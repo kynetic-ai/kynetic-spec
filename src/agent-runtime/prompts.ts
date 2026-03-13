@@ -11,7 +11,8 @@
 import * as path from "node:path";
 import * as fs from "node:fs/promises";
 import { resolveSkillReferenceTokensForPlatform } from "../parser/skill-render.js";
-import type { LoadedSkill } from "../parser/meta.js";
+import { loadMetaContext, type LoadedSkill } from "../parser/meta.js";
+import { initContext } from "../parser/yaml.js";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -39,13 +40,15 @@ export interface BuildPromptOptions {
   adapterId?: string;
 }
 
-function getSkillReferencePlatform(adapterId?: string): "claude-code" | "codex" | null {
+function getSkillReferencePlatform(adapterId?: string): "claude-code" | "codex" | "droid" | null {
   switch (adapterId) {
     case "claude-agent-acp":
     case "claude-code-acp":
       return "claude-code";
     case "codex-acp":
       return "codex";
+    case "droid-acp":
+      return "droid";
     default:
       return null;
   }
@@ -79,6 +82,29 @@ async function loadKspecSkillIds(specDir: string): Promise<Set<string>> {
   }
 }
 
+async function loadSkillOrigins(specDir: string): Promise<Map<string, LoadedSkill["origin"]>> {
+  try {
+    const ctx = await initContext(specDir);
+    const meta = await loadMetaContext(ctx);
+    if (meta.skills.length > 0) {
+      const origins = new Map<string, LoadedSkill["origin"]>();
+      for (const skill of meta.skills) {
+        origins.set(skill.id, skill.origin);
+      }
+      return origins;
+    }
+  } catch {
+    // Fall back to rendered skill directory inference below.
+  }
+
+  const kspecSkillIds = await loadKspecSkillIds(specDir);
+  const origins = new Map<string, LoadedSkill["origin"]>();
+  for (const skillId of kspecSkillIds) {
+    origins.set(skillId, "core");
+  }
+  return origins;
+}
+
 export async function rewriteSkillReferencesForAdapter(
   text: string,
   specDir: string,
@@ -89,11 +115,7 @@ export async function rewriteSkillReferencesForAdapter(
     return text;
   }
 
-  const kspecSkillIds = await loadKspecSkillIds(specDir);
-  const skillOrigins = new Map<string, LoadedSkill["origin"]>();
-  for (const skillId of kspecSkillIds) {
-    skillOrigins.set(skillId, "core");
-  }
+  const skillOrigins = await loadSkillOrigins(specDir);
 
   return resolveSkillReferenceTokensForPlatform(text, platform, skillOrigins);
 }

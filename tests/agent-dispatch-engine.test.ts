@@ -217,6 +217,14 @@ function makeProvisionedWorkspace(
   };
 }
 
+function git(cwd: string, command: string): string {
+  return execSync(`git ${command}`, {
+    cwd,
+    stdio: "pipe",
+    encoding: "utf-8",
+  }).trim();
+}
+
 /**
  * Set up a minimal kspec project directory with meta containing agents.
  *
@@ -3137,6 +3145,51 @@ describe("Stale queue entry discard", () => {
 
     await engine.stop();
   });
+
+  // AC: @dispatch-scheduling-priority-model ac-8
+  it("logs task-linked discard diagnostics when workspace eligibility pruning drops a queued candidate", async () => {
+    const agent = makeTestAgent({
+      id: "pr-reviewer",
+      dispatch: [{ on: "task.pending_review" }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK");
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending_review", automation: "eligible" }]);
+
+    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValueOnce({
+      exists: true,
+      healthy: false,
+      reason: "missing-registry-record",
+      metadata: null,
+    });
+    const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      session: {} as any,
+      outcome: "success" as const,
+      durationMs: 1,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+
+    await engine.start();
+
+    expect(runSpy).not.toHaveBeenCalled();
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect.stringContaining(`[dispatch] Discarded queue entry @${taskId} for agent "pr-reviewer": workspace is unhealthy (missing-registry-record)`),
+    );
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect.stringContaining('Discarded 1 ineligible queue entry for agent "pr-reviewer"'),
+    );
+
+    await engine.stop();
+  });
 });
 
 // ─── Self-trigger suppression ────────────────────────────────────────────────
@@ -3358,6 +3411,170 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     await (engine as unknown as { _reconcile: () => Promise<void> })._reconcile();
     expect(enqueueSpy.mock.calls.length).toBe(0);
 
+    await engine.stop();
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-6
+  // AC: @dispatch-workspace-cleanup-policy ac-7
+  it("recovers metadata-backed legacy workspaces before pruning pending_review reviewer work", async () => {
+    const reviewer = makeTestAgent({
+      id: "pr-reviewer",
+      dispatch: [{ on: "task.pending_review" }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [reviewer]);
+
+    const taskId = testUlid("TASK", 29);
+    const taskRef = `@${taskId}`;
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending_review", automation: "eligible" }]);
+
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: testDir,
+      taskRef,
+      task: {
+        title: "Legacy Review Recovery",
+        slugs: ["task-legacy-review-recovery"],
+      },
+    });
+
+    const legacyBranch = "feat/legacy-review-recovery";
+    git(workspace.cwd, `checkout -b ${legacyBranch}`);
+    git(testDir, `branch -D ${workspace.metadata.canonicalBranch}`);
+    const metadataPath = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
+    const metadata = JSON.parse(await fs.readFile(metadataPath, "utf-8")) as {
+      canonicalBranch: string;
+      canonicalBranchHead: string;
+    };
+    metadata.canonicalBranch = legacyBranch;
+    metadata.canonicalBranchHead = git(workspace.cwd, "rev-parse HEAD");
+    await fs.writeFile(metadataPath, `${JSON.stringify(metadata, null, 2)}\n`, "utf-8");
+    await fs.writeFile(
+      path.join(testDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({
+        kynetic_dispatch_workspaces: "1.0",
+        workspaces: [],
+      }),
+      "utf-8",
+    );
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+    const spawnSpy = vi.spyOn(
+      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
+      "_spawnInvocation",
+    ).mockResolvedValue(true);
+
+    await engine.start();
+
+    expect(spawnSpy).toHaveBeenCalledTimes(1);
+    expect(git(workspace.cwd, "branch --show-current")).toBe(workspace.metadata.canonicalBranch);
+    const registry = YAML.parse(
+      await fs.readFile(path.join(testDir, "project.dispatch-workspaces.yaml"), "utf-8"),
+    ) as { workspaces?: Array<{ task_ref: string; canonical_branch: string }> };
+    expect(registry.workspaces).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          task_ref: taskRef,
+          canonical_branch: workspace.metadata.canonicalBranch,
+        }),
+      ]),
+    );
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-6
+  it("persists stale reviewer metadata recovery when the worker registration is gone", async () => {
+    const reviewer = makeTestAgent({
+      id: "pr-reviewer",
+      dispatch: [{ on: "task.pending_review" }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [reviewer]);
+
+    const taskId = testUlid("TASK", 30);
+    const taskRef = `@${taskId}`;
+    const task = {
+      title: "Missing Worker Registration Recovery",
+      slugs: ["task-missing-worker-registration-recovery"],
+    };
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending_review", automation: "eligible" }]);
+
+    const workerWorkspace = await provisionDispatchWorkspace({
+      projectDir: testDir,
+      taskRef,
+      task,
+    });
+    const reviewerWorkspace = await provisionDispatchWorkspace({
+      projectDir: testDir,
+      taskRef,
+      role: "reviewer",
+      task,
+    });
+    await fs.writeFile(
+      path.join(reviewerWorkspace.cwd, ".kspec-dispatch-workspace.json"),
+      `${JSON.stringify(reviewerWorkspace.metadata, null, 2)}\n`,
+      "utf-8",
+    );
+
+    git(testDir, `worktree remove --force ${workerWorkspace.cwd}`);
+    await fs.writeFile(
+      path.join(testDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({
+        kynetic_dispatch_workspaces: "1.0",
+        workspaces: [],
+      }),
+      "utf-8",
+    );
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+    const spawnSpy = vi.spyOn(
+      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
+      "_spawnInvocation",
+    ).mockResolvedValue(true);
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    await engine.start();
+
+    expect(spawnSpy).not.toHaveBeenCalled();
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.stringContaining(
+        `[dispatch] Discarded queue entry ${taskRef} for agent "pr-reviewer": workspace is unhealthy (missing-worker-worktree)`,
+      ),
+    );
+
+    const health = await workspaceModule.getDispatchWorkspaceHealth({
+      projectDir: testDir,
+      taskRef,
+      task,
+      role: "reviewer",
+    });
+    expect(health.exists).toBe(true);
+    expect(health.healthy).toBe(false);
+    expect(health.reason).toBe("missing-worker-worktree");
+
+    const registry = YAML.parse(
+      await fs.readFile(path.join(testDir, "project.dispatch-workspaces.yaml"), "utf-8"),
+    ) as { workspaces?: Array<{ task_ref: string; lifecycle_state: string }> };
+    expect(registry.workspaces).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          task_ref: taskRef,
+          lifecycle_state: "stale",
+        }),
+      ]),
+    );
+
+    logSpy.mockRestore();
     await engine.stop();
   });
 });

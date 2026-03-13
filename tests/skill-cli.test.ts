@@ -859,6 +859,8 @@ describe('Skill CLI - skill set --platform-config', () => {
     expect(result.stderr).toContain('Valid platform config keys');
     expect(result.stderr).toContain('claude_code');
     expect(result.stderr).toContain('user_invocable');
+    expect(result.stderr).toContain('droid');
+    expect(result.stderr).toContain('argument_hint');
   });
 
   // AC: @skill-platform-config-cli ac-4 - invalid codex key
@@ -874,6 +876,22 @@ describe('Skill CLI - skill set --platform-config', () => {
     expect(result.stderr).toContain('Valid platform config keys');
     expect(result.stderr).toContain('codex');
     expect(result.stderr).toContain('allow_implicit_invocation');
+  });
+
+  // AC: @skill-platform-config-cli ac-4 - invalid droid key
+  it('should show validation error for invalid droid key', async () => {
+    const result = kspecFull(
+      'skill set @my-skill --platform-config droid.bad_key=true',
+      tempDir,
+      { expectFail: true }
+    );
+
+    expect(result.exitCode).not.toBe(0);
+    expect(result.stderr).toContain('bad_key');
+    expect(result.stderr).toContain('Valid platform config keys');
+    expect(result.stderr).toContain('droid');
+    expect(result.stderr).toContain('disable_model_invocation');
+    expect(result.stderr).toContain('argument_hint');
   });
 
   it('should show error for invalid format (missing platform)', async () => {

@@ -23,6 +23,7 @@ describe("Integration: task plan_ref field", () => {
     await cleanupTempDir(tempDir);
   });
 
+  // AC: @task-add ac-plan-ref
   // AC: @plan-derive-enhanced ac-bidirectional-links
   it("should allow creating task with plan_ref", () => {
     // Create a plan first
@@ -123,6 +124,7 @@ describe("Integration: task plan_ref field", () => {
     expect(addOutput.task.plan_ref).toBe("@test-plan-5");
   });
 
+  // AC: @task-add ac-plan-ref-invalid
   it("should validate plan_ref exists", () => {
     const result = kspecRun(
       'task add --title "Test Task" --plan-ref @nonexistent',
@@ -134,6 +136,7 @@ describe("Integration: task plan_ref field", () => {
     expect(result.exitCode).not.toBe(0);
   });
 
+  // AC: @task-add ac-plan-ref-invalid
   it("should error when plan_ref points to a task", () => {
     // Create a task (not a plan)
     kspec('task add --title "Other Task" --slug other-task-not-plan', tempDir);

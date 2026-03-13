@@ -1325,7 +1325,11 @@ export class DispatchEngine {
     selected.entry.starvationDeferrals = 0;
   }
 
-  private async _workspaceCandidateEligible(entry: QueueEntry): Promise<boolean> {
+  private async _workspaceCandidateHealth(entry: QueueEntry): Promise<{
+    eligible: boolean;
+    exists: boolean;
+    reason: string | null;
+  }> {
     const role = entry.change.toStatus === "pending_review" ? "reviewer" : "worker";
     const health = await getDispatchWorkspaceHealth({
       projectDir: this.projectDir,
@@ -1339,11 +1343,14 @@ export class DispatchEngine {
       role,
     });
 
-    if (!health.exists) {
-      return entry.change.toStatus !== "in_progress" && entry.change.toStatus !== "pending_review";
-    }
-
-    return health.healthy;
+    const eligible = !health.exists
+      ? entry.change.toStatus !== "in_progress" && entry.change.toStatus !== "pending_review"
+      : health.healthy;
+    return {
+      eligible,
+      exists: health.exists,
+      reason: health.reason,
+    };
   }
 
   private async _pruneIneligibleQueueEntries(
@@ -1356,6 +1363,7 @@ export class DispatchEngine {
     for (const agent of agents) {
       const queue = this.queues.get(agent.id) ?? [];
       const before = queue.length;
+      const discardedDetails: string[] = [];
 
       for (let i = queue.length - 1; i >= 0; i--) {
         const entry = queue[i];
@@ -1365,12 +1373,18 @@ export class DispatchEngine {
         if (expectedEvent) {
           if (currentStatus === undefined) {
             if (this.prevTaskStates.has(entry.change.taskId)) {
+              discardedDetails.push(
+                `${entry.change.taskRef} for agent "${agent.id}": task no longer exists on disk`,
+              );
               queue.splice(i, 1);
               continue;
             }
           } else {
             const currentEvent = STATUS_TO_EVENT[currentStatus];
             if (currentEvent !== expectedEvent) {
+              discardedDetails.push(
+                `${entry.change.taskRef} for agent "${agent.id}": task state changed to ${currentStatus}`,
+              );
               queue.splice(i, 1);
               continue;
             }
@@ -1381,6 +1395,9 @@ export class DispatchEngine {
         if (currentTask) {
           entry.change.task = currentTask;
           if (currentTask.blocked_by.length > 0) {
+            discardedDetails.push(
+              `${entry.change.taskRef} for agent "${agent.id}": task is blocked by ${currentTask.blocked_by.join(", ")}`,
+            );
             queue.splice(i, 1);
             continue;
           }
@@ -1389,16 +1406,26 @@ export class DispatchEngine {
             currentTasks &&
             !areDependenciesMet(currentTask, currentTasks)
           ) {
+            discardedDetails.push(
+              `${entry.change.taskRef} for agent "${agent.id}": dependencies are no longer satisfied`,
+            );
             queue.splice(i, 1);
             continue;
           }
         }
 
-        if (!(await this._workspaceCandidateEligible(entry))) {
+        const workspaceHealth = await this._workspaceCandidateHealth(entry);
+        if (!workspaceHealth.eligible) {
+          discardedDetails.push(
+            `${entry.change.taskRef} for agent "${agent.id}": workspace ${workspaceHealth.exists ? "is unhealthy" : "is missing"}${workspaceHealth.reason ? ` (${workspaceHealth.reason})` : ""}`,
+          );
           queue.splice(i, 1);
         }
       }
 
+      for (const detail of discardedDetails) {
+        console.log(`[dispatch] Discarded queue entry ${detail}`);
+      }
       if (before > queue.length) {
         console.log(
           `[dispatch] Discarded ${before - queue.length} ineligible queue entr${before - queue.length === 1 ? "y" : "ies"} for agent "${agent.id}"`,
@@ -1809,6 +1836,7 @@ export class DispatchEngine {
       };
 
       let terminalEvent: InvocationEvent | null = null;
+      let releasedInFlightKey = false;
       const markActivePromise = this.shadowMutex.runExclusive(async () => {
         try {
           const activeWorkspace = await markDispatchWorkspaceActive({
@@ -1917,16 +1945,18 @@ export class DispatchEngine {
 
           if (entry.change.toStatus === "pending_review") {
             try {
-              await cleanupReviewerDispatchWorkspace(
-                this.projectDir,
-                entry.change.taskRef,
-                entry.change.task
-                  ? {
-                      title: entry.change.task.title,
-                      slugs: entry.change.task.slugs,
-                    }
-                  : undefined,
-              );
+              await this.shadowMutex.runExclusive(async () => {
+                await cleanupReviewerDispatchWorkspace(
+                  this.projectDir,
+                  entry.change.taskRef,
+                  entry.change.task
+                    ? {
+                        title: entry.change.task.title,
+                        slugs: entry.change.task.slugs,
+                      }
+                    : undefined,
+                );
+              });
             } catch (cleanupErr) {
               const cleanupMessage = cleanupErr instanceof Error ? cleanupErr.message : String(cleanupErr);
               console.warn(
@@ -1940,6 +1970,12 @@ export class DispatchEngine {
         })
         .then(async () => {
           if (!this.running) return;
+
+          // Release the in-flight marker before re-evaluating tasks from disk so
+          // follow-up reviewer/fix-cycle work for the same task can be requeued
+          // immediately after the prior invocation completes.
+          this.inFlightTaskKeys.delete(inFlightKey);
+          releasedInFlightKey = true;
 
           // AC: @agent-dispatch-engine ac-23, ac-24
           // Re-evaluate all tasks from disk so the drain loop sees tasks that
@@ -1964,7 +2000,9 @@ export class DispatchEngine {
           }
         })
         .finally(() => {
-          this.inFlightTaskKeys.delete(inFlightKey);
+          if (!releasedInFlightKey) {
+            this.inFlightTaskKeys.delete(inFlightKey);
+          }
           this.runningInvocations.delete(invocationPromise);
           this.invocationAbortControllers.delete(abortController);
         });

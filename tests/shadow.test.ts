@@ -245,6 +245,50 @@ describe('Shadow Branch', () => {
       expect(ctx.specDir).toBe(specDir);
       expect(ctx.manifestPath).toBe(path.join(specDir, 'kynetic.yaml'));
     });
+
+    async function setupShadowRepo(rootManifest = false): Promise<void> {
+      execSync('git init', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: testDir, stdio: 'pipe' });
+      execSync('git commit --allow-empty -m "init"', { cwd: testDir, stdio: 'pipe' });
+      await initializeShadow(testDir);
+
+      if (rootManifest) {
+        await fs.writeFile(
+          path.join(testDir, 'kynetic.yaml'),
+          'kynetic: "1.0"\nproject:\n  name: Root Fallback Trap\n  version: "0.1.0"\n  status: draft\n'
+        );
+      }
+    }
+
+    // AC: @broken-shadow-safety ac-context-fails-fast
+    // AC: @broken-shadow-safety ac-no-root-fallback
+    it('throws DIRECTORY_MISSING instead of falling back to repo-root paths when a root manifest exists', async () => {
+      await setupShadowRepo(true);
+
+      execSync(`git worktree remove ${SHADOW_WORKTREE_DIR} --force`, {
+        cwd: testDir,
+        stdio: 'pipe',
+      });
+
+      await expect(initContext(testDir)).rejects.toMatchObject({
+        code: 'DIRECTORY_MISSING',
+      });
+    });
+
+    // AC: @broken-shadow-safety ac-context-fails-fast
+    it('throws WORKTREE_DISCONNECTED when the shadow worktree link is corrupted', async () => {
+      await setupShadowRepo();
+
+      await fs.writeFile(
+        path.join(testDir, SHADOW_WORKTREE_DIR, '.git'),
+        'corrupted content'
+      );
+
+      await expect(initContext(testDir)).rejects.toMatchObject({
+        code: 'WORKTREE_DISCONNECTED',
+      });
+    });
   });
 
   describe('initializeShadow', () => {
@@ -494,6 +538,24 @@ describe('Shadow Branch', () => {
       expect(status.healthy).toBe(true);
     });
 
+    // AC: @broken-shadow-safety ac-preserve-on-failure
+    it('restores the previous .kspec directory when repair cannot recreate the worktree', async () => {
+      await setupHealthyShadow();
+      const worktreeDir = path.join(testDir, SHADOW_WORKTREE_DIR);
+      const gitFile = path.join(worktreeDir, '.git');
+      const competingWorktree = path.join(testDir, 'shadow-conflict');
+
+      await fs.writeFile(gitFile, 'corrupted content');
+      execSync(`git worktree add --force "${competingWorktree}" kspec-meta`, {
+        cwd: testDir,
+        stdio: 'pipe',
+      });
+
+      const result = await repairShadow(testDir);
+      expect(result.success).toBe(false);
+      expect(await fs.readFile(gitFile, 'utf-8')).toBe('corrupted content');
+    });
+
     // AC: @shadow-recovery ac-recovery-3 - No shadow branch → repair fails suggesting init
     it('fails with helpful error when shadow branch does not exist', async () => {
       // Just a git repo without shadow branch
@@ -674,6 +736,38 @@ describe('Shadow Branch', () => {
           stdio: ['pipe', 'pipe', 'pipe'],
         }).trim();
         expect(tracking).toBe('origin');
+      } finally {
+        await fs.rm(cloneDir, { recursive: true, force: true });
+      }
+    });
+
+    // AC: @broken-shadow-safety ac-bootstrap-reuses-repair
+    it('repair reattaches shadow state from the remote when the local branch is missing', async () => {
+      await setupBareRemote();
+      await setupLocalWithRemote();
+
+      await initializeShadow(testDir);
+      await pushShadowToRemote();
+
+      const cloneDir = path.join('/tmp', `kspec-repair-clone-${Date.now()}`);
+      try {
+        execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+        execSync('git config user.email "test@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+        execSync('git config user.name "Test"', { cwd: cloneDir, stdio: 'pipe' });
+
+        const branchList = execSync(`git -C ${cloneDir} branch --list ${SHADOW_BRANCH_NAME}`, {
+          encoding: 'utf-8',
+          stdio: ['pipe', 'pipe', 'pipe'],
+        }).trim();
+        expect(branchList).toBe('');
+
+        const result = await repairShadow(cloneDir);
+        expect(result.success).toBe(true);
+        expect(result.createdFromRemote).toBe(true);
+        expect(result.worktreeCreated).toBe(true);
+
+        const status = await getShadowStatus(cloneDir);
+        expect(status.healthy).toBe(true);
       } finally {
         await fs.rm(cloneDir, { recursive: true, force: true });
       }

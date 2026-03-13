@@ -6,6 +6,7 @@ import {
   getShadowStatus,
   hasRemoteTracking,
   repairShadow,
+  remoteShadowBranchExists,
   resolveProjectRoots,
   SHADOW_BRANCH_NAME,
   SHADOW_WORKTREE_DIR,
@@ -13,6 +14,7 @@ import {
   type ShadowStatus,
   shadowSync,
 } from "../../parser/shadow.js";
+import { loadProjectConfig } from "../../parser/config.js";
 import {
   getSessionBranchStatus,
   repairSessionBranch,
@@ -32,14 +34,16 @@ function resolveCliProjectRoot(): string | null {
 function formatShadowStatus(
   status: ShadowStatus,
   gitRoot: string,
+  branchName: string,
+  worktreeDir: string,
   sessionStatus?: SessionBranchStatus,
   sessionBranchName?: string,
 ): void {
   console.log(chalk.bold("Shadow Branch Status"));
   console.log(chalk.gray("─".repeat(40)));
   console.log(`Project root: ${gitRoot}`);
-  console.log(`Branch name:  ${SHADOW_BRANCH_NAME}`);
-  console.log(`Worktree:     ${SHADOW_WORKTREE_DIR}/`);
+  console.log(`Branch name:  ${branchName}`);
+  console.log(`Worktree:     ${worktreeDir}/`);
   console.log();
 
   if (status.healthy) {
@@ -152,7 +156,16 @@ export function registerShadowCommands(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const status = await getShadowStatus(gitRoot);
+        const { config } = await loadProjectConfig(gitRoot, gitRoot);
+        const shadowOptions = {
+          branchName: config.shadow.branch,
+          directory: config.shadow.directory,
+          remote: config.shadow.remote?.value,
+          remoteType: config.shadow.remote?.type,
+        };
+        const branchName = shadowOptions.branchName || SHADOW_BRANCH_NAME;
+        const worktreeDir = shadowOptions.directory || SHADOW_WORKTREE_DIR;
+        const status = await getShadowStatus(gitRoot, shadowOptions);
 
         // AC: @session-branch-worktree ac-status — check session branch if configured
         let sessionStatus: SessionBranchStatus | undefined;
@@ -176,8 +189,8 @@ export function registerShadowCommands(program: Command): void {
           {
             ...status,
             gitRoot,
-            branchName: SHADOW_BRANCH_NAME,
-            worktreeDir: SHADOW_WORKTREE_DIR,
+            branchName,
+            worktreeDir,
             ...(sessionStatus && {
               sessionBranch: {
                 ...sessionStatus,
@@ -190,6 +203,8 @@ export function registerShadowCommands(program: Command): void {
             formatShadowStatus(
               status,
               gitRoot,
+              branchName,
+              worktreeDir,
               sessionStatus,
               sessionBranchName,
             ),
@@ -216,19 +231,28 @@ export function registerShadowCommands(program: Command): void {
           process.exit(EXIT_CODES.ERROR);
         }
 
-        const status = await getShadowStatus(gitRoot);
+        const { config } = await loadProjectConfig(gitRoot, gitRoot);
+        const shadowOptions = {
+          branchName: config.shadow.branch,
+          directory: config.shadow.directory,
+          remote: config.shadow.remote?.value,
+          remoteType: config.shadow.remote?.type,
+        };
+        const branchName = shadowOptions.branchName || SHADOW_BRANCH_NAME;
+        const worktreeDir = shadowOptions.directory || SHADOW_WORKTREE_DIR;
+        const status = await getShadowStatus(gitRoot, shadowOptions);
+        const remoteHasShadow = await remoteShadowBranchExists(
+          gitRoot,
+          shadowOptions,
+        );
         let hadError = false;
 
         if (status.healthy) {
           info(shadowCommands.repair.alreadyHealthy);
-        } else if (!status.branchExists) {
-          error(shadowCommands.repair.branchNotExist);
-          console.log(shadowCommands.repair.initHint);
-          hadError = true;
         } else {
           info(shadowCommands.repair.repairing);
 
-          const result = await repairShadow(gitRoot);
+          const result = await repairShadow(gitRoot, shadowOptions);
 
           if (result.success) {
             if (result.alreadyExists) {
@@ -238,11 +262,14 @@ export function registerShadowCommands(program: Command): void {
                 worktreeCreated: result.worktreeCreated,
               });
               console.log(
-                shadowCommands.repair.worktreeCreated(SHADOW_WORKTREE_DIR),
+                shadowCommands.repair.worktreeCreated(worktreeDir),
               );
             }
           } else {
             error(shadowCommands.repair.failed(result.error || "Unknown error"));
+            if (!status.branchExists && !remoteHasShadow) {
+              console.log(shadowCommands.repair.initHint);
+            }
             hadError = true;
           }
         }

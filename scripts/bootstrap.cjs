@@ -181,33 +181,240 @@ function checkKspecCli() {
 }
 
 /**
- * Check if .kspec/ directory exists and is healthy
+ * Minimal shadow config understood by bootstrap before the main parser is ready.
  */
-function checkKspecDir() {
-  const kspecDir = path.join(projectRoot, '.kspec');
+const DEFAULT_SHADOW_BOOTSTRAP_CONFIG = {
+  branch: 'kspec-meta',
+  directory: '.kspec',
+  remote: null,
+  remoteType: null,
+};
 
-  if (!fs.existsSync(kspecDir)) {
-    return { exists: false, healthy: false, reason: '.kspec/ directory not found' };
+function detectShadowRemoteType(remote) {
+  if (
+    remote.startsWith('/') ||
+    remote.startsWith('./') ||
+    remote.startsWith('../') ||
+    remote.startsWith('~')
+  ) {
+    return 'path';
+  }
+
+  if (remote.includes('://') || remote.startsWith('git@')) {
+    return 'url';
+  }
+
+  return 'named';
+}
+
+function parseScalar(value) {
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+
+  if (
+    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+  ) {
+    return trimmed.slice(1, -1);
+  }
+
+  return trimmed;
+}
+
+function loadShadowBootstrapConfigWithDeps({ fsApi, pathApi, projectRootPath }) {
+  const configPath = pathApi.join(projectRootPath, 'kspec.config.yaml');
+  if (!fsApi.existsSync(configPath)) {
+    return { ...DEFAULT_SHADOW_BOOTSTRAP_CONFIG };
+  }
+
+  try {
+    const content = fsApi.readFileSync(configPath, 'utf8');
+    const lines = content.split(/\r?\n/);
+    const shadowConfig = { ...DEFAULT_SHADOW_BOOTSTRAP_CONFIG };
+    let inShadowBlock = false;
+    let shadowIndent = 0;
+
+    for (const line of lines) {
+      if (!line.trim() || line.trimStart().startsWith('#')) {
+        continue;
+      }
+
+      const match = line.match(/^(\s*)([A-Za-z0-9_-]+)\s*:\s*(.*)$/);
+      if (!match) {
+        continue;
+      }
+
+      const [, indentText, key, rawValue] = match;
+      const indent = indentText.length;
+
+      if (!inShadowBlock) {
+        if (key === 'shadow' && rawValue.trim() === '') {
+          inShadowBlock = true;
+          shadowIndent = indent;
+        }
+        continue;
+      }
+
+      if (indent <= shadowIndent) {
+        inShadowBlock = false;
+        continue;
+      }
+
+      if (key === 'branch' || key === 'directory' || key === 'remote') {
+        shadowConfig[key] = parseScalar(rawValue);
+      }
+    }
+
+    if (shadowConfig.remote) {
+      shadowConfig.remoteType = detectShadowRemoteType(shadowConfig.remote);
+    }
+
+    return shadowConfig;
+  } catch {
+    return { ...DEFAULT_SHADOW_BOOTSTRAP_CONFIG };
+  }
+}
+
+function loadShadowBootstrapConfig() {
+  return loadShadowBootstrapConfigWithDeps({
+    fsApi: fs,
+    pathApi: path,
+    projectRootPath: projectRoot,
+  });
+}
+
+function expandBootstrapPathRemote(remote) {
+  if (!remote.startsWith('~')) {
+    return remote;
+  }
+
+  return remote.replace(/^~/, process.env.HOME || process.env.USERPROFILE || '~');
+}
+
+function resolveBootstrapRemoteTarget(shadowConfig) {
+  if (!shadowConfig.remote) {
+    return 'origin';
+  }
+
+  if (shadowConfig.remoteType === 'path') {
+    return expandBootstrapPathRemote(shadowConfig.remote);
+  }
+
+  return shadowConfig.remote;
+}
+
+function shellQuote(value) {
+  return `'${String(value).replace(/'/g, `'\"'\"'`)}'`;
+}
+
+/**
+ * Check if the configured shadow directory exists and is healthy.
+ */
+function checkKspecDirWithDeps({ fsApi, pathApi, projectRootPath, shadowConfig }) {
+  const kspecDir = pathApi.join(projectRootPath, shadowConfig.directory);
+
+  if (!fsApi.existsSync(kspecDir)) {
+    return { exists: false, healthy: false, reason: `${shadowConfig.directory}/ directory not found` };
   }
 
   // Check if it's a git worktree (has .git file, not directory)
-  const gitPath = path.join(kspecDir, '.git');
-  if (!fs.existsSync(gitPath)) {
-    return { exists: true, healthy: false, reason: '.kspec/.git not found' };
+  const gitPath = pathApi.join(kspecDir, '.git');
+  if (!fsApi.existsSync(gitPath)) {
+    return { exists: true, healthy: false, reason: `${shadowConfig.directory}/.git not found` };
   }
 
-  const stat = fs.statSync(gitPath);
+  const stat = fsApi.statSync(gitPath);
   if (stat.isDirectory()) {
-    return { exists: true, healthy: false, reason: '.kspec/.git is a directory, not a worktree link' };
+    return { exists: true, healthy: false, reason: `${shadowConfig.directory}/.git is a directory, not a worktree link` };
   }
 
   // Read the gitdir reference
-  const gitContent = fs.readFileSync(gitPath, 'utf8').trim();
+  const gitContent = fsApi.readFileSync(gitPath, 'utf8').trim();
   if (!gitContent.startsWith('gitdir:')) {
-    return { exists: true, healthy: false, reason: '.kspec/.git does not contain gitdir reference' };
+    return { exists: true, healthy: false, reason: `${shadowConfig.directory}/.git does not contain gitdir reference` };
   }
 
   return { exists: true, healthy: true };
+}
+
+function checkKspecDir(shadowConfig = DEFAULT_SHADOW_BOOTSTRAP_CONFIG) {
+  return checkKspecDirWithDeps({
+    fsApi: fs,
+    pathApi: path,
+    projectRootPath: projectRoot,
+    shadowConfig,
+  });
+}
+
+function checkShadowBranchExists(runFn, shadowConfig) {
+  const result = runFn(`git branch --list ${shellQuote(shadowConfig.branch)}`, { silent: true });
+  return result.success && Boolean(result.output.trim());
+}
+
+function checkRemoteShadowBranchExists(runFn, shadowConfig) {
+  const remoteTarget = resolveBootstrapRemoteTarget(shadowConfig);
+
+  if (shadowConfig.remote && shadowConfig.remoteType === 'named') {
+    const remoteResult = runFn(
+      `git remote get-url ${shellQuote(remoteTarget)}`,
+      { silent: true },
+    );
+    if (!remoteResult.success) {
+      return false;
+    }
+  } else if (!shadowConfig.remote) {
+    const remoteResult = runFn(
+      `git remote get-url ${shellQuote(remoteTarget)}`,
+      { silent: true },
+    );
+    if (!remoteResult.success) {
+      return false;
+    }
+  }
+
+  const result = runFn(
+    `git ls-remote --heads ${shellQuote(remoteTarget)} ${shellQuote(shadowConfig.branch)}`,
+    { silent: true },
+  );
+  return result.success && Boolean(result.output.trim());
+}
+
+function resolveShadowBootstrapActionWithDeps({
+  dirStatus,
+  shadowConfig,
+  runFn,
+  kspecCmd,
+}) {
+  if (dirStatus.healthy) {
+    return {
+      kind: 'none',
+      command: '',
+      startMessage: '',
+      successMessage: '',
+      actionSummary: '',
+    };
+  }
+
+  if (
+    checkShadowBranchExists(runFn, shadowConfig) ||
+    checkRemoteShadowBranchExists(runFn, shadowConfig)
+  ) {
+    return {
+      kind: 'repair',
+      command: `${kspecCmd} shadow repair`,
+      startMessage: 'Repairing kspec shadow worktree (kspec shadow repair)...',
+      successMessage: 'Kspec shadow repaired',
+      actionSummary: 'Repaired shadow branch worktree (kspec shadow repair)',
+    };
+  }
+
+  return {
+    kind: 'init',
+    command: `${kspecCmd} init --no-prompt`,
+    startMessage: 'Initializing kspec (kspec init --no-prompt)...',
+    successMessage: 'Kspec initialized',
+    actionSummary: 'Initialized shadow branch (kspec init)',
+  };
 }
 
 /**
@@ -247,8 +454,9 @@ async function bootstrap() {
   // Step 1: Check current state
   logStep('Checking current state...');
 
+  const shadowConfig = loadShadowBootstrapConfig();
   const cliStatus = checkKspecCli();
-  const dirStatus = checkKspecDir();
+  const dirStatus = checkKspecDir(shadowConfig);
   const modulesStatus = checkNodeModules();
   const buildStatus = checkBuild();
 
@@ -306,18 +514,24 @@ async function bootstrap() {
       logSkip('CLI already linked');
     }
 
-    // Step 5: kspec init (if needed)
+    // Step 5: initialize or repair kspec shadow state (if needed)
     if (needsInit) {
-      logStep('Initializing kspec (kspec init --no-prompt)...');
       // Use the local dist if npm link might not have worked yet
       const kspecCmd = commandExists('kspec') ? 'kspec' : 'node dist/cli/index.js';
-      const result = run(`${kspecCmd} init --no-prompt`);
+      const shadowAction = resolveShadowBootstrapActionWithDeps({
+        dirStatus,
+        shadowConfig,
+        runFn: run,
+        kspecCmd,
+      });
+      logStep(shadowAction.startMessage);
+      const result = run(shadowAction.command);
       if (!result.success) {
-        logError('kspec init failed');
+        logError(`${shadowAction.kind === 'repair' ? 'kspec shadow repair' : 'kspec init'} failed`);
         process.exit(1);
       }
-      logSuccess('Kspec initialized');
-      actions.push('Initialized shadow branch (kspec init)');
+      logSuccess(shadowAction.successMessage);
+      actions.push(shadowAction.actionSummary);
     } else {
       logSkip('Kspec already initialized');
     }
@@ -351,4 +565,7 @@ if (require.main === module) {
 module.exports = {
   checkKspecCli,
   checkKspecCliWithDeps,
+  loadShadowBootstrapConfig,
+  loadShadowBootstrapConfigWithDeps,
+  resolveShadowBootstrapActionWithDeps,
 };

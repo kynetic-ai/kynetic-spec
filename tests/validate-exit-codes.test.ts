@@ -1,8 +1,6 @@
 /**
  * Tests for validate command exit codes
  *
- * AC: @cli-exit-codes
- *
  * Exit code behavior:
  * - 0 (SUCCESS): No errors, no warnings
  * - 4 (VALIDATION_FAILED): Errors present (schema, refs, trait cycles, etc.)

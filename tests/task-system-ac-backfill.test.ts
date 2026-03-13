@@ -262,6 +262,8 @@ describe("Task system AC backfill coverage", () => {
 
   // AC: @query-next ac-1
   // AC: @query-filters ac-1
+  // AC: @trait-priority-parameter ac-3
+  // AC: @trait-priority-parameter ac-5
   it("returns the highest-priority ready task and supports task list filters in json mode", () => {
     kspecOutput("task set @test-task-pending --priority 4", tempDir);
     kspecOutput("task set @test-task-secondary --priority 5", tempDir);

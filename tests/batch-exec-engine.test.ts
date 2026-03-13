@@ -623,6 +623,7 @@ describe("batch command integration", () => {
     expect(result.summary.succeeded).toBe(1);
   });
 
+  // AC: @trait-priority-parameter ac-8
   it("accepts P1/P2/P3 aliases for numeric priority args in batch commands", () => {
     const commands = JSON.stringify([
       {

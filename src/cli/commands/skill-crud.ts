@@ -38,6 +38,7 @@ import {
   SkillSchema,
   ClaudeCodeConfigSchema,
   CodexConfigSchema,
+  DroidConfigSchema,
   type SkillOrigin,
   type PlatformConfig,
 } from "../../schema/index.js";
@@ -45,6 +46,12 @@ import { errors } from "../../strings/errors.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output, success } from "../output.js";
 import { parseTagsArray } from "../parse-utils.js";
+
+const PLATFORM_CONFIG_GUIDANCE_SCHEMAS = {
+  claude_code: ClaudeCodeConfigSchema,
+  codex: CodexConfigSchema,
+  droid: DroidConfigSchema,
+} as const;
 
 // ============================================================================
 // Frontmatter & Content Processing
@@ -649,15 +656,17 @@ export function registerSkillCrudCommands(skill: Command): void {
 
           let errorMsg = `Invalid skill data: ${issues}`;
           if (hasPlatformConfigError) {
-            // Get valid keys from schemas
-            const claudeCodeKeys = Object.keys(ClaudeCodeConfigSchema.shape).join(
-              ", ",
-            );
-            const codexKeys = Object.keys(CodexConfigSchema.shape).join(", ");
+            const validPlatformConfigKeys = Object.entries(
+              PLATFORM_CONFIG_GUIDANCE_SCHEMAS,
+            )
+              .map(
+                ([platform, schema]) =>
+                  `  ${platform}: ${Object.keys(schema.shape).join(", ")}`,
+              )
+              .join("\n");
             errorMsg +=
               `\n\nValid platform config keys:` +
-              `\n  claude_code: ${claudeCodeKeys}` +
-              `\n  codex: ${codexKeys}`;
+              `\n${validPlatformConfigKeys}`;
           }
 
           error(errorMsg);

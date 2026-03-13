@@ -1219,6 +1219,7 @@ describe('Integration: meta_ref in tasks', () => {
     await cleanupTempDir(tempDir);
   });
 
+  // AC: @task-add ac-meta-ref
   // AC: @meta-ref ac-meta-ref-1
   it('should create task with valid meta_ref to workflow', () => {
     // AC-meta-ref-1: task add --meta-ref @workflow-id creates task with meta_ref field
@@ -1235,6 +1236,7 @@ describe('Integration: meta_ref in tasks', () => {
     expect(task.meta_ref).toBe('@task-start');
   });
 
+  // AC: @task-add ac-meta-ref
   // AC: @meta-ref ac-meta-ref-1
   it('should create task with valid meta_ref to agent', () => {
     const output = kspec('task add --title "Update agent capabilities" --meta-ref "@test-agent"', tempDir);
@@ -1266,6 +1268,7 @@ describe('Integration: meta_ref in tasks', () => {
     expect(taskTitles).not.toContain('Task 4');
   });
 
+  // AC: @task-add ac-meta-ref-invalid
   // AC: @meta-ref ac-meta-ref-3
   it('should error when meta_ref does not resolve', () => {
     try {
@@ -1278,6 +1281,7 @@ describe('Integration: meta_ref in tasks', () => {
     }
   });
 
+  // AC: @task-add ac-meta-ref-invalid
   // AC: @meta-ref ac-meta-ref-4
   it('should error when meta_ref points to spec item', () => {
     try {
@@ -2086,7 +2090,6 @@ describe('Integration: meta includes', () => {
   });
 });
 
-// AC: @convention-schema
 describe('Integration: conventions', () => {
   let tempDir: string;
 
