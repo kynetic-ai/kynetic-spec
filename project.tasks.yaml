@@ -94103,6 +94103,20 @@
         integration.status='reset' but receiving 'pending' after reopened-task reconciliation;
         review also saw an unhandled spawn node ENOENT during that file."
       supersedes: null
+    - _ulid: 01KKKMT9CX92VMJW0F34NT0AZV
+      created_at: 2026-03-13T13:05:18.749Z
+      author: "@claude"
+      content: "Fix cycle 6 resolution: The lifecycle persistence test failure (line 698,
+        integration.status='pending' instead of 'reset') was a race condition between the background
+        pending_review invocation's cleanup writes and the completed handler's lifecycle
+        reconciliation. Although both are serialized by the engine shadowMutex, the test did not
+        wait for the pending_review invocation to fully complete before sending the completed
+        transition. Fix: added a wait-for-idle loop between the pending_review and completed
+        handleStateChange calls to ensure the background invocation's markDispatchWorkspaceIdle and
+        cleanupReviewerDispatchWorkspace complete before the completed handler runs. The ENOENT
+        error was a secondary symptom of the same timing issue. Full npm test passes (226/227, only
+        pre-existing droid detection failure)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJYEETYYQABWJ2QWJGPEMRT
