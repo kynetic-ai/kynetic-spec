@@ -37,5 +37,9 @@ test-results/
 # Session context
 .kspec-sessions/
 .kspec-worktrees/
+
+# Dispatch workspace tracking
+.kspec-dispatch-workspace.json
+.kspec-dispatch-shadow-mutation
 bun.lock
 .claude/plugins/
