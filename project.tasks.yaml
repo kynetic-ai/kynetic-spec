@@ -93020,6 +93020,7 @@
   created_at: 2026-03-13T03:25:18.873Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKJKM9SGG5AV5N0EV3GFTMZ4
   slugs:
     - implement-portable-skill-reference-resolution
