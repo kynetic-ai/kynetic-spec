@@ -3,6 +3,7 @@ import {
   DateTimeSchema,
   RefSchema,
   SlugSchema,
+  SubmissionLinkageSchema,
   TaskStatusSchema,
   TaskTypeSchema,
   UlidSchema,
@@ -97,6 +98,10 @@ export const TaskSchema = z.object({
   // AC: @task-submit ac-submit-2
   review_url: z.string().url().optional(),
 
+  // AC: @portable-task-submission-linkage ac-1, ac-2, ac-3
+  // Structured submission linkage: branch, commit, remote context
+  submission_linkage: SubmissionLinkageSchema.nullable().optional(),
+
   // Session scoping (advisory, not enforced)
   // AC: @session-scoped-task-claiming ac-schema
   session_id: z.string().nullable().optional(),
@@ -165,6 +170,9 @@ export const TaskInputSchema = z.object({
 
   // Review URL
   review_url: z.string().url().optional(),
+
+  // Submission linkage
+  submission_linkage: SubmissionLinkageSchema.nullable().optional(),
 
   // Session scoping
   session_id: z.string().nullable().optional(),

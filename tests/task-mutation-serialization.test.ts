@@ -15,9 +15,21 @@ import {
 
 function runKspecAsync(args: string, cwd: string): Promise<{ exitCode: number; stdout: string; stderr: string }> {
   return new Promise((resolve, reject) => {
+    // Strip dispatch/session env vars that pollute tests when running
+    // inside a dispatch loop — mirrors the sanitization in tests/helpers/cli.ts.
+    const cleanEnv = { ...process.env };
+    for (const key of [
+      'KSPEC_RALPH_SESSION',
+      'KSPEC_SESSION_ID',
+      'KSPEC_SHADOW_MUTATION_LOCK_FILE',
+      'KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS',
+    ]) {
+      delete cleanEnv[key];
+    }
+
     const child = spawn("/bin/sh", ["-c", `node ${CLI_PATH} ${args}`], {
       cwd,
-      env: { ...process.env, KSPEC_AUTHOR: "@test" },
+      env: { ...cleanEnv, KSPEC_AUTHOR: "@test" },
     });
 
     let stdout = "";

@@ -85,6 +85,20 @@ export const VcsRefSchema = z.object({
   type: z.enum(["branch", "tag", "commit"]).optional(),
 });
 
+// AC: @portable-task-submission-linkage ac-1, ac-2
+// Structured submission linkage captured at task submit time.
+// Stores branch, commit, and remote context so another checkout
+// can recover the submitted code lineage for review and follow-up.
+export const SubmissionLinkageSchema = z.object({
+  branch: z.string().nullable(),
+  commit: z.string(),
+  remote: z.string().nullable().optional(),
+  remote_url: z.string().nullable().optional(),
+  upstream_ref: z.string().nullable().optional(),
+  review_url: z.string().url().nullable().optional(),
+  captured_at: DateTimeSchema,
+});
+
 export type Ulid = z.infer<typeof UlidSchema>;
 export type Slug = z.infer<typeof SlugSchema>;
 export type Ref = z.infer<typeof RefSchema>;
@@ -96,6 +110,7 @@ export type TaskStatus = z.infer<typeof TaskStatusSchema>;
 export type TaskType = z.infer<typeof TaskTypeSchema>;
 export type ItemType = z.infer<typeof ItemTypeSchema>;
 export type VcsRef = z.infer<typeof VcsRefSchema>;
+export type SubmissionLinkage = z.infer<typeof SubmissionLinkageSchema>;
 
 /**
  * Normalize a reference string to ensure @ prefix.

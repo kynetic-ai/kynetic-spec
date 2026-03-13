@@ -250,6 +250,112 @@ export function getDiffSince(since: Date, cwd?: string): string | null {
   }
 }
 
+/**
+ * Get the current HEAD commit hash (full 40-char SHA).
+ * AC: @portable-task-submission-linkage ac-1
+ */
+export function getHeadCommit(cwd?: string): string | null {
+  try {
+    return (
+      execSync("git rev-parse HEAD", {
+        cwd,
+        encoding: "utf-8",
+        stdio: ["pipe", "pipe", "ignore"],
+      }).trim() || null
+    );
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Get the upstream remote name, URL, and upstream ref for the current branch.
+ * Returns { remote, url, upstream_ref } or null if no upstream is configured.
+ * upstream_ref is the merge ref (e.g. "refs/heads/main") from branch.<name>.merge,
+ * which may differ from the local branch name when tracking a differently named remote branch.
+ * AC: @portable-task-submission-linkage ac-1
+ */
+export function getBranchRemote(
+  branch: string,
+  cwd?: string,
+): { remote: string; url: string; upstream_ref: string | null } | null {
+  try {
+    const remote = execSync(
+      `git config --get branch.${branch}.remote`,
+      { cwd, encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] },
+    ).trim();
+    if (!remote) return null;
+
+    const url = execSync(`git remote get-url ${remote}`, {
+      cwd,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "ignore"],
+    }).trim();
+
+    // Capture the upstream merge ref (e.g. refs/heads/some-branch)
+    let upstreamRef: string | null = null;
+    try {
+      upstreamRef =
+        execSync(`git config --get branch.${branch}.merge`, {
+          cwd,
+          encoding: "utf-8",
+          stdio: ["pipe", "pipe", "ignore"],
+        }).trim() || null;
+    } catch {
+      // No merge ref configured — tracking remote but no specific branch
+    }
+
+    return { remote, url: url || "", upstream_ref: upstreamRef };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Capture submission linkage context from current git state.
+ * Returns structured data for storage in task.submission_linkage.
+ * AC: @portable-task-submission-linkage ac-1, ac-3
+ */
+export function captureSubmissionLinkage(
+  cwd?: string,
+  reviewUrl?: string,
+): {
+  branch: string | null;
+  commit: string;
+  remote: string | null;
+  remote_url: string | null;
+  upstream_ref: string | null;
+  review_url: string | null;
+  captured_at: string;
+} | null {
+  const commit = getHeadCommit(cwd);
+  if (!commit) return null;
+
+  const branch = getCurrentBranch(cwd);
+
+  let remote: string | null = null;
+  let remoteUrl: string | null = null;
+  let upstreamRef: string | null = null;
+  if (branch) {
+    const remoteInfo = getBranchRemote(branch, cwd);
+    if (remoteInfo) {
+      remote = remoteInfo.remote;
+      remoteUrl = remoteInfo.url;
+      upstreamRef = remoteInfo.upstream_ref;
+    }
+  }
+
+  return {
+    branch,
+    commit,
+    remote: remote || null,
+    remote_url: remoteUrl || null,
+    upstream_ref: upstreamRef || null,
+    review_url: reviewUrl || null,
+    captured_at: new Date().toISOString(),
+  };
+}
+
 function parseStatusCode(
   code: string,
 ): "modified" | "added" | "deleted" | "renamed" | "untracked" {

@@ -28,6 +28,7 @@ import {
   formatCommitGuidance,
   printCommitGuidance,
 } from "../../utils/commit.js";
+import { captureSubmissionLinkage, isGitRepo } from "../../utils/git.js";
 import { executeBatchOperation, formatBatchOutput } from "../batch.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { parseTagsArray } from "../parse-utils.js";
@@ -529,6 +530,22 @@ async function setTaskFields(
         }
       }
 
+      // AC: @portable-task-submission-linkage ac-4 — repair/backfill or clear submission linkage
+      if (options.clearSubmissionLinkage) {
+        if (latestTask.submission_linkage != null) {
+          mutationChanges.push({ field: "submission_linkage", before: latestTask.submission_linkage, after: null });
+          nextTask.submission_linkage = null;
+        }
+      } else if (options.submissionLinkage) {
+        const linkage = isGitRepo(ctx.projectRoot)
+          ? captureSubmissionLinkage(ctx.projectRoot, latestTask.review_url)
+          : null;
+        if (linkage) {
+          mutationChanges.push({ field: "submission_linkage", before: latestTask.submission_linkage, after: linkage });
+          nextTask.submission_linkage = linkage;
+        }
+      }
+
       changes.splice(0, changes.length, ...mutationChanges);
       return nextTask;
     });
@@ -985,6 +1002,14 @@ Examples:
       "--status <status>",
       "Reject with error - use state transition commands instead",
     )
+    .option(
+      "--submission-linkage",
+      "Repair/backfill submission linkage from current git context (AC: @portable-task-submission-linkage ac-4)",
+    )
+    .option(
+      "--clear-submission-linkage",
+      "Clear submission linkage (AC: @portable-task-submission-linkage ac-4)",
+    )
     .addHelpText(
       "after",
       `
@@ -993,6 +1018,7 @@ Examples:
   $ kspec task set @task-slug --description "Updated context"
   $ kspec task set @task-slug --depends-on @dep1 @dep2
   $ kspec task set @task-slug --tag cli urgent
+  $ kspec task set @task-slug --submission-linkage  # capture current git context
   $ kspec task set --refs @task1 @task2 --priority 3`,
     )
     .action(async (ref: string | undefined, options) => {
@@ -1686,6 +1712,11 @@ Examples:
         const index = new ReferenceIndex(tasks, items);
         const foundTask = resolveTaskRef(ref, tasks, index);
 
+        // AC: @portable-task-submission-linkage ac-1, ac-3 — capture git context
+        const linkage = isGitRepo(ctx.projectRoot)
+          ? captureSubmissionLinkage(ctx.projectRoot, options.reviewUrl)
+          : null;
+
         let transitionFromStatus: Task["status"] = foundTask.status;
         const updatedTask = await mutateTaskAtomically(
           ctx,
@@ -1702,6 +1733,8 @@ Examples:
               submitted_at: new Date().toISOString(),
               // AC: @task-submit ac-submit-2
               ...(options.reviewUrl !== undefined && { review_url: options.reviewUrl }),
+              // AC: @portable-task-submission-linkage ac-1
+              ...(linkage && { submission_linkage: linkage }),
             };
           },
         );
@@ -1731,6 +1764,15 @@ Examples:
           `Submitted task for review: ${index.shortUlid(updatedTask._ulid)}`,
           { task: updatedTask },
         );
+
+        // AC: @portable-task-submission-linkage ac-3 — warn on detached HEAD
+        if (linkage && !linkage.branch) {
+          warn(
+            "Submitted from detached HEAD — submission linkage has no branch name. " +
+              "Dispatch review continuity may require an explicit branch. " +
+              "Use `kspec task set @ref --submission-linkage` to repair.",
+          );
+        }
       } catch (err) {
         error(errors.failures.updateTask, err);
         process.exit(EXIT_CODES.ERROR);
