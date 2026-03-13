@@ -92217,7 +92217,7 @@
   spec_ref: "@dispatch-role-workflow-entry-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-implement-dispatch-orientation-prompt"
@@ -92453,6 +92453,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-13T03:32:35.103Z
+  closed_reason: "Merged in PR #810. Implemented dispatcher-owned role-specific workflow entry
+    rendering, publication-mode-aware PR/manual-merge guidance, invalid publication metadata
+    fail-fast handling, and the related dispatch/file-lock lifecycle regressions. AC coverage
+    verified for ac-1 through ac-4 with local npm test green and GitHub CI green on head
+    4efbd91edf14dc0081fce672efb458663ddcfd92."
 - _ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
   slugs:
     - task-scope-dispatch-shadow-serialization
