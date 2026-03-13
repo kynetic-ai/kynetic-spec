@@ -14498,3 +14498,305 @@ plans:
     approved_at: null
     completed_at: null
     notes: []
+  - _ulid: 01KKJE4HGC53027S7JXRX52GJX
+    slugs:
+      - plan-droid-platform-support
+    title: Droid Platform Support
+    content: >
+      # Droid Platform Support
+
+
+      Add Factory Droid as a first-class platform in kspec alongside claude-code and codex. Droid
+      uses ACP natively and discovers skills from `.factory/skills/` with the same frontmatter
+      format as Claude Code (name, description, user-invocable, disable-model-invocation). Droid
+      invokes skills via `/skill-name` — the same syntax as Claude Code, not `$skill` like Codex.
+
+
+      ## Specs
+
+
+      ```yaml
+
+      - title: Droid Platform Config Schema
+        slug: droid-platform-config
+        type: requirement
+        parent: "@agent-integration"
+        description: |
+          Add DroidConfigSchema to the platform config, mirroring ClaudeCodeConfigSchema.
+          Droid's frontmatter fields match Claude Code (user-invocable, disable-model-invocation,
+          context, model, argument-hint) so the schema can reuse the same shape. The key
+          difference is that Droid does not use the 'agent' field. Add 'droid' key to
+          PlatformConfigSchema. Export DroidConfig type.
+        traits:
+          - trait-error-guidance
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A skill has platform_config.droid defined
+            when: |
+              The skill schema is validated
+            then: |
+              Validation passes with recognized droid-specific fields
+          - id: ac-2
+            given: |
+              A skill has platform_config.droid with unknown fields
+            when: |
+              The skill schema is validated
+            then: |
+              Validation rejects the unknown fields (strict mode)
+          - id: ac-3
+            given: |
+              PlatformConfigSchema is inspected
+            when: |
+              The schema object is examined
+            then: |
+              It contains optional 'droid' key alongside claude_code and codex
+
+      - title: Droid Agent Detection
+        slug: droid-agent-detection
+        type: requirement
+        parent: "@agent-integration"
+        description: |
+          Detect when kspec is running inside a Factory Droid environment.
+          Droid sets FACTORY_API_KEY and potentially DROID_SESSION_ID or similar
+          env vars. Add "droid" to AgentType union in agent-detection.ts and
+          setup.ts. Add detection logic for Droid-specific environment markers.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              DROID_SESSION_ID environment variable is set
+            when: |
+              detectAgentFromEnv() is called
+            then: |
+              Returns { type: "droid", confidence: "high" }
+          - id: ac-2
+            given: |
+              No Droid-specific env vars are set
+            when: |
+              detectAgentFromEnv() is called
+            then: |
+              Droid is not falsely detected
+          - id: ac-3
+            given: |
+              Droid is detected
+            when: |
+              Setup status is checked
+            then: |
+              Agent type shows as "droid" with appropriate config path
+
+      - title: Droid ACP Adapter
+        slug: droid-acp-adapter
+        type: requirement
+        parent: "@agent-integration"
+        description: |
+          Register a "droid-acp" adapter in the adapter registry. Droid supports
+          ACP natively via `droid exec --input-format stream-jsonrpc --output-format stream-jsonrpc`.
+          The adapter spawns droid exec with the appropriate flags for multi-turn
+          ACP communication.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              resolveAdapter("droid-acp") is called
+            when: |
+              The adapter is looked up
+            then: |
+              Returns an adapter with command "droid" and args including "exec" and stream-jsonrpc flags
+          - id: ac-2
+            given: |
+              listAdapters() is called
+            when: |
+              The registry is queried
+            then: |
+              "droid-acp" appears in the list alongside claude-agent-acp and codex-acp
+          - id: ac-3
+            given: |
+              The droid-acp adapter is resolved
+            when: |
+              autoApproveArgs is inspected
+            then: |
+              Contains "--skip-permissions-unsafe" for full automation mode
+
+      - title: Droid Skill Renderer
+        slug: droid-renderer
+        type: requirement
+        parent: "@agent-integration"
+        description: |
+          Implement a droidRenderer that outputs skills to .factory/skills/<id>/SKILL.md.
+          Droid uses the same frontmatter fields as Claude Code (name, description,
+          user-invocable, disable-model-invocation) and the same /skill-name invocation
+          syntax. The renderer should resolve portable {skill:<id>} reference tokens
+          to /skill-name format (same as Claude Code). Core skills should be prefixed
+          with kspec- in the output directory for namespace clarity, matching the
+          codex convention.
+        traits:
+          - platform-renderer-trait
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A skill with platforms: ["droid"] exists
+            when: |
+              droidRenderer.render() is called
+            then: |
+              .factory/skills/<id>/SKILL.md is created with YAML frontmatter containing name and description
+          - id: ac-2
+            given: |
+              A skill has platform_config.droid with user_invocable: false
+            when: |
+              droidRenderer.render() is called
+            then: |
+              Frontmatter includes "user-invocable: false"
+          - id: ac-3
+            given: |
+              A core skill is rendered for droid platform
+            when: |
+              The output path is computed
+            then: |
+              The skill subdirectory is "kspec-<id>" (namespaced)
+          - id: ac-4
+            given: |
+              droidRenderer.render() completes
+            when: |
+              The rendered file is inspected
+            then: |
+              Contains <!-- kspec-managed --> marker
+          - id: ac-5
+            given: |
+              A skill body contains {skill:task-work} reference tokens
+            when: |
+              droidRenderer.render() is called
+            then: |
+              Tokens are resolved to /kspec-task-work for core skills or /skill-id for project skills
+          - id: ac-6
+            given: |
+              storeHash option is true
+            when: |
+              droidRenderer.render() completes
+            then: |
+              Per-platform hash is written to .render-hash-droid
+
+      - title: Droid Setup Integration
+        slug: droid-setup-integration
+        type: requirement
+        parent: "@agent-integration"
+        description: |
+          Integrate Droid into the kspec setup command pipeline. When Droid is
+          detected (or --agent droid is specified), setup should render skills to
+          .factory/skills/, generate kspec-agents.md, and provide Droid-specific
+          guidance for KSPEC_AUTHOR configuration. Since Droid uses .factory/
+          directory structure rather than .claude/, hooks installation may differ.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              kspec setup is run with --agent droid
+            when: |
+              Setup completes
+            then: |
+              Skills targeting the droid platform are rendered to .factory/skills/
+          - id: ac-2
+            given: |
+              kspec setup --status is run in a Droid environment
+            when: |
+              Status is displayed
+            then: |
+              Shows agent detected as "droid" with skill render counts
+          - id: ac-3
+            given: |
+              Setup detects Droid and prompts for KSPEC_AUTHOR
+            when: |
+              Author configuration instructions are shown
+            then: |
+              Instructions reference Droid's environment variable configuration
+
+      - title: Core Skills Droid Platform Registration
+        slug: core-skills-droid-platform
+        type: requirement
+        parent: "@agent-integration"
+        description: |
+          Add "droid" to the platforms array for all core skills in
+          templates/skills/manifest.yaml so they are rendered for Droid
+          environments during kspec setup.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              templates/skills/manifest.yaml is inspected
+            when: |
+              Each core skill's platforms list is examined
+            then: |
+              All skills include "droid" alongside "claude-code" and "codex"
+
+      - title: Portable Skill Reference Resolution
+        slug: portable-skill-references
+        type: requirement
+        parent: "@agent-integration"
+        description: |
+          Extend the formatSkillInvocation and resolveSkillReferenceTokensForPlatform
+          functions to handle the "droid" platform. Droid uses /skill-name invocation
+          like Claude Code, with core skills namespaced as /kspec-<id>. This matches
+          the pattern where core skills render to kspec-<id> subdirectories so the
+          slash command name matches the directory.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              formatSkillInvocation is called with platform "droid" and origin "core"
+            when: |
+              The invocation string is generated
+            then: |
+              Returns "/kspec-<id>" format
+          - id: ac-2
+            given: |
+              formatSkillInvocation is called with platform "droid" and origin "project"
+            when: |
+              The invocation string is generated
+            then: |
+              Returns "/<id>" format
+          - id: ac-3
+            given: |
+              A skill body contains {skill:reflect} token
+            when: |
+              resolveSkillReferenceTokensForPlatform is called for "droid"
+            then: |
+              Token resolves to "/kspec-reflect" (core skill with namespace)
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: true
+
+
+      ## Implementation Notes
+
+
+      Key research findings that inform the design:
+
+
+      1. **Droid skill discovery**: `.factory/skills/<name>/SKILL.md` (workspace),
+      `~/.factory/skills/<name>/SKILL.md` (personal), `.agent/skills/` (compatibility).
+
+      2. **Frontmatter format**: Identical to Claude Code — name, description, user-invocable,
+      disable-model-invocation.
+
+      3. **Invocation syntax**: `/skill-name` — same as Claude Code, not `$skill` like Codex.
+
+      4. **ACP support**: Native via `droid exec --input-format stream-jsonrpc --output-format
+      stream-jsonrpc`.
+
+      5. **Env detection**: Need to confirm exact Droid env vars. FACTORY_API_KEY is the API key,
+      but session/runtime markers need verification.
+
+      6. **The renderer registry pattern** means most of the setup pipeline will automatically pick
+      up the droid renderer once registered — the setup command iterates `skill.platforms` and calls
+      `getRenderer(platform)`.
+
+      7. **Cross-platform skill references**: The `{skill:<id>}` portable token system already
+      exists. Droid just needs a resolution case added to `formatSkillInvocation`.
+    status: draft
+    derived_tasks: []
+    derived_specs: []
+    source_path: /home/chapel/Projects/kynetic-spec/droid-platform-plan.md
+    module_ref: "@agent-integration"
+    created_at: 2026-03-13T01:49:20.268Z
+    approved_at: null
+    completed_at: null
+    notes: []
