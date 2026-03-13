@@ -94462,7 +94462,7 @@
   type: task
   spec_ref: "@dispatch-workspace-remote-branch-fallback"
   derivation: auto
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-design-canonical-task-workspace-contract"
@@ -94523,6 +94523,15 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-13T19:55:24.564Z
+  submission_linkage:
+    branch: main
+    commit: 88b68a229e7759cabb0a1a8c2e891d9b7e0b2bd3
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-13T19:55:23.618Z
 - _ulid: 01KKJZW9XNWT7VPFK3FNBA41FZ
   slugs:
     - fix-broken-shadow-safety
