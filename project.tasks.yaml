@@ -94276,6 +94276,7 @@
   priority: 1
   tags: []
   vcs_refs: []
+  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/826
   session_id: 01KKKJCTK66EMMANM275NCTNFW
   created_at: 2026-03-13T09:16:59.010Z
   started_at: 2026-03-13T12:23:29.674Z
@@ -94300,9 +94301,16 @@
 
         - Verification: npm test covers AC coverage; kspec validate for spec alignment
       supersedes: null
+    - _ulid: 01KKKKDATXGAKH7K3A0T5SECVB
+      created_at: 2026-03-13T12:40:45.661Z
+      author: "@claude"
+      content: "Implementation complete. Added submission_linkage schema field, auto-capture on task
+        submit, display in task get (human + JSON), detached HEAD warning, and repair/backfill via
+        task set --submission-linkage. All 10 tests pass covering 4 spec ACs + trait error guidance
+        N/A annotations. PR #826 created."
+      supersedes: null
   todos: []
   automation: eligible
-  review_url: https://github.com/kynetic-ai/kynetic-spec/pull/826
 - _ulid: 01KKK7R7W2M83V3Y5XRAESEHCM
   slugs:
     - implement-adopt-existing-task-branch-lineage-for-r
