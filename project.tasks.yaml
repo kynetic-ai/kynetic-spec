@@ -92265,6 +92265,16 @@
         src/agent-runtime/dispatch.ts; rebase/merge main, resolve conflicts, and rerun verification
         on the updated head."
       supersedes: null
+    - _ulid: 01KKJCCR5AJN6CNBDM3ECT6JBV
+      created_at: 2026-03-13T01:18:52.074Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Rebasing PR #810 onto main exposed conflicts in dispatch.ts/workspace.ts
+        plus stale role-entry fixtures. Resolved the runtime merge on top of current dispatch
+        workspace/bootstrap architecture, updated the role-entry tests for current
+        publication/workspace contracts, and force-pushed rebased head 105b05f43 to PR #810.
+        Verification: npm test -- tests/agent-dispatch-engine.test.ts; npm test; kspec validate
+        (warnings-only baseline, exit 6)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
