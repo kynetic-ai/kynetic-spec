@@ -92431,6 +92431,15 @@
         tests/agent-dispatch-engine.test.ts plus targeted dispatch verification proving bad
         publication metadata fails fast with actionable guidance and no spawned invocation."
       supersedes: null
+    - _ulid: 01KKJK6QQ62196ESHGE8YKM2BG
+      created_at: 2026-03-13T03:17:55.046Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 20] Full-suite rerun after the new ac-4 regression exposed the known dispatch
+        workspace lifecycle race again in tests/dispatch-workspace-registry.test.ts: the immediate
+        parser-layer reread could still observe integrating before cleanup persisted closing.
+        Hardened the test to poll the loaded registry view through findDispatchWorkspaceByTaskRef so
+        the assertion tracks the durable closing state instead of a transient snapshot."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
