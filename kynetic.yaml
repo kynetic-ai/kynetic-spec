@@ -332,9 +332,10 @@ traits:
         when: item reference is available
         then: commit message includes ULID prefix (8 chars) or primary slug
       - id: ac-4
-        given: shadow is not configured (no worktree)
-        when: command that would normally commit runs
-        then: command completes successfully without attempting git operations
+        given: the project is operating without an initialized shadow branch
+        when: a command that would normally commit shadow state runs
+        then: the command completes successfully without attempting git operations; repositories with an
+          existing but broken shadow branch instead surface actionable shadow recovery errors
       - id: ac-5
         given: save operation fails
         when: validation or IO error occurs
