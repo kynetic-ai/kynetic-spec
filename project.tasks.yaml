@@ -94004,6 +94004,19 @@
         dispatch-workspace-registry fails the lifecycle persistence assertion and full npm test
         fails with dispatch shadow mutation lock timeouts."
       supersedes: null
+    - _ulid: 01KKKAVCQ9D8G5V9G4FAPWFSXK
+      created_at: 2026-03-13T10:11:09.161Z
+      author: "@claude"
+      content: "Fix cycle 3 resolution: restructured dispatch registry persistence so ALL registry writes
+        happen inside the shadow mutation lock (withDispatchShadowMutationLock). Key changes: (1)
+        split old commitWorkspaceRegistryIfShadow into withDispatchShadowMutationLock (lock wrapper)
+        + commitWorkspaceRegistryToShadow (commit-only helper), (2) persistWorkspaceRecord now
+        acquires lock → writes → commits atomically, (3) reconcileDispatchWorkspaceRegistry wraps
+        all record saves + final commit in a single lock, (4) provisionDispatchWorkspace moves git
+        worktree ops before the lock, then wraps provisioning + final record write + commit inside
+        the lock, (5) test now asserts registry file is NOT modified when lock blocks the operation.
+        All 142 dispatch tests pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJYEETYYQABWJ2QWJGPEMRT
@@ -94078,6 +94091,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #824. Hardened broken shadow recovery so context fails closed on
+    disconnected shadow state, repair preserves/restores the prior shadow directory on failure, and
+    bootstrap/setup reuse repair semantics for existing local or remote shadow state. AC coverage
+    verified for all four spec criteria; focused verification and full regression passed."
   depends_on: []
   context: []
   priority: 1
@@ -94091,6 +94108,7 @@
   created_at: 2026-03-13T06:59:24.725Z
   started_at: 2026-03-13T07:21:31.583Z
   submitted_at: 2026-03-13T07:54:05.245Z
+  completed_at: 2026-03-13T09:40:41.671Z
   notes:
     - _ulid: 01KKK0QVX2TJEQ9MJME5DV3YDP
       created_at: 2026-03-13T07:14:27.874Z
@@ -94156,11 +94174,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-13T09:40:41.671Z
-  closed_reason: "Merged in PR #824. Hardened broken shadow recovery so context fails closed on
-    disconnected shadow state, repair preserves/restores the prior shadow directory on failure, and
-    bootstrap/setup reuse repair semantics for existing local or remote shadow state. AC coverage
-    verified for all four spec criteria; focused verification and full regression passed."
 - _ulid: 01KKK7R6R2GDTVKZMSJD5RR757
   slugs:
     - implement-portable-task-submission-linkage
