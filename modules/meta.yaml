@@ -4939,6 +4939,9 @@ modules:
         traits: []
         notes: []
         created: 2026-03-13T03:25:15.455Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KKJKM5VEBGKMA8GA5AF3KJHA
         slugs:
           - portable-skill-references
