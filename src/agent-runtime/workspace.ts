@@ -927,14 +927,18 @@ async function recoverWorkspaceRecordFromMetadata(
     slugs: [metadata.taskSlug],
   });
   const hasAdoptedProvenance = metadata.branchProvenance?.ownership === "adopted";
-  const canonicalBranch = hasAdoptedProvenance
+  // When branch_provenance is missing (legacy workspace) AND the canonical branch
+  // is not a dispatch branch, infer adopted status to preserve the branch identity
+  // instead of normalizing it back to dispatch/task/* (AC-2).
+  const inferredAdopted = !metadata.branchProvenance && !isDispatchBranch(metadata.canonicalBranch);
+  const canonicalBranch = (hasAdoptedProvenance || inferredAdopted)
     ? metadata.canonicalBranch
     : isDispatchBranch(metadata.canonicalBranch)
       ? metadata.canonicalBranch
       : `dispatch/task/${taskSlug}/${shortTaskId(metadata.taskRef)}`;
   const currentWorkerBranch = normalizeBranchRef(workerRegistration?.branch);
 
-  if (workerRegistration && currentWorkerBranch !== canonicalBranch && !hasAdoptedProvenance) {
+  if (workerRegistration && currentWorkerBranch !== canonicalBranch && !hasAdoptedProvenance && !inferredAdopted) {
     try {
       runGitOrThrow(
         workerWorktreeDir,

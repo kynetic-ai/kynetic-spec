@@ -586,6 +586,58 @@ describe("dispatch workspace branch provenance", () => {
   });
 
   // AC: @branch-provenance-in-dispatch-workspace-registry ac-2
+  it("preserves adopted branch identity during metadata-backed recovery when branch_provenance is missing", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b dev");
+
+    const taskRef = `@${testUlid("PROV", 11)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Legacy Adopted Recovery",
+        slugs: ["task-legacy-adopted-recovery"],
+      },
+    });
+
+    // Simulate adoption: rename branch to a non-dispatch name
+    const adoptedBranch = "feat/legacy-adopted";
+    git(workspace.cwd, `checkout -b ${adoptedBranch}`);
+    git(tempDir, `branch -D ${workspace.metadata.canonicalBranch}`);
+
+    // Write metadata WITHOUT branchProvenance (simulating a legacy workspace
+    // that was adopted before provenance tracking existed)
+    const metadataFile = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
+    const metadata = JSON.parse(await fs.readFile(metadataFile, "utf-8"));
+    metadata.canonicalBranch = adoptedBranch;
+    delete metadata.branchProvenance;
+    await fs.writeFile(metadataFile, `${JSON.stringify(metadata, null, 2)}\n`, "utf-8");
+
+    // Remove the registry record so recovery from metadata is triggered
+    const ctx = await initContext(tempDir);
+    const registryPath = getDispatchWorkspaceRegistryPath(ctx);
+    await fs.writeFile(
+      registryPath,
+      YAML.stringify({
+        kynetic_dispatch_workspaces: "1.0",
+        workspaces: [],
+      }),
+      "utf-8",
+    );
+
+    // Run artifact reconciliation — should recover from metadata
+    await reconcileDispatchWorkspaceArtifacts(tempDir);
+
+    // Verify the recovered record preserves adopted branch identity
+    const record = await readWorkspaceRecord(registryPath, taskRef);
+    expect(record.canonical_branch).toBe(adoptedBranch);
+    expect(record.branch_provenance).toMatchObject({
+      ownership: "adopted",
+      adopted_from: adoptedBranch,
+    });
+  });
+
+  // AC: @branch-provenance-in-dispatch-workspace-registry ac-2
   it("does not normalize adopted canonical branch back to dispatch namespace during reconciliation", async () => {
     await seedRepo(tempDir);
     git(tempDir, "checkout -b dev");
