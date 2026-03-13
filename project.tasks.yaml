@@ -95109,7 +95109,7 @@
   spec_ref: "@dispatch-workspace-orientation-prompt"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -95131,3 +95131,7 @@
         Added ac-4 test for the new instruction. All 97 dispatch engine tests pass."
       supersedes: null
   todos: []
+  completed_at: 2026-03-13T19:17:26.275Z
+  closed_reason: "Merged in PR #831. Added explicit workspace working directory instruction to
+    dispatch autonomous preamble, clarified orientation label, excluded .kspec-worktrees/ from
+    vitest, added ac-4 to spec and test coverage."
