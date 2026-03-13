@@ -3486,6 +3486,97 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
 
     await engine.stop();
   });
+
+  // AC: @dispatch-workspace-cleanup-policy ac-6
+  it("persists stale reviewer metadata recovery when the worker registration is gone", async () => {
+    const reviewer = makeTestAgent({
+      id: "pr-reviewer",
+      dispatch: [{ on: "task.pending_review" }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [reviewer]);
+
+    const taskId = testUlid("TASK", 30);
+    const taskRef = `@${taskId}`;
+    const task = {
+      title: "Missing Worker Registration Recovery",
+      slugs: ["task-missing-worker-registration-recovery"],
+    };
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending_review", automation: "eligible" }]);
+
+    const workerWorkspace = await provisionDispatchWorkspace({
+      projectDir: testDir,
+      taskRef,
+      task,
+    });
+    const reviewerWorkspace = await provisionDispatchWorkspace({
+      projectDir: testDir,
+      taskRef,
+      role: "reviewer",
+      task,
+    });
+    await fs.writeFile(
+      path.join(reviewerWorkspace.cwd, ".kspec-dispatch-workspace.json"),
+      `${JSON.stringify(reviewerWorkspace.metadata, null, 2)}\n`,
+      "utf-8",
+    );
+
+    git(testDir, `worktree remove --force ${workerWorkspace.cwd}`);
+    await fs.writeFile(
+      path.join(testDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({
+        kynetic_dispatch_workspaces: "1.0",
+        workspaces: [],
+      }),
+      "utf-8",
+    );
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+    });
+    const spawnSpy = vi.spyOn(
+      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
+      "_spawnInvocation",
+    ).mockResolvedValue(true);
+    const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    await engine.start();
+
+    expect(spawnSpy).not.toHaveBeenCalled();
+    expect(logSpy).toHaveBeenCalledWith(
+      expect.stringContaining(
+        `[dispatch] Discarded queue entry ${taskRef} for agent "pr-reviewer": workspace is unhealthy (missing-worker-worktree)`,
+      ),
+    );
+
+    const health = await workspaceModule.getDispatchWorkspaceHealth({
+      projectDir: testDir,
+      taskRef,
+      task,
+      role: "reviewer",
+    });
+    expect(health.exists).toBe(true);
+    expect(health.healthy).toBe(false);
+    expect(health.reason).toBe("missing-worker-worktree");
+
+    const registry = YAML.parse(
+      await fs.readFile(path.join(testDir, "project.dispatch-workspaces.yaml"), "utf-8"),
+    ) as { workspaces?: Array<{ task_ref: string; lifecycle_state: string }> };
+    expect(registry.workspaces).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          task_ref: taskRef,
+          lifecycle_state: "stale",
+        }),
+      ]),
+    );
+
+    logSpy.mockRestore();
+    await engine.stop();
+  });
 });
 
 // ─── AC-20: Reconciliation interval configuration ─────────────────────────────

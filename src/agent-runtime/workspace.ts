@@ -871,7 +871,13 @@ async function recoverWorkspaceRecordFromMetadata(
   }
 
   const workerRegistration = findWorktreeByPath(projectDir, workerWorktreeDir);
-  if (!workerRegistration) {
+  const reviewerWorktreeDir = metadata.reviewerWorktreeDir
+    ? path.resolve(metadata.reviewerWorktreeDir)
+    : null;
+  const reviewerRegistration = reviewerWorktreeDir
+    ? findWorktreeByPath(projectDir, reviewerWorktreeDir)
+    : null;
+  if (!workerRegistration && !reviewerRegistration) {
     return null;
   }
 
@@ -882,9 +888,9 @@ async function recoverWorkspaceRecordFromMetadata(
   const canonicalBranch = isDispatchBranch(metadata.canonicalBranch)
     ? metadata.canonicalBranch
     : `dispatch/task/${taskSlug}/${shortTaskId(metadata.taskRef)}`;
-  const currentWorkerBranch = normalizeBranchRef(workerRegistration.branch);
+  const currentWorkerBranch = normalizeBranchRef(workerRegistration?.branch);
 
-  if (currentWorkerBranch !== canonicalBranch) {
+  if (workerRegistration && currentWorkerBranch !== canonicalBranch) {
     try {
       runGitOrThrow(
         workerWorktreeDir,
@@ -927,16 +933,15 @@ async function recoverWorkspaceRecordFromMetadata(
       }, now);
   const canonicalBranchHead = refExists(projectDir, `refs/heads/${canonicalBranch}`)
     ? resolveCommit(projectDir, canonicalBranch)
-    : metadata.canonicalBranchHead;
-  const reviewerRegistration = metadata.reviewerWorktreeDir
-    ? findWorktreeByPath(projectDir, metadata.reviewerWorktreeDir)
-    : null;
-  const reviewerWorktree = metadata.reviewerWorktreeDir && pathExists(metadata.reviewerWorktreeDir)
+    : workerRegistration
+      ? resolveCommit(workerWorktreeDir, "HEAD")
+      : metadata.canonicalBranchHead;
+  const reviewerWorktree = reviewerWorktreeDir && pathExists(reviewerWorktreeDir)
     ? buildWorktreeRecord(
-        metadata.reviewerWorktreeDir,
+        reviewerWorktreeDir,
         "detached",
         null,
-        reviewerRegistration ? resolveCommit(metadata.reviewerWorktreeDir, "HEAD") : null,
+        reviewerRegistration ? resolveCommit(reviewerWorktreeDir, "HEAD") : null,
         now,
       )
     : null;
@@ -956,7 +961,7 @@ async function recoverWorkspaceRecordFromMetadata(
         workerWorktreeDir,
         "branch",
         canonicalBranch,
-        canonicalBranchHead,
+        workerRegistration ? resolveCommit(workerWorktreeDir, "HEAD") : canonicalBranchHead,
         now,
       ),
       reviewer: reviewerWorktree,
