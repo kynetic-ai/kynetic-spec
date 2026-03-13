@@ -92139,7 +92139,7 @@
   spec_ref: "@dispatch-workspace-orientation-prompt"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-implement-dispatch-branch-integration-contract"
@@ -92153,7 +92153,7 @@
   session_id: 01KKJ95AYDY2SM8FV9QBW9TYCY
   created_at: 2026-03-12T02:33:57.285Z
   started_at: 2026-03-13T00:43:31.291Z
-  submitted_at: 2026-03-13T00:17:09.539Z
+  submitted_at: 2026-03-13T00:43:45.911Z
   notes:
     - _ulid: 01KKJ8CSB04PZ9FACW5Y2YTH9K
       created_at: 2026-03-13T00:08:58.977Z
