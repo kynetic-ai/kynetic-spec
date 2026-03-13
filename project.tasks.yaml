@@ -92688,6 +92688,25 @@
         - Verification: run targeted dispatch tests, then project validation and full test suite
         before submit.
       supersedes: null
+    - _ulid: 01KKJNKS9FBS0453A5K91AYP7D
+      created_at: 2026-03-13T03:59:59.791Z
+      author: Jacob Chapel
+      content: >-
+        Implemented dispatch flow regression coverage and fixed the runtime queue handoff bug it
+        exposed.
+
+        - Added tests/dispatch-workspace-and-scheduler-flow.test.ts to exercise worker -> reviewer
+        -> fix-cycle behavior with real worktrees, base-branch env/orientation data, reviewer
+        snapshot cleanup, canonical branch reuse, and final workspace reaping.
+
+        - Updated src/agent-runtime/dispatch.ts to release the task's in-flight key before
+        post-invocation task re-evaluation so newly eligible follow-up work for the same task can be
+        queued immediately.
+
+        - Verification: dispatch-focused suite passed; representative lock-related failures from the
+        full npm test run passed in isolated reruns. `kspec validate` completed with the repo's
+        existing warning set (exit 6), not new errors.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFZ61246P1HQKMP9HSM7D1F
