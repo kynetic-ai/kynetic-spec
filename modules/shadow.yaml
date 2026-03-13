@@ -687,6 +687,11 @@ features:
             then: initialization fails with actionable shadow guidance and does not fall back to repo-root
               manifest or registry paths or write kspec-managed files outside the configured shadow
               directory
+          - id: ac-preserve-on-failure
+            given: shadow repair or automatic shadow recovery is rebuilding a broken shadow worktree
+            when: the replacement worktree cannot be created successfully
+            then: the pre-repair shadow directory is preserved or restored and the failure reports recovery
+              guidance instead of leaving the checkout without its shadow directory
   - _ulid: 01KF47F4J7DAQ3TD3BGHFQSK9C
     slugs:
       - shadow-sync
