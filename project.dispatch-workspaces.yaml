@@ -2581,12 +2581,7 @@ workspaces:
         branch_ref: dispatch/task/implement-review-and-fix-cycle-workspace-discovery/01kkk7ra
         head: e210038758c74a6d957454ea8372300eb67aacb3
         last_seen_at: 2026-03-13T23:32:46.465Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-review-and-fix-cycle-workspace-discovery-01kkk7ra-review
-        branch_mode: detached
-        branch_ref: null
-        head: e210038758c74a6d957454ea8372300eb67aacb3
-        last_seen_at: 2026-03-13T23:32:46.465Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -2625,7 +2620,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T23:51:44.357Z
+      updated_at: 2026-03-13T23:51:54.952Z
     cleanup:
       status: scheduled
       eligible: true
@@ -2634,8 +2629,8 @@ workspaces:
       updated_at: 2026-03-13T23:51:44.357Z
     timestamps:
       created_at: 2026-03-13T22:31:41.938Z
-      updated_at: 2026-03-13T23:51:53.929Z
-      last_reconciled_at: 2026-03-13T23:51:53.929Z
+      updated_at: 2026-03-13T23:51:54.952Z
+      last_reconciled_at: 2026-03-13T23:51:54.952Z
       last_active_at: 2026-03-13T23:32:46.900Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKK7R9XYTYS5JTNBFDNQ5YNS
