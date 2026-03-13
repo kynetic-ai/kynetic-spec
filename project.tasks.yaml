@@ -94836,6 +94836,14 @@
         tests/agent-dispatch-engine.test.ts — rebase required. SHOULD-FIX: unused remoteUrl
         parameter in rehydrateAdoptedBranch (workspace.ts:418). See PR review for details."
       supersedes: null
+    - _ulid: 01KKMENDH2VQA7H9DHYSSCGPZ6
+      created_at: 2026-03-13T20:37:02.114Z
+      author: "@claude"
+      content: "Fix cycle 3: Merged main to resolve conflicts in agent-dispatch-engine.test.ts. Used
+        remoteUrl as fallback in rehydrateAdoptedBranch (SHOULD-FIX). Extracted
+        buildMockWorkspaceMetadata helper to deduplicate ~50-line mock blocks (SUGGESTION). Added
+        test for remote URL fallback adoption. All 4789 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKK7R8XY5MSEEWA0E9NKEW76
