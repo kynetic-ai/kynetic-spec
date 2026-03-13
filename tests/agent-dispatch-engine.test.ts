@@ -2946,6 +2946,11 @@ describe("Stale queue entry discard", () => {
       reason: null,
       metadata: null,
     });
+    // Mock workspace lifecycle functions to avoid real git/filesystem I/O
+    // that is slow and unreliable under parallel test load.
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry" as any).mockResolvedValue(undefined);
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceArtifacts" as any).mockResolvedValue(undefined);
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceLifecycle" as any).mockResolvedValue(undefined);
   });
 
   afterEach(async () => {
@@ -2966,34 +2971,49 @@ describe("Stale queue entry discard", () => {
     // Task starts as in_progress
     await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
 
-    // Block runInvocation so the first invocation holds the slot
-    let resolveFirst!: () => void;
-    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
-    const runSpy = vi.spyOn(invocationModule, "runInvocation")
-      .mockImplementationOnce(async () => {
-        await firstBlock;
-        return { session: {} as any, outcome: "success" as const, durationMs: 1 };
-      })
-      .mockResolvedValue({
-        session: {} as any,
-        outcome: "success" as const,
-        durationMs: 1,
-      });
-
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
     });
+
+    // Mock _spawnInvocation to avoid real workspace provisioning I/O.
+    // Mirrors the real implementation: returns immediately (fire-and-forget),
+    // increments activeCount, then completes asynchronously.
+    const spawned: string[] = [];
+    let completeFirst!: () => void;
+    const firstCompletion = new Promise<void>((r) => { completeFirst = r; });
+    type EngineInternal = {
+      _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
+      activeCount: Map<string, number>;
+      _drainQueues: (agents: unknown[]) => Promise<void>;
+      _loadAgents: () => Promise<unknown[]>;
+    };
+    const internal = engine as unknown as EngineInternal;
+    vi.spyOn(internal, "_spawnInvocation")
+      .mockImplementationOnce(async (_agent, entry) => {
+        const taskRef = (entry as { change: TaskStateChange }).change.taskRef;
+        spawned.push(taskRef);
+        internal.activeCount.set("worker", (internal.activeCount.get("worker") ?? 0) + 1);
+        // Fire-and-forget: simulate post-completion cleanup in background
+        firstCompletion.then(async () => {
+          const current = internal.activeCount.get("worker") ?? 1;
+          internal.activeCount.set("worker", Math.max(0, current - 1));
+          const agents = await internal._loadAgents();
+          await internal._drainQueues(agents);
+        });
+        return true;
+      })
+      .mockImplementation(async (_agent, entry) => {
+        const taskRef = (entry as { change: TaskStateChange }).change.taskRef;
+        spawned.push(taskRef);
+        return true;
+      });
 
     await engine.start();
 
-    // First invocation is running (bootstrap picked up in_progress task)
-    // Wait for first invocation to start
-    for (let i = 0; i < 50 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((r) => setTimeout(r, 5));
-    }
-    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(spawned).toHaveLength(1);
 
     // Enqueue another event for the same task while first is running
     await engine.handleStateChange({
@@ -3010,14 +3030,16 @@ describe("Stale queue entry discard", () => {
     // Now update the task to completed (simulating the task finishing)
     await writeTasks(testDir, [{ _ulid: taskId, status: "completed" }]);
 
-    // Release the first invocation
-    resolveFirst();
+    // Complete the first invocation — post-completion drain should discard stale entry
+    completeFirst();
 
     // Wait for drain to process
-    await new Promise((r) => setTimeout(r, 200));
+    for (let i = 0; i < 100 && engine.getStatus().queuedInvocations > 0; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
 
     // The stale entry should have been discarded — only 1 invocation total
-    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(spawned).toHaveLength(1);
 
     await engine.stop();
   });
@@ -3038,47 +3060,64 @@ describe("Stale queue entry discard", () => {
       { _ulid: taskId2, status: "in_progress" },
     ]);
 
-    // Block first invocation
-    let resolveFirst!: () => void;
-    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
-    const runSpy = vi.spyOn(invocationModule, "runInvocation")
-      .mockImplementationOnce(async () => {
-        await firstBlock;
-        return { session: {} as any, outcome: "success" as const, durationMs: 1 };
-      })
-      .mockResolvedValue({
-        session: {} as any,
-        outcome: "success" as const,
-        durationMs: 1,
-      });
-
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
     });
+
+    // Mock _spawnInvocation to avoid real workspace provisioning I/O.
+    // Mirrors the real implementation: returns immediately (fire-and-forget),
+    // increments activeCount, then completes asynchronously.
+    const spawned: string[] = [];
+    let completeFirst!: () => void;
+    const firstCompletion = new Promise<void>((r) => { completeFirst = r; });
+    type EngineInternal = {
+      _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
+      activeCount: Map<string, number>;
+      _drainQueues: (agents: unknown[]) => Promise<void>;
+      _loadAgents: () => Promise<unknown[]>;
+    };
+    const internal = engine as unknown as EngineInternal;
+    vi.spyOn(internal, "_spawnInvocation")
+      .mockImplementationOnce(async (_agent, entry) => {
+        const taskRef = (entry as { change: TaskStateChange }).change.taskRef;
+        spawned.push(taskRef);
+        internal.activeCount.set("worker", (internal.activeCount.get("worker") ?? 0) + 1);
+        // Fire-and-forget: simulate post-completion cleanup in background
+        firstCompletion.then(async () => {
+          const current = internal.activeCount.get("worker") ?? 1;
+          internal.activeCount.set("worker", Math.max(0, current - 1));
+          const agents = await internal._loadAgents();
+          await internal._drainQueues(agents);
+        });
+        return true;
+      })
+      .mockImplementation(async (_agent, entry) => {
+        const taskRef = (entry as { change: TaskStateChange }).change.taskRef;
+        spawned.push(taskRef);
+        return true;
+      });
 
     await engine.start();
 
-    // Wait for bootstrap to fire first invocation
-    for (let i = 0; i < 50 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((r) => setTimeout(r, 5));
-    }
-    expect(runSpy).toHaveBeenCalledTimes(1);
+    // Bootstrap spawned first invocation and queued second (max_concurrent=1)
+    expect(spawned).toHaveLength(1);
 
     // task2 is still in_progress — its queue entry should survive
     expect(engine.getStatus().queuedInvocations).toBeGreaterThanOrEqual(1);
 
-    // Release first invocation
-    resolveFirst();
+    // Complete first invocation — triggers post-completion drain
+    completeFirst();
 
-    // Wait for second invocation to start
-    for (let i = 0; i < 50 && runSpy.mock.calls.length < 2; i++) {
+    // Wait for second invocation to spawn
+    for (let i = 0; i < 100 && spawned.length < 2; i++) {
       await new Promise((r) => setTimeout(r, 10));
     }
 
     // Second invocation should have been spawned (task2 still in_progress)
-    expect(runSpy).toHaveBeenCalledTimes(2);
+    expect(spawned).toHaveLength(2);
 
     await engine.stop();
   });
@@ -3095,32 +3134,49 @@ describe("Stale queue entry discard", () => {
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
 
-    // Block first invocation
-    let resolveFirst!: () => void;
-    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
-    const runSpy = vi.spyOn(invocationModule, "runInvocation")
-      .mockImplementationOnce(async () => {
-        await firstBlock;
-        return { session: {} as any, outcome: "success" as const, durationMs: 1 };
-      })
-      .mockResolvedValue({
-        session: {} as any,
-        outcome: "success" as const,
-        durationMs: 1,
-      });
-
     const engine = new DispatchEngine({
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
     });
+
+    // Mock _spawnInvocation to avoid real workspace provisioning I/O.
+    // Mirrors the real implementation: returns immediately (fire-and-forget),
+    // increments activeCount, then completes asynchronously.
+    const spawned: string[] = [];
+    let completeFirst!: () => void;
+    const firstCompletion = new Promise<void>((r) => { completeFirst = r; });
+    type EngineInternal = {
+      _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
+      activeCount: Map<string, number>;
+      _drainQueues: (agents: unknown[]) => Promise<void>;
+      _loadAgents: () => Promise<unknown[]>;
+    };
+    const internal = engine as unknown as EngineInternal;
+    vi.spyOn(internal, "_spawnInvocation")
+      .mockImplementationOnce(async (_agent, entry) => {
+        const taskRef = (entry as { change: TaskStateChange }).change.taskRef;
+        spawned.push(taskRef);
+        internal.activeCount.set("worker", (internal.activeCount.get("worker") ?? 0) + 1);
+        // Fire-and-forget: simulate post-completion cleanup in background
+        firstCompletion.then(async () => {
+          const current = internal.activeCount.get("worker") ?? 1;
+          internal.activeCount.set("worker", Math.max(0, current - 1));
+          const agents = await internal._loadAgents();
+          await internal._drainQueues(agents);
+        });
+        return true;
+      })
+      .mockImplementation(async (_agent, entry) => {
+        const taskRef = (entry as { change: TaskStateChange }).change.taskRef;
+        spawned.push(taskRef);
+        return true;
+      });
 
     await engine.start();
 
-    for (let i = 0; i < 50 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((r) => setTimeout(r, 5));
-    }
-    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(spawned).toHaveLength(1);
 
     // Enqueue another event while first is running
     await engine.handleStateChange({
@@ -3136,12 +3192,15 @@ describe("Stale queue entry discard", () => {
     // Delete the task (write empty tasks list)
     await writeTasks(testDir, []);
 
-    // Release first invocation
-    resolveFirst();
-    await new Promise((r) => setTimeout(r, 200));
+    // Complete the first invocation — post-completion drain should discard stale entry
+    completeFirst();
+
+    for (let i = 0; i < 100 && engine.getStatus().queuedInvocations > 0; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
 
     // Entry for deleted task should have been discarded
-    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(spawned).toHaveLength(1);
 
     await engine.stop();
   });

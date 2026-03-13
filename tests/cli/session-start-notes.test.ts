@@ -6,7 +6,10 @@
  * AC: @trait-json-output ac-1 - Valid JSON output purity
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { kspec, kspecJson, setupTempFixtures, cleanupTempDir } from '../helpers/cli';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { parse as yamlParse, stringify as yamlStringify } from 'yaml';
+import { kspec, kspecJson, setupTempFixtures, cleanupTempDir, testUlids } from '../helpers/cli';
 import type { SessionContext } from '../helpers/session-types';
 
 const SESSION_START_NOTES_TIMEOUT_MS = 20_000;
@@ -109,15 +112,41 @@ describe('session start notes enrichment', () => {
       expect(completedNotes.some((n) => n.content.includes('Implementation complete'))).toBe(true);
     });
 
-    it('should limit to last 3-5 completed tasks', { timeout: 30000 }, () => {
-      // Create and complete 7 tasks (more than the limit)
-      for (let i = 1; i <= 7; i++) {
-        kspec(`task add --title "Completed ${i}" --slug completed-${i}`, tempDir);
-        kspec(`task start @completed-${i}`, tempDir);
-        kspec(`task note @completed-${i} "Note for task ${i}"`, tempDir);
-        kspec(`task submit @completed-${i}`, tempDir);
-        kspec(`task complete @completed-${i} --reason "Done"`, tempDir);
+    it('should limit to last 3-5 completed tasks', { timeout: SESSION_START_NOTES_TIMEOUT_MS }, () => {
+      // Seed 7 completed tasks directly via YAML to avoid 35+ CLI subprocess calls
+      // that time out under parallel test load.
+      const tasksFile = join(tempDir, 'project.tasks.yaml');
+      const existing = yamlParse(readFileSync(tasksFile, 'utf8')) as { tasks: unknown[] };
+      const taskUlids = testUlids('CMPL', 7);
+      const noteUlids = testUlids('CNOT', 7);
+
+      for (let i = 0; i < 7; i++) {
+        const hour = (i + 1).toString().padStart(2, '0');
+        existing.tasks.push({
+          _ulid: taskUlids[i],
+          slugs: [`completed-${i + 1}`],
+          title: `Completed ${i + 1}`,
+          type: 'task',
+          status: 'completed',
+          priority: 3,
+          tags: ['test'],
+          depends_on: [],
+          notes: [{
+            _ulid: noteUlids[i],
+            created_at: `2026-01-01T00:${hour}:00Z`,
+            author: '@test',
+            content: `Note for task ${i + 1}`,
+          }],
+          todos: [],
+          created_at: '2026-01-01T00:00:00Z',
+          started_at: `2026-01-01T00:${hour}:00Z`,
+          submitted_at: `2026-01-01T00:${hour}:30Z`,
+          completed_at: `2026-01-01T${hour}:00:00Z`,
+          closed_reason: 'Done',
+        });
       }
+
+      writeFileSync(tasksFile, yamlStringify(existing));
 
       // Get session context
       const session = kspecJson<SessionContext>('session start --json', tempDir);
@@ -186,26 +215,85 @@ describe('session start notes enrichment', () => {
 
   // AC: @cmd-session-start ac-notes-starvation
   describe('mixed-status note starvation prevention', () => {
-    it('should include pending_review and completed notes even with many in_progress notes', { timeout: 20000 }, () => {
-      // Create many in_progress tasks with notes (potential starvation scenario)
-      for (let i = 1; i <= 5; i++) {
-        kspec(`task add --title "Active ${i}" --slug active-${i}`, tempDir);
-        kspec(`task start @active-${i}`, tempDir);
-        kspec(`task note @active-${i} "Active note ${i}"`, tempDir);
+    it('should include pending_review and completed notes even with many in_progress notes', { timeout: SESSION_START_NOTES_TIMEOUT_MS }, () => {
+      // Seed tasks directly via YAML to avoid 24+ CLI subprocess calls
+      // that time out under parallel test load.
+      const tasksFile = join(tempDir, 'project.tasks.yaml');
+      const existing = yamlParse(readFileSync(tasksFile, 'utf8')) as { tasks: unknown[] };
+      const taskUlids = testUlids('STRV', 7);
+      const noteUlids = testUlids('SNOT', 7);
+
+      // 5 in_progress tasks with notes (potential starvation scenario)
+      for (let i = 0; i < 5; i++) {
+        const minute = (i + 1).toString().padStart(2, '0');
+        existing.tasks.push({
+          _ulid: taskUlids[i],
+          slugs: [`active-${i + 1}`],
+          title: `Active ${i + 1}`,
+          type: 'task',
+          status: 'in_progress',
+          priority: 3,
+          tags: ['test'],
+          depends_on: [],
+          notes: [{
+            _ulid: noteUlids[i],
+            created_at: `2026-01-01T00:${minute}:00Z`,
+            author: '@test',
+            content: `Active note ${i + 1}`,
+          }],
+          todos: [],
+          created_at: '2026-01-01T00:00:00Z',
+          started_at: `2026-01-01T00:${minute}:00Z`,
+        });
       }
 
-      // Create a pending_review task with notes
-      kspec('task add --title "Review task" --slug review-task', tempDir);
-      kspec('task start @review-task', tempDir);
-      kspec('task note @review-task "Review note"', tempDir);
-      kspec('task submit @review-task', tempDir);
+      // 1 pending_review task with note
+      existing.tasks.push({
+        _ulid: taskUlids[5],
+        slugs: ['review-task'],
+        title: 'Review task',
+        type: 'task',
+        status: 'pending_review',
+        priority: 3,
+        tags: ['test'],
+        depends_on: [],
+        notes: [{
+          _ulid: noteUlids[5],
+          created_at: '2026-01-01T00:06:00Z',
+          author: '@test',
+          content: 'Review note',
+        }],
+        todos: [],
+        created_at: '2026-01-01T00:00:00Z',
+        started_at: '2026-01-01T00:06:00Z',
+        submitted_at: '2026-01-01T00:06:30Z',
+      });
 
-      // Create a completed task with notes
-      kspec('task add --title "Done task" --slug done-task', tempDir);
-      kspec('task start @done-task', tempDir);
-      kspec('task note @done-task "Done note"', tempDir);
-      kspec('task submit @done-task', tempDir);
-      kspec('task complete @done-task --reason "Finished"', tempDir);
+      // 1 completed task with note
+      existing.tasks.push({
+        _ulid: taskUlids[6],
+        slugs: ['done-task'],
+        title: 'Done task',
+        type: 'task',
+        status: 'completed',
+        priority: 3,
+        tags: ['test'],
+        depends_on: [],
+        notes: [{
+          _ulid: noteUlids[6],
+          created_at: '2026-01-01T00:07:00Z',
+          author: '@test',
+          content: 'Done note',
+        }],
+        todos: [],
+        created_at: '2026-01-01T00:00:00Z',
+        started_at: '2026-01-01T00:07:00Z',
+        submitted_at: '2026-01-01T00:07:30Z',
+        completed_at: '2026-01-01T01:00:00Z',
+        closed_reason: 'Finished',
+      });
+
+      writeFileSync(tasksFile, yamlStringify(existing));
 
       // Get session context
       const session = kspecJson<SessionContext>('session start --json', tempDir);
