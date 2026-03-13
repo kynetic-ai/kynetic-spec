@@ -93076,6 +93076,11 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #815 via commit 8c00ce498dc22eb667e663bdfb5c4003c4c66fd1. Implemented
+    Factory Droid agent detection with FACTORY_PROJECT_DIR env detection, ~/.factory setup fallback,
+    setup status configPath reporting, and --agent droid override support. AC coverage verified for
+    ac-1 through ac-6 with targeted tests in tests/agent-detection.test.ts and
+    tests/enhanced-setup.test.ts; GitHub CI passed on the reviewed head."
   depends_on: []
   context: []
   priority: 3
@@ -93085,6 +93090,7 @@
   created_at: 2026-03-13T03:25:16.343Z
   started_at: 2026-03-13T04:02:26.938Z
   submitted_at: 2026-03-13T04:10:35.316Z
+  completed_at: 2026-03-13T08:09:01.036Z
   notes:
     - _ulid: 01KKJNR76N84K3DF82CPKH1N88
       created_at: 2026-03-13T04:02:25.109Z
@@ -93125,12 +93131,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-13T08:09:01.036Z
-  closed_reason: "Merged in PR #815 via commit 8c00ce498dc22eb667e663bdfb5c4003c4c66fd1. Implemented
-    Factory Droid agent detection with FACTORY_PROJECT_DIR env detection, ~/.factory setup fallback,
-    setup status configPath reporting, and --agent droid override support. AC coverage verified for
-    ac-1 through ac-6 with targeted tests in tests/agent-detection.test.ts and
-    tests/enhanced-setup.test.ts; GitHub CI passed on the reviewed head."
 - _ulid: 01KKJKM79JZR25WY03DTZETJN7
   slugs:
     - implement-droid-acp-adapter
@@ -93840,6 +93840,14 @@
         persistence on the merge commit. GitHub Actions rerun 23037905680 still fails in
         tests/dispatch-workspace-registry.test.ts:688 because the reloaded record remains
         integrating instead of transitioning to closing after the completed-task path."
+      supersedes: null
+    - _ulid: 01KKK3Y2Y298B81ZAB54YFH16W
+      created_at: 2026-03-13T08:10:17.410Z
+      author: Jacob Chapel
+      content: Validated the review regression against a synthetic merge of current origin/main into this
+        task branch. The previously reported integrating-vs-closing failure no longer reproduces on
+        the current merge target, so the fix cycle is to bring the branch forward to main and
+        reverify on the updated merge candidate.
       supersedes: null
   todos: []
   automation: eligible
