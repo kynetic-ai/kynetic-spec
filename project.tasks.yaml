@@ -92987,14 +92987,14 @@
   derivation: auto
   plan_ref: "@plan-droid-platform-support"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKJKXKDRMSKJ98CCYR8F0039
+  session_id: null
   created_at: 2026-03-13T03:25:15.700Z
   started_at: 2026-03-13T03:34:09.261Z
   submitted_at: 2026-03-13T03:39:03.168Z
@@ -93026,6 +93026,13 @@
         droid, and compile-time DroidConfig usage. Verification: npm test --
         tests/skill-schema.test.ts, npm test, kspec validate (warnings-only baseline exit 6; no
         task-specific errors)."
+      supersedes: null
+    - _ulid: 01KKJXX0CJK3SGFFMJYEX698YS
+      created_at: 2026-03-13T06:24:50.578Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: droid platform schema support did not update the
+        skill CLI validation guidance path, so invalid droid platform_config keys still show stale
+        valid-key guidance that only mentions claude_code and codex."
       supersedes: null
   todos: []
   automation: eligible
