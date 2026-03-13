@@ -92960,6 +92960,7 @@
   created_at: 2026-03-13T03:25:16.978Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKJKM7Y5M5366F6XWC0KMHV5
   slugs:
     - implement-droid-skill-renderer
