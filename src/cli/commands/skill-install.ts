@@ -82,7 +82,7 @@ interface CoreSkillDefinition {
   platforms?: string[];
 }
 
-type CoreInstallPlatform = "claude-code" | "codex";
+type CoreInstallPlatform = "claude-code" | "codex" | "droid";
 
 interface CoreSkillRenderSummary {
   platform: CoreInstallPlatform;
@@ -320,7 +320,7 @@ export async function copyCoreSkillFiles(
 function resolveCoreInstallPlatform(
   override?: string
 ): { platform: CoreInstallPlatform; source: "auto-detect" | "override" } {
-  if (override === "claude-code" || override === "codex") {
+  if (override === "claude-code" || override === "codex" || override === "droid") {
     return { platform: override, source: "override" };
   }
 
@@ -348,7 +348,7 @@ export function registerSkillInstallCommands(skill: Command): void {
     .option("--dry-run", "Show what would be installed without making changes")
     .option(
       "--platform <platform>",
-      "Render target platform override (claude-code|codex)"
+      "Render target platform override (claude-code|codex|droid)"
     )
     .action(async (options) => {
       try {
@@ -370,9 +370,10 @@ export function registerSkillInstallCommands(skill: Command): void {
           platformOverride
           && platformOverride !== "claude-code"
           && platformOverride !== "codex"
+          && platformOverride !== "droid"
         ) {
           error(
-            `Invalid --platform value "${platformOverride}". Expected "claude-code" or "codex".`
+            `Invalid --platform value "${platformOverride}". Expected "claude-code", "codex", or "droid".`
           );
           process.exit(EXIT_CODES.ERROR);
         }

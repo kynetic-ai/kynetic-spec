@@ -2,7 +2,11 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { execSync, spawnSync } from 'node:child_process';
-import { SHADOW_BRANCH_NAME, SHADOW_WORKTREE_DIR } from '../src/parser/shadow.js';
+import {
+  initializeShadow,
+  SHADOW_BRANCH_NAME,
+  SHADOW_WORKTREE_DIR,
+} from '../src/parser/shadow.js';
 import { kspec, createTempDir, cleanupTempDir, initGitRepo } from './helpers/cli.js';
 
 describe('kspec setup', () => {
@@ -99,8 +103,10 @@ describe('kspec setup', () => {
 
     // Should succeed and create worktree without prompting
     expect(result.status).toBe(0);
-    expect(result.stdout).toContain('Detected kspec-meta branch without .kspec worktree');
-    expect(result.stdout).toContain('Created .kspec worktree');
+    expect(result.stdout).toContain(
+      `Detected ${SHADOW_BRANCH_NAME} shadow state without a healthy ${SHADOW_WORKTREE_DIR} worktree`,
+    );
+    expect(result.stdout).toContain(`Created ${SHADOW_WORKTREE_DIR} worktree`);
     expect(result.stdout).not.toContain('Create it?');
 
     // Verify worktree was created
@@ -135,8 +141,47 @@ describe('kspec setup', () => {
     });
 
     // Should prompt with the expected message
-    expect(result.stdout).toContain(`${SHADOW_BRANCH_NAME} branch exists but .kspec worktree is missing. Create it?`);
+    expect(result.stdout).toContain(
+      `${SHADOW_BRANCH_NAME} shadow state exists but ${SHADOW_WORKTREE_DIR} worktree is missing or unhealthy. Create it?`,
+    );
     expect(result.status).toBe(1); // Exit with error since user declined
+  });
+
+  // AC: @broken-shadow-safety ac-bootstrap-reuses-repair
+  it('should reattach remote shadow state with --auto-worktree when no local shadow branch exists', async () => {
+    const remoteDir = path.join('/tmp', `kspec-setup-remote-${Date.now()}`);
+    const cloneDir = path.join('/tmp', `kspec-setup-clone-${Date.now()}`);
+
+    try {
+      await fs.mkdir(remoteDir, { recursive: true });
+      execSync('git init --bare', { cwd: remoteDir, stdio: 'pipe' });
+      execSync(`git remote add origin ${remoteDir}`, { cwd: testDir, stdio: 'pipe' });
+      execSync('git push -u origin main', { cwd: testDir, stdio: 'pipe' });
+
+      const initResult = await initializeShadow(testDir);
+      expect(initResult.success).toBe(true);
+      execSync(`git -C ${testDir}/${SHADOW_WORKTREE_DIR} push -u origin ${SHADOW_BRANCH_NAME}`, {
+        stdio: 'pipe',
+      });
+
+      execSync(`git clone ${remoteDir} ${cloneDir}`, { stdio: 'pipe' });
+      execSync('git config user.email "test@test.com"', { cwd: cloneDir, stdio: 'pipe' });
+      execSync('git config user.name "Test"', { cwd: cloneDir, stdio: 'pipe' });
+
+      const result = spawnSync('node', [kspecBin, 'setup', '--auto-worktree', '--dry-run'], {
+        cwd: cloneDir,
+        encoding: 'utf-8',
+      });
+
+      expect(result.status).toBe(0);
+      expect(result.stdout).toContain(
+        `Detected ${SHADOW_BRANCH_NAME} shadow state without a healthy ${SHADOW_WORKTREE_DIR} worktree`,
+      );
+      await fs.access(path.join(cloneDir, SHADOW_WORKTREE_DIR));
+    } finally {
+      await fs.rm(cloneDir, { recursive: true, force: true });
+      await fs.rm(remoteDir, { recursive: true, force: true });
+    }
   });
 });
 

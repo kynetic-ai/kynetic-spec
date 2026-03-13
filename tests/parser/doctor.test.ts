@@ -28,15 +28,27 @@ import { initializeShadow } from "../../src/parser/shadow.js";
 describe("Doctor Command", () => {
   let tempDir: string;
   let originalCwd: string;
+  const originalEnv = process.env;
 
   beforeEach(async () => {
     tempDir = await createTempDir("kspec-doctor-test-");
     originalCwd = process.cwd();
+    process.env = { ...originalEnv };
+    delete process.env.CLAUDECODE;
+    delete process.env.CLAUDE_CODE;
+    delete process.env.CLAUDE_CODE_ENTRYPOINT;
+    delete process.env.CLAUDE_PROJECT_DIR;
+    delete process.env.CODEX_THREAD_ID;
+    delete process.env.CODEX_SANDBOX;
+    delete process.env.CODEX_CI;
+    delete process.env.CODEX_MANAGED_BY_NPM;
+    delete process.env.FACTORY_PROJECT_DIR;
   });
 
   afterEach(async () => {
     process.chdir(originalCwd);
     await cleanupTempDir(tempDir);
+    process.env = originalEnv;
   });
 
   describe("ac-no-git-repo", () => {
@@ -193,6 +205,53 @@ describe("Doctor Command", () => {
       // No hooks installed in bare test
       expect(hooksCheck!.severity).toBe("error");
       expect(hooksCheck!.guidance).toContain("kspec setup");
+    });
+
+    // AC: @doctor-command ac-setup-agent-hooks
+    it("treats droid hook status as an intentional skip instead of an error", async () => {
+      initGitRepo(tempDir);
+      await initializeShadow(tempDir, { projectName: "test-project" });
+      await fs.mkdir(path.join(tempDir, ".factory", "skills", "droid-status"), {
+        recursive: true,
+      });
+      await fs.writeFile(
+        path.join(tempDir, ".factory", "skills", "droid-status", "SKILL.md"),
+        "---\nname: droid-status\ndescription: Droid status\n---\n<!-- kspec-managed -->\n# Droid status\n",
+        "utf-8",
+      );
+
+      const previousFactoryProjectDir = process.env.FACTORY_PROJECT_DIR;
+      const previousHome = process.env.HOME;
+      process.env.FACTORY_PROJECT_DIR = tempDir;
+      process.env.HOME = tempDir;
+
+      try {
+        const report = await getDoctorReport(tempDir);
+
+        const hooksCheck = report.setup.checks.find((c) => c.name === "hooks");
+        const skillsCheck = report.setup.checks.find((c) => c.name === "skills");
+
+        expect(report.setup.agentType).toBe("droid");
+        expect(hooksCheck).toBeDefined();
+        expect(hooksCheck!.severity).toBe("ok");
+        expect(hooksCheck!.message).toContain("droid hooks are not yet supported");
+
+        expect(skillsCheck).toBeDefined();
+        expect(skillsCheck!.severity).toBe("ok");
+        expect(skillsCheck!.message).toContain("1 skills rendered");
+      } finally {
+        if (previousFactoryProjectDir === undefined) {
+          delete process.env.FACTORY_PROJECT_DIR;
+        } else {
+          process.env.FACTORY_PROJECT_DIR = previousFactoryProjectDir;
+        }
+
+        if (previousHome === undefined) {
+          delete process.env.HOME;
+        } else {
+          process.env.HOME = previousHome;
+        }
+      }
     });
   });
 

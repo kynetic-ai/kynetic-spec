@@ -392,7 +392,7 @@ describe("dispatch workspace and scheduler flow", () => {
 
     await waitFor(async () => {
       await expect(fs.access(reviewerCwd!)).rejects.toThrow();
-    });
+    }, { attempts: 500, delayMs: 20 });
 
     await engine.stop();
 

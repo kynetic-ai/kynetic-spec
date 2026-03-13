@@ -182,13 +182,12 @@ export class KspecWatcher {
     this.options.onError(error);
 
     const nodeError = error as NodeJS.ErrnoException;
-    if (nodeError.code === 'ENOENT' && !existsSync(this.options.kspecDir)) {
-      console.warn('[watcher] Watched .kspec directory no longer exists; stopping watcher');
-      await this.stop();
-      return;
-    }
-
     if (this.retryCount >= this.maxRetries) {
+      if (nodeError.code === 'ENOENT' && !existsSync(this.options.kspecDir)) {
+        console.warn('[watcher] Watched .kspec directory no longer exists after recovery attempts; stopping watcher');
+        await this.stop();
+        return;
+      }
       console.error('[watcher] Max retries reached, giving up');
       return;
     }

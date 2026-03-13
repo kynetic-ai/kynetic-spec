@@ -119,6 +119,11 @@ describe('kspec setup (enhanced)', () => {
         env: {
           FACTORY_PROJECT_DIR: tempDir,
           HOME: tempDir,
+          // Clear higher-priority agent env vars so droid detection wins
+          CLAUDECODE: '',
+          CLAUDE_CODE_ENTRYPOINT: '',
+          CLAUDE_PROJECT_DIR: '',
+          CLAUDE_CODE: '',
           CODEX_THREAD_ID: '',
           CODEX_SANDBOX: '',
           CODEX_CI: '',
@@ -141,6 +146,7 @@ describe('kspec setup (enhanced)', () => {
     });
 
     // AC: @droid-agent-detection ac-6
+    // AC: @droid-setup-integration ac-4
     it('should accept droid as a valid setup --agent override', async () => {
       const result = kspecJson<{
         agent: { detected: string; confidence: string; configPath?: string };
@@ -503,6 +509,134 @@ describe('kspec setup (enhanced)', () => {
       expect(result.stdout).toContain('Install hooks');
       expect(result.stdout).toContain('skipped');
       expect(result.stdout).toContain('--no-hooks flag');
+    });
+  });
+
+  describe('droid setup integration', () => {
+    beforeEach(async () => {
+      kspec('init --name test-project --no-prompt', tempDir);
+    });
+
+    // AC: @droid-setup-integration ac-1
+    it('renders droid-targeted skills to .factory/skills during setup', async () => {
+      kspec(
+        'skill add --id droid-setup --name "Droid Setup" --description "Droid setup skill" --platform droid',
+        tempDir,
+      );
+      await fs.writeFile(
+        path.join(tempDir, '.kspec', 'skills', 'droid-setup', 'SKILL.md'),
+        '# Droid Setup\n\nRendered for Droid setup integration.\n',
+        'utf-8',
+      );
+
+      const result = kspec('setup --agent droid', tempDir, {
+        env: { FACTORY_PROJECT_DIR: tempDir, HOME: tempDir, KSPEC_AUTHOR: '@test' },
+      });
+
+      expect(result.exitCode).toBe(0);
+
+      const renderedPath = path.join(tempDir, '.factory', 'skills', 'droid-setup', 'SKILL.md');
+      const rendered = await fs.readFile(renderedPath, 'utf-8');
+      expect(rendered).toContain('<!-- kspec-managed -->');
+      expect(rendered).toContain('name: droid-setup');
+    });
+
+    // AC: @droid-setup-integration ac-2
+    it('reports droid agent detection with rendered skill counts in setup status', async () => {
+      kspec(
+        'skill add --id droid-status --name "Droid Status" --description "Droid status skill" --platform droid',
+        tempDir,
+      );
+      await fs.writeFile(
+        path.join(tempDir, '.kspec', 'skills', 'droid-status', 'SKILL.md'),
+        '# Droid Status\n\nRendered for status checks.\n',
+        'utf-8',
+      );
+
+      const setupResult = kspec('setup --agent droid', tempDir, {
+        env: { FACTORY_PROJECT_DIR: tempDir, HOME: tempDir, KSPEC_AUTHOR: '@test' },
+      });
+      expect(setupResult.exitCode).toBe(0);
+
+      const status = kspecJson<{
+        agent: { detected: string };
+        hooks: { supported: boolean; promptCheck: boolean; stop: boolean; preToolUse: boolean };
+        skills: { rendered: number };
+      }>('setup --status --agent droid', tempDir, {
+        env: { FACTORY_PROJECT_DIR: tempDir, HOME: tempDir, KSPEC_AUTHOR: '@test' },
+      });
+
+      expect(status.agent.detected).toBe('droid');
+      expect(status.hooks.supported).toBe(false);
+      expect(status.hooks.promptCheck).toBe(false);
+      expect(status.hooks.stop).toBe(false);
+      expect(status.hooks.preToolUse).toBe(false);
+      // Core skills targeting droid are also installed during setup, so rendered count
+      // includes both the custom droid-status skill and all core droid-platform skills
+      expect(status.skills.rendered).toBeGreaterThanOrEqual(1);
+    });
+
+    it('reports droid hooks as unsupported in human-readable setup status output', async () => {
+      const setupResult = kspec('setup --agent droid', tempDir, {
+        env: { FACTORY_PROJECT_DIR: tempDir, HOME: tempDir, KSPEC_AUTHOR: '@test' },
+      });
+      expect(setupResult.exitCode).toBe(0);
+
+      const statusResult = kspec('setup --status --agent droid', tempDir, {
+        env: { FACTORY_PROJECT_DIR: tempDir, HOME: tempDir, KSPEC_AUTHOR: '@test' },
+      });
+
+      expect(statusResult.exitCode).toBe(0);
+      expect(statusResult.stdout).toContain('UserPromptSubmit: unsupported');
+      expect(statusResult.stdout).toContain('Stop:             unsupported');
+      expect(statusResult.stdout).toContain('PreToolUse:       unsupported');
+      expect(statusResult.stdout).toContain('droid hooks are not yet supported');
+      expect(statusResult.stdout).not.toContain('UserPromptSubmit: ✗');
+      expect(statusResult.stdout).not.toContain('Stop:             ✗');
+      expect(statusResult.stdout).not.toContain('PreToolUse:       ✗');
+    });
+
+    it('detects native guard hooks in setup status for claude-code', async () => {
+      const setupResult = kspec('setup --agent claude-code', tempDir, {
+        env: { CLAUDECODE: '1', HOME: tempDir, KSPEC_AUTHOR: '@test' },
+      });
+      expect(setupResult.exitCode).toBe(0);
+
+      const status = kspecJson<{
+        hooks: { promptCheck: boolean; stop: boolean; preToolUse: boolean; guardsPresent: string[] };
+      }>('setup --status --agent claude-code', tempDir, {
+        env: { CLAUDECODE: '1', HOME: tempDir, KSPEC_AUTHOR: '@test' },
+      });
+
+      expect(status.hooks.promptCheck).toBe(true);
+      expect(status.hooks.stop).toBe(true);
+      expect(status.hooks.preToolUse).toBe(true);
+      expect(status.hooks.guardsPresent).toContain('kspec guard worktree');
+    });
+
+    // AC: @droid-setup-integration ac-3
+    it('shows Droid-specific KSPEC_AUTHOR guidance for .factory/settings.json', async () => {
+      const result = kspec('setup --dry-run --agent droid --force', tempDir, {
+        env: { FACTORY_PROJECT_DIR: tempDir, HOME: tempDir, KSPEC_AUTHOR: '' },
+      });
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('Configure author');
+      expect(result.stdout).toContain('.factory/settings.json');
+      expect(result.stdout).toContain('KSPEC_AUTHOR');
+      expect(result.stdout).toContain('@droid');
+    });
+
+    // AC: @droid-setup-integration ac-5
+    it('skips hook installation for droid with a non-error guidance message', async () => {
+      const result = kspec('setup --dry-run --agent droid', tempDir, {
+        env: { FACTORY_PROJECT_DIR: tempDir, HOME: tempDir, KSPEC_AUTHOR: '@test' },
+      });
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain('Install hooks');
+      expect(result.stdout).toContain('skipped');
+      expect(result.stdout).toContain('droid hooks are not yet supported');
     });
   });
 

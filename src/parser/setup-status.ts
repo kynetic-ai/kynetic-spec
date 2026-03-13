@@ -28,8 +28,10 @@ export interface SetupStatus {
   agent: {
     detected: AgentType;
     confidence: AgentConfidence;
+    configPath?: string;
   };
   hooks: {
+    supported: boolean;
     promptCheck: boolean;
     stop: boolean;
     preToolUse: boolean;
@@ -61,6 +63,10 @@ export interface SetupStatus {
   error?: string;
 }
 
+export interface GetSetupStatusOptions {
+  agentOverride?: AgentType;
+}
+
 /**
  * Guard scripts that can be installed
  */
@@ -69,6 +75,12 @@ const GUARD_SCRIPTS: Record<string, boolean> = {
   "write-guard.mjs": true,
   "edit-guard.mjs": true,
 };
+
+const NATIVE_GUARD_COMMAND = "kspec guard worktree";
+const LEGACY_GUARD_SCRIPTS = [
+  "kspec-worktree-guard.sh",
+  "ralph-task-limit-guard.sh",
+];
 
 /**
  * Detect the agent type in use.
@@ -80,10 +92,16 @@ export async function detectAgent(): Promise<{
 }> {
   const detected = detectAgentFromEnv();
   if (detected.type !== "unknown") {
+    const configPath = detected.configPath ??
+      (detected.type === "claude-code"
+        ? path.join(process.env.HOME ?? "", ".claude", "settings.json")
+        : detected.type === "droid"
+          ? path.join(process.env.HOME ?? "", ".factory", "settings.json")
+          : undefined);
     return {
       type: detected.type,
       confidence: detected.confidence,
-      configPath: detected.configPath,
+      configPath,
     };
   }
 
@@ -142,67 +160,108 @@ function debugLog(message: string, _error?: unknown): void {
  *
  * @param projectDir Project root directory
  */
-export async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
-  const detected = await detectAgent();
-  const configPath = path.join(projectDir, ".claude", "settings.json");
-  const hooksDir = path.join(projectDir, ".claude", "hooks");
+export async function getSetupStatus(
+  projectDir: string,
+  options: GetSetupStatusOptions = {},
+): Promise<SetupStatus> {
+  const detected = options.agentOverride
+    ? {
+        type: options.agentOverride,
+        confidence: "high" as const,
+        configPath:
+          options.agentOverride === "claude-code"
+            ? path.join(process.env.HOME ?? "", ".claude", "settings.json")
+            : options.agentOverride === "droid"
+              ? path.join(process.env.HOME ?? "", ".factory", "settings.json")
+              : undefined,
+      }
+    : await detectAgent();
   const agentsMdPath = path.join(projectDir, "kspec-agents.md");
   const hashPath = path.join(projectDir, ".kspec", ".kspec-agents-hash");
-  const skillsDir = path.join(projectDir, ".claude", "skills");
+  const claudeConfigPath = path.join(projectDir, ".claude", "settings.json");
+  const hooksDir = path.join(projectDir, ".claude", "hooks");
+  const skillDirs = new Set<string>([path.join(projectDir, ".claude", "skills")]);
+  if (detected.type === "droid") {
+    skillDirs.add(path.join(projectDir, ".factory", "skills"));
+  }
 
   // Check hooks
   const hooks = {
+    supported: detected.type === "claude-code",
     promptCheck: false,
     stop: false,
     preToolUse: false,
     guardsPresent: [] as string[],
   };
 
-  try {
-    const configContent = await fs.readFile(configPath, "utf-8");
-    const config = JSON.parse(configContent);
-    const hooksConfig = config.hooks || {};
+  if (hooks.supported) {
+    try {
+      const configContent = await fs.readFile(claudeConfigPath, "utf-8");
+      const config = JSON.parse(configContent);
+      const hooksConfig = config.hooks || {};
 
-    // Check UserPromptSubmit
-    const promptHooks = hooksConfig.UserPromptSubmit as
-      | Array<{ hooks?: Array<{ command?: string }> }>
-      | undefined;
-    hooks.promptCheck =
-      promptHooks?.some((entry) =>
-        entry.hooks?.some((h) => h.command?.includes("prompt-check"))
-      ) ?? false;
+      // Check UserPromptSubmit
+      const promptHooks = hooksConfig.UserPromptSubmit as
+        | Array<{ hooks?: Array<{ command?: string }> }>
+        | undefined;
+      hooks.promptCheck =
+        promptHooks?.some((entry) =>
+          entry.hooks?.some((h) => h.command?.includes("prompt-check"))
+        ) ?? false;
 
-    // Check Stop
-    const stopHooks = hooksConfig.Stop as
-      | Array<{ hooks?: Array<{ command?: string }> }>
-      | undefined;
-    hooks.stop =
-      stopHooks?.some((entry) =>
-        entry.hooks?.some((h) => h.command?.includes("checkpoint"))
-      ) ?? false;
+      // Check Stop
+      const stopHooks = hooksConfig.Stop as
+        | Array<{ hooks?: Array<{ command?: string }> }>
+        | undefined;
+      hooks.stop =
+        stopHooks?.some((entry) =>
+          entry.hooks?.some((h) => h.command?.includes("checkpoint"))
+        ) ?? false;
 
-    // Check PreToolUse
-    const preToolUseHooks = hooksConfig.PreToolUse as
-      | Array<{ hooks?: Array<{ command?: string }> }>
-      | undefined;
-    hooks.preToolUse =
-      preToolUseHooks?.some((entry) =>
-        entry.hooks?.some((h) => h.command?.includes(".claude/hooks/"))
-      ) ?? false;
-  } catch (err) {
-    debugLog("Failed to read hooks config for status", err);
-  }
+      // Check PreToolUse
+      const preToolUseHooks = hooksConfig.PreToolUse as
+        | Array<{ hooks?: Array<{ command?: string }> }>
+        | undefined;
+      hooks.preToolUse =
+        preToolUseHooks?.some((entry) =>
+          entry.hooks?.some((h) =>
+            h.command === NATIVE_GUARD_COMMAND ||
+            h.command?.includes(".claude/hooks/")
+          )
+        ) ?? false;
 
-  // Check guard scripts
-  try {
-    const guardFiles = await fs.readdir(hooksDir);
-    for (const name of Object.keys(GUARD_SCRIPTS)) {
-      if (guardFiles.includes(name)) {
-        hooks.guardsPresent.push(name);
+      if (preToolUseHooks?.some((entry) =>
+        entry.hooks?.some((h) => h.command === NATIVE_GUARD_COMMAND)
+      )) {
+        hooks.guardsPresent.push(NATIVE_GUARD_COMMAND);
       }
+      if (preToolUseHooks?.some((entry) =>
+        entry.hooks?.some((h) =>
+          LEGACY_GUARD_SCRIPTS.some((name) => h.command?.includes(name))
+        )
+      )) {
+        hooks.guardsPresent.push("legacy:bash-scripts");
+      }
+    } catch (err) {
+      debugLog("Failed to read hooks config for status", err);
     }
-  } catch (err) {
-    debugLog("Hooks dir doesn't exist", err);
+
+    // Check guard scripts
+    try {
+      const guardFiles = await fs.readdir(hooksDir);
+      for (const name of Object.keys(GUARD_SCRIPTS)) {
+        if (guardFiles.includes(name)) {
+          hooks.guardsPresent.push(name);
+        }
+      }
+      for (const name of LEGACY_GUARD_SCRIPTS) {
+        if (guardFiles.includes(name)) {
+          hooks.guardsPresent.push(`legacy-file:${name}`);
+        }
+      }
+    } catch (err) {
+      debugLog("Hooks dir doesn't exist", err);
+    }
   }
 
   // Check skills
@@ -240,8 +299,9 @@ export async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
     }
   }
 
-  // Scan .claude/skills/ (project/local skills)
-  await scanForSkills(skillsDir, "skills");
+  for (const skillsDir of skillDirs) {
+    await scanForSkills(skillsDir, path.relative(projectDir, skillsDir) || skillsDir);
+  }
 
   // Check plugin marketplace health
   // AC: @enhanced-setup ac-7, ac-8
@@ -269,7 +329,7 @@ export async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
 
   // Check if plugin is enabled in project settings
   try {
-    const configContent = await fs.readFile(configPath, "utf-8");
+    const configContent = await fs.readFile(claudeConfigPath, "utf-8");
     const config = JSON.parse(configContent);
     plugin.pluginEnabled = config.enabledPlugins?.["kspec@kspec-plugins"] === true;
   } catch (err) {
@@ -368,6 +428,7 @@ export async function getSetupStatus(projectDir: string): Promise<SetupStatus> {
     agent: {
       detected: detected.type,
       confidence: detected.confidence,
+      configPath: detected.configPath,
     },
     hooks,
     skills,

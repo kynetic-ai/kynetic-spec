@@ -1018,6 +1018,55 @@ describe("Skill resolution for agent invocations", () => {
   });
 
   // AC: @agent-invocation-lifecycle ac-10
+  it("buildPromptWithSkills should resolve portable references from meta origins without rendered skills", async () => {
+    await fs.writeFile(
+      path.join(testDir, "kynetic.yaml"),
+      YAML.stringify({ kynetic: "1.0", project: { name: "Prompt Test" } }),
+    );
+    await fs.writeFile(
+      path.join(testDir, "kynetic.meta.yaml"),
+      YAML.stringify({
+        kynetic_meta: "1.0",
+        skills: [
+          {
+            _ulid: testUlid("SKIL", 1),
+            id: "task-work",
+            name: "Task Work",
+            description: "Core task work",
+            origin: "core",
+          },
+          {
+            _ulid: testUlid("SKIL", 2),
+            id: "helper",
+            name: "Helper",
+            description: "Project helper",
+            origin: "project",
+          },
+        ],
+      }),
+    );
+
+    const skillDir = path.join(testDir, "skills", "helper");
+    await fs.mkdir(skillDir, { recursive: true });
+    await fs.writeFile(
+      path.join(skillDir, "SKILL.md"),
+      "# Helper\n\nRun {skill:task-work} and then {skill:helper}.",
+    );
+
+    const result = await buildPromptWithSkills({
+      basePrompt: "Base prompt",
+      skillIds: ["helper"],
+      specDir: testDir,
+      adapterId: "codex-acp",
+    });
+
+    expect(result).toContain("$kspec-task-work");
+    expect(result).toContain("$helper");
+    expect(result).not.toContain("{skill:task-work}");
+    expect(result).not.toContain("{skill:helper}");
+  });
+
+  // AC: @agent-invocation-lifecycle ac-10
   it("buildPromptWithSkills should leave skill references unchanged for unknown adapters", async () => {
     const skillDir = path.join(testDir, "skills", "task-work");
     await fs.mkdir(skillDir, { recursive: true });
