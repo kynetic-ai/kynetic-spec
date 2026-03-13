@@ -14100,45 +14100,53 @@ plans:
     slugs:
       - plan-review-records-and-gates
     title: Review Records and Gates
-    content: >
+    content: |
       # Review Records and Gates
 
+      This plan defines first-party review records as durable kspec artifacts for
+      plans, task work, and other reviewable subjects. The first wave focuses on the
+      canonical data model and workflow contracts needed to capture review feedback,
+      check evidence, verdicts, and resolution history without depending on GitHub
+      PRs as the source of truth.
 
-      This draft plan covers a first-party review system for kspec artifacts. The goal is to support
-      review records for plans, task work, and other reviewable objects with durable comments,
-      approvals, and gate/check outcomes.
-
-
-      This plan is intentionally separate from the dispatch isolation plan so the workspace/runtime
-      work can move first without waiting on the full review data model.
-
+      This plan is intentionally scoped to the record model and integration
+      contracts. It does not try to deliver full hosted-review UI parity or replace
+      the existing task lifecycle in the same step.
 
       ## Context
 
-
-      Today kspec has review-related task states (`pending_review`, `needs_work`) and optional
-      `review_url`, but no native review artifact. Reviews mainly live in GitHub PRs or ad hoc task
-      notes. That leaves no first-party record for:
-
+      Today kspec has review-related task states (`pending_review`, `needs_work`) and
+      optional `review_url`, but no native review artifact. Reviews mainly live in
+      GitHub PRs or ad hoc task notes. That leaves no first-party record for:
 
       - local review without a PR
-
       - line-targeted comments on code or structured sections in plans/specs
-
       - durable check runs and approval state
-
       - a consistent review history across different artifact types
 
+      ## Scope
+
+      This plan should cover:
+
+      - first-party review records with stable subject identity
+      - threaded comments with general and targeted anchors
+      - recorded checks and normalized gate evaluation
+      - reviewer verdicts, blocking state, and iterative re-review cycles
+      - explicit integration with task review states and compatibility fields
+
+      This plan should not yet cover:
+
+      - a full web review experience or GitHub-style UI parity
+      - provider-specific sync beyond storing external identities and links
+      - replacing `pending_review` or `needs_work` as the task workflow signal
 
       ## Specs
 
-
       ```yaml
-
       - title: Review Record Core Model
         slug: review-record-core-model
         type: feature
-        parent: "@plan-support"
+        parent: "@core"
         description: |
           kspec stores review records as first-party artifacts with a typed subject,
           lifecycle state, authorship, timestamps, and links to the object under
@@ -14151,8 +14159,8 @@ plans:
             when: |
               The review record is stored
             then: |
-              The record captures subject type, subject ref or external identity,
-              status, author, timestamps, and lifecycle history
+              The record captures subject binding, status, author, timestamps, and
+              lifecycle history in first-party kspec metadata
           - id: ac-2
             given: |
               A review progresses through work
@@ -14170,13 +14178,50 @@ plans:
               The review record stores those links without making them the source of
               truth for local review state
 
-      - title: Review Comment Anchors
-        slug: review-comment-anchors
+      - title: Review Subject Bindings
+        slug: review-subject-bindings
         type: requirement
         parent: "@review-record-core-model"
         description: |
-          Review comments support both general feedback and targeted anchors such as
-          file/line comments for code or section/field anchors for plans/specs.
+          Review records identify what is under review using stable local refs when
+          available and normalized external identities when the subject is not purely
+          local.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A review is created for a plan, task, spec, code worktree, or other
+              supported artifact
+            when: |
+              The subject binding is stored
+            then: |
+              The record captures subject type plus a stable local ref or external
+              identity that can be used to reopen the review later
+          - id: ac-2
+            given: |
+              A review subject has both a local kspec ref and an external identity
+            when: |
+              The review record is stored
+            then: |
+              The local ref remains authoritative while external identifiers are kept
+              as linkage metadata
+          - id: ac-3
+            given: |
+              A review targets a mutable artifact such as a code worktree or imported
+              plan content
+            when: |
+              The review binding is stored
+            then: |
+              The record can preserve revision context needed to interpret later
+              comments and gates against the reviewed snapshot
+
+      - title: Review Comment Threads and Anchors
+        slug: review-comment-threads-and-anchors
+        type: requirement
+        parent: "@review-record-core-model"
+        description: |
+          Review comments support both general feedback and threaded targeted anchors
+          such as file and line comments for code or section and field anchors for
+          structured artifacts.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -14184,15 +14229,16 @@ plans:
             when: |
               A comment is created without a target anchor
             then: |
-              The comment is stored as a general review comment
+              The comment is stored as a general review thread entry with author and
+              timestamps
           - id: ac-2
             given: |
               A reviewer wants to comment on code
             when: |
               The comment targets a file and line or range
             then: |
-              The review record stores a durable code anchor with enough information
-              to render targeted feedback
+              The review record stores a durable code anchor with enough context to
+              render targeted feedback later
           - id: ac-3
             given: |
               A reviewer wants to comment on a plan, spec, or other structured
@@ -14202,15 +14248,23 @@ plans:
             then: |
               The review record stores the structured anchor and renders it as
               targeted feedback on that artifact
+          - id: ac-4
+            given: |
+              A reviewer or author replies to an existing review comment
+            when: |
+              The reply is stored
+            then: |
+              The conversation is preserved as a durable thread rather than isolated
+              standalone comments
 
-      - title: Review Gates and Check Runs
-        slug: review-gates-and-check-runs
+      - title: Review Checks and Gate Evaluation
+        slug: review-checks-and-gate-evaluation
         type: requirement
         parent: "@review-record-core-model"
         description: |
-          Reviews can include recorded checks and gates such as test runs, local
-          verification, CI runs, or manual attestations, whether those checks are
-          backed by real CI systems or agent-filled review evidence.
+          Reviews can include recorded checks and derived gate state such as test
+          runs, local verification, CI runs, or manual attestations, whether those
+          checks are backed by real CI systems or first-party review evidence.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -14242,16 +14296,26 @@ plans:
             when: |
               An approval is attempted
             then: |
-              The system can distinguish required vs informational checks and enforce
+              The system distinguishes required vs informational checks and enforces
               the required ones
+          - id: ac-5
+            given: |
+              Multiple runs exist for the same logical check over the life of a
+              review
+            when: |
+              Gate state is evaluated
+            then: |
+              Check history is preserved while the current gate decision is computed
+              from the latest applicable result
 
-      - title: Review Approvals and Resolution Model
-        slug: review-approvals-and-resolution-model
+      - title: Review Verdicts and Resolution Lifecycle
+        slug: review-verdicts-and-resolution-lifecycle
         type: requirement
         parent: "@review-record-core-model"
         description: |
-          Reviews support approval signals, blocking requests for change, comment
-          resolution state, and final disposition similar to hosted code review tools.
+          Reviews support individual reviewer verdicts, blocking requests for change,
+          thread resolution, and iterative re-review cycles without losing audit
+          history.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -14262,102 +14326,155 @@ plans:
               Their verdicts are recorded distinctly from the overall review status
           - id: ac-2
             given: |
-              A targeted review comment results in follow-up work
+              A targeted review thread results in follow-up work
             when: |
               The issue is addressed
             then: |
-              The comment or thread can be marked resolved with timestamp and actor
+              The thread can be marked resolved with timestamp and actor
           - id: ac-3
             given: |
               A review subject goes through multiple cycles
             when: |
               It moves from review to changes requested to re-review
             then: |
-              The same review record can represent iterative cycles without losing the
-              audit trail
-      ```
+              The same review record or an explicitly linked successor cycle can
+              represent the iteration without losing the audit trail
+          - id: ac-4
+            given: |
+              Required gates are failing or blocking change requests remain unresolved
+            when: |
+              The review disposition is evaluated
+            then: |
+              The review cannot be represented as fully approved while those blockers
+              remain open
 
+      - title: Review Task Lifecycle Integration
+        slug: review-task-lifecycle-integration
+        type: requirement
+        parent: "@review-record-core-model"
+        description: |
+          Review records integrate with task workflow signals and compatibility
+          fields without replacing the lightweight task lifecycle model already used
+          by kspec.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A task is in pending_review or needs_work
+            when: |
+              A review record exists for that task or its code work
+            then: |
+              The task can link to the active review record while task status remains
+              the lightweight workflow signal
+          - id: ac-2
+            given: |
+              A task-associated review records changes requested and later returns for
+              re-review
+            when: |
+              The task moves between needs_work and pending_review
+            then: |
+              The review history remains intact instead of being replaced by ad hoc
+              task notes
+          - id: ac-3
+            given: |
+              A task or review has an external PR URL or provider identifier
+            when: |
+              Review state is rendered or audited locally
+            then: |
+              The external link is treated as compatibility linkage, not the sole
+              durable review record
+      ```
 
       ## Tasks
 
-
-      derive_from_specs: true
-
+      derive_from_specs: false
 
       ```yaml
-
-      - slug: task-design-review-record-schema
-        title: Design first-party review record schema
+      - slug: task-design-review-record-core
+        title: Design first-party review record core schema
         spec_ref: "@review-record-core-model"
         priority: 2
         tags: [review, schema, design]
 
-      - slug: task-design-review-comment-anchors
-        title: Design targeted review anchors for code and structured artifacts
-        spec_ref: "@review-comment-anchors"
+      - slug: task-design-review-subject-bindings
+        title: Design stable subject bindings for review records
+        spec_ref: "@review-subject-bindings"
         priority: 2
+        depends_on:
+          - "@task-design-review-record-core"
+        tags: [review, schema, identity]
+
+      - slug: task-design-review-comment-threads
+        title: Design threaded review comments and target anchors
+        spec_ref: "@review-comment-threads-and-anchors"
+        priority: 2
+        depends_on:
+          - "@task-design-review-subject-bindings"
         tags: [review, comments, ux]
 
-      - slug: task-design-review-checks
-        title: Design review gate and check-run recording model
-        spec_ref: "@review-gates-and-check-runs"
+      - slug: task-design-review-checks-and-gates
+        title: Design review check recording and gate evaluation
+        spec_ref: "@review-checks-and-gate-evaluation"
         priority: 2
-        tags: [review, ci, checks]
+        depends_on:
+          - "@task-design-review-record-core"
+        tags: [review, checks, policy]
 
-      - slug: task-design-review-approvals
-        title: Design approval and resolution semantics for review records
-        spec_ref: "@review-approvals-and-resolution-model"
+      - slug: task-design-review-verdicts-and-resolution
+        title: Design review verdict and resolution lifecycle semantics
+        spec_ref: "@review-verdicts-and-resolution-lifecycle"
         priority: 2
+        depends_on:
+          - "@task-design-review-comment-threads"
+          - "@task-design-review-checks-and-gates"
         tags: [review, approvals, workflow]
-      ```
 
+      - slug: task-design-review-task-integration
+        title: Design integration between review records and task lifecycle states
+        spec_ref: "@review-task-lifecycle-integration"
+        priority: 2
+        depends_on:
+          - "@task-design-review-verdicts-and-resolution"
+        tags: [review, tasks, integration]
+      ```
 
       ## Implementation Notes
 
-
-      ### Subjects to support
-
+      ### Subject coverage
 
       The first wave should at least support:
 
-
       - plan reviews
-
-      - task/code-work reviews
-
-      - arbitrary artifact reviews when the subject can be identified by a stable ref or external
-      key
-
+      - task or code-work reviews
+      - spec reviews when the subject can be identified by a stable ref
+      - arbitrary external artifact reviews when the subject can be identified by a
+        stable external key
 
       ### Anchors
 
-
       The model should support both:
 
+      - code anchors: file path plus line or range plus optional revision context
+      - structured anchors: markdown heading, YAML path, ref plus field name, or a
+        similar stable logical target
 
-      - code anchors: file path + line/range + optional commit context
+      ### Checks and gate policy
 
-      - structured anchors: markdown heading, YAML path, ref + field name, or similar stable logical
-      targets
-
-
-      ### CI and local verification
-
-
-      This plan leaves open whether GitHub Actions local runners are adopted directly, but the
-      review record must support both:
-
-
-      - mirrored external CI results
-
-      - first-party locally executed checks recorded by agents or humans
-
+      The review record should separate historical check evidence from current gate
+      evaluation so re-runs can be preserved without losing the latest approval
+      decision inputs.
 
       ### Relationship to task state
 
+      Task state should remain a lightweight workflow signal. The review record should
+      become the durable audit object instead of overloading `task.notes` and
+      `review_url`.
 
-      Task state should remain a lightweight workflow signal. The review record should become the
-      durable audit object instead of overloading `task.notes` and `review_url`.
+      ### Out of scope for this plan
+
+      This plan does not yet attempt to specify the full CLI surface, web UI, or
+      provider sync implementation for review records. The immediate goal is the
+      record model and its integration contracts so later plans can build commands,
+      rendering, and automation on top of a stable core.
     status: draft
     derived_tasks: []
     derived_specs: []
@@ -14366,7 +14483,11 @@ plans:
     created_at: 2026-03-11T23:15:29.907Z
     approved_at: null
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KKJV44NWWSBDZWN74QRJEXFC
+        created_at: 2026-03-13T05:36:18.620Z
+        author: Jacob Chapel
+        content: Refine scope, task semantics, and integration contracts
   - _ulid: 01KKFJY80GMJZKN10AMDJ2WDNC
     slugs:
       - plan-grouped-work-and-human-handoff
