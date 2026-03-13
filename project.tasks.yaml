@@ -93488,6 +93488,11 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #823 (merge commit bc85500e18c7035f5d834a70889cf8233cf19dc4).
+    Implemented droid portable skill reference resolution by mapping droid-acp to the droid prompt
+    platform and loading skill origins from meta context before falling back to rendered core-skill
+    inference. Added AC coverage for droid core/project invocation formatting, token resolution, and
+    prompt rewriting; review verified all four spec ACs and no trait ACs applied."
   depends_on: []
   context: []
   priority: 3
@@ -93497,6 +93502,7 @@
   created_at: 2026-03-13T03:25:19.536Z
   started_at: 2026-03-13T07:58:58.979Z
   submitted_at: 2026-03-13T08:06:36.156Z
+  completed_at: 2026-03-13T08:26:23.344Z
   notes:
     - _ulid: 01KKK39FKPW4W5XJ58JXYZ4YAB
       created_at: 2026-03-13T07:59:02.262Z
@@ -93534,12 +93540,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-13T08:26:23.344Z
-  closed_reason: "Merged in PR #823 (merge commit bc85500e18c7035f5d834a70889cf8233cf19dc4).
-    Implemented droid portable skill reference resolution by mapping droid-acp to the droid prompt
-    platform and loading skill origins from meta context before falling back to rendered core-skill
-    inference. Added AC coverage for droid core/project invocation formatting, token resolution, and
-    prompt rewriting; review verified all four spec ACs and no trait ACs applied."
 - _ulid: 01KKJKMACTMKC8CNF9D9Y56B3C
   slugs:
     - implement-droid-core-skill-install-support
@@ -93549,7 +93549,7 @@
   derivation: auto
   plan_ref: "@plan-droid-platform-support"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -93598,6 +93598,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-13T08:33:15.429Z
+  closed_reason: "Merged in PR #825. Added droid as a valid install-core platform override, verified
+    droid core skills render into .factory/skills/kspec-<id>/SKILL.md, and preserved the default
+    claude-code behavior when --platform is omitted. Own AC coverage verified for ac-1 through ac-3;
+    spec has no inherited trait ACs."
 - _ulid: 01KKJKMB07ACRP29S80J2PB1RK
   slugs:
     - implement-droid-setup-status-reporting
