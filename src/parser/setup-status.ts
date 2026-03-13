@@ -123,6 +123,7 @@ export async function detectAgent(): Promise<{
       // Directory doesn't exist
     }
 
+    // AC: @droid-setup-status ac-2 — ~/.factory as medium-confidence droid fallback (after ~/.claude)
     const globalDroidDir = path.join(process.env.HOME, ".factory");
     try {
       const stats = await fs.stat(globalDroidDir);
@@ -180,6 +181,7 @@ export async function getSetupStatus(
   const hashPath = path.join(projectDir, ".kspec", ".kspec-agents-hash");
   const claudeConfigPath = path.join(projectDir, ".claude", "settings.json");
   const hooksDir = path.join(projectDir, ".claude", "hooks");
+  // AC: @droid-setup-status ac-1 — scan .factory/skills/ for droid-rendered skills
   const skillDirs = new Set<string>([path.join(projectDir, ".claude", "skills")]);
   if (detected.type === "droid") {
     skillDirs.add(path.join(projectDir, ".factory", "skills"));
