@@ -2581,8 +2581,8 @@ workspaces:
       remote_ref: null
       adopted_from: null
       adopted_at: null
-    lifecycle_state: integrating
-    active_role: reviewer
+    lifecycle_state: ready
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remote-branch-fallback-in-workspace-health-reconci-01kkjyee
@@ -2629,21 +2629,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T19:55:28.041Z
+      updated_at: 2026-03-13T19:56:01.790Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T19:55:30.840Z
+      updated_at: 2026-03-13T19:56:01.790Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T19:55:28.041Z
+      updated_at: 2026-03-13T19:56:01.790Z
     timestamps:
       created_at: 2026-03-13T19:45:31.226Z
-      updated_at: 2026-03-13T19:55:30.840Z
-      last_reconciled_at: 2026-03-13T19:55:30.840Z
+      updated_at: 2026-03-13T19:56:01.790Z
+      last_reconciled_at: 2026-03-13T19:56:01.790Z
       last_active_at: 2026-03-13T19:55:30.840Z
       closed_at: null
