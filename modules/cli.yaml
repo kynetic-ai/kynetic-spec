@@ -8509,6 +8509,13 @@ features:
             traits: []
             notes: []
             created: 2026-03-13T06:33:38.361Z
+            acceptance_criteria:
+              - id: ac-1
+                given: A workspace record references a canonical branch that does not exist as a local ref
+                when: reconcileWorkspaceHealth() runs and the branch exists on a configured remote (e.g.
+                  refs/remotes/origin/<branch>)
+                then: The health check fetches or creates the local branch from the remote ref and does not emit a
+                  missing_canonical_branch issue
         status:
           maturity: draft
           implementation: implemented
