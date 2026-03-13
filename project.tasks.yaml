@@ -93309,7 +93309,7 @@
   spec_ref: "@dispatch-workspace-cleanup-policy"
   meta_ref: null
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -93320,7 +93320,7 @@
     - upgrade
     - cleanup
   vcs_refs: []
-  session_id: 01KKJP8BXATYVQQW3SGWYCJBQE
+  session_id: null
   created_at: 2026-03-13T04:10:10.874Z
   started_at: 2026-03-13T04:11:51.457Z
   submitted_at: 2026-03-13T04:27:04.150Z
@@ -93380,6 +93380,14 @@
 
         - Full npm test in this dispatch worktree hit shared .kspec-dispatch-shadow-mutation lock
         contention across unrelated suites; captured as observation @01KKJQ34.
+      supersedes: null
+    - _ulid: 01KKJQM6N4X9P8A53PW3CJNKT9
+      created_at: 2026-03-13T04:35:10.628Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: metadata-backed reviewer snapshots with stale or
+        missing worker registrations still bypass reconstruction/retirement and keep pending_review
+        handoff ineligible; full npm test is also red locally (29 files / 47 tests failed, dominated
+        by dispatch shadow mutation lock contention)."
       supersedes: null
   todos: []
   automation: eligible
