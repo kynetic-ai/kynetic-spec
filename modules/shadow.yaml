@@ -697,6 +697,12 @@ features:
             when: any kspec read or write path initializes project context for CLI, daemon, or dispatch work
             then: initialization fails with actionable shadow recovery guidance instead of treating the checkout
               as a non-shadow repo
+          - id: ac-no-root-fallback
+            given: a checkout has an existing shadow branch but the configured shadow worktree is missing or
+              disconnected
+            when: CLI, daemon, or dispatch code resolves kspec-managed manifest, registry, or metadata paths
+            then: it does not redirect reads or writes to repo-root fallback paths outside the configured shadow
+              directory
   - _ulid: 01KF47F4J7DAQ3TD3BGHFQSK9C
     slugs:
       - shadow-sync
