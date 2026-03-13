@@ -33,6 +33,7 @@ import {
 } from "./helpers/cli.js";
 import * as http from "node:http";
 import type { Agent } from "../src/schema/meta.js";
+import { provisionDispatchWorkspace } from "../src/agent-runtime/workspace.js";
 
 // ─── Fixtures ────────────────────────────────────────────────────────────────
 
@@ -264,6 +265,22 @@ async function setupProjectWithAgents(
   );
 
   execSync("git add -A && git commit -m init", { cwd: dir, stdio: "pipe" });
+}
+
+async function installFakeGh(dir: string): Promise<{ restore: () => void }> {
+  const binDir = path.join(dir, "fake-bin");
+  const ghPath = path.join(binDir, "gh");
+  await fs.mkdir(binDir, { recursive: true });
+  await fs.writeFile(ghPath, "#!/usr/bin/env bash\nexit 0\n", "utf-8");
+  await fs.chmod(ghPath, 0o755);
+
+  const previousPath = process.env.PATH ?? "";
+  process.env.PATH = `${binDir}:${previousPath}`;
+  return {
+    restore: () => {
+      process.env.PATH = previousPath;
+    },
+  };
 }
 
 /**
@@ -1368,6 +1385,71 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       vi.restoreAllMocks();
     }
   });
+
+  it("releases the in-flight task key when bootstrap fails before invocation start", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      [
+        "dispatch:",
+        "  base_branch: main",
+        "  bootstrap:",
+        "    steps:",
+        "      - run: exit 7",
+      ].join("\n"),
+      "utf-8",
+    );
+
+    const captureFile = path.join(testDir, "kspec-bootstrap-failure-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+
+    try {
+      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+      const taskId = testUlid("TASK", 35);
+      const taskRef = `@${taskId}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+        task: {
+          _ulid: taskId,
+          title: "Bootstrap failure releases in-flight key",
+          slugs: ["bootstrap-failure-releases-in-flight-key"],
+          status: "pending",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as any,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+      vi.spyOn(console, "error").mockImplementation(() => {});
+
+      type EngineInternal = {
+        _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
+        inFlightTaskKeys: Set<string>;
+      };
+      const internal = engine as unknown as EngineInternal;
+
+      const spawned = await internal._spawnInvocation(agent, entry);
+
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+      expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
 });
 
 // ─── AC-11: Graceful shutdown ─────────────────────────────────────────────────
@@ -2370,6 +2452,308 @@ describe("Dispatch prompt orientation context and interpolation", () => {
 
       await engine.stop();
     });
+  });
+});
+
+// AC: @dispatch-role-workflow-entry-contract ac-1
+// AC: @dispatch-role-workflow-entry-contract ac-2
+describe("Dispatch role workflow entrypoints", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-role-entry-");
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(testDir);
+  });
+
+  it("renders a role entry block with adapter-specific worker entrypoint and PR target guidance", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      adapter: "codex-acp",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      [
+        "dispatch:",
+        "  base_branch: main",
+        "ralph:",
+        "  skills:",
+        "    task_work: \"/kspec:task-work\"",
+      ].join("\n"),
+      "utf-8",
+    );
+    execSync("git remote add origin https://github.com/example/repo.git", { cwd: testDir, stdio: "pipe" });
+    const fakeGh = await installFakeGh(testDir);
+
+    try {
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+      });
+
+      await engine.start();
+      const taskId = testUlid("TASK");
+      await engine.handleStateChange({
+        taskId,
+        taskRef: `@${taskId}`,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: { _ulid: taskId, title: "Worker role task", slugs: ["worker-role-task"], status: "pending", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
+      });
+
+      for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 5));
+      }
+
+      expect(runSpy).toHaveBeenCalled();
+      const invocation = runSpy.mock.calls[0][0];
+      expect(invocation.prompt).toContain("## Role Entry");
+      expect(invocation.prompt).toContain("Workflow entrypoint: `$kspec-task-work`");
+      expect(invocation.prompt).toContain("Publication mode: `pull_request`");
+      expect(invocation.prompt).toContain("Publish target: `main`");
+      expect(invocation.prompt).toContain("create or update a PR");
+      expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("pull_request");
+
+      await engine.stop();
+    } finally {
+      fakeGh.restore();
+    }
+  });
+
+  // AC: @dispatch-role-workflow-entry-contract ac-3
+  it("renders manual merge reviewer guidance with explicit conflict escalation", async () => {
+    const agent = makeTestAgent({
+      id: "reviewer",
+      adapter: "claude-agent-acp",
+      dispatch: [{ on: "task.pending_review" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      [
+        "dispatch:",
+        "  base_branch: main",
+        "ralph:",
+        "  skills:",
+        "    pr_review: \"{skill:pr-review}\"",
+      ].join("\n"),
+      "utf-8",
+    );
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+      session: {} as any,
+      outcome: "success",
+      durationMs: 1,
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+    });
+
+    await engine.start();
+    const taskId = testUlid("TASK");
+    await provisionDispatchWorkspace({
+      projectDir: testDir,
+      taskRef: `@${taskId}`,
+      task: { title: "Reviewer role task", slugs: ["reviewer-role-task"] },
+    });
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending_review",
+      timestamp: Date.now(),
+      task: { _ulid: taskId, title: "Reviewer role task", slugs: ["reviewer-role-task"], status: "pending_review", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible", review_url: "https://example.com/pr/1" } as any,
+    });
+
+    for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    }
+
+    expect(runSpy).toHaveBeenCalled();
+    const invocation = runSpy.mock.calls[0][0];
+    expect(invocation.prompt).toContain("Workflow entrypoint: `/pr-review`");
+    expect(invocation.prompt).not.toContain("{skill:pr-review}");
+    expect(invocation.prompt).toContain("Publication mode: `manual_merge`");
+    expect(invocation.prompt).toContain("git merge --abort");
+    expect(invocation.prompt).toContain("needs_work");
+    expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("manual_merge");
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-role-workflow-entry-contract ac-4
+  it("fails fast with a task note when the configured role entrypoint is blank", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      adapter: "mock-acp",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      [
+        "dispatch:",
+        "  base_branch: main",
+        "ralph:",
+        "  skills:",
+        "    task_work: \"   \"",
+      ].join("\n"),
+      "utf-8",
+    );
+
+    const captureFile = path.join(testDir, "kspec-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+
+    try {
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+      });
+
+      type EngineInternal = {
+        _spawnInvocation: (a: Agent, e: unknown) => Promise<boolean>;
+        inFlightTaskKeys: Set<string>;
+      };
+      const taskId = testUlid("TASK");
+      const taskRef = `@${taskId}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+        task: { _ulid: taskId, title: "Blank entrypoint task", slugs: ["blank-entrypoint-task"], status: "pending", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0, enqueuedAtMs: Date.now(), sequence: 1 };
+
+      const internal = engine as unknown as EngineInternal;
+      const started = await internal._spawnInvocation(agent, entry);
+
+      expect(started).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Failed to build prompt"),
+      );
+      expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
+
+      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall).toBeTruthy();
+      expect(noteCall!.args.join(" ")).toContain("DISPATCH-PROMPT");
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+    }
+  });
+
+  // AC: @dispatch-role-workflow-entry-contract ac-4
+  it("fails fast with actionable guidance when workspace publicationMode is invalid", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      adapter: "mock-acp",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      [
+        "dispatch:",
+        "  base_branch: main",
+        "ralph:",
+        "  skills:",
+        "    task_work: \"/kspec:task-work\"",
+      ].join("\n"),
+      "utf-8",
+    );
+
+    const captureFile = path.join(testDir, "kspec-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+
+    const originalProvision = workspaceModule.provisionDispatchWorkspace;
+
+    try {
+      const provisionSpy = vi.spyOn(workspaceModule, "provisionDispatchWorkspace")
+        .mockImplementationOnce(async (options) => {
+          const workspace = await originalProvision(options);
+          if (!workspace) {
+            return workspace;
+          }
+          return {
+            ...workspace,
+            metadata: {
+              ...workspace.metadata,
+              publicationMode: "broken-mode" as unknown as ProvisionedDispatchWorkspace["metadata"]["publicationMode"],
+            },
+          };
+        });
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+      });
+
+      type EngineInternal = {
+        _spawnInvocation: (a: Agent, e: unknown) => Promise<boolean>;
+        inFlightTaskKeys: Set<string>;
+      };
+      const taskId = testUlid("TASK", 41);
+      const taskRef = `@${taskId}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+        task: { _ulid: taskId, title: "Invalid publication mode task", slugs: ["invalid-publication-mode-task"], status: "pending", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0, enqueuedAtMs: Date.now(), sequence: 1 };
+
+      const internal = engine as unknown as EngineInternal;
+      const started = await internal._spawnInvocation(agent, entry);
+
+      expect(started).toBe(false);
+      expect(provisionSpy).toHaveBeenCalledOnce();
+      expect(runSpy).not.toHaveBeenCalled();
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Failed to build prompt"),
+      );
+      expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
+
+      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall).toBeTruthy();
+      expect(noteCall!.args.join(" ")).toContain("DISPATCH-PROMPT");
+      expect(noteCall!.args.join(" ")).toContain("publication mode \"broken-mode\" is invalid");
+      expect(noteCall!.args.join(" ")).toContain("publicationMode is pull_request or manual_merge");
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+    }
   });
 });
 

@@ -1062,20 +1062,6 @@ export async function reconcileDispatchWorkspaceRegistry(
   }
 }
 
-function nextLifecycleState(
-  role: DispatchWorkspaceRole,
-  cleanupState: DispatchWorkspaceCleanupState,
-  existingMetadata: DispatchWorkspaceMetadata | null,
-): DispatchWorkspaceLifecycleState {
-  if (cleanupState.cleanupEligible) {
-    return "closing";
-  }
-  if (existingMetadata?.lifecycleState === "stale") {
-    return "stale";
-  }
-  return role === "reviewer" || role === "worker" ? "active" : "ready";
-}
-
 async function safelyRemoveDispatchWorktree(
   projectDir: string,
   worktreeRoot: string,
@@ -1220,16 +1206,17 @@ export async function cleanupReviewerDispatchWorkspace(
   );
 
   const now = new Date().toISOString();
+  const lifecycleState = existingRecord.cleanup.eligible ? "closing" : "ready";
   const updatedMetadata: DispatchWorkspaceMetadata = {
     ...existing.metadata,
     reviewerWorktreeDir: null,
-    lifecycleState: existing.metadata.cleanupEligible ? "closing" : "ready",
+    lifecycleState,
     cleanupBlockedReason: null,
     updatedAt: now,
   };
   const updatedRecord: DispatchWorkspaceRecord = {
     ...existingRecord,
-    lifecycle_state: updatedMetadata.lifecycleState,
+    lifecycle_state: lifecycleState,
     worktrees: {
       ...existingRecord.worktrees,
       reviewer: null,

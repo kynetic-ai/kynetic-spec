@@ -22,8 +22,12 @@ import {
   type LoadedAgent,
 } from "../parser/index.js";
 import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
+import { loadProjectConfig } from "../parser/config.js";
 import type { InvocationOptions } from "./invocation.js";
-import { interpolateTemplate } from "./prompts.js";
+import {
+  interpolateTemplate,
+  rewriteSkillReferencesForAdapter,
+} from "./prompts.js";
 import { getAdapter } from "../agents/adapters.js";
 import {
   provisionDispatchWorkspace,
@@ -199,6 +203,142 @@ function formatRecentNotes(
     return `- [${date}] ${author}: ${content}`;
   });
   return lines.join("\n");
+}
+
+class DispatchPromptError extends Error {
+  suggestion: string;
+
+  constructor(message: string, suggestion: string) {
+    super(message);
+    this.name = "DispatchPromptError";
+    this.suggestion = suggestion;
+  }
+}
+
+function resolveDispatchRole(trigger: SessionTrigger): "worker" | "reviewer" {
+  return trigger === "task.pending_review" ? "reviewer" : "worker";
+}
+
+async function renderEntrypointForAdapter(
+  entrypoint: string,
+  adapterId: string,
+  projectDir: string,
+): Promise<string> {
+  const trimmed = entrypoint.trim();
+  if (!trimmed) {
+    return trimmed;
+  }
+
+  const portableResolved = await rewriteSkillReferencesForAdapter(
+    trimmed,
+    projectDir,
+    adapterId,
+  );
+  if (portableResolved !== trimmed) {
+    return portableResolved.trim();
+  }
+
+  switch (adapterId) {
+    case "codex-acp":
+      return trimmed
+        .replace(/^\/kspec:([a-z0-9][a-z0-9-]*)$/i, "$kspec-$1")
+        .replace(/^\/([a-z0-9][a-z0-9-]*)$/i, "$$$1");
+    case "claude-agent-acp":
+    case "claude-code-acp":
+      return trimmed
+        .replace(/^\$kspec-([a-z0-9][a-z0-9-]*)$/i, "/kspec:$1")
+        .replace(/^\$([a-z0-9][a-z0-9-]*)$/i, "/$1");
+    default:
+      return trimmed;
+  }
+}
+
+async function resolveRoleEntrypoint(
+  role: "worker" | "reviewer",
+  adapterId: string,
+  projectDir: string,
+  config: Awaited<ReturnType<typeof loadProjectConfig>>["config"],
+): Promise<string> {
+  const rawEntrypoint = role === "reviewer"
+    ? config.ralph.skills.pr_review
+    : config.ralph.skills.task_work;
+  const rendered = await renderEntrypointForAdapter(
+    rawEntrypoint,
+    adapterId,
+    projectDir,
+  );
+  if (!rendered) {
+    throw new DispatchPromptError(
+      `No valid ${role} entrypoint is configured for adapter "${adapterId}".`,
+      `Set ralph.skills.${role === "reviewer" ? "pr_review" : "task_work"} in kspec.config.yaml to a non-empty workflow or skill entrypoint.`,
+    );
+  }
+  return rendered;
+}
+
+function buildPublicationInstructions(
+  role: "worker" | "reviewer",
+  metadata: DispatchWorkspaceMetadata,
+): string[] {
+  const lines = [
+    `Publication mode: \`${metadata.publicationMode}\``,
+    `Publish target: \`${metadata.mergeTargetBranch}\``,
+    `Canonical branch: \`${metadata.canonicalBranch}\``,
+  ];
+
+  if (metadata.publicationMode === "pull_request") {
+    if (role === "reviewer") {
+      lines.push(
+        `Review and merge the PR that targets \`${metadata.mergeTargetBranch}\`; do not retarget it to a different base branch.`,
+        "If you push fixes during review, re-run the required verification on the new HEAD before merging.",
+      );
+    } else {
+      lines.push(
+        `After submitting the task, create or update a PR from \`${metadata.canonicalBranch}\` into \`${metadata.mergeTargetBranch}\` using the recorded base branch as the PR target.`,
+      );
+    }
+    return lines;
+  }
+
+  if (metadata.publicationMode === "manual_merge") {
+    if (role === "reviewer") {
+      lines.push(
+        `If review is clean, merge \`${metadata.canonicalBranch}\` back into \`${metadata.mergeTargetBranch}\` manually against the recorded base branch.`,
+        `If conflicts appear, stop, run \`git merge --abort\`, and move the task to \`needs_work\` or \`blocked\` with a note describing the conflict. Do not guess at conflict resolution.`,
+      );
+    } else {
+      lines.push(
+        `Manual merge-back is recorded for this workspace. Submit the task for review; do not open a PR against \`${metadata.mergeTargetBranch}\`.`,
+        `If you must prepare the merge path, keep the work on \`${metadata.canonicalBranch}\` and hand review a clean branch lineage back to \`${metadata.mergeTargetBranch}\`.`,
+      );
+    }
+    return lines;
+  }
+
+  throw new DispatchPromptError(
+    `Workspace publication mode "${metadata.publicationMode}" is invalid.`,
+    "Re-provision the dispatch workspace or repair its metadata so publicationMode is pull_request or manual_merge.",
+  );
+}
+
+async function buildRoleEntryContext(
+  projectDir: string,
+  adapterId: string,
+  trigger: SessionTrigger,
+  metadata: DispatchWorkspaceMetadata,
+): Promise<string> {
+  const role = resolveDispatchRole(trigger);
+  const { config } = await loadProjectConfig(projectDir, projectDir);
+  const entrypoint = await resolveRoleEntrypoint(role, adapterId, projectDir, config);
+  const publication = buildPublicationInstructions(role, metadata);
+
+  return [
+    "## Role Entry",
+    `Role: ${role}`,
+    `Workflow entrypoint: \`${entrypoint}\``,
+    `Start by executing the ${role === "reviewer" ? "review" : "work"} flow defined by \`${entrypoint}\`.`,
+    ...publication,
+  ].join("\n");
 }
 
 /**
@@ -1341,11 +1481,11 @@ export class DispatchEngine {
    *
    * AC: @agent-dispatch-engine ac-13, ac-14, ac-15, ac-16
    */
-  private _buildDispatchPrompt(
+  private async _buildDispatchPrompt(
     agent: LoadedAgent,
     change: TaskStateChange,
     workspace: ProvisionedDispatchWorkspace,
-  ): string {
+  ): Promise<string> {
     const trigger = (STATUS_TO_EVENT[change.toStatus] ?? "task.ready") as SessionTrigger;
     const taskRef = change.taskRef;
 
@@ -1360,6 +1500,12 @@ export class DispatchEngine {
     const basePrompt = interpolateTemplate(rawTemplate, templateVars);
 
     const orientation = buildOrientationContext(taskRef, trigger, workspace, change.task);
+    const roleEntry = await buildRoleEntryContext(
+      this.projectDir,
+      agent.adapter ?? "claude-agent-acp",
+      trigger,
+      workspace.metadata,
+    );
     const autonomousPreamble = [
       "AUTONOMOUS DISPATCH MODE (no interactive user is available).",
       "- Do not ask for confirmation, approval, or next-step handoff.",
@@ -1384,7 +1530,7 @@ export class DispatchEngine {
             "- If your workflow includes git or PR steps, execute them directly instead of deferring to a human.",
           ];
 
-    return `${basePrompt}\n\n${orientation}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
+    return `${basePrompt}\n\n${orientation}\n\n${roleEntry}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
   }
 
   private _runKspecCommand(args: string[]): KspecCommandResult {
@@ -1441,368 +1587,396 @@ export class DispatchEngine {
     const agentId = agent.id;
     const inFlightKey = `${agentId}:${entry.change.taskRef}`;
     this.inFlightTaskKeys.add(inFlightKey);
+    let invocationRegistered = false;
     let workspace: Awaited<ReturnType<typeof provisionDispatchWorkspace>>;
     const role: DispatchWorkspaceRole =
       entry.change.toStatus === "pending_review" ? "reviewer" : "worker";
     try {
-      workspace = await provisionDispatchWorkspace({
-        projectDir: this.projectDir,
-        taskRef: entry.change.taskRef,
-        role,
-        cleanupState: {
-          taskStatus: entry.change.task?.status ?? entry.change.toStatus,
-        },
-        task: entry.change.task
-          ? {
-              title: entry.change.task.title,
-              slugs: entry.change.task.slugs,
-            }
-          : undefined,
-      });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      const guidance = err instanceof DispatchWorkspaceError ? err.suggestion : "Inspect dispatch workspace configuration and git worktree state.";
-      console.error(
-        `[dispatch] Failed to provision workspace for ${entry.change.taskRef}: ${message}`,
-      );
-      this._addTaskNote(
-        entry.change.taskRef,
-        `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
-      );
-      this._blockTask(
-        entry.change.taskRef,
-        `Dispatch workspace provisioning failed: ${message}. Suggested action: ${guidance}`,
-      );
-      this.inFlightTaskKeys.delete(inFlightKey);
-      return false;
-    }
-
-    const dispatchEnv = {
-      KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
-      KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,
-      KSPEC_DISPATCH_CANONICAL_BRANCH: workspace.metadata.canonicalBranch,
-      KSPEC_DISPATCH_WORKTREE_ROOT: workspace.metadata.worktreeRoot,
-      KSPEC_DISPATCH_WORKSPACE_FILE: workspace.metadataPath,
-    };
-
-    try {
-      const bootstrap = await ensureWorkspaceBootstrap({
-        projectDir: this.projectDir,
-        workspaceDir: workspace.cwd,
-        metadataPath: workspace.metadataPath,
-        metadata: workspace.metadata,
-        role,
-        agent,
-        env: dispatchEnv,
-      });
-      workspace = {
-        ...workspace,
-        metadata: bootstrap.metadata,
-      };
-    } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
-      const guidance = err instanceof DispatchBootstrapError
-        ? err.suggestion
-        : "Inspect dispatch bootstrap configuration, dependency prerequisites, and workspace health.";
-      console.error(
-        `[dispatch] Failed to bootstrap workspace for ${entry.change.taskRef}: ${message}`,
-      );
-      if (this.kspecCliPath) {
-        spawnSync(process.execPath, [
-          this.kspecCliPath,
-          "task", "note", entry.change.taskRef,
-          `[DISPATCH-BOOTSTRAP] ${message} Suggested action: ${guidance}`,
-        ], { cwd: this.cwd });
-        spawnSync(process.execPath, [
-          this.kspecCliPath,
-          "task", "block", entry.change.taskRef,
-          "--reason", `Dispatch bootstrap failed: ${message}`,
-        ], { cwd: this.cwd });
+      try {
+        workspace = await provisionDispatchWorkspace({
+          projectDir: this.projectDir,
+          taskRef: entry.change.taskRef,
+          role,
+          cleanupState: {
+            taskStatus: entry.change.task?.status ?? entry.change.toStatus,
+          },
+          task: entry.change.task
+            ? {
+                title: entry.change.task.title,
+                slugs: entry.change.task.slugs,
+              }
+            : undefined,
+        });
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        const guidance = err instanceof DispatchWorkspaceError ? err.suggestion : "Inspect dispatch workspace configuration and git worktree state.";
+        console.error(
+          `[dispatch] Failed to provision workspace for ${entry.change.taskRef}: ${message}`,
+        );
+        this._addTaskNote(
+          entry.change.taskRef,
+          `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
+        );
+        this._blockTask(
+          entry.change.taskRef,
+          `Dispatch workspace provisioning failed: ${message}. Suggested action: ${guidance}`,
+        );
+        return false;
       }
-      return false;
-    }
 
-    // Increment active count
-    this.activeCount.set(agentId, (this.activeCount.get(agentId) ?? 0) + 1);
-
-    // AC: @agent-dispatch-engine ac-10 - Check adapter resolvability before spawn
-    const adapterId = agent.adapter ?? "claude-agent-acp";
-    const adapter = getAdapter(adapterId);
-    if (!adapter) {
-      console.error(
-        `[dispatch] Cannot resolve adapter "${adapterId}" for agent "${agentId}". Skipping invocation.`,
-      );
-      // Decrement active count since we're not actually running
-      const currentActive = this.activeCount.get(agentId) ?? 1;
-      this.activeCount.set(agentId, Math.max(0, currentActive - 1));
-      // AC: @agent-dispatch-engine ac-10 - Add task note for unresolvable adapter
-      if (this.kspecCliPath) {
-        spawnSync(process.execPath, [
-          this.kspecCliPath,
-          "task", "note", entry.change.taskRef,
-          `[AGENT-SKIP] Cannot resolve adapter "${adapterId}" for agent "${agentId}". Invocation skipped.`,
-        ], { cwd: this.cwd });
-      }
-      return false;
-    }
-
-    // AC: @agent-dispatch-engine ac-11 - Create abort controller for graceful cancellation
-    const abortController = new AbortController();
-    this.invocationAbortControllers.add(abortController);
-
-    // AC: @cli-agent-commands ac-6 - Pre-assign session ID for status tracking
-    const preSessionId = ulid();
-    const invocationId = ulid();
-    const trackingRecord: ActiveInvocationRecord = {
-      invocationId,
-      sessionId: preSessionId,
-      agentId,
-      agentName: agent.name,
-      taskRef: entry.change.taskRef,
-      role,
-      startedAtMs: Date.now(),
-    };
-    this.activeInvocationDetails.set(invocationId, trackingRecord);
-    this.recentTaskAffinityRef = entry.change.taskRef;
-
-    let startedEventEmitted = false;
-    const emitStartedEvent = (): void => {
-      if (startedEventEmitted) return;
-      startedEventEmitted = true;
-      this.onInvocationEvent?.({
-        type: "started",
-        session_id: preSessionId,
-        agent_id: agentId,
-        task_id: entry.change.taskRef,
-        status: "started",
-        timestamp: Date.now(),
-      });
-    };
-
-    // AC: @cli-agent-commands ac-13, @daemon-agent-dispatch ac-8 - stream text chunks to watchers
-    const taskId = entry.change.taskRef ?? null;
-    const onUpdate = this.onTextChunk
-      ? (update: import("../acp/index.js").SessionUpdate) => {
-          emitStartedEvent();
-          if (
-            update.sessionUpdate === "agent_message_chunk" &&
-            update.content.type === "text"
-          ) {
-            this.onTextChunk!(preSessionId, agentId, taskId, update.content.text);
-            return;
-          }
-          // Non-text updates (especially tool events) delimit logical message runs.
-          // Emit an empty sentinel so watch renderers can end the current line
-          // without needing to infer boundaries from prose punctuation.
-          this.onTextChunk!(preSessionId, agentId, taskId, "");
-        }
-      : undefined;
-
-    const options: InvocationOptions = {
-      agent,
-      specDir: this.specDir,
-      sessionsDir: path.join(this.projectDir, ".kspec-sessions"),
-      cwd: workspace.cwd,
-      taskRef: entry.change.taskRef,
-      prompt: this._buildDispatchPrompt(agent, entry.change, workspace),
-      trigger: (STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready") as SessionTrigger,
-      kspecCliPath: this.kspecCliPath,
-      abortSignal: abortController.signal,
-      sessionId: preSessionId,
-      mutationLockFile: path.join(this.projectDir, ".kspec-dispatch-shadow-mutation"),
-      env: {
+      const dispatchEnv = {
         KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
         KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,
         KSPEC_DISPATCH_CANONICAL_BRANCH: workspace.metadata.canonicalBranch,
-        KSPEC_DISPATCH_CANONICAL_HEAD: workspace.metadata.canonicalBranchHead,
-        KSPEC_DISPATCH_INTEGRATION_TARGET: workspace.metadata.integrationTargetBranch,
-        KSPEC_DISPATCH_INTEGRATION_COMMIT: workspace.metadata.integrationTargetCommit,
-        KSPEC_DISPATCH_PUBLICATION_MODE: workspace.metadata.publicationMode,
-        KSPEC_DISPATCH_INTEGRATION_STATE: workspace.metadata.integrationState,
-        KSPEC_DISPATCH_INTEGRATION_OUTCOME: workspace.metadata.integrationOutcome,
         KSPEC_DISPATCH_WORKTREE_ROOT: workspace.metadata.worktreeRoot,
         KSPEC_DISPATCH_WORKSPACE_FILE: workspace.metadataPath,
-        KSPEC_DISPATCH_WORKSPACE_ID: workspace.metadata.workspaceId,
-        KSPEC_DISPATCH_BOOTSTRAP_STATUS: workspace.metadata.bootstrap.status,
-        KSPEC_DISPATCH_BOOTSTRAP_LAST_ROLE: workspace.metadata.bootstrap.lastRole ?? "",
-      },
-      onUpdate,
-    };
+      };
 
-    let resolveInvocationStarted!: () => void;
-    const invocationStarted = new Promise<void>((resolve) => {
-      resolveInvocationStarted = resolve;
-    });
-    let invocationStartedResolved = false;
-    const markInvocationStarted = (): void => {
-      if (invocationStartedResolved) return;
-      invocationStartedResolved = true;
-      resolveInvocationStarted();
-    };
-
-    let terminalEvent: InvocationEvent | null = null;
-    const markActivePromise = this.shadowMutex.runExclusive(async () => {
       try {
-        const activeWorkspace = await markDispatchWorkspaceActive({
+        const bootstrap = await ensureWorkspaceBootstrap({
           projectDir: this.projectDir,
-          taskRef: entry.change.taskRef,
-          role: entry.change.toStatus === "pending_review" ? "reviewer" : "worker",
+          workspaceDir: workspace.cwd,
+          metadataPath: workspace.metadataPath,
+          metadata: workspace.metadata,
+          role,
+          agent,
+          env: dispatchEnv,
         });
-        if (activeWorkspace) {
-          workspace = activeWorkspace;
-          options.env = {
-            ...options.env,
-            KSPEC_DISPATCH_WORKSPACE_FILE: activeWorkspace.metadataPath,
-            KSPEC_DISPATCH_WORKSPACE_ID: activeWorkspace.metadata.workspaceId,
-          };
-        }
+        workspace = {
+          ...workspace,
+          metadata: bootstrap.metadata,
+        };
       } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        const guidance = err instanceof DispatchBootstrapError
+          ? err.suggestion
+          : "Inspect dispatch bootstrap configuration, dependency prerequisites, and workspace health.";
         console.error(
-          `[dispatch] Failed to mark workspace active for ${entry.change.taskRef}:`,
-          err,
+          `[dispatch] Failed to bootstrap workspace for ${entry.change.taskRef}: ${message}`,
         );
+        if (this.kspecCliPath) {
+          spawnSync(process.execPath, [
+            this.kspecCliPath,
+            "task", "note", entry.change.taskRef,
+            `[DISPATCH-BOOTSTRAP] ${message} Suggested action: ${guidance}`,
+          ], { cwd: this.cwd });
+          spawnSync(process.execPath, [
+            this.kspecCliPath,
+            "task", "block", entry.change.taskRef,
+            "--reason", `Dispatch bootstrap failed: ${message}`,
+          ], { cwd: this.cwd });
+        }
+        return false;
       }
-    });
 
-    const invocationPromise = Promise.resolve()
-      .then(async () => {
-        // AC: @agent-dispatch-engine ac-9 - Retry on transient errors
+      let prompt: string;
+      try {
+        prompt = await this._buildDispatchPrompt(agent, entry.change, workspace);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        const guidance = err instanceof DispatchPromptError
+          ? err.suggestion
+          : "Inspect dispatch role-entry configuration and workspace metadata.";
+        console.error(
+          `[dispatch] Failed to build prompt for ${entry.change.taskRef}: ${message}`,
+        );
+        if (this.kspecCliPath) {
+          spawnSync(process.execPath, [
+            this.kspecCliPath,
+            "task", "note", entry.change.taskRef,
+            `[DISPATCH-PROMPT] ${message} Suggested action: ${guidance}`,
+          ], { cwd: this.cwd });
+        }
+        return false;
+      }
+
+      // Increment active count
+      this.activeCount.set(agentId, (this.activeCount.get(agentId) ?? 0) + 1);
+
+      // AC: @agent-dispatch-engine ac-10 - Check adapter resolvability before spawn
+      const adapterId = agent.adapter ?? "claude-agent-acp";
+      const adapter = getAdapter(adapterId);
+      if (!adapter) {
+        console.error(
+          `[dispatch] Cannot resolve adapter "${adapterId}" for agent "${agentId}". Skipping invocation.`,
+        );
+        // Decrement active count since we're not actually running
+        const currentActive = this.activeCount.get(agentId) ?? 1;
+        this.activeCount.set(agentId, Math.max(0, currentActive - 1));
+        // AC: @agent-dispatch-engine ac-10 - Add task note for unresolvable adapter
+        if (this.kspecCliPath) {
+          spawnSync(process.execPath, [
+            this.kspecCliPath,
+            "task", "note", entry.change.taskRef,
+            `[AGENT-SKIP] Cannot resolve adapter "${adapterId}" for agent "${agentId}". Invocation skipped.`,
+          ], { cwd: this.cwd });
+        }
+        return false;
+      }
+
+      // AC: @agent-dispatch-engine ac-11 - Create abort controller for graceful cancellation
+      const abortController = new AbortController();
+      this.invocationAbortControllers.add(abortController);
+
+      // AC: @cli-agent-commands ac-6 - Pre-assign session ID for status tracking
+      const preSessionId = ulid();
+      const invocationId = ulid();
+      const trackingRecord: ActiveInvocationRecord = {
+        invocationId,
+        sessionId: preSessionId,
+        agentId,
+        agentName: agent.name,
+        taskRef: entry.change.taskRef,
+        role,
+        startedAtMs: Date.now(),
+      };
+      this.activeInvocationDetails.set(invocationId, trackingRecord);
+      this.recentTaskAffinityRef = entry.change.taskRef;
+
+      let startedEventEmitted = false;
+      const emitStartedEvent = (): void => {
+        if (startedEventEmitted) return;
+        startedEventEmitted = true;
+        this.onInvocationEvent?.({
+          type: "started",
+          session_id: preSessionId,
+          agent_id: agentId,
+          task_id: entry.change.taskRef,
+          status: "started",
+          timestamp: Date.now(),
+        });
+      };
+
+      // AC: @cli-agent-commands ac-13, @daemon-agent-dispatch ac-8 - stream text chunks to watchers
+      const taskId = entry.change.taskRef ?? null;
+      const onUpdate = this.onTextChunk
+        ? (update: import("../acp/index.js").SessionUpdate) => {
+            emitStartedEvent();
+            if (
+              update.sessionUpdate === "agent_message_chunk" &&
+              update.content.type === "text"
+            ) {
+              this.onTextChunk!(preSessionId, agentId, taskId, update.content.text);
+              return;
+            }
+            // Non-text updates (especially tool events) delimit logical message runs.
+            // Emit an empty sentinel so watch renderers can end the current line
+            // without needing to infer boundaries from prose punctuation.
+            this.onTextChunk!(preSessionId, agentId, taskId, "");
+          }
+        : undefined;
+
+      const options: InvocationOptions = {
+        agent,
+        specDir: this.specDir,
+        sessionsDir: path.join(this.projectDir, ".kspec-sessions"),
+        cwd: workspace.cwd,
+        taskRef: entry.change.taskRef,
+        prompt,
+        trigger: (STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready") as SessionTrigger,
+        kspecCliPath: this.kspecCliPath,
+        abortSignal: abortController.signal,
+        sessionId: preSessionId,
+        mutationLockFile: path.join(this.projectDir, ".kspec-dispatch-shadow-mutation"),
+        env: {
+          KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
+          KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,
+          KSPEC_DISPATCH_CANONICAL_BRANCH: workspace.metadata.canonicalBranch,
+          KSPEC_DISPATCH_CANONICAL_HEAD: workspace.metadata.canonicalBranchHead,
+          KSPEC_DISPATCH_INTEGRATION_TARGET: workspace.metadata.integrationTargetBranch,
+          KSPEC_DISPATCH_INTEGRATION_COMMIT: workspace.metadata.integrationTargetCommit,
+          KSPEC_DISPATCH_PUBLICATION_MODE: workspace.metadata.publicationMode,
+          KSPEC_DISPATCH_INTEGRATION_STATE: workspace.metadata.integrationState,
+          KSPEC_DISPATCH_INTEGRATION_OUTCOME: workspace.metadata.integrationOutcome,
+          KSPEC_DISPATCH_WORKTREE_ROOT: workspace.metadata.worktreeRoot,
+          KSPEC_DISPATCH_WORKSPACE_FILE: workspace.metadataPath,
+          KSPEC_DISPATCH_WORKSPACE_ID: workspace.metadata.workspaceId,
+          KSPEC_DISPATCH_BOOTSTRAP_STATUS: workspace.metadata.bootstrap.status,
+          KSPEC_DISPATCH_BOOTSTRAP_LAST_ROLE: workspace.metadata.bootstrap.lastRole ?? "",
+        },
+        onUpdate,
+      };
+
+      let resolveInvocationStarted!: () => void;
+      const invocationStarted = new Promise<void>((resolve) => {
+        resolveInvocationStarted = resolve;
+      });
+      let invocationStartedResolved = false;
+      const markInvocationStarted = (): void => {
+        if (invocationStartedResolved) return;
+        invocationStartedResolved = true;
+        resolveInvocationStarted();
+      };
+
+      let terminalEvent: InvocationEvent | null = null;
+      const markActivePromise = this.shadowMutex.runExclusive(async () => {
         try {
-          markInvocationStarted();
-          emitStartedEvent();
-          await markActivePromise;
-          await runInvocation(options);
-          // Reset retry count on success
-          entry.retryCount = 0;
-          entry.starvationDeferrals = 0;
-          this.recentTaskAffinityRef = entry.change.taskRef;
-          terminalEvent = {
-            type: "completed",
-            session_id: preSessionId,
-            agent_id: agentId,
-            task_id: entry.change.taskRef,
-            status: "completed",
-            timestamp: Date.now(),
-          };
+          const activeWorkspace = await markDispatchWorkspaceActive({
+            projectDir: this.projectDir,
+            taskRef: entry.change.taskRef,
+            role: entry.change.toStatus === "pending_review" ? "reviewer" : "worker",
+          });
+          if (activeWorkspace) {
+            workspace = activeWorkspace;
+            options.env = {
+              ...options.env,
+              KSPEC_DISPATCH_WORKSPACE_FILE: activeWorkspace.metadataPath,
+              KSPEC_DISPATCH_WORKSPACE_ID: activeWorkspace.metadata.workspaceId,
+            };
+          }
         } catch (err) {
-          markInvocationStarted();
-          const retryLimit = agent.budget?.max_retries ?? 3;
-          if (entry.retryCount < retryLimit) {
-            entry.retryCount++;
-            const backoffMs = Math.min(
-              1000 * Math.pow(2, entry.retryCount - 1),
-              30_000,
-            );
-            entry.nextRetryAt = Date.now() + backoffMs;
-            console.warn(
-              `[dispatch] Invocation for agent "${agentId}" failed (attempt ${entry.retryCount}/${retryLimit}), retrying in ${backoffMs}ms`,
-              err,
-            );
-            // Re-enqueue for retry while preserving status precedence ordering.
-            const queue = this.queues.get(agentId) ?? [];
-            this._insertQueueEntry(queue, entry);
-            this.queues.set(agentId, queue);
-            // AC: @agent-dispatch-engine ac-9 - Schedule wake-up to drain retry
-            setTimeout(() => {
-              if (this.running) {
-                this._loadAgents()
-                  .then((agents) => this._drainQueues(agents))
-                  .catch(() => {/* best effort */});
-              }
-            }, backoffMs);
-          } else {
-            console.error(
-              `[dispatch] Agent "${agentId}" exceeded retry limit. Dropping invocation.`,
-              err,
-            );
+          console.error(
+            `[dispatch] Failed to mark workspace active for ${entry.change.taskRef}:`,
+            err,
+          );
+        }
+      });
+
+      const invocationPromise = Promise.resolve()
+        .then(async () => {
+          // AC: @agent-dispatch-engine ac-9 - Retry on transient errors
+          try {
+            markInvocationStarted();
+            emitStartedEvent();
+            await markActivePromise;
+            await runInvocation(options);
+            // Reset retry count on success
+            entry.retryCount = 0;
+            entry.starvationDeferrals = 0;
+            this.recentTaskAffinityRef = entry.change.taskRef;
             terminalEvent = {
-              type: "failed",
+              type: "completed",
               session_id: preSessionId,
               agent_id: agentId,
               task_id: entry.change.taskRef,
-              status: "failed",
+              status: "completed",
               timestamp: Date.now(),
             };
+          } catch (err) {
+            markInvocationStarted();
+            const retryLimit = agent.budget?.max_retries ?? 3;
+            if (entry.retryCount < retryLimit) {
+              entry.retryCount++;
+              const backoffMs = Math.min(
+                1000 * Math.pow(2, entry.retryCount - 1),
+                30_000,
+              );
+              entry.nextRetryAt = Date.now() + backoffMs;
+              console.warn(
+                `[dispatch] Invocation for agent "${agentId}" failed (attempt ${entry.retryCount}/${retryLimit}), retrying in ${backoffMs}ms`,
+                err,
+              );
+              // Re-enqueue for retry while preserving status precedence ordering.
+              const queue = this.queues.get(agentId) ?? [];
+              this._insertQueueEntry(queue, entry);
+              this.queues.set(agentId, queue);
+              // AC: @agent-dispatch-engine ac-9 - Schedule wake-up to drain retry
+              setTimeout(() => {
+                if (this.running) {
+                  this._loadAgents()
+                    .then((agents) => this._drainQueues(agents))
+                    .catch(() => {/* best effort */});
+                }
+              }, backoffMs);
+            } else {
+              console.error(
+                `[dispatch] Agent "${agentId}" exceeded retry limit. Dropping invocation.`,
+                err,
+              );
+              terminalEvent = {
+                type: "failed",
+                session_id: preSessionId,
+                agent_id: agentId,
+                task_id: entry.change.taskRef,
+                status: "failed",
+                timestamp: Date.now(),
+              };
+            }
           }
-        }
 
-        try {
-          await this.shadowMutex.runExclusive(async () => {
-            await markDispatchWorkspaceIdle({
-              projectDir: this.projectDir,
-              taskRef: entry.change.taskRef,
-              taskStatus: entry.change.toStatus,
-            });
-          });
-        } catch (err) {
-          console.error(
-            `[dispatch] Failed to mark workspace idle for ${entry.change.taskRef}:`,
-            err,
-          );
-        }
-
-        // Clean up active tracking before queue drain runs so completed
-        // invocations do not linger in the active fleet snapshot.
-        const currentActive = this.activeCount.get(agentId) ?? 1;
-        this.activeCount.set(agentId, Math.max(0, currentActive - 1));
-        this.activeInvocationDetails.delete(invocationId);
-
-        if (entry.change.toStatus === "pending_review") {
           try {
-            await cleanupReviewerDispatchWorkspace(
-              this.projectDir,
-              entry.change.taskRef,
-              entry.change.task
-                ? {
-                    title: entry.change.task.title,
-                    slugs: entry.change.task.slugs,
-                  }
-                : undefined,
-            );
-          } catch (cleanupErr) {
-            const cleanupMessage = cleanupErr instanceof Error ? cleanupErr.message : String(cleanupErr);
-            console.warn(
-              `[dispatch] Failed to clean reviewer snapshot for ${entry.change.taskRef}: ${cleanupMessage}`,
+            await this.shadowMutex.runExclusive(async () => {
+              await markDispatchWorkspaceIdle({
+                projectDir: this.projectDir,
+                taskRef: entry.change.taskRef,
+                taskStatus: entry.change.toStatus,
+              });
+            });
+          } catch (err) {
+            console.error(
+              `[dispatch] Failed to mark workspace idle for ${entry.change.taskRef}:`,
+              err,
             );
           }
-        }
-        if (terminalEvent) {
-          this.onInvocationEvent?.(terminalEvent);
-        }
-      })
-      .then(async () => {
-        if (!this.running) return;
 
-        // AC: @agent-dispatch-engine ac-23, ac-24
-        // Re-evaluate all tasks from disk so the drain loop sees tasks that
-        // reached a dispatchable state during the prior invocation (e.g.
-        // pending_review tasks submitted by a worker).
-        try {
-          await this._evaluateAllTasks({ skipIfActive: true });
-        } catch (err) {
-          // AC: @agent-dispatch-engine ac-25
-          console.warn(
-            "[dispatch] Post-invocation re-evaluation failed, proceeding with existing queue:",
-            err,
-          );
-        }
+          // Clean up active tracking before queue drain runs so completed
+          // invocations do not linger in the active fleet snapshot.
+          const currentActive = this.activeCount.get(agentId) ?? 1;
+          this.activeCount.set(agentId, Math.max(0, currentActive - 1));
+          this.activeInvocationDetails.delete(invocationId);
 
-        // Drain queues with current state
-        try {
-          const agents = await this._loadAgents();
-          await this._drainQueues(agents);
-        } catch {
-          // Best effort drain
-        }
-      })
-      .finally(() => {
+          if (entry.change.toStatus === "pending_review") {
+            try {
+              await cleanupReviewerDispatchWorkspace(
+                this.projectDir,
+                entry.change.taskRef,
+                entry.change.task
+                  ? {
+                      title: entry.change.task.title,
+                      slugs: entry.change.task.slugs,
+                    }
+                  : undefined,
+              );
+            } catch (cleanupErr) {
+              const cleanupMessage = cleanupErr instanceof Error ? cleanupErr.message : String(cleanupErr);
+              console.warn(
+                `[dispatch] Failed to clean reviewer snapshot for ${entry.change.taskRef}: ${cleanupMessage}`,
+              );
+            }
+          }
+          if (terminalEvent) {
+            this.onInvocationEvent?.(terminalEvent);
+          }
+        })
+        .then(async () => {
+          if (!this.running) return;
+
+          // AC: @agent-dispatch-engine ac-23, ac-24
+          // Re-evaluate all tasks from disk so the drain loop sees tasks that
+          // reached a dispatchable state during the prior invocation (e.g.
+          // pending_review tasks submitted by a worker).
+          try {
+            await this._evaluateAllTasks({ skipIfActive: true });
+          } catch (err) {
+            // AC: @agent-dispatch-engine ac-25
+            console.warn(
+              "[dispatch] Post-invocation re-evaluation failed, proceeding with existing queue:",
+              err,
+            );
+          }
+
+          // Drain queues with current state
+          try {
+            const agents = await this._loadAgents();
+            await this._drainQueues(agents);
+          } catch {
+            // Best effort drain
+          }
+        })
+        .finally(() => {
+          this.inFlightTaskKeys.delete(inFlightKey);
+          this.runningInvocations.delete(invocationPromise);
+          this.invocationAbortControllers.delete(abortController);
+        });
+
+      invocationRegistered = true;
+      this.runningInvocations.add(invocationPromise);
+      await invocationStarted;
+      return true;
+    } finally {
+      if (!invocationRegistered) {
         this.inFlightTaskKeys.delete(inFlightKey);
-        this.runningInvocations.delete(invocationPromise);
-        this.invocationAbortControllers.delete(abortController);
-      });
-
-    this.runningInvocations.add(invocationPromise);
-    await invocationStarted;
-    return true;
+      }
+    }
   }
 }

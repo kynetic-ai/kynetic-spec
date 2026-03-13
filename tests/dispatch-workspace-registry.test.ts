@@ -14,6 +14,7 @@ import {
   saveDispatchWorkspaceRecord,
 } from "../src/parser/dispatch-workspaces.js";
 import {
+  cleanupReviewerDispatchWorkspace,
   markDispatchWorkspaceActive,
   provisionDispatchWorkspace,
   reconcileDispatchWorkspaceRegistry,
@@ -62,6 +63,50 @@ async function readWorkspaceRecord(
     workspaces?: Array<Record<string, any>>;
   };
   return raw.workspaces?.find((workspace) => workspace.task_ref === taskRef) ?? {};
+}
+
+async function waitForWorkspaceRecord(
+  registryPath: string,
+  taskRef: string,
+  predicate: (record: Record<string, any>) => boolean,
+  timeoutMs: number = 2000,
+): Promise<Record<string, any>> {
+  const deadline = Date.now() + timeoutMs;
+  let record = await readWorkspaceRecord(registryPath, taskRef);
+
+  while (!predicate(record) && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    record = await readWorkspaceRecord(registryPath, taskRef);
+  }
+
+  return record;
+}
+
+async function waitForLoadedWorkspaceRecord(
+  projectDir: string,
+  taskRef: string,
+  predicate: (record: Awaited<ReturnType<typeof findDispatchWorkspaceByTaskRef>>) => boolean,
+  timeoutMs: number = 2000,
+): Promise<NonNullable<Awaited<ReturnType<typeof findDispatchWorkspaceByTaskRef>>>> {
+  const deadline = Date.now() + timeoutMs;
+  let record = await findDispatchWorkspaceByTaskRef(
+    await initContext(projectDir),
+    taskRef,
+  );
+
+  while ((!record || !predicate(record)) && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    record = await findDispatchWorkspaceByTaskRef(
+      await initContext(projectDir),
+      taskRef,
+    );
+  }
+
+  if (!record) {
+    throw new Error(`Workspace record for ${taskRef} was not available before timeout.`);
+  }
+
+  return record;
 }
 
 async function setupProjectWithWorkerAgent(dir: string): Promise<void> {
@@ -530,13 +575,11 @@ describe("dispatch workspace registry", () => {
       } as never,
     });
 
-    for (let i = 0; i < 40; i++) {
-      record = await readWorkspaceRecord(registryPath, taskRef);
-      if (record.lifecycle_state === "integrating") {
-        break;
-      }
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
+    record = await waitForWorkspaceRecord(
+      registryPath,
+      taskRef,
+      (current) => current.lifecycle_state === "integrating",
+    );
     expect(record.lifecycle_state).toBe("integrating");
     expect(record.integration.status).toBe("pending");
 
@@ -565,13 +608,11 @@ describe("dispatch workspace registry", () => {
       } as never,
     });
 
-    for (let i = 0; i < 40; i++) {
-      record = await readWorkspaceRecord(registryPath, taskRef);
-      if (record.lifecycle_state === "closing") {
-        break;
-      }
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
+    record = await waitForWorkspaceRecord(
+      registryPath,
+      taskRef,
+      (current) => current.lifecycle_state === "closing",
+    );
     expect(record.lifecycle_state).toBe("closing");
     expect(record.integration.status).toBe("merged");
     expect(record.cleanup).toMatchObject({
@@ -580,9 +621,10 @@ describe("dispatch workspace registry", () => {
       status: "scheduled",
     });
 
-    const reloaded = await findDispatchWorkspaceByTaskRef(
-      await initContext(tempDir),
+    const reloaded = await waitForLoadedWorkspaceRecord(
+      tempDir,
       taskRef,
+      (current) => current.lifecycle_state === "closing",
     );
     expect(reloaded?.lifecycle_state).toBe("closing");
 
@@ -652,6 +694,65 @@ describe("dispatch workspace registry", () => {
     record = await readWorkspaceRecord(registryPath, taskRef);
     expect(record.lifecycle_state).toBe("closed");
     expect(record.timestamps.closed_at).toBeTruthy();
+  });
+
+  it("keeps closing lifecycle when reviewer cleanup sees stale worker metadata", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 27)}`;
+    await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      role: "reviewer",
+      task: {
+        title: "Reviewer Cleanup Lifecycle Race",
+        slugs: ["task-reviewer-cleanup-lifecycle-race"],
+      },
+    });
+
+    const ctx = await initContext(tempDir);
+    const registryPath = getDispatchWorkspaceRegistryPath(ctx);
+    const existingRecord = await findDispatchWorkspaceByTaskRef(ctx, taskRef, { includeClosed: true });
+    expect(existingRecord?.worktrees.reviewer?.path).toBeTruthy();
+
+    const now = new Date().toISOString();
+    await saveDispatchWorkspaceRecord(ctx, {
+      ...existingRecord!,
+      lifecycle_state: "closing",
+      integration: {
+        ...existingRecord!.integration,
+        status: "merged",
+        outcome: "merged",
+        detail: "integration:merged",
+        updated_at: now,
+      },
+      cleanup: {
+        ...existingRecord!.cleanup,
+        status: "scheduled",
+        eligible: true,
+        reason: "integrated-into-base-branch",
+        detail: "integrated-into-base-branch",
+        updated_at: now,
+      },
+      timestamps: {
+        ...existingRecord!.timestamps,
+        updated_at: now,
+        last_reconciled_at: now,
+      },
+      _sourceFile: registryPath,
+    });
+
+    await cleanupReviewerDispatchWorkspace(tempDir, taskRef, {
+      title: "Reviewer Cleanup Lifecycle Race",
+      slugs: ["task-reviewer-cleanup-lifecycle-race"],
+    });
+
+    const record = await readWorkspaceRecord(registryPath, taskRef);
+    expect(record.lifecycle_state).toBe("closing");
+    expect(record.cleanup.eligible).toBe(true);
+    expect(record.integration.status).toBe("merged");
+    expect(record.worktrees.reviewer).toBeNull();
   });
 
   it("rejects malformed registry content instead of resetting the registry from an empty baseline", async () => {
