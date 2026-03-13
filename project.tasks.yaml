@@ -94722,7 +94722,7 @@
   derivation: auto
   plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-branch-provenance-in-dispatch-workspace-"
@@ -94738,7 +94738,7 @@
     upstream_ref: refs/heads/main
     review_url: null
     captured_at: 2026-03-13T20:37:23.973Z
-  session_id: 01KKMDVC36TW24XRNXTYCJVZFA
+  session_id: null
   created_at: 2026-03-13T09:17:00.162Z
   started_at: 2026-03-13T20:37:20.474Z
   submitted_at: 2026-03-13T20:37:24.902Z
@@ -94843,6 +94843,14 @@
         remoteUrl as fallback in rehydrateAdoptedBranch (SHOULD-FIX). Extracted
         buildMockWorkspaceMetadata helper to deduplicate ~50-line mock blocks (SUGGESTION). Added
         test for remote URL fallback adoption. All 4789 tests pass."
+      supersedes: null
+    - _ulid: 01KKMK70SKQZSNZGDJ6WDCKEPZ
+      created_at: 2026-03-13T21:56:33.204Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: 2 tests fail on CI — git init --bare in AC-2
+        tests does not set init.defaultBranch=main, causing master/main mismatch on GitHub Actions.
+        Fix bare repo initialization in dispatch-workspace-adopt-branch-lineage.test.ts lines 136
+        and 182. See PR #834 review for inline details."
       supersedes: null
   todos: []
   automation: eligible
