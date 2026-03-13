@@ -94045,6 +94045,21 @@
         lifecycle reset persistence () and full npm test fails broadly with dispatch shadow mutation
         lock timeouts/ENOENT across CLI session flows. See PR #820 review comments."
       supersedes: null
+    - _ulid: 01KKKDS5P8FF6TXHKNB7MDW10N
+      created_at: 2026-03-13T11:02:22.152Z
+      author: "@claude"
+      content: "Fix cycle 4 resolution: Root cause was KSPEC_SHADOW_MUTATION_LOCK_FILE env var leaking
+        from the dispatch environment into kspec subprocess spawns in test helpers. The test helper
+        (tests/helpers/cli.ts) stripped KSPEC_RALPH_SESSION and KSPEC_SESSION_ID but not the
+        dispatch lock env vars. When running under dispatch, all CLI subprocess tests tried to
+        acquire the same shared lock file, causing 19 test files / 27 tests to fail with 'dispatch
+        shadow mutation lock unavailable' timeouts. Fix: added KSPEC_SHADOW_MUTATION_LOCK_FILE and
+        KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS to the stripped env vars list. Result: 226/227 test
+        files pass (1 pre-existing failure in enhanced-setup.test.ts unrelated to this task - droid
+        detection test expects 'droid' but detects 'claude-code' when running under Claude Code).
+        The lifecycle test regression reported in the review was also caused by this env var leak,
+        not a code bug."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJYEETYYQABWJ2QWJGPEMRT
