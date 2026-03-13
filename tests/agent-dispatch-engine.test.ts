@@ -21,6 +21,7 @@ import {
 } from "../src/agent-runtime/dispatch.js";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import * as workspaceModule from "../src/agent-runtime/workspace.js";
+import type { ProvisionedDispatchWorkspace } from "../src/agent-runtime/workspace.js";
 import {
   createTempDir,
   cleanupTempDir,
@@ -54,6 +55,164 @@ function makeTestAgent(overrides: Partial<Agent> = {}): Agent {
     concurrency: { max_concurrent: 1 },
     adapter: "mock-acp",
     ...overrides,
+  };
+}
+
+function makeProvisionedWorkspace(
+  taskRef: string,
+  role: "worker" | "reviewer" = "worker",
+): ProvisionedDispatchWorkspace {
+  const slug = taskRef.replace(/^@/, "").toLowerCase();
+  const workerDir = `/tmp/${slug}-worker`;
+  const reviewerDir = `/tmp/${slug}-review`;
+  return {
+    cwd: role === "reviewer" ? reviewerDir : workerDir,
+    metadataPath: `${role === "reviewer" ? reviewerDir : workerDir}/.kspec-dispatch-workspace.json`,
+    metadata: {
+      workspaceId: `dispatch-workspace-${slug}`,
+      taskRef,
+      taskSlug: slug,
+      baseBranch: "main",
+      baseBranchPoint: "1234567890abcdef1234567890abcdef12345678",
+      mergeTargetBranch: "main",
+      integrationTargetBranch: "main",
+      integrationTargetCommit: "1234567890abcdef1234567890abcdef12345678",
+      canonicalBranch: `dispatch/task/${slug}/01task00`,
+      canonicalBranchHead: "abcdef1234567890abcdef1234567890abcdef12",
+      publicationMode: "pull_request",
+      integrationState: "pending",
+      integrationOutcome: "pull_request",
+      integrationUpdatedAt: "2026-03-12T00:00:00.000Z",
+      worktreeRoot: "/tmp/.kspec-worktrees",
+      workerWorktreeDir: workerDir,
+      reviewerWorktreeDir: role === "reviewer" ? reviewerDir : null,
+      lifecycleState: role === "reviewer" ? "integrating" : "active",
+      activeRole: role,
+      bootstrapState: {
+        status: role === "reviewer" ? "succeeded" : "succeeded",
+        configHash: "cfg-1",
+        canonicalBranchHead: "abcdef1234567890abcdef1234567890abcdef12",
+        lastRunAt: "2026-03-12T00:00:00.000Z",
+        invalidationReasons: [],
+        steps: role === "reviewer" ? [] : [{
+          source: "dispatch",
+          name: "prepare",
+          run: "npm install",
+          idempotent: true,
+          allowTrackedChanges: false,
+          reviewerRerunAllowed: false,
+          status: "succeeded",
+          role: "worker",
+          output: "ok",
+        }],
+        failureMessage: null,
+        lastRole: role === "reviewer" ? "worker" : "worker",
+        roleStates: {
+          worker: {
+            status: "succeeded",
+            configHash: "cfg-1",
+            canonicalBranchHead: "abcdef1234567890abcdef1234567890abcdef12",
+            lastRunAt: "2026-03-12T00:00:00.000Z",
+            invalidationReasons: [],
+            steps: [{
+              source: "dispatch",
+              name: "prepare",
+              run: "npm install",
+              idempotent: true,
+              allowTrackedChanges: false,
+              reviewerRerunAllowed: false,
+              status: "succeeded",
+              role: "worker",
+              output: "ok",
+            }],
+            failureMessage: null,
+          },
+          reviewer: {
+            status: "succeeded",
+            configHash: "cfg-1",
+            canonicalBranchHead: "abcdef1234567890abcdef1234567890abcdef12",
+            lastRunAt: "2026-03-12T00:00:00.000Z",
+            invalidationReasons: [],
+            steps: [],
+            failureMessage: null,
+          },
+        },
+      },
+      healthState: {
+        status: "healthy",
+        summary: "Workspace record matches current git branch and worktree state.",
+        issues: [],
+        updated_at: "2026-03-12T00:00:00.000Z",
+      },
+      cleanupState: {
+        status: "not_scheduled",
+        eligible: false,
+        reason: null,
+        detail: null,
+        updated_at: "2026-03-12T00:00:00.000Z",
+      },
+      healthStatus: "healthy",
+      healthReason: null,
+      bootstrap: {
+        status: role === "reviewer" ? "succeeded" : "succeeded",
+        configHash: "cfg-1",
+        canonicalBranchHead: "abcdef1234567890abcdef1234567890abcdef12",
+        lastRunAt: "2026-03-12T00:00:00.000Z",
+        invalidationReasons: [],
+        steps: role === "reviewer" ? [] : [{
+          source: "dispatch",
+          name: "prepare",
+          run: "npm install",
+          idempotent: true,
+          allowTrackedChanges: false,
+          reviewerRerunAllowed: false,
+          status: "succeeded",
+          role: "worker",
+          output: "ok",
+        }],
+        failureMessage: null,
+        lastRole: role === "reviewer" ? "worker" : "worker",
+        roleStates: {
+          worker: {
+            status: "succeeded",
+            configHash: "cfg-1",
+            canonicalBranchHead: "abcdef1234567890abcdef1234567890abcdef12",
+            lastRunAt: "2026-03-12T00:00:00.000Z",
+            invalidationReasons: [],
+            steps: [{
+              source: "dispatch",
+              name: "prepare",
+              run: "npm install",
+              idempotent: true,
+              allowTrackedChanges: false,
+              reviewerRerunAllowed: false,
+              status: "succeeded",
+              role: "worker",
+              output: "ok",
+            }],
+            failureMessage: null,
+          },
+          reviewer: {
+            status: "succeeded",
+            configHash: "cfg-1",
+            canonicalBranchHead: "abcdef1234567890abcdef1234567890abcdef12",
+            lastRunAt: "2026-03-12T00:00:00.000Z",
+            invalidationReasons: [],
+            steps: [],
+            failureMessage: null,
+          },
+        },
+      },
+      cleanupEligible: false,
+      cleanupReason: null,
+      cleanupScheduledAt: null,
+      cleanupBlockedReason: null,
+      createdAt: "2026-03-12T00:00:00.000Z",
+      updatedAt: "2026-03-12T00:00:00.000Z",
+      lastReconciledAt: "2026-03-12T00:00:00.000Z",
+      lastActiveAt: "2026-03-12T00:00:00.000Z",
+      closedAt: null,
+    },
   };
 }
 
@@ -1960,20 +2119,42 @@ describe("Dispatch prompt orientation context and interpolation", () => {
       buildOrientationContext = mod.buildOrientationContext;
     });
 
-    it("should include task title and trigger for task.ready", () => {
-      const result = buildOrientationContext("@my-task", "task.ready", {
-        title: "Implement feature X",
-      });
+    // AC: @dispatch-workspace-orientation-prompt ac-1
+    // AC: @dispatch-workspace-orientation-prompt ac-2
+    it("should include workspace, branch, role, and status context for task.ready", () => {
+      const result = buildOrientationContext(
+        "@my-task",
+        "task.ready",
+        makeProvisionedWorkspace("@my-task"),
+        {
+          title: "Implement feature X",
+        },
+      );
       expect(result).toContain("## Task Context");
       expect(result).toContain("@my-task");
       expect(result).toContain("Implement feature X");
       expect(result).toContain("New task assignment");
+      expect(result).toContain("Role: worker");
+      expect(result).toContain("Focus:");
+      expect(result).toContain("Workspace: /tmp/my-task-worker");
+      expect(result).toContain("Workspace mode: mutable worker branch");
+      expect(result).toContain("Canonical branch: dispatch/task/my-task/01task00");
+      expect(result).toContain("Integration target: main");
+      expect(result).toContain("Canonical head: abcdef123456");
+      expect(result).toContain("Bootstrap state: prepared");
+      expect(result).toContain("Workspace health: ready");
+      expect(result).toContain("Dependency status: satisfied");
     });
 
     it("should include trigger for task.in_progress", () => {
-      const result = buildOrientationContext("@my-task", "task.in_progress", {
-        title: "Continue work",
-      });
+      const result = buildOrientationContext(
+        "@my-task",
+        "task.in_progress",
+        makeProvisionedWorkspace("@my-task"),
+        {
+          title: "Continue work",
+        },
+      );
       expect(result).toContain("Continuing in-progress work");
     });
 
@@ -1985,10 +2166,15 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         { created_at: "2026-01-03T00:00:00Z", author: "carol", content: "Note 3" },
         { created_at: "2026-01-04T00:00:00Z", author: "dave", content: "Note 4" },
       ];
-      const result = buildOrientationContext("@my-task", "task.needs_work", {
-        title: "Fix it",
-        notes,
-      });
+      const result = buildOrientationContext(
+        "@my-task",
+        "task.needs_work",
+        makeProvisionedWorkspace("@my-task"),
+        {
+          title: "Fix it",
+          notes,
+        },
+      );
       expect(result).toContain("Fix cycle");
       expect(result).toContain("Recent notes:");
       // Should include last 3, not first
@@ -2003,45 +2189,78 @@ describe("Dispatch prompt orientation context and interpolation", () => {
       const notes = [
         { created_at: "2026-01-01T00:00:00Z", author: "reviewer", content: longContent },
       ];
-      const result = buildOrientationContext("@my-task", "task.needs_work", {
-        title: "Fix it",
-        notes,
-      });
+      const result = buildOrientationContext(
+        "@my-task",
+        "task.needs_work",
+        makeProvisionedWorkspace("@my-task"),
+        {
+          title: "Fix it",
+          notes,
+        },
+      );
       // Should not contain full 300-char content
       expect(result).not.toContain(longContent);
       // Should contain truncated version (200 chars)
       expect(result).toContain("x".repeat(200));
     });
 
-    it("should omit notes section when no notes for fix cycle", () => {
-      const result = buildOrientationContext("@my-task", "task.needs_work", {
-        title: "Fix it",
-        notes: [],
-      });
+    // AC: @dispatch-workspace-orientation-prompt ac-3
+    it("should make fix-cycle resume context explicit", () => {
+      const result = buildOrientationContext(
+        "@my-task",
+        "task.needs_work",
+        makeProvisionedWorkspace("@my-task"),
+        {
+          title: "Fix it",
+          notes: [],
+        },
+      );
       expect(result).toContain("Fix cycle");
       expect(result).not.toContain("Recent notes:");
+      expect(result).toContain("Cycle context: Fix cycle after review.");
+      expect(result).toContain("publication still targets main");
     });
 
     // AC: @agent-dispatch-engine ac-15
-    it("should include review_url for task.pending_review", () => {
-      const result = buildOrientationContext("@my-task", "task.pending_review", {
-        title: "Review this",
-        review_url: "https://github.com/org/repo/pull/42",
-      });
+    // AC: @dispatch-workspace-orientation-prompt ac-3
+    it("should include review-cycle snapshot context for reviewers", () => {
+      const result = buildOrientationContext(
+        "@my-task",
+        "task.pending_review",
+        makeProvisionedWorkspace("@my-task", "reviewer"),
+        {
+          title: "Review this",
+          review_url: "https://github.com/org/repo/pull/42",
+        },
+      );
       expect(result).toContain("Task submitted for review");
       expect(result).toContain("https://github.com/org/repo/pull/42");
+      expect(result).toContain("Role: reviewer");
+      expect(result).toContain("Workspace mode: detached review snapshot");
+      expect(result).toContain("Cycle context: Review cycle on a detached snapshot.");
+      expect(result).toContain("follow-up worker resumes dispatch/task/my-task/01task00");
     });
 
     it("should show fallback when review_url missing for reviewer", () => {
-      const result = buildOrientationContext("@my-task", "task.pending_review", {
-        title: "Review this",
-      });
+      const result = buildOrientationContext(
+        "@my-task",
+        "task.pending_review",
+        makeProvisionedWorkspace("@my-task", "reviewer"),
+        {
+          title: "Review this",
+        },
+      );
       expect(result).toContain("Not provided");
       expect(result).toContain("task notes or git log");
     });
 
     it("should handle undefined task data gracefully", () => {
-      const result = buildOrientationContext("@my-task", "task.ready", undefined);
+      const result = buildOrientationContext(
+        "@my-task",
+        "task.ready",
+        makeProvisionedWorkspace("@my-task"),
+        undefined,
+      );
       expect(result).toContain("(unavailable)");
       expect(result).toContain("## Task Context");
     });
@@ -2061,6 +2280,8 @@ describe("Dispatch prompt orientation context and interpolation", () => {
     });
 
     // AC: @agent-dispatch-engine ac-13
+    // AC: @dispatch-workspace-orientation-prompt ac-1
+    // AC: @dispatch-workspace-orientation-prompt ac-2
     it("should include orientation context in dispatched prompt", async () => {
       const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
       await setupProjectWithAgents(testDir, [agent]);
@@ -2097,6 +2318,10 @@ describe("Dispatch prompt orientation context and interpolation", () => {
       expect(prompt).toContain("## Task Context");
       expect(prompt).toContain("Test task title");
       expect(prompt).toContain("New task assignment");
+      expect(prompt).toContain(`Workspace: ${path.join(testDir, ".kspec-worktrees", `test-task-title-${taskId.slice(0, 8).toLowerCase()}`)}`);
+      expect(prompt).toContain("Canonical branch: dispatch/task/test-task-title/");
+      expect(prompt).toContain("Integration target: main");
+      expect(prompt).toContain("Workspace mode: mutable worker branch");
 
       await engine.stop();
     });

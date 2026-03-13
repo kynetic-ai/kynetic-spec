@@ -33,8 +33,8 @@ import {
   reconcileDispatchWorkspaceRegistry,
   getDispatchWorkspaceHealth,
   reconcileDispatchWorkspaceLifecycle,
-  type DispatchWorkspaceMetadata,
   type DispatchWorkspaceRole,
+  type ProvisionedDispatchWorkspace,
   cleanupReviewerDispatchWorkspace,
   reconcileDispatchWorkspaceArtifacts,
 } from "./workspace.js";
@@ -163,6 +163,23 @@ function triggerDescription(trigger: string): string {
   }
 }
 
+function focusDescription(trigger: string, role: "worker" | "reviewer"): string {
+  if (role === "reviewer") {
+    return "Review the submitted changes in this snapshot and decide whether the task should advance or return for fixes.";
+  }
+  if (trigger === "task.needs_work") {
+    return "Resume the canonical worker branch, address review findings, and move the task back toward review.";
+  }
+  if (trigger === "task.in_progress") {
+    return "Resume the existing canonical worker branch and continue the in-flight implementation.";
+  }
+  return "Work the assigned task in this mutable workspace and move it to the next appropriate state.";
+}
+
+function shortSha(commit: string | undefined): string {
+  return commit ? commit.slice(0, 12) : "(unavailable)";
+}
+
 /**
  * Format recent notes for inclusion in dispatch prompts.
  * Takes last N notes, truncates each to maxLen characters, strips newlines.
@@ -192,27 +209,66 @@ function formatRecentNotes(
 export function buildOrientationContext(
   taskRef: string,
   trigger: string,
+  workspace: ProvisionedDispatchWorkspace,
   task?: {
     title: string;
     notes?: Array<{ created_at: string; author?: string; content: string }>;
     review_url?: string;
   },
-  workspace?: Pick<
-    DispatchWorkspaceMetadata,
-    | "canonicalBranch"
-    | "canonicalBranchHead"
-    | "integrationTargetBranch"
-    | "integrationTargetCommit"
-    | "publicationMode"
-  >,
-  role: DispatchWorkspaceRole = trigger === "task.pending_review" ? "reviewer" : "worker",
 ): string {
   const title = task?.title ?? "(unavailable)";
+  const role: DispatchWorkspaceRole = trigger === "task.pending_review" ? "reviewer" : "worker";
+  const metadata = workspace.metadata;
+  const bootstrapRoleState = metadata.bootstrap.roleStates[role];
+  const workspaceMode =
+    role === "reviewer" ? "detached review snapshot" : "mutable worker branch";
+  const bootstrapSummary =
+    bootstrapRoleState.status === "succeeded"
+      ? role === "reviewer" && bootstrapRoleState.steps.length === 0
+        ? "reused worker bootstrap"
+        : "prepared"
+      : bootstrapRoleState.status === "failed"
+        ? `failed${bootstrapRoleState.failureMessage ? ` (${bootstrapRoleState.failureMessage})` : ""}`
+        : "not run";
+  const dependencyStatus =
+    bootstrapRoleState.invalidationReasons.length > 0
+      ? bootstrapRoleState.invalidationReasons.join("; ")
+      : "satisfied";
+  const healthSummary =
+    metadata.healthStatus === "healthy"
+      ? "ready"
+      : metadata.healthReason
+        ? `${metadata.healthStatus} (${metadata.healthReason})`
+        : metadata.healthStatus;
+  const canonicalHeadContext =
+    role === "reviewer"
+      ? `${shortSha(metadata.canonicalBranchHead)} (snapshot under review)`
+      : `${shortSha(metadata.canonicalBranchHead)} (canonical branch head to resume)`;
   const lines = [
     "## Task Context",
     `Task: ${taskRef} \u2014 "${title}"`,
-    `Trigger: ${triggerDescription(trigger)}`,
+    `Selection reason: ${triggerDescription(trigger)}`,
+    `Role: ${role}`,
+    `Focus: ${focusDescription(trigger, role)}`,
+    `Workspace: ${workspace.cwd}`,
+    `Workspace mode: ${workspaceMode}`,
+    `Canonical branch: ${metadata.canonicalBranch}`,
+    `Integration target: ${metadata.integrationTargetBranch}`,
+    `Canonical head: ${canonicalHeadContext}`,
+    `Bootstrap state: ${bootstrapSummary}`,
+    `Workspace health: ${healthSummary}`,
+    `Dependency status: ${dependencyStatus}`,
   ];
+
+  if (role === "reviewer") {
+    lines.push(
+      `Prepared state: Detached reviewer snapshot at ${shortSha(metadata.canonicalBranchHead)}. The mutable worker branch remains ${metadata.canonicalBranch}.`,
+    );
+  } else {
+    lines.push(
+      `Prepared state: Mutable worker worktree attached to ${metadata.canonicalBranch} under ${metadata.worktreeRoot}.`,
+    );
+  }
 
   // AC: @agent-dispatch-engine ac-14 - Include recent notes for fix cycles
   if (trigger === "task.needs_work" && task?.notes && task.notes.length > 0) {
@@ -226,25 +282,32 @@ export function buildOrientationContext(
   if (trigger === "task.pending_review") {
     const url = task?.review_url ?? "Not provided \u2014 find PR via task notes or git log.";
     lines.push(`Review URL: ${url}`);
-  }
-
-  if (workspace) {
-    const publicationGuidance =
-      workspace.publicationMode === "pull_request"
-        ? `- Publish via PR: create or update a pull request from ${workspace.canonicalBranch} into ${workspace.integrationTargetBranch}.`
-        : `- Publish via manual merge: merge ${workspace.canonicalBranch} back into ${workspace.integrationTargetBranch}; if conflicts occur, stop and escalate with the conflict details instead of improvising.`;
     lines.push(
-      "",
-      "Dispatch Branch Context:",
-      `- Canonical branch: ${workspace.canonicalBranch}`,
-      `- Integration target: ${workspace.integrationTargetBranch} @ ${workspace.integrationTargetCommit}`,
-      `- Publication mode: ${workspace.publicationMode}`,
-      role === "reviewer"
-        ? `- Snapshot under review: ${workspace.canonicalBranchHead}`
-        : `- Canonical head: ${workspace.canonicalBranchHead}`,
-      publicationGuidance,
+      `Cycle context: Review cycle on a detached snapshot. If changes are kicked back, the follow-up worker resumes ${metadata.canonicalBranch} and still publishes against ${metadata.integrationTargetBranch}.`,
     );
   }
+
+  if (trigger === "task.needs_work") {
+    lines.push(
+      `Cycle context: Fix cycle after review. You are resuming ${metadata.canonicalBranch}; publication still targets ${metadata.integrationTargetBranch}.`,
+    );
+  }
+
+  const publicationGuidance =
+    metadata.publicationMode === "pull_request"
+      ? `- Publish via PR: create or update a pull request from ${metadata.canonicalBranch} into ${metadata.integrationTargetBranch}.`
+      : `- Publish via manual merge: merge ${metadata.canonicalBranch} back into ${metadata.integrationTargetBranch}; if conflicts occur, stop and escalate with the conflict details instead of improvising.`;
+  lines.push(
+    "",
+    "Dispatch Branch Context:",
+    `- Canonical branch: ${metadata.canonicalBranch}`,
+    `- Integration target: ${metadata.integrationTargetBranch} @ ${metadata.integrationTargetCommit}`,
+    `- Publication mode: ${metadata.publicationMode}`,
+    role === "reviewer"
+      ? `- Snapshot under review: ${metadata.canonicalBranchHead}`
+      : `- Canonical head: ${metadata.canonicalBranchHead}`,
+    publicationGuidance,
+  );
 
   return lines.join("\n");
 }
@@ -1238,7 +1301,11 @@ export class DispatchEngine {
    *
    * AC: @agent-dispatch-engine ac-13, ac-14, ac-15, ac-16
    */
-  private _buildDispatchPrompt(agent: LoadedAgent, change: TaskStateChange): string {
+  private _buildDispatchPrompt(
+    agent: LoadedAgent,
+    change: TaskStateChange,
+    workspace: ProvisionedDispatchWorkspace,
+  ): string {
     const trigger = (STATUS_TO_EVENT[change.toStatus] ?? "task.ready") as SessionTrigger;
     const taskRef = change.taskRef;
 
@@ -1252,7 +1319,7 @@ export class DispatchEngine {
     const rawTemplate = agent.prompt_template ?? `Work on task ${taskRef}`;
     const basePrompt = interpolateTemplate(rawTemplate, templateVars);
 
-    // AC: @agent-dispatch-engine ac-13 - Orientation context
+    const orientation = buildOrientationContext(taskRef, trigger, workspace, change.task);
     const autonomousPreamble = [
       "AUTONOMOUS DISPATCH MODE (no interactive user is available).",
       "- Do not ask for confirmation, approval, or next-step handoff.",
@@ -1277,7 +1344,7 @@ export class DispatchEngine {
             "- If your workflow includes git or PR steps, execute them directly instead of deferring to a human.",
           ];
 
-    return `${basePrompt}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
+    return `${basePrompt}\n\n${orientation}\n\n${autonomousPreamble.join("\n")}\n\n${triggerSpecific.join("\n")}`;
   }
 
   private _runKspecCommand(args: string[]): KspecCommandResult {
@@ -1497,13 +1564,7 @@ export class DispatchEngine {
       sessionsDir: path.join(this.projectDir, ".kspec-sessions"),
       cwd: workspace.cwd,
       taskRef: entry.change.taskRef,
-      prompt: `${this._buildDispatchPrompt(agent, entry.change)}\n\n${buildOrientationContext(
-        entry.change.taskRef,
-        STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready",
-        entry.change.task,
-        workspace.metadata,
-        role,
-      )}`,
+      prompt: this._buildDispatchPrompt(agent, entry.change, workspace),
       trigger: (STATUS_TO_EVENT[entry.change.toStatus] ?? "task.ready") as SessionTrigger,
       kspecCliPath: this.kspecCliPath,
       abortSignal: abortController.signal,
