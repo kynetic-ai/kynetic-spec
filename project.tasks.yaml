@@ -93783,16 +93783,22 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: "Implement: Remote Branch Fallback in Workspace Health Reconciliation"
+- _ulid: 01KKJYEETYYQABWJ2QWJGPEMRT
+  slugs:
+    - task-remote-branch-fallback-in-workspace-health-reconci
+  title: "Implement: Remote Branch Fallback in Workspace Health Reconciliation"
   type: task
   spec_ref: "@dispatch-workspace-remote-branch-fallback"
   derivation: auto
-  priority: 3
-  slugs:
-    - task-remote-branch-fallback-in-workspace-health-reconci
-  tags: []
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-design-canonical-task-workspace-contract"
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-13T06:34:22.430Z
   notes:
     - _ulid: 01KKJYEETXAGGKACG58Q6ZE0ZW
       created_at: 2026-03-13T06:34:22.429Z
@@ -93831,10 +93837,5 @@
         health state is computed, then The canonical_branch_head is updated to the resolved commit
         from the restored branch
       supersedes: null
-  _ulid: 01KKJYEETYYQABWJ2QWJGPEMRT
-  status: pending
-  blocked_by: []
-  context: []
-  vcs_refs: []
-  created_at: 2026-03-13T06:34:22.430Z
   todos: []
+  automation: eligible
