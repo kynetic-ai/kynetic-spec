@@ -93758,7 +93758,30 @@
   session_id: 01KKKR5FH4CDZ47FF9YNMPKDAW
   created_at: 2026-03-13T03:25:21.408Z
   started_at: 2026-03-13T14:04:20.625Z
-  notes: []
+  notes:
+    - _ulid: 01KKKS93B6JZSNKF31BDHTQBWS
+      created_at: 2026-03-13T14:23:18.375Z
+      author: "@claude"
+      content: >-
+        Implemented droid skill import support. Changes:
+
+
+        1. Added detectImportPlatform() function to skill-crud.ts that detects .factory/skills/
+        paths and returns 'droid' platform, defaulting to 'claude_code' for all other paths.
+
+
+        2. Modified the import command's platform_config building to use the detected platform key
+        instead of hardcoding 'claude_code'. For droid imports, the 'agent' field is excluded (droid
+        doesn't use it, matching the renderer behavior).
+
+
+        3. Added 6 tests: 3 unit tests for detectImportPlatform, 3 integration tests covering all 3
+        ACs (droid import populates platform_config.droid, user_invocable=false works, existing
+        claude_code behavior unchanged).
+
+
+        All existing import tests continue to pass unchanged.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJP6E1TN5ZFMHASTHSGG2MH
@@ -93978,7 +94001,7 @@
   spec_ref: "@dispatch-workspace-registry"
   meta_ref: null
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -93989,7 +94012,7 @@
     - shadow
     - durability
   vcs_refs: []
-  session_id: 01KKKQNTEE4G77EY0XB56DTKKQ
+  session_id: null
   created_at: 2026-03-13T05:18:07.958Z
   started_at: 2026-03-13T14:03:10.660Z
   submitted_at: 2026-03-13T14:03:20.385Z
@@ -94183,6 +94206,15 @@
         integration task). Conflict resolution kept our KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS
         addition while incorporating main's parallel fix for KSPEC_SHADOW_MUTATION_LOCK_FILE. Full
         test suite passes: 228 files, 4733 tests, 0 failures."
+      supersedes: null
+    - _ulid: 01KKKRNQDDVJ87BM1D22MPS1PF
+      created_at: 2026-03-13T14:12:43.565Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 9] Review findings: MUST-FIX: full npm test still fails on review snapshot
+        5c756f7cf2a153e3e7a57b9f6655c670825dbf4f. tests/agent-dispatch-engine.test.ts AC-20
+        (reconciliation interval configuration) fails reproducibly under the full suite with
+        ENOTEMPTY during temp-dir teardown, indicating the new registry durability/reconciliation
+        path still leaves an in-flight side effect after engine stop."
       supersedes: null
   todos: []
   automation: eligible
