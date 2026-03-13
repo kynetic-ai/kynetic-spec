@@ -45,6 +45,11 @@ describe("Core Skill Namespace", () => {
       expect(getSkillSubdir("help", "core", "codex")).toBe("kspec-help");
     });
 
+    // AC: @droid-renderer ac-3
+    it("should return kspec-<id> for core skills on droid", () => {
+      expect(getSkillSubdir("help", "core", "droid")).toBe("kspec-help");
+    });
+
     it("should default to <id> when platform is omitted (no prefix)", () => {
       expect(getSkillSubdir("help", "core")).toBe("help");
     });
