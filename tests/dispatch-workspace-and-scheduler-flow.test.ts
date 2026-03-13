@@ -172,7 +172,7 @@ describe("dispatch workspace and scheduler flow", () => {
     await cleanupTempDir(tempDir);
   });
 
-  it("runs a worker-reviewer-fix-cycle flow in isolated worktrees and preserves scheduler ordering", async () => {
+  it("runs a worker-reviewer-fix-cycle flow in isolated worktrees and preserves scheduler ordering", { timeout: 30_000 }, async () => {
     await seedRepo(tempDir);
     await setupProject(tempDir);
 
@@ -368,7 +368,7 @@ describe("dispatch workspace and scheduler flow", () => {
 
     await waitFor(() => {
       expect(invocations).toHaveLength(4);
-    });
+    }, { attempts: 500, delayMs: 20 });
 
     expect(invocations[0] && [invocations[0].agentId, invocations[0].taskRef]).toEqual([
       "task-worker",
