@@ -92423,6 +92423,14 @@
         not fully covered on PR #810; add a regression for invalid publicationMode fail-fast
         behavior before merge."
       supersedes: null
+    - _ulid: 01KKJJTM3D3THN5RVQKR2CS8BC
+      created_at: 2026-03-13T03:11:18.126Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 20] Re-entered in_progress to close the remaining ac-4 gap with a prompt-build
+        regression for invalid dispatch workspace publicationMode. Scope:
+        tests/agent-dispatch-engine.test.ts plus targeted dispatch verification proving bad
+        publication metadata fails fast with actionable guidance and no spawned invocation."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
