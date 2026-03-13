@@ -94726,6 +94726,37 @@
 
         - Verification: Tests covering all 4 ACs + trait ACs, npm test passing
       supersedes: null
+    - _ulid: 01KKM9ERCMBCE23SMPRQFZ7R8Z
+      created_at: 2026-03-13T19:06:00.980Z
+      author: "@claude"
+      content: >-
+        Implementation complete:
+
+        - provisionDispatchWorkspace now accepts submissionLinkage and taskStatus parameters
+
+        - When no workspace record exists, checks submission linkage for an adoptable branch (AC-1)
+
+        - Rehydrates branches from remote when not present locally (AC-2)
+
+        - Fix-cycle re-provisioning preserves adopted branch via existing workspace record (AC-3)
+
+        - Throws DispatchWorkspaceError with recovery guidance for pending_review/needs_work without
+        linkage (AC-4)
+
+        - Dispatch engine passes submission_linkage from task data to provisioning
+
+        - Queue eligibility updated to allow pending_review tasks with submission linkage through
+
+        - 9 tests covering all 4 ACs plus edge cases (detached HEAD, unreachable branch, regular
+        tasks)
+
+        - Trait AC annotations for @trait-error-guidance included
+
+        - Existing dispatch engine test updated to mock provisioning and bootstrap for reviewer
+        guardrail test
+
+        - Full test suite passes (4770 passed, 1 pre-existing flaky shadow test)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKK7R8XY5MSEEWA0E9NKEW76
@@ -95076,6 +95107,7 @@
   vcs_refs: []
   created_at: 2026-03-13T18:56:45.194Z
   started_at: 2026-03-13T18:57:24.833Z
+  submitted_at: 2026-03-13T18:58:51.526Z
   notes:
     - _ulid: 01KKM91CM6F38J20DXXJZSZQ5Q
       created_at: 2026-03-13T18:58:42.951Z
@@ -95085,4 +95117,3 @@
         Added ac-4 test for the new instruction. All 97 dispatch engine tests pass."
       supersedes: null
   todos: []
-  submitted_at: 2026-03-13T18:58:51.526Z
