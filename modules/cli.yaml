@@ -8489,6 +8489,26 @@ features:
             status:
               maturity: draft
               implementation: implemented
+          - _ulid: 01KKJYD3SRSC971JQPVSG48VQ0
+            slugs:
+              - dispatch-workspace-remote-branch-fallback
+            title: Remote Branch Fallback in Workspace Health Reconciliation
+            type: requirement
+            tags: []
+            description: reconcileWorkspaceHealth() in workspace.ts checks for the canonical branch using
+              refExists() which only checks local refs (git show-ref --verify refs/heads/<branch>).
+              When a canonical branch exists on a remote (e.g. origin) but not locally, the
+              workspace is incorrectly marked unhealthy with missing_canonical_branch. The health
+              check should attempt to fetch or verify the remote ref before declaring the branch
+              missing. This enables dispatch to self-heal workspaces whose local branches were
+              pruned or never fetched, without requiring manual intervention.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits: []
+            notes: []
+            created: 2026-03-13T06:33:38.361Z
         status:
           maturity: draft
           implementation: implemented
