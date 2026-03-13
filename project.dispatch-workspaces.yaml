@@ -90,24 +90,29 @@ workspaces:
     canonical_branch: dispatch/task/implement-droid-agent-detection/01kkjkm6
     canonical_branch_head: f64d3d8f722aebcf28b41a4a6299c94f31ddb2bb
     lifecycle_state: integrating
-    active_role: null
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-agent-detection-01kkjkm6
         branch_mode: branch
         branch_ref: dispatch/task/implement-droid-agent-detection/01kkjkm6
-        head: 38084e8cb463cf3128e69d2cac20fc6431452618
-        last_seen_at: 2026-03-13T04:01:50.333Z
-      reviewer: null
+        head: f64d3d8f722aebcf28b41a4a6299c94f31ddb2bb
+        last_seen_at: 2026-03-13T08:04:18.103Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-agent-detection-01kkjkm6-review
+        branch_mode: detached
+        branch_ref: null
+        head: f64d3d8f722aebcf28b41a4a6299c94f31ddb2bb
+        last_seen_at: 2026-03-13T08:04:18.103Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-      canonicalBranchHead: 38084e8cb463cf3128e69d2cac20fc6431452618
-      lastRunAt: 2026-03-13T04:01:50.388Z
+      canonicalBranchHead: f64d3d8f722aebcf28b41a4a6299c94f31ddb2bb
+      lastRunAt: 2026-03-13T08:04:18.253Z
       invalidationReasons: []
       steps: []
       failureMessage: null
-      lastRole: worker
+      lastRole: reviewer
       roleStates:
         worker:
           status: succeeded
@@ -118,10 +123,10 @@ workspaces:
           steps: []
           failureMessage: null
         reviewer:
-          status: not_run
-          configHash: null
-          canonicalBranchHead: null
-          lastRunAt: null
+          status: succeeded
+          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+          canonicalBranchHead: f64d3d8f722aebcf28b41a4a6299c94f31ddb2bb
+          lastRunAt: 2026-03-13T08:04:18.253Z
           invalidationReasons: []
           steps: []
           failureMessage: null
@@ -132,23 +137,23 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T08:03:57.112Z
+      updated_at: 2026-03-13T08:04:18.103Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T08:03:57.112Z
+      updated_at: 2026-03-13T08:04:18.340Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T08:03:57.112Z
+      updated_at: 2026-03-13T08:04:18.103Z
     timestamps:
       created_at: 2026-03-13T04:01:50.333Z
-      updated_at: 2026-03-13T08:03:57.112Z
-      last_reconciled_at: 2026-03-13T08:03:57.112Z
-      last_active_at: 2026-03-13T04:01:50.431Z
+      updated_at: 2026-03-13T08:04:18.340Z
+      last_reconciled_at: 2026-03-13T08:04:18.340Z
+      last_active_at: 2026-03-13T08:04:18.340Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJP6E1TN5ZFMHASTHSGG2MH
     task_ref: "@01KKJP6E1TN5ZFMHASTHSGG2MH"
@@ -640,8 +645,8 @@ workspaces:
     base_branch_point: a3120f904159a992682178398e87ffe5649ab7f5
     canonical_branch: dispatch/task/implement-droid-platform-config-schema/01kkjkm6
     canonical_branch_head: 1d5bbc2d76f96de5c92556da1f46b42a6cff9429
-    lifecycle_state: integrating
-    active_role: reviewer
+    lifecycle_state: stale
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-platform-config-schema-01kkjkm6
@@ -684,28 +689,42 @@ workspaces:
           steps: []
           failureMessage: null
     integration:
-      status: pending
+      status: merged
       target_branch: main
       target_commit: a3120f904159a992682178398e87ffe5649ab7f5
       publication_mode: pull_request
-      outcome: pull_request
-      detail: null
-      updated_at: 2026-03-13T08:03:57.659Z
+      outcome: merged
+      detail: integration:merged
+      updated_at: 2026-03-13T08:04:16.686Z
     health:
-      status: healthy
-      summary: Workspace record matches current git branch and worktree state.
-      issues: []
-      updated_at: 2026-03-13T08:03:57.659Z
+      status: invalid
+      summary: Workspace registry record is invalid because required git state is missing.
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/implement-droid-platform-config-schema/01kkjkm6" is
+            missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-platform-config-schema-01kkjkm6"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+        - code: missing_reviewer_worktree
+          message: Reviewer worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-platform-config-schema-01kkjkm6-review"
+            is missing or no longer registered.
+          suggestion: Recreate the detached reviewer snapshot before running review again.
+      updated_at: 2026-03-13T08:04:16.686Z
     cleanup:
-      status: not_scheduled
-      eligible: false
-      reason: null
-      detail: null
-      updated_at: 2026-03-13T08:03:57.659Z
+      status: scheduled
+      eligible: true
+      reason: integrated-into-base-branch
+      detail: integrated-into-base-branch
+      updated_at: 2026-03-13T08:04:16.686Z
     timestamps:
       created_at: 2026-03-13T03:30:24.310Z
-      updated_at: 2026-03-13T08:03:57.659Z
-      last_reconciled_at: 2026-03-13T08:03:57.659Z
+      updated_at: 2026-03-13T08:04:16.686Z
+      last_reconciled_at: 2026-03-13T08:04:16.686Z
       last_active_at: 2026-03-13T07:57:55.750Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFZ61246P1HQKMP9HSM7D1F
