@@ -8520,6 +8520,11 @@ features:
                 given: A workspace record references a canonical branch that does not exist locally or on any remote
                 when: reconcileWorkspaceHealth() runs
                 then: The missing_canonical_branch issue is still emitted (existing behavior preserved)
+              - id: ac-3
+                given: The remote branch fetch fails (network error, permissions, etc.)
+                when: reconcileWorkspaceHealth() attempts the remote fallback
+                then: The failure is logged at debug level and the missing_canonical_branch issue is emitted as if
+                  no remote existed (graceful degradation)
         status:
           maturity: draft
           implementation: implemented
