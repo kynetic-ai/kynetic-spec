@@ -1640,12 +1640,13 @@ This skill runs in the background.
 
   // AC: @droid-skill-import ac-3
   it('should preserve existing claude_code import behavior for .claude/skills/', async () => {
-    // Create a .claude/skills/ directory structure (existing behavior)
-    const claudeDir = await createTempDir();
-    const skillDir = path.join(claudeDir, 'claude-skill');
-    await fs.mkdir(skillDir, { recursive: true });
+    // Create a .claude/skills/ directory structure inside the fixture project
+    // to verify that importing from an actual .claude/skills/ path still
+    // populates platform_config.claude_code (not droid).
+    const claudeSkillDir = path.join(tempDir, '.claude', 'skills', 'claude-skill');
+    await fs.mkdir(claudeSkillDir, { recursive: true });
 
-    const skillPath = path.join(skillDir, 'SKILL.md');
+    const skillPath = path.join(claudeSkillDir, 'SKILL.md');
     await fs.writeFile(skillPath, `---
 name: Claude Skill
 description: A skill for claude-code platform
@@ -1678,7 +1679,5 @@ This skill is for Claude Code.
     expect(result.platform_config.claude_code!.agent).toBe('task-worker');
     expect(result.platform_config.claude_code!.context).toBe('full');
     expect(result.platform_config.droid).toBeUndefined();
-
-    await cleanupTempDir(claudeDir);
   });
 });
