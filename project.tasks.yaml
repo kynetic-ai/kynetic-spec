@@ -94169,12 +94169,13 @@
   blocked_by: []
   depends_on: []
   context: []
-  priority: 3
+  priority: 1
   tags: []
   vcs_refs: []
   created_at: 2026-03-13T09:16:59.010Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKK7R7W2M83V3Y5XRAESEHCM
   slugs:
     - implement-adopt-existing-task-branch-lineage-for-r
@@ -94186,14 +94187,16 @@
   origin: derived
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-branch-provenance-in-dispatch-workspace-"
   context: []
-  priority: 3
+  priority: 1
   tags: []
   vcs_refs: []
   created_at: 2026-03-13T09:17:00.162Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKK7R8XY5MSEEWA0E9NKEW76
   slugs:
     - implement-branch-provenance-in-dispatch-workspace-
@@ -94205,14 +94208,16 @@
   origin: derived
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-portable-task-submission-linkage"
   context: []
-  priority: 3
+  priority: 1
   tags: []
   vcs_refs: []
   created_at: 2026-03-13T09:17:01.246Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKK7R9XYTYS5JTNBFDNQ5YNS
   slugs:
     - implement-adopted-branch-cleanup-and-recoverabilit
@@ -94224,14 +94229,16 @@
   origin: derived
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-review-and-fix-cycle-workspace-discovery"
   context: []
-  priority: 3
+  priority: 1
   tags: []
   vcs_refs: []
   created_at: 2026-03-13T09:17:02.270Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKK7RAYW9VJ3325R9DMBDQHN
   slugs:
     - implement-review-and-fix-cycle-workspace-discovery
@@ -94243,14 +94250,16 @@
   origin: derived
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-adopt-existing-task-branch-lineage-for-r"
   context: []
-  priority: 3
+  priority: 1
   tags: []
   vcs_refs: []
   created_at: 2026-03-13T09:17:03.324Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKK7RC2WKBDMMXWWM7S0P80M
   slugs:
     - implement-deterministic-task-branch-helper
@@ -94262,14 +94271,16 @@
   origin: derived
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-adopted-branch-cleanup-and-recoverabilit"
   context: []
-  priority: 3
+  priority: 1
   tags: []
   vcs_refs: []
   created_at: 2026-03-13T09:17:04.476Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKK7RD4RNFCQN29QVYRP8E0Z
   slugs:
     - update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches
@@ -94280,7 +94291,8 @@
   origin: derived
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-deterministic-task-branch-helper"
   context: []
   priority: 1
   tags:
@@ -94291,6 +94303,7 @@
   created_at: 2026-03-13T09:17:05.560Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKK7RE59ZEANEM8MZJWXY5NV
   slugs:
     - add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-review
@@ -94301,7 +94314,8 @@
   origin: derived
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@implement-deterministic-task-branch-helper"
   context: []
   priority: 1
   tags:
@@ -94312,3 +94326,4 @@
   created_at: 2026-03-13T09:17:06.601Z
   notes: []
   todos: []
+  automation: eligible
