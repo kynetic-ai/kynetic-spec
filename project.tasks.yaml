@@ -94268,12 +94268,31 @@
   priority: 1
   tags: []
   vcs_refs: []
+  session_id: 01KKKJCTK66EMMANM275NCTNFW
   created_at: 2026-03-13T09:16:59.010Z
-  notes: []
+  started_at: 2026-03-13T12:23:29.674Z
+  notes:
+    - _ulid: 01KKKJKQET3XYXYRD2HNC96JSX
+      created_at: 2026-03-13T12:26:46.618Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Task submission currently stores review_url and submitted_at but no structured
+        branch/commit linkage. Other dispatch checkouts cannot reliably recover which branch
+        contains the submitted code.
+
+        - Scope: Add submission_linkage schema field, auto-capture on task submit, display in task
+        get, handle detached HEAD, add repair/backfill via task set
+
+        - Files: src/schema/task.ts (schema), src/schema/common.ts (SubmissionLinkageSchema),
+        src/utils/git.ts (git capture helpers), src/cli/commands/task.ts (submit + set commands),
+        src/cli/output.ts (display), tests/
+
+        - Verification: npm test covers AC coverage; kspec validate for spec alignment
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-13T12:23:29.674Z
-  session_id: 01KKKJCTK66EMMANM275NCTNFW
 - _ulid: 01KKK7R7W2M83V3Y5XRAESEHCM
   slugs:
     - implement-adopt-existing-task-branch-lineage-for-r
