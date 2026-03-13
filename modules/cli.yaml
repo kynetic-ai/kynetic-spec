@@ -8314,6 +8314,15 @@ features:
                 then: |
                   Those transitions are durably persisted on the shadow branch for
                   restart recovery and later review workflows
+              - id: ac-8
+                given: The dispatch runtime writes workspace registry state such as provisioning, reconciliation,
+                  bootstrap, integration, or cleanup updates into project.dispatch-workspaces.yaml
+                  on the shadow worktree
+                when: The write succeeds
+                then: The registry mutation is durably committed on the shadow branch through the protected
+                  shadow-mutation path before the dispatcher treats the new registry state as
+                  authoritative, so daemon restart or later reconciliation cannot lose the update in
+                  an uncommitted dirty worktree
             depends_on: []
             implements: []
             relates_to: []
