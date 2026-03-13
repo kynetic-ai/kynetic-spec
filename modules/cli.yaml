@@ -8208,6 +8208,12 @@ features:
               The prompt makes the cycle context explicit, including whether a
               follow-up worker will resume the same canonical branch after review and
               which base branch remains the publication target
+          - id: ac-4
+            given: A worker or reviewer invocation prompt is built with workspace metadata
+            when: The agent receives the dispatch prompt
+            then: The prompt includes an explicit instruction that the agent must run all commands from the
+              assigned workspace directory, not the project root, because the workspace is an
+              isolated git worktree with the correct branch checked out
         depends_on: []
         implements: []
         relates_to: []
