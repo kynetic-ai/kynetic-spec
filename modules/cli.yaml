@@ -8525,6 +8525,10 @@ features:
                 when: reconcileWorkspaceHealth() attempts the remote fallback
                 then: The failure is logged at debug level and the missing_canonical_branch issue is emitted as if
                   no remote existed (graceful degradation)
+              - id: ac-4
+                given: reconcileWorkspaceHealth() restores a branch from remote
+                when: The workspace health state is computed
+                then: The canonical_branch_head is updated to the resolved commit from the restored branch
         status:
           maturity: draft
           implementation: implemented
