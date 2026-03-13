@@ -93461,6 +93461,7 @@
   session_id: 01KKK37EY9VCK3XSZPTW3G7RVE
   created_at: 2026-03-13T03:25:19.536Z
   started_at: 2026-03-13T07:58:58.979Z
+  submitted_at: 2026-03-13T08:06:36.156Z
   notes:
     - _ulid: 01KKK39FKPW4W5XJ58JXYZ4YAB
       created_at: 2026-03-13T07:59:02.262Z
@@ -93498,7 +93499,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-13T08:06:36.156Z
 - _ulid: 01KKJKMACTMKC8CNF9D9Y56B3C
   slugs:
     - implement-droid-core-skill-install-support
@@ -93776,7 +93776,7 @@
   spec_ref: "@dispatch-workspace-registry"
   meta_ref: null
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -93787,9 +93787,9 @@
     - shadow
     - durability
   vcs_refs: []
-  session_id: null
+  session_id: 01KKK3RBA25G6SCFR301S6M0VV
   created_at: 2026-03-13T05:18:07.958Z
-  started_at: 2026-03-13T05:31:10.664Z
+  started_at: 2026-03-13T08:07:47.126Z
   submitted_at: 2026-03-13T05:40:32.794Z
   notes:
     - _ulid: 01KKJTTV69QXCSDT6WNWYJM2NR
