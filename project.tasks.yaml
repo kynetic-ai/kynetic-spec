@@ -94696,8 +94696,13 @@
   derivation: auto
   plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
   origin: derived
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Implementation complete and committed locally (fcfe78ed1) but git push is blocked by sandbox
+      network restrictions. Branch
+      dispatch/task/implement-adopt-existing-task-branch-lineage-for-r/01kkk7r7 needs to be pushed
+      to origin and PR created against main. All 9 tests pass, full suite passes (4770/4770 + 3
+      skipped, 1 pre-existing flaky shadow test).
   depends_on:
     - "@implement-branch-provenance-in-dispatch-workspace-"
   context: []
