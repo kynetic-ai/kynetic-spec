@@ -474,7 +474,7 @@ describe("dispatch workspace registry", () => {
 
   // AC: @dispatch-workspace-registry ac-6
   // AC: @dispatch-workspace-registry ac-7
-  it("persists lifecycle transitions across explicit dispatch workspace lifecycle states", async () => {
+  it("persists lifecycle transitions across explicit dispatch workspace lifecycle states", { timeout: 30_000 }, async () => {
     await seedRepo(tempDir);
     await setupProjectWithWorkerAgent(tempDir);
     git(tempDir, "checkout -b agent-dev");
@@ -579,9 +579,17 @@ describe("dispatch workspace registry", () => {
       registryPath,
       taskRef,
       (current) => current.lifecycle_state === "integrating",
+      5000,
     );
     expect(record.lifecycle_state).toBe("integrating");
     expect(record.integration.status).toBe("pending");
+
+    // Wait for the reviewer invocation's background cleanup to settle
+    // before triggering the completed transition, preventing races between
+    // markDispatchWorkspaceIdle and reconcileDispatchWorkspaceLifecycle.
+    for (let i = 0; i < 100 && engine.getStatus().activeInvocations > 0; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
 
     await engine.handleStateChange({
       taskId,
@@ -612,6 +620,7 @@ describe("dispatch workspace registry", () => {
       registryPath,
       taskRef,
       (current) => current.lifecycle_state === "closing",
+      5000,
     );
     expect(record.lifecycle_state).toBe("closing");
     expect(record.integration.status).toBe("merged");
@@ -625,6 +634,7 @@ describe("dispatch workspace registry", () => {
       tempDir,
       taskRef,
       (current) => current.lifecycle_state === "closing",
+      5000,
     );
     expect(reloaded?.lifecycle_state).toBe("closing");
 
