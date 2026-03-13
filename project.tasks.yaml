@@ -93234,12 +93234,30 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKJS37FDX53HYCJBF5BVQ2D0
   created_at: 2026-03-13T03:25:18.247Z
-  notes: []
+  started_at: 2026-03-13T05:01:20.593Z
+  notes:
+    - _ulid: 01KKJS4K7PNSKVK4BTNZ4ANT86
+      created_at: 2026-03-13T05:01:36.374Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: finish Droid support by wiring setup/status behavior to the renderer and
+        agent-detection work already landed.
+
+        - Scope: setup agent override acceptance, Droid skill rendering path, Droid-specific
+        KSPEC_AUTHOR guidance, and hook-phase skip behavior without affecting existing Claude Code
+        flows.
+
+        - Files: src/cli/commands/setup.ts plus focused CLI/setup tests, and any adjacent
+        setup-status helpers if the current shared status path is insufficient.
+
+        - Verification: targeted setup tests, then full npm test and kspec validate before submit.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-13T05:01:20.593Z
-  session_id: 01KKJS37FDX53HYCJBF5BVQ2D0
 - _ulid: 01KKJKM94SSN5XJCTY5PPWSX8T
   slugs:
     - implement-core-skills-droid-platform-registration
