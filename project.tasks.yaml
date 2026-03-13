@@ -92920,6 +92920,7 @@
   created_at: 2026-03-13T03:25:15.700Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKJKM6NQ8M1W9MSAKGXDXW97
   slugs:
     - implement-droid-agent-detection
@@ -93072,22 +93073,22 @@
   created_at: 2026-03-13T03:25:20.775Z
   notes: []
   todos: []
-- title: Implement Droid Skill Import Support
-  type: task
+- _ulid: 01KKJKMBM006GT41HWHR5DXCW6
   slugs:
     - implement-droid-skill-import-support
+  title: Implement Droid Skill Import Support
+  type: task
   spec_ref: "@droid-skill-import"
-  plan_ref: "@plan-droid-platform-support"
-  priority: 3
-  tags: []
-  depends_on: []
-  notes: []
-  origin: derived
   derivation: auto
-  _ulid: 01KKJKMBM006GT41HWHR5DXCW6
+  plan_ref: "@plan-droid-platform-support"
+  origin: derived
   status: pending
   blocked_by: []
+  depends_on: []
   context: []
+  priority: 3
+  tags: []
   vcs_refs: []
   created_at: 2026-03-13T03:25:21.408Z
+  notes: []
   todos: []
