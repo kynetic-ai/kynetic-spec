@@ -642,6 +642,14 @@ describe("dispatch workspace registry", () => {
     expect(record.lifecycle_state).toBe("integrating");
     expect(record.integration.status).toBe("pending");
 
+    // Wait for the pending_review invocation to complete before
+    // sending the completed transition, so its background
+    // markDispatchWorkspaceIdle / cleanupReviewerDispatchWorkspace
+    // writes finish and don't race with the completed handler.
+    for (let i = 0; i < 200 && engine.getStatus().activeInvocations > 0; i++) {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+
     await engine.handleStateChange({
       taskId,
       taskRef,
