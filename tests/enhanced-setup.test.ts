@@ -119,6 +119,11 @@ describe('kspec setup (enhanced)', () => {
         env: {
           FACTORY_PROJECT_DIR: tempDir,
           HOME: tempDir,
+          // Clear higher-priority agent env vars so droid detection wins
+          CLAUDECODE: '',
+          CLAUDE_CODE_ENTRYPOINT: '',
+          CLAUDE_PROJECT_DIR: '',
+          CLAUDE_CODE: '',
           CODEX_THREAD_ID: '',
           CODEX_SANDBOX: '',
           CODEX_CI: '',
