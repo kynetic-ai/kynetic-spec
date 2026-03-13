@@ -35,6 +35,8 @@ import {
   reconcileDispatchWorkspaceLifecycle,
   type DispatchWorkspaceMetadata,
   type DispatchWorkspaceRole,
+  cleanupReviewerDispatchWorkspace,
+  reconcileDispatchWorkspaceArtifacts,
 } from "./workspace.js";
 import {
   ensureWorkspaceBootstrap,
@@ -465,6 +467,9 @@ export class DispatchEngine {
     } catch (err) {
       console.error("[dispatch] Workspace registry reconciliation error:", err);
     }
+    await reconcileDispatchWorkspaceArtifacts(this.projectDir, {
+      activeTaskRefs: this._activeTaskRefs(),
+    });
 
     // AC: @agent-dispatch-engine ac-8 - Bootstrap: evaluate existing task states
     await this._bootstrap();
@@ -741,7 +746,9 @@ export class DispatchEngine {
     } catch (err) {
       console.error("[dispatch] Workspace registry reconciliation error:", err);
     }
-
+    await reconcileDispatchWorkspaceArtifacts(this.projectDir, {
+      activeTaskRefs: this._activeTaskRefs(),
+    });
     const enqueued = await this._evaluateAllTasks({ skipIfActive: true });
     if (enqueued > 0) {
       console.log(`[dispatch] Reconciliation enqueued ${enqueued} task(s)`);
@@ -828,6 +835,16 @@ export class DispatchEngine {
       }
     }
     return roles;
+  }
+
+  private _activeTaskRefs(): Set<string> {
+    const refs = new Set<string>();
+    for (const record of this.activeInvocationDetails.values()) {
+      if (record.taskRef) {
+        refs.add(record.taskRef);
+      }
+    }
+    return refs;
   }
 
   /**
@@ -1628,6 +1645,26 @@ export class DispatchEngine {
         const currentActive = this.activeCount.get(agentId) ?? 1;
         this.activeCount.set(agentId, Math.max(0, currentActive - 1));
         this.activeInvocationDetails.delete(invocationId);
+
+        if (entry.change.toStatus === "pending_review") {
+          try {
+            await cleanupReviewerDispatchWorkspace(
+              this.projectDir,
+              entry.change.taskRef,
+              entry.change.task
+                ? {
+                    title: entry.change.task.title,
+                    slugs: entry.change.task.slugs,
+                  }
+                : undefined,
+            );
+          } catch (cleanupErr) {
+            const cleanupMessage = cleanupErr instanceof Error ? cleanupErr.message : String(cleanupErr);
+            console.warn(
+              `[dispatch] Failed to clean reviewer snapshot for ${entry.change.taskRef}: ${cleanupMessage}`,
+            );
+          }
+        }
         if (terminalEvent) {
           this.onInvocationEvent?.(terminalEvent);
         }

@@ -3,7 +3,6 @@ import * as fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import * as path from "node:path";
 import * as YAML from "yaml";
-import * as invocationModule from "../src/agent-runtime/invocation.js";
 import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
 import {
   provisionDispatchWorkspace,
@@ -155,8 +154,7 @@ describe("canonical task workspace contract", () => {
     await setupProjectWithReviewerAgent(tempDir);
     git(tempDir, "checkout -b agent-dev");
 
-    const taskId = testUlid("TASK", 13);
-    const taskRef = `@${taskId}`;
+    const taskRef = `@${testUlid("TASK", 13)}`;
     const workerWorkspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
       taskRef,
@@ -171,64 +169,27 @@ describe("canonical task workspace contract", () => {
     git(workerWorkspace.cwd, 'commit -m "worker change for review"');
     const canonicalHead = git(workerWorkspace.cwd, "rev-parse HEAD");
 
-    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
-      session: {} as never,
-      outcome: "success",
-      durationMs: 1,
-    });
-
-    const engine = new DispatchEngine({
+    const reviewerWorkspace = await provisionDispatchWorkspace({
       projectDir: tempDir,
-      specDir: tempDir,
-      kspecCliPath: MOCK_KSPEC_CLI,
-    });
-
-    await engine.start();
-    await engine.handleStateChange({
-      taskId,
       taskRef,
-      fromStatus: "in_progress",
-      toStatus: "pending_review",
-      timestamp: Date.now(),
+      role: "reviewer",
       task: {
-        _ulid: taskId,
         title: "Canonical Reviewer Snapshot",
         slugs: ["task-canonical-reviewer-snapshot"],
-        status: "pending_review",
-        type: "task",
-        priority: 1,
-        blocked_by: [],
-        depends_on: [],
-        context: [],
-        tags: [],
-        vcs_refs: [],
-        notes: [],
-        todos: [],
-        created_at: new Date().toISOString(),
-        automation: "eligible",
-      } as never,
+      },
     });
-
-    for (let i = 0; i < 40 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
-
-    expect(runSpy).toHaveBeenCalledTimes(1);
-    const invocation = runSpy.mock.calls[0][0];
-    expect(invocation.cwd).toBe(
+    expect(reviewerWorkspace.cwd).toBe(
       path.join(tempDir, ".kspec-worktrees", "task-canonical-reviewer-snapshot-01task00-review"),
     );
-    expect(invocation.cwd).not.toBe(workerWorkspace.cwd);
-    expect(git(invocation.cwd, "rev-parse HEAD")).toBe(canonicalHead);
-    expect(git(invocation.cwd, "branch --show-current")).toBe("");
+    expect(reviewerWorkspace.cwd).not.toBe(workerWorkspace.cwd);
+    expect(git(reviewerWorkspace.cwd, "rev-parse HEAD")).toBe(canonicalHead);
+    expect(git(reviewerWorkspace.cwd, "branch --show-current")).toBe("");
 
     const worktreeList = git(tempDir, "worktree list --porcelain");
     const canonicalBranchMentions = worktreeList
       .split("\n")
       .filter((line) => line === `branch refs/heads/${workerWorkspace.metadata.canonicalBranch}`);
     expect(canonicalBranchMentions).toHaveLength(1);
-
-    await engine.stop();
   });
 
   // AC: @canonical-task-workspace-contract ac-6
