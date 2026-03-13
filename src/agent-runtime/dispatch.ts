@@ -674,6 +674,8 @@ export class DispatchEngine {
   private recentTaskAffinityRef: string | null = null;
   /** Timer handle for periodic reconciliation. AC: @agent-dispatch-engine ac-20 */
   private reconcileTimer: ReturnType<typeof setInterval> | null = null;
+  /** In-flight reconciliation promise so stop() can await it. */
+  private inFlightReconcile: Promise<void> | null = null;
 
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
@@ -722,9 +724,14 @@ export class DispatchEngine {
     if (this.reconcileIntervalMs > 0) {
       this.reconcileTimer = setInterval(() => {
         if (this.running) {
-          this._reconcile().catch((err) => {
+          const p = this._reconcile().catch((err) => {
             console.error("[dispatch] Reconciliation error:", err);
+          }).finally(() => {
+            if (this.inFlightReconcile === p) {
+              this.inFlightReconcile = null;
+            }
           });
+          this.inFlightReconcile = p;
         }
       }, this.reconcileIntervalMs);
       this.reconcileTimer.unref();
@@ -872,6 +879,13 @@ export class DispatchEngine {
     if (this.reconcileTimer !== null) {
       clearInterval(this.reconcileTimer);
       this.reconcileTimer = null;
+    }
+
+    // Wait for any in-flight reconciliation to finish so it doesn't
+    // write files after stop() returns (prevents ENOTEMPTY in test teardown).
+    if (this.inFlightReconcile) {
+      await this.inFlightReconcile;
+      this.inFlightReconcile = null;
     }
 
     // AC: @agent-dispatch-engine ac-11 - Send graceful cancel to all active invocations
