@@ -93756,6 +93756,14 @@
         tests/cli/session-start-format.test.ts (notes starvation prevention JSON case), so the PR is
         not mergeable yet."
       supersedes: null
+    - _ulid: 01KKKXAQNWSS53TASHAXF3EVR7
+      created_at: 2026-03-13T15:34:06.268Z
+      author: "@claude"
+      content: "Fix cycle 2: Eliminated CI timeout in session-start-format.test.ts notes starvation
+        prevention test. Replaced 25 CLI subprocess calls with direct YAML seeding via new
+        seedTasksWithNotes() helper. Test time dropped from 5288ms to 592ms (9x improvement). Full
+        suite passes: 4736 tests, 0 failures."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKMBM006GT41HWHR5DXCW6
