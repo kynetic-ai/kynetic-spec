@@ -572,26 +572,31 @@ workspaces:
     base_branch_point: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
     canonical_branch: dispatch/task/durably-shadow-commit-dispatch-workspace-registry-writes/01kkjt2v
     canonical_branch_head: 5c756f7cf2a153e3e7a57b9f6655c670825dbf4f
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: ready
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/durably-shadow-commit-dispatch-workspace-registry-writes-01kkjt2v
         branch_mode: branch
         branch_ref: dispatch/task/durably-shadow-commit-dispatch-workspace-registry-writes/01kkjt2v
-        head: 6a20ae2ab7814e7ad0d4792935a9d8efe189d8ac
-        last_seen_at: 2026-03-13T13:55:17.924Z
-      reviewer: null
+        head: 5c756f7cf2a153e3e7a57b9f6655c670825dbf4f
+        last_seen_at: 2026-03-13T14:03:25.285Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/durably-shadow-commit-dispatch-workspace-registry-writes-01kkjt2v-review
+        branch_mode: detached
+        branch_ref: null
+        head: 5c756f7cf2a153e3e7a57b9f6655c670825dbf4f
+        last_seen_at: 2026-03-13T14:03:25.285Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-      canonicalBranchHead: 6a20ae2ab7814e7ad0d4792935a9d8efe189d8ac
-      lastRunAt: 2026-03-13T13:55:18.020Z
+      canonicalBranchHead: 5c756f7cf2a153e3e7a57b9f6655c670825dbf4f
+      lastRunAt: 2026-03-13T14:03:25.758Z
       invalidationReasons:
         - canonical-branch-head-changed
       steps: []
       failureMessage: null
-      lastRole: worker
+      lastRole: reviewer
       roleStates:
         worker:
           status: succeeded
@@ -605,8 +610,8 @@ workspaces:
         reviewer:
           status: succeeded
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-          canonicalBranchHead: 6a20ae2ab7814e7ad0d4792935a9d8efe189d8ac
-          lastRunAt: 2026-03-13T13:44:02.613Z
+          canonicalBranchHead: 5c756f7cf2a153e3e7a57b9f6655c670825dbf4f
+          lastRunAt: 2026-03-13T14:03:25.758Z
           invalidationReasons:
             - canonical-branch-head-changed
           steps: []
@@ -618,23 +623,23 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T14:03:00.127Z
+      updated_at: 2026-03-13T14:03:49.777Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T14:03:00.127Z
+      updated_at: 2026-03-13T14:03:49.777Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T14:03:00.127Z
+      updated_at: 2026-03-13T14:03:49.777Z
     timestamps:
       created_at: 2026-03-13T05:30:39.118Z
-      updated_at: 2026-03-13T14:03:00.127Z
-      last_reconciled_at: 2026-03-13T14:03:00.127Z
-      last_active_at: 2026-03-13T13:55:18.117Z
+      updated_at: 2026-03-13T14:03:49.777Z
+      last_reconciled_at: 2026-03-13T14:03:49.777Z
+      last_active_at: 2026-03-13T14:03:26.042Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM61M5BAEFRPNBRK7XDRY
     task_ref: "@01KKJKM61M5BAEFRPNBRK7XDRY"
@@ -2062,4 +2067,73 @@ workspaces:
       updated_at: 2026-03-13T14:03:04.989Z
       last_reconciled_at: 2026-03-13T14:03:04.989Z
       last_active_at: 2026-03-13T13:54:40.835Z
+      closed_at: null
+  - workspace_id: dispatch-workspace-01KKJKMBM006GT41HWHR5DXCW6
+    task_ref: "@01KKJKMBM006GT41HWHR5DXCW6"
+    task_slug: implement-droid-skill-import-support
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    resolved_base_branch: main
+    base_branch_point: 48408281d10e9f1d5ec6ba581041cd9477006c46
+    canonical_branch: dispatch/task/implement-droid-skill-import-support/01kkjkmb
+    canonical_branch_head: 48408281d10e9f1d5ec6ba581041cd9477006c46
+    lifecycle_state: active
+    active_role: worker
+    worktrees:
+      worker:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-skill-import-support-01kkjkmb
+        branch_mode: branch
+        branch_ref: dispatch/task/implement-droid-skill-import-support/01kkjkmb
+        head: 48408281d10e9f1d5ec6ba581041cd9477006c46
+        last_seen_at: 2026-03-13T14:03:51.006Z
+      reviewer: null
+    bootstrap:
+      status: succeeded
+      configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+      canonicalBranchHead: 48408281d10e9f1d5ec6ba581041cd9477006c46
+      lastRunAt: 2026-03-13T14:03:51.139Z
+      invalidationReasons: []
+      steps: []
+      failureMessage: null
+      lastRole: worker
+      roleStates:
+        worker:
+          status: succeeded
+          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+          canonicalBranchHead: 48408281d10e9f1d5ec6ba581041cd9477006c46
+          lastRunAt: 2026-03-13T14:03:51.139Z
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+        reviewer:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+    integration:
+      status: pending
+      target_branch: main
+      target_commit: 48408281d10e9f1d5ec6ba581041cd9477006c46
+      publication_mode: pull_request
+      outcome: pull_request
+      detail: null
+      updated_at: 2026-03-13T14:03:51.006Z
+    health:
+      status: healthy
+      summary: Workspace record matches current git branch and worktree state.
+      issues: []
+      updated_at: 2026-03-13T14:03:51.233Z
+    cleanup:
+      status: not_scheduled
+      eligible: false
+      reason: null
+      detail: null
+      updated_at: 2026-03-13T14:03:51.006Z
+    timestamps:
+      created_at: 2026-03-13T14:03:51.006Z
+      updated_at: 2026-03-13T14:03:51.233Z
+      last_reconciled_at: 2026-03-13T14:03:51.233Z
+      last_active_at: 2026-03-13T14:03:51.233Z
       closed_at: null
