@@ -94701,6 +94701,50 @@
         - Verification: New test file covering all 3 ACs + trait-error-guidance N/A annotations.
         Existing tests must continue passing.
       supersedes: null
+    - _ulid: 01KKM1GDNX8770PEZB1PAGAN1C
+      created_at: 2026-03-13T16:47:06.941Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+
+        Schema (src/schema/dispatch-workspace.ts):
+
+        - Added DispatchWorkspaceBranchOwnershipSchema enum: 'dispatcher-managed' | 'adopted'
+
+        - Added DispatchWorkspaceBranchProvenanceSchema: ownership, source, remote_ref,
+        adopted_from, adopted_at
+
+        - Added optional branch_provenance field to DispatchWorkspaceRecordSchema with default of
+        dispatcher-managed
+
+
+        Runtime (src/agent-runtime/workspace.ts):
+
+        - Added branchProvenance to DispatchWorkspaceMetadata interface
+
+        - Added defaultBranchProvenance() and adoptedBranchProvenance() helpers
+
+        - Provisioning populates branch_provenance (dispatcher-managed by default, preserves
+        existing)
+
+        - Recovery from metadata detects adopted branches (non-dispatch namespace) and sets adopted
+        provenance
+
+        - Reconciliation preserves adopted branch identity (skips normalization to dispatch/task/*
+        namespace)
+
+        - Cleanup skips branch deletion for adopted branches (preserves externally-owned refs)
+
+        - toMetadata() includes branchProvenance with fallback to default
+
+
+        Tests (tests/dispatch-workspace-branch-provenance.test.ts):
+
+        - 8 tests covering all 3 ACs + trait-error-guidance N/A annotations
+
+        - All existing dispatch workspace tests continue passing
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKK7R9XYTYS5JTNBFDNQ5YNS
@@ -94812,7 +94856,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: Implement inline registry purge for closed dispatch workspace records
+- _ulid: 01KKM1CAH2KSMH1TWS2E6079A1
+  slugs: []
+  title: Implement inline registry purge for closed dispatch workspace records
+  type: task
   description: >-
     The dispatch workspace registry (project.dispatch-workspaces.yaml) accumulates records
     indefinitely. Records transition through lifecycle states ending in 'closed' but are never
@@ -94853,23 +94900,20 @@
     (new test file for purge behavior)
 
     Verification: npm test
-  type: task
   spec_ref: "@dispatch-workspace-registry"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - dispatch
     - cleanup
     - registry
-  depends_on: []
-  automation: eligible
-  _ulid: 01KKM1CAH2KSMH1TWS2E6079A1
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-13T16:44:52.642Z
   notes: []
   todos: []
+  automation: eligible
