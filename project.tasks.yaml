@@ -92190,6 +92190,16 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #809 conflicts with main, and workspace
         provisioning does not persist the new orientation metadata fields for real dispatch runs."
       supersedes: null
+    - _ulid: 01KKJAB2TC2F2Z60PXQAV14DA0
+      created_at: 2026-03-13T00:43:00.301Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Rebased PR #809 onto origin/main, updated orientation rendering to stay
+        compatible with both provisioned-workspace and metadata-only callers, and added a regression
+        test that reads the persisted .kspec-dispatch-workspace.json written by real provisioning.
+        Verification: npm test -- tests/dispatch-branch-integration-contract.test.ts
+        tests/canonical-task-workspace-contract.test.ts tests/agent-dispatch-engine.test.ts; kspec
+        validate (warnings-only baseline, exit 6); npm test."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9HBMSAW4DD924SYTEJ0P
