@@ -93445,6 +93445,18 @@
         dispatch/task/implement-droid-setup-integration/01kkjkm8 and resolve conflicts in
         src/cli/commands/setup.ts and src/parser/setup-status.ts before review can complete."
       supersedes: null
+    - _ulid: 01KKKBTWZRAZFT1CNKGXR3VYNY
+      created_at: 2026-03-13T10:28:21.624Z
+      author: "@claude"
+      content: "Fix cycle 4 resolution: merged origin/main into the task branch to resolve conflicts in
+        src/cli/commands/setup.ts, src/parser/setup-status.ts, and tests/enhanced-setup.test.ts.
+        Conflict resolution kept our branch's changes (shared setup-status import, droid configPath
+        resolution, and Claude env var clearing in tests). Also updated the droid skill count
+        assertion in enhanced-setup.test.ts to account for core skills now targeting the droid
+        platform after merging the droid core skill install work from main. Verification: npm run
+        typecheck clean, npm test 228 files passed (4730 tests, 2 flaky timing tests pass on
+        re-run)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKM94SSN5XJCTY5PPWSX8T
