@@ -94462,7 +94462,7 @@
   type: task
   spec_ref: "@dispatch-workspace-remote-branch-fallback"
   derivation: auto
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-design-canonical-task-workspace-contract"
@@ -94511,6 +94511,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-13T19:45:51.516Z
+  session_id: 01KKMBQ3K49B7S3TM7H30RKWBJ
 - _ulid: 01KKJZW9XNWT7VPFK3FNBA41FZ
   slugs:
     - fix-broken-shadow-safety
@@ -95092,9 +95094,18 @@
     - cleanup
     - registry
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 88b68a229e7759cabb0a1a8c2e891d9b7e0b2bd3
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-13T19:45:00.879Z
   session_id: 01KKMB85VTW1TVCWTV2X6ZJFFA
   created_at: 2026-03-13T16:44:52.642Z
   started_at: 2026-03-13T19:37:39.315Z
+  submitted_at: 2026-03-13T19:45:01.833Z
   notes:
     - _ulid: 01KKMBNJ2RTJ4NZRJBS8C11E7E
       created_at: 2026-03-13T19:44:41.048Z
@@ -95110,15 +95121,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-13T19:45:01.833Z
-  submission_linkage:
-    branch: main
-    commit: 88b68a229e7759cabb0a1a8c2e891d9b7e0b2bd3
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-13T19:45:00.879Z
 - _ulid: 01KKM8XSMBD2HB6PBC4303YYA3
   slugs: []
   title: Add workspace working directory instruction to dispatch prompt
