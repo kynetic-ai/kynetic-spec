@@ -703,6 +703,9 @@ features:
             when: CLI, daemon, or dispatch code resolves kspec-managed manifest, registry, or metadata paths
             then: it does not redirect reads or writes to repo-root fallback paths outside the configured shadow
               directory
+        status:
+          maturity: draft
+          implementation: in_progress
   - _ulid: 01KF47F4J7DAQ3TD3BGHFQSK9C
     slugs:
       - shadow-sync
