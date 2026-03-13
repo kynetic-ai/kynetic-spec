@@ -93452,12 +93452,29 @@
   priority: 3
   tags: []
   vcs_refs: []
+  session_id: 01KKK37EY9VCK3XSZPTW3G7RVE
   created_at: 2026-03-13T03:25:19.536Z
-  notes: []
+  started_at: 2026-03-13T07:58:58.979Z
+  notes:
+    - _ulid: 01KKK39FKPW4W5XJ58JXYZ4YAB
+      created_at: 2026-03-13T07:59:02.262Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: droid skill rendering is already in place, but runtime prompt rewriting still
+        needs portable skill references to resolve through the droid adapter.
+
+        - Scope: finish adapter-to-platform mapping in prompts, add AC-linked tests for droid
+        invocation formatting and prompt-side token rewriting.
+
+        - Files: src/agent-runtime/prompts.ts, tests covering skill-render and prompt rewriting
+        behavior.
+
+        - Verification: npm test plus kspec validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-13T07:58:58.979Z
-  session_id: 01KKK37EY9VCK3XSZPTW3G7RVE
 - _ulid: 01KKJKMACTMKC8CNF9D9Y56B3C
   slugs:
     - implement-droid-core-skill-install-support
