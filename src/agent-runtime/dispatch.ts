@@ -1809,6 +1809,7 @@ export class DispatchEngine {
       };
 
       let terminalEvent: InvocationEvent | null = null;
+      let releasedInFlightKey = false;
       const markActivePromise = this.shadowMutex.runExclusive(async () => {
         try {
           const activeWorkspace = await markDispatchWorkspaceActive({
@@ -1917,16 +1918,18 @@ export class DispatchEngine {
 
           if (entry.change.toStatus === "pending_review") {
             try {
-              await cleanupReviewerDispatchWorkspace(
-                this.projectDir,
-                entry.change.taskRef,
-                entry.change.task
-                  ? {
-                      title: entry.change.task.title,
-                      slugs: entry.change.task.slugs,
-                    }
-                  : undefined,
-              );
+              await this.shadowMutex.runExclusive(async () => {
+                await cleanupReviewerDispatchWorkspace(
+                  this.projectDir,
+                  entry.change.taskRef,
+                  entry.change.task
+                    ? {
+                        title: entry.change.task.title,
+                        slugs: entry.change.task.slugs,
+                      }
+                    : undefined,
+                );
+              });
             } catch (cleanupErr) {
               const cleanupMessage = cleanupErr instanceof Error ? cleanupErr.message : String(cleanupErr);
               console.warn(
@@ -1940,6 +1943,12 @@ export class DispatchEngine {
         })
         .then(async () => {
           if (!this.running) return;
+
+          // Release the in-flight marker before re-evaluating tasks from disk so
+          // follow-up reviewer/fix-cycle work for the same task can be requeued
+          // immediately after the prior invocation completes.
+          this.inFlightTaskKeys.delete(inFlightKey);
+          releasedInFlightKey = true;
 
           // AC: @agent-dispatch-engine ac-23, ac-24
           // Re-evaluate all tasks from disk so the drain loop sees tasks that
@@ -1964,7 +1973,9 @@ export class DispatchEngine {
           }
         })
         .finally(() => {
-          this.inFlightTaskKeys.delete(inFlightKey);
+          if (!releasedInFlightKey) {
+            this.inFlightTaskKeys.delete(inFlightKey);
+          }
           this.runningInvocations.delete(invocationPromise);
           this.invocationAbortControllers.delete(abortController);
         });
