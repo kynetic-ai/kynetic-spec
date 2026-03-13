@@ -94537,18 +94537,15 @@
   derivation: auto
   plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
   origin: derived
-  status: blocked
-  blocked_by:
-    - "Review complete: PR #826 code is clean, but merge is blocked by required CI failure in test
-      (shard 3/3). GitHub Actions is consistently failing tests/agent-dispatch-engine.test.ts with
-      ENOTEMPTY removing a temp directory, which is outside this task's changed surface."
+  status: pending
+  blocked_by: []
   depends_on: []
   context: []
   priority: 1
   tags: []
   vcs_refs: []
   review_url: https://github.com/kynetic-ai/kynetic-spec/pull/826
-  session_id: 01KKKMW8VVRW6NRPQBEJ5898CS
+  session_id: null
   created_at: 2026-03-13T09:16:59.010Z
   started_at: 2026-03-13T13:16:28.517Z
   submitted_at: 2026-03-13T13:16:35.782Z
