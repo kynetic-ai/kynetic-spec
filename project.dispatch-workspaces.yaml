@@ -7,7 +7,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
     canonical_branch: dispatch/task/task-test-dispatch-workspace-and-scheduler-flow/01kkfy9k
-    canonical_branch_head: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
+    canonical_branch_head: 69c722e11311150cc173f8e2f7c665402cb2cd1a
     lifecycle_state: active
     active_role: worker
     worktrees:
@@ -51,21 +51,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T03:59:34.293Z
+      updated_at: 2026-03-13T04:00:34.320Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T03:59:34.293Z
+      updated_at: 2026-03-13T04:00:34.320Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T03:59:34.293Z
+      updated_at: 2026-03-13T04:00:34.320Z
     timestamps:
       created_at: 2026-03-13T03:46:33.670Z
-      updated_at: 2026-03-13T03:59:34.293Z
-      last_reconciled_at: 2026-03-13T03:59:34.293Z
+      updated_at: 2026-03-13T04:00:34.320Z
+      last_reconciled_at: 2026-03-13T04:00:34.320Z
       last_active_at: 2026-03-13T03:46:33.829Z
       closed_at: null
