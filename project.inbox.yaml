@@ -1539,3 +1539,12 @@ inbox:
       - shadow
       - fixtures
     added_by: Jacob Chapel
+  - _ulid: 01KKM8Y2TKS97PZ89YGP0AZT8H
+    text: Rewrite tests that assert on static prompt outputs (like dispatch orientation context) to
+      focus on unique/dynamic parts being inserted correctly rather than matching full static
+      strings. Fragile prompt assertion tests break on any formatting change.
+    created_at: 2026-03-13T18:56:54.611Z
+    tags:
+      - cli
+      - testing
+    added_by: "@claude"
