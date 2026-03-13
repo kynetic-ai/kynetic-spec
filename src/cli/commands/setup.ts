@@ -68,6 +68,7 @@ export type AgentType =
   | "copilot-cli"
   | "gemini-cli"
   | "codex-cli"
+  | "droid"
   | "aider"
   | "opencode"
   | "amp"
@@ -88,6 +89,7 @@ export interface DetectedAgent {
 const SETUP_AGENT_OVERRIDES = [
   "claude-code",
   "cline",
+  "droid",
   "cursor",
   "windsurf",
   "unknown",
@@ -117,6 +119,13 @@ function buildDetectedAgent(type: AgentType): DetectedAgent {
       configPath: path.join(os.homedir(), ".claude", "settings.json"),
     };
   }
+  if (type === "droid") {
+    return {
+      type,
+      confidence: "high",
+      configPath: path.join(os.homedir(), ".factory", "settings.json"),
+    };
+  }
   return { type, confidence: "high" };
 }
 
@@ -138,6 +147,14 @@ export function detectAgent(): DetectedAgent {
       type: "claude-code",
       confidence: "low",
       configPath: path.join(os.homedir(), ".claude", "settings.json"),
+    };
+  }
+
+  if (existsSync(path.join(os.homedir(), ".factory"))) {
+    return {
+      type: "droid",
+      confidence: "low",
+      configPath: path.join(os.homedir(), ".factory", "settings.json"),
     };
   }
 
@@ -701,6 +718,7 @@ interface SetupStatus {
   agent: {
     detected: AgentType;
     confidence: "high" | "medium" | "low";
+    configPath?: string;
   };
   hooks: {
     promptCheck: boolean;
@@ -972,6 +990,7 @@ async function getSetupStatus(
     agent: {
       detected: detected.type,
       confidence: detected.confidence,
+      configPath: detected.configPath,
     },
     hooks,
     skills,
@@ -1851,7 +1870,7 @@ export function registerSetupCommand(program: Command): void {
     .description("Configure agent environment for kspec (orchestrated pipeline)")
     .option(
       "--agent <type>",
-      "Explicit agent type override (claude-code|cline|cursor|windsurf|unknown)",
+      "Explicit agent type override (claude-code|cline|droid|cursor|windsurf|unknown)",
     )
     .option("--dry-run", "Show what would be done without making changes")
     .option(
@@ -1885,6 +1904,9 @@ export function registerSetupCommand(program: Command): void {
             console.log(
               `  Detected: ${status.agent.detected} (${status.agent.confidence} confidence)`,
             );
+            if (status.agent.configPath) {
+              console.log(`  Config:   ${status.agent.configPath}`);
+            }
             console.log();
 
             // Hooks status

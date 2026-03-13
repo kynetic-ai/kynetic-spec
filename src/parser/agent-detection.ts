@@ -8,6 +8,7 @@ export type AgentType =
   | "copilot-cli"
   | "gemini-cli"
   | "codex-cli"
+  | "droid"
   | "aider"
   | "opencode"
   | "amp"
@@ -128,6 +129,17 @@ export function detectAgentFromEnv(): DetectedAgent {
         ...(process.env.CODEX_MANAGED_BY_NPM && {
           CODEX_MANAGED_BY_NPM: process.env.CODEX_MANAGED_BY_NPM,
         }),
+      },
+    };
+  }
+
+  if (process.env.FACTORY_PROJECT_DIR) {
+    return {
+      type: "droid",
+      confidence: "high",
+      configPath: path.join(os.homedir(), ".factory", "settings.json"),
+      envVars: {
+        FACTORY_PROJECT_DIR: process.env.FACTORY_PROJECT_DIR,
       },
     };
   }
