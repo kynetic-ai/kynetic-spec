@@ -93790,6 +93790,15 @@
         or merge main into dispatch/task/implement-droid-setup-status-reporting/01kkjkmb, rerun
         verification on the new head, and resubmit for review."
       supersedes: null
+    - _ulid: 01KKM1WZ0ZHNPM42KMHFJ1DXB6
+      created_at: 2026-03-13T16:53:57.919Z
+      author: "@claude"
+      content: "Fix cycle 4: Merged main into dispatch branch to resolve merge conflict in
+        src/agent-runtime/dispatch.ts. Conflict was between local single-promise activeReconcile
+        tracking vs main's Set-based inFlightReconciles tracking — took main's version which is
+        strictly better (handles overlapping reconciliation calls). Full test suite passes: 4756
+        tests, 0 failures."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKMBM006GT41HWHR5DXCW6
@@ -94677,6 +94686,7 @@
   session_id: 01KKM0NGHKG2MWKAHZTT7NQ2PV
   created_at: 2026-03-13T09:17:01.246Z
   started_at: 2026-03-13T16:32:47.086Z
+  submitted_at: 2026-03-13T16:47:37.976Z
   notes:
     - _ulid: 01KKM0V8N7G4FS6DA85F2D2BB3
       created_at: 2026-03-13T16:35:33.671Z
@@ -94747,7 +94757,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-13T16:47:37.976Z
 - _ulid: 01KKK7R9XYTYS5JTNBFDNQ5YNS
   slugs:
     - implement-adopted-branch-cleanup-and-recoverabilit
