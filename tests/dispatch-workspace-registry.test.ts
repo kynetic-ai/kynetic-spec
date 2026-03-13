@@ -1014,6 +1014,9 @@ describe("dispatch workspace registry shadow durability", () => {
       const release = await acquireFileLock(getDispatchShadowMutationLockPath(tempDir));
       process.env.KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS = "50";
 
+      const ctx = await initContext(tempDir);
+      const registryPath = getDispatchWorkspaceRegistryPath(ctx);
+
       try {
         await expect(
           provisionDispatchWorkspace({
@@ -1025,6 +1028,16 @@ describe("dispatch workspace registry shadow durability", () => {
             },
           }),
         ).rejects.toThrow(/dispatch shadow mutation lock unavailable/i);
+
+        // The registry file must NOT have been modified — the write happens
+        // inside the lock scope, so blocking the lock prevents the write.
+        const registryExists = existsSync(registryPath);
+        if (registryExists) {
+          const registryContent = YAML.parse(
+            await fs.readFile(registryPath, "utf-8"),
+          ) as { workspaces?: unknown[] };
+          expect(registryContent.workspaces ?? []).toHaveLength(0);
+        }
       } finally {
         delete process.env.KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS;
         await release();

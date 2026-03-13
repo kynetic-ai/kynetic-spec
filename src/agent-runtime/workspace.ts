@@ -798,8 +798,9 @@ async function loadWorkspaceRecord(
 /**
  * Save a workspace record to the registry file and update worktree metadata.
  * Does NOT acquire the dispatch shadow mutation lock or trigger a shadow commit.
- * Callers that need durable persistence should follow up with
- * {@link commitWorkspaceRegistryIfShadow}.
+ * Callers MUST hold the dispatch shadow mutation lock (via
+ * {@link withDispatchShadowMutationLock}) and follow up with
+ * {@link commitWorkspaceRegistryToShadow}.
  */
 async function saveWorkspaceRecordToRegistry(
   projectDir: string,
@@ -821,19 +822,16 @@ async function saveWorkspaceRecordToRegistry(
 }
 
 /**
- * Durably commit pending workspace registry changes on the shadow branch.
- * Acquires the dispatch shadow mutation lock to serialize with other shadow
- * writers, then commits if there are staged or unstaged shadow changes.
+ * Run a callback inside the dispatch shadow mutation file lock.
+ * Serializes with other shadow writers across processes.
  *
  * AC: @dispatch-workspace-registry ac-8
  */
-async function commitWorkspaceRegistryIfShadow(
+async function withDispatchShadowMutationLock<T>(
   projectDir: string,
   taskRef: string,
-): Promise<void> {
-  const ctx = await initContext(projectDir);
-  if (!ctx.shadow?.enabled) return;
-
+  fn: () => Promise<T>,
+): Promise<T> {
   const lockPath = getDispatchShadowMutationLockPath(projectDir);
   const timeoutMs = resolveDispatchMutationLockTimeoutMs();
 
@@ -849,37 +847,61 @@ async function commitWorkspaceRegistryIfShadow(
   }
 
   try {
-    const committed = await commitIfShadow(
-      ctx.shadow,
-      "dispatch-workspace-registry",
-      taskRef,
-    );
-    if (!committed) {
-      const shadowStatus = runGit(ctx.shadow.worktreeDir, ["status", "--porcelain"]);
-      const hasPendingShadowChanges = shadowStatus.status !== 0 || shadowStatus.stdout.trim().length > 0;
-      if (hasPendingShadowChanges) {
-        throw new DispatchWorkspaceError(
-          `Dispatch workspace registry write succeeded but could not be durably committed on the shadow branch for ${taskRef}.`,
-          "Resolve the shadow branch commit issue, then rerun dispatch reconciliation or workspace provisioning so the registry state becomes durable.",
-        );
-      }
-    }
+    return await fn();
   } finally {
     await release?.();
   }
 }
 
 /**
- * Persist a single workspace record: save to registry, then durably commit
- * to the shadow branch under the dispatch mutation lock.
+ * Commit pending workspace registry changes on the shadow branch.
+ * MUST be called while the dispatch shadow mutation lock is held.
+ * Does NOT acquire the lock itself — callers are responsible for
+ * wrapping the write-then-commit sequence inside
+ * {@link withDispatchShadowMutationLock}.
+ *
+ * AC: @dispatch-workspace-registry ac-8
+ */
+async function commitWorkspaceRegistryToShadow(
+  projectDir: string,
+  taskRef: string,
+): Promise<void> {
+  const ctx = await initContext(projectDir);
+  if (!ctx.shadow?.enabled) return;
+
+  const committed = await commitIfShadow(
+    ctx.shadow,
+    "dispatch-workspace-registry",
+    taskRef,
+  );
+  if (!committed) {
+    const shadowStatus = runGit(ctx.shadow.worktreeDir, ["status", "--porcelain"]);
+    const hasPendingShadowChanges = shadowStatus.status !== 0 || shadowStatus.stdout.trim().length > 0;
+    if (hasPendingShadowChanges) {
+      throw new DispatchWorkspaceError(
+        `Dispatch workspace registry write succeeded but could not be durably committed on the shadow branch for ${taskRef}.`,
+        "Resolve the shadow branch commit issue, then rerun dispatch reconciliation or workspace provisioning so the registry state becomes durable.",
+      );
+    }
+  }
+}
+
+/**
+ * Persist a single workspace record: acquire the dispatch shadow mutation
+ * lock, save to registry, then durably commit — all within the lock scope
+ * so the write is never visible without a matching shadow commit.
+ *
+ * AC: @dispatch-workspace-registry ac-8
  */
 async function persistWorkspaceRecord(
   projectDir: string,
   record: DispatchWorkspaceRecord,
 ): Promise<string> {
-  const registryPath = await saveWorkspaceRecordToRegistry(projectDir, record);
-  await commitWorkspaceRegistryIfShadow(projectDir, record.task_ref);
-  return registryPath;
+  return withDispatchShadowMutationLock(projectDir, record.task_ref, async () => {
+    const registryPath = await saveWorkspaceRecordToRegistry(projectDir, record);
+    await commitWorkspaceRegistryToShadow(projectDir, record.task_ref);
+    return registryPath;
+  });
 }
 
 export async function persistDispatchWorkspaceMetadata(
@@ -1247,56 +1269,65 @@ export async function reconcileDispatchWorkspaceRegistry(
 ): Promise<void> {
   const ctx = await initContext(projectDir);
   const records = await loadDispatchWorkspaceRegistry(ctx);
-  let lastTaskRef: string | null = null;
+  const nonClosedRecords = records.filter((r) => r.lifecycle_state !== "closed");
+  if (nonClosedRecords.length === 0) return;
 
-  for (const record of records) {
-    if (record.lifecycle_state === "closed") continue;
+  // Use the first non-closed record's task_ref for lock/commit attribution.
+  const lockTaskRef = nonClosedRecords[0].task_ref;
 
-    const now = new Date().toISOString();
-    const currentTaskStatus = taskStatusByRef?.get(record.task_ref) ?? null;
-    const health = reconcileWorkspaceHealth(projectDir, record, now);
-    const canonicalBranchHead = refExists(projectDir, `refs/heads/${record.canonical_branch}`)
-      ? resolveCommit(projectDir, record.canonical_branch)
-      : record.canonical_branch_head;
-    const { cleanup, integration } = resolveRegistryStateForTaskStatus(
-      currentTaskStatus,
-      record,
-      now,
-    );
-    const activeRole = activeRoleByTaskRef?.get(record.task_ref) ?? null;
-    const lifecycleState = resolveLifecycleState(
-      currentTaskStatus,
-      health,
-      integration,
-      cleanup,
-      activeRole,
-    );
-    const closedAt = lifecycleState === "closed"
-      ? (record.timestamps.closed_at ?? now)
-      : null;
+  // AC: @dispatch-workspace-registry ac-8 — all registry writes + commit
+  // happen inside the shadow mutation lock so no write is visible without
+  // a matching durable commit.
+  await withDispatchShadowMutationLock(projectDir, lockTaskRef, async () => {
+    let lastTaskRef: string | null = null;
 
-    await saveWorkspaceRecordToRegistry(projectDir, {
-      ...record,
-      canonical_branch_head: canonicalBranchHead,
-      lifecycle_state: lifecycleState,
-      active_role: activeRole,
-      health,
-      cleanup,
-      integration,
-      timestamps: {
-        ...record.timestamps,
-        updated_at: now,
-        last_reconciled_at: now,
-        closed_at: closedAt,
-      },
-    });
-    lastTaskRef = record.task_ref;
-  }
+    for (const record of nonClosedRecords) {
+      const now = new Date().toISOString();
+      const currentTaskStatus = taskStatusByRef?.get(record.task_ref) ?? null;
+      const health = reconcileWorkspaceHealth(projectDir, record, now);
+      const canonicalBranchHead = refExists(projectDir, `refs/heads/${record.canonical_branch}`)
+        ? resolveCommit(projectDir, record.canonical_branch)
+        : record.canonical_branch_head;
+      const { cleanup, integration } = resolveRegistryStateForTaskStatus(
+        currentTaskStatus,
+        record,
+        now,
+      );
+      const activeRole = activeRoleByTaskRef?.get(record.task_ref) ?? null;
+      const lifecycleState = resolveLifecycleState(
+        currentTaskStatus,
+        health,
+        integration,
+        cleanup,
+        activeRole,
+      );
+      const closedAt = lifecycleState === "closed"
+        ? (record.timestamps.closed_at ?? now)
+        : null;
 
-  // Commit all registry changes once after the loop rather than per-record.
-  if (lastTaskRef) {
-    await commitWorkspaceRegistryIfShadow(projectDir, lastTaskRef);
-  }
+      await saveWorkspaceRecordToRegistry(projectDir, {
+        ...record,
+        canonical_branch_head: canonicalBranchHead,
+        lifecycle_state: lifecycleState,
+        active_role: activeRole,
+        health,
+        cleanup,
+        integration,
+        timestamps: {
+          ...record.timestamps,
+          updated_at: now,
+          last_reconciled_at: now,
+          closed_at: closedAt,
+        },
+      });
+      lastTaskRef = record.task_ref;
+    }
+
+    // Commit all registry changes once after the loop rather than per-record.
+    if (lastTaskRef) {
+      await commitWorkspaceRegistryToShadow(projectDir, lastTaskRef);
+    }
+  });
 }
 
 async function safelyRemoveDispatchWorktree(
@@ -1718,10 +1749,8 @@ export async function provisionDispatchWorkspace(
       closed_at: null,
     },
   };
-  // Save the provisioning record without committing; the final record
-  // (after worktree setup and health reconciliation) will commit both writes.
-  const metadataPath = await saveWorkspaceRecordToRegistry(projectDir, provisioningRecord);
-
+  // Perform git worktree operations before acquiring the shadow mutation lock
+  // so we don't hold the lock during potentially slow git operations.
   await assertPathSafeForWorktree(workerWorktreeDir, projectDir);
   const existingWorkerWorktree = findExistingWorktreeForBranch(projectDir, canonicalBranch);
   if (!existingWorkerWorktree) {
@@ -1808,7 +1837,16 @@ export async function provisionDispatchWorkspace(
       last_reconciled_at: now,
     },
   };
-  await persistWorkspaceRecord(projectDir, record);
+
+  // AC: @dispatch-workspace-registry ac-8 — both the provisioning and final
+  // registry writes happen inside the shadow mutation lock, followed by a
+  // single durable commit, so no uncommitted state is left on disk.
+  const metadataPath = await withDispatchShadowMutationLock(projectDir, taskRef, async () => {
+    const regPath = await saveWorkspaceRecordToRegistry(projectDir, provisioningRecord);
+    await saveWorkspaceRecordToRegistry(projectDir, record);
+    await commitWorkspaceRegistryToShadow(projectDir, taskRef);
+    return regPath;
+  });
 
   return {
     cwd: role === "reviewer" && reviewerRecord ? reviewerRecord.path : workerWorktreeDir,
