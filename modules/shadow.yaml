@@ -705,7 +705,7 @@ features:
               directory
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
   - _ulid: 01KF47F4J7DAQ3TD3BGHFQSK9C
     slugs:
       - shadow-sync
