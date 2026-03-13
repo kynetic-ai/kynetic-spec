@@ -1761,8 +1761,8 @@ workspaces:
     base_branch_point: 48408281d10e9f1d5ec6ba581041cd9477006c46
     canonical_branch: dispatch/task/implement-droid-core-skill-install-support/01kkjkma
     canonical_branch_head: ff090642667eb75bae85500588d3a4f446287976
-    lifecycle_state: integrating
-    active_role: reviewer
+    lifecycle_state: closing
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-core-skill-install-support-01kkjkma
@@ -1803,27 +1803,27 @@ workspaces:
           steps: []
           failureMessage: null
     integration:
-      status: pending
+      status: merged
       target_branch: main
       target_commit: 48408281d10e9f1d5ec6ba581041cd9477006c46
       publication_mode: pull_request
-      outcome: pull_request
-      detail: null
-      updated_at: 2026-03-13T08:32:57.488Z
+      outcome: merged
+      detail: integration:merged
+      updated_at: 2026-03-13T08:33:17.713Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T08:32:57.488Z
+      updated_at: 2026-03-13T08:33:17.713Z
     cleanup:
-      status: not_scheduled
-      eligible: false
-      reason: null
-      detail: null
-      updated_at: 2026-03-13T08:32:57.488Z
+      status: scheduled
+      eligible: true
+      reason: integrated-into-base-branch
+      detail: integrated-into-base-branch
+      updated_at: 2026-03-13T08:33:17.713Z
     timestamps:
       created_at: 2026-03-13T08:14:07.606Z
-      updated_at: 2026-03-13T08:32:57.488Z
-      last_reconciled_at: 2026-03-13T08:32:57.488Z
+      updated_at: 2026-03-13T08:33:17.713Z
+      last_reconciled_at: 2026-03-13T08:33:17.713Z
       last_active_at: 2026-03-13T08:26:59.132Z
       closed_at: null

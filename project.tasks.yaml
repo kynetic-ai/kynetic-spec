@@ -93396,6 +93396,27 @@
         doctor and setup status. Verification target: targeted setup/doctor tests, typecheck, and
         kspec validate before re-submit."
       supersedes: null
+    - _ulid: 01KKK58GNJ741M8WJQJD41BWE2
+      created_at: 2026-03-13T08:33:27.730Z
+      author: Jacob Chapel
+      content: >-
+        Completed fix-cycle update for the duplicated setup --status path.
+
+        - Replaced the local setup status scanner with the shared parser/setup-status helper, adding
+        agent override support so setup --status and doctor use the same Droid/Claude semantics.
+
+        - Updated the shared helper to preserve configPath for env/override detection and to
+        recognize native PreToolUse guard installs (kspec guard worktree) plus legacy guard markers.
+
+        - Added regression coverage for Droid human-readable status output and Claude native-guard
+        status detection.
+
+        - Verification: npm run typecheck; npm test -- tests/enhanced-setup.test.ts
+        tests/parser/doctor.test.ts tests/agent-detection.test.ts (74 passed); kspec validate
+        (warnings only from existing repo debt); npm test still fails in this dispatch workspace due
+        existing shadow lock contention and unrelated pre-existing suite failures outside this task
+        scope.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKM94SSN5XJCTY5PPWSX8T
@@ -93551,6 +93572,10 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #825. Added droid as a valid install-core platform override, verified
+    droid core skills render into .factory/skills/kspec-<id>/SKILL.md, and preserved the default
+    claude-code behavior when --platform is omitted. Own AC coverage verified for ac-1 through ac-3;
+    spec has no inherited trait ACs."
   depends_on: []
   context: []
   priority: 3
@@ -93560,6 +93585,7 @@
   created_at: 2026-03-13T03:25:20.154Z
   started_at: 2026-03-13T08:14:31.705Z
   submitted_at: 2026-03-13T08:20:47.305Z
+  completed_at: 2026-03-13T08:33:15.429Z
   notes:
     - _ulid: 01KKK46AMAQ1ES5P5AN4GNT71W
       created_at: 2026-03-13T08:14:47.434Z
@@ -93598,11 +93624,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-13T08:33:15.429Z
-  closed_reason: "Merged in PR #825. Added droid as a valid install-core platform override, verified
-    droid core skills render into .factory/skills/kspec-<id>/SKILL.md, and preserved the default
-    claude-code behavior when --platform is omitted. Own AC coverage verified for ac-1 through ac-3;
-    spec has no inherited trait ACs."
 - _ulid: 01KKJKMB07ACRP29S80J2PB1RK
   slugs:
     - implement-droid-setup-status-reporting
