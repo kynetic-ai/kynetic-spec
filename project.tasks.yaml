@@ -92665,12 +92665,31 @@
     - test
     - integration
   vcs_refs: []
+  session_id: 01KKJMV66J77XGP92ZMXC65Y7R
   created_at: 2026-03-12T02:33:59.701Z
-  notes: []
+  started_at: 2026-03-13T03:47:16.027Z
+  notes:
+    - _ulid: 01KKJMZ41VW1D8DJJ8SA5FKVX4
+      created_at: 2026-03-13T03:48:42.683Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: dispatch workspace, cleanup, bootstrap, orientation, and scheduler contracts
+        now have focused unit tests, but this task should prove they cooperate in one runtime flow.
+
+        - Scope: add an integration-style dispatch test covering base-branch sourcing,
+        worker/reviewer isolated worktrees, reviewer cleanup, fix-cycle reuse of the canonical
+        branch/workspace, and scheduler ordering after state transitions.
+
+        - Files: expected focus is tests/agent-dispatch-engine.test.ts and/or a dedicated dispatch
+        integration test file, with minimal helper changes only if needed.
+
+        - Verification: run targeted dispatch tests, then project validation and full test suite
+        before submit.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-13T03:47:16.027Z
-  session_id: 01KKJMV66J77XGP92ZMXC65Y7R
 - _ulid: 01KKFZ61246P1HQKMP9HSM7D1F
   slugs:
     - task-honor-derive-from-specs-false-in-plan-derive
