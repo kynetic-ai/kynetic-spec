@@ -2331,16 +2331,21 @@ workspaces:
       remote_ref: null
       adopted_from: null
       adopted_at: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-adopt-existing-task-branch-lineage-for-r-01kkk7r7
         branch_mode: branch
         branch_ref: dispatch/task/implement-adopt-existing-task-branch-lineage-for-r/01kkk7r7
-        head: f0353f68db19e03f0a372bfc0bee511a3d1db6b6
-        last_seen_at: 2026-03-13T22:03:00.894Z
-      reviewer: null
+        head: 805edf275aff9e6c44b8ce55dc49b1e8938c5d69
+        last_seen_at: 2026-03-13T22:08:05.258Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-adopt-existing-task-branch-lineage-for-r-01kkk7r7-review
+        branch_mode: detached
+        branch_ref: null
+        head: 805edf275aff9e6c44b8ce55dc49b1e8938c5d69
+        last_seen_at: 2026-03-13T22:08:05.258Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -2376,22 +2381,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T22:08:06.537Z
+      updated_at: 2026-03-13T22:08:05.258Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T22:08:06.537Z
+      updated_at: 2026-03-13T22:08:05.258Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T22:08:06.537Z
+      updated_at: 2026-03-13T22:08:05.258Z
     timestamps:
       created_at: 2026-03-13T18:39:13.247Z
-      updated_at: 2026-03-13T22:08:06.537Z
-      last_reconciled_at: 2026-03-13T22:08:06.537Z
+      updated_at: 2026-03-13T22:08:05.258Z
+      last_reconciled_at: 2026-03-13T22:08:05.258Z
       last_active_at: 2026-03-13T22:03:01.354Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKM1CAH2KSMH1TWS2E6079A1
