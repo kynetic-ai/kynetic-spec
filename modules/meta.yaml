@@ -5083,6 +5083,9 @@ modules:
         traits: []
         notes: []
         created: 2026-03-13T03:25:15.597Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KKJKM601W85HDSX3NGPA55C7
         slugs:
           - droid-skill-import
