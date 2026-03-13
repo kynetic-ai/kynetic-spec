@@ -92992,6 +92992,11 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #811. Added DroidConfigSchema and DroidConfig export, registered
+    optional platform_config.droid, and updated skill CLI platform-config guidance/tests so invalid
+    droid keys show schema-backed valid-key help. AC coverage verified in tests/skill-schema.test.ts
+    and tests/skill-cli.test.ts; npm test passed on current HEAD; kspec validate remained
+    warnings-only baseline with no task-specific errors."
   depends_on: []
   context: []
   priority: 3
@@ -93001,6 +93006,7 @@
   created_at: 2026-03-13T03:25:15.700Z
   started_at: 2026-03-13T06:33:35.343Z
   submitted_at: 2026-03-13T06:33:43.162Z
+  completed_at: 2026-03-13T08:03:58.374Z
   notes:
     - _ulid: 01KKJM5BAW70T4PTCEYQZ5VP3F
       created_at: 2026-03-13T03:34:38.173Z
@@ -93059,12 +93065,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-13T08:03:58.374Z
-  closed_reason: "Merged in PR #811. Added DroidConfigSchema and DroidConfig export, registered
-    optional platform_config.droid, and updated skill CLI platform-config guidance/tests so invalid
-    droid keys show schema-backed valid-key help. AC coverage verified in tests/skill-schema.test.ts
-    and tests/skill-cli.test.ts; npm test passed on current HEAD; kspec validate remained
-    warnings-only baseline with no task-specific errors."
 - _ulid: 01KKJKM6NQ8M1W9MSAKGXDXW97
   slugs:
     - implement-droid-agent-detection
@@ -93478,6 +93478,23 @@
         behavior.
 
         - Verification: npm test plus kspec validate.
+      supersedes: null
+    - _ulid: 01KKK3NRW512XNE4CNQGRX0K7Y
+      created_at: 2026-03-13T08:05:44.965Z
+      author: Jacob Chapel
+      content: >-
+        Implemented portable skill reference resolution for droid adapters.
+
+        - Updated prompt adapter mapping so droid-acp resolves portable skill tokens using droid
+        slash syntax.
+
+        - Added spec-linked tests covering droid core/project invocation formatting, token
+        resolution, and prompt rewriting.
+
+        - Verification: targeted npm test subset passed for portable-skill-references,
+        agent-invocation-lifecycle, core-skill-namespace, and platform-renderer; kspec validate had
+        warnings only from existing repository debt; full npm test currently fails in unrelated
+        session-start suites due dispatch shadow mutation lock contention.
       supersedes: null
   todos: []
   automation: eligible
