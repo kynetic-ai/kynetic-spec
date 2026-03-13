@@ -76,10 +76,15 @@ const GUARD_SCRIPTS: Record<string, boolean> = {
 export async function detectAgent(): Promise<{
   type: AgentType;
   confidence: AgentConfidence;
+  configPath?: string;
 }> {
   const detected = detectAgentFromEnv();
   if (detected.type !== "unknown") {
-    return { type: detected.type, confidence: detected.confidence };
+    return {
+      type: detected.type,
+      confidence: detected.confidence,
+      configPath: detected.configPath,
+    };
   }
 
   // Check for Claude Code by looking for .claude directory
@@ -90,7 +95,25 @@ export async function detectAgent(): Promise<{
     try {
       const stats = await fs.stat(globalClaudeDir);
       if (stats.isDirectory()) {
-        return { type: "claude-code", confidence: "medium" };
+        return {
+          type: "claude-code",
+          confidence: "medium",
+          configPath: path.join(process.env.HOME, ".claude", "settings.json"),
+        };
+      }
+    } catch {
+      // Directory doesn't exist
+    }
+
+    const globalDroidDir = path.join(process.env.HOME, ".factory");
+    try {
+      const stats = await fs.stat(globalDroidDir);
+      if (stats.isDirectory()) {
+        return {
+          type: "droid",
+          confidence: "medium",
+          configPath: path.join(process.env.HOME, ".factory", "settings.json"),
+        };
       }
     } catch {
       // Directory doesn't exist
