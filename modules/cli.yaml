@@ -1254,7 +1254,7 @@ features:
             created: 2026-03-13T09:16:57.822Z
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
       - _ulid: 01JHNKA9W0CTSK400000000000
         slugs:
           - task-block
