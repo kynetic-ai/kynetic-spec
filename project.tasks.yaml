@@ -93119,6 +93119,14 @@
 
         - Verification: run focused adapter tests plus kspec validate before submit.
       supersedes: null
+    - _ulid: 01KKJQKHJPKQMH018ESH10ZPCH
+      created_at: 2026-03-13T04:34:49.046Z
+      author: Jacob Chapel
+      content: Implemented the built-in droid-acp registry entry in src/agents/adapters.ts with native
+        droid exec stream-jsonrpc flags and --skip-permissions-unsafe auto-approve args. Added
+        explicit @droid-acp-adapter AC coverage for resolveAdapter(), listAdapters(), and
+        autoApproveArgs in tests/session-create.test.ts.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKM7Y5M5366F6XWC0KMHV5
