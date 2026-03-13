@@ -1,6 +1,5 @@
 /**
  * Tests for task automation eligibility system
- * AC: @task-automation-eligibility
  */
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';

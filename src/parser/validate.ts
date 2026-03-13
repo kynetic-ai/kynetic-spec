@@ -781,7 +781,7 @@ const AC_LINE_PREFIX = /\/\/\s*AC:\s*/;
  * Handles single and multiple @ref groups separated by commas or spaces.
  * Examples:
  *   "// AC: @spec-a ac-1"                        → [{specRef:"@spec-a", acIds:["ac-1"]}]
- *   "// AC: @spec-a ac-1, ac-2"                  → [{specRef:"@spec-a", acIds:["ac-1","ac-2"]}]
+ *   "// AC: @spec-a ac-create, ac-update"        → [{specRef:"@spec-a", acIds:["ac-create","ac-update"]}]
  *   "// AC: @spec-a ac-1, @spec-b ac-2"          → [{specRef:"@spec-a", acIds:["ac-1"]}, {specRef:"@spec-b", acIds:["ac-2"]}]
  *   "// AC: @spec-a ac-1 — N/A: reason"          → [{specRef:"@spec-a", acIds:["ac-1"]}]
  */
@@ -804,7 +804,7 @@ export function parseACAnnotationLine(
 
   // Match each @ref followed by its optional ac-N ids
   // This regex captures @ref and then all ac-N tokens until the next @ref or end
-  const refGroupPattern = /(@[\w-]+)((?:\s*,?\s*ac-\d+)*)/g;
+  const refGroupPattern = /(@[\w-]+)((?:\s*,?\s*ac-[\w-]+)*)/g;
   let match;
 
   while ((match = refGroupPattern.exec(remainder)) !== null) {
@@ -814,7 +814,7 @@ export function parseACAnnotationLine(
 
     if (acPart) {
       // Extract individual ac-N tokens
-      const acMatches = acPart.match(/ac-\d+/g);
+      const acMatches = acPart.match(/ac-[\w-]+/g);
       if (acMatches) {
         acIds.push(...acMatches);
       }
@@ -851,12 +851,8 @@ async function scanDirForACAnnotations(
 
       const groups = parseACAnnotationLine(lineText);
       for (const { specRef, acIds } of groups) {
-        if (acIds.length > 0) {
-          for (const ac of acIds) {
-            coveredACs.add(`${specRef} ${ac}`);
-          }
-        } else {
-          coveredACs.add(specRef);
+        for (const ac of acIds) {
+          coveredACs.add(`${specRef} ${ac}`);
         }
       }
     }
@@ -868,7 +864,7 @@ async function scanDirForACAnnotations(
  * Scans:
  * - tests/ (unit/integration tests, .test.ts/.test.js)
  * - packages/web-ui/tests/e2e/ (E2E Playwright tests, .spec.ts/.spec.js)
- * Returns a Set of covered ACs in format "@spec-ref ac-N"
+ * Returns a Set of covered ACs in format "@spec-ref ac-id"
  */
 export async function scanTestCoverage(rootDir: string): Promise<Set<string>> {
   const coveredACs = new Set<string>();
@@ -957,6 +953,7 @@ export async function scanACAnnotations(rootDir: string): Promise<ACAnnotation[]
  * Checks that:
  * 1. @slug resolves to a real spec item or trait
  * 2. ac-N exists on the resolved item's acceptance_criteria
+ * 3. blanket refs without ac-* ids do not count for items that define ACs
  *
  * Returns completeness warnings for invalid annotations.
  */
@@ -998,8 +995,17 @@ export function validateACAnnotations(
       continue;
     }
 
-    // If no specific AC ids, annotation is just a generic spec reference — skip AC existence check
     if (acIds.length === 0) {
+      const hasAcceptanceCriteria = (item.acceptance_criteria?.length ?? 0) > 0;
+      if (hasAcceptanceCriteria) {
+        warnings.push({
+          type: "invalid_ac_annotation",
+          itemRef: specRef,
+          itemTitle: `${relFile}:${line}`,
+          message: `AC annotation references '${specRef}' without explicit ac-* ids; blanket refs do not count for completeness coverage`,
+          details: `${file}:${line}`,
+        });
+      }
       continue;
     }
 
@@ -1044,21 +1050,18 @@ export function computeACCoverage<
     return [];
   }
 
-  return item.acceptance_criteria.map((ac, index) => {
-    const acId = `ac-${index + 1}`;
+  return item.acceptance_criteria.map((ac) => {
     const possibleRefs: string[] = [];
 
     // Try with primary slug
     if (item.slugs && item.slugs.length > 0) {
-      possibleRefs.push(`@${item.slugs[0]} ${acId}`);
-      possibleRefs.push(`@${item.slugs[0]}`);
+      possibleRefs.push(`@${item.slugs[0]} ${ac.id}`);
     }
 
     // Try all ULID prefix lengths (8..full) to support shortest-unique refs
     for (let prefixLength = 8; prefixLength <= item._ulid.length; prefixLength++) {
       const prefix = item._ulid.slice(0, prefixLength);
-      possibleRefs.push(`@${prefix} ${acId}`);
-      possibleRefs.push(`@${prefix}`);
+      possibleRefs.push(`@${prefix} ${ac.id}`);
     }
 
     const covered = possibleRefs.some((ref) => coveredACs.has(ref));
@@ -1169,15 +1172,12 @@ async function checkCompleteness(
         // Try with primary slug
         if (item.slugs && item.slugs.length > 0) {
           possibleRefs.push(`@${item.slugs[0]} ${ac.id}`);
-          // Also check for just the slug without specific AC
-          possibleRefs.push(`@${item.slugs[0]}`);
         }
 
         // Try all ULID prefix lengths (8..full) to support shortest-unique refs
         for (let prefixLength = 8; prefixLength <= item._ulid.length; prefixLength++) {
           const prefix = item._ulid.slice(0, prefixLength);
           possibleRefs.push(`@${prefix} ${ac.id}`);
-          possibleRefs.push(`@${prefix}`);
         }
 
         // Check if any of these references are covered
@@ -1213,13 +1213,11 @@ async function checkCompleteness(
 
         // Try with trait slug
         possibleRefs.push(`@${trait.slug} ${ac.id}`);
-        possibleRefs.push(`@${trait.slug}`);
 
         // Try all trait ULID prefix lengths (8..full) to support shortest-unique refs
         for (let prefixLength = 8; prefixLength <= trait.ulid.length; prefixLength++) {
           const prefix = trait.ulid.slice(0, prefixLength);
           possibleRefs.push(`@${prefix} ${ac.id}`);
-          possibleRefs.push(`@${prefix}`);
         }
 
         // Check if any of these references are covered

@@ -96,6 +96,10 @@ describe("parseIntOption", () => {
 });
 
 describe("parsePriority", () => {
+  // AC: @trait-priority-parameter ac-1
+  // AC: @trait-priority-parameter ac-2
+  // AC: @trait-priority-parameter ac-6
+  // AC: @trait-priority-parameter ac-7
   it("accepts numeric format", () => {
     expect(parsePriority("2")).toEqual({ ok: true, value: 2 });
   });
