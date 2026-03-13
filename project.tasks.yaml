@@ -92715,6 +92715,13 @@
         tests/dispatch-workspace-registry.test.ts because lifecycle_state remains ready instead of
         closing on the reviewed head."
       supersedes: null
+    - _ulid: 01KKJQ877X0A5Y6DR3HB843NQT
+      created_at: 2026-03-13T04:28:38.013Z
+      author: Jacob Chapel
+      content: "Fix cycle: reproduced the registry test in isolation, which passes locally. Investigating
+        shard-order-sensitive lifecycle reset behavior around reviewed-head cleanup and workspace
+        reuse before patching."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFZ61246P1HQKMP9HSM7D1F
