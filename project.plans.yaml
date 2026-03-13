@@ -15697,9 +15697,24 @@ plans:
       command should explain both the naming contract and why dispatch continuity
 
       depends on it.
-    status: approved
-    derived_tasks: []
-    derived_specs: []
+    status: active
+    derived_tasks:
+      - "@implement-portable-task-submission-linkage"
+      - "@implement-adopt-existing-task-branch-lineage-for-r"
+      - "@implement-branch-provenance-in-dispatch-workspace-"
+      - "@implement-adopted-branch-cleanup-and-recoverabilit"
+      - "@implement-review-and-fix-cycle-workspace-discovery"
+      - "@implement-deterministic-task-branch-helper"
+      - "@update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches"
+      - "@add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-rev\
+        iew"
+    derived_specs:
+      - "@portable-task-submission-linkage"
+      - "@adopt-existing-task-branch-lineage"
+      - "@branch-provenance-in-dispatch-workspace-registry"
+      - "@adopted-branch-cleanup-and-recoverability"
+      - "@review-and-fix-cycle-workspace-discovery-before-discard"
+      - "@deterministic-task-branch-helper"
     source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-branch-adoption-and-deterministic-task-branches.md
     module_ref: null
     created_at: 2026-03-13T08:39:33.082Z
@@ -15710,3 +15725,43 @@ plans:
         created_at: 2026-03-13T08:45:32.970Z
         author: Jacob Chapel
         content: Content updated from file
+      - _ulid: 01KKK7RF88Q5MAMZN026MVJ6S9
+        created_at: 2026-03-13T09:17:07.720Z
+        author: Jacob Chapel
+        content: |-
+          Treat this as a staged capability, not a one-shot branch-discovery patch.
+
+          Preferred state model:
+
+          - task state holds portable submission linkage that another checkout can use to
+            discover the submitted code lineage
+          - dispatch workspace registry remains the runtime source of truth once a branch
+            is adopted or provisioned
+
+          Important behavioral boundary:
+
+          - `task.ready` or fresh automation work may still synthesize deterministic
+            dispatcher-owned branches when appropriate
+          - `pending_review` and `needs_work` must not silently synthesize a fresh branch
+            when the submitted work is missing; those states require recovery or explicit
+            blockage because code already exists somewhere and the wrong branch would
+            corrupt review continuity
+
+          Branch-of-record precedence should be explicit in the plan and later specs:
+
+          - existing dispatch workspace registry state
+          - explicitly repaired or backfilled task submission linkage
+          - captured task submission linkage from submit time
+          - remote or review-derived discovery
+          - otherwise block with guidance for `pending_review` and `needs_work`
+
+          The deterministic helper and documentation layer should be treated as defense
+          in depth. It reduces incidence for manual work, but the runtime still needs to
+          adopt and preserve already-existing non-dispatch branches reliably. In this
+          plan, the helper standardizes on the exact dispatch-compatible branch format
+          rather than introducing a second alias or mapping layer.
+
+          The documentation/convention work should update the dynamic conventions and any
+          rendered agent instructions or skill output if their sources change. The helper
+          command should explain both the naming contract and why dispatch continuity
+          depends on it.

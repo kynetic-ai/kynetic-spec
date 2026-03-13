@@ -1194,6 +1194,64 @@ features:
             given: --review-url is provided with an invalid URL
             when: Task submit runs
             then: Validation error is returned before any state change occurs
+        requirements:
+          - _ulid: 01KKK7R5JXF1XD5JBKCYFTT7FN
+            slugs:
+              - portable-task-submission-linkage
+            title: Portable Task Submission Linkage
+            type: requirement
+            tags: []
+            description: |
+              Task submission stores structured branch linkage that another checkout can
+              use to recover the submitted code lineage for review and follow-up work.
+              This linkage is portable bootstrap state, not local worktree metadata.
+            acceptance_criteria:
+              - id: ac-1
+                given: |
+                  A task is submitted from a named branch
+                when: |
+                  `kspec task submit` runs
+                then: |
+                  The task stores structured submission linkage that includes the branch
+                  name, the current HEAD commit, and remote or upstream locator data when
+                  available, alongside any provided review URL
+              - id: ac-2
+                given: |
+                  A task has stored submission linkage
+                when: |
+                  The task is shown via `task get` or `--json`
+                then: |
+                  The linkage is available as machine-readable task state rather than
+                  only as prose in notes or prompts
+              - id: ac-3
+                given: |
+                  A task is submitted without a recoverable named branch context, such as
+                  detached HEAD or otherwise unresolved branch identity
+                when: |
+                  Submission linkage is captured
+                then: |
+                  The command records the best available revision identity and returns
+                  guidance that dispatch review continuity may require an explicit branch
+                  before adoption can occur
+              - id: ac-4
+                given: |
+                  A submitted task's branch linkage is missing or stale because the
+                  branch was renamed, the PR head changed, or the task predates linkage
+                  capture
+                when: |
+                  An explicit repair or backfill flow updates the task's submission
+                  linkage
+                then: |
+                  The linkage can be corrected without resetting task status or losing
+                  review and fix-cycle history
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-error-guidance"
+            notes: []
+            created: 2026-03-13T09:16:57.822Z
       - _ulid: 01JHNKA9W0CTSK400000000000
         slugs:
           - task-block
@@ -1585,6 +1643,52 @@ features:
           implementation: implemented
         description: Allow task creation to declare dependency relationships at creation time so newly added
           tasks can immediately encode prerequisite task refs in their depends_on field.
+      - _ulid: 01KKK7R6G305N8S4QWF3RHMPS0
+        slugs:
+          - deterministic-task-branch-helper
+        title: Deterministic Task Branch Helper
+        type: requirement
+        tags: []
+        description: |
+          kspec provides a first-party helper for humans and agents to create or
+          resume a deterministic task branch that remains dispatch-compatible by
+          default, reducing branch-identity ambiguity for manual work.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A user or agent wants to begin manual work on a task
+            when: |
+              The deterministic task-branch helper runs for that task
+            then: |
+              It creates or resumes the exact dispatch-compatible deterministic branch
+              derived from the task's slug and short ref using the documented
+              `dispatch/task/<normalized-task-slug>/<short-task-ref>` naming contract
+          - id: ac-2
+            given: |
+              The deterministic branch already exists locally or remotely
+            when: |
+              The helper runs again
+            then: |
+              It reuses or rehydrates that same branch lineage instead of creating a
+              duplicate branch for the task
+          - id: ac-3
+            given: |
+              The helper reports its result
+            when: |
+              Output is shown in human or JSON mode
+            then: |
+              It includes the resolved branch name and explains that using the helper
+              preserves dispatch reviewer and fix-cycle continuity for manual work
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-error-guidance"
+        notes: []
+        created: 2026-03-13T09:16:58.755Z
     features:
       - _ulid: 01KF41VNTAWFBTPPNAWJFFD6T6
         slugs:
@@ -8159,6 +8263,63 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KKK7R69KXXSNB39GHX8VMK8J
+        slugs:
+          - review-and-fix-cycle-workspace-discovery-before-discard
+        title: Review and Fix-Cycle Workspace Discovery Before Discard
+        type: requirement
+        tags: []
+        description: |
+          Queue pruning for `pending_review` and `needs_work` performs workspace
+          discovery and recovery before treating a task as missing or ineligible, so
+          dispatch can recover work that already exists outside the local checkout.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A queued `pending_review` or `needs_work` dispatch entry has no healthy
+              local workspace candidate
+            when: |
+              Queue eligibility is evaluated
+            then: |
+              Dispatch first attempts recovery from registry state, metadata-backed
+              worktrees, recorded task submission linkage, and remote or review
+              locators before discarding the queue entry as missing
+          - id: ac-2
+            given: |
+              One of those recovery paths succeeds
+            when: |
+              Eligibility is re-evaluated
+            then: |
+              The queue entry remains eligible and normal provisioning proceeds on the
+              recovered or adopted canonical branch lineage
+          - id: ac-3
+            given: |
+              No trustworthy recovery path exists for the review or fix-cycle task
+            when: |
+              Dispatch cannot reconstruct a branch-of-record
+            then: |
+              The engine emits explicit task-linked diagnostics and recovery guidance
+              rather than silently pruning the work as stale or synthesizing a fresh
+              unrelated branch
+          - id: ac-4
+            given: |
+              Multiple branch signals exist, such as existing registry state,
+              explicitly repaired task linkage, captured submission linkage, and
+              remote or review-derived discovery
+            when: |
+              Dispatch resolves the branch-of-record for review or fix-cycle work
+            then: |
+              It applies explicit precedence in that order and blocks with
+              diagnostics rather than guessing when the competing signals cannot be
+              reconciled safely
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-error-guidance"
+        notes: []
+        created: 2026-03-13T09:16:58.547Z
     features:
       - _ulid: 01KKFY93PW5HZ7V21GGJMMZENW
         slugs:
@@ -8415,6 +8576,112 @@ features:
                 status:
                   maturity: draft
                   implementation: implemented
+                requirements:
+                  - _ulid: 01KKK7R64BHWCKAV51ESXQ0NAZ
+                    slugs:
+                      - adopted-branch-cleanup-and-recoverability
+                    title: Adopted Branch Cleanup and Recoverability
+                    type: requirement
+                    tags: []
+                    description: |
+                      Cleanup and health reconciliation treat adopted/manual branches differently
+                      from dispatcher-owned branches so dispatch can preserve externally-owned
+                      refs while still cleaning local worktrees and surfacing actionable recovery
+                      states.
+                    acceptance_criteria:
+                      - id: ac-1
+                        given: |
+                          Cleanup runs for a workspace whose canonical branch was adopted from a
+                          manual or externally-created branch
+                        when: |
+                          The workspace becomes cleanup-eligible
+                        then: |
+                          Dispatch removes local worker and reviewer worktrees plus runtime
+                          metadata as appropriate, but preserves the adopted branch ref unless an
+                          explicit policy says the branch is dispatcher-owned
+                      - id: ac-2
+                        given: |
+                          Cleanup runs for a workspace whose canonical branch is
+                          dispatcher-managed
+                        when: |
+                          Cleanup safety checks pass
+                        then: |
+                          Dispatch may still delete the dispatcher-owned branch using the current
+                          cleanup lifecycle
+                      - id: ac-3
+                        given: |
+                          Reconciliation evaluates a non-healthy workspace
+                        when: |
+                          The canonical branch is missing locally, the remote locator is known,
+                          or only the reviewer snapshot is missing
+                        then: |
+                          Health state distinguishes recoverable adopted-branch rehydration,
+                          missing dispatcher-managed canonical branch, and missing reviewer
+                          snapshot as separate recovery paths with specific guidance
+                      - id: ac-4
+                        given: |
+                          Dispatch created or fetched a local branch ref only to rehydrate an
+                          adopted externally-owned branch into the local checkout
+                        when: |
+                          Cleanup runs after the workspace closes
+                        then: |
+                          Cleanup policy distinguishes the external source branch from the local
+                          dispatch-side mirror ref so local rehydration state can be removed
+                          without deleting or mutating the externally-owned branch lineage
+                    depends_on: []
+                    implements: []
+                    relates_to: []
+                    tests: []
+                    traits:
+                      - "@trait-error-guidance"
+                    notes: []
+                    created: 2026-03-13T09:16:58.379Z
+              - _ulid: 01KKK7R5Z8AH2XQ7TQ9JQNG2FG
+                slugs:
+                  - branch-provenance-in-dispatch-workspace-registry
+                title: Branch Provenance in Dispatch Workspace Registry
+                type: requirement
+                tags: []
+                description: |
+                  Dispatch workspace records capture whether the canonical branch is
+                  dispatcher-managed or adopted, plus the locator and ownership semantics
+                  needed to rehydrate and preserve that lineage correctly across restarts and
+                  reconciliation.
+                acceptance_criteria:
+                  - id: ac-1
+                    given: |
+                      A workspace record is persisted for a task
+                    when: |
+                      The canonical branch is dispatcher-managed or adopted from existing
+                      task state
+                    then: |
+                      The record stores branch provenance and locator data sufficient to
+                      distinguish ownership, remote recovery source, and cleanup semantics
+                  - id: ac-2
+                    given: |
+                      A metadata-backed workspace is reconstructed or reconciled
+                    when: |
+                      The canonical branch was previously adopted from a non-dispatch branch
+                    then: |
+                      Recovery preserves that adopted canonical branch identity instead of
+                      normalizing it back to the deterministic `dispatch/task/*` namespace
+                  - id: ac-3
+                    given: |
+                      Existing dispatcher-managed workspace records created before provenance
+                      tracking existed
+                    when: |
+                      They are read after the migration
+                    then: |
+                      They default to dispatcher-managed ownership semantics without breaking
+                      current dispatch continuity
+                depends_on: []
+                implements: []
+                relates_to: []
+                tests: []
+                traits:
+                  - "@trait-error-guidance"
+                notes: []
+                created: 2026-03-13T09:16:58.216Z
             status:
               maturity: draft
               implementation: in_progress
@@ -8529,6 +8796,64 @@ features:
                 given: reconcileWorkspaceHealth() restores a branch from remote
                 when: The workspace health state is computed
                 then: The canonical_branch_head is updated to the resolved commit from the restored branch
+          - _ulid: 01KKK7R5SA3G0203T8D595AB0A
+            slugs:
+              - adopt-existing-task-branch-lineage
+            title: Adopt Existing Task Branch Lineage for Review and Fix Cycles
+            type: requirement
+            tags: []
+            description: |
+              When review or follow-up work begins without an existing local dispatch
+              workspace, dispatch can adopt a previously-submitted branch lineage instead
+              of synthesizing a new dispatcher-owned branch and diverging from the code
+              already under review.
+            acceptance_criteria:
+              - id: ac-1
+                given: |
+                  A task in `pending_review` or `needs_work` has no active dispatch
+                  workspace record but does have recoverable submission linkage
+                when: |
+                  The dispatcher provisions workspace state
+                then: |
+                  It adopts that existing branch lineage as the task's canonical branch
+                  for reviewer and fix-cycle continuity instead of creating a fresh
+                  `dispatch/task/*` branch from the base branch
+              - id: ac-2
+                given: |
+                  The adopted branch is not present locally in the dispatch checkout but
+                  its remote or review locator is known
+                when: |
+                  The dispatcher prepares reviewer or fix-cycle work
+                then: |
+                  It rehydrates the local adopted branch from the recorded locator before
+                  reviewer or worker eligibility is discarded
+              - id: ac-3
+                given: |
+                  A task transitions from review to `needs_work` after an adopted branch
+                  lineage has been established
+                when: |
+                  The follow-up worker invocation is prepared
+                then: |
+                  The worker resumes the same adopted canonical branch lineage instead of
+                  forking a new branch for the fix cycle
+              - id: ac-4
+                given: |
+                  A task in `pending_review` or `needs_work` has no existing workspace
+                  record and no recoverable submission lineage
+                when: |
+                  Dispatch attempts to prepare the workspace
+                then: |
+                  The task is blocked or marked with explicit recovery guidance rather
+                  than silently provisioning a fresh branch that does not contain the
+                  submitted work under review
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-error-guidance"
+            notes: []
+            created: 2026-03-13T09:16:58.026Z
         status:
           maturity: draft
           implementation: implemented
