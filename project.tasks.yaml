@@ -87593,7 +87593,7 @@
   type: task
   spec_ref: "@test-annotation-sweep"
   plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-core-primitives-ac-backfill"
@@ -87757,6 +87757,14 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-13T08:12:49.542Z
+  closed_reason: "Merged in PR #794 as 05cb88a59c14. Implemented AC annotation coverage semantics so
+    named and numeric ac-* ids are parsed end-to-end, blanket refs against AC-bearing specs/traits
+    emit invalid_ac_annotation warnings and grant no completeness credit, and validator regression
+    coverage was added for explicit mapping, named-id parsing, and no-blanket-credit behavior.
+    Verification: targeted validator tests passed, GitHub CI passed on c8d10e732e39, and full npm
+    test passed on the verified PR head in a project-local worktree (219 files, 4618 tests, 0
+    failures)."
 - _ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
   slugs:
     - implement-missing-description-backfill
