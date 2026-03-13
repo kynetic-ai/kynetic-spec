@@ -93915,5 +93915,23 @@
         state is missing but the configured remote has the branch, recovery should attach/fetch and
         repair rather than re-initialize a brand-new shadow history."
       supersedes: null
+    - _ulid: 01KKK2MKFDSBSHKKSFVF7EVAJ0
+      created_at: 2026-03-13T07:47:38.094Z
+      author: Jacob Chapel
+      content: Implemented broken-shadow safety across repair/bootstrap/setup flows. repairShadow() now
+        preserves/restores the prior worktree on failure and can reattach a missing local shadow
+        branch from existing remote shadow state before recreating the worktree; kspec shadow repair
+        now uses configured shadow options instead of default-only assumptions.
+        scripts/bootstrap.cjs and kspec setup now choose repair when shadow state already exists
+        locally or on the configured/default remote, and setup prompts/messages were updated to
+        describe missing or unhealthy worktrees instead of only the local-branch case. Verified with
+        npm run build; npm test -- --run tests/bootstrap.test.ts tests/setup.test.ts
+        tests/shadow.test.ts tests/daemon-watcher-error-handling.test.ts; npm test -- --run
+        tests/integration.test.ts -t "should search shadow branch when main is empty but shadow has
+        commits"; npm test -- --run tests/dispatch-workspace-and-scheduler-flow.test.ts. kspec
+        validate still reports the repo\'s existing warning set (orphaned specs, AC coverage gaps,
+        fixture annotation warnings, orphaned skill dir) but no new schema/reference errors from
+        this task.
+      supersedes: null
   todos: []
   automation: manual_only
