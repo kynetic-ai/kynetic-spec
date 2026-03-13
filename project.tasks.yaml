@@ -93876,6 +93876,7 @@
     - reliability
   vcs_refs: []
   created_at: 2026-03-13T06:59:24.725Z
+  started_at: 2026-03-13T07:21:31.583Z
   notes:
     - _ulid: 01KKK0QVX2TJEQ9MJME5DV3YDP
       created_at: 2026-03-13T07:14:27.874Z
@@ -93884,6 +93885,27 @@
         linked to the wrong spec family. Use this task as the single implementation thread for the
         broader broken-shadow incident.
       supersedes: null
+    - _ulid: 01KKK155ANB51KZHWB4MTSZH7K
+      created_at: 2026-03-13T07:21:43.509Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: dispatch checkout lost .kspec twice; when shadow detection fell through,
+        daemon/dispatch continued in repo-root mode and a root-level
+        project.dispatch-workspaces.yaml appeared.
+
+        - Scope: fail fast for broken existing shadow repos, prevent repo-root fallback path
+        resolution, preserve/restore .kspec when repair cannot recreate it, and make setup/bootstrap
+        recovery prefer repair semantics over fresh init.
+
+        - Files: expected focus in src/parser/yaml.ts, src/parser/shadow.ts, scripts/bootstrap.cjs,
+        packages/daemon/src/watcher.ts if watcher behavior remains justified, plus targeted tests
+        under tests/.
+
+        - Verification: focused vitest coverage for shadow/bootstrap/watcher regressions, then
+        validate whether any docs/help output or generated agent artifacts need updates based on
+        behavior changes.
+      supersedes: null
   todos: []
   automation: manual_only
-  started_at: 2026-03-13T07:21:31.583Z
