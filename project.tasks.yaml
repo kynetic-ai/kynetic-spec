@@ -94699,12 +94699,30 @@
   priority: 1
   tags: []
   vcs_refs: []
+  session_id: 01KKM7XPKGQGBYV5A2D1GEDZSW
   created_at: 2026-03-13T09:17:00.162Z
-  notes: []
+  started_at: 2026-03-13T18:39:37.133Z
+  notes:
+    - _ulid: 01KKM7YV581A5HVB4WW7D4FW6N
+      created_at: 2026-03-13T18:39:50.952Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Dispatch system needs to adopt existing task branches (from manual or external
+        work) rather than creating fresh dispatch/task/* branches when no workspace record exists
+        but submission linkage is available. This enables review and fix-cycle continuity for
+        adopted branches.
+
+        - Scope: Implement branch adoption logic in workspace provisioning, rehydration from remote
+        locators, fix-cycle branch continuity, and explicit failure when no linkage exists.
+
+        - Files: src/dispatch/ workspace and scheduler modules (to be confirmed after exploration)
+
+        - Verification: Tests covering all 4 ACs + trait ACs, npm test passing
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-13T18:39:37.133Z
-  session_id: 01KKM7XPKGQGBYV5A2D1GEDZSW
 - _ulid: 01KKK7R8XY5MSEEWA0E9NKEW76
   slugs:
     - implement-branch-provenance-in-dispatch-workspace-
