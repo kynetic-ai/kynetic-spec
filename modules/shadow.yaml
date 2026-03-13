@@ -658,6 +658,27 @@ features:
             when: the user runs kspec validate
             then: validation checks the shadow worktree link, branch reachability, clean shadow status, and
               schema-valid shadow spec files before reporting success
+      - _ulid: 01KKJZTZ6309QBKBMQ0CSF3FXX
+        slugs:
+          - broken-shadow-safety
+        title: Broken Shadow Safety
+        type: requirement
+        priority: high
+        tags:
+          - shadow
+          - dispatch
+          - reliability
+        description: Broken-shadow handling must be fail-safe. Existing shadow repos that lose or disconnect
+          the configured shadow worktree must not silently fall back to repo-root read/write paths,
+          and recovery flows must preserve the prior shadow directory unless a replacement worktree
+          is successfully recreated.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-13T06:58:40.964Z
   - _ulid: 01KF47F4J7DAQ3TD3BGHFQSK9C
     slugs:
       - shadow-sync
