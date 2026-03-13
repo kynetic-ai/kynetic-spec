@@ -93466,6 +93466,18 @@
         tests/dispatch-workspace-and-scheduler-flow.test.ts:370 (expected 4 lifecycle records, got
         3). Local npm test passed, but CI must be green before merge."
       supersedes: null
+    - _ulid: 01KKKF1CGMEMH75NRPFCXZS5B9
+      created_at: 2026-03-13T11:24:19.860Z
+      author: "@claude"
+      content: "Fix cycle 5 resolution: the CI failures in dispatch-workspace-registry.test.ts:616 and
+        dispatch-workspace-and-scheduler-flow.test.ts:370 were flaky timing issues — both tests pass
+        consistently locally but fail on slower CI runners. Root cause: tight polling timeouts
+        (2000ms/1200ms) that expire before async workspace lifecycle state transitions complete
+        under I/O contention. Fix: increased waitFor/waitForWorkspaceRecord timeouts, bumped
+        test-level vitest timeouts to 30s, and added explicit wait for background invocation cleanup
+        before triggering the completed transition. Verification: npm run typecheck clean, npm test
+        228/228 files passed (4730 tests)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKM94SSN5XJCTY5PPWSX8T
