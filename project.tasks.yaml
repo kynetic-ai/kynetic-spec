@@ -93034,6 +93034,13 @@
         skill CLI validation guidance path, so invalid droid platform_config keys still show stale
         valid-key guidance that only mentions claude_code and codex."
       supersedes: null
+    - _ulid: 01KKJY4D8EDEDPCQ6BTQ3WZZ0Q
+      created_at: 2026-03-13T06:28:53.134Z
+      author: Jacob Chapel
+      content: "Fix cycle focus: update skill CLI platform_config validation guidance so schema-backed
+        valid-key output includes droid alongside claude_code and codex, then add regression
+        coverage for invalid droid keys and expanded guidance text."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKM6NQ8M1W9MSAKGXDXW97
@@ -93352,6 +93359,7 @@
   session_id: 01KKJXGV71P19H53PZXYST8WP3
   created_at: 2026-03-13T03:25:18.873Z
   started_at: 2026-03-13T06:18:40.297Z
+  submitted_at: 2026-03-13T06:27:41.493Z
   notes:
     - _ulid: 01KKJXJ35BD9HQEZ8Q9DBF9WAD
       created_at: 2026-03-13T06:18:52.971Z
@@ -93405,7 +93413,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-13T06:27:41.493Z
 - _ulid: 01KKJKM9SGG5AV5N0EV3GFTMZ4
   slugs:
     - implement-portable-skill-reference-resolution
