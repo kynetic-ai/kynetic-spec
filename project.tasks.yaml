@@ -93870,6 +93870,14 @@
         dispatch/task/implement-droid-skill-import-support/01kkjkmb, resolve conflicts, rerun CI,
         then resubmit."
       supersedes: null
+    - _ulid: 01KKM0KD03V05KM4FD3Y6PJBWB
+      created_at: 2026-03-13T16:31:15.971Z
+      author: "@claude"
+      content: "Fix cycle 3: Rebased onto current main (4d6126d81) to resolve merge conflict. Dropped the
+        dispatch reconciliation fix commit (cef133885) since main already has the same fix via
+        commits 3305f1147 and 9cb3579a5 from the durably-shadow-commit task. Branch now has 2 clean
+        commits on top of main: feat + AC-3 test fix. All 4750 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJP6E1TN5ZFMHASTHSGG2MH
