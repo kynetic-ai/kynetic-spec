@@ -572,8 +572,8 @@ workspaces:
     base_branch_point: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
     canonical_branch: dispatch/task/durably-shadow-commit-dispatch-workspace-registry-writes/01kkjt2v
     canonical_branch_head: 975dede747a081507985a92d3164e0425718e275
-    lifecycle_state: integrating
-    active_role: reviewer
+    lifecycle_state: closing
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/durably-shadow-commit-dispatch-workspace-registry-writes-01kkjt2v
@@ -617,28 +617,28 @@ workspaces:
           steps: []
           failureMessage: null
     integration:
-      status: pending
+      status: merged
       target_branch: main
       target_commit: e728c62710bbc6fe43d7bd1dfd135c092ef732f2
       publication_mode: pull_request
-      outcome: pull_request
-      detail: null
-      updated_at: 2026-03-13T16:03:00.468Z
+      outcome: merged
+      detail: integration:merged
+      updated_at: 2026-03-13T16:03:20.026Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T16:03:00.468Z
+      updated_at: 2026-03-13T16:03:20.026Z
     cleanup:
-      status: not_scheduled
-      eligible: false
-      reason: null
-      detail: null
-      updated_at: 2026-03-13T16:03:00.468Z
+      status: scheduled
+      eligible: true
+      reason: integrated-into-base-branch
+      detail: integrated-into-base-branch
+      updated_at: 2026-03-13T16:03:20.026Z
     timestamps:
       created_at: 2026-03-13T05:30:39.118Z
-      updated_at: 2026-03-13T16:03:00.468Z
-      last_reconciled_at: 2026-03-13T16:03:00.468Z
+      updated_at: 2026-03-13T16:03:20.026Z
+      last_reconciled_at: 2026-03-13T16:03:20.026Z
       last_active_at: 2026-03-13T15:50:29.262Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM61M5BAEFRPNBRK7XDRY
