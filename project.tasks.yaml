@@ -93907,5 +93907,13 @@
         validate whether any docs/help output or generated agent artifacts need updates based on
         behavior changes.
       supersedes: null
+    - _ulid: 01KKK1SR0A5HMNZMWPGBFQ659Z
+      created_at: 2026-03-13T07:32:57.994Z
+      author: Jacob Chapel
+      content: "Requirement clarification: bootstrap/recovery must treat existing shadow state on the
+        configured remote as recoverable too, not only a local kspec-meta branch. If local shadow
+        state is missing but the configured remote has the branch, recovery should attach/fetch and
+        repair rather than re-initialize a brand-new shadow history."
+      supersedes: null
   todos: []
   automation: manual_only
