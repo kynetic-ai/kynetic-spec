@@ -14133,6 +14133,8 @@ plans:
       - recorded checks and normalized gate evaluation
       - reviewer verdicts, blocking state, and iterative re-review cycles
       - explicit integration with task review states and compatibility fields
+      - a minimal CLI surface so agents and humans can create, inspect, and update
+        review records without direct file mutation
 
       This plan should not yet cover:
 
@@ -14382,6 +14384,136 @@ plans:
             then: |
               The external link is treated as compatibility linkage, not the sole
               durable review record
+
+      - title: Review CLI Commands
+        slug: review-cli-commands
+        type: feature
+        parent: "@cli"
+        description: |
+          kspec exposes a first-party CLI for creating, inspecting, and updating
+          review records so agents and humans can use the review system without a web
+          UI or direct file edits.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A user or agent needs to work with review records locally
+            when: |
+              They use kspec review commands
+            then: |
+              The CLI provides supported commands for the core review workflow rather
+              than requiring direct mutation of stored metadata
+          - id: ac-2
+            given: |
+              Review records are rendered through the CLI
+            when: |
+              A command prints review data
+            then: |
+              The output includes the subject, status, current verdict or gate
+              summary, thread state, and external linkage needed to understand the
+              review without opening raw storage
+
+      - title: Review CLI Creation and Query
+        slug: review-cli-creation-and-query
+        type: requirement
+        parent: "@review-cli-commands"
+        description: |
+          The CLI supports creating reviews and reading them back by review ref,
+          subject, and status so agents can discover active work and reopen an
+          existing review thread.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A user or agent needs to create a review for a supported subject
+            when: |
+              They run a review creation command such as kspec review add
+            then: |
+              A first-party review record is created with subject binding, initial
+              status, and author metadata
+          - id: ac-2
+            given: |
+              A review record exists
+            when: |
+              A user or agent runs a command such as kspec review get @review-ref
+            then: |
+              The CLI shows the review core state, threads, checks, verdicts,
+              resolution state, and linkage metadata
+          - id: ac-3
+            given: |
+              Multiple review records exist
+            when: |
+              A user or agent runs a query command such as kspec review list with
+              filters for subject, status, or reviewer
+            then: |
+              The CLI can return the matching review set so automation can find the
+              active review record instead of scraping task notes
+
+      - title: Review CLI Mutation Commands
+        slug: review-cli-mutation-commands
+        type: requirement
+        parent: "@review-cli-commands"
+        description: |
+          The CLI supports the minimal mutations needed to conduct a review cycle:
+          add comments, record checks, set verdicts, and resolve or reopen threads.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A review record exists
+            when: |
+              A reviewer runs a command such as kspec review comment add with an
+              optional code or structured anchor
+            then: |
+              The review stores the new thread entry with its anchor and authorship
+          - id: ac-2
+            given: |
+              Verification evidence exists for a review
+            when: |
+              A user or agent runs a command such as kspec review check add
+            then: |
+              The review stores the check result with normalized status and evidence
+              details
+          - id: ac-3
+            given: |
+              A reviewer needs to approve, request changes, or leave a non-blocking
+              verdict
+            when: |
+              They run a command such as kspec review verdict set
+            then: |
+              The individual verdict and resulting review disposition are updated
+              according to gate and blocker rules
+          - id: ac-4
+            given: |
+              A review thread has been addressed or needs to be reopened
+            when: |
+              A user or agent runs a command such as kspec review resolve or reopen
+            then: |
+              The thread resolution state changes with actor and timestamp history
+
+      - title: Review CLI Task Linkage
+        slug: review-cli-task-linkage
+        type: requirement
+        parent: "@review-cli-commands"
+        description: |
+          Task-oriented CLI output exposes the active review linkage so automation can
+          move between task workflow state and the corresponding durable review
+          record.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A task has an active associated review record
+            when: |
+              A user or agent inspects the task through task or review CLI output
+            then: |
+              The active review ref can be discovered without reading raw storage or
+              scraping ad hoc task notes
+          - id: ac-2
+            given: |
+              An automation flow starts from a task in pending_review or needs_work
+            when: |
+              It needs the durable review audit object
+            then: |
+              The CLI supports resolving from the task context to the corresponding
+              review record using supported commands rather than convention-only
+              fields
       ```
 
       ## Tasks
@@ -14435,6 +14567,41 @@ plans:
         depends_on:
           - "@task-design-review-verdicts-and-resolution"
         tags: [review, tasks, integration]
+
+      - slug: task-design-review-cli-surface
+        title: Design minimal CLI surface for review records
+        spec_ref: "@review-cli-commands"
+        priority: 2
+        depends_on:
+          - "@task-design-review-record-core"
+          - "@task-design-review-task-integration"
+        tags: [review, cli, ux]
+
+      - slug: task-design-review-cli-create-query
+        title: Design review CLI creation and query commands
+        spec_ref: "@review-cli-creation-and-query"
+        priority: 2
+        depends_on:
+          - "@task-design-review-cli-surface"
+        tags: [review, cli, query]
+
+      - slug: task-design-review-cli-mutations
+        title: Design review CLI mutation commands
+        spec_ref: "@review-cli-mutation-commands"
+        priority: 2
+        depends_on:
+          - "@task-design-review-cli-surface"
+          - "@task-design-review-verdicts-and-resolution"
+        tags: [review, cli, workflow]
+
+      - slug: task-design-review-cli-task-linkage
+        title: Design task and review CLI linkage behavior
+        spec_ref: "@review-cli-task-linkage"
+        priority: 2
+        depends_on:
+          - "@task-design-review-cli-create-query"
+          - "@task-design-review-task-integration"
+        tags: [review, cli, tasks]
       ```
 
       ## Implementation Notes
@@ -14471,10 +14638,11 @@ plans:
 
       ### Out of scope for this plan
 
-      This plan does not yet attempt to specify the full CLI surface, web UI, or
-      provider sync implementation for review records. The immediate goal is the
-      record model and its integration contracts so later plans can build commands,
-      rendering, and automation on top of a stable core.
+      This plan does not yet attempt to specify a full web UI or provider sync
+      implementation for review records. The immediate goal is a stable core record
+      model plus the minimal CLI needed for agents and humans to use it. Richer
+      rendering, interaction design, and provider-specific synchronization can follow
+      in later plans.
     status: draft
     derived_tasks: []
     derived_specs: []
@@ -14488,6 +14656,10 @@ plans:
         created_at: 2026-03-13T05:36:18.620Z
         author: Jacob Chapel
         content: Refine scope, task semantics, and integration contracts
+      - _ulid: 01KKM3AF150CF90P3TS4Z0HW26
+        created_at: 2026-03-13T17:18:48.869Z
+        author: Jacob Chapel
+        content: Add minimal CLI surface for review records
   - _ulid: 01KKFJY80GMJZKN10AMDJ2WDNC
     slugs:
       - plan-grouped-work-and-human-handoff
