@@ -8487,6 +8487,14 @@ features:
                   shadow-mutation path before the dispatcher treats the new registry state as
                   authoritative, so daemon restart or later reconciliation cannot lose the update in
                   an uncommitted dirty worktree
+              - id: ac-9
+                given: The dispatch runtime writes a workspace record to the registry file and closed records exist
+                  whose closed_at timestamp exceeds the retention threshold
+                when: The registry file is saved through saveDispatchWorkspaceRecord
+                then: Closed records older than the retention threshold are removed from the file atomically within
+                  the same write and lock scope, requiring no separate cleanup step. Purged records
+                  are no longer available for workspace identity reuse during re-provisioning;
+                  re-opened tasks receive fresh workspace identities.
             depends_on: []
             implements: []
             relates_to: []
