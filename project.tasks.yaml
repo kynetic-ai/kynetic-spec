@@ -94770,6 +94770,34 @@
         adopted workspaces cannot be reaped even though branch deletion is skipped for adopted
         provenance."
       supersedes: null
+    - _ulid: 01KKM2Q0R3W819BPY34D1401WT
+      created_at: 2026-03-13T17:08:11.651Z
+      author: "@claude"
+      content: >-
+        Fix cycle 1 addressed. The issue was that findWorkspaceRegistrationByTaskRef hardcoded the
+        dispatch/task/* branch pattern when discovering worktrees. Adopted branches use non-dispatch
+        canonical names (e.g. feat/*), so the synthetic branch lookup returned null and
+        reapDispatchWorkspace silently returned action:'none'.
+
+
+        Fix: Added registry fallback to findWorkspaceRegistrationByTaskRef. When the synthetic
+        dispatch/task/<slug>/<shortId> branch has no worktree, the function now queries the
+        workspace registry by task_ref to get the actual canonical_branch, then looks up the
+        worktree by that. This fixes both reapDispatchWorkspace and cleanupReviewerDispatchWorkspace
+        (both call findWorkspaceRegistrationByTaskRef).
+
+
+        Added 2 new tests:
+
+        - Direct reap of adopted workspace via registry fallback (exercises reapDispatchWorkspace
+        directly)
+
+        - Reap via artifact reconciliation (exercises the reconcileDispatchWorkspaceArtifacts →
+        reapDispatchWorkspace path that triggered the original bug)
+
+
+        Both verify worktree removal AND that adopted branches are preserved (not deleted).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKK7R9XYTYS5JTNBFDNQ5YNS
