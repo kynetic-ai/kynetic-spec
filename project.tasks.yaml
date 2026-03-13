@@ -92944,6 +92944,17 @@
 
         - Verification: targeted schema tests, typecheck/build-backed test run, then kspec validate.
       supersedes: null
+    - _ulid: 01KKJMCNGDFP7MNCGC67AGHVRS
+      created_at: 2026-03-13T03:38:37.966Z
+      author: Jacob Chapel
+      content: "Implemented Droid platform config schema support in src/schema/meta.ts by adding
+        DroidConfigSchema, wiring optional platform_config.droid into PlatformConfigSchema, and
+        exporting DroidConfig. Added AC-tagged coverage in tests/skill-schema.test.ts for accepted
+        Droid fields, strict rejection of unknown Droid keys, PlatformConfigSchema shape including
+        droid, and compile-time DroidConfig usage. Verification: npm test --
+        tests/skill-schema.test.ts, npm test, kspec validate (warnings-only baseline exit 6; no
+        task-specific errors)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKM6NQ8M1W9MSAKGXDXW97
