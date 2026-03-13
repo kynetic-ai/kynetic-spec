@@ -92380,6 +92380,14 @@
       content: "[FIX_CYCLE: 15] Review findings: MUST-FIX: _spawnInvocation leaks inFlightTaskKeys on
         bootstrap/prompt failure, which can strand the task after role-entry configuration errors."
       supersedes: null
+    - _ulid: 01KKJGG3H2S4FATT2YTRV8JR1Y
+      created_at: 2026-03-13T02:30:36.322Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 15] Re-entered in_progress to fix the remaining dispatch concurrency leak in
+        _spawnInvocation. Scope: src/agent-runtime/dispatch.ts plus targeted agent-dispatch-engine
+        regressions proving bootstrap/prompt failures release the in-flight task key so the task can
+        be retried."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
