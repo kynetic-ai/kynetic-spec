@@ -93803,6 +93803,10 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #828. Implemented droid skill import support by mapping imports from
+    .factory/skills/ into platform_config.droid, preserving existing .claude/skills/ behavior, and
+    covering AC-1 through AC-3 with skill CLI tests. Local regression suite passed (npm test: 4750
+    passed, 3 skipped) and current-head GitHub checks were green before merge."
   depends_on: []
   context: []
   priority: 3
@@ -93812,6 +93816,7 @@
   created_at: 2026-03-13T03:25:21.408Z
   started_at: 2026-03-13T16:31:33.711Z
   submitted_at: 2026-03-13T16:31:37.533Z
+  completed_at: 2026-03-13T16:42:12.312Z
   notes:
     - _ulid: 01KKKS93B6JZSNKF31BDHTQBWS
       created_at: 2026-03-13T14:23:18.375Z
@@ -93887,11 +93892,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-13T16:42:12.312Z
-  closed_reason: "Merged in PR #828. Implemented droid skill import support by mapping imports from
-    .factory/skills/ into platform_config.droid, preserving existing .claude/skills/ behavior, and
-    covering AC-1 through AC-3 with skill CLI tests. Local regression suite passed (npm test: 4750
-    passed, 3 skipped) and current-head GitHub checks were green before merge."
 - _ulid: 01KKJP6E1TN5ZFMHASTHSGG2MH
   slugs:
     - reconcile-legacy-dispatch-workspaces-and-spec-gaps
@@ -94812,3 +94812,64 @@
   notes: []
   todos: []
   automation: eligible
+- title: Implement inline registry purge for closed dispatch workspace records
+  description: >-
+    The dispatch workspace registry (project.dispatch-workspaces.yaml) accumulates records
+    indefinitely. Records transition through lifecycle states ending in 'closed' but are never
+    removed from the file. Over time this causes unbounded growth.
+
+
+    Implement inline purge logic in saveDispatchWorkspaceRecord (src/parser/dispatch-workspaces.ts)
+    that removes closed records whose closed_at timestamp exceeds a retention threshold (default 7
+    days). The purge runs inside the existing withFileLock scope so no new locking is needed. The
+    shadow commit that follows registry writes already handles durability — purged records are
+    simply fewer records in the same write.
+
+
+    Key implementation details:
+
+    - Add purge logic to saveDispatchWorkspaceRecord only (NOT
+    mutateDispatchWorkspaceRecordAtomically — different semantics)
+
+    - Filter out records where lifecycle_state === 'closed' AND timestamps.closed_at is older than 7
+    days
+
+    - The first write after shipping will purge the backlog of old records automatically
+
+    - provisionDispatchWorkspace reads closed records (includeClosed: true) to reuse workspace
+    identity (canonical branch, worktree paths) during re-provisioning. After purge, re-opened tasks
+    beyond the retention window get fresh identities. This is acceptable since the worktree and
+    branch are already reaped by cleanup
+
+    - reconcileDispatchWorkspaceRegistry already filters to non-closed records (nonClosedRecords at
+    ~line 1272) — no interaction
+
+    - validateSingleOpenWorkspacePerTask only checks non-closed records — no interaction
+
+
+    Spec: @dispatch-workspace-registry ac-9
+
+    Files: src/parser/dispatch-workspaces.ts (purge logic in saveDispatchWorkspaceRecord), tests/
+    (new test file for purge behavior)
+
+    Verification: npm test
+  type: task
+  spec_ref: "@dispatch-workspace-registry"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - dispatch
+    - cleanup
+    - registry
+  depends_on: []
+  automation: eligible
+  _ulid: 01KKM1CAH2KSMH1TWS2E6079A1
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-13T16:44:52.642Z
+  notes: []
+  todos: []
