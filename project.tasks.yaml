@@ -92316,6 +92316,14 @@
         src/agent-runtime/workspace.ts so the role-entry PR only carries code required for the
         merged behavior."
       supersedes: null
+    - _ulid: 01KKJENGKADCNZPH5T4NEKQJ0K
+      created_at: 2026-03-13T01:58:36.394Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 7] Removed the dead local workspace helpers left behind after the
+        dispatch/runtime merge (commandSucceeds, nextLifecycleState, hasGitRemote) so the role-entry
+        PR only carries the helper surface still exercised by the current workspace lifecycle and
+        role-entry behavior."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
