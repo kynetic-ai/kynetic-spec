@@ -2502,7 +2502,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
     lifecycle_state: integrating
-    active_role: null
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-inline-registry-purge-for-closed-dispatch-workspace-records-01kkm1ca
@@ -2554,7 +2554,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T19:45:04.838Z
+      updated_at: 2026-03-13T19:45:05.396Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -2563,7 +2563,7 @@ workspaces:
       updated_at: 2026-03-13T19:45:04.838Z
     timestamps:
       created_at: 2026-03-13T19:37:21.948Z
-      updated_at: 2026-03-13T19:45:05.081Z
-      last_reconciled_at: 2026-03-13T19:45:04.838Z
-      last_active_at: 2026-03-13T19:37:22.615Z
+      updated_at: 2026-03-13T19:45:05.396Z
+      last_reconciled_at: 2026-03-13T19:45:05.396Z
+      last_active_at: 2026-03-13T19:45:05.396Z
       closed_at: null
