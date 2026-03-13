@@ -93646,9 +93646,26 @@
     - shadow
     - durability
   vcs_refs: []
+  session_id: 01KKJTSS9PRA1MV659QZ0HXS40
   created_at: 2026-03-13T05:18:07.958Z
-  notes: []
+  started_at: 2026-03-13T05:31:10.664Z
+  notes:
+    - _ulid: 01KKJTTV69QXCSDT6WNWYJM2NR
+      created_at: 2026-03-13T05:31:13.993Z
+      author: Jacob Chapel
+      content: >-
+        Execution context:
+
+        - Background: dispatch registry writes currently update project.dispatch-workspaces.yaml
+        without an explicit durable shadow commit in the runtime path.
+
+        - Scope: wire registry mutations through the serialized shadow-mutation commit path, add
+        restart/regression coverage, and document commit-failure behavior if persistence cannot
+        complete.
+
+        - Files: expected dispatch runtime modules plus registry persistence/reconciliation tests.
+
+        - Verification: focused dispatch tests, full npm test, and kspec validate.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-13T05:31:10.664Z
-  session_id: 01KKJTSS9PRA1MV659QZ0HXS40
