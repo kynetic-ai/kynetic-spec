@@ -94261,7 +94261,7 @@
   derivation: auto
   plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -94272,6 +94272,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-13T12:23:29.674Z
+  session_id: 01KKKJCTK66EMMANM275NCTNFW
 - _ulid: 01KKK7R7W2M83V3Y5XRAESEHCM
   slugs:
     - implement-adopt-existing-task-branch-lineage-for-r
