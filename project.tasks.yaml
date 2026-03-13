@@ -94155,7 +94155,7 @@
         cycle stay on the same branch lineage."
       supersedes: null
   todos: []
-  automation: manual_only
+  automation: eligible
 - _ulid: 01KKK7R6R2GDTVKZMSJD5RR757
   slugs:
     - implement-portable-task-submission-linkage
