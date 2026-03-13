@@ -93772,6 +93772,17 @@
         expected 'closing' vs 'integrating', plus ENOTEMPTY/spawn node ENOENT cleanup errors, so the
         regression gate is not clean."
       supersedes: null
+    - _ulid: 01KKM05KKG3TCZKR0M9QW97W4N
+      created_at: 2026-03-13T16:23:43.985Z
+      author: "@claude"
+      content: "Fix cycle 3: Prevented idle marking from regressing terminal lifecycle states in
+        markDispatchWorkspaceIdle. When an invocation completes and calls markDispatchWorkspaceIdle
+        with a stale taskStatus (e.g. 'pending_review' from the original dispatch event), it could
+        overwrite a 'closing' state set by a concurrent handleStateChange(completed) →
+        reconcileDispatchWorkspaceLifecycle. Added early-return guard: if the existing record is
+        already in a terminal state (closing/cleanup_blocked/closed), only clear active_role without
+        recalculating lifecycle. Full suite passes: 4736 tests, 0 failures."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKMBM006GT41HWHR5DXCW6
@@ -94539,6 +94550,9 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #826. Adds structured submission_linkage to task submit (branch,
+    commit, remote, upstream_ref), displayed in task get, with detached HEAD handling and repair via
+    task set."
   depends_on: []
   context: []
   priority: 1
@@ -94549,6 +94563,7 @@
   created_at: 2026-03-13T09:16:59.010Z
   started_at: 2026-03-13T16:16:09.551Z
   submitted_at: 2026-03-13T16:16:14.840Z
+  completed_at: 2026-03-13T16:16:18.570Z
   notes:
     - _ulid: 01KKKJKQET3XYXYRD2HNC96JSX
       created_at: 2026-03-13T12:26:46.618Z
@@ -94601,10 +94616,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-13T16:16:18.570Z
-  closed_reason: "Merged in PR #826. Adds structured submission_linkage to task submit (branch,
-    commit, remote, upstream_ref), displayed in task get, with detached HEAD handling and repair via
-    task set."
 - _ulid: 01KKK7R7W2M83V3Y5XRAESEHCM
   slugs:
     - implement-adopt-existing-task-branch-lineage-for-r
