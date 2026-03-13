@@ -93041,6 +93041,19 @@
         valid-key output includes droid alongside claude_code and codex, then add regression
         coverage for invalid droid keys and expanded guidance text."
       supersedes: null
+    - _ulid: 01KKJYBXDCQN8Q5MP4MG9B8386
+      created_at: 2026-03-13T06:32:59.053Z
+      author: Jacob Chapel
+      content: >-
+        Verification after fix cycle:
+
+        - Focused coverage passed: npm test -- tests/skill-cli.test.ts tests/skill-schema.test.ts
+
+        - Full suite passed: npm test
+
+        - kspec validate exited 6 with pre-existing warnings-only baseline; schema/reference checks
+        remain OK and no task-specific validation errors were introduced.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKM6NQ8M1W9MSAKGXDXW97
@@ -93184,6 +93197,12 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #818. Implemented the droid skill renderer in the shared platform
+    rendering pipeline, added Droid frontmatter sourced from platform_config.droid, registered the
+    renderer, updated droid output-dir/core-skill namespacing helpers, and covered own plus
+    inherited renderer-trait ACs with Droid-specific tests. Detached review verified PR CI was
+    green; local targeted renderer/skill tests passed; full npm test in this snapshot was affected
+    by unrelated dispatch shadow lock contention."
   depends_on: []
   context: []
   priority: 3
@@ -93193,6 +93212,7 @@
   created_at: 2026-03-13T03:25:17.637Z
   started_at: 2026-03-13T05:19:34.977Z
   submitted_at: 2026-03-13T05:23:07.517Z
+  completed_at: 2026-03-13T06:32:11.811Z
   notes:
     - _ulid: 01KKJRQWVQHMCEGVC63RQGZN2G
       created_at: 2026-03-13T04:54:40.248Z
@@ -93255,13 +93275,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-13T06:32:11.811Z
-  closed_reason: "Merged in PR #818. Implemented the droid skill renderer in the shared platform
-    rendering pipeline, added Droid frontmatter sourced from platform_config.droid, registered the
-    renderer, updated droid output-dir/core-skill namespacing helpers, and covered own plus
-    inherited renderer-trait ACs with Droid-specific tests. Detached review verified PR CI was
-    green; local targeted renderer/skill tests passed; full npm test in this snapshot was affected
-    by unrelated dispatch shadow lock contention."
 - _ulid: 01KKJKM8H7XWFRNJH8ME1RMZKD
   slugs:
     - implement-droid-setup-integration
