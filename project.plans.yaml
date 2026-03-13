@@ -15300,6 +15300,8 @@ plans:
 
       - portable task submission linkage for review and fix-cycle recovery
 
+      - repair or backfill of submission linkage after branch renames, PR-head swaps,
+        or older submissions that predate linkage capture
       - adoption of existing non-dispatch task branches as the canonical dispatch
         lineage for a task
       - registry provenance and cleanup semantics for adopted vs dispatcher-managed
@@ -15318,6 +15320,9 @@ plans:
 
       - replacing dispatcher-managed `dispatch/task/*` branches as the preferred
         branch shape for automation
+      - alternate helper naming aliases or a second deterministic branch namespace;
+        this plan standardizes on the exact dispatch-compatible branch format for the
+        helper path
       - broad task-state redesign beyond the submission linkage needed for dispatch
         recovery
 
@@ -15364,6 +15369,17 @@ plans:
               The command records the best available revision identity and returns
               guidance that dispatch review continuity may require an explicit branch
               before adoption can occur
+          - id: ac-4
+            given: |
+              A submitted task's branch linkage is missing or stale because the
+              branch was renamed, the PR head changed, or the task predates linkage
+              capture
+            when: |
+              An explicit repair or backfill flow updates the task's submission
+              linkage
+            then: |
+              The linkage can be corrected without resetting task status or losing
+              review and fix-cycle history
 
       - title: Adopt Existing Task Branch Lineage for Review and Fix Cycles
         slug: adopt-existing-task-branch-lineage
@@ -15496,6 +15512,16 @@ plans:
               Health state distinguishes recoverable adopted-branch rehydration,
               missing dispatcher-managed canonical branch, and missing reviewer
               snapshot as separate recovery paths with specific guidance
+          - id: ac-4
+            given: |
+              Dispatch created or fetched a local branch ref only to rehydrate an
+              adopted externally-owned branch into the local checkout
+            when: |
+              Cleanup runs after the workspace closes
+            then: |
+              Cleanup policy distinguishes the external source branch from the local
+              dispatch-side mirror ref so local rehydration state can be removed
+              without deleting or mutating the externally-owned branch lineage
 
       - title: Review and Fix-Cycle Workspace Discovery Before Discard
         slug: review-and-fix-cycle-workspace-discovery-before-discard
@@ -15535,6 +15561,17 @@ plans:
               The engine emits explicit task-linked diagnostics and recovery guidance
               rather than silently pruning the work as stale or synthesizing a fresh
               unrelated branch
+          - id: ac-4
+            given: |
+              Multiple branch signals exist, such as existing registry state,
+              explicitly repaired task linkage, captured submission linkage, and
+              remote or review-derived discovery
+            when: |
+              Dispatch resolves the branch-of-record for review or fix-cycle work
+            then: |
+              It applies explicit precedence in that order and blocks with
+              diagnostics rather than guessing when the competing signals cannot be
+              reconciled safely
 
       - title: Deterministic Task Branch Helper
         slug: deterministic-task-branch-helper
@@ -15555,9 +15592,9 @@ plans:
             when: |
               The deterministic task-branch helper runs for that task
             then: |
-              It creates or resumes a deterministic branch derived from the task's
-              slug and short ref using the documented dispatch-compatible naming
-              contract or documented deterministic variant
+              It creates or resumes the exact dispatch-compatible deterministic branch
+              derived from the task's slug and short ref using the documented
+              `dispatch/task/<normalized-task-slug>/<short-task-ref>` naming contract
           - id: ac-2
             given: |
               The deterministic branch already exists locally or remotely
@@ -15628,11 +15665,29 @@ plans:
         blockage because code already exists somewhere and the wrong branch would
         corrupt review continuity
 
+      Branch-of-record precedence should be explicit in the plan and later specs:
+
+
+      - existing dispatch workspace registry state
+
+      - explicitly repaired or backfilled task submission linkage
+
+      - captured task submission linkage from submit time
+
+      - remote or review-derived discovery
+
+      - otherwise block with guidance for `pending_review` and `needs_work`
+
+
       The deterministic helper and documentation layer should be treated as defense
 
       in depth. It reduces incidence for manual work, but the runtime still needs to
 
-      adopt and preserve already-existing non-dispatch branches reliably.
+      adopt and preserve already-existing non-dispatch branches reliably. In this
+
+      plan, the helper standardizes on the exact dispatch-compatible branch format
+
+      rather than introducing a second alias or mapping layer.
 
 
       The documentation/convention work should update the dynamic conventions and any
@@ -15650,4 +15705,8 @@ plans:
     created_at: 2026-03-13T08:39:33.082Z
     approved_at: null
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KKK5YMXAXZZN87WFJ3EMY72H
+        created_at: 2026-03-13T08:45:32.970Z
+        author: Jacob Chapel
+        content: Content updated from file
