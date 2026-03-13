@@ -260,6 +260,20 @@ export const CodexConfigSchema = z
   .strict();
 
 /**
+ * Droid platform config - same portable frontmatter shape as Claude Code
+ * without the Claude-specific agent field.
+ */
+export const DroidConfigSchema = z
+  .object({
+    disable_model_invocation: z.boolean().optional(),
+    user_invocable: z.boolean().optional(),
+    context: z.string().optional(),
+    model: z.string().optional(),
+    argument_hint: z.string().optional(),
+  })
+  .strict();
+
+/**
  * Platform config - container for platform-specific settings
  * Uses passthrough for unknown platforms to support future extensibility
  */
@@ -267,6 +281,7 @@ export const PlatformConfigSchema = z
   .object({
     claude_code: ClaudeCodeConfigSchema.optional(),
     codex: CodexConfigSchema.optional(),
+    droid: DroidConfigSchema.optional(),
   })
   .passthrough();
 
@@ -423,6 +438,7 @@ export type Observation = z.infer<typeof ObservationSchema>;
 export type SkillOrigin = z.infer<typeof SkillOriginSchema>;
 export type ClaudeCodeConfig = z.infer<typeof ClaudeCodeConfigSchema>;
 export type CodexConfig = z.infer<typeof CodexConfigSchema>;
+export type DroidConfig = z.infer<typeof DroidConfigSchema>;
 export type PlatformConfig = z.infer<typeof PlatformConfigSchema>;
 export type Skill = z.infer<typeof SkillSchema>;
 export type SessionContext = z.infer<typeof SessionContextSchema>;

@@ -5,7 +5,14 @@
  */
 import { describe, it, expect } from 'vitest';
 import { testUlid } from './helpers/cli';
-import { SkillSchema, ClaudeCodeConfigSchema, CodexConfigSchema, PlatformConfigSchema } from '../src/schema/meta';
+import {
+  SkillSchema,
+  ClaudeCodeConfigSchema,
+  CodexConfigSchema,
+  DroidConfigSchema,
+  PlatformConfigSchema,
+} from '../src/schema/meta';
+import type { DroidConfig } from '../src/schema';
 
 describe('Skill Schema Definition', () => {
   describe('id validation', () => {
@@ -423,6 +430,37 @@ describe('Skill Schema Definition', () => {
       }
     });
 
+    // AC: @droid-platform-config ac-1
+    it('should validate droid config with recognized fields', () => {
+      const skill = {
+        _ulid: testUlid('SKDRD1'),
+        id: 'droid-config-skill',
+        name: 'Droid Config Skill',
+        origin: 'project',
+        platform_config: {
+          droid: {
+            disable_model_invocation: true,
+            user_invocable: false,
+            context: 'project',
+            model: 'factory-fast',
+            argument_hint: '<task-ref>',
+          },
+        },
+      };
+
+      const result = SkillSchema.safeParse(skill);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.platform_config?.droid).toEqual({
+          disable_model_invocation: true,
+          user_invocable: false,
+          context: 'project',
+          model: 'factory-fast',
+          argument_hint: '<task-ref>',
+        });
+      }
+    });
+
     // AC: @extended-skill-schema ac-4
     it('should pass validation for unknown platform keys (passthrough)', () => {
       const skill = {
@@ -529,6 +567,31 @@ describe('Skill Schema Definition', () => {
       }
     });
 
+    // AC: @droid-platform-config ac-2
+    it('should fail validation for invalid droid config fields', () => {
+      const skill = {
+        _ulid: testUlid('SKDRD2'),
+        id: 'invalid-droid-skill',
+        name: 'Invalid Droid Skill',
+        origin: 'project',
+        platform_config: {
+          droid: {
+            user_invocable: true,
+            unknown_droid_field: 'not allowed',
+          },
+        },
+      };
+
+      const result = SkillSchema.safeParse(skill);
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        const error = result.error.issues.find(
+          (issue) => issue.path.includes('platform_config') || issue.path.includes('droid'),
+        );
+        expect(error).toBeDefined();
+      }
+    });
+
     // AC: @extended-skill-schema ac-5
     it('should provide descriptive error for invalid nested fields', () => {
       const skill = {
@@ -621,6 +684,20 @@ describe('Skill Schema Definition', () => {
       expect(result.success).toBe(true);
     });
 
+    // AC: @droid-platform-config ac-3
+    it('should include optional droid key alongside claude_code and codex', () => {
+      expect(PlatformConfigSchema.shape).toHaveProperty('claude_code');
+      expect(PlatformConfigSchema.shape).toHaveProperty('codex');
+      expect(PlatformConfigSchema.shape).toHaveProperty('droid');
+
+      const result = PlatformConfigSchema.safeParse({
+        claude_code: { user_invocable: true },
+        codex: { display_name: 'Skill' },
+        droid: { model: 'factory-fast' },
+      });
+      expect(result.success).toBe(true);
+    });
+
     it('should pass through unknown platform keys', () => {
       const config = {
         some_future_platform: {
@@ -644,6 +721,39 @@ describe('Skill Schema Definition', () => {
       };
       const result = PlatformConfigSchema.safeParse(config);
       expect(result.success).toBe(false);
+    });
+  });
+
+  describe('DroidConfigSchema direct validation', () => {
+    it('should accept empty config', () => {
+      const result = DroidConfigSchema.safeParse({});
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject unknown fields due to strict mode', () => {
+      const config = {
+        model: 'factory-fast',
+        extra_droid_field: true,
+      };
+      const result = DroidConfigSchema.safeParse(config);
+      expect(result.success).toBe(false);
+    });
+
+    // AC: @droid-platform-config ac-4
+    it('should export DroidConfig type with correct field types', () => {
+      const config: DroidConfig = {
+        disable_model_invocation: true,
+        user_invocable: false,
+        context: 'project',
+        model: 'factory-fast',
+        argument_hint: '@task-ref',
+      };
+
+      expect(config.disable_model_invocation).toBe(true);
+      expect(config.user_invocable).toBe(false);
+      expect(config.context).toBe('project');
+      expect(config.model).toBe('factory-fast');
+      expect(config.argument_hint).toBe('@task-ref');
     });
   });
 });
