@@ -1206,16 +1206,17 @@ export async function cleanupReviewerDispatchWorkspace(
   );
 
   const now = new Date().toISOString();
+  const lifecycleState = existingRecord.cleanup.eligible ? "closing" : "ready";
   const updatedMetadata: DispatchWorkspaceMetadata = {
     ...existing.metadata,
     reviewerWorktreeDir: null,
-    lifecycleState: existing.metadata.cleanupEligible ? "closing" : "ready",
+    lifecycleState,
     cleanupBlockedReason: null,
     updatedAt: now,
   };
   const updatedRecord: DispatchWorkspaceRecord = {
     ...existingRecord,
-    lifecycle_state: updatedMetadata.lifecycleState,
+    lifecycle_state: lifecycleState,
     worktrees: {
       ...existingRecord.worktrees,
       reviewer: null,
