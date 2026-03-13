@@ -55,6 +55,17 @@ describe('Platform Renderer Contract', () => {
     await cleanupTempDir(tempDir);
   });
 
+  async function loadSkill(skillId = 'test-skill') {
+    const ctx = await initContext(tempDir);
+    const metaCtx = await loadMetaContext(ctx);
+    const skill = metaCtx.skills.find((s) => s.id === skillId);
+    if (!skill) {
+      throw new Error(`Missing skill fixture: ${skillId}`);
+    }
+
+    return { ctx, skill };
+  }
+
   // AC: @platform-renderer-trait ac-1
   describe('ac-1: Platform-specific output files written to configured output directory', () => {
     it('should write output files to the platform default output directory', async () => {
@@ -243,6 +254,34 @@ describe('Platform Renderer Contract', () => {
       expect(result.paths).toContain(path.join(tempDir, '.claude', 'skills', 'test-skill', 'SKILL.md'));
       expect(result.paths).toContain(path.join(tempDir, '.claude', 'skills', 'test-skill', 'docs'));
     });
+
+    // AC: @platform-renderer-trait ac-3
+    it('should copy supporting directories for droid renderer', async () => {
+      kspecFull(
+        'skill add --id droid-support --name "Droid Support" --description "Droid support skill" --platform droid',
+        tempDir
+      );
+      await fs.writeFile(
+        path.join(tempDir, 'skills', 'droid-support', 'SKILL.md'),
+        '# Droid Support\n\nBody.\n',
+        'utf-8'
+      );
+      const refsDir = path.join(tempDir, 'skills', 'droid-support', 'references');
+      await fs.mkdir(refsDir, { recursive: true });
+      await fs.writeFile(path.join(refsDir, 'api.md'), '# API Reference\n', 'utf-8');
+
+      const { ctx, skill } = await loadSkill('droid-support');
+      const result = await droidRenderer.render(ctx, tempDir, skill);
+
+      expect(result.supportingDirsAction!.references).toBe('created');
+      expect(result.paths).toContain(path.join(tempDir, '.factory', 'skills', 'droid-support', 'references'));
+
+      const copied = await fs.readFile(
+        path.join(tempDir, '.factory', 'skills', 'droid-support', 'references', 'api.md'),
+        'utf-8'
+      );
+      expect(copied).toContain('# API Reference');
+    });
   });
 
   // AC: @platform-renderer-trait ac-4
@@ -294,6 +333,34 @@ describe('Platform Renderer Contract', () => {
       const result = await claudeCodeRenderer.render(ctx, tempDir, skill, { dryRun: true });
 
       expect(result.action).toBe('unchanged');
+    });
+
+    // AC: @platform-renderer-trait ac-4
+    it('should not write droid files when dryRun is true', async () => {
+      kspecFull(
+        'skill add --id droid-dry-run --name "Droid Dry Run" --description "Droid dry run skill" --platform droid',
+        tempDir
+      );
+      await fs.writeFile(
+        path.join(tempDir, 'skills', 'droid-dry-run', 'SKILL.md'),
+        '# Droid Dry Run\n\nBody.\n',
+        'utf-8'
+      );
+      const scriptsDir = path.join(tempDir, 'skills', 'droid-dry-run', 'scripts');
+      await fs.mkdir(scriptsDir, { recursive: true });
+      await fs.writeFile(path.join(scriptsDir, 'helper.sh'), '#!/bin/bash\necho hi\n', 'utf-8');
+
+      const { ctx, skill } = await loadSkill('droid-dry-run');
+      const result = await droidRenderer.render(ctx, tempDir, skill, { dryRun: true });
+
+      expect(result.action).toBe('created');
+      expect(result.supportingDirsAction!.scripts).toBe('created');
+      await expect(
+        fs.access(path.join(tempDir, '.factory', 'skills', 'droid-dry-run', 'SKILL.md'))
+      ).rejects.toThrow();
+      await expect(
+        fs.access(path.join(tempDir, '.factory', 'skills', 'droid-dry-run', 'scripts'))
+      ).rejects.toThrow();
     });
   });
 
@@ -347,6 +414,38 @@ describe('Platform Renderer Contract', () => {
       const targetDocsPath = path.join(tempDir, customOutputDir, 'test-skill', 'docs', 'guide.md');
       const content = await fs.readFile(targetDocsPath, 'utf-8');
       expect(content).toContain('# Guide');
+    });
+
+    // AC: @platform-renderer-trait ac-5
+    it('should write droid output to custom output directory', async () => {
+      kspecFull(
+        'skill add --id droid-custom --name "Droid Custom" --description "Droid custom output skill" --platform droid',
+        tempDir
+      );
+      await fs.writeFile(
+        path.join(tempDir, 'skills', 'droid-custom', 'SKILL.md'),
+        '# Droid Custom\n\nBody.\n',
+        'utf-8'
+      );
+      const assetsDir = path.join(tempDir, 'skills', 'droid-custom', 'assets');
+      await fs.mkdir(assetsDir, { recursive: true });
+      await fs.writeFile(path.join(assetsDir, 'config.json'), '{"key":"value"}\n', 'utf-8');
+
+      const { ctx, skill } = await loadSkill('droid-custom');
+      const customOutputDir = 'custom/droid/skills';
+      const result = await droidRenderer.render(ctx, tempDir, skill, { outputDir: customOutputDir });
+
+      expect(result.paths[0]).toBe(path.join(tempDir, customOutputDir, 'droid-custom', 'SKILL.md'));
+      expect(result.supportingDirsAction!.assets).toBe('created');
+      await expect(
+        fs.access(path.join(tempDir, '.factory', 'skills', 'droid-custom', 'SKILL.md'))
+      ).rejects.toThrow();
+
+      const copied = await fs.readFile(
+        path.join(tempDir, customOutputDir, 'droid-custom', 'assets', 'config.json'),
+        'utf-8'
+      );
+      expect(copied).toContain('"key":"value"');
     });
   });
 
