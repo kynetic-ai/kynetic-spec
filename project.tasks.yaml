@@ -94291,8 +94291,11 @@
   derivation: auto
   plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
   origin: derived
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Review complete: PR #826 code is clean, but merge is blocked by required CI failure in test
+      (shard 3/3). GitHub Actions is consistently failing tests/agent-dispatch-engine.test.ts with
+      ENOTEMPTY removing a temp directory, which is outside this task's changed surface."
   depends_on: []
   context: []
   priority: 1
