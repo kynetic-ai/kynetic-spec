@@ -2226,7 +2226,7 @@ describe("Dispatch prompt orientation context and interpolation", () => {
       expect(result).toContain("New task assignment");
       expect(result).toContain("Role: worker");
       expect(result).toContain("Focus:");
-      expect(result).toContain("Workspace: /tmp/my-task-worker");
+      expect(result).toContain("Workspace (your working directory): /tmp/my-task-worker");
       expect(result).toContain("Workspace mode: mutable worker branch");
       expect(result).toContain("Canonical branch: dispatch/task/my-task/01task00");
       expect(result).toContain("Integration target: main");
@@ -2408,10 +2408,52 @@ describe("Dispatch prompt orientation context and interpolation", () => {
       expect(prompt).toContain("## Task Context");
       expect(prompt).toContain("Test task title");
       expect(prompt).toContain("New task assignment");
-      expect(prompt).toContain(`Workspace: ${path.join(testDir, ".kspec-worktrees", `test-task-title-${taskId.slice(0, 8).toLowerCase()}`)}`);
+      expect(prompt).toContain(`Workspace (your working directory): ${path.join(testDir, ".kspec-worktrees", `test-task-title-${taskId.slice(0, 8).toLowerCase()}`)}`);
       expect(prompt).toContain("Canonical branch: dispatch/task/test-task-title/");
       expect(prompt).toContain("Integration target: main");
       expect(prompt).toContain("Workspace mode: mutable worker branch");
+
+      await engine.stop();
+    });
+
+    // AC: @dispatch-workspace-orientation-prompt ac-4
+    it("should include explicit working directory instruction in autonomous preamble", async () => {
+      const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
+      await setupProjectWithAgents(testDir, [agent]);
+
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+      });
+
+      await engine.start();
+      const taskId = testUlid("WDIR");
+      await engine.handleStateChange({
+        taskId,
+        taskRef: `@${taskId}`,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: { _ulid: taskId, title: "Workspace dir test", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
+      });
+
+      for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 5));
+      }
+
+      expect(runSpy).toHaveBeenCalled();
+      const prompt = runSpy.mock.calls[0][0].prompt;
+      const worktreePath = path.join(testDir, ".kspec-worktrees", `workspace-dir-test-${taskId.slice(0, 8).toLowerCase()}`);
+      expect(prompt).toContain("CRITICAL: Your working directory is your assigned workspace");
+      expect(prompt).toContain(worktreePath);
+      expect(prompt).toContain("Do NOT cd to the project root");
 
       await engine.stop();
     });
