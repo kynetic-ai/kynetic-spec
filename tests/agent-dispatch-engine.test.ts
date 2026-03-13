@@ -3331,11 +3331,26 @@ describe("Stale queue entry discard", () => {
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [{ _ulid: taskId, status: "pending_review", automation: "eligible" }]);
 
-    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValueOnce({
+    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
       exists: true,
       healthy: false,
       reason: "missing-registry-record",
       metadata: null,
+    });
+    // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1, ac-3
+    // Discovery is attempted for pending_review entries before discard.
+    // Mock it to return unrecoverable so the entry is still discarded.
+    vi.spyOn(workspaceModule, "discoverWorkspaceForReviewOrFixCycle").mockResolvedValueOnce({
+      recovered: false,
+      recoverySource: null,
+      health: { exists: true, healthy: false, reason: "missing-registry-record", metadata: null },
+      diagnostics: [{
+        taskRef: `@${taskId}`,
+        code: "no-recoverable-workspace",
+        message: `No trustworthy recovery path exists for @${taskId}.`,
+        suggestion: "Ensure the task was submitted with kspec task submit.",
+      }],
+      conflictingSignals: null,
     });
     const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
     const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
@@ -3354,8 +3369,12 @@ describe("Stale queue entry discard", () => {
     await engine.start();
 
     expect(runSpy).not.toHaveBeenCalled();
+    // Discovery diagnostics are logged before the discard message.
     expect(consoleLogSpy).toHaveBeenCalledWith(
-      expect.stringContaining(`[dispatch] Discarded queue entry @${taskId} for agent "pr-reviewer": workspace is unhealthy (missing-registry-record)`),
+      expect.stringContaining(`[dispatch] Workspace discovery diagnostic for @${taskId}`),
+    );
+    expect(consoleLogSpy).toHaveBeenCalledWith(
+      expect.stringContaining(`[dispatch] Discarded queue entry @${taskId} for agent "pr-reviewer": workspace is unhealthy (no-recoverable-workspace)`),
     );
     expect(consoleLogSpy).toHaveBeenCalledWith(
       expect.stringContaining('Discarded 1 ineligible queue entry for agent "pr-reviewer"'),
@@ -3661,6 +3680,11 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-6
+  // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1, ac-2
+  // Discovery now recovers from reviewer metadata when worker worktree is gone.
+  // Because the canonical branch still exists (only the worktree is missing),
+  // the workspace is recovered and the queue entry remains eligible.
+  // Provisioning then recreates the missing worker worktree.
   it("persists stale reviewer metadata recovery when the worker registration is gone", async () => {
     const reviewer = makeTestAgent({
       id: "pr-reviewer",
@@ -3718,31 +3742,22 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
 
     await engine.start();
 
-    expect(spawnSpy).not.toHaveBeenCalled();
-    expect(logSpy).toHaveBeenCalledWith(
-      expect.stringContaining(
-        `[dispatch] Discarded queue entry ${taskRef} for agent "pr-reviewer": workspace is unhealthy (missing-worker-worktree)`,
-      ),
-    );
+    // With workspace discovery, the reviewer metadata is found in the
+    // worktree root and the registry record is restored. Because the
+    // canonical branch still exists (only the worktree was removed),
+    // discovery considers this recovered and the entry remains eligible.
+    // The spawnInvocation mock is called since provisioning would
+    // recreate the missing worker worktree.
+    expect(spawnSpy).toHaveBeenCalled();
 
-    const health = await workspaceModule.getDispatchWorkspaceHealth({
-      projectDir: testDir,
-      taskRef,
-      task,
-      role: "reviewer",
-    });
-    expect(health.exists).toBe(true);
-    expect(health.healthy).toBe(false);
-    expect(health.reason).toBe("missing-worker-worktree");
-
+    // The registry should have been recovered from the reviewer metadata.
     const registry = YAML.parse(
       await fs.readFile(path.join(testDir, "project.dispatch-workspaces.yaml"), "utf-8"),
-    ) as { workspaces?: Array<{ task_ref: string; lifecycle_state: string }> };
+    ) as { workspaces?: Array<{ task_ref: string }> };
     expect(registry.workspaces).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
           task_ref: taskRef,
-          lifecycle_state: "stale",
         }),
       ]),
     );
