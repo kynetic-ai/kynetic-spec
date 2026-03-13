@@ -1473,36 +1473,38 @@ export async function cleanupReviewerDispatchWorkspace(
     existing.metadata.reviewerWorktreeDir,
   );
 
-  const now = new Date().toISOString();
-  const lifecycleState = existingRecord.cleanup.eligible ? "closing" : "ready";
-  const updatedMetadata: DispatchWorkspaceMetadata = {
-    ...existing.metadata,
-    reviewerWorktreeDir: null,
-    lifecycleState,
-    cleanupBlockedReason: null,
-    updatedAt: now,
-  };
-  const updatedRecord: DispatchWorkspaceRecord = {
-    ...existingRecord,
-    lifecycle_state: lifecycleState,
-    worktrees: {
-      ...existingRecord.worktrees,
-      reviewer: null,
-    },
-    health: reconcileWorkspaceHealth(projectDir, {
-      ...existingRecord,
+  // Re-read the record inside the lock to avoid a TOCTOU race where a
+  // concurrent writer (e.g. handleStateChange → reconcileDispatchWorkspaceLifecycle)
+  // updates the registry between our initial read and the write below.
+  await withDispatchShadowMutationLock(projectDir, taskRef, async () => {
+    const latestRecord = await loadWorkspaceRecord(projectDir, taskRef);
+    if (!latestRecord) return;
+
+    const now = new Date().toISOString();
+    const lifecycleState = latestRecord.cleanup.eligible ? "closing" : "ready";
+    const updatedRecord: DispatchWorkspaceRecord = {
+      ...latestRecord,
+      lifecycle_state: lifecycleState,
       worktrees: {
-        ...existingRecord.worktrees,
+        ...latestRecord.worktrees,
         reviewer: null,
       },
-    }, now),
-    timestamps: {
-      ...existingRecord.timestamps,
-      updated_at: now,
-      last_reconciled_at: now,
-    },
-  };
-  await persistWorkspaceRecord(projectDir, updatedRecord);
+      health: reconcileWorkspaceHealth(projectDir, {
+        ...latestRecord,
+        worktrees: {
+          ...latestRecord.worktrees,
+          reviewer: null,
+        },
+      }, now),
+      timestamps: {
+        ...latestRecord.timestamps,
+        updated_at: now,
+        last_reconciled_at: now,
+      },
+    };
+    await saveWorkspaceRecordToRegistry(projectDir, updatedRecord);
+    await commitWorkspaceRegistryToShadow(projectDir, taskRef);
+  });
   return { taskRef, action: "reviewer_cleaned", blockedReason: null };
 }
 
