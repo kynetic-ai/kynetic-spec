@@ -687,9 +687,9 @@ features:
               guidance instead of leaving the checkout without its shadow directory
           - id: ac-bootstrap-reuses-repair
             given: setup or bootstrap recovery flows run in a checkout where the shadow branch already exists
-              but the shadow worktree is missing or unhealthy
+              locally or on the configured remote but the shadow worktree is missing or unhealthy
             when: the flow chooses a shadow recovery action
-            then: it reuses the existing shadow branch via shadow repair semantics instead of treating the
+            then: it reuses or reattaches the existing shadow state via repair semantics instead of treating the
               checkout as a brand-new init
           - id: ac-context-fails-fast
             given: a checkout has an existing shadow branch but the configured shadow worktree is missing or
