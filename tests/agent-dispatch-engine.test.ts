@@ -2483,7 +2483,7 @@ describe("Dispatch role workflow entrypoints", () => {
         "  base_branch: main",
         "ralph:",
         "  skills:",
-        "    pr_review: \"/kspec:review\"",
+        "    pr_review: \"{skill:pr-review}\"",
       ].join("\n"),
       "utf-8",
     );
@@ -2522,7 +2522,8 @@ describe("Dispatch role workflow entrypoints", () => {
 
     expect(runSpy).toHaveBeenCalled();
     const invocation = runSpy.mock.calls[0][0];
-    expect(invocation.prompt).toContain("Workflow entrypoint: `/kspec:review`");
+    expect(invocation.prompt).toContain("Workflow entrypoint: `/pr-review`");
+    expect(invocation.prompt).not.toContain("{skill:pr-review}");
     expect(invocation.prompt).toContain("Publication mode: `manual_merge`");
     expect(invocation.prompt).toContain("git merge --abort");
     expect(invocation.prompt).toContain("needs_work");

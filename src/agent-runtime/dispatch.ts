@@ -24,7 +24,10 @@ import {
 import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
 import { loadProjectConfig } from "../parser/config.js";
 import type { InvocationOptions } from "./invocation.js";
-import { interpolateTemplate } from "./prompts.js";
+import {
+  interpolateTemplate,
+  rewriteSkillReferencesForAdapter,
+} from "./prompts.js";
 import { getAdapter } from "../agents/adapters.js";
 import {
   provisionDispatchWorkspace,
@@ -216,10 +219,23 @@ function resolveDispatchRole(trigger: SessionTrigger): "worker" | "reviewer" {
   return trigger === "task.pending_review" ? "reviewer" : "worker";
 }
 
-function renderEntrypointForAdapter(entrypoint: string, adapterId: string): string {
+async function renderEntrypointForAdapter(
+  entrypoint: string,
+  adapterId: string,
+  projectDir: string,
+): Promise<string> {
   const trimmed = entrypoint.trim();
   if (!trimmed) {
     return trimmed;
+  }
+
+  const portableResolved = await rewriteSkillReferencesForAdapter(
+    trimmed,
+    projectDir,
+    adapterId,
+  );
+  if (portableResolved !== trimmed) {
+    return portableResolved.trim();
   }
 
   switch (adapterId) {
@@ -237,15 +253,20 @@ function renderEntrypointForAdapter(entrypoint: string, adapterId: string): stri
   }
 }
 
-function resolveRoleEntrypoint(
+async function resolveRoleEntrypoint(
   role: "worker" | "reviewer",
   adapterId: string,
+  projectDir: string,
   config: Awaited<ReturnType<typeof loadProjectConfig>>["config"],
-): string {
+): Promise<string> {
   const rawEntrypoint = role === "reviewer"
     ? config.ralph.skills.pr_review
     : config.ralph.skills.task_work;
-  const rendered = renderEntrypointForAdapter(rawEntrypoint, adapterId);
+  const rendered = await renderEntrypointForAdapter(
+    rawEntrypoint,
+    adapterId,
+    projectDir,
+  );
   if (!rendered) {
     throw new DispatchPromptError(
       `No valid ${role} entrypoint is configured for adapter "${adapterId}".`,
@@ -308,7 +329,7 @@ async function buildRoleEntryContext(
 ): Promise<string> {
   const role = resolveDispatchRole(trigger);
   const { config } = await loadProjectConfig(projectDir, projectDir);
-  const entrypoint = resolveRoleEntrypoint(role, adapterId, config);
+  const entrypoint = await resolveRoleEntrypoint(role, adapterId, projectDir, config);
   const publication = buildPublicationInstructions(role, metadata);
 
   return [

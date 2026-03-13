@@ -79,7 +79,7 @@ async function loadKspecSkillIds(specDir: string): Promise<Set<string>> {
   }
 }
 
-async function rewriteSkillReferences(
+export async function rewriteSkillReferencesForAdapter(
   text: string,
   specDir: string,
   adapterId?: string,
@@ -180,5 +180,5 @@ export async function buildPromptWithSkills(options: BuildPromptOptions): Promis
 
   // AC: @agent-invocation-lifecycle ac-10
   // Rewrite portable {skill:<id>} references to adapter-specific invocation syntax.
-  return rewriteSkillReferences(promptWithSkills, specDir, adapterId);
+  return rewriteSkillReferencesForAdapter(promptWithSkills, specDir, adapterId);
 }
