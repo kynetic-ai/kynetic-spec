@@ -300,6 +300,27 @@ function resolveBranchStartPoint(
   return null;
 }
 
+/**
+ * Attempt to restore a missing local branch from a remote ref.
+ * Iterates configured remotes (origin first) and creates the local branch
+ * from the first matching remote ref. Returns true if the branch was restored.
+ * On failure, logs at debug level and returns false (graceful degradation).
+ */
+function tryRestoreBranchFromRemote(projectDir: string, branch: string): boolean {
+  for (const remote of listGitRemotes(projectDir)) {
+    const remoteRef = `refs/remotes/${remote}/${branch}`;
+    if (!refExists(projectDir, remoteRef)) continue;
+    const result = runGit(projectDir, ["branch", branch, `${remote}/${branch}`]);
+    if (result.status === 0) {
+      return true;
+    }
+    console.debug(
+      `[dispatch] Failed to restore branch "${branch}" from ${remote}: ${result.stderr || result.stdout}`,
+    );
+  }
+  return false;
+}
+
 function resolveRemoteHeadBranch(projectDir: string): string | null {
   for (const remote of listGitRemotes(projectDir)) {
     const result = runGit(projectDir, ["symbolic-ref", "--quiet", `refs/remotes/${remote}/HEAD`]);
@@ -709,7 +730,10 @@ function reconcileWorkspaceHealth(
 ): DispatchWorkspaceHealthState {
   const issues: DispatchWorkspaceIssue[] = [];
   const branchRef = `refs/heads/${record.canonical_branch}`;
-  const branchExists = refExists(projectDir, branchRef);
+  let branchExists = refExists(projectDir, branchRef);
+  if (!branchExists) {
+    branchExists = tryRestoreBranchFromRemote(projectDir, record.canonical_branch);
+  }
   if (!branchExists) {
     issues.push(buildIssue(
       "missing_canonical_branch",
