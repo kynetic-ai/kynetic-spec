@@ -94076,7 +94076,7 @@
   spec_ref: "@broken-shadow-safety"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -94156,6 +94156,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-13T09:40:41.671Z
+  closed_reason: "Merged in PR #824. Hardened broken shadow recovery so context fails closed on
+    disconnected shadow state, repair preserves/restores the prior shadow directory on failure, and
+    bootstrap/setup reuse repair semantics for existing local or remote shadow state. AC coverage
+    verified for all four spec criteria; focused verification and full regression passed."
 - _ulid: 01KKK7R6R2GDTVKZMSJD5RR757
   slugs:
     - implement-portable-task-submission-linkage
