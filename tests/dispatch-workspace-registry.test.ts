@@ -474,7 +474,7 @@ describe("dispatch workspace registry", () => {
 
   // AC: @dispatch-workspace-registry ac-6
   // AC: @dispatch-workspace-registry ac-7
-  it("persists lifecycle transitions across explicit dispatch workspace lifecycle states", async () => {
+  it("persists lifecycle transitions across explicit dispatch workspace lifecycle states", { timeout: 30_000 }, async () => {
     await seedRepo(tempDir);
     await setupProjectWithWorkerAgent(tempDir);
     git(tempDir, "checkout -b agent-dev");
@@ -579,6 +579,7 @@ describe("dispatch workspace registry", () => {
       registryPath,
       taskRef,
       (current) => current.lifecycle_state === "integrating",
+      5000,
     );
     expect(record.lifecycle_state).toBe("integrating");
     expect(record.integration.status).toBe("pending");
@@ -608,11 +609,14 @@ describe("dispatch workspace registry", () => {
       } as never,
     });
 
-    record = await waitForWorkspaceRecord(
-      registryPath,
-      taskRef,
-      (current) => current.lifecycle_state === "closing",
-    );
+    // Stop the engine to drain all running invocations and their background
+    // cleanup chains (markDispatchWorkspaceIdle, cleanupReviewerDispatchWorkspace)
+    // before asserting the final lifecycle state.  Without this, the reviewer
+    // invocation's cleanupReviewerDispatchWorkspace can race and overwrite the
+    // "closing" lifecycle state that handleStateChange(completed) just persisted.
+    await engine.stop();
+
+    record = await readWorkspaceRecord(registryPath, taskRef);
     expect(record.lifecycle_state).toBe("closing");
     expect(record.integration.status).toBe("merged");
     expect(record.cleanup).toMatchObject({
@@ -625,10 +629,9 @@ describe("dispatch workspace registry", () => {
       tempDir,
       taskRef,
       (current) => current.lifecycle_state === "closing",
+      5000,
     );
     expect(reloaded?.lifecycle_state).toBe("closing");
-
-    await engine.stop();
 
     await reconcileDispatchWorkspaceRegistry(
       tempDir,

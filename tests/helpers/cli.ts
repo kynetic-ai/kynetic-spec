@@ -106,11 +106,16 @@ export interface WaitForStartupOptions {
 export function kspec(args: string, cwd: string, options: KspecOptions = {}): KspecResult {
   const { stdin, expectFail = false, env = {} } = options;
 
-  // Build clean env: strip ralph-specific vars that pollute tests when running
-  // inside a ralph loop. Tests that need these vars pass them explicitly via env.
+  // Build clean env: strip dispatch/ralph vars that pollute tests when running
+  // inside a dispatch worktree or ralph loop. Tests that need these vars pass
+  // them explicitly via env.
   const cleanEnv = { ...process.env };
-  const RALPH_ENV_VARS = ['KSPEC_RALPH_SESSION', 'KSPEC_SESSION_ID'];
-  for (const key of RALPH_ENV_VARS) {
+  const DISPATCH_ENV_VARS = [
+    'KSPEC_RALPH_SESSION',
+    'KSPEC_SESSION_ID',
+    'KSPEC_SHADOW_MUTATION_LOCK_FILE',
+  ];
+  for (const key of DISPATCH_ENV_VARS) {
     if (!(key in env)) {
       delete cleanEnv[key];
     }
