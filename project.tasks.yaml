@@ -94462,7 +94462,7 @@
   type: task
   spec_ref: "@dispatch-workspace-remote-branch-fallback"
   derivation: auto
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-design-canonical-task-workspace-contract"
@@ -94532,6 +94532,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-13T20:06:37.575Z
+  closed_reason: "Merged in PR #833. Added tryRestoreBranchFromRemote() to reconcileWorkspaceHealth()
+    — checks configured remotes (origin first) for missing canonical branches and restores them
+    locally. Graceful degradation on failure with debug-level logging. All 4 ACs covered with
+    dedicated tests. Full test suite passes (4772/4772). CI all green."
 - _ulid: 01KKJZW9XNWT7VPFK3FNBA41FZ
   slugs:
     - fix-broken-shadow-safety
