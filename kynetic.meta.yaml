@@ -268,7 +268,7 @@ agents:
       - git
       - gh
     conventions: []
-    adapter: codex-acp
+    adapter: claude-agent-acp
     dispatch:
       - on: task.pending_review
     skills:
