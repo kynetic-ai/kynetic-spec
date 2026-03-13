@@ -32,6 +32,7 @@ import { getAdapter } from "../agents/adapters.js";
 import {
   provisionDispatchWorkspace,
   DispatchWorkspaceError,
+  getDispatchShadowMutationLockPath,
   markDispatchWorkspaceActive,
   markDispatchWorkspaceIdle,
   reconcileDispatchWorkspaceRegistry,
@@ -1777,7 +1778,7 @@ export class DispatchEngine {
         kspecCliPath: this.kspecCliPath,
         abortSignal: abortController.signal,
         sessionId: preSessionId,
-        mutationLockFile: path.join(this.projectDir, ".kspec-dispatch-shadow-mutation"),
+        mutationLockFile: getDispatchShadowMutationLockPath(this.projectDir),
         env: {
           KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
           KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,

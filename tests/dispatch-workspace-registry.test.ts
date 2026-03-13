@@ -1,12 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { existsSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import * as path from "node:path";
 import * as YAML from "yaml";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import * as dispatchWorkspaceRegistryModule from "../src/parser/dispatch-workspaces.js";
+import * as shadowModule from "../src/parser/shadow.js";
 import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
 import { initContext } from "../src/parser/index.js";
+import { SHADOW_WORKTREE_DIR } from "../src/parser/shadow.js";
 import {
   findDispatchWorkspaceByTaskRef,
   getDispatchWorkspaceRegistryPath,
@@ -15,19 +18,34 @@ import {
 } from "../src/parser/dispatch-workspaces.js";
 import {
   cleanupReviewerDispatchWorkspace,
+  getDispatchShadowMutationLockPath,
   markDispatchWorkspaceActive,
   provisionDispatchWorkspace,
   reconcileDispatchWorkspaceRegistry,
   type DispatchWorkspaceMetadata,
 } from "../src/agent-runtime/workspace.js";
+import { acquireFileLock } from "../src/parser/file-lock.js";
 import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
+  kspec,
   testUlid,
 } from "./helpers/cli.js";
 
 const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
+const projectCli = path.resolve(__dirname, "..", "dist", "cli", "index.js");
+const canRunShadowTests = (() => {
+  try {
+    const version = execSync("git --version", { encoding: "utf-8" }).trim();
+    const match = version.match(/(\d+)\.(\d+)/);
+    if (!match) return false;
+    const [, major, minor] = match.map(Number);
+    return (major > 2 || (major === 2 && minor >= 42)) && existsSync(projectCli);
+  } catch {
+    return false;
+  }
+})();
 
 function git(cwd: string, command: string): string {
   return execSync(`git ${command}`, {
@@ -53,6 +71,47 @@ async function setupShadowSpecDir(dir: string): Promise<string> {
     "utf-8",
   );
   return specDir;
+}
+
+async function setupShadowProject(dir: string): Promise<string> {
+  initGitRepo(dir);
+  await fs.writeFile(path.join(dir, "README.md"), "seed\n", "utf-8");
+  git(dir, "add README.md");
+  git(dir, 'commit -m "init"');
+  const result = kspec("init --no-prompt", dir, {
+    env: { KSPEC_AUTHOR: "@test" },
+  });
+  if (result.exitCode !== 0) {
+    throw new Error(`kspec init --no-prompt failed: ${result.stderr}`);
+  }
+  return path.join(dir, SHADOW_WORKTREE_DIR);
+}
+
+function getShadowCommitCount(projectDir: string): number {
+  return parseInt(
+    execSync("git rev-list --count HEAD", {
+      cwd: path.join(projectDir, SHADOW_WORKTREE_DIR),
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    }).trim(),
+    10,
+  );
+}
+
+function getShadowStatus(projectDir: string): string {
+  return execSync("git status --porcelain", {
+    cwd: path.join(projectDir, SHADOW_WORKTREE_DIR),
+    encoding: "utf-8",
+    stdio: ["pipe", "pipe", "pipe"],
+  }).trim();
+}
+
+function readCommittedShadowFile(projectDir: string, filePath: string): string {
+  return execSync(`git show HEAD:${filePath}`, {
+    cwd: path.join(projectDir, SHADOW_WORKTREE_DIR),
+    encoding: "utf-8",
+    stdio: ["pipe", "pipe", "pipe"],
+  });
 }
 
 async function readWorkspaceRecord(
@@ -833,4 +892,143 @@ describe("dispatch workspace registry", () => {
     const raw = await fs.readFile(registryPath, "utf-8");
     expect(raw).toContain("task_ref: not-a-ref");
   });
+});
+
+describe("dispatch workspace registry shadow durability", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-dispatch-workspace-shadow-");
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    if (tempDir) {
+      await cleanupTempDir(tempDir);
+    }
+  });
+
+  // AC: @dispatch-workspace-registry ac-8
+  it.skipIf(!canRunShadowTests)(
+    "durably commits provisioning and reconciliation registry writes on the shadow branch",
+    async () => {
+      await setupShadowProject(tempDir);
+      git(tempDir, "checkout -b agent-dev");
+
+      const initialCommitCount = getShadowCommitCount(tempDir);
+      const taskRef = `@${testUlid("TASK", 28)}`;
+      const workspace = await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: {
+          title: "Shadow Durable Workspace Registry",
+          slugs: ["task-shadow-durable-workspace-registry"],
+        },
+      });
+
+      expect(getShadowStatus(tempDir)).toBe("");
+      expect(getShadowCommitCount(tempDir)).toBeGreaterThan(initialCommitCount);
+
+      const committedProvisioning = YAML.parse(
+        readCommittedShadowFile(tempDir, "project.dispatch-workspaces.yaml"),
+      ) as { workspaces?: Array<Record<string, unknown>> };
+      const provisionedRecord = committedProvisioning.workspaces?.find((entry) => entry.task_ref === taskRef);
+      expect(provisionedRecord).toMatchObject({
+        task_ref: taskRef,
+        lifecycle_state: "ready",
+        canonical_branch: workspace.metadata.canonicalBranch,
+      });
+
+      const preReconcileCommitCount = getShadowCommitCount(tempDir);
+      await markDispatchWorkspaceActive({
+        projectDir: tempDir,
+        taskRef,
+        role: "worker",
+      });
+      await reconcileDispatchWorkspaceRegistry(
+        tempDir,
+        new Map([[taskRef, "in_progress" as const]]),
+        new Map([[taskRef, "worker" as const]]),
+      );
+
+      expect(getShadowStatus(tempDir)).toBe("");
+      expect(getShadowCommitCount(tempDir)).toBeGreaterThan(preReconcileCommitCount);
+
+      const committedReconciliation = YAML.parse(
+        readCommittedShadowFile(tempDir, "project.dispatch-workspaces.yaml"),
+      ) as { workspaces?: Array<Record<string, unknown>> };
+      const reconciledRecord = committedReconciliation.workspaces?.find((entry) => entry.task_ref === taskRef);
+      expect(reconciledRecord).toMatchObject({
+        task_ref: taskRef,
+        lifecycle_state: "active",
+        active_role: "worker",
+      });
+
+      const reloaded = await findDispatchWorkspaceByTaskRef(
+        await initContext(tempDir),
+        taskRef,
+      );
+      expect(reloaded?.lifecycle_state).toBe("active");
+      expect(reloaded?.active_role).toBe("worker");
+    },
+  );
+
+  // AC: @dispatch-workspace-registry ac-8
+  // AC: @trait-error-guidance ac-1 — runtime error explains the persistence failure
+  // AC: @trait-error-guidance ac-2 — runtime error includes a concrete recovery action
+  it.skipIf(!canRunShadowTests)(
+    "raises actionable guidance when the registry write cannot be durably committed",
+    async () => {
+      await setupShadowProject(tempDir);
+      git(tempDir, "checkout -b agent-dev");
+
+      const commitSpy = vi.spyOn(shadowModule, "commitIfShadow").mockResolvedValue(false);
+      const taskRef = `@${testUlid("TASK", 29)}`;
+
+      await expect(
+        provisionDispatchWorkspace({
+          projectDir: tempDir,
+          taskRef,
+          task: {
+            title: "Shadow Commit Failure Registry",
+            slugs: ["task-shadow-commit-failure-registry"],
+          },
+        }),
+      ).rejects.toThrow(
+        /could not be durably committed on the shadow branch/i,
+      );
+
+      expect(commitSpy).toHaveBeenCalled();
+      expect(getShadowStatus(tempDir)).toContain("project.dispatch-workspaces.yaml");
+    },
+  );
+
+  // AC: @dispatch-workspace-registry ac-8
+  // AC: @scoped-dispatch-shadow-serialization ac-2
+  it.skipIf(!canRunShadowTests)(
+    "uses the shared dispatch shadow mutation lock for runtime registry writes",
+    async () => {
+      await setupShadowProject(tempDir);
+      git(tempDir, "checkout -b agent-dev");
+
+      const release = await acquireFileLock(getDispatchShadowMutationLockPath(tempDir));
+      process.env.KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS = "50";
+
+      try {
+        await expect(
+          provisionDispatchWorkspace({
+            projectDir: tempDir,
+            taskRef: `@${testUlid("TASK", 30)}`,
+            task: {
+              title: "Shadow Mutation Lock Registry",
+              slugs: ["task-shadow-mutation-lock-registry"],
+            },
+          }),
+        ).rejects.toThrow(/dispatch shadow mutation lock unavailable/i);
+      } finally {
+        delete process.env.KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS;
+        await release();
+      }
+    },
+  );
 });

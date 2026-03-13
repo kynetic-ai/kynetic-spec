@@ -2,6 +2,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { spawnSync } from "node:child_process";
 import { initContext } from "../parser/index.js";
+import { acquireFileLock } from "../parser/file-lock.js";
 import {
   findDispatchWorkspaceByTaskRef,
   getDispatchWorkspaceRegistryPath,
@@ -10,6 +11,7 @@ import {
   type LoadedDispatchWorkspaceRecord,
 } from "../parser/dispatch-workspaces.js";
 import { loadProjectConfig } from "../parser/config.js";
+import { commitIfShadow } from "../parser/shadow.js";
 import type {
   DispatchWorkspaceBootstrapState,
   DispatchWorkspaceBootstrapRoleState,
@@ -29,6 +31,7 @@ import type {
 
 const DISPATCH_WORKSPACE_METADATA_FILE = ".kspec-dispatch-workspace.json";
 const DISPATCH_BRANCH_PREFIX = "dispatch/task/";
+const DISPATCH_SHADOW_MUTATION_LOCK_FILE = ".kspec-dispatch-shadow-mutation";
 
 interface GitResult {
   stdout: string;
@@ -96,6 +99,10 @@ export type DispatchWorkspaceIntegrationState = DispatchWorkspaceIntegrationStat
 export type DispatchWorkspaceIntegrationOutcome = RegistryIntegrationOutcome;
 
 export type { DispatchWorkspaceBootstrapRoleState, DispatchWorkspaceBootstrapStepResult };
+
+export function getDispatchShadowMutationLockPath(projectDir: string): string {
+  return path.join(projectDir, DISPATCH_SHADOW_MUTATION_LOCK_FILE);
+}
 
 function emptyBootstrapRoleState(): DispatchWorkspaceBootstrapRoleState {
   return {
@@ -230,6 +237,13 @@ function runGit(cwd: string, args: string[]): GitResult {
     stderr: (result.stderr ?? "").trim(),
     status: result.status,
   };
+}
+
+function resolveDispatchMutationLockTimeoutMs(): number | undefined {
+  const raw = process.env.KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS;
+  if (!raw) return undefined;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) ? parsed : undefined;
 }
 
 function runGitOrThrow(
@@ -781,12 +795,49 @@ async function persistWorkspaceRecord(
   projectDir: string,
   record: DispatchWorkspaceRecord,
 ): Promise<string> {
-  const ctx = await initContext(projectDir);
-  const registryPath = getDispatchWorkspaceRegistryPath(ctx);
-  await saveDispatchWorkspaceRecord(ctx, {
-    ...record,
-    _sourceFile: registryPath,
-  });
+  const lockPath = getDispatchShadowMutationLockPath(projectDir);
+  const timeoutMs = resolveDispatchMutationLockTimeoutMs();
+  let registryPath = "";
+
+  let release: (() => Promise<void>) | undefined;
+  try {
+    release = await acquireFileLock(lockPath, timeoutMs);
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    throw new DispatchWorkspaceError(
+      `Dispatch shadow mutation lock unavailable while persisting workspace registry for ${record.task_ref}: ${reason}`,
+      `Wait for the overlapping kspec mutation to finish, or remove ${path.basename(lockPath)}.lock if the lock holder is gone.`,
+    );
+  }
+
+  try {
+    const ctx = await initContext(projectDir);
+    registryPath = getDispatchWorkspaceRegistryPath(ctx);
+    await saveDispatchWorkspaceRecord(ctx, {
+      ...record,
+      _sourceFile: registryPath,
+    });
+
+    if (ctx.shadow?.enabled) {
+      const committed = await commitIfShadow(
+        ctx.shadow,
+        "dispatch-workspace-registry",
+        record.task_ref,
+      );
+      if (!committed) {
+        const shadowStatus = runGit(ctx.shadow.worktreeDir, ["status", "--porcelain"]);
+        const hasPendingShadowChanges = shadowStatus.status !== 0 || shadowStatus.stdout.trim().length > 0;
+        if (hasPendingShadowChanges) {
+          throw new DispatchWorkspaceError(
+            `Dispatch workspace registry write succeeded but could not be durably committed on the shadow branch for ${record.task_ref}.`,
+            "Resolve the shadow branch commit issue, then rerun dispatch reconciliation or workspace provisioning so the registry state becomes durable.",
+          );
+        }
+      }
+    }
+  } finally {
+    await release?.();
+  }
 
   const workerDir = record.worktrees.worker.path;
   if (workerDir && pathExists(workerDir)) {
