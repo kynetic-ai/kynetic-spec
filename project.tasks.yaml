@@ -94260,6 +94260,17 @@
         recently scheduled _reconcile() promise on PR #820, so overlapping reconciliation intervals
         can still leave registry/artifact mutations running after stop() returns."
       supersedes: null
+    - _ulid: 01KKKVFRDTGDTX2397MYEKF8G1
+      created_at: 2026-03-13T15:01:53.722Z
+      author: "@claude"
+      content: "Fix cycle 10 resolution: The inFlightReconcile field was a single Promise|null that only
+        held the most recently scheduled _reconcile() promise. When reconciliation intervals
+        overlapped (a new _reconcile fires before the previous one completes), earlier promises were
+        silently dropped and stop() only awaited the latest one. Fix: replaced with a
+        Set<Promise<void>> so every in-flight reconciliation is tracked and stop() uses
+        Promise.allSettled to await them all before returning. Verified with full npm test (228
+        files, 4733 tests, 0 failures)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJYEETYYQABWJ2QWJGPEMRT
