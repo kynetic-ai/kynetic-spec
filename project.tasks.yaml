@@ -93306,6 +93306,24 @@
       content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: shared doctor/setup-status path still reports
         Claude-only hooks and skill status for Droid after setup; see PR #819 review."
       supersedes: null
+    - _ulid: 01KKJTRC1Y4B0J90VMM5E34GMR
+      created_at: 2026-03-13T05:29:52.958Z
+      author: Jacob Chapel
+      content: >-
+        Addressed PR #819 fix-cycle feedback in the shared doctor/setup-status path.
+
+        - Made shared setup status scan .factory/skills when Droid is detected so doctor reports
+        rendered Droid skills instead of Claude-only counts.
+
+        - Marked hooks as unsupported for non-Claude agents and report Droid hook status as an
+        intentional skip instead of a setup error.
+
+        - Added doctor regression coverage and isolated doctor env detection from harness env vars.
+
+        - Verification: npm run typecheck; npm test -- tests/parser/doctor.test.ts
+        tests/agent-detection.test.ts tests/enhanced-setup.test.ts; kspec validate (warnings only
+        from existing repo debt).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKM94SSN5XJCTY5PPWSX8T
