@@ -94224,6 +94224,16 @@
         ENOTEMPTY during temp-dir teardown, indicating the new registry durability/reconciliation
         path still leaves an in-flight side effect after engine stop."
       supersedes: null
+    - _ulid: 01KKKSZGY5YEZEAEVBYJAMGH2T
+      created_at: 2026-03-13T14:35:33.189Z
+      author: "@claude"
+      content: "Fix cycle 9 resolution: The ENOTEMPTY during temp-dir teardown was caused by engine.stop()
+        returning while _reconcile() was still running. The setInterval callback fired _reconcile()
+        as fire-and-forget, so stop() didn't wait for in-flight reconciliation to complete its file
+        writes (registry saves, artifact cleanup). Fix: track the in-flight reconciliation promise
+        and await it in stop() after clearing the interval timer. Verified with 2 consecutive
+        full-suite runs (228/228 files, 4733/4733 tests, 0 failures)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJYEETYYQABWJ2QWJGPEMRT
