@@ -92248,6 +92248,15 @@
         - Verification: focused dispatch/runtime tests, kspec validate, and targeted git diff
         review.
       supersedes: null
+    - _ulid: 01KKJBGBY0X9JJZSAHVC5HYMEA
+      created_at: 2026-03-13T01:03:22.048Z
+      author: Jacob Chapel
+      content: Implemented dispatcher-owned role entry rendering separate from orientation. Added
+        workspace publication_mode persistence, adapter-aware entrypoint rendering for
+        worker/reviewer roles, explicit manual-merge escalation guidance, and fail-fast prompt note
+        reporting when entry configuration is invalid. Verified with focused dispatch tests, full
+        npm test, and kspec validate (warnings-only baseline).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
