@@ -33,6 +33,7 @@ import {
   reconcileDispatchWorkspaceRegistry,
   getDispatchWorkspaceHealth,
   reconcileDispatchWorkspaceLifecycle,
+  type DispatchWorkspaceMetadata,
   type DispatchWorkspaceRole,
   type ProvisionedDispatchWorkspace,
   cleanupReviewerDispatchWorkspace,
@@ -209,21 +210,60 @@ function formatRecentNotes(
 export function buildOrientationContext(
   taskRef: string,
   trigger: string,
-  workspace: ProvisionedDispatchWorkspace,
-  task?: {
+  workspaceOrTask:
+    | ProvisionedDispatchWorkspace
+    | {
+        title: string;
+        notes?: Array<{ created_at: string; author?: string; content: string }>;
+        review_url?: string;
+      },
+  taskOrMetadata?: {
     title: string;
     notes?: Array<{ created_at: string; author?: string; content: string }>;
     review_url?: string;
-  },
+  } | DispatchWorkspaceMetadata,
+  metadataOrRole?: DispatchWorkspaceMetadata | DispatchWorkspaceRole,
+  explicitRole?: DispatchWorkspaceRole,
 ): string {
+  const usingProvisionedWorkspace =
+    typeof workspaceOrTask === "object"
+    && workspaceOrTask !== null
+    && "cwd" in workspaceOrTask
+    && "metadata" in workspaceOrTask;
+  const role: DispatchWorkspaceRole =
+    explicitRole
+    ?? (usingProvisionedWorkspace
+      ? (trigger === "task.pending_review" ? "reviewer" : "worker")
+      : ((metadataOrRole as DispatchWorkspaceRole | undefined)
+        ?? (trigger === "task.pending_review" ? "reviewer" : "worker")));
+  const workspace = usingProvisionedWorkspace
+    ? workspaceOrTask
+    : null;
+  const task = usingProvisionedWorkspace
+    ? (taskOrMetadata as {
+        title: string;
+        notes?: Array<{ created_at: string; author?: string; content: string }>;
+        review_url?: string;
+      } | undefined)
+    : (workspaceOrTask as {
+        title: string;
+        notes?: Array<{ created_at: string; author?: string; content: string }>;
+        review_url?: string;
+      } | undefined);
+  const metadata = (usingProvisionedWorkspace
+    ? workspaceOrTask.metadata
+    : (taskOrMetadata as DispatchWorkspaceMetadata | undefined)) ?? null;
   const title = task?.title ?? "(unavailable)";
-  const role: DispatchWorkspaceRole = trigger === "task.pending_review" ? "reviewer" : "worker";
-  const metadata = workspace.metadata;
-  const bootstrapRoleState = metadata.bootstrap.roleStates[role];
+  const bootstrapRoleState = metadata?.bootstrap?.roleStates?.[role];
+  const workspacePath = workspace?.cwd
+    ?? (role === "reviewer" ? metadata?.reviewerWorktreeDir : metadata?.workerWorktreeDir)
+    ?? "(unavailable)";
   const workspaceMode =
     role === "reviewer" ? "detached review snapshot" : "mutable worker branch";
   const bootstrapSummary =
-    bootstrapRoleState.status === "succeeded"
+    !bootstrapRoleState
+      ? "not available"
+      : bootstrapRoleState.status === "succeeded"
       ? role === "reviewer" && bootstrapRoleState.steps.length === 0
         ? "reused worker bootstrap"
         : "prepared"
@@ -231,29 +271,29 @@ export function buildOrientationContext(
         ? `failed${bootstrapRoleState.failureMessage ? ` (${bootstrapRoleState.failureMessage})` : ""}`
         : "not run";
   const dependencyStatus =
-    bootstrapRoleState.invalidationReasons.length > 0
+    bootstrapRoleState && bootstrapRoleState.invalidationReasons.length > 0
       ? bootstrapRoleState.invalidationReasons.join("; ")
       : "satisfied";
   const healthSummary =
-    metadata.healthStatus === "healthy"
+    metadata?.healthStatus === "healthy"
       ? "ready"
-      : metadata.healthReason
+      : metadata?.healthReason
         ? `${metadata.healthStatus} (${metadata.healthReason})`
-        : metadata.healthStatus;
+        : (metadata?.healthStatus ?? "unknown");
   const canonicalHeadContext =
     role === "reviewer"
-      ? `${shortSha(metadata.canonicalBranchHead)} (snapshot under review)`
-      : `${shortSha(metadata.canonicalBranchHead)} (canonical branch head to resume)`;
+      ? `${shortSha(metadata?.canonicalBranchHead)} (snapshot under review)`
+      : `${shortSha(metadata?.canonicalBranchHead)} (canonical branch head to resume)`;
   const lines = [
     "## Task Context",
     `Task: ${taskRef} \u2014 "${title}"`,
     `Selection reason: ${triggerDescription(trigger)}`,
     `Role: ${role}`,
     `Focus: ${focusDescription(trigger, role)}`,
-    `Workspace: ${workspace.cwd}`,
+    `Workspace: ${workspacePath}`,
     `Workspace mode: ${workspaceMode}`,
-    `Canonical branch: ${metadata.canonicalBranch}`,
-    `Integration target: ${metadata.integrationTargetBranch}`,
+    `Canonical branch: ${metadata?.canonicalBranch ?? "(unavailable)"}`,
+    `Integration target: ${metadata?.integrationTargetBranch ?? metadata?.mergeTargetBranch ?? "(unavailable)"}`,
     `Canonical head: ${canonicalHeadContext}`,
     `Bootstrap state: ${bootstrapSummary}`,
     `Workspace health: ${healthSummary}`,
@@ -262,11 +302,11 @@ export function buildOrientationContext(
 
   if (role === "reviewer") {
     lines.push(
-      `Prepared state: Detached reviewer snapshot at ${shortSha(metadata.canonicalBranchHead)}. The mutable worker branch remains ${metadata.canonicalBranch}.`,
+      `Prepared state: Detached reviewer snapshot at ${shortSha(metadata?.canonicalBranchHead)}. The mutable worker branch remains ${metadata?.canonicalBranch ?? "(unavailable)"}.`,
     );
   } else {
     lines.push(
-      `Prepared state: Mutable worker worktree attached to ${metadata.canonicalBranch} under ${metadata.worktreeRoot}.`,
+      `Prepared state: Mutable worker worktree attached to ${metadata?.canonicalBranch ?? "(unavailable)"} under ${metadata?.worktreeRoot ?? "(unavailable)"}.`,
     );
   }
 
@@ -283,29 +323,29 @@ export function buildOrientationContext(
     const url = task?.review_url ?? "Not provided \u2014 find PR via task notes or git log.";
     lines.push(`Review URL: ${url}`);
     lines.push(
-      `Cycle context: Review cycle on a detached snapshot. If changes are kicked back, the follow-up worker resumes ${metadata.canonicalBranch} and still publishes against ${metadata.integrationTargetBranch}.`,
+      `Cycle context: Review cycle on a detached snapshot. If changes are kicked back, the follow-up worker resumes ${metadata?.canonicalBranch ?? "(unavailable)"} and still publishes against ${metadata?.integrationTargetBranch ?? metadata?.mergeTargetBranch ?? "(unavailable)"}.`,
     );
   }
 
   if (trigger === "task.needs_work") {
     lines.push(
-      `Cycle context: Fix cycle after review. You are resuming ${metadata.canonicalBranch}; publication still targets ${metadata.integrationTargetBranch}.`,
+      `Cycle context: Fix cycle after review. You are resuming ${metadata?.canonicalBranch ?? "(unavailable)"}; publication still targets ${metadata?.integrationTargetBranch ?? metadata?.mergeTargetBranch ?? "(unavailable)"}.`,
     );
   }
 
   const publicationGuidance =
-    metadata.publicationMode === "pull_request"
+    metadata?.publicationMode === "pull_request"
       ? `- Publish via PR: create or update a pull request from ${metadata.canonicalBranch} into ${metadata.integrationTargetBranch}.`
-      : `- Publish via manual merge: merge ${metadata.canonicalBranch} back into ${metadata.integrationTargetBranch}; if conflicts occur, stop and escalate with the conflict details instead of improvising.`;
+      : `- Publish via manual merge: merge ${metadata?.canonicalBranch ?? "(unavailable)"} back into ${metadata?.integrationTargetBranch ?? metadata?.mergeTargetBranch ?? "(unavailable)"}; if conflicts occur, stop and escalate with the conflict details instead of improvising.`;
   lines.push(
     "",
     "Dispatch Branch Context:",
-    `- Canonical branch: ${metadata.canonicalBranch}`,
-    `- Integration target: ${metadata.integrationTargetBranch} @ ${metadata.integrationTargetCommit}`,
-    `- Publication mode: ${metadata.publicationMode}`,
+    `- Canonical branch: ${metadata?.canonicalBranch ?? "(unavailable)"}`,
+    `- Integration target: ${metadata?.integrationTargetBranch ?? metadata?.mergeTargetBranch ?? "(unavailable)"} @ ${metadata?.integrationTargetCommit ?? metadata?.baseBranchPoint ?? "(unavailable)"}`,
+    `- Publication mode: ${metadata?.publicationMode ?? "manual_merge"}`,
     role === "reviewer"
-      ? `- Snapshot under review: ${metadata.canonicalBranchHead}`
-      : `- Canonical head: ${metadata.canonicalBranchHead}`,
+      ? `- Snapshot under review: ${metadata?.canonicalBranchHead ?? "(unavailable)"}`
+      : `- Canonical head: ${metadata?.canonicalBranchHead ?? "(unavailable)"}`,
     publicationGuidance,
   );
 
