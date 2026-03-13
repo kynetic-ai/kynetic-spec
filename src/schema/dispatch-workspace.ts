@@ -1,6 +1,19 @@
 import { z } from "zod";
 import { DateTimeSchema, RefSchema, SlugSchema } from "./common.js";
 
+export const DispatchWorkspaceBranchOwnershipSchema = z.enum([
+  "dispatcher-managed",
+  "adopted",
+]);
+
+export const DispatchWorkspaceBranchProvenanceSchema = z.object({
+  ownership: DispatchWorkspaceBranchOwnershipSchema,
+  source: z.string().min(1, "Branch provenance source is required"),
+  remote_ref: z.string().nullable().optional(),
+  adopted_from: z.string().nullable().optional(),
+  adopted_at: DateTimeSchema.nullable().optional(),
+});
+
 export const DispatchWorkspaceLifecycleStateSchema = z.enum([
   "provisioning",
   "ready",
@@ -168,6 +181,13 @@ export const DispatchWorkspaceRecordSchema = z.object({
   base_branch_point: z.string().min(1, "Base branch point is required"),
   canonical_branch: z.string().min(1, "Canonical branch is required"),
   canonical_branch_head: z.string().min(1, "Canonical branch head is required"),
+  branch_provenance: DispatchWorkspaceBranchProvenanceSchema.optional().default({
+    ownership: "dispatcher-managed",
+    source: "provisioned",
+    remote_ref: null,
+    adopted_from: null,
+    adopted_at: null,
+  }),
   lifecycle_state: DispatchWorkspaceLifecycleStateSchema,
   active_role: DispatchWorkspaceRoleSchema.nullable().optional(),
   worktrees: z.object({
@@ -210,6 +230,12 @@ export type DispatchWorkspacePublicationMode = z.infer<
 >;
 export type DispatchWorkspaceIntegrationOutcome = z.infer<
   typeof DispatchWorkspaceIntegrationOutcomeSchema
+>;
+export type DispatchWorkspaceBranchOwnership = z.infer<
+  typeof DispatchWorkspaceBranchOwnershipSchema
+>;
+export type DispatchWorkspaceBranchProvenance = z.infer<
+  typeof DispatchWorkspaceBranchProvenanceSchema
 >;
 export type DispatchWorkspaceIssue = z.infer<
   typeof DispatchWorkspaceIssueSchema
