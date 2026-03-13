@@ -54,7 +54,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-13T13:15:57.462Z
+      updated_at: 2026-03-13T13:16:57.494Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -68,17 +68,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-dispatch-workspace-and-scheduler-flow-01kkfy9k"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-13T13:15:57.462Z
+      updated_at: 2026-03-13T13:16:57.494Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-13T13:15:57.462Z
+      updated_at: 2026-03-13T13:16:57.494Z
     timestamps:
       created_at: 2026-03-13T03:46:33.670Z
-      updated_at: 2026-03-13T13:15:57.462Z
-      last_reconciled_at: 2026-03-13T13:15:57.462Z
+      updated_at: 2026-03-13T13:16:57.494Z
+      last_reconciled_at: 2026-03-13T13:16:57.494Z
       last_active_at: 2026-03-13T04:35:30.347Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM6NQ8M1W9MSAKGXDXW97
@@ -132,7 +132,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-13T13:15:57.505Z
+      updated_at: 2026-03-13T13:16:57.548Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -145,17 +145,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-agent-detection-01kkjkm6"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-13T13:15:57.505Z
+      updated_at: 2026-03-13T13:16:57.548Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-13T13:15:57.505Z
+      updated_at: 2026-03-13T13:16:57.548Z
     timestamps:
       created_at: 2026-03-13T04:01:50.333Z
-      updated_at: 2026-03-13T13:15:57.505Z
-      last_reconciled_at: 2026-03-13T13:15:57.505Z
+      updated_at: 2026-03-13T13:16:57.548Z
+      last_reconciled_at: 2026-03-13T13:16:57.548Z
       last_active_at: 2026-03-13T08:04:18.340Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJP6E1TN5ZFMHASTHSGG2MH
@@ -217,7 +217,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-13T13:15:57.557Z
+      updated_at: 2026-03-13T13:16:57.596Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -236,17 +236,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/reconcile-legacy-dispatch-workspaces-and-spec-gaps-01kkjp6e-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-13T13:15:57.557Z
+      updated_at: 2026-03-13T13:16:57.596Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-13T13:15:57.557Z
+      updated_at: 2026-03-13T13:16:57.596Z
     timestamps:
       created_at: 2026-03-13T04:11:14.073Z
-      updated_at: 2026-03-13T13:15:57.557Z
-      last_reconciled_at: 2026-03-13T13:15:57.557Z
+      updated_at: 2026-03-13T13:16:57.596Z
+      last_reconciled_at: 2026-03-13T13:16:57.596Z
       last_active_at: 2026-03-13T05:18:14.161Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM79JZR25WY03DTZETJN7
@@ -300,7 +300,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-13T13:15:57.607Z
+      updated_at: 2026-03-13T13:16:57.646Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -313,17 +313,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-acp-adapter-01kkjkm7"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-13T13:15:57.607Z
+      updated_at: 2026-03-13T13:16:57.646Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-13T13:15:57.607Z
+      updated_at: 2026-03-13T13:16:57.646Z
     timestamps:
       created_at: 2026-03-13T04:33:22.590Z
-      updated_at: 2026-03-13T13:15:57.607Z
-      last_reconciled_at: 2026-03-13T13:15:57.607Z
+      updated_at: 2026-03-13T13:16:57.646Z
+      last_reconciled_at: 2026-03-13T13:16:57.646Z
       last_active_at: 2026-03-13T04:44:46.937Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM7Y5M5366F6XWC0KMHV5
@@ -380,7 +380,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-13T13:15:57.650Z
+      updated_at: 2026-03-13T13:16:57.692Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -393,17 +393,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-skill-renderer-01kkjkm7"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-13T13:15:57.650Z
+      updated_at: 2026-03-13T13:16:57.692Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-13T13:15:57.650Z
+      updated_at: 2026-03-13T13:16:57.692Z
     timestamps:
       created_at: 2026-03-13T04:53:07.037Z
-      updated_at: 2026-03-13T13:15:57.650Z
-      last_reconciled_at: 2026-03-13T13:15:57.650Z
+      updated_at: 2026-03-13T13:16:57.692Z
+      last_reconciled_at: 2026-03-13T13:16:57.692Z
       last_active_at: 2026-03-13T06:25:26.178Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM8H7XWFRNJH8ME1RMZKD
@@ -460,7 +460,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-13T13:15:57.701Z
+      updated_at: 2026-03-13T13:16:57.740Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -473,17 +473,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-setup-integration-01kkjkm8"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-13T13:15:57.701Z
+      updated_at: 2026-03-13T13:16:57.740Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-13T13:15:57.701Z
+      updated_at: 2026-03-13T13:16:57.740Z
     timestamps:
       created_at: 2026-03-13T05:00:51.404Z
-      updated_at: 2026-03-13T13:15:57.701Z
-      last_reconciled_at: 2026-03-13T13:15:57.701Z
+      updated_at: 2026-03-13T13:16:57.740Z
+      last_reconciled_at: 2026-03-13T13:16:57.740Z
       last_active_at: 2026-03-13T11:53:47.900Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKB8FGF6K5NP97PEEXRP2PY7
@@ -537,7 +537,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-13T13:15:57.746Z
+      updated_at: 2026-03-13T13:16:57.786Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -551,17 +551,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-test-coverage-annotation-sweep-01kkb8fg"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-13T13:15:57.746Z
+      updated_at: 2026-03-13T13:16:57.786Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-13T13:15:57.746Z
+      updated_at: 2026-03-13T13:16:57.786Z
     timestamps:
       created_at: 2026-03-13T05:19:40.155Z
-      updated_at: 2026-03-13T13:15:57.746Z
-      last_reconciled_at: 2026-03-13T13:15:57.746Z
+      updated_at: 2026-03-13T13:16:57.786Z
+      last_reconciled_at: 2026-03-13T13:16:57.786Z
       last_active_at: 2026-03-13T07:57:55.232Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJT2VJPSPQRCVDW5NZ9G6TJ
@@ -618,22 +618,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T13:15:57.900Z
+      updated_at: 2026-03-13T13:16:57.831Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T13:15:57.900Z
+      updated_at: 2026-03-13T13:16:57.831Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T13:15:57.900Z
+      updated_at: 2026-03-13T13:16:57.831Z
     timestamps:
       created_at: 2026-03-13T05:30:39.118Z
-      updated_at: 2026-03-13T13:15:57.900Z
-      last_reconciled_at: 2026-03-13T13:15:57.900Z
+      updated_at: 2026-03-13T13:16:57.831Z
+      last_reconciled_at: 2026-03-13T13:16:57.831Z
       last_active_at: 2026-03-13T13:05:30.885Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM61M5BAEFRPNBRK7XDRY
@@ -694,7 +694,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-13T13:15:57.947Z
+      updated_at: 2026-03-13T13:16:57.882Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -713,17 +713,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-platform-config-schema-01kkjkm6-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-13T13:15:57.947Z
+      updated_at: 2026-03-13T13:16:57.882Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-13T13:15:57.947Z
+      updated_at: 2026-03-13T13:16:57.882Z
     timestamps:
       created_at: 2026-03-13T03:30:24.310Z
-      updated_at: 2026-03-13T13:15:57.947Z
-      last_reconciled_at: 2026-03-13T13:15:57.947Z
+      updated_at: 2026-03-13T13:16:57.882Z
+      last_reconciled_at: 2026-03-13T13:16:57.882Z
       last_active_at: 2026-03-13T07:57:55.750Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFZ61246P1HQKMP9HSM7D1F
@@ -782,7 +782,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-13T13:15:58.002Z
+      updated_at: 2026-03-13T13:16:57.932Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -801,17 +801,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-honor-derive-from-specs-false-in-plan-derive-01kkfz61-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-13T13:15:58.002Z
+      updated_at: 2026-03-13T13:16:57.932Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-13T13:15:58.002Z
+      updated_at: 2026-03-13T13:16:57.932Z
     timestamps:
       created_at: 2026-03-12T23:14:42.085Z
-      updated_at: 2026-03-13T13:15:58.002Z
-      last_reconciled_at: 2026-03-13T13:15:58.002Z
+      updated_at: 2026-03-13T13:16:57.932Z
+      last_reconciled_at: 2026-03-13T13:16:57.932Z
       last_active_at: null
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFY9G5E5WP7T9XC2P6DEYFX
@@ -870,7 +870,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-13T13:15:58.049Z
+      updated_at: 2026-03-13T13:16:57.990Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -889,17 +889,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-bootstrap-contract-01kkfy9g-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-13T13:15:58.049Z
+      updated_at: 2026-03-13T13:16:57.990Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-13T13:15:58.049Z
+      updated_at: 2026-03-13T13:16:57.990Z
     timestamps:
       created_at: 2026-03-12T22:10:35.812Z
-      updated_at: 2026-03-13T13:15:58.049Z
-      last_reconciled_at: 2026-03-13T13:15:58.049Z
+      updated_at: 2026-03-13T13:16:57.990Z
+      last_reconciled_at: 2026-03-13T13:16:57.990Z
       last_active_at: null
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFY9F0VXEG6YWVBA20N7DJ2
@@ -958,7 +958,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-13T13:15:58.099Z
+      updated_at: 2026-03-13T13:16:58.044Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -977,17 +977,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-branch-integration-contract-01kkfy9f-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-13T13:15:58.099Z
+      updated_at: 2026-03-13T13:16:58.044Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-13T13:15:58.099Z
+      updated_at: 2026-03-13T13:16:58.044Z
     timestamps:
       created_at: 2026-03-12T17:21:25.682Z
-      updated_at: 2026-03-13T13:15:58.099Z
-      last_reconciled_at: 2026-03-13T13:15:58.099Z
+      updated_at: 2026-03-13T13:16:58.044Z
+      last_reconciled_at: 2026-03-13T13:16:58.044Z
       last_active_at: null
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFY9GS59BDK2CGJARN0RHNZ
@@ -1046,7 +1046,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-13T13:15:58.147Z
+      updated_at: 2026-03-13T13:16:58.163Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -1065,17 +1065,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-orientation-prompt-01kkfy9g-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-13T13:15:58.147Z
+      updated_at: 2026-03-13T13:16:58.163Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-13T13:15:58.147Z
+      updated_at: 2026-03-13T13:16:58.163Z
     timestamps:
       created_at: 2026-03-13T00:44:09.505Z
-      updated_at: 2026-03-13T13:15:58.147Z
-      last_reconciled_at: 2026-03-13T13:15:58.147Z
+      updated_at: 2026-03-13T13:16:58.163Z
+      last_reconciled_at: 2026-03-13T13:16:58.163Z
       last_active_at: null
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFY9HBMSAW4DD924SYTEJ0P
@@ -1924,27 +1924,32 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 48408281d10e9f1d5ec6ba581041cd9477006c46
     canonical_branch: dispatch/task/implement-portable-task-submission-linkage/01kkk7r6
-    canonical_branch_head: e27aa01753822dbad58104bb6330ccf78de80822
-    lifecycle_state: active
-    active_role: worker
+    canonical_branch_head: fd1eee5f84bd46185b00d5476a123f0acd44bb7c
+    lifecycle_state: integrating
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-portable-task-submission-linkage-01kkk7r6
         branch_mode: branch
         branch_ref: dispatch/task/implement-portable-task-submission-linkage/01kkk7r6
-        head: e27aa01753822dbad58104bb6330ccf78de80822
-        last_seen_at: 2026-03-13T13:06:23.590Z
-      reviewer: null
+        head: fd1eee5f84bd46185b00d5476a123f0acd44bb7c
+        last_seen_at: 2026-03-13T13:16:38.153Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-portable-task-submission-linkage-01kkk7r6-review
+        branch_mode: detached
+        branch_ref: null
+        head: fd1eee5f84bd46185b00d5476a123f0acd44bb7c
+        last_seen_at: 2026-03-13T13:16:38.153Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-      canonicalBranchHead: e27aa01753822dbad58104bb6330ccf78de80822
-      lastRunAt: 2026-03-13T13:06:23.676Z
+      canonicalBranchHead: fd1eee5f84bd46185b00d5476a123f0acd44bb7c
+      lastRunAt: 2026-03-13T13:16:38.338Z
       invalidationReasons:
         - canonical-branch-head-changed
       steps: []
       failureMessage: null
-      lastRole: worker
+      lastRole: reviewer
       roleStates:
         worker:
           status: succeeded
@@ -1958,9 +1963,10 @@ workspaces:
         reviewer:
           status: succeeded
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-          canonicalBranchHead: e27aa01753822dbad58104bb6330ccf78de80822
-          lastRunAt: 2026-03-13T12:40:09.353Z
-          invalidationReasons: []
+          canonicalBranchHead: fd1eee5f84bd46185b00d5476a123f0acd44bb7c
+          lastRunAt: 2026-03-13T13:16:38.338Z
+          invalidationReasons:
+            - canonical-branch-head-changed
           steps: []
           failureMessage: null
     integration:
@@ -1970,21 +1976,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T13:15:58.645Z
+      updated_at: 2026-03-13T13:16:38.153Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T13:15:58.645Z
+      updated_at: 2026-03-13T13:16:38.563Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T13:15:58.645Z
+      updated_at: 2026-03-13T13:16:38.153Z
     timestamps:
       created_at: 2026-03-13T12:23:00.271Z
-      updated_at: 2026-03-13T13:15:58.645Z
-      last_reconciled_at: 2026-03-13T13:15:58.645Z
-      last_active_at: 2026-03-13T13:06:23.854Z
+      updated_at: 2026-03-13T13:16:38.563Z
+      last_reconciled_at: 2026-03-13T13:16:38.563Z
+      last_active_at: 2026-03-13T13:16:38.563Z
       closed_at: null
