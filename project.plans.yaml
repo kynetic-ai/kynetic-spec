@@ -15006,9 +15006,29 @@ plans:
           - `src/cli/commands/skill-crud.ts` — import platform detection
           - `src/cli/commands/session/commands.ts` — agent-type option
           - `templates/skills/manifest.yaml` — platforms arrays
-    status: approved
-    derived_tasks: []
-    derived_specs: []
+    status: active
+    derived_tasks:
+      - "@implement-droid-platform-config-schema"
+      - "@implement-droid-agent-detection"
+      - "@implement-droid-acp-adapter"
+      - "@implement-droid-skill-renderer"
+      - "@implement-droid-setup-integration"
+      - "@implement-core-skills-droid-platform-registration"
+      - "@implement-portable-skill-reference-resolution"
+      - "@implement-droid-core-skill-install-support"
+      - "@implement-droid-setup-status-reporting"
+      - "@implement-droid-skill-import-support"
+    derived_specs:
+      - "@droid-platform-config"
+      - "@droid-agent-detection"
+      - "@droid-acp-adapter"
+      - "@droid-renderer"
+      - "@droid-setup-integration"
+      - "@core-skills-droid-platform"
+      - "@portable-skill-references"
+      - "@droid-core-skill-install"
+      - "@droid-setup-status"
+      - "@droid-skill-import"
     source_path: /home/chapel/Projects/kynetic-spec/droid-platform-plan.md
     module_ref: "@agent-integration"
     created_at: 2026-03-13T01:49:20.268Z
@@ -15021,3 +15041,54 @@ plans:
         content: "Address review gaps: added 4 new specs (core-skill-install, setup-status, skill-import,
           prompts mapping), expanded ACs for detection priority, frontmatter generation, utility
           functions, and comprehensive file change list"
+      - _ulid: 01KKJKMC80DFMQ0ZV141FXXNH8
+        created_at: 2026-03-13T03:25:22.049Z
+        author: Jacob Chapel
+        content: >-
+          Key research findings that inform the design:
+
+
+          1. **Droid skill discovery**: `.factory/skills/<name>/SKILL.md` (workspace),
+          `~/.factory/skills/<name>/SKILL.md` (personal), `.agent/skills/` (compatibility).
+
+          2. **Frontmatter format**: Identical to Claude Code — name, description, user-invocable,
+          disable-model-invocation.
+
+          3. **Invocation syntax**: `/skill-name` — same as Claude Code, not `$skill` like Codex.
+
+          4. **ACP support**: Native via `droid exec --input-format stream-jsonrpc --output-format
+          stream-jsonrpc`.
+
+          5. **Env detection**: FACTORY_PROJECT_DIR is set during Droid execution (confirmed via
+          hooks docs). No dedicated session ID env var found. Detection uses FACTORY_PROJECT_DIR
+          (high confidence) with ~/.factory filesystem fallback (medium/low confidence). Must be
+          ordered after Claude Code and Codex checks.
+
+          6. **The renderer registry pattern** means most of the setup pipeline will automatically
+          pick up the droid renderer once registered — the setup command iterates `skill.platforms`
+          and calls `getRenderer(platform)`.
+
+          7. **Cross-platform skill references**: The `{skill:<id>}` portable token system already
+          exists. Droid needs: (a) formatSkillInvocation case, (b) getSkillReferencePlatform mapping
+          in prompts.ts for "droid-acp" -> "droid".
+
+          8. **Hooks**: Droid has its own hook system via `.factory/settings.json` with compatible
+          event types (PreToolUse, PostToolUse, UserPromptSubmit, Stop, SessionStart, SessionEnd).
+          Hook installation is deferred to a future iteration.
+
+          9. **`.factory/` directory ownership**: Droid manages `.factory/` broadly (settings,
+          droids, skills, hooks). kspec renders into `.factory/skills/` which is the standard skill
+          discovery path. This is safe — Droid does not auto-regenerate that directory.
+
+          10. **Files requiring changes** (comprehensive list):
+              - `src/schema/meta.ts` — DroidConfigSchema, PlatformConfigSchema
+              - `src/parser/agent-detection.ts` — AgentType, detectAgentFromEnv
+              - `src/agents/adapters.ts` — droid-acp adapter
+              - `src/parser/skill-render.ts` — droidRenderer, getPlatformDefaultOutputDir, getSkillSubdir, formatSkillInvocation, rendererRegistry
+              - `src/cli/commands/setup.ts` — AgentType, SETUP_AGENT_OVERRIDES, detectAgent, author config
+              - `src/cli/commands/skill-install.ts` — CoreInstallPlatform
+              - `src/parser/setup-status.ts` — skill scanning, filesystem fallback
+              - `src/agent-runtime/prompts.ts` — getSkillReferencePlatform
+              - `src/cli/commands/skill-crud.ts` — import platform detection
+              - `src/cli/commands/session/commands.ts` — agent-type option
+              - `templates/skills/manifest.yaml` — platforms arrays
