@@ -93233,16 +93233,17 @@
   derivation: auto
   plan_ref: "@plan-droid-platform-support"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKJS37FDX53HYCJBF5BVQ2D0
+  session_id: null
   created_at: 2026-03-13T03:25:18.247Z
   started_at: 2026-03-13T05:01:20.593Z
+  submitted_at: 2026-03-13T05:12:53.878Z
   notes:
     - _ulid: 01KKJS4K7PNSKVK4BTNZ4ANT86
       created_at: 2026-03-13T05:01:36.374Z
@@ -93282,9 +93283,14 @@
         debt only. Full npm test in this dispatch workspace hit unrelated dispatch shadow mutation
         lock timeouts on .kspec-dispatch-shadow-mutation.
       supersedes: null
+    - _ulid: 01KKJT0DBZ0YCKVQPV1DHPMCN2
+      created_at: 2026-03-13T05:16:47.871Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: shared doctor/setup-status path still reports
+        Claude-only hooks and skill status for Droid after setup; see PR #819 review."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-13T05:12:53.878Z
 - _ulid: 01KKJKM94SSN5XJCTY5PPWSX8T
   slugs:
     - implement-core-skills-droid-platform-registration
