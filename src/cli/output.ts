@@ -613,6 +613,24 @@ export function formatTaskDetails(
     console.log(`Review:    ${chalk.blue(task.review_url)}`);
   }
 
+  // AC: @portable-task-submission-linkage ac-2 - display submission linkage
+  if (task.submission_linkage) {
+    const sl = task.submission_linkage;
+    console.log(`\n${chalk.bold("─── Submission Linkage ───")}`);
+    console.log(`  Branch:  ${sl.branch ? chalk.cyan(sl.branch) : chalk.yellow("(detached)")}`);
+    console.log(`  Commit:  ${chalk.gray(sl.commit)}`);
+    if (sl.remote) {
+      console.log(`  Remote:  ${sl.remote}${sl.remote_url ? ` (${sl.remote_url})` : ""}`);
+    }
+    if (sl.upstream_ref) {
+      console.log(`  Upstream: ${chalk.cyan(sl.upstream_ref)}`);
+    }
+    if (sl.review_url) {
+      console.log(`  Review:  ${chalk.blue(sl.review_url)}`);
+    }
+    console.log(`  Captured: ${sl.captured_at}`);
+  }
+
   if (task.depends_on.length > 0) {
     if (index) {
       console.log(fieldLabels.depends);
