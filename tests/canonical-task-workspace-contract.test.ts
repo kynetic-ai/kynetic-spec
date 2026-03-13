@@ -192,6 +192,63 @@ describe("canonical task workspace contract", () => {
     expect(canonicalBranchMentions).toHaveLength(1);
   });
 
+  // AC: @dispatch-workspace-orientation-prompt ac-2
+  it("persists orientation metadata into the workspace file for worker and reviewer provisioning", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 16)}`;
+    const workerWorkspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Workspace Orientation Metadata",
+        slugs: ["task-workspace-orientation-metadata"],
+      },
+    });
+
+    const workerMetadata = JSON.parse(
+      await fs.readFile(path.join(workerWorkspace.cwd, ".kspec-dispatch-workspace.json"), "utf-8"),
+    ) as Record<string, any>;
+    expect(workerMetadata).toMatchObject({
+      taskRef,
+      canonicalBranch: workerWorkspace.metadata.canonicalBranch,
+      integrationTargetBranch: "agent-dev",
+      publicationMode: workerWorkspace.metadata.publicationMode,
+      workerWorktreeDir: workerWorkspace.cwd,
+      reviewerWorktreeDir: null,
+      healthStatus: "healthy",
+    });
+    expect(workerMetadata.bootstrap.roleStates.worker.status).toBe("not_run");
+    expect(workerMetadata.bootstrap.roleStates.reviewer.status).toBe("not_run");
+
+    const reviewerWorkspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      role: "reviewer",
+      task: {
+        title: "Workspace Orientation Metadata",
+        slugs: ["task-workspace-orientation-metadata"],
+      },
+    });
+
+    const reviewerMetadata = JSON.parse(
+      await fs.readFile(path.join(workerWorkspace.cwd, ".kspec-dispatch-workspace.json"), "utf-8"),
+    ) as Record<string, any>;
+    expect(reviewerWorkspace.cwd).toMatch(/-review$/);
+    expect(reviewerMetadata).toMatchObject({
+      taskRef,
+      canonicalBranch: workerWorkspace.metadata.canonicalBranch,
+      integrationTargetBranch: "agent-dev",
+      publicationMode: reviewerWorkspace.metadata.publicationMode,
+      workerWorktreeDir: workerWorkspace.cwd,
+      reviewerWorktreeDir: reviewerWorkspace.cwd,
+      healthStatus: "healthy",
+    });
+    expect(reviewerMetadata.bootstrap.roleStates.worker.status).toBe("not_run");
+    expect(reviewerMetadata.bootstrap.roleStates.reviewer.status).toBe("not_run");
+  });
+
   // AC: @canonical-task-workspace-contract ac-6
   it("marks canonical task branches cleanup-eligible after merge, abandonment, or reset reconciliation", () => {
     expect(resolveDispatchWorkspaceCleanupState({ integrationState: "merged" })).toEqual({
