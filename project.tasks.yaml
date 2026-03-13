@@ -94700,7 +94700,7 @@
   derivation: auto
   plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
   origin: derived
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-portable-task-submission-linkage"
@@ -94708,9 +94708,9 @@
   priority: 1
   tags: []
   vcs_refs: []
-  session_id: null
+  session_id: 01KKM452F2Q89R6AD6GV86JHTE
   created_at: 2026-03-13T09:17:01.246Z
-  started_at: 2026-03-13T17:08:25.858Z
+  started_at: 2026-03-13T17:46:18.285Z
   submitted_at: 2026-03-13T17:08:29.664Z
   notes:
     - _ulid: 01KKM0V8N7G4FS6DA85F2D2BB3
