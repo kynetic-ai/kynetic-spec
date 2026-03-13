@@ -92440,6 +92440,17 @@
         Hardened the test to poll the loaded registry view through findDispatchWorkspaceByTaskRef so
         the assertion tracks the durable closing state instead of a transient snapshot."
       supersedes: null
+    - _ulid: 01KKJKCBCT43H54Q27ZQB2QCQS
+      created_at: 2026-03-13T03:20:59.034Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 20] Added the missing ac-4 regression for invalid dispatch workspace
+        publicationMode so _spawnInvocation now proves prompt-build fail-fast behavior emits
+        actionable DISPATCH-PROMPT guidance and never starts an invocation. Also hardened the
+        registry lifecycle regression test’s parser-layer reread to poll for the durable closing
+        state, eliminating the remaining full-suite race on this branch. Verification: npm test --
+        tests/agent-dispatch-engine.test.ts tests/dispatch-workspace-registry.test.ts; npm test (225
+        files, 4667 passed, 3 skipped); kspec validate (warnings-only baseline, exit 6)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
