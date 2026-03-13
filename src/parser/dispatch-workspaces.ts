@@ -204,16 +204,32 @@ export async function findDispatchWorkspaceById(
   return workspaces.find((workspace) => workspace.workspace_id === workspaceId);
 }
 
+/** Default retention threshold for closed workspace records (7 days in milliseconds). */
+export const CLOSED_WORKSPACE_RETENTION_MS = 7 * 24 * 60 * 60 * 1000;
+
+function isClosedBeyondRetention(
+  record: DispatchWorkspaceRecord,
+  now: number,
+  retentionMs: number,
+): boolean {
+  if (record.lifecycle_state !== "closed") return false;
+  const closedAt = record.timestamps.closed_at;
+  if (!closedAt) return false;
+  return now - new Date(closedAt).getTime() > retentionMs;
+}
+
 export async function saveDispatchWorkspaceRecord(
   ctx: KspecContext,
   record: LoadedDispatchWorkspaceRecord,
+  options?: { retentionMs?: number },
 ): Promise<void> {
   const registryPath = getDispatchWorkspaceRegistryPath(ctx);
+  const retentionMs = options?.retentionMs ?? CLOSED_WORKSPACE_RETENTION_MS;
 
   await withFileLock(registryPath, async () => {
     const dir = path.dirname(registryPath);
     await fs.mkdir(dir, { recursive: true });
-    const workspaces = await loadRegistryFile(registryPath);
+    let workspaces = await loadRegistryFile(registryPath);
 
     const cleanRecord = stripRuntimeMetadata(record);
     const index = workspaces.findIndex(
@@ -224,6 +240,12 @@ export async function saveDispatchWorkspaceRecord(
     } else {
       workspaces.push(cleanRecord);
     }
+
+    // Purge closed records older than the retention threshold (ac-9)
+    const now = Date.now();
+    workspaces = workspaces.filter(
+      (ws) => !isClosedBeyondRetention(ws, now, retentionMs),
+    );
 
     validateSingleOpenWorkspacePerTask(workspaces);
 
