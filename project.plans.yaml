@@ -15697,13 +15697,13 @@ plans:
       command should explain both the naming contract and why dispatch continuity
 
       depends on it.
-    status: draft
+    status: approved
     derived_tasks: []
     derived_specs: []
     source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-branch-adoption-and-deterministic-task-branches.md
     module_ref: null
     created_at: 2026-03-13T08:39:33.082Z
-    approved_at: null
+    approved_at: 2026-03-13T09:15:50.526Z
     completed_at: null
     notes:
       - _ulid: 01KKK5YMXAXZZN87WFJ3EMY72H
