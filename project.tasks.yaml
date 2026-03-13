@@ -94464,6 +94464,10 @@
   derivation: auto
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #833. Added tryRestoreBranchFromRemote() to reconcileWorkspaceHealth()
+    — checks configured remotes (origin first) for missing canonical branches and restores them
+    locally. Graceful degradation on failure with debug-level logging. All 4 ACs covered with
+    dedicated tests. Full test suite passes (4772/4772). CI all green."
   depends_on:
     - "@task-design-canonical-task-workspace-contract"
   context: []
@@ -94482,6 +94486,7 @@
   created_at: 2026-03-13T06:34:22.430Z
   started_at: 2026-03-13T19:45:51.516Z
   submitted_at: 2026-03-13T19:55:24.564Z
+  completed_at: 2026-03-13T20:06:37.575Z
   notes:
     - _ulid: 01KKJYEETXAGGKACG58Q6ZE0ZW
       created_at: 2026-03-13T06:34:22.429Z
@@ -94532,11 +94537,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-13T20:06:37.575Z
-  closed_reason: "Merged in PR #833. Added tryRestoreBranchFromRemote() to reconcileWorkspaceHealth()
-    — checks configured remotes (origin first) for missing canonical branches and restores them
-    locally. Graceful degradation on failure with debug-level logging. All 4 ACs covered with
-    dedicated tests. Full test suite passes (4772/4772). CI all green."
 - _ulid: 01KKJZW9XNWT7VPFK3FNBA41FZ
   slugs:
     - fix-broken-shadow-safety
@@ -94722,7 +94722,7 @@
   derivation: auto
   plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@implement-branch-provenance-in-dispatch-workspace-"
@@ -94738,7 +94738,7 @@
     upstream_ref: refs/heads/main
     review_url: null
     captured_at: 2026-03-13T20:01:39.442Z
-  session_id: 01KKMCMA0CEZ7PCC57XGC960DD
+  session_id: null
   created_at: 2026-03-13T09:17:00.162Z
   started_at: 2026-03-13T20:01:35.796Z
   submitted_at: 2026-03-13T20:01:40.400Z
@@ -94806,6 +94806,18 @@
       content: "Branch pushed to origin and PR #834 created
         (https://github.com/kynetic-ai/kynetic-spec/pull/834). Task moved to pending_review.
         Original agent was blocked by sandbox network restrictions on git push."
+      supersedes: null
+    - _ulid: 01KKMD4B14DGM78W2ZP35V2W68
+      created_at: 2026-03-13T20:10:13.924Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #834 bundles out-of-scope deletions — removed
+        workspace registry purge logic (src/parser/dispatch-workspaces.ts), deleted
+        tests/dispatch-workspace-registry-purge.test.ts (405 lines, @dispatch-workspace-registry
+        ac-9), deleted tests/droid-setup-status.test.ts (210 lines, @droid-setup-status ac-1/2/3),
+        removed droid agent-type from session commands, removed AC annotations. SHOULD-FIX: reverted
+        test YAML-seeding optimizations, removed reconcileIntervalMs test config, removed vitest
+        worktree exclusion, unused remoteUrl parameter. Core adoption logic is solid — revert
+        out-of-scope changes only."
       supersedes: null
   todos: []
   automation: eligible
