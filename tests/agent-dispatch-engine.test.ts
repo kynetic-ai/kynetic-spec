@@ -34,6 +34,7 @@ import {
 import * as http from "node:http";
 import type { Agent } from "../src/schema/meta.js";
 import { provisionDispatchWorkspace } from "../src/agent-runtime/workspace.js";
+import * as bootstrapModule from "../src/agent-runtime/bootstrap.js";
 
 // ─── Fixtures ────────────────────────────────────────────────────────────────
 
@@ -2133,6 +2134,56 @@ describe("Autonomous dispatch prompt guardrails", () => {
       healthy: true,
       reason: null,
       metadata: null,
+    });
+    // Mock workspace provisioning and bootstrap — this test validates prompt content,
+    // not workspace setup. Without provisioning mock, pending_review tasks without
+    // submission linkage would fail adoption checks (AC: @adopt-existing-task-branch-lineage ac-4).
+    const emptyBootstrapRoleState = { status: "not_run" as const, configHash: null, canonicalBranchHead: null, lastRunAt: null, invalidationReasons: [] as string[], steps: [] as any[], failureMessage: null };
+    const mockBootstrap = { ...emptyBootstrapRoleState, lastRole: null, roleStates: { worker: { ...emptyBootstrapRoleState }, reviewer: { ...emptyBootstrapRoleState } } };
+    const mockMetadata = {
+      workspaceId: "mock-workspace",
+      taskRef: "@mock",
+      taskSlug: "mock",
+      baseBranch: "main",
+      baseBranchPoint: "abc123",
+      mergeTargetBranch: "main",
+      integrationTargetBranch: "main",
+      integrationTargetCommit: "abc123",
+      canonicalBranch: "dispatch/task/mock/abc12345",
+      canonicalBranchHead: "abc123",
+      branchProvenance: { ownership: "dispatcher-managed" as const, source: "provisioned", remote_ref: null, adopted_from: null, adopted_at: null },
+      publicationMode: "pull_request" as const,
+      integrationState: "pending" as const,
+      integrationOutcome: "pending" as const,
+      integrationUpdatedAt: new Date().toISOString(),
+      worktreeRoot: testDir,
+      workerWorktreeDir: testDir,
+      reviewerWorktreeDir: null,
+      lifecycleState: "ready" as const,
+      activeRole: null,
+      bootstrapState: mockBootstrap,
+      healthState: { status: "healthy" as const, summary: "Healthy", issues: [] as any[], updated_at: new Date().toISOString() },
+      cleanupState: { status: "not_scheduled" as const, eligible: false, reason: null, detail: null, updated_at: new Date().toISOString() },
+      healthStatus: "healthy" as const,
+      healthReason: null,
+      bootstrap: mockBootstrap,
+      cleanupEligible: false,
+      cleanupReason: null,
+      cleanupScheduledAt: null,
+      cleanupBlockedReason: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      lastReconciledAt: null,
+      lastActiveAt: null,
+      closedAt: null,
+    };
+    vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
+      cwd: testDir,
+      metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
+      metadata: mockMetadata,
+    });
+    vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+      metadata: mockMetadata,
     });
 
     await engine.start();

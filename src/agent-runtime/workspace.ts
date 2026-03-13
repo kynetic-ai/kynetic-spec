@@ -184,6 +184,21 @@ export interface ProvisionDispatchWorkspaceOptions {
     title?: string;
     slugs?: string[];
   };
+  /** Submission linkage from the task, used to adopt an existing branch when no workspace record exists. */
+  submissionLinkage?: {
+    branch: string | null;
+    commit: string;
+    remote?: string | null;
+    remote_url?: string | null;
+    upstream_ref?: string | null;
+    review_url?: string | null;
+    captured_at: string;
+  } | null;
+  /**
+   * The task status that triggered provisioning. Used to determine
+   * whether adoption is required (pending_review, needs_work) vs optional.
+   */
+  taskStatus?: string;
 }
 
 export interface ProvisionedDispatchWorkspace {
@@ -393,6 +408,36 @@ function resolveWorkspacePublicationMode(
     default:
       return existingRecord.integration.publication_mode;
   }
+}
+
+// AC: @adopt-existing-task-branch-lineage ac-2 — rehydrate adopted branch from remote
+function rehydrateAdoptedBranch(
+  projectDir: string,
+  branchName: string,
+  remote: string | null,
+  remoteUrl: string | null,
+): boolean {
+  // Try the specified remote first, then fall back to all remotes
+  const remotes = remote
+    ? [remote, ...listGitRemotes(projectDir).filter((r) => r !== remote)]
+    : listGitRemotes(projectDir);
+  for (const remoteName of remotes) {
+    // Fetch the specific branch from the remote
+    const fetchResult = runGit(projectDir, [
+      "fetch", remoteName, `${branchName}:${branchName}`,
+    ]);
+    if (fetchResult.status === 0) {
+      return true;
+    }
+    // Also try refs/heads/<branch> in case the remote ref name differs
+    const fetchAlt = runGit(projectDir, [
+      "fetch", remoteName, `refs/heads/${branchName}:refs/heads/${branchName}`,
+    ]);
+    if (fetchAlt.status === 0) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function isDispatchBranch(branch: string | null | undefined): branch is string {
@@ -1741,14 +1786,66 @@ async function ensureReviewerWorktree(
 export async function provisionDispatchWorkspace(
   options: ProvisionDispatchWorkspaceOptions,
 ): Promise<ProvisionedDispatchWorkspace> {
-  const { projectDir, taskRef, task, role = "worker", cleanupState } = options;
+  const { projectDir, taskRef, task, role = "worker", cleanupState, submissionLinkage, taskStatus } = options;
   const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
   await ensureUsableWorktreeRoot(projectDir, resolvedConfig.worktreeRoot);
 
   const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
   const taskSlug = existingRecord?.task_slug ?? normalizeTaskSlug(taskRef, task);
   const shortId = shortTaskId(taskRef);
-  const canonicalBranch = existingRecord?.canonical_branch ?? `dispatch/task/${taskSlug}/${shortId}`;
+
+  // AC: @adopt-existing-task-branch-lineage ac-1, ac-2, ac-3, ac-4
+  // When no workspace record exists but submission linkage provides a branch,
+  // adopt that existing branch lineage instead of creating a fresh dispatch branch.
+  // For pending_review or needs_work tasks without either, fail explicitly.
+  const isReviewOrFixCycle = taskStatus === "pending_review" || taskStatus === "needs_work";
+  let adoptedBranch: string | null = null;
+  let adoptionRemoteRef: string | null = null;
+
+  if (!existingRecord && submissionLinkage?.branch) {
+    const linkageBranch = submissionLinkage.branch;
+    const branchExistsLocally = refExists(projectDir, `refs/heads/${linkageBranch}`);
+
+    if (branchExistsLocally) {
+      // AC: @adopt-existing-task-branch-lineage ac-1 — adopt the local branch directly
+      adoptedBranch = linkageBranch;
+    } else {
+      // AC: @adopt-existing-task-branch-lineage ac-2 — rehydrate from remote
+      const rehydrated = rehydrateAdoptedBranch(
+        projectDir,
+        linkageBranch,
+        submissionLinkage.remote ?? null,
+        submissionLinkage.remote_url ?? null,
+      );
+      if (rehydrated) {
+        adoptedBranch = linkageBranch;
+        adoptionRemoteRef = submissionLinkage.remote
+          ? `${submissionLinkage.remote}/${linkageBranch}`
+          : null;
+      }
+    }
+  }
+
+  // AC: @adopt-existing-task-branch-lineage ac-4 — explicit failure when no record
+  // and no recoverable submission linkage for review/fix-cycle tasks.
+  if (!existingRecord && !adoptedBranch && isReviewOrFixCycle) {
+    const detail = submissionLinkage
+      ? submissionLinkage.branch
+        ? `Submission linkage references branch "${submissionLinkage.branch}" but it could not be found locally or on any remote.`
+        : `Submission linkage exists but records no branch name (detached HEAD at ${submissionLinkage.commit}).`
+      : `Task ${taskRef} has no submission linkage recorded.`;
+    throw new DispatchWorkspaceError(
+      `Cannot provision workspace for ${taskRef} in ${taskStatus}: no existing workspace record and no recoverable branch lineage. ${detail}`,
+      `Ensure the task has submission linkage with a valid branch (kspec task set ${taskRef} --submission-linkage), or manually create the workspace branch and re-submit.`,
+    );
+  }
+
+  const canonicalBranch = existingRecord?.canonical_branch
+    ?? (adoptedBranch || `dispatch/task/${taskSlug}/${shortId}`);
+  const branchProvenance: DispatchWorkspaceBranchProvenance = existingRecord?.branch_provenance
+    ?? (adoptedBranch
+      ? adoptedBranchProvenance(adoptedBranch, adoptionRemoteRef, new Date().toISOString())
+      : defaultBranchProvenance());
   const workspaceId = existingRecord?.workspace_id ?? workspaceIdFor(taskRef);
   const workerWorktreeDir = existingRecord?.worktrees.worker.path
     ?? findExistingWorktreeForBranch(projectDir, canonicalBranch)
@@ -1775,7 +1872,7 @@ export async function provisionDispatchWorkspace(
     base_branch_point: baseBranchPoint,
     canonical_branch: canonicalBranch,
     canonical_branch_head: existingRecord?.canonical_branch_head ?? baseBranchPoint,
-    branch_provenance: existingRecord?.branch_provenance ?? defaultBranchProvenance(),
+    branch_provenance: branchProvenance,
     lifecycle_state: "provisioning",
     active_role: null,
     worktrees: {

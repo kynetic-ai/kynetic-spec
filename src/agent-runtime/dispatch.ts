@@ -1356,8 +1356,11 @@ export class DispatchEngine {
       role,
     });
 
+    // AC: @adopt-existing-task-branch-lineage ac-1 — when workspace doesn't exist
+    // but the task has submission linkage, allow provisioning to adopt the branch.
+    const hasSubmissionLinkage = Boolean(entry.change.task?.submission_linkage?.branch);
     const eligible = !health.exists
-      ? entry.change.toStatus !== "in_progress" && entry.change.toStatus !== "pending_review"
+      ? (entry.change.toStatus !== "in_progress" && entry.change.toStatus !== "pending_review") || hasSubmissionLinkage
       : health.healthy;
     return {
       eligible,
@@ -1646,6 +1649,11 @@ export class DispatchEngine {
                 slugs: entry.change.task.slugs,
               }
             : undefined,
+          // AC: @adopt-existing-task-branch-lineage ac-1, ac-2, ac-4
+          // Pass submission linkage so provisioning can adopt an existing branch
+          // when no workspace record exists for review/fix-cycle tasks.
+          submissionLinkage: entry.change.task?.submission_linkage ?? undefined,
+          taskStatus: entry.change.task?.status ?? entry.change.toStatus,
         });
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);
