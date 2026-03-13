@@ -14652,102 +14652,107 @@ plans:
       derive_from_specs: false
 
       ```yaml
-      - slug: task-design-review-record-core
-        title: Design first-party review record core schema
+      - slug: task-implement-review-record-core
+        title: Implement first-party review record core model
         spec_ref: "@review-record-core-model"
-        priority: 2
-        tags: [review, schema, design]
-
-      - slug: task-design-review-subject-bindings
-        title: Design stable subject bindings for review records
-        spec_ref: "@review-subject-bindings"
         priority: 1
-        depends_on:
-          - "@task-design-review-record-core"
-        tags: [review, schema, identity]
+        tags: [review, core, schema]
 
-      - slug: task-design-review-storage-and-identity
-        title: Design review record storage location and reference identity
+      - slug: task-implement-review-storage-and-identity
+        title: Implement review record storage and reference identity
         spec_ref: "@review-record-storage-and-identity"
         priority: 1
         depends_on:
-          - "@task-design-review-record-core"
+          - "@task-implement-review-record-core"
         tags: [review, storage, identity]
 
-      - slug: task-design-review-comment-threads
-        title: Design threaded review comments and target anchors
+      - slug: task-implement-review-subject-bindings
+        title: Implement stable subject bindings and revision pinning
+        spec_ref: "@review-subject-bindings"
+        priority: 1
+        depends_on:
+          - "@task-implement-review-record-core"
+          - "@task-implement-review-storage-and-identity"
+        tags: [review, bindings, identity]
+
+      - slug: task-implement-review-comment-threads
+        title: Implement threaded review comments and target anchors
         spec_ref: "@review-comment-threads-and-anchors"
         priority: 2
         depends_on:
-          - "@task-design-review-subject-bindings"
+          - "@task-implement-review-subject-bindings"
         tags: [review, comments, ux]
 
-      - slug: task-design-review-checks-and-gates
-        title: Design review check recording and gate evaluation
+      - slug: task-implement-review-checks-and-gates
+        title: Implement review check recording and gate evaluation
         spec_ref: "@review-checks-and-gate-evaluation"
         priority: 2
         depends_on:
-          - "@task-design-review-record-core"
+          - "@task-implement-review-record-core"
+          - "@task-implement-review-storage-and-identity"
         tags: [review, checks, policy]
 
-      - slug: task-design-review-verdicts-and-resolution
-        title: Design review verdict and resolution lifecycle semantics
+      - slug: task-implement-review-verdicts-and-resolution
+        title: Implement review verdict aggregation and lifecycle handling
         spec_ref: "@review-verdicts-and-resolution-lifecycle"
         priority: 2
         depends_on:
-          - "@task-design-review-comment-threads"
-          - "@task-design-review-checks-and-gates"
+          - "@task-implement-review-comment-threads"
+          - "@task-implement-review-checks-and-gates"
         tags: [review, approvals, workflow]
 
-      - slug: task-design-review-validation
-        title: Design schema validation coverage for review records
+      - slug: task-implement-review-validation
+        title: Implement schema validation for review records
         spec_ref: "@review-record-validation"
         priority: 2
         depends_on:
-          - "@task-design-review-storage-and-identity"
+          - "@task-implement-review-record-core"
+          - "@task-implement-review-storage-and-identity"
         tags: [review, schema, validation]
 
-      - slug: task-design-review-task-integration
-        title: Design integration between review records and task lifecycle states
+      - slug: task-implement-review-task-integration
+        title: Implement review integration with task lifecycle states
         spec_ref: "@review-task-lifecycle-integration"
         priority: 2
         depends_on:
-          - "@task-design-review-verdicts-and-resolution"
+          - "@task-implement-review-verdicts-and-resolution"
         tags: [review, tasks, integration]
 
-      - slug: task-design-review-cli-surface
-        title: Design minimal CLI surface for review records
+      - slug: task-implement-review-cli-surface
+        title: Implement review CLI command surface
         spec_ref: "@review-cli-commands"
         priority: 2
         depends_on:
-          - "@task-design-review-record-core"
-          - "@task-design-review-task-integration"
+          - "@task-implement-review-record-core"
+          - "@task-implement-review-task-integration"
         tags: [review, cli, ux]
 
-      - slug: task-design-review-cli-create-query
-        title: Design review CLI creation and query commands
+      - slug: task-implement-review-cli-create-query
+        title: Implement review CLI creation and query commands
         spec_ref: "@review-cli-creation-and-query"
         priority: 2
         depends_on:
-          - "@task-design-review-cli-surface"
+          - "@task-implement-review-cli-surface"
+          - "@task-implement-review-validation"
         tags: [review, cli, query]
 
-      - slug: task-design-review-cli-mutations
-        title: Design review CLI mutation commands
+      - slug: task-implement-review-cli-mutations
+        title: Implement review CLI mutation commands
         spec_ref: "@review-cli-mutation-commands"
         priority: 2
         depends_on:
-          - "@task-design-review-cli-surface"
-          - "@task-design-review-verdicts-and-resolution"
+          - "@task-implement-review-cli-surface"
+          - "@task-implement-review-verdicts-and-resolution"
+          - "@task-implement-review-validation"
         tags: [review, cli, workflow]
 
-      - slug: task-design-review-cli-task-linkage
-        title: Design task and review CLI linkage behavior
+      - slug: task-implement-review-cli-task-linkage
+        title: Implement task and review CLI linkage behavior
         spec_ref: "@review-cli-task-linkage"
         priority: 2
         depends_on:
-          - "@task-design-review-cli-create-query"
-          - "@task-design-review-task-integration"
+          - "@task-implement-review-cli-create-query"
+          - "@task-implement-review-task-integration"
         tags: [review, cli, tasks]
       ```
 
@@ -14797,12 +14802,12 @@ plans:
       become the durable audit object instead of overloading `task.notes` and
       `review_url`.
 
-      ### Design wave intent
+      ### Execution intent
 
-      This plan is intentionally the design and contract wave. The expected outcome is
-      approval-ready specs and design tasks that make a follow-on implementation wave
-      straightforward, rather than trying to finish the full review subsystem in one
-      plan.
+      This plan is intended to derive execution tasks directly. The plan itself is
+      the design step; the derived tasks should build the review record subsystem and
+      its minimal CLI surface rather than producing another layer of design-only
+      artifacts.
 
       ### Out of scope for this plan
 
@@ -14832,6 +14837,10 @@ plans:
         created_at: 2026-03-13T17:28:16.282Z
         author: Jacob Chapel
         content: Address review feedback on storage, identity, traits, and lifecycle semantics
+      - _ulid: 01KKM4C0MZ49PP6CCYY8RVBEXC
+        created_at: 2026-03-13T17:37:08.256Z
+        author: Jacob Chapel
+        content: Convert plan tasks from design work to execution work
   - _ulid: 01KKFJY80GMJZKN10AMDJ2WDNC
     slugs:
       - plan-grouped-work-and-human-handoff
