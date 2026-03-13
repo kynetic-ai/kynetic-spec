@@ -14129,6 +14129,7 @@ plans:
       This plan should cover:
 
       - first-party review records with stable subject identity
+      - explicit storage and referencing rules for review entities
       - threaded comments with general and targeted anchors
       - recorded checks and normalized gate evaluation
       - reviewer verdicts, blocking state, and iterative re-review cycles
@@ -14180,6 +14181,42 @@ plans:
               The review record stores those links without making them the source of
               truth for local review state
 
+      - title: Review Record Storage and Identity
+        slug: review-record-storage-and-identity
+        type: requirement
+        parent: "@review-record-core-model"
+        description: |
+          Review records are stored as a first-party top-level entity with stable
+          references so they can be addressed through normal kspec lookup and audit
+          flows without being modeled as spec items.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A review record is created
+            when: |
+              It is persisted in kspec metadata
+            then: |
+              The record is stored in dedicated first-party review storage rather
+              than being embedded ad hoc under plans, tasks, or module files
+          - id: ac-2
+            given: |
+              A review record exists
+            when: |
+              It is referenced through kspec commands
+            then: |
+              The review has a stable ULID-backed identity and can be addressed by an
+              @review ref using the shared reference system
+          - id: ac-3
+            given: |
+              Review records grow over time with threads, checks, verdicts, and
+              history
+            when: |
+              The storage shape is designed
+            then: |
+              The storage model is constrained to remain auditable and practical for
+              shadow-branch persistence instead of leaving location and ownership
+              unspecified
+
       - title: Review Subject Bindings
         slug: review-subject-bindings
         type: requirement
@@ -14213,8 +14250,16 @@ plans:
             when: |
               The review binding is stored
             then: |
-              The record can preserve revision context needed to interpret later
+              The record preserves revision context needed to interpret later
               comments and gates against the reviewed snapshot
+          - id: ac-4
+            given: |
+              A review subject includes code anchors or code-specific checks
+            when: |
+              The review binding and anchors are stored
+            then: |
+              Revision pinning is required so comments and checks remain interpretable
+              against the reviewed code snapshot
 
       - title: Review Comment Threads and Anchors
         slug: review-comment-threads-and-anchors
@@ -14349,6 +14394,58 @@ plans:
             then: |
               The review cannot be represented as fully approved while those blockers
               remain open
+          - id: ac-5
+            given: |
+              Multiple reviewers have recorded verdicts on the same review
+            when: |
+              The aggregate review disposition is computed
+            then: |
+              The system applies explicit aggregation policy instead of leaving the
+              interaction between approvals and change requests implicit
+          - id: ac-6
+            given: |
+              Review policy requires more than one approval, distinguishes reviewer
+              roles, or allows explicit override authority
+            when: |
+              The review model is designed
+            then: |
+              The schema can represent the policy inputs needed for those rules
+              without requiring a breaking redesign later
+          - id: ac-7
+            given: |
+              A review is no longer active because its subject completed, was
+              cancelled, or was superseded
+            when: |
+              The review lifecycle is finalized
+            then: |
+              The system supports explicit closed or archived terminal handling rather
+              than relying on deletion as the only cleanup path
+
+      - title: Review Record Validation
+        slug: review-record-validation
+        type: requirement
+        parent: "@review-record-core-model"
+        description: |
+          Review entities use explicit schema validation so nested review data is
+          checked consistently during parsing, persistence, and command mutation.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              Review records, threads, checks, verdicts, and subject bindings are
+              persisted or mutated
+            when: |
+              The data is validated
+            then: |
+              The review model is covered by first-party schema validation rather
+              than relying on loosely typed metadata blobs
+          - id: ac-2
+            given: |
+              Invalid review data is supplied through import, CLI mutation, or future
+              automation paths
+            when: |
+              Validation fails
+            then: |
+              The system rejects the mutation with actionable validation feedback
 
       - title: Review Task Lifecycle Integration
         slug: review-task-lifecycle-integration
@@ -14389,6 +14486,9 @@ plans:
         slug: review-cli-commands
         type: feature
         parent: "@cli"
+        traits:
+          - trait-shadow-commit
+          - trait-error-guidance
         description: |
           kspec exposes a first-party CLI for creating, inspecting, and updating
           review records so agents and humans can use the review system without a web
@@ -14411,11 +14511,25 @@ plans:
               The output includes the subject, status, current verdict or gate
               summary, thread state, and external linkage needed to understand the
               review without opening raw storage
+          - id: ac-3
+            given: |
+              A workflow needs to perform multiple review mutations in one atomic
+              shadow-branch change
+            when: |
+              It uses supported kspec batching patterns around review commands
+            then: |
+              The review command surface is compatible with batch-oriented mutation
+              flows instead of assuming one-off manual invocations only
 
       - title: Review CLI Creation and Query
         slug: review-cli-creation-and-query
         type: requirement
         parent: "@review-cli-commands"
+        traits:
+          - trait-json-output
+          - trait-filterable-list
+          - trait-semantic-exit-codes
+          - trait-error-guidance
         description: |
           The CLI supports creating reviews and reading them back by review ref,
           subject, and status so agents can discover active work and reopen an
@@ -14451,6 +14565,11 @@ plans:
         slug: review-cli-mutation-commands
         type: requirement
         parent: "@review-cli-commands"
+        traits:
+          - trait-json-output
+          - trait-semantic-exit-codes
+          - trait-error-guidance
+          - trait-shadow-commit
         description: |
           The CLI supports the minimal mutations needed to conduct a review cycle:
           add comments, record checks, set verdicts, and resolve or reopen threads.
@@ -14487,11 +14606,23 @@ plans:
               A user or agent runs a command such as kspec review resolve or reopen
             then: |
               The thread resolution state changes with actor and timestamp history
+          - id: ac-5
+            given: |
+              A destructive review mutation such as delete is offered in the future
+            when: |
+              The command surface is extended
+            then: |
+              Destructive operations are treated separately from close or archive
+              lifecycle actions and require explicit safety behavior
 
       - title: Review CLI Task Linkage
         slug: review-cli-task-linkage
         type: requirement
         parent: "@review-cli-commands"
+        traits:
+          - trait-json-output
+          - trait-semantic-exit-codes
+          - trait-error-guidance
         description: |
           Task-oriented CLI output exposes the active review linkage so automation can
           move between task workflow state and the corresponding durable review
@@ -14530,10 +14661,18 @@ plans:
       - slug: task-design-review-subject-bindings
         title: Design stable subject bindings for review records
         spec_ref: "@review-subject-bindings"
-        priority: 2
+        priority: 1
         depends_on:
           - "@task-design-review-record-core"
         tags: [review, schema, identity]
+
+      - slug: task-design-review-storage-and-identity
+        title: Design review record storage location and reference identity
+        spec_ref: "@review-record-storage-and-identity"
+        priority: 1
+        depends_on:
+          - "@task-design-review-record-core"
+        tags: [review, storage, identity]
 
       - slug: task-design-review-comment-threads
         title: Design threaded review comments and target anchors
@@ -14559,6 +14698,14 @@ plans:
           - "@task-design-review-comment-threads"
           - "@task-design-review-checks-and-gates"
         tags: [review, approvals, workflow]
+
+      - slug: task-design-review-validation
+        title: Design schema validation coverage for review records
+        spec_ref: "@review-record-validation"
+        priority: 2
+        depends_on:
+          - "@task-design-review-storage-and-identity"
+        tags: [review, schema, validation]
 
       - slug: task-design-review-task-integration
         title: Design integration between review records and task lifecycle states
@@ -14630,11 +14777,32 @@ plans:
       evaluation so re-runs can be preserved without losing the latest approval
       decision inputs.
 
+      ### Storage and references
+
+      Assume reviews are introduced as a dedicated top-level entity with their own
+      storage file and reference identity, analogous to plans rather than embedded
+      under tasks or specs. The design work should validate that choice explicitly
+      and keep shadow-branch growth and auditability in mind.
+
+      ### Validation and traits
+
+      The CLI slice should inherit existing cross-cutting behavior through traits
+      instead of restating every CLI concern from scratch. The design work should
+      also identify the Zod and parser validation boundaries required for a nested
+      review record model.
+
       ### Relationship to task state
 
       Task state should remain a lightweight workflow signal. The review record should
       become the durable audit object instead of overloading `task.notes` and
       `review_url`.
+
+      ### Design wave intent
+
+      This plan is intentionally the design and contract wave. The expected outcome is
+      approval-ready specs and design tasks that make a follow-on implementation wave
+      straightforward, rather than trying to finish the full review subsystem in one
+      plan.
 
       ### Out of scope for this plan
 
@@ -14660,6 +14828,10 @@ plans:
         created_at: 2026-03-13T17:18:48.869Z
         author: Jacob Chapel
         content: Add minimal CLI surface for review records
+      - _ulid: 01KKM3VS4TW94C67P9DFW60MEH
+        created_at: 2026-03-13T17:28:16.282Z
+        author: Jacob Chapel
+        content: Address review feedback on storage, identity, traits, and lifecycle semantics
   - _ulid: 01KKFJY80GMJZKN10AMDJ2WDNC
     slugs:
       - plan-grouped-work-and-human-handoff
