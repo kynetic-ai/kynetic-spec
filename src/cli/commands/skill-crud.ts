@@ -54,6 +54,24 @@ const PLATFORM_CONFIG_GUIDANCE_SCHEMAS = {
 } as const;
 
 // ============================================================================
+// Platform Detection for Import
+// ============================================================================
+
+/**
+ * Detect import platform from the source file path.
+ * Files under .factory/skills/ are droid-format; otherwise default to claude_code.
+ * AC: @droid-skill-import ac-1 - recognize skills from .factory/skills/
+ * AC: @droid-skill-import ac-3 - preserve existing claude_code behavior
+ */
+export function detectImportPlatform(filePath: string): "claude_code" | "droid" {
+  const normalized = filePath.replace(/\\/g, "/");
+  if (normalized.includes(".factory/skills/") || normalized.includes(".factory/skills\\")) {
+    return "droid";
+  }
+  return "claude_code";
+}
+
+// ============================================================================
 // Frontmatter & Content Processing
 // ============================================================================
 
@@ -842,32 +860,35 @@ export function registerSkillCrudCommands(skill: Command): void {
           process.exit(EXIT_CODES.CONFLICT);
         }
 
-        // AC: @import-frontmatter-strip ac-3 - Build platform_config.claude_code from frontmatter
+        // AC: @import-frontmatter-strip ac-3 - Build platform_config from frontmatter
+        // AC: @droid-skill-import ac-1 - detect platform from source path
+        const importPlatform = detectImportPlatform(filePath);
         let platformConfig: PlatformConfig | undefined;
         if (frontmatter) {
-          const claudeCodeConfig: import("../../schema/index.js").ClaudeCodeConfig = {};
+          const config: Record<string, unknown> = {};
           if (frontmatter.user_invocable !== undefined) {
-            claudeCodeConfig.user_invocable = frontmatter.user_invocable;
+            config.user_invocable = frontmatter.user_invocable;
           }
           if (frontmatter.disable_model_invocation !== undefined) {
-            claudeCodeConfig.disable_model_invocation = frontmatter.disable_model_invocation;
+            config.disable_model_invocation = frontmatter.disable_model_invocation;
           }
           if (frontmatter.context !== undefined) {
-            claudeCodeConfig.context = frontmatter.context;
+            config.context = frontmatter.context;
           }
-          if (frontmatter.agent !== undefined) {
-            claudeCodeConfig.agent = frontmatter.agent;
+          // AC: @droid-skill-import ac-1 - droid doesn't use the 'agent' field
+          if (importPlatform === "claude_code" && frontmatter.agent !== undefined) {
+            config.agent = frontmatter.agent;
           }
           if (frontmatter.model !== undefined) {
-            claudeCodeConfig.model = frontmatter.model;
+            config.model = frontmatter.model;
           }
           if (frontmatter.argument_hint !== undefined) {
-            claudeCodeConfig.argument_hint = frontmatter.argument_hint;
+            config.argument_hint = frontmatter.argument_hint;
           }
 
-          // Only set platform_config if we have Claude Code config fields
-          if (Object.keys(claudeCodeConfig).length > 0) {
-            platformConfig = { claude_code: claudeCodeConfig };
+          // Map to the correct platform key based on source path
+          if (Object.keys(config).length > 0) {
+            platformConfig = { [importPlatform]: config } as PlatformConfig;
           }
         }
 
