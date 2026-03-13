@@ -92217,7 +92217,7 @@
   spec_ref: "@dispatch-role-workflow-entry-contract"
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-implement-dispatch-orientation-prompt"
@@ -92229,9 +92229,10 @@
     - prompts
     - skills
   vcs_refs: []
-  session_id: 01KKJAZWA25SBAXHM4XRY580P0
+  session_id: null
   created_at: 2026-03-12T02:33:57.875Z
   started_at: 2026-03-13T00:54:51.480Z
+  submitted_at: 2026-03-13T01:04:00.285Z
   notes:
     - _ulid: 01KKJBBBY6WHTQS1Q38J1GGBC6
       created_at: 2026-03-13T01:00:38.214Z
@@ -92257,9 +92258,15 @@
         reporting when entry configuration is invalid. Verified with focused dispatch tests, full
         npm test, and kspec validate (warnings-only baseline).
       supersedes: null
+    - _ulid: 01KKJBS3SAQ86DP60TCKW2R5ZQ
+      created_at: 2026-03-13T01:08:08.618Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #810 is merge-conflicting with main in
+        src/agent-runtime/dispatch.ts; rebase/merge main, resolve conflicts, and rerun verification
+        on the updated head."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-13T01:04:00.285Z
 - _ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
   slugs:
     - task-scope-dispatch-shadow-serialization
