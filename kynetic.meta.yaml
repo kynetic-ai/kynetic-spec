@@ -291,7 +291,7 @@ agents:
       - git
       - npm
     conventions: []
-    adapter: codex-acp
+    adapter: claude-agent-acp
     dispatch:
       - on: task.in_progress
         filter:
