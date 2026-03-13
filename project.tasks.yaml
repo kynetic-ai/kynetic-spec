@@ -93307,14 +93307,14 @@
   derivation: auto
   plan_ref: "@plan-droid-platform-support"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
-  session_id: 01KKK6QXBNESMPW5CA31WKQXTZ
+  session_id: null
   created_at: 2026-03-13T03:25:18.247Z
   started_at: 2026-03-13T09:14:17.085Z
   submitted_at: 2026-03-13T09:14:20.908Z
@@ -93436,6 +93436,14 @@
         vars (CLAUDECODE, CLAUDE_CODE_ENTRYPOINT) which are present in dispatch worktrees.
         Verification: npm run typecheck clean, npm test 225/225 files passed (4695 tests), kspec
         validate warnings-only."
+      supersedes: null
+    - _ulid: 01KKK7YPQ1WK66YV2FZ481G5NP
+      created_at: 2026-03-13T09:20:31.969Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 4] Review findings: MUST-FIX: PR #819 is regression-clean but no longer merges
+        cleanly with current main. Rebase or merge main into
+        dispatch/task/implement-droid-setup-integration/01kkjkm8 and resolve conflicts in
+        src/cli/commands/setup.ts and src/parser/setup-status.ts before review can complete."
       supersedes: null
   todos: []
   automation: eligible
@@ -94283,24 +94291,24 @@
   created_at: 2026-03-13T09:17:05.560Z
   notes: []
   todos: []
-- title: Add regression coverage for adopted manual branches and fallback-independent dispatch review
-  type: task
+- _ulid: 01KKK7RE59ZEANEM8MZJWXY5NV
   slugs:
     - add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-review
+  title: Add regression coverage for adopted manual branches and fallback-independent dispatch review
+  type: task
   spec_ref: null
   plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
   tags:
     - test
     - dispatch
     - reliability
-  depends_on: []
-  notes: []
-  origin: derived
-  _ulid: 01KKK7RE59ZEANEM8MZJWXY5NV
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-13T09:17:06.601Z
+  notes: []
   todos: []
