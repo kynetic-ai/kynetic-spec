@@ -16,6 +16,7 @@ import {
   createTempDir,
   initGitRepo,
 } from './helpers/cli';
+import { detectImportPlatform } from '../src/cli/commands/skill-crud';
 
 describe('Skill CLI - skill list', () => {
   let tempDir: string;
@@ -1531,5 +1532,152 @@ This has every field.
     const copiedContent = await fs.readFile(copiedPath, 'utf-8');
     expect(copiedContent).not.toContain('---');
     expect(copiedContent).toContain('# Complete Skill');
+  });
+});
+
+describe('Droid Skill Import Support', () => {
+  // Unit tests for detectImportPlatform
+  describe('detectImportPlatform', () => {
+    it('should detect droid platform from .factory/skills/ path', () => {
+      expect(detectImportPlatform('/home/user/project/.factory/skills/my-skill/SKILL.md')).toBe('droid');
+    });
+
+    it('should detect claude_code for .claude/skills/ path', () => {
+      expect(detectImportPlatform('/home/user/project/.claude/skills/my-skill/SKILL.md')).toBe('claude_code');
+    });
+
+    it('should detect claude_code for arbitrary paths', () => {
+      expect(detectImportPlatform('/tmp/some-dir/SKILL.md')).toBe('claude_code');
+    });
+  });
+
+  // Integration tests
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await setupTempFixtures();
+    await initGitRepo(tempDir);
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @droid-skill-import ac-1
+  it('should populate platform_config.droid when importing from .factory/skills/', async () => {
+    // Create a .factory/skills/ directory structure
+    const factoryDir = path.join(tempDir, '.factory', 'skills', 'my-droid-skill');
+    await fs.mkdir(factoryDir, { recursive: true });
+
+    const skillPath = path.join(factoryDir, 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: My Droid Skill
+description: A skill for droid platform
+user-invocable: true
+context: task
+model: sonnet
+---
+
+# My Droid Skill
+
+This skill is for the droid platform.
+`);
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    const result = kspecJson<{
+      platform_config: {
+        droid?: {
+          user_invocable: boolean;
+          context: string;
+          model: string;
+        };
+        claude_code?: unknown;
+      };
+    }>('skill get @my-droid-skill', tempDir);
+
+    // Should populate droid, not claude_code
+    expect(result.platform_config.droid).toBeDefined();
+    expect(result.platform_config.droid!.user_invocable).toBe(true);
+    expect(result.platform_config.droid!.context).toBe('task');
+    expect(result.platform_config.droid!.model).toBe('sonnet');
+    expect(result.platform_config.claude_code).toBeUndefined();
+  });
+
+  // AC: @droid-skill-import ac-2
+  it('should set platform_config.droid.user_invocable to false when importing from .factory/skills/', async () => {
+    const factoryDir = path.join(tempDir, '.factory', 'skills', 'background-skill');
+    await fs.mkdir(factoryDir, { recursive: true });
+
+    const skillPath = path.join(factoryDir, 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Background Skill
+description: A non-user-invocable droid skill
+user-invocable: false
+disable-model-invocation: true
+---
+
+# Background Skill
+
+This skill runs in the background.
+`);
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    const result = kspecJson<{
+      platform_config: {
+        droid?: {
+          user_invocable: boolean;
+          disable_model_invocation: boolean;
+        };
+      };
+    }>('skill get @background-skill', tempDir);
+
+    expect(result.platform_config.droid).toBeDefined();
+    expect(result.platform_config.droid!.user_invocable).toBe(false);
+    expect(result.platform_config.droid!.disable_model_invocation).toBe(true);
+  });
+
+  // AC: @droid-skill-import ac-3
+  it('should preserve existing claude_code import behavior for .claude/skills/', async () => {
+    // Create a .claude/skills/ directory structure inside the fixture project
+    // to verify that importing from an actual .claude/skills/ path still
+    // populates platform_config.claude_code (not droid).
+    const claudeSkillDir = path.join(tempDir, '.claude', 'skills', 'claude-skill');
+    await fs.mkdir(claudeSkillDir, { recursive: true });
+
+    const skillPath = path.join(claudeSkillDir, 'SKILL.md');
+    await fs.writeFile(skillPath, `---
+name: Claude Skill
+description: A skill for claude-code platform
+user-invocable: true
+agent: task-worker
+context: full
+---
+
+# Claude Skill
+
+This skill is for Claude Code.
+`);
+
+    kspec(`skill import "${skillPath}"`, tempDir);
+
+    const result = kspecJson<{
+      platform_config: {
+        claude_code?: {
+          user_invocable: boolean;
+          agent: string;
+          context: string;
+        };
+        droid?: unknown;
+      };
+    }>('skill get @claude-skill', tempDir);
+
+    // Should populate claude_code, not droid
+    expect(result.platform_config.claude_code).toBeDefined();
+    expect(result.platform_config.claude_code!.user_invocable).toBe(true);
+    expect(result.platform_config.claude_code!.agent).toBe('task-worker');
+    expect(result.platform_config.claude_code!.context).toBe('full');
+    expect(result.platform_config.droid).toBeUndefined();
   });
 });
