@@ -8695,7 +8695,7 @@ features:
                 created: 2026-03-13T09:16:58.216Z
                 status:
                   maturity: draft
-                  implementation: in_progress
+                  implementation: implemented
             status:
               maturity: draft
               implementation: implemented
