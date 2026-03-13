@@ -95081,6 +95081,31 @@
 
         - Verification: Tests covering all 4 ACs plus trait ACs
       supersedes: null
+    - _ulid: 01KKMPH2F532W0EECSJEYN97WB
+      created_at: 2026-03-13T22:54:28.325Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Added discoverWorkspaceForReviewOrFixCycle() to workspace.ts that
+        attempts 4-phase recovery with explicit precedence:
+
+        1. Registry state (highest priority)
+
+        2. Metadata-backed worktrees (scan worktree root)
+
+        3. Task submission linkage (adopt branch from task state)
+
+        4. Remote/review-derived locators (deterministic dispatch branch on remotes)
+
+
+        Modified _workspaceCandidateHealth in dispatch.ts to call discovery before discarding
+        pending_review and needs_work entries. Returns diagnostics with recovery guidance when all
+        paths fail, and blocks with conflict info when branch signals disagree.
+
+
+        9 new tests in dispatch-workspace-discovery.test.ts covering all 4 spec ACs plus
+        trait-error-guidance annotations. Updated 2 existing tests in agent-dispatch-engine.test.ts
+        to reflect new recovery behavior.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKK7RC2WKBDMMXWWM7S0P80M
