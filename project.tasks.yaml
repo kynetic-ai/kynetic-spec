@@ -93080,6 +93080,7 @@
   created_at: 2026-03-13T03:25:20.775Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKJKMBM006GT41HWHR5DXCW6
   slugs:
     - implement-droid-skill-import-support
