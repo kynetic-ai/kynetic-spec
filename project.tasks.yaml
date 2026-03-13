@@ -94819,6 +94819,16 @@
         worktree exclusion, unused remoteUrl parameter. Core adoption logic is solid — revert
         out-of-scope changes only."
       supersedes: null
+    - _ulid: 01KKMDFBTNDJVG9JQKZB97DQJE
+      created_at: 2026-03-13T20:16:15.189Z
+      author: "@claude"
+      content: "Fix cycle: Restored workspace provisioning, bootstrap, and reconciliation mocks in stale
+        queue entry discard tests (agent-dispatch-engine.test.ts). The original implementation
+        removed these mocks when refactoring from _spawnInvocation to runInvocation mocking, causing
+        _spawnInvocation to call real provisionDispatchWorkspace/ensureWorkspaceBootstrap before
+        reaching the mocked runInvocation. All 96 dispatch engine tests now pass. PR #834 updated
+        and pushed."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKK7R8XY5MSEEWA0E9NKEW76
