@@ -93375,6 +93375,20 @@
       content: Updated templates/skills/manifest.yaml so every core skill advertises the droid platform,
         and added direct manifest-loading AC coverage to prevent regressions.
       supersedes: null
+    - _ulid: 01KKJXZTD46JESFK882DCFT6TW
+      created_at: 2026-03-13T06:26:22.756Z
+      author: Jacob Chapel
+      content: >-
+        Verification:
+
+        - Focused coverage passed: npm test -- tests/core-skill-install.test.ts
+
+        - kspec validate passed schema/reference checks; repo has pre-existing warning debt.
+
+        - Full npm test is currently blocked by existing workspace-wide failures dominated by
+        dispatch shadow mutation lock contention (), plus several unrelated pre-existing test
+        timeouts/failures outside this task's scope.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKM9SGG5AV5N0EV3GFTMZ4
