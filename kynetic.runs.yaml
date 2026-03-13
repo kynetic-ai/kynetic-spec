@@ -13608,7 +13608,7 @@ runs:
   - _ulid: 01KKJSEV38E34DNQC320EC360T
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     status: active
-    current_step: 1
+    current_step: 2
     total_steps: 6
     started_at: 2026-03-13T05:07:12.105Z
     step_results:
@@ -13623,5 +13623,15 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-13T05:08:00.882Z
-        completed_at: 2026-03-13T05:08:00.882Z
+        completed_at: 2026-03-13T05:08:18.488Z
+        notes: "Friction points: 1) the live daemon state was in the sibling checkout
+          /home/chapel/Projects/kynetic-spec-dispatch, while the source repo at
+          /home/chapel/Projects/kynetic-spec showed a different workspace registry snapshot, which
+          made early inspection misleading; 2) dispatch logs aggregated reviewer pruning by agent
+          count only, so an eligibility/reconciliation problem initially looked like a shared-queue
+          or max_concurrent problem."
+      - step_index: 2
+        status: completed
+        started_at: 2026-03-13T05:08:18.488Z
+        completed_at: 2026-03-13T05:08:18.488Z
     initiated_by: Jacob Chapel
