@@ -8188,6 +8188,14 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KKJSRCG17NHTK5KJ73R6FKK9
+    type: friction
+    content: Running npm test inside an active dispatch worker workspace can fail unrelated CLI/session
+      tests with dispatch shadow mutation lock timeouts on .kspec-dispatch-shadow-mutation.
+    created_at: 2026-03-13T05:12:24.834Z
+    author: Jacob Chapel
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
