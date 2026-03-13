@@ -2666,6 +2666,95 @@ describe("Dispatch role workflow entrypoints", () => {
       delete process.env.KSPEC_CAPTURE_FILE;
     }
   });
+
+  // AC: @dispatch-role-workflow-entry-contract ac-4
+  it("fails fast with actionable guidance when workspace publicationMode is invalid", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      adapter: "mock-acp",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      [
+        "dispatch:",
+        "  base_branch: main",
+        "ralph:",
+        "  skills:",
+        "    task_work: \"/kspec:task-work\"",
+      ].join("\n"),
+      "utf-8",
+    );
+
+    const captureFile = path.join(testDir, "kspec-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+
+    const originalProvision = workspaceModule.provisionDispatchWorkspace;
+
+    try {
+      const provisionSpy = vi.spyOn(workspaceModule, "provisionDispatchWorkspace")
+        .mockImplementationOnce(async (options) => {
+          const workspace = await originalProvision(options);
+          if (!workspace) {
+            return workspace;
+          }
+          return {
+            ...workspace,
+            metadata: {
+              ...workspace.metadata,
+              publicationMode: "broken-mode" as unknown as ProvisionedDispatchWorkspace["metadata"]["publicationMode"],
+            },
+          };
+        });
+      const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
+        session: {} as any,
+        outcome: "success",
+        durationMs: 1,
+      });
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+      const engine = new DispatchEngine({
+        projectDir: testDir,
+        specDir: testDir,
+        kspecCliPath: MOCK_KSPEC_CLI,
+      });
+
+      type EngineInternal = {
+        _spawnInvocation: (a: Agent, e: unknown) => Promise<boolean>;
+        inFlightTaskKeys: Set<string>;
+      };
+      const taskId = testUlid("TASK", 41);
+      const taskRef = `@${taskId}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+        task: { _ulid: taskId, title: "Invalid publication mode task", slugs: ["invalid-publication-mode-task"], status: "pending", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0, enqueuedAtMs: Date.now(), sequence: 1 };
+
+      const internal = engine as unknown as EngineInternal;
+      const started = await internal._spawnInvocation(agent, entry);
+
+      expect(started).toBe(false);
+      expect(provisionSpy).toHaveBeenCalledOnce();
+      expect(runSpy).not.toHaveBeenCalled();
+      expect(errorSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Failed to build prompt"),
+      );
+      expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
+
+      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
+      expect(noteCall).toBeTruthy();
+      expect(noteCall!.args.join(" ")).toContain("DISPATCH-PROMPT");
+      expect(noteCall!.args.join(" ")).toContain("publication mode \"broken-mode\" is invalid");
+      expect(noteCall!.args.join(" ")).toContain("publicationMode is pull_request or manual_merge");
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+    }
+  });
 });
 
 // ─── AC-9: Retry with exponential backoff ─────────────────────────────────────

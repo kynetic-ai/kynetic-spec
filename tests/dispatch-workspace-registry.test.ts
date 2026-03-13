@@ -82,6 +82,33 @@ async function waitForWorkspaceRecord(
   return record;
 }
 
+async function waitForLoadedWorkspaceRecord(
+  projectDir: string,
+  taskRef: string,
+  predicate: (record: Awaited<ReturnType<typeof findDispatchWorkspaceByTaskRef>>) => boolean,
+  timeoutMs: number = 2000,
+): Promise<NonNullable<Awaited<ReturnType<typeof findDispatchWorkspaceByTaskRef>>>> {
+  const deadline = Date.now() + timeoutMs;
+  let record = await findDispatchWorkspaceByTaskRef(
+    await initContext(projectDir),
+    taskRef,
+  );
+
+  while ((!record || !predicate(record)) && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    record = await findDispatchWorkspaceByTaskRef(
+      await initContext(projectDir),
+      taskRef,
+    );
+  }
+
+  if (!record) {
+    throw new Error(`Workspace record for ${taskRef} was not available before timeout.`);
+  }
+
+  return record;
+}
+
 async function setupProjectWithWorkerAgent(dir: string): Promise<void> {
   const specTarget = process.env.KSPEC_SPEC_DIR
     ? path.resolve(process.env.KSPEC_SPEC_DIR)
@@ -594,9 +621,10 @@ describe("dispatch workspace registry", () => {
       status: "scheduled",
     });
 
-    const reloaded = await findDispatchWorkspaceByTaskRef(
-      await initContext(tempDir),
+    const reloaded = await waitForLoadedWorkspaceRecord(
+      tempDir,
       taskRef,
+      (current) => current.lifecycle_state === "closing",
     );
     expect(reloaded?.lifecycle_state).toBe("closing");
 
