@@ -93335,7 +93335,7 @@
   derivation: auto
   plan_ref: "@plan-droid-platform-support"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -93346,6 +93346,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-13T06:18:40.297Z
+  session_id: 01KKJXGV71P19H53PZXYST8WP3
 - _ulid: 01KKJKM9SGG5AV5N0EV3GFTMZ4
   slugs:
     - implement-portable-skill-reference-resolution
@@ -93657,6 +93659,7 @@
   session_id: 01KKJTSS9PRA1MV659QZ0HXS40
   created_at: 2026-03-13T05:18:07.958Z
   started_at: 2026-03-13T05:31:10.664Z
+  submitted_at: 2026-03-13T05:40:32.794Z
   notes:
     - _ulid: 01KKJTTV69QXCSDT6WNWYJM2NR
       created_at: 2026-03-13T05:31:13.993Z
@@ -93695,4 +93698,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-13T05:40:32.794Z
