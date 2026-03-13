@@ -93710,6 +93710,7 @@
   session_id: 01KKKQ2MYRQVCNZMG8S6QBDQ3D
   created_at: 2026-03-13T03:25:20.775Z
   started_at: 2026-03-13T13:45:07.921Z
+  submitted_at: 2026-03-13T13:54:37.978Z
   notes:
     - _ulid: 01KKKQAZN48RZ1Z35WWJJ0KS14
       created_at: 2026-03-13T13:49:22.981Z
@@ -93731,7 +93732,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-13T13:54:37.978Z
 - _ulid: 01KKJKMBM006GT41HWHR5DXCW6
   slugs:
     - implement-droid-skill-import-support
@@ -94165,6 +94165,15 @@
       content: "[FIX_CYCLE: 8] Review findings: MUST-FIX: PR #820 is not mergeable into main. gh pr merge
         reports the merge commit cannot be cleanly created against current main, so the task branch
         must be rebased/merged forward and resubmitted for review."
+      supersedes: null
+    - _ulid: 01KKKR3KHV2NDSKTJ9PFG7CZHJ
+      created_at: 2026-03-13T14:02:49.787Z
+      author: "@claude"
+      content: "Fix cycle 8 resolution: Merged origin/main into task branch to resolve merge conflicts
+        (tests/helpers/cli.ts had conflicting env var stripping changes from the droid setup
+        integration task). Conflict resolution kept our KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS
+        addition while incorporating main's parallel fix for KSPEC_SHADOW_MUTATION_LOCK_FILE. Full
+        test suite passes: 228 files, 4733 tests, 0 failures."
       supersedes: null
   todos: []
   automation: eligible
