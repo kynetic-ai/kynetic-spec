@@ -65,6 +65,23 @@ async function readWorkspaceRecord(
   return raw.workspaces?.find((workspace) => workspace.task_ref === taskRef) ?? {};
 }
 
+async function waitForWorkspaceRecord(
+  registryPath: string,
+  taskRef: string,
+  predicate: (record: Record<string, any>) => boolean,
+  timeoutMs: number = 2000,
+): Promise<Record<string, any>> {
+  const deadline = Date.now() + timeoutMs;
+  let record = await readWorkspaceRecord(registryPath, taskRef);
+
+  while (!predicate(record) && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    record = await readWorkspaceRecord(registryPath, taskRef);
+  }
+
+  return record;
+}
+
 async function setupProjectWithWorkerAgent(dir: string): Promise<void> {
   const specTarget = process.env.KSPEC_SPEC_DIR
     ? path.resolve(process.env.KSPEC_SPEC_DIR)
@@ -531,13 +548,11 @@ describe("dispatch workspace registry", () => {
       } as never,
     });
 
-    for (let i = 0; i < 40; i++) {
-      record = await readWorkspaceRecord(registryPath, taskRef);
-      if (record.lifecycle_state === "integrating") {
-        break;
-      }
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
+    record = await waitForWorkspaceRecord(
+      registryPath,
+      taskRef,
+      (current) => current.lifecycle_state === "integrating",
+    );
     expect(record.lifecycle_state).toBe("integrating");
     expect(record.integration.status).toBe("pending");
 
@@ -566,13 +581,11 @@ describe("dispatch workspace registry", () => {
       } as never,
     });
 
-    for (let i = 0; i < 40; i++) {
-      record = await readWorkspaceRecord(registryPath, taskRef);
-      if (record.lifecycle_state === "closing") {
-        break;
-      }
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
+    record = await waitForWorkspaceRecord(
+      registryPath,
+      taskRef,
+      (current) => current.lifecycle_state === "closing",
+    );
     expect(record.lifecycle_state).toBe("closing");
     expect(record.integration.status).toBe("merged");
     expect(record.cleanup).toMatchObject({

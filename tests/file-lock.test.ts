@@ -204,4 +204,30 @@ describe("File Lock", () => {
     const finalContent = await fs.readFile(targetFile, "utf-8");
     expect(finalContent).toBe("count: 5\n");
   });
+
+  it("should not remove a successor lock when an old releaser runs late", async () => {
+    tempDir = await createTempDir();
+    const lockTarget = path.join(tempDir, "test.yaml");
+    const lockDir = `${lockTarget}.lock`;
+    const pidFile = path.join(lockDir, "pid");
+
+    const release1 = await acquireFileLock(lockTarget);
+    const owner1 = await fs.readFile(pidFile, "utf-8");
+
+    await fs.rm(lockDir, { recursive: true, force: true });
+
+    const release2 = await acquireFileLock(lockTarget);
+    const owner2 = await fs.readFile(pidFile, "utf-8");
+
+    expect(owner2).not.toBe(owner1);
+
+    await release1();
+
+    const stat = await fs.stat(lockDir);
+    expect(stat.isDirectory()).toBe(true);
+    expect(await fs.readFile(pidFile, "utf-8")).toBe(owner2);
+
+    await release2();
+    await expect(fs.stat(lockDir)).rejects.toThrow();
+  });
 });

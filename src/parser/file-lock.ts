@@ -10,6 +10,7 @@
  */
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import { randomUUID } from "node:crypto";
 
 const DEFAULT_TIMEOUT_MS = 5000;
 const RETRY_INTERVAL_MS = 50;
@@ -29,6 +30,7 @@ export async function acquireFileLock(
   const lockDir = `${filePath}.lock`;
   const pidFile = path.join(lockDir, "pid");
   const deadline = Date.now() + timeoutMs;
+  const ownershipMarker = `${process.pid}\n${Date.now()}\n${randomUUID()}`;
 
   // Ensure parent directory exists so the lock dir can be created
   // even when the target file's directory hasn't been made yet.
@@ -41,12 +43,18 @@ export async function acquireFileLock(
       await fs.mkdir(lockDir, { recursive: false });
 
       // Write our PID for stale lock detection
-      await fs.writeFile(pidFile, `${process.pid}\n${Date.now()}`, "utf-8");
+      await fs.writeFile(pidFile, ownershipMarker, "utf-8");
 
       // Return release function
       return async () => {
         try {
-          await fs.rm(lockDir, { recursive: true, force: true });
+          const currentMarker = await fs.readFile(pidFile, "utf-8");
+          if (currentMarker !== ownershipMarker) {
+            return;
+          }
+
+          await fs.unlink(pidFile);
+          await fs.rmdir(lockDir);
         } catch {
           // Best effort cleanup
         }
