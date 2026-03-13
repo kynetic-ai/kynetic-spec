@@ -30,6 +30,15 @@
  * AC: @codex-renderer ac-4 - rendered file contains <!-- kspec-managed --> marker
  * AC: @codex-renderer ac-5 - supporting directories (references/, scripts/, assets/) copied
  * AC: @codex-renderer ac-6 - hash written to .render-hash-codex
+ *
+ * AC: @droid-renderer ac-1 - .factory/skills/<id>/SKILL.md with YAML frontmatter
+ * AC: @droid-renderer ac-2 - frontmatter reads user-invocable from platform_config.droid
+ * AC: @droid-renderer ac-3 - core droid skills use kspec-<id> subdir
+ * AC: @droid-renderer ac-4 - rendered file contains <!-- kspec-managed --> marker
+ * AC: @droid-renderer ac-5 - {skill:<id>} tokens resolve to Droid /skill-name invocations
+ * AC: @droid-renderer ac-6 - hash written to .render-hash-droid
+ * AC: @droid-renderer ac-7 - default output dir for droid is .factory/skills
+ * AC: @droid-renderer ac-8 - frontmatter reads disable-model-invocation from platform_config.droid
  */
 
 import * as crypto from "node:crypto";
@@ -152,6 +161,44 @@ export interface RenderSkillOptions {
  */
 export const KSPEC_MANAGED_MARKER = "<!-- kspec-managed -->";
 
+type ClaudeStyleFrontmatterConfig = {
+  disable_model_invocation?: boolean;
+  user_invocable?: boolean;
+  context?: string;
+  model?: string;
+  argument_hint?: string;
+  agent?: string;
+};
+
+function applyClaudeStyleFrontmatterFields(
+  frontmatter: Record<string, unknown>,
+  config: ClaudeStyleFrontmatterConfig | undefined,
+  options: { includeAgent: boolean }
+): void {
+  if (!config) {
+    return;
+  }
+
+  if (config.user_invocable !== undefined) {
+    frontmatter["user-invocable"] = config.user_invocable;
+  }
+  if (config.disable_model_invocation !== undefined) {
+    frontmatter["disable-model-invocation"] = config.disable_model_invocation;
+  }
+  if (config.context) {
+    frontmatter.context = config.context;
+  }
+  if (options.includeAgent && config.agent) {
+    frontmatter.agent = config.agent;
+  }
+  if (config.model) {
+    frontmatter.model = config.model;
+  }
+  if (config.argument_hint) {
+    frontmatter["argument-hint"] = config.argument_hint;
+  }
+}
+
 /**
  * Generate YAML frontmatter for a skill.
  * AC: @claude-code-renderer ac-2 - YAML frontmatter with name and description fields
@@ -180,31 +227,46 @@ export function generateFrontmatter(skill: LoadedSkill): string {
   }
 
   // AC: @claude-code-renderer-extended ac-2, ac-3, ac-4 - Add Claude Code platform fields
-  const claudeCodeConfig = skill.platform_config?.claude_code;
-  if (claudeCodeConfig) {
-    // AC: @claude-code-renderer-extended ac-2 - user_invocable
-    if (claudeCodeConfig.user_invocable !== undefined) {
-      frontmatter["user-invocable"] = claudeCodeConfig.user_invocable;
-    }
-    // AC: @claude-code-renderer-extended ac-4 - disable_model_invocation
-    if (claudeCodeConfig.disable_model_invocation !== undefined) {
-      frontmatter["disable-model-invocation"] = claudeCodeConfig.disable_model_invocation;
-    }
-    // AC: @claude-code-renderer-extended ac-3 - context and agent
-    if (claudeCodeConfig.context) {
-      frontmatter.context = claudeCodeConfig.context;
-    }
-    if (claudeCodeConfig.agent) {
-      frontmatter.agent = claudeCodeConfig.agent;
-    }
-    // Other Claude Code fields
-    if (claudeCodeConfig.model) {
-      frontmatter.model = claudeCodeConfig.model;
-    }
-    if (claudeCodeConfig.argument_hint) {
-      frontmatter["argument-hint"] = claudeCodeConfig.argument_hint;
-    }
+  applyClaudeStyleFrontmatterFields(frontmatter, skill.platform_config?.claude_code, {
+    includeAgent: true,
+  });
+
+  return `---\n${yaml.stringify(frontmatter).trim()}\n---`;
+}
+
+function getDroidConfig(skill: LoadedSkill): ClaudeStyleFrontmatterConfig | undefined {
+  const platformConfig = skill.platform_config as Record<string, unknown> | undefined;
+  const droidConfig = platformConfig?.droid;
+  if (!droidConfig || typeof droidConfig !== "object") {
+    return undefined;
   }
+  return droidConfig as ClaudeStyleFrontmatterConfig;
+}
+
+/**
+ * Generate YAML frontmatter for Droid.
+ * Droid uses Claude-style fields, but sourced from platform_config.droid.
+ * AC: @droid-renderer ac-2, ac-8
+ */
+export function generateDroidFrontmatter(skill: LoadedSkill): string {
+  const frontmatter: Record<string, unknown> = {
+    name: getSkillSubdir(skill.id, skill.origin, "droid"),
+    description: skill.description || skill.name,
+  };
+
+  if (skill.license) {
+    frontmatter.license = skill.license;
+  }
+  if (skill.allowed_tools && skill.allowed_tools.length > 0) {
+    frontmatter["allowed-tools"] = skill.allowed_tools;
+  }
+  if (skill.compatibility) {
+    frontmatter.compatibility = skill.compatibility;
+  }
+
+  applyClaudeStyleFrontmatterFields(frontmatter, getDroidConfig(skill), {
+    includeAgent: false,
+  });
 
   return `---\n${yaml.stringify(frontmatter).trim()}\n---`;
 }
@@ -226,7 +288,7 @@ export const PLUGIN_SKILLS_DIR = ".claude/plugins/kspec/skills";
  * AC: @skill-rendering ac-7
  */
 export function getSkillSubdir(skillId: string, origin?: string, platform?: string): string {
-  if (origin === "core" && platform === "codex") {
+  if (origin === "core" && (platform === "codex" || platform === "droid")) {
     return `kspec-${skillId}`;
   }
   // Core+claude-code: just ID (plugin path provides namespace)
@@ -264,6 +326,8 @@ export function formatSkillInvocation(skillId: string, platform: string, origin?
   switch (platform) {
     case "claude-code":
       return origin === "core" ? `/kspec:${skillId}` : `/${skillId}`;
+    case "droid":
+      return `/${getSkillSubdir(skillId, origin, "droid")}`;
     case "codex":
       return `$${getSkillSubdir(skillId, origin, "codex")}`;
     default:
@@ -861,12 +925,14 @@ export async function checkPlatformSkillDrift(
 /**
  * Get the default output directory for a platform
  */
-function getPlatformDefaultOutputDir(platform: string): string {
+export function getPlatformDefaultOutputDir(platform: string): string {
   switch (platform) {
     case "claude-code":
       return ".claude/skills";
     case "codex":
       return ".agents/skills";
+    case "droid":
+      return ".factory/skills";
     default:
       return `.${platform}/skills`;
   }
@@ -1395,6 +1461,55 @@ export const codexRenderer: PlatformRenderer = {
 };
 
 // ============================================================================
+// Droid Renderer (implements PlatformRenderer)
+// AC: @droid-renderer ac-1 through ac-8
+// ============================================================================
+
+/**
+ * Droid platform renderer implementation.
+ * Droid uses Claude-style frontmatter fields and slash invocation syntax.
+ */
+export const droidRenderer: PlatformRenderer = {
+  platform: "droid",
+  defaultOutputDir: ".factory/skills",
+
+  async render(
+    ctx: KspecContext,
+    projectRoot: string,
+    skill: LoadedSkill,
+    options: PlatformRenderOptions = {}
+  ): Promise<PlatformRenderResult> {
+    const skillOrigins = await loadSkillOrigins(ctx);
+    const droidSubdir = getSkillSubdir(skill.id, skill.origin, "droid");
+
+    return renderSkillBase(ctx, projectRoot, skill, options, {
+      platform: this.platform,
+      generateFrontmatter: generateDroidFrontmatter,
+      transformBody: (body, loadedSkill) =>
+        resolveSkillReferenceTokens(body, this.platform, loadedSkill, skillOrigins),
+      transformSupportingFileContent: (_relativePath, content, loadedSkill) =>
+        resolveSkillReferenceTokens(content, this.platform, loadedSkill, skillOrigins),
+    }, this.defaultOutputDir, droidSubdir);
+  },
+
+  async checkDrift(
+    specDir: string,
+    projectRoot: string,
+    skillId: string,
+    options?: { outputDir?: string; origin?: string }
+  ): Promise<DriftStatus> {
+    return checkPlatformSkillDrift(
+      specDir,
+      projectRoot,
+      skillId,
+      this.platform,
+      options?.outputDir,
+      options?.origin
+    );
+  },
+};
+
+// ============================================================================
 // Renderer Registry
 // ============================================================================
 
@@ -1402,6 +1517,7 @@ export const codexRenderer: PlatformRenderer = {
 const rendererRegistry: Map<string, PlatformRenderer> = new Map([
   ["claude-code", claudeCodeRenderer],
   ["codex", codexRenderer],
+  ["droid", droidRenderer],
 ]);
 
 /**
