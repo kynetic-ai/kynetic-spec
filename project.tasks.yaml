@@ -92353,6 +92353,15 @@
         the current PR head before changing code. Focusing on the lifecycle_state transition around
         cleanup/integration so the fix stays scoped to the failing contract."
       supersedes: null
+    - _ulid: 01KKJFR25F5T5JWMA3HRWPA653
+      created_at: 2026-03-13T02:17:28.496Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 11] Identified a real merge-ref race in cleanupReviewerDispatchWorkspace():
+        reviewer cleanup runs outside the shadow mutex, can read stale worker metadata with
+        cleanupEligible=false, and then overwrite a newer completed/closing registry record back to
+        ready. Fixing the cleanup path to derive lifecycle from the registry record instead of the
+        metadata snapshot."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
