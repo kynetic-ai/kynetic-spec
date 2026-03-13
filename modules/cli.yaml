@@ -8816,6 +8816,9 @@ features:
                 given: reconcileWorkspaceHealth() restores a branch from remote
                 when: The workspace health state is computed
                 then: The canonical_branch_head is updated to the resolved commit from the restored branch
+            status:
+              maturity: draft
+              implementation: in_progress
           - _ulid: 01KKK7R5SA3G0203T8D595AB0A
             slugs:
               - adopt-existing-task-branch-lineage
