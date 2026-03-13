@@ -2324,7 +2324,7 @@ workspaces:
         steps: []
         failureMessage: null
       reviewer:
-        status: pending
+        status: not_run
         configHash: null
         canonicalBranchHead: null
         lastRunAt: null
