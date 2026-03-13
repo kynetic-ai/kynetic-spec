@@ -13611,6 +13611,7 @@ runs:
     current_step: 5
     total_steps: 6
     started_at: 2026-03-13T05:07:12.105Z
+    completed_at: 2026-03-13T05:09:29.726Z
     step_results:
       - step_index: 0
         status: completed
@@ -13663,4 +13664,11 @@ runs:
           already tracked by @01KKJP6E1TN5ZFMHASTHSGG2MH, and no additional observation or inbox
           item met the bar for separate capture."
     initiated_by: Jacob Chapel
-    completed_at: 2026-03-13T05:09:29.726Z
+  - _ulid: 01KKJXHVTP5QATZJQAA8FGMRQR
+    workflow_ref: "@01KFRX0S3VBZGV72A17E21AB9E"
+    status: active
+    current_step: 0
+    total_steps: 10
+    started_at: 2026-03-13T06:18:45.463Z
+    step_results: []
+    initiated_by: Jacob Chapel
