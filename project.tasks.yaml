@@ -94852,6 +94852,13 @@
         Fix bare repo initialization in dispatch-workspace-adopt-branch-lineage.test.ts lines 136
         and 182. See PR #834 review for inline details."
       supersedes: null
+    - _ulid: 01KKMKVF83DGVX5Y76KNMVRJ3C
+      created_at: 2026-03-13T22:07:43.363Z
+      author: "@claude"
+      content: "Fix cycle 4: Used --initial-branch=main for all 3 git init --bare calls in AC-2 tests
+        (lines 136, 182, 202). Also changed git push at line 204 to HEAD:main for
+        branch-name-agnostic push. All 4789 tests pass locally."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKK7R8XY5MSEEWA0E9NKEW76
