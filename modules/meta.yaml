@@ -4996,7 +4996,7 @@ modules:
         created: 2026-03-13T03:25:15.502Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKJKM5WWNNFJT19V9HVVQYQ7
         slugs:
           - droid-core-skill-install
