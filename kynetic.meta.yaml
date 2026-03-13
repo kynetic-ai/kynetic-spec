@@ -276,7 +276,7 @@ agents:
     budget:
       timeout_minutes: 60
     concurrency:
-      max_concurrent: 1
+      max_concurrent: 2
     auto_approve: true
   - _ulid: 01KKBVD4KQP5KH27QXR0C7WJG9
     id: task-worker
