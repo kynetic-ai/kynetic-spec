@@ -31,7 +31,7 @@ import {
   createSession,
 } from "../src/sessions/store.js";
 import type { SessionMetadataInput } from "../src/sessions/types.js";
-import { resolveAdapter } from "../src/agents/adapters.js";
+import { listAdapters, resolveAdapter } from "../src/agents/adapters.js";
 import { EXIT_CODES } from "../src/cli/exit-codes.js";
 import {
   kspec,
@@ -952,6 +952,39 @@ describe("Environment Injection", () => {
       expect(adapter.description).not.toContain("Ad-hoc");
       expect(adapter.command).toBe("npx");
       expect(adapter.args).toContain("@zed-industries/codex-acp");
+    });
+
+    // AC: @droid-acp-adapter ac-1
+    it("should resolve droid-acp as a registered native droid adapter", () => {
+      const adapter = resolveAdapter("droid-acp");
+
+      expect(adapter.description).not.toContain("Ad-hoc");
+      expect(adapter.command).toBe("droid");
+      expect(adapter.args).toEqual([
+        "exec",
+        "--input-format",
+        "stream-jsonrpc",
+        "--output-format",
+        "stream-jsonrpc",
+      ]);
+    });
+
+    // AC: @droid-acp-adapter ac-2
+    it("should include droid-acp in the registered adapter list", () => {
+      expect(listAdapters()).toEqual(
+        expect.arrayContaining([
+          "claude-agent-acp",
+          "codex-acp",
+          "droid-acp",
+        ]),
+      );
+    });
+
+    // AC: @droid-acp-adapter ac-3
+    it("should expose droid-acp auto-approve args for full automation", () => {
+      const adapter = resolveAdapter("droid-acp");
+
+      expect(adapter.autoApproveArgs).toEqual(["--skip-permissions-unsafe"]);
     });
 
     // AC: @codex-acp-adapter-registration ac-2
