@@ -70,6 +70,23 @@ const ADAPTERS: Record<string, AgentAdapter> = {
   },
 
   /**
+   * Droid ACP adapter.
+   * Uses Droid's native ACP support over stream JSON-RPC.
+   */
+  "droid-acp": {
+    command: "droid",
+    args: [
+      "exec",
+      "--input-format",
+      "stream-jsonrpc",
+      "--output-format",
+      "stream-jsonrpc",
+    ],
+    description: "Droid agent via native ACP protocol",
+    autoApproveArgs: ["--skip-permissions-unsafe"],
+  },
+
+  /**
    * Mock ACP adapter for testing.
    * Uses a local mock script that simulates ACP behavior.
    */
