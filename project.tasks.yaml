@@ -93342,7 +93342,7 @@
   derivation: auto
   plan_ref: "@plan-droid-platform-support"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -93405,6 +93405,7 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-13T06:27:41.493Z
 - _ulid: 01KKJKM9SGG5AV5N0EV3GFTMZ4
   slugs:
     - implement-portable-skill-reference-resolution
