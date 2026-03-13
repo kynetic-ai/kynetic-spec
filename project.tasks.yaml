@@ -93847,32 +93847,39 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Fix broken shadow fail-open fallback and repair safety
+- _ulid: 01KKJZW9XNWT7VPFK3FNBA41FZ
+  slugs:
+    - fix-broken-shadow-safety
+  title: Fix broken shadow fail-open fallback and repair safety
+  type: bug
   description: "Investigate and fix the destructive broken-shadow path reported from the dispatch
     checkout. Scope: fail closed when a configured shadow branch exists but the shadow worktree is
     missing or disconnected; prevent daemon/dispatch from writing kspec-managed state outside the
     configured shadow directory; preserve or restore the prior shadow directory when repair cannot
     recreate the worktree; and make bootstrap/setup reuse shadow repair instead of re-initializing
     an existing shadow branch."
-  type: bug
   spec_ref: "@broken-shadow-safety"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs:
-    - fix-broken-shadow-safety
   tags:
     - shadow
     - dispatch
     - daemon
     - reliability
-  depends_on: []
-  automation: manual_only
-  _ulid: 01KKJZW9XNWT7VPFK3FNBA41FZ
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-13T06:59:24.725Z
-  notes: []
+  notes:
+    - _ulid: 01KKK0QVX2TJEQ9MJME5DV3YDP
+      created_at: 2026-03-13T07:14:27.874Z
+      author: Jacob Chapel
+      content: Supersedes @01KKBBS7, which covered the narrower repair-deletes-.kspec failure mode but was
+        linked to the wrong spec family. Use this task as the single implementation thread for the
+        broader broken-shadow incident.
+      supersedes: null
   todos: []
+  automation: manual_only
