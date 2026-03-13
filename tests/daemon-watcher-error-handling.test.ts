@@ -21,18 +21,24 @@ describe('KspecWatcher error handling', () => {
   beforeEach(() => {
     vi.resetModules();
     vi.clearAllMocks();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     vi.restoreAllMocks();
   });
 
-  it('stops cleanly when Bun fs.watch emits ENOENT for a deleted watched root', async () => {
+  // AC: @daemon-server ac-7
+  it('retries when Bun fs.watch emits ENOENT for a deleted watched root', async () => {
     const fsWatcher = new MockFsWatcher();
+    const recoveredWatcher = new MockFsWatcher();
     const errorHandler = vi.fn();
     const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout');
 
-    mockState.fsWatch.mockReturnValue(fsWatcher);
+    mockState.fsWatch
+      .mockReturnValueOnce(fsWatcher)
+      .mockReturnValueOnce(recoveredWatcher);
 
     const { KspecWatcher } = await import('../packages/daemon/src/watcher');
     const watcher = new KspecWatcher({
@@ -48,7 +54,14 @@ describe('KspecWatcher error handling', () => {
       expect(errorHandler).toHaveBeenCalledTimes(1);
     });
 
+    expect(fsWatcher.close).not.toHaveBeenCalled();
+    expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 1000);
+
+    await vi.advanceTimersByTimeAsync(1000);
+
     expect(fsWatcher.close).toHaveBeenCalledTimes(1);
-    expect(setTimeoutSpy).not.toHaveBeenCalledWith(expect.any(Function), 1000);
+    expect(mockState.fsWatch).toHaveBeenCalledTimes(2);
+
+    await watcher.stop();
   });
 });
