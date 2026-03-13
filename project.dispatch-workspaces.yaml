@@ -2572,16 +2572,21 @@ workspaces:
       remote_ref: null
       adopted_from: null
       adopted_at: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-review-and-fix-cycle-workspace-discovery-01kkk7ra
         branch_mode: branch
         branch_ref: dispatch/task/implement-review-and-fix-cycle-workspace-discovery/01kkk7ra
-        head: 39ee4d27a5e06c775adfdc2b4c2e9028fc09d4e3
-        last_seen_at: 2026-03-13T22:31:41.938Z
-      reviewer: null
+        head: e210038758c74a6d957454ea8372300eb67aacb3
+        last_seen_at: 2026-03-13T22:54:55.312Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-review-and-fix-cycle-workspace-discovery-01kkk7ra-review
+        branch_mode: detached
+        branch_ref: null
+        head: e210038758c74a6d957454ea8372300eb67aacb3
+        last_seen_at: 2026-03-13T22:54:55.312Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -2615,21 +2620,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-13T22:54:57.021Z
+      updated_at: 2026-03-13T22:54:55.312Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T22:54:57.021Z
+      updated_at: 2026-03-13T22:54:55.312Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-13T22:54:57.021Z
+      updated_at: 2026-03-13T22:54:55.312Z
     timestamps:
       created_at: 2026-03-13T22:31:41.938Z
-      updated_at: 2026-03-13T22:54:57.021Z
-      last_reconciled_at: 2026-03-13T22:54:57.021Z
+      updated_at: 2026-03-13T22:54:55.312Z
+      last_reconciled_at: 2026-03-13T22:54:55.312Z
       last_active_at: 2026-03-13T22:31:42.479Z
       closed_at: null
