@@ -87,6 +87,91 @@ function seedCompletedTasks(dir: string, count: number): void {
   writeFileSync(tasksFile, yamlStringify(existing));
 }
 
+/**
+ * Seed tasks with notes directly into fixture YAML for starvation prevention tests.
+ * Avoids 25+ CLI subprocess calls that cause CI timeouts under load.
+ *
+ * AC: @test-suite-perf-reliability ac-1
+ */
+function seedTasksWithNotes(dir: string): void {
+  const tasksFile = join(dir, 'project.tasks.yaml');
+  const existing = yamlParse(readFileSync(tasksFile, 'utf8')) as { tasks: unknown[] };
+  const taskUlids = testUlids('STRV', 7);
+  const noteUlids = testUlids('SNOT', 7);
+
+  // 5 in_progress tasks with notes
+  for (let i = 0; i < 5; i++) {
+    const minute = (i + 1).toString().padStart(2, '0');
+    existing.tasks.push({
+      _ulid: taskUlids[i],
+      slugs: [`active-${i + 1}`],
+      title: `Active ${i + 1}`,
+      type: 'task',
+      status: 'in_progress',
+      priority: 3,
+      tags: ['test'],
+      depends_on: [],
+      notes: [{
+        _ulid: noteUlids[i],
+        created_at: `2026-01-01T00:${minute}:00Z`,
+        author: '@test',
+        content: `Active note ${i + 1}`,
+      }],
+      todos: [],
+      created_at: '2026-01-01T00:00:00Z',
+      started_at: `2026-01-01T00:${minute}:00Z`,
+    });
+  }
+
+  // 1 pending_review task with note
+  existing.tasks.push({
+    _ulid: taskUlids[5],
+    slugs: ['review-task'],
+    title: 'Review',
+    type: 'task',
+    status: 'pending_review',
+    priority: 3,
+    tags: ['test'],
+    depends_on: [],
+    notes: [{
+      _ulid: noteUlids[5],
+      created_at: '2026-01-01T00:06:00Z',
+      author: '@test',
+      content: 'Review note',
+    }],
+    todos: [],
+    created_at: '2026-01-01T00:00:00Z',
+    started_at: '2026-01-01T00:06:00Z',
+    submitted_at: '2026-01-01T00:06:30Z',
+  });
+
+  // 1 completed task with note
+  existing.tasks.push({
+    _ulid: taskUlids[6],
+    slugs: ['done-task'],
+    title: 'Done',
+    type: 'task',
+    status: 'completed',
+    priority: 3,
+    tags: ['test'],
+    depends_on: [],
+    notes: [{
+      _ulid: noteUlids[6],
+      created_at: '2026-01-01T00:07:00Z',
+      author: '@test',
+      content: 'Done note',
+    }],
+    todos: [],
+    created_at: '2026-01-01T00:00:00Z',
+    started_at: '2026-01-01T00:07:00Z',
+    submitted_at: '2026-01-01T00:07:30Z',
+    completed_at: '2026-01-01T01:00:00Z',
+    closed_reason: 'Finished',
+  });
+
+  writeFileSync(tasksFile, yamlStringify(existing));
+}
+
 describe('session start format rewrite', () => {
   let tempDir: string;
 
@@ -452,27 +537,11 @@ describe('session start format rewrite', () => {
   });
 
   // AC: @cmd-session-start ac-notes-starvation
+  // AC: @test-suite-perf-reliability ac-1
   describe('notes starvation prevention', () => {
-    it('should include notes from all statuses in JSON', { timeout: 20000 }, () => {
-      // Create in_progress tasks with many notes
-      for (let i = 1; i <= 5; i++) {
-        kspec(`task add --title "Active ${i}" --slug active-${i}`, tempDir);
-        kspec(`task start @active-${i}`, tempDir);
-        kspec(`task note @active-${i} "Active note ${i}"`, tempDir);
-      }
-
-      // Create pending_review task
-      kspec('task add --title "Review" --slug review-task', tempDir);
-      kspec('task start @review-task', tempDir);
-      kspec('task note @review-task "Review note"', tempDir);
-      kspec('task submit @review-task', tempDir);
-
-      // Create completed task
-      kspec('task add --title "Done" --slug done-task', tempDir);
-      kspec('task start @done-task', tempDir);
-      kspec('task note @done-task "Done note"', tempDir);
-      kspec('task submit @done-task', tempDir);
-      kspec('task complete @done-task --reason "Finished"', tempDir);
+    it('should include notes from all statuses in JSON', () => {
+      // Seed tasks with notes directly into fixture YAML instead of 25 CLI calls
+      seedTasksWithNotes(tempDir);
 
       const session = kspecJson<SessionContext>('session start --json', tempDir);
 

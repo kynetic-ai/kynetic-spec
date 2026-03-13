@@ -1971,6 +1971,30 @@ export async function markDispatchWorkspaceIdle(options: {
   const existingRecord = await loadWorkspaceRecord(options.projectDir, options.taskRef);
   if (!existingRecord) return null;
 
+  // If a lifecycle reconciliation (e.g. task completed/cancelled) has already
+  // moved the record into a terminal state, don't regress it.  The taskStatus
+  // passed here is from the invocation's original dispatch event and may be
+  // stale relative to the current record.
+  const terminalStates = new Set(["closing", "cleanup_blocked", "closed"]);
+  if (terminalStates.has(existingRecord.lifecycle_state)) {
+    const now = new Date().toISOString();
+    const record: DispatchWorkspaceRecord = {
+      ...existingRecord,
+      active_role: null,
+      timestamps: {
+        ...existingRecord.timestamps,
+        updated_at: now,
+        last_reconciled_at: now,
+      },
+    };
+    const metadataPath = await persistWorkspaceRecord(options.projectDir, record);
+    return {
+      cwd: record.worktrees.worker.path,
+      metadataPath,
+      metadata: toMetadata(record),
+    };
+  }
+
   const now = new Date().toISOString();
   const health = reconcileWorkspaceHealth(options.projectDir, existingRecord, now);
   const cleanup = {
