@@ -13623,15 +13623,14 @@ runs:
       - step_index: 1
         status: completed
         started_at: 2026-03-13T05:08:00.882Z
-        completed_at: 2026-03-13T05:08:18.488Z
-        notes: "Friction points: 1) the live daemon state was in the sibling checkout
-          /home/chapel/Projects/kynetic-spec-dispatch, while the source repo at
-          /home/chapel/Projects/kynetic-spec showed a different workspace registry snapshot, which
-          made early inspection misleading; 2) dispatch logs aggregated reviewer pruning by agent
-          count only, so an eligibility/reconciliation problem initially looked like a shared-queue
-          or max_concurrent problem."
+        completed_at: 2026-03-13T05:08:18.515Z
+        notes: "Coverage check: search found no existing tracking for legacy dispatch workspace registry
+          upgrade/recovery or reviewer-prune diagnostics before capture. The primary friction is now
+          tracked by @01KKJP6E1TN5ZFMHASTHSGG2MH. Search also found shadow mutation lock contention
+          already tracked inside that task's notes, so no duplicate capture is needed for that
+          issue."
       - step_index: 2
         status: completed
-        started_at: 2026-03-13T05:08:18.488Z
-        completed_at: 2026-03-13T05:08:18.488Z
+        started_at: 2026-03-13T05:08:18.515Z
+        completed_at: 2026-03-13T05:08:18.515Z
     initiated_by: Jacob Chapel
