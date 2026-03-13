@@ -581,12 +581,7 @@ workspaces:
         branch_ref: dispatch/task/durably-shadow-commit-dispatch-workspace-registry-writes/01kkjt2v
         head: 975dede747a081507985a92d3164e0425718e275
         last_seen_at: 2026-03-13T15:50:28.802Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/durably-shadow-commit-dispatch-workspace-registry-writes-01kkjt2v-review
-        branch_mode: detached
-        branch_ref: null
-        head: 975dede747a081507985a92d3164e0425718e275
-        last_seen_at: 2026-03-13T15:50:28.802Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -628,7 +623,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-13T16:03:20.026Z
+      updated_at: 2026-03-13T16:03:20.731Z
     cleanup:
       status: scheduled
       eligible: true
@@ -637,8 +632,8 @@ workspaces:
       updated_at: 2026-03-13T16:03:20.026Z
     timestamps:
       created_at: 2026-03-13T05:30:39.118Z
-      updated_at: 2026-03-13T16:03:20.026Z
-      last_reconciled_at: 2026-03-13T16:03:20.026Z
+      updated_at: 2026-03-13T16:03:20.731Z
+      last_reconciled_at: 2026-03-13T16:03:20.731Z
       last_active_at: 2026-03-13T15:50:29.262Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM61M5BAEFRPNBRK7XDRY
