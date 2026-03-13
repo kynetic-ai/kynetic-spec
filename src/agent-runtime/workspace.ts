@@ -266,14 +266,6 @@ function refExists(projectDir: string, ref: string): boolean {
   return result.status === 0;
 }
 
-function commandSucceeds(command: string, args: string[]): boolean {
-  const result = spawnSync(command, args, {
-    encoding: "utf-8",
-    stdio: "ignore",
-  });
-  return result.status === 0;
-}
-
 function resolveBranchStartPoint(
   projectDir: string,
   branch: string,
@@ -1070,20 +1062,6 @@ export async function reconcileDispatchWorkspaceRegistry(
   }
 }
 
-function nextLifecycleState(
-  role: DispatchWorkspaceRole,
-  cleanupState: DispatchWorkspaceCleanupState,
-  existingMetadata: DispatchWorkspaceMetadata | null,
-): DispatchWorkspaceLifecycleState {
-  if (cleanupState.cleanupEligible) {
-    return "closing";
-  }
-  if (existingMetadata?.lifecycleState === "stale") {
-    return "stale";
-  }
-  return role === "reviewer" || role === "worker" ? "active" : "ready";
-}
-
 async function safelyRemoveDispatchWorktree(
   projectDir: string,
   worktreeRoot: string,
@@ -1150,10 +1128,6 @@ function listDispatchBranches(projectDir: string): string[] {
     return [];
   }
   return result.stdout.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
-}
-
-function hasGitRemote(projectDir: string): boolean {
-  return listGitRemotes(projectDir).length > 0;
 }
 
 export async function reconcileDispatchWorkspaceLifecycle(
