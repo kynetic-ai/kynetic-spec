@@ -29,13 +29,17 @@ import {
   getGitRoot,
   getShadowStatus,
   repairShadow,
+  remoteShadowBranchExists,
   SHADOW_BRANCH_NAME,
+  SHADOW_WORKTREE_DIR,
   SESSIONS_WORKTREE_DIR,
   ensureSessionsGitignore,
   ensureShadowSessionsGitignore,
   needsSessionsGitignore,
   needsShadowSessionsGitignore,
+  type ShadowOptions,
 } from "../../parser/shadow.js";
+import { loadProjectConfig } from "../../parser/config.js";
 import {
   detectAgentFromEnv,
   type AgentConfidence,
@@ -546,23 +550,37 @@ async function ensureWorktree(autoWorktree: boolean): Promise<boolean> {
     return true;
   }
 
-  const status = await getShadowStatus(projectRoot);
+  const { config } = await loadProjectConfig(projectRoot, projectRoot);
+  const shadowOptions: ShadowOptions = {
+    branchName: config.shadow.branch,
+    directory: config.shadow.directory,
+    remote: config.shadow.remote?.value,
+    remoteType: config.shadow.remote?.type,
+  };
+  const branchName = shadowOptions.branchName || SHADOW_BRANCH_NAME;
+  const worktreeDir = shadowOptions.directory || SHADOW_WORKTREE_DIR;
+  const status = await getShadowStatus(projectRoot, shadowOptions);
+  const remoteHasShadow = await remoteShadowBranchExists(
+    projectRoot,
+    shadowOptions,
+  );
+  const recoverableShadow = status.branchExists || remoteHasShadow;
 
   // AC: worktree-already-exists - if already valid, skip
   if (status.healthy) {
     return true;
   }
 
-  // AC: detect-existing-repo - branch exists but worktree doesn't
-  if (status.branchExists && !status.worktreeExists) {
+  // AC: detect-existing-repo - existing shadow state but missing/unhealthy worktree
+  if (recoverableShadow && (!status.worktreeExists || !status.worktreeLinked)) {
     // AC: auto-worktree-flag - auto-create if flag set
     if (autoWorktree) {
       console.log(
-        `Detected ${SHADOW_BRANCH_NAME} branch without .kspec worktree. Creating...`,
+        `Detected ${branchName} shadow state without a healthy ${worktreeDir} worktree. Creating...`,
       );
-      const result = await repairShadow(projectRoot);
+      const result = await repairShadow(projectRoot, shadowOptions);
       if (result.success) {
-        success("Created .kspec worktree");
+        success(`Created ${worktreeDir} worktree`);
         return true;
       } else {
         error(`Failed to create worktree: ${result.error}`);
@@ -572,14 +590,14 @@ async function ensureWorktree(autoWorktree: boolean): Promise<boolean> {
 
     // AC: detect-existing-repo - prompt user
     const shouldCreate = await promptYesNo(
-      `${SHADOW_BRANCH_NAME} branch exists but .kspec worktree is missing. Create it? (y/N)`,
+      `${branchName} shadow state exists but ${worktreeDir} worktree is missing or unhealthy. Create it? (y/N)`,
     );
 
     if (shouldCreate) {
-      console.log("Creating .kspec worktree...");
-      const result = await repairShadow(projectRoot);
+      console.log(`Creating ${worktreeDir} worktree...`);
+      const result = await repairShadow(projectRoot, shadowOptions);
       if (result.success) {
-        success("Created .kspec worktree");
+        success(`Created ${worktreeDir} worktree`);
         return true;
       } else {
         error(`Failed to create worktree: ${result.error}`);

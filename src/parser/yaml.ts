@@ -35,8 +35,10 @@ import { ItemIndex } from "./items.js";
 import type { LoadedPlan } from "./plans.js";
 import { ReferenceIndex } from "./refs.js";
 import {
+  createShadowError,
   detectRunningFromShadowWorktree,
   detectShadow,
+  getShadowStatus,
   hasRemoteTracking,
   resolveProjectRoots,
   shadowNeedsSync,
@@ -487,6 +489,18 @@ export async function initContext(startDir?: string): Promise<KspecContext> {
       shadow,
       config,
     };
+  }
+
+  // Fail closed when a repo already has shadow state but the configured worktree
+  // is missing or disconnected, rather than silently degrading into repo-root mode.
+  if (projectRoots?.mainRoot) {
+    const shadowStatus = await getShadowStatus(projectRoots.mainRoot, {
+      branchName: config.shadow.branch,
+      directory: config.shadow.directory,
+    });
+    if (shadowStatus.branchExists && !shadowStatus.healthy) {
+      throw createShadowError(shadowStatus);
+    }
   }
 
   // Traditional mode: find manifest in spec/ or current directory

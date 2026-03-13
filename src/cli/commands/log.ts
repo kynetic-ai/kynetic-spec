@@ -56,6 +56,18 @@ function hasCommits(cwd?: string, checkShadow = true): boolean {
   }
 }
 
+function getGitRoot(cwd?: string): string | null {
+  try {
+    return execSync("git rev-parse --show-toplevel", {
+      cwd,
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "pipe"],
+    }).trim();
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Search git log for commits with trailer pattern
  */
@@ -202,9 +214,11 @@ export function registerLogCommand(program: Command): void {
         },
       ) => {
         try {
-          const ctx = await initContext();
+          const needsSpecContext = Boolean(ref);
+          const ctx = needsSpecContext ? await initContext() : null;
+          const rootDir = ctx?.rootDir ?? getGitRoot(process.cwd()) ?? process.cwd();
 
-          if (!isGitRepo(ctx.rootDir)) {
+          if (!isGitRepo(rootDir)) {
             error(errors.git.notGitRepo);
             process.exit(EXIT_CODES.ERROR);
           }
@@ -215,8 +229,8 @@ export function registerLogCommand(program: Command): void {
             dashDashIndex !== -1 ? process.argv.slice(dashDashIndex + 1) : [];
 
           // Determine what to search for
-          const tasks = await loadAllTasks(ctx);
-          const items = await loadAllItems(ctx);
+          const tasks = needsSpecContext && ctx ? await loadAllTasks(ctx) : [];
+          const items = needsSpecContext && ctx ? await loadAllItems(ctx) : [];
           const index = new ReferenceIndex(tasks, items);
 
           // Build search patterns
@@ -273,14 +287,14 @@ export function registerLogCommand(program: Command): void {
             const rawOutput = searchCommitsRaw(patterns, {
               limit,
               since: options.since,
-              cwd: ctx.rootDir,
+              cwd: rootDir,
               passthroughArgs,
             });
 
             if (!rawOutput.trim()) {
               // AC: @spec-log-empty-repo ac-5
               // Check if repo has no commits vs no matching commits
-              if (!hasCommits(ctx.rootDir)) {
+              if (!hasCommits(rootDir)) {
                 info("No commits in repository yet");
               } else {
                 info("No commits found");
@@ -293,9 +307,9 @@ export function registerLogCommand(program: Command): void {
 
           // AC: @spec-log-empty-repo ac-6
           // Check if we should search shadow branch (main has no commits but shadow does)
-          const mainHasCommits = hasCommits(ctx.rootDir, false);
+          const mainHasCommits = hasCommits(rootDir, false);
           const shadowHasCommits =
-            !mainHasCommits && hasCommits(ctx.rootDir, true);
+            !mainHasCommits && hasCommits(rootDir, true);
           const searchBranch = shadowHasCommits ? "kspec-meta " : undefined;
 
           // Search for all patterns and dedupe
@@ -306,7 +320,7 @@ export function registerLogCommand(program: Command): void {
             const commits = searchCommits(pattern, {
               limit,
               since: options.since,
-              cwd: ctx.rootDir,
+              cwd: rootDir,
               branch: searchBranch,
             });
 
@@ -327,7 +341,7 @@ export function registerLogCommand(program: Command): void {
           // AC: @spec-log-empty-repo ac-1, ac-2, ac-3, ac-4
           // Handle empty results - differentiate between no commits and no matches
           if (limited.length === 0) {
-            if (!hasCommits(ctx.rootDir)) {
+            if (!hasCommits(rootDir)) {
               // AC: @spec-log-empty-repo ac-4
               output(
                 { commits: [], message: "No commits in repository yet" },

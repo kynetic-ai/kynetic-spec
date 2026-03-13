@@ -1,7 +1,11 @@
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
-const { checkKspecCliWithDeps } = require('../scripts/bootstrap.cjs');
+const {
+  checkKspecCliWithDeps,
+  loadShadowBootstrapConfigWithDeps,
+  resolveShadowBootstrapActionWithDeps,
+} = require('../scripts/bootstrap.cjs');
 
 function makeRunStub(responses: Record<string, { success: boolean; output: string }>) {
   return (cmd: string) => responses[cmd] ?? { success: false, output: '' };
@@ -124,5 +128,105 @@ describe('bootstrap checkKspecCli link detection', () => {
 
     expect(status.linked).toBe(true);
     expect(realpathCalls).toEqual([distCli, globalBin]);
+  });
+});
+
+describe('bootstrap shadow recovery command selection', () => {
+  // AC: @broken-shadow-safety ac-bootstrap-reuses-repair
+  it('uses shadow repair when the shadow branch exists but .kspec is missing', () => {
+    const action = resolveShadowBootstrapActionWithDeps({
+      dirStatus: { exists: false, healthy: false },
+      shadowConfig: {
+        branch: 'kspec-meta',
+        directory: '.kspec',
+        remote: null,
+        remoteType: null,
+      },
+      runFn: makeRunStub({
+        "git branch --list 'kspec-meta'": { success: true, output: '  kspec-meta\n' },
+      }),
+      kspecCmd: 'kspec',
+    });
+
+    expect(action).toMatchObject({
+      kind: 'repair',
+      command: 'kspec shadow repair',
+    });
+  });
+
+  it('uses init when no shadow branch exists yet', () => {
+    const action = resolveShadowBootstrapActionWithDeps({
+      dirStatus: { exists: false, healthy: false },
+      shadowConfig: {
+        branch: 'kspec-meta',
+        directory: '.kspec',
+        remote: null,
+        remoteType: null,
+      },
+      runFn: makeRunStub({
+        "git branch --list 'kspec-meta'": { success: true, output: '' },
+        "git remote get-url 'origin'": { success: false, output: '' },
+      }),
+      kspecCmd: 'node dist/cli/index.js',
+    });
+
+    expect(action).toMatchObject({
+      kind: 'init',
+      command: 'node dist/cli/index.js init --no-prompt',
+    });
+  });
+
+  it('uses shadow repair when the configured remote already has the shadow branch', () => {
+    const action = resolveShadowBootstrapActionWithDeps({
+      dirStatus: { exists: false, healthy: false },
+      shadowConfig: {
+        branch: 'kspec-meta',
+        directory: '.kspec',
+        remote: 'specs-origin',
+        remoteType: 'named',
+      },
+      runFn: makeRunStub({
+        "git branch --list 'kspec-meta'": { success: true, output: '' },
+        "git remote get-url 'specs-origin'": {
+          success: true,
+          output: 'git@example.com/specs.git\n',
+        },
+        "git ls-remote --heads 'specs-origin' 'kspec-meta'": {
+          success: true,
+          output: 'abc123\trefs/heads/kspec-meta\n',
+        },
+      }),
+      kspecCmd: 'kspec',
+    });
+
+    expect(action).toMatchObject({
+      kind: 'repair',
+      command: 'kspec shadow repair',
+    });
+  });
+});
+
+describe('bootstrap shadow config parsing', () => {
+  it('loads branch, directory, and remote from kspec.config.yaml', () => {
+    const status = loadShadowBootstrapConfigWithDeps({
+      fsApi: {
+        existsSync: (target: string) => target === '/workspace/kspec.config.yaml',
+        readFileSync: () => [
+          'shadow:',
+          '  branch: specs-meta',
+          '  directory: .shadow-spec',
+          '  remote: specs-origin',
+        ].join('\n'),
+      },
+      pathApi: path,
+      projectRootPath: '/workspace',
+    });
+
+    expect(status).toEqual({
+      branch: 'specs-meta',
+      directory: '.shadow-spec',
+      remote: 'specs-origin',
+      remoteType: 'named',
+    });
   });
 });

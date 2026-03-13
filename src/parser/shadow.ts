@@ -59,6 +59,37 @@ async function runGitAsync(
   return { stdout: stdout.toString(), stderr: stderr.toString() };
 }
 
+async function stashBrokenWorktreeDir(worktreeDir: string): Promise<string | null> {
+  const stat = await fs.stat(worktreeDir).catch(() => null);
+  if (!stat) {
+    return null;
+  }
+
+  const backupDir = `${worktreeDir}.repair-backup-${Date.now()}`;
+  await fs.rename(worktreeDir, backupDir);
+  return backupDir;
+}
+
+async function restoreStashedWorktreeDir(
+  backupDir: string | null,
+  worktreeDir: string,
+): Promise<void> {
+  if (!backupDir) {
+    return;
+  }
+
+  await fs.rm(worktreeDir, { recursive: true, force: true });
+  await fs.rename(backupDir, worktreeDir);
+}
+
+async function discardStashedWorktreeDir(backupDir: string | null): Promise<void> {
+  if (!backupDir) {
+    return;
+  }
+
+  await fs.rm(backupDir, { recursive: true, force: true });
+}
+
 function runGitSync(
   cwd: string,
   args: string[],
@@ -341,6 +372,55 @@ export function getRemoteName(options?: ShadowOptions): string {
   const remoteType = options.remoteType ?? "named";
   if (remoteType === "path" || remoteType === "url") return "kspec-specs";
   return options.remote;
+}
+
+/**
+ * Resolve the remote target used for direct ls-remote/fetch queries.
+ * Named remotes use the configured name, while path remotes expand "~".
+ */
+function getRemoteQueryTarget(options?: ShadowOptions): string {
+  if (!options?.remote) return "origin";
+
+  const remoteType = options.remoteType ?? "named";
+  if (remoteType !== "path") {
+    return options.remote;
+  }
+
+  if (options.remote.startsWith("~")) {
+    return options.remote.replace(
+      /^~/,
+      process.env.HOME || process.env.USERPROFILE || "~",
+    );
+  }
+
+  return options.remote;
+}
+
+/**
+ * Check whether the shadow branch exists on the configured/default remote.
+ */
+export async function remoteShadowBranchExists(
+  projectRoot: string,
+  options?: ShadowOptions,
+): Promise<boolean> {
+  const branchName = getBranchName(options);
+  const remoteType = options?.remoteType ?? "named";
+  const remoteName = getRemoteName(options);
+  const remoteQueryTarget = getRemoteQueryTarget(options);
+
+  if (options?.remote) {
+    if (remoteType === "named" && !(await hasRemote(projectRoot, remoteName))) {
+      return false;
+    }
+
+    return remoteBranchExists(projectRoot, branchName, remoteQueryTarget);
+  }
+
+  if (!(await hasRemote(projectRoot, remoteName))) {
+    return false;
+  }
+
+  return remoteBranchExists(projectRoot, branchName, remoteQueryTarget);
 }
 
 /**
@@ -2515,6 +2595,7 @@ export async function initializeShadow(
     remoteHasShadow = await remoteBranchExists(projectRoot, branchName, remoteName);
   }
 
+  let stashedWorktreeDir: string | null = null;
   try {
     // Step 1: Update .gitignore first (before creating worktree)
     result.gitignoreUpdated = await ensureGitignore(projectRoot, options.shadow);
@@ -2542,7 +2623,7 @@ export async function initializeShadow(
     if (!status.worktreeExists || !status.worktreeLinked) {
       // Remove existing directory if present but not linked
       if (status.worktreeExists && !status.worktreeLinked) {
-        await fs.rm(worktreeDir, { recursive: true, force: true });
+        stashedWorktreeDir = await stashBrokenWorktreeDir(worktreeDir);
       }
 
       // Remove stale worktree reference if any
@@ -2707,9 +2788,11 @@ export async function initializeShadow(
       // Non-fatal: session branch failure doesn't block shadow init
     }
 
+    await discardStashedWorktreeDir(stashedWorktreeDir);
     result.success = true;
     return result;
   } catch (error) {
+    await restoreStashedWorktreeDir(stashedWorktreeDir, worktreeDir).catch(() => {});
     result.error = error instanceof Error ? error.message : String(error);
     return result;
   }
@@ -2732,6 +2815,8 @@ export async function repairShadow(
   const branchName = getBranchName(options);
   const directoryName = getDirectoryName(options);
   const status = await getShadowStatus(projectRoot, options);
+  const remoteQueryTarget = getRemoteQueryTarget(options);
+  const remoteHasShadow = await remoteShadowBranchExists(projectRoot, options);
 
   if (status.healthy) {
     return {
@@ -2746,7 +2831,7 @@ export async function repairShadow(
     };
   }
 
-  if (!status.branchExists) {
+  if (!status.branchExists && !remoteHasShadow) {
     // Can't repair without a branch - need full init
     return {
       success: false,
@@ -2761,8 +2846,9 @@ export async function repairShadow(
     };
   }
 
-  // Branch exists but worktree is broken - repair it
+  // The branch exists locally or remotely, but the worktree is broken - repair it.
   const worktreeDir = path.join(projectRoot, directoryName);
+  let stashedWorktreeDir: string | null = null;
 
   try {
     // Remove stale worktree reference
@@ -2778,13 +2864,21 @@ export async function repairShadow(
     }
 
     // Remove directory if exists (handles corrupted .git file case)
-    await fs.rm(worktreeDir, { recursive: true, force: true });
+    stashedWorktreeDir = await stashBrokenWorktreeDir(worktreeDir);
 
     // Prune stale worktree references (cleans up orphaned entries)
     try {
       await runGitAsync(projectRoot, ["worktree", "prune"]);
     } catch {
       // Ignore - prune is best-effort
+    }
+
+    if (!status.branchExists && remoteHasShadow) {
+      await runGitAsync(projectRoot, [
+        "fetch",
+        remoteQueryTarget,
+        `${branchName}:${branchName}`,
+      ]);
     }
 
     // Recreate worktree
@@ -2794,6 +2888,21 @@ export async function repairShadow(
       directoryName,
       branchName,
     ]);
+
+    if (remoteHasShadow) {
+      const tracking = await ensureRemoteTracking(
+        worktreeDir,
+        projectRoot,
+        options,
+      );
+      if (!tracking.success) {
+        throw new Error(
+          tracking.guidance || "Failed to configure shadow branch remote tracking",
+        );
+      }
+    }
+
+    await discardStashedWorktreeDir(stashedWorktreeDir);
 
     // Install pre-commit hook
     await installShadowHook(projectRoot);
@@ -2809,10 +2918,11 @@ export async function repairShadow(
       gitignoreUpdated: false,
       initialCommit: false,
       alreadyExists: false,
-      createdFromRemote: false,
+      createdFromRemote: !status.branchExists && remoteHasShadow,
       pushedToRemote: false,
     };
   } catch (error) {
+    await restoreStashedWorktreeDir(stashedWorktreeDir, worktreeDir).catch(() => {});
     return {
       success: false,
       branchCreated: false,
