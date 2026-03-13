@@ -93424,6 +93424,19 @@
         npm test exits 1 with 29 failing tests across 23 files, including session-start suites and
         ralph/end-loop, with repeated dispatch shadow mutation lock errors."
       supersedes: null
+    - _ulid: 01KKK7JQF923R2ZNRZG8Q3YX7H
+      created_at: 2026-03-13T09:13:59.529Z
+      author: "@claude"
+      content: "Fix cycle 3 resolution: the 29 failing tests were all caused by
+        KSPEC_SHADOW_MUTATION_LOCK_FILE env var leaking from the dispatch environment into
+        test-spawned CLI processes. The test helper stripped KSPEC_SESSION_ID and
+        KSPEC_RALPH_SESSION but not the lock file var, causing all test kspec invocations to contend
+        on a single parent-level lock. Fixed by adding KSPEC_SHADOW_MUTATION_LOCK_FILE to the
+        stripped env vars. Also fixed a droid env-detection test that didn't clear Claude Code env
+        vars (CLAUDECODE, CLAUDE_CODE_ENTRYPOINT) which are present in dispatch worktrees.
+        Verification: npm run typecheck clean, npm test 225/225 files passed (4695 tests), kspec
+        validate warnings-only."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJKM94SSN5XJCTY5PPWSX8T
