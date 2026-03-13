@@ -584,13 +584,6 @@ describe("dispatch workspace registry", () => {
     expect(record.lifecycle_state).toBe("integrating");
     expect(record.integration.status).toBe("pending");
 
-    // Wait for the reviewer invocation's background cleanup to settle
-    // before triggering the completed transition, preventing races between
-    // markDispatchWorkspaceIdle and reconcileDispatchWorkspaceLifecycle.
-    for (let i = 0; i < 100 && engine.getStatus().activeInvocations > 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 10));
-    }
-
     await engine.handleStateChange({
       taskId,
       taskRef,
@@ -616,12 +609,14 @@ describe("dispatch workspace registry", () => {
       } as never,
     });
 
-    record = await waitForWorkspaceRecord(
-      registryPath,
-      taskRef,
-      (current) => current.lifecycle_state === "closing",
-      5000,
-    );
+    // Stop the engine to drain all running invocations and their background
+    // cleanup chains (markDispatchWorkspaceIdle, cleanupReviewerDispatchWorkspace)
+    // before asserting the final lifecycle state.  Without this, the reviewer
+    // invocation's cleanupReviewerDispatchWorkspace can race and overwrite the
+    // "closing" lifecycle state that handleStateChange(completed) just persisted.
+    await engine.stop();
+
+    record = await readWorkspaceRecord(registryPath, taskRef);
     expect(record.lifecycle_state).toBe("closing");
     expect(record.integration.status).toBe("merged");
     expect(record.cleanup).toMatchObject({
@@ -637,8 +632,6 @@ describe("dispatch workspace registry", () => {
       5000,
     );
     expect(reloaded?.lifecycle_state).toBe("closing");
-
-    await engine.stop();
 
     await reconcileDispatchWorkspaceRegistry(
       tempDir,
