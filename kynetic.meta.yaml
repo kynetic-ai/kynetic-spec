@@ -8493,4 +8493,16 @@ skills:
     tags:
       - core
     allowed_tools: []
+  - _ulid: 01KKJSXCG9E563A430YYD6ZEEV
+    _type: skill
+    id: droid-status
+    name: Droid Status
+    description: Droid status skill
+    origin: project
+    platforms:
+      - droid
+      - /tmp/tmp.OuD6TXPJvr
+    depends_on: []
+    tags: []
+    allowed_tools: []
 includes: []
