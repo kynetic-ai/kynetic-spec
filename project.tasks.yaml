@@ -94717,7 +94717,7 @@
   derivation: auto
   plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-branch-provenance-in-dispatch-workspace-"
@@ -94728,7 +94728,7 @@
   session_id: 01KKMCMA0CEZ7PCC57XGC960DD
   created_at: 2026-03-13T09:17:00.162Z
   started_at: 2026-03-13T20:01:35.796Z
-  submitted_at: 2026-03-13T19:06:15.229Z
+  submitted_at: 2026-03-13T20:01:40.400Z
   notes:
     - _ulid: 01KKM7YV581A5HVB4WW7D4FW6N
       created_at: 2026-03-13T18:39:50.952Z
@@ -94789,6 +94789,14 @@
       supersedes: null
   todos: []
   automation: eligible
+  submission_linkage:
+    branch: main
+    commit: 7b81d75214dbeee843301e93d7297bf5c72623c7
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-13T20:01:39.442Z
 - _ulid: 01KKK7R8XY5MSEEWA0E9NKEW76
   slugs:
     - implement-branch-provenance-in-dispatch-workspace-
