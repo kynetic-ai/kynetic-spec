@@ -92388,6 +92388,15 @@
         regressions proving bootstrap/prompt failures release the in-flight task key so the task can
         be retried."
       supersedes: null
+    - _ulid: 01KKJGW8E8ACKQWQNS8CQ6EPSV
+      created_at: 2026-03-13T02:37:14.568Z
+      author: Jacob Chapel
+      content: "[FIX_CYCLE: 15] Fixed the remaining _spawnInvocation leak by releasing the in-flight task
+        key from a top-level finally whenever provisioning/bootstrap/prompt/adapter validation bails
+        out before an invocation promise is registered. Added regressions for both bootstrap-failure
+        and prompt-failure paths. Verification: npm test -- tests/agent-dispatch-engine.test.ts; npm
+        test (225 files, 4665 passed, 3 skipped); kspec validate (warnings-only baseline, exit 6)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
