@@ -4638,7 +4638,7 @@ modules:
         created: 2026-03-13T03:25:15.195Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKJKM5KR1S0FFH45S9XM3PBJ
         slugs:
           - droid-agent-detection
