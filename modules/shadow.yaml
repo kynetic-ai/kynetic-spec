@@ -692,6 +692,12 @@ features:
             when: the replacement worktree cannot be created successfully
             then: the pre-repair shadow directory is preserved or restored and the failure reports recovery
               guidance instead of leaving the checkout without its shadow directory
+          - id: ac-bootstrap-reuses-repair
+            given: a project bootstrap or setup helper runs in a checkout where the shadow branch already exists
+              but the shadow worktree is missing or unhealthy
+            when: it chooses a recovery action
+            then: it reuses the existing shadow branch via shadow repair instead of treating the checkout as a
+              brand-new init
   - _ulid: 01KF47F4J7DAQ3TD3BGHFQSK9C
     slugs:
       - shadow-sync
