@@ -8046,6 +8046,11 @@ features:
                 then: |
                   The chosen order follows the scheduler contract above rather than agent
                   definition order alone
+              - id: ac-8
+                given: queued dispatch candidates are excluded during eligibility pruning
+                when: the scheduler discards a worker or reviewer candidate
+                then: dispatch diagnostics identify the task ref, agent, and exclusion reason for each discarded
+                  candidate instead of logging only aggregate discard counts
             depends_on: []
             implements: []
             relates_to: []
@@ -8373,6 +8378,23 @@ features:
                     then: |
                       The dispatcher either reattaches them to a workspace record or cleans
                       them up deterministically instead of leaving orphaned state
+                  - id: ac-6
+                    given: project has a dispatcher-managed worker or reviewer worktree under the configured dispatch
+                      root with .kspec-dispatch-workspace.json metadata, but no matching registry
+                      record on the shadow branch
+                    when: daemon startup or periodic reconciliation compares registry and filesystem state
+                    then: the dispatcher reconstructs or reattaches a canonical workspace record from the on-disk
+                      metadata before reviewer or worker eligibility is pruned, or deterministically
+                      blocks or cleans the workspace with actionable recovery detail if the metadata
+                      cannot be trusted
+                  - id: ac-7
+                    given: reconciliation finds a metadata-backed dispatch worktree whose checked-out branch layout
+                      predates the canonical dispatch/task/* naming contract, such as a rollout-era
+                      feat/* branch
+                    when: the dispatcher reconciles legacy upgrade-path state
+                    then: it normalizes that workspace onto the canonical workspace record or retires it
+                      deterministically with explicit task-linked diagnostics instead of silently
+                      leaving reviewer handoff ineligible
                 depends_on: []
                 implements: []
                 relates_to: []
