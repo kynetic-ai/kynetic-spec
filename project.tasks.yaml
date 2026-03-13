@@ -93468,6 +93468,13 @@
   plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #816 via merge commit fbdd35a665192a1a8b7ceb33578e43bcbdfa5895.
+    Reconciliation now rebuilds metadata-backed dispatch workspace records, normalizes legacy feat/*
+    worker branches onto canonical dispatch/task/* branches, logs task-linked discard reasons during
+    queue pruning, and hardens daemon watcher teardown for deleted .kspec roots. AC coverage
+    verified for @dispatch-workspace-cleanup-policy ac-6/ac-7 and
+    @dispatch-scheduling-priority-model ac-8; fresh PR CI passed on head
+    5fbf600b5aa248215c4d107dc2bd609713a33cbb."
   depends_on: []
   context: []
   priority: 1
@@ -93481,6 +93488,7 @@
   created_at: 2026-03-13T04:10:10.874Z
   started_at: 2026-03-13T05:18:07.629Z
   submitted_at: 2026-03-13T05:18:11.504Z
+  completed_at: 2026-03-13T05:32:12.090Z
   notes:
     - _ulid: 01KKJP9KEQ41DDJ7HKP6XD1M7F
       created_at: 2026-03-13T04:11:54.712Z
@@ -93603,14 +93611,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-13T05:32:12.090Z
-  closed_reason: "Merged in PR #816 via merge commit fbdd35a665192a1a8b7ceb33578e43bcbdfa5895.
-    Reconciliation now rebuilds metadata-backed dispatch workspace records, normalizes legacy feat/*
-    worker branches onto canonical dispatch/task/* branches, logs task-linked discard reasons during
-    queue pruning, and hardens daemon watcher teardown for deleted .kspec roots. AC coverage
-    verified for @dispatch-workspace-cleanup-policy ac-6/ac-7 and
-    @dispatch-scheduling-priority-model ac-8; fresh PR CI passed on head
-    5fbf600b5aa248215c4d107dc2bd609713a33cbb."
 - _ulid: 01KKJT2VJPSPQRCVDW5NZ9G6TJ
   slugs:
     - durably-shadow-commit-dispatch-workspace-registry-writes
@@ -93674,6 +93674,24 @@
         - Files: expected dispatch runtime modules plus registry persistence/reconciliation tests.
 
         - Verification: focused dispatch tests, full npm test, and kspec validate.
+      supersedes: null
+    - _ulid: 01KKJVBA7CSRR5CA3GE2TDXRSE
+      created_at: 2026-03-13T05:40:13.676Z
+      author: Jacob Chapel
+      content: >-
+        Implemented durable dispatch registry persistence.
+
+        - Wrapped runtime registry writes in the shared dispatch shadow mutation lock path.
+
+        - Forced shadow auto-commit after successful registry saves and fail fast if the shadow
+        worktree remains dirty.
+
+        - Added shadow-branch regression coverage for committed provisioning/reconciliation writes,
+        commit-failure guidance, and lock-path serialization.
+
+        - Verification: npm test -- dispatch-workspace-registry (pass), npm test (pass in worker
+        worktree), kspec validate from canonical repo (warnings only: existing global validation
+        debt).
       supersedes: null
   todos: []
   automation: eligible
