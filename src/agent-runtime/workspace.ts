@@ -14,6 +14,7 @@ import type {
   DispatchWorkspaceBootstrapState,
   DispatchWorkspaceBootstrapRoleState,
   DispatchWorkspaceBootstrapStepResult,
+  DispatchWorkspaceBranchProvenance,
   DispatchWorkspaceCleanupState as RegistryCleanupState,
   DispatchWorkspaceHealthState,
   DispatchWorkspaceIntegrationState as RegistryIntegrationRecord,
@@ -54,6 +55,7 @@ export interface DispatchWorkspaceMetadata {
   integrationTargetCommit: string;
   canonicalBranch: string;
   canonicalBranchHead: string;
+  branchProvenance: DispatchWorkspaceBranchProvenance;
   publicationMode: DispatchWorkspacePublicationMode;
   integrationState: DispatchWorkspaceIntegrationState;
   integrationOutcome: DispatchWorkspaceIntegrationOutcome;
@@ -461,6 +463,30 @@ function pathExists(targetPath: string): boolean {
   }).status === 0;
 }
 
+function defaultBranchProvenance(): DispatchWorkspaceBranchProvenance {
+  return {
+    ownership: "dispatcher-managed",
+    source: "provisioned",
+    remote_ref: null,
+    adopted_from: null,
+    adopted_at: null,
+  };
+}
+
+function adoptedBranchProvenance(
+  adoptedFrom: string,
+  remoteRef: string | null,
+  now: string,
+): DispatchWorkspaceBranchProvenance {
+  return {
+    ownership: "adopted",
+    source: "task-submission-linkage",
+    remote_ref: remoteRef,
+    adopted_from: adoptedFrom,
+    adopted_at: now,
+  };
+}
+
 function defaultBootstrapState(now: string): DispatchWorkspaceBootstrapState {
   return {
     ...emptyBootstrapRoleState(),
@@ -742,6 +768,7 @@ function toMetadata(record: DispatchWorkspaceRecord): DispatchWorkspaceMetadata 
     integrationTargetCommit: record.integration.target_commit,
     canonicalBranch: record.canonical_branch,
     canonicalBranchHead: record.canonical_branch_head,
+    branchProvenance: record.branch_provenance ?? defaultBranchProvenance(),
     publicationMode: record.integration.publication_mode,
     integrationState: record.integration.status,
     integrationOutcome: record.integration.outcome,
@@ -885,12 +912,15 @@ async function recoverWorkspaceRecordFromMetadata(
     title: metadata.taskSlug,
     slugs: [metadata.taskSlug],
   });
-  const canonicalBranch = isDispatchBranch(metadata.canonicalBranch)
+  const hasAdoptedProvenance = metadata.branchProvenance?.ownership === "adopted";
+  const canonicalBranch = hasAdoptedProvenance
     ? metadata.canonicalBranch
-    : `dispatch/task/${taskSlug}/${shortTaskId(metadata.taskRef)}`;
+    : isDispatchBranch(metadata.canonicalBranch)
+      ? metadata.canonicalBranch
+      : `dispatch/task/${taskSlug}/${shortTaskId(metadata.taskRef)}`;
   const currentWorkerBranch = normalizeBranchRef(workerRegistration?.branch);
 
-  if (workerRegistration && currentWorkerBranch !== canonicalBranch) {
+  if (workerRegistration && currentWorkerBranch !== canonicalBranch && !hasAdoptedProvenance) {
     try {
       runGitOrThrow(
         workerWorktreeDir,
@@ -945,6 +975,10 @@ async function recoverWorkspaceRecordFromMetadata(
         now,
       )
     : null;
+  const branchProvenance: DispatchWorkspaceBranchProvenance = metadata.branchProvenance
+    ?? (isDispatchBranch(metadata.canonicalBranch)
+      ? defaultBranchProvenance()
+      : adoptedBranchProvenance(metadata.canonicalBranch, null, now));
   const provisionalRecord: DispatchWorkspaceRecord = {
     workspace_id: metadata.workspaceId || workspaceIdFor(metadata.taskRef),
     task_ref: metadata.taskRef,
@@ -954,6 +988,7 @@ async function recoverWorkspaceRecordFromMetadata(
     base_branch_point: baseBranchPoint,
     canonical_branch: canonicalBranch,
     canonical_branch_head: canonicalBranchHead,
+    branch_provenance: branchProvenance,
     lifecycle_state: metadata.lifecycleState ?? "ready",
     active_role: metadata.activeRole ?? null,
     worktrees: {
@@ -1440,7 +1475,9 @@ export async function reapDispatchWorkspace(
     existing.metadata.worktreeRoot,
     existing.workerWorktreeDir,
   );
-  deleteDispatchBranch(projectDir, existing.metadata.canonicalBranch);
+  if (existing.metadata.branchProvenance.ownership !== "adopted") {
+    deleteDispatchBranch(projectDir, existing.metadata.canonicalBranch);
+  }
   return { taskRef, action: "reaped", blockedReason: null };
 }
 
@@ -1598,6 +1635,7 @@ export async function provisionDispatchWorkspace(
     base_branch_point: baseBranchPoint,
     canonical_branch: canonicalBranch,
     canonical_branch_head: existingRecord?.canonical_branch_head ?? baseBranchPoint,
+    branch_provenance: existingRecord?.branch_provenance ?? defaultBranchProvenance(),
     lifecycle_state: "provisioning",
     active_role: null,
     worktrees: {
