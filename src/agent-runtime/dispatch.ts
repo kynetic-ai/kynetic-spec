@@ -32,6 +32,7 @@ import { getAdapter } from "../agents/adapters.js";
 import {
   provisionDispatchWorkspace,
   DispatchWorkspaceError,
+  getDispatchShadowMutationLockPath,
   markDispatchWorkspaceActive,
   markDispatchWorkspaceIdle,
   reconcileDispatchWorkspaceRegistry,
@@ -673,6 +674,8 @@ export class DispatchEngine {
   private recentTaskAffinityRef: string | null = null;
   /** Timer handle for periodic reconciliation. AC: @agent-dispatch-engine ac-20 */
   private reconcileTimer: ReturnType<typeof setInterval> | null = null;
+  /** All in-flight reconciliation promises so stop() can await every one. */
+  private inFlightReconciles = new Set<Promise<void>>();
 
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
@@ -721,9 +724,12 @@ export class DispatchEngine {
     if (this.reconcileIntervalMs > 0) {
       this.reconcileTimer = setInterval(() => {
         if (this.running) {
-          this._reconcile().catch((err) => {
+          const p = this._reconcile().catch((err) => {
             console.error("[dispatch] Reconciliation error:", err);
+          }).finally(() => {
+            this.inFlightReconciles.delete(p);
           });
+          this.inFlightReconciles.add(p);
         }
       }, this.reconcileIntervalMs);
       this.reconcileTimer.unref();
@@ -871,6 +877,13 @@ export class DispatchEngine {
     if (this.reconcileTimer !== null) {
       clearInterval(this.reconcileTimer);
       this.reconcileTimer = null;
+    }
+
+    // Wait for ALL in-flight reconciliations to finish so none
+    // write files after stop() returns (prevents ENOTEMPTY in test teardown).
+    if (this.inFlightReconciles.size > 0) {
+      await Promise.allSettled(Array.from(this.inFlightReconciles));
+      this.inFlightReconciles.clear();
     }
 
     // AC: @agent-dispatch-engine ac-11 - Send graceful cancel to all active invocations
@@ -1804,7 +1817,7 @@ export class DispatchEngine {
         kspecCliPath: this.kspecCliPath,
         abortSignal: abortController.signal,
         sessionId: preSessionId,
-        mutationLockFile: path.join(this.projectDir, ".kspec-dispatch-shadow-mutation"),
+        mutationLockFile: getDispatchShadowMutationLockPath(this.projectDir),
         env: {
           KSPEC_DISPATCH_BASE_BRANCH: workspace.metadata.baseBranch,
           KSPEC_DISPATCH_MERGE_TARGET: workspace.metadata.mergeTargetBranch,
