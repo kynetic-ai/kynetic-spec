@@ -1385,6 +1385,71 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       vi.restoreAllMocks();
     }
   });
+
+  it("releases the in-flight task key when bootstrap fails before invocation start", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      [
+        "dispatch:",
+        "  base_branch: main",
+        "  bootstrap:",
+        "    steps:",
+        "      - run: exit 7",
+      ].join("\n"),
+      "utf-8",
+    );
+
+    const captureFile = path.join(testDir, "kspec-bootstrap-failure-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+
+    try {
+      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+      const taskId = testUlid("TASK", 35);
+      const taskRef = `@${taskId}`;
+      const change = makeStateChange({
+        toStatus: "pending",
+        fromStatus: "in_progress",
+        taskRef,
+        task: {
+          _ulid: taskId,
+          title: "Bootstrap failure releases in-flight key",
+          slugs: ["bootstrap-failure-releases-in-flight-key"],
+          status: "pending",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as any,
+      });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+      vi.spyOn(console, "error").mockImplementation(() => {});
+
+      type EngineInternal = {
+        _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
+        inFlightTaskKeys: Set<string>;
+      };
+      const internal = engine as unknown as EngineInternal;
+
+      const spawned = await internal._spawnInvocation(agent, entry);
+
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+      expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      vi.restoreAllMocks();
+    }
+  });
 });
 
 // ─── AC-11: Graceful shutdown ─────────────────────────────────────────────────
@@ -2569,7 +2634,10 @@ describe("Dispatch role workflow entrypoints", () => {
         kspecCliPath: MOCK_KSPEC_CLI,
       });
 
-      type EngineInternal = { _spawnInvocation: (a: Agent, e: unknown) => Promise<boolean> };
+      type EngineInternal = {
+        _spawnInvocation: (a: Agent, e: unknown) => Promise<boolean>;
+        inFlightTaskKeys: Set<string>;
+      };
       const taskId = testUlid("TASK");
       const taskRef = `@${taskId}`;
       const change = makeStateChange({
@@ -2580,13 +2648,15 @@ describe("Dispatch role workflow entrypoints", () => {
       });
       const entry = { agent, change, retryCount: 0, nextRetryAt: 0, enqueuedAtMs: Date.now(), sequence: 1 };
 
-      const started = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+      const internal = engine as unknown as EngineInternal;
+      const started = await internal._spawnInvocation(agent, entry);
 
       expect(started).toBe(false);
       expect(runSpy).not.toHaveBeenCalled();
       expect(errorSpy).toHaveBeenCalledWith(
         expect.stringContaining("Failed to build prompt"),
       );
+      expect(internal.inFlightTaskKeys.has(`${agent.id}:${taskRef}`)).toBe(false);
 
       const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
       const noteCall = calls.find((c) => c.args.includes("note") && c.args.includes(taskRef));
