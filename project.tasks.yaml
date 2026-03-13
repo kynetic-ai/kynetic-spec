@@ -94295,6 +94295,21 @@
         of closing at tests/dispatch-workspace-registry.test.ts:687, and task-mutation-serialization
         also fails at tests/task-mutation-serialization.test.ts:163 with task set --refs exiting 1."
       supersedes: null
+    - _ulid: 01KKKWT7EY9C52YC78T99WAK9Q
+      created_at: 2026-03-13T15:25:05.374Z
+      author: "@claude"
+      content: "Fix cycle 11 resolution: The task-mutation-serialization test failure was caused by the
+        runKspecAsync helper in the test file spawning subprocesses with raw process.env, which
+        includes KSPEC_SHADOW_MUTATION_LOCK_FILE when running under dispatch. The standard kspec()
+        test helper in tests/helpers/cli.ts strips these dispatch env vars, but the local
+        runKspecAsync did not. Under the full suite with I/O contention, the subprocess task set
+        --refs would try to acquire the dispatch shadow mutation lock and fail. Fix: added the same
+        env var sanitization (KSPEC_RALPH_SESSION, KSPEC_SESSION_ID,
+        KSPEC_SHADOW_MUTATION_LOCK_FILE, KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS) to runKspecAsync.
+        The dispatch-workspace-registry lifecycle test did not reproduce on the current HEAD after 4
+        consecutive full-suite runs (3 after the fix + 1 before). Verified with 3 consecutive
+        full-suite runs (228/228 files, 4733/4733 tests, 0 failures each)."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJYEETYYQABWJ2QWJGPEMRT
