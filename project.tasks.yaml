@@ -93963,6 +93963,17 @@
         tests/dispatch-workspace-and-scheduler-flow.test.ts:175 after the new durable registry
         commit path."
       supersedes: null
+    - _ulid: 01KKK6P5NE53Q19MHJRGFD3YDX
+      created_at: 2026-03-13T08:58:23.790Z
+      author: "@claude"
+      content: "Fix cycle 2 resolution: split persistWorkspaceRecord into saveWorkspaceRecordToRegistry
+        (file write only) and commitWorkspaceRegistryIfShadow (lock + shadow commit).
+        reconcileDispatchWorkspaceRegistry now batches all saves then commits once.
+        provisionDispatchWorkspace defers commit on the initial provisioning record. This eliminates
+        ~20 redundant lock acquisitions per scheduler flow test run, fixing the CI timeout. All
+        dispatch tests pass locally including durable commit, shadow lock, and scheduler flow
+        tests."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKJYEETYYQABWJ2QWJGPEMRT
