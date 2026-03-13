@@ -4847,7 +4847,7 @@ modules:
         created: 2026-03-13T03:25:15.356Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKJKM5REB7NEX04F2TQ73JCK
         slugs:
           - droid-setup-integration
