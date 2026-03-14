@@ -13,6 +13,7 @@ export * from "./items.js";
 export * from "./meta.js";
 export * from "./plans.js";
 export * from "./refs.js";
+export * from "./reviews.js";
 export * from "./shadow.js";
 export * from "./skill-render.js";
 export * from "./traits.js";

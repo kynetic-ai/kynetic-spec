@@ -7,6 +7,7 @@
 
 import type { LoadedMetaItem } from "./meta.js";
 import type { LoadedPlan } from "./plans.js";
+import type { LoadedReviewRecord } from "./reviews.js";
 import type { AnyLoadedItem, LoadedSpecItem, LoadedTask } from "./yaml.js";
 
 // ============================================================
@@ -144,12 +145,14 @@ export class ReferenceIndex {
    * Build index from loaded items and meta items
    * AC: @agent-definitions ac-agent-3
    * AC: @plan-validation ac-10
+   * AC: @review-record-storage-and-identity ac-2
    */
   constructor(
     tasks: LoadedTask[],
     items: LoadedSpecItem[],
     metaItems: LoadedMetaItem[] = [],
     plans: LoadedPlan[] = [],
+    reviews: LoadedReviewRecord[] = [],
   ) {
     // Index tasks
     for (const task of tasks) {
@@ -165,6 +168,12 @@ export class ReferenceIndex {
     // AC: @plan-validation ac-10
     for (const plan of plans) {
       this.indexPlan(plan);
+    }
+
+    // Index review records
+    // AC: @review-record-storage-and-identity ac-2
+    for (const review of reviews) {
+      this.indexReview(review);
     }
 
     // Index meta items (agents, workflows, conventions, observations)
@@ -208,6 +217,28 @@ export class ReferenceIndex {
 
     // Index by slugs
     for (const slug of plan.slugs) {
+      const existing = this.slugIndex.get(slug);
+      if (existing) {
+        existing.push(ulid);
+      } else {
+        this.slugIndex.set(slug, [ulid]);
+      }
+    }
+  }
+
+  /**
+   * Index a review record.
+   * AC: @review-record-storage-and-identity ac-2
+   */
+  private indexReview(review: LoadedReviewRecord): void {
+    const ulid = review._ulid;
+
+    // Index by ULID
+    this.ulidIndex.set(ulid, review as unknown as AnyLoadedItem);
+    this.allUlids.push(ulid);
+
+    // Index by slugs
+    for (const slug of review.slugs) {
       const existing = this.slugIndex.get(slug);
       if (existing) {
         existing.push(ulid);
