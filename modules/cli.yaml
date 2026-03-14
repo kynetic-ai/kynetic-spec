@@ -9440,7 +9440,7 @@ features:
         parent: "@review-cli-commands"
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKNRBYM58Y5BBA8KFE82QKWA
         slugs:
           - review-cli-task-linkage
