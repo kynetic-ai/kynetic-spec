@@ -11,6 +11,14 @@ description: Pre-PR quality review - verify AC coverage, test quality, E2E
 
 Quality enforcement for pre-PR review. Use before creating a PR to catch issues early.
 
+## Reviewer Philosophy
+
+**You are the first gate, not a formality.** Your job is to catch problems before they reach the PR review. If you pass something that the PR reviewer catches, the local review failed. Be more strict than you think is necessary — it is always cheaper to fix something now than after a PR is created.
+
+**When in doubt, flag it as MUST-FIX.** Do not rationalize away problems. Do not downgrade findings because "it's early stage" or "it will be fixed later." If the spec says the system does X, the code must actually do X right now — not stub it, not mock it, not TODO it.
+
+**Reproduce, don't just read.** Run `npm test`. Run the actual CLI commands. If the spec says "exit 0 on success," run it and verify. If a test claims to cover an AC, verify the test would actually fail if the feature broke.
+
 ## Quick Start
 
 ```bash
@@ -85,6 +93,26 @@ Use CLI commands to resolve specs and traits. **Do NOT search `.kspec/` YAML fil
 
 **Resolving inherited traits:** When `kspec item get` shows "Inherited from @trait-slug", run `kspec item get @trait-slug` to see the full trait ACs. This is one command — never grep through `.kspec/modules/*.yaml` files.
 
+## Automatic MUST-FIX: Patterns That Always Block
+
+The following are **always MUST-FIX** — no exceptions, no downgrading:
+
+- **Stubs claiming AC coverage** — `void` expressions, empty function bodies, TODO comments, placeholder returns where the spec requires real behavior.
+- **Tests that don't prove the AC** — testing implementation internals (parser state, compiled strings, internal data structures) instead of user-visible behavior. A test must fail if the feature breaks.
+- **Tests that mock the thing being tested** — mocking the CLI runner then asserting the mock was called proves nothing about the CLI working.
+- **Imports from unmerged branches** — code that depends on work not yet on main must be blocked or rebased.
+- **Hardcoded absolute paths** — `/home/user/project/...` in any file.
+- **Test helpers exported from production code** — test-only exports from `src/` modules. Test infrastructure belongs in `tests/`.
+- **Bypassing Zod validation** — creating parallel validation logic instead of using the schemas in `src/schema/`.
+
+### Build and Verification Config Changes
+Any change to tsconfig, Biome config, vitest config, or other verification tooling that makes the pipeline report *fewer* problems is MUST-FIX:
+- Adding excludes/ignores to suppress errors instead of fixing them
+- Loosening compiler strictness, disabling Biome rules, skipping test suites
+- Modifying test sharding or timeouts to mask failures
+
+**Severity default: MUST-FIX.** Only downgrade to SUGGESTION for pure style preferences (naming, comment formatting) with zero correctness implications. If it touches behavior or correctness in any way, it is at minimum SHOULD-FIX.
+
 ## Review Criteria
 
 ### 1. Own AC Coverage (MUST-FIX)
@@ -141,19 +169,21 @@ If the spec has no traits, skip this step.
 
 ### 3. Test Quality (MUST-FIX)
 
-All tests must properly validate their intended purpose.
+All tests must properly validate their intended purpose. **Coverage quality matters more than coverage existence.**
 
 **Valid tests:**
-- AC-specific tests that validate acceptance criteria
+- AC-specific tests that validate acceptance criteria through observable behavior
 - Edge case tests that catch real bugs
-- Integration tests that verify components work together
+- E2E tests that run the CLI as a user would and verify output/exit codes
 
-**Fluff tests to reject:**
+**Fluff tests to reject (MUST-FIX):**
 - Tests that always pass regardless of implementation
-- Tests that only verify implementation details
-- Tests that mock everything and verify nothing
+- Tests that only verify implementation internals (parser state, compiled source strings, internal data structures) instead of user-visible behavior
+- Tests that mock everything and verify nothing — if you mock the CLI runner, you haven't proven the CLI works
+- Tests that assert a function exists or was called, rather than asserting its actual output/effect
+- Tests that claim AC coverage but stop at a different abstraction layer than what the AC describes (e.g., parser tests claiming CLI-level AC coverage)
 
-**Litmus test:** Would this test fail if the feature breaks?
+**Litmus test:** Would this test fail if the feature broke? If the answer is "maybe not" or "only if the internals changed in a specific way," it's fluff.
 
 ### 4. Test Strategy (SUGGESTION)
 
@@ -219,6 +249,10 @@ Review the implementation code, not just tests. Assume there is a problem to fin
 - **Inconsistent patterns** — Does the code follow conventions in neighboring files? Check naming, error handling, import style. If adjacent files handle errors with `Result<T>`, new code should too.
 - **Ignored shared utilities** — Were test helpers (`testUlid()`, `setupTempFixtures()`, `kspec()` runner) overlooked in favor of ad-hoc implementations?
 - **Error handling gaps** — Are error paths tested? Does the code handle edge cases the spec implies?
+- **Schema validation bypass** — New code that validates input without using Zod schemas from `src/schema/` is MUST-FIX. Zod is the single source of truth for validation.
+- **Shadow branch integrity** — Changes touching worktree management, `.kspec/` state, or shadow branch operations need extra scrutiny for corruption risks.
+- **Test helpers in production code** — Exports like `_resetForTesting` from `src/` modules are MUST-FIX. Test infrastructure belongs in `tests/` only.
+- **Stubs and no-ops** — `void` expressions, empty function bodies, or TODO comments where real behavior is required by the spec. If the AC's core verb (parse, validate, output, persist, exit) isn't actually executed, it's MUST-FIX.
 
 Each finding must include `file:line` and a concrete description of what's wrong.
 
