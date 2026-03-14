@@ -2904,12 +2904,7 @@ workspaces:
         branch_ref: dispatch/task/add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-review/01kkk7re
         head: e01ea4e6d18102d62744bfe32610c556c1c06af7
         last_seen_at: 2026-03-14T02:22:51.909Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-review-01kkk7re-review
-        branch_mode: detached
-        branch_ref: null
-        head: e01ea4e6d18102d62744bfe32610c556c1c06af7
-        last_seen_at: 2026-03-14T02:22:51.909Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -2951,7 +2946,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T02:37:11.928Z
+      updated_at: 2026-03-14T02:37:26.637Z
     cleanup:
       status: scheduled
       eligible: true
@@ -2960,7 +2955,7 @@ workspaces:
       updated_at: 2026-03-14T02:37:11.928Z
     timestamps:
       created_at: 2026-03-14T01:43:46.458Z
-      updated_at: 2026-03-14T02:37:25.847Z
-      last_reconciled_at: 2026-03-14T02:37:25.847Z
+      updated_at: 2026-03-14T02:37:26.637Z
+      last_reconciled_at: 2026-03-14T02:37:26.637Z
       last_active_at: 2026-03-14T02:22:52.377Z
       closed_at: null
