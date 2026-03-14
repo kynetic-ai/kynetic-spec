@@ -22,6 +22,7 @@ import {
 } from "../schema/index.js";
 import { findMetaManifest, getSkillContentPath, loadMetaContext, type LoadedSkill } from "./meta.js";
 import { loadPlans } from "./plans.js";
+import { findReviewFiles, validateReviewsFile } from "./review-validation.js";
 import {
   ReferenceIndex,
   type RefValidationError,
@@ -1719,6 +1720,17 @@ export async function validate(
       }
     } catch {
       // Already reported in schema validation
+    }
+  }
+
+  // Validate review files
+  // AC: @review-record-validation ac-1, ac-2
+  if (runSchema) {
+    const reviewFiles = await findReviewFiles(ctx.specDir);
+    for (const reviewFile of reviewFiles) {
+      const reviewErrors = await validateReviewsFile(reviewFile);
+      result.schemaErrors.push(...reviewErrors);
+      result.stats.filesChecked++;
     }
   }
 
