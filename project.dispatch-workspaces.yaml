@@ -3395,7 +3395,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-implement-review-validation/01kknrc2
         head: 37081784431c9fd9ffa8ae1bbf16736b2f49c861
-        last_seen_at: 2026-03-14T17:10:45.294Z
+        last_seen_at: 2026-03-14T17:31:39.008Z
       reviewer: null
     bootstrap:
       status: succeeded
@@ -3430,22 +3430,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-14T17:30:50.152Z
+      updated_at: 2026-03-14T17:31:39.008Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T17:30:50.152Z
+      updated_at: 2026-03-14T17:31:39.008Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-14T17:30:50.152Z
+      updated_at: 2026-03-14T17:31:39.008Z
     timestamps:
       created_at: 2026-03-14T10:36:47.635Z
-      updated_at: 2026-03-14T17:30:50.152Z
-      last_reconciled_at: 2026-03-14T17:30:50.152Z
+      updated_at: 2026-03-14T17:31:39.008Z
+      last_reconciled_at: 2026-03-14T17:31:39.008Z
       last_active_at: 2026-03-14T17:10:46.000Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC3AMTWV7SS9F6ZP2FCA7
