@@ -96232,9 +96232,18 @@
     - checks
     - policy
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-14T17:59:18.813Z
   session_id: 01KKPQBCQGSYEX6NFJ4TWSR1S9
   created_at: 2026-03-14T08:45:54.617Z
   started_at: 2026-03-14T17:49:45.518Z
+  submitted_at: 2026-03-14T17:59:19.542Z
   notes:
     - _ulid: 01KKPQGEV5VMFS546RTJ5VTPPT
       created_at: 2026-03-14T17:50:05.669Z
@@ -96256,17 +96265,41 @@
 
         - Verification: npm test must pass, all 6 ACs covered with annotated tests.
       supersedes: null
+    - _ulid: 01KKPR2B2DFYJN4S06T1DNW2EQ
+      created_at: 2026-03-14T17:59:51.629Z
+      author: "@claude"
+      content: >-
+        Submitted PR #853. Implementation adds:
+
+        - src/review/checks.ts: Check recording factories (createCheck, createLocalCheck,
+        mirrorExternalCheck) and gate evaluation engine (evaluateGates)
+
+        - src/review/index.ts: Updated barrel export
+
+        - tests/review-checks.test.ts: 38 tests covering all 6 ACs
+
+
+        Key design decisions:
+
+        - Checks are grouped by logical name for gate evaluation; latest fresh run per name
+        determines gate state
+
+        - Required flag uses 'any run required' semantics — if any run for a check name was marked
+        required, the gate is required
+
+        - Stale checks (applies_to_version mismatch) cause failing state for required gates, not
+        pending
+
+        - Skipped required checks are treated as satisfied (explicit skip is an acceptable outcome)
+
+        - Running checks leave gates in pending state
+
+        - Informational checks are always satisfied regardless of status
+
+        - Reuses isVersionStale from subject-bindings.ts for staleness detection
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-14T17:59:19.542Z
-  submission_linkage:
-    branch: main
-    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-14T17:59:18.813Z
 - _ulid: 01KKNRC1M21CX9TW44VZWMEHHZ
   slugs:
     - task-implement-review-verdicts-and-resolution
