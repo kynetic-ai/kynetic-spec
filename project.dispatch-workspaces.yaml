@@ -3141,8 +3141,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
-    active_role: reviewer
+    lifecycle_state: closing
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-record-core-01kknrby
@@ -3183,27 +3183,27 @@ workspaces:
           steps: []
           failureMessage: null
     integration:
-      status: pending
+      status: merged
       target_branch: main
       target_commit: ffbfd0bdf8a37b51338293cb85773e20377438a3
       publication_mode: pull_request
-      outcome: pull_request
-      detail: null
-      updated_at: 2026-03-14T09:16:48.200Z
+      outcome: merged
+      detail: integration:merged
+      updated_at: 2026-03-14T09:16:48.553Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T09:16:48.200Z
+      updated_at: 2026-03-14T09:16:48.553Z
     cleanup:
-      status: not_scheduled
-      eligible: false
-      reason: null
-      detail: null
-      updated_at: 2026-03-14T09:16:48.200Z
+      status: scheduled
+      eligible: true
+      reason: integrated-into-base-branch
+      detail: integrated-into-base-branch
+      updated_at: 2026-03-14T09:16:48.553Z
     timestamps:
       created_at: 2026-03-14T08:54:42.370Z
-      updated_at: 2026-03-14T09:16:48.200Z
-      last_reconciled_at: 2026-03-14T09:16:48.200Z
+      updated_at: 2026-03-14T09:16:48.553Z
+      last_reconciled_at: 2026-03-14T09:16:48.553Z
       last_active_at: 2026-03-14T09:05:18.503Z
       closed_at: null
