@@ -96000,6 +96000,24 @@
       author: "@claude"
       content: Reset from in_progress to pending
       supersedes: null
+    - _ulid: 01KKNW823NH257BNDSMYT9G4YT
+      created_at: 2026-03-14T09:53:38.933Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: This task implements the storage and reference identity layer for review
+        records, building on the Zod schema created in @task-implement-review-record-core.
+
+        - Scope: Parser/loader functions for project.reviews.yaml (load, save, find), integration
+        into the shared reference system (ReferenceIndex), and exported Loaded type.
+
+        - Files: src/parser/yaml.ts (add review CRUD), src/parser/refs.ts (register in
+        ReferenceIndex), tests/review-storage.test.ts (new)
+
+        - Verification: Tests covering all 3 ACs — dedicated storage (ac-1), ULID-backed @ref
+        identity (ac-2), single-file storage path (ac-3)
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKNRBZXF4B280EVREQJ6ZJRH
