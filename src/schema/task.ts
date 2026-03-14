@@ -98,6 +98,10 @@ export const TaskSchema = z.object({
   // AC: @task-submit ac-submit-2
   review_url: z.string().url().optional(),
 
+  // Review record linkage (set automatically when a review targets or relates to this task)
+  // AC: @review-task-lifecycle-integration ac-1
+  review_ref: RefSchema.nullable().optional(),
+
   // AC: @portable-task-submission-linkage ac-1, ac-2, ac-3
   // Structured submission linkage: branch, commit, remote context
   submission_linkage: SubmissionLinkageSchema.nullable().optional(),
@@ -170,6 +174,9 @@ export const TaskInputSchema = z.object({
 
   // Review URL
   review_url: z.string().url().optional(),
+
+  // Review record linkage
+  review_ref: RefSchema.nullable().optional(),
 
   // Submission linkage
   submission_linkage: SubmissionLinkageSchema.nullable().optional(),

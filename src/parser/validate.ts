@@ -29,6 +29,8 @@ import {
   shortestUniqueUlid,
   validateRefs,
 } from "./refs.js";
+import { checkReviewLinkageConsistency } from "./review-task-integration.js";
+import { loadReviewRecords } from "./reviews.js";
 import { TraitIndex } from "./traits.js";
 import type { KspecContext, LoadedSpecItem, LoadedTask } from "./yaml.js";
 import {
@@ -73,7 +75,8 @@ export type CompletenessWarningType =
   | "missing_test_coverage"
   | "automation_eligible_no_spec"
   | "ac_schema_field_mismatch"
-  | "invalid_ac_annotation";
+  | "invalid_ac_annotation"
+  | "inconsistent_review_linkage";
 
 /**
  * Trait cycle error
@@ -1839,6 +1842,19 @@ export async function validate(
       // Check automation eligibility warnings for tasks
       const automationWarnings = checkAutomationEligibility(allTasks, index);
       completenessWarnings.push(...automationWarnings);
+
+      // AC: @review-task-lifecycle-integration ac-5
+      // Check review linkage consistency for pending_review tasks
+      const reviews = await loadReviewRecords(ctx);
+      const linkageWarnings = checkReviewLinkageConsistency(allTasks, reviews);
+      for (const lw of linkageWarnings) {
+        completenessWarnings.push({
+          type: "inconsistent_review_linkage",
+          itemRef: lw.taskRef,
+          itemTitle: lw.taskTitle,
+          message: lw.message,
+        });
+      }
 
       // Validate AC annotations in test files
       const annotations = await scanACAnnotations(ctx.rootDir);
