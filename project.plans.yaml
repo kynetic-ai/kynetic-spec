@@ -14222,8 +14222,8 @@ plans:
             then: |
               The review record has separate lifecycle_state (draft, open, closed,
               archived) and computed disposition (pending, approved,
-              changes_requested, rejected) fields rather than collapsing lifecycle
-              and outcome into one status enum
+              changes_requested) fields rather than collapsing lifecycle and outcome
+              into one status enum
           - id: ac-3
             given: |
               A review references external systems such as GitHub
@@ -14328,12 +14328,14 @@ plans:
             given: |
               The reviewed subject has changed since the review was created
             when: |
-              Staleness is evaluated
+              Staleness is evaluated after a review refresh updates the subject
+              version
             then: |
-              Code subjects compare current branch HEAD against the stored
-              head_commit, and shadow-branch subjects compare entity content hash
-              against the stored hash, rather than using shadow branch HEAD which
-              would self-invalidate on every review mutation
+              Verdicts and checks whose applies_to_version does not match the
+              refreshed subject version are identified as stale, and for
+              shadow-branch subjects the entity content hash is compared rather
+              than shadow branch HEAD which would self-invalidate on every review
+              mutation
 
       - title: Review Comment Threads and Anchors
         slug: review-comment-threads-and-anchors
@@ -14417,7 +14419,7 @@ plans:
             then: |
               The review stores check records with name, status, timestamps,
               runner, required flag, evidence payload or link, and the
-              applies_to_compare context (base_commit and head_commit) identifying
+              applies_to_version context (base_commit and head_commit) identifying
               which reviewed state the check ran against
           - id: ac-2
             given: |
@@ -14451,7 +14453,7 @@ plans:
               Gate state is evaluated
             then: |
               Check history is preserved while the current gate decision is
-              computed from the latest run whose applies_to_compare matches the
+              computed from the latest run whose applies_to_version matches the
               current head_commit
           - id: ac-6
             given: |
@@ -14460,8 +14462,7 @@ plans:
             when: |
               Gate state is evaluated
             then: |
-              Checks whose applies_to_compare head_commit does not match the
-              current head_commit are treated as stale and do not satisfy required
+              Checks whose applies_to_version head_commit does not match the subject's current version are treated as stale and do not satisfy required
               gate checks
 
       - title: Review Verdicts and Resolution Lifecycle
@@ -14482,7 +14483,7 @@ plans:
             when: |
               They approve, request changes, or leave non-blocking comments
             then: |
-              Their verdicts are recorded with the applies_to_compare context
+              Their verdicts are recorded with the applies_to_version context
               (base_commit and head_commit) identifying the reviewed state, and
               stored distinctly from the overall review disposition
           - id: ac-2
@@ -14516,7 +14517,8 @@ plans:
               The aggregate review disposition is computed
             then: |
               The default aggregation rule is that any changes_requested verdict
-              whose applies_to_compare matches the current head_commit blocks
+              whose applies_to_version matches the subject's current version (both base_commit and head_commit
+              for code subjects, or content_hash for entity subjects) blocks
               approval and at least one explicit approve verdict matching the
               current head_commit is required for the review to be considered
               approved
@@ -14532,15 +14534,25 @@ plans:
               can filter by role and count approvals without a schema redesign
           - id: ac-7
             given: |
-              The reviewed subject has been updated with new commits since the last
-              approval
+              The reviewed subject has been updated since the last approval
             when: |
               The review disposition is computed
             then: |
-              Approvals whose applies_to_compare head_commit does not match the
-              current head_commit are treated as stale and do not count toward
-              the approval requirement
+              Verdicts whose applies_to_version does not match the subject's
+              current version are treated as stale and excluded from the
+              aggregation computation
           - id: ac-8
+            given: |
+              A reviewer submits a new verdict on the same review after a
+              previous verdict
+            when: |
+              The aggregate disposition is computed
+            then: |
+              Only the latest verdict per reviewer whose applies_to_version
+              matches the current subject version is considered, so a reviewer
+              who requests changes and later approves the same version does not
+              remain permanently blocking
+          - id: ac-9
             given: |
               A review is no longer active because its subject completed, was
               cancelled, or was superseded
@@ -14604,13 +14616,23 @@ plans:
               review record ref
           - id: ac-3
             given: |
+              A code review is created with a related task ref
+            when: |
+              The review add command runs with --related @task-ref
+            then: |
+              The review stores the task in related_refs and the task's
+              review_ref is set to the new review, so code reviews can be
+              discovered from task context even when the subject is code not
+              a task
+          - id: ac-4
+            given: |
               A reviewer sets a changes_requested verdict on a task review
             when: |
               The verdict is recorded
             then: |
               The task is automatically transitioned to needs_work if it was in
               pending_review
-          - id: ac-4
+          - id: ac-5
             given: |
               A task is in pending_review with no active review record or a
               review_ref pointing at a closed review
@@ -14618,7 +14640,7 @@ plans:
               The task state is rendered or validated
             then: |
               The system surfaces a warning about the inconsistent review linkage
-          - id: ac-5
+          - id: ac-6
             given: |
               A task-associated review records changes requested and later returns
               for re-review
@@ -14627,7 +14649,7 @@ plans:
             then: |
               The review history remains intact instead of being replaced by ad hoc
               task notes
-          - id: ac-6
+          - id: ac-7
             given: |
               A task or review has an external PR URL or provider identifier
             when: |
@@ -14760,8 +14782,17 @@ plans:
               A reviewer runs kspec review comment add with an optional code
               anchor including path, side, line range, and commit
             then: |
-              The review stores the new thread entry with its anchor, kind
-              (defaulting to nit), and authorship
+              The review stores a new thread with its anchor, kind (defaulting
+              to nit), and authorship
+          - id: ac-1b
+            given: |
+              A thread exists on a review
+            when: |
+              A user or agent runs kspec review reply with a thread ULID and
+              body text
+            then: |
+              A reply entry is appended to the existing thread with author and
+              timestamp, preserving the threaded conversation
           - id: ac-2
             given: |
               Verification evidence exists for a review
@@ -14770,7 +14801,7 @@ plans:
               and the current compare context
             then: |
               The review stores the check result with normalized status, evidence
-              details, and the applies_to_compare binding
+              details, and the applies_to_version binding
           - id: ac-3
             given: |
               A reviewer needs to approve, request changes, or leave a
@@ -14779,7 +14810,7 @@ plans:
               They run kspec review verdict set with the decision and compare
               context
             then: |
-              The individual verdict is recorded with applies_to_compare and the
+              The individual verdict is recorded with applies_to_version and the
               computed disposition is updated according to aggregation, gate, and
               blocker rules
           - id: ac-4
@@ -15024,7 +15055,7 @@ plans:
       Disposition and gate state are computed from the review's current data:
 
 
-      - `disposition`: `pending | approved | changes_requested | rejected` — derived
+      - `disposition`: `pending | approved | changes_requested` — derived
         from current (non-stale) verdicts, unresolved blocking threads, and
         aggregation policy
       - `gate_state`: `passing | failing | pending` — derived from current
@@ -15052,8 +15083,10 @@ plans:
         - `task`: `ref`, `shadow_commit`, `content_hash`
         - `spec`: `ref`, `shadow_commit`, `content_hash`
         - `external`: `url`, `external_id?`, `provider?`
-      - `ReviewCompareContextSchema` — `base_commit` + `head_commit` (used by
-        verdicts and checks to bind to the reviewed state)
+      - `ReviewSubjectVersionSchema` — discriminated union binding verdicts and
+        checks to the reviewed state:
+        - `code_compare`: `base_commit` + `head_commit`
+        - `entity_version`: `content_hash`
       - `ReviewCodeAnchorSchema` — `path`, `side` (base | head), `line_start`,
         `line_end`, `commit`
       - `ReviewStructuredAnchorSchema` — `section?`, `field?`, `path?`, `ref?`
@@ -15068,18 +15101,20 @@ plans:
       - `ReviewCheckStatusSchema` — enum: `pass`, `fail`, `running`, `skipped`
 
       - `ReviewCheckSchema` — name, status, required (boolean), runner, evidence,
-        timestamps, `applies_to_compare` (ReviewCompareContextSchema)
+        timestamps, `applies_to_version` (ReviewSubjectVersionSchema)
       - `ReviewVerdictDecisionSchema` — enum: `approve`, `request_changes`, `comment`
         (use underscores consistently, not hyphens)
       - `ReviewVerdictSchema` — reviewer (string), role (string, default
-        `"reviewer"`), decision, timestamp, `applies_to_compare`
-        (ReviewCompareContextSchema)
-      - `ReviewEventSchema` — ULID, event_type (status_change, verdict_submitted,
-        thread_resolved, thread_reopened, check_added, subject_refreshed,
-        lifecycle_change), actor, timestamp, payload (type-specific data)
+        `"reviewer"`), decision, timestamp, `applies_to_version`
+        (ReviewSubjectVersionSchema)
+      - `ReviewEventSchema` — ULID, event_type (lifecycle_change,
+        verdict_submitted, thread_created, thread_replied, thread_resolved,
+        thread_reopened, check_added, subject_refreshed), actor, timestamp,
+        payload (type-specific data)
       - `ReviewRecordSchema` — full record with `_ulid`, `slugs`, `title`,
-        `lifecycle_state`, subject, threads[], checks[], verdicts[], events[],
-        notes[], external_links[], timestamps
+        `lifecycle_state`, subject, related_refs[] (optional refs to tasks or
+        other entities related to this review), threads[], checks[], verdicts[],
+        events[], notes[], external_links[], timestamps
       - `ReviewRecordInputSchema` — input variant (most fields optional)
 
       - `ReviewRecordsFileSchema` — collection wrapper with `kynetic_reviews` version
@@ -15132,6 +15167,26 @@ plans:
       branch activity.
 
 
+      The content hash uses a **canonical semantic hash**, not a raw YAML hash.
+
+      For each entity type, only substantive fields are included:
+
+
+      - **Tasks**: title, description, spec_ref, depends_on, tags, acceptance_criteria.
+        Excluded: status, review_ref, review_url, notes, assigned_to, updated_at
+        (these change as side effects of review/workflow actions)
+      - **Plans**: title, content (the imported document body), specs, tasks.
+        Excluded: status, notes, approved_at
+      - **Specs**: title, description, type, parent, traits, acceptance_criteria.
+        Excluded: maturity, implementation status
+
+      Fields are sorted by key, serialized to deterministic JSON, and hashed with
+
+      SHA-256. This prevents formatting changes, field reordering, or review-driven
+
+      mutations from self-invalidating the subject.
+
+
       ### Git-backed compare semantics for code
 
 
@@ -15157,24 +15212,38 @@ plans:
 
       verdict:
         decision: approve
-        applies_to_compare:
+        applies_to_version:
+          type: code_compare
           base_commit: "<sha>"
           head_commit: "<sha>"
 
       check:
         name: tests
         status: pass
-        applies_to_compare:
+        applies_to_version:
+          type: code_compare
           base_commit: "<sha>"
           head_commit: "<sha>"
+
+      # For entity subjects:
+
+      verdict:
+        decision: approve
+        applies_to_version:
+          type: entity_version
+          content_hash: "<sha256>"
       ```
 
 
-      Staleness: a verdict or check is stale when its `applies_to_compare.head_commit`
+      Staleness: a verdict or check is stale when its `applies_to_version` does not
 
-      does not match the subject's current `head_commit`. Stale verdicts do not count
+      match the subject's current version. For code subjects, both `base_commit` and
 
-      toward approval. Stale required checks do not satisfy gates.
+      `head_commit` must match (a base change alters the reviewed diff even if head
+
+      is unchanged). For entity subjects, `content_hash` must match. Stale verdicts
+
+      do not count toward approval. Stale required checks do not satisfy gates.
 
 
       v1 does **not** support uncommitted worktree review. Only committed code is
@@ -15230,17 +15299,17 @@ plans:
           timestamp: "2026-03-13T..."
           payload:
             decision: approve
-            applies_to_compare: { base_commit: "abc", head_commit: "def" }
+            applies_to_version: { base_commit: "abc", head_commit: "def" }
       ```
 
 
-      Event types: `lifecycle_change`, `verdict_submitted`, `thread_created`,
+      Event types (canonical list): `lifecycle_change`, `verdict_submitted`,
 
-      `thread_resolved`, `thread_reopened`, `check_added`, `subject_refreshed`,
+      `thread_created`, `thread_replied`, `thread_resolved`, `thread_reopened`,
 
-      `comment_added`. Notes are separate from events — notes are human-readable
+      `check_added`, `subject_refreshed`. Notes are separate from events — notes
 
-      context, events are machine-parseable audit records.
+      are human-readable context, events are machine-parseable audit records.
 
 
       ### Identity and defaults
@@ -15260,17 +15329,23 @@ plans:
       ### Verdict aggregation
 
 
-      The default aggregation rule: any `request_changes` verdict whose
+      The default aggregation rule: only the **latest verdict per reviewer** whose
 
-      `applies_to_compare.head_commit` matches the current subject `head_commit`
+      `applies_to_version` matches the subject's current version is considered
 
-      blocks the disposition from being `approved`. At least one explicit `approve`
+      (supersession by reviewer). Among those active verdicts, any
 
-      verdict matching the current `head_commit` is required. Stale verdicts (those
+      `request_changes` blocks the disposition from being `approved`, and at least
 
-      whose `applies_to_compare` does not match) are preserved in history but
+      one explicit `approve` is required. Stale verdicts (those whose
 
-      excluded from the aggregation computation.
+      `applies_to_version` does not match the current subject version) and
+
+      superseded verdicts (older verdicts from the same reviewer on the same
+
+      version) are preserved in history but excluded from the aggregation
+
+      computation.
 
 
       The `role` field on each verdict defaults to `"reviewer"`. v1 ships with the
@@ -15290,8 +15365,11 @@ plans:
 
       1. `review add` with a task subject → auto-sets `task.review_ref` to the new
          review
-      2. `review verdict set --decision request_changes` on a task review → auto-
-         transitions task to `needs_work` if currently `pending_review`
+      1b. `review add` with `--related @task-ref` → stores task in `related_refs`
+          and auto-sets `task.review_ref` (for code reviews tied to a task)
+      2. `review verdict set --decision request_changes` on a task-subject or
+         related-task review → auto-transitions task to `needs_work` if currently
+         `pending_review`
       3. Approval does **not** auto-transition the task — completion is always a
          manual/explicit step
       4. `kspec task get` on a task with `review_ref` pointing at a closed/archived
@@ -15320,9 +15398,12 @@ plans:
       - `createReviewRecord(input)` — factory that generates ULID, sets defaults
 
       - `computeDisposition(record)` — pure function computing disposition from
-        current verdicts, checks, and threads against the subject's head_commit
+        current (non-stale, latest-per-reviewer) verdicts, blocking threads, and
+        gate state against the subject's current version
       - `computeGateState(record)` — pure function computing gate state from current
-        required checks against the subject's head_commit
+        (non-stale) required checks against the subject's current version
+      - `isVersionMatch(applies_to, subject)` — compare applies_to_version against
+        the subject's current version (full compare for code, hash for entities)
       - `computeEntityContentHash(entity)` — compute content hash for shadow-branch
         subject staleness detection
 
@@ -15361,7 +15442,7 @@ plans:
       kspec review add --title "..." --subject @task-ref [--slug my-review]
 
       kspec review add --title "..." --base-commit abc --head-commit def [--merge-base aaa]
-      [--head-branch feat/foo]
+      [--head-branch feat/foo] [--related @task-ref]
 
       kspec review get @review-ref
 
@@ -15374,6 +15455,8 @@ plans:
       [--base-commit sha] [--evidence "..."]
 
       kspec review verdict set @review-ref --decision approve --head-commit sha [--base-commit sha]
+
+      kspec review reply @review-ref <thread-ulid> --body "..."
 
       kspec review resolve @review-ref <thread-ulid>
 
@@ -15446,9 +15529,13 @@ plans:
 
       milestone. The validation task ensures the complete schema is wired up
 
-      end-to-end and that cross-schema relationships (e.g. applies_to_compare
+      end-to-end and that structural relationships are validated correctly.
 
-      references matching subject compare context) are validated correctly.
+      Validation checks structural shape (e.g. applies_to_version has the right
+
+      discriminant for the subject type) but does **not** check freshness equality
+
+      — stale verdicts and checks are valid data that must be preserved.
 
 
       Invalid data supplied through CLI or batch should be rejected with actionable
@@ -15465,11 +15552,13 @@ plans:
 
       evaluation. Each check run is appended (never overwritten) and carries its
 
-      `applies_to_compare` context. Gate evaluation computes current pass/fail from
+      `applies_to_version` context. Gate evaluation computes current pass/fail from
 
-      the latest run of each logical check name **whose `applies_to_compare.head_commit`
+      the latest run of each logical check name **whose `applies_to_version` matches
 
-      matches the subject's current `head_commit`**. Required vs informational check
+      the subject's current version** (full compare for code, hash for entities).
+
+      Required vs informational check
 
       classification is a property of the check record. Checks with stale compare
 
@@ -15495,16 +15584,28 @@ plans:
 
       Key test scenarios:
 
-      - Stale verdict detection (approve at commit A, refresh to commit B, disposition
-        should not be approved)
-      - Stale check detection (pass at commit A, refresh to commit B, gate should be
-        pending not passing)
+      - Stale verdict detection (approve at compare A, refresh to compare B,
+        disposition should not be approved)
+      - Base-commit change staleness (same head but different base → stale, because
+        the reviewed diff changed)
+      - Verdict supersession (reviewer requests changes then approves same version →
+        only the approve counts)
+      - Stale check detection (pass at compare A, refresh to compare B, gate should
+        be pending not passing)
       - Blocking thread semantics (unresolved blocker prevents approval, unresolved
         nit does not)
+      - Thread replies (reply appends to existing thread, not new thread)
+
       - Task auto-sync (request_changes auto-transitions task to needs_work)
 
+      - Code review with --related @task-ref (task.review_ref set, discoverable)
+
       - Shadow-branch subject staleness (review mutation does not self-invalidate
-        plan/spec subject)
+        plan/spec subject via content hash)
+      - Entity content hash stability (workflow-driven field changes like status,
+        notes, review_ref do not change the hash)
+      - Entity version binding on verdicts/checks for non-code reviews
+
 
       Remember: ULIDs must be Crockford base32 — always use `testUlid()`.
 
@@ -15608,6 +15709,17 @@ plans:
           needs_work on request_changes), (9) CLI commands for close/archive/open/refresh, (10)
           consistent naming (request_changes not request-changes), (11) explicit --slug support for
           batch workflows, (12) v1 scoped to committed code only, hardcoded gate policy only"
+      - _ulid: 01KKNQRGTMN9PCADB1ZR42BZG7
+        created_at: 2026-03-14T08:35:15.412Z
+        author: "@claude"
+        content: "Final review fixes: (1) generic applies_to_version as discriminated union of code_compare
+          and entity_version for non-code reviews, (2) full compare identity staleness — both
+          base_commit + head_commit must match, (3) verdict supersession — only latest verdict per
+          reviewer per version counts, (4) related_refs on reviews + --related flag for code reviews
+          tied to tasks, (5) review reply CLI command for threaded conversations, (6) canonical
+          semantic content hash with excluded fields per entity type, (7) removed rejected from v1
+          disposition, (8) unified event type list, (9) validation checks structure not freshness,
+          (10) review refresh as authoritative staleness trigger"
   - _ulid: 01KKFJY80GMJZKN10AMDJ2WDNC
     slugs:
       - plan-grouped-work-and-human-handoff
