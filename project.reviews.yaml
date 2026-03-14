@@ -25,3 +25,27 @@ reviews:
     external_links: []
     created_at: 2026-03-14T18:41:18.919Z
     updated_at: null
+  - _ulid: 01KKPTEK2ASKXYS52TEBQBE75C
+    slugs: []
+    title: Code Review
+    lifecycle_state: draft
+    subject:
+      type: code
+      base_commit: abc123
+      head_commit: def456
+    author: "@claude"
+    related_refs: []
+    threads: []
+    checks: []
+    verdicts: []
+    events:
+      - _ulid: 01KKPTEK29BA1BMPCV5PNBMS5S
+        event_type: lifecycle_change
+        actor: "@claude"
+        timestamp: 2026-03-14T18:41:30.185Z
+        payload:
+          to: draft
+    notes: []
+    external_links: []
+    created_at: 2026-03-14T18:41:30.186Z
+    updated_at: null
