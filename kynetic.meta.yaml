@@ -1349,6 +1349,9 @@ conventions:
       - For task work (manual or automated), prefer kspec task branch @ref to create or resume the
         deterministic dispatch-compatible branch (dispatch/task/<slug>/<short-id>). This preserves
         dispatch reviewer and fix-cycle continuity.
+      - The dispatch/task/ branch namespace is reserved for task-scoped branches. Do not manually
+        create branches under dispatch/task/ — use kspec task branch to ensure the deterministic
+        naming contract.
     examples: []
   - _ulid: 01KF8BNQXGBBFYRDJKYQHAEDCC
     domain: documentation
