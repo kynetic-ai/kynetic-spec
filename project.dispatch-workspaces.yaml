@@ -3789,25 +3789,30 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-verdicts-and-resolution-01kknrc1
         branch_mode: branch
         branch_ref: dispatch/task/task-implement-review-verdicts-and-resolution/01kknrc1
-        head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-        last_seen_at: 2026-03-14T18:15:58.408Z
-      reviewer: null
+        head: 4d66cd55d8d869b811a1022bdce5f043515ce93e
+        last_seen_at: 2026-03-14T18:25:48.397Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-verdicts-and-resolution-01kknrc1-review
+        branch_mode: detached
+        branch_ref: null
+        head: 4d66cd55d8d869b811a1022bdce5f043515ce93e
+        last_seen_at: 2026-03-14T18:25:48.397Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-      canonicalBranchHead: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-      lastRunAt: 2026-03-14T18:15:58.586Z
+      canonicalBranchHead: 4d66cd55d8d869b811a1022bdce5f043515ce93e
+      lastRunAt: 2026-03-14T18:25:48.666Z
       invalidationReasons: []
       steps: []
       failureMessage: null
-      lastRole: worker
+      lastRole: reviewer
       roleStates:
         worker:
           status: succeeded
@@ -3818,10 +3823,10 @@ workspaces:
           steps: []
           failureMessage: null
         reviewer:
-          status: not_run
-          configHash: null
-          canonicalBranchHead: null
-          lastRunAt: null
+          status: succeeded
+          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+          canonicalBranchHead: 4d66cd55d8d869b811a1022bdce5f043515ce93e
+          lastRunAt: 2026-03-14T18:25:48.666Z
           invalidationReasons: []
           steps: []
           failureMessage: null
@@ -3832,21 +3837,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-14T18:25:51.798Z
+      updated_at: 2026-03-14T18:25:48.397Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T18:25:51.798Z
+      updated_at: 2026-03-14T18:25:48.397Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-14T18:25:51.798Z
+      updated_at: 2026-03-14T18:25:48.397Z
     timestamps:
       created_at: 2026-03-14T18:15:58.408Z
-      updated_at: 2026-03-14T18:25:51.798Z
-      last_reconciled_at: 2026-03-14T18:25:51.798Z
+      updated_at: 2026-03-14T18:25:48.666Z
+      last_reconciled_at: 2026-03-14T18:25:48.397Z
       last_active_at: 2026-03-14T18:15:58.850Z
       closed_at: null
