@@ -95223,7 +95223,7 @@
   derivation: auto
   plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-adopted-branch-cleanup-and-recoverabilit"
@@ -95231,9 +95231,18 @@
   priority: 1
   tags: []
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 38dc760d3353e2cde497e9150881b2c81da24679
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-14T01:17:42.144Z
   session_id: 01KKMXY8DBXAWAS4BX15FH7NRD
   created_at: 2026-03-13T09:17:04.476Z
   started_at: 2026-03-14T01:04:23.987Z
+  submitted_at: 2026-03-14T01:17:42.876Z
   notes:
     - _ulid: 01KKMYPPA3EMA351B5VWHF65H9
       created_at: 2026-03-14T01:17:21.092Z
@@ -95257,15 +95266,12 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-14T01:17:42.876Z
-  submission_linkage:
-    branch: main
-    commit: 38dc760d3353e2cde497e9150881b2c81da24679
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-14T01:17:42.144Z
+  completed_at: 2026-03-14T01:29:27.220Z
+  closed_reason: "Merged in PR #837. Implements kspec task branch <ref> command that creates or
+    resumes the deterministic dispatch-compatible branch (dispatch/task/<slug>/<short-id>) for a
+    task. Supports local branch reuse, remote rehydration, and both human-readable and JSON output
+    with dispatch continuity guidance. All 3 spec ACs covered plus trait ACs for json-output,
+    semantic-exit-codes, and error-guidance. 16 integration tests."
 - _ulid: 01KKK7RD4RNFCQN29QVYRP8E0Z
   slugs:
     - update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches
