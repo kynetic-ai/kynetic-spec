@@ -95805,7 +95805,7 @@
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -95876,3 +95876,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-14T07:57:20.980Z
+  closed_reason: "Merged in PR #841. Exported findManifestInDir() from src/parser/yaml.ts and replaced
+    hardcoded join(specDir, 'kynetic.yaml') with discovery API call in
+    packages/daemon/src/server.ts. Added graceful early return when no manifest found. 5 new
+    behavioral tests covering slug-based manifest discovery, priority ordering, null case, and
+    backward compatibility. All CI checks pass. AC coverage verified: @multi-directory-daemon ac-31
+    and @manifest-discovery ac-6."
