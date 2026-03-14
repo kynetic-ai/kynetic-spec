@@ -96484,9 +96484,18 @@
     - tasks
     - integration
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-14T19:17:33.137Z
   session_id: 01KKPVKX8BPZSKV7TJVDE4WB7X
   created_at: 2026-03-14T08:45:56.377Z
   started_at: 2026-03-14T19:07:20.845Z
+  submitted_at: 2026-03-14T19:17:33.830Z
   notes:
     - _ulid: 01KKPVY93GK0408A3W1TPY5DRT
       created_at: 2026-03-14T19:07:32.848Z
@@ -96510,17 +96519,34 @@
 
         - Verification: npm test, kspec validate
       supersedes: null
+    - _ulid: 01KKPWHN4K1948172QWD6H82GP
+      created_at: 2026-03-14T19:18:07.763Z
+      author: "@claude"
+      content: >-
+        Implementation complete. PR #856 created.
+
+
+        Changes:
+
+        - src/schema/task.ts: Added review_ref field to TaskSchema and TaskInputSchema
+
+        - src/parser/review-task-integration.ts: New module with linkReviewToTasks(),
+        handleVerdictTaskTransition(), checkReviewLinkageConsistency()
+
+        - src/parser/index.ts: Added export for review-task-integration module
+
+        - src/parser/validate.ts: Added inconsistent_review_linkage warning type and review linkage
+        check
+
+        - src/cli/output.ts: Display review_ref in task get output
+
+        - tests/review-task-integration.test.ts: 22 tests covering all 7 ACs
+
+
+        All 4975 tests pass. No regressions.
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-14T19:17:33.830Z
-  submission_linkage:
-    branch: main
-    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-14T19:17:33.137Z
 - _ulid: 01KKNRC3AMTWV7SS9F6ZP2FCA7
   slugs:
     - task-implement-review-cli-surface
