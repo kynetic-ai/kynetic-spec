@@ -8658,7 +8658,7 @@ features:
                     created: 2026-03-13T09:16:58.379Z
                     status:
                       maturity: draft
-                      implementation: in_progress
+                      implementation: implemented
               - _ulid: 01KKK7R5Z8AH2XQ7TQ9JQNG2FG
                 slugs:
                   - branch-provenance-in-dispatch-workspace-registry
