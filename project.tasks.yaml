@@ -96175,9 +96175,18 @@
     - comments
     - ux
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-14T17:46:43.427Z
   session_id: 01KKPPTCNHSAJ3B199MM0ZRFY1
   created_at: 2026-03-14T08:45:54.032Z
   started_at: 2026-03-14T17:38:28.971Z
+  submitted_at: 2026-03-14T17:46:44.143Z
   notes:
     - _ulid: 01KKPPZPFKABEFJDJ66J0TQTEM
       created_at: 2026-03-14T17:40:56.436Z
@@ -96198,15 +96207,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-14T17:46:44.143Z
-  submission_linkage:
-    branch: main
-    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-14T17:46:43.427Z
 - _ulid: 01KKNRC11SHJBA9WRP91V92V0D
   slugs:
     - task-implement-review-checks-and-gates
@@ -96262,7 +96262,7 @@
   spec_ref: "@review-record-validation"
   plan_ref: "@plan-review-records-and-gates"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-implement-review-record-core"
@@ -96318,6 +96318,11 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-14T17:48:56.875Z
+  closed_reason: "Merged in PR #849. Implemented first-party schema validation for review records
+    covering all review entities (records, threads, checks, verdicts, events, subject bindings) with
+    actionable error messages. Integrated into kspec validate pipeline. 37 tests covering both ACs.
+    Fix cycle 1 resolved merge conflict and removed dead code."
 - _ulid: 01KKNRC2RSHEC4VE39AK5NQN1J
   slugs:
     - task-implement-review-task-integration
