@@ -96261,14 +96261,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: "Fix test isolation: core-skill-install tests stomp global plugin marketplace"
+- _ulid: 01KKNTBN4C568D5J8FS3ANBNZJ
+  slugs: []
+  title: "Fix test isolation: core-skill-install tests stomp global plugin marketplace"
   type: task
-  priority: 3
-  spec_ref: null
-  tags:
-    - bug
-    - testing
-    - plugin
   description: "core-skill-install.test.ts calls kspec skill install-core via CLI subprocess without
     KSPEC_CLAUDE_HOME isolation. This calls registerCorePluginMarketplace() which writes to the real
     ~/.claude/plugins/known_marketplaces.json. When tests run from dispatch worktrees,
@@ -96278,13 +96274,18 @@
     overwrote the marketplace at 09:06:59 UTC. Fix: set KSPEC_CLAUDE_HOME env var in
     core-skill-install.test.ts (and any other test that calls skill install-core or kspec setup
     without --dry-run) to a temp directory, matching the pattern in claude-plugin-registry.test.ts."
-  _ulid: 01KKNTBN4C568D5J8FS3ANBNZJ
-  slugs: []
+  spec_ref: null
   status: pending
   blocked_by: []
   depends_on: []
   context: []
+  priority: 3
+  tags:
+    - bug
+    - testing
+    - plugin
   vcs_refs: []
   created_at: 2026-03-14T09:20:39.564Z
   notes: []
   todos: []
+  automation: eligible
