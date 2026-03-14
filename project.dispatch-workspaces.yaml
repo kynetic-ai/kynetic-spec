@@ -3722,12 +3722,7 @@ workspaces:
         branch_ref: dispatch/task/task-implement-review-cli-create-query/01kknrc3
         head: 8793a119af5cd7a2b9248b2af0ba307bb6db5381
         last_seen_at: 2026-03-14T18:35:22.624Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-create-query-01kknrc3-review
-        branch_mode: detached
-        branch_ref: null
-        head: 8793a119af5cd7a2b9248b2af0ba307bb6db5381
-        last_seen_at: 2026-03-14T18:35:22.624Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -3769,7 +3764,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T18:43:19.317Z
+      updated_at: 2026-03-14T18:43:34.615Z
     cleanup:
       status: scheduled
       eligible: true
@@ -3778,8 +3773,8 @@ workspaces:
       updated_at: 2026-03-14T18:43:19.317Z
     timestamps:
       created_at: 2026-03-14T18:00:09.677Z
-      updated_at: 2026-03-14T18:43:33.862Z
-      last_reconciled_at: 2026-03-14T18:43:33.862Z
+      updated_at: 2026-03-14T18:43:34.615Z
+      last_reconciled_at: 2026-03-14T18:43:34.615Z
       last_active_at: 2026-03-14T18:35:23.118Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC1M21CX9TW44VZWMEHHZ
