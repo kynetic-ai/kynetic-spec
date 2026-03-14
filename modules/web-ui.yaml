@@ -1395,6 +1395,10 @@ features:
         given: daemon is shutting down
         when: shutdown signal received
         then: all project watchers are stopped and all WebSocket connections are closed before process exits
+      - id: ac-31
+        given: A project is auto-registered or session sync is started for any project
+        when: The daemon needs to read that project manifest
+        then: The manifest is resolved via the discovery API, not by hardcoding kynetic.yaml
     status:
       maturity: draft
       implementation: implemented

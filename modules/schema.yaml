@@ -464,6 +464,11 @@ features:
             given: A *.yaml file without kynetic version field
             when: Finding the manifest
             then: File is skipped as invalid manifest
+          - id: ac-6
+            given: Any production code path needs to read the project manifest
+            when: Resolving the manifest file path
+            then: Must use the manifest discovery API (findManifestInDir/findManifest), never hardcode a
+              filename like kynetic.yaml
         status:
           maturity: draft
           implementation: implemented
