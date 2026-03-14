@@ -3713,8 +3713,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
-    active_role: reviewer
+    lifecycle_state: ready
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-create-query-01kknrc3
@@ -3761,21 +3761,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-14T18:15:50.936Z
+      updated_at: 2026-03-14T18:15:57.247Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T18:15:50.936Z
+      updated_at: 2026-03-14T18:15:57.247Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-14T18:15:50.936Z
+      updated_at: 2026-03-14T18:15:57.247Z
     timestamps:
       created_at: 2026-03-14T18:00:09.677Z
-      updated_at: 2026-03-14T18:15:50.936Z
-      last_reconciled_at: 2026-03-14T18:15:50.936Z
+      updated_at: 2026-03-14T18:15:57.247Z
+      last_reconciled_at: 2026-03-14T18:15:57.247Z
       last_active_at: 2026-03-14T18:15:00.767Z
       closed_at: null
