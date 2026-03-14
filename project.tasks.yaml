@@ -96957,7 +96957,7 @@
   spec_ref: null
   plan_ref: "@plan-review-records-and-gates"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-implement-review-cli-create-query"
@@ -96970,9 +96970,18 @@
     - skill
     - agents
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-14T20:42:54.163Z
   session_id: 01KKQ0G7KSNN8ND3BCGF6SCEFH
   created_at: 2026-03-14T08:45:59.288Z
   started_at: 2026-03-14T20:27:25.572Z
+  submitted_at: 2026-03-14T20:42:54.891Z
   notes:
     - _ulid: 01KKQ0S2ESFB4MGK3FE69NXCYR
       created_at: 2026-03-14T20:32:05.081Z
@@ -96993,15 +97002,13 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-14T20:42:54.891Z
-  submission_linkage:
-    branch: main
-    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-14T20:42:54.163Z
+  completed_at: 2026-03-14T20:54:36.250Z
+  closed_reason: "Merged in PR #859. Added comprehensive review record CLI documentation to the review
+    skill (templates/skills/review/SKILL.md). Documented lifecycle, disposition computation,
+    creating reviews for all subject types, threaded comments with anchors, check recording, verdict
+    management, thread resolution, subject refresh, task linkage, and command reference. Updated
+    manifest description. Regenerated rendered skills and agent instructions. All CI checks passed.
+    No code changes — documentation only."
 - _ulid: 01KKNTBN4C568D5J8FS3ANBNZJ
   slugs: []
   title: "Fix test isolation: core-skill-install tests stomp global plugin marketplace"
