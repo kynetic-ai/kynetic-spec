@@ -2146,7 +2146,7 @@ features:
         parent: "@review-record-core-model"
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
     parent: "@core"
     status:
       maturity: draft
