@@ -95031,7 +95031,7 @@
   derivation: auto
   plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-review-and-fix-cycle-workspace-discovery"
@@ -95099,6 +95099,15 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-14T00:29:15.694Z
+  submission_linkage:
+    branch: main
+    commit: 38dc760d3353e2cde497e9150881b2c81da24679
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-14T00:29:14.915Z
 - _ulid: 01KKK7RAYW9VJ3325R9DMBDQHN
   slugs:
     - implement-review-and-fix-cycle-workspace-discovery
