@@ -96238,12 +96238,26 @@
     - schema
     - validation
   vcs_refs: []
+  session_id: 01KKNYQ2GVJ0HEYHYERK542GGE
   created_at: 2026-03-14T08:45:55.797Z
-  notes: []
+  started_at: 2026-03-14T10:37:03.651Z
+  notes:
+    - _ulid: 01KKNZ6AST360YFWVDTX19YQ3M
+      created_at: 2026-03-14T10:45:08.026Z
+      author: "@claude"
+      content: |-
+        Implemented review record validation in src/parser/review-validation.ts:
+        - validateReviewRecord() for persisted records
+        - validateReviewRecordInput() for creation inputs
+        - validateReviewsFile() for .reviews.yaml files
+        - parseReviewRecord/parseReviewRecordInput convenience wrappers
+        - findReviewFiles() to discover review YAML files
+        - Actionable error messages for subject type, URL, ULID, datetime failures
+        - Integrated into main validate() in validate.ts
+        - 37 tests covering both ACs (ac-1: schema coverage, ac-2: actionable feedback)
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-14T10:37:03.651Z
-  session_id: 01KKNYQ2GVJ0HEYHYERK542GGE
 - _ulid: 01KKNRC2RSHEC4VE39AK5NQN1J
   slugs:
     - task-implement-review-task-integration
