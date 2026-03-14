@@ -95745,3 +95745,4 @@
         coalescing-specific tests use fake timers."
       supersedes: null
   todos: []
+  automation: eligible
