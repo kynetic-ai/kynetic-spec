@@ -307,7 +307,6 @@ registerShadowCommands(program);
 registerLogCommand(program);
 registerSearchCommand(program);
 registerRefsCommand(program);
-registerReviewCommands(program);
 registerServeCommands(program);
 registerRalphCommand(program);
 registerMetaCommands(program);
