@@ -96226,12 +96226,32 @@
     - checks
     - policy
   vcs_refs: []
+  session_id: 01KKPQBCQGSYEX6NFJ4TWSR1S9
   created_at: 2026-03-14T08:45:54.617Z
-  notes: []
+  started_at: 2026-03-14T17:49:45.518Z
+  notes:
+    - _ulid: 01KKPQGEV5VMFS546RTJ5VTPPT
+      created_at: 2026-03-14T17:50:05.669Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Checks and gate evaluation add the quality-gate layer to reviews. The schema
+        (ReviewCheckSchema, ReviewGateStateSchema) and subject-bindings staleness helpers already
+        exist. This task adds factory functions for creating checks and the gate evaluation engine.
+
+        - Scope: (1) Check recording factory (createCheck, createLocalCheck, mirrorExternalCheck),
+        (2) Gate evaluation engine (evaluateGates) that filters by applies_to_version freshness,
+        distinguishes required/informational, computes aggregate gate state, (3) AC-annotated tests
+        for all 6 ACs.
+
+        - Files: src/review/checks.ts (new), tests/review-checks.test.ts (new), src/review/index.ts
+        (update)
+
+        - Verification: npm test must pass, all 6 ACs covered with annotated tests.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-14T17:49:45.518Z
-  session_id: 01KKPQBCQGSYEX6NFJ4TWSR1S9
 - _ulid: 01KKNRC1M21CX9TW44VZWMEHHZ
   slugs:
     - task-implement-review-verdicts-and-resolution
