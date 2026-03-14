@@ -3314,13 +3314,13 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-implement-review-subject-bindings/01kknrbz
         head: ea38c8241ed95df50503bbfbd360e28555ba2ec9
-        last_seen_at: 2026-03-14T10:36:03.346Z
+        last_seen_at: 2026-03-14T17:10:44.804Z
       reviewer:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-subject-bindings-01kknrbz-review
         branch_mode: detached
         branch_ref: null
         head: ea38c8241ed95df50503bbfbd360e28555ba2ec9
-        last_seen_at: 2026-03-14T10:36:03.346Z
+        last_seen_at: 2026-03-14T17:10:44.804Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -3354,22 +3354,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-14T17:10:43.101Z
+      updated_at: 2026-03-14T17:10:44.804Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T17:10:43.101Z
+      updated_at: 2026-03-14T17:10:44.804Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-14T17:10:43.101Z
+      updated_at: 2026-03-14T17:10:44.804Z
     timestamps:
       created_at: 2026-03-14T10:27:04.030Z
-      updated_at: 2026-03-14T17:10:43.101Z
-      last_reconciled_at: 2026-03-14T17:10:43.101Z
+      updated_at: 2026-03-14T17:10:44.804Z
+      last_reconciled_at: 2026-03-14T17:10:44.804Z
       last_active_at: 2026-03-14T10:36:03.817Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC26NFC7EGP5AN7AZ1982
