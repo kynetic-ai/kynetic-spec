@@ -3307,7 +3307,7 @@ workspaces:
       adopted_at: null
       rehydrated: null
     lifecycle_state: integrating
-    active_role: null
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-subject-bindings-01kknrbz
@@ -3359,7 +3359,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T10:36:03.346Z
+      updated_at: 2026-03-14T10:36:03.817Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -3368,7 +3368,7 @@ workspaces:
       updated_at: 2026-03-14T10:36:03.346Z
     timestamps:
       created_at: 2026-03-14T10:27:04.030Z
-      updated_at: 2026-03-14T10:36:03.547Z
-      last_reconciled_at: 2026-03-14T10:36:03.346Z
-      last_active_at: 2026-03-14T10:27:04.457Z
+      updated_at: 2026-03-14T10:36:03.817Z
+      last_reconciled_at: 2026-03-14T10:36:03.817Z
+      last_active_at: 2026-03-14T10:36:03.817Z
       closed_at: null
