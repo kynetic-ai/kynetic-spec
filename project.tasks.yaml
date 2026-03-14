@@ -96286,6 +96286,45 @@
     - plugin
   vcs_refs: []
   created_at: 2026-03-14T09:20:39.564Z
-  notes: []
+  notes:
+    - _ulid: 01KKNTDTX4GM9HBC6JEC0RPR0Z
+      created_at: 2026-03-14T09:21:51.013Z
+      author: "@claude"
+      content: >-
+        Audit of all test files calling skill install-core or kspec setup without KSPEC_CLAUDE_HOME
+        isolation:
+
+
+        CONFIRMED AFFECTED (call registerCorePluginMarketplace via non-dry-run paths):
+
+        - tests/core-skill-install.test.ts — 15+ skill install-core calls
+
+        - tests/core-skill-update.test.ts — 5 skill install-core calls
+
+        - tests/enhanced-setup.test.ts — many non-dry-run setup calls (lines 305, 331, 349, 389,
+        406, 438, 456, etc.)
+
+        - tests/setup-pipeline-unification.test.ts — non-dry-run setup calls
+
+        - tests/native-guard-setup.test.ts — setup calls
+
+        - tests/init-setup-integration.test.ts — init --no-prompt --setup calls
+
+        - tests/shadow-skill-commit.test.ts — init --no-prompt --setup
+
+        - tests/cli/setup-seeding.test.ts — setup calls
+
+
+        LIKELY SAFE (skip skills or dry-run only):
+
+        - tests/ralph-replacement.test.ts — uses --no-hooks --skip-skills
+
+
+        Only tests/claude-plugin-registry.test.ts properly uses KSPEC_CLAUDE_HOME for isolation.
+
+
+        Fix: pass KSPEC_CLAUDE_HOME=tempDir in env for all CLI subprocess calls that run setup or
+        skill install-core. The kspec helper supports env option.
+      supersedes: null
   todos: []
   automation: eligible
