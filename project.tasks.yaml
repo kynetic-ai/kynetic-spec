@@ -96018,6 +96018,28 @@
         - Verification: Tests covering all 3 ACs — dedicated storage (ac-1), ULID-backed @ref
         identity (ac-2), single-file storage path (ac-3)
       supersedes: null
+    - _ulid: 01KKNWMGJN6EN8KEEJAXBYXFWG
+      created_at: 2026-03-14T10:00:26.965Z
+      author: "@claude"
+      content: >-
+        Implementation complete:
+
+        - Created src/parser/reviews.ts with full CRUD: LoadedReviewRecord type, getReviewsFilePath,
+        loadReviewRecords, findReviewByRef, createReviewRecord, saveReviewRecord,
+        mutateReviewAtomically, deleteReviewRecord
+
+        - Integrated into ReferenceIndex (src/parser/refs.ts): added reviews parameter to
+        constructor with indexReview method for ULID + slug indexing
+
+        - Exported from src/parser/index.ts
+
+        - Storage: project.reviews.yaml with { kynetic_reviews: '1.0', reviews: [...] } wrapper
+        format
+
+        - Tests: 23 tests in tests/review-storage.test.ts covering all 3 ACs
+
+        - Full test suite: 4951 tests pass, 0 regressions
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKNRBZXF4B280EVREQJ6ZJRH
