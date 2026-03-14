@@ -1416,6 +1416,89 @@ function buildWorktreeRecord(
   };
 }
 
+/**
+ * Compare two sub-objects by their serializable fields, excluding `updated_at`
+ * timestamps that are consequences of change rather than triggers.
+ *
+ * AC: @dispatch-workspace-registry ac-10
+ */
+function deepEqualExcludingTimestamps(
+  a: Record<string, unknown>,
+  b: Record<string, unknown>,
+): boolean {
+  const keysA = Object.keys(a).filter((k) => k !== "updated_at");
+  const keysB = Object.keys(b).filter((k) => k !== "updated_at");
+  if (keysA.length !== keysB.length) return false;
+  for (const key of keysA) {
+    if (!keysB.includes(key)) return false;
+    const va = a[key];
+    const vb = b[key];
+    if (va === vb) continue;
+    if (va === null || vb === null || va === undefined || vb === undefined) return false;
+    if (typeof va === "object" && typeof vb === "object") {
+      if (Array.isArray(va) && Array.isArray(vb)) {
+        if (va.length !== vb.length) return false;
+        for (let i = 0; i < va.length; i++) {
+          if (typeof va[i] === "object" && va[i] !== null && typeof vb[i] === "object" && vb[i] !== null) {
+            if (!deepEqualExcludingTimestamps(va[i] as Record<string, unknown>, vb[i] as Record<string, unknown>)) return false;
+          } else if (va[i] !== vb[i]) {
+            return false;
+          }
+        }
+        continue;
+      }
+      if (!deepEqualExcludingTimestamps(va as Record<string, unknown>, vb as Record<string, unknown>)) return false;
+      continue;
+    }
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Determine whether the computed reconciliation state differs from the
+ * existing persisted record in any meaningful field. Timestamps are NOT
+ * considered meaningful triggers — they are consequences of real changes.
+ *
+ * Fields compared (meaningful):
+ * - canonical_branch_head
+ * - lifecycle_state
+ * - active_role
+ * - health (deep compare, excluding updated_at)
+ * - cleanup (deep compare, excluding updated_at)
+ * - integration (deep compare, excluding updated_at)
+ *
+ * AC: @dispatch-workspace-registry ac-10
+ */
+export function isWorkspaceRecordDirty(
+  existing: DispatchWorkspaceRecord,
+  computed: {
+    canonical_branch_head: string;
+    lifecycle_state: DispatchWorkspaceLifecycleState;
+    active_role: RegistryRole | null;
+    health: DispatchWorkspaceHealthState;
+    cleanup: RegistryCleanupState;
+    integration: RegistryIntegrationRecord;
+  },
+): boolean {
+  if (existing.canonical_branch_head !== computed.canonical_branch_head) return true;
+  if (existing.lifecycle_state !== computed.lifecycle_state) return true;
+  if ((existing.active_role ?? null) !== (computed.active_role ?? null)) return true;
+  if (!deepEqualExcludingTimestamps(
+    existing.health as unknown as Record<string, unknown>,
+    computed.health as unknown as Record<string, unknown>,
+  )) return true;
+  if (!deepEqualExcludingTimestamps(
+    existing.cleanup as unknown as Record<string, unknown>,
+    computed.cleanup as unknown as Record<string, unknown>,
+  )) return true;
+  if (!deepEqualExcludingTimestamps(
+    existing.integration as unknown as Record<string, unknown>,
+    computed.integration as unknown as Record<string, unknown>,
+  )) return true;
+  return false;
+}
+
 export async function reconcileDispatchWorkspaceRegistry(
   projectDir: string,
   taskStatusByRef?: Map<string, ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"]>,
@@ -1434,6 +1517,7 @@ export async function reconcileDispatchWorkspaceRegistry(
   // a matching durable commit.
   await withDispatchShadowMutationLock(projectDir, lockTaskRef, async () => {
     let lastTaskRef: string | null = null;
+    let anyDirty = false;
 
     for (const record of nonClosedRecords) {
       const now = new Date().toISOString();
@@ -1455,30 +1539,47 @@ export async function reconcileDispatchWorkspaceRegistry(
         cleanup,
         activeRole,
       );
-      const closedAt = lifecycleState === "closed"
-        ? (record.timestamps.closed_at ?? now)
-        : null;
 
-      await saveWorkspaceRecordToRegistry(projectDir, {
-        ...record,
+      // AC: @dispatch-workspace-registry ac-10 — skip save when no meaningful
+      // field has changed. Timestamps must not change unless a real field differs.
+      const dirty = isWorkspaceRecordDirty(record, {
         canonical_branch_head: canonicalBranchHead,
         lifecycle_state: lifecycleState,
         active_role: activeRole,
         health,
         cleanup,
         integration,
-        timestamps: {
-          ...record.timestamps,
-          updated_at: now,
-          last_reconciled_at: now,
-          closed_at: closedAt,
-        },
       });
+
+      if (dirty) {
+        const closedAt = lifecycleState === "closed"
+          ? (record.timestamps.closed_at ?? now)
+          : null;
+
+        await saveWorkspaceRecordToRegistry(projectDir, {
+          ...record,
+          canonical_branch_head: canonicalBranchHead,
+          lifecycle_state: lifecycleState,
+          active_role: activeRole,
+          health,
+          cleanup,
+          integration,
+          timestamps: {
+            ...record.timestamps,
+            updated_at: now,
+            last_reconciled_at: now,
+            closed_at: closedAt,
+          },
+        });
+        anyDirty = true;
+      }
       lastTaskRef = record.task_ref;
     }
 
     // Commit all registry changes once after the loop rather than per-record.
-    if (lastTaskRef) {
+    // AC: @dispatch-workspace-registry ac-10 — only commit when at least one
+    // record had a meaningful change.
+    if (anyDirty && lastTaskRef) {
       await commitWorkspaceRegistryToShadow(projectDir, lastTaskRef);
     }
   });
