@@ -95357,7 +95357,7 @@
   spec_ref: null
   plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@implement-deterministic-task-branch-helper"
@@ -95372,6 +95372,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-14T01:44:06.960Z
+  session_id: 01KKN072WGD2D77N919M3R4NPC
 - _ulid: 01KKM1CAH2KSMH1TWS2E6079A1
   slugs: []
   title: Implement inline registry purge for closed dispatch workspace records
