@@ -96970,12 +96970,29 @@
     - skill
     - agents
   vcs_refs: []
+  session_id: 01KKQ0G7KSNN8ND3BCGF6SCEFH
   created_at: 2026-03-14T08:45:59.288Z
-  notes: []
+  started_at: 2026-03-14T20:27:25.572Z
+  notes:
+    - _ulid: 01KKQ0S2ESFB4MGK3FE69NXCYR
+      created_at: 2026-03-14T20:32:05.081Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Review CLI commands are now fully implemented and merged to main. The review
+        skill needs to document the new first-party review record commands alongside the existing
+        spec-alignment gates.
+
+        - Scope: Update templates/skills/review/SKILL.md to add review record CLI documentation
+        (lifecycle, commands, task linkage). Update manifest description. Render and regenerate.
+
+        - Files: templates/skills/review/SKILL.md, templates/skills/manifest.yaml
+
+        - Verification: kspec skill render succeeds, kspec agents generate succeeds, tests pass
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-14T20:27:25.572Z
-  session_id: 01KKQ0G7KSNN8ND3BCGF6SCEFH
 - _ulid: 01KKNTBN4C568D5J8FS3ANBNZJ
   slugs: []
   title: "Fix test isolation: core-skill-install tests stomp global plugin marketplace"
