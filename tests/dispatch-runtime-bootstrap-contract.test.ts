@@ -180,6 +180,7 @@ describe("dispatch runtime bootstrap contract", () => {
       projectDir: tempDir,
       specDir: tempDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
 
     await engine.start();
@@ -623,6 +624,7 @@ describe("dispatch runtime bootstrap contract", () => {
       projectDir: tempDir,
       specDir: tempDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
 
     await engine.start();

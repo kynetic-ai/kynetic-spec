@@ -362,6 +362,7 @@ describe("dispatch workspace and scheduler flow", () => {
       specDir: tempDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     await engine.start();

@@ -185,6 +185,7 @@ describe("dispatch workspace configuration", () => {
       projectDir: tempDir,
       specDir: tempDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
 
     await engine.start();
