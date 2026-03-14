@@ -96376,6 +96376,17 @@
         refreshSubject, transitionLifecycle) should be kept but refactored to use the existing
         primitives. AC coverage is comprehensive and tests pass - just needs deduplication."
       supersedes: null
+    - _ulid: 01KKPTSZTMASW5RW61DJZ9HTVE
+      created_at: 2026-03-14T18:47:43.700Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Addressed review findings: merged origin/main (13 new commits including
+        review threads, subject bindings, checks modules), resolved merge conflict in
+        parser/index.ts, refactored review-operations.ts to use 7 existing primitives
+        (extractSubjectVersion, isVersionStale, evaluateGates, resolveThread, reopenThread,
+        getUnresolvedBlockers, createEvent). Updated tests to use shared function signatures.
+        Adapted stale-check tests to match evaluateGates semantics. All 73 verdict tests and full
+        suite (5235) pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKNRC26NFC7EGP5AN7AZ1982
@@ -96553,6 +96564,13 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #854. Review CLI creation and query commands fully implemented on main
+    via dependency task @task-implement-review-cli-surface (PR #851) which delivered a superset:
+    review add (ref/code/external subjects, --slug, --author), review get (full details with
+    computed disposition/gate_state/thread_state), review list (--status, --disposition, --subject,
+    --reviewer, --tag, --limit, --offset, --count filters). All 5 own ACs verified empirically.
+    Trait coverage confirmed: json-output (6/6), filterable-list (8/8), semantic-exit-codes (8/8),
+    shadow-commit (8/8). 5161 tests pass."
   depends_on:
     - "@task-implement-review-cli-surface"
     - "@task-implement-review-validation"
@@ -96576,6 +96594,7 @@
   created_at: 2026-03-14T08:45:57.519Z
   started_at: 2026-03-14T18:35:05.541Z
   submitted_at: 2026-03-14T18:35:15.037Z
+  completed_at: 2026-03-14T18:43:17.007Z
   notes:
     - _ulid: 01KKPR45QWGAMTZAQ4XZH2XWFQ
       created_at: 2026-03-14T18:00:51.708Z
@@ -96640,14 +96659,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-14T18:43:17.007Z
-  closed_reason: "Merged in PR #854. Review CLI creation and query commands fully implemented on main
-    via dependency task @task-implement-review-cli-surface (PR #851) which delivered a superset:
-    review add (ref/code/external subjects, --slug, --author), review get (full details with
-    computed disposition/gate_state/thread_state), review list (--status, --disposition, --subject,
-    --reviewer, --tag, --limit, --offset, --count filters). All 5 own ACs verified empirically.
-    Trait coverage confirmed: json-output (6/6), filterable-list (8/8), semantic-exit-codes (8/8),
-    shadow-commit (8/8). 5161 tests pass."
 - _ulid: 01KKNRC4F8KAXMPAJCEVZEMNVH
   slugs:
     - task-implement-review-cli-mutations
