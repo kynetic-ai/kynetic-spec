@@ -4125,8 +4125,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: active
+    active_role: worker
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-create-review-skill-01kknrc5
@@ -4173,7 +4173,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T20:27:15.011Z
+      updated_at: 2026-03-14T20:27:15.482Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -4182,7 +4182,7 @@ workspaces:
       updated_at: 2026-03-14T20:27:15.011Z
     timestamps:
       created_at: 2026-03-14T20:27:15.011Z
-      updated_at: 2026-03-14T20:27:15.227Z
-      last_reconciled_at: 2026-03-14T20:27:15.011Z
-      last_active_at: null
+      updated_at: 2026-03-14T20:27:15.482Z
+      last_reconciled_at: 2026-03-14T20:27:15.482Z
+      last_active_at: 2026-03-14T20:27:15.482Z
       closed_at: null
