@@ -2481,8 +2481,10 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
     // Check if the branch exists locally or on a remote.
     const branchRef = `refs/heads/${submissionLinkage.branch}`;
     let branchAvailable = refExists(projectDir, branchRef);
+    let branchRehydrated = false;
     if (!branchAvailable) {
       branchAvailable = tryRestoreBranchFromRemote(projectDir, submissionLinkage.branch);
+      branchRehydrated = branchAvailable;
     }
 
     if (branchAvailable && !existingRecord) {
@@ -2512,6 +2514,7 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
             submissionLinkage.branch,
             submissionLinkage.remote ?? null,
             now,
+            branchRehydrated,
           ),
           lifecycle_state: "ready",
           active_role: null,
