@@ -9219,6 +9219,258 @@ features:
     status:
       maturity: draft
       implementation: in_progress
+  - _ulid: 01KKNRBYAYA3PS05V3BXDK5MXK
+    slugs:
+      - review-cli-commands
+    title: Review CLI Commands
+    type: feature
+    tags: []
+    description: |
+      kspec exposes a first-party CLI for creating, inspecting, and updating
+      review records so agents and humans can use the review system without a
+      web UI or direct file edits. The CLI covers the full review lifecycle
+      including creation, mutation, lifecycle transitions, subject refresh,
+      and task linkage.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          A user or agent needs to work with review records locally
+        when: |
+          They use kspec review commands
+        then: |
+          The CLI provides supported commands for the core review workflow
+          rather than requiring direct mutation of stored metadata
+      - id: ac-2
+        given: |
+          Review records are rendered through the CLI
+        when: |
+          A command prints review data
+        then: |
+          The output includes the subject, lifecycle state, computed
+          disposition, computed gate state, thread state, and external linkage
+          needed to understand the review without opening raw storage
+      - id: ac-3
+        given: |
+          A workflow needs to perform multiple review mutations in one atomic
+          shadow-branch change
+        when: |
+          It uses supported kspec batching patterns around review commands
+        then: |
+          The review command surface is compatible with batch-oriented mutation
+          flows instead of assuming one-off manual invocations only
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-shadow-commit"
+      - "@trait-error-guidance"
+    notes: []
+    created: 2026-03-14T08:45:51.838Z
+    requirements:
+      - _ulid: 01KKNRBYDYXQ1KYRRCE14J3ZT4
+        slugs:
+          - review-cli-creation-and-query
+        title: Review CLI Creation and Query
+        type: requirement
+        tags: []
+        description: |
+          The CLI supports creating reviews with subject bindings and reading them
+          back by review ref, subject, and status. For code subjects, creation
+          accepts base and head commit refs. For non-ref subjects (code, external),
+          the CLI accepts structured flags or a JSON input mode.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A user or agent needs to create a review for a ref-backed subject
+              such as a task, plan, or spec
+            when: |
+              They run kspec review add with a subject ref
+            then: |
+              A first-party review record is created with subject binding, initial
+              lifecycle state of draft, and author metadata
+          - id: ac-2
+            given: |
+              A user or agent needs to create a review for committed code
+            when: |
+              They run kspec review add with base and head commit flags
+            then: |
+              A review record is created with a code subject binding containing
+              base_commit, head_commit, and optionally merge_base_commit and
+              branch metadata
+          - id: ac-3
+            given: |
+              A review record exists
+            when: |
+              A user or agent runs kspec review get @review-ref
+            then: |
+              The CLI shows the review lifecycle state, computed disposition,
+              computed gate state, threads, checks, verdicts, events, and linkage
+              metadata
+          - id: ac-4
+            given: |
+              Multiple review records exist
+            when: |
+              A user or agent runs kspec review list with filters for subject,
+              lifecycle state, disposition, or reviewer
+            then: |
+              The CLI can return the matching review set so automation can find the
+              active review record instead of scraping task notes
+          - id: ac-5
+            given: |
+              A user or agent creates a review with a --slug flag
+            when: |
+              The review is created
+            then: |
+              The provided slug is used instead of an auto-generated one so batch
+              workflows can reference the review by a known slug in subsequent
+              commands
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-filterable-list"
+          - "@trait-semantic-exit-codes"
+          - "@trait-shadow-commit"
+        notes: []
+        created: 2026-03-14T08:45:51.934Z
+      - _ulid: 01KKNRBYH3G84Z1TFXDRVHQYKY
+        slugs:
+          - review-cli-mutation-commands
+        title: Review CLI Mutation Commands
+        type: requirement
+        tags: []
+        description: |
+          The CLI supports the mutations needed to conduct a review cycle: add
+          comments with diff-side anchors, record checks with compare binding,
+          set verdicts with compare binding, resolve or reopen threads, and
+          manage review lifecycle transitions.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A review record exists
+            when: |
+              A reviewer runs kspec review comment add with an optional code
+              anchor including path, side, line range, and commit
+            then: |
+              The review stores a new thread with its anchor, kind (defaulting
+              to nit), and authorship
+          - id: ac-1b
+            given: |
+              A thread exists on a review
+            when: |
+              A user or agent runs kspec review reply with a thread ULID and
+              body text
+            then: |
+              A reply entry is appended to the existing thread with author and
+              timestamp, preserving the threaded conversation
+          - id: ac-2
+            given: |
+              Verification evidence exists for a review
+            when: |
+              A user or agent runs kspec review check add with name, status,
+              and the current compare context
+            then: |
+              The review stores the check result with normalized status, evidence
+              details, and the applies_to_version binding
+          - id: ac-3
+            given: |
+              A reviewer needs to approve, request changes, or leave a
+              non-blocking verdict
+            when: |
+              They run kspec review verdict set with the decision and compare
+              context
+            then: |
+              The individual verdict is recorded with applies_to_version and the
+              computed disposition is updated according to aggregation, gate, and
+              blocker rules
+          - id: ac-4
+            given: |
+              A review thread has been addressed or needs to be reopened
+            when: |
+              A user or agent runs kspec review resolve or reopen with a thread
+              ULID
+            then: |
+              The thread resolution state changes with actor and timestamp history
+          - id: ac-5
+            given: |
+              A review needs to transition lifecycle state
+            when: |
+              A user or agent runs kspec review close, kspec review archive, or
+              kspec review open
+            then: |
+              The lifecycle_state transitions and an event is appended to the
+              event log
+          - id: ac-6
+            given: |
+              A code review subject has been updated with new commits
+            when: |
+              A user or agent runs kspec review refresh with updated head_commit
+              and optionally updated base_commit
+            then: |
+              The subject compare context is updated and an event is appended
+              recording the subject revision change so stale verdicts and checks
+              can be identified
+          - id: ac-7
+            given: |
+              A destructive review mutation such as delete is offered in the
+              future
+            when: |
+              The command surface is extended
+            then: |
+              Destructive operations are treated separately from close or archive
+              lifecycle actions and require explicit safety behavior
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+          - "@trait-shadow-commit"
+          - "@trait-confirmation-prompt"
+        notes: []
+        created: 2026-03-14T08:45:52.035Z
+      - _ulid: 01KKNRBYM58Y5BBA8KFE82QKWA
+        slugs:
+          - review-cli-task-linkage
+        title: Review CLI Task Linkage
+        type: requirement
+        tags: []
+        description: |
+          Task-oriented CLI output exposes the active review linkage so automation
+          can move between task workflow state and the corresponding durable review
+          record.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A task has an active associated review record
+            when: |
+              A user or agent inspects the task through task or review CLI output
+            then: |
+              The active review ref can be discovered without reading raw storage
+              or scraping ad hoc task notes
+          - id: ac-2
+            given: |
+              An automation flow starts from a task in pending_review or
+              needs_work
+            when: |
+              It needs the durable review audit object
+            then: |
+              The CLI supports resolving from the task context to the
+              corresponding review record using supported commands rather than
+              convention-only fields
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-semantic-exit-codes"
+        notes: []
+        created: 2026-03-14T08:45:52.133Z
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:

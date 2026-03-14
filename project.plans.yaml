@@ -15669,9 +15669,34 @@ plans:
       rendering, interaction design, policy configuration, and provider-specific
 
       synchronization can follow in later plans.
-    status: approved
-    derived_tasks: []
-    derived_specs: []
+    status: active
+    derived_tasks:
+      - "@task-implement-review-record-core"
+      - "@task-implement-review-storage-and-identity"
+      - "@task-implement-review-subject-bindings"
+      - "@task-implement-review-comment-threads"
+      - "@task-implement-review-checks-and-gates"
+      - "@task-implement-review-verdicts-and-resolution"
+      - "@task-implement-review-validation"
+      - "@task-implement-review-task-integration"
+      - "@task-implement-review-cli-surface"
+      - "@task-implement-review-cli-create-query"
+      - "@task-implement-review-cli-mutations"
+      - "@task-implement-review-cli-task-linkage"
+      - "@task-create-review-skill"
+    derived_specs:
+      - "@review-record-core-model"
+      - "@review-record-storage-and-identity"
+      - "@review-subject-bindings"
+      - "@review-comment-threads-and-anchors"
+      - "@review-checks-and-gate-evaluation"
+      - "@review-verdicts-and-resolution-lifecycle"
+      - "@review-record-validation"
+      - "@review-task-lifecycle-integration"
+      - "@review-cli-commands"
+      - "@review-cli-creation-and-query"
+      - "@review-cli-mutation-commands"
+      - "@review-cli-task-linkage"
     source_path: /home/chapel/Projects/kynetic-spec/plans/review-records-and-gates.md
     module_ref: null
     created_at: 2026-03-11T23:15:29.907Z
@@ -15755,6 +15780,673 @@ plans:
         author: "@claude"
         content: Approved after 4 review rounds (internal + external reviewer). All structural, accuracy,
           and semantic issues resolved. Ready for spec/task derivation.
+      - _ulid: 01KKNRC67AK8Y85ZSCSZW0RMW9
+        created_at: 2026-03-14T08:45:59.914Z
+        author: "@claude"
+        content: >-
+          ### Storage location and file structure
+
+
+          Review records are stored in `project.reviews.yaml` inside `.kspec/`, following
+
+          the same pattern as `project.tasks.yaml` and `project.plans.yaml`. The file
+
+          uses the standard versioned collection shape:
+
+
+          ```yaml
+
+          kynetic_reviews: "1.0"
+
+          reviews:
+            - _ulid: 01KX...
+              slugs: [review-pr-123]
+              title: "Review of PR #123"
+              lifecycle_state: open
+              subject:
+                type: code
+                base_commit: "abc123"
+                head_commit: "def456"
+                merge_base_commit: "aaa111"
+                base_branch: "main"
+                head_branch: "feat/foo"
+              threads: [ ... ]
+              checks: [ ... ]
+              verdicts: [ ... ]
+              events: [ ... ]
+              notes: [ ... ]
+              created_at: "2026-03-13T..."
+          ```
+
+
+          A single file per entity type keeps shadow branch commits atomic and avoids
+
+          scattered state. Note that task integration (auto-setting `review_ref`) does
+
+          touch `project.tasks.yaml` as well — this is acceptable because it mirrors how
+
+          other cross-entity mutations (e.g. `task set --depends-on`) already work.
+
+
+          ### Lifecycle state vs disposition vs gate state
+
+
+          The review record stores only `lifecycle_state` as a persisted field:
+
+
+          - `lifecycle_state`: `draft | open | closed | archived` — explicitly set by
+            the user or automation via lifecycle commands
+
+          Disposition and gate state are computed from the review's current data:
+
+
+          - `disposition`: `pending | approved | changes_requested` — derived
+            from current (non-stale) verdicts, unresolved blocking threads, and
+            aggregation policy
+          - `gate_state`: `passing | failing | pending` — derived from current
+            (non-stale) required check results
+
+          This separation prevents the contradictions that arise from collapsing
+
+          lifecycle, outcome, and gate status into a single enum.
+
+
+          ### Schema definition
+
+
+          Create `src/schema/review-records.ts` with Zod schemas following the plan and
+
+          task schema patterns:
+
+
+          - `ReviewLifecycleStateSchema` — enum: `draft`, `open`, `closed`, `archived`
+
+          - `ReviewSubjectSchema` — discriminated union on `type` field:
+            - `code`: `base_commit`, `head_commit`, `merge_base_commit?`,
+              `base_branch?`, `head_branch?`
+            - `plan`: `ref`, `shadow_commit`, `content_hash`
+            - `task`: `ref`, `shadow_commit`, `content_hash`
+            - `spec`: `ref`, `shadow_commit`, `content_hash`
+            - `external`: `url`, `external_id?`, `provider?`
+          - `ReviewSubjectVersionSchema` — discriminated union binding verdicts and
+            checks to the reviewed state:
+            - `code_compare`: `base_commit` + `head_commit`
+            - `entity_version`: `content_hash`
+          - `ReviewCodeAnchorSchema` — `path`, `side` (base | head), `line_start`,
+            `line_end`, `commit`
+          - `ReviewStructuredAnchorSchema` — `section?`, `field?`, `path?`, `ref?`
+
+          - `ReviewAnchorSchema` — discriminated union of code and structured anchors
+
+          - `ReviewThreadKindSchema` — enum: `blocker`, `question`, `nit`
+
+          - `ReviewThreadSchema` — ULID-identified thread with optional anchor, kind
+            (default `nit`), entries array (each entry has ULID, author, body,
+            timestamp), resolved state (resolved_at, resolved_by)
+          - `ReviewCheckStatusSchema` — enum: `pass`, `fail`, `running`, `skipped`
+
+          - `ReviewCheckSchema` — name, status, required (boolean), runner, evidence,
+            timestamps, `applies_to_version` (ReviewSubjectVersionSchema)
+          - `ReviewVerdictDecisionSchema` — enum: `approve`, `request_changes`, `comment`
+            (use underscores consistently, not hyphens)
+          - `ReviewVerdictSchema` — reviewer (string), role (string, default
+            `"reviewer"`), decision, timestamp, `applies_to_version`
+            (ReviewSubjectVersionSchema)
+          - `ReviewEventSchema` — ULID, event_type (lifecycle_change,
+            verdict_submitted, thread_created, thread_replied, thread_resolved,
+            thread_reopened, check_added, subject_refreshed), actor, timestamp,
+            payload (type-specific data)
+          - `ReviewRecordSchema` — full record with `_ulid`, `slugs`, `title`,
+            `lifecycle_state`, subject, related_refs[] (optional refs to tasks or
+            other entities related to this review), threads[], checks[], verdicts[],
+            events[], notes[], external_links[], timestamps
+          - `ReviewRecordInputSchema` — input variant (most fields optional)
+
+          - `ReviewRecordsFileSchema` — collection wrapper with `kynetic_reviews` version
+            key, matching the `kynetic_plans`/`kynetic_tasks` convention
+
+          Use `UlidSchema`, `SlugSchema`, `RefSchema`, `DateTimeSchema` from
+
+          `src/schema/common.ts`. Import `NoteSchema` from `src/schema/task.ts` (where
+
+          it is defined, not common.ts).
+
+
+          ### Subject type extensibility
+
+
+          The subject type set (plan, task, spec, code, external) is modeled as a Zod
+
+          discriminated union on a `type` field. Adding a new subject type requires
+
+          adding a new variant to the union — this is a schema change but not a breaking
+
+          one since existing variants are unaffected. For unknown/future types, the
+
+          `external` variant with a freeform `provider` field serves as the escape hatch.
+
+
+          ### Shadow-branch subject staleness
+
+
+          For subjects that live on the shadow branch (plans, specs, tasks), using
+
+          `kspec-meta` HEAD as the staleness signal would be a bug — every review
+
+          mutation (comment, check, verdict) commits to the same branch and would
+
+          self-invalidate the subject.
+
+
+          Instead, shadow-branch subjects store:
+
+          - `shadow_commit`: the kspec-meta commit at the time of review creation
+
+          - `content_hash`: a hash of the specific entity's YAML content
+
+
+          Staleness is detected by re-computing the entity content hash and comparing
+
+          against the stored hash. This isolates subject freshness from unrelated shadow
+
+          branch activity.
+
+
+          The content hash uses a **canonical semantic hash**, not a raw YAML hash.
+
+          For each entity type, only substantive fields are included:
+
+
+          - **Tasks**: title, description, spec_ref, depends_on, tags, acceptance_criteria.
+            Excluded: status, review_ref, review_url, notes, assigned_to, updated_at
+            (these change as side effects of review/workflow actions)
+          - **Plans**: title, content (the imported document body), specs, tasks.
+            Excluded: status, notes, approved_at
+          - **Specs**: title, description, type, parent, traits, acceptance_criteria.
+            Excluded: maturity, implementation status
+
+          Fields are sorted by key, serialized to deterministic JSON, and hashed with
+
+          SHA-256. This prevents formatting changes, field reordering, or review-driven
+
+          mutations from self-invalidating the subject.
+
+
+          ### Git-backed compare semantics for code
+
+
+          Code reviews store a frozen compare context, not a single ref:
+
+
+          ```yaml
+
+          subject:
+            type: code
+            base_commit: "<sha>"       # authoritative
+            head_commit: "<sha>"       # authoritative
+            merge_base_commit: "<sha>" # optional but recommended
+            base_branch: "main"        # metadata only, never authoritative
+            head_branch: "feat/foo"    # metadata only, never authoritative
+          ```
+
+
+          Verdicts and checks bind to the compare they ran against:
+
+
+          ```yaml
+
+          verdict:
+            decision: approve
+            applies_to_version:
+              type: code_compare
+              base_commit: "<sha>"
+              head_commit: "<sha>"
+
+          check:
+            name: tests
+            status: pass
+            applies_to_version:
+              type: code_compare
+              base_commit: "<sha>"
+              head_commit: "<sha>"
+
+          # For entity subjects:
+
+          verdict:
+            decision: approve
+            applies_to_version:
+              type: entity_version
+              content_hash: "<sha256>"
+          ```
+
+
+          Staleness: a verdict or check is stale when its `applies_to_version` does not
+
+          match the subject's current version. For code subjects, both `base_commit` and
+
+          `head_commit` must match (a base change alters the reviewed diff even if head
+
+          is unchanged). For entity subjects, `content_hash` must match. Stale verdicts
+
+          do not count toward approval. Stale required checks do not satisfy gates.
+
+
+          v1 does **not** support uncommitted worktree review. Only committed code is
+
+          reviewable.
+
+
+          ### Code anchor diff-side semantics
+
+
+          Code anchors store enough context for PR-style rendering:
+
+
+          ```yaml
+
+          anchor:
+            type: code
+            path: "src/foo.ts"
+            side: head           # or base
+            line_start: 42
+            line_end: 46
+            commit: "<sha>"
+          ```
+
+
+          Optional hunk/context text can be added later but is not required for v1.
+
+
+          ### Thread blocking semantics
+
+
+          Every thread has a `kind` field: `blocker`, `question`, or `nit` (default
+
+          `nit`). Only unresolved `blocker` threads prevent the computed disposition from
+
+          being `approved`. This prevents nits and questions from accidentally blocking
+
+          agent workflows.
+
+
+          ### Append-only event log
+
+
+          Every mutation appends to `events[]`:
+
+
+          ```yaml
+
+          events:
+            - _ulid: 01KX...
+              event_type: verdict_submitted
+              actor: "agent@kspec"
+              timestamp: "2026-03-13T..."
+              payload:
+                decision: approve
+                applies_to_version: { base_commit: "abc", head_commit: "def" }
+          ```
+
+
+          Event types (canonical list): `lifecycle_change`, `verdict_submitted`,
+
+          `thread_created`, `thread_replied`, `thread_resolved`, `thread_reopened`,
+
+          `check_added`, `subject_refreshed`. Notes are separate from events — notes
+
+          are human-readable context, events are machine-parseable audit records.
+
+
+          ### Identity and defaults
+
+
+          Review records get a ULID on creation (via `ulid()`) and an auto-generated
+
+          slug derived from the subject (e.g. `review-task-foo-1`). The `--slug` flag
+
+          on `review add` allows explicit slug assignment for batch workflows that need
+
+          to reference the review by a known name in subsequent commands. Default initial
+
+          lifecycle state is `draft`.
+
+
+          ### Verdict aggregation
+
+
+          The default aggregation rule: only the **latest verdict per reviewer** whose
+
+          `applies_to_version` matches the subject's current version is considered
+
+          (supersession by reviewer). Among those active verdicts, any
+
+          `request_changes` blocks the disposition from being `approved`, and at least
+
+          one explicit `approve` is required. Stale verdicts (those whose
+
+          `applies_to_version` does not match the current subject version) and
+
+          superseded verdicts (older verdicts from the same reviewer on the same
+
+          version) are preserved in history but excluded from the aggregation
+
+          computation.
+
+
+          The `role` field on each verdict defaults to `"reviewer"`. v1 ships with the
+
+          default aggregation rule only. Policy configuration (quorum, required roles,
+
+          override authority) is deferred to a future plan — the schema carries the
+
+          fields needed to support it without a redesign.
+
+
+          ### Task synchronization rules
+
+
+          Exact rules for review-task interaction:
+
+
+          1. `review add` with a task subject → auto-sets `task.review_ref` to the new
+             review
+          1b. `review add` with `--related @task-ref` → stores task in `related_refs`
+              and auto-sets `task.review_ref` (for code reviews tied to a task)
+          2. `review verdict set --decision request_changes` on a task-subject or
+             related-task review → auto-transitions task to `needs_work` if currently
+             `pending_review`
+          3. Approval does **not** auto-transition the task — completion is always a
+             manual/explicit step
+          4. `kspec task get` on a task with `review_ref` pointing at a closed/archived
+             review while the task is `pending_review` → surfaces a warning
+          5. `review_ref` is a new optional field on the task schema alongside existing
+             `review_url` — `review_url` remains for external-only linkage
+
+          ### Parser and storage layer
+
+
+          Create `src/parser/review-records.ts` following the pattern in
+
+          `src/parser/plans.ts`:
+
+
+          - `getReviewRecordsFilePath(ctx)` — returns
+            `path.join(ctx.specDir, "project.reviews.yaml")`
+          - `loadReviewRecords(ctx)` — parse file, validate with Zod, return
+            `LoadedReviewRecord[]` with `_sourceFile` metadata
+          - `findReviewRecordByRef(ctx, ref)` — resolve by ULID or slug (strip `@`
+            prefix), return single record or undefined
+          - `saveReviewRecord(ctx, record)` — file-locked read-modify-write via
+            `withFileLock` from `src/parser/file-lock.ts`
+          - `mutateReviewRecordAtomically(ctx, record, mutator)` — atomic
+            read-modify-write with callback, same pattern as plan mutations
+          - `createReviewRecord(input)` — factory that generates ULID, sets defaults
+
+          - `computeDisposition(record)` — pure function computing disposition from
+            current (non-stale, latest-per-reviewer) verdicts, blocking threads, and
+            gate state against the subject's current version
+          - `computeGateState(record)` — pure function computing gate state from current
+            (non-stale) required checks against the subject's current version
+          - `isVersionMatch(applies_to, subject)` — compare applies_to_version against
+            the subject's current version (full compare for code, hash for entities)
+          - `computeEntityContentHash(entity)` — compute content hash for shadow-branch
+            subject staleness detection
+
+          All writes use `writeYamlFilePreserveFormat` for format-stable YAML output.
+
+          Export everything through `src/parser/index.ts`.
+
+
+          ### Reference system integration
+
+
+          Update `ReferenceIndex` constructor in `src/parser/refs.ts` to accept and index
+
+          `LoadedReviewRecord[]` alongside tasks, items, plans, and meta items. This
+
+          enables `@review-slug` resolution through normal kspec lookup.
+
+
+          Update `buildIndexes()` in `src/parser/yaml.ts` to load and pass review records
+
+          into the index.
+
+
+          ### CLI command structure
+
+
+          Create `src/cli/commands/review.ts` and register via
+
+          `src/cli/commands/index.ts` → `src/cli/index.ts`. Use `review` as the command
+
+          group name:
+
+
+          ```
+
+          kspec review add --title "..." --subject @task-ref [--slug my-review]
+
+          kspec review add --title "..." --base-commit abc --head-commit def [--merge-base aaa]
+          [--head-branch feat/foo] [--related @task-ref]
+
+          kspec review get @review-ref
+
+          kspec review list [--state open] [--disposition pending] [--subject @ref] [--reviewer
+          name]
+
+          kspec review comment add @review-ref --body "..." [--kind blocker] [--file path --side
+          head --line-start N --line-end N --commit sha]
+
+          kspec review check add @review-ref --name "tests" --status pass --head-commit sha
+          [--base-commit sha] [--evidence "..."]
+
+          kspec review verdict set @review-ref --decision approve --head-commit sha [--base-commit
+          sha]
+
+          kspec review reply @review-ref <thread-ulid> --body "..."
+
+          kspec review resolve @review-ref <thread-ulid>
+
+          kspec review reopen @review-ref <thread-ulid>
+
+          kspec review open @review-ref
+
+          kspec review close @review-ref
+
+          kspec review archive @review-ref
+
+          kspec review refresh @review-ref --head-commit sha [--base-commit sha]
+
+          ```
+
+
+          Mark all write commands with `markMutating()` for batch eligibility. Each
+
+          mutation follows: load → validate → mutate → append event → save →
+
+          `commitIfShadow()`. Use `output()` for all rendering (handles `--json` mode
+
+          automatically via `@trait-json-output`).
+
+
+          For code and external subjects that require structured input beyond simple
+
+          flags, support `--subject-json '{"type":"code","base_commit":"...","head_commit":"..."}'`
+
+          as an alternative input mode.
+
+
+          ### Shadow branch commits
+
+
+          All mutations auto-commit to the `kspec-meta` shadow branch via
+
+          `commitIfShadow(ctx.shadow, "review-add", slug, title)`. No special
+
+          handling needed — the existing shadow commit infrastructure handles this for
+
+          any file under `.kspec/`.
+
+
+          ### Batch support
+
+
+          Commands marked with `markMutating()` are automatically eligible for
+
+          `kspec batch`. For batch workflows that need to reference a review created in
+
+          an earlier command, use `--slug` on creation:
+
+
+          ```json
+
+          [
+            {"command": "review add", "args": {"title": "PR #42 review", "subject": "@task-foo", "slug": "review-pr-42"}},
+            {"command": "review comment add", "args": {"ref": "@review-pr-42", "body": "Fix the error handling", "kind": "blocker"}},
+            {"command": "review check add", "args": {"ref": "@review-pr-42", "name": "tests", "status": "pass", "headCommit": "def456"}}
+          ]
+
+          ```
+
+
+          ### Validation approach
+
+
+          Validation is built into each model task rather than treated as a standalone
+
+          milestone. The validation task ensures the complete schema is wired up
+
+          end-to-end and that structural relationships are validated correctly.
+
+          Validation checks structural shape (e.g. applies_to_version has the right
+
+          discriminant for the subject type) but does **not** check freshness equality
+
+          — stale verdicts and checks are valid data that must be preserved.
+
+
+          Invalid data supplied through CLI or batch should be rejected with actionable
+
+          Zod validation errors, matching the existing pattern in `src/schema/common.ts`
+
+          error formatting.
+
+
+          ### Checks and gate policy
+
+
+          The review record separates historical check evidence from current gate
+
+          evaluation. Each check run is appended (never overwritten) and carries its
+
+          `applies_to_version` context. Gate evaluation computes current pass/fail from
+
+          the latest run of each logical check name **whose `applies_to_version` matches
+
+          the subject's current version** (full compare for code, hash for entities).
+
+          Required vs informational check
+
+          classification is a property of the check record. Checks with stale compare
+
+          context are preserved in history but excluded from gate computation.
+
+
+          v1 gate policy is hardcoded defaults only: all required checks must pass, no
+
+          configuration surface. Policy configuration is deferred to a future plan.
+
+
+          ### Testing approach
+
+
+          Tests go in `tests/review-records.test.ts` using the standard helpers:
+
+          `createTempDir()`, `initGitRepo()`, `kspec()`, `kspecJson()`, `testUlid()`.
+
+          Test both the parser layer (load/save/mutate/compute-disposition/compute-gates)
+
+          and the CLI surface (create, query, mutate, lifecycle, refresh, batch).
+
+
+          Key test scenarios:
+
+          - Stale verdict detection (approve at compare A, refresh to compare B,
+            disposition should not be approved)
+          - Base-commit change staleness (same head but different base → stale, because
+            the reviewed diff changed)
+          - Verdict supersession (reviewer requests changes then approves same version →
+            only the approve counts)
+          - Stale check detection (pass at compare A, refresh to compare B, gate should
+            be pending not passing)
+          - Blocking thread semantics (unresolved blocker prevents approval, unresolved
+            nit does not)
+          - Thread replies (reply appends to existing thread, not new thread)
+
+          - Task auto-sync (request_changes auto-transitions task to needs_work)
+
+          - Code review with --related @task-ref (task.review_ref set, discoverable)
+
+          - Shadow-branch subject staleness (review mutation does not self-invalidate
+            plan/spec subject via content hash)
+          - Entity content hash stability (workflow-driven field changes like status,
+            notes, review_ref do not change the hash)
+          - Entity version binding on verdicts/checks for non-code reviews
+
+
+          Remember: ULIDs must be Crockford base32 — always use `testUlid()`.
+
+
+          ### Review skill for agents
+
+
+          Create `templates/skills/review.md` and add it to `templates/skills/manifest.yaml`.
+
+          The skill should document the review CLI commands, common workflows (create
+
+          review for task, add comments, run checks, submit verdict, handle re-review
+
+          cycles), and the review-task sync rules. Since skills auto-surface in
+
+          `kspec-agents.md` via `kspec agents generate`, agents will discover the review
+
+          system through the skill without needing separate template sections.
+
+
+          ### Execution intent
+
+
+          This plan is intended to derive execution tasks directly. The plan itself is
+
+          the design step; the derived tasks should build the review record subsystem
+
+          and its minimal CLI surface rather than producing another layer of
+
+          design-only artifacts.
+
+
+          ### Out of scope for this plan
+
+
+          This plan does not yet attempt to specify:
+
+
+          - a full web UI or provider sync implementation for review records
+
+          - review of uncommitted worktree state (v1 is committed code only)
+
+          - gate policy configuration beyond hardcoded defaults
+
+          - verdict aggregation policy configuration (quorum, required roles)
+
+
+          The immediate goal is a stable core record model with git-backed compare
+
+          semantics plus the minimal CLI needed for agents and humans to use it. Richer
+
+          rendering, interaction design, policy configuration, and provider-specific
+
+          synchronization can follow in later plans.
   - _ulid: 01KKFJY80GMJZKN10AMDJ2WDNC
     slugs:
       - plan-grouped-work-and-human-handoff

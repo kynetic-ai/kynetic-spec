@@ -95807,6 +95807,12 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #841. Exported findManifestInDir() from src/parser/yaml.ts and replaced
+    hardcoded join(specDir, 'kynetic.yaml') with discovery API call in
+    packages/daemon/src/server.ts. Added graceful early return when no manifest found. 5 new
+    behavioral tests covering slug-based manifest discovery, priority ordering, null case, and
+    backward compatibility. All CI checks pass. AC coverage verified: @multi-directory-daemon ac-31
+    and @manifest-discovery ac-6."
   depends_on: []
   context: []
   priority: 3
@@ -95826,6 +95832,7 @@
   created_at: 2026-03-14T07:26:25.342Z
   started_at: 2026-03-14T07:33:53.755Z
   submitted_at: 2026-03-14T07:45:35.826Z
+  completed_at: 2026-03-14T07:57:20.980Z
   notes:
     - _ulid: 01KKNM0Q5WKSBRASNAC05PHP9D
       created_at: 2026-03-14T07:29:49.756Z
@@ -95876,10 +95883,299 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-14T07:57:20.980Z
-  closed_reason: "Merged in PR #841. Exported findManifestInDir() from src/parser/yaml.ts and replaced
-    hardcoded join(specDir, 'kynetic.yaml') with discovery API call in
-    packages/daemon/src/server.ts. Added graceful early return when no manifest found. 5 new
-    behavioral tests covering slug-based manifest discovery, priority ordering, null case, and
-    backward compatibility. All CI checks pass. AC coverage verified: @multi-directory-daemon ac-31
-    and @manifest-discovery ac-6."
+- _ulid: 01KKNRBYQ78WDH2BA1E1HP69Q6
+  slugs:
+    - task-implement-review-record-core
+  title: Implement first-party review record core model
+  type: task
+  spec_ref: "@review-record-core-model"
+  plan_ref: "@plan-review-records-and-gates"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - review
+    - core
+    - schema
+  vcs_refs: []
+  created_at: 2026-03-14T08:45:52.231Z
+  notes: []
+  todos: []
+- _ulid: 01KKNRBZAGSK357RJ8PKV75MZ9
+  slugs:
+    - task-implement-review-storage-and-identity
+  title: Implement review record storage and reference identity
+  type: task
+  spec_ref: "@review-record-storage-and-identity"
+  plan_ref: "@plan-review-records-and-gates"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-review-record-core"
+  context: []
+  priority: 1
+  tags:
+    - review
+    - storage
+    - identity
+  vcs_refs: []
+  created_at: 2026-03-14T08:45:52.848Z
+  notes: []
+  todos: []
+- _ulid: 01KKNRBZXF4B280EVREQJ6ZJRH
+  slugs:
+    - task-implement-review-subject-bindings
+  title: Implement subject bindings with compare semantics and staleness
+  type: task
+  spec_ref: "@review-subject-bindings"
+  plan_ref: "@plan-review-records-and-gates"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-review-record-core"
+    - "@task-implement-review-storage-and-identity"
+  context: []
+  priority: 1
+  tags:
+    - review
+    - bindings
+    - identity
+  vcs_refs: []
+  created_at: 2026-03-14T08:45:53.455Z
+  notes: []
+  todos: []
+- _ulid: 01KKNRC0FGK9TWYBNBVEGC7Z50
+  slugs:
+    - task-implement-review-comment-threads
+  title: Implement threaded comments with diff-side anchors and blocking kinds
+  type: task
+  spec_ref: "@review-comment-threads-and-anchors"
+  plan_ref: "@plan-review-records-and-gates"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-review-subject-bindings"
+  context: []
+  priority: 2
+  tags:
+    - review
+    - comments
+    - ux
+  vcs_refs: []
+  created_at: 2026-03-14T08:45:54.032Z
+  notes: []
+  todos: []
+- _ulid: 01KKNRC11SHJBA9WRP91V92V0D
+  slugs:
+    - task-implement-review-checks-and-gates
+  title: Implement check recording with compare binding and gate evaluation
+  type: task
+  spec_ref: "@review-checks-and-gate-evaluation"
+  plan_ref: "@plan-review-records-and-gates"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-review-subject-bindings"
+  context: []
+  priority: 2
+  tags:
+    - review
+    - checks
+    - policy
+  vcs_refs: []
+  created_at: 2026-03-14T08:45:54.617Z
+  notes: []
+  todos: []
+- _ulid: 01KKNRC1M21CX9TW44VZWMEHHZ
+  slugs:
+    - task-implement-review-verdicts-and-resolution
+  title: Implement verdict aggregation with compare binding and staleness
+  type: task
+  spec_ref: "@review-verdicts-and-resolution-lifecycle"
+  plan_ref: "@plan-review-records-and-gates"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-review-comment-threads"
+    - "@task-implement-review-checks-and-gates"
+  context: []
+  priority: 2
+  tags:
+    - review
+    - approvals
+    - workflow
+  vcs_refs: []
+  created_at: 2026-03-14T08:45:55.202Z
+  notes: []
+  todos: []
+- _ulid: 01KKNRC26NFC7EGP5AN7AZ1982
+  slugs:
+    - task-implement-review-validation
+  title: Implement schema validation for review records
+  type: task
+  spec_ref: "@review-record-validation"
+  plan_ref: "@plan-review-records-and-gates"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-review-record-core"
+    - "@task-implement-review-storage-and-identity"
+  context: []
+  priority: 2
+  tags:
+    - review
+    - schema
+    - validation
+  vcs_refs: []
+  created_at: 2026-03-14T08:45:55.797Z
+  notes: []
+  todos: []
+- _ulid: 01KKNRC2RSHEC4VE39AK5NQN1J
+  slugs:
+    - task-implement-review-task-integration
+  title: Implement review-task sync rules and linkage
+  type: task
+  spec_ref: "@review-task-lifecycle-integration"
+  plan_ref: "@plan-review-records-and-gates"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-review-verdicts-and-resolution"
+  context: []
+  priority: 2
+  tags:
+    - review
+    - tasks
+    - integration
+  vcs_refs: []
+  created_at: 2026-03-14T08:45:56.377Z
+  notes: []
+  todos: []
+- _ulid: 01KKNRC3AMTWV7SS9F6ZP2FCA7
+  slugs:
+    - task-implement-review-cli-surface
+  title: Implement review CLI command surface
+  type: task
+  spec_ref: "@review-cli-commands"
+  plan_ref: "@plan-review-records-and-gates"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-review-record-core"
+    - "@task-implement-review-storage-and-identity"
+  context: []
+  priority: 2
+  tags:
+    - review
+    - cli
+    - ux
+  vcs_refs: []
+  created_at: 2026-03-14T08:45:56.947Z
+  notes: []
+  todos: []
+- _ulid: 01KKNRC3WFJDQX2KAS2129GZ2W
+  slugs:
+    - task-implement-review-cli-create-query
+  title: Implement review CLI creation and query commands
+  type: task
+  spec_ref: "@review-cli-creation-and-query"
+  plan_ref: "@plan-review-records-and-gates"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-review-cli-surface"
+    - "@task-implement-review-validation"
+    - "@task-implement-review-subject-bindings"
+  context: []
+  priority: 2
+  tags:
+    - review
+    - cli
+    - query
+  vcs_refs: []
+  created_at: 2026-03-14T08:45:57.519Z
+  notes: []
+  todos: []
+- _ulid: 01KKNRC4F8KAXMPAJCEVZEMNVH
+  slugs:
+    - task-implement-review-cli-mutations
+  title: Implement review CLI mutation commands
+  type: task
+  spec_ref: "@review-cli-mutation-commands"
+  plan_ref: "@plan-review-records-and-gates"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-review-cli-surface"
+    - "@task-implement-review-verdicts-and-resolution"
+    - "@task-implement-review-validation"
+  context: []
+  priority: 2
+  tags:
+    - review
+    - cli
+    - workflow
+  vcs_refs: []
+  created_at: 2026-03-14T08:45:58.120Z
+  notes: []
+  todos: []
+- _ulid: 01KKNRC51AWZKNSBW4CTEDBRDS
+  slugs:
+    - task-implement-review-cli-task-linkage
+  title: Implement task and review CLI linkage behavior
+  type: task
+  spec_ref: "@review-cli-task-linkage"
+  plan_ref: "@plan-review-records-and-gates"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-review-cli-create-query"
+    - "@task-implement-review-task-integration"
+  context: []
+  priority: 2
+  tags:
+    - review
+    - cli
+    - tasks
+  vcs_refs: []
+  created_at: 2026-03-14T08:45:58.698Z
+  notes: []
+  todos: []
+- title: Create review skill for agent instructions
+  type: task
+  slugs:
+    - task-create-review-skill
+  spec_ref: null
+  plan_ref: "@plan-review-records-and-gates"
+  priority: 3
+  tags:
+    - review
+    - skill
+    - agents
+  depends_on:
+    - "@task-implement-review-cli-create-query"
+    - "@task-implement-review-cli-mutations"
+    - "@task-implement-review-cli-task-linkage"
+  notes: []
+  origin: derived
+  _ulid: 01KKNRC5KR8DTW5JVETBX9CMS8
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-14T08:45:59.288Z
+  todos: []
