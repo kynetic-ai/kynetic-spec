@@ -97321,7 +97321,10 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Fix double @@ in dispatch-workspace-registry shadow commit messages
+- _ulid: 01KKQ6WEK03MXED7T07XW39DWK
+  slugs: []
+  title: Fix double @@ in dispatch-workspace-registry shadow commit messages
+  type: task
   description: >-
     ## Problem
 
@@ -97382,23 +97385,22 @@
     - src/agent-runtime/workspace.ts — commitWorkspaceRegistryToShadow() around line 1000
 
     - src/parser/shadow.ts — generateCommitMessage() around line 1012 (for reference only)
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - bug
     - dispatch
     - shadow
-  depends_on: []
-  automation: eligible
-  _ulid: 01KKQ6WEK03MXED7T07XW39DWK
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-14T22:18:47.260Z
   notes: []
   todos: []
+  automation: eligible
+  started_at: 2026-03-14T22:19:51.466Z
+  session_id: 01KKQ6XXDS7NSWTPGR1T059T23
