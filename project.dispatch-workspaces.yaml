@@ -3693,3 +3693,79 @@ workspaces:
       last_reconciled_at: 2026-03-14T18:00:08.444Z
       last_active_at: 2026-03-14T17:59:27.492Z
       closed_at: null
+  - workspace_id: dispatch-workspace-01KKNRC3WFJDQX2KAS2129GZ2W
+    task_ref: "@01KKNRC3WFJDQX2KAS2129GZ2W"
+    task_slug: task-implement-review-cli-create-query
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    resolved_base_branch: main
+    base_branch_point: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    canonical_branch: dispatch/task/task-implement-review-cli-create-query/01kknrc3
+    canonical_branch_head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    branch_provenance:
+      ownership: dispatcher-managed
+      source: provisioned
+      remote_ref: null
+      adopted_from: null
+      adopted_at: null
+      rehydrated: null
+    lifecycle_state: ready
+    active_role: null
+    worktrees:
+      worker:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-create-query-01kknrc3
+        branch_mode: branch
+        branch_ref: dispatch/task/task-implement-review-cli-create-query/01kknrc3
+        head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+        last_seen_at: 2026-03-14T18:00:09.677Z
+      reviewer: null
+    bootstrap:
+      status: not_run
+      configHash: null
+      canonicalBranchHead: null
+      lastRunAt: null
+      invalidationReasons: []
+      steps: []
+      failureMessage: null
+      lastRole: null
+      roleStates:
+        worker:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+        reviewer:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+    integration:
+      status: pending
+      target_branch: main
+      target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+      publication_mode: pull_request
+      outcome: pull_request
+      detail: null
+      updated_at: 2026-03-14T18:00:09.677Z
+    health:
+      status: healthy
+      summary: Workspace record matches current git branch and worktree state.
+      issues: []
+      updated_at: 2026-03-14T18:00:09.677Z
+    cleanup:
+      status: not_scheduled
+      eligible: false
+      reason: null
+      detail: null
+      updated_at: 2026-03-14T18:00:09.677Z
+    timestamps:
+      created_at: 2026-03-14T18:00:09.677Z
+      updated_at: 2026-03-14T18:00:09.677Z
+      last_reconciled_at: 2026-03-14T18:00:09.677Z
+      last_active_at: null
+      closed_at: null
