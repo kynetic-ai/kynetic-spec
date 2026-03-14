@@ -3387,8 +3387,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: active
+    active_role: worker
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-validation-01kknrc2
@@ -3437,7 +3437,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T17:31:39.008Z
+      updated_at: 2026-03-14T17:31:39.390Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -3446,9 +3446,9 @@ workspaces:
       updated_at: 2026-03-14T17:31:39.008Z
     timestamps:
       created_at: 2026-03-14T10:36:47.635Z
-      updated_at: 2026-03-14T17:31:39.137Z
-      last_reconciled_at: 2026-03-14T17:31:39.008Z
-      last_active_at: 2026-03-14T17:10:46.000Z
+      updated_at: 2026-03-14T17:31:39.390Z
+      last_reconciled_at: 2026-03-14T17:31:39.390Z
+      last_active_at: 2026-03-14T17:31:39.390Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC3AMTWV7SS9F6ZP2FCA7
     task_ref: "@01KKNRC3AMTWV7SS9F6ZP2FCA7"
