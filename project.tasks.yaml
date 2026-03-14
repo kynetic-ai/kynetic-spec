@@ -96318,12 +96318,32 @@
     - cli
     - ux
   vcs_refs: []
+  session_id: 01KKPN8F88MVTR6KM0NMKTFM67
   created_at: 2026-03-14T08:45:56.947Z
-  notes: []
+  started_at: 2026-03-14T17:17:02.489Z
+  notes:
+    - _ulid: 01KKPNM8RME47A1JQ1VC7MHRHK
+      created_at: 2026-03-14T17:17:13.364Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: This task implements the CLI command surface for first-party review records.
+        Dependencies (core model, storage/identity) are completed.
+
+        - Scope: Create kspec review commands (add, get, list, comment, check, verdict,
+        resolve/reopen, lifecycle transitions, refresh). Ensure batch compatibility. Output
+        human-readable + JSON. Trait coverage for shadow-commit, error-guidance, json-output,
+        filterable-list, semantic-exit-codes.
+
+        - Files: src/cli/commands/review.ts (new), src/strings/errors.ts (add review errors),
+        src/cli/commands/index.ts (register), src/cli/index.ts (register), tests/review-cli.test.ts
+        (new)
+
+        - Verification: npm test, kspec validate
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-14T17:17:02.489Z
-  session_id: 01KKPN8F88MVTR6KM0NMKTFM67
 - _ulid: 01KKNRC3WFJDQX2KAS2129GZ2W
   slugs:
     - task-implement-review-cli-create-query
