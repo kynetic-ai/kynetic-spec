@@ -3694,8 +3694,8 @@ workspaces:
       updated_at: 2026-03-14T18:12:10.867Z
     timestamps:
       created_at: 2026-03-14T17:47:18.971Z
-      updated_at: 2026-03-14T18:12:10.867Z
-      last_reconciled_at: 2026-03-14T18:12:10.867Z
+      updated_at: 2026-03-14T18:12:21.891Z
+      last_reconciled_at: 2026-03-14T18:12:21.891Z
       last_active_at: 2026-03-14T17:59:27.492Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC3WFJDQX2KAS2129GZ2W
