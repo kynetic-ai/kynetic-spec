@@ -96555,6 +96555,16 @@
         handleVerdictTaskTransition into review verdict handler. SHOULD-FIX: Pass explicit author to
         createNote in handleVerdictTaskTransition. See PR #856 review for details."
       supersedes: null
+    - _ulid: 01KKPXXCEEEGYHYPXK10N8J199
+      created_at: 2026-03-14T19:42:00.654Z
+      author: "@claude"
+      content: "Fix cycle 1 addressed: (1) Merged main to resolve parser/index.ts conflict — all three
+        review exports coexist. (2) Wired linkReviewToTasks() into review add CLI handler for
+        ac-2/ac-3 auto-linkage. (3) Wired handleVerdictTaskTransition() into review verdict CLI
+        handler for ac-4 auto-transition. (4) Passed explicit author via
+        getAuthor(ctx.config?.identity?.author) to createNote in handleVerdictTaskTransition. All
+        5257 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKNRC3AMTWV7SS9F6ZP2FCA7
@@ -96756,9 +96766,18 @@
     - cli
     - workflow
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-14T19:31:32.887Z
   session_id: 01KKPWJ9BCV4KEY990T1WA3F0K
   created_at: 2026-03-14T08:45:58.120Z
   started_at: 2026-03-14T19:18:42.061Z
+  submitted_at: 2026-03-14T19:31:33.602Z
   notes:
     - _ulid: 01KKPWY0GR4MCD03SR1X9N96P4
       created_at: 2026-03-14T19:24:52.632Z
@@ -96820,15 +96839,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-14T19:31:33.602Z
-  submission_linkage:
-    branch: main
-    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-14T19:31:32.887Z
 - _ulid: 01KKNRC51AWZKNSBW4CTEDBRDS
   slugs:
     - task-implement-review-cli-task-linkage
