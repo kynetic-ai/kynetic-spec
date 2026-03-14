@@ -2653,7 +2653,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
     lifecycle_state: integrating
-    active_role: null
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-adopted-branch-cleanup-and-recoverabilit-01kkk7r9
@@ -2705,7 +2705,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T00:29:18.737Z
+      updated_at: 2026-03-14T00:29:19.182Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -2714,7 +2714,7 @@ workspaces:
       updated_at: 2026-03-14T00:29:18.737Z
     timestamps:
       created_at: 2026-03-13T23:51:45.708Z
-      updated_at: 2026-03-14T00:29:18.946Z
-      last_reconciled_at: 2026-03-14T00:29:18.737Z
-      last_active_at: 2026-03-14T00:15:35.616Z
+      updated_at: 2026-03-14T00:29:19.182Z
+      last_reconciled_at: 2026-03-14T00:29:19.182Z
+      last_active_at: 2026-03-14T00:29:19.182Z
       closed_at: null
