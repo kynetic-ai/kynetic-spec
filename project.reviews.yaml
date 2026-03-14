@@ -49,3 +49,29 @@ reviews:
     external_links: []
     created_at: 2026-03-14T18:41:30.186Z
     updated_at: null
+  - _ulid: 01KKPTEP4RZGTEH6X3H878MRJM
+    slugs:
+      - my-custom-slug
+    title: Slug Review
+    lifecycle_state: draft
+    subject:
+      type: task
+      ref: "@task-implement-review-cli-create-query"
+      shadow_commit: ""
+      content_hash: ""
+    author: "@claude"
+    related_refs: []
+    threads: []
+    checks: []
+    verdicts: []
+    events:
+      - _ulid: 01KKPTEP4Q73BXN76VW4M54CMH
+        event_type: lifecycle_change
+        actor: "@claude"
+        timestamp: 2026-03-14T18:41:33.335Z
+        payload:
+          to: draft
+    notes: []
+    external_links: []
+    created_at: 2026-03-14T18:41:33.336Z
+    updated_at: null
