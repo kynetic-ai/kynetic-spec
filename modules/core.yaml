@@ -1911,7 +1911,7 @@ features:
         parent: "@review-record-core-model"
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKNRBY8S23TZN5MBJND7C0YK
         slugs:
           - review-verdicts-and-resolution-lifecycle
