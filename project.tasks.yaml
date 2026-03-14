@@ -96506,7 +96506,10 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Fix agent spawn ENOENT by using absolute paths instead of PATH resolution
+- _ulid: 01KKPKQAMQM2MJ3T1G4DTTCRJG
+  slugs: []
+  title: Fix agent spawn ENOENT by using absolute paths instead of PATH resolution
+  type: task
   description: >-
     The daemon crashes with ENOENT when spawning agents via bunx/npx because PATH resolution fails
     in detached/nested Bun spawn chains. This was first seen with npx, and a prior fix switched to
@@ -96526,22 +96529,21 @@
 
     2. Add child.on('error') handler in spawner.ts — previously missing, so ENOENT crashed the
     daemon. Now spawn errors propagate cleanly through Promise.race against initialization.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - bug
     - agents
     - daemon
-  depends_on: []
-  _ulid: 01KKPKQAMQM2MJ3T1G4DTTCRJG
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-14T16:43:56.439Z
   notes: []
   todos: []
+  started_at: 2026-03-14T16:44:06.486Z
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
