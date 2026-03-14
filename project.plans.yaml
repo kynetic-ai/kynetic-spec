@@ -14115,6 +14115,13 @@ plans:
       PRs as the source of truth.
 
 
+      Reviews use git-backed compare semantics for code subjects and per-entity
+
+      content hashing for shadow-branch subjects. v1 covers committed code only —
+
+      uncommitted worktree review is explicitly out of scope.
+
+
       This plan is intentionally scoped to the record model and integration
 
       contracts. It does not try to deliver full hosted-review UI parity or replace
@@ -14151,11 +14158,21 @@ plans:
 
       - explicit storage and referencing rules for review entities
 
-      - threaded comments with general and targeted anchors
+      - git-backed compare semantics for code subjects (base + head + merge base)
 
-      - recorded checks and normalized gate evaluation
+      - per-entity content hashing for shadow-branch subject staleness
 
-      - reviewer verdicts, blocking state, and iterative re-review cycles
+      - threaded comments with general and targeted anchors including diff-side
+        semantics for code
+      - recorded checks and normalized gate evaluation with compare binding
+
+      - reviewer verdicts with compare binding and staleness detection
+
+      - blocking thread semantics (blocker vs non-blocking)
+
+      - explicit append-only event log for audit history
+
+      - separate lifecycle state from computed disposition and gate state
 
       - explicit integration with task review states and compatibility fields
 
@@ -14171,6 +14188,8 @@ plans:
 
       - replacing `pending_review` or `needs_work` as the task workflow signal
 
+      - review of uncommitted worktree state (v1 is committed code only)
+
 
       ## Specs
 
@@ -14183,27 +14202,28 @@ plans:
         parent: "@core"
         description: |
           kspec stores review records as first-party artifacts with a typed subject,
-          lifecycle state, authorship, timestamps, and links to the object under
-          review.
+          separate lifecycle and disposition states, authorship, timestamps, an
+          append-only event log, and links to the object under review.
         acceptance_criteria:
           - id: ac-1
             given: |
-              A review is created for a plan, task, code change, or other supported
-              artifact
+              A review is created for a plan, task, committed code change, or other
+              supported artifact
             when: |
               The review record is stored
             then: |
-              The record captures subject binding, status, author, timestamps, and
-              lifecycle history in first-party kspec metadata
+              The record captures subject binding, lifecycle state, author,
+              timestamps, and an empty event log in first-party kspec metadata
           - id: ac-2
             given: |
               A review progresses through work
             when: |
-              Status changes occur
+              Any state-bearing mutation occurs
             then: |
-              The review history records transitions such as draft, pending,
-              in_progress, approved, changes_requested, rejected, closed, and
-              archived
+              The review record has separate lifecycle_state (draft, open, closed,
+              archived) and computed disposition (pending, approved,
+              changes_requested, rejected) fields rather than collapsing lifecycle
+              and outcome into one status enum
           - id: ac-3
             given: |
               A review references external systems such as GitHub
@@ -14212,6 +14232,17 @@ plans:
             then: |
               The review record stores those links without making them the source of
               truth for local review state
+          - id: ac-4
+            given: |
+              Any mutation occurs on a review record including status changes,
+              verdict submissions, thread resolution, check additions, close, and
+              archive actions
+            when: |
+              The mutation is persisted
+            then: |
+              An append-only event is recorded with event type, actor, timestamp,
+              and relevant payload so the full review history can be reconstructed
+              from the event log
 
       - title: Review Record Storage and Identity
         slug: review-record-storage-and-identity
@@ -14236,8 +14267,8 @@ plans:
             when: |
               It is referenced through kspec commands
             then: |
-              The review has a stable ULID-backed identity and can be addressed by an
-              @review ref using the shared reference system
+              The review has a stable ULID-backed identity and can be addressed by
+              an @review ref using the shared reference system
           - id: ac-3
             given: |
               Review records are stored in the shadow branch
@@ -14253,13 +14284,13 @@ plans:
         type: requirement
         parent: "@review-record-core-model"
         description: |
-          Review records identify what is under review using stable local refs when
-          available and normalized external identities when the subject is not purely
-          local.
+          Review records identify what is under review using git-backed compare
+          semantics for code subjects and per-entity content hashing for shadow
+          branch subjects. v1 covers committed code only.
         acceptance_criteria:
           - id: ac-1
             given: |
-              A review is created for a plan, task, spec, code worktree, or other
+              A review is created for a plan, task, spec, committed code, or other
               supported artifact
             when: |
               The subject binding is stored
@@ -14272,35 +14303,49 @@ plans:
             when: |
               The review record is stored
             then: |
-              The local ref remains authoritative while external identifiers are kept
-              as linkage metadata
+              The local ref remains authoritative while external identifiers are
+              kept as linkage metadata
           - id: ac-3
             given: |
-              A review targets a mutable artifact such as a code worktree or imported
-              plan content
+              A review targets committed code
             when: |
-              The review binding is stored
+              The subject binding is stored
             then: |
-              The record preserves revision context needed to interpret later
-              comments and gates against the reviewed snapshot
+              The record stores base_commit, head_commit, and optionally
+              merge_base_commit as the frozen compare context, with branch names
+              stored only as optional metadata and never as the authoritative
+              identity
           - id: ac-4
             given: |
-              A review subject includes code anchors or code-specific checks
+              A review targets a shadow-branch entity such as a plan, spec, or task
             when: |
-              The review binding and anchors are stored
+              The subject binding is stored
             then: |
-              Revision pinning is required so comments and checks remain interpretable
-              against the reviewed code snapshot
+              The record stores the shadow branch commit plus a per-entity content
+              hash so review mutations on the same shadow branch do not
+              self-invalidate the subject freshness check
+          - id: ac-5
+            given: |
+              The reviewed subject has changed since the review was created
+            when: |
+              Staleness is evaluated
+            then: |
+              Code subjects compare current branch HEAD against the stored
+              head_commit, and shadow-branch subjects compare entity content hash
+              against the stored hash, rather than using shadow branch HEAD which
+              would self-invalidate on every review mutation
 
       - title: Review Comment Threads and Anchors
         slug: review-comment-threads-and-anchors
         type: requirement
         parent: "@review-record-core-model"
         description: |
-          Review comments support both general feedback and threaded targeted anchors
-          such as file and line comments for code or section and field anchors for
-          structured artifacts. Each thread has a ULID-based identifier for stable
-          addressing through CLI commands.
+          Review comments support both general feedback and threaded targeted
+          anchors. Code anchors use diff-side semantics (base or head side, file
+          path, line range, commit). Structured anchors target sections or fields
+          in plans, specs, and other artifacts. Each thread has a ULID-based
+          identifier and a kind that distinguishes blocking from non-blocking
+          feedback.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -14309,15 +14354,16 @@ plans:
               A comment is created without a target anchor
             then: |
               The comment is stored as a general review thread entry with a ULID
-              thread identifier, author, and timestamps
+              thread identifier, author, kind, and timestamps
           - id: ac-2
             given: |
               A reviewer wants to comment on code
             when: |
               The comment targets a file and line or range
             then: |
-              The review record stores a durable code anchor with enough context to
-              render targeted feedback later
+              The review record stores a code anchor with path, side (base or
+              head), line_start, line_end, and commit so the comment can be
+              rendered against the correct diff context
           - id: ac-3
             given: |
               A reviewer wants to comment on a plan, spec, or other structured
@@ -14333,8 +14379,25 @@ plans:
             when: |
               The reply is stored
             then: |
-              The conversation is preserved as a durable thread rather than isolated
-              standalone comments
+              The conversation is preserved as a durable thread rather than
+              isolated standalone comments
+          - id: ac-5
+            given: |
+              A reviewer creates a thread
+            when: |
+              The thread kind is specified or defaulted
+            then: |
+              The thread stores a kind field that distinguishes at least blocker,
+              question, and nit so the system can determine which unresolved
+              threads should block approval and which should not
+          - id: ac-6
+            given: |
+              Unresolved threads exist on a review
+            when: |
+              The review disposition is computed
+            then: |
+              Only threads with kind blocker prevent the review from being approved
+              while unresolved nit and question threads do not block
 
       - title: Review Checks and Gate Evaluation
         slug: review-checks-and-gate-evaluation
@@ -14342,8 +14405,9 @@ plans:
         parent: "@review-record-core-model"
         description: |
           Reviews can include recorded checks and derived gate state such as test
-          runs, local verification, CI runs, or manual attestations, whether those
-          checks are backed by real CI systems or first-party review evidence.
+          runs, local verification, CI runs, or manual attestations. Each check
+          records the compare context it applies to so gate evaluation uses only
+          checks that match the current reviewed state.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -14351,8 +14415,10 @@ plans:
             when: |
               Evidence is recorded
             then: |
-              The review stores check records with name, status, timestamps, runner,
-              and evidence payload or link
+              The review stores check records with name, status, timestamps,
+              runner, required flag, evidence payload or link, and the
+              applies_to_compare context (base_commit and head_commit) identifying
+              which reviewed state the check ran against
           - id: ac-2
             given: |
               A project has no external CI for a reviewable artifact
@@ -14367,16 +14433,16 @@ plans:
             when: |
               A check run is mirrored into the review record
             then: |
-              The local review gate references the external run while preserving the
-              normalized local status model
+              The local review gate references the external run while preserving
+              the normalized local status model
           - id: ac-4
             given: |
               Review policy requires all required gates to pass before approval
             when: |
               An approval is attempted
             then: |
-              The system distinguishes required vs informational checks and enforces
-              the required ones
+              The system distinguishes required vs informational checks and
+              enforces the required ones
           - id: ac-5
             given: |
               Multiple runs exist for the same logical check over the life of a
@@ -14384,18 +14450,31 @@ plans:
             when: |
               Gate state is evaluated
             then: |
-              Check history is preserved while the current gate decision is computed
-              from the latest applicable result
+              Check history is preserved while the current gate decision is
+              computed from the latest run whose applies_to_compare matches the
+              current head_commit
+          - id: ac-6
+            given: |
+              The reviewed subject has been updated with new commits since the last
+              check run
+            when: |
+              Gate state is evaluated
+            then: |
+              Checks whose applies_to_compare head_commit does not match the
+              current head_commit are treated as stale and do not satisfy required
+              gate checks
 
       - title: Review Verdicts and Resolution Lifecycle
         slug: review-verdicts-and-resolution-lifecycle
         type: requirement
         parent: "@review-record-core-model"
         description: |
-          Reviews support individual reviewer verdicts, blocking requests for change,
-          thread resolution, and iterative re-review cycles without losing audit
-          history. Reviewer identity is a plain string matching the author convention
-          used by task notes and git config (e.g. "user@example.com" or "agent-name").
+          Reviews support individual reviewer verdicts, blocking requests for
+          change, thread resolution, and iterative re-review cycles without losing
+          audit history. Each verdict records the compare context it applies to so
+          approvals can be invalidated when the reviewed state changes. Reviewer
+          identity is a plain string matching the author convention used by task
+          notes and git config (e.g. "user@example.com" or "agent-name").
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -14403,7 +14482,9 @@ plans:
             when: |
               They approve, request changes, or leave non-blocking comments
             then: |
-              Their verdicts are recorded distinctly from the overall review status
+              Their verdicts are recorded with the applies_to_compare context
+              (base_commit and head_commit) identifying the reviewed state, and
+              stored distinctly from the overall review disposition
           - id: ac-2
             given: |
               A targeted review thread results in follow-up work
@@ -14417,15 +14498,16 @@ plans:
             when: |
               It moves from review to changes requested to re-review
             then: |
-              The same review record or an explicitly linked successor cycle can
-              represent the iteration without losing the audit trail
+              The same review record tracks iteration through its event log and
+              compare context updates without losing the audit trail
           - id: ac-4
             given: |
-              Required gates are failing or blocking change requests remain unresolved
+              Required gates are failing, blocking threads are unresolved, or
+              blocking change requests remain open
             when: |
               The review disposition is evaluated
             then: |
-              The review cannot be represented as fully approved while those blockers
+              The computed disposition cannot be approved while those blockers
               remain open
           - id: ac-5
             given: |
@@ -14434,8 +14516,10 @@ plans:
               The aggregate review disposition is computed
             then: |
               The default aggregation rule is that any changes_requested verdict
-              blocks approval and at least one explicit approve verdict is required
-              for the review to be considered approved
+              whose applies_to_compare matches the current head_commit blocks
+              approval and at least one explicit approve verdict matching the
+              current head_commit is required for the review to be considered
+              approved
           - id: ac-6
             given: |
               Review policy requires more than one approval, distinguishes reviewer
@@ -14443,18 +14527,28 @@ plans:
             when: |
               The verdict schema is defined
             then: |
-              Each verdict record includes a reviewer identity string, a role field
-              with a default value, and a timestamp so aggregation queries can filter
-              by role and count approvals without a schema redesign
+              Each verdict record includes a reviewer identity string, a role
+              field with a default value, and a timestamp so aggregation queries
+              can filter by role and count approvals without a schema redesign
           - id: ac-7
+            given: |
+              The reviewed subject has been updated with new commits since the last
+              approval
+            when: |
+              The review disposition is computed
+            then: |
+              Approvals whose applies_to_compare head_commit does not match the
+              current head_commit are treated as stale and do not count toward
+              the approval requirement
+          - id: ac-8
             given: |
               A review is no longer active because its subject completed, was
               cancelled, or was superseded
             when: |
               The review lifecycle is finalized
             then: |
-              The system supports explicit closed or archived terminal handling rather
-              than relying on deletion as the only cleanup path
+              The system supports explicit closed or archived terminal handling
+              rather than relying on deletion as the only cleanup path
 
       - title: Review Record Validation
         slug: review-record-validation
@@ -14466,8 +14560,8 @@ plans:
         acceptance_criteria:
           - id: ac-1
             given: |
-              Review records, threads, checks, verdicts, and subject bindings are
-              persisted or mutated
+              Review records, threads, checks, verdicts, events, and subject
+              bindings are persisted or mutated
             when: |
               The data is validated
             then: |
@@ -14475,8 +14569,8 @@ plans:
               than relying on loosely typed metadata blobs
           - id: ac-2
             given: |
-              Invalid review data is supplied through import, CLI mutation, or future
-              automation paths
+              Invalid review data is supplied through import, CLI mutation, or
+              future automation paths
             when: |
               Validation fails
             then: |
@@ -14488,8 +14582,9 @@ plans:
         parent: "@review-record-core-model"
         description: |
           Review records integrate with task workflow signals and compatibility
-          fields without replacing the lightweight task lifecycle model already used
-          by kspec.
+          fields without replacing the lightweight task lifecycle model already
+          used by kspec. The integration defines exact synchronization rules for
+          when review state drives task transitions and when it does not.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -14497,18 +14592,42 @@ plans:
             when: |
               A review record exists for that task or its code work
             then: |
-              The task can link to the active review record while task status remains
-              the lightweight workflow signal
+              The task can link to the active review record via a review_ref field
+              while task status remains the lightweight workflow signal
           - id: ac-2
             given: |
-              A task-associated review records changes requested and later returns for
-              re-review
+              A review is created with a task as its subject
+            when: |
+              The review add command runs with a task subject
+            then: |
+              The review_ref field on the task is automatically set to the new
+              review record ref
+          - id: ac-3
+            given: |
+              A reviewer sets a changes_requested verdict on a task review
+            when: |
+              The verdict is recorded
+            then: |
+              The task is automatically transitioned to needs_work if it was in
+              pending_review
+          - id: ac-4
+            given: |
+              A task is in pending_review with no active review record or a
+              review_ref pointing at a closed review
+            when: |
+              The task state is rendered or validated
+            then: |
+              The system surfaces a warning about the inconsistent review linkage
+          - id: ac-5
+            given: |
+              A task-associated review records changes requested and later returns
+              for re-review
             when: |
               The task moves between needs_work and pending_review
             then: |
               The review history remains intact instead of being replaced by ad hoc
               task notes
-          - id: ac-3
+          - id: ac-6
             given: |
               A task or review has an external PR URL or provider identifier
             when: |
@@ -14526,8 +14645,10 @@ plans:
           - trait-error-guidance
         description: |
           kspec exposes a first-party CLI for creating, inspecting, and updating
-          review records so agents and humans can use the review system without a web
-          UI or direct file edits.
+          review records so agents and humans can use the review system without a
+          web UI or direct file edits. The CLI covers the full review lifecycle
+          including creation, mutation, lifecycle transitions, subject refresh,
+          and task linkage.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -14535,17 +14656,17 @@ plans:
             when: |
               They use kspec review commands
             then: |
-              The CLI provides supported commands for the core review workflow rather
-              than requiring direct mutation of stored metadata
+              The CLI provides supported commands for the core review workflow
+              rather than requiring direct mutation of stored metadata
           - id: ac-2
             given: |
               Review records are rendered through the CLI
             when: |
               A command prints review data
             then: |
-              The output includes the subject, status, current verdict or gate
-              summary, thread state, and external linkage needed to understand the
-              review without opening raw storage
+              The output includes the subject, lifecycle state, computed
+              disposition, computed gate state, thread state, and external linkage
+              needed to understand the review without opening raw storage
           - id: ac-3
             given: |
               A workflow needs to perform multiple review mutations in one atomic
@@ -14566,35 +14687,56 @@ plans:
           - trait-semantic-exit-codes
           - trait-shadow-commit
         description: |
-          The CLI supports creating reviews and reading them back by review ref,
-          subject, and status so agents can discover active work and reopen an
-          existing review thread.
+          The CLI supports creating reviews with subject bindings and reading them
+          back by review ref, subject, and status. For code subjects, creation
+          accepts base and head commit refs. For non-ref subjects (code, external),
+          the CLI accepts structured flags or a JSON input mode.
         acceptance_criteria:
           - id: ac-1
             given: |
-              A user or agent needs to create a review for a supported subject
+              A user or agent needs to create a review for a ref-backed subject
+              such as a task, plan, or spec
             when: |
-              They run a review creation command such as kspec review add
+              They run kspec review add with a subject ref
             then: |
               A first-party review record is created with subject binding, initial
-              status, and author metadata
+              lifecycle state of draft, and author metadata
           - id: ac-2
+            given: |
+              A user or agent needs to create a review for committed code
+            when: |
+              They run kspec review add with base and head commit flags
+            then: |
+              A review record is created with a code subject binding containing
+              base_commit, head_commit, and optionally merge_base_commit and
+              branch metadata
+          - id: ac-3
             given: |
               A review record exists
             when: |
-              A user or agent runs a command such as kspec review get @review-ref
+              A user or agent runs kspec review get @review-ref
             then: |
-              The CLI shows the review core state, threads, checks, verdicts,
-              resolution state, and linkage metadata
-          - id: ac-3
+              The CLI shows the review lifecycle state, computed disposition,
+              computed gate state, threads, checks, verdicts, events, and linkage
+              metadata
+          - id: ac-4
             given: |
               Multiple review records exist
             when: |
-              A user or agent runs a query command such as kspec review list with
-              filters for subject, status, or reviewer
+              A user or agent runs kspec review list with filters for subject,
+              lifecycle state, disposition, or reviewer
             then: |
               The CLI can return the matching review set so automation can find the
               active review record instead of scraping task notes
+          - id: ac-5
+            given: |
+              A user or agent creates a review with a --slug flag
+            when: |
+              The review is created
+            then: |
+              The provided slug is used instead of an auto-generated one so batch
+              workflows can reference the review by a known slug in subsequent
+              commands
 
       - title: Review CLI Mutation Commands
         slug: review-cli-mutation-commands
@@ -14606,44 +14748,71 @@ plans:
           - trait-shadow-commit
           - trait-confirmation-prompt
         description: |
-          The CLI supports the minimal mutations needed to conduct a review cycle:
-          add comments, record checks, set verdicts, and resolve or reopen threads.
+          The CLI supports the mutations needed to conduct a review cycle: add
+          comments with diff-side anchors, record checks with compare binding,
+          set verdicts with compare binding, resolve or reopen threads, and
+          manage review lifecycle transitions.
         acceptance_criteria:
           - id: ac-1
             given: |
               A review record exists
             when: |
-              A reviewer runs a command such as kspec review comment add with an
-              optional code or structured anchor
+              A reviewer runs kspec review comment add with an optional code
+              anchor including path, side, line range, and commit
             then: |
-              The review stores the new thread entry with its anchor and authorship
+              The review stores the new thread entry with its anchor, kind
+              (defaulting to nit), and authorship
           - id: ac-2
             given: |
               Verification evidence exists for a review
             when: |
-              A user or agent runs a command such as kspec review check add
+              A user or agent runs kspec review check add with name, status,
+              and the current compare context
             then: |
-              The review stores the check result with normalized status and evidence
-              details
+              The review stores the check result with normalized status, evidence
+              details, and the applies_to_compare binding
           - id: ac-3
             given: |
-              A reviewer needs to approve, request changes, or leave a non-blocking
-              verdict
+              A reviewer needs to approve, request changes, or leave a
+              non-blocking verdict
             when: |
-              They run a command such as kspec review verdict set
+              They run kspec review verdict set with the decision and compare
+              context
             then: |
-              The individual verdict and resulting review disposition are updated
-              according to gate and blocker rules
+              The individual verdict is recorded with applies_to_compare and the
+              computed disposition is updated according to aggregation, gate, and
+              blocker rules
           - id: ac-4
             given: |
               A review thread has been addressed or needs to be reopened
             when: |
-              A user or agent runs a command such as kspec review resolve or reopen
+              A user or agent runs kspec review resolve or reopen with a thread
+              ULID
             then: |
               The thread resolution state changes with actor and timestamp history
           - id: ac-5
             given: |
-              A destructive review mutation such as delete is offered in the future
+              A review needs to transition lifecycle state
+            when: |
+              A user or agent runs kspec review close, kspec review archive, or
+              kspec review open
+            then: |
+              The lifecycle_state transitions and an event is appended to the
+              event log
+          - id: ac-6
+            given: |
+              A code review subject has been updated with new commits
+            when: |
+              A user or agent runs kspec review refresh with updated head_commit
+              and optionally updated base_commit
+            then: |
+              The subject compare context is updated and an event is appended
+              recording the subject revision change so stale verdicts and checks
+              can be identified
+          - id: ac-7
+            given: |
+              A destructive review mutation such as delete is offered in the
+              future
             when: |
               The command surface is extended
             then: |
@@ -14658,8 +14827,8 @@ plans:
           - trait-json-output
           - trait-semantic-exit-codes
         description: |
-          Task-oriented CLI output exposes the active review linkage so automation can
-          move between task workflow state and the corresponding durable review
+          Task-oriented CLI output exposes the active review linkage so automation
+          can move between task workflow state and the corresponding durable review
           record.
         acceptance_criteria:
           - id: ac-1
@@ -14668,17 +14837,18 @@ plans:
             when: |
               A user or agent inspects the task through task or review CLI output
             then: |
-              The active review ref can be discovered without reading raw storage or
-              scraping ad hoc task notes
+              The active review ref can be discovered without reading raw storage
+              or scraping ad hoc task notes
           - id: ac-2
             given: |
-              An automation flow starts from a task in pending_review or needs_work
+              An automation flow starts from a task in pending_review or
+              needs_work
             when: |
               It needs the durable review audit object
             then: |
-              The CLI supports resolving from the task context to the corresponding
-              review record using supported commands rather than convention-only
-              fields
+              The CLI supports resolving from the task context to the
+              corresponding review record using supported commands rather than
+              convention-only fields
       ```
 
 
@@ -14705,7 +14875,7 @@ plans:
         tags: [review, storage, identity]
 
       - slug: task-implement-review-subject-bindings
-        title: Implement stable subject bindings and revision pinning
+        title: Implement subject bindings with compare semantics and staleness
         spec_ref: "@review-subject-bindings"
         priority: 1
         depends_on:
@@ -14714,7 +14884,7 @@ plans:
         tags: [review, bindings, identity]
 
       - slug: task-implement-review-comment-threads
-        title: Implement threaded review comments and target anchors
+        title: Implement threaded comments with diff-side anchors and blocking kinds
         spec_ref: "@review-comment-threads-and-anchors"
         priority: 2
         depends_on:
@@ -14722,16 +14892,15 @@ plans:
         tags: [review, comments, ux]
 
       - slug: task-implement-review-checks-and-gates
-        title: Implement review check recording and gate evaluation
+        title: Implement check recording with compare binding and gate evaluation
         spec_ref: "@review-checks-and-gate-evaluation"
         priority: 2
         depends_on:
-          - "@task-implement-review-record-core"
-          - "@task-implement-review-storage-and-identity"
+          - "@task-implement-review-subject-bindings"
         tags: [review, checks, policy]
 
       - slug: task-implement-review-verdicts-and-resolution
-        title: Implement review verdict aggregation and lifecycle handling
+        title: Implement verdict aggregation with compare binding and staleness
         spec_ref: "@review-verdicts-and-resolution-lifecycle"
         priority: 2
         depends_on:
@@ -14749,7 +14918,7 @@ plans:
         tags: [review, schema, validation]
 
       - slug: task-implement-review-task-integration
-        title: Implement review integration with task lifecycle states
+        title: Implement review-task sync rules and linkage
         spec_ref: "@review-task-lifecycle-integration"
         priority: 2
         depends_on:
@@ -14817,11 +14986,18 @@ plans:
         - _ulid: 01KX...
           slugs: [review-pr-123]
           title: "Review of PR #123"
-          status: pending
-          subject: { ... }
+          lifecycle_state: open
+          subject:
+            type: code
+            base_commit: "abc123"
+            head_commit: "def456"
+            merge_base_commit: "aaa111"
+            base_branch: "main"
+            head_branch: "feat/foo"
           threads: [ ... ]
           checks: [ ... ]
           verdicts: [ ... ]
+          events: [ ... ]
           notes: [ ... ]
           created_at: "2026-03-13T..."
       ```
@@ -14829,11 +15005,34 @@ plans:
 
       A single file per entity type keeps shadow branch commits atomic and avoids
 
-      scattered state. Reviews with many threads and checks will grow, but this
+      scattered state. Note that task integration (auto-setting `review_ref`) does
 
-      matches how plans and tasks already accumulate notes and history in their
+      touch `project.tasks.yaml` as well — this is acceptable because it mirrors how
 
-      respective files.
+      other cross-entity mutations (e.g. `task set --depends-on`) already work.
+
+
+      ### Lifecycle state vs disposition vs gate state
+
+
+      The review record stores only `lifecycle_state` as a persisted field:
+
+
+      - `lifecycle_state`: `draft | open | closed | archived` — explicitly set by
+        the user or automation via lifecycle commands
+
+      Disposition and gate state are computed from the review's current data:
+
+
+      - `disposition`: `pending | approved | changes_requested | rejected` — derived
+        from current (non-stale) verdicts, unresolved blocking threads, and
+        aggregation policy
+      - `gate_state`: `passing | failing | pending` — derived from current
+        (non-stale) required check results
+
+      This separation prevents the contradictions that arise from collapsing
+
+      lifecycle, outcome, and gate status into a single enum.
 
 
       ### Schema definition
@@ -14844,21 +15043,43 @@ plans:
       task schema patterns:
 
 
-      - `ReviewStatusSchema` — enum: `draft`, `pending`, `in_progress`, `approved`,
-        `changes_requested`, `rejected`, `closed`, `archived`
-      - `ReviewSubjectSchema` — discriminated union on `type` field (plan, task, spec,
-        code, external) with type-specific fields (ref, path, revision, url)
-      - `ReviewAnchorSchema` — discriminated union: code anchor (file, line/range,
-        revision) vs structured anchor (section, field, path)
-      - `ReviewThreadSchema` — ULID-identified thread with optional anchor, entries
-        array (each entry has ULID, author, body, timestamp), resolved state
-      - `ReviewCheckSchema` — name, status (pass/fail/running/skipped), required
-        (boolean), runner, evidence, timestamps
-      - `ReviewVerdictSchema` — reviewer (string, same convention as git author),
-        role (string, default `"reviewer"`), decision (approve/request-changes/comment),
-        timestamp
-      - `ReviewRecordSchema` — full record with `_ulid`, `slugs`, all nested schemas
+      - `ReviewLifecycleStateSchema` — enum: `draft`, `open`, `closed`, `archived`
 
+      - `ReviewSubjectSchema` — discriminated union on `type` field:
+        - `code`: `base_commit`, `head_commit`, `merge_base_commit?`,
+          `base_branch?`, `head_branch?`
+        - `plan`: `ref`, `shadow_commit`, `content_hash`
+        - `task`: `ref`, `shadow_commit`, `content_hash`
+        - `spec`: `ref`, `shadow_commit`, `content_hash`
+        - `external`: `url`, `external_id?`, `provider?`
+      - `ReviewCompareContextSchema` — `base_commit` + `head_commit` (used by
+        verdicts and checks to bind to the reviewed state)
+      - `ReviewCodeAnchorSchema` — `path`, `side` (base | head), `line_start`,
+        `line_end`, `commit`
+      - `ReviewStructuredAnchorSchema` — `section?`, `field?`, `path?`, `ref?`
+
+      - `ReviewAnchorSchema` — discriminated union of code and structured anchors
+
+      - `ReviewThreadKindSchema` — enum: `blocker`, `question`, `nit`
+
+      - `ReviewThreadSchema` — ULID-identified thread with optional anchor, kind
+        (default `nit`), entries array (each entry has ULID, author, body,
+        timestamp), resolved state (resolved_at, resolved_by)
+      - `ReviewCheckStatusSchema` — enum: `pass`, `fail`, `running`, `skipped`
+
+      - `ReviewCheckSchema` — name, status, required (boolean), runner, evidence,
+        timestamps, `applies_to_compare` (ReviewCompareContextSchema)
+      - `ReviewVerdictDecisionSchema` — enum: `approve`, `request_changes`, `comment`
+        (use underscores consistently, not hyphens)
+      - `ReviewVerdictSchema` — reviewer (string), role (string, default
+        `"reviewer"`), decision, timestamp, `applies_to_compare`
+        (ReviewCompareContextSchema)
+      - `ReviewEventSchema` — ULID, event_type (status_change, verdict_submitted,
+        thread_resolved, thread_reopened, check_added, subject_refreshed,
+        lifecycle_change), actor, timestamp, payload (type-specific data)
+      - `ReviewRecordSchema` — full record with `_ulid`, `slugs`, `title`,
+        `lifecycle_state`, subject, threads[], checks[], verdicts[], events[],
+        notes[], external_links[], timestamps
       - `ReviewRecordInputSchema` — input variant (most fields optional)
 
       - `ReviewRecordsFileSchema` — collection wrapper with `kynetic_reviews` version
@@ -14868,25 +15089,158 @@ plans:
 
       `src/schema/common.ts`. Import `NoteSchema` from `src/schema/task.ts` (where
 
-      it is defined, not common.ts). Include
-
-      `notes: z.array(NoteSchema).default([])` for audit trail, matching the
-
-      existing append-only note pattern.
+      it is defined, not common.ts).
 
 
       ### Subject type extensibility
 
 
-      The subject type set (plan, task, spec, code, external) should be modeled as a
+      The subject type set (plan, task, spec, code, external) is modeled as a Zod
 
-      Zod discriminated union on a `type` field rather than a closed enum so new
+      discriminated union on a `type` field. Adding a new subject type requires
 
-      subject types can be added without breaking schema changes. The initial
+      adding a new variant to the union — this is a schema change but not a breaking
 
-      implementation should support the listed types but the schema should not make
+      one since existing variants are unaffected. For unknown/future types, the
 
-      it impossible to extend.
+      `external` variant with a freeform `provider` field serves as the escape hatch.
+
+
+      ### Shadow-branch subject staleness
+
+
+      For subjects that live on the shadow branch (plans, specs, tasks), using
+
+      `kspec-meta` HEAD as the staleness signal would be a bug — every review
+
+      mutation (comment, check, verdict) commits to the same branch and would
+
+      self-invalidate the subject.
+
+
+      Instead, shadow-branch subjects store:
+
+      - `shadow_commit`: the kspec-meta commit at the time of review creation
+
+      - `content_hash`: a hash of the specific entity's YAML content
+
+
+      Staleness is detected by re-computing the entity content hash and comparing
+
+      against the stored hash. This isolates subject freshness from unrelated shadow
+
+      branch activity.
+
+
+      ### Git-backed compare semantics for code
+
+
+      Code reviews store a frozen compare context, not a single ref:
+
+
+      ```yaml
+
+      subject:
+        type: code
+        base_commit: "<sha>"       # authoritative
+        head_commit: "<sha>"       # authoritative
+        merge_base_commit: "<sha>" # optional but recommended
+        base_branch: "main"        # metadata only, never authoritative
+        head_branch: "feat/foo"    # metadata only, never authoritative
+      ```
+
+
+      Verdicts and checks bind to the compare they ran against:
+
+
+      ```yaml
+
+      verdict:
+        decision: approve
+        applies_to_compare:
+          base_commit: "<sha>"
+          head_commit: "<sha>"
+
+      check:
+        name: tests
+        status: pass
+        applies_to_compare:
+          base_commit: "<sha>"
+          head_commit: "<sha>"
+      ```
+
+
+      Staleness: a verdict or check is stale when its `applies_to_compare.head_commit`
+
+      does not match the subject's current `head_commit`. Stale verdicts do not count
+
+      toward approval. Stale required checks do not satisfy gates.
+
+
+      v1 does **not** support uncommitted worktree review. Only committed code is
+
+      reviewable.
+
+
+      ### Code anchor diff-side semantics
+
+
+      Code anchors store enough context for PR-style rendering:
+
+
+      ```yaml
+
+      anchor:
+        type: code
+        path: "src/foo.ts"
+        side: head           # or base
+        line_start: 42
+        line_end: 46
+        commit: "<sha>"
+      ```
+
+
+      Optional hunk/context text can be added later but is not required for v1.
+
+
+      ### Thread blocking semantics
+
+
+      Every thread has a `kind` field: `blocker`, `question`, or `nit` (default
+
+      `nit`). Only unresolved `blocker` threads prevent the computed disposition from
+
+      being `approved`. This prevents nits and questions from accidentally blocking
+
+      agent workflows.
+
+
+      ### Append-only event log
+
+
+      Every mutation appends to `events[]`:
+
+
+      ```yaml
+
+      events:
+        - _ulid: 01KX...
+          event_type: verdict_submitted
+          actor: "agent@kspec"
+          timestamp: "2026-03-13T..."
+          payload:
+            decision: approve
+            applies_to_compare: { base_commit: "abc", head_commit: "def" }
+      ```
+
+
+      Event types: `lifecycle_change`, `verdict_submitted`, `thread_created`,
+
+      `thread_resolved`, `thread_reopened`, `check_added`, `subject_refreshed`,
+
+      `comment_added`. Notes are separate from events — notes are human-readable
+
+      context, events are machine-parseable audit records.
 
 
       ### Identity and defaults
@@ -14894,34 +15248,56 @@ plans:
 
       Review records get a ULID on creation (via `ulid()`) and an auto-generated
 
-      slug derived from the subject (e.g. `review-task-foo-1` for a review of
+      slug derived from the subject (e.g. `review-task-foo-1`). The `--slug` flag
 
-      `@task-foo`). Default initial status is `draft`. Each thread within a review
+      on `review add` allows explicit slug assignment for batch workflows that need
 
-      also gets a ULID so it can be addressed by CLI commands (`kspec review resolve
+      to reference the review by a known name in subsequent commands. Default initial
 
-      @review-ref <thread-ulid>`). Reviewer identity uses the same plain string
-
-      convention as task note authors — typically the git config `user.email` or
-
-      agent name.
+      lifecycle state is `draft`.
 
 
       ### Verdict aggregation
 
 
-      The default aggregation rule: any `changes_requested` verdict blocks the
+      The default aggregation rule: any `request_changes` verdict whose
 
-      review from being `approved`. At least one explicit `approve` verdict is
+      `applies_to_compare.head_commit` matches the current subject `head_commit`
 
-      required. The `role` field on each verdict defaults to `"reviewer"` but
+      blocks the disposition from being `approved`. At least one explicit `approve`
 
-      supports future policy rules that distinguish required reviewers, optional
+      verdict matching the current `head_commit` is required. Stale verdicts (those
 
-      reviewers, or override authority — the aggregation function should be
+      whose `applies_to_compare` does not match) are preserved in history but
 
-      pluggable via a policy object but ship with the default rule.
+      excluded from the aggregation computation.
 
+
+      The `role` field on each verdict defaults to `"reviewer"`. v1 ships with the
+
+      default aggregation rule only. Policy configuration (quorum, required roles,
+
+      override authority) is deferred to a future plan — the schema carries the
+
+      fields needed to support it without a redesign.
+
+
+      ### Task synchronization rules
+
+
+      Exact rules for review-task interaction:
+
+
+      1. `review add` with a task subject → auto-sets `task.review_ref` to the new
+         review
+      2. `review verdict set --decision request_changes` on a task review → auto-
+         transitions task to `needs_work` if currently `pending_review`
+      3. Approval does **not** auto-transition the task — completion is always a
+         manual/explicit step
+      4. `kspec task get` on a task with `review_ref` pointing at a closed/archived
+         review while the task is `pending_review` → surfaces a warning
+      5. `review_ref` is a new optional field on the task schema alongside existing
+         `review_url` — `review_url` remains for external-only linkage
 
       ### Parser and storage layer
 
@@ -14943,6 +15319,12 @@ plans:
         read-modify-write with callback, same pattern as plan mutations
       - `createReviewRecord(input)` — factory that generates ULID, sets defaults
 
+      - `computeDisposition(record)` — pure function computing disposition from
+        current verdicts, checks, and threads against the subject's head_commit
+      - `computeGateState(record)` — pure function computing gate state from current
+        required checks against the subject's head_commit
+      - `computeEntityContentHash(entity)` — compute content hash for shadow-branch
+        subject staleness detection
 
       All writes use `writeYamlFilePreserveFormat` for format-stable YAML output.
 
@@ -14956,11 +15338,7 @@ plans:
 
       `LoadedReviewRecord[]` alongside tasks, items, plans, and meta items. This
 
-      enables `@review-slug` resolution through normal kspec lookup. Add any
-
-      review-specific ref fields (e.g. `subject_ref`, `related_review`) to
-
-      `REF_FIELDS` so cross-entity references are validated.
+      enables `@review-slug` resolution through normal kspec lookup.
 
 
       Update `buildIndexes()` in `src/parser/yaml.ts` to load and pass review records
@@ -14975,37 +15353,57 @@ plans:
 
       `src/cli/commands/index.ts` → `src/cli/index.ts`. Use `review` as the command
 
-      group name (not `review-record`) for ergonomics:
+      group name:
 
 
       ```
 
-      kspec review add --title "..." --subject @task-ref [--status draft]
+      kspec review add --title "..." --subject @task-ref [--slug my-review]
+
+      kspec review add --title "..." --base-commit abc --head-commit def [--merge-base aaa]
+      [--head-branch feat/foo]
 
       kspec review get @review-ref
 
-      kspec review list [--status pending] [--subject @task-ref] [--reviewer name]
+      kspec review list [--state open] [--disposition pending] [--subject @ref] [--reviewer name]
 
-      kspec review comment add @review-ref --body "..." [--file path --line N]
+      kspec review comment add @review-ref --body "..." [--kind blocker] [--file path --side head
+      --line-start N --line-end N --commit sha]
 
-      kspec review check add @review-ref --name "tests" --status pass [--evidence "..."]
+      kspec review check add @review-ref --name "tests" --status pass --head-commit sha
+      [--base-commit sha] [--evidence "..."]
 
-      kspec review verdict set @review-ref --decision approve|request-changes|comment
+      kspec review verdict set @review-ref --decision approve --head-commit sha [--base-commit sha]
 
-      kspec review resolve @review-ref <thread-id>
+      kspec review resolve @review-ref <thread-ulid>
 
-      kspec review reopen @review-ref <thread-id>
+      kspec review reopen @review-ref <thread-ulid>
+
+      kspec review open @review-ref
+
+      kspec review close @review-ref
+
+      kspec review archive @review-ref
+
+      kspec review refresh @review-ref --head-commit sha [--base-commit sha]
 
       ```
 
 
       Mark all write commands with `markMutating()` for batch eligibility. Each
 
-      mutation follows: load → validate → mutate → save → `commitIfShadow()`. Use
+      mutation follows: load → validate → mutate → append event → save →
 
-      `output()` for all rendering (handles `--json` mode automatically via
+      `commitIfShadow()`. Use `output()` for all rendering (handles `--json` mode
 
-      `@trait-json-output`).
+      automatically via `@trait-json-output`).
+
+
+      For code and external subjects that require structured input beyond simple
+
+      flags, support `--subject-json '{"type":"code","base_commit":"...","head_commit":"..."}'`
+
+      as an alternative input mode.
 
 
       ### Shadow branch commits
@@ -15025,15 +15423,17 @@ plans:
 
       Commands marked with `markMutating()` are automatically eligible for
 
-      `kspec batch`. A typical agent workflow:
+      `kspec batch`. For batch workflows that need to reference a review created in
+
+      an earlier command, use `--slug` on creation:
 
 
       ```json
 
       [
-        {"command": "review add", "args": {"title": "PR #42 review", "subject": "@task-foo"}},
-        {"command": "review comment add", "args": {"ref": "@review-pr-42", "body": "Fix the error handling"}},
-        {"command": "review check add", "args": {"ref": "@review-pr-42", "name": "tests", "status": "pass"}}
+        {"command": "review add", "args": {"title": "PR #42 review", "subject": "@task-foo", "slug": "review-pr-42"}},
+        {"command": "review comment add", "args": {"ref": "@review-pr-42", "body": "Fix the error handling", "kind": "blocker"}},
+        {"command": "review check add", "args": {"ref": "@review-pr-42", "name": "tests", "status": "pass", "headCommit": "def456"}}
       ]
 
       ```
@@ -15042,72 +15442,43 @@ plans:
       ### Validation approach
 
 
-      Validation should be built iteratively: start with the base review record
+      Validation is built into each model task rather than treated as a standalone
 
-      schema (core fields, status, subject binding) and extend as sibling schemas
+      milestone. The validation task ensures the complete schema is wired up
 
-      for threads, checks, and verdicts are defined by their respective tasks. The
+      end-to-end and that cross-schema relationships (e.g. applies_to_compare
 
-      validation task should not block on all sub-schemas being complete.
+      references matching subject compare context) are validated correctly.
 
 
       Invalid data supplied through CLI or batch should be rejected with actionable
 
-      Zod validation errors, matching the existing pattern in
+      Zod validation errors, matching the existing pattern in `src/schema/common.ts`
 
-      `src/schema/common.ts` error formatting.
+      error formatting.
 
-
-      ### Anchors
-
-
-      The anchor model should support both:
-
-
-      - code anchors: file path plus line or range, with revision (commit SHA) for
-        pinning — revision is required for code subjects so comments remain
-        interpretable after the code changes
-      - structured anchors: markdown heading, YAML path, ref plus field name, or a
-        similar stable logical target for plan/spec subjects
 
       ### Checks and gate policy
 
 
-      The review record should separate historical check evidence from current gate
+      The review record separates historical check evidence from current gate
 
-      evaluation. Each check run is appended (never overwritten), and gate
+      evaluation. Each check run is appended (never overwritten) and carries its
 
-      evaluation computes current pass/fail from the latest run of each logical
+      `applies_to_compare` context. Gate evaluation computes current pass/fail from
 
-      check name. Required vs informational check classification should be a
+      the latest run of each logical check name **whose `applies_to_compare.head_commit`
 
-      property of the check record so policy evaluation can filter accordingly.
+      matches the subject's current `head_commit`**. Required vs informational check
 
+      classification is a property of the check record. Checks with stale compare
 
-      ### Task lifecycle integration
-
-
-      The task schema gains an optional `review_ref` field (alongside the existing
-
-      `review_url`) that points to the active first-party review record. When
-
-      `kspec task get` renders a task in `pending_review` or `needs_work`, it
-
-      should surface the linked review ref so agents can resolve to the review
-
-      record without scraping notes. The task status remains the lightweight
-
-      workflow signal — review records provide the durable audit detail.
+      context are preserved in history but excluded from gate computation.
 
 
-      ### Relationship to task state
+      v1 gate policy is hardcoded defaults only: all required checks must pass, no
 
-
-      Task state should remain a lightweight workflow signal. The review record
-
-      should become the durable audit object instead of overloading `task.notes`
-
-      and `review_url`.
+      configuration surface. Policy configuration is deferred to a future plan.
 
 
       ### Testing approach
@@ -15117,13 +15488,25 @@ plans:
 
       `createTempDir()`, `initGitRepo()`, `kspec()`, `kspecJson()`, `testUlid()`.
 
-      Test both the parser layer (load/save/mutate) and the CLI surface (create,
+      Test both the parser layer (load/save/mutate/compute-disposition/compute-gates)
 
-      query, mutate, batch). Use `setupTempFixtures()` where pre-built fixture
+      and the CLI surface (create, query, mutate, lifecycle, refresh, batch).
 
-      state is needed. Remember: ULIDs must be Crockford base32 — always use
 
-      `testUlid()`.
+      Key test scenarios:
+
+      - Stale verdict detection (approve at commit A, refresh to commit B, disposition
+        should not be approved)
+      - Stale check detection (pass at commit A, refresh to commit B, gate should be
+        pending not passing)
+      - Blocking thread semantics (unresolved blocker prevents approval, unresolved
+        nit does not)
+      - Task auto-sync (request_changes auto-transitions task to needs_work)
+
+      - Shadow-branch subject staleness (review mutation does not self-invalidate
+        plan/spec subject)
+
+      Remember: ULIDs must be Crockford base32 — always use `testUlid()`.
 
 
       ### Execution intent
@@ -15141,15 +15524,25 @@ plans:
       ### Out of scope for this plan
 
 
-      This plan does not yet attempt to specify a full web UI or provider sync
+      This plan does not yet attempt to specify:
 
-      implementation for review records. The immediate goal is a stable core record
 
-      model plus the minimal CLI needed for agents and humans to use it. Richer
+      - a full web UI or provider sync implementation for review records
 
-      rendering, interaction design, and provider-specific synchronization can
+      - review of uncommitted worktree state (v1 is committed code only)
 
-      follow in later plans.
+      - gate policy configuration beyond hardcoded defaults
+
+      - verdict aggregation policy configuration (quorum, required roles)
+
+
+      The immediate goal is a stable core record model with git-backed compare
+
+      semantics plus the minimal CLI needed for agents and humans to use it. Richer
+
+      rendering, interaction design, policy configuration, and provider-specific
+
+      synchronization can follow in later plans.
     status: draft
     derived_tasks: []
     derived_specs: []
@@ -15202,6 +15595,19 @@ plans:
           ULIDs, (8) defined reviewer identity as plain string matching git author convention, (9)
           added archived to status enum, (10) relaxed CLI surface task dep to unblock scaffolding,
           (11) tightened storage ac-3 into testable behavior"
+      - _ulid: 01KKNHA44D9TVMXQZ0Q702WYNQ
+        created_at: 2026-03-14T06:42:32.206Z
+        author: "@claude"
+        content: "Major rework incorporating external review feedback: (1) git-backed compare semantics for
+          code subjects (base_commit + head_commit + merge_base_commit), (2) per-entity content
+          hashing for shadow-branch subject staleness instead of HEAD, (3) split lifecycle_state
+          from computed disposition and gate_state, (4) thread.kind for blocking semantics
+          (blocker/question/nit), (5) append-only events[] for audit history, (6) applies_to_compare
+          on verdicts and checks for stale detection, (7) diff-side code anchors
+          (path/side/line_start/line_end/commit), (8) exact task-sync rules (auto review_ref, auto
+          needs_work on request_changes), (9) CLI commands for close/archive/open/refresh, (10)
+          consistent naming (request_changes not request-changes), (11) explicit --slug support for
+          batch workflows, (12) v1 scoped to committed code only, hardcoded gate policy only"
   - _ulid: 01KKFJY80GMJZKN10AMDJ2WDNC
     slugs:
       - plan-grouped-work-and-human-handoff
