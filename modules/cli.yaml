@@ -9339,7 +9339,7 @@ features:
         parent: "@review-cli-commands"
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKNRBYH3G84Z1TFXDRVHQYKY
         slugs:
           - review-cli-mutation-commands
