@@ -96095,12 +96095,31 @@
     - bindings
     - identity
   vcs_refs: []
+  session_id: 01KKNY58K5Z3Q7E199SFR0MHM7
   created_at: 2026-03-14T08:45:53.455Z
-  notes: []
+  started_at: 2026-03-14T10:27:31.437Z
+  notes:
+    - _ulid: 01KKNY9BM488V3ZP16YH9TQ6KF
+      created_at: 2026-03-14T10:29:18.596Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Subject bindings define how review records identify what's under review. Prior
+        tasks delivered Zod schemas; this task adds the behavioral layer (factories, content
+        hashing, staleness detection).
+
+        - Scope: (1) Subject binding factory functions for each subject type, (2) content hash
+        computation for shadow-branch entities, (3) staleness evaluation comparing
+        applies_to_version against refreshed subject version, (4) AC-annotated tests covering all 5
+        ACs.
+
+        - Files: src/review/subject-bindings.ts (new), tests/review-subject-bindings.test.ts (new)
+
+        - Verification: npm test must pass, all 5 ACs covered with annotated tests.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-14T10:27:31.437Z
-  session_id: 01KKNY58K5Z3Q7E199SFR0MHM7
 - _ulid: 01KKNRC0FGK9TWYBNBVEGC7Z50
   slugs:
     - task-implement-review-comment-threads
