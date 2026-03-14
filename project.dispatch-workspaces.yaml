@@ -3060,16 +3060,21 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-daemon-session-sync-hardcoded-manifest-path-01kknktf
         branch_mode: branch
         branch_ref: dispatch/task/fix-daemon-session-sync-hardcoded-manifest-path/01kknktf
-        head: 8c2a386b10b0684fefcb86a4d3508279cc324a42
-        last_seen_at: 2026-03-14T07:33:32.494Z
-      reviewer: null
+        head: 26cc351a2b8a94f2f693278de1a3a7c8244aa42f
+        last_seen_at: 2026-03-14T07:45:44.163Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-daemon-session-sync-hardcoded-manifest-path-01kknktf-review
+        branch_mode: detached
+        branch_ref: null
+        head: 26cc351a2b8a94f2f693278de1a3a7c8244aa42f
+        last_seen_at: 2026-03-14T07:45:44.163Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -3103,21 +3108,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-14T07:45:32.681Z
+      updated_at: 2026-03-14T07:45:44.163Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T07:45:32.681Z
+      updated_at: 2026-03-14T07:45:44.163Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-14T07:45:32.681Z
+      updated_at: 2026-03-14T07:45:44.163Z
     timestamps:
       created_at: 2026-03-14T07:33:32.494Z
-      updated_at: 2026-03-14T07:45:32.681Z
-      last_reconciled_at: 2026-03-14T07:45:32.681Z
+      updated_at: 2026-03-14T07:45:44.163Z
+      last_reconciled_at: 2026-03-14T07:45:44.163Z
       last_active_at: 2026-03-14T07:33:32.949Z
       closed_at: null
