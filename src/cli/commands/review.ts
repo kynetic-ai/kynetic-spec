@@ -546,6 +546,7 @@ export function registerReviewCommands(program: Command): void {
     .option("--disposition <disposition>", "Filter by computed disposition (pending, approved, changes_requested)")
     .option("--subject-type <type>", "Filter by subject type")
     .option("--reviewer <reviewer>", "Filter by reviewer who has submitted a verdict")
+    .option("--task <ref>", "Filter reviews linked to a specific task (via subject, related_refs, or review_ref)")
     .option("--limit <n>", "Limit results", parseInt)
     .option("--offset <n>", "Skip first N results", parseInt)
     .option("--count", "Show only the count of matching items")
@@ -577,6 +578,32 @@ export function registerReviewCommands(program: Command): void {
         if (options.reviewer) {
           reviews = reviews.filter((r) =>
             r.verdicts.some((v) => v.reviewer === options.reviewer),
+          );
+        }
+
+        // AC: @review-cli-task-linkage ac-1, ac-2 — filter by task ref
+        if (options.task) {
+          const taskRef = options.task.startsWith("@") ? options.task : `@${options.task}`;
+          const taskRefNoAt = taskRef.slice(1);
+
+          // Also check task.review_ref to find reviews linked via the task schema
+          const tasks = await loadAllTasks(ctx);
+          const task = tasks.find(
+            (t) =>
+              t._ulid === taskRefNoAt ||
+              t._ulid.toLowerCase().startsWith(taskRefNoAt.toLowerCase()) ||
+              t.slugs.includes(taskRefNoAt),
+          );
+          const reviewRefFromTask = task?.review_ref ?? null;
+
+          reviews = reviews.filter(
+            (r) =>
+              r.related_refs.includes(taskRef) ||
+              (r.subject.type === "task" && r.subject.ref === taskRef) ||
+              (reviewRefFromTask && (
+                r._ulid === reviewRefFromTask.replace(/^@/, "") ||
+                r.slugs.includes(reviewRefFromTask.replace(/^@/, ""))
+              )),
           );
         }
 
@@ -1438,7 +1465,9 @@ export function registerReviewCommands(program: Command): void {
       try {
         const ctx = await initContext();
         const reviews = await loadReviewRecords(ctx);
+        const tasks = await loadAllTasks(ctx);
         const cleanRef = ref.startsWith("@") ? ref : `@${ref}`;
+        const cleanRefNoAt = cleanRef.startsWith("@") ? cleanRef.slice(1) : cleanRef;
 
         // Find reviews by related_refs or subject ref
         const matches = reviews.filter(
@@ -1446,6 +1475,20 @@ export function registerReviewCommands(program: Command): void {
             r.related_refs.includes(cleanRef) ||
             (r.subject.type === "task" && r.subject.ref === cleanRef),
         );
+
+        // AC: @review-cli-task-linkage ac-2 — also resolve via task's review_ref field
+        const task = tasks.find(
+          (t) =>
+            t._ulid === cleanRefNoAt ||
+            t._ulid.toLowerCase().startsWith(cleanRefNoAt.toLowerCase()) ||
+            t.slugs.includes(cleanRefNoAt),
+        );
+        if (task?.review_ref) {
+          const linkedReview = findReviewByRef(reviews, task.review_ref);
+          if (linkedReview && !matches.some((m) => m._ulid === linkedReview._ulid)) {
+            matches.push(linkedReview);
+          }
+        }
 
         if (matches.length === 0) {
           output({ reviews: [], total: 0, task_ref: cleanRef }, () => {

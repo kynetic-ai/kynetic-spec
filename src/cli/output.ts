@@ -550,6 +550,13 @@ export function formatTaskList(
 export interface FormatTaskDetailsOptions {
   /** Show all notes including superseded ones (default: false) */
   showAllNotes?: boolean;
+  /** Resolved active review summary for display */
+  activeReview?: {
+    ref: string;
+    title: string;
+    lifecycle_state: string;
+    disposition: string;
+  } | null;
 }
 
 /**
@@ -609,8 +616,16 @@ export function formatTaskDetails(
   }
 
   // AC: @review-task-lifecycle-integration ac-1 - display review_ref
+  // AC: @review-cli-task-linkage ac-1 - display resolved review summary
   if (task.review_ref) {
-    console.log(`Review ref: ${task.review_ref}`);
+    if (options.activeReview) {
+      const r = options.activeReview;
+      const stateColor = r.lifecycle_state === "open" ? chalk.green : r.lifecycle_state === "closed" ? chalk.red : chalk.gray;
+      const dispColor = r.disposition === "approved" ? chalk.green : r.disposition === "changes_requested" ? chalk.red : chalk.yellow;
+      console.log(`Review ref: ${task.review_ref} ${chalk.gray("→")} ${r.title} ${stateColor(`[${r.lifecycle_state}]`)} ${dispColor(`(${r.disposition})`)}`);
+    } else {
+      console.log(`Review ref: ${task.review_ref}`);
+    }
   }
 
   // AC: @task-submit ac-submit-2 - display review_url
