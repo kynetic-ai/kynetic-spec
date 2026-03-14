@@ -96280,7 +96280,7 @@
     core-skill-install.test.ts (and any other test that calls skill install-core or kspec setup
     without --dry-run) to a temp directory, matching the pattern in claude-plugin-registry.test.ts."
   spec_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -96290,7 +96290,9 @@
     - testing
     - plugin
   vcs_refs: []
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-14T09:20:39.564Z
+  started_at: 2026-03-14T09:31:19.905Z
   notes:
     - _ulid: 01KKNTDTX4GM9HBC6JEC0RPR0Z
       created_at: 2026-03-14T09:21:51.013Z
@@ -96344,5 +96346,12 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-14T09:31:19.905Z
-  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+  submitted_at: 2026-03-14T09:37:28.528Z
+  submission_linkage:
+    branch: fix/test-isolation-plugin-marketplace
+    commit: cb40dbadf23b125edc3f852a6e11a97671b241be
+    remote: null
+    remote_url: null
+    upstream_ref: null
+    review_url: null
+    captured_at: 2026-03-14T09:37:27.611Z
