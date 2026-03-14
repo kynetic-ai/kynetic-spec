@@ -60,7 +60,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:55.709Z
+      updated_at: 2026-03-14T22:10:55.718Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -70,17 +70,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-dispatch-workspace-and-scheduler-flow-01kkfy9k"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:55.709Z
+      updated_at: 2026-03-14T22:10:55.718Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:55.709Z
+      updated_at: 2026-03-14T22:10:55.718Z
     timestamps:
       created_at: 2026-03-13T03:46:33.670Z
-      updated_at: 2026-03-14T22:09:55.709Z
-      last_reconciled_at: 2026-03-14T22:09:55.709Z
+      updated_at: 2026-03-14T22:10:55.718Z
+      last_reconciled_at: 2026-03-14T22:10:55.718Z
       last_active_at: 2026-03-13T04:35:30.347Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM6NQ8M1W9MSAKGXDXW97
@@ -140,7 +140,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:55.814Z
+      updated_at: 2026-03-14T22:10:55.813Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -150,17 +150,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-agent-detection-01kkjkm6"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:55.814Z
+      updated_at: 2026-03-14T22:10:55.813Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:55.814Z
+      updated_at: 2026-03-14T22:10:55.813Z
     timestamps:
       created_at: 2026-03-13T04:01:50.333Z
-      updated_at: 2026-03-14T22:09:55.814Z
-      last_reconciled_at: 2026-03-14T22:09:55.814Z
+      updated_at: 2026-03-14T22:10:55.813Z
+      last_reconciled_at: 2026-03-14T22:10:55.813Z
       last_active_at: 2026-03-13T08:04:18.340Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJP6E1TN5ZFMHASTHSGG2MH
@@ -228,7 +228,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:55.917Z
+      updated_at: 2026-03-14T22:10:55.910Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -243,17 +243,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/reconcile-legacy-dispatch-workspaces-and-spec-gaps-01kkjp6e-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-14T22:09:55.917Z
+      updated_at: 2026-03-14T22:10:55.910Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:55.917Z
+      updated_at: 2026-03-14T22:10:55.910Z
     timestamps:
       created_at: 2026-03-13T04:11:14.073Z
-      updated_at: 2026-03-14T22:09:55.917Z
-      last_reconciled_at: 2026-03-14T22:09:55.917Z
+      updated_at: 2026-03-14T22:10:55.910Z
+      last_reconciled_at: 2026-03-14T22:10:55.910Z
       last_active_at: 2026-03-13T05:18:14.161Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM79JZR25WY03DTZETJN7
@@ -313,7 +313,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:56.020Z
+      updated_at: 2026-03-14T22:10:56.014Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -323,17 +323,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-acp-adapter-01kkjkm7"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:56.020Z
+      updated_at: 2026-03-14T22:10:56.014Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:56.020Z
+      updated_at: 2026-03-14T22:10:56.014Z
     timestamps:
       created_at: 2026-03-13T04:33:22.590Z
-      updated_at: 2026-03-14T22:09:56.020Z
-      last_reconciled_at: 2026-03-14T22:09:56.020Z
+      updated_at: 2026-03-14T22:10:56.014Z
+      last_reconciled_at: 2026-03-14T22:10:56.014Z
       last_active_at: 2026-03-13T04:44:46.937Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM7Y5M5366F6XWC0KMHV5
@@ -396,7 +396,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:56.124Z
+      updated_at: 2026-03-14T22:10:56.115Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -406,17 +406,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-skill-renderer-01kkjkm7"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:56.124Z
+      updated_at: 2026-03-14T22:10:56.115Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:56.124Z
+      updated_at: 2026-03-14T22:10:56.115Z
     timestamps:
       created_at: 2026-03-13T04:53:07.037Z
-      updated_at: 2026-03-14T22:09:56.124Z
-      last_reconciled_at: 2026-03-14T22:09:56.124Z
+      updated_at: 2026-03-14T22:10:56.115Z
+      last_reconciled_at: 2026-03-14T22:10:56.115Z
       last_active_at: 2026-03-13T06:25:26.178Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM8H7XWFRNJH8ME1RMZKD
@@ -479,7 +479,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:56.222Z
+      updated_at: 2026-03-14T22:10:56.214Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -489,17 +489,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-setup-integration-01kkjkm8"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:56.222Z
+      updated_at: 2026-03-14T22:10:56.214Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:56.222Z
+      updated_at: 2026-03-14T22:10:56.214Z
     timestamps:
       created_at: 2026-03-13T05:00:51.404Z
-      updated_at: 2026-03-14T22:09:56.222Z
-      last_reconciled_at: 2026-03-14T22:09:56.222Z
+      updated_at: 2026-03-14T22:10:56.214Z
+      last_reconciled_at: 2026-03-14T22:10:56.214Z
       last_active_at: 2026-03-13T11:53:47.900Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKB8FGF6K5NP97PEEXRP2PY7
@@ -559,7 +559,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:56.316Z
+      updated_at: 2026-03-14T22:10:56.312Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -573,17 +573,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-test-coverage-annotation-sweep-01kkb8fg"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:56.316Z
+      updated_at: 2026-03-14T22:10:56.312Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:56.316Z
+      updated_at: 2026-03-14T22:10:56.312Z
     timestamps:
       created_at: 2026-03-13T05:19:40.155Z
-      updated_at: 2026-03-14T22:09:56.316Z
-      last_reconciled_at: 2026-03-14T22:09:56.316Z
+      updated_at: 2026-03-14T22:10:56.312Z
+      last_reconciled_at: 2026-03-14T22:10:56.312Z
       last_active_at: 2026-03-13T07:57:55.232Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJT2VJPSPQRCVDW5NZ9G6TJ
@@ -646,7 +646,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:56.413Z
+      updated_at: 2026-03-14T22:10:56.407Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -656,17 +656,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/durably-shadow-commit-dispatch-workspace-registry-writes-01kkjt2v"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:56.413Z
+      updated_at: 2026-03-14T22:10:56.407Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:56.413Z
+      updated_at: 2026-03-14T22:10:56.407Z
     timestamps:
       created_at: 2026-03-13T05:30:39.118Z
-      updated_at: 2026-03-14T22:09:56.413Z
-      last_reconciled_at: 2026-03-14T22:09:56.413Z
+      updated_at: 2026-03-14T22:10:56.407Z
+      last_reconciled_at: 2026-03-14T22:10:56.407Z
       last_active_at: 2026-03-13T15:50:29.262Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM61M5BAEFRPNBRK7XDRY
@@ -733,7 +733,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:56.509Z
+      updated_at: 2026-03-14T22:10:56.503Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -748,17 +748,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-platform-config-schema-01kkjkm6-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-14T22:09:56.509Z
+      updated_at: 2026-03-14T22:10:56.503Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:56.509Z
+      updated_at: 2026-03-14T22:10:56.503Z
     timestamps:
       created_at: 2026-03-13T03:30:24.310Z
-      updated_at: 2026-03-14T22:09:56.509Z
-      last_reconciled_at: 2026-03-14T22:09:56.509Z
+      updated_at: 2026-03-14T22:10:56.503Z
+      last_reconciled_at: 2026-03-14T22:10:56.503Z
       last_active_at: 2026-03-13T07:57:55.750Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFZ61246P1HQKMP9HSM7D1F
@@ -823,7 +823,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:56.614Z
+      updated_at: 2026-03-14T22:10:56.610Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -838,17 +838,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-honor-derive-from-specs-false-in-plan-derive-01kkfz61-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-14T22:09:56.614Z
+      updated_at: 2026-03-14T22:10:56.610Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:56.614Z
+      updated_at: 2026-03-14T22:10:56.610Z
     timestamps:
       created_at: 2026-03-12T23:14:42.085Z
-      updated_at: 2026-03-14T22:09:56.614Z
-      last_reconciled_at: 2026-03-14T22:09:56.614Z
+      updated_at: 2026-03-14T22:10:56.610Z
+      last_reconciled_at: 2026-03-14T22:10:56.610Z
       last_active_at: null
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFY9G5E5WP7T9XC2P6DEYFX
@@ -913,7 +913,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:56.726Z
+      updated_at: 2026-03-14T22:10:56.712Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -928,17 +928,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-bootstrap-contract-01kkfy9g-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-14T22:09:56.726Z
+      updated_at: 2026-03-14T22:10:56.712Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:56.726Z
+      updated_at: 2026-03-14T22:10:56.712Z
     timestamps:
       created_at: 2026-03-12T22:10:35.812Z
-      updated_at: 2026-03-14T22:09:56.726Z
-      last_reconciled_at: 2026-03-14T22:09:56.726Z
+      updated_at: 2026-03-14T22:10:56.712Z
+      last_reconciled_at: 2026-03-14T22:10:56.712Z
       last_active_at: null
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFY9F0VXEG6YWVBA20N7DJ2
@@ -1003,7 +1003,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:56.837Z
+      updated_at: 2026-03-14T22:10:56.813Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -1018,17 +1018,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-branch-integration-contract-01kkfy9f-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-14T22:09:56.837Z
+      updated_at: 2026-03-14T22:10:56.813Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:56.837Z
+      updated_at: 2026-03-14T22:10:56.813Z
     timestamps:
       created_at: 2026-03-12T17:21:25.682Z
-      updated_at: 2026-03-14T22:09:56.837Z
-      last_reconciled_at: 2026-03-14T22:09:56.837Z
+      updated_at: 2026-03-14T22:10:56.813Z
+      last_reconciled_at: 2026-03-14T22:10:56.813Z
       last_active_at: null
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFY9GS59BDK2CGJARN0RHNZ
@@ -1093,7 +1093,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:56.940Z
+      updated_at: 2026-03-14T22:10:56.917Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -1108,17 +1108,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-orientation-prompt-01kkfy9g-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-14T22:09:56.940Z
+      updated_at: 2026-03-14T22:10:56.917Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:56.940Z
+      updated_at: 2026-03-14T22:10:56.917Z
     timestamps:
       created_at: 2026-03-13T00:44:09.505Z
-      updated_at: 2026-03-14T22:09:56.940Z
-      last_reconciled_at: 2026-03-14T22:09:56.940Z
+      updated_at: 2026-03-14T22:10:56.917Z
+      last_reconciled_at: 2026-03-14T22:10:56.917Z
       last_active_at: null
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFY9HBMSAW4DD924SYTEJ0P
@@ -1183,7 +1183,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:57.050Z
+      updated_at: 2026-03-14T22:10:57.033Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -1198,17 +1198,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-role-entrypoints-01kkfy9h-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-14T22:09:57.050Z
+      updated_at: 2026-03-14T22:10:57.033Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:57.050Z
+      updated_at: 2026-03-14T22:10:57.033Z
     timestamps:
       created_at: 2026-03-13T03:22:09.306Z
-      updated_at: 2026-03-14T22:09:57.050Z
-      last_reconciled_at: 2026-03-14T22:09:57.050Z
+      updated_at: 2026-03-14T22:10:57.033Z
+      last_reconciled_at: 2026-03-14T22:10:57.033Z
       last_active_at: null
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFY9FK58T570QTKKYMPTK98
@@ -1273,7 +1273,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:57.154Z
+      updated_at: 2026-03-14T22:10:57.142Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -1288,17 +1288,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-workspace-cleanup-01kkfy9f-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-14T22:09:57.154Z
+      updated_at: 2026-03-14T22:10:57.142Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:57.154Z
+      updated_at: 2026-03-14T22:10:57.142Z
     timestamps:
       created_at: 2026-03-12T22:51:09.791Z
-      updated_at: 2026-03-14T22:09:57.154Z
-      last_reconciled_at: 2026-03-14T22:09:57.154Z
+      updated_at: 2026-03-14T22:10:57.142Z
+      last_reconciled_at: 2026-03-14T22:10:57.142Z
       last_active_at: null
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFY9ECRCS3GRXNRV1NNXY8F
@@ -1363,7 +1363,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:57.257Z
+      updated_at: 2026-03-14T22:10:57.247Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -1378,17 +1378,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-worktree-provisioning-01kkfy9e-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-14T22:09:57.257Z
+      updated_at: 2026-03-14T22:10:57.247Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:57.257Z
+      updated_at: 2026-03-14T22:10:57.247Z
     timestamps:
       created_at: 2026-03-12T17:26:30.735Z
-      updated_at: 2026-03-14T22:09:57.257Z
-      last_reconciled_at: 2026-03-14T22:09:57.257Z
+      updated_at: 2026-03-14T22:10:57.247Z
+      last_reconciled_at: 2026-03-14T22:10:57.247Z
       last_active_at: null
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFY9JJ9SDWB05ZBQSV2VBDW
@@ -1453,7 +1453,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:57.359Z
+      updated_at: 2026-03-14T22:10:57.351Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -1468,17 +1468,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-priority-aware-dispatch-scheduler-01kkfy9j-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-14T22:09:57.359Z
+      updated_at: 2026-03-14T22:10:57.351Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:57.359Z
+      updated_at: 2026-03-14T22:10:57.351Z
     timestamps:
       created_at: 2026-03-12T20:40:02.242Z
-      updated_at: 2026-03-14T22:09:57.359Z
-      last_reconciled_at: 2026-03-14T22:09:57.359Z
+      updated_at: 2026-03-14T22:10:57.351Z
+      last_reconciled_at: 2026-03-14T22:10:57.351Z
       last_active_at: null
       closed_at: null
   - workspace_id: dispatch-workspace-01KKG0SN9325ERD0JW6H97SNFE
@@ -1543,7 +1543,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:57.467Z
+      updated_at: 2026-03-14T22:10:57.458Z
     health:
       status: invalid
       summary: Workspace registry record is invalid because required git state is missing.
@@ -1562,17 +1562,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-embedded-views-mixed-task-precedence-01kkg0sn-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-14T22:09:57.467Z
+      updated_at: 2026-03-14T22:10:57.458Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:57.467Z
+      updated_at: 2026-03-14T22:10:57.458Z
     timestamps:
       created_at: 2026-03-12T17:16:25.884Z
-      updated_at: 2026-03-14T22:09:57.467Z
-      last_reconciled_at: 2026-03-14T22:09:57.467Z
+      updated_at: 2026-03-14T22:10:57.458Z
+      last_reconciled_at: 2026-03-14T22:10:57.458Z
       last_active_at: null
       closed_at: null
   - workspace_id: dispatch-workspace-01KKFY9HY25VQHXXF0AJ94C0JP
@@ -1637,7 +1637,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:57.572Z
+      updated_at: 2026-03-14T22:10:57.557Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -1652,17 +1652,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scope-dispatch-shadow-serialization-01kkfy9h-review"
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
-      updated_at: 2026-03-14T22:09:57.572Z
+      updated_at: 2026-03-14T22:10:57.557Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:57.572Z
+      updated_at: 2026-03-14T22:10:57.557Z
     timestamps:
       created_at: 2026-03-12T21:32:13.883Z
-      updated_at: 2026-03-14T22:09:57.572Z
-      last_reconciled_at: 2026-03-14T22:09:57.572Z
+      updated_at: 2026-03-14T22:10:57.557Z
+      last_reconciled_at: 2026-03-14T22:10:57.557Z
       last_active_at: null
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM94SSN5XJCTY5PPWSX8T
@@ -1722,7 +1722,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:57.677Z
+      updated_at: 2026-03-14T22:10:57.696Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -1732,17 +1732,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-core-skills-droid-platform-registration-01kkjkm9"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:57.677Z
+      updated_at: 2026-03-14T22:10:57.696Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:57.677Z
+      updated_at: 2026-03-14T22:10:57.696Z
     timestamps:
       created_at: 2026-03-13T06:18:11.694Z
-      updated_at: 2026-03-14T22:09:57.677Z
-      last_reconciled_at: 2026-03-14T22:09:57.677Z
+      updated_at: 2026-03-14T22:10:57.696Z
+      last_reconciled_at: 2026-03-14T22:10:57.696Z
       last_active_at: 2026-03-13T08:09:51.073Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKM9SGG5AV5N0EV3GFTMZ4
@@ -1802,7 +1802,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:57.785Z
+      updated_at: 2026-03-14T22:10:57.797Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -1812,17 +1812,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-portable-skill-reference-resolution-01kkjkm9"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:57.785Z
+      updated_at: 2026-03-14T22:10:57.797Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:57.785Z
+      updated_at: 2026-03-14T22:10:57.797Z
     timestamps:
       created_at: 2026-03-13T06:33:53.248Z
-      updated_at: 2026-03-14T22:09:57.785Z
-      last_reconciled_at: 2026-03-14T22:09:57.785Z
+      updated_at: 2026-03-14T22:10:57.797Z
+      last_reconciled_at: 2026-03-14T22:10:57.797Z
       last_active_at: 2026-03-13T08:21:13.773Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKMACTMKC8CNF9D9Y56B3C
@@ -1882,7 +1882,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:57.913Z
+      updated_at: 2026-03-14T22:10:57.903Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -1892,17 +1892,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-core-skill-install-support-01kkjkma"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:57.913Z
+      updated_at: 2026-03-14T22:10:57.903Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:57.913Z
+      updated_at: 2026-03-14T22:10:57.903Z
     timestamps:
       created_at: 2026-03-13T08:14:07.606Z
-      updated_at: 2026-03-14T22:09:57.913Z
-      last_reconciled_at: 2026-03-14T22:09:57.913Z
+      updated_at: 2026-03-14T22:10:57.903Z
+      last_reconciled_at: 2026-03-14T22:10:57.903Z
       last_active_at: 2026-03-13T08:26:59.132Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJZW9XNWT7VPFK3FNBA41FZ
@@ -1962,7 +1962,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:58.007Z
+      updated_at: 2026-03-14T22:10:58.003Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -1972,17 +1972,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-broken-shadow-safety-01kkjzw9"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:58.007Z
+      updated_at: 2026-03-14T22:10:58.003Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:58.007Z
+      updated_at: 2026-03-14T22:10:58.003Z
     timestamps:
       created_at: 2026-03-13T09:25:12.097Z
-      updated_at: 2026-03-14T22:09:58.007Z
-      last_reconciled_at: 2026-03-14T22:09:58.007Z
+      updated_at: 2026-03-14T22:10:58.003Z
+      last_reconciled_at: 2026-03-14T22:10:58.003Z
       last_active_at: 2026-03-13T09:25:59.168Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKK7R6R2GDTVKZMSJD5RR757
@@ -2045,7 +2045,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:58.112Z
+      updated_at: 2026-03-14T22:10:58.108Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -2055,17 +2055,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-portable-task-submission-linkage-01kkk7r6"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:58.112Z
+      updated_at: 2026-03-14T22:10:58.108Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:58.112Z
+      updated_at: 2026-03-14T22:10:58.108Z
     timestamps:
       created_at: 2026-03-13T12:23:00.271Z
-      updated_at: 2026-03-14T22:09:58.112Z
-      last_reconciled_at: 2026-03-14T22:09:58.112Z
+      updated_at: 2026-03-14T22:10:58.108Z
+      last_reconciled_at: 2026-03-14T22:10:58.108Z
       last_active_at: 2026-03-13T13:16:38.563Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKMB07ACRP29S80J2PB1RK
@@ -2128,7 +2128,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:58.210Z
+      updated_at: 2026-03-14T22:10:58.213Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -2138,17 +2138,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-setup-status-reporting-01kkjkmb"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:58.210Z
+      updated_at: 2026-03-14T22:10:58.213Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:58.210Z
+      updated_at: 2026-03-14T22:10:58.213Z
     timestamps:
       created_at: 2026-03-13T13:44:49.687Z
-      updated_at: 2026-03-14T22:09:58.210Z
-      last_reconciled_at: 2026-03-14T22:09:58.210Z
+      updated_at: 2026-03-14T22:10:58.213Z
+      last_reconciled_at: 2026-03-14T22:10:58.213Z
       last_active_at: 2026-03-13T18:38:38.157Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJKMBM006GT41HWHR5DXCW6
@@ -2211,7 +2211,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:58.310Z
+      updated_at: 2026-03-14T22:10:58.312Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -2221,17 +2221,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-skill-import-support-01kkjkmb"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:58.310Z
+      updated_at: 2026-03-14T22:10:58.312Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:58.310Z
+      updated_at: 2026-03-14T22:10:58.312Z
     timestamps:
       created_at: 2026-03-13T14:03:51.006Z
-      updated_at: 2026-03-14T22:09:58.310Z
-      last_reconciled_at: 2026-03-14T22:09:58.310Z
+      updated_at: 2026-03-14T22:10:58.312Z
+      last_reconciled_at: 2026-03-14T22:10:58.312Z
       last_active_at: 2026-03-13T16:31:40.102Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKK7R8XY5MSEEWA0E9NKEW76
@@ -2294,7 +2294,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:58.411Z
+      updated_at: 2026-03-14T22:10:58.407Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -2304,17 +2304,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-branch-provenance-in-dispatch-workspace-01kkk7r8"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:58.411Z
+      updated_at: 2026-03-14T22:10:58.407Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:58.411Z
+      updated_at: 2026-03-14T22:10:58.407Z
     timestamps:
       created_at: 2026-03-13T16:32:24.945Z
-      updated_at: 2026-03-14T22:09:58.411Z
-      last_reconciled_at: 2026-03-14T22:09:58.411Z
+      updated_at: 2026-03-14T22:10:58.407Z
+      last_reconciled_at: 2026-03-14T22:10:58.407Z
       last_active_at: 2026-03-13T17:46:28.708Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKK7R7W2M83V3Y5XRAESEHCM
@@ -2375,7 +2375,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:58.508Z
+      updated_at: 2026-03-14T22:10:58.506Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -2385,17 +2385,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-adopt-existing-task-branch-lineage-for-r-01kkk7r7"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:58.508Z
+      updated_at: 2026-03-14T22:10:58.506Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:58.508Z
+      updated_at: 2026-03-14T22:10:58.506Z
     timestamps:
       created_at: 2026-03-13T18:39:13.247Z
-      updated_at: 2026-03-14T22:09:58.508Z
-      last_reconciled_at: 2026-03-14T22:09:58.508Z
+      updated_at: 2026-03-14T22:10:58.506Z
+      last_reconciled_at: 2026-03-14T22:10:58.506Z
       last_active_at: 2026-03-13T22:19:57.677Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKM1CAH2KSMH1TWS2E6079A1
@@ -2455,7 +2455,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:58.611Z
+      updated_at: 2026-03-14T22:10:58.611Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -2465,17 +2465,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-inline-registry-purge-for-closed-dispatch-workspace-records-01kkm1ca"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:58.611Z
+      updated_at: 2026-03-14T22:10:58.611Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:58.611Z
+      updated_at: 2026-03-14T22:10:58.611Z
     timestamps:
       created_at: 2026-03-13T19:37:21.948Z
-      updated_at: 2026-03-14T22:09:58.611Z
-      last_reconciled_at: 2026-03-14T22:09:58.611Z
+      updated_at: 2026-03-14T22:10:58.611Z
+      last_reconciled_at: 2026-03-14T22:10:58.611Z
       last_active_at: 2026-03-13T19:45:05.396Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKJYEETYYQABWJ2QWJGPEMRT
@@ -2535,7 +2535,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:58.715Z
+      updated_at: 2026-03-14T22:10:58.708Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -2545,17 +2545,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remote-branch-fallback-in-workspace-health-reconci-01kkjyee"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:58.715Z
+      updated_at: 2026-03-14T22:10:58.708Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:58.715Z
+      updated_at: 2026-03-14T22:10:58.708Z
     timestamps:
       created_at: 2026-03-13T19:45:31.226Z
-      updated_at: 2026-03-14T22:09:58.715Z
-      last_reconciled_at: 2026-03-14T22:09:58.715Z
+      updated_at: 2026-03-14T22:10:58.708Z
+      last_reconciled_at: 2026-03-14T22:10:58.708Z
       last_active_at: 2026-03-13T19:55:30.840Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKK7RAYW9VJ3325R9DMBDQHN
@@ -2615,7 +2615,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:58.846Z
+      updated_at: 2026-03-14T22:10:58.814Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -2625,17 +2625,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-review-and-fix-cycle-workspace-discovery-01kkk7ra"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:58.846Z
+      updated_at: 2026-03-14T22:10:58.814Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:58.846Z
+      updated_at: 2026-03-14T22:10:58.814Z
     timestamps:
       created_at: 2026-03-13T22:31:41.938Z
-      updated_at: 2026-03-14T22:09:58.846Z
-      last_reconciled_at: 2026-03-14T22:09:58.846Z
+      updated_at: 2026-03-14T22:10:58.814Z
+      last_reconciled_at: 2026-03-14T22:10:58.814Z
       last_active_at: 2026-03-13T23:32:46.900Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKK7R9XYTYS5JTNBFDNQ5YNS
@@ -2698,7 +2698,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:58.948Z
+      updated_at: 2026-03-14T22:10:58.921Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -2708,17 +2708,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-adopted-branch-cleanup-and-recoverabilit-01kkk7r9"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:58.948Z
+      updated_at: 2026-03-14T22:10:58.921Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:58.948Z
+      updated_at: 2026-03-14T22:10:58.921Z
     timestamps:
       created_at: 2026-03-13T23:51:45.708Z
-      updated_at: 2026-03-14T22:09:58.948Z
-      last_reconciled_at: 2026-03-14T22:09:58.948Z
+      updated_at: 2026-03-14T22:10:58.921Z
+      last_reconciled_at: 2026-03-14T22:10:58.921Z
       last_active_at: 2026-03-14T00:52:47.371Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKK7RC2WKBDMMXWWM7S0P80M
@@ -2778,7 +2778,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:59.046Z
+      updated_at: 2026-03-14T22:10:59.021Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -2788,17 +2788,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-deterministic-task-branch-helper-01kkk7rc"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:59.046Z
+      updated_at: 2026-03-14T22:10:59.021Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:59.046Z
+      updated_at: 2026-03-14T22:10:59.021Z
     timestamps:
       created_at: 2026-03-14T01:04:00.051Z
-      updated_at: 2026-03-14T22:09:59.046Z
-      last_reconciled_at: 2026-03-14T22:09:59.046Z
+      updated_at: 2026-03-14T22:10:59.021Z
+      last_reconciled_at: 2026-03-14T22:10:59.021Z
       last_active_at: 2026-03-14T01:17:46.129Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKK7RD4RNFCQN29QVYRP8E0Z
@@ -2858,7 +2858,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:59.147Z
+      updated_at: 2026-03-14T22:10:59.129Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -2868,17 +2868,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches-01kkk7rd"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:59.147Z
+      updated_at: 2026-03-14T22:10:59.129Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:59.147Z
+      updated_at: 2026-03-14T22:10:59.129Z
     timestamps:
       created_at: 2026-03-14T01:29:39.354Z
-      updated_at: 2026-03-14T22:09:59.147Z
-      last_reconciled_at: 2026-03-14T22:09:59.147Z
+      updated_at: 2026-03-14T22:10:59.129Z
+      last_reconciled_at: 2026-03-14T22:10:59.129Z
       last_active_at: 2026-03-14T01:42:46.820Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKK7RE59ZEANEM8MZJWXY5NV
@@ -2941,7 +2941,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:59.252Z
+      updated_at: 2026-03-14T22:10:59.232Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -2951,17 +2951,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-review-01kkk7re"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:59.252Z
+      updated_at: 2026-03-14T22:10:59.232Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:59.252Z
+      updated_at: 2026-03-14T22:10:59.232Z
     timestamps:
       created_at: 2026-03-14T01:43:46.458Z
-      updated_at: 2026-03-14T22:09:59.252Z
-      last_reconciled_at: 2026-03-14T22:09:59.252Z
+      updated_at: 2026-03-14T22:10:59.232Z
+      last_reconciled_at: 2026-03-14T22:10:59.232Z
       last_active_at: 2026-03-14T02:22:52.377Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKN32PF34M089KX910N0SZV4
@@ -3022,7 +3022,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:59.385Z
+      updated_at: 2026-03-14T22:10:59.326Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -3032,17 +3032,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-per-task-dispatch-drain-coalescing-01kkn32p"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:59.385Z
+      updated_at: 2026-03-14T22:10:59.326Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:59.385Z
+      updated_at: 2026-03-14T22:10:59.326Z
     timestamps:
       created_at: 2026-03-14T03:01:50.894Z
-      updated_at: 2026-03-14T22:09:59.385Z
-      last_reconciled_at: 2026-03-14T22:09:59.385Z
+      updated_at: 2026-03-14T22:10:59.326Z
+      last_reconciled_at: 2026-03-14T22:10:59.326Z
       last_active_at: 2026-03-14T03:24:46.473Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNKTFJ0JB8JK0DNDMDCRXAG
@@ -3103,7 +3103,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:59.485Z
+      updated_at: 2026-03-14T22:10:59.434Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -3113,17 +3113,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-daemon-session-sync-hardcoded-manifest-path-01kknktf"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:59.485Z
+      updated_at: 2026-03-14T22:10:59.434Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:59.485Z
+      updated_at: 2026-03-14T22:10:59.434Z
     timestamps:
       created_at: 2026-03-14T07:33:32.494Z
-      updated_at: 2026-03-14T22:09:59.485Z
-      last_reconciled_at: 2026-03-14T22:09:59.485Z
+      updated_at: 2026-03-14T22:10:59.434Z
+      last_reconciled_at: 2026-03-14T22:10:59.434Z
       last_active_at: 2026-03-14T07:45:44.674Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRBYQ78WDH2BA1E1HP69Q6
@@ -3184,7 +3184,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:59.582Z
+      updated_at: 2026-03-14T22:10:59.534Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -3194,17 +3194,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-record-core-01kknrby"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:59.582Z
+      updated_at: 2026-03-14T22:10:59.534Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:59.582Z
+      updated_at: 2026-03-14T22:10:59.534Z
     timestamps:
       created_at: 2026-03-14T08:54:42.370Z
-      updated_at: 2026-03-14T22:09:59.582Z
-      last_reconciled_at: 2026-03-14T22:09:59.582Z
+      updated_at: 2026-03-14T22:10:59.534Z
+      last_reconciled_at: 2026-03-14T22:10:59.534Z
       last_active_at: 2026-03-14T09:05:18.503Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRBZAGSK357RJ8PKV75MZ9
@@ -3268,7 +3268,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:59.680Z
+      updated_at: 2026-03-14T22:10:59.636Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -3278,17 +3278,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-storage-and-identity-01kknrbz"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:59.680Z
+      updated_at: 2026-03-14T22:10:59.636Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:59.680Z
+      updated_at: 2026-03-14T22:10:59.636Z
     timestamps:
       created_at: 2026-03-14T09:16:49.988Z
-      updated_at: 2026-03-14T22:09:59.680Z
-      last_reconciled_at: 2026-03-14T22:09:59.680Z
+      updated_at: 2026-03-14T22:10:59.636Z
+      last_reconciled_at: 2026-03-14T22:10:59.636Z
       last_active_at: 2026-03-14T10:14:54.649Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRBZXF4B280EVREQJ6ZJRH
@@ -3349,7 +3349,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:59.774Z
+      updated_at: 2026-03-14T22:10:59.737Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -3359,17 +3359,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-subject-bindings-01kknrbz"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:59.774Z
+      updated_at: 2026-03-14T22:10:59.737Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:59.774Z
+      updated_at: 2026-03-14T22:10:59.737Z
     timestamps:
       created_at: 2026-03-14T10:27:04.030Z
-      updated_at: 2026-03-14T22:09:59.774Z
-      last_reconciled_at: 2026-03-14T22:09:59.774Z
+      updated_at: 2026-03-14T22:10:59.737Z
+      last_reconciled_at: 2026-03-14T22:10:59.737Z
       last_active_at: 2026-03-14T17:10:45.224Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC26NFC7EGP5AN7AZ1982
@@ -3432,7 +3432,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:09:59.876Z
+      updated_at: 2026-03-14T22:10:59.845Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -3442,17 +3442,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-validation-01kknrc2"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:09:59.876Z
+      updated_at: 2026-03-14T22:10:59.845Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:09:59.876Z
+      updated_at: 2026-03-14T22:10:59.845Z
     timestamps:
       created_at: 2026-03-14T10:36:47.635Z
-      updated_at: 2026-03-14T22:09:59.876Z
-      last_reconciled_at: 2026-03-14T22:09:59.876Z
+      updated_at: 2026-03-14T22:10:59.845Z
+      last_reconciled_at: 2026-03-14T22:10:59.845Z
       last_active_at: 2026-03-14T17:37:50.660Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC3AMTWV7SS9F6ZP2FCA7
@@ -3513,7 +3513,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:10:00.005Z
+      updated_at: 2026-03-14T22:10:59.948Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -3523,17 +3523,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-surface-01kknrc3"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:10:00.005Z
+      updated_at: 2026-03-14T22:10:59.948Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:10:00.005Z
+      updated_at: 2026-03-14T22:10:59.948Z
     timestamps:
       created_at: 2026-03-14T17:10:46.081Z
-      updated_at: 2026-03-14T22:10:00.005Z
-      last_reconciled_at: 2026-03-14T22:10:00.005Z
+      updated_at: 2026-03-14T22:10:59.948Z
+      last_reconciled_at: 2026-03-14T22:10:59.948Z
       last_active_at: 2026-03-14T17:30:59.805Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC0FGK9TWYBNBVEGC7Z50
@@ -3594,7 +3594,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:10:00.100Z
+      updated_at: 2026-03-14T22:11:00.047Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -3604,17 +3604,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-comment-threads-01kknrc0"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:10:00.100Z
+      updated_at: 2026-03-14T22:11:00.047Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:10:00.100Z
+      updated_at: 2026-03-14T22:11:00.047Z
     timestamps:
       created_at: 2026-03-14T17:38:02.153Z
-      updated_at: 2026-03-14T22:10:00.100Z
-      last_reconciled_at: 2026-03-14T22:10:00.100Z
+      updated_at: 2026-03-14T22:11:00.047Z
+      last_reconciled_at: 2026-03-14T22:11:00.047Z
       last_active_at: 2026-03-14T17:46:52.212Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC11SHJBA9WRP91V92V0D
@@ -3675,7 +3675,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:10:00.197Z
+      updated_at: 2026-03-14T22:11:00.143Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -3685,17 +3685,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-checks-and-gates-01kknrc1"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:10:00.197Z
+      updated_at: 2026-03-14T22:11:00.143Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:10:00.197Z
+      updated_at: 2026-03-14T22:11:00.143Z
     timestamps:
       created_at: 2026-03-14T17:47:18.971Z
-      updated_at: 2026-03-14T22:10:00.197Z
-      last_reconciled_at: 2026-03-14T22:10:00.197Z
+      updated_at: 2026-03-14T22:11:00.143Z
+      last_reconciled_at: 2026-03-14T22:11:00.143Z
       last_active_at: 2026-03-14T17:59:27.492Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC3WFJDQX2KAS2129GZ2W
@@ -3759,7 +3759,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:10:00.301Z
+      updated_at: 2026-03-14T22:11:00.242Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -3769,17 +3769,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-create-query-01kknrc3"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:10:00.301Z
+      updated_at: 2026-03-14T22:11:00.242Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:10:00.301Z
+      updated_at: 2026-03-14T22:11:00.242Z
     timestamps:
       created_at: 2026-03-14T18:00:09.677Z
-      updated_at: 2026-03-14T22:10:00.301Z
-      last_reconciled_at: 2026-03-14T22:10:00.301Z
+      updated_at: 2026-03-14T22:11:00.242Z
+      last_reconciled_at: 2026-03-14T22:11:00.242Z
       last_active_at: 2026-03-14T18:35:23.118Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC1M21CX9TW44VZWMEHHZ
@@ -3843,7 +3843,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:10:00.403Z
+      updated_at: 2026-03-14T22:11:00.377Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -3853,17 +3853,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-verdicts-and-resolution-01kknrc1"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:10:00.403Z
+      updated_at: 2026-03-14T22:11:00.377Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:10:00.403Z
+      updated_at: 2026-03-14T22:11:00.377Z
     timestamps:
       created_at: 2026-03-14T18:15:58.408Z
-      updated_at: 2026-03-14T22:10:00.403Z
-      last_reconciled_at: 2026-03-14T22:10:00.403Z
+      updated_at: 2026-03-14T22:11:00.377Z
+      last_reconciled_at: 2026-03-14T22:11:00.377Z
       last_active_at: 2026-03-14T18:48:09.636Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC2RSHEC4VE39AK5NQN1J
@@ -3927,7 +3927,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:10:00.505Z
+      updated_at: 2026-03-14T22:11:00.477Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -3937,17 +3937,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-task-integration-01kknrc2"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:10:00.505Z
+      updated_at: 2026-03-14T22:11:00.477Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:10:00.505Z
+      updated_at: 2026-03-14T22:11:00.477Z
     timestamps:
       created_at: 2026-03-14T19:01:52.598Z
-      updated_at: 2026-03-14T22:10:00.505Z
-      last_reconciled_at: 2026-03-14T22:10:00.505Z
+      updated_at: 2026-03-14T22:11:00.477Z
+      last_reconciled_at: 2026-03-14T22:11:00.477Z
       last_active_at: 2026-03-14T19:42:31.203Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC4F8KAXMPAJCEVZEMNVH
@@ -4011,7 +4011,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:10:00.605Z
+      updated_at: 2026-03-14T22:11:00.580Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -4021,17 +4021,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-mutations-01kknrc4"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:10:00.605Z
+      updated_at: 2026-03-14T22:11:00.580Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:10:00.605Z
+      updated_at: 2026-03-14T22:11:00.580Z
     timestamps:
       created_at: 2026-03-14T19:18:28.041Z
-      updated_at: 2026-03-14T22:10:00.605Z
-      last_reconciled_at: 2026-03-14T22:10:00.605Z
+      updated_at: 2026-03-14T22:11:00.580Z
+      last_reconciled_at: 2026-03-14T22:11:00.580Z
       last_active_at: 2026-03-14T19:48:55.527Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC51AWZKNSBW4CTEDBRDS
@@ -4092,7 +4092,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:10:00.701Z
+      updated_at: 2026-03-14T22:11:00.684Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -4102,17 +4102,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-task-linkage-01kknrc5"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:10:00.701Z
+      updated_at: 2026-03-14T22:11:00.684Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:10:00.701Z
+      updated_at: 2026-03-14T22:11:00.684Z
     timestamps:
       created_at: 2026-03-14T19:59:53.706Z
-      updated_at: 2026-03-14T22:10:00.701Z
-      last_reconciled_at: 2026-03-14T22:10:00.701Z
+      updated_at: 2026-03-14T22:11:00.684Z
+      last_reconciled_at: 2026-03-14T22:11:00.684Z
       last_active_at: 2026-03-14T20:15:02.096Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC5KR8DTW5JVETBX9CMS8
@@ -4173,7 +4173,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:10:00.799Z
+      updated_at: 2026-03-14T22:11:00.786Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -4183,17 +4183,17 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-create-review-skill-01kknrc5"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:10:00.799Z
+      updated_at: 2026-03-14T22:11:00.786Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:10:00.799Z
+      updated_at: 2026-03-14T22:11:00.786Z
     timestamps:
       created_at: 2026-03-14T20:27:15.011Z
-      updated_at: 2026-03-14T22:10:00.799Z
-      last_reconciled_at: 2026-03-14T22:10:00.799Z
+      updated_at: 2026-03-14T22:11:00.786Z
+      last_reconciled_at: 2026-03-14T22:11:00.786Z
       last_active_at: 2026-03-14T20:43:02.893Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKQ4RKBQMPKJRG2G3ASM11YR
@@ -4254,7 +4254,7 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-14T22:10:00.899Z
+      updated_at: 2026-03-14T22:11:00.887Z
     health:
       status: stale
       summary: Workspace registry record is stale and needs reconciliation.
@@ -4264,16 +4264,16 @@ workspaces:
             "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/suppress-no-op-workspace-registry-writes-during-periodic-reconciliation-01kkq4rk"
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-14T22:10:00.899Z
+      updated_at: 2026-03-14T22:11:00.887Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-14T22:10:00.899Z
+      updated_at: 2026-03-14T22:11:00.887Z
     timestamps:
       created_at: 2026-03-14T21:42:54.416Z
-      updated_at: 2026-03-14T22:10:00.899Z
-      last_reconciled_at: 2026-03-14T22:10:00.899Z
+      updated_at: 2026-03-14T22:11:00.887Z
+      last_reconciled_at: 2026-03-14T22:11:00.887Z
       last_active_at: 2026-03-14T21:54:19.380Z
       closed_at: null
