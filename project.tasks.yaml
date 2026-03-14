@@ -96959,6 +96959,12 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #859. Added comprehensive review record CLI documentation to the review
+    skill (templates/skills/review/SKILL.md). Documented lifecycle, disposition computation,
+    creating reviews for all subject types, threaded comments with anchors, check recording, verdict
+    management, thread resolution, subject refresh, task linkage, and command reference. Updated
+    manifest description. Regenerated rendered skills and agent instructions. All CI checks passed.
+    No code changes — documentation only."
   depends_on:
     - "@task-implement-review-cli-create-query"
     - "@task-implement-review-cli-mutations"
@@ -96982,6 +96988,7 @@
   created_at: 2026-03-14T08:45:59.288Z
   started_at: 2026-03-14T20:27:25.572Z
   submitted_at: 2026-03-14T20:42:54.891Z
+  completed_at: 2026-03-14T20:54:36.250Z
   notes:
     - _ulid: 01KKQ0S2ESFB4MGK3FE69NXCYR
       created_at: 2026-03-14T20:32:05.081Z
@@ -97002,13 +97009,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-14T20:54:36.250Z
-  closed_reason: "Merged in PR #859. Added comprehensive review record CLI documentation to the review
-    skill (templates/skills/review/SKILL.md). Documented lifecycle, disposition computation,
-    creating reviews for all subject types, threaded comments with anchors, check recording, verdict
-    management, thread resolution, subject refresh, task linkage, and command reference. Updated
-    manifest description. Regenerated rendered skills and agent instructions. All CI checks passed.
-    No code changes — documentation only."
 - _ulid: 01KKNTBN4C568D5J8FS3ANBNZJ
   slugs: []
   title: "Fix test isolation: core-skill-install tests stomp global plugin marketplace"
@@ -97154,5 +97154,131 @@
   started_at: 2026-03-14T16:44:06.486Z
   submitted_at: 2026-03-14T16:45:27.927Z
   completed_at: 2026-03-14T16:57:19.470Z
+  notes: []
+  todos: []
+- title: Suppress no-op workspace registry writes during periodic reconciliation
+  description: >-
+    ## Problem
+
+
+    The dispatch engine's periodic reconciliation (every 60s) unconditionally rewrites
+
+    project.dispatch-workspaces.yaml and commits to the shadow branch — even when nothing
+
+    has actually changed. This creates ~1 commit/minute of pure timestamp churn on the
+
+    kspec-meta branch.
+
+
+    ## Root Cause
+
+
+    reconcileDispatchWorkspaceRegistry() in src/agent-runtime/workspace.ts (around line 1462)
+
+    always calls saveWorkspaceRecordToRegistry() with updated_at: now and last_reconciled_at: now,
+
+    then calls commitWorkspaceRegistryToShadow() — regardless of whether any meaningful field
+    changed.
+
+
+    The call chain is:
+
+    1. dispatch.ts _reconcile() (called every 60s by setInterval)
+
+    2. -> reconcileDispatchWorkspaceRegistry() in workspace.ts
+
+    3. -> Computes new health, lifecycle_state, active_role, cleanup, integration,
+    canonical_branch_head
+
+    4. -> Unconditionally writes record with fresh timestamps
+
+    5. -> Commits to shadow branch
+
+
+    ## Fix
+
+
+    Add dirty-checking before the save in reconcileDispatchWorkspaceRegistry(). Compare the
+
+    computed state fields against the existing record. Only call saveWorkspaceRecordToRegistry()
+
+    and commitWorkspaceRegistryToShadow() if at least one meaningful field differs.
+
+
+    Fields to compare (the meaningful fields):
+
+    - canonical_branch_head
+
+    - lifecycle_state
+
+    - active_role
+
+    - health (deep compare — status, issues)
+
+    - cleanup (deep compare — status, eligible, reason, detail)
+
+    - integration (deep compare — status, target_branch, target_commit, publication_mode, outcome,
+    detail)
+
+
+    Fields NOT to compare (timestamps are consequences, not triggers):
+
+    - timestamps.updated_at — only set when meaningful change occurs
+
+    - timestamps.last_reconciled_at — can track in memory but must not trigger write
+
+    - timestamps.closed_at — derived from lifecycle_state transition, compared via lifecycle_state
+
+
+    ## Implementation Notes
+
+
+    - The comparison should use a helper function (e.g. isRecordDirty(existing, computed)) for
+    testability
+
+    - For deep comparison of health/cleanup/integration sub-objects, compare the serializable fields
+    excluding their own updated_at timestamps
+
+    - last_reconciled_at can still be useful for staleness detection — consider keeping it as an
+    in-memory concern on the dispatch engine rather than persisted, or only persisting it when
+    piggy-backing on a dirty write
+
+    - The commit message dispatch-workspace-registry @@... should only appear when there is a real
+    change
+
+
+    ## Spec Coverage
+
+
+    Implements @dispatch-workspace-registry ac-10.
+
+
+    ## Testing
+
+
+    - Unit test: call reconcileDispatchWorkspaceRegistry() twice with identical task state; assert
+    no commit on second call
+
+    - Unit test: call with a changed field (e.g. health goes stale); assert commit happens
+
+    - Unit test: verify isRecordDirty() helper returns false for timestamp-only differences
+  type: task
+  spec_ref: "@dispatch-workspace-registry"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - cli
+    - dispatch
+    - bug
+  depends_on: []
+  automation: eligible
+  _ulid: 01KKQ4RKBQMPKJRG2G3ASM11YR
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-14T21:41:43.927Z
   notes: []
   todos: []
