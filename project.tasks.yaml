@@ -95805,7 +95805,7 @@
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -95825,3 +95825,5 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-14T07:33:53.755Z
+  session_id: 01KKNM7H3CJ57C7FHP09NR832X
