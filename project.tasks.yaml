@@ -96473,7 +96473,7 @@
   spec_ref: "@review-task-lifecycle-integration"
   plan_ref: "@plan-review-records-and-gates"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-implement-review-verdicts-and-resolution"
@@ -96492,7 +96492,7 @@
     upstream_ref: refs/heads/main
     review_url: null
     captured_at: 2026-03-14T19:17:33.137Z
-  session_id: 01KKPVKX8BPZSKV7TJVDE4WB7X
+  session_id: null
   created_at: 2026-03-14T08:45:56.377Z
   started_at: 2026-03-14T19:07:20.845Z
   submitted_at: 2026-03-14T19:17:33.830Z
@@ -96544,6 +96544,16 @@
 
 
         All 4975 tests pass. No regressions.
+      supersedes: null
+    - _ulid: 01KKPX15SM4TZ81TM922AGG67R
+      created_at: 2026-03-14T19:26:36.340Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: (1) Merge conflict in src/parser/index.ts —
+        rebase onto main required. (2) linkReviewToTasks and handleVerdictTaskTransition are library
+        functions only — not wired into review CLI commands. ACs ac-2, ac-3, ac-4 require CLI-level
+        integration: wire linkReviewToTasks into review add handler, wire
+        handleVerdictTaskTransition into review verdict handler. SHOULD-FIX: Pass explicit author to
+        createNote in handleVerdictTaskTransition. See PR #856 review for details."
       supersedes: null
   todos: []
   automation: eligible
