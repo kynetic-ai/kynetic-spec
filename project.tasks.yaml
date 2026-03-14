@@ -96325,12 +96325,32 @@
     - approvals
     - workflow
   vcs_refs: []
+  session_id: 01KKPRZVJVQM2H674K54C5E45G
   created_at: 2026-03-14T08:45:55.202Z
-  notes: []
+  started_at: 2026-03-14T18:18:13.370Z
+  notes:
+    - _ulid: 01KKPS4CY1HCTGNB106YBTY778
+      created_at: 2026-03-14T18:18:27.649Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: This task implements verdict aggregation, staleness detection, thread
+        resolution, gate evaluation, and review lifecycle transitions. It builds on the completed
+        review record core model, storage/identity, subject bindings, comment threads, and
+        checks/gates tasks.
+
+        - Scope: Pure library functions for computing disposition from verdicts/checks/threads,
+        submitting verdicts, resolving threads, managing lifecycle transitions (close/archive), and
+        staleness detection. No CLI commands (those are separate tasks).
+
+        - Files: src/parser/review-operations.ts (new - verdict/thread/lifecycle operations),
+        tests/review-verdicts-resolution.test.ts (new - comprehensive AC coverage)
+
+        - Verification: npm test covering all 9 ACs with AC annotations
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-14T18:18:13.370Z
-  session_id: 01KKPRZVJVQM2H674K54C5E45G
 - _ulid: 01KKNRC26NFC7EGP5AN7AZ1982
   slugs:
     - task-implement-review-validation
