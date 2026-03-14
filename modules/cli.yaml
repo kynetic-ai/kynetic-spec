@@ -8581,6 +8581,15 @@ features:
                   the same write and lock scope, requiring no separate cleanup step. Purged records
                   are no longer available for workspace identity reuse during re-provisioning;
                   re-opened tasks receive fresh workspace identities.
+              - id: ac-10
+                given: The periodic reconciliation runs and computes a new candidate state for a non-closed
+                  workspace record
+                when: The computed state (health, lifecycle_state, active_role, cleanup, integration,
+                  canonical_branch_head) is identical to the currently persisted record
+                then: The registry file is not rewritten and no shadow branch commit is created for that record.
+                  Timestamps such as updated_at must not change unless a meaningful field has
+                  changed. last_reconciled_at may be updated in memory for staleness evaluation but
+                  must not trigger a write or commit on its own.
             depends_on: []
             implements: []
             relates_to: []
