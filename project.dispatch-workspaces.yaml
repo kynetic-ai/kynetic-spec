@@ -3222,16 +3222,21 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-storage-and-identity-01kknrbz
         branch_mode: branch
         branch_ref: dispatch/task/task-implement-review-storage-and-identity/01kknrbz
-        head: 162a5d279614dacf0b307c15f5f69fb7fd6f49f2
-        last_seen_at: 2026-03-14T10:07:36.105Z
-      reviewer: null
+        head: 8e89f666bfdc17461c1fa546d100c9b0842c74ac
+        last_seen_at: 2026-03-14T10:14:54.183Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-storage-and-identity-01kknrbz-review
+        branch_mode: detached
+        branch_ref: null
+        head: 8e89f666bfdc17461c1fa546d100c9b0842c74ac
+        last_seen_at: 2026-03-14T10:14:54.183Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -3267,21 +3272,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-14T10:14:37.832Z
+      updated_at: 2026-03-14T10:14:54.183Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T10:14:37.832Z
+      updated_at: 2026-03-14T10:14:54.183Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-14T10:14:37.832Z
+      updated_at: 2026-03-14T10:14:54.183Z
     timestamps:
       created_at: 2026-03-14T09:16:49.988Z
-      updated_at: 2026-03-14T10:14:37.832Z
-      last_reconciled_at: 2026-03-14T10:14:37.832Z
+      updated_at: 2026-03-14T10:14:54.183Z
+      last_reconciled_at: 2026-03-14T10:14:54.183Z
       last_active_at: 2026-03-14T10:07:39.327Z
       closed_at: null
