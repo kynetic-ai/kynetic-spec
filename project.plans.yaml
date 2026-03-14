@@ -14100,52 +14100,83 @@ plans:
     slugs:
       - plan-review-records-and-gates
     title: Review Records and Gates
-    content: |
+    content: >
       # Review Records and Gates
 
+
       This plan defines first-party review records as durable kspec artifacts for
+
       plans, task work, and other reviewable subjects. The first wave focuses on the
+
       canonical data model and workflow contracts needed to capture review feedback,
+
       check evidence, verdicts, and resolution history without depending on GitHub
+
       PRs as the source of truth.
 
+
       This plan is intentionally scoped to the record model and integration
+
       contracts. It does not try to deliver full hosted-review UI parity or replace
+
       the existing task lifecycle in the same step.
+
 
       ## Context
 
+
       Today kspec has review-related task states (`pending_review`, `needs_work`) and
+
       optional `review_url`, but no native review artifact. Reviews mainly live in
+
       GitHub PRs or ad hoc task notes. That leaves no first-party record for:
 
+
       - local review without a PR
+
       - line-targeted comments on code or structured sections in plans/specs
+
       - durable check runs and approval state
+
       - a consistent review history across different artifact types
+
 
       ## Scope
 
+
       This plan should cover:
 
+
       - first-party review records with stable subject identity
+
       - explicit storage and referencing rules for review entities
+
       - threaded comments with general and targeted anchors
+
       - recorded checks and normalized gate evaluation
+
       - reviewer verdicts, blocking state, and iterative re-review cycles
+
       - explicit integration with task review states and compatibility fields
+
       - a minimal CLI surface so agents and humans can create, inspect, and update
         review records without direct file mutation
 
       This plan should not yet cover:
 
+
       - a full web review experience or GitHub-style UI parity
+
       - provider-specific sync beyond storing external identities and links
+
       - replacing `pending_review` or `needs_work` as the task workflow signal
+
 
       ## Specs
 
+
       ```yaml
+
       - title: Review Record Core Model
         slug: review-record-core-model
         type: feature
@@ -14645,11 +14676,15 @@ plans:
               fields
       ```
 
+
       ## Tasks
+
 
       derive_from_specs: false
 
+
       ```yaml
+
       - slug: task-implement-review-record-core
         title: Implement first-party review record core model
         spec_ref: "@review-record-core-model"
@@ -14754,79 +14789,322 @@ plans:
         tags: [review, cli, tasks]
       ```
 
+
       ## Implementation Notes
 
-      ### Subject coverage
 
-      The first wave should at least support:
+      ### Storage location and file structure
 
-      - plan reviews
-      - task or code-work reviews
-      - spec reviews when the subject can be identified by a stable ref
-      - arbitrary external artifact reviews when the subject can be identified by a
-        stable external key
 
-      ### Anchors
+      Review records are stored in `project.reviews.yaml` inside `.kspec/`, following
 
-      The model should support both:
+      the same pattern as `project.tasks.yaml` and `project.plans.yaml`. The file
 
-      - code anchors: file path plus line or range plus optional revision context
-      - structured anchors: markdown heading, YAML path, ref plus field name, or a
-        similar stable logical target
+      uses the standard versioned collection shape:
 
-      ### Checks and gate policy
 
-      The review record should separate historical check evidence from current gate
-      evaluation so re-runs can be preserved without losing the latest approval
-      decision inputs.
+      ```yaml
 
-      ### Storage and references
+      version: "1.0"
 
-      Assume reviews are introduced as a dedicated top-level entity with their own
-      storage file and reference identity, analogous to plans rather than embedded
-      under tasks or specs. The design work should validate that choice explicitly
-      and keep shadow-branch growth and auditability in mind.
+      reviews:
+        - _ulid: 01KX...
+          slugs: [review-pr-123]
+          title: "Review of PR #123"
+          status: pending
+          subject: { ... }
+          threads: [ ... ]
+          checks: [ ... ]
+          verdicts: [ ... ]
+          notes: [ ... ]
+          created_at: "2026-03-13T..."
+      ```
 
-      ### Validation and traits
 
-      The CLI slice should inherit existing cross-cutting behavior through traits
-      instead of restating every CLI concern from scratch. The design work should
-      also identify the Zod and parser validation boundaries required for a nested
-      review record model.
+      A single file per entity type keeps shadow branch commits atomic and avoids
 
-      Validation should be built iteratively: start with the base review record
-      schema (core fields, status, subject binding) and extend as sibling schemas
-      for threads, checks, and verdicts are defined by their respective tasks.
-      The validation task should not block on all sub-schemas being complete.
+      scattered state. Reviews with many threads and checks will grow, but this
+
+      matches how plans and tasks already accumulate notes and history in their
+
+      respective files.
+
+
+      ### Schema definition
+
+
+      Create `src/schema/review-records.ts` with Zod schemas following the plan and
+
+      task schema patterns:
+
+
+      - `ReviewStatusSchema` — enum: `draft`, `pending`, `in_progress`, `approved`,
+        `changes_requested`, `rejected`, `closed`
+      - `ReviewSubjectSchema` — discriminated union on `type` field (plan, task, spec,
+        code, external) with type-specific fields (ref, path, revision, url)
+      - `ReviewAnchorSchema` — discriminated union: code anchor (file, line/range,
+        revision) vs structured anchor (section, field, path)
+      - `ReviewThreadSchema` — thread with optional anchor, entries array, resolved
+        state
+      - `ReviewCheckSchema` — name, status, runner, evidence, timestamps
+
+      - `ReviewVerdictSchema` — reviewer, decision, timestamp
+
+      - `ReviewRecordSchema` — full record with `_ulid`, `slugs`, all nested schemas
+
+      - `ReviewRecordInputSchema` — input variant (most fields optional)
+
+      - `ReviewRecordsFileSchema` — collection wrapper with `version` field
+
+
+      Use `UlidSchema`, `SlugSchema`, `RefSchema`, `DateTimeSchema` from
+
+      `src/schema/common.ts`. Include `notes: z.array(NoteSchema).default([])` for
+
+      audit trail, matching the existing append-only note pattern.
+
 
       ### Subject type extensibility
 
-      The subject type set (plan, task, spec, code worktree, external) should be
-      modeled as an open discriminated union rather than a closed enum so new
+
+      The subject type set (plan, task, spec, code, external) should be modeled as a
+
+      Zod discriminated union on a `type` field rather than a closed enum so new
+
       subject types can be added without breaking schema changes. The initial
-      implementation should support the listed types but the schema should not
-      make it impossible to extend.
+
+      implementation should support the listed types but the schema should not make
+
+      it impossible to extend.
+
+
+      ### Parser and storage layer
+
+
+      Create `src/parser/review-records.ts` following the pattern in
+
+      `src/parser/plans.ts`:
+
+
+      - `getReviewRecordsFilePath(ctx)` — returns
+        `path.join(ctx.specDir, "project.reviews.yaml")`
+      - `loadReviewRecords(ctx)` — parse file, validate with Zod, return
+        `LoadedReviewRecord[]` with `_sourceFile` metadata
+      - `findReviewRecordByRef(ctx, ref)` — resolve by ULID or slug (strip `@`
+        prefix), return single record or undefined
+      - `saveReviewRecord(ctx, record)` — file-locked read-modify-write via
+        `withFileLock` from `src/parser/file-lock.ts`
+      - `mutateReviewRecordAtomically(ctx, record, mutator)` — atomic
+        read-modify-write with callback, same pattern as plan mutations
+      - `createReviewRecord(input)` — factory that generates ULID, sets defaults
+
+
+      All writes use `writeYamlFilePreserveFormat` for format-stable YAML output.
+
+      Export everything through `src/parser/index.ts`.
+
+
+      ### Reference system integration
+
+
+      Update `ReferenceIndex` constructor in `src/parser/refs.ts` to accept and index
+
+      `LoadedReviewRecord[]` alongside tasks, items, plans, and meta items. This
+
+      enables `@review-slug` resolution through normal kspec lookup. Add any
+
+      review-specific ref fields (e.g. `subject_ref`, `related_review`) to
+
+      `REF_FIELDS` so cross-entity references are validated.
+
+
+      Update `buildIndexes()` in `src/parser/yaml.ts` to load and pass review records
+
+      into the index.
+
+
+      ### CLI command structure
+
+
+      Create `src/cli/commands/review.ts` and register via
+
+      `src/cli/commands/index.ts` → `src/cli/index.ts`. Use `review` as the command
+
+      group name (not `review-record`) for ergonomics:
+
+
+      ```
+
+      kspec review add --title "..." --subject @task-ref [--status draft]
+
+      kspec review get @review-ref
+
+      kspec review list [--status pending] [--subject @task-ref] [--reviewer name]
+
+      kspec review comment add @review-ref --body "..." [--file path --line N]
+
+      kspec review check add @review-ref --name "tests" --status pass [--evidence "..."]
+
+      kspec review verdict set @review-ref --decision approve|request-changes|comment
+
+      kspec review resolve @review-ref <thread-id>
+
+      kspec review reopen @review-ref <thread-id>
+
+      ```
+
+
+      Mark all write commands with `markMutating()` for batch eligibility. Each
+
+      mutation follows: load → validate → mutate → save → `commitIfShadow()`. Use
+
+      `output()` for all rendering (handles `--json` mode automatically via
+
+      `@trait-json-output`).
+
+
+      ### Shadow branch commits
+
+
+      All mutations auto-commit to the `kspec-meta` shadow branch via
+
+      `commitIfShadow(ctx.shadowConfig, "review-add", slug, title)`. No special
+
+      handling needed — the existing shadow commit infrastructure handles this for
+
+      any file under `.kspec/`.
+
+
+      ### Batch support
+
+
+      Commands marked with `markMutating()` are automatically eligible for
+
+      `kspec batch`. A typical agent workflow:
+
+
+      ```json
+
+      [
+        {"command": "review add", "args": {"title": "PR #42 review", "subject": "@task-foo"}},
+        {"command": "review comment add", "args": {"ref": "@review-pr-42", "body": "Fix the error handling"}},
+        {"command": "review check add", "args": {"ref": "@review-pr-42", "name": "tests", "status": "pass"}}
+      ]
+
+      ```
+
+
+      ### Validation approach
+
+
+      Validation should be built iteratively: start with the base review record
+
+      schema (core fields, status, subject binding) and extend as sibling schemas
+
+      for threads, checks, and verdicts are defined by their respective tasks. The
+
+      validation task should not block on all sub-schemas being complete.
+
+
+      Invalid data supplied through CLI or batch should be rejected with actionable
+
+      Zod validation errors, matching the existing pattern in
+
+      `src/schema/common.ts` error formatting.
+
+
+      ### Anchors
+
+
+      The anchor model should support both:
+
+
+      - code anchors: file path plus line or range, with revision (commit SHA) for
+        pinning — revision is required for code subjects so comments remain
+        interpretable after the code changes
+      - structured anchors: markdown heading, YAML path, ref plus field name, or a
+        similar stable logical target for plan/spec subjects
+
+      ### Checks and gate policy
+
+
+      The review record should separate historical check evidence from current gate
+
+      evaluation. Each check run is appended (never overwritten), and gate
+
+      evaluation computes current pass/fail from the latest run of each logical
+
+      check name. Required vs informational check classification should be a
+
+      property of the check record so policy evaluation can filter accordingly.
+
+
+      ### Task lifecycle integration
+
+
+      The task schema gains an optional `review_ref` field (alongside the existing
+
+      `review_url`) that points to the active first-party review record. When
+
+      `kspec task get` renders a task in `pending_review` or `needs_work`, it
+
+      should surface the linked review ref so agents can resolve to the review
+
+      record without scraping notes. The task status remains the lightweight
+
+      workflow signal — review records provide the durable audit detail.
+
 
       ### Relationship to task state
 
-      Task state should remain a lightweight workflow signal. The review record should
-      become the durable audit object instead of overloading `task.notes` and
-      `review_url`.
+
+      Task state should remain a lightweight workflow signal. The review record
+
+      should become the durable audit object instead of overloading `task.notes`
+
+      and `review_url`.
+
+
+      ### Testing approach
+
+
+      Tests go in `tests/review-records.test.ts` using the standard helpers:
+
+      `createTempDir()`, `initGitRepo()`, `kspec()`, `kspecJson()`, `testUlid()`.
+
+      Test both the parser layer (load/save/mutate) and the CLI surface (create,
+
+      query, mutate, batch). Use `setupTempFixtures()` where pre-built fixture
+
+      state is needed. Remember: ULIDs must be Crockford base32 — always use
+
+      `testUlid()`.
+
 
       ### Execution intent
 
+
       This plan is intended to derive execution tasks directly. The plan itself is
-      the design step; the derived tasks should build the review record subsystem and
-      its minimal CLI surface rather than producing another layer of design-only
-      artifacts.
+
+      the design step; the derived tasks should build the review record subsystem
+
+      and its minimal CLI surface rather than producing another layer of
+
+      design-only artifacts.
+
 
       ### Out of scope for this plan
 
+
       This plan does not yet attempt to specify a full web UI or provider sync
+
       implementation for review records. The immediate goal is a stable core record
+
       model plus the minimal CLI needed for agents and humans to use it. Richer
-      rendering, interaction design, and provider-specific synchronization can follow
-      in later plans.
+
+      rendering, interaction design, and provider-specific synchronization can
+
+      follow in later plans.
     status: draft
     derived_tasks: []
     derived_specs: []
@@ -14859,6 +15137,15 @@ plans:
           (inherited from parent), added trait-confirmation-prompt to mutation commands for
           destructive op safety, added implementation notes for iterative validation approach and
           subject type extensibility as open discriminated union"
+      - _ulid: 01KKN7395N95AETAMGEQEG3M70
+        created_at: 2026-03-14T03:44:02.229Z
+        author: "@claude"
+        content: "Expanded implementation notes with concrete guidance: storage location
+          (project.reviews.yaml), schema structure (Zod discriminated unions, nested schemas),
+          parser layer (file-locked mutations following plans.ts pattern), reference system
+          integration (ReferenceIndex update), CLI command surface (kspec review subcommands with
+          markMutating), batch support, testing approach, and task lifecycle integration (review_ref
+          field)"
   - _ulid: 01KKFJY80GMJZKN10AMDJ2WDNC
     slugs:
       - plan-grouped-work-and-human-handoff
