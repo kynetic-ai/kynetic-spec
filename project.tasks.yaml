@@ -95814,9 +95814,18 @@
     - bug
     - daemon
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 8c2a386b10b0684fefcb86a4d3508279cc324a42
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-14T07:45:34.966Z
   session_id: 01KKNM7H3CJ57C7FHP09NR832X
   created_at: 2026-03-14T07:26:25.342Z
   started_at: 2026-03-14T07:33:53.755Z
+  submitted_at: 2026-03-14T07:45:35.826Z
   notes:
     - _ulid: 01KKNM0Q5WKSBRASNAC05PHP9D
       created_at: 2026-03-14T07:29:49.756Z
@@ -95845,14 +95854,25 @@
 
         - ACs: @multi-directory-daemon ac-31, @manifest-discovery ac-6
       supersedes: null
+    - _ulid: 01KKNMYAX94EXF7PG0DNPV9F58
+      created_at: 2026-03-14T07:46:00.233Z
+      author: "@claude"
+      content: >-
+        Fix implemented and PR created: https://github.com/kynetic-ai/kynetic-spec/pull/841
+
+
+        Changes:
+
+        1. Exported findManifestInDir() from src/parser/yaml.ts
+
+        2. Replaced hardcoded join(specDir, 'kynetic.yaml') with findManifestInDir(specDir) in
+        packages/daemon/src/server.ts
+
+        3. Added graceful early return when no manifest found (prevents ENOENT)
+
+        4. Added 5 behavioral tests in tests/daemon-session-sync-manifest-discovery.test.ts
+
+        5. Full test suite passes (239 files, 4853 tests, 0 failures)
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-14T07:45:35.826Z
-  submission_linkage:
-    branch: main
-    commit: 8c2a386b10b0684fefcb86a4d3508279cc324a42
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-14T07:45:34.966Z
