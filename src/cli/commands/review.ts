@@ -17,7 +17,10 @@ import {
   createReviewRecord,
   findReviewByRef,
   getAuthor,
+  handleVerdictTaskTransition,
   initContext,
+  linkReviewToTasks,
+  loadAllTasks,
   type LoadedReviewRecord,
   loadReviewRecords,
   mutateReviewAtomically,
@@ -477,6 +480,19 @@ export function registerReviewCommands(program: Command): void {
             review.slugs[0] || review._ulid.slice(0, 8),
             options.title,
           );
+
+          // AC: @review-task-lifecycle-integration ac-2, ac-3
+          // Auto-link review to task(s) via review_ref
+          const allTasks = await loadAllTasks(ctx);
+          const linkResult = await linkReviewToTasks(ctx, review, allTasks);
+          if (linkResult.linkedTasks.length > 0) {
+            await commitIfShadow(
+              ctx.shadow,
+              "review-task-link",
+              review.slugs[0] || review._ulid.slice(0, 8),
+              `linked to ${linkResult.linkedTasks.length} task(s)`,
+            );
+          }
 
           const reviews = await loadReviewRecords(ctx);
           const shortRef = shortReviewRef(
@@ -964,10 +980,32 @@ export function registerReviewCommands(program: Command): void {
             options.decision,
           );
 
+          // AC: @review-task-lifecycle-integration ac-4
+          // Auto-transition tasks to needs_work on changes_requested verdict
+          const allTasks = await loadAllTasks(ctx);
+          const transitioned = await handleVerdictTaskTransition(
+            ctx,
+            found,
+            options.decision as ReviewVerdictDecision,
+            allTasks,
+            reviewer,
+          );
+          if (transitioned.some((t) => t.transitioned)) {
+            await commitIfShadow(
+              ctx.shadow,
+              "review-verdict-task-transition",
+              found.slugs[0] || found._ulid.slice(0, 8),
+              `tasks transitioned to needs_work`,
+            );
+          }
+
           output(
             { decision: options.decision, reviewer, review_ulid: found._ulid },
             () => {
               success(`Recorded verdict "${options.decision}" by ${reviewer} on review ${shortReviewRef(found, reviews)}`);
+              for (const t of transitioned.filter((t) => t.transitioned)) {
+                info(`Task @${t.slug || t.ulid} transitioned to needs_work`);
+              }
             },
           );
         } catch (err) {

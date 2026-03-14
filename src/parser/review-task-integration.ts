@@ -15,7 +15,7 @@
 
 import type { ReviewRecord, ReviewVerdictDecision } from "../schema/index.js";
 import type { KspecContext, LoadedTask } from "./yaml.js";
-import { createNote, mutateTaskAtomically } from "./yaml.js";
+import { createNote, getAuthor, mutateTaskAtomically } from "./yaml.js";
 import { findReviewByRef, loadReviewRecords, type LoadedReviewRecord } from "./reviews.js";
 
 /**
@@ -169,6 +169,7 @@ export async function handleVerdictTaskTransition(
 
       const note = createNote(
         `[FIX_CYCLE: ${cycleNumber}] Review verdict: changes_requested${reviewer ? ` by ${reviewer}` : ""}`,
+        getAuthor(ctx.config?.identity?.author),
       );
 
       return {
