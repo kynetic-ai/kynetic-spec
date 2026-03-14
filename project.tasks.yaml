@@ -95282,6 +95282,12 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #838. Updated branching conventions and agent docs to reference kspec
+    task branch for dispatch-compatible deterministic branches. Changes include: task-work skill
+    section 3.5 updated from ad-hoc branching to kspec task branch @ref, two new branching
+    convention rules added (prefer kspec task branch, reserve dispatch/task/ namespace), dispatch
+    loop template updated, and all derived files regenerated (kspec-agents.md, .agents/skills/,
+    .factory/skills/). All CI checks passed, no regressions."
   depends_on:
     - "@implement-deterministic-task-branch-helper"
   context: []
@@ -95303,6 +95309,7 @@
   created_at: 2026-03-13T09:17:05.560Z
   started_at: 2026-03-14T01:30:07.445Z
   submitted_at: 2026-03-14T01:42:44.132Z
+  completed_at: 2026-03-14T01:54:23.399Z
   notes:
     - _ulid: 01KKMZJQ9GGKT9RYXBSJDGCWEG
       created_at: 2026-03-14T01:32:39.600Z
@@ -95349,13 +95356,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-14T01:54:23.399Z
-  closed_reason: "Merged in PR #838. Updated branching conventions and agent docs to reference kspec
-    task branch for dispatch-compatible deterministic branches. Changes include: task-work skill
-    section 3.5 updated from ad-hoc branching to kspec task branch @ref, two new branching
-    convention rules added (prefer kspec task branch, reserve dispatch/task/ namespace), dispatch
-    loop template updated, and all derived files regenerated (kspec-agents.md, .agents/skills/,
-    .factory/skills/). All CI checks passed, no regressions."
 - _ulid: 01KKK7RE59ZEANEM8MZJWXY5NV
   slugs:
     - add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-review
@@ -95400,6 +95400,33 @@
         - Files: tests/dispatch-adopted-branch-regression.test.ts (new)
 
         - Verification: npm test must pass with all new tests green
+      supersedes: null
+    - _ulid: 01KKN0Z07APT9193FAEV2W8N5G
+      created_at: 2026-03-14T01:56:50.538Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Created tests/dispatch-adopted-branch-regression.test.ts with 15
+        regression tests covering:
+
+
+        1. @adopted-branch-cleanup-and-recoverability (ac-1 through ac-4):
+           - ac-1: Adopted branch ref preserved during cleanup while worktrees removed
+           - ac-2: Dispatcher-managed branch deleted during cleanup
+           - ac-3: Health state distinguishes adopted branch recovery (remote fallback), missing managed branch, and missing reviewer snapshot as separate paths
+           - ac-4: Local rehydration state cleaned without deleting external source branch
+
+        2. @review-and-fix-cycle-workspace-discovery-before-discard (ac-1 through ac-4):
+           - ac-1: Recovery from submission linkage, registry state, and remote for pending_review/needs_work
+           - ac-2: Post-recovery workspace is healthy and fully functional
+           - ac-3: Explicit diagnostics and guidance when no recovery path exists
+           - ac-4: Precedence: registry state over submission linkage; metadata-backed recovery as fallback
+
+        3. Full lifecycle regression tests:
+           - Adopted branch identity maintained through review → fix-cycle → review → cleanup
+           - Dispatcher-managed branch deleted after full lifecycle (contrast test)
+           - Adopted workspace recovered from metadata after registry loss
+
+        All 4804 tests pass including 15 new regression tests.
       supersedes: null
   todos: []
   automation: eligible
