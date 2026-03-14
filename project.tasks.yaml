@@ -95722,9 +95722,18 @@
     - dispatch
     - mvp
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 2fa2efb3a75e8fe34f9ad964c5eef351db308f40
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-14T03:24:41.025Z
   session_id: 01KKN4P1RET7Q85Z2SMF5A8NEF
   created_at: 2026-03-14T02:33:48.771Z
   started_at: 2026-03-14T03:02:16.503Z
+  submitted_at: 2026-03-14T03:24:42.035Z
   notes:
     - _ulid: 01KKN32QMAKWNX3TV9479A42DV
       created_at: 2026-03-14T02:33:49.962Z
@@ -95766,14 +95775,15 @@
         - Verification: All existing tests pass with coalesceWindowMs: 0; new tests cover all 8 ACs
         using fake timers
       supersedes: null
+    - _ulid: 01KKN60ZBXT2QPSG24E4RQ0KZE
+      created_at: 2026-03-14T03:25:18.078Z
+      author: "@claude"
+      content: "PR created: https://github.com/kynetic-ai/kynetic-spec/pull/840 — Implementation complete
+        with all 8 ACs covered by tests. Key design decisions: (1) _serializedDrain() with
+        drainPending flag for ac-8 rather than a full mutex, since drain concurrency is purely
+        timer-driven. (2) Bootstrap/reconciliation/post-invocation all call _drainQueues() directly,
+        bypassing coalescing per ac-7. (3) All existing tests use coalesceWindowMs: 0 for zero churn
+        in existing behavior."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-14T03:24:42.035Z
-  submission_linkage:
-    branch: main
-    commit: 2fa2efb3a75e8fe34f9ad964c5eef351db308f40
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-14T03:24:41.025Z
