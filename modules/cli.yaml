@@ -8335,6 +8335,69 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KKN31NVPQD9S14MJK71RYSKG
+        slugs:
+          - per-task-dispatch-drain-coalescing
+        title: Per-Task Dispatch Drain Coalescing
+        type: requirement
+        tags:
+          - dispatch
+          - mvp
+        description: When multiple task state change events arrive for the same task in rapid succession,
+          the dispatch engine defers queue draining behind a per-task coalescing window instead of
+          draining immediately after each enqueue. This ensures that only the final landing state is
+          evaluated for dispatch, preventing spurious agent spawns for transient intermediate states
+          (e.g., unblock → start → submit within seconds spawning both a worker and a reviewer
+          instead of just the reviewer).
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-14T02:33:15.382Z
+        acceptance_criteria:
+          - id: ac-1
+            given: A task state change event is received by the dispatch engine
+            when: The engine enqueues matching agent dispatch entries
+            then: Instead of draining queues immediately, the engine schedules a per-task coalescing timer
+              (configurable, default 5 seconds). If the timer is already pending for that task, it
+              is reset to the full window duration.
+          - id: ac-2
+            given: A per-task coalescing timer expires with no further events for that task
+            when: The engine drains queues
+            then: The existing stale-entry pruning (ac-17 of @agent-dispatch-engine) evaluates queue entries
+              against the task's current on-disk state, discarding entries whose expected status no
+              longer matches, and only the entries matching the final landing state survive to be
+              spawned.
+          - id: ac-3
+            given: State change events arrive for different tasks concurrently
+            when: The engine processes the events
+            then: Each task's coalescing timer is independent — a rapid transition on task A does not delay
+              dispatching for task B whose timer has already expired or was never set.
+          - id: ac-4
+            given: The coalescing window duration is configurable via DispatchEngineOptions
+            when: The engine is constructed
+            then: The coalesceWindowMs option controls the per-task drain delay (default 5000ms). Setting it to
+              0 disables coalescing and preserves the current immediate-drain behavior for backward
+              compatibility.
+          - id: ac-5
+            given: The dispatch engine is stopped while per-task coalescing timers are pending
+            when: stop() is called
+            then: All pending coalescing timers are cancelled and no further drains are scheduled.
+              Already-running drains complete normally per existing shutdown behavior (ac-11 of
+              @agent-dispatch-engine).
+          - id: ac-6
+            given: A single task state change event arrives with no subsequent events for the same task
+            when: The coalescing timer expires
+            then: The drain proceeds normally after the coalescing delay. The only observable difference from
+              pre-coalescing behavior is the added latency of the coalescing window.
+          - id: ac-7
+            given: Post-invocation re-evaluation (ac-24 of @agent-dispatch-engine) discovers new dispatchable
+              tasks
+            when: The engine re-evaluates and enqueues after an invocation completes
+            then: The coalescing window applies to these re-evaluation enqueues as well, preventing rapid
+              post-invocation churn from bypassing the coalescing protection.
     features:
       - _ulid: 01KKFY93PW5HZ7V21GGJMMZENW
         slugs:
