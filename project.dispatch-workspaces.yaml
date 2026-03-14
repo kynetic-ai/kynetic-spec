@@ -3396,12 +3396,7 @@ workspaces:
         branch_ref: dispatch/task/task-implement-review-validation/01kknrc2
         head: 78da8b3f50619e7c822c1fd7ffc0f7626a71dcac
         last_seen_at: 2026-03-14T17:37:46.705Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-validation-01kknrc2-review
-        branch_mode: detached
-        branch_ref: null
-        head: 78da8b3f50619e7c822c1fd7ffc0f7626a71dcac
-        last_seen_at: 2026-03-14T17:37:46.705Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -3442,7 +3437,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T17:49:00.701Z
+      updated_at: 2026-03-14T17:49:15.209Z
     cleanup:
       status: scheduled
       eligible: true
@@ -3451,8 +3446,8 @@ workspaces:
       updated_at: 2026-03-14T17:49:00.701Z
     timestamps:
       created_at: 2026-03-14T10:36:47.635Z
-      updated_at: 2026-03-14T17:49:13.782Z
-      last_reconciled_at: 2026-03-14T17:49:13.782Z
+      updated_at: 2026-03-14T17:49:15.209Z
+      last_reconciled_at: 2026-03-14T17:49:15.209Z
       last_active_at: 2026-03-14T17:37:50.660Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC3AMTWV7SS9F6ZP2FCA7
