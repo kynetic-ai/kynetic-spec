@@ -1572,19 +1572,6 @@ inbox:
       - bug
       - skill-resolution
     added_by: "@claude"
-  - _ulid: 01KKNQG46EYAY857R6ST1DA6CH
-    text: Plugin marketplace registration pointing to stale worktree path — known_marketplaces.json had
-      kspec-plugins pointing to a cleaned-up reviewer worktree
-      (kynetic-spec-dispatch/.kspec-worktrees/...) instead of the stable npm-linked path
-      (kynetic-spec/plugin). Broke plugin for all projects. Root cause unclear —
-      registerCorePluginMarketplace resolves via import.meta.dirname which should always resolve to
-      the linked binary, not a worktree. Need to investigate how the worktree path got written and
-      harden getPackagePluginDir() to prevent recurrence.
-    created_at: 2026-03-14T08:30:40.334Z
-    tags:
-      - bug
-      - plugin
-    added_by: "@claude"
   - _ulid: 01KKNQZ63EQE20TJDNQ2HYK004
     text: Add plan output CLI option to suppress specs/tasks YAML blocks — when agents use plan
       commands, the full specs and tasks blocks spam the output. Add a flag (e.g. --summary or

@@ -95991,12 +95991,12 @@
     - storage
     - identity
   vcs_refs: []
+  session_id: 01KKNT4NB1HBWF014Y2KHZ7EKS
   created_at: 2026-03-14T08:45:52.848Z
+  started_at: 2026-03-14T09:17:44.277Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-03-14T09:17:44.277Z
-  session_id: 01KKNT4NB1HBWF014Y2KHZ7EKS
 - _ulid: 01KKNRBZXF4B280EVREQJ6ZJRH
   slugs:
     - task-implement-review-subject-bindings
@@ -96261,3 +96261,30 @@
   notes: []
   todos: []
   automation: eligible
+- title: "Fix test isolation: core-skill-install tests stomp global plugin marketplace"
+  type: task
+  priority: 3
+  spec_ref: null
+  tags:
+    - bug
+    - testing
+    - plugin
+  description: "core-skill-install.test.ts calls kspec skill install-core via CLI subprocess without
+    KSPEC_CLAUDE_HOME isolation. This calls registerCorePluginMarketplace() which writes to the real
+    ~/.claude/plugins/known_marketplaces.json. When tests run from dispatch worktrees,
+    getPackagePluginDir() resolves import.meta.dirname to the worktree path, stomping the global
+    marketplace to point at a worktree plugin/ directory that may get cleaned up. Confirmed by
+    monitoring: session 01KKNSFHKED3PWYMF9J455BV4X (pr-reviewer running npm test in worktree)
+    overwrote the marketplace at 09:06:59 UTC. Fix: set KSPEC_CLAUDE_HOME env var in
+    core-skill-install.test.ts (and any other test that calls skill install-core or kspec setup
+    without --dry-run) to a temp directory, matching the pattern in claude-plugin-registry.test.ts."
+  _ulid: 01KKNTBN4C568D5J8FS3ANBNZJ
+  slugs: []
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-14T09:20:39.564Z
+  notes: []
+  todos: []
