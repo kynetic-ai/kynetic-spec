@@ -4196,3 +4196,79 @@ workspaces:
       last_reconciled_at: 2026-03-14T21:42:52.584Z
       last_active_at: 2026-03-14T20:43:02.893Z
       closed_at: null
+  - workspace_id: dispatch-workspace-01KKQ4RKBQMPKJRG2G3ASM11YR
+    task_ref: "@01KKQ4RKBQMPKJRG2G3ASM11YR"
+    task_slug: suppress-no-op-workspace-registry-writes-during-periodic-reconciliation
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    resolved_base_branch: main
+    base_branch_point: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    canonical_branch: dispatch/task/suppress-no-op-workspace-registry-writes-during-periodic-reconciliation/01kkq4rk
+    canonical_branch_head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    branch_provenance:
+      ownership: dispatcher-managed
+      source: provisioned
+      remote_ref: null
+      adopted_from: null
+      adopted_at: null
+      rehydrated: null
+    lifecycle_state: ready
+    active_role: null
+    worktrees:
+      worker:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/suppress-no-op-workspace-registry-writes-during-periodic-reconciliation-01kkq4rk
+        branch_mode: branch
+        branch_ref: dispatch/task/suppress-no-op-workspace-registry-writes-during-periodic-reconciliation/01kkq4rk
+        head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+        last_seen_at: 2026-03-14T21:42:54.416Z
+      reviewer: null
+    bootstrap:
+      status: not_run
+      configHash: null
+      canonicalBranchHead: null
+      lastRunAt: null
+      invalidationReasons: []
+      steps: []
+      failureMessage: null
+      lastRole: null
+      roleStates:
+        worker:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+        reviewer:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+    integration:
+      status: pending
+      target_branch: main
+      target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+      publication_mode: pull_request
+      outcome: pull_request
+      detail: null
+      updated_at: 2026-03-14T21:42:54.416Z
+    health:
+      status: healthy
+      summary: Workspace record matches current git branch and worktree state.
+      issues: []
+      updated_at: 2026-03-14T21:42:54.416Z
+    cleanup:
+      status: not_scheduled
+      eligible: false
+      reason: null
+      detail: null
+      updated_at: 2026-03-14T21:42:54.416Z
+    timestamps:
+      created_at: 2026-03-14T21:42:54.416Z
+      updated_at: 2026-03-14T21:42:54.416Z
+      last_reconciled_at: 2026-03-14T21:42:54.416Z
+      last_active_at: null
+      closed_at: null
