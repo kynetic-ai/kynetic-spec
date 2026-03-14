@@ -97156,7 +97156,10 @@
   completed_at: 2026-03-14T16:57:19.470Z
   notes: []
   todos: []
-- title: Suppress no-op workspace registry writes during periodic reconciliation
+- _ulid: 01KKQ4RKBQMPKJRG2G3ASM11YR
+  slugs: []
+  title: Suppress no-op workspace registry writes during periodic reconciliation
+  type: task
   description: >-
     ## Problem
 
@@ -97262,23 +97265,22 @@
     - Unit test: call with a changed field (e.g. health goes stale); assert commit happens
 
     - Unit test: verify isRecordDirty() helper returns false for timestamp-only differences
-  type: task
   spec_ref: "@dispatch-workspace-registry"
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - cli
     - dispatch
     - bug
-  depends_on: []
-  automation: eligible
-  _ulid: 01KKQ4RKBQMPKJRG2G3ASM11YR
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-14T21:41:43.927Z
   notes: []
   todos: []
+  automation: eligible
+  started_at: 2026-03-14T21:43:16.150Z
+  session_id: 01KKQ4TRSVZCQ0SHJGV6MQHN28
