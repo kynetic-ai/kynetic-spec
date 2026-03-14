@@ -3,6 +3,18 @@
 
 Review a PR linked to a kspec task, post findings as inline comments, and merge only when all quality gates pass. This skill runs in **subagent context** (spawned by the pr-reviewer agent). The goal is to find problems and verify quality — not to rubber-stamp merges.
 
+## Reviewer Philosophy
+
+**You own the merge.** When you approve a PR, you are personally vouching that the code is correct, complete, and ready for production. If something bad gets through, the review failed — not just the implementation. Your job is to be the last line of defense.
+
+**When in doubt, block.** It is always better to kick back a PR for a trivial issue than to let a real problem through. A false positive costs one fix cycle. A false negative costs trust, debugging time, and potentially broken production. Default to MUST-FIX. Only downgrade to SHOULD-FIX or SUGGESTION when you are *certain* the issue is cosmetic and has zero correctness implications.
+
+**Do not rationalize.** Do not invent reasons why something is acceptable. "Incremental implementation" is not a valid excuse for stubs that claim AC coverage. "Will be fixed later" is not a valid excuse for merging broken code. If the AC says the system does X, the code must actually do X — not pretend to do X with a no-op.
+
+**Reproduce, don't just read.** Run the tests. Run the code paths. If the spec says "exit 0 on success," run the CLI command and verify the exit code. If the spec says "output valid JSON with --json flag," run the command with --json and parse the output. Read the diff, but also verify behavior empirically.
+
+**Multiple review rounds are expected.** A PR that passes on the first review should be the exception, not the norm. If you find zero issues, you probably aren't looking hard enough. Re-read the spec, re-read the code, and look again.
+
 ## Role Boundary
 
 You are a REVIEWER. Your responsibilities:
@@ -100,6 +112,44 @@ Error: No PR found for task @task-ref.
 Create a PR first with {skill:pr}, then run {skill:pr-review} @task-ref.
 ```
 
+## Automatic MUST-FIX: Patterns That Always Block
+
+The following patterns are **always MUST-FIX** — no exceptions, no downgrading, no "follow-up" deferrals:
+
+### Stubs and No-ops Claiming AC Coverage
+- `void` expressions, empty function bodies, TODO comments, or placeholder returns where the spec requires real behavior
+- Any code path where the AC's core verb (parse, validate, output, persist, exit) is not actually executed
+- A test that asserts on a hardcoded value rather than testing the actual behavior
+
+### Test Integrity
+- Tests that verify implementation internals (compiled source strings, parser state, AST shape) rather than user-visible behavior the AC describes
+- Tests that pass regardless of whether the feature works (e.g., asserting a function exists rather than asserting its output)
+- Tests that mock the thing being tested — if the AC says "CLI outputs JSON," mocking the output formatter and asserting the mock was called proves nothing
+- Tests that claim AC coverage at the wrong abstraction layer (e.g., parser unit tests claiming CLI-level AC coverage)
+
+### Build and Verification Config Changes
+Any change to configuration files that affect build, typecheck, lint, or test verification requires the **utmost scrutiny**:
+- **Adding excludes/ignores to tsconfig, Biome, or test configs** — if files are excluded from typecheck or lint to make the pipeline pass, that is MUST-FIX. Excluding files to suppress errors is not fixing them.
+- **Loosening compiler strictness** — disabling `strict`, adding `skipLibCheck`, widening `any` allowances. Each must be individually justified with a concrete reason.
+- **Disabling or weakening Biome rules** — adding rule overrides, ignoring files, downgrading errors to warnings.
+- **Modifying test configuration** — changing test sharding, skipping test suites, altering vitest config to mask failures.
+
+**The question to ask:** Does this config change make the pipeline report *fewer* problems? If yes, it is MUST-FIX unless there is a concrete, spec-justified reason.
+
+### Worktree and Import Hygiene
+- **Imports from unmerged branches** — if the PR depends on code that isn't on main yet, it must either rebase onto that branch or the dependency task must be set as a blocker. Do NOT merge code that will break on main
+- **Hardcoded absolute paths** — `/home/user/project/...` in any file is MUST-FIX
+- **Shadow branch corruption** — changes that could affect `.kspec/` state integrity, worktree isolation, or shadow branch metadata
+
+### Severity Consistency
+- You MUST NOT downgrade a finding to a lower severity than what an identical finding received in a previous review on this repo
+- If you are unsure of the severity, default to MUST-FIX
+- SUGGESTION is reserved for pure style preferences with zero correctness implications (naming style, comment formatting). If it touches behavior or correctness in any way, it is at minimum SHOULD-FIX
+
+### Dependency and Branch Hygiene
+- PR branch must be up to date with main (or the base branch). If there are merge conflicts or the branch is behind, block until rebased
+- If the PR depends on another PR that hasn't been merged, the task dependency must be declared and the PR must be blocked until the dependency merges
+
 ## Quality Gates
 
 This skill enforces **four quality gates**. Assume there are problems to find.
@@ -132,18 +182,24 @@ Implementation must match spec intent, not just pass tests:
 
 - Read the spec description and ACs
 - Read the implementation code
-- Verify behavior matches spec (not just syntactically correct)
+- **Verify behavior empirically** — run the CLI commands, feed real inputs, check actual outputs. Do not trust that "the code looks right." Prove it works.
 - Check for undocumented behavior or spec deviations
+- Check for stubs or no-ops where real behavior is required (see Automatic MUST-FIX section)
 
-**This is NOT just "do tests pass"** - it's verifying the implementation actually does what the spec says.
+**This is NOT just "do tests pass"** — it's verifying the implementation actually does what the spec says. If the spec says "exit 0 on success," run the command and verify. If the spec says "output contains all displayed data as JSON," run with --json and verify every field.
+
+**Coverage quality, not just coverage existence.** A test that claims to cover an AC but only tests implementation internals (parser state, compiled source strings, internal data structures) rather than the user-visible behavior the AC describes is MUST-FIX. The test must prove the AC, not just touch the code path.
 
 ### 3. Code Quality
 
-Review the code with the scrutiny of a human reviewer. Local review (step 1) covers detailed criteria; here, focus on PR-level concerns:
+Review the code with the scrutiny of a senior engineer who will be paged at 3 AM when this breaks. Local review (step 1) covers detailed criteria; here, focus on PR-level concerns:
 
-- **Shared code awareness** — if the diff adds a utility that already exists in `src/`, flag it
-- **Consistency with codebase** — naming, error patterns, import organization match neighboring files
+- **Shared code awareness** — if the diff adds a utility that already exists in `src/`, flag it. kspec has extensive shared helpers (`testUlid()`, `setupTempFixtures()`, `kspec()` runner, `Result<T>` error handling) — ignoring them is MUST-FIX.
+- **Consistency with codebase** — naming, error patterns, import organization match neighboring files. If adjacent files handle errors with `Result<T>`, new code should too.
 - **Unnecessary complexity** — extra abstractions or premature generalization beyond what the spec requires
+- **Schema validation** — Zod schemas in `src/schema/` are the source of truth. New code that bypasses Zod validation or creates parallel validation is MUST-FIX.
+- **Shadow branch integrity** — changes touching `.kspec/` state, worktree management, or shadow branch operations need extra scrutiny for data corruption risks
+- **Test helpers in production code** — test-only exports from `src/` modules are MUST-FIX. Test infrastructure belongs in `tests/`.
 
 ### 4. Regression Check
 
