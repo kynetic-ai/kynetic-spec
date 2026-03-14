@@ -95980,7 +95980,7 @@
   spec_ref: "@review-record-storage-and-identity"
   plan_ref: "@plan-review-records-and-gates"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-implement-review-record-core"
@@ -96068,6 +96068,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-14T10:26:45.999Z
+  closed_reason: "Merged in PR #846. Implemented review record storage and reference identity:
+    dedicated first-party storage in project.reviews.yaml (ac-1), ULID-backed identity with @ref
+    resolution through shared reference system including buildReferenceIndex/buildIndexes
+    integration (ac-2), single dedicated file per project (ac-3). Fix cycle 1 resolved
+    buildReferenceIndex/buildIndexes integration gap. 25 tests, all 3 ACs covered, 4953 tests
+    passing."
 - _ulid: 01KKNRBZXF4B280EVREQJ6ZJRH
   slugs:
     - task-implement-review-subject-bindings
