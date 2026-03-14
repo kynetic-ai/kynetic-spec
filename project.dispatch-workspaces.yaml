@@ -3222,7 +3222,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
+    lifecycle_state: ready
     active_role: null
     worktrees:
       worker:
@@ -3231,12 +3231,7 @@ workspaces:
         branch_ref: dispatch/task/task-implement-review-storage-and-identity/01kknrbz
         head: 162a5d279614dacf0b307c15f5f69fb7fd6f49f2
         last_seen_at: 2026-03-14T10:07:36.105Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-storage-and-identity-01kknrbz-review
-        branch_mode: detached
-        branch_ref: null
-        head: 162a5d279614dacf0b307c15f5f69fb7fd6f49f2
-        last_seen_at: 2026-03-14T10:00:56.703Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -3277,7 +3272,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T10:07:46.128Z
+      updated_at: 2026-03-14T10:07:46.852Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -3286,7 +3281,7 @@ workspaces:
       updated_at: 2026-03-14T10:07:46.128Z
     timestamps:
       created_at: 2026-03-14T09:16:49.988Z
-      updated_at: 2026-03-14T10:07:46.128Z
-      last_reconciled_at: 2026-03-14T10:07:46.128Z
+      updated_at: 2026-03-14T10:07:46.852Z
+      last_reconciled_at: 2026-03-14T10:07:46.852Z
       last_active_at: 2026-03-14T10:07:39.327Z
       closed_at: null
