@@ -1401,7 +1401,7 @@ features:
         then: The manifest is resolved via the discovery API, not by hardcoding kynetic.yaml
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
   - _ulid: 01KJXSVF2ZKQRVKRZYZVGP10EN
     slugs:
       - ui-design-system
