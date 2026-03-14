@@ -96313,7 +96313,7 @@
   spec_ref: "@review-verdicts-and-resolution-lifecycle"
   plan_ref: "@plan-review-records-and-gates"
   origin: derived
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-implement-review-comment-threads"
@@ -96333,9 +96333,9 @@
     upstream_ref: refs/heads/main
     review_url: null
     captured_at: 2026-03-14T18:25:39.499Z
-  session_id: null
+  session_id: 01KKPT3S4R8S65FD2931ZZ2RBQ
   created_at: 2026-03-14T08:45:55.202Z
-  started_at: 2026-03-14T18:18:13.370Z
+  started_at: 2026-03-14T18:47:57.965Z
   submitted_at: 2026-03-14T18:25:40.223Z
   notes:
     - _ulid: 01KKPS4CY1HCTGNB106YBTY778
