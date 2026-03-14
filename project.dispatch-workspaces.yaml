@@ -3949,7 +3949,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
     canonical_branch: dispatch/task/task-implement-review-cli-mutations/01kknrc4
-    canonical_branch_head: 01bfd5f4d44e88b3e5b49b75b6d2f8889d96abb7
+    canonical_branch_head: 0083a06f25dcaf81302f9f31828a688019d7253e
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -3957,16 +3957,21 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-mutations-01kknrc4
         branch_mode: branch
         branch_ref: dispatch/task/task-implement-review-cli-mutations/01kknrc4
-        head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-        last_seen_at: 2026-03-14T19:18:28.041Z
-      reviewer: null
+        head: 0083a06f25dcaf81302f9f31828a688019d7253e
+        last_seen_at: 2026-03-14T19:31:41.200Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-mutations-01kknrc4-review
+        branch_mode: detached
+        branch_ref: null
+        head: 0083a06f25dcaf81302f9f31828a688019d7253e
+        last_seen_at: 2026-03-14T19:31:41.200Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -4000,21 +4005,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-14T19:30:51.812Z
+      updated_at: 2026-03-14T19:31:41.200Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T19:30:51.812Z
+      updated_at: 2026-03-14T19:31:41.200Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-14T19:30:51.812Z
+      updated_at: 2026-03-14T19:31:41.200Z
     timestamps:
       created_at: 2026-03-14T19:18:28.041Z
-      updated_at: 2026-03-14T19:30:51.812Z
-      last_reconciled_at: 2026-03-14T19:30:51.812Z
+      updated_at: 2026-03-14T19:31:41.200Z
+      last_reconciled_at: 2026-03-14T19:31:41.200Z
       last_active_at: 2026-03-14T19:18:28.497Z
       closed_at: null
