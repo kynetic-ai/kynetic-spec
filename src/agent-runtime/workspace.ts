@@ -2279,3 +2279,446 @@ export async function getDispatchWorkspaceHealth(
     metadata,
   };
 }
+
+// ─── Review and Fix-Cycle Workspace Discovery ───────────────────────────────
+
+/**
+ * Result of workspace discovery attempt for review or fix-cycle tasks.
+ *
+ * AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1 through ac-4
+ */
+export interface WorkspaceDiscoveryResult {
+  /** Whether a recoverable workspace was found. */
+  recovered: boolean;
+  /** Source that provided recovery, if any. */
+  recoverySource:
+    | "registry-state"
+    | "metadata-backed-worktree"
+    | "task-submission-linkage"
+    | "remote-or-review-locator"
+    | null;
+  /** Updated health after recovery attempt. */
+  health: DispatchWorkspaceHealth;
+  /** Diagnostics when recovery fails — task-linked messages with guidance. */
+  diagnostics: WorkspaceDiscoveryDiagnostic[];
+  /** When multiple branch signals conflict, details of the conflict. */
+  conflictingSignals: BranchSignal[] | null;
+}
+
+export interface WorkspaceDiscoveryDiagnostic {
+  taskRef: string;
+  code: string;
+  message: string;
+  suggestion: string;
+}
+
+export interface BranchSignal {
+  source: string;
+  branch: string;
+}
+
+/**
+ * Submission linkage shape for discovery. Matches the SubmissionLinkage type
+ * from schema/common.ts but defined here to avoid circular imports.
+ */
+interface DiscoverySubmissionLinkage {
+  branch: string | null;
+  commit: string;
+  remote?: string | null;
+  remote_url?: string | null;
+  upstream_ref?: string | null;
+  review_url?: string | null;
+  captured_at: string;
+}
+
+/**
+ * Attempt workspace discovery and recovery for a `pending_review` or
+ * `needs_work` dispatch entry that has no healthy local workspace candidate.
+ *
+ * Applies explicit precedence ordering (AC-4):
+ *   1. Existing registry state
+ *   2. Metadata-backed worktrees
+ *   3. Recorded task submission linkage
+ *   4. Remote or review-derived discovery
+ *
+ * If recovery succeeds, the workspace is adopted or re-registered so normal
+ * provisioning can proceed (AC-2).
+ *
+ * If no trustworthy recovery path exists, returns structured diagnostics
+ * with task-linked recovery guidance (AC-3).
+ *
+ * When multiple branch signals exist and cannot be reconciled, blocks with
+ * diagnostics rather than guessing (AC-4).
+ *
+ * AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1
+ * AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-2
+ * AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-3
+ * AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-4
+ */
+export async function discoverWorkspaceForReviewOrFixCycle(options: {
+  projectDir: string;
+  taskRef: string;
+  role?: DispatchWorkspaceRole;
+  task?: {
+    title?: string;
+    slugs?: string[];
+    submission_linkage?: DiscoverySubmissionLinkage | null;
+    review_url?: string;
+  };
+}): Promise<WorkspaceDiscoveryResult> {
+  const { projectDir, taskRef, role = "worker", task } = options;
+  const diagnostics: WorkspaceDiscoveryDiagnostic[] = [];
+  const branchSignals: BranchSignal[] = [];
+
+  // Phase 1: Registry state — the highest precedence source.
+  // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1, ac-4
+  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  if (existingRecord) {
+    branchSignals.push({
+      source: "registry-state",
+      branch: existingRecord.canonical_branch,
+    });
+    // Registry record exists but workspace may be unhealthy.
+    // Attempt to reconcile: restore branch from remote if missing.
+    // reconcileWorkspaceHealth internally calls tryRestoreBranchFromRemote.
+    const now = new Date().toISOString();
+    const health = reconcileWorkspaceHealth(projectDir, existingRecord, now);
+    // Recovery is successful if the canonical branch is intact (healthy or
+    // stale). Stale means worktrees are missing but the branch exists —
+    // provisioning can recreate them. Only "invalid" (missing canonical
+    // branch) is truly unrecoverable from registry state alone.
+    if (health.status !== "invalid") {
+      return {
+        recovered: true,
+        recoverySource: "registry-state",
+        health: await getDispatchWorkspaceHealth({ projectDir, taskRef, role, task }),
+        diagnostics: [],
+        conflictingSignals: null,
+      };
+    }
+    // Registry exists but canonical branch is missing everywhere —
+    // continue to collect other signals for potential conflict detection
+    // or alternative recovery.
+  }
+
+  // Phase 2: Metadata-backed worktrees — scan worktree root for metadata
+  // files that reference this task.
+  // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1
+  let metadataCandidate: { branch: string; worktreeDir: string } | null = null;
+  try {
+    const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+    const worktreeEntries = parseWorktreeList(projectDir);
+    const entriesUnderRoot = worktreeEntries.filter((entry) =>
+      isPathInside(resolvedConfig.worktreeRoot, entry.path)
+    );
+    for (const entry of entriesUnderRoot) {
+      const metadata = await readWorkspaceMetadata(entry.path);
+      if (metadata && metadata.taskRef === taskRef) {
+        metadataCandidate = {
+          branch: metadata.canonicalBranch,
+          worktreeDir: entry.path,
+        };
+        branchSignals.push({
+          source: "metadata-backed-worktree",
+          branch: metadata.canonicalBranch,
+        });
+        break;
+      }
+    }
+  } catch {
+    // Config or worktree listing failure is non-fatal for discovery.
+  }
+
+  // If we recovered from metadata but had no registry record, attempt
+  // to reconstruct the registry record from the worktree metadata.
+  if (metadataCandidate && !existingRecord) {
+    try {
+      const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+      const recovered = await recoverWorkspaceRecordFromMetadata(
+        projectDir,
+        resolvedConfig,
+        metadataCandidate.worktreeDir,
+      );
+      if (recovered) {
+        await withDispatchShadowMutationLock(projectDir, taskRef, async () => {
+          await saveWorkspaceRecordToRegistry(projectDir, recovered);
+          await commitWorkspaceRegistryToShadow(projectDir, taskRef);
+        });
+        // Re-check health after metadata recovery. The record is restored
+        // but the workspace may still be unhealthy (e.g. missing worktrees).
+        // Only consider this recovered if the canonical branch is intact
+        // so provisioning can recreate missing worktrees.
+        const postRecoveryHealth = reconcileWorkspaceHealth(
+          projectDir, recovered, new Date().toISOString(),
+        );
+        if (postRecoveryHealth.status !== "invalid") {
+          return {
+            recovered: true,
+            recoverySource: "metadata-backed-worktree",
+            health: await getDispatchWorkspaceHealth({ projectDir, taskRef, role, task }),
+            diagnostics: [],
+            conflictingSignals: null,
+          };
+        }
+        // Record restored but workspace is invalid — continue collecting
+        // signals for potential alternative recovery.
+      }
+    } catch {
+      // Recovery failure is non-fatal; continue to next source.
+    }
+  }
+
+  // Phase 3: Task submission linkage — use the captured branch/commit
+  // from the task's submission to discover or adopt the branch.
+  // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1, ac-4
+  const submissionLinkage = task?.submission_linkage;
+  if (submissionLinkage?.branch) {
+    branchSignals.push({
+      source: "task-submission-linkage",
+      branch: submissionLinkage.branch,
+    });
+
+    // Check if the branch exists locally or on a remote.
+    const branchRef = `refs/heads/${submissionLinkage.branch}`;
+    let branchAvailable = refExists(projectDir, branchRef);
+    if (!branchAvailable) {
+      branchAvailable = tryRestoreBranchFromRemote(projectDir, submissionLinkage.branch);
+    }
+
+    if (branchAvailable && !existingRecord) {
+      // Adopt the submission branch as the canonical branch for this task.
+      try {
+        const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+        const now = new Date().toISOString();
+        const taskSlug = normalizeTaskSlug(taskRef, task);
+        const shortId = shortTaskId(taskRef);
+        const workspaceId = workspaceIdFor(taskRef);
+        const workerWorktreeDir = findExistingWorktreeForBranch(projectDir, submissionLinkage.branch)
+          ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
+        const baseBranch = resolvedConfig.baseBranch;
+        const baseBranchPoint = resolvedConfig.baseBranchStartPoint;
+        const publicationMode = resolvePublicationMode(projectDir);
+
+        const adoptedRecord: DispatchWorkspaceRecord = {
+          workspace_id: workspaceId,
+          task_ref: taskRef,
+          task_slug: taskSlug,
+          worktree_root: resolvedConfig.worktreeRoot,
+          resolved_base_branch: baseBranch,
+          base_branch_point: baseBranchPoint,
+          canonical_branch: submissionLinkage.branch,
+          canonical_branch_head: submissionLinkage.commit,
+          branch_provenance: adoptedBranchProvenance(
+            submissionLinkage.branch,
+            submissionLinkage.remote ?? null,
+            now,
+          ),
+          lifecycle_state: "ready",
+          active_role: null,
+          worktrees: {
+            worker: buildWorktreeRecord(
+              workerWorktreeDir,
+              "branch",
+              submissionLinkage.branch,
+              submissionLinkage.commit,
+              now,
+            ),
+            reviewer: null,
+          },
+          bootstrap: defaultBootstrapState(now),
+          integration: {
+            status: "pending",
+            target_branch: baseBranch,
+            target_commit: baseBranchPoint,
+            publication_mode: publicationMode,
+            outcome: resolveIntegrationOutcome(publicationMode, "pending"),
+            detail: null,
+            updated_at: now,
+          },
+          health: createHealthyState(now),
+          cleanup: {
+            status: "not_scheduled",
+            eligible: false,
+            reason: null,
+            detail: null,
+            updated_at: now,
+          },
+          timestamps: {
+            created_at: now,
+            updated_at: now,
+            last_reconciled_at: now,
+            last_active_at: null,
+            closed_at: null,
+          },
+        };
+
+        await withDispatchShadowMutationLock(projectDir, taskRef, async () => {
+          await saveWorkspaceRecordToRegistry(projectDir, adoptedRecord);
+          await commitWorkspaceRegistryToShadow(projectDir, taskRef);
+        });
+
+        console.log(
+          `[dispatch] Adopted branch "${submissionLinkage.branch}" from task submission linkage for ${taskRef}`,
+        );
+
+        return {
+          recovered: true,
+          recoverySource: "task-submission-linkage",
+          health: await getDispatchWorkspaceHealth({ projectDir, taskRef, role, task }),
+          diagnostics: [],
+          conflictingSignals: null,
+        };
+      } catch {
+        // Adoption failure is non-fatal; continue to next source.
+      }
+    }
+  }
+
+  // Phase 4: Remote or review-derived discovery — try the deterministic
+  // dispatch branch name on remotes as a last resort.
+  // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1, ac-4
+  if (!existingRecord) {
+    const taskSlug = normalizeTaskSlug(taskRef, task);
+    const shortId = shortTaskId(taskRef);
+    const syntheticBranch = `dispatch/task/${taskSlug}/${shortId}`;
+    const restoredFromRemote = tryRestoreBranchFromRemote(projectDir, syntheticBranch);
+    if (restoredFromRemote) {
+      branchSignals.push({
+        source: "remote-or-review-locator",
+        branch: syntheticBranch,
+      });
+      try {
+        const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+        const now = new Date().toISOString();
+        const workspaceId = workspaceIdFor(taskRef);
+        const workerWorktreeDir = findExistingWorktreeForBranch(projectDir, syntheticBranch)
+          ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
+        const baseBranch = resolvedConfig.baseBranch;
+        const baseBranchPoint = resolvedConfig.baseBranchStartPoint;
+        const publicationMode = resolvePublicationMode(projectDir);
+
+        const remoteRecord: DispatchWorkspaceRecord = {
+          workspace_id: workspaceId,
+          task_ref: taskRef,
+          task_slug: taskSlug,
+          worktree_root: resolvedConfig.worktreeRoot,
+          resolved_base_branch: baseBranch,
+          base_branch_point: baseBranchPoint,
+          canonical_branch: syntheticBranch,
+          canonical_branch_head: resolveCommit(projectDir, syntheticBranch),
+          branch_provenance: defaultBranchProvenance(),
+          lifecycle_state: "ready",
+          active_role: null,
+          worktrees: {
+            worker: buildWorktreeRecord(
+              workerWorktreeDir,
+              "branch",
+              syntheticBranch,
+              resolveCommit(projectDir, syntheticBranch),
+              now,
+            ),
+            reviewer: null,
+          },
+          bootstrap: defaultBootstrapState(now),
+          integration: {
+            status: "pending",
+            target_branch: baseBranch,
+            target_commit: baseBranchPoint,
+            publication_mode: publicationMode,
+            outcome: resolveIntegrationOutcome(publicationMode, "pending"),
+            detail: null,
+            updated_at: now,
+          },
+          health: createHealthyState(now),
+          cleanup: {
+            status: "not_scheduled",
+            eligible: false,
+            reason: null,
+            detail: null,
+            updated_at: now,
+          },
+          timestamps: {
+            created_at: now,
+            updated_at: now,
+            last_reconciled_at: now,
+            last_active_at: null,
+            closed_at: null,
+          },
+        };
+
+        await withDispatchShadowMutationLock(projectDir, taskRef, async () => {
+          await saveWorkspaceRecordToRegistry(projectDir, remoteRecord);
+          await commitWorkspaceRegistryToShadow(projectDir, taskRef);
+        });
+
+        console.log(
+          `[dispatch] Restored dispatch branch "${syntheticBranch}" from remote for ${taskRef}`,
+        );
+
+        return {
+          recovered: true,
+          recoverySource: "remote-or-review-locator",
+          health: await getDispatchWorkspaceHealth({ projectDir, taskRef, role, task }),
+          diagnostics: [],
+          conflictingSignals: null,
+        };
+      } catch {
+        // Remote recovery failure is non-fatal; fall through to diagnostics.
+      }
+    }
+  }
+
+  // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-4
+  // Check for conflicting branch signals before emitting final diagnostics.
+  const uniqueBranches = new Set(branchSignals.map((s) => s.branch));
+  if (uniqueBranches.size > 1) {
+    diagnostics.push({
+      taskRef,
+      code: "conflicting-branch-signals",
+      message: `Multiple branch signals exist for ${taskRef} that cannot be reconciled safely: ${branchSignals.map((s) => `${s.source}="${s.branch}"`).join(", ")}.`,
+      suggestion:
+        "Inspect task submission linkage and workspace registry state. Use `kspec task set @ref --submission-linkage` to repair the branch-of-record, or delete stale workspace records.",
+    });
+    return {
+      recovered: false,
+      recoverySource: null,
+      health: await getDispatchWorkspaceHealth({ projectDir, taskRef, role, task }),
+      diagnostics,
+      conflictingSignals: branchSignals,
+    };
+  }
+
+  // If we had a registry record but it was unhealthy and no other source
+  // helped, the registry recovery is our best signal. Re-check health.
+  if (existingRecord && branchSignals.length === 1) {
+    const updatedHealth = await getDispatchWorkspaceHealth({ projectDir, taskRef, role, task });
+    if (updatedHealth.healthy) {
+      return {
+        recovered: true,
+        recoverySource: "registry-state",
+        health: updatedHealth,
+        diagnostics: [],
+        conflictingSignals: null,
+      };
+    }
+  }
+
+  // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-3
+  // No trustworthy recovery path exists — emit explicit diagnostics.
+  diagnostics.push({
+    taskRef,
+    code: "no-recoverable-workspace",
+    message: `No trustworthy recovery path exists for ${taskRef}. Attempted: registry state, metadata-backed worktrees, task submission linkage, and remote/review locators.`,
+    suggestion: existingRecord
+      ? "The workspace registry record exists but the canonical branch is missing. Restore the branch from a backup, push it to a remote, or use `kspec task set @ref --submission-linkage` to update the branch-of-record."
+      : "No workspace record or branch could be found for this task. Ensure the task was submitted with `kspec task submit` (which captures submission linkage), or manually provision a workspace with `kspec agent workspace provision`.",
+  });
+
+  return {
+    recovered: false,
+    recoverySource: null,
+    health: await getDispatchWorkspaceHealth({ projectDir, taskRef, role, task }),
+    diagnostics,
+    conflictingSignals: null,
+  };
+}
