@@ -96326,9 +96326,18 @@
     - cli
     - ux
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-14T17:30:51.023Z
   session_id: 01KKPN8F88MVTR6KM0NMKTFM67
   created_at: 2026-03-14T08:45:56.947Z
   started_at: 2026-03-14T17:17:02.489Z
+  submitted_at: 2026-03-14T17:30:51.716Z
   notes:
     - _ulid: 01KKPNM8RME47A1JQ1VC7MHRHK
       created_at: 2026-03-14T17:17:13.364Z
@@ -96350,17 +96359,19 @@
 
         - Verification: npm test, kspec validate
       supersedes: null
+    - _ulid: 01KKPPE2F1SFW50BNT3FRNADF9
+      created_at: 2026-03-14T17:31:18.881Z
+      author: "@claude"
+      content: |-
+        Submitted PR #851. Implementation adds:
+        - src/cli/commands/review.ts: 13 subcommands covering full review lifecycle
+        - src/strings/errors.ts: review-specific error messages
+        - src/cli/commands/index.ts + src/cli/index.ts: registration
+        - tests/review-cli.test.ts: 59 tests with AC annotations
+        All 5012 tests pass. Batch compatibility verified.
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-14T17:30:51.716Z
-  submission_linkage:
-    branch: main
-    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-14T17:30:51.023Z
 - _ulid: 01KKNRC3WFJDQX2KAS2129GZ2W
   slugs:
     - task-implement-review-cli-create-query
