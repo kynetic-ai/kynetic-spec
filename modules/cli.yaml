@@ -9482,7 +9482,7 @@ features:
         parent: "@review-cli-commands"
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
     parent: "@cli"
     status:
       maturity: draft
