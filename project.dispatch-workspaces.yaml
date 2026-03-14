@@ -3889,7 +3889,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-implement-review-task-integration/01kknrc2
         head: af3c1b5ab75841ca4594458360efb743f61720df
-        last_seen_at: 2026-03-14T19:17:41.301Z
+        last_seen_at: 2026-03-14T19:32:10.586Z
       reviewer: null
     bootstrap:
       status: succeeded
@@ -3924,22 +3924,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-14T19:31:51.827Z
+      updated_at: 2026-03-14T19:32:10.586Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T19:31:51.827Z
+      updated_at: 2026-03-14T19:32:10.586Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-14T19:31:51.827Z
+      updated_at: 2026-03-14T19:32:10.586Z
     timestamps:
       created_at: 2026-03-14T19:01:52.598Z
-      updated_at: 2026-03-14T19:31:51.827Z
-      last_reconciled_at: 2026-03-14T19:31:51.827Z
+      updated_at: 2026-03-14T19:32:10.586Z
+      last_reconciled_at: 2026-03-14T19:32:10.586Z
       last_active_at: 2026-03-14T19:17:41.780Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC4F8KAXMPAJCEVZEMNVH
