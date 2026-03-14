@@ -2964,3 +2964,79 @@ workspaces:
       last_reconciled_at: 2026-03-14T03:01:49.110Z
       last_active_at: 2026-03-14T02:22:52.377Z
       closed_at: null
+  - workspace_id: dispatch-workspace-01KKN32PF34M089KX910N0SZV4
+    task_ref: "@01KKN32PF34M089KX910N0SZV4"
+    task_slug: implement-per-task-dispatch-drain-coalescing
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    resolved_base_branch: main
+    base_branch_point: 2fa2efb3a75e8fe34f9ad964c5eef351db308f40
+    canonical_branch: dispatch/task/implement-per-task-dispatch-drain-coalescing/01kkn32p
+    canonical_branch_head: 2fa2efb3a75e8fe34f9ad964c5eef351db308f40
+    branch_provenance:
+      ownership: dispatcher-managed
+      source: provisioned
+      remote_ref: null
+      adopted_from: null
+      adopted_at: null
+      rehydrated: null
+    lifecycle_state: ready
+    active_role: null
+    worktrees:
+      worker:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-per-task-dispatch-drain-coalescing-01kkn32p
+        branch_mode: branch
+        branch_ref: dispatch/task/implement-per-task-dispatch-drain-coalescing/01kkn32p
+        head: 2fa2efb3a75e8fe34f9ad964c5eef351db308f40
+        last_seen_at: 2026-03-14T03:01:50.894Z
+      reviewer: null
+    bootstrap:
+      status: not_run
+      configHash: null
+      canonicalBranchHead: null
+      lastRunAt: null
+      invalidationReasons: []
+      steps: []
+      failureMessage: null
+      lastRole: null
+      roleStates:
+        worker:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+        reviewer:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+    integration:
+      status: pending
+      target_branch: main
+      target_commit: 2fa2efb3a75e8fe34f9ad964c5eef351db308f40
+      publication_mode: pull_request
+      outcome: pull_request
+      detail: null
+      updated_at: 2026-03-14T03:01:50.894Z
+    health:
+      status: healthy
+      summary: Workspace record matches current git branch and worktree state.
+      issues: []
+      updated_at: 2026-03-14T03:01:50.894Z
+    cleanup:
+      status: not_scheduled
+      eligible: false
+      reason: null
+      detail: null
+      updated_at: 2026-03-14T03:01:50.894Z
+    timestamps:
+      created_at: 2026-03-14T03:01:50.894Z
+      updated_at: 2026-03-14T03:01:50.894Z
+      last_reconciled_at: 2026-03-14T03:01:50.894Z
+      last_active_at: null
+      closed_at: null
