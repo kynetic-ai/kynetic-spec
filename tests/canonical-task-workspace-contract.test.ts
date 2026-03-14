@@ -301,6 +301,7 @@ describe("canonical task workspace contract", () => {
       specDir: tempDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
     await engine.start();
 

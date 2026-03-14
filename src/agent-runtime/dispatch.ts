@@ -611,6 +611,14 @@ export interface DispatchEngineOptions {
    * AC: @agent-dispatch-engine ac-20
    */
   reconcileIntervalMs?: number | null;
+  /**
+   * Per-task coalescing window in milliseconds (default 5000).
+   * When a state change event triggers a drain, the drain is deferred by this
+   * window. If another event arrives for the same task within the window, the
+   * timer resets. Set to 0 to disable coalescing (immediate drain behavior).
+   * AC: @per-task-dispatch-drain-coalescing ac-4
+   */
+  coalesceWindowMs?: number;
   /** Path to kspec CLI binary (for task notes) */
   kspecCliPath?: string;
   /**
@@ -645,6 +653,8 @@ export class DispatchEngine {
   private cwd: string;
   private dedupWindowMs: number;
   private reconcileIntervalMs: number;
+  /** AC: @per-task-dispatch-drain-coalescing ac-4 */
+  private coalesceWindowMs: number;
   private kspecCliPath?: string;
   private onInvocationEvent?: (event: InvocationEvent) => void;
   private onTextChunk?: (sessionId: string, agentId: string, taskId: string | null, text: string) => void;
@@ -677,6 +687,12 @@ export class DispatchEngine {
   private reconcileTimer: ReturnType<typeof setInterval> | null = null;
   /** All in-flight reconciliation promises so stop() can await every one. */
   private inFlightReconciles = new Set<Promise<void>>();
+  /** Per-task coalescing timers. AC: @per-task-dispatch-drain-coalescing ac-1 */
+  private coalesceTimers: Map<string, ReturnType<typeof setTimeout>> = new Map();
+  /** Whether a drain is currently in progress. AC: @per-task-dispatch-drain-coalescing ac-8 */
+  private drainInProgress = false;
+  /** Whether another drain was requested while one is already running. AC: @per-task-dispatch-drain-coalescing ac-8 */
+  private drainPending = false;
 
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
@@ -686,6 +702,8 @@ export class DispatchEngine {
     this.reconcileIntervalMs = (options.reconcileIntervalMs === null || options.reconcileIntervalMs === 0)
       ? 0
       : (options.reconcileIntervalMs ?? 60_000);
+    // AC: @per-task-dispatch-drain-coalescing ac-4
+    this.coalesceWindowMs = options.coalesceWindowMs ?? 5000;
     this.kspecCliPath = options.kspecCliPath;
     this.onInvocationEvent = options.onInvocationEvent;
     this.onTextChunk = options.onTextChunk;
@@ -818,8 +836,14 @@ export class DispatchEngine {
       }
     }
 
-    // Drain queues after enqueuing
-    await this._drainQueues(agents);
+    // AC: @per-task-dispatch-drain-coalescing ac-1, ac-4, ac-6
+    // Schedule a per-task coalescing timer instead of draining immediately.
+    // If coalesceWindowMs is 0, drain immediately for backward compatibility.
+    if (this.coalesceWindowMs <= 0) {
+      await this._drainQueues(agents);
+    } else {
+      this._scheduleCoalescedDrain(change.taskId);
+    }
   }
 
   /**
@@ -873,6 +897,12 @@ export class DispatchEngine {
    */
   async stop(): Promise<void> {
     this.running = false;
+
+    // AC: @per-task-dispatch-drain-coalescing ac-5 - Cancel all pending coalescing timers
+    for (const timer of this.coalesceTimers.values()) {
+      clearTimeout(timer);
+    }
+    this.coalesceTimers.clear();
 
     // AC: @agent-dispatch-engine ac-20 - Stop periodic reconciliation
     if (this.reconcileTimer !== null) {
@@ -1528,6 +1558,66 @@ export class DispatchEngine {
     const selected = candidates[0];
     this._recordContinuityDeferrals(selected, candidates);
     return selected;
+  }
+
+  /**
+   * Schedule a per-task coalesced drain. If a timer already exists for this
+   * task, it is cleared and reset to the full coalescing window.
+   *
+   * AC: @per-task-dispatch-drain-coalescing ac-1, ac-3
+   */
+  private _scheduleCoalescedDrain(taskId: string): void {
+    // Clear any existing timer for this task (reset window)
+    const existing = this.coalesceTimers.get(taskId);
+    if (existing !== undefined) {
+      clearTimeout(existing);
+    }
+
+    const timer = setTimeout(() => {
+      this.coalesceTimers.delete(taskId);
+      if (!this.running) return;
+
+      // AC: @per-task-dispatch-drain-coalescing ac-8 — serialize drain execution
+      this._serializedDrain().catch((err) => {
+        console.error("[dispatch] Coalesced drain error:", err);
+      });
+    }, this.coalesceWindowMs);
+
+    // Unref so it doesn't keep the process alive
+    if (timer && typeof timer === "object" && "unref" in timer) {
+      timer.unref();
+    }
+
+    this.coalesceTimers.set(taskId, timer);
+  }
+
+  /**
+   * Serialize drain execution: if a drain is already running, mark that another
+   * drain is pending and return. When the current drain finishes, it runs the
+   * follow-up drain. This prevents concurrent _drainQueues() calls from
+   * racing on queue state.
+   *
+   * AC: @per-task-dispatch-drain-coalescing ac-8
+   */
+  private async _serializedDrain(): Promise<void> {
+    if (this.drainInProgress) {
+      this.drainPending = true;
+      return;
+    }
+
+    this.drainInProgress = true;
+    try {
+      const agents = await this._loadAgents();
+      await this._drainQueues(agents);
+    } finally {
+      this.drainInProgress = false;
+    }
+
+    // If another drain was requested while we were running, do one follow-up.
+    if (this.drainPending) {
+      this.drainPending = false;
+      await this._serializedDrain();
+    }
   }
 
   /**

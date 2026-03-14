@@ -483,6 +483,7 @@ describe("dispatch workspace registry", () => {
       specDir: specDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
     await engine.start();
 
@@ -557,6 +558,7 @@ describe("dispatch workspace registry", () => {
       // Disable periodic reconciliation to prevent timer-driven registry
       // writes from racing with the explicit lifecycle transitions below.
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
     await engine.start();
 

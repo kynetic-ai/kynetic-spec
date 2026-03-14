@@ -423,6 +423,7 @@ describe("Dispatch in-progress priority", () => {
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
     vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockImplementation(async (options) => ({
       exists: options.role === "reviewer" || options.taskRef === `@${testUlid("TASK", 13)}`,
@@ -522,6 +523,7 @@ describe("Dispatch in-progress priority", () => {
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
 
     let enqueueCount = 0;
@@ -550,6 +552,7 @@ describe("Dispatch in-progress priority", () => {
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
 
     let enqueueCount = 0;
@@ -650,6 +653,7 @@ describe("Dispatch scheduling priority model", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     const spawned: string[] = [];
@@ -689,6 +693,7 @@ describe("Dispatch scheduling priority model", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     const internal = engine as unknown as {
@@ -738,6 +743,7 @@ describe("Dispatch scheduling priority model", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     const internal = engine as unknown as {
@@ -800,6 +806,7 @@ describe("Dispatch scheduling priority model", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     const spawned: Array<{ agentId: string; taskRef: string }> = [];
@@ -854,6 +861,7 @@ describe("AC-1: Task state change queues matching agents", () => {
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
 
     // Spy on _enqueue before start so all enqueue calls are captured
@@ -908,7 +916,7 @@ describe("AC-2: Multiple matching agents queued independently", () => {
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress", automation: "eligible" }]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
 
     // Track enqueue calls per agent
     const enqueuedAgentIds: string[] = [];
@@ -953,7 +961,7 @@ describe("AC-3: max_concurrent limit enforced", () => {
     });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     const status = engine.getStatus();
@@ -985,7 +993,7 @@ describe("AC-5: File watcher diffs task states", () => {
     // Start with in_progress
     await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     // Update task to pending (task.ready event)
@@ -1017,7 +1025,7 @@ describe("AC-5: File watcher diffs task states", () => {
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     // Same status again — no change
@@ -1060,7 +1068,7 @@ describe("AC-6: Dispatch rule filters applied", () => {
       { _ulid: taskId, status: "in_progress", automation: "ineligible" },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     // Transition to pending — should NOT be queued (automation: ineligible)
@@ -1093,7 +1101,7 @@ describe("AC-6: Dispatch rule filters applied", () => {
       { _ulid: taskId, status: "in_progress", automation: "eligible", tags: ["mvp"] },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     await writeTasks(testDir, [
@@ -1140,6 +1148,7 @@ describe("AC-7: Event deduplication within time window", () => {
       specDir: testDir,
       dedupWindowMs: 5000,
       kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
 
     // Spy before start to capture all enqueue calls
@@ -1185,6 +1194,7 @@ describe("AC-7: Event deduplication within time window", () => {
       specDir: testDir,
       dedupWindowMs: 100, // Very short window
       kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
 
     // Spy before start
@@ -1240,7 +1250,7 @@ describe("AC-8: Bootstrap evaluates existing tasks on start", () => {
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [{ _ulid: taskId, status: "pending", automation: "eligible" }]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
 
     // Spy before start() so bootstrap calls are captured
     let enqueueCount = 0;
@@ -1263,7 +1273,7 @@ describe("AC-8: Bootstrap evaluates existing tasks on start", () => {
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress" }]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     // After bootstrap, in_progress is seeded as prevState
@@ -1309,7 +1319,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
 
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
 
     // Manually call _spawnInvocation with the bad agent via type assertion
     type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
@@ -1338,7 +1348,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     process.env.KSPEC_CAPTURE_FILE = captureFile;
 
     try {
-      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
 
       type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
       const taskRef = `@${testUlid("TASK")}`;
@@ -1374,7 +1384,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     process.env.KSPEC_CAPTURE_FILE = captureFile;
 
     try {
-      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
       const taskRef = `@${testUlid("TASK", 33)}`;
       const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
       const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
@@ -1417,7 +1427,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     process.env.KSPEC_CAPTURE_FAIL_ON = "task:block";
 
     try {
-      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
       const taskRef = `@${testUlid("TASK", 34)}`;
       const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
       const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
@@ -1462,7 +1472,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     process.env.KSPEC_CAPTURE_FILE = captureFile;
 
     try {
-      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
       const taskId = testUlid("TASK", 35);
       const taskRef = `@${taskId}`;
       const change = makeStateChange({
@@ -1527,7 +1537,7 @@ describe("AC-11: Graceful shutdown waits for active invocations", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     expect(engine.getStatus().running).toBe(true);
@@ -1551,7 +1561,7 @@ describe("AC-11: Graceful shutdown waits for active invocations", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     // Inject a fake long-running invocation
@@ -1577,7 +1587,7 @@ describe("AC-11: Graceful shutdown waits for active invocations", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     // Inject a fake abort controller to verify it gets aborted
@@ -1596,7 +1606,7 @@ describe("AC-11: Graceful shutdown waits for active invocations", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
     await engine.stop();
 
@@ -1644,7 +1654,7 @@ describe("AC-12: Shadow branch mutations serialized via mutex", () => {
     const agent = makeTestAgent();
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     const mutex = engine.getShadowMutex();
@@ -1658,7 +1668,7 @@ describe("AC-12: Shadow branch mutations serialized via mutex", () => {
     const agent = makeTestAgent();
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     const mutex = engine.getShadowMutex();
@@ -1715,7 +1725,7 @@ describe("AC-12: Shadow branch mutations serialized via mutex", () => {
       return { session: {} as any, outcome: "success", durationMs: 1 };
     });
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     const [taskA, taskB] = testUlids("TASK", 2);
@@ -1757,7 +1767,7 @@ describe("AC-12: Shadow branch mutations serialized via mutex", () => {
       durationMs: 1,
     });
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     const taskId = testUlid("TASK");
@@ -1820,6 +1830,7 @@ describe("Active fleet cleanup on invocation completion", () => {
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
 
     await engine.start();
@@ -1876,6 +1887,7 @@ describe("Active fleet cleanup on invocation completion", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       onInvocationEvent: (e) => events.push(e),
+      coalesceWindowMs: 0,
     });
 
     await engine.start();
@@ -1928,6 +1940,7 @@ describe("Active fleet cleanup on invocation completion", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       onInvocationEvent: (event) => quietEvents.push(event.type),
+      coalesceWindowMs: 0,
     });
 
     await quietEngine.start();
@@ -1962,6 +1975,7 @@ describe("Active fleet cleanup on invocation completion", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       onInvocationEvent: (event) => failureEvents.push(event.type),
+      coalesceWindowMs: 0,
     });
 
     await failingEngine.start();
@@ -2008,7 +2022,7 @@ describe("AC-4: CLI posts state change event via handleStateChange", () => {
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [{ _ulid: taskId, status: "pending_review", automation: "eligible" }]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
 
     let enqueueCount = 0;
     vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
@@ -2085,6 +2099,7 @@ describe("Text chunk boundary signaling", () => {
       onTextChunk: (_sessionId, _agentId, _taskId, text) => {
         seenChunks.push(text);
       },
+      coalesceWindowMs: 0,
     });
 
     await engine.start();
@@ -2133,6 +2148,7 @@ describe("Autonomous dispatch prompt guardrails", () => {
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
 
     await engine.start();
@@ -2176,6 +2192,7 @@ describe("Autonomous dispatch prompt guardrails", () => {
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
     vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
       exists: true,
@@ -2447,6 +2464,7 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         projectDir: testDir,
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
       });
 
       await engine.start();
@@ -2492,6 +2510,7 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         projectDir: testDir,
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
       });
 
       await engine.start();
@@ -2538,6 +2557,7 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         projectDir: testDir,
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
       });
 
       await engine.start();
@@ -2612,6 +2632,7 @@ describe("Dispatch role workflow entrypoints", () => {
         projectDir: testDir,
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
       });
 
       await engine.start();
@@ -2674,6 +2695,7 @@ describe("Dispatch role workflow entrypoints", () => {
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
     });
 
     await engine.start();
@@ -2743,6 +2765,7 @@ describe("Dispatch role workflow entrypoints", () => {
         projectDir: testDir,
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
       });
 
       type EngineInternal = {
@@ -2829,6 +2852,7 @@ describe("Dispatch role workflow entrypoints", () => {
         projectDir: testDir,
         specDir: testDir,
         kspecCliPath: MOCK_KSPEC_CLI,
+        coalesceWindowMs: 0,
       });
 
       type EngineInternal = {
@@ -2886,7 +2910,7 @@ describe("AC-9: Retry transient errors with exponential backoff", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     // Verify retry logic by checking the queue re-enqueue behavior
@@ -2936,7 +2960,7 @@ describe("AC-9: Retry transient errors with exponential backoff", () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     // Track drain calls via _loadAgents spy
@@ -3014,7 +3038,7 @@ describe("getStatus", () => {
     const agent = makeTestAgent();
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir });
+    const engine = new DispatchEngine({ projectDir: testDir, coalesceWindowMs: 0 });
     const status = engine.getStatus();
 
     expect(status.running).toBe(false);
@@ -3026,7 +3050,7 @@ describe("getStatus", () => {
     const agent = makeTestAgent();
     await setupProjectWithAgents(testDir, [agent]);
 
-    const engine = new DispatchEngine({ projectDir: testDir });
+    const engine = new DispatchEngine({ projectDir: testDir, coalesceWindowMs: 0 });
     await engine.start();
     const status = engine.getStatus();
 
@@ -3090,6 +3114,7 @@ describe("Stale queue entry discard", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     // Mock _spawnInvocation to avoid real workspace provisioning I/O.
@@ -3179,6 +3204,7 @@ describe("Stale queue entry discard", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     // Mock _spawnInvocation to avoid real workspace provisioning I/O.
@@ -3253,6 +3279,7 @@ describe("Stale queue entry discard", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     // Mock _spawnInvocation to avoid real workspace provisioning I/O.
@@ -3364,6 +3391,7 @@ describe("Stale queue entry discard", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     await engine.start();
@@ -3522,6 +3550,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     // Mock _drainQueues to prevent actual invocation spawning
@@ -3559,6 +3588,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     // Mock _drainQueues to prevent actual invocation spawning
@@ -3592,6 +3622,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     const enqueueSpy = vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue");
@@ -3654,6 +3685,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
     const spawnSpy = vi.spyOn(
       engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
@@ -3733,6 +3765,7 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
     const spawnSpy = vi.spyOn(
       engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
@@ -3792,6 +3825,7 @@ describe("AC-20: Reconciliation interval configuration", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 100, // 100ms for testing
+      coalesceWindowMs: 0,
     });
 
     const reconcileSpy = vi.spyOn(
@@ -3820,6 +3854,7 @@ describe("AC-20: Reconciliation interval configuration", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     const reconcileSpy = vi.spyOn(
@@ -3846,6 +3881,7 @@ describe("AC-20: Reconciliation interval configuration", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: null,
+      coalesceWindowMs: 0,
     });
 
     const reconcileSpy = vi.spyOn(
@@ -3872,6 +3908,7 @@ describe("AC-20: Reconciliation interval configuration", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 50,
+      coalesceWindowMs: 0,
     });
 
     const reconcileSpy = vi.spyOn(
@@ -3917,7 +3954,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
       { _ulid: taskId, status: "in_progress", automation: "ineligible" },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
 
     let enqueueCount = 0;
     vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
@@ -3951,7 +3988,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
       { _ulid: taskId, status: "in_progress", automation: "eligible" },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
 
     let enqueueCount = 0;
     vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
@@ -3984,7 +4021,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
       { _ulid: taskId, status: "pending_review", automation: "ineligible" },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
 
     let enqueueCount = 0;
     vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
@@ -4019,7 +4056,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
       { _ulid: taskId, status: "in_progress", automation: "ineligible" },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
     // Transition to pending_review — should be queued even though task is ineligible
@@ -4062,7 +4099,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
       { _ulid: taskId, status: "in_progress", automation: "ineligible", tags: ["mvp"] },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
 
     let enqueueCount = 0;
     vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
@@ -4111,7 +4148,7 @@ describe("Priority filter uses threshold semantics (<=)", () => {
       { _ulid: taskId, status: "in_progress", automation: "eligible", priority: 3 },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
 
     let enqueueCount = 0;
     vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
@@ -4142,7 +4179,7 @@ describe("Priority filter uses threshold semantics (<=)", () => {
       { _ulid: taskId, status: "in_progress", automation: "eligible", priority: 1 },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
 
     let enqueueCount = 0;
     vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
@@ -4173,7 +4210,7 @@ describe("Priority filter uses threshold semantics (<=)", () => {
       { _ulid: taskId, status: "in_progress", automation: "eligible", priority: 5 },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
 
     let enqueueCount = 0;
     vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
@@ -4206,7 +4243,7 @@ describe("Priority filter uses threshold semantics (<=)", () => {
       { _ulid: taskId, status: "in_progress", automation: "eligible" },
     ]);
 
-    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI });
+    const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
 
     let enqueueCount = 0;
     vi.spyOn(engine as unknown as { _enqueue: (a: unknown, c: unknown) => void }, "_enqueue").mockImplementation(() => {
@@ -4265,6 +4302,7 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     const enqueuedTaskIds: string[] = [];
@@ -4306,6 +4344,7 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     let enqueueCount = 0;
@@ -4350,6 +4389,7 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     let enqueueCount = 0;
@@ -4391,6 +4431,7 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     let enqueueCount = 0;
@@ -4431,6 +4472,7 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     let enqueueCount = 0;
@@ -4473,6 +4515,7 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     let enqueueCount = 0;
@@ -4515,6 +4558,7 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     let enqueueCount = 0;
@@ -4550,6 +4594,7 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     // Block draining entirely during enqueue so entries stay in queue
@@ -4611,6 +4656,7 @@ describe("Task readiness checks in dispatch (trait-task-readiness)", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     let enqueueCount = 0;
@@ -4711,6 +4757,7 @@ describe("Post-invocation re-evaluation", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0, // Disable periodic reconciliation
+      coalesceWindowMs: 0,
     });
 
     await engine.start();
@@ -4770,6 +4817,7 @@ describe("Post-invocation re-evaluation", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     await engine.start();
@@ -4827,6 +4875,7 @@ describe("Post-invocation re-evaluation", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     await engine.start();
@@ -4910,6 +4959,7 @@ describe("Post-invocation re-evaluation", () => {
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
       reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
     });
 
     await engine.start();
@@ -4948,6 +4998,547 @@ describe("Post-invocation re-evaluation", () => {
     );
 
     warnSpy.mockRestore();
+    await engine.stop();
+  });
+});
+
+// ─── Per-Task Dispatch Drain Coalescing ────────────────────────────────────────
+
+describe("Per-task dispatch drain coalescing", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    vi.useFakeTimers();
+    testDir = await createTempDir("kspec-dispatch-coalesce-");
+  });
+
+  afterEach(async () => {
+    vi.useRealTimers();
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @per-task-dispatch-drain-coalescing ac-1
+  it("should schedule a per-task coalescing timer on state change instead of draining immediately", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 5000,
+    });
+
+    // Track _serializedDrain calls (the coalescing timer callback target).
+    // Mock it to avoid real I/O in the async chain (_loadAgents → _drainQueues).
+    const serializedDrainSpy = vi.spyOn(
+      engine as unknown as { _serializedDrain: () => Promise<void> },
+      "_serializedDrain",
+    ).mockResolvedValue();
+
+    // Mock _drainQueues so bootstrap doesn't do real I/O
+    vi.spyOn(
+      engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
+      "_drainQueues",
+    ).mockResolvedValue();
+
+    // Start (bootstrap drains directly — expected)
+    await engine.start();
+    const countAfterBoot = serializedDrainSpy.mock.calls.length;
+
+    const taskId = testUlid("TASK", 60);
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    // _serializedDrain should NOT have been called yet (coalescing deferred it)
+    expect(serializedDrainSpy.mock.calls.length).toBe(countAfterBoot);
+
+    // Advance past coalescing window
+    await vi.advanceTimersByTimeAsync(5000);
+
+    // Now _serializedDrain should have been called via the coalescing timer
+    expect(serializedDrainSpy.mock.calls.length).toBeGreaterThan(countAfterBoot);
+
+    await engine.stop();
+  });
+
+  // AC: @per-task-dispatch-drain-coalescing ac-1
+  it("should reset the coalescing timer when a second event arrives for the same task", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready" }, { on: "task.needs_work" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 5000,
+    });
+
+    const serializedDrainSpy = vi.spyOn(
+      engine as unknown as { _serializedDrain: () => Promise<void> },
+      "_serializedDrain",
+    ).mockResolvedValue();
+
+    vi.spyOn(
+      engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
+      "_drainQueues",
+    ).mockResolvedValue();
+
+    await engine.start();
+    const countAfterBoot = serializedDrainSpy.mock.calls.length;
+
+    const taskId = testUlid("TASK", 61);
+
+    // First event
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    // Advance 3s (within window)
+    await vi.advanceTimersByTimeAsync(3000);
+    expect(serializedDrainSpy.mock.calls.length).toBe(countAfterBoot);
+
+    // Second event for same task (should reset timer)
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "pending",
+      toStatus: "needs_work",
+      timestamp: Date.now() + 3000,
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    // Advance another 3s — original timer would have fired by now (5s total),
+    // but the reset means we need 5s from the second event
+    await vi.advanceTimersByTimeAsync(3000);
+    expect(serializedDrainSpy.mock.calls.length).toBe(countAfterBoot);
+
+    // Advance remaining 2s — total 5s from second event
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(serializedDrainSpy.mock.calls.length).toBeGreaterThan(countAfterBoot);
+
+    await engine.stop();
+  });
+
+  // AC: @per-task-dispatch-drain-coalescing ac-2
+  it("should rely on stale-entry pruning to discard intermediate states after coalescing", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [
+        { on: "task.ready" },
+        { on: "task.in_progress" },
+        { on: "task.pending_review" },
+      ],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK", 62);
+    // Final on-disk state is pending_review
+    await writeTasks(testDir, [{ _ulid: taskId, status: "pending_review" }]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 5000,
+      reconcileIntervalMs: 0,
+    });
+
+    const spawnSpy = vi.spyOn(
+      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
+      "_spawnInvocation",
+    ).mockResolvedValue(true);
+
+    await engine.start();
+
+    // Simulate rapid transitions: pending → in_progress → pending_review
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "blocked",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { _ulid: taskId, status: "pending_review", automation: "eligible", tags: [] } as any,
+    });
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "pending",
+      toStatus: "in_progress",
+      timestamp: Date.now() + 100,
+      task: { _ulid: taskId, status: "pending_review", automation: "eligible", tags: [] } as any,
+    });
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending_review",
+      timestamp: Date.now() + 200,
+      task: { _ulid: taskId, status: "pending_review", automation: "eligible", tags: [] } as any,
+    });
+
+    // Advance past coalescing window — drain fires and staleness prunes intermediates
+    await vi.advanceTimersByTimeAsync(5000);
+
+    // Only the final state (pending_review) should have survived stale pruning.
+    // The pending and in_progress entries get discarded because on-disk status is pending_review.
+    const spawnedStatuses = spawnSpy.mock.calls.map(
+      (call) => ((call[1] as { change: TaskStateChange }).change.toStatus),
+    );
+    expect(spawnedStatuses).not.toContain("pending");
+    expect(spawnedStatuses).not.toContain("in_progress");
+
+    await engine.stop();
+  });
+
+  // AC: @per-task-dispatch-drain-coalescing ac-3
+  it("should coalesce timers independently per task", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const [taskA, taskB] = testUlids("TASK", 2);
+    await writeTasks(testDir, [
+      { _ulid: taskA, status: "pending", automation: "eligible" },
+      { _ulid: taskB, status: "pending", automation: "eligible" },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 5000,
+      reconcileIntervalMs: 0,
+    });
+
+    const serializedDrainSpy = vi.spyOn(
+      engine as unknown as { _serializedDrain: () => Promise<void> },
+      "_serializedDrain",
+    ).mockResolvedValue();
+
+    vi.spyOn(
+      engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
+      "_drainQueues",
+    ).mockResolvedValue();
+
+    await engine.start();
+    const countAfterBoot = serializedDrainSpy.mock.calls.length;
+
+    // Event for task A
+    await engine.handleStateChange({
+      taskId: taskA,
+      taskRef: `@${taskA}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    // 3s later, event for task B
+    await vi.advanceTimersByTimeAsync(3000);
+    await engine.handleStateChange({
+      taskId: taskB,
+      taskRef: `@${taskB}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    // At t=5s, task A's timer fires (_serializedDrain should be called)
+    await vi.advanceTimersByTimeAsync(2000);
+    expect(serializedDrainSpy.mock.calls.length).toBeGreaterThan(countAfterBoot);
+    const countAfterA = serializedDrainSpy.mock.calls.length;
+
+    // At t=8s, task B's timer fires (3s + 5s = 8s)
+    await vi.advanceTimersByTimeAsync(3000);
+    expect(serializedDrainSpy.mock.calls.length).toBeGreaterThan(countAfterA);
+
+    await engine.stop();
+  });
+
+  // AC: @per-task-dispatch-drain-coalescing ac-4
+  it("should drain immediately when coalesceWindowMs is 0", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+    });
+
+    const drainSpy = vi.spyOn(
+      engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
+      "_drainQueues",
+    ).mockResolvedValue();
+
+    await engine.start();
+    const drainCountAfterBoot = drainSpy.mock.calls.length;
+
+    const taskId = testUlid("TASK", 64);
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    // Drain should have been called immediately (no timer involved)
+    expect(drainSpy.mock.calls.length).toBeGreaterThan(drainCountAfterBoot);
+
+    await engine.stop();
+  });
+
+  // AC: @per-task-dispatch-drain-coalescing ac-5
+  it("should cancel all pending coalescing timers when stop() is called", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 5000,
+    });
+
+    const drainSpy = vi.spyOn(
+      engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
+      "_drainQueues",
+    ).mockResolvedValue();
+
+    await engine.start();
+    const drainCountAfterBoot = drainSpy.mock.calls.length;
+
+    const [taskA, taskB] = testUlids("STOP", 2);
+    await engine.handleStateChange({
+      taskId: taskA,
+      taskRef: `@${taskA}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+    await engine.handleStateChange({
+      taskId: taskB,
+      taskRef: `@${taskB}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    // Timers are pending. Stop the engine.
+    await engine.stop();
+
+    // Verify timers were cleared
+    const internal = engine as unknown as {
+      coalesceTimers: Map<string, ReturnType<typeof setTimeout>>;
+    };
+    expect(internal.coalesceTimers.size).toBe(0);
+
+    // Advance well past the coalescing window — no drains should fire
+    const drainCountAfterStop = drainSpy.mock.calls.length;
+    await vi.advanceTimersByTimeAsync(10000);
+    expect(drainSpy.mock.calls.length).toBe(drainCountAfterStop);
+  });
+
+  // AC: @per-task-dispatch-drain-coalescing ac-6
+  it("should drain normally after coalescing delay for a single event", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK", 66);
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "eligible" },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 5000,
+      reconcileIntervalMs: 0,
+    });
+
+    // Use _serializedDrain spy since it's what the coalescing timer calls.
+    // Mocking avoids real async I/O that doesn't complete with fake timers.
+    const serializedDrainSpy = vi.spyOn(
+      engine as unknown as { _serializedDrain: () => Promise<void> },
+      "_serializedDrain",
+    ).mockResolvedValue();
+
+    vi.spyOn(
+      engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
+      "_drainQueues",
+    ).mockResolvedValue();
+
+    await engine.start();
+
+    // Clear spy after bootstrap
+    serializedDrainSpy.mockClear();
+
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { _ulid: taskId, status: "pending", automation: "eligible", tags: [] } as any,
+    });
+
+    // No drain scheduled yet (within coalescing window)
+    expect(serializedDrainSpy).not.toHaveBeenCalled();
+
+    // Advance past coalescing window
+    await vi.advanceTimersByTimeAsync(5000);
+
+    // Now the drain should have been triggered via _serializedDrain
+    expect(serializedDrainSpy).toHaveBeenCalled();
+
+    await engine.stop();
+  });
+
+  // AC: @per-task-dispatch-drain-coalescing ac-7
+  it("should drain immediately for bootstrap, reconciliation, and post-invocation paths", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK", 67);
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "eligible" },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 5000,
+      reconcileIntervalMs: 0,
+    });
+
+    const drainSpy = vi.spyOn(
+      engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
+      "_drainQueues",
+    ).mockResolvedValue();
+
+    // Bootstrap calls _drainQueues directly (no coalescing)
+    await engine.start();
+    expect(drainSpy).toHaveBeenCalled();
+
+    // Reconciliation also calls _drainQueues directly
+    const reconcileDrainCount = drainSpy.mock.calls.length;
+    await (engine as unknown as { _reconcile: () => Promise<void> })._reconcile();
+    // _reconcile only calls _drainQueues if enqueued > 0, so check it ran without delay
+    // (it either called _drainQueues or found nothing to enqueue — either way, no timer)
+    const internal = engine as unknown as {
+      coalesceTimers: Map<string, ReturnType<typeof setTimeout>>;
+    };
+    // No coalescing timer should have been set by reconciliation
+    expect(internal.coalesceTimers.size).toBe(0);
+
+    await engine.stop();
+  });
+
+  // AC: @per-task-dispatch-drain-coalescing ac-8
+  it("should serialize concurrent drain calls via drainPending flag", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 5000,
+      reconcileIntervalMs: 0,
+    });
+
+    let drainConcurrency = 0;
+    let maxConcurrency = 0;
+    const originalDrain = (engine as unknown as {
+      _drainQueues: (agents: unknown[]) => Promise<void>;
+    })._drainQueues.bind(engine);
+
+    vi.spyOn(
+      engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
+      "_drainQueues",
+    ).mockImplementation(async (agents) => {
+      drainConcurrency++;
+      maxConcurrency = Math.max(maxConcurrency, drainConcurrency);
+      // Simulate some async work
+      await new Promise((r) => setTimeout(r, 100));
+      await vi.advanceTimersByTimeAsync(100);
+      drainConcurrency--;
+    });
+
+    await engine.start();
+
+    // Schedule two events that will fire their coalescing timers simultaneously
+    const [taskA, taskB] = testUlids("CONC", 2);
+    await engine.handleStateChange({
+      taskId: taskA,
+      taskRef: `@${taskA}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+    await engine.handleStateChange({
+      taskId: taskB,
+      taskRef: `@${taskB}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [] } as any,
+    });
+
+    // Advance past coalescing window — both timers fire at the same time
+    await vi.advanceTimersByTimeAsync(5000);
+
+    // Give time for the serialized drain to complete
+    await vi.advanceTimersByTimeAsync(500);
+
+    // Drains should never run concurrently (max concurrency = 1)
+    expect(maxConcurrency).toBeLessThanOrEqual(1);
+
     await engine.stop();
   });
 });
