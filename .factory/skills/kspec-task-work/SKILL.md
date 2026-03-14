@@ -1,3 +1,10 @@
+---
+name: kspec-task-work
+description: Structured task lifecycle — start, work, note, submit, complete.
+  Fix cycle handling, scope management, loop mode for automation, and quality
+  gates.
+---
+<!-- kspec-managed -->
 # Task Work
 
 Structured workflow for working on tasks. Full lifecycle from start through PR merge.
@@ -8,7 +15,7 @@ Structured workflow for working on tasks. Full lifecycle from start through PR m
 - Continuing in-progress or needs_work tasks
 - Ensuring consistent task lifecycle with notes and audit trail
 
-**Not for:** Spec creation (use `{skill:writing-specs}`), plan translation (use `{skill:plan}`), or triage (use `{skill:triage}`).
+**Not for:** Spec creation (use `/kspec-writing-specs`), plan translation (use `/kspec-plan`), or triage (use `/kspec-triage`).
 
 ## Inherit Existing Work First
 
@@ -361,8 +368,8 @@ kspec session start
 
 ## Integration
 
-- **`{skill:writing-specs}`** — Create specs before deriving tasks
-- **`{skill:plan}`** — Plans create specs that become tasks
-- **`{skill:review}`** — Review checks AC coverage and code quality
-- **`{skill:observe}`** — Capture friction found during task work
-- **`{skill:reflect}`** — Session reflection after completing tasks
+- **`/kspec-writing-specs`** — Create specs before deriving tasks
+- **`/kspec-plan`** — Plans create specs that become tasks
+- **`/kspec-review`** — Review checks AC coverage and code quality
+- **`/kspec-observe`** — Capture friction found during task work
+- **`/kspec-reflect`** — Session reflection after completing tasks

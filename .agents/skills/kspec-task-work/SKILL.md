@@ -109,14 +109,17 @@ kspec task start @ref
 Immediately after `kspec task start` and before any file edits, create or switch to a dedicated branch for that task. Do not keep implementing on a branch that is tied to another pending-review task.
 
 ```bash
-# Example naming from task intent/slug
-TASK_BRANCH="fix/<task-slug>"
-
-# Create the branch if missing, otherwise switch to it
-git checkout -b "$TASK_BRANCH" 2>/dev/null || git checkout "$TASK_BRANCH"
+# Preferred: deterministic dispatch-compatible branch
+kspec task branch @ref
 ```
 
-This keeps each task's commits scoped to its own PR and prevents cross-task contamination.
+`kspec task branch` creates or resumes the exact branch that the dispatch engine expects: `dispatch/task/<normalized-slug>/<short-task-ref>`. Using this command ensures:
+
+- **Dispatch continuity** — reviewer and fix-cycle agents can find and resume the branch
+- **No naming collisions** — the branch name is deterministic from the task identity
+- **Remote rehydration** — if the branch exists only on the remote, the command fetches it
+
+If you need a non-dispatch branch (e.g., for work not tied to a task), use conventional prefixes (`feat/`, `fix/`, etc.) instead.
 
 ### 4. Work and Note
 
@@ -305,7 +308,7 @@ kspec tasks ready --eligible  # Only automation-eligible tasks
 ### Key Behaviors
 
 - Verify work is needed before starting (prevent duplicates)
-- Create/switch to a dedicated task branch before making code edits
+- Use `kspec task branch @ref` to create/switch to the dispatch-compatible branch before making code edits
 - Decisions auto-resolve without prompts
 - PR review handled externally (not this workflow)
 - All actions are logged and auditable
@@ -344,6 +347,7 @@ The agent dispatch engine continues automatically — it checks for remaining el
 ```bash
 # Task lifecycle
 kspec task start @ref
+kspec task branch @ref               # Create/resume dispatch-compatible branch
 kspec task note @ref "..."
 kspec task submit @ref
 kspec task complete @ref --reason "..."
