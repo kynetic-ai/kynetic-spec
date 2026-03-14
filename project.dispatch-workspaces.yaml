@@ -2988,12 +2988,7 @@ workspaces:
         branch_ref: dispatch/task/implement-per-task-dispatch-drain-coalescing/01kkn32p
         head: 65a55bf93afe092ab829a8172bfb725f08f82ebd
         last_seen_at: 2026-03-14T03:24:45.793Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-per-task-dispatch-drain-coalescing-01kkn32p-review
-        branch_mode: detached
-        branch_ref: null
-        head: 65a55bf93afe092ab829a8172bfb725f08f82ebd
-        last_seen_at: 2026-03-14T03:24:45.793Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -3032,7 +3027,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T03:36:50.793Z
+      updated_at: 2026-03-14T03:36:54.606Z
     cleanup:
       status: scheduled
       eligible: true
@@ -3041,7 +3036,7 @@ workspaces:
       updated_at: 2026-03-14T03:36:50.793Z
     timestamps:
       created_at: 2026-03-14T03:01:50.894Z
-      updated_at: 2026-03-14T03:36:53.674Z
-      last_reconciled_at: 2026-03-14T03:36:53.674Z
+      updated_at: 2026-03-14T03:36:54.606Z
+      last_reconciled_at: 2026-03-14T03:36:54.606Z
       last_active_at: 2026-03-14T03:24:46.473Z
       closed_at: null
