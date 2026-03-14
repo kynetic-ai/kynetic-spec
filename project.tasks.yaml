@@ -96326,5 +96326,16 @@
         Fix: pass KSPEC_CLAUDE_HOME=tempDir in env for all CLI subprocess calls that run setup or
         skill install-core. The kspec helper supports env option.
       supersedes: null
+    - _ulid: 01KKNTJNV6G25WQ1NA4J3BX8KP
+      created_at: 2026-03-14T09:24:29.670Z
+      author: "@claude"
+      content: "Proposed fix approach: set KSPEC_CLAUDE_HOME in vitest globalSetup to a shared temp dir
+        for the entire test run. This isolates ALL tests from the real marketplace without requiring
+        changes to individual test files. Tests that need their own isolation (like
+        claude-plugin-registry.test.ts) already set KSPEC_CLAUDE_HOME explicitly and would override.
+        Alternative: set it in the kspec() CLI helper in tests/helpers/cli.ts alongside the existing
+        DISPATCH_ENV_VARS cleanup. Either approach prevents any test from stomping the real
+        ~/.claude/plugins/known_marketplaces.json."
+      supersedes: null
   todos: []
   automation: eligible
