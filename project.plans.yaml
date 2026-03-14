@@ -14202,7 +14202,8 @@ plans:
               Status changes occur
             then: |
               The review history records transitions such as draft, pending,
-              in_progress, approved, changes_requested, rejected, and closed
+              in_progress, approved, changes_requested, rejected, closed, and
+              archived
           - id: ac-3
             given: |
               A review references external systems such as GitHub
@@ -14239,14 +14240,13 @@ plans:
               @review ref using the shared reference system
           - id: ac-3
             given: |
-              Review records grow over time with threads, checks, verdicts, and
-              history
+              Review records are stored in the shadow branch
             when: |
-              The storage shape is designed
+              A review mutation is committed
             then: |
-              The storage model is constrained to remain auditable and practical for
-              shadow-branch persistence instead of leaving location and ownership
-              unspecified
+              The review data lives in a single dedicated file per project rather
+              than being split across multiple files or embedded inside other entity
+              files, so each shadow branch commit touches one predictable path
 
       - title: Review Subject Bindings
         slug: review-subject-bindings
@@ -14299,7 +14299,8 @@ plans:
         description: |
           Review comments support both general feedback and threaded targeted anchors
           such as file and line comments for code or section and field anchors for
-          structured artifacts.
+          structured artifacts. Each thread has a ULID-based identifier for stable
+          addressing through CLI commands.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -14307,8 +14308,8 @@ plans:
             when: |
               A comment is created without a target anchor
             then: |
-              The comment is stored as a general review thread entry with author and
-              timestamps
+              The comment is stored as a general review thread entry with a ULID
+              thread identifier, author, and timestamps
           - id: ac-2
             given: |
               A reviewer wants to comment on code
@@ -14393,7 +14394,8 @@ plans:
         description: |
           Reviews support individual reviewer verdicts, blocking requests for change,
           thread resolution, and iterative re-review cycles without losing audit
-          history.
+          history. Reviewer identity is a plain string matching the author convention
+          used by task notes and git config (e.g. "user@example.com" or "agent-name").
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -14431,17 +14433,19 @@ plans:
             when: |
               The aggregate review disposition is computed
             then: |
-              The system applies explicit aggregation policy instead of leaving the
-              interaction between approvals and change requests implicit
+              The default aggregation rule is that any changes_requested verdict
+              blocks approval and at least one explicit approve verdict is required
+              for the review to be considered approved
           - id: ac-6
             given: |
               Review policy requires more than one approval, distinguishes reviewer
               roles, or allows explicit override authority
             when: |
-              The review model is designed
+              The verdict schema is defined
             then: |
-              The schema can represent the policy inputs needed for those rules
-              without requiring a breaking redesign later
+              Each verdict record includes a reviewer identity string, a role field
+              with a default value, and a timestamp so aggregation queries can filter
+              by role and count approvals without a schema redesign
           - id: ac-7
             given: |
               A review is no longer active because its subject completed, was
@@ -14560,6 +14564,7 @@ plans:
           - trait-json-output
           - trait-filterable-list
           - trait-semantic-exit-codes
+          - trait-shadow-commit
         description: |
           The CLI supports creating reviews and reading them back by review ref,
           subject, and status so agents can discover active work and reopen an
@@ -14757,7 +14762,7 @@ plans:
         priority: 2
         depends_on:
           - "@task-implement-review-record-core"
-          - "@task-implement-review-task-integration"
+          - "@task-implement-review-storage-and-identity"
         tags: [review, cli, ux]
 
       - slug: task-implement-review-cli-create-query
@@ -14767,6 +14772,7 @@ plans:
         depends_on:
           - "@task-implement-review-cli-surface"
           - "@task-implement-review-validation"
+          - "@task-implement-review-subject-bindings"
         tags: [review, cli, query]
 
       - slug: task-implement-review-cli-mutations
@@ -14805,7 +14811,7 @@ plans:
 
       ```yaml
 
-      version: "1.0"
+      kynetic_reviews: "1.0"
 
       reviews:
         - _ulid: 01KX...
@@ -14839,29 +14845,34 @@ plans:
 
 
       - `ReviewStatusSchema` — enum: `draft`, `pending`, `in_progress`, `approved`,
-        `changes_requested`, `rejected`, `closed`
+        `changes_requested`, `rejected`, `closed`, `archived`
       - `ReviewSubjectSchema` — discriminated union on `type` field (plan, task, spec,
         code, external) with type-specific fields (ref, path, revision, url)
       - `ReviewAnchorSchema` — discriminated union: code anchor (file, line/range,
         revision) vs structured anchor (section, field, path)
-      - `ReviewThreadSchema` — thread with optional anchor, entries array, resolved
-        state
-      - `ReviewCheckSchema` — name, status, runner, evidence, timestamps
-
-      - `ReviewVerdictSchema` — reviewer, decision, timestamp
-
+      - `ReviewThreadSchema` — ULID-identified thread with optional anchor, entries
+        array (each entry has ULID, author, body, timestamp), resolved state
+      - `ReviewCheckSchema` — name, status (pass/fail/running/skipped), required
+        (boolean), runner, evidence, timestamps
+      - `ReviewVerdictSchema` — reviewer (string, same convention as git author),
+        role (string, default `"reviewer"`), decision (approve/request-changes/comment),
+        timestamp
       - `ReviewRecordSchema` — full record with `_ulid`, `slugs`, all nested schemas
 
       - `ReviewRecordInputSchema` — input variant (most fields optional)
 
-      - `ReviewRecordsFileSchema` — collection wrapper with `version` field
-
+      - `ReviewRecordsFileSchema` — collection wrapper with `kynetic_reviews` version
+        key, matching the `kynetic_plans`/`kynetic_tasks` convention
 
       Use `UlidSchema`, `SlugSchema`, `RefSchema`, `DateTimeSchema` from
 
-      `src/schema/common.ts`. Include `notes: z.array(NoteSchema).default([])` for
+      `src/schema/common.ts`. Import `NoteSchema` from `src/schema/task.ts` (where
 
-      audit trail, matching the existing append-only note pattern.
+      it is defined, not common.ts). Include
+
+      `notes: z.array(NoteSchema).default([])` for audit trail, matching the
+
+      existing append-only note pattern.
 
 
       ### Subject type extensibility
@@ -14876,6 +14887,40 @@ plans:
       implementation should support the listed types but the schema should not make
 
       it impossible to extend.
+
+
+      ### Identity and defaults
+
+
+      Review records get a ULID on creation (via `ulid()`) and an auto-generated
+
+      slug derived from the subject (e.g. `review-task-foo-1` for a review of
+
+      `@task-foo`). Default initial status is `draft`. Each thread within a review
+
+      also gets a ULID so it can be addressed by CLI commands (`kspec review resolve
+
+      @review-ref <thread-ulid>`). Reviewer identity uses the same plain string
+
+      convention as task note authors — typically the git config `user.email` or
+
+      agent name.
+
+
+      ### Verdict aggregation
+
+
+      The default aggregation rule: any `changes_requested` verdict blocks the
+
+      review from being `approved`. At least one explicit `approve` verdict is
+
+      required. The `role` field on each verdict defaults to `"reviewer"` but
+
+      supports future policy rules that distinguish required reviewers, optional
+
+      reviewers, or override authority — the aggregation function should be
+
+      pluggable via a policy object but ship with the default rule.
 
 
       ### Parser and storage layer
@@ -14968,7 +15013,7 @@ plans:
 
       All mutations auto-commit to the `kspec-meta` shadow branch via
 
-      `commitIfShadow(ctx.shadowConfig, "review-add", slug, title)`. No special
+      `commitIfShadow(ctx.shadow, "review-add", slug, title)`. No special
 
       handling needed — the existing shadow commit infrastructure handles this for
 
@@ -15146,6 +15191,17 @@ plans:
           integration (ReferenceIndex update), CLI command surface (kspec review subcommands with
           markMutating), batch support, testing approach, and task lifecycle integration (review_ref
           field)"
+      - _ulid: 01KKN8KDMHY99H777BHJSMDJ9D
+        created_at: 2026-03-14T04:10:19.665Z
+        author: "@claude"
+        content: "Fixed all issues from deep review: (1) storage format key kynetic_reviews, (2) NoteSchema
+          import path corrected to task.ts, (3) ctx.shadow not ctx.shadowConfig, (4) added missing
+          dep task-implement-review-cli-create-query -> subject-bindings, (5) added
+          trait-shadow-commit to review-cli-creation-and-query, (6) specified verdict aggregation
+          algorithm (any changes_requested blocks, one approve required), (7) defined thread IDs as
+          ULIDs, (8) defined reviewer identity as plain string matching git author convention, (9)
+          added archived to status enum, (10) relaxed CLI surface task dep to unblock scaffolding,
+          (11) tightened storage ac-3 into testable behavior"
   - _ulid: 01KKFJY80GMJZKN10AMDJ2WDNC
     slugs:
       - plan-grouped-work-and-human-handoff
