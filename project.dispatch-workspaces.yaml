@@ -3797,16 +3797,21 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-verdicts-and-resolution-01kknrc1
         branch_mode: branch
         branch_ref: dispatch/task/task-implement-review-verdicts-and-resolution/01kknrc1
-        head: 4d66cd55d8d869b811a1022bdce5f043515ce93e
-        last_seen_at: 2026-03-14T18:35:35.608Z
-      reviewer: null
+        head: 89c53f72a11932602ce770ba3ce2af2c9e4f4d48
+        last_seen_at: 2026-03-14T18:48:09.170Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-verdicts-and-resolution-01kknrc1-review
+        branch_mode: detached
+        branch_ref: null
+        head: 89c53f72a11932602ce770ba3ce2af2c9e4f4d48
+        last_seen_at: 2026-03-14T18:48:09.170Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -3842,21 +3847,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-14T18:47:51.176Z
+      updated_at: 2026-03-14T18:48:09.170Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T18:47:51.176Z
+      updated_at: 2026-03-14T18:48:09.170Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-14T18:47:51.176Z
+      updated_at: 2026-03-14T18:48:09.170Z
     timestamps:
       created_at: 2026-03-14T18:15:58.408Z
-      updated_at: 2026-03-14T18:47:51.176Z
-      last_reconciled_at: 2026-03-14T18:47:51.176Z
+      updated_at: 2026-03-14T18:48:09.170Z
+      last_reconciled_at: 2026-03-14T18:48:09.170Z
       last_active_at: 2026-03-14T18:35:35.997Z
       closed_at: null
