@@ -2979,8 +2979,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
-    active_role: reviewer
+    lifecycle_state: closing
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-per-task-dispatch-drain-coalescing-01kkn32p
@@ -3021,27 +3021,27 @@ workspaces:
           steps: []
           failureMessage: null
     integration:
-      status: pending
+      status: merged
       target_branch: main
       target_commit: 2fa2efb3a75e8fe34f9ad964c5eef351db308f40
       publication_mode: pull_request
-      outcome: pull_request
-      detail: null
-      updated_at: 2026-03-14T03:35:50.840Z
+      outcome: merged
+      detail: integration:merged
+      updated_at: 2026-03-14T03:36:40.302Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T03:35:50.840Z
+      updated_at: 2026-03-14T03:36:40.302Z
     cleanup:
-      status: not_scheduled
-      eligible: false
-      reason: null
-      detail: null
-      updated_at: 2026-03-14T03:35:50.840Z
+      status: scheduled
+      eligible: true
+      reason: integrated-into-base-branch
+      detail: integrated-into-base-branch
+      updated_at: 2026-03-14T03:36:40.302Z
     timestamps:
       created_at: 2026-03-14T03:01:50.894Z
-      updated_at: 2026-03-14T03:35:50.840Z
-      last_reconciled_at: 2026-03-14T03:35:50.840Z
+      updated_at: 2026-03-14T03:36:40.302Z
+      last_reconciled_at: 2026-03-14T03:36:40.302Z
       last_active_at: 2026-03-14T03:24:46.473Z
       closed_at: null
