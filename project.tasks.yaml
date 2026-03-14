@@ -96095,9 +96095,18 @@
     - bindings
     - identity
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 345842980ec9cc5474800e321ea89f3d20c5072a
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-14T10:35:55.123Z
   session_id: 01KKNY58K5Z3Q7E199SFR0MHM7
   created_at: 2026-03-14T08:45:53.455Z
   started_at: 2026-03-14T10:27:31.437Z
+  submitted_at: 2026-03-14T10:35:55.850Z
   notes:
     - _ulid: 01KKNY9BM488V3ZP16YH9TQ6KF
       created_at: 2026-03-14T10:29:18.596Z
@@ -96118,17 +96127,27 @@
 
         - Verification: npm test must pass, all 5 ACs covered with annotated tests.
       supersedes: null
+    - _ulid: 01KKNYPKKG177VSYWXJXSE14DY
+      created_at: 2026-03-14T10:36:32.753Z
+      author: "@claude"
+      content: >-
+        Submitted PR #847. Implementation adds:
+
+        - src/review/subject-bindings.ts: Factory functions (createCodeSubject, createPlanSubject,
+        createTaskSubject, createSpecSubject, createExternalSubject), extractSubjectVersion,
+        isVersionStale, findStaleChecks, findStaleVerdicts
+
+        - src/review/index.ts: Module barrel export
+
+        - src/index.ts: Added review module re-export
+
+        - tests/review-subject-bindings.test.ts: 39 tests covering all 5 ACs
+
+        Key decision: Reused computeContentHash from parser/skill-render.ts rather than duplicating.
+        Shadow branch staleness uses content_hash (not shadow commit) to prevent self-invalidation.
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-14T10:35:55.850Z
-  submission_linkage:
-    branch: main
-    commit: 345842980ec9cc5474800e321ea89f3d20c5072a
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-14T10:35:55.123Z
 - _ulid: 01KKNRC0FGK9TWYBNBVEGC7Z50
   slugs:
     - task-implement-review-comment-threads
