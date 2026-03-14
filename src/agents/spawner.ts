@@ -33,6 +33,8 @@ export interface SpawnedAgent {
   process: ChildProcess;
   /** Kill the agent process */
   kill: (signal?: NodeJS.Signals) => void;
+  /** Rejects if the child process emits a spawn error (e.g. ENOENT) */
+  spawnError: Promise<never>;
 }
 
 /**
@@ -132,6 +134,15 @@ export function spawnAgent(
     stdio: ["pipe", "pipe", "pipe"], // pipe all stdio so stderr can be filtered
   });
 
+  // Catch spawn-level errors (e.g. ENOENT when command not found) so they
+  // propagate as a rejected promise from spawnAndInitialize instead of
+  // crashing the daemon with an unhandled exception.
+  const spawnError = new Promise<never>((_, reject) => {
+    child.on("error", (err) => reject(err));
+  });
+  // Prevent unhandled rejection when spawn succeeds (nobody races against it)
+  spawnError.catch(() => {});
+
   // Keep actionable adapter stderr visible while dropping known non-actionable noise.
   forwardFilteredAdapterStderr(child);
 
@@ -173,7 +184,7 @@ export function spawnAgent(
     }
   };
 
-  return { client, process: child, kill };
+  return { client, process: child, kill, spawnError };
 }
 
 /**
@@ -192,7 +203,9 @@ export async function spawnAndInitialize(
   const agent = spawnAgent(adapter, options);
 
   try {
-    await agent.client.initialize();
+    // Race initialization against spawn errors — if the command doesn't exist,
+    // the 'error' event fires before initialize() can complete.
+    await Promise.race([agent.client.initialize(), agent.spawnError]);
     return agent;
   } catch (err) {
     // Clean up on initialization failure
