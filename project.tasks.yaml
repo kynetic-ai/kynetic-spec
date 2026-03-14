@@ -96475,6 +96475,12 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #856. Implemented review-task integration: review_ref schema field
+    (ac-1), auto-linkage on review add for task subjects and related refs (ac-2, ac-3),
+    verdict-driven task transition to needs_work (ac-4), inconsistent review linkage validation
+    warnings (ac-5), review history preservation through fix cycles (ac-6), external link
+    compatibility (ac-7). All 7 ACs covered with 22 tests. Fix cycle 1 addressed CLI wiring, merge
+    conflict, and author parameter."
   depends_on:
     - "@task-implement-review-verdicts-and-resolution"
   context: []
@@ -96496,6 +96502,7 @@
   created_at: 2026-03-14T08:45:56.377Z
   started_at: 2026-03-14T19:42:13.542Z
   submitted_at: 2026-03-14T19:42:23.193Z
+  completed_at: 2026-03-14T19:59:37.347Z
   notes:
     - _ulid: 01KKPVY93GK0408A3W1TPY5DRT
       created_at: 2026-03-14T19:07:32.848Z
@@ -96567,13 +96574,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-14T19:59:37.347Z
-  closed_reason: "Merged in PR #856. Implemented review-task integration: review_ref schema field
-    (ac-1), auto-linkage on review add for task subjects and related refs (ac-2, ac-3),
-    verdict-driven task transition to needs_work (ac-4), inconsistent review linkage validation
-    warnings (ac-5), review history preservation through fix cycles (ac-6), external link
-    compatibility (ac-7). All 7 ACs covered with 22 tests. Fix cycle 1 addressed CLI wiring, merge
-    conflict, and author parameter."
 - _ulid: 01KKNRC3AMTWV7SS9F6ZP2FCA7
   slugs:
     - task-implement-review-cli-surface
@@ -96760,7 +96760,7 @@
   spec_ref: "@review-cli-mutation-commands"
   plan_ref: "@plan-review-records-and-gates"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-implement-review-cli-surface"
@@ -96862,6 +96862,14 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-14T20:00:07.067Z
+  closed_reason: "Merged in PR #857. Implemented all review CLI mutation commands: comment add (ac-1),
+    reply (ac-1b), check add (ac-2), verdict set (ac-3), resolve/reopen (ac-4), lifecycle
+    transitions open/close/archive (ac-5), refresh subject compare context (ac-6), and design
+    constraint for deferred destructive operations (ac-7). All 8 own ACs verified with test
+    coverage. Trait coverage complete: json-output 6/6, semantic-exit-codes 8/8, shadow-commit 8/8,
+    confirmation-prompt 6/6 N/A. Fix cycle 1 resolved missing @trait-json-output ac-2 and ac-3
+    annotations."
 - _ulid: 01KKNRC51AWZKNSBW4CTEDBRDS
   slugs:
     - task-implement-review-cli-task-linkage
