@@ -950,7 +950,8 @@ describe("Environment Injection", () => {
       const adapter = resolveAdapter("codex-acp");
       // Registered adapters have a specific description; ad-hoc ones say "Ad-hoc adapter for ..."
       expect(adapter.description).not.toContain("Ad-hoc");
-      expect(["npx", "bunx"]).toContain(adapter.command);
+      // Command is an absolute path to the runtime (bun or npx)
+      expect(adapter.command).toMatch(/\b(bun|npx)\b/);
       expect(adapter.args).toContain("@zed-industries/codex-acp");
     });
 

@@ -26,14 +26,6 @@ export interface ReviewValidationResult {
 }
 
 /**
- * Format a Zod issue path into a human-readable dotted path.
- */
-function formatIssuePath(prefix: string, issuePath: (string | number)[]): string {
-  const suffix = issuePath.join(".");
-  return prefix ? `${prefix}.${suffix}` : suffix;
-}
-
-/**
  * Provide actionable guidance for common review validation failures.
  *
  * AC: @review-record-validation ac-2
