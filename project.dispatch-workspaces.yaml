@@ -3965,7 +3965,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
+    lifecycle_state: ready
     active_role: null
     worktrees:
       worker:
@@ -3974,12 +3974,7 @@ workspaces:
         branch_ref: dispatch/task/task-implement-review-cli-mutations/01kknrc4
         head: 0083a06f25dcaf81302f9f31828a688019d7253e
         last_seen_at: 2026-03-14T19:44:20.144Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-mutations-01kknrc4-review
-        branch_mode: detached
-        branch_ref: null
-        head: 0083a06f25dcaf81302f9f31828a688019d7253e
-        last_seen_at: 2026-03-14T19:31:41.200Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -4020,7 +4015,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T19:44:30.348Z
+      updated_at: 2026-03-14T19:44:31.813Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -4029,7 +4024,7 @@ workspaces:
       updated_at: 2026-03-14T19:44:30.348Z
     timestamps:
       created_at: 2026-03-14T19:18:28.041Z
-      updated_at: 2026-03-14T19:44:30.348Z
-      last_reconciled_at: 2026-03-14T19:44:30.348Z
+      updated_at: 2026-03-14T19:44:31.813Z
+      last_reconciled_at: 2026-03-14T19:44:31.813Z
       last_active_at: 2026-03-14T19:44:21.217Z
       closed_at: null
