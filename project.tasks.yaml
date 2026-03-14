@@ -95280,7 +95280,7 @@
   spec_ref: null
   plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@implement-deterministic-task-branch-helper"
@@ -95349,6 +95349,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-14T01:54:23.399Z
+  closed_reason: "Merged in PR #838. Updated branching conventions and agent docs to reference kspec
+    task branch for dispatch-compatible deterministic branches. Changes include: task-work skill
+    section 3.5 updated from ad-hoc branching to kspec task branch @ref, two new branching
+    convention rules added (prefer kspec task branch, reserve dispatch/task/ namespace), dispatch
+    loop template updated, and all derived files regenerated (kspec-agents.md, .agents/skills/,
+    .factory/skills/). All CI checks passed, no regressions."
 - _ulid: 01KKK7RE59ZEANEM8MZJWXY5NV
   slugs:
     - add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-review
