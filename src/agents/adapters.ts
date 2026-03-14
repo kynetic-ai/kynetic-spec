@@ -24,6 +24,13 @@ export interface AgentAdapter {
 }
 
 /**
+ * Resolve the package runner command for the current runtime.
+ * Uses `bunx` when running under Bun (avoids PATH resolution issues in
+ * nested spawn chains), falls back to `npx` otherwise.
+ */
+const PKG_RUNNER = typeof globalThis.Bun !== "undefined" ? "bunx" : "npx";
+
+/**
  * Built-in adapter registry.
  */
 const ADAPTERS: Record<string, AgentAdapter> = {
@@ -32,7 +39,7 @@ const ADAPTERS: Record<string, AgentAdapter> = {
    * Uses @zed-industries/claude-agent-acp package.
    */
   "claude-agent-acp": {
-    command: "npx",
+    command: PKG_RUNNER,
     args: ["@zed-industries/claude-agent-acp"],
     shell: process.platform === "win32",
     description: "Claude Agent via ACP protocol",
@@ -45,7 +52,7 @@ const ADAPTERS: Record<string, AgentAdapter> = {
    * This alias ensures existing scripts with --adapter claude-code-acp continue to work.
    */
   "claude-code-acp": {
-    command: "npx",
+    command: PKG_RUNNER,
     args: ["@zed-industries/claude-agent-acp"],
     shell: process.platform === "win32",
     description: "Claude Agent via ACP protocol (deprecated alias)",
@@ -57,7 +64,7 @@ const ADAPTERS: Record<string, AgentAdapter> = {
    * Uses the codex-acp package for OpenAI Codex agent.
    */
   "codex-acp": {
-    command: "npx",
+    command: PKG_RUNNER,
     args: ["@zed-industries/codex-acp"],
     shell: process.platform === "win32",
     description: "Codex agent via ACP protocol",
@@ -147,9 +154,9 @@ export function resolveAdapter(id?: string): AgentAdapter {
     return adapter;
   }
 
-  // Treat unknown IDs as npm package names - create ad-hoc npx adapter
+  // Treat unknown IDs as npm package names - create ad-hoc adapter
   return {
-    command: "npx",
+    command: PKG_RUNNER,
     args: [adapterId],
     shell: process.platform === "win32",
     description: `Ad-hoc adapter for ${adapterId}`,
