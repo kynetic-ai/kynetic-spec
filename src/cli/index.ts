@@ -314,6 +314,7 @@ registerMetaCommands(program);
 registerLinkCommands(program);
 registerModuleCommands(program);
 registerPlanCommands(program);
+registerReviewCommands(program);
 registerCloneForTestingCommand(program);
 registerWorkflowCommand(program);
 registerMergeDriverCommand(program);

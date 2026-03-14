@@ -1,75 +1,115 @@
 /**
- * Review CLI commands — creation and query
+ * Review CLI commands
+ *
+ * AC: @review-cli-commands ac-1 — CLI provides commands for core review workflow
+ * AC: @review-cli-commands ac-2 — Output includes subject, lifecycle, disposition, gate, threads, linkage
+ * AC: @review-cli-commands ac-3 — Compatible with batch-oriented mutation flows
  *
  * AC: @review-cli-creation-and-query ac-1, ac-2, ac-3, ac-4, ac-5
+ * AC: @review-cli-mutation-commands ac-1, ac-1b, ac-2, ac-3, ac-4, ac-5, ac-6
+ * AC: @review-cli-task-linkage ac-1, ac-2
  */
 
 import type { Command } from "commander";
-import chalk from "chalk";
+import { ulid } from "ulid";
 import { markMutating } from "../command-annotations.js";
 import {
-  buildIndexes,
   createReviewRecord,
   findReviewByRef,
   getAuthor,
   initContext,
-  loadReviewRecords,
-  saveReviewRecord,
   type LoadedReviewRecord,
+  loadReviewRecords,
+  mutateReviewAtomically,
+  saveReviewRecord,
+  shortestUniqueUlid,
 } from "../../parser/index.js";
-import { checkSlugUniqueness } from "../../parser/refs.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type {
-  ReviewRecord,
-  ReviewRecordInput,
-  ReviewSubject,
+  ReviewAnchor,
+  ReviewCheck,
+  ReviewEvent,
   ReviewLifecycleState,
+  ReviewRecord,
+  ReviewSubject,
+  ReviewSubjectVersion,
+  ReviewThread,
+  ReviewThreadKind,
+  ReviewVerdict,
+  ReviewVerdictDecision,
 } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
-import { error, info, output, success } from "../output.js";
+import { error, info, isJsonMode, output, success, warn } from "../output.js";
+import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 
-// --- Formatting helpers ---
+// --- Helpers ---
 
-/**
- * Color a lifecycle state for display.
- */
-function lifecycleColor(state: string): (text: string) => string {
-  switch (state) {
-    case "draft":
-      return (t: string) => chalk.gray(t);
-    case "open":
-      return (t: string) => chalk.blue(t);
-    case "closed":
-      return (t: string) => chalk.green(t);
-    case "archived":
-      return (t: string) => chalk.dim.gray(t);
-    default:
-      return (t: string) => chalk.white(t);
-  }
+function formatRelativeTime(dateStr: string): string {
+  return formatRelativeTimeUtil(new Date(dateStr));
 }
 
 /**
- * Color a disposition for display.
+ * Exit with error guidance for review commands.
+ * AC: @trait-error-guidance ac-1, ac-2
  */
-function dispositionColor(disposition: string): (text: string) => string {
-  switch (disposition) {
-    case "approved":
-      return (t: string) => chalk.green(t);
-    case "changes_requested":
-      return (t: string) => chalk.red(t);
-    case "pending":
-      return (t: string) => chalk.yellow(t);
-    default:
-      return (t: string) => chalk.white(t);
+function exitWithGuidance(
+  message: string,
+  exitCode: number,
+  suggestion?: string,
+  details?: Record<string, unknown>,
+): never {
+  if (suggestion) {
+    if (isJsonMode()) {
+      error(message, {
+        ...details,
+        suggestion,
+        guidance: suggestion,
+      });
+    } else {
+      error(message);
+      console.error(`Suggestion: ${suggestion}`);
+    }
+  } else {
+    error(message, isJsonMode() ? details : undefined);
   }
+
+  process.exit(exitCode);
 }
 
 /**
- * Compute the disposition from verdicts.
- * If any verdict is request_changes, disposition is changes_requested.
- * If any verdict is approve and none request_changes, disposition is approved.
- * Otherwise pending.
+ * Resolve a review reference (ULID, short ULID, or slug).
+ * AC: @trait-error-guidance ac-3
+ */
+function resolveReviewRef(
+  ref: string,
+  reviews: LoadedReviewRecord[],
+): LoadedReviewRecord {
+  const found = findReviewByRef(reviews, ref);
+  if (!found) {
+    exitWithGuidance(
+      errors.reference.reviewNotFound(ref),
+      EXIT_CODES.NOT_FOUND,
+      "Check available reviews with: kspec review list",
+      { ref, entity: "review" },
+    );
+  }
+  return found;
+}
+
+function shortReviewRef(
+  review: LoadedReviewRecord,
+  reviews: LoadedReviewRecord[],
+): string {
+  return shortestUniqueUlid(
+    review._ulid,
+    reviews.map((r) => r._ulid),
+  );
+}
+
+/**
+ * Compute disposition from verdicts.
+ * AC: @review-cli-commands ac-2
  */
 function computeDisposition(review: ReviewRecord): string {
   if (review.verdicts.length === 0) return "pending";
@@ -83,67 +123,70 @@ function computeDisposition(review: ReviewRecord): string {
 }
 
 /**
- * Compute the gate state from checks.
- * If no checks, pending. If any required check is fail, failing.
- * If any required check is running/pending, pending.
- * Otherwise passing.
+ * Compute gate state from checks.
+ * AC: @review-cli-commands ac-2
  */
 function computeGateState(review: ReviewRecord): string {
-  if (review.checks.length === 0) return "pending";
   const requiredChecks = review.checks.filter((c) => c.required);
-  if (requiredChecks.length === 0) return "passing";
-  const hasFailing = requiredChecks.some((c) => c.status === "fail");
-  if (hasFailing) return "failing";
-  const hasPending = requiredChecks.some(
-    (c) => c.status === "running" || c.status === "skipped",
+  if (requiredChecks.length === 0) return "pending";
+  const allPassing = requiredChecks.every((c) => c.status === "pass");
+  if (allPassing) return "passing";
+  const hasFailing = requiredChecks.some(
+    (c) => c.status === "fail",
   );
-  if (hasPending) return "pending";
-  return "passing";
+  if (hasFailing) return "failing";
+  return "pending";
 }
 
 /**
- * Color a gate state for display.
+ * Compute thread state summary.
  */
-function gateColor(state: string): (text: string) => string {
-  switch (state) {
-    case "passing":
-      return (t: string) => chalk.green(t);
-    case "failing":
-      return (t: string) => chalk.red(t);
-    case "pending":
-      return (t: string) => chalk.yellow(t);
-    default:
-      return (t: string) => chalk.white(t);
-  }
+function computeThreadState(review: ReviewRecord): {
+  total: number;
+  resolved: number;
+  unresolved: number;
+  blockers_unresolved: number;
+} {
+  const total = review.threads.length;
+  const resolved = review.threads.filter((t) => t.resolved_at).length;
+  const unresolved = total - resolved;
+  const blockers_unresolved = review.threads.filter(
+    (t) => t.kind === "blocker" && !t.resolved_at,
+  ).length;
+  return { total, resolved, unresolved, blockers_unresolved };
 }
 
 /**
- * Format a subject binding for display.
+ * Format subject for display.
  */
 function formatSubject(subject: ReviewSubject): string {
   switch (subject.type) {
     case "code":
-      return `code (${subject.base_commit.slice(0, 8)}..${subject.head_commit.slice(0, 8)})`;
+      return `code: ${subject.base_commit.slice(0, 8)}..${subject.head_commit.slice(0, 8)}${subject.head_branch ? ` (${subject.head_branch})` : ""}`;
     case "plan":
+      return `plan: ${subject.ref}`;
     case "task":
+      return `task: ${subject.ref}`;
     case "spec":
-      return `${subject.type} (@${subject.ref})`;
+      return `spec: ${subject.ref}`;
     case "external":
-      return `external (${subject.url})`;
-    default:
-      return "unknown";
+      return `external: ${subject.url}`;
   }
 }
 
 /**
- * Format a review record for JSON output.
- * AC: @trait-json-output ac-2 — includes all data available in human-readable mode
- * AC: @trait-json-output ac-4 — references use @ prefix consistently
- * AC: @trait-json-output ac-5 — timestamps use ISO 8601 format
+ * Build JSON output for a review with computed fields.
+ * AC: @review-cli-commands ac-2
+ * AC: @trait-json-output ac-2, ac-4, ac-5
  */
-function toJsonOutput(review: ReviewRecord): Record<string, unknown> {
+function buildReviewOutput(
+  review: LoadedReviewRecord,
+  reviews: LoadedReviewRecord[],
+): Record<string, unknown> {
+  const threadState = computeThreadState(review);
   return {
     _ulid: review._ulid,
+    ref: `@${review.slugs[0] || review._ulid}`,
     slugs: review.slugs,
     title: review.title,
     lifecycle_state: review.lifecycle_state,
@@ -151,553 +194,1251 @@ function toJsonOutput(review: ReviewRecord): Record<string, unknown> {
     gate_state: computeGateState(review),
     subject: review.subject,
     author: review.author,
-    related_refs: review.related_refs.map((r) =>
-      r.startsWith("@") ? r : `@${r}`,
-    ),
+    related_refs: review.related_refs,
     threads: review.threads,
+    thread_state: threadState,
     checks: review.checks,
     verdicts: review.verdicts,
     events: review.events,
     notes: review.notes,
     external_links: review.external_links,
     created_at: review.created_at,
-    updated_at: review.updated_at ?? null,
+    updated_at: review.updated_at,
   };
 }
 
 /**
  * Format review details for human-readable output.
- * AC: @review-cli-creation-and-query ac-3
+ * AC: @review-cli-commands ac-2
  */
-function formatReviewDetails(review: ReviewRecord): void {
-  console.log(chalk.bold(review.title));
-  console.log(chalk.gray("─".repeat(40)));
-  console.log(`ULID:        ${review._ulid}`);
-  if (review.slugs.length > 0) {
-    console.log(`Slugs:       ${review.slugs.join(", ")}`);
-  }
-  console.log(
-    `Lifecycle:   ${lifecycleColor(review.lifecycle_state)(review.lifecycle_state)}`,
-  );
-
+function formatReviewDetails(
+  review: LoadedReviewRecord,
+  reviews: LoadedReviewRecord[],
+): void {
+  const shortRef = shortReviewRef(review, reviews);
   const disposition = computeDisposition(review);
-  console.log(
-    `Disposition: ${dispositionColor(disposition)(disposition)}`,
-  );
-
   const gateState = computeGateState(review);
-  console.log(
-    `Gate:        ${gateColor(gateState)(gateState)}`,
-  );
+  const threadState = computeThreadState(review);
 
-  console.log(`Subject:     ${formatSubject(review.subject)}`);
-  console.log(`Author:      ${review.author}`);
+  console.log(review.title);
+  console.log("─".repeat(40));
+  console.log(`ULID:         ${review._ulid}`);
+  if (review.slugs.length > 0) {
+    console.log(`Slugs:        ${review.slugs.join(", ")}`);
+  }
+  console.log(`Lifecycle:    ${review.lifecycle_state}`);
+  console.log(`Disposition:  ${disposition}`);
+  console.log(`Gate:         ${gateState}`);
+  console.log(`Subject:      ${formatSubject(review.subject)}`);
+  console.log(`Author:       ${review.author}`);
+  console.log(`Created:      ${review.created_at} (${formatRelativeTime(review.created_at)})`);
+  if (review.updated_at) {
+    console.log(`Updated:      ${review.updated_at} (${formatRelativeTime(review.updated_at)})`);
+  }
 
   if (review.related_refs.length > 0) {
-    console.log(
-      `Related:     ${review.related_refs.map((r) => (r.startsWith("@") ? r : `@${r}`)).join(", ")}`,
-    );
+    console.log(`\n─── Related Refs ───`);
+    for (const ref of review.related_refs) {
+      console.log(`  ${ref}`);
+    }
   }
 
-  console.log(`Created:     ${review.created_at}`);
-  if (review.updated_at) {
-    console.log(`Updated:     ${review.updated_at}`);
+  if (review.external_links.length > 0) {
+    console.log(`\n─── External Links ───`);
+    for (const link of review.external_links) {
+      console.log(`  ${link.label || link.url}${link.provider ? ` (${link.provider})` : ""}`);
+      if (link.label) console.log(`    ${link.url}`);
+    }
   }
 
-  // Threads
   if (review.threads.length > 0) {
-    const resolved = review.threads.filter((t) => t.resolved_at).length;
-    const unresolved = review.threads.length - resolved;
-    console.log(
-      `\n${chalk.bold("─── Threads ───")} (${review.threads.length} total, ${unresolved} unresolved)`,
-    );
+    console.log(`\n─── Threads (${threadState.unresolved} unresolved, ${threadState.blockers_unresolved} blockers) ───`);
     for (const thread of review.threads) {
-      const kindColor =
-        thread.kind === "blocker"
-          ? chalk.red
-          : thread.kind === "question"
-            ? chalk.yellow
-            : chalk.gray;
-      const resolvedLabel = thread.resolved_at
-        ? chalk.green(" [resolved]")
+      const resolved = thread.resolved_at ? "✓" : "○";
+      const anchor = thread.anchor
+        ? thread.anchor.type === "code"
+          ? ` ${thread.anchor.path}:${thread.anchor.line_start}`
+          : thread.anchor.type === "structured"
+            ? ` ${thread.anchor.section || thread.anchor.field || thread.anchor.ref || ""}`
+            : ""
         : "";
-      const firstEntry =
-        thread.entries.length > 0 ? thread.entries[0].body : "(empty)";
-      const preview =
-        firstEntry.length > 80 ? firstEntry.slice(0, 77) + "..." : firstEntry;
-      console.log(
-        `  ${kindColor(`[${thread.kind}]`)}${resolvedLabel} ${chalk.gray(preview)}`,
-      );
+      console.log(`  ${resolved} [${thread.kind}]${anchor} (${thread.entries.length} entries)`);
+      if (thread.entries.length > 0) {
+        const first = thread.entries[0];
+        const body = first.body.length > 80 ? first.body.slice(0, 77) + "..." : first.body;
+        console.log(`    ${first.author}: ${body}`);
+      }
     }
   }
 
-  // Checks
   if (review.checks.length > 0) {
-    console.log(
-      `\n${chalk.bold("─── Checks ───")} (${review.checks.length})`,
-    );
+    console.log(`\n─── Checks ───`);
     for (const check of review.checks) {
-      const statusColor =
-        check.status === "pass"
-          ? chalk.green
-          : check.status === "fail"
-            ? chalk.red
-            : check.status === "running"
-              ? chalk.blue
-              : chalk.gray;
-      const requiredLabel = check.required
-        ? chalk.yellow(" [required]")
-        : "";
-      console.log(
-        `  ${statusColor(`[${check.status}]`)}${requiredLabel} ${check.name}`,
-      );
+      const required = check.required ? "(required)" : "(optional)";
+      console.log(`  ${check.status === "pass" ? "✓" : check.status === "fail" ? "✗" : "○"} ${check.name} ${required} — ${check.status}`);
     }
   }
 
-  // Verdicts
   if (review.verdicts.length > 0) {
-    console.log(
-      `\n${chalk.bold("─── Verdicts ───")} (${review.verdicts.length})`,
-    );
+    console.log(`\n─── Verdicts ───`);
     for (const verdict of review.verdicts) {
-      const decisionColor =
-        verdict.decision === "approve"
-          ? chalk.green
-          : verdict.decision === "request_changes"
-            ? chalk.red
-            : chalk.gray;
-      console.log(
-        `  ${decisionColor(`[${verdict.decision}]`)} ${verdict.reviewer} (${verdict.role}) — ${verdict.created_at}`,
-      );
+      console.log(`  ${verdict.reviewer} (${verdict.role}): ${verdict.decision} — ${formatRelativeTime(verdict.created_at)}`);
     }
   }
 
-  // Events
   if (review.events.length > 0) {
-    console.log(
-      `\n${chalk.bold("─── Events ───")} (${review.events.length})`,
-    );
-    for (const event of review.events) {
-      console.log(
-        `  ${chalk.gray(`[${event.timestamp}]`)} ${event.event_type} by ${event.actor}`,
-      );
+    console.log(`\n─── Events (${review.events.length}) ───`);
+    for (const event of review.events.slice(-10)) {
+      console.log(`  ${event.event_type} by ${event.actor} — ${formatRelativeTime(event.timestamp)}`);
     }
-  }
-
-  // Notes
-  if (review.notes.length > 0) {
-    console.log(
-      `\n${chalk.bold("─── Notes ───")} (${review.notes.length})`,
-    );
-    for (const note of review.notes) {
-      const author = note.author || "unknown";
-      console.log(chalk.gray(`[${note.created_at}] ${author}:`));
-      console.log(note.content);
+    if (review.events.length > 10) {
+      console.log(`  ... and ${review.events.length - 10} more`);
     }
   }
 }
 
 /**
- * Format a review for list display.
+ * Create an event entry.
+ * AC: @review-record-core-model ac-4
  */
-function formatReviewListItem(review: ReviewRecord): void {
-  const shortUlid = review._ulid.slice(0, 8);
-  const slugLabel =
-    review.slugs.length > 0 ? ` (${review.slugs[0]})` : "";
-  const stateLabel = lifecycleColor(review.lifecycle_state)(
-    `[${review.lifecycle_state}]`,
-  );
-  const disposition = computeDisposition(review);
-  const dispLabel = dispositionColor(disposition)(`[${disposition}]`);
-  const subjectLabel = formatSubject(review.subject);
-
-  console.log(
-    `${shortUlid}${slugLabel} ${stateLabel} ${dispLabel} ${review.title}`,
-  );
-  console.log(chalk.gray(`    ${subjectLabel} — by ${review.author}`));
+function createEvent(
+  eventType: ReviewEvent["event_type"],
+  actor: string,
+  payload: Record<string, unknown> = {},
+): ReviewEvent {
+  return {
+    _ulid: ulid(),
+    event_type: eventType,
+    actor,
+    timestamp: new Date().toISOString(),
+    payload,
+  };
 }
 
-// --- Command registration ---
+/**
+ * Parse subject from CLI flags.
+ * AC: @review-cli-creation-and-query ac-1, ac-2
+ */
+function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubject {
+  const subjectType = options.subjectType as string | undefined;
+
+  if (subjectType === "code" || options.base) {
+    if (!options.base || !options.head) {
+      exitWithGuidance(
+        "Code subject requires --base and --head commit refs",
+        EXIT_CODES.USAGE_ERROR,
+        "Usage: kspec review add --title '...' --subject-type code --base <commit> --head <commit>",
+        { field: "base/head", value: "missing" },
+      );
+    }
+    const subject: ReviewSubject = {
+      type: "code" as const,
+      base_commit: options.base as string,
+      head_commit: options.head as string,
+    };
+    if (options.mergeBase) {
+      (subject as Record<string, unknown>).merge_base_commit = options.mergeBase as string;
+    }
+    if (options.baseBranch) {
+      (subject as Record<string, unknown>).base_branch = options.baseBranch as string;
+    }
+    if (options.headBranch) {
+      (subject as Record<string, unknown>).head_branch = options.headBranch as string;
+    }
+    return subject;
+  }
+
+  if (subjectType === "external" || options.url) {
+    if (!options.url) {
+      exitWithGuidance(
+        "External subject requires --url",
+        EXIT_CODES.USAGE_ERROR,
+        "Usage: kspec review add --title '...' --subject-type external --url <url>",
+        { field: "url", value: "missing" },
+      );
+    }
+    const subject: ReviewSubject = {
+      type: "external" as const,
+      url: options.url as string,
+    };
+    if (options.externalId) {
+      (subject as Record<string, unknown>).external_id = options.externalId as string;
+    }
+    if (options.provider) {
+      (subject as Record<string, unknown>).provider = options.provider as string;
+    }
+    return subject;
+  }
+
+  // Ref-backed subjects (plan, task, spec)
+  if (!options.subjectRef) {
+    exitWithGuidance(
+      "Subject is required. Provide --subject-ref for plan/task/spec, or --base/--head for code, or --url for external",
+      EXIT_CODES.USAGE_ERROR,
+      "Usage: kspec review add --title '...' --subject-ref @ref [--subject-type plan|task|spec]",
+      { field: "subject", value: "missing" },
+    );
+  }
+
+  const ref = options.subjectRef as string;
+  const type = (subjectType || "task") as "plan" | "task" | "spec";
+  if (!["plan", "task", "spec"].includes(type)) {
+    exitWithGuidance(
+      `Invalid subject type: ${type}. Must be one of: plan, task, spec, code, external`,
+      EXIT_CODES.USAGE_ERROR,
+      "Valid subject types: plan, task, spec, code, external",
+      { field: "subject-type", value: type },
+    );
+  }
+
+  return {
+    type,
+    ref: ref.startsWith("@") ? ref : `@${ref}`,
+    shadow_commit: "",
+    content_hash: "",
+  };
+}
+
+/**
+ * Parse applies_to_version from CLI flags.
+ */
+function parseVersionFromOptions(options: Record<string, unknown>): ReviewSubjectVersion {
+  if (options.versionBase && options.versionHead) {
+    return {
+      type: "code_compare" as const,
+      base_commit: options.versionBase as string,
+      head_commit: options.versionHead as string,
+    };
+  }
+  if (options.versionHash) {
+    return {
+      type: "entity_version" as const,
+      content_hash: options.versionHash as string,
+    };
+  }
+  // Default code compare with empty commits (must be provided)
+  exitWithGuidance(
+    "Version context is required. Provide --version-base and --version-head for code, or --version-hash for entity",
+    EXIT_CODES.USAGE_ERROR,
+    "Usage: --version-base <commit> --version-head <commit> OR --version-hash <hash>",
+    { field: "version", value: "missing" },
+  );
+}
+
+// --- Command Registration ---
 
 export function registerReviewCommands(program: Command): void {
   const review = program
     .command("review")
-    .description("Review record operations")
-    .allowUnknownOption()
-    .allowExcessArguments();
+    .description("Manage first-party review records");
 
-  // Default action for bare "kspec review"
-  review.action(async (_options, cmd: Command) => {
-    cmd.help();
-  });
+  // --- review add ---
+  // AC: @review-cli-creation-and-query ac-1, ac-2, ac-5
+  // AC: @review-cli-commands ac-1
+  markMutating(
+    review
+      .command("add")
+      .description("Create a new review record")
+      .requiredOption("--title <title>", "Review title")
+      .option("--slug <slug>", "Custom slug for the review")
+      .option("--subject-type <type>", "Subject type: plan, task, spec, code, external")
+      .option("--subject-ref <ref>", "Subject reference (for plan/task/spec)")
+      .option("--base <commit>", "Base commit (for code subjects)")
+      .option("--head <commit>", "Head commit (for code subjects)")
+      .option("--merge-base <commit>", "Merge base commit (for code subjects)")
+      .option("--base-branch <branch>", "Base branch name (for code subjects)")
+      .option("--head-branch <branch>", "Head branch name (for code subjects)")
+      .option("--url <url>", "External URL (for external subjects)")
+      .option("--external-id <id>", "External identifier (for external subjects)")
+      .option("--provider <provider>", "External provider (for external subjects)")
+      .option("--related-ref <ref...>", "Related references (e.g. task refs)")
+      .option("--author <author>", "Review author (defaults to configured author)")
+      .action(async (options) => {
+        try {
+          const ctx = await initContext();
+          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const subject = parseSubjectFromOptions(options);
 
-  // --- kspec review add ---
-  // AC: @review-cli-creation-and-query ac-1 — ref-backed subject
-  // AC: @review-cli-creation-and-query ac-2 — code subject with base/head
-  // AC: @review-cli-creation-and-query ac-5 — --slug flag
-  markMutating(review.command("add"))
-    .description("Create a new review record")
-    .requiredOption("--title <title>", "Review title")
-    .option("--subject-ref <ref>", "Subject reference (task, plan, or spec)")
-    .option("--base-commit <sha>", "Base commit SHA (code subject)")
-    .option("--head-commit <sha>", "Head commit SHA (code subject)")
-    .option(
-      "--merge-base-commit <sha>",
-      "Merge base commit SHA (code subject, optional)",
-    )
-    .option("--base-branch <branch>", "Base branch name (code subject, optional)")
-    .option("--head-branch <branch>", "Head branch name (code subject, optional)")
-    .option("--slug <slug>", "Human-friendly slug for the review")
-    .option("--related-ref <refs...>", "Related references (tasks, specs, etc.)")
-    .option("--author <author>", "Review author (defaults to configured author)")
-    .addHelpText(
-      "after",
-      `
-Examples:
-  $ kspec review add --title "Review task-auth" --subject-ref @task-auth
-  $ kspec review add --title "Code review" --base-commit abc123 --head-commit def456
-  $ kspec review add --title "Plan review" --subject-ref @plan-auth --slug review-auth-plan`,
-    )
-    .action(async (options) => {
-      try {
-        const ctx = await initContext();
-        const { refIndex } = await buildIndexes(ctx);
+          const review = createReviewRecord({
+            title: options.title,
+            slugs: options.slug ? [options.slug] : [],
+            subject,
+            author,
+            related_refs: options.relatedRef || [],
+            events: [createEvent("lifecycle_change", author, { to: "draft" })],
+          });
 
-        // Determine subject binding
-        let subject: ReviewSubject;
+          await saveReviewRecord(ctx, { ...review, _sourceFile: undefined });
 
-        if (options.subjectRef) {
-          // AC: @review-cli-creation-and-query ac-1 — ref-backed subject
-          if (options.baseCommit || options.headCommit) {
-            error(
-              "Cannot use --subject-ref with --base-commit/--head-commit. Use one or the other.",
-            );
-            process.exit(EXIT_CODES.USAGE_ERROR);
-          }
-
-          const ref = options.subjectRef.startsWith("@")
-            ? options.subjectRef.slice(1)
-            : options.subjectRef;
-          const result = refIndex.resolve(ref);
-
-          if (!result.ok) {
-            if (result.error === "ambiguous") {
-              error(errors.reference.ambiguous(options.subjectRef));
-              for (const candidate of result.candidates) {
-                console.error(chalk.gray(`  ${candidate}`));
-              }
-            } else {
-              error(errors.reference.refNotFound(options.subjectRef));
-            }
-            process.exit(EXIT_CODES.NOT_FOUND);
-          }
-
-          // Determine type from resolved item
-          const item = result.item;
-          let subjectType: "task" | "plan" | "spec";
-          if ("status" in item && typeof item.status === "string") {
-            subjectType = "task";
-          } else if ("source" in item || ("title" in item && "status" in item && typeof item.status === "object" && item.status && "approval" in item.status)) {
-            subjectType = "plan";
-          } else {
-            subjectType = "spec";
-          }
-
-          // For ref subjects, we use a placeholder shadow_commit and content_hash
-          // These would be computed by the subject binding system in production
-          subject = {
-            type: subjectType,
-            ref: `@${ref}`,
-            shadow_commit: "pending",
-            content_hash: "pending",
-          } as ReviewSubject;
-        } else if (options.baseCommit && options.headCommit) {
-          // AC: @review-cli-creation-and-query ac-2 — code subject
-          subject = {
-            type: "code",
-            base_commit: options.baseCommit,
-            head_commit: options.headCommit,
-            ...(options.mergeBaseCommit && {
-              merge_base_commit: options.mergeBaseCommit,
-            }),
-            ...(options.baseBranch && { base_branch: options.baseBranch }),
-            ...(options.headBranch && { head_branch: options.headBranch }),
-          };
-        } else if (options.baseCommit || options.headCommit) {
-          error(
-            "Both --base-commit and --head-commit are required for code subjects.",
+          // AC: @trait-shadow-commit ac-1, ac-2, ac-3
+          await commitIfShadow(
+            ctx.shadow,
+            "review-add",
+            review.slugs[0] || review._ulid.slice(0, 8),
+            options.title,
           );
-          process.exit(EXIT_CODES.USAGE_ERROR);
-        } else {
-          error(
-            "Subject is required. Use --subject-ref <ref> or --base-commit/--head-commit.",
+
+          const reviews = await loadReviewRecords(ctx);
+          const shortRef = shortReviewRef(
+            { ...review, _sourceFile: undefined },
+            reviews,
           );
-          process.exit(EXIT_CODES.USAGE_ERROR);
+
+          output(
+            buildReviewOutput({ ...review, _sourceFile: undefined }, reviews),
+            () => {
+              success(
+                `Created review: ${shortRef}${review.slugs.length > 0 ? ` (${review.slugs[0]})` : ""}`,
+              );
+            },
+          );
+        } catch (err) {
+          error(errors.failures.createReview, err);
+          process.exit(EXIT_CODES.ERROR);
         }
+      }),
+  );
 
-        // AC: @review-cli-creation-and-query ac-5 — slug
-        const slugs: string[] = [];
-        if (options.slug) {
-          const slugCheck = checkSlugUniqueness(refIndex, [options.slug]);
-          if (!slugCheck.ok) {
-            error(
-              errors.slug.alreadyExists(slugCheck.slug, slugCheck.existingUlid),
-            );
-            process.exit(EXIT_CODES.CONFLICT);
-          }
-          slugs.push(options.slug);
-        }
-
-        // Determine author
-        const author =
-          options.author ?? getAuthor(ctx.config?.identity?.author) ?? "unknown";
-
-        const input: ReviewRecordInput = {
-          title: options.title,
-          subject,
-          author,
-          slugs,
-          related_refs: options.relatedRef ?? [],
-        };
-
-        const reviewRecord = createReviewRecord(input);
-        const loaded: LoadedReviewRecord = {
-          ...reviewRecord,
-          _sourceFile: undefined,
-        };
-
-        await saveReviewRecord(ctx, loaded);
-
-        // AC: @trait-shadow-commit ac-1, ac-2, ac-3
-        await commitIfShadow(
-          ctx.shadow,
-          "review-add",
-          reviewRecord._ulid.slice(0, 8),
-          reviewRecord.title,
-        );
-
-        output(toJsonOutput(reviewRecord), () => {
-          success(
-            `Created review: ${reviewRecord._ulid.slice(0, 8)}${slugs.length > 0 ? ` (${slugs[0]})` : ""}`,
-          );
-          console.log(`  Title:   ${reviewRecord.title}`);
-          console.log(`  Subject: ${formatSubject(reviewRecord.subject)}`);
-          console.log(`  State:   ${reviewRecord.lifecycle_state}`);
-          console.log(`  Author:  ${reviewRecord.author}`);
-        });
-      } catch (err) {
-        error("Failed to create review", err);
-        process.exit(EXIT_CODES.ERROR);
-      }
-    });
-
-  // --- kspec review get ---
+  // --- review get ---
   // AC: @review-cli-creation-and-query ac-3
+  // AC: @review-cli-commands ac-2
   review
     .command("get <ref>")
-    .description("Show review record details")
-    .addHelpText(
-      "after",
-      `
-Examples:
-  $ kspec review get @review-auth
-  $ kspec review get 01KKNR`,
-    )
-    .action(async (ref: string, _options) => {
+    .description("Show review details")
+    .action(async (ref: string) => {
       try {
         const ctx = await initContext();
         const reviews = await loadReviewRecords(ctx);
+        const found = resolveReviewRef(ref, reviews);
 
-        const found = findReviewByRef(reviews, ref);
-        if (!found) {
-          error(`Review not found: ${ref}`);
-          process.exit(EXIT_CODES.NOT_FOUND);
-        }
-
-        // AC: @review-cli-creation-and-query ac-3 — show lifecycle, disposition, gate, threads, checks, verdicts, events, linkage
-        output(toJsonOutput(found), () => {
-          formatReviewDetails(found);
+        output(buildReviewOutput(found, reviews), () => {
+          formatReviewDetails(found, reviews);
         });
       } catch (err) {
-        error("Failed to get review", err);
+        error(errors.failures.getReview, err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
 
-  // --- kspec review list ---
+  // --- review list ---
   // AC: @review-cli-creation-and-query ac-4
-  // AC: @trait-filterable-list ac-1 through ac-8
+  // AC: @trait-filterable-list ac-1, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8
   review
     .command("list")
-    .description("List review records with optional filters")
-    .option("--status <state>", "Filter by lifecycle state (draft, open, closed, archived)")
+    .description("List review records")
+    .option("--status <status>", "Filter by lifecycle state (draft, open, closed, archived)")
     .option("--disposition <disposition>", "Filter by computed disposition (pending, approved, changes_requested)")
-    .option("--subject <ref>", "Filter by subject reference")
-    .option("--reviewer <name>", "Filter by reviewer name")
-    .option("--tag <value>", "Filter by related ref containing tag (for trait compatibility)")
-    .option("--limit <n>", "Limit number of results")
-    .option("--offset <n>", "Skip first N results")
+    .option("--subject-type <type>", "Filter by subject type")
+    .option("--reviewer <reviewer>", "Filter by reviewer who has submitted a verdict")
+    .option("--limit <n>", "Limit results", parseInt)
+    .option("--offset <n>", "Skip first N results", parseInt)
     .option("--count", "Show only the count of matching items")
-    .addHelpText(
-      "after",
-      `
-Examples:
-  $ kspec review list
-  $ kspec review list --status open
-  $ kspec review list --disposition changes_requested
-  $ kspec review list --subject @task-auth
-  $ kspec review list --reviewer alice --json
-  $ kspec review list --count`,
-    )
     .action(async (options) => {
       try {
         const ctx = await initContext();
         let reviews = await loadReviewRecords(ctx);
 
-        // AC: @trait-filterable-list ac-1 — filter by status
+        // Apply filters
+        // AC: @trait-filterable-list ac-1
         if (options.status) {
-          const validStates = ["draft", "open", "closed", "archived"];
-          if (!validStates.includes(options.status)) {
-            error(
-              `Invalid lifecycle state: ${options.status}. Must be one of: ${validStates.join(", ")}`,
-            );
-            process.exit(EXIT_CODES.USAGE_ERROR);
-          }
           reviews = reviews.filter(
             (r) => r.lifecycle_state === options.status,
           );
         }
 
-        // AC: @review-cli-creation-and-query ac-4 — filter by disposition
         if (options.disposition) {
-          const validDispositions = [
-            "pending",
-            "approved",
-            "changes_requested",
-          ];
-          if (!validDispositions.includes(options.disposition)) {
-            error(
-              `Invalid disposition: ${options.disposition}. Must be one of: ${validDispositions.join(", ")}`,
-            );
-            process.exit(EXIT_CODES.USAGE_ERROR);
-          }
           reviews = reviews.filter(
             (r) => computeDisposition(r) === options.disposition,
           );
         }
 
-        // AC: @review-cli-creation-and-query ac-4 — filter by subject
-        if (options.subject) {
-          const subjectRef = options.subject.startsWith("@")
-            ? options.subject.slice(1)
-            : options.subject;
-          reviews = reviews.filter((r) => {
-            const s = r.subject;
-            if ("ref" in s) {
-              const sRef = s.ref.startsWith("@") ? s.ref.slice(1) : s.ref;
-              return sRef === subjectRef || sRef.startsWith(subjectRef);
-            }
-            return false;
-          });
+        if (options.subjectType) {
+          reviews = reviews.filter(
+            (r) => r.subject.type === options.subjectType,
+          );
         }
 
-        // AC: @review-cli-creation-and-query ac-4 — filter by reviewer
         if (options.reviewer) {
           reviews = reviews.filter((r) =>
-            r.verdicts.some((v) => v.reviewer === options.reviewer) ||
-            r.author === options.reviewer,
+            r.verdicts.some((v) => v.reviewer === options.reviewer),
           );
         }
 
-        // AC: @trait-filterable-list ac-2 — filter by tag
-        // Reviews don't have tags directly, but we can filter by related_refs
-        if (options.tag) {
-          reviews = reviews.filter((r) =>
-            r.related_refs.some((ref) => {
-              const clean = ref.startsWith("@") ? ref.slice(1) : ref;
-              return clean.includes(options.tag);
-            }),
-          );
-        }
-
-        const totalMatching = reviews.length;
+        const total = reviews.length;
 
         // AC: @trait-filterable-list ac-8 — count mode
         if (options.count) {
-          output({ count: totalMatching }, () => {
-            console.log(String(totalMatching));
+          output({ count: total }, () => {
+            console.log(String(total));
           });
           return;
         }
 
         // AC: @trait-filterable-list ac-4 — offset
         if (options.offset) {
-          const offset = parseInt(options.offset, 10);
-          if (isNaN(offset) || offset < 0) {
-            error("--offset must be a non-negative integer");
-            process.exit(EXIT_CODES.USAGE_ERROR);
-          }
-          reviews = reviews.slice(offset);
+          reviews = reviews.slice(options.offset);
         }
 
         // AC: @trait-filterable-list ac-3 — limit
         if (options.limit) {
-          const limit = parseInt(options.limit, 10);
-          if (isNaN(limit) || limit < 1) {
-            error("--limit must be a positive integer");
-            process.exit(EXIT_CODES.USAGE_ERROR);
-          }
-          reviews = reviews.slice(0, limit);
+          reviews = reviews.slice(0, options.limit);
         }
 
-        // AC: @trait-filterable-list ac-6 — empty list message
-        if (reviews.length === 0) {
-          const hasFilters =
-            options.status ||
-            options.disposition ||
-            options.subject ||
-            options.reviewer ||
-            options.tag;
-          output([], () => {
-            if (hasFilters) {
-              info("No reviews matching the given filters.");
-            } else {
-              info("No reviews found.");
-            }
+        // AC: @trait-filterable-list ac-6 — empty results
+        if (total === 0) {
+          output({ reviews: [], total: 0, message: "No reviews found" }, () => {
+            info("No reviews found");
           });
           return;
         }
 
-        // Build JSON output with computed fields
-        const jsonItems = reviews.map(toJsonOutput);
+        // Build output data
+        const allReviews = await loadReviewRecords(ctx);
+        const outputData = {
+          reviews: reviews.map((r) => ({
+            _ulid: r._ulid,
+            ref: `@${r.slugs[0] || r._ulid}`,
+            slugs: r.slugs,
+            title: r.title,
+            lifecycle_state: r.lifecycle_state,
+            disposition: computeDisposition(r),
+            gate_state: computeGateState(r),
+            subject_type: r.subject.type,
+            author: r.author,
+            threads: computeThreadState(r),
+            created_at: r.created_at,
+          })),
+          total,
+          showing: reviews.length,
+        };
 
-        output(jsonItems, () => {
+        // AC: @trait-filterable-list ac-7 — summary
+        output(outputData, () => {
+          console.log(`Reviews (${reviews.length}/${total}):`);
           for (const r of reviews) {
-            formatReviewListItem(r);
-          }
-
-          // AC: @trait-filterable-list ac-7 — summary
-          const filterParts: string[] = [];
-          if (options.status) filterParts.push(`status=${options.status}`);
-          if (options.disposition)
-            filterParts.push(`disposition=${options.disposition}`);
-          if (options.subject) filterParts.push(`subject=${options.subject}`);
-          if (options.reviewer)
-            filterParts.push(`reviewer=${options.reviewer}`);
-          if (options.tag) filterParts.push(`tag=${options.tag}`);
-
-          const filterLabel =
-            filterParts.length > 0
-              ? ` (${filterParts.join(", ")})`
+            const shortRef = shortReviewRef(r, allReviews);
+            const disposition = computeDisposition(r);
+            const threadState = computeThreadState(r);
+            const threadSummary = threadState.total > 0
+              ? ` [${threadState.unresolved}/${threadState.total} threads]`
               : "";
-          console.log(
-            chalk.gray(
-              `\n${totalMatching} review${totalMatching === 1 ? "" : "s"} found${filterLabel}`,
-            ),
-          );
+            console.log(
+              `  ${shortRef} ${r.lifecycle_state}/${disposition} ${r.title}${threadSummary}`,
+            );
+          }
         });
       } catch (err) {
-        error("Failed to list reviews", err);
+        error(errors.failures.listReviews, err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // --- review comment add ---
+  // AC: @review-cli-mutation-commands ac-1
+  markMutating(
+    review
+      .command("comment <ref>")
+      .description("Add a comment thread to a review")
+      .requiredOption("--body <body>", "Comment body")
+      .option("--kind <kind>", "Thread kind: blocker, question, nit", "nit")
+      .option("--path <path>", "Code anchor: file path")
+      .option("--side <side>", "Code anchor: base or head")
+      .option("--line-start <n>", "Code anchor: start line", parseInt)
+      .option("--line-end <n>", "Code anchor: end line", parseInt)
+      .option("--commit <commit>", "Code anchor: commit")
+      .option("--section <section>", "Structured anchor: section")
+      .option("--field <field>", "Structured anchor: field")
+      .option("--anchor-ref <ref>", "Structured anchor: ref")
+      .option("--author <author>", "Comment author")
+      .action(async (ref: string, options) => {
+        try {
+          const ctx = await initContext();
+          const reviews = await loadReviewRecords(ctx);
+          const found = resolveReviewRef(ref, reviews);
+          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+
+          // Validate thread kind
+          // AC: @trait-error-guidance ac-5
+          const validKinds = ["blocker", "question", "nit"];
+          if (!validKinds.includes(options.kind)) {
+            exitWithGuidance(
+              `Invalid thread kind: ${options.kind}`,
+              EXIT_CODES.USAGE_ERROR,
+              `Valid kinds: ${validKinds.join(", ")}`,
+              { field: "kind", value: options.kind },
+            );
+          }
+
+          // Build anchor if provided
+          let anchor: ReviewAnchor | undefined;
+          if (options.path) {
+            anchor = {
+              type: "code" as const,
+              path: options.path,
+              side: (options.side || "head") as "base" | "head",
+              line_start: options.lineStart || 1,
+              line_end: options.lineEnd || options.lineStart || 1,
+              commit: options.commit || "",
+            };
+          } else if (options.section || options.field || options.anchorRef) {
+            anchor = {
+              type: "structured" as const,
+              ...(options.section ? { section: options.section } : {}),
+              ...(options.field ? { field: options.field } : {}),
+              ...(options.anchorRef ? { ref: options.anchorRef } : {}),
+            };
+          }
+
+          const threadId = ulid();
+          const entryId = ulid();
+          const now = new Date().toISOString();
+
+          const newThread: ReviewThread = {
+            _ulid: threadId,
+            kind: options.kind as ReviewThreadKind,
+            ...(anchor ? { anchor } : {}),
+            entries: [
+              {
+                _ulid: entryId,
+                author,
+                body: options.body,
+                created_at: now,
+              },
+            ],
+          };
+
+          const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
+            ...latest,
+            threads: [...latest.threads, newThread],
+            events: [
+              ...latest.events,
+              createEvent("thread_created", author, {
+                thread_ulid: threadId,
+                kind: options.kind,
+              }),
+            ],
+            updated_at: now,
+          }));
+
+          await commitIfShadow(
+            ctx.shadow,
+            "review-comment",
+            found.slugs[0] || found._ulid.slice(0, 8),
+          );
+
+          output(
+            { thread_ulid: threadId, review_ulid: found._ulid },
+            () => {
+              success(`Added ${options.kind} thread to review ${shortReviewRef(found, reviews)}`);
+            },
+          );
+        } catch (err) {
+          error(errors.failures.addReviewComment, err);
+          process.exit(EXIT_CODES.ERROR);
+        }
+      }),
+  );
+
+  // --- review reply ---
+  // AC: @review-cli-mutation-commands ac-1b
+  markMutating(
+    review
+      .command("reply <ref>")
+      .description("Reply to an existing review thread")
+      .requiredOption("--thread <ulid>", "Thread ULID to reply to")
+      .requiredOption("--body <body>", "Reply body")
+      .option("--author <author>", "Reply author")
+      .action(async (ref: string, options) => {
+        try {
+          const ctx = await initContext();
+          const reviews = await loadReviewRecords(ctx);
+          const found = resolveReviewRef(ref, reviews);
+          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const now = new Date().toISOString();
+
+          const threadRef = options.thread.startsWith("@")
+            ? options.thread.slice(1)
+            : options.thread;
+          const threadIndex = found.threads.findIndex(
+            (t) =>
+              t._ulid === threadRef ||
+              t._ulid.toLowerCase().startsWith(threadRef.toLowerCase()),
+          );
+          if (threadIndex === -1) {
+            exitWithGuidance(
+              `Thread not found: ${options.thread}`,
+              EXIT_CODES.NOT_FOUND,
+              `Check threads with: kspec review get ${ref}`,
+              { ref: options.thread, entity: "thread" },
+            );
+          }
+
+          const entryId = ulid();
+
+          const updated = await mutateReviewAtomically(ctx, found, (latest) => {
+            const threads = [...latest.threads];
+            threads[threadIndex] = {
+              ...threads[threadIndex],
+              entries: [
+                ...threads[threadIndex].entries,
+                {
+                  _ulid: entryId,
+                  author,
+                  body: options.body,
+                  created_at: now,
+                },
+              ],
+            };
+            return {
+              ...latest,
+              threads,
+              events: [
+                ...latest.events,
+                createEvent("thread_replied", author, {
+                  thread_ulid: found.threads[threadIndex]._ulid,
+                }),
+              ],
+              updated_at: now,
+            };
+          });
+
+          await commitIfShadow(
+            ctx.shadow,
+            "review-reply",
+            found.slugs[0] || found._ulid.slice(0, 8),
+          );
+
+          output(
+            { thread_ulid: found.threads[threadIndex]._ulid, review_ulid: found._ulid },
+            () => {
+              success(`Replied to thread on review ${shortReviewRef(found, reviews)}`);
+            },
+          );
+        } catch (err) {
+          error(errors.failures.replyToReviewThread, err);
+          process.exit(EXIT_CODES.ERROR);
+        }
+      }),
+  );
+
+  // --- review check ---
+  // AC: @review-cli-mutation-commands ac-2
+  markMutating(
+    review
+      .command("check <ref>")
+      .description("Add a check result to a review")
+      .requiredOption("--name <name>", "Check name")
+      .requiredOption("--status <status>", "Check status: pass, fail, running, skipped")
+      .option("--required", "Mark check as required (default: true)")
+      .option("--no-required", "Mark check as not required")
+      .option("--runner <runner>", "Check runner identifier")
+      .option("--evidence <evidence>", "Evidence payload or link")
+      .option("--version-base <commit>", "Applies-to version: base commit (for code)")
+      .option("--version-head <commit>", "Applies-to version: head commit (for code)")
+      .option("--version-hash <hash>", "Applies-to version: content hash (for entities)")
+      .option("--author <author>", "Actor for the event")
+      .action(async (ref: string, options) => {
+        try {
+          const ctx = await initContext();
+          const reviews = await loadReviewRecords(ctx);
+          const found = resolveReviewRef(ref, reviews);
+          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const now = new Date().toISOString();
+
+          // Validate check status
+          // AC: @trait-error-guidance ac-5
+          const validStatuses = ["pass", "fail", "running", "skipped"];
+          if (!validStatuses.includes(options.status)) {
+            exitWithGuidance(
+              `Invalid check status: ${options.status}`,
+              EXIT_CODES.USAGE_ERROR,
+              `Valid statuses: ${validStatuses.join(", ")}`,
+              { field: "status", value: options.status },
+            );
+          }
+
+          const version = parseVersionFromOptions(options);
+
+          const newCheck: ReviewCheck = {
+            name: options.name,
+            status: options.status as ReviewCheck["status"],
+            required: options.required !== false,
+            ...(options.runner ? { runner: options.runner } : {}),
+            ...(options.evidence ? { evidence: options.evidence } : {}),
+            applies_to_version: version,
+            created_at: now,
+            completed_at: options.status !== "running" ? now : null,
+          };
+
+          const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
+            ...latest,
+            checks: [...latest.checks, newCheck],
+            events: [
+              ...latest.events,
+              createEvent("check_added", author, {
+                name: options.name,
+                status: options.status,
+              }),
+            ],
+            updated_at: now,
+          }));
+
+          await commitIfShadow(
+            ctx.shadow,
+            "review-check",
+            found.slugs[0] || found._ulid.slice(0, 8),
+            options.name,
+          );
+
+          output(
+            { check_name: options.name, status: options.status, review_ulid: found._ulid },
+            () => {
+              success(`Added check "${options.name}" (${options.status}) to review ${shortReviewRef(found, reviews)}`);
+            },
+          );
+        } catch (err) {
+          error(errors.failures.addReviewCheck, err);
+          process.exit(EXIT_CODES.ERROR);
+        }
+      }),
+  );
+
+  // --- review verdict ---
+  // AC: @review-cli-mutation-commands ac-3
+  markMutating(
+    review
+      .command("verdict <ref>")
+      .description("Set a verdict on a review")
+      .requiredOption("--decision <decision>", "Verdict: approve, request_changes, comment")
+      .option("--reviewer <reviewer>", "Reviewer identity")
+      .option("--role <role>", "Reviewer role", "reviewer")
+      .option("--version-base <commit>", "Applies-to version: base commit (for code)")
+      .option("--version-head <commit>", "Applies-to version: head commit (for code)")
+      .option("--version-hash <hash>", "Applies-to version: content hash (for entities)")
+      .action(async (ref: string, options) => {
+        try {
+          const ctx = await initContext();
+          const reviews = await loadReviewRecords(ctx);
+          const found = resolveReviewRef(ref, reviews);
+          const reviewer = options.reviewer || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const now = new Date().toISOString();
+
+          // Validate decision
+          // AC: @trait-error-guidance ac-5
+          const validDecisions = ["approve", "request_changes", "comment"];
+          if (!validDecisions.includes(options.decision)) {
+            exitWithGuidance(
+              `Invalid verdict decision: ${options.decision}`,
+              EXIT_CODES.USAGE_ERROR,
+              `Valid decisions: ${validDecisions.join(", ")}`,
+              { field: "decision", value: options.decision },
+            );
+          }
+
+          const version = parseVersionFromOptions(options);
+
+          const newVerdict: ReviewVerdict = {
+            reviewer,
+            role: options.role,
+            decision: options.decision as ReviewVerdictDecision,
+            applies_to_version: version,
+            created_at: now,
+          };
+
+          const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
+            ...latest,
+            verdicts: [...latest.verdicts, newVerdict],
+            events: [
+              ...latest.events,
+              createEvent("verdict_submitted", reviewer, {
+                decision: options.decision,
+              }),
+            ],
+            updated_at: now,
+          }));
+
+          await commitIfShadow(
+            ctx.shadow,
+            "review-verdict",
+            found.slugs[0] || found._ulid.slice(0, 8),
+            options.decision,
+          );
+
+          output(
+            { decision: options.decision, reviewer, review_ulid: found._ulid },
+            () => {
+              success(`Recorded verdict "${options.decision}" by ${reviewer} on review ${shortReviewRef(found, reviews)}`);
+            },
+          );
+        } catch (err) {
+          error(errors.failures.setReviewVerdict, err);
+          process.exit(EXIT_CODES.ERROR);
+        }
+      }),
+  );
+
+  // --- review resolve ---
+  // AC: @review-cli-mutation-commands ac-4
+  markMutating(
+    review
+      .command("resolve <ref>")
+      .description("Resolve a review thread")
+      .requiredOption("--thread <ulid>", "Thread ULID to resolve")
+      .option("--author <author>", "Actor")
+      .action(async (ref: string, options) => {
+        try {
+          const ctx = await initContext();
+          const reviews = await loadReviewRecords(ctx);
+          const found = resolveReviewRef(ref, reviews);
+          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const now = new Date().toISOString();
+
+          const threadRef = options.thread.startsWith("@")
+            ? options.thread.slice(1)
+            : options.thread;
+          const threadIndex = found.threads.findIndex(
+            (t) =>
+              t._ulid === threadRef ||
+              t._ulid.toLowerCase().startsWith(threadRef.toLowerCase()),
+          );
+          if (threadIndex === -1) {
+            exitWithGuidance(
+              `Thread not found: ${options.thread}`,
+              EXIT_CODES.NOT_FOUND,
+              `Check threads with: kspec review get ${ref}`,
+              { ref: options.thread, entity: "thread" },
+            );
+          }
+
+          if (found.threads[threadIndex].resolved_at) {
+            exitWithGuidance(
+              `Thread is already resolved`,
+              EXIT_CODES.USAGE_ERROR,
+              `Use kspec review reopen ${ref} --thread ${options.thread} to reopen`,
+              { current_state: "resolved", valid_next: ["reopen"] },
+            );
+          }
+
+          const updated = await mutateReviewAtomically(ctx, found, (latest) => {
+            const threads = [...latest.threads];
+            threads[threadIndex] = {
+              ...threads[threadIndex],
+              resolved_at: now,
+              resolved_by: author,
+            };
+            return {
+              ...latest,
+              threads,
+              events: [
+                ...latest.events,
+                createEvent("thread_resolved", author, {
+                  thread_ulid: found.threads[threadIndex]._ulid,
+                }),
+              ],
+              updated_at: now,
+            };
+          });
+
+          await commitIfShadow(
+            ctx.shadow,
+            "review-resolve",
+            found.slugs[0] || found._ulid.slice(0, 8),
+          );
+
+          output(
+            { thread_ulid: found.threads[threadIndex]._ulid, review_ulid: found._ulid },
+            () => {
+              success(`Resolved thread on review ${shortReviewRef(found, reviews)}`);
+            },
+          );
+        } catch (err) {
+          error(errors.failures.resolveReviewThread, err);
+          process.exit(EXIT_CODES.ERROR);
+        }
+      }),
+  );
+
+  // --- review reopen ---
+  // AC: @review-cli-mutation-commands ac-4
+  markMutating(
+    review
+      .command("reopen <ref>")
+      .description("Reopen a resolved review thread")
+      .requiredOption("--thread <ulid>", "Thread ULID to reopen")
+      .option("--author <author>", "Actor")
+      .action(async (ref: string, options) => {
+        try {
+          const ctx = await initContext();
+          const reviews = await loadReviewRecords(ctx);
+          const found = resolveReviewRef(ref, reviews);
+          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const now = new Date().toISOString();
+
+          const threadRef = options.thread.startsWith("@")
+            ? options.thread.slice(1)
+            : options.thread;
+          const threadIndex = found.threads.findIndex(
+            (t) =>
+              t._ulid === threadRef ||
+              t._ulid.toLowerCase().startsWith(threadRef.toLowerCase()),
+          );
+          if (threadIndex === -1) {
+            exitWithGuidance(
+              `Thread not found: ${options.thread}`,
+              EXIT_CODES.NOT_FOUND,
+              `Check threads with: kspec review get ${ref}`,
+              { ref: options.thread, entity: "thread" },
+            );
+          }
+
+          if (!found.threads[threadIndex].resolved_at) {
+            exitWithGuidance(
+              `Thread is not resolved`,
+              EXIT_CODES.USAGE_ERROR,
+              `Use kspec review resolve ${ref} --thread ${options.thread} to resolve`,
+              { current_state: "unresolved", valid_next: ["resolve"] },
+            );
+          }
+
+          const updated = await mutateReviewAtomically(ctx, found, (latest) => {
+            const threads = [...latest.threads];
+            threads[threadIndex] = {
+              ...threads[threadIndex],
+              resolved_at: null,
+              resolved_by: null,
+            };
+            return {
+              ...latest,
+              threads,
+              events: [
+                ...latest.events,
+                createEvent("thread_reopened", author, {
+                  thread_ulid: found.threads[threadIndex]._ulid,
+                }),
+              ],
+              updated_at: now,
+            };
+          });
+
+          await commitIfShadow(
+            ctx.shadow,
+            "review-reopen",
+            found.slugs[0] || found._ulid.slice(0, 8),
+          );
+
+          output(
+            { thread_ulid: found.threads[threadIndex]._ulid, review_ulid: found._ulid },
+            () => {
+              success(`Reopened thread on review ${shortReviewRef(found, reviews)}`);
+            },
+          );
+        } catch (err) {
+          error(errors.failures.reopenReviewThread, err);
+          process.exit(EXIT_CODES.ERROR);
+        }
+      }),
+  );
+
+  // --- review open ---
+  // AC: @review-cli-mutation-commands ac-5
+  markMutating(
+    review
+      .command("open <ref>")
+      .description("Open a review (transition from draft to open)")
+      .option("--author <author>", "Actor")
+      .action(async (ref: string, options) => {
+        try {
+          const ctx = await initContext();
+          const reviews = await loadReviewRecords(ctx);
+          const found = resolveReviewRef(ref, reviews);
+          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const now = new Date().toISOString();
+
+          // AC: @trait-error-guidance ac-4
+          if (found.lifecycle_state !== "draft" && found.lifecycle_state !== "closed") {
+            exitWithGuidance(
+              `Cannot open review: current state is ${found.lifecycle_state}`,
+              EXIT_CODES.VALIDATION_FAILED,
+              `Review can only be opened from draft or closed state`,
+              {
+                current_state: found.lifecycle_state,
+                valid_from: ["draft", "closed"],
+              },
+            );
+          }
+
+          const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
+            ...latest,
+            lifecycle_state: "open" as ReviewLifecycleState,
+            events: [
+              ...latest.events,
+              createEvent("lifecycle_change", author, {
+                from: latest.lifecycle_state,
+                to: "open",
+              }),
+            ],
+            updated_at: now,
+          }));
+
+          await commitIfShadow(
+            ctx.shadow,
+            "review-open",
+            found.slugs[0] || found._ulid.slice(0, 8),
+          );
+
+          output(
+            { lifecycle_state: "open", review_ulid: found._ulid },
+            () => {
+              success(`Opened review ${shortReviewRef(found, reviews)}`);
+            },
+          );
+        } catch (err) {
+          error(errors.failures.openReview, err);
+          process.exit(EXIT_CODES.ERROR);
+        }
+      }),
+  );
+
+  // --- review close ---
+  // AC: @review-cli-mutation-commands ac-5
+  markMutating(
+    review
+      .command("close <ref>")
+      .description("Close a review")
+      .option("--author <author>", "Actor")
+      .action(async (ref: string, options) => {
+        try {
+          const ctx = await initContext();
+          const reviews = await loadReviewRecords(ctx);
+          const found = resolveReviewRef(ref, reviews);
+          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const now = new Date().toISOString();
+
+          // AC: @trait-error-guidance ac-4
+          if (found.lifecycle_state === "closed") {
+            exitWithGuidance(
+              `Review is already closed`,
+              EXIT_CODES.VALIDATION_FAILED,
+              `Current state: closed`,
+              { current_state: "closed", valid_next: ["open", "archive"] },
+            );
+          }
+          if (found.lifecycle_state === "archived") {
+            exitWithGuidance(
+              `Cannot close review: current state is archived`,
+              EXIT_CODES.VALIDATION_FAILED,
+              `Archived reviews cannot be modified`,
+              { current_state: "archived", valid_next: [] },
+            );
+          }
+
+          const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
+            ...latest,
+            lifecycle_state: "closed" as ReviewLifecycleState,
+            events: [
+              ...latest.events,
+              createEvent("lifecycle_change", author, {
+                from: latest.lifecycle_state,
+                to: "closed",
+              }),
+            ],
+            updated_at: now,
+          }));
+
+          await commitIfShadow(
+            ctx.shadow,
+            "review-close",
+            found.slugs[0] || found._ulid.slice(0, 8),
+          );
+
+          output(
+            { lifecycle_state: "closed", review_ulid: found._ulid },
+            () => {
+              success(`Closed review ${shortReviewRef(found, reviews)}`);
+            },
+          );
+        } catch (err) {
+          error(errors.failures.closeReview, err);
+          process.exit(EXIT_CODES.ERROR);
+        }
+      }),
+  );
+
+  // --- review archive ---
+  // AC: @review-cli-mutation-commands ac-5
+  markMutating(
+    review
+      .command("archive <ref>")
+      .description("Archive a review (permanent)")
+      .option("--author <author>", "Actor")
+      .action(async (ref: string, options) => {
+        try {
+          const ctx = await initContext();
+          const reviews = await loadReviewRecords(ctx);
+          const found = resolveReviewRef(ref, reviews);
+          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const now = new Date().toISOString();
+
+          // AC: @trait-error-guidance ac-4
+          if (found.lifecycle_state === "archived") {
+            exitWithGuidance(
+              `Review is already archived`,
+              EXIT_CODES.VALIDATION_FAILED,
+              `Current state: archived`,
+              { current_state: "archived", valid_next: [] },
+            );
+          }
+
+          const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
+            ...latest,
+            lifecycle_state: "archived" as ReviewLifecycleState,
+            events: [
+              ...latest.events,
+              createEvent("lifecycle_change", author, {
+                from: latest.lifecycle_state,
+                to: "archived",
+              }),
+            ],
+            updated_at: now,
+          }));
+
+          await commitIfShadow(
+            ctx.shadow,
+            "review-archive",
+            found.slugs[0] || found._ulid.slice(0, 8),
+          );
+
+          output(
+            { lifecycle_state: "archived", review_ulid: found._ulid },
+            () => {
+              success(`Archived review ${shortReviewRef(found, reviews)}`);
+            },
+          );
+        } catch (err) {
+          error(errors.failures.archiveReview, err);
+          process.exit(EXIT_CODES.ERROR);
+        }
+      }),
+  );
+
+  // --- review refresh ---
+  // AC: @review-cli-mutation-commands ac-6
+  markMutating(
+    review
+      .command("refresh <ref>")
+      .description("Update subject compare context after new commits")
+      .requiredOption("--head <commit>", "New head commit")
+      .option("--base <commit>", "New base commit (if changed)")
+      .option("--author <author>", "Actor")
+      .action(async (ref: string, options) => {
+        try {
+          const ctx = await initContext();
+          const reviews = await loadReviewRecords(ctx);
+          const found = resolveReviewRef(ref, reviews);
+          const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
+          const now = new Date().toISOString();
+
+          if (found.subject.type !== "code") {
+            exitWithGuidance(
+              `Refresh is only supported for code subjects (current: ${found.subject.type})`,
+              EXIT_CODES.USAGE_ERROR,
+              "Only code reviews support refresh with --head/--base",
+              { field: "subject.type", value: found.subject.type },
+            );
+          }
+
+          const updated = await mutateReviewAtomically(ctx, found, (latest) => {
+            const subject = { ...latest.subject } as Record<string, unknown>;
+            const previousHead = (subject as { head_commit: string }).head_commit;
+            subject.head_commit = options.head;
+            if (options.base) {
+              subject.base_commit = options.base;
+            }
+            return {
+              ...latest,
+              subject: subject as ReviewSubject,
+              events: [
+                ...latest.events,
+                createEvent("subject_refreshed", author, {
+                  previous_head: previousHead,
+                  new_head: options.head,
+                  ...(options.base ? { new_base: options.base } : {}),
+                }),
+              ],
+              updated_at: now,
+            };
+          });
+
+          await commitIfShadow(
+            ctx.shadow,
+            "review-refresh",
+            found.slugs[0] || found._ulid.slice(0, 8),
+          );
+
+          output(
+            { review_ulid: found._ulid, new_head: options.head },
+            () => {
+              success(`Refreshed subject on review ${shortReviewRef(found, reviews)}`);
+            },
+          );
+        } catch (err) {
+          error(errors.failures.refreshReview, err);
+          process.exit(EXIT_CODES.ERROR);
+        }
+      }),
+  );
+
+  // --- review for-task ---
+  // AC: @review-cli-task-linkage ac-1, ac-2
+  review
+    .command("for-task <ref>")
+    .description("Find reviews linked to a task")
+    .action(async (ref: string) => {
+      try {
+        const ctx = await initContext();
+        const reviews = await loadReviewRecords(ctx);
+        const cleanRef = ref.startsWith("@") ? ref : `@${ref}`;
+
+        // Find reviews by related_refs or subject ref
+        const matches = reviews.filter(
+          (r) =>
+            r.related_refs.includes(cleanRef) ||
+            (r.subject.type === "task" && r.subject.ref === cleanRef),
+        );
+
+        if (matches.length === 0) {
+          output({ reviews: [], total: 0, task_ref: cleanRef }, () => {
+            info(`No reviews found for task ${cleanRef}`);
+          });
+          return;
+        }
+
+        const outputData = {
+          reviews: matches.map((r) => ({
+            _ulid: r._ulid,
+            ref: `@${r.slugs[0] || r._ulid}`,
+            title: r.title,
+            lifecycle_state: r.lifecycle_state,
+            disposition: computeDisposition(r),
+            gate_state: computeGateState(r),
+            created_at: r.created_at,
+          })),
+          total: matches.length,
+          task_ref: cleanRef,
+        };
+
+        output(outputData, () => {
+          console.log(`Reviews for ${cleanRef} (${matches.length}):`);
+          for (const r of matches) {
+            const shortRef = shortReviewRef(r, reviews);
+            const disposition = computeDisposition(r);
+            console.log(
+              `  ${shortRef} ${r.lifecycle_state}/${disposition} ${r.title}`,
+            );
+          }
+        });
+      } catch (err) {
+        error(errors.failures.findReviewsForTask, err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
