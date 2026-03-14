@@ -2144,6 +2144,9 @@ features:
         notes: []
         created: 2026-03-14T08:45:51.815Z
         parent: "@review-record-core-model"
+        status:
+          maturity: draft
+          implementation: in_progress
     parent: "@core"
     status:
       maturity: draft
