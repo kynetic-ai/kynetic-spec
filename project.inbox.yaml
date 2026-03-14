@@ -1585,3 +1585,15 @@ inbox:
       - bug
       - plugin
     added_by: "@claude"
+  - _ulid: 01KKNQZ63EQE20TJDNQ2HYK004
+    text: Add plan output CLI option to suppress specs/tasks YAML blocks — when agents use plan
+      commands, the full specs and tasks blocks spam the output. Add a flag (e.g. --summary or
+      --no-blocks) that shows plan details relevant to the task at hand without the raw YAML
+      spec/task definitions. Useful for agent prompts and task-work sessions where the agent needs
+      the plan context but not the import-format blocks.
+    created_at: 2026-03-14T08:38:53.807Z
+    tags:
+      - cli
+      - plan
+      - agent-ux
+    added_by: "@claude"
