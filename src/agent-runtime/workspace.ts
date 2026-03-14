@@ -997,10 +997,11 @@ async function commitWorkspaceRegistryToShadow(
   const ctx = await initContext(projectDir);
   if (!ctx.shadow?.enabled) return;
 
+  const bareRef = taskRef.replace(/^@/, "");
   const committed = await commitIfShadow(
     ctx.shadow,
     "dispatch-workspace-registry",
-    taskRef,
+    bareRef,
   );
   if (!committed) {
     const shadowStatus = runGit(ctx.shadow.worktreeDir, ["status", "--porcelain"]);
