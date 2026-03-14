@@ -95062,6 +95062,41 @@
 
         - Verification: New tests for all 4 ACs plus trait ACs, existing test suite passes.
       supersedes: null
+    - _ulid: 01KKMVXSCFTBKYZRH430C6GDBV
+      created_at: 2026-03-14T00:28:47.887Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+
+        1. AC-1: Cleanup preserves adopted branch refs — already implemented in
+        reapDispatchWorkspace, added dedicated test coverage.
+
+        2. AC-2: Dispatcher-managed branches still deleted during cleanup — existing behavior
+        verified with test.
+
+        3. AC-3: Health reconciliation now emits distinct issue codes:
+           - missing_adopted_branch_recoverable (stale status, with rehydration guidance) when remote locator is known
+           - missing_adopted_branch (invalid status) when no remote locator exists
+           - missing_canonical_branch (invalid status) for dispatcher-managed branches
+           - missing_reviewer_worktree already existed as a separate path
+        4. AC-4: Added rehydrated flag to branch provenance schema. Cleanup now distinguishes:
+           - rehydrated=true: local branch ref created by dispatch for rehydration is deleted on cleanup (remote lineage preserved)
+           - rehydrated=false/null: locally-adopted branch ref is preserved on cleanup
+
+        Files changed:
+
+        - src/schema/dispatch-workspace.ts: Added rehydrated field to branch provenance schema
+
+        - src/agent-runtime/workspace.ts: Updated reconcileWorkspaceHealth for AC-3 distinct issue
+        codes, added deleteRehydratedAdoptedBranch for AC-4, updated adoptedBranchProvenance helper
+
+        - tests/dispatch-workspace-adopted-branch-cleanup.test.ts: New test file with 10 tests
+        covering all 4 ACs plus trait AC N/A annotations
+
+
+        Full test suite: 235 files, 4799 tests pass, 0 failures.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKK7RAYW9VJ3325R9DMBDQHN
@@ -95343,7 +95378,10 @@
         Added ac-4 test for the new instruction. All 97 dispatch engine tests pass."
       supersedes: null
   todos: []
-- title: Investigate and fix npx ENOENT crash in dispatch agent spawn
+- _ulid: 01KKMVDNTA80SYMTFY9EY454WJ
+  slugs: []
+  title: Investigate and fix npx ENOENT crash in dispatch agent spawn
+  type: task
   description: >-
     When the daemon is started via kspec serve start (which spawns bun as a child process),
     subsequent agent spawns using npx fail with ENOENT. This causes the daemon to crash because the
@@ -95378,21 +95416,18 @@
 
     - Stale reviewer worktree records after crashes create a blocking cycle (addressed by the branch
     adoption plan tasks)
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - dispatch
     - reliability
     - agents
-  depends_on: []
-  _ulid: 01KKMVDNTA80SYMTFY9EY454WJ
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-14T00:19:59.946Z
   notes: []
