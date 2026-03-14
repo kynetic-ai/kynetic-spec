@@ -1831,6 +1831,9 @@ features:
         notes: []
         created: 2026-03-14T08:45:51.729Z
         parent: "@review-record-core-model"
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KKNRBY85S31QQM77CMT13SJD
         slugs:
           - review-checks-and-gate-evaluation
