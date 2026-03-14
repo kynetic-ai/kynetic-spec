@@ -4131,7 +4131,7 @@ workspaces:
       adopted_at: null
       rehydrated: null
     lifecycle_state: closing
-    active_role: reviewer
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-create-review-skill-01kknrc5
@@ -4192,7 +4192,7 @@ workspaces:
       updated_at: 2026-03-14T20:54:53.639Z
     timestamps:
       created_at: 2026-03-14T20:27:15.011Z
-      updated_at: 2026-03-14T20:54:53.639Z
-      last_reconciled_at: 2026-03-14T20:54:53.639Z
+      updated_at: 2026-03-14T20:54:53.832Z
+      last_reconciled_at: 2026-03-14T20:54:53.832Z
       last_active_at: 2026-03-14T20:43:02.893Z
       closed_at: null
