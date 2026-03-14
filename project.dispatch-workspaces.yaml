@@ -2990,20 +2990,20 @@ workspaces:
         last_seen_at: 2026-03-14T03:01:50.894Z
       reviewer: null
     bootstrap:
-      status: not_run
-      configHash: null
-      canonicalBranchHead: null
-      lastRunAt: null
+      status: succeeded
+      configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+      canonicalBranchHead: 2fa2efb3a75e8fe34f9ad964c5eef351db308f40
+      lastRunAt: 2026-03-14T03:01:51.210Z
       invalidationReasons: []
       steps: []
       failureMessage: null
-      lastRole: null
+      lastRole: worker
       roleStates:
         worker:
-          status: not_run
-          configHash: null
-          canonicalBranchHead: null
-          lastRunAt: null
+          status: succeeded
+          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+          canonicalBranchHead: 2fa2efb3a75e8fe34f9ad964c5eef351db308f40
+          lastRunAt: 2026-03-14T03:01:51.210Z
           invalidationReasons: []
           steps: []
           failureMessage: null
@@ -3036,7 +3036,7 @@ workspaces:
       updated_at: 2026-03-14T03:01:50.894Z
     timestamps:
       created_at: 2026-03-14T03:01:50.894Z
-      updated_at: 2026-03-14T03:01:50.894Z
+      updated_at: 2026-03-14T03:01:51.210Z
       last_reconciled_at: 2026-03-14T03:01:50.894Z
       last_active_at: null
       closed_at: null
