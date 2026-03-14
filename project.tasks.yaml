@@ -95980,7 +95980,7 @@
   spec_ref: "@review-record-storage-and-identity"
   plan_ref: "@plan-review-records-and-gates"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-implement-review-record-core"
@@ -95991,9 +95991,9 @@
     - storage
     - identity
   vcs_refs: []
-  session_id: null
+  session_id: 01KKNW2EBBJ9DGWB0P8V02V1FD
   created_at: 2026-03-14T08:45:52.848Z
-  started_at: null
+  started_at: 2026-03-14T09:53:29.470Z
   notes:
     - _ulid: 01KKNTVEKADPW3SM5QFJKBE6FK
       created_at: 2026-03-14T09:29:17.162Z
@@ -96282,6 +96282,9 @@
   spec_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #845. Set KSPEC_CLAUDE_HOME in vitest setup.ts to isolate all test runs
+    from the real plugin marketplace. Verified fix prevents marketplace stomping when tests run from
+    dispatch worktrees."
   depends_on: []
   context: []
   priority: 3
@@ -96302,6 +96305,7 @@
   created_at: 2026-03-14T09:20:39.564Z
   started_at: 2026-03-14T09:31:19.905Z
   submitted_at: 2026-03-14T09:37:28.528Z
+  completed_at: 2026-03-14T09:49:46.197Z
   notes:
     - _ulid: 01KKNTDTX4GM9HBC6JEC0RPR0Z
       created_at: 2026-03-14T09:21:51.013Z
@@ -96355,7 +96359,3 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-14T09:49:46.197Z
-  closed_reason: "Merged in PR #845. Set KSPEC_CLAUDE_HOME in vitest setup.ts to isolate all test runs
-    from the real plugin marketplace. Verified fix prevents marketplace stomping when tests run from
-    dispatch worktrees."
