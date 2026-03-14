@@ -96223,6 +96223,10 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #853. Implemented check recording factories (createCheck,
+    createLocalCheck, mirrorExternalCheck) and gate evaluation engine (evaluateGates). All 6 ACs
+    covered with 38 annotated tests. No traits on spec. All CI checks passed. Full test suite: 5126
+    tests, 0 failures."
   depends_on:
     - "@task-implement-review-subject-bindings"
   context: []
@@ -96244,6 +96248,7 @@
   created_at: 2026-03-14T08:45:54.617Z
   started_at: 2026-03-14T17:49:45.518Z
   submitted_at: 2026-03-14T17:59:19.542Z
+  completed_at: 2026-03-14T18:12:08.104Z
   notes:
     - _ulid: 01KKPQGEV5VMFS546RTJ5VTPPT
       created_at: 2026-03-14T17:50:05.669Z
@@ -96300,11 +96305,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-14T18:12:08.104Z
-  closed_reason: "Merged in PR #853. Implemented check recording factories (createCheck,
-    createLocalCheck, mirrorExternalCheck) and gate evaluation engine (evaluateGates). All 6 ACs
-    covered with 38 annotated tests. No traits on spec. All CI checks passed. Full test suite: 5126
-    tests, 0 failures."
 - _ulid: 01KKNRC1M21CX9TW44VZWMEHHZ
   slugs:
     - task-implement-review-verdicts-and-resolution
@@ -96537,6 +96537,25 @@
         - Files: expected changes in src/cli/commands/review/, tests/
 
         - Verification: npm test, kspec validate
+      supersedes: null
+    - _ulid: 01KKPRXGF35FAARGSNPZXKH2HJ
+      created_at: 2026-03-14T18:14:41.891Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Created review CLI with three commands:
+
+        - review add: Creates reviews with ref-backed subjects (task/plan/spec) or code subjects
+        (base/head commits). Supports --slug, --author, --related-ref flags.
+
+        - review get: Shows full review details including lifecycle state, computed disposition,
+        computed gate state, threads, checks, verdicts, events, and notes.
+
+        - review list: Lists reviews with filters (--status, --disposition, --subject, --reviewer,
+        --tag, --limit, --offset, --count).
+
+
+        All commands support --json output. 37 tests covering all 5 own ACs plus trait ACs for
+        json-output, filterable-list, semantic-exit-codes, and shadow-commit.
       supersedes: null
   todos: []
   automation: eligible
