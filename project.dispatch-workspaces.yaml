@@ -3969,12 +3969,7 @@ workspaces:
         branch_ref: dispatch/task/task-implement-review-cli-mutations/01kknrc4
         head: 82708deaf73c2543a74b26ba778c218a8ceb96a3
         last_seen_at: 2026-03-14T19:48:55.081Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-mutations-01kknrc4-review
-        branch_mode: detached
-        branch_ref: null
-        head: 82708deaf73c2543a74b26ba778c218a8ceb96a3
-        last_seen_at: 2026-03-14T19:48:55.081Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -4016,7 +4011,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T20:00:09.226Z
+      updated_at: 2026-03-14T20:00:24.835Z
     cleanup:
       status: scheduled
       eligible: true
@@ -4025,8 +4020,8 @@ workspaces:
       updated_at: 2026-03-14T20:00:09.226Z
     timestamps:
       created_at: 2026-03-14T19:18:28.041Z
-      updated_at: 2026-03-14T20:00:24.099Z
-      last_reconciled_at: 2026-03-14T20:00:24.099Z
+      updated_at: 2026-03-14T20:00:24.835Z
+      last_reconciled_at: 2026-03-14T20:00:24.835Z
       last_active_at: 2026-03-14T19:48:55.527Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC51AWZKNSBW4CTEDBRDS
