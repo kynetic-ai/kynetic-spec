@@ -8532,4 +8532,18 @@ skills:
     depends_on: []
     tags: []
     allowed_tools: []
+  - _ulid: 01KKQARZBMX2DSCAQXTKHK0ZM9
+    _type: skill
+    id: review-principles
+    name: Review Principles
+    description: Foundational code review principles — adversarial investigation, cognitive bias
+      countermeasures, structured exploration, anti-rubber-stamping. Building block for pr-review
+      and local-review.
+    origin: project
+    platforms:
+      - claude-code
+      - codex
+    depends_on: []
+    tags: []
+    allowed_tools: []
 includes: []
