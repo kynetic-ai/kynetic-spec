@@ -8406,6 +8406,9 @@ features:
             then: A drain-pending flag or mutex serializes drain execution. If a drain is already running, the
               pending drain request is coalesced into a single follow-up drain after the current one
               completes, rather than running concurrently.
+        status:
+          maturity: draft
+          implementation: in_progress
     features:
       - _ulid: 01KKFY93PW5HZ7V21GGJMMZENW
         slugs:
