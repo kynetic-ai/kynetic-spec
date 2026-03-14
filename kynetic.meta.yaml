@@ -273,6 +273,7 @@ agents:
       - on: task.pending_review
     skills:
       - pr-review
+      - review-principles
     budget:
       timeout_minutes: 60
     concurrency:
