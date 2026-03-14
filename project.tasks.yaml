@@ -97268,7 +97268,7 @@
   spec_ref: "@dispatch-workspace-registry"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -97278,9 +97278,18 @@
     - dispatch
     - bug
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-14T21:54:09.509Z
   session_id: 01KKQ4TRSVZCQ0SHJGV6MQHN28
   created_at: 2026-03-14T21:41:43.927Z
   started_at: 2026-03-14T21:43:16.150Z
+  submitted_at: 2026-03-14T21:54:10.492Z
   notes:
     - _ulid: 01KKQ5EXZ00THEKZR4AHQ299GZ
       created_at: 2026-03-14T21:53:55.680Z
@@ -97305,12 +97314,10 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-14T21:54:10.492Z
-  submission_linkage:
-    branch: main
-    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-14T21:54:09.509Z
+  completed_at: 2026-03-14T22:07:01.782Z
+  closed_reason: "Merged in PR #860. Added dirty-checking to reconcileDispatchWorkspaceRegistry() via
+    isWorkspaceRecordDirty() helper that compares meaningful fields (canonical_branch_head,
+    lifecycle_state, active_role, health, cleanup, integration) excluding updated_at timestamps.
+    Registry file and shadow branch commit are now suppressed when periodic reconciliation produces
+    no meaningful state change, eliminating ~1 commit/minute of timestamp churn. 12 tests covering
+    all branches of the dirty-check logic plus integration verification."
