@@ -97270,6 +97270,12 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #860. Added dirty-checking to reconcileDispatchWorkspaceRegistry() via
+    isWorkspaceRecordDirty() helper that compares meaningful fields (canonical_branch_head,
+    lifecycle_state, active_role, health, cleanup, integration) excluding updated_at timestamps.
+    Registry file and shadow branch commit are now suppressed when periodic reconciliation produces
+    no meaningful state change, eliminating ~1 commit/minute of timestamp churn. 12 tests covering
+    all branches of the dirty-check logic plus integration verification."
   depends_on: []
   context: []
   priority: 3
@@ -97290,6 +97296,7 @@
   created_at: 2026-03-14T21:41:43.927Z
   started_at: 2026-03-14T21:43:16.150Z
   submitted_at: 2026-03-14T21:54:10.492Z
+  completed_at: 2026-03-14T22:07:01.782Z
   notes:
     - _ulid: 01KKQ5EXZ00THEKZR4AHQ299GZ
       created_at: 2026-03-14T21:53:55.680Z
@@ -97314,10 +97321,84 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-14T22:07:01.782Z
-  closed_reason: "Merged in PR #860. Added dirty-checking to reconcileDispatchWorkspaceRegistry() via
-    isWorkspaceRecordDirty() helper that compares meaningful fields (canonical_branch_head,
-    lifecycle_state, active_role, health, cleanup, integration) excluding updated_at timestamps.
-    Registry file and shadow branch commit are now suppressed when periodic reconciliation produces
-    no meaningful state change, eliminating ~1 commit/minute of timestamp churn. 12 tests covering
-    all branches of the dirty-check logic plus integration verification."
+- title: Fix double @@ in dispatch-workspace-registry shadow commit messages
+  description: >-
+    ## Problem
+
+
+    Shadow branch commit messages for dispatch-workspace-registry operations show double @@:
+
+    dispatch-workspace-registry @@01KKNRC5KR8DTW5JVETBX9CMS8
+
+
+    Should be:
+
+    dispatch-workspace-registry @01KKNRC5KR8DTW5JVETBX9CMS8
+
+
+    ## Root Cause
+
+
+    generateCommitMessage() in src/parser/shadow.ts (line 1012-1014) has a default case
+
+    that unconditionally prepends @ to the ref:
+
+      default:
+        parts.push(operation);
+        if (ref) parts.push(' @' + ref);
+
+    All named cases (task-start, task-complete, etc.) also use '@' + ref and expect bare
+
+    refs without the @ prefix. This contract works for those callers.
+
+
+    But commitWorkspaceRegistryToShadow() in src/agent-runtime/workspace.ts (line 1000-1003)
+
+    passes taskRef which is already @-prefixed (comes from record.task_ref /
+    nonClosedRecords[0].task_ref
+
+    which stores refs in canonical @ULID format):
+
+      commitIfShadow(ctx.shadow, "dispatch-workspace-registry", taskRef)
+
+    ## Fix
+
+
+    Strip the @ prefix from taskRef before passing it to commitIfShadow in
+
+    commitWorkspaceRegistryToShadow(). Use taskRef.replace(/^@/, '') to normalize.
+
+
+    Check all other callers of commitIfShadow to verify they pass bare refs — this may
+
+    be the only call site with the issue since the others go through CLI command handlers
+
+    that work with bare refs.
+
+
+    ## Files
+
+
+    - src/agent-runtime/workspace.ts — commitWorkspaceRegistryToShadow() around line 1000
+
+    - src/parser/shadow.ts — generateCommitMessage() around line 1012 (for reference only)
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - bug
+    - dispatch
+    - shadow
+  depends_on: []
+  automation: eligible
+  _ulid: 01KKQ6WEK03MXED7T07XW39DWK
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-14T22:18:47.260Z
+  notes: []
+  todos: []
