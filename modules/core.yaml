@@ -2058,7 +2058,7 @@ features:
         parent: "@review-record-core-model"
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKNRBYA7AA4YXRBVRDC7PMHY
         slugs:
           - review-task-lifecycle-integration
