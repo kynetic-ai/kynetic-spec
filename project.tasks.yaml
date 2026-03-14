@@ -95793,27 +95793,34 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Fix daemon session sync hardcoded manifest path
+- _ulid: 01KKNKTFJ0JB8JK0DNDMDCRXAG
+  slugs: []
+  title: Fix daemon session sync hardcoded manifest path
+  type: task
   description: "startSessionSyncForProject in packages/daemon/src/server.ts:117 hardcodes
     join(specDir, 'kynetic.yaml') instead of using findManifestInDir(). Projects with non-default
     manifest names (e.g., be-kynetic) fail with ENOENT when the daemon tries to start session sync.
     Introduced in commit 5ea3e0e08 (2026-03-10). Fix: export findManifestInDir from
     src/parser/yaml.ts and use it in the daemon. Gracefully skip sync if no manifest found."
-  type: task
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - bug
     - daemon
-  depends_on: []
-  _ulid: 01KKNKTFJ0JB8JK0DNDMDCRXAG
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-14T07:26:25.342Z
-  notes: []
+  notes:
+    - _ulid: 01KKNM0Q5WKSBRASNAC05PHP9D
+      created_at: 2026-03-14T07:29:49.756Z
+      author: "@claude"
+      content: Covers @manifest-discovery ac-6 (all production code must use discovery API) and
+        @multi-directory-daemon ac-31 (daemon manifest reads for auto-registered projects must use
+        discovery). Fix is in packages/daemon/src/server.ts:117.
+      supersedes: null
   todos: []
