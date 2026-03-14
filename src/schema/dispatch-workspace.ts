@@ -12,6 +12,7 @@ export const DispatchWorkspaceBranchProvenanceSchema = z.object({
   remote_ref: z.string().nullable().optional(),
   adopted_from: z.string().nullable().optional(),
   adopted_at: DateTimeSchema.nullable().optional(),
+  rehydrated: z.boolean().nullable().optional(),
 });
 
 export const DispatchWorkspaceLifecycleStateSchema = z.enum([
@@ -187,6 +188,7 @@ export const DispatchWorkspaceRecordSchema = z.object({
     remote_ref: null,
     adopted_from: null,
     adopted_at: null,
+    rehydrated: null,
   }),
   lifecycle_state: DispatchWorkspaceLifecycleStateSchema,
   active_role: DispatchWorkspaceRoleSchema.nullable().optional(),

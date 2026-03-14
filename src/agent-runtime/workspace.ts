@@ -560,6 +560,7 @@ function defaultBranchProvenance(): DispatchWorkspaceBranchProvenance {
     remote_ref: null,
     adopted_from: null,
     adopted_at: null,
+    rehydrated: null,
   };
 }
 
@@ -567,6 +568,7 @@ function adoptedBranchProvenance(
   adoptedFrom: string,
   remoteRef: string | null,
   now: string,
+  rehydrated: boolean,
 ): DispatchWorkspaceBranchProvenance {
   return {
     ownership: "adopted",
@@ -574,6 +576,7 @@ function adoptedBranchProvenance(
     remote_ref: remoteRef,
     adopted_from: adoptedFrom,
     adopted_at: now,
+    rehydrated,
   };
 }
 
@@ -778,6 +781,7 @@ function buildIssue(
   };
 }
 
+// AC: @adopted-branch-cleanup-and-recoverability ac-3
 function reconcileWorkspaceHealth(
   projectDir: string,
   record: DispatchWorkspaceRecord,
@@ -790,11 +794,27 @@ function reconcileWorkspaceHealth(
     branchExists = tryRestoreBranchFromRemote(projectDir, record.canonical_branch);
   }
   if (!branchExists) {
-    issues.push(buildIssue(
-      "missing_canonical_branch",
-      `Canonical branch "${record.canonical_branch}" is missing.`,
-      "Re-provision the workspace or restore the branch before dispatch resumes.",
-    ));
+    const isAdopted = record.branch_provenance?.ownership === "adopted";
+    const hasRemoteLocator = Boolean(record.branch_provenance?.remote_ref);
+    if (isAdopted && hasRemoteLocator) {
+      issues.push(buildIssue(
+        "missing_adopted_branch_recoverable",
+        `Adopted canonical branch "${record.canonical_branch}" is missing locally but a remote locator is known (${record.branch_provenance.remote_ref}).`,
+        `Rehydrate the adopted branch from the remote locator with: git fetch <remote> ${record.canonical_branch}:${record.canonical_branch}`,
+      ));
+    } else if (isAdopted) {
+      issues.push(buildIssue(
+        "missing_adopted_branch",
+        `Adopted canonical branch "${record.canonical_branch}" is missing locally and no remote locator is recorded.`,
+        "Locate the original branch source and manually restore it, or re-submit the task with updated submission linkage.",
+      ));
+    } else {
+      issues.push(buildIssue(
+        "missing_canonical_branch",
+        `Canonical branch "${record.canonical_branch}" is missing.`,
+        "Re-provision the workspace or restore the branch before dispatch resumes.",
+      ));
+    }
   }
 
   const workerRegistered = findExistingWorktreeForBranch(projectDir, record.canonical_branch);
@@ -823,10 +843,12 @@ function reconcileWorkspaceHealth(
     return createHealthyState(now);
   }
 
-  const invalid = issues.some((issue) => issue.code === "missing_canonical_branch");
+  const hasUnrecoverableBranch = issues.some(
+    (issue) => issue.code === "missing_canonical_branch" || issue.code === "missing_adopted_branch",
+  );
   return {
-    status: invalid ? "invalid" : "stale",
-    summary: invalid
+    status: hasUnrecoverableBranch ? "invalid" : "stale",
+    summary: hasUnrecoverableBranch
       ? "Workspace registry record is invalid because required git state is missing."
       : "Workspace registry record is stale and needs reconciliation.",
     issues,
@@ -1179,7 +1201,7 @@ async function recoverWorkspaceRecordFromMetadata(
   const branchProvenance: DispatchWorkspaceBranchProvenance = metadata.branchProvenance
     ?? (isDispatchBranch(metadata.canonicalBranch)
       ? defaultBranchProvenance()
-      : adoptedBranchProvenance(metadata.canonicalBranch, null, now));
+      : adoptedBranchProvenance(metadata.canonicalBranch, null, now, false));
   const provisionalRecord: DispatchWorkspaceRecord = {
     workspace_id: metadata.workspaceId || workspaceIdFor(metadata.taskRef),
     task_ref: metadata.taskRef,
@@ -1518,6 +1540,28 @@ function deleteDispatchBranch(projectDir: string, branch: string): void {
   );
 }
 
+// AC: @adopted-branch-cleanup-and-recoverability ac-4
+// Removes a local branch ref that was created by dispatch solely for
+// rehydrating an adopted externally-owned branch. This is distinct from
+// deleteDispatchBranch, which refuses non-dispatch branches. This function
+// is the cleanup counterpart: it safely removes the local mirror ref without
+// affecting the externally-owned branch lineage on the remote.
+function deleteRehydratedAdoptedBranch(projectDir: string, branch: string): void {
+  if (!refExists(projectDir, `refs/heads/${branch}`)) {
+    return;
+  }
+  // Safety: never delete protected branch names
+  if (branch === "main" || branch === "master" || branch === "develop") {
+    return;
+  }
+  runGitOrThrow(
+    projectDir,
+    ["branch", "-D", branch],
+    `Failed to delete rehydrated adopted branch "${branch}"`,
+    "Inspect branch state and active worktree registrations before retrying cleanup.",
+  );
+}
+
 function listDispatchBranches(projectDir: string): string[] {
   const result = runGit(projectDir, [
     "for-each-ref",
@@ -1694,8 +1738,16 @@ export async function reapDispatchWorkspace(
     existing.metadata.worktreeRoot,
     existing.workerWorktreeDir,
   );
+  // AC: @adopted-branch-cleanup-and-recoverability ac-1, ac-2, ac-4
+  // Dispatcher-managed branches are always deleted on cleanup.
+  // Adopted branches are preserved unless they were rehydrated (local ref
+  // created by dispatch solely for adoption), in which case only the local
+  // dispatch-side mirror ref is removed — the externally-owned branch lineage
+  // lives on the remote and is not mutated.
   if (existing.metadata.branchProvenance.ownership !== "adopted") {
     deleteDispatchBranch(projectDir, existing.metadata.canonicalBranch);
+  } else if (existing.metadata.branchProvenance.rehydrated) {
+    deleteRehydratedAdoptedBranch(projectDir, existing.metadata.canonicalBranch);
   }
   return { taskRef, action: "reaped", blockedReason: null };
 }
@@ -1835,6 +1887,7 @@ export async function provisionDispatchWorkspace(
   const isReviewOrFixCycle = taskStatus === "pending_review" || taskStatus === "needs_work";
   let adoptedBranch: string | null = null;
   let adoptionRemoteRef: string | null = null;
+  let adoptionRehydrated = false;
 
   if (!existingRecord && submissionLinkage?.branch) {
     const linkageBranch = submissionLinkage.branch;
@@ -1853,6 +1906,7 @@ export async function provisionDispatchWorkspace(
       );
       if (rehydrated) {
         adoptedBranch = linkageBranch;
+        adoptionRehydrated = true;
         adoptionRemoteRef = submissionLinkage.remote
           ? `${submissionLinkage.remote}/${linkageBranch}`
           : null;
@@ -1878,7 +1932,7 @@ export async function provisionDispatchWorkspace(
     ?? (adoptedBranch || `dispatch/task/${taskSlug}/${shortId}`);
   const branchProvenance: DispatchWorkspaceBranchProvenance = existingRecord?.branch_provenance
     ?? (adoptedBranch
-      ? adoptedBranchProvenance(adoptedBranch, adoptionRemoteRef, new Date().toISOString())
+      ? adoptedBranchProvenance(adoptedBranch, adoptionRemoteRef, new Date().toISOString(), adoptionRehydrated)
       : defaultBranchProvenance());
   const workspaceId = existingRecord?.workspace_id ?? workspaceIdFor(taskRef);
   const workerWorktreeDir = existingRecord?.worktrees.worker.path
@@ -2427,8 +2481,10 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
     // Check if the branch exists locally or on a remote.
     const branchRef = `refs/heads/${submissionLinkage.branch}`;
     let branchAvailable = refExists(projectDir, branchRef);
+    let branchRehydrated = false;
     if (!branchAvailable) {
       branchAvailable = tryRestoreBranchFromRemote(projectDir, submissionLinkage.branch);
+      branchRehydrated = branchAvailable;
     }
 
     if (branchAvailable && !existingRecord) {
@@ -2458,6 +2514,7 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
             submissionLinkage.branch,
             submissionLinkage.remote ?? null,
             now,
+            branchRehydrated,
           ),
           lifecycle_state: "ready",
           active_role: null,
