@@ -3387,8 +3387,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
-    active_role: null
+    lifecycle_state: stale
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-validation-01kknrc2
@@ -3437,10 +3437,15 @@ workspaces:
       detail: null
       updated_at: 2026-03-14T10:45:38.537Z
     health:
-      status: healthy
-      summary: Workspace record matches current git branch and worktree state.
-      issues: []
-      updated_at: 2026-03-14T10:45:38.537Z
+      status: stale
+      summary: Workspace registry record is stale and needs reconciliation.
+      issues:
+        - code: missing_reviewer_worktree
+          message: Reviewer worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-validation-01kknrc2-review"
+            is missing or no longer registered.
+          suggestion: Recreate the detached reviewer snapshot before running review again.
+      updated_at: 2026-03-14T10:45:39.700Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -3449,7 +3454,7 @@ workspaces:
       updated_at: 2026-03-14T10:45:38.537Z
     timestamps:
       created_at: 2026-03-14T10:36:47.635Z
-      updated_at: 2026-03-14T10:45:39.453Z
-      last_reconciled_at: 2026-03-14T10:45:38.537Z
-      last_active_at: 2026-03-14T10:36:48.061Z
+      updated_at: 2026-03-14T10:45:39.700Z
+      last_reconciled_at: 2026-03-14T10:45:39.700Z
+      last_active_at: 2026-03-14T10:45:39.700Z
       closed_at: null
