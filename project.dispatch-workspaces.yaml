@@ -3315,12 +3315,7 @@ workspaces:
         branch_ref: dispatch/task/task-implement-review-subject-bindings/01kknrbz
         head: ea38c8241ed95df50503bbfbd360e28555ba2ec9
         last_seen_at: 2026-03-14T17:10:44.804Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-subject-bindings-01kknrbz-review
-        branch_mode: detached
-        branch_ref: null
-        head: ea38c8241ed95df50503bbfbd360e28555ba2ec9
-        last_seen_at: 2026-03-14T17:10:44.804Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -3359,7 +3354,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T17:16:50.121Z
+      updated_at: 2026-03-14T17:16:53.218Z
     cleanup:
       status: scheduled
       eligible: true
@@ -3368,8 +3363,8 @@ workspaces:
       updated_at: 2026-03-14T17:16:50.121Z
     timestamps:
       created_at: 2026-03-14T10:27:04.030Z
-      updated_at: 2026-03-14T17:16:52.425Z
-      last_reconciled_at: 2026-03-14T17:16:52.425Z
+      updated_at: 2026-03-14T17:16:53.218Z
+      last_reconciled_at: 2026-03-14T17:16:53.218Z
       last_active_at: 2026-03-14T17:10:45.224Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC26NFC7EGP5AN7AZ1982
