@@ -1561,3 +1561,14 @@ inbox:
       - cli
       - web-ui
     added_by: "@claude"
+  - _ulid: 01KKNDFSNZ288SA77WFXPQ0HX6
+    text: "Skill/workflow name collision: local-review exists as both a workflow (in meta) and a skill
+      (in skills list). skill get local-review fails with 'Item local-review is not a skill' because
+      the resolver finds the workflow first. skill render local-review also fails. This means the
+      hardened local-review SKILL.md content may not be reaching agents that reference
+      /local-review. Discovered during be-kynetic PR review audit."
+    created_at: 2026-03-14T05:35:43.807Z
+    tags:
+      - bug
+      - skill-resolution
+    added_by: "@claude"
