@@ -95231,12 +95231,32 @@
   priority: 1
   tags: []
   vcs_refs: []
+  session_id: 01KKMXY8DBXAWAS4BX15FH7NRD
   created_at: 2026-03-13T09:17:04.476Z
-  notes: []
+  started_at: 2026-03-14T01:04:23.987Z
+  notes:
+    - _ulid: 01KKMYPPA3EMA351B5VWHF65H9
+      created_at: 2026-03-14T01:17:21.092Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Implements the deterministic task branch helper as a first-party CLI command
+        (kspec task branch <ref>) so humans and agents can create/resume dispatch-compatible
+        branches for manual work.
+
+        - Scope: New 'task branch' subcommand in src/cli/commands/task.ts with branch naming,
+        local/remote reuse, human+JSON output. Error string in src/strings/errors.ts. 16 integration
+        tests covering all 3 spec ACs plus trait ACs (json-output, semantic-exit-codes,
+        error-guidance).
+
+        - Files: src/cli/commands/task.ts, src/strings/errors.ts, tests/task-branch-helper.test.ts
+        (new)
+
+        - Verification: npm test passes all 4805 tests (16 new). npx tsc --noEmit clean.
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-14T01:04:23.987Z
-  session_id: 01KKMXY8DBXAWAS4BX15FH7NRD
 - _ulid: 01KKK7RD4RNFCQN29QVYRP8E0Z
   slugs:
     - update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches
