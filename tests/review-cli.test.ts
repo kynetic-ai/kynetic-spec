@@ -202,6 +202,7 @@ describe("Integration: review CLI commands", () => {
     });
 
     // AC: @trait-error-guidance ac-6
+    // AC: @trait-json-output ac-3
     it("should return JSON error when review not found in JSON mode", () => {
       const result = kspecRun("review get @nonexistent --json", tempDir, { expectFail: true });
       expect(result.exitCode).toBe(3);
@@ -858,6 +859,7 @@ describe("Integration: review CLI commands", () => {
   // AC: @trait-json-output ac-1, ac-2, ac-4, ac-5
   describe("JSON output trait compliance", () => {
     // AC: @trait-json-output ac-1
+    // AC: @trait-json-output ac-2
     it("should output valid JSON with no ANSI color codes", () => {
       kspec("review add --title 'JSON Test' --base a1 --head b1 --slug json-test", tempDir);
       const result = kspecRun("review get @json-test --json", tempDir);
