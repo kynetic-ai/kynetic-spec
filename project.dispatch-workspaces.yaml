@@ -3060,8 +3060,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: active
+    active_role: worker
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-daemon-session-sync-hardcoded-manifest-path-01kknktf
@@ -3108,7 +3108,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T07:33:32.494Z
+      updated_at: 2026-03-14T07:33:32.949Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -3117,7 +3117,7 @@ workspaces:
       updated_at: 2026-03-14T07:33:32.494Z
     timestamps:
       created_at: 2026-03-14T07:33:32.494Z
-      updated_at: 2026-03-14T07:33:32.705Z
-      last_reconciled_at: 2026-03-14T07:33:32.494Z
-      last_active_at: null
+      updated_at: 2026-03-14T07:33:32.949Z
+      last_reconciled_at: 2026-03-14T07:33:32.949Z
+      last_active_at: 2026-03-14T07:33:32.949Z
       closed_at: null
