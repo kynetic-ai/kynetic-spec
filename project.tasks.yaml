@@ -95904,6 +95904,7 @@
   created_at: 2026-03-14T08:45:52.231Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKNRBZAGSK357RJ8PKV75MZ9
   slugs:
     - task-implement-review-storage-and-identity
@@ -95926,6 +95927,7 @@
   created_at: 2026-03-14T08:45:52.848Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKNRBZXF4B280EVREQJ6ZJRH
   slugs:
     - task-implement-review-subject-bindings
@@ -95949,6 +95951,7 @@
   created_at: 2026-03-14T08:45:53.455Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKNRC0FGK9TWYBNBVEGC7Z50
   slugs:
     - task-implement-review-comment-threads
@@ -95971,6 +95974,7 @@
   created_at: 2026-03-14T08:45:54.032Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKNRC11SHJBA9WRP91V92V0D
   slugs:
     - task-implement-review-checks-and-gates
@@ -95993,6 +95997,7 @@
   created_at: 2026-03-14T08:45:54.617Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKNRC1M21CX9TW44VZWMEHHZ
   slugs:
     - task-implement-review-verdicts-and-resolution
@@ -96016,6 +96021,7 @@
   created_at: 2026-03-14T08:45:55.202Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKNRC26NFC7EGP5AN7AZ1982
   slugs:
     - task-implement-review-validation
@@ -96039,6 +96045,7 @@
   created_at: 2026-03-14T08:45:55.797Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKNRC2RSHEC4VE39AK5NQN1J
   slugs:
     - task-implement-review-task-integration
@@ -96061,6 +96068,7 @@
   created_at: 2026-03-14T08:45:56.377Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKNRC3AMTWV7SS9F6ZP2FCA7
   slugs:
     - task-implement-review-cli-surface
@@ -96084,6 +96092,7 @@
   created_at: 2026-03-14T08:45:56.947Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKNRC3WFJDQX2KAS2129GZ2W
   slugs:
     - task-implement-review-cli-create-query
@@ -96108,6 +96117,7 @@
   created_at: 2026-03-14T08:45:57.519Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKNRC4F8KAXMPAJCEVZEMNVH
   slugs:
     - task-implement-review-cli-mutations
@@ -96132,6 +96142,7 @@
   created_at: 2026-03-14T08:45:58.120Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKNRC51AWZKNSBW4CTEDBRDS
   slugs:
     - task-implement-review-cli-task-linkage
@@ -96155,27 +96166,29 @@
   created_at: 2026-03-14T08:45:58.698Z
   notes: []
   todos: []
-- title: Create review skill for agent instructions
-  type: task
+  automation: eligible
+- _ulid: 01KKNRC5KR8DTW5JVETBX9CMS8
   slugs:
     - task-create-review-skill
+  title: Create review skill for agent instructions
+  type: task
   spec_ref: null
   plan_ref: "@plan-review-records-and-gates"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-review-cli-create-query"
+    - "@task-implement-review-cli-mutations"
+    - "@task-implement-review-cli-task-linkage"
+  context: []
   priority: 3
   tags:
     - review
     - skill
     - agents
-  depends_on:
-    - "@task-implement-review-cli-create-query"
-    - "@task-implement-review-cli-mutations"
-    - "@task-implement-review-cli-task-linkage"
-  notes: []
-  origin: derived
-  _ulid: 01KKNRC5KR8DTW5JVETBX9CMS8
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-14T08:45:59.288Z
+  notes: []
   todos: []
+  automation: eligible
