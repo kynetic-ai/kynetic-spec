@@ -8796,7 +8796,7 @@ features:
                   implementation: implemented
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: implemented
           - _ulid: 01KKFY93X0Z8AEJ57RVNHR8N73
             slugs:
               - dispatch-branch-integration-contract
