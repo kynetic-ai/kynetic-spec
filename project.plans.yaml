@@ -14993,6 +14993,15 @@ plans:
           - "@task-implement-review-cli-create-query"
           - "@task-implement-review-task-integration"
         tags: [review, cli, tasks]
+
+      - slug: task-create-review-skill
+        title: Create review skill for agent instructions
+        priority: 3
+        depends_on:
+          - "@task-implement-review-cli-create-query"
+          - "@task-implement-review-cli-mutations"
+          - "@task-implement-review-cli-task-linkage"
+        tags: [review, skill, agents]
       ```
 
 
@@ -15610,6 +15619,22 @@ plans:
       Remember: ULIDs must be Crockford base32 — always use `testUlid()`.
 
 
+      ### Review skill for agents
+
+
+      Create `templates/skills/review.md` and add it to `templates/skills/manifest.yaml`.
+
+      The skill should document the review CLI commands, common workflows (create
+
+      review for task, add comments, run checks, submit verdict, handle re-review
+
+      cycles), and the review-task sync rules. Since skills auto-surface in
+
+      `kspec-agents.md` via `kspec agents generate`, agents will discover the review
+
+      system through the skill without needing separate template sections.
+
+
       ### Execution intent
 
 
@@ -15720,6 +15745,11 @@ plans:
           semantic content hash with excluded fields per entity type, (7) removed rejected from v1
           disposition, (8) unified event type list, (9) validation checks structure not freshness,
           (10) review refresh as authoritative staleness trigger"
+      - _ulid: 01KKNR66C3NVD1CE8XA8TP2KJW
+        created_at: 2026-03-14T08:42:43.459Z
+        author: "@claude"
+        content: "Added task-create-review-skill: create templates/skills/review.md for agent instructions,
+          depends on all CLI tasks, auto-surfaces via kspec agents generate"
   - _ulid: 01KKFJY80GMJZKN10AMDJ2WDNC
     slugs:
       - plan-grouped-work-and-human-handoff
