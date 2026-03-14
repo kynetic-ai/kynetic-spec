@@ -4139,12 +4139,7 @@ workspaces:
         branch_ref: dispatch/task/task-create-review-skill/01kknrc5
         head: 80a24e30153780e940d4c136c3f6612788e6d6cb
         last_seen_at: 2026-03-14T20:43:02.421Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-create-review-skill-01kknrc5-review
-        branch_mode: detached
-        branch_ref: null
-        head: 80a24e30153780e940d4c136c3f6612788e6d6cb
-        last_seen_at: 2026-03-14T20:43:02.421Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -4183,7 +4178,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T20:54:53.639Z
+      updated_at: 2026-03-14T20:54:55.177Z
     cleanup:
       status: scheduled
       eligible: true
@@ -4192,7 +4187,7 @@ workspaces:
       updated_at: 2026-03-14T20:54:53.639Z
     timestamps:
       created_at: 2026-03-14T20:27:15.011Z
-      updated_at: 2026-03-14T20:54:53.832Z
-      last_reconciled_at: 2026-03-14T20:54:53.832Z
+      updated_at: 2026-03-14T20:54:55.177Z
+      last_reconciled_at: 2026-03-14T20:54:55.177Z
       last_active_at: 2026-03-14T20:43:02.893Z
       closed_at: null
