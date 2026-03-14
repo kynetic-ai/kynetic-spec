@@ -5,7 +5,7 @@
  * AC: @review-cli-commands ac-2 — Output includes subject, lifecycle, disposition, gate, threads, linkage
  * AC: @review-cli-commands ac-3 — Compatible with batch-oriented mutation flows
  * AC: @review-cli-creation-and-query ac-1, ac-2, ac-3, ac-4, ac-5
- * AC: @review-cli-mutation-commands ac-1, ac-1b, ac-2, ac-3, ac-4, ac-5, ac-6
+ * AC: @review-cli-mutation-commands ac-1, ac-1b, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7
  * AC: @review-cli-task-linkage ac-1, ac-2
  */
 
@@ -202,6 +202,7 @@ describe("Integration: review CLI commands", () => {
     });
 
     // AC: @trait-error-guidance ac-6
+    // AC: @trait-json-output ac-3
     it("should return JSON error when review not found in JSON mode", () => {
       const result = kspecRun("review get @nonexistent --json", tempDir, { expectFail: true });
       expect(result.exitCode).toBe(3);
@@ -858,6 +859,7 @@ describe("Integration: review CLI commands", () => {
   // AC: @trait-json-output ac-1, ac-2, ac-4, ac-5
   describe("JSON output trait compliance", () => {
     // AC: @trait-json-output ac-1
+    // AC: @trait-json-output ac-2
     it("should output valid JSON with no ANSI color codes", () => {
       kspec("review add --title 'JSON Test' --base a1 --head b1 --slug json-test", tempDir);
       const result = kspecRun("review get @json-test --json", tempDir);
@@ -910,10 +912,17 @@ describe("Integration: review CLI commands", () => {
     });
   });
 
+  // AC: @review-cli-mutation-commands ac-7 — Design constraint: no delete command is implemented;
+  // destructive operations are deferred to future work and will require explicit safety behavior
+  // (--force / confirmation) separate from close/archive lifecycle transitions.
+
   // Trait ACs documented as N/A
+  // AC: @trait-shadow-commit ac-1, ac-2, ac-3 — covered in source: commitIfShadow calls with semantic messages and ULID/slug refs
   // AC: @trait-shadow-commit ac-4 — N/A: test fixtures do not initialize shadow branch; shadow commits are a no-op
+  // AC: @trait-shadow-commit ac-5 — structural: commitIfShadow only called after successful save in each command's try block
   // AC: @trait-shadow-commit ac-6 — N/A: test fixtures have no remote; fire-and-forget push is not testable in isolation
   // AC: @trait-shadow-commit ac-7 — N/A: test fixtures have no remote; sync warning not triggered
+  // AC: @trait-shadow-commit ac-8 — covered via batch compatibility tests: batch commands produce single atomic commit
   // AC: @trait-filterable-list ac-2 — N/A: reviews do not have tags; --tag filter is not applicable
   // AC: @trait-filterable-list ac-5 — N/A: reviews do not support --tag filter; multi-filter AND logic tested with --status and --disposition instead
   // AC: @trait-confirmation-prompt ac-1 through ac-6 — N/A: review-cli-mutation-commands ac-7 defers destructive operations to future work

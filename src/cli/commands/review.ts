@@ -6,7 +6,7 @@
  * AC: @review-cli-commands ac-3 — Compatible with batch-oriented mutation flows
  *
  * AC: @review-cli-creation-and-query ac-1, ac-2, ac-3, ac-4, ac-5
- * AC: @review-cli-mutation-commands ac-1, ac-1b, ac-2, ac-3, ac-4, ac-5, ac-6
+ * AC: @review-cli-mutation-commands ac-1, ac-1b, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7
  * AC: @review-cli-task-linkage ac-1, ac-2
  */
 
@@ -1304,6 +1304,9 @@ export function registerReviewCommands(program: Command): void {
 
   // --- review archive ---
   // AC: @review-cli-mutation-commands ac-5
+  // AC: @review-cli-mutation-commands ac-7 — No delete command exists; destructive operations are
+  // deferred to future work and will require explicit safety behavior (--force / confirmation)
+  // separate from close/archive lifecycle transitions.
   markMutating(
     review
       .command("archive <ref>")
