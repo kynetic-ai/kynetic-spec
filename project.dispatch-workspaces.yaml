@@ -2824,12 +2824,7 @@ workspaces:
         branch_ref: dispatch/task/update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches/01kkk7rd
         head: f3a111b5872f450beef3093dd527ed71e9875a02
         last_seen_at: 2026-03-14T01:42:46.415Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches-01kkk7rd-review
-        branch_mode: detached
-        branch_ref: null
-        head: f3a111b5872f450beef3093dd527ed71e9875a02
-        last_seen_at: 2026-03-14T01:42:46.415Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -2868,7 +2863,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T01:54:43.883Z
+      updated_at: 2026-03-14T01:54:47.370Z
     cleanup:
       status: scheduled
       eligible: true
@@ -2877,8 +2872,8 @@ workspaces:
       updated_at: 2026-03-14T01:54:43.883Z
     timestamps:
       created_at: 2026-03-14T01:29:39.354Z
-      updated_at: 2026-03-14T01:54:44.607Z
-      last_reconciled_at: 2026-03-14T01:54:44.607Z
+      updated_at: 2026-03-14T01:54:47.370Z
+      last_reconciled_at: 2026-03-14T01:54:47.370Z
       last_active_at: 2026-03-14T01:42:46.820Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKK7RE59ZEANEM8MZJWXY5NV
