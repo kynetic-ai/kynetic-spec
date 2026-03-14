@@ -2026,7 +2026,7 @@ features:
         parent: "@review-record-core-model"
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKNRBY9J2BYDRA6WEM4B5G03
         slugs:
           - review-record-validation
