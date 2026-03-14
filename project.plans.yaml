@@ -14529,7 +14529,6 @@ plans:
           - trait-json-output
           - trait-filterable-list
           - trait-semantic-exit-codes
-          - trait-error-guidance
         description: |
           The CLI supports creating reviews and reading them back by review ref,
           subject, and status so agents can discover active work and reopen an
@@ -14568,8 +14567,8 @@ plans:
         traits:
           - trait-json-output
           - trait-semantic-exit-codes
-          - trait-error-guidance
           - trait-shadow-commit
+          - trait-confirmation-prompt
         description: |
           The CLI supports the minimal mutations needed to conduct a review cycle:
           add comments, record checks, set verdicts, and resolve or reopen threads.
@@ -14622,7 +14621,6 @@ plans:
         traits:
           - trait-json-output
           - trait-semantic-exit-codes
-          - trait-error-guidance
         description: |
           Task-oriented CLI output exposes the active review linkage so automation can
           move between task workflow state and the corresponding durable review
@@ -14796,6 +14794,19 @@ plans:
       also identify the Zod and parser validation boundaries required for a nested
       review record model.
 
+      Validation should be built iteratively: start with the base review record
+      schema (core fields, status, subject binding) and extend as sibling schemas
+      for threads, checks, and verdicts are defined by their respective tasks.
+      The validation task should not block on all sub-schemas being complete.
+
+      ### Subject type extensibility
+
+      The subject type set (plan, task, spec, code worktree, external) should be
+      modeled as an open discriminated union rather than a closed enum so new
+      subject types can be added without breaking schema changes. The initial
+      implementation should support the listed types but the schema should not
+      make it impossible to extend.
+
       ### Relationship to task state
 
       Task state should remain a lightweight workflow signal. The review record should
@@ -14841,6 +14852,13 @@ plans:
         created_at: 2026-03-13T17:37:08.256Z
         author: Jacob Chapel
         content: Convert plan tasks from design work to execution work
+      - _ulid: 01KKN6FTN1XFTQFYP5MGQF2CQ5
+        created_at: 2026-03-14T03:33:24.769Z
+        author: "@claude"
+        content: "Addressed review feedback: removed redundant trait-error-guidance from child CLI specs
+          (inherited from parent), added trait-confirmation-prompt to mutation commands for
+          destructive op safety, added implementation notes for iterative validation approach and
+          subject type extensibility as open discriminated union"
   - _ulid: 01KKFJY80GMJZKN10AMDJ2WDNC
     slugs:
       - plan-grouped-work-and-human-handoff
