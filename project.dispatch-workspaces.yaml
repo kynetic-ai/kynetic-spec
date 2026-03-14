@@ -2744,12 +2744,7 @@ workspaces:
         branch_ref: dispatch/task/implement-deterministic-task-branch-helper/01kkk7rc
         head: fdef43715537f280774155c02cab8d965ffe09e9
         last_seen_at: 2026-03-14T01:17:45.173Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-deterministic-task-branch-helper-01kkk7rc-review
-        branch_mode: detached
-        branch_ref: null
-        head: fdef43715537f280774155c02cab8d965ffe09e9
-        last_seen_at: 2026-03-14T01:17:45.173Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -2788,7 +2783,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T01:29:38.104Z
+      updated_at: 2026-03-14T01:29:44.737Z
     cleanup:
       status: scheduled
       eligible: true
@@ -2797,8 +2792,8 @@ workspaces:
       updated_at: 2026-03-14T01:29:38.104Z
     timestamps:
       created_at: 2026-03-14T01:04:00.051Z
-      updated_at: 2026-03-14T01:29:44.031Z
-      last_reconciled_at: 2026-03-14T01:29:44.031Z
+      updated_at: 2026-03-14T01:29:44.737Z
+      last_reconciled_at: 2026-03-14T01:29:44.737Z
       last_active_at: 2026-03-14T01:17:46.129Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKK7RD4RNFCQN29QVYRP8E0Z
