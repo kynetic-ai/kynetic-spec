@@ -2971,7 +2971,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 2fa2efb3a75e8fe34f9ad964c5eef351db308f40
     canonical_branch: dispatch/task/implement-per-task-dispatch-drain-coalescing/01kkn32p
-    canonical_branch_head: 2fa2efb3a75e8fe34f9ad964c5eef351db308f40
+    canonical_branch_head: 65a55bf93afe092ab829a8172bfb725f08f82ebd
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -2979,16 +2979,21 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-per-task-dispatch-drain-coalescing-01kkn32p
         branch_mode: branch
         branch_ref: dispatch/task/implement-per-task-dispatch-drain-coalescing/01kkn32p
-        head: 2fa2efb3a75e8fe34f9ad964c5eef351db308f40
-        last_seen_at: 2026-03-14T03:01:50.894Z
-      reviewer: null
+        head: 65a55bf93afe092ab829a8172bfb725f08f82ebd
+        last_seen_at: 2026-03-14T03:24:45.793Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-per-task-dispatch-drain-coalescing-01kkn32p-review
+        branch_mode: detached
+        branch_ref: null
+        head: 65a55bf93afe092ab829a8172bfb725f08f82ebd
+        last_seen_at: 2026-03-14T03:24:45.793Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -3022,21 +3027,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-14T03:23:50.390Z
+      updated_at: 2026-03-14T03:24:45.793Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T03:23:50.390Z
+      updated_at: 2026-03-14T03:24:45.793Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-14T03:23:50.390Z
+      updated_at: 2026-03-14T03:24:45.793Z
     timestamps:
       created_at: 2026-03-14T03:01:50.894Z
-      updated_at: 2026-03-14T03:23:50.390Z
-      last_reconciled_at: 2026-03-14T03:23:50.390Z
+      updated_at: 2026-03-14T03:24:45.793Z
+      last_reconciled_at: 2026-03-14T03:24:45.793Z
       last_active_at: 2026-03-14T03:01:51.544Z
       closed_at: null
