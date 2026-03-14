@@ -3307,7 +3307,7 @@ workspaces:
       adopted_at: null
       rehydrated: null
     lifecycle_state: closing
-    active_role: reviewer
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-subject-bindings-01kknrbz
@@ -3368,8 +3368,8 @@ workspaces:
       updated_at: 2026-03-14T17:16:50.121Z
     timestamps:
       created_at: 2026-03-14T10:27:04.030Z
-      updated_at: 2026-03-14T17:16:50.121Z
-      last_reconciled_at: 2026-03-14T17:16:50.121Z
+      updated_at: 2026-03-14T17:16:52.425Z
+      last_reconciled_at: 2026-03-14T17:16:52.425Z
       last_active_at: 2026-03-14T17:10:45.224Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKNRC26NFC7EGP5AN7AZ1982
