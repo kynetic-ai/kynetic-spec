@@ -15669,13 +15669,13 @@ plans:
       rendering, interaction design, policy configuration, and provider-specific
 
       synchronization can follow in later plans.
-    status: draft
+    status: approved
     derived_tasks: []
     derived_specs: []
     source_path: /home/chapel/Projects/kynetic-spec/plans/review-records-and-gates.md
     module_ref: null
     created_at: 2026-03-11T23:15:29.907Z
-    approved_at: null
+    approved_at: 2026-03-14T08:45:16.499Z
     completed_at: null
     notes:
       - _ulid: 01KKJV44NWWSBDZWN74QRJEXFC
