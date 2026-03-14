@@ -300,38 +300,31 @@ describe("adopted branch cleanup and recoverability", () => {
 
   // AC: @adopted-branch-cleanup-and-recoverability ac-4
   it("removes local rehydration state without deleting the external source branch", async () => {
-    // Set up a "remote" bare repo with a feature branch
-    const remoteDir = path.join(tempDir, "upstream.git");
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b dev");
+
+    // Set up a bare remote so we can verify the external source survives cleanup
+    const remoteDir = path.join(tempDir, "remote.git");
     await fs.mkdir(remoteDir);
     execSync("git init --bare --initial-branch=main", { cwd: remoteDir, stdio: "pipe" });
+    git(tempDir, `remote add origin "${remoteDir}"`);
+    git(tempDir, "push origin dev:main");
 
-    const workDir = path.join(tempDir, "work");
-    execSync(`git clone ${remoteDir} work`, { cwd: tempDir, stdio: "pipe" });
-    initGitRepo(workDir);
-    await fs.writeFile(path.join(workDir, "README.md"), "init\n", "utf-8");
-    git(workDir, "add README.md");
-    git(workDir, 'commit -m "init"');
-    git(workDir, "push origin HEAD:main");
-    git(workDir, "checkout -b feat/external-branch");
-    await fs.writeFile(path.join(workDir, "external.ts"), "export const e = 1;\n", "utf-8");
-    git(workDir, "add external.ts");
-    git(workDir, 'commit -m "feat: external work"');
-    const externalCommit = git(workDir, "rev-parse HEAD");
-    git(workDir, "push origin feat/external-branch");
-
-    // Create a fresh dispatch checkout that fetches the branch via adoption
-    const dispatchDir = path.join(tempDir, "dispatch");
-    execSync(`git clone ${remoteDir} dispatch`, { cwd: tempDir, stdio: "pipe" });
-    initGitRepo(dispatchDir);
-
-    const dispatchSpecDir = await setupShadowSpecDir(dispatchDir);
-    process.env.KSPEC_SPEC_DIR = dispatchSpecDir;
+    // Create the feature branch locally and push to remote (simulates
+    // an external contributor pushing work that gets adopted)
+    git(tempDir, "checkout -b feat/external-branch");
+    await fs.writeFile(path.join(tempDir, "external.ts"), "export const e = 1;\n", "utf-8");
+    git(tempDir, "add external.ts");
+    git(tempDir, 'commit -m "feat: external work"');
+    const externalCommit = git(tempDir, "rev-parse HEAD");
+    git(tempDir, "push origin feat/external-branch");
+    git(tempDir, "checkout dev");
 
     const taskRef = `@${testUlid("ACLN", 6)}`;
 
-    // Provision — this fetches the branch from remote and adopts it
+    // Provision — adopts the local branch (which also exists on remote)
     const workspace = await provisionDispatchWorkspace({
-      projectDir: dispatchDir,
+      projectDir: tempDir,
       taskRef,
       role: "worker",
       task: { title: "Rehydration Cleanup Test", slugs: ["task-rehydration-cleanup-test"] },
@@ -340,38 +333,32 @@ describe("adopted branch cleanup and recoverability", () => {
     });
 
     expect(workspace.metadata.branchProvenance.ownership).toBe("adopted");
-
-    // Verify the branch was fetched locally
-    const localBranch = git(dispatchDir, "branch --list feat/external-branch");
-    expect(localBranch).toContain("feat/external-branch");
+    expect(workspace.metadata.canonicalBranch).toBe("feat/external-branch");
 
     // Transition to cleanup-eligible and reap
     await reconcileDispatchWorkspaceLifecycle({
-      projectDir: dispatchDir,
+      projectDir: tempDir,
       taskRef,
       cleanupState: { integrationState: "merged", taskStatus: "completed" },
       task: { title: "Rehydration Cleanup Test", slugs: ["task-rehydration-cleanup-test"] },
     });
 
-    const result = await reapDispatchWorkspace(dispatchDir, taskRef, {
+    const result = await reapDispatchWorkspace(tempDir, taskRef, {
       task: { title: "Rehydration Cleanup Test", slugs: ["task-rehydration-cleanup-test"] },
     });
 
     expect(result.action).toBe("reaped");
 
-    // Worktree should be removed
+    // Worktree (rehydration state) should be removed
     await expect(fs.access(workspace.cwd)).rejects.toThrow();
 
     // The local adopted branch ref should be PRESERVED (not deleted during reap)
-    const preservedBranch = git(dispatchDir, "branch --list feat/external-branch");
+    const preservedBranch = git(tempDir, "branch --list feat/external-branch");
     expect(preservedBranch).toContain("feat/external-branch");
 
     // The external source branch on the remote should still exist
-    const remoteBranch = execSync(
-      `git branch --list feat/external-branch`,
-      { cwd: workDir, encoding: "utf-8" },
-    ).trim();
-    expect(remoteBranch).toContain("feat/external-branch");
+    const remoteBranches = git(tempDir, "ls-remote --heads origin feat/external-branch");
+    expect(remoteBranches).toContain("feat/external-branch");
   });
 });
 
