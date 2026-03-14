@@ -3792,7 +3792,7 @@ workspaces:
       adopted_at: null
       rehydrated: null
     lifecycle_state: integrating
-    active_role: reviewer
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-verdicts-and-resolution-01kknrc1
@@ -3839,21 +3839,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-14T18:33:02.376Z
+      updated_at: 2026-03-14T18:33:21.096Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T18:33:02.376Z
+      updated_at: 2026-03-14T18:33:21.096Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-14T18:33:02.376Z
+      updated_at: 2026-03-14T18:33:21.096Z
     timestamps:
       created_at: 2026-03-14T18:15:58.408Z
-      updated_at: 2026-03-14T18:33:02.376Z
-      last_reconciled_at: 2026-03-14T18:33:02.376Z
+      updated_at: 2026-03-14T18:33:21.096Z
+      last_reconciled_at: 2026-03-14T18:33:21.096Z
       last_active_at: 2026-03-14T18:25:55.181Z
       closed_at: null
