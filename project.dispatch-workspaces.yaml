@@ -3726,19 +3726,21 @@ workspaces:
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-      canonicalBranchHead: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-      lastRunAt: 2026-03-14T18:15:00.496Z
-      invalidationReasons: []
+      canonicalBranchHead: 6443ae7bc356a3d4cdf2a275c84eee0cedfbcab8
+      lastRunAt: 2026-03-14T18:26:29.338Z
+      invalidationReasons:
+        - canonical-branch-head-changed
       steps: []
       failureMessage: null
-      lastRole: reviewer
+      lastRole: worker
       roleStates:
         worker:
           status: succeeded
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-          canonicalBranchHead: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-          lastRunAt: 2026-03-14T18:00:09.869Z
-          invalidationReasons: []
+          canonicalBranchHead: 6443ae7bc356a3d4cdf2a275c84eee0cedfbcab8
+          lastRunAt: 2026-03-14T18:26:29.338Z
+          invalidationReasons:
+            - canonical-branch-head-changed
           steps: []
           failureMessage: null
         reviewer:
@@ -3770,7 +3772,7 @@ workspaces:
       updated_at: 2026-03-14T18:26:29.191Z
     timestamps:
       created_at: 2026-03-14T18:00:09.677Z
-      updated_at: 2026-03-14T18:26:29.191Z
+      updated_at: 2026-03-14T18:26:29.338Z
       last_reconciled_at: 2026-03-14T18:26:29.191Z
       last_active_at: 2026-03-14T18:15:00.767Z
       closed_at: null
