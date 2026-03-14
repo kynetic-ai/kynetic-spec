@@ -95824,3 +95824,4 @@
         discovery). Fix is in packages/daemon/src/server.ts:117.
       supersedes: null
   todos: []
+  automation: eligible
