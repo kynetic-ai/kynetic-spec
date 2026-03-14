@@ -8359,8 +8359,9 @@ skills:
     _type: skill
     id: review
     name: Review
-    description: Kspec-specific review gates — spec alignment, own AC coverage, trait AC coverage, and
-      validation integration. Building block for project-specific review workflows.
+    description: Kspec-specific review gates and first-party review records — spec alignment, AC
+      coverage, trait coverage, validation integration, and the review record CLI for creating,
+      inspecting, and managing durable review artifacts.
     origin: core
     version: 0.11.0
     platforms:
