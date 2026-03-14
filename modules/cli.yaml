@@ -9336,6 +9336,7 @@ features:
           - "@trait-shadow-commit"
         notes: []
         created: 2026-03-14T08:45:51.934Z
+        parent: "@review-cli-commands"
       - _ulid: 01KKNRBYH3G84Z1TFXDRVHQYKY
         slugs:
           - review-cli-mutation-commands
@@ -9433,6 +9434,7 @@ features:
           - "@trait-confirmation-prompt"
         notes: []
         created: 2026-03-14T08:45:52.035Z
+        parent: "@review-cli-commands"
       - _ulid: 01KKNRBYM58Y5BBA8KFE82QKWA
         slugs:
           - review-cli-task-linkage
@@ -9471,6 +9473,8 @@ features:
           - "@trait-semantic-exit-codes"
         notes: []
         created: 2026-03-14T08:45:52.133Z
+        parent: "@review-cli-commands"
+    parent: "@cli"
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:

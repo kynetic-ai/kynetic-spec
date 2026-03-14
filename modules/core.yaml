@@ -1684,6 +1684,7 @@ features:
         traits: []
         notes: []
         created: 2026-03-14T08:45:51.685Z
+        parent: "@review-record-core-model"
       - _ulid: 01KKNRBY6VD6FQ19B4NA8TAG7Y
         slugs:
           - review-subject-bindings
@@ -1750,6 +1751,7 @@ features:
         traits: []
         notes: []
         created: 2026-03-14T08:45:51.707Z
+        parent: "@review-record-core-model"
       - _ulid: 01KKNRBY7HTB4H4NYJXQWZG54V
         slugs:
           - review-comment-threads-and-anchors
@@ -1822,6 +1824,7 @@ features:
         traits: []
         notes: []
         created: 2026-03-14T08:45:51.729Z
+        parent: "@review-record-core-model"
       - _ulid: 01KKNRBY85S31QQM77CMT13SJD
         slugs:
           - review-checks-and-gate-evaluation
@@ -1896,6 +1899,7 @@ features:
         traits: []
         notes: []
         created: 2026-03-14T08:45:51.749Z
+        parent: "@review-record-core-model"
       - _ulid: 01KKNRBY8S23TZN5MBJND7C0YK
         slugs:
           - review-verdicts-and-resolution-lifecycle
@@ -2007,6 +2011,7 @@ features:
         traits: []
         notes: []
         created: 2026-03-14T08:45:51.769Z
+        parent: "@review-record-core-model"
       - _ulid: 01KKNRBY9J2BYDRA6WEM4B5G03
         slugs:
           - review-record-validation
@@ -2041,6 +2046,7 @@ features:
         traits: []
         notes: []
         created: 2026-03-14T08:45:51.794Z
+        parent: "@review-record-core-model"
       - _ulid: 01KKNRBYA7AA4YXRBVRDC7PMHY
         slugs:
           - review-task-lifecycle-integration
@@ -2119,6 +2125,8 @@ features:
         traits: []
         notes: []
         created: 2026-03-14T08:45:51.815Z
+        parent: "@review-record-core-model"
+    parent: "@core"
 notes:
   - _ulid: 01KFA9VSSX2B220DNRCKBBT5WX
     created_at: 2026-01-19T04:57:56.798Z
