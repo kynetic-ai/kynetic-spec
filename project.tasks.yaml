@@ -96746,12 +96746,31 @@
     - cli
     - workflow
   vcs_refs: []
+  session_id: 01KKPWJ9BCV4KEY990T1WA3F0K
   created_at: 2026-03-14T08:45:58.120Z
-  notes: []
+  started_at: 2026-03-14T19:18:42.061Z
+  notes:
+    - _ulid: 01KKPWY0GR4MCD03SR1X9N96P4
+      created_at: 2026-03-14T19:24:52.632Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: This task implements the review CLI mutation commands (comment, reply, check,
+        verdict, resolve/reopen, lifecycle transitions, refresh). It builds on the already-completed
+        review CLI surface task and review schema/parser tasks.
+
+        - Scope: Create src/cli/commands/review.ts with all subcommands, add error strings, register
+        commands, and write comprehensive tests with AC annotations.
+
+        - Files: src/cli/commands/review.ts (new), src/strings/errors.ts (modify),
+        src/cli/commands/index.ts (modify), src/cli/index.ts (modify), tests/review-cli.test.ts
+        (new)
+
+        - Verification: npm test passes, all 7 own ACs covered, trait ACs covered
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-14T19:18:42.061Z
-  session_id: 01KKPWJ9BCV4KEY990T1WA3F0K
 - _ulid: 01KKNRC51AWZKNSBW4CTEDBRDS
   slugs:
     - task-implement-review-cli-task-linkage
