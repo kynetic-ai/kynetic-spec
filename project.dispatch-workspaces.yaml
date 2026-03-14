@@ -2645,23 +2645,28 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: f989407d6d277bf6ea3590141836f872a2934933
     canonical_branch: dispatch/task/implement-adopted-branch-cleanup-and-recoverabilit/01kkk7r9
-    canonical_branch_head: f989407d6d277bf6ea3590141836f872a2934933
+    canonical_branch_head: 4a8c92699cef2ce2c4312ee06002137a6246359d
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
       remote_ref: null
       adopted_from: null
       adopted_at: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-adopted-branch-cleanup-and-recoverabilit-01kkk7r9
         branch_mode: branch
         branch_ref: dispatch/task/implement-adopted-branch-cleanup-and-recoverabilit/01kkk7r9
-        head: f989407d6d277bf6ea3590141836f872a2934933
-        last_seen_at: 2026-03-14T00:15:35.252Z
-      reviewer: null
+        head: 4a8c92699cef2ce2c4312ee06002137a6246359d
+        last_seen_at: 2026-03-14T00:29:18.737Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-adopted-branch-cleanup-and-recoverabilit-01kkk7r9-review
+        branch_mode: detached
+        branch_ref: null
+        head: 4a8c92699cef2ce2c4312ee06002137a6246359d
+        last_seen_at: 2026-03-14T00:29:18.737Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -2695,21 +2700,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-14T00:28:38.577Z
+      updated_at: 2026-03-14T00:29:18.737Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T00:28:38.577Z
+      updated_at: 2026-03-14T00:29:18.737Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-14T00:28:38.577Z
+      updated_at: 2026-03-14T00:29:18.737Z
     timestamps:
       created_at: 2026-03-13T23:51:45.708Z
-      updated_at: 2026-03-14T00:28:38.577Z
-      last_reconciled_at: 2026-03-14T00:28:38.577Z
+      updated_at: 2026-03-14T00:29:18.737Z
+      last_reconciled_at: 2026-03-14T00:29:18.737Z
       last_active_at: 2026-03-14T00:15:35.616Z
       closed_at: null
