@@ -1,10 +1,14 @@
 /**
- * Review verdict aggregation, gate evaluation, staleness detection,
- * thread resolution, and lifecycle transitions.
+ * Review verdict aggregation, disposition computation,
+ * verdict submission, subject refresh, and lifecycle transitions.
  *
  * Pure computation functions operate on in-memory ReviewRecord data.
  * Mutation helpers produce updated records for the caller to persist
  * via saveReviewRecord / mutateReviewAtomically.
+ *
+ * Delegates to existing primitives from review/subject-bindings,
+ * review/checks, and parser/review-threads for version extraction,
+ * staleness detection, gate evaluation, and thread operations.
  */
 
 import { ulid } from "ulid";
@@ -13,88 +17,17 @@ import type {
   ReviewSubject,
   ReviewSubjectVersion,
   ReviewVerdict,
-  ReviewCheck,
-  ReviewThread,
   ReviewDisposition,
-  ReviewGateState,
   ReviewLifecycleState,
   ReviewEvent,
   ReviewVerdictDecision,
 } from "../schema/index.js";
-
-// ---------------------------------------------------------------------------
-// Subject version extraction
-// ---------------------------------------------------------------------------
-
-/**
- * Extract the current subject version from a review's subject binding.
- *
- * For code subjects: returns { type: "code_compare", base_commit, head_commit }
- * For entity subjects (plan/task/spec): returns { type: "entity_version", content_hash }
- * For external subjects: returns undefined (no versioning contract)
- */
-// AC: @review-verdicts-and-resolution-lifecycle ac-5, ac-7
-export function getCurrentSubjectVersion(
-  subject: ReviewSubject,
-): ReviewSubjectVersion | undefined {
-  switch (subject.type) {
-    case "code":
-      return {
-        type: "code_compare",
-        base_commit: subject.base_commit,
-        head_commit: subject.head_commit,
-      };
-    case "plan":
-    case "task":
-    case "spec":
-      return {
-        type: "entity_version",
-        content_hash: subject.content_hash,
-      };
-    case "external":
-      return undefined;
-  }
-}
-
-// ---------------------------------------------------------------------------
-// Version freshness
-// ---------------------------------------------------------------------------
-
-/**
- * Check whether an applies_to_version matches the current subject version.
- *
- * For code_compare: both base_commit AND head_commit must match.
- * For entity_version: content_hash must match.
- * If currentVersion is undefined (external subject), always returns false
- * since there is no versioning contract.
- */
-// AC: @review-verdicts-and-resolution-lifecycle ac-5, ac-7
-export function isVersionCurrent(
-  appliesTo: ReviewSubjectVersion,
-  currentVersion: ReviewSubjectVersion | undefined,
-): boolean {
-  if (!currentVersion) return false;
-
-  if (
-    appliesTo.type === "code_compare" &&
-    currentVersion.type === "code_compare"
-  ) {
-    return (
-      appliesTo.base_commit === currentVersion.base_commit &&
-      appliesTo.head_commit === currentVersion.head_commit
-    );
-  }
-
-  if (
-    appliesTo.type === "entity_version" &&
-    currentVersion.type === "entity_version"
-  ) {
-    return appliesTo.content_hash === currentVersion.content_hash;
-  }
-
-  // Mismatched version types — treat as stale
-  return false;
-}
+import {
+  extractSubjectVersion,
+  isVersionStale,
+} from "../review/subject-bindings.js";
+import { evaluateGates } from "../review/checks.js";
+import { getUnresolvedBlockers } from "./review-threads.js";
 
 // ---------------------------------------------------------------------------
 // Verdict aggregation
@@ -112,11 +45,11 @@ export function isVersionCurrent(
  */
 export function getEffectiveVerdicts(
   verdicts: ReviewVerdict[],
-  currentVersion: ReviewSubjectVersion | undefined,
+  currentVersion: ReviewSubjectVersion,
 ): ReviewVerdict[] {
-  // Filter to current verdicts only
-  const current = verdicts.filter((v) =>
-    isVersionCurrent(v.applies_to_version, currentVersion),
+  // Filter to current verdicts only (not stale)
+  const current = verdicts.filter(
+    (v) => !isVersionStale(v.applies_to_version, currentVersion).stale,
   );
 
   // Group by reviewer, keep latest
@@ -129,66 +62,6 @@ export function getEffectiveVerdicts(
   }
 
   return Array.from(byReviewer.values());
-}
-
-// ---------------------------------------------------------------------------
-// Gate evaluation
-// ---------------------------------------------------------------------------
-
-/**
- * Compute the aggregate gate state from check records.
- *
- * Only checks whose applies_to_version matches the current subject
- * version are considered. Among multiple runs of the same logical
- * check name, only the latest (by created_at) is used.
- *
- * Gate state rules:
- * - If any required check has status "fail" → "failing"
- * - If any required check has status "running" → "pending"
- * - If no required checks exist at all → "passing" (vacuously)
- * - If all required checks pass → "passing"
- * - Otherwise → "pending"
- */
-// AC: @review-verdicts-and-resolution-lifecycle ac-4
-export function computeGateState(
-  checks: ReviewCheck[],
-  currentVersion: ReviewSubjectVersion | undefined,
-): ReviewGateState {
-  // Filter to current checks
-  const current = checks.filter((c) =>
-    isVersionCurrent(c.applies_to_version, currentVersion),
-  );
-
-  // Deduplicate by name, keep latest
-  const byName = new Map<string, ReviewCheck>();
-  for (const c of current) {
-    const existing = byName.get(c.name);
-    if (!existing || c.created_at > existing.created_at) {
-      byName.set(c.name, c);
-    }
-  }
-
-  const requiredChecks = Array.from(byName.values()).filter((c) => c.required);
-
-  if (requiredChecks.length === 0) return "passing";
-
-  if (requiredChecks.some((c) => c.status === "fail")) return "failing";
-  if (requiredChecks.some((c) => c.status === "running")) return "pending";
-  if (requiredChecks.every((c) => c.status === "pass")) return "passing";
-
-  return "pending";
-}
-
-// ---------------------------------------------------------------------------
-// Thread blocking
-// ---------------------------------------------------------------------------
-
-/**
- * Check whether any blocker threads are unresolved.
- */
-// AC: @review-verdicts-and-resolution-lifecycle ac-4
-export function hasUnresolvedBlockerThreads(threads: ReviewThread[]): boolean {
-  return threads.some((t) => t.kind === "blocker" && !t.resolved_at);
 }
 
 // ---------------------------------------------------------------------------
@@ -213,27 +86,31 @@ export function hasUnresolvedBlockerThreads(threads: ReviewThread[]): boolean {
  * AC: @review-verdicts-and-resolution-lifecycle ac-5 — aggregation rule
  */
 export function computeDisposition(review: ReviewRecord): ReviewDisposition {
-  const currentVersion = getCurrentSubjectVersion(review.subject);
+  const currentVersion = extractSubjectVersion(review.subject);
   const effectiveVerdicts = getEffectiveVerdicts(
     review.verdicts,
     currentVersion,
   );
-  const gateState = computeGateState(review.checks, currentVersion);
-  const unresolvedBlockers = hasUnresolvedBlockerThreads(review.threads);
+  const gateResult = evaluateGates(review.checks, currentVersion);
+  const unresolvedBlockers = getUnresolvedBlockers(review);
 
   const hasChangesRequested = effectiveVerdicts.some(
     (v) => v.decision === "request_changes",
   );
 
   // Any blocker → changes_requested
-  if (gateState === "failing" || unresolvedBlockers || hasChangesRequested) {
+  if (
+    gateResult.state === "failing" ||
+    unresolvedBlockers.length > 0 ||
+    hasChangesRequested
+  ) {
     return "changes_requested";
   }
 
   const hasApproval = effectiveVerdicts.some((v) => v.decision === "approve");
 
   // No blockers and at least one approval → approved
-  if (gateState === "passing" && hasApproval) {
+  if (gateResult.state === "passing" && hasApproval) {
     return "approved";
   }
 
@@ -282,13 +159,7 @@ export function submitVerdict(
   },
 ): ReviewRecord {
   const now = new Date().toISOString();
-  const currentVersion = getCurrentSubjectVersion(review.subject);
-
-  if (!currentVersion) {
-    throw new Error(
-      "Cannot submit verdict: review subject has no versioning contract (external subject)",
-    );
-  }
+  const currentVersion = extractSubjectVersion(review.subject);
 
   const verdict: ReviewVerdict = {
     reviewer: input.reviewer,
@@ -312,84 +183,6 @@ export function submitVerdict(
 }
 
 // ---------------------------------------------------------------------------
-// Thread resolution
-// ---------------------------------------------------------------------------
-
-/**
- * Mark a thread as resolved.
- *
- * AC: @review-verdicts-and-resolution-lifecycle ac-2 — thread resolution
- */
-export function resolveThread(
-  review: ReviewRecord,
-  threadUlid: string,
-  actor: string,
-): ReviewRecord {
-  const now = new Date().toISOString();
-  const threadIndex = review.threads.findIndex((t) => t._ulid === threadUlid);
-
-  if (threadIndex === -1) {
-    throw new Error(`Thread not found: ${threadUlid}`);
-  }
-
-  if (review.threads[threadIndex].resolved_at) {
-    throw new Error(`Thread already resolved: ${threadUlid}`);
-  }
-
-  const updatedThreads = review.threads.map((t, i) =>
-    i === threadIndex ? { ...t, resolved_at: now, resolved_by: actor } : t,
-  );
-
-  const event = createEvent("thread_resolved", actor, {
-    thread_ulid: threadUlid,
-  });
-
-  return {
-    ...review,
-    threads: updatedThreads,
-    events: [...review.events, event],
-    updated_at: now,
-  };
-}
-
-/**
- * Reopen a previously resolved thread.
- */
-export function reopenThread(
-  review: ReviewRecord,
-  threadUlid: string,
-  actor: string,
-): ReviewRecord {
-  const now = new Date().toISOString();
-  const threadIndex = review.threads.findIndex((t) => t._ulid === threadUlid);
-
-  if (threadIndex === -1) {
-    throw new Error(`Thread not found: ${threadUlid}`);
-  }
-
-  if (!review.threads[threadIndex].resolved_at) {
-    throw new Error(`Thread is not resolved: ${threadUlid}`);
-  }
-
-  const updatedThreads = review.threads.map((t, i) =>
-    i === threadIndex
-      ? { ...t, resolved_at: null, resolved_by: null }
-      : t,
-  );
-
-  const event = createEvent("thread_reopened", actor, {
-    thread_ulid: threadUlid,
-  });
-
-  return {
-    ...review,
-    threads: updatedThreads,
-    events: [...review.events, event],
-    updated_at: now,
-  };
-}
-
-// ---------------------------------------------------------------------------
 // Subject refresh (re-review cycle support)
 // ---------------------------------------------------------------------------
 
@@ -406,8 +199,8 @@ export function refreshSubject(
   actor: string,
 ): ReviewRecord {
   const now = new Date().toISOString();
-  const previousVersion = getCurrentSubjectVersion(review.subject);
-  const newVersion = getCurrentSubjectVersion(newSubject);
+  const previousVersion = extractSubjectVersion(review.subject);
+  const newVersion = extractSubjectVersion(newSubject);
 
   const event = createEvent("subject_refreshed", actor, {
     previous_version: previousVersion,

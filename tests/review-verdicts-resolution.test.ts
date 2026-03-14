@@ -9,18 +9,22 @@ import type {
   ReviewThread,
 } from "../src/schema/index.js";
 import {
-  getCurrentSubjectVersion,
-  isVersionCurrent,
   getEffectiveVerdicts,
-  computeGateState,
-  hasUnresolvedBlockerThreads,
   computeDisposition,
   submitVerdict,
-  resolveThread,
-  reopenThread,
   refreshSubject,
   transitionLifecycle,
 } from "../src/parser/review-operations.js";
+import {
+  extractSubjectVersion,
+  isVersionStale,
+} from "../src/review/subject-bindings.js";
+import { evaluateGates } from "../src/review/checks.js";
+import {
+  resolveThread,
+  reopenThread,
+  getUnresolvedBlockers,
+} from "../src/parser/review-threads.js";
 
 // --- Test constants ---
 
@@ -55,13 +59,6 @@ function taskSubject(hash = CONTENT_HASH_1): ReviewSubject {
     ref: "@my-task",
     shadow_commit: COMMIT_BASE,
     content_hash: hash,
-  };
-}
-
-function externalSubject(): ReviewSubject {
-  return {
-    type: "external",
-    url: "https://example.com/review/1",
   };
 }
 
@@ -219,14 +216,20 @@ describe("AC-1: Verdict recording with version context", () => {
   });
 
   // AC: @review-verdicts-and-resolution-lifecycle ac-1
-  it("rejects verdict submission on external subject (no versioning)", () => {
-    const review = makeReview({ subject: externalSubject() });
-    expect(() =>
-      submitVerdict(review, {
-        reviewer: "alice@example.com",
-        decision: "approve",
-      }),
-    ).toThrow("no versioning contract");
+  it("records verdict on external subject using synthetic version", () => {
+    const externalSubject: ReviewSubject = {
+      type: "external",
+      url: "https://example.com/review/1",
+    };
+    const review = makeReview({ subject: externalSubject });
+    const updated = submitVerdict(review, {
+      reviewer: "alice@example.com",
+      decision: "approve",
+    });
+
+    // External subjects get a synthetic entity_version from extractSubjectVersion
+    expect(updated.verdicts).toHaveLength(1);
+    expect(updated.verdicts[0].applies_to_version.type).toBe("entity_version");
   });
 });
 
@@ -240,7 +243,10 @@ describe("AC-2: Thread resolution", () => {
     const thread = makeThread({ _ulid: ULID_THREAD_1, kind: "blocker" });
     const review = makeReview({ threads: [thread] });
 
-    const updated = resolveThread(review, ULID_THREAD_1, "fixer@example.com");
+    const updated = resolveThread(review, {
+      threadUlid: ULID_THREAD_1,
+      actor: "fixer@example.com",
+    });
 
     const resolved = updated.threads[0];
     expect(resolved.resolved_at).toBeTruthy();
@@ -252,7 +258,10 @@ describe("AC-2: Thread resolution", () => {
     const thread = makeThread({ _ulid: ULID_THREAD_1, kind: "blocker" });
     const review = makeReview({ threads: [thread] });
 
-    const updated = resolveThread(review, ULID_THREAD_1, "fixer@example.com");
+    const updated = resolveThread(review, {
+      threadUlid: ULID_THREAD_1,
+      actor: "fixer@example.com",
+    });
 
     expect(updated.events).toHaveLength(1);
     expect(updated.events[0].event_type).toBe("thread_resolved");
@@ -266,22 +275,11 @@ describe("AC-2: Thread resolution", () => {
   it("throws when thread not found", () => {
     const review = makeReview({ threads: [] });
     expect(() =>
-      resolveThread(review, ULID_THREAD_1, "actor@example.com"),
+      resolveThread(review, {
+        threadUlid: ULID_THREAD_1,
+        actor: "actor@example.com",
+      }),
     ).toThrow("Thread not found");
-  });
-
-  // AC: @review-verdicts-and-resolution-lifecycle ac-2
-  it("throws when thread already resolved", () => {
-    const thread = makeThread({
-      _ulid: ULID_THREAD_1,
-      resolved_at: VALID_DATE,
-      resolved_by: "someone@example.com",
-    });
-    const review = makeReview({ threads: [thread] });
-
-    expect(() =>
-      resolveThread(review, ULID_THREAD_1, "actor@example.com"),
-    ).toThrow("already resolved");
   });
 
   // AC: @review-verdicts-and-resolution-lifecycle ac-2
@@ -293,7 +291,10 @@ describe("AC-2: Thread resolution", () => {
     });
     const review = makeReview({ threads: [thread] });
 
-    const updated = reopenThread(review, ULID_THREAD_1, "reviewer@example.com");
+    const updated = reopenThread(review, {
+      threadUlid: ULID_THREAD_1,
+      actor: "reviewer@example.com",
+    });
 
     expect(updated.threads[0].resolved_at).toBeNull();
     expect(updated.threads[0].resolved_by).toBeNull();
@@ -306,7 +307,10 @@ describe("AC-2: Thread resolution", () => {
     const thread2 = makeThread({ _ulid: ULID_THREAD_2, kind: "nit" });
     const review = makeReview({ threads: [thread1, thread2] });
 
-    const updated = resolveThread(review, ULID_THREAD_1, "actor@example.com");
+    const updated = resolveThread(review, {
+      threadUlid: ULID_THREAD_1,
+      actor: "actor@example.com",
+    });
 
     expect(updated.threads[0].resolved_at).toBeTruthy();
     expect(updated.threads[1].resolved_at).toBeUndefined();
@@ -760,7 +764,7 @@ describe("AC-7: Stale verdict exclusion", () => {
   });
 
   // AC: @review-verdicts-and-resolution-lifecycle ac-7
-  it("checks are also subject to staleness", () => {
+  it("checks are also subject to staleness — stale check means gate unverified", () => {
     const review = makeReview({
       subject: codeSubject(COMMIT_BASE, COMMIT_HEAD),
       verdicts: [makeVerdict({ decision: "approve" })],
@@ -775,7 +779,36 @@ describe("AC-7: Stale verdict exclusion", () => {
       ],
     });
 
-    // Stale failing check should NOT block approval
+    // Required check has only stale runs → gate is not verified on current version → blocks
+    expect(computeDisposition(review)).toBe("changes_requested");
+  });
+
+  // AC: @review-verdicts-and-resolution-lifecycle ac-7
+  it("stale check does not block when fresh passing run exists", () => {
+    const review = makeReview({
+      subject: codeSubject(COMMIT_BASE, COMMIT_HEAD),
+      verdicts: [makeVerdict({ decision: "approve" })],
+      checks: [
+        makeCheck({
+          name: "ci",
+          status: "fail",
+          required: true,
+          // Stale check — ran against old version
+          applies_to_version: codeVersion(COMMIT_BASE, COMMIT_HEAD_2),
+          created_at: VALID_DATE,
+        }),
+        makeCheck({
+          name: "ci",
+          status: "pass",
+          required: true,
+          // Fresh check — matches current version
+          applies_to_version: codeVersion(COMMIT_BASE, COMMIT_HEAD),
+          created_at: VALID_DATE_2,
+        }),
+      ],
+    });
+
+    // Fresh passing run exists → stale failure doesn't matter
     expect(computeDisposition(review)).toBe("approved");
   });
 });
@@ -851,7 +884,7 @@ describe("AC-8: Latest verdict per reviewer wins", () => {
 
     const effective = getEffectiveVerdicts(
       review.verdicts,
-      getCurrentSubjectVersion(review.subject),
+      extractSubjectVersion(review.subject),
     );
     expect(effective).toHaveLength(2);
     expect(effective.find((v) => v.reviewer === "alice@example.com")?.decision).toBe(
@@ -967,13 +1000,14 @@ describe("AC-9: Lifecycle finalization", () => {
 });
 
 // ==========================================================================
-// Gate evaluation
+// Gate evaluation (delegates to evaluateGates from review/checks)
 // ==========================================================================
 
-describe("Gate evaluation", () => {
+describe("Gate evaluation via evaluateGates", () => {
   // AC: @review-verdicts-and-resolution-lifecycle ac-4
   it("returns passing when no required checks exist", () => {
-    expect(computeGateState([], codeVersion())).toBe("passing");
+    const result = evaluateGates([], codeVersion());
+    expect(result.state).toBe("passing");
   });
 
   // AC: @review-verdicts-and-resolution-lifecycle ac-4
@@ -983,7 +1017,7 @@ describe("Gate evaluation", () => {
       makeCheck({ name: "lint", status: "pass", required: true }),
     ];
 
-    expect(computeGateState(checks, codeVersion())).toBe("passing");
+    expect(evaluateGates(checks, codeVersion()).state).toBe("passing");
   });
 
   // AC: @review-verdicts-and-resolution-lifecycle ac-4
@@ -993,7 +1027,7 @@ describe("Gate evaluation", () => {
       makeCheck({ name: "lint", status: "fail", required: true }),
     ];
 
-    expect(computeGateState(checks, codeVersion())).toBe("failing");
+    expect(evaluateGates(checks, codeVersion()).state).toBe("failing");
   });
 
   // AC: @review-verdicts-and-resolution-lifecycle ac-4
@@ -1002,7 +1036,7 @@ describe("Gate evaluation", () => {
       makeCheck({ name: "tests", status: "running", required: true }),
     ];
 
-    expect(computeGateState(checks, codeVersion())).toBe("pending");
+    expect(evaluateGates(checks, codeVersion()).state).toBe("pending");
   });
 
   // AC: @review-verdicts-and-resolution-lifecycle ac-4
@@ -1012,7 +1046,7 @@ describe("Gate evaluation", () => {
       makeCheck({ name: "advisory", status: "fail", required: false }),
     ];
 
-    expect(computeGateState(checks, codeVersion())).toBe("passing");
+    expect(evaluateGates(checks, codeVersion()).state).toBe("passing");
   });
 
   // AC: @review-verdicts-and-resolution-lifecycle ac-4
@@ -1032,11 +1066,11 @@ describe("Gate evaluation", () => {
       }),
     ];
 
-    expect(computeGateState(checks, codeVersion())).toBe("passing");
+    expect(evaluateGates(checks, codeVersion()).state).toBe("passing");
   });
 
   // AC: @review-verdicts-and-resolution-lifecycle ac-4
-  it("ignores stale checks", () => {
+  it("treats stale-only required check as gate failure (unverified)", () => {
     const staleVersion = codeVersion(COMMIT_BASE, COMMIT_HEAD_2);
     const currentVersion = codeVersion(COMMIT_BASE, COMMIT_HEAD);
 
@@ -1049,17 +1083,43 @@ describe("Gate evaluation", () => {
       }),
     ];
 
-    expect(computeGateState(checks, currentVersion)).toBe("passing");
+    // Required check with only stale runs → gate not verified → failing
+    expect(evaluateGates(checks, currentVersion).state).toBe("failing");
+  });
+
+  // AC: @review-verdicts-and-resolution-lifecycle ac-4
+  it("fresh passing run supersedes stale failure for same check", () => {
+    const staleVersion = codeVersion(COMMIT_BASE, COMMIT_HEAD_2);
+    const currentVersion = codeVersion(COMMIT_BASE, COMMIT_HEAD);
+
+    const checks: ReviewCheck[] = [
+      makeCheck({
+        name: "tests",
+        status: "fail",
+        required: true,
+        applies_to_version: staleVersion,
+        created_at: VALID_DATE,
+      }),
+      makeCheck({
+        name: "tests",
+        status: "pass",
+        required: true,
+        applies_to_version: currentVersion,
+        created_at: VALID_DATE_2,
+      }),
+    ];
+
+    expect(evaluateGates(checks, currentVersion).state).toBe("passing");
   });
 });
 
 // ==========================================================================
-// Subject version extraction
+// Subject version extraction (delegates to extractSubjectVersion)
 // ==========================================================================
 
-describe("getCurrentSubjectVersion", () => {
+describe("extractSubjectVersion", () => {
   it("extracts code_compare version from code subject", () => {
-    const version = getCurrentSubjectVersion(codeSubject());
+    const version = extractSubjectVersion(codeSubject());
     expect(version).toEqual({
       type: "code_compare",
       base_commit: COMMIT_BASE,
@@ -1068,7 +1128,7 @@ describe("getCurrentSubjectVersion", () => {
   });
 
   it("extracts entity_version from task subject", () => {
-    const version = getCurrentSubjectVersion(taskSubject());
+    const version = extractSubjectVersion(taskSubject());
     expect(version).toEqual({
       type: "entity_version",
       content_hash: CONTENT_HASH_1,
@@ -1082,7 +1142,7 @@ describe("getCurrentSubjectVersion", () => {
       shadow_commit: COMMIT_BASE,
       content_hash: CONTENT_HASH_1,
     };
-    const version = getCurrentSubjectVersion(subject);
+    const version = extractSubjectVersion(subject);
     expect(version).toEqual({
       type: "entity_version",
       content_hash: CONTENT_HASH_1,
@@ -1096,98 +1156,104 @@ describe("getCurrentSubjectVersion", () => {
       shadow_commit: COMMIT_BASE,
       content_hash: CONTENT_HASH_1,
     };
-    const version = getCurrentSubjectVersion(subject);
+    const version = extractSubjectVersion(subject);
     expect(version).toEqual({
       type: "entity_version",
       content_hash: CONTENT_HASH_1,
     });
   });
 
-  it("returns undefined for external subject", () => {
-    const version = getCurrentSubjectVersion(externalSubject());
-    expect(version).toBeUndefined();
+  it("returns synthetic entity_version for external subject", () => {
+    const subject: ReviewSubject = {
+      type: "external",
+      url: "https://example.com/review/1",
+    };
+    const version = extractSubjectVersion(subject);
+    expect(version.type).toBe("entity_version");
+    // External subjects get a synthetic content_hash from the URL
+    expect((version as { type: "entity_version"; content_hash: string }).content_hash).toBeTruthy();
   });
 });
 
 // ==========================================================================
-// isVersionCurrent
+// isVersionStale (delegates to review/subject-bindings)
 // ==========================================================================
 
-describe("isVersionCurrent", () => {
+describe("isVersionStale", () => {
   // AC: @review-verdicts-and-resolution-lifecycle ac-5
-  it("returns true when code versions match both base and head", () => {
-    expect(isVersionCurrent(codeVersion(), codeVersion())).toBe(true);
+  it("returns not stale when code versions match both base and head", () => {
+    expect(isVersionStale(codeVersion(), codeVersion()).stale).toBe(false);
   });
 
-  it("returns false when base_commit differs", () => {
+  it("returns stale when base_commit differs", () => {
     expect(
-      isVersionCurrent(
+      isVersionStale(
         codeVersion(COMMIT_BASE_2, COMMIT_HEAD),
         codeVersion(COMMIT_BASE, COMMIT_HEAD),
-      ),
-    ).toBe(false);
-  });
-
-  it("returns false when head_commit differs", () => {
-    expect(
-      isVersionCurrent(
-        codeVersion(COMMIT_BASE, COMMIT_HEAD_2),
-        codeVersion(COMMIT_BASE, COMMIT_HEAD),
-      ),
-    ).toBe(false);
-  });
-
-  it("returns true when entity content_hash matches", () => {
-    expect(isVersionCurrent(entityVersion(), entityVersion())).toBe(true);
-  });
-
-  it("returns false when entity content_hash differs", () => {
-    expect(
-      isVersionCurrent(entityVersion(CONTENT_HASH_1), entityVersion(CONTENT_HASH_2)),
-    ).toBe(false);
-  });
-
-  it("returns false when version types mismatch", () => {
-    expect(isVersionCurrent(codeVersion(), entityVersion())).toBe(false);
-  });
-
-  it("returns false when currentVersion is undefined", () => {
-    expect(isVersionCurrent(codeVersion(), undefined)).toBe(false);
-  });
-});
-
-// ==========================================================================
-// hasUnresolvedBlockerThreads
-// ==========================================================================
-
-describe("hasUnresolvedBlockerThreads", () => {
-  // AC: @review-verdicts-and-resolution-lifecycle ac-4
-  it("returns false for empty threads", () => {
-    expect(hasUnresolvedBlockerThreads([])).toBe(false);
-  });
-
-  it("returns false when only nit threads are unresolved", () => {
-    expect(
-      hasUnresolvedBlockerThreads([makeThread({ kind: "nit" })]),
-    ).toBe(false);
-  });
-
-  it("returns true when blocker thread is unresolved", () => {
-    expect(
-      hasUnresolvedBlockerThreads([makeThread({ kind: "blocker" })]),
+      ).stale,
     ).toBe(true);
   });
 
-  it("returns false when all blocker threads are resolved", () => {
+  it("returns stale when head_commit differs", () => {
     expect(
-      hasUnresolvedBlockerThreads([
+      isVersionStale(
+        codeVersion(COMMIT_BASE, COMMIT_HEAD_2),
+        codeVersion(COMMIT_BASE, COMMIT_HEAD),
+      ).stale,
+    ).toBe(true);
+  });
+
+  it("returns not stale when entity content_hash matches", () => {
+    expect(isVersionStale(entityVersion(), entityVersion()).stale).toBe(false);
+  });
+
+  it("returns stale when entity content_hash differs", () => {
+    expect(
+      isVersionStale(entityVersion(CONTENT_HASH_1), entityVersion(CONTENT_HASH_2)).stale,
+    ).toBe(true);
+  });
+
+  it("returns stale when version types mismatch", () => {
+    expect(isVersionStale(codeVersion(), entityVersion()).stale).toBe(true);
+  });
+});
+
+// ==========================================================================
+// getUnresolvedBlockers (delegates to parser/review-threads)
+// ==========================================================================
+
+describe("getUnresolvedBlockers", () => {
+  // AC: @review-verdicts-and-resolution-lifecycle ac-4
+  it("returns empty for review with no threads", () => {
+    const review = makeReview({ threads: [] });
+    expect(getUnresolvedBlockers(review)).toHaveLength(0);
+  });
+
+  it("returns empty when only nit threads are unresolved", () => {
+    const review = makeReview({
+      threads: [makeThread({ kind: "nit" })],
+    });
+    expect(getUnresolvedBlockers(review)).toHaveLength(0);
+  });
+
+  it("returns blocker thread when unresolved", () => {
+    const review = makeReview({
+      threads: [makeThread({ kind: "blocker" })],
+    });
+    expect(getUnresolvedBlockers(review)).toHaveLength(1);
+  });
+
+  it("returns empty when all blocker threads are resolved", () => {
+    const review = makeReview({
+      threads: [
         makeThread({
           kind: "blocker",
           resolved_at: VALID_DATE_2,
           resolved_by: "fixer@example.com",
         }),
-      ]),
-    ).toBe(false);
+      ],
+    });
+    expect(getUnresolvedBlockers(review)).toHaveLength(0);
   });
 });
 
