@@ -34,6 +34,7 @@ import { errors } from "../strings/index.js";
 import { ItemIndex } from "./items.js";
 import type { LoadedPlan } from "./plans.js";
 import { ReferenceIndex } from "./refs.js";
+import { loadReviewRecords } from "./reviews.js";
 import {
   createShadowError,
   detectRunningFromShadowWorktree,
@@ -1517,7 +1518,8 @@ export async function buildReferenceIndex(ctx: KspecContext): Promise<{
 }> {
   const tasks = await loadAllTasks(ctx);
   const items = await loadAllItems(ctx);
-  const index = new ReferenceIndex(tasks, items);
+  const reviews = await loadReviewRecords(ctx);
+  const index = new ReferenceIndex(tasks, items, [], [], reviews);
   return { index, tasks, items };
 }
 
@@ -1536,7 +1538,8 @@ export async function buildIndexes(ctx: KspecContext, plans: LoadedPlan[] = []):
 }> {
   const tasks = await loadAllTasks(ctx);
   const items = await loadAllItems(ctx);
-  const refIndex = new ReferenceIndex(tasks, items, [], plans);
+  const reviews = await loadReviewRecords(ctx);
+  const refIndex = new ReferenceIndex(tasks, items, [], plans, reviews);
   const itemIndex = new ItemIndex(tasks, items);
   const traitIndex = new TraitIndex(items, refIndex);
   return { refIndex, itemIndex, traitIndex, tasks, items };
