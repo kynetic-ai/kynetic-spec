@@ -1,3 +1,4 @@
+import { execSync } from "node:child_process";
 import * as path from "node:path";
 import chalk from "chalk";
 import type { Command } from "commander";
@@ -28,7 +29,7 @@ import {
   formatCommitGuidance,
   printCommitGuidance,
 } from "../../utils/commit.js";
-import { captureSubmissionLinkage, isGitRepo } from "../../utils/git.js";
+import { captureSubmissionLinkage, getCurrentBranch, isGitRepo } from "../../utils/git.js";
 import { executeBatchOperation, formatBatchOutput } from "../batch.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { parseTagsArray } from "../parse-utils.js";
@@ -191,6 +192,134 @@ function resolveTaskRefForBatch(
   }
 
   return { task };
+}
+
+/**
+ * Compute the deterministic dispatch-compatible branch name for a task.
+ * Uses the exact `dispatch/task/<normalized-task-slug>/<short-task-ref>` naming contract.
+ * AC: @deterministic-task-branch-helper ac-1
+ */
+function computeDispatchBranchName(
+  taskRef: string,
+  task?: { title?: string; slugs?: string[] },
+): string {
+  const preferred = task?.slugs?.[0] ?? task?.title ?? taskRef.replace(/^@/, "task");
+  const slug = preferred
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/--+/g, "-") || "task";
+  const shortId = taskRef.replace(/^@/, "").slice(0, 8).toLowerCase();
+  return `dispatch/task/${slug}/${shortId}`;
+}
+
+/**
+ * Check if a git ref exists locally.
+ */
+function gitRefExists(ref: string): boolean {
+  try {
+    execSync(`git show-ref --verify --quiet ${ref}`, { stdio: "pipe" });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * List git remotes, with "origin" sorted first.
+ */
+function listRemotes(): string[] {
+  try {
+    const output = execSync("git remote", { encoding: "utf-8", stdio: "pipe" }).trim();
+    if (!output) return [];
+    const remotes = output.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+    return [
+      ...remotes.filter((r) => r === "origin"),
+      ...remotes.filter((r) => r !== "origin"),
+    ];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Find a branch on any configured remote. Returns the remote ref (e.g. "origin/branch")
+ * if found, null otherwise. Fetches from the remote to ensure refs are up to date.
+ */
+function findBranchOnRemote(branch: string): string | null {
+  for (const remote of listRemotes()) {
+    // Fetch the branch from the remote (it may exist remotely but not be tracked locally)
+    try {
+      execSync(`git fetch ${remote} ${branch}`, { stdio: "pipe" });
+    } catch {
+      // Fetch failed — branch may not exist on this remote
+    }
+    if (gitRefExists(`refs/remotes/${remote}/${branch}`)) {
+      return `${remote}/${branch}`;
+    }
+  }
+  return null;
+}
+
+/**
+ * Create a local branch from a remote tracking ref.
+ */
+function gitCreateBranchFrom(branch: string, startPoint: string): void {
+  execSync(`git branch ${branch} ${startPoint}`, { stdio: "pipe" });
+}
+
+/**
+ * Switch to an existing branch.
+ */
+function gitCheckout(branch: string): void {
+  execSync(`git checkout ${branch}`, { stdio: "pipe" });
+}
+
+/**
+ * Create and switch to a new branch.
+ */
+function gitCheckoutNew(branch: string): void {
+  execSync(`git checkout -b ${branch}`, { stdio: "pipe" });
+}
+
+/**
+ * Report the result of the branch helper operation.
+ * AC: @deterministic-task-branch-helper ac-3
+ * AC: @trait-json-output ac-1, ac-2, ac-4
+ */
+function reportBranchResult(result: {
+  branch: string;
+  action: "created" | "switched" | "rehydrated" | "already_on_branch";
+  source?: string;
+  taskRef: string;
+}): void {
+  const actionLabels: Record<string, string> = {
+    created: "Created new branch",
+    switched: "Switched to existing branch",
+    rehydrated: "Rehydrated branch from remote",
+    already_on_branch: "Already on branch",
+  };
+
+  const label = actionLabels[result.action];
+  const guidance =
+    "Using this dispatch-compatible branch preserves reviewer and fix-cycle continuity for manual work.";
+
+  if (isJsonMode()) {
+    output({
+      branch: result.branch,
+      action: result.action,
+      task_ref: result.taskRef,
+      source: result.source ?? null,
+      guidance,
+    });
+  } else {
+    success(`${label}: ${result.branch}`);
+    info(`Task: ${result.taskRef}`);
+    if (result.source) {
+      info(`Source: ${result.source}`);
+    }
+    info(guidance);
+  }
 }
 
 /**
@@ -2759,6 +2888,89 @@ Examples:
         });
       } catch (err) {
         error(errors.failures.markTodoNotDone, err);
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+
+  // kspec task branch <ref>
+  // AC: @deterministic-task-branch-helper ac-1, ac-2, ac-3
+  task
+    .command("branch <ref>")
+    .description(
+      "Create or resume the deterministic dispatch-compatible branch for a task",
+    )
+    .action(async (ref: string) => {
+      try {
+        const ctx = await initContext();
+        const tasks = await loadAllTasks(ctx);
+        const items = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, items);
+        const foundTask = resolveTaskRef(ref, tasks, index);
+
+        // AC: @trait-error-guidance ac-1, ac-2
+        if (!isGitRepo()) {
+          error(
+            "Not a git repository. Run this command from inside a git repo.",
+          );
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
+        // AC: @deterministic-task-branch-helper ac-1
+        // Compute the deterministic branch name using the dispatch naming contract
+        const branchName = computeDispatchBranchName(
+          foundTask._ulid,
+          foundTask,
+        );
+
+        // AC: @deterministic-task-branch-helper ac-2
+        // Check if the branch already exists locally
+        const localExists = gitRefExists(`refs/heads/${branchName}`);
+
+        if (localExists) {
+          // Branch exists locally — switch to it
+          const currentBranch = getCurrentBranch();
+          if (currentBranch === branchName) {
+            // Already on the branch
+            reportBranchResult({
+              branch: branchName,
+              action: "already_on_branch",
+              taskRef: `@${foundTask.slugs[0] || foundTask._ulid}`,
+            });
+          } else {
+            gitCheckout(branchName);
+            reportBranchResult({
+              branch: branchName,
+              action: "switched",
+              taskRef: `@${foundTask.slugs[0] || foundTask._ulid}`,
+            });
+          }
+          return;
+        }
+
+        // AC: @deterministic-task-branch-helper ac-2
+        // Check remotes for the branch and rehydrate if found
+        const remoteSource = findBranchOnRemote(branchName);
+        if (remoteSource) {
+          gitCreateBranchFrom(branchName, remoteSource);
+          gitCheckout(branchName);
+          reportBranchResult({
+            branch: branchName,
+            action: "rehydrated",
+            source: remoteSource,
+            taskRef: `@${foundTask.slugs[0] || foundTask._ulid}`,
+          });
+          return;
+        }
+
+        // Branch does not exist anywhere — create it
+        gitCheckoutNew(branchName);
+        reportBranchResult({
+          branch: branchName,
+          action: "created",
+          taskRef: `@${foundTask.slugs[0] || foundTask._ulid}`,
+        });
+      } catch (err) {
+        error(errors.failures.taskBranch, err);
         process.exit(EXIT_CODES.ERROR);
       }
     });
