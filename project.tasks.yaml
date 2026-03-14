@@ -95713,7 +95713,7 @@
   spec_ref: "@per-task-dispatch-drain-coalescing"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -95787,3 +95787,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-14T03:36:38.056Z
+  closed_reason: "Merged in PR #840. Implemented per-task dispatch drain coalescing with configurable
+    coalesceWindowMs (default 5000ms), per-task timer management, drain serialization via
+    drainInProgress/drainPending mutex pattern, and timer cleanup on stop(). All 8 ACs covered with
+    tests using fake timers. Existing tests updated with coalesceWindowMs: 0 for backward
+    compatibility."
