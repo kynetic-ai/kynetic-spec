@@ -14,6 +14,7 @@ export * from "./meta.js";
 export * from "./plans.js";
 export * from "./refs.js";
 export * from "./review-operations.js";
+export * from "./review-task-integration.js";
 export * from "./review-validation.js";
 export * from "./reviews.js";
 export * from "./review-threads.js";

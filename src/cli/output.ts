@@ -608,6 +608,11 @@ export function formatTaskDetails(
     console.log(`Plan ref:  ${task.plan_ref}`);
   }
 
+  // AC: @review-task-lifecycle-integration ac-1 - display review_ref
+  if (task.review_ref) {
+    console.log(`Review ref: ${task.review_ref}`);
+  }
+
   // AC: @task-submit ac-submit-2 - display review_url
   if (task.review_url) {
     console.log(`Review:    ${chalk.blue(task.review_url)}`);
