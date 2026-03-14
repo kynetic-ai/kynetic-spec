@@ -12,6 +12,7 @@ import {
 } from "../src/parser/reviews.js";
 import { ReferenceIndex } from "../src/parser/refs.js";
 import type { ReviewRecordInput } from "../src/schema/index.js";
+import { buildReferenceIndex, buildIndexes } from "../src/parser/yaml.js";
 import type { KspecContext } from "../src/parser/yaml.js";
 import { createTempDir, cleanupTempDir, initGitRepo, testUlid, testUlids } from "./helpers/cli.js";
 
@@ -460,5 +461,63 @@ describe("Review Record Storage and Identity", () => {
     const reviewsPath = getReviewsFilePath(ctx);
     const content = await fs.readFile(reviewsPath, "utf-8");
     expect(content).not.toContain("_sourceFile");
+  });
+
+  // ============================================================
+  // AC-2: Shared entry points load reviews into ReferenceIndex
+  // ============================================================
+
+  // AC: @review-record-storage-and-identity ac-2
+  it("should include reviews in buildReferenceIndex()", async () => {
+    const ctx = makeCtx(kspecDir);
+    ctx.rootDir = tempDir;
+    ctx.projectRoot = tempDir;
+    ctx.manifest = null;
+    ctx.manifestPath = null;
+    ctx.shadow = null;
+
+    const reviewUlid = testUlid("BRI");
+    const review = createReviewRecord(makeInput({
+      _ulid: reviewUlid,
+      slugs: ["build-ref-idx-review"],
+    }));
+    await saveReviewRecord(ctx, { ...review });
+
+    const { index } = await buildReferenceIndex(ctx);
+
+    // Review should be resolvable through the shared reference system
+    const bySlug = index.resolve("@build-ref-idx-review");
+    expect(bySlug.ok).toBe(true);
+    if (bySlug.ok) {
+      expect(bySlug.ulid).toBe(reviewUlid);
+    }
+
+    const byUlid = index.resolve(`@${reviewUlid}`);
+    expect(byUlid.ok).toBe(true);
+  });
+
+  // AC: @review-record-storage-and-identity ac-2
+  it("should include reviews in buildIndexes()", async () => {
+    const ctx = makeCtx(kspecDir);
+    ctx.rootDir = tempDir;
+    ctx.projectRoot = tempDir;
+    ctx.manifest = null;
+    ctx.manifestPath = null;
+    ctx.shadow = null;
+
+    const reviewUlid = testUlid("BDX");
+    const review = createReviewRecord(makeInput({
+      _ulid: reviewUlid,
+      slugs: ["build-indexes-review"],
+    }));
+    await saveReviewRecord(ctx, { ...review });
+
+    const { refIndex } = await buildIndexes(ctx);
+
+    const bySlug = refIndex.resolve("@build-indexes-review");
+    expect(bySlug.ok).toBe(true);
+    if (bySlug.ok) {
+      expect(bySlug.ulid).toBe(reviewUlid);
+    }
   });
 });
