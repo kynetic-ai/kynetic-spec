@@ -96912,6 +96912,26 @@
 
         - Verification: tests covering both own ACs and trait ACs, npm test passes
       supersedes: null
+    - _ulid: 01KKPZSA89DN2HB1C2P9D2YY52
+      created_at: 2026-03-14T20:14:44.489Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+        1. task get: resolves review_ref to show active_review summary (ref, title, lifecycle_state,
+        disposition) in both JSON and human output
+
+        2. review for-task: also matches reviews via task.review_ref field (in addition to
+        related_refs/subject matching)
+
+        3. review list --task: new filter option to find reviews linked to a specific task
+
+        4. 22 tests covering own ACs (ac-1, ac-2) and trait ACs (json-output ac-1/2/3/4/5,
+        semantic-exit-codes ac-1/5)
+
+        5. Merged origin/main to get review CLI and review-task integration dependencies before
+        implementing
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKNRC5KR8DTW5JVETBX9CMS8
