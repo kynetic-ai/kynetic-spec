@@ -96484,12 +96484,34 @@
     - tasks
     - integration
   vcs_refs: []
+  session_id: 01KKPVKX8BPZSKV7TJVDE4WB7X
   created_at: 2026-03-14T08:45:56.377Z
-  notes: []
+  started_at: 2026-03-14T19:07:20.845Z
+  notes:
+    - _ulid: 01KKPVY93GK0408A3W1TPY5DRT
+      created_at: 2026-03-14T19:07:32.848Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: This task adds review_ref linkage to the task schema and implements sync rules
+        between review records and task lifecycle transitions. Reviews were added as first-party
+        records in prior tasks; this bridges them with the existing task workflow.
+
+        - Scope: (1) Add review_ref field to TaskSchema, (2) Auto-set review_ref when review add
+        targets a task or relates to one, (3) Auto-transition task to needs_work on
+        changes_requested verdict, (4) Warn on inconsistent review linkage during
+        validation/rendering, (5) Preserve review history through fix cycles, (6) Treat external
+        links as compatibility only.
+
+        - Files: src/schema/task.ts, src/parser/reviews.ts (integration hooks), src/parser/tasks.ts
+        (if needed), src/cli/commands/task.ts (display/validation),
+        tests/review-task-integration.test.ts
+
+        - Verification: npm test, kspec validate
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-14T19:07:20.845Z
-  session_id: 01KKPVKX8BPZSKV7TJVDE4WB7X
 - _ulid: 01KKNRC3AMTWV7SS9F6ZP2FCA7
   slugs:
     - task-implement-review-cli-surface
