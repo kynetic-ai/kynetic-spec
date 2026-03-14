@@ -566,7 +566,7 @@ function isManifestCandidate(filename: string): boolean {
  *
  * AC: @manifest-discovery ac-1, ac-2, ac-3, ac-4, ac-5
  */
-async function findManifestInDir(dir: string): Promise<string | null> {
+export async function findManifestInDir(dir: string): Promise<string | null> {
   // AC: @manifest-discovery ac-1, ac-2 - explicit names have priority
   const priorityCandidates = ["kynetic.yaml", "kynetic.spec.yaml"];
 

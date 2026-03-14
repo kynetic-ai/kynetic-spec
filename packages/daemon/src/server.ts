@@ -113,8 +113,14 @@ async function startSessionSyncForProject(
   const { config } = await loadProjectConfig(projectPath);
   const specDir = join(projectPath, config.shadow.directory);
 
-  const { readYamlFile } = await import('../parser/yaml.js');
-  const manifestPath = join(specDir, 'kynetic.yaml');
+  // AC: @multi-directory-daemon ac-31, @manifest-discovery ac-6
+  // Use discovery API instead of hardcoding kynetic.yaml
+  const { findManifestInDir, readYamlFile } = await import('../parser/yaml.js');
+  const manifestPath = await findManifestInDir(specDir);
+  if (!manifestPath) {
+    // No manifest found — gracefully skip session sync for this project
+    return;
+  }
   const manifest = await readYamlFile<{ sessions?: { storage?: string; branch?: string } }>(manifestPath);
 
   if (manifest?.sessions?.storage === 'branch') {
