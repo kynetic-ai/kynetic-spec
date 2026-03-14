@@ -1833,7 +1833,7 @@ features:
         parent: "@review-record-core-model"
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKNRBY85S31QQM77CMT13SJD
         slugs:
           - review-checks-and-gate-evaluation
