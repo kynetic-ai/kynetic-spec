@@ -1,0 +1,27 @@
+kynetic_reviews: "1.0"
+reviews:
+  - _ulid: 01KKPTE827F3G45RH8T37AM9YB
+    slugs: []
+    title: Test Review
+    lifecycle_state: draft
+    subject:
+      type: task
+      ref: "@task-implement-review-cli-create-query"
+      shadow_commit: ""
+      content_hash: ""
+    author: "@claude"
+    related_refs: []
+    threads: []
+    checks: []
+    verdicts: []
+    events:
+      - _ulid: 01KKPTE826PCD45SSA6W17DRSQ
+        event_type: lifecycle_change
+        actor: "@claude"
+        timestamp: 2026-03-14T18:41:18.918Z
+        payload:
+          to: draft
+    notes: []
+    external_links: []
+    created_at: 2026-03-14T18:41:18.919Z
+    updated_at: null
