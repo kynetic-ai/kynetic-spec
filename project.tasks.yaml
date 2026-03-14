@@ -96626,6 +96626,18 @@
         code 3, contradicting both the AC and test name. SHOULD-FIX: Unused imports (kspecOutput in
         test, ReviewLifecycleState in impl). See PR #854 review for inline details."
       supersedes: null
+    - _ulid: 01KKPT1JB6F4EVGDQVY7JM1EDN
+      created_at: 2026-03-14T18:34:23.462Z
+      author: "@claude"
+      content: "Fix cycle resolution: All review findings addressed by merging with origin/main. The
+        @task-implement-review-cli-surface (PR #851) had already landed on main with a complete
+        review CLI surface (1445 lines) that fully implements all 5 ACs for
+        @review-cli-creation-and-query plus mutation commands, task linkage, and comprehensive trait
+        coverage (json-output, filterable-list, semantic-exit-codes, shadow-commit including N/A
+        annotations). Our branch's duplicate review.ts and test file were dropped in favor of main's
+        complete implementation. Removed duplicate registerReviewCommands registration that the
+        merge introduced. All 5162 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKNRC4F8KAXMPAJCEVZEMNVH
