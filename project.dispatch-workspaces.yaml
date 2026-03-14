@@ -3882,7 +3882,7 @@ workspaces:
       adopted_at: null
       rehydrated: null
     lifecycle_state: integrating
-    active_role: null
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-task-integration-01kknrc2
@@ -3934,7 +3934,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T19:17:41.301Z
+      updated_at: 2026-03-14T19:17:41.780Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -3943,7 +3943,7 @@ workspaces:
       updated_at: 2026-03-14T19:17:41.301Z
     timestamps:
       created_at: 2026-03-14T19:01:52.598Z
-      updated_at: 2026-03-14T19:17:41.516Z
-      last_reconciled_at: 2026-03-14T19:17:41.301Z
-      last_active_at: 2026-03-14T19:01:53.076Z
+      updated_at: 2026-03-14T19:17:41.780Z
+      last_reconciled_at: 2026-03-14T19:17:41.780Z
+      last_active_at: 2026-03-14T19:17:41.780Z
       closed_at: null
