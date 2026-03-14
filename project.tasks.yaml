@@ -95366,6 +95366,10 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #839. Added 15 regression tests covering adopted branch cleanup and
+    recoverability (ac-1 through ac-4) and review/fix-cycle workspace discovery before discard (ac-1
+    through ac-4), plus full lifecycle regression tests. All own and trait AC coverage verified. CI
+    instability from fix cycle 1 was properly addressed. All 4804 tests pass locally and in CI."
   depends_on:
     - "@implement-deterministic-task-branch-helper"
   context: []
@@ -95387,6 +95391,7 @@
   created_at: 2026-03-13T09:17:06.601Z
   started_at: 2026-03-14T02:10:27.475Z
   submitted_at: 2026-03-14T02:22:48.301Z
+  completed_at: 2026-03-14T02:37:09.635Z
   notes:
     - _ulid: 01KKN0JWNJW69XWNGEZ370HJYN
       created_at: 2026-03-14T01:50:13.683Z
@@ -95460,11 +95465,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-14T02:37:09.635Z
-  closed_reason: "Merged in PR #839. Added 15 regression tests covering adopted branch cleanup and
-    recoverability (ac-1 through ac-4) and review/fix-cycle workspace discovery before discard (ac-1
-    through ac-4), plus full lifecycle regression tests. All own and trait AC coverage verified. CI
-    instability from fix cycle 1 was properly addressed. All 4804 tests pass locally and in CI."
 - _ulid: 01KKM1CAH2KSMH1TWS2E6079A1
   slugs: []
   title: Implement inline registry purge for closed dispatch workspace records
@@ -95732,5 +95732,16 @@
         pruning) is the mechanism we rely on — the delayed drain ensures pruning sees the final
         state. ac-23/ac-24 (fresh state at drain) are compatible since delayed drains still load
         from disk. The coalescing window is purely additive between enqueue and drain."
+      supersedes: null
+    - _ulid: 01KKN3930PY5S85FZTK7RZK2PY
+      created_at: 2026-03-14T02:37:18.230Z
+      author: "@claude"
+      content: "Spec review findings addressed: (1) Removed ac-7 (post-invocation coalescing) —
+        post-invocation re-evaluation is a controlled full-scan, coalescing it adds 5s unnecessary
+        latency to worker→reviewer handoff. (2) Added ac-7 (scoping) — explicitly states bootstrap,
+        reconciliation, and post-invocation drains are NOT subject to coalescing. (3) Added ac-8
+        (drain re-entrance protection) — timer callbacks can fire concurrently, need mutex/flag to
+        serialize drains. Also: existing tests should use coalesceWindowMs: 0 for minimal churn; new
+        coalescing-specific tests use fake timers."
       supersedes: null
   todos: []

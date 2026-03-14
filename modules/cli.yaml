@@ -8393,11 +8393,19 @@ features:
             then: The drain proceeds normally after the coalescing delay. The only observable difference from
               pre-coalescing behavior is the added latency of the coalescing window.
           - id: ac-7
-            given: Post-invocation re-evaluation (ac-24 of @agent-dispatch-engine) discovers new dispatchable
-              tasks
-            when: The engine re-evaluates and enqueues after an invocation completes
-            then: The coalescing window applies to these re-evaluation enqueues as well, preventing rapid
-              post-invocation churn from bypassing the coalescing protection.
+            given: The dispatch engine drains queues from bootstrap (ac-8), periodic reconciliation (ac-19/20),
+              or post-invocation re-evaluation (ac-24) paths
+            when: These code paths call _drainQueues() directly
+            then: The drain executes immediately without coalescing delay. Coalescing only applies to drains
+              triggered by individual state change events via handleStateChange(). These full-scan
+              paths are deliberate evaluations, not reactions to rapid external events.
+          - id: ac-8
+            given: Multiple per-task coalescing timers expire at approximately the same time, or a timer fires
+              while a drain is already in progress
+            when: The timer callbacks attempt concurrent _drainQueues() calls
+            then: A drain-pending flag or mutex serializes drain execution. If a drain is already running, the
+              pending drain request is coalesced into a single follow-up drain after the current one
+              completes, rather than running concurrently.
     features:
       - _ulid: 01KKFY93PW5HZ7V21GGJMMZENW
         slugs:
