@@ -4220,12 +4220,7 @@ workspaces:
         branch_ref: dispatch/task/suppress-no-op-workspace-registry-writes-during-periodic-reconciliation/01kkq4rk
         head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
         last_seen_at: 2026-03-14T21:54:18.731Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/suppress-no-op-workspace-registry-writes-during-periodic-reconciliation-01kkq4rk-review
-        branch_mode: detached
-        branch_ref: null
-        head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-        last_seen_at: 2026-03-14T21:54:18.731Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -4264,7 +4259,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T22:07:04.726Z
+      updated_at: 2026-03-14T22:07:19.511Z
     cleanup:
       status: scheduled
       eligible: true
@@ -4273,7 +4268,7 @@ workspaces:
       updated_at: 2026-03-14T22:07:04.726Z
     timestamps:
       created_at: 2026-03-14T21:42:54.416Z
-      updated_at: 2026-03-14T22:07:18.438Z
-      last_reconciled_at: 2026-03-14T22:07:18.438Z
+      updated_at: 2026-03-14T22:07:19.511Z
+      last_reconciled_at: 2026-03-14T22:07:19.511Z
       last_active_at: 2026-03-14T21:54:19.380Z
       closed_at: null
