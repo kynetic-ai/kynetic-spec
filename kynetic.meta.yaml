@@ -1346,6 +1346,9 @@ conventions:
       - Use kebab-case for branch names
       - Before committing, verify current branch with git branch --show-current; never commit
         directly to main.
+      - For task work (manual or automated), prefer kspec task branch @ref to create or resume the
+        deterministic dispatch-compatible branch (dispatch/task/<slug>/<short-id>). This preserves
+        dispatch reviewer and fix-cycle continuity.
     examples: []
   - _ulid: 01KF8BNQXGBBFYRDJKYQHAEDCC
     domain: documentation
