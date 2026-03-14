@@ -1685,6 +1685,9 @@ features:
         notes: []
         created: 2026-03-14T08:45:51.685Z
         parent: "@review-record-core-model"
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KKNRBY6VD6FQ19B4NA8TAG7Y
         slugs:
           - review-subject-bindings
