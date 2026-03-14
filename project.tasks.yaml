@@ -95722,7 +95722,9 @@
     - dispatch
     - mvp
   vcs_refs: []
+  session_id: 01KKN4P1RET7Q85Z2SMF5A8NEF
   created_at: 2026-03-14T02:33:48.771Z
+  started_at: 2026-03-14T03:02:16.503Z
   notes:
     - _ulid: 01KKN32QMAKWNX3TV9479A42DV
       created_at: 2026-03-14T02:33:49.962Z
@@ -95744,7 +95746,25 @@
         serialize drains. Also: existing tests should use coalesceWindowMs: 0 for minimal churn; new
         coalescing-specific tests use fake timers."
       supersedes: null
+    - _ulid: 01KKN4QQWZCZVWYK0ZVYXK03TE
+      created_at: 2026-03-14T03:02:46.943Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Rapid sequential task state transitions can spawn agents for intermediate
+        states, wasting resources. Per-task coalescing defers drain to evaluate only the final
+        landing state.
+
+        - Scope: Add coalesceWindowMs option, per-task coalescing timers in handleStateChange, drain
+        serialization mutex, timer cleanup in stop(). Bootstrap/reconciliation/post-invocation
+        drains remain immediate.
+
+        - Files: src/agent-runtime/dispatch.ts (DispatchEngine class),
+        tests/agent-dispatch-engine.test.ts (test coverage)
+
+        - Verification: All existing tests pass with coalesceWindowMs: 0; new tests cover all 8 ACs
+        using fake timers
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-14T03:02:16.503Z
-  session_id: 01KKN4P1RET7Q85Z2SMF5A8NEF
