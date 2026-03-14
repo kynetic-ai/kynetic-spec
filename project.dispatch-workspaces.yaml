@@ -2896,7 +2896,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
     lifecycle_state: integrating
-    active_role: null
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-review-01kkk7re
@@ -2948,7 +2948,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T01:56:59.879Z
+      updated_at: 2026-03-14T01:57:00.310Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -2957,7 +2957,7 @@ workspaces:
       updated_at: 2026-03-14T01:56:59.879Z
     timestamps:
       created_at: 2026-03-14T01:43:46.458Z
-      updated_at: 2026-03-14T01:57:00.069Z
-      last_reconciled_at: 2026-03-14T01:56:59.879Z
-      last_active_at: 2026-03-14T01:43:46.862Z
+      updated_at: 2026-03-14T01:57:00.310Z
+      last_reconciled_at: 2026-03-14T01:57:00.310Z
+      last_active_at: 2026-03-14T01:57:00.310Z
       closed_at: null
