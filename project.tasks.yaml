@@ -95713,7 +95713,7 @@
   spec_ref: "@per-task-dispatch-drain-coalescing"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -95746,3 +95746,5 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-14T03:02:16.503Z
+  session_id: 01KKN4P1RET7Q85Z2SMF5A8NEF
