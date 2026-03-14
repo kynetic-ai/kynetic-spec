@@ -95715,6 +95715,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #840. Implemented per-task dispatch drain coalescing with configurable
+    coalesceWindowMs (default 5000ms), per-task timer management, drain serialization via
+    drainInProgress/drainPending mutex pattern, and timer cleanup on stop(). All 8 ACs covered with
+    tests using fake timers. Existing tests updated with coalesceWindowMs: 0 for backward
+    compatibility."
   depends_on: []
   context: []
   priority: 2
@@ -95734,6 +95739,7 @@
   created_at: 2026-03-14T02:33:48.771Z
   started_at: 2026-03-14T03:02:16.503Z
   submitted_at: 2026-03-14T03:24:42.035Z
+  completed_at: 2026-03-14T03:36:38.056Z
   notes:
     - _ulid: 01KKN32QMAKWNX3TV9479A42DV
       created_at: 2026-03-14T02:33:49.962Z
@@ -95787,9 +95793,27 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-14T03:36:38.056Z
-  closed_reason: "Merged in PR #840. Implemented per-task dispatch drain coalescing with configurable
-    coalesceWindowMs (default 5000ms), per-task timer management, drain serialization via
-    drainInProgress/drainPending mutex pattern, and timer cleanup on stop(). All 8 ACs covered with
-    tests using fake timers. Existing tests updated with coalesceWindowMs: 0 for backward
-    compatibility."
+- title: Fix daemon session sync hardcoded manifest path
+  description: "startSessionSyncForProject in packages/daemon/src/server.ts:117 hardcodes
+    join(specDir, 'kynetic.yaml') instead of using findManifestInDir(). Projects with non-default
+    manifest names (e.g., be-kynetic) fail with ENOENT when the daemon tries to start session sync.
+    Introduced in commit 5ea3e0e08 (2026-03-10). Fix: export findManifestInDir from
+    src/parser/yaml.ts and use it in the daemon. Gracefully skip sync if no manifest found."
+  type: task
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - bug
+    - daemon
+  depends_on: []
+  _ulid: 01KKNKTFJ0JB8JK0DNDMDCRXAG
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-14T07:26:25.342Z
+  notes: []
+  todos: []
