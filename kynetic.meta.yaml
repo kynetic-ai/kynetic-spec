@@ -8222,6 +8222,7 @@ skills:
     platforms:
       - claude-code
       - codex
+      - droid
     depends_on: []
     tags:
       - core
@@ -8237,6 +8238,7 @@ skills:
     platforms:
       - claude-code
       - codex
+      - droid
     depends_on: []
     tags:
       - core
@@ -8252,6 +8254,7 @@ skills:
     platforms:
       - claude-code
       - codex
+      - droid
     depends_on: []
     tags:
       - core
@@ -8267,6 +8270,7 @@ skills:
     platforms:
       - claude-code
       - codex
+      - droid
     depends_on: []
     tags:
       - core
@@ -8282,6 +8286,7 @@ skills:
     platforms:
       - claude-code
       - codex
+      - droid
     depends_on: []
     tags:
       - core
@@ -8297,6 +8302,7 @@ skills:
     platforms:
       - claude-code
       - codex
+      - droid
     depends_on: []
     tags:
       - core
@@ -8312,6 +8318,7 @@ skills:
     platforms:
       - claude-code
       - codex
+      - droid
     depends_on: []
     tags:
       - core
@@ -8327,6 +8334,7 @@ skills:
     platforms:
       - claude-code
       - codex
+      - droid
     depends_on: []
     tags:
       - core
@@ -8342,6 +8350,7 @@ skills:
     platforms:
       - claude-code
       - codex
+      - droid
     depends_on: []
     tags:
       - core
@@ -8357,6 +8366,7 @@ skills:
     platforms:
       - claude-code
       - codex
+      - droid
     depends_on: []
     tags:
       - core
@@ -8489,6 +8499,7 @@ skills:
     platforms:
       - claude-code
       - codex
+      - droid
     depends_on: []
     tags:
       - core
