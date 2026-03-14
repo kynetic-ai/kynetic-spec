@@ -2816,7 +2816,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
     lifecycle_state: closing
-    active_role: reviewer
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches-01kkk7rd
@@ -2877,8 +2877,8 @@ workspaces:
       updated_at: 2026-03-14T01:54:43.883Z
     timestamps:
       created_at: 2026-03-14T01:29:39.354Z
-      updated_at: 2026-03-14T01:54:43.883Z
-      last_reconciled_at: 2026-03-14T01:54:43.883Z
+      updated_at: 2026-03-14T01:54:44.607Z
+      last_reconciled_at: 2026-03-14T01:54:44.607Z
       last_active_at: 2026-03-14T01:42:46.820Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKK7RE59ZEANEM8MZJWXY5NV
