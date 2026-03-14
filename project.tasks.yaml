@@ -96215,7 +96215,7 @@
   spec_ref: "@review-checks-and-gate-evaluation"
   plan_ref: "@plan-review-records-and-gates"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-implement-review-subject-bindings"
@@ -96230,6 +96230,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-14T17:49:45.518Z
+  session_id: 01KKPQBCQGSYEX6NFJ4TWSR1S9
 - _ulid: 01KKNRC1M21CX9TW44VZWMEHHZ
   slugs:
     - task-implement-review-verdicts-and-resolution
@@ -96264,6 +96266,10 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #849. Implemented first-party schema validation for review records
+    covering all review entities (records, threads, checks, verdicts, events, subject bindings) with
+    actionable error messages. Integrated into kspec validate pipeline. 37 tests covering both ACs.
+    Fix cycle 1 resolved merge conflict and removed dead code."
   depends_on:
     - "@task-implement-review-record-core"
     - "@task-implement-review-storage-and-identity"
@@ -96286,6 +96292,7 @@
   created_at: 2026-03-14T08:45:55.797Z
   started_at: 2026-03-14T17:37:31.431Z
   submitted_at: 2026-03-14T17:37:39.059Z
+  completed_at: 2026-03-14T17:48:56.875Z
   notes:
     - _ulid: 01KKNZ6AST360YFWVDTX19YQ3M
       created_at: 2026-03-14T10:45:08.026Z
@@ -96318,11 +96325,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-14T17:48:56.875Z
-  closed_reason: "Merged in PR #849. Implemented first-party schema validation for review records
-    covering all review entities (records, threads, checks, verdicts, events, subject bindings) with
-    actionable error messages. Integrated into kspec validate pipeline. 37 tests covering both ACs.
-    Fix cycle 1 resolved merge conflict and removed dead code."
 - _ulid: 01KKNRC2RSHEC4VE39AK5NQN1J
   slugs:
     - task-implement-review-task-integration
