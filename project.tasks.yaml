@@ -96238,9 +96238,18 @@
     - schema
     - validation
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 345842980ec9cc5474800e321ea89f3d20c5072a
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-14T10:45:30.078Z
   session_id: 01KKNYQ2GVJ0HEYHYERK542GGE
   created_at: 2026-03-14T08:45:55.797Z
   started_at: 2026-03-14T10:37:03.651Z
+  submitted_at: 2026-03-14T10:45:30.800Z
   notes:
     - _ulid: 01KKNZ6AST360YFWVDTX19YQ3M
       created_at: 2026-03-14T10:45:08.026Z
@@ -96258,15 +96267,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-14T10:45:30.800Z
-  submission_linkage:
-    branch: main
-    commit: 345842980ec9cc5474800e321ea89f3d20c5072a
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-14T10:45:30.078Z
 - _ulid: 01KKNRC2RSHEC4VE39AK5NQN1J
   slugs:
     - task-implement-review-task-integration
@@ -96506,3 +96506,42 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Fix agent spawn ENOENT by using absolute paths instead of PATH resolution
+  description: >-
+    The daemon crashes with ENOENT when spawning agents via bunx/npx because PATH resolution fails
+    in detached/nested Bun spawn chains. This was first seen with npx, and a prior fix switched to
+    bunx under Bun — but bunx (a symlink managed by mise) suffers the same PATH loss.
+
+
+    Root cause: When the daemon runs as a detached Bun process (kspec serve start -d), subsequent
+    child_process.spawn calls with a custom env object can lose PATH resolution for commands like
+    bunx/npx. This is likely a Bun quirk with mise-managed symlinks in detached spawn chains.
+
+
+    Fix (two parts):
+
+    1. Eliminate PATH dependency entirely — use process.execPath (absolute path to bun binary) with
+    'x' subcommand instead of bunx. Under Node, resolve npx to absolute path at module load time.
+    This makes spawn immune to any PATH changes or resolution failures.
+
+    2. Add child.on('error') handler in spawner.ts — previously missing, so ENOENT crashed the
+    daemon. Now spawn errors propagate cleanly through Promise.race against initialization.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - bug
+    - agents
+    - daemon
+  depends_on: []
+  _ulid: 01KKPKQAMQM2MJ3T1G4DTTCRJG
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-14T16:43:56.439Z
+  notes: []
+  todos: []
