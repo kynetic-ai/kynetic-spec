@@ -1757,7 +1757,7 @@ features:
         parent: "@review-record-core-model"
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKNRBY7HTB4H4NYJXQWZG54V
         slugs:
           - review-comment-threads-and-anchors
