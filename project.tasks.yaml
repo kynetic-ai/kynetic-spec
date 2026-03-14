@@ -96753,7 +96753,7 @@
   spec_ref: "@review-cli-mutation-commands"
   plan_ref: "@plan-review-records-and-gates"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-implement-review-cli-surface"
@@ -96774,7 +96774,7 @@
     upstream_ref: refs/heads/main
     review_url: null
     captured_at: 2026-03-14T19:31:32.887Z
-  session_id: 01KKPWJ9BCV4KEY990T1WA3F0K
+  session_id: null
   created_at: 2026-03-14T08:45:58.120Z
   started_at: 2026-03-14T19:18:42.061Z
   submitted_at: 2026-03-14T19:31:33.602Z
@@ -96836,6 +96836,14 @@
         Implementation was inherited from completed dependency @task-implement-review-cli-surface
         (PR #851). This task added missing ac-7 annotation and completed shadow-commit trait
         coverage annotations.
+      supersedes: null
+    - _ulid: 01KKPY1CHCPRYV7DADWAZ4W96E
+      created_at: 2026-03-14T19:44:11.820Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: SHOULD-FIX: Missing @trait-json-output ac-2 and ac-3
+        annotations in tests/review-cli.test.ts. ac-2 needs per-test annotation (currently only in
+        describe header). ac-3 needs annotation added to existing test at line 205. See PR #857
+        review comments for details."
       supersedes: null
   todos: []
   automation: eligible
