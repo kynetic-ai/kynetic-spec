@@ -4301,12 +4301,7 @@ workspaces:
         branch_ref: dispatch/task/fix-double-in-dispatch-workspace-registry-shadow-commit-messages/01kkq6we
         head: ac5effddbcb44de1153de315b0c9d03ecb8a2996
         last_seen_at: 2026-03-14T22:29:28.929Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-double-in-dispatch-workspace-registry-shadow-commit-messages-01kkq6we-review
-        branch_mode: detached
-        branch_ref: null
-        head: ac5effddbcb44de1153de315b0c9d03ecb8a2996
-        last_seen_at: 2026-03-14T22:29:28.929Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -4345,7 +4340,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T22:40:38.668Z
+      updated_at: 2026-03-14T22:40:49.788Z
     cleanup:
       status: scheduled
       eligible: true
@@ -4354,7 +4349,7 @@ workspaces:
       updated_at: 2026-03-14T22:40:38.668Z
     timestamps:
       created_at: 2026-03-14T22:19:34.465Z
-      updated_at: 2026-03-14T22:40:48.801Z
-      last_reconciled_at: 2026-03-14T22:40:48.801Z
+      updated_at: 2026-03-14T22:40:49.788Z
+      last_reconciled_at: 2026-03-14T22:40:49.788Z
       last_active_at: 2026-03-14T22:29:30.180Z
       closed_at: null
