@@ -96083,7 +96083,7 @@
   spec_ref: "@review-subject-bindings"
   plan_ref: "@plan-review-records-and-gates"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-implement-review-record-core"
@@ -96148,6 +96148,14 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-14T17:16:35.068Z
+  closed_reason: "Merged in PR #847. Implementation adds subject binding factories (createCodeSubject,
+    createPlanSubject, createTaskSubject, createSpecSubject, createExternalSubject), subject version
+    extraction (extractSubjectVersion), and staleness detection (isVersionStale, findStaleChecks,
+    findStaleVerdicts). Code subjects use commit SHAs as authoritative identity with branch names as
+    optional metadata. Shadow-branch entities use per-entity content_hash for staleness detection to
+    prevent self-invalidation. All 5 ACs covered with 39 annotated tests. Reuses existing
+    computeContentHash from parser/skill-render.ts."
 - _ulid: 01KKNRC0FGK9TWYBNBVEGC7Z50
   slugs:
     - task-implement-review-comment-threads
@@ -96534,6 +96542,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #848. Used process.execPath + 'x' subcommand under Bun and absolute npx
+    path under Node to eliminate PATH dependency for agent spawning. Added child.on('error') handler
+    so spawn failures propagate cleanly instead of crashing the daemon."
   depends_on: []
   context: []
   priority: 3
@@ -96554,9 +96565,6 @@
   created_at: 2026-03-14T16:43:56.439Z
   started_at: 2026-03-14T16:44:06.486Z
   submitted_at: 2026-03-14T16:45:27.927Z
+  completed_at: 2026-03-14T16:57:19.470Z
   notes: []
   todos: []
-  completed_at: 2026-03-14T16:57:19.470Z
-  closed_reason: "Merged in PR #848. Used process.execPath + 'x' subcommand under Bun and absolute npx
-    path under Node to eliminate PATH dependency for agent spawning. Added child.on('error') handler
-    so spawn failures propagate cleanly instead of crashing the daemon."
