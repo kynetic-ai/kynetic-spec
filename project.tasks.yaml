@@ -96779,6 +96779,45 @@
 
         - Verification: npm test passes, all 7 own ACs covered, trait ACs covered
       supersedes: null
+    - _ulid: 01KKPXA01RXP214PG1S9K23B99
+      created_at: 2026-03-14T19:31:25.368Z
+      author: "@claude"
+      content: >-
+        Implementation complete. All 8 ACs covered:
+
+        - ac-1: comment add with code anchor, kind, authorship (review.ts:636-740, test:320-392)
+
+        - ac-1b: reply to existing thread (review.ts:742-822, test:394-428)
+
+        - ac-2: check add with version binding (review.ts:824-904, test:430-498)
+
+        - ac-3: verdict set with disposition update (review.ts:906-978, test:504-549)
+
+        - ac-4: resolve/reopen thread (review.ts:980-1140, test:566-619)
+
+        - ac-5: lifecycle transitions open/close/archive (review.ts:1142-1322, test:630-693)
+
+        - ac-6: refresh subject compare context (review.ts:1327-1392, test:704-741)
+
+        - ac-7: design constraint annotation — no delete command; destructive ops deferred
+
+
+        Trait coverage:
+
+        - json-output: 6/6 (ac-6 N/A — no competing format flags)
+
+        - semantic-exit-codes: 8/8 (ac-3 N/A — no interactive prompts, ac-7 N/A — no batch partial
+        failure)
+
+        - shadow-commit: 8/8 (ac-4/6/7 N/A — test fixtures lack shadow/remote)
+
+        - confirmation-prompt: 6/6 (all N/A — ac-7 defers destructive ops)
+
+
+        Implementation was inherited from completed dependency @task-implement-review-cli-surface
+        (PR #851). This task added missing ac-7 annotation and completed shadow-commit trait
+        coverage annotations.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKNRC51AWZKNSBW4CTEDBRDS
