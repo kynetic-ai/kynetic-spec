@@ -96280,7 +96280,7 @@
     core-skill-install.test.ts (and any other test that calls skill install-core or kspec setup
     without --dry-run) to a temp directory, matching the pattern in claude-plugin-registry.test.ts."
   spec_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -96290,9 +96290,18 @@
     - testing
     - plugin
   vcs_refs: []
+  submission_linkage:
+    branch: fix/test-isolation-plugin-marketplace
+    commit: cb40dbadf23b125edc3f852a6e11a97671b241be
+    remote: null
+    remote_url: null
+    upstream_ref: null
+    review_url: null
+    captured_at: 2026-03-14T09:37:27.611Z
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-14T09:20:39.564Z
   started_at: 2026-03-14T09:31:19.905Z
+  submitted_at: 2026-03-14T09:37:28.528Z
   notes:
     - _ulid: 01KKNTDTX4GM9HBC6JEC0RPR0Z
       created_at: 2026-03-14T09:21:51.013Z
@@ -96346,12 +96355,7 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-14T09:37:28.528Z
-  submission_linkage:
-    branch: fix/test-isolation-plugin-marketplace
-    commit: cb40dbadf23b125edc3f852a6e11a97671b241be
-    remote: null
-    remote_url: null
-    upstream_ref: null
-    review_url: null
-    captured_at: 2026-03-14T09:37:27.611Z
+  completed_at: 2026-03-14T09:49:46.197Z
+  closed_reason: "Merged in PR #845. Set KSPEC_CLAUDE_HOME in vitest setup.ts to isolate all test runs
+    from the real plugin marketplace. Verified fix prevents marketplace stomping when tests run from
+    dispatch worktrees."
