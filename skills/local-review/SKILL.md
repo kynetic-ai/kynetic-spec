@@ -13,6 +13,8 @@ Quality enforcement for pre-PR review. Use before creating a PR to catch issues 
 
 **Reproduce, don't just read.** Run `npm test`. Run the actual CLI commands. If the spec says "exit 0 on success," run it and verify. If a test claims to cover an AC, verify the test would actually fail if the feature broke.
 
+**Simple-looking changes are where bugs hide.** Refactors, renames, test rewrites, and "mechanical" changes can silently change semantics. Give these the same scrutiny as new feature code.
+
 ## Quick Start
 
 ```bash
@@ -104,6 +106,12 @@ Any change to tsconfig, Biome config, vitest config, or other verification tooli
 - Adding excludes/ignores to suppress errors instead of fixing them
 - Loosening compiler strictness, disabling Biome rules, skipping test suites
 - Modifying test sharding or timeouts to mask failures
+
+### Test Rewrites That Reduce Coverage
+- If original tests verified behavior X and the replacement no longer verifies X, that is MUST-FIX. Replacements must be a **superset** of original coverage. Watch for: E2E CLI tests replaced with unit tests, structural assertions replacing behavioral ones, test names describing old behavior with new assertions.
+
+### Refactors and Mechanical Changes
+- Refactored code must preserve all behavior including error handling, edge cases, and `Result<T>` chains. Verify all call sites still get the same behavior after utility extraction or consolidation.
 
 **Severity default: MUST-FIX.** Only downgrade to SUGGESTION for pure style preferences (naming, comment formatting) with zero correctness implications. If it touches behavior or correctness in any way, it is at minimum SHOULD-FIX.
 
