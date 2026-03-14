@@ -281,6 +281,7 @@ export const operationFailures = {
   addTodo: "Failed to add todo",
   markTodoDone: "Failed to mark todo as done",
   markTodoNotDone: "Failed to mark todo as not done",
+  taskBranch: "Failed to create or resume task branch",
   listTasks: "Failed to list tasks",
   getReadyTasks: "Failed to get ready tasks",
   getNextTask: "Failed to get next task",
