@@ -95644,3 +95644,88 @@
   created_at: 2026-03-14T00:19:59.946Z
   notes: []
   todos: []
+- _ulid: 01KKN32PF34M089KX910N0SZV4
+  slugs:
+    - implement-per-task-dispatch-drain-coalescing
+  title: Implement per-task dispatch drain coalescing
+  type: task
+  description: >-
+    Add a per-task coalescing window to the dispatch engine that defers queue draining when multiple
+    state change events arrive for the same task in rapid succession.
+
+
+    ## Problem
+
+
+    When rapid sequential CLI commands transition a task through multiple states (e.g., unblock →
+    start → submit within seconds), each transition fires an independent dispatch event. Because
+    handleStateChange() immediately calls _drainQueues(), the engine can spawn agents for
+    intermediate states before subsequent transitions arrive. This caused a task-worker to be
+    spawned for the transient in_progress state AND a pr-reviewer for the final pending_review
+    state, when only the reviewer was needed.
+
+
+    ## Approach
+
+
+    Replace the immediate _drainQueues() call in handleStateChange() with a per-task coalescing
+    timer:
+
+
+    1. Add a `coalesceTimers: Map<string, NodeJS.Timeout>` to DispatchEngine tracking pending
+    per-task drain timers
+
+    2. Add `coalesceWindowMs` option to DispatchEngineOptions (default 5000ms, 0 to disable)
+
+    3. In handleStateChange(), after enqueuing, instead of calling _drainQueues() directly:
+       - If a timer exists for this taskId, clear it
+       - Schedule a new timer for coalesceWindowMs
+       - When timer fires, call _drainQueues() (which already handles stale pruning via ac-17)
+    4. In stop(), clear all pending coalescing timers
+
+    5. In post-invocation re-evaluation, coalescing also applies
+
+
+    ## Key files
+
+
+    - `src/agent-runtime/dispatch.ts` — DispatchEngine class (handleStateChange, _drainQueues, stop,
+    constructor)
+
+    - `tests/agent-dispatch-engine.test.ts` — existing dispatch tests
+
+
+    ## Testing considerations
+
+
+    - Tests that rely on immediate drain behavior will need coalesceWindowMs: 0 or explicit timer
+    advancement
+
+    - New tests needed for: rapid transition coalescing, per-task independence, timer cleanup on
+    stop, single-event delay behavior, post-invocation coalescing
+
+    - Use fake timers (vi.useFakeTimers) to avoid actual 5s waits in tests
+  spec_ref: "@per-task-dispatch-drain-coalescing"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - dispatch
+    - mvp
+  vcs_refs: []
+  created_at: 2026-03-14T02:33:48.771Z
+  notes:
+    - _ulid: 01KKN32QMAKWNX3TV9479A42DV
+      created_at: 2026-03-14T02:33:49.962Z
+      author: "@claude"
+      content: "Spec gap analysis: No conflicts with existing dispatch engine ACs. ac-7 (dedup) operates
+        on event identity, coalescing operates on drain timing — complementary layers. ac-17 (stale
+        pruning) is the mechanism we rely on — the delayed drain ensures pruning sees the final
+        state. ac-23/ac-24 (fresh state at drain) are compatible since delayed drains still load
+        from disk. The coalescing window is purely additive between enqueue and drain."
+      supersedes: null
+  todos: []
