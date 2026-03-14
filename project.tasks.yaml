@@ -95114,6 +95114,15 @@
         the 4th rehydrated parameter added by this PR. CI fails with TS2554: Expected 4 arguments
         but got 3. Implementation and AC coverage are otherwise solid."
       supersedes: null
+    - _ulid: 01KKMX92YRF94F5Y7N3EZT5XCF
+      created_at: 2026-03-14T00:52:26.712Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1 resolved] Merged latest main into task branch and fixed the missing 4th
+        parameter (rehydrated) on the adoptedBranchProvenance() call added by PR #835 in
+        discoverWorkspaceForReviewOrFixCycle. Also tracks whether the branch was restored from
+        remote vs found locally. All 236 test files pass (4808 tests, 0 failures). TypeScript
+        compiles clean."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKK7RAYW9VJ3325R9DMBDQHN
