@@ -4130,8 +4130,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
-    active_role: reviewer
+    lifecycle_state: closing
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-create-review-skill-01kknrc5
@@ -4172,27 +4172,27 @@ workspaces:
           steps: []
           failureMessage: null
     integration:
-      status: pending
+      status: merged
       target_branch: main
       target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
       publication_mode: pull_request
-      outcome: pull_request
-      detail: null
-      updated_at: 2026-03-14T20:53:52.784Z
+      outcome: merged
+      detail: integration:merged
+      updated_at: 2026-03-14T20:54:38.529Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-14T20:53:52.784Z
+      updated_at: 2026-03-14T20:54:38.529Z
     cleanup:
-      status: not_scheduled
-      eligible: false
-      reason: null
-      detail: null
-      updated_at: 2026-03-14T20:53:52.784Z
+      status: scheduled
+      eligible: true
+      reason: integrated-into-base-branch
+      detail: integrated-into-base-branch
+      updated_at: 2026-03-14T20:54:38.529Z
     timestamps:
       created_at: 2026-03-14T20:27:15.011Z
-      updated_at: 2026-03-14T20:53:52.784Z
-      last_reconciled_at: 2026-03-14T20:53:52.784Z
+      updated_at: 2026-03-14T20:54:38.529Z
+      last_reconciled_at: 2026-03-14T20:54:38.529Z
       last_active_at: 2026-03-14T20:43:02.893Z
       closed_at: null
