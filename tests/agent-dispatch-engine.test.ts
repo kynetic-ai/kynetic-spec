@@ -1320,6 +1320,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+    (engine as unknown as { running: boolean }).running = true;
 
     // Manually call _spawnInvocation with the bad agent via type assertion
     type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
@@ -1349,6 +1350,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
 
     try {
       const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+      (engine as unknown as { running: boolean }).running = true;
 
       type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
       const taskRef = `@${testUlid("TASK")}`;
@@ -1385,6 +1387,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
 
     try {
       const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+      (engine as unknown as { running: boolean }).running = true;
       const taskRef = `@${testUlid("TASK", 33)}`;
       const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
       const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
@@ -1428,6 +1431,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
 
     try {
       const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+      (engine as unknown as { running: boolean }).running = true;
       const taskRef = `@${testUlid("TASK", 34)}`;
       const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
       const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
@@ -1502,10 +1506,12 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       vi.spyOn(console, "error").mockImplementation(() => {});
 
       type EngineInternal = {
+        running: boolean;
         _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean>;
         inFlightTaskKeys: Set<string>;
       };
       const internal = engine as unknown as EngineInternal;
+      internal.running = true;
 
       const spawned = await internal._spawnInvocation(agent, entry);
 
@@ -1854,8 +1860,9 @@ describe("Active fleet cleanup on invocation completion", () => {
       task: { automation: "eligible", tags: [] } as any,
     });
 
-    // Wait for both invocations to complete
-    for (let i = 0; i < 50 && invocationCount < 2; i++) {
+    // Wait for both invocations to complete (second is spawned by drain
+    // after the first completes, which involves real git worktree operations)
+    for (let i = 0; i < 200 && invocationCount < 2; i++) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
 
@@ -2769,9 +2776,13 @@ describe("Dispatch role workflow entrypoints", () => {
       });
 
       type EngineInternal = {
+        running: boolean;
         _spawnInvocation: (a: Agent, e: unknown) => Promise<boolean>;
         inFlightTaskKeys: Set<string>;
       };
+      const internal = engine as unknown as EngineInternal;
+      internal.running = true;
+
       const taskId = testUlid("TASK");
       const taskRef = `@${taskId}`;
       const change = makeStateChange({
@@ -2782,7 +2793,6 @@ describe("Dispatch role workflow entrypoints", () => {
       });
       const entry = { agent, change, retryCount: 0, nextRetryAt: 0, enqueuedAtMs: Date.now(), sequence: 1 };
 
-      const internal = engine as unknown as EngineInternal;
       const started = await internal._spawnInvocation(agent, entry);
 
       expect(started).toBe(false);
@@ -2856,9 +2866,13 @@ describe("Dispatch role workflow entrypoints", () => {
       });
 
       type EngineInternal = {
+        running: boolean;
         _spawnInvocation: (a: Agent, e: unknown) => Promise<boolean>;
         inFlightTaskKeys: Set<string>;
       };
+      const internal = engine as unknown as EngineInternal;
+      internal.running = true;
+
       const taskId = testUlid("TASK", 41);
       const taskRef = `@${taskId}`;
       const change = makeStateChange({
@@ -2869,7 +2883,6 @@ describe("Dispatch role workflow entrypoints", () => {
       });
       const entry = { agent, change, retryCount: 0, nextRetryAt: 0, enqueuedAtMs: Date.now(), sequence: 1 };
 
-      const internal = engine as unknown as EngineInternal;
       const started = await internal._spawnInvocation(agent, entry);
 
       expect(started).toBe(false);

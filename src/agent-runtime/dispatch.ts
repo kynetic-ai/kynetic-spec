@@ -918,17 +918,26 @@ export class DispatchEngine {
       this.inFlightReconciles.clear();
     }
 
+    // Clear queues BEFORE awaiting invocations so completion handlers
+    // that call _drainQueues find nothing to spawn. This prevents
+    // second-generation invocations from being added to runningInvocations
+    // after our snapshot, eliminating the need for a while loop (which
+    // risks hanging indefinitely if an invocation never resolves).
+    this.queues.clear();
+
     // AC: @agent-dispatch-engine ac-11 - Send graceful cancel to all active invocations
     for (const controller of this.invocationAbortControllers) {
       controller.abort();
     }
 
-    // Wait for all running invocations to complete (or abort)
+    // Wait for all running invocations to complete (or abort).
+    // Safe as a single pass: queues are already cleared above, and
+    // _spawnInvocation guards with !this.running, so no new promises
+    // can be added to runningInvocations during this await.
     if (this.runningInvocations.size > 0) {
       await Promise.allSettled(Array.from(this.runningInvocations));
     }
 
-    this.queues.clear();
     this.activeCount.clear();
     this.recentEvents.clear();
     this.invocationAbortControllers.clear();
@@ -1770,6 +1779,10 @@ export class DispatchEngine {
    * AC: @agent-dispatch-engine ac-9, ac-10, ac-11, ac-12
    */
   private async _spawnInvocation(agent: LoadedAgent, entry: QueueEntry): Promise<boolean> {
+    // Bail out during shutdown — don't provision workspaces or add to
+    // runningInvocations for invocations that will never complete.
+    if (!this.running) return false;
+
     const agentId = agent.id;
     const inFlightKey = `${agentId}:${entry.change.taskRef}`;
     this.inFlightTaskKeys.add(inFlightKey);
