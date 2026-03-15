@@ -98084,7 +98084,7 @@
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-tanstack-setup"
@@ -98189,6 +98189,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-15T07:30:16.851Z
+  closed_reason: "Merged in PR #871. Migrated 6 core pages (observations, workflows, settings, agents,
+    sessions/[id], sessions) from manual fetch/$state/$effect/WS patterns to TanStack Query. All 8
+    @ui-data-freshness ACs covered with test annotations. Eliminated fetchTasks({limit:1000})
+    pattern from 3 pages via server-resolved task_title. Centralized WS invalidation replaces 4
+    per-page WS subscriptions. 5433 tests pass."
 - _ulid: 01KKQRK4GRF9PBJVJG4S3BDE33
   slugs:
     - task-migrate-sidebar
