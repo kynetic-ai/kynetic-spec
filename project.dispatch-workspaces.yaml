@@ -4373,16 +4373,21 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-data-layer-skill-01kkqrk0
         branch_mode: branch
         branch_ref: dispatch/task/task-ui-data-layer-skill/01kkqrk0
-        head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-        last_seen_at: 2026-03-15T03:34:35.208Z
-      reviewer: null
+        head: b4a8f6362f176f915761ce49f05a4cb757f58ab0
+        last_seen_at: 2026-03-15T03:47:52.536Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-data-layer-skill-01kkqrk0-review
+        branch_mode: detached
+        branch_ref: null
+        head: b4a8f6362f176f915761ce49f05a4cb757f58ab0
+        last_seen_at: 2026-03-15T03:47:52.536Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -4416,21 +4421,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T03:47:33.871Z
+      updated_at: 2026-03-15T03:47:52.536Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T03:47:33.871Z
+      updated_at: 2026-03-15T03:47:52.536Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T03:47:33.871Z
+      updated_at: 2026-03-15T03:47:52.536Z
     timestamps:
       created_at: 2026-03-15T03:34:35.208Z
-      updated_at: 2026-03-15T03:47:33.871Z
-      last_reconciled_at: 2026-03-15T03:47:33.871Z
+      updated_at: 2026-03-15T03:47:52.536Z
+      last_reconciled_at: 2026-03-15T03:47:52.536Z
       last_active_at: 2026-03-15T03:34:35.741Z
       closed_at: null
