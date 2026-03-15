@@ -17747,10 +17747,6 @@ plans:
           responses) and via a dedicated lightweight index endpoint for arbitrary
           resolution.
 
-          Currently, API responses return bare ref strings (e.g., "@task-slug",
-          "@01KKFY93") forcing every consumer to independently fetch full entity
-          lists to build title lookup maps. With 1000+ entities, this pattern
-          breaks and wastes bandwidth.
         traits:
           - trait-api-endpoint
         acceptance_criteria:
@@ -17808,11 +17804,6 @@ plans:
           data. This covers both HTTP endpoints for summary statistics and WebSocket
           broadcast events that include enough context for in-place UI updates.
 
-          Currently, the dashboard fetches 1000 tasks to count by status, the
-          validate page fetches all items and tasks to compute coverage stats, and
-          inbox/triage pages independently fetch all inbox items and triage records
-          to perform the same client-side join. Every WebSocket event triggers a
-          full list re-fetch because broadcasts lack display context.
         traits:
           - trait-api-endpoint
           - trait-websocket-protocol
@@ -17870,10 +17861,6 @@ plans:
           gracefully when the daemon is unreachable and supports read-only static
           mode for exported snapshots.
 
-          Currently, each page independently fetches data on mount, discards it
-          on navigation, and re-fetches the same data on return. WebSocket events
-          trigger full list re-fetches. The sidebar polls 4 endpoints every 30
-          seconds. There is no shared state between pages.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -18363,3 +18350,7 @@ plans:
         author: "@claude"
         content: "Restructure: 6 specs → 3 behavioral specs, move implementation details to task acceptance
           gates"
+      - _ulid: 01KKQQ7SNWDNVQ8YX7E3R99WH1
+        created_at: 2026-03-15T03:04:36.284Z
+        author: "@claude"
+        content: Remove 'currently' sections from spec descriptions — stale after implementation
