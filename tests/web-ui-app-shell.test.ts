@@ -163,19 +163,19 @@ describe("grouped sidebar navigation (@ui-app-shell ac-1)", () => {
 
 // AC: @ui-app-shell ac-2
 describe("badge counts on nav items (@ui-app-shell ac-2)", () => {
-  it("fetches inbox count for badge display", () => {
+  it("fetches inbox count via TanStack Query", () => {
     expect(sidebarSrc).toContain("fetchInbox");
-    expect(sidebarSrc).toContain("inboxCount");
+    expect(sidebarSrc).toContain("inboxCountQuery");
   });
 
-  it("fetches unresolved observations count", () => {
+  it("fetches unresolved observations count via TanStack Query", () => {
     expect(sidebarSrc).toContain("fetchObservations");
-    expect(sidebarSrc).toContain("unresolvedObservationsCount");
+    expect(sidebarSrc).toContain("observationsCountQuery");
   });
 
-  it("fetches pending review tasks count", () => {
+  it("fetches pending review tasks count via TanStack Query", () => {
     expect(sidebarSrc).toContain("fetchTasks");
-    expect(sidebarSrc).toContain("pendingReviewCount");
+    expect(sidebarSrc).toContain("pendingReviewCountQuery");
     expect(sidebarSrc).toContain("pending_review");
   });
 
@@ -203,13 +203,19 @@ describe("badge counts on nav items (@ui-app-shell ac-2)", () => {
     expect(sidebarSrc).toContain('data-testid="badge-');
   });
 
-  it("refreshes counts periodically (every 30s)", () => {
-    expect(sidebarSrc).toContain("setInterval(loadCounts, 30000)");
+  // AC: @ui-data-freshness ac-4 — No polling; uses TanStack Query with WS invalidation
+  it("does not use polling intervals", () => {
+    expect(sidebarSrc).not.toContain("setInterval");
+    expect(sidebarSrc).not.toContain("clearInterval");
   });
 
-  it("refreshes counts on project change", () => {
-    expect(sidebarSrc).toContain("getProjectVersion");
-    expect(sidebarSrc).toContain("loadCounts");
+  it("uses createQuery for data fetching", () => {
+    expect(sidebarSrc).toContain("createQuery");
+    expect(sidebarSrc).toContain("queryKeys");
+  });
+
+  it("gates queries on project initialization", () => {
+    expect(sidebarSrc).toContain("isProjectInitialized()");
   });
 });
 

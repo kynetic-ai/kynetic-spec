@@ -32,6 +32,13 @@ export const queryKeys = {
 		lists: () => [...queryKeys.observations.all, 'list'] as const,
 		list: (filters?: Record<string, unknown>) =>
 			[...queryKeys.observations.lists(), filters] as const,
+		count: (filters?: Record<string, unknown>) =>
+			[...queryKeys.observations.all, 'count', filters] as const,
+	},
+
+	sessionContext: {
+		all: ['sessionContext'] as const,
+		current: () => [...queryKeys.sessionContext.all, 'current'] as const,
 	},
 
 	validation: {
