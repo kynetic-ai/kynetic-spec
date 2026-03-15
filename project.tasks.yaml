@@ -98946,6 +98946,18 @@
         - tests/agent-dispatch-engine.test.ts — fleet cleanup tests at line 1798+, polling loop at
         line 1858
       supersedes: null
+    - _ulid: 01KKSMQ6V8KA599RA0NG5HEN7X
+      created_at: 2026-03-15T20:59:04.425Z
+      author: "@claude"
+      content: "Revised approach from the original plan: instead of a while loop in stop() (which risks
+        hanging indefinitely if an invocation never resolves), we clear queues BEFORE awaiting
+        runningInvocations. This way completion handlers that call _drainQueues find nothing to
+        spawn — no second-generation invocations can be added. Combined with a !this.running guard
+        at the top of _spawnInvocation, a single-pass if/allSettled is sufficient. Fixed 7 tests
+        that called _spawnInvocation directly without starting the engine (set running=true via type
+        assertion). Also increased fleet cleanup polling timeout from 500ms to 2000ms for git
+        worktree operation latency."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKS7BD3N7DCQNS5GW8ZZSAZW
