@@ -99583,6 +99583,15 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #885. Rewrote session detail page for WebSocket-first live viewing:
+    replaced HTTP polling with WS event handlers (message_start/progress/complete,
+    thinking_start/progress/complete, tool_call_start/complete) via incrementalBlockUpdate(); added
+    on-demand tool output via TanStack Query (fetchSessionEventDetail with expand-gated enabled);
+    HTTP catch-up on load and after WS reconnection; stripToolOutput for consistent on-demand UX.
+    All 10 task-gated ACs covered (ac-message-start, ac-message-progress, ac-message-complete,
+    ac-tool-call-start, ac-tool-call-complete, ac-tool-output-on-demand, ac-thinking-blocks,
+    ac-live-session-catchup, ac-no-http-polling, ac-reconnect-recovery) plus ac-historical-playback.
+    253 test files pass (5526 tests), E2E smoke test updated for new WS protocol."
   depends_on:
     - "@task-session-event-accumulator"
     - "@task-session-event-detail-endpoint"
@@ -99603,6 +99612,7 @@
   created_at: 2026-03-15T19:50:42.003Z
   started_at: 2026-03-15T23:25:23.533Z
   submitted_at: 2026-03-15T23:30:24.946Z
+  completed_at: 2026-03-15T23:43:02.282Z
   notes:
     - _ulid: 01KKSSVYYQY7W9ARNA6SWYAEH2
       created_at: 2026-03-15T22:29:03.064Z
@@ -99667,16 +99677,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T23:43:02.282Z
-  closed_reason: "Merged in PR #885. Rewrote session detail page for WebSocket-first live viewing:
-    replaced HTTP polling with WS event handlers (message_start/progress/complete,
-    thinking_start/progress/complete, tool_call_start/complete) via incrementalBlockUpdate(); added
-    on-demand tool output via TanStack Query (fetchSessionEventDetail with expand-gated enabled);
-    HTTP catch-up on load and after WS reconnection; stripToolOutput for consistent on-demand UX.
-    All 10 task-gated ACs covered (ac-message-start, ac-message-progress, ac-message-complete,
-    ac-tool-call-start, ac-tool-call-complete, ac-tool-output-on-demand, ac-thinking-blocks,
-    ac-live-session-catchup, ac-no-http-polling, ac-reconnect-recovery) plus ac-historical-playback.
-    253 test files pass (5526 tests), E2E smoke test updated for new WS protocol."
 - _ulid: 01KKSGT15XQJERS3XGKWKEZ1EZ
   slugs:
     - task-cli-watch-ws-events
@@ -99963,6 +99963,37 @@
 
         - ac-metadata-only is satisfied — list still doesn't scan events.jsonl (reads persisted
         value instead)
+      supersedes: null
+    - _ulid: 01KKSYEGWHKGA86F87YV9G55S6
+      created_at: 2026-03-15T23:49:05.553Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+
+        1. SessionMetadataSchema (types.ts): Added optional event_count, iteration_count,
+        tasks_completed fields
+
+        2. closeSession() (store.ts): Now computes stats from events.jsonl via
+        countEventLines/countIterations/countTaskCompletions and persists them in session.yaml
+        before writing
+
+        3. getSessionMetadataOnly() (store.ts): Reads persisted stats from metadata (event_count ??
+        0) instead of hardcoding 0
+
+        4. SessionSummaryCache (cache.ts): Added in-memory liveEventCounts Map with
+        incrementEventCount(), discardLiveCounter(), getLiveEventCount() methods. The summaries()
+        method overlays live counts on active sessions.
+
+        5. InvocationOptions (invocation.ts): Added onEventAppended callback, called after each
+        event write
+
+        6. Dispatch engine (dispatch.ts): Wires onEventAppended to cache.incrementEventCount(), and
+        discards live counter + invalidates cache entry after invocation completes
+
+
+        Tests: 36 tests in session-summary-cache.test.ts covering all ACs (ac-persist-on-close,
+        ac-live-counter, plus existing ACs). Full suite passes (5482 tests).
       supersedes: null
   todos: []
   automation: eligible
