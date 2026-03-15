@@ -4383,6 +4383,11 @@ features:
             given: sessions exist
             when: --count flag is provided
             then: output is limited to the specified number of sessions
+          - id: ac-recompute-stats
+            given: Sessions exist with missing or stale summary stats in their metadata
+            when: kspec session log recompute-stats [--session <id>] is run
+            then: Summary stats are recomputed from event data and persisted to session metadata. Reports how
+              many sessions were updated. Skips active sessions.
         depends_on: []
         implements: []
         relates_to: []

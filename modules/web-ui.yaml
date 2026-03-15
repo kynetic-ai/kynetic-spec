@@ -628,6 +628,16 @@ features:
             then: |
               Stats are recomputed on each request since events are still
               being appended. Completed/failed/abandoned sessions use cached stats.
+          - id: ac-persist-on-close
+            given: A session reaches a terminal status (completed, failed, abandoned, timed_out, stalled)
+            when: The session is closed
+            then: event_count, iteration_count, and tasks_completed are persisted in the session metadata.
+              Subsequent list requests read these values without scanning event data.
+          - id: ac-live-counter
+            given: A session is active and events are being recorded
+            when: The session list includes this active session
+            then: event_count reflects the current number of events recorded so far, without requiring a full
+              scan of stored event data.
         depends_on: []
         implements: []
         relates_to: []
