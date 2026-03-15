@@ -99578,7 +99578,7 @@
   spec_ref: "@ws-session-event-streaming"
   plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on:
     - "@task-session-event-accumulator"
@@ -99649,6 +99649,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-15T22:37:05.522Z
+  closed_reason: "Merged in PR #883. Updated CLI dispatch watch to use typed WebSocket event stream
+    (message_progress/complete, thinking_progress/complete, tool_call_start/complete) instead of
+    legacy agent_text_chunk. Added --verbose flag for thinking block display with ANSI dim
+    rendering, tool input summary on tool_call_start, and 9 new tests covering all
+    ac-cli-watch-parity behaviors. All quality gates passed."
 - _ulid: 01KKSGT1SGVWACS5ET75Q87NPX
   slugs:
     - task-update-session-stream-spec-cleanup
