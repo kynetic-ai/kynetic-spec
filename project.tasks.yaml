@@ -98868,7 +98868,7 @@
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -98960,6 +98960,15 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-15T21:02:26.228Z
+  submission_linkage:
+    branch: dispatch/task/task-fix-dispatch-engine-stop-await/01kks7am
+    commit: eb224322abe7db2840eb0143173c0b3727f641a8
+    remote: null
+    remote_url: null
+    upstream_ref: null
+    review_url: null
+    captured_at: 2026-03-15T21:02:25.430Z
 - _ulid: 01KKS7BD3N7DCQNS5GW8ZZSAZW
   slugs:
     - task-yaml-seed-session-tests
