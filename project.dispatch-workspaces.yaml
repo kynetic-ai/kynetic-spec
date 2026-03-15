@@ -5348,3 +5348,79 @@ workspaces:
       last_reconciled_at: 2026-03-15T13:56:08.002Z
       last_active_at: 2026-03-15T13:56:03.934Z
       closed_at: null
+  - workspace_id: dispatch-workspace-01KKRTSS1EDEF6G8FE6CB16PB5
+    task_ref: "@01KKRTSS1EDEF6G8FE6CB16PB5"
+    task_slug: add-unfiltered-total-to-sessions-api-response-to-eliminate-extra-limit-0-request
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    resolved_base_branch: main
+    base_branch_point: 8045b69abbe62718c1abb64a7b00e7dc460b571d
+    canonical_branch: dispatch/task/add-unfiltered-total-to-sessions-api-response-to-eliminate-extra-limit-0-request/01kkrtss
+    canonical_branch_head: 8045b69abbe62718c1abb64a7b00e7dc460b571d
+    branch_provenance:
+      ownership: dispatcher-managed
+      source: provisioned
+      remote_ref: null
+      adopted_from: null
+      adopted_at: null
+      rehydrated: null
+    lifecycle_state: ready
+    active_role: null
+    worktrees:
+      worker:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-unfiltered-total-to-sessions-api-response-to-eliminate-extra-limit-0-request-01kkrtss
+        branch_mode: branch
+        branch_ref: dispatch/task/add-unfiltered-total-to-sessions-api-response-to-eliminate-extra-limit-0-request/01kkrtss
+        head: 8045b69abbe62718c1abb64a7b00e7dc460b571d
+        last_seen_at: 2026-03-15T13:56:10.359Z
+      reviewer: null
+    bootstrap:
+      status: not_run
+      configHash: null
+      canonicalBranchHead: null
+      lastRunAt: null
+      invalidationReasons: []
+      steps: []
+      failureMessage: null
+      lastRole: null
+      roleStates:
+        worker:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+        reviewer:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+    integration:
+      status: pending
+      target_branch: main
+      target_commit: 8045b69abbe62718c1abb64a7b00e7dc460b571d
+      publication_mode: pull_request
+      outcome: pull_request
+      detail: null
+      updated_at: 2026-03-15T13:56:10.359Z
+    health:
+      status: healthy
+      summary: Workspace record matches current git branch and worktree state.
+      issues: []
+      updated_at: 2026-03-15T13:56:10.359Z
+    cleanup:
+      status: not_scheduled
+      eligible: false
+      reason: null
+      detail: null
+      updated_at: 2026-03-15T13:56:10.359Z
+    timestamps:
+      created_at: 2026-03-15T13:56:10.359Z
+      updated_at: 2026-03-15T13:56:10.359Z
+      last_reconciled_at: 2026-03-15T13:56:10.359Z
+      last_active_at: null
+      closed_at: null
