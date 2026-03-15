@@ -97571,6 +97571,17 @@
     - task-ref-index-endpoint
   title: Implement ref index endpoint
   type: task
+  description: >-
+    Add GET /api/refs/index returning a lightweight ref-to-display-metadata map. Include tasks,
+    items, and traits. Return title, type, and status for each. Key by both ULID and slug.
+
+
+    Omit descriptions, notes, ACs, tags, and other heavyweight fields. Must respect X-Kspec-Dir
+    project scoping. Add response type to @kynetic-ai/shared package.
+
+
+    Acceptance gates (from @ui-api-ref-resolution): Returns map with title, type, status per ref
+    (ac-4), payload significantly smaller than full entity lists (ac-5).
   spec_ref: "@ui-api-ref-resolution"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
@@ -97585,17 +97596,6 @@
   created_at: 2026-03-15T03:28:14.027Z
   notes: []
   todos: []
-  description: >-
-    Add GET /api/refs/index returning a lightweight ref-to-display-metadata map. Include tasks,
-    items, and traits. Return title, type, and status for each. Key by both ULID and slug.
-
-
-    Omit descriptions, notes, ACs, tags, and other heavyweight fields. Must respect X-Kspec-Dir
-    project scoping. Add response type to @kynetic-ai/shared package.
-
-
-    Acceptance gates (from @ui-api-ref-resolution): Returns map with title, type, status per ref
-    (ac-4), payload significantly smaller than full entity lists (ac-5).
 - _ulid: 01KKQRK2R219TBGWE4XQEBJNEC
   slugs:
     - task-server-aggregation
@@ -97615,6 +97615,28 @@
   created_at: 2026-03-15T03:28:14.594Z
   notes: []
   todos: []
+  description: >-
+    Three independent server-side endpoints. Can be implemented incrementally.
+
+
+    1. Task status summary: Endpoint returning counts by status with dependency-aware ready vs
+    blocked distinction.
+
+
+    2. Validation/alignment stats: Extend validation/alignment response to include entity counts, AC
+    counts, and orphan counts as pre-computed fields. Eliminates the fragile pattern of parsing
+    free-text warning detail strings with regex for AC coverage calculation.
+
+
+    3. Inbox/triage merge: Merged endpoint returning inbox items with inline triage status.
+
+
+    Add response types to @kynetic-ai/shared package. Each must respect X-Kspec-Dir project scoping.
+
+
+    Acceptance gates (from @ui-api-aggregation): Status counts with dependency-aware distinctions
+    (ac-1), coverage stats as pre-computed fields (ac-2), inbox items with inline triage status
+    (ac-3).
 - _ulid: 01KKQRK3BM6MARTC3MSE6YV4VY
   slugs:
     - task-ws-enrichment
