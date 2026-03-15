@@ -5036,8 +5036,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: integrating
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-complex-pages-01kkqrk5
@@ -5087,22 +5087,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T07:58:44.219Z
+      updated_at: 2026-03-15T07:59:36.338Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T07:58:44.219Z
+      updated_at: 2026-03-15T07:59:36.338Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T07:58:44.219Z
+      updated_at: 2026-03-15T07:59:36.338Z
     timestamps:
       created_at: 2026-03-15T06:47:12.066Z
-      updated_at: 2026-03-15T07:58:44.219Z
-      last_reconciled_at: 2026-03-15T07:58:44.219Z
+      updated_at: 2026-03-15T07:59:36.338Z
+      last_reconciled_at: 2026-03-15T07:59:36.338Z
       last_active_at: 2026-03-15T07:58:27.085Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKQRK5PM5VTQBBBMT11PMCE6
