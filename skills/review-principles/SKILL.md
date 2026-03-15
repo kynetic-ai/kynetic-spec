@@ -10,6 +10,8 @@ Foundational code review principles that apply to all review contexts — PR rev
 
 **Treat every justification as something to verify.** When you see comments like "pre-existing issue," "out of scope," "will be addressed in follow-up," "this is the standard pattern," or "this matches the reference implementation" — these are claims that require evidence, not conclusions you should accept. Check each one.
 
+**A clean review is a valid outcome.** Not every PR has bugs. If you investigate thoroughly and find nothing wrong, that is an acceptable result — document what you checked and approve. Do not invent findings to justify the time spent reviewing. The goal is accuracy, not a finding quota.
+
 ## Cognitive Biases to Counteract
 
 ### Satisfaction of Search
@@ -26,40 +28,80 @@ On the Nth review in a session, reviewers default to approval. If you notice you
 
 ## Structured Exploration Requirements
 
-Before rendering any verdict, the reviewer MUST:
+Before rendering any verdict, the reviewer MUST complete these steps. The first group is deterministic — run these as tool calls, not as reasoning:
 
+### Deterministic Checks (run these, don't reason about them)
+```bash
+# 1. Resolve spec and ACs — do not manually read YAML
+kspec item get @spec-ref                    # Own ACs + inherited trait ACs
+kspec validate                              # Trait coverage warnings
+
+# 2. Run the full test suite locally
+npm test                                    # Or pnpm turbo test — verify actual output
+
+# 3. Verify HEAD is current with base branch
+git log --oneline main..HEAD               # What commits are in this PR
+git merge-base --is-ancestor main HEAD     # Is it up to date
+
+# 4. Check for AC annotations in test files
+grep -rn "// AC: @spec-ref" tests/ packages/   # Own AC coverage
+grep -rn "// AC: @trait-" tests/ packages/     # Trait AC coverage
+```
+
+### Analytical Checks (these require reading and judgment)
 1. **Read the diff** — every changed file, not just the ones that look interesting
 2. **Read surrounding context** — unchanged files that interact with changed code
-3. **Run the test suite** — not just check if CI passed, but run locally and verify output
-4. **Check spec alignment** — read the spec ACs and verify each one is satisfied by the code, not just by tests
-5. **Verify at least one claim** — pick one claim from the PR description or commit message and independently verify it is true
+3. **Verify spec alignment** — for each AC, confirm the code satisfies the behavior described, not just that a test exists
+4. **Verify at least one worker claim** — pick one claim from the PR description and independently confirm it is true
+5. **Search across categories** — correctness, edge cases, error handling, security, test quality, integration
 
-If the review produces zero findings, the reviewer must explicitly document what was investigated and why no issues were found. "No issues found" without evidence of investigation is not an acceptable review.
+### Review Evidence Log
+Every review must include a brief log of what was checked. If the review produces zero findings, this log is what proves the review was real:
+```
+Files read: <list>
+Commands run: <list>
+Claims verified: <which claim, how verified>
+Categories searched: <which categories, any findings>
+```
+"No issues found" without this evidence is not an acceptable review.
+
+## Finding Validation Process
+
+Before emitting any finding, apply the **claim-disprove-emit** cycle:
+
+1. **State the claim.** What exactly is wrong? Be specific: file, line, behavior.
+2. **Try to disprove it.** Look for evidence that the code is actually correct — maybe there's a guard clause you missed, a test that covers the case, or a spec decision that justifies the approach. Check the code, the tests, and the spec.
+3. **If disproved, drop it.** Do not emit findings you've already refuted. A dropped candidate is not a failure — it's the process working correctly.
+4. **If still valid, assess severity and confidence.** Only findings that survive disproval get emitted.
+
+This prevents hallucinated findings. The adversarial stance is toward the code, not toward producing a finding count.
 
 ## Finding Quality Standards
 
-### Every Finding Must Have Evidence
+### Every Finding Must Be Structured
 A finding without evidence is an opinion. Every finding must include:
-- **File and line** — exactly where the issue is
-- **What is wrong** — concrete description of the problem
-- **Why it matters** — what breaks, what is incorrect, what guarantee is lost
-- **How to verify** — how the worker can confirm the issue exists
+- **Path and line** — exactly where the issue is
+- **Claim** — what is wrong, stated precisely
+- **Impact** — what breaks, what guarantee is lost, what spec/AC is violated
+- **Evidence** — what you observed that proves the claim (test output, code path, spec text)
+- **Counterevidence checked** — what you looked at to try to disprove the finding (and why it didn't disprove it)
+- **Confidence** — high (verified empirically), medium (strong code-reading evidence), low (plausible but unverified)
+
+Only high and medium confidence findings should be MUST-FIX. Low confidence findings should be SHOULD-FIX at most, with a note explaining what additional verification would resolve the uncertainty.
 
 ### Severity Must Be Justified
-- **MUST-FIX**: Correctness, security, data integrity, spec violation, build breakage, coverage loss. The code is wrong or incomplete.
+- **MUST-FIX**: Correctness, security, data integrity, spec violation, build breakage, coverage loss. The code is wrong or incomplete. Requires high or medium confidence.
 - **SHOULD-FIX**: Likely correctness issue, missing boundary case, contract mismatch without immediate critical impact, debt that will cause real problems. The code works but is fragile or incomplete.
 - **SUGGESTION**: Pure style, naming, comment formatting. Zero correctness implications. **If you are unsure whether something is a SUGGESTION or SHOULD-FIX, it is SHOULD-FIX.**
 
 ### Categories to Cover
-A review should address multiple concern areas, not just one. If the review only finds style issues but no logic/correctness issues, that's a signal the review was shallow. The reviewer should explicitly search across:
+A review should search across multiple concern areas. If a category was searched and nothing was found, note it briefly — this proves the search happened:
 - **Correctness** — does the code do what the spec says?
 - **Edge cases** — what happens with empty input, null, boundary values, concurrent access?
 - **Error handling** — are error paths tested? Do errors propagate correctly?
 - **Security** — input validation, authorization checks, data exposure
 - **Test quality** — do tests prove the ACs or just touch code paths?
 - **Integration** — does this change interact correctly with existing code?
-
-If a category was searched and nothing was found, note it: "Searched for error handling gaps — none found." This proves the search happened.
 
 ## Spec-Driven Review
 

@@ -13,7 +13,7 @@ Review a PR linked to a kspec task, post findings as inline comments, and merge 
 
 **Reproduce, don't just read.** Run the tests. Run the code paths. If the spec says "exit 0 on success," run the CLI command and verify the exit code. If the spec says "output valid JSON with --json flag," run the command with --json and parse the output. Read the diff, but also verify behavior empirically.
 
-**Multiple review rounds are expected.** A PR that passes on the first review should be the exception, not the norm. If you find zero issues, you probably aren't looking hard enough. Re-read the spec, re-read the code, and look again.
+**Multiple review rounds are expected.** A PR that passes on the first review is fine if the investigation was thorough — but do not rush to approve. If you haven't completed the deterministic checks and analytical review described in review-principles, you haven't finished reviewing.
 
 **Simple-looking PRs are where bugs hide.** A refactor, a rename, a test rewrite, or a "mechanical" change can silently change semantics. Refactors can break `Result<T>` error handling chains. Test rewrites can reduce coverage while appearing to improve it. Give these the same scrutiny as new feature code — do not fast-track based on perceived simplicity.
 
