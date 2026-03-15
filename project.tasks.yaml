@@ -97878,7 +97878,7 @@
   spec_ref: "@ui-api-aggregation"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -97893,11 +97893,11 @@
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/main
     review_url: null
-    captured_at: 2026-03-15T05:24:09.096Z
+    captured_at: 2026-03-15T05:54:08.927Z
   session_id: 01KKR0HF59QNB7DEVQ4DJDSE3S
   created_at: 2026-03-15T03:28:14.594Z
   started_at: 2026-03-15T05:54:05.452Z
-  submitted_at: 2026-03-15T05:24:09.839Z
+  submitted_at: 2026-03-15T05:54:09.674Z
   notes:
     - _ulid: 01KKQYPAXH32XQBBQ2S470QEYQ
       created_at: 2026-03-15T05:14:52.721Z
