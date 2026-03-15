@@ -97743,23 +97743,6 @@
     - task-migrate-complex-pages
   title: Migrate complex pages to TanStack Query (tasks, board, specs, plans, validate)
   type: task
-  spec_ref: "@ui-data-freshness"
-  plan_ref: "@plan-ui-data-layer-rework"
-  origin: derived
-  status: pending
-  blocked_by: []
-  depends_on:
-    - "@task-tanstack-setup"
-    - "@task-server-resolve"
-    - "@task-server-aggregation"
-  context: []
-  priority: 2
-  tags:
-    - web-ui
-  vcs_refs: []
-  created_at: 2026-03-15T03:28:17.016Z
-  notes: []
-  todos: []
   description: >-
     Pages with complex data needs — aggregation, filtering, multiple related queries, or detail
     panels.
@@ -97777,6 +97760,23 @@
     Acceptance gates (from @ui-data-freshness): Each page renders from cache on revisit (ac-1),
     board agent status served from cache not 5s polling (ac-4), WS events invalidate not full
     re-fetch (ac-3), project switch clears all cache (ac-5).
+  spec_ref: "@ui-data-freshness"
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-tanstack-setup"
+    - "@task-server-resolve"
+    - "@task-server-aggregation"
+  context: []
+  priority: 2
+  tags:
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:17.016Z
+  notes: []
+  todos: []
 - _ulid: 01KKQRK5PM5VTQBBBMT11PMCE6
   slugs:
     - task-migrate-inbox-triage
@@ -97799,6 +97799,24 @@
   created_at: 2026-03-15T03:28:17.620Z
   notes: []
   todos: []
+  description: >-
+    These pages share the same client-side join pattern (inbox + triage records) and should be
+    migrated together using the merged endpoint.
+
+
+    Pages: inbox/+page.svelte (use merged inbox endpoint, remove separate fetchTriageRecords call
+    and O(n*m) client join, triage evidence_refs should use ref index for title resolution),
+    triage/+page.svelte (same merged endpoint, card-by-card navigation stays as-is but data source
+    changes).
+
+
+    Both pages subscribe to inbox:updates and triage:updates — after migration, WS events invalidate
+    the merged inbox query instead of triggering full reload.
+
+
+    Acceptance gates (from @ui-data-freshness + @ui-api-aggregation): Inbox items include inline
+    triage status, no client join (aggregation ac-3), WS events invalidate not full re-fetch
+    (freshness ac-3).
 - _ulid: 01KKQRK68XM841PBFQFNPT33VZ
   slugs:
     - task-cleanup-legacy-fetches
