@@ -97461,7 +97461,7 @@
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -97474,6 +97474,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-15T03:35:04.813Z
+  session_id: 01KKQRYPXH2GC132Q5XDJQRRZJ
 - _ulid: 01KKQRK0ZZZ1QMCNHDHK3969AF
   slugs:
     - task-tanstack-setup
