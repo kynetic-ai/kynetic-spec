@@ -5923,7 +5923,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6f2b02df930df09e597db225bd51605b7f2a58e7
     canonical_branch: dispatch/task/task-session-stream-ws-ui/01kksgt0
-    canonical_branch_head: e32ab60ab668f37d42c79d07fb7271dc2d9d664d
+    canonical_branch_head: 041e67af48467f290728ddb10a0057c8ed7a352e
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -5931,16 +5931,21 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-stream-ws-ui-01kksgt0
         branch_mode: branch
         branch_ref: dispatch/task/task-session-stream-ws-ui/01kksgt0
-        head: e32ab60ab668f37d42c79d07fb7271dc2d9d664d
-        last_seen_at: 2026-03-15T23:25:03.255Z
-      reviewer: null
+        head: 041e67af48467f290728ddb10a0057c8ed7a352e
+        last_seen_at: 2026-03-15T23:30:32.693Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-stream-ws-ui-01kksgt0-review
+        branch_mode: detached
+        branch_ref: null
+        head: 041e67af48467f290728ddb10a0057c8ed7a352e
+        last_seen_at: 2026-03-15T23:30:32.693Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -5976,22 +5981,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T23:25:03.255Z
+      updated_at: 2026-03-15T23:30:32.693Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T23:25:04.715Z
+      updated_at: 2026-03-15T23:30:32.693Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T23:25:03.255Z
+      updated_at: 2026-03-15T23:30:32.693Z
     timestamps:
       created_at: 2026-03-15T22:25:24.728Z
-      updated_at: 2026-03-15T23:25:04.715Z
-      last_reconciled_at: 2026-03-15T23:25:04.715Z
+      updated_at: 2026-03-15T23:30:32.693Z
+      last_reconciled_at: 2026-03-15T23:30:32.693Z
       last_active_at: 2026-03-15T23:25:04.715Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKS7BD3N7DCQNS5GW8ZZSAZW
