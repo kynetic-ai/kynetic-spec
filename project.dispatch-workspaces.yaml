@@ -5761,7 +5761,7 @@ workspaces:
       adopted_at: null
       rehydrated: null
     lifecycle_state: integrating
-    active_role: reviewer
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-event-detail-endpoint-01kksgsz
@@ -5808,21 +5808,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T21:45:01.452Z
+      updated_at: 2026-03-15T21:51:25.760Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T21:45:01.452Z
+      updated_at: 2026-03-15T21:51:25.760Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T21:45:01.452Z
+      updated_at: 2026-03-15T21:51:25.760Z
     timestamps:
       created_at: 2026-03-15T21:31:43.360Z
-      updated_at: 2026-03-15T21:45:01.452Z
-      last_reconciled_at: 2026-03-15T21:45:01.452Z
+      updated_at: 2026-03-15T21:51:25.760Z
+      last_reconciled_at: 2026-03-15T21:51:25.760Z
       last_active_at: 2026-03-15T21:44:10.521Z
       closed_at: null
