@@ -98286,6 +98286,10 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #873. Migrated 5 complex pages (tasks, board, specs, plans, validate)
+    to TanStack Query. Board 5s polling replaced with cache + WS invalidation. Validate page uses
+    server-side aggregation. Plans filter converted to URL params. All 8 @ui-data-freshness ACs
+    covered with test annotations. All CI checks pass."
   depends_on:
     - "@task-tanstack-setup"
     - "@task-server-resolve"
@@ -98307,6 +98311,7 @@
   created_at: 2026-03-15T03:28:17.016Z
   started_at: 2026-03-15T07:58:14.080Z
   submitted_at: 2026-03-15T07:58:18.936Z
+  completed_at: 2026-03-15T08:10:12.305Z
   notes:
     - _ulid: 01KKR49JKM770NHB86FC8352D9
       created_at: 2026-03-15T06:52:46.068Z
@@ -98377,11 +98382,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T08:10:12.305Z
-  closed_reason: "Merged in PR #873. Migrated 5 complex pages (tasks, board, specs, plans, validate)
-    to TanStack Query. Board 5s polling replaced with cache + WS invalidation. Validate page uses
-    server-side aggregation. Plans filter converted to URL params. All 8 @ui-data-freshness ACs
-    covered with test annotations. All CI checks pass."
 - _ulid: 01KKQRK5PM5VTQBBBMT11PMCE6
   slugs:
     - task-migrate-inbox-triage
@@ -98471,7 +98471,7 @@
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-migrate-core-pages"
@@ -98487,3 +98487,5 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-15T08:11:22.117Z
+  session_id: 01KKR8R07JGA7GPAGJ76C81D5W
