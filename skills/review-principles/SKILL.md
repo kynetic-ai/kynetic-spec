@@ -31,6 +31,7 @@ On the Nth review in a session, reviewers default to approval. If you notice you
 Before rendering any verdict, the reviewer MUST complete these steps. The first group is deterministic — run these as tool calls, not as reasoning:
 
 ### Deterministic Checks (run these, don't reason about them)
+These are examples — use whatever tools work best (grep, git grep, Grep tool, ripgrep, etc.):
 ```bash
 # 1. Resolve spec and ACs — do not manually read YAML
 kspec item get @spec-ref                    # Own ACs + inherited trait ACs
@@ -43,7 +44,7 @@ npm test                                    # Or pnpm turbo test — verify actu
 git log --oneline main..HEAD               # What commits are in this PR
 git merge-base --is-ancestor main HEAD     # Is it up to date
 
-# 4. Check for AC annotations in test files
+# 4. Check for AC annotations in test files (use any search tool)
 grep -rn "// AC: @spec-ref" tests/ packages/   # Own AC coverage
 grep -rn "// AC: @trait-" tests/ packages/     # Trait AC coverage
 ```
