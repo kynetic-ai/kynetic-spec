@@ -98983,7 +98983,7 @@
   spec_ref: "@session-start-inbox-triage"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -99099,6 +99099,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-15T22:39:59.261Z
+  session_id: 01KKSTFJA9FJEKS3QJ0J3JKTZY
 - _ulid: 01KKS7CE6Y05AHZCR8JED24M3V
   slugs:
     - task-validate-default-base-branch
@@ -99580,6 +99582,11 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #883. Updated CLI dispatch watch to use typed WebSocket event stream
+    (message_progress/complete, thinking_progress/complete, tool_call_start/complete) instead of
+    legacy agent_text_chunk. Added --verbose flag for thinking block display with ANSI dim
+    rendering, tool input summary on tool_call_start, and 9 new tests covering all
+    ac-cli-watch-parity behaviors. All quality gates passed."
   depends_on:
     - "@task-session-event-accumulator"
   context: []
@@ -99599,6 +99606,7 @@
   created_at: 2026-03-15T19:50:42.621Z
   started_at: 2026-03-15T22:12:57.017Z
   submitted_at: 2026-03-15T22:24:53.708Z
+  completed_at: 2026-03-15T22:37:05.522Z
   notes:
     - _ulid: 01KKSSKEGAW24S9CJ4H4ND20XZ
       created_at: 2026-03-15T22:24:24.075Z
@@ -99649,12 +99657,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T22:37:05.522Z
-  closed_reason: "Merged in PR #883. Updated CLI dispatch watch to use typed WebSocket event stream
-    (message_progress/complete, thinking_progress/complete, tool_call_start/complete) instead of
-    legacy agent_text_chunk. Added --verbose flag for thinking block display with ANSI dim
-    rendering, tool input summary on tool_call_start, and 9 new tests covering all
-    ac-cli-watch-parity behaviors. All quality gates passed."
 - _ulid: 01KKSGT1SGVWACS5ET75Q87NPX
   slugs:
     - task-update-session-stream-spec-cleanup
