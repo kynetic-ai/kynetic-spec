@@ -80,7 +80,7 @@ function fixtureTasks() {
 			}
 		],
 		total: 5,
-		limit: 1000,
+		limit: 50,
 		offset: 0
 	};
 }
@@ -123,7 +123,7 @@ function fixtureAgentStatus() {
  * Intercepts browser-side fetches to localhost:3456 and fulfills with fixture data.
  */
 async function interceptDashboardAPIs(page: import('@playwright/test').Page) {
-	await page.route('**/api/tasks?*', (route) => {
+	await page.route(/\/api\/tasks(\?|$)/, (route) => {
 		route.fulfill({
 			status: 200,
 			contentType: 'application/json',
@@ -184,7 +184,7 @@ test.describe('Dashboard Overview', () => {
 
 		test('shows active fleet when agents are running', async ({ page }) => {
 			// Override agent status to show active invocations
-			await page.route('**/api/tasks?*', (route) => {
+			await page.route(/\/api\/tasks(\?|$)/, (route) => {
 				route.fulfill({
 					status: 200,
 					contentType: 'application/json',
@@ -393,11 +393,11 @@ test.describe('Dashboard Overview', () => {
 
 		test('shows no-attention empty state when all counts are zero', async ({ page }) => {
 			// Override all APIs to return zero counts
-			await page.route('**/api/tasks?*', (route) => {
+			await page.route(/\/api\/tasks(\?|$)/, (route) => {
 				route.fulfill({
 					status: 200,
 					contentType: 'application/json',
-					body: JSON.stringify({ items: [], total: 0, limit: 1000, offset: 0 })
+					body: JSON.stringify({ items: [], total: 0, limit: 50, offset: 0 })
 				});
 			});
 			await page.route('**/api/inbox?*', (route) => {
@@ -501,7 +501,7 @@ test.describe('Dashboard Overview', () => {
 	// These verify the daemon API returns expected fixture data, independent of UI rendering.
 	test.describe('API Contract Verification', () => {
 		test('daemon returns task counts matching fixture data', async ({ daemon }) => {
-			const response = await fetch(`${daemon.baseUrl}/api/tasks?limit=1000`);
+			const response = await fetch(`${daemon.baseUrl}/api/tasks`);
 			expect(response.ok).toBe(true);
 			const data = await response.json();
 

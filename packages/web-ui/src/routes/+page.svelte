@@ -19,8 +19,7 @@
 		fetchObservations,
 		fetchValidation,
 		fetchAgentStatus,
-		type AgentDispatchStatus,
-		type ActiveInvocation
+		type AgentDispatchStatus
 	} from '$lib/api';
 	import {
 		createSessionState,
@@ -62,9 +61,11 @@
 	// AC: @ui-data-freshness ac-1 — createQuery caches results; revisits render from cache
 	// AC: @ui-data-freshness ac-2 — Concurrent uses share the same in-flight request
 	// AC: @ui-data-freshness ac-6 — fetchTasks/fetchInbox/etc. already dispatch to static mode
+	// Fetch all tasks for status counting. Uses default server pagination (returns all).
+	// TODO: Replace with server-side task summary/counts aggregation endpoint.
 	const tasksQuery = createQuery(() => ({
-		queryKey: queryKeys.tasks.list({ limit: 1000 }),
-		queryFn: () => fetchTasks({ limit: 1000 }),
+		queryKey: queryKeys.tasks.list({}),
+		queryFn: () => fetchTasks(),
 		enabled: isProjectInitialized(),
 	}));
 
@@ -148,20 +149,6 @@
 		}
 
 		return newCounts;
-	});
-
-	let taskTitles = $derived.by(() => {
-		const tasks = tasksQuery.data?.items ?? [];
-		const titles: Record<string, string> = {};
-		for (const task of tasks) {
-			if (task.slugs?.length) {
-				for (const slug of task.slugs) {
-					titles[`@${slug}`] = task.title;
-				}
-			}
-			titles[`@${task._ulid}`] = task.title;
-		}
-		return titles;
 	});
 
 	let agentStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
@@ -428,7 +415,7 @@
 					</div>
 					<div class="flex gap-3 overflow-x-auto pb-2" data-testid="active-fleet-row">
 						{#each agentStatus?.active_invocations ?? [] as invocation (invocation.session_id)}
-							{@const title = invocation.task_ref ? taskTitles[invocation.task_ref] : undefined}
+							{@const title = invocation.task_title ?? undefined}
 							{@const sessionState = sessionStates[invocation.session_id]}
 							{@const lines = sessionState?.lines ?? []}
 							<div

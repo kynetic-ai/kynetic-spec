@@ -71,21 +71,6 @@
 		)
 	);
 
-	// AC: @ui-task-board ac-4 — Lookup map: task_ref (@ULID or @slug) → title
-	let taskTitles = $derived(
-		Object.fromEntries(
-			tasks.flatMap((t) => {
-				const entries: [string, string][] = [
-					[`@${t._ulid}`, t.title]
-				];
-				for (const slug of t.slugs) {
-					entries.push([`@${slug}`, t.title]);
-				}
-				return entries;
-			})
-		)
-	);
-
 	// Detail modal state
 	let modalOpen = $state(false);
 	let selectedTaskRef = $state<string | null>(null);
@@ -226,7 +211,7 @@
 	{:else}
 		<!-- AC: @ui-task-board ac-4 — Active Fleet Row -->
 		<div class="px-6 pt-4">
-			<ActiveFleetRow status={agentStatus} outputLines={agentOutputLines} {taskTitles} />
+			<ActiveFleetRow status={agentStatus} outputLines={agentOutputLines} />
 		</div>
 
 		<!-- AC: @ui-task-board ac-1 — Kanban Columns -->

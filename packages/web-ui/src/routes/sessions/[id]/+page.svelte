@@ -44,7 +44,6 @@
 	let streamingText = $state('');
 	let isLive = $derived(sessionQuery.data?.status === 'active');
 	let lastSeq = $state(-1);
-	let refreshTimer: ReturnType<typeof setInterval> | undefined;
 
 	// Server-resolved task_title eliminates need for separate task title lookup
 	let taskTitle = $derived<string | null>(sessionQuery.data?.task_title ?? null);
@@ -109,6 +108,9 @@
 	}
 
 	// AC: @ui-session-stream ac-2 — WebSocket handler for live text chunks
+	// AC: @ui-data-freshness ac-4 — Event-driven refresh replaces timer-based polling
+	let refreshDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+
 	function handleAgentEvent(event: BroadcastEvent) {
 		// Uses extracted utility for session-filtered text accumulation
 		streamingText = accumulateStreamingText(streamingText, event, sessionId);
@@ -116,8 +118,18 @@
 		if (event.event === 'agent_invocation') {
 			const data = event.data as { session_id?: string; status?: string };
 			if (data.session_id === sessionId) {
-				// Refresh on invocation state changes
+				// Refresh immediately on invocation state changes
 				refreshEvents();
+			}
+		} else if (event.event === 'agent_text_chunk' && isLive) {
+			// Debounced refresh for structured events during live streaming.
+			// Text chunks indicate the session is active — refresh structured events
+			// periodically rather than on every chunk to avoid excessive requests.
+			if (!refreshDebounceTimer) {
+				refreshDebounceTimer = setTimeout(() => {
+					refreshDebounceTimer = undefined;
+					refreshEvents();
+				}, 3000);
 			}
 		}
 	}
@@ -136,15 +148,6 @@
 			subscribe(['agents']);
 			on('agents', handleAgentEvent);
 		}
-
-		// AC: @ui-session-stream ac-2 — Periodic refresh (every 3s for live sessions)
-		if (!isStaticMode()) {
-			refreshTimer = setInterval(() => {
-				if (isLive) {
-					refreshEvents();
-				}
-			}, 3000);
-		}
 	});
 
 	onDestroy(() => {
@@ -152,7 +155,7 @@
 			off('agents', handleAgentEvent);
 			unsubscribe(['agents']);
 		}
-		if (refreshTimer) clearInterval(refreshTimer);
+		if (refreshDebounceTimer) clearTimeout(refreshDebounceTimer);
 	});
 </script>
 

@@ -210,7 +210,7 @@ test.describe('Interactive Triage UI', () => {
   // AC: @interactive-triage-ui ac-7
   test('action filter narrows cards by triage action and resets card index', async ({ page, request, daemon }) => {
     let targetAction = 'defer';
-    const triageListResponse = await request.get(`${daemon.baseUrl}/api/triage?limit=1000`);
+    const triageListResponse = await request.get(`${daemon.baseUrl}/api/triage`);
     expect(triageListResponse.ok()).toBe(true);
     const triageListBody = await triageListResponse.json();
     const existingAction = triageListBody.items.find((item: { action?: string | null }) => item.action)?.action;
