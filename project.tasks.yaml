@@ -98765,27 +98765,49 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Document all supported fields for custom tasks in plan documents
+- _ulid: 01KKS72EKJS2R9FM38A7YB5W5C
+  slugs:
+    - task-plan-custom-task-docs
+  title: Document all supported fields for custom tasks in plan documents
+  type: task
   description: The plan skill template (templates/skills/plan/SKILL.md) only shows title, slug,
     priority, and tags for custom tasks in the Tasks section example. But PlanTaskSchema also
     supports description, spec_ref, and depends_on — all of which work in the code. Update the skill
     doc to show the full set of available fields with examples.
-  type: task
   spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - docs
+    - cli
+  vcs_refs: []
+  created_at: 2026-03-15T17:00:32.754Z
+  notes: []
+  todos: []
+- title: Fix dispatch engine stop() not awaiting second-generation invocations
+  type: task
+  spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
   priority: 2
   slugs:
-    - task-plan-custom-task-docs
+    - task-fix-dispatch-engine-stop-await
   tags:
-    - docs
-    - cli
+    - bug
+    - dispatch
+    - test-flakiness
   depends_on: []
-  _ulid: 01KKS72EKJS2R9FM38A7YB5W5C
+  automation: eligible
+  _ulid: 01KKS7AM5ABY67ESJAGBXAQT71
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-15T17:00:32.754Z
+  created_at: 2026-03-15T17:05:00.586Z
   notes: []
   todos: []
