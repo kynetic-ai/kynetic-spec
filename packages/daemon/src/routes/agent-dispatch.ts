@@ -24,7 +24,7 @@ import { Elysia, t } from 'elysia';
 import { DispatchEngine } from '../../agent-runtime/dispatch.js';
 import type { TaskStateChange, TaskStatus, InvocationEvent } from '../../agent-runtime/dispatch.js';
 import { DEFAULT_KSPEC_CLI_PATH } from '../../agent-runtime/invocation.js';
-import { initContext, loadMetaContext, resolveProjectRoots } from '../../parser/index.js';
+import { initContext, loadMetaContext, loadAllTasks, loadAllItems, ReferenceIndex, resolveProjectRoots } from '../../parser/index.js';
 import { getCompletedSessionCountsByAgent } from '../../sessions/store.js';
 import type { PubSubManager } from '../websocket/pubsub.js';
 
@@ -279,19 +279,24 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
     })
 
     // AC: @daemon-agent-dispatch ac-5 - Public status endpoint
+    // AC: @ui-api-ref-resolution ac-1 - Include task_title for active invocations
     .get('/status', async ({ projectContext }) => {
       const projectDir = projectContext.path;
       const engineStatus = engines.get(projectDir)?.getStatus();
 
       let agentDefinitions: Array<{ id: string; name: string; adapter: string; completed_sessions: number }> = [];
       let completedCounts: Record<string, number> = {};
+      let refIndex: ReferenceIndex | null = null;
       try {
         const ctx = await initContext(projectDir);
-        const [meta, counts] = await Promise.all([
+        const [meta, counts, tasks, items] = await Promise.all([
           loadMetaContext(ctx),
           getCompletedSessionCountsByAgent(ctx.specDir),
+          loadAllTasks(ctx),
+          loadAllItems(ctx),
         ]);
         completedCounts = counts;
+        refIndex = new ReferenceIndex(tasks, items);
         agentDefinitions = meta.agents.map((a) => ({
           id: a.id,
           name: a.name,
@@ -304,12 +309,22 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
 
       return {
         dispatch_enabled: engineStatus?.running ?? false,
-        active_invocations: engineStatus?.invocations?.map((inv) => ({
-          session_id: inv.sessionId,
-          agent_id: inv.agentId,
-          task_ref: inv.taskRef ?? null,
-          elapsed_ms: inv.elapsedMs,
-        })) ?? [],
+        active_invocations: engineStatus?.invocations?.map((inv) => {
+          let task_title: string | null = null;
+          if (inv.taskRef && refIndex) {
+            const result = refIndex.resolve(inv.taskRef);
+            if (result.ok) {
+              task_title = (result.item as { title?: string }).title ?? null;
+            }
+          }
+          return {
+            session_id: inv.sessionId,
+            agent_id: inv.agentId,
+            task_ref: inv.taskRef ?? null,
+            task_title,
+            elapsed_ms: inv.elapsedMs,
+          };
+        }) ?? [],
         queue_depth: engineStatus?.queuedInvocations ?? 0,
         agent_definitions: agentDefinitions,
       };

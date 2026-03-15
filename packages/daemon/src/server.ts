@@ -31,6 +31,7 @@ import { createAgentDispatchRoutes, getDispatchEngine, stopAllEngines } from './
 import { createSessionRoutes } from './routes/sessions';
 import { createPlansRoutes } from './routes/plans';
 import { createAggregationRoutes } from './routes/aggregation';
+import { createRefsRoutes } from './routes/refs';
 import { ShadowSyncScheduler } from './shadow-sync';
 import { SessionSyncScheduler } from './session-sync';
 import { join } from 'path';
@@ -326,6 +327,9 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @ui-api-aggregation ac-1, ac-2, ac-3 - Aggregation endpoints
     .use(createAggregationRoutes())
+
+    // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
+    .use(createRefsRoutes())
 
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
     // AC: @daemon-agent-dispatch ac-3, ac-4 - Pass pubsub for WebSocket broadcast on invocation events

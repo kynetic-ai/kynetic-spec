@@ -25,6 +25,9 @@ import { Elysia, t } from 'elysia';
 import { ulid } from 'ulidx';
 import {
   initContext,
+  loadAllTasks,
+  loadAllItems,
+  ReferenceIndex,
   loadTriageRecords,
   saveTriageRecord,
   findTriageRecordByRef,
@@ -34,6 +37,7 @@ import {
   getAuthor,
   type LoadedTriageRecord,
 } from '../../parser/index.js';
+import { resolveRefEntries } from './ref-resolution.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import { normalizeRefInput } from '../../schema/index.js';
 import type { TriageAction } from '../../schema/index.js';
@@ -87,8 +91,27 @@ export function createTriageRoutes(options: TriageRouteOptions) {
 
         const paginated = filtered.slice(offset, offset + limit);
 
+        // AC: @ui-api-ref-resolution ac-2 - Resolve evidence_refs titles
+        const hasEvidenceRefs = paginated.some((r) => r.evidence_refs?.length > 0);
+        let refIndex: ReferenceIndex | null = null;
+        if (hasEvidenceRefs) {
+          try {
+            const tasks = await loadAllTasks(ctx);
+            const items = await loadAllItems(ctx);
+            refIndex = new ReferenceIndex(tasks, items);
+          } catch {
+            // Non-critical
+          }
+        }
+        const enriched = refIndex
+          ? paginated.map((r) => ({
+              ...r,
+              resolved_evidence_refs: resolveRefEntries(refIndex!, r.evidence_refs),
+            }))
+          : paginated;
+
         return {
-          items: paginated,
+          items: enriched,
           total,
           offset,
           limit,
@@ -223,6 +246,7 @@ export function createTriageRoutes(options: TriageRouteOptions) {
     )
 
     // GET single triage record
+    // AC: @ui-api-ref-resolution ac-2 - Resolve evidence_refs titles
     .get(
       '/:ref',
       async ({ params, error: errorResponse, projectContext }) => {
@@ -238,6 +262,21 @@ export function createTriageRoutes(options: TriageRouteOptions) {
             message: `Triage record reference "${params.ref}" not found`,
             suggestion: 'Use kspec triage list or GET /api/triage to find valid triage record references',
           });
+        }
+
+        // AC: @ui-api-ref-resolution ac-2 - Resolve evidence_refs
+        if (record.evidence_refs?.length > 0) {
+          try {
+            const tasks = await loadAllTasks(ctx);
+            const items = await loadAllItems(ctx);
+            const refIndex = new ReferenceIndex(tasks, items);
+            return {
+              ...record,
+              resolved_evidence_refs: resolveRefEntries(refIndex, record.evidence_refs),
+            };
+          } catch {
+            // Non-critical
+          }
         }
 
         return record;

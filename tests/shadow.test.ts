@@ -158,6 +158,16 @@ describe('Shadow Branch', () => {
       const msg = generateCommitMessage('custom-op', 'ref');
       expect(msg).toBe('custom-op @ref');
     });
+
+    it('produces single @ for dispatch-workspace-registry with bare ref', () => {
+      const msg = generateCommitMessage('dispatch-workspace-registry', '01KKNRC5KR8DTW5JVETBX9CMS8');
+      expect(msg).toBe('dispatch-workspace-registry @01KKNRC5KR8DTW5JVETBX9CMS8');
+    });
+
+    it('would double @@ if caller passes @-prefixed ref (callers must strip)', () => {
+      const msg = generateCommitMessage('dispatch-workspace-registry', '@01KKNRC5KR8DTW5JVETBX9CMS8');
+      expect(msg).toBe('dispatch-workspace-registry @@01KKNRC5KR8DTW5JVETBX9CMS8');
+    });
   });
 
   describe('ShadowError', () => {

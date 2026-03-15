@@ -20,7 +20,9 @@ Review a PR linked to a kspec task, post findings as inline comments, and merge 
 
 **Reproduce, don't just read.** Run the tests. Run the code paths. If the spec says "exit 0 on success," run the CLI command and verify the exit code. If the spec says "output valid JSON with --json flag," run the command with --json and parse the output. Read the diff, but also verify behavior empirically.
 
-**Multiple review rounds are expected.** A PR that passes on the first review should be the exception, not the norm. If you find zero issues, you probably aren't looking hard enough. Re-read the spec, re-read the code, and look again.
+**Multiple review rounds are expected.** A PR that passes on the first review is fine if the investigation was thorough — but do not rush to approve. If you haven't completed the deterministic checks and analytical review described in review-principles, you haven't finished reviewing.
+
+**Simple-looking PRs are where bugs hide.** A refactor, a rename, a test rewrite, or a "mechanical" change can silently change semantics. Refactors can break `Result<T>` error handling chains. Test rewrites can reduce coverage while appearing to improve it. Give these the same scrutiny as new feature code — do not fast-track based on perceived simplicity.
 
 ## Role Boundary
 
@@ -147,6 +149,15 @@ Any change to configuration files that affect build, typecheck, lint, or test ve
 - **Imports from unmerged branches** — if the PR depends on code that isn't on main yet, it must either rebase onto that branch or the dependency task must be set as a blocker. Do NOT merge code that will break on main
 - **Hardcoded absolute paths** — `/home/user/project/...` in any file is MUST-FIX
 - **Shadow branch corruption** — changes that could affect `.kspec/` state integrity, worktree isolation, or shadow branch metadata
+
+### Test Rewrites That Reduce Coverage
+- If original tests verified behavior X and the replacement no longer verifies X — even if it verifies Y better — that is MUST-FIX. Replacement tests must be a **superset** of original coverage, not a different set.
+- Watch for: test names that describe the old behavior but assertions that test something else, E2E CLI tests replaced with unit tests that skip the CLI layer, structural assertions replacing behavioral ones.
+- When tests are rewritten, explicitly compare what the originals tested vs what the replacements test. If any original guarantee is lost, flag it.
+
+### Refactors and Mechanical Changes
+- When code is refactored, verify the refactored version preserves all behavior of the original — not just the happy path. Check error handling, edge cases, and `Result<T>` chains.
+- When shared utilities are extracted or consolidated, verify all call sites still get the same behavior. Parameter ordering, default values, and error propagation can silently change during extraction.
 
 ### Severity Consistency
 - You MUST NOT downgrade a finding to a lower severity than what an identical finding received in a previous review on this repo

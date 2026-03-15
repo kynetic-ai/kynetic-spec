@@ -9,12 +9,14 @@ import {
   createTask,
   createTodo,
   deleteTask,
+  findReviewByRef,
   getAuthor,
   initContext,
   type LoadedSpecItem,
   type LoadedTask,
   loadAllItems,
   loadAllTasks,
+  loadReviewRecords,
   mutateTaskAtomically,
   ReferenceIndex,
   saveTask,
@@ -836,11 +838,34 @@ export function registerTaskCommands(program: Command): void {
           }
         }
 
+        // AC: @review-cli-task-linkage ac-1 — resolve active review for task
+        let activeReview: {
+          ref: string;
+          title: string;
+          lifecycle_state: string;
+          disposition: string;
+        } | null = null;
+        if (foundTask.review_ref) {
+          const reviews = await loadReviewRecords(ctx);
+          const { computeDisposition } = await import("../../parser/index.js");
+          const found = findReviewByRef(reviews, foundTask.review_ref);
+          if (found) {
+            activeReview = {
+              ref: `@${found.slugs[0] || found._ulid}`,
+              title: found.title,
+              lifecycle_state: found.lifecycle_state,
+              disposition: computeDisposition(found),
+            };
+          }
+        }
+
         // Build JSON output with inherited traits (AC: @trait-display ac-2)
         // Always include all notes in JSON output with superseded computed field
+        // AC: @review-cli-task-linkage ac-1 — include resolved review summary in JSON
         const jsonOutput = {
           ...foundTask,
           notes: annotateNotesWithSuperseded(foundTask.notes),
+          ...(activeReview && { active_review: activeReview }),
           ...(inheritedTraits.length > 0 && {
             inherited_traits: inheritedTraits.map(({ trait, acs }) => ({
               ref: `@${trait.slug}`,
@@ -851,7 +876,7 @@ export function registerTaskCommands(program: Command): void {
         };
 
         output(jsonOutput, () => {
-          formatTaskDetails(foundTask, index, { showAllNotes: options.all });
+          formatTaskDetails(foundTask, index, { showAllNotes: options.all, activeReview });
 
           // AC: @trait-display ac-3, ac-4, ac-5 - Show inherited AC per trait in labeled sections
           if (inheritedTraits.length > 0) {

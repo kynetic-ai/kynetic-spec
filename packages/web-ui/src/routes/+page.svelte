@@ -1,11 +1,17 @@
 <!--
   AC: @ui-dashboard-overview ac-1 — Dashboard home view
   Active work section, status summary, needs-attention aggregation.
+
+  AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
+  AC: @ui-data-freshness ac-3 — WebSocket events invalidate dashboard queries
+  AC: @ui-data-freshness ac-6 — Static mode compatibility via queryFn dispatch
+  AC: @ui-data-freshness ac-7 — Error state with retry for daemon-unreachable
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
+	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
 	import type { BroadcastEvent } from '@kynetic-ai/shared';
 	import {
 		fetchTasks,
@@ -25,9 +31,10 @@
 	import { Badge } from '$lib/components/ui/badge';
 	import { Skeleton } from '$lib/components/ui/skeleton';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
-	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
+	import { queryKeys } from '$lib/query/keys.js';
 	import AlertTriangle from '@lucide/svelte/icons/triangle-alert';
 	import InboxIcon from '@lucide/svelte/icons/inbox';
 	import Eye from '@lucide/svelte/icons/eye';
@@ -38,11 +45,9 @@
 	import ExternalLink from '@lucide/svelte/icons/external-link';
 	import TerminalIcon from '@lucide/svelte/icons/terminal';
 
-	// --- State ---
-	let loading = $state(true);
-	let error = $state<string | null>(null);
+	const queryClient = useQueryClient();
 
-	// Task counts
+	// --- Task counts type ---
 	interface TaskCounts {
 		ready: number;
 		in_progress: number;
@@ -53,35 +58,154 @@
 		cancelled: number;
 	}
 
-	let counts = $state<TaskCounts>({
-		ready: 0,
-		in_progress: 0,
-		needs_work: 0,
-		pending_review: 0,
-		blocked: 0,
-		completed: 0,
-		cancelled: 0
+	// --- Queries ---
+	// AC: @ui-data-freshness ac-1 — createQuery caches results; revisits render from cache
+	// AC: @ui-data-freshness ac-2 — Concurrent uses share the same in-flight request
+	// AC: @ui-data-freshness ac-6 — fetchTasks/fetchInbox/etc. already dispatch to static mode
+	const tasksQuery = createQuery(() => ({
+		queryKey: queryKeys.tasks.list({ limit: 1000 }),
+		queryFn: () => fetchTasks({ limit: 1000 }),
+		enabled: isProjectInitialized(),
+	}));
+
+	const inboxQuery = createQuery(() => ({
+		queryKey: queryKeys.inbox.count(),
+		queryFn: () => fetchInbox({ limit: 0 }),
+		enabled: isProjectInitialized(),
+	}));
+
+	const observationsQuery = createQuery(() => ({
+		queryKey: queryKeys.observations.list({ resolved: false }),
+		queryFn: () => fetchObservations({ resolved: false }),
+		enabled: isProjectInitialized(),
+	}));
+
+	const validationQuery = createQuery(() => ({
+		queryKey: queryKeys.validation.results(),
+		queryFn: () => fetchValidation(),
+		enabled: isProjectInitialized(),
+	}));
+
+	// AC: @ui-data-freshness ac-6 — Skip agent status in static mode
+	const agentStatusQuery = createQuery(() => ({
+		queryKey: queryKeys.agents.status(),
+		queryFn: () => fetchAgentStatus(),
+		enabled: isProjectInitialized() && !isStaticMode(),
+		staleTime: 10 * 1000,
+	}));
+
+	// --- Derived state from queries ---
+	let counts = $derived.by(() => {
+		const tasks = tasksQuery.data?.items ?? [];
+		const newCounts: TaskCounts = {
+			ready: 0,
+			in_progress: 0,
+			needs_work: 0,
+			pending_review: 0,
+			blocked: 0,
+			completed: 0,
+			cancelled: 0,
+		};
+
+		const completedRefs = new Set(
+			tasks
+				.filter((t) => t.status === 'completed')
+				.flatMap((t) => [t._ulid, ...(t.slugs || [])])
+		);
+
+		for (const task of tasks) {
+			switch (task.status) {
+				case 'completed':
+					newCounts.completed++;
+					break;
+				case 'in_progress':
+					newCounts.in_progress++;
+					break;
+				case 'pending_review':
+					newCounts.pending_review++;
+					break;
+				case 'blocked':
+					newCounts.blocked++;
+					break;
+				case 'needs_work':
+					newCounts.needs_work++;
+					break;
+				case 'cancelled':
+					newCounts.cancelled++;
+					break;
+				case 'pending': {
+					const deps = task.depends_on || [];
+					const hasUnmetDeps = deps.some((dep: string) => {
+						const ref = dep.startsWith('@') ? dep.slice(1) : dep;
+						return !completedRefs.has(ref);
+					});
+					if (!hasUnmetDeps) {
+						newCounts.ready++;
+					}
+					break;
+				}
+			}
+		}
+
+		return newCounts;
 	});
 
-	// Active work
-	let agentStatus = $state<AgentDispatchStatus | null>(null);
-	let taskTitles = $state<Record<string, string>>({});
+	let taskTitles = $derived.by(() => {
+		const tasks = tasksQuery.data?.items ?? [];
+		const titles: Record<string, string> = {};
+		for (const task of tasks) {
+			if (task.slugs?.length) {
+				for (const slug of task.slugs) {
+					titles[`@${slug}`] = task.title;
+				}
+			}
+			titles[`@${task._ulid}`] = task.title;
+		}
+		return titles;
+	});
 
-	// Buffered output state per agent session (same pattern as board)
-	let sessionStates = $state<Record<string, FleetSessionState>>({});
+	let agentStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
 
 	let hasActiveWork = $derived(
 		agentStatus?.dispatch_enabled && (agentStatus?.active_invocations?.length ?? 0) > 0
 	);
 
-	// Needs attention
-	let inboxUntriaged = $state(0);
-	let observationsUnresolved = $state(0);
-	let validationWarnings = $state(0);
-	let blockedTasks = $state(0);
+	// Buffered output state per agent session (same pattern as board)
+	let sessionStates = $state<Record<string, FleetSessionState>>({});
+
+	let inboxUntriaged = $derived(inboxQuery.data?.total ?? 0);
+	let observationsUnresolved = $derived(observationsQuery.data?.total ?? 0);
+
+	let validationWarnings = $derived.by(() => {
+		const v = validationQuery.data;
+		if (!v) return 0;
+		return (
+			v.refWarnings.length +
+			v.completenessWarnings.length +
+			v.schemaErrors.length +
+			v.refErrors.length
+		);
+	});
+
+	let blockedTasks = $derived(counts.blocked);
 
 	let totalAttention = $derived(
 		inboxUntriaged + observationsUnresolved + validationWarnings + blockedTasks
+	);
+
+	// AC: @ui-data-freshness ac-7 — Surface error with retry capability
+	let error = $derived.by(() => {
+		if (tasksQuery.error) return tasksQuery.error.message;
+		if (inboxQuery.error) return inboxQuery.error.message;
+		if (observationsQuery.error) return observationsQuery.error.message;
+		return null;
+	});
+
+	// AC: @ui-data-freshness ac-1 — Only show loading skeleton on initial fetch (no cache)
+	let loading = $derived(
+		tasksQuery.isLoading ||
+		inboxQuery.isLoading ||
+		observationsQuery.isLoading
 	);
 
 	// --- Status config with design system tokens ---
@@ -177,134 +301,22 @@
 		return `${secs}s`;
 	}
 
-	// --- Data loading ---
-	async function loadDashboard() {
-		loading = true;
-		error = null;
-
-		try {
-			const [tasksResponse, inboxResponse, obsResponse, validationResult, agentStatusResult] =
-				await Promise.all([
-					fetchTasks({ limit: 1000 }),
-					fetchInbox({ limit: 0 }),
-					fetchObservations({ resolved: false }),
-					fetchValidation().catch(() => null),
-					isStaticMode()
-						? Promise.resolve(null)
-						: fetchAgentStatus().catch(() => null)
-				]);
-
-			// Compute task counts
-			const tasks = tasksResponse.items;
-			const newCounts: TaskCounts = {
-				ready: 0,
-				in_progress: 0,
-				needs_work: 0,
-				pending_review: 0,
-				blocked: 0,
-				completed: 0,
-				cancelled: 0
-			};
-
-			const completedRefs = new Set(
-				tasks
-					.filter((t) => t.status === 'completed')
-					.flatMap((t) => [t._ulid, ...(t.slugs || [])])
-			);
-
-			const titles: Record<string, string> = {};
-
-			for (const task of tasks) {
-				// Build task titles for active fleet
-				if (task.slugs?.length) {
-					for (const slug of task.slugs) {
-						titles[`@${slug}`] = task.title;
-					}
-				}
-				titles[`@${task._ulid}`] = task.title;
-
-				switch (task.status) {
-					case 'completed':
-						newCounts.completed++;
-						break;
-					case 'in_progress':
-						newCounts.in_progress++;
-						break;
-					case 'pending_review':
-						newCounts.pending_review++;
-						break;
-					case 'blocked':
-						newCounts.blocked++;
-						break;
-					case 'needs_work':
-						newCounts.needs_work++;
-						break;
-					case 'cancelled':
-						newCounts.cancelled++;
-						break;
-					case 'pending': {
-						const deps = task.depends_on || [];
-						const hasUnmetDeps = deps.some((dep: string) => {
-							const ref = dep.startsWith('@') ? dep.slice(1) : dep;
-							return !completedRefs.has(ref);
-						});
-						if (hasUnmetDeps) {
-							// Pending tasks with unmet deps are not ready, but don't
-							// count as "blocked" (which is status=blocked only). They
-							// resolve naturally when predecessor tasks complete.
-						} else {
-							newCounts.ready++;
-						}
-						break;
-					}
-				}
-			}
-
-			counts = newCounts;
-			taskTitles = titles;
-			// Needs-attention blocked count only includes status=blocked tasks.
-			// Pending tasks with unmet deps are excluded — they resolve naturally
-			// when predecessor tasks complete, and don't require user intervention.
-			blockedTasks = newCounts.blocked;
-
-			// Inbox count
-			inboxUntriaged = inboxResponse.total;
-
-			// Observations: unresolved count
-			observationsUnresolved = obsResponse.total;
-
-			// Validation warnings
-			if (validationResult) {
-				validationWarnings =
-					validationResult.refWarnings.length +
-					validationResult.completenessWarnings.length +
-					validationResult.schemaErrors.length +
-					validationResult.refErrors.length;
-			}
-
-			// Agent status
-			if (agentStatusResult) {
-				agentStatus = agentStatusResult;
-			}
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load dashboard data';
-			console.error('Dashboard load error:', err);
-		} finally {
-			loading = false;
-		}
-	}
-
 	function navigateToTasks(status: string) {
 		goto(`${base}/tasks?status=${status}`);
 	}
 
-	// --- WebSocket real-time updates ---
-	function handleTaskUpdate() {
-		loadDashboard();
+	function retryAll() {
+		queryClient.invalidateQueries({ queryKey: queryKeys.tasks.all });
+		queryClient.invalidateQueries({ queryKey: queryKeys.inbox.all });
+		queryClient.invalidateQueries({ queryKey: queryKeys.observations.all });
+		queryClient.invalidateQueries({ queryKey: queryKeys.validation.all });
+		queryClient.invalidateQueries({ queryKey: queryKeys.agents.all });
 	}
 
+	// --- WebSocket handlers for agent text streaming ---
+	// Agent text chunks stay outside TanStack Query (streaming buffer, not request-response).
+	// Agent lifecycle events trigger an agent status query invalidation.
 	function handleAgentEvent(event: BroadcastEvent) {
-		// Buffer text chunks into complete lines
 		if (event.event === 'agent_text_chunk' && event.data?.session_id && event.data?.text) {
 			const sessionId = event.data.session_id as string;
 			const text = event.data.text as string;
@@ -313,46 +325,37 @@
 			return;
 		}
 
-		// Invocation lifecycle events — refresh status and clean up stale state
-		fetchAgentStatus()
-			.then((s) => {
-				agentStatus = s;
-				const activeSessions = new Set(
-					s.active_invocations.map((inv) => inv.session_id)
-				);
-				for (const sessionId of Object.keys(sessionStates)) {
-					if (!activeSessions.has(sessionId)) {
-						delete sessionStates[sessionId];
-					}
+		// Invocation lifecycle events — invalidate agent status query, clean up stale state
+		// AC: @ui-data-freshness ac-3 — WS event drives cache invalidation instead of full re-fetch
+		queryClient.invalidateQueries({ queryKey: queryKeys.agents.status() });
+
+		// Clean up stale session states based on refreshed agent status
+		if (agentStatusQuery.data) {
+			const activeSessions = new Set(
+				agentStatusQuery.data.active_invocations.map((inv) => inv.session_id)
+			);
+			for (const sessionId of Object.keys(sessionStates)) {
+				if (!activeSessions.has(sessionId)) {
+					delete sessionStates[sessionId];
 				}
-			})
-			.catch(() => {});
+			}
+		}
 	}
 
 	// --- Lifecycle ---
+	// Subscribe to agent events for text chunk streaming (tasks handled by centralized wiring).
 	onMount(() => {
 		if (!isStaticMode()) {
-			subscribe(['tasks', 'agents']);
-			on('tasks', handleTaskUpdate);
+			subscribe(['agents']);
 			on('agents', handleAgentEvent);
 		}
 	});
 
 	onDestroy(() => {
 		if (!isStaticMode()) {
-			off('tasks', handleTaskUpdate);
 			off('agents', handleAgentEvent);
-			unsubscribe(['tasks', 'agents']);
+			unsubscribe(['agents']);
 		}
-	});
-
-	// Load dashboard when project is ready and reload on project change.
-	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
-	$effect(() => {
-		const version = getProjectVersion();
-		const ready = isProjectInitialized();
-		if (!ready) return;
-		loadDashboard();
 	});
 </script>
 
@@ -360,7 +363,7 @@
 	<h1 class="text-2xl font-bold">Dashboard</h1>
 
 	{#if error}
-		<!-- Error state -->
+		<!-- AC: @ui-data-freshness ac-7 — Error state with retry -->
 		<div
 			class="flex items-center gap-3 rounded-lg border border-destructive/50 bg-destructive/10 p-4"
 			role="alert"
@@ -373,7 +376,7 @@
 			</div>
 			<button
 				class="ml-auto text-xs text-muted-foreground underline hover:text-foreground"
-				onclick={loadDashboard}
+				onclick={retryAll}
 			>
 				Retry
 			</button>
