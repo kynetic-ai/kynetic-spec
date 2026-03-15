@@ -5116,7 +5116,7 @@ workspaces:
       adopted_at: null
       rehydrated: null
     lifecycle_state: integrating
-    active_role: null
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-inbox-triage-01kkqrk5
@@ -5168,7 +5168,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T07:40:00.939Z
+      updated_at: 2026-03-15T07:40:01.461Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -5177,7 +5177,7 @@ workspaces:
       updated_at: 2026-03-15T07:40:00.939Z
     timestamps:
       created_at: 2026-03-15T07:17:31.113Z
-      updated_at: 2026-03-15T07:40:01.172Z
-      last_reconciled_at: 2026-03-15T07:40:00.939Z
-      last_active_at: 2026-03-15T07:17:32.138Z
+      updated_at: 2026-03-15T07:40:01.461Z
+      last_reconciled_at: 2026-03-15T07:40:01.461Z
+      last_active_at: 2026-03-15T07:40:01.461Z
       closed_at: null
