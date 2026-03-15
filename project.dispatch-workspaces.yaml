@@ -6089,8 +6089,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
-    active_role: reviewer
+    lifecycle_state: closing
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-default-base-branch-01kks7ce
@@ -6131,28 +6131,28 @@ workspaces:
           steps: []
           failureMessage: null
     integration:
-      status: pending
+      status: merged
       target_branch: main
       target_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
       publication_mode: pull_request
-      outcome: pull_request
-      detail: null
-      updated_at: 2026-03-15T23:11:01.478Z
+      outcome: merged
+      detail: integration:merged
+      updated_at: 2026-03-15T23:22:50.270Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T23:11:01.478Z
+      updated_at: 2026-03-15T23:22:50.270Z
     cleanup:
-      status: not_scheduled
-      eligible: false
-      reason: null
-      detail: null
-      updated_at: 2026-03-15T23:11:01.478Z
+      status: scheduled
+      eligible: true
+      reason: integrated-into-base-branch
+      detail: integrated-into-base-branch
+      updated_at: 2026-03-15T23:22:50.270Z
     timestamps:
       created_at: 2026-03-15T23:05:10.854Z
-      updated_at: 2026-03-15T23:11:01.478Z
-      last_reconciled_at: 2026-03-15T23:11:01.478Z
+      updated_at: 2026-03-15T23:22:50.270Z
+      last_reconciled_at: 2026-03-15T23:22:50.270Z
       last_active_at: 2026-03-15T23:10:36.799Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKSW2QFG4MDMQZ7CTZYRHG3D
