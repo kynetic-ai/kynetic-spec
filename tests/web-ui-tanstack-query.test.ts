@@ -635,6 +635,44 @@ describe("session detail page migration (@ui-data-freshness ac-1)", () => {
 
 // AC: @ui-data-freshness ac-1
 describe("sessions list page migration (@ui-data-freshness ac-1)", () => {
+  it("uses createInfiniteQuery for paginated session list", () => {
+    expect(sessionsSrc).toContain("createInfiniteQuery");
+    expect(sessionsSrc).toContain("@tanstack/svelte-query");
+  });
+
+  it("uses query key factory for sessions", () => {
+    expect(sessionsSrc).toContain("queryKeys.sessions.list");
+  });
+
+  it("uses createQuery for search results", () => {
+    expect(sessionsSrc).toContain("createQuery");
+    expect(sessionsSrc).toContain("fetchSessionSearch");
+  });
+
+  it("does not use manual $effect for data loading", () => {
+    expect(sessionsSrc).not.toContain("async function loadInitialPage");
+    expect(sessionsSrc).not.toContain("async function loadNextPage");
+  });
+
+  it("does not have manual WS subscription (handled by centralized wiring)", () => {
+    expect(sessionsSrc).not.toContain("subscribe(");
+    expect(sessionsSrc).not.toContain("unsubscribe(");
+    expect(sessionsSrc).not.toContain("on('agents'");
+    expect(sessionsSrc).not.toContain("off('agents'");
+  });
+
+  it("derives sessions from infinite query pages", () => {
+    expect(sessionsSrc).toContain("sessionsQuery.data?.pages.flatMap");
+  });
+
+  it("uses fetchNextPage for infinite scroll", () => {
+    expect(sessionsSrc).toContain("sessionsQuery.fetchNextPage()");
+  });
+
+  it("gates queries on project initialization", () => {
+    expect(sessionsSrc).toContain("enabled: isProjectInitialized()");
+  });
+
   it("does not fetch all tasks for title lookup", () => {
     expect(sessionsSrc).not.toContain("fetchTasks");
     expect(sessionsSrc).not.toContain("limit: 1000");
