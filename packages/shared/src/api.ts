@@ -582,3 +582,52 @@ export interface KspecSnapshot {
   alignment?: AlignmentResponse;
 }
 
+/**
+ * Task status counts with dependency-aware distinctions
+ * AC: @ui-api-aggregation ac-1
+ */
+export interface TaskStatusSummary {
+  counts: Record<string, number>;
+  ready: number;
+  blocked_by_dependencies: number;
+  total: number;
+}
+
+/**
+ * Extended validation/alignment stats with entity and AC counts
+ * AC: @ui-api-aggregation ac-2
+ */
+export interface ValidationAggregation {
+  stats: AlignmentStats;
+  warnings: AlignmentWarning[];
+  entity_counts: {
+    items: number;
+    tasks: number;
+    traits: number;
+  };
+  ac_counts: {
+    total: number;
+    covered: number;
+    uncovered: number;
+  };
+  orphan_count: number;
+  valid: boolean;
+  error_count: number;
+  warning_count: number;
+}
+
+/**
+ * Inbox item with inline triage status
+ * AC: @ui-api-aggregation ac-3
+ */
+export interface InboxItemWithTriage extends InboxItem {
+  triage?: {
+    _ulid: string;
+    status: TriageStatus;
+    action?: TriageAction;
+    reasoning?: string;
+    decided_by?: string;
+    acted_at?: string;
+    result_ref?: string;
+  };
+}

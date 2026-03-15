@@ -30,6 +30,7 @@ import { createTriageRoutes } from './routes/triage';
 import { createAgentDispatchRoutes, getDispatchEngine, stopAllEngines } from './routes/agent-dispatch';
 import { createSessionRoutes } from './routes/sessions';
 import { createPlansRoutes } from './routes/plans';
+import { createAggregationRoutes } from './routes/aggregation';
 import { createRefsRoutes } from './routes/refs';
 import { ShadowSyncScheduler } from './shadow-sync';
 import { SessionSyncScheduler } from './session-sync';
@@ -323,6 +324,9 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @ui-plans-view ac-1 - Plans data endpoints
     .use(createPlansRoutes())
+
+    // AC: @ui-api-aggregation ac-1, ac-2, ac-3 - Aggregation endpoints
+    .use(createAggregationRoutes())
 
     // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
     .use(createRefsRoutes())
