@@ -97879,12 +97879,30 @@
   tags:
     - daemon
   vcs_refs: []
+  session_id: 01KKQYF4PZEFFDVPQ1W283T12K
   created_at: 2026-03-15T03:28:14.594Z
-  notes: []
+  started_at: 2026-03-15T05:11:14.861Z
+  notes:
+    - _ulid: 01KKQYPAXH32XQBBQ2S470QEYQ
+      created_at: 2026-03-15T05:14:52.721Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Three server-side aggregation endpoints for the daemon API — task status
+        summary, validation/alignment stats extension, inbox/triage merge.
+
+        - Scope: New route file (aggregation.ts), shared types in @kynetic-ai/shared, E2E tests.
+        Task description says ac-4 (WebSocket enrichment) is OUT of scope for this task.
+
+        - Files: packages/daemon/src/routes/aggregation.ts (new), packages/shared/src/api.ts (add
+        types), packages/daemon/src/server.ts (register routes),
+        packages/web-ui/tests/e2e/api-aggregation.spec.ts (new tests)
+
+        - Verification: E2E tests + full test suite pass
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-15T05:11:14.861Z
-  session_id: 01KKQYF4PZEFFDVPQ1W283T12K
 - _ulid: 01KKQRK3BM6MARTC3MSE6YV4VY
   slugs:
     - task-ws-enrichment
