@@ -17950,6 +17950,18 @@ plans:
           the data fetching patterns and conventions for the web UI. This skill is
           the reference for all agents working on UI data layer tasks.
 
+          CRITICAL: The agent MUST research the actual TanStack Query v6 Svelte
+          documentation online before writing this skill. Do NOT fabricate API
+          signatures, configuration options, or patterns from memory. Fetch and
+          reference the real docs:
+          - https://tanstack.com/query/latest/docs/framework/svelte/overview
+          - https://tanstack.com/query/latest/docs/framework/svelte/migrate-from-v5-to-v6
+          - @tanstack/svelte-query npm package README
+          - Any Svelte 5 runes-specific examples in the official docs
+
+          Include URLs as references in the skill where patterns come from
+          external documentation.
+
           Content to cover:
           - TanStack Query v6 setup and conventions for this project
           - Query key naming conventions and factory patterns
@@ -18354,3 +18366,7 @@ plans:
         created_at: 2026-03-15T03:04:36.284Z
         author: "@claude"
         content: Remove 'currently' sections from spec descriptions — stale after implementation
+      - _ulid: 01KKQQABN6887N31R8X9QRZ545
+        created_at: 2026-03-15T03:06:00.230Z
+        author: "@claude"
+        content: Require skill task to research actual TanStack docs online, include references
