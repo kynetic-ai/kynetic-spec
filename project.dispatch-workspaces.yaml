@@ -6186,12 +6186,7 @@ workspaces:
         branch_ref: dispatch/task/fix-max-concurrent-violation-from-concurrent-drain-paths/01kksw2q
         head: e5cb370b87eed23af80ef73b4810965ec2cec206
         last_seen_at: 2026-03-15T23:24:24.540Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-max-concurrent-violation-from-concurrent-drain-paths-01kksw2q-review
-        branch_mode: detached
-        branch_ref: null
-        head: e5cb370b87eed23af80ef73b4810965ec2cec206
-        last_seen_at: 2026-03-15T23:24:24.540Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -6230,7 +6225,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T23:37:01.252Z
+      updated_at: 2026-03-15T23:37:06.352Z
     cleanup:
       status: scheduled
       eligible: true
@@ -6239,8 +6234,8 @@ workspaces:
       updated_at: 2026-03-15T23:37:01.252Z
     timestamps:
       created_at: 2026-03-15T23:10:59.903Z
-      updated_at: 2026-03-15T23:37:05.566Z
-      last_reconciled_at: 2026-03-15T23:37:05.566Z
+      updated_at: 2026-03-15T23:37:06.352Z
+      last_reconciled_at: 2026-03-15T23:37:06.352Z
       last_active_at: 2026-03-15T23:24:25.163Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKSRDQY1HZBENKBD06V6KDGW
