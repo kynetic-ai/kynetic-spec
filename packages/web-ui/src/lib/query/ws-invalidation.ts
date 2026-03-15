@@ -1,0 +1,117 @@
+/**
+ * WebSocket → Query Invalidation Wiring
+ *
+ * Maps WebSocket broadcast topics to TanStack Query key invalidations.
+ * Centralized handler that replaces per-page WS reload patterns.
+ *
+ * AC: @ui-data-freshness ac-3 — WS events invalidate cached data
+ * AC: @ui-data-freshness ac-4 — Event-driven, not polling
+ */
+
+import type { QueryClient } from '@tanstack/svelte-query';
+import type { BroadcastEvent } from '@kynetic-ai/shared';
+import { queryKeys } from './keys.js';
+import { on, off, subscribe, unsubscribe } from '$lib/stores/connection.svelte';
+
+/** Topics we subscribe to for cache invalidation */
+const INVALIDATION_TOPICS = ['tasks', 'items', 'inbox', 'agents', 'files'] as const;
+
+/**
+ * Map a broadcast event to the query keys that should be invalidated.
+ *
+ * Returns an array of query key prefixes to invalidate.
+ * Returning an empty array means no invalidation needed (e.g., text chunks).
+ */
+function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (readonly unknown[])[] {
+	switch (topic) {
+		case 'tasks':
+			// Task status changes affect task lists, summaries, and sidebar counts
+			return [queryKeys.tasks.all, queryKeys.validation.all];
+
+		case 'items':
+			// Spec item changes affect item lists and validation
+			return [queryKeys.items.all, queryKeys.validation.all];
+
+		case 'inbox':
+			// Inbox changes affect inbox list and count
+			return [queryKeys.inbox.all];
+
+		case 'agents':
+			// Agent text chunks are handled separately (streaming buffer).
+			// Only lifecycle events (started, completed, etc.) need invalidation.
+			if (event.event === 'agent_text_chunk') {
+				return [];
+			}
+			return [queryKeys.agents.all];
+
+		case 'files':
+			// File changes (e.g., settings save) affect multiple caches
+			return [
+				queryKeys.settings.all,
+				queryKeys.workflows.all,
+				queryKeys.validation.all,
+			];
+
+		default:
+			return [];
+	}
+}
+
+let queryClientRef: QueryClient | null = null;
+let handlersRegistered = false;
+
+function handleBroadcastEvent(topic: string) {
+	return (event: BroadcastEvent) => {
+		if (!queryClientRef) return;
+
+		const keys = getInvalidationKeys(topic, event);
+		for (const key of keys) {
+			queryClientRef.invalidateQueries({ queryKey: key as unknown[] });
+		}
+	};
+}
+
+// Store handler references for cleanup
+const topicHandlers = new Map<string, (event: BroadcastEvent) => void>();
+
+/**
+ * Wire up WebSocket events to TanStack Query invalidation.
+ * Call this once after the QueryClient and WebSocket connection are initialized.
+ *
+ * AC: @ui-data-freshness ac-3 — Broadcast events → query invalidation
+ */
+export function setupWsInvalidation(queryClient: QueryClient): void {
+	if (handlersRegistered) return;
+
+	queryClientRef = queryClient;
+
+	// Subscribe to all relevant topics
+	subscribe([...INVALIDATION_TOPICS]);
+
+	// Register handlers for each topic
+	for (const topic of INVALIDATION_TOPICS) {
+		const handler = handleBroadcastEvent(topic);
+		topicHandlers.set(topic, handler);
+		on(topic, handler);
+	}
+
+	handlersRegistered = true;
+}
+
+/**
+ * Tear down WebSocket invalidation wiring.
+ * Called on app teardown or when reinitializing.
+ */
+export function teardownWsInvalidation(): void {
+	if (!handlersRegistered) return;
+
+	for (const [topic, handler] of topicHandlers) {
+		off(topic, handler);
+	}
+	topicHandlers.clear();
+
+	unsubscribe([...INVALIDATION_TOPICS]);
+
+	queryClientRef = null;
+	handlersRegistered = false;
+}
