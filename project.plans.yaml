@@ -17728,15 +17728,22 @@ plans:
     slugs:
       - plan-ui-data-layer-rework
     title: UI Data Layer Rework
-    content: >
+    content: |+
       # UI Data Layer Rework
 
+      Rework the web UI → daemon data layer to eliminate per-page independent
+      fetching, client-side joins, and unbounded entity list fetches. The daemon
+      API resolves references and provides aggregations server-side. The web UI
+      maintains a shared reactive cache with WebSocket-driven invalidation.
+
+      **Technology choice:** @tanstack/svelte-query v6 — Svelte 5 runes-native
+      (~13 kB gzip), provides automatic caching, request deduplication,
+      stale-while-revalidate, and background revalidation. WebSocket events
+      integrate via queryClient.invalidateQueries() and setQueryData().
 
       ## Specs
 
-
       ```yaml
-
       - title: API Reference Resolution
         slug: ui-api-ref-resolution
         type: feature
@@ -17930,15 +17937,11 @@ plans:
               updates immediately without waiting for a broadcast.
       ```
 
-
       ## Tasks
-
 
       derive_from_specs: false
 
-
       ```yaml
-
       - title: Create UI data layer skill for Svelte + TanStack Query patterns
         slug: task-ui-data-layer-skill
         priority: 1
@@ -18265,80 +18268,6 @@ plans:
           - "@task-migrate-inbox-triage"
       ```
 
-
-      ## Implementation Notes
-
-
-      This plan addresses a systemic issue in the UI data layer where pages independently
-
-      fetch large entity lists for client-side reference resolution and counting. The
-
-      immediate trigger was fetchTasks({limit: 1000}) breaking at 1020 tasks, but the
-
-      underlying pattern affects sessions, items, and will compound as the UI grows.
-
-
-      **Technology choice: @tanstack/svelte-query v6**
-
-      TanStack Query v6 is Svelte 5 runes-native (~13 kB gzip) and provides automatic
-
-      caching, request deduplication, stale-while-revalidate, and background revalidation.
-
-      WebSocket events integrate via queryClient.invalidateQueries() and setQueryData().
-
-
-      **Convention to add after plan approval:**
-
-      "API list endpoints must use pagination; clients must not fetch unbounded entity
-
-      lists for derived data. Use server-resolved fields or the ref index for title
-
-      resolution. Use server-side aggregation for computed statistics."
-
-
-      **UI audit summary (14 unbounded fetches across 7 pages + sidebar):**
-
-      - 6 pages fetch all tasks (limit 1000) — 5 solely for title resolution
-
-      - 2 pages fetch all inbox + triage records (limit 1000) for O(n*m) client-side join
-
-      - 1 page fetches all items + tasks (limit 999) for counting with fragile regex parsing
-
-      - Every WebSocket event triggers full list re-fetch (11 instances)
-
-      - Sidebar polls 4 endpoints every 30s; board polls agent status every 5s
-
-      - No shared data layer — each page independently fetches and discards on navigation
-
-      - spec_ref shows as raw @slug on task list, board cards, and detail panels
-
-      - Triage evidence_refs display as raw joined strings without resolution
-
-
-      **Task dependency graph:**
-
-      - task-ui-data-layer-skill (no deps — first)
-
-      - task-tanstack-setup ← task-ui-data-layer-skill
-
-      - task-server-resolve (no deps, daemon-only, parallel with setup)
-
-      - task-ref-index-endpoint (no deps, daemon-only, parallel with setup)
-
-      - task-migrate-sidebar ← task-tanstack-setup
-
-      - task-migrate-core-pages ← task-tanstack-setup, task-server-resolve
-
-      - task-server-aggregation (no deps, daemon-only, parallel)
-
-      - task-ws-enrichment (no deps, daemon-only, parallel)
-
-      - task-migrate-complex-pages ← task-tanstack-setup, task-server-resolve,
-      task-server-aggregation
-
-      - task-migrate-inbox-triage ← task-tanstack-setup, task-server-aggregation
-
-      - task-cleanup-legacy-fetches ← all 4 migration tasks
     status: draft
     derived_tasks: []
     derived_specs: []
@@ -18370,3 +18299,8 @@ plans:
         created_at: 2026-03-15T03:06:00.230Z
         author: "@claude"
         content: Require skill task to research actual TanStack docs online, include references
+      - _ulid: 01KKQQKGBWS6P82BH8E2C5SN8R
+        created_at: 2026-03-15T03:10:59.964Z
+        author: "@claude"
+        content: Move context to top, remove implementation notes section, convention added to development
+          rules
