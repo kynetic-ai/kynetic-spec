@@ -5202,7 +5202,7 @@ workspaces:
       adopted_at: null
       rehydrated: null
     lifecycle_state: integrating
-    active_role: null
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cleanup-legacy-fetches-01kkqrk6
@@ -5254,7 +5254,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T08:28:48.702Z
+      updated_at: 2026-03-15T08:28:50.187Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -5263,7 +5263,7 @@ workspaces:
       updated_at: 2026-03-15T08:28:48.702Z
     timestamps:
       created_at: 2026-03-15T08:10:32.487Z
-      updated_at: 2026-03-15T08:28:49.830Z
-      last_reconciled_at: 2026-03-15T08:28:48.702Z
-      last_active_at: 2026-03-15T08:10:33.123Z
+      updated_at: 2026-03-15T08:28:50.187Z
+      last_reconciled_at: 2026-03-15T08:28:50.187Z
+      last_active_at: 2026-03-15T08:28:50.187Z
       closed_at: null
