@@ -98553,33 +98553,22 @@
   automation: eligible
 - _ulid: 01KKRTSS1EDEF6G8FE6CB16PB5
   slugs: []
-  title: "Fix TanStack Query migration regressions: SSR hydration stuck loading and unnecessary
-    limit=0 fetch"
+  title: Add unfiltered_total to sessions API response to eliminate extra limit=0 request
   type: task
   description: >-
-    Two regressions from the TanStack Query migration:
+    Sessions page makes a separate limit=0 API call to get the unfiltered total for the filter count
+    display ("12 of 731 sessions"). This defeats the purpose of infinite scroll pagination — the
+    server already has all sessions cached.
 
 
-    1. Hard refresh stuck on loading (agents, sessions, inbox, etc.): Pages migrated to TanStack
-    Query but missing +page.ts with ssr=false get stuck on loading skeleton after hard refresh, even
-    though API requests complete. Client-side navigation works fine. Root cause: SSR renders
-    children with ready=true (browser=false on server), but client hydration flips ready to false,
-    creating a hydration mismatch that breaks reactive state. Some pages already have ssr=false
-    (tasks, plans, workflows, settings) but others do not (agents, sessions, inbox, observations,
-    specs, triage, validate). Fix: add root +layout.ts with export const ssr = false since this is a
-    daemon-connected SPA.
+    Fix: Add unfiltered_total field to the paginated sessions API response
+    (sessionCache.getAll().length before filtering). Remove the separate unfilteredQuery from the UI
+    and read unfiltered_total from the infinite query first page response.
 
 
-    2. Sessions page makes unnecessary limit=0 API call: The unfilteredQuery fires on every page
-    load to get total count for the X of Y sessions filter display. But that display only renders
-    when filters are active (hasFilters). Fix: gate enabled on hasFilters.
-
-
-    Spec gap: @ui-data-freshness has no AC covering initial page load behavior on hard refresh. ac-1
-    covers cache-then-revalidate for revisits but not first load lifecycle. The
-    @session-filter-controls ac-filter-counts correctly specifies count shown when filters applied -
-    implementation just over-fetches.
-  spec_ref: "@ui-data-freshness"
+    Spec: @session-filter-controls ac-filter-counts (updated to specify unfiltered total comes from
+    same response)
+  spec_ref: "@session-filter-controls"
   meta_ref: null
   plan_ref: null
   status: pending
@@ -98618,7 +98607,10 @@
            - @ui-data-freshness: no AC for initial page load on hard refresh (only covers revisit caching)
       supersedes: null
   todos: []
-- title: Disable SSR globally to fix hard refresh stuck on loading
+- _ulid: 01KKRVZQR41NJXPFQMDTK23801
+  slugs: []
+  title: Disable SSR globally to fix hard refresh stuck on loading
+  type: task
   description: >-
     Hard refresh on pages without +page.ts ssr=false (agents, sessions, inbox, observations, specs,
     triage, validate) gets stuck on loading skeleton. API requests complete but the page never
@@ -98637,20 +98629,17 @@
 
 
     Spec: @ui-data-freshness ac-9
-  type: task
   spec_ref: "@ui-data-freshness"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - web-ui
     - bug
-  depends_on: []
-  _ulid: 01KKRVZQR41NJXPFQMDTK23801
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-15T13:46:49.476Z
   notes: []
