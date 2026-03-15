@@ -98084,7 +98084,7 @@
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-tanstack-setup"
@@ -98102,7 +98102,7 @@
     upstream_ref: refs/heads/main
     review_url: null
     captured_at: 2026-03-15T06:19:58.900Z
-  session_id: 01KKR0YWV7ED1SQ2CGF8K1KCHM
+  session_id: null
   created_at: 2026-03-15T03:28:15.834Z
   started_at: 2026-03-15T05:55:01.454Z
   submitted_at: 2026-03-15T06:19:59.640Z
@@ -98142,6 +98142,14 @@
         Key patterns: eliminated fetchTasks-for-titles across 3 pages, extended WS invalidation
         wiring for observations+sessions, added task_title to ActiveInvocation+SessionSummary types.
       supersedes: null
+    - _ulid: 01KKR2R4RNXJ8NXJ5VG9NVFKWH
+      created_at: 2026-03-15T06:25:46.261Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: sessions/+page.svelte has false AC annotations
+        claiming @ui-data-freshness ac-1 and ac-3, but the page does NOT use TanStack Query — it
+        still uses manual $effect + fetchSessions + per-page WS handlers. Either remove the false AC
+        annotations or complete the migration. See PR #871 review for details."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK4GRF9PBJVJG4S3BDE33
@@ -98170,12 +98178,12 @@
   tags:
     - web-ui
   vcs_refs: []
+  session_id: 01KKR2F6FX723S2K6RNDJ27Y07
   created_at: 2026-03-15T03:28:16.408Z
+  started_at: 2026-03-15T06:21:57.411Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-03-15T06:21:57.411Z
-  session_id: 01KKR2F6FX723S2K6RNDJ27Y07
 - _ulid: 01KKQRK53RE5Q3JHHH07W67NTJ
   slugs:
     - task-migrate-complex-pages
