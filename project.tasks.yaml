@@ -99372,6 +99372,13 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #882. Added GET /api/sessions/:id/events/:seq endpoint with blob
+    resolution. Implementation: readEventBySeq() in store.ts for targeted single-event read, new
+    route in sessions.ts with session ID resolution/seq validation/blob pointer resolution/404
+    handling, 11 tests covering all own ACs (ac-single-event-fetch, ac-blob-resolution,
+    ac-not-found) and trait ACs (@trait-api-endpoint ac-1, ac-2 tested; ac-3-ac-6 N/A). Fix cycle 1
+    addressed: trait AC annotations fixed to standalone comments, unused imports removed, docstring
+    corrected."
   depends_on: []
   context: []
   priority: 1
@@ -99390,6 +99397,7 @@
   created_at: 2026-03-15T19:50:41.353Z
   started_at: 2026-03-15T22:12:16.471Z
   submitted_at: 2026-03-15T22:12:20.422Z
+  completed_at: 2026-03-15T22:24:48.104Z
   notes:
     - _ulid: 01KKSQ34ARF6GZZFNE5NP9H76H
       created_at: 2026-03-15T21:40:32.216Z
@@ -99454,14 +99462,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T22:24:48.104Z
-  closed_reason: "Merged in PR #882. Added GET /api/sessions/:id/events/:seq endpoint with blob
-    resolution. Implementation: readEventBySeq() in store.ts for targeted single-event read, new
-    route in sessions.ts with session ID resolution/seq validation/blob pointer resolution/404
-    handling, 11 tests covering all own ACs (ac-single-event-fetch, ac-blob-resolution,
-    ac-not-found) and trait ACs (@trait-api-endpoint ac-1, ac-2 tested; ac-3-ac-6 N/A). Fix cycle 1
-    addressed: trait AC annotations fixed to standalone comments, unused imports removed, docstring
-    corrected."
 - _ulid: 01KKSGT0JK5JV84SHPA6K7MAK1
   slugs:
     - task-session-stream-ws-ui
@@ -99554,7 +99554,7 @@
   spec_ref: "@ws-session-event-streaming"
   plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-session-event-accumulator"
@@ -99616,6 +99616,15 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-15T22:24:53.708Z
+  submission_linkage:
+    branch: main
+    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T22:24:52.876Z
 - _ulid: 01KKSGT1SGVWACS5ET75Q87NPX
   slugs:
     - task-update-session-stream-spec-cleanup
