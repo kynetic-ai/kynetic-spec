@@ -99657,6 +99657,14 @@
         to work with the new in-block streaming architecture (send message_start first, then
         message_progress, assert on content within [data-testid="message-block"]).'
       supersedes: null
+    - _ulid: 01KKSXC1Q2ZEJ3HV04CYZZBKG6
+      created_at: 2026-03-15T23:30:15.906Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Fixed E2E smoke test: updated to send message_start before message_progress
+        (new WS protocol), assert on [data-testid='message-block'] >
+        [data-testid='streaming-markdown'] instead of removed [data-testid='streaming-text']. All
+        253 test files pass (5526 tests), build succeeds."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKSGT15XQJERS3XGKWKEZ1EZ
