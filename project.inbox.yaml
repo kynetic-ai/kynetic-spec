@@ -1623,3 +1623,14 @@ inbox:
       - web-ui
       - bug
     added_by: "@claude"
+  - _ulid: 01KKRWCKBMVK7EE4QXB7QNRVM8
+    text: Session detail page triggers HTTP polling (/events?since_seq=N) on every WebSocket text chunk
+      (debounced 3s) even though text chunks are for live streaming only. HTTP refresh should only
+      trigger on agent_invocation lifecycle events, not text chunks. Also session events use manual
+      fetch, not TanStack Query — bypasses cache/dedup infrastructure.
+    created_at: 2026-03-15T13:53:50.964Z
+    tags:
+      - web-ui
+      - performance
+      - tanstack-query
+    added_by: "@claude"
