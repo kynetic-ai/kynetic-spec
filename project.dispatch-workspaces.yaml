@@ -5525,8 +5525,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: active
+    active_role: worker
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-dispatch-engine-stop-await-01kks7am
@@ -5573,7 +5573,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T18:26:50.552Z
+      updated_at: 2026-03-15T18:26:51.314Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -5582,9 +5582,9 @@ workspaces:
       updated_at: 2026-03-15T18:26:50.552Z
     timestamps:
       created_at: 2026-03-15T17:05:58.160Z
-      updated_at: 2026-03-15T18:26:50.867Z
-      last_reconciled_at: 2026-03-15T18:26:50.552Z
-      last_active_at: 2026-03-15T17:49:46.914Z
+      updated_at: 2026-03-15T18:26:51.314Z
+      last_reconciled_at: 2026-03-15T18:26:51.314Z
+      last_active_at: 2026-03-15T18:26:51.314Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKS72EKJS2R9FM38A7YB5W5C
     task_ref: "@01KKS72EKJS2R9FM38A7YB5W5C"
