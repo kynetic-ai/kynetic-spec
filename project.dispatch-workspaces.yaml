@@ -4871,7 +4871,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
+    lifecycle_state: ready
     active_role: null
     worktrees:
       worker:
@@ -4880,12 +4880,7 @@ workspaces:
         branch_ref: dispatch/task/task-migrate-core-pages/01kkqrk3
         head: adee64fddc7d4113f4b8e659a7349df94080236a
         last_seen_at: 2026-03-15T06:46:37.574Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-core-pages-01kkqrk3-review
-        branch_mode: detached
-        branch_ref: null
-        head: adee64fddc7d4113f4b8e659a7349df94080236a
-        last_seen_at: 2026-03-15T06:46:37.574Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -4927,7 +4922,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T06:56:18.623Z
+      updated_at: 2026-03-15T06:56:19.432Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -4936,8 +4931,8 @@ workspaces:
       updated_at: 2026-03-15T06:56:18.623Z
     timestamps:
       created_at: 2026-03-15T05:54:29.769Z
-      updated_at: 2026-03-15T06:56:18.623Z
-      last_reconciled_at: 2026-03-15T06:56:18.623Z
+      updated_at: 2026-03-15T06:56:19.432Z
+      last_reconciled_at: 2026-03-15T06:56:19.432Z
       last_active_at: 2026-03-15T06:46:38.202Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKQRK4GRF9PBJVJG4S3BDE33
