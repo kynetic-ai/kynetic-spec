@@ -1,38 +1,41 @@
+<!--
+  AC: @web-dashboard ac-11, ac-12, ac-13, ac-14, ac-15
+  AC: @multi-directory-daemon ac-27 - Reload on project change
+  AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
+  AC: @ui-data-freshness ac-3 — WebSocket events invalidate item queries via centralized wiring
+-->
 <script lang="ts">
 	// AC: @web-dashboard ac-11, ac-12, ac-13, ac-14, ac-15
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	import { base } from '$app/paths';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import type { ItemSummary } from '@kynetic-ai/shared';
+	import { createQuery } from '@tanstack/svelte-query';
 	import { fetchItems } from '$lib/api';
 	import ItemTree from '$lib/components/ItemTree.svelte';
 	import ItemDetail from '$lib/components/ItemDetail.svelte';
 	import { Skeleton } from '$lib/components/ui/skeleton';
-	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { queryKeys } from '$lib/query/keys.js';
 
-	let items = $state<ItemSummary[]>([]);
-	let loading = $state(true);
-	let error = $state<string | null>(null);
 	let selectedRef = $state<string | null>(null);
 	let detailOpen = $state(false);
 
 	// Plan filter from URL query param (set by "View Specs" on plans page)
 	let planFilter = $derived($page.url.searchParams.get('plan') ?? undefined);
 
-	async function loadItems() {
-		loading = true;
-		error = null;
-		try {
-			const response = await fetchItems(planFilter ? { plan: planFilter } : undefined);
-			items = response.items;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load spec items';
-			items = [];
-		} finally {
-			loading = false;
-		}
-	}
+	// AC: @ui-data-freshness ac-1 — createQuery caches; revisits render from cache
+	// AC: @ui-data-freshness ac-2 — Concurrent uses share the same in-flight request
+	// AC: @multi-directory-daemon ac-27 — Re-fetches when project changes
+	const itemsQuery = createQuery(() => ({
+		queryKey: queryKeys.items.list(planFilter ? { plan: planFilter } : {}),
+		queryFn: () => fetchItems(planFilter ? { plan: planFilter } : undefined),
+		enabled: isProjectInitialized(),
+	}));
+
+	let items = $derived(itemsQuery.data?.items ?? []);
+	let loading = $derived(itemsQuery.isLoading);
+	let error = $derived(itemsQuery.error?.message ?? null);
 
 	function handleSelect(event: CustomEvent<string>) {
 		selectedRef = event.detail;
@@ -62,17 +65,6 @@
 			selectedRef = urlRef;
 			detailOpen = true;
 		}
-	});
-
-	// Load items when project is ready, on project change, and on plan filter change.
-	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
-	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
-	$effect(() => {
-		const _plan = planFilter;
-		const version = getProjectVersion();
-		const ready = isProjectInitialized();
-		if (!ready) return;
-		loadItems();
 	});
 </script>
 

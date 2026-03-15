@@ -759,3 +759,210 @@ describe("query key factory additions for core pages", () => {
     expect(keysSrc).toContain("shadow:");
   });
 });
+
+// ===================================================================
+// Complex pages migration tests — @ui-data-freshness ac-1, ac-4, ac-8
+// ===================================================================
+
+const TASKS_PAGE_PATH = join(WEB_UI_SRC, "routes", "tasks", "+page.svelte");
+const BOARD_PAGE_PATH = join(
+  WEB_UI_SRC,
+  "routes",
+  "tasks",
+  "board",
+  "+page.svelte",
+);
+const SPECS_PAGE_PATH = join(WEB_UI_SRC, "routes", "specs", "+page.svelte");
+const PLANS_PAGE_PATH = join(WEB_UI_SRC, "routes", "plans", "+page.svelte");
+const VALIDATE_PAGE_PATH = join(
+  WEB_UI_SRC,
+  "routes",
+  "validate",
+  "+page.svelte",
+);
+
+const tasksPageSrc = readFileSync(TASKS_PAGE_PATH, "utf-8");
+const boardPageSrc = readFileSync(BOARD_PAGE_PATH, "utf-8");
+const specsPageSrc = readFileSync(SPECS_PAGE_PATH, "utf-8");
+const plansPageSrc = readFileSync(PLANS_PAGE_PATH, "utf-8");
+const validatePageSrc = readFileSync(VALIDATE_PAGE_PATH, "utf-8");
+
+// AC: @ui-data-freshness ac-1 — Tasks page renders from cache on revisit
+describe("tasks page migration (@ui-data-freshness ac-1)", () => {
+  it("uses createQuery for task list", () => {
+    expect(tasksPageSrc).toContain("createQuery");
+    expect(tasksPageSrc).toContain("@tanstack/svelte-query");
+  });
+
+  it("uses queryKeys.tasks.list with filter params", () => {
+    expect(tasksPageSrc).toContain("queryKeys.tasks.list(filterParams)");
+  });
+
+  it("derives loading from query isLoading (not manual $state)", () => {
+    expect(tasksPageSrc).toContain("tasksQuery.isLoading");
+    expect(tasksPageSrc).not.toContain("let loading = $state");
+  });
+
+  it("does not use manual loadTasks function", () => {
+    expect(tasksPageSrc).not.toContain("async function loadTasks");
+  });
+
+  it("does not call getProjectVersion for effect dependency tracking", () => {
+    expect(tasksPageSrc).not.toContain("getProjectVersion");
+  });
+
+  it("gates query on isProjectInitialized", () => {
+    expect(tasksPageSrc).toContain("enabled: isProjectInitialized()");
+  });
+
+  // AC: @ui-data-freshness ac-8
+  it("invalidates task queries on write operations", () => {
+    expect(tasksPageSrc).toContain("queryClient.invalidateQueries");
+    expect(tasksPageSrc).toContain("queryKeys.tasks.all");
+  });
+});
+
+// AC: @ui-data-freshness ac-1, ac-4 — Board page
+describe("board page migration (@ui-data-freshness ac-1, ac-4)", () => {
+  it("uses createQuery for task list and agent status", () => {
+    expect(boardPageSrc).toContain("createQuery");
+    expect(boardPageSrc).toContain("@tanstack/svelte-query");
+  });
+
+  it("uses queryKeys.agents.status for agent data", () => {
+    expect(boardPageSrc).toContain("queryKeys.agents.status()");
+  });
+
+  // AC: @ui-data-freshness ac-4 — No 5s polling for agent status
+  it("does not use setInterval polling for agent status", () => {
+    expect(boardPageSrc).not.toContain("setInterval");
+    expect(boardPageSrc).not.toContain("clearInterval");
+    expect(boardPageSrc).not.toContain("agentPollTimer");
+  });
+
+  it("does not use manual loadBoard function", () => {
+    expect(boardPageSrc).not.toContain("async function loadBoard");
+  });
+
+  it("derives loading from query isLoading", () => {
+    expect(boardPageSrc).toContain("tasksQuery.isLoading");
+  });
+
+  it("gates agent status query on non-static mode", () => {
+    expect(boardPageSrc).toContain("!isStaticMode()");
+  });
+
+  it("still handles agent text chunks outside TanStack Query", () => {
+    expect(boardPageSrc).toContain("processTextChunk");
+    expect(boardPageSrc).toContain("agent_text_chunk");
+  });
+});
+
+// AC: @ui-data-freshness ac-1 — Specs page renders from cache on revisit
+describe("specs page migration (@ui-data-freshness ac-1)", () => {
+  it("uses createQuery for items list", () => {
+    expect(specsPageSrc).toContain("createQuery");
+    expect(specsPageSrc).toContain("@tanstack/svelte-query");
+  });
+
+  it("uses queryKeys.items.list with plan filter", () => {
+    expect(specsPageSrc).toContain("queryKeys.items.list");
+  });
+
+  it("does not use manual loadItems function", () => {
+    expect(specsPageSrc).not.toContain("async function loadItems");
+  });
+
+  it("does not call getProjectVersion for effect dependency tracking", () => {
+    expect(specsPageSrc).not.toContain("getProjectVersion");
+  });
+
+  it("gates query on isProjectInitialized", () => {
+    expect(specsPageSrc).toContain("enabled: isProjectInitialized()");
+  });
+});
+
+// AC: @ui-data-freshness ac-1 — Plans page renders from cache on revisit
+describe("plans page migration (@ui-data-freshness ac-1)", () => {
+  it("uses createQuery for plans list", () => {
+    expect(plansPageSrc).toContain("createQuery");
+    expect(plansPageSrc).toContain("@tanstack/svelte-query");
+  });
+
+  it("uses queryKeys.plans.lists()", () => {
+    expect(plansPageSrc).toContain("queryKeys.plans.lists()");
+  });
+
+  it("does not use manual loadData function", () => {
+    expect(plansPageSrc).not.toContain("async function loadData");
+  });
+
+  it("does not use manual WS subscription for reload", () => {
+    expect(plansPageSrc).not.toContain("subscribe(['tasks:updates'])");
+    expect(plansPageSrc).not.toContain("on('tasks:updates'");
+  });
+
+  it("uses URL params for filter state (not local $state)", () => {
+    // Filter is derived from $page.url.searchParams, not local $state
+    expect(plansPageSrc).toContain("$page.url.searchParams.get('status')");
+    expect(plansPageSrc).not.toContain("let filterStatus = $state");
+  });
+
+  it("gates query on isProjectInitialized", () => {
+    expect(plansPageSrc).toContain("enabled: isProjectInitialized()");
+  });
+});
+
+// AC: @ui-data-freshness ac-1 — Validate page renders from cache on revisit
+describe("validate page migration (@ui-data-freshness ac-1)", () => {
+  it("uses createQuery for validation and aggregation data", () => {
+    expect(validatePageSrc).toContain("createQuery");
+    expect(validatePageSrc).toContain("@tanstack/svelte-query");
+  });
+
+  it("uses queryKeys.validation.results() for validation query", () => {
+    expect(validatePageSrc).toContain("queryKeys.validation.results()");
+  });
+
+  it("uses server-side aggregation endpoint instead of fetchItems/fetchTasks", () => {
+    expect(validatePageSrc).toContain("fetchValidationAggregation");
+    expect(validatePageSrc).toContain("queryKeys.validation.aggregation()");
+    // Should not import or call fetchItems/fetchTasks — only aggregation endpoint
+    expect(validatePageSrc).not.toMatch(/import\s[^;]*fetchItems/);
+    expect(validatePageSrc).not.toMatch(/import\s[^;]*fetchTasks/);
+  });
+
+  it("does not use manual loadData function", () => {
+    expect(validatePageSrc).not.toContain("async function loadData");
+  });
+
+  it("uses query invalidation for refresh button", () => {
+    expect(validatePageSrc).toContain("invalidateQueries");
+    expect(validatePageSrc).toContain("queryKeys.validation.all");
+  });
+
+  it("gates queries on isProjectInitialized", () => {
+    expect(validatePageSrc).toContain("enabled: isProjectInitialized()");
+  });
+});
+
+// Aggregation API functions exist
+describe("aggregation API functions", () => {
+  it("exports fetchValidationAggregation function", () => {
+    expect(apiSrc).toContain(
+      "export async function fetchValidationAggregation",
+    );
+    expect(apiSrc).toContain("/api/aggregation/validation");
+  });
+
+  it("imports aggregation types from shared", () => {
+    expect(apiSrc).toContain("ValidationAggregation");
+  });
+});
+
+// Query key factories include aggregation key
+describe("validation aggregation query key", () => {
+  it("defines aggregation key under validation", () => {
+    expect(keysSrc).toContain("aggregation:");
+  });
+});
