@@ -98713,7 +98713,7 @@
   spec_ref: "@ui-data-freshness"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -98745,3 +98745,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-15T14:24:13.018Z
+  submission_linkage:
+    branch: main
+    commit: 8045b69abbe62718c1abb64a7b00e7dc460b571d
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T14:24:12.272Z
