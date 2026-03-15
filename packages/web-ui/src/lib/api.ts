@@ -661,6 +661,7 @@ export interface ActiveInvocation {
 	session_id: string;
 	agent_id: string;
 	task_ref: string | null;
+	task_title: string | null;
 	elapsed_ms: number;
 }
 
@@ -871,6 +872,8 @@ export interface SessionSummary {
 	trigger?: string;
 	/** Task ID being worked on (if any). AC: @ui-session-history ac-1 */
 	task_id?: string;
+	/** Server-resolved task title. AC: @ui-api-ref-resolution ac-1 */
+	task_title?: string | null;
 	started_at: string;
 	ended_at?: string;
 	duration_ms: number;

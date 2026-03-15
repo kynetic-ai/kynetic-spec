@@ -2,10 +2,12 @@
   AC: @ui-settings-view ac-1 — Displays project config (name, version, remote tracking),
   conventions list from meta, daemon connection info (port, uptime, version), and shadow branch
   status. Read-only for v1.
+  AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
+  AC: @ui-data-freshness ac-3 — WS events invalidate settings queries via centralized wiring
 -->
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
 	import type { Convention } from '@kynetic-ai/shared';
+	import { createQuery } from '@tanstack/svelte-query';
 	import {
 		fetchHealth,
 		fetchProjectConfig,
@@ -16,8 +18,8 @@
 		type ShadowStatusResponse
 	} from '$lib/api';
 	import { getSnapshot, isStaticMode } from '$lib/stores/mode.svelte';
-	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
-	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { queryKeys } from '$lib/query/keys.js';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import ServerIcon from '@lucide/svelte/icons/server';
@@ -27,135 +29,73 @@
 	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
 	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
 
-	// ── Data state ──
-	let health = $state<HealthResponse | null>(null);
-	let projectConfig = $state<ProjectConfig | null>(null);
-	let shadowStatus = $state<ShadowStatusResponse | null>(null);
-	let conventions = $state<Convention[]>([]);
-
-	let loadingConfig = $state(true);
-	let loadingHealth = $state(true);
-	let loadingShadow = $state(true);
-	let loadingConventions = $state(true);
-
-	let errorConfig = $state('');
-	let errorHealth = $state('');
-	let errorShadow = $state('');
-	let errorConventions = $state('');
-
 	// Convention expand state
 	let expandedDomains = $state<Set<string>>(new Set());
 
-	// ── Lifecycle ──
-	onMount(() => {
-		if (!isStaticMode()) {
-			subscribe(['files:updates']);
-			on('files:updates', handleUpdate);
-		}
-	});
+	// --- Queries ---
+	// AC: @ui-data-freshness ac-1 — createQuery caches results; revisits render from cache
+	const projectConfigQuery = createQuery(() => ({
+		queryKey: queryKeys.settings.projectConfig(),
+		queryFn: () => {
+			if (isStaticMode()) {
+				const snapshot = getSnapshot();
+				return {
+					project: {
+						name: snapshot?.project.name ?? 'Static Export',
+						version: snapshot?.project.version ?? '—',
+						status: 'static'
+					},
+					spec_version: null,
+					root_dir: 'GitHub Pages export',
+					remote_tracking: null,
+					daemon: { port: 0, host: 'n/a', auto_start: false }
+				} as ProjectConfig;
+			}
+			return fetchProjectConfig();
+		},
+		enabled: isProjectInitialized(),
+	}));
 
-	onDestroy(() => {
-		if (!isStaticMode()) {
-			off('files:updates', handleUpdate);
-			unsubscribe(['files:updates']);
-		}
-	});
+	const healthQuery = createQuery(() => ({
+		queryKey: queryKeys.settings.health(),
+		queryFn: () => fetchHealth(),
+		enabled: isProjectInitialized() && !isStaticMode(),
+	}));
 
-	// Load data when project is ready and reload on project change.
-	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
-	$effect(() => {
-		const version = getProjectVersion();
-		const ready = isProjectInitialized();
-		if (!ready) return;
-		loadAllData();
-	});
+	const shadowQuery = createQuery(() => ({
+		queryKey: queryKeys.settings.shadow(),
+		queryFn: () => fetchShadowStatus(),
+		enabled: isProjectInitialized() && !isStaticMode(),
+	}));
 
-	// ── Data loading ──
-	async function loadAllData() {
-		await Promise.all([loadConfig(), loadHealth(), loadShadow(), loadConventions()]);
-	}
+	const conventionsQuery = createQuery(() => ({
+		queryKey: queryKeys.settings.conventions(),
+		queryFn: () => {
+			if (isStaticMode()) {
+				return { items: getSnapshot()?.conventions ?? [], total: 0 };
+			}
+			return fetchConventions();
+		},
+		enabled: isProjectInitialized(),
+	}));
 
-	async function loadConfig() {
-		if (isStaticMode()) {
-			const snapshot = getSnapshot();
-			projectConfig = {
-				project: {
-					name: snapshot?.project.name ?? 'Static Export',
-					version: snapshot?.project.version ?? '—',
-					status: 'static'
-				},
-				spec_version: null,
-				root_dir: 'GitHub Pages export',
-				remote_tracking: null,
-				daemon: { port: 0, host: 'n/a', auto_start: false }
-			};
-			loadingConfig = false;
-			return;
-		}
-		try {
-			loadingConfig = true;
-			errorConfig = '';
-			projectConfig = await fetchProjectConfig();
-		} catch (err) {
-			errorConfig = err instanceof Error ? err.message : 'Failed to load project config';
-		} finally {
-			loadingConfig = false;
-		}
-	}
+	// --- Derived state ---
+	let projectConfig = $derived<ProjectConfig | null>(projectConfigQuery.data ?? null);
+	let health = $derived<HealthResponse | null>(healthQuery.data ?? null);
+	let shadowStatus = $derived<ShadowStatusResponse | null>(shadowQuery.data ?? null);
+	let conventions = $derived<Convention[]>(conventionsQuery.data?.items ?? []);
 
-	async function loadHealth() {
-		if (isStaticMode()) {
-			loadingHealth = false;
-			return;
-		}
-		try {
-			loadingHealth = true;
-			errorHealth = '';
-			health = await fetchHealth();
-		} catch (err) {
-			errorHealth = err instanceof Error ? err.message : 'Failed to connect to daemon';
-		} finally {
-			loadingHealth = false;
-		}
-	}
+	let loadingConfig = $derived(projectConfigQuery.isLoading);
+	let loadingHealth = $derived(healthQuery.isLoading);
+	let loadingShadow = $derived(shadowQuery.isLoading);
+	let loadingConventions = $derived(conventionsQuery.isLoading);
 
-	async function loadShadow() {
-		if (isStaticMode()) {
-			loadingShadow = false;
-			return;
-		}
-		try {
-			loadingShadow = true;
-			errorShadow = '';
-			shadowStatus = await fetchShadowStatus();
-		} catch (err) {
-			errorShadow = err instanceof Error ? err.message : 'Failed to load shadow status';
-		} finally {
-			loadingShadow = false;
-		}
-	}
+	let errorConfig = $derived(projectConfigQuery.error?.message ?? '');
+	let errorHealth = $derived(healthQuery.error?.message ?? '');
+	let errorShadow = $derived(shadowQuery.error?.message ?? '');
+	let errorConventions = $derived(conventionsQuery.error?.message ?? '');
 
-	async function loadConventions() {
-		if (isStaticMode()) {
-			conventions = getSnapshot()?.conventions ?? [];
-			loadingConventions = false;
-			return;
-		}
-		try {
-			loadingConventions = true;
-			errorConventions = '';
-			const response = await fetchConventions();
-			conventions = response.items;
-		} catch (err) {
-			errorConventions = err instanceof Error ? err.message : 'Failed to load conventions';
-		} finally {
-			loadingConventions = false;
-		}
-	}
-
-	function handleUpdate() {
-		loadAllData();
-	}
+	let loading = $derived(loadingConfig && loadingHealth && loadingShadow && loadingConventions);
 
 	// ── Helpers ──
 	function formatUptime(seconds: number): string {
@@ -176,8 +116,6 @@
 		}
 		expandedDomains = next;
 	}
-
-	let loading = $derived(loadingConfig && loadingHealth && loadingShadow && loadingConventions);
 </script>
 
 <div class="flex flex-col gap-4 p-6">

@@ -1,6 +1,11 @@
+<!--
+  AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
+  AC: @ui-data-freshness ac-3 — WS events invalidate observations queries via centralized wiring
+-->
 <script lang="ts">
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
 	import type { Observation } from '@kynetic-ai/shared';
+	import { createQuery } from '@tanstack/svelte-query';
 	import { fetchObservations } from '$lib/api';
 	import { Card, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
@@ -11,12 +16,8 @@
 		AlertTriangle,
 		HelpCircle
 	} from 'lucide-svelte';
-	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
-
-	// AC: @web-dashboard ac-22
-	let observations = $state<Observation[]>([]);
-	let loading = $state(true);
-	let error = $state('');
+	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { queryKeys } from '$lib/query/keys.js';
 
 	// Type icons mapping
 	const typeIcons = {
@@ -40,29 +41,18 @@
 		idea: 'Idea'
 	};
 
-	// Load observations when project is ready and reload on project change.
-	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
-	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
-	$effect(() => {
-		const version = getProjectVersion();
-		const ready = isProjectInitialized();
-		if (!ready) return;
-		loadObservations();
-	});
+	// AC: @ui-data-freshness ac-1 — createQuery caches results; revisits render from cache
+	// AC: @ui-data-freshness ac-2 — Concurrent uses share the same in-flight request
+	// AC: @web-dashboard ac-22
+	const observationsQuery = createQuery(() => ({
+		queryKey: queryKeys.observations.list({ resolved: false }),
+		queryFn: () => fetchObservations({ resolved: false }),
+		enabled: isProjectInitialized(),
+	}));
 
-	async function loadObservations() {
-		try {
-			loading = true;
-			error = '';
-			// AC: @web-dashboard ac-22 - Show unresolved observations
-			const response = await fetchObservations({ resolved: false });
-			observations = response.items;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load observations';
-		} finally {
-			loading = false;
-		}
-	}
+	let observations = $derived<Observation[]>(observationsQuery.data?.items ?? []);
+	let loading = $derived(observationsQuery.isLoading);
+	let error = $derived(observationsQuery.error?.message ?? '');
 
 	function formatDate(dateString: string): string {
 		const date = new Date(dateString);

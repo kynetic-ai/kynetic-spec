@@ -161,15 +161,14 @@ describe("fetchWorkflows API function", () => {
   });
 });
 
-// WebSocket subscription for live updates
+// Real-time updates via TanStack Query + centralized WS invalidation
 describe("real-time updates", () => {
-  it("subscribes to updates for live reload", () => {
-    expect(pageSrc).toContain("subscribe");
-    expect(pageSrc).toContain("unsubscribe");
+  it("uses TanStack Query for data freshness (WS handled by centralized wiring)", () => {
+    expect(pageSrc).toContain("createQuery");
+    expect(pageSrc).toContain("queryKeys.workflows");
   });
 
-  it("responds to project version changes", () => {
-    expect(pageSrc).toContain("getProjectVersion");
-    expect(pageSrc).toContain("$effect");
+  it("gates query on project initialization", () => {
+    expect(pageSrc).toContain("isProjectInitialized()");
   });
 });

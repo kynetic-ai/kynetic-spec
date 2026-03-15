@@ -1,20 +1,26 @@
+<!--
+  AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
+  AC: @ui-data-freshness ac-3 — WS events invalidate agent queries via centralized wiring
+  AC: @ui-data-freshness ac-8 — Dispatch control mutations invalidate related cache
+-->
 <script lang="ts">
 	// AC: @ui-agent-dispatch ac-1 — Agent definitions with name, triggers, active/completed counts
 	// AC: @ui-agent-dispatch ac-2 — Dispatch running: status, stop button, active invocations
 	// AC: @ui-agent-dispatch ac-3 — Dispatch stopped: status shown, no active invocations
 	import { onMount, onDestroy } from 'svelte';
+	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
 	import {
 		fetchAgentStatus,
 		fetchAgentDefinitions,
 		controlDispatch,
-		fetchTasks,
 		type AgentDefinition,
 		type AgentDispatchStatus,
 		type ActiveInvocation
 	} from '$lib/api';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
-	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { queryKeys } from '$lib/query/keys.js';
 	import AgentCard from '$lib/components/agents/AgentCard.svelte';
 	import AgentEditForm from '$lib/components/agents/AgentEditForm.svelte';
 	import DispatchStatusComponent from '$lib/components/agents/DispatchStatus.svelte';
@@ -24,12 +30,31 @@
 	import Bot from '@lucide/svelte/icons/bot';
 	import Zap from '@lucide/svelte/icons/zap';
 
-	let agentDefinitions = $state<AgentDefinition[]>([]);
-	let dispatchStatus = $state<AgentDispatchStatus | null>(null);
-	let taskTitles = $state<Record<string, string>>({});
-	let loading = $state(true);
+	const queryClient = useQueryClient();
+
+	// --- Queries ---
+	// AC: @ui-data-freshness ac-1 — createQuery caches results; revisits render from cache
+	// AC: @ui-data-freshness ac-6 — Skip agent status in static mode
+	const agentStatusQuery = createQuery(() => ({
+		queryKey: queryKeys.agents.status(),
+		queryFn: () => fetchAgentStatus(),
+		enabled: isProjectInitialized() && !isStaticMode(),
+		staleTime: 10 * 1000,
+	}));
+
+	const agentDefsQuery = createQuery(() => ({
+		queryKey: queryKeys.agents.definitions(),
+		queryFn: () => fetchAgentDefinitions(),
+		enabled: isProjectInitialized(),
+	}));
+
+	// --- Derived state ---
+	let dispatchStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
+	let agentDefinitions = $derived<AgentDefinition[]>(agentDefsQuery.data?.items ?? []);
+
+	// AC: @ui-data-freshness ac-1 — Only show loading skeleton on initial fetch (no cache)
+	let loading = $derived(agentStatusQuery.isLoading || agentDefsQuery.isLoading);
 	let error = $state('');
-	let isToggling = $state(false);
 
 	// AC: @ui-agent-dispatch ac-4 — Edit form state
 	let editDialogOpen = $state(false);
@@ -40,6 +65,19 @@
 
 	// Track completed invocations per agent (incremented by WebSocket events)
 	let completedCounts = $state<Record<string, number>>({});
+
+	// Pre-populate completed counts from agent definitions
+	$effect(() => {
+		if (agentStatusQuery.data?.agent_definitions) {
+			const initial: Record<string, number> = {};
+			for (const def of agentStatusQuery.data.agent_definitions) {
+				if (def.completed_sessions != null && def.completed_sessions > 0) {
+					initial[def.id] = def.completed_sessions;
+				}
+			}
+			completedCounts = initial;
+		}
+	});
 
 	// Derive active counts per agent from dispatch status
 	let activeCounts = $derived.by(() => {
@@ -52,96 +90,39 @@
 		return counts;
 	});
 
-	// Load data when project is ready and reload on project change.
-	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
-	$effect(() => {
-		const version = getProjectVersion();
-		const ready = isProjectInitialized();
-		if (!ready) return;
-		loadData();
-	});
-
-	async function loadData() {
-		loading = true;
-		error = '';
-
-		try {
-			const [statusResult, defsResult, tasksResult] = await Promise.all([
-				fetchAgentStatus(),
-				fetchAgentDefinitions(),
-				fetchTasks({ limit: 1000 })
-			]);
-			dispatchStatus = statusResult;
-			agentDefinitions = defsResult.items;
-
-			// Build task title lookup for ActiveInvocationRow display
-			const titles: Record<string, string> = {};
-			for (const task of tasksResult.items) {
-				if (task.slugs?.length) {
-					for (const slug of task.slugs) {
-						titles[`@${slug}`] = task.title;
-					}
-				}
-				titles[`@${task._ulid}`] = task.title;
-			}
-			taskTitles = titles;
-
-			// Pre-populate completed counts from API (server-side aggregation from session history)
-			const initial: Record<string, number> = {};
-			for (const def of statusResult.agent_definitions) {
-				if (def.completed_sessions != null && def.completed_sessions > 0) {
-					initial[def.id] = def.completed_sessions;
-				}
-			}
-			completedCounts = initial;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load agent data';
-			console.error('Error loading agent data:', err);
-		} finally {
-			loading = false;
-		}
-	}
-
-	async function handleStartDispatch() {
-		if (isStaticMode()) return;
-		isToggling = true;
-		error = '';
-
-		try {
-			const result = await controlDispatch('start');
-			// Refresh full status after toggle
-			dispatchStatus = await fetchAgentStatus();
-		} catch (err) {
+	// --- Mutations ---
+	// AC: @ui-data-freshness ac-8 — Dispatch control invalidates related cache
+	const dispatchMutation = createMutation(() => ({
+		mutationFn: (action: 'start' | 'stop') => controlDispatch(action),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.agents.all });
+		},
+		onError: (err: Error) => {
 			if (err instanceof ReadOnlyModeError) {
 				error = err.message;
 			} else {
-				error = err instanceof Error ? err.message : 'Failed to start dispatch';
+				error = err.message || 'Failed to control dispatch';
 			}
-		} finally {
-			isToggling = false;
-		}
-	}
+		},
+	}));
 
-	async function handleStopDispatch() {
+	let isToggling = $derived(dispatchMutation.isPending);
+
+	function handleStartDispatch() {
 		if (isStaticMode()) return;
-		isToggling = true;
 		error = '';
-
-		try {
-			const result = await controlDispatch('stop');
-			// Refresh full status after toggle
-			dispatchStatus = await fetchAgentStatus();
-		} catch (err) {
-			if (err instanceof ReadOnlyModeError) {
-				error = err.message;
-			} else {
-				error = err instanceof Error ? err.message : 'Failed to stop dispatch';
-			}
-		} finally {
-			isToggling = false;
-		}
+		dispatchMutation.mutate('start');
 	}
 
+	function handleStopDispatch() {
+		if (isStaticMode()) return;
+		error = '';
+		dispatchMutation.mutate('stop');
+	}
+
+	// --- WebSocket handlers ---
+	// Agent lifecycle events still need per-page handling for completed counts
+	// and screen reader announcements. Query invalidation handled by centralized wiring.
 	function handleAgentEvent(event: any) {
 		if (event.event === 'agent_invocation') {
 			const data = event.data;
@@ -160,12 +141,6 @@
 			} else if (data.status === 'failed') {
 				invocationAnnouncement = `${agentLabel} invocation failed`;
 			}
-			// Refresh status to update active invocations
-			fetchAgentStatus()
-				.then((status) => {
-					dispatchStatus = status;
-				})
-				.catch((err) => console.error('Error refreshing agent status:', err));
 		}
 	}
 
@@ -176,20 +151,22 @@
 	}
 
 	function handleAgentSaved(updated: AgentDefinition) {
-		// Update the agent in the local list
-		agentDefinitions = agentDefinitions.map((a) =>
-			a.id === updated.id ? updated : a
-		);
+		// Invalidate agent definitions query to refresh the list
+		queryClient.invalidateQueries({ queryKey: queryKeys.agents.definitions() });
 	}
 
 	onMount(() => {
-		subscribe(['agents']);
-		on('agents', handleAgentEvent);
+		if (!isStaticMode()) {
+			subscribe(['agents']);
+			on('agents', handleAgentEvent);
+		}
 	});
 
 	onDestroy(() => {
-		off('agents', handleAgentEvent);
-		unsubscribe(['agents']);
+		if (!isStaticMode()) {
+			off('agents', handleAgentEvent);
+			unsubscribe(['agents']);
+		}
 	});
 </script>
 
@@ -200,13 +177,13 @@
 	</div>
 
 	<!-- Error State -->
-	{#if error}
+	{#if error || agentStatusQuery.error || agentDefsQuery.error}
 		<div
 			class="bg-destructive/10 text-destructive p-4 rounded-lg"
 			data-testid="error-message"
 			role="alert"
 		>
-			{error}
+			{error || agentStatusQuery.error?.message || agentDefsQuery.error?.message}
 		</div>
 	{/if}
 
@@ -245,7 +222,7 @@
 				{#if dispatchStatus.active_invocations.length > 0}
 					<div class="flex flex-col gap-2">
 						{#each dispatchStatus.active_invocations as invocation (invocation.session_id)}
-							<ActiveInvocationRow {invocation} taskTitle={invocation.task_ref ? taskTitles[invocation.task_ref] : null} />
+							<ActiveInvocationRow {invocation} taskTitle={invocation.task_title ?? null} />
 						{/each}
 					</div>
 				{:else}

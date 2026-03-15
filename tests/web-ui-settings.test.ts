@@ -297,16 +297,15 @@ describe("settings API functions (@ui-settings-view ac-1)", () => {
   });
 });
 
-// WebSocket subscription for live updates
+// Real-time updates via TanStack Query + centralized WS invalidation
 describe("real-time updates (@ui-settings-view ac-1)", () => {
-  it("subscribes to updates for live reload", () => {
-    expect(pageSrc).toContain("subscribe");
-    expect(pageSrc).toContain("unsubscribe");
+  it("uses TanStack Query for data freshness (WS handled by centralized wiring)", () => {
+    expect(pageSrc).toContain("createQuery");
+    expect(pageSrc).toContain("queryKeys.settings");
   });
 
-  it("responds to project version changes", () => {
-    expect(pageSrc).toContain("getProjectVersion");
-    expect(pageSrc).toContain("$effect");
+  it("gates queries on project initialization", () => {
+    expect(pageSrc).toContain("isProjectInitialized()");
   });
 });
 

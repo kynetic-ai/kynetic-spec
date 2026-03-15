@@ -43,7 +43,8 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 			if (event.event === 'agent_text_chunk') {
 				return [];
 			}
-			return [queryKeys.agents.all];
+			// Agent lifecycle events also affect session lists (new/completed sessions)
+			return [queryKeys.agents.all, queryKeys.sessions.all];
 
 		case 'files':
 			// File changes (e.g., settings save, meta edits) affect multiple caches
@@ -51,6 +52,7 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 			return [
 				queryKeys.settings.all,
 				queryKeys.workflows.all,
+				queryKeys.observations.all,
 				queryKeys.validation.all,
 				queryKeys.observations.all,
 				queryKeys.sessionContext.all,

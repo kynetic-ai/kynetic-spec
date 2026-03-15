@@ -14,6 +14,8 @@
   AC: @session-filter-controls ac-date-filter — Date range filter via URL params.
   AC: @session-filter-controls ac-clear-filters — Clear all filters button.
   AC: @session-filter-controls ac-filter-counts — Filtered vs total count display.
+  AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
+  AC: @ui-data-freshness ac-3 — WS events invalidate session queries via centralized wiring
 -->
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
@@ -26,7 +28,7 @@
 		SessionSearchResult,
 		FetchSessionSearchParams
 	} from '$lib/api';
-	import { fetchSessions, fetchSessionSearch, fetchTasks } from '$lib/api';
+	import { fetchSessions, fetchSessionSearch } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
@@ -55,10 +57,6 @@
 	let error = $state('');
 	let totalMatches = $state(0);
 	let searchInput = $state('');
-
-	// Task title lookup
-	let taskTitles = $state<Record<string, string>>({});
-	let taskTitlesLoaded = $state(false);
 
 	// AC: @session-filter-controls ac-filter-counts — Track unfiltered total for count display
 	let unfilteredTotal = $state(0);
@@ -178,11 +176,7 @@
 				total = data.total_sessions;
 				totalMatches = data.total_matches;
 			} else {
-				const [data, tasksData] = await Promise.all([
-					fetchSessions(buildFetchParams(0)),
-					// Only load task titles once
-					taskTitlesLoaded ? Promise.resolve(null) : fetchTasks({ limit: 1000 })
-				]);
+				const data = await fetchSessions(buildFetchParams(0));
 				// AC: @ui-session-history ac-1 — sorted by most recent first (daemon returns pre-sorted)
 				sessions = data.items;
 				total = data.total;
@@ -192,21 +186,6 @@
 				// AC: @session-filter-controls ac-filter-counts — Update unfiltered total if no filters active
 				if (!hasFilters) {
 					unfilteredTotal = data.total;
-				}
-
-				// Build task title lookup for ReferenceLink display
-				if (tasksData) {
-					const titles: Record<string, string> = {};
-					for (const task of tasksData.items) {
-						if (task.slugs?.length) {
-							for (const slug of task.slugs) {
-								titles[`@${slug}`] = task.title;
-							}
-						}
-						titles[`@${task._ulid}`] = task.title;
-					}
-					taskTitles = titles;
-					taskTitlesLoaded = true;
 				}
 			}
 		} catch (err) {
@@ -533,7 +512,7 @@
 							{#if s.task_id}
 								<span class="text-xs text-muted-foreground">&middot;</span>
 								<span data-testid="session-task-ref">
-									<ReferenceLink ref={s.task_id} type="task" title={taskTitles[s.task_id] || taskTitles[`@${s.task_id}`]} inline class="text-xs" />
+									<ReferenceLink ref={s.task_id} type="task" title={s.task_title ?? undefined} inline class="text-xs" />
 								</span>
 							{/if}
 						</div>

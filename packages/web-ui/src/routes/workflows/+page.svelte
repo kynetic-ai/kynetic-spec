@@ -2,14 +2,16 @@
   AC: @ui-workflows-view ac-1 — Each workflow shows id, description, ordered steps with names,
   trigger type if configured, and loop variant indicator. A Start button initiates the workflow
   via daemon API.
+  AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
+  AC: @ui-data-freshness ac-3 — WS events invalidate workflow queries via centralized wiring
 -->
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
 	import type { Workflow } from '@kynetic-ai/shared';
+	import { createQuery } from '@tanstack/svelte-query';
 	import { fetchWorkflows } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
-	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
-	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { queryKeys } from '$lib/query/keys.js';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import { Button } from '$lib/components/ui/button';
@@ -23,12 +25,6 @@
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import { renderMarkdown } from '$lib/utils/markdown';
 
-	// ── Data state ──
-	let workflows = $state<Workflow[]>([]);
-	let loading = $state(true);
-	let error = $state('');
-	let copiedId = $state<string | null>(null);
-
 	// ── Step type classes (using design-system severity tokens) ──
 	const STEP_TYPE_CLASS: Record<string, string> = {
 		action: 'text-severity-success',
@@ -36,50 +32,21 @@
 		decision: 'text-severity-warning'
 	};
 
-	// ── Lifecycle ──
-	onMount(() => {
-		if (!isStaticMode()) {
-			subscribe(['files:updates']);
-			on('files:updates', handleUpdate);
-		}
-	});
+	// AC: @ui-data-freshness ac-1 — createQuery caches results; revisits render from cache
+	// AC: @ui-data-freshness ac-2 — Concurrent uses share the same in-flight request
+	const workflowsQuery = createQuery(() => ({
+		queryKey: queryKeys.workflows.all,
+		queryFn: () => fetchWorkflows(),
+		enabled: isProjectInitialized(),
+	}));
 
-	onDestroy(() => {
-		if (!isStaticMode()) {
-			off('files:updates', handleUpdate);
-			unsubscribe(['files:updates']);
-		}
-	});
-
-	// Load data when project is ready and reload on project change.
-	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
-	$effect(() => {
-		const version = getProjectVersion();
-		const ready = isProjectInitialized();
-		if (!ready) return;
-		loadData();
-	});
-
-	// ── Data loading ──
-	async function loadData() {
-		try {
-			loading = true;
-			error = '';
-			const response = await fetchWorkflows();
-			workflows = response.items;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load workflows';
-		} finally {
-			loading = false;
-		}
-	}
-
-	// ── WebSocket handler ──
-	function handleUpdate() {
-		loadData();
-	}
+	let workflows = $derived<Workflow[]>(workflowsQuery.data?.items ?? []);
+	let loading = $derived(workflowsQuery.isLoading);
+	let error = $derived(workflowsQuery.error?.message ?? '');
 
 	// ── Copy start command ──
+	let copiedId = $state<string | null>(null);
+
 	async function copyStartCommand(workflowId: string) {
 		const command = `kspec workflow start @${workflowId}`;
 		try {
