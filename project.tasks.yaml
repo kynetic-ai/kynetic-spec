@@ -98150,6 +98150,16 @@
         still uses manual $effect + fetchSessions + per-page WS handlers. Either remove the false AC
         annotations or complete the migration. See PR #871 review for details."
       supersedes: null
+    - _ulid: 01KKR3YDAF1BCXVVEV1CH107GA
+      created_at: 2026-03-15T06:46:40.207Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1 RESOLVED] Migrated sessions/+page.svelte to TanStack Query: replaced manual
+        fetchSessions/loadInitialPage/loadNextPage with createInfiniteQuery, replaced
+        fetchSessionSearch with createQuery, removed per-page WS handlers
+        (subscribe/on/off/unsubscribe), derived all state from query objects. AC annotations for
+        @ui-data-freshness ac-1 and ac-3 are now truthful. Added 9 new test assertions verifying
+        createInfiniteQuery usage, query keys, fetchNextPage, absence of manual WS handlers."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK4GRF9PBJVJG4S3BDE33
