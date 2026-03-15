@@ -840,8 +840,9 @@ export class DispatchEngine {
     // AC: @per-task-dispatch-drain-coalescing ac-1, ac-4, ac-6
     // Schedule a per-task coalescing timer instead of draining immediately.
     // If coalesceWindowMs is 0, drain immediately for backward compatibility.
+    // AC: @agent-dispatch-engine ac-27 — all drains go through _serializedDrain()
     if (this.coalesceWindowMs <= 0) {
-      await this._drainQueues(agents);
+      await this._serializedDrain();
     } else {
       this._scheduleCoalescedDrain(change.taskId);
     }
@@ -1004,8 +1005,8 @@ export class DispatchEngine {
     try {
       const enqueued = await this._evaluateAllTasks({ skipIfActive: false });
       if (enqueued > 0) {
-        const agents = await this._loadAgents();
-        await this._drainQueues(agents);
+        // AC: @agent-dispatch-engine ac-27 — all drains go through _serializedDrain()
+        await this._serializedDrain();
       }
     } catch (err) {
       console.error("[dispatch] Bootstrap error:", err);
@@ -1040,8 +1041,8 @@ export class DispatchEngine {
     const enqueued = await this._evaluateAllTasks({ skipIfActive: true });
     if (enqueued > 0) {
       console.log(`[dispatch] Reconciliation enqueued ${enqueued} task(s)`);
-      const agents = await this._loadAgents();
-      await this._drainQueues(agents);
+      // AC: @agent-dispatch-engine ac-27 — all drains go through _serializedDrain()
+      await this._serializedDrain();
     }
   }
 
@@ -2065,11 +2066,11 @@ export class DispatchEngine {
               const queue = this.queues.get(agentId) ?? [];
               this._insertQueueEntry(queue, entry);
               this.queues.set(agentId, queue);
-              // AC: @agent-dispatch-engine ac-9 - Schedule wake-up to drain retry
+              // AC: @agent-dispatch-engine ac-9, ac-27 - Schedule wake-up to drain retry
+              // All drains go through _serializedDrain() to prevent concurrent races.
               setTimeout(() => {
                 if (this.running) {
-                  this._loadAgents()
-                    .then((agents) => this._drainQueues(agents))
+                  this._serializedDrain()
                     .catch(() => {/* best effort */});
                 }
               }, backoffMs);
@@ -2159,10 +2160,9 @@ export class DispatchEngine {
             );
           }
 
-          // Drain queues with current state
+          // AC: @agent-dispatch-engine ac-27 — all drains go through _serializedDrain()
           try {
-            const agents = await this._loadAgents();
-            await this._drainQueues(agents);
+            await this._serializedDrain();
           } catch {
             // Best effort drain
           }
