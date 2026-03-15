@@ -98786,11 +98786,11 @@
     - docs
     - cli
   vcs_refs: []
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-15T17:00:32.754Z
+  started_at: 2026-03-15T17:05:03.277Z
   notes: []
   todos: []
-  started_at: 2026-03-15T17:05:03.277Z
-  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
 - _ulid: 01KKS7AM5ABY67ESJAGBXAQT71
   slugs:
     - task-fix-dispatch-engine-stop-await
@@ -98810,6 +98810,70 @@
     - test-flakiness
   vcs_refs: []
   created_at: 2026-03-15T17:05:00.586Z
-  notes: []
+  notes:
+    - _ulid: 01KKS7B1PZZ12JC3CHT813RTTE
+      created_at: 2026-03-15T17:05:14.463Z
+      author: "@claude"
+      content: >-
+        ## Problem
+
+
+        agent-dispatch-engine.test.ts fails in ~15% of post-fix dispatch sessions. Most common
+        failing test: "should remove completed invocation from getStatus before draining next
+        invocation" (line 1810).
+
+
+        Two failure modes:
+
+        1. ENOTEMPTY on temp dir cleanup — async operations still writing after stop() returns
+
+        2. invocationCount never reaches 2 — second invocation never fires within 500ms polling
+        window
+
+
+        ## Root Cause
+
+
+        engine.stop() at src/agent-runtime/dispatch.ts:927-928 snapshots this.runningInvocations and
+        awaits them via Promise.allSettled. But when a running invocation completes, its .then()
+        handler (line 2139-2168) calls _drainQueues which may call _spawnInvocation, adding NEW
+        promises to this.runningInvocations AFTER stop() already captured its snapshot. So stop()
+        returns while second-generation invocations are still running — their git worktree
+        operations race with cleanupTempDir in afterEach, causing ENOTEMPTY.
+
+
+        ## Implementation
+
+
+        1. Fix stop() to loop until runningInvocations is empty:
+
+        ```ts
+
+        // Replace single snapshot+await with loop
+
+        while (this.runningInvocations.size > 0) {
+          await Promise.allSettled(Array.from(this.runningInvocations));
+        }
+
+        ```
+
+
+        2. Guard the completion handler's _drainQueues call with this.running check (line 2140
+        already checks but the drain may spawn before the check). Ensure _spawnInvocation returns
+        false early when !this.running.
+
+
+        3. Increase the test polling timeout from 500ms (50*10ms) to at least 2000ms to accommodate
+        real git worktree operations under load.
+
+
+        ## Key Files
+
+        - src/agent-runtime/dispatch.ts — stop() at line 899, _spawnInvocation at 1772, completion
+        handler at 2029-2176
+
+        - tests/agent-dispatch-engine.test.ts — fleet cleanup tests at line 1798+, polling loop at
+        line 1858
+      supersedes: null
   todos: []
   automation: eligible
