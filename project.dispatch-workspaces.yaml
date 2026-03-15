@@ -4782,16 +4782,21 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ws-enrichment-01kkqrk3
         branch_mode: branch
         branch_ref: dispatch/task/task-ws-enrichment/01kkqrk3
-        head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-        last_seen_at: 2026-03-15T05:25:01.659Z
-      reviewer: null
+        head: 42befa87a3439974aa7dce5ec45d33a97d61851a
+        last_seen_at: 2026-03-15T05:46:43.598Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ws-enrichment-01kkqrk3-review
+        branch_mode: detached
+        branch_ref: null
+        head: 42befa87a3439974aa7dce5ec45d33a97d61851a
+        last_seen_at: 2026-03-15T05:46:43.598Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -4825,21 +4830,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T05:46:35.869Z
+      updated_at: 2026-03-15T05:46:43.598Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T05:46:35.869Z
+      updated_at: 2026-03-15T05:46:43.598Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T05:46:35.869Z
+      updated_at: 2026-03-15T05:46:43.598Z
     timestamps:
       created_at: 2026-03-15T05:25:01.659Z
-      updated_at: 2026-03-15T05:46:35.869Z
-      last_reconciled_at: 2026-03-15T05:46:35.869Z
+      updated_at: 2026-03-15T05:46:43.598Z
+      last_reconciled_at: 2026-03-15T05:46:43.598Z
       last_active_at: 2026-03-15T05:25:02.434Z
       closed_at: null
