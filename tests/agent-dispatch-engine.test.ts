@@ -2096,7 +2096,7 @@ describe("Text chunk boundary signaling", () => {
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
-      onTextChunk: (_sessionId, _agentId, _taskId, text) => {
+      onTextChunk: (_sessionId, _agentId, _taskId, _taskTitle, text) => {
         seenChunks.push(text);
       },
       coalesceWindowMs: 0,

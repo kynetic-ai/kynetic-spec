@@ -88,9 +88,14 @@ export function createInboxRoutes(options: InboxRouteOptions) {
         await commitIfShadow(ctx.shadow, `inbox: add item ${item._ulid}`);
 
         // Broadcast update
+        // AC: @ui-api-aggregation ac-4 - Include full item data for in-place UI updates
         // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
         pubsub.broadcast('inbox:updates', 'inbox_item_created', {
           ulid: item._ulid,
+          text: item.text,
+          tags: item.tags,
+          added_by: item.added_by,
+          created_at: item.created_at,
         }, projectContext.path);
 
         // AC: @api-contract ac-13 - Return item with generated ULID

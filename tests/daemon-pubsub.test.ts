@@ -2,6 +2,12 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PubSubManager } from '../packages/daemon/src/websocket/pubsub';
 import type { ServerWebSocket } from 'bun';
 import type { ConnectionData } from '../packages/daemon/src/websocket/types';
+import type {
+  TaskUpdatedEventData,
+  InboxItemCreatedEventData,
+  AgentInvocationEventData,
+  AgentTextChunkEventData,
+} from '../packages/shared/src/websocket';
 
 describe('PubSubManager', () => {
   let manager: PubSubManager;
@@ -144,6 +150,150 @@ describe('PubSubManager', () => {
       expect(messages[0].seq).toBe(1);
       expect(messages[1].seq).toBe(2);
       expect(messages[2].seq).toBe(3);
+    });
+  });
+
+  // AC: @ui-api-aggregation ac-4
+  describe('Enriched Broadcast Payloads', () => {
+    it('task_updated payload includes title and old/new status for state transitions', () => {
+      const projectA = '/tmp/project-a';
+      const ws = createMockWebSocket('conn-1', projectA, ['tasks:updates']);
+      manager.addConnection('conn-1', ws);
+
+      const payload: TaskUpdatedEventData = {
+        ref: '@task-auth',
+        ulid: '01ABC123',
+        action: 'start',
+        title: 'Implement authentication',
+        old_status: 'pending',
+        new_status: 'in_progress',
+      };
+
+      manager.broadcast('tasks:updates', 'task_updated', payload, projectA);
+
+      expect(ws.send).toHaveBeenCalledOnce();
+      const sentMessage = JSON.parse((ws.send as any).mock.calls[0][0]);
+
+      expect(sentMessage.data).toMatchObject({
+        ref: '@task-auth',
+        ulid: '01ABC123',
+        action: 'start',
+        title: 'Implement authentication',
+        old_status: 'pending',
+        new_status: 'in_progress',
+      });
+    });
+
+    it('task_updated note_added payload has null old/new status', () => {
+      const projectA = '/tmp/project-a';
+      const ws = createMockWebSocket('conn-1', projectA, ['tasks:updates']);
+      manager.addConnection('conn-1', ws);
+
+      const payload: TaskUpdatedEventData = {
+        ref: '@task-auth',
+        ulid: '01ABC123',
+        action: 'note_added',
+        title: 'Implement authentication',
+        old_status: null,
+        new_status: null,
+        note_ulid: '01NOTE456',
+      };
+
+      manager.broadcast('tasks:updates', 'task_updated', payload, projectA);
+
+      const sentMessage = JSON.parse((ws.send as any).mock.calls[0][0]);
+      expect(sentMessage.data.title).toBe('Implement authentication');
+      expect(sentMessage.data.old_status).toBeNull();
+      expect(sentMessage.data.new_status).toBeNull();
+      expect(sentMessage.data.note_ulid).toBe('01NOTE456');
+    });
+
+    it('inbox_item_created payload includes full item data', () => {
+      const projectA = '/tmp/project-a';
+      const ws = createMockWebSocket('conn-1', projectA, ['inbox:updates']);
+      manager.addConnection('conn-1', ws);
+
+      const payload: InboxItemCreatedEventData = {
+        ulid: '01INBOX789',
+        text: 'New feature idea',
+        tags: ['mvp', 'cli'],
+        added_by: 'user@example.com',
+        created_at: '2026-03-14T00:00:00.000Z',
+      };
+
+      manager.broadcast('inbox:updates', 'inbox_item_created', payload, projectA);
+
+      const sentMessage = JSON.parse((ws.send as any).mock.calls[0][0]);
+      expect(sentMessage.data).toMatchObject({
+        ulid: '01INBOX789',
+        text: 'New feature idea',
+        tags: ['mvp', 'cli'],
+        added_by: 'user@example.com',
+        created_at: '2026-03-14T00:00:00.000Z',
+      });
+    });
+
+    it('agent_invocation payload includes task_title', () => {
+      const projectA = '/tmp/project-a';
+      const ws = createMockWebSocket('conn-1', projectA, ['agents']);
+      manager.addConnection('conn-1', ws);
+
+      const payload: AgentInvocationEventData = {
+        session_id: 'sess-1',
+        agent_id: 'task-worker',
+        task_id: '@task-auth',
+        task_title: 'Implement authentication',
+        status: 'started',
+        timestamp: 1710374400000,
+      };
+
+      manager.broadcast('agents', 'agent_invocation', payload, projectA);
+
+      const sentMessage = JSON.parse((ws.send as any).mock.calls[0][0]);
+      expect(sentMessage.data.task_title).toBe('Implement authentication');
+      expect(sentMessage.data.task_id).toBe('@task-auth');
+    });
+
+    it('agent_invocation payload has null task_title when no task', () => {
+      const projectA = '/tmp/project-a';
+      const ws = createMockWebSocket('conn-1', projectA, ['agents']);
+      manager.addConnection('conn-1', ws);
+
+      const payload: AgentInvocationEventData = {
+        session_id: 'sess-1',
+        agent_id: 'task-worker',
+        task_id: null,
+        task_title: null,
+        status: 'started',
+        timestamp: 1710374400000,
+      };
+
+      manager.broadcast('agents', 'agent_invocation', payload, projectA);
+
+      const sentMessage = JSON.parse((ws.send as any).mock.calls[0][0]);
+      expect(sentMessage.data.task_id).toBeNull();
+      expect(sentMessage.data.task_title).toBeNull();
+    });
+
+    it('agent_text_chunk payload includes task_title', () => {
+      const projectA = '/tmp/project-a';
+      const ws = createMockWebSocket('conn-1', projectA, ['agents']);
+      manager.addConnection('conn-1', ws);
+
+      const payload: AgentTextChunkEventData = {
+        session_id: 'sess-1',
+        agent_id: 'task-worker',
+        task_id: '@task-auth',
+        task_title: 'Implement authentication',
+        text: 'Working on it...',
+        timestamp: 1710374400000,
+      };
+
+      manager.broadcast('agents', 'agent_text_chunk', payload, projectA);
+
+      const sentMessage = JSON.parse((ws.send as any).mock.calls[0][0]);
+      expect(sentMessage.data.task_title).toBe('Implement authentication');
+      expect(sentMessage.data.text).toBe('Working on it...');
     });
   });
 

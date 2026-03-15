@@ -306,12 +306,15 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         await commitIfShadow(ctx.shadow, `task: start ${params.ref}`);
 
         // AC: @api-contract ac-6, @trait-api-endpoint ac-5 - WebSocket broadcast
+        // AC: @ui-api-aggregation ac-4 - Include title and old/new status
         // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
         pubsub.broadcast('tasks:updates', 'task_updated', {
           ref: params.ref,
           ulid: task._ulid,
           action: 'start',
-          status: 'in_progress',
+          title: task.title,
+          old_status: task.status,
+          new_status: 'in_progress',
         }, projectContext.path);
 
         // AC: @api-contract ac-6 - Return updated task
@@ -378,11 +381,15 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         await commitIfShadow(ctx.shadow, `task: add note to ${params.ref}`);
 
         // AC: @api-contract ac-7 - WebSocket broadcast
+        // AC: @ui-api-aggregation ac-4 - Include title (no status change for notes)
         // AC: @multi-directory-daemon ac-18 - Broadcast scoped to request project
         pubsub.broadcast('tasks:updates', 'task_updated', {
           ref: params.ref,
           ulid: task._ulid,
           action: 'note_added',
+          title: task.title,
+          old_status: null,
+          new_status: null,
           note_ulid: note._ulid,
         }, projectContext.path);
 
@@ -441,11 +448,14 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         await syncSpecImplementationStatus(ctx, updatedTask, tasks, items, index);
         await commitIfShadow(ctx.shadow, `task: submit ${params.ref}`);
 
+        // AC: @ui-api-aggregation ac-4 - Include title and old/new status
         pubsub.broadcast('tasks:updates', 'task_updated', {
           ref: params.ref,
           ulid: task._ulid,
           action: 'submit',
-          status: 'pending_review',
+          title: task.title,
+          old_status: task.status,
+          new_status: 'pending_review',
         }, projectContext.path);
 
         return updatedTask;
@@ -488,11 +498,14 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         await syncSpecImplementationStatus(ctx, updatedTask, tasks, items, index);
         await commitIfShadow(ctx.shadow, `task: complete ${params.ref}`);
 
+        // AC: @ui-api-aggregation ac-4 - Include title and old/new status
         pubsub.broadcast('tasks:updates', 'task_updated', {
           ref: params.ref,
           ulid: task._ulid,
           action: 'complete',
-          status: 'completed',
+          title: task.title,
+          old_status: task.status,
+          new_status: 'completed',
         }, projectContext.path);
 
         return updatedTask;
@@ -540,11 +553,14 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         await syncSpecImplementationStatus(ctx, updatedTask, tasks, items, index);
         await commitIfShadow(ctx.shadow, `task: block ${params.ref}`);
 
+        // AC: @ui-api-aggregation ac-4 - Include title and old/new status
         pubsub.broadcast('tasks:updates', 'task_updated', {
           ref: params.ref,
           ulid: task._ulid,
           action: 'block',
-          status: 'blocked',
+          title: task.title,
+          old_status: task.status,
+          new_status: 'blocked',
         }, projectContext.path);
 
         return updatedTask;

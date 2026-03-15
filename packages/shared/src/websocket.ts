@@ -60,6 +60,61 @@ export interface BroadcastEvent {
   data: any;
 }
 
+// ─── Enriched Event Data Payloads ─────────────────────────────────────────────
+// AC: @ui-api-aggregation ac-4
+
+/**
+ * Data payload for task_updated broadcast events.
+ * Includes display title and both old/new status for in-place UI updates.
+ */
+export interface TaskUpdatedEventData {
+  ref: string;
+  ulid: string;
+  action: string;
+  title: string;
+  old_status: string | null;
+  new_status: string | null;
+  note_ulid?: string;
+}
+
+/**
+ * Data payload for inbox_item_created broadcast events.
+ * Includes full item data so consumers can render without re-fetching.
+ */
+export interface InboxItemCreatedEventData {
+  ulid: string;
+  text: string;
+  tags?: string[];
+  added_by?: string;
+  created_at: string;
+}
+
+/**
+ * Data payload for agent_invocation broadcast events.
+ * Includes task_title for display alongside task_id.
+ */
+export interface AgentInvocationEventData {
+  session_id: string;
+  agent_id: string;
+  task_id: string | null;
+  task_title: string | null;
+  status: string;
+  timestamp: number;
+}
+
+/**
+ * Data payload for agent_text_chunk broadcast events.
+ * Includes task_title for display alongside task_id.
+ */
+export interface AgentTextChunkEventData {
+  session_id: string;
+  agent_id: string;
+  task_id: string | null;
+  task_title: string | null;
+  text: string;
+  timestamp: number;
+}
+
 /**
  * Union of all possible WebSocket messages from server
  */
