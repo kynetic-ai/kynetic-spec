@@ -131,9 +131,15 @@ derive_from_specs: true
 ```yaml
 - title: Write migration guide
   slug: migration-guide
+  description: |
+    Document breaking changes and provide step-by-step upgrade instructions
+    for users migrating from v1 to v2.
   priority: 2
   tags:
     - docs
+  spec_ref: "@oauth-provider"
+  depends_on:
+    - "@token-refresh"
 ```
 
 ## Implementation Notes
@@ -147,7 +153,7 @@ Use passport.js for OAuth, following existing auth patterns.
 | Section | Content | Notes |
 |---------|---------|-------|
 | `## Specs` | YAML code block — array of spec objects | **Must** use fenced code block (triple-backtick yaml) |
-| `## Tasks` | `derive_from_specs: true` + optional manual tasks | Manual tasks get `plan_ref` but no `spec_ref` |
+| `## Tasks` | `derive_from_specs: true` + optional manual tasks | Manual tasks get `plan_ref`; can optionally set `spec_ref`, `depends_on`, `description` |
 | `## Implementation Notes` | Plain text | Attached to plan record; per-spec notes use `implementation_notes` field |
 
 ### Spec Fields
@@ -162,6 +168,18 @@ Use passport.js for OAuth, following existing auth patterns.
 | `acceptance_criteria` | No | Array of `{id, given, when, then}` |
 | `traits` | No | Array of trait slugs (e.g., `trait-json-output`) |
 | `implementation_notes` | No | Scoped to this spec's derived task |
+
+### Task Fields
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `title` | Yes | Task title |
+| `slug` | No | Human-friendly ID (auto-generated from title if omitted) |
+| `description` | No | Task context — what to do and why |
+| `priority` | No | 1 (highest) to 5 (lowest), default: 3 |
+| `tags` | No | Array of tags (e.g., `docs`, `cli`) |
+| `spec_ref` | No | Link to a spec — local spec slug or existing `@ref` |
+| `depends_on` | No | Array of refs — local task/spec slugs or existing `@ref`s |
 
 ## Trait Selection
 
