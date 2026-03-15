@@ -98777,7 +98777,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -98786,9 +98786,18 @@
     - docs
     - cli
   vcs_refs: []
-  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+  submission_linkage:
+    branch: main
+    commit: 0779d4b97c3812e05ad6c8cf8ba12d1e3c6e02e1
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T17:10:02.918Z
+  session_id: null
   created_at: 2026-03-15T17:00:32.754Z
   started_at: 2026-03-15T17:05:03.277Z
+  submitted_at: 2026-03-15T17:10:03.717Z
   notes:
     - _ulid: 01KKS7JRW69MB7WWGZCY8C4HB8
       created_at: 2026-03-15T17:09:27.558Z
@@ -98800,16 +98809,45 @@
         'local task/spec slugs'. Files changed: templates/skills/plan/SKILL.md. Rendered via kspec
         setup to .kspec/skills/ and .agents/skills/."
       supersedes: null
+    - _ulid: 01KKS89KE2WNRAGPCECS9T2EAH
+      created_at: 2026-03-15T17:21:55.650Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 1] Review findings: MUST-FIX: No PR exists and changes were applied to the wrong
+        file. Three blocking issues:
+
+
+        1. SUBMISSION COMMIT MISSING: The submission commit 0779d4b does not exist in the repo
+        history. The changes were never pushed to main or any branch.
+
+
+        2. WRONG FILE EDITED: The worker edited .kspec/skills/plan/SKILL.md (shadow branch local
+        skill override) instead of templates/skills/plan/SKILL.md (the source template). Per
+        AGENTS.md: 'Core skills are authored in templates/skills/ and listed in
+        templates/skills/manifest.yaml.' The plan skill is a core skill — the source of truth is
+        templates/skills/plan/SKILL.md.
+
+
+        3. NO PR CREATED: Task was submitted without creating a PR. The pr workflow requires a PR
+        for review.
+
+
+        Required fixes:
+
+        - Apply all three changes (expanded task example, updated Section Reference, Task Fields
+        table) to templates/skills/plan/SKILL.md
+
+        - Run kspec skill render (or kspec setup) to regenerate .agents/skills/ from the source
+        template
+
+        - Remove the local override from .kspec/skills/plan/SKILL.md (or ensure it stays in sync)
+
+        - Create a PR with the changes
+
+        - The content in .kspec/skills/plan/SKILL.md shows good work — just applied to the wrong
+        file
+      supersedes: null
   todos: []
-  submitted_at: 2026-03-15T17:10:03.717Z
-  submission_linkage:
-    branch: main
-    commit: 0779d4b97c3812e05ad6c8cf8ba12d1e3c6e02e1
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-15T17:10:02.918Z
 - _ulid: 01KKS7AM5ABY67ESJAGBXAQT71
   slugs:
     - task-fix-dispatch-engine-stop-await
