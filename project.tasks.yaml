@@ -97461,7 +97461,7 @@
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -97478,7 +97478,7 @@
     upstream_ref: refs/heads/main
     review_url: null
     captured_at: 2026-03-15T03:47:43.845Z
-  session_id: 01KKQRYPXH2GC132Q5XDJQRRZJ
+  session_id: null
   created_at: 2026-03-15T03:28:12.187Z
   started_at: 2026-03-15T03:35:04.813Z
   submitted_at: 2026-03-15T03:47:44.622Z
@@ -97494,6 +97494,13 @@
         for sessions, ref index usage, project switch cache clearing, static mode compatibility,
         error handling, migration guide (before/after), testing patterns, anti-patterns, and
         boundaries (WS streaming stays outside queries)."
+      supersedes: null
+    - _ulid: 01KKQT9538GF43PZ0K2X76GG3R
+      created_at: 2026-03-15T03:57:46.472Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: Branch behind origin/main with merge conflict in
+        kspec-agents.md. Rebase onto main and re-run kspec agents generate. Content quality is clean
+        — this is the only blocking issue."
       supersedes: null
   todos: []
   automation: eligible
