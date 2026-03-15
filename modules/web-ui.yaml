@@ -263,7 +263,7 @@ features:
               module location
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
       - _ulid: 01KJTVMGPNP3HN9B9SRF6MEER7
         slugs:
           - ws-disconnect-lifecycle-cleanup
