@@ -98094,9 +98094,18 @@
   tags:
     - web-ui
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T06:19:58.900Z
   session_id: 01KKR0YWV7ED1SQ2CGF8K1KCHM
   created_at: 2026-03-15T03:28:15.834Z
   started_at: 2026-03-15T05:55:01.454Z
+  submitted_at: 2026-03-15T06:19:59.640Z
   notes:
     - _ulid: 01KKR158XDEF2VT67AAPGQ69RS
       created_at: 2026-03-15T05:57:59.341Z
@@ -98111,17 +98120,30 @@
         - Files: packages/web-ui/src/routes/{agents,sessions,sessions/[id],settings,workflows,observations}/+page.svelte, packages/web-ui/src/lib/query/keys.ts, tests/web-ui-tanstack-query.test.ts
         - Verification: npm test, existing AC annotations preserved
       supersedes: null
+    - _ulid: 01KKR2EGW24B0XYP3YPQ2S1BD9
+      created_at: 2026-03-15T06:20:30.978Z
+      author: "@claude"
+      content: >-
+        Submitted PR #871. Migrated 6 pages to TanStack Query:
+
+        - observations: createQuery, removed 
+
+        - workflows: createQuery, removed WS handlers  
+
+        - settings: 4x createQuery, removed WS handlers
+
+        - agents: createQuery + createMutation, server-resolved task_title
+
+        - sessions/[id]: createQuery, server-resolved task_title, removed resolveTaskTitle()
+
+        - sessions: removed fetchTasks({limit:1000}), uses task_title from response
+
+
+        Key patterns: eliminated fetchTasks-for-titles across 3 pages, extended WS invalidation
+        wiring for observations+sessions, added task_title to ActiveInvocation+SessionSummary types.
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-15T06:19:59.640Z
-  submission_linkage:
-    branch: main
-    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-15T06:19:58.900Z
 - _ulid: 01KKQRK4GRF9PBJVJG4S3BDE33
   slugs:
     - task-migrate-sidebar
