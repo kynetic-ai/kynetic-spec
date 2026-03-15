@@ -98409,7 +98409,17 @@
   session_id: 01KKR5PXSGHFCRZ94BQZSQXE60
   created_at: 2026-03-15T03:28:17.620Z
   started_at: 2026-03-15T07:18:53.553Z
-  notes: []
+  notes:
+    - _ulid: 01KKR6ZKPHH208WX2F3ZZFCC6X
+      created_at: 2026-03-15T07:39:45.233Z
+      author: "@claude"
+      content: Migrated inbox and triage pages to TanStack Query. Used merged aggregation endpoint for
+        inline triage status (eliminates O(n*m) client-side join). Fixed WS invalidation topic names
+        to match daemon broadcasts (tasks:updates, inbox:updates, triage:updates, items:updates,
+        files:updates). Triage page still uses fetchTriageRecords for detail view fields
+        (evidence_refs, override_reasoning, override_by) not included in merged endpoint. All 251
+        test files pass (5383 tests).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK68XM841PBFQFNPT33VZ
