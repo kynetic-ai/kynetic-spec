@@ -1594,3 +1594,13 @@ inbox:
       - bug
       - validate
     added_by: "@claude"
+  - _ulid: 01KKQSA39WYM55BREEXP8S5728
+    text: Plan derive does not carry implementation_notes from plan task definitions into the created
+      task descriptions. Had to manually set descriptions on all 11 tasks after derive. The
+      implementation_notes field in plan YAML is parsed but not mapped to task.description during
+      derive.
+    created_at: 2026-03-15T03:40:48.828Z
+    tags:
+      - cli
+      - plan
+    added_by: "@claude"

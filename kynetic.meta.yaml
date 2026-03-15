@@ -8215,6 +8215,26 @@ observations:
     author: Jacob Chapel
     resolved: false
     resolution: null
+  - _ulid: 01KKQSA3BKV4SGH18961VYJFK8
+    type: friction
+    content: "Spec quality iteration: took 3 rounds of agent review to move from implementation-shaped
+      specs to behavioral specs. Consider adding a spec quality checklist to /kspec:writing-specs
+      skill — questions like: Would this AC survive a complete reimplementation? Does it name
+      specific technologies? Does it describe observable behavior?"
+    created_at: 2026-03-15T03:40:48.883Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KKQSA3FHXPA6Y0NWP6JTYNCA
+    type: success
+    content: Parallel agent-browser UI audit across all pages simultaneously gave concrete findings that
+      code-only analysis missed (raw spec_ref slugs on task cards, sidebar 30s polling, missing
+      Active Fleet on board). The agent-browser CLI + parallel agents pattern is highly effective
+      for UI coverage audits.
+    created_at: 2026-03-15T03:40:49.009Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
