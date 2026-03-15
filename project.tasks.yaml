@@ -99235,6 +99235,16 @@
 
         - resolveBranchStartPoint (same file) already validates branch existence
       supersedes: null
+    - _ulid: 01KKSW6YW2ZXFBPFHQ6A4HF63H
+      created_at: 2026-03-15T23:10:00.578Z
+      author: "@claude"
+      content: "Implemented fix: replaced unconditional 'main' default return in
+        resolveDispatchWorkspaceConfig (workspace.ts:1358-1363) with validation via
+        resolveBranchStartPoint. Now throws DispatchWorkspaceError with actionable guidance when no
+        base branch can be resolved. Added two tests: one for the error case (non-main repo,
+        detached HEAD, no remote) and one for the valid default fallback (main exists, detached
+        HEAD). All 5473 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKSGSZA2HXFDXW8RA3GV1JFC
