@@ -100061,9 +100061,18 @@
     - bug
     - mvp
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T23:24:15.634Z
   session_id: 01KKSW8V518J7QMQA3KN873A2F
   created_at: 2026-03-15T23:07:41.936Z
   started_at: 2026-03-15T23:11:17.037Z
+  submitted_at: 2026-03-15T23:24:16.410Z
   notes:
     - _ulid: 01KKSW9SECT2WB0E96YDG2BG99
       created_at: 2026-03-15T23:11:33.324Z
@@ -100084,14 +100093,13 @@
 
         - Verification: Existing tests pass + new test proving concurrent drains are serialized
       supersedes: null
+    - _ulid: 01KKSX1VH24QWTE5MC8H7J4DCC
+      created_at: 2026-03-15T23:24:41.890Z
+      author: "@claude"
+      content: "Submitted PR #887. Fixed by routing all 5 direct _drainQueues() call sites through
+        _serializedDrain(): handleStateChange (coalesceWindowMs=0), _bootstrap, _reconcile, retry
+        wake-up setTimeout, and post-invocation re-evaluation. Added 4 tests covering AC-27 and
+        AC-9. Full test suite passes (5475/5475)."
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-15T23:24:16.410Z
-  submission_linkage:
-    branch: main
-    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-15T23:24:15.634Z
