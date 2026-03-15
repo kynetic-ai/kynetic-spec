@@ -97431,7 +97431,7 @@
     - task-ui-data-layer-skill
   title: Create UI data layer skill for Svelte + TanStack Query patterns
   type: task
-  spec_ref: null
+  spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
   status: pending
@@ -97451,7 +97451,7 @@
     - task-tanstack-setup
   title: Install TanStack Query, set up provider, and migrate dashboard as proof
   type: task
-  spec_ref: null
+  spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
   status: pending
@@ -97472,7 +97472,7 @@
     - task-server-resolve
   title: Add server-side title resolution to API responses
   type: task
-  spec_ref: null
+  spec_ref: "@ui-api-ref-resolution"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
   status: pending
@@ -97492,7 +97492,7 @@
     - task-ref-index-endpoint
   title: Implement ref index endpoint
   type: task
-  spec_ref: null
+  spec_ref: "@ui-api-ref-resolution"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
   status: pending
@@ -97511,7 +97511,7 @@
     - task-server-aggregation
   title: Add server-side aggregation endpoints
   type: task
-  spec_ref: null
+  spec_ref: "@ui-api-aggregation"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
   status: pending
@@ -97530,7 +97530,7 @@
     - task-ws-enrichment
   title: Enrich WebSocket broadcast payloads
   type: task
-  spec_ref: null
+  spec_ref: "@ui-api-aggregation"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
   status: pending
@@ -97550,7 +97550,7 @@
     - task-migrate-core-pages
   title: Migrate core pages to TanStack Query (agents, sessions, settings)
   type: task
-  spec_ref: null
+  spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
   status: pending
@@ -97571,7 +97571,7 @@
     - task-migrate-sidebar
   title: Migrate sidebar to TanStack Query and eliminate polling
   type: task
-  spec_ref: null
+  spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
   status: pending
@@ -97591,7 +97591,7 @@
     - task-migrate-complex-pages
   title: Migrate complex pages to TanStack Query (tasks, board, specs, plans, validate)
   type: task
-  spec_ref: null
+  spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
   status: pending
@@ -97613,7 +97613,7 @@
     - task-migrate-inbox-triage
   title: Migrate inbox and triage pages to TanStack Query
   type: task
-  spec_ref: null
+  spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
   status: pending
@@ -97630,26 +97630,26 @@
   created_at: 2026-03-15T03:28:17.620Z
   notes: []
   todos: []
-- title: Clean up legacy fetch infrastructure
-  type: task
+- _ulid: 01KKQRK68XM841PBFQFNPT33VZ
   slugs:
     - task-cleanup-legacy-fetches
-  spec_ref: null
+  title: Clean up legacy fetch infrastructure
+  type: task
+  spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
-  priority: 3
-  tags:
-    - web-ui
+  origin: derived
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-migrate-core-pages"
     - "@task-migrate-sidebar"
     - "@task-migrate-complex-pages"
     - "@task-migrate-inbox-triage"
-  notes: []
-  origin: derived
-  _ulid: 01KKQRK68XM841PBFQFNPT33VZ
-  status: pending
-  blocked_by: []
   context: []
+  priority: 3
+  tags:
+    - web-ui
   vcs_refs: []
   created_at: 2026-03-15T03:28:18.205Z
+  notes: []
   todos: []
