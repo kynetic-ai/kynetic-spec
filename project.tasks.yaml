@@ -97739,7 +97739,7 @@
   spec_ref: "@ui-api-ref-resolution"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -97814,6 +97814,14 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-15T04:56:24.208Z
+  closed_reason: "Merged in PR #867. The ref index endpoint implementation was delivered via PR #866
+    (server-side title resolution) which included the complete implementation with
+    ReferenceIndex/buildRefIndex utility, plans support, and comprehensive test coverage (28 tests
+    in ref-resolution.test.ts). PR #867 cleanly closed the task branch after merge conflict
+    resolution adopted main's version. All ACs covered: ac-4 (ref map with title/type/status,
+    ULID+slug keys), ac-5 (lightweight payload). All trait ACs properly annotated as N/A with
+    justification."
 - _ulid: 01KKQRK2R219TBGWE4XQEBJNEC
   slugs:
     - task-server-aggregation
