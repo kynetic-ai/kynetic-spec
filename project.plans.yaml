@@ -17737,146 +17737,41 @@ plans:
 
       ```yaml
 
-      - title: TanStack Query Integration
-        slug: ui-tanstack-query
+      - title: API Reference Resolution
+        slug: ui-api-ref-resolution
         type: feature
         description: |
-          Adopt @tanstack/svelte-query v6 as the client-side data fetching and caching
-          layer. TanStack Query provides automatic caching, request deduplication,
-          stale-while-revalidate, and background revalidation — all the primitives
-          needed to replace the current per-page independent fetch pattern.
+          The daemon API resolves entity references to display-ready metadata so
+          consumers can render human-readable titles, statuses, and types without
+          separate lookups. This applies both inline (fields within existing
+          responses) and via a dedicated lightweight index endpoint for arbitrary
+          resolution.
 
-          The integration establishes a QueryClient at the app root, migrates existing
-          fetch calls to query hooks, and wires WebSocket events into query invalidation
-          so real-time updates flow through the cache layer instead of bypassing it.
-
-          Must coexist with the existing static mode (GitHub Pages export) where daemon
-          APIs are unavailable and data comes from embedded JSON snapshots.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              The web UI app initializes
-            when: |
-              The root layout mounts
-            then: |
-              A QueryClient is created and provided to all descendant components
-              with default cache timing configured for the app's real-time
-              update pattern.
-          - id: ac-2
-            given: |
-              A page needs to fetch data from the daemon API
-            when: |
-              The page component mounts
-            then: |
-              The page uses a query that manages loading and error states as
-              a single source of truth rather than independent state variables.
-          - id: ac-3
-            given: |
-              The user navigates from one page to another and back
-            when: |
-              The second visit occurs while cached data is still available
-            then: |
-              The page renders immediately from cache without a loading state,
-              then revalidates in the background if stale.
-          - id: ac-4
-            given: |
-              Two pages or components request the same data concurrently
-            when: |
-              Both queries are active at the same time
-            then: |
-              Only one HTTP call is made. Both consumers share the result.
-          - id: ac-5
-            given: |
-              A WebSocket broadcast event arrives indicating data has changed
-            when: |
-              The event is processed
-            then: |
-              Active queries for the affected entity type are invalidated,
-              triggering background revalidation.
-          - id: ac-6
-            given: |
-              A WebSocket broadcast includes enough data to patch the cache
-              (e.g., enriched task_updated with title, old/new status)
-            when: |
-              The event is processed
-            then: |
-              The cache is updated immediately from broadcast data without
-              waiting for revalidation.
-          - id: ac-7
-            given: |
-              The user switches projects in the multi-directory daemon
-            when: |
-              The project context changes
-            then: |
-              All cached data is discarded. Subsequent queries fetch fresh
-              data for the new project.
-          - id: ac-8
-            given: |
-              A write operation is performed (start task, add note, etc.)
-            when: |
-              The operation succeeds
-            then: |
-              Related queries are invalidated on success so the originating
-              client updates immediately without waiting for a broadcast.
-          - id: ac-9
-            given: |
-              The app is running in static mode (GitHub Pages export)
-            when: |
-              A query is created
-            then: |
-              The query uses static data sources and does not attempt daemon
-              HTTP calls. Existing static mode data dispatch is preserved.
-          - id: ac-10
-            given: |
-              The daemon is unreachable or returns an error
-            when: |
-              A query fails
-            then: |
-              The query surfaces the error state with appropriate messaging
-              (e.g., daemon not running vs data error). Retry behavior is
-              configured for localhost semantics (minimal retries, short delay).
-
-      - title: Server-Side Reference Resolution
-        slug: ui-server-resolve
-        type: requirement
-        description: |
-          API endpoints that return entity references (task_ref, spec_ref, depends_on,
-          blocked_by) resolve display metadata server-side rather than returning bare
-          ref strings that require the client to fetch all entities and join locally.
-
-          The daemon already loads ReferenceIndex on most routes, so exposing resolved
-          metadata alongside refs is near-zero additional cost.
-
-          Audit findings driving this spec:
-          - 5 pages call fetchTasks({limit: 1000}) solely for title resolution
-          - sessions/[id] fetches 1000 tasks to resolve ONE title
-          - depends_on/blocked_by arrays are bare ref strings requiring separate resolution
-          - spec_ref on task list, board cards, and detail panel shows raw @slug, not title
-          - Triage evidence_refs display as raw joined strings without resolution
-
-          This spec covers inline resolution in existing API responses. For arbitrary
-          ref resolution (markdown content, cross-links), see @ui-ref-index.
+          Currently, API responses return bare ref strings (e.g., "@task-slug",
+          "@01KKFY93") forcing every consumer to independently fetch full entity
+          lists to build title lookup maps. With 1000+ entities, this pattern
+          breaks and wastes bandwidth.
         traits:
           - trait-api-endpoint
         acceptance_criteria:
           - id: ac-1
             given: |
-              An API response includes a reference to another entity
+              An API response includes a single-valued reference to another entity
               (task_ref, task_id, spec_ref, plan_ref)
             when: |
               The response is serialized
             then: |
-              A corresponding title field is included alongside the ref,
-              resolved against the loaded entity data. Null if unresolvable.
+              A corresponding title field is included alongside the ref, resolved
+              against loaded entity data. Null if the ref cannot be resolved.
           - id: ac-2
             given: |
-              An API response includes arrays of references to other entities
+              An API response includes an array of references to other entities
               (depends_on, blocked_by, evidence_refs, derived_specs, derived_tasks)
             when: |
               The response is serialized
             then: |
-              Each entry includes the resolved title and current status
-              alongside the ref string.
+              Each entry includes the resolved title and current status alongside
+              the ref string.
           - id: ac-3
             given: |
               A referenced entity has been deleted or the ref is invalid
@@ -17885,162 +17780,46 @@ plans:
             then: |
               The title field is null and the raw ref is preserved. The response
               does not fail or omit the entry.
-
-      - title: Lightweight Reference Index Endpoint
-        slug: ui-ref-index
-        type: requirement
-        description: |
-          A dedicated endpoint that returns a minimal ref-to-display-metadata map
-          for all entities. Returns only lightweight tuples — not full entity objects.
-          Serves cases where server-side resolution isn't available (rendering
-          arbitrary refs in markdown content, cross-entity link previews).
-
-          Backed by a long-lived cache query with WebSocket-driven invalidation.
-
-          Audit findings: 7 pages fetch full entity lists (limit 999-1000) purely
-          for counting or ref resolution. A lightweight index serves all of these
-          at a fraction of the payload size.
-        traits:
-          - trait-api-endpoint
-        acceptance_criteria:
-          - id: ac-1
+          - id: ac-4
             given: |
-              The client needs to resolve an arbitrary ref to display metadata
+              A consumer needs to resolve an arbitrary set of refs to display
+              metadata (e.g., rendering refs in markdown, cross-entity link previews)
             when: |
-              The endpoint is called
+              A lightweight index endpoint is called
             then: |
               Returns a map of all resolvable refs (tasks, items, traits) with
               title, type, and status. Both ULID and slug keys are included
               for each entity.
-          - id: ac-2
+          - id: ac-5
             given: |
               The project has 1000+ entities
             when: |
-              The endpoint is called
+              The index endpoint is called
             then: |
-              Response payload is significantly smaller than fetching full entity
-              lists because it only includes display metadata.
-          - id: ac-3
-            given: |
-              An entity changes while the client holds a cached ref index
-            when: |
-              The change is detected via WebSocket
-            then: |
-              The cached index is updated or invalidated so subsequent
-              resolution calls return current data.
+              The response payload is significantly smaller than fetching full
+              entity lists because it only includes display metadata.
 
-      - title: Eliminate Unbounded Fetch Patterns
-        slug: ui-no-unbounded-fetch
-        type: requirement
+      - title: API Aggregation and Enriched Events
+        slug: ui-api-aggregation
+        type: feature
         description: |
-          Remove all instances of fetching large entity lists with arbitrary limits
-          purely for client-side joins or counting. Pages that display entity lists
-          use proper pagination. Pages that need reference resolution use the ref
-          index or server-resolved fields.
+          The daemon provides pre-computed aggregations and enriched event payloads
+          so consumers do not need to fetch full entity lists to compute derived
+          data. This covers both HTTP endpoints for summary statistics and WebSocket
+          broadcast events that include enough context for in-place UI updates.
 
-          Audit findings — 14 unbounded fetches to eliminate:
-          - fetchTasks({limit: 1000}) on 6 pages (dashboard, agents, sessions list,
-            session detail, board, validate)
-          - fetchItems({limit: 999}) on validate page for AC counting
-          - fetchTasks({limit: 999}) on validate page for orphan counting
-          - fetchInbox({limit: 1000}) on triage and inbox pages
-          - fetchTriageRecords({limit: 1000}) on triage and inbox pages
-          - Sidebar polls fetchInbox, fetchObservations, fetchTasks every 30 seconds
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              A page previously fetched all entities solely for title resolution
-            when: |
-              The page loads
-            then: |
-              The page uses server-resolved titles from API responses or the
-              ref index. No bulk entity fetch occurs for title lookup.
-          - id: ac-2
-            given: |
-              A page displays a paginated list
-            when: |
-              The list is filtered or paginated
-            then: |
-              Only the current page of results is fetched. Total count comes
-              from the API pagination wrapper.
-          - id: ac-3
-            given: |
-              A page needs aggregate statistics (counts, coverage percentages)
-            when: |
-              The page loads
-            then: |
-              The API returns pre-computed statistics. The client does not
-              fetch full entity lists to compute them locally.
-          - id: ac-4
-            given: |
-              The sidebar needs badge counts (inbox, observations, pending review)
-            when: |
-              The sidebar renders
-            then: |
-              Badge counts come from cached queries invalidated by WebSocket
-              events, not from a polling interval.
-
-      - title: WebSocket Event Enrichment
-        slug: ui-ws-enrichment
-        type: requirement
-        description: |
-          WebSocket broadcast events include enough resolved data for the client
-          to update its cache without a round-trip HTTP re-fetch. For entity
-          mutation events, the broadcast includes the minimal set of fields the
-          UI renders in list/summary views.
-
-          The daemon already has the entity loaded when it broadcasts, so the
-          marginal cost is near zero.
-
-          Audit findings — every WS event currently triggers full list re-fetch:
-          - tasks topic on tasks page, board, dashboard, plans → loadAll pattern
-          - Dashboard task_updated triggers 5 parallel API re-fetches
-          - triage:updates and inbox:updates each trigger 1000-item re-fetches
-          - Settings reloads 4 endpoints on any files:updates event
-          - No page patches local state in-place
+          Currently, the dashboard fetches 1000 tasks to count by status, the
+          validate page fetches all items and tasks to compute coverage stats, and
+          inbox/triage pages independently fetch all inbox items and triage records
+          to perform the same client-side join. Every WebSocket event triggers a
+          full list re-fetch because broadcasts lack display context.
         traits:
+          - trait-api-endpoint
           - trait-websocket-protocol
         acceptance_criteria:
           - id: ac-1
             given: |
-              An entity changes (task status, inbox item created, etc.)
-            when: |
-              The broadcast event is sent
-            then: |
-              The payload includes the entity's display title and both
-              old and new state where applicable, in addition to the
-              existing ref and action fields.
-          - id: ac-2
-            given: |
-              The client receives an enriched broadcast event
-            when: |
-              The event is for data the client has cached
-            then: |
-              The client can patch cached data in-place for the affected
-              entity without re-fetching the entire list. Full re-fetch
-              is reserved for derived data that needs server recomputation.
-
-      - title: Server-Side Aggregation Endpoints
-        slug: ui-server-aggregation
-        type: requirement
-        description: |
-          Dedicated endpoints for aggregated/computed data that the client currently
-          derives by fetching full entity lists. The daemon computes these from
-          data it already loads, eliminating heavyweight client-side processing.
-
-          Audit findings:
-          - Dashboard fetches 1000 tasks to count by status and resolve dependencies
-            for ready vs blocked distinction
-          - Validate page fetches all items (999) + all tasks (999) to count coverage
-            stats; AC coverage is fragile — parses free-text warning detail strings
-          - Inbox and triage pages both fetch all inbox items + all triage records
-            then merge them client-side by inbox_ref (O(n*m) join)
-        traits:
-          - trait-api-endpoint
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              The dashboard needs task status breakdowns
+              A consumer needs entity counts grouped by status
             when: |
               A summary endpoint is called
             then: |
@@ -18048,20 +17827,120 @@ plans:
               distinctions (e.g., ready vs blocked by incomplete dependencies).
           - id: ac-2
             given: |
-              The validate page needs coverage statistics
+              A consumer needs validation coverage statistics
             when: |
               The validation or alignment endpoint is called
             then: |
               The response includes entity counts, acceptance criteria counts,
-              and orphaned task/spec counts as pre-computed fields.
+              and orphaned entity counts as pre-computed fields.
           - id: ac-3
             given: |
-              A page needs inbox items with their triage status
+              A consumer needs inbox items with their triage status
             when: |
               A merged endpoint is called
             then: |
               Returns inbox items with inline triage status, eliminating the
               need for separate fetches and client-side joins.
+          - id: ac-4
+            given: |
+              An entity changes (task status, inbox item created, etc.)
+            when: |
+              A WebSocket broadcast event is sent
+            then: |
+              The payload includes the entity's display title and both old and
+              new state where applicable, in addition to the existing ref and
+              action fields.
+          - id: ac-5
+            given: |
+              A consumer receives a broadcast event for data it has displayed
+            when: |
+              The event contains enriched fields
+            then: |
+              The consumer has enough information to update the affected entity
+              in-place without re-fetching the entire list from the server.
+
+      - title: UI Data Freshness and Caching
+        slug: ui-data-freshness
+        type: feature
+        description: |
+          The web UI maintains a shared, reactive data cache that provides instant
+          page transitions, request deduplication, and real-time updates without
+          per-page independent fetching. Data fetched by one page is available to
+          all pages. Real-time events drive cache invalidation. The UI degrades
+          gracefully when the daemon is unreachable and supports read-only static
+          mode for exported snapshots.
+
+          Currently, each page independently fetches data on mount, discards it
+          on navigation, and re-fetches the same data on return. WebSocket events
+          trigger full list re-fetches. The sidebar polls 4 endpoints every 30
+          seconds. There is no shared state between pages.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A page fetches data on first visit
+            when: |
+              The user navigates away and returns to the same page
+            then: |
+              The page renders immediately from cached data without a loading
+              state, then revalidates in the background if the data is stale.
+          - id: ac-2
+            given: |
+              Two or more pages or components need the same data concurrently
+            when: |
+              Both are active at the same time
+            then: |
+              Only one HTTP request is made. Both consumers share the result.
+          - id: ac-3
+            given: |
+              A WebSocket broadcast event indicates data has changed
+            when: |
+              The event is processed by the UI
+            then: |
+              Cached data for the affected entity type is invalidated and
+              active views revalidate in the background. If the broadcast
+              includes sufficient enriched data, the cache is updated
+              immediately without a server round-trip.
+          - id: ac-4
+            given: |
+              The UI needs periodic status data (badge counts, agent status)
+            when: |
+              The data would previously have been polled on an interval
+            then: |
+              The data is served from cache and invalidated by WebSocket
+              events rather than polled on a timer.
+          - id: ac-5
+            given: |
+              The user switches projects in the multi-directory daemon
+            when: |
+              The project context changes
+            then: |
+              All cached data is discarded. Subsequent data requests fetch
+              fresh data for the new project.
+          - id: ac-6
+            given: |
+              The app is running in static mode (exported snapshot)
+            when: |
+              A data request is made
+            then: |
+              The request is served from the static data source. No daemon
+              HTTP calls are attempted.
+          - id: ac-7
+            given: |
+              The daemon is unreachable or returns an error
+            when: |
+              A data request fails
+            then: |
+              The error is surfaced with appropriate messaging (e.g., daemon
+              not running vs data error). Retry behavior is appropriate for
+              localhost (minimal retries, short delay).
+          - id: ac-8
+            given: |
+              A write operation is performed (start task, add note, etc.)
+            when: |
+              The operation succeeds
+            then: |
+              Related cached data is invalidated so the originating client
+              updates immediately without waiting for a broadcast.
       ```
 
 
@@ -18143,17 +18022,24 @@ plans:
           tasks follow. The query factories, WebSocket wiring, and conventions
           created here become the foundation — later tasks just add more queries
           using the same patterns.
+
+          Acceptance gates (from @ui-data-freshness):
+          - Dashboard renders from cache on revisit without loading state (ac-1)
+          - WebSocket events invalidate dashboard queries, no full re-fetch (ac-3)
+          - Static mode works without daemon calls (ac-6)
+          - Daemon-unreachable shows appropriate error, not infinite loading (ac-7)
+          - Write operations (if any on dashboard) invalidate related cache (ac-8)
         depends_on:
           - "@task-ui-data-layer-skill"
 
-      - title: Add server-side title resolution to invocation and session API responses
-        slug: task-server-resolve-sessions
+      - title: Add server-side title resolution to API responses
+        slug: task-server-resolve
         priority: 1
         tags:
           - daemon
           - web-ui
         implementation_notes: |
-          The daemon already loads task data on the affected routes.
+          The daemon already loads task/item data via ReferenceIndex on most routes.
           Add resolved title fields alongside existing ref fields.
 
           Endpoints to update:
@@ -18163,12 +18049,14 @@ plans:
           - GET /api/tasks → task summaries need spec_title alongside spec_ref
           - GET /api/tasks/:ref → task detail needs spec_title, resolved depends_on
             and blocked_by entries with titles and status
+          - Triage records → evidence_refs need resolved titles
 
           Add response types to @kynetic-ai/shared package for type safety.
 
-          Frontend: consume the new fields instead of building per-page
-          taskTitles lookup maps. Remove the fetchTasks({limit: 1000}) calls
-          from agents page, sessions list, and session detail page.
+          Acceptance gates (from @ui-api-ref-resolution):
+          - Single-valued refs include resolved title (ac-1)
+          - Array refs include resolved title and status per entry (ac-2)
+          - Invalid/deleted refs return null title, preserve raw ref (ac-3)
 
       - title: Implement ref index endpoint
         slug: task-ref-index-endpoint
@@ -18176,16 +18064,68 @@ plans:
         tags:
           - daemon
         implementation_notes: |
-          Add a lightweight endpoint that returns a ref-to-display-metadata map
-          for all entities. Include tasks, items, and traits. Return title, type,
-          and status for each. Key by both ULID and slug.
+          Add GET /api/refs/index returning a lightweight ref-to-display-metadata
+          map. Include tasks, items, and traits. Return title, type, and status
+          for each. Key by both ULID and slug.
 
-          The payload should be significantly smaller than full entity lists —
-          omit descriptions, notes, ACs, tags, and other heavyweight fields.
-
+          Omit descriptions, notes, ACs, tags, and other heavyweight fields.
+          Must respect X-Kspec-Dir project scoping.
           Add response type to @kynetic-ai/shared package.
 
-          Must respect X-Kspec-Dir project scoping.
+          Acceptance gates (from @ui-api-ref-resolution):
+          - Returns map with title, type, status per ref (ac-4)
+          - Payload significantly smaller than full entity lists (ac-5)
+
+      - title: Add server-side aggregation endpoints
+        slug: task-server-aggregation
+        priority: 2
+        tags:
+          - daemon
+        implementation_notes: |
+          Three independent endpoints. Can be implemented incrementally.
+
+          1. Task status summary:
+             - Endpoint returning counts by status with dependency-aware
+               ready vs blocked distinction.
+
+          2. Validation/alignment stats:
+             - Extend validation/alignment response to include entity counts,
+               AC counts, and orphan counts as pre-computed fields. Eliminates
+               the fragile pattern of parsing free-text warning detail strings
+               with regex for AC coverage calculation.
+
+          3. Inbox/triage merge:
+             - Merged endpoint returning inbox items with inline triage status,
+               eliminating the need for separate fetches and client-side joins.
+
+          Add response types to @kynetic-ai/shared package.
+          Each must respect X-Kspec-Dir project scoping.
+
+          Acceptance gates (from @ui-api-aggregation):
+          - Status counts with dependency-aware distinctions (ac-1)
+          - Coverage stats as pre-computed fields (ac-2)
+          - Inbox items with inline triage status (ac-3)
+
+      - title: Enrich WebSocket broadcast payloads
+        slug: task-ws-enrichment
+        priority: 2
+        tags:
+          - daemon
+          - websocket
+        implementation_notes: |
+          Update broadcast calls in daemon routes to include display-ready data.
+          The entities are already loaded at broadcast time.
+
+          task_updated: add title, include both old and new status.
+          agent_invocation: add task_title alongside task_id.
+          agent_text_chunk: add task_title.
+          inbox_item_created: include full item data (already partially done).
+
+          Update shared BroadcastEvent types in @kynetic-ai/shared.
+
+          Acceptance gates (from @ui-api-aggregation):
+          - Broadcasts include display title and old/new state (ac-4)
+          - Payload sufficient for in-place update without re-fetch (ac-5)
 
       - title: Migrate core pages to TanStack Query (agents, sessions, settings)
         slug: task-migrate-core-pages
@@ -18212,9 +18152,14 @@ plans:
           For each page: replace manual fetch/$state/$effect/WS reload with queries.
           Preserve @ui-url-panel-state AC annotations where URL state is used.
           Remove old WebSocket reload handlers as pages are migrated.
+
+          Acceptance gates (from @ui-data-freshness):
+          - Each page renders from cache on revisit (ac-1)
+          - Concurrent requests deduplicated (ac-2)
+          - WS events invalidate, not full re-fetch (ac-3)
         depends_on:
           - "@task-tanstack-setup"
-          - "@task-server-resolve-sessions"
+          - "@task-server-resolve"
 
       - title: Migrate sidebar to TanStack Query and eliminate polling
         slug: task-migrate-sidebar
@@ -18232,10 +18177,14 @@ plans:
           - Session context query
 
           After migration, remove the 30s polling interval entirely.
+
+          Acceptance gates (from @ui-data-freshness):
+          - Badge counts served from cache, invalidated by WS events (ac-4)
+          - No polling interval remains (ac-4)
         depends_on:
           - "@task-tanstack-setup"
 
-      - title: Migrate complex pages to TanStack Query (dashboard, tasks, specs)
+      - title: Migrate complex pages to TanStack Query (tasks, board, specs, plans, validate)
         slug: task-migrate-complex-pages
         priority: 2
         tags:
@@ -18247,19 +18196,24 @@ plans:
           Pages in scope (dashboard already migrated in task-tanstack-setup):
           1. tasks/+page.svelte — paginated query with filter params in key,
              task detail panel as separate query, spec_ref uses server-resolved title
-          3. tasks/board/+page.svelte — all-tasks query for columns, agent status
+          2. tasks/board/+page.svelte — all-tasks query for columns, agent status
              query (replace 5s polling interval). Active Fleet streaming stays
              outside TanStack Query. Spec refs use server-resolved titles.
-          4. specs/+page.svelte — items query, detail query (3 parallel calls could
+          3. specs/+page.svelte — items query, detail query (3 parallel calls could
              be reduced), caching eliminates re-fetch on re-select
-          5. plans/+page.svelte — plans query, lazy content query with caching.
+          4. plans/+page.svelte — plans query, lazy content query with caching.
              Convert filter from local state to URL params for consistency.
-          6. validate/+page.svelte — validation query with server-computed stats
+          5. validate/+page.svelte — validation query with server-computed stats
              (after server aggregation), remove fetchItems/fetchTasks
 
+          Acceptance gates (from @ui-data-freshness):
+          - Each page renders from cache on revisit (ac-1)
+          - Board agent status served from cache, not 5s polling (ac-4)
+          - WS events invalidate, not full re-fetch (ac-3)
+          - Project switch clears all cache (ac-5)
         depends_on:
           - "@task-tanstack-setup"
-          - "@task-server-resolve-sessions"
+          - "@task-server-resolve"
           - "@task-server-aggregation"
 
       - title: Migrate inbox and triage pages to TanStack Query
@@ -18281,58 +18235,12 @@ plans:
           Both pages subscribe to inbox:updates and triage:updates — after migration,
           WS events invalidate the merged inbox query instead of triggering full reload.
 
+          Acceptance gates (from @ui-data-freshness + @ui-api-aggregation):
+          - Inbox items include inline triage status, no client join (aggregation ac-3)
+          - WS events invalidate, not full re-fetch (freshness ac-3)
         depends_on:
           - "@task-tanstack-setup"
           - "@task-server-aggregation"
-
-      - title: Add server-side aggregation for dashboard, validate, and inbox
-        slug: task-server-aggregation
-        priority: 2
-        tags:
-          - daemon
-          - web-ui
-        implementation_notes: |
-          Three independent server-side endpoints. Can be implemented incrementally.
-
-          Dashboard counts:
-          - Endpoint returning task counts by status with dependency-aware
-            ready vs blocked distinction.
-
-          Validate stats:
-          - Extend validation/alignment response to include entity counts,
-            AC counts, and orphan counts as pre-computed fields. Eliminates
-            the fragile pattern of parsing free-text warning detail strings
-            with regex for AC coverage calculation.
-
-          Inbox/triage merge:
-          - Merged endpoint returning inbox items with inline triage status,
-            eliminating the client-side join that both inbox and triage pages
-            perform independently.
-
-          Add response types to @kynetic-ai/shared package.
-          Each endpoint must respect X-Kspec-Dir project scoping.
-
-      - title: Enrich WebSocket broadcast payloads with resolved data
-        slug: task-ws-enrichment
-        priority: 2
-        tags:
-          - daemon
-          - websocket
-        implementation_notes: |
-          Update broadcast calls in daemon routes to include display-ready data.
-          The entities are already loaded at broadcast time.
-
-          task_updated: add title, include both old and new status.
-          agent_invocation: add task_title alongside task_id.
-          agent_text_chunk: add task_title.
-          inbox_item_created: include full item data (already partially done).
-
-          After enrichment, the WebSocket → query invalidation handler can use
-          the enriched data for immediate cache patches via setQueryData() on
-          the affected entity while invalidating derived data (counts,
-          aggregations) for background revalidation.
-
-          Update shared BroadcastEvent types in @kynetic-ai/shared.
 
       - title: Clean up legacy fetch infrastructure
         slug: task-cleanup-legacy-fetches
@@ -18350,14 +18258,12 @@ plans:
 
           Grep for "limit: 999" and "limit: 1000" to verify none remain.
           Grep for "setInterval" to verify no polling remains.
+          Verify static mode still works end-to-end.
         depends_on:
           - "@task-migrate-core-pages"
           - "@task-migrate-sidebar"
           - "@task-migrate-complex-pages"
           - "@task-migrate-inbox-triage"
-          Verify static mode still works end-to-end.
-
-          Depends on: all migration tasks complete
       ```
 
 
@@ -18370,9 +18276,7 @@ plans:
 
       immediate trigger was fetchTasks({limit: 1000}) breaking at 1020 tasks, but the
 
-      underlying pattern affects sessions, items, and will compound as the UI grows
-
-      (reviews, deeper plan management, inter-entity navigation).
+      underlying pattern affects sessions, items, and will compound as the UI grows.
 
 
       **Technology choice: @tanstack/svelte-query v6**
@@ -18383,9 +18287,14 @@ plans:
 
       WebSocket events integrate via queryClient.invalidateQueries() and setQueryData().
 
-      This replaces the current pattern where every page independently fetches and discards
 
-      data on navigation, and every WebSocket event triggers a full list re-fetch.
+      **Convention to add after plan approval:**
+
+      "API list endpoints must use pagination; clients must not fetch unbounded entity
+
+      lists for derived data. Use server-resolved fields or the ref index for title
+
+      resolution. Use server-side aggregation for computed statistics."
 
 
       **UI audit summary (14 unbounded fetches across 7 pages + sidebar):**
@@ -18406,60 +18315,31 @@ plans:
 
       - Triage evidence_refs display as raw joined strings without resolution
 
-      - Specs, observations, and validate pages have no WebSocket subscriptions
-
-      - Sessions infinite scroll must use createInfiniteQuery
-
-
-      **Architecture principles:**
-
-      1. TanStack Query as the data layer — all request-response fetches go through queries,
-         WebSocket text streaming (agent output) stays outside queries
-      2. Server resolves what it already has — the daemon loads ReferenceIndex on almost
-         every route, so adding title resolution is near-zero cost
-      3. Ref index as a cached query — one lightweight endpoint, long staleTime, WS-invalidated
-
-      4. Enrich broadcasts — the daemon has the entity at broadcast time, include the title;
-         enriched data enables immediate cache patches via setQueryData()
-      5. Aggregate server-side — counts and joins that every client repeats belong on the server
-
-      6. Static mode preserved — query factories must wrap the existing isStaticMode() dispatch
-
-
-      **Phasing:**
-
-      - Phase 1: Skill + TanStack Query setup + server-side title resolution + ref index endpoint
-        → fixes the 1000 limit bug, establishes the data layer and conventions
-      - Phase 2: Migrate all pages (4 migration tasks split by complexity) + server-side
-        aggregation + WebSocket enrichment + sidebar migration
-        → eliminates all unbounded fetches, polling, and re-fetch storms
-      - Phase 3: Clean up legacy fetch infrastructure
-        → remove dead code, verify no regressions
 
       **Task dependency graph:**
 
-      - task-ui-data-layer-skill (no deps)
+      - task-ui-data-layer-skill (no deps — first)
 
       - task-tanstack-setup ← task-ui-data-layer-skill
 
-      - task-server-resolve-sessions (no deps, daemon-only)
+      - task-server-resolve (no deps, daemon-only, parallel with setup)
 
-      - task-ref-index-endpoint (no deps, daemon-only)
+      - task-ref-index-endpoint (no deps, daemon-only, parallel with setup)
 
       - task-migrate-sidebar ← task-tanstack-setup
 
-      - task-migrate-core-pages ← task-tanstack-setup, task-server-resolve-sessions
+      - task-migrate-core-pages ← task-tanstack-setup, task-server-resolve
 
-      - task-server-aggregation (no deps, daemon-only)
+      - task-server-aggregation (no deps, daemon-only, parallel)
 
-      - task-ws-enrichment (no deps, daemon-only)
+      - task-ws-enrichment (no deps, daemon-only, parallel)
 
-      - task-migrate-complex-pages ← task-tanstack-setup (dashboard proves pattern),
-      task-server-resolve-sessions, task-server-aggregation
+      - task-migrate-complex-pages ← task-tanstack-setup, task-server-resolve,
+      task-server-aggregation
 
       - task-migrate-inbox-triage ← task-tanstack-setup, task-server-aggregation
 
-      - task-cleanup-legacy-fetches ← all migration tasks
+      - task-cleanup-legacy-fetches ← all 4 migration tasks
     status: draft
     derived_tasks: []
     derived_specs: []
@@ -18478,3 +18358,8 @@ plans:
         author: "@claude"
         content: "Set derive_from_specs: false — explicit tasks cover all work, spec-derived tasks would be
           redundant"
+      - _ulid: 01KKQPST4XQHQKD9S34C7Y43RG
+        created_at: 2026-03-15T02:56:58.013Z
+        author: "@claude"
+        content: "Restructure: 6 specs → 3 behavioral specs, move implementation details to task acceptance
+          gates"
