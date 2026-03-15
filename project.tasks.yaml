@@ -98367,6 +98367,14 @@
         rebase onto main and resolve conflicts in api.ts and keys.ts. No code quality issues — only
         a merge conflict."
       supersedes: null
+    - _ulid: 01KKR8118P3R5DHB5015RYJTX5
+      created_at: 2026-03-15T07:58:00.470Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 4] Rebased onto main to resolve merge conflicts with PR #871 (core pages
+        migration). Conflicts in tests/web-ui-tanstack-query.test.ts resolved — kept both core pages
+        and complex pages test sections. api.ts and keys.ts auto-merged cleanly. All 5467 tests pass
+        locally, all CI checks pass. PR #873 is now MERGEABLE."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK5PM5VTQBBBMT11PMCE6
@@ -98397,6 +98405,11 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #874. Migrated inbox and triage pages to TanStack Query using merged
+    aggregation endpoint. Eliminates O(n*m) client-side join between inbox items and triage records.
+    Fixed WS invalidation topic names to match daemon broadcasts. Added triage:updates to
+    centralized WS invalidation. Write operations properly invalidate cache. All AC coverage
+    verified: @ui-data-freshness ac-1/2/3/6/7/8, @ui-api-aggregation ac-3."
   depends_on:
     - "@task-tanstack-setup"
     - "@task-server-aggregation"
@@ -98418,6 +98431,7 @@
   created_at: 2026-03-15T03:28:17.620Z
   started_at: 2026-03-15T07:18:53.553Z
   submitted_at: 2026-03-15T07:39:53.293Z
+  completed_at: 2026-03-15T07:55:17.958Z
   notes:
     - _ulid: 01KKR6ZKPHH208WX2F3ZZFCC6X
       created_at: 2026-03-15T07:39:45.233Z
@@ -98431,12 +98445,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T07:55:17.958Z
-  closed_reason: "Merged in PR #874. Migrated inbox and triage pages to TanStack Query using merged
-    aggregation endpoint. Eliminates O(n*m) client-side join between inbox items and triage records.
-    Fixed WS invalidation topic names to match daemon broadcasts. Added triage:updates to
-    centralized WS invalidation. Write operations properly invalidate cache. All AC coverage
-    verified: @ui-data-freshness ac-1/2/3/6/7/8, @ui-api-aggregation ac-3."
 - _ulid: 01KKQRK68XM841PBFQFNPT33VZ
   slugs:
     - task-cleanup-legacy-fetches
