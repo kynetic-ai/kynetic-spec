@@ -97478,22 +97478,6 @@
     - task-tanstack-setup
   title: Install TanStack Query, set up provider, and migrate dashboard as proof
   type: task
-  spec_ref: "@ui-data-freshness"
-  plan_ref: "@plan-ui-data-layer-rework"
-  origin: derived
-  status: pending
-  blocked_by: []
-  depends_on:
-    - "@task-ui-data-layer-skill"
-  context: []
-  priority: 1
-  tags:
-    - web-ui
-    - infra
-  vcs_refs: []
-  created_at: 2026-03-15T03:28:12.799Z
-  notes: []
-  todos: []
   description: >-
     Install @tanstack/svelte-query v6 (requires Svelte >= 5.25.0).
 
@@ -97517,6 +97501,22 @@
     loading state (ac-1), WebSocket events invalidate dashboard queries (ac-3), static mode works
     (ac-6), daemon-unreachable shows appropriate error (ac-7), write operations invalidate related
     cache (ac-8).
+  spec_ref: "@ui-data-freshness"
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-ui-data-layer-skill"
+  context: []
+  priority: 1
+  tags:
+    - web-ui
+    - infra
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:12.799Z
+  notes: []
+  todos: []
 - _ulid: 01KKQRK1KGVQKF0WA5C06C2B1K
   slugs:
     - task-server-resolve
@@ -97537,6 +97537,35 @@
   created_at: 2026-03-15T03:28:13.424Z
   notes: []
   todos: []
+  description: >-
+    Add resolved title fields alongside existing ref fields on daemon API responses. The daemon
+    already loads task/item data via ReferenceIndex on most routes.
+
+
+    Endpoints to update:
+
+    - GET /api/agent/status → active_invocations need task_title
+
+    - GET /api/sessions → session summaries need task_title
+
+    - GET /api/sessions/:id → session detail needs task_title
+
+    - GET /api/tasks → task summaries need spec_title alongside spec_ref
+
+    - GET /api/tasks/:ref → task detail needs spec_title, resolved depends_on and blocked_by entries
+    with titles and status
+
+    - Triage records → evidence_refs need resolved titles
+
+
+    Add response types to @kynetic-ai/shared package for type safety. Frontend: consume the new
+    fields instead of building per-page taskTitles lookup maps. Remove the fetchTasks({limit: 1000})
+    calls from agents page, sessions list, and session detail page.
+
+
+    Acceptance gates (from @ui-api-ref-resolution): Single-valued refs include resolved title
+    (ac-1), array refs include resolved title and status per entry (ac-2), invalid/deleted refs
+    return null title, preserve raw ref (ac-3).
 - _ulid: 01KKQRK26BXGJJPBJ1NQ4GM59C
   slugs:
     - task-ref-index-endpoint
