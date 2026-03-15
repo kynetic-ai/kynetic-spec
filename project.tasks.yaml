@@ -99956,7 +99956,8 @@
   plan_ref: null
   status: pending
   blocked_by: []
-  depends_on: []
+  depends_on:
+    - "@01KKSW2Q"
   context: []
   priority: 1
   tags:
@@ -99967,7 +99968,11 @@
   created_at: 2026-03-15T23:07:24.153Z
   notes: []
   todos: []
-- title: Fix max_concurrent violation from concurrent drain paths
+  automation: eligible
+- _ulid: 01KKSW2QFG4MDMQZ7CTZYRHG3D
+  slugs: []
+  title: Fix max_concurrent violation from concurrent drain paths
+  type: task
   description: >-
     The dispatch engine can violate the per-agent max_concurrent limit when multiple drain paths
     execute concurrently. For example, after a worker invocation fails, the post-invocation
@@ -100008,22 +100013,20 @@
 
 
     AC coverage: @agent-dispatch-engine ac-27, @per-task-dispatch-drain-coalescing ac-9.
-  type: task
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - dispatch
     - bug
     - mvp
-  depends_on: []
-  _ulid: 01KKSW2QFG4MDMQZ7CTZYRHG3D
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-15T23:07:41.936Z
   notes: []
   todos: []
+  automation: eligible
