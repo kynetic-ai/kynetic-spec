@@ -255,9 +255,7 @@ features:
           - id: ac-4
             given: an explicit webUiDir option or WEB_UI_DIR env var is present
             when: daemon starts
-            then: the explicit or env var path takes precedence over the bundled dist/web-ui/ path. The daemon
-              never resolves web UI assets from process.cwd() as cwd reflects the project directory,
-              not the daemon installation.
+            then: the explicit or env var path is used to serve web UI assets
           - id: ac-5
             given: the daemon is started with cwd set to a project directory that contains its own
               packages/web-ui/build/
