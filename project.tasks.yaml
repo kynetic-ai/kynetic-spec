@@ -97871,7 +97871,7 @@
   spec_ref: "@ui-api-aggregation"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -97883,6 +97883,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-15T05:11:14.861Z
+  session_id: 01KKQYF4PZEFFDVPQ1W283T12K
 - _ulid: 01KKQRK3BM6MARTC3MSE6YV4VY
   slugs:
     - task-ws-enrichment
