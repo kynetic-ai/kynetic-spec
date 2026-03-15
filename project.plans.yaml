@@ -18893,12 +18893,12 @@ plans:
 
       - **Shared types** (`@kynetic-ai/shared`): New BroadcastEvent types, deprecate
       agent_text_chunk.
-    status: draft
+    status: approved
     derived_tasks: []
     derived_specs: []
     source_path: /home/chapel/Projects/kynetic-spec/plans/session-stream-redesign.md
     module_ref: null
     created_at: 2026-03-15T19:50:09.906Z
-    approved_at: null
+    approved_at: 2026-03-15T19:50:16.828Z
     completed_at: null
     notes: []
