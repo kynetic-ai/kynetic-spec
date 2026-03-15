@@ -5748,3 +5748,79 @@ workspaces:
       last_reconciled_at: 2026-03-15T21:31:41.098Z
       last_active_at: 2026-03-15T21:31:03.039Z
       closed_at: null
+  - workspace_id: dispatch-workspace-01KKSGSZY9G04716168198EYK2
+    task_ref: "@01KKSGSZY9G04716168198EYK2"
+    task_slug: task-session-event-detail-endpoint
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    resolved_base_branch: main
+    base_branch_point: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    canonical_branch: dispatch/task/task-session-event-detail-endpoint/01kksgsz
+    canonical_branch_head: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    branch_provenance:
+      ownership: dispatcher-managed
+      source: provisioned
+      remote_ref: null
+      adopted_from: null
+      adopted_at: null
+      rehydrated: null
+    lifecycle_state: ready
+    active_role: null
+    worktrees:
+      worker:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-event-detail-endpoint-01kksgsz
+        branch_mode: branch
+        branch_ref: dispatch/task/task-session-event-detail-endpoint/01kksgsz
+        head: 6f2b02df930df09e597db225bd51605b7f2a58e7
+        last_seen_at: 2026-03-15T21:31:43.360Z
+      reviewer: null
+    bootstrap:
+      status: not_run
+      configHash: null
+      canonicalBranchHead: null
+      lastRunAt: null
+      invalidationReasons: []
+      steps: []
+      failureMessage: null
+      lastRole: null
+      roleStates:
+        worker:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+        reviewer:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+    integration:
+      status: pending
+      target_branch: main
+      target_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+      publication_mode: pull_request
+      outcome: pull_request
+      detail: null
+      updated_at: 2026-03-15T21:31:43.360Z
+    health:
+      status: healthy
+      summary: Workspace record matches current git branch and worktree state.
+      issues: []
+      updated_at: 2026-03-15T21:31:43.360Z
+    cleanup:
+      status: not_scheduled
+      eligible: false
+      reason: null
+      detail: null
+      updated_at: 2026-03-15T21:31:43.360Z
+    timestamps:
+      created_at: 2026-03-15T21:31:43.360Z
+      updated_at: 2026-03-15T21:31:43.360Z
+      last_reconciled_at: 2026-03-15T21:31:43.360Z
+      last_active_at: null
+      closed_at: null
