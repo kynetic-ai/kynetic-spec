@@ -631,6 +631,13 @@ describe("session detail page migration (@ui-data-freshness ac-1)", () => {
     expect(sessionDetailSrc).toContain("streamingText");
     expect(sessionDetailSrc).toContain("subscribe(['agents'])");
   });
+
+  it("resets events state when sessionId changes", () => {
+    // When SvelteKit reuses the component for a different session,
+    // eventsLoadTriggered must be reset to trigger a fresh load
+    expect(sessionDetailSrc).toContain("prevSessionId");
+    expect(sessionDetailSrc).toContain("eventsLoadTriggered = false");
+  });
 });
 
 // AC: @ui-data-freshness ac-1
@@ -659,6 +666,10 @@ describe("sessions list page migration (@ui-data-freshness ac-1)", () => {
     expect(sessionsSrc).not.toContain("unsubscribe(");
     expect(sessionsSrc).not.toContain("on('agents'");
     expect(sessionsSrc).not.toContain("off('agents'");
+  });
+
+  it("does not import unused onMount", () => {
+    expect(sessionsSrc).not.toContain("onMount");
   });
 
   it("derives sessions from infinite query pages", () => {

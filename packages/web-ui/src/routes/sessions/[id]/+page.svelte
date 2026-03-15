@@ -55,6 +55,21 @@
 	// Track whether initial events load has been triggered
 	let eventsLoadTriggered = $state(false);
 
+	// Reset events state when sessionId changes (SvelteKit may reuse component)
+	let prevSessionId = $state(sessionId);
+	$effect(() => {
+		if (sessionId !== prevSessionId) {
+			prevSessionId = sessionId;
+			eventsLoadTriggered = false;
+			events = [];
+			blocks = [];
+			eventsLoading = true;
+			error = '';
+			streamingText = '';
+			lastSeq = -1;
+		}
+	});
+
 	async function loadEvents() {
 		if (isStaticMode()) {
 			eventsLoading = false;

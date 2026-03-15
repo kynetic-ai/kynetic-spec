@@ -18,7 +18,7 @@
   AC: @ui-data-freshness ac-3 — WS events invalidate session queries via centralized wiring
 -->
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
