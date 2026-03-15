@@ -97560,9 +97560,18 @@
     - web-ui
     - infra
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T04:36:22.684Z
   session_id: 01KKQVMA97Z9PGF09R3HFNY1F1
   created_at: 2026-03-15T03:28:12.799Z
   started_at: 2026-03-15T04:21:49.683Z
+  submitted_at: 2026-03-15T04:36:23.431Z
   notes:
     - _ulid: 01KKQWEB13G5M30JHQ35RPHDHG
       created_at: 2026-03-15T04:35:33.539Z
@@ -97590,15 +97599,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-15T04:36:23.431Z
-  submission_linkage:
-    branch: main
-    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-15T04:36:22.684Z
 - _ulid: 01KKQRK1KGVQKF0WA5C06C2B1K
   slugs:
     - task-server-resolve
@@ -97792,6 +97792,16 @@
         behind by 20+ commits. PR #866 (server-side title resolution) modified
         packages/daemon/src/server.ts and likely conflicts. Rebase onto main and resolve conflicts.
         Code quality and AC coverage are otherwise clean — no code changes needed."
+      supersedes: null
+    - _ulid: 01KKQWYWQ5X70WAEPFMP54BWHQ
+      created_at: 2026-03-15T04:44:35.941Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Resolved merge conflicts with main. PR #866 (server-side title resolution)
+        had already merged the ref index implementation using ReferenceIndex and buildRefIndex
+        utility. Adopted main's version which is more complete (includes plans, uses shared
+        utility). Removed duplicate test file (daemon-refs-index.test.ts) since
+        ref-resolution.test.ts provides full AC-4/AC-5 coverage. Fixed duplicate type definitions in
+        api.ts from auto-merge. All 5312 tests pass, PR #867 now CLEAN/MERGEABLE."
       supersedes: null
   todos: []
   automation: eligible
