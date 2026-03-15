@@ -97563,7 +97563,31 @@
   session_id: 01KKQVMA97Z9PGF09R3HFNY1F1
   created_at: 2026-03-15T03:28:12.799Z
   started_at: 2026-03-15T04:21:49.683Z
-  notes: []
+  notes:
+    - _ulid: 01KKQWEB13G5M30JHQ35RPHDHG
+      created_at: 2026-03-15T04:35:33.539Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Install TanStack Query v6 and migrate dashboard as proof of the data layer
+        pattern
+
+        - Scope: Part 1 (infrastructure setup) and Part 2 (dashboard migration)
+
+        - Files changed:
+          - packages/web-ui/package.json (added @tanstack/svelte-query dependency)
+          - packages/web-ui/src/lib/query/client.ts (new - QueryClient factory)
+          - packages/web-ui/src/lib/query/keys.ts (new - query key factories)
+          - packages/web-ui/src/lib/query/ws-invalidation.ts (new - WS → query invalidation)
+          - packages/web-ui/src/lib/query/context.ts (new - QueryClient lifecycle)
+          - packages/web-ui/src/lib/query/index.ts (new - barrel export)
+          - packages/web-ui/src/routes/+layout.svelte (added QueryClientProvider + WS wiring)
+          - packages/web-ui/src/lib/stores/project.svelte.ts (added cache clear on project switch)
+          - packages/web-ui/src/routes/+page.svelte (migrated dashboard from manual fetch to createQuery)
+          - tests/web-ui-tanstack-query.test.ts (new - 48 static analysis tests)
+        - Verification: All 5001 tests pass, svelte-check passes for modified files, build succeeds
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK1KGVQKF0WA5C06C2B1K
