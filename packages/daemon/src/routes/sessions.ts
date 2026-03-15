@@ -36,6 +36,7 @@ import {
   AlignmentIndex,
   type KspecContext,
 } from '../../parser/index.js';
+import { resolveRefTitle } from './ref-resolution.js';
 import { getSessionCache } from '../../sessions/cache.js';
 import { SessionStatusSchema } from '../../sessions/types.js';
 import { parseTimeSpec } from '../../utils/time.js';
@@ -252,6 +253,7 @@ export function createSessionRoutes() {
     // AC: @session-summary-cache ac-cache-build — Uses cached summaries instead of re-reading all files
     // AC: @session-list-pagination-api ac-pagination — offset/limit pagination with total
     // AC: @session-list-pagination-api ac-metadata-only — Only reads session.yaml, uses cache
+    // AC: @ui-api-ref-resolution ac-1 — Include task_title resolved server-side
     .get('/', async ({ query, error: errorResponse, projectContext }) => {
       const ctx = await initContext(projectContext.path);
       const filteredResult = await filterSessionSummaries(ctx, query);
@@ -267,11 +269,28 @@ export function createSessionRoutes() {
       const limit = Number(query.limit) || total;
       const paginated = filtered.slice(offset, offset + limit);
 
+      // AC: @ui-api-ref-resolution ac-1 — Resolve task_title for session summaries
+      let refIndex: ReferenceIndex | null = null;
+      const taskIdsPresent = paginated.some((s) => s.task_id);
+      if (taskIdsPresent) {
+        try {
+          const tasks = await loadAllTasks(ctx);
+          const items = await loadAllItems(ctx);
+          refIndex = new ReferenceIndex(tasks, items);
+        } catch {
+          // Non-critical — task_title will be null
+        }
+      }
+      const enriched = paginated.map((s) => ({
+        ...s,
+        task_title: s.task_id && refIndex ? resolveRefTitle(refIndex, s.task_id) : null,
+      }));
+
       // Detect legacy sessions and include warning in response
       const legacyCount = await countLegacySessions(ctx.specDir);
 
       return {
-        items: paginated,
+        items: enriched,
         total,
         offset,
         limit,
@@ -375,11 +394,13 @@ export function createSessionRoutes() {
       const metadata = await getSession(ctx.sessionsDir, resolution.id);
 
       // AC: @ui-session-stream ac-4 — Resolve spec context from task's spec_ref
+      // AC: @ui-api-ref-resolution ac-1 — Resolve task_title
       let spec_context: {
         spec_ref: string;
         title: string;
         acceptance_criteria: Array<{ id: string; description: string }>;
       } | null = null;
+      let task_title: string | null = null;
 
       if (metadata?.task_id) {
         try {
@@ -388,7 +409,8 @@ export function createSessionRoutes() {
           const index = new ReferenceIndex(tasks, items);
           const taskResult = index.resolve(metadata.task_id);
           if (taskResult.ok) {
-            const task = taskResult.item as { spec_ref?: string };
+            const task = taskResult.item as { title?: string; spec_ref?: string };
+            task_title = task.title ?? null;
             if (task.spec_ref) {
               const specResult = index.resolve(task.spec_ref);
               if (specResult.ok) {
@@ -426,6 +448,7 @@ export function createSessionRoutes() {
       return {
         ...detail,
         task_id: metadata?.task_id,
+        task_title,
         agent_id: metadata?.agent_id,
         trigger: metadata?.trigger ?? 'legacy',
         spec_context,

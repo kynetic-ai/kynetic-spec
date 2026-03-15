@@ -35,6 +35,7 @@ import {
 import { commitIfShadow } from '../../parser/shadow.js';
 import type { PubSubManager } from '../websocket/pubsub';
 import { getRelatedSessionsForTask } from './session-related.js';
+import { resolveRefTitle, resolveRefEntries } from './ref-resolution.js';
 
 interface TasksRouteOptions {
   pubsub: PubSubManager;
@@ -111,6 +112,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
         // AC: @api-contract ac-2 - Return with status, priority, spec_ref, notes count
         // AC: @web-dashboard ac-1 - Include depends_on for blocked task computation
+        // AC: @ui-api-ref-resolution ac-1 - Include spec_title resolved server-side
         const items = paginated.map((task) => ({
           _ulid: task._ulid,
           slugs: task.slugs,
@@ -119,6 +121,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           status: task.status,
           priority: task.priority,
           spec_ref: task.spec_ref,
+          spec_title: resolveRefTitle(index, task.spec_ref),
           meta_ref: task.meta_ref,
           tags: task.tags,
           depends_on: task.depends_on || [],
@@ -159,7 +162,8 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         const ctx = await initContext(projectContext.path);
         const tasks = await loadAllTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
+        const plans = await loadPlans(ctx);
+        const index = new ReferenceIndex(tasks, items, [], plans);
 
         // AC: @api-contract ac-5, @trait-api-endpoint ac-2 - Resolve ref via ReferenceIndex
         const result = index.resolve(params.ref);
@@ -185,6 +189,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
 
         // AC: @api-contract ac-5 - Return full task with notes, todos, dependencies
         // AC: @ui-task-board ac-3 - Include type, description, blocked_by, vcs_refs, plan_ref, session_ref
+        // AC: @ui-api-ref-resolution ac-1, ac-2 - Include resolved titles for refs
         return {
           _ulid: task._ulid,
           slugs: task.slugs,
@@ -193,17 +198,21 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           status: task.status,
           priority: task.priority,
           spec_ref: task.spec_ref,
+          spec_title: resolveRefTitle(index, task.spec_ref),
           meta_ref: task.meta_ref,
           tags: task.tags,
           description: task.description,
           derivation: task.derivation,
           depends_on: task.depends_on,
+          resolved_depends_on: resolveRefEntries(index, task.depends_on),
           blocked_by: task.blocked_by || [],
+          resolved_blocked_by: resolveRefEntries(index, task.blocked_by),
           context: task.context || [],
           vcs_refs: (task.vcs_refs || []).map((v) =>
             typeof v === 'string' ? v : v.type ? `${v.type}:${v.ref}` : v.ref
           ),
           plan_ref: task.plan_ref,
+          plan_title: resolveRefTitle(index, task.plan_ref),
           session_ref: task.session_id,
           notes: task.notes,
           notes_count: task.notes?.length || 0,
