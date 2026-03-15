@@ -5028,7 +5028,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
     canonical_branch: dispatch/task/task-migrate-complex-pages/01kkqrk5
-    canonical_branch_head: 9bfe2e9f16354498a16451f96cdc4b12f6b42b8d
+    canonical_branch_head: 1675afee56a1c9ea9c6963deeedfe973221412ea
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -5081,22 +5081,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T07:18:35.941Z
+      updated_at: 2026-03-15T07:24:35.784Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T07:18:35.941Z
+      updated_at: 2026-03-15T07:24:35.784Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T07:18:35.941Z
+      updated_at: 2026-03-15T07:24:35.784Z
     timestamps:
       created_at: 2026-03-15T06:47:12.066Z
-      updated_at: 2026-03-15T07:18:35.941Z
-      last_reconciled_at: 2026-03-15T07:18:35.941Z
+      updated_at: 2026-03-15T07:24:35.784Z
+      last_reconciled_at: 2026-03-15T07:24:35.784Z
       last_active_at: 2026-03-15T07:17:32.983Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKQRK5PM5VTQBBBMT11PMCE6
