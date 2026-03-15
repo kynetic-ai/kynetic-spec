@@ -97446,6 +97446,33 @@
   created_at: 2026-03-15T03:28:12.187Z
   notes: []
   todos: []
+  description: >-
+    Create a kspec skill (.kspec/skills/ui-data-layer/SKILL.md) that documents the data fetching
+    patterns and conventions for the web UI. This skill is the reference for all agents working on
+    UI data layer tasks.
+
+
+    CRITICAL: The agent MUST research the actual TanStack Query v6 Svelte documentation online
+    before writing this skill. Do NOT fabricate API signatures, configuration options, or patterns
+    from memory. Fetch and reference the real docs:
+
+    - https://tanstack.com/query/latest/docs/framework/svelte/overview
+
+    - https://tanstack.com/query/latest/docs/framework/svelte/migrate-from-v5-to-v6
+
+    - @tanstack/svelte-query npm package README
+
+
+    Content to cover: TanStack Query v6 setup and conventions, query key naming conventions and
+    factory patterns, WebSocket → query invalidation wiring, creating queries and mutations, ref
+    index usage for title resolution, cache timing conventions, project switch cache clearing,
+    static mode compatibility, error handling and retry config for localhost daemon, migration guide
+    (page from manual fetch to queries), testing patterns, anti-patterns to avoid, boundary
+    (WebSocket streaming stays outside queries), sessions infinite scroll uses createInfiniteQuery.
+
+
+    The existing svelte-5 skill covers reactivity patterns. This new skill covers the data layer
+    specifically. After creating, add to .kspec/skills/ and run kspec skill render.
 - _ulid: 01KKQRK0ZZZ1QMCNHDHK3969AF
   slugs:
     - task-tanstack-setup
