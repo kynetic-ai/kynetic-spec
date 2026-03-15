@@ -98877,3 +98877,25 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Replace CLI spawns with YAML seeding in session start tests
+  type: task
+  spec_ref: "@session-start-inbox-triage"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - task-yaml-seed-session-tests
+  tags:
+    - test
+    - performance
+    - test-flakiness
+  depends_on: []
+  automation: eligible
+  _ulid: 01KKS7BD3N7DCQNS5GW8ZZSAZW
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-15T17:05:26.133Z
+  notes: []
+  todos: []
