@@ -98181,7 +98181,25 @@
   session_id: 01KKR2F6FX723S2K6RNDJ27Y07
   created_at: 2026-03-15T03:28:16.408Z
   started_at: 2026-03-15T06:21:57.411Z
-  notes: []
+  notes:
+    - _ulid: 01KKR33VRX34DJRR0AJGSP3A31
+      created_at: 2026-03-15T06:32:10.269Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Migrate sidebar from 30s polling to TanStack Query with WS-driven invalidation
+
+        - Scope: Sidebar.svelte, query keys, WS invalidation mapping, tests
+
+        - Files changed:
+          - packages/web-ui/src/lib/components/Sidebar.svelte (replaced setInterval+loadCounts with 4 createQuery calls)
+          - packages/web-ui/src/lib/query/keys.ts (added sessionContext and observations.count keys)
+          - packages/web-ui/src/lib/query/ws-invalidation.ts (added observations+sessionContext to files/tasks invalidation)
+          - tests/web-ui-tanstack-query.test.ts (added sidebar migration tests)
+          - tests/web-ui-app-shell.test.ts (updated badge count tests for new query pattern)
+        - Verification: All 5383 tests pass, svelte-check clean for modified files
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK53RE5Q3JHHH07W67NTJ
