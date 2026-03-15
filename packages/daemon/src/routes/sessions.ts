@@ -5,6 +5,7 @@
  * - GET /api/sessions - list sessions with summaries
  * - GET /api/sessions/:id - get session metadata and detail
  * - GET /api/sessions/:id/events - get session events from events.jsonl
+ * - GET /api/sessions/:id/events/:seq - get single event with blob resolution
  *
  * AC Coverage:
  * - @ui-session-stream ac-1: Session events as structured blocks
@@ -13,14 +14,19 @@
  * - @session-summary-cache ac-cache-build: Cache built on first list request
  * - @session-summary-cache ac-cache-invalidate: Cache refreshed via directory listing diff
  * - @session-summary-cache ac-active-refresh: Active sessions recomputed on each request
+ * - @session-event-detail-endpoint ac-single-event-fetch: Single event by seq with blob resolution
+ * - @session-event-detail-endpoint ac-blob-resolution: Blob pointers resolved to full content
+ * - @session-event-detail-endpoint ac-not-found: 404 for missing session or seq
  */
 
 import { Elysia, t } from 'elysia';
 import {
   getSession,
   readEvents,
+  readEventBySeq,
   deduplicatePhasedToolCalls,
   resolveSessionId,
+  resolveSessionBlobPointers,
   getBudget,
   searchSessionEvents,
   type SessionLogSummary,
@@ -510,5 +516,66 @@ export function createSessionRoutes() {
       query: t.Object({
         since_seq: t.Optional(t.String()),
       }),
+    })
+
+    // Get single session event by sequence number with blob resolution
+    // AC: @session-event-detail-endpoint ac-single-event-fetch — Returns full event for seq
+    // AC: @session-event-detail-endpoint ac-blob-resolution — Blob pointers resolved to full content
+    // AC: @session-event-detail-endpoint ac-not-found — 404 for missing session or seq
+    // AC: @trait-api-endpoint ac-1 — Returns 2xx with JSON body on success
+    // AC: @trait-api-endpoint ac-2 — Returns 404 for invalid session or seq ref
+    .get('/:id/events/:seq', async ({ params, error: errorResponse, projectContext }) => {
+      const ctx = await initContext(projectContext.path);
+
+      // Resolve session ID (supports prefix matching)
+      const resolution = await resolveSessionId(ctx.sessionsDir, params.id);
+      if (!resolution.ok) {
+        if (resolution.error === 'ambiguous') {
+          return errorResponse(400, {
+            error: 'ambiguous_id',
+            message: `Ambiguous session ID: ${params.id} matches ${resolution.matches.length} sessions`,
+            suggestion: 'Provide a longer prefix to uniquely identify the session',
+          });
+        }
+        return errorResponse(404, {
+          error: 'not_found',
+          message: `Session not found: ${params.id}`,
+          suggestion: 'Use GET /api/sessions to list available sessions',
+        });
+      }
+
+      // Parse and validate seq parameter
+      const seq = parseInt(params.seq, 10);
+      if (isNaN(seq) || seq < 0) {
+        return errorResponse(400, {
+          error: 'invalid_parameter',
+          details: [{
+            field: 'seq',
+            message: `Invalid sequence number: "${params.seq}". Must be a non-negative integer.`,
+          }],
+        });
+      }
+
+      // Targeted single-event read
+      const event = await readEventBySeq(ctx.sessionsDir, resolution.id, seq);
+      if (!event) {
+        return errorResponse(404, {
+          error: 'not_found',
+          message: `Event with seq ${seq} not found in session ${params.id}`,
+          suggestion: 'Use GET /api/sessions/:id/events to list available events',
+        });
+      }
+
+      // Resolve blob pointers in event data
+      const resolvedData = await resolveSessionBlobPointers(
+        ctx.sessionsDir,
+        resolution.id,
+        event.data,
+      );
+
+      return {
+        ...event,
+        data: resolvedData,
+      };
     });
 }
