@@ -5850,8 +5850,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
-    active_role: reviewer
+    lifecycle_state: closing
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-watch-ws-events-01kksgt1
@@ -5892,28 +5892,28 @@ workspaces:
           steps: []
           failureMessage: null
     integration:
-      status: pending
+      status: merged
       target_branch: main
       target_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
       publication_mode: pull_request
-      outcome: pull_request
-      detail: null
-      updated_at: 2026-03-15T22:26:01.145Z
+      outcome: merged
+      detail: integration:merged
+      updated_at: 2026-03-15T22:37:08.241Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T22:26:01.145Z
+      updated_at: 2026-03-15T22:37:08.241Z
     cleanup:
-      status: not_scheduled
-      eligible: false
-      reason: null
-      detail: null
-      updated_at: 2026-03-15T22:26:01.145Z
+      status: scheduled
+      eligible: true
+      reason: integrated-into-base-branch
+      detail: integrated-into-base-branch
+      updated_at: 2026-03-15T22:37:08.241Z
     timestamps:
       created_at: 2026-03-15T22:12:38.959Z
-      updated_at: 2026-03-15T22:26:01.145Z
-      last_reconciled_at: 2026-03-15T22:26:01.145Z
+      updated_at: 2026-03-15T22:37:08.241Z
+      last_reconciled_at: 2026-03-15T22:37:08.241Z
       last_active_at: 2026-03-15T22:25:04.365Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKSGT0JK5JV84SHPA6K7MAK1
