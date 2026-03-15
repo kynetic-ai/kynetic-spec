@@ -4872,7 +4872,7 @@ workspaces:
       adopted_at: null
       rehydrated: null
     lifecycle_state: integrating
-    active_role: null
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-core-pages-01kkqrk3
@@ -4927,7 +4927,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T07:16:46.672Z
+      updated_at: 2026-03-15T07:16:47.202Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -4936,9 +4936,9 @@ workspaces:
       updated_at: 2026-03-15T07:16:46.672Z
     timestamps:
       created_at: 2026-03-15T05:54:29.769Z
-      updated_at: 2026-03-15T07:16:46.919Z
-      last_reconciled_at: 2026-03-15T07:16:46.672Z
-      last_active_at: 2026-03-15T07:09:21.027Z
+      updated_at: 2026-03-15T07:16:47.202Z
+      last_reconciled_at: 2026-03-15T07:16:47.202Z
+      last_active_at: 2026-03-15T07:16:47.202Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKQRK4GRF9PBJVJG4S3BDE33
     task_ref: "@01KKQRK4GRF9PBJVJG4S3BDE33"
