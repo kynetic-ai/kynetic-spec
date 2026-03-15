@@ -5444,7 +5444,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
+    lifecycle_state: closing
     active_role: reviewer
     worktrees:
       worker:
@@ -5486,27 +5486,27 @@ workspaces:
           steps: []
           failureMessage: null
     integration:
-      status: pending
+      status: merged
       target_branch: main
       target_commit: 8045b69abbe62718c1abb64a7b00e7dc460b571d
       publication_mode: pull_request
-      outcome: pull_request
-      detail: null
-      updated_at: 2026-03-15T14:24:45.725Z
+      outcome: merged
+      detail: integration:merged
+      updated_at: 2026-03-15T14:36:00.757Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T14:24:46.288Z
+      updated_at: 2026-03-15T14:36:00.757Z
     cleanup:
-      status: not_scheduled
-      eligible: false
-      reason: null
-      detail: null
-      updated_at: 2026-03-15T14:24:45.725Z
+      status: scheduled
+      eligible: true
+      reason: integrated-into-base-branch
+      detail: integrated-into-base-branch
+      updated_at: 2026-03-15T14:36:00.757Z
     timestamps:
       created_at: 2026-03-15T14:13:14.505Z
-      updated_at: 2026-03-15T14:24:46.288Z
-      last_reconciled_at: 2026-03-15T14:24:46.288Z
+      updated_at: 2026-03-15T14:36:00.757Z
+      last_reconciled_at: 2026-03-15T14:36:00.757Z
       last_active_at: 2026-03-15T14:24:46.288Z
       closed_at: null
