@@ -581,3 +581,4 @@ export interface KspecSnapshot {
   validation?: ExportedValidation;
   alignment?: AlignmentResponse;
 }
+
