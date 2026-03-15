@@ -88,7 +88,7 @@ async function filterSessionSummaries(
   ctx: KspecContext,
   query: SessionListQuery,
 ): Promise<
-  | { summaries: SessionLogSummary[] }
+  | { summaries: SessionLogSummary[]; unfilteredTotal: number }
   | {
       error: {
         status: number;
@@ -125,6 +125,8 @@ async function filterSessionSummaries(
 
   const sessionCache = getSessionCache(ctx.sessionsDir);
   let filtered = sortSessionSummaries(await sessionCache.getAll(ctx.sessionsDir));
+  // AC: @session-filter-controls ac-filter-counts — Capture unfiltered total before applying filters
+  const unfilteredTotal = filtered.length;
 
   if (statusValues.length > 0) {
     filtered = filtered.filter((summary) => statusValues.includes(summary.status));
@@ -242,7 +244,7 @@ async function filterSessionSummaries(
     );
   }
 
-  return { summaries: filtered };
+  return { summaries: filtered, unfilteredTotal };
 }
 
 export function createSessionRoutes() {
@@ -261,6 +263,7 @@ export function createSessionRoutes() {
         return errorResponse(filteredResult.error.status, filteredResult.error.body);
       }
       const filtered = filteredResult.summaries;
+      const { unfilteredTotal } = filteredResult;
 
       // AC: @session-list-pagination-api ac-pagination — Apply pagination after filtering
       // AC: @trait-api-endpoint ac-4 — {items, total, offset, limit} wrapper
@@ -289,9 +292,11 @@ export function createSessionRoutes() {
       // Detect legacy sessions and include warning in response
       const legacyCount = await countLegacySessions(ctx.specDir);
 
+      // AC: @session-filter-controls ac-filter-counts — Include unfiltered_total in response
       return {
         items: enriched,
         total,
+        unfiltered_total: unfilteredTotal,
         offset,
         limit,
         ...(legacyCount > 0 ? {
