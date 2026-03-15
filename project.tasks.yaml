@@ -99583,3 +99583,23 @@
   notes: []
   todos: []
   automation: eligible
+- title: Implement session summary stats persistence and live counters
+  type: task
+  spec_ref: "@session-summary-cache"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - cli
+    - daemon
+    - sessions
+  depends_on: []
+  _ulid: 01KKSRDQY1HZBENKBD06V6KDGW
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-15T22:03:48.545Z
+  notes: []
+  todos: []
