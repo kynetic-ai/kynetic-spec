@@ -98870,6 +98870,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #880. Fix prevents second-generation invocations during engine shutdown
+    by clearing queues before awaiting runningInvocations and adding a !this.running guard at the
+    top of _spawnInvocation. Defense-in-depth: 3 layers prevent post-shutdown spawning. 7 tests
+    fixed to set running=true for direct _spawnInvocation calls, polling timeout increased for git
+    worktree latency. All 106 dispatch tests pass, full suite (5471 tests) clean, CI all green."
   depends_on: []
   context: []
   priority: 2
@@ -98890,6 +98895,7 @@
   created_at: 2026-03-15T17:05:00.586Z
   started_at: 2026-03-15T17:06:22.270Z
   submitted_at: 2026-03-15T21:02:26.228Z
+  completed_at: 2026-03-15T21:16:30.072Z
   notes:
     - _ulid: 01KKS7B1PZZ12JC3CHT813RTTE
       created_at: 2026-03-15T17:05:14.463Z
@@ -98969,12 +98975,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T21:16:30.072Z
-  closed_reason: "Merged in PR #880. Fix prevents second-generation invocations during engine shutdown
-    by clearing queues before awaiting runningInvocations and adding a !this.running guard at the
-    top of _spawnInvocation. Defense-in-depth: 3 layers prevent post-shutdown spawning. 7 tests
-    fixed to set running=true for direct _spawnInvocation calls, polling timeout increased for git
-    worktree latency. All 106 dispatch tests pass, full suite (5471 tests) clean, CI all green."
 - _ulid: 01KKS7BD3N7DCQNS5GW8ZZSAZW
   slugs:
     - task-yaml-seed-session-tests
@@ -99276,6 +99276,33 @@
         ws-invalidation.ts, CLI watch command
 
         - Verification: Unit tests for accumulator logic, full test suite passing
+      supersedes: null
+    - _ulid: 01KKSPFZENFW923SK0NF5044VJ
+      created_at: 2026-03-15T21:30:04.629Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Key changes:
+
+        - New SessionEventAccumulator class (src/agent-runtime/session-event-accumulator.ts) with
+        per-session state, newline-boundary flushing, 8KB max buffer, and state transition detection
+
+        - New typed event types in @kynetic-ai/shared (MessageStart/Progress/Complete,
+        ThinkingStart/Progress/Complete, ToolCallStart/Complete)
+
+        - dispatch.ts: replaced onTextChunk with onSessionEvent, wired accumulator into update
+        handler and session end
+
+        - agent-dispatch.ts: broadcasts typed events instead of agent_text_chunk
+
+        - ws-invalidation.ts: completion events trigger session query invalidation, progress events
+        skip invalidation
+
+        - CLI watch: consumes new typed events, shows tool call start/complete status in terminal
+
+        - Web UI: session-utils.ts and all pages updated to consume new event types (with backwards
+        compat for agent_text_chunk)
+
+        - All 5492 tests passing
       supersedes: null
   todos: []
   automation: eligible
