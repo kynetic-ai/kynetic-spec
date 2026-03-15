@@ -98607,6 +98607,7 @@
            - @ui-data-freshness: no AC for initial page load on hard refresh (only covers revisit caching)
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KKRVZQR41NJXPFQMDTK23801
   slugs: []
   title: Disable SSR globally to fix hard refresh stuck on loading
@@ -98644,3 +98645,4 @@
   created_at: 2026-03-15T13:46:49.476Z
   notes: []
   todos: []
+  automation: eligible
