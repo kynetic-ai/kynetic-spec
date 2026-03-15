@@ -99247,7 +99247,7 @@
   spec_ref: "@session-event-broadcast"
   plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -99306,6 +99306,15 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-15T21:30:53.280Z
+  submission_linkage:
+    branch: main
+    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T21:30:52.533Z
 - _ulid: 01KKSGSZY9G04716168198EYK2
   slugs:
     - task-session-event-detail-endpoint
