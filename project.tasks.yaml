@@ -98540,6 +98540,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #876. Removed process.cwd()-based web UI resolution (options 3 and 4)
+    from resolveWebUiPath() in daemon server.ts. Resolution order is now: explicit webUiDir option,
+    WEB_UI_DIR env var, bundled dist/web-ui/ relative to import.meta.url. Tests updated with
+    negative test for cwd-based paths. All 5 ACs covered (ac-3 N/A annotated). No traits on this
+    spec."
   depends_on: []
   context: []
   priority: 1
@@ -98559,6 +98564,7 @@
   created_at: 2026-03-15T12:04:22.982Z
   started_at: 2026-03-15T13:49:19.669Z
   submitted_at: 2026-03-15T13:55:18.406Z
+  completed_at: 2026-03-15T14:07:59.199Z
   notes:
     - _ulid: 01KKRW50TSG30XG7YCBR6PRFXA
       created_at: 2026-03-15T13:49:42.617Z
@@ -98587,12 +98593,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T14:07:59.199Z
-  closed_reason: "Merged in PR #876. Removed process.cwd()-based web UI resolution (options 3 and 4)
-    from resolveWebUiPath() in daemon server.ts. Resolution order is now: explicit webUiDir option,
-    WEB_UI_DIR env var, bundled dist/web-ui/ relative to import.meta.url. Tests updated with
-    negative test for cwd-based paths. All 5 ACs covered (ac-3 N/A annotated). No traits on this
-    spec."
 - _ulid: 01KKRTSS1EDEF6G8FE6CB16PB5
   slugs: []
   title: Add unfiltered_total to sessions API response to eliminate extra limit=0 request
@@ -98649,6 +98649,33 @@
            - @session-filter-controls ac-filter-counts: doesn't specify unfiltered total comes from same response (led to separate request)
            - @session-list-infinite-scroll: no AC for hard refresh completing load lifecycle
            - @ui-data-freshness: no AC for initial page load on hard refresh (only covers revisit caching)
+      supersedes: null
+    - _ulid: 01KKRXECYHY30K79V73ZV04GZ4
+      created_at: 2026-03-15T14:12:18.513Z
+      author: "@claude"
+      content: >-
+        Implementation complete:
+
+
+        1. Daemon API (sessions.ts): Added unfiltered_total field to GET /api/sessions response.
+        Captured from sessionCache.getAll().length before applying any filters. Returns alongside
+        existing total/offset/limit fields.
+
+
+        2. Web UI (api.ts): Added unfiltered_total to SessionListResponse interface and static mode
+        return value.
+
+
+        3. Sessions page (+page.svelte): Removed separate unfilteredQuery (createQuery with
+        limit=0). Now derives unfilteredTotal from sessionsQuery.data.pages[0].unfiltered_total.
+        This eliminates one API request per page load.
+
+
+        4. Tests: Added 3 E2E tests verifying unfiltered_total behavior (no filters, with filters,
+        with pagination). Updated api-static test for new response shape.
+
+
+        All tests passing (pre-existing flaky dispatch tests excluded).
       supersedes: null
   todos: []
   automation: eligible
