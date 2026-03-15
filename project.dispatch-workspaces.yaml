@@ -4622,8 +4622,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: integrating
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tanstack-setup-01kkqrk0
@@ -4673,22 +4673,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T05:10:55.074Z
+      updated_at: 2026-03-15T05:11:34.643Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T05:10:55.074Z
+      updated_at: 2026-03-15T05:11:34.643Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T05:10:55.074Z
+      updated_at: 2026-03-15T05:11:34.643Z
     timestamps:
       created_at: 2026-03-15T04:21:20.365Z
-      updated_at: 2026-03-15T05:10:55.074Z
-      last_reconciled_at: 2026-03-15T05:10:55.074Z
+      updated_at: 2026-03-15T05:11:34.643Z
+      last_reconciled_at: 2026-03-15T05:11:34.643Z
       last_active_at: 2026-03-15T05:10:44.742Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKQRK2R219TBGWE4XQEBJNEC
