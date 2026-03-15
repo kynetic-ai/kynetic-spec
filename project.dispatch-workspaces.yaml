@@ -5282,7 +5282,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
+    lifecycle_state: ready
     active_role: null
     worktrees:
       worker:
@@ -5291,12 +5291,7 @@ workspaces:
         branch_ref: dispatch/task/remove-process-cwd-web-ui-resolution-from-daemon/01kkrp45
         head: 815bd9f1a66d3319f68ad145342907d18a4ad485
         last_seen_at: 2026-03-15T13:56:03.215Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-process-cwd-web-ui-resolution-from-daemon-01kkrp45-review
-        branch_mode: detached
-        branch_ref: null
-        head: 815bd9f1a66d3319f68ad145342907d18a4ad485
-        last_seen_at: 2026-03-15T13:56:03.215Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -5335,7 +5330,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T14:08:13.080Z
+      updated_at: 2026-03-15T14:08:14.326Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -5344,8 +5339,8 @@ workspaces:
       updated_at: 2026-03-15T14:08:13.080Z
     timestamps:
       created_at: 2026-03-15T13:48:58.547Z
-      updated_at: 2026-03-15T14:08:13.080Z
-      last_reconciled_at: 2026-03-15T14:08:13.080Z
+      updated_at: 2026-03-15T14:08:14.326Z
+      last_reconciled_at: 2026-03-15T14:08:14.326Z
       last_active_at: 2026-03-15T13:56:03.934Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKRTSS1EDEF6G8FE6CB16PB5
