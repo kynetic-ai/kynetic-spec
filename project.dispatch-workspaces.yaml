@@ -4374,7 +4374,7 @@ workspaces:
       adopted_at: null
       rehydrated: null
     lifecycle_state: integrating
-    active_role: null
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-data-layer-skill-01kkqrk0
@@ -4426,7 +4426,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T03:47:52.536Z
+      updated_at: 2026-03-15T03:47:53.906Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -4435,7 +4435,7 @@ workspaces:
       updated_at: 2026-03-15T03:47:52.536Z
     timestamps:
       created_at: 2026-03-15T03:34:35.208Z
-      updated_at: 2026-03-15T03:47:53.504Z
-      last_reconciled_at: 2026-03-15T03:47:52.536Z
-      last_active_at: 2026-03-15T03:34:35.741Z
+      updated_at: 2026-03-15T03:47:53.906Z
+      last_reconciled_at: 2026-03-15T03:47:53.906Z
+      last_active_at: 2026-03-15T03:47:53.906Z
       closed_at: null
