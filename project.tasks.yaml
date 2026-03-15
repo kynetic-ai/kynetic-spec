@@ -100060,9 +100060,18 @@
     - bug
     - mvp
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T23:59:15.276Z
   session_id: 01KKSYGPED31WEHK2GMV9YH4R4
   created_at: 2026-03-15T23:07:24.153Z
   started_at: 2026-03-15T23:50:35.705Z
+  submitted_at: 2026-03-15T23:59:16.094Z
   notes:
     - _ulid: 01KKSYHQ636X2SZS4YZK5ZKJK8
       created_at: 2026-03-15T23:50:50.307Z
@@ -100082,17 +100091,30 @@
 
         - Verification: Tests proving cross-agent exclusivity, existing tests still pass
       supersedes: null
+    - _ulid: 01KKSZ1XT0SBZ78TQ9CKABYD06
+      created_at: 2026-03-15T23:59:41.376Z
+      author: "@claude"
+      content: >-
+        Implementation complete. PR #889 created.
+
+
+        Changes:
+
+        1. Added _hasActiveInvocationForTask(taskRef) method that checks both
+        activeInvocationDetails and inFlightTaskKeys across all agents for cross-agent exclusivity.
+
+        2. Added guard in _selectNextCandidate() to skip candidates whose task already has an active
+        invocation by any agent. Entries remain queued (not discarded) so post-invocation drain
+        picks them up.
+
+        3. Added 4 tests covering: worker-blocks-reviewer, dual-agent-same-event,
+        different-tasks-concurrent, and staleness-check-on-deferred-entries.
+
+
+        All 5475 tests pass with 0 failures.
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-15T23:59:16.094Z
-  submission_linkage:
-    branch: main
-    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-15T23:59:15.276Z
 - _ulid: 01KKSW2QFG4MDMQZ7CTZYRHG3D
   slugs: []
   title: Fix max_concurrent violation from concurrent drain paths
