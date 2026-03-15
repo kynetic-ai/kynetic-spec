@@ -97470,12 +97470,24 @@
     - docs
     - web-ui
   vcs_refs: []
+  session_id: 01KKQRYPXH2GC132Q5XDJQRRZJ
   created_at: 2026-03-15T03:28:12.187Z
-  notes: []
+  started_at: 2026-03-15T03:35:04.813Z
+  notes:
+    - _ulid: 01KKQSPJBMXA9ECGVVC36VJQHX
+      created_at: 2026-03-15T03:47:37.460Z
+      author: "@claude"
+      content: "Created UI data layer skill (.kspec/skills/ui-data-layer/SKILL.md). Researched TanStack
+        Query v6 Svelte docs online (thunk pattern, runes-native API, no stores). Explored existing
+        codebase patterns (api.ts, WebSocket manager, sidebar polling, sessions infinite scroll,
+        static mode, project switching). Skill covers: setup, v6 thunk API, query key factories,
+        cache timing, WS→invalidation wiring, mutations with optimistic updates, createInfiniteQuery
+        for sessions, ref index usage, project switch cache clearing, static mode compatibility,
+        error handling, migration guide (before/after), testing patterns, anti-patterns, and
+        boundaries (WS streaming stays outside queries)."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-15T03:35:04.813Z
-  session_id: 01KKQRYPXH2GC132Q5XDJQRRZJ
 - _ulid: 01KKQRK0ZZZ1QMCNHDHK3969AF
   slugs:
     - task-tanstack-setup
