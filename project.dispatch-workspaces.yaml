@@ -4774,7 +4774,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
     canonical_branch: dispatch/task/task-ws-enrichment/01kkqrk3
-    canonical_branch_head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    canonical_branch_head: 42befa87a3439974aa7dce5ec45d33a97d61851a
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -4825,21 +4825,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T05:25:01.659Z
+      updated_at: 2026-03-15T05:46:35.869Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T05:25:02.434Z
+      updated_at: 2026-03-15T05:46:35.869Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T05:25:01.659Z
+      updated_at: 2026-03-15T05:46:35.869Z
     timestamps:
       created_at: 2026-03-15T05:25:01.659Z
-      updated_at: 2026-03-15T05:25:02.434Z
-      last_reconciled_at: 2026-03-15T05:25:02.434Z
+      updated_at: 2026-03-15T05:46:35.869Z
+      last_reconciled_at: 2026-03-15T05:46:35.869Z
       last_active_at: 2026-03-15T05:25:02.434Z
       closed_at: null
