@@ -99001,25 +99001,102 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Validate default base branch in resolveDispatchWorkspaceConfig
+- _ulid: 01KKS7CE6Y05AHZCR8JED24M3V
+  slugs:
+    - task-validate-default-base-branch
+  title: Validate default base branch in resolveDispatchWorkspaceConfig
   type: task
   spec_ref: "@dispatch-workspace-configuration"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs:
-    - task-validate-default-base-branch
   tags:
     - bug
     - dispatch
     - defensive-code
-  depends_on: []
-  automation: eligible
-  _ulid: 01KKS7CE6Y05AHZCR8JED24M3V
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-15T17:06:00.029Z
-  notes: []
+  notes:
+    - _ulid: 01KKS7D0EZP1KAE7XN68M4F81G
+      created_at: 2026-03-15T17:06:18.719Z
+      author: "@claude"
+      content: >-
+        ## Problem
+
+
+        resolveDispatchWorkspaceConfig() at src/agent-runtime/workspace.ts:1358-1363 has an
+        unvalidated default fallback. When no dispatch.base_branch is configured, no remote HEAD
+        exists, and resolveCurrentBranch() returns null, it returns { baseBranch: "main",
+        baseBranchStartPoint: "main" } without checking if "main" exists.
+
+
+        Pre-fix, this caused "fatal: invalid reference: main" errors when env var leaks made git
+        subprocess calls unreliable (resolveCurrentBranch failed silently). The env leak is now
+        fixed so this doesn't trigger in practice, but the defensive gap remains — any future
+        transient git failure could silently fall through to an invalid default.
+
+
+        ## Implementation
+
+
+        Replace the unconditional default return (workspace.ts:1358-1363):
+
+
+        ```ts
+
+        // Current:
+
+        return {
+          baseBranch: "main",
+          baseBranchStartPoint: "main",
+          baseBranchSource: "default",
+          worktreeRoot,
+        };
+
+
+        // Fixed:
+
+        const defaultBranch = "main";
+
+        const resolved = resolveBranchStartPoint(projectDir, defaultBranch);
+
+        if (resolved) {
+          return {
+            baseBranch: defaultBranch,
+            baseBranchStartPoint: resolved.startPoint,
+            baseBranchSource: "default",
+            worktreeRoot,
+          };
+        }
+
+        throw new DispatchWorkspaceError(
+          'No base branch could be resolved: no configured dispatch.base_branch, no remote HEAD, ' +
+          'no current branch, and default "main" does not exist.',
+          "Set dispatch.base_branch in kspec.config.yaml, or ensure the repository has a main branch.",
+        );
+
+        ```
+
+
+        ### Test
+
+
+        Add a unit test in tests/dispatch-runtime-bootstrap-contract.test.ts or a new file that
+        creates a git repo with a non-main default branch (e.g. git init -b develop), no dispatch
+        config, no remote, and verifies resolveDispatchWorkspaceConfig throws a clear error instead
+        of silently returning an invalid ref.
+
+
+        ### Key Files
+
+        - src/agent-runtime/workspace.ts — resolveDispatchWorkspaceConfig at line 1305, default
+        fallback at 1358-1363
+
+        - resolveBranchStartPoint (same file) already validates branch existence
+      supersedes: null
   todos: []
+  automation: eligible
