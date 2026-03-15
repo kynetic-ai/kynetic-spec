@@ -1584,3 +1584,13 @@ inbox:
       - plan
       - agent-ux
     added_by: "@claude"
+  - _ulid: 01KKQD6BTSKP1M40MSA6ZGWRHE
+    text: kspec validate does not scan monorepo package test directories (e.g.
+      packages/backend/__tests__/) for AC annotations — only scans tests/ at repo root. This causes
+      false 'uncovered trait AC' warnings in projects with monorepo structures. Need test_paths
+      config or recursive scanning.
+    created_at: 2026-03-15T00:09:03.578Z
+    tags:
+      - bug
+      - validate
+    added_by: "@claude"
