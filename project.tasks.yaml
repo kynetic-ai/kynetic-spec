@@ -97601,20 +97601,6 @@
     - task-server-aggregation
   title: Add server-side aggregation endpoints
   type: task
-  spec_ref: "@ui-api-aggregation"
-  plan_ref: "@plan-ui-data-layer-rework"
-  origin: derived
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 2
-  tags:
-    - daemon
-  vcs_refs: []
-  created_at: 2026-03-15T03:28:14.594Z
-  notes: []
-  todos: []
   description: >-
     Three independent server-side endpoints. Can be implemented incrementally.
 
@@ -97637,6 +97623,20 @@
     Acceptance gates (from @ui-api-aggregation): Status counts with dependency-aware distinctions
     (ac-1), coverage stats as pre-computed fields (ac-2), inbox items with inline triage status
     (ac-3).
+  spec_ref: "@ui-api-aggregation"
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - daemon
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:14.594Z
+  notes: []
+  todos: []
 - _ulid: 01KKQRK3BM6MARTC3MSE6YV4VY
   slugs:
     - task-ws-enrichment
@@ -97657,6 +97657,21 @@
   created_at: 2026-03-15T03:28:15.220Z
   notes: []
   todos: []
+  description: >-
+    Update broadcast calls in daemon routes to include display-ready data. The entities are already
+    loaded at broadcast time.
+
+
+    task_updated: add title, include both old and new status. agent_invocation: add task_title
+    alongside task_id. agent_text_chunk: add task_title. inbox_item_created: include full item data
+    (already partially done).
+
+
+    Update shared BroadcastEvent types in @kynetic-ai/shared.
+
+
+    Acceptance gates (from @ui-api-aggregation): Broadcasts include display title and old/new state
+    (ac-4).
 - _ulid: 01KKQRK3YT328Q9BKN9HD0DE34
   slugs:
     - task-migrate-core-pages
