@@ -9828,7 +9828,7 @@ requirements:
         created: 2026-02-24T06:19:05.377Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KJ74T8C9CHXCAT6FRW3DDRF5
         slugs:
           - session-start-computed-json
