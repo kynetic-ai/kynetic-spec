@@ -1634,3 +1634,17 @@ inbox:
       - performance
       - tanstack-query
     added_by: "@claude"
+  - _ulid: 01KKSGTNTQXYWGY4X0C7FNSVM5
+    text: "Orphaned bun daemon processes from test runs — two root causes: (1) cli-serve.test.ts:583
+      installed-package test starts daemon in isolated temp root but stop is mid-test-body, not in
+      afterEach; if test throws, daemon leaks since cleanupTempDir only deletes files, does not kill
+      processes. (2) Auto-start pid path bug at src/cli/index.ts:121 — maybeAutoStartDaemon uses
+      PidFileManager(kspecDir) but PidFileManager expects config dir, while serve start/stop use
+      ~/.config/kspec, so auto-start checks wrong pid file and can spawn duplicates. E2E fixture
+      (test-base.ts:217) is safe — it stops in teardown."
+    created_at: 2026-03-15T19:51:03.768Z
+    tags:
+      - bug
+      - testing
+      - daemon
+    added_by: "@claude"
