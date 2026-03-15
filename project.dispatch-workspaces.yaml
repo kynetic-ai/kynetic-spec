@@ -5444,8 +5444,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: ready
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/disable-ssr-globally-to-fix-hard-refresh-stuck-on-loading-01kkrvzq
@@ -5487,21 +5487,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T14:24:00.738Z
+      updated_at: 2026-03-15T14:24:44.488Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T14:24:00.738Z
+      updated_at: 2026-03-15T14:24:44.488Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T14:24:00.738Z
+      updated_at: 2026-03-15T14:24:44.488Z
     timestamps:
       created_at: 2026-03-15T14:13:14.505Z
-      updated_at: 2026-03-15T14:24:00.738Z
-      last_reconciled_at: 2026-03-15T14:24:00.738Z
+      updated_at: 2026-03-15T14:24:44.488Z
+      last_reconciled_at: 2026-03-15T14:24:44.488Z
       last_active_at: 2026-03-15T14:13:15.175Z
       closed_at: null
