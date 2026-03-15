@@ -743,12 +743,14 @@ export function registerAgentCommands(program: Command): void {
   // ─── kspec agent dispatch watch ───────────────────────────────────────────
 
   // AC: @cli-agent-commands ac-13 through ac-18
+  // AC: @ws-session-event-streaming ac-cli-watch-parity
   dispatch
     .command("watch")
-    .description("Stream agent text output from the dispatch engine in real time")
+    .description("Stream live agent activity via WebSocket event stream")
     .option("--agent <name>", "Only show output from this agent")
     .option("--session <id>", "Only show output from this session")
     .option("--retries <n>", "Number of reconnect attempts on disconnect (default 5)", "5")
+    .option("--verbose", "Show thinking blocks (hidden by default)")
     .action(async (opts) => {
       const DEFAULT_RETRIES = 5;
       const RETRY_BASE_MS = 1000;
@@ -781,6 +783,7 @@ export function registerAgentCommands(program: Command): void {
       const retryLimit = parsedRetries.value;
       const agentFilter: string | undefined = opts.agent;
       const sessionFilter: string | undefined = opts.session;
+      const verbose: boolean = opts.verbose === true;
       type StreamRenderState = {
         hasRenderedBody: boolean;
         spacerPending: boolean;
@@ -861,6 +864,17 @@ export function registerAgentCommands(program: Command): void {
       function formatSessionIdForDisplay(sessionId: string): string {
         // AC: @cli-agent-commands ac-17 — shorten session ULID in watch prefix.
         return sessionId ? sessionId.slice(0, 8) : "";
+      }
+
+      function summarizeToolInput(input: unknown): string {
+        if (input == null) return "";
+        try {
+          const str = typeof input === "string" ? input : JSON.stringify(input);
+          if (str.length <= 80) return ` (${str})`;
+          return ` (${str.slice(0, 77)}...)`;
+        } catch {
+          return "";
+        }
       }
 
       // Resolve project dir for WebSocket project binding
@@ -950,20 +964,37 @@ export function registerAgentCommands(program: Command): void {
             const displaySessionId = formatSessionIdForDisplay(sessionId);
             const prefix = `[${agentId} ${displaySessionId}]`;
 
+            // AC: @ws-session-event-streaming ac-cli-watch-parity
             switch (eventType) {
-              case "message_progress":
-              case "thinking_progress": {
+              case "message_progress": {
                 const text = data.text ?? "";
                 if (text.length > 0) {
                   queuePrefixedChunk(streamKey, prefix, text);
                 }
                 break;
               }
-              case "message_complete":
-              case "thinking_complete": {
+              case "message_complete": {
                 const text = data.text ?? "";
                 if (text.length > 0) {
                   queuePrefixedChunk(streamKey, prefix, text);
+                }
+                markMessageBoundary(streamKey);
+                break;
+              }
+              case "thinking_progress": {
+                if (!verbose) break;
+                const text = data.text ?? "";
+                if (text.length > 0) {
+                  // Dim ANSI escape: \x1b[2m ... \x1b[22m
+                  queuePrefixedChunk(streamKey, prefix, `\x1b[2m${text}\x1b[22m`);
+                }
+                break;
+              }
+              case "thinking_complete": {
+                if (!verbose) break;
+                const text = data.text ?? "";
+                if (text.length > 0) {
+                  queuePrefixedChunk(streamKey, prefix, `\x1b[2m${text}\x1b[22m`);
                 }
                 markMessageBoundary(streamKey);
                 break;
@@ -971,8 +1002,9 @@ export function registerAgentCommands(program: Command): void {
               case "tool_call_start": {
                 markMessageBoundary(streamKey);
                 const toolName = data.tool_name ?? "unknown";
+                const inputSummary = summarizeToolInput(data.tool_input);
                 startSpeakerSection(streamKey, prefix);
-                writeRaw(`  ⚡ Tool: ${toolName}\n`);
+                writeRaw(`  ⚡ Tool: ${toolName}${inputSummary}\n`);
                 break;
               }
               case "tool_call_complete": {

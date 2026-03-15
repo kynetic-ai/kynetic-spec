@@ -2680,6 +2680,456 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
   });
 });
 
+// AC: @ws-session-event-streaming ac-cli-watch-parity
+// AC: @trait-websocket-protocol ac-1 — N/A: server-side connection ID assignment, not CLI consumer
+// AC: @trait-websocket-protocol ac-3 — N/A: server-side broadcast event format, not CLI consumer
+// AC: @trait-websocket-protocol ac-4 — N/A: server-side ping frame timing, not CLI consumer
+// AC: @trait-websocket-protocol ac-5 — N/A: server-side pong timeout handling, not CLI consumer
+// AC: @trait-websocket-protocol ac-6 — N/A: server-side backpressure handling, not CLI consumer
+// AC: @trait-websocket-protocol ac-7 — N/A: server-side close code semantics, not CLI consumer
+describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
+  afterEach(() => {
+    _setWebSocketCtor(null);
+    vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+  });
+
+  // AC: @ws-session-event-streaming ac-cli-watch-parity — text streams progressively at newline boundaries
+  it("should stream message text progressively at newline boundaries", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    // Simulate newline-boundary streaming: two progress events with line content
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "message_progress",
+        data: { session_id: "sess-1", agent_id: "worker", text: "Line one\n" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "message_progress",
+        data: { session_id: "sess-1", agent_id: "worker", text: "Line two\n" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "message_complete",
+        data: { session_id: "sess-1", agent_id: "worker", text: "Final partial" },
+      }),
+    });
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("[worker sess-1]\nLine one\nLine two\nFinal partial");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  // AC: @ws-session-event-streaming ac-cli-watch-parity — tool calls show name and status transitions
+  it("should display tool_call_start with tool name and input summary", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "tool_call_start",
+        data: {
+          session_id: "sess-1",
+          agent_id: "worker",
+          tool_call_id: "tc-1",
+          tool_name: "Read",
+          tool_input: { file_path: "/src/main.ts" },
+        },
+      }),
+    });
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("⚡ Tool: Read");
+    expect(output).toContain("/src/main.ts");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  // AC: @ws-session-event-streaming ac-cli-watch-parity — tool calls show status transitions
+  it("should display tool_call_complete with status and duration", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "tool_call_complete",
+        data: {
+          session_id: "sess-1",
+          agent_id: "worker",
+          tool_call_id: "tc-1",
+          tool_name: "Read",
+          status: "completed",
+          duration_ms: 1500,
+        },
+      }),
+    });
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("✓ Read completed (1.5s)");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  // AC: @ws-session-event-streaming ac-cli-watch-parity — tool call with sub-second duration
+  it("should format sub-second tool call durations in milliseconds", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "tool_call_complete",
+        data: {
+          session_id: "sess-1",
+          agent_id: "worker",
+          tool_call_id: "tc-2",
+          tool_name: "Bash",
+          status: "completed",
+          duration_ms: 250,
+        },
+      }),
+    });
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("✓ Bash completed (250ms)");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  // AC: @ws-session-event-streaming ac-cli-watch-parity — thinking blocks hidden by default
+  it("should not display thinking events when --verbose is not set", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "thinking_progress",
+        data: { session_id: "sess-1", agent_id: "worker", text: "internal reasoning\n" },
+      }),
+    });
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "thinking_complete",
+        data: { session_id: "sess-1", agent_id: "worker", text: "done thinking" },
+      }),
+    });
+    // Non-thinking message should appear
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "message_progress",
+        data: { session_id: "sess-1", agent_id: "worker", text: "visible output" },
+      }),
+    });
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).not.toContain("internal reasoning");
+    expect(output).not.toContain("done thinking");
+    expect(output).toContain("visible output");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  // AC: @ws-session-event-streaming ac-cli-watch-parity — thinking blocks shown with --verbose
+  it("should display thinking events dimmed when --verbose is set", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(
+      ["agent", "dispatch", "watch", "--verbose"],
+      { from: "user" },
+    );
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "thinking_progress",
+        data: { session_id: "sess-1", agent_id: "worker", text: "deep thought\n" },
+      }),
+    });
+    await Promise.resolve();
+
+    const output = written.join("");
+    // Should contain the thinking text with ANSI dim escape codes
+    expect(output).toContain("deep thought");
+    expect(output).toContain("\x1b[2m"); // dim start
+    expect(output).toContain("\x1b[22m"); // dim end
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  // AC: @ws-session-event-streaming ac-cli-watch-parity — full lifecycle sequence
+  it("should render a full message → tool call → message lifecycle", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    const events = [
+      { event: "message_start", data: { session_id: "sess-1", agent_id: "worker" } },
+      { event: "message_progress", data: { session_id: "sess-1", agent_id: "worker", text: "Let me read that file.\n" } },
+      { event: "message_complete", data: { session_id: "sess-1", agent_id: "worker", text: "" } },
+      {
+        event: "tool_call_start",
+        data: {
+          session_id: "sess-1", agent_id: "worker",
+          tool_call_id: "tc-1", tool_name: "Read",
+          tool_input: { file_path: "/src/index.ts" },
+        },
+      },
+      {
+        event: "tool_call_complete",
+        data: {
+          session_id: "sess-1", agent_id: "worker",
+          tool_call_id: "tc-1", tool_name: "Read",
+          status: "completed", duration_ms: 45,
+        },
+      },
+      { event: "message_start", data: { session_id: "sess-1", agent_id: "worker" } },
+      { event: "message_progress", data: { session_id: "sess-1", agent_id: "worker", text: "Here is the content.\n" } },
+      { event: "message_complete", data: { session_id: "sess-1", agent_id: "worker", text: "" } },
+    ];
+
+    for (const evt of events) {
+      ws.onmessage?.({ data: JSON.stringify(evt) });
+    }
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("Let me read that file.");
+    expect(output).toContain("⚡ Tool: Read");
+    expect(output).toContain("✓ Read completed (45ms)");
+    expect(output).toContain("Here is the content.");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  // AC: @ws-session-event-streaming ac-cli-watch-parity — no agent_text_chunk consumption
+  it("should ignore legacy agent_text_chunk events", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    // Send a legacy agent_text_chunk event
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "agent_text_chunk",
+        data: { session_id: "sess-1", agent_id: "worker", text: "legacy text" },
+      }),
+    });
+    // Send a typed event
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "message_progress",
+        data: { session_id: "sess-1", agent_id: "worker", text: "typed text" },
+      }),
+    });
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).not.toContain("legacy text");
+    expect(output).toContain("typed text");
+
+    runPromise.catch(() => {/* ignore */});
+  });
+
+  // AC: @ws-session-event-streaming ac-cli-watch-parity — tool input summary truncation
+  it("should truncate long tool input summaries to 80 chars", async () => {
+    const { PidFileManager } = await import("../src/cli/pid-utils.js");
+    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
+    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
+    await mockInitContextFast();
+
+    const { FakeWs, getLastInstance } = makeFakeWsClass();
+    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
+
+    const written: string[] = [];
+    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
+      written.push(String(chunk));
+      return true;
+    });
+
+    const program = createTestProgram();
+    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
+
+    await waitFor(() => getLastInstance() !== null);
+    const ws = getLastInstance()!;
+    ws.onopen?.({});
+
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "tool_call_start",
+        data: {
+          session_id: "sess-1",
+          agent_id: "worker",
+          tool_call_id: "tc-3",
+          tool_name: "Write",
+          tool_input: { file_path: "/very/long/path/to/some/deeply/nested/file/that/exceeds/eighty/characters/definitely.ts", content: "lots of content here" },
+        },
+      }),
+    });
+    await Promise.resolve();
+
+    const output = written.join("");
+    expect(output).toContain("⚡ Tool: Write");
+    // Should contain truncation marker
+    expect(output).toContain("...");
+    // The parenthesized input summary should be <= 83 chars (80 content + parens + space)
+    const toolLine = output.split("\n").find(l => l.includes("⚡ Tool: Write"))!;
+    const inputPart = toolLine.match(/\(.*\)/)?.[0];
+    expect(inputPart).toBeDefined();
+    expect(inputPart!.length).toBeLessThanOrEqual(82); // ( + 77 chars + ... + ) = 82
+
+    runPromise.catch(() => {/* ignore */});
+  });
+});
+
 // AC: @test-suite-perf-reliability ac-3
 describe("AC-3: waitFor timeout floor and diagnostic messages", () => {
   afterEach(() => {
