@@ -17,6 +17,7 @@ export const referenceErrors = {
   inboxNotFound: (ref: string) => `Inbox item not found: ${ref}`,
   observationNotFound: (ref: string) => `Observation not found: ${ref}`,
   planNotFound: (ref: string) => `Plan not found: ${ref}`,
+  reviewNotFound: (ref: string) => `Review not found: ${ref}`,
   depNotFound: (ref: string) => `Dependency reference not found: ${ref}`,
   acNotFound: (acId: string, itemRef: string) =>
     `Acceptance criterion "${acId}" not found on @${itemRef}`,
@@ -302,6 +303,22 @@ export const operationFailures = {
   createMeta: (type: string) => `Failed to create ${type}`,
   updateMetaItem: "Failed to update meta item",
   deleteMetaItem: "Failed to delete meta item",
+
+  // Review operations
+  getReview: "Failed to get review",
+  createReview: "Failed to create review",
+  listReviews: "Failed to list reviews",
+  addReviewComment: "Failed to add review comment",
+  replyToReviewThread: "Failed to reply to review thread",
+  addReviewCheck: "Failed to add review check",
+  setReviewVerdict: "Failed to set review verdict",
+  resolveReviewThread: "Failed to resolve review thread",
+  reopenReviewThread: "Failed to reopen review thread",
+  openReview: "Failed to open review",
+  closeReview: "Failed to close review",
+  archiveReview: "Failed to archive review",
+  refreshReview: "Failed to refresh review subject",
+  findReviewsForTask: "Failed to find reviews for task",
 
   // Plan operations
   getPlan: "Failed to get plan",
