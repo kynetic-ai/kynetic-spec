@@ -4949,8 +4949,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: integrating
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-sidebar-01kkqrk4
@@ -4997,21 +4997,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T06:33:18.066Z
+      updated_at: 2026-03-15T06:33:35.436Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T06:33:18.066Z
+      updated_at: 2026-03-15T06:33:35.436Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T06:33:18.066Z
+      updated_at: 2026-03-15T06:33:35.436Z
     timestamps:
       created_at: 2026-03-15T06:20:52.447Z
-      updated_at: 2026-03-15T06:33:18.066Z
-      last_reconciled_at: 2026-03-15T06:33:18.066Z
+      updated_at: 2026-03-15T06:33:35.436Z
+      last_reconciled_at: 2026-03-15T06:33:35.436Z
       last_active_at: 2026-03-15T06:32:51.203Z
       closed_at: null
