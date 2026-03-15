@@ -97959,6 +97959,23 @@
         not one AC. (2) PR has merge conflicts with main (53 commits behind, server.ts and api.ts
         conflict). SHOULD-FIX: unused loadAllItems import. See PR #869 review for details."
       supersedes: null
+    - _ulid: 01KKR0XPYKJ27HEGCDRZG4GQZ0
+      created_at: 2026-03-15T05:53:51.571Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 1] Addressed all review findings:
+
+        1. MUST-FIX: Fixed ac_counts.uncovered to count individual ACs by parsing the details field
+        ('Uncovered: ac-1, ac-2, ac-3') instead of counting warnings (one per item).
+
+        2. MUST-FIX: Resolved merge conflicts with main (merged origin/main, kept both aggregation
+        routes and refs routes).
+
+        3. SHOULD-FIX: Removed unused loadAllItems import.
+
+
+        Tests: 5360 passed, 1 skipped pre-existing flaky (cli-serve foreground exit code).
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK3BM6MARTC3MSE6YV4VY
@@ -97993,9 +98010,18 @@
     - daemon
     - websocket
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T05:46:33.973Z
   session_id: 01KKQZ8Y9GCS76HXBKYYZ3QW70
   created_at: 2026-03-15T03:28:15.220Z
   started_at: 2026-03-15T05:25:23.522Z
+  submitted_at: 2026-03-15T05:46:34.752Z
   notes:
     - _ulid: 01KKR0EYTJ8KYKKZH3PKTTPJGX
       created_at: 2026-03-15T05:45:48.114Z
@@ -98022,15 +98048,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-15T05:46:34.752Z
-  submission_linkage:
-    branch: main
-    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-15T05:46:33.973Z
 - _ulid: 01KKQRK3YT328Q9BKN9HD0DE34
   slugs:
     - task-migrate-core-pages
