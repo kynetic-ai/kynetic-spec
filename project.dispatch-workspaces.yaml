@@ -4530,7 +4530,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
     canonical_branch: dispatch/task/task-ref-index-endpoint/01kkqrk2
-    canonical_branch_head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    canonical_branch_head: f274d2c36393abc8a94533d35719750b9e5ba251
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -4538,16 +4538,21 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ref-index-endpoint-01kkqrk2
         branch_mode: branch
         branch_ref: dispatch/task/task-ref-index-endpoint/01kkqrk2
-        head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-        last_seen_at: 2026-03-15T04:08:59.654Z
-      reviewer: null
+        head: f274d2c36393abc8a94533d35719750b9e5ba251
+        last_seen_at: 2026-03-15T04:20:52.646Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ref-index-endpoint-01kkqrk2-review
+        branch_mode: detached
+        branch_ref: null
+        head: f274d2c36393abc8a94533d35719750b9e5ba251
+        last_seen_at: 2026-03-15T04:20:52.646Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -4581,21 +4586,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T04:08:59.654Z
+      updated_at: 2026-03-15T04:20:52.646Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T04:09:00.134Z
+      updated_at: 2026-03-15T04:20:52.646Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T04:08:59.654Z
+      updated_at: 2026-03-15T04:20:52.646Z
     timestamps:
       created_at: 2026-03-15T04:08:59.654Z
-      updated_at: 2026-03-15T04:09:00.134Z
-      last_reconciled_at: 2026-03-15T04:09:00.134Z
+      updated_at: 2026-03-15T04:20:52.646Z
+      last_reconciled_at: 2026-03-15T04:20:52.646Z
       last_active_at: 2026-03-15T04:09:00.134Z
       closed_at: null
