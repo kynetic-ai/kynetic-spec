@@ -5758,7 +5758,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6f2b02df930df09e597db225bd51605b7f2a58e7
     canonical_branch: dispatch/task/task-session-event-detail-endpoint/01kksgsz
-    canonical_branch_head: 7349887887afee8a513e51e993d9e3379ae7d435
+    canonical_branch_head: 389562bc5ac70d3fccfef3e01b225c04bfa06198
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -5811,21 +5811,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T22:07:55.625Z
+      updated_at: 2026-03-15T22:12:01.107Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T22:07:56.146Z
+      updated_at: 2026-03-15T22:12:01.107Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T22:07:55.625Z
+      updated_at: 2026-03-15T22:12:01.107Z
     timestamps:
       created_at: 2026-03-15T21:31:43.360Z
-      updated_at: 2026-03-15T22:07:56.146Z
-      last_reconciled_at: 2026-03-15T22:07:56.146Z
+      updated_at: 2026-03-15T22:12:01.107Z
+      last_reconciled_at: 2026-03-15T22:12:01.107Z
       last_active_at: 2026-03-15T22:07:56.146Z
       closed_at: null
