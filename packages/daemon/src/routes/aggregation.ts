@@ -16,7 +16,6 @@ import { Elysia } from 'elysia';
 import {
   initContext,
   loadAllTasks,
-  loadAllItems,
   loadInboxItems,
   loadTriageRecords,
   findTriageRecordByInboxRef,
@@ -97,12 +96,19 @@ export function createAggregationRoutes(options: AggregationRouteOptions = {}) {
       }
 
       // Count uncovered ACs from completeness warnings
+      // Each warning represents one item with N uncovered ACs listed in details
+      // Details format: "Uncovered: ac-1, ac-2, ac-3"
       const uncoveredWarnings = validationResult.completenessWarnings.filter(
         (w) => w.type === 'missing_test_coverage' && w.subtype === 'own_ac'
       );
-      // Each warning covers one item; parse details for individual AC count
-      // The message format includes the count; use warning count as proxy for uncovered items
-      const uncoveredCount = uncoveredWarnings.length;
+      let uncoveredCount = 0;
+      for (const warning of uncoveredWarnings) {
+        if (warning.details) {
+          // Parse "Uncovered: ac-1, ac-2, ac-3" to count individual ACs
+          const acList = warning.details.replace(/^Uncovered:\s*/, '');
+          uncoveredCount += acList.split(',').filter((s) => s.trim().length > 0).length;
+        }
+      }
       const coveredCount = Math.max(0, totalACs - uncoveredCount);
 
       const result: ValidationAggregation = {
