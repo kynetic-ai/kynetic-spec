@@ -97463,6 +97463,13 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #865. Created comprehensive UI data layer skill
+    (.kspec/skills/ui-data-layer/SKILL.md) documenting TanStack Query v6 patterns for Svelte web UI.
+    Covers all 8 @ui-data-freshness ACs: cache setup, request dedup, WS-driven invalidation,
+    event-driven badge updates, project switch cache clearing, static mode compatibility, error
+    handling, and mutation-based cache invalidation. Includes query key factories, cache timing
+    conventions, createInfiniteQuery for sessions, migration guide from manual fetch, testing
+    patterns, anti-patterns, and architecture boundaries."
   depends_on: []
   context: []
   priority: 1
@@ -97482,6 +97489,7 @@
   created_at: 2026-03-15T03:28:12.187Z
   started_at: 2026-03-15T04:08:40.071Z
   submitted_at: 2026-03-15T04:08:44.145Z
+  completed_at: 2026-03-15T04:17:08.172Z
   notes:
     - _ulid: 01KKQSPJBMXA9ECGVVC36VJQHX
       created_at: 2026-03-15T03:47:37.460Z
@@ -97511,14 +97519,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T04:17:08.172Z
-  closed_reason: "Merged in PR #865. Created comprehensive UI data layer skill
-    (.kspec/skills/ui-data-layer/SKILL.md) documenting TanStack Query v6 patterns for Svelte web UI.
-    Covers all 8 @ui-data-freshness ACs: cache setup, request dedup, WS-driven invalidation,
-    event-driven badge updates, project switch cache clearing, static mode compatibility, error
-    handling, and mutation-based cache invalidation. Includes query key factories, cache timing
-    conventions, createInfiniteQuery for sessions, migration guide from manual fetch, testing
-    patterns, anti-patterns, and architecture boundaries."
 - _ulid: 01KKQRK0ZZZ1QMCNHDHK3969AF
   slugs:
     - task-tanstack-setup
@@ -97706,7 +97706,41 @@
   session_id: 01KKQTXPXXNMD887KR6C9Y2YDP
   created_at: 2026-03-15T03:28:14.027Z
   started_at: 2026-03-15T04:10:57.144Z
-  notes: []
+  notes:
+    - _ulid: 01KKQVJF66XE9DDKMHM2SCTGJS
+      created_at: 2026-03-15T04:20:20.294Z
+      author: "@claude"
+      content: >-
+        Implemented GET /api/refs/index endpoint.
+
+
+        Files changed:
+
+        - packages/shared/src/api.ts — Added RefIndexEntry and RefIndexResponse types
+
+        - packages/daemon/src/routes/refs.ts — New route handler for /api/refs/index
+
+        - packages/daemon/src/server.ts — Registered refs route
+
+        - tests/daemon-refs-index.test.ts — 6 tests covering AC-4, AC-5, and trait ACs
+
+
+        Design decisions:
+
+        - Returns flat map keyed by both ULID and slug for O(1) lookup
+
+        - For spec items, extracts implementation status from nested status object
+
+        - Uses Promise.all to load tasks and items concurrently
+
+        - No pagination since this is a complete index, not a list endpoint
+
+        - Trait ACs ac-2/3/4/5 marked N/A (read-only index endpoint with no
+        body/pagination/mutation)
+
+
+        All 4959 tests pass, 0 regressions.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK2R219TBGWE4XQEBJNEC
