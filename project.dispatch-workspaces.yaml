@@ -5533,7 +5533,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-dispatch-engine-stop-await/01kks7am
         head: 1cac2b1227fafaf4945fc413fbfd1eec4dc8a198
-        last_seen_at: 2026-03-15T18:40:01.149Z
+        last_seen_at: 2026-03-15T20:27:01.866Z
       reviewer: null
     bootstrap:
       status: succeeded
@@ -5568,22 +5568,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T18:40:05.089Z
+      updated_at: 2026-03-15T20:27:01.866Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T18:40:05.089Z
+      updated_at: 2026-03-15T20:27:01.866Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T18:40:05.089Z
+      updated_at: 2026-03-15T20:27:01.866Z
     timestamps:
       created_at: 2026-03-15T17:05:58.160Z
-      updated_at: 2026-03-15T18:40:05.089Z
-      last_reconciled_at: 2026-03-15T18:40:05.089Z
+      updated_at: 2026-03-15T20:27:01.866Z
+      last_reconciled_at: 2026-03-15T20:27:01.866Z
       last_active_at: 2026-03-15T18:40:01.734Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKS72EKJS2R9FM38A7YB5W5C
