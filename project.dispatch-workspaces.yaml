@@ -6027,12 +6027,12 @@ workspaces:
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
-      canonicalBranchHead: 6f2b02df930df09e597db225bd51605b7f2a58e7
-      lastRunAt: 2026-03-15T22:39:43.861Z
+      canonicalBranchHead: 1bde4a3176dfa189af74969df73b39e00a2adcc4
+      lastRunAt: 2026-03-15T22:51:38.086Z
       invalidationReasons: []
       steps: []
       failureMessage: null
-      lastRole: worker
+      lastRole: reviewer
       roleStates:
         worker:
           status: succeeded
@@ -6043,10 +6043,10 @@ workspaces:
           steps: []
           failureMessage: null
         reviewer:
-          status: not_run
-          configHash: null
-          canonicalBranchHead: null
-          lastRunAt: null
+          status: succeeded
+          configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
+          canonicalBranchHead: 1bde4a3176dfa189af74969df73b39e00a2adcc4
+          lastRunAt: 2026-03-15T22:51:38.086Z
           invalidationReasons: []
           steps: []
           failureMessage: null
@@ -6071,7 +6071,7 @@ workspaces:
       updated_at: 2026-03-15T22:51:37.842Z
     timestamps:
       created_at: 2026-03-15T22:39:41.894Z
-      updated_at: 2026-03-15T22:51:37.842Z
+      updated_at: 2026-03-15T22:51:38.086Z
       last_reconciled_at: 2026-03-15T22:51:37.842Z
       last_active_at: 2026-03-15T22:39:47.192Z
       closed_at: null
