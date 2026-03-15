@@ -100045,9 +100045,28 @@
     - bug
     - mvp
   vcs_refs: []
+  session_id: 01KKSW8V518J7QMQA3KN873A2F
   created_at: 2026-03-15T23:07:41.936Z
-  notes: []
+  started_at: 2026-03-15T23:11:17.037Z
+  notes:
+    - _ulid: 01KKSW9SECT2WB0E96YDG2BG99
+      created_at: 2026-03-15T23:11:33.324Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: The dispatch engine can violate max_concurrent because _drainQueues() is
+        called directly from 5 call sites, bypassing _serializedDrain(). Only the coalesced timer
+        path uses _serializedDrain().
+
+        - Scope: Route all _drainQueues() calls through _serializedDrain() so drain execution is
+        always serialized. The 5 call sites are: handleStateChange (line 844), _bootstrap (line
+        1008), _reconcile (line 1044), retry wake-up (line 2072), post-invocation re-eval (line
+        2165).
+
+        - Files: src/agent-runtime/dispatch.ts, tests/agent-dispatch-engine.test.ts
+
+        - Verification: Existing tests pass + new test proving concurrent drains are serialized
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-15T23:11:17.037Z
-  session_id: 01KKSW8V518J7QMQA3KN873A2F
