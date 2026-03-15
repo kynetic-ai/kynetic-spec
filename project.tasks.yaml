@@ -99911,7 +99911,10 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Implement cross-agent task dispatch exclusivity
+- _ulid: 01KKSW263S036SS7QFQ5RTN813
+  slugs: []
+  title: Implement cross-agent task dispatch exclusivity
+  type: task
   description: >-
     The dispatch engine currently allows multiple agents to have active invocations for the same
     task simultaneously. For example, when a task-worker submits a task (transitioning to
@@ -99948,6 +99951,63 @@
 
 
     AC coverage: @agent-dispatch-engine ac-26.
+  spec_ref: "@agent-dispatch-engine"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - bug
+    - mvp
+  vcs_refs: []
+  created_at: 2026-03-15T23:07:24.153Z
+  notes: []
+  todos: []
+- title: Fix max_concurrent violation from concurrent drain paths
+  description: >-
+    The dispatch engine can violate the per-agent max_concurrent limit when multiple drain paths
+    execute concurrently. For example, after a worker invocation fails, the post-invocation
+    re-evaluation (line 2178) calls _drainQueues() directly. Simultaneously, a coalesced timer or
+    reconciliation scan also calls _drainQueues(). Both see activeCount=0, both call
+    _selectNextCandidate(), both spawn — resulting in two workers running despite max_concurrent=1.
+
+
+    Root cause: _serializedDrain() (line 1612) uses drainInProgress/drainPending flags to serialize
+    drain execution, but only the coalesced timer path (line 1591) goes through _serializedDrain().
+    Five other call sites call _drainQueues() directly, bypassing serialization:
+
+    - Line 844: handleStateChange with coalesceWindowMs <= 0
+
+    - Line 1017: bootstrap
+
+    - Line 1053: reconciliation
+
+    - Line 2085: retry wake-up setTimeout callback
+
+    - Line 2178: post-invocation re-evaluation
+
+
+    Fix: All _drainQueues() call sites must go through _serializedDrain() (or equivalent
+    serialization). This ensures only one drain executes at a time — concurrent requests are
+    coalesced into a single follow-up drain.
+
+
+    Important nuance: @per-task-dispatch-drain-coalescing ac-7 says
+    bootstrap/reconciliation/post-invocation drains execute immediately (no coalescing DELAY). This
+    is compatible with drain SERIALIZATION — 'immediately' means the drain is requested without
+    waiting for a timer window, but execution still waits for any in-progress drain to complete.
+    These are orthogonal concerns.
+
+
+    Files: src/agent-runtime/dispatch.ts (all _drainQueues call sites),
+    tests/agent-dispatch-engine.test.ts.
+
+
+    AC coverage: @agent-dispatch-engine ac-27, @per-task-dispatch-drain-coalescing ac-9.
   type: task
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
@@ -99959,11 +100019,11 @@
     - bug
     - mvp
   depends_on: []
-  _ulid: 01KKSW263S036SS7QFQ5RTN813
+  _ulid: 01KKSW2QFG4MDMQZ7CTZYRHG3D
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-15T23:07:24.153Z
+  created_at: 2026-03-15T23:07:41.936Z
   notes: []
   todos: []
