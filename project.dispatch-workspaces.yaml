@@ -6243,3 +6243,79 @@ workspaces:
       last_reconciled_at: 2026-03-15T23:25:01.893Z
       last_active_at: 2026-03-15T23:24:25.163Z
       closed_at: null
+  - workspace_id: dispatch-workspace-01KKSRDQY1HZBENKBD06V6KDGW
+    task_ref: "@01KKSRDQY1HZBENKBD06V6KDGW"
+    task_slug: implement-session-summary-stats-persistence-and-live-counters
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    resolved_base_branch: main
+    base_branch_point: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    canonical_branch: dispatch/task/implement-session-summary-stats-persistence-and-live-counters/01kksrdq
+    canonical_branch_head: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    branch_provenance:
+      ownership: dispatcher-managed
+      source: provisioned
+      remote_ref: null
+      adopted_from: null
+      adopted_at: null
+      rehydrated: null
+    lifecycle_state: ready
+    active_role: null
+    worktrees:
+      worker:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-session-summary-stats-persistence-and-live-counters-01kksrdq
+        branch_mode: branch
+        branch_ref: dispatch/task/implement-session-summary-stats-persistence-and-live-counters/01kksrdq
+        head: 6f2b02df930df09e597db225bd51605b7f2a58e7
+        last_seen_at: 2026-03-15T23:30:41.721Z
+      reviewer: null
+    bootstrap:
+      status: not_run
+      configHash: null
+      canonicalBranchHead: null
+      lastRunAt: null
+      invalidationReasons: []
+      steps: []
+      failureMessage: null
+      lastRole: null
+      roleStates:
+        worker:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+        reviewer:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+    integration:
+      status: pending
+      target_branch: main
+      target_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+      publication_mode: pull_request
+      outcome: pull_request
+      detail: null
+      updated_at: 2026-03-15T23:30:41.721Z
+    health:
+      status: healthy
+      summary: Workspace record matches current git branch and worktree state.
+      issues: []
+      updated_at: 2026-03-15T23:30:41.721Z
+    cleanup:
+      status: not_scheduled
+      eligible: false
+      reason: null
+      detail: null
+      updated_at: 2026-03-15T23:30:41.721Z
+    timestamps:
+      created_at: 2026-03-15T23:30:41.721Z
+      updated_at: 2026-03-15T23:30:41.721Z
+      last_reconciled_at: 2026-03-15T23:30:41.721Z
+      last_active_at: null
+      closed_at: null
