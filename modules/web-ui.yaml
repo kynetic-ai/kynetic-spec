@@ -2626,6 +2626,9 @@ features:
       - "@trait-websocket-protocol"
     notes: []
     created: 2026-03-15T03:28:12.134Z
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KKQRK0C161X7JRT3RZKDAB6F
     slugs:
       - ui-data-freshness
