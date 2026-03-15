@@ -2986,6 +2986,9 @@ features:
         status:
           maturity: draft
           implementation: in_progress
+    status:
+      maturity: draft
+      implementation: in_progress
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:
