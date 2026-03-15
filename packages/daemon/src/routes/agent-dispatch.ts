@@ -56,22 +56,26 @@ function createEngine(
     kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
     onInvocationEvent: pubsub
       ? (event: InvocationEvent) => {
+          // AC: @ui-api-aggregation ac-4 - Include task_title for display
           pubsub.broadcast('agents', 'agent_invocation', {
             session_id: event.session_id,
             agent_id: event.agent_id,
             task_id: event.task_id ?? null,
+            task_title: event.task_title ?? null,
             status: event.status,
             timestamp: event.timestamp,
           }, projectDir);
         }
       : undefined,
     // AC: @cli-agent-commands ac-13, @daemon-agent-dispatch ac-8
+    // AC: @ui-api-aggregation ac-4 - Include task_title for display
     onTextChunk: pubsub
-      ? (sessionId: string, agentId: string, taskId: string | null, text: string) => {
+      ? (sessionId: string, agentId: string, taskId: string | null, taskTitle: string | null, text: string) => {
           pubsub.broadcast('agents', 'agent_text_chunk', {
             session_id: sessionId,
             agent_id: agentId,
             task_id: taskId,
+            task_title: taskTitle,
             text,
             timestamp: Date.now(),
           }, projectDir);

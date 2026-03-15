@@ -585,6 +585,7 @@ export interface InvocationEvent {
   session_id: string;
   agent_id: string;
   task_id: string | undefined;
+  task_title: string | null;
   status: "started" | "completed" | "failed";
   timestamp: number;
 }
@@ -631,7 +632,7 @@ export interface DispatchEngineOptions {
    * AC: @cli-agent-commands ac-13 (broadcast to watch subscribers)
    * AC: @daemon-agent-dispatch ac-8
    */
-  onTextChunk?: (sessionId: string, agentId: string, taskId: string | null, text: string) => void;
+  onTextChunk?: (sessionId: string, agentId: string, taskId: string | null, taskTitle: string | null, text: string) => void;
 }
 
 // ─── DispatchEngine ───────────────────────────────────────────────────────────
@@ -657,7 +658,7 @@ export class DispatchEngine {
   private coalesceWindowMs: number;
   private kspecCliPath?: string;
   private onInvocationEvent?: (event: InvocationEvent) => void;
-  private onTextChunk?: (sessionId: string, agentId: string, taskId: string | null, text: string) => void;
+  private onTextChunk?: (sessionId: string, agentId: string, taskId: string | null, taskTitle: string | null, text: string) => void;
 
   /** Queue of pending dispatch entries, per agent id */
   private queues: Map<string, QueueEntry[]> = new Map();
@@ -1932,6 +1933,7 @@ export class DispatchEngine {
           session_id: preSessionId,
           agent_id: agentId,
           task_id: entry.change.taskRef,
+          task_title: entry.change.task?.title ?? null,
           status: "started",
           timestamp: Date.now(),
         });
@@ -1939,6 +1941,7 @@ export class DispatchEngine {
 
       // AC: @cli-agent-commands ac-13, @daemon-agent-dispatch ac-8 - stream text chunks to watchers
       const taskId = entry.change.taskRef ?? null;
+      const taskTitle = entry.change.task?.title ?? null;
       const onUpdate = this.onTextChunk
         ? (update: import("../acp/index.js").SessionUpdate) => {
             emitStartedEvent();
@@ -1946,13 +1949,13 @@ export class DispatchEngine {
               update.sessionUpdate === "agent_message_chunk" &&
               update.content.type === "text"
             ) {
-              this.onTextChunk!(preSessionId, agentId, taskId, update.content.text);
+              this.onTextChunk!(preSessionId, agentId, taskId, taskTitle, update.content.text);
               return;
             }
             // Non-text updates (especially tool events) delimit logical message runs.
             // Emit an empty sentinel so watch renderers can end the current line
             // without needing to infer boundaries from prose punctuation.
-            this.onTextChunk!(preSessionId, agentId, taskId, "");
+            this.onTextChunk!(preSessionId, agentId, taskId, taskTitle, "");
           }
         : undefined;
 
@@ -2040,6 +2043,7 @@ export class DispatchEngine {
               session_id: preSessionId,
               agent_id: agentId,
               task_id: entry.change.taskRef,
+              task_title: entry.change.task?.title ?? null,
               status: "completed",
               timestamp: Date.now(),
             };
@@ -2079,6 +2083,7 @@ export class DispatchEngine {
                 session_id: preSessionId,
                 agent_id: agentId,
                 task_id: entry.change.taskRef,
+                task_title: entry.change.task?.title ?? null,
                 status: "failed",
                 timestamp: Date.now(),
               };
