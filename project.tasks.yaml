@@ -98251,7 +98251,7 @@
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-tanstack-setup"
@@ -98266,6 +98266,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-15T06:48:31.502Z
+  session_id: 01KKR3ZCWTR8B36D571DRHSXF3
 - _ulid: 01KKQRK5PM5VTQBBBMT11PMCE6
   slugs:
     - task-migrate-inbox-triage
