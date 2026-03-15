@@ -100060,12 +100060,30 @@
     - bug
     - mvp
   vcs_refs: []
+  session_id: 01KKSYGPED31WEHK2GMV9YH4R4
   created_at: 2026-03-15T23:07:24.153Z
-  notes: []
+  started_at: 2026-03-15T23:50:35.705Z
+  notes:
+    - _ulid: 01KKSYHQ636X2SZS4YZK5ZKJK8
+      created_at: 2026-03-15T23:50:50.307Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Dispatch engine allows concurrent invocations for the same task across
+        different agents, causing conflicts
+
+        - Scope: Add cross-agent exclusivity check in handleStateChange() and _selectNextCandidate()
+        so at most one invocation is active per task
+
+        - Files: src/agent-runtime/dispatch.ts, tests/agent-dispatch-engine.test.ts
+
+        - AC: @agent-dispatch-engine ac-26
+
+        - Verification: Tests proving cross-agent exclusivity, existing tests still pass
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-15T23:50:35.705Z
-  session_id: 01KKSYGPED31WEHK2GMV9YH4R4
 - _ulid: 01KKSW2QFG4MDMQZ7CTZYRHG3D
   slugs: []
   title: Fix max_concurrent violation from concurrent drain paths
