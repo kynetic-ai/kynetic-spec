@@ -97588,12 +97588,30 @@
     - daemon
     - web-ui
   vcs_refs: []
+  session_id: 01KKQSR7CQEY70BWMWTVDVN146
   created_at: 2026-03-15T03:28:13.424Z
-  notes: []
+  started_at: 2026-03-15T03:48:54.091Z
+  notes:
+    - _ulid: 01KKQSWDCJ7K1HC2M0RWSRYBY8
+      created_at: 2026-03-15T03:50:48.978Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: This task adds server-side title resolution to daemon API responses so the web
+        UI doesn't need per-page taskTitles lookup maps or fetchTasks({limit: 1000}) calls.
+
+        - Scope: (1) Create ref resolution utility, (2) Add resolved title fields to shared types in
+        packages/shared, (3) Update daemon routes: tasks, sessions, agent-dispatch, triage, (4) Add
+        lightweight ref index endpoint (ac-4/ac-5), (5) Write tests for all 5 ACs plus trait ACs
+
+        - Files: packages/shared/src/api.ts, packages/daemon/src/routes/tasks.ts, sessions.ts,
+        agent-dispatch.ts, triage.ts, new resolution utility, tests
+
+        - Verification: npm test, all AC annotations present
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-15T03:48:54.091Z
-  session_id: 01KKQSR7CQEY70BWMWTVDVN146
 - _ulid: 01KKQRK26BXGJJPBJ1NQ4GM59C
   slugs:
     - task-ref-index-endpoint
