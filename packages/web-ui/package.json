@@ -19,6 +19,7 @@
 	},
 	"dependencies": {
 		"@kynetic-ai/shared": "*",
+		"@tanstack/svelte-query": "^6.1.0",
 		"highlight.js": "^11.11.1",
 		"isomorphic-dompurify": "^3.0.0",
 		"lucide-svelte": "^0.563.0",

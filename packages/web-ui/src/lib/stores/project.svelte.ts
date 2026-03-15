@@ -14,6 +14,7 @@
 
 import { browser } from '$app/environment';
 import { DAEMON_API_BASE } from '$lib/constants';
+import { clearQueryCache } from '$lib/query/context.js';
 
 const STORAGE_KEY = 'kspec-selected-project';
 
@@ -112,6 +113,9 @@ export function selectProject(path: string): void {
 
 	selectedPath = path;
 	persistSelection(path);
+
+	// AC: @ui-data-freshness ac-5 — Discard all cached data on project change
+	clearQueryCache();
 
 	// Increment version to trigger data reloads in components
 	// AC: @multi-directory-daemon ac-27
