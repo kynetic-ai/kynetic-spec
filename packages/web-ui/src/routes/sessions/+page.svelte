@@ -14,9 +14,11 @@
   AC: @session-filter-controls ac-date-filter — Date range filter via URL params.
   AC: @session-filter-controls ac-clear-filters — Clear all filters button.
   AC: @session-filter-controls ac-filter-counts — Filtered vs total count display.
+  AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state (createInfiniteQuery caches pages)
+  AC: @ui-data-freshness ac-3 — WS events invalidate session queries via centralized wiring
 -->
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onDestroy } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
@@ -26,52 +28,27 @@
 		SessionSearchResult,
 		FetchSessionSearchParams
 	} from '$lib/api';
-	import { fetchSessions, fetchSessionSearch, fetchTasks } from '$lib/api';
+	import { fetchSessions, fetchSessionSearch } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
-	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
-	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
+	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { formatElapsed, formatAge, getTriggerLabel, isDispatchedSession } from '$lib/components/session/session-utils';
 	import SessionFilters from '$lib/components/session/SessionFilters.svelte';
 	import { Badge } from '$lib/components/ui/badge';
 	import ReferenceLink from '$lib/components/ReferenceLink.svelte';
+	import { createInfiniteQuery, createQuery } from '@tanstack/svelte-query';
+	import { queryKeys } from '$lib/query/keys.js';
 	import Activity from '@lucide/svelte/icons/activity';
 	import Zap from '@lucide/svelte/icons/zap';
 	import Terminal from '@lucide/svelte/icons/terminal';
 	import Loader2 from '@lucide/svelte/icons/loader-2';
-	import ArrowUp from '@lucide/svelte/icons/arrow-up';
 	import Search from '@lucide/svelte/icons/search';
 
 	const PAGE_SIZE = 25;
 	const SCROLL_THRESHOLD = 200; // px from bottom to trigger load
 	const SEARCH_LIMIT = 50;
 
-	// Pagination state
-	let sessions = $state<SessionSummary[]>([]);
-	let searchResults = $state<SessionSearchResult[]>([]);
-	let total = $state(0);
-	let offset = $state(0);
-	let loading = $state(true); // Initial load
-	let loadingMore = $state(false); // Subsequent page loads
-	let error = $state('');
-	let totalMatches = $state(0);
+	// Local UI state
 	let searchInput = $state('');
-
-	// Task title lookup
-	let taskTitles = $state<Record<string, string>>({});
-	let taskTitlesLoaded = $state(false);
-
-	// AC: @session-filter-controls ac-filter-counts — Track unfiltered total for count display
-	let unfilteredTotal = $state(0);
-
-	// AC: @session-filter-controls ac-agent-filter, ac-agent-type-filter — Distinct values for filter dropdowns
-	let distinctAgentIds = $state<string[]>([]);
-	let distinctAgentTypes = $state<string[]>([]);
-
-	// AC: @session-list-infinite-scroll ac-live-update — Track new sessions
-	let newSessionsAvailable = $state(0);
-	let isAtTop = $state(true);
-	let pageRoot: HTMLDivElement | undefined = $state();
-	let scrollContainer: HTMLElement | undefined = $state();
 
 	// IntersectionObserver sentinel element
 	let sentinel: HTMLDivElement | undefined = $state();
@@ -87,7 +64,6 @@
 	let filterSpecRef = $derived($page.url.searchParams.get('spec_ref') || '');
 	let searchQuery = $derived($page.url.searchParams.get('q') || '');
 	let searchMode = $derived(searchQuery.trim().length > 0);
-	let allLoaded = $derived(searchMode ? true : sessions.length >= total);
 	let hasFilters = $derived(
 		filterStatuses.length > 0 ||
 			filterAgentId ||
@@ -98,29 +74,28 @@
 			filterSpecRef
 	);
 
-	function updateDistinctFilters(items: SessionSummary[], options?: { reset?: boolean }) {
-		const reset = options?.reset ?? false;
-		const agentIdSet = new Set(reset ? [] : distinctAgentIds);
-		const agentTypeSet = new Set(reset ? [] : distinctAgentTypes);
-
-		for (const session of items) {
-			if (session.agent_id) agentIdSet.add(session.agent_id);
-			agentTypeSet.add(session.agent_type);
-		}
-
-		if (filterAgentId) agentIdSet.add(filterAgentId);
-		if (filterAgentType) agentTypeSet.add(filterAgentType);
-
-		distinctAgentIds = [...agentIdSet].sort();
-		distinctAgentTypes = [...agentTypeSet].sort();
+	/**
+	 * Build filter object for query keys and fetch params.
+	 * Excludes pagination — used for cache key identity.
+	 */
+	function buildFilterKey(): Record<string, unknown> {
+		const key: Record<string, unknown> = {};
+		if (filterStatuses.length > 0) key.status = filterStatuses;
+		if (filterAgentId) key.agent_id = filterAgentId;
+		if (filterAgentType) key.agent_type = filterAgentType;
+		if (filterTrigger) key.trigger = filterTrigger;
+		if (filterSince) key.since = filterSince;
+		if (filterTaskId) key.task_id = filterTaskId;
+		if (filterSpecRef) key.spec_ref = filterSpecRef;
+		return key;
 	}
 
 	/**
-	 * Build FetchSessionsParams from current URL search params.
+	 * Build FetchSessionsParams from current URL search params + page offset.
 	 */
-	function buildFetchParams(extraOffset?: number): FetchSessionsParams {
+	function buildFetchParams(pageOffset: number): FetchSessionsParams {
 		const params: FetchSessionsParams = {
-			offset: extraOffset ?? 0,
+			offset: pageOffset,
 			limit: PAGE_SIZE
 		};
 		if (filterStatuses.length > 0) params.status = filterStatuses;
@@ -148,125 +123,70 @@
 		return params;
 	}
 
-	/**
-	 * Seed filter metadata from the first unfiltered page so controls scale with pagination.
-	 */
-	async function loadFilterOptions() {
-		try {
-			const data = await fetchSessions({ offset: 0, limit: PAGE_SIZE });
-			unfilteredTotal = data.total;
-			updateDistinctFilters(data.items, { reset: true });
-		} catch {
-			// Non-critical — filter options just won't be populated
+	// AC: @ui-data-freshness ac-1 — createInfiniteQuery caches pages; revisits render from cache
+	// AC: @ui-data-freshness ac-2 — Concurrent requests deduplicated by TanStack Query
+	// AC: @session-list-infinite-scroll ac-initial-load — First page loaded automatically
+	const sessionsQuery = createInfiniteQuery(() => ({
+		queryKey: queryKeys.sessions.list({ ...buildFilterKey(), mode: 'paginated' }),
+		queryFn: ({ pageParam }) =>
+			fetchSessions(buildFetchParams(pageParam as number)),
+		initialPageParam: 0,
+		getNextPageParam: (lastPage) => {
+			const nextOffset = lastPage.offset + lastPage.items.length;
+			return nextOffset < lastPage.total ? nextOffset : undefined;
+		},
+		enabled: isProjectInitialized() && !searchMode,
+	}));
+
+	// Search query — separate from paginated list
+	const searchResultsQuery = createQuery(() => ({
+		queryKey: queryKeys.sessions.list({ ...buildFilterKey(), mode: 'search', q: searchQuery }),
+		queryFn: () => fetchSessionSearch(buildSearchParams()),
+		enabled: isProjectInitialized() && searchMode,
+	}));
+
+	// AC: @session-filter-controls ac-filter-counts — Unfiltered total for count display
+	const unfilteredQuery = createQuery(() => ({
+		queryKey: queryKeys.sessions.list({ mode: 'unfiltered-total' }),
+		queryFn: () => fetchSessions({ offset: 0, limit: 0 }),
+		enabled: isProjectInitialized(),
+	}));
+
+	// Derived state from queries
+	let sessions = $derived<SessionSummary[]>(
+		sessionsQuery.data?.pages.flatMap((p) => p.items) ?? []
+	);
+	let total = $derived(sessionsQuery.data?.pages[0]?.total ?? 0);
+	let loading = $derived(sessionsQuery.isLoading);
+	let loadingMore = $derived(sessionsQuery.isFetchingNextPage);
+	let allLoaded = $derived(searchMode ? true : !sessionsQuery.hasNextPage);
+	let error = $derived(sessionsQuery.error?.message ?? searchResultsQuery.error?.message ?? '');
+
+	let searchResults = $derived<SessionSearchResult[]>(searchResultsQuery.data?.items ?? []);
+	let totalMatches = $derived(searchResultsQuery.data?.total_matches ?? 0);
+	let searchTotal = $derived(searchResultsQuery.data?.total_sessions ?? 0);
+	let searchLoading = $derived(searchResultsQuery.isLoading);
+
+	let unfilteredTotal = $derived(unfilteredQuery.data?.total ?? 0);
+
+	// AC: @session-filter-controls ac-agent-filter, ac-agent-type-filter — Distinct values for filter dropdowns
+	let distinctAgentIds = $derived.by(() => {
+		const agentIdSet = new Set<string>();
+		for (const session of sessions) {
+			if (session.agent_id) agentIdSet.add(session.agent_id);
 		}
-	}
+		if (filterAgentId) agentIdSet.add(filterAgentId);
+		return [...agentIdSet].sort();
+	});
 
-	// AC: @session-list-infinite-scroll ac-initial-load — Load first page
-	async function loadInitialPage() {
-		loading = true;
-		error = '';
-		sessions = [];
-		searchResults = [];
-		offset = 0;
-		total = 0;
-		totalMatches = 0;
-		newSessionsAvailable = 0;
-		try {
-			if (searchMode) {
-				const data = await fetchSessionSearch(buildSearchParams());
-				searchResults = data.items;
-				total = data.total_sessions;
-				totalMatches = data.total_matches;
-			} else {
-				const [data, tasksData] = await Promise.all([
-					fetchSessions(buildFetchParams(0)),
-					// Only load task titles once
-					taskTitlesLoaded ? Promise.resolve(null) : fetchTasks({ limit: 1000 })
-				]);
-				// AC: @ui-session-history ac-1 — sorted by most recent first (daemon returns pre-sorted)
-				sessions = data.items;
-				total = data.total;
-				offset = data.items.length;
-				updateDistinctFilters(data.items, { reset: !hasFilters });
-
-				// AC: @session-filter-controls ac-filter-counts — Update unfiltered total if no filters active
-				if (!hasFilters) {
-					unfilteredTotal = data.total;
-				}
-
-				// Build task title lookup for ReferenceLink display
-				if (tasksData) {
-					const titles: Record<string, string> = {};
-					for (const task of tasksData.items) {
-						if (task.slugs?.length) {
-							for (const slug of task.slugs) {
-								titles[`@${slug}`] = task.title;
-							}
-						}
-						titles[`@${task._ulid}`] = task.title;
-					}
-					taskTitles = titles;
-					taskTitlesLoaded = true;
-				}
-			}
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load sessions';
-		} finally {
-			loading = false;
+	let distinctAgentTypes = $derived.by(() => {
+		const agentTypeSet = new Set<string>();
+		for (const session of sessions) {
+			agentTypeSet.add(session.agent_type);
 		}
-	}
-
-	// AC: @session-list-infinite-scroll ac-scroll-load — Load next page
-	async function loadNextPage() {
-		if (searchMode || loadingMore || allLoaded) return;
-		loadingMore = true;
-		try {
-			const data = await fetchSessions(buildFetchParams(offset));
-			sessions = [...sessions, ...data.items];
-			total = data.total;
-			offset += data.items.length;
-			updateDistinctFilters(data.items);
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load more sessions';
-		} finally {
-			loadingMore = false;
-		}
-	}
-
-	// AC: @session-list-infinite-scroll ac-live-update — WebSocket handler
-	function handleAgentEvent(event: { event: string; data?: { session_id?: string; status?: string } }) {
-		if (event.event === 'agent_invocation') {
-			const data = event.data;
-			if (data?.status === 'started') {
-				// Always update total count immediately
-				total++;
-				unfilteredTotal++;
-
-				if (isAtTop) {
-					// User is at top — re-fetch page 1 to show the new session
-					loadInitialPage();
-				} else {
-					// User is scrolled down — show "new sessions available" indicator
-					newSessionsAvailable++;
-				}
-			}
-		}
-	}
-
-	// AC: @session-list-infinite-scroll ac-live-update — Refresh to show new sessions
-	function refreshNewSessions() {
-		newSessionsAvailable = 0;
-		loadInitialPage();
-		// Scroll to top to see the new sessions
-		scrollContainer?.scrollTo({ top: 0, behavior: 'smooth' });
-	}
-
-	// AC: @session-list-infinite-scroll ac-live-update — Track scroll position
-	function handleScroll() {
-		if (scrollContainer) {
-			isAtTop = scrollContainer.scrollTop <= 10;
-		}
-	}
+		if (filterAgentType) agentTypeSet.add(filterAgentType);
+		return [...agentTypeSet].sort();
+	});
 
 	function statusColor(status: string): string {
 		switch (status) {
@@ -309,29 +229,8 @@
 		applySearch(searchInput);
 	}
 
-	// Load sessions when project is ready and reload on project change.
-	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
-	$effect(() => {
-		const version = getProjectVersion();
-		const ready = isProjectInitialized();
-		if (!ready) return;
-		loadFilterOptions();
-		loadInitialPage();
-	});
-
 	$effect(() => {
 		searchInput = searchQuery;
-	});
-
-	// AC: @session-list-infinite-scroll ac-filter-reset — Reload when URL filter params change
-	let previousFilterKey: string | undefined;
-	$effect(() => {
-		// Build a stable key from all filter params to detect changes
-		const key = `${filterStatuses.join(',')}|${filterAgentId}|${filterAgentType}|${filterTrigger}|${filterSince}|${filterTaskId}|${filterSpecRef}|${searchQuery}`;
-		if (previousFilterKey !== undefined && previousFilterKey !== key) {
-			loadInitialPage();
-		}
-		previousFilterKey = key;
 	});
 
 	// AC: @session-list-infinite-scroll ac-scroll-load — IntersectionObserver for sentinel
@@ -342,7 +241,7 @@
 			(entries) => {
 				const entry = entries[0];
 				if (entry?.isIntersecting && !searchMode && !loadingMore && !allLoaded && !loading) {
-					loadNextPage();
+					sessionsQuery.fetchNextPage();
 				}
 			},
 			{ rootMargin: `${SCROLL_THRESHOLD}px` }
@@ -355,37 +254,18 @@
 		};
 	});
 
-	// AC: @session-list-infinite-scroll ac-live-update — Subscribe to agent events
-	// AC: @session-list-infinite-scroll ac-live-update — Find the layout's <main> scroll container
-	onMount(() => {
-		// The actual scroll container is the layout's <main class="overflow-auto">,
-		// not the page's root div. Attach scroll listener there.
-		scrollContainer = pageRoot?.closest('main') ?? undefined;
-		scrollContainer?.addEventListener('scroll', handleScroll);
-
-		if (!isStaticMode()) {
-			subscribe(['agents']);
-			on('agents', handleAgentEvent);
-		}
-	});
-
 	onDestroy(() => {
-		scrollContainer?.removeEventListener('scroll', handleScroll);
-		if (!isStaticMode()) {
-			off('agents', handleAgentEvent);
-			unsubscribe(['agents']);
-		}
 		observer?.disconnect();
 	});
 </script>
 
-<div class="flex flex-col gap-4 p-6" bind:this={pageRoot}>
+<div class="flex flex-col gap-4 p-6">
 	<div>
 		<h1 class="text-2xl font-bold">Sessions</h1>
 		<!-- AC: @session-list-infinite-scroll ac-initial-load — Show count -->
-		{#if !loading && searchMode}
+		{#if searchMode && !searchLoading}
 			<p class="text-sm text-muted-foreground" data-testid="session-search-count">
-				{totalMatches} match{totalMatches === 1 ? '' : 'es'} across {total} session{total === 1 ? '' : 's'}
+				{totalMatches} match{totalMatches === 1 ? '' : 'es'} across {searchTotal} session{searchTotal === 1 ? '' : 's'}
 			</p>
 		{:else if !loading && total > 0 && !hasFilters}
 			<p class="text-sm text-muted-foreground" data-testid="sessions-count">
@@ -415,9 +295,9 @@
 	</form>
 
 	<!-- AC: @session-filter-controls — Filter controls with URL state -->
-	{#if !loading || sessions.length > 0 || searchResults.length > 0}
+	{#if (!loading && !searchLoading) || sessions.length > 0 || searchResults.length > 0}
 		<SessionFilters
-			filteredTotal={total}
+			filteredTotal={searchMode ? searchTotal : total}
 			{unfilteredTotal}
 			agentIds={distinctAgentIds}
 			agentTypes={distinctAgentTypes}
@@ -430,26 +310,14 @@
 		</div>
 	{/if}
 
-	<!-- AC: @session-list-infinite-scroll ac-live-update — New sessions indicator -->
-	{#if newSessionsAvailable > 0}
-		<button
-			class="flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-primary/10 text-primary text-sm font-medium hover:bg-primary/20 transition-colors"
-			onclick={refreshNewSessions}
-			data-testid="new-sessions-indicator"
-		>
-			<ArrowUp class="size-3.5" />
-			{newSessionsAvailable} new session{newSessionsAvailable === 1 ? '' : 's'} available
-		</button>
-	{/if}
-
 	<!-- AC: @session-list-infinite-scroll ac-initial-load — Loading skeleton -->
-	{#if loading}
+	{#if loading || (searchMode && searchLoading)}
 		<div class="space-y-2" data-testid="sessions-loading">
 			{#each Array(5) as _}
 				<div class="h-16 rounded-lg bg-muted ds-shimmer"></div>
 			{/each}
 		</div>
-	{:else if (searchMode ? searchResults.length === 0 : sessions.length === 0) && total === 0}
+	{:else if (searchMode ? searchResults.length === 0 : sessions.length === 0) && (searchMode ? searchTotal === 0 : total === 0)}
 		<div class="flex flex-col items-center justify-center py-16" data-testid="sessions-empty">
 			<Activity class="size-12 text-muted-foreground/30 mb-4" />
 			<h2 class="text-lg font-medium text-muted-foreground mb-1">
@@ -533,7 +401,7 @@
 							{#if s.task_id}
 								<span class="text-xs text-muted-foreground">&middot;</span>
 								<span data-testid="session-task-ref">
-									<ReferenceLink ref={s.task_id} type="task" title={taskTitles[s.task_id] || taskTitles[`@${s.task_id}`]} inline class="text-xs" />
+									<ReferenceLink ref={s.task_id} type="task" title={s.task_title ?? undefined} inline class="text-xs" />
 								</span>
 							{/if}
 						</div>

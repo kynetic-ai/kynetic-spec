@@ -3,14 +3,18 @@
   AC: @ui-session-stream ac-2 — Live streaming via WebSocket agent_text_chunk events.
   AC: @ui-session-stream ac-3 — Auto-scroll with jump-to-bottom.
   AC: @ui-session-stream ac-4 — Session context panel with metadata.
+  AC: @ui-data-freshness ac-1 — Session detail renders from cache on revisit
 -->
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { onMount, onDestroy } from 'svelte';
+	import { createQuery } from '@tanstack/svelte-query';
 	import type { SessionDetail, SessionEvent as SessionEventType } from '$lib/api';
-	import { fetchSession, fetchSessionEvents, fetchTasks } from '$lib/api';
+	import { fetchSession, fetchSessionEvents } from '$lib/api';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
+	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { queryKeys } from '$lib/query/keys.js';
 	import type { BroadcastEvent } from '@kynetic-ai/shared';
 	import { parseEventsToBlocks, accumulateStreamingText, getLastSeq, type DisplayBlock } from '$lib/components/session/session-utils';
 	import SessionStream from '$lib/components/session/SessionStream.svelte';
@@ -21,67 +25,69 @@
 
 	let sessionId = $derived($page.params.id);
 
-	let session = $state<SessionDetail | null>(null);
-	let taskTitle = $state<string | null>(null);
+	// --- Queries ---
+	// AC: @ui-data-freshness ac-1 — createQuery caches session detail
+	const sessionQuery = createQuery(() => ({
+		queryKey: queryKeys.sessions.detail(sessionId),
+		queryFn: () => fetchSession(sessionId),
+		enabled: isProjectInitialized() && !isStaticMode(),
+	}));
+
+	// Events are fetched once and then incrementally updated via polling for live sessions.
+	// We use manual state for events since they accumulate incrementally.
 	let events = $state<SessionEventType[]>([]);
 	let blocks = $state<DisplayBlock[]>([]);
-	let loading = $state(true);
+	let eventsLoading = $state(true);
 	let error = $state('');
 
 	// AC: @ui-session-stream ac-2 — Live streaming state
 	let streamingText = $state('');
-	let isLive = $derived(session?.status === 'active');
+	let isLive = $derived(sessionQuery.data?.status === 'active');
 	let lastSeq = $state(-1);
 	let refreshTimer: ReturnType<typeof setInterval> | undefined;
 
-	async function loadSession() {
+	// Server-resolved task_title eliminates need for separate task title lookup
+	let taskTitle = $derived<string | null>(sessionQuery.data?.task_title ?? null);
+	let session = $derived<SessionDetail | null>(sessionQuery.data ?? null);
+
+	let loading = $derived(sessionQuery.isLoading || eventsLoading);
+
+	// Track whether initial events load has been triggered
+	let eventsLoadTriggered = $state(false);
+
+	// Reset events state when sessionId changes (SvelteKit may reuse component)
+	let prevSessionId = $state(sessionId);
+	$effect(() => {
+		if (sessionId !== prevSessionId) {
+			prevSessionId = sessionId;
+			eventsLoadTriggered = false;
+			events = [];
+			blocks = [];
+			eventsLoading = true;
+			error = '';
+			streamingText = '';
+			lastSeq = -1;
+		}
+	});
+
+	async function loadEvents() {
 		if (isStaticMode()) {
-			loading = false;
+			eventsLoading = false;
 			error = '';
 			return;
 		}
 
-		loading = true;
+		eventsLoading = true;
 		error = '';
 		try {
-			const [sessionData, eventsData] = await Promise.all([
-				fetchSession(sessionId),
-				fetchSessionEvents(sessionId)
-			]);
-			session = sessionData;
+			const eventsData = await fetchSessionEvents(sessionId);
 			events = eventsData.events;
 			blocks = parseEventsToBlocks(events);
 			lastSeq = getLastSeq(events);
-
-			// Resolve task title if the session has a task_id
-			if (sessionData.task_id) {
-				resolveTaskTitle(sessionData.task_id);
-			}
 		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load session';
+			error = err instanceof Error ? err.message : 'Failed to load session events';
 		} finally {
-			loading = false;
-		}
-	}
-
-	async function resolveTaskTitle(taskId: string) {
-		try {
-			const tasksData = await fetchTasks({ limit: 1000 });
-			const ref = taskId.startsWith('@') ? taskId : `@${taskId}`;
-			for (const task of tasksData.items) {
-				if (`@${task._ulid}` === ref) {
-					taskTitle = task.title;
-					return;
-				}
-				for (const slug of task.slugs || []) {
-					if (`@${slug}` === ref) {
-						taskTitle = task.title;
-						return;
-					}
-				}
-			}
-		} catch {
-			// Non-critical — ReferenceLink falls back to raw ID display
+			eventsLoading = false;
 		}
 	}
 
@@ -97,10 +103,6 @@
 				// Clear streaming text when we get structured data
 				streamingText = '';
 			}
-
-			// Also refresh session metadata to detect status changes
-			const sessionData = await fetchSession(sessionId);
-			session = sessionData;
 		} catch {
 			// Ignore refresh errors — will retry on next interval
 		}
@@ -120,9 +122,15 @@
 		}
 	}
 
-	onMount(() => {
-		loadSession();
+	// Load events when session query resolves (only once per session)
+	$effect(() => {
+		if (sessionQuery.data && !isStaticMode() && !eventsLoadTriggered) {
+			eventsLoadTriggered = true;
+			loadEvents();
+		}
+	});
 
+	onMount(() => {
 		// Subscribe to agent events for live streaming
 		if (!isStaticMode()) {
 			subscribe(['agents']);
@@ -178,9 +186,9 @@
 	</div>
 
 	<!-- Error -->
-	{#if error}
+	{#if error || sessionQuery.error}
 		<div class="mx-4 mt-4 bg-destructive/10 text-destructive p-4 rounded-lg" role="alert" data-testid="session-error">
-			{error}
+			{error || sessionQuery.error?.message}
 		</div>
 	{/if}
 

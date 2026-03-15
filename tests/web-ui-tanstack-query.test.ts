@@ -17,12 +17,30 @@ const WEB_UI_SRC = join(process.cwd(), "packages", "web-ui", "src");
 const QUERY_DIR = join(WEB_UI_SRC, "lib", "query");
 const LAYOUT_PATH = join(WEB_UI_SRC, "routes", "+layout.svelte");
 const DASHBOARD_PATH = join(WEB_UI_SRC, "routes", "+page.svelte");
+const AGENTS_PATH = join(WEB_UI_SRC, "routes", "agents", "+page.svelte");
+const SESSIONS_PATH = join(WEB_UI_SRC, "routes", "sessions", "+page.svelte");
+const SESSION_DETAIL_PATH = join(
+  WEB_UI_SRC,
+  "routes",
+  "sessions",
+  "[id]",
+  "+page.svelte",
+);
+const SETTINGS_PATH = join(WEB_UI_SRC, "routes", "settings", "+page.svelte");
+const WORKFLOWS_PATH = join(WEB_UI_SRC, "routes", "workflows", "+page.svelte");
+const OBSERVATIONS_PATH = join(
+  WEB_UI_SRC,
+  "routes",
+  "observations",
+  "+page.svelte",
+);
 const PROJECT_STORE_PATH = join(
   WEB_UI_SRC,
   "lib",
   "stores",
   "project.svelte.ts",
 );
+const API_PATH = join(WEB_UI_SRC, "lib", "api.ts");
 const PACKAGE_JSON_PATH = join(
   process.cwd(),
   "packages",
@@ -49,9 +67,16 @@ const indexSrc = readFileSync(join(QUERY_DIR, "index.ts"), "utf-8");
 const layoutSrc = readFileSync(LAYOUT_PATH, "utf-8");
 const dashboardSrc = readFileSync(DASHBOARD_PATH, "utf-8");
 const sidebarSrc = readFileSync(SIDEBAR_PATH, "utf-8");
+const agentsSrc = readFileSync(AGENTS_PATH, "utf-8");
+const sessionsSrc = readFileSync(SESSIONS_PATH, "utf-8");
+const sessionDetailSrc = readFileSync(SESSION_DETAIL_PATH, "utf-8");
+const settingsSrc = readFileSync(SETTINGS_PATH, "utf-8");
+const workflowsSrc = readFileSync(WORKFLOWS_PATH, "utf-8");
+const observationsSrc = readFileSync(OBSERVATIONS_PATH, "utf-8");
 const projectStoreSrc = readFileSync(PROJECT_STORE_PATH, "utf-8");
 const packageJsonSrc = readFileSync(PACKAGE_JSON_PATH, "utf-8");
 const packageJson = JSON.parse(packageJsonSrc);
+const apiSrc = readFileSync(API_PATH, "utf-8");
 
 describe("TanStack Query package installation", () => {
   it("has @tanstack/svelte-query in dependencies", () => {
@@ -447,5 +472,290 @@ describe("WS invalidation covers sidebar data (@ui-data-freshness ac-3)", () => 
       wsInvalidationSrc.indexOf("case 'items':"),
     );
     expect(tasksCase).toContain("queryKeys.sessionContext.all");
+  });
+});
+
+// ===================================================================
+// Core page migrations — @ui-data-freshness ac-1, ac-2, ac-3
+// ===================================================================
+
+// AC: @ui-data-freshness ac-1
+describe("observations page migration (@ui-data-freshness ac-1)", () => {
+  it("uses createQuery from @tanstack/svelte-query", () => {
+    expect(observationsSrc).toContain("createQuery");
+    expect(observationsSrc).toContain("@tanstack/svelte-query");
+  });
+
+  it("uses query key factory for observations", () => {
+    expect(observationsSrc).toContain("queryKeys.observations.list");
+  });
+
+  it("does not use manual $effect for data loading", () => {
+    expect(observationsSrc).not.toContain("$effect(");
+    expect(observationsSrc).not.toContain("async function loadObservations");
+  });
+
+  it("does not import getProjectVersion", () => {
+    expect(observationsSrc).not.toContain("getProjectVersion");
+  });
+
+  it("derives loading from query state", () => {
+    expect(observationsSrc).toContain("observationsQuery.isLoading");
+  });
+
+  it("gates query on project initialization", () => {
+    expect(observationsSrc).toContain("enabled: isProjectInitialized()");
+  });
+});
+
+// AC: @ui-data-freshness ac-1
+describe("workflows page migration (@ui-data-freshness ac-1)", () => {
+  it("uses createQuery from @tanstack/svelte-query", () => {
+    expect(workflowsSrc).toContain("createQuery");
+    expect(workflowsSrc).toContain("@tanstack/svelte-query");
+  });
+
+  it("uses query key factory for workflows", () => {
+    expect(workflowsSrc).toContain("queryKeys.workflows.all");
+  });
+
+  it("does not use manual $effect for data loading", () => {
+    expect(workflowsSrc).not.toContain("$effect(");
+    expect(workflowsSrc).not.toContain("async function loadData");
+  });
+
+  it("does not have manual WS subscription (handled by centralized wiring)", () => {
+    expect(workflowsSrc).not.toContain("subscribe(");
+    expect(workflowsSrc).not.toContain("on('files:updates'");
+    expect(workflowsSrc).not.toContain("onMount(");
+    expect(workflowsSrc).not.toContain("onDestroy(");
+  });
+
+  it("derives loading from query state", () => {
+    expect(workflowsSrc).toContain("workflowsQuery.isLoading");
+  });
+});
+
+// AC: @ui-data-freshness ac-1
+describe("settings page migration (@ui-data-freshness ac-1)", () => {
+  it("uses createQuery from @tanstack/svelte-query", () => {
+    expect(settingsSrc).toContain("createQuery");
+    expect(settingsSrc).toContain("@tanstack/svelte-query");
+  });
+
+  it("uses query key factories for all settings queries", () => {
+    expect(settingsSrc).toContain("queryKeys.settings.projectConfig()");
+    expect(settingsSrc).toContain("queryKeys.settings.health()");
+    expect(settingsSrc).toContain("queryKeys.settings.shadow()");
+    expect(settingsSrc).toContain("queryKeys.settings.conventions()");
+  });
+
+  it("does not have manual WS subscription (handled by centralized wiring)", () => {
+    expect(settingsSrc).not.toContain("subscribe(");
+    expect(settingsSrc).not.toContain("on('files:updates'");
+    expect(settingsSrc).not.toContain("onMount(");
+    expect(settingsSrc).not.toContain("onDestroy(");
+  });
+
+  it("does not use manual $effect for data loading", () => {
+    expect(settingsSrc).not.toContain("$effect(");
+    expect(settingsSrc).not.toContain("async function loadAllData");
+  });
+
+  it("disables daemon-only queries in static mode", () => {
+    expect(settingsSrc).toContain("!isStaticMode()");
+  });
+});
+
+// AC: @ui-data-freshness ac-1
+describe("agents page migration (@ui-data-freshness ac-1, ac-8)", () => {
+  it("uses createQuery from @tanstack/svelte-query", () => {
+    expect(agentsSrc).toContain("createQuery");
+    expect(agentsSrc).toContain("@tanstack/svelte-query");
+  });
+
+  it("uses query key factories for agent queries", () => {
+    expect(agentsSrc).toContain("queryKeys.agents.status()");
+    expect(agentsSrc).toContain("queryKeys.agents.definitions()");
+  });
+
+  it("does not use manual $effect for data loading", () => {
+    expect(agentsSrc).not.toContain("async function loadData");
+  });
+
+  // AC: @ui-data-freshness ac-8 — Write operations invalidate cache
+  it("uses createMutation for dispatch control with cache invalidation", () => {
+    expect(agentsSrc).toContain("createMutation");
+    expect(agentsSrc).toContain("invalidateQueries");
+    expect(agentsSrc).toContain("queryKeys.agents.all");
+  });
+
+  it("does not fetch all tasks for title lookup", () => {
+    expect(agentsSrc).not.toContain("fetchTasks");
+    expect(agentsSrc).not.toContain("limit: 1000");
+  });
+
+  it("uses server-resolved task_title from invocation data", () => {
+    expect(agentsSrc).toContain("task_title");
+  });
+
+  it("derives loading from query states", () => {
+    expect(agentsSrc).toContain("agentStatusQuery.isLoading");
+    expect(agentsSrc).toContain("agentDefsQuery.isLoading");
+  });
+});
+
+// AC: @ui-data-freshness ac-1
+describe("session detail page migration (@ui-data-freshness ac-1)", () => {
+  it("uses createQuery for session detail", () => {
+    expect(sessionDetailSrc).toContain("createQuery");
+    expect(sessionDetailSrc).toContain("@tanstack/svelte-query");
+  });
+
+  it("uses query key factory for session detail", () => {
+    expect(sessionDetailSrc).toContain("queryKeys.sessions.detail(sessionId)");
+  });
+
+  it("does not fetch all tasks for title lookup", () => {
+    expect(sessionDetailSrc).not.toContain("fetchTasks");
+    expect(sessionDetailSrc).not.toContain("limit: 1000");
+    expect(sessionDetailSrc).not.toContain("resolveTaskTitle");
+  });
+
+  it("uses server-resolved task_title from session data", () => {
+    expect(sessionDetailSrc).toContain("task_title");
+  });
+
+  it("keeps agent text streaming outside TanStack Query", () => {
+    expect(sessionDetailSrc).toContain("accumulateStreamingText");
+    expect(sessionDetailSrc).toContain("streamingText");
+    expect(sessionDetailSrc).toContain("subscribe(['agents'])");
+  });
+
+  it("resets events state when sessionId changes", () => {
+    // When SvelteKit reuses the component for a different session,
+    // eventsLoadTriggered must be reset to trigger a fresh load
+    expect(sessionDetailSrc).toContain("prevSessionId");
+    expect(sessionDetailSrc).toContain("eventsLoadTriggered = false");
+  });
+});
+
+// AC: @ui-data-freshness ac-1
+describe("sessions list page migration (@ui-data-freshness ac-1)", () => {
+  it("uses createInfiniteQuery for paginated session list", () => {
+    expect(sessionsSrc).toContain("createInfiniteQuery");
+    expect(sessionsSrc).toContain("@tanstack/svelte-query");
+  });
+
+  it("uses query key factory for sessions", () => {
+    expect(sessionsSrc).toContain("queryKeys.sessions.list");
+  });
+
+  it("uses createQuery for search results", () => {
+    expect(sessionsSrc).toContain("createQuery");
+    expect(sessionsSrc).toContain("fetchSessionSearch");
+  });
+
+  it("does not use manual $effect for data loading", () => {
+    expect(sessionsSrc).not.toContain("async function loadInitialPage");
+    expect(sessionsSrc).not.toContain("async function loadNextPage");
+  });
+
+  it("does not have manual WS subscription (handled by centralized wiring)", () => {
+    expect(sessionsSrc).not.toContain("subscribe(");
+    expect(sessionsSrc).not.toContain("unsubscribe(");
+    expect(sessionsSrc).not.toContain("on('agents'");
+    expect(sessionsSrc).not.toContain("off('agents'");
+  });
+
+  it("does not import unused onMount", () => {
+    expect(sessionsSrc).not.toContain("onMount");
+  });
+
+  it("derives sessions from infinite query pages", () => {
+    expect(sessionsSrc).toContain("sessionsQuery.data?.pages.flatMap");
+  });
+
+  it("uses fetchNextPage for infinite scroll", () => {
+    expect(sessionsSrc).toContain("sessionsQuery.fetchNextPage()");
+  });
+
+  it("gates queries on project initialization", () => {
+    expect(sessionsSrc).toContain("enabled: isProjectInitialized()");
+  });
+
+  it("does not fetch all tasks for title lookup", () => {
+    expect(sessionsSrc).not.toContain("fetchTasks");
+    expect(sessionsSrc).not.toContain("limit: 1000");
+    expect(sessionsSrc).not.toContain("taskTitlesLoaded");
+  });
+
+  it("uses server-resolved task_title from session data", () => {
+    expect(sessionsSrc).toContain("task_title");
+  });
+
+  it("preserves URL panel state AC annotations", () => {
+    expect(sessionsSrc).toContain("AC: @ui-url-panel-state");
+  });
+});
+
+// AC: @ui-data-freshness ac-3
+describe("WS invalidation covers all migrated page topics (@ui-data-freshness ac-3)", () => {
+  it("invalidates observations queries on file changes", () => {
+    expect(wsInvalidationSrc).toContain("queryKeys.observations.all");
+  });
+
+  it("invalidates session queries on agent lifecycle events", () => {
+    expect(wsInvalidationSrc).toContain("queryKeys.sessions.all");
+  });
+});
+
+// Verify fetchTasks-for-titles pattern is eliminated
+describe("fetchTasks-for-titles elimination", () => {
+  it("agents page does not import fetchTasks", () => {
+    expect(agentsSrc).not.toContain("fetchTasks");
+  });
+
+  it("session detail page does not import fetchTasks", () => {
+    expect(sessionDetailSrc).not.toContain("fetchTasks");
+  });
+
+  it("sessions list page does not import fetchTasks", () => {
+    expect(sessionsSrc).not.toContain("fetchTasks");
+  });
+});
+
+// Verify server-side title resolution types
+describe("server-side title resolution types", () => {
+  it("ActiveInvocation includes task_title field", () => {
+    expect(apiSrc).toContain("task_title: string | null");
+  });
+
+  it("SessionSummary includes task_title field", () => {
+    // Check the task_title field is near task_id in SessionSummary
+    const sessionSummaryBlock = apiSrc.slice(
+      apiSrc.indexOf("interface SessionSummary"),
+      apiSrc.indexOf("interface SessionSpecContext"),
+    );
+    expect(sessionSummaryBlock).toContain("task_title");
+  });
+});
+
+// Query key factory additions
+describe("query key factory additions for core pages", () => {
+  it("sessions key factory includes list method with filters", () => {
+    expect(keysSrc).toContain("sessions:");
+    // Verify sessions has a list factory function
+    const sessionsBlock = keysSrc.slice(
+      keysSrc.indexOf("sessions:"),
+      keysSrc.indexOf("plans:"),
+    );
+    expect(sessionsBlock).toContain("list:");
+  });
+
+  it("settings key factory includes health, projectConfig, shadow", () => {
+    expect(keysSrc).toContain("health:");
+    expect(keysSrc).toContain("projectConfig:");
+    expect(keysSrc).toContain("shadow:");
   });
 });

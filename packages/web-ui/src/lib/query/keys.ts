@@ -64,6 +64,8 @@ export const queryKeys = {
 	sessions: {
 		all: ['sessions'] as const,
 		lists: () => [...queryKeys.sessions.all, 'list'] as const,
+		list: (filters?: Record<string, unknown>) =>
+			[...queryKeys.sessions.lists(), filters] as const,
 		detail: (id: string) => [...queryKeys.sessions.all, 'detail', id] as const,
 	},
 
@@ -80,6 +82,9 @@ export const queryKeys = {
 
 	settings: {
 		all: ['settings'] as const,
+		health: () => [...queryKeys.settings.all, 'health'] as const,
+		projectConfig: () => [...queryKeys.settings.all, 'projectConfig'] as const,
+		shadow: () => [...queryKeys.settings.all, 'shadow'] as const,
 		conventions: () => [...queryKeys.settings.all, 'conventions'] as const,
 		session: () => [...queryKeys.settings.all, 'session'] as const,
 	},
