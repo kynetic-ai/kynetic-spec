@@ -99832,7 +99832,9 @@
     - daemon
     - sessions
   vcs_refs: []
+  session_id: 01KKSXCVDBH512KTKJJSQX9R8P
   created_at: 2026-03-15T22:03:48.545Z
+  started_at: 2026-03-15T23:31:05.357Z
   notes:
     - _ulid: 01KKSREVJXS84VH3494MWGZDXX
       created_at: 2026-03-15T22:04:25.053Z
@@ -99954,8 +99956,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-15T23:31:05.357Z
-  session_id: 01KKSXCVDBH512KTKJJSQX9R8P
 - _ulid: 01KKSW263S036SS7QFQ5RTN813
   slugs: []
   title: Implement cross-agent task dispatch exclusivity
@@ -100061,7 +100061,7 @@
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -100113,3 +100113,9 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-15T23:36:48.975Z
+  closed_reason: "Merged in PR #887. Routed all 5 direct _drainQueues() call sites through
+    _serializedDrain() to prevent max_concurrent violation from concurrent drain paths. 4 new tests
+    verify drain serialization (concurrency tracking) and routing (handleStateChange, bootstrap,
+    reconciliation). All 5475 tests pass, all CI checks pass, AC coverage verified for
+    @agent-dispatch-engine ac-27 and @per-task-dispatch-drain-coalescing ac-9."
