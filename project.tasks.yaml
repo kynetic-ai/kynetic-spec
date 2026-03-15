@@ -98993,9 +98993,18 @@
     - performance
     - test-flakiness
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T22:51:29.077Z
   session_id: 01KKSTFJA9FJEKS3QJ0J3JKTZY
   created_at: 2026-03-15T17:05:26.133Z
   started_at: 2026-03-15T22:39:59.261Z
+  submitted_at: 2026-03-15T22:51:29.850Z
   notes:
     - _ulid: 01KKS7C4T0YARP0EKH8QKFF2CX
       created_at: 2026-03-15T17:05:50.400Z
@@ -99099,17 +99108,29 @@
 
         Also related: @session-start-computed-json spec
       supersedes: null
+    - _ulid: 01KKSV55G4W4EWBAD9VE4QZEMA
+      created_at: 2026-03-15T22:51:33.253Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+        - Added seedInboxItems() and seedTriageRecords() to tests/helpers/inbox.ts
+
+        - Converted all 13 tests in session-start-inbox-triage.test.ts from CLI spawns to YAML
+        seeding (~47 CLI spawns eliminated)
+
+        - Converted 4 inbox/triage tests in session-start-computed-json.test.ts from CLI spawns to
+        YAML seeding (~12 CLI spawns eliminated)
+
+        - Preserved task CLI calls in computed-json tests (task_unlocks, recent_activity need real
+        state transitions)
+
+        - Removed 20s timeout overrides from inbox-triage tests (no longer needed)
+
+        - Full test suite passes: 251 files, 5471 tests, 0 failures
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-15T22:51:29.850Z
-  submission_linkage:
-    branch: main
-    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-15T22:51:29.077Z
 - _ulid: 01KKS7CE6Y05AHZCR8JED24M3V
   slugs:
     - task-validate-default-base-branch
