@@ -4539,7 +4539,7 @@ workspaces:
       adopted_at: null
       rehydrated: null
     lifecycle_state: integrating
-    active_role: null
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ref-index-endpoint-01kkqrk2
@@ -4591,7 +4591,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T04:20:52.646Z
+      updated_at: 2026-03-15T04:20:54.024Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -4600,7 +4600,7 @@ workspaces:
       updated_at: 2026-03-15T04:20:52.646Z
     timestamps:
       created_at: 2026-03-15T04:08:59.654Z
-      updated_at: 2026-03-15T04:20:53.512Z
-      last_reconciled_at: 2026-03-15T04:20:52.646Z
-      last_active_at: 2026-03-15T04:09:00.134Z
+      updated_at: 2026-03-15T04:20:54.024Z
+      last_reconciled_at: 2026-03-15T04:20:54.024Z
+      last_active_at: 2026-03-15T04:20:54.024Z
       closed_at: null
