@@ -98473,6 +98473,12 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #875. Removed all legacy fetch infrastructure: per-page taskTitles
+    lookup maps (using server-resolved invocation.task_title), limit:1000 from
+    dashboard/triage/static-mode queries, setInterval polling from session detail (replaced with
+    WebSocket event-driven debounced refresh), updated E2E test route patterns and mock data. All
+    acceptance gates verified: no setInterval, no limit:999/1000, no taskTitles, no loadData/loadAll
+    remain. ac-4 and ac-6 confirmed."
   depends_on:
     - "@task-migrate-core-pages"
     - "@task-migrate-sidebar"
@@ -98495,6 +98501,7 @@
   created_at: 2026-03-15T03:28:18.205Z
   started_at: 2026-03-15T08:11:22.117Z
   submitted_at: 2026-03-15T08:28:40.880Z
+  completed_at: 2026-03-15T08:40:53.077Z
   notes:
     - _ulid: 01KKR9RFRH98EBGW10MANYHB46
       created_at: 2026-03-15T08:28:17.553Z
@@ -98508,10 +98515,39 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T08:40:53.077Z
-  closed_reason: "Merged in PR #875. Removed all legacy fetch infrastructure: per-page taskTitles
-    lookup maps (using server-resolved invocation.task_title), limit:1000 from
-    dashboard/triage/static-mode queries, setInterval polling from session detail (replaced with
-    WebSocket event-driven debounced refresh), updated E2E test route patterns and mock data. All
-    acceptance gates verified: no setInterval, no limit:999/1000, no taskTitles, no loadData/loadAll
-    remain. ac-4 and ac-6 confirmed."
+- title: Remove process.cwd() web UI resolution from daemon
+  description: |-
+    resolveWebUiPath() in packages/daemon/src/server.ts uses process.cwd() to find
+    packages/web-ui/build (options 3 and 4). In multi-directory daemon mode, cwd is
+    the project directory, not the daemon installation. If that project has its own
+    stale web UI build, the daemon serves it instead of its own current build.
+
+    Fix: Remove options 3 and 4 (process.cwd()-based resolution) from resolveWebUiPath().
+    The resolution order should be:
+    1. Explicit webUiDir option
+    2. WEB_UI_DIR environment variable
+    3. Bundled dist/web-ui/ relative to import.meta.url (the daemon's own module)
+
+    This matches @daemon-web-ui-bundle ac-4 (updated) and ac-5 (new).
+
+    The existing test in tests/daemon-web-ui-bundle.test.ts covers resolveWebUiPath —
+    update it to verify cwd-based paths are NOT used.
+  type: task
+  spec_ref: "@daemon-web-ui-bundle"
+  meta_ref: null
+  plan_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - daemon
+    - bug
+  depends_on: []
+  automation: eligible
+  _ulid: 01KKRP45A6S4TBWZX8KFKQPEVV
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-15T12:04:22.982Z
+  notes: []
+  todos: []
