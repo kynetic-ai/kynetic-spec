@@ -948,11 +948,6 @@ describe("validate page migration (@ui-data-freshness ac-1)", () => {
 
 // Aggregation API functions exist
 describe("aggregation API functions", () => {
-  it("exports fetchTaskStatusSummary function", () => {
-    expect(apiSrc).toContain("export async function fetchTaskStatusSummary");
-    expect(apiSrc).toContain("/api/aggregation/tasks/summary");
-  });
-
   it("exports fetchValidationAggregation function", () => {
     expect(apiSrc).toContain(
       "export async function fetchValidationAggregation",
@@ -961,7 +956,6 @@ describe("aggregation API functions", () => {
   });
 
   it("imports aggregation types from shared", () => {
-    expect(apiSrc).toContain("TaskStatusSummary");
     expect(apiSrc).toContain("ValidationAggregation");
   });
 });

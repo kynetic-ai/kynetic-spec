@@ -139,19 +139,23 @@
 		// Invocation lifecycle events — invalidate agent status query
 		// AC: @ui-data-freshness ac-3 — WS event drives cache invalidation
 		queryClient.invalidateQueries({ queryKey: queryKeys.agents.status() });
+	}
 
-		// Clean up session states for sessions no longer active
-		if (agentStatusQuery.data) {
-			const activeSessions = new Set(
-				agentStatusQuery.data.active_invocations.map((inv) => inv.session_id)
-			);
-			for (const sessionId of Object.keys(sessionStates)) {
-				if (!activeSessions.has(sessionId)) {
-					delete sessionStates[sessionId];
-				}
+	// Clean up session states for sessions no longer active.
+	// Runs as a $effect so it reacts to fresh agentStatusQuery.data after invalidation completes,
+	// rather than reading stale pre-invalidation cache in the WS handler.
+	$effect(() => {
+		const status = agentStatusQuery.data;
+		if (!status) return;
+		const activeSessions = new Set(
+			status.active_invocations.map((inv) => inv.session_id)
+		);
+		for (const sessionId of Object.keys(sessionStates)) {
+			if (!activeSessions.has(sessionId)) {
+				delete sessionStates[sessionId];
 			}
 		}
-	}
+	});
 
 	onMount(() => {
 		// AC: @ui-task-board ac-5 — Subscribe to agent events for text chunk streaming
