@@ -1,9 +1,19 @@
 <!--
   AC: @ui-session-stream ac-1 — Session events render as structured blocks.
-  AC: @ui-session-stream ac-2 — Live streaming via WebSocket session events.
+  AC: @ws-session-event-streaming ac-message-start — Writing indicator appears for in-progress messages.
+  AC: @ws-session-event-streaming ac-message-progress — Text streams at newline boundaries.
+  AC: @ws-session-event-streaming ac-message-complete — Remaining text flushed, indicator removed.
+  AC: @ws-session-event-streaming ac-tool-call-start — Tool call block appears in running state.
+  AC: @ws-session-event-streaming ac-tool-call-complete — Status and duration updated.
+  AC: @ws-session-event-streaming ac-tool-output-on-demand — Output fetched on expand via ToolCallView.
+  AC: @ws-session-event-streaming ac-thinking-blocks — Thinking blocks stream progressively.
+  AC: @ws-session-event-streaming ac-historical-playback — Historical events fetched via HTTP.
+  AC: @ws-session-event-streaming ac-live-session-catchup — HTTP catch-up then WS for live sessions.
+  AC: @ws-session-event-streaming ac-no-http-polling — No periodic HTTP polling for live sessions.
+  AC: @ws-session-event-streaming ac-reconnect-recovery — Gap fill on reconnection.
   AC: @ui-session-stream ac-3 — Auto-scroll with jump-to-bottom.
   AC: @ui-session-stream ac-4 — Session context panel with metadata.
-  AC: @ui-data-freshness ac-1 — Session detail renders from cache on revisit
+  AC: @ui-data-freshness ac-1 — Session detail renders from cache on revisit.
 -->
 <script lang="ts">
 	import { page } from '$app/stores';
@@ -11,12 +21,19 @@
 	import { createQuery } from '@tanstack/svelte-query';
 	import type { SessionDetail, SessionEvent as SessionEventType } from '$lib/api';
 	import { fetchSession, fetchSessionEvents } from '$lib/api';
-	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
+	import { subscribe, unsubscribe, on, off, onStateChange, offStateChange } from '$lib/stores/connection.svelte';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { queryKeys } from '$lib/query/keys.js';
 	import type { BroadcastEvent } from '@kynetic-ai/shared';
-	import { parseEventsToBlocks, accumulateStreamingText, getLastSeq, type DisplayBlock } from '$lib/components/session/session-utils';
+	import type { ConnectionState } from '$lib/websocket/types';
+	import {
+		parseEventsToBlocks,
+		incrementalBlockUpdate,
+		stripToolOutput,
+		getLastSeq,
+		type DisplayBlock,
+	} from '$lib/components/session/session-utils';
 	import SessionStream from '$lib/components/session/SessionStream.svelte';
 	import SessionContextPanel from '$lib/components/session/SessionContextPanel.svelte';
 	import SessionStreamSkeleton from '$lib/components/session/SessionStreamSkeleton.svelte';
@@ -33,15 +50,13 @@
 		enabled: isProjectInitialized() && !isStaticMode(),
 	}));
 
-	// Events are fetched once and then incrementally updated via polling for live sessions.
-	// We use manual state for events since they accumulate incrementally.
+	// Events are fetched once on load (for catch-up/historical), then updated incrementally via WS.
+	// Manual state since they accumulate incrementally.
 	let events = $state<SessionEventType[]>([]);
 	let blocks = $state<DisplayBlock[]>([]);
 	let eventsLoading = $state(true);
 	let error = $state('');
 
-	// AC: @ui-session-stream ac-2 — Live streaming state
-	let streamingText = $state('');
 	let isLive = $derived(sessionQuery.data?.status === 'active');
 	let lastSeq = $state(-1);
 
@@ -54,6 +69,9 @@
 	// Track whether initial events load has been triggered
 	let eventsLoadTriggered = $state(false);
 
+	// Track whether WS was connected before (to detect reconnection)
+	let wasConnected = $state(false);
+
 	// Reset events state when sessionId changes (SvelteKit may reuse component)
 	let prevSessionId = $state(sessionId);
 	$effect(() => {
@@ -64,25 +82,40 @@
 			blocks = [];
 			eventsLoading = true;
 			error = '';
-			streamingText = '';
 			lastSeq = -1;
 		}
 	});
 
-	async function loadEvents() {
+	// AC: @ws-session-event-streaming ac-historical-playback, ac-live-session-catchup
+	// Load events via HTTP (initial load, catch-up, and gap fill after reconnect).
+	// Tool output is stripped for on-demand loading (consistent UX).
+	async function loadEvents(sinceSeq?: number) {
 		if (isStaticMode()) {
 			eventsLoading = false;
 			error = '';
 			return;
 		}
 
-		eventsLoading = true;
+		if (sinceSeq === undefined) {
+			eventsLoading = true;
+		}
 		error = '';
 		try {
-			const eventsData = await fetchSessionEvents(sessionId);
-			events = eventsData.events;
-			blocks = parseEventsToBlocks(events);
-			lastSeq = getLastSeq(events);
+			const eventsData = await fetchSessionEvents(sessionId, sinceSeq);
+			if (sinceSeq !== undefined) {
+				// Gap fill: append new events to existing
+				if (eventsData.events.length > 0) {
+					events = [...events, ...eventsData.events];
+					// Re-parse all events to rebuild blocks (handles merging, tool call correlation)
+					blocks = stripToolOutput(parseEventsToBlocks(events));
+					lastSeq = getLastSeq(events);
+				}
+			} else {
+				// Initial load
+				events = eventsData.events;
+				blocks = stripToolOutput(parseEventsToBlocks(events));
+				lastSeq = getLastSeq(events);
+			}
 		} catch (err) {
 			error = err instanceof Error ? err.message : 'Failed to load session events';
 		} finally {
@@ -90,55 +123,42 @@
 		}
 	}
 
-	// AC: @ui-session-stream ac-2 — Periodic structured refresh for live sessions
-	async function refreshEvents() {
-		if (!isLive) return;
-		try {
-			const eventsData = await fetchSessionEvents(sessionId, lastSeq);
-			if (eventsData.events.length > 0) {
-				events = [...events, ...eventsData.events];
-				blocks = parseEventsToBlocks(events);
-				lastSeq = getLastSeq(events);
-				// Clear streaming text when we get structured data
-				streamingText = '';
-			}
-		} catch {
-			// Ignore refresh errors — will retry on next interval
+	// AC: @ws-session-event-streaming ac-no-http-polling — No periodic polling.
+	// All live activity arrives via WebSocket event handlers below.
+
+	// AC: @ws-session-event-streaming — WebSocket handler for typed session lifecycle events
+	function handleAgentEvent(event: BroadcastEvent) {
+		const data = event.data as Record<string, unknown> | null;
+		if (!data) return;
+
+		// Filter events to this session
+		if (data.session_id !== sessionId) return;
+
+		// Session lifecycle events handled via incrementalBlockUpdate
+		const sessionEventTypes = new Set([
+			'message_start', 'message_progress', 'message_complete',
+			'thinking_start', 'thinking_progress', 'thinking_complete',
+			'tool_call_start', 'tool_call_complete',
+		]);
+
+		if (sessionEventTypes.has(event.event)) {
+			blocks = incrementalBlockUpdate(blocks, event.event, data);
+		}
+
+		// Agent invocation events: refresh session detail for status changes
+		if (event.event === 'agent_invocation') {
+			sessionQuery.refetch();
 		}
 	}
 
-	// AC: @ui-session-stream ac-2 — WebSocket handler for live text chunks
-	// AC: @ui-data-freshness ac-4 — Event-driven refresh replaces timer-based polling
-	let refreshDebounceTimer: ReturnType<typeof setTimeout> | undefined;
-
-	function handleAgentEvent(event: BroadcastEvent) {
-		// Uses extracted utility for session-filtered text accumulation
-		// AC: @session-event-broadcast ac-replaces-text-chunks
-		streamingText = accumulateStreamingText(streamingText, event, sessionId);
-
-		if (event.event === 'agent_invocation') {
-			const data = event.data as { session_id?: string; status?: string };
-			if (data.session_id === sessionId) {
-				// Refresh immediately on invocation state changes
-				refreshEvents();
+	// AC: @ws-session-event-streaming ac-reconnect-recovery — Fill gap on reconnection
+	function handleStateChange(state: ConnectionState) {
+		if (state === 'connected') {
+			if (wasConnected && isLive) {
+				// Reconnected after disconnect during live session — fill the gap
+				loadEvents(lastSeq);
 			}
-		} else if ((event.event === 'message_complete' || event.event === 'thinking_complete' || event.event === 'tool_call_complete') && isLive) {
-			// Completion events trigger debounced structured event refresh.
-			const data = event.data as { session_id?: string };
-			if (data?.session_id === sessionId && !refreshDebounceTimer) {
-				refreshDebounceTimer = setTimeout(() => {
-					refreshDebounceTimer = undefined;
-					refreshEvents();
-				}, 3000);
-			}
-		} else if ((event.event === 'message_progress' || event.event === 'thinking_progress') && isLive) {
-			// Progress events indicate the session is active — debounced refresh
-			if (!refreshDebounceTimer) {
-				refreshDebounceTimer = setTimeout(() => {
-					refreshDebounceTimer = undefined;
-					refreshEvents();
-				}, 3000);
-			}
+			wasConnected = true;
 		}
 	}
 
@@ -155,6 +175,7 @@
 		if (!isStaticMode()) {
 			subscribe(['agents']);
 			on('agents', handleAgentEvent);
+			onStateChange(handleStateChange);
 		}
 	});
 
@@ -162,8 +183,8 @@
 		if (!isStaticMode()) {
 			off('agents', handleAgentEvent);
 			unsubscribe(['agents']);
+			offStateChange(handleStateChange);
 		}
-		if (refreshDebounceTimer) clearTimeout(refreshDebounceTimer);
 	});
 </script>
 
@@ -216,8 +237,8 @@
 			<!-- AC: @ui-session-stream ac-4 — Context panel with spec context, files, budget -->
 			<SessionContextPanel {session} {blocks} {taskTitle} />
 
-			<!-- AC: @ui-session-stream ac-1, ac-2, ac-3 — Event stream -->
-			<SessionStream {blocks} {isLive} {streamingText} />
+			<!-- AC: @ui-session-stream ac-1, ac-3 — Event stream -->
+			<SessionStream {blocks} {isLive} {sessionId} />
 		</div>
 	{/if}
 </div>

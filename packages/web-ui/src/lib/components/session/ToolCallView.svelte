@@ -1,16 +1,29 @@
 <!--
   AC: @ui-session-stream ac-1 — Tool calls rendered as collapsible blocks with icon, input/output, timing.
+  AC: @ws-session-event-streaming ac-tool-output-on-demand — Output fetched on expand via HTTP.
+  AC: @ws-session-event-streaming ac-tool-call-start — Shows tool name and input in running state.
+  AC: @ws-session-event-streaming ac-tool-call-complete — Updates status and duration.
 -->
 <script lang="ts">
 	import type { ToolCallBlock } from './session-utils';
 	import { getToolIcon, getToolInputPreview, formatDuration, formatTime } from './session-utils';
 	import { ansiToHtml, containsAnsi, safeTruncateAnsi } from '$lib/utils/ansi';
+	import { createQuery } from '@tanstack/svelte-query';
+	import { fetchSessionEventDetail } from '$lib/api';
+	import { queryKeys } from '$lib/query/keys.js';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Check from '@lucide/svelte/icons/check';
 	import X from '@lucide/svelte/icons/x';
 	import Loader from '@lucide/svelte/icons/loader';
+	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
 
-	let { block }: { block: ToolCallBlock } = $props();
+	let {
+		block,
+		sessionId,
+	}: {
+		block: ToolCallBlock;
+		sessionId: string;
+	} = $props();
 
 	let expanded = $state(false);
 
@@ -24,6 +37,33 @@
 
 	let icon = $derived(getToolIcon(block.toolName));
 	let preview = $derived(getToolInputPreview(block.toolName, block.input));
+
+	// AC: @ws-session-event-streaming ac-tool-output-on-demand — Fetch output on demand when expanded
+	// Use resultSeq (the tool result event) when available; fall back to seq (tool call start event).
+	// resultSeq points to the event that contains the actual output.
+	let outputSeq = $derived(block.resultSeq ?? block.seq);
+	let shouldFetchOutput = $derived(expanded && outputSeq >= 0 && block.output === undefined);
+
+	const outputQuery = createQuery(() => ({
+		queryKey: queryKeys.sessions.eventDetail(sessionId, outputSeq),
+		queryFn: () => fetchSessionEventDetail(sessionId, outputSeq),
+		enabled: shouldFetchOutput,
+		staleTime: Infinity, // Tool output doesn't change
+	}));
+
+	// Extract output from the fetched event detail
+	let fetchedOutput = $derived.by(() => {
+		if (!outputQuery.data) return undefined;
+		const data = outputQuery.data.data as Record<string, unknown> | null;
+		if (!data) return undefined;
+		// ACP format: data.sessionUpdate exists
+		const update = (data.sessionUpdate ? data : (data.update as Record<string, unknown> | undefined)) as Record<string, unknown> | undefined;
+		if (!update) return undefined;
+		return update.rawOutput ?? update.output ?? update.content;
+	});
+
+	// Use inline output if present, otherwise fetched output
+	let resolvedOutput = $derived(block.output ?? fetchedOutput);
 
 	function formatOutput(output: unknown): string {
 		if (typeof output === 'string') return output;
@@ -43,7 +83,7 @@
 		}
 	}
 
-	let outputText = $derived(block.output ? formatOutput(block.output) : '');
+	let outputText = $derived(resolvedOutput !== undefined ? formatOutput(resolvedOutput) : '');
 	let truncatedOutput = $derived(safeTruncateAnsi(outputText, 1000));
 	let isOutputTruncated = $derived(outputText.length > 1000);
 	let showFullOutput = $state(false);
@@ -104,7 +144,26 @@
 				</div>
 			{/if}
 
-			{#if block.output !== undefined}
+			<!-- AC: @ws-session-event-streaming ac-tool-output-on-demand — Loading, error, and content states -->
+			{#if shouldFetchOutput && outputQuery.isLoading}
+				<div class="flex items-center gap-2 text-xs text-muted-foreground py-2" data-testid="tool-output-loading">
+					<Loader class="size-3.5 ds-tool-spin" />
+					Loading output...
+				</div>
+			{:else if shouldFetchOutput && outputQuery.isError}
+				<div class="flex items-center gap-2 text-xs text-destructive py-2" data-testid="tool-output-error">
+					<X class="size-3.5" />
+					Failed to load output
+					<button
+						class="text-primary hover:underline ml-1"
+						onclick={() => outputQuery.refetch()}
+						data-testid="tool-output-retry"
+					>
+						<RefreshCw class="size-3 inline" />
+						Retry
+					</button>
+				</div>
+			{:else if resolvedOutput !== undefined}
 				<div>
 					<p class="text-[10px] font-medium text-muted-foreground uppercase tracking-wide mb-1">
 						Output
@@ -125,6 +184,10 @@
 							Show full output ({outputText.length.toLocaleString()} chars)
 						</button>
 					{/if}
+				</div>
+			{:else if block.status === 'running'}
+				<div class="text-xs text-muted-foreground py-1" data-testid="tool-output-pending">
+					Tool is running...
 				</div>
 			{/if}
 		</div>

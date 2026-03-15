@@ -129,6 +129,23 @@ export function off(topic: string, handler: (event: any) => void): void {
 }
 
 /**
+ * Register a state change handler on the WebSocket manager.
+ * AC: @ws-session-event-streaming ac-reconnect-recovery
+ */
+export function onStateChange(handler: (state: ConnectionState) => void): void {
+	if (!manager) return;
+	manager.onStateChange(handler);
+}
+
+/**
+ * Unregister a state change handler.
+ */
+export function offStateChange(handler: (state: ConnectionState) => void): void {
+	if (!manager) return;
+	manager.offStateChange(handler);
+}
+
+/**
  * Disconnect
  */
 export function disconnect(): void {
