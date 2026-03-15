@@ -1402,6 +1402,9 @@ conventions:
         break reactive effects. See /svelte-5 skill for details.
       - After modifying skill sources (templates/skills/ or .kspec/skills/), run kspec skill render
         and commit the regenerated .agents/skills/ output alongside your changes.
+      - API list endpoints must use pagination; clients must not fetch unbounded entity lists for
+        derived data. Use server-resolved fields or the ref index for title resolution. Use
+        server-side aggregation for computed statistics.
     examples: []
   - _ulid: 01KHYXJYDW2FWSYRVDR9J5A6XM
     domain: ci
