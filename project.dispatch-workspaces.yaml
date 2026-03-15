@@ -4863,7 +4863,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
     canonical_branch: dispatch/task/task-migrate-core-pages/01kkqrk3
-    canonical_branch_head: d8f8c459bc4a72af3b91af01f819a401d2d1a120
+    canonical_branch_head: adee64fddc7d4113f4b8e659a7349df94080236a
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -4916,22 +4916,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T06:33:19.577Z
+      updated_at: 2026-03-15T06:46:35.448Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T06:33:20.042Z
+      updated_at: 2026-03-15T06:46:35.448Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T06:33:19.577Z
+      updated_at: 2026-03-15T06:46:35.448Z
     timestamps:
       created_at: 2026-03-15T05:54:29.769Z
-      updated_at: 2026-03-15T06:33:20.042Z
-      last_reconciled_at: 2026-03-15T06:33:20.042Z
+      updated_at: 2026-03-15T06:46:35.448Z
+      last_reconciled_at: 2026-03-15T06:46:35.448Z
       last_active_at: 2026-03-15T06:33:20.042Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKQRK4GRF9PBJVJG4S3BDE33
@@ -4949,7 +4949,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: closing
+    lifecycle_state: stale
     active_role: null
     worktrees:
       worker:
@@ -4992,21 +4992,26 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-15T06:44:37.497Z
+      updated_at: 2026-03-15T06:46:35.533Z
     health:
-      status: healthy
-      summary: Workspace record matches current git branch and worktree state.
-      issues: []
-      updated_at: 2026-03-15T06:44:44.482Z
+      status: stale
+      summary: Workspace registry record is stale and needs reconciliation.
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-sidebar-01kkqrk4"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      updated_at: 2026-03-15T06:46:35.533Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-15T06:44:37.497Z
+      updated_at: 2026-03-15T06:46:35.533Z
     timestamps:
       created_at: 2026-03-15T06:20:52.447Z
-      updated_at: 2026-03-15T06:44:44.482Z
-      last_reconciled_at: 2026-03-15T06:44:44.482Z
+      updated_at: 2026-03-15T06:46:35.533Z
+      last_reconciled_at: 2026-03-15T06:46:35.533Z
       last_active_at: 2026-03-15T06:32:51.203Z
       closed_at: null
