@@ -1,20 +1,13 @@
-/**
- * Session event detail endpoint tests.
- *
- * Tests for readEventBySeq store function and
- * GET /api/sessions/:id/events/:seq route behavior.
- *
- * AC Coverage:
- * - @session-event-detail-endpoint ac-single-event-fetch
- * - @session-event-detail-endpoint ac-blob-resolution
- * - @session-event-detail-endpoint ac-not-found
- * - @trait-api-endpoint ac-1
- * - @trait-api-endpoint ac-2
- * - @trait-api-endpoint ac-3 — N/A: endpoint has no request body to validate
- * - @trait-api-endpoint ac-4 — N/A: this is a single-resource endpoint, not a list endpoint
- * - @trait-api-endpoint ac-5 — N/A: endpoint is read-only, no state mutation
- * - @trait-api-endpoint ac-6 — N/A: X-Request-Id handled by server middleware, not individual routes
- */
+// Session event detail endpoint tests.
+//
+// Tests for readEventBySeq store function and
+// GET /api/sessions/:id/events/:seq route behavior.
+//
+// Trait AC annotations (N/A):
+// AC: @trait-api-endpoint ac-3 — N/A: endpoint has no request body to validate
+// AC: @trait-api-endpoint ac-4 — N/A: this is a single-resource endpoint, not a list endpoint
+// AC: @trait-api-endpoint ac-5 — N/A: endpoint is read-only, no state mutation
+// AC: @trait-api-endpoint ac-6 — N/A: X-Request-Id handled by server middleware, not individual routes
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import * as fs from 'node:fs/promises';
@@ -23,8 +16,6 @@ import * as os from 'node:os';
 import {
   readEventBySeq,
   resolveSessionBlobPointers,
-  getSessionDir,
-  getSessionEventsPath,
 } from '../src/sessions/store.js';
 
 let tempDir: string;
@@ -53,6 +44,7 @@ function writeEvents(events: Array<Record<string, unknown>>): Promise<void> {
 
 describe('readEventBySeq', () => {
   // AC: @session-event-detail-endpoint ac-single-event-fetch
+  // AC: @trait-api-endpoint ac-1
   it('should return the event matching the given seq', async () => {
     await writeEvents([
       { ts: 1000, seq: 0, type: 'session.start', session_id: SESSION_ID, data: { iteration: 1 } },
@@ -81,6 +73,7 @@ describe('readEventBySeq', () => {
   });
 
   // AC: @session-event-detail-endpoint ac-not-found
+  // AC: @trait-api-endpoint ac-2
   it('should return null for non-existent seq', async () => {
     await writeEvents([
       { ts: 1000, seq: 0, type: 'session.start', session_id: SESSION_ID, data: {} },

@@ -1134,7 +1134,7 @@ export async function readEvents(
  * Read a single event by sequence number from a session's event log.
  *
  * Scans events.jsonl line-by-line and stops as soon as the matching seq is
- * found, avoiding a full file read for large sessions.
+ * found, avoiding full parsing of all events for large sessions.
  *
  * AC: @session-event-detail-endpoint ac-single-event-fetch
  *
