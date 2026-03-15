@@ -98607,7 +98607,7 @@
   spec_ref: "@session-filter-controls"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -98644,6 +98644,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-15T13:56:37.386Z
+  session_id: 01KKRWGW2JCJAT40V9B7EJQ3FG
 - _ulid: 01KKRVZQR41NJXPFQMDTK23801
   slugs: []
   title: Disable SSR globally to fix hard refresh stuck on loading
