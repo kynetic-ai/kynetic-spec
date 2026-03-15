@@ -17837,8 +17837,7 @@ plans:
             when: |
               A merged endpoint is called
             then: |
-              Returns inbox items with inline triage status, eliminating the
-              need for separate fetches and client-side joins.
+              Returns inbox items with inline triage status in a single response.
           - id: ac-4
             given: |
               An entity changes (task status, inbox item created, etc.)
@@ -17848,15 +17847,6 @@ plans:
               The payload includes the entity's display title and both old and
               new state where applicable, in addition to the existing ref and
               action fields.
-          - id: ac-5
-            given: |
-              A consumer receives a broadcast event for data it has displayed
-            when: |
-              The event contains enriched fields
-            then: |
-              The consumer has enough information to update the affected entity
-              in-place without re-fetching the entire list from the server.
-
       - title: UI Data Freshness and Caching
         slug: ui-data-freshness
         type: feature
@@ -17898,10 +17888,10 @@ plans:
             given: |
               The UI needs periodic status data (badge counts, agent status)
             when: |
-              The data would previously have been polled on an interval
+              The data changes on the server
             then: |
-              The data is served from cache and invalidated by WebSocket
-              events rather than polled on a timer.
+              The data is served from cache and kept current via event-driven
+              invalidation rather than timer-based polling.
           - id: ac-5
             given: |
               The user switches projects in the multi-directory daemon
@@ -18127,7 +18117,6 @@ plans:
 
           Acceptance gates (from @ui-api-aggregation):
           - Broadcasts include display title and old/new state (ac-4)
-          - Payload sufficient for in-place update without re-fetch (ac-5)
 
       - title: Migrate core pages to TanStack Query (agents, sessions, settings)
         slug: task-migrate-core-pages
@@ -18243,6 +18232,7 @@ plans:
         depends_on:
           - "@task-tanstack-setup"
           - "@task-server-aggregation"
+          - "@task-ref-index-endpoint"
 
       - title: Clean up legacy fetch infrastructure
         slug: task-cleanup-legacy-fetches
@@ -18261,6 +18251,10 @@ plans:
           Grep for "limit: 999" and "limit: 1000" to verify none remain.
           Grep for "setInterval" to verify no polling remains.
           Verify static mode still works end-to-end.
+
+          Acceptance gates (from @ui-data-freshness):
+          - No polling intervals remain (ac-4)
+          - Static mode works end-to-end (ac-6)
         depends_on:
           - "@task-migrate-core-pages"
           - "@task-migrate-sidebar"
@@ -18304,3 +18298,8 @@ plans:
         author: "@claude"
         content: Move context to top, remove implementation notes section, convention added to development
           rules
+      - _ulid: 01KKQQXX3BWT7V639D7XHMMF4M
+        created_at: 2026-03-15T03:16:40.683Z
+        author: "@claude"
+        content: "Apply review fixes: remove duplicate ac-5, fix ac-3 then clause, fix ac-4 temporal
+          framing, add cleanup acceptance gates, add ref-index dep to inbox-triage"
