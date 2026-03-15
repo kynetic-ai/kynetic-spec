@@ -5767,7 +5767,7 @@ workspaces:
       adopted_at: null
       rehydrated: null
     lifecycle_state: closing
-    active_role: reviewer
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-event-detail-endpoint-01kksgsz
@@ -5831,8 +5831,8 @@ workspaces:
       updated_at: 2026-03-15T22:25:01.092Z
     timestamps:
       created_at: 2026-03-15T21:31:43.360Z
-      updated_at: 2026-03-15T22:25:01.092Z
-      last_reconciled_at: 2026-03-15T22:25:01.092Z
+      updated_at: 2026-03-15T22:25:06.655Z
+      last_reconciled_at: 2026-03-15T22:25:06.655Z
       last_active_at: 2026-03-15T22:12:29.088Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKSGT15XQJERS3XGKWKEZ1EZ
