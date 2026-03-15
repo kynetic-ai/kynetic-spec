@@ -6001,7 +6001,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6f2b02df930df09e597db225bd51605b7f2a58e7
     canonical_branch: dispatch/task/task-yaml-seed-session-tests/01kks7bd
-    canonical_branch_head: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    canonical_branch_head: 1bde4a3176dfa189af74969df73b39e00a2adcc4
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -6009,16 +6009,21 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-yaml-seed-session-tests-01kks7bd
         branch_mode: branch
         branch_ref: dispatch/task/task-yaml-seed-session-tests/01kks7bd
-        head: 6f2b02df930df09e597db225bd51605b7f2a58e7
-        last_seen_at: 2026-03-15T22:39:41.894Z
-      reviewer: null
+        head: 1bde4a3176dfa189af74969df73b39e00a2adcc4
+        last_seen_at: 2026-03-15T22:51:37.842Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-yaml-seed-session-tests-01kks7bd-review
+        branch_mode: detached
+        branch_ref: null
+        head: 1bde4a3176dfa189af74969df73b39e00a2adcc4
+        last_seen_at: 2026-03-15T22:51:37.842Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -6052,21 +6057,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T22:39:41.894Z
+      updated_at: 2026-03-15T22:51:37.842Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T22:39:47.192Z
+      updated_at: 2026-03-15T22:51:37.842Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T22:39:41.894Z
+      updated_at: 2026-03-15T22:51:37.842Z
     timestamps:
       created_at: 2026-03-15T22:39:41.894Z
-      updated_at: 2026-03-15T22:39:47.192Z
-      last_reconciled_at: 2026-03-15T22:39:47.192Z
+      updated_at: 2026-03-15T22:51:37.842Z
+      last_reconciled_at: 2026-03-15T22:51:37.842Z
       last_active_at: 2026-03-15T22:39:47.192Z
       closed_at: null
