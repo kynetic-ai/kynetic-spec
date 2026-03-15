@@ -4698,7 +4698,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
     canonical_branch: dispatch/task/task-server-aggregation/01kkqrk2
-    canonical_branch_head: 6fb708ed74ea6bbd2c88e8b9efe5ac3175223f36
+    canonical_branch_head: 43fe0714a6a8ed97b29aed405f82013017b0a0c1
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -4751,22 +4751,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T05:47:09.482Z
+      updated_at: 2026-03-15T05:48:37.576Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T05:47:11.014Z
+      updated_at: 2026-03-15T05:48:37.576Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T05:47:09.482Z
+      updated_at: 2026-03-15T05:48:37.576Z
     timestamps:
       created_at: 2026-03-15T05:10:56.550Z
-      updated_at: 2026-03-15T05:47:11.014Z
-      last_reconciled_at: 2026-03-15T05:47:11.014Z
+      updated_at: 2026-03-15T05:48:37.576Z
+      last_reconciled_at: 2026-03-15T05:48:37.576Z
       last_active_at: 2026-03-15T05:47:11.014Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKQRK3BM6MARTC3MSE6YV4VY
