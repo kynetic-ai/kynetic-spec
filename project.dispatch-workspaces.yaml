@@ -6258,8 +6258,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: active
+    active_role: worker
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-session-summary-stats-persistence-and-live-counters-01kksrdq
@@ -6306,7 +6306,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T23:30:41.721Z
+      updated_at: 2026-03-15T23:30:42.270Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -6315,7 +6315,7 @@ workspaces:
       updated_at: 2026-03-15T23:30:41.721Z
     timestamps:
       created_at: 2026-03-15T23:30:41.721Z
-      updated_at: 2026-03-15T23:30:41.950Z
-      last_reconciled_at: 2026-03-15T23:30:41.721Z
-      last_active_at: null
+      updated_at: 2026-03-15T23:30:42.270Z
+      last_reconciled_at: 2026-03-15T23:30:42.270Z
+      last_active_at: 2026-03-15T23:30:42.270Z
       closed_at: null
