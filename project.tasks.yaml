@@ -99154,7 +99154,9 @@
     - dispatch
     - defensive-code
   vcs_refs: []
+  session_id: 01KKSVY4D9EEAMZMQVAJ6PTZX6
   created_at: 2026-03-15T17:06:00.029Z
+  started_at: 2026-03-15T23:05:27.439Z
   notes:
     - _ulid: 01KKS7D0EZP1KAE7XN68M4F81G
       created_at: 2026-03-15T17:06:18.719Z
@@ -99235,8 +99237,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-15T23:05:27.439Z
-  session_id: 01KKSVY4D9EEAMZMQVAJ6PTZX6
 - _ulid: 01KKSGSZA2HXFDXW8RA3GV1JFC
   slugs:
     - task-session-event-accumulator
@@ -99911,3 +99911,59 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Implement cross-agent task dispatch exclusivity
+  description: >-
+    The dispatch engine currently allows multiple agents to have active invocations for the same
+    task simultaneously. For example, when a task-worker submits a task (transitioning to
+    pending_review), the file watcher detects the state change and dispatches a pr-reviewer — even
+    though the task-worker invocation is still running (e.g., waiting for CI). This results in two
+    agents working on the same task concurrently, causing conflicts.
+
+
+    Root cause: handleStateChange() in src/agent-runtime/dispatch.ts (around line 828-837) loops
+    through agents, matches dispatch rules, and calls _enqueue() without checking if any agent
+    already has an active invocation for that task. The existing _hasActiveOrQueuedInvocation()
+    check (line 1112) is per-agent (agentId + taskId) and only called during batch re-evaluation
+    (_evaluateAllTasks with skipIfActive), never during live event processing.
+
+
+    The helper _activeTaskRefs() (line 1137) already returns all task refs with active invocations
+    regardless of agent type — this can be used as the basis for a cross-agent guard.
+
+
+    Implementation approach: Before enqueueing in handleStateChange() and before spawning in
+    _selectNextCandidate(), check if any agent (not just the current one) has an active invocation
+    for the task. If so, the entry should remain queued (deferred), not discarded. The
+    post-invocation re-evaluation (ac-24 path at line 2166) already re-evaluates all tasks after an
+    invocation completes and drains queues, so deferred entries will be picked up naturally.
+
+
+    Key constraint: Deferred entries must still be subject to staleness checks
+    (_pruneIneligibleQueueEntries) before spawn — if the task state changed while deferred, stale
+    entries should be discarded as usual.
+
+
+    Files: src/agent-runtime/dispatch.ts (handleStateChange, _selectNextCandidate, possibly
+    _hasActiveOrQueuedInvocation or a new cross-agent variant), tests/agent-dispatch-engine.test.ts.
+
+
+    AC coverage: @agent-dispatch-engine ac-26.
+  type: task
+  spec_ref: "@agent-dispatch-engine"
+  meta_ref: null
+  plan_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - dispatch
+    - bug
+    - mvp
+  depends_on: []
+  _ulid: 01KKSW263S036SS7QFQ5RTN813
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-15T23:07:24.153Z
+  notes: []
+  todos: []
