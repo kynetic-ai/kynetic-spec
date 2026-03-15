@@ -88,6 +88,12 @@ export interface InvocationOptions {
   mutationLockFile?: string;
   /** Called for each streaming update from the agent */
   onUpdate?: (update: SessionUpdate) => void;
+  /**
+   * Called after each event is appended to events.jsonl.
+   * Used by the daemon to increment live event counters in the session cache.
+   * AC: @session-summary-cache ac-live-counter
+   */
+  onEventAppended?: (sessionId: string) => void;
   /** Path to kspec CLI (defaults to resolved bin/kspec.cjs) */
   kspecCliPath?: string;
   /** Abort signal for graceful cancellation (AC-11) */
@@ -279,6 +285,7 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
     env = {},
     mutationLockFile,
     onUpdate,
+    onEventAppended,
     kspecCliPath = DEFAULT_KSPEC_CLI_PATH,
     abortSignal,
   } = options;
@@ -351,6 +358,8 @@ export async function runInvocation(options: InvocationOptions): Promise<Invocat
       }),
     );
     nextEventSeq = event.seq + 1;
+    // AC: @session-summary-cache ac-live-counter — notify cache of new event
+    onEventAppended?.(sessionId);
   };
 
   // ─── Create session ───────────────────────────────────────────────────────

@@ -54,6 +54,7 @@ import type {
   AgentDispatchFilter,
 } from "../schema/meta.js";
 import type { SessionTrigger } from "../sessions/types.js";
+import { getSessionCache } from "../sessions/cache.js";
 
 // ─── Simple Mutex ─────────────────────────────────────────────────────────────
 
@@ -1988,6 +1989,12 @@ export class DispatchEngine {
           KSPEC_DISPATCH_BOOTSTRAP_LAST_ROLE: workspace.metadata.bootstrap.lastRole ?? "",
         },
         onUpdate,
+        // AC: @session-summary-cache ac-live-counter — increment cache counter on each event append
+        onEventAppended: (sid: string) => {
+          const sessionsDir = path.join(this.projectDir, ".kspec-sessions");
+          const cache = getSessionCache(sessionsDir);
+          cache.incrementEventCount(sid);
+        },
       };
 
       let resolveInvocationStarted!: () => void;
@@ -2088,6 +2095,15 @@ export class DispatchEngine {
                 timestamp: Date.now(),
               };
             }
+          }
+
+          // AC: @session-summary-cache ac-live-counter — discard live counter after session closes
+          // and invalidate cache entry so next list picks up persisted stats
+          {
+            const sessionsDir = path.join(this.projectDir, ".kspec-sessions");
+            const cache = getSessionCache(sessionsDir);
+            cache.discardLiveCounter(preSessionId);
+            cache.invalidate(preSessionId);
           }
 
           try {
