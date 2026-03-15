@@ -97595,9 +97595,18 @@
     - daemon
     - web-ui
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T04:02:14.974Z
   session_id: 01KKQSR7CQEY70BWMWTVDVN146
   created_at: 2026-03-15T03:28:13.424Z
   started_at: 2026-03-15T03:48:54.091Z
+  submitted_at: 2026-03-15T04:02:15.715Z
   notes:
     - _ulid: 01KKQSWDCJ7K1HC2M0RWSRYBY8
       created_at: 2026-03-15T03:50:48.978Z
@@ -97617,17 +97626,34 @@
 
         - Verification: npm test, all AC annotations present
       supersedes: null
+    - _ulid: 01KKQTJG7CGMX45SYMK3M4MSSM
+      created_at: 2026-03-15T04:02:52.780Z
+      author: "@claude"
+      content: >-
+        Submitted PR #866. Implementation adds server-side title resolution to all specified daemon
+        API endpoints:
+
+        - GET /api/tasks: spec_title on summaries
+
+        - GET /api/tasks/:ref: spec_title, plan_title, resolved_depends_on, resolved_blocked_by
+
+        - GET /api/agent/status: task_title on active invocations
+
+        - GET /api/sessions: task_title on session summaries
+
+        - GET /api/sessions/:id: task_title on session detail
+
+        - GET /api/triage: resolved_evidence_refs with titles
+
+        - GET /api/refs: new lightweight index endpoint (ac-4, ac-5)
+
+
+        Added ref-resolution utility, shared types (ResolvedRefEntry, RefIndexEntry,
+        RefIndexResponse), and 19 tests covering all 5 spec ACs. Full test suite: 4972 passed, 0
+        failures.
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-15T04:02:15.715Z
-  submission_linkage:
-    branch: main
-    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-15T04:02:14.974Z
 - _ulid: 01KKQRK26BXGJJPBJ1NQ4GM59C
   slugs:
     - task-ref-index-endpoint
