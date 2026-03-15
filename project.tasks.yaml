@@ -97522,21 +97522,6 @@
     - task-server-resolve
   title: Add server-side title resolution to API responses
   type: task
-  spec_ref: "@ui-api-ref-resolution"
-  plan_ref: "@plan-ui-data-layer-rework"
-  origin: derived
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 1
-  tags:
-    - daemon
-    - web-ui
-  vcs_refs: []
-  created_at: 2026-03-15T03:28:13.424Z
-  notes: []
-  todos: []
   description: >-
     Add resolved title fields alongside existing ref fields on daemon API responses. The daemon
     already loads task/item data via ReferenceIndex on most routes.
@@ -97566,6 +97551,21 @@
     Acceptance gates (from @ui-api-ref-resolution): Single-valued refs include resolved title
     (ac-1), array refs include resolved title and status per entry (ac-2), invalid/deleted refs
     return null title, preserve raw ref (ac-3).
+  spec_ref: "@ui-api-ref-resolution"
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - daemon
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:13.424Z
+  notes: []
+  todos: []
 - _ulid: 01KKQRK26BXGJJPBJ1NQ4GM59C
   slugs:
     - task-ref-index-endpoint
@@ -97585,6 +97585,17 @@
   created_at: 2026-03-15T03:28:14.027Z
   notes: []
   todos: []
+  description: >-
+    Add GET /api/refs/index returning a lightweight ref-to-display-metadata map. Include tasks,
+    items, and traits. Return title, type, and status for each. Key by both ULID and slug.
+
+
+    Omit descriptions, notes, ACs, tags, and other heavyweight fields. Must respect X-Kspec-Dir
+    project scoping. Add response type to @kynetic-ai/shared package.
+
+
+    Acceptance gates (from @ui-api-ref-resolution): Returns map with title, type, status per ref
+    (ac-4), payload significantly smaller than full entity lists (ac-5).
 - _ulid: 01KKQRK2R219TBGWE4XQEBJNEC
   slugs:
     - task-server-aggregation
