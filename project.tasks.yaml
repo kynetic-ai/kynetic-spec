@@ -98084,7 +98084,7 @@
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-tanstack-setup"
@@ -98102,9 +98102,9 @@
     upstream_ref: refs/heads/main
     review_url: null
     captured_at: 2026-03-15T06:19:58.900Z
-  session_id: null
+  session_id: 01KKR35ZVRBVY9TSRDB2NCHYAZ
   created_at: 2026-03-15T03:28:15.834Z
-  started_at: 2026-03-15T05:55:01.454Z
+  started_at: 2026-03-15T06:46:25.662Z
   submitted_at: 2026-03-15T06:19:59.640Z
   notes:
     - _ulid: 01KKR158XDEF2VT67AAPGQ69RS
@@ -98171,6 +98171,10 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #872. Migrated sidebar from 30s polling (setInterval + loadCounts) to
+    TanStack Query with 4 createQuery calls (inbox count, observations count, pending review count,
+    session context). Badge counts served from cache with WS event-driven invalidation. All 8
+    @ui-data-freshness ACs covered with test annotations. 5383 tests pass, CI green."
   depends_on:
     - "@task-tanstack-setup"
   context: []
@@ -98190,6 +98194,7 @@
   created_at: 2026-03-15T03:28:16.408Z
   started_at: 2026-03-15T06:21:57.411Z
   submitted_at: 2026-03-15T06:32:42.745Z
+  completed_at: 2026-03-15T06:44:23.936Z
   notes:
     - _ulid: 01KKR33VRX34DJRR0AJGSP3A31
       created_at: 2026-03-15T06:32:10.269Z
@@ -98211,11 +98216,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T06:44:23.936Z
-  closed_reason: "Merged in PR #872. Migrated sidebar from 30s polling (setInterval + loadCounts) to
-    TanStack Query with 4 createQuery calls (inbox count, observations count, pending review count,
-    session context). Badge counts served from cache with WS event-driven invalidation. All 8
-    @ui-data-freshness ACs covered with test annotations. 5383 tests pass, CI green."
 - _ulid: 01KKQRK53RE5Q3JHHH07W67NTJ
   slugs:
     - task-migrate-complex-pages
