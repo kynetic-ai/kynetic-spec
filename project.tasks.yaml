@@ -97473,6 +97473,7 @@
   created_at: 2026-03-15T03:28:12.187Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKQRK0ZZZ1QMCNHDHK3969AF
   slugs:
     - task-tanstack-setup
@@ -97517,6 +97518,7 @@
   created_at: 2026-03-15T03:28:12.799Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKQRK1KGVQKF0WA5C06C2B1K
   slugs:
     - task-server-resolve
@@ -97566,6 +97568,7 @@
   created_at: 2026-03-15T03:28:13.424Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKQRK26BXGJJPBJ1NQ4GM59C
   slugs:
     - task-ref-index-endpoint
@@ -97596,6 +97599,7 @@
   created_at: 2026-03-15T03:28:14.027Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKQRK2R219TBGWE4XQEBJNEC
   slugs:
     - task-server-aggregation
@@ -97637,6 +97641,7 @@
   created_at: 2026-03-15T03:28:14.594Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKQRK3BM6MARTC3MSE6YV4VY
   slugs:
     - task-ws-enrichment
@@ -97672,6 +97677,7 @@
   created_at: 2026-03-15T03:28:15.220Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKQRK3YT328Q9BKN9HD0DE34
   slugs:
     - task-migrate-core-pages
@@ -97709,6 +97715,7 @@
   created_at: 2026-03-15T03:28:15.834Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKQRK4GRF9PBJVJG4S3BDE33
   slugs:
     - task-migrate-sidebar
@@ -97738,6 +97745,7 @@
   created_at: 2026-03-15T03:28:16.408Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKQRK53RE5Q3JHHH07W67NTJ
   slugs:
     - task-migrate-complex-pages
@@ -97777,6 +97785,7 @@
   created_at: 2026-03-15T03:28:17.016Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKQRK5PM5VTQBBBMT11PMCE6
   slugs:
     - task-migrate-inbox-triage
@@ -97817,11 +97826,25 @@
   created_at: 2026-03-15T03:28:17.620Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKQRK68XM841PBFQFNPT33VZ
   slugs:
     - task-cleanup-legacy-fetches
   title: Clean up legacy fetch infrastructure
   type: task
+  description: >-
+    After all pages are migrated, remove dead code: unused fetch functions from api.ts
+    (fetchTasks-for-titles pattern), per-page taskTitles lookup map construction, sidebar polling
+    interval (setInterval), board agent status polling interval, manual loading/error $state
+    variables replaced by query states, old WebSocket reload handlers (loadAll, loadData patterns).
+
+
+    Grep for "limit: 999" and "limit: 1000" to verify none remain. Grep for "setInterval" to verify
+    no polling remains. Verify static mode still works end-to-end.
+
+
+    Acceptance gates (from @ui-data-freshness): No polling intervals remain (ac-4), static mode
+    works end-to-end (ac-6).
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
@@ -97840,16 +97863,4 @@
   created_at: 2026-03-15T03:28:18.205Z
   notes: []
   todos: []
-  description: >-
-    After all pages are migrated, remove dead code: unused fetch functions from api.ts
-    (fetchTasks-for-titles pattern), per-page taskTitles lookup map construction, sidebar polling
-    interval (setInterval), board agent status polling interval, manual loading/error $state
-    variables replaced by query states, old WebSocket reload handlers (loadAll, loadData patterns).
-
-
-    Grep for "limit: 999" and "limit: 1000" to verify none remain. Grep for "setInterval" to verify
-    no polling remains. Verify static mode still works end-to-end.
-
-
-    Acceptance gates (from @ui-data-freshness): No polling intervals remain (ac-4), static mode
-    works end-to-end (ac-6).
+  automation: eligible
