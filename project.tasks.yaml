@@ -98359,6 +98359,14 @@
         pages migration) merged. Conflicts in shared files (api.ts, keys.ts). Rebase onto main and
         resolve conflicts, then re-push."
       supersedes: null
+    - _ulid: 01KKR6V5K8CQB4EDE0G0Q0K3SW
+      created_at: 2026-03-15T07:37:19.721Z
+      author: "@claude"
+      content: "Review passed (all quality gates clean, all previous findings resolved). PR #873 cannot
+        merge due to conflicts with main after PR #871 (core pages migration). Worker needs to
+        rebase onto main and resolve conflicts in api.ts and keys.ts. No code quality issues — only
+        a merge conflict."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK5PM5VTQBBBMT11PMCE6
