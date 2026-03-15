@@ -2940,7 +2940,7 @@ features:
         created: 2026-03-15T19:50:40.640Z
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
       - _ulid: 01KKSGSZ934FRKKPX3D2SDR0XC
         slugs:
           - session-event-detail-endpoint
