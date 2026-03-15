@@ -97878,7 +97878,7 @@
   spec_ref: "@ui-api-aggregation"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -97894,7 +97894,7 @@
     upstream_ref: refs/heads/main
     review_url: null
     captured_at: 2026-03-15T05:24:09.096Z
-  session_id: 01KKQYF4PZEFFDVPQ1W283T12K
+  session_id: null
   created_at: 2026-03-15T03:28:14.594Z
   started_at: 2026-03-15T05:11:14.861Z
   submitted_at: 2026-03-15T05:24:09.839Z
@@ -97951,6 +97951,14 @@
         - All trait-websocket-protocol ACs marked N/A (WebSocket enrichment is separate task
         @task-ws-enrichment)
       supersedes: null
+    - _ulid: 01KKQZNCVK1SJXR8TSKQ1MRDDE
+      created_at: 2026-03-15T05:31:50.515Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: (1) ac_counts.uncovered calculation counts spec
+        items instead of individual ACs — each CompletenessWarning is one item with N uncovered ACs,
+        not one AC. (2) PR has merge conflicts with main (53 commits behind, server.ts and api.ts
+        conflict). SHOULD-FIX: unused loadAllItems import. See PR #869 review for details."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK3BM6MARTC3MSE6YV4VY
@@ -97985,12 +97993,12 @@
     - daemon
     - websocket
   vcs_refs: []
+  session_id: 01KKQZ8Y9GCS76HXBKYYZ3QW70
   created_at: 2026-03-15T03:28:15.220Z
+  started_at: 2026-03-15T05:25:23.522Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-03-15T05:25:23.522Z
-  session_id: 01KKQZ8Y9GCS76HXBKYYZ3QW70
 - _ulid: 01KKQRK3YT328Q9BKN9HD0DE34
   slugs:
     - task-migrate-core-pages
