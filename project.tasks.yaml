@@ -97880,6 +97880,12 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #869. Added three server-side aggregation endpoints to the daemon API:
+    (1) GET /api/aggregation/tasks/summary with dependency-aware ready vs blocked distinction, (2)
+    GET /api/aggregation/validation with entity counts, AC counts, and orphan counts as pre-computed
+    fields, (3) GET /api/aggregation/inbox with inline triage status. All own ACs (ac-1, ac-2, ac-3)
+    covered by 16 E2E tests. Trait ACs all N/A with valid justification. Fix cycle addressed:
+    ac_counts.uncovered counting fix and merge conflict resolution."
   depends_on: []
   context: []
   priority: 2
@@ -97898,6 +97904,7 @@
   created_at: 2026-03-15T03:28:14.594Z
   started_at: 2026-03-15T05:54:05.452Z
   submitted_at: 2026-03-15T05:54:09.674Z
+  completed_at: 2026-03-15T06:04:48.161Z
   notes:
     - _ulid: 01KKQYPAXH32XQBBQ2S470QEYQ
       created_at: 2026-03-15T05:14:52.721Z
@@ -97978,13 +97985,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T06:04:48.161Z
-  closed_reason: "Merged in PR #869. Added three server-side aggregation endpoints to the daemon API:
-    (1) GET /api/aggregation/tasks/summary with dependency-aware ready vs blocked distinction, (2)
-    GET /api/aggregation/validation with entity counts, AC counts, and orphan counts as pre-computed
-    fields, (3) GET /api/aggregation/inbox with inline triage status. All own ACs (ac-1, ac-2, ac-3)
-    covered by 16 E2E tests. Trait ACs all N/A with valid justification. Fix cycle addressed:
-    ac_counts.uncovered counting fix and merge conflict resolution."
 - _ulid: 01KKQRK3BM6MARTC3MSE6YV4VY
   slugs:
     - task-ws-enrichment
@@ -98084,7 +98084,7 @@
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-tanstack-setup"
@@ -98113,6 +98113,15 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-15T06:19:59.640Z
+  submission_linkage:
+    branch: main
+    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T06:19:58.900Z
 - _ulid: 01KKQRK4GRF9PBJVJG4S3BDE33
   slugs:
     - task-migrate-sidebar
