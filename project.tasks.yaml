@@ -98551,8 +98551,11 @@
   notes: []
   todos: []
   automation: eligible
-- title: "Fix TanStack Query migration regressions: SSR hydration stuck loading and unnecessary
+- _ulid: 01KKRTSS1EDEF6G8FE6CB16PB5
+  slugs: []
+  title: "Fix TanStack Query migration regressions: SSR hydration stuck loading and unnecessary
     limit=0 fetch"
+  type: task
   description: >-
     Two regressions from the TanStack Query migration:
 
@@ -98576,22 +98579,42 @@
     covers cache-then-revalidate for revisits but not first load lifecycle. The
     @session-filter-controls ac-filter-counts correctly specifies count shown when filters applied -
     implementation just over-fetches.
-  type: task
   spec_ref: "@ui-data-freshness"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - web-ui
     - bug
     - tanstack-query
-  depends_on: []
-  _ulid: 01KKRTSS1EDEF6G8FE6CB16PB5
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-15T13:26:05.614Z
-  notes: []
+  notes:
+    - _ulid: 01KKRVPJVQE4YXRCC7YQ386ZFV
+      created_at: 2026-03-15T13:41:49.559Z
+      author: "@claude"
+      content: >-
+        Investigation findings — corrected approach:
+
+
+        1. **limit=0 fetch**: Instead of gating the separate unfilteredQuery on hasFilters, the
+        better fix is to eliminate it entirely. The sessions API should return unfiltered_total
+        alongside total in every paginated response. The daemon already has all sessions cached via
+        sessionCache.getAll() — adding unfiltered_total is one line. The UI reads it from the
+        infinite query's first page response instead of making a separate request.
+
+
+        2. **SSR hydration**: Root +layout.ts with ssr=false is confirmed fix. Pages missing
+        +page.ts with ssr=false: agents, sessions, inbox, observations, specs, triage, validate.
+
+
+        3. **Spec gaps identified**:
+           - @session-filter-controls ac-filter-counts: doesn't specify unfiltered total comes from same response (led to separate request)
+           - @session-list-infinite-scroll: no AC for hard refresh completing load lifecycle
+           - @ui-data-freshness: no AC for initial page load on hard refresh (only covers revisit caching)
+      supersedes: null
   todos: []
