@@ -25,8 +25,9 @@ const INVALIDATION_TOPICS = ['tasks', 'items', 'inbox', 'agents', 'files'] as co
 function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (readonly unknown[])[] {
 	switch (topic) {
 		case 'tasks':
-			// Task status changes affect task lists, summaries, and sidebar counts
-			return [queryKeys.tasks.all, queryKeys.validation.all];
+			// Task status changes affect task lists, summaries, sidebar counts,
+			// and session context (which includes current focus/active work)
+			return [queryKeys.tasks.all, queryKeys.validation.all, queryKeys.sessionContext.all];
 
 		case 'items':
 			// Spec item changes affect item lists and validation
@@ -45,11 +46,14 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 			return [queryKeys.agents.all];
 
 		case 'files':
-			// File changes (e.g., settings save) affect multiple caches
+			// File changes (e.g., settings save, meta edits) affect multiple caches
+			// Observations and session context live in meta files
 			return [
 				queryKeys.settings.all,
 				queryKeys.workflows.all,
 				queryKeys.validation.all,
+				queryKeys.observations.all,
+				queryKeys.sessionContext.all,
 			];
 
 		default:

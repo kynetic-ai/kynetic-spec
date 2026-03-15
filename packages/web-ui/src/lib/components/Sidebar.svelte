@@ -1,8 +1,12 @@
+<!--
+	AC: @ui-data-freshness ac-4 — Badge counts served from cache, invalidated by WS events (no polling)
+	AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
+	AC: @ui-data-freshness ac-3 — WebSocket events invalidate sidebar queries
+-->
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
-	import { onMount } from 'svelte';
+	import { createQuery } from '@tanstack/svelte-query';
 	import {
 		Sidebar,
 		SidebarContent,
@@ -20,15 +24,13 @@
 	} from '$lib/components/ui/sidebar';
 	import { Badge } from '$lib/components/ui/badge';
 	import { fetchSessionContext, fetchObservations, fetchInbox, fetchTasks } from '$lib/api';
-	import type { SessionContext } from '@kynetic-ai/shared';
 	import ConnectionStatus from '$lib/components/ConnectionStatus.svelte';
 	import ProjectSelector from '$lib/components/ProjectSelector.svelte';
 	import {
 		hasMultipleProjects,
-		getProjectVersion,
 		isInitialized as isProjectInitialized
 	} from '$lib/stores/project.svelte';
-	import { isStaticMode } from '$lib/stores/mode.svelte';
+	import { queryKeys } from '$lib/query/keys.js';
 	import {
 		LayoutDashboard,
 		ListTodo,
@@ -94,12 +96,36 @@
 		}
 	];
 
-	// AC: @ui-app-shell ac-2 — Badge counts for actionable items
-	let sessionContext = $state<SessionContext | null>(null);
-	let inboxCount = $state(0);
-	let unresolvedObservationsCount = $state(0);
-	let pendingReviewCount = $state(0);
+	// --- TanStack Query: sidebar badge counts ---
+	// AC: @ui-data-freshness ac-4 — Cache-based, event-driven invalidation (no polling)
+	// AC: @ui-data-freshness ac-1 — Cached results render immediately on revisit
+	// AC: @ui-data-freshness ac-2 — Shared queries deduplicate requests with dashboard
 
+	const sessionContextQuery = createQuery(() => ({
+		queryKey: queryKeys.sessionContext.current(),
+		queryFn: () => fetchSessionContext(),
+		enabled: isProjectInitialized(),
+	}));
+
+	const inboxCountQuery = createQuery(() => ({
+		queryKey: queryKeys.inbox.count(),
+		queryFn: () => fetchInbox({ limit: 0 }),
+		enabled: isProjectInitialized(),
+	}));
+
+	const observationsCountQuery = createQuery(() => ({
+		queryKey: queryKeys.observations.count({ resolved: false }),
+		queryFn: () => fetchObservations({ resolved: false }),
+		enabled: isProjectInitialized(),
+	}));
+
+	const pendingReviewCountQuery = createQuery(() => ({
+		queryKey: queryKeys.tasks.list({ status: 'pending_review', limit: 0 }),
+		queryFn: () => fetchTasks({ status: 'pending_review', limit: 0 }),
+		enabled: isProjectInitialized(),
+	}));
+
+	// AC: @ui-app-shell ac-2 — Badge counts for actionable items
 	let showProjectSelector = $derived(hasMultipleProjects());
 
 	// Collapsed group state (all expanded by default)
@@ -122,57 +148,13 @@
 		if (!key) return 0;
 		switch (key) {
 			case 'inbox':
-				return inboxCount;
+				return inboxCountQuery.data?.total ?? 0;
 			case 'observations':
-				return unresolvedObservationsCount;
+				return observationsCountQuery.data?.total ?? 0;
 			case 'pendingReview':
-				return pendingReviewCount;
+				return pendingReviewCountQuery.data?.total ?? 0;
 			default:
 				return 0;
-		}
-	}
-
-	// Polling interval handle — set up once project store is ready
-	let countsInterval: ReturnType<typeof setInterval> | undefined;
-
-	onMount(() => {
-		return () => {
-			if (countsInterval) clearInterval(countsInterval);
-		};
-	});
-
-	// Load counts when project store is initialized and on every project change.
-	// This replaces the old onMount loadCounts() call which could fire before
-	// loadProjects() completed, causing stale/wrong-project badge counts.
-	$effect(() => {
-		const version = getProjectVersion();
-		const ready = isProjectInitialized();
-		if (!ready) return;
-
-		// Initial load (version === 0) and subsequent project switches (version > 0)
-		loadCounts();
-
-		// Set up polling interval on first ready signal
-		if (!countsInterval) {
-			countsInterval = setInterval(loadCounts, 30000);
-		}
-	});
-
-	async function loadCounts() {
-		try {
-			const [sessionData, obsResponse, inboxResponse, tasksResponse] = await Promise.all([
-				fetchSessionContext(),
-				fetchObservations({ resolved: false }),
-				fetchInbox({ limit: 0 }),
-				fetchTasks({ status: 'pending_review', limit: 0 })
-			]);
-
-			sessionContext = sessionData;
-			unresolvedObservationsCount = obsResponse.total;
-			inboxCount = inboxResponse.total;
-			pendingReviewCount = tasksResponse.total;
-		} catch (err) {
-			console.error('Failed to load sidebar counts:', err);
 		}
 	}
 </script>
@@ -197,7 +179,7 @@
 			</SidebarGroup>
 		{/if}
 
-		{#if sessionContext?.focus}
+		{#if sessionContextQuery.data?.focus}
 			<SidebarGroup>
 				<SidebarGroupLabel>Current Focus</SidebarGroupLabel>
 				<SidebarGroupContent>
@@ -205,7 +187,7 @@
 						class="px-4 py-2 text-sm italic text-muted-foreground"
 						data-testid="session-focus"
 					>
-						{sessionContext.focus}
+						{sessionContextQuery.data?.focus}
 					</div>
 				</SidebarGroupContent>
 			</SidebarGroup>

@@ -30,6 +30,13 @@ const PACKAGE_JSON_PATH = join(
   "package.json",
 );
 
+const SIDEBAR_PATH = join(
+  WEB_UI_SRC,
+  "lib",
+  "components",
+  "Sidebar.svelte",
+);
+
 // Load source files
 const clientSrc = readFileSync(join(QUERY_DIR, "client.ts"), "utf-8");
 const keysSrc = readFileSync(join(QUERY_DIR, "keys.ts"), "utf-8");
@@ -41,6 +48,7 @@ const contextSrc = readFileSync(join(QUERY_DIR, "context.ts"), "utf-8");
 const indexSrc = readFileSync(join(QUERY_DIR, "index.ts"), "utf-8");
 const layoutSrc = readFileSync(LAYOUT_PATH, "utf-8");
 const dashboardSrc = readFileSync(DASHBOARD_PATH, "utf-8");
+const sidebarSrc = readFileSync(SIDEBAR_PATH, "utf-8");
 const projectStoreSrc = readFileSync(PROJECT_STORE_PATH, "utf-8");
 const packageJsonSrc = readFileSync(PACKAGE_JSON_PATH, "utf-8");
 const packageJson = JSON.parse(packageJsonSrc);
@@ -341,5 +349,103 @@ describe("query module barrel export", () => {
     expect(indexSrc).toContain("setQueryClient");
     expect(indexSrc).toContain("getQueryClient");
     expect(indexSrc).toContain("clearQueryCache");
+  });
+});
+
+// AC: @ui-data-freshness ac-4 — Sidebar badge counts via cache, no polling
+describe("sidebar migration to TanStack Query (@ui-data-freshness ac-4)", () => {
+  it("uses createQuery for all badge count data fetching", () => {
+    expect(sidebarSrc).toContain("createQuery");
+    expect(sidebarSrc).toContain("@tanstack/svelte-query");
+  });
+
+  it("creates inbox count query", () => {
+    expect(sidebarSrc).toContain("inboxCountQuery");
+    expect(sidebarSrc).toContain("queryKeys.inbox.count()");
+    expect(sidebarSrc).toContain("fetchInbox({ limit: 0 })");
+  });
+
+  it("creates observations count query", () => {
+    expect(sidebarSrc).toContain("observationsCountQuery");
+    expect(sidebarSrc).toContain("queryKeys.observations.count");
+    expect(sidebarSrc).toContain("fetchObservations({ resolved: false })");
+  });
+
+  it("creates pending review count query", () => {
+    expect(sidebarSrc).toContain("pendingReviewCountQuery");
+    expect(sidebarSrc).toContain("queryKeys.tasks.list");
+    expect(sidebarSrc).toContain("fetchTasks({ status: 'pending_review', limit: 0 })");
+  });
+
+  it("creates session context query", () => {
+    expect(sidebarSrc).toContain("sessionContextQuery");
+    expect(sidebarSrc).toContain("queryKeys.sessionContext.current()");
+    expect(sidebarSrc).toContain("fetchSessionContext()");
+  });
+
+  it("does not use setInterval polling", () => {
+    expect(sidebarSrc).not.toContain("setInterval");
+    expect(sidebarSrc).not.toContain("clearInterval");
+    expect(sidebarSrc).not.toContain("countsInterval");
+  });
+
+  it("does not use manual loadCounts function", () => {
+    expect(sidebarSrc).not.toContain("async function loadCounts");
+    expect(sidebarSrc).not.toContain("Promise.all");
+  });
+
+  it("gates all queries on project initialization", () => {
+    // All createQuery calls should be gated by isProjectInitialized()
+    const queryBlocks = sidebarSrc.match(/createQuery\(\(\) => \(\{[\s\S]*?\}\)\)/g) ?? [];
+    expect(queryBlocks.length).toBe(4);
+    for (const block of queryBlocks) {
+      expect(block).toContain("isProjectInitialized()");
+    }
+  });
+
+  it("reads badge counts from query data", () => {
+    expect(sidebarSrc).toContain("inboxCountQuery.data?.total");
+    expect(sidebarSrc).toContain("observationsCountQuery.data?.total");
+    expect(sidebarSrc).toContain("pendingReviewCountQuery.data?.total");
+  });
+
+  it("reads session context from query data", () => {
+    expect(sidebarSrc).toContain("sessionContextQuery.data?.focus");
+  });
+});
+
+describe("query key factories include sidebar-specific keys", () => {
+  it("defines sessionContext key factories", () => {
+    expect(keysSrc).toContain("sessionContext:");
+    expect(keysSrc).toContain("current:");
+  });
+
+  it("defines observations count key factory", () => {
+    expect(keysSrc).toContain("observations:");
+    // Should have a count() factory parallel to inbox.count()
+    const obsSection = keysSrc.slice(
+      keysSrc.indexOf("observations:"),
+      keysSrc.indexOf("},", keysSrc.indexOf("observations:")) + 2,
+    );
+    expect(obsSection).toContain("count:");
+  });
+});
+
+describe("WS invalidation covers sidebar data (@ui-data-freshness ac-3)", () => {
+  it("file events invalidate observations queries", () => {
+    expect(wsInvalidationSrc).toContain("queryKeys.observations.all");
+  });
+
+  it("file events invalidate session context queries", () => {
+    expect(wsInvalidationSrc).toContain("queryKeys.sessionContext.all");
+  });
+
+  it("task events invalidate session context queries", () => {
+    // Session context includes focus/active work which changes with tasks
+    const tasksCase = wsInvalidationSrc.slice(
+      wsInvalidationSrc.indexOf("case 'tasks':"),
+      wsInvalidationSrc.indexOf("case 'items':"),
+    );
+    expect(tasksCase).toContain("queryKeys.sessionContext.all");
   });
 });
