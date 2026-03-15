@@ -18262,9 +18262,23 @@ plans:
           - "@task-migrate-inbox-triage"
       ```
 
-    status: approved
-    derived_tasks: []
-    derived_specs: []
+    status: active
+    derived_tasks:
+      - "@task-ui-data-layer-skill"
+      - "@task-tanstack-setup"
+      - "@task-server-resolve"
+      - "@task-ref-index-endpoint"
+      - "@task-server-aggregation"
+      - "@task-ws-enrichment"
+      - "@task-migrate-core-pages"
+      - "@task-migrate-sidebar"
+      - "@task-migrate-complex-pages"
+      - "@task-migrate-inbox-triage"
+      - "@task-cleanup-legacy-fetches"
+    derived_specs:
+      - "@ui-api-ref-resolution"
+      - "@ui-api-aggregation"
+      - "@ui-data-freshness"
     source_path: /home/chapel/Projects/kynetic-spec/plans/ui-data-layer-rework.md
     module_ref: null
     created_at: 2026-03-15T02:22:10.628Z

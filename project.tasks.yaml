@@ -97390,6 +97390,9 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #861. Fixed double @@ in dispatch-workspace-registry shadow commit
+    messages by stripping @ prefix from taskRef before passing to commitIfShadow(). Two contract
+    tests added. All CI green, all 4955 tests pass."
   depends_on: []
   context: []
   priority: 3
@@ -97410,6 +97413,7 @@
   created_at: 2026-03-14T22:18:47.260Z
   started_at: 2026-03-14T22:19:51.466Z
   submitted_at: 2026-03-14T22:29:19.863Z
+  completed_at: 2026-03-14T22:40:35.237Z
   notes:
     - _ulid: 01KKQ795T0XFC4CTQ64JM4KQT9
       created_at: 2026-03-14T22:25:44.256Z
@@ -97422,7 +97426,230 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-14T22:40:35.237Z
-  closed_reason: "Merged in PR #861. Fixed double @@ in dispatch-workspace-registry shadow commit
-    messages by stripping @ prefix from taskRef before passing to commitIfShadow(). Two contract
-    tests added. All CI green, all 4955 tests pass."
+- _ulid: 01KKQRK0CVGPA3H2GT9GH0EA8B
+  slugs:
+    - task-ui-data-layer-skill
+  title: Create UI data layer skill for Svelte + TanStack Query patterns
+  type: task
+  spec_ref: null
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - docs
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:12.187Z
+  notes: []
+  todos: []
+- _ulid: 01KKQRK0ZZZ1QMCNHDHK3969AF
+  slugs:
+    - task-tanstack-setup
+  title: Install TanStack Query, set up provider, and migrate dashboard as proof
+  type: task
+  spec_ref: null
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-ui-data-layer-skill"
+  context: []
+  priority: 1
+  tags:
+    - web-ui
+    - infra
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:12.799Z
+  notes: []
+  todos: []
+- _ulid: 01KKQRK1KGVQKF0WA5C06C2B1K
+  slugs:
+    - task-server-resolve
+  title: Add server-side title resolution to API responses
+  type: task
+  spec_ref: null
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - daemon
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:13.424Z
+  notes: []
+  todos: []
+- _ulid: 01KKQRK26BXGJJPBJ1NQ4GM59C
+  slugs:
+    - task-ref-index-endpoint
+  title: Implement ref index endpoint
+  type: task
+  spec_ref: null
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - daemon
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:14.027Z
+  notes: []
+  todos: []
+- _ulid: 01KKQRK2R219TBGWE4XQEBJNEC
+  slugs:
+    - task-server-aggregation
+  title: Add server-side aggregation endpoints
+  type: task
+  spec_ref: null
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - daemon
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:14.594Z
+  notes: []
+  todos: []
+- _ulid: 01KKQRK3BM6MARTC3MSE6YV4VY
+  slugs:
+    - task-ws-enrichment
+  title: Enrich WebSocket broadcast payloads
+  type: task
+  spec_ref: null
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - daemon
+    - websocket
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:15.220Z
+  notes: []
+  todos: []
+- _ulid: 01KKQRK3YT328Q9BKN9HD0DE34
+  slugs:
+    - task-migrate-core-pages
+  title: Migrate core pages to TanStack Query (agents, sessions, settings)
+  type: task
+  spec_ref: null
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-tanstack-setup"
+    - "@task-server-resolve"
+  context: []
+  priority: 2
+  tags:
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:15.834Z
+  notes: []
+  todos: []
+- _ulid: 01KKQRK4GRF9PBJVJG4S3BDE33
+  slugs:
+    - task-migrate-sidebar
+  title: Migrate sidebar to TanStack Query and eliminate polling
+  type: task
+  spec_ref: null
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-tanstack-setup"
+  context: []
+  priority: 2
+  tags:
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:16.408Z
+  notes: []
+  todos: []
+- _ulid: 01KKQRK53RE5Q3JHHH07W67NTJ
+  slugs:
+    - task-migrate-complex-pages
+  title: Migrate complex pages to TanStack Query (tasks, board, specs, plans, validate)
+  type: task
+  spec_ref: null
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-tanstack-setup"
+    - "@task-server-resolve"
+    - "@task-server-aggregation"
+  context: []
+  priority: 2
+  tags:
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:17.016Z
+  notes: []
+  todos: []
+- _ulid: 01KKQRK5PM5VTQBBBMT11PMCE6
+  slugs:
+    - task-migrate-inbox-triage
+  title: Migrate inbox and triage pages to TanStack Query
+  type: task
+  spec_ref: null
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-tanstack-setup"
+    - "@task-server-aggregation"
+    - "@task-ref-index-endpoint"
+  context: []
+  priority: 2
+  tags:
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:17.620Z
+  notes: []
+  todos: []
+- title: Clean up legacy fetch infrastructure
+  type: task
+  slugs:
+    - task-cleanup-legacy-fetches
+  spec_ref: null
+  plan_ref: "@plan-ui-data-layer-rework"
+  priority: 3
+  tags:
+    - web-ui
+  depends_on:
+    - "@task-migrate-core-pages"
+    - "@task-migrate-sidebar"
+    - "@task-migrate-complex-pages"
+    - "@task-migrate-inbox-triage"
+  notes: []
+  origin: derived
+  _ulid: 01KKQRK68XM841PBFQFNPT33VZ
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:18.205Z
+  todos: []

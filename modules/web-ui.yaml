@@ -2505,6 +2505,211 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KKQRK0A7CZPK4RC70AGTK2ZX
+    slugs:
+      - ui-api-ref-resolution
+    title: API Reference Resolution
+    type: feature
+    tags: []
+    description: |
+      The daemon API resolves entity references to display-ready metadata so
+      consumers can render human-readable titles, statuses, and types without
+      separate lookups. This applies both inline (fields within existing
+      responses) and via a dedicated lightweight index endpoint for arbitrary
+      resolution.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          An API response includes a single-valued reference to another entity
+          (task_ref, task_id, spec_ref, plan_ref)
+        when: |
+          The response is serialized
+        then: |
+          A corresponding title field is included alongside the ref, resolved
+          against loaded entity data. Null if the ref cannot be resolved.
+      - id: ac-2
+        given: |
+          An API response includes an array of references to other entities
+          (depends_on, blocked_by, evidence_refs, derived_specs, derived_tasks)
+        when: |
+          The response is serialized
+        then: |
+          Each entry includes the resolved title and current status alongside
+          the ref string.
+      - id: ac-3
+        given: |
+          A referenced entity has been deleted or the ref is invalid
+        when: |
+          The API attempts resolution
+        then: |
+          The title field is null and the raw ref is preserved. The response
+          does not fail or omit the entry.
+      - id: ac-4
+        given: |
+          A consumer needs to resolve an arbitrary set of refs to display
+          metadata (e.g., rendering refs in markdown, cross-entity link previews)
+        when: |
+          A lightweight index endpoint is called
+        then: |
+          Returns a map of all resolvable refs (tasks, items, traits) with
+          title, type, and status. Both ULID and slug keys are included
+          for each entity.
+      - id: ac-5
+        given: |
+          The project has 1000+ entities
+        when: |
+          The index endpoint is called
+        then: |
+          The response payload is significantly smaller than fetching full
+          entity lists because it only includes display metadata.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-api-endpoint"
+    notes: []
+    created: 2026-03-15T03:28:12.103Z
+  - _ulid: 01KKQRK0B6BH53Z2CBQ312YZHZ
+    slugs:
+      - ui-api-aggregation
+    title: API Aggregation and Enriched Events
+    type: feature
+    tags: []
+    description: |
+      The daemon provides pre-computed aggregations and enriched event payloads
+      so consumers do not need to fetch full entity lists to compute derived
+      data. This covers both HTTP endpoints for summary statistics and WebSocket
+      broadcast events that include enough context for in-place UI updates.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          A consumer needs entity counts grouped by status
+        when: |
+          A summary endpoint is called
+        then: |
+          Returns pre-computed counts by status with dependency-aware
+          distinctions (e.g., ready vs blocked by incomplete dependencies).
+      - id: ac-2
+        given: |
+          A consumer needs validation coverage statistics
+        when: |
+          The validation or alignment endpoint is called
+        then: |
+          The response includes entity counts, acceptance criteria counts,
+          and orphaned entity counts as pre-computed fields.
+      - id: ac-3
+        given: |
+          A consumer needs inbox items with their triage status
+        when: |
+          A merged endpoint is called
+        then: |
+          Returns inbox items with inline triage status in a single response.
+      - id: ac-4
+        given: |
+          An entity changes (task status, inbox item created, etc.)
+        when: |
+          A WebSocket broadcast event is sent
+        then: |
+          The payload includes the entity's display title and both old and
+          new state where applicable, in addition to the existing ref and
+          action fields.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-api-endpoint"
+      - "@trait-websocket-protocol"
+    notes: []
+    created: 2026-03-15T03:28:12.134Z
+  - _ulid: 01KKQRK0C161X7JRT3RZKDAB6F
+    slugs:
+      - ui-data-freshness
+    title: UI Data Freshness and Caching
+    type: feature
+    tags: []
+    description: |
+      The web UI maintains a shared, reactive data cache that provides instant
+      page transitions, request deduplication, and real-time updates without
+      per-page independent fetching. Data fetched by one page is available to
+      all pages. Real-time events drive cache invalidation. The UI degrades
+      gracefully when the daemon is unreachable and supports read-only static
+      mode for exported snapshots.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          A page fetches data on first visit
+        when: |
+          The user navigates away and returns to the same page
+        then: |
+          The page renders immediately from cached data without a loading
+          state, then revalidates in the background if the data is stale.
+      - id: ac-2
+        given: |
+          Two or more pages or components need the same data concurrently
+        when: |
+          Both are active at the same time
+        then: |
+          Only one HTTP request is made. Both consumers share the result.
+      - id: ac-3
+        given: |
+          A WebSocket broadcast event indicates data has changed
+        when: |
+          The event is processed by the UI
+        then: |
+          Cached data for the affected entity type is invalidated and
+          active views revalidate in the background. If the broadcast
+          includes sufficient enriched data, the cache is updated
+          immediately without a server round-trip.
+      - id: ac-4
+        given: |
+          The UI needs periodic status data (badge counts, agent status)
+        when: |
+          The data changes on the server
+        then: |
+          The data is served from cache and kept current via event-driven
+          invalidation rather than timer-based polling.
+      - id: ac-5
+        given: |
+          The user switches projects in the multi-directory daemon
+        when: |
+          The project context changes
+        then: |
+          All cached data is discarded. Subsequent data requests fetch
+          fresh data for the new project.
+      - id: ac-6
+        given: |
+          The app is running in static mode (exported snapshot)
+        when: |
+          A data request is made
+        then: |
+          The request is served from the static data source. No daemon
+          HTTP calls are attempted.
+      - id: ac-7
+        given: |
+          The daemon is unreachable or returns an error
+        when: |
+          A data request fails
+        then: |
+          The error is surfaced with appropriate messaging (e.g., daemon
+          not running vs data error). Retry behavior is appropriate for
+          localhost (minimal retries, short delay).
+      - id: ac-8
+        given: |
+          A write operation is performed (start task, add note, etc.)
+        when: |
+          The operation succeeds
+        then: |
+          Related cached data is invalidated so the originating client
+          updates immediately without waiting for a broadcast.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-15T03:28:12.161Z
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:
