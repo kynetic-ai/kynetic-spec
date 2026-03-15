@@ -1,24 +1,24 @@
 <!--
   AC: @ui-inbox-enhanced ac-1 — Each item shows triage status inline with quick triage action links.
   AC: @ui-inbox-enhanced ac-2 — Filters by status, tags, age.
+  AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
+  AC: @ui-data-freshness ac-3 — WebSocket events invalidate merged inbox query
+  AC: @ui-api-aggregation ac-3 — Inbox items include inline triage status, no client join
 -->
 <script lang="ts">
-	// AC: @multi-directory-daemon ac-27 - Reload on project change
+	// AC: @multi-directory-daemon ac-27 - Reload on project change (handled by TanStack Query enabled flag)
 	// AC: @gh-pages-export ac-17 - Hide Add button in static mode
-	import { onMount, onDestroy } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
 	import { page } from '$app/state';
-	import type { InboxItem, BroadcastEvent } from '@kynetic-ai/shared';
-	import type { TriageRecord } from '$lib/types/triage';
+	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
+	import type { InboxItem, InboxItemWithTriage } from '@kynetic-ai/shared';
 	import {
-		fetchInbox,
+		fetchMergedInbox,
 		addInboxItem,
-		deleteInboxItem,
-		fetchTriageRecords
+		deleteInboxItem
 	} from '$lib/api';
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
-	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import { Input } from '$lib/components/ui/input';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
@@ -31,15 +31,12 @@
 		DialogHeader,
 		DialogTitle
 	} from '$lib/components/ui/dialog';
-	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { renderMarkdown } from '$lib/utils/markdown';
+	import { queryKeys } from '$lib/query/keys.js';
 	import Inbox from '@lucide/svelte/icons/inbox';
 
-	// ── Data state ──
-	let inboxItems = $state<InboxItem[]>([]);
-	let triageRecords = $state<TriageRecord[]>([]);
-	let loading = $state(true);
-	let error = $state('');
+	const queryClient = useQueryClient();
 
 	// ── Add item state ──
 	let showAddInput = $state(false);
@@ -50,6 +47,9 @@
 	let deleteConfirmOpen = $state(false);
 	let itemToDelete = $state<InboxItem | null>(null);
 	let deletingItem = $state(false);
+
+	// ── Write operation error (separate from query error) ──
+	let writeError = $state('');
 
 	// ── Triage status labels and colors ──
 	const TRIAGE_STATUS_LABELS: Record<string, string> = {
@@ -63,6 +63,17 @@
 		triaged: 'bg-status-pending-review text-status-pending-review-fg',
 		acted_on: 'bg-status-completed text-status-completed-fg'
 	};
+
+	// ── Query: merged inbox with inline triage status ──
+	// AC: @ui-data-freshness ac-1 — createQuery caches; revisits render from cache
+	// AC: @ui-data-freshness ac-2 — Concurrent uses share the same in-flight request
+	// AC: @ui-api-aggregation ac-3 — Uses merged endpoint, no client-side join
+	// AC: @ui-data-freshness ac-6 — fetchMergedInbox dispatches to static mode internally
+	const mergedInboxQuery = createQuery(() => ({
+		queryKey: queryKeys.inbox.merged(),
+		queryFn: () => fetchMergedInbox(),
+		enabled: isProjectInitialized(),
+	}));
 
 	// ── Filter state ──
 	// AC: @ui-inbox-enhanced ac-2
@@ -81,21 +92,20 @@
 
 	// ── Merged inbox + triage view ──
 	interface InboxCardItem {
-		inbox: InboxItem;
-		record: TriageRecord | null;
+		inbox: InboxItemWithTriage;
 		triageStatus: string;
 	}
 
-	// AC: @ui-inbox-enhanced ac-1 — Merge inbox items with triage records
-	let allItems = $derived.by(() => {
-		return inboxItems.map((inbox) => {
-			const record = triageRecords.find((r) => r.inbox_ref === inbox._ulid) ?? null;
-			const triageStatus = record
-				? record.status === 'pending'
+	// AC: @ui-inbox-enhanced ac-1 — Items include inline triage status from merged endpoint
+	let allItems = $derived.by((): InboxCardItem[] => {
+		const items = mergedInboxQuery.data?.items ?? [];
+		return items.map((item) => {
+			const triageStatus = item.triage
+				? item.triage.status === 'pending'
 					? 'untriaged'
-					: record.status
+					: item.triage.status
 				: 'untriaged';
-			return { inbox, record, triageStatus };
+			return { inbox: item, triageStatus };
 		});
 	});
 
@@ -136,8 +146,9 @@
 
 	// All unique tags across inbox items
 	let allTags = $derived.by(() => {
+		const items = mergedInboxQuery.data?.items ?? [];
 		const tagSet = new Set<string>();
-		inboxItems.forEach((item) => item.tags.forEach((t) => tagSet.add(t)));
+		items.forEach((item) => item.tags.forEach((t) => tagSet.add(t)));
 		return Array.from(tagSet).sort();
 	});
 
@@ -146,73 +157,11 @@
 	let triagedCount = $derived(allItems.filter((i) => i.triageStatus === 'triaged').length);
 	let actedCount = $derived(allItems.filter((i) => i.triageStatus === 'acted_on').length);
 
-	// ── Lifecycle ──
-	onMount(() => {
-		// Subscribe to real-time updates
-		if (!isStaticMode()) {
-			subscribe(['inbox:updates', 'triage:updates']);
-			on('inbox:updates', handleInboxUpdate);
-			on('triage:updates', handleTriageUpdate);
-		}
-	});
+	// AC: @ui-data-freshness ac-1 — Only show loading on initial fetch (no cache)
+	let loading = $derived(mergedInboxQuery.isLoading);
 
-	onDestroy(() => {
-		if (!isStaticMode()) {
-			off('inbox:updates', handleInboxUpdate);
-			off('triage:updates', handleTriageUpdate);
-			unsubscribe(['inbox:updates', 'triage:updates']);
-		}
-	});
-
-	// Load data when project is ready and reload on project change.
-	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
-	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
-	$effect(() => {
-		const version = getProjectVersion();
-		const ready = isProjectInitialized();
-		if (!ready) return;
-		loadData();
-	});
-
-	// ── Data loading ──
-	async function loadData() {
-		try {
-			loading = true;
-			error = '';
-			const inboxResponse = await fetchInbox({ limit: 1000 });
-			inboxItems = inboxResponse.items;
-
-			// Load triage records separately — if triage fails, inbox still shows
-			try {
-				const triageResponse = await fetchTriageRecords({ limit: 1000 });
-				triageRecords = triageResponse.items;
-			} catch {
-				triageRecords = [];
-			}
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load inbox';
-		} finally {
-			loading = false;
-		}
-	}
-
-	// ── WebSocket handlers ──
-	function handleInboxUpdate(_event: BroadcastEvent) {
-		loadData();
-	}
-
-	function handleTriageUpdate(_event: BroadcastEvent) {
-		loadTriageData();
-	}
-
-	async function loadTriageData() {
-		try {
-			const triageResponse = await fetchTriageRecords({ limit: 1000 });
-			triageRecords = triageResponse.items;
-		} catch (err) {
-			console.error('Failed to reload triage records:', err);
-		}
-	}
+	// AC: @ui-data-freshness ac-7 — Surface error from query or write operations
+	let error = $derived(writeError || (mergedInboxQuery.error ? mergedInboxQuery.error.message : ''));
 
 	// ── Filter URL management ──
 	function updateFilterParam(key: 'status' | 'tag' | 'age', value: string) {
@@ -230,26 +179,28 @@
 	}
 
 	// ── Add item ──
+	// AC: @ui-data-freshness ac-8 — Write operation invalidates related cache
 	async function handleAddItem() {
 		if (!newItemText.trim()) return;
 
 		if (isStaticMode()) {
-			error = 'Cannot add items in read-only mode. Use the kspec CLI.';
+			writeError = 'Cannot add items in read-only mode. Use the kspec CLI.';
 			return;
 		}
 
 		try {
 			addingItem = true;
-			error = '';
-			const newItem = await addInboxItem(newItemText.trim());
-			inboxItems = [newItem, ...inboxItems];
+			writeError = '';
+			await addInboxItem(newItemText.trim());
 			newItemText = '';
 			showAddInput = false;
+			// AC: @ui-data-freshness ac-8 — Invalidate inbox cache after write
+			queryClient.invalidateQueries({ queryKey: queryKeys.inbox.all });
 		} catch (err) {
 			if (err instanceof ReadOnlyModeError) {
-				error = err.message;
+				writeError = err.message;
 			} else {
-				error = err instanceof Error ? err.message : 'Failed to add item';
+				writeError = err instanceof Error ? err.message : 'Failed to add item';
 			}
 		} finally {
 			addingItem = false;
@@ -264,16 +215,17 @@
 	}
 
 	// ── Delete item ──
-	function confirmDelete(item: InboxItem) {
+	function confirmDelete(item: InboxItemWithTriage) {
 		itemToDelete = item;
 		deleteConfirmOpen = true;
 	}
 
+	// AC: @ui-data-freshness ac-8 — Write operation invalidates related cache
 	async function handleDelete() {
 		if (!itemToDelete) return;
 
 		if (isStaticMode()) {
-			error = 'Cannot delete items in read-only mode. Use the kspec CLI.';
+			writeError = 'Cannot delete items in read-only mode. Use the kspec CLI.';
 			deleteConfirmOpen = false;
 			itemToDelete = null;
 			return;
@@ -281,16 +233,17 @@
 
 		try {
 			deletingItem = true;
-			error = '';
+			writeError = '';
 			await deleteInboxItem(itemToDelete._ulid);
-			inboxItems = inboxItems.filter((i) => i._ulid !== itemToDelete!._ulid);
 			deleteConfirmOpen = false;
 			itemToDelete = null;
+			// AC: @ui-data-freshness ac-8 — Invalidate inbox cache after write
+			queryClient.invalidateQueries({ queryKey: queryKeys.inbox.all });
 		} catch (err) {
 			if (err instanceof ReadOnlyModeError) {
-				error = err.message;
+				writeError = err.message;
 			} else {
-				error = err instanceof Error ? err.message : 'Failed to delete item';
+				writeError = err instanceof Error ? err.message : 'Failed to delete item';
 			}
 		} finally {
 			deletingItem = false;
@@ -457,9 +410,9 @@
 									>
 										{getTriageStatusLabel(item)}
 									</Badge>
-									{#if item.record?.action}
+									{#if item.inbox.triage?.action}
 										<span class="text-xs text-muted-foreground" data-testid="inbox-triage-action">
-											{item.record.action}
+											{item.inbox.triage.action}
 										</span>
 									{/if}
 								</div>

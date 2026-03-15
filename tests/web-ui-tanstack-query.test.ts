@@ -360,7 +360,7 @@ describe("write operation cache invalidation pattern (@ui-data-freshness ac-8)",
     // When a write operation succeeds, the daemon broadcasts a WS event.
     // The centralized WS invalidation handler catches it and invalidates
     // the relevant queries. This ensures write operations update the UI.
-    expect(wsInvalidationSrc).toContain("case 'tasks':");
+    expect(wsInvalidationSrc).toContain("case 'tasks:updates':");
     expect(wsInvalidationSrc).toContain("queryKeys.tasks.all");
   });
 });
@@ -468,8 +468,8 @@ describe("WS invalidation covers sidebar data (@ui-data-freshness ac-3)", () => 
   it("task events invalidate session context queries", () => {
     // Session context includes focus/active work which changes with tasks
     const tasksCase = wsInvalidationSrc.slice(
-      wsInvalidationSrc.indexOf("case 'tasks':"),
-      wsInvalidationSrc.indexOf("case 'items':"),
+      wsInvalidationSrc.indexOf("case 'tasks:updates':"),
+      wsInvalidationSrc.indexOf("case 'items:updates':"),
     );
     expect(tasksCase).toContain("queryKeys.sessionContext.all");
   });
