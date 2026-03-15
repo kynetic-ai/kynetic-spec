@@ -4939,7 +4939,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
     canonical_branch: dispatch/task/task-migrate-sidebar/01kkqrk4
-    canonical_branch_head: c389fbae94466723c0d514529a18d44b2309a128
+    canonical_branch_head: b2a4795204090e1001b00342728b8dba565323dc
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -4990,21 +4990,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T06:23:35.485Z
+      updated_at: 2026-03-15T06:32:35.396Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T06:23:35.485Z
+      updated_at: 2026-03-15T06:32:35.396Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T06:23:35.485Z
+      updated_at: 2026-03-15T06:32:35.396Z
     timestamps:
       created_at: 2026-03-15T06:20:52.447Z
-      updated_at: 2026-03-15T06:23:35.485Z
-      last_reconciled_at: 2026-03-15T06:23:35.485Z
+      updated_at: 2026-03-15T06:32:35.396Z
+      last_reconciled_at: 2026-03-15T06:32:35.396Z
       last_active_at: 2026-03-15T06:20:53.484Z
       closed_at: null
