@@ -24,6 +24,8 @@ import {
 import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
 import { loadProjectConfig } from "../parser/config.js";
 import type { InvocationOptions } from "./invocation.js";
+import { SessionEventAccumulator } from "./session-event-accumulator.js";
+import type { SessionEventData } from "@kynetic-ai/shared";
 import {
   interpolateTemplate,
   rewriteSkillReferencesForAdapter,
@@ -628,11 +630,13 @@ export interface DispatchEngineOptions {
    */
   onInvocationEvent?: (event: InvocationEvent) => void;
   /**
-   * Optional callback invoked for each text chunk produced by a running agent.
+   * Optional callback invoked for typed session lifecycle events.
+   * Replaces the old onTextChunk callback with structured event emission.
+   * AC: @session-event-broadcast ac-replaces-text-chunks
    * AC: @cli-agent-commands ac-13 (broadcast to watch subscribers)
    * AC: @daemon-agent-dispatch ac-8
    */
-  onTextChunk?: (sessionId: string, agentId: string, taskId: string | null, taskTitle: string | null, text: string) => void;
+  onSessionEvent?: (event: SessionEventData) => void;
 }
 
 // ─── DispatchEngine ───────────────────────────────────────────────────────────
@@ -658,7 +662,9 @@ export class DispatchEngine {
   private coalesceWindowMs: number;
   private kspecCliPath?: string;
   private onInvocationEvent?: (event: InvocationEvent) => void;
-  private onTextChunk?: (sessionId: string, agentId: string, taskId: string | null, taskTitle: string | null, text: string) => void;
+  private onSessionEvent?: (event: SessionEventData) => void;
+  /** Per-session text accumulator for newline-boundary streaming. */
+  private accumulator = new SessionEventAccumulator();
 
   /** Queue of pending dispatch entries, per agent id */
   private queues: Map<string, QueueEntry[]> = new Map();
@@ -707,7 +713,7 @@ export class DispatchEngine {
     this.coalesceWindowMs = options.coalesceWindowMs ?? 5000;
     this.kspecCliPath = options.kspecCliPath;
     this.onInvocationEvent = options.onInvocationEvent;
-    this.onTextChunk = options.onTextChunk;
+    this.onSessionEvent = options.onSessionEvent;
   }
 
   // ─── Public API ─────────────────────────────────────────────────────────────
@@ -1939,23 +1945,20 @@ export class DispatchEngine {
         });
       };
 
-      // AC: @cli-agent-commands ac-13, @daemon-agent-dispatch ac-8 - stream text chunks to watchers
+      // AC: @session-event-broadcast ac-newline-streaming, ac-boundary-flush, ac-per-session-state
+      // AC: @cli-agent-commands ac-13, @daemon-agent-dispatch ac-8 - stream session events to watchers
       const taskId = entry.change.taskRef ?? null;
       const taskTitle = entry.change.task?.title ?? null;
-      const onUpdate = this.onTextChunk
+      const sessionCtx = {
+        sessionId: preSessionId,
+        agentId,
+        taskId,
+        taskTitle,
+      };
+      const onUpdate = this.onSessionEvent
         ? (update: import("../acp/index.js").SessionUpdate) => {
             emitStartedEvent();
-            if (
-              update.sessionUpdate === "agent_message_chunk" &&
-              update.content.type === "text"
-            ) {
-              this.onTextChunk!(preSessionId, agentId, taskId, taskTitle, update.content.text);
-              return;
-            }
-            // Non-text updates (especially tool events) delimit logical message runs.
-            // Emit an empty sentinel so watch renderers can end the current line
-            // without needing to infer boundaries from prose punctuation.
-            this.onTextChunk!(preSessionId, agentId, taskId, taskTitle, "");
+            this.accumulator.handleUpdate(sessionCtx, update, this.onSessionEvent!);
           }
         : undefined;
 
@@ -2131,6 +2134,10 @@ export class DispatchEngine {
                 `[dispatch] Failed to clean reviewer snapshot for ${entry.change.taskRef}: ${cleanupMessage}`,
               );
             }
+          }
+          // Flush any remaining buffered text before emitting terminal event
+          if (this.onSessionEvent) {
+            this.accumulator.endSession(sessionCtx, this.onSessionEvent);
           }
           if (terminalEvent) {
             this.onInvocationEvent?.(terminalEvent);

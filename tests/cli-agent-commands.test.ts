@@ -1610,13 +1610,29 @@ function loadDispatchWatchFixture<T>(fileName: string): T {
   return JSON.parse(fsSync.readFileSync(fixturePath, "utf-8")) as T;
 }
 
+/**
+ * Emit a session event to a fake WebSocket.
+ * Maps old text chunk semantics to new typed events:
+ * - Non-empty text → message_progress
+ * - Empty text → message_complete (boundary)
+ */
 function emitAgentTextChunk(ws: FakeWsInstance, chunk: DispatchWatchTextChunk): void {
-  ws.onmessage?.({
-    data: JSON.stringify({
-      event: "agent_text_chunk",
-      data: chunk,
-    }),
-  });
+  if (chunk.text.length === 0) {
+    // Empty text was the old boundary sentinel — now message_complete
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "message_complete",
+        data: { ...chunk, type: "message_complete", timestamp: Date.now() },
+      }),
+    });
+  } else {
+    ws.onmessage?.({
+      data: JSON.stringify({
+        event: "message_progress",
+        data: { ...chunk, type: "message_progress", timestamp: Date.now() },
+      }),
+    });
+  }
 }
 
 /**
@@ -1798,10 +1814,10 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     // Simulate connected + subscribed
     ws!.onopen?.({});
 
-    // Send an agent_text_chunk event
+    // Send a message_progress event
     ws!.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: {
           session_id: "sess-abc",
           agent_id: "worker",
@@ -1847,7 +1863,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     for (const token of ["I", " am", " streaming", "\nNext", " line"]) {
       ws.onmessage?.({
         data: JSON.stringify({
-          event: "agent_text_chunk",
+          event: "message_progress",
           data: {
             session_id: "sess-abc",
             agent_id: "worker",
@@ -1891,13 +1907,13 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
 
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "sess-a", agent_id: "worker-a", text: "hello" },
       }),
     });
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "sess-b", agent_id: "worker-b", text: "world" },
       }),
     });
@@ -1934,14 +1950,14 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
 
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "sess-abc", agent_id: "worker", text: "First update." },
       }),
     });
-    // ACP message boundary sentinel (matches legacy Ralph parser semantics).
+    // Message complete boundary event.
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_complete",
         data: { session_id: "sess-abc", agent_id: "worker", text: "" },
       }),
     });
@@ -1949,7 +1965,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
 
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "sess-abc", agent_id: "worker", text: "Second update." },
       }),
     });
@@ -1985,25 +2001,25 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
 
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "sess-abc", agent_id: "worker", text: "First block." },
       }),
     });
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_complete",
         data: { session_id: "sess-abc", agent_id: "worker", text: "" },
       }),
     });
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_complete",
         data: { session_id: "sess-abc", agent_id: "worker", text: "" },
       }),
     });
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "sess-abc", agent_id: "worker", text: "Second block." },
       }),
     });
@@ -2041,19 +2057,19 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
 
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "sess-a", agent_id: "worker-a", text: "hello" },
       }),
     });
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_complete",
         data: { session_id: "sess-b", agent_id: "worker-b", text: "" },
       }),
     });
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "sess-a", agent_id: "worker-a", text: " world" },
       }),
     });
@@ -2090,28 +2106,28 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     const ws = getLastInstance()!;
     ws.onopen?.({});
 
-    // Claude ACP often emits empty chunk before a new statement's text stream.
+    // Message complete before first text (boundary at start).
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_complete",
         data: { session_id: "sess-abc", agent_id: "worker", text: "" },
       }),
     });
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "sess-abc", agent_id: "worker", text: "First statement." },
       }),
     });
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_complete",
         data: { session_id: "sess-abc", agent_id: "worker", text: "" },
       }),
     });
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "sess-abc", agent_id: "worker", text: "Second statement." },
       }),
     });
@@ -2150,7 +2166,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
 
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: {
           session_id: "01KJVFYRKXXQG7N3BYC68KSX6H",
           agent_id: "worker",
@@ -2197,7 +2213,7 @@ describe("AC-13: dispatch watch — streams section-marked output", () => {
     for (const text of parts) {
       ws.onmessage?.({
         data: JSON.stringify({
-          event: "agent_text_chunk",
+          event: "message_progress",
           data: { session_id: "sess-abc", agent_id: "worker", text },
         }),
       });
@@ -2314,7 +2330,7 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
     // Send chunk from non-matching agent — should be dropped
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "s1", agent_id: "other-agent", text: "ignored" },
       }),
     });
@@ -2322,7 +2338,7 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
     // Send chunk from matching agent — should be printed
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "s2", agent_id: "target-agent", text: "visible" },
       }),
     });
@@ -2365,13 +2381,13 @@ describe("AC-16: dispatch watch — filter by agent or session", () => {
 
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "other-session", agent_id: "a1", text: "dropped" },
       }),
     });
     ws.onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "target-session", agent_id: "a2", text: "shown" },
       }),
     });
@@ -2484,7 +2500,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     instances[0].onopen?.({});
     instances[0].onmessage?.({
       data: JSON.stringify({
-        event: "agent_text_chunk",
+        event: "message_progress",
         data: { session_id: "sess-abc", agent_id: "worker", text: "line without newline" },
       }),
     });

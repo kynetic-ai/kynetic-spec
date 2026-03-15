@@ -2050,9 +2050,9 @@ describe("AC-4: CLI posts state change event via handleStateChange", () => {
   });
 });
 
-// ─── AC-8 (daemon-agent-dispatch): structural boundaries for watch rendering ──
+// ─── AC: @session-event-broadcast — session event accumulator integration ──
 
-describe("Text chunk boundary signaling", () => {
+describe("Session event accumulator integration", () => {
   let testDir: string;
 
   beforeEach(async () => {
@@ -2064,26 +2064,32 @@ describe("Text chunk boundary signaling", () => {
     await cleanupTempDir(testDir);
   });
 
-  it("should emit empty chunk boundary on non-text updates between text chunks", async () => {
+  // AC: @session-event-broadcast ac-boundary-flush
+  it("should emit typed session events with boundary flush on state transitions", async () => {
     const agent = makeTestAgent({ id: "worker", dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
 
     const taskId = testUlid("TASK");
-    const seenChunks: string[] = [];
+    const seenEvents: Array<{ type: string; text?: string; tool_name?: string }> = [];
     vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (opts) => {
       opts.onUpdate?.({
         sessionUpdate: "agent_message_chunk",
-        content: { type: "text", text: "before tool" },
+        content: { type: "text", text: "before tool\n" },
       } as unknown as import("../src/acp/index.js").SessionUpdate);
       opts.onUpdate?.({
         sessionUpdate: "tool_call",
         toolCallId: "tool-1",
-        name: "Bash",
-        input: {},
+        title: "Bash",
+        rawInput: { command: "ls" },
+      } as unknown as import("../src/acp/index.js").SessionUpdate);
+      opts.onUpdate?.({
+        sessionUpdate: "tool_call_update",
+        toolCallId: "tool-1",
+        status: "completed",
       } as unknown as import("../src/acp/index.js").SessionUpdate);
       opts.onUpdate?.({
         sessionUpdate: "agent_message_chunk",
-        content: { type: "text", text: "after tool" },
+        content: { type: "text", text: "after tool\n" },
       } as unknown as import("../src/acp/index.js").SessionUpdate);
       return {
         session: {} as any,
@@ -2096,8 +2102,8 @@ describe("Text chunk boundary signaling", () => {
       projectDir: testDir,
       specDir: testDir,
       kspecCliPath: MOCK_KSPEC_CLI,
-      onTextChunk: (_sessionId, _agentId, _taskId, _taskTitle, text) => {
-        seenChunks.push(text);
+      onSessionEvent: (event) => {
+        seenEvents.push({ type: event.type, ...("text" in event ? { text: event.text } : {}), ...("tool_name" in event ? { tool_name: event.tool_name } : {}) });
       },
       coalesceWindowMs: 0,
     });
@@ -2112,10 +2118,30 @@ describe("Text chunk boundary signaling", () => {
       task: { automation: "eligible", tags: [] } as any,
     });
 
-    for (let i = 0; i < 50 && seenChunks.length < 3; i++) {
+    for (let i = 0; i < 50 && seenEvents.length < 6; i++) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
-    expect(seenChunks).toEqual(["before tool", "", "after tool"]);
+
+    // Expected event sequence:
+    // 1. message_start (entering message mode)
+    // 2. message_progress (newline-flushed "before tool\n")
+    // 3. message_complete (transition to idle for tool call)
+    // 4. tool_call_start (tool_call event)
+    // 5. tool_call_complete (tool_call_update with completed status)
+    // 6. message_start (re-entering message mode)
+    // 7. message_progress (newline-flushed "after tool\n")
+    // 8. message_complete (session end flush)
+    const types = seenEvents.map(e => e.type);
+    expect(types).toContain("message_start");
+    expect(types).toContain("message_progress");
+    expect(types).toContain("message_complete");
+    expect(types).toContain("tool_call_start");
+    expect(types).toContain("tool_call_complete");
+
+    // Tool call start should include the tool name
+    const toolStart = seenEvents.find(e => e.type === "tool_call_start");
+    expect(toolStart?.tool_name).toBe("Bash");
+
     await engine.stop();
   });
 });
