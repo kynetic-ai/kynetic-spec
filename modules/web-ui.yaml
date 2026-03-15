@@ -257,12 +257,10 @@ features:
             when: daemon starts
             then: the explicit or env var path is used to serve web UI assets
           - id: ac-5
-            given: the daemon is started with cwd set to a project directory that contains its own
-              packages/web-ui/build/
-            when: resolveWebUiPath runs
-            then: the daemon ignores the cwd-based path and resolves web UI assets from its own module location
-              (dist/web-ui/) or an explicit override. The daemon always serves its own version of
-              the web UI, not a build from an arbitrary project directory.
+            given: no explicit webUiDir option or WEB_UI_DIR env var is set
+            when: daemon starts and resolves web UI path
+            then: web UI assets are served from the bundled dist/web-ui/ directory relative to the daemon's own
+              module location
         status:
           maturity: draft
           implementation: implemented
