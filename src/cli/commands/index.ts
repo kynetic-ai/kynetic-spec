@@ -20,6 +20,7 @@ export { registerModuleCommands } from "./module.js";
 export { registerPlanCommands } from "./plan.js";
 export { registerRalphCommand } from "./ralph.js";
 export { registerRefsCommand } from "./refs.js";
+export { registerReviewCommands } from "./review.js";
 export { registerSearchCommand } from "./search.js";
 export { registerServeCommands } from "./serve.js";
 export { registerSessionCommands } from "./session.js";

@@ -36,6 +36,7 @@ import {
   registerPlanCommands,
   registerRalphCommand,
   registerRefsCommand,
+  registerReviewCommands,
   registerSearchCommand,
   registerServeCommands,
   registerSessionCommands,
@@ -312,6 +313,7 @@ registerMetaCommands(program);
 registerLinkCommands(program);
 registerModuleCommands(program);
 registerPlanCommands(program);
+registerReviewCommands(program);
 registerCloneForTestingCommand(program);
 registerWorkflowCommand(program);
 registerMergeDriverCommand(program);

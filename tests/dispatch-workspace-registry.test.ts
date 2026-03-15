@@ -19,6 +19,7 @@ import {
 import {
   cleanupReviewerDispatchWorkspace,
   getDispatchShadowMutationLockPath,
+  isWorkspaceRecordDirty,
   markDispatchWorkspaceActive,
   provisionDispatchWorkspace,
   reconcileDispatchWorkspaceRegistry,
@@ -1057,6 +1058,261 @@ describe("dispatch workspace registry shadow durability", () => {
         delete process.env.KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS;
         await release();
       }
+    },
+  );
+
+  // AC: @dispatch-workspace-registry ac-10
+  describe("isWorkspaceRecordDirty", () => {
+    const baseRecord = {
+      workspace_id: "ws-test-dirty",
+      task_ref: "@01TASK0000000000DIRTY0000A",
+      task_slug: "task-dirty-check",
+      worktree_root: "/tmp/worktrees",
+      resolved_base_branch: "main",
+      base_branch_point: "abc123",
+      canonical_branch: "dispatch/task/dirty-check/01task",
+      canonical_branch_head: "def456",
+      branch_provenance: {
+        ownership: "dispatcher-managed" as const,
+        source: "provisioned",
+        remote_ref: null,
+        adopted_from: null,
+        adopted_at: null,
+        rehydrated: null,
+      },
+      lifecycle_state: "ready" as const,
+      active_role: null,
+      worktrees: {
+        worker: {
+          path: "/tmp/worktrees/dirty-check-01task",
+          branch_mode: "branch" as const,
+          branch_ref: "dispatch/task/dirty-check/01task",
+          head: "def456",
+          last_seen_at: "2026-01-01T00:00:00.000Z",
+        },
+        reviewer: null,
+      },
+      bootstrap: {
+        status: "not_run" as const,
+        configHash: null,
+        canonicalBranchHead: null,
+        lastRunAt: null,
+        invalidationReasons: [],
+        steps: [],
+        failureMessage: null,
+        lastRole: null,
+        roleStates: {
+          worker: {
+            status: "not_run" as const,
+            configHash: null,
+            canonicalBranchHead: null,
+            lastRunAt: null,
+            invalidationReasons: [],
+            steps: [],
+            failureMessage: null,
+          },
+          reviewer: {
+            status: "not_run" as const,
+            configHash: null,
+            canonicalBranchHead: null,
+            lastRunAt: null,
+            invalidationReasons: [],
+            steps: [],
+            failureMessage: null,
+          },
+        },
+      },
+      integration: {
+        status: "pending" as const,
+        target_branch: "main",
+        target_commit: "abc123",
+        publication_mode: "pull_request" as const,
+        outcome: "pending" as const,
+        detail: null,
+        updated_at: "2026-01-01T00:00:00.000Z",
+      },
+      health: {
+        status: "healthy" as const,
+        summary: "OK",
+        issues: [],
+        updated_at: "2026-01-01T00:00:00.000Z",
+      },
+      cleanup: {
+        status: "not_scheduled" as const,
+        eligible: false,
+        reason: null,
+        detail: null,
+        updated_at: "2026-01-01T00:00:00.000Z",
+      },
+      timestamps: {
+        created_at: "2026-01-01T00:00:00.000Z",
+        updated_at: "2026-01-01T00:00:00.000Z",
+        last_reconciled_at: "2026-01-01T00:00:00.000Z",
+        last_active_at: null,
+        closed_at: null,
+      },
+    };
+
+    function computedFrom(record: typeof baseRecord) {
+      return {
+        canonical_branch_head: record.canonical_branch_head,
+        lifecycle_state: record.lifecycle_state,
+        active_role: record.active_role,
+        health: { ...record.health },
+        cleanup: { ...record.cleanup },
+        integration: { ...record.integration },
+      };
+    }
+
+    it("returns false when all meaningful fields are identical", () => {
+      expect(isWorkspaceRecordDirty(baseRecord, computedFrom(baseRecord))).toBe(false);
+    });
+
+    it("returns false when only timestamps differ (updated_at in sub-objects)", () => {
+      const computed = computedFrom(baseRecord);
+      computed.health.updated_at = "2026-03-14T12:00:00.000Z";
+      computed.cleanup.updated_at = "2026-03-14T12:00:00.000Z";
+      computed.integration.updated_at = "2026-03-14T12:00:00.000Z";
+      expect(isWorkspaceRecordDirty(baseRecord, computed)).toBe(false);
+    });
+
+    it("returns true when canonical_branch_head changes", () => {
+      const computed = computedFrom(baseRecord);
+      computed.canonical_branch_head = "newcommit789";
+      expect(isWorkspaceRecordDirty(baseRecord, computed)).toBe(true);
+    });
+
+    it("returns true when lifecycle_state changes", () => {
+      const computed = computedFrom(baseRecord);
+      computed.lifecycle_state = "active";
+      expect(isWorkspaceRecordDirty(baseRecord, computed)).toBe(true);
+    });
+
+    it("returns true when active_role changes from null to worker", () => {
+      const computed = computedFrom(baseRecord);
+      computed.active_role = "worker";
+      expect(isWorkspaceRecordDirty(baseRecord, computed)).toBe(true);
+    });
+
+    it("returns true when health status changes", () => {
+      const computed = computedFrom(baseRecord);
+      computed.health = {
+        status: "stale",
+        summary: "Branch missing",
+        issues: [{ code: "BRANCH_MISSING", message: "branch gone", suggestion: "repair" }],
+        updated_at: "2026-03-14T12:00:00.000Z",
+      };
+      expect(isWorkspaceRecordDirty(baseRecord, computed)).toBe(true);
+    });
+
+    it("returns true when cleanup state changes", () => {
+      const computed = computedFrom(baseRecord);
+      computed.cleanup = {
+        ...computed.cleanup,
+        status: "scheduled",
+        eligible: true,
+        reason: "integrated-into-base-branch",
+      };
+      expect(isWorkspaceRecordDirty(baseRecord, computed)).toBe(true);
+    });
+
+    it("returns true when integration status changes", () => {
+      const computed = computedFrom(baseRecord);
+      computed.integration = {
+        ...computed.integration,
+        status: "merged",
+        outcome: "merged",
+      };
+      expect(isWorkspaceRecordDirty(baseRecord, computed)).toBe(true);
+    });
+
+    it("returns false when active_role is undefined vs null (treated equally)", () => {
+      const recordWithUndefined = { ...baseRecord, active_role: undefined };
+      const computed = computedFrom(baseRecord);
+      computed.active_role = null;
+      expect(isWorkspaceRecordDirty(recordWithUndefined, computed)).toBe(false);
+    });
+  });
+
+  // AC: @dispatch-workspace-registry ac-10
+  it("suppresses registry write and commit when reconciliation produces no meaningful change", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 31)}`;
+    await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "No-Op Reconciliation",
+        slugs: ["task-no-op-reconciliation"],
+      },
+    });
+
+    const saveSpy = vi.spyOn(dispatchWorkspaceRegistryModule, "saveDispatchWorkspaceRecord");
+
+    // First reconciliation — may save since provisioning sets initial state.
+    await reconcileDispatchWorkspaceRegistry(tempDir);
+    saveSpy.mockClear();
+
+    // Second reconciliation with identical state — should NOT save.
+    await reconcileDispatchWorkspaceRegistry(tempDir);
+    expect(saveSpy).not.toHaveBeenCalled();
+  });
+
+  // AC: @dispatch-workspace-registry ac-10
+  it("performs registry write when a meaningful field changes between reconciliations", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+
+    const taskRef = `@${testUlid("TASK", 32)}`;
+    await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: {
+        title: "Dirty Reconciliation",
+        slugs: ["task-dirty-reconciliation"],
+      },
+    });
+
+    // Ensure initial state is settled.
+    await reconcileDispatchWorkspaceRegistry(tempDir);
+
+    const saveSpy = vi.spyOn(dispatchWorkspaceRegistryModule, "saveDispatchWorkspaceRecord");
+
+    // Reconcile with a changed task status which triggers lifecycle_state and
+    // integration changes — should trigger a save.
+    await reconcileDispatchWorkspaceRegistry(
+      tempDir,
+      new Map([[taskRef, "completed" as const]]),
+    );
+    expect(saveSpy).toHaveBeenCalled();
+  });
+
+  // AC: @dispatch-workspace-registry ac-10
+  it.skipIf(!canRunShadowTests)(
+    "does not create a shadow commit when reconciliation state is unchanged",
+    async () => {
+      await setupShadowProject(tempDir);
+      git(tempDir, "checkout -b agent-dev");
+
+      const taskRef = `@${testUlid("TASK", 33)}`;
+      await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: {
+          title: "No-Commit Reconciliation",
+          slugs: ["task-no-commit-reconciliation"],
+        },
+      });
+
+      // First reconciliation — settles state.
+      await reconcileDispatchWorkspaceRegistry(tempDir);
+      const commitCountBefore = getShadowCommitCount(tempDir);
+
+      // Second reconciliation with no change — no new commit expected.
+      await reconcileDispatchWorkspaceRegistry(tempDir);
+      expect(getShadowCommitCount(tempDir)).toBe(commitCountBefore);
     },
   );
 });

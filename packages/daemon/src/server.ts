@@ -324,7 +324,7 @@ export async function createServer(options: ServerOptions) {
     // AC: @ui-plans-view ac-1 - Plans data endpoints
     .use(createPlansRoutes())
 
-    // AC: @ui-api-ref-resolution ac-4, ac-5 - Ref index endpoint
+    // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
     .use(createRefsRoutes())
 
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
