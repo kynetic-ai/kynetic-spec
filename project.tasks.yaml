@@ -99249,6 +99249,12 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #881. Implemented session event accumulator with newline-boundary
+    streaming, typed broadcast events (message/thinking start/progress/complete, tool_call
+    start/complete), per-session state tracking, and 8KB max buffer safety. All consumers updated
+    (CLI watch, web UI, ws-invalidation). Replaces agent_text_chunk with structured lifecycle
+    events. 5/5 own ACs covered, trait ACs unaffected. Fix cycle resolved CI build failure from
+    cross-package import."
   depends_on: []
   context: []
   priority: 1
@@ -99268,6 +99274,7 @@
   created_at: 2026-03-15T19:50:40.706Z
   started_at: 2026-03-15T21:56:29.148Z
   submitted_at: 2026-03-15T21:56:33.035Z
+  completed_at: 2026-03-15T22:08:09.711Z
   notes:
     - _ulid: 01KKSNAAE167HYS2N48Y3K0T4G
       created_at: 2026-03-15T21:09:30.689Z
@@ -99335,13 +99342,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T22:08:09.711Z
-  closed_reason: "Merged in PR #881. Implemented session event accumulator with newline-boundary
-    streaming, typed broadcast events (message/thinking start/progress/complete, tool_call
-    start/complete), per-session state tracking, and 8KB max buffer safety. All consumers updated
-    (CLI watch, web UI, ws-invalidation). Replaces agent_text_chunk with structured lifecycle
-    events. 5/5 own ACs covered, trait ACs unaffected. Fix cycle resolved CI build failure from
-    cross-package import."
 - _ulid: 01KKSGSZY9G04716168198EYK2
   slugs:
     - task-session-event-detail-endpoint
@@ -99435,6 +99435,22 @@
         and ac-2 need annotations on the test cases that prove them; ac-3 through ac-6 need
         standalone N/A annotations. See PR #882 review comments for details. Also two SUGGESTIONs:
         unused imports and misleading docstring."
+      supersedes: null
+    - _ulid: 01KKSRWSTD9XGKJQ6651KJS92F
+      created_at: 2026-03-15T22:12:01.998Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 1] Addressed all review findings:
+
+        - SHOULD-FIX: Converted trait AC annotations from JSDoc block to standalone // AC: line
+        comments (ac-3–ac-6 N/A at file top, ac-1 on valid-request test, ac-2 on not-found test)
+
+        - SUGGESTION: Removed unused imports (getSessionDir, getSessionEventsPath)
+
+        - SUGGESTION: Fixed misleading docstring in readEventBySeq ('avoiding full parsing' instead
+        of 'avoiding full file read')
+
+        All 11 tests pass, shard1 regression check clean (1770 pass).
       supersedes: null
   todos: []
   automation: eligible
