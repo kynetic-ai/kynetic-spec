@@ -1897,6 +1897,13 @@ features:
               The total count updates. If the user is at the top of the list,
               the new session appears. Otherwise a "new sessions available"
               indicator shows.
+          - id: ac-hard-refresh
+            given: The user performs a hard page refresh (Ctrl+R / Cmd+R) on /sessions or any page with data
+              queries
+            when: The page reloads from scratch
+            then: The page completes initialization and renders data without getting stuck in a loading state.
+              The load lifecycle (mode detection, project init, query execution) completes reliably
+              regardless of whether the page was reached via hard refresh or client-side navigation.
         depends_on: []
         implements: []
         relates_to: []
@@ -1968,13 +1975,11 @@ features:
               All filter params are removed from URL.
               Session list shows all sessions.
           - id: ac-filter-counts
-            given: |
-              Filters are applied
-            when: |
-              The session list updates
-            then: |
-              The count indicator shows filtered vs total
-              (e.g., "12 of 731 sessions").
+            given: Filters are applied
+            when: The session list updates
+            then: The count indicator shows filtered vs total (e.g., "12 of 731 sessions"). The unfiltered total
+              is returned as a field in the paginated sessions API response, not fetched via a
+              separate request.
         depends_on: []
         implements: []
         relates_to: []
@@ -2714,6 +2719,12 @@ features:
         then: |
           Related cached data is invalidated so the originating client
           updates immediately without waiting for a broadcast.
+      - id: ac-9
+        given: A user performs a hard page refresh or navigates directly to a URL
+        when: The app initializes from scratch (no prior client state)
+        then: The initialization lifecycle (mode detection, project loading, query enabling) completes and
+          the page renders data. No SSR hydration mismatch prevents reactive state updates from
+          propagating.
     depends_on: []
     implements: []
     relates_to: []
