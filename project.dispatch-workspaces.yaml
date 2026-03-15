@@ -5691,12 +5691,7 @@ workspaces:
         branch_ref: dispatch/task/task-session-event-accumulator/01kksgsz
         head: 1ce539e65bfc2498e16d7ede242cd3fb84d6fcce
         last_seen_at: 2026-03-15T21:56:41.104Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-event-accumulator-01kksgsz-review
-        branch_mode: detached
-        branch_ref: null
-        head: 1ce539e65bfc2498e16d7ede242cd3fb84d6fcce
-        last_seen_at: 2026-03-15T21:56:41.104Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -5738,7 +5733,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T22:08:12.269Z
+      updated_at: 2026-03-15T22:08:27.921Z
     cleanup:
       status: scheduled
       eligible: true
@@ -5747,8 +5742,8 @@ workspaces:
       updated_at: 2026-03-15T22:08:12.269Z
     timestamps:
       created_at: 2026-03-15T21:08:57.501Z
-      updated_at: 2026-03-15T22:08:27.185Z
-      last_reconciled_at: 2026-03-15T22:08:27.185Z
+      updated_at: 2026-03-15T22:08:27.921Z
+      last_reconciled_at: 2026-03-15T22:08:27.921Z
       last_active_at: 2026-03-15T21:56:41.629Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKSGSZY9G04716168198EYK2
