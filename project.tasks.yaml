@@ -99250,12 +99250,29 @@
     - daemon
     - websocket
   vcs_refs: []
+  session_id: 01KKSN9C1SC6DCQVM59FT748ZR
   created_at: 2026-03-15T19:50:40.706Z
-  notes: []
+  started_at: 2026-03-15T21:09:18.881Z
+  notes:
+    - _ulid: 01KKSNAAE167HYS2N48Y3K0T4G
+      created_at: 2026-03-15T21:09:30.689Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Replace per-token text chunk broadcasting with structured lifecycle events at
+        newline boundaries
+
+        - Scope: Session event accumulator, new broadcast types, consumer updates (ws-invalidation,
+        CLI watch, shared types)
+
+        - Files: dispatch.ts (accumulator), agent-dispatch.ts (broadcasts), shared types,
+        ws-invalidation.ts, CLI watch command
+
+        - Verification: Unit tests for accumulator logic, full test suite passing
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-15T21:09:18.881Z
-  session_id: 01KKSN9C1SC6DCQVM59FT748ZR
 - _ulid: 01KKSGSZY9G04716168198EYK2
   slugs:
     - task-session-event-detail-endpoint
