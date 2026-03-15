@@ -13,7 +13,7 @@
  */
 
 import type { SessionUpdate } from "../acp/index.js";
-import type { SessionEventData } from "@kynetic-ai/shared";
+import type { SessionEventData } from "./session-event-types.js";
 
 /** Maximum buffer size before forced flush (prevents unbounded memory growth). */
 const MAX_BUFFER_SIZE = 8 * 1024; // 8KB
@@ -75,7 +75,8 @@ export class SessionEventAccumulator {
 
   /**
    * Flush buffered text as a progress event (newline-boundary streaming).
-   * If force is true, flush everything (for state transitions / _complete events).
+   * Emits complete lines up to the last newline, keeps the partial remainder.
+   * Forces a full flush when the buffer exceeds MAX_BUFFER_SIZE.
    *
    * AC: @session-event-broadcast ac-newline-streaming
    */
@@ -83,18 +84,8 @@ export class SessionEventAccumulator {
     state: AccumulatorState,
     ctx: SessionContext,
     emit: SessionEventEmitter,
-    force: boolean,
   ): void {
     if (state.buffer.length === 0) return;
-
-    if (force) {
-      // Flush everything — state transition or buffer overflow
-      const text = state.buffer;
-      state.buffer = "";
-      const progressType = state.mode === "thinking" ? "thinking_progress" : "message_progress";
-      emit({ ...this.baseFields(ctx), type: progressType, text } as SessionEventData);
-      return;
-    }
 
     // Newline-boundary flush: emit complete lines, keep partial remainder
     const lastNewline = state.buffer.lastIndexOf("\n");
@@ -174,7 +165,7 @@ export class SessionEventAccumulator {
 
         // Accumulate text and flush at newline boundaries
         state.buffer += (update.content as { type: "text"; text: string }).text;
-        this.flushBuffer(state, ctx, emit, false);
+        this.flushBuffer(state, ctx, emit);
         break;
       }
 
@@ -188,7 +179,7 @@ export class SessionEventAccumulator {
 
         // Accumulate and flush at newline boundaries
         state.buffer += (update.content as { type: "text"; text: string }).text;
-        this.flushBuffer(state, ctx, emit, false);
+        this.flushBuffer(state, ctx, emit);
         break;
       }
 

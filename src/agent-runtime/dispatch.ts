@@ -25,7 +25,7 @@ import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
 import { loadProjectConfig } from "../parser/config.js";
 import type { InvocationOptions } from "./invocation.js";
 import { SessionEventAccumulator } from "./session-event-accumulator.js";
-import type { SessionEventData } from "@kynetic-ai/shared";
+import type { SessionEventData } from "./session-event-types.js";
 import {
   interpolateTemplate,
   rewriteSkillReferencesForAdapter,
