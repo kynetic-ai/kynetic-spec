@@ -98868,7 +98868,7 @@
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -98969,6 +98969,12 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-15T21:16:30.072Z
+  closed_reason: "Merged in PR #880. Fix prevents second-generation invocations during engine shutdown
+    by clearing queues before awaiting runningInvocations and adding a !this.running guard at the
+    top of _spawnInvocation. Defense-in-depth: 3 layers prevent post-shutdown spawning. 7 tests
+    fixed to set running=true for direct _spawnInvocation calls, polling timeout increased for git
+    worktree latency. All 106 dispatch tests pass, full suite (5471 tests) clean, CI all green."
 - _ulid: 01KKS7BD3N7DCQNS5GW8ZZSAZW
   slugs:
     - task-yaml-seed-session-tests
