@@ -8570,4 +8570,17 @@ skills:
     depends_on: []
     tags: []
     allowed_tools: []
+  - _ulid: 01KKQSETRX801FPENC49A0XYM5
+    _type: skill
+    id: ui-data-layer
+    name: UI Data Layer
+    description: Svelte + TanStack Query v6 data fetching patterns. Use when building or migrating web
+      UI data fetching, cache management, WebSocket invalidation, or query/mutation patterns.
+    origin: project
+    platforms:
+      - claude-code
+      - codex
+    depends_on: []
+    tags: []
+    allowed_tools: []
 includes: []
