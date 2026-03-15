@@ -98985,6 +98985,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #884. Replaced ~59 CLI spawns with YAML seeding helpers
+    (seedInboxItems, seedTriageRecords) in session-start-inbox-triage.test.ts and
+    session-start-computed-json.test.ts. All 13 test names, assertions, and AC annotations preserved
+    identically. Full test suite passes (5471 tests, 0 failures). All CI checks green."
   depends_on: []
   context: []
   priority: 3
@@ -99005,6 +99009,7 @@
   created_at: 2026-03-15T17:05:26.133Z
   started_at: 2026-03-15T22:39:59.261Z
   submitted_at: 2026-03-15T22:51:29.850Z
+  completed_at: 2026-03-15T23:03:55.027Z
   notes:
     - _ulid: 01KKS7C4T0YARP0EKH8QKFF2CX
       created_at: 2026-03-15T17:05:50.400Z
@@ -99131,11 +99136,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T23:03:55.027Z
-  closed_reason: "Merged in PR #884. Replaced ~59 CLI spawns with YAML seeding helpers
-    (seedInboxItems, seedTriageRecords) in session-start-inbox-triage.test.ts and
-    session-start-computed-json.test.ts. All 13 test names, assertions, and AC annotations preserved
-    identically. Full test suite passes (5471 tests, 0 failures). All CI checks green."
 - _ulid: 01KKS7CE6Y05AHZCR8JED24M3V
   slugs:
     - task-validate-default-base-branch
@@ -99553,7 +99553,7 @@
   spec_ref: "@ws-session-event-streaming"
   plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-session-event-accumulator"
@@ -99591,6 +99591,15 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-15T23:04:08.847Z
+  submission_linkage:
+    branch: main
+    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T23:04:08.087Z
 - _ulid: 01KKSGT15XQJERS3XGKWKEZ1EZ
   slugs:
     - task-cli-watch-ws-events
