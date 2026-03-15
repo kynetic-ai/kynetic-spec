@@ -99546,7 +99546,7 @@
   spec_ref: "@ws-session-event-streaming"
   plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-session-event-accumulator"
@@ -99559,6 +99559,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-15T22:12:57.017Z
+  session_id: 01KKSRXYCCYV6JT8NJMJHEKD03
 - _ulid: 01KKSGT1SGVWACS5ET75Q87NPX
   slugs:
     - task-update-session-stream-spec-cleanup
