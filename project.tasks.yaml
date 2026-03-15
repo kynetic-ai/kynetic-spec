@@ -98538,7 +98538,7 @@
   spec_ref: "@daemon-web-ui-bundle"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -98569,6 +98569,15 @@
       supersedes: null
   todos: []
   automation: eligible
+  submitted_at: 2026-03-15T13:55:18.406Z
+  submission_linkage:
+    branch: main
+    commit: 8045b69abbe62718c1abb64a7b00e7dc460b571d
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T13:55:17.456Z
 - _ulid: 01KKRTSS1EDEF6G8FE6CB16PB5
   slugs: []
   title: Add unfiltered_total to sessions API response to eliminate extra limit=0 request
