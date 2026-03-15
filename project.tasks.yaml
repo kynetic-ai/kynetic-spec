@@ -99144,7 +99144,7 @@
   spec_ref: "@dispatch-workspace-configuration"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -99256,6 +99256,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-15T23:22:47.484Z
+  closed_reason: "Merged in PR #886. Validated the default 'main' fallback in
+    resolveDispatchWorkspaceConfig using resolveBranchStartPoint before returning. Now throws
+    DispatchWorkspaceError with actionable guidance when no base branch can be resolved. Two tests
+    added: error case (non-main repo, detached HEAD, no remote) and valid default fallback (main
+    exists, detached HEAD). All CI checks pass. Own AC coverage (ac-1 through ac-4) and trait AC
+    coverage (@trait-error-guidance ac-1, ac-2) verified."
 - _ulid: 01KKSGSZA2HXFDXW8RA3GV1JFC
   slugs:
     - task-session-event-accumulator
