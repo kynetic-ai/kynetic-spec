@@ -99364,7 +99364,26 @@
   session_id: 01KKSPK0AP45SNX5ZKPD3BVNEJ
   created_at: 2026-03-15T19:50:41.353Z
   started_at: 2026-03-15T21:31:58.518Z
-  notes: []
+  notes:
+    - _ulid: 01KKSQ34ARF6GZZFNE5NP9H76H
+      created_at: 2026-03-15T21:40:32.216Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: New HTTP endpoint for on-demand session event detail with blob resolution,
+        part of WebSocket-first session stream redesign
+
+        - Scope: readEventBySeq in store.ts + GET /api/sessions/:id/events/:seq route in sessions.ts
+        + unit tests
+
+        - Files changed: src/sessions/store.ts (new readEventBySeq function),
+        packages/daemon/src/routes/sessions.ts (new route), tests/session-event-detail.test.ts (new
+        test file)
+
+        - Verification: npm test -- tests/session-event-detail.test.ts (11 tests passing), full test
+        suite shards running
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKSGT0JK5JV84SHPA6K7MAK1
