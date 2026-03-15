@@ -97606,6 +97606,25 @@
         getProjectVersion import in +page.svelte, and ac-4 missing test annotation. See PR #868
         review comments for details."
       supersedes: null
+    - _ulid: 01KKQYDZ2XQPJWMRRVNCRZTDX1
+      created_at: 2026-03-15T05:10:18.462Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 1] Addressed all review findings from PR #868:
+
+        - MUST-FIX: Replaced queryClient.clear() with queryClient.resetQueries() in
+        clearQueryCache(). resetQueries() resets state AND triggers refetches of active queries, so
+        mounted components fetch fresh data for the new project (ac-5).
+
+        - MUST-FIX: Updated ac-5 test to verify resetQueries() is used and clear() is not.
+
+        - SHOULD-FIX: Removed unused getProjectVersion import from +page.svelte.
+
+        - Added ac-4 test annotation and dedicated test verifying event-driven (not polling)
+        invalidation.
+
+        All 5002 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK1KGVQKF0WA5C06C2B1K
@@ -97741,6 +97760,13 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #867. The ref index endpoint implementation was delivered via PR #866
+    (server-side title resolution) which included the complete implementation with
+    ReferenceIndex/buildRefIndex utility, plans support, and comprehensive test coverage (28 tests
+    in ref-resolution.test.ts). PR #867 cleanly closed the task branch after merge conflict
+    resolution adopted main's version. All ACs covered: ac-4 (ref map with title/type/status,
+    ULID+slug keys), ac-5 (lightweight payload). All trait ACs properly annotated as N/A with
+    justification."
   depends_on: []
   context: []
   priority: 1
@@ -97759,6 +97785,7 @@
   created_at: 2026-03-15T03:28:14.027Z
   started_at: 2026-03-15T04:44:47.124Z
   submitted_at: 2026-03-15T04:44:50.971Z
+  completed_at: 2026-03-15T04:56:24.208Z
   notes:
     - _ulid: 01KKQVJF66XE9DDKMHM2SCTGJS
       created_at: 2026-03-15T04:20:20.294Z
@@ -97814,14 +97841,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T04:56:24.208Z
-  closed_reason: "Merged in PR #867. The ref index endpoint implementation was delivered via PR #866
-    (server-side title resolution) which included the complete implementation with
-    ReferenceIndex/buildRefIndex utility, plans support, and comprehensive test coverage (28 tests
-    in ref-resolution.test.ts). PR #867 cleanly closed the task branch after merge conflict
-    resolution adopted main's version. All ACs covered: ac-4 (ref map with title/type/status,
-    ULID+slug keys), ac-5 (lightweight payload). All trait ACs properly annotated as N/A with
-    justification."
 - _ulid: 01KKQRK2R219TBGWE4XQEBJNEC
   slugs:
     - task-server-aggregation
