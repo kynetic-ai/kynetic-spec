@@ -21,12 +21,17 @@ const DIST_WEB_UI = join(PROJECT_ROOT, 'dist', 'web-ui');
 
 /**
  * Recreates resolveWebUiPath from packages/daemon/src/server.ts for unit testing.
- * Accepts cwd override so tests can simulate a non-monorepo working directory.
+ * Resolution order:
+ * 1. Explicit webUiDir option
+ * 2. WEB_UI_DIR environment variable
+ * 3. Bundled dist/web-ui/ relative to daemon module location
+ *
+ * process.cwd()-based resolution was intentionally removed to prevent
+ * stale builds in multi-directory daemon mode from being served.
  */
 function resolveWebUiPath(
   webUiDir?: string,
   envOverride?: Record<string, string | undefined>,
-  cwd = process.cwd()
 ): string | null {
   const env = envOverride ?? process.env;
 
@@ -41,19 +46,7 @@ function resolveWebUiPath(
     return envPath;
   }
 
-  // 3. Monorepo development: packages/web-ui/build from cwd
-  const monorepoPath = join(cwd, 'packages', 'web-ui', 'build');
-  if (existsSync(monorepoPath)) {
-    return monorepoPath;
-  }
-
-  // 4. Alternate location: web-ui/build in cwd
-  const altPath = join(cwd, 'web-ui', 'build');
-  if (existsSync(altPath)) {
-    return altPath;
-  }
-
-  // 5. Bundled assets: dist/web-ui/ relative to daemon module (dist/daemon/server.js)
+  // 3. Bundled assets: dist/web-ui/ relative to daemon module (dist/daemon/server.js)
   const daemonModuleDir = join(PROJECT_ROOT, 'dist', 'daemon');
   const bundledPath = join(daemonModuleDir, '..', 'web-ui');
   if (existsSync(bundledPath)) {
@@ -86,30 +79,46 @@ describe('Web UI asset bundling (@daemon-web-ui-bundle)', () => {
     });
 
     // AC: @daemon-web-ui-bundle ac-2
-    it('falls back to bundled dist/web-ui/ when no local or env build exists', () => {
-      // Use tempDir as cwd so steps 3 (packages/web-ui/build) and 4 (web-ui/build)
-      // find nothing — forces resolution to reach step 5 (bundled dist/web-ui/).
-      const result = resolveWebUiPath(undefined, {}, tempDir);
+    it('falls back to bundled dist/web-ui/ when no explicit or env build exists', () => {
+      const result = resolveWebUiPath(undefined, {});
       expect(result).toBe(DIST_WEB_UI);
       expect(existsSync(result!)).toBe(true);
     });
 
     // AC: @daemon-web-ui-bundle ac-4
     it('explicit webUiDir option takes precedence over bundled fallback', () => {
-      const result = resolveWebUiPath(tempDir, {}, tempDir);
+      const result = resolveWebUiPath(tempDir, {});
       expect(result).toBe(tempDir);
     });
 
     // AC: @daemon-web-ui-bundle ac-4
     it('WEB_UI_DIR env var takes precedence over bundled fallback', () => {
-      const result = resolveWebUiPath(undefined, { WEB_UI_DIR: tempDir }, tempDir);
+      const result = resolveWebUiPath(undefined, { WEB_UI_DIR: tempDir });
       expect(result).toBe(tempDir);
     });
 
     // AC: @daemon-web-ui-bundle ac-4
     it('non-existent explicit webUiDir is skipped and falls through to bundled', () => {
-      const result = resolveWebUiPath('/non/existent/path', {}, tempDir);
+      const result = resolveWebUiPath('/non/existent/path', {});
       expect(result).toBe(DIST_WEB_UI);
+    });
+
+    // AC: @daemon-web-ui-bundle ac-5
+    it('does not resolve web UI from process.cwd()-based paths', () => {
+      // Create directories that would have matched the old cwd-based resolution
+      const cwdMonorepoPath = join(process.cwd(), 'packages', 'web-ui', 'build');
+      const cwdAltPath = join(process.cwd(), 'web-ui', 'build');
+
+      // The function should NOT return cwd-based paths even if they exist on disk.
+      // It should only return the bundled path (dist/web-ui/).
+      const result = resolveWebUiPath(undefined, {});
+
+      // Result must be either the bundled path or null — never a cwd-based path
+      if (result !== null) {
+        expect(result).toBe(DIST_WEB_UI);
+        expect(result).not.toBe(cwdMonorepoPath);
+        expect(result).not.toBe(cwdAltPath);
+      }
     });
   });
 });
