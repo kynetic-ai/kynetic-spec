@@ -5193,7 +5193,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: f685a0a6a6de762ecc06fd43442df8f14971d219
     canonical_branch: dispatch/task/task-cleanup-legacy-fetches/01kkqrk6
-    canonical_branch_head: f685a0a6a6de762ecc06fd43442df8f14971d219
+    canonical_branch_head: c424e45a2a2d3d15d85de2e52f61eec7f9675448
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -5244,21 +5244,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T08:10:32.487Z
+      updated_at: 2026-03-15T08:13:36.415Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T08:10:33.123Z
+      updated_at: 2026-03-15T08:13:36.415Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T08:10:32.487Z
+      updated_at: 2026-03-15T08:13:36.415Z
     timestamps:
       created_at: 2026-03-15T08:10:32.487Z
-      updated_at: 2026-03-15T08:10:33.123Z
-      last_reconciled_at: 2026-03-15T08:10:33.123Z
+      updated_at: 2026-03-15T08:13:36.415Z
+      last_reconciled_at: 2026-03-15T08:13:36.415Z
       last_active_at: 2026-03-15T08:10:33.123Z
       closed_at: null
