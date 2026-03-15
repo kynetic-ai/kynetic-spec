@@ -363,7 +363,7 @@ describe('static sessions behavior (@gh-pages-export ac-22)', () => {
 
 	it('fetchSessions returns empty list in static mode', async () => {
 		const result = await fetchSessions();
-		expect(result).toEqual({ items: [], total: 0, offset: 0, limit: 25 });
+		expect(result).toEqual({ items: [], total: 0, unfiltered_total: 0, offset: 0, limit: 25 });
 	});
 
 	it('fetchSession throws in static mode', async () => {

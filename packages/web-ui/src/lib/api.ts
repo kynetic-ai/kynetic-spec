@@ -1027,6 +1027,7 @@ export interface SessionSearchResponse {
 export interface SessionListResponse {
 	items: SessionSummary[];
 	total: number;
+	unfiltered_total: number;
 	offset: number;
 	limit: number;
 }
@@ -1038,7 +1039,7 @@ export interface SessionListResponse {
  */
 export async function fetchSessions(params?: FetchSessionsParams): Promise<SessionListResponse> {
 	if (isStaticMode()) {
-		return { items: [], total: 0, offset: 0, limit: 25 };
+		return { items: [], total: 0, unfiltered_total: 0, offset: 0, limit: 25 };
 	}
 
 	const url = new URL(`${API_BASE}/api/sessions`);

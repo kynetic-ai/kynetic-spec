@@ -19,6 +19,7 @@
  * - @trait-api-endpoint ac-1: Returns 2xx with JSON body
  * - @trait-api-endpoint ac-2: Returns 404 for unknown task_id/spec_ref refs
  * - @trait-api-endpoint ac-3: Returns 400 with details array on invalid params
+ * - @session-filter-controls ac-filter-counts: unfiltered_total in paginated response
  * - @trait-api-endpoint ac-4: Pagination wrapper {items, total, offset, limit}
  */
 
@@ -228,6 +229,47 @@ test.describe('Session List Pagination API', () => {
       expect(body.total).toBe(6);
       expect(body.offset).toBe(0);
       expect(body.limit).toBe(6);
+    });
+
+    // AC: @session-filter-controls ac-filter-counts
+    test('includes unfiltered_total equal to total when no filters applied', async ({ request, daemon }) => {
+      const sessionsDir = join(daemon.tempDir, '.kspec-sessions');
+      setupTestSessions(sessionsDir);
+
+      const response = await request.get(`${daemon.baseUrl}/api/sessions`);
+      expect(response.status()).toBe(200);
+
+      const body = await response.json();
+      expect(body).toHaveProperty('unfiltered_total');
+      expect(body.unfiltered_total).toBe(6);
+      expect(body.unfiltered_total).toBe(body.total);
+    });
+
+    // AC: @session-filter-controls ac-filter-counts
+    test('unfiltered_total remains full count when filters reduce results', async ({ request, daemon }) => {
+      const sessionsDir = join(daemon.tempDir, '.kspec-sessions');
+      setupTestSessions(sessionsDir);
+
+      const response = await request.get(`${daemon.baseUrl}/api/sessions?status=completed`);
+      expect(response.status()).toBe(200);
+
+      const body = await response.json();
+      expect(body.total).toBe(3); // Only completed sessions
+      expect(body.unfiltered_total).toBe(6); // All sessions regardless of filter
+    });
+
+    // AC: @session-filter-controls ac-filter-counts
+    test('unfiltered_total is present with pagination', async ({ request, daemon }) => {
+      const sessionsDir = join(daemon.tempDir, '.kspec-sessions');
+      setupTestSessions(sessionsDir);
+
+      const response = await request.get(`${daemon.baseUrl}/api/sessions?offset=0&limit=2&status=completed`);
+      expect(response.status()).toBe(200);
+
+      const body = await response.json();
+      expect(body.items.length).toBe(2);
+      expect(body.total).toBe(3); // Filtered total
+      expect(body.unfiltered_total).toBe(6); // Unfiltered total
     });
   });
 

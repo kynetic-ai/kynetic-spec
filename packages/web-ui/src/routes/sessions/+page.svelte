@@ -145,13 +145,6 @@
 		enabled: isProjectInitialized() && searchMode,
 	}));
 
-	// AC: @session-filter-controls ac-filter-counts — Unfiltered total for count display
-	const unfilteredQuery = createQuery(() => ({
-		queryKey: queryKeys.sessions.list({ mode: 'unfiltered-total' }),
-		queryFn: () => fetchSessions({ offset: 0, limit: 0 }),
-		enabled: isProjectInitialized(),
-	}));
-
 	// Derived state from queries
 	let sessions = $derived<SessionSummary[]>(
 		sessionsQuery.data?.pages.flatMap((p) => p.items) ?? []
@@ -167,7 +160,8 @@
 	let searchTotal = $derived(searchResultsQuery.data?.total_sessions ?? 0);
 	let searchLoading = $derived(searchResultsQuery.isLoading);
 
-	let unfilteredTotal = $derived(unfilteredQuery.data?.total ?? 0);
+	// AC: @session-filter-controls ac-filter-counts — Read unfiltered_total from paginated response
+	let unfilteredTotal = $derived(sessionsQuery.data?.pages[0]?.unfiltered_total ?? 0);
 
 	// AC: @session-filter-controls ac-agent-filter, ac-agent-type-filter — Distinct values for filter dropdowns
 	let distinctAgentIds = $derived.by(() => {
