@@ -6018,12 +6018,7 @@ workspaces:
         branch_ref: dispatch/task/task-yaml-seed-session-tests/01kks7bd
         head: 1bde4a3176dfa189af74969df73b39e00a2adcc4
         last_seen_at: 2026-03-15T22:51:37.842Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-yaml-seed-session-tests-01kks7bd-review
-        branch_mode: detached
-        branch_ref: null
-        head: 1bde4a3176dfa189af74969df73b39e00a2adcc4
-        last_seen_at: 2026-03-15T22:51:37.842Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -6062,7 +6057,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T23:04:01.284Z
+      updated_at: 2026-03-15T23:04:16.492Z
     cleanup:
       status: scheduled
       eligible: true
@@ -6071,7 +6066,7 @@ workspaces:
       updated_at: 2026-03-15T23:04:01.284Z
     timestamps:
       created_at: 2026-03-15T22:39:41.894Z
-      updated_at: 2026-03-15T23:04:15.647Z
-      last_reconciled_at: 2026-03-15T23:04:15.647Z
+      updated_at: 2026-03-15T23:04:16.492Z
+      last_reconciled_at: 2026-03-15T23:04:16.492Z
       last_active_at: 2026-03-15T22:51:38.393Z
       closed_at: null
