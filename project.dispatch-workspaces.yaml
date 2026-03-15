@@ -5842,7 +5842,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6f2b02df930df09e597db225bd51605b7f2a58e7
     canonical_branch: dispatch/task/task-cli-watch-ws-events/01kksgt1
-    canonical_branch_head: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    canonical_branch_head: 968fbf0e026a15d8cd56b540644f2811226c1799
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -5893,21 +5893,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T22:12:38.959Z
+      updated_at: 2026-03-15T22:16:01.096Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T22:12:39.491Z
+      updated_at: 2026-03-15T22:16:01.096Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T22:12:38.959Z
+      updated_at: 2026-03-15T22:16:01.096Z
     timestamps:
       created_at: 2026-03-15T22:12:38.959Z
-      updated_at: 2026-03-15T22:12:39.491Z
-      last_reconciled_at: 2026-03-15T22:12:39.491Z
+      updated_at: 2026-03-15T22:16:01.096Z
+      last_reconciled_at: 2026-03-15T22:16:01.096Z
       last_active_at: 2026-03-15T22:12:39.491Z
       closed_at: null
