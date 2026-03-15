@@ -97680,7 +97680,7 @@
   spec_ref: "@ui-api-ref-resolution"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -97692,6 +97692,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-15T04:10:57.144Z
+  session_id: 01KKQTXPXXNMD887KR6C9Y2YDP
 - _ulid: 01KKQRK2R219TBGWE4XQEBJNEC
   slugs:
     - task-server-aggregation
