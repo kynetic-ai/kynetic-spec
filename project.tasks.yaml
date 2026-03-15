@@ -99323,6 +99323,16 @@
         root src/ or changing build order. All other quality gates pass (5/5 own ACs covered, tests
         pass locally, spec alignment verified)."
       supersedes: null
+    - _ulid: 01KKSQZWW7219CSGP3G7JYWEGR
+      created_at: 2026-03-15T21:56:14.855Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Fix applied: Created src/agent-runtime/session-event-types.ts with
+        canonical SessionEventData types for the root package. Replaced @kynetic-ai/shared imports
+        in dispatch.ts and session-event-accumulator.ts with local imports. Also removed dead force
+        parameter from flushBuffer(). tsc build passes with packages/shared/dist removed (simulating
+        CI). 5491 tests pass (1 pre-existing flaky test in dispatch role entrypoint —
+        timing-dependent, passes on retry). All 3 review threads resolved."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKSGSZY9G04716168198EYK2
