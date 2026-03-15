@@ -5444,7 +5444,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: closing
+    lifecycle_state: stale
     active_role: null
     worktrees:
       worker:
@@ -5487,21 +5487,26 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-15T14:36:00.757Z
+      updated_at: 2026-03-15T14:38:00.755Z
     health:
-      status: healthy
-      summary: Workspace record matches current git branch and worktree state.
-      issues: []
-      updated_at: 2026-03-15T14:36:02.736Z
+      status: stale
+      summary: Workspace registry record is stale and needs reconciliation.
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/disable-ssr-globally-to-fix-hard-refresh-stuck-on-loading-01kkrvzq"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      updated_at: 2026-03-15T14:38:00.755Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-15T14:36:00.757Z
+      updated_at: 2026-03-15T14:38:00.755Z
     timestamps:
       created_at: 2026-03-15T14:13:14.505Z
-      updated_at: 2026-03-15T14:36:02.736Z
-      last_reconciled_at: 2026-03-15T14:36:02.736Z
+      updated_at: 2026-03-15T14:38:00.755Z
+      last_reconciled_at: 2026-03-15T14:38:00.755Z
       last_active_at: 2026-03-15T14:24:46.288Z
       closed_at: null
