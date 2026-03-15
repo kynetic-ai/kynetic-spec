@@ -470,17 +470,20 @@ export function shouldShowJumpButton(autoScrolling: boolean, isLive: boolean, bl
 }
 
 /**
- * Accumulate streaming text from agent_text_chunk WebSocket events.
- * Only accumulates for the target session. Returns updated streaming text.
+ * Accumulate streaming text from session event WebSocket events.
+ * Handles both new typed events (message_progress, message_complete, etc.)
+ * and legacy agent_text_chunk for backwards compatibility.
  *
  * AC: @ui-session-stream ac-2
+ * AC: @session-event-broadcast ac-replaces-text-chunks
  */
 export function accumulateStreamingText(
 	currentText: string,
 	event: { event: string; data: unknown },
 	targetSessionId: string,
 ): string {
-	if (event.event !== 'agent_text_chunk') return currentText;
+	const textEvents = new Set(['message_progress', 'message_complete', 'thinking_progress', 'thinking_complete', 'agent_text_chunk']);
+	if (!textEvents.has(event.event)) return currentText;
 	const data = event.data as { session_id?: string; text?: string } | null;
 	if (!data || data.session_id !== targetSessionId || !data.text) return currentText;
 	return currentText + data.text;

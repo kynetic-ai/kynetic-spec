@@ -920,16 +920,27 @@ export function registerAgentCommands(program: Command): void {
             return;
           }
 
-          // AC: @cli-agent-commands ac-13 — stream text with per-line [agent-id session-id] prefixes
-          if (msg.event === "agent_text_chunk" && msg.data) {
+          // AC: @cli-agent-commands ac-13 — stream session events with per-line [agent-id session-id] prefixes
+          // AC: @session-event-broadcast ac-replaces-text-chunks
+          const eventType = msg.event as string;
+          const sessionEventTypes = new Set([
+            "message_start", "message_progress", "message_complete",
+            "thinking_start", "thinking_progress", "thinking_complete",
+            "tool_call_start", "tool_call_complete",
+          ]);
+
+          if (sessionEventTypes.has(eventType) && msg.data) {
             const data = msg.data as {
               session_id?: string;
               agent_id?: string;
               text?: string;
+              tool_name?: string;
+              tool_input?: unknown;
+              status?: string;
+              duration_ms?: number;
             };
             const sessionId = data.session_id ?? "";
             const agentId = data.agent_id ?? "";
-            const text = data.text ?? "";
 
             // AC: @cli-agent-commands ac-16 — filter by agent/session if specified
             if (agentFilter && agentId !== agentFilter) return;
@@ -938,12 +949,47 @@ export function registerAgentCommands(program: Command): void {
             const streamKey = `${agentId}\u0000${sessionId}`;
             const displaySessionId = formatSessionIdForDisplay(sessionId);
             const prefix = `[${agentId} ${displaySessionId}]`;
-            // Match old Ralph rendering semantics: empty chunk marks message end.
-            if (text.length === 0) {
-              markMessageBoundary(streamKey);
-              return;
+
+            switch (eventType) {
+              case "message_progress":
+              case "thinking_progress": {
+                const text = data.text ?? "";
+                if (text.length > 0) {
+                  queuePrefixedChunk(streamKey, prefix, text);
+                }
+                break;
+              }
+              case "message_complete":
+              case "thinking_complete": {
+                const text = data.text ?? "";
+                if (text.length > 0) {
+                  queuePrefixedChunk(streamKey, prefix, text);
+                }
+                markMessageBoundary(streamKey);
+                break;
+              }
+              case "tool_call_start": {
+                markMessageBoundary(streamKey);
+                const toolName = data.tool_name ?? "unknown";
+                startSpeakerSection(streamKey, prefix);
+                writeRaw(`  ⚡ Tool: ${toolName}\n`);
+                break;
+              }
+              case "tool_call_complete": {
+                const toolName = data.tool_name ?? "unknown";
+                const status = data.status ?? "unknown";
+                const durationMs = data.duration_ms ?? 0;
+                const durationStr = durationMs >= 1000
+                  ? `${(durationMs / 1000).toFixed(1)}s`
+                  : `${durationMs}ms`;
+                startSpeakerSection(streamKey, prefix);
+                writeRaw(`  ✓ ${toolName} ${status} (${durationStr})\n`);
+                break;
+              }
+              // message_start, thinking_start — no visual output needed
+              default:
+                break;
             }
-            queuePrefixedChunk(streamKey, prefix, text);
           }
         };
 

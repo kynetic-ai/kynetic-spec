@@ -531,7 +531,7 @@ test.describe('Task Board (Kanban)', () => {
 		await expect(page.getByTestId('fleet-output-empty')).toBeVisible();
 		await expect(page.getByTestId('fleet-output-empty')).toHaveText(/Awaiting output/);
 
-		// Inject a synthetic agent_text_chunk WebSocket message through the live connection
+		// Inject a synthetic message_progress WebSocket message through the live connection
 		const injected = await page.evaluate((sessionId) => {
 			const instances = (window as any).__test_ws_instances as WebSocket[];
 			const ws = instances?.find((s) => s.readyState === WebSocket.OPEN);
@@ -542,7 +542,7 @@ test.describe('Task Board (Kanban)', () => {
 				seq: 9999,
 				timestamp: new Date().toISOString(),
 				topic: 'agents',
-				event: 'agent_text_chunk',
+				event: 'message_progress',
 				data: {
 					session_id: sessionId,
 					text: 'Running tests...\nAll 25 tests passed\nBuild complete'

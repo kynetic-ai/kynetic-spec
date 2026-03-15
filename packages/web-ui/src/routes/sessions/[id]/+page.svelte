@@ -1,6 +1,6 @@
 <!--
   AC: @ui-session-stream ac-1 — Session events render as structured blocks.
-  AC: @ui-session-stream ac-2 — Live streaming via WebSocket agent_text_chunk events.
+  AC: @ui-session-stream ac-2 — Live streaming via WebSocket session events.
   AC: @ui-session-stream ac-3 — Auto-scroll with jump-to-bottom.
   AC: @ui-session-stream ac-4 — Session context panel with metadata.
   AC: @ui-data-freshness ac-1 — Session detail renders from cache on revisit
@@ -113,6 +113,7 @@
 
 	function handleAgentEvent(event: BroadcastEvent) {
 		// Uses extracted utility for session-filtered text accumulation
+		// AC: @session-event-broadcast ac-replaces-text-chunks
 		streamingText = accumulateStreamingText(streamingText, event, sessionId);
 
 		if (event.event === 'agent_invocation') {
@@ -121,10 +122,17 @@
 				// Refresh immediately on invocation state changes
 				refreshEvents();
 			}
-		} else if (event.event === 'agent_text_chunk' && isLive) {
-			// Debounced refresh for structured events during live streaming.
-			// Text chunks indicate the session is active — refresh structured events
-			// periodically rather than on every chunk to avoid excessive requests.
+		} else if ((event.event === 'message_complete' || event.event === 'thinking_complete' || event.event === 'tool_call_complete') && isLive) {
+			// Completion events trigger debounced structured event refresh.
+			const data = event.data as { session_id?: string };
+			if (data?.session_id === sessionId && !refreshDebounceTimer) {
+				refreshDebounceTimer = setTimeout(() => {
+					refreshDebounceTimer = undefined;
+					refreshEvents();
+				}, 3000);
+			}
+		} else if ((event.event === 'message_progress' || event.event === 'thinking_progress') && isLive) {
+			// Progress events indicate the session is active — debounced refresh
 			if (!refreshDebounceTimer) {
 				refreshDebounceTimer = setTimeout(() => {
 					refreshDebounceTimer = undefined;

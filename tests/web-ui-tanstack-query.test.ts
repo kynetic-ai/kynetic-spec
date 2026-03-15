@@ -183,7 +183,8 @@ describe("WebSocket invalidation wiring (@ui-data-freshness ac-3, ac-4)", () => 
     expect(wsInvalidationSrc).toContain("invalidateQueries");
   });
 
-  it("skips invalidation for agent text chunks (streaming)", () => {
+  it("skips invalidation for streaming progress events", () => {
+    expect(wsInvalidationSrc).toContain("message_progress");
     expect(wsInvalidationSrc).toContain("agent_text_chunk");
   });
 
@@ -852,9 +853,9 @@ describe("board page migration (@ui-data-freshness ac-1, ac-4)", () => {
     expect(boardPageSrc).toContain("!isStaticMode()");
   });
 
-  it("still handles agent text chunks outside TanStack Query", () => {
+  it("still handles session text events outside TanStack Query", () => {
     expect(boardPageSrc).toContain("processTextChunk");
-    expect(boardPageSrc).toContain("agent_text_chunk");
+    expect(boardPageSrc).toContain("message_progress");
   });
 });
 

@@ -6,7 +6,7 @@ import type {
   TaskUpdatedEventData,
   InboxItemCreatedEventData,
   AgentInvocationEventData,
-  AgentTextChunkEventData,
+  MessageProgressEventData,
 } from '../packages/shared/src/websocket';
 
 describe('PubSubManager', () => {
@@ -275,12 +275,13 @@ describe('PubSubManager', () => {
       expect(sentMessage.data.task_title).toBeNull();
     });
 
-    it('agent_text_chunk payload includes task_title', () => {
+    it('message_progress payload includes task_title', () => {
       const projectA = '/tmp/project-a';
       const ws = createMockWebSocket('conn-1', projectA, ['agents']);
       manager.addConnection('conn-1', ws);
 
-      const payload: AgentTextChunkEventData = {
+      const payload: MessageProgressEventData = {
+        type: 'message_progress',
         session_id: 'sess-1',
         agent_id: 'task-worker',
         task_id: '@task-auth',
@@ -289,7 +290,7 @@ describe('PubSubManager', () => {
         timestamp: 1710374400000,
       };
 
-      manager.broadcast('agents', 'agent_text_chunk', payload, projectA);
+      manager.broadcast('agents', 'message_progress', payload, projectA);
 
       const sentMessage = JSON.parse((ws.send as any).mock.calls[0][0]);
       expect(sentMessage.data.task_title).toBe('Implement authentication');

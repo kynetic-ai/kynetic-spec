@@ -107,7 +107,7 @@ test.describe('Smoke Tests', () => {
             seq: 9999,
             timestamp: new Date().toISOString(),
             topic: 'agents',
-            event: 'agent_text_chunk',
+            event: 'message_progress',
             data: {
               session_id: 'test-session-stream',
               text: 'Hello **markdown**',

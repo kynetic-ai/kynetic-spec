@@ -27,6 +27,7 @@ import { DEFAULT_KSPEC_CLI_PATH } from '../../agent-runtime/invocation.js';
 import { initContext, loadMetaContext, loadAllTasks, loadAllItems, ReferenceIndex, resolveProjectRoots } from '../../parser/index.js';
 import { getCompletedSessionCountsByAgent } from '../../sessions/store.js';
 import type { PubSubManager } from '../websocket/pubsub.js';
+import type { SessionEventData } from '@kynetic-ai/shared';
 
 const VALID_TASK_STATUSES = new Set<string>([
   "pending", "in_progress", "pending_review", "needs_work", "blocked", "completed", "cancelled",
@@ -67,18 +68,11 @@ function createEngine(
           }, projectDir);
         }
       : undefined,
+    // AC: @session-event-broadcast ac-replaces-text-chunks
     // AC: @cli-agent-commands ac-13, @daemon-agent-dispatch ac-8
-    // AC: @ui-api-aggregation ac-4 - Include task_title for display
-    onTextChunk: pubsub
-      ? (sessionId: string, agentId: string, taskId: string | null, taskTitle: string | null, text: string) => {
-          pubsub.broadcast('agents', 'agent_text_chunk', {
-            session_id: sessionId,
-            agent_id: agentId,
-            task_id: taskId,
-            task_title: taskTitle,
-            text,
-            timestamp: Date.now(),
-          }, projectDir);
+    onSessionEvent: pubsub
+      ? (event: SessionEventData) => {
+          pubsub.broadcast('agents', event.type, event, projectDir);
         }
       : undefined,
   });

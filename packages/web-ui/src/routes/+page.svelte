@@ -301,10 +301,12 @@
 	}
 
 	// --- WebSocket handlers for agent text streaming ---
-	// Agent text chunks stay outside TanStack Query (streaming buffer, not request-response).
+	// Session events stay outside TanStack Query (streaming buffer, not request-response).
 	// Agent lifecycle events trigger an agent status query invalidation.
+	// AC: @session-event-broadcast ac-replaces-text-chunks
 	function handleAgentEvent(event: BroadcastEvent) {
-		if (event.event === 'agent_text_chunk' && event.data?.session_id && event.data?.text) {
+		const textEvents = new Set(['message_progress', 'message_complete', 'thinking_progress', 'thinking_complete']);
+		if (textEvents.has(event.event) && event.data?.session_id && event.data?.text) {
 			const sessionId = event.data.session_id as string;
 			const text = event.data.text as string;
 			const current = sessionStates[sessionId] ?? createSessionState();

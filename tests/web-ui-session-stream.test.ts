@@ -1575,43 +1575,60 @@ describe("live streaming logic (@ui-session-stream ac-2)", () => {
     });
   });
 
-  describe("accumulateStreamingText — WebSocket text chunk handling", () => {
+  describe("accumulateStreamingText — WebSocket session event handling", () => {
     // AC: @ui-session-stream ac-2
-    it("accumulates text from matching session chunks", () => {
+    // AC: @session-event-broadcast ac-replaces-text-chunks
+    it("accumulates text from matching session message_progress events", () => {
       let text = "";
-      text = accumulateStreamingText(text, { event: "agent_text_chunk", data: { session_id: "s1", text: "Hello " } }, "s1");
-      text = accumulateStreamingText(text, { event: "agent_text_chunk", data: { session_id: "s1", text: "world" } }, "s1");
+      text = accumulateStreamingText(text, { event: "message_progress", data: { session_id: "s1", text: "Hello " } }, "s1");
+      text = accumulateStreamingText(text, { event: "message_progress", data: { session_id: "s1", text: "world" } }, "s1");
       expect(text).toBe("Hello world");
+    });
+
+    // AC: @ui-session-stream ac-2
+    it("accumulates text from message_complete events", () => {
+      let text = "";
+      text = accumulateStreamingText(text, { event: "message_complete", data: { session_id: "s1", text: "final line" } }, "s1");
+      expect(text).toBe("final line");
     });
 
     // AC: @ui-session-stream ac-2
     it("ignores chunks from other sessions", () => {
       let text = "existing";
-      text = accumulateStreamingText(text, { event: "agent_text_chunk", data: { session_id: "s2", text: "other" } }, "s1");
+      text = accumulateStreamingText(text, { event: "message_progress", data: { session_id: "s2", text: "other" } }, "s1");
       expect(text).toBe("existing");
     });
 
     // AC: @ui-session-stream ac-2
-    it("ignores non-text-chunk events", () => {
+    it("ignores non-text events", () => {
       let text = "existing";
       text = accumulateStreamingText(text, { event: "agent_invocation", data: { session_id: "s1" } }, "s1");
       expect(text).toBe("existing");
+      text = accumulateStreamingText(text, { event: "tool_call_start", data: { session_id: "s1" } }, "s1");
+      expect(text).toBe("existing");
     });
 
     // AC: @ui-session-stream ac-2
-    it("ignores chunks with empty/missing text", () => {
+    it("ignores events with empty/missing text", () => {
       let text = "existing";
-      text = accumulateStreamingText(text, { event: "agent_text_chunk", data: { session_id: "s1", text: "" } }, "s1");
+      text = accumulateStreamingText(text, { event: "message_progress", data: { session_id: "s1", text: "" } }, "s1");
       expect(text).toBe("existing");
-      text = accumulateStreamingText(text, { event: "agent_text_chunk", data: { session_id: "s1" } }, "s1");
+      text = accumulateStreamingText(text, { event: "message_progress", data: { session_id: "s1" } }, "s1");
       expect(text).toBe("existing");
     });
 
     // AC: @ui-session-stream ac-2
     it("handles null data gracefully", () => {
       let text = "existing";
-      text = accumulateStreamingText(text, { event: "agent_text_chunk", data: null }, "s1");
+      text = accumulateStreamingText(text, { event: "message_progress", data: null }, "s1");
       expect(text).toBe("existing");
+    });
+
+    // Backwards compatibility: legacy agent_text_chunk still works
+    it("still accumulates from legacy agent_text_chunk events", () => {
+      let text = "";
+      text = accumulateStreamingText(text, { event: "agent_text_chunk", data: { session_id: "s1", text: "legacy" } }, "s1");
+      expect(text).toBe("legacy");
     });
   });
 

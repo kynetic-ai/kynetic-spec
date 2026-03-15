@@ -51,14 +51,30 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 			// Triage changes affect the merged inbox view (triage status inline)
 			return [queryKeys.inbox.all];
 
-		case 'agents':
-			// Agent text chunks are handled separately (streaming buffer).
-			// Only lifecycle events (started, completed, etc.) need invalidation.
-			if (event.event === 'agent_text_chunk') {
+		case 'agents': {
+			// Streaming progress events don't need cache invalidation —
+			// they're consumed directly by components for real-time display.
+			const streamingEvents = new Set([
+				'message_start', 'message_progress',
+				'thinking_start', 'thinking_progress',
+				'tool_call_start',
+				// Legacy: kept for backwards compatibility during migration
+				'agent_text_chunk',
+			]);
+			if (streamingEvents.has(event.event)) {
 				return [];
 			}
-			// Agent lifecycle events also affect session lists (new/completed sessions)
+			// Completion events (message_complete, thinking_complete, tool_call_complete)
+			// and invocation lifecycle events invalidate session event caches.
+			if (event.event === 'message_complete' || event.event === 'thinking_complete' || event.event === 'tool_call_complete') {
+				const sessionId = (event.data as { session_id?: string })?.session_id;
+				if (sessionId) {
+					return [queryKeys.sessions.all, queryKeys.agents.all];
+				}
+			}
+			// Agent lifecycle events (agent_invocation) also affect session lists
 			return [queryKeys.agents.all, queryKeys.sessions.all];
+		}
 
 		case 'files:updates':
 			// File changes (e.g., settings save, meta edits) affect multiple caches

@@ -111,9 +111,10 @@
 		queryClient.invalidateQueries({ queryKey: queryKeys.tasks.all });
 	}
 
-	// AC: @ui-task-board ac-4 — Buffer agent text chunks (streaming stays outside TanStack Query)
+	// AC: @ui-task-board ac-4 — Buffer agent session events (streaming stays outside TanStack Query)
 	function handleAgentUpdate(event: BroadcastEvent) {
-		if (event.event === 'agent_text_chunk' && event.data?.session_id && event.data?.text) {
+		const textEvents = new Set(['message_progress', 'message_complete', 'thinking_progress', 'thinking_complete']);
+		if (textEvents.has(event.event) && event.data?.session_id && event.data?.text) {
 			const sessionId = event.data.session_id as string;
 			const text = event.data.text as string;
 			const current = sessionStates[sessionId] ?? createSessionState();
