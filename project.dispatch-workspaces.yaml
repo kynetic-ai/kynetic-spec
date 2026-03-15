@@ -4365,7 +4365,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
     canonical_branch: dispatch/task/task-ui-data-layer-skill/01kkqrk0
-    canonical_branch_head: b4a8f6362f176f915761ce49f05a4cb757f58ab0
+    canonical_branch_head: 560f730b5c458fa6f2f07280175875da2cced4e5
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -4418,22 +4418,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T04:03:14.625Z
+      updated_at: 2026-03-15T04:04:36.688Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T04:03:15.498Z
+      updated_at: 2026-03-15T04:04:36.688Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T04:03:14.625Z
+      updated_at: 2026-03-15T04:04:36.688Z
     timestamps:
       created_at: 2026-03-15T03:34:35.208Z
-      updated_at: 2026-03-15T04:03:15.498Z
-      last_reconciled_at: 2026-03-15T04:03:15.498Z
+      updated_at: 2026-03-15T04:04:36.688Z
+      last_reconciled_at: 2026-03-15T04:04:36.688Z
       last_active_at: 2026-03-15T04:03:15.498Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKQRK1KGVQKF0WA5C06C2B1K
