@@ -98337,6 +98337,15 @@
         result before cleanup. Fix by awaiting invalidation or moving cleanup to a $effect reactive
         to query data changes. See PR #873 review inline comments."
       supersedes: null
+    - _ulid: 01KKR634WAJ4NFASDGF93T9TTF
+      created_at: 2026-03-15T07:24:12.555Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Addressed review findings: (1) SHOULD-FIX: Moved board page session cleanup
+        from synchronous read in WS handler to $effect reactive to agentStatusQuery.data — cleanup
+        now runs with fresh data after invalidation completes. (2) SUGGESTION: Removed dead
+        fetchTaskStatusSummary export and TaskStatusSummary import from api.ts, updated tests. All
+        5417 tests pass."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK5PM5VTQBBBMT11PMCE6
@@ -98376,12 +98385,12 @@
   tags:
     - web-ui
   vcs_refs: []
+  session_id: 01KKR5PXSGHFCRZ94BQZSQXE60
   created_at: 2026-03-15T03:28:17.620Z
+  started_at: 2026-03-15T07:18:53.553Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-03-15T07:18:53.553Z
-  session_id: 01KKR5PXSGHFCRZ94BQZSQXE60
 - _ulid: 01KKQRK68XM841PBFQFNPT33VZ
   slugs:
     - task-cleanup-legacy-fetches
