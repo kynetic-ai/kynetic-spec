@@ -99001,3 +99001,25 @@
       supersedes: null
   todos: []
   automation: eligible
+- title: Validate default base branch in resolveDispatchWorkspaceConfig
+  type: task
+  spec_ref: "@dispatch-workspace-configuration"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs:
+    - task-validate-default-base-branch
+  tags:
+    - bug
+    - dispatch
+    - defensive-code
+  depends_on: []
+  automation: eligible
+  _ulid: 01KKS7CE6Y05AHZCR8JED24M3V
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-15T17:06:00.029Z
+  notes: []
+  todos: []
