@@ -98615,6 +98615,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #877. Added unfiltered_total field to GET /api/sessions response
+    (captured from sessionCache.getAll().length before filtering). Removed separate limit=0
+    unfilteredQuery from sessions page UI. UI now reads unfiltered_total from the infinite query's
+    first page response, eliminating one redundant API request per page load. 3 E2E tests added for
+    the new field. AC coverage verified for @session-filter-controls ac-filter-counts."
   depends_on: []
   context: []
   priority: 2
@@ -98635,6 +98640,7 @@
   created_at: 2026-03-15T13:26:05.614Z
   started_at: 2026-03-15T13:56:37.386Z
   submitted_at: 2026-03-15T14:12:40.442Z
+  completed_at: 2026-03-15T14:24:48.336Z
   notes:
     - _ulid: 01KKRVPJVQE4YXRCC7YQ386ZFV
       created_at: 2026-03-15T13:41:49.559Z
@@ -98688,12 +98694,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T14:24:48.336Z
-  closed_reason: "Merged in PR #877. Added unfiltered_total field to GET /api/sessions response
-    (captured from sessionCache.getAll().length before filtering). Removed separate limit=0
-    unfilteredQuery from sessions page UI. UI now reads unfiltered_total from the infinite query's
-    first page response, eliminating one redundant API request per page load. 3 E2E tests added for
-    the new field. AC coverage verified for @session-filter-controls ac-filter-counts."
 - _ulid: 01KKRVZQR41NJXPFQMDTK23801
   slugs: []
   title: Disable SSR globally to fix hard refresh stuck on loading
@@ -98719,7 +98719,7 @@
   spec_ref: "@ui-data-freshness"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -98760,3 +98760,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-15T14:35:47.342Z
+  closed_reason: "Merged in PR #878. Disabled SSR globally via root +layout.ts (export const ssr =
+    false) to fix hard refresh stuck on loading. Simplified layout ready derivation by removing
+    browser-conditional ternary. AC @ui-data-freshness ac-9 covered with implementation annotation
+    and 3 static analysis tests. All 5470 tests pass, all CI green."
