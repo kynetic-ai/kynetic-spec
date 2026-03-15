@@ -540,3 +540,22 @@ export interface KspecSnapshot {
   validation?: ExportedValidation;
   alignment?: AlignmentResponse;
 }
+
+/**
+ * Lightweight ref-to-display-metadata entry for the ref index endpoint.
+ * AC: @ui-api-ref-resolution ac-4, ac-5
+ */
+export interface RefIndexEntry {
+  title: string;
+  type: string;
+  status?: string;
+}
+
+/**
+ * Response from GET /api/refs/index — a map of ref keys (ULID and slug)
+ * to lightweight display metadata.
+ * AC: @ui-api-ref-resolution ac-4
+ */
+export interface RefIndexResponse {
+  refs: Record<string, RefIndexEntry>;
+}
