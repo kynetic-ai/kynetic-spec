@@ -97550,7 +97550,7 @@
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-ui-data-layer-skill"
@@ -97568,7 +97568,7 @@
     upstream_ref: refs/heads/main
     review_url: null
     captured_at: 2026-03-15T04:36:22.684Z
-  session_id: 01KKQVMA97Z9PGF09R3HFNY1F1
+  session_id: null
   created_at: 2026-03-15T03:28:12.799Z
   started_at: 2026-03-15T04:21:49.683Z
   submitted_at: 2026-03-15T04:36:23.431Z
@@ -97596,6 +97596,15 @@
           - packages/web-ui/src/routes/+page.svelte (migrated dashboard from manual fetch to createQuery)
           - tests/web-ui-tanstack-query.test.ts (new - 48 static analysis tests)
         - Verification: All 5001 tests pass, svelte-check passes for modified files, build succeeds
+      supersedes: null
+    - _ulid: 01KKQWZGJXQY5V5QC7QWACBVFN
+      created_at: 2026-03-15T04:44:56.286Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: queryClient.clear() in clearQueryCache() does
+        not trigger refetches of active queries after project switch. Components continue showing
+        stale data from the old project. Use queryClient.resetQueries() instead. Also: unused
+        getProjectVersion import in +page.svelte, and ac-4 missing test annotation. See PR #868
+        review comments for details."
       supersedes: null
   todos: []
   automation: eligible
