@@ -5210,12 +5210,7 @@ workspaces:
         branch_ref: dispatch/task/task-cleanup-legacy-fetches/01kkqrk6
         head: 466d32b985d3df285e441b475e9e01576e9a66f9
         last_seen_at: 2026-03-15T08:28:48.702Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cleanup-legacy-fetches-01kkqrk6-review
-        branch_mode: detached
-        branch_ref: null
-        head: 466d32b985d3df285e441b475e9e01576e9a66f9
-        last_seen_at: 2026-03-15T08:28:48.702Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -5254,7 +5249,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T08:40:55.372Z
+      updated_at: 2026-03-15T08:41:09.123Z
     cleanup:
       status: scheduled
       eligible: true
@@ -5263,7 +5258,7 @@ workspaces:
       updated_at: 2026-03-15T08:40:55.372Z
     timestamps:
       created_at: 2026-03-15T08:10:32.487Z
-      updated_at: 2026-03-15T08:41:08.323Z
-      last_reconciled_at: 2026-03-15T08:41:08.323Z
+      updated_at: 2026-03-15T08:41:09.123Z
+      last_reconciled_at: 2026-03-15T08:41:09.123Z
       last_active_at: 2026-03-15T08:28:50.187Z
       closed_at: null
