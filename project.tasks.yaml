@@ -98515,7 +98515,10 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Remove process.cwd() web UI resolution from daemon
+- _ulid: 01KKRP45A6S4TBWZX8KFKQPEVV
+  slugs: []
+  title: Remove process.cwd() web UI resolution from daemon
+  type: task
   description: |-
     resolveWebUiPath() in packages/daemon/src/server.ts uses process.cwd() to find
     packages/web-ui/build (options 3 and 4). In multi-directory daemon mode, cwd is
@@ -98532,22 +98535,63 @@
 
     The existing test in tests/daemon-web-ui-bundle.test.ts covers resolveWebUiPath —
     update it to verify cwd-based paths are NOT used.
-  type: task
   spec_ref: "@daemon-web-ui-bundle"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - daemon
     - bug
-  depends_on: []
+  vcs_refs: []
+  created_at: 2026-03-15T12:04:22.982Z
+  notes: []
+  todos: []
   automation: eligible
-  _ulid: 01KKRP45A6S4TBWZX8KFKQPEVV
+- title: "Fix TanStack Query migration regressions: SSR hydration stuck loading and unnecessary
+    limit=0 fetch"
+  description: >-
+    Two regressions from the TanStack Query migration:
+
+
+    1. Hard refresh stuck on loading (agents, sessions, inbox, etc.): Pages migrated to TanStack
+    Query but missing +page.ts with ssr=false get stuck on loading skeleton after hard refresh, even
+    though API requests complete. Client-side navigation works fine. Root cause: SSR renders
+    children with ready=true (browser=false on server), but client hydration flips ready to false,
+    creating a hydration mismatch that breaks reactive state. Some pages already have ssr=false
+    (tasks, plans, workflows, settings) but others do not (agents, sessions, inbox, observations,
+    specs, triage, validate). Fix: add root +layout.ts with export const ssr = false since this is a
+    daemon-connected SPA.
+
+
+    2. Sessions page makes unnecessary limit=0 API call: The unfilteredQuery fires on every page
+    load to get total count for the X of Y sessions filter display. But that display only renders
+    when filters are active (hasFilters). Fix: gate enabled on hasFilters.
+
+
+    Spec gap: @ui-data-freshness has no AC covering initial page load behavior on hard refresh. ac-1
+    covers cache-then-revalidate for revisits but not first load lifecycle. The
+    @session-filter-controls ac-filter-counts correctly specifies count shown when filters applied -
+    implementation just over-fetches.
+  type: task
+  spec_ref: "@ui-data-freshness"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - web-ui
+    - bug
+    - tanstack-query
+  depends_on: []
+  _ulid: 01KKRTSS1EDEF6G8FE6CB16PB5
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-15T12:04:22.982Z
+  created_at: 2026-03-15T13:26:05.614Z
   notes: []
   todos: []
