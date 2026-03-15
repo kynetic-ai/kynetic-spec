@@ -98777,7 +98777,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -98857,6 +98857,9 @@
         with the correct changes."
       supersedes: null
   todos: []
+  completed_at: 2026-03-15T18:23:27.284Z
+  closed_reason: "Merged in PR #879. Documented description, spec_ref, and depends_on fields for
+    custom tasks in plan import documents."
 - _ulid: 01KKS7AM5ABY67ESJAGBXAQT71
   slugs:
     - task-fix-dispatch-engine-stop-await
