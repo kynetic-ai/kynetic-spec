@@ -99563,9 +99563,18 @@
   tags:
     - web-ui
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T23:04:08.087Z
   session_id: 01KKSSNA6S2S7C3CMESS9P8EE2
   created_at: 2026-03-15T19:50:42.003Z
   started_at: 2026-03-15T22:25:45.182Z
+  submitted_at: 2026-03-15T23:04:08.847Z
   notes:
     - _ulid: 01KKSSVYYQY7W9ARNA6SWYAEH2
       created_at: 2026-03-15T22:29:03.064Z
@@ -99589,17 +99598,30 @@
 
         - Verification: npm test, npm run build
       supersedes: null
+    - _ulid: 01KKSVXFGTBQ8K04MAFXHWDNR7
+      created_at: 2026-03-15T23:04:49.946Z
+      author: "@claude"
+      content: >-
+        Implementation complete. PR #885 created.
+
+
+        Key implementation decisions:
+
+        - Added resultSeq to ToolCallBlock to fix on-demand output fetch targeting the
+        tool_call_update/tool_result event instead of the tool_call start event
+
+        - Used StreamingMarkdown component for live message rendering
+
+        - WS-created blocks use seq=-1; on-demand fetch requires resultSeq >= 0 (set after HTTP
+        gap-fill)
+
+        - Kept accumulateStreamingText as deprecated for backward compatibility with existing tests
+
+        - 3 pre-existing test failures in agent-dispatch-engine.test.ts (from accumulator
+        refactoring) are unrelated to this task
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-15T23:04:08.847Z
-  submission_linkage:
-    branch: main
-    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-15T23:04:08.087Z
 - _ulid: 01KKSGT15XQJERS3XGKWKEZ1EZ
   slugs:
     - task-cli-watch-ws-events
