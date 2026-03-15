@@ -18893,12 +18893,125 @@ plans:
 
       - **Shared types** (`@kynetic-ai/shared`): New BroadcastEvent types, deprecate
       agent_text_chunk.
-    status: approved
-    derived_tasks: []
-    derived_specs: []
+    status: active
+    derived_tasks:
+      - "@task-session-event-accumulator"
+      - "@task-session-event-detail-endpoint"
+      - "@task-session-stream-ws-ui"
+      - "@task-cli-watch-ws-events"
+      - "@task-update-session-stream-spec-cleanup"
+    derived_specs:
+      - "@ws-session-event-streaming"
+      - "@session-event-broadcast"
+      - "@session-event-detail-endpoint"
     source_path: /home/chapel/Projects/kynetic-spec/plans/session-stream-redesign.md
     module_ref: null
     created_at: 2026-03-15T19:50:09.906Z
     approved_at: 2026-03-15T19:50:16.828Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KKSGT2DZE2K0GK30PY3RWKB8
+        created_at: 2026-03-15T19:50:43.903Z
+        author: "@claude"
+        content: >-
+          ### Newline-Boundary Streaming
+
+
+          ACP streams `agent_message_chunk` per-token. Rather than forwarding each
+
+          token (too chatty) or buffering the entire message (poor UX for long
+
+          responses), the daemon accumulates text and flushes at newline boundaries:
+
+
+          - Each `agent_message_chunk` appends text to a per-session buffer
+
+          - When the buffer contains `\n`, everything up to the last `\n` is
+            broadcast as `message_progress`; the remainder stays in the buffer
+          - On state transition (tool call, thinking, session end), the full
+            buffer is flushed regardless of newline presence
+
+          This gives a natural line-by-line streaming feel — code blocks stream
+
+          line by line, prose streams paragraph by paragraph, and the churn from
+
+          per-token updates is eliminated.
+
+
+          A maximum buffer size (e.g., 8KB) forces a flush even without a newline,
+
+          preventing unbounded growth from newline-sparse content.
+
+
+          ### Sequence Numbers
+
+
+          Sequence numbers (`seq`) in WebSocket events correspond to the
+
+          `events.jsonl` line sequence numbers, not WebSocket-level message
+
+          counters. This means `since_seq` on the HTTP endpoint and the last
+
+          seen `seq` from WebSocket events use the same numbering scheme,
+
+          enabling seamless catch-up after reconnection or initial load.
+
+
+          ### Reconnection Edge Cases
+
+
+          If the session ended while disconnected, the HTTP catch-up fetch
+
+          returns all remaining events including `session.end`, and the UI
+
+          transitions to completed state. If the gap is very large, the HTTP
+
+          fetch handles it the same as historical playback — no special casing.
+
+
+          ### Historical vs Live Consistency
+
+
+          HTTP `GET /api/sessions/:id/events` continues to return full events
+
+          including tool output for historical sessions. The on-demand pattern
+
+          for tool output applies to the UI rendering layer — historical playback
+
+          renders tool call blocks collapsed with output fetched on expand, same
+
+          as live. This keeps the UX consistent regardless of session state.
+
+
+          For live sessions already in progress, the UI fetches existing events
+
+          via HTTP first (full catch-up), then switches to WebSocket for
+
+          subsequent events. The lastSeq from the HTTP response gates which
+
+          WebSocket events to apply, preventing duplication.
+
+
+          ### Key Integration Points
+
+
+          - **Dispatch engine** (`src/agent-runtime/dispatch.ts`): Replace `onTextChunk` with
+          `onSessionEvent`. Per-session accumulator with newline-boundary flushing.
+
+          - **Daemon WS** (`packages/daemon/src/routes/agent-dispatch.ts`): Broadcast new typed
+          events via PubSubManager.
+
+          - **Daemon routes** (`packages/daemon/src/routes/sessions.ts`): Add `GET
+          /api/sessions/:id/events/:seq` with blob resolution.
+
+          - **Web UI session detail** (`packages/web-ui/src/routes/sessions/[id]/+page.svelte`):
+          Consume new WS events, build blocks incrementally, on-demand tool output via TanStack
+          Query.
+
+          - **CLI watch** (`src/agent-runtime/dispatch.ts` or daemon route): Same WS events,
+          terminal-formatted output.
+
+          - **ws-invalidation.ts**: Update event type → query key mapping for new event types.
+
+          - **Shared types** (`@kynetic-ai/shared`): New BroadcastEvent types, deprecate
+          agent_text_chunk.

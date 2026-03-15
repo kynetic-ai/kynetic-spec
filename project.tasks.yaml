@@ -98779,6 +98779,8 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #879. Documented description, spec_ref, and depends_on fields for
+    custom tasks in plan import documents."
   depends_on: []
   context: []
   priority: 2
@@ -98798,6 +98800,7 @@
   created_at: 2026-03-15T17:00:32.754Z
   started_at: 2026-03-15T17:27:53.233Z
   submitted_at: 2026-03-15T17:28:00.928Z
+  completed_at: 2026-03-15T18:23:27.284Z
   notes:
     - _ulid: 01KKS7JRW69MB7WWGZCY8C4HB8
       created_at: 2026-03-15T17:09:27.558Z
@@ -98857,9 +98860,6 @@
         with the correct changes."
       supersedes: null
   todos: []
-  completed_at: 2026-03-15T18:23:27.284Z
-  closed_reason: "Merged in PR #879. Documented description, spec_ref, and depends_on fields for
-    custom tasks in plan import documents."
 - _ulid: 01KKS7AM5ABY67ESJAGBXAQT71
   slugs:
     - task-fix-dispatch-engine-stop-await
@@ -99171,3 +99171,252 @@
       supersedes: null
   todos: []
   automation: eligible
+- _ulid: 01KKSGSZA2HXFDXW8RA3GV1JFC
+  slugs:
+    - task-session-event-accumulator
+  title: Implement daemon session event accumulator and new broadcast types
+  type: task
+  description: |
+    Replace the onTextChunk callback in the dispatch engine with
+    onSessionEvent that emits typed lifecycle events.
+
+    Core implementation:
+    1. Create per-session accumulator in dispatch.ts that buffers
+       agent_message_chunk text and flushes at newline boundaries.
+    2. Detect state transitions (message → tool_call, message → thinking,
+       etc.) and flush remaining buffer as _complete event.
+    3. Broadcast new event types via PubSubManager:
+       - message_start, message_progress, message_complete
+       - thinking_start, thinking_progress, thinking_complete
+       - tool_call_start (with tool name + input), tool_call_complete
+    4. tool_call_start includes input parameters from the ACP tool_call
+       SessionUpdate. tool_call_complete includes status and duration_ms
+       but NOT output.
+    5. Update agent-dispatch.ts broadcast calls to use new event types.
+    6. Remove onTextChunk callback and agent_text_chunk event type.
+
+    Consumers to update:
+    - ws-invalidation.ts: new event types need invalidation rules
+      (message_complete and tool_call_complete should invalidate
+      session event queries for the affected session)
+    - CLI watch command: update to consume new event stream, display
+      text at newline boundaries and tool call status transitions
+    - BroadcastEvent types in @kynetic-ai/shared
+
+    The accumulator must handle concurrent sessions independently —
+    use a Map<sessionId, AccumulatorState> with cleanup on session end.
+
+    Buffer safety: include a maximum buffer size (e.g., 8KB) that
+    triggers a flush even without a newline boundary, to prevent
+    unbounded memory growth from newline-sparse content (minified
+    JS, base64 strings, long single-line output).
+
+    Acceptance gates:
+    - @session-event-broadcast ac-newline-streaming
+    - @session-event-broadcast ac-boundary-flush
+    - @session-event-broadcast ac-per-session-state
+    - @session-event-broadcast ac-tool-input-included
+    - @session-event-broadcast ac-replaces-text-chunks
+  spec_ref: "@session-event-broadcast"
+  plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - daemon
+    - websocket
+  vcs_refs: []
+  created_at: 2026-03-15T19:50:40.706Z
+  notes: []
+  todos: []
+- _ulid: 01KKSGSZY9G04716168198EYK2
+  slugs:
+    - task-session-event-detail-endpoint
+  title: Add session event detail HTTP endpoint with blob resolution
+  type: task
+  description: |
+    Add GET /api/sessions/:id/events/:seq endpoint to the daemon
+    session routes.
+
+    Implementation:
+    1. Read events.jsonl for the session, find event by seq number.
+    2. Resolve any blob pointers in the event data — read blob files
+       from the session's blobs/ directory and inline the content.
+    3. Return the full resolved SessionEvent as JSON.
+    4. 404 if session or seq not found.
+    5. Respect X-Kspec-Dir project scoping.
+
+    The existing readEvents() in store.ts reads all events. For
+    single-event fetch, consider a targeted read that stops at the
+    matching seq to avoid reading the full file for large sessions.
+
+    Acceptance gates:
+    - @session-event-detail-endpoint ac-single-event-fetch
+    - @session-event-detail-endpoint ac-blob-resolution
+    - @session-event-detail-endpoint ac-not-found
+  spec_ref: "@session-event-detail-endpoint"
+  plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - daemon
+  vcs_refs: []
+  created_at: 2026-03-15T19:50:41.353Z
+  notes: []
+  todos: []
+- _ulid: 01KKSGT0JK5JV84SHPA6K7MAK1
+  slugs:
+    - task-session-stream-ws-ui
+  title: Update web UI session stream for WebSocket-first live viewing
+  type: task
+  description: |
+    Rewrite the session detail page to consume the new WebSocket
+    event stream for live sessions and use on-demand HTTP for
+    tool output.
+
+    Changes to sessions/[id]/+page.svelte:
+    1. Remove the refreshEvents() HTTP polling and debounce timer.
+    2. Remove streamingText accumulation from agent_text_chunk.
+    3. Add WebSocket handlers for new event types:
+       - message_start → add DisplayBlock with writing indicator
+       - message_progress → append text to current message block
+       - message_complete → finalize message block, remove indicator
+       - thinking_start/progress/complete → same pattern, collapsed
+       - tool_call_start → add ToolCallBlock with name + input, status running
+       - tool_call_complete → update status, duration_ms
+    4. On expand of tool call block, fetch output via
+       GET /api/sessions/:id/events/:seq using TanStack Query
+       (createQuery with enabled gated on expand state).
+    5. Show error state with retry if detail fetch fails.
+
+    Changes to session-utils.ts:
+    - Add incrementalBlockUpdate() for applying WS events to block list
+    - Keep parseEventsToBlocks() for historical playback (unchanged)
+    - For historical playback, strip tool output from initial render
+      and load on-demand same as live (consistent UX)
+
+    Initial/catch-up load:
+    - When navigating to a live session, fetch events via HTTP first
+      (existing endpoint), then attach WS handlers for new events
+      using lastSeq to avoid duplication.
+
+    E2E tests should cover: live message streaming (newline-boundary
+    updates visible), tool call expand/load, historical session playback,
+    and WebSocket reconnection recovery.
+
+    Acceptance gates:
+    - @ws-session-event-streaming ac-message-start
+    - @ws-session-event-streaming ac-message-progress
+    - @ws-session-event-streaming ac-message-complete
+    - @ws-session-event-streaming ac-tool-call-start
+    - @ws-session-event-streaming ac-tool-call-complete
+    - @ws-session-event-streaming ac-tool-output-on-demand
+    - @ws-session-event-streaming ac-thinking-blocks
+    - @ws-session-event-streaming ac-live-session-catchup
+    - @ws-session-event-streaming ac-no-http-polling
+    - @ws-session-event-streaming ac-reconnect-recovery
+  spec_ref: "@ws-session-event-streaming"
+  plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-session-event-accumulator"
+    - "@task-session-event-detail-endpoint"
+  context: []
+  priority: 2
+  tags:
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-15T19:50:42.003Z
+  notes: []
+  todos: []
+- _ulid: 01KKSGT15XQJERS3XGKWKEZ1EZ
+  slugs:
+    - task-cli-watch-ws-events
+  title: Update CLI watch to use new WebSocket event stream
+  type: task
+  description: |
+    The kspec agent dispatch watch command currently consumes
+    agent_text_chunk events to display live agent output. Update
+    it to use the new typed event stream.
+
+    Changes:
+    1. Subscribe to the same new event types as the web UI.
+    2. Display message text progressively (newline-boundary streaming
+       maps naturally to terminal line output).
+    3. Show tool call start (name + input summary) and completion
+       (status + timing) as formatted terminal output.
+    4. Thinking blocks can be shown dimmed or behind a --verbose flag.
+    5. Remove consumption of agent_text_chunk events.
+
+    Acceptance gates:
+    - @ws-session-event-streaming ac-cli-watch-parity
+  spec_ref: "@ws-session-event-streaming"
+  plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-session-event-accumulator"
+  context: []
+  priority: 2
+  tags:
+    - cli
+  vcs_refs: []
+  created_at: 2026-03-15T19:50:42.621Z
+  notes: []
+  todos: []
+- title: Update @ui-session-stream spec and clean up legacy streaming code
+  type: task
+  slugs:
+    - task-update-session-stream-spec-cleanup
+  description: |
+    After all consumers are migrated:
+
+    1. Update @ui-session-stream ac-2 which currently reads:
+       "Live text streams in real-time via agent_text_chunk WebSocket
+       events, with periodic structured refresh from events.jsonl"
+       Replace with reference to new WebSocket event streaming model.
+
+    2. Remove dead code:
+       - agent_text_chunk event type from shared types
+       - onTextChunk callback from dispatch engine
+       - streamingText state and accumulateStreamingText from session-utils
+       - refreshEvents() polling logic from session detail page
+       - Old WebSocket handler for agent_text_chunk in session detail
+
+    3. Update ws-invalidation.ts:
+       - Remove agent_text_chunk handler (returns [] currently)
+       - Ensure new event types have correct invalidation rules
+
+    4. Verify no remaining references to agent_text_chunk in codebase.
+
+    Acceptance gates:
+    - @session-event-broadcast ac-replaces-text-chunks
+    - @ws-session-event-streaming ac-no-http-polling
+  spec_ref: "@ws-session-event-streaming"
+  plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
+  priority: 3
+  tags:
+    - web-ui
+    - docs
+  depends_on:
+    - "@task-session-stream-ws-ui"
+    - "@task-cli-watch-ws-events"
+  notes: []
+  origin: derived
+  _ulid: 01KKSGT1SGVWACS5ET75Q87NPX
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-15T19:50:43.248Z
+  todos: []
