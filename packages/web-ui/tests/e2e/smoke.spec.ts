@@ -49,6 +49,8 @@ test.describe('Smoke Tests', () => {
   });
 
   // AC: @streaming-markdown-component ac-7
+  // AC: @ws-session-event-streaming ac-message-start
+  // AC: @ws-session-event-streaming ac-message-progress
   test('live session output renders markdown with the blinking streaming cursor', async ({ page, daemon }) => {
     await page.route('**/api/sessions/test-session-stream', (route) => {
       route.fulfill({
@@ -95,6 +97,7 @@ test.describe('Smoke Tests', () => {
     await page.goto('/sessions/test-session-stream');
     await expect(page.getByTestId('session-stream')).toBeVisible();
 
+    // Send message_start first (new WS protocol), then message_progress with content
     const injected = await page.evaluate(() => {
       const instances = (window as any).__test_ws_instances as WebSocket[];
       const ws = instances?.find((socket) => socket.readyState === WebSocket.OPEN);
@@ -104,13 +107,28 @@ test.describe('Smoke Tests', () => {
         new MessageEvent('message', {
           data: JSON.stringify({
             msg_id: 'test-stream-001',
+            seq: 9998,
+            timestamp: new Date().toISOString(),
+            topic: 'agents',
+            event: 'message_start',
+            data: {
+              session_id: 'test-session-stream',
+            },
+          }),
+        }),
+      );
+
+      ws.dispatchEvent(
+        new MessageEvent('message', {
+          data: JSON.stringify({
+            msg_id: 'test-stream-002',
             seq: 9999,
             timestamp: new Date().toISOString(),
             topic: 'agents',
             event: 'message_progress',
             data: {
               session_id: 'test-session-stream',
-              text: 'Hello **markdown**',
+              text: 'Hello **markdown**\n',
             },
           }),
         }),
@@ -121,7 +139,10 @@ test.describe('Smoke Tests', () => {
 
     expect(injected).toBe(true);
 
-    await expect(page.locator('[data-testid="streaming-text"] strong')).toHaveText('markdown');
+    // Content renders inside a message block via StreamingMarkdown
+    const messageBlock = page.getByTestId('message-block');
+    await expect(messageBlock).toBeVisible();
+    await expect(messageBlock.locator('[data-testid="streaming-markdown"] strong')).toHaveText('markdown');
 
     const cursor = page.locator('.ds-streaming-cursor');
     await expect(cursor).toBeVisible();

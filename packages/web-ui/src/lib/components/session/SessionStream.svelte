@@ -1,10 +1,10 @@
 <!--
   AC: @ui-session-stream ac-1 — Session events render as structured blocks.
   AC: @ui-session-stream ac-3 — Auto-scroll behavior with jump-to-bottom button.
+  AC: @ws-session-event-streaming ac-message-start — Writing indicator on streaming blocks.
 -->
 <script lang="ts">
 	import { type DisplayBlock, shouldAutoScroll as computeShouldAutoScroll, shouldShowJumpButton as computeShowJumpButton } from './session-utils';
-	import StreamingMarkdown from '$lib/components/markdown/StreamingMarkdown.svelte';
 	import MessageBlock from './MessageBlock.svelte';
 	import ToolCallView from './ToolCallView.svelte';
 	import ThinkingBlock from './ThinkingBlock.svelte';
@@ -14,17 +14,22 @@
 	let {
 		blocks,
 		isLive = false,
-		streamingText = '',
+		sessionId,
 	}: {
 		blocks: DisplayBlock[];
 		isLive?: boolean;
-		streamingText?: string;
+		sessionId: string;
 	} = $props();
 
 	let scrollContainer: HTMLDivElement | undefined = $state();
 	let autoScrollActive = $state(true);
 	let userScrolling = $state(false);
 	let scrollDebounceTimer: ReturnType<typeof setTimeout> | undefined;
+
+	// Track whether any block is streaming (for auto-scroll reactivity)
+	let hasStreamingBlock = $derived(blocks.some(
+		(b) => (b.type === 'message' || b.type === 'thinking') && b.isStreaming
+	));
 
 	// AC: @ui-session-stream ac-3 — Pause auto-scroll when user scrolls up
 	function handleScroll() {
@@ -46,9 +51,9 @@
 
 	// AC: @ui-session-stream ac-3 — Auto-scroll to follow new content
 	$effect(() => {
-		// Track block count and streaming text to trigger scroll
+		// Track block count and streaming state to trigger scroll
 		const _blockCount = blocks.length;
-		const _text = streamingText;
+		const _streaming = hasStreamingBlock;
 
 		if (autoScrollActive && !userScrolling && scrollContainer) {
 			requestAnimationFrame(() => {
@@ -74,6 +79,11 @@
 
 	// AC: @ui-session-stream ac-3 — Uses extracted utility for button visibility
 	let showJumpButton = $derived(computeShowJumpButton(autoScrollActive, isLive, blocks.length));
+
+	// Use block index as key since WS-created blocks may have seq=-1
+	function blockKey(block: DisplayBlock, index: number): string | number {
+		return block.seq >= 0 ? block.seq : `ws-${index}`;
+	}
 </script>
 
 <div class="relative flex-1 min-h-0">
@@ -86,11 +96,11 @@
 		aria-label="Session event stream"
 		role="log"
 	>
-		{#each blocks as block (block.seq)}
+		{#each blocks as block, i (blockKey(block, i))}
 			{#if block.type === 'message'}
 				<MessageBlock {block} />
 			{:else if block.type === 'tool_call'}
-				<ToolCallView {block} />
+				<ToolCallView {block} {sessionId} />
 			{:else if block.type === 'thinking'}
 				<ThinkingBlock {block} />
 			{:else if block.type === 'system'}
@@ -98,21 +108,7 @@
 			{/if}
 		{/each}
 
-		<!-- AC: @ui-session-stream ac-2 — Live streaming text appended to stream -->
-		{#if isLive && streamingText}
-			<div class="py-2" data-testid="streaming-text">
-				<div class="flex items-start gap-3">
-					<div class="flex-shrink-0 w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center">
-						<span class="text-xs font-bold text-primary">A</span>
-					</div>
-					<div class="flex-1 min-w-0">
-						<StreamingMarkdown content={streamingText} isStreaming={true} />
-					</div>
-				</div>
-			</div>
-		{/if}
-
-		{#if blocks.length === 0 && !streamingText}
+		{#if blocks.length === 0}
 			<div class="flex items-center justify-center h-full text-muted-foreground/50 text-sm" data-testid="stream-empty">
 				{#if isLive}
 					Waiting for agent output...

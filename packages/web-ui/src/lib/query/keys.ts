@@ -69,6 +69,8 @@ export const queryKeys = {
 		list: (filters?: Record<string, unknown>) =>
 			[...queryKeys.sessions.lists(), filters] as const,
 		detail: (id: string) => [...queryKeys.sessions.all, 'detail', id] as const,
+		eventDetail: (id: string, seq: number) =>
+			[...queryKeys.sessions.all, 'eventDetail', id, seq] as const,
 	},
 
 	plans: {

@@ -54,6 +54,13 @@ const SIDEBAR_PATH = join(
   "components",
   "Sidebar.svelte",
 );
+const TOOL_CALL_VIEW_PATH = join(
+  WEB_UI_SRC,
+  "lib",
+  "components",
+  "session",
+  "ToolCallView.svelte",
+);
 
 // Load source files
 const clientSrc = readFileSync(join(QUERY_DIR, "client.ts"), "utf-8");
@@ -77,6 +84,7 @@ const projectStoreSrc = readFileSync(PROJECT_STORE_PATH, "utf-8");
 const packageJsonSrc = readFileSync(PACKAGE_JSON_PATH, "utf-8");
 const packageJson = JSON.parse(packageJsonSrc);
 const apiSrc = readFileSync(API_PATH, "utf-8");
+const toolCallViewSrc = readFileSync(TOOL_CALL_VIEW_PATH, "utf-8");
 
 describe("TanStack Query package installation", () => {
   it("has @tanstack/svelte-query in dependencies", () => {
@@ -627,10 +635,12 @@ describe("session detail page migration (@ui-data-freshness ac-1)", () => {
     expect(sessionDetailSrc).toContain("task_title");
   });
 
-  it("keeps agent text streaming outside TanStack Query", () => {
-    expect(sessionDetailSrc).toContain("accumulateStreamingText");
-    expect(sessionDetailSrc).toContain("streamingText");
+  // AC: @ws-session-event-streaming ac-no-http-polling
+  it("uses WebSocket incremental block updates instead of HTTP polling", () => {
+    expect(sessionDetailSrc).toContain("incrementalBlockUpdate");
     expect(sessionDetailSrc).toContain("subscribe(['agents'])");
+    expect(sessionDetailSrc).not.toContain("refreshEvents");
+    expect(sessionDetailSrc).not.toContain("setInterval");
   });
 
   it("resets events state when sessionId changes", () => {
@@ -638,6 +648,52 @@ describe("session detail page migration (@ui-data-freshness ac-1)", () => {
     // eventsLoadTriggered must be reset to trigger a fresh load
     expect(sessionDetailSrc).toContain("prevSessionId");
     expect(sessionDetailSrc).toContain("eventsLoadTriggered = false");
+  });
+
+  // AC: @ws-session-event-streaming ac-reconnect-recovery
+  it("handles WebSocket reconnection with gap fill", () => {
+    expect(sessionDetailSrc).toContain("handleStateChange");
+    expect(sessionDetailSrc).toContain("wasConnected");
+    expect(sessionDetailSrc).toContain("onStateChange");
+  });
+
+  // AC: @ws-session-event-streaming ac-live-session-catchup
+  it("fetches events via HTTP for initial catch-up", () => {
+    expect(sessionDetailSrc).toContain("loadEvents");
+    expect(sessionDetailSrc).toContain("fetchSessionEvents");
+    expect(sessionDetailSrc).toContain("stripToolOutput");
+  });
+});
+
+// AC: @ws-session-event-streaming ac-tool-output-on-demand
+describe("on-demand tool output via TanStack Query (@ws-session-event-streaming ac-tool-output-on-demand)", () => {
+
+  it("uses createQuery for on-demand output fetch", () => {
+    expect(toolCallViewSrc).toContain("createQuery");
+    expect(toolCallViewSrc).toContain("fetchSessionEventDetail");
+  });
+
+  it("gates output fetch on expand state", () => {
+    expect(toolCallViewSrc).toContain("shouldFetchOutput");
+    expect(toolCallViewSrc).toContain("expanded");
+  });
+
+  it("uses resultSeq for fetching tool output event", () => {
+    expect(toolCallViewSrc).toContain("resultSeq");
+    expect(toolCallViewSrc).toContain("outputSeq");
+  });
+
+  it("uses eventDetail query key", () => {
+    expect(toolCallViewSrc).toContain("queryKeys.sessions.eventDetail");
+  });
+
+  it("shows loading state during fetch", () => {
+    expect(toolCallViewSrc).toContain("tool-output-loading");
+  });
+
+  it("shows error state with retry on fetch failure", () => {
+    expect(toolCallViewSrc).toContain("tool-output-error");
+    expect(toolCallViewSrc).toContain("tool-output-retry");
   });
 });
 

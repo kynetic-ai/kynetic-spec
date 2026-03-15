@@ -15,6 +15,7 @@ export interface MessageBlock {
 	content: string;
 	timestamp: number;
 	seq: number;
+	isStreaming?: boolean;
 }
 
 export interface ToolCallBlock {
@@ -28,6 +29,8 @@ export interface ToolCallBlock {
 	completedAt?: number;
 	durationMs?: number;
 	seq: number;
+	/** Seq of the result/completion event (for on-demand output fetching). */
+	resultSeq?: number;
 }
 
 export interface ThinkingBlock {
@@ -35,6 +38,7 @@ export interface ThinkingBlock {
 	content: string;
 	timestamp: number;
 	seq: number;
+	isStreaming?: boolean;
 }
 
 export interface SystemBlock {
@@ -240,6 +244,7 @@ export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
 						const output = update.rawOutput ?? update.output ?? update.content;
 						if (output !== undefined) {
 							existing.output = output;
+							existing.resultSeq = event.seq;
 						}
 						if (acpStatus === 'completed' || acpStatus === 'failed') {
 							existing.status = acpStatus;
@@ -253,6 +258,9 @@ export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
 							existing.status = 'completed';
 							existing.completedAt = event.ts;
 							existing.durationMs = event.ts - existing.startedAt;
+						}
+						if (!existing.resultSeq) {
+							existing.resultSeq = event.seq;
 						}
 						// Update rawInput if provided (ACP phased tool calls)
 						if (update.rawInput !== undefined) {
@@ -291,6 +299,7 @@ export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
 					existing.status = (data.error || data.isError) ? 'failed' : 'completed';
 					existing.completedAt = event.ts;
 					existing.durationMs = event.ts - existing.startedAt;
+					existing.resultSeq = event.seq;
 				}
 				break;
 			}
@@ -356,6 +365,183 @@ export function parseEventsToBlocks(events: SessionEvent[]): DisplayBlock[] {
 	}
 
 	return blocks;
+}
+
+/**
+ * Apply a WebSocket session event to an existing block list incrementally.
+ * Returns a new array (shallow copy) with the event applied.
+ *
+ * AC: @ws-session-event-streaming ac-message-start
+ * AC: @ws-session-event-streaming ac-message-progress
+ * AC: @ws-session-event-streaming ac-message-complete
+ * AC: @ws-session-event-streaming ac-tool-call-start
+ * AC: @ws-session-event-streaming ac-tool-call-complete
+ * AC: @ws-session-event-streaming ac-thinking-blocks
+ */
+export function incrementalBlockUpdate(
+	blocks: DisplayBlock[],
+	eventType: string,
+	data: Record<string, unknown>,
+): DisplayBlock[] {
+	const result = [...blocks];
+
+	switch (eventType) {
+		case 'message_start': {
+			// AC: @ws-session-event-streaming ac-message-start — writing indicator
+			result.push({
+				type: 'message',
+				content: '',
+				timestamp: (data.timestamp as number) ?? Date.now(),
+				seq: -1, // WS events don't have JSONL seq; will be reconciled on HTTP catch-up
+				isStreaming: true,
+			});
+			break;
+		}
+
+		case 'message_progress': {
+			// AC: @ws-session-event-streaming ac-message-progress — append text at newline boundaries
+			const text = (data.text as string) ?? '';
+			const lastBlock = result[result.length - 1];
+			if (lastBlock?.type === 'message' && lastBlock.isStreaming) {
+				// Mutate-in-place for the copy — spread a new object
+				result[result.length - 1] = { ...lastBlock, content: lastBlock.content + text };
+			} else {
+				// No existing streaming message — create one
+				result.push({
+					type: 'message',
+					content: text,
+					timestamp: (data.timestamp as number) ?? Date.now(),
+					seq: -1,
+					isStreaming: true,
+				});
+			}
+			break;
+		}
+
+		case 'message_complete': {
+			// AC: @ws-session-event-streaming ac-message-complete — flush remaining text, remove indicator
+			const text = (data.text as string) ?? '';
+			const lastBlock = result[result.length - 1];
+			if (lastBlock?.type === 'message' && lastBlock.isStreaming) {
+				result[result.length - 1] = {
+					...lastBlock,
+					content: lastBlock.content + text,
+					isStreaming: false,
+				};
+			} else if (text) {
+				result.push({
+					type: 'message',
+					content: text,
+					timestamp: (data.timestamp as number) ?? Date.now(),
+					seq: -1,
+				});
+			}
+			break;
+		}
+
+		case 'thinking_start': {
+			// AC: @ws-session-event-streaming ac-thinking-blocks — thinking indicator
+			result.push({
+				type: 'thinking',
+				content: '',
+				timestamp: (data.timestamp as number) ?? Date.now(),
+				seq: -1,
+				isStreaming: true,
+			});
+			break;
+		}
+
+		case 'thinking_progress': {
+			const text = (data.text as string) ?? '';
+			const lastBlock = result[result.length - 1];
+			if (lastBlock?.type === 'thinking' && lastBlock.isStreaming) {
+				result[result.length - 1] = { ...lastBlock, content: lastBlock.content + text };
+			} else {
+				result.push({
+					type: 'thinking',
+					content: text,
+					timestamp: (data.timestamp as number) ?? Date.now(),
+					seq: -1,
+					isStreaming: true,
+				});
+			}
+			break;
+		}
+
+		case 'thinking_complete': {
+			const text = (data.text as string) ?? '';
+			const lastBlock = result[result.length - 1];
+			if (lastBlock?.type === 'thinking' && lastBlock.isStreaming) {
+				result[result.length - 1] = {
+					...lastBlock,
+					content: lastBlock.content + text,
+					isStreaming: false,
+				};
+			} else if (text) {
+				result.push({
+					type: 'thinking',
+					content: text,
+					timestamp: (data.timestamp as number) ?? Date.now(),
+					seq: -1,
+				});
+			}
+			break;
+		}
+
+		case 'tool_call_start': {
+			// AC: @ws-session-event-streaming ac-tool-call-start — running state with name + input
+			const toolCallId = (data.tool_call_id as string) ?? '';
+			const toolName = (data.tool_name as string) ?? 'unknown';
+			result.push({
+				type: 'tool_call',
+				toolName,
+				toolCallId,
+				input: data.tool_input,
+				status: 'running',
+				startedAt: (data.timestamp as number) ?? Date.now(),
+				seq: -1,
+			});
+			break;
+		}
+
+		case 'tool_call_complete': {
+			// AC: @ws-session-event-streaming ac-tool-call-complete — update status and duration
+			const toolCallId = (data.tool_call_id as string) ?? '';
+			const idx = result.findLastIndex(
+				(b) => b.type === 'tool_call' && b.toolCallId === toolCallId
+			);
+			if (idx !== -1) {
+				const existing = result[idx] as ToolCallBlock;
+				result[idx] = {
+					...existing,
+					status: (data.status as string) === 'failed' ? 'failed' : 'completed',
+					durationMs: (data.duration_ms as number) ?? undefined,
+					completedAt: (data.timestamp as number) ?? Date.now(),
+				};
+			}
+			break;
+		}
+	}
+
+	return result;
+}
+
+/**
+ * Strip tool output from display blocks for on-demand loading.
+ * Used for both historical playback and live session catch-up to ensure
+ * consistent UX where tool output is always fetched on expand.
+ *
+ * AC: @ws-session-event-streaming ac-historical-playback
+ * AC: @ws-session-event-streaming ac-tool-output-on-demand
+ */
+export function stripToolOutput(blocks: DisplayBlock[]): DisplayBlock[] {
+	return blocks.map((block) => {
+		if (block.type === 'tool_call' && block.output !== undefined) {
+			const { output: _, ...rest } = block;
+			return rest as ToolCallBlock;
+		}
+		return block;
+	});
 }
 
 /**
@@ -470,9 +656,8 @@ export function shouldShowJumpButton(autoScrolling: boolean, isLive: boolean, bl
 }
 
 /**
- * Accumulate streaming text from session event WebSocket events.
- * Handles both new typed events (message_progress, message_complete, etc.)
- * and legacy agent_text_chunk for backwards compatibility.
+ * @deprecated Use incrementalBlockUpdate() instead.
+ * Kept temporarily for backwards compatibility with tests.
  *
  * AC: @ui-session-stream ac-2
  * AC: @session-event-broadcast ac-replaces-text-chunks

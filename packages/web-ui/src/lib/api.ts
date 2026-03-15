@@ -1210,6 +1210,28 @@ export async function fetchSessionEvents(
 	return response.json();
 }
 
+/**
+ * Fetch a single session event by sequence number (on-demand tool output).
+ * AC: @ws-session-event-streaming ac-tool-output-on-demand
+ */
+export async function fetchSessionEventDetail(
+	id: string,
+	seq: number
+): Promise<SessionEvent> {
+	if (isStaticMode()) {
+		throw new Error('Session event detail not available in static mode');
+	}
+
+	const response = await fetch(`${API_BASE}/api/sessions/${id}/events/${seq}`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
 // ============================================================
 // Validation & Alignment API Functions
 // AC: @ui-validation-view ac-1

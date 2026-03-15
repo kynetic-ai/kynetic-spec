@@ -38,6 +38,8 @@ let shouldAutoScrollFn: SessionUtils["shouldAutoScroll"];
 let AUTO_SCROLL_THRESHOLD: SessionUtils["AUTO_SCROLL_THRESHOLD"];
 let shouldShowJumpButton: SessionUtils["shouldShowJumpButton"];
 let accumulateStreamingText: SessionUtils["accumulateStreamingText"];
+let incrementalBlockUpdate: SessionUtils["incrementalBlockUpdate"];
+let stripToolOutput: SessionUtils["stripToolOutput"];
 let getLastSeq: SessionUtils["getLastSeq"];
 let renderMarkdown: MarkdownUtils["renderMarkdown"];
 let sanitizeHtml: typeof import("../packages/web-ui/src/lib/utils/sanitize")["sanitizeHtml"];
@@ -74,6 +76,8 @@ beforeAll(async () => {
   AUTO_SCROLL_THRESHOLD = sessionMod.AUTO_SCROLL_THRESHOLD;
   shouldShowJumpButton = sessionMod.shouldShowJumpButton;
   accumulateStreamingText = sessionMod.accumulateStreamingText;
+  incrementalBlockUpdate = sessionMod.incrementalBlockUpdate;
+  stripToolOutput = sessionMod.stripToolOutput;
   getLastSeq = sessionMod.getLastSeq;
 
   const markdownMod = await import(
@@ -2196,5 +2200,358 @@ describe("design tokens and accessibility", () => {
         }
       }
     }
+  });
+});
+
+// AC: @ws-session-event-streaming ac-message-start, ac-message-progress, ac-message-complete
+// AC: @ws-session-event-streaming ac-tool-call-start, ac-tool-call-complete
+// AC: @ws-session-event-streaming ac-thinking-blocks
+describe("incrementalBlockUpdate — WebSocket event to block mapping", () => {
+  it("message_start creates a streaming message block", () => {
+    const blocks = incrementalBlockUpdate([], "message_start", {
+      session_id: "s1",
+      timestamp: 1000,
+    });
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0].type).toBe("message");
+    expect(blocks[0]).toMatchObject({
+      type: "message",
+      content: "",
+      isStreaming: true,
+    });
+  });
+
+  it("message_progress appends text to existing streaming message", () => {
+    const initial = incrementalBlockUpdate([], "message_start", {
+      session_id: "s1",
+      timestamp: 1000,
+    });
+    const after = incrementalBlockUpdate(initial, "message_progress", {
+      session_id: "s1",
+      text: "Hello\n",
+      timestamp: 1001,
+    });
+    expect(after).toHaveLength(1);
+    expect(after[0]).toMatchObject({
+      type: "message",
+      content: "Hello\n",
+      isStreaming: true,
+    });
+  });
+
+  it("message_progress creates a streaming block if none exists", () => {
+    const blocks = incrementalBlockUpdate([], "message_progress", {
+      session_id: "s1",
+      text: "unexpected text\n",
+      timestamp: 1000,
+    });
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({
+      type: "message",
+      content: "unexpected text\n",
+      isStreaming: true,
+    });
+  });
+
+  it("message_complete flushes remaining text and removes streaming flag", () => {
+    let blocks = incrementalBlockUpdate([], "message_start", {
+      session_id: "s1",
+      timestamp: 1000,
+    });
+    blocks = incrementalBlockUpdate(blocks, "message_progress", {
+      session_id: "s1",
+      text: "line 1\n",
+      timestamp: 1001,
+    });
+    blocks = incrementalBlockUpdate(blocks, "message_complete", {
+      session_id: "s1",
+      text: "final text",
+      timestamp: 1002,
+    });
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({
+      type: "message",
+      content: "line 1\nfinal text",
+      isStreaming: false,
+    });
+  });
+
+  it("thinking_start creates a streaming thinking block", () => {
+    const blocks = incrementalBlockUpdate([], "thinking_start", {
+      session_id: "s1",
+      timestamp: 1000,
+    });
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({
+      type: "thinking",
+      content: "",
+      isStreaming: true,
+    });
+  });
+
+  it("thinking_progress appends text to existing thinking block", () => {
+    let blocks = incrementalBlockUpdate([], "thinking_start", {
+      session_id: "s1",
+      timestamp: 1000,
+    });
+    blocks = incrementalBlockUpdate(blocks, "thinking_progress", {
+      session_id: "s1",
+      text: "reasoning...\n",
+      timestamp: 1001,
+    });
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({
+      type: "thinking",
+      content: "reasoning...\n",
+      isStreaming: true,
+    });
+  });
+
+  it("thinking_complete finalizes thinking block", () => {
+    let blocks = incrementalBlockUpdate([], "thinking_start", {
+      session_id: "s1",
+      timestamp: 1000,
+    });
+    blocks = incrementalBlockUpdate(blocks, "thinking_progress", {
+      session_id: "s1",
+      text: "partial\n",
+      timestamp: 1001,
+    });
+    blocks = incrementalBlockUpdate(blocks, "thinking_complete", {
+      session_id: "s1",
+      text: "done",
+      timestamp: 1002,
+    });
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({
+      type: "thinking",
+      content: "partial\ndone",
+      isStreaming: false,
+    });
+  });
+
+  it("tool_call_start creates a running tool call block", () => {
+    const blocks = incrementalBlockUpdate([], "tool_call_start", {
+      session_id: "s1",
+      tool_call_id: "tc-1",
+      tool_name: "Bash",
+      tool_input: { command: "ls" },
+      timestamp: 1000,
+    });
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({
+      type: "tool_call",
+      toolName: "Bash",
+      toolCallId: "tc-1",
+      input: { command: "ls" },
+      status: "running",
+    });
+  });
+
+  it("tool_call_complete updates status and duration on existing tool call", () => {
+    let blocks = incrementalBlockUpdate([], "tool_call_start", {
+      session_id: "s1",
+      tool_call_id: "tc-1",
+      tool_name: "Bash",
+      tool_input: { command: "ls" },
+      timestamp: 1000,
+    });
+    blocks = incrementalBlockUpdate(blocks, "tool_call_complete", {
+      session_id: "s1",
+      tool_call_id: "tc-1",
+      tool_name: "Bash",
+      status: "completed",
+      duration_ms: 500,
+      timestamp: 1500,
+    });
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({
+      type: "tool_call",
+      status: "completed",
+      durationMs: 500,
+    });
+  });
+
+  it("tool_call_complete marks failed status", () => {
+    let blocks = incrementalBlockUpdate([], "tool_call_start", {
+      session_id: "s1",
+      tool_call_id: "tc-1",
+      tool_name: "Bash",
+      tool_input: { command: "exit 1" },
+      timestamp: 1000,
+    });
+    blocks = incrementalBlockUpdate(blocks, "tool_call_complete", {
+      session_id: "s1",
+      tool_call_id: "tc-1",
+      tool_name: "Bash",
+      status: "failed",
+      duration_ms: 100,
+      timestamp: 1100,
+    });
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]).toMatchObject({
+      type: "tool_call",
+      status: "failed",
+    });
+  });
+
+  it("returns a new array reference (immutable update)", () => {
+    const original: ReturnType<typeof incrementalBlockUpdate> = [];
+    const result = incrementalBlockUpdate(original, "message_start", {
+      session_id: "s1",
+      timestamp: 1000,
+    });
+    expect(result).not.toBe(original);
+  });
+
+  it("interleaves messages and tool calls correctly", () => {
+    let blocks = incrementalBlockUpdate([], "message_start", {
+      session_id: "s1",
+      timestamp: 1000,
+    });
+    blocks = incrementalBlockUpdate(blocks, "message_progress", {
+      session_id: "s1",
+      text: "Let me check.\n",
+      timestamp: 1001,
+    });
+    blocks = incrementalBlockUpdate(blocks, "message_complete", {
+      session_id: "s1",
+      text: "",
+      timestamp: 1002,
+    });
+    blocks = incrementalBlockUpdate(blocks, "tool_call_start", {
+      session_id: "s1",
+      tool_call_id: "tc-1",
+      tool_name: "Read",
+      tool_input: { file_path: "/src/index.ts" },
+      timestamp: 1003,
+    });
+    blocks = incrementalBlockUpdate(blocks, "tool_call_complete", {
+      session_id: "s1",
+      tool_call_id: "tc-1",
+      tool_name: "Read",
+      status: "completed",
+      duration_ms: 200,
+      timestamp: 1203,
+    });
+    blocks = incrementalBlockUpdate(blocks, "message_start", {
+      session_id: "s1",
+      timestamp: 1204,
+    });
+    blocks = incrementalBlockUpdate(blocks, "message_progress", {
+      session_id: "s1",
+      text: "Here's what I found.\n",
+      timestamp: 1205,
+    });
+
+    expect(blocks).toHaveLength(3);
+    expect(blocks[0].type).toBe("message");
+    expect(blocks[1].type).toBe("tool_call");
+    expect(blocks[2].type).toBe("message");
+  });
+});
+
+// AC: @ws-session-event-streaming ac-historical-playback
+// AC: @ws-session-event-streaming ac-tool-output-on-demand
+describe("stripToolOutput — on-demand output loading", () => {
+  it("removes output from tool call blocks", () => {
+    const blocks = parseEventsToBlocks([
+      { ts: 1000, seq: 0, type: "session.start", session_id: "s1", data: {} },
+      {
+        ts: 1001,
+        seq: 1,
+        type: "session.update",
+        session_id: "s1",
+        data: {
+          sessionUpdate: "tool_call",
+          toolCallId: "tc-1",
+          title: "Read",
+          rawInput: { file_path: "/src/app.ts" },
+        },
+      },
+      {
+        ts: 1002,
+        seq: 2,
+        type: "session.update",
+        session_id: "s1",
+        data: {
+          sessionUpdate: "tool_call_update",
+          toolCallId: "tc-1",
+          status: "completed",
+          rawOutput: "file contents here",
+        },
+      },
+    ]);
+
+    // Before strip: output exists
+    const toolBlock = blocks.find((b) => b.type === "tool_call");
+    expect(toolBlock).toBeDefined();
+    expect((toolBlock as any).output).toBe("file contents here");
+
+    // After strip: output removed
+    const stripped = stripToolOutput(blocks);
+    const strippedTool = stripped.find((b) => b.type === "tool_call");
+    expect(strippedTool).toBeDefined();
+    expect((strippedTool as any).output).toBeUndefined();
+  });
+
+  it("preserves resultSeq for on-demand fetching", () => {
+    const blocks = parseEventsToBlocks([
+      {
+        ts: 1001,
+        seq: 5,
+        type: "session.update",
+        session_id: "s1",
+        data: {
+          sessionUpdate: "tool_call",
+          toolCallId: "tc-1",
+          title: "Bash",
+          rawInput: { command: "ls" },
+        },
+      },
+      {
+        ts: 1002,
+        seq: 6,
+        type: "session.update",
+        session_id: "s1",
+        data: {
+          sessionUpdate: "tool_call_update",
+          toolCallId: "tc-1",
+          status: "completed",
+          rawOutput: "output data",
+        },
+      },
+    ]);
+
+    const toolBlock = blocks.find((b) => b.type === "tool_call") as any;
+    expect(toolBlock.seq).toBe(5); // start event seq
+    expect(toolBlock.resultSeq).toBe(6); // result event seq
+
+    const stripped = stripToolOutput(blocks);
+    const strippedTool = stripped.find((b) => b.type === "tool_call") as any;
+    expect(strippedTool.output).toBeUndefined();
+    expect(strippedTool.resultSeq).toBe(6); // preserved for on-demand fetch
+  });
+
+  it("leaves non-tool-call blocks unchanged", () => {
+    const blocks = parseEventsToBlocks([
+      { ts: 1000, seq: 0, type: "session.start", session_id: "s1", data: {} },
+      {
+        ts: 1001,
+        seq: 1,
+        type: "session.update",
+        session_id: "s1",
+        data: {
+          sessionUpdate: "agent_message_chunk",
+          content: { type: "text", text: "hello" },
+        },
+      },
+    ]);
+
+    const stripped = stripToolOutput(blocks);
+    expect(stripped).toHaveLength(blocks.length);
+    const msg = stripped.find((b) => b.type === "message");
+    expect(msg).toBeDefined();
+    expect((msg as any).content).toBe("hello");
   });
 });

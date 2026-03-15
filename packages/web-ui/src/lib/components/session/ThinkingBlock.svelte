@@ -1,5 +1,6 @@
 <!--
   AC: @ui-session-stream ac-1 — Thinking blocks collapsed by default, expandable.
+  AC: @ws-session-event-streaming ac-thinking-blocks — Thinking blocks stream progressively, collapsed by default.
 -->
 <script lang="ts">
 	import type { ThinkingBlock as ThinkingBlockType } from './session-utils';
@@ -30,6 +31,10 @@
 
 		<Brain class="size-3.5 text-design-ring" />
 		<span class="text-xs text-design-muted-fg">Thinking</span>
+
+		{#if block.isStreaming}
+			<span class="ds-session-active-dot size-1.5 rounded-full bg-design-ring inline-block"></span>
+		{/if}
 
 		{#if !expanded}
 			<span class="text-xs text-muted-foreground/60 truncate flex-1 italic">{preview}</span>
