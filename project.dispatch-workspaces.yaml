@@ -4466,12 +4466,7 @@ workspaces:
         branch_ref: dispatch/task/task-server-resolve/01kkqrk1
         head: 8cba502f426b32e3b0b494e58fae52256adf7a8f
         last_seen_at: 2026-03-15T04:02:24.449Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-server-resolve-01kkqrk1-review
-        branch_mode: detached
-        branch_ref: null
-        head: 8cba502f426b32e3b0b494e58fae52256adf7a8f
-        last_seen_at: 2026-03-15T04:02:24.449Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -4510,7 +4505,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T04:14:47.494Z
+      updated_at: 2026-03-15T04:15:02.619Z
     cleanup:
       status: scheduled
       eligible: true
@@ -4519,8 +4514,8 @@ workspaces:
       updated_at: 2026-03-15T04:14:47.494Z
     timestamps:
       created_at: 2026-03-15T03:48:31.307Z
-      updated_at: 2026-03-15T04:15:01.846Z
-      last_reconciled_at: 2026-03-15T04:15:01.846Z
+      updated_at: 2026-03-15T04:15:02.619Z
+      last_reconciled_at: 2026-03-15T04:15:02.619Z
       last_active_at: 2026-03-15T04:02:24.985Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKQRK26BXGJJPBJ1NQ4GM59C
