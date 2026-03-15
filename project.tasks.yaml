@@ -97502,6 +97502,13 @@
         kspec-agents.md. Rebase onto main and re-run kspec agents generate. Content quality is clean
         — this is the only blocking issue."
       supersedes: null
+    - _ulid: 01KKQTWJNQMTYVMKPB9WGJGNT7
+      created_at: 2026-03-15T04:08:22.968Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Merged origin/main into task branch to resolve kspec-agents.md conflict.
+        Regenerated agents (already up to date). Full test suite passes (248/249 files; 1
+        pre-existing flaky cli-serve shutdown test). PR #865 updated."
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK0ZZZ1QMCNHDHK3969AF
