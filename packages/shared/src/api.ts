@@ -30,8 +30,19 @@ export interface ErrorResponse {
 }
 
 /**
+ * Resolved reference entry with title and status
+ * AC: @ui-api-ref-resolution ac-2
+ */
+export interface ResolvedRefEntry {
+  ref: string;
+  title: string | null;
+  status: string | null;
+}
+
+/**
  * Task summary for list endpoints
  * AC: @api-contract ac-2
+ * AC: @ui-api-ref-resolution ac-1 — spec_title resolved server-side
  */
 export interface TaskSummary {
   _ulid: string;
@@ -41,6 +52,8 @@ export interface TaskSummary {
   status: string;
   priority: number;
   spec_ref?: string;
+  /** Resolved title for spec_ref. Null if ref cannot be resolved. */
+  spec_title?: string | null;
   tags: string[];
   depends_on: string[];
   automation?: string;
@@ -54,15 +67,22 @@ export interface TaskSummary {
  * Full task with notes and todos
  * AC: @api-contract ac-5
  * AC: @ui-task-board ac-3 — description, plan_ref, session_ref for detail modal
+ * AC: @ui-api-ref-resolution ac-1, ac-2 — resolved titles for refs
  */
 export interface TaskDetail extends TaskSummary {
   description?: string;
   derivation?: string;
   blocked_by: string[];
   depends_on: string[];
+  /** Resolved depends_on entries with titles and status */
+  resolved_depends_on?: ResolvedRefEntry[];
+  /** Resolved blocked_by entries with titles and status */
+  resolved_blocked_by?: ResolvedRefEntry[];
   context: string[];
   vcs_refs: string[];
   plan_ref?: string;
+  /** Resolved title for plan_ref. Null if ref cannot be resolved. */
+  plan_title?: string | null;
   session_ref?: string;
   notes: Note[];
   todos?: Todo[];
@@ -442,6 +462,7 @@ export type TriageAction = 'promote' | 'delete' | 'defer' | 'spec-gap' | 'duplic
 
 /**
  * Triage record
+ * AC: @ui-api-ref-resolution ac-2 — resolved_evidence_refs with titles
  */
 export interface TriageRecord {
   _ulid: string;
@@ -452,6 +473,8 @@ export interface TriageRecord {
   reasoning?: string;
   decided_by?: string;
   evidence_refs: string[];
+  /** Resolved evidence_refs with titles and status */
+  resolved_evidence_refs?: ResolvedRefEntry[];
   override_reasoning?: string;
   override_by?: string;
   override_at?: string;
@@ -518,6 +541,24 @@ export interface ExportedValidation {
     file: string;
     message: string;
   }>;
+}
+
+/**
+ * Lightweight ref index entry for display metadata
+ * AC: @ui-api-ref-resolution ac-4, ac-5
+ */
+export interface RefIndexEntry {
+  title: string;
+  type: string;
+  status?: string;
+}
+
+/**
+ * Ref index response — map of ref keys to display metadata
+ * AC: @ui-api-ref-resolution ac-4, ac-5
+ */
+export interface RefIndexResponse {
+  refs: Record<string, RefIndexEntry>;
 }
 
 /**
