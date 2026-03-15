@@ -4863,7 +4863,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
     canonical_branch: dispatch/task/task-migrate-core-pages/01kkqrk3
-    canonical_branch_head: adee64fddc7d4113f4b8e659a7349df94080236a
+    canonical_branch_head: 337e05a28722003c4afe299281e2e58345003ca0
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -4871,7 +4871,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: stale
+    lifecycle_state: active
     active_role: worker
     worktrees:
       worker:
@@ -4917,27 +4917,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T07:10:35.657Z
+      updated_at: 2026-03-15T07:12:35.668Z
     health:
-      status: stale
-      summary: Workspace registry record is stale and needs reconciliation.
-      issues:
-        - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-core-pages-01kkqrk3"
-            is missing or no longer registered.
-          suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-15T07:10:35.657Z
+      status: healthy
+      summary: Workspace record matches current git branch and worktree state.
+      issues: []
+      updated_at: 2026-03-15T07:12:35.668Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T07:10:35.657Z
+      updated_at: 2026-03-15T07:12:35.668Z
     timestamps:
       created_at: 2026-03-15T05:54:29.769Z
-      updated_at: 2026-03-15T07:10:35.657Z
-      last_reconciled_at: 2026-03-15T07:10:35.657Z
+      updated_at: 2026-03-15T07:12:35.668Z
+      last_reconciled_at: 2026-03-15T07:12:35.668Z
       last_active_at: 2026-03-15T07:09:21.027Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKQRK4GRF9PBJVJG4S3BDE33
