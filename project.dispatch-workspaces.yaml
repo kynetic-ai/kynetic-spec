@@ -4799,12 +4799,7 @@ workspaces:
         branch_ref: dispatch/task/task-ws-enrichment/01kkqrk3
         head: 42befa87a3439974aa7dce5ec45d33a97d61851a
         last_seen_at: 2026-03-15T05:46:43.598Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ws-enrichment-01kkqrk3-review
-        branch_mode: detached
-        branch_ref: null
-        head: 42befa87a3439974aa7dce5ec45d33a97d61851a
-        last_seen_at: 2026-03-15T05:46:43.598Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -4843,7 +4838,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T05:57:43.362Z
+      updated_at: 2026-03-15T05:57:52.512Z
     cleanup:
       status: scheduled
       eligible: true
@@ -4852,8 +4847,8 @@ workspaces:
       updated_at: 2026-03-15T05:57:43.362Z
     timestamps:
       created_at: 2026-03-15T05:25:01.659Z
-      updated_at: 2026-03-15T05:57:47.691Z
-      last_reconciled_at: 2026-03-15T05:57:47.691Z
+      updated_at: 2026-03-15T05:57:52.512Z
+      last_reconciled_at: 2026-03-15T05:57:52.512Z
       last_active_at: 2026-03-15T05:46:44.152Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKQRK3YT328Q9BKN9HD0DE34
