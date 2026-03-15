@@ -1131,6 +1131,51 @@ export async function readEvents(
 }
 
 /**
+ * Read a single event by sequence number from a session's event log.
+ *
+ * Scans events.jsonl line-by-line and stops as soon as the matching seq is
+ * found, avoiding full parsing of all events for large sessions.
+ *
+ * AC: @session-event-detail-endpoint ac-single-event-fetch
+ *
+ * @param sessionsDir - The sessions directory path
+ * @param sessionId - Session ID
+ * @param seq - Sequence number to find
+ * @returns The matching event, or null if not found
+ */
+export async function readEventBySeq(
+  sessionsDir: string,
+  sessionId: string,
+  seq: number,
+): Promise<SessionEvent | null> {
+  const eventsPath = getSessionEventsPath(sessionsDir, sessionId);
+
+  let content: string;
+  try {
+    content = await fsPromises.readFile(eventsPath, "utf-8");
+  } catch {
+    return null;
+  }
+
+  const lines = content.split("\n");
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.length === 0) continue;
+
+    try {
+      const raw = JSON.parse(trimmed);
+      if (isRecord(raw) && raw.seq === seq) {
+        return SessionEventSchema.parse(raw);
+      }
+    } catch {
+      // Skip invalid lines
+    }
+  }
+
+  return null;
+}
+
+/**
  * Deduplicate phased tool_call events.
  *
  * ACP SDK 0.14+ sends tool calls in two phases: first with empty rawInput,
