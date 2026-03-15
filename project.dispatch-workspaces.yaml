@@ -5850,8 +5850,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: active
+    active_role: worker
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-watch-ws-events-01kksgt1
@@ -5898,7 +5898,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T22:12:38.959Z
+      updated_at: 2026-03-15T22:12:39.491Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -5907,7 +5907,7 @@ workspaces:
       updated_at: 2026-03-15T22:12:38.959Z
     timestamps:
       created_at: 2026-03-15T22:12:38.959Z
-      updated_at: 2026-03-15T22:12:39.182Z
-      last_reconciled_at: 2026-03-15T22:12:38.959Z
-      last_active_at: null
+      updated_at: 2026-03-15T22:12:39.491Z
+      last_reconciled_at: 2026-03-15T22:12:39.491Z
+      last_active_at: 2026-03-15T22:12:39.491Z
       closed_at: null
