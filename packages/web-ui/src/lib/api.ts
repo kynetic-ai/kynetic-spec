@@ -18,6 +18,7 @@ import type {
 	ItemDetail,
 	BatchItemsResponse,
 	InboxItem,
+	InboxItemWithTriage,
 	SessionContext,
 	Observation,
 	Workflow,
@@ -406,6 +407,48 @@ export async function fetchInbox(params?: {
 	}
 
 	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch inbox items with inline triage status from the merged aggregation endpoint.
+ * Eliminates the need for separate fetchInbox + fetchTriageRecords + client-side join.
+ * AC: @ui-api-aggregation ac-3 — Inbox items with inline triage status
+ */
+export async function fetchMergedInbox(): Promise<{
+	items: InboxItemWithTriage[];
+	total: number;
+}> {
+	// In static mode, fall back to separate fetches and merge client-side
+	if (isStaticMode()) {
+		const inboxResponse = await fetchInboxStatic({ limit: 1000 });
+		const triageResponse = await fetchTriageRecordsStatic({ limit: 1000 });
+		const items: InboxItemWithTriage[] = inboxResponse.items.map((item) => {
+			const record = triageResponse.items.find((r) => r.inbox_ref === item._ulid);
+			const result: InboxItemWithTriage = { ...item };
+			if (record) {
+				result.triage = {
+					_ulid: record._ulid,
+					status: record.status,
+					action: record.action,
+					reasoning: record.reasoning,
+					decided_by: record.decided_by,
+					acted_at: record.acted_at,
+					result_ref: record.result_ref,
+				};
+			}
+			return result;
+		});
+		return { items, total: items.length };
+	}
+
+	const response = await fetch(`${API_BASE}/api/aggregation/inbox`, {
 		headers: getProjectHeaders()
 	});
 	if (!response.ok) {

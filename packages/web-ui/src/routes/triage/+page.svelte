@@ -1,23 +1,27 @@
+<!--
+  AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
+  AC: @ui-data-freshness ac-3 — WebSocket events invalidate merged inbox query
+  AC: @ui-api-aggregation ac-3 — Inbox items include inline triage status, no client join
+-->
 <script lang="ts">
 	// AC: @interactive-triage-ui ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8
-	// AC: @trait-websocket-protocol ac-1, ac-2, ac-3
-	import { onMount, onDestroy } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { base } from '$app/paths';
-	import { page } from '$app/stores';
-	import type { InboxItem, BroadcastEvent } from '@kynetic-ai/shared';
+	import { page } from '$app/state';
+	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
+	import type { InboxItemWithTriage } from '@kynetic-ai/shared';
 	import type { TriageRecord, TriageAction } from '$lib/types/triage';
 	import {
-		fetchInbox,
+		fetchMergedInbox,
 		fetchTriageRecords,
 		createTriageRecord,
 		overrideTriageRecord,
 		actOnTriageRecord
 	} from '$lib/api';
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
-	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
-	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { renderMarkdown } from '$lib/utils/markdown';
+	import { queryKeys } from '$lib/query/keys.js';
 	import { Button } from '$lib/components/ui/button';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
@@ -26,11 +30,7 @@
 	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
 	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
 
-	// Data state
-	let inboxItems = $state<InboxItem[]>([]);
-	let triageRecords = $state<TriageRecord[]>([]);
-	let loading = $state(true);
-	let error = $state('');
+	const queryClient = useQueryClient();
 
 	// Card navigation state
 	// AC: @interactive-triage-ui ac-5
@@ -41,6 +41,9 @@
 	// AC: @interactive-triage-ui ac-3
 	let selectedAction = $state<TriageAction | ''>('');
 	let reasoning = $state('');
+
+	// Write operation error (separate from query error)
+	let writeError = $state('');
 
 	// Action labels
 	const ACTION_LABELS: Record<TriageAction, string> = {
@@ -63,37 +66,63 @@
 	const TRIAGE_STATUS_VALUES: readonly TriageFilterStatus[] = ['all', 'untriaged', 'triaged', 'acted_on'];
 	const TRIAGE_ACTION_VALUES = Object.keys(ACTION_LABELS) as TriageAction[];
 
+	// ── Queries ──
+	// AC: @ui-data-freshness ac-1 — createQuery caches; revisits render from cache
+	// AC: @ui-api-aggregation ac-3 — Uses merged endpoint for inline triage status
+	const mergedInboxQuery = createQuery(() => ({
+		queryKey: queryKeys.inbox.merged(),
+		queryFn: () => fetchMergedInbox(),
+		enabled: isProjectInitialized(),
+	}));
+
+	// Full triage records for detail view (evidence_refs, override_reasoning, override_by)
+	const triageRecordsQuery = createQuery(() => ({
+		queryKey: queryKeys.inbox.list({ type: 'triage-records' }),
+		queryFn: () => fetchTriageRecords({ limit: 1000 }),
+		enabled: isProjectInitialized(),
+	}));
+
 	// Filter state — derived from URL params (single source of truth)
 	// AC: @interactive-triage-ui ac-7
-	let filterTag = $derived($page.url.searchParams.get('tag') || '');
+	let filterTag = $derived(page.url.searchParams.get('tag') || '');
 	let filterStatus = $derived.by((): TriageFilterStatus => {
-		const raw = $page.url.searchParams.get('status');
+		const raw = page.url.searchParams.get('status');
 		if (raw && TRIAGE_STATUS_VALUES.includes(raw as TriageFilterStatus)) {
 			return raw as TriageFilterStatus;
 		}
 		return 'all';
 	});
 	let filterAction = $derived.by((): TriageAction | '' => {
-		const raw = $page.url.searchParams.get('action');
+		const raw = page.url.searchParams.get('action');
 		if (raw && TRIAGE_ACTION_VALUES.includes(raw as TriageAction)) {
 			return raw as TriageAction;
 		}
 		return '';
 	});
 
+	// Build a map of triage records by inbox_ref for fast lookup in the detail card
+	let triageRecordsByInboxRef = $derived.by((): Map<string, TriageRecord> => {
+		const records = triageRecordsQuery.data?.items ?? [];
+		const map = new Map<string, TriageRecord>();
+		for (const r of records) {
+			map.set(r.inbox_ref, r);
+		}
+		return map;
+	});
+
 	// Merged view: inbox items with their triage records
 	interface TriageCardItem {
-		inbox: InboxItem;
+		inbox: InboxItemWithTriage;
 		record: TriageRecord | null;
 	}
 
 	// AC: @interactive-triage-ui ac-7 - Filtered items
-	let allItems = $derived.by(() => {
-		const items: TriageCardItem[] = inboxItems.map((inbox) => {
-			const record = triageRecords.find((r) => r.inbox_ref === inbox._ulid) ?? null;
-			return { inbox, record };
+	let allItems = $derived.by((): TriageCardItem[] => {
+		const items = mergedInboxQuery.data?.items ?? [];
+		return items.map((item) => {
+			const record = triageRecordsByInboxRef.get(item._ulid) ?? null;
+			return { inbox: item, record };
 		});
-		return items;
 	});
 
 	let filteredItems = $derived.by(() => {
@@ -104,18 +133,18 @@
 			items = items.filter((i) => i.inbox.tags.includes(filterTag));
 		}
 
-		// Status filter
+		// Status filter (use inline triage status from merged endpoint)
 		if (filterStatus === 'untriaged') {
-			items = items.filter((i) => !i.record || i.record.status === 'pending');
+			items = items.filter((i) => !i.inbox.triage || i.inbox.triage.status === 'pending');
 		} else if (filterStatus === 'triaged') {
-			items = items.filter((i) => i.record?.status === 'triaged');
+			items = items.filter((i) => i.inbox.triage?.status === 'triaged');
 		} else if (filterStatus === 'acted_on') {
-			items = items.filter((i) => i.record?.status === 'acted_on');
+			items = items.filter((i) => i.inbox.triage?.status === 'acted_on');
 		}
 
 		// Action filter
 		if (filterAction) {
-			items = items.filter((i) => i.record?.action === filterAction);
+			items = items.filter((i) => i.inbox.triage?.action === filterAction);
 		}
 
 		return items;
@@ -124,77 +153,31 @@
 	let currentItem = $derived(filteredItems[currentIndex] ?? null);
 
 	// AC: @interactive-triage-ui ac-7 - Progress count
-	let triagedCount = $derived(allItems.filter((i) => i.record && i.record.status !== 'pending').length);
+	let triagedCount = $derived(
+		allItems.filter((i) => i.inbox.triage && i.inbox.triage.status !== 'pending').length
+	);
 	let totalCount = $derived(allItems.length);
 
 	// All unique tags for filter
 	let allTags = $derived.by(() => {
+		const items = mergedInboxQuery.data?.items ?? [];
 		const tagSet = new Set<string>();
-		inboxItems.forEach((item) => item.tags.forEach((t) => tagSet.add(t)));
+		items.forEach((item) => item.tags.forEach((t) => tagSet.add(t)));
 		return Array.from(tagSet).sort();
 	});
 
-	onMount(() => {
-		// AC: @interactive-triage-ui ac-6 - Subscribe to triage:updates
-		// AC: @trait-websocket-protocol ac-2 - Subscribe to topic
-		if (!isStaticMode()) {
-			subscribe(['triage:updates']);
-			on('triage:updates', handleTriageUpdate);
-		}
-	});
+	// AC: @ui-data-freshness ac-1 — Only show loading on initial fetch (no cache)
+	let loading = $derived(mergedInboxQuery.isLoading || triageRecordsQuery.isLoading);
 
-	onDestroy(() => {
-		if (!isStaticMode()) {
-			off('triage:updates', handleTriageUpdate);
-			unsubscribe(['triage:updates']);
-		}
-	});
-
-	// Load data when project is ready and reload on project change.
-	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
-	// AC: @multi-directory-daemon ac-27 - Reload on project change
-	$effect(() => {
-		const version = getProjectVersion();
-		const ready = isProjectInitialized();
-		if (!ready) return;
-		loadData();
-	});
-
-	// AC: @interactive-triage-ui ac-6 - Real-time update handler
-	// AC: @trait-websocket-protocol ac-3 - Handle broadcast event
-	function handleTriageUpdate(_event: BroadcastEvent) {
-		// Reload triage records on any triage update
-		loadTriageData();
-	}
-
-	async function loadData() {
-		try {
-			loading = true;
-			error = '';
-			const [inboxResponse, triageResponse] = await Promise.all([
-				fetchInbox({ limit: 1000 }),
-				fetchTriageRecords({ limit: 1000 })
-			]);
-			inboxItems = inboxResponse.items;
-			triageRecords = triageResponse.items;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load triage data';
-		} finally {
-			loading = false;
-		}
-	}
-
-	async function loadTriageData() {
-		try {
-			const triageResponse = await fetchTriageRecords({ limit: 1000 });
-			triageRecords = triageResponse.items;
-		} catch (err) {
-			console.error('Failed to reload triage records:', err);
-		}
-	}
+	// AC: @ui-data-freshness ac-7 — Surface error from query or write operations
+	let error = $derived(
+		writeError ||
+		(mergedInboxQuery.error ? mergedInboxQuery.error.message : '') ||
+		(triageRecordsQuery.error ? triageRecordsQuery.error.message : '')
+	);
 
 	function updateFilterParam(key: 'status' | 'action' | 'tag', value: string) {
-		const params = new URLSearchParams($page.url.searchParams);
+		const params = new URLSearchParams(page.url.searchParams);
 
 		if (!value || value === 'all') {
 			params.delete(key);
@@ -225,7 +208,7 @@
 	function resetForm() {
 		selectedAction = '';
 		reasoning = '';
-		error = '';
+		writeError = '';
 	}
 
 	// Keyboard navigation - skip when focus is on input/textarea elements
@@ -242,17 +225,18 @@
 	}
 
 	// AC: @interactive-triage-ui ac-3 - Submit triage decision
+	// AC: @ui-data-freshness ac-8 — Write operation invalidates related cache
 	async function handleSubmit() {
 		if (!currentItem || !selectedAction || !reasoning.trim()) return;
 
 		if (isStaticMode()) {
-			error = 'Cannot submit triage decisions in read-only mode.';
+			writeError = 'Cannot submit triage decisions in read-only mode.';
 			return;
 		}
 
 		try {
 			submitting = true;
-			error = '';
+			writeError = '';
 
 			const existing = currentItem.record;
 
@@ -271,8 +255,8 @@
 				});
 			}
 
-			// Reload triage data
-			await loadTriageData();
+			// AC: @ui-data-freshness ac-8 — Invalidate inbox cache after write
+			queryClient.invalidateQueries({ queryKey: queryKeys.inbox.all });
 
 			// Auto-advance to next item
 			// AC: @interactive-triage-ui ac-3 - advances to next item
@@ -282,9 +266,9 @@
 			resetForm();
 		} catch (err) {
 			if (err instanceof ReadOnlyModeError) {
-				error = err.message;
+				writeError = err.message;
 			} else {
-				error = err instanceof Error ? err.message : 'Failed to submit triage decision';
+				writeError = err instanceof Error ? err.message : 'Failed to submit triage decision';
 			}
 		} finally {
 			submitting = false;
@@ -292,24 +276,26 @@
 	}
 
 	// Execute the triage action
+	// AC: @ui-data-freshness ac-8 — Write operation invalidates related cache
 	async function handleAct() {
 		if (!currentItem?.record) return;
 
 		if (isStaticMode()) {
-			error = 'Cannot execute triage actions in read-only mode.';
+			writeError = 'Cannot execute triage actions in read-only mode.';
 			return;
 		}
 
 		try {
 			submitting = true;
-			error = '';
+			writeError = '';
 			await actOnTriageRecord(currentItem.record._ulid);
-			await loadTriageData();
+			// AC: @ui-data-freshness ac-8 — Invalidate inbox cache after write
+			queryClient.invalidateQueries({ queryKey: queryKeys.inbox.all });
 		} catch (err) {
 			if (err instanceof ReadOnlyModeError) {
-				error = err.message;
+				writeError = err.message;
 			} else {
-				error = err instanceof Error ? err.message : 'Failed to execute triage action';
+				writeError = err instanceof Error ? err.message : 'Failed to execute triage action';
 			}
 		} finally {
 			submitting = false;

@@ -13,8 +13,18 @@ import type { BroadcastEvent } from '@kynetic-ai/shared';
 import { queryKeys } from './keys.js';
 import { on, off, subscribe, unsubscribe } from '$lib/stores/connection.svelte';
 
-/** Topics we subscribe to for cache invalidation */
-const INVALIDATION_TOPICS = ['tasks', 'items', 'inbox', 'agents', 'files'] as const;
+/**
+ * Topics we subscribe to for cache invalidation.
+ * Must match the exact topic strings the daemon broadcasts on.
+ */
+const INVALIDATION_TOPICS = [
+	'tasks:updates',
+	'items:updates',
+	'inbox:updates',
+	'triage:updates',
+	'agents',
+	'files:updates',
+] as const;
 
 /**
  * Map a broadcast event to the query keys that should be invalidated.
@@ -24,17 +34,21 @@ const INVALIDATION_TOPICS = ['tasks', 'items', 'inbox', 'agents', 'files'] as co
  */
 function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (readonly unknown[])[] {
 	switch (topic) {
-		case 'tasks':
+		case 'tasks:updates':
 			// Task status changes affect task lists, summaries, sidebar counts,
 			// and session context (which includes current focus/active work)
 			return [queryKeys.tasks.all, queryKeys.validation.all, queryKeys.sessionContext.all];
 
-		case 'items':
+		case 'items:updates':
 			// Spec item changes affect item lists and validation
 			return [queryKeys.items.all, queryKeys.validation.all];
 
-		case 'inbox':
-			// Inbox changes affect inbox list and count
+		case 'inbox:updates':
+			// Inbox changes affect inbox list, count, and merged inbox (triage status)
+			return [queryKeys.inbox.all];
+
+		case 'triage:updates':
+			// Triage changes affect the merged inbox view (triage status inline)
 			return [queryKeys.inbox.all];
 
 		case 'agents':
@@ -45,7 +59,7 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 			}
 			return [queryKeys.agents.all];
 
-		case 'files':
+		case 'files:updates':
 			// File changes (e.g., settings save, meta edits) affect multiple caches
 			// Observations and session context live in meta files
 			return [

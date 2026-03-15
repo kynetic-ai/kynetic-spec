@@ -24,6 +24,7 @@ export const queryKeys = {
 		lists: () => [...queryKeys.inbox.all, 'list'] as const,
 		list: (filters?: Record<string, unknown>) =>
 			[...queryKeys.inbox.lists(), filters] as const,
+		merged: () => [...queryKeys.inbox.all, 'merged'] as const,
 		count: () => [...queryKeys.inbox.all, 'count'] as const,
 	},
 
