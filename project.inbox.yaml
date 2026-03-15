@@ -1613,3 +1613,13 @@ inbox:
       - bug
       - worktree-guard
     added_by: "@claude"
+  - _ulid: 01KKR5PY7HZDRQGD9J1XD2C08A
+    text: "SUGGESTION from PR #873: ws-invalidation module subscribes to topic 'tasks' but daemon
+      broadcasts on 'tasks:updates'. Exact-match semantics in pubsub.ts means centralized WS
+      invalidation for task/item/inbox queries never fires. Affects all TanStack Query migrated
+      pages. Fix: align topic names between daemon broadcast and ws-invalidation subscribe."
+    created_at: 2026-03-15T07:17:32.529Z
+    tags:
+      - web-ui
+      - bug
+    added_by: "@claude"
