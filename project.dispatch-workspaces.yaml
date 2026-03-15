@@ -5682,7 +5682,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: closing
+    lifecycle_state: stale
     active_role: null
     worktrees:
       worker:
@@ -5728,22 +5728,27 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-15T22:08:12.269Z
+      updated_at: 2026-03-15T22:10:02.783Z
     health:
-      status: healthy
-      summary: Workspace record matches current git branch and worktree state.
-      issues: []
-      updated_at: 2026-03-15T22:08:27.921Z
+      status: stale
+      summary: Workspace registry record is stale and needs reconciliation.
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-event-accumulator-01kksgsz"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      updated_at: 2026-03-15T22:10:02.783Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-15T22:08:12.269Z
+      updated_at: 2026-03-15T22:10:02.783Z
     timestamps:
       created_at: 2026-03-15T21:08:57.501Z
-      updated_at: 2026-03-15T22:08:27.921Z
-      last_reconciled_at: 2026-03-15T22:08:27.921Z
+      updated_at: 2026-03-15T22:10:02.783Z
+      last_reconciled_at: 2026-03-15T22:10:02.783Z
       last_active_at: 2026-03-15T21:56:41.629Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKSGSZY9G04716168198EYK2
