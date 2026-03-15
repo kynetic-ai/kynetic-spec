@@ -253,9 +253,11 @@ features:
             when: browser opens http://localhost:3456/
             then: daemon serves the bundled web UI and returns HTTP 200 with HTML content
           - id: ac-4
-            given: an explicit webUiDir option or WEB_UI_DIR env var or local packages/web-ui/build is present
+            given: an explicit webUiDir option or WEB_UI_DIR env var is present
             when: daemon starts
-            then: the explicit or local path takes precedence over the bundled dist/web-ui/ fallback
+            then: the explicit or env var path takes precedence over the bundled dist/web-ui/ path. The daemon
+              never resolves web UI assets from process.cwd() as cwd reflects the project directory,
+              not the daemon installation.
         status:
           maturity: draft
           implementation: implemented
