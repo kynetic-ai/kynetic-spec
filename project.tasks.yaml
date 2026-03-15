@@ -97431,21 +97431,6 @@
     - task-ui-data-layer-skill
   title: Create UI data layer skill for Svelte + TanStack Query patterns
   type: task
-  spec_ref: "@ui-data-freshness"
-  plan_ref: "@plan-ui-data-layer-rework"
-  origin: derived
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 1
-  tags:
-    - docs
-    - web-ui
-  vcs_refs: []
-  created_at: 2026-03-15T03:28:12.187Z
-  notes: []
-  todos: []
   description: >-
     Create a kspec skill (.kspec/skills/ui-data-layer/SKILL.md) that documents the data fetching
     patterns and conventions for the web UI. This skill is the reference for all agents working on
@@ -97473,6 +97458,21 @@
 
     The existing svelte-5 skill covers reactivity patterns. This new skill covers the data layer
     specifically. After creating, add to .kspec/skills/ and run kspec skill render.
+  spec_ref: "@ui-data-freshness"
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - docs
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:12.187Z
+  notes: []
+  todos: []
 - _ulid: 01KKQRK0ZZZ1QMCNHDHK3969AF
   slugs:
     - task-tanstack-setup
@@ -97494,6 +97494,29 @@
   created_at: 2026-03-15T03:28:12.799Z
   notes: []
   todos: []
+  description: >-
+    Install @tanstack/svelte-query v6 (requires Svelte >= 5.25.0).
+
+
+    Part 1 — Infrastructure: npm install, create query client factory with default config (staleTime
+    for localhost daemon, retry config, gcTime), add QueryClientProvider to root layout, create
+    query key factories directory, wire WebSocket connection store to
+    queryClient.invalidateQueries() mapping broadcast topics to query key filters, wire project
+    switch to queryClient.clear(), ensure static mode compatibility.
+
+
+    Part 2 — Dashboard migration as proving ground: Migrate the dashboard (+page.svelte) from manual
+    fetch to TanStack Query. The dashboard touches multiple data sources (tasks, inbox,
+    observations, agent status, validation) and makes 5+ parallel API calls including
+    fetchTasks({limit: 1000}). Migrating it proves the full pattern: query factories, WebSocket
+    invalidation wiring, cache-then-revalidate navigation, static mode compatibility, and error
+    handling.
+
+
+    Acceptance gates (from @ui-data-freshness): Dashboard renders from cache on revisit without
+    loading state (ac-1), WebSocket events invalidate dashboard queries (ac-3), static mode works
+    (ac-6), daemon-unreachable shows appropriate error (ac-7), write operations invalidate related
+    cache (ac-8).
 - _ulid: 01KKQRK1KGVQKF0WA5C06C2B1K
   slugs:
     - task-server-resolve
