@@ -5663,7 +5663,7 @@ workspaces:
       updated_at: 2026-03-15T17:28:46.210Z
     timestamps:
       created_at: 2026-03-15T17:10:46.463Z
-      updated_at: 2026-03-15T17:28:46.210Z
+      updated_at: 2026-03-15T17:28:46.473Z
       last_reconciled_at: 2026-03-15T17:28:46.210Z
       last_active_at: 2026-03-15T17:17:46.487Z
       closed_at: null
