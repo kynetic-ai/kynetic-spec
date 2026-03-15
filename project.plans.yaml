@@ -18068,7 +18068,7 @@ plans:
       ## Tasks
 
 
-      derive_from_specs: true
+      derive_from_specs: false
 
 
       ```yaml
@@ -18473,3 +18473,8 @@ plans:
         created_at: 2026-03-15T02:48:35.541Z
         author: "@claude"
         content: Add formal depends_on to task definitions
+      - _ulid: 01KKQPC4Y3XWM6GDGXMGZ7AAWZ
+        created_at: 2026-03-15T02:49:30.307Z
+        author: "@claude"
+        content: "Set derive_from_specs: false — explicit tasks cover all work, spec-derived tasks would be
+          redundant"
