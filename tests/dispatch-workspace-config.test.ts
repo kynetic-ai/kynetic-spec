@@ -255,6 +255,42 @@ describe("dispatch workspace configuration", () => {
   });
 
   // AC: @dispatch-workspace-configuration ac-4
+  // AC: @trait-error-guidance ac-1
+  // AC: @trait-error-guidance ac-2
+  it("fails with actionable guidance when default 'main' fallback does not exist", async () => {
+    // Create a repo with a non-main default branch, detach HEAD so resolveCurrentBranch returns null
+    git(tempDir, "init -b develop");
+    git(tempDir, 'config user.email "test@example.com"');
+    git(tempDir, 'config user.name "Test User"');
+    await fs.writeFile(path.join(tempDir, "README.md"), "seed\n", "utf-8");
+    git(tempDir, "add README.md");
+    git(tempDir, 'commit -m "init"');
+    git(tempDir, "checkout --detach");
+
+    await expect(resolveDispatchWorkspaceConfig(tempDir)).rejects.toMatchObject({
+      name: "DispatchWorkspaceError",
+      message:
+        'No base branch could be resolved: no configured dispatch.base_branch, no remote HEAD, ' +
+        'no current branch, and default "main" does not exist.',
+      suggestion:
+        "Set dispatch.base_branch in kspec.config.yaml, or ensure the repository has a main branch.",
+    } satisfies Partial<DispatchWorkspaceError>);
+  });
+
+  // AC: @dispatch-workspace-configuration ac-2
+  it("falls back to validated 'main' when no remote HEAD and detached HEAD", async () => {
+    // Repo with "main" branch, no remote, detached HEAD — default fallback should succeed
+    await seedRepo(tempDir);
+    git(tempDir, "checkout --detach");
+
+    const resolved = await resolveDispatchWorkspaceConfig(tempDir);
+
+    expect(resolved.baseBranch).toBe("main");
+    expect(resolved.baseBranchSource).toBe("default");
+    expect(resolved.baseBranchStartPoint).toBe("main");
+  });
+
+  // AC: @dispatch-workspace-configuration ac-4
   it("fails with actionable guidance when dispatch.worktree_root resolves inside .kspec", async () => {
     await seedRepo(tempDir);
     git(tempDir, "checkout -b agent-dev");

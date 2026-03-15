@@ -1355,12 +1355,21 @@ export async function resolveDispatchWorkspaceConfig(
     };
   }
 
-  return {
-    baseBranch: "main",
-    baseBranchStartPoint: "main",
-    baseBranchSource: "default",
-    worktreeRoot,
-  };
+  const defaultBranch = "main";
+  const resolved = resolveBranchStartPoint(projectDir, defaultBranch);
+  if (resolved) {
+    return {
+      baseBranch: defaultBranch,
+      baseBranchStartPoint: resolved.startPoint,
+      baseBranchSource: "default",
+      worktreeRoot,
+    };
+  }
+  throw new DispatchWorkspaceError(
+    'No base branch could be resolved: no configured dispatch.base_branch, no remote HEAD, ' +
+      'no current branch, and default "main" does not exist.',
+    "Set dispatch.base_branch in kspec.config.yaml, or ensure the repository has a main branch.",
+  );
 }
 
 export function resolveDispatchWorkspaceCleanupState(
