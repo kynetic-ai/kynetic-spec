@@ -99361,9 +99361,18 @@
   tags:
     - daemon
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T21:43:57.994Z
   session_id: 01KKSPK0AP45SNX5ZKPD3BVNEJ
   created_at: 2026-03-15T19:50:41.353Z
   started_at: 2026-03-15T21:31:58.518Z
+  submitted_at: 2026-03-15T21:43:59.021Z
   notes:
     - _ulid: 01KKSQ34ARF6GZZFNE5NP9H76H
       created_at: 2026-03-15T21:40:32.216Z
@@ -99384,17 +99393,25 @@
         - Verification: npm test -- tests/session-event-detail.test.ts (11 tests passing), full test
         suite shards running
       supersedes: null
+    - _ulid: 01KKSQAFEB5871QS7C391N8F0C
+      created_at: 2026-03-15T21:44:32.971Z
+      author: "@claude"
+      content: >-
+        Submitted for review. PR #882: https://github.com/kynetic-ai/kynetic-spec/pull/882
+
+
+        Changes:
+
+        - src/sessions/store.ts: Added readEventBySeq() - targeted single-event read that stops at
+        matching seq
+
+        - packages/daemon/src/routes/sessions.ts: Added GET /api/sessions/:id/events/:seq with
+        session ID resolution, seq validation, blob pointer resolution, and proper 404 handling
+
+        - tests/session-event-detail.test.ts: 11 tests covering all own ACs + applicable trait ACs
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-15T21:43:59.021Z
-  submission_linkage:
-    branch: main
-    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-15T21:43:57.994Z
 - _ulid: 01KKSGT0JK5JV84SHPA6K7MAK1
   slugs:
     - task-session-stream-ws-ui
