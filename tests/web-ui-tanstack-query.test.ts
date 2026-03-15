@@ -126,7 +126,8 @@ describe("query key factories", () => {
 });
 
 // AC: @ui-data-freshness ac-3
-describe("WebSocket invalidation wiring (@ui-data-freshness ac-3)", () => {
+// AC: @ui-data-freshness ac-4 — Event-driven invalidation, not timer-based polling
+describe("WebSocket invalidation wiring (@ui-data-freshness ac-3, ac-4)", () => {
   it("exports setupWsInvalidation function", () => {
     expect(wsInvalidationSrc).toContain("export function setupWsInvalidation");
   });
@@ -157,6 +158,15 @@ describe("WebSocket invalidation wiring (@ui-data-freshness ac-3)", () => {
     expect(wsInvalidationSrc).toContain("queryKeys.tasks.all");
     expect(wsInvalidationSrc).toContain("queryKeys.validation.all");
   });
+
+  // AC: @ui-data-freshness ac-4
+  it("uses event-driven invalidation, not timer-based polling", () => {
+    // No setInterval or polling timers — data freshness is driven by WS events
+    expect(wsInvalidationSrc).not.toContain("setInterval");
+    expect(wsInvalidationSrc).not.toContain("setTimeout");
+    // Uses WS event handlers (on/off) for reactivity, not timers
+    expect(wsInvalidationSrc).toContain("on(topic, handler)");
+  });
 });
 
 // AC: @ui-data-freshness ac-5
@@ -173,9 +183,12 @@ describe("project switch cache clearing (@ui-data-freshness ac-5)", () => {
     expect(selectProjectBlock).toContain("clearQueryCache()");
   });
 
-  it("context module exports clearQueryCache that calls queryClient.clear()", () => {
+  it("context module exports clearQueryCache that uses resetQueries()", () => {
     expect(contextSrc).toContain("export function clearQueryCache");
-    expect(contextSrc).toContain("queryClientInstance.clear()");
+    // resetQueries() resets state AND triggers refetches of active queries,
+    // unlike clear() which destroys queries without notifying observers
+    expect(contextSrc).toContain("queryClientInstance.resetQueries()");
+    expect(contextSrc).not.toContain("queryClientInstance.clear()");
   });
 });
 

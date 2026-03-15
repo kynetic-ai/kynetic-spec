@@ -30,12 +30,17 @@ export function getQueryClient(): QueryClient | null {
 }
 
 /**
- * Clear all query cache. Called on project switch.
+ * Reset all queries and refetch active ones. Called on project switch.
+ *
+ * Uses resetQueries() instead of clear() because clear() destroys queries
+ * without notifying observers — mounted components would continue showing
+ * stale data. resetQueries() resets state, notifies observers, and triggers
+ * refetches for active queries so they load fresh data for the new project.
  *
  * AC: @ui-data-freshness ac-5 — Discard all cached data on project change
  */
 export function clearQueryCache(): void {
 	if (queryClientInstance) {
-		queryClientInstance.clear();
+		queryClientInstance.resetQueries();
 	}
 }
