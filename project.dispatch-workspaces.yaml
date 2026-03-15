@@ -5517,7 +5517,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 1cac2b1227fafaf4945fc413fbfd1eec4dc8a198
     canonical_branch: dispatch/task/task-fix-dispatch-engine-stop-await/01kks7am
-    canonical_branch_head: 1cac2b1227fafaf4945fc413fbfd1eec4dc8a198
+    canonical_branch_head: eb224322abe7db2840eb0143173c0b3727f641a8
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -5525,16 +5525,21 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: stale
+    lifecycle_state: integrating
     active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-dispatch-engine-stop-await-01kks7am
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-dispatch-engine-stop-await/01kks7am
-        head: 1cac2b1227fafaf4945fc413fbfd1eec4dc8a198
-        last_seen_at: 2026-03-15T20:27:01.866Z
-      reviewer: null
+        head: eb224322abe7db2840eb0143173c0b3727f641a8
+        last_seen_at: 2026-03-15T21:08:56.626Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-dispatch-engine-stop-await-01kks7am-review
+        branch_mode: detached
+        branch_ref: null
+        head: eb224322abe7db2840eb0143173c0b3727f641a8
+        last_seen_at: 2026-03-15T21:08:56.626Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -5568,27 +5573,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T21:08:54.569Z
+      updated_at: 2026-03-15T21:08:56.626Z
     health:
-      status: stale
-      summary: Workspace registry record is stale and needs reconciliation.
-      issues:
-        - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-dispatch-engine-stop-await-01kks7am"
-            is missing or no longer registered.
-          suggestion: Re-provision the worker worktree from the recorded canonical branch.
-      updated_at: 2026-03-15T21:08:54.569Z
+      status: healthy
+      summary: Workspace record matches current git branch and worktree state.
+      issues: []
+      updated_at: 2026-03-15T21:08:56.626Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T21:08:54.569Z
+      updated_at: 2026-03-15T21:08:56.626Z
     timestamps:
       created_at: 2026-03-15T17:05:58.160Z
-      updated_at: 2026-03-15T21:08:54.569Z
-      last_reconciled_at: 2026-03-15T21:08:54.569Z
+      updated_at: 2026-03-15T21:08:56.626Z
+      last_reconciled_at: 2026-03-15T21:08:56.626Z
       last_active_at: 2026-03-15T20:27:02.383Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKS72EKJS2R9FM38A7YB5W5C
