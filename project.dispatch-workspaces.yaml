@@ -5926,8 +5926,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: active
+    active_role: worker
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-stream-ws-ui-01kksgt0
@@ -5974,7 +5974,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T22:25:24.728Z
+      updated_at: 2026-03-15T22:25:25.253Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -5983,7 +5983,7 @@ workspaces:
       updated_at: 2026-03-15T22:25:24.728Z
     timestamps:
       created_at: 2026-03-15T22:25:24.728Z
-      updated_at: 2026-03-15T22:25:24.954Z
-      last_reconciled_at: 2026-03-15T22:25:24.728Z
-      last_active_at: null
+      updated_at: 2026-03-15T22:25:25.253Z
+      last_reconciled_at: 2026-03-15T22:25:25.253Z
+      last_active_at: 2026-03-15T22:25:25.253Z
       closed_at: null
