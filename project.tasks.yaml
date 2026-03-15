@@ -97782,23 +97782,6 @@
     - task-migrate-inbox-triage
   title: Migrate inbox and triage pages to TanStack Query
   type: task
-  spec_ref: "@ui-data-freshness"
-  plan_ref: "@plan-ui-data-layer-rework"
-  origin: derived
-  status: pending
-  blocked_by: []
-  depends_on:
-    - "@task-tanstack-setup"
-    - "@task-server-aggregation"
-    - "@task-ref-index-endpoint"
-  context: []
-  priority: 2
-  tags:
-    - web-ui
-  vcs_refs: []
-  created_at: 2026-03-15T03:28:17.620Z
-  notes: []
-  todos: []
   description: >-
     These pages share the same client-side join pattern (inbox + triage records) and should be
     migrated together using the merged endpoint.
@@ -97817,6 +97800,23 @@
     Acceptance gates (from @ui-data-freshness + @ui-api-aggregation): Inbox items include inline
     triage status, no client join (aggregation ac-3), WS events invalidate not full re-fetch
     (freshness ac-3).
+  spec_ref: "@ui-data-freshness"
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-tanstack-setup"
+    - "@task-server-aggregation"
+    - "@task-ref-index-endpoint"
+  context: []
+  priority: 2
+  tags:
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:17.620Z
+  notes: []
+  todos: []
 - _ulid: 01KKQRK68XM841PBFQFNPT33VZ
   slugs:
     - task-cleanup-legacy-fetches
@@ -97840,3 +97840,16 @@
   created_at: 2026-03-15T03:28:18.205Z
   notes: []
   todos: []
+  description: >-
+    After all pages are migrated, remove dead code: unused fetch functions from api.ts
+    (fetchTasks-for-titles pattern), per-page taskTitles lookup map construction, sidebar polling
+    interval (setInterval), board agent status polling interval, manual loading/error $state
+    variables replaced by query states, old WebSocket reload handlers (loadAll, loadData patterns).
+
+
+    Grep for "limit: 999" and "limit: 1000" to verify none remain. Grep for "setInterval" to verify
+    no polling remains. Verify static mode still works end-to-end.
+
+
+    Acceptance gates (from @ui-data-freshness): No polling intervals remain (ac-4), static mode
+    works end-to-end (ac-6).
