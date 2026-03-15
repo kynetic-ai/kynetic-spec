@@ -98161,7 +98161,7 @@
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-tanstack-setup"
@@ -98174,6 +98174,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-15T06:21:57.411Z
+  session_id: 01KKR2F6FX723S2K6RNDJ27Y07
 - _ulid: 01KKQRK53RE5Q3JHHH07W67NTJ
   slugs:
     - task-migrate-complex-pages
