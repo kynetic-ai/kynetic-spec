@@ -5363,8 +5363,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: integrating
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-unfiltered-total-to-sessions-api-response-to-eliminate-extra-limit-0-request-01kkrtss
@@ -5411,22 +5411,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T14:13:13.041Z
+      updated_at: 2026-03-15T14:14:01.139Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T14:13:13.041Z
+      updated_at: 2026-03-15T14:14:01.139Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T14:13:13.041Z
+      updated_at: 2026-03-15T14:14:01.139Z
     timestamps:
       created_at: 2026-03-15T13:56:10.359Z
-      updated_at: 2026-03-15T14:13:13.041Z
-      last_reconciled_at: 2026-03-15T14:13:13.041Z
+      updated_at: 2026-03-15T14:14:01.139Z
+      last_reconciled_at: 2026-03-15T14:14:01.139Z
       last_active_at: 2026-03-15T14:13:05.359Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKRVZQR41NJXPFQMDTK23801
