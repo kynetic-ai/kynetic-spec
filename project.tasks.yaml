@@ -98003,6 +98003,10 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #870. Enriched all WebSocket broadcast payloads: task_updated includes
+    title and old/new status, agent_invocation and agent_text_chunk include task_title,
+    inbox_item_created includes full item data (text, tags, added_by, created_at). Added typed event
+    data interfaces to @kynetic-ai/shared. All AC-4 requirements verified with 6 dedicated tests."
   depends_on: []
   context: []
   priority: 2
@@ -98022,6 +98026,7 @@
   created_at: 2026-03-15T03:28:15.220Z
   started_at: 2026-03-15T05:25:23.522Z
   submitted_at: 2026-03-15T05:46:34.752Z
+  completed_at: 2026-03-15T05:57:21.501Z
   notes:
     - _ulid: 01KKR0EYTJ8KYKKZH3PKTTPJGX
       created_at: 2026-03-15T05:45:48.114Z
@@ -98048,11 +98053,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T05:57:21.501Z
-  closed_reason: "Merged in PR #870. Enriched all WebSocket broadcast payloads: task_updated includes
-    title and old/new status, agent_invocation and agent_text_chunk include task_title,
-    inbox_item_created includes full item data (text, tags, added_by, created_at). Added typed event
-    data interfaces to @kynetic-ai/shared. All AC-4 requirements verified with 6 dedicated tests."
 - _ulid: 01KKQRK3YT328Q9BKN9HD0DE34
   slugs:
     - task-migrate-core-pages
@@ -98090,7 +98090,20 @@
   session_id: 01KKR0YWV7ED1SQ2CGF8K1KCHM
   created_at: 2026-03-15T03:28:15.834Z
   started_at: 2026-03-15T05:55:01.454Z
-  notes: []
+  notes:
+    - _ulid: 01KKR158XDEF2VT67AAPGQ69RS
+      created_at: 2026-03-15T05:57:59.341Z
+      author: "@claude"
+      content: |-
+        Execution context:
+        - Background: Migrate core pages from manual fetch///WS reload to TanStack Query
+        - Scope: agents, sessions, sessions/[id], settings, workflows, observations pages
+        - Infrastructure: TanStack Query v6 setup already exists (from @task-tanstack-setup) — query client, key factories, WS invalidation wiring, and dashboard migration as reference pattern
+        - Server-side title resolution available (from @task-server-resolve) — task_title field on session responses
+        - Approach: Follow dashboard migration patterns — createQuery with queryKeys, enabled gating, centralized WS invalidation replaces per-page handlers, remove fetchTasks-for-titles patterns
+        - Files: packages/web-ui/src/routes/{agents,sessions,sessions/[id],settings,workflows,observations}/+page.svelte, packages/web-ui/src/lib/query/keys.ts, tests/web-ui-tanstack-query.test.ts
+        - Verification: npm test, existing AC annotations preserved
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK4GRF9PBJVJG4S3BDE33
