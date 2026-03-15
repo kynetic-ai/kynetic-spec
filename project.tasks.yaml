@@ -98547,9 +98547,18 @@
     - daemon
     - bug
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 8045b69abbe62718c1abb64a7b00e7dc460b571d
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T13:55:17.456Z
   session_id: 01KKRW3PHE1DMPCGZXQDMHXD9B
   created_at: 2026-03-15T12:04:22.982Z
   started_at: 2026-03-15T13:49:19.669Z
+  submitted_at: 2026-03-15T13:55:18.406Z
   notes:
     - _ulid: 01KKRW50TSG30XG7YCBR6PRFXA
       created_at: 2026-03-15T13:49:42.617Z
@@ -98567,17 +98576,17 @@
 
         - Verification: npm test covering daemon-web-ui-bundle tests
       supersedes: null
+    - _ulid: 01KKRWFM805XDHVKDHVNHYK09C
+      created_at: 2026-03-15T13:55:30.177Z
+      author: "@claude"
+      content: Implementation complete. Removed options 3 and 4 (process.cwd()-based resolution) from
+        resolveWebUiPath() in packages/daemon/src/server.ts. Updated test replica in
+        tests/daemon-web-ui-bundle.test.ts to match new 3-step resolution order and added negative
+        test verifying cwd-based paths are not used. All 6 daemon-web-ui-bundle tests pass. Full
+        test suite timeouts are pre-existing and unrelated.
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-15T13:55:18.406Z
-  submission_linkage:
-    branch: main
-    commit: 8045b69abbe62718c1abb64a7b00e7dc460b571d
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-15T13:55:17.456Z
 - _ulid: 01KKRTSS1EDEF6G8FE6CB16PB5
   slugs: []
   title: Add unfiltered_total to sessions API response to eliminate extra limit=0 request
