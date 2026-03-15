@@ -98547,12 +98547,28 @@
     - daemon
     - bug
   vcs_refs: []
+  session_id: 01KKRW3PHE1DMPCGZXQDMHXD9B
   created_at: 2026-03-15T12:04:22.982Z
-  notes: []
+  started_at: 2026-03-15T13:49:19.669Z
+  notes:
+    - _ulid: 01KKRW50TSG30XG7YCBR6PRFXA
+      created_at: 2026-03-15T13:49:42.617Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: resolveWebUiPath() uses process.cwd() in options 3 and 4, which breaks
+        multi-directory daemon mode when cwd is a project directory with a stale web-ui/build
+
+        - Scope: Remove options 3 and 4 from resolveWebUiPath() in server.ts, update test replica
+        and add negative test
+
+        - Files: packages/daemon/src/server.ts, tests/daemon-web-ui-bundle.test.ts
+
+        - Verification: npm test covering daemon-web-ui-bundle tests
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-15T13:49:19.669Z
-  session_id: 01KKRW3PHE1DMPCGZXQDMHXD9B
 - _ulid: 01KKRTSS1EDEF6G8FE6CB16PB5
   slugs: []
   title: Add unfiltered_total to sessions API response to eliminate extra limit=0 request
