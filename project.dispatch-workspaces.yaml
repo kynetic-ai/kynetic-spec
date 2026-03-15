@@ -5923,7 +5923,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6f2b02df930df09e597db225bd51605b7f2a58e7
     canonical_branch: dispatch/task/task-session-stream-ws-ui/01kksgt0
-    canonical_branch_head: c79e41363d67938a4552c72010fcf8105befcd58
+    canonical_branch_head: e32ab60ab668f37d42c79d07fb7271dc2d9d664d
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -5976,22 +5976,22 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T22:39:41.215Z
+      updated_at: 2026-03-15T23:04:01.161Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T22:39:44.506Z
+      updated_at: 2026-03-15T23:04:01.161Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T22:39:41.215Z
+      updated_at: 2026-03-15T23:04:01.161Z
     timestamps:
       created_at: 2026-03-15T22:25:24.728Z
-      updated_at: 2026-03-15T22:39:44.506Z
-      last_reconciled_at: 2026-03-15T22:39:44.506Z
+      updated_at: 2026-03-15T23:04:01.161Z
+      last_reconciled_at: 2026-03-15T23:04:01.161Z
       last_active_at: 2026-03-15T22:39:44.506Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKS7BD3N7DCQNS5GW8ZZSAZW
@@ -6010,7 +6010,7 @@ workspaces:
       adopted_at: null
       rehydrated: null
     lifecycle_state: closing
-    active_role: null
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-yaml-seed-session-tests-01kks7bd
@@ -6057,21 +6057,21 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-15T23:03:57.654Z
+      updated_at: 2026-03-15T23:04:01.284Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T23:03:57.654Z
+      updated_at: 2026-03-15T23:04:01.284Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-15T23:03:57.654Z
+      updated_at: 2026-03-15T23:04:01.284Z
     timestamps:
       created_at: 2026-03-15T22:39:41.894Z
-      updated_at: 2026-03-15T23:03:57.654Z
-      last_reconciled_at: 2026-03-15T23:03:57.654Z
+      updated_at: 2026-03-15T23:04:01.284Z
+      last_reconciled_at: 2026-03-15T23:04:01.284Z
       last_active_at: 2026-03-15T22:51:38.393Z
       closed_at: null
