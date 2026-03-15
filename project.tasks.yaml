@@ -97550,7 +97550,7 @@
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-ui-data-layer-skill"
@@ -97564,6 +97564,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-15T04:21:49.683Z
+  session_id: 01KKQVMA97Z9PGF09R3HFNY1F1
 - _ulid: 01KKQRK1KGVQKF0WA5C06C2B1K
   slugs:
     - task-server-resolve
@@ -97703,9 +97705,18 @@
   tags:
     - daemon
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-15T04:20:43.144Z
   session_id: 01KKQTXPXXNMD887KR6C9Y2YDP
   created_at: 2026-03-15T03:28:14.027Z
   started_at: 2026-03-15T04:10:57.144Z
+  submitted_at: 2026-03-15T04:20:43.913Z
   notes:
     - _ulid: 01KKQVJF66XE9DDKMHM2SCTGJS
       created_at: 2026-03-15T04:20:20.294Z
@@ -97743,15 +97754,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-15T04:20:43.913Z
-  submission_linkage:
-    branch: main
-    commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-15T04:20:43.144Z
 - _ulid: 01KKQRK2R219TBGWE4XQEBJNEC
   slugs:
     - task-server-aggregation
