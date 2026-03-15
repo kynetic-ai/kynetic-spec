@@ -6009,8 +6009,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: integrating
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-yaml-seed-session-tests-01kks7bd
@@ -6057,21 +6057,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T22:52:09.350Z
+      updated_at: 2026-03-15T22:53:03.954Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T22:52:09.350Z
+      updated_at: 2026-03-15T22:53:03.954Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T22:52:09.350Z
+      updated_at: 2026-03-15T22:53:03.954Z
     timestamps:
       created_at: 2026-03-15T22:39:41.894Z
-      updated_at: 2026-03-15T22:52:09.350Z
-      last_reconciled_at: 2026-03-15T22:52:09.350Z
+      updated_at: 2026-03-15T22:53:03.954Z
+      last_reconciled_at: 2026-03-15T22:53:03.954Z
       last_active_at: 2026-03-15T22:51:38.393Z
       closed_at: null
