@@ -98618,3 +98618,40 @@
            - @ui-data-freshness: no AC for initial page load on hard refresh (only covers revisit caching)
       supersedes: null
   todos: []
+- title: Disable SSR globally to fix hard refresh stuck on loading
+  description: >-
+    Hard refresh on pages without +page.ts ssr=false (agents, sessions, inbox, observations, specs,
+    triage, validate) gets stuck on loading skeleton. API requests complete but the page never
+    renders. Client-side navigation works fine.
+
+
+    Root cause: SSR renders children with ready=true (browser=false on server), but client hydration
+    flips ready to false, creating a hydration mismatch that breaks reactive state propagation. This
+    is cross-cutting — every page is affected unless it has its own +page.ts with ssr=false.
+
+
+    Fix: Add root +layout.ts with export const ssr = false. This app connects to a local daemon; SSR
+    adds no value. Simplify the layout ready derivation since browser is always true without SSR.
+    Existing per-page +page.ts files (tasks, plans, workflows, settings) become redundant but
+    harmless.
+
+
+    Spec: @ui-data-freshness ac-9
+  type: task
+  spec_ref: "@ui-data-freshness"
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - web-ui
+    - bug
+  depends_on: []
+  _ulid: 01KKRVZQR41NJXPFQMDTK23801
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-15T13:46:49.476Z
+  notes: []
+  todos: []
