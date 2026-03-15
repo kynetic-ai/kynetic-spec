@@ -99581,7 +99581,7 @@
   spec_ref: "@ws-session-event-streaming"
   plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-session-event-accumulator"
@@ -99598,11 +99598,11 @@
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/main
     review_url: null
-    captured_at: 2026-03-15T23:04:08.087Z
+    captured_at: 2026-03-15T23:30:24.116Z
   session_id: 01KKSX2HQBB50JQ9XKCCK461T7
   created_at: 2026-03-15T19:50:42.003Z
   started_at: 2026-03-15T23:25:23.533Z
-  submitted_at: 2026-03-15T23:04:08.847Z
+  submitted_at: 2026-03-15T23:30:24.946Z
   notes:
     - _ulid: 01KKSSVYYQY7W9ARNA6SWYAEH2
       created_at: 2026-03-15T22:29:03.064Z
