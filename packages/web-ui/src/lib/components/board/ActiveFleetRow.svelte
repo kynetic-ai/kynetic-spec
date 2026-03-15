@@ -14,12 +14,10 @@
 
 	let {
 		status,
-		outputLines = {},
-		taskTitles = {}
+		outputLines = {}
 	}: {
 		status: AgentDispatchStatus | null;
 		outputLines?: Record<string, string[]>;
-		taskTitles?: Record<string, string>;
 	} = $props();
 
 	let activeInvocations = $derived(status?.active_invocations ?? []);
@@ -43,7 +41,7 @@
 		<div class="flex gap-3 overflow-x-auto pb-2">
 			{#each activeInvocations as invocation (invocation.session_id)}
 				{@const lines = outputLines[invocation.session_id] ?? []}
-				{@const title = invocation.task_ref ? taskTitles[invocation.task_ref] : undefined}
+				{@const title = invocation.task_title ?? undefined}
 				{@const agentName = agentNameMap[invocation.agent_id] ?? invocation.agent_id}
 				<div
 					class="flex-shrink-0 w-72 rounded-lg border bg-card p-3 ds-breathe"

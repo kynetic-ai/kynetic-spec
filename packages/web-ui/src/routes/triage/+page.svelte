@@ -78,7 +78,7 @@
 	// Full triage records for detail view (evidence_refs, override_reasoning, override_by)
 	const triageRecordsQuery = createQuery(() => ({
 		queryKey: queryKeys.inbox.list({ type: 'triage-records' }),
-		queryFn: () => fetchTriageRecords({ limit: 1000 }),
+		queryFn: () => fetchTriageRecords(),
 		enabled: isProjectInitialized(),
 	}));
 

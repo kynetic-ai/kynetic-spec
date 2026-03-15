@@ -428,8 +428,8 @@ export async function fetchMergedInbox(): Promise<{
 }> {
 	// In static mode, fall back to separate fetches and merge client-side
 	if (isStaticMode()) {
-		const inboxResponse = await fetchInboxStatic({ limit: 1000 });
-		const triageResponse = await fetchTriageRecordsStatic({ limit: 1000 });
+		const inboxResponse = await fetchInboxStatic();
+		const triageResponse = await fetchTriageRecordsStatic();
 		const items: InboxItemWithTriage[] = inboxResponse.items.map((item) => {
 			const record = triageResponse.items.find((r) => r.inbox_ref === item._ulid);
 			const result: InboxItemWithTriage = { ...item };

@@ -135,7 +135,7 @@ function mockItems() {
 		],
 		total: 10,
 		offset: 0,
-		limit: 999
+		limit: 50
 	};
 }
 
@@ -177,7 +177,7 @@ function mockTasks() {
 		],
 		total: 3,
 		offset: 0,
-		limit: 999
+		limit: 50
 	};
 }
 
