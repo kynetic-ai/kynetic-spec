@@ -98169,6 +98169,24 @@
         reset on sessionId change — latent bug when SvelteKit reuses component for different session
         params. SUGGESTION: unused onMount import in sessions/+page.svelte."
       supersedes: null
+    - _ulid: 01KKR5NQZW174ABX66W9RVFEFE
+      created_at: 2026-03-15T07:16:53.372Z
+      author: "@claude"
+      content: >-
+        [FIX_CYCLE: 3 RESOLVED] Addressed all review findings:
+
+        1. MUST-FIX: Rebased onto main (resolved conflicts with sidebar #872, server aggregation
+        #869, enriched WS #870). Auto-merged keys.ts and ws-invalidation.ts cleanly. Manually
+        resolved test file conflict by keeping both sidebar and core page migration tests.
+
+        2. SHOULD-FIX: Added $effect to reset eventsLoadTriggered, events, blocks, streamingText,
+        lastSeq when sessionId changes in sessions/[id]/+page.svelte — prevents stale state when
+        SvelteKit reuses component for different session params.
+
+        3. SUGGESTION: Removed unused onMount import from sessions/+page.svelte.
+
+        4. Added test assertions for both fixes. All 5433 tests pass.
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKQRK4GRF9PBJVJG4S3BDE33
