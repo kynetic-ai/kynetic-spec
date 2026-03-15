@@ -5682,8 +5682,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: active
+    active_role: worker
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-event-accumulator-01kksgsz
@@ -5730,7 +5730,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T21:08:57.501Z
+      updated_at: 2026-03-15T21:08:59.644Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -5739,7 +5739,7 @@ workspaces:
       updated_at: 2026-03-15T21:08:57.501Z
     timestamps:
       created_at: 2026-03-15T21:08:57.501Z
-      updated_at: 2026-03-15T21:08:59.246Z
-      last_reconciled_at: 2026-03-15T21:08:57.501Z
-      last_active_at: null
+      updated_at: 2026-03-15T21:08:59.644Z
+      last_reconciled_at: 2026-03-15T21:08:59.644Z
+      last_active_at: 2026-03-15T21:08:59.644Z
       closed_at: null
