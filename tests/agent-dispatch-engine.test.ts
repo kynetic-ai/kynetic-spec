@@ -5496,11 +5496,11 @@ describe("Per-task dispatch drain coalescing", () => {
       "_drainQueues",
     ).mockResolvedValue();
 
-    // Bootstrap calls _drainQueues directly (no coalescing)
+    // Bootstrap calls _drainQueues via _serializedDrain (no coalescing delay)
     await engine.start();
     expect(drainSpy).toHaveBeenCalled();
 
-    // Reconciliation also calls _drainQueues directly
+    // Reconciliation also calls _drainQueues via _serializedDrain (no coalescing delay)
     const reconcileDrainCount = drainSpy.mock.calls.length;
     await (engine as unknown as { _reconcile: () => Promise<void> })._reconcile();
     // _reconcile only calls _drainQueues if enqueued > 0, so check it ran without delay
@@ -5577,6 +5577,212 @@ describe("Per-task dispatch drain coalescing", () => {
 
     // Drains should never run concurrently (max concurrency = 1)
     expect(maxConcurrency).toBeLessThanOrEqual(1);
+
+    await engine.stop();
+  });
+
+  // AC: @per-task-dispatch-drain-coalescing ac-9
+  // AC: @agent-dispatch-engine ac-27
+  it("should serialize drains from all sources via _serializedDrain", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 5000,
+      reconcileIntervalMs: 0,
+    });
+
+    let drainConcurrency = 0;
+    let maxDrainConcurrency = 0;
+    const drainCallCount = { value: 0 };
+
+    // Spy on _drainQueues to track concurrency — _serializedDrain calls this.
+    // Use a microtask yield (not setTimeout) so fake timers don't block resolution.
+    vi.spyOn(
+      engine as unknown as { _drainQueues: (agents: unknown[]) => Promise<void> },
+      "_drainQueues",
+    ).mockImplementation(async () => {
+      drainConcurrency++;
+      drainCallCount.value++;
+      maxDrainConcurrency = Math.max(maxDrainConcurrency, drainConcurrency);
+      // Yield to microtask queue so concurrent callers have a chance to run
+      await Promise.resolve();
+      drainConcurrency--;
+    });
+
+    await engine.start();
+
+    const internal = engine as unknown as {
+      _serializedDrain: () => Promise<void>;
+    };
+
+    // Fire multiple _serializedDrain calls concurrently — simulates the race
+    // between bootstrap/reconciliation/retry/post-invocation drain paths
+    // that all now route through _serializedDrain.
+    const p1 = internal._serializedDrain();
+    const p2 = internal._serializedDrain();
+    const p3 = internal._serializedDrain();
+
+    await Promise.all([p1, p2, p3]);
+
+    // _drainQueues should never have run concurrently
+    expect(maxDrainConcurrency).toBeLessThanOrEqual(1);
+    // Multiple drains should have executed (first + follow-up from coalesced pending)
+    expect(drainCallCount.value).toBeGreaterThanOrEqual(2);
+
+    await engine.stop();
+  });
+});
+
+// AC: @agent-dispatch-engine ac-27
+describe("AC-27: All drain paths go through _serializedDrain to prevent max_concurrent violation", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-ac27-");
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(testDir);
+  });
+
+  it("should route handleStateChange immediate drain (coalesceWindowMs=0) through _serializedDrain", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready" }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const [taskA, taskB] = testUlids("RACE", 2);
+    await writeTasks(testDir, [
+      { _ulid: taskA, status: "pending", automation: "eligible" },
+      { _ulid: taskB, status: "pending", automation: "eligible" },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+      reconcileIntervalMs: 0,
+    });
+
+    const serializedDrainSpy = vi.spyOn(
+      engine as unknown as { _serializedDrain: () => Promise<void> },
+      "_serializedDrain",
+    );
+
+    // Mock _spawnInvocation to avoid real spawning
+    vi.spyOn(
+      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
+      "_spawnInvocation",
+    ).mockResolvedValue(true);
+
+    await engine.start();
+
+    // handleStateChange with coalesceWindowMs=0 should call _serializedDrain
+    const callsBefore = serializedDrainSpy.mock.calls.length;
+    await engine.handleStateChange({
+      taskId: taskA,
+      taskRef: `@${taskA}`,
+      fromStatus: "in_progress",
+      toStatus: "pending",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [], _ulid: taskA, status: "pending", blocked_by: [], depends_on: [], slugs: [] } as any,
+    });
+
+    // _serializedDrain should have been called (not _drainQueues directly)
+    expect(serializedDrainSpy.mock.calls.length).toBeGreaterThan(callsBefore);
+
+    await engine.stop();
+  });
+
+  it("should route bootstrap drain through _serializedDrain", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK", 91);
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "eligible" },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+      reconcileIntervalMs: 0,
+    });
+
+    const serializedDrainSpy = vi.spyOn(
+      engine as unknown as { _serializedDrain: () => Promise<void> },
+      "_serializedDrain",
+    );
+
+    // Mock _spawnInvocation to avoid real spawning
+    vi.spyOn(
+      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
+      "_spawnInvocation",
+    ).mockResolvedValue(true);
+
+    // start() → _bootstrap() → _serializedDrain()
+    await engine.start();
+
+    // Bootstrap should have called _serializedDrain (there's an eligible pending task)
+    expect(serializedDrainSpy).toHaveBeenCalled();
+
+    await engine.stop();
+  });
+
+  it("should route reconciliation drain through _serializedDrain", async () => {
+    const agent = makeTestAgent({
+      id: "worker",
+      dispatch: [{ on: "task.ready" }],
+    });
+    await setupProjectWithAgents(testDir, [agent]);
+
+    const taskId = testUlid("TASK", 92);
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "eligible" },
+    ]);
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      coalesceWindowMs: 0,
+      reconcileIntervalMs: 0,
+    });
+
+    // Mock _spawnInvocation to avoid real spawning
+    vi.spyOn(
+      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
+      "_spawnInvocation",
+    ).mockResolvedValue(true);
+
+    await engine.start();
+
+    // Spy after start so we don't count the bootstrap drain
+    const serializedDrainSpy = vi.spyOn(
+      engine as unknown as { _serializedDrain: () => Promise<void> },
+      "_serializedDrain",
+    );
+
+    // _reconcile() → _serializedDrain()
+    await (engine as unknown as { _reconcile: () => Promise<void> })._reconcile();
+
+    // Reconciliation should have called _serializedDrain
+    expect(serializedDrainSpy).toHaveBeenCalled();
 
     await engine.stop();
   });
