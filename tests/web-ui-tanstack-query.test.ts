@@ -966,3 +966,23 @@ describe("validation aggregation query key", () => {
     expect(keysSrc).toContain("aggregation:");
   });
 });
+
+// AC: @ui-data-freshness ac-9 — Hard refresh initializes without SSR hydration mismatch
+describe("global SSR disabled (@ui-data-freshness ac-9)", () => {
+  const layoutTsPath = join(WEB_UI_SRC, "routes", "+layout.ts");
+
+  it("root +layout.ts exists", () => {
+    expect(existsSync(layoutTsPath)).toBe(true);
+  });
+
+  it("root +layout.ts disables SSR globally", () => {
+    const layoutTs = readFileSync(layoutTsPath, "utf-8");
+    expect(layoutTs).toContain("export const ssr = false");
+  });
+
+  it("layout ready state does not branch on browser environment", () => {
+    // With SSR disabled, the layout should not use the browser import
+    // to conditionally set ready state — it's always client-side
+    expect(layoutSrc).not.toContain("browser ? appReady : true");
+  });
+});

@@ -12,7 +12,6 @@
 	import { initConnection } from '$lib/stores/connection.svelte';
 	import { loadProjects, getSelectedProjectPath, isInitialized, initializeForStaticMode } from '$lib/stores/project.svelte';
 	import { initMode, isStaticMode, isLoading as isModeLoading } from '$lib/stores/mode.svelte';
-	import { browser } from '$app/environment';
 	import { createQueryClientInstance, setQueryClient } from '$lib/query';
 	import { setupWsInvalidation } from '$lib/query/ws-invalidation.js';
 
@@ -54,8 +53,8 @@
 		setupWsInvalidation(queryClient);
 	});
 
-	// For SSR, treat as ready since we can't have a selected project anyway
-	let ready = $derived(browser ? appReady : true);
+	// SSR is disabled globally via +layout.ts — ready tracks appReady directly
+	let ready = $derived(appReady);
 </script>
 
 <svelte:head>
