@@ -28,7 +28,9 @@ import type {
 	ErrorResponse,
 	SearchResponse,
 	AgentDefinition,
-	AgentUpdatePayload
+	AgentUpdatePayload,
+	TaskStatusSummary,
+	ValidationAggregation,
 } from '@kynetic-ai/shared';
 import type { TriageRecord } from './types/triage';
 import {
@@ -1393,6 +1395,34 @@ export async function fetchShadowStatus(): Promise<ShadowStatusResponse> {
  */
 export async function fetchConventions(): Promise<{ items: Convention[]; total: number }> {
 	const response = await fetch(`${API_BASE}/api/meta/conventions`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch task status summary with dependency-aware distinctions
+ * AC: @ui-api-aggregation ac-1
+ */
+export async function fetchTaskStatusSummary(): Promise<TaskStatusSummary> {
+	const response = await fetch(`${API_BASE}/api/aggregation/tasks/summary`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch extended validation/alignment stats with entity and AC counts
+ * AC: @ui-api-aggregation ac-2
+ */
+export async function fetchValidationAggregation(): Promise<ValidationAggregation> {
+	const response = await fetch(`${API_BASE}/api/aggregation/validation`, {
 		headers: getProjectHeaders()
 	});
 	if (!response.ok) {

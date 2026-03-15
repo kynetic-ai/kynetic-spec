@@ -1,14 +1,18 @@
+<!--
+  AC: @ui-validation-view ac-1
+  AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
+  AC: @ui-data-freshness ac-3 — WebSocket events invalidate validation queries via centralized wiring
+-->
 <script lang="ts">
 	// AC: @ui-validation-view ac-1
 	import {
 		fetchValidation,
-		fetchAlignment,
-		fetchItems,
-		fetchTasks,
+		fetchValidationAggregation,
 		type ValidationResponse,
-		type AlignmentResponse,
 		type CompletenessWarning
 	} from '$lib/api';
+	import type { ValidationAggregation } from '@kynetic-ai/shared';
+	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
 	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
 	import {
@@ -22,17 +26,31 @@
 		FileWarning,
 		RefreshCw
 	} from 'lucide-svelte';
-	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { queryKeys } from '$lib/query/keys.js';
 
-	// --- State ---
+	const queryClient = useQueryClient();
 
-	let validation = $state<ValidationResponse | null>(null);
-	let alignment = $state<AlignmentResponse | null>(null);
-	let totalItemCount = $state(0);
-	let totalAcCount = $state(0);
-	let orphanedTaskCount = $state(0);
-	let loading = $state(true);
-	let error = $state('');
+	// --- TanStack Query: validation data ---
+	// AC: @ui-data-freshness ac-1 — createQuery caches; revisits render from cache
+	// AC: @ui-data-freshness ac-2 — Concurrent uses share the same in-flight request
+	const validationQuery = createQuery(() => ({
+		queryKey: queryKeys.validation.results(),
+		queryFn: () => fetchValidation(),
+		enabled: isProjectInitialized(),
+	}));
+
+	// AC: @ui-api-aggregation ac-2 — Server-computed stats replace client-side fetchItems/fetchTasks
+	const aggregationQuery = createQuery(() => ({
+		queryKey: queryKeys.validation.aggregation(),
+		queryFn: () => fetchValidationAggregation(),
+		enabled: isProjectInitialized(),
+	}));
+
+	let validation = $derived<ValidationResponse | null>(validationQuery.data ?? null);
+	let aggregation = $derived<ValidationAggregation | null>(aggregationQuery.data ?? null);
+	let loading = $derived(validationQuery.isLoading || aggregationQuery.isLoading);
+	let error = $derived(validationQuery.error?.message ?? aggregationQuery.error?.message ?? '');
 
 	// --- Derived counts ---
 	// AC: @ui-validation-view ac-1 — error count, warning count, valid item count
@@ -55,23 +73,24 @@
 		);
 	});
 
+	// Stats from server-side aggregation — replaces manual fetchItems/fetchTasks
+	let totalItemCount = $derived(aggregation?.entity_counts.items ?? 0);
+	let totalAcCount = $derived(aggregation?.ac_counts.total ?? 0);
+	let uncoveredAcCount = $derived(aggregation?.ac_counts.uncovered ?? 0);
+	let orphanedTaskCount = $derived(aggregation?.orphan_count ?? 0);
+
 	// AC: @ui-validation-view ac-1 — valid item count
-	// Count unique items that have errors (using the source item, not the broken target)
 	let validItemCount = $derived.by(() => {
 		if (!validation) return 0;
 		const itemsWithErrors = new Set<string>();
 		for (const e of validation.schemaErrors) {
-			// schemaErrors.file = the YAML file containing the invalid item
 			if (e.file) itemsWithErrors.add(e.file);
 		}
 		for (const e of validation.refErrors) {
-			// sourceUlid/sourceFile = the item containing the broken reference
-			// (NOT e.ref, which is the target that doesn't exist)
 			const source = e.sourceUlid ?? e.sourceFile;
 			if (source) itemsWithErrors.add(source);
 		}
 		for (const e of validation.traitCycles) {
-			// traitRef = the trait involved in the cycle
 			if (e.traitRef) itemsWithErrors.add(e.traitRef);
 		}
 		return Math.max(0, totalItemCount - itemsWithErrors.size);
@@ -79,19 +98,13 @@
 
 	// AC: @ui-validation-view ac-1 — spec coverage %, AC coverage %
 	let specCoverage = $derived.by(() => {
-		if (!alignment || alignment.stats.totalSpecs === 0) return 0;
+		if (!aggregation || aggregation.stats.totalSpecs === 0) return 0;
 		return Math.round(
-			(alignment.stats.specsWithTasks / alignment.stats.totalSpecs) * 100
+			(aggregation.stats.specsWithTasks / aggregation.stats.totalSpecs) * 100
 		);
 	});
 
 	// AC: @ui-validation-view ac-1 — AC coverage %
-	// Computed from total AC count (from items API) minus uncovered ACs (from completeness warnings)
-	let uncoveredAcCount = $derived.by(() => {
-		if (!validation) return 0;
-		return countUncoveredACs(validation.completenessWarnings);
-	});
-
 	let acCoverage = $derived.by(() => {
 		if (totalAcCount === 0) return 100;
 		const covered = totalAcCount - uncoveredAcCount;
@@ -108,7 +121,7 @@
 	};
 
 	let groupedIssues = $derived.by((): GroupedIssue[] => {
-		if (!validation && !alignment) return [];
+		if (!validation && !aggregation) return [];
 		const issues: GroupedIssue[] = [];
 
 		if (validation) {
@@ -162,8 +175,8 @@
 			}
 		}
 
-		if (alignment) {
-			for (const w of alignment.warnings) {
+		if (aggregation) {
+			for (const w of aggregation.warnings) {
 				issues.push({
 					severity: w.type === 'status_mismatch' ? 'warning' : 'info',
 					category: alignmentLabel(w.type),
@@ -180,41 +193,8 @@
 	let warningIssues = $derived(groupedIssues.filter((i) => i.severity === 'warning'));
 	let infoIssues = $derived(groupedIssues.filter((i) => i.severity === 'info'));
 
-	// --- Lifecycle ---
-	// Load data when project is ready and reload on project change.
-	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
-	$effect(() => {
-		const version = getProjectVersion();
-		const ready = isProjectInitialized();
-		if (!ready) return;
-		loadData();
-	});
-
-	async function loadData() {
-		try {
-			loading = true;
-			error = '';
-			const [v, a, itemsRes, tasksRes] = await Promise.all([
-				fetchValidation(),
-				fetchAlignment(),
-				fetchItems({ limit: 999 }),
-				fetchTasks({ limit: 999 })
-			]);
-			validation = v;
-			alignment = a;
-			totalItemCount = itemsRes.total;
-			// Sum acceptance_criteria_count from all items (field returned by daemon but not in ItemSummary type)
-			totalAcCount = itemsRes.items.reduce(
-				(sum, item) => sum + ((item as any).acceptance_criteria_count ?? 0),
-				0
-			);
-			// Orphaned tasks = tasks without a spec_ref
-			orphanedTaskCount = tasksRes.items.filter((t) => !t.spec_ref).length;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load validation data';
-		} finally {
-			loading = false;
-		}
+	function refreshAll() {
+		queryClient.invalidateQueries({ queryKey: queryKeys.validation.all });
 	}
 
 	// --- Helpers ---
@@ -229,24 +209,6 @@
 			ac_schema_field_mismatch: 'AC Schema Mismatch'
 		};
 		return labels[type] ?? type;
-	}
-
-	/** Count total uncovered ACs from completeness warnings details field.
-	 * Own AC format: "Uncovered: ac-1, ac-2"
-	 * Trait AC format: "Uncovered trait ACs: @trait-slug ac-1, @trait-slug ac-2"
-	 */
-	function countUncoveredACs(warnings: CompletenessWarning[]): number {
-		let count = 0;
-		for (const w of warnings) {
-			if (w.type === 'missing_test_coverage' && w.details) {
-				// Match both "Uncovered: ..." and "Uncovered trait ACs: ..."
-				const match = w.details.match(/^Uncovered(?:\s+trait\s+ACs)?:\s*(.+)$/);
-				if (match) {
-					count += match[1].split(',').length;
-				}
-			}
-		}
-		return count;
 	}
 
 	function alignmentLabel(type: string): string {
@@ -282,7 +244,7 @@
 			<button
 				class="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm
 					text-muted-foreground transition-colors hover:bg-muted/50"
-				onclick={loadData}
+				onclick={refreshAll}
 				data-testid="refresh-btn"
 			>
 				<RefreshCw class="h-3.5 w-3.5" />
@@ -330,7 +292,7 @@
 		</div>
 
 	<!-- Empty state (no data returned) -->
-	{:else if !validation && !alignment && !error}
+	{:else if !validation && !aggregation && !error}
 		<div class="text-center text-muted-foreground py-12" data-testid="empty">
 			<ShieldCheck class="mx-auto h-12 w-12 mb-4 opacity-50" />
 			<p>No validation data available.</p>
@@ -390,7 +352,7 @@
 
 		<!-- Alignment Section -->
 		<!-- AC: @ui-validation-view ac-1 — spec coverage %, AC coverage %, orphaned tasks/specs counts -->
-		{#if alignment}
+		{#if aggregation}
 			<Card data-testid="alignment-section">
 				<CardHeader>
 					<CardTitle class="flex items-center gap-2">
@@ -405,7 +367,7 @@
 							<div class="flex items-baseline gap-2">
 								<span class="text-2xl font-bold">{specCoverage}%</span>
 								<span class="text-xs text-muted-foreground">
-									{alignment.stats.specsWithTasks}/{alignment.stats.totalSpecs} specs with tasks
+									{aggregation.stats.specsWithTasks}/{aggregation.stats.totalSpecs} specs with tasks
 								</span>
 							</div>
 							<div class="h-2 w-full rounded-full bg-muted overflow-hidden">
@@ -450,9 +412,9 @@
 							<p class="text-sm text-muted-foreground">Orphaned Specs</p>
 							<div class="flex items-baseline gap-2">
 								<span class="text-2xl font-bold"
-									class:text-severity-warning={alignment.stats.orphanedSpecs > 0}
+									class:text-severity-warning={aggregation.stats.orphanedSpecs > 0}
 								>
-									{alignment.stats.orphanedSpecs}
+									{aggregation.stats.orphanedSpecs}
 								</span>
 								<span class="text-xs text-muted-foreground">
 									specs without linked tasks

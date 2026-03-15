@@ -1,15 +1,19 @@
 <!--
   AC: @ui-plans-view ac-1 — Each plan shows title, status, creation date, linked spec/task counts, and progress.
   AC: @ui-plans-view ac-2 — Expandable plan content rendered as formatted markdown, loaded on demand.
+  AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
+  AC: @ui-data-freshness ac-3 — WebSocket events invalidate plan queries via centralized wiring
 -->
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
 	import { base } from '$app/paths';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import type { BatchItemSummary, PlanDetail, PlanSummary } from '@kynetic-ai/shared';
+	import { createQuery } from '@tanstack/svelte-query';
 	import { fetchPlans, fetchPlanContent, fetchBatchItems } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
-	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
-	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { queryKeys } from '$lib/query/keys.js';
 	import { buildPlanContentBlocks } from '$lib/utils/plan-embedded-content';
 	import { Card, CardContent, CardHeader } from '$lib/components/ui/card';
 	import { Badge } from '$lib/components/ui/badge';
@@ -21,14 +25,21 @@
 	import ListTodoIcon from '@lucide/svelte/icons/list-todo';
 	import ChevronDownIcon from '@lucide/svelte/icons/chevron-down';
 
-	// ── Data state ──
-	let plans = $state<PlanSummary[]>([]);
-	let loading = $state(true);
-	let error = $state('');
-
-	// ── Filter state ──
+	// ── Filter state — URL-driven for consistency ──
 	type PlanStatusFilter = 'all' | 'draft' | 'approved' | 'active' | 'completed' | 'rejected';
-	let filterStatus = $state<PlanStatusFilter>('all');
+	let filterStatus = $derived<PlanStatusFilter>(
+		($page.url.searchParams.get('status') as PlanStatusFilter) || 'all'
+	);
+
+	function setFilterStatus(status: PlanStatusFilter) {
+		const url = new URL($page.url);
+		if (status === 'all') {
+			url.searchParams.delete('status');
+		} else {
+			url.searchParams.set('status', status);
+		}
+		goto(url, { replaceState: true, keepFocus: true, noScroll: true });
+	}
 
 	// ── Plan content expansion state ──
 	// AC: @ui-plans-view ac-2 — Track expanded plans and their lazy-loaded content
@@ -58,6 +69,19 @@
 		rejected: 'bg-status-blocked text-status-blocked-fg'
 	};
 
+	// --- TanStack Query: plans data ---
+	// AC: @ui-data-freshness ac-1 — createQuery caches; revisits render from cache
+	// AC: @ui-data-freshness ac-2 — Concurrent uses share the same in-flight request
+	const plansQuery = createQuery(() => ({
+		queryKey: queryKeys.plans.lists(),
+		queryFn: () => fetchPlans(),
+		enabled: isProjectInitialized(),
+	}));
+
+	let plans = $derived(plansQuery.data?.items ?? []);
+	let loading = $derived(plansQuery.isLoading);
+	let error = $derived(plansQuery.error?.message ?? '');
+
 	// ── Filtered plans ──
 	let filteredPlans = $derived.by(() => {
 		if (filterStatus === 'all') return plans;
@@ -72,51 +96,6 @@
 		}
 		return counts;
 	});
-
-	// ── Lifecycle ──
-	onMount(() => {
-		if (!isStaticMode()) {
-			// Plan progress is derived from task statuses, so subscribe to tasks:updates
-			// to refresh when task status changes (e.g., task completed → plan progress updates)
-			subscribe(['tasks:updates']);
-			on('tasks:updates', handleUpdate);
-		}
-	});
-
-	onDestroy(() => {
-		if (!isStaticMode()) {
-			off('tasks:updates', handleUpdate);
-			unsubscribe(['tasks:updates']);
-		}
-	});
-
-	// Load data when project is ready and reload on project change.
-	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
-	$effect(() => {
-		const version = getProjectVersion();
-		const ready = isProjectInitialized();
-		if (!ready) return;
-		loadData();
-	});
-
-	// ── Data loading ──
-	async function loadData() {
-		try {
-			loading = true;
-			error = '';
-			const response = await fetchPlans();
-			plans = response.items;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load plans';
-		} finally {
-			loading = false;
-		}
-	}
-
-	// ── WebSocket handler ──
-	function handleUpdate() {
-		loadData();
-	}
 
 	// AC: @ui-plans-view ac-2 — Toggle plan content expansion, lazy-load content on first expand
 	async function togglePlanContent(plan: PlanSummary) {
@@ -245,12 +224,13 @@
 		</div>
 	</div>
 
-	<!-- Filter controls -->
+	<!-- Filter controls — URL-driven for consistency -->
 	<div class="flex flex-wrap gap-2 items-center" data-testid="plans-filters">
 		<label for="plans-status-filter" class="text-sm font-medium text-muted-foreground">Status</label>
 		<select
 			id="plans-status-filter"
-			bind:value={filterStatus}
+			value={filterStatus}
+			onchange={(e) => setFilterStatus(e.currentTarget.value as PlanStatusFilter)}
 			class="rounded-md border bg-background px-3 py-1.5 text-sm"
 			data-testid="plans-status-filter"
 		>

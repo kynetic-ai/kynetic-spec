@@ -45,6 +45,7 @@ export const queryKeys = {
 		all: ['validation'] as const,
 		results: () => [...queryKeys.validation.all, 'results'] as const,
 		alignment: () => [...queryKeys.validation.all, 'alignment'] as const,
+		aggregation: () => [...queryKeys.validation.all, 'aggregation'] as const,
 	},
 
 	agents: {

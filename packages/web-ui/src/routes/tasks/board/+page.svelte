@@ -5,14 +5,20 @@
   AC: @ui-task-board ac-4 — Active Fleet row
   AC: @ui-task-board ac-5 — Real-time WebSocket updates
   AC: @ui-task-board ac-6 — Task action buttons in modal
+  AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
+  AC: @ui-data-freshness ac-3 — WebSocket events invalidate queries via centralized wiring
+  AC: @ui-data-freshness ac-4 — Agent status served from cache, not 5s polling
 -->
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { onMount, onDestroy } from 'svelte';
-	import type { TaskSummary, BroadcastEvent } from '@kynetic-ai/shared';
+	import type { BroadcastEvent } from '@kynetic-ai/shared';
+	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
 	import { fetchTasks, fetchAgentStatus, type AgentDispatchStatus } from '$lib/api';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
-	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { isStaticMode } from '$lib/stores/mode.svelte';
+	import { queryKeys } from '$lib/query/keys.js';
 	import { distributeToColumns, type BoardColumn } from '$lib/components/board/board-utils';
 	import BoardColumnComponent from '$lib/components/board/BoardColumn.svelte';
 	import ActiveFleetRow from '$lib/components/board/ActiveFleetRow.svelte';
@@ -29,14 +35,34 @@
 	import { base } from '$app/paths';
 	import { goto } from '$app/navigation';
 
-	let tasks = $state<TaskSummary[]>([]);
-	let columns = $state<BoardColumn[]>([]);
-	let loading = $state(true);
-	let error = $state('');
-	let agentStatus = $state<AgentDispatchStatus | null>(null);
+	const queryClient = useQueryClient();
 
 	// AC: @ui-task-board ac-4 — Buffered output state per agent session
 	let sessionStates = $state<Record<string, FleetSessionState>>({});
+
+	// --- TanStack Query: board data ---
+	// AC: @ui-data-freshness ac-1 — createQuery caches; revisits render from cache
+	// AC: @ui-data-freshness ac-2 — Concurrent uses share the same in-flight request
+	const tasksQuery = createQuery(() => ({
+		queryKey: queryKeys.tasks.list({}),
+		queryFn: () => fetchTasks(),
+		enabled: isProjectInitialized(),
+	}));
+
+	// AC: @ui-data-freshness ac-4 — Agent status served from cache, event-driven invalidation
+	// Replaces 5s polling interval with cache + WS invalidation
+	const agentStatusQuery = createQuery(() => ({
+		queryKey: queryKeys.agents.status(),
+		queryFn: () => fetchAgentStatus(),
+		enabled: isProjectInitialized() && !isStaticMode(),
+		staleTime: 10 * 1000,
+	}));
+
+	let tasks = $derived(tasksQuery.data?.items ?? []);
+	let columns = $derived(distributeToColumns(tasks));
+	let loading = $derived(tasksQuery.isLoading);
+	let error = $derived(tasksQuery.error?.message ?? '');
+	let agentStatus = $derived<AgentDispatchStatus | null>(agentStatusQuery.data ?? null);
 
 	// Derived: output lines per session (for ActiveFleetRow)
 	let agentOutputLines = $derived<Record<string, string[]>>(
@@ -67,21 +93,6 @@
 	// Track last processed URL ref to avoid infinite loops
 	let lastProcessedRef = $state('');
 
-	$effect(() => {
-		// Re-derive columns whenever tasks change
-		columns = distributeToColumns(tasks);
-	});
-
-	// AC: @ui-task-board ac-5 — Load board when project is ready and reload on project change
-	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
-	// Replaces the old onMount+$effect pattern that could race with project resolution.
-	$effect(() => {
-		const version = getProjectVersion();
-		const ready = isProjectInitialized();
-		if (!ready) return;
-		loadBoard();
-	});
-
 	// Open task detail from URL param
 	$effect(() => {
 		const urlRef = $page.url.searchParams.get('ref');
@@ -105,40 +116,18 @@
 		}
 	});
 
-	async function loadBoard() {
-		loading = true;
-		error = '';
-		try {
-			const [taskResponse, statusResponse] = await Promise.all([
-				fetchTasks(),
-				fetchAgentStatus().catch(() => null)
-			]);
-			tasks = taskResponse.items;
-			agentStatus = statusResponse;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load board';
-		} finally {
-			loading = false;
-		}
-	}
-
-	function handleCardClick(task: TaskSummary) {
+	function handleCardClick(task: { _ulid: string }) {
 		selectedTaskRef = task._ulid;
 		modalOpen = true;
 	}
 
+	// AC: @ui-data-freshness ac-8 — Write operations invalidate related cache
 	function handleTaskUpdated() {
-		loadBoard();
+		queryClient.invalidateQueries({ queryKey: queryKeys.tasks.all });
 	}
 
-	// AC: @ui-task-board ac-5 — WebSocket real-time updates
-	function handleTaskUpdate(event: BroadcastEvent) {
-		loadBoard();
-	}
-
-	// AC: @ui-task-board ac-4 — Refresh agent status on agent events
+	// AC: @ui-task-board ac-4 — Buffer agent text chunks (streaming stays outside TanStack Query)
 	function handleAgentUpdate(event: BroadcastEvent) {
-		// AC: @ui-task-board ac-4 — Buffer text chunks into complete lines
 		if (event.event === 'agent_text_chunk' && event.data?.session_id && event.data?.text) {
 			const sessionId = event.data.session_id as string;
 			const text = event.data.text as string;
@@ -147,47 +136,37 @@
 			return;
 		}
 
-		// Invocation lifecycle events — refresh status and clean up stale state
-		fetchAgentStatus()
-			.then((status) => {
-				agentStatus = status;
-				// Clean up session states for sessions no longer active
-				const activeSessions = new Set(
-					status.active_invocations.map((inv) => inv.session_id)
-				);
-				for (const sessionId of Object.keys(sessionStates)) {
-					if (!activeSessions.has(sessionId)) {
-						delete sessionStates[sessionId];
-					}
+		// Invocation lifecycle events — invalidate agent status query
+		// AC: @ui-data-freshness ac-3 — WS event drives cache invalidation
+		queryClient.invalidateQueries({ queryKey: queryKeys.agents.status() });
+
+		// Clean up session states for sessions no longer active
+		if (agentStatusQuery.data) {
+			const activeSessions = new Set(
+				agentStatusQuery.data.active_invocations.map((inv) => inv.session_id)
+			);
+			for (const sessionId of Object.keys(sessionStates)) {
+				if (!activeSessions.has(sessionId)) {
+					delete sessionStates[sessionId];
 				}
-			})
-			.catch(() => {});
+			}
+		}
 	}
 
-	// Polling for agent elapsed time updates
-	let agentPollTimer: ReturnType<typeof setInterval> | undefined;
-
 	onMount(() => {
-		// AC: @ui-task-board ac-5 — Subscribe to task and agent updates
-		subscribe(['tasks', 'agents']);
-		on('tasks', handleTaskUpdate);
-		on('agents', handleAgentUpdate);
-
-		// Poll agent status every 5s for elapsed time updates
-		agentPollTimer = setInterval(() => {
-			fetchAgentStatus()
-				.then((status) => {
-					agentStatus = status;
-				})
-				.catch(() => {});
-		}, 5000);
+		// AC: @ui-task-board ac-5 — Subscribe to agent events for text chunk streaming
+		// Task data reloading handled by centralized ws-invalidation wiring
+		if (!isStaticMode()) {
+			subscribe(['agents']);
+			on('agents', handleAgentUpdate);
+		}
 	});
 
 	onDestroy(() => {
-		off('tasks', handleTaskUpdate);
-		off('agents', handleAgentUpdate);
-		unsubscribe(['tasks', 'agents']);
-		if (agentPollTimer) clearInterval(agentPollTimer);
+		if (!isStaticMode()) {
+			off('agents', handleAgentUpdate);
+			unsubscribe(['agents']);
+		}
 	});
 </script>
 

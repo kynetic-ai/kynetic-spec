@@ -1,3 +1,9 @@
+<!--
+  AC: @web-dashboard ac-4, ac-5, ac-9, ac-10, ac-33, ac-default-active-filter
+  AC: @multi-directory-daemon ac-27 - Reload on project change
+  AC: @ui-data-freshness ac-1 — Renders from cache on revisit without loading state
+  AC: @ui-data-freshness ac-3 — WebSocket events invalidate task queries via centralized wiring
+-->
 <script lang="ts">
 	// AC: @web-dashboard ac-4, ac-5, ac-9, ac-10, ac-33, ac-default-active-filter
 	// AC: @multi-directory-daemon ac-27 - Reload on project change
@@ -5,22 +11,22 @@
 	import { base } from '$app/paths';
 	import { goto } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
-	import type { TaskSummary, TaskDetail, BroadcastEvent } from '@kynetic-ai/shared';
+	import type { TaskDetail, BroadcastEvent } from '@kynetic-ai/shared';
+	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
 	import TaskFilters, { ACTIVE_STATUSES } from '$lib/components/TaskFilters.svelte';
 	import TaskList from '$lib/components/TaskList.svelte';
 	import TaskDetailContent from '$lib/components/board/TaskDetailContent.svelte';
 	import { fetchTasks, fetchTask } from '$lib/api';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
-	import { getProjectVersion, isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { queryKeys } from '$lib/query/keys.js';
 	import { Button } from '$lib/components/ui/button';
 	import * as Dialog from '$lib/components/ui/dialog';
 	import LayoutGrid from '@lucide/svelte/icons/layout-grid';
 	import ListIcon from '@lucide/svelte/icons/list';
 
-	let tasks = $state<TaskSummary[]>([]);
-	let total = $state(0);
-	let loading = $state(true);
-	let error = $state('');
+	const queryClient = useQueryClient();
+
 	let updatedTaskIds = $state<Set<string>>(new Set());
 
 	// Dialog panel state
@@ -50,17 +56,20 @@
 	// Track the last processed ref to avoid infinite loops
 	let lastProcessedRef = $state('');
 
-	// Re-fetch when filterParams change or project changes.
-	// Gates on isProjectInitialized() to prevent loading with wrong/missing project context.
-	// AC: @multi-directory-daemon ac-27 - Reload data when project changes
-	$effect(() => {
-		// Explicitly access all filter properties for dependency tracking
-		const { status, tag, assignee, automation, plan, limit, offset } = filterParams;
-		const version = getProjectVersion();
-		const ready = isProjectInitialized();
-		if (!ready) return;
-		loadTasks();
-	});
+	// AC: @ui-data-freshness ac-1 — createQuery caches results; revisits render from cache
+	// AC: @ui-data-freshness ac-2 — Concurrent uses share the same in-flight request
+	// AC: @multi-directory-daemon ac-27 — Re-fetches when project changes (isProjectInitialized toggles)
+	const tasksQuery = createQuery(() => ({
+		queryKey: queryKeys.tasks.list(filterParams),
+		queryFn: () => fetchTasks(filterParams),
+		enabled: isProjectInitialized(),
+	}));
+
+	let tasks = $derived(tasksQuery.data?.items ?? []);
+	let total = $derived(tasksQuery.data?.total ?? 0);
+	// AC: @ui-data-freshness ac-1 — Only show loading on initial fetch (no cache)
+	let loading = $derived(tasksQuery.isLoading);
+	let error = $derived(tasksQuery.error?.message ?? '');
 
 	// AC: Open task detail when URL has ref param
 	$effect(() => {
@@ -70,22 +79,6 @@
 			handleSelectTask(urlRef);
 		}
 	});
-
-	async function loadTasks() {
-		loading = true;
-		error = '';
-
-		try {
-			const response = await fetchTasks(filterParams);
-			tasks = response.items;
-			total = response.total;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load tasks';
-			console.error('Error loading tasks:', err);
-		} finally {
-			loading = false;
-		}
-	}
 
 	async function handleSelectTask(taskId: string) {
 		panelLoading = true;
@@ -106,7 +99,10 @@
 		handleSelectTask(event.detail);
 	}
 
+	// AC: @ui-data-freshness ac-8 — Write operations invalidate related cache
 	async function handleTaskUpdated() {
+		// Invalidate task queries so list and detail refresh
+		queryClient.invalidateQueries({ queryKey: queryKeys.tasks.all });
 		// Reload the task detail to reflect changes
 		if (panelTask) {
 			try {
@@ -115,8 +111,6 @@
 				console.error('Error reloading task:', err);
 			}
 		}
-		// Reload the task list to reflect status changes
-		loadTasks();
 	}
 
 	// AC: @ui-task-board ac-7, @ui-url-panel-state ac-2 — Reset panel state and clear URL param when dialog closes
@@ -133,7 +127,8 @@
 		}
 	});
 
-	// AC: @web-dashboard ac-33 - Handle WebSocket task updates
+	// AC: @web-dashboard ac-33 - Handle WebSocket task updates for highlight animation
+	// Data reloading is handled by centralized ws-invalidation wiring (AC: @ui-data-freshness ac-3)
 	function handleTaskUpdate(event: BroadcastEvent) {
 		// Mark task as updated for highlight animation
 		if (event.data?.ulid) {
@@ -146,9 +141,6 @@
 				updatedTaskIds = new Set(updatedTaskIds);
 			}, 3000);
 		}
-
-		// Reload tasks list
-		loadTasks();
 
 		// Reload selected task if it's the one that updated
 		if (panelTask && event.data?.ulid === panelTask._ulid) {
@@ -163,7 +155,7 @@
 	}
 
 	onMount(() => {
-		// AC: @web-dashboard ac-32, ac-33 - Subscribe to task updates
+		// AC: @web-dashboard ac-32, ac-33 - Subscribe to task updates for highlight animation
 		subscribe(['tasks']);
 		on('tasks', handleTaskUpdate);
 	});
