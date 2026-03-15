@@ -6009,8 +6009,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
-    active_role: reviewer
+    lifecycle_state: closing
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-yaml-seed-session-tests-01kks7bd
@@ -6051,27 +6051,27 @@ workspaces:
           steps: []
           failureMessage: null
     integration:
-      status: pending
+      status: merged
       target_branch: main
       target_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
       publication_mode: pull_request
-      outcome: pull_request
-      detail: null
-      updated_at: 2026-03-15T22:53:03.954Z
+      outcome: merged
+      detail: integration:merged
+      updated_at: 2026-03-15T23:03:57.654Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T22:53:03.954Z
+      updated_at: 2026-03-15T23:03:57.654Z
     cleanup:
-      status: not_scheduled
-      eligible: false
-      reason: null
-      detail: null
-      updated_at: 2026-03-15T22:53:03.954Z
+      status: scheduled
+      eligible: true
+      reason: integrated-into-base-branch
+      detail: integrated-into-base-branch
+      updated_at: 2026-03-15T23:03:57.654Z
     timestamps:
       created_at: 2026-03-15T22:39:41.894Z
-      updated_at: 2026-03-15T22:53:03.954Z
-      last_reconciled_at: 2026-03-15T22:53:03.954Z
+      updated_at: 2026-03-15T23:03:57.654Z
+      last_reconciled_at: 2026-03-15T23:03:57.654Z
       last_active_at: 2026-03-15T22:51:38.393Z
       closed_at: null
