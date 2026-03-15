@@ -97461,7 +97461,7 @@
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -97511,6 +97511,14 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-15T04:17:08.172Z
+  closed_reason: "Merged in PR #865. Created comprehensive UI data layer skill
+    (.kspec/skills/ui-data-layer/SKILL.md) documenting TanStack Query v6 patterns for Svelte web UI.
+    Covers all 8 @ui-data-freshness ACs: cache setup, request dedup, WS-driven invalidation,
+    event-driven badge updates, project switch cache clearing, static mode compatibility, error
+    handling, and mutation-based cache invalidation. Includes query key factories, cache timing
+    conventions, createInfiniteQuery for sessions, migration guide from manual fetch, testing
+    patterns, anti-patterns, and architecture boundaries."
 - _ulid: 01KKQRK0ZZZ1QMCNHDHK3969AF
   slugs:
     - task-tanstack-setup
@@ -97595,6 +97603,12 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #866. Added server-side reference resolution to daemon API responses:
+    resolveRefTitle for single-valued refs (spec_title, task_title, plan_title), resolveRefEntries
+    for array refs (resolved_depends_on, resolved_blocked_by, resolved_evidence_refs), and GET
+    /api/refs lightweight index endpoint. All 5 own ACs and 6 trait ACs covered. 19 unit tests, 4972
+    total tests passing. Two SUGGESTION-level items noted (inline resolution consistency in
+    agent-dispatch, duplicate type definitions)."
   depends_on: []
   context: []
   priority: 1
@@ -97614,6 +97628,7 @@
   created_at: 2026-03-15T03:28:13.424Z
   started_at: 2026-03-15T03:48:54.091Z
   submitted_at: 2026-03-15T04:02:15.715Z
+  completed_at: 2026-03-15T04:14:44.762Z
   notes:
     - _ulid: 01KKQSWDCJ7K1HC2M0RWSRYBY8
       created_at: 2026-03-15T03:50:48.978Z
@@ -97661,13 +97676,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-15T04:14:44.762Z
-  closed_reason: "Merged in PR #866. Added server-side reference resolution to daemon API responses:
-    resolveRefTitle for single-valued refs (spec_title, task_title, plan_title), resolveRefEntries
-    for array refs (resolved_depends_on, resolved_blocked_by, resolved_evidence_refs), and GET
-    /api/refs lightweight index endpoint. All 5 own ACs and 6 trait ACs covered. 19 unit tests, 4972
-    total tests passing. Two SUGGESTION-level items noted (inline resolution consistency in
-    agent-dispatch, duplicate type definitions)."
 - _ulid: 01KKQRK26BXGJJPBJ1NQ4GM59C
   slugs:
     - task-ref-index-endpoint
