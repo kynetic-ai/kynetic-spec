@@ -5274,7 +5274,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 8045b69abbe62718c1abb64a7b00e7dc460b571d
     canonical_branch: dispatch/task/remove-process-cwd-web-ui-resolution-from-daemon/01kkrp45
-    canonical_branch_head: 8045b69abbe62718c1abb64a7b00e7dc460b571d
+    canonical_branch_head: 815bd9f1a66d3319f68ad145342907d18a4ad485
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -5325,21 +5325,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T13:48:58.547Z
+      updated_at: 2026-03-15T13:56:01.091Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T13:48:59.399Z
+      updated_at: 2026-03-15T13:56:01.091Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T13:48:58.547Z
+      updated_at: 2026-03-15T13:56:01.091Z
     timestamps:
       created_at: 2026-03-15T13:48:58.547Z
-      updated_at: 2026-03-15T13:48:59.399Z
-      last_reconciled_at: 2026-03-15T13:48:59.399Z
+      updated_at: 2026-03-15T13:56:01.091Z
+      last_reconciled_at: 2026-03-15T13:56:01.091Z
       last_active_at: 2026-03-15T13:48:59.399Z
       closed_at: null
