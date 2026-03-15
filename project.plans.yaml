@@ -18143,8 +18143,8 @@ plans:
           tasks follow. The query factories, WebSocket wiring, and conventions
           created here become the foundation — later tasks just add more queries
           using the same patterns.
-
-          Depends on: task-ui-data-layer-skill (skill documents conventions to follow)
+        depends_on:
+          - "@task-ui-data-layer-skill"
 
       - title: Add server-side title resolution to invocation and session API responses
         slug: task-server-resolve-sessions
@@ -18212,8 +18212,9 @@ plans:
           For each page: replace manual fetch/$state/$effect/WS reload with queries.
           Preserve @ui-url-panel-state AC annotations where URL state is used.
           Remove old WebSocket reload handlers as pages are migrated.
-
-          Depends on: task-tanstack-setup, task-server-resolve-sessions
+        depends_on:
+          - "@task-tanstack-setup"
+          - "@task-server-resolve-sessions"
 
       - title: Migrate sidebar to TanStack Query and eliminate polling
         slug: task-migrate-sidebar
@@ -18231,8 +18232,8 @@ plans:
           - Session context query
 
           After migration, remove the 30s polling interval entirely.
-
-          Depends on: task-tanstack-setup
+        depends_on:
+          - "@task-tanstack-setup"
 
       - title: Migrate complex pages to TanStack Query (dashboard, tasks, specs)
         slug: task-migrate-complex-pages
@@ -18256,8 +18257,10 @@ plans:
           6. validate/+page.svelte — validation query with server-computed stats
              (after server aggregation), remove fetchItems/fetchTasks
 
-          Depends on: task-tanstack-setup, task-server-resolve-sessions,
-          task-server-aggregation (for dashboard and validate)
+        depends_on:
+          - "@task-tanstack-setup"
+          - "@task-server-resolve-sessions"
+          - "@task-server-aggregation"
 
       - title: Migrate inbox and triage pages to TanStack Query
         slug: task-migrate-inbox-triage
@@ -18278,7 +18281,9 @@ plans:
           Both pages subscribe to inbox:updates and triage:updates — after migration,
           WS events invalidate the merged inbox query instead of triggering full reload.
 
-          Depends on: task-tanstack-setup, task-server-aggregation (for merged endpoint)
+        depends_on:
+          - "@task-tanstack-setup"
+          - "@task-server-aggregation"
 
       - title: Add server-side aggregation for dashboard, validate, and inbox
         slug: task-server-aggregation
@@ -18345,6 +18350,11 @@ plans:
 
           Grep for "limit: 999" and "limit: 1000" to verify none remain.
           Grep for "setInterval" to verify no polling remains.
+        depends_on:
+          - "@task-migrate-core-pages"
+          - "@task-migrate-sidebar"
+          - "@task-migrate-complex-pages"
+          - "@task-migrate-inbox-triage"
           Verify static mode still works end-to-end.
 
           Depends on: all migration tasks complete
@@ -18458,4 +18468,8 @@ plans:
     created_at: 2026-03-15T02:22:10.628Z
     approved_at: null
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KKQPAFENGBHVJ0S21FPV5BVA
+        created_at: 2026-03-15T02:48:35.541Z
+        author: "@claude"
+        content: Add formal depends_on to task definitions
