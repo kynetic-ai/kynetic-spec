@@ -99555,12 +99555,59 @@
   tags:
     - cli
   vcs_refs: []
+  session_id: 01KKSRXYCCYV6JT8NJMJHEKD03
   created_at: 2026-03-15T19:50:42.621Z
-  notes: []
+  started_at: 2026-03-15T22:12:57.017Z
+  notes:
+    - _ulid: 01KKSSKEGAW24S9CJ4H4ND20XZ
+      created_at: 2026-03-15T22:24:24.075Z
+      author: "@claude"
+      content: >-
+        Implementation complete. Changes:
+
+
+        1. Added --verbose flag to control thinking block visibility (hidden by default, shown
+        dimmed with ANSI dim codes when verbose)
+
+        2. Added tool input summary display on tool_call_start (truncated to 80 chars for long
+        inputs)
+
+        3. Updated command description to 'Stream live agent activity via WebSocket event stream'
+
+        4. Added AC annotation for @ws-session-event-streaming ac-cli-watch-parity
+
+        5. Added N/A annotations for server-side trait-websocket-protocol ACs (ac-1, ac-3-7)
+
+
+        The predecessor task (@task-session-event-accumulator) already did most of the heavy
+        lifting:
+
+        - Switched from agent_text_chunk to typed events (message_progress, message_complete, etc.)
+
+        - Added tool_call_start/complete display with formatted duration
+
+        - Updated all existing tests to use new event types
+
+
+        This task focused on the remaining gaps:
+
+        - Thinking block --verbose gating and dim ANSI rendering
+
+        - Tool input summary in tool_call_start output
+
+        - 9 new tests covering: progressive streaming, tool call start/complete display, thinking
+        visibility with/without --verbose, full lifecycle sequence, legacy event rejection, input
+        truncation
+
+
+        Files changed:
+
+        - src/cli/commands/agent.ts (watch command)
+
+        - tests/cli-agent-commands.test.ts (new test section)
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-15T22:12:57.017Z
-  session_id: 01KKSRXYCCYV6JT8NJMJHEKD03
 - _ulid: 01KKSGT1SGVWACS5ET75Q87NPX
   slugs:
     - task-update-session-stream-spec-cleanup
