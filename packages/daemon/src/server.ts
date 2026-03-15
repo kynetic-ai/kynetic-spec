@@ -48,10 +48,9 @@ export interface ServerOptions {
  * Tries multiple locations in order:
  * 1. Explicit webUiDir option
  * 2. WEB_UI_DIR environment variable
- * 3. packages/web-ui/build in current working directory (monorepo dev)
- * 4. web-ui/build in current working directory
- * 5. Bundled dist/web-ui/ relative to this module (npm package installs)
+ * 3. Bundled dist/web-ui/ relative to this module (npm package installs)
  *
+ * AC: @daemon-web-ui-bundle ac-4, ac-5
  * Exported for testing only.
  */
 export function resolveWebUiPath(webUiDir?: string): string | null {
@@ -66,20 +65,7 @@ export function resolveWebUiPath(webUiDir?: string): string | null {
     return envPath;
   }
 
-  // 3. Monorepo development: packages/web-ui/build from cwd
-  // The daemon is spawned with cwd set to project root
-  const monorepoPath = join(process.cwd(), 'packages', 'web-ui', 'build');
-  if (existsSync(monorepoPath)) {
-    return monorepoPath;
-  }
-
-  // 4. Alternate location: web-ui/build in cwd
-  const altPath = join(process.cwd(), 'web-ui', 'build');
-  if (existsSync(altPath)) {
-    return altPath;
-  }
-
-  // 5. Bundled assets: dist/web-ui/ relative to daemon module location
+  // 3. Bundled assets: dist/web-ui/ relative to daemon module location
   // Covers npm package installs where no local web UI build exists.
   // import.meta.url resolves to dist/daemon/server.js → sibling is dist/web-ui/
   const selfDir = dirname(fileURLToPath(import.meta.url));
