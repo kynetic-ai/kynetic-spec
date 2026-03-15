@@ -97642,21 +97642,6 @@
     - task-ws-enrichment
   title: Enrich WebSocket broadcast payloads
   type: task
-  spec_ref: "@ui-api-aggregation"
-  plan_ref: "@plan-ui-data-layer-rework"
-  origin: derived
-  status: pending
-  blocked_by: []
-  depends_on: []
-  context: []
-  priority: 2
-  tags:
-    - daemon
-    - websocket
-  vcs_refs: []
-  created_at: 2026-03-15T03:28:15.220Z
-  notes: []
-  todos: []
   description: >-
     Update broadcast calls in daemon routes to include display-ready data. The entities are already
     loaded at broadcast time.
@@ -97672,6 +97657,21 @@
 
     Acceptance gates (from @ui-api-aggregation): Broadcasts include display title and old/new state
     (ac-4).
+  spec_ref: "@ui-api-aggregation"
+  plan_ref: "@plan-ui-data-layer-rework"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - daemon
+    - websocket
+  vcs_refs: []
+  created_at: 2026-03-15T03:28:15.220Z
+  notes: []
+  todos: []
 - _ulid: 01KKQRK3YT328Q9BKN9HD0DE34
   slugs:
     - task-migrate-core-pages
@@ -97693,6 +97693,22 @@
   created_at: 2026-03-15T03:28:15.834Z
   notes: []
   todos: []
+  description: >-
+    Migrate the simplest pages first — ones that primarily need server-resolved titles and don't
+    have complex state.
+
+
+    Pages: agents/+page.svelte, sessions/+page.svelte (convert infinite scroll to
+    createInfiniteQuery), sessions/[id]/+page.svelte (agent text streaming stays outside TanStack
+    Query), settings/+page.svelte, workflows/+page.svelte, observations/+page.svelte.
+
+
+    For each page: replace manual fetch/$state/$effect/WS reload with queries. Preserve
+    @ui-url-panel-state AC annotations. Remove old WebSocket reload handlers as pages are migrated.
+
+
+    Acceptance gates (from @ui-data-freshness): Each page renders from cache on revisit (ac-1),
+    concurrent requests deduplicated (ac-2), WS events invalidate, not full re-fetch (ac-3).
 - _ulid: 01KKQRK4GRF9PBJVJG4S3BDE33
   slugs:
     - task-migrate-sidebar
