@@ -4772,3 +4772,79 @@ workspaces:
       last_reconciled_at: 2026-03-15T05:24:59.444Z
       last_active_at: 2026-03-15T05:24:18.601Z
       closed_at: null
+  - workspace_id: dispatch-workspace-01KKQRK3BM6MARTC3MSE6YV4VY
+    task_ref: "@01KKQRK3BM6MARTC3MSE6YV4VY"
+    task_slug: task-ws-enrichment
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    resolved_base_branch: main
+    base_branch_point: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    canonical_branch: dispatch/task/task-ws-enrichment/01kkqrk3
+    canonical_branch_head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+    branch_provenance:
+      ownership: dispatcher-managed
+      source: provisioned
+      remote_ref: null
+      adopted_from: null
+      adopted_at: null
+      rehydrated: null
+    lifecycle_state: ready
+    active_role: null
+    worktrees:
+      worker:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ws-enrichment-01kkqrk3
+        branch_mode: branch
+        branch_ref: dispatch/task/task-ws-enrichment/01kkqrk3
+        head: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+        last_seen_at: 2026-03-15T05:25:01.659Z
+      reviewer: null
+    bootstrap:
+      status: not_run
+      configHash: null
+      canonicalBranchHead: null
+      lastRunAt: null
+      invalidationReasons: []
+      steps: []
+      failureMessage: null
+      lastRole: null
+      roleStates:
+        worker:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+        reviewer:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+    integration:
+      status: pending
+      target_branch: main
+      target_commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+      publication_mode: pull_request
+      outcome: pull_request
+      detail: null
+      updated_at: 2026-03-15T05:25:01.659Z
+    health:
+      status: healthy
+      summary: Workspace record matches current git branch and worktree state.
+      issues: []
+      updated_at: 2026-03-15T05:25:01.659Z
+    cleanup:
+      status: not_scheduled
+      eligible: false
+      reason: null
+      detail: null
+      updated_at: 2026-03-15T05:25:01.659Z
+    timestamps:
+      created_at: 2026-03-15T05:25:01.659Z
+      updated_at: 2026-03-15T05:25:01.659Z
+      last_reconciled_at: 2026-03-15T05:25:01.659Z
+      last_active_at: null
+      closed_at: null
