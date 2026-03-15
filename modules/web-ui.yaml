@@ -2570,6 +2570,9 @@ features:
       - "@trait-api-endpoint"
     notes: []
     created: 2026-03-15T03:28:12.103Z
+    status:
+      maturity: draft
+      implementation: in_progress
   - _ulid: 01KKQRK0B6BH53Z2CBQ312YZHZ
     slugs:
       - ui-api-aggregation
