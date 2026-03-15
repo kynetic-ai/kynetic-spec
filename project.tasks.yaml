@@ -97550,7 +97550,7 @@
   spec_ref: "@ui-data-freshness"
   plan_ref: "@plan-ui-data-layer-rework"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-ui-data-layer-skill"
@@ -97567,11 +97567,11 @@
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/main
     review_url: null
-    captured_at: 2026-03-15T04:36:22.684Z
+    captured_at: 2026-03-15T05:10:35.590Z
   session_id: 01KKQX00YKZRXA074114T9T37K
   created_at: 2026-03-15T03:28:12.799Z
   started_at: 2026-03-15T05:10:29.755Z
-  submitted_at: 2026-03-15T04:36:23.431Z
+  submitted_at: 2026-03-15T05:10:36.367Z
   notes:
     - _ulid: 01KKQWEB13G5M30JHQ35RPHDHG
       created_at: 2026-03-15T04:35:33.539Z
