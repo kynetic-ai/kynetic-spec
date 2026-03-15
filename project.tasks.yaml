@@ -99232,6 +99232,7 @@
   created_at: 2026-03-15T19:50:40.706Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKSGSZY9G04716168198EYK2
   slugs:
     - task-session-event-detail-endpoint
@@ -99271,6 +99272,7 @@
   created_at: 2026-03-15T19:50:41.353Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKSGT0JK5JV84SHPA6K7MAK1
   slugs:
     - task-session-stream-ws-ui
@@ -99338,6 +99340,7 @@
   created_at: 2026-03-15T19:50:42.003Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKSGT15XQJERS3XGKWKEZ1EZ
   slugs:
     - task-cli-watch-ws-events
@@ -99374,10 +99377,12 @@
   created_at: 2026-03-15T19:50:42.621Z
   notes: []
   todos: []
-- title: Update @ui-session-stream spec and clean up legacy streaming code
-  type: task
+  automation: eligible
+- _ulid: 01KKSGT1SGVWACS5ET75Q87NPX
   slugs:
     - task-update-session-stream-spec-cleanup
+  title: Update @ui-session-stream spec and clean up legacy streaming code
+  type: task
   description: |
     After all consumers are migrated:
 
@@ -99404,19 +99409,19 @@
     - @ws-session-event-streaming ac-no-http-polling
   spec_ref: "@ws-session-event-streaming"
   plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-session-stream-ws-ui"
+    - "@task-cli-watch-ws-events"
+  context: []
   priority: 3
   tags:
     - web-ui
     - docs
-  depends_on:
-    - "@task-session-stream-ws-ui"
-    - "@task-cli-watch-ws-events"
-  notes: []
-  origin: derived
-  _ulid: 01KKSGT1SGVWACS5ET75Q87NPX
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-15T19:50:43.248Z
+  notes: []
   todos: []
+  automation: eligible
