@@ -6086,7 +6086,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6f2b02df930df09e597db225bd51605b7f2a58e7
     canonical_branch: dispatch/task/task-validate-default-base-branch/01kks7ce
-    canonical_branch_head: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    canonical_branch_head: eeec8806d7d2d87a274095887cad29746b142fe8
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -6094,16 +6094,21 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-default-base-branch-01kks7ce
         branch_mode: branch
         branch_ref: dispatch/task/task-validate-default-base-branch/01kks7ce
-        head: 6f2b02df930df09e597db225bd51605b7f2a58e7
-        last_seen_at: 2026-03-15T23:05:10.854Z
-      reviewer: null
+        head: eeec8806d7d2d87a274095887cad29746b142fe8
+        last_seen_at: 2026-03-15T23:10:36.235Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-default-base-branch-01kks7ce-review
+        branch_mode: detached
+        branch_ref: null
+        head: eeec8806d7d2d87a274095887cad29746b142fe8
+        last_seen_at: 2026-03-15T23:10:36.235Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -6137,21 +6142,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T23:05:10.854Z
+      updated_at: 2026-03-15T23:10:36.235Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T23:05:11.384Z
+      updated_at: 2026-03-15T23:10:36.235Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T23:05:10.854Z
+      updated_at: 2026-03-15T23:10:36.235Z
     timestamps:
       created_at: 2026-03-15T23:05:10.854Z
-      updated_at: 2026-03-15T23:05:11.384Z
-      last_reconciled_at: 2026-03-15T23:05:11.384Z
+      updated_at: 2026-03-15T23:10:36.235Z
+      last_reconciled_at: 2026-03-15T23:10:36.235Z
       last_active_at: 2026-03-15T23:05:11.384Z
       closed_at: null
