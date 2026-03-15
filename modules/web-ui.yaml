@@ -1897,13 +1897,6 @@ features:
               The total count updates. If the user is at the top of the list,
               the new session appears. Otherwise a "new sessions available"
               indicator shows.
-          - id: ac-hard-refresh
-            given: The user performs a hard page refresh (Ctrl+R / Cmd+R) on /sessions or any page with data
-              queries
-            when: The page reloads from scratch
-            then: The page completes initialization and renders data without getting stuck in a loading state.
-              The load lifecycle (mode detection, project init, query execution) completes reliably
-              regardless of whether the page was reached via hard refresh or client-side navigation.
         depends_on: []
         implements: []
         relates_to: []
