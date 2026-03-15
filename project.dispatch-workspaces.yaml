@@ -5355,7 +5355,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 8045b69abbe62718c1abb64a7b00e7dc460b571d
     canonical_branch: dispatch/task/add-unfiltered-total-to-sessions-api-response-to-eliminate-extra-limit-0-request/01kkrtss
-    canonical_branch_head: 8045b69abbe62718c1abb64a7b00e7dc460b571d
+    canonical_branch_head: 207ce9829ab70a83d8e7589adfceda9728b88700
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -5406,21 +5406,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-15T13:56:10.359Z
+      updated_at: 2026-03-15T14:13:01.135Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T13:56:11.039Z
+      updated_at: 2026-03-15T14:13:01.135Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-15T13:56:10.359Z
+      updated_at: 2026-03-15T14:13:01.135Z
     timestamps:
       created_at: 2026-03-15T13:56:10.359Z
-      updated_at: 2026-03-15T13:56:11.039Z
-      last_reconciled_at: 2026-03-15T13:56:11.039Z
+      updated_at: 2026-03-15T14:13:01.135Z
+      last_reconciled_at: 2026-03-15T14:13:01.135Z
       last_active_at: 2026-03-15T13:56:11.039Z
       closed_at: null
