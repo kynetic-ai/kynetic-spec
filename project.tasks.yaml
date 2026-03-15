@@ -98262,12 +98262,39 @@
   tags:
     - web-ui
   vcs_refs: []
+  session_id: 01KKR3ZCWTR8B36D571DRHSXF3
   created_at: 2026-03-15T03:28:17.016Z
-  notes: []
+  started_at: 2026-03-15T06:48:31.502Z
+  notes:
+    - _ulid: 01KKR49JKM770NHB86FC8352D9
+      created_at: 2026-03-15T06:52:46.068Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Migrate 5 complex pages (tasks, board, specs, plans, validate) from manual
+        fetch+++WS reload patterns to TanStack Query
+
+        - Dependencies satisfied: tanstack-setup (merged #868), server-resolve (merged #866),
+        server-aggregation (merged #869), sidebar (merged #872) all merged to main. Merged main into
+        task branch.
+
+        - Scope: tasks/+page, tasks/board/+page, specs/+page, plans/+page, validate/+page. Add
+        aggregation fetch functions to api.ts, add query key entries as needed. Convert each page's
+        manual loadData()//WS handler to createQuery.
+
+        - Pattern reference: Dashboard (+page.svelte) and Sidebar (Sidebar.svelte) already migrated
+        — follow same createQuery + queryKeys + ws-invalidation pattern.
+
+        - Parallel task: core-pages PR #871 is open but touches different pages (agents, sessions,
+        settings, workflows, observations). No page file overlap but shared files (api.ts, keys.ts)
+        may need merge resolution.
+
+        - Verification: npm test (vitest shards), verify no setInterval polling remains on migrated
+        pages
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-15T06:48:31.502Z
-  session_id: 01KKR3ZCWTR8B36D571DRHSXF3
 - _ulid: 01KKQRK5PM5VTQBBBMT11PMCE6
   slugs:
     - task-migrate-inbox-triage
