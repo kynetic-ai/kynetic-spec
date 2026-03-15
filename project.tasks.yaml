@@ -99144,7 +99144,7 @@
   spec_ref: "@dispatch-workspace-configuration"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -99235,6 +99235,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-15T23:05:27.439Z
+  session_id: 01KKSVY4D9EEAMZMQVAJ6PTZX6
 - _ulid: 01KKSGSZA2HXFDXW8RA3GV1JFC
   slugs:
     - task-session-event-accumulator
