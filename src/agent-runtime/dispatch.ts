@@ -1136,6 +1136,29 @@ export class DispatchEngine {
   }
 
   /**
+   * Check whether any agent has an active or in-flight invocation for a task.
+   * Considers both registered active invocations (activeInvocationDetails) and
+   * tasks that are between queue removal and active registration (inFlightTaskKeys).
+   *
+   * AC: @agent-dispatch-engine ac-26
+   */
+  private _hasActiveInvocationForTask(taskRef: string): boolean {
+    // Check active invocations across all agents
+    for (const record of this.activeInvocationDetails.values()) {
+      if (record.taskRef === taskRef) {
+        return true;
+      }
+    }
+    // Check in-flight keys (format: "agentId:taskRef") across all agents
+    for (const key of this.inFlightTaskKeys) {
+      if (key.endsWith(`:${taskRef}`)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Load agent definitions from meta context.
    */
   private async _loadAgents(): Promise<LoadedAgent[]> {
@@ -1547,6 +1570,11 @@ export class DispatchEngine {
       for (let index = 0; index < queue.length; index++) {
         const entry = queue[index];
         if (entry.nextRetryAt > now) continue;
+        // AC: @agent-dispatch-engine ac-26 — cross-agent task exclusivity:
+        // skip candidates whose task already has an active invocation by any
+        // agent. The entry stays queued and will be picked up after the active
+        // invocation completes (post-invocation drain via ac-24).
+        if (this._hasActiveInvocationForTask(entry.change.taskRef)) continue;
         candidates.push({ agent, queue, queueIndex: index, entry });
       }
     }
