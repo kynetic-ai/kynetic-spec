@@ -20742,20 +20742,16 @@ plans:
     slugs:
       - plan-review-records-web-ui
     title: Review Records Web UI
-    content: >
+    content: |
       # Review Records Web UI
 
-
-      Add daemon API endpoints and SvelteKit pages for viewing and interacting with kspec review
-      records. This is the primary interface for humans to see agent review activity and participate
-      in reviews.
-
+      Add daemon API endpoints and SvelteKit pages for viewing and interacting
+      with kspec review records. The primary interface for humans to see agent
+      review activity and participate in reviews.
 
       ## Specs
 
-
       ```yaml
-
       - title: Review Records Daemon API
         slug: review-records-daemon-api
         type: requirement
@@ -20924,48 +20920,265 @@ plans:
               review detail page
       ```
 
-
       ## Tasks
 
-
-      derive_from_specs: true
-
+      derive_from_specs: false
 
       ```yaml
+      # ─── API Layer ───
 
-      - slug: task-review-daemon-api
-        title: Implement review records daemon API endpoints
-        spec_ref: "@review-records-daemon-api"
+      - title: Implement review list and detail API endpoints
+        slug: task-review-api-read
         priority: 2
         tags: [daemon, api, review]
+        spec_ref: "@review-records-daemon-api"
+        description: |
+          Add GET /api/reviews and GET /api/reviews/:id endpoints to the daemon.
+          These are the read-only foundation the web UI queries.
 
-      - slug: task-review-web-ui
-        title: Build review records web UI pages
-        spec_ref: "@review-records-web-ui"
+          Why: The web UI needs server-side data. The review library already has
+          loadReviews() and full record parsing — the daemon is a thin HTTP layer
+          over these functions, following the same pattern as /api/tasks and
+          /api/plans.
+
+          What: GET /api/reviews returns paginated ReviewSummary objects (ulid,
+          title, lifecycle, disposition, subject type, reviewer, linked task ref,
+          created/updated timestamps). Supports query params: status, disposition,
+          subject-type, reviewer, task (matches subject-ref or related-refs),
+          sort, limit, offset. GET /api/reviews/:id returns the full review record
+          including threads, checks, verdicts, events, and computed disposition.
+
+          How: Add routes to src/daemon/routes/. Use loadReviews() from
+          parser/reviews.ts. Create ReviewSummary and ReviewDetail types in
+          @kynetic-ai/shared following existing PlanSummary/TaskDetail patterns.
+          Pagination follows existing daemon conventions (limit/offset with total
+          count header).
+
+          Covers: @review-records-daemon-api ac-1, ac-2.
+
+      - title: Implement review thread mutation API endpoints
+        slug: task-review-api-threads
+        priority: 2
+        tags: [daemon, api, review]
+        spec_ref: "@review-records-daemon-api"
+        depends_on:
+          - "@task-review-api-read"
+        description: |
+          Add endpoints for creating threads, replying, and resolving/reopening.
+          These are the core interaction endpoints for the review UI.
+
+          Why: Thread interaction is the primary review workflow — reviewers
+          create threads with findings, workers reply and resolve. The review
+          library has addThread(), addReply(), resolveThread(), reopenThread()
+          in parser/review-threads.ts — the API wraps these.
+
+          What: POST /api/reviews/:id/comments creates a new thread (body, kind,
+          optional anchor). POST /api/reviews/:id/comments/:threadId/replies adds
+          a reply (body). PATCH /api/reviews/:id/comments/:threadId/resolve and
+          /reopen toggle resolution state. All mutations return the updated thread.
+
+          How: Route handlers call the atomic wrapper functions from
+          parser/review-threads.ts which handle file locking and persistence.
+          Validate request bodies with Zod schemas. Return 400 with actionable
+          messages for invalid input (missing body, invalid thread ULID, etc.).
+
+          Covers: @review-records-daemon-api ac-3, ac-4, ac-5, ac-10.
+
+      - title: Implement review verdict, check, and lifecycle API endpoints
+        slug: task-review-api-verdicts
+        priority: 2
+        tags: [daemon, api, review]
+        spec_ref: "@review-records-daemon-api"
+        depends_on:
+          - "@task-review-api-read"
+        description: |
+          Add endpoints for recording verdicts, checks, and lifecycle transitions.
+          These complete the mutation API surface.
+
+          Why: Verdicts drive disposition computation (the core review outcome).
+          Checks record verification evidence. Lifecycle transitions control
+          review state. The review library has functions for all of these in
+          parser/review-operations.ts.
+
+          What: POST /api/reviews/:id/verdicts records a verdict (decision,
+          reviewer, version fields). POST /api/reviews/:id/checks records a
+          check result (name, status, runner, evidence, version fields).
+          PATCH /api/reviews/:id/lifecycle transitions lifecycle state (target
+          state: open, closed, archived). Invalid transitions return 400 with
+          the reason.
+
+          How: Use submitVerdict(), addCheck(), transitionLifecycle() from
+          parser/review-operations.ts. Validate state transitions server-side
+          (e.g., can't archive from draft). Return recomputed disposition in
+          verdict responses so the UI can update immediately.
+
+          Covers: @review-records-daemon-api ac-6, ac-7, ac-8, ac-10.
+
+      - title: Add WebSocket events for review mutations
+        slug: task-review-api-websocket
+        priority: 2
+        tags: [daemon, websocket, review]
+        spec_ref: "@review-records-daemon-api"
+        depends_on:
+          - "@task-review-api-threads"
+          - "@task-review-api-verdicts"
+        description: |
+          Broadcast WebSocket events when review records are created or mutated,
+          so the UI can refresh without polling.
+
+          Why: The web UI uses TanStack Query with WebSocket-driven invalidation.
+          Without real-time events, users would need to manually refresh to see
+          new threads, verdicts, or disposition changes from agent reviewers.
+
+          What: Add a "reviews" WebSocket topic. Emit events on review creation,
+          thread creation/update, verdict submission, check recording, and
+          lifecycle transitions. Event types: review_created, review_updated,
+          thread_created, thread_updated, verdict_submitted, check_recorded,
+          lifecycle_changed.
+
+          How: Follow existing WebSocket patterns (tasks topic, plans topic).
+          Add broadcast calls at the end of each mutation endpoint handler.
+          Events carry the review ULID and the mutation type so the client
+          knows which query keys to invalidate.
+
+          Covers: @review-records-daemon-api ac-9.
+
+      # ─── Web UI ───
+
+      - title: Build review list page
+        slug: task-review-list-page
         priority: 3
         tags: [web-ui, review]
+        spec_ref: "@review-records-web-ui"
         depends_on:
-          - "@task-review-daemon-api"
-      ```
+          - "@task-review-api-read"
+        description: |
+          Create the /reviews route with a filterable, sortable list of reviews.
 
+          Why: Users need to see all reviews at a glance — which are open,
+          which need attention, what disposition each has. This is the entry
+          point to the review UI.
+
+          What: SvelteKit page at /reviews. Table showing review title,
+          lifecycle status, disposition badge (color-coded: pending=amber,
+          approved=emerald, changes_requested=red), subject type, reviewer,
+          linked task (clickable), and timestamps. Filters for status,
+          disposition, and subject type via URL query params. Sortable columns.
+          Empty state when no reviews exist.
+
+          How: TanStack Query for data fetching from GET /api/reviews.
+          WebSocket subscription to "reviews" topic for real-time invalidation.
+          Use goto() for URL param changes per project conventions. Follow
+          existing list page patterns (tasks list, plans list).
+
+          Covers: @review-records-web-ui ac-1.
+
+      - title: Build review detail page with thread view
+        slug: task-review-detail-page
+        priority: 3
+        tags: [web-ui, review]
+        spec_ref: "@review-records-web-ui"
+        depends_on:
+          - "@task-review-list-page"
+          - "@task-review-api-threads"
+          - "@task-review-api-verdicts"
+        description: |
+          Create the /reviews/[id] route showing the full review with threads,
+          checks, verdicts, and disposition.
+
+          Why: This is the primary review interaction surface — where humans
+          read agent findings, see check results, and understand the overall
+          review state.
+
+          What: Header with review title, lifecycle badge, disposition badge,
+          subject info (type, ref, version), and reviewer. Thread list showing
+          each thread with kind badge (blocker=red, question=amber, nit=gray),
+          resolution state, entries with timestamps, and anchors (file/line
+          for code, section/field for structured). Checks section showing
+          pass/fail status per check with staleness indicator. Verdicts section
+          showing reviewer decisions with timestamps. Event timeline (collapsible).
+
+          How: TanStack Query fetching from GET /api/reviews/:id. WebSocket
+          subscription for real-time updates. Thread entries rendered as a
+          conversation view. Disposition badge recomputes visually when
+          verdicts/threads change via WebSocket.
+
+          Covers: @review-records-web-ui ac-2.
+
+      - title: Add review interaction controls (comment, reply, resolve, verdict)
+        slug: task-review-interaction
+        priority: 3
+        tags: [web-ui, review]
+        spec_ref: "@review-records-web-ui"
+        depends_on:
+          - "@task-review-detail-page"
+        description: |
+          Add interactive controls to the review detail page so users can
+          participate in reviews through the UI.
+
+          Why: Without interaction, the UI is read-only. Users need to create
+          threads, reply, resolve issues, and submit verdicts — the same
+          operations agents do via CLI but through a visual interface.
+
+          What: "Add Comment" button opening a form with body textarea and
+          kind selector (blocker/question/nit). Reply button on each thread
+          opening an inline reply form. Resolve/Reopen toggle on blocker and
+          question threads. Verdict submission panel with decision selector
+          (approve/request_changes/comment) and submit button. All controls
+          use optimistic updates with TanStack Query mutations.
+
+          How: POST/PATCH to the thread and verdict API endpoints. Mutation
+          hooks with optimistic updates following existing patterns. After
+          verdict submission, disposition badge updates immediately from the
+          response. WebSocket events handle multi-user scenarios (another
+          reviewer acting simultaneously).
+
+          Covers: @review-records-web-ui ac-3, ac-4, ac-5, ac-6.
+
+      - title: Add review links to task detail page
+        slug: task-review-task-integration
+        priority: 3
+        tags: [web-ui, review]
+        spec_ref: "@review-records-web-ui"
+        depends_on:
+          - "@task-review-api-read"
+        description: |
+          Show linked reviews on the task detail page so users can navigate
+          from a task to its review history.
+
+          Why: When viewing a task in pending_review or needs_work state, the
+          user needs to see the review that's driving the workflow — its
+          disposition, outstanding blockers, and a link to the full review.
+
+          What: On the task detail page, if the task has review_ref or appears
+          in a review's related_refs, show a "Reviews" section with review
+          title, disposition badge, and thread summary (e.g., "3 threads,
+          1 blocker unresolved"). Each review links to /reviews/[id].
+
+          How: Use the existing task detail page component. Query
+          GET /api/reviews?task=@task-ref to find linked reviews. Render as
+          a compact card or list section. Follow existing task detail patterns
+          for supplementary data sections.
+
+          Covers: @review-records-web-ui ac-7.
+      ```
 
       ## Implementation Notes
 
+      The daemon API is a thin HTTP layer over existing review library functions.
+      Key files: parser/reviews.ts (load/save), parser/review-operations.ts
+      (verdicts, disposition, lifecycle), parser/review-threads.ts (thread CRUD),
+      review/checks.ts (gate evaluation), review/subject-bindings.ts (version
+      tracking).
 
-      Follow existing daemon API patterns (pagination, WebSocket events). Review operations should
-      use the existing review library functions (parser/reviews.ts, parser/review-operations.ts,
-      parser/review-threads.ts, etc.) — the daemon is a thin HTTP layer over them.
+      WebSocket events follow existing patterns (tasks and plans topics). The
+      "reviews" topic carries mutation type and review ULID for targeted query
+      invalidation.
 
-
-      WebSocket events should use a `reviews` topic following existing patterns (tasks topic, plans
-      topic). Event types: `review_created`, `review_updated`, `thread_created`, `thread_updated`,
-      `verdict_submitted`, `check_recorded`.
-
-
-      For the web UI, follow existing SvelteKit patterns and TanStack Query data layer. Review list
-      page at /reviews with filters. Review detail page at /reviews/[id] with thread view, check
-      status, verdict history, disposition badge. Thread interaction (reply, resolve). Link from
-      task detail to associated reviews. Use goto() for URL state per project conventions.
+      Web UI follows existing SvelteKit + TanStack Query patterns. Use goto()
+      for URL state. Disposition colors: pending=amber, approved=emerald,
+      changes_requested=red. Thread kind colors: blocker=red, question=amber,
+      nit=gray.
     status: draft
     derived_tasks: []
     derived_specs: []
@@ -20980,3 +21193,8 @@ plans:
         author: "@claude"
         content: "Address review feedback: split broad ACs, add error handling, add traits, specify routes
           and WebSocket topics"
+      - _ulid: 01KKTSKWFBX6SADCPVH3C42XQT
+        created_at: 2026-03-16T07:43:52.812Z
+        author: "@claude"
+        content: "Granular tasks with why/what/how descriptions, derive_from_specs: false, explicit AC
+          coverage per task, proper dependency chain"
