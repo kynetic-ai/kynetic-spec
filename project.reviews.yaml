@@ -3892,3 +3892,29 @@ reviews:
     created_at: 2026-03-16T22:54:15.290Z
     updated_at: 2026-03-16T22:54:57.629Z
     notes: []
+  - _ulid: 01KKWEBZSZ2R6X6GGTBB3YE5M5
+    slugs: []
+    title: "Review: normalize activity entries"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKWEBZSY9QE6QK64GT397TGW
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T23:05:48.606Z
+    examined_commit: f6e16b92e3cf47b7a6144407e45d3891435c0e05
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-normalize-activity-entries"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-16T23:05:48.607Z
+    updated_at: null
+    notes: []
