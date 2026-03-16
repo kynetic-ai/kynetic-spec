@@ -3351,7 +3351,18 @@ reviews:
     slugs: []
     title: Review dispatch config fallback for submission linkage
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 3997a56ae521f947483e867f45ba0e0059237196
+          head_commit: 7176f3ab35ea73ae593941eb0d824ba6da12b653
+        evidence: All 13 tests passed in task-submission-linkage.test.ts including 2 new ac-5 tests
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-16T21:55:09.313Z
+        completed_at: 2026-03-16T21:55:09.313Z
     events:
       - _ulid: 01KKWA9K750XS4MZH8CPVVEFNZ
         actor: "@claude"
@@ -3366,6 +3377,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-16T21:54:45.459Z
+      - _ulid: 01KKWAAKX53CH60WRZ0TM013WE
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-16T21:55:09.349Z
     external_links: []
     lifecycle_state: open
     related_refs: []
@@ -3377,5 +3395,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-16T21:54:35.878Z
-    updated_at: 2026-03-16T21:54:45.420Z
+    updated_at: 2026-03-16T21:55:09.313Z
     notes: []
