@@ -1454,6 +1454,31 @@ reviews:
               rendering for data that cannot be produced. Either the verdict schema needs extending
               (separate spec work) or this AC should be deferred until verdict bodies exist."
             created_at: 2026-03-16T07:59:44.188Z
+      - _ulid: 01KKTTHAQW2Y96GPFN3JVQYSSH
+        kind: question
+        entries:
+          - _ulid: 01KKTTHAQXPMRQJKMWC35N1NSK
+            author: "@claude"
+            body: >-
+              **Task scoping: detail page task covers too many rendering concerns.** Task
+              @task-review-detail-page now covers ac-2, ac-8, ac-9, ac-10, ac-11, ac-12 — six ACs
+              spanning layout, markdown rendering, code snippet resolution, structured anchor
+              navigation, check staleness logic, and verdict formatting. This is a lot of distinct
+              rendering work.
+
+
+              Consider splitting: ac-8 + ac-12 (markdown rendering) could be a shared component task
+              since both are 'render markdown body' with the same library/approach. ac-9 (code
+              anchor display) involves snippet resolution which has its own data-fetching complexity
+              (see blocker on AC-9). ac-10, ac-11 are lighter and fit naturally in the detail page
+              task alongside ac-2.
+
+
+              Recommendation: Split ac-9 into its own task (it requires solving the snippet data
+              source problem first), keep the rest in the detail page task. Markdown rendering
+              (ac-8, ac-12) could stay in the detail page task since the shared component is an
+              implementation detail, not a separate deliverable.
+            created_at: 2026-03-16T07:59:57.693Z
     checks: []
     verdicts: []
     events:
@@ -1505,7 +1530,14 @@ reviews:
         payload:
           thread_ulid: 01KKTTGXHWEF1S4J3XF68WQV4W
           kind: blocker
+      - _ulid: 01KKTTHARYVXFKW3ABP1C1NBZE
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:59:57.726Z
+        payload:
+          thread_ulid: 01KKTTHAQW2Y96GPFN3JVQYSSH
+          kind: question
     notes: []
     external_links: []
     created_at: 2026-03-16T07:57:51.698Z
-    updated_at: 2026-03-16T07:59:44.188Z
+    updated_at: 2026-03-16T07:59:57.693Z
