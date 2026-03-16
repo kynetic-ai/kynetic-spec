@@ -100,13 +100,7 @@ export function formatCheckpointResult(result: CheckpointResult): void {
     console.log("");
 
     for (const issue of result.issues) {
-      const icon =
-        issue.type === "uncommitted_changes"
-          ? chalk.yellow("⚠")
-          : issue.type === "in_progress_task"
-            ? chalk.blue("●")
-            : chalk.gray("○");
-      console.log(`  ${icon} ${issue.description}`);
+      console.log(`  ${chalk.yellow("⚠")} ${issue.description}`);
     }
 
     if (result.instructions.length > 0) {
