@@ -2303,6 +2303,17 @@ reviews:
           head_commit: be7a988ce9d990284148d7f03083d7914ef3c15e
         created_at: 2026-03-16T16:16:28.218Z
         completed_at: 2026-03-16T16:16:28.218Z
+      - name: kspec-validate
+        status: pass
+        required: false
+        runner: kspec
+        evidence: Schema OK, reference errors and alignment warnings are all pre-existing (verified on main)
+        applies_to_version:
+          type: code_compare
+          base_commit: c09189ec7386070eb3b6331251bf123e29698e81
+          head_commit: be7a988ce9d990284148d7f03083d7914ef3c15e
+        created_at: 2026-03-16T16:16:31.016Z
+        completed_at: 2026-03-16T16:16:31.016Z
     verdicts: []
     events:
       - _ulid: 01KKVPK4EFE07WG8S22ZYFR99B
@@ -2339,7 +2350,14 @@ reviews:
         payload:
           name: vitest
           status: pass
+      - _ulid: 01KKVPYHSWN69HX9E2ZBQGG3YD
+        event_type: check_added
+        actor: "@claude"
+        timestamp: 2026-03-16T16:16:31.037Z
+        payload:
+          name: kspec-validate
+          status: pass
     notes: []
     external_links: []
     created_at: 2026-03-16T16:10:16.911Z
-    updated_at: 2026-03-16T16:16:28.218Z
+    updated_at: 2026-03-16T16:16:31.016Z
