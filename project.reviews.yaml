@@ -3804,7 +3804,18 @@ reviews:
     slugs: []
     title: Review task-implement-activity-git-query
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 9aef1ee768efc5a8e5a2797650be3d8fb04e4963
+          head_commit: 070cd9965c930bcc611e744d18c19745ea881db1
+        evidence: 13/13 tests passed in activity-git-query.test.ts
+        name: vitest-activity
+        required: true
+        runner: vitest
+        created_at: 2026-03-16T22:54:43.755Z
+        completed_at: 2026-03-16T22:54:43.755Z
     events:
       - _ulid: 01KKWDPTQPAC4F2BZ7P4KG563Y
         actor: "@claude"
@@ -3819,6 +3830,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-16T22:54:23.520Z
+      - _ulid: 01KKWDQPJGS98078MY1PNHYEAC
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest-activity
+        timestamp: 2026-03-16T22:54:43.793Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -3831,5 +3849,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-16T22:54:15.290Z
-    updated_at: 2026-03-16T22:54:23.478Z
+    updated_at: 2026-03-16T22:54:43.755Z
     notes: []
