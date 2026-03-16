@@ -630,11 +630,6 @@ features:
         given: A hooks section contains an invalid value
         when: kspec setup reads the configuration
         then: A validation error is reported identifying the invalid field.
-      - id: ac-dispatch-publication-mode
-        given: dispatch.publication_mode is set in kspec.config.yaml
-        when: the dispatcher resolves publication mode for a new or re-evaluated workspace
-        then: the configured mode governs how agents publish work, overriding environment auto-detection
-          when not set to auto
     depends_on: []
     implements: []
     relates_to: []
