@@ -1193,7 +1193,14 @@ reviews:
               5. **No missing tasks** — full spec surface is covered.
             created_at: 2026-03-16T07:47:27.183Z
     checks: []
-    verdicts: []
+    verdicts:
+      - reviewer: plan-review-agent-r3
+        role: reviewer
+        decision: request_changes
+        applies_to_version:
+          type: entity_version
+          content_hash: 01KKTSTR86E3AFZ3K4K0EC39VN
+        created_at: 2026-03-16T07:47:38.043Z
     events:
       - _ulid: 01KKTSM6DDJ8D68E4EH6CTZTJC
         event_type: lifecycle_change
@@ -1257,7 +1264,13 @@ reviews:
         payload:
           thread_ulid: 01KKTSTDTFDQ9SJDT7MW1S41JD
           kind: nit
+      - _ulid: 01KKTSTRE7PVA9M68YE47RJJGH
+        event_type: verdict_submitted
+        actor: plan-review-agent-r3
+        timestamp: 2026-03-16T07:47:38.055Z
+        payload:
+          decision: request_changes
     notes: []
     external_links: []
     created_at: 2026-03-16T07:44:02.989Z
-    updated_at: 2026-03-16T07:47:27.183Z
+    updated_at: 2026-03-16T07:47:38.043Z
