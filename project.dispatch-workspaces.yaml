@@ -6663,8 +6663,8 @@ workspaces:
       adopted_from: dispatch/task/rewrite-core-skills-for-review-driven-architecture/01kkthzw
       adopted_at: 2026-03-16T05:50:54.458Z
       rehydrated: true
-    lifecycle_state: integrating
-    active_role: reviewer
+    lifecycle_state: closing
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/rewrite-core-skills-for-review-driven-architecture-01kkthzw
@@ -6705,27 +6705,27 @@ workspaces:
           steps: []
           failureMessage: null
     integration:
-      status: pending
+      status: merged
       target_branch: main
       target_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
       publication_mode: pull_request
-      outcome: pull_request
-      detail: null
-      updated_at: 2026-03-16T06:29:52.979Z
+      outcome: merged
+      detail: integration:merged
+      updated_at: 2026-03-16T06:41:34.620Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-16T06:29:53.536Z
+      updated_at: 2026-03-16T06:41:34.620Z
     cleanup:
-      status: not_scheduled
-      eligible: false
-      reason: null
-      detail: null
-      updated_at: 2026-03-16T06:29:52.979Z
+      status: scheduled
+      eligible: true
+      reason: integrated-into-base-branch
+      detail: integrated-into-base-branch
+      updated_at: 2026-03-16T06:41:34.620Z
     timestamps:
       created_at: 2026-03-16T05:50:54.496Z
-      updated_at: 2026-03-16T06:29:53.536Z
-      last_reconciled_at: 2026-03-16T06:29:53.536Z
+      updated_at: 2026-03-16T06:41:34.620Z
+      last_reconciled_at: 2026-03-16T06:41:34.620Z
       last_active_at: 2026-03-16T06:29:53.536Z
       closed_at: null
