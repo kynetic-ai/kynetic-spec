@@ -191,7 +191,7 @@ export function submitVerdict(
  * in the event log. This supports iterative re-review cycles where
  * the subject has been updated.
  *
- * AC: @review-verdicts-and-resolution-lifecycle ac-3 — re-review cycles
+ * AC: @review-verdicts-and-resolution-lifecycle ac-7 — stale verdict detection via subject refresh
  */
 export function refreshSubject(
   review: ReviewRecord,
