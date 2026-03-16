@@ -3580,6 +3580,18 @@ reviews:
         runner: vitest
         created_at: 2026-03-16T22:18:10.212Z
         completed_at: 2026-03-16T22:18:10.212Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: 4439a1d4
+        evidence: "ac-2: annotated on test 1 (line 26) and test 2 (line 91). ac-3: annotated on test 2 (line
+          92) and test 3 (line 148). Both ACs tested with multiple scenarios. ac-1 has dedicated
+          coverage in review-cli.test.ts."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-16T22:18:17.306Z
+        completed_at: 2026-03-16T22:18:17.306Z
     events:
       - _ulid: 01KKWBKHZJTQB1AZCA3APAS9SK
         actor: "@claude"
@@ -3608,6 +3620,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-16T22:18:10.251Z
+      - _ulid: 01KKWBMZC6RVP602SDVFP2S522
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-16T22:18:17.350Z
     external_links: []
     lifecycle_state: open
     related_refs: []
@@ -3629,5 +3648,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-16T22:17:30.867Z
-    updated_at: 2026-03-16T22:18:10.212Z
+    updated_at: 2026-03-16T22:18:17.306Z
     notes: []
