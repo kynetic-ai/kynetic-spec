@@ -274,6 +274,7 @@ agents:
     skills:
       - pr-review
       - review-principles
+      - merge
     budget:
       timeout_minutes: 60
     concurrency:
