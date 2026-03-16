@@ -265,6 +265,48 @@ export interface PlanDetail extends PlanSummary {
   content: string;
 }
 
+/**
+ * Review summary for list endpoints
+ * AC: @review-records-daemon-api ac-1
+ */
+export interface ReviewSummary {
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  lifecycle_state: string;
+  disposition: string;
+  gate_state: string;
+  subject_type: string;
+  subject_ref?: string;
+  /** Resolved title for subject ref (task/plan/spec subjects) */
+  subject_title?: string | null;
+  author: string;
+  related_refs: string[];
+  /** Resolved related_refs with titles and status */
+  resolved_related_refs?: ResolvedRefEntry[];
+  threads_total: number;
+  threads_resolved: number;
+  threads_unresolved_blockers: number;
+  verdicts_count: number;
+  checks_count: number;
+  created_at: string;
+  updated_at?: string | null;
+}
+
+/**
+ * Review detail with full content
+ * AC: @review-records-daemon-api ac-2
+ */
+export interface ReviewDetail extends ReviewSummary {
+  subject: unknown;
+  threads: unknown[];
+  checks: unknown[];
+  verdicts: unknown[];
+  events: unknown[];
+  notes: Note[];
+  external_links: unknown[];
+}
+
 export interface BatchSpecItemSummary {
   kind: 'item';
   ulid: string;
