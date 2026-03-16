@@ -6339,7 +6339,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: closing
+    lifecycle_state: stale
     active_role: null
     worktrees:
       worker:
@@ -6382,22 +6382,27 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-16T00:11:34.110Z
+      updated_at: 2026-03-16T00:13:01.362Z
     health:
-      status: healthy
-      summary: Workspace record matches current git branch and worktree state.
-      issues: []
-      updated_at: 2026-03-16T00:11:49.441Z
+      status: stale
+      summary: Workspace registry record is stale and needs reconciliation.
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-cross-agent-task-dispatch-exclusivity-01kksw26"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      updated_at: 2026-03-16T00:13:01.362Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-16T00:11:34.110Z
+      updated_at: 2026-03-16T00:13:01.362Z
     timestamps:
       created_at: 2026-03-15T23:50:16.242Z
-      updated_at: 2026-03-16T00:11:49.441Z
-      last_reconciled_at: 2026-03-16T00:11:49.441Z
+      updated_at: 2026-03-16T00:13:01.362Z
+      last_reconciled_at: 2026-03-16T00:13:01.362Z
       last_active_at: 2026-03-15T23:59:24.921Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKSGT1SGVWACS5ET75Q87NPX
