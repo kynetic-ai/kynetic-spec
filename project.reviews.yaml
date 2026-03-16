@@ -902,7 +902,14 @@ reviews:
               approve and derive."
             created_at: 2026-03-16T07:39:05.084Z
     checks: []
-    verdicts: []
+    verdicts:
+      - reviewer: plan-review-agent-r2
+        role: reviewer
+        decision: approve
+        applies_to_version:
+          type: entity_version
+          content_hash: draft-r2
+        created_at: 2026-03-16T07:39:14.121Z
     events:
       - _ulid: 01KKTS7P56SHW0252D3868VKXS
         event_type: lifecycle_change
@@ -1001,7 +1008,13 @@ reviews:
         payload:
           thread_ulid: 01KKTSB3FWE3BSFTQ3KH4WY3A9
           kind: nit
+      - _ulid: 01KKTSBCAP614R246JMZ1SJBM0
+        event_type: verdict_submitted
+        actor: plan-review-agent-r2
+        timestamp: 2026-03-16T07:39:14.134Z
+        payload:
+          decision: approve
     notes: []
     external_links: []
     created_at: 2026-03-16T07:37:13.126Z
-    updated_at: 2026-03-16T07:39:05.084Z
+    updated_at: 2026-03-16T07:39:14.121Z
