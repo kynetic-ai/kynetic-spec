@@ -1955,6 +1955,40 @@ reviews:
               verdicts can proceed in parallel, code and structured content viewers can proceed in
               parallel).
             created_at: 2026-03-16T08:22:13.721Z
+      - _ulid: 01KKTVTDD9V3PSRCE0W1WCF13G
+        kind: nit
+        entries:
+          - _ulid: 01KKTVTDDABYNFNPW3EF969X59
+            author: "@claude"
+            body: |-
+              **NIT: AC coverage is complete across specs and tasks**
+
+              Verified AC-to-task mapping:
+
+              **review-records-daemon-api (10 ACs):**
+              - ac-1, ac-2 → task-review-api-read ✓
+              - ac-3, ac-4, ac-5, ac-10 → task-review-api-threads ✓
+              - ac-6, ac-7, ac-8, ac-10 → task-review-api-verdicts ✓
+              - ac-9 → task-review-api-websocket ✓
+              - ac-10 appears in both thread and verdict tasks (correct — both need error handling)
+
+              **review-content-diff-api (4 ACs):**
+              - ac-1, ac-2, ac-3, ac-4 → task-diff-api ✓
+
+              **review-records-web-ui (11 ACs):**
+              - ac-1, ac-10 → task-review-list-page ✓
+              - ac-2, ac-8, ac-9, ac-10, ac-11 → task-review-detail-page ✓
+              - ac-3, ac-4, ac-5, ac-6 → task-review-interaction ✓
+              - ac-7 → task-review-task-integration ✓
+
+              **review-code-diff-viewer (6 ACs):**
+              - ac-1 through ac-6 → task-code-diff-viewer ✓
+
+              **review-structured-content-viewer (4 ACs):**
+              - ac-1 through ac-4 → task-structured-content-viewer ✓
+
+              All ACs have task coverage. No gaps found.
+            created_at: 2026-03-16T08:22:23.914Z
     checks: []
     verdicts: []
     events:
@@ -2020,7 +2054,14 @@ reviews:
         payload:
           thread_ulid: 01KKTVT3ERYXE09J0VTS1W2TBV
           kind: nit
+      - _ulid: 01KKTVTDE0GQ82RGWRTHS6P77D
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T08:22:23.936Z
+        payload:
+          thread_ulid: 01KKTVTDD9V3PSRCE0W1WCF13G
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T08:18:45.731Z
-    updated_at: 2026-03-16T08:22:13.721Z
+    updated_at: 2026-03-16T08:22:23.914Z
