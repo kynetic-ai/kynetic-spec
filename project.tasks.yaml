@@ -101421,7 +101421,7 @@
 
 
     This is blocking dispatched agents from following the review-driven local merge flow.
-  spec_ref: null
+  spec_ref: "@dispatch-workspace-configuration"
   meta_ref: null
   plan_ref: null
   status: needs_work
