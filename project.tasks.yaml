@@ -102146,7 +102146,17 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-16T20:19:38.280Z
   started_at: 2026-03-16T23:42:40.017Z
-  notes: []
+  notes:
+    - _ulid: 01KKWGT6Y43TANFSZFP6MX16BQ
+      content: "Implemented activity timeline in task get. Changes: (1) Added --activity flag to task get
+        command, (2) Activity section in formatTaskDetails shows last 10 entries by default with
+        --activity for full view, (3) Review events merged from linked review records into timeline
+        (ac-3), (4) JSON output includes typed activity array (ac-4), (5) Icons per activity type
+        for visual scanning. 5 integration tests pass covering ac-1, ac-2, ac-4 + trait-json-output
+        ac-5."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-16T23:48:31.812Z
   todos: []
 - _ulid: 01KKW4VQZ7QYP98F0ZXJJT0Z85
   slugs:
