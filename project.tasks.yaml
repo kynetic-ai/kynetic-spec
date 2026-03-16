@@ -101629,8 +101629,10 @@
   spec_ref: null
   plan_ref: "@plan-task-activity-timeline"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Reviewed, approved, and merged to dev. Fix correctly includes entity ref in task-add
+    commit messages.
   depends_on: []
   context: []
   priority: 1
@@ -101650,6 +101652,7 @@
   created_at: 2026-03-16T20:19:31.701Z
   started_at: 2026-03-16T21:42:01.641Z
   submitted_at: 2026-03-16T21:44:10.103Z
+  completed_at: 2026-03-16T21:46:48.727Z
   notes:
     - _ulid: 01KKW9NS7533GWC4VNGRQ513DF
       content: "Fixed task-add case in generateCommitMessage() to include ref when both ref and detail are
