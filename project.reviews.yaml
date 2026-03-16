@@ -1105,6 +1105,29 @@ reviews:
               locking and persistence. review-operations.ts does NOT have such wrappers, so the
               route implementer needs to build that pattern.
             created_at: 2026-03-16T07:46:47.610Z
+      - _ulid: 01KKTSSFAVGC5VN3KYPWE5MKB7
+        kind: nit
+        entries:
+          - _ulid: 01KKTSSFAVG7BPXBW7H4WNMX41
+            author: "@claude"
+            body: >-
+              **NIT: WebSocket topic naming inconsistent with existing conventions**
+
+
+              The plan says to add a "reviews" WebSocket topic. Existing topics use a
+              `<domain>:updates` naming pattern:
+
+              - `tasks:updates`
+
+              - `inbox:updates`
+
+              - `triage:updates`
+
+
+              The topic should be `reviews:updates` to match the convention. The
+              task-review-api-websocket description says "reviews" topic in the What section but
+              doesn't specify the exact string.
+            created_at: 2026-03-16T07:46:55.963Z
     checks: []
     verdicts: []
     events:
@@ -1142,7 +1165,14 @@ reviews:
         payload:
           thread_ulid: 01KKTSS75S23N6YZ9TD25ZXRJZ
           kind: blocker
+      - _ulid: 01KKTSSFB7BPGCXGG8S3VP9EPM
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:46:55.975Z
+        payload:
+          thread_ulid: 01KKTSSFAVGC5VN3KYPWE5MKB7
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:44:02.989Z
-    updated_at: 2026-03-16T07:46:47.610Z
+    updated_at: 2026-03-16T07:46:55.963Z
