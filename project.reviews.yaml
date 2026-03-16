@@ -172,6 +172,14 @@ reviews:
           base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
           head_commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
         created_at: 2026-03-16T06:21:37.669Z
+      - reviewer: pr-reviewer@kspec.local
+        role: reviewer
+        decision: approve
+        applies_to_version:
+          type: code_compare
+          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+          head_commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
+        created_at: 2026-03-16T06:38:10.816Z
     events:
       - _ulid: 01KKTMVTDVS7YRNSRC6MWJHVHN
         event_type: lifecycle_change
@@ -244,7 +252,13 @@ reviews:
         payload:
           name: vitest
           status: pass
+      - _ulid: 01KKTNVJW7WSS142PJEZ21QDRT
+        event_type: verdict_submitted
+        actor: pr-reviewer@kspec.local
+        timestamp: 2026-03-16T06:38:10.823Z
+        payload:
+          decision: approve
     notes: []
     external_links: []
     created_at: 2026-03-16T06:20:49.980Z
-    updated_at: 2026-03-16T06:38:04.053Z
+    updated_at: 2026-03-16T06:38:10.816Z
