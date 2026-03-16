@@ -1128,6 +1128,27 @@ reviews:
               task-review-api-websocket description says "reviews" topic in the What section but
               doesn't specify the exact string.
             created_at: 2026-03-16T07:46:55.963Z
+      - _ulid: 01KKTSST15GSME00YY0MTQ8BT9
+        kind: nit
+        entries:
+          - _ulid: 01KKTSST15NPWWDGDTR7JA40T5
+            author: "@claude"
+            body: >-
+              **NIT: Plans route does not use limit/offset pagination**
+
+
+              task-review-api-read says "Pagination follows existing daemon conventions
+              (limit/offset with total count header)". However, the plans route (the closest analog
+              for a read-only listing of top-level entities) does NOT use limit/offset pagination —
+              it returns all items with a `total` count. See `packages/daemon/src/routes/plans.ts`
+              lines 108-113.
+
+
+              The tasks route DOES use pagination. The task should specify which pattern to follow.
+              Given the convention note in AGENTS.md ("API list endpoints must use pagination"),
+              pagination is correct — just note that plans.ts is NOT the right template to copy. Use
+              tasks.ts instead.
+            created_at: 2026-03-16T07:47:06.917Z
     checks: []
     verdicts: []
     events:
@@ -1172,7 +1193,14 @@ reviews:
         payload:
           thread_ulid: 01KKTSSFAVGC5VN3KYPWE5MKB7
           kind: nit
+      - _ulid: 01KKTSST1M7W5AZQQJE05MS5DT
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:47:06.932Z
+        payload:
+          thread_ulid: 01KKTSST15GSME00YY0MTQ8BT9
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:44:02.989Z
-    updated_at: 2026-03-16T07:46:55.963Z
+    updated_at: 2026-03-16T07:47:06.917Z
