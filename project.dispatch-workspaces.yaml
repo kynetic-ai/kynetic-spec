@@ -5598,7 +5598,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 1cac2b1227fafaf4945fc413fbfd1eec4dc8a198
     canonical_branch: main
-    canonical_branch_head: 45e009274ddc58b9c173c7d353109c618981e336
+    canonical_branch_head: c09189ec7386070eb3b6331251bf123e29698e81
     branch_provenance:
       ownership: adopted
       source: task-submission-linkage
@@ -5649,22 +5649,22 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-16T06:47:07.438Z
+      updated_at: 2026-03-16T09:03:05.237Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-16T06:47:07.438Z
+      updated_at: 2026-03-16T09:03:05.237Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-16T06:47:07.438Z
+      updated_at: 2026-03-16T09:03:05.237Z
     timestamps:
       created_at: 2026-03-15T17:10:46.463Z
-      updated_at: 2026-03-16T06:47:07.438Z
-      last_reconciled_at: 2026-03-16T06:47:07.438Z
+      updated_at: 2026-03-16T09:03:05.237Z
+      last_reconciled_at: 2026-03-16T09:03:05.237Z
       last_active_at: 2026-03-15T17:49:49.325Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKSGSZA2HXFDXW8RA3GV1JFC
