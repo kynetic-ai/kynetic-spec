@@ -2618,6 +2618,28 @@ reviews:
               this variable doesn't currently exist in the codebase. The task description should
               note this is a new convention, not an existing one.
             created_at: 2026-03-16T19:17:28.273Z
+      - _ulid: 01KKW1A1PP53ETST8RGQX4QXM9
+        kind: nit
+        entries:
+          - _ulid: 01KKW1A1PSM4KN4NAH0600X56C
+            author: "@claude"
+            body: >-
+              **Task @task-new-review-per-cycle is described as "primarily a skill/documentation
+              change" but has code implications**
+
+
+              The task says "This is primarily a skill/documentation change with supporting code for
+              the orientation context." However, it also says "Update the pr-reviewer agent's
+              workflow (review skill) to always create a new review when picking up a pending_review
+              task that already has a closed review_ref."
+
+
+              If the reviewer agent is currently coded to reopen or reuse the existing review,
+              there's actual code to change in the dispatch/agent-runtime layer — not just skill
+              docs. The task description undersells the code work. The spec_ref
+              (@review-record-lifecycle-completion ac-2) requires the task's review_ref to be
+              updated to the new record, which is a CLI/data operation, not just documentation.
+            created_at: 2026-03-16T19:17:33.529Z
     checks: []
     verdicts: []
     events:
@@ -2683,7 +2705,14 @@ reviews:
         payload:
           thread_ulid: 01KKW19WJHGV7J0VBK8CVDSA7C
           kind: nit
+      - _ulid: 01KKW1A1QJH5X2JE2JTQ0NJ7T8
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T19:17:33.555Z
+        payload:
+          thread_ulid: 01KKW1A1PP53ETST8RGQX4QXM9
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T19:15:55.134Z
-    updated_at: 2026-03-16T19:17:28.273Z
+    updated_at: 2026-03-16T19:17:33.529Z
