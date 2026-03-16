@@ -281,7 +281,18 @@ reviews:
     author: "@claude"
     related_refs: []
     threads: []
-    checks: []
+    checks:
+      - name: vitest
+        status: pass
+        required: true
+        runner: vitest
+        evidence: All 5563 tests passed (253 files, 3 skipped). Full npm test at canonical HEAD e07e8ab29.
+        applies_to_version:
+          type: code_compare
+          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+          head_commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
+        created_at: 2026-03-16T06:39:13.985Z
+        completed_at: 2026-03-16T06:39:13.985Z
     verdicts: []
     events:
       - _ulid: 01KKTNX37VRXNY7T1PX931RRXP
@@ -297,7 +308,14 @@ reviews:
         payload:
           from: draft
           to: open
+      - _ulid: 01KKTNXGJ7J7CBNYVT8M7EXCPZ
+        event_type: check_added
+        actor: "@claude"
+        timestamp: 2026-03-16T06:39:13.992Z
+        payload:
+          name: vitest
+          status: pass
     notes: []
     external_links: []
     created_at: 2026-03-16T06:39:00.348Z
-    updated_at: 2026-03-16T06:39:07.729Z
+    updated_at: 2026-03-16T06:39:13.985Z
