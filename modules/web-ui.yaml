@@ -409,6 +409,9 @@ features:
           - "@trait-websocket-protocol"
         notes: []
         created: 2026-03-16T08:28:58.883Z
+        status:
+          maturity: draft
+          implementation: in_progress
       - _ulid: 01KKTW6F5DGX9V24SK6WTMRTSN
         slugs:
           - review-content-diff-api
