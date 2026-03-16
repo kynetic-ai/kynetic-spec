@@ -22311,6 +22311,15 @@ plans:
           - @01KKVW67 / @01KKVX1X: YAML serialization invariants (canonical field
             ordering enables reliable git log -L queries as an alternative to
             git log --grep)
+      - _ulid: 01KKW6C76N54EP601D1SCDJ2PX
+        created_at: 2026-03-16T20:46:07.573Z
+        author: "@claude"
+        content: "Revision: Switched git query mechanism from git log --grep (commit message filtering) to
+          git log -L (YAML block boundary tracking). This captures complete history regardless of
+          commit message content, works retroactively, and handles manual edits/batch operations.
+          Prerequisite changed from @task-fix-task-add-commit-ref to @01KKVW67 (YAML field
+          ordering). Specs and tasks updated directly via CLI. Plan text reflects the change but
+          could not be re-imported (active plan)."
   - _ulid: 01KKW3WRAH3VC30TWF5FKZ513Z
     slugs:
       - plan-activity-timeline-diff-summaries
