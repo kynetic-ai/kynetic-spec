@@ -474,6 +474,33 @@ reviews:
               Recommendation: Split into at least 4 ACs covering each interaction type separately,
               with specific testable outcomes.
             created_at: 2026-03-16T07:32:31.769Z
+      - _ulid: 01KKTRZFCZRX92RJQ86ZDAK5KT
+        kind: blocker
+        entries:
+          - _ulid: 01KKTRZFCZWJ3WQZNXKEWJFR5H
+            author: "@claude"
+            body: >-
+              **Missing spec: review list filtering by task ref needs API support.**
+
+
+              Web UI ac-1 says "with filtering and sorting" but the API spec ac-1 lists specific
+              filters (status, disposition, subject-type, reviewer, linked task). The "linked task"
+              filter is important but underspecified — does it filter by subject.ref when
+              subject_type is "task", or by related_refs, or both? The
+              review-task-lifecycle-integration spec shows reviews can link to tasks via subject
+              binding OR via related_refs. The filter semantics need to be explicit.
+
+
+              Also, the API spec mentions no sorting parameter. The web UI spec mentions sorting but
+              the API doesn't expose a sort query parameter. Without server-side sorting, the client
+              would need to fetch all reviews and sort locally — violating the "API list endpoints
+              must use pagination; clients must not fetch unbounded entity lists for derived data"
+              convention.
+
+
+              Recommendation: Add explicit sort parameter to API ac-1, and clarify what "linked
+              task" filtering means (subject ref, related_refs, or both).
+            created_at: 2026-03-16T07:32:44.063Z
     checks: []
     verdicts: []
     events:
@@ -518,7 +545,14 @@ reviews:
         payload:
           thread_ulid: 01KKTRZ3CR3CQ6HXQ9TM4HXBYA
           kind: blocker
+      - _ulid: 01KKTRZFD8R0XE1SG0RY1YAHAH
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:32:44.072Z
+        payload:
+          thread_ulid: 01KKTRZFCZRX92RJQ86ZDAK5KT
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T07:29:52.508Z
-    updated_at: 2026-03-16T07:32:31.769Z
+    updated_at: 2026-03-16T07:32:44.063Z
