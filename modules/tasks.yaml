@@ -1220,6 +1220,9 @@ features:
           Queries all commits that modified a task's data block to extract the
           complete history of state transitions and mutations, including manual
           edits and batch operations.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
