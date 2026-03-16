@@ -100292,7 +100292,7 @@
   spec_ref: "@cmd-session-checkpoint"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -100379,6 +100379,8 @@
       supersedes: null
   todos: []
   automation: eligible
+  started_at: 2026-03-16T00:20:23.929Z
+  session_id: 01KKT078JV094S6N32KW5VX6SV
 - _ulid: 01KKT042895JSK5GS951Z5F1BR
   slugs: []
   title: Add hooks configuration to kspec.config.yaml and setup
