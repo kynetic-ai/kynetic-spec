@@ -3977,6 +3977,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKWEECXPE7YHX3VHW5YE8FCY
         timestamp: 2026-03-16T23:07:07.609Z
+      - _ulid: 01KKWEERN92V33VR060GS43ETZ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKWEERM53HNGR625K67RG3BG
+        timestamp: 2026-03-16T23:07:19.593Z
     examined_commit: f6e16b92e3cf47b7a6144407e45d3891435c0e05
     external_links: []
     lifecycle_state: open
@@ -4025,7 +4032,28 @@ reviews:
               but worth noting if more nested map fields are added to the task schema."
             created_at: 2026-03-16T23:07:07.575Z
         kind: nit
+      - _ulid: 01KKWEERM53HNGR625K67RG3BG
+        anchor:
+          type: code
+          commit: ""
+          line_end: 277
+          line_start: 217
+          path: src/utils/activity.ts
+          side: head
+        entries:
+          - _ulid: 01KKWEERM6TBE0MCVNEVEPYV8C
+            author: "@claude"
+            body: "**Missing patterns for review-* commit messages.** The MESSAGE_PATTERNS array covers
+              task-lifecycle operations but not review operations (review-add, review-open,
+              review-check, review-close, review-comment, review-verdict, review-task-link). These
+              fall through to \"unknown\". For task-scoped activity this is acceptable — most
+              review-* commits don't touch the task's YAML block (exception: review-task-link sets
+              review_ref, caught by diff path). But if this parser is ever used for general shadow
+              branch activity, the gap would matter. Could add a catch-all `review-` prefix pattern
+              mapped to a \"review_activity\" type."
+            created_at: 2026-03-16T23:07:19.558Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-16T23:05:48.607Z
-    updated_at: 2026-03-16T23:07:07.575Z
+    updated_at: 2026-03-16T23:07:19.558Z
     notes: []
