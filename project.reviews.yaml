@@ -416,6 +416,34 @@ reviews:
               in @kynetic-ai/shared for the review API response shapes (ReviewListItem,
               ReviewDetail, ReviewThreadView, etc.).
             created_at: 2026-03-16T07:32:09.099Z
+      - _ulid: 01KKTRYREP0EXD2RZPBFG8ZMNK
+        kind: blocker
+        entries:
+          - _ulid: 01KKTRYREPNA70KP6P7Y8PXR6M
+            author: "@claude"
+            body: >-
+              **Missing API spec: no AC for error cases and validation.**
+
+
+              The existing review library has review-validation.ts and review-record-validation spec
+              (@review-record-validation). The API spec has no ACs for:
+
+              - Invalid review ID returns 404
+
+              - Invalid mutation payloads return 400 with validation errors
+
+              - State-invalid transitions (e.g., submitting verdict on a closed review) return
+              appropriate errors
+
+
+              The daemon's error handling patterns matter for the web UI — it needs to know what
+              error shapes to expect. The existing specs for tasks route handle this via
+              @trait-error-guidance, but the plan doesn't reference any traits.
+
+
+              Recommendation: Either add explicit error ACs or reference @trait-error-guidance and
+              @trait-json-output as traits on the review-records-daemon-api spec.
+            created_at: 2026-03-16T07:32:20.566Z
     checks: []
     verdicts: []
     events:
@@ -446,7 +474,14 @@ reviews:
         payload:
           thread_ulid: 01KKTRYD8BJHH5T4G5ERCZ47MA
           kind: question
+      - _ulid: 01KKTRYREY9799QC9H7FJZ061E
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:32:20.574Z
+        payload:
+          thread_ulid: 01KKTRYREP0EXD2RZPBFG8ZMNK
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T07:29:52.508Z
-    updated_at: 2026-03-16T07:32:09.099Z
+    updated_at: 2026-03-16T07:32:20.566Z
