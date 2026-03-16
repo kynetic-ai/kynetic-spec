@@ -101871,25 +101871,32 @@
     - task-implement-activity-git-query
   title: Implement task activity git query
   type: task
-  description: |
+  description: |-
     Build the function that queries shadow branch git history to extract
-    a task's activity timeline from auto-commit messages.
+    a task's activity timeline using git log -L with YAML block boundaries.
 
-    Why: This is the data layer for the activity timeline. Without it,
-    task get has no way to show state transitions beyond bare timestamps.
+    Why: This is the data layer for the activity timeline. git log -L tracks
+    all commits that touched a specific line range, capturing the complete
+    history including manual edits, batch operations, and commits predating
+    commit message convention fixes. This is more reliable than git log
+    --grep which depends on every commit message including the task ref.
 
-    What: Create a getTaskActivity(specDir, taskRef) function that runs
-    git log --oneline --format with grep filtering for the task ref in
-    the shadow branch worktree, parses commit messages into structured
-    activity entries (type, timestamp, author, summary), and returns
-    them in chronological order.
+    What: Create a getTaskActivity(specDir, taskRef) function that:
+    1. Finds the task's _ulid line in project.tasks.yaml
+    2. Finds the next _ulid line (or EOF) to determine block boundaries
+    3. Runs git log -L <start>,<end>:project.tasks.yaml in the shadow
+       branch worktree
+    4. Parses commit messages into structured activity entries (type,
+       timestamp, author, summary)
+    5. Returns them in chronological order
 
-    How: Shell out to git in the .kspec worktree directory. Parse each
-    line into {hash, timestamp, message}. Map commit message prefixes
-    to activity types: "Start @ref" → started, "task-submit @ref" →
-    submitted, "Complete @ref" → completed, "Note on @ref" → note,
-    "task-needs-work @ref" → needs_work, "Add task @ref" → created,
-    etc. Return structured array.
+    How: Shell out to git in the .kspec worktree directory. The _ulid-first
+    invariant (@yaml-serialization-invariants ac-1) guarantees reliable
+    block boundary detection. Parse each commit's message to extract
+    operation type: "Start @ref" → started, "task-submit @ref" → submitted,
+    "Complete @ref" → completed, "Note on @ref" → note, etc. For commits
+    with unrecognized message formats (manual edits, batch), use a generic
+    "modified" type with the raw message as summary.
 
     Covers: @task-activity-git-query ac-1, ac-2, ac-3.
   spec_ref: "@task-activity-git-query"
@@ -102018,28 +102025,28 @@
   created_at: 2026-03-16T20:19:39.906Z
   notes: []
   todos: []
-- title: Update AGENTS.md for review lifecycle conventions
-  type: task
+- _ulid: 01KKW4VSHS4JRSB3AMJN05QR10
   slugs:
     - task-update-agents-review-conventions
+  title: Update AGENTS.md for review lifecycle conventions
+  type: task
   description: |
     Regenerate kspec-agents.md to reflect the updated review lifecycle
     conventions. Add a convention rule for the fix-cycle note requirement
     if needed. Run kspec agents generate.
   spec_ref: null
   plan_ref: "@plan-task-activity-timeline"
-  priority: 3
-  tags:
-    - docs
+  origin: derived
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-update-review-skill-docs"
     - "@task-update-task-work-skill-docs"
-  notes: []
-  origin: derived
-  _ulid: 01KKW4VSHS4JRSB3AMJN05QR10
-  status: pending
-  blocked_by: []
   context: []
+  priority: 3
+  tags:
+    - docs
   vcs_refs: []
   created_at: 2026-03-16T20:19:40.729Z
+  notes: []
   todos: []
