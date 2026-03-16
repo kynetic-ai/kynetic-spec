@@ -3244,3 +3244,29 @@ reviews:
     created_at: 2026-03-16T21:37:32.280Z
     updated_at: 2026-03-16T21:39:06.215Z
     notes: []
+  - _ulid: 01KKW9SYYZ272HG3DM7PNTTS7V
+    slugs: []
+    title: "Review fix: task-add commit ref"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKW9SYYYYWJRZMGM7X9VTAEY
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T21:46:03.615Z
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: code
+      base_branch: dev
+      base_commit: 2c85c5dd
+      head_branch: dispatch/task/task-fix-task-add-commit-ref/01kkw4vg
+      head_commit: 69b7aecd
+    threads: []
+    verdicts: []
+    created_at: 2026-03-16T21:46:03.615Z
+    updated_at: null
+    notes: []
