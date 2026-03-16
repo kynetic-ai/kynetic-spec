@@ -101433,9 +101433,16 @@
     - dispatch
     - config
   vcs_refs: []
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-16T09:18:04.261Z
-  notes: []
+  started_at: 2026-03-16T15:29:10.982Z
+  notes:
+    - _ulid: 01KKVMZPJYER98T27R0JP5KGVY
+      created_at: 2026-03-16T15:42:11.550Z
+      author: "@claude"
+      content: "Pre-existing test failure found: ralph-replacement.test.ts expects 'pr-reviewer agent' in
+        generated agent template, but this was removed in c09189ec7 (fix(agents): remove PR creation
+        from dispatch loop instructions). Adding test fix to this task scope."
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-16T15:29:10.982Z
-  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
