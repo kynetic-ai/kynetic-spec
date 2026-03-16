@@ -3205,8 +3205,15 @@ reviews:
         payload:
           decision: approve
         timestamp: 2026-03-16T21:38:36.521Z
+      - _ulid: 01KKW9D7CCT7FG8002PG5RYXYK
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-16T21:39:06.252Z
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -3235,5 +3242,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-16T21:38:36.494Z
     created_at: 2026-03-16T21:37:32.280Z
-    updated_at: 2026-03-16T21:38:36.494Z
+    updated_at: 2026-03-16T21:39:06.215Z
     notes: []
