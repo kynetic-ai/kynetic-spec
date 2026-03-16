@@ -102317,3 +102317,27 @@
       author: "@claude"
       created_at: 2026-03-16T23:03:09.893Z
   todos: []
+- _ulid: 01KKWG44FR0W955X7EFVBHPX6B
+  slugs:
+    - task-fix-dead-submission-linkage-case
+  title: Fix dead submission_linkage case in diffChangesToEntries
+  type: task
+  description: The submission_linkage case in diffChangesToEntries (src/utils/activity.ts) never fires
+    because submission_linkage is a YAML map header with no scalar value — parseDiffChanges captures
+    its nested child fields (branch, commit, remote, etc.) individually instead. Either remove the
+    dead case or add map-aware detection that groups nested fields under their parent key.
+  spec_ref: "@task-activity-git-query"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - tasks
+  vcs_refs: []
+  created_at: 2026-03-16T23:36:28.408Z
+  notes: []
+  todos: []
