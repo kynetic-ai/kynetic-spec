@@ -2207,7 +2207,14 @@ reviews:
               more explicit. Not a blocker.
             created_at: 2026-03-16T08:25:41.714Z
     checks: []
-    verdicts: []
+    verdicts:
+      - reviewer: plan-review-agent-r8
+        role: reviewer
+        decision: approve
+        applies_to_version:
+          type: entity_version
+          content_hash: e549850b6eff
+        created_at: 2026-03-16T08:26:04.870Z
     events:
       - _ulid: 01KKTVY4SQB91A3EKZEYKPNVCK
         event_type: lifecycle_change
@@ -2229,7 +2236,13 @@ reviews:
         payload:
           thread_ulid: 01KKTW0EJJ4MCS17WEGENVWA4N
           kind: nit
+      - _ulid: 01KKTW156SAXCMJP5MCTDW64NN
+        event_type: verdict_submitted
+        actor: plan-review-agent-r8
+        timestamp: 2026-03-16T08:26:04.889Z
+        payload:
+          decision: approve
     notes: []
     external_links: []
     created_at: 2026-03-16T08:24:26.167Z
-    updated_at: 2026-03-16T08:25:41.714Z
+    updated_at: 2026-03-16T08:26:04.870Z
