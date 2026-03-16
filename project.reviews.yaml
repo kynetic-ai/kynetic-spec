@@ -2770,7 +2770,7 @@ reviews:
   - _ulid: 01KKW4N9C44M0FKZVYCH180MFB
     slugs: []
     title: "Review: Task Activity Timeline Plan (revision 2)"
-    lifecycle_state: open
+    lifecycle_state: closed
     subject:
       type: plan
       ref: "@plan-task-activity-timeline"
@@ -2947,7 +2947,14 @@ reviews:
         timestamp: 2026-03-16T20:18:07.155Z
         payload:
           decision: approve
+      - _ulid: 01KKW4S2KWZJHW84E25KKKED0N
+        event_type: lifecycle_change
+        actor: "@claude"
+        timestamp: 2026-03-16T20:18:11.708Z
+        payload:
+          from: open
+          to: closed
     notes: []
     external_links: []
     created_at: 2026-03-16T20:16:07.556Z
-    updated_at: 2026-03-16T20:18:07.122Z
+    updated_at: 2026-03-16T20:18:11.681Z
