@@ -99821,12 +99821,12 @@
     - web-ui
     - docs
   vcs_refs: []
+  session_id: 01KKSZ2MF6917GR5DRAASMRXWH
   created_at: 2026-03-15T19:50:43.248Z
+  started_at: 2026-03-16T00:00:18.487Z
   notes: []
   todos: []
   automation: eligible
-  started_at: 2026-03-16T00:00:18.487Z
-  session_id: 01KKSZ2MF6917GR5DRAASMRXWH
 - _ulid: 01KKSRDQY1HZBENKBD06V6KDGW
   slugs: []
   title: Implement session summary stats persistence and live counters
@@ -99834,7 +99834,7 @@
   spec_ref: "@session-summary-cache"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -100008,6 +100008,13 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-16T00:02:07.940Z
+  closed_reason: "Merged in PR #888. Implemented session summary stats persistence on close
+    (ac-persist-on-close) and live event counters for active sessions (ac-live-counter). Schema
+    extended with optional event_count/iteration_count/tasks_completed fields. closeSession()
+    computes stats from events.jsonl before writing. getSessionMetadataOnly() reads persisted values
+    instead of hardcoding 0. Live counters in SessionSummaryCache incremented via onEventAppended
+    callback through invocation/dispatch pipeline. 15 new tests, all 5482 tests passing."
 - _ulid: 01KKSW263S036SS7QFQ5RTN813
   slugs: []
   title: Implement cross-agent task dispatch exclusivity
