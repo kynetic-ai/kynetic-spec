@@ -1220,11 +1220,9 @@ features:
         tags: []
         description: |-
           The mechanism for deriving task activity from shadow branch git history.
-          Uses git log -L with YAML block boundaries (anchored on _ulid as first
-          field per @yaml-serialization-invariants) to extract all commits that
-          touched a task's YAML block, regardless of commit message content. This
-          captures the complete history including manual edits, batch operations,
-          and commits predating any commit message convention fixes.
+          Queries all commits that modified a task's data block to extract the
+          complete history of state transitions and mutations, including manual
+          edits and batch operations.
         acceptance_criteria:
           - id: ac-1
             given: a task ref is provided
