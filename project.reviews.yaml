@@ -1522,7 +1522,14 @@ reviews:
               that layout. No conflicts detected."
             created_at: 2026-03-16T08:00:18.934Z
     checks: []
-    verdicts: []
+    verdicts:
+      - reviewer: plan-review-agent-r5
+        role: reviewer
+        decision: request_changes
+        applies_to_version:
+          type: entity_version
+          content_hash: r5-content-rendering
+        created_at: 2026-03-16T08:00:34.528Z
     events:
       - _ulid: 01KKTTDFPJBH045TV4KGQH1HW6
         event_type: lifecycle_change
@@ -1593,7 +1600,13 @@ reviews:
         payload:
           thread_ulid: 01KKTTHZFPG8F1A4PSS66CX3J5
           kind: nit
+      - _ulid: 01KKTTJEQP9BJ1JQ2ZTF697W6A
+        event_type: verdict_submitted
+        actor: plan-review-agent-r5
+        timestamp: 2026-03-16T08:00:34.550Z
+        payload:
+          decision: request_changes
     notes: []
     external_links: []
     created_at: 2026-03-16T07:57:51.698Z
-    updated_at: 2026-03-16T08:00:18.934Z
+    updated_at: 2026-03-16T08:00:34.528Z
