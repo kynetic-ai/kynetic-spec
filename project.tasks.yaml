@@ -102290,5 +102290,14 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-16T20:51:47.638Z
   started_at: 2026-03-16T22:59:58.430Z
-  notes: []
+  notes:
+    - _ulid: 01KKWE74T5RTEVZG0306EDHN0W
+      content: "Implemented normalizeTaskActivity(), parseCommitMessage(), and parseDiffChanges() in
+        src/utils/activity.ts. Three-layer approach: (1) parseCommitMessage maps 14 shadow branch
+        commit patterns to activity types (ac-3), (2) parseDiffChanges extracts field-level YAML
+        changes from unified diff hunks (ac-4), (3) normalizeTaskActivity combines them — tries diff
+        first, falls back to commit message. 30 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-16T23:03:09.893Z
   todos: []
