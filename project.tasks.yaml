@@ -101436,12 +101436,12 @@
   review_ref: "@01KKVPK4EFBKNMNQZZE9NRARD9"
   submission_linkage:
     branch: fix/dispatch-publication-mode-config
-    commit: be7a988ce9d990284148d7f03083d7914ef3c15e
+    commit: cda7391a78d0cdd0fe5ecb707a4c0bc68dbe18a7
     remote: null
     remote_url: null
     upstream_ref: null
     review_url: null
-    captured_at: 2026-03-16T16:09:26.630Z
+    captured_at: 2026-03-16T16:23:09.488Z
   session_id: null
   created_at: 2026-03-16T09:18:04.261Z
   started_at: 2026-03-16T15:29:10.982Z
