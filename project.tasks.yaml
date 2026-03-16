@@ -100431,6 +100431,12 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #892. Added typed hooks configuration section to kspec.config.yaml with
+    checkpoint (default: false) and prompt_check (default: true) fields. Setup now conditionally
+    installs/removes hooks based on config preferences and is idempotent. All 4 own ACs covered
+    (ac-hooks-section, ac-hooks-missing-keys, ac-hooks-no-config, ac-hooks-validation) with tests at
+    both parser and setup layers. Two SUGGESTIONs noted (HooksPreferences type duplication, removal
+    logic duplication) — non-blocking."
   depends_on: []
   context: []
   priority: 3
@@ -100450,6 +100456,7 @@
   created_at: 2026-03-16T00:18:20.041Z
   started_at: 2026-03-16T00:31:59.737Z
   submitted_at: 2026-03-16T00:43:21.181Z
+  completed_at: 2026-03-16T00:57:24.867Z
   notes:
     - _ulid: 01KKT05KN3SC10N8XVA87TFAND
       created_at: 2026-03-16T00:19:10.627Z
@@ -100597,10 +100604,53 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-16T00:57:24.867Z
-  closed_reason: "Merged in PR #892. Added typed hooks configuration section to kspec.config.yaml with
-    checkpoint (default: false) and prompt_check (default: true) fields. Setup now conditionally
-    installs/removes hooks based on config preferences and is idempotent. All 4 own ACs covered
-    (ac-hooks-section, ac-hooks-missing-keys, ac-hooks-no-config, ac-hooks-validation) with tests at
-    both parser and setup layers. Two SUGGESTIONs noted (HooksPreferences type duplication, removal
-    logic duplication) — non-blocking."
+- title: Rewrite core skills for review-driven architecture
+  description: >-
+    Restructure core kspec skills around kspec reviews as the primary review mechanism. Three core
+    skill changes:
+
+
+    1. Rewrite task-work skill: unified (no loop split), language-agnostic AC annotations,
+    review-aware fix cycles via kspec review for-task
+
+    2. Rewrite review skill: unified worker+reviewer perspective, baked-in review principles
+    (adversarial investigation, bias countermeasures), AC coverage verification (own + trait), full
+    review record interface, no GitHub dependency
+
+    3. New merge skill: local git merge to dev/integration branch, disposition-based merge gate,
+    merge commits for trailer traceability
+
+
+    Also create two project-specific skills for kspec itself:
+
+    4. work-gates (.kspec/skills/): MUST-FIX patterns, test rules, E2E preference extracted from
+    current local-review
+
+    5. review-gates (.kspec/skills/): severity classification, regression patterns extracted from
+    current pr-review
+
+
+    Then archive superseded project-local skills (local-review, pr-review, review-principles, pr)
+    and update all references in workflows, conventions, AGENTS.md.
+
+
+    Render with kspec skill render + kspec agents generate.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - skills
+    - core
+    - review
+  depends_on: []
+  _ulid: 01KKTHZWHC2B628XA0ETE1XN8B
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-16T05:30:37.484Z
+  notes: []
+  todos: []
