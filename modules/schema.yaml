@@ -1522,4 +1522,8 @@ requirements:
         given: a YAML file is read and re-written without logical changes
         when: the two serializations are compared
         then: the output is identical (round-trip stability)
+      - id: ac-4
+        given: records are serialized with canonical field ordering
+        when: tools query YAML file history for record boundaries
+        then: the _ulid-first invariant provides a reliable and stable delimiter between records
 acceptance_criteria: []
