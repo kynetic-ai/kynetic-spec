@@ -1292,7 +1292,40 @@ reviews:
       content_hash: ""
     author: "@claude"
     related_refs: []
-    threads: []
+    threads:
+      - _ulid: 01KKTSZWN9TQDSJRGDF18R99VP
+        kind: nit
+        entries:
+          - _ulid: 01KKTSZWNAA6MDTCE07V53ZFZR
+            author: "@claude"
+            body: >-
+              Round 4 verification — all 3 blockers from round 3 are resolved:
+
+
+              1. **Daemon route path** — Plan correctly references `packages/daemon/src/routes/`.
+              Verified: directory exists with 14 route files (tasks.ts, plans.ts, inbox.ts, etc.).
+              No reviews.ts yet — greenfield.
+
+
+              2. **Function name** — Plan correctly uses `loadReviewRecords()`. Verified: exported
+              from `src/parser/reviews.ts:95`, imported by validate.ts, review-task-integration.ts,
+              yaml.ts.
+
+
+              3. **Check functions and atomic mutation** — Plan correctly references:
+                 - `createCheck()` and `createLocalCheck()` from `src/review/checks.ts` (lines 17, 47)
+                 - `mutateReviewAtomically()` from `src/parser/reviews.ts` (line 211)
+                 - `submitVerdict()` and `transitionLifecycle()` correctly identified as pure functions needing `mutateReviewAtomically()` for persistence
+                 - Thread atomic wrappers (`addThreadAtomic`, `addReplyAtomic`, `resolveThreadAtomic`, `reopenThreadAtomic`) correctly identified as self-persisting via internal `mutateReviewAtomically` calls
+
+              Round 3 nits also verified:
+
+              - WebSocket topic `reviews:updates` matches convention: `tasks:updates`,
+              `triage:updates`, `inbox:updates`, `files:updates`
+
+              - Shared types in `packages/shared/src/api.ts` confirmed — contains `PlanSummary`,
+              `TaskDetail`, `PlanDetail` patterns to follow
+            created_at: 2026-03-16T07:50:26.218Z
     checks: []
     verdicts: []
     events:
@@ -1309,7 +1342,14 @@ reviews:
         payload:
           from: draft
           to: open
+      - _ulid: 01KKTSZWP0G2BF5C488CNKJEH6
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:50:26.240Z
+        payload:
+          thread_ulid: 01KKTSZWN9TQDSJRGDF18R99VP
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:49:00.795Z
-    updated_at: 2026-03-16T07:49:10.290Z
+    updated_at: 2026-03-16T07:50:26.218Z
