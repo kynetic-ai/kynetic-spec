@@ -19062,7 +19062,10 @@ plans:
             then: |
               The event carries causation_id (the event_id that directly caused
               it) and correlation_id (the root event_id of the causal chain,
-              propagated transitively)
+              propagated transitively); when a kspec hook action triggers a
+              CLI command that emits events (e.g. task state changes), the
+              CLI propagates correlation_id via KSPEC_CORRELATION_ID env var
+              so re-entry events maintain the causal chain for loop prevention
           - id: ac-3
             given: |
               Task events arrive from both file watcher and API within a
@@ -19278,9 +19281,12 @@ plans:
             when: |
               The action executes
             then: |
-              The kspec command runs in the project root directory with shadow
-              branch mutations serialized against any concurrent agent or hook
-              mutations via the existing shadow mutex
+              The kspec command runs in the project root directory; shadow
+              branch mutations use the existing per-mutation scoped lock
+              (consistent with @scoped-dispatch-shadow-serialization), not
+              a per-command lock; the parent event's correlation_id is injected
+              via KSPEC_CORRELATION_ID env var so CLI-emitted events inherit
+              the causal chain for loop prevention
           - id: ac-4
             given: |
               An agent action is configured with agent_id
@@ -19374,9 +19380,10 @@ plans:
             when: |
               The command writes to the working tree
             then: |
-              The command operates outside the shadow branch mutex; command
-              actions that need shadow branch serialization should use the
-              kspec action type instead
+              The command operates outside the shadow branch mutex; the
+              shadow branch pre-commit hook prevents direct git commits to
+              kspec-meta as a safety net; command actions that need shadow
+              branch serialization should use the kspec action type instead
 
       - title: Dispatch Agent Action Input Contract
         slug: dispatch-agent-action-input
@@ -19548,13 +19555,15 @@ plans:
               (all specified tags must be present, extra tags are allowed)
           - id: ac-3
             given: |
-              A hook filter references a payload field that does not exist
-              on the event type
+              A hook filter references a field that is neither a known
+              envelope field nor a payload field for the hook's event type
             when: |
               kspec validate runs
             then: |
-              A warning identifies the filter field as unavailable for the
-              hook's event type and lists available fields
+              A warning identifies the unknown filter field and lists
+              available fields; envelope fields (event_id, source_type,
+              source_id, correlation_id, causation_id) are always valid
+              filter targets for any event type
           - id: ac-4
             given: |
               A hook has no filter configured
@@ -20323,8 +20332,11 @@ plans:
           tasks completed — read from session metadata on close).
 
           Covers: @dispatch-event-taxonomy ac-2,
-          @dispatch-event-payload ac-3,
-          @dispatch-action-model ac-4 (action run closure on invocation end).
+          @dispatch-event-payload ac-3.
+          Also covers action run closure: when an agent action's linked
+          invocation ends, the action run is completed/failed accordingly.
+          This is emergent behavior from wiring invocation terminal events
+          to action run state, not a direct AC on @dispatch-action-model.
 
       - title: Implement hook schema and meta manifest extension
         slug: task-hook-schema
@@ -20348,7 +20360,7 @@ plans:
           warnings.
 
           Covers: @dispatch-hook-schema ac-1 through ac-4,
-          @dispatch-hook-filter ac-1 through ac-4.
+          @dispatch-hook-filter ac-1 through ac-5.
 
       - title: Implement hook execution engine
         slug: task-hook-executor
@@ -20378,6 +20390,9 @@ plans:
           incremented on meta file change.
 
           Covers: @dispatch-hook-system ac-1 through ac-5.
+          Also implicitly covers @dispatch-composition-patterns ac-1
+          (pipeline chaining via hooks) and ac-4 (conditional routing via
+          separate hooks for completed vs failed).
 
       - title: Implement schedule schema and meta extension
         slug: task-schedule-schema
@@ -20523,7 +20538,7 @@ plans:
           use meta YAML write helpers. Runtime queries read from ScheduleEngine
           and HookExecutor in-memory state. Event log from bus ring buffer.
 
-          Covers: @automation-api ac-1 through ac-5,
+          Covers: @automation-api ac-1 through ac-6,
           @automation-event-stream ac-1, ac-2.
 
       - title: Extend kspec validate with hook/schedule/composition rules
@@ -20715,3 +20730,11 @@ plans:
           composition config vs activation distinction, event emit API endpoint, envelope filters,
           agent refs as errors not warnings, filterable-list + semantic-exit-codes traits,
           derive_from_specs: false"
+      - _ulid: 01KKTBRXVB58SJDV95DM0MWDMA
+        created_at: 2026-03-16T03:41:57.995Z
+        author: "@claude"
+        content: "Deep review fixes: correlation propagation via KSPEC_CORRELATION_ID for CLI re-entry loop
+          prevention, scoped shadow mutex (per-mutation not per-command), envelope fields always
+          valid in filter validation, AC coverage gaps closed (hook-filter ac-5, automation-api
+          ac-6, composition ac-1/ac-4), misattributed task coverage corrected, command action shadow
+          pre-commit hook safety net noted"
