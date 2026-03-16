@@ -102277,8 +102277,13 @@
   spec_ref: "@task-activity-git-query"
   meta_ref: null
   plan_ref: "@plan-task-activity-timeline"
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Implements parseCommitMessage() (11 patterns, ac-3),
+    parseDiffChanges() (scalar fields + note detection, ac-4), and normalizeTaskActivity()
+    (diff-first with commit message fallback). 30 tests pass. Review 01KKWEBZ approved with 3 nits:
+    dead submission_linkage case, nested map field leakage, and missing review-* patterns — all low
+    impact due to diff-first strategy."
   depends_on:
     - "@task-implement-activity-git-query"
   context: []
@@ -102300,6 +102305,7 @@
   created_at: 2026-03-16T20:51:47.638Z
   started_at: 2026-03-16T22:59:58.430Z
   submitted_at: 2026-03-16T23:03:25.970Z
+  completed_at: 2026-03-16T23:13:32.072Z
   notes:
     - _ulid: 01KKWE74T5RTEVZG0306EDHN0W
       content: "Implemented normalizeTaskActivity(), parseCommitMessage(), and parseDiffChanges() in
