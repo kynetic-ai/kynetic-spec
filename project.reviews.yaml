@@ -3460,7 +3460,18 @@ reviews:
     slugs: []
     title: Review task-auto-close-review-on-verdict
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: dev
+          head_commit: 02e5983cf
+        evidence: 84/84 tests passed in review-cli test suites
+        name: vitest-review-cli
+        required: true
+        runner: vitest
+        created_at: 2026-03-16T22:05:21.244Z
+        completed_at: 2026-03-16T22:05:21.244Z
     events:
       - _ulid: 01KKWAWS4GFN2WK41H12815ARF
         actor: "@claude"
@@ -3475,6 +3486,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-16T22:05:12.909Z
+      - _ulid: 01KKWAX9G1MZPYD5KY9QJGSBF0
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest-review-cli
+        timestamp: 2026-03-16T22:05:21.282Z
     external_links: []
     lifecycle_state: open
     related_refs: []
@@ -3486,5 +3504,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-16T22:05:04.528Z
-    updated_at: 2026-03-16T22:05:12.870Z
+    updated_at: 2026-03-16T22:05:21.244Z
     notes: []
