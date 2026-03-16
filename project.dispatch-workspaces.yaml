@@ -6582,8 +6582,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: ready
-    active_role: null
+    lifecycle_state: active
+    active_role: worker
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-hooks-configuration-to-kspec-config-yaml-and-setup-01kkt042
@@ -6630,7 +6630,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-16T00:31:43.445Z
+      updated_at: 2026-03-16T00:31:44.097Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -6639,7 +6639,7 @@ workspaces:
       updated_at: 2026-03-16T00:31:43.445Z
     timestamps:
       created_at: 2026-03-16T00:31:43.445Z
-      updated_at: 2026-03-16T00:31:43.728Z
-      last_reconciled_at: 2026-03-16T00:31:43.445Z
-      last_active_at: null
+      updated_at: 2026-03-16T00:31:44.097Z
+      last_reconciled_at: 2026-03-16T00:31:44.097Z
+      last_active_at: 2026-03-16T00:31:44.097Z
       closed_at: null
