@@ -105,6 +105,25 @@ reviews:
               631-632 expect 'Local review' and 'Create PR' which no longer appear in the template.
               Tests must be updated to match the new template content."
             created_at: 2026-03-16T06:21:07.243Z
+      - _ulid: 01KKTMWK9067T28VEEWXJATHQ1
+        kind: blocker
+        anchor:
+          type: code
+          path: .agents/skills/ui-data-layer/SKILL.md
+          side: head
+          line_start: 875
+          line_end: 875
+          commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
+        entries:
+          - _ulid: 01KKTMWK90HG9GYRCGYFSTHCJY
+            author: "@claude"
+            body: "SHOULD-FIX: ui-data-layer skill re-rendered with stale source referencing 'agent_text_chunk
+              events' — this pattern was removed by PR #890 (already on this branch). The
+              .kspec/skills/ui-data-layer source was never updated to match the WebSocket-first
+              rewrite (PRs #885, #890). After merge, the skill doc will reference a non-existent
+              streaming pattern. Suggest either updating the .kspec/skills/ source or reverting this
+              file to avoid the regression."
+            created_at: 2026-03-16T06:21:15.424Z
     checks: []
     verdicts: []
     events:
@@ -128,7 +147,14 @@ reviews:
         payload:
           thread_ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
           kind: blocker
+      - _ulid: 01KKTMWK93GTHRGEZ71KK9TE0P
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T06:21:15.427Z
+        payload:
+          thread_ulid: 01KKTMWK9067T28VEEWXJATHQ1
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T06:20:49.980Z
-    updated_at: 2026-03-16T06:21:07.243Z
+    updated_at: 2026-03-16T06:21:15.424Z
