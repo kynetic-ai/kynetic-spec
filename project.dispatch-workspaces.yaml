@@ -6407,7 +6407,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6f2b02df930df09e597db225bd51605b7f2a58e7
     canonical_branch: dispatch/task/task-update-session-stream-spec-cleanup/01kksgt1
-    canonical_branch_head: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    canonical_branch_head: 9c536ce09b2b00fa8926d660647ceb142a1d385c
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -6458,21 +6458,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-16T00:00:04.071Z
+      updated_at: 2026-03-16T00:03:04.139Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-16T00:00:04.634Z
+      updated_at: 2026-03-16T00:03:04.139Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-16T00:00:04.071Z
+      updated_at: 2026-03-16T00:03:04.139Z
     timestamps:
       created_at: 2026-03-16T00:00:04.071Z
-      updated_at: 2026-03-16T00:00:04.634Z
-      last_reconciled_at: 2026-03-16T00:00:04.634Z
+      updated_at: 2026-03-16T00:03:04.139Z
+      last_reconciled_at: 2026-03-16T00:03:04.139Z
       last_active_at: 2026-03-16T00:00:04.634Z
       closed_at: null
