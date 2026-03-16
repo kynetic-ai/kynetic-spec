@@ -2989,7 +2989,7 @@ features:
           implementation: implemented
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:
