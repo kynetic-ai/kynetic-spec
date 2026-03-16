@@ -6574,7 +6574,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6f2b02df930df09e597db225bd51605b7f2a58e7
     canonical_branch: dispatch/task/add-hooks-configuration-to-kspec-config-yaml-and-setup/01kkt042
-    canonical_branch_head: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    canonical_branch_head: 6cb2e0ae3f075407e0b5c2d606efd448d6d9df1e
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -6582,16 +6582,21 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: integrating
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-hooks-configuration-to-kspec-config-yaml-and-setup-01kkt042
         branch_mode: branch
         branch_ref: dispatch/task/add-hooks-configuration-to-kspec-config-yaml-and-setup/01kkt042
-        head: 6f2b02df930df09e597db225bd51605b7f2a58e7
-        last_seen_at: 2026-03-16T00:31:43.445Z
-      reviewer: null
+        head: 6cb2e0ae3f075407e0b5c2d606efd448d6d9df1e
+        last_seen_at: 2026-03-16T00:43:29.529Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-hooks-configuration-to-kspec-config-yaml-and-setup-01kkt042-review
+        branch_mode: detached
+        branch_ref: null
+        head: 6cb2e0ae3f075407e0b5c2d606efd448d6d9df1e
+        last_seen_at: 2026-03-16T00:43:29.529Z
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -6625,21 +6630,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-16T00:31:43.445Z
+      updated_at: 2026-03-16T00:43:29.529Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-16T00:31:44.097Z
+      updated_at: 2026-03-16T00:43:29.529Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-16T00:31:43.445Z
+      updated_at: 2026-03-16T00:43:29.529Z
     timestamps:
       created_at: 2026-03-16T00:31:43.445Z
-      updated_at: 2026-03-16T00:31:44.097Z
-      last_reconciled_at: 2026-03-16T00:31:44.097Z
+      updated_at: 2026-03-16T00:43:29.529Z
+      last_reconciled_at: 2026-03-16T00:43:29.529Z
       last_active_at: 2026-03-16T00:31:44.097Z
       closed_at: null
