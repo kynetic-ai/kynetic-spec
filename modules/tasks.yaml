@@ -1242,6 +1242,11 @@ features:
             then: |
               the operation type (start, submit, complete, note, block, etc.)
               is parsed from the commit message into a structured activity type
+          - id: ac-4
+            given: a commit's diff shows changes to specific task fields
+            when: the raw commit data is normalized into activity entries
+            then: each meaningful field change is translated into a typed activity entry that identifies what
+              changed, such as state transitions, notes added, review linkage, or submission updates
         depends_on: []
         implements: []
         relates_to: []
