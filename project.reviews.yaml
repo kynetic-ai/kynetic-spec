@@ -3970,6 +3970,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKWEE2S9HCBVWTMFWWB1FAJV
         timestamp: 2026-03-16T23:06:57.230Z
+      - _ulid: 01KKWEECYSA3PD4NHCJVKD9ZFY
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKWEECXPE7YHX3VHW5YE8FCY
+        timestamp: 2026-03-16T23:07:07.609Z
     examined_commit: f6e16b92e3cf47b7a6144407e45d3891435c0e05
     external_links: []
     lifecycle_state: open
@@ -3999,7 +4006,26 @@ reviews:
               detected — but this case is unreachable and misleading.'
             created_at: 2026-03-16T23:06:57.193Z
         kind: nit
+      - _ulid: 01KKWEECXPE7YHX3VHW5YE8FCY
+        anchor:
+          type: code
+          commit: ""
+          line_end: 349
+          line_start: 348
+          path: src/utils/activity.ts
+          side: head
+        entries:
+          - _ulid: 01KKWEECXQSYWXXKZBB6E4MVZA
+            author: "@claude"
+            body: "**Nested map fields leak into scalar tracking.** parseDiffChanges has no general nesting
+              awareness — only notes gets special-cased. Fields nested under submission_linkage
+              (review_url, branch, captured_at, commit, remote, remote_url, upstream_ref) are
+              treated as top-level task fields, producing misleading field_updated activity entries.
+              Low impact for now since submission commits always have a high-signal status change,
+              but worth noting if more nested map fields are added to the task schema."
+            created_at: 2026-03-16T23:07:07.575Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-16T23:05:48.607Z
-    updated_at: 2026-03-16T23:06:57.193Z
+    updated_at: 2026-03-16T23:07:07.575Z
     notes: []
