@@ -9534,13 +9534,8 @@ requirements:
       Pre-stop hook for Claude Code integration.
 
 
-      Checks for uncommitted work before allowing session to end:
-
-      - Uncommitted git changes (staged, unstaged, untracked)
-
-      - Tasks in in_progress status
-
-      - Incomplete todos on active tasks
+      Checks for uncommitted git changes (staged, unstaged, untracked) before allowing session to
+      end. Focuses on preventing data loss from uncommitted work.
 
 
       One-time trigger: Reads stop_hook_active from Claude Code stdin JSON to detect retry. First
@@ -9548,24 +9543,12 @@ requirements:
 
 
       Output: JSON formatted for Claude Code hook consumption with clear kspec-branded message
-      instructing agent to document progress and commit changes. Uses {"decision": "block",
-      "reason": "..."} format.
+      instructing agent to commit changes. Uses {"decision": "block", "reason": "..."} format.
 
 
-      Installation: kspec setup automatically installs this hook to project-level
-      .claude/settings.json for Claude Code users. Hook format requires matcher field (even if empty
-      string).
-
-
-      Acceptance Criteria:
-
-      - AC1: Instructions are numbered sequentially based on which issues apply (dynamic numbering,
-      not hardcoded)
-
-      - AC2: Only relevant instructions shown (e.g., if no in_progress tasks, those steps are
-      omitted)
-
-      - AC3: Exit silently with no output when session can end cleanly
+      Installation: Controlled by project configuration (kspec.config.yaml). Disabled by default.
+      When enabled, kspec setup installs this hook to project-level .claude/settings.json. Hook
+      format requires matcher field (even if empty string).
     depends_on: []
     implements: []
     relates_to: []
