@@ -63,6 +63,7 @@ export const sectionHeaders = {
   acceptanceCriteria: chalk.gray("─── Acceptance Criteria ───"),
   notes: chalk.gray("─── Notes ───"),
   todos: chalk.gray("─── Todos ───"),
+  activity: chalk.gray("─── Activity ───"),
 } as const;
 
 /**

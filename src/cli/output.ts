@@ -3,6 +3,8 @@ import { stringify as yamlStringify } from "yaml";
 import type { ReferenceIndex } from "../parser/index.js";
 import type { Note, Task, TaskStatus } from "../schema/index.js";
 import { fieldLabels, sectionHeaders, summaries } from "../strings/labels.js";
+import type { ActivityEntry } from "../utils/activity.js";
+import { formatRelativeTime } from "../utils/time.js";
 import { formatMatchedFields, grepItem } from "../utils/grep.js";
 
 /**
@@ -557,6 +559,10 @@ export interface FormatTaskDetailsOptions {
     lifecycle_state: string;
     disposition: string;
   } | null;
+  /** Activity timeline entries to display */
+  activity?: ActivityEntry[];
+  /** Show full activity timeline (default: last 10 entries) */
+  showFullActivity?: boolean;
 }
 
 /**
@@ -838,6 +844,35 @@ export function formatTaskDetails(
     }
   }
 
+  // AC: @task-activity-timeline ac-1 — show recent activity by default
+  if (options.activity && options.activity.length > 0) {
+    const DEFAULT_ACTIVITY_COUNT = 10;
+    // Display in reverse chronological order (most recent first)
+    const reversed = [...options.activity].reverse();
+    const showAll = options.showFullActivity;
+    const entries = showAll
+      ? reversed
+      : reversed.slice(0, DEFAULT_ACTIVITY_COUNT);
+    const hiddenCount = reversed.length - entries.length;
+
+    console.log(`\n${sectionHeaders.activity}`);
+    for (const entry of entries) {
+      const icon = activityIcon(entry.type);
+      const time = formatRelativeTime(new Date(entry.timestamp));
+      console.log(
+        `${icon} ${chalk.gray(time)} ${entry.summary}` +
+          (entry.author ? chalk.gray(` (${entry.author})`) : ""),
+      );
+    }
+    if (hiddenCount > 0) {
+      console.log(
+        chalk.gray(
+          `\n(${hiddenCount} older entr${hiddenCount === 1 ? "y" : "ies"} hidden — use --activity to show all)`,
+        ),
+      );
+    }
+  }
+
   if (task.todos.length > 0) {
     console.log(`\n${sectionHeaders.todos}`);
     for (const todo of task.todos) {
@@ -845,5 +880,37 @@ export function formatTaskDetails(
       const text = todo.done ? chalk.strikethrough.gray(todo.text) : todo.text;
       console.log(`${check} [${todo.id}] ${text}`);
     }
+  }
+}
+
+/**
+ * Map activity types to display icons.
+ */
+function activityIcon(type: string): string {
+  switch (type) {
+    case "created":
+      return chalk.green("●");
+    case "started":
+      return chalk.cyan("▶");
+    case "submitted":
+      return chalk.blue("↑");
+    case "completed":
+      return chalk.green("✓");
+    case "blocked":
+      return chalk.red("⊘");
+    case "needs_work":
+      return chalk.yellow("↩");
+    case "cancelled":
+      return chalk.gray("✕");
+    case "note_added":
+      return chalk.gray("✎");
+    case "state_change":
+      return chalk.yellow("◆");
+    case "review_linked":
+      return chalk.magenta("⚑");
+    case "field_updated":
+      return chalk.gray("·");
+    default:
+      return chalk.gray("○");
   }
 }
