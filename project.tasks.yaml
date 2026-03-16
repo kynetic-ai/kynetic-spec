@@ -99810,7 +99810,7 @@
   spec_ref: "@ws-session-event-streaming"
   plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-session-stream-ws-ui"
@@ -99825,6 +99825,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-16T00:00:18.487Z
+  session_id: 01KKSZ2MF6917GR5DRAASMRXWH
 - _ulid: 01KKSRDQY1HZBENKBD06V6KDGW
   slugs: []
   title: Implement session summary stats persistence and live counters
