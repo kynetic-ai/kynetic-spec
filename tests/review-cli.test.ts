@@ -537,6 +537,57 @@ describe("Integration: review CLI commands", () => {
       expect(review.disposition).toBe("changes_requested");
     });
 
+    // AC: @review-record-per-cycle-lifecycle ac-1
+    it("should auto-close review on approve verdict", () => {
+      kspec(
+        `review verdict @${reviewSlug} --decision approve --reviewer alice --version-base a1 --version-head b1`,
+        tempDir,
+      );
+
+      const review = kspecJson<{
+        lifecycle_state: string;
+        events: Array<{ event_type: string; payload?: Record<string, unknown> }>;
+      }>(`review get @${reviewSlug}`, tempDir);
+
+      expect(review.lifecycle_state).toBe("closed");
+      expect(review.events.some((e) => e.event_type === "lifecycle_change")).toBe(true);
+      const closeEvent = review.events.find(
+        (e) => e.event_type === "lifecycle_change" && e.payload?.to === "closed",
+      );
+      expect(closeEvent).toBeDefined();
+    });
+
+    // AC: @review-record-per-cycle-lifecycle ac-1
+    it("should auto-close review on request_changes verdict", () => {
+      kspec(
+        `review verdict @${reviewSlug} --decision request_changes --reviewer bob --version-base a1 --version-head b1`,
+        tempDir,
+      );
+
+      const review = kspecJson<{
+        lifecycle_state: string;
+      }>(`review get @${reviewSlug}`, tempDir);
+
+      expect(review.lifecycle_state).toBe("closed");
+    });
+
+    // AC: @review-record-per-cycle-lifecycle ac-1
+    it("should NOT auto-close review on comment verdict", () => {
+      // Open the review first (review add creates in draft state)
+      kspec(`review open @${reviewSlug}`, tempDir);
+
+      kspec(
+        `review verdict @${reviewSlug} --decision comment --reviewer carol --version-base a1 --version-head b1`,
+        tempDir,
+      );
+
+      const review = kspecJson<{
+        lifecycle_state: string;
+      }>(`review get @${reviewSlug}`, tempDir);
+
+      expect(review.lifecycle_state).toBe("open");
+    });
+
     // AC: @trait-error-guidance ac-5
     it("should error on invalid decision", () => {
       const result = kspecRun(
