@@ -17,6 +17,27 @@ import {
   testUlid,
 } from "./helpers/cli.js";
 
+async function createToolPath(options: { gh: boolean }): Promise<string> {
+  const binDir = await createTempDir("kspec-dispatch-tools-");
+  const gitPath = execSync("command -v git", {
+    encoding: "utf-8",
+    shell: "/bin/bash",
+  }).trim();
+  await fs.writeFile(
+    path.join(binDir, "git"),
+    `#!/bin/sh\nexec "${gitPath}" "$@"\n`,
+    { encoding: "utf-8", mode: 0o755 },
+  );
+  if (options.gh) {
+    await fs.writeFile(
+      path.join(binDir, "gh"),
+      '#!/bin/sh\nif [ "$1" = "--version" ]; then\n  echo "gh version 99.0.0"\n  exit 0\nfi\nexit 0\n',
+      { encoding: "utf-8", mode: 0o755 },
+    );
+  }
+  return binDir;
+}
+
 const MOCK_KSPEC_CLI = path.join(__dirname, "mocks", "kspec-capture-mock.cjs");
 
 function git(cwd: string, command: string): string {
@@ -314,5 +335,114 @@ describe("dispatch workspace configuration", () => {
       message: `Resolved dispatch worktree root "${path.join(tempDir, ".kspec", "worktrees")}" is inside the shadow worktree.`,
       suggestion: "Set dispatch.worktree_root to a directory outside .kspec/.",
     } satisfies Partial<DispatchWorkspaceError>);
+  });
+});
+
+// AC: @dispatch-workspace-configuration ac-5
+describe("dispatch publication mode configuration", () => {
+  let tempDir: string;
+  let originalPath: string | undefined;
+  let toolDirs: string[];
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-dispatch-pubmode-");
+    originalPath = process.env.PATH;
+    toolDirs = [];
+  });
+
+  afterEach(async () => {
+    process.env.PATH = originalPath;
+    vi.restoreAllMocks();
+    for (const dir of toolDirs) {
+      await cleanupTempDir(dir);
+    }
+    await cleanupTempDir(tempDir);
+  });
+
+  it("resolves publication_mode from config", async () => {
+    await seedRepo(tempDir);
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  publication_mode: manual_merge\n",
+      "utf-8",
+    );
+
+    const resolved = await resolveDispatchWorkspaceConfig(tempDir);
+    expect(resolved.publicationMode).toBe("manual_merge");
+  });
+
+  it("defaults publication_mode to auto when not configured", async () => {
+    await seedRepo(tempDir);
+
+    const resolved = await resolveDispatchWorkspaceConfig(tempDir);
+    expect(resolved.publicationMode).toBe("auto");
+  });
+
+  it("manual_merge config overrides auto-detection when gh is available", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "remote add origin https://github.com/example/repo.git");
+    const toolDir = await createToolPath({ gh: true });
+    toolDirs.push(toolDir);
+    process.env.PATH = `${toolDir}:${originalPath ?? ""}`;
+
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  publication_mode: manual_merge\n",
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 50)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Config Override Test", slugs: ["task-config-override"] },
+    });
+
+    expect(workspace.metadata.publicationMode).toBe("manual_merge");
+  });
+
+  it("pull_request config overrides auto-detection when gh is unavailable", async () => {
+    await seedRepo(tempDir);
+    const toolDir = await createToolPath({ gh: false });
+    toolDirs.push(toolDir);
+    process.env.PATH = `${toolDir}:${originalPath ?? ""}`;
+
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  publication_mode: pull_request\n",
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 51)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "PR Override Test", slugs: ["task-pr-override"] },
+    });
+
+    expect(workspace.metadata.publicationMode).toBe("pull_request");
+  });
+
+  it("auto preserves environment-based detection", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "remote add origin https://github.com/example/repo.git");
+    const toolDir = await createToolPath({ gh: true });
+    toolDirs.push(toolDir);
+    process.env.PATH = `${toolDir}:${originalPath ?? ""}`;
+
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  publication_mode: auto\n",
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 52)}`;
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Auto Mode Test", slugs: ["task-auto-mode"] },
+    });
+
+    expect(workspace.metadata.publicationMode).toBe("pull_request");
   });
 });
