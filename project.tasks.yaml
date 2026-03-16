@@ -100651,9 +100651,18 @@
     - core
     - review
   vcs_refs: []
+  submission_linkage:
+    branch: dispatch/task/rewrite-core-skills-for-review-driven-architecture/01kkthzw
+    commit: 5fd00bce799e8bbf49a1f685764e56845774acf5
+    remote: null
+    remote_url: null
+    upstream_ref: null
+    review_url: null
+    captured_at: 2026-03-16T05:49:40.321Z
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-16T05:30:37.484Z
   started_at: 2026-03-16T05:36:27.882Z
+  submitted_at: 2026-03-16T05:49:41.384Z
   notes:
     - _ulid: 01KKTK1BM0EZF1RZ7BTBGSGTF5
       created_at: 2026-03-16T05:48:54.272Z
@@ -100689,12 +100698,40 @@
         - Rendered skills and regenerated kspec-agents.md
       supersedes: null
   todos: []
-  submitted_at: 2026-03-16T05:49:41.384Z
-  submission_linkage:
-    branch: dispatch/task/rewrite-core-skills-for-review-driven-architecture/01kkthzw
-    commit: 5fd00bce799e8bbf49a1f685764e56845774acf5
-    remote: null
-    remote_url: null
-    upstream_ref: null
-    review_url: null
-    captured_at: 2026-03-16T05:49:40.321Z
+- title: Remove skill table from kspec-agents.md and port descriptions to skill frontmatter
+  description: >-
+    The skill table in kspec-agents.md is redundant — agent runtimes auto-inject skill content when
+    invoked. The table wastes context window space for no benefit.
+
+
+    Changes needed:
+
+    1. Update kspec agents generate to skip the skill table section
+
+    2. Ensure skill descriptions are in the skill frontmatter (SKILL.md metadata) so runtimes can
+    use them for discovery/matching
+
+    3. Port any useful description text from the table entries to the skill metadata if not already
+    there
+
+    4. Verify agent runtimes still have enough context to discover and invoke skills without the
+    table
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - cli
+    - agents
+    - skills
+  depends_on: []
+  _ulid: 01KKTK96Z5M9T8WP900CPFWRNG
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-16T05:53:11.653Z
+  notes: []
+  todos: []
