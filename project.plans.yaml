@@ -20776,8 +20776,9 @@ plans:
               A client requests GET /api/reviews
             then: |
               It returns a paginated list of review records with filtering by status,
-              disposition, subject-type, reviewer, and linked task (via subject-ref or
-              related-refs), with sort parameter support; defaults to open reviews
+              disposition, subject-type, reviewer, linked task (via subject-ref or
+              related-refs), and subject-branch (base-branch/head-branch for code
+              reviews), with sort parameter support; defaults to open reviews
           - id: ac-2
             given: |
               The daemon is running
@@ -20874,7 +20875,7 @@ plans:
             given: |
               A code review has base and head commit refs
             when: |
-              A client requests GET /api/diff/:base..:head
+              A client requests GET /api/diff?base=X&head=Y
             then: |
               It returns a parsed diff with file list, per-file stats (+/- lines),
               and structured hunks with typed change lines (added, deleted, unchanged)
@@ -20883,13 +20884,14 @@ plans:
             given: |
               A client requests expanded context for a file in a diff
             when: |
-              The request includes path, start line, and end line
+              The request includes GET /api/diff/context?base=X&head=Y&path=P&start=N&end=M
             then: |
-              It returns the additional context lines from the file at the
-              specified commit, enabling "show more lines" expansion
+              It returns the additional context lines from the file at the head
+              commit for the specified line range, enabling "show more lines"
+              expansion in the diff viewer
           - id: ac-3
             given: |
-              A client requests GET /api/diff/:base..:head/:path
+              A client requests GET /api/diff/file?base=X&head=Y&path=P
             when: |
               The file exists in the diff
             then: |
@@ -20901,8 +20903,11 @@ plans:
             when: |
               A client requests GET /api/reviews/:id/content
             then: |
-              It returns the entity content (plan document, spec YAML) in a
-              format suitable for structured display with section identifiers
+              It returns the parsed entity content — for plans: sections
+              (title, specs array, tasks array, notes) extracted from the plan
+              document; for specs: structured fields (description, acceptance
+              criteria, traits, metadata) from kspec item get — each with
+              section identifiers for anchor targeting
 
       # ─── Web UI ───
 
@@ -21002,14 +21007,14 @@ plans:
               "No checks recorded")
           - id: ac-11
             given: |
-              Multiple reviews exist for the same subject (same subject-ref or
-              same base-branch/head-branch)
+              Multiple reviews exist for the same subject
             when: |
               The user views any one of those reviews
             then: |
               A revision dropdown is shown listing all reviews for that subject
               ordered by creation date, with the current review selected; selecting
-              another review navigates to it
+              another review navigates to it; subject matching uses subject-ref
+              for plan/task/spec reviews, or head-branch for code reviews
 
       - title: Review Code Diff Viewer
         slug: review-code-diff-viewer
@@ -21257,12 +21262,13 @@ plans:
           needs plan/spec content to display with section markers. The daemon runs
           in the repo and has access to git and .kspec/.
 
-          What: GET /api/diff/:base..:head returns parsed diff with file list,
-          stats, and structured hunks. GET /api/diff/:base..:head/:path returns
-          single-file diff for lazy loading. GET /api/diff/:base..:head/context
-          returns expanded context lines for a file region.
-          GET /api/reviews/:id/content returns plan/spec content for structured
-          reviews.
+          What: GET /api/diff?base=X&head=Y returns parsed diff with file list,
+          stats, and structured hunks. GET /api/diff/file?base=X&head=Y&path=P
+          returns single-file diff for lazy loading.
+          GET /api/diff/context?base=X&head=Y&path=P&start=N&end=M returns
+          expanded context lines for a file region.
+          GET /api/reviews/:id/content returns parsed plan/spec content for
+          structured reviews.
 
           How: Run `git diff --unified=3 base..head` on the server, parse with
           parse-git-diff into typed structures (files, chunks, changes with line
@@ -21566,3 +21572,9 @@ plans:
           review-code-diff-viewer, review-structured-content-viewer. New tasks: task-diff-api,
           task-code-diff-viewer, task-structured-content-viewer. Updated ac-9 from metadata-only to
           proper diff context. Added ac-11 revision selector."
+      - _ulid: 01KKTVXWADFFSYFEB2J4SGS6CJ
+        created_at: 2026-03-16T08:24:17.485Z
+        author: "@claude"
+        content: "Fix round 7 blockers: use query params for diff routes (not path segments with ..), add
+          subject-branch filter for code review revision queries, fix context/file route conflict,
+          clarify content API response shape"
