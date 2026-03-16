@@ -3816,6 +3816,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-16T22:54:43.755Z
         completed_at: 2026-03-16T22:54:43.755Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 9aef1ee768efc5a8e5a2797650be3d8fb04e4963
+          head_commit: 070cd9965c930bcc611e744d18c19745ea881db1
+        evidence: 5599/5599 tests passed. 3 failing test files are pre-existing on dev
+          (dispatch-workspace-and-scheduler-flow, dispatch-runtime-bootstrap-contract,
+          agent-dispatch-engine). No regressions.
+        name: full-suite-regression
+        required: true
+        runner: vitest
+        created_at: 2026-03-16T22:54:50.991Z
+        completed_at: 2026-03-16T22:54:50.991Z
     events:
       - _ulid: 01KKWDPTQPAC4F2BZ7P4KG563Y
         actor: "@claude"
@@ -3837,6 +3850,13 @@ reviews:
           status: pass
           name: vitest-activity
         timestamp: 2026-03-16T22:54:43.793Z
+      - _ulid: 01KKWDQXMQKXGNDZEFMZC0H4HX
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: full-suite-regression
+        timestamp: 2026-03-16T22:54:51.031Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -3849,5 +3869,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-16T22:54:15.290Z
-    updated_at: 2026-03-16T22:54:43.755Z
+    updated_at: 2026-03-16T22:54:50.991Z
     notes: []
