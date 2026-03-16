@@ -152,6 +152,17 @@ reviews:
           head_commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
         created_at: 2026-03-16T06:21:30.734Z
         completed_at: 2026-03-16T06:21:30.734Z
+      - name: vitest
+        status: pass
+        required: true
+        runner: vitest
+        evidence: All 5563 tests passed (253 files, 3 skipped). Full npm test at canonical HEAD e07e8ab29.
+        applies_to_version:
+          type: code_compare
+          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+          head_commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
+        created_at: 2026-03-16T06:38:04.053Z
+        completed_at: 2026-03-16T06:38:04.053Z
     verdicts:
       - reviewer: pr-reviewer@kspec.local
         role: reviewer
@@ -226,7 +237,14 @@ reviews:
         timestamp: 2026-03-16T06:37:47.358Z
         payload:
           thread_ulid: 01KKTMWK9067T28VEEWXJATHQ1
+      - _ulid: 01KKTNVC8SMKNS996YXPEZ0HDD
+        event_type: check_added
+        actor: "@claude"
+        timestamp: 2026-03-16T06:38:04.057Z
+        payload:
+          name: vitest
+          status: pass
     notes: []
     external_links: []
     created_at: 2026-03-16T06:20:49.980Z
-    updated_at: 2026-03-16T06:37:47.353Z
+    updated_at: 2026-03-16T06:38:04.053Z
