@@ -101943,7 +101943,7 @@
   status: pending
   blocked_by: []
   depends_on:
-    - "@task-implement-activity-git-query"
+    - "@task-normalize-activity-entries"
   context: []
   priority: 1
   tags:
@@ -102044,7 +102044,11 @@
   created_at: 2026-03-16T20:19:40.729Z
   notes: []
   todos: []
-- title: Normalize git diff data into typed activity entries
+- _ulid: 01KKW6PK9QFXKH69HE6KY8Q40Y
+  slugs:
+    - task-normalize-activity-entries
+  title: Normalize git diff data into typed activity entries
+  type: task
   description: |-
     Parse raw git diff hunks from task commit history into typed, structured
     activity entries for the timeline.
@@ -102077,22 +102081,18 @@
     meaningful change. Commit message serves as fallback context.
 
     Covers: @task-activity-git-query ac-3, ac-4.
-  type: task
   spec_ref: "@task-activity-git-query"
   meta_ref: null
   plan_ref: "@plan-task-activity-timeline"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-implement-activity-git-query"
+  context: []
   priority: 1
-  slugs:
-    - task-normalize-activity-entries
   tags:
     - cli
     - tasks
-  depends_on:
-    - "@task-implement-activity-git-query"
-  _ulid: 01KKW6PK9QFXKH69HE6KY8Q40Y
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-16T20:51:47.638Z
   notes: []
