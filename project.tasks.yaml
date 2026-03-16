@@ -101465,5 +101465,13 @@
       content: "[FIX_CYCLE: 2] Review findings: Addressing review: tests were already added in cda7391a7,
         threads resolved"
       supersedes: null
+    - _ulid: 01KKVQGYVSD4VPXEV2BB4ZBSAC
+      created_at: 2026-03-16T16:26:34.233Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 2] Review findings already addressed: (1) Blocker — publication_mode tests
+        were added in cda7391a7, 5 tests covering config override, defaults, and auto-detection
+        pass. (2) Question — ac-5 on @dispatch-workspace-configuration already covers
+        publication_mode. Both threads replied to with evidence and resolved."
+      supersedes: null
   todos: []
   automation: eligible
