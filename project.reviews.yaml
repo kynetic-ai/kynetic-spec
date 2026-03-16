@@ -3963,6 +3963,13 @@ reviews:
           status: pass
           name: tests pass
         timestamp: 2026-03-16T23:06:34.530Z
+      - _ulid: 01KKWEE2TER5XMBM529DD5N69N
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKWEE2S9HCBVWTMFWWB1FAJV
+        timestamp: 2026-03-16T23:06:57.230Z
     examined_commit: f6e16b92e3cf47b7a6144407e45d3891435c0e05
     external_links: []
     lifecycle_state: open
@@ -3972,8 +3979,27 @@ reviews:
       content_hash: ""
       ref: "@task-normalize-activity-entries"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKWEE2S9HCBVWTMFWWB1FAJV
+        anchor:
+          type: code
+          commit: ""
+          line_end: 450
+          line_start: 443
+          path: src/utils/activity.ts
+          side: head
+        entries:
+          - _ulid: 01KKWEE2S9FRNAT2SAWBKYNVCP
+            author: "@claude"
+            body: '**Dead code: submission_linkage case never fires.** In real YAML diffs, `submission_linkage:`
+              is a map header (no scalar value), so parseDiffChanges never returns `{ field:
+              "submission_linkage" }`. The nested child fields (review_url, branch, captured_at,
+              etc.) are each captured as separate field_updated entries instead. Not a functional
+              problem — submission commits always include a status change that gets correctly
+              detected — but this case is unreachable and misleading.'
+            created_at: 2026-03-16T23:06:57.193Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-16T23:05:48.607Z
-    updated_at: 2026-03-16T23:06:34.500Z
+    updated_at: 2026-03-16T23:06:57.193Z
     notes: []
