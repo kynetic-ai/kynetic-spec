@@ -1511,6 +1511,16 @@ reviews:
               None of these are blockers for this round, but they are gaps worth addressing before
               import.
             created_at: 2026-03-16T08:00:11.492Z
+      - _ulid: 01KKTTHZFPG8F1A4PSS66CX3J5
+        kind: nit
+        entries:
+          - _ulid: 01KKTTHZFPAJD127PP4ZCN7EWH
+            author: "@claude"
+            body: "**No duplication with existing ACs.** Verified: ac-8 through ac-12 are all net-new rendering
+              concerns not covered by ac-1 through ac-7. ac-2 (detail page layout) is complementary
+              — it covers the structural layout while the new ACs cover content rendering within
+              that layout. No conflicts detected."
+            created_at: 2026-03-16T08:00:18.934Z
     checks: []
     verdicts: []
     events:
@@ -1576,7 +1586,14 @@ reviews:
         payload:
           thread_ulid: 01KKTTHR74ZWBTAT568053N07S
           kind: question
+      - _ulid: 01KKTTHZGMXEGCR8HJ8SCYB5TZ
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T08:00:18.964Z
+        payload:
+          thread_ulid: 01KKTTHZFPG8F1A4PSS66CX3J5
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:57:51.698Z
-    updated_at: 2026-03-16T08:00:11.492Z
+    updated_at: 2026-03-16T08:00:18.934Z
