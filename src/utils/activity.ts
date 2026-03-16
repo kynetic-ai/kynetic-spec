@@ -1,8 +1,9 @@
 /**
- * Task activity git query — extracts raw commit data for a task's YAML block
- * from shadow branch git history using git log -L.
+ * Task activity — extracts and normalizes task activity from shadow branch
+ * git history.
  *
- * AC: @task-activity-git-query ac-1, ac-2
+ * AC: @task-activity-git-query ac-1, ac-2 (raw extraction)
+ * AC: @task-activity-git-query ac-3, ac-4 (normalization)
  */
 
 import { execSync } from "node:child_process";
@@ -177,4 +178,338 @@ export function parseGitLogLOutput(output: string): RawTaskCommit[] {
   }
 
   return commits;
+}
+
+// ─── Activity Entry Types ───
+
+export type ActivityType =
+  | "created"
+  | "started"
+  | "submitted"
+  | "completed"
+  | "blocked"
+  | "needs_work"
+  | "cancelled"
+  | "note_added"
+  | "state_change"
+  | "review_linked"
+  | "field_updated"
+  | "unknown";
+
+export interface ActivityEntry {
+  type: ActivityType;
+  timestamp: string;
+  author: string;
+  summary: string;
+  /** Commit hash for traceability */
+  commitHash: string;
+  /** Additional detail (e.g., from/to for state changes, field name) */
+  detail?: Record<string, string>;
+}
+
+// ─── Commit Message Parsing (AC: @task-activity-git-query ac-3) ───
+
+/**
+ * Map shadow branch auto-commit message patterns to activity types.
+ *
+ * AC: @task-activity-git-query ac-3 — operation type parsed from commit message
+ */
+const MESSAGE_PATTERNS: Array<{
+  pattern: RegExp;
+  type: ActivityType;
+  summary: (match: RegExpMatchArray) => string;
+}> = [
+  {
+    pattern: /^Start @/,
+    type: "started",
+    summary: () => "Task started",
+  },
+  {
+    pattern: /^Complete @([^:]+)(?:: (.+))?$/,
+    type: "completed",
+    summary: (m) => (m[2] ? `Task completed: ${m[2]}` : "Task completed"),
+  },
+  {
+    pattern: /^Note on @/,
+    type: "note_added",
+    summary: () => "Note added",
+  },
+  {
+    pattern: /^Add task @/,
+    type: "created",
+    summary: () => "Task created",
+  },
+  {
+    pattern: /^task-submit @/,
+    type: "submitted",
+    summary: () => "Task submitted for review",
+  },
+  {
+    pattern: /^task-needs-work @/,
+    type: "needs_work",
+    summary: () => "Task returned for changes",
+  },
+  {
+    pattern: /^task-block @/,
+    type: "blocked",
+    summary: () => "Task blocked",
+  },
+  {
+    pattern: /^task-cancel @/,
+    type: "cancelled",
+    summary: () => "Task cancelled",
+  },
+  {
+    pattern: /^task-set @|^Update @/,
+    type: "field_updated",
+    summary: () => "Task updated",
+  },
+  {
+    pattern: /^batch: \d+ commands?$/,
+    type: "field_updated",
+    summary: (m) => m[0],
+  },
+  {
+    pattern: /^spec-sync @/,
+    type: "field_updated",
+    summary: () => "Spec sync",
+  },
+];
+
+/**
+ * Parse a shadow branch commit message into an activity type.
+ *
+ * AC: @task-activity-git-query ac-3
+ */
+export function parseCommitMessage(message: string): {
+  type: ActivityType;
+  summary: string;
+} {
+  for (const { pattern, type, summary } of MESSAGE_PATTERNS) {
+    const match = message.match(pattern);
+    if (match) {
+      return { type, summary: summary(match) };
+    }
+  }
+  return { type: "unknown", summary: message };
+}
+
+// ─── Diff Parsing (AC: @task-activity-git-query ac-4) ───
+
+interface DiffChange {
+  field: string;
+  oldValue?: string;
+  newValue?: string;
+}
+
+/**
+ * Parse YAML diff hunks to extract field-level changes.
+ *
+ * Identifies scalar field changes (status, priority, etc.) and array
+ * insertions (notes, todos) from unified diff format.
+ *
+ * AC: @task-activity-git-query ac-4
+ */
+export function parseDiffChanges(diff: string): DiffChange[] {
+  if (!diff) return [];
+
+  const changes: DiffChange[] = [];
+  const lines = diff.split("\n");
+
+  // Track removed/added values for top-level scalar fields
+  const removed = new Map<string, string>();
+  const added = new Map<string, string>();
+
+  // Detect new note insertions (new _ulid entries under notes)
+  let inNotesSection = false;
+  let foundNewNote = false;
+
+  for (const line of lines) {
+    // Skip diff headers
+    if (
+      line.startsWith("diff --git") ||
+      line.startsWith("---") ||
+      line.startsWith("+++") ||
+      line.startsWith("@@")
+    ) {
+      continue;
+    }
+
+    // Context and changed lines — detect section context
+    const content = line.slice(1); // Remove +/- prefix
+    const trimmed = content.trimStart();
+
+    // Track if we're in the notes section
+    if (/^\s*notes:/.test(content)) {
+      inNotesSection = true;
+      continue;
+    }
+    // Exit notes section when we hit a non-indented field
+    if (inNotesSection && /^  \w/.test(content) && !content.startsWith("    ")) {
+      inNotesSection = false;
+    }
+
+    if (line.startsWith("-")) {
+      // Removed line — top-level scalar field (indented 2 spaces under list item)
+      const scalarMatch = trimmed.match(/^(\w[\w_]*?):\s+(.+)$/);
+      if (scalarMatch && !inNotesSection) {
+        removed.set(scalarMatch[1], scalarMatch[2]);
+      }
+    } else if (line.startsWith("+")) {
+      // Added line
+      const scalarMatch = trimmed.match(/^(\w[\w_]*?):\s+(.+)$/);
+      if (scalarMatch && !inNotesSection) {
+        added.set(scalarMatch[1], scalarMatch[2]);
+      }
+
+      // Detect new note (_ulid added inside notes section)
+      // In YAML arrays, entries start with "- _ulid:" so check both forms
+      if (
+        inNotesSection &&
+        (trimmed.startsWith("_ulid:") || trimmed.startsWith("- _ulid:"))
+      ) {
+        foundNewNote = true;
+      }
+    }
+  }
+
+  // Produce changes for scalar fields that changed
+  for (const [field, newValue] of added) {
+    const oldValue = removed.get(field);
+    if (oldValue !== undefined && oldValue !== newValue) {
+      changes.push({ field, oldValue, newValue });
+    } else if (oldValue === undefined) {
+      // Field was added (not present before)
+      changes.push({ field, newValue });
+    }
+  }
+
+  // Note insertion
+  if (foundNewNote) {
+    changes.push({ field: "notes", newValue: "new note added" });
+  }
+
+  return changes;
+}
+
+/**
+ * Translate diff changes into typed activity entries.
+ *
+ * AC: @task-activity-git-query ac-4
+ */
+function diffChangesToEntries(
+  changes: DiffChange[],
+  commit: RawTaskCommit,
+): ActivityEntry[] {
+  const entries: ActivityEntry[] = [];
+
+  for (const change of changes) {
+    switch (change.field) {
+      case "status":
+        entries.push({
+          type: "state_change",
+          timestamp: commit.timestamp,
+          author: commit.author,
+          summary: `Status: ${change.oldValue ?? "—"} → ${change.newValue}`,
+          commitHash: commit.hash,
+          detail: {
+            from: change.oldValue ?? "",
+            to: change.newValue ?? "",
+          },
+        });
+        break;
+
+      case "notes":
+        entries.push({
+          type: "note_added",
+          timestamp: commit.timestamp,
+          author: commit.author,
+          summary: "Note added",
+          commitHash: commit.hash,
+        });
+        break;
+
+      case "review_ref":
+        entries.push({
+          type: "review_linked",
+          timestamp: commit.timestamp,
+          author: commit.author,
+          summary: `Review linked: ${change.newValue ?? ""}`,
+          commitHash: commit.hash,
+          detail: { ref: change.newValue ?? "" },
+        });
+        break;
+
+      case "submission_linkage":
+        entries.push({
+          type: "submitted",
+          timestamp: commit.timestamp,
+          author: commit.author,
+          summary: "Submission linkage captured",
+          commitHash: commit.hash,
+        });
+        break;
+
+      default:
+        entries.push({
+          type: "field_updated",
+          timestamp: commit.timestamp,
+          author: commit.author,
+          summary: `Updated ${change.field}`,
+          commitHash: commit.hash,
+          detail: {
+            field: change.field,
+            ...(change.oldValue !== undefined && { from: change.oldValue }),
+            ...(change.newValue !== undefined && { to: change.newValue }),
+          },
+        });
+        break;
+    }
+  }
+
+  return entries;
+}
+
+// ─── Main Normalizer ───
+
+/**
+ * Normalize raw git commit data into typed activity entries.
+ *
+ * For each commit, attempts diff-based field change detection first.
+ * Falls back to commit message parsing when diff is unavailable or
+ * yields no changes.
+ *
+ * Returns entries in chronological order (oldest first).
+ *
+ * AC: @task-activity-git-query ac-3 — commit message → activity type
+ * AC: @task-activity-git-query ac-4 — diff → typed field changes
+ */
+export function normalizeTaskActivity(
+  rawCommits: RawTaskCommit[],
+): ActivityEntry[] {
+  const entries: ActivityEntry[] = [];
+
+  for (const commit of rawCommits) {
+    // Try diff-based detection first (ac-4)
+    const diffChanges = parseDiffChanges(commit.diff);
+
+    if (diffChanges.length > 0) {
+      // Diff produced typed changes — use them
+      entries.push(...diffChangesToEntries(diffChanges, commit));
+    } else {
+      // Fall back to commit message parsing (ac-3)
+      const { type, summary } = parseCommitMessage(commit.message);
+      entries.push({
+        type,
+        timestamp: commit.timestamp,
+        author: commit.author,
+        summary,
+        commitHash: commit.hash,
+      });
+    }
+  }
+
+  // Reverse: rawCommits are newest-first (git log order),
+  // but activity timeline should be chronological (oldest first)
+  return entries.reverse();
 }
