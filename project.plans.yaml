@@ -19032,11 +19032,19 @@ plans:
         description: |
           Extends the dispatch event system beyond the current 4 task-state events
           to support a generalized event taxonomy. Events use dotted-namespace
-          domains: task.*, invocation.*, schedule.*, and system.*. Each event
-          carries a typed payload. Existing task events are preserved unchanged.
+          domains: task.*, invocation.*, schedule.*. Each event carries a typed
+          payload with a defined schema per event type. Existing task events are
+          preserved unchanged.
 
           All event sources publish to a single internal event bus. The bus routes
           events to dispatch rules (existing) and hooks (new) independently.
+
+          Event domains:
+          - task.ready, task.in_progress, task.needs_work, task.pending_review
+            (existing, unchanged)
+          - invocation.started, invocation.completed, invocation.failed,
+            invocation.stalled (new)
+          - schedule.tick (new)
         traits:
           - trait-error-guidance
         acceptance_criteria:
@@ -19069,8 +19077,7 @@ plans:
             when: |
               Any event is processed
             then: |
-              Deduplication, filtering, and routing behave consistently
-              regardless of event source
+              Filtering and routing behave consistently regardless of event source
           - id: ac-5
             given: |
               An event matches both a dispatch rule and a hook
@@ -19078,88 +19085,207 @@ plans:
               The event is processed
             then: |
               Both are evaluated independently without interference
+          - id: ac-6
+            given: |
+              Task events arrive from both file watcher and API within a short window
+            when: |
+              The event bus processes them
+            then: |
+              Task events are deduplicated using the existing (task_id, from_status,
+              to_status) mechanism; non-task events (invocation.*, schedule.*) are
+              not deduplicated since they have unique occurrence identity
+          - id: ac-7
+            given: |
+              Multiple task state transitions happen in rapid succession
+              (e.g. pending -> in_progress -> pending_review)
+            when: |
+              The events reach the bus
+            then: |
+              Events are delivered to subscribers in the order they were emitted;
+              subscribers process events sequentially per source to preserve causal order
+
+      - title: Dispatch Event Payload Schema
+        slug: dispatch-event-payload
+        type: requirement
+        parent: "@dispatch-event-taxonomy"
+        description: |
+          Defines the typed payload contract for each event domain. Consumers
+          (hooks, UI, composition) need to know which fields are guaranteed
+          on each event type.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A task.* event is emitted
+            when: |
+              A consumer reads the payload
+            then: |
+              The payload includes task_id, task_ref, from_status, to_status,
+              and timestamp
+          - id: ac-2
+            given: |
+              An invocation.* event is emitted
+            when: |
+              A consumer reads the payload
+            then: |
+              The payload includes session_id, agent_id, trigger, and timestamp;
+              invocation.completed and invocation.failed also include duration_ms
+              and task_ref (if the invocation was task-scoped)
+          - id: ac-3
+            given: |
+              A schedule.tick event is emitted
+            when: |
+              A consumer reads the payload
+            then: |
+              The payload includes schedule_id, schedule_name, tick_time,
+              and run_count
+
+      - title: Dispatch Action Model
+        slug: dispatch-action-model
+        type: feature
+        parent: "@agent-integration"
+        description: |
+          Defines the shared action model used by both hooks and schedules.
+          An action describes what to do when an event matches. Four action
+          types are supported:
+
+          - command: Run a shell command
+          - kspec: Run a kspec CLI command
+          - agent: Spawn an agent invocation
+          - notify: Emit a WebSocket notification
+
+          Actions support template variable interpolation using {{var}} syntax.
+          Variables are resolved from the triggering event's payload.
+        traits:
+          - trait-error-guidance
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A command action is configured with a shell command string
+            when: |
+              The action executes
+            then: |
+              The command runs asynchronously with event context available as
+              environment variables; the action does not block event processing
+          - id: ac-2
+            given: |
+              A command action uses template variables like {{task_ref}}
+            when: |
+              The variable value contains shell metacharacters or injection
+              patterns (semicolons, backticks, $(), pipes)
+            then: |
+              Variable values are sanitized before interpolation into shell
+              commands; the command cannot be used to execute arbitrary code
+              via crafted payload values
+          - id: ac-3
+            given: |
+              A command action is configured with a timeout
+            when: |
+              The command exceeds the timeout duration
+            then: |
+              The process is terminated and the action is recorded as timed out
+          - id: ac-4
+            given: |
+              A kspec action is configured with a CLI command string
+            when: |
+              The action executes
+            then: |
+              The kspec command runs in the project root directory with shadow
+              branch mutations serialized against any concurrent agent or hook
+              mutations
+          - id: ac-5
+            given: |
+              An agent action references an agent by ID
+            when: |
+              The action executes
+            then: |
+              A new invocation spawns using the standard invocation lifecycle;
+              the invocation is not task-scoped unless the event payload includes
+              a task reference and the action configuration opts into task binding
+          - id: ac-6
+            given: |
+              An agent action spawns a non-task-scoped invocation
+            when: |
+              The per-task exclusivity check runs
+            then: |
+              The invocation is not subject to per-task exclusivity since it has
+              no task binding; it is subject to the target agent's max_concurrent
+          - id: ac-7
+            given: |
+              A notify action fires
+            when: |
+              WebSocket clients are connected
+            then: |
+              Clients subscribed to the automation topic receive the hook name,
+              event type, and payload summary
+          - id: ac-8
+            given: |
+              A template variable references a field not present in the event payload
+            when: |
+              The action's template is interpolated
+            then: |
+              The unresolved placeholder passes through unchanged (not removed,
+              not errored)
+          - id: ac-9
+            given: |
+              An action fails for any reason
+            when: |
+              Other actions for the same event are pending
+            then: |
+              The failure is logged and remaining actions continue unaffected
 
       - title: Dispatch Hook System
         slug: dispatch-hook-system
         type: feature
         parent: "@agent-integration"
         description: |
-          A hook is an action triggered by an event. Unlike dispatch rules which
-          spawn agent invocations for tasks, hooks support multiple action types:
-          command (shell command), kspec (CLI command), agent (spawn invocation),
-          and notify (WebSocket notification).
+          A hook is an event-triggered action. Hooks are configured in
+          kynetic.meta.yaml under a top-level hooks section. Each hook has:
+          on (event identifier), filter (optional payload filter), action
+          (from the shared action model), name (label), and enabled (boolean).
 
-          Hooks are configured in kynetic.meta.yaml under a top-level hooks
-          section. Each hook has: on (event identifier), filter (optional payload
-          filter), action (type + config), name (label), and enabled (boolean).
-
-          Hooks run asynchronously. Hook failures do not affect other hooks or
-          dispatch rules. Template variables use {{var}} interpolation from the
-          event payload.
+          Hooks run asynchronously and independently. Multiple hooks can
+          match the same event. Hook failures are isolated.
         traits:
           - trait-error-guidance
         acceptance_criteria:
           - id: ac-1
             given: |
-              A user configures a hook with a command action
+              A hook is configured with an event type and action
             when: |
-              The matching event fires
+              A matching event fires
             then: |
-              The shell command runs with event context available (event type,
-              session, agent, task ref) and the hook does not block event processing
+              The configured action executes with the event payload as context
           - id: ac-2
-            given: |
-              A user configures a hook with a kspec action containing template
-              variables like {{task_ref}}
-            when: |
-              The matching event fires
-            then: |
-              Template variables are resolved from the event payload before
-              the kspec command executes
-          - id: ac-3
-            given: |
-              A user configures a hook with an agent action referencing another agent
-            when: |
-              The matching event fires
-            then: |
-              A new agent invocation spawns with event context in its prompt
-          - id: ac-4
-            given: |
-              A user configures a hook with a notify action
-            when: |
-              The matching event fires
-            then: |
-              Connected WebSocket clients receive a notification with hook name,
-              event type, and payload summary
-          - id: ac-5
-            given: |
-              A hook action fails (non-zero exit, timeout, spawn error)
-            when: |
-              Other hooks and dispatch rules target the same event
-            then: |
-              The failed hook is logged; all other hooks and dispatch rules
-              continue unaffected
-          - id: ac-6
             given: |
               A hook is disabled (enabled: false)
             when: |
               Its matching event fires
             then: |
               The hook is silently skipped
-          - id: ac-7
+          - id: ac-3
             given: |
               Multiple hooks match the same event
             when: |
               The event fires
             then: |
               All matching hooks execute; no hook depends on another's outcome
-          - id: ac-8
+          - id: ac-4
             given: |
-              A hook has filters (e.g. agent_id, event status)
+              A hook has filters (e.g. agent_id, status)
             when: |
               An event fires that does not match the filter criteria
             then: |
               The hook does not execute
+          - id: ac-5
+            given: |
+              Hook configuration changes in kynetic.meta.yaml while the
+              dispatch engine is running
+            when: |
+              The next event is processed
+            then: |
+              The updated hook configuration is used; added hooks take effect,
+              removed hooks stop matching, modified hooks use new settings;
+              in-flight actions from removed hooks complete normally
 
       - title: Dispatch Hook Schema
         slug: dispatch-hook-schema
@@ -19175,8 +19301,8 @@ plans:
             when: |
               The meta manifest is loaded
             then: |
-              The hook is parsed with typed fields including a discriminated
-              union for the action type
+              The hook is parsed with typed fields; the action field uses the
+              shared action schema as a discriminated union on type
           - id: ac-2
             given: |
               A hook uses an invalid or unknown action type
@@ -19188,7 +19314,7 @@ plans:
             given: |
               A hook's agent action references a non-existent agent
             when: |
-              Cross-reference validation runs
+              Cross-reference validation runs (kspec validate)
             then: |
               A warning identifies the unresolvable agent reference
           - id: ac-4
@@ -19206,8 +19332,8 @@ plans:
         description: |
           Schedules are first-class entities in kynetic.meta.yaml that fire
           events on a cron-style cadence. Each schedule references an action
-          (same model as hooks) with overlap policy, enable/disable, and
-          optional backfill on restart.
+          (from the shared action model) with overlap policy, enable/disable,
+          and optional backfill on restart.
 
           The schedule entity is separate from the action it triggers — the
           same agent can respond to both event-driven dispatch rules and
@@ -19216,16 +19342,19 @@ plans:
           Overlap policies control behavior when a previous invocation is
           still running: skip (drop the tick), buffer_one (queue at most one),
           or allow (start subject to agent concurrency limits).
+
+          Schedule evaluation has minute-level resolution. Sub-minute cron
+          expressions are not supported.
         traits:
           - trait-error-guidance
         acceptance_criteria:
           - id: ac-1
             given: |
-              A schedule is configured with a cron expression and an agent action
+              A schedule is configured with a cron expression and an action
             when: |
               The cron expression matches the current time
             then: |
-              The configured agent is invoked with schedule context (schedule
+              The configured action executes with schedule context (schedule
               name, tick time, run count)
           - id: ac-2
             given: |
@@ -19260,11 +19389,21 @@ plans:
           - id: ac-6
             given: |
               A schedule with overlap_policy: allow fires while the previous
-              invocation is running
+              invocation is running and the target agent has max_concurrent: 1
             when: |
               The new invocation is attempted
             then: |
-              The new invocation starts subject to the agent's concurrency limits
+              The invocation is queued (not dropped) and runs when the agent
+              slot opens, consistent with dispatch rule queuing behavior
+          - id: ac-7
+            given: |
+              Schedule configuration changes while the schedule engine is running
+            when: |
+              The next evaluation cycle runs
+            then: |
+              Updated schedules use new cron/action/policy settings; added
+              schedules are evaluated from the next cycle; removed schedules
+              stop ticking but in-flight actions complete normally
 
       - title: Dispatch Schedule Schema
         slug: dispatch-schedule-schema
@@ -19272,11 +19411,12 @@ plans:
         parent: "@dispatch-schedule-entities"
         description: |
           Schema for schedule configuration in kynetic.meta.yaml. Extends the
-          meta manifest with an optional schedules array.
+          meta manifest with an optional schedules array. Uses the shared
+          action schema for the action field.
         acceptance_criteria:
           - id: ac-1
             given: |
-              A schedule uses a valid cron expression
+              A schedule uses a valid 5-field cron expression
             when: |
               The meta manifest is loaded
             then: |
@@ -19284,12 +19424,20 @@ plans:
               with examples of valid syntax
           - id: ac-2
             given: |
+              A schedule uses a 6-field (second-level) cron expression
+            when: |
+              Validation runs
+            then: |
+              An error indicates that only 5-field (minute-level) expressions
+              are supported
+          - id: ac-3
+            given: |
               A schedule references a non-existent agent
             when: |
-              Cross-reference validation runs
+              Cross-reference validation runs (kspec validate)
             then: |
               A warning identifies the unresolvable agent reference
-          - id: ac-3
+          - id: ac-4
             given: |
               An existing meta manifest has no schedules section
             when: |
@@ -19302,9 +19450,9 @@ plans:
         type: feature
         parent: "@agent-integration"
         description: |
-          Multi-agent coordination patterns built on the event taxonomy and hook
-          system. Composition is achieved through event-driven chaining rather
-          than graph topology:
+          Multi-agent coordination patterns built on the event taxonomy and
+          hook system. Composition is achieved through event-driven chaining
+          rather than graph topology:
 
           1. Fan-out: Multiple agents match the same event (existing capability).
           2. Pipeline: A hook on one agent's completion triggers another agent,
@@ -19315,7 +19463,7 @@ plans:
              enable different follow-up paths.
 
           Composition groups track related invocations by group ID in daemon
-          runtime memory.
+          runtime memory. Group configuration is stored in kynetic.meta.yaml.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -19326,9 +19474,9 @@ plans:
               Agent B receives context about A's session and outcome in its prompt
           - id: ac-2
             given: |
-              A composition group requires 3 invocations to complete
+              A composition group requires N invocations to complete
             when: |
-              The third invocation finishes
+              The Nth invocation finishes
             then: |
               A synthesis agent is invoked with references to all completed sessions
           - id: ac-3
@@ -19347,6 +19495,30 @@ plans:
               The agent fails
             then: |
               Only the failure hook fires; the completion hook does not
+
+      - title: Dispatch Composition Schema
+        slug: dispatch-composition-schema
+        type: requirement
+        parent: "@dispatch-composition-patterns"
+        description: |
+          Schema for composition group configuration in kynetic.meta.yaml.
+          Extends the meta manifest with an optional compositions array.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A composition group defines a join count and on_complete action
+            when: |
+              The meta manifest is loaded
+            then: |
+              The group is parsed with typed fields; the on_complete action
+              uses the shared action schema
+          - id: ac-2
+            given: |
+              An existing meta manifest has no compositions section
+            when: |
+              The extended schema is applied
+            then: |
+              The manifest loads successfully with compositions defaulting to empty
 
       - title: Dispatch Event CLI Commands
         slug: dispatch-event-cli
@@ -19419,8 +19591,6 @@ plans:
           capabilities, tools, skills, budget) but dispatch trigger editing
           moves to the automation view where it has full context alongside
           hooks and schedules.
-        traits:
-          - trait-markdown-rendering
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -19473,7 +19643,7 @@ plans:
               relative to target, and active/completed session references
           - id: ac-7
             given: |
-              A hook or schedule fires
+              A hook, schedule, or dispatch event fires
             when: |
               The automation view is open
             then: |
@@ -19496,22 +19666,20 @@ plans:
 
           Why: Every subsequent feature (hooks, schedules, composition) needs
           a central place to emit and subscribe to events. Without the bus,
-          each feature would wire into handleStateChange() directly, creating
-          a tangled mess.
+          each feature would wire into handleStateChange() directly.
 
           What: Create an EventBus class with emit(event) and subscribe(pattern, handler).
-          Refactor the existing dispatch rule matching into a subscriber. Add
-          invocation lifecycle events (started, completed, failed, stalled) by
-          emitting from the invocation completion handlers that already exist.
+          Refactor existing dispatch rule matching into a subscriber. Route
+          invocation lifecycle events (started, completed, failed, stalled)
+          through the bus — these already exist as onInvocationEvent callbacks.
+          Ensure task event dedup remains on task.* events only; non-task events
+          pass through without dedup. Preserve causal ordering per source.
 
-          How: Start from the existing onInvocationEvent callback in dispatch.ts
-          which already fires started/completed/failed. Route those through the
-          bus instead of the direct callback. The bus lives inside DispatchEngine
-          and shares its lifecycle (start/stop). Subscribers are registered during
-          engine initialization.
+          How: The bus lives inside DispatchEngine and shares its lifecycle.
+          Start from the existing onInvocationEvent callback. Subscribers are
+          registered during engine initialization.
 
-          Relates to: @dispatch-event-taxonomy ac-1 (invocation events), ac-4
-          (uniform routing), ac-5 (independent hook/rule evaluation).
+          Covers: @dispatch-event-taxonomy ac-1, ac-4, ac-5, ac-6, ac-7.
 
       - title: Extend event schema for dotted namespaces
         slug: task-event-schema
@@ -19521,27 +19689,74 @@ plans:
         depends_on:
           - "@task-event-bus"
         description: |
-          The current AgentDispatchEventSchema is a z.enum of 4 string literals.
-          This needs to become a validated string pattern that accepts dotted
-          namespaces (task.*, invocation.*, schedule.*) while still accepting
-          the original 4 values.
+          Replace the current AgentDispatchEventSchema (z.enum of 4 literals)
+          with a validated string pattern accepting dotted namespaces while
+          remaining backward compatible.
 
-          Why: Hooks and schedules need to reference event types beyond task
-          state changes. The schema must validate new event types while
-          remaining backward compatible with existing dispatch rules.
+          Why: Hooks and schedules reference event types beyond task state
+          changes. The schema must validate new types while existing dispatch
+          rules continue working unchanged.
 
-          What: Replace z.enum with a z.string() + refinement or z.union that
-          accepts both the original 4 values and new dotted-namespace patterns.
-          Update SessionTriggerSchema to include new trigger sources. Add event
-          payload type definitions per domain.
+          What: Update AgentDispatchEventSchema to accept both original 4 values
+          and new dotted-namespace identifiers. Update SessionTriggerSchema with
+          new trigger sources.
 
-          How: Look at how AgentDispatchEventSchema is consumed — in dispatch
-          rule matching, session trigger recording, and API event posting. Each
-          consumer needs to handle the expanded set. The key constraint is that
-          STATUS_TO_EVENT and EVENT_TO_STATUS remain unchanged for task events.
+          How: Look at how AgentDispatchEventSchema is consumed — dispatch rule
+          matching, session trigger recording, API event posting. STATUS_TO_EVENT
+          and EVENT_TO_STATUS remain unchanged for task events.
 
-          Relates to: @dispatch-event-taxonomy ac-2 (validation), ac-3
-          (backward compatibility).
+          Covers: @dispatch-event-taxonomy ac-2, ac-3.
+
+      - title: Define event payload schemas
+        slug: task-event-payloads
+        priority: 1
+        tags: [dispatch, schema]
+        spec_ref: "@dispatch-event-payload"
+        depends_on:
+          - "@task-event-schema"
+        description: |
+          Define typed payload schemas for each event domain so hook authors
+          and UI consumers know exactly what fields are available.
+
+          Why: Without a payload contract, hook filters and template variables
+          are guesswork. This is the contract that makes the event bus useful.
+
+          What: Zod schemas for task event payloads (task_id, task_ref,
+          from_status, to_status, timestamp), invocation event payloads
+          (session_id, agent_id, trigger, timestamp, duration_ms, task_ref),
+          and schedule tick payloads (schedule_id, schedule_name, tick_time,
+          run_count).
+
+          Covers: @dispatch-event-payload ac-1, ac-2, ac-3.
+
+      - title: Implement shared action model
+        slug: task-action-model
+        priority: 1
+        tags: [dispatch, actions, foundation]
+        spec_ref: "@dispatch-action-model"
+        description: |
+          Implement the shared action model used by both hooks and schedules.
+          This is the execution engine for all four action types.
+
+          Why: Hooks and schedules both need to execute actions. Implementing
+          the action model once prevents divergent behavior across features.
+          The security model (template sanitization, shadow branch serialization)
+          must be right in one place.
+
+          What: An ActionExecutor that handles command (spawn with sanitized
+          template vars, timeout), kspec (CLI spawn with shadow mutex), agent
+          (invocation via existing machinery, non-task-scoped by default), and
+          notify (WebSocket broadcast). Template interpolation with shell-safe
+          escaping for command actions.
+
+          How: Command actions must NOT use shell interpolation for template
+          values — use explicit argv or escape metacharacters. Kspec actions
+          must acquire the shadow branch mutex before spawning to prevent races
+          with agent-initiated mutations. Agent actions create invocations
+          without task binding unless explicitly configured, so they bypass
+          per-task exclusivity (ac-26) and are only subject to max_concurrent.
+
+          Covers: @dispatch-action-model ac-1 through ac-9.
 
       - title: Implement hook schema and meta manifest extension
         slug: task-hook-schema
@@ -19549,26 +19764,21 @@ plans:
         tags: [dispatch, hooks, schema]
         spec_ref: "@dispatch-hook-schema"
         description: |
-          Define the Zod schemas for hooks and extend MetaManifestSchema. This
-          is independent of the event bus and can be done in parallel.
+          Define Zod schemas for hooks and extend MetaManifestSchema.
 
-          Why: The schema is the contract for hook configuration. It needs to
-          exist before the executor or CLI can be built. Getting the schema
-          right early prevents rework.
+          Why: The schema is the contract for hook configuration. Needs to
+          exist before the executor or CLI.
 
-          What: Create HookActionSchema as a discriminated union on type
-          (command, kspec, agent, notify) with type-specific fields. Create
-          HookSchema with _ulid, name, on, filter, action, enabled. Create
+          What: Create HookSchema with _ulid, name, on, filter, action
+          (reuses action schema as discriminated union), enabled. Create
           HookFilterSchema for payload matching. Add hooks array to
           MetaManifestSchema with default [].
 
-          How: Follow the pattern of AgentDispatchRuleSchema — it's the closest
-          existing analog. The action discriminated union follows the pattern
-          used elsewhere in the codebase. Cross-reference validation for agent
-          actions should follow the same pattern as dispatch rule agent_id
-          validation in kspec validate.
+          How: Follow AgentDispatchRuleSchema as the closest pattern.
+          Cross-reference validation for agent actions follows existing
+          validate pipeline patterns.
 
-          Relates to: @dispatch-hook-schema ac-1 through ac-4.
+          Covers: @dispatch-hook-schema ac-1 through ac-4.
 
       - title: Implement hook execution engine
         slug: task-hook-executor
@@ -19578,31 +19788,25 @@ plans:
         depends_on:
           - "@task-hook-schema"
           - "@task-event-bus"
+          - "@task-action-model"
         description: |
-          The hook executor subscribes to the event bus and runs matching hooks.
-          This is the core runtime for the hook system.
+          The hook executor subscribes to the event bus and runs matching hooks
+          via the shared action model.
 
-          Why: This connects the schema (what hooks look like) to the bus
-          (where events flow). Without it, hooks are just configuration with
-          no effect.
+          Why: Connects hook configuration to the event bus. Without it, hooks
+          are just YAML with no effect.
 
           What: A HookExecutor class that loads hooks from meta, subscribes to
           the event bus, filters events against hook configurations, and
-          dispatches the appropriate action. Each action type has its own
-          execution path.
+          dispatches actions via ActionExecutor. Handles hot reload: re-reads
+          hooks from meta on each event (or on file change notification) so
+          configuration changes take effect without restart.
 
           How: On event, iterate loaded hooks, check on + filter match, execute
-          action. Command actions use child_process spawn with env vars from
-          event payload and configurable timeout. Kspec actions use the same
-          spawnSync pattern as dispatch task notes. Agent actions use the
-          existing invocation machinery. Notify actions broadcast via the
-          daemon's PubSubManager. Template variable interpolation is simple
-          string replacement ({{var}}).
+          action via ActionExecutor. All actions are fire-and-forget. In-flight
+          actions from removed hooks complete normally.
 
-          All actions are fire-and-forget: failures are logged, never thrown.
-          Each hook runs independently.
-
-          Relates to: @dispatch-hook-system ac-1 through ac-8.
+          Covers: @dispatch-hook-system ac-1 through ac-5.
 
       - title: Implement schedule schema and meta manifest extension
         slug: task-schedule-schema
@@ -19611,23 +19815,20 @@ plans:
         spec_ref: "@dispatch-schedule-schema"
         description: |
           Define Zod schemas for schedules and extend MetaManifestSchema.
-          Reuses the HookActionSchema for the action field.
+          Reuses the shared action schema.
 
           Why: Same reasoning as hook schema — the contract must exist before
           the runtime or CLI.
 
-          What: Create ScheduleSchema with _ulid, id, name, cron, timezone,
-          action (reuses HookActionSchema), overlap_policy (enum: skip,
-          buffer_one, allow), backfill (boolean), enabled. Add schedules
-          array to MetaManifestSchema with default []. Cron validation should
-          catch syntax errors at parse time.
+          What: Create ScheduleSchema with _ulid, id, name, cron (validated
+          5-field only), timezone, action, overlap_policy (enum: skip,
+          buffer_one, allow), backfill (boolean), enabled. Reject 6-field
+          cron expressions explicitly. Add schedules array to MetaManifestSchema.
 
-          How: The cron field needs runtime validation — consider croner or
-          cron-parser npm packages. Overlap policy is a simple z.enum.
-          Cross-reference validation for agent actions follows the same
-          pattern as hooks.
+          How: Use croner or cron-parser for cron validation. Cross-reference
+          validation follows hook pattern.
 
-          Relates to: @dispatch-schedule-schema ac-1 through ac-3.
+          Covers: @dispatch-schedule-schema ac-1 through ac-4.
 
       - title: Implement schedule tick engine
         slug: task-schedule-engine
@@ -19637,31 +19838,26 @@ plans:
         depends_on:
           - "@task-schedule-schema"
           - "@task-event-bus"
-          - "@task-hook-executor"
+          - "@task-action-model"
         description: |
           The schedule engine evaluates cron expressions on a timer and fires
-          schedule.tick events on the event bus. It manages overlap tracking
-          and backfill on startup.
+          schedule.tick events on the event bus, enforcing overlap policies.
 
-          Why: This is what makes schedules actually run. Without it, schedule
-          configuration just sits in YAML.
+          Why: Makes schedules actually run.
 
-          What: A ScheduleEngine class that runs a 60-second evaluation loop.
-          Each tick: check all enabled schedules against current time, enforce
-          overlap policies, emit schedule.tick events for matching schedules.
-          Track per-schedule state in memory (last_tick, next_tick, run_count,
-          active invocation, buffered tick).
+          What: A ScheduleEngine class with a 60-second evaluation loop. Each
+          tick: check all enabled schedules against current time, enforce
+          overlap policies, emit schedule.tick events. Track per-schedule state
+          in memory (last_tick, next_tick, run_count, active invocation,
+          buffered tick). Hot reload: re-read schedule config each cycle.
 
-          How: The engine integrates with DispatchEngine lifecycle — created
-          during dispatch start, stopped during dispatch stop. On start, load
-          schedules from meta and calculate initial next_tick for each. The
-          evaluation loop uses setInterval at 60s. For overlap tracking, listen
-          for invocation lifecycle events on the bus to know when schedule-
-          triggered invocations complete (needed for buffer_one release and
-          skip reset). On daemon restart with backfill: check if last_tick is
-          older than one cron interval and fire one catch-up if so.
+          How: Integrates with DispatchEngine lifecycle (start/stop). For
+          overlap tracking, subscribe to invocation lifecycle events to know
+          when schedule-triggered invocations complete. The allow policy queues
+          (not drops) when max_concurrent is reached. On daemon restart with
+          backfill: check if last_tick is older than one cron interval.
 
-          Relates to: @dispatch-schedule-entities ac-1 through ac-6.
+          Covers: @dispatch-schedule-entities ac-1 through ac-7.
 
       - title: Implement hook CLI commands
         slug: task-hook-cli
@@ -19673,20 +19869,16 @@ plans:
         description: |
           CLI commands for hook CRUD: list, add, set, enable, disable, remove.
 
-          Why: Users need to manage hooks without hand-editing YAML. Agents
-          also need to create hooks programmatically.
+          Why: Users and agents need to manage hooks without hand-editing YAML.
 
           What: kspec hook list (table + --json), kspec hook add (with --on,
-          --action-type, --action-run flags), kspec hook set @ref (modify
-          fields), kspec hook enable/disable @ref, kspec hook remove @ref.
-          All mutations auto-commit to shadow branch.
+          --action-type, --action-run flags), kspec hook set @ref, kspec hook
+          enable/disable @ref, kspec hook remove @ref. All mutations auto-commit
+          to shadow branch. Add to batch allowed commands.
 
-          How: Follow the pattern of existing meta mutation commands (e.g.
-          kspec agent, kspec meta). Load meta, mutate hooks array, save.
-          Batch compatibility means adding "hook add", "hook set", etc. to
-          the batch allowed commands list.
+          How: Follow existing meta mutation command patterns.
 
-          Relates to: @dispatch-event-cli ac-1, ac-4.
+          Covers: @dispatch-event-cli ac-1, ac-4.
 
       - title: Implement schedule CLI commands
         slug: task-schedule-cli
@@ -19696,24 +19888,20 @@ plans:
         depends_on:
           - "@task-schedule-engine"
         description: |
-          CLI commands for schedule CRUD plus manual trigger: list, add, set,
-          enable, disable, remove, trigger.
+          CLI commands for schedule CRUD plus manual trigger.
 
-          Why: Same as hook CLI — management without hand-editing, plus the
-          trigger command enables testing schedules without waiting for cron.
+          Why: Management without hand-editing, plus trigger enables testing
+          without waiting for cron.
 
-          What: kspec schedule list (shows next tick time from daemon API),
-          kspec schedule add (with --cron, --action-type, --agent-id, etc.),
-          kspec schedule set @ref, kspec schedule enable/disable @ref,
-          kspec schedule remove @ref, kspec schedule trigger @ref (POSTs to
-          daemon to fire immediate tick).
+          What: kspec schedule list (merges config with daemon runtime state),
+          add, set, enable, disable, remove, trigger (POSTs to daemon API).
+          When daemon is not running, list shows config only with a note.
 
-          How: schedule list needs to merge static config (from meta YAML)
-          with runtime state (from daemon API — next_tick, run_count). When
-          daemon is not running, show config only with a note about runtime
-          info. The trigger command posts to a new daemon API endpoint.
+          How: schedule list merges static config from meta YAML with runtime
+          state from daemon API (next_tick, run_count). Trigger posts to a
+          daemon API endpoint.
 
-          Relates to: @dispatch-event-cli ac-2, ac-3.
+          Covers: @dispatch-event-cli ac-2, ac-3.
 
       - title: Implement event types CLI command
         slug: task-event-types-cli
@@ -19723,21 +19911,15 @@ plans:
         depends_on:
           - "@task-event-schema"
         description: |
-          kspec event types command that lists the full event taxonomy grouped
-          by domain.
+          kspec event types — lists the full event taxonomy grouped by domain.
 
-          Why: Users and agents need to discover valid event identifiers when
-          configuring hooks and schedules. This is the reference command.
+          Why: Reference command for discovering valid event identifiers.
 
-          What: Static listing of all event types grouped by domain (task.*,
-          invocation.*, schedule.*, system.*) with brief descriptions.
-          Supports --json for structured output.
+          What: Static listing grouped by domain with descriptions. --json.
 
-          How: The taxonomy is defined by the schema — this command just
-          renders it. Straightforward implementation following kspec trait list
-          as a pattern for "list known types" commands.
+          How: Renders the schema taxonomy. Follow kspec trait list pattern.
 
-          Relates to: @dispatch-event-cli ac-5.
+          Covers: @dispatch-event-cli ac-5.
 
       - title: Implement composition join accumulator
         slug: task-composition-join
@@ -19746,31 +19928,24 @@ plans:
         spec_ref: "@dispatch-composition-patterns"
         depends_on:
           - "@task-hook-executor"
+          - "@task-action-model"
         description: |
           The join accumulator enables fan-in synthesis by tracking invocation
           completions per composition group.
 
-          Why: Pipeline chaining (agent A -> agent B) works with hooks alone.
-          But fan-in (wait for agents A, B, C then run synthesizer D) needs a
-          new primitive that counts completions before firing.
+          Why: Pipeline chaining works with hooks alone. Fan-in (wait for N
+          agents then synthesize) needs a new primitive.
 
-          What: A JoinAccumulator class that tracks invocation completions by
-          group_id. When count reaches the configured threshold (or timeout
-          fires), it executes the join's on_complete action with references to
-          all completed sessions. Composition groups are configured in meta
-          YAML. Group IDs are assigned when invocations are dispatched or
-          triggered by hooks.
+          What: A JoinAccumulator that subscribes to invocation events, tracks
+          completions by group_id, and fires on_complete action when count
+          threshold is met or timeout expires. Define composition group schema
+          in meta YAML.
 
-          How: Subscribe to invocation.completed events on the bus. For each
-          completion, check if the invocation belongs to a composition group
-          (via group_id on the session or invocation metadata). Increment
-          the group's completion count. If count >= target, fire on_complete
-          action. If timeout expires first, fire with partial results. State
-          is in-memory only — composition groups are ephemeral per daemon
-          lifetime. Define the schema for composition groups in meta YAML
-          alongside hooks and schedules.
+          How: Subscribe to invocation.completed on the bus. Match completions
+          to groups via group_id. State is in-memory (daemon lifetime).
 
-          Relates to: @dispatch-composition-patterns ac-2, ac-3.
+          Covers: @dispatch-composition-patterns ac-2, ac-3.
+          Also covers @dispatch-composition-schema ac-1, ac-2.
 
       - title: Daemon API endpoints for hooks, schedules, and events
         slug: task-daemon-api
@@ -19781,30 +19956,43 @@ plans:
           - "@task-hook-executor"
           - "@task-schedule-engine"
         description: |
-          Daemon API routes that the CLI and web UI use to manage hooks,
-          schedules, and query event state.
+          API routes that CLI and web UI use for hook/schedule management,
+          schedule runtime state, manual triggers, and event log queries.
 
-          Why: The CLI and UI need API endpoints for CRUD operations on hooks
-          and schedules, querying schedule runtime state, manually triggering
-          schedules, and streaming event log updates.
+          Why: CLI and UI need HTTP endpoints for all automation operations.
 
-          What: Hook CRUD endpoints (GET/POST/PATCH/DELETE on /api/hooks).
-          Schedule CRUD + runtime state (GET/POST/PATCH/DELETE on /api/schedules,
-          GET /api/schedules/:id/status for runtime state, POST /api/schedules/:id/trigger
-          for manual fire). Event log endpoint (GET /api/events/recent for
-          recent event history). WebSocket topic "automation" for real-time
-          event streaming to UI.
+          What: Hook CRUD (GET/POST/PATCH/DELETE /api/hooks). Schedule CRUD +
+          runtime state (/api/schedules, /api/schedules/:id/status,
+          POST /api/schedules/:id/trigger). Event log (GET /api/events/recent
+          from ring buffer). WebSocket topic "automation" for real-time streaming.
 
-          How: Follow the existing agent-dispatch.ts route patterns. Hook/schedule
-          mutations go through meta YAML write helpers. Runtime state queries
-          read from the ScheduleEngine and HookExecutor in-memory state. The
-          event log is a ring buffer of recent events maintained by the event bus
-          (configurable size, e.g. last 200 events). Manual trigger endpoint
-          calls ScheduleEngine.triggerNow(scheduleId).
+          How: Follow agent-dispatch.ts route patterns. Hook/schedule mutations
+          use meta YAML write helpers. Event log is a configurable ring buffer
+          in the event bus. Manual trigger calls ScheduleEngine.triggerNow().
 
-          Relates to: @dispatch-hook-system (API backing for hooks),
-          @dispatch-schedule-entities ac-1 (schedule trigger),
-          @ui-automation-view ac-2 (event log), ac-7 (real-time updates).
+      - title: Extend kspec validate with hook and schedule rules
+        slug: task-validate-integration
+        priority: 3
+        tags: [dispatch, validation]
+        spec_ref: "@dispatch-hook-schema"
+        depends_on:
+          - "@task-hook-schema"
+          - "@task-schedule-schema"
+        description: |
+          Wire hook and schedule cross-reference validation into the existing
+          kspec validate pipeline.
+
+          Why: Hooks and schedules reference agents by ID. Invalid references
+          should surface during validation, not at runtime.
+
+          What: Add validation rules that check hook agent action references
+          resolve to existing agents. Same for schedule agent actions. Check
+          hook event identifiers are in the taxonomy. Report as warnings
+          consistent with existing validation output.
+
+          How: Extend the existing validate command's meta validation pass.
+
+          Covers: @dispatch-hook-schema ac-3, @dispatch-schedule-schema ac-3.
 
       - title: Build automation view in web UI
         slug: task-automation-view
@@ -19814,60 +20002,43 @@ plans:
         depends_on:
           - "@task-daemon-api"
         description: |
-          A new dedicated view in the web UI for all dispatch automation:
-          agent triggers, hooks, schedules, event log, and composition groups.
+          New /automation route consolidating all dispatch automation config
+          and monitoring.
 
-          Why: Currently dispatch triggers are buried in agent definition cards.
-          With hooks, schedules, and composition added, automation configuration
-          needs its own home where everything is visible together. The agents
-          view retains agent identity management; automation moves here.
+          Why: With hooks, schedules, and composition added, automation needs
+          its own home. Currently triggers are buried in agent cards.
 
-          What: New /automation route with sections for:
-          1. Agent dispatch triggers — moved from agents view, showing event
-             type and filter criteria per agent with inline editing
-          2. Hooks — list with name, event, action, enabled toggle, edit/delete
-          3. Schedules — list with cron expression, next tick, overlap state,
-             enabled toggle, manual trigger button, edit/delete
-          4. Event log — reverse-chronological stream of recent events with
-             type, source, timestamp, and linked entities
-          5. Composition groups — join status showing completion progress
+          What: Sections for agent dispatch triggers, hooks, schedules, event
+          log (real-time via WebSocket), and composition groups. Inline editing
+          for all configuration. Real-time event log updates.
 
-          How: Follow patterns from the existing tasks and sessions views.
-          Use TanStack Query for data fetching. Real-time updates via WebSocket
-          subscription to "automation" topic. Schedule runtime state (next tick,
-          overlap) comes from the daemon API, not meta YAML. Dispatch trigger
-          editing reuses the existing inline form components from the agents view.
+          How: Follow existing tasks/sessions view patterns. TanStack Query for
+          data fetching. WebSocket subscription to "automation" topic. Schedule
+          runtime state from daemon API.
 
-          Relates to: @ui-automation-view ac-1 through ac-7.
+          Covers: @ui-automation-view ac-1 through ac-7.
 
-      - title: Migrate dispatch triggers from agents view
-        slug: task-migrate-triggers-to-automation
+      - title: Migrate dispatch triggers from agents view to automation view
+        slug: task-migrate-triggers
         priority: 3
         tags: [dispatch, web-ui]
         spec_ref: "@ui-automation-view"
         depends_on:
           - "@task-automation-view"
         description: |
-          Move dispatch trigger editing from the agent cards on /agents to the
-          new /automation view. The agents view retains agent identity (name,
-          adapter, tools, skills, budget) but triggers live in automation.
+          Move dispatch trigger editing from agent cards to the automation view.
+          Update @ui-agent-dispatch spec to remove ac-4 through ac-9 (trigger
+          editing ACs) since those behaviors move to @ui-automation-view ac-5.
 
-          Why: The user wants all event-driven configuration in one place.
-          Having triggers on agent cards and hooks/schedules on a separate
-          view splits related concepts.
+          Why: All event-driven configuration should live in one place.
 
-          What: Remove the dispatch trigger editing section from agent cards.
-          Add a link/reference from agent cards to the automation view. Ensure
-          the existing @ui-agent-dispatch spec ACs (ac-4 through ac-9) are
-          covered by the automation view implementation.
+          What: Remove trigger editing from agent cards, add read-only summary
+          with link to automation view. Move existing trigger editing components
+          (they relocate, not rewrite). Update @ui-agent-dispatch spec.
 
-          How: The trigger editing components already exist — they move, not
-          rewrite. The agent card still shows a read-only summary of triggers
-          with a "Configure in Automation" link. Update the agents view to
-          remove the edit controls for dispatch.
-
-          Relates to: @ui-automation-view ac-5 (trigger editing in automation),
-          @ui-agent-dispatch ac-4 through ac-9 (trigger editing ACs transfer).
+          How: The components already exist. Agent cards keep a read-only
+          trigger summary. File a spec update for @ui-agent-dispatch removing
+          the trigger editing ACs.
 
       - title: Cancel subsumed dispatch trigger expansion task
         slug: task-cancel-old-trigger-task
@@ -19875,22 +20046,35 @@ plans:
         tags: [dispatch, cleanup]
         description: |
           Cancel task 01KKBD6GBCWTZA2ECFWN62F92F (Dispatch trigger expansion
-          ideas) since this plan comprehensively covers and supersedes it.
+          ideas) since this plan comprehensively supersedes it.
       ```
 
       ## Implementation Notes
 
-      This plan expands the dispatch engine's event system in three areas:
+      This plan expands the dispatch engine's event system across three areas:
       lifecycle hooks, cron schedules, and multi-agent composition.
 
       Core design: a unified event bus that all event sources publish to,
-      with hooks and dispatch rules as independent subscribers. Hooks and
-      schedules share a common action model (command, kspec, agent, notify).
-      Composition emerges from hook chaining (pipeline) and a join accumulator
-      (fan-in) — no DAG topology in YAML.
+      with hooks and dispatch rules as independent subscribers. A shared
+      action model (command, kspec, agent, notify) is used by both hooks
+      and schedules. Composition emerges from hook chaining (pipeline) and
+      a join accumulator (fan-in).
+
+      Critical security and concurrency decisions:
+      - Template variables in command actions are sanitized to prevent shell
+        injection. Command actions use argv-based execution, not shell string
+        interpolation with user-controlled values.
+      - Kspec hook actions acquire the shadow branch mutex to prevent races
+        with concurrent agent shadow mutations.
+      - Hook-triggered agent invocations are non-task-scoped by default and
+        bypass per-task exclusivity (ac-26), subject only to max_concurrent.
+      - Task event dedup is preserved for task.* events; non-task events have
+        unique identity and are not deduplicated.
+      - Events are delivered in causal order per source.
 
       The automation view consolidates all event-driven configuration in the
-      web UI, absorbing dispatch trigger editing from the agents view.
+      web UI, absorbing dispatch trigger editing from the agents view. The
+      @ui-agent-dispatch spec will be updated to remove trigger editing ACs.
 
       Industry patterns adopted: Claude Code hooks (declarative config,
       multiple handler types), Temporal Schedules (schedule as entity, overlap
@@ -19912,3 +20096,9 @@ plans:
         author: "@claude"
         content: Rewritten with behavioral ACs, UI spec, manual tasks with detailed descriptions and
           dependencies
+      - _ulid: 01KKT0KZQMM4M5Y9E85AGGTZ2Y
+        created_at: 2026-03-16T00:27:01.748Z
+        author: "@claude"
+        content: "Addressed review: added action model spec, event payload spec, composition schema, shell
+          injection AC, shadow mutex AC, dedup clarification, hot reload ACs, validate integration
+          task, UI spec migration, overlap/allow clarification"
