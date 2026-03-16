@@ -1235,13 +1235,12 @@ features:
               capturing the creation commit, state transitions, notes, and field
               changes regardless of commit message content
           - id: ac-2
-            given: |
-              multiple tasks exist in the same YAML file
-            when: |
-              activity is queried for a specific task
-            then: |
-              only commits whose message references that task's ref are
-              included; commits for other tasks are excluded
+            given: multiple tasks exist in the same YAML file
+            when: activity is queried for a specific task
+            then: |-
+              only commits that touched that task's YAML block are included;
+              the block boundaries are determined by _ulid field positions
+              ensuring isolation between adjacent task entries
           - id: ac-3
             given: |
               a commit message follows the shadow branch auto-commit format
