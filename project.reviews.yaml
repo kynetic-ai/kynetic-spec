@@ -807,6 +807,16 @@ reviews:
               selection), ac-4 (reply to thread), ac-5 (resolve/reopen toggle), ac-6 (submit verdict
               with disposition update). Each interaction is now independently testable."
             created_at: 2026-03-16T07:38:30.070Z
+      - _ulid: 01KKTSA3GJK4G0A4QTAM62Z4FP
+        kind: nit
+        entries:
+          - _ulid: 01KKTSA3GJ593EGJFF1361WMAK
+            author: "@claude"
+            body: '**Blocker 5 (filtering underspecified) — RESOLVED.** API ac-1 now explicitly says "linked
+              task (via subject-ref or related-refs)" which clarifies the semantics. Sort parameter
+              support is also mentioned. This addresses both the filter ambiguity and the missing
+              sort parameter.'
+            created_at: 2026-03-16T07:38:32.338Z
     checks: []
     verdicts: []
     events:
@@ -844,7 +854,14 @@ reviews:
         payload:
           thread_ulid: 01KKTSA19PHGNX2MF1M8FK2SD7
           kind: nit
+      - _ulid: 01KKTSA3GXW62ER2JWWFS0YN5N
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:38:32.349Z
+        payload:
+          thread_ulid: 01KKTSA3GJK4G0A4QTAM62Z4FP
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:37:13.126Z
-    updated_at: 2026-03-16T07:38:30.070Z
+    updated_at: 2026-03-16T07:38:32.338Z
