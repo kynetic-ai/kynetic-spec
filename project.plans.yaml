@@ -20760,6 +20760,11 @@ plans:
         slug: review-records-daemon-api
         type: requirement
         parent: "@daemon-server"
+        traits:
+          - "@trait-json-output"
+          - "@trait-error-guidance"
+          - "@trait-localhost-security"
+          - "@trait-websocket-protocol"
         description: |
           REST API endpoints on the daemon for CRUD operations on review records,
           enabling the web UI to display and interact with reviews.
@@ -20770,31 +20775,86 @@ plans:
             when: |
               A client requests GET /api/reviews
             then: |
-              It returns a paginated list of review records with filtering by status, disposition,
-              subject-type, reviewer, and linked task
+              It returns a paginated list of review records with filtering by status,
+              disposition, subject-type, reviewer, and linked task (via subject-ref or
+              related-refs), with sort parameter support
           - id: ac-2
             given: |
               The daemon is running
             when: |
               A client requests GET /api/reviews/:id
             then: |
-              It returns the full review record including threads, checks, verdicts, and events
+              It returns the full review record including threads, checks, verdicts,
+              events, and computed disposition
           - id: ac-3
             given: |
               The daemon is running
             when: |
-              A client sends mutation requests (POST comment, POST verdict, POST check,
-              PATCH resolve thread, PATCH lifecycle transition)
+              A client sends POST /api/reviews/:id/comments with body, kind, and
+              optional anchor fields
             then: |
-              The mutation is applied via the review library functions and the response
-              reflects the updated state
+              A new thread is created on the review and the response includes the
+              created thread
           - id: ac-4
             given: |
-              A review record is created or mutated
+              The daemon is running
+            when: |
+              A client sends POST /api/reviews/:id/comments/:threadId/replies with
+              a body
+            then: |
+              A reply is added to the thread and the response includes the updated
+              thread
+          - id: ac-5
+            given: |
+              The daemon is running
+            when: |
+              A client sends PATCH /api/reviews/:id/comments/:threadId/resolve or
+              /reopen
+            then: |
+              The thread resolution state is updated and the response reflects the
+              new state
+          - id: ac-6
+            given: |
+              The daemon is running
+            when: |
+              A client sends POST /api/reviews/:id/verdicts with decision, reviewer,
+              and version fields
+            then: |
+              The verdict is recorded and the review disposition is recomputed
+          - id: ac-7
+            given: |
+              The daemon is running
+            when: |
+              A client sends POST /api/reviews/:id/checks with name, status, runner,
+              and version fields
+            then: |
+              The check is recorded and the gate evaluation is updated
+          - id: ac-8
+            given: |
+              The daemon is running
+            when: |
+              A client sends PATCH /api/reviews/:id/lifecycle with a target state
+              (open, closed, archived)
+            then: |
+              The lifecycle transition is applied if valid, or a 400 error is returned
+              with the reason the transition is invalid
+          - id: ac-9
+            given: |
+              A review record is created or mutated via any API endpoint
             when: |
               WebSocket clients are connected
             then: |
-              A real-time update event is broadcast so the UI can refresh without polling
+              A real-time update event is broadcast on the reviews topic so the UI
+              can refresh without polling
+          - id: ac-10
+            given: |
+              A client sends a mutation request with invalid data (missing required
+              fields, invalid ref, invalid state transition)
+            when: |
+              The request is processed
+            then: |
+              A 400 response is returned with an actionable error message describing
+              what is wrong and how to fix it
 
       - title: Review Records Web UI
         slug: review-records-web-ui
@@ -20802,40 +20862,66 @@ plans:
         parent: "@web-ui"
         description: |
           SvelteKit pages for viewing and interacting with review records in the browser.
-          The primary interface for humans to see agent review activity and participate in reviews.
+          The primary interface for humans to see agent review activity and participate
+          in reviews. Routes follow existing patterns: /reviews for list, /reviews/[id]
+          for detail.
         acceptance_criteria:
           - id: ac-1
             given: |
-              A user navigates to the reviews section
+              A user navigates to /reviews
             when: |
               Reviews exist in the system
             then: |
               A list view shows reviews with status, disposition, subject type, reviewer,
-              and linked task, with filtering and sorting
+              and linked task, with filtering by status, disposition, and subject type,
+              and sortable columns
           - id: ac-2
             given: |
-              A user opens a review detail page
+              A user opens /reviews/[id]
             when: |
               The review has threads, checks, and verdicts
             then: |
-              All threads are displayed with their entries, resolution state, and anchors;
-              checks show pass/fail status; verdicts show reviewer decisions;
-              and the computed disposition is prominent
+              All threads are displayed with their entries, resolution state, and kind
+              badges (blocker/question/nit); checks show pass/fail status; verdicts
+              show reviewer decisions; and the computed disposition is prominent
           - id: ac-3
             given: |
-              A user is viewing a review
+              A user is viewing a review detail page
             when: |
-              They want to participate
+              They click "Add Comment"
             then: |
-              They can add comments (new threads), reply to existing threads,
-              resolve/reopen threads, and submit verdicts through the UI
+              They can create a new thread with a body and kind selection
+              (blocker, question, nit)
           - id: ac-4
             given: |
-              A task detail page is displayed
+              A user is viewing a thread on a review
             when: |
-              The task has linked reviews
+              They click "Reply"
             then: |
-              The reviews are shown inline or linked from the task view with current disposition
+              They can add a reply to the thread
+          - id: ac-5
+            given: |
+              A user is viewing a blocker or question thread
+            when: |
+              They click "Resolve" or "Reopen"
+            then: |
+              The thread resolution state is toggled and the UI updates immediately
+          - id: ac-6
+            given: |
+              A user is viewing a review detail page
+            when: |
+              They submit a verdict (approve, request_changes, comment)
+            then: |
+              The verdict is recorded and the disposition badge updates to reflect
+              the new computed disposition
+          - id: ac-7
+            given: |
+              A user views a task detail page
+            when: |
+              The task has linked reviews (via review_ref or related_refs)
+            then: |
+              The reviews are shown with current disposition badge and link to the
+              review detail page
       ```
 
 
@@ -20868,14 +20954,18 @@ plans:
 
       Follow existing daemon API patterns (pagination, WebSocket events). Review operations should
       use the existing review library functions (parser/reviews.ts, parser/review-operations.ts,
-      etc.) — the daemon is a thin HTTP layer over them. Include WebSocket event types for review
-      mutations matching existing event patterns.
+      parser/review-threads.ts, etc.) — the daemon is a thin HTTP layer over them.
+
+
+      WebSocket events should use a `reviews` topic following existing patterns (tasks topic, plans
+      topic). Event types: `review_created`, `review_updated`, `thread_created`, `thread_updated`,
+      `verdict_submitted`, `check_recorded`.
 
 
       For the web UI, follow existing SvelteKit patterns and TanStack Query data layer. Review list
-      page with filters. Review detail page with thread view, check status, verdict history,
-      disposition badge. Thread interaction (reply, resolve). Link from task detail to associated
-      reviews. Use goto() for URL state per project conventions.
+      page at /reviews with filters. Review detail page at /reviews/[id] with thread view, check
+      status, verdict history, disposition badge. Thread interaction (reply, resolve). Link from
+      task detail to associated reviews. Use goto() for URL state per project conventions.
     status: draft
     derived_tasks: []
     derived_specs: []
@@ -20884,4 +20974,9 @@ plans:
     created_at: 2026-03-16T07:19:37.425Z
     approved_at: null
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KKTS73R0SQC2ZSMCB8MJ6866
+        created_at: 2026-03-16T07:36:54.272Z
+        author: "@claude"
+        content: "Address review feedback: split broad ACs, add error handling, add traits, specify routes
+          and WebSocket topics"
