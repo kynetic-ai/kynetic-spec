@@ -101723,7 +101723,15 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-16T20:19:33.392Z
   started_at: 2026-03-16T21:32:17.970Z
-  notes: []
+  notes:
+    - _ulid: 01KKW94Q4800D8R916JV3ACZNC
+      content: "Rewrote ac-3 to describe per-cycle review model: each cycle produces its own review
+        record, collection comprises full history. Moved 3 test annotations and 1 code comment from
+        ac-3 to ac-7 (stale verdict handling) since the existing tests exercise refreshSubject
+        within a single record, which maps to stale verdict detection not per-cycle lifecycle."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-16T21:34:27.464Z
   todos: []
 - _ulid: 01KKW4VK66MC4FXEE3FDPTTD53
   slugs:
