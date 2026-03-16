@@ -22327,6 +22327,37 @@ plans:
           stays on the original task, normalization of diffs into typed activity entries is now
           @task-normalize-activity-entries (ac-3, ac-4). Display task depends on normalizer. Added
           ac-4 to spec for field-level diff translation."
+      - _ulid: 01KKW6XQSS3N570750A91Z5G0N
+        created_at: 2026-03-16T20:55:41.625Z
+        author: "@claude"
+        content: >-
+          Post-derive changes summary:
+
+
+          1. Switched git query from --grep (commit message filtering) to -L (YAML block boundary
+          tracking). Prerequisite changed from @task-fix-task-add-commit-ref to @01KKVW67 (YAML
+          field ordering).
+
+
+          2. Rewrote @task-activity-git-query spec and ACs to use behavioral language instead of
+          implementation details.
+
+
+          3. Split @task-implement-activity-git-query into two tasks:
+             - @task-implement-activity-git-query: raw git extraction (ac-1, ac-2)
+             - @task-normalize-activity-entries: diff-to-activity normalization (ac-3, ac-4)
+             Added ac-4 to spec for field-level diff translation.
+
+          4. Updated @task-implement-activity-display to depend on @task-normalize-activity-entries
+          instead of @task-implement-activity-git-query.
+
+
+          5. @task-fix-task-add-commit-ref remains in plan as a standalone bug fix against
+          @trait-shadow-commit but is no longer a timeline prerequisite.
+
+
+          Total: 5 specs (13 ACs), 13 tasks (was 12). Plan text could not be re-imported (active
+          plan) but specs/tasks updated directly via CLI.
   - _ulid: 01KKW3WRAH3VC30TWF5FKZ513Z
     slugs:
       - plan-activity-timeline-diff-summaries
