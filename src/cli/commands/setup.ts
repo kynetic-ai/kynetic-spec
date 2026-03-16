@@ -235,12 +235,25 @@ const OLD_GUARD_SCRIPTS = [
 ];
 
 /**
+ * Resolved hooks preferences for installation decisions.
+ * AC: @project-config ac-hooks-section — each hook independently controllable
+ */
+interface HooksPreferences {
+  /** Whether to install the checkpoint (Stop) hook */
+  checkpoint: boolean;
+  /** Whether to install the prompt-check (UserPromptSubmit) hook */
+  prompt_check: boolean;
+}
+
+/**
  * Install hooks to project-level Claude Code settings (.claude/settings.json)
  * AC: @enhanced-setup ac-2 - all hook entries present
+ * AC: @project-config ac-hooks-section — respects per-hook enable/disable from config
  */
 async function installClaudeCodeHooks(
   projectDir: string,
   dryRun = false,
+  hooksPrefs?: HooksPreferences,
 ): Promise<HooksInstallResult> {
   const configPath = path.join(projectDir, ".claude", "settings.json");
   const configDir = path.dirname(configPath);
@@ -272,7 +285,9 @@ async function installClaudeCodeHooks(
     // Get or create hooks object
     const hooks = (config.hooks as Record<string, unknown[]>) || {};
 
-    // Install UserPromptSubmit hook (spec-first reminder)
+    // AC: @project-config ac-hooks-section — prompt-check independently controllable
+    // Default: enabled (lightweight spec-first reminder)
+    const promptCheckEnabled = hooksPrefs?.prompt_check ?? true;
     const promptCheckCommand = "kspec session prompt-check";
     const existingPromptHooks = hooks.UserPromptSubmit as
       | Array<{ hooks?: Array<{ command?: string }> }>
@@ -283,24 +298,44 @@ async function installClaudeCodeHooks(
       ),
     );
 
-    if (!promptAlreadyInstalled) {
-      hooks.UserPromptSubmit = [
-        ...(existingPromptHooks || []),
-        {
-          hooks: [
-            {
-              type: "command",
-              command: promptCheckCommand,
-            },
-          ],
-        },
-      ];
-      result.promptCheck = true;
+    if (promptCheckEnabled) {
+      if (!promptAlreadyInstalled) {
+        hooks.UserPromptSubmit = [
+          ...(existingPromptHooks || []),
+          {
+            hooks: [
+              {
+                type: "command",
+                command: promptCheckCommand,
+              },
+            ],
+          },
+        ];
+        result.promptCheck = true;
+      } else {
+        result.promptCheck = true; // Already configured
+      }
     } else {
-      result.promptCheck = true; // Already configured
+      // AC: @project-config ac-hooks-section — remove if disabled and previously installed
+      if (promptAlreadyInstalled) {
+        const filtered = (existingPromptHooks || []).map((entry) => ({
+          ...entry,
+          hooks: entry.hooks?.filter(
+            (hook) => !hook.command?.includes("session prompt-check"),
+          ),
+        })).filter((entry) => entry.hooks && entry.hooks.length > 0);
+        if (filtered.length > 0) {
+          hooks.UserPromptSubmit = filtered;
+        } else {
+          delete hooks.UserPromptSubmit;
+        }
+      }
+      result.promptCheck = false;
     }
 
-    // Install Stop hook (checkpoint)
+    // AC: @project-config ac-hooks-section — checkpoint independently controllable
+    // Default: disabled (dispatch handles task lifecycle)
+    const checkpointEnabled = hooksPrefs?.checkpoint ?? false;
     const stopHookCommand = "kspec session checkpoint --json";
     const existingStopHooks = hooks.Stop as
       | Array<{ matcher?: string; hooks?: Array<{ command?: string }> }>
@@ -309,22 +344,41 @@ async function installClaudeCodeHooks(
       entry.hooks?.some((hook) => hook.command?.includes("session checkpoint")),
     );
 
-    if (!stopAlreadyInstalled) {
-      hooks.Stop = [
-        ...(existingStopHooks || []),
-        {
-          matcher: "",
-          hooks: [
-            {
-              type: "command",
-              command: stopHookCommand,
-            },
-          ],
-        },
-      ];
-      result.stop = true;
+    if (checkpointEnabled) {
+      // AC: @project-config ac-hooks-section — install when enabled
+      if (!stopAlreadyInstalled) {
+        hooks.Stop = [
+          ...(existingStopHooks || []),
+          {
+            matcher: "",
+            hooks: [
+              {
+                type: "command",
+                command: stopHookCommand,
+              },
+            ],
+          },
+        ];
+        result.stop = true;
+      } else {
+        result.stop = true; // Already configured
+      }
     } else {
-      result.stop = true; // Already configured
+      // AC: @project-config ac-hooks-section — remove if disabled and previously installed
+      if (stopAlreadyInstalled) {
+        const filtered = (existingStopHooks || []).map((entry) => ({
+          ...entry,
+          hooks: entry.hooks?.filter(
+            (hook) => !hook.command?.includes("session checkpoint"),
+          ),
+        })).filter((entry) => entry.hooks && entry.hooks.length > 0);
+        if (filtered.length > 0) {
+          hooks.Stop = filtered;
+        } else {
+          delete hooks.Stop;
+        }
+      }
+      result.stop = false;
     }
 
     // AC: @enhanced-setup ac-2 - Install PreToolUse hooks with guards
@@ -1238,8 +1292,16 @@ export async function runSetupPipeline(
 
     // Step 3: Install hooks (Claude Code only)
     // AC: @init-setup-integration ac-3 - hooks present
+    // AC: @project-config ac-hooks-section — read config to determine hook preferences
     if (detected.type === "claude-code" && installHooksFlag) {
-      const hooksResult = await installClaudeCodeHooks(projectDir, dryRun);
+      // Load project config to get hooks preferences
+      const { config: projectConfig } = await loadProjectConfig(projectDir, projectDir);
+      const hooksPrefs: HooksPreferences = {
+        checkpoint: projectConfig.hooks.checkpoint,
+        prompt_check: projectConfig.hooks.prompt_check,
+      };
+
+      const hooksResult = await installClaudeCodeHooks(projectDir, dryRun, hooksPrefs);
       const installedHooks: string[] = [];
       if (hooksResult.promptCheck) installedHooks.push("UserPromptSubmit");
       if (hooksResult.stop) installedHooks.push("Stop");
