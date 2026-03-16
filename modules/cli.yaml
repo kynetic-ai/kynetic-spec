@@ -9628,25 +9628,7 @@ requirements:
             when: Project hooks are installed.
             then: The setup flow installs `kspec session prompt-check` as a `UserPromptSubmit` hook alongside
               the session checkpoint hook.
-    acceptance_criteria:
-      - id: ac-session-scope
-        given: KSPEC_SESSION_ID is set in the environment
-        when: checkpoint evaluates in-progress tasks
-        then: only tasks where session_id matches current session, session_id is null (unclaimed), or owning
-          session is no longer active (completed/abandoned/not found) are reported as issues. Tasks
-          claimed by active other sessions are excluded. This scoping applies to both in-progress
-          task warnings and their associated incomplete todo warnings.
-      - id: ac-no-session-scope
-        given: KSPEC_SESSION_ID is not set in the environment
-        when: checkpoint evaluates in-progress tasks
-        then: only tasks with no session_id (unclaimed) or tasks whose owning session is no longer active
-          are reported as issues. Tasks claimed by active sessions are excluded.
-      - id: ac-session-failsafe
-        given: a task has a session_id that cannot be resolved (session not found, corrupt metadata, or read
-          error)
-        when: checkpoint evaluates that task
-        then: the task is included in checkpoint warnings (fail-safe toward inclusion, never silently
-          excluded)
+    acceptance_criteria: []
   - _ulid: 01KF2C5P8BGYKT9GDTYNXTSTQM
     slugs:
       - cmd-session-start
