@@ -781,7 +781,8 @@ export function registerTaskCommands(program: Command): void {
     .command("get <ref>")
     .description("Get task details")
     .option("--all", "Show all notes including superseded ones")
-    .action(async (ref: string, options: { all?: boolean }) => {
+    .option("--activity", "Show full activity timeline")
+    .action(async (ref: string, options: { all?: boolean; activity?: boolean }) => {
       try {
         const ctx = await initContext();
         const tasks = await loadAllTasks(ctx);
@@ -859,13 +860,62 @@ export function registerTaskCommands(program: Command): void {
           }
         }
 
+        // AC: @task-activity-timeline ac-1, ac-2, ac-3 — load activity timeline
+        let activity: import("../../utils/activity.js").ActivityEntry[] = [];
+        try {
+          const { getRawTaskCommits, normalizeTaskActivity } = await import(
+            "../../utils/activity.js"
+          );
+          const rawCommits = getRawTaskCommits(ctx.specDir, foundTask._ulid);
+          activity = normalizeTaskActivity(rawCommits);
+
+          // AC: @task-activity-timeline ac-3 — merge review events into timeline
+          const reviews = await loadReviewRecords(ctx);
+          const taskRef = `@${foundTask.slugs[0] || foundTask._ulid}`;
+          const taskUlid = foundTask._ulid;
+          const linkedReviews = reviews.filter(
+            (r) =>
+              r.related_refs.includes(taskRef) ||
+              (r.subject.type === "task" && r.subject.ref === taskRef) ||
+              r._ulid === (foundTask.review_ref?.startsWith("@")
+                ? foundTask.review_ref.slice(1)
+                : foundTask.review_ref),
+          );
+          for (const review of linkedReviews) {
+            const reviewRef = `@${review.slugs[0] || review._ulid}`;
+            for (const event of review.events) {
+              activity.push({
+                type: event.event_type === "verdict_submitted"
+                  ? "submitted"
+                  : event.event_type === "lifecycle_change"
+                    ? "state_change"
+                    : "review_linked",
+                timestamp: event.timestamp,
+                author: event.actor,
+                summary: `Review ${reviewRef}: ${event.event_type.replace(/_/g, " ")}`,
+                commitHash: "",
+              });
+            }
+          }
+
+          // Re-sort chronologically (oldest first) after merging
+          activity.sort(
+            (a, b) =>
+              new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
+          );
+        } catch {
+          // Activity is best-effort — don't fail task get if git query fails
+        }
+
         // Build JSON output with inherited traits (AC: @trait-display ac-2)
         // Always include all notes in JSON output with superseded computed field
         // AC: @review-cli-task-linkage ac-1 — include resolved review summary in JSON
+        // AC: @task-activity-timeline ac-4 — include activity in JSON output
         const jsonOutput = {
           ...foundTask,
           notes: annotateNotesWithSuperseded(foundTask.notes),
           ...(activeReview && { active_review: activeReview }),
+          ...(activity.length > 0 && { activity }),
           ...(inheritedTraits.length > 0 && {
             inherited_traits: inheritedTraits.map(({ trait, acs }) => ({
               ref: `@${trait.slug}`,
@@ -876,7 +926,12 @@ export function registerTaskCommands(program: Command): void {
         };
 
         output(jsonOutput, () => {
-          formatTaskDetails(foundTask, index, { showAllNotes: options.all, activeReview });
+          formatTaskDetails(foundTask, index, {
+            showAllNotes: options.all,
+            activeReview,
+            activity,
+            showFullActivity: options.activity,
+          });
 
           // AC: @trait-display ac-3, ac-4, ac-5 - Show inherited AC per trait in labeled sections
           if (inheritedTraits.length > 0) {
