@@ -340,3 +340,28 @@ reviews:
     external_links: []
     created_at: 2026-03-16T06:39:00.348Z
     updated_at: 2026-03-16T06:41:27.549Z
+  - _ulid: 01KKTRT7VWQ9YDQQAK2FT3RV3Z
+    slugs: []
+    title: "Review: Review Records Web UI plan"
+    lifecycle_state: draft
+    subject:
+      type: plan
+      ref: "@plan-review-records-web-ui"
+      shadow_commit: ""
+      content_hash: ""
+    author: "@claude"
+    related_refs: []
+    threads: []
+    checks: []
+    verdicts: []
+    events:
+      - _ulid: 01KKTRT7VVSCS7WJCCYAA7G9WE
+        event_type: lifecycle_change
+        actor: "@claude"
+        timestamp: 2026-03-16T07:29:52.508Z
+        payload:
+          to: draft
+    notes: []
+    external_links: []
+    created_at: 2026-03-16T07:29:52.508Z
+    updated_at: null
