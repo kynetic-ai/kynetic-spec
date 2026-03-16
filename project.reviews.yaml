@@ -501,6 +501,31 @@ reviews:
               Recommendation: Add explicit sort parameter to API ac-1, and clarify what "linked
               task" filtering means (subject ref, related_refs, or both).
             created_at: 2026-03-16T07:32:44.063Z
+      - _ulid: 01KKTRZVA0TRKDG7W4VH48PXJF
+        kind: question
+        entries:
+          - _ulid: 01KKTRZVA0T1YDHJSMM1W499D8
+            author: "@claude"
+            body: >-
+              **Missing spec: no AC for task-to-review navigation from task detail page.**
+
+
+              Web UI ac-4 says reviews are "shown inline or linked from the task view." This is
+              good, but the API needs to support this. There's no AC on the API spec for resolving
+              reviews by task ref (e.g., GET /api/reviews?task=@task-slug or a dedicated GET
+              /api/tasks/:ref/reviews endpoint). The web UI task detail page would need to fetch
+              reviews linked to a task, but there's no explicit API surface for this.
+
+
+              The review-task-lifecycle-integration spec (@review-task-lifecycle-integration ac-1)
+              says tasks can have a review_ref field, but there could be multiple reviews per task
+              over its lifecycle. The API needs to support "all reviews for this task" not just "the
+              current review_ref."
+
+
+              Recommendation: Add an AC to the API spec for querying reviews by task ref, or clarify
+              that the list endpoint's "linked task" filter serves this purpose.
+            created_at: 2026-03-16T07:32:56.256Z
     checks: []
     verdicts: []
     events:
@@ -552,7 +577,14 @@ reviews:
         payload:
           thread_ulid: 01KKTRZFCZRX92RJQ86ZDAK5KT
           kind: blocker
+      - _ulid: 01KKTRZVA80PHCE1VZQ5B52VJT
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:32:56.264Z
+        payload:
+          thread_ulid: 01KKTRZVA0TRKDG7W4VH48PXJF
+          kind: question
     notes: []
     external_links: []
     created_at: 2026-03-16T07:29:52.508Z
-    updated_at: 2026-03-16T07:32:44.063Z
+    updated_at: 2026-03-16T07:32:56.256Z
