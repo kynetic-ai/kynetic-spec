@@ -4,13 +4,13 @@ slugs:
   - core-primitives
 title: Core Primitives
 type: module
-status:
-  maturity: draft
-  implementation: implemented
 description: |
   The foundational concepts that everything else builds on:
   spec items as the fundamental unit, the ULID+slug ID system,
   and the @reference syntax for linking items together.
+status:
+  maturity: draft
+  implementation: implemented
 features:
   - _ulid: 01KEZCJPHZTTRBTEXCF6WYQYR3
     slugs:
@@ -18,56 +18,53 @@ features:
       - item-concept
     title: Spec Item
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: high
-    tags:
-      - mvp
-      - core
     description: |
       A spec item is the fundamental unit in Kynetic Spec.
       Everything - features, requirements, constraints, decisions,
       tasks - is represented as an item with consistent structure.
+    status:
+      maturity: draft
+      implementation: implemented
     acceptance_criteria:
-      - id: ac-item-1
-        given: any piece of spec content
-        when: it is stored in the spec
+      - given: any piece of spec content
+        id: ac-item-1
         then: it exists as an item with id, title, type, and content
-      - id: ac-item-2
-        given: an item
-        when: it is created
+        when: it is stored in the spec
+      - given: an item
+        id: ac-item-2
         then: it has a ULID assigned automatically
+        when: it is created
+    priority: high
+    tags:
+      - mvp
+      - core
     requirements:
       - _ulid: 01KEZCJPHZ0X9NQZMED44BM9MT
         slugs:
           - item-required-fields
         title: Required Item Fields
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Every item MUST have:
           - _ulid: Canonical unique identifier (auto-generated)
           - title: Human-readable name (required, user-provided)
 
           All other fields are optional with sensible defaults.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@spec-item"
         acceptance_criteria:
-          - id: ac-1
-            given: a user creates a new spec item with only a title
-            when: the item is stored
+          - given: a user creates a new spec item with only a title
+            id: ac-1
             then: the item has a generated ULID and preserves the provided title as required fields
+            when: the item is stored
       - _ulid: 01KEZCJPHZ67B47NKNJZ8C1H3G
         slugs:
           - item-optional-fields
         title: Optional Item Fields
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Items MAY include:
           - slugs: Human-friendly aliases (array)
@@ -80,81 +77,81 @@ features:
           - depends_on, implements, relates_to: References (arrays)
           - traceability: Links to code, tests, commits
           - created, created_by: Lifecycle metadata
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@spec-item"
         acceptance_criteria:
-          - id: ac-1
-            given: a spec item is created without optional metadata such as slugs, tags, description, or
+          - given: a spec item is created without optional metadata such as slugs, tags, description, or
               relationships
-            when: the item is retrieved or validated
+            id: ac-1
             then: the item remains valid and the omitted fields do not prevent storage
+            when: the item is retrieved or validated
       - _ulid: 01KF3H8QTT6W0FMEGQ97FH5VYA
         slugs:
           - item-derive-hint
         title: Derive Hint After Item Creation
         type: requirement
-        tags:
-          - dx
-          - cli
         description: "After creating or modifying a spec item, CLI shows a hint suggesting task derivation:
           'Derive implementation task? kspec derive @new-item'"
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: 2026-01-16T13:52:39.770Z
         acceptance_criteria:
-          - id: ac-1
-            given: User runs 'kspec item add' and creates a new spec item
-            when: The item is created successfully
+          - given: User runs 'kspec item add' and creates a new spec item
+            id: ac-1
             then: "CLI shows hint: 'Derive implementation task? kspec derive @new-slug'"
-          - id: ac-2
-            given: User runs 'kspec item set @existing-item --description new'
-            when: The item is updated successfully
+            when: The item is created successfully
+          - given: User runs 'kspec item set @existing-item --description new'
+            id: ac-2
             then: "CLI shows hint: 'Derive implementation task? kspec derive @slug'"
-        status:
-          maturity: draft
-          implementation: implemented
+            when: The item is updated successfully
+        tags:
+          - dx
+          - cli
+        created: 2026-01-16T13:52:39.770Z
   - _ulid: 01KEZCJPHZ0NV4QECZ6ADZDX1Z
     slugs:
       - ulid-system
       - canonical-ids
     title: ULID Identifier System
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: high
-    tags:
-      - mvp
-      - core
     description: |
       ULIDs (Universally Unique Lexicographically Sortable Identifiers)
       serve as the canonical, immutable identifier for every item.
       They are time-sortable, globally unique, and can be shortened
       for display like git commit hashes.
+    status:
+      maturity: draft
+      implementation: implemented
     acceptance_criteria:
-      - id: ac-ulid-1
-        given: a new item is created
-        when: no ULID is provided
+      - given: a new item is created
+        id: ac-ulid-1
         then: a ULID is auto-generated
-      - id: ac-ulid-2
-        given: a ULID "01KEZCJPHZ86X9PA509GREWDM0"
-        when: it needs to be displayed briefly
+        when: no ULID is provided
+      - given: a ULID "01KEZCJPHZ86X9PA509GREWDM0"
+        id: ac-ulid-2
         then: it can be shortened to "01JHNK" (first 6+ chars)
-      - id: ac-ulid-3
-        given: an item's ULID
-        when: the item is modified
+        when: it needs to be displayed briefly
+      - given: an item's ULID
+        id: ac-ulid-3
         then: the ULID never changes
+        when: the item is modified
+    priority: high
+    tags:
+      - mvp
+      - core
     requirements:
       - _ulid: 01KEZCJPHZH6VQH44813GV3PTC
         slugs:
           - ulid-format
         title: ULID Format
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           ULIDs are 26-character strings in Crockford base32 encoding.
           Format: TTTTTTTTTTNNNNNNNNNNNNNNNN
@@ -162,41 +159,41 @@ features:
           - Last 16 chars: Random component
 
           Example: 01KEZCJPHZ86X9PA509GREWDM0
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@ulid-system"
         acceptance_criteria:
-          - id: ac-1
-            given: the system generates a ULID for a new item
-            when: the identifier is inspected
+          - given: the system generates a ULID for a new item
+            id: ac-1
             then: it is a 26-character Crockford base32 string with a 10-character time component followed by a
               16-character random component
+            when: the identifier is inspected
       - _ulid: 01KEZCJPJ0MZSX946EF3ZPW9TA
         slugs:
           - ulid-immutability
         title: ULID Immutability
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Once assigned, a ULID is NEVER changed and NEVER reused.
           If an item is deprecated, its ULID remains; a superseding
           item gets a new ULID and links via supersedes relationship.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@ulid-system"
         acceptance_criteria:
-          - id: ac-1
-            given: an existing item is updated, deprecated, or superseded
-            when: its metadata or relationships change
+          - given: an existing item is updated, deprecated, or superseded
+            id: ac-1
             then: the original ULID remains unchanged and any replacement item receives a different ULID
+            when: its metadata or relationships change
       - _ulid: 01KEZCJPJ0W8V4JZRYZFX56DX5
         slugs:
           - ulid-shortening
         title: ULID Shortening
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           ULIDs can be shortened for display and references, similar
           to git commit short hashes. The system resolves short ULIDs
@@ -204,174 +201,174 @@ features:
 
           Minimum recommended: 6 characters
           Full length: 26 characters
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@ulid-system"
         acceptance_criteria:
-          - id: ac-1
-            given: an item has a full ULID
-            when: a unique shortened ULID prefix is used for display or as an @reference
+          - given: an item has a full ULID
+            id: ac-1
             then: the system resolves that prefix back to the same full ULID
+            when: a unique shortened ULID prefix is used for display or as an @reference
   - _ulid: 01KEZCJPJ0K5S6G1QMBXEVC54W
     slugs:
       - slug-system
       - item-aliases
     title: Slug Alias System
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: high
-    tags:
-      - mvp
-      - core
     description: |
       Slugs are human-friendly aliases that point to ULIDs.
       They make specs readable and references memorable.
       Multiple slugs can point to the same item, and slugs
       can evolve without breaking references (the ULID is canonical).
+    status:
+      maturity: draft
+      implementation: implemented
     acceptance_criteria:
-      - id: ac-slug-1
-        given: an item with ULID "01JHNK8QW0..."
-        when: slug "core-primitives" is assigned
+      - given: an item with ULID "01JHNK8QW0..."
+        id: ac-slug-1
         then: '"@core-primitives" resolves to that item'
-      - id: ac-slug-2
-        given: an item with slugs ["auth-login", "user-login"]
-        when: either slug is used as a reference
+        when: slug "core-primitives" is assigned
+      - given: an item with slugs ["auth-login", "user-login"]
+        id: ac-slug-2
         then: both resolve to the same item
-      - id: ac-slug-3
-        given: a slug "old-name" assigned to an item
-        when: the slug is changed to "new-name"
+        when: either slug is used as a reference
+      - given: a slug "old-name" assigned to an item
+        id: ac-slug-3
         then: references to "@old-name" produce a warning but still resolve
+        when: the slug is changed to "new-name"
+    priority: high
+    tags:
+      - mvp
+      - core
     requirements:
       - _ulid: 01KEZCJPJ05XAAVB7JK0G169DP
         slugs:
           - slug-format
         title: Slug Format
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Slugs MUST be lowercase, alphanumeric, with hyphens allowed.
           Pattern: ^[a-z][a-z0-9-]*$
 
           Examples: auth-login, user-model, impl-session-v2
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@slug-system"
         acceptance_criteria:
-          - id: ac-1
-            given: a user provides a slug containing uppercase letters, spaces, or underscores
-            when: the slug is validated during item creation or update
+          - given: a user provides a slug containing uppercase letters, spaces, or underscores
+            id: ac-1
             then: the command rejects the slug because it does not match the lowercase hyphenated slug pattern
+            when: the slug is validated during item creation or update
       - _ulid: 01KEZCJPJ1HD0JRARXD5AY3ZAW
         slugs:
           - slug-uniqueness
         title: Slug Uniqueness
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |-
           Each slug MUST be unique within the spec. Two items cannot have the same slug.
 
           Enforcement:
           - Validation: kspec validate reports duplicate slug errors
           - Prevention: CLI commands reject duplicate slugs at creation/update time
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@slug-system"
         acceptance_criteria:
-          - id: ac-1
-            given: a slug 'auth-login' exists in the spec
-            when: validation runs
+          - given: a slug 'auth-login' exists in the spec
+            id: ac-1
             then: duplicate slug error is reported if another item also has 'auth-login'
-          - id: ac-2
-            given: a slug 'auth-login' exists in the spec
+            when: validation runs
+          - given: a slug 'auth-login' exists in the spec
+            id: ac-2
+            then: command fails with 'slug already exists' error
             when: kspec item add --slug auth-login is run
+          - given: a slug 'auth-login' exists in the spec
+            id: ac-3
             then: command fails with 'slug already exists' error
-          - id: ac-3
-            given: a slug 'auth-login' exists in the spec
             when: kspec item set @other --slug auth-login is run
+          - given: a slug 'auth-login' exists in the spec
+            id: ac-4
             then: command fails with 'slug already exists' error
-          - id: ac-4
-            given: a slug 'auth-login' exists in the spec
             when: kspec task add --slug auth-login is run
+          - given: a slug 'auth-login' exists in the spec
+            id: ac-5
             then: command fails with 'slug already exists' error
-          - id: ac-5
-            given: a slug 'auth-login' exists in the spec
             when: kspec task set @other --slug auth-login is run
-            then: command fails with 'slug already exists' error
       - _ulid: 01KEZCJPJ1RC6G58T2XJCJZWB8
         slugs:
           - slug-resolution
         title: Slug Resolution
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           When a reference like "@auth-login" is encountered:
           1. Check if it matches a slug exactly
           2. If not found, check if it's a ULID prefix
           3. If still not found, report broken reference error
           4. If ambiguous (multiple matches), report ambiguity error
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@slug-system"
         acceptance_criteria:
-          - id: ac-1
-            given: a new item is created with slug 'my-feature'
-            when: "@my-feature is referenced immediately after creation"
+          - given: a new item is created with slug 'my-feature'
+            id: ac-1
             then: reference resolves to the newly created item without requiring reload
-          - id: ac-2
-            given: an item exists with slug 'auth-login'
-            when: "@auth-login is referenced"
+            when: "@my-feature is referenced immediately after creation"
+          - given: an item exists with slug 'auth-login'
+            id: ac-2
             then: reference resolves to that item
-          - id: ac-3
-            given: no item exists with slug 'nonexistent'
-            when: "@nonexistent is referenced"
+            when: "@auth-login is referenced"
+          - given: no item exists with slug 'nonexistent'
+            id: ac-3
             then: broken reference error is reported
-          - id: ac-4
-            given: multiple items share ULID prefix '01KEZ'
-            when: "@01KEZ is referenced"
+            when: "@nonexistent is referenced"
+          - given: multiple items share ULID prefix '01KEZ'
+            id: ac-4
             then: ambiguity error is reported listing matching items
+            when: "@01KEZ is referenced"
   - _ulid: 01JHNKA0W2REFS000000000000
     slugs:
       - reference-system
       - at-refs
     title: Reference System
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: high
-    tags:
-      - mvp
-      - core
     description: |
       The @reference syntax links items together. References can
       point to slugs or ULIDs (full or shortened). The system
       validates that all references resolve to existing items.
+    status:
+      maturity: draft
+      implementation: implemented
     acceptance_criteria:
-      - id: ac-ref-1
-        given: an item with depends_on ["@auth-session"]
-        when: the spec is validated
+      - given: an item with depends_on ["@auth-session"]
+        id: ac-ref-1
         then: the reference is checked against the slug index
-      - id: ac-ref-2
-        given: a reference "@01JHNK"
-        when: it's a unique ULID prefix
+        when: the spec is validated
+      - given: a reference "@01JHNK"
+        id: ac-ref-2
         then: it resolves to the full ULID
-      - id: ac-ref-3
-        given: a reference to a non-existent item
-        when: validation runs
+        when: it's a unique ULID prefix
+      - given: a reference to a non-existent item
+        id: ac-ref-3
         then: an error is reported with the broken reference
+        when: validation runs
+    priority: high
+    tags:
+      - mvp
+      - core
     requirements:
       - _ulid: 01JHNKA0W3REFS100000000000
         slugs:
           - ref-syntax
         title: Reference Syntax
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           References use the @ prefix to distinguish from plain strings:
 
@@ -381,22 +378,22 @@ features:
 
           References appear in relationship fields:
           depends_on, implements, relates_to, tests, supersedes, blocked_by
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@reference-system"
         acceptance_criteria:
-          - id: ac-1
-            given: a relationship field contains @slug, @short-ulid, or @full-ulid values
-            when: the item is parsed or validated
+          - given: a relationship field contains @slug, @short-ulid, or @full-ulid values
+            id: ac-1
             then: those values are recognized as references rather than plain text and are available for
               resolution
+            when: the item is parsed or validated
       - _ulid: 01JHNKA0W4REFS200000000000
         slugs:
           - ref-validation
         title: Reference Validation
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           All references MUST be validated:
           1. Parse @ prefix to extract identifier
@@ -405,246 +402,249 @@ features:
           4. Report warnings for deprecated targets
 
           Validation is triggered by `kspec validate --refs`
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@reference-system"
         acceptance_criteria:
-          - id: ac-1
-            given: an item contains one valid reference and one unresolved @reference
-            when: kspec validate --refs runs
+          - given: an item contains one valid reference and one unresolved @reference
+            id: ac-1
             then: the valid reference resolves successfully and the unresolved reference is reported as an error
+            when: kspec validate --refs runs
   - _ulid: 01KEZCJPJ1SMT5AJJ2Y6Z0S21K
     slugs:
       - relationship-types
       - item-links
     title: Relationship Types
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: high
-    tags:
-      - mvp
-      - core
     description: |
       Items link to each other via typed relationships.
       The hierarchy (module > feature > requirement) is one axis;
       relationships form a cross-cutting graph for other connections.
+    status:
+      maturity: draft
+      implementation: implemented
+    acceptance_criteria:
+      - given: an item links to other items using depends_on, implements, relates_to, tests, or supersedes
+        id: ac-1
+        then: each link retains its relationship type so tools can distinguish prerequisite, realization,
+          association, verification, and replacement semantics
+        when: the item graph is inspected
+    priority: high
+    tags:
+      - mvp
+      - core
     requirements:
       - _ulid: 01KEZCJPJ16V8C3N97BCEEV6GK
         slugs:
           - rel-depends-on
         title: depends_on Relationship
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           "A depends_on B" means A requires B to be completed/available.
           Used for: ordering work, tracking prerequisites.
 
           For tasks: Auto-blocks A until B is completed.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@relationship-types"
         acceptance_criteria:
-          - id: ac-1
-            given: User provides a depends_on reference without @ prefix (e.g., --depends-on 01KH7XA9)
-            when: the value is stored
+          - given: User provides a depends_on reference without @ prefix (e.g., --depends-on 01KH7XA9)
+            id: ac-1
             then: the CLI auto-prefixes @ to normalize the reference (stores @01KH7XA9); applies to task set,
               task add, and derive commands
-          - id: ac-2
-            given: A task has depends_on referencing incomplete tasks
-            when: the task is auto-blocked
+            when: the value is stored
+          - given: A task has depends_on referencing incomplete tasks
+            id: ac-2
             then: the task is excluded from tasks list and tasks ready by default, but is still accessible via
               task get @ref
-          - id: ac-3
-            given: A task has depends_on with a valid @-prefixed reference
-            when: the referenced task is completed
+            when: the task is auto-blocked
+          - given: A task has depends_on with a valid @-prefixed reference
+            id: ac-3
             then: the dependent task is automatically unblocked and appears in tasks list and tasks ready
+            when: the referenced task is completed
       - _ulid: 01KEZCJPJ2MKTF1V4PCN9X6Y7K
         slugs:
           - rel-implements
         title: implements Relationship
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           "A implements B" means A is a realization of B.
           Used for: requirement-to-task, feature-to-module.
 
           Enables traceability from high-level to concrete.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@relationship-types"
         acceptance_criteria:
-          - id: ac-1
-            given: item A implements item B
-            when: querying implementation traceability
+          - given: item A implements item B
+            id: ac-1
             then: A is linked to B showing concrete realization (e.g., requirement implements feature, task
               implements requirement)
-          - id: ac-2
-            given: multiple items implement the same item
-            when: viewing the implemented item
+            when: querying implementation traceability
+          - given: multiple items implement the same item
+            id: ac-2
             then: all implementers are shown enabling traceability from high-level to concrete
+            when: viewing the implemented item
       - _ulid: 01KEZCJPJ2JS9T7PSR30RMDCFE
         slugs:
           - rel-relates-to
         title: relates_to Relationship
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           "A relates_to B" is a general association without specific semantics.
           Used for: cross-references, "see also" links.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@relationship-types"
         acceptance_criteria:
-          - id: ac-1
-            given: item A relates_to item B
-            when: viewing item A
+          - given: item A relates_to item B
+            id: ac-1
             then: B is shown as a related reference (general association without specific semantics like 'see
               also')
-          - id: ac-2
-            given: item A relates_to item B
-            when: validating relationships
+            when: viewing item A
+          - given: item A relates_to item B
+            id: ac-2
             then: relates_to is accepted as valid cross-reference without enforcing specific constraints (unlike
               depends_on or blocks)
+            when: validating relationships
       - _ulid: 01KEZCJPJ26Q09SD3GCQAXJWP9
         slugs:
           - rel-blocks
         title: blocks Relationship
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           "A blocks B" means B cannot proceed while A is unresolved.
           The inverse of depends_on, used for explicit blocking issues.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@relationship-types"
         acceptance_criteria:
-          - id: ac-1
-            given: item A blocks item B
-            when: item B is a task
+          - given: item A blocks item B
+            id: ac-1
             then: task B cannot transition to in_progress while A is unresolved (blocking relationship enforced)
-          - id: ac-2
-            given: item A blocks item B
-            when: item A is resolved or completed
+            when: item B is a task
+          - given: item A blocks item B
+            id: ac-2
             then: item B becomes unblocked (blocks relationship is inverse of depends_on)
+            when: item A is resolved or completed
       - _ulid: 01KEZCJPJ2HC490BP03G39SX8R
         slugs:
           - rel-tests
         title: tests Relationship
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           "A tests B" means A validates or verifies B.
           Used for: linking test items to features/requirements.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@relationship-types"
         acceptance_criteria:
-          - id: ac-1
-            given: item A declares a tests relationship to item B
-            when: verification traceability is viewed
+          - given: item A declares a tests relationship to item B
+            id: ac-1
             then: item A is shown as evidence that validates item B
+            when: verification traceability is viewed
       - _ulid: 01KEZCJPJ2ZJMV482PPMTCSZKN
         slugs:
           - rel-supersedes
         title: supersedes Relationship
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           "A supersedes B" means A replaces B, which is now deprecated.
           The old item's ULID remains stable; the relationship links them.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@relationship-types"
         acceptance_criteria:
-          - id: ac-1
-            given: item A supersedes item B
-            when: the superseded item is reviewed
+          - given: item A supersedes item B
+            id: ac-1
             then: item B remains identifiable by its original ULID and the relationship points to item A as its
               replacement
-    acceptance_criteria:
-      - id: ac-1
-        given: an item links to other items using depends_on, implements, relates_to, tests, or supersedes
-        when: the item graph is inspected
-        then: each link retains its relationship type so tools can distinguish prerequisite, realization,
-          association, verification, and replacement semantics
+            when: the superseded item is reviewed
   - _ulid: 01KHVXK254VHT2WXKK073TB5ZT
     slugs:
       - project-config
     title: Project Config File
     type: feature
-    tags: []
     description: |
       A kspec.config.yaml file in the project root (main branch) that provides
       project-level configuration for shadow branch setup, identity, validation,
       and daemon settings. Loaded before shadow branch detection. All fields
       optional with backward-compatible defaults.
-    acceptance_criteria:
-      - id: ac-1
-        given: a project with no kspec.config.yaml
-        when: kspec commands are run
-        then: all settings resolve to current defaults with no behavior change
-      - id: ac-2
-        given: a kspec.config.yaml exists in the project root
-        when: initContext() is called
-        then: config is parsed, validated, and available on KspecContext.config before shadow detection
-      - id: ac-3
-        given: a kspec.config.yaml with invalid YAML syntax
-        when: config is loaded
-        then: parsing falls back to defaults and emits a warning to stderr with the parse error
-      - id: ac-4
-        given: a kspec.config.yaml with unknown fields
-        when: config is loaded
-        then: unknown fields are ignored and valid fields are applied normally
-      - id: ac-5
-        given: an env var override exists (e.g. KSPEC_AUTHOR)
-        when: config is resolved
-        then: env var takes precedence over the config file value
-      - id: ac-6
-        given: kspec is invoked from a subdirectory of the project
-        when: initContext() resolves config
-        then: config is loaded from the git root, not the current working directory
-      - id: ac-7
-        given: KSPEC_SPEC_DIR env var is set (batch atomic mode)
-        when: initContext() runs
-        then: config is still loaded from the real project root, not the temp spec dir
-      - id: ac-hooks-section
-        given: A kspec.config.yaml with a hooks section
-        when: kspec setup reads hook preferences
-        then: Each hook (checkpoint, prompt-check) can be independently enabled or disabled.
-      - id: ac-hooks-missing-keys
-        given: The hooks section exists but a specific hook key is absent
-        when: kspec setup determines installation for that hook
-        then: "The hook resolves to its default (prompt-check: enabled, checkpoint: disabled)."
-      - id: ac-hooks-no-config
-        given: No hooks section exists in kspec.config.yaml, or the config file is absent
-        when: kspec setup determines hook installation
-        then: All hooks resolve to their defaults.
-      - id: ac-hooks-validation
-        given: A hooks section contains an invalid value
-        when: kspec setup reads the configuration
-        then: A validation error is reported identifying the invalid field.
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits:
       - "@trait-error-guidance"
-    notes: []
-    created: 2026-02-19T21:41:10.948Z
+    acceptance_criteria:
+      - given: a project with no kspec.config.yaml
+        id: ac-1
+        then: all settings resolve to current defaults with no behavior change
+        when: kspec commands are run
+      - given: a kspec.config.yaml exists in the project root
+        id: ac-2
+        then: config is parsed, validated, and available on KspecContext.config before shadow detection
+        when: initContext() is called
+      - given: a kspec.config.yaml with invalid YAML syntax
+        id: ac-3
+        then: parsing falls back to defaults and emits a warning to stderr with the parse error
+        when: config is loaded
+      - given: a kspec.config.yaml with unknown fields
+        id: ac-4
+        then: unknown fields are ignored and valid fields are applied normally
+        when: config is loaded
+      - given: an env var override exists (e.g. KSPEC_AUTHOR)
+        id: ac-5
+        then: env var takes precedence over the config file value
+        when: config is resolved
+      - given: kspec is invoked from a subdirectory of the project
+        id: ac-6
+        then: config is loaded from the git root, not the current working directory
+        when: initContext() resolves config
+      - given: KSPEC_SPEC_DIR env var is set (batch atomic mode)
+        id: ac-7
+        then: config is still loaded from the real project root, not the temp spec dir
+        when: initContext() runs
+      - given: A kspec.config.yaml with a hooks section
+        id: ac-hooks-section
+        then: Each hook (checkpoint, prompt-check) can be independently enabled or disabled.
+        when: kspec setup reads hook preferences
+      - given: The hooks section exists but a specific hook key is absent
+        id: ac-hooks-missing-keys
+        then: "The hook resolves to its default (prompt-check: enabled, checkpoint: disabled)."
+        when: kspec setup determines installation for that hook
+      - given: No hooks section exists in kspec.config.yaml, or the config file is absent
+        id: ac-hooks-no-config
+        then: All hooks resolve to their defaults.
+        when: kspec setup determines hook installation
+      - given: A hooks section contains an invalid value
+        id: ac-hooks-validation
+        then: A validation error is reported identifying the invalid field.
+        when: kspec setup reads the configuration
+    tags: []
     features:
       - _ulid: 01KHVXK25H4Y67SNE1VR7M9H52
         slugs:
           - config-shadow
         title: Configurable Shadow Branch
         type: feature
-        tags: []
         description: |
           Shadow branch name, worktree directory, and remote target are configurable
           via kspec.config.yaml instead of hardcoded constants. The remote can be any
@@ -652,947 +652,901 @@ features:
           a local directory path to a bare repo, or a remote git server URL. This enables
           multi-project machines with distinct branch names, and spec storage in separate
           repositories.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              kspec.config.yaml sets shadow.branch to a custom name
-            when: kspec init is run
-            then: the orphan branch is created with the configured name instead of kspec-meta
-          - id: ac-2
-            given: |
-              kspec.config.yaml sets shadow.directory to a custom path
-            when: kspec init is run
-            then: the worktree is created at the configured directory and .gitignore is updated accordingly
-          - id: ac-3
-            given: |
-              shadow.remote is set to a named remote (e.g. specs-origin)
-            when: remote tracking is configured
-            then: push/pull operations use the named remote instead of origin
-          - id: ac-4
-            given: |
-              shadow.remote is set to a local filesystem path (starts with / or ./ or ~)
-            when: remote tracking is configured
-            then: a git remote is added using the local path as target
-          - id: ac-5
-            given: |
-              shadow.remote is set to a git URL (contains :// or starts with git@)
-            when: remote tracking is configured
-            then: a git remote is added using the URL as target
-          - id: ac-6
-            given: |
-              shadow.remote references a named remote that does not exist
-            when: push or pull is attempted
-            then: an error is reported with guidance to add the remote or fix the config
-          - id: ac-7
-            given: existing shadow branch functions (detectShadow, hasRemoteTracking, pushShadowBranch, etc.)
-            when: called without config parameter
-            then: they fall back to current constants (backward compat for direct callers)
-          - id: ac-8
-            given: |
-              shadow.directory is set to a custom name (not .kspec)
-            when: detectRunningFromShadowWorktree() is called
-            then: it correctly detects the custom worktree directory using git worktree metadata
-          - id: ac-9
-            given: |
-              a shadow branch already exists with default settings (kspec-meta, .kspec)
-            when: config is changed to different shadow.branch or shadow.directory
-            then: kspec reports the mismatch and guides the user to migrate or repair
-          - id: ac-10
-            given: git version is below 2.42 (does not support --orphan worktree flag)
-            when: kspec init creates the shadow branch
-            then: falls back to creating the orphan branch in a temporary directory (never modifies the project
-              working tree), pushes the branch to the local repo, then uses standard git worktree
-              add to attach it
-          - id: ac-11
-            given: Shadow branch has remote tracking configured and multiple clones or worktrees share the same
-              remote shadow branch
-            when: A kspec write command commits to the local shadow branch
-            then: The shadow sync performs a pull-rebase before pushing, using the configured merge driver for
-              conflict resolution, so that changes from other clones are integrated before pushing
-              new commits — preventing divergence and reducing merge conflicts
-          - id: ac-12
-            given: The daemon is running with shadow remote tracking configured
-            when: A configurable sync interval elapses (default 60s)
-            then: The daemon performs a background shadow pull to pick up changes pushed by other clones, making
-              remote shadow state available locally without requiring a manual kspec shadow sync
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits:
           - "@trait-error-guidance"
-        notes: []
-        created: 2026-02-19T21:41:10.961Z
-        status:
-          maturity: draft
-          implementation: implemented
+        acceptance_criteria:
+          - given: |
+              kspec.config.yaml sets shadow.branch to a custom name
+            id: ac-1
+            then: the orphan branch is created with the configured name instead of kspec-meta
+            when: kspec init is run
+          - given: |
+              kspec.config.yaml sets shadow.directory to a custom path
+            id: ac-2
+            then: the worktree is created at the configured directory and .gitignore is updated accordingly
+            when: kspec init is run
+          - given: |
+              shadow.remote is set to a named remote (e.g. specs-origin)
+            id: ac-3
+            then: push/pull operations use the named remote instead of origin
+            when: remote tracking is configured
+          - given: |
+              shadow.remote is set to a local filesystem path (starts with / or ./ or ~)
+            id: ac-4
+            then: a git remote is added using the local path as target
+            when: remote tracking is configured
+          - given: |
+              shadow.remote is set to a git URL (contains :// or starts with git@)
+            id: ac-5
+            then: a git remote is added using the URL as target
+            when: remote tracking is configured
+          - given: |
+              shadow.remote references a named remote that does not exist
+            id: ac-6
+            then: an error is reported with guidance to add the remote or fix the config
+            when: push or pull is attempted
+          - given: existing shadow branch functions (detectShadow, hasRemoteTracking, pushShadowBranch, etc.)
+            id: ac-7
+            then: they fall back to current constants (backward compat for direct callers)
+            when: called without config parameter
+          - given: |
+              shadow.directory is set to a custom name (not .kspec)
+            id: ac-8
+            then: it correctly detects the custom worktree directory using git worktree metadata
+            when: detectRunningFromShadowWorktree() is called
+          - given: |
+              a shadow branch already exists with default settings (kspec-meta, .kspec)
+            id: ac-9
+            then: kspec reports the mismatch and guides the user to migrate or repair
+            when: config is changed to different shadow.branch or shadow.directory
+          - given: git version is below 2.42 (does not support --orphan worktree flag)
+            id: ac-10
+            then: falls back to creating the orphan branch in a temporary directory (never modifies the project
+              working tree), pushes the branch to the local repo, then uses standard git worktree
+              add to attach it
+            when: kspec init creates the shadow branch
+          - given: Shadow branch has remote tracking configured and multiple clones or worktrees share the same
+              remote shadow branch
+            id: ac-11
+            then: The shadow sync performs a pull-rebase before pushing, using the configured merge driver for
+              conflict resolution, so that changes from other clones are integrated before pushing
+              new commits — preventing divergence and reducing merge conflicts
+            when: A kspec write command commits to the local shadow branch
+          - given: The daemon is running with shadow remote tracking configured
+            id: ac-12
+            then: The daemon performs a background shadow pull to pick up changes pushed by other clones, making
+              remote shadow state available locally without requiring a manual kspec shadow sync
+            when: A configurable sync interval elapses (default 60s)
+        tags: []
         features:
           - _ulid: 01KKCED6N48VAWE15SBABSC3MB
             slugs:
               - worktree-support
             title: Git Worktree Support
             type: feature
-            tags:
-              - cli
-              - shadow
-              - infra
             description: kspec commands auto-resolve to the main repo's .kspec/ when run from a linked git
               worktree. Uses git rev-parse --git-common-dir to detect worktrees and derive the main
               working tree root. Adds projectRoot to KspecContext for daemon/dispatch identity while
               rootDir becomes the code checkout root. Includes submodule-safe detection, dispatch
               cwd pinning, and worktree-aware shadow/serve commands.
+            status:
+              maturity: draft
+              implementation: implemented
             depends_on: []
             implements: []
             relates_to:
               - "@config-shadow"
             tests: []
             traits: []
-            notes: []
-            created: 2026-03-10T17:58:37.476Z
             acceptance_criteria:
-              - id: ac-resolve-roots
-                given: kspec is run from a linked git worktree (created via git worktree add)
-                when: initContext() resolves the project roots
+              - given: kspec is run from a linked git worktree (created via git worktree add)
+                id: ac-resolve-roots
                 then: rootDir is the worktree root, projectRoot is the main repo root, specDir points to .kspec/ at
                   the main repo root, and sessionsDir is at the main repo root
-              - id: ac-no-worktree-unchanged
-                given: kspec is run from the main repo (not a worktree)
                 when: initContext() resolves the project roots
+              - given: kspec is run from the main repo (not a worktree)
+                id: ac-no-worktree-unchanged
                 then: rootDir equals projectRoot and all behavior is identical to before this change
-              - id: ac-submodule-safe
-                given: kspec is run from inside a git submodule
-                when: resolveProjectRoots() checks git-common-dir
+                when: initContext() resolves the project roots
+              - given: kspec is run from inside a git submodule
+                id: ac-submodule-safe
                 then: the submodule is not falsely detected as a worktree (isWorktree is false)
-              - id: ac-daemon-identity
-                given: kspec CLI sends X-Kspec-Dir header to the daemon from a worktree
-                when: any command posts dispatch events or queries daemon status
+                when: resolveProjectRoots() checks git-common-dir
+              - given: kspec CLI sends X-Kspec-Dir header to the daemon from a worktree
+                id: ac-daemon-identity
                 then: X-Kspec-Dir contains projectRoot (main repo root), not rootDir (worktree root)
-              - id: ac-dispatch-cwd
-                given: dispatch start is called from a worktree
-                when: the dispatch engine spawns agent invocations
+                when: any command posts dispatch events or queries daemon status
+              - given: dispatch start is called from a worktree
+                id: ac-dispatch-cwd
                 then: the agent's cwd is the worktree root (via X-Kspec-Cwd header) while specDir points to .kspec/
                   at the main repo
-              - id: ac-dispatch-conflict
-                given: a dispatch engine is already running for a project with cwd set to worktree A
-                when: dispatch start is called from worktree B (different cwd, same project)
+                when: the dispatch engine spawns agent invocations
+              - given: a dispatch engine is already running for a project with cwd set to worktree A
+                id: ac-dispatch-conflict
                 then: the daemon returns 409 Conflict
-              - id: ac-shadow-commands
-                given: kspec shadow status/repair/log/resolve/sync is run from a linked worktree
-                when: the command resolves the shadow branch location
+                when: dispatch start is called from worktree B (different cwd, same project)
+              - given: kspec shadow status/repair/log/resolve/sync is run from a linked worktree
+                id: ac-shadow-commands
                 then: it finds .kspec/ at the main repo root, not the worktree root
-              - id: ac-serve-default
-                given: kspec serve start/stop/status/restart is run from a linked worktree without explicit
+                when: the command resolves the shadow branch location
+              - given: kspec serve start/stop/status/restart is run from a linked worktree without explicit
                   --kspec-dir
-                when: the command resolves the default --kspec-dir
+                id: ac-serve-default
                 then: it defaults to .kspec/ at the main repo root
-              - id: ac-false-positive-guard
-                given: a code worktree is named with 'kspec' in the path (e.g. kspec-feature)
-                when: detectRunningFromShadowWorktree checks the worktree
+                when: the command resolves the default --kspec-dir
+              - given: a code worktree is named with 'kspec' in the path (e.g. kspec-feature)
+                id: ac-false-positive-guard
                 then: it is NOT falsely detected as the shadow worktree — structural check (manifest+modules) is
                   required, not just name matching
-              - id: ac-performance
-                given: initContext() is called
-                when: it resolves project roots via git
+                when: detectRunningFromShadowWorktree checks the worktree
+              - given: initContext() is called
+                id: ac-performance
                 then: it uses a single git rev-parse call (--show-toplevel --git-common-dir) instead of multiple
                   separate calls
-            status:
-              maturity: draft
-              implementation: implemented
+                when: it resolves project roots via git
+            tags:
+              - cli
+              - shadow
+              - infra
             features:
               - _ulid: 01KKFY93WHPD9KSVER6KFCYN6W
                 slugs:
                   - dispatch-invocation-worktree-isolation
                 title: Dispatched Invocation Worktree Isolation
                 type: feature
-                tags: []
                 description: |
                   Each dispatched agent invocation runs in an isolated git worktree rooted
                   under a dispatcher-managed worktree root instead of sharing the primary
                   checkout.
-                acceptance_criteria:
-                  - id: ac-1
-                    given: |
-                      The dispatch engine is about to spawn a worker or fix-cycle invocation
-                      for a task
-                    when: |
-                      The invocation is created
-                    then: |
-                      The engine creates or reuses an isolated mutable worktree under a
-                      dedicated dispatch worktree root rather than running in the main
-                      checkout
-                  - id: ac-2
-                    given: |
-                      A reviewer invocation is prepared for a task with a canonical branch
-                    when: |
-                      The review worktree is prepared
-                    then: |
-                      The reviewer uses a separate worktree directory positioned at the
-                      recorded canonical branch head without checking out the same local
-                      branch a second time
-                  - id: ac-3
-                    given: |
-                      A role-specific worktree already exists for a task and is healthy for
-                      reuse
-                    when: |
-                      A later invocation for that role is spawned
-                    then: |
-                      The dispatcher may reuse that role worktree by reconciling it to the
-                      recorded canonical state appropriate to the role rather than creating a
-                      fresh checkout every time
-                  - id: ac-4
-                    given: |
-                      A tracked worktree is missing, broken, or cannot be prepared safely
-                    when: |
-                      The dispatch engine prepares an invocation
-                    then: |
-                      The engine either repairs or recreates the worktree using the canonical
-                      workspace record, or blocks the task with guidance; it does not fall
-                      back to the shared main checkout
-                  - id: ac-5
-                    given: |
-                      Dispatch worktrees are created on disk
-                    when: |
-                      Their location is chosen
-                    then: |
-                      They live outside the shadow worktree itself and under one configurable
-                      dispatch worktree root with deterministic path derivation
+                status:
+                  maturity: draft
+                  implementation: implemented
                 depends_on: []
                 implements: []
                 relates_to: []
                 tests: []
                 traits:
                   - "@trait-error-guidance"
-                notes: []
+                acceptance_criteria:
+                  - given: |
+                      The dispatch engine is about to spawn a worker or fix-cycle invocation
+                      for a task
+                    id: ac-1
+                    then: |
+                      The engine creates or reuses an isolated mutable worktree under a
+                      dedicated dispatch worktree root rather than running in the main
+                      checkout
+                    when: |
+                      The invocation is created
+                  - given: |
+                      A reviewer invocation is prepared for a task with a canonical branch
+                    id: ac-2
+                    then: |
+                      The reviewer uses a separate worktree directory positioned at the
+                      recorded canonical branch head without checking out the same local
+                      branch a second time
+                    when: |
+                      The review worktree is prepared
+                  - given: |
+                      A role-specific worktree already exists for a task and is healthy for
+                      reuse
+                    id: ac-3
+                    then: |
+                      The dispatcher may reuse that role worktree by reconciling it to the
+                      recorded canonical state appropriate to the role rather than creating a
+                      fresh checkout every time
+                    when: |
+                      A later invocation for that role is spawned
+                  - given: |
+                      A tracked worktree is missing, broken, or cannot be prepared safely
+                    id: ac-4
+                    then: |
+                      The engine either repairs or recreates the worktree using the canonical
+                      workspace record, or blocks the task with guidance; it does not fall
+                      back to the shared main checkout
+                    when: |
+                      The dispatch engine prepares an invocation
+                  - given: |
+                      Dispatch worktrees are created on disk
+                    id: ac-5
+                    then: |
+                      They live outside the shadow worktree itself and under one configurable
+                      dispatch worktree root with deterministic path derivation
+                    when: |
+                      Their location is chosen
+                tags: []
                 created: 2026-03-12T02:33:44.081Z
-                status:
-                  maturity: draft
-                  implementation: implemented
+                notes: []
+            created: 2026-03-10T17:58:37.476Z
+            notes: []
+        created: 2026-02-19T21:41:10.961Z
+        notes: []
       - _ulid: 01KHVXK25SDYTAEKZN28S2X66K
         slugs:
           - config-author
         title: Configurable Author Identity
         type: feature
-        tags: []
         description: |
           Project-level default author via kspec.config.yaml author field. Sits between
           env var (highest priority) and git/OS user fallbacks (lowest).
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              kspec.config.yaml sets author to a value like @bot-agent
-            when: a note or inbox item is created without KSPEC_AUTHOR env var set
-            then: the author is recorded as the configured value
-          - id: ac-2
-            given: both KSPEC_AUTHOR env var and config author are set
-            when: a note is created
-            then: the env var value wins
-          - id: ac-3
-            given: no config author and no KSPEC_AUTHOR env var
-            when: a note is created
-            then: author falls back to git user.name then OS user (current behavior)
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
+        acceptance_criteria:
+          - given: |
+              kspec.config.yaml sets author to a value like @bot-agent
+            id: ac-1
+            then: the author is recorded as the configured value
+            when: a note or inbox item is created without KSPEC_AUTHOR env var set
+          - given: both KSPEC_AUTHOR env var and config author are set
+            id: ac-2
+            then: the env var value wins
+            when: a note is created
+          - given: no config author and no KSPEC_AUTHOR env var
+            id: ac-3
+            then: author falls back to git user.name then OS user (current behavior)
+            when: a note is created
+        tags: []
         created: 2026-02-19T21:41:10.969Z
-        status:
-          maturity: draft
-          implementation: implemented
+        notes: []
       - _ulid: 01KHVXK2626BBA62818AE84663
         slugs:
           - config-validation
         title: Configurable Validation Defaults
         type: feature
-        tags: []
         description: |
           Validation strictness settings (strict_refs, require_acceptance) configurable
           in kspec.config.yaml. CLI flags override config values. Replaces the dead
           config block that init currently writes into manifests.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              kspec.config.yaml sets validation.require_acceptance to true
-            when: kspec validate is run without CLI flags
-            then: specs missing acceptance criteria are reported as errors not warnings
-          - id: ac-2
-            given: |
-              kspec.config.yaml sets validation.strict_refs to true
-            when: kspec validate is run without --strict flag
-            then: dangling references are treated as errors
-          - id: ac-3
-            given: |
-              kspec.config.yaml sets validation.strict_refs to false
-            when: kspec validate is run without --strict flag
-            then: dangling references are reported as warnings not errors
-          - id: ac-4
-            given: CLI flag --strict is passed
-            when: |
-              config has validation.strict_refs set to false
-            then: CLI flag wins and dangling refs are treated as errors
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits:
           - "@trait-error-guidance"
-        notes: []
+        acceptance_criteria:
+          - given: |
+              kspec.config.yaml sets validation.require_acceptance to true
+            id: ac-1
+            then: specs missing acceptance criteria are reported as errors not warnings
+            when: kspec validate is run without CLI flags
+          - given: |
+              kspec.config.yaml sets validation.strict_refs to true
+            id: ac-2
+            then: dangling references are treated as errors
+            when: kspec validate is run without --strict flag
+          - given: |
+              kspec.config.yaml sets validation.strict_refs to false
+            id: ac-3
+            then: dangling references are reported as warnings not errors
+            when: kspec validate is run without --strict flag
+          - given: CLI flag --strict is passed
+            id: ac-4
+            then: CLI flag wins and dangling refs are treated as errors
+            when: |
+              config has validation.strict_refs set to false
+        tags: []
         created: 2026-02-19T21:41:10.978Z
-        status:
-          maturity: draft
-          implementation: implemented
+        notes: []
       - _ulid: 01KHVXK26A6DMJ6NY1610Z40TV
         slugs:
           - config-daemon
         title: Configurable Daemon Settings
         type: feature
-        tags: []
         description: |
           Daemon port and auto-start configurable in kspec.config.yaml. Replaces the
           manifest daemon block (which exists in the schema but is never read by
           serve start). Resolves the chicken-and-egg problem where daemon config was
           inside the shadow branch.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              kspec.config.yaml sets daemon.port to 4000
-            when: kspec serve start is run without --port flag
-            then: daemon starts on port 4000
-          - id: ac-2
-            given: --port 5000 CLI flag is passed
-            when: |
-              config sets daemon.port to 4000
-            then: daemon starts on port 5000 (CLI flag wins)
-          - id: ac-3
-            given: |
-              kspec.config.yaml sets daemon.auto_start to false
-            when: a kspec command triggers maybeAutoStartDaemon()
-            then: the daemon is not auto-started
-          - id: ac-4
-            given: an existing manifest has a daemon block with port set
-            when: kspec commands are run
-            then: |
-              the manifest daemon block is ignored and a deprecation warning is emitted
-              recommending migration to kspec.config.yaml
-          - id: ac-5
-            given: kspec.config.yaml sets daemon.host to '0.0.0.0'
-            when: kspec serve start is run
-            then: daemon binds to the configured host address
-          - id: ac-6
-            given: KSPEC_DAEMON_HOST env var is set
-            when: config file also sets daemon.host
-            then: env var value takes precedence
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits:
           - "@trait-error-guidance"
-        notes: []
+        acceptance_criteria:
+          - given: |
+              kspec.config.yaml sets daemon.port to 4000
+            id: ac-1
+            then: daemon starts on port 4000
+            when: kspec serve start is run without --port flag
+          - given: --port 5000 CLI flag is passed
+            id: ac-2
+            then: daemon starts on port 5000 (CLI flag wins)
+            when: |
+              config sets daemon.port to 4000
+          - given: |
+              kspec.config.yaml sets daemon.auto_start to false
+            id: ac-3
+            then: the daemon is not auto-started
+            when: a kspec command triggers maybeAutoStartDaemon()
+          - given: an existing manifest has a daemon block with port set
+            id: ac-4
+            then: |
+              the manifest daemon block is ignored and a deprecation warning is emitted
+              recommending migration to kspec.config.yaml
+            when: kspec commands are run
+          - given: kspec.config.yaml sets daemon.host to '0.0.0.0'
+            id: ac-5
+            then: daemon binds to the configured host address
+            when: kspec serve start is run
+          - given: KSPEC_DAEMON_HOST env var is set
+            id: ac-6
+            then: env var value takes precedence
+            when: config file also sets daemon.host
+        tags: []
         created: 2026-02-19T21:41:10.986Z
-        status:
-          maturity: draft
-          implementation: implemented
+        notes: []
       - _ulid: 01KKFY93P2Z8C7D0TY42H1RBHD
         slugs:
           - dispatch-workspace-configuration
         title: Dispatch Workspace Configuration
         type: feature
-        tags: []
         description: |
           kspec.config.yaml exposes dispatch-specific configuration for canonical
           base branch selection and dispatcher-managed worktree placement.
+        status:
+          maturity: draft
+          implementation: implemented
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-error-guidance"
         acceptance_criteria:
-          - id: ac-1
-            given: |
+          - given: |
               kspec.config.yaml sets dispatch.base_branch to a branch such as
               agent-dev
-            when: |
-              The dispatcher provisions a task workspace
+            id: ac-1
             then: |
               Canonical task branches are created from that branch and the same
               branch is recorded as the default PR or manual merge target for the
               task
-          - id: ac-2
-            given: |
-              dispatch.base_branch is not configured
             when: |
-              A task workspace is provisioned
+              The dispatcher provisions a task workspace
+          - given: |
+              dispatch.base_branch is not configured
+            id: ac-2
             then: |
               The dispatcher resolves the repository's default integration branch
               deterministically using remote HEAD when available, otherwise the
               current symbolic branch of the main repo checkout, otherwise `main`,
               and records the resolved value on the workspace so later invocations do
               not drift
-          - id: ac-3
-            given: |
+            when: |
+              A task workspace is provisioned
+          - given: |
               kspec.config.yaml sets dispatch.worktree_root to a relative or absolute
               path
-            when: |
-              The dispatch worktree root is resolved
+            id: ac-3
             then: |
               Relative paths resolve from the project root, absolute paths are used
               as-is, and the default when unset is `.kspec-worktrees`
-          - id: ac-4
-            given: |
-              The configured base branch or worktree root is invalid or unusable
             when: |
-              The dispatcher provisions a workspace
+              The dispatch worktree root is resolved
+          - given: |
+              The configured base branch or worktree root is invalid or unusable
+            id: ac-4
             then: |
               Dispatch fails with actionable guidance instead of silently falling back
               to a shared checkout or hardcoded branch
-          - id: ac-5
-            given: kspec.config.yaml sets dispatch.publication_mode to pull_request, manual_merge, or auto
-            when: the dispatcher resolves publication mode for a new or re-evaluated workspace
+            when: |
+              The dispatcher provisions a workspace
+          - given: kspec.config.yaml sets dispatch.publication_mode to pull_request, manual_merge, or auto
+            id: ac-5
             then: the configured mode governs how agents publish work, overriding environment auto-detection
               when not set to auto
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        traits:
-          - "@trait-error-guidance"
-        notes: []
+            when: the dispatcher resolves publication mode for a new or re-evaluated workspace
+        tags: []
         created: 2026-03-12T02:33:43.875Z
-        status:
-          maturity: draft
-          implementation: implemented
+        notes: []
     requirements:
       - _ulid: 01KHVXK26MF758N8ZPPSYY9ZKD
         slugs:
           - config-manifest-cleanup
         title: Clean Up Dead Manifest Config
         type: requirement
-        tags: []
         description: |
           Remove the dead config block from generated manifests and handle the existing
           daemon field in ManifestSchema now that config lives in kspec.config.yaml.
-        acceptance_criteria:
-          - id: ac-1
-            given: kspec init is run on a new project
-            when: the manifest is generated
-            then: no config block is written to the manifest YAML
-          - id: ac-2
-            given: an existing manifest contains a config block
-            when: the manifest is parsed
-            then: parsing succeeds without errors via explicit optional field in schema
-          - id: ac-3
-            given: kspec init is run on a new project
-            when: the manifest is generated
-            then: no daemon block is written to the manifest
-          - id: ac-4
-            given: an existing manifest contains a daemon block
-            when: the manifest is parsed
-            then: parsing succeeds and a debug-level deprecation note is logged
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
+        acceptance_criteria:
+          - given: kspec init is run on a new project
+            id: ac-1
+            then: no config block is written to the manifest YAML
+            when: the manifest is generated
+          - given: an existing manifest contains a config block
+            id: ac-2
+            then: parsing succeeds without errors via explicit optional field in schema
+            when: the manifest is parsed
+          - given: kspec init is run on a new project
+            id: ac-3
+            then: no daemon block is written to the manifest
+            when: the manifest is generated
+          - given: an existing manifest contains a daemon block
+            id: ac-4
+            then: parsing succeeds and a debug-level deprecation note is logged
+            when: the manifest is parsed
+        tags: []
         created: 2026-02-19T21:41:10.996Z
-        status:
-          maturity: draft
-          implementation: implemented
-    status:
-      maturity: draft
-      implementation: implemented
+        notes: []
+    created: 2026-02-19T21:41:10.948Z
+    notes: []
   - _ulid: 01KJP27632FPGSCSMEP0332YDP
     slugs:
       - session-model-evolution
     title: Session Model Evolution
     type: feature
-    tags: []
     description: |
       Extend SessionMetadata with trigger source, agent definition reference,
       and structured completion tracking. Extend SessionStatusSchema with
       timed_out and failed statuses. Each agent invocation creates its own
       session rather than sharing one session across a loop of iterations.
       Backward compatible with existing sessions.
-    acceptance_criteria:
-      - id: ac-1
-        given: |
-          A session is created for an agent invocation
-        when: |
-          The session metadata is written
-        then: |
-          It includes trigger (event type that caused dispatch), agent_id
-          (reference to agent definition), and task_id (the task being
-          worked on) fields
-      - id: ac-2
-        given: |
-          A session was created by the old ralph system without trigger/agent_id
-        when: |
-          The session is read by any session command
-        then: |
-          trigger defaults to "legacy" and agent_id defaults to the
-          agent_type value — no error is raised
-      - id: ac-3
-        given: |
-          SessionStatusSchema currently allows active, completed, abandoned
-        when: |
-          The schema is extended
-        then: |
-          timed_out and failed are added as valid status values
-      - id: ac-4
-        given: |
-          New event types agent.dispatched, agent.started, agent.completed,
-          agent.failed, agent.timeout are defined
-        when: |
-          Events with these types are appended to a session log
-        then: |
-          The EventTypeSchema accepts them without error
-      - id: ac-5
-        given: |
-          An agent invocation completes a task
-        when: |
-          The completion is recorded
-        then: |
-          A structured agent.completed event is appended with task_id,
-          outcome (success, blocked, failed), and duration_ms fields
-      - id: ac-6
-        given: |
-          kspec session log list is run
-        when: |
-          Sessions from both old ralph and new agent runtime exist
-        then: |
-          Legacy sessions show type "loop" and new sessions show type
-          "invocation" in the output
-      - id: ac-7
-        given: |
-          kspec session log show is run on a new-style invocation session
-        when: |
-          The session contains agent.* events
-        then: |
-          The events are rendered with human-readable formatting matching
-          the existing event display patterns
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
-    notes: []
-    created: 2026-03-02T01:22:19.874Z
-    status:
-      maturity: draft
-      implementation: implemented
+    acceptance_criteria:
+      - given: |
+          A session is created for an agent invocation
+        id: ac-1
+        then: |
+          It includes trigger (event type that caused dispatch), agent_id
+          (reference to agent definition), and task_id (the task being
+          worked on) fields
+        when: |
+          The session metadata is written
+      - given: |
+          A session was created by the old ralph system without trigger/agent_id
+        id: ac-2
+        then: |
+          trigger defaults to "legacy" and agent_id defaults to the
+          agent_type value — no error is raised
+        when: |
+          The session is read by any session command
+      - given: |
+          SessionStatusSchema currently allows active, completed, abandoned
+        id: ac-3
+        then: |
+          timed_out and failed are added as valid status values
+        when: |
+          The schema is extended
+      - given: |
+          New event types agent.dispatched, agent.started, agent.completed,
+          agent.failed, agent.timeout are defined
+        id: ac-4
+        then: |
+          The EventTypeSchema accepts them without error
+        when: |
+          Events with these types are appended to a session log
+      - given: |
+          An agent invocation completes a task
+        id: ac-5
+        then: |
+          A structured agent.completed event is appended with task_id,
+          outcome (success, blocked, failed), and duration_ms fields
+        when: |
+          The completion is recorded
+      - given: |
+          kspec session log list is run
+        id: ac-6
+        then: |
+          Legacy sessions show type "loop" and new sessions show type
+          "invocation" in the output
+        when: |
+          Sessions from both old ralph and new agent runtime exist
+      - given: |
+          kspec session log show is run on a new-style invocation session
+        id: ac-7
+        then: |
+          The events are rendered with human-readable formatting matching
+          the existing event display patterns
+        when: |
+          The session contains agent.* events
+    tags: []
     requirements:
       - _ulid: 01KK7T2BMFFBH7PPST20MPC2TY
         slugs:
           - session-storage-modes
         title: Session Storage Modes
         type: requirement
-        tags: []
         description: |
           Configurable session storage with two modes: local (default) and branch.
           Local mode writes to .kspec-sessions/ with no git tracking. Branch mode
           writes to .kspec-sessions/ backed by a named orphan branch for persistence.
           Shadow mode (sessions on kspec-meta) is legacy read-only — never written to.
-        acceptance_criteria:
-          - id: ac-config
-            given: |
-              A kspec project with kynetic.yaml
-            when: |
-              sessions.storage is set to "local" or "branch"
-            then: |
-              Session operations use the configured storage mode.
-          - id: ac-config-default
-            given: |
-              A kspec project with no sessions.storage in kynetic.yaml
-            when: |
-              A session operation runs
-            then: |
-              Defaults to "local" mode.
-          - id: ac-config-invalid
-            given: |
-              sessions.storage is set to an unsupported value
-            when: |
-              kspec validates the manifest
-            then: |
-              Zod validation error with message indicating valid values (local, branch).
-          - id: ac-local-mode
-            given: |
-              sessions.storage is "local" (or unconfigured)
-            when: |
-              A session is created, events appended, or session closed
-            then: |
-              Files are written to .kspec-sessions/{id}/ with no git operations.
-          - id: ac-branch-mode
-            given: |
-              sessions.storage is "branch" with a branch name configured
-            when: |
-              A session is created or closed
-            then: |
-              Files are written to .kspec-sessions/ which is a git worktree
-              on the configured orphan branch. Auto-commits on session lifecycle
-              boundaries (create, close, stale cleanup, compact) but NOT on every event append.
-          - id: ac-branch-name
-            given: |
-              sessions.storage is "branch"
-            when: |
-              sessions.branch is set (e.g., "kspec-sessions")
-            then: |
-              The orphan branch uses the configured name.
-          - id: ac-branch-name-default
-            given: |
-              sessions.storage is "branch" with no sessions.branch set
-            when: |
-              Session branch is initialized
-            then: |
-              Default branch name is "kspec-sessions".
-          - id: ac-no-event-commits
-            given: |
-              sessions.storage is "branch"
-            when: |
-              An event is appended to events.jsonl during active session
-            then: |
-              No git commit occurs. Events are committed in bulk at session close.
-          - id: ac-sessions-dir
-            given: |
-              Any storage mode
-            when: |
-              Session operations resolve file paths
-            then: |
-              Sessions directory is .kspec-sessions/ at project root,
-              separate from .kspec/ (which remains spec/task only).
-          - id: ac-sessions-dir-autocreate
-            given: |
-              .kspec-sessions/ directory does not exist
-            when: |
-              A session create operation runs
-            then: |
-              The directory is created automatically (mkdir -p equivalent).
-          - id: ac-gitignore
-            given: |
-              A kspec project
-            when: |
-              kspec init or kspec setup runs
-            then: |
-              .kspec-sessions/ is added to the project root .gitignore
-              (not tracked on main branch regardless of storage mode).
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
-        created: 2026-03-08T22:46:12.879Z
+        acceptance_criteria:
+          - given: |
+              A kspec project with kynetic.yaml
+            id: ac-config
+            then: |
+              Session operations use the configured storage mode.
+            when: |
+              sessions.storage is set to "local" or "branch"
+          - given: |
+              A kspec project with no sessions.storage in kynetic.yaml
+            id: ac-config-default
+            then: |
+              Defaults to "local" mode.
+            when: |
+              A session operation runs
+          - given: |
+              sessions.storage is set to an unsupported value
+            id: ac-config-invalid
+            then: |
+              Zod validation error with message indicating valid values (local, branch).
+            when: |
+              kspec validates the manifest
+          - given: |
+              sessions.storage is "local" (or unconfigured)
+            id: ac-local-mode
+            then: |
+              Files are written to .kspec-sessions/{id}/ with no git operations.
+            when: |
+              A session is created, events appended, or session closed
+          - given: |
+              sessions.storage is "branch" with a branch name configured
+            id: ac-branch-mode
+            then: |
+              Files are written to .kspec-sessions/ which is a git worktree
+              on the configured orphan branch. Auto-commits on session lifecycle
+              boundaries (create, close, stale cleanup, compact) but NOT on every event append.
+            when: |
+              A session is created or closed
+          - given: |
+              sessions.storage is "branch"
+            id: ac-branch-name
+            then: |
+              The orphan branch uses the configured name.
+            when: |
+              sessions.branch is set (e.g., "kspec-sessions")
+          - given: |
+              sessions.storage is "branch" with no sessions.branch set
+            id: ac-branch-name-default
+            then: |
+              Default branch name is "kspec-sessions".
+            when: |
+              Session branch is initialized
+          - given: |
+              sessions.storage is "branch"
+            id: ac-no-event-commits
+            then: |
+              No git commit occurs. Events are committed in bulk at session close.
+            when: |
+              An event is appended to events.jsonl during active session
+          - given: |
+              Any storage mode
+            id: ac-sessions-dir
+            then: |
+              Sessions directory is .kspec-sessions/ at project root,
+              separate from .kspec/ (which remains spec/task only).
+            when: |
+              Session operations resolve file paths
+          - given: |
+              .kspec-sessions/ directory does not exist
+            id: ac-sessions-dir-autocreate
+            then: |
+              The directory is created automatically (mkdir -p equivalent).
+            when: |
+              A session create operation runs
+          - given: |
+              A kspec project
+            id: ac-gitignore
+            then: |
+              .kspec-sessions/ is added to the project root .gitignore
+              (not tracked on main branch regardless of storage mode).
+            when: |
+              kspec init or kspec setup runs
+        tags: []
         requirements:
           - _ulid: 01KK7T2BR295DN37ZY4VE896F8
             slugs:
               - session-branch-worktree
             title: Session Branch Worktree Management
             type: requirement
-            tags: []
             description: |
               Git worktree management for the session branch mode. Creates and
               maintains an orphan branch with its own worktree at .kspec-sessions/.
-            acceptance_criteria:
-              - id: ac-init
-                given: |
-                  sessions.storage is "branch" and no session worktree exists
-                when: |
-                  kspec init or kspec setup runs
-                then: |
-                  Creates orphan branch with configured name (default "kspec-sessions"),
-                  adds worktree at .kspec-sessions/.
-              - id: ac-commit-boundaries
-                given: |
-                  sessions.storage is "branch"
-                when: |
-                  Session lifecycle events occur (create, close, stale cleanup, compact)
-                then: |
-                  Auto-commits to session branch at lifecycle boundaries only.
-                  Event appends during active sessions are NOT committed individually.
-              - id: ac-sync
-                given: |
-                  sessions.storage is "branch" and remote tracking is configured
-                when: |
-                  Daemon shadow sync runs
-                then: |
-                  Session branch syncs independently from kspec-meta.
-                  Sync failures on one branch do not affect the other.
-              - id: ac-status
-                given: |
-                  sessions.storage is "branch"
-                when: |
-                  kspec shadow status runs
-                then: |
-                  Reports health of both kspec-meta and session branch worktrees.
-              - id: ac-repair
-                given: |
-                  Session worktree is broken or disconnected
-                when: |
-                  kspec shadow repair runs
-                then: |
-                  Repairs session worktree independently from kspec-meta worktree.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
             tests: []
             traits: []
-            notes: []
+            acceptance_criteria:
+              - given: |
+                  sessions.storage is "branch" and no session worktree exists
+                id: ac-init
+                then: |
+                  Creates orphan branch with configured name (default "kspec-sessions"),
+                  adds worktree at .kspec-sessions/.
+                when: |
+                  kspec init or kspec setup runs
+              - given: |
+                  sessions.storage is "branch"
+                id: ac-commit-boundaries
+                then: |
+                  Auto-commits to session branch at lifecycle boundaries only.
+                  Event appends during active sessions are NOT committed individually.
+                when: |
+                  Session lifecycle events occur (create, close, stale cleanup, compact)
+              - given: |
+                  sessions.storage is "branch" and remote tracking is configured
+                id: ac-sync
+                then: |
+                  Session branch syncs independently from kspec-meta.
+                  Sync failures on one branch do not affect the other.
+                when: |
+                  Daemon shadow sync runs
+              - given: |
+                  sessions.storage is "branch"
+                id: ac-status
+                then: |
+                  Reports health of both kspec-meta and session branch worktrees.
+                when: |
+                  kspec shadow status runs
+              - given: |
+                  Session worktree is broken or disconnected
+                id: ac-repair
+                then: |
+                  Repairs session worktree independently from kspec-meta worktree.
+                when: |
+                  kspec shadow repair runs
+            tags: []
             created: 2026-03-08T22:46:12.994Z
-            status:
-              maturity: draft
-              implementation: in_progress
+            notes: []
           - _ulid: 01KK7T2BRDRG8YMYXMB412EEQY
             slugs:
               - session-remove-shadow-commits
             title: Remove Shadow Commits for Sessions
             type: requirement
-            tags: []
             description: |
               Remove all shadowAutoCommit calls related to session operations.
               Sessions no longer dirty the kspec-meta worktree.
-            acceptance_criteria:
-              - id: ac-invocation-end
-                given: |
-                  An agent invocation ends (completed, timed_out, failed, aborted)
-                when: |
-                  closeSession() is called in invocation.ts
-                then: |
-                  No shadowAutoCommit is called for the session.
-                  Task state changes (if any) still commit to kspec-meta normally.
-              - id: ac-stale-cleanup
-                given: |
-                  Stale session auto-abandon runs
-                when: |
-                  Session metadata is updated to abandoned
-                then: |
-                  Commit goes to session branch (if branch mode) or nowhere (if local).
-                  No commit to kspec-meta.
-              - id: ac-no-sync-conflict
-                given: |
-                  Dispatch engine creates sessions while daemon syncs shadow branch
-                when: |
-                  Periodic shadow sync runs shadowPull on kspec-meta
-                then: |
-                  No conflict occurs because session files are not in the kspec-meta worktree.
+            status:
+              maturity: draft
+              implementation: implemented
             depends_on: []
             implements: []
             relates_to: []
             tests: []
             traits: []
-            notes: []
+            acceptance_criteria:
+              - given: |
+                  An agent invocation ends (completed, timed_out, failed, aborted)
+                id: ac-invocation-end
+                then: |
+                  No shadowAutoCommit is called for the session.
+                  Task state changes (if any) still commit to kspec-meta normally.
+                when: |
+                  closeSession() is called in invocation.ts
+              - given: |
+                  Stale session auto-abandon runs
+                id: ac-stale-cleanup
+                then: |
+                  Commit goes to session branch (if branch mode) or nowhere (if local).
+                  No commit to kspec-meta.
+                when: |
+                  Session metadata is updated to abandoned
+              - given: |
+                  Dispatch engine creates sessions while daemon syncs shadow branch
+                id: ac-no-sync-conflict
+                then: |
+                  No conflict occurs because session files are not in the kspec-meta worktree.
+                when: |
+                  Periodic shadow sync runs shadowPull on kspec-meta
+            tags: []
             created: 2026-03-08T22:46:13.005Z
-            status:
-              maturity: draft
-              implementation: implemented
-        status:
-          maturity: draft
-          implementation: implemented
+            notes: []
+        created: 2026-03-08T22:46:12.879Z
+        notes: []
       - _ulid: 01KK7T2BN1AGYHZHDPY3HD28H6
         slugs:
           - session-legacy-migration
         title: Legacy Session Migration
         type: requirement
-        tags: []
         description: |
           Read-only fallback for sessions stored on the kspec-meta shadow branch
           (.kspec/sessions/) from before the storage separation. Provides migration
           path with deprecation timeline.
-        acceptance_criteria:
-          - id: ac-read-fallback
-            given: Legacy sessions exist in .kspec/sessions/ but not in .kspec-sessions/
-            when: Any session read operation executes (CLI or daemon)
-            then: Returns results only from .kspec-sessions/. Does not transparently read from .kspec/sessions/.
-              If hasLegacySessions() is true, emits a warning advising the user to run kspec session
-              migrate.
-          - id: ac-no-write
-            given: |
-              Legacy sessions exist in .kspec/sessions/ on kspec-meta
-            when: |
-              Any session write operation occurs (create, append, close, compact)
-            then: |
-              Writes always go to .kspec-sessions/, never to .kspec/sessions/.
-          - id: ac-list-merge
-            given: Legacy sessions exist in .kspec/sessions/ but have not been migrated
-            when: kspec session log list runs
-            then: Returns only sessions from .kspec-sessions/. A warning is shown indicating N legacy sessions
-              exist and advising to run kspec session migrate.
-          - id: ac-deprecation-warning
-            given: |
-              A session is read from the legacy .kspec/sessions/ location
-            when: |
-              The read completes
-            then: |
-              A deprecation warning is emitted (stderr, not stdout) noting
-              the legacy location. Warning includes guidance to run kspec session migrate.
-          - id: ac-shadow-gitignore
-            given: |
-              kspec setup or kspec init runs
-            when: |
-              .kspec/sessions/ exists on kspec-meta
-            then: |
-              sessions/ is added to .kspec/.gitignore so no new session files
-              are tracked on kspec-meta. Existing history is preserved in git.
-          - id: ac-migration-copy
-            given: |
-              Legacy sessions exist in .kspec/sessions/
-            when: |
-              kspec session migrate runs
-            then: |
-              Copies session directories from .kspec/sessions/ to .kspec-sessions/.
-              Does not delete originals.
-          - id: ac-migration-idempotent
-            given: |
-              Some sessions already exist in .kspec-sessions/
-            when: |
-              kspec session migrate runs
-            then: |
-              Skips sessions that already exist in target.
-              Reports count of migrated and skipped sessions.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
+        acceptance_criteria:
+          - given: Legacy sessions exist in .kspec/sessions/ but not in .kspec-sessions/
+            id: ac-read-fallback
+            then: Returns results only from .kspec-sessions/. Does not transparently read from .kspec/sessions/.
+              If hasLegacySessions() is true, emits a warning advising the user to run kspec session
+              migrate.
+            when: Any session read operation executes (CLI or daemon)
+          - given: |
+              Legacy sessions exist in .kspec/sessions/ on kspec-meta
+            id: ac-no-write
+            then: |
+              Writes always go to .kspec-sessions/, never to .kspec/sessions/.
+            when: |
+              Any session write operation occurs (create, append, close, compact)
+          - given: Legacy sessions exist in .kspec/sessions/ but have not been migrated
+            id: ac-list-merge
+            then: Returns only sessions from .kspec-sessions/. A warning is shown indicating N legacy sessions
+              exist and advising to run kspec session migrate.
+            when: kspec session log list runs
+          - given: |
+              A session is read from the legacy .kspec/sessions/ location
+            id: ac-deprecation-warning
+            then: |
+              A deprecation warning is emitted (stderr, not stdout) noting
+              the legacy location. Warning includes guidance to run kspec session migrate.
+            when: |
+              The read completes
+          - given: |
+              kspec setup or kspec init runs
+            id: ac-shadow-gitignore
+            then: |
+              sessions/ is added to .kspec/.gitignore so no new session files
+              are tracked on kspec-meta. Existing history is preserved in git.
+            when: |
+              .kspec/sessions/ exists on kspec-meta
+          - given: |
+              Legacy sessions exist in .kspec/sessions/
+            id: ac-migration-copy
+            then: |
+              Copies session directories from .kspec/sessions/ to .kspec-sessions/.
+              Does not delete originals.
+            when: |
+              kspec session migrate runs
+          - given: |
+              Some sessions already exist in .kspec-sessions/
+            id: ac-migration-idempotent
+            then: |
+              Skips sessions that already exist in target.
+              Reports count of migrated and skipped sessions.
+            when: |
+              kspec session migrate runs
+        tags: []
         created: 2026-03-08T22:46:12.897Z
-        status:
-          maturity: draft
-          implementation: implemented
+        notes: []
       - _ulid: 01KK7T2BRVFT4E3NK8N44J9P98
         slugs:
           - session-spec-path-updates
         title: Update Existing Session Specs for Storage Separation
         type: requirement
-        tags: []
         description: |
           Update existing session-related specs that hardcode .kspec/sessions/ paths
           or inherit @trait-shadow-commit, to reflect the new .kspec-sessions/ storage
           location and the removal of shadow branch commits for sessions.
-        acceptance_criteria:
-          - id: ac-session-events-paths
-            given: |
-              @session-events ac-1 and ac-8 reference .kspec/sessions/{id}/
-            when: |
-              This plan is implemented
-            then: |
-              ACs are updated to reference .kspec-sessions/{id}/ instead.
-          - id: ac-session-events-commits
-            given: |
-              @session-events ac-7 says "events are included in next kspec commit"
-            when: |
-              This plan is implemented
-            then: |
-              AC is updated to reflect storage-mode-dependent behavior:
-              local mode has no commits, branch mode commits at lifecycle boundaries.
-          - id: ac-session-creation-paths
-            given: |
-              @session-creation-and-env-injection ac-create references .kspec/sessions/{id}/
-              and ac-budget-local references .kspec/sessions/{id}/budget.json
-            when: |
-              This plan is implemented
-            then: |
-              ACs are updated to reference .kspec-sessions/{id}/ instead.
-          - id: ac-compact-trait
-            given: |
-              @session-compact inherits @trait-shadow-commit
-            when: |
-              This plan is implemented
-            then: |
-              @trait-shadow-commit is removed from @session-compact since compact
-              now operates on .kspec-sessions/ which is not the shadow worktree.
-          - id: ac-stale-cleanup-trait
-            given: |
-              @session-stale-cleanup inherits @trait-shadow-commit
-            when: |
-              This plan is implemented
-            then: |
-              @trait-shadow-commit is removed from @session-stale-cleanup since
-              stale cleanup no longer commits to kspec-meta.
-          - id: ac-session-log-list-path
-            given: |
-              @session-log-list ac-1 references .kspec/sessions/ in its given clause
-            when: |
-              This plan is implemented
-            then: |
-              AC is updated to reference .kspec-sessions/ instead.
-          - id: ac-session-creation-description
-            given: |
-              @session-creation-and-env-injection description references
-              .kspec/sessions/{id}/budget.json
-            when: |
-              This plan is implemented
-            then: |
-              Description is updated to reference .kspec-sessions/ paths.
-          - id: ac-cli-ralph-path
-            given: |
-              @cli-ralph ac-22 references .kspec/sessions/{session}/tool-output/
-            when: |
-              This plan is implemented
-            then: |
-              AC is updated to reference .kspec-sessions/ paths instead.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
+        acceptance_criteria:
+          - given: |
+              @session-events ac-1 and ac-8 reference .kspec/sessions/{id}/
+            id: ac-session-events-paths
+            then: |
+              ACs are updated to reference .kspec-sessions/{id}/ instead.
+            when: |
+              This plan is implemented
+          - given: |
+              @session-events ac-7 says "events are included in next kspec commit"
+            id: ac-session-events-commits
+            then: |
+              AC is updated to reflect storage-mode-dependent behavior:
+              local mode has no commits, branch mode commits at lifecycle boundaries.
+            when: |
+              This plan is implemented
+          - given: |
+              @session-creation-and-env-injection ac-create references .kspec/sessions/{id}/
+              and ac-budget-local references .kspec/sessions/{id}/budget.json
+            id: ac-session-creation-paths
+            then: |
+              ACs are updated to reference .kspec-sessions/{id}/ instead.
+            when: |
+              This plan is implemented
+          - given: |
+              @session-compact inherits @trait-shadow-commit
+            id: ac-compact-trait
+            then: |
+              @trait-shadow-commit is removed from @session-compact since compact
+              now operates on .kspec-sessions/ which is not the shadow worktree.
+            when: |
+              This plan is implemented
+          - given: |
+              @session-stale-cleanup inherits @trait-shadow-commit
+            id: ac-stale-cleanup-trait
+            then: |
+              @trait-shadow-commit is removed from @session-stale-cleanup since
+              stale cleanup no longer commits to kspec-meta.
+            when: |
+              This plan is implemented
+          - given: |
+              @session-log-list ac-1 references .kspec/sessions/ in its given clause
+            id: ac-session-log-list-path
+            then: |
+              AC is updated to reference .kspec-sessions/ instead.
+            when: |
+              This plan is implemented
+          - given: |
+              @session-creation-and-env-injection description references
+              .kspec/sessions/{id}/budget.json
+            id: ac-session-creation-description
+            then: |
+              Description is updated to reference .kspec-sessions/ paths.
+            when: |
+              This plan is implemented
+          - given: |
+              @cli-ralph ac-22 references .kspec/sessions/{session}/tool-output/
+            id: ac-cli-ralph-path
+            then: |
+              AC is updated to reference .kspec-sessions/ paths instead.
+            when: |
+              This plan is implemented
+        tags: []
         created: 2026-03-08T22:46:13.019Z
-        status:
-          maturity: draft
-          implementation: implemented
+        notes: []
       - _ulid: 01KKB3PGBGX289R1JWSKP66683
         slugs:
           - session-cli-unified-filtering
         title: Session CLI Unified Filtering
         type: requirement
-        tags: []
         description: |
           Align CLI session log commands with the daemon API filtering
           capabilities. Currently the CLI has --status, --agent, --since
           but lacks --agent-id, --trigger, --task, and combined filters.
           Unify the filter vocabulary so CLI and UI use the same fields.
-        acceptance_criteria:
-          - id: ac-agent-id-filter
-            given: |
-              Sessions exist with different agent_id values
-            when: |
-              kspec session log list --agent-id worker is run
-            then: |
-              Only sessions with agent_id "worker" are listed
-          - id: ac-trigger-filter
-            given: |
-              Sessions exist with various triggers
-            when: |
-              kspec session log list --trigger manual is run
-            then: |
-              Only sessions with matching trigger are listed.
-              --trigger dispatched matches all task.* triggers.
-          - id: ac-task-filter
-            given: |
-              Sessions exist with task_id references
-            when: |
-              kspec session log list --task @task-slug is run
-            then: |
-              Only sessions linked to that task are listed
-          - id: ac-backward-compat
-            given: |
-              The existing --agent flag is used
-            when: |
-              kspec session log list --agent claude-agent-acp is run
-            then: |
-              --agent continues to filter by agent_type as before.
-              Both --agent and --agent-type are accepted as synonyms.
-          - id: ac-combined
-            given: |
-              Multiple filters are specified
-            when: |
-              kspec session log list --status completed --agent-id worker --since 7d is run
-            then: |
-              All filters are AND'd together
-          - id: ac-json-output
-            given: |
-              Any filter combination is applied
-            when: |
-              --json flag is used
-            then: |
-              Output includes the filter criteria and filtered results in
-              structured JSON matching the daemon API response shape
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
@@ -1600,191 +1554,238 @@ features:
         traits:
           - "@trait-filterable-list"
           - "@trait-json-output"
-        notes: []
+        acceptance_criteria:
+          - given: |
+              Sessions exist with different agent_id values
+            id: ac-agent-id-filter
+            then: |
+              Only sessions with agent_id "worker" are listed
+            when: |
+              kspec session log list --agent-id worker is run
+          - given: |
+              Sessions exist with various triggers
+            id: ac-trigger-filter
+            then: |
+              Only sessions with matching trigger are listed.
+              --trigger dispatched matches all task.* triggers.
+            when: |
+              kspec session log list --trigger manual is run
+          - given: |
+              Sessions exist with task_id references
+            id: ac-task-filter
+            then: |
+              Only sessions linked to that task are listed
+            when: |
+              kspec session log list --task @task-slug is run
+          - given: |
+              The existing --agent flag is used
+            id: ac-backward-compat
+            then: |
+              --agent continues to filter by agent_type as before.
+              Both --agent and --agent-type are accepted as synonyms.
+            when: |
+              kspec session log list --agent claude-agent-acp is run
+          - given: |
+              Multiple filters are specified
+            id: ac-combined
+            then: |
+              All filters are AND'd together
+            when: |
+              kspec session log list --status completed --agent-id worker --since 7d is run
+          - given: |
+              Any filter combination is applied
+            id: ac-json-output
+            then: |
+              Output includes the filter criteria and filtered results in
+              structured JSON matching the daemon API response shape
+            when: |
+              --json flag is used
+        tags: []
         created: 2026-03-10T05:32:13.552Z
-        status:
-          maturity: draft
-          implementation: implemented
+        notes: []
+    created: 2026-03-02T01:22:19.874Z
+    notes: []
   - _ulid: 01KKNRBY570KKPAJ829WCE66P9
     slugs:
       - review-record-core-model
     title: Review Record Core Model
     type: feature
-    tags: []
     description: |
       kspec stores review records as first-party artifacts with a typed subject,
       separate lifecycle and disposition states, authorship, timestamps, an
       append-only event log, and links to the object under review.
-    acceptance_criteria:
-      - id: ac-1
-        given: |
-          A review is created for a plan, task, committed code change, or other
-          supported artifact
-        when: |
-          The review record is stored
-        then: |
-          The record captures subject binding, lifecycle state, author,
-          timestamps, and an empty event log in first-party kspec metadata
-      - id: ac-2
-        given: |
-          A review progresses through work
-        when: |
-          Any state-bearing mutation occurs
-        then: |
-          The review record has separate lifecycle_state (draft, open, closed,
-          archived) and computed disposition (pending, approved,
-          changes_requested) fields rather than collapsing lifecycle and outcome
-          into one status enum
-      - id: ac-3
-        given: |
-          A review references external systems such as GitHub
-        when: |
-          External identifiers or URLs exist
-        then: |
-          The review record stores those links without making them the source of
-          truth for local review state
-      - id: ac-4
-        given: |
-          Any mutation occurs on a review record including status changes,
-          verdict submissions, thread resolution, check additions, close, and
-          archive actions
-        when: |
-          The mutation is persisted
-        then: |
-          An append-only event is recorded with event type, actor, timestamp,
-          and relevant payload so the full review history can be reconstructed
-          from the event log
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
-    notes: []
-    created: 2026-03-14T08:45:51.655Z
+    acceptance_criteria:
+      - given: |
+          A review is created for a plan, task, committed code change, or other
+          supported artifact
+        id: ac-1
+        then: |
+          The record captures subject binding, lifecycle state, author,
+          timestamps, and an empty event log in first-party kspec metadata
+        when: |
+          The review record is stored
+      - given: |
+          A review progresses through work
+        id: ac-2
+        then: |
+          The review record has separate lifecycle_state (draft, open, closed,
+          archived) and computed disposition (pending, approved,
+          changes_requested) fields rather than collapsing lifecycle and outcome
+          into one status enum
+        when: |
+          Any state-bearing mutation occurs
+      - given: |
+          A review references external systems such as GitHub
+        id: ac-3
+        then: |
+          The review record stores those links without making them the source of
+          truth for local review state
+        when: |
+          External identifiers or URLs exist
+      - given: |
+          Any mutation occurs on a review record including status changes,
+          verdict submissions, thread resolution, check additions, close, and
+          archive actions
+        id: ac-4
+        then: |
+          An append-only event is recorded with event type, actor, timestamp,
+          and relevant payload so the full review history can be reconstructed
+          from the event log
+        when: |
+          The mutation is persisted
+    tags: []
+    parent: "@core"
     requirements:
       - _ulid: 01KKNRBY656P9FNPKJYP4KCCVJ
         slugs:
           - review-record-storage-and-identity
         title: Review Record Storage and Identity
         type: requirement
-        tags: []
         description: |
           Review records are stored as a first-party top-level entity with stable
           references so they can be addressed through normal kspec lookup and audit
           flows without being modeled as spec items.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              A review record is created
-            when: |
-              It is persisted in kspec metadata
-            then: |
-              The record is stored in dedicated first-party review storage rather
-              than being embedded ad hoc under plans, tasks, or module files
-          - id: ac-2
-            given: |
-              A review record exists
-            when: |
-              It is referenced through kspec commands
-            then: |
-              The review has a stable ULID-backed identity and can be addressed by
-              an @review ref using the shared reference system
-          - id: ac-3
-            given: |
-              Review records are stored in the shadow branch
-            when: |
-              A review mutation is committed
-            then: |
-              The review data lives in a single dedicated file per project rather
-              than being split across multiple files or embedded inside other entity
-              files, so each shadow branch commit touches one predictable path
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
-        created: 2026-03-14T08:45:51.685Z
+        acceptance_criteria:
+          - given: |
+              A review record is created
+            id: ac-1
+            then: |
+              The record is stored in dedicated first-party review storage rather
+              than being embedded ad hoc under plans, tasks, or module files
+            when: |
+              It is persisted in kspec metadata
+          - given: |
+              A review record exists
+            id: ac-2
+            then: |
+              The review has a stable ULID-backed identity and can be addressed by
+              an @review ref using the shared reference system
+            when: |
+              It is referenced through kspec commands
+          - given: |
+              Review records are stored in the shadow branch
+            id: ac-3
+            then: |
+              The review data lives in a single dedicated file per project rather
+              than being split across multiple files or embedded inside other entity
+              files, so each shadow branch commit touches one predictable path
+            when: |
+              A review mutation is committed
+        tags: []
         parent: "@review-record-core-model"
-        status:
-          maturity: draft
-          implementation: implemented
+        created: 2026-03-14T08:45:51.685Z
+        notes: []
       - _ulid: 01KKNRBY6VD6FQ19B4NA8TAG7Y
         slugs:
           - review-subject-bindings
         title: Review Subject Bindings
         type: requirement
-        tags: []
         description: |
           Review records identify what is under review using git-backed compare
           semantics for code subjects and per-entity content hashing for shadow
           branch subjects. v1 covers committed code only.
+        status:
+          maturity: draft
+          implementation: implemented
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
         acceptance_criteria:
-          - id: ac-1
-            given: |
+          - given: |
               A review is created for a plan, task, spec, committed code, or other
               supported artifact
-            when: |
-              The subject binding is stored
+            id: ac-1
             then: |
               The record captures subject type plus a stable local ref or external
               identity that can be used to reopen the review later
-          - id: ac-2
-            given: |
-              A review subject has both a local kspec ref and an external identity
             when: |
-              The review record is stored
+              The subject binding is stored
+          - given: |
+              A review subject has both a local kspec ref and an external identity
+            id: ac-2
             then: |
               The local ref remains authoritative while external identifiers are
               kept as linkage metadata
-          - id: ac-3
-            given: |
-              A review targets committed code
             when: |
-              The subject binding is stored
+              The review record is stored
+          - given: |
+              A review targets committed code
+            id: ac-3
             then: |
               The record stores base_commit, head_commit, and optionally
               merge_base_commit as the frozen compare context, with branch names
               stored only as optional metadata and never as the authoritative
               identity
-          - id: ac-4
-            given: |
-              A review targets a shadow-branch entity such as a plan, spec, or task
             when: |
               The subject binding is stored
+          - given: |
+              A review targets a shadow-branch entity such as a plan, spec, or task
+            id: ac-4
             then: |
               The record stores the shadow branch commit plus a per-entity content
               hash so review mutations on the same shadow branch do not
               self-invalidate the subject freshness check
-          - id: ac-5
-            given: |
-              The reviewed subject has changed since the review was created
             when: |
-              Staleness is evaluated after a review refresh updates the subject
-              version
+              The subject binding is stored
+          - given: |
+              The reviewed subject has changed since the review was created
+            id: ac-5
             then: |
               Verdicts and checks whose applies_to_version does not match the
               refreshed subject version are identified as stale, and for
               shadow-branch subjects the entity content hash is compared rather
               than shadow branch HEAD which would self-invalidate on every review
               mutation
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        traits: []
-        notes: []
-        created: 2026-03-14T08:45:51.707Z
+            when: |
+              Staleness is evaluated after a review refresh updates the subject
+              version
+        tags: []
         parent: "@review-record-core-model"
-        status:
-          maturity: draft
-          implementation: implemented
+        created: 2026-03-14T08:45:51.707Z
+        notes: []
       - _ulid: 01KKNRBY7HTB4H4NYJXQWZG54V
         slugs:
           - review-comment-threads-and-anchors
         title: Review Comment Threads and Anchors
         type: requirement
-        tags: []
         description: |
           Review comments support both general feedback and threaded targeted
           anchors. Code anchors use diff-side semantics (base or head side, file
@@ -1792,153 +1793,153 @@ features:
           in plans, specs, and other artifacts. Each thread has a ULID-based
           identifier and a kind that distinguishes blocking from non-blocking
           feedback.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              A reviewer wants to leave general feedback
-            when: |
-              A comment is created without a target anchor
-            then: |
-              The comment is stored as a general review thread entry with a ULID
-              thread identifier, author, kind, and timestamps
-          - id: ac-2
-            given: |
-              A reviewer wants to comment on code
-            when: |
-              The comment targets a file and line or range
-            then: |
-              The review record stores a code anchor with path, side (base or
-              head), line_start, line_end, and commit so the comment can be
-              rendered against the correct diff context
-          - id: ac-3
-            given: |
-              A reviewer wants to comment on a plan, spec, or other structured
-              artifact
-            when: |
-              The comment targets a section, field, or logical anchor
-            then: |
-              The review record stores the structured anchor and renders it as
-              targeted feedback on that artifact
-          - id: ac-4
-            given: |
-              A reviewer or author replies to an existing review comment
-            when: |
-              The reply is stored
-            then: |
-              The conversation is preserved as a durable thread rather than
-              isolated standalone comments
-          - id: ac-5
-            given: |
-              A reviewer creates a thread
-            when: |
-              The thread kind is specified or defaulted
-            then: |
-              The thread stores a kind field that distinguishes at least blocker,
-              question, and nit so the system can determine which unresolved
-              threads should block approval and which should not
-          - id: ac-6
-            given: |
-              Unresolved threads exist on a review
-            when: |
-              The review disposition is computed
-            then: |
-              Only threads with kind blocker prevent the review from being approved
-              while unresolved nit and question threads do not block
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
-        created: 2026-03-14T08:45:51.729Z
+        acceptance_criteria:
+          - given: |
+              A reviewer wants to leave general feedback
+            id: ac-1
+            then: |
+              The comment is stored as a general review thread entry with a ULID
+              thread identifier, author, kind, and timestamps
+            when: |
+              A comment is created without a target anchor
+          - given: |
+              A reviewer wants to comment on code
+            id: ac-2
+            then: |
+              The review record stores a code anchor with path, side (base or
+              head), line_start, line_end, and commit so the comment can be
+              rendered against the correct diff context
+            when: |
+              The comment targets a file and line or range
+          - given: |
+              A reviewer wants to comment on a plan, spec, or other structured
+              artifact
+            id: ac-3
+            then: |
+              The review record stores the structured anchor and renders it as
+              targeted feedback on that artifact
+            when: |
+              The comment targets a section, field, or logical anchor
+          - given: |
+              A reviewer or author replies to an existing review comment
+            id: ac-4
+            then: |
+              The conversation is preserved as a durable thread rather than
+              isolated standalone comments
+            when: |
+              The reply is stored
+          - given: |
+              A reviewer creates a thread
+            id: ac-5
+            then: |
+              The thread stores a kind field that distinguishes at least blocker,
+              question, and nit so the system can determine which unresolved
+              threads should block approval and which should not
+            when: |
+              The thread kind is specified or defaulted
+          - given: |
+              Unresolved threads exist on a review
+            id: ac-6
+            then: |
+              Only threads with kind blocker prevent the review from being approved
+              while unresolved nit and question threads do not block
+            when: |
+              The review disposition is computed
+        tags: []
         parent: "@review-record-core-model"
-        status:
-          maturity: draft
-          implementation: implemented
+        created: 2026-03-14T08:45:51.729Z
+        notes: []
       - _ulid: 01KKNRBY85S31QQM77CMT13SJD
         slugs:
           - review-checks-and-gate-evaluation
         title: Review Checks and Gate Evaluation
         type: requirement
-        tags: []
         description: |
           Reviews can include recorded checks and derived gate state such as test
           runs, local verification, CI runs, or manual attestations. Each check
           records the compare context it applies to so gate evaluation uses only
           checks that match the current reviewed state.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              A review requires tests, static checks, or other gates
-            when: |
-              Evidence is recorded
-            then: |
-              The review stores check records with name, status, timestamps,
-              runner, required flag, evidence payload or link, and the
-              applies_to_version context (base_commit and head_commit) identifying
-              which reviewed state the check ran against
-          - id: ac-2
-            given: |
-              A project has no external CI for a reviewable artifact
-            when: |
-              An agent or human performs verification locally
-            then: |
-              The review record can store that verification as a first-party check
-              run rather than requiring GitHub Actions
-          - id: ac-3
-            given: |
-              External CI exists
-            when: |
-              A check run is mirrored into the review record
-            then: |
-              The local review gate references the external run while preserving
-              the normalized local status model
-          - id: ac-4
-            given: |
-              Review policy requires all required gates to pass before approval
-            when: |
-              An approval is attempted
-            then: |
-              The system distinguishes required vs informational checks and
-              enforces the required ones
-          - id: ac-5
-            given: |
-              Multiple runs exist for the same logical check over the life of a
-              review
-            when: |
-              Gate state is evaluated
-            then: |
-              Check history is preserved while the current gate decision is
-              computed from the latest run whose applies_to_version matches the
-              current head_commit
-          - id: ac-6
-            given: |
-              The reviewed subject has been updated with new commits since the last
-              check run
-            when: |
-              Gate state is evaluated
-            then: >
-              Checks whose applies_to_version head_commit does not match the subject's current
-              version are treated as stale and do not satisfy required
-
-              gate checks
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
-        created: 2026-03-14T08:45:51.749Z
+        acceptance_criteria:
+          - given: |
+              A review requires tests, static checks, or other gates
+            id: ac-1
+            then: |
+              The review stores check records with name, status, timestamps,
+              runner, required flag, evidence payload or link, and the
+              applies_to_version context (base_commit and head_commit) identifying
+              which reviewed state the check ran against
+            when: |
+              Evidence is recorded
+          - given: |
+              A project has no external CI for a reviewable artifact
+            id: ac-2
+            then: |
+              The review record can store that verification as a first-party check
+              run rather than requiring GitHub Actions
+            when: |
+              An agent or human performs verification locally
+          - given: |
+              External CI exists
+            id: ac-3
+            then: |
+              The local review gate references the external run while preserving
+              the normalized local status model
+            when: |
+              A check run is mirrored into the review record
+          - given: |
+              Review policy requires all required gates to pass before approval
+            id: ac-4
+            then: |
+              The system distinguishes required vs informational checks and
+              enforces the required ones
+            when: |
+              An approval is attempted
+          - given: |
+              Multiple runs exist for the same logical check over the life of a
+              review
+            id: ac-5
+            then: |
+              Check history is preserved while the current gate decision is
+              computed from the latest run whose applies_to_version matches the
+              current head_commit
+            when: |
+              Gate state is evaluated
+          - given: |
+              The reviewed subject has been updated with new commits since the last
+              check run
+            id: ac-6
+            then: >
+              Checks whose applies_to_version head_commit does not match the subject's current
+              version are treated as stale and do not satisfy required
+
+              gate checks
+            when: |
+              Gate state is evaluated
+        tags: []
         parent: "@review-record-core-model"
-        status:
-          maturity: draft
-          implementation: implemented
+        created: 2026-03-14T08:45:51.749Z
+        notes: []
       - _ulid: 01KKNRBY8S23TZN5MBJND7C0YK
         slugs:
           - review-verdicts-and-resolution-lifecycle
         title: Review Verdicts and Resolution Lifecycle
         type: requirement
-        tags: []
         description: |
           Reviews support individual reviewer verdicts, blocking requests for
           change, thread resolution, and iterative re-review cycles without losing
@@ -1946,45 +1947,49 @@ features:
           approvals can be invalidated when the reviewed state changes. Reviewer
           identity is a plain string matching the author convention used by task
           notes and git config (e.g. "user@example.com" or "agent-name").
+        status:
+          maturity: draft
+          implementation: implemented
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
         acceptance_criteria:
-          - id: ac-1
-            given: |
+          - given: |
               One or more reviewers act on a review
-            when: |
-              They approve, request changes, or leave non-blocking comments
+            id: ac-1
             then: |
               Their verdicts are recorded with the applies_to_version context
               (base_commit and head_commit) identifying the reviewed state, and
               stored distinctly from the overall review disposition
-          - id: ac-2
-            given: |
-              A targeted review thread results in follow-up work
             when: |
-              The issue is addressed
+              They approve, request changes, or leave non-blocking comments
+          - given: |
+              A targeted review thread results in follow-up work
+            id: ac-2
             then: |
               The thread can be marked resolved with timestamp and actor
-          - id: ac-3
-            given: |
-              A review subject goes through multiple cycles
             when: |
-              It moves from review to changes requested to re-review
-            then: |
-              The same review record tracks iteration through its event log and
-              compare context updates without losing the audit trail
-          - id: ac-4
-            given: |
+              The issue is addressed
+          - given: a review subject goes through multiple cycles
+            id: ac-3
+            then: each review cycle produces its own review record; the collection of records across cycles
+              comprises the full review history without losing the audit trail, with each record
+              preserving the verdict, disposition, and compare context from its cycle
+            when: it moves from review to changes requested to re-review
+          - given: |
               Required gates are failing, blocking threads are unresolved, or
               blocking change requests remain open
-            when: |
-              The review disposition is evaluated
+            id: ac-4
             then: |
               The computed disposition cannot be approved while those blockers
               remain open
-          - id: ac-5
-            given: |
-              Multiple reviewers have recorded verdicts on the same review
             when: |
-              The aggregate review disposition is computed
+              The review disposition is evaluated
+          - given: |
+              Multiple reviewers have recorded verdicts on the same review
+            id: ac-5
             then: >
               The default aggregation rule is that any changes_requested verdict
 
@@ -1998,220 +2003,213 @@ features:
               current head_commit is required for the review to be considered
 
               approved
-          - id: ac-6
-            given: |
+            when: |
+              The aggregate review disposition is computed
+          - given: |
               Review policy requires more than one approval, distinguishes reviewer
               roles, or allows explicit override authority
-            when: |
-              The verdict schema is defined
+            id: ac-6
             then: |
               Each verdict record includes a reviewer identity string, a role
               field with a default value, and a timestamp so aggregation queries
               can filter by role and count approvals without a schema redesign
-          - id: ac-7
-            given: |
-              The reviewed subject has been updated since the last approval
             when: |
-              The review disposition is computed
+              The verdict schema is defined
+          - given: |
+              The reviewed subject has been updated since the last approval
+            id: ac-7
             then: |
               Verdicts whose applies_to_version does not match the subject's
               current version are treated as stale and excluded from the
               aggregation computation
-          - id: ac-8
-            given: |
+            when: |
+              The review disposition is computed
+          - given: |
               A reviewer submits a new verdict on the same review after a
               previous verdict
-            when: |
-              The aggregate disposition is computed
+            id: ac-8
             then: |
               Only the latest verdict per reviewer whose applies_to_version
               matches the current subject version is considered, so a reviewer
               who requests changes and later approves the same version does not
               remain permanently blocking
-          - id: ac-9
-            given: |
+            when: |
+              The aggregate disposition is computed
+          - given: |
               A review is no longer active because its subject completed, was
               cancelled, or was superseded
-            when: |
-              The review lifecycle is finalized
+            id: ac-9
             then: |
               The system supports explicit closed or archived terminal handling
               rather than relying on deletion as the only cleanup path
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        traits: []
-        notes: []
-        created: 2026-03-14T08:45:51.769Z
+            when: |
+              The review lifecycle is finalized
+        tags: []
         parent: "@review-record-core-model"
-        status:
-          maturity: draft
-          implementation: implemented
+        created: 2026-03-14T08:45:51.769Z
+        notes: []
       - _ulid: 01KKNRBY9J2BYDRA6WEM4B5G03
         slugs:
           - review-record-validation
         title: Review Record Validation
         type: requirement
-        tags: []
         description: |
           Review entities use explicit schema validation so nested review data is
           checked consistently during parsing, persistence, and command mutation.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              Review records, threads, checks, verdicts, events, and subject
-              bindings are persisted or mutated
-            when: |
-              The data is validated
-            then: |
-              The review model is covered by first-party schema validation rather
-              than relying on loosely typed metadata blobs
-          - id: ac-2
-            given: |
-              Invalid review data is supplied through import, CLI mutation, or
-              future automation paths
-            when: |
-              Validation fails
-            then: |
-              The system rejects the mutation with actionable validation feedback
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
-        created: 2026-03-14T08:45:51.794Z
+        acceptance_criteria:
+          - given: |
+              Review records, threads, checks, verdicts, events, and subject
+              bindings are persisted or mutated
+            id: ac-1
+            then: |
+              The review model is covered by first-party schema validation rather
+              than relying on loosely typed metadata blobs
+            when: |
+              The data is validated
+          - given: |
+              Invalid review data is supplied through import, CLI mutation, or
+              future automation paths
+            id: ac-2
+            then: |
+              The system rejects the mutation with actionable validation feedback
+            when: |
+              Validation fails
+        tags: []
         parent: "@review-record-core-model"
-        status:
-          maturity: draft
-          implementation: implemented
+        created: 2026-03-14T08:45:51.794Z
+        notes: []
       - _ulid: 01KKNRBYA7AA4YXRBVRDC7PMHY
         slugs:
           - review-task-lifecycle-integration
         title: Review Task Lifecycle Integration
         type: requirement
-        tags: []
         description: |
           Review records integrate with task workflow signals and compatibility
           fields without replacing the lightweight task lifecycle model already
           used by kspec. The integration defines exact synchronization rules for
           when review state drives task transitions and when it does not.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              A task is in pending_review or needs_work
-            when: |
-              A review record exists for that task or its code work
-            then: |
-              The task can link to the active review record via a review_ref field
-              while task status remains the lightweight workflow signal
-          - id: ac-2
-            given: |
-              A review is created with a task as its subject
-            when: |
-              The review add command runs with a task subject
-            then: |
-              The review_ref field on the task is automatically set to the new
-              review record ref
-          - id: ac-3
-            given: |
-              A code review is created with a related task ref
-            when: |
-              The review add command runs with --related @task-ref
-            then: |
-              The review stores the task in related_refs and the task's
-              review_ref is set to the new review, so code reviews can be
-              discovered from task context even when the subject is code not
-              a task
-          - id: ac-4
-            given: |
-              A reviewer sets a changes_requested verdict on a task review
-            when: |
-              The verdict is recorded
-            then: |
-              The task is automatically transitioned to needs_work if it was in
-              pending_review
-          - id: ac-5
-            given: |
-              A task is in pending_review with no active review record or a
-              review_ref pointing at a closed review
-            when: |
-              The task state is rendered or validated
-            then: |
-              The system surfaces a warning about the inconsistent review linkage
-          - id: ac-6
-            given: |
-              A task-associated review records changes requested and later returns
-              for re-review
-            when: |
-              The task moves between needs_work and pending_review
-            then: |
-              The review history remains intact instead of being replaced by ad hoc
-              task notes
-          - id: ac-7
-            given: |
-              A task or review has an external PR URL or provider identifier
-            when: |
-              Review state is rendered or audited locally
-            then: |
-              The external link is treated as compatibility linkage, not the sole
-              durable review record
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
-        created: 2026-03-14T08:45:51.815Z
+        acceptance_criteria:
+          - given: |
+              A task is in pending_review or needs_work
+            id: ac-1
+            then: |
+              The task can link to the active review record via a review_ref field
+              while task status remains the lightweight workflow signal
+            when: |
+              A review record exists for that task or its code work
+          - given: |
+              A review is created with a task as its subject
+            id: ac-2
+            then: |
+              The review_ref field on the task is automatically set to the new
+              review record ref
+            when: |
+              The review add command runs with a task subject
+          - given: |
+              A code review is created with a related task ref
+            id: ac-3
+            then: |
+              The review stores the task in related_refs and the task's
+              review_ref is set to the new review, so code reviews can be
+              discovered from task context even when the subject is code not
+              a task
+            when: |
+              The review add command runs with --related @task-ref
+          - given: |
+              A reviewer sets a changes_requested verdict on a task review
+            id: ac-4
+            then: |
+              The task is automatically transitioned to needs_work if it was in
+              pending_review
+            when: |
+              The verdict is recorded
+          - given: |
+              A task is in pending_review with no active review record or a
+              review_ref pointing at a closed review
+            id: ac-5
+            then: |
+              The system surfaces a warning about the inconsistent review linkage
+            when: |
+              The task state is rendered or validated
+          - given: |
+              A task-associated review records changes requested and later returns
+              for re-review
+            id: ac-6
+            then: |
+              The review history remains intact instead of being replaced by ad hoc
+              task notes
+            when: |
+              The task moves between needs_work and pending_review
+          - given: |
+              A task or review has an external PR URL or provider identifier
+            id: ac-7
+            then: |
+              The external link is treated as compatibility linkage, not the sole
+              durable review record
+            when: |
+              Review state is rendered or audited locally
+        tags: []
         parent: "@review-record-core-model"
-        status:
-          maturity: draft
-          implementation: implemented
-    parent: "@core"
-    status:
-      maturity: draft
-      implementation: implemented
-notes:
-  - _ulid: 01KFA9VSSX2B220DNRCKBBT5WX
-    created_at: 2026-01-19T04:57:56.798Z
-    author: "@claude"
-    content: Test note for spec item notes feature
-    supersedes: null
+        created: 2026-03-14T08:45:51.815Z
+        notes: []
+    created: 2026-03-14T08:45:51.655Z
+    notes: []
 requirements:
   - _ulid: 01KKB8FCEPMCC7J05GV278WKGT
     slugs:
       - core-ac-backfill
     title: Core Primitives AC Backfill
     type: requirement
-    tags: []
     description: |
       Add acceptance criteria to foundational spec items under @core that
       currently lack them: ULID system, slug system, reference system,
       item types, relationship types, and status lifecycle. These are the
       building blocks — their ACs define what correctness means for everything
       built on top.
-    acceptance_criteria:
-      - id: ac-coverage
-        given: |
-          All feature and requirement items under @core module
-        when: |
-          kspec validate --completeness runs
-        then: |
-          Zero "missing acceptance criteria" warnings for @core descendants
-      - id: ac-testable
-        given: |
-          Each newly added AC
-        when: |
-          It is reviewed
-        then: It follows given/when/then format with concrete, observable outcomes
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
-    notes: []
+    acceptance_criteria:
+      - given: |
+          All feature and requirement items under @core module
+        id: ac-coverage
+        then: |
+          Zero "missing acceptance criteria" warnings for @core descendants
+        when: |
+          kspec validate --completeness runs
+      - given: |
+          Each newly added AC
+        id: ac-testable
+        then: It follows given/when/then format with concrete, observable outcomes
+        when: |
+          It is reviewed
+    tags: []
     created: 2026-03-10T06:55:43.062Z
-    status:
-      maturity: draft
-      implementation: implemented
+    notes: []
+notes:
+  - _ulid: 01KFA9VSSX2B220DNRCKBBT5WX
+    content: Test note for spec item notes feature
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T04:57:56.798Z
