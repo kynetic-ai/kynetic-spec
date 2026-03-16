@@ -102063,8 +102063,11 @@
   spec_ref: "@task-activity-git-query"
   plan_ref: "@plan-task-activity-timeline"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Implements getRawTaskCommits() and findTaskBlockLines() in
+    src/utils/activity.ts with 13 passing tests covering ac-1 (all commits returned) and ac-2
+    (task-scoped filtering). No regressions.
   depends_on:
     - "@01KKVW67"
   context: []
@@ -102086,6 +102089,7 @@
   created_at: 2026-03-16T20:19:37.440Z
   started_at: 2026-03-16T22:33:36.570Z
   submitted_at: 2026-03-16T22:44:19.382Z
+  completed_at: 2026-03-16T22:55:10.440Z
   notes:
     - _ulid: 01KKWCT2N6CHXSBC0GZ9T6ZFVS
       content: "Implemented getRawTaskCommits() and findTaskBlockLines() in src/utils/activity.ts. Uses
