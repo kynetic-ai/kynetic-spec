@@ -99821,9 +99821,18 @@
     - web-ui
     - docs
   vcs_refs: []
+  submission_linkage:
+    branch: main
+    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/main
+    review_url: null
+    captured_at: 2026-03-16T00:13:51.603Z
   session_id: 01KKSZ2MF6917GR5DRAASMRXWH
   created_at: 2026-03-15T19:50:43.248Z
   started_at: 2026-03-16T00:00:18.487Z
+  submitted_at: 2026-03-16T00:13:52.571Z
   notes:
     - _ulid: 01KKSZ96ZVAKGCWTQGTF2F48W1
       created_at: 2026-03-16T00:03:40.155Z
@@ -99849,17 +99858,26 @@
         - Verification: npm test (full suite), grep for agent_text_chunk confirming zero production
         references
       supersedes: null
+    - _ulid: 01KKSZWW55S8EDKP9SG99K78FA
+      created_at: 2026-03-16T00:14:24.421Z
+      author: "@claude"
+      content: |-
+        Completed cleanup. PR #890 created.
+
+        Summary:
+        - Updated @ui-session-stream ac-2 to reference typed WebSocket session events
+        - Removed AgentTextChunkEventData type from shared/websocket.ts  
+        - Removed agent_text_chunk from ws-invalidation.ts streaming events set
+        - Removed deprecated accumulateStreamingText() from session-utils.ts
+        - Removed backward-compat tests for legacy agent_text_chunk
+        - Updated test assertions to verify agent_text_chunk absence
+        - Renamed test helper emitAgentTextChunk → emitSessionTextEvent
+        - Updated ui-data-layer skill docs
+
+        Net: 7 insertions, 147 deletions across 8 files. Full test suite passes (5543 tests).
+      supersedes: null
   todos: []
   automation: eligible
-  submitted_at: 2026-03-16T00:13:52.571Z
-  submission_linkage:
-    branch: main
-    commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/main
-    review_url: null
-    captured_at: 2026-03-16T00:13:51.603Z
 - _ulid: 01KKSRDQY1HZBENKBD06V6KDGW
   slugs: []
   title: Implement session summary stats persistence and live counters
