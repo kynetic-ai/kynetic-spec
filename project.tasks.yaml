@@ -100429,7 +100429,7 @@
   spec_ref: "@project-config"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -100597,3 +100597,10 @@
       supersedes: null
   todos: []
   automation: eligible
+  completed_at: 2026-03-16T00:57:24.867Z
+  closed_reason: "Merged in PR #892. Added typed hooks configuration section to kspec.config.yaml with
+    checkpoint (default: false) and prompt_check (default: true) fields. Setup now conditionally
+    installs/removes hooks based on config preferences and is idempotent. All 4 own ACs covered
+    (ac-hooks-section, ac-hooks-missing-keys, ac-hooks-no-config, ac-hooks-validation) with tests at
+    both parser and setup layers. Two SUGGESTIONs noted (HooksPreferences type duplication, removal
+    logic duplication) — non-blocking."
