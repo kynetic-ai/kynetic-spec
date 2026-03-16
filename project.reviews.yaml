@@ -351,7 +351,45 @@ reviews:
       content_hash: ""
     author: "@claude"
     related_refs: []
-    threads: []
+    threads:
+      - _ulid: 01KKTRXVREZJCZNSQQYFH2SRRF
+        kind: blocker
+        entries:
+          - _ulid: 01KKTRXVRFMAAJP8XFDZT088JB
+            author: "@claude"
+            body: >-
+              **API spec ac-3 is too broad — should be split into individual mutation endpoints.**
+
+
+              ac-3 lumps five distinct mutation operations (POST comment, POST verdict, POST check,
+              PATCH resolve thread, PATCH lifecycle transition) into a single acceptance criterion.
+              Each of these is a different endpoint with different request shapes, different
+              validation rules, and different side effects (e.g., verdict submission may trigger
+              task state transitions via handleVerdictTaskTransition). A single AC cannot
+              meaningfully be tested — when would you mark it as satisfied?
+
+
+              Recommendation: Split ac-3 into separate ACs for each mutation endpoint:
+
+              - ac-3a: POST /api/reviews/:id/threads (create thread/comment)
+
+              - ac-3b: POST /api/reviews/:id/threads/:threadId/replies (reply to thread)
+
+              - ac-3c: POST /api/reviews/:id/verdicts (submit verdict)
+
+              - ac-3d: POST /api/reviews/:id/checks (record check)
+
+              - ac-3e: PATCH /api/reviews/:id/threads/:threadId/resolve (resolve thread)
+
+              - ac-3f: PATCH /api/reviews/:id/threads/:threadId/reopen (reopen thread)
+
+              - ac-3g: POST /api/reviews/:id/lifecycle (lifecycle transitions: open, close, archive)
+
+
+              The existing review library already has distinct functions for each (addThreadAtomic,
+              addReplyAtomic, resolveThreadAtomic, reopenThreadAtomic, submitVerdict,
+              transitionLifecycle) — the API spec should mirror this granularity.
+            created_at: 2026-03-16T07:31:51.183Z
     checks: []
     verdicts: []
     events:
@@ -368,7 +406,14 @@ reviews:
         payload:
           from: draft
           to: open
+      - _ulid: 01KKTRXVRMD2PVYTB7WR4PSG7S
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:31:51.188Z
+        payload:
+          thread_ulid: 01KKTRXVREZJCZNSQQYFH2SRRF
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T07:29:52.508Z
-    updated_at: 2026-03-16T07:30:03.651Z
+    updated_at: 2026-03-16T07:31:51.183Z
