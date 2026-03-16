@@ -1845,6 +1845,28 @@ reviews:
               /api/diff/:range/:path?expand=true&start=N&end=N`, or use a distinct route prefix like
               `GET /api/diff/:range/expand-context?path=X&start=N&end=N`.
             created_at: 2026-03-16T08:21:29.313Z
+      - _ulid: 01KKTVS3JBQB956MEDG81RTV72
+        kind: nit
+        entries:
+          - _ulid: 01KKTVS3JBHP97KJRDCKRH012E
+            author: "@claude"
+            body: >-
+              **NIT: npm package verification — both packages exist and are viable**
+
+
+              Verified:
+
+              - `@git-diff-view/svelte` — exists on npm (from MrWangJustToDo/git-diff-view repo).
+              Provides native Svelte diff components with widget system, split/unified views, syntax
+              highlighting. The plan's description of `renderWidgetLine`, `onAddWidgetClick`, and
+              `extendData` APIs is accurate per the repo docs.
+
+              - `parse-git-diff` — exists on npm (v0.0.19). Zero-dependency parser for raw git diff
+              output. MIT licensed.
+
+
+              Both packages are appropriate choices for the specified use case.
+            created_at: 2026-03-16T08:21:41.067Z
     checks: []
     verdicts: []
     events:
@@ -1882,7 +1904,14 @@ reviews:
         payload:
           thread_ulid: 01KKTVRR31F3408SRDYCT4Q6T0
           kind: blocker
+      - _ulid: 01KKTVS3JZ508BABP2HMQ241YC
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T08:21:41.087Z
+        payload:
+          thread_ulid: 01KKTVS3JBQB956MEDG81RTV72
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T08:18:45.731Z
-    updated_at: 2026-03-16T08:21:29.313Z
+    updated_at: 2026-03-16T08:21:41.067Z
