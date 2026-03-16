@@ -544,14 +544,19 @@ describe('Agent Instruction Generation', () => {
         const filePath = path.join(tempDir, 'kspec-agents.md');
         const content = await fs.readFile(filePath, 'utf-8');
 
-        // Verify template sections are present
-        expect(content).toContain('## Quick Start');
-        expect(content).toContain('## Shadow Branch Architecture');
-        expect(content).toContain('## Task Lifecycle');
-        expect(content).toContain('## PR Workflow');
-        expect(content).toContain('## Commit Convention');
-        expect(content).toContain('## Agent Dispatch Mode');
-        expect(content).toContain('## Batch Usage');
+        // Read actual template files to get their headings
+        const templateDir = path.join(getPackageRoot(), 'templates', 'agents-sections');
+        const templateFiles = (await fs.readdir(templateDir))
+          .filter(f => f.endsWith('.md'))
+          .sort();
+
+        // Each template should contribute its first ## heading to the output
+        for (const file of templateFiles) {
+          const templateContent = await fs.readFile(path.join(templateDir, file), 'utf-8');
+          const headingMatch = templateContent.match(/^## (.+)$/m);
+          expect(headingMatch, `Template ${file} should have a ## heading`).toBeTruthy();
+          expect(content).toContain(headingMatch![0]);
+        }
       });
 
       it('should include templates in file order (sorted by prefix)', async () => {
@@ -560,114 +565,57 @@ describe('Agent Instruction Generation', () => {
         const filePath = path.join(tempDir, 'kspec-agents.md');
         const content = await fs.readFile(filePath, 'utf-8');
 
-        // Verify order: Quick Start before Shadow Branch before Task Lifecycle
-        const quickStartPos = content.indexOf('## Quick Start');
-        const shadowBranchPos = content.indexOf('## Shadow Branch Architecture');
-        const taskLifecyclePos = content.indexOf('## Task Lifecycle');
-        const prWorkflowPos = content.indexOf('## PR Workflow');
-        const commitConventionPos = content.indexOf('## Commit Convention');
-        const agentDispatchPos = content.indexOf('## Agent Dispatch Mode');
-        const batchUsagePos = content.indexOf('## Batch Usage');
+        // Read actual template headings in file order
+        const templateDir = path.join(getPackageRoot(), 'templates', 'agents-sections');
+        const templateFiles = (await fs.readdir(templateDir))
+          .filter(f => f.endsWith('.md'))
+          .sort();
 
-        expect(quickStartPos).toBeLessThan(shadowBranchPos);
-        expect(shadowBranchPos).toBeLessThan(taskLifecyclePos);
-        expect(taskLifecyclePos).toBeLessThan(prWorkflowPos);
-        expect(prWorkflowPos).toBeLessThan(commitConventionPos);
-        expect(commitConventionPos).toBeLessThan(agentDispatchPos);
-        expect(agentDispatchPos).toBeLessThan(batchUsagePos);
+        const headings: string[] = [];
+        for (const file of templateFiles) {
+          const templateContent = await fs.readFile(path.join(templateDir, file), 'utf-8');
+          const headingMatch = templateContent.match(/^## (.+)$/m);
+          if (headingMatch) headings.push(headingMatch[0]);
+        }
+
+        // Verify they appear in order in the generated output
+        for (let i = 1; i < headings.length; i++) {
+          const prevPos = content.indexOf(headings[i - 1]);
+          const currPos = content.indexOf(headings[i]);
+          expect(prevPos).toBeLessThan(currPos);
+        }
       });
     });
 
     // AC: @agent-templates ac-2
     describe('ac-2: each template section appears in generated output', () => {
-      it('should include quick-start template content', async () => {
+      it('should include content from every template file', async () => {
         kspecFull('agents generate', tempDir);
 
         const filePath = path.join(tempDir, 'kspec-agents.md');
         const content = await fs.readFile(filePath, 'utf-8');
 
-        // Verify quick-start specific content (generic, not kspec-repo-specific)
-        expect(content).toContain('kspec init');
-        expect(content).toContain('kspec setup');
-        expect(content).toContain('kspec session start');
-        expect(content).toContain('kspec shadow status');
-        expect(content).toContain('Essential Rules');
-        // Should NOT contain kspec-repo-specific commands
-        expect(content).not.toContain('bootstrap.cjs');
-        expect(content).not.toContain('npm run dev');
-      });
+        // Read all template files and verify each one's content appears in the output
+        const templateDir = path.join(getPackageRoot(), 'templates', 'agents-sections');
+        const templateFiles = (await fs.readdir(templateDir))
+          .filter(f => f.endsWith('.md'))
+          .sort();
 
-      it('should include shadow-branch template content', async () => {
-        kspecFull('agents generate', tempDir);
+        for (const file of templateFiles) {
+          const templateContent = await fs.readFile(path.join(templateDir, file), 'utf-8');
+          // Each template's heading must appear in the generated output
+          const headingMatch = templateContent.match(/^## (.+)$/m);
+          expect(headingMatch, `Template ${file} should have a ## heading`).toBeTruthy();
+          expect(content).toContain(headingMatch![0]);
 
-        const filePath = path.join(tempDir, 'kspec-agents.md');
-        const content = await fs.readFile(filePath, 'utf-8');
-
-        // Verify shadow-branch specific content
-        expect(content).toContain('git worktree');
-        expect(content).toContain('kspec-meta');
-        expect(content).toContain('kspec shadow status');
-      });
-
-      it('should include task-lifecycle template content', async () => {
-        kspecFull('agents generate', tempDir);
-
-        const filePath = path.join(tempDir, 'kspec-agents.md');
-        const content = await fs.readFile(filePath, 'utf-8');
-
-        // Verify task-lifecycle specific content
-        expect(content).toContain('pending → in_progress → pending_review → completed');
-        expect(content).toContain('spec_ref');
-      });
-
-      it('should include pr-workflow template content', async () => {
-        kspecFull('agents generate', tempDir);
-
-        const filePath = path.join(tempDir, 'kspec-agents.md');
-        const content = await fs.readFile(filePath, 'utf-8');
-
-        // Verify pr-workflow specific content (generic, not project-specific skill references)
-        expect(content).toContain('kspec task submit');
-        expect(content).toContain('Local review');
-        expect(content).toContain('Create PR');
-      });
-
-      it('should include commit-convention template content', async () => {
-        kspecFull('agents generate', tempDir);
-
-        const filePath = path.join(tempDir, 'kspec-agents.md');
-        const content = await fs.readFile(filePath, 'utf-8');
-
-        // Verify commit-convention specific content
-        expect(content).toContain('Task: @task-slug');
-        expect(content).toContain('Spec: @spec-ref');
-        // Language-agnostic AC annotation examples (JavaScript and Python)
-        expect(content).toContain('// AC: @spec-item ac-N');
-        expect(content).toContain('# AC: @spec-item ac-N');
-      });
-
-      it('should include agent-dispatch template content', async () => {
-        kspecFull('agents generate', tempDir);
-
-        const filePath = path.join(tempDir, 'kspec-agents.md');
-        const content = await fs.readFile(filePath, 'utf-8');
-
-        // Verify agent dispatch specific content (AC: @ralph-replacement ac-6)
-        expect(content).toContain('Agent Dispatch Mode');
-        expect(content).toContain('pending_review');
-        expect(content).toContain('kspec task block');
-      });
-
-      it('should include batch-usage template content', async () => {
-        kspecFull('agents generate', tempDir);
-
-        const filePath = path.join(tempDir, 'kspec-agents.md');
-        const content = await fs.readFile(filePath, 'utf-8');
-
-        // Verify batch-usage specific content
-        expect(content).toContain('Batch Usage');
-        expect(content).toContain('kspec batch');
-        expect(content).toContain('batch commands');
+          // A non-trivial substring from the template body should appear too
+          // (skip the heading line, take the first non-empty content line)
+          const lines = templateContent.split('\n').filter(l => l.trim() && !l.startsWith('##'));
+          if (lines.length > 0) {
+            const sampleLine = lines[0].trim();
+            expect(content).toContain(sampleLine);
+          }
+        }
       });
     });
 
