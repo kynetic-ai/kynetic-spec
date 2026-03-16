@@ -86,7 +86,25 @@ reviews:
       content_hash: ""
     author: "@claude"
     related_refs: []
-    threads: []
+    threads:
+      - _ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
+        kind: blocker
+        anchor:
+          type: code
+          path: templates/agents-sections/04-pr-workflow.md
+          side: head
+          line_start: 1
+          line_end: 1
+          commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
+        entries:
+          - _ulid: 01KKTMWB9BGKQKCV3ZTG05ZET8
+            author: "@claude"
+            body: "MUST-FIX: Template renamed from '## PR Workflow' to '## Work and Review Lifecycle' but
+              tests/agents-instruction-gen.test.ts was not updated. 3 test failures: (1) line 551
+              expects '## PR Workflow', (2) line 567 uses indexOf('## PR Workflow'), (3) lines
+              631-632 expect 'Local review' and 'Create PR' which no longer appear in the template.
+              Tests must be updated to match the new template content."
+            created_at: 2026-03-16T06:21:07.243Z
     checks: []
     verdicts: []
     events:
@@ -103,7 +121,14 @@ reviews:
         payload:
           from: draft
           to: open
+      - _ulid: 01KKTMWB9EMYRXP55JT78BX6K7
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T06:21:07.246Z
+        payload:
+          thread_ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T06:20:49.980Z
-    updated_at: 2026-03-16T06:20:57.589Z
+    updated_at: 2026-03-16T06:21:07.243Z
