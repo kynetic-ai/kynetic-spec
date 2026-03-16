@@ -1092,7 +1092,7 @@ features:
           implementation: implemented
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
   - _ulid: 01KJP27632FPGSCSMEP0332YDP
     slugs:
       - session-model-evolution
