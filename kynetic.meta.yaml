@@ -7840,8 +7840,8 @@ skills:
     _type: skill
     id: task-work
     name: Task Work
-    description: Structured task lifecycle — start, work, note, submit, complete. Fix cycle handling,
-      scope management, loop mode for automation, and quality gates.
+    description: Structured task lifecycle — start, work, note, submit, complete. AC annotations, fix
+      cycle handling via review records, scope management, and quality checks.
     origin: core
     version: 0.11.0
     platforms:
@@ -7872,9 +7872,9 @@ skills:
     _type: skill
     id: review
     name: Review
-    description: Kspec-specific review gates and first-party review records — spec alignment, AC
-      coverage, trait coverage, validation integration, and the review record CLI for creating,
-      inspecting, and managing durable review artifacts.
+    description: How to review work and use kspec review records. Covers both reviewer and worker
+      perspectives — creating reviews, structuring findings, AC coverage verification, review
+      principles, and the full review record interface.
     origin: core
     version: 0.11.0
     platforms:
@@ -8047,5 +8047,21 @@ skills:
       - droid
     depends_on: []
     tags: []
+    allowed_tools: []
+  - _ulid: 01KKTK010HQJMYQ116NPVYRN22
+    _type: skill
+    id: merge
+    name: Merge
+    description: Merge approved work into an integration branch. Local-first git merge with gates based
+      on kspec review disposition — approved status, passing checks, and resolved blocker threads.
+    origin: core
+    version: 0.11.0
+    platforms:
+      - claude-code
+      - codex
+      - droid
+    depends_on: []
+    tags:
+      - core
     allowed_tools: []
 includes: []
