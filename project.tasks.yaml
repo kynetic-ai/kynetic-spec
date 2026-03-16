@@ -100641,7 +100641,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -100651,6 +100651,7 @@
     - core
     - review
   vcs_refs: []
+  review_ref: "@01KKTMVTDW2EBX0YHND7N5RM37"
   submission_linkage:
     branch: dispatch/task/rewrite-core-skills-for-review-driven-architecture/01kkthzw
     commit: 5fd00bce799e8bbf49a1f685764e56845774acf5
@@ -100659,7 +100660,7 @@
     upstream_ref: null
     review_url: null
     captured_at: 2026-03-16T05:49:40.321Z
-  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+  session_id: null
   created_at: 2026-03-16T05:30:37.484Z
   started_at: 2026-03-16T05:36:27.882Z
   submitted_at: 2026-03-16T05:49:41.384Z
@@ -100704,8 +100705,12 @@
         from .claude/skills/ — they were missed during the initial cleanup (only .agents/skills/ was
         cleaned). Now all three render targets (.agents/, .claude/, .factory/) are clean."
       supersedes: null
+    - _ulid: 01KKTMXAAKHZ78BGE99NJJMMQE
+      created_at: 2026-03-16T06:21:39.027Z
+      author: "@claude"
+      content: "[FIX_CYCLE: 1] Review verdict: changes_requested by pr-reviewer@kspec.local"
+      supersedes: null
   todos: []
-  review_ref: "@01KKTMVTDW2EBX0YHND7N5RM37"
 - _ulid: 01KKTK96Z5M9T8WP900CPFWRNG
   slugs: []
   title: Remove skill table from kspec-agents.md and port descriptions to skill frontmatter
