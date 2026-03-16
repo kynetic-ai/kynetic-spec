@@ -2301,6 +2301,15 @@ reviews:
               regardless of gh CLI availability'). Not blocking since this task was created
               standalone, but spec coverage would be valuable for future trait AC verification.
             created_at: 2026-03-16T16:16:16.736Z
+          - _ulid: 01KKVQEPTC26HSPFD5ENFARGDK
+            author: "@claude"
+            body: "Spec @dispatch-workspace-configuration already has ac-5 covering publication_mode: 'Given
+              kspec.config.yaml sets dispatch.publication_mode to pull_request, manual_merge, or
+              auto / When the dispatcher resolves publication mode / Then the configured mode
+              governs how agents publish work, overriding auto-detection when not set to auto'. The
+              task also has spec_ref set to @dispatch-workspace-configuration. All tests annotated
+              with AC: @dispatch-workspace-configuration ac-5."
+            created_at: 2026-03-16T16:25:20.460Z
     checks:
       - name: vitest
         status: pass
@@ -2393,7 +2402,13 @@ reviews:
         timestamp: 2026-03-16T16:25:11.486Z
         payload:
           thread_ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
+      - _ulid: 01KKVQEPV2653354N8BG33KVXJ
+        event_type: thread_replied
+        actor: "@claude"
+        timestamp: 2026-03-16T16:25:20.482Z
+        payload:
+          thread_ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
     notes: []
     external_links: []
     created_at: 2026-03-16T16:10:16.911Z
-    updated_at: 2026-03-16T16:25:11.466Z
+    updated_at: 2026-03-16T16:25:20.460Z
