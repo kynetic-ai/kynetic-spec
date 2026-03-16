@@ -101711,7 +101711,7 @@
   spec_ref: null
   plan_ref: "@plan-task-activity-timeline"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -101720,7 +101720,9 @@
     - spec
     - reviews
   vcs_refs: []
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-16T20:19:33.392Z
+  started_at: 2026-03-16T21:32:17.970Z
   notes: []
   todos: []
 - _ulid: 01KKW4VK66MC4FXEE3FDPTTD53
