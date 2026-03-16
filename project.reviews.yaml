@@ -1418,6 +1418,19 @@ reviews:
               fallback — e.g., show the file path and line range without the snippet, with a note
               that the source is unavailable.
             created_at: 2026-03-16T07:59:10.261Z
+      - _ulid: 01KKTTG8AFCAC7NCM309T27AVS
+        kind: question
+        entries:
+          - _ulid: 01KKTTG8AFH2HC57H7A349F87S
+            author: "@claude"
+            body: "**AC-10 (structured anchor display): Good, minor clarification needed.** The AC correctly
+              specifies showing section/field context with a navigable link. The example format
+              ('acceptance_criteria > ac-3 on @spec-ref') is helpful. However, 'navigable link' is
+              ambiguous — does it navigate to the spec detail page in the web UI, or is it a
+              conceptual reference? Since the web UI has /specs or /items routes, clarify whether
+              the link targets an existing route (and what happens if that route doesn't exist yet)
+              or just renders as a styled reference badge."
+            created_at: 2026-03-16T07:59:22.447Z
     checks: []
     verdicts: []
     events:
@@ -1448,7 +1461,14 @@ reviews:
         payload:
           thread_ulid: 01KKTTFWDN9JQWEC19ZW5NP095
           kind: blocker
+      - _ulid: 01KKTTG8BES53GZFEWGSSMGCKP
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:59:22.478Z
+        payload:
+          thread_ulid: 01KKTTG8AFCAC7NCM309T27AVS
+          kind: question
     notes: []
     external_links: []
     created_at: 2026-03-16T07:57:51.698Z
-    updated_at: 2026-03-16T07:59:10.261Z
+    updated_at: 2026-03-16T07:59:22.447Z
