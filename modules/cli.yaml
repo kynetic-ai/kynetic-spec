@@ -9628,7 +9628,24 @@ requirements:
             when: Project hooks are installed.
             then: The setup flow installs `kspec session prompt-check` as a `UserPromptSubmit` hook alongside
               the session checkpoint hook.
-    acceptance_criteria: []
+    acceptance_criteria:
+      - id: ac-git-only
+        given: The checkpoint hook is triggered
+        when: It evaluates session state
+        then: Only uncommitted git changes are reported as issues. Task status and todo completeness are not
+          checked.
+      - id: ac-default-disabled
+        given: A new project runs kspec init or kspec setup
+        when: No checkpoint preference is configured
+        then: The checkpoint hook is not installed.
+      - id: ac-install-when-enabled
+        given: Project configuration has checkpoint enabled
+        when: kspec setup configures agent hooks
+        then: The checkpoint hook is installed.
+      - id: ac-remove-when-disabled
+        given: The checkpoint hook was previously installed
+        when: kspec setup runs and checkpoint is disabled or unconfigured
+        then: The hook is removed.
   - _ulid: 01KF2C5P8BGYKT9GDTYNXTSTQM
     slugs:
       - cmd-session-start
