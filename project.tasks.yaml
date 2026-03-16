@@ -100651,7 +100651,7 @@
     - core
     - review
   vcs_refs: []
-  review_ref: "@01KKTMVTDW2EBX0YHND7N5RM37"
+  review_ref: "@01KKTNX37WQYMJWHJNNH7NF2GW"
   submission_linkage:
     branch: dispatch/task/rewrite-core-skills-for-review-driven-architecture/01kkthzw
     commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
