@@ -1989,6 +1989,39 @@ reviews:
 
               All ACs have task coverage. No gaps found.
             created_at: 2026-03-16T08:22:23.914Z
+      - _ulid: 01KKTVTT9K69KNJRV938WF7VAE
+        kind: question
+        entries:
+          - _ulid: 01KKTVTT9KYPJTWC8DS11QJ69N
+            author: "@claude"
+            body: >-
+              **QUESTION: review-content-diff-api ac-4 "structured display with section identifiers"
+              — what format?**
+
+
+              ac-4 says the endpoint returns entity content "in a format suitable for structured
+              display with section identifiers." This is vague — what does the response JSON look
+              like?
+
+
+              For plan content: Is it raw markdown? Parsed sections? A tree of headings/blocks?
+
+              For spec content: Is it the raw YAML? Parsed fields as JSON?
+
+
+              The task description says "parse plan markdown into sections (split on ## headings,
+              YAML code blocks)" and "parse spec YAML into structured fields" — but is this parsing
+              done server-side (in the API) or client-side (in the Svelte component)?
+
+
+              If server-side, the API response schema should be specified. If client-side, the API
+              just returns raw text and the AC wording "format suitable for structured display" is
+              misleading.
+
+
+              Recommend: specify the response shape, even informally, so the implementer knows what
+              to return.
+            created_at: 2026-03-16T08:22:37.107Z
     checks: []
     verdicts: []
     events:
@@ -2061,7 +2094,14 @@ reviews:
         payload:
           thread_ulid: 01KKTVTDD9V3PSRCE0W1WCF13G
           kind: nit
+      - _ulid: 01KKTVTTA6F769D7K87Y8FW4Z8
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T08:22:37.126Z
+        payload:
+          thread_ulid: 01KKTVTT9K69KNJRV938WF7VAE
+          kind: question
     notes: []
     external_links: []
     created_at: 2026-03-16T08:18:45.731Z
-    updated_at: 2026-03-16T08:22:23.914Z
+    updated_at: 2026-03-16T08:22:37.107Z
