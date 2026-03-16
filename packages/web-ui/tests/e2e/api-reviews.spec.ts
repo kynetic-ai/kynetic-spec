@@ -10,6 +10,30 @@
 
 import { test, expect } from '../fixtures/test-base';
 
+// AC: @trait-json-output ac-1 — N/A: daemon REST endpoints always return JSON; no --json CLI flag
+// AC: @trait-json-output ac-2 — N/A: daemon REST endpoints always return JSON; no --json CLI flag
+// AC: @trait-json-output ac-3 — N/A: daemon REST endpoints return structured JSON errors natively
+// AC: @trait-json-output ac-4 — N/A: daemon REST endpoints always use @ prefix in refs (see resolved_related_refs)
+// AC: @trait-json-output ac-5 — N/A: daemon REST endpoints always emit ISO 8601 timestamps (see created_at/updated_at)
+// AC: @trait-json-output ac-6 — N/A: daemon REST endpoints have no competing format options
+// AC: @trait-error-guidance ac-1 — covered by 404 test: response includes error description in message field
+// AC: @trait-error-guidance ac-2 — covered by 404 test: response includes suggestion field with action to resolve
+// AC: @trait-error-guidance ac-3 — covered by 404 test: suggestion says "Use kspec review list to find valid review references"
+// AC: @trait-error-guidance ac-4 — N/A: read-only endpoints have no state transitions
+// AC: @trait-error-guidance ac-5 — N/A: GET endpoints have no field validation
+// AC: @trait-error-guidance ac-6 — N/A: daemon REST endpoints always return JSON; no separate JSON error mode
+// AC: @trait-localhost-security ac-1 — N/A: localhost binding tested in api-server.spec.ts
+// AC: @trait-localhost-security ac-2 — N/A: non-localhost rejection tested in api-server.spec.ts
+// AC: @trait-localhost-security ac-3 — N/A: daemon does not support external binding configuration
+// AC: @trait-websocket-protocol ac-1 — N/A: WebSocket connection lifecycle tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-3 — N/A: WebSocket broadcast format tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-4 — N/A: WebSocket heartbeat timing tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-5 — N/A: WebSocket ping/pong timeout tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-6 — N/A: WebSocket backpressure tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-7 — N/A: WebSocket close codes tested in api-websocket.spec.ts
+// AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection tested in api-websocket.spec.ts
+
 test.describe('Reviews API', () => {
   test.describe('GET /api/reviews', () => {
     // AC: @review-records-daemon-api ac-1 - default returns open reviews only
