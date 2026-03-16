@@ -100697,8 +100697,18 @@
 
         - Rendered skills and regenerated kspec-agents.md
       supersedes: null
+    - _ulid: 01KKTKTRXKA61TDDS3ATB3382Z
+      created_at: 2026-03-16T06:02:47.092Z
+      author: "@claude"
+      content: "Follow-up fix: removed old skill dirs (local-review, pr, pr-review, review-principles)
+        from .claude/skills/ — they were missed during the initial cleanup (only .agents/skills/ was
+        cleaned). Now all three render targets (.agents/, .claude/, .factory/) are clean."
+      supersedes: null
   todos: []
-- title: Remove skill table from kspec-agents.md and port descriptions to skill frontmatter
+- _ulid: 01KKTK96Z5M9T8WP900CPFWRNG
+  slugs: []
+  title: Remove skill table from kspec-agents.md and port descriptions to skill frontmatter
+  type: task
   description: >-
     The skill table in kspec-agents.md is redundant — agent runtimes auto-inject skill content when
     invoked. The table wastes context window space for no benefit.
@@ -100716,21 +100726,18 @@
 
     4. Verify agent runtimes still have enough context to discover and invoke skills without the
     table
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - cli
     - agents
     - skills
-  depends_on: []
-  _ulid: 01KKTK96Z5M9T8WP900CPFWRNG
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-16T05:53:11.653Z
   notes: []
