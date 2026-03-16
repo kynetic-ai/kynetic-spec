@@ -301,6 +301,173 @@ features:
         status:
           maturity: draft
           implementation: implemented
+      - _ulid: 01KKTW6F432X56CKMZKETYVR2C
+        slugs:
+          - review-records-daemon-api
+        title: Review Records Daemon API
+        type: requirement
+        tags: []
+        description: |
+          REST API endpoints on the daemon for CRUD operations on review records,
+          enabling the web UI to display and interact with reviews.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              The daemon is running
+            when: |
+              A client requests GET /api/reviews
+            then: |
+              It returns a paginated list of review records with filtering by status,
+              disposition, subject-type, reviewer, linked task (via subject-ref or
+              related-refs), and subject-branch (base-branch/head-branch for code
+              reviews), with sort parameter support; defaults to open reviews
+          - id: ac-2
+            given: |
+              The daemon is running
+            when: |
+              A client requests GET /api/reviews/:id
+            then: |
+              It returns the full review record including threads, checks, verdicts,
+              events, and computed disposition
+          - id: ac-3
+            given: |
+              The daemon is running
+            when: |
+              A client sends POST /api/reviews/:id/comments with body, kind, and
+              optional anchor fields
+            then: |
+              A new thread is created on the review and the response includes the
+              created thread
+          - id: ac-4
+            given: |
+              The daemon is running
+            when: |
+              A client sends POST /api/reviews/:id/comments/:threadId/replies with
+              a body
+            then: |
+              A reply is added to the thread and the response includes the updated
+              thread
+          - id: ac-5
+            given: |
+              The daemon is running
+            when: |
+              A client sends PATCH /api/reviews/:id/comments/:threadId/resolve or
+              /reopen
+            then: |
+              The thread resolution state is updated and the response reflects the
+              new state
+          - id: ac-6
+            given: |
+              The daemon is running
+            when: |
+              A client sends POST /api/reviews/:id/verdicts with decision, reviewer,
+              and version fields
+            then: |
+              The verdict is recorded and the review disposition is recomputed
+          - id: ac-7
+            given: |
+              The daemon is running
+            when: |
+              A client sends POST /api/reviews/:id/checks with name, status, runner,
+              and version fields
+            then: |
+              The check is recorded and the gate evaluation is updated
+          - id: ac-8
+            given: |
+              The daemon is running
+            when: |
+              A client sends PATCH /api/reviews/:id/lifecycle with a target state
+              (open, closed, archived)
+            then: |
+              The lifecycle transition is applied if valid, or a 400 error is returned
+              with the reason the transition is invalid
+          - id: ac-9
+            given: |
+              A review record is created or mutated via any API endpoint
+            when: |
+              WebSocket clients are connected
+            then: |
+              A real-time update event is broadcast on the reviews:updates topic so
+              the UI can refresh without polling
+          - id: ac-10
+            given: |
+              A client sends a mutation request with invalid data (missing required
+              fields, invalid ref, invalid state transition)
+            when: |
+              The request is processed
+            then: |
+              A 400 response is returned with an actionable error message describing
+              what is wrong and how to fix it
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-error-guidance"
+          - "@trait-localhost-security"
+          - "@trait-websocket-protocol"
+        notes: []
+        created: 2026-03-16T08:28:58.883Z
+      - _ulid: 01KKTW6F5DGX9V24SK6WTMRTSN
+        slugs:
+          - review-content-diff-api
+        title: Review Content Diff API
+        type: requirement
+        tags: []
+        description: |
+          Daemon API endpoints for serving diff content and file data needed by
+          the review content viewer. For code reviews, serves parsed git diffs
+          between base and head commits. For plan/spec reviews, serves the
+          entity content for structured display.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A code review has base and head commit refs
+            when: |
+              A client requests GET /api/diff?base=X&head=Y
+            then: |
+              It returns a parsed diff with file list, per-file stats (+/- lines),
+              and structured hunks with typed change lines (added, deleted, unchanged)
+              including old and new line numbers
+          - id: ac-2
+            given: |
+              A client requests expanded context for a file in a diff
+            when: |
+              The request includes GET /api/diff/context?base=X&head=Y&path=P&start=N&end=M
+            then: |
+              It returns the additional context lines from the file at the head
+              commit for the specified line range, enabling "show more lines"
+              expansion in the diff viewer
+          - id: ac-3
+            given: |
+              A client requests GET /api/diff/file?base=X&head=Y&path=P
+            when: |
+              The file exists in the diff
+            then: |
+              It returns the parsed diff for a single file, enabling lazy
+              loading of individual file diffs
+          - id: ac-4
+            given: |
+              A plan or spec review has a subject-ref
+            when: |
+              A client requests GET /api/reviews/:id/content
+            then: |
+              It returns the parsed entity content — for plans: sections
+              (title, specs array, tasks array, notes) extracted from the plan
+              document; for specs: structured fields (description, acceptance
+              criteria, traits, metadata) from kspec item get — each with
+              section identifiers for anchor targeting
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-json-output"
+          - "@trait-error-guidance"
+          - "@trait-localhost-security"
+        notes: []
+        created: 2026-03-16T08:28:58.926Z
   - _ulid: 01KFMM8F5V7H46QYW9MVFYRTHW
     slugs:
       - api-contract
@@ -3083,6 +3250,240 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KKTW6F6PA3SQM6ZHV1WS4EKE
+    slugs:
+      - review-records-web-ui
+    title: Review Records Web UI
+    type: requirement
+    tags: []
+    description: |
+      SvelteKit pages for viewing and interacting with review records in the
+      browser. The primary interface for humans to see agent review activity
+      and participate in reviews. Routes: /reviews for list, /reviews/[id]
+      for detail. Reviews on the same subject are treated as revisions with
+      a dropdown selector to navigate between them.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          A user navigates to /reviews
+        when: |
+          Reviews exist in the system
+        then: |
+          A list view shows reviews with lifecycle status, disposition badge,
+          subject type, reviewer, and linked task, with filtering by status,
+          disposition, and subject type, and sortable columns; defaults to
+          showing open reviews
+      - id: ac-2
+        given: |
+          A user opens /reviews/[id]
+        when: |
+          The review has threads, checks, and verdicts
+        then: |
+          All threads are displayed with their entries, resolution state, and
+          kind badges (blocker/question/nit); checks show pass/fail with
+          staleness; verdicts show reviewer decisions; computed disposition
+          is prominent
+      - id: ac-3
+        given: |
+          A user is viewing a review detail page
+        when: |
+          They click "Add Comment"
+        then: |
+          They can create a new thread with a body and kind selection
+          (blocker, question, nit)
+      - id: ac-4
+        given: |
+          A user is viewing a thread on a review
+        when: |
+          They click "Reply"
+        then: |
+          They can add a reply to the thread
+      - id: ac-5
+        given: |
+          A user is viewing a blocker or question thread
+        when: |
+          They click "Resolve" or "Reopen"
+        then: |
+          The thread resolution state is toggled and the UI updates immediately
+      - id: ac-6
+        given: |
+          A user is viewing a review detail page
+        when: |
+          They submit a verdict (approve, request_changes, comment)
+        then: |
+          The verdict is recorded and the disposition badge updates to reflect
+          the new computed disposition
+      - id: ac-7
+        given: |
+          A user views a task detail page
+        when: |
+          The task has linked reviews (via review_ref or related_refs)
+        then: |
+          The reviews are shown with current disposition badge and link to the
+          review detail page
+      - id: ac-8
+        given: |
+          A thread comment has a body containing markdown (headings, code blocks,
+          inline code, bold, lists, links)
+        when: |
+          The comment is rendered in the thread view
+        then: |
+          The body is rendered as formatted markdown with syntax highlighting
+          in code blocks
+      - id: ac-9
+        given: |
+          A thread entry is displayed
+        when: |
+          The entry has author and timestamp fields
+        then: |
+          The author identity and relative timestamp are shown alongside
+          the entry body
+      - id: ac-10
+        given: |
+          A review section (threads, checks, verdicts) has no items
+        when: |
+          The section is rendered
+        then: |
+          An empty state message is shown (e.g., "No threads yet",
+          "No checks recorded")
+      - id: ac-11
+        given: |
+          Multiple reviews exist for the same subject
+        when: |
+          The user views any one of those reviews
+        then: |
+          A revision dropdown is shown listing all reviews for that subject
+          ordered by creation date, with the current review selected; selecting
+          another review navigates to it; subject matching uses subject-ref
+          for plan/task/spec reviews, or head-branch for code reviews
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-16T08:28:58.966Z
+    requirements:
+      - _ulid: 01KKTW6F7VHCBJR9ZN6M3VA0VE
+        slugs:
+          - review-code-diff-viewer
+        title: Review Code Diff Viewer
+        type: requirement
+        tags: []
+        description: |
+          A GitHub-style unified diff viewer for code reviews. Shows per-file
+          diffs with syntax highlighting, line numbers, expandable context,
+          and inline comment threading anchored to specific diff lines.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A code review is open with base and head commits
+            when: |
+              The review detail page loads
+            then: |
+              A file list shows all changed files with their diff stats (+/- lines)
+              and each file is expandable to show its diff content
+          - id: ac-2
+            given: |
+              A file diff is expanded
+            when: |
+              The diff renders
+            then: |
+              It shows a unified diff view with syntax highlighting, old and new
+              line numbers, added lines (green), deleted lines (red), and unchanged
+              context lines
+          - id: ac-3
+            given: |
+              A diff hunk has collapsed unchanged regions
+            when: |
+              The user clicks "Show N more lines"
+            then: |
+              Additional context lines are fetched and inserted into the diff
+              view without reloading the page
+          - id: ac-4
+            given: |
+              A user hovers over a line number in the diff
+            when: |
+              They click the comment button (+)
+            then: |
+              A comment form opens inline between diff rows, anchored to that
+              file, line number, and side (old/new); submitting creates a thread
+              with a code anchor
+          - id: ac-5
+            given: |
+              Existing review threads have code anchors matching lines in the diff
+            when: |
+              The diff is rendered
+            then: |
+              The comment threads are shown inline at their anchored position
+              in the diff, between the relevant diff rows
+          - id: ac-6
+            given: |
+              A diff contains more than 20 changed files
+            when: |
+              The diff viewer loads
+            then: |
+              Files are lazy-loaded (headers and stats shown immediately, full
+              diff content loaded on expand or viewport intersection)
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-16T08:28:59.003Z
+      - _ulid: 01KKTW6F8Y4ASYA4GE89BMT676
+        slugs:
+          - review-structured-content-viewer
+        title: Review Structured Content Viewer
+        type: requirement
+        tags: []
+        description: |
+          Content viewer for non-code reviews (plans, specs). Renders the
+          entity content with identifiable sections that support anchored
+          commenting, similar to how the diff viewer enables line-level
+          comments on code.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A plan review is open
+            when: |
+              The review detail page loads
+            then: |
+              The plan content is rendered with identifiable sections (specs,
+              tasks, implementation notes) that can be targeted for comments
+          - id: ac-2
+            given: |
+              A spec review is open
+            when: |
+              The review detail page loads
+            then: |
+              The spec content is rendered showing description, acceptance
+              criteria, traits, and metadata with each section targetable
+              for comments
+          - id: ac-3
+            given: |
+              A user clicks a comment button next to a content section
+            when: |
+              The comment form opens
+            then: |
+              Submitting creates a thread with a structured anchor (section,
+              field, anchor-ref) pointing to the selected content area
+          - id: ac-4
+            given: |
+              Existing threads have structured anchors matching content sections
+            when: |
+              The content is rendered
+            then: |
+              The threads are shown inline at their anchored position in the
+              content, adjacent to the referenced section
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-16T08:28:59.038Z
 acceptance_criteria:
   - id: ac-1
     given: kspec is installed globally via npm

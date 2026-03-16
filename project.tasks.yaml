@@ -100806,7 +100806,10 @@
   created_at: 2026-03-16T07:56:01.018Z
   notes: []
   todos: []
-- title: Improve review skill to direct use of anchors in plan and code reviews
+- _ulid: 01KKTTC2CTEPS5X2VPE7QVFA16
+  slugs: []
+  title: Improve review skill to direct use of anchors in plan and code reviews
+  type: task
   description: >-
     The core review skill documents anchor CLI flags but doesn't direct reviewers to use them.
     During plan review testing (4 rounds on @plan-review-records-web-ui), agents described locations
@@ -100826,21 +100829,516 @@
 
     4. In the finding quality standards section, add anchor as a recommended field alongside
     path/line
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - skills
     - review
+  vcs_refs: []
+  created_at: 2026-03-16T07:57:05.306Z
+  notes: []
+  todos: []
+- _ulid: 01KKTW6FA04X5BDGFWPX0HKRY4
+  slugs:
+    - task-review-api-read
+  title: Implement review list and detail API endpoints
+  type: task
+  description: |
+    Add GET /api/reviews and GET /api/reviews/:id endpoints to the daemon.
+    These are the read-only foundation the web UI queries.
+
+    Why: The web UI needs server-side data. The review library already has
+    loadReviewRecords() and full record parsing — the daemon is a thin HTTP
+    layer over these functions, following the same pattern as /api/tasks and
+    /api/plans.
+
+    What: GET /api/reviews returns paginated ReviewSummary objects (ulid,
+    title, lifecycle, disposition, subject type, reviewer, linked task ref,
+    created/updated timestamps). Supports query params: status, disposition,
+    subject-type, reviewer, task (matches subject-ref or related-refs),
+    sort, limit, offset. Default status filter: open. GET /api/reviews/:id
+    returns the full review record including threads, checks, verdicts,
+    events, and computed disposition.
+
+    How: Add routes to packages/daemon/src/routes/. Use loadReviewRecords()
+    from parser/reviews.ts. Create ReviewSummary and ReviewDetail types in
+    packages/shared/src/api.ts following existing PlanSummary/TaskDetail
+    patterns. Pagination follows existing tasks route conventions
+    (limit/offset with total count header).
+
+    Covers: @review-records-daemon-api ac-1, ac-2.
+  spec_ref: "@review-records-daemon-api"
+  plan_ref: "@plan-review-records-web-ui"
+  origin: derived
+  status: pending
+  blocked_by: []
   depends_on: []
-  _ulid: 01KKTTC2CTEPS5X2VPE7QVFA16
+  context: []
+  priority: 2
+  tags:
+    - daemon
+    - api
+    - review
+  vcs_refs: []
+  created_at: 2026-03-16T08:28:59.072Z
+  notes: []
+  todos: []
+- _ulid: 01KKTW6G1640H2J7RF82ZVSEXT
+  slugs:
+    - task-review-api-threads
+  title: Implement review thread mutation API endpoints
+  type: task
+  description: |
+    Add endpoints for creating threads, replying, and resolving/reopening.
+    These are the core interaction endpoints for the review UI.
+
+    Why: Thread interaction is the primary review workflow — reviewers
+    create threads with findings, workers reply and resolve. The review
+    library has addThread(), addReply(), resolveThread(), reopenThread()
+    in parser/review-threads.ts — the API wraps these.
+
+    What: POST /api/reviews/:id/comments creates a new thread (body, kind,
+    optional anchor). POST /api/reviews/:id/comments/:threadId/replies adds
+    a reply (body). PATCH /api/reviews/:id/comments/:threadId/resolve and
+    /reopen toggle resolution state. All mutations return the updated thread.
+
+    How: Route handlers call the atomic wrapper functions from
+    parser/review-threads.ts which handle file locking and persistence.
+    Validate request bodies with Zod schemas. Return 400 with actionable
+    messages for invalid input (missing body, invalid thread ULID, etc.).
+
+    Covers: @review-records-daemon-api ac-3, ac-4, ac-5, ac-10.
+  spec_ref: "@review-records-daemon-api"
+  plan_ref: "@plan-review-records-web-ui"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-review-api-read"
+  context: []
+  priority: 2
+  tags:
+    - daemon
+    - api
+    - review
+  vcs_refs: []
+  created_at: 2026-03-16T08:28:59.814Z
+  notes: []
+  todos: []
+- _ulid: 01KKTW6GRPMVH8M9WVGH9NTJCF
+  slugs:
+    - task-review-api-verdicts
+  title: Implement review verdict, check, and lifecycle API endpoints
+  type: task
+  description: |
+    Add endpoints for recording verdicts, checks, and lifecycle transitions.
+    These complete the mutation API surface.
+
+    Why: Verdicts drive disposition computation (the core review outcome).
+    Checks record verification evidence. Lifecycle transitions control
+    review state. The review library has functions for all of these in
+    parser/review-operations.ts.
+
+    What: POST /api/reviews/:id/verdicts records a verdict (decision,
+    reviewer, version fields). POST /api/reviews/:id/checks records a
+    check result (name, status, runner, evidence, version fields).
+    PATCH /api/reviews/:id/lifecycle transitions lifecycle state (target
+    state: open, closed, archived). Invalid transitions return 400 with
+    the reason.
+
+    How: Use submitVerdict() and transitionLifecycle() from
+    parser/review-operations.ts, and createCheck()/createLocalCheck()
+    from review/checks.ts. All mutations need mutateReviewAtomically()
+    from parser/reviews.ts for persistence with file locking. Validate
+    state transitions server-side (e.g., can't archive from draft).
+    Return recomputed disposition in verdict responses so the UI can
+    update immediately.
+
+    Covers: @review-records-daemon-api ac-6, ac-7, ac-8, ac-10.
+  spec_ref: "@review-records-daemon-api"
+  plan_ref: "@plan-review-records-web-ui"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-review-api-read"
+  context: []
+  priority: 2
+  tags:
+    - daemon
+    - api
+    - review
+  vcs_refs: []
+  created_at: 2026-03-16T08:29:00.566Z
+  notes: []
+  todos: []
+- _ulid: 01KKTW6HCFS1KY6X0KVF5F6RFP
+  slugs:
+    - task-review-api-websocket
+  title: Add WebSocket events for review mutations
+  type: task
+  description: |
+    Broadcast WebSocket events when review records are created or mutated,
+    so the UI can refresh without polling.
+
+    Why: The web UI uses TanStack Query with WebSocket-driven invalidation.
+    Without real-time events, users would need to manually refresh to see
+    new threads, verdicts, or disposition changes from agent reviewers.
+
+    What: Add a "reviews:updates" WebSocket topic. Emit events on review
+    creation, thread creation/update, verdict submission, check recording,
+    and lifecycle transitions. Event types: review_created, review_updated,
+    thread_created, thread_updated, verdict_submitted, check_recorded,
+    lifecycle_changed.
+
+    How: Follow existing WebSocket patterns (tasks:updates, plans:updates).
+    Add broadcast calls at the end of each mutation endpoint handler.
+    Events carry the review ULID and the mutation type so the client
+    knows which query keys to invalidate.
+
+    Covers: @review-records-daemon-api ac-9.
+  spec_ref: "@review-records-daemon-api"
+  plan_ref: "@plan-review-records-web-ui"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-review-api-threads"
+    - "@task-review-api-verdicts"
+  context: []
+  priority: 2
+  tags:
+    - daemon
+    - websocket
+    - review
+  vcs_refs: []
+  created_at: 2026-03-16T08:29:01.199Z
+  notes: []
+  todos: []
+- _ulid: 01KKTW6J1F8NHGA7G7SJJ1ZFFS
+  slugs:
+    - task-diff-api
+  title: Implement diff content API endpoints
+  type: task
+  description: |
+    Add daemon endpoints for serving parsed git diffs and entity content
+    for the review content viewers.
+
+    Why: The diff viewer needs structured diff data (not raw text) to render
+    syntax-highlighted diffs with line numbers. The structured content viewer
+    needs plan/spec content to display with section markers. The daemon runs
+    in the repo and has access to git and .kspec/.
+
+    What: GET /api/diff?base=X&head=Y returns parsed diff with file list,
+    stats, and structured hunks. GET /api/diff/file?base=X&head=Y&path=P
+    returns single-file diff for lazy loading.
+    GET /api/diff/context?base=X&head=Y&path=P&start=N&end=M returns
+    expanded context lines for a file region.
+    GET /api/reviews/:id/content returns parsed plan/spec content for
+    structured reviews.
+
+    How: Run `git diff --unified=3 base..head` on the server, parse with
+    parse-git-diff into typed structures (files, chunks, changes with line
+    numbers and change types). For context expansion, run `git show
+    commit:path` and extract the requested line range. For entity content,
+    use existing kspec plan/spec loading functions. Return structured JSON
+    matching the input format expected by @git-diff-view/svelte.
+
+    Covers: @review-content-diff-api ac-1, ac-2, ac-3, ac-4.
+  spec_ref: "@review-content-diff-api"
+  plan_ref: "@plan-review-records-web-ui"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - daemon
+    - api
+    - diff
+  vcs_refs: []
+  created_at: 2026-03-16T08:29:01.871Z
+  notes: []
+  todos: []
+- _ulid: 01KKTW6JPAR1P0W78EAWX5482A
+  slugs:
+    - task-review-list-page
+  title: Build review list page
+  type: task
+  description: |
+    Create the /reviews route with a filterable, sortable list of reviews.
+
+    Why: Users need to see all reviews at a glance — which are open,
+    which need attention, what disposition each has. This is the entry
+    point to the review UI.
+
+    What: SvelteKit page at /reviews. Table showing review title,
+    lifecycle status, disposition badge (color-coded: pending=amber,
+    approved=emerald, changes_requested=red), subject type, reviewer,
+    linked task (clickable), and timestamps. Filters for status,
+    disposition, and subject type via URL query params. Default filter:
+    open reviews. Sortable columns. Empty state when no reviews exist.
+
+    How: TanStack Query for data fetching from GET /api/reviews.
+    WebSocket subscription to "reviews:updates" topic for real-time
+    invalidation. Use goto() for URL param changes per project conventions.
+    Follow existing list page patterns (tasks list, plans list).
+
+    Covers: @review-records-web-ui ac-1, ac-10.
+  spec_ref: "@review-records-web-ui"
+  plan_ref: "@plan-review-records-web-ui"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-review-api-read"
+  context: []
+  priority: 3
+  tags:
+    - web-ui
+    - review
+  vcs_refs: []
+  created_at: 2026-03-16T08:29:02.538Z
+  notes: []
+  todos: []
+- _ulid: 01KKTW6KAHVDDR0XTZGG3EQYTM
+  slugs:
+    - task-review-detail-page
+  title: Build review detail page with thread view and revision selector
+  type: task
+  description: |
+    Create the /reviews/[id] route showing the full review with threads,
+    checks, verdicts, disposition, and a revision selector for navigating
+    between reviews on the same subject.
+
+    Why: This is the primary review interaction surface — where humans
+    read agent findings, see check results, and understand the overall
+    review state. Multiple reviews on the same subject (e.g., 6 rounds
+    of plan review) need to be navigable as revisions.
+
+    What: Header with review title, lifecycle badge, disposition badge,
+    subject info (type, ref, version), and reviewer. Revision dropdown
+    listing all reviews for the same subject ordered by creation date.
+    Thread list with kind badges (blocker=red, question=amber, nit=gray),
+    resolution state, entries with author/timestamp, and markdown
+    rendering in bodies. Checks section with pass/fail status and
+    staleness indicator. Verdicts with reviewer decisions. Empty states
+    for sections with no items.
+
+    How: TanStack Query fetching from GET /api/reviews/:id. For the
+    revision selector, query GET /api/reviews?subject-ref=X to find
+    sibling reviews. WebSocket subscription for real-time updates. Thread
+    entries rendered as a conversation view. Markdown rendering with
+    syntax highlighting in code blocks.
+
+    Covers: @review-records-web-ui ac-2, ac-8, ac-9, ac-10, ac-11.
+  spec_ref: "@review-records-web-ui"
+  plan_ref: "@plan-review-records-web-ui"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-review-list-page"
+    - "@task-review-api-threads"
+    - "@task-review-api-verdicts"
+  context: []
+  priority: 3
+  tags:
+    - web-ui
+    - review
+  vcs_refs: []
+  created_at: 2026-03-16T08:29:03.185Z
+  notes: []
+  todos: []
+- _ulid: 01KKTW6KXATJ0TEV1SF98ZK8PN
+  slugs:
+    - task-review-interaction
+  title: Add review interaction controls (comment, reply, resolve, verdict)
+  type: task
+  description: |
+    Add interactive controls to the review detail page so users can
+    participate in reviews through the UI.
+
+    Why: Without interaction, the UI is read-only. Users need to create
+    threads, reply, resolve issues, and submit verdicts — the same
+    operations agents do via CLI but through a visual interface.
+
+    What: "Add Comment" button opening a form with body textarea and
+    kind selector (blocker/question/nit). Reply button on each thread
+    opening an inline reply form. Resolve/Reopen toggle on blocker and
+    question threads. Verdict submission panel with decision selector
+    (approve/request_changes/comment) and submit button. All controls
+    use optimistic updates with TanStack Query mutations.
+
+    How: POST/PATCH to the thread and verdict API endpoints. Mutation
+    hooks with optimistic updates following existing patterns. After
+    verdict submission, disposition badge updates immediately from the
+    response. WebSocket events handle multi-user scenarios (another
+    reviewer acting simultaneously).
+
+    Covers: @review-records-web-ui ac-3, ac-4, ac-5, ac-6.
+  spec_ref: "@review-records-web-ui"
+  plan_ref: "@plan-review-records-web-ui"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-review-detail-page"
+  context: []
+  priority: 3
+  tags:
+    - web-ui
+    - review
+  vcs_refs: []
+  created_at: 2026-03-16T08:29:03.786Z
+  notes: []
+  todos: []
+- _ulid: 01KKTW6MH5PWQSPXA3J689NHDB
+  slugs:
+    - task-code-diff-viewer
+  title: Build code diff viewer with inline commenting
+  type: task
+  description: |
+    Build the GitHub-style unified diff viewer for code reviews with
+    inline comment threading.
+
+    Why: Code reviews need a visual diff to be useful. Showing threads
+    as a flat list without diff context is how the review looks today
+    via CLI — the web UI should show threads anchored to the code they
+    reference, with the full diff visible.
+
+    What: File list sidebar with changed files and diff stats (+/- lines).
+    Per-file unified diff with syntax highlighting, old/new line numbers,
+    added/deleted/unchanged lines with color coding. Collapsed unchanged
+    regions with "show N more lines" buttons. Click-to-comment on any
+    diff line (opens inline form that creates code-anchored threads).
+    Existing threads rendered inline at their anchor positions. Lazy
+    loading for diffs with many files (20+).
+
+    How: Use @git-diff-view/svelte for rendering — it provides native
+    Svelte diff components with a widget system (renderWidgetLine) for
+    injecting comment thread components between diff lines.
+    onAddWidgetClick handles the click-to-comment interaction. extendData
+    attaches existing comment threads to their anchor lines. Use
+    parse-git-diff on the server (in the diff API) to parse raw git diff
+    output into the structured format git-diff-view expects. TanStack
+    Query for fetching diff data and comment threads. Lazy file loading
+    via intersection observer or expand-on-click.
+
+    Covers: @review-code-diff-viewer ac-1, ac-2, ac-3, ac-4, ac-5, ac-6.
+  spec_ref: "@review-code-diff-viewer"
+  plan_ref: "@plan-review-records-web-ui"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-diff-api"
+    - "@task-review-detail-page"
+    - "@task-review-interaction"
+  context: []
+  priority: 3
+  tags:
+    - web-ui
+    - review
+    - diff
+  vcs_refs: []
+  created_at: 2026-03-16T08:29:04.421Z
+  notes: []
+  todos: []
+- _ulid: 01KKTW6N50TFB9MFMG7T5KZT6N
+  slugs:
+    - task-structured-content-viewer
+  title: Build structured content viewer for plan/spec reviews
+  type: task
+  description: |
+    Build the content viewer for non-code reviews (plans, specs) with
+    section-level inline commenting.
+
+    Why: Plans and specs are the primary review subjects for design work.
+    The current CLI experience shows threads in a flat list — the web UI
+    should show the actual content with threads anchored to the sections
+    they reference.
+
+    What: For plans: render the plan document with identifiable sections
+    (specs list, tasks list, implementation notes). For specs: render
+    description, acceptance criteria (each AC individually targetable),
+    traits, and metadata. Each section has a comment button that creates
+    a thread with a structured anchor. Existing threads with structured
+    anchors render inline at their referenced section.
+
+    How: Fetch content from GET /api/reviews/:id/content. Parse plan
+    markdown into sections (split on ## headings, YAML code blocks).
+    Parse spec YAML into structured fields. Render each section as a
+    component with a hover-to-comment button. Map structured anchors
+    (section + field + anchor-ref) to rendered section positions. Reuse
+    the thread rendering components from the review detail page.
+
+    Covers: @review-structured-content-viewer ac-1, ac-2, ac-3, ac-4.
+  spec_ref: "@review-structured-content-viewer"
+  plan_ref: "@plan-review-records-web-ui"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-diff-api"
+    - "@task-review-detail-page"
+    - "@task-review-interaction"
+  context: []
+  priority: 3
+  tags:
+    - web-ui
+    - review
+    - content
+  vcs_refs: []
+  created_at: 2026-03-16T08:29:05.056Z
+  notes: []
+  todos: []
+- title: Add review links to task detail page
+  type: task
+  slugs:
+    - task-review-task-integration
+  description: |
+    Show linked reviews on the task detail page so users can navigate
+    from a task to its review history.
+
+    Why: When viewing a task in pending_review or needs_work state, the
+    user needs to see the review that's driving the workflow — its
+    disposition, outstanding blockers, and a link to the full review.
+
+    What: On the task detail page, if the task has review_ref or appears
+    in a review's related_refs, show a "Reviews" section with review
+    title, disposition badge, and thread summary (e.g., "3 threads,
+    1 blocker unresolved"). Each review links to /reviews/[id]. Show
+    the current (open) review prominently, with closed reviews collapsed
+    as history.
+
+    How: Use the existing task detail page component. Query
+    GET /api/reviews?task=@task-ref to find linked reviews. Render as
+    a compact card or list section. Follow existing task detail patterns
+    for supplementary data sections.
+
+    Covers: @review-records-web-ui ac-7.
+  spec_ref: "@review-records-web-ui"
+  plan_ref: "@plan-review-records-web-ui"
+  priority: 3
+  tags:
+    - web-ui
+    - review
+  depends_on:
+    - "@task-review-api-read"
+  notes: []
+  origin: derived
+  _ulid: 01KKTW6NR1WA12MZCR6FY1AGT8
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-16T07:57:05.306Z
-  notes: []
+  created_at: 2026-03-16T08:29:05.665Z
   todos: []

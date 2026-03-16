@@ -21527,9 +21527,25 @@ plans:
       nit=gray. Diff colors: added=green, deleted=red, unchanged=default.
       Markdown rendering with syntax highlighting in code blocks.
       Use goto() for URL state per project conventions.
-    status: approved
-    derived_tasks: []
-    derived_specs: []
+    status: active
+    derived_tasks:
+      - "@task-review-api-read"
+      - "@task-review-api-threads"
+      - "@task-review-api-verdicts"
+      - "@task-review-api-websocket"
+      - "@task-diff-api"
+      - "@task-review-list-page"
+      - "@task-review-detail-page"
+      - "@task-review-interaction"
+      - "@task-code-diff-viewer"
+      - "@task-structured-content-viewer"
+      - "@task-review-task-integration"
+    derived_specs:
+      - "@review-records-daemon-api"
+      - "@review-content-diff-api"
+      - "@review-records-web-ui"
+      - "@review-code-diff-viewer"
+      - "@review-structured-content-viewer"
     source_path: /home/chapel/Projects/kynetic-spec/plans/review-records-web-ui.md
     module_ref: null
     created_at: 2026-03-16T07:19:37.425Z
@@ -21578,3 +21594,55 @@ plans:
         content: "Fix round 7 blockers: use query params for diff routes (not path segments with ..), add
           subject-branch filter for code review revision queries, fix context/file route conflict,
           clarify content API response shape"
+      - _ulid: 01KKTW6PC35R0XGV7FXR26AW03
+        created_at: 2026-03-16T08:29:06.307Z
+        author: "@claude"
+        content: |-
+          ### Architecture
+
+          The daemon API is a thin HTTP layer over existing review library functions.
+          Key files: parser/reviews.ts (load/save), parser/review-operations.ts
+          (verdicts, disposition, lifecycle), parser/review-threads.ts (thread CRUD),
+          review/checks.ts (gate evaluation), review/subject-bindings.ts (version
+          tracking).
+
+          ### Diff Viewer Technology
+
+          Use @git-diff-view/svelte for the code diff viewer. It provides native
+          Svelte components with:
+          - Split/unified views with syntax highlighting (Shiki/lowlight)
+          - Widget system (renderWidgetLine) for injecting comment threads inline
+          - onAddWidgetClick for click-to-comment interaction
+          - extendData for attaching metadata to lines
+          - Range mode for large diffs (~280ms for 15k lines)
+          - ~37-40kb bundle (core + svelte + highlighter)
+
+          Server-side parsing: use parse-git-diff to parse raw `git diff` output
+          into structured typed data (files, chunks, changes with line numbers)
+          that feeds directly into git-diff-view's input format.
+
+          For context expansion ("show more lines"), the daemon runs
+          `git show commit:path` and returns the requested line range.
+
+          ### Revision Selector UX
+
+          Reviews on the same subject are presented as revisions. The revision
+          dropdown queries for all reviews sharing the same subject-ref (for
+          plan/spec reviews) or same base-branch/head-branch (for code reviews),
+          ordered by creation date. This is analogous to GitHub's "Conversation"
+          tab showing all reviews in chronological order — each review is a
+          revision of the same conversation.
+
+          ### WebSocket Events
+
+          Follow existing patterns (tasks:updates, inbox:updates). The
+          "reviews:updates" topic carries mutation type and review ULID for
+          targeted query invalidation.
+
+          ### UI Conventions
+
+          Disposition colors: pending=amber, approved=emerald,
+          changes_requested=red. Thread kind colors: blocker=red, question=amber,
+          nit=gray. Diff colors: added=green, deleted=red, unchanged=default.
+          Markdown rendering with syntax highlighting in code blocks.
+          Use goto() for URL state per project conventions.
