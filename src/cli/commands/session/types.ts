@@ -236,7 +236,7 @@ export interface CheckpointResult {
 }
 
 export interface CheckpointIssue {
-  type: "uncommitted_changes" | "in_progress_task" | "incomplete_todo";
+  type: "uncommitted_changes";
   description: string;
   details?: Record<string, unknown>;
 }
