@@ -99812,6 +99812,11 @@
   origin: derived
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #890. Removed all legacy agent_text_chunk backward-compatibility shims:
+    AgentTextChunkEventData type, accumulateStreamingText() deprecated function, agent_text_chunk
+    from ws-invalidation streaming events. Updated @ui-session-stream ac-2 spec to reference typed
+    WebSocket session events. Updated ui-data-layer skill docs. Verified zero remaining production
+    references to agent_text_chunk. All CI checks pass."
   depends_on:
     - "@task-session-stream-ws-ui"
     - "@task-cli-watch-ws-events"
@@ -99833,6 +99838,7 @@
   created_at: 2026-03-15T19:50:43.248Z
   started_at: 2026-03-16T00:00:18.487Z
   submitted_at: 2026-03-16T00:13:52.571Z
+  completed_at: 2026-03-16T00:26:07.524Z
   notes:
     - _ulid: 01KKSZ96ZVAKGCWTQGTF2F48W1
       created_at: 2026-03-16T00:03:40.155Z
@@ -99878,12 +99884,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-16T00:26:07.524Z
-  closed_reason: "Merged in PR #890. Removed all legacy agent_text_chunk backward-compatibility shims:
-    AgentTextChunkEventData type, accumulateStreamingText() deprecated function, agent_text_chunk
-    from ws-invalidation streaming events. Updated @ui-session-stream ac-2 spec to reference typed
-    WebSocket session events. Updated ui-data-layer skill docs. Verified zero remaining production
-    references to agent_text_chunk. All CI checks pass."
 - _ulid: 01KKSRDQY1HZBENKBD06V6KDGW
   slugs: []
   title: Implement session summary stats persistence and live counters
@@ -100384,6 +100384,26 @@
         - The silent exit on clean pass (ac-3) stays the same
 
         - The hook installation in kspec setup — that's a separate task
+      supersedes: null
+    - _ulid: 01KKT0TZXJQWFX5C3D144CSRN2
+      created_at: 2026-03-16T00:30:51.314Z
+      author: "@claude"
+      content: >-
+        Completed implementation:
+
+        - Removed task loading, session scoping, and todo checking from performCheckpoint()
+
+        - Narrowed CheckpointIssue type to only 'uncommitted_changes'
+
+        - Simplified format.ts (only one issue type icon needed)
+
+        - Deleted session-checkpoint-scoping.test.ts (tested removed ACs: ac-session-scope,
+        ac-no-session-scope, ac-session-failsafe)
+
+        - Added tests/cli/session-checkpoint.test.ts with 4 tests covering ac-git-only
+
+        - All checkpoint tests pass. 2 pre-existing failures in agent-dispatch-engine.test.ts are
+        unrelated.
       supersedes: null
   todos: []
   automation: eligible
