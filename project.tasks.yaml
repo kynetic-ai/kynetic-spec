@@ -101691,8 +101691,12 @@
   spec_ref: "@portable-task-submission-linkage"
   plan_ref: "@plan-task-activity-timeline"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Added ac-5 to @portable-task-submission-linkage spec.
+    captureSubmissionLinkage() now falls back to dispatch config base_branch for upstream_ref when
+    git upstream tracking is absent. Both callers pass ctx.config?.dispatch?.base_branch. Two
+    integration tests cover the fallback and precedence behaviors.
   depends_on: []
   context: []
   priority: 2
@@ -101713,6 +101717,7 @@
   created_at: 2026-03-16T20:19:32.546Z
   started_at: 2026-03-16T21:48:28.990Z
   submitted_at: 2026-03-16T21:52:23.993Z
+  completed_at: 2026-03-16T21:56:01.475Z
   notes:
     - _ulid: 01KKWA4Y3XXTKX34DXRYSQYCT0
       content: "Added ac-5 to @portable-task-submission-linkage spec. Implemented dispatch config
