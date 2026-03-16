@@ -3644,8 +3644,21 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-16T22:18:27.783Z
+      - _ulid: 01KKWBNFV2AJ9M4CWF9H8NDM4Y
+        actor: pr-reviewer-agent
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-16T22:18:34.210Z
+      - _ulid: 01KKWBNFV2390SXHK0HYCC7G3E
+        actor: pr-reviewer-agent
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-16T22:18:34.210Z
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -3663,7 +3676,14 @@ reviews:
               to ac-2, ac-3 to avoid implying this is the primary ac-1 coverage location.
             created_at: 2026-03-16T22:17:53.411Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: 4439a1d4
+        decision: approve
+        reviewer: pr-reviewer-agent
+        role: reviewer
+        created_at: 2026-03-16T22:18:34.164Z
     created_at: 2026-03-16T22:17:30.867Z
-    updated_at: 2026-03-16T22:18:27.743Z
+    updated_at: 2026-03-16T22:18:34.164Z
     notes: []
