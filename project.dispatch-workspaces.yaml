@@ -6744,8 +6744,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: active
-    active_role: worker
+    lifecycle_state: ready
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-read-01kktw6f
@@ -6789,21 +6789,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-16T09:10:09.817Z
+      updated_at: 2026-03-16T09:10:39.656Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-16T09:10:09.817Z
+      updated_at: 2026-03-16T09:10:39.656Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-16T09:10:09.817Z
+      updated_at: 2026-03-16T09:10:39.656Z
     timestamps:
       created_at: 2026-03-16T08:34:09.518Z
-      updated_at: 2026-03-16T09:10:09.817Z
-      last_reconciled_at: 2026-03-16T09:10:09.817Z
+      updated_at: 2026-03-16T09:10:39.656Z
+      last_reconciled_at: 2026-03-16T09:10:39.656Z
       last_active_at: 2026-03-16T09:03:08.178Z
       closed_at: null
