@@ -6648,3 +6648,84 @@ workspaces:
       last_reconciled_at: 2026-03-16T00:59:01.725Z
       last_active_at: 2026-03-16T00:43:31.894Z
       closed_at: null
+  - workspace_id: dispatch-workspace-01KKTHZWHC2B628XA0ETE1XN8B
+    task_ref: "@01KKTHZWHC2B628XA0ETE1XN8B"
+    task_slug: rewrite-core-skills-for-review-driven-architecture
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    resolved_base_branch: main
+    base_branch_point: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    canonical_branch: dispatch/task/rewrite-core-skills-for-review-driven-architecture/01kkthzw
+    canonical_branch_head: 5fd00bce799e8bbf49a1f685764e56845774acf5
+    branch_provenance:
+      ownership: adopted
+      source: task-submission-linkage
+      remote_ref: null
+      adopted_from: dispatch/task/rewrite-core-skills-for-review-driven-architecture/01kkthzw
+      adopted_at: 2026-03-16T05:50:54.458Z
+      rehydrated: true
+    lifecycle_state: integrating
+    active_role: null
+    worktrees:
+      worker:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/rewrite-core-skills-for-review-driven-architecture-01kkthzw
+        branch_mode: branch
+        branch_ref: dispatch/task/rewrite-core-skills-for-review-driven-architecture/01kkthzw
+        head: 5fd00bce799e8bbf49a1f685764e56845774acf5
+        last_seen_at: 2026-03-16T05:50:54.496Z
+      reviewer:
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/rewrite-core-skills-for-review-driven-architecture-01kkthzw-review
+        branch_mode: detached
+        branch_ref: null
+        head: 5fd00bce799e8bbf49a1f685764e56845774acf5
+        last_seen_at: 2026-03-16T05:50:54.496Z
+    bootstrap:
+      status: not_run
+      configHash: null
+      canonicalBranchHead: null
+      lastRunAt: null
+      invalidationReasons: []
+      steps: []
+      failureMessage: null
+      lastRole: null
+      roleStates:
+        worker:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+        reviewer:
+          status: not_run
+          configHash: null
+          canonicalBranchHead: null
+          lastRunAt: null
+          invalidationReasons: []
+          steps: []
+          failureMessage: null
+    integration:
+      status: pending
+      target_branch: main
+      target_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+      publication_mode: pull_request
+      outcome: pull_request
+      detail: null
+      updated_at: 2026-03-16T05:50:54.496Z
+    health:
+      status: healthy
+      summary: Workspace record matches current git branch and worktree state.
+      issues: []
+      updated_at: 2026-03-16T05:50:54.496Z
+    cleanup:
+      status: not_scheduled
+      eligible: false
+      reason: null
+      detail: null
+      updated_at: 2026-03-16T05:50:54.496Z
+    timestamps:
+      created_at: 2026-03-16T05:50:54.496Z
+      updated_at: 2026-03-16T05:50:54.496Z
+      last_reconciled_at: 2026-03-16T05:50:54.496Z
+      last_active_at: null
+      closed_at: null
