@@ -5787,3 +5787,351 @@ describe("AC-27: All drain paths go through _serializedDrain to prevent max_conc
     await engine.stop();
   });
 });
+
+// ─── AC-26: Cross-agent task dispatch exclusivity ────────────────────────────
+
+describe("Cross-agent task dispatch exclusivity", () => {
+  let testDir: string;
+
+  beforeEach(async () => {
+    testDir = await createTempDir("kspec-dispatch-cross-agent-exclusivity-");
+    vi.spyOn(workspaceModule, "getDispatchWorkspaceHealth").mockResolvedValue({
+      exists: true,
+      healthy: true,
+      reason: null,
+      metadata: null,
+    });
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceRegistry" as any).mockResolvedValue(undefined);
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceArtifacts" as any).mockResolvedValue(undefined);
+    vi.spyOn(workspaceModule, "reconcileDispatchWorkspaceLifecycle" as any).mockResolvedValue(undefined);
+    const mockMetadata = buildMockWorkspaceMetadata(testDir, { workspaceId: "mock-exclusivity-test" });
+    vi.spyOn(workspaceModule, "provisionDispatchWorkspace").mockResolvedValue({
+      cwd: testDir,
+      metadataPath: path.join(testDir, ".kspec-dispatch-workspace.json"),
+      metadata: mockMetadata as any,
+    });
+    vi.spyOn(bootstrapModule, "ensureWorkspaceBootstrap").mockResolvedValue({
+      metadata: mockMetadata as any,
+    });
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(testDir);
+  });
+
+  // AC: @agent-dispatch-engine ac-26
+  it("should not spawn a reviewer while a worker invocation is active for the same task", async () => {
+    // Two agents: worker handles task.ready, reviewer handles task.pending_review.
+    // When the worker is active for a task and a pending_review event arrives
+    // for the same task, the reviewer entry should be queued but not spawned.
+    const worker = makeTestAgent({
+      id: "task-worker",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 1 },
+    });
+    const reviewer = makeTestAgent({
+      id: "pr-reviewer",
+      dispatch: [{ on: "task.pending_review" }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [worker, reviewer]);
+
+    const taskId = testUlid("EXCL");
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "eligible" },
+    ]);
+
+    let resolveWorker!: () => void;
+    const workerBlock = new Promise<void>((r) => { resolveWorker = r; });
+    const spawned: Array<{ agentId: string; taskRef: string }> = [];
+    let invocationCount = 0;
+
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (opts) => {
+      invocationCount++;
+      const agentId = (opts as any).agent?.id ?? "unknown";
+      const taskRef = (opts as any).taskRef ?? "unknown";
+      spawned.push({ agentId, taskRef });
+
+      if (agentId === "task-worker") {
+        await workerBlock;
+      }
+      return { session: {} as any, outcome: "success" as const, durationMs: 1 };
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+
+    await engine.start();
+
+    // Wait for worker to start
+    for (let i = 0; i < 100 && invocationCount === 0; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+    expect(invocationCount).toBe(1);
+    expect(spawned[0].agentId).toBe("task-worker");
+
+    // While worker is still running, simulate task transitioning to pending_review
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending_review", automation: "eligible" },
+    ]);
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending_review",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [], status: "pending_review" } as any,
+    });
+
+    // Give time for potential spawn
+    await new Promise((r) => setTimeout(r, 100));
+
+    // Reviewer should NOT have been spawned — worker is still active for the same task
+    expect(invocationCount).toBe(1);
+    expect(spawned).toHaveLength(1);
+
+    // Verify the reviewer entry is queued (not discarded)
+    const internal = engine as unknown as {
+      queues: Map<string, Array<{ change: TaskStateChange }>>;
+    };
+    const reviewerQueue = internal.queues.get("pr-reviewer") ?? [];
+    expect(reviewerQueue.some((e) => e.change.taskId === taskId)).toBe(true);
+
+    // Release worker — post-invocation drain should now pick up the reviewer entry
+    resolveWorker();
+
+    // Wait for reviewer to be spawned
+    for (let i = 0; i < 100 && invocationCount < 2; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+    expect(invocationCount).toBe(2);
+    expect(spawned[1].agentId).toBe("pr-reviewer");
+
+    await engine.stop();
+  });
+
+  // AC: @agent-dispatch-engine ac-26
+  it("should enforce at most one active invocation per task across all agents", async () => {
+    // Both agents match the same event. Cross-agent exclusivity means only one
+    // should spawn at a time for the same task.
+    const agentA = makeTestAgent({
+      id: "agent-a",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 2 },
+    });
+    const agentB = makeTestAgent({
+      id: "agent-b",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 2 },
+    });
+    await setupProjectWithAgents(testDir, [agentA, agentB]);
+
+    const taskId = testUlid("ONLYONE");
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "eligible" },
+    ]);
+
+    let resolveFirst!: () => void;
+    const firstBlock = new Promise<void>((r) => { resolveFirst = r; });
+    const spawned: Array<{ agentId: string; taskRef: string }> = [];
+    let invocationCount = 0;
+
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (opts) => {
+      invocationCount++;
+      const agentId = (opts as any).agent?.id ?? "unknown";
+      const taskRef = (opts as any).taskRef ?? "unknown";
+      spawned.push({ agentId, taskRef });
+
+      if (invocationCount === 1) {
+        await firstBlock;
+      }
+      return { session: {} as any, outcome: "success" as const, durationMs: 1 };
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+
+    await engine.start();
+
+    // Wait for first invocation to start
+    for (let i = 0; i < 100 && invocationCount === 0; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+    expect(invocationCount).toBe(1);
+
+    // Give time for potential concurrent spawn
+    await new Promise((r) => setTimeout(r, 100));
+
+    // Only one agent should have spawned — the other should be deferred
+    expect(invocationCount).toBe(1);
+
+    // Release first invocation
+    resolveFirst();
+
+    // Wait for the second agent to pick up the task
+    for (let i = 0; i < 100 && invocationCount < 2; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+    expect(invocationCount).toBe(2);
+
+    await engine.stop();
+  });
+
+  // AC: @agent-dispatch-engine ac-26
+  it("should allow different tasks to have concurrent invocations across agents", async () => {
+    // Cross-agent exclusivity is per-task, not global. Different tasks should
+    // be able to run concurrently with different agents.
+    const worker = makeTestAgent({
+      id: "task-worker",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 2 },
+    });
+    const reviewer = makeTestAgent({
+      id: "pr-reviewer",
+      dispatch: [{ on: "task.pending_review" }],
+      concurrency: { max_concurrent: 2 },
+    });
+    await setupProjectWithAgents(testDir, [worker, reviewer]);
+
+    const [taskA, taskB] = testUlids("DIFF", 2);
+    await writeTasks(testDir, [
+      { _ulid: taskA, status: "pending", automation: "eligible" },
+      { _ulid: taskB, status: "pending_review", automation: "eligible" },
+    ]);
+
+    let resolveAll!: () => void;
+    const allBlock = new Promise<void>((r) => { resolveAll = r; });
+    const spawned: Array<{ agentId: string; taskRef: string }> = [];
+    let invocationCount = 0;
+
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (opts) => {
+      invocationCount++;
+      const agentId = (opts as any).agent?.id ?? "unknown";
+      const taskRef = (opts as any).taskRef ?? "unknown";
+      spawned.push({ agentId, taskRef });
+      await allBlock;
+      return { session: {} as any, outcome: "success" as const, durationMs: 1 };
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+
+    await engine.start();
+
+    // Wait for both invocations to start
+    for (let i = 0; i < 100 && invocationCount < 2; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+
+    // Both tasks should have active invocations concurrently since they are different tasks
+    expect(invocationCount).toBe(2);
+    const agents = spawned.map((s) => s.agentId);
+    expect(agents).toContain("task-worker");
+    expect(agents).toContain("pr-reviewer");
+
+    resolveAll();
+    await engine.stop();
+  });
+
+  // AC: @agent-dispatch-engine ac-26
+  it("should subject deferred entries to staleness checks before spawn", async () => {
+    // When a deferred entry's task changes state while waiting, the entry should
+    // be discarded by staleness checks rather than spawned.
+    const worker = makeTestAgent({
+      id: "task-worker",
+      dispatch: [{ on: "task.ready", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 1 },
+    });
+    const reviewer = makeTestAgent({
+      id: "pr-reviewer",
+      dispatch: [{ on: "task.pending_review" }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [worker, reviewer]);
+
+    const taskId = testUlid("STALE");
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "pending", automation: "eligible" },
+    ]);
+
+    let resolveWorker!: () => void;
+    const workerBlock = new Promise<void>((r) => { resolveWorker = r; });
+    const spawned: Array<{ agentId: string; taskRef: string }> = [];
+    let invocationCount = 0;
+
+    vi.spyOn(invocationModule, "runInvocation").mockImplementation(async (opts) => {
+      invocationCount++;
+      const agentId = (opts as any).agent?.id ?? "unknown";
+      const taskRef = (opts as any).taskRef ?? "unknown";
+      spawned.push({ agentId, taskRef });
+
+      if (agentId === "task-worker") {
+        // While worker is running, task transitions to pending_review then to completed
+        await writeTasks(testDir, [
+          { _ulid: taskId, status: "pending_review", automation: "eligible" },
+        ]);
+        await workerBlock;
+      }
+      return { session: {} as any, outcome: "success" as const, durationMs: 1 };
+    });
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+
+    await engine.start();
+
+    // Wait for worker to start
+    for (let i = 0; i < 100 && invocationCount === 0; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+    }
+    expect(invocationCount).toBe(1);
+
+    // Enqueue a pending_review event for the reviewer
+    await engine.handleStateChange({
+      taskId,
+      taskRef: `@${taskId}`,
+      fromStatus: "in_progress",
+      toStatus: "pending_review",
+      timestamp: Date.now(),
+      task: { automation: "eligible", tags: [], status: "pending_review" } as any,
+    });
+
+    // Now change the task to completed on disk (making the pending_review entry stale)
+    await writeTasks(testDir, [
+      { _ulid: taskId, status: "completed", automation: "eligible" },
+    ]);
+
+    // Release worker — drain should run staleness check and discard the stale entry
+    resolveWorker();
+
+    // Wait for potential reviewer spawn
+    await new Promise((r) => setTimeout(r, 200));
+
+    // Reviewer should NOT have been spawned — the queued entry is stale (task is now completed)
+    expect(spawned).toHaveLength(1);
+    expect(spawned[0].agentId).toBe("task-worker");
+
+    await engine.stop();
+  });
+});
