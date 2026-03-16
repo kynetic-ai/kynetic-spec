@@ -3281,6 +3281,13 @@ reviews:
           status: pass
           name: vitest shadow.test
         timestamp: 2026-03-16T21:46:18.565Z
+      - _ulid: 01KKW9TRXVZ7ZRBZSY34HNNXG8
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKW9TRX1638T7GNY5BCB5C8N
+        timestamp: 2026-03-16T21:46:30.203Z
     external_links: []
     lifecycle_state: open
     related_refs: []
@@ -3290,8 +3297,32 @@ reviews:
       base_commit: 2c85c5dd
       head_branch: dispatch/task/task-fix-task-add-commit-ref/01kkw4vg
       head_commit: 69b7aecd
-    threads: []
+    threads:
+      - _ulid: 01KKW9TRX1638T7GNY5BCB5C8N
+        entries:
+          - _ulid: 01KKW9TRX1KBMNEXMVMYAQKD1Y
+            author: "@claude"
+            body: >-
+              Review evidence log:
+
+              Files read: src/parser/shadow.ts (lines 989-995), tests/shadow.test.ts (lines
+              130-146), src/cli/commands/task.ts (lines 1097-1105), src/cli/commands/meta.ts (lines
+              1123-1131)
+
+              Commands run: git diff dev...HEAD, npm test -- shadow.test (111 pass), kspec item get
+              @trait-shadow-commit
+
+              Claims verified: (1) Both callers (task.ts:1102, meta.ts:1128) pass ref AND detail —
+              confirmed fix handles actual call pattern. (2) Fallback preserved for detail-only case
+              — confirmed test at line 143.
+
+              Categories searched: correctness (fix matches trait ac-2/ac-3 requirements), edge
+              cases (ref-only fallback path — defensive, never hit by callers, pre-existing behavior
+              unchanged), test quality (AC annotations present, tests prove behavior), integration
+              (callers verified).
+            created_at: 2026-03-16T21:46:30.177Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-16T21:46:03.615Z
-    updated_at: 2026-03-16T21:46:18.533Z
+    updated_at: 2026-03-16T21:46:30.177Z
     notes: []
