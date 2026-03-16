@@ -2310,6 +2310,8 @@ reviews:
               task also has spec_ref set to @dispatch-workspace-configuration. All tests annotated
               with AC: @dispatch-workspace-configuration ac-5."
             created_at: 2026-03-16T16:25:20.460Z
+        resolved_at: 2026-03-16T16:25:27.984Z
+        resolved_by: "@claude"
     checks:
       - name: vitest
         status: pass
@@ -2408,7 +2410,13 @@ reviews:
         timestamp: 2026-03-16T16:25:20.482Z
         payload:
           thread_ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
+      - _ulid: 01KKVQEY5ZS2B7G4RP391MPNPY
+        event_type: thread_resolved
+        actor: "@claude"
+        timestamp: 2026-03-16T16:25:28.000Z
+        payload:
+          thread_ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
     notes: []
     external_links: []
     created_at: 2026-03-16T16:10:16.911Z
-    updated_at: 2026-03-16T16:25:20.460Z
+    updated_at: 2026-03-16T16:25:27.984Z
