@@ -2797,6 +2797,22 @@ reviews:
               intentional based on the task description for @task-auto-close-review-on-verdict which
               explains the rationale clearly.)"
             created_at: 2026-03-16T20:17:07.035Z
+      - _ulid: 01KKW4Q774QRRV0K5EVZ8RW7VC
+        kind: nit
+        anchor:
+          type: structured
+          section: Specs
+          ref: "@task-activity-git-query"
+        entries:
+          - _ulid: 01KKW4Q77433NBXE3W1ERV122K
+            author: "@claude"
+            body: Spec @task-activity-git-query ac-2 tests filtering by task ref when multiple tasks exist in
+              the same YAML file. The filtering mechanism (git log --grep) operates on commit
+              messages, not file content. If two tasks are modified in the same commit (e.g., via
+              kspec batch), the commit message may reference both tasks and this AC would require
+              that such commits appear in both timelines. This is probably the desired behavior but
+              worth noting — a single commit can appear in multiple task timelines.
+            created_at: 2026-03-16T20:17:10.884Z
     checks: []
     verdicts: []
     events:
@@ -2820,7 +2836,14 @@ reviews:
         payload:
           thread_ulid: 01KKW4Q3EV9HJ5ZXVB9R5PEAEJ
           kind: question
+      - _ulid: 01KKW4Q77T9FJAJRKJ44RS9W3T
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T20:17:10.906Z
+        payload:
+          thread_ulid: 01KKW4Q774QRRV0K5EVZ8RW7VC
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T20:16:07.556Z
-    updated_at: 2026-03-16T20:17:07.035Z
+    updated_at: 2026-03-16T20:17:10.884Z
