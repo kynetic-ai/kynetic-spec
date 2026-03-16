@@ -314,11 +314,12 @@ export function getBranchRemote(
 /**
  * Capture submission linkage context from current git state.
  * Returns structured data for storage in task.submission_linkage.
- * AC: @portable-task-submission-linkage ac-1, ac-3
+ * AC: @portable-task-submission-linkage ac-1, ac-3, ac-5
  */
 export function captureSubmissionLinkage(
   cwd?: string,
   reviewUrl?: string,
+  dispatchBaseBranch?: string | null,
 ): {
   branch: string | null;
   commit: string;
@@ -343,6 +344,11 @@ export function captureSubmissionLinkage(
       remoteUrl = remoteInfo.url;
       upstreamRef = remoteInfo.upstream_ref;
     }
+  }
+
+  // AC: @portable-task-submission-linkage ac-5 — fallback to dispatch config base_branch
+  if (!upstreamRef && dispatchBaseBranch) {
+    upstreamRef = dispatchBaseBranch;
   }
 
   return {

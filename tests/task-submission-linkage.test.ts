@@ -1,10 +1,12 @@
 /**
  * Tests for portable task submission linkage
- * AC: @portable-task-submission-linkage ac-1, ac-2, ac-3, ac-4
+ * AC: @portable-task-submission-linkage ac-1, ac-2, ac-3, ac-4, ac-5
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { execSync } from "node:child_process";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import {
   setupTempFixtures,
   cleanupTempDir,
@@ -312,6 +314,62 @@ describe("Integration: task submission linkage", () => {
     );
     expect(after.submission_linkage).toBeDefined();
     expect(after.submission_linkage!.commit).toMatch(/^[0-9a-f]{40}$/);
+  });
+
+  // AC: @portable-task-submission-linkage ac-5
+  it("should fall back to dispatch config base_branch for upstream_ref when no git upstream tracking", () => {
+    // Write dispatch config with base_branch
+    fs.writeFileSync(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: dev\n",
+    );
+
+    // Create a branch without upstream tracking
+    git("checkout -b feat/no-upstream", tempDir);
+    git("commit --allow-empty -m 'feature work'", tempDir);
+
+    kspec('task add --title "Dispatch fallback" --slug dispatch-fallback', tempDir);
+    kspec("task start @dispatch-fallback", tempDir);
+    kspec("task submit @dispatch-fallback", tempDir);
+
+    const task = kspecJson<TaskWithLinkage>(
+      "task get @dispatch-fallback --json",
+      tempDir,
+    );
+    expect(task.submission_linkage).toBeDefined();
+    expect(task.submission_linkage!.branch).toBe("feat/no-upstream");
+    // No git upstream tracking, but dispatch config provides fallback
+    expect(task.submission_linkage!.upstream_ref).toBe("dev");
+  });
+
+  // AC: @portable-task-submission-linkage ac-5
+  it("should prefer git upstream tracking over dispatch config fallback", () => {
+    // Write dispatch config with base_branch
+    fs.writeFileSync(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: dev\n",
+    );
+
+    // Create bare remote and set up upstream tracking
+    const bareDir = tempDir + "-bare-precedence";
+    execSync(`git init --bare "${bareDir}"`, { stdio: "pipe" });
+    git(`remote add origin "${bareDir}"`, tempDir);
+    git("checkout -b feat/with-upstream", tempDir);
+    git("push -u origin feat/with-upstream", tempDir);
+
+    kspec('task add --title "Upstream precedence" --slug upstream-precedence', tempDir);
+    kspec("task start @upstream-precedence", tempDir);
+    kspec("task submit @upstream-precedence", tempDir);
+
+    const task = kspecJson<TaskWithLinkage>(
+      "task get @upstream-precedence --json",
+      tempDir,
+    );
+    expect(task.submission_linkage).toBeDefined();
+    // Git upstream tracking takes precedence over dispatch config
+    expect(task.submission_linkage!.upstream_ref).toBe("refs/heads/feat/with-upstream");
+
+    execSync(`rm -rf "${bareDir}"`, { stdio: "pipe" });
   });
 
   // AC: @trait-error-guidance ac-1 — N/A: submission linkage capture is best-effort, not error-producing
