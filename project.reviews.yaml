@@ -3483,6 +3483,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-16T22:05:27.759Z
         completed_at: 2026-03-16T22:05:27.759Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: dev
+          head_commit: 02e5983cf
+        evidence: "AC: @review-record-per-cycle-lifecycle ac-1 covered by 3 tests: approve auto-closes,
+          request_changes auto-closes, comment stays open"
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-16T22:05:34.223Z
+        completed_at: 2026-03-16T22:05:34.223Z
     events:
       - _ulid: 01KKWAWS4GFN2WK41H12815ARF
         actor: "@claude"
@@ -3511,6 +3523,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-16T22:05:27.799Z
+      - _ulid: 01KKWAXP5JKY5FAVYB34FPFYZP
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-16T22:05:34.258Z
     external_links: []
     lifecycle_state: open
     related_refs: []
@@ -3522,5 +3541,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-16T22:05:04.528Z
-    updated_at: 2026-03-16T22:05:27.759Z
+    updated_at: 2026-03-16T22:05:34.223Z
     notes: []
