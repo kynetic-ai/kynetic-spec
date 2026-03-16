@@ -2640,6 +2640,30 @@ reviews:
               (@review-record-lifecycle-completion ac-2) requires the task's review_ref to be
               updated to the new record, which is a CLI/data operation, not just documentation.
             created_at: 2026-03-16T19:17:33.529Z
+      - _ulid: 01KKW1AE10MKPQX34J4GTQ0247
+        kind: nit
+        entries:
+          - _ulid: 01KKW1AE1016MEHK8RCTZS9TK5
+            author: "@claude"
+            body: >-
+              **Missing task: tests for activity timeline**
+
+
+              The plan has implementation tasks but no dedicated test tasks. Given the convention of
+              behavioral tests over static analysis, the activity timeline (especially the git query
+              parsing and timeline merging) would benefit from explicit test tasks. The
+              session-start-activity-timeline plan had a dedicated test task
+              (@task-session-start-output-tests). Consider adding:
+
+
+              1. A test task for getTaskActivity() git query parsing
+
+              2. A test task for the merged timeline rendering (git + review events)
+
+
+              These could be folded into the implementation tasks' descriptions, but making them
+              explicit ensures they don't get skipped during dispatch.
+            created_at: 2026-03-16T19:17:46.144Z
     checks: []
     verdicts: []
     events:
@@ -2712,7 +2736,14 @@ reviews:
         payload:
           thread_ulid: 01KKW1A1PP53ETST8RGQX4QXM9
           kind: nit
+      - _ulid: 01KKW1AE1W553XMMQQ0EYGG2BJ
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T19:17:46.172Z
+        payload:
+          thread_ulid: 01KKW1AE10MKPQX34J4GTQ0247
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T19:15:55.134Z
-    updated_at: 2026-03-16T19:17:33.529Z
+    updated_at: 2026-03-16T19:17:46.144Z
