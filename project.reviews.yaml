@@ -2527,6 +2527,26 @@ reviews:
               Keeping it as a separate spec isn't wrong, but it creates a small spec for what is
               essentially one if-else branch in captureSubmissionLinkage().
             created_at: 2026-03-16T19:16:46.984Z
+      - _ulid: 01KKW18S8F3XJGD95D92HX1G45
+        kind: question
+        entries:
+          - _ulid: 01KKW18S8FJNC6FP318254ATZQ
+            author: "@claude"
+            body: >-
+              **@task-activity-timeline ac-5 dependency chain is heavy for a P3 feature**
+
+
+              The diff summaries at submission points (ac-5) depend on: submission linkage merge
+              target, review examined commit, review diff orientation, AND the core activity
+              display. Task @task-activity-diff-summaries lists 4 dependencies. This is the last
+              thing that can be worked on and touches the most surface area.
+
+
+              Is this essential for the initial plan, or should it be deferred to a follow-up plan?
+              The core timeline (ac-1 through ac-4) delivers the primary value without diff
+              summaries. Including ac-5 increases the plan's scope without adding to the MVP
+              experience. Consider splitting it out.
+            created_at: 2026-03-16T19:16:52.112Z
     checks: []
     verdicts: []
     events:
@@ -2564,7 +2584,14 @@ reviews:
         payload:
           thread_ulid: 01KKW18M88VFNKGG1BJEKMBTAC
           kind: question
+      - _ulid: 01KKW18S99EB2HHBVC8NJ793ME
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T19:16:52.137Z
+        payload:
+          thread_ulid: 01KKW18S8F3XJGD95D92HX1G45
+          kind: question
     notes: []
     external_links: []
     created_at: 2026-03-16T19:15:55.134Z
-    updated_at: 2026-03-16T19:16:46.984Z
+    updated_at: 2026-03-16T19:16:52.112Z
