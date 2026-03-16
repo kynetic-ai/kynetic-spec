@@ -100643,6 +100643,10 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged via PR #893. Rewrote core skills (task-work, review, merge) for review-driven
+    architecture. Created project-specific work-gates and review-gates skills. Archived superseded
+    skills (local-review, pr-review, review-principles, pr). Updated kspec-agents.md and all
+    rendered skill targets."
   depends_on: []
   context: []
   priority: 2
@@ -100664,6 +100668,7 @@
   created_at: 2026-03-16T05:30:37.484Z
   started_at: 2026-03-16T06:28:38.713Z
   submitted_at: 2026-03-16T06:28:42.710Z
+  completed_at: 2026-03-16T06:41:31.960Z
   notes:
     - _ulid: 01KKTK1BM0EZF1RZ7BTBGSGTF5
       created_at: 2026-03-16T05:48:54.272Z
@@ -100720,11 +100725,6 @@
         source. Skill content quality is solid — core skills are well-structured and comprehensive."
       supersedes: null
   todos: []
-  completed_at: 2026-03-16T06:41:31.960Z
-  closed_reason: "Merged via PR #893. Rewrote core skills (task-work, review, merge) for review-driven
-    architecture. Created project-specific work-gates and review-gates skills. Archived superseded
-    skills (local-review, pr-review, review-principles, pr). Updated kspec-agents.md and all
-    rendered skill targets."
 - _ulid: 01KKTK96Z5M9T8WP900CPFWRNG
   slugs: []
   title: Remove skill table from kspec-agents.md and port descriptions to skill frontmatter
@@ -100760,5 +100760,48 @@
     - skills
   vcs_refs: []
   created_at: 2026-03-16T05:53:11.653Z
+  notes: []
+  todos: []
+- title: Add content rendering and anchor display ACs to review web UI spec
+  description: >-
+    The review-records-web-ui spec has ACs for thread structure (kind badges, resolution state) but
+    nothing about how review content is actually displayed. Missing:
+
+
+    1. Comment body rendering — markdown support, code blocks, inline formatting
+
+    2. Code anchor display — file path, line numbers, diff context for code-targeted comments
+
+    3. Structured anchor display — section/field references for plan/spec reviews shown with context
+
+    4. Verdict body rendering — reviewer notes alongside decision
+
+    5. Check evidence display — how evidence text and runner info are presented
+
+
+    These are essential for the review detail page (ac-2) and comment creation (ac-3) to be
+    implementable — without them, the UI tasks have no spec coverage for content treatment.
+
+
+    Action: Add ACs to @review-records-web-ui covering content rendering, code anchor visualization
+    (file:line with context), structured anchor visualization (section/field with referenced
+    content), and markdown rendering in comment bodies. Update the plan document after spec changes.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - specs
+    - web-ui
+    - review
+  depends_on: []
+  _ulid: 01KKTTA3KTQMPJFWXMPVYZ3TJN
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-16T07:56:01.018Z
   notes: []
   todos: []
