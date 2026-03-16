@@ -2497,6 +2497,36 @@ reviews:
               the implementation just has a gap in the task-add case. Creating a parallel spec for
               the same concern adds confusion.
             created_at: 2026-03-16T19:16:31.525Z
+      - _ulid: 01KKW18M88VFNKGG1BJEKMBTAC
+        kind: question
+        entries:
+          - _ulid: 01KKW18M88S47Q7SPEHJWK267Y
+            author: "@claude"
+            body: >-
+              **@submission-linkage-merge-target: Is this already covered by
+              @portable-task-submission-linkage?**
+
+
+              The existing @portable-task-submission-linkage ac-1 says submission stores "remote or
+              upstream locator data when available." The current implementation in
+              captureSubmissionLinkage() (src/utils/git.ts:319) already captures upstream_ref from
+              getBranchRemote().
+
+
+              The plan's @submission-linkage-merge-target adds a fallback to dispatch config's
+              base_branch when git upstream tracking is absent. This is a valid enhancement, but:
+
+
+              1. Should this be an AC added to the existing @portable-task-submission-linkage rather
+              than a new spec? It's extending the same function with an additional fallback source.
+
+              2. The existing spec's ac-1 says "when available" — one could argue the dispatch
+              config fallback is already in scope.
+
+
+              Keeping it as a separate spec isn't wrong, but it creates a small spec for what is
+              essentially one if-else branch in captureSubmissionLinkage().
+            created_at: 2026-03-16T19:16:46.984Z
     checks: []
     verdicts: []
     events:
@@ -2527,7 +2557,14 @@ reviews:
         payload:
           thread_ulid: 01KKW18554QK0XEKRVR2KQE08B
           kind: blocker
+      - _ulid: 01KKW18M905R3EZ69F01JN4V1N
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T19:16:47.008Z
+        payload:
+          thread_ulid: 01KKW18M88VFNKGG1BJEKMBTAC
+          kind: question
     notes: []
     external_links: []
     created_at: 2026-03-16T19:15:55.134Z
-    updated_at: 2026-03-16T19:16:31.525Z
+    updated_at: 2026-03-16T19:16:46.984Z
