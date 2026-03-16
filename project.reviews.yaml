@@ -553,6 +553,35 @@ reviews:
               'review_lifecycle_changed', etc. Or consolidate to a single 'review_updated' event if
               the client just refetches the whole record.
             created_at: 2026-03-16T07:33:08.156Z
+      - _ulid: 01KKTS0GPPH0KPX50K1NZ4H7FF
+        kind: blocker
+        entries:
+          - _ulid: 01KKTS0GPPM0X9TYRJ7GSK8W0V
+            author: "@claude"
+            body: >-
+              **Missing: no traits referenced on either spec.**
+
+
+              The daemon-server parent spec inherits from @trait-json-output, @trait-error-guidance,
+              @trait-shadow-commit, @trait-localhost-security, and @trait-websocket-protocol. The
+              plan's specs don't reference any traits. At minimum, the API spec should inherit:
+
+              - @trait-json-output (all API responses should be valid JSON)
+
+              - @trait-error-guidance (error responses should include suggested actions)
+
+
+              And the web UI spec likely has UI-related traits that should apply (e.g., URL state
+              management patterns mentioned in conventions).
+
+
+              Without traits, the implementer has to guess which cross-cutting concerns apply. The
+              plan should explicitly declare trait refs.
+
+
+              Recommendation: Add traits field to both specs in the plan. At minimum
+              @trait-json-output and @trait-error-guidance for the API spec.
+            created_at: 2026-03-16T07:33:18.166Z
     checks: []
     verdicts: []
     events:
@@ -618,7 +647,14 @@ reviews:
         payload:
           thread_ulid: 01KKTS06XV59ZTCERGD6WVBM0T
           kind: nit
+      - _ulid: 01KKTS0GQ05RS359S0T5PNRA2J
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:33:18.176Z
+        payload:
+          thread_ulid: 01KKTS0GPPH0KPX50K1NZ4H7FF
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T07:29:52.508Z
-    updated_at: 2026-03-16T07:33:08.156Z
+    updated_at: 2026-03-16T07:33:18.166Z
