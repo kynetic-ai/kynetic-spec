@@ -133,7 +133,14 @@ describe('Shadow Branch', () => {
       expect(msg).toBe('Note on @my-task');
     });
 
-    it('generates task-add message', () => {
+    // AC: @trait-shadow-commit ac-2
+    // AC: @trait-shadow-commit ac-3
+    it('generates task-add message with ref and title', () => {
+      const msg = generateCommitMessage('task-add', 'my-task', 'New feature');
+      expect(msg).toBe('Add task @my-task: New feature');
+    });
+
+    it('generates task-add message with only detail (no ref)', () => {
       const msg = generateCommitMessage('task-add', undefined, 'New feature');
       expect(msg).toBe('Add task: New feature');
     });
