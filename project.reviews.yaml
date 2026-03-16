@@ -444,6 +444,36 @@ reviews:
               Recommendation: Either add explicit error ACs or reference @trait-error-guidance and
               @trait-json-output as traits on the review-records-daemon-api spec.
             created_at: 2026-03-16T07:32:20.566Z
+      - _ulid: 01KKTRZ3CR3CQ6HXQ9TM4HXBYA
+        kind: blocker
+        entries:
+          - _ulid: 01KKTRZ3CSNH1S3ZMB9XQEC6PP
+            author: "@claude"
+            body: >-
+              **Web UI spec ac-3 conflates multiple distinct interactions into one AC.**
+
+
+              ac-3 covers: adding comments (new threads), replying to existing threads,
+              resolving/reopening threads, and submitting verdicts. These are fundamentally
+              different UI components with different interaction patterns:
+
+              - Thread creation needs a form with kind selection (blocker/question/nit) and optional
+              anchor
+
+              - Reply needs inline text input within a thread
+
+              - Resolve/reopen is a button toggle on a thread
+
+              - Verdict submission is a separate form with decision dropdown and summary
+
+
+              Each deserves its own AC so they can be independently tested and verified. As written,
+              "they can participate" is vague — participate how? What constitutes success?
+
+
+              Recommendation: Split into at least 4 ACs covering each interaction type separately,
+              with specific testable outcomes.
+            created_at: 2026-03-16T07:32:31.769Z
     checks: []
     verdicts: []
     events:
@@ -481,7 +511,14 @@ reviews:
         payload:
           thread_ulid: 01KKTRYREP0EXD2RZPBFG8ZMNK
           kind: blocker
+      - _ulid: 01KKTRZ3D29Z2FBA10F2CETZ9G
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:32:31.778Z
+        payload:
+          thread_ulid: 01KKTRZ3CR3CQ6HXQ9TM4HXBYA
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T07:29:52.508Z
-    updated_at: 2026-03-16T07:32:20.566Z
+    updated_at: 2026-03-16T07:32:31.769Z
