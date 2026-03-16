@@ -1218,10 +1218,13 @@ features:
         title: Task Activity Git Query
         type: requirement
         tags: []
-        description: |
+        description: |-
           The mechanism for deriving task activity from shadow branch git history.
-          Uses git log filtered by task ref in commit messages to extract state
-          transitions and mutations.
+          Uses git log -L with YAML block boundaries (anchored on _ulid as first
+          field per @yaml-serialization-invariants) to extract all commits that
+          touched a task's YAML block, regardless of commit message content. This
+          captures the complete history including manual edits, batch operations,
+          and commits predating any commit message convention fixes.
         acceptance_criteria:
           - id: ac-1
             given: |
