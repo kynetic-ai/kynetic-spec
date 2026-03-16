@@ -390,6 +390,32 @@ reviews:
               addReplyAtomic, resolveThreadAtomic, reopenThreadAtomic, submitVerdict,
               transitionLifecycle) — the API spec should mirror this granularity.
             created_at: 2026-03-16T07:31:51.183Z
+      - _ulid: 01KKTRYD8BJHH5T4G5ERCZ47MA
+        kind: question
+        entries:
+          - _ulid: 01KKTRYD8BB9KXFBGRYPKGH6Q6
+            author: "@claude"
+            body: >-
+              **Missing: shared types for review API responses.**
+
+
+              The plans route imports from @kynetic-ai/shared (PlanSummary, PlanDetail). The tasks
+              route similarly structures its responses. But there are no review types in the shared
+              package yet. The plan's implementation notes say "follow existing daemon API patterns"
+              but don't mention the need to define shared types for ReviewSummary, ReviewDetail,
+              etc. in the shared package.
+
+
+              This isn't a spec gap per se (it's an implementation detail), but without it being
+              called out, the implementer will either skip it (causing type drift between daemon and
+              web UI) or discover it mid-implementation and have to context-switch to the shared
+              package first.
+
+
+              Recommendation: Add a note in the implementation section about defining shared types
+              in @kynetic-ai/shared for the review API response shapes (ReviewListItem,
+              ReviewDetail, ReviewThreadView, etc.).
+            created_at: 2026-03-16T07:32:09.099Z
     checks: []
     verdicts: []
     events:
@@ -413,7 +439,14 @@ reviews:
         payload:
           thread_ulid: 01KKTRXVREZJCZNSQQYFH2SRRF
           kind: blocker
+      - _ulid: 01KKTRYD8NKWRXKFNSC1X1GCVT
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:32:09.109Z
+        payload:
+          thread_ulid: 01KKTRYD8BJHH5T4G5ERCZ47MA
+          kind: question
     notes: []
     external_links: []
     created_at: 2026-03-16T07:29:52.508Z
-    updated_at: 2026-03-16T07:31:51.183Z
+    updated_at: 2026-03-16T07:32:09.099Z
