@@ -3,99 +3,208 @@ reviews:
   - _ulid: 01KKPTE827F3G45RH8T37AM9YB
     slugs: []
     title: Test Review
-    lifecycle_state: draft
-    subject:
-      type: task
-      ref: "@task-implement-review-cli-create-query"
-      shadow_commit: ""
-      content_hash: ""
     author: "@claude"
-    related_refs: []
-    threads: []
     checks: []
-    verdicts: []
     events:
       - _ulid: 01KKPTE826PCD45SSA6W17DRSQ
-        event_type: lifecycle_change
         actor: "@claude"
-        timestamp: 2026-03-14T18:41:18.918Z
+        event_type: lifecycle_change
         payload:
           to: draft
-    notes: []
+        timestamp: 2026-03-14T18:41:18.918Z
     external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-implement-review-cli-create-query"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
     created_at: 2026-03-14T18:41:18.919Z
     updated_at: null
+    notes: []
   - _ulid: 01KKPTEK2ASKXYS52TEBQBE75C
     slugs: []
     title: Code Review
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKPTEK29BA1BMPCV5PNBMS5S
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-14T18:41:30.185Z
+    external_links: []
     lifecycle_state: draft
+    related_refs: []
     subject:
       type: code
       base_commit: abc123
       head_commit: def456
-    author: "@claude"
-    related_refs: []
     threads: []
-    checks: []
     verdicts: []
-    events:
-      - _ulid: 01KKPTEK29BA1BMPCV5PNBMS5S
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-14T18:41:30.185Z
-        payload:
-          to: draft
-    notes: []
-    external_links: []
     created_at: 2026-03-14T18:41:30.186Z
     updated_at: null
+    notes: []
   - _ulid: 01KKPTEP4RZGTEH6X3H878MRJM
     slugs:
       - my-custom-slug
     title: Slug Review
-    lifecycle_state: draft
-    subject:
-      type: task
-      ref: "@task-implement-review-cli-create-query"
-      shadow_commit: ""
-      content_hash: ""
     author: "@claude"
-    related_refs: []
-    threads: []
     checks: []
-    verdicts: []
     events:
       - _ulid: 01KKPTEP4Q73BXN76VW4M54CMH
-        event_type: lifecycle_change
         actor: "@claude"
-        timestamp: 2026-03-14T18:41:33.335Z
+        event_type: lifecycle_change
         payload:
           to: draft
-    notes: []
+        timestamp: 2026-03-14T18:41:33.335Z
     external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-implement-review-cli-create-query"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
     created_at: 2026-03-14T18:41:33.336Z
     updated_at: null
+    notes: []
   - _ulid: 01KKTMVTDW2EBX0YHND7N5RM37
     slugs: []
     title: "Review: rewrite core skills for review-driven architecture"
+    author: "@claude"
+    checks:
+      - status: fail
+        applies_to_version:
+          type: code_compare
+          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+          head_commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
+        evidence: "3 test failures in tests/agents-instruction-gen.test.ts: template renamed without
+          updating tests."
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-16T06:21:30.734Z
+        completed_at: 2026-03-16T06:21:30.734Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+          head_commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
+        evidence: All 5563 tests passed (253 files, 3 skipped). Full npm test at canonical HEAD e07e8ab29.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-16T06:38:04.053Z
+        completed_at: 2026-03-16T06:38:04.053Z
+    events:
+      - _ulid: 01KKTMVTDVS7YRNSRC6MWJHVHN
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T06:20:49.979Z
+      - _ulid: 01KKTMW1VQC3H7FR3KKT83Y8WJ
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-16T06:20:57.591Z
+      - _ulid: 01KKTMWB9EMYRXP55JT78BX6K7
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
+        timestamp: 2026-03-16T06:21:07.246Z
+      - _ulid: 01KKTMWK93GTHRGEZ71KK9TE0P
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTMWK9067T28VEEWXJATHQ1
+        timestamp: 2026-03-16T06:21:15.427Z
+      - _ulid: 01KKTMX27HG0NPXY3JT8NNSY3Y
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: vitest
+        timestamp: 2026-03-16T06:21:30.738Z
+      - _ulid: 01KKTMX9097NNHYWQ1AEAP8KF6
+        actor: pr-reviewer@kspec.local
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-16T06:21:37.673Z
+      - _ulid: 01KKTNTGV06TSYHK8QGAN2HDN4
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
+        timestamp: 2026-03-16T06:37:35.968Z
+      - _ulid: 01KKTNTK9NDC6GDK6960G1SNQ5
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKTMWK9067T28VEEWXJATHQ1
+        timestamp: 2026-03-16T06:37:38.485Z
+      - _ulid: 01KKTNTSNWVKVHNF3PZ8QYP95R
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
+        timestamp: 2026-03-16T06:37:45.020Z
+      - _ulid: 01KKTNTVYYJA5RCVVPAC862HXK
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KKTMWK9067T28VEEWXJATHQ1
+        timestamp: 2026-03-16T06:37:47.358Z
+      - _ulid: 01KKTNVC8SMKNS996YXPEZ0HDD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-16T06:38:04.057Z
+      - _ulid: 01KKTNVJW7WSS142PJEZ21QDRT
+        actor: pr-reviewer@kspec.local
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-16T06:38:10.823Z
+      - _ulid: 01KKTNWVZCRFNSMV6NT3C368WZ
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-16T06:38:52.908Z
+    external_links: []
     lifecycle_state: closed
+    related_refs: []
     subject:
       type: task
+      content_hash: ""
       ref: "@01KKTHZWHC2B628XA0ETE1XN8B"
       shadow_commit: ""
-      content_hash: ""
-    author: "@claude"
-    related_refs: []
     threads:
       - _ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
-        kind: blocker
         anchor:
           type: code
+          commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
+          line_end: 1
+          line_start: 1
           path: templates/agents-sections/04-pr-workflow.md
           side: head
-          line_start: 1
-          line_end: 1
-          commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
         entries:
           - _ulid: 01KKTMWB9BGKQKCV3ZTG05ZET8
             author: "@claude"
@@ -110,17 +219,17 @@ reviews:
             body: Fixed in commit e07e8ab29 — tests now dynamically read template headings instead of hardcoding
               section names. All tests pass.
             created_at: 2026-03-16T06:37:35.964Z
+        kind: blocker
         resolved_at: 2026-03-16T06:37:45.017Z
         resolved_by: "@claude"
       - _ulid: 01KKTMWK9067T28VEEWXJATHQ1
-        kind: blocker
         anchor:
           type: code
+          commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
+          line_end: 875
+          line_start: 875
           path: .agents/skills/ui-data-layer/SKILL.md
           side: head
-          line_start: 875
-          line_end: 875
-          commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
         entries:
           - _ulid: 01KKTMWK90HG9GYRCGYFSTHCJY
             author: "@claude"
@@ -137,223 +246,219 @@ reviews:
               source lives in .kspec/skills/, which is outside this task's scope. Downgrading: not a
               blocker for this PR."
             created_at: 2026-03-16T06:37:38.481Z
+        kind: blocker
         resolved_at: 2026-03-16T06:37:47.353Z
         resolved_by: "@claude"
-    checks:
-      - name: vitest
-        status: fail
-        required: true
-        runner: vitest
-        evidence: "3 test failures in tests/agents-instruction-gen.test.ts: template renamed without
-          updating tests."
-        applies_to_version:
-          type: code_compare
-          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-          head_commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
-        created_at: 2026-03-16T06:21:30.734Z
-        completed_at: 2026-03-16T06:21:30.734Z
-      - name: vitest
-        status: pass
-        required: true
-        runner: vitest
-        evidence: All 5563 tests passed (253 files, 3 skipped). Full npm test at canonical HEAD e07e8ab29.
-        applies_to_version:
-          type: code_compare
-          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-          head_commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
-        created_at: 2026-03-16T06:38:04.053Z
-        completed_at: 2026-03-16T06:38:04.053Z
     verdicts:
-      - reviewer: pr-reviewer@kspec.local
-        role: reviewer
-        decision: request_changes
-        applies_to_version:
+      - applies_to_version:
           type: code_compare
           base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
           head_commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
-        created_at: 2026-03-16T06:21:37.669Z
-      - reviewer: pr-reviewer@kspec.local
+        decision: request_changes
+        reviewer: pr-reviewer@kspec.local
         role: reviewer
-        decision: approve
-        applies_to_version:
+        created_at: 2026-03-16T06:21:37.669Z
+      - applies_to_version:
           type: code_compare
           base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
           head_commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
+        decision: approve
+        reviewer: pr-reviewer@kspec.local
+        role: reviewer
         created_at: 2026-03-16T06:38:10.816Z
-    events:
-      - _ulid: 01KKTMVTDVS7YRNSRC6MWJHVHN
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T06:20:49.979Z
-        payload:
-          to: draft
-      - _ulid: 01KKTMW1VQC3H7FR3KKT83Y8WJ
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T06:20:57.591Z
-        payload:
-          from: draft
-          to: open
-      - _ulid: 01KKTMWB9EMYRXP55JT78BX6K7
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T06:21:07.246Z
-        payload:
-          thread_ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
-          kind: blocker
-      - _ulid: 01KKTMWK93GTHRGEZ71KK9TE0P
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T06:21:15.427Z
-        payload:
-          thread_ulid: 01KKTMWK9067T28VEEWXJATHQ1
-          kind: blocker
-      - _ulid: 01KKTMX27HG0NPXY3JT8NNSY3Y
-        event_type: check_added
-        actor: "@claude"
-        timestamp: 2026-03-16T06:21:30.738Z
-        payload:
-          name: vitest
-          status: fail
-      - _ulid: 01KKTMX9097NNHYWQ1AEAP8KF6
-        event_type: verdict_submitted
-        actor: pr-reviewer@kspec.local
-        timestamp: 2026-03-16T06:21:37.673Z
-        payload:
-          decision: request_changes
-      - _ulid: 01KKTNTGV06TSYHK8QGAN2HDN4
-        event_type: thread_replied
-        actor: "@claude"
-        timestamp: 2026-03-16T06:37:35.968Z
-        payload:
-          thread_ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
-      - _ulid: 01KKTNTK9NDC6GDK6960G1SNQ5
-        event_type: thread_replied
-        actor: "@claude"
-        timestamp: 2026-03-16T06:37:38.485Z
-        payload:
-          thread_ulid: 01KKTMWK9067T28VEEWXJATHQ1
-      - _ulid: 01KKTNTSNWVKVHNF3PZ8QYP95R
-        event_type: thread_resolved
-        actor: "@claude"
-        timestamp: 2026-03-16T06:37:45.020Z
-        payload:
-          thread_ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
-      - _ulid: 01KKTNTVYYJA5RCVVPAC862HXK
-        event_type: thread_resolved
-        actor: "@claude"
-        timestamp: 2026-03-16T06:37:47.358Z
-        payload:
-          thread_ulid: 01KKTMWK9067T28VEEWXJATHQ1
-      - _ulid: 01KKTNVC8SMKNS996YXPEZ0HDD
-        event_type: check_added
-        actor: "@claude"
-        timestamp: 2026-03-16T06:38:04.057Z
-        payload:
-          name: vitest
-          status: pass
-      - _ulid: 01KKTNVJW7WSS142PJEZ21QDRT
-        event_type: verdict_submitted
-        actor: pr-reviewer@kspec.local
-        timestamp: 2026-03-16T06:38:10.823Z
-        payload:
-          decision: approve
-      - _ulid: 01KKTNWVZCRFNSMV6NT3C368WZ
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T06:38:52.908Z
-        payload:
-          from: open
-          to: closed
-    notes: []
-    external_links: []
     created_at: 2026-03-16T06:20:49.980Z
     updated_at: 2026-03-16T06:38:52.902Z
+    notes: []
   - _ulid: 01KKTNX37WQYMJWHJNNH7NF2GW
     slugs: []
     title: "Review cycle 2: rewrite core skills for review-driven architecture"
-    lifecycle_state: closed
-    subject:
-      type: task
-      ref: "@01KKTHZWHC2B628XA0ETE1XN8B"
-      shadow_commit: ""
-      content_hash: ""
     author: "@claude"
-    related_refs: []
-    threads: []
     checks:
-      - name: vitest
-        status: pass
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+          head_commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
+        evidence: All 5563 tests passed (253 files, 3 skipped). Full npm test at canonical HEAD e07e8ab29.
+        name: vitest
         required: true
         runner: vitest
-        evidence: All 5563 tests passed (253 files, 3 skipped). Full npm test at canonical HEAD e07e8ab29.
-        applies_to_version:
-          type: code_compare
-          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-          head_commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
         created_at: 2026-03-16T06:39:13.985Z
         completed_at: 2026-03-16T06:39:13.985Z
-    verdicts:
-      - reviewer: pr-reviewer@kspec.local
-        role: reviewer
-        decision: approve
-        applies_to_version:
-          type: code_compare
-          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-          head_commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
-        created_at: 2026-03-16T06:39:20.508Z
     events:
       - _ulid: 01KKTNX37VRXNY7T1PX931RRXP
-        event_type: lifecycle_change
         actor: "@claude"
-        timestamp: 2026-03-16T06:39:00.348Z
+        event_type: lifecycle_change
         payload:
           to: draft
+        timestamp: 2026-03-16T06:39:00.348Z
       - _ulid: 01KKTNXAEN38SP9SY79Q1910FC
-        event_type: lifecycle_change
         actor: "@claude"
-        timestamp: 2026-03-16T06:39:07.733Z
+        event_type: lifecycle_change
         payload:
           from: draft
           to: open
+        timestamp: 2026-03-16T06:39:07.733Z
       - _ulid: 01KKTNXGJ7J7CBNYVT8M7EXCPZ
-        event_type: check_added
         actor: "@claude"
-        timestamp: 2026-03-16T06:39:13.992Z
+        event_type: check_added
         payload:
-          name: vitest
           status: pass
+          name: vitest
+        timestamp: 2026-03-16T06:39:13.992Z
       - _ulid: 01KKTNXPY441JQPWBFHY4JET7T
-        event_type: verdict_submitted
         actor: pr-reviewer@kspec.local
-        timestamp: 2026-03-16T06:39:20.516Z
+        event_type: verdict_submitted
         payload:
           decision: approve
+        timestamp: 2026-03-16T06:39:20.516Z
       - _ulid: 01KKTP1K01SM29M2CYYZWNGV9W
-        event_type: lifecycle_change
         actor: "@claude"
-        timestamp: 2026-03-16T06:41:27.553Z
+        event_type: lifecycle_change
         payload:
           from: open
           to: closed
-    notes: []
+        timestamp: 2026-03-16T06:41:27.553Z
     external_links: []
+    lifecycle_state: closed
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKTHZWHC2B628XA0ETE1XN8B"
+      shadow_commit: ""
+    threads: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+          head_commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
+        decision: approve
+        reviewer: pr-reviewer@kspec.local
+        role: reviewer
+        created_at: 2026-03-16T06:39:20.508Z
     created_at: 2026-03-16T06:39:00.348Z
     updated_at: 2026-03-16T06:41:27.549Z
+    notes: []
   - _ulid: 01KKTRT7VWQ9YDQQAK2FT3RV3Z
     slugs: []
     title: "Review: Review Records Web UI plan"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKTRT7VVSCS7WJCCYAA7G9WE
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T07:29:52.508Z
+      - _ulid: 01KKTRTJRAJPJMGSY2MW069F89
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-16T07:30:03.658Z
+      - _ulid: 01KKTRXVRMD2PVYTB7WR4PSG7S
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTRXVREZJCZNSQQYFH2SRRF
+        timestamp: 2026-03-16T07:31:51.188Z
+      - _ulid: 01KKTRYD8NKWRXKFNSC1X1GCVT
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKTRYD8BJHH5T4G5ERCZ47MA
+        timestamp: 2026-03-16T07:32:09.109Z
+      - _ulid: 01KKTRYREY9799QC9H7FJZ061E
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTRYREP0EXD2RZPBFG8ZMNK
+        timestamp: 2026-03-16T07:32:20.574Z
+      - _ulid: 01KKTRZ3D29Z2FBA10F2CETZ9G
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTRZ3CR3CQ6HXQ9TM4HXBYA
+        timestamp: 2026-03-16T07:32:31.778Z
+      - _ulid: 01KKTRZFD8R0XE1SG0RY1YAHAH
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTRZFCZRX92RJQ86ZDAK5KT
+        timestamp: 2026-03-16T07:32:44.072Z
+      - _ulid: 01KKTRZVA80PHCE1VZQ5B52VJT
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKTRZVA0TRKDG7W4VH48PXJF
+        timestamp: 2026-03-16T07:32:56.264Z
+      - _ulid: 01KKTS06Y6X531GC3CMZW4FSRS
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTS06XV59ZTCERGD6WVBM0T
+        timestamp: 2026-03-16T07:33:08.166Z
+      - _ulid: 01KKTS0GQ05RS359S0T5PNRA2J
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTS0GPPH0KPX50K1NZ4H7FF
+        timestamp: 2026-03-16T07:33:18.176Z
+      - _ulid: 01KKTS0T354X8Z978TQ1MCJG9R
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTS0T2XHES1CMW4P2EY03T7
+        timestamp: 2026-03-16T07:33:27.782Z
+      - _ulid: 01KKTS13R003VB2MRZ4JARGYVT
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTS13QRQAEMX333KZ60E118
+        timestamp: 2026-03-16T07:33:37.664Z
+      - _ulid: 01KKTS1D6AP1EM444N5E07H8Y1
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKTS1D5Y39TZ6HMTWZ426TDZ
+        timestamp: 2026-03-16T07:33:47.338Z
+      - _ulid: 01KKTS2BW5CZFSF0VBXB9N4Z38
+        actor: plan-review-agent
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-16T07:34:18.757Z
+      - _ulid: 01KKTS7F8F44Q7K2RPSM847SX1
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-16T07:37:06.063Z
+    external_links: []
     lifecycle_state: closed
+    related_refs: []
     subject:
       type: plan
+      content_hash: ""
       ref: "@plan-review-records-web-ui"
       shadow_commit: ""
-      content_hash: ""
-    author: "@claude"
-    related_refs: []
     threads:
       - _ulid: 01KKTRXVREZJCZNSQQYFH2SRRF
-        kind: blocker
         entries:
           - _ulid: 01KKTRXVRFMAAJP8XFDZT088JB
             author: "@claude"
@@ -390,8 +495,8 @@ reviews:
               addReplyAtomic, resolveThreadAtomic, reopenThreadAtomic, submitVerdict,
               transitionLifecycle) — the API spec should mirror this granularity.
             created_at: 2026-03-16T07:31:51.183Z
+        kind: blocker
       - _ulid: 01KKTRYD8BJHH5T4G5ERCZ47MA
-        kind: question
         entries:
           - _ulid: 01KKTRYD8BB9KXFBGRYPKGH6Q6
             author: "@claude"
@@ -416,8 +521,8 @@ reviews:
               in @kynetic-ai/shared for the review API response shapes (ReviewListItem,
               ReviewDetail, ReviewThreadView, etc.).
             created_at: 2026-03-16T07:32:09.099Z
+        kind: question
       - _ulid: 01KKTRYREP0EXD2RZPBFG8ZMNK
-        kind: blocker
         entries:
           - _ulid: 01KKTRYREPNA70KP6P7Y8PXR6M
             author: "@claude"
@@ -444,8 +549,8 @@ reviews:
               Recommendation: Either add explicit error ACs or reference @trait-error-guidance and
               @trait-json-output as traits on the review-records-daemon-api spec.
             created_at: 2026-03-16T07:32:20.566Z
-      - _ulid: 01KKTRZ3CR3CQ6HXQ9TM4HXBYA
         kind: blocker
+      - _ulid: 01KKTRZ3CR3CQ6HXQ9TM4HXBYA
         entries:
           - _ulid: 01KKTRZ3CSNH1S3ZMB9XQEC6PP
             author: "@claude"
@@ -474,8 +579,8 @@ reviews:
               Recommendation: Split into at least 4 ACs covering each interaction type separately,
               with specific testable outcomes.
             created_at: 2026-03-16T07:32:31.769Z
-      - _ulid: 01KKTRZFCZRX92RJQ86ZDAK5KT
         kind: blocker
+      - _ulid: 01KKTRZFCZRX92RJQ86ZDAK5KT
         entries:
           - _ulid: 01KKTRZFCZWJ3WQZNXKEWJFR5H
             author: "@claude"
@@ -501,8 +606,8 @@ reviews:
               Recommendation: Add explicit sort parameter to API ac-1, and clarify what "linked
               task" filtering means (subject ref, related_refs, or both).
             created_at: 2026-03-16T07:32:44.063Z
+        kind: blocker
       - _ulid: 01KKTRZVA0TRKDG7W4VH48PXJF
-        kind: question
         entries:
           - _ulid: 01KKTRZVA0T1YDHJSMM1W499D8
             author: "@claude"
@@ -526,8 +631,8 @@ reviews:
               Recommendation: Add an AC to the API spec for querying reviews by task ref, or clarify
               that the list endpoint's "linked task" filter serves this purpose.
             created_at: 2026-03-16T07:32:56.256Z
+        kind: question
       - _ulid: 01KKTS06XV59ZTCERGD6WVBM0T
-        kind: nit
         entries:
           - _ulid: 01KKTS06XWV17DJQQN818Z8MS1
             author: "@claude"
@@ -553,8 +658,8 @@ reviews:
               'review_lifecycle_changed', etc. Or consolidate to a single 'review_updated' event if
               the client just refetches the whole record.
             created_at: 2026-03-16T07:33:08.156Z
+        kind: nit
       - _ulid: 01KKTS0GPPH0KPX50K1NZ4H7FF
-        kind: blocker
         entries:
           - _ulid: 01KKTS0GPPM0X9TYRJ7GSK8W0V
             author: "@claude"
@@ -582,8 +687,8 @@ reviews:
               Recommendation: Add traits field to both specs in the plan. At minimum
               @trait-json-output and @trait-error-guidance for the API spec.
             created_at: 2026-03-16T07:33:18.166Z
+        kind: blocker
       - _ulid: 01KKTS0T2XHES1CMW4P2EY03T7
-        kind: nit
         entries:
           - _ulid: 01KKTS0T2XF5XAHKK45DHC8VR8
             author: "@claude"
@@ -606,8 +711,8 @@ reviews:
               Recommendation: Add a note or expand the daemon API task scope to include shared type
               definitions.
             created_at: 2026-03-16T07:33:27.774Z
-      - _ulid: 01KKTS13QRQAEMX333KZ60E118
         kind: nit
+      - _ulid: 01KKTS13QRQAEMX333KZ60E118
         entries:
           - _ulid: 01KKTS13QRHPBRST93K9Z6DC63
             author: "@claude"
@@ -625,8 +730,8 @@ reviews:
               notes correctly identify the existing review library functions to delegate to and the
               SvelteKit/TanStack Query patterns to follow.
             created_at: 2026-03-16T07:33:37.656Z
+        kind: nit
       - _ulid: 01KKTS1D5Y39TZ6HMTWZ426TDZ
-        kind: question
         entries:
           - _ulid: 01KKTS1D5YVPHCZ4BWZPQ503H7
             author: "@claude"
@@ -648,137 +753,144 @@ reviews:
               Recommendation: Add an AC for URL structure and deep-linking to threads (e.g.,
               /reviews/:id?thread=:threadId or /reviews/:id#thread-:threadId).
             created_at: 2026-03-16T07:33:47.326Z
-    checks: []
+        kind: question
     verdicts:
-      - reviewer: plan-review-agent
-        role: reviewer
-        decision: request_changes
-        applies_to_version:
+      - applies_to_version:
           type: entity_version
           content_hash: draft-no-hash
+        decision: request_changes
+        reviewer: plan-review-agent
+        role: reviewer
         created_at: 2026-03-16T07:34:18.746Z
-    events:
-      - _ulid: 01KKTRT7VVSCS7WJCCYAA7G9WE
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T07:29:52.508Z
-        payload:
-          to: draft
-      - _ulid: 01KKTRTJRAJPJMGSY2MW069F89
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T07:30:03.658Z
-        payload:
-          from: draft
-          to: open
-      - _ulid: 01KKTRXVRMD2PVYTB7WR4PSG7S
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:31:51.188Z
-        payload:
-          thread_ulid: 01KKTRXVREZJCZNSQQYFH2SRRF
-          kind: blocker
-      - _ulid: 01KKTRYD8NKWRXKFNSC1X1GCVT
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:32:09.109Z
-        payload:
-          thread_ulid: 01KKTRYD8BJHH5T4G5ERCZ47MA
-          kind: question
-      - _ulid: 01KKTRYREY9799QC9H7FJZ061E
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:32:20.574Z
-        payload:
-          thread_ulid: 01KKTRYREP0EXD2RZPBFG8ZMNK
-          kind: blocker
-      - _ulid: 01KKTRZ3D29Z2FBA10F2CETZ9G
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:32:31.778Z
-        payload:
-          thread_ulid: 01KKTRZ3CR3CQ6HXQ9TM4HXBYA
-          kind: blocker
-      - _ulid: 01KKTRZFD8R0XE1SG0RY1YAHAH
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:32:44.072Z
-        payload:
-          thread_ulid: 01KKTRZFCZRX92RJQ86ZDAK5KT
-          kind: blocker
-      - _ulid: 01KKTRZVA80PHCE1VZQ5B52VJT
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:32:56.264Z
-        payload:
-          thread_ulid: 01KKTRZVA0TRKDG7W4VH48PXJF
-          kind: question
-      - _ulid: 01KKTS06Y6X531GC3CMZW4FSRS
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:33:08.166Z
-        payload:
-          thread_ulid: 01KKTS06XV59ZTCERGD6WVBM0T
-          kind: nit
-      - _ulid: 01KKTS0GQ05RS359S0T5PNRA2J
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:33:18.176Z
-        payload:
-          thread_ulid: 01KKTS0GPPH0KPX50K1NZ4H7FF
-          kind: blocker
-      - _ulid: 01KKTS0T354X8Z978TQ1MCJG9R
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:33:27.782Z
-        payload:
-          thread_ulid: 01KKTS0T2XHES1CMW4P2EY03T7
-          kind: nit
-      - _ulid: 01KKTS13R003VB2MRZ4JARGYVT
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:33:37.664Z
-        payload:
-          thread_ulid: 01KKTS13QRQAEMX333KZ60E118
-          kind: nit
-      - _ulid: 01KKTS1D6AP1EM444N5E07H8Y1
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:33:47.338Z
-        payload:
-          thread_ulid: 01KKTS1D5Y39TZ6HMTWZ426TDZ
-          kind: question
-      - _ulid: 01KKTS2BW5CZFSF0VBXB9N4Z38
-        event_type: verdict_submitted
-        actor: plan-review-agent
-        timestamp: 2026-03-16T07:34:18.757Z
-        payload:
-          decision: request_changes
-      - _ulid: 01KKTS7F8F44Q7K2RPSM847SX1
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T07:37:06.063Z
-        payload:
-          from: open
-          to: closed
-    notes: []
-    external_links: []
     created_at: 2026-03-16T07:29:52.508Z
     updated_at: 2026-03-16T07:37:06.052Z
+    notes: []
   - _ulid: 01KKTS7P565FHZ6SM1Y6JDCBDM
     slugs: []
     title: "Review: Review Records Web UI plan (round 2)"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKTS7P56SHW0252D3868VKXS
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T07:37:13.126Z
+      - _ulid: 01KKTS7V0R5JT58YSCGE2NXSAX
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-16T07:37:18.104Z
+      - _ulid: 01KKTS9WEHQ16ZCMQ62APWTJH5
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTS9WE7YHN19XJ7DGFT8HMT
+        timestamp: 2026-03-16T07:38:25.105Z
+      - _ulid: 01KKTS9YZ4467NBZCFC4Z77PRF
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTS9YYRWSMBJCTGRAHEY4EC
+        timestamp: 2026-03-16T07:38:27.684Z
+      - _ulid: 01KKTSA1A3EWJMKGRK38M8ERZ4
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTSA19PHGNX2MF1M8FK2SD7
+        timestamp: 2026-03-16T07:38:30.083Z
+      - _ulid: 01KKTSA3GXW62ER2JWWFS0YN5N
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTSA3GJK4G0A4QTAM62Z4FP
+        timestamp: 2026-03-16T07:38:32.349Z
+      - _ulid: 01KKTSA662T6Q0TWVNRB9ZBZTH
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTSA65T072TW885F02YHJGV
+        timestamp: 2026-03-16T07:38:35.074Z
+      - _ulid: 01KKTSADNQSKWWM6CG0ECQPSV6
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTSADNF6TETZBY7A217021X
+        timestamp: 2026-03-16T07:38:42.743Z
+      - _ulid: 01KKTSAFXH5Z267YE0FM40PP5A
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTSAFX333M71FZ6WJRV0E25
+        timestamp: 2026-03-16T07:38:45.041Z
+      - _ulid: 01KKTSAJFZ44R63QMT70BS1VK4
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTSAJFHT6XMJWN1ZPP8EKHN
+        timestamp: 2026-03-16T07:38:47.679Z
+      - _ulid: 01KKTSANF0KKMYC1PMC5QA893N
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTSANERBG5PMMCKWAC6VD6X
+        timestamp: 2026-03-16T07:38:50.721Z
+      - _ulid: 01KKTSAXJ0NX6KCA2ZGYN9P727
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTSAXHM2RH8V3049VJ1WGSV
+        timestamp: 2026-03-16T07:38:59.008Z
+      - _ulid: 01KKTSB10RQ5242JN15CGTXNNT
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTSB10CMQR2VHSXDJSM0X0F
+        timestamp: 2026-03-16T07:39:02.552Z
+      - _ulid: 01KKTSB3G7PKYCECQTG20AJZ8N
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTSB3FWE3BSFTQ3KH4WY3A9
+        timestamp: 2026-03-16T07:39:05.095Z
+      - _ulid: 01KKTSBCAP614R246JMZ1SJBM0
+        actor: plan-review-agent-r2
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-16T07:39:14.134Z
+      - _ulid: 01KKTSM4H3AGS111V7NEHZ0A25
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-16T07:44:01.059Z
+    external_links: []
     lifecycle_state: closed
+    related_refs: []
     subject:
       type: plan
+      content_hash: ""
       ref: "@plan-review-records-web-ui"
       shadow_commit: ""
-      content_hash: ""
-    author: "@claude"
-    related_refs: []
     threads:
       - _ulid: 01KKTS9WE7YHN19XJ7DGFT8HMT
-        kind: nit
         entries:
           - _ulid: 01KKTS9WE7CC0AFKGT098JH66S
             author: "@claude"
@@ -787,8 +899,8 @@ reviews:
               (verdicts), ac-7 (checks), ac-8 (lifecycle). Each endpoint now has its own testable AC
               with distinct request shape and expected behavior. Good granularity."
             created_at: 2026-03-16T07:38:25.095Z
-      - _ulid: 01KKTS9YYRWSMBJCTGRAHEY4EC
         kind: nit
+      - _ulid: 01KKTS9YYRWSMBJCTGRAHEY4EC
         entries:
           - _ulid: 01KKTS9YYST86SA85SBJPC4EFR
             author: "@claude"
@@ -798,8 +910,8 @@ reviews:
               adequate error coverage. The trait ACs cover specifics like "suggests checking ref"
               and "indicates current state and valid next states."'
             created_at: 2026-03-16T07:38:27.673Z
-      - _ulid: 01KKTSA19PHGNX2MF1M8FK2SD7
         kind: nit
+      - _ulid: 01KKTSA19PHGNX2MF1M8FK2SD7
         entries:
           - _ulid: 01KKTSA19PFWTZKW4F24V96NQC
             author: "@claude"
@@ -807,8 +919,8 @@ reviews:
               selection), ac-4 (reply to thread), ac-5 (resolve/reopen toggle), ac-6 (submit verdict
               with disposition update). Each interaction is now independently testable."
             created_at: 2026-03-16T07:38:30.070Z
-      - _ulid: 01KKTSA3GJK4G0A4QTAM62Z4FP
         kind: nit
+      - _ulid: 01KKTSA3GJK4G0A4QTAM62Z4FP
         entries:
           - _ulid: 01KKTSA3GJ593EGJFF1361WMAK
             author: "@claude"
@@ -817,8 +929,8 @@ reviews:
               support is also mentioned. This addresses both the filter ambiguity and the missing
               sort parameter.'
             created_at: 2026-03-16T07:38:32.338Z
-      - _ulid: 01KKTSA65T072TW885F02YHJGV
         kind: nit
+      - _ulid: 01KKTSA65T072TW885F02YHJGV
         entries:
           - _ulid: 01KKTSA65VGT8Q1GV08K3VHGQV
             author: "@claude"
@@ -829,8 +941,8 @@ reviews:
               commits internally). The web UI spec has no traits, consistent with the @web-ui parent
               module having none."
             created_at: 2026-03-16T07:38:35.067Z
-      - _ulid: 01KKTSADNF6TETZBY7A217021X
         kind: nit
+      - _ulid: 01KKTSADNF6TETZBY7A217021X
         entries:
           - _ulid: 01KKTSADNF2CQZZAS06JQR5BPS
             author: "@claude"
@@ -838,8 +950,8 @@ reviews:
               task detail page with linked reviews, reviews are shown with disposition badge and
               link to review detail. This covers the use case."
             created_at: 2026-03-16T07:38:42.735Z
-      - _ulid: 01KKTSAFX333M71FZ6WJRV0E25
         kind: nit
+      - _ulid: 01KKTSAFX333M71FZ6WJRV0E25
         entries:
           - _ulid: 01KKTSAFX4AXDT3X45WBTTV6P1
             author: "@claude"
@@ -848,8 +960,8 @@ reviews:
               thread_created, thread_updated, verdict_submitted, check_recorded. This gives
               implementers clear guidance.'
             created_at: 2026-03-16T07:38:45.028Z
-      - _ulid: 01KKTSAJFHT6XMJWN1ZPP8EKHN
         kind: nit
+      - _ulid: 01KKTSAJFHT6XMJWN1ZPP8EKHN
         entries:
           - _ulid: 01KKTSAJFHF79S9ERTXWT4DSC4
             author: "@claude"
@@ -858,8 +970,8 @@ reviews:
               threads was not addressed, but this is an enhancement that can be added later — the
               core routing is specified.'
             created_at: 2026-03-16T07:38:47.665Z
-      - _ulid: 01KKTSANERBG5PMMCKWAC6VD6X
         kind: nit
+      - _ulid: 01KKTSANERBG5PMMCKWAC6VD6X
         entries:
           - _ulid: 01KKTSANER0E9YJ1BBN8DZXHMR
             author: "@claude"
@@ -868,8 +980,8 @@ reviews:
               patterns\" is sufficient guidance. The implementer will see PlanSummary/PlanDetail
               imports in the plans route and follow the same pattern. Not a gap worth blocking on."
             created_at: 2026-03-16T07:38:50.712Z
-      - _ulid: 01KKTSAXHM2RH8V3049VJ1WGSV
         kind: nit
+      - _ulid: 01KKTSAXHM2RH8V3049VJ1WGSV
         entries:
           - _ulid: 01KKTSAXHNFT209C2HX635P1AZ
             author: "@claude"
@@ -879,8 +991,8 @@ reviews:
               the general ac-10. Other mutation ACs (ac-3 through ac-7) rely on ac-10 for error
               coverage, which is fine."
             created_at: 2026-03-16T07:38:58.997Z
-      - _ulid: 01KKTSB10CMQR2VHSXDJSM0X0F
         kind: nit
+      - _ulid: 01KKTSB10CMQR2VHSXDJSM0X0F
         entries:
           - _ulid: 01KKTSB10DA4V6N5CCYED49AER
             author: "@claude"
@@ -890,8 +1002,8 @@ reviews:
               blocker — traits can be added during implementation if needed, and the web UI spec's
               ACs are sufficiently specific without them."
             created_at: 2026-03-16T07:39:02.541Z
-      - _ulid: 01KKTSB3FWE3BSFTQ3KH4WY3A9
         kind: nit
+      - _ulid: 01KKTSB3FWE3BSFTQ3KH4WY3A9
         entries:
           - _ulid: 01KKTSB3FW7VWJACM7MS70WS6C
             author: "@claude"
@@ -901,144 +1013,109 @@ reviews:
               parent refs, appropriate spec types, and a sound task dependency chain. Ready to
               approve and derive."
             created_at: 2026-03-16T07:39:05.084Z
-    checks: []
+        kind: nit
     verdicts:
-      - reviewer: plan-review-agent-r2
-        role: reviewer
-        decision: approve
-        applies_to_version:
+      - applies_to_version:
           type: entity_version
           content_hash: draft-r2
+        decision: approve
+        reviewer: plan-review-agent-r2
+        role: reviewer
         created_at: 2026-03-16T07:39:14.121Z
-    events:
-      - _ulid: 01KKTS7P56SHW0252D3868VKXS
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T07:37:13.126Z
-        payload:
-          to: draft
-      - _ulid: 01KKTS7V0R5JT58YSCGE2NXSAX
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T07:37:18.104Z
-        payload:
-          from: draft
-          to: open
-      - _ulid: 01KKTS9WEHQ16ZCMQ62APWTJH5
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:38:25.105Z
-        payload:
-          thread_ulid: 01KKTS9WE7YHN19XJ7DGFT8HMT
-          kind: nit
-      - _ulid: 01KKTS9YZ4467NBZCFC4Z77PRF
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:38:27.684Z
-        payload:
-          thread_ulid: 01KKTS9YYRWSMBJCTGRAHEY4EC
-          kind: nit
-      - _ulid: 01KKTSA1A3EWJMKGRK38M8ERZ4
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:38:30.083Z
-        payload:
-          thread_ulid: 01KKTSA19PHGNX2MF1M8FK2SD7
-          kind: nit
-      - _ulid: 01KKTSA3GXW62ER2JWWFS0YN5N
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:38:32.349Z
-        payload:
-          thread_ulid: 01KKTSA3GJK4G0A4QTAM62Z4FP
-          kind: nit
-      - _ulid: 01KKTSA662T6Q0TWVNRB9ZBZTH
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:38:35.074Z
-        payload:
-          thread_ulid: 01KKTSA65T072TW885F02YHJGV
-          kind: nit
-      - _ulid: 01KKTSADNQSKWWM6CG0ECQPSV6
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:38:42.743Z
-        payload:
-          thread_ulid: 01KKTSADNF6TETZBY7A217021X
-          kind: nit
-      - _ulid: 01KKTSAFXH5Z267YE0FM40PP5A
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:38:45.041Z
-        payload:
-          thread_ulid: 01KKTSAFX333M71FZ6WJRV0E25
-          kind: nit
-      - _ulid: 01KKTSAJFZ44R63QMT70BS1VK4
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:38:47.679Z
-        payload:
-          thread_ulid: 01KKTSAJFHT6XMJWN1ZPP8EKHN
-          kind: nit
-      - _ulid: 01KKTSANF0KKMYC1PMC5QA893N
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:38:50.721Z
-        payload:
-          thread_ulid: 01KKTSANERBG5PMMCKWAC6VD6X
-          kind: nit
-      - _ulid: 01KKTSAXJ0NX6KCA2ZGYN9P727
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:38:59.008Z
-        payload:
-          thread_ulid: 01KKTSAXHM2RH8V3049VJ1WGSV
-          kind: nit
-      - _ulid: 01KKTSB10RQ5242JN15CGTXNNT
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:39:02.552Z
-        payload:
-          thread_ulid: 01KKTSB10CMQR2VHSXDJSM0X0F
-          kind: nit
-      - _ulid: 01KKTSB3G7PKYCECQTG20AJZ8N
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:39:05.095Z
-        payload:
-          thread_ulid: 01KKTSB3FWE3BSFTQ3KH4WY3A9
-          kind: nit
-      - _ulid: 01KKTSBCAP614R246JMZ1SJBM0
-        event_type: verdict_submitted
-        actor: plan-review-agent-r2
-        timestamp: 2026-03-16T07:39:14.134Z
-        payload:
-          decision: approve
-      - _ulid: 01KKTSM4H3AGS111V7NEHZ0A25
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T07:44:01.059Z
-        payload:
-          from: open
-          to: closed
-    notes: []
-    external_links: []
     created_at: 2026-03-16T07:37:13.126Z
     updated_at: 2026-03-16T07:44:01.048Z
+    notes: []
   - _ulid: 01KKTSM6DDD1FKGW7Y9SZZCEEF
     slugs: []
     title: "Review: Review Records Web UI plan (round 3 — granular tasks)"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKTSM6DDJ8D68E4EH6CTZTJC
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T07:44:02.989Z
+      - _ulid: 01KKTSMBDHG38W1G7TC2Q6C0QV
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-16T07:44:08.113Z
+      - _ulid: 01KKTSRNPBTQCRTRFXQ8XWWH24
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTSRNP0YK949MP75Q284DSV
+        timestamp: 2026-03-16T07:46:29.707Z
+      - _ulid: 01KKTSRX41FPXJ6N1H22MQQY0S
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTSRX3MA37CB0WRZ8JZMXYQ
+        timestamp: 2026-03-16T07:46:37.313Z
+      - _ulid: 01KKTSS763K37QZ8CRFBQV94SN
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTSS75S23N6YZ9TD25ZXRJZ
+        timestamp: 2026-03-16T07:46:47.619Z
+      - _ulid: 01KKTSSFB7BPGCXGG8S3VP9EPM
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTSSFAVGC5VN3KYPWE5MKB7
+        timestamp: 2026-03-16T07:46:55.975Z
+      - _ulid: 01KKTSST1M7W5AZQQJE05MS5DT
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTSST15GSME00YY0MTQ8BT9
+        timestamp: 2026-03-16T07:47:06.932Z
+      - _ulid: 01KKTST17J7CQKRY2QA45XGJXM
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKTST178N53ZYNH05A0REXR3
+        timestamp: 2026-03-16T07:47:14.290Z
+      - _ulid: 01KKTSTDTXC760SPN491RHKAGT
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTSTDTFDQ9SJDT7MW1S41JD
+        timestamp: 2026-03-16T07:47:27.197Z
+      - _ulid: 01KKTSTRE7PVA9M68YE47RJJGH
+        actor: plan-review-agent-r3
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-16T07:47:38.055Z
+      - _ulid: 01KKTSX723QAN9M6Q72WB5SEC5
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-16T07:48:58.563Z
+    external_links: []
     lifecycle_state: closed
+    related_refs: []
     subject:
       type: plan
+      content_hash: ""
       ref: "@plan-review-records-web-ui"
       shadow_commit: ""
-      content_hash: ""
-    author: "@claude"
-    related_refs: []
     threads:
       - _ulid: 01KKTSRNP0YK949MP75Q284DSV
-        kind: blocker
         entries:
           - _ulid: 01KKTSRNP0S449ZC8209ETQC4X
             author: "@claude"
@@ -1058,8 +1135,8 @@ reviews:
               This will mislead the implementing agent into looking for or creating files in the
               wrong directory. Fix all "How" sections to reference `packages/daemon/src/routes/`.
             created_at: 2026-03-16T07:46:29.696Z
-      - _ulid: 01KKTSRX3MA37CB0WRZ8JZMXYQ
         kind: blocker
+      - _ulid: 01KKTSRX3MA37CB0WRZ8JZMXYQ
         entries:
           - _ulid: 01KKTSRX3NGTGV1MV25MV9S1V8
             author: "@claude"
@@ -1074,8 +1151,8 @@ reviews:
               This will cause a compilation error or lead the agent to create an unnecessary wrapper
               function.
             created_at: 2026-03-16T07:46:37.301Z
-      - _ulid: 01KKTSS75S23N6YZ9TD25ZXRJZ
         kind: blocker
+      - _ulid: 01KKTSS75S23N6YZ9TD25ZXRJZ
         entries:
           - _ulid: 01KKTSS75STS2F2917ST4XKB46
             author: "@claude"
@@ -1105,8 +1182,8 @@ reviews:
               locking and persistence. review-operations.ts does NOT have such wrappers, so the
               route implementer needs to build that pattern.
             created_at: 2026-03-16T07:46:47.610Z
+        kind: blocker
       - _ulid: 01KKTSSFAVGC5VN3KYPWE5MKB7
-        kind: nit
         entries:
           - _ulid: 01KKTSSFAVG7BPXBW7H4WNMX41
             author: "@claude"
@@ -1128,8 +1205,8 @@ reviews:
               task-review-api-websocket description says "reviews" topic in the What section but
               doesn't specify the exact string.
             created_at: 2026-03-16T07:46:55.963Z
-      - _ulid: 01KKTSST15GSME00YY0MTQ8BT9
         kind: nit
+      - _ulid: 01KKTSST15GSME00YY0MTQ8BT9
         entries:
           - _ulid: 01KKTSST15NPWWDGDTR7JA40T5
             author: "@claude"
@@ -1149,8 +1226,8 @@ reviews:
               pagination is correct — just note that plans.ts is NOT the right template to copy. Use
               tasks.ts instead.
             created_at: 2026-03-16T07:47:06.917Z
+        kind: nit
       - _ulid: 01KKTST178N53ZYNH05A0REXR3
-        kind: question
         entries:
           - _ulid: 01KKTST178HVMPV3YKS5VEN292
             author: "@claude"
@@ -1164,8 +1241,8 @@ reviews:
               live in `packages/shared/src/api.ts`. The task should mention this file explicitly so
               the implementer adds them in the right place and follows the existing export pattern.
             created_at: 2026-03-16T07:47:14.280Z
+        kind: question
       - _ulid: 01KKTSTDTFDQ9SJDT7MW1S41JD
-        kind: nit
         entries:
           - _ulid: 01KKTSTDTF8T4QG40QWYS6Y57N
             author: "@claude"
@@ -1192,109 +1269,67 @@ reviews:
 
               5. **No missing tasks** — full spec surface is covered.
             created_at: 2026-03-16T07:47:27.183Z
-    checks: []
+        kind: nit
     verdicts:
-      - reviewer: plan-review-agent-r3
-        role: reviewer
-        decision: request_changes
-        applies_to_version:
+      - applies_to_version:
           type: entity_version
           content_hash: 01KKTSTR86E3AFZ3K4K0EC39VN
+        decision: request_changes
+        reviewer: plan-review-agent-r3
+        role: reviewer
         created_at: 2026-03-16T07:47:38.043Z
-    events:
-      - _ulid: 01KKTSM6DDJ8D68E4EH6CTZTJC
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T07:44:02.989Z
-        payload:
-          to: draft
-      - _ulid: 01KKTSMBDHG38W1G7TC2Q6C0QV
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T07:44:08.113Z
-        payload:
-          from: draft
-          to: open
-      - _ulid: 01KKTSRNPBTQCRTRFXQ8XWWH24
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:46:29.707Z
-        payload:
-          thread_ulid: 01KKTSRNP0YK949MP75Q284DSV
-          kind: blocker
-      - _ulid: 01KKTSRX41FPXJ6N1H22MQQY0S
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:46:37.313Z
-        payload:
-          thread_ulid: 01KKTSRX3MA37CB0WRZ8JZMXYQ
-          kind: blocker
-      - _ulid: 01KKTSS763K37QZ8CRFBQV94SN
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:46:47.619Z
-        payload:
-          thread_ulid: 01KKTSS75S23N6YZ9TD25ZXRJZ
-          kind: blocker
-      - _ulid: 01KKTSSFB7BPGCXGG8S3VP9EPM
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:46:55.975Z
-        payload:
-          thread_ulid: 01KKTSSFAVGC5VN3KYPWE5MKB7
-          kind: nit
-      - _ulid: 01KKTSST1M7W5AZQQJE05MS5DT
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:47:06.932Z
-        payload:
-          thread_ulid: 01KKTSST15GSME00YY0MTQ8BT9
-          kind: nit
-      - _ulid: 01KKTST17J7CQKRY2QA45XGJXM
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:47:14.290Z
-        payload:
-          thread_ulid: 01KKTST178N53ZYNH05A0REXR3
-          kind: question
-      - _ulid: 01KKTSTDTXC760SPN491RHKAGT
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:47:27.197Z
-        payload:
-          thread_ulid: 01KKTSTDTFDQ9SJDT7MW1S41JD
-          kind: nit
-      - _ulid: 01KKTSTRE7PVA9M68YE47RJJGH
-        event_type: verdict_submitted
-        actor: plan-review-agent-r3
-        timestamp: 2026-03-16T07:47:38.055Z
-        payload:
-          decision: request_changes
-      - _ulid: 01KKTSX723QAN9M6Q72WB5SEC5
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T07:48:58.563Z
-        payload:
-          from: open
-          to: closed
-    notes: []
-    external_links: []
     created_at: 2026-03-16T07:44:02.989Z
     updated_at: 2026-03-16T07:48:58.532Z
+    notes: []
   - _ulid: 01KKTSX97VVWENCR4N53PJC1XP
     slugs: []
     title: "Review: Review Records Web UI plan (round 4)"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKTSX97TXKX5V3DVE58GD6F4
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T07:49:00.795Z
+      - _ulid: 01KKTSXJHTE6MH14F4ZQNKJPEB
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-16T07:49:10.331Z
+      - _ulid: 01KKTSZWP0G2BF5C488CNKJEH6
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTSZWN9TQDSJRGDF18R99VP
+        timestamp: 2026-03-16T07:50:26.240Z
+      - _ulid: 01KKTT0FD6BD93CN7FR5YNY16P
+        actor: plan-review-agent-r4
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-16T07:50:45.415Z
+      - _ulid: 01KKTTDDHHFVG0Y0QYDSH9Z05J
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-16T07:57:49.489Z
+    external_links: []
     lifecycle_state: closed
+    related_refs: []
     subject:
       type: plan
+      content_hash: ""
       ref: "@plan-review-records-web-ui"
       shadow_commit: ""
-      content_hash: ""
-    author: "@claude"
-    related_refs: []
     threads:
       - _ulid: 01KKTSZWN9TQDSJRGDF18R99VP
-        kind: nit
         entries:
           - _ulid: 01KKTSZWNAA6MDTCE07V53ZFZR
             author: "@claude"
@@ -1326,67 +1361,116 @@ reviews:
               - Shared types in `packages/shared/src/api.ts` confirmed — contains `PlanSummary`,
               `TaskDetail`, `PlanDetail` patterns to follow
             created_at: 2026-03-16T07:50:26.218Z
-    checks: []
+        kind: nit
     verdicts:
-      - reviewer: plan-review-agent-r4
-        role: reviewer
-        decision: approve
-        applies_to_version:
+      - applies_to_version:
           type: entity_version
           content_hash: d1ba8cf52799b95c4367e334992f0575
+        decision: approve
+        reviewer: plan-review-agent-r4
+        role: reviewer
         created_at: 2026-03-16T07:50:45.392Z
-    events:
-      - _ulid: 01KKTSX97TXKX5V3DVE58GD6F4
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T07:49:00.795Z
-        payload:
-          to: draft
-      - _ulid: 01KKTSXJHTE6MH14F4ZQNKJPEB
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T07:49:10.331Z
-        payload:
-          from: draft
-          to: open
-      - _ulid: 01KKTSZWP0G2BF5C488CNKJEH6
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:50:26.240Z
-        payload:
-          thread_ulid: 01KKTSZWN9TQDSJRGDF18R99VP
-          kind: nit
-      - _ulid: 01KKTT0FD6BD93CN7FR5YNY16P
-        event_type: verdict_submitted
-        actor: plan-review-agent-r4
-        timestamp: 2026-03-16T07:50:45.415Z
-        payload:
-          decision: approve
-      - _ulid: 01KKTTDDHHFVG0Y0QYDSH9Z05J
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T07:57:49.489Z
-        payload:
-          from: open
-          to: closed
-    notes: []
-    external_links: []
     created_at: 2026-03-16T07:49:00.795Z
     updated_at: 2026-03-16T07:57:49.458Z
+    notes: []
   - _ulid: 01KKTTDFPJENJQP9GECWR26S7K
     slugs: []
     title: "Review: Review Records Web UI plan (round 5 — content rendering)"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKTTDFPJBH045TV4KGQH1HW6
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T07:57:51.698Z
+      - _ulid: 01KKTTDPBSYNK5HQKJ3S3V3A6T
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-16T07:57:58.521Z
+      - _ulid: 01KKTTFFNEVAS9MGC5009SZWMH
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTTFFMS6T3TEXJQMK11153Y
+        timestamp: 2026-03-16T07:58:57.198Z
+      - _ulid: 01KKTTFWEBFGNZ8R9FFFK9AGEG
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTTFWDN9JQWEC19ZW5NP095
+        timestamp: 2026-03-16T07:59:10.283Z
+      - _ulid: 01KKTTG8BES53GZFEWGSSMGCKP
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKTTG8AFCAC7NCM309T27AVS
+        timestamp: 2026-03-16T07:59:22.478Z
+      - _ulid: 01KKTTGHJ0DJZ176N3V5P9JRJG
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTTGHHBSR8EPC61RGZ1RQG9
+        timestamp: 2026-03-16T07:59:31.904Z
+      - _ulid: 01KKTTGXJJEFE0TZ955M6AAAXY
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTTGXHWEF1S4J3XF68WQV4W
+        timestamp: 2026-03-16T07:59:44.219Z
+      - _ulid: 01KKTTHARYVXFKW3ABP1C1NBZE
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKTTHAQW2Y96GPFN3JVQYSSH
+        timestamp: 2026-03-16T07:59:57.726Z
+      - _ulid: 01KKTTHR8FJAF1D8AXNTTP1ZCR
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKTTHR74ZWBTAT568053N07S
+        timestamp: 2026-03-16T08:00:11.535Z
+      - _ulid: 01KKTTHZGMXEGCR8HJ8SCYB5TZ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTTHZFPG8F1A4PSS66CX3J5
+        timestamp: 2026-03-16T08:00:18.964Z
+      - _ulid: 01KKTTJEQP9BJ1JQ2ZTF697W6A
+        actor: plan-review-agent-r5
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-16T08:00:34.550Z
+      - _ulid: 01KKTTM99709G9N00QZRJSH03W
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-16T08:01:34.503Z
+    external_links: []
     lifecycle_state: closed
+    related_refs: []
     subject:
       type: plan
+      content_hash: ""
       ref: "@plan-review-records-web-ui"
       shadow_commit: ""
-      content_hash: ""
-    author: "@claude"
-    related_refs: []
     threads:
       - _ulid: 01KKTTFFMS6T3TEXJQMK11153Y
-        kind: nit
         entries:
           - _ulid: 01KKTTFFMSD1FW87MFTGZ4YJ3X
             author: "@claude"
@@ -1395,8 +1479,8 @@ reviews:
               lists, links) and explicitly requires syntax highlighting in code blocks. This is
               verifiable in E2E tests by checking rendered DOM elements. No issues."
             created_at: 2026-03-16T07:58:57.177Z
+        kind: nit
       - _ulid: 01KKTTFWDN9JQWEC19ZW5NP095
-        kind: blocker
         entries:
           - _ulid: 01KKTTFWDN2ZKXHT34A7EK06SH
             author: "@claude"
@@ -1418,8 +1502,8 @@ reviews:
               fallback — e.g., show the file path and line range without the snippet, with a note
               that the source is unavailable.
             created_at: 2026-03-16T07:59:10.261Z
+        kind: blocker
       - _ulid: 01KKTTG8AFCAC7NCM309T27AVS
-        kind: question
         entries:
           - _ulid: 01KKTTG8AFH2HC57H7A349F87S
             author: "@claude"
@@ -1431,8 +1515,8 @@ reviews:
               the link targets an existing route (and what happens if that route doesn't exist yet)
               or just renders as a styled reference badge."
             created_at: 2026-03-16T07:59:22.447Z
+        kind: question
       - _ulid: 01KKTTGHHBSR8EPC61RGZ1RQG9
-        kind: nit
         entries:
           - _ulid: 01KKTTGHHBGGXQXMRYSQQ8MPA6
             author: "@claude"
@@ -1442,8 +1526,8 @@ reviews:
               and staleness — all fields available from the check record schema. Testable via E2E.
               No issues."
             created_at: 2026-03-16T07:59:31.884Z
+        kind: nit
       - _ulid: 01KKTTGXHWEF1S4J3XF68WQV4W
-        kind: blocker
         entries:
           - _ulid: 01KKTTGXHWF3MCAZMK8Q2XR9DH
             author: "@claude"
@@ -1454,8 +1538,8 @@ reviews:
               rendering for data that cannot be produced. Either the verdict schema needs extending
               (separate spec work) or this AC should be deferred until verdict bodies exist."
             created_at: 2026-03-16T07:59:44.188Z
+        kind: blocker
       - _ulid: 01KKTTHAQW2Y96GPFN3JVQYSSH
-        kind: question
         entries:
           - _ulid: 01KKTTHAQXPMRQJKMWC35N1NSK
             author: "@claude"
@@ -1479,8 +1563,8 @@ reviews:
               (ac-8, ac-12) could stay in the detail page task since the shared component is an
               implementation detail, not a separate deliverable.
             created_at: 2026-03-16T07:59:57.693Z
-      - _ulid: 01KKTTHR74ZWBTAT568053N07S
         kind: question
+      - _ulid: 01KKTTHR74ZWBTAT568053N07S
         entries:
           - _ulid: 01KKTTHR7466Q2AM63QFY1T5C3
             author: "@claude"
@@ -1511,8 +1595,8 @@ reviews:
               None of these are blockers for this round, but they are gaps worth addressing before
               import.
             created_at: 2026-03-16T08:00:11.492Z
+        kind: question
       - _ulid: 01KKTTHZFPG8F1A4PSS66CX3J5
-        kind: nit
         entries:
           - _ulid: 01KKTTHZFPAJD127PP4ZCN7EWH
             author: "@claude"
@@ -1521,116 +1605,67 @@ reviews:
               — it covers the structural layout while the new ACs cover content rendering within
               that layout. No conflicts detected."
             created_at: 2026-03-16T08:00:18.934Z
-    checks: []
+        kind: nit
     verdicts:
-      - reviewer: plan-review-agent-r5
-        role: reviewer
-        decision: request_changes
-        applies_to_version:
+      - applies_to_version:
           type: entity_version
           content_hash: r5-content-rendering
+        decision: request_changes
+        reviewer: plan-review-agent-r5
+        role: reviewer
         created_at: 2026-03-16T08:00:34.528Z
-    events:
-      - _ulid: 01KKTTDFPJBH045TV4KGQH1HW6
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T07:57:51.698Z
-        payload:
-          to: draft
-      - _ulid: 01KKTTDPBSYNK5HQKJ3S3V3A6T
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T07:57:58.521Z
-        payload:
-          from: draft
-          to: open
-      - _ulid: 01KKTTFFNEVAS9MGC5009SZWMH
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:58:57.198Z
-        payload:
-          thread_ulid: 01KKTTFFMS6T3TEXJQMK11153Y
-          kind: nit
-      - _ulid: 01KKTTFWEBFGNZ8R9FFFK9AGEG
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:59:10.283Z
-        payload:
-          thread_ulid: 01KKTTFWDN9JQWEC19ZW5NP095
-          kind: blocker
-      - _ulid: 01KKTTG8BES53GZFEWGSSMGCKP
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:59:22.478Z
-        payload:
-          thread_ulid: 01KKTTG8AFCAC7NCM309T27AVS
-          kind: question
-      - _ulid: 01KKTTGHJ0DJZ176N3V5P9JRJG
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:59:31.904Z
-        payload:
-          thread_ulid: 01KKTTGHHBSR8EPC61RGZ1RQG9
-          kind: nit
-      - _ulid: 01KKTTGXJJEFE0TZ955M6AAAXY
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:59:44.219Z
-        payload:
-          thread_ulid: 01KKTTGXHWEF1S4J3XF68WQV4W
-          kind: blocker
-      - _ulid: 01KKTTHARYVXFKW3ABP1C1NBZE
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T07:59:57.726Z
-        payload:
-          thread_ulid: 01KKTTHAQW2Y96GPFN3JVQYSSH
-          kind: question
-      - _ulid: 01KKTTHR8FJAF1D8AXNTTP1ZCR
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T08:00:11.535Z
-        payload:
-          thread_ulid: 01KKTTHR74ZWBTAT568053N07S
-          kind: question
-      - _ulid: 01KKTTHZGMXEGCR8HJ8SCYB5TZ
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T08:00:18.964Z
-        payload:
-          thread_ulid: 01KKTTHZFPG8F1A4PSS66CX3J5
-          kind: nit
-      - _ulid: 01KKTTJEQP9BJ1JQ2ZTF697W6A
-        event_type: verdict_submitted
-        actor: plan-review-agent-r5
-        timestamp: 2026-03-16T08:00:34.550Z
-        payload:
-          decision: request_changes
-      - _ulid: 01KKTTM99709G9N00QZRJSH03W
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T08:01:34.503Z
-        payload:
-          from: open
-          to: closed
-    notes: []
-    external_links: []
     created_at: 2026-03-16T07:57:51.698Z
     updated_at: 2026-03-16T08:01:34.481Z
+    notes: []
   - _ulid: 01KKTTMBMPTDYTVJM92QHRBM5G
     slugs: []
     title: "Review: Review Records Web UI plan (round 6)"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKTTMBMN9J8S9C95BHDG3NB9
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T08:01:36.918Z
+      - _ulid: 01KKTTMK1J857D1JCKPSN6V9HW
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-16T08:01:44.498Z
+      - _ulid: 01KKTTP8M2R2B9PZSXWXSD7WF8
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTTP8K8TEAT7Y898HN01AWX
+        timestamp: 2026-03-16T08:02:39.362Z
+      - _ulid: 01KKTTQ3498SSGBC59KYKX3D9Q
+        actor: plan-review-agent-r6
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-16T08:03:06.506Z
+      - _ulid: 01KKTVKP8WZKRT3JVN9Q6MP1Q3
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-16T08:18:43.613Z
+    external_links: []
     lifecycle_state: closed
+    related_refs: []
     subject:
       type: plan
+      content_hash: ""
       ref: "@plan-review-records-web-ui"
       shadow_commit: ""
-      content_hash: ""
-    author: "@claude"
-    related_refs: []
     threads:
       - _ulid: 01KKTTP8K8TEAT7Y898HN01AWX
-        kind: nit
         entries:
           - _ulid: 01KKTTP8K8YNED722NXCZEZYX3
             author: "@claude"
@@ -1695,67 +1730,130 @@ reviews:
 
               **Verdict: Clean. No blockers remain.**
             created_at: 2026-03-16T08:02:39.336Z
-    checks: []
+        kind: nit
     verdicts:
-      - reviewer: plan-review-agent-r6
-        role: reviewer
-        decision: approve
-        applies_to_version:
+      - applies_to_version:
           type: entity_version
           content_hash: plan-r6
+        decision: approve
+        reviewer: plan-review-agent-r6
+        role: reviewer
         created_at: 2026-03-16T08:03:06.490Z
-    events:
-      - _ulid: 01KKTTMBMN9J8S9C95BHDG3NB9
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T08:01:36.918Z
-        payload:
-          to: draft
-      - _ulid: 01KKTTMK1J857D1JCKPSN6V9HW
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T08:01:44.498Z
-        payload:
-          from: draft
-          to: open
-      - _ulid: 01KKTTP8M2R2B9PZSXWXSD7WF8
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T08:02:39.362Z
-        payload:
-          thread_ulid: 01KKTTP8K8TEAT7Y898HN01AWX
-          kind: nit
-      - _ulid: 01KKTTQ3498SSGBC59KYKX3D9Q
-        event_type: verdict_submitted
-        actor: plan-review-agent-r6
-        timestamp: 2026-03-16T08:03:06.506Z
-        payload:
-          decision: approve
-      - _ulid: 01KKTVKP8WZKRT3JVN9Q6MP1Q3
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T08:18:43.613Z
-        payload:
-          from: open
-          to: closed
-    notes: []
-    external_links: []
     created_at: 2026-03-16T08:01:36.918Z
     updated_at: 2026-03-16T08:18:43.597Z
+    notes: []
   - _ulid: 01KKTVKRB3MNTX1EGF98QKYV8X
     slugs: []
     title: "Review: Review Records Web UI plan (round 7 — diff viewer + revisions)"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKTVKRB3M89C0ZW5R5KT4FS0
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T08:18:45.731Z
+      - _ulid: 01KKTVKYVAWZR9RMHJ2CBG3SK0
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-16T08:18:52.394Z
+      - _ulid: 01KKTVR1Y78PZ3FJH6ESVRC4F7
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTVR1XNKPF715NGARH06V3G
+        timestamp: 2026-03-16T08:21:06.631Z
+      - _ulid: 01KKTVREA64EFXNZX6J4S4S1TT
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTVRE9NBER2D85VPVMRD3VE
+        timestamp: 2026-03-16T08:21:19.302Z
+      - _ulid: 01KKTVRR3H81DAM7HQ6NKYVAS2
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKTVRR31F3408SRDYCT4Q6T0
+        timestamp: 2026-03-16T08:21:29.329Z
+      - _ulid: 01KKTVS3JZ508BABP2HMQ241YC
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTVS3JBQB956MEDG81RTV72
+        timestamp: 2026-03-16T08:21:41.087Z
+      - _ulid: 01KKTVSEWE4KMA88AWXX10S6XQ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKTVSEVZA1VSY52ASDJWQXEX
+        timestamp: 2026-03-16T08:21:52.654Z
+      - _ulid: 01KKTVSS6N8EH7A7RSPVF8A5N4
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKTVSS64ZWH9MHZRF924902S
+        timestamp: 2026-03-16T08:22:03.222Z
+      - _ulid: 01KKTVT3FCPC5T4B4PVXAFMVEA
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTVT3ERYXE09J0VTS1W2TBV
+        timestamp: 2026-03-16T08:22:13.740Z
+      - _ulid: 01KKTVTDE0GQ82RGWRTHS6P77D
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTVTDD9V3PSRCE0W1WCF13G
+        timestamp: 2026-03-16T08:22:23.936Z
+      - _ulid: 01KKTVTTA6F769D7K87Y8FW4Z8
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKTVTT9K69KNJRV938WF7VAE
+        timestamp: 2026-03-16T08:22:37.126Z
+      - _ulid: 01KKTVV506Y5YJKJ22WFV6QZMK
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTVV4ZNG580SPNRFT9GJ7Y4
+        timestamp: 2026-03-16T08:22:48.070Z
+      - _ulid: 01KKTVVN1Z7KG1XBT2PC0F4J2V
+        actor: plan-review-agent-r7
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-16T08:23:04.511Z
+      - _ulid: 01KKTVY2R4YP3QDSN9XVSM6EFN
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-16T08:24:24.068Z
+    external_links: []
     lifecycle_state: closed
+    related_refs: []
     subject:
       type: plan
+      content_hash: ""
       ref: "@plan-review-records-web-ui"
       shadow_commit: ""
-      content_hash: ""
-    author: "@claude"
-    related_refs: []
     threads:
       - _ulid: 01KKTVR1XNKPF715NGARH06V3G
-        kind: blocker
         entries:
           - _ulid: 01KKTVR1XNA2VZ150A5ZK7X36K
             author: "@claude"
@@ -1786,8 +1884,8 @@ reviews:
 
               This affects: review-content-diff-api ac-1, ac-2, ac-3 and task-diff-api.
             created_at: 2026-03-16T08:21:06.613Z
-      - _ulid: 01KKTVRE9NBER2D85VPVMRD3VE
         kind: blocker
+      - _ulid: 01KKTVRE9NBER2D85VPVMRD3VE
         entries:
           - _ulid: 01KKTVRE9P68AYHD4W7STS971J
             author: "@claude"
@@ -1821,8 +1919,8 @@ reviews:
 
               3. Consider: should `subject-ref` filter also search `related_refs`?
             created_at: 2026-03-16T08:21:19.286Z
-      - _ulid: 01KKTVRR31F3408SRDYCT4Q6T0
         kind: blocker
+      - _ulid: 01KKTVRR31F3408SRDYCT4Q6T0
         entries:
           - _ulid: 01KKTVRR31JE2HFM6T2804XH6G
             author: "@claude"
@@ -1845,8 +1943,8 @@ reviews:
               /api/diff/:range/:path?expand=true&start=N&end=N`, or use a distinct route prefix like
               `GET /api/diff/:range/expand-context?path=X&start=N&end=N`.
             created_at: 2026-03-16T08:21:29.313Z
+        kind: blocker
       - _ulid: 01KKTVS3JBQB956MEDG81RTV72
-        kind: nit
         entries:
           - _ulid: 01KKTVS3JBHP97KJRDCKRH012E
             author: "@claude"
@@ -1867,8 +1965,8 @@ reviews:
 
               Both packages are appropriate choices for the specified use case.
             created_at: 2026-03-16T08:21:41.067Z
+        kind: nit
       - _ulid: 01KKTVSEVZA1VSY52ASDJWQXEX
-        kind: question
         entries:
           - _ulid: 01KKTVSEW08HZ5M5BH7KGCGM6Z
             author: "@claude"
@@ -1892,8 +1990,8 @@ reviews:
               context and `base` for old-side, but the AC is ambiguous. Consider specifying a `side`
               or `commit` query param.
             created_at: 2026-03-16T08:21:52.640Z
-      - _ulid: 01KKTVSS64ZWH9MHZRF924902S
         kind: question
+      - _ulid: 01KKTVSS64ZWH9MHZRF924902S
         entries:
           - _ulid: 01KKTVSS64F6JQ0DA7RBH5E14X
             author: "@claude"
@@ -1915,8 +2013,8 @@ reviews:
               This is non-blocking — either approach works — but worth confirming the UX intent
               matches the existing app patterns.
             created_at: 2026-03-16T08:22:03.204Z
+        kind: question
       - _ulid: 01KKTVT3ERYXE09J0VTS1W2TBV
-        kind: nit
         entries:
           - _ulid: 01KKTVT3ESK7NBC6DQPRDWK2HT
             author: "@claude"
@@ -1955,8 +2053,8 @@ reviews:
               verdicts can proceed in parallel, code and structured content viewers can proceed in
               parallel).
             created_at: 2026-03-16T08:22:13.721Z
-      - _ulid: 01KKTVTDD9V3PSRCE0W1WCF13G
         kind: nit
+      - _ulid: 01KKTVTDD9V3PSRCE0W1WCF13G
         entries:
           - _ulid: 01KKTVTDDABYNFNPW3EF969X59
             author: "@claude"
@@ -1989,8 +2087,8 @@ reviews:
 
               All ACs have task coverage. No gaps found.
             created_at: 2026-03-16T08:22:23.914Z
+        kind: nit
       - _ulid: 01KKTVTT9K69KNJRV938WF7VAE
-        kind: question
         entries:
           - _ulid: 01KKTVTT9KYPJTWC8DS11QJ69N
             author: "@claude"
@@ -2022,8 +2120,8 @@ reviews:
               Recommend: specify the response shape, even informally, so the implementer knows what
               to return.
             created_at: 2026-03-16T08:22:37.107Z
+        kind: question
       - _ulid: 01KKTVV4ZNG580SPNRFT9GJ7Y4
-        kind: nit
         entries:
           - _ulid: 01KKTVV4ZPQ1Q773XYY2ANNMQD
             author: "@claude"
@@ -2049,130 +2147,60 @@ reviews:
               (parser/reviews.ts, parser/review-operations.ts, parser/review-threads.ts,
               review/checks.ts). All verified to exist in the codebase.
             created_at: 2026-03-16T08:22:48.054Z
-    checks: []
+        kind: nit
     verdicts:
-      - reviewer: plan-review-agent-r7
-        role: reviewer
-        decision: request_changes
-        applies_to_version:
+      - applies_to_version:
           type: entity_version
           content_hash: plan-r7-draft
+        decision: request_changes
+        reviewer: plan-review-agent-r7
+        role: reviewer
         created_at: 2026-03-16T08:23:04.489Z
-    events:
-      - _ulid: 01KKTVKRB3M89C0ZW5R5KT4FS0
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T08:18:45.731Z
-        payload:
-          to: draft
-      - _ulid: 01KKTVKYVAWZR9RMHJ2CBG3SK0
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T08:18:52.394Z
-        payload:
-          from: draft
-          to: open
-      - _ulid: 01KKTVR1Y78PZ3FJH6ESVRC4F7
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T08:21:06.631Z
-        payload:
-          thread_ulid: 01KKTVR1XNKPF715NGARH06V3G
-          kind: blocker
-      - _ulid: 01KKTVREA64EFXNZX6J4S4S1TT
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T08:21:19.302Z
-        payload:
-          thread_ulid: 01KKTVRE9NBER2D85VPVMRD3VE
-          kind: blocker
-      - _ulid: 01KKTVRR3H81DAM7HQ6NKYVAS2
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T08:21:29.329Z
-        payload:
-          thread_ulid: 01KKTVRR31F3408SRDYCT4Q6T0
-          kind: blocker
-      - _ulid: 01KKTVS3JZ508BABP2HMQ241YC
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T08:21:41.087Z
-        payload:
-          thread_ulid: 01KKTVS3JBQB956MEDG81RTV72
-          kind: nit
-      - _ulid: 01KKTVSEWE4KMA88AWXX10S6XQ
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T08:21:52.654Z
-        payload:
-          thread_ulid: 01KKTVSEVZA1VSY52ASDJWQXEX
-          kind: question
-      - _ulid: 01KKTVSS6N8EH7A7RSPVF8A5N4
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T08:22:03.222Z
-        payload:
-          thread_ulid: 01KKTVSS64ZWH9MHZRF924902S
-          kind: question
-      - _ulid: 01KKTVT3FCPC5T4B4PVXAFMVEA
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T08:22:13.740Z
-        payload:
-          thread_ulid: 01KKTVT3ERYXE09J0VTS1W2TBV
-          kind: nit
-      - _ulid: 01KKTVTDE0GQ82RGWRTHS6P77D
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T08:22:23.936Z
-        payload:
-          thread_ulid: 01KKTVTDD9V3PSRCE0W1WCF13G
-          kind: nit
-      - _ulid: 01KKTVTTA6F769D7K87Y8FW4Z8
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T08:22:37.126Z
-        payload:
-          thread_ulid: 01KKTVTT9K69KNJRV938WF7VAE
-          kind: question
-      - _ulid: 01KKTVV506Y5YJKJ22WFV6QZMK
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T08:22:48.070Z
-        payload:
-          thread_ulid: 01KKTVV4ZNG580SPNRFT9GJ7Y4
-          kind: nit
-      - _ulid: 01KKTVVN1Z7KG1XBT2PC0F4J2V
-        event_type: verdict_submitted
-        actor: plan-review-agent-r7
-        timestamp: 2026-03-16T08:23:04.511Z
-        payload:
-          decision: request_changes
-      - _ulid: 01KKTVY2R4YP3QDSN9XVSM6EFN
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T08:24:24.068Z
-        payload:
-          from: open
-          to: closed
-    notes: []
-    external_links: []
     created_at: 2026-03-16T08:18:45.731Z
     updated_at: 2026-03-16T08:24:24.046Z
+    notes: []
   - _ulid: 01KKTVY4SQHHDNTDPXRA5FRGHH
     slugs: []
     title: "Review: Review Records Web UI plan (round 8)"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKTVY4SQB91A3EKZEYKPNVCK
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T08:24:26.167Z
+      - _ulid: 01KKTVYCZ7KVKYM05THG78NRPK
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-16T08:24:34.536Z
+      - _ulid: 01KKTW0EK53Y45C9QPTBCWP93T
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKTW0EJJ4MCS17WEGENVWA4N
+        timestamp: 2026-03-16T08:25:41.733Z
+      - _ulid: 01KKTW156SAXCMJP5MCTDW64NN
+        actor: plan-review-agent-r8
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-16T08:26:04.889Z
+    external_links: []
     lifecycle_state: open
+    related_refs: []
     subject:
       type: plan
+      content_hash: ""
       ref: "@plan-review-records-web-ui"
       shadow_commit: ""
-      content_hash: ""
-    author: "@claude"
-    related_refs: []
     threads:
       - _ulid: 01KKTW0EJJ4MCS17WEGENVWA4N
-        kind: nit
         entries:
           - _ulid: 01KKTW0EJJ811585NDX6JYRYEZ
             author: "@claude"
@@ -2206,67 +2234,134 @@ reviews:
               are clear, so an implementer would figure it out — but the task description could be
               more explicit. Not a blocker.
             created_at: 2026-03-16T08:25:41.714Z
-    checks: []
+        kind: nit
     verdicts:
-      - reviewer: plan-review-agent-r8
-        role: reviewer
-        decision: approve
-        applies_to_version:
+      - applies_to_version:
           type: entity_version
           content_hash: e549850b6eff
+        decision: approve
+        reviewer: plan-review-agent-r8
+        role: reviewer
         created_at: 2026-03-16T08:26:04.870Z
-    events:
-      - _ulid: 01KKTVY4SQB91A3EKZEYKPNVCK
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T08:24:26.167Z
-        payload:
-          to: draft
-      - _ulid: 01KKTVYCZ7KVKYM05THG78NRPK
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T08:24:34.536Z
-        payload:
-          from: draft
-          to: open
-      - _ulid: 01KKTW0EK53Y45C9QPTBCWP93T
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T08:25:41.733Z
-        payload:
-          thread_ulid: 01KKTW0EJJ4MCS17WEGENVWA4N
-          kind: nit
-      - _ulid: 01KKTW156SAXCMJP5MCTDW64NN
-        event_type: verdict_submitted
-        actor: plan-review-agent-r8
-        timestamp: 2026-03-16T08:26:04.889Z
-        payload:
-          decision: approve
-    notes: []
-    external_links: []
     created_at: 2026-03-16T08:24:26.167Z
     updated_at: 2026-03-16T08:26:04.870Z
+    notes: []
   - _ulid: 01KKVPK4EFBKNMNQZZE9NRARD9
     slugs: []
     title: "Review: dispatch publication mode config"
+    author: "@claude"
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: c09189ec7386070eb3b6331251bf123e29698e81
+          head_commit: be7a988ce9d990284148d7f03083d7914ef3c15e
+        evidence: 253 test files, 5563 tests passed, 3 skipped, 0 failures
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-16T16:16:28.218Z
+        completed_at: 2026-03-16T16:16:28.218Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: c09189ec7386070eb3b6331251bf123e29698e81
+          head_commit: be7a988ce9d990284148d7f03083d7914ef3c15e
+        evidence: Schema OK, reference errors and alignment warnings are all pre-existing (verified on main)
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-16T16:16:31.016Z
+        completed_at: 2026-03-16T16:16:31.016Z
+    events:
+      - _ulid: 01KKVPK4EFE07WG8S22ZYFR99B
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T16:10:16.911Z
+      - _ulid: 01KKVPKBAPY3JFR9WFG8J6QNTR
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-16T16:10:23.958Z
+      - _ulid: 01KKVPXTJ176REMR1Z049ZP768
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
+        timestamp: 2026-03-16T16:16:07.234Z
+      - _ulid: 01KKVPY3VNRWJC8J9TKQBYKY01
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
+        timestamp: 2026-03-16T16:16:16.757Z
+      - _ulid: 01KKVPYF2G1ATXVYFYTS66PGVC
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-16T16:16:28.240Z
+      - _ulid: 01KKVPYHSWN69HX9E2ZBQGG3YD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-16T16:16:31.037Z
+      - _ulid: 01KKVPYSY72BJCYKHXTEYE368N
+        actor: claude-reviewer@kspec
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-16T16:16:39.367Z
+      - _ulid: 01KKVQE89AKBJ3WARN5PACB9R3
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
+        timestamp: 2026-03-16T16:25:05.579Z
+      - _ulid: 01KKVQEE1XJNGVZ4NZK06RQV72
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
+        timestamp: 2026-03-16T16:25:11.486Z
+      - _ulid: 01KKVQEPV2653354N8BG33KVXJ
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
+        timestamp: 2026-03-16T16:25:20.482Z
+      - _ulid: 01KKVQEY5ZS2B7G4RP391MPNPY
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
+        timestamp: 2026-03-16T16:25:28.000Z
+    external_links: []
     lifecycle_state: open
+    related_refs: []
     subject:
       type: task
+      content_hash: ""
       ref: "@01KKTZ0B"
       shadow_commit: ""
-      content_hash: ""
-    author: "@claude"
-    related_refs: []
     threads:
       - _ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
-        kind: blocker
         anchor:
           type: code
+          commit: ""
+          line_end: 318
+          line_start: 318
           path: tests/dispatch-workspace-config.test.ts
           side: head
-          line_start: 318
-          line_end: 318
-          commit: ""
         entries:
           - _ulid: 01KKVPXTHCXXKSKH9FQ6TE84N0
             author: "@claude"
@@ -2286,10 +2381,10 @@ reviews:
               detection, (4) resolves publication_mode from config, (5) defaults to auto when not
               configured. All 13 tests pass."
             created_at: 2026-03-16T16:25:05.560Z
+        kind: blocker
         resolved_at: 2026-03-16T16:25:11.466Z
         resolved_by: "@claude"
       - _ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
-        kind: question
         entries:
           - _ulid: 01KKVPY3V0CD7J279PWWQJWEXE
             author: "@claude"
@@ -2310,130 +2405,126 @@ reviews:
               task also has spec_ref set to @dispatch-workspace-configuration. All tests annotated
               with AC: @dispatch-workspace-configuration ac-5."
             created_at: 2026-03-16T16:25:20.460Z
+        kind: question
         resolved_at: 2026-03-16T16:25:27.984Z
         resolved_by: "@claude"
-    checks:
-      - name: vitest
-        status: pass
-        required: true
-        runner: vitest
-        evidence: 253 test files, 5563 tests passed, 3 skipped, 0 failures
-        applies_to_version:
-          type: code_compare
-          base_commit: c09189ec7386070eb3b6331251bf123e29698e81
-          head_commit: be7a988ce9d990284148d7f03083d7914ef3c15e
-        created_at: 2026-03-16T16:16:28.218Z
-        completed_at: 2026-03-16T16:16:28.218Z
-      - name: kspec-validate
-        status: pass
-        required: false
-        runner: kspec
-        evidence: Schema OK, reference errors and alignment warnings are all pre-existing (verified on main)
-        applies_to_version:
-          type: code_compare
-          base_commit: c09189ec7386070eb3b6331251bf123e29698e81
-          head_commit: be7a988ce9d990284148d7f03083d7914ef3c15e
-        created_at: 2026-03-16T16:16:31.016Z
-        completed_at: 2026-03-16T16:16:31.016Z
     verdicts:
-      - reviewer: claude-reviewer@kspec
-        role: reviewer
-        decision: request_changes
-        applies_to_version:
+      - applies_to_version:
           type: code_compare
           base_commit: c09189ec7386070eb3b6331251bf123e29698e81
           head_commit: be7a988ce9d990284148d7f03083d7914ef3c15e
+        decision: request_changes
+        reviewer: claude-reviewer@kspec
+        role: reviewer
         created_at: 2026-03-16T16:16:39.351Z
-    events:
-      - _ulid: 01KKVPK4EFE07WG8S22ZYFR99B
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T16:10:16.911Z
-        payload:
-          to: draft
-      - _ulid: 01KKVPKBAPY3JFR9WFG8J6QNTR
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T16:10:23.958Z
-        payload:
-          from: draft
-          to: open
-      - _ulid: 01KKVPXTJ176REMR1Z049ZP768
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T16:16:07.234Z
-        payload:
-          thread_ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
-          kind: blocker
-      - _ulid: 01KKVPY3VNRWJC8J9TKQBYKY01
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T16:16:16.757Z
-        payload:
-          thread_ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
-          kind: question
-      - _ulid: 01KKVPYF2G1ATXVYFYTS66PGVC
-        event_type: check_added
-        actor: "@claude"
-        timestamp: 2026-03-16T16:16:28.240Z
-        payload:
-          name: vitest
-          status: pass
-      - _ulid: 01KKVPYHSWN69HX9E2ZBQGG3YD
-        event_type: check_added
-        actor: "@claude"
-        timestamp: 2026-03-16T16:16:31.037Z
-        payload:
-          name: kspec-validate
-          status: pass
-      - _ulid: 01KKVPYSY72BJCYKHXTEYE368N
-        event_type: verdict_submitted
-        actor: claude-reviewer@kspec
-        timestamp: 2026-03-16T16:16:39.367Z
-        payload:
-          decision: request_changes
-      - _ulid: 01KKVQE89AKBJ3WARN5PACB9R3
-        event_type: thread_replied
-        actor: "@claude"
-        timestamp: 2026-03-16T16:25:05.579Z
-        payload:
-          thread_ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
-      - _ulid: 01KKVQEE1XJNGVZ4NZK06RQV72
-        event_type: thread_resolved
-        actor: "@claude"
-        timestamp: 2026-03-16T16:25:11.486Z
-        payload:
-          thread_ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
-      - _ulid: 01KKVQEPV2653354N8BG33KVXJ
-        event_type: thread_replied
-        actor: "@claude"
-        timestamp: 2026-03-16T16:25:20.482Z
-        payload:
-          thread_ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
-      - _ulid: 01KKVQEY5ZS2B7G4RP391MPNPY
-        event_type: thread_resolved
-        actor: "@claude"
-        timestamp: 2026-03-16T16:25:28.000Z
-        payload:
-          thread_ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
-    notes: []
-    external_links: []
     created_at: 2026-03-16T16:10:16.911Z
     updated_at: 2026-03-16T16:25:27.984Z
+    notes: []
   - _ulid: 01KKW171KY6Y7K2SH8S1HT42FK
     slugs: []
     title: "Review: Task Activity Timeline Plan"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKW171KYQB3C0EZ3CBYPSKTG
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T19:15:55.134Z
+      - _ulid: 01KKW17BD4ZBXC64D1XZVZ61HP
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-16T19:16:05.156Z
+      - _ulid: 01KKW17Y80V9CGWZA78BZ4PBZV
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKW17Y77A0KPNRZAV0SHZJDN
+        timestamp: 2026-03-16T19:16:24.448Z
+      - _ulid: 01KKW1856208728QA72TFK8Z3V
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKW18554QK0XEKRVR2KQE08B
+        timestamp: 2026-03-16T19:16:31.554Z
+      - _ulid: 01KKW18M905R3EZ69F01JN4V1N
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKW18M88VFNKGG1BJEKMBTAC
+        timestamp: 2026-03-16T19:16:47.008Z
+      - _ulid: 01KKW18S99EB2HHBVC8NJ793ME
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKW18S8F3XJGD95D92HX1G45
+        timestamp: 2026-03-16T19:16:52.137Z
+      - _ulid: 01KKW197TBZPR6KCHCRZXCZYRW
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKW197SJKXM2XPWYZKQ5W43P
+        timestamp: 2026-03-16T19:17:07.019Z
+      - _ulid: 01KKW19D7MJWBGF50TTVFKECF6
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKW19D6T7CZJP3ERNTJXK5PH
+        timestamp: 2026-03-16T19:17:12.564Z
+      - _ulid: 01KKW19WKAHX59DCXAGQRXJ85T
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKW19WJHGV7J0VBK8CVDSA7C
+        timestamp: 2026-03-16T19:17:28.298Z
+      - _ulid: 01KKW1A1QJH5X2JE2JTQ0NJ7T8
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKW1A1PP53ETST8RGQX4QXM9
+        timestamp: 2026-03-16T19:17:33.555Z
+      - _ulid: 01KKW1AE1W553XMMQQ0EYGG2BJ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKW1AE10MKPQX34J4GTQ0247
+        timestamp: 2026-03-16T19:17:46.172Z
+      - _ulid: 01KKW1B0CA974F61Z2WW7XERAS
+        actor: "@claude"
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-16T19:18:04.938Z
+      - _ulid: 01KKW1B4M18T9TSK4T5A53AG1N
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-16T19:18:09.282Z
+    external_links: []
     lifecycle_state: closed
+    related_refs: []
     subject:
       type: plan
+      content_hash: ""
       ref: "@plan-task-activity-timeline"
       shadow_commit: ""
-      content_hash: ""
-    author: "@claude"
-    related_refs: []
     threads:
       - _ulid: 01KKW17Y77A0KPNRZAV0SHZJDN
-        kind: blocker
         entries:
           - _ulid: 01KKW17Y77F84GRMC8VM82S3ZQ
             author: "@claude"
@@ -2468,8 +2559,8 @@ reviews:
               Without addressing this conflict, importing this plan would create contradictory specs
               in the system.
             created_at: 2026-03-16T19:16:24.423Z
-      - _ulid: 01KKW18554QK0XEKRVR2KQE08B
         kind: blocker
+      - _ulid: 01KKW18554QK0XEKRVR2KQE08B
         entries:
           - _ulid: 01KKW185559QNKXNA23JK6PYA2
             author: "@claude"
@@ -2497,8 +2588,8 @@ reviews:
               the implementation just has a gap in the task-add case. Creating a parallel spec for
               the same concern adds confusion.
             created_at: 2026-03-16T19:16:31.525Z
+        kind: blocker
       - _ulid: 01KKW18M88VFNKGG1BJEKMBTAC
-        kind: question
         entries:
           - _ulid: 01KKW18M88S47Q7SPEHJWK267Y
             author: "@claude"
@@ -2527,8 +2618,8 @@ reviews:
               Keeping it as a separate spec isn't wrong, but it creates a small spec for what is
               essentially one if-else branch in captureSubmissionLinkage().
             created_at: 2026-03-16T19:16:46.984Z
-      - _ulid: 01KKW18S8F3XJGD95D92HX1G45
         kind: question
+      - _ulid: 01KKW18S8F3XJGD95D92HX1G45
         entries:
           - _ulid: 01KKW18S8FJNC6FP318254ATZQ
             author: "@claude"
@@ -2547,8 +2638,8 @@ reviews:
               summaries. Including ac-5 increases the plan's scope without adding to the MVP
               experience. Consider splitting it out.
             created_at: 2026-03-16T19:16:52.112Z
-      - _ulid: 01KKW197SJKXM2XPWYZKQ5W43P
         kind: question
+      - _ulid: 01KKW197SJKXM2XPWYZKQ5W43P
         entries:
           - _ulid: 01KKW197SJNA4AJ74149HQ8S07
             author: "@claude"
@@ -2575,8 +2666,8 @@ reviews:
               timeline uses shadow-branch commit messages. These are complementary but the plan
               doesn't mention the distinction.
             created_at: 2026-03-16T19:17:06.994Z
+        kind: question
       - _ulid: 01KKW19D6T7CZJP3ERNTJXK5PH
-        kind: nit
         entries:
           - _ulid: 01KKW19D6T8D9VPPNG0BSXSAMP
             author: "@claude"
@@ -2597,8 +2688,8 @@ reviews:
               filtering. Current wording could be read as requiring git log to analyze per-file
               diffs.
             created_at: 2026-03-16T19:17:12.538Z
-      - _ulid: 01KKW19WJHGV7J0VBK8CVDSA7C
         kind: nit
+      - _ulid: 01KKW19WJHGV7J0VBK8CVDSA7C
         entries:
           - _ulid: 01KKW19WJH9RAJPMH2HE30YEHS
             author: "@claude"
@@ -2618,8 +2709,8 @@ reviews:
               this variable doesn't currently exist in the codebase. The task description should
               note this is a new convention, not an existing one.
             created_at: 2026-03-16T19:17:28.273Z
-      - _ulid: 01KKW1A1PP53ETST8RGQX4QXM9
         kind: nit
+      - _ulid: 01KKW1A1PP53ETST8RGQX4QXM9
         entries:
           - _ulid: 01KKW1A1PSM4KN4NAH0600X56C
             author: "@claude"
@@ -2640,8 +2731,8 @@ reviews:
               (@review-record-lifecycle-completion ac-2) requires the task's review_ref to be
               updated to the new record, which is a CLI/data operation, not just documentation.
             created_at: 2026-03-16T19:17:33.529Z
-      - _ulid: 01KKW1AE10MKPQX34J4GTQ0247
         kind: nit
+      - _ulid: 01KKW1AE10MKPQX34J4GTQ0247
         entries:
           - _ulid: 01KKW1AE1016MEHK8RCTZS9TK5
             author: "@claude"
@@ -2664,123 +2755,95 @@ reviews:
               These could be folded into the implementation tasks' descriptions, but making them
               explicit ensures they don't get skipped during dispatch.
             created_at: 2026-03-16T19:17:46.144Z
-    checks: []
+        kind: nit
     verdicts:
-      - reviewer: "@claude"
-        role: reviewer
-        decision: request_changes
-        applies_to_version:
+      - applies_to_version:
           type: entity_version
           content_hash: plan-draft-1
+        decision: request_changes
+        reviewer: "@claude"
+        role: reviewer
         created_at: 2026-03-16T19:18:04.909Z
-    events:
-      - _ulid: 01KKW171KYQB3C0EZ3CBYPSKTG
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T19:15:55.134Z
-        payload:
-          to: draft
-      - _ulid: 01KKW17BD4ZBXC64D1XZVZ61HP
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T19:16:05.156Z
-        payload:
-          from: draft
-          to: open
-      - _ulid: 01KKW17Y80V9CGWZA78BZ4PBZV
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T19:16:24.448Z
-        payload:
-          thread_ulid: 01KKW17Y77A0KPNRZAV0SHZJDN
-          kind: blocker
-      - _ulid: 01KKW1856208728QA72TFK8Z3V
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T19:16:31.554Z
-        payload:
-          thread_ulid: 01KKW18554QK0XEKRVR2KQE08B
-          kind: blocker
-      - _ulid: 01KKW18M905R3EZ69F01JN4V1N
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T19:16:47.008Z
-        payload:
-          thread_ulid: 01KKW18M88VFNKGG1BJEKMBTAC
-          kind: question
-      - _ulid: 01KKW18S99EB2HHBVC8NJ793ME
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T19:16:52.137Z
-        payload:
-          thread_ulid: 01KKW18S8F3XJGD95D92HX1G45
-          kind: question
-      - _ulid: 01KKW197TBZPR6KCHCRZXCZYRW
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T19:17:07.019Z
-        payload:
-          thread_ulid: 01KKW197SJKXM2XPWYZKQ5W43P
-          kind: question
-      - _ulid: 01KKW19D7MJWBGF50TTVFKECF6
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T19:17:12.564Z
-        payload:
-          thread_ulid: 01KKW19D6T7CZJP3ERNTJXK5PH
-          kind: nit
-      - _ulid: 01KKW19WKAHX59DCXAGQRXJ85T
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T19:17:28.298Z
-        payload:
-          thread_ulid: 01KKW19WJHGV7J0VBK8CVDSA7C
-          kind: nit
-      - _ulid: 01KKW1A1QJH5X2JE2JTQ0NJ7T8
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T19:17:33.555Z
-        payload:
-          thread_ulid: 01KKW1A1PP53ETST8RGQX4QXM9
-          kind: nit
-      - _ulid: 01KKW1AE1W553XMMQQ0EYGG2BJ
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T19:17:46.172Z
-        payload:
-          thread_ulid: 01KKW1AE10MKPQX34J4GTQ0247
-          kind: nit
-      - _ulid: 01KKW1B0CA974F61Z2WW7XERAS
-        event_type: verdict_submitted
-        actor: "@claude"
-        timestamp: 2026-03-16T19:18:04.938Z
-        payload:
-          decision: request_changes
-      - _ulid: 01KKW1B4M18T9TSK4T5A53AG1N
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T19:18:09.282Z
-        payload:
-          from: open
-          to: closed
-    notes: []
-    external_links: []
     created_at: 2026-03-16T19:15:55.134Z
     updated_at: 2026-03-16T19:18:09.254Z
+    notes: []
   - _ulid: 01KKW4N9C44M0FKZVYCH180MFB
     slugs: []
     title: "Review: Task Activity Timeline Plan (revision 2)"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKW4N9C1DGWYF7G0RXBJBEPW
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T20:16:07.553Z
+      - _ulid: 01KKW4NJGXQBYVKBX70B5PRM7J
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-16T20:16:16.926Z
+      - _ulid: 01KKW4Q3FXVKBKZG1RVFE07DJC
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKW4Q3EV9HJ5ZXVB9R5PEAEJ
+        timestamp: 2026-03-16T20:17:07.069Z
+      - _ulid: 01KKW4Q77T9FJAJRKJ44RS9W3T
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKW4Q774QRRV0K5EVZ8RW7VC
+        timestamp: 2026-03-16T20:17:10.906Z
+      - _ulid: 01KKW4QEBEA062139PACC2TXRX
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKW4QEAEEMD6RJEA9GPZ3JJ3
+        timestamp: 2026-03-16T20:17:18.190Z
+      - _ulid: 01KKW4QHCJ53862G97KKQQN144
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKW4QHBS2Q5W1MQRYWDZXQXV
+        timestamp: 2026-03-16T20:17:21.298Z
+      - _ulid: 01KKW4QY1R1JVFY61XHZ33FA5Q
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKW4QY11FBE7NVPAY0G38VRN
+        timestamp: 2026-03-16T20:17:34.265Z
+      - _ulid: 01KKW4RY5K4QSVGPSWK2Q0HM67
+        actor: "@claude"
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-16T20:18:07.155Z
+      - _ulid: 01KKW4S2KWZJHW84E25KKKED0N
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-16T20:18:11.708Z
+    external_links: []
     lifecycle_state: closed
+    related_refs: []
     subject:
       type: plan
+      content_hash: ""
       ref: "@plan-task-activity-timeline"
       shadow_commit: ""
-      content_hash: ""
-    author: "@claude"
-    related_refs: []
     threads:
       - _ulid: 01KKW4Q3EV9HJ5ZXVB9R5PEAEJ
-        kind: question
         anchor:
           type: structured
           section: Review Lifecycle
@@ -2797,12 +2860,12 @@ reviews:
               intentional based on the task description for @task-auto-close-review-on-verdict which
               explains the rationale clearly.)"
             created_at: 2026-03-16T20:17:07.035Z
+        kind: question
       - _ulid: 01KKW4Q774QRRV0K5EVZ8RW7VC
-        kind: nit
         anchor:
           type: structured
-          section: Specs
           ref: "@task-activity-git-query"
+          section: Specs
         entries:
           - _ulid: 01KKW4Q77433NBXE3W1ERV122K
             author: "@claude"
@@ -2813,12 +2876,12 @@ reviews:
               that such commits appear in both timelines. This is probably the desired behavior but
               worth noting — a single commit can appear in multiple task timelines.
             created_at: 2026-03-16T20:17:10.884Z
-      - _ulid: 01KKW4QEAEEMD6RJEA9GPZ3JJ3
         kind: nit
+      - _ulid: 01KKW4QEAEEMD6RJEA9GPZ3JJ3
         anchor:
           type: structured
-          section: Tasks
           ref: "@task-submission-linkage-dispatch-fallback"
+          section: Tasks
         entries:
           - _ulid: 01KKW4QEAEV7J8ZZ3WKN2FYS3K
             author: "@claude"
@@ -2828,12 +2891,12 @@ reviews:
               spec uses "portable-task-submission-linkage". Minor naming inconsistency, no action
               needed since kspec handles slug-ref mapping.
             created_at: 2026-03-16T20:17:18.158Z
-      - _ulid: 01KKW4QHBS2Q5W1MQRYWDZXQXV
         kind: nit
+      - _ulid: 01KKW4QHBS2Q5W1MQRYWDZXQXV
         anchor:
           type: structured
-          section: Tasks
           ref: "@task-review-examined-commit"
+          section: Tasks
         entries:
           - _ulid: 01KKW4QHBS5N2Y4KZRPWDRB8NJ
             author: "@claude"
@@ -2843,8 +2906,8 @@ reviews:
               dispatch agent conventions or the relevant spec. Not a plan blocker since the task
               description is clear about what it does.
             created_at: 2026-03-16T20:17:21.273Z
-      - _ulid: 01KKW4QY11FBE7NVPAY0G38VRN
         kind: nit
+      - _ulid: 01KKW4QY11FBE7NVPAY0G38VRN
         anchor:
           type: structured
           section: Summary
@@ -2883,78 +2946,40 @@ reviews:
 
               - No new spec conflicts detected
             created_at: 2026-03-16T20:17:34.242Z
-    checks: []
+        kind: nit
     verdicts:
-      - reviewer: "@claude"
-        role: reviewer
-        decision: approve
-        applies_to_version:
+      - applies_to_version:
           type: entity_version
           content_hash: plan-rev2-1773692286
+        decision: approve
+        reviewer: "@claude"
+        role: reviewer
         created_at: 2026-03-16T20:18:07.122Z
-    events:
-      - _ulid: 01KKW4N9C1DGWYF7G0RXBJBEPW
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T20:16:07.553Z
-        payload:
-          to: draft
-      - _ulid: 01KKW4NJGXQBYVKBX70B5PRM7J
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T20:16:16.926Z
-        payload:
-          from: draft
-          to: open
-      - _ulid: 01KKW4Q3FXVKBKZG1RVFE07DJC
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T20:17:07.069Z
-        payload:
-          thread_ulid: 01KKW4Q3EV9HJ5ZXVB9R5PEAEJ
-          kind: question
-      - _ulid: 01KKW4Q77T9FJAJRKJ44RS9W3T
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T20:17:10.906Z
-        payload:
-          thread_ulid: 01KKW4Q774QRRV0K5EVZ8RW7VC
-          kind: nit
-      - _ulid: 01KKW4QEBEA062139PACC2TXRX
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T20:17:18.190Z
-        payload:
-          thread_ulid: 01KKW4QEAEEMD6RJEA9GPZ3JJ3
-          kind: nit
-      - _ulid: 01KKW4QHCJ53862G97KKQQN144
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T20:17:21.298Z
-        payload:
-          thread_ulid: 01KKW4QHBS2Q5W1MQRYWDZXQXV
-          kind: nit
-      - _ulid: 01KKW4QY1R1JVFY61XHZ33FA5Q
-        event_type: thread_created
-        actor: "@claude"
-        timestamp: 2026-03-16T20:17:34.265Z
-        payload:
-          thread_ulid: 01KKW4QY11FBE7NVPAY0G38VRN
-          kind: nit
-      - _ulid: 01KKW4RY5K4QSVGPSWK2Q0HM67
-        event_type: verdict_submitted
-        actor: "@claude"
-        timestamp: 2026-03-16T20:18:07.155Z
-        payload:
-          decision: approve
-      - _ulid: 01KKW4S2KWZJHW84E25KKKED0N
-        event_type: lifecycle_change
-        actor: "@claude"
-        timestamp: 2026-03-16T20:18:11.708Z
-        payload:
-          from: open
-          to: closed
-    notes: []
-    external_links: []
     created_at: 2026-03-16T20:16:07.556Z
     updated_at: 2026-03-16T20:18:11.681Z
+    notes: []
+  - _ulid: 01KKW8QCAKR7HESRF2X0V33CN7
+    slugs: []
+    title: "Review: canonical field ordering in YAML serialization"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKW8QCAK5DF04SH2YHK5B3FZ
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T21:27:10.419Z
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKVW67"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-16T21:27:10.419Z
+    updated_at: null
+    notes: []
