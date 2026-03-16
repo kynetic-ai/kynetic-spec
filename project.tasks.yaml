@@ -100641,7 +100641,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
   depends_on: []
   context: []
@@ -100720,6 +100720,11 @@
         source. Skill content quality is solid — core skills are well-structured and comprehensive."
       supersedes: null
   todos: []
+  completed_at: 2026-03-16T06:41:31.960Z
+  closed_reason: "Merged via PR #893. Rewrote core skills (task-work, review, merge) for review-driven
+    architecture. Created project-specific work-gates and review-gates skills. Archived superseded
+    skills (local-review, pr-review, review-principles, pr). Updated kspec-agents.md and all
+    rendered skill targets."
 - _ulid: 01KKTK96Z5M9T8WP900CPFWRNG
   slugs: []
   title: Remove skill table from kspec-agents.md and port descriptions to skill frontmatter
