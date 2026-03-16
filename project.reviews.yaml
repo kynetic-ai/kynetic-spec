@@ -879,6 +879,17 @@ reviews:
               the general ac-10. Other mutation ACs (ac-3 through ac-7) rely on ac-10 for error
               coverage, which is fine."
             created_at: 2026-03-16T07:38:58.997Z
+      - _ulid: 01KKTSB10CMQR2VHSXDJSM0X0F
+        kind: nit
+        entries:
+          - _ulid: 01KKTSB10DA4V6N5CCYED49AER
+            author: "@claude"
+            body: "**Minor gap: Web UI spec has no traits but API spec does.** The web-ui parent module has no
+              traits, so this is consistent. However, if there are UI-specific traits (e.g.,
+              @trait-url-panel-state mentioned in MEMORY.md), those might apply. This is not a
+              blocker — traits can be added during implementation if needed, and the web UI spec's
+              ACs are sufficiently specific without them."
+            created_at: 2026-03-16T07:39:02.541Z
     checks: []
     verdicts: []
     events:
@@ -965,7 +976,14 @@ reviews:
         payload:
           thread_ulid: 01KKTSAXHM2RH8V3049VJ1WGSV
           kind: nit
+      - _ulid: 01KKTSB10RQ5242JN15CGTXNNT
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:39:02.552Z
+        payload:
+          thread_ulid: 01KKTSB10CMQR2VHSXDJSM0X0F
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:37:13.126Z
-    updated_at: 2026-03-16T07:38:58.997Z
+    updated_at: 2026-03-16T07:39:02.541Z
