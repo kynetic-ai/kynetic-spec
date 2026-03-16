@@ -21646,3 +21646,220 @@ plans:
           nit=gray. Diff colors: added=green, deleted=red, unchanged=default.
           Markdown rendering with syntax highlighting in code blocks.
           Use goto() for URL state per project conventions.
+  - _ulid: 01KKVZS3EGT96MMQTX7BX0GTVA
+    slugs:
+      - plan-task-activity-timeline
+    title: Task Activity Timeline
+    content: |
+      # Task Activity Timeline
+
+      ## Specs
+
+      ```yaml
+      - title: Task Activity Timeline
+        slug: task-activity-timeline
+        type: feature
+        parent: "@tasks"
+        description: |
+          Unified chronological view of all activity on a task — state transitions,
+          notes, review events, and submission linkage changes — derived from shadow
+          branch git history and linked review records. Surfaces in task get output
+          by default (recent activity) and in full via --activity flag.
+        traits:
+          - trait-json-output
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a task has had state transitions recorded via shadow branch commits
+            when: |
+              kspec task get @ref is run
+            then: |
+              recent activity entries are shown by default, including state changes,
+              notes, and review events in reverse chronological order
+          - id: ac-2
+            given: |
+              a task has state transitions, notes, and linked review records
+            when: |
+              kspec task get @ref --activity is run
+            then: |
+              the full activity timeline is shown, merging shadow branch commit
+              history with review record events into a single chronological view
+          - id: ac-3
+            given: |
+              a task has a linked review record
+            when: |
+              the activity timeline is rendered
+            then: |
+              review events (creation, verdict, thread activity, lifecycle changes)
+              appear inline in the timeline alongside task state changes and notes
+          - id: ac-4
+            given: |
+              activity is derived from shadow branch git history
+            when: |
+              commits referencing the task ref are queried
+            then: |
+              all commits including the creation commit contain the task ref
+              in a consistent, queryable format
+          - id: ac-5
+            given: |
+              task get is run with --json
+            when: |
+              activity data is included in the output
+            then: |
+              each activity entry has a type, timestamp, author, and summary
+              in a structured array
+
+      - title: Shadow Commit Message Consistency
+        slug: shadow-commit-consistency
+        type: requirement
+        parent: "@tasks"
+        description: |
+          All shadow branch auto-commit messages include the canonical ref of the
+          affected entity, enabling reliable git log queries filtered by ref.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a task is created via kspec task add
+            when: |
+              the shadow branch auto-commit is generated
+            then: |
+              the commit message includes the task ref in the same format used
+              by all other task operations
+          - id: ac-2
+            given: |
+              any shadow branch mutation targets a specific entity
+            when: |
+              the auto-commit message is generated
+            then: |
+              the entity ref appears in the commit message in a format that
+              git log --grep can reliably match
+
+      - title: Review Record Per Cycle
+        slug: review-record-per-cycle
+        type: requirement
+        parent: "@tasks"
+        description: |
+          Each review cycle produces a self-contained review record that is opened,
+          investigated, verdicted, and closed within that cycle. Fix cycles create
+          new review records rather than appending to the previous one, giving
+          clean timeline artifacts and unambiguous history.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a reviewer submits a verdict on a review record
+            when: |
+              the review is complete
+            then: |
+              the review record transitions to closed, capturing the final
+              disposition as a point-in-time artifact
+          - id: ac-2
+            given: |
+              a task enters a new review cycle after a fix cycle
+            when: |
+              a reviewer begins reviewing the updated work
+            then: |
+              a new review record is created rather than reopening the
+              previous one
+          - id: ac-3
+            given: |
+              a task has multiple review records from successive cycles
+            when: |
+              the activity timeline is rendered
+            then: |
+              each review appears as a distinct entry with its own verdict
+              and cycle number
+          - id: ac-4
+            given: |
+              a new review record is created for a fix cycle
+            when: |
+              the reviewer receives orientation context
+            then: |
+              the prompt includes the diff between the previous review's
+              examined commit and the current submission HEAD
+
+      - title: Submission Linkage Merge Target
+        slug: submission-linkage-merge-target
+        type: requirement
+        parent: "@tasks"
+        description: |
+          Submission linkage captures the intended merge target so reviewers and
+          tooling know where work is heading without relying on git upstream tracking.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a task is submitted and dispatch.base_branch or dispatch.publication_mode
+              is configured
+            when: |
+              submission linkage is auto-captured
+            then: |
+              upstream_ref is populated from the dispatch config merge target
+              when git upstream tracking is not configured
+          - id: ac-2
+            given: |
+              a task is submitted with git upstream tracking configured
+            when: |
+              submission linkage is auto-captured
+            then: |
+              upstream_ref is populated from git config as it is today,
+              taking precedence over dispatch config
+      ```
+
+      ## Tasks
+
+      derive_from_specs: true
+
+      ```yaml
+      - title: Fix shadow commit messages to always include task ref
+        slug: task-fix-shadow-commit-refs
+        description: |
+          Change generateCommitMessage() in src/parser/shadow.ts so that the
+          task-add operation includes the task ref alongside the title.
+          Verify all other operations already include the ref consistently.
+        priority: 2
+        tags:
+          - cli
+          - schema
+        spec_ref: "@shadow-commit-consistency"
+
+      - title: Populate submission linkage upstream_ref from dispatch config
+        slug: task-submission-linkage-merge-target
+        description: |
+          Update captureSubmissionLinkage() in src/utils/git.ts to fall back to
+          dispatch config base_branch when git upstream tracking is not configured.
+          Requires loading project config in the capture path.
+        priority: 2
+        tags:
+          - dispatch
+          - cli
+        spec_ref: "@submission-linkage-merge-target"
+      ```
+
+      ## Implementation Notes
+
+      The activity timeline is derived from two sources merged chronologically:
+
+      1. Shadow branch git history: `git log --oneline --grep="<task-ref>" -- project.tasks.yaml`
+         within the .kspec worktree. Commit messages already encode operation type and ref.
+         The creation commit is the only gap (task-add uses title instead of ref — fixed by
+         shadow-commit-consistency spec).
+
+      2. Linked review records: review.events array provides lifecycle changes, verdicts,
+         and thread activity with timestamps. Merge these into the git-derived timeline
+         by timestamp.
+
+      For default display, show the last N activity entries (e.g. 5-10). The --activity
+      flag shows the full history. JSON output includes the complete structured array.
+
+      The review-record-per-cycle change affects the review skill instructions and the
+      auto-transition logic. Current auto-close on verdict does not exist — needs to be
+      added. The reviewer prompt needs to include diff-since-last-review context when
+      a previous review record exists for the same task.
+    status: draft
+    derived_tasks: []
+    derived_specs: []
+    source_path: /home/chapel/Projects/kynetic-spec/plans/task-activity-timeline.md
+    module_ref: "@tasks"
+    created_at: 2026-03-16T18:50:49.680Z
+    approved_at: null
+    completed_at: null
+    notes: []
