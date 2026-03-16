@@ -22320,6 +22320,13 @@ plans:
           Prerequisite changed from @task-fix-task-add-commit-ref to @01KKVW67 (YAML field
           ordering). Specs and tasks updated directly via CLI. Plan text reflects the change but
           could not be re-imported (active plan)."
+      - _ulid: 01KKW6Q478B0FX9KBA1ZF6PT79
+        created_at: 2026-03-16T20:52:04.968Z
+        author: "@claude"
+        content: "Split @task-implement-activity-git-query into two tasks: raw git extraction (ac-1, ac-2)
+          stays on the original task, normalization of diffs into typed activity entries is now
+          @task-normalize-activity-entries (ac-3, ac-4). Display task depends on normalizer. Added
+          ac-4 to spec for field-level diff translation."
   - _ulid: 01KKW3WRAH3VC30TWF5FKZ513Z
     slugs:
       - plan-activity-timeline-diff-summaries
