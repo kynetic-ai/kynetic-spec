@@ -99824,7 +99824,31 @@
   session_id: 01KKSZ2MF6917GR5DRAASMRXWH
   created_at: 2026-03-15T19:50:43.248Z
   started_at: 2026-03-16T00:00:18.487Z
-  notes: []
+  notes:
+    - _ulid: 01KKSZ96ZVAKGCWTQGTF2F48W1
+      created_at: 2026-03-16T00:03:40.155Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Predecessor tasks (#881, #883, #885) replaced the agent_text_chunk streaming
+        with typed session event streaming. This cleanup task removes backward-compat shims and dead
+        code.
+
+        - Scope: (1) Update @ui-session-stream ac-2 spec text, (2) Remove AgentTextChunkEventData
+        type, (3) Remove agent_text_chunk from ws-invalidation.ts/session-utils.ts, (4) Remove
+        accumulateStreamingText (dead code — unused by any production code), (5) Update tests to
+        remove backward-compat assertions, (6) Update skill docs referencing agent_text_chunk
+
+        - Files: packages/shared/src/websocket.ts, packages/web-ui/src/lib/query/ws-invalidation.ts,
+        packages/web-ui/src/lib/components/session/session-utils.ts,
+        tests/web-ui-session-stream.test.ts, tests/web-ui-tanstack-query.test.ts,
+        tests/cli-agent-commands.test.ts, .claude/skills/ui-data-layer/SKILL.md,
+        templates/skills/ui-data-layer/SKILL.md
+
+        - Verification: npm test (full suite), grep for agent_text_chunk confirming zero production
+        references
+      supersedes: null
   todos: []
   automation: eligible
 - _ulid: 01KKSRDQY1HZBENKBD06V6KDGW
@@ -99836,6 +99860,12 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #888. Implemented session summary stats persistence on close
+    (ac-persist-on-close) and live event counters for active sessions (ac-live-counter). Schema
+    extended with optional event_count/iteration_count/tasks_completed fields. closeSession()
+    computes stats from events.jsonl before writing. getSessionMetadataOnly() reads persisted values
+    instead of hardcoding 0. Live counters in SessionSummaryCache incremented via onEventAppended
+    callback through invocation/dispatch pipeline. 15 new tests, all 5482 tests passing."
   depends_on: []
   context: []
   priority: 3
@@ -99856,6 +99886,7 @@
   created_at: 2026-03-15T22:03:48.545Z
   started_at: 2026-03-15T23:31:05.357Z
   submitted_at: 2026-03-15T23:49:32.427Z
+  completed_at: 2026-03-16T00:02:07.940Z
   notes:
     - _ulid: 01KKSREVJXS84VH3494MWGZDXX
       created_at: 2026-03-15T22:04:25.053Z
@@ -100008,13 +100039,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-16T00:02:07.940Z
-  closed_reason: "Merged in PR #888. Implemented session summary stats persistence on close
-    (ac-persist-on-close) and live event counters for active sessions (ac-live-counter). Schema
-    extended with optional event_count/iteration_count/tasks_completed fields. closeSession()
-    computes stats from events.jsonl before writing. getSessionMetadataOnly() reads persisted values
-    instead of hardcoding 0. Live counters in SessionSummaryCache incremented via onEventAppended
-    callback through invocation/dispatch pipeline. 15 new tests, all 5482 tests passing."
 - _ulid: 01KKSW263S036SS7QFQ5RTN813
   slugs: []
   title: Implement cross-agent task dispatch exclusivity
