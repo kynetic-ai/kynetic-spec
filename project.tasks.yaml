@@ -101522,3 +101522,30 @@
   created_at: 2026-03-16T17:48:05.992Z
   notes: []
   todos: []
+- title: Ensure YAML round-trip stability
+  description: >-
+    Verify and enforce that reading a YAML file and re-writing it without logical changes produces
+    identical output. Without this, any kspec command that touches a file produces noisy diffs from
+    formatting changes, polluting shadow branch git history.
+
+
+    Covers ac-3 of @yaml-serialization-invariants. Separate from the field ordering work (ac-1,
+    ac-2, ac-4) because round-trip stability touches all YAML write paths and may require auditing
+    multiple serialization call sites.
+  type: task
+  spec_ref: "@yaml-serialization-invariants"
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - schema
+  depends_on: []
+  _ulid: 01KKVX1X4QVZDC1A8T19A5J5DE
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-16T18:03:12.406Z
+  notes: []
+  todos: []
