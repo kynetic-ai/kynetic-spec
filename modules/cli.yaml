@@ -1315,6 +1315,11 @@ features:
                 when: |
                   An explicit repair or backfill flow updates the task's submission
                   linkage
+              - given: a task is submitted from a branch without git upstream tracking configured
+                id: ac-5
+                then: the upstream_ref field is populated from the dispatch config base_branch as a fallback; git
+                  upstream tracking takes precedence when available
+                when: submission linkage is captured and dispatch config specifies a base_branch
             tags: []
             created: 2026-03-13T09:16:57.822Z
             notes: []
