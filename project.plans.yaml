@@ -20738,3 +20738,150 @@ plans:
           valid in filter validation, AC coverage gaps closed (hook-filter ac-5, automation-api
           ac-6, composition ac-1/ac-4), misattributed task coverage corrected, command action shadow
           pre-commit hook safety net noted"
+  - _ulid: 01KKTR7F6HX6EE2WZ8SMV84N37
+    slugs:
+      - plan-review-records-web-ui
+    title: Review Records Web UI
+    content: >
+      # Review Records Web UI
+
+
+      Add daemon API endpoints and SvelteKit pages for viewing and interacting with kspec review
+      records. This is the primary interface for humans to see agent review activity and participate
+      in reviews.
+
+
+      ## Specs
+
+
+      ```yaml
+
+      - title: Review Records Daemon API
+        slug: review-records-daemon-api
+        type: requirement
+        parent: "@daemon-server"
+        description: |
+          REST API endpoints on the daemon for CRUD operations on review records,
+          enabling the web UI to display and interact with reviews.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              The daemon is running
+            when: |
+              A client requests GET /api/reviews
+            then: |
+              It returns a paginated list of review records with filtering by status, disposition,
+              subject-type, reviewer, and linked task
+          - id: ac-2
+            given: |
+              The daemon is running
+            when: |
+              A client requests GET /api/reviews/:id
+            then: |
+              It returns the full review record including threads, checks, verdicts, and events
+          - id: ac-3
+            given: |
+              The daemon is running
+            when: |
+              A client sends mutation requests (POST comment, POST verdict, POST check,
+              PATCH resolve thread, PATCH lifecycle transition)
+            then: |
+              The mutation is applied via the review library functions and the response
+              reflects the updated state
+          - id: ac-4
+            given: |
+              A review record is created or mutated
+            when: |
+              WebSocket clients are connected
+            then: |
+              A real-time update event is broadcast so the UI can refresh without polling
+
+      - title: Review Records Web UI
+        slug: review-records-web-ui
+        type: requirement
+        parent: "@web-ui"
+        description: |
+          SvelteKit pages for viewing and interacting with review records in the browser.
+          The primary interface for humans to see agent review activity and participate in reviews.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A user navigates to the reviews section
+            when: |
+              Reviews exist in the system
+            then: |
+              A list view shows reviews with status, disposition, subject type, reviewer,
+              and linked task, with filtering and sorting
+          - id: ac-2
+            given: |
+              A user opens a review detail page
+            when: |
+              The review has threads, checks, and verdicts
+            then: |
+              All threads are displayed with their entries, resolution state, and anchors;
+              checks show pass/fail status; verdicts show reviewer decisions;
+              and the computed disposition is prominent
+          - id: ac-3
+            given: |
+              A user is viewing a review
+            when: |
+              They want to participate
+            then: |
+              They can add comments (new threads), reply to existing threads,
+              resolve/reopen threads, and submit verdicts through the UI
+          - id: ac-4
+            given: |
+              A task detail page is displayed
+            when: |
+              The task has linked reviews
+            then: |
+              The reviews are shown inline or linked from the task view with current disposition
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: true
+
+
+      ```yaml
+
+      - slug: task-review-daemon-api
+        title: Implement review records daemon API endpoints
+        spec_ref: "@review-records-daemon-api"
+        priority: 2
+        tags: [daemon, api, review]
+
+      - slug: task-review-web-ui
+        title: Build review records web UI pages
+        spec_ref: "@review-records-web-ui"
+        priority: 3
+        tags: [web-ui, review]
+        depends_on:
+          - "@task-review-daemon-api"
+      ```
+
+
+      ## Implementation Notes
+
+
+      Follow existing daemon API patterns (pagination, WebSocket events). Review operations should
+      use the existing review library functions (parser/reviews.ts, parser/review-operations.ts,
+      etc.) — the daemon is a thin HTTP layer over them. Include WebSocket event types for review
+      mutations matching existing event patterns.
+
+
+      For the web UI, follow existing SvelteKit patterns and TanStack Query data layer. Review list
+      page with filters. Review detail page with thread view, check status, verdict history,
+      disposition badge. Thread interaction (reply, resolve). Link from task detail to associated
+      reviews. Use goto() for URL state per project conventions.
+    status: draft
+    derived_tasks: []
+    derived_specs: []
+    source_path: /home/chapel/Projects/kynetic-spec/plans/review-records-web-ui.md
+    module_ref: null
+    created_at: 2026-03-16T07:19:37.425Z
+    approved_at: null
+    completed_at: null
+    notes: []
