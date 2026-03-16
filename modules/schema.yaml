@@ -1514,4 +1514,8 @@ requirements:
         given: any record containing a _ulid field is serialized to YAML
         when: the output is written
         then: _ulid is the first key in that record, regardless of nesting depth
+      - id: ac-2
+        given: any record is serialized to YAML
+        when: the output is written
+        then: keys follow a canonical, stable order that is consistent across all serialization paths
 acceptance_criteria: []
