@@ -829,6 +829,15 @@ reviews:
               commits internally). The web UI spec has no traits, consistent with the @web-ui parent
               module having none."
             created_at: 2026-03-16T07:38:35.067Z
+      - _ulid: 01KKTSADNF6TETZBY7A217021X
+        kind: nit
+        entries:
+          - _ulid: 01KKTSADNF2CQZZAS06JQR5BPS
+            author: "@claude"
+            body: "**Question 6 (task-to-review navigation) — RESOLVED.** Web UI ac-7 added: when a user views a
+              task detail page with linked reviews, reviews are shown with disposition badge and
+              link to review detail. This covers the use case."
+            created_at: 2026-03-16T07:38:42.735Z
     checks: []
     verdicts: []
     events:
@@ -880,7 +889,14 @@ reviews:
         payload:
           thread_ulid: 01KKTSA65T072TW885F02YHJGV
           kind: nit
+      - _ulid: 01KKTSADNQSKWWM6CG0ECQPSV6
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:38:42.743Z
+        payload:
+          thread_ulid: 01KKTSADNF6TETZBY7A217021X
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:37:13.126Z
-    updated_at: 2026-03-16T07:38:35.067Z
+    updated_at: 2026-03-16T07:38:42.735Z
