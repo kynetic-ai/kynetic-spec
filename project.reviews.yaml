@@ -1442,6 +1442,18 @@ reviews:
               and staleness — all fields available from the check record schema. Testable via E2E.
               No issues."
             created_at: 2026-03-16T07:59:31.884Z
+      - _ulid: 01KKTTGXHWEF1S4J3XF68WQV4W
+        kind: blocker
+        entries:
+          - _ulid: 01KKTTGXHWF3MCAZMK8Q2XR9DH
+            author: "@claude"
+            body: "**AC-12 (verdict body rendering): Testable but assumption gap.** The AC says 'a verdict has a
+              body or notes' but the review verdict schema (from kspec review verdict CLI) only
+              accepts --decision, --reviewer, and --version fields — there is no --body or --notes
+              parameter. If verdict bodies are not yet part of the schema, this AC is specifying UI
+              rendering for data that cannot be produced. Either the verdict schema needs extending
+              (separate spec work) or this AC should be deferred until verdict bodies exist."
+            created_at: 2026-03-16T07:59:44.188Z
     checks: []
     verdicts: []
     events:
@@ -1486,7 +1498,14 @@ reviews:
         payload:
           thread_ulid: 01KKTTGHHBSR8EPC61RGZ1RQG9
           kind: nit
+      - _ulid: 01KKTTGXJJEFE0TZ955M6AAAXY
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:59:44.219Z
+        payload:
+          thread_ulid: 01KKTTGXHWEF1S4J3XF68WQV4W
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T07:57:51.698Z
-    updated_at: 2026-03-16T07:59:31.884Z
+    updated_at: 2026-03-16T07:59:44.188Z
