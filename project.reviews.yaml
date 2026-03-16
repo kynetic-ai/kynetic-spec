@@ -1786,6 +1786,41 @@ reviews:
 
               This affects: review-content-diff-api ac-1, ac-2, ac-3 and task-diff-api.
             created_at: 2026-03-16T08:21:06.613Z
+      - _ulid: 01KKTVRE9NBER2D85VPVMRD3VE
+        kind: blocker
+        entries:
+          - _ulid: 01KKTVRE9P68AYHD4W7STS971J
+            author: "@claude"
+            body: >-
+              **BLOCKER: Revision selector query assumes `subject-ref` filter but code reviews have
+              no `ref`**
+
+
+              The revision selector (ac-11) and task-review-detail-page both say to query `GET
+              /api/reviews?subject-ref=X` to find sibling reviews. However, the review schema uses a
+              discriminated union for the subject:
+
+
+              - **plan/task/spec reviews** have `subject.ref` (e.g., `@plan-review-records-web-ui`)
+
+              - **code reviews** have NO `ref` — they have `base_commit`, `head_commit`,
+              `base_branch`, `head_branch`
+
+
+              The plan says to match code reviews by "same base-branch/head-branch" but the API spec
+              (review-records-daemon-api ac-1) only lists `subject-ref` as a filter, not
+              `base-branch`/`head-branch`.
+
+
+              **Fix needed:**
+
+              1. Add `base-branch` and `head-branch` as query filters to review-records-daemon-api
+              ac-1
+
+              2. Specify in ac-11 exactly which fields to match for each subject type
+
+              3. Consider: should `subject-ref` filter also search `related_refs`?
+            created_at: 2026-03-16T08:21:19.286Z
     checks: []
     verdicts: []
     events:
@@ -1809,7 +1844,14 @@ reviews:
         payload:
           thread_ulid: 01KKTVR1XNKPF715NGARH06V3G
           kind: blocker
+      - _ulid: 01KKTVREA64EFXNZX6J4S4S1TT
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T08:21:19.302Z
+        payload:
+          thread_ulid: 01KKTVRE9NBER2D85VPVMRD3VE
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T08:18:45.731Z
-    updated_at: 2026-03-16T08:21:06.613Z
+    updated_at: 2026-03-16T08:21:19.286Z
