@@ -118,6 +118,40 @@ describe("Integration: review CLI commands", () => {
       expect(output).toContain("Created review:");
     });
 
+    // AC: @review-fix-cycle-diff ac-1
+    it("should store examined_commit when --examined-commit is provided", () => {
+      const result = kspecJson<{
+        examined_commit: string | null;
+      }>(
+        "review add --title 'Commit Review' --subject-ref @task-slug --examined-commit abc123def456",
+        tempDir,
+      );
+      expect(result.examined_commit).toBe("abc123def456");
+    });
+
+    // AC: @review-fix-cycle-diff ac-1
+    it("should store examined_commit from KSPEC_DISPATCH_CANONICAL_HEAD env var", () => {
+      const result = kspecJson<{
+        examined_commit: string | null;
+      }>(
+        "review add --title 'Env Commit Review' --subject-ref @task-slug",
+        tempDir,
+        { env: { KSPEC_DISPATCH_CANONICAL_HEAD: "envcommit789" } },
+      );
+      expect(result.examined_commit).toBe("envcommit789");
+    });
+
+    // AC: @review-fix-cycle-diff ac-1
+    it("should leave examined_commit null when not provided", () => {
+      const result = kspecJson<{
+        examined_commit: string | null;
+      }>(
+        "review add --title 'No Commit Review' --subject-ref @task-slug",
+        tempDir,
+      );
+      expect(result.examined_commit).toBeNull();
+    });
+
     // AC: @trait-error-guidance ac-1, ac-2, ac-5
     it("should error with guidance when subject is missing", () => {
       const result = kspecRun(

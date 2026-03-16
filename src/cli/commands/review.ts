@@ -205,6 +205,7 @@ function buildReviewOutput(
     events: review.events,
     notes: review.notes,
     external_links: review.external_links,
+    examined_commit: review.examined_commit,
     created_at: review.created_at,
     updated_at: review.updated_at,
   };
@@ -234,6 +235,9 @@ function formatReviewDetails(
   console.log(`Gate:         ${gateState}`);
   console.log(`Subject:      ${formatSubject(review.subject)}`);
   console.log(`Author:       ${review.author}`);
+  if (review.examined_commit) {
+    console.log(`Examined:     ${review.examined_commit}`);
+  }
   console.log(`Created:      ${review.created_at} (${formatRelativeTime(review.created_at)})`);
   if (review.updated_at) {
     console.log(`Updated:      ${review.updated_at} (${formatRelativeTime(review.updated_at)})`);
@@ -456,11 +460,18 @@ export function registerReviewCommands(program: Command): void {
       .option("--provider <provider>", "External provider (for external subjects)")
       .option("--related-ref <ref...>", "Related references (e.g. task refs)")
       .option("--author <author>", "Review author (defaults to configured author)")
+      .option("--examined-commit <commit>", "Commit hash the reviewer is examining")
       .action(async (options) => {
         try {
           const ctx = await initContext();
           const author = options.author || getAuthor(ctx.config?.identity?.author) || "unknown";
           const subject = parseSubjectFromOptions(options);
+
+          // AC: @review-fix-cycle-diff ac-1 — capture examined commit
+          const examinedCommit: string | null =
+            (options.examinedCommit as string | undefined) ||
+            process.env.KSPEC_DISPATCH_CANONICAL_HEAD ||
+            null;
 
           const review = createReviewRecord({
             title: options.title,
@@ -468,6 +479,7 @@ export function registerReviewCommands(program: Command): void {
             subject,
             author,
             related_refs: options.relatedRef || [],
+            examined_commit: examinedCommit,
             events: [createEvent("lifecycle_change", author, { to: "draft" })],
           });
 

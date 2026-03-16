@@ -151,6 +151,7 @@ export function createReviewRecord(input: ReviewRecordInput): ReviewRecord {
     events: input.events ?? [],
     notes: input.notes ?? [],
     external_links: input.external_links ?? [],
+    examined_commit: input.examined_commit ?? null,
     created_at: input.created_at ?? now,
     updated_at: input.updated_at ?? null,
   };
