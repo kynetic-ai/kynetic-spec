@@ -1509,4 +1509,9 @@ requirements:
     traits: []
     notes: []
     created: 2026-03-16T18:02:45.034Z
+    acceptance_criteria:
+      - id: ac-1
+        given: any record containing a _ulid field is serialized to YAML
+        when: the output is written
+        then: _ulid is the first key in that record, regardless of nesting depth
 acceptance_criteria: []
