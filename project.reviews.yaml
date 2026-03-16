@@ -1479,6 +1479,38 @@ reviews:
               (ac-8, ac-12) could stay in the detail page task since the shared component is an
               implementation detail, not a separate deliverable.
             created_at: 2026-03-16T07:59:57.693Z
+      - _ulid: 01KKTTHR74ZWBTAT568053N07S
+        kind: question
+        entries:
+          - _ulid: 01KKTTHR7466Q2AM63QFY1T5C3
+            author: "@claude"
+            body: >-
+              **Remaining content rendering gaps:**
+
+
+              1. **Event timeline rendering** — The detail page task description mentions 'Event
+              timeline (collapsible)' but no AC covers it. Events are part of the review record
+              (visible in kspec review get output). If the timeline is in scope, add an AC. If it's
+              an implementation detail of ac-2, that's fine, but ac-2's then-clause doesn't mention
+              events explicitly despite the task description including them.
+
+
+              2. **Empty states** — No AC covers what happens when a review has zero threads, zero
+              checks, or zero verdicts. The list page task description mentions 'Empty state when no
+              reviews exist' but again no AC for it. Empty states are important for UX — a blank
+              section with no explanation is confusing. Consider adding at minimum an AC for the
+              empty review list state.
+
+
+              3. **Thread entry author/timestamp display** — ac-2 says 'All threads are displayed
+              with their entries' but doesn't specify that each entry shows author and timestamp.
+              The task description says 'entries with timestamps' but the AC should be the source of
+              truth.
+
+
+              None of these are blockers for this round, but they are gaps worth addressing before
+              import.
+            created_at: 2026-03-16T08:00:11.492Z
     checks: []
     verdicts: []
     events:
@@ -1537,7 +1569,14 @@ reviews:
         payload:
           thread_ulid: 01KKTTHAQW2Y96GPFN3JVQYSSH
           kind: question
+      - _ulid: 01KKTTHR8FJAF1D8AXNTTP1ZCR
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T08:00:11.535Z
+        payload:
+          thread_ulid: 01KKTTHR74ZWBTAT568053N07S
+          kind: question
     notes: []
     external_links: []
     created_at: 2026-03-16T07:57:51.698Z
-    updated_at: 2026-03-16T07:59:57.693Z
+    updated_at: 2026-03-16T08:00:11.492Z
