@@ -1892,6 +1892,29 @@ reviews:
               context and `base` for old-side, but the AC is ambiguous. Consider specifying a `side`
               or `commit` query param.
             created_at: 2026-03-16T08:21:52.640Z
+      - _ulid: 01KKTVSS64ZWH9MHZRF924902S
+        kind: question
+        entries:
+          - _ulid: 01KKTVSS64F6JQ0DA7RBH5E14X
+            author: "@claude"
+            body: >-
+              **QUESTION: Should review-records-web-ui use a /reviews/[id] dynamic route?**
+
+
+              The existing web UI routes use flat page patterns (e.g., `/tasks`, `/plans`,
+              `/sessions/[id]`). Only `sessions/[id]` uses a dynamic route param. The plan proposes
+              `/reviews/[id]` which follows the sessions pattern — this is consistent.
+
+
+              However, the current task detail and plan detail pages don't appear to use dynamic
+              routes — they seem to use URL query params or in-page expansion. Is the intent to
+              introduce a new dynamic route pattern for reviews, or should the detail view follow
+              the existing expansion/modal pattern used by tasks and plans?
+
+
+              This is non-blocking — either approach works — but worth confirming the UX intent
+              matches the existing app patterns.
+            created_at: 2026-03-16T08:22:03.204Z
     checks: []
     verdicts: []
     events:
@@ -1943,7 +1966,14 @@ reviews:
         payload:
           thread_ulid: 01KKTVSEVZA1VSY52ASDJWQXEX
           kind: question
+      - _ulid: 01KKTVSS6N8EH7A7RSPVF8A5N4
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T08:22:03.222Z
+        payload:
+          thread_ulid: 01KKTVSS64ZWH9MHZRF924902S
+          kind: question
     notes: []
     external_links: []
     created_at: 2026-03-16T08:18:45.731Z
-    updated_at: 2026-03-16T08:21:52.640Z
+    updated_at: 2026-03-16T08:22:03.204Z
