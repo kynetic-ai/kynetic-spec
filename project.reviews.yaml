@@ -2828,6 +2828,21 @@ reviews:
               spec uses "portable-task-submission-linkage". Minor naming inconsistency, no action
               needed since kspec handles slug-ref mapping.
             created_at: 2026-03-16T20:17:18.158Z
+      - _ulid: 01KKW4QHBS2Q5W1MQRYWDZXQXV
+        kind: nit
+        anchor:
+          type: structured
+          section: Tasks
+          ref: "@task-review-examined-commit"
+        entries:
+          - _ulid: 01KKW4QHBS5N2Y4KZRPWDRB8NJ
+            author: "@claude"
+            body: Task @task-review-examined-commit mentions "KSPEC_DISPATCH_CANONICAL_HEAD env var" as the
+              source for examined_commit. This env var doesn't appear to be documented in AGENTS.md
+              or existing specs. When implementing, ensure this env var is documented in the
+              dispatch agent conventions or the relevant spec. Not a plan blocker since the task
+              description is clear about what it does.
+            created_at: 2026-03-16T20:17:21.273Z
     checks: []
     verdicts: []
     events:
@@ -2865,7 +2880,14 @@ reviews:
         payload:
           thread_ulid: 01KKW4QEAEEMD6RJEA9GPZ3JJ3
           kind: nit
+      - _ulid: 01KKW4QHCJ53862G97KKQQN144
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T20:17:21.298Z
+        payload:
+          thread_ulid: 01KKW4QHBS2Q5W1MQRYWDZXQXV
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T20:16:07.556Z
-    updated_at: 2026-03-16T20:17:18.158Z
+    updated_at: 2026-03-16T20:17:21.273Z
