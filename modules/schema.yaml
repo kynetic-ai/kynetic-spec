@@ -1526,4 +1526,7 @@ requirements:
         given: records are serialized with canonical field ordering
         when: tools query YAML file history for record boundaries
         then: the _ulid-first invariant provides a reliable and stable delimiter between records
+    status:
+      maturity: draft
+      implementation: in_progress
 acceptance_criteria: []
