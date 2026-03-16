@@ -4078,3 +4078,30 @@ reviews:
     created_at: 2026-03-16T23:05:48.607Z
     updated_at: 2026-03-16T23:07:47.035Z
     notes: []
+  - _ulid: 01KKWGZX4Q4H2XZ00A4HY73RS5
+    slugs: []
+    title: "Review: activity timeline in task get"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKWGZX4PG93C22AWN3NJMHDQ
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T23:51:38.391Z
+    examined_commit: 38bc6aae2c263297dbf412cc5365d0fec558cbd6
+    external_links: []
+    lifecycle_state: draft
+    related_refs:
+      - "@task-implement-activity-display"
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-implement-activity-display"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-16T23:51:38.391Z
+    updated_at: null
+    notes: []
