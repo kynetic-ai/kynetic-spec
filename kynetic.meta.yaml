@@ -311,6 +311,7 @@ agents:
     skills:
       - task-work
       - work-gates
+      - review
     budget:
       timeout_minutes: 60
     concurrency:
