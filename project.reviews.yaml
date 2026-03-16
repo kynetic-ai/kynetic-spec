@@ -2547,6 +2547,34 @@ reviews:
               summaries. Including ac-5 increases the plan's scope without adding to the MVP
               experience. Consider splitting it out.
             created_at: 2026-03-16T19:16:52.112Z
+      - _ulid: 01KKW197SJKXM2XPWYZKQ5W43P
+        kind: question
+        entries:
+          - _ulid: 01KKW197SJNA4AJ74149HQ8S07
+            author: "@claude"
+            body: >-
+              **Relationship to @session-start-activity-timeline — potential overlap**
+
+
+              The existing @session-start-activity-timeline spec (implemented) already merges
+              completed tasks and git commits into a chronological timeline for session start. The
+              new @task-activity-timeline proposes a per-task timeline from shadow branch commits.
+
+
+              These are conceptually different (session-level recent activity vs. single-task
+              history), but the plan should acknowledge the existing timeline infrastructure.
+              Specifically:
+
+
+              1. Can getTaskActivity() reuse any of the session-start timeline merging logic?
+
+              2. Should the plan reference @session-start-activity-timeline to signal awareness of
+              the prior art?
+
+              3. The session timeline uses Task: @slug trailers in main-branch commits. The new
+              timeline uses shadow-branch commit messages. These are complementary but the plan
+              doesn't mention the distinction.
+            created_at: 2026-03-16T19:17:06.994Z
     checks: []
     verdicts: []
     events:
@@ -2591,7 +2619,14 @@ reviews:
         payload:
           thread_ulid: 01KKW18S8F3XJGD95D92HX1G45
           kind: question
+      - _ulid: 01KKW197TBZPR6KCHCRZXCZYRW
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T19:17:07.019Z
+        payload:
+          thread_ulid: 01KKW197SJKXM2XPWYZKQ5W43P
+          kind: question
     notes: []
     external_links: []
     created_at: 2026-03-16T19:15:55.134Z
-    updated_at: 2026-03-16T19:16:52.112Z
+    updated_at: 2026-03-16T19:17:06.994Z
