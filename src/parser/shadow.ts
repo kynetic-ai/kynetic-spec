@@ -987,7 +987,11 @@ export function generateCommitMessage(
       parts.push(`Note on @${ref}`);
       break;
     case "task-add":
-      parts.push(`Add task: ${detail || ref}`);
+      if (ref && detail) {
+        parts.push(`Add task @${ref}: ${detail}`);
+      } else {
+        parts.push(`Add task: ${detail || ref}`);
+      }
       break;
     case "inbox-add":
       parts.push(
