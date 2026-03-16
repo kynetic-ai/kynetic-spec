@@ -101393,7 +101393,10 @@
   notes: []
   todos: []
   automation: eligible
-- title: Make dispatch publication mode configurable
+- _ulid: 01KKTZ0BF597PSYKT1H4VXPCPG
+  slugs: []
+  title: Make dispatch publication mode configurable
+  type: task
   description: >-
     The dispatch engine auto-detects publication mode based on whether gh CLI is installed and a
     GitHub remote exists (resolvePublicationMode in src/agent-runtime/workspace.ts:411-414). When it
@@ -101418,22 +101421,21 @@
 
 
     This is blocking dispatched agents from following the review-driven local merge flow.
-  type: task
   spec_ref: null
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - dispatch
     - config
-  depends_on: []
-  automation: eligible
-  _ulid: 01KKTZ0BF597PSYKT1H4VXPCPG
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-16T09:18:04.261Z
   notes: []
   todos: []
+  automation: eligible
+  started_at: 2026-03-16T15:29:10.982Z
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
