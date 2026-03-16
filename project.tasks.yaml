@@ -100705,6 +100705,7 @@
         cleaned). Now all three render targets (.agents/, .claude/, .factory/) are clean."
       supersedes: null
   todos: []
+  review_ref: "@01KKTMVTDW2EBX0YHND7N5RM37"
 - _ulid: 01KKTK96Z5M9T8WP900CPFWRNG
   slugs: []
   title: Remove skill table from kspec-agents.md and port descriptions to skill frontmatter
