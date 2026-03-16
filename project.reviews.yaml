@@ -2575,6 +2575,28 @@ reviews:
               timeline uses shadow-branch commit messages. These are complementary but the plan
               doesn't mention the distinction.
             created_at: 2026-03-16T19:17:06.994Z
+      - _ulid: 01KKW19D6T7CZJP3ERNTJXK5PH
+        kind: nit
+        entries:
+          - _ulid: 01KKW19D6T8D9VPPNG0BSXSAMP
+            author: "@claude"
+            body: >-
+              **@task-activity-git-query ac-2 may be harder than described**
+
+
+              AC-2 says: "only commits referencing that task's ref are included; commits for other
+              tasks in the same file are excluded." Since all tasks live in project.tasks.yaml and
+              git log --grep filters by commit message (not file content diff), this relies entirely
+              on the ref being in the commit message. That's fine after the
+              shadow-commit-consistency fix, but the AC implies per-file filtering which isn't
+              actually needed — the git log --grep="@task-ref" already scopes to the right commits
+              regardless of file.
+
+
+              The AC wording should clarify it's about commit message filtering, not file-level
+              filtering. Current wording could be read as requiring git log to analyze per-file
+              diffs.
+            created_at: 2026-03-16T19:17:12.538Z
     checks: []
     verdicts: []
     events:
@@ -2626,7 +2648,14 @@ reviews:
         payload:
           thread_ulid: 01KKW197SJKXM2XPWYZKQ5W43P
           kind: question
+      - _ulid: 01KKW19D7MJWBGF50TTVFKECF6
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T19:17:12.564Z
+        payload:
+          thread_ulid: 01KKW19D6T7CZJP3ERNTJXK5PH
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T19:15:55.134Z
-    updated_at: 2026-03-16T19:17:06.994Z
+    updated_at: 2026-03-16T19:17:12.538Z
