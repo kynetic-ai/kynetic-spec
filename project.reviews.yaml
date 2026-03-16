@@ -1395,6 +1395,29 @@ reviews:
               lists, links) and explicitly requires syntax highlighting in code blocks. This is
               verifiable in E2E tests by checking rendered DOM elements. No issues."
             created_at: 2026-03-16T07:58:57.177Z
+      - _ulid: 01KKTTFWDN9JQWEC19ZW5NP095
+        kind: blocker
+        entries:
+          - _ulid: 01KKTTFWDN2ZKXHT34A7EK06SH
+            author: "@claude"
+            body: >-
+              **AC-9 (code anchor display): Missing fallback behavior.** The AC says 'a code context
+              snippet from the referenced lines is displayed alongside the comment' but doesn't
+              address what happens when the code context is unavailable (commit not present locally,
+              file deleted in HEAD, referenced lines out of range). The daemon API returns anchor
+              metadata but may not have the actual file content to serve a snippet. Two sub-issues:
+
+
+              1. **Where does the snippet come from?** The daemon API spec (ac-2) returns the full
+              review record which includes the code anchor fields (path, line-start, line-end, side,
+              commit), but there is no API endpoint or AC for actually resolving those fields into
+              source code content. The web UI AC assumes a snippet exists but nothing produces it.
+
+
+              2. **Graceful degradation:** When snippet resolution fails, the AC should specify the
+              fallback — e.g., show the file path and line range without the snippet, with a note
+              that the source is unavailable.
+            created_at: 2026-03-16T07:59:10.261Z
     checks: []
     verdicts: []
     events:
@@ -1418,7 +1441,14 @@ reviews:
         payload:
           thread_ulid: 01KKTTFFMS6T3TEXJQMK11153Y
           kind: nit
+      - _ulid: 01KKTTFWEBFGNZ8R9FFFK9AGEG
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:59:10.283Z
+        payload:
+          thread_ulid: 01KKTTFWDN9JQWEC19ZW5NP095
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T07:57:51.698Z
-    updated_at: 2026-03-16T07:58:57.177Z
+    updated_at: 2026-03-16T07:59:10.261Z
