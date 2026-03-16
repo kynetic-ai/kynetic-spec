@@ -297,11 +297,21 @@ describe('kspec setup (enhanced)', () => {
       expect(result.stderr).toContain('Supported values');
     });
 
-    // AC: @enhanced-setup ac-2 - all hook entries present
+    // AC: @enhanced-setup ac-2 - all hook entries present when enabled
     // AC: @full-hook-install ac-1 - UserPromptSubmit hook entry is written
-    // AC: @full-hook-install ac-2 - Stop hook entry is present
+    // AC: @full-hook-install ac-2 - Stop hook entry is present when enabled
     // AC: @full-hook-install ac-3 - PreToolUse Bash hook entries are present
-    it('should install all required hooks', async () => {
+    it('should install all required hooks when enabled via config', async () => {
+      // Enable both hooks explicitly (checkpoint defaults to disabled)
+      await fs.writeFile(
+        path.join(tempDir, 'kspec.config.yaml'),
+        `
+hooks:
+  checkpoint: true
+  prompt_check: true
+`
+      );
+
       kspec('setup', tempDir, {
         env: { CLAUDECODE: '1' },
       });
@@ -597,6 +607,15 @@ describe('kspec setup (enhanced)', () => {
     });
 
     it('detects native guard hooks in setup status for claude-code', async () => {
+      // Enable checkpoint via config so Stop hook is installed
+      await fs.writeFile(
+        path.join(tempDir, 'kspec.config.yaml'),
+        `
+hooks:
+  checkpoint: true
+`
+      );
+
       const setupResult = kspec('setup --agent claude-code', tempDir, {
         env: { CLAUDECODE: '1', HOME: tempDir, KSPEC_AUTHOR: '@test' },
       });
@@ -637,6 +656,272 @@ describe('kspec setup (enhanced)', () => {
       expect(result.stdout).toContain('Install hooks');
       expect(result.stdout).toContain('skipped');
       expect(result.stdout).toContain('droid hooks are not yet supported');
+    });
+  });
+
+  // AC: @project-config ac-hooks-section — hooks config controls setup behavior
+  // AC: @project-config ac-hooks-missing-keys — absent keys resolve to defaults
+  // AC: @project-config ac-hooks-no-config — no hooks section = defaults
+  describe('hooks configuration', () => {
+    beforeEach(async () => {
+      kspec('init --name test-project --no-prompt', tempDir);
+    });
+
+    // AC: @project-config ac-hooks-no-config
+    // With no hooks config, prompt-check should be installed (default: true)
+    // and checkpoint should NOT be installed (default: false)
+    it('should install prompt-check but not checkpoint by default', async () => {
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      const settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+
+      // UserPromptSubmit should be present (prompt-check default: enabled)
+      expect(settings.hooks.UserPromptSubmit).toBeDefined();
+      const hasPromptCheck = settings.hooks.UserPromptSubmit.some(
+        (entry: { hooks?: Array<{ command?: string }> }) =>
+          entry.hooks?.some((h) => h.command?.includes('session prompt-check')),
+      );
+      expect(hasPromptCheck).toBe(true);
+
+      // Stop hook should NOT be present (checkpoint default: disabled)
+      const hasCheckpoint = settings.hooks.Stop?.some(
+        (entry: { hooks?: Array<{ command?: string }> }) =>
+          entry.hooks?.some((h) => h.command?.includes('session checkpoint')),
+      );
+      expect(hasCheckpoint).toBeFalsy();
+    });
+
+    // AC: @project-config ac-hooks-section
+    it('should install checkpoint when config enables it', async () => {
+      await fs.writeFile(
+        path.join(tempDir, 'kspec.config.yaml'),
+        `
+hooks:
+  checkpoint: true
+  prompt_check: true
+`
+      );
+
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      const settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+
+      // Both should be installed
+      expect(settings.hooks.UserPromptSubmit).toBeDefined();
+      expect(settings.hooks.Stop).toBeDefined();
+
+      const hasCheckpoint = settings.hooks.Stop.some(
+        (entry: { hooks?: Array<{ command?: string }> }) =>
+          entry.hooks?.some((h) => h.command?.includes('session checkpoint')),
+      );
+      expect(hasCheckpoint).toBe(true);
+    });
+
+    // AC: @project-config ac-hooks-section
+    it('should not install prompt-check when config disables it', async () => {
+      await fs.writeFile(
+        path.join(tempDir, 'kspec.config.yaml'),
+        `
+hooks:
+  checkpoint: false
+  prompt_check: false
+`
+      );
+
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      const settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+
+      // Neither kspec hook should be present
+      const hasPromptCheck = settings.hooks?.UserPromptSubmit?.some(
+        (entry: { hooks?: Array<{ command?: string }> }) =>
+          entry.hooks?.some((h) => h.command?.includes('session prompt-check')),
+      );
+      expect(hasPromptCheck).toBeFalsy();
+
+      const hasCheckpoint = settings.hooks?.Stop?.some(
+        (entry: { hooks?: Array<{ command?: string }> }) =>
+          entry.hooks?.some((h) => h.command?.includes('session checkpoint')),
+      );
+      expect(hasCheckpoint).toBeFalsy();
+    });
+
+    // AC: @project-config ac-hooks-section — removal of previously installed hooks
+    it('should remove checkpoint hook when config disables it after previous install', async () => {
+      // First: install with checkpoint enabled
+      await fs.writeFile(
+        path.join(tempDir, 'kspec.config.yaml'),
+        `
+hooks:
+  checkpoint: true
+`
+      );
+
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      let settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+
+      // Verify checkpoint was installed
+      let hasCheckpoint = settings.hooks.Stop?.some(
+        (entry: { hooks?: Array<{ command?: string }> }) =>
+          entry.hooks?.some((h) => h.command?.includes('session checkpoint')),
+      );
+      expect(hasCheckpoint).toBe(true);
+
+      // Second: disable checkpoint
+      await fs.writeFile(
+        path.join(tempDir, 'kspec.config.yaml'),
+        `
+hooks:
+  checkpoint: false
+`
+      );
+
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+
+      // Verify checkpoint was removed
+      hasCheckpoint = settings.hooks?.Stop?.some(
+        (entry: { hooks?: Array<{ command?: string }> }) =>
+          entry.hooks?.some((h) => h.command?.includes('session checkpoint')),
+      );
+      expect(hasCheckpoint).toBeFalsy();
+    });
+
+    // AC: @project-config ac-hooks-section — removal of previously installed prompt-check
+    it('should remove prompt-check hook when config disables it after previous install', async () => {
+      // First: install with defaults (prompt-check enabled)
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      let settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+
+      // Verify prompt-check was installed
+      let hasPromptCheck = settings.hooks.UserPromptSubmit?.some(
+        (entry: { hooks?: Array<{ command?: string }> }) =>
+          entry.hooks?.some((h) => h.command?.includes('session prompt-check')),
+      );
+      expect(hasPromptCheck).toBe(true);
+
+      // Second: disable prompt-check
+      await fs.writeFile(
+        path.join(tempDir, 'kspec.config.yaml'),
+        `
+hooks:
+  prompt_check: false
+`
+      );
+
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+
+      // Verify prompt-check was removed
+      hasPromptCheck = settings.hooks?.UserPromptSubmit?.some(
+        (entry: { hooks?: Array<{ command?: string }> }) =>
+          entry.hooks?.some((h) => h.command?.includes('session prompt-check')),
+      );
+      expect(hasPromptCheck).toBeFalsy();
+    });
+
+    // AC: @project-config ac-hooks-missing-keys
+    it('should resolve absent keys to defaults (checkpoint=false, prompt_check=true)', async () => {
+      await fs.writeFile(
+        path.join(tempDir, 'kspec.config.yaml'),
+        `
+hooks: {}
+`
+      );
+
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      const settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+
+      // prompt-check should be installed (default: true)
+      const hasPromptCheck = settings.hooks.UserPromptSubmit?.some(
+        (entry: { hooks?: Array<{ command?: string }> }) =>
+          entry.hooks?.some((h) => h.command?.includes('session prompt-check')),
+      );
+      expect(hasPromptCheck).toBe(true);
+
+      // checkpoint should NOT be installed (default: false)
+      const hasCheckpoint = settings.hooks?.Stop?.some(
+        (entry: { hooks?: Array<{ command?: string }> }) =>
+          entry.hooks?.some((h) => h.command?.includes('session checkpoint')),
+      );
+      expect(hasCheckpoint).toBeFalsy();
+    });
+
+    // Idempotency with hooks config
+    it('should be idempotent with hooks config', async () => {
+      await fs.writeFile(
+        path.join(tempDir, 'kspec.config.yaml'),
+        `
+hooks:
+  checkpoint: true
+  prompt_check: true
+`
+      );
+
+      // First run
+      kspec('setup', tempDir, { env: { CLAUDECODE: '1' } });
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      const content1 = await fs.readFile(settingsPath, 'utf-8');
+
+      // Second run
+      kspec('setup', tempDir, { env: { CLAUDECODE: '1' } });
+      const content2 = await fs.readFile(settingsPath, 'utf-8');
+
+      expect(content2).toBe(content1);
+    });
+
+    // PreToolUse (worktree guard) should always be installed regardless of hooks config
+    it('should always install PreToolUse guard regardless of hooks config', async () => {
+      await fs.writeFile(
+        path.join(tempDir, 'kspec.config.yaml'),
+        `
+hooks:
+  checkpoint: false
+  prompt_check: false
+`
+      );
+
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      const settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+
+      // PreToolUse should still be present
+      expect(settings.hooks.PreToolUse).toBeDefined();
+      const hasGuard = settings.hooks.PreToolUse.some(
+        (entry: { hooks?: Array<{ command?: string }> }) =>
+          entry.hooks?.some((h) => h.command === 'kspec guard worktree'),
+      );
+      expect(hasGuard).toBe(true);
     });
   });
 

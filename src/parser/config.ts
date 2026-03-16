@@ -141,6 +141,24 @@ const DispatchConfigSchema = z
   .optional();
 
 /**
+ * Schema for hooks configuration.
+ *
+ * Controls which agent hooks kspec setup installs/removes.
+ * AC: @project-config ac-hooks-section — each hook independently enabled/disabled
+ * AC: @project-config ac-hooks-missing-keys — absent keys resolve to defaults
+ * AC: @project-config ac-hooks-validation — invalid values produce validation error
+ */
+const HooksConfigSchema = z
+  .object({
+    /** Whether to install the checkpoint (Stop) hook. Default: false */
+    checkpoint: z.boolean().optional(),
+    /** Whether to install the prompt-check (UserPromptSubmit) hook. Default: true */
+    prompt_check: z.boolean().optional(),
+  })
+  .strict()
+  .optional();
+
+/**
  * Schema for ralph skill name overrides.
  *
  * Ralph prompts reference skills by invocation name. These default to
@@ -189,6 +207,8 @@ export const KspecConfigSchema = z
     dispatch: DispatchConfigSchema,
     /** Ralph automation configuration */
     ralph: RalphConfigSchema,
+    /** Hooks installation configuration */
+    hooks: HooksConfigSchema,
   })
   .passthrough(); // AC: ac-4 — ignore unknown fields
 
@@ -315,6 +335,20 @@ export interface ResolvedKspecConfig {
       pr_review: string;
     };
   };
+  hooks: {
+    /**
+     * Whether to install the checkpoint (Stop) hook.
+     * Default: false — most dispatch-managed sessions don't need it.
+     * AC: @project-config ac-hooks-section
+     */
+    checkpoint: boolean;
+    /**
+     * Whether to install the prompt-check (UserPromptSubmit) hook.
+     * Default: true — lightweight spec-first reminder.
+     * AC: @project-config ac-hooks-section
+     */
+    prompt_check: boolean;
+  };
 }
 
 // ── Defaults ────────────────────────────────────────────────────────────
@@ -359,6 +393,11 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
       reflect: "/kspec:reflect",
       pr_review: "/kspec:review",
     },
+  },
+  hooks: {
+    // AC: @project-config ac-hooks-no-config — defaults when no config
+    checkpoint: false,   // Disabled by default — dispatch handles task lifecycle
+    prompt_check: true,  // Enabled by default — lightweight spec-first reminder
   },
 };
 
@@ -571,6 +610,11 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
         pr_review: file.ralph?.skills?.pr_review ?? DEFAULT_CONFIG.ralph.skills.pr_review,
       },
     },
+    hooks: {
+      // AC: @project-config ac-hooks-missing-keys — absent keys resolve to defaults
+      checkpoint: file.hooks?.checkpoint ?? DEFAULT_CONFIG.hooks.checkpoint,
+      prompt_check: file.hooks?.prompt_check ?? DEFAULT_CONFIG.hooks.prompt_check,
+    },
   };
 }
 
@@ -607,5 +651,6 @@ export function getDefaultConfig(): ResolvedKspecConfig {
     ralph: {
       skills: { ...DEFAULT_CONFIG.ralph.skills },
     },
+    hooks: { ...DEFAULT_CONFIG.hooks },
   };
 }

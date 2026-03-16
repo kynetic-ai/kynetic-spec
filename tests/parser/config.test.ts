@@ -715,4 +715,245 @@ dispatch:
       expect(result.config.dispatch.worktree_root).toBe(".kspec-worktrees");
     });
   });
+
+  // AC: @project-config ac-hooks-section — hooks section in config
+  // AC: @project-config ac-hooks-missing-keys — absent keys resolve to defaults
+  // AC: @project-config ac-hooks-no-config — no hooks section = defaults
+  // AC: @project-config ac-hooks-validation — invalid values produce validation error
+  describe("hooks config", () => {
+    // AC: @project-config ac-hooks-section
+    it("loads hooks section with both fields set", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+hooks:
+  checkpoint: true
+  prompt_check: false
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toBeNull();
+      expect(result.config.hooks.checkpoint).toBe(true);
+      expect(result.config.hooks.prompt_check).toBe(false);
+    });
+
+    // AC: @project-config ac-hooks-section
+    it("loads hooks with checkpoint disabled and prompt_check enabled", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+hooks:
+  checkpoint: false
+  prompt_check: true
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.hooks.checkpoint).toBe(false);
+      expect(result.config.hooks.prompt_check).toBe(true);
+    });
+
+    // AC: @project-config ac-hooks-missing-keys
+    it("resolves absent checkpoint key to default (false)", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+hooks:
+  prompt_check: false
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.hooks.checkpoint).toBe(false); // default
+      expect(result.config.hooks.prompt_check).toBe(false); // explicit
+    });
+
+    // AC: @project-config ac-hooks-missing-keys
+    it("resolves absent prompt_check key to default (true)", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+hooks:
+  checkpoint: true
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.hooks.checkpoint).toBe(true); // explicit
+      expect(result.config.hooks.prompt_check).toBe(true); // default
+    });
+
+    // AC: @project-config ac-hooks-no-config
+    it("resolves all hooks to defaults when hooks section is absent", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+daemon:
+  port: 5000
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.hooks.checkpoint).toBe(false);
+      expect(result.config.hooks.prompt_check).toBe(true);
+    });
+
+    // AC: @project-config ac-hooks-no-config
+    it("resolves all hooks to defaults when config file is absent", async () => {
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.hooks.checkpoint).toBe(false);
+      expect(result.config.hooks.prompt_check).toBe(true);
+    });
+
+    // AC: @project-config ac-hooks-validation
+    it("reports validation error for non-boolean checkpoint value", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+hooks:
+  checkpoint: "yes"
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toContain("Config validation failed");
+      // Falls back to defaults
+      expect(result.config.hooks.checkpoint).toBe(false);
+      expect(result.config.hooks.prompt_check).toBe(true);
+    });
+
+    // AC: @project-config ac-hooks-validation
+    it("reports validation error for non-boolean prompt_check value", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+hooks:
+  prompt_check: 42
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toContain("Config validation failed");
+    });
+
+    // AC: @project-config ac-hooks-validation
+    it("rejects unknown fields in hooks section (strict)", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+hooks:
+  checkpoint: true
+  unknown_hook: true
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toContain("Config validation failed");
+    });
+  });
+
+  describe("getDefaultConfig hooks", () => {
+    // AC: @project-config ac-hooks-no-config
+    it("includes correct hook defaults", () => {
+      const defaults = getDefaultConfig();
+
+      expect(defaults.hooks.checkpoint).toBe(false);
+      expect(defaults.hooks.prompt_check).toBe(true);
+    });
+
+    it("returns independent hooks objects", () => {
+      const defaults1 = getDefaultConfig();
+      const defaults2 = getDefaultConfig();
+
+      defaults1.hooks.checkpoint = true;
+
+      expect(defaults2.hooks.checkpoint).toBe(false); // Not affected
+    });
+  });
+
+  describe("resolveConfig hooks", () => {
+    // AC: @project-config ac-hooks-missing-keys
+    it("applies defaults for missing hooks keys", () => {
+      const config = resolveConfig({ hooks: {} });
+
+      expect(config.hooks.checkpoint).toBe(false);
+      expect(config.hooks.prompt_check).toBe(true);
+    });
+
+    // AC: @project-config ac-hooks-section
+    it("uses explicit values from config", () => {
+      const config = resolveConfig({
+        hooks: { checkpoint: true, prompt_check: false },
+      });
+
+      expect(config.hooks.checkpoint).toBe(true);
+      expect(config.hooks.prompt_check).toBe(false);
+    });
+
+    // AC: @project-config ac-hooks-no-config
+    it("uses defaults when hooks is undefined", () => {
+      const config = resolveConfig({});
+
+      expect(config.hooks.checkpoint).toBe(false);
+      expect(config.hooks.prompt_check).toBe(true);
+    });
+  });
+
+  describe("KspecConfigSchema hooks validation", () => {
+    // AC: @project-config ac-hooks-section
+    it("validates correct hooks config", () => {
+      const result = KspecConfigSchema.safeParse({
+        hooks: { checkpoint: true, prompt_check: false },
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it("allows empty hooks section", () => {
+      const result = KspecConfigSchema.safeParse({
+        hooks: {},
+      });
+      expect(result.success).toBe(true);
+    });
+
+    it("allows partial hooks section", () => {
+      const result = KspecConfigSchema.safeParse({
+        hooks: { checkpoint: true },
+      });
+      expect(result.success).toBe(true);
+    });
+
+    // AC: @project-config ac-hooks-validation
+    it("rejects non-boolean checkpoint", () => {
+      const result = KspecConfigSchema.safeParse({
+        hooks: { checkpoint: "yes" },
+      });
+      expect(result.success).toBe(false);
+    });
+
+    // AC: @project-config ac-hooks-validation
+    it("rejects non-boolean prompt_check", () => {
+      const result = KspecConfigSchema.safeParse({
+        hooks: { prompt_check: 1 },
+      });
+      expect(result.success).toBe(false);
+    });
+
+    // AC: @project-config ac-hooks-validation
+    it("rejects unknown fields in hooks (strict mode)", () => {
+      const result = KspecConfigSchema.safeParse({
+        hooks: { checkpoint: true, unknown_hook: true },
+      });
+      expect(result.success).toBe(false);
+    });
+  });
 });
