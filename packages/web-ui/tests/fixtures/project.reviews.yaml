@@ -1,0 +1,165 @@
+kynetic_reviews: "1.0"
+reviews:
+  - _ulid: 01KG0RRJCC9N4YGP991WD7XSRV
+    slugs:
+      - test-review-open-code
+    title: "Review: feat/test-task-in-progress"
+    lifecycle_state: open
+    subject:
+      type: code
+      base_commit: abc123
+      head_commit: def456
+      base_branch: main
+      head_branch: feat/test-task-in-progress
+    author: alice
+    related_refs:
+      - "@test-task-in-progress"
+      - "@test-task-pending-review"
+    threads:
+      - _ulid: 01KG0RRKCC9N4YGP991WD7XSTD
+        kind: blocker
+        anchor:
+          type: code
+          path: src/main.ts
+          side: head
+          line_start: 10
+          line_end: 15
+          commit: def456
+        entries:
+          - _ulid: 01KG0RRMCC9N4YGP991WD7XSVF
+            author: bob
+            body: "This function needs error handling"
+            created_at: "2026-01-01T04:00:00Z"
+      - _ulid: 01KG0RRNCC9N4YGP991WD7XSWG
+        kind: nit
+        entries:
+          - _ulid: 01KG0RRPCC9N4YGP991WD7XSXH
+            author: bob
+            body: "Consider renaming this variable"
+            created_at: "2026-01-01T04:30:00Z"
+        resolved_at: "2026-01-01T05:00:00Z"
+        resolved_by: alice
+    checks:
+      - name: tests
+        status: pass
+        required: true
+        runner: ci
+        applies_to_version:
+          type: code_compare
+          base_commit: abc123
+          head_commit: def456
+        created_at: "2026-01-01T03:30:00Z"
+        completed_at: "2026-01-01T03:35:00Z"
+      - name: lint
+        status: fail
+        required: true
+        runner: ci
+        applies_to_version:
+          type: code_compare
+          base_commit: abc123
+          head_commit: def456
+        created_at: "2026-01-01T03:30:00Z"
+        completed_at: "2026-01-01T03:35:00Z"
+    verdicts:
+      - reviewer: bob
+        role: reviewer
+        decision: request_changes
+        applies_to_version:
+          type: code_compare
+          base_commit: abc123
+          head_commit: def456
+        created_at: "2026-01-01T05:00:00Z"
+    events:
+      - _ulid: 01KG0RRQCC9N4YGP991WD7XSYJ
+        event_type: lifecycle_change
+        actor: alice
+        timestamp: "2026-01-01T03:00:00Z"
+        payload:
+          from: draft
+          to: open
+      - _ulid: 01KG0RRRCC9N4YGP991WD7XSZK
+        event_type: verdict_submitted
+        actor: bob
+        timestamp: "2026-01-01T05:00:00Z"
+        payload:
+          decision: request_changes
+    notes:
+      - _ulid: 01KG0RRSCC9N4YGP991WD7XT0M
+        created_at: "2026-01-01T03:00:00Z"
+        author: alice
+        content: "Created review for PR"
+    external_links:
+      - url: "https://github.com/test/repo/pull/42"
+        provider: github
+        external_id: "42"
+        label: "PR #42"
+    created_at: "2026-01-01T03:00:00Z"
+    updated_at: "2026-01-01T05:00:00Z"
+
+  - _ulid: 01KG0RRTCC9N4YGP991WD7XT1N
+    slugs:
+      - test-review-closed
+    title: "Review: completed task"
+    lifecycle_state: closed
+    subject:
+      type: task
+      ref: "@test-task-completed"
+      shadow_commit: sha123
+      content_hash: hash456
+    author: bob
+    related_refs: []
+    threads: []
+    checks: []
+    verdicts:
+      - reviewer: alice
+        role: reviewer
+        decision: approve
+        applies_to_version:
+          type: entity_version
+          content_hash: hash456
+        created_at: "2026-01-02T10:00:00Z"
+    events:
+      - _ulid: 01KG0RRVCC9N4YGP991WD7XT2P
+        event_type: lifecycle_change
+        actor: bob
+        timestamp: "2026-01-02T09:00:00Z"
+        payload:
+          from: draft
+          to: open
+      - _ulid: 01KG0RRWCC9N4YGP991WD7XT3Q
+        event_type: verdict_submitted
+        actor: alice
+        timestamp: "2026-01-02T10:00:00Z"
+        payload:
+          decision: approve
+      - _ulid: 01KG0RRXCC9N4YGP991WD7XT4R
+        event_type: lifecycle_change
+        actor: bob
+        timestamp: "2026-01-02T11:00:00Z"
+        payload:
+          from: open
+          to: closed
+    notes: []
+    external_links: []
+    created_at: "2026-01-02T09:00:00Z"
+    updated_at: "2026-01-02T11:00:00Z"
+
+  - _ulid: 01KG0RRYCC9N4YGP991WD7XT5S
+    slugs:
+      - test-review-draft
+    title: "Draft review for spec"
+    lifecycle_state: draft
+    subject:
+      type: spec
+      ref: "@test-feature"
+      shadow_commit: sha789
+      content_hash: hashABC
+    author: alice
+    related_refs: []
+    threads: []
+    checks: []
+    verdicts: []
+    events: []
+    notes: []
+    external_links: []
+    created_at: "2026-01-03T08:00:00Z"

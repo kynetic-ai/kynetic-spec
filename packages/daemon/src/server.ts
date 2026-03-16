@@ -32,6 +32,7 @@ import { createSessionRoutes } from './routes/sessions';
 import { createPlansRoutes } from './routes/plans';
 import { createAggregationRoutes } from './routes/aggregation';
 import { createRefsRoutes } from './routes/refs';
+import { createReviewsRoutes } from './routes/reviews';
 import { ShadowSyncScheduler } from './shadow-sync';
 import { SessionSyncScheduler } from './session-sync';
 import { join } from 'path';
@@ -310,6 +311,9 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @ui-plans-view ac-1 - Plans data endpoints
     .use(createPlansRoutes())
+
+    // AC: @review-records-daemon-api ac-1, ac-2 - Review data endpoints
+    .use(createReviewsRoutes())
 
     // AC: @ui-api-aggregation ac-1, ac-2, ac-3 - Aggregation endpoints
     .use(createAggregationRoutes())
