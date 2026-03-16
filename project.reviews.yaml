@@ -1036,7 +1036,28 @@ reviews:
       content_hash: ""
     author: "@claude"
     related_refs: []
-    threads: []
+    threads:
+      - _ulid: 01KKTSRNP0YK949MP75Q284DSV
+        kind: blocker
+        entries:
+          - _ulid: 01KKTSRNP0S449ZC8209ETQC4X
+            author: "@claude"
+            body: >-
+              **BLOCKER: Wrong daemon route file paths in all API tasks**
+
+
+              All four API tasks (task-review-api-read, task-review-api-threads,
+              task-review-api-verdicts, task-review-api-websocket) reference `src/daemon/routes/` as
+              the location for route files. The actual path is `packages/daemon/src/routes/`.
+
+
+              Evidence: `ls src/daemon/routes/` returns "No such file or directory". Existing route
+              files like tasks.ts, plans.ts, inbox.ts all live at `packages/daemon/src/routes/`.
+
+
+              This will mislead the implementing agent into looking for or creating files in the
+              wrong directory. Fix all "How" sections to reference `packages/daemon/src/routes/`.
+            created_at: 2026-03-16T07:46:29.696Z
     checks: []
     verdicts: []
     events:
@@ -1053,7 +1074,14 @@ reviews:
         payload:
           from: draft
           to: open
+      - _ulid: 01KKTSRNPBTQCRTRFXQ8XWWH24
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:46:29.707Z
+        payload:
+          thread_ulid: 01KKTSRNP0YK949MP75Q284DSV
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T07:44:02.989Z
-    updated_at: 2026-03-16T07:44:08.098Z
+    updated_at: 2026-03-16T07:46:29.696Z
