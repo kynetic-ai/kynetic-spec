@@ -868,6 +868,17 @@ reviews:
               patterns\" is sufficient guidance. The implementer will see PlanSummary/PlanDetail
               imports in the plans route and follow the same pattern. Not a gap worth blocking on."
             created_at: 2026-03-16T07:38:50.712Z
+      - _ulid: 01KKTSAXHM2RH8V3049VJ1WGSV
+        kind: nit
+        entries:
+          - _ulid: 01KKTSAXHNFT209C2HX635P1AZ
+            author: "@claude"
+            body: "**New observation: ac-8 lifecycle PATCH endpoint is well-specified.** The AC includes both
+              the happy path (valid transition applied) and the error path (400 with reason). This
+              is good — it's the only mutation AC that explicitly covers its own error case beyond
+              the general ac-10. Other mutation ACs (ac-3 through ac-7) rely on ac-10 for error
+              coverage, which is fine."
+            created_at: 2026-03-16T07:38:58.997Z
     checks: []
     verdicts: []
     events:
@@ -947,7 +958,14 @@ reviews:
         payload:
           thread_ulid: 01KKTSANERBG5PMMCKWAC6VD6X
           kind: nit
+      - _ulid: 01KKTSAXJ0NX6KCA2ZGYN9P727
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:38:59.008Z
+        payload:
+          thread_ulid: 01KKTSAXHM2RH8V3049VJ1WGSV
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:37:13.126Z
-    updated_at: 2026-03-16T07:38:50.712Z
+    updated_at: 2026-03-16T07:38:58.997Z
