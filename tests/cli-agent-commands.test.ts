@@ -1611,12 +1611,11 @@ function loadDispatchWatchFixture<T>(fileName: string): T {
 }
 
 /**
- * Emit a session event to a fake WebSocket.
- * Maps old text chunk semantics to new typed events:
+ * Emit a typed session text event to a fake WebSocket.
  * - Non-empty text → message_progress
  * - Empty text → message_complete (boundary)
  */
-function emitAgentTextChunk(ws: FakeWsInstance, chunk: DispatchWatchTextChunk): void {
+function emitSessionTextEvent(ws: FakeWsInstance, chunk: DispatchWatchTextChunk): void {
   if (chunk.text.length === 0) {
     // Empty text was the old boundary sentinel — now message_complete
     ws.onmessage?.({
@@ -2267,7 +2266,7 @@ describe("AC-13: dispatch watch — transcript fixture regressions", () => {
     ws.onopen?.({});
 
     for (const chunk of fixture.chunks) {
-      emitAgentTextChunk(ws, chunk);
+      emitSessionTextEvent(ws, chunk);
     }
     await Promise.resolve();
 
@@ -2569,7 +2568,7 @@ describe("AC-14: dispatch watch — reconnect on disconnect", () => {
     await waitFor(() => instances.length >= 1, 2000, "WebSocket instance created for reconnect boundary test");
     instances[0].onopen?.({});
     for (const chunk of fixture.chunks_before_close) {
-      emitAgentTextChunk(instances[0], chunk);
+      emitSessionTextEvent(instances[0], chunk);
     }
     instances[0].onclose?.();
     await vi.advanceTimersByTimeAsync(1100);
@@ -3029,52 +3028,6 @@ describe("ac-cli-watch-parity: dispatch watch — typed event stream", () => {
     expect(output).toContain("⚡ Tool: Read");
     expect(output).toContain("✓ Read completed (45ms)");
     expect(output).toContain("Here is the content.");
-
-    runPromise.catch(() => {/* ignore */});
-  });
-
-  // AC: @ws-session-event-streaming ac-cli-watch-parity — no agent_text_chunk consumption
-  it("should ignore legacy agent_text_chunk events", async () => {
-    const { PidFileManager } = await import("../src/cli/pid-utils.js");
-    vi.spyOn(PidFileManager.prototype, "isDaemonRunning").mockReturnValue(true);
-    vi.spyOn(PidFileManager.prototype, "readPort").mockReturnValue(9999);
-    await mockInitContextFast();
-
-    const { FakeWs, getLastInstance } = makeFakeWsClass();
-    _setWebSocketCtor(FakeWs as unknown as typeof WebSocket);
-
-    const written: string[] = [];
-    vi.spyOn(process.stdout, "write").mockImplementation((chunk) => {
-      written.push(String(chunk));
-      return true;
-    });
-
-    const program = createTestProgram();
-    const runPromise = program.parseAsync(["agent", "dispatch", "watch"], { from: "user" });
-
-    await waitFor(() => getLastInstance() !== null);
-    const ws = getLastInstance()!;
-    ws.onopen?.({});
-
-    // Send a legacy agent_text_chunk event
-    ws.onmessage?.({
-      data: JSON.stringify({
-        event: "agent_text_chunk",
-        data: { session_id: "sess-1", agent_id: "worker", text: "legacy text" },
-      }),
-    });
-    // Send a typed event
-    ws.onmessage?.({
-      data: JSON.stringify({
-        event: "message_progress",
-        data: { session_id: "sess-1", agent_id: "worker", text: "typed text" },
-      }),
-    });
-    await Promise.resolve();
-
-    const output = written.join("");
-    expect(output).not.toContain("legacy text");
-    expect(output).toContain("typed text");
 
     runPromise.catch(() => {/* ignore */});
   });

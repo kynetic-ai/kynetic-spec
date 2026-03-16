@@ -656,25 +656,6 @@ export function shouldShowJumpButton(autoScrolling: boolean, isLive: boolean, bl
 }
 
 /**
- * @deprecated Use incrementalBlockUpdate() instead.
- * Kept temporarily for backwards compatibility with tests.
- *
- * AC: @ui-session-stream ac-2
- * AC: @session-event-broadcast ac-replaces-text-chunks
- */
-export function accumulateStreamingText(
-	currentText: string,
-	event: { event: string; data: unknown },
-	targetSessionId: string,
-): string {
-	const textEvents = new Set(['message_progress', 'message_complete', 'thinking_progress', 'thinking_complete', 'agent_text_chunk']);
-	if (!textEvents.has(event.event)) return currentText;
-	const data = event.data as { session_id?: string; text?: string } | null;
-	if (!data || data.session_id !== targetSessionId || !data.text) return currentText;
-	return currentText + data.text;
-}
-
-/**
  * Determine the last sequence number from an events array.
  * Returns -1 if the array is empty.
  *

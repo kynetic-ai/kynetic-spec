@@ -872,7 +872,7 @@ All **request-response** data fetching:
 
 ### What Stays Outside TanStack Query
 
-- **WebSocket text streaming** (agent text chunks) — These are real-time streaming data, not request-response. Continue using the existing WS handler + `$state` accumulation pattern for `agent_text_chunk` events.
+- **WebSocket session event streaming** — These are real-time streaming data, not request-response. Continue using the existing WS handler + `$state`/`incrementalBlockUpdate()` pattern for typed session events (`message_start/progress/complete`, `thinking_start/progress/complete`, `tool_call_start/complete`).
 - **WebSocket connection management** — The connection store handles connect/disconnect/reconnect lifecycle.
 - **Local UI state** — Filter selections, panel open/close, dialog state. These are not server data.
 - **Static snapshot loading** — Initial mode detection and snapshot loading happens once at startup, before QueryClientProvider is available.
