@@ -20933,17 +20933,19 @@ plans:
             when: |
               The thread is displayed
             then: |
-              The file path and line range are shown as a clickable header, and a
-              code context snippet from the referenced lines is displayed alongside
-              the comment
+              The file path and line range are shown as a styled header
+              (e.g., "src/parser/validate.ts:42-45") with the side and commit
+              metadata visible; no source code snippet is rendered (the daemon
+              does not serve file content)
           - id: ac-10
             given: |
               A thread has a structured anchor (section, field, anchor-ref)
             when: |
               The thread is displayed
             then: |
-              The anchor reference is shown as a navigable link with the section
-              and field context (e.g., "acceptance_criteria > ac-3 on @spec-ref")
+              The anchor is shown as a styled reference badge with the section
+              and field context (e.g., "acceptance_criteria > ac-3 on @spec-ref");
+              if the anchor-ref matches a known web UI route, it links to that page
           - id: ac-11
             given: |
               A check has evidence text and runner information
@@ -20955,12 +20957,20 @@ plans:
               version
           - id: ac-12
             given: |
-              A verdict has a body or notes
+              A thread entry is displayed
             when: |
-              The verdict is displayed
+              The entry has author and timestamp fields
             then: |
-              The verdict body is rendered as markdown alongside the decision badge
-              and reviewer identity
+              The author identity and relative timestamp are shown alongside
+              the entry body
+          - id: ac-13
+            given: |
+              A review section (threads, checks, verdicts) has no items
+            when: |
+              The section is rendered
+            then: |
+              An empty state message is shown (e.g., "No threads yet",
+              "No checks recorded")
       ```
 
       ## Tasks
@@ -21149,7 +21159,7 @@ plans:
           conversation view. Disposition badge recomputes visually when
           verdicts/threads change via WebSocket.
 
-          Covers: @review-records-web-ui ac-2, ac-8, ac-9, ac-10, ac-11, ac-12.
+          Covers: @review-records-web-ui ac-2, ac-8, ac-9, ac-10, ac-11, ac-12, ac-13.
 
       - title: Add review interaction controls (comment, reply, resolve, verdict)
         slug: task-review-interaction
@@ -21256,3 +21266,9 @@ plans:
         content: "Add content rendering ACs to web UI spec: markdown rendering (ac-8), code anchor display
           (ac-9), structured anchor display (ac-10), check evidence display (ac-11), verdict body
           rendering (ac-12). Updated detail page task to cover new ACs."
+      - _ulid: 01KKTTM2S0TXNGC2CMHNQTZCHM
+        created_at: 2026-03-16T08:01:27.841Z
+        author: "@claude"
+        content: "Fix round 5 blockers: simplify ac-9 to metadata-only display (no source snippets), replace
+          ac-12 verdict body (schema doesn't support it) with thread entry author/timestamp display,
+          add ac-13 for empty states"
