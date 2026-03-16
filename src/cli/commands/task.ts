@@ -669,7 +669,7 @@ async function setTaskFields(
         }
       } else if (options.submissionLinkage) {
         const linkage = isGitRepo(ctx.projectRoot)
-          ? captureSubmissionLinkage(ctx.projectRoot, latestTask.review_url)
+          ? captureSubmissionLinkage(ctx.projectRoot, latestTask.review_url, ctx.config?.dispatch?.base_branch)
           : null;
         if (linkage) {
           mutationChanges.push({ field: "submission_linkage", before: latestTask.submission_linkage, after: linkage });
@@ -1866,9 +1866,9 @@ Examples:
         const index = new ReferenceIndex(tasks, items);
         const foundTask = resolveTaskRef(ref, tasks, index);
 
-        // AC: @portable-task-submission-linkage ac-1, ac-3 — capture git context
+        // AC: @portable-task-submission-linkage ac-1, ac-3, ac-5 — capture git context
         const linkage = isGitRepo(ctx.projectRoot)
-          ? captureSubmissionLinkage(ctx.projectRoot, options.reviewUrl)
+          ? captureSubmissionLinkage(ctx.projectRoot, options.reviewUrl, ctx.config?.dispatch?.base_branch)
           : null;
 
         let transitionFromStatus: Task["status"] = foundTask.status;
