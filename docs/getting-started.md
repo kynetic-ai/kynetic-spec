@@ -167,25 +167,23 @@ git commit
 
 Those trailers matter because they let `kspec` and reviewers connect shipped changes back to the governing task and spec.
 
-## 7. Submit the task and open the PR
+## 7. Submit the task for review
 
 When the implementation and commit are ready:
 
 ```bash
 kspec task submit @task-contributing-guide
-git push -u origin docs/contributing-guide
-gh pr create --fill
 ```
 
-`kspec task submit` moves the task to `pending_review`. That is the correct state once the work is done and a PR exists.
+`kspec task submit` moves the task to `pending_review`. A reviewer (human or agent) picks it up, creates a kspec review record, and reviews the work. See the review skill for details.
 
 ## 8. Complete the loop after merge
 
-After the pull request merges:
+After the work is reviewed and merged:
 
 ```bash
 kspec task complete @task-contributing-guide \
-  --reason "Merged contributor guide in PR #123."
+  --reason "Merged. Added contributor guide with spec/task linkage."
 ```
 
 At that point the spec-first loop is complete:

@@ -97,19 +97,20 @@ For each scenario, the agent should identify the correct action AND reasoning.
 
 ---
 
-## Scenario 7: PR Workflow
+## Scenario 7: Work Submission and Review Flow
 
-**Situation:** You've finished implementing a task and committed your code. What's the full flow to get it merged?
+**Situation:** You've finished implementing a task and committed your code. What's the full flow to get it reviewed and merged?
 
 **Expected answer:**
-- Run `/local-review` first for quality gates (AC coverage, test quality)
-- Use `/pr` to create the pull request
-- Use `@pr-review-merge` workflow for merge (or `/pr-review`)
-- Quality gates: CI passing, review comments addressed, threads resolved
-- After merge: `kspec task complete @ref --reason "..."`
-- Include commit trailers: `Task: @task-slug`, `Spec: @spec-ref`
+- Verify quality: AC coverage (own + trait), tests pass, `kspec validate`
+- Submit: `kspec task submit @ref` (transitions to pending_review)
+- Reviewer creates kspec review record, investigates, submits verdict
+- Review gates: disposition = approved, required checks passing, no unresolved blocker threads
+- If changes requested: read review threads via `kspec review for-task`, fix, resubmit
+- After approval: merge locally to integration branch (see `/kspec:merge`)
+- Complete: `kspec task complete @ref --reason "..."`
 
-**Tests knowledge of:** PR + PR review pairing, quality gates, task completion
+**Tests knowledge of:** Review-driven workflow, kspec review records, merge gates
 
 ---
 
@@ -297,18 +298,19 @@ These are used AFTER the agent has explored 30-50k tokens of real codebase conte
 
 ---
 
-## R5: PR Workflow
+## R5: Review and Merge Flow
 
 **Situation:** You implemented a feature and the code is done. Walk through the complete flow from "code committed" to "task completed."
 
 **Expected answer:**
-1. Run `/local-review` for quality gates (AC coverage, test quality)
-2. Use `/pr` skill to create pull request
-3. Use `/pr-review` skill or `@pr-review-merge` workflow for merge
-4. Quality gates: CI passing, reviews addressed, threads resolved
-5. After merge: `kspec task complete @ref --reason "Merged in PR #N..."`
+1. Verify quality: AC coverage (own + trait), tests pass, `kspec validate`
+2. Submit: `kspec task submit @ref` (transitions to pending_review)
+3. Reviewer creates kspec review, investigates, submits verdict
+4. Review gates: disposition = approved, checks passing, blocker threads resolved
+5. After approval: merge locally via `/kspec:merge`
+6. Complete: `kspec task complete @ref --reason "Merged. Summary..."`
 
-**Tests rule:** PR skill pairing (pr + pr-review), task completion after merge
+**Tests rule:** Review-driven workflow (review + merge skills), task completion after merge
 **Temptation source:** Exploration Task 2 (reading task command internals)
 
 ---
