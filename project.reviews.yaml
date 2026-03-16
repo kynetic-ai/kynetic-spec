@@ -526,6 +526,33 @@ reviews:
               Recommendation: Add an AC to the API spec for querying reviews by task ref, or clarify
               that the list endpoint's "linked task" filter serves this purpose.
             created_at: 2026-03-16T07:32:56.256Z
+      - _ulid: 01KKTS06XV59ZTCERGD6WVBM0T
+        kind: nit
+        entries:
+          - _ulid: 01KKTS06XWV17DJQQN818Z8MS1
+            author: "@claude"
+            body: >-
+              **Missing spec: no AC for WebSocket topic naming.**
+
+
+              API ac-4 says "a real-time update event is broadcast" but doesn't specify the topic
+              name or event types. Looking at existing patterns: tasks use 'tasks:updates' with
+              'task_updated', inbox uses 'inbox:updates' with
+              'inbox_item_created'/'inbox_item_deleted', triage uses 'triage:updates' with specific
+              event subtypes.
+
+
+              The review domain has many distinct mutation types (thread added, reply added, thread
+              resolved, verdict submitted, check added, lifecycle changed). The event naming and
+              topic structure should be specified so the web UI knows what to subscribe to and what
+              event shapes to expect.
+
+
+              Recommendation: Add explicit topic/event naming to ac-4, e.g., topic 'reviews:updates'
+              with events like 'review_thread_added', 'review_verdict_submitted',
+              'review_lifecycle_changed', etc. Or consolidate to a single 'review_updated' event if
+              the client just refetches the whole record.
+            created_at: 2026-03-16T07:33:08.156Z
     checks: []
     verdicts: []
     events:
@@ -584,7 +611,14 @@ reviews:
         payload:
           thread_ulid: 01KKTRZVA0TRKDG7W4VH48PXJF
           kind: question
+      - _ulid: 01KKTS06Y6X531GC3CMZW4FSRS
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:33:08.166Z
+        payload:
+          thread_ulid: 01KKTS06XV59ZTCERGD6WVBM0T
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:29:52.508Z
-    updated_at: 2026-03-16T07:32:56.256Z
+    updated_at: 2026-03-16T07:33:08.156Z
