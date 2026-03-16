@@ -61,7 +61,21 @@ skills:
       - droid
   - id: task-work
     name: Task Work
-    description: Structured task lifecycle — start, work, note, submit, complete. Fix cycle handling, scope management, loop mode for automation, and quality gates.
+    description: Structured task lifecycle — start, work, note, submit, complete. AC annotations, fix cycle handling via review records, scope management, and quality checks.
+    platforms:
+      - claude-code
+      - codex
+      - droid
+  - id: review
+    name: Review
+    description: How to review work and use kspec review records. Covers both reviewer and worker perspectives — creating reviews, structuring findings, AC coverage verification, review principles, and the full review record interface.
+    platforms:
+      - claude-code
+      - codex
+      - droid
+  - id: merge
+    name: Merge
+    description: Merge approved work into an integration branch. Local-first git merge with gates based on kspec review disposition — approved status, passing checks, and resolved blocker threads.
     platforms:
       - claude-code
       - codex
@@ -69,13 +83,6 @@ skills:
   - id: create-workflow
     name: Create Workflow
     description: Formalize repeatable patterns into trackable kspec workflows. Design steps, choose triggers, create loop variants, and integrate with skills.
-    platforms:
-      - claude-code
-      - codex
-      - droid
-  - id: review
-    name: Review
-    description: Kspec-specific review gates and first-party review records — spec alignment, AC coverage, trait coverage, validation integration, and the review record CLI for creating, inspecting, and managing durable review artifacts.
     platforms:
       - claude-code
       - codex
