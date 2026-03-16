@@ -1230,12 +1230,10 @@ features:
             then: all commits that modified the task's data are returned, including the creation commit, state
               transitions, notes, and field changes, regardless of commit message content
           - id: ac-2
-            given: multiple tasks exist in the same YAML file
+            given: multiple tasks exist in the same file
             when: activity is queried for a specific task
-            then: |-
-              only commits that touched that task's YAML block are included;
-              the block boundaries are determined by _ulid field positions
-              ensuring isolation between adjacent task entries
+            then: only commits that affected that task's data are included; changes to other tasks in the same
+              file are excluded
           - id: ac-3
             given: |
               a commit message follows the shadow branch auto-commit format
