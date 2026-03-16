@@ -100432,7 +100432,9 @@
     - cli
     - config
   vcs_refs: []
+  session_id: 01KKT0WKD862DWN9C68ZJD9Y52
   created_at: 2026-03-16T00:18:20.041Z
+  started_at: 2026-03-16T00:31:59.737Z
   notes:
     - _ulid: 01KKT05KN3SC10N8XVA87TFAND
       created_at: 2026-03-16T00:19:10.627Z
@@ -100534,7 +100536,22 @@
         checks). They're independent — this controls installation, that controls what the hook
         checks.
       supersedes: null
+    - _ulid: 01KKT1055TPQ5A3QSKEBGA0SDG
+      created_at: 2026-03-16T00:33:40.538Z
+      author: "@claude"
+      content: >-
+        Execution context:
+
+        - Background: Setup currently installs checkpoint and prompt-check hooks unconditionally.
+        Need to make this configurable via kspec.config.yaml.
+
+        - Scope: Add HooksConfigSchema to config.ts, update setup.ts to conditionally install/remove
+        hooks based on config, add comprehensive tests.
+
+        - Files: src/parser/config.ts, src/cli/commands/setup.ts, tests/parser/config.test.ts,
+        tests/enhanced-setup.test.ts
+
+        - Verification: npm test passes, hooks config controls installation behavior
+      supersedes: null
   todos: []
   automation: eligible
-  started_at: 2026-03-16T00:31:59.737Z
-  session_id: 01KKT0WKD862DWN9C68ZJD9Y52
