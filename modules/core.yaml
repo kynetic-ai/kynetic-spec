@@ -1047,6 +1047,11 @@ features:
             then: |
               Dispatch fails with actionable guidance instead of silently falling back
               to a shared checkout or hardcoded branch
+          - id: ac-5
+            given: kspec.config.yaml sets dispatch.publication_mode to pull_request, manual_merge, or auto
+            when: the dispatcher resolves publication mode for a new or re-evaluated workspace
+            then: the configured mode governs how agents publish work, overriding environment auto-detection
+              when not set to auto
         depends_on: []
         implements: []
         relates_to: []
