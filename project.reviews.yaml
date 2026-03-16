@@ -3725,6 +3725,18 @@ reviews:
         runner: vitest
         created_at: 2026-03-16T22:29:19.023Z
         completed_at: 2026-03-16T22:29:19.023Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: cf51fadb
+          head_commit: e6bcac94
+        evidence: "3 tests annotated with AC: @review-fix-cycle-diff ac-1 covering explicit flag, env var
+          fallback, and null default"
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-16T22:29:27.419Z
+        completed_at: 2026-03-16T22:29:27.419Z
     events:
       - _ulid: 01KKWC896GCJET5S01KTASSYQT
         actor: pr-reviewer@kspec
@@ -3746,6 +3758,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-16T22:29:19.057Z
+      - _ulid: 01KKWC9DRX8TB6G97DVNBNEFKY
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-16T22:29:27.454Z
     examined_commit: e6bcac947eef33b38543de2dd1de19e46e0b117d
     external_links: []
     lifecycle_state: open
@@ -3758,5 +3777,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-16T22:28:50.000Z
-    updated_at: 2026-03-16T22:29:19.023Z
+    updated_at: 2026-03-16T22:29:27.419Z
     notes: []
