@@ -1628,7 +1628,73 @@ reviews:
       content_hash: ""
     author: "@claude"
     related_refs: []
-    threads: []
+    threads:
+      - _ulid: 01KKTTP8K8TEAT7Y898HN01AWX
+        kind: nit
+        entries:
+          - _ulid: 01KKTTP8K8YNED722NXCZEZYX3
+            author: "@claude"
+            body: >-
+              ## Round 6 Review — Plan Review Records Web UI
+
+
+              ### Blocker Resolution Verification
+
+
+              **Blocker 1 (AC-9 — code snippet display):** RESOLVED. AC-9 now correctly specifies
+              metadata-only display (file path, line range, side, commit) with explicit statement
+              "no source code snippet is rendered (the daemon does not serve file content)." This
+              matches the daemon's actual capabilities.
+
+
+              **Blocker 2 (AC-12 — verdict body):** RESOLVED. Verified against schema:
+              `ReviewVerdictSchema` has `reviewer`, `role`, `decision`, `applies_to_version`,
+              `created_at` — no `body` field. New AC-12 correctly targets `ReviewThreadEntrySchema`
+              which does have `author`, `body`, `created_at`. The replacement AC tests observable
+              behavior (author identity + relative timestamp alongside entry body).
+
+
+              ### New AC Assessment
+
+
+              **AC-12 (thread entry display):** Testable. Clear given/when/then. Maps to schema
+              fields. Covered by task-review-detail-page.
+
+
+              **AC-13 (empty states):** Testable. Clear given/when/then. Good UX practice. Covered
+              by task-review-detail-page.
+
+
+              ### AC-10 Structured Anchor Note
+
+
+              AC-10 references `anchor-ref` linking to a web UI route "if known." The schema field
+              `ReviewStructuredAnchorSchema.ref` is optional, so AC-10 correctly handles the
+              conditional case. No issue.
+
+
+              ### Task Coverage
+
+
+              task-review-detail-page covers: ac-2, ac-8, ac-9, ac-10, ac-11, ac-12, ac-13 — all
+              detail-page ACs accounted for.
+
+
+              ### Gaps Check
+
+
+              - All 13 web UI ACs have task coverage
+
+              - All 10 daemon API ACs have task coverage
+
+              - Dependency chain is correct (API read → mutations → WebSocket; API read → list page
+              → detail page → interactions)
+
+              - No orphan ACs, no uncovered ACs
+
+
+              **Verdict: Clean. No blockers remain.**
+            created_at: 2026-03-16T08:02:39.336Z
     checks: []
     verdicts: []
     events:
@@ -1645,7 +1711,14 @@ reviews:
         payload:
           from: draft
           to: open
+      - _ulid: 01KKTTP8M2R2B9PZSXWXSD7WF8
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T08:02:39.362Z
+        payload:
+          thread_ulid: 01KKTTP8K8TEAT7Y898HN01AWX
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T08:01:36.918Z
-    updated_at: 2026-03-16T08:01:44.467Z
+    updated_at: 2026-03-16T08:02:39.336Z
