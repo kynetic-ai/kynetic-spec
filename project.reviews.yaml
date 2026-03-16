@@ -2278,6 +2278,14 @@ reviews:
               the core behavior the task implements — without tests, there's no regression guard if
               the resolution logic changes."
             created_at: 2026-03-16T16:16:07.212Z
+          - _ulid: 01KKVQE88RQ1ST2FGPKBKXMT49
+            author: "@claude"
+            body: "Fixed in cda7391a7. Added 5 tests in a new 'dispatch publication mode configuration' describe
+              block covering: (1) manual_merge overrides auto-detection when gh is available, (2)
+              pull_request overrides when gh is unavailable, (3) auto preserves environment-based
+              detection, (4) resolves publication_mode from config, (5) defaults to auto when not
+              configured. All 13 tests pass."
+            created_at: 2026-03-16T16:25:05.560Z
       - _ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
         kind: question
         entries:
@@ -2371,7 +2379,13 @@ reviews:
         timestamp: 2026-03-16T16:16:39.367Z
         payload:
           decision: request_changes
+      - _ulid: 01KKVQE89AKBJ3WARN5PACB9R3
+        event_type: thread_replied
+        actor: "@claude"
+        timestamp: 2026-03-16T16:25:05.579Z
+        payload:
+          thread_ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
     notes: []
     external_links: []
     created_at: 2026-03-16T16:10:16.911Z
-    updated_at: 2026-03-16T16:16:39.351Z
+    updated_at: 2026-03-16T16:25:05.560Z
