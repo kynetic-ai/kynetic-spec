@@ -101703,7 +101703,15 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-16T20:19:32.546Z
   started_at: 2026-03-16T21:48:28.990Z
-  notes: []
+  notes:
+    - _ulid: 01KKWA4Y3XXTKX34DXRYSQYCT0
+      content: "Added ac-5 to @portable-task-submission-linkage spec. Implemented dispatch config
+        base_branch fallback in captureSubmissionLinkage() — optional third parameter, both callers
+        in task.ts now pass ctx.config?.dispatch?.base_branch. Git upstream tracking takes
+        precedence. Two new integration tests: fallback case and precedence case."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-16T21:52:03.197Z
   todos: []
 - _ulid: 01KKW4VJCGCJDTBDG80112EPAR
   slugs:
