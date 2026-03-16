@@ -776,7 +776,17 @@ reviews:
       content_hash: ""
     author: "@claude"
     related_refs: []
-    threads: []
+    threads:
+      - _ulid: 01KKTS9WE7YHN19XJ7DGFT8HMT
+        kind: nit
+        entries:
+          - _ulid: 01KKTS9WE7CC0AFKGT098JH66S
+            author: "@claude"
+            body: "**Blocker 1 (API ac-3 too broad) — RESOLVED.** Original ac-3 that lumped all mutations has
+              been split into ac-3 (create thread), ac-4 (reply), ac-5 (resolve/reopen), ac-6
+              (verdicts), ac-7 (checks), ac-8 (lifecycle). Each endpoint now has its own testable AC
+              with distinct request shape and expected behavior. Good granularity."
+            created_at: 2026-03-16T07:38:25.095Z
     checks: []
     verdicts: []
     events:
@@ -793,7 +803,14 @@ reviews:
         payload:
           from: draft
           to: open
+      - _ulid: 01KKTS9WEHQ16ZCMQ62APWTJH5
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:38:25.105Z
+        payload:
+          thread_ulid: 01KKTS9WE7YHN19XJ7DGFT8HMT
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:37:13.126Z
-    updated_at: 2026-03-16T07:37:18.096Z
+    updated_at: 2026-03-16T07:38:25.095Z
