@@ -1620,7 +1620,7 @@ reviews:
   - _ulid: 01KKTTMBMPTDYTVJM92QHRBM5G
     slugs: []
     title: "Review: Review Records Web UI plan (round 6)"
-    lifecycle_state: open
+    lifecycle_state: closed
     subject:
       type: plan
       ref: "@plan-review-records-web-ui"
@@ -1731,7 +1731,14 @@ reviews:
         timestamp: 2026-03-16T08:03:06.506Z
         payload:
           decision: approve
+      - _ulid: 01KKTVKP8WZKRT3JVN9Q6MP1Q3
+        event_type: lifecycle_change
+        actor: "@claude"
+        timestamp: 2026-03-16T08:18:43.613Z
+        payload:
+          from: open
+          to: closed
     notes: []
     external_links: []
     created_at: 2026-03-16T08:01:36.918Z
-    updated_at: 2026-03-16T08:03:06.490Z
+    updated_at: 2026-03-16T08:18:43.597Z
