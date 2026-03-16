@@ -3800,3 +3800,29 @@ reviews:
     created_at: 2026-03-16T22:28:50.000Z
     updated_at: 2026-03-16T22:29:34.738Z
     notes: []
+  - _ulid: 01KKWDPTQTDSXSH9FSNRNM1JAZ
+    slugs: []
+    title: Review task-implement-activity-git-query
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKWDPTQPAC4F2BZ7P4KG563Y
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T22:54:15.289Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-implement-activity-git-query"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-16T22:54:15.290Z
+    updated_at: null
+    notes: []
