@@ -838,6 +838,16 @@ reviews:
               task detail page with linked reviews, reviews are shown with disposition badge and
               link to review detail. This covers the use case."
             created_at: 2026-03-16T07:38:42.735Z
+      - _ulid: 01KKTSAFX333M71FZ6WJRV0E25
+        kind: nit
+        entries:
+          - _ulid: 01KKTSAFX4AXDT3X45WBTTV6P1
+            author: "@claude"
+            body: '**Nit 7 (WebSocket topic naming) — RESOLVED.** ac-9 specifies "reviews topic" and
+              implementation notes list specific event types: review_created, review_updated,
+              thread_created, thread_updated, verdict_submitted, check_recorded. This gives
+              implementers clear guidance.'
+            created_at: 2026-03-16T07:38:45.028Z
     checks: []
     verdicts: []
     events:
@@ -896,7 +906,14 @@ reviews:
         payload:
           thread_ulid: 01KKTSADNF6TETZBY7A217021X
           kind: nit
+      - _ulid: 01KKTSAFXH5Z267YE0FM40PP5A
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:38:45.041Z
+        payload:
+          thread_ulid: 01KKTSAFX333M71FZ6WJRV0E25
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:37:13.126Z
-    updated_at: 2026-03-16T07:38:42.735Z
+    updated_at: 2026-03-16T07:38:45.028Z
