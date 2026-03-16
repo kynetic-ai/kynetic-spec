@@ -4104,6 +4104,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKWH0NKVXMXHZR50NTXJJHB9
         timestamp: 2026-03-16T23:52:03.502Z
+      - _ulid: 01KKWH101Y270C1J935YWQJP3B
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKWH100ZB5XJY9Z5KCVNSQ9B
+        timestamp: 2026-03-16T23:52:14.142Z
     examined_commit: 38bc6aae2c263297dbf412cc5365d0fec558cbd6
     external_links: []
     lifecycle_state: open
@@ -4131,7 +4138,25 @@ reviews:
               declared but never used — dead variable.
             created_at: 2026-03-16T23:52:03.451Z
         kind: nit
+      - _ulid: 01KKWH100ZB5XJY9Z5KCVNSQ9B
+        anchor:
+          type: code
+          commit: ""
+          line_end: 1
+          line_start: 1
+          path: tests/activity-display.test.ts
+          side: head
+        entries:
+          - _ulid: 01KKWH1010WYZ6XNFF1FTS9EQ7
+            author: "@claude"
+            body: No test for ac-3 (review events merged into activity timeline). The 5 tests cover ac-1, ac-2,
+              ac-4, and trait-json-output ac-5, but the review event merging (ac-3) — which is the
+              most complex part of the implementation — has no test coverage. This is understandable
+              given test complexity (would need to set up review records with events), but should be
+              noted as a gap.
+            created_at: 2026-03-16T23:52:14.112Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-16T23:51:38.391Z
-    updated_at: 2026-03-16T23:52:03.451Z
+    updated_at: 2026-03-16T23:52:14.112Z
     notes: []
