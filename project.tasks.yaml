@@ -100651,8 +100651,41 @@
     - core
     - review
   vcs_refs: []
-  created_at: 2026-03-16T05:30:37.484Z
-  notes: []
-  todos: []
-  started_at: 2026-03-16T05:36:27.882Z
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+  created_at: 2026-03-16T05:30:37.484Z
+  started_at: 2026-03-16T05:36:27.882Z
+  notes:
+    - _ulid: 01KKTK1BM0EZF1RZ7BTBGSGTF5
+      created_at: 2026-03-16T05:48:54.272Z
+      author: "@claude"
+      content: >-
+        Completed skill rewrite:
+
+        - Rewrote core task-work skill: unified (no loop split), language-agnostic AC annotations,
+        review-aware fix cycles
+
+        - Rewrote core review skill: unified worker+reviewer, baked-in review principles + AC
+        coverage, full review record interface, no GitHub
+
+        - Created new core merge skill: local git merge, disposition-based gate, merge commits for
+        traceability
+
+        - Created project work-gates skill: kspec MUST-FIX patterns, test rules, E2E preference
+
+        - Created project review-gates skill: severity classification, anti-rubber-stamping,
+        evidence log
+
+        - Archived old skills: local-review, pr-review, review-principles, pr (deleted from
+        .kspec/skills/ and .agents/skills/)
+
+        - Deleted old workflows: local-review, task-work-session, task-work-loop, pr-review-loop,
+        pr-review-merge
+
+        - Updated agent skill references: pr-reviewer → review+review-gates+merge, task-worker →
+        task-work+work-gates
+
+        - Updated PR workflow template (now Work and Review Lifecycle)
+
+        - Rendered skills and regenerated kspec-agents.md
+      supersedes: null
+  todos: []
