@@ -100710,6 +100710,15 @@
       author: "@claude"
       content: "[FIX_CYCLE: 1] Review verdict: changes_requested by pr-reviewer@kspec.local"
       supersedes: null
+    - _ulid: 01KKTMYNNKY5107GRHCCZ7S3BH
+      created_at: 2026-03-16T06:22:23.411Z
+      author: "@claude"
+      content: "Review @01KKTMVT: request_changes. Two findings: (1) MUST-FIX: Template 04-pr-workflow.md
+        renamed from '## PR Workflow' to '## Work and Review Lifecycle' but
+        tests/agents-instruction-gen.test.ts not updated — 3 test failures. (2) SHOULD-FIX:
+        ui-data-layer skill re-rendered with stale agent_text_chunk reference from .kspec/skills/
+        source. Skill content quality is solid — core skills are well-structured and comprehensive."
+      supersedes: null
   todos: []
 - _ulid: 01KKTK96Z5M9T8WP900CPFWRNG
   slugs: []
