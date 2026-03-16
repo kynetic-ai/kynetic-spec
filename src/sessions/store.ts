@@ -440,11 +440,22 @@ export async function closeSession(
     return null;
   }
 
+  // AC: @session-summary-cache ac-persist-on-close — compute stats from events.jsonl
+  // and persist in session metadata so list endpoints never need to scan event data.
+  const [eventCount, iterationCount, tasksCompleted] = await Promise.all([
+    countEventLines(sessionsDir, sessionId),
+    countIterations(sessionsDir, sessionId),
+    countTaskCompletions(sessionsDir, sessionId),
+  ]);
+
   const updated: SessionMetadata = {
     ...metadata,
     status,
     ended_at: new Date().toISOString(),
     close_reason: reason,
+    event_count: eventCount,
+    iteration_count: iterationCount,
+    tasks_completed: tasksCompleted,
   };
 
   const metadataPath = getSessionMetadataPath(sessionsDir, sessionId);
@@ -1916,9 +1927,9 @@ export async function getSessionLogSummary(
  * Get session metadata only — reads session.yaml without touching events.jsonl.
  *
  * AC: @session-list-pagination-api ac-metadata-only — List endpoint reads only
- * session.yaml metadata. Summary stats (event_count, iteration_count,
- * tasks_completed) are set to 0 and computed lazily when a single session
- * is requested via the detail endpoint.
+ * session.yaml metadata.
+ * AC: @session-summary-cache ac-persist-on-close — Closed sessions have stats
+ * persisted in metadata; read them instead of hardcoding 0.
  */
 export async function getSessionMetadataOnly(
   sessionsDir: string,
@@ -1944,9 +1955,9 @@ export async function getSessionMetadataOnly(
     started_at: metadata.started_at,
     ended_at: metadata.ended_at,
     duration_ms: durationMs,
-    event_count: 0,
-    iteration_count: 0,
-    tasks_completed: 0,
+    event_count: metadata.event_count ?? 0,
+    iteration_count: metadata.iteration_count ?? 0,
+    tasks_completed: metadata.tasks_completed ?? 0,
   };
 }
 

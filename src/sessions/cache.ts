@@ -2,8 +2,9 @@
  * Session summary cache.
  *
  * In-memory cache for session metadata. Reads only session.yaml files —
- * never reads events.jsonl. Summary stats are computed lazily via the
- * single-session detail endpoint.
+ * never reads events.jsonl. Summary stats for closed sessions come from
+ * persisted metadata fields. Active sessions get live event counts from
+ * an in-memory counter incremented on each event append.
  *
  * AC Coverage:
  * - @session-summary-cache ac-cache-build: Build cache on first request
@@ -11,6 +12,8 @@
  * - @session-summary-cache ac-cache-graceful: Skip corrupt/missing entries with warning
  * - @session-list-pagination-api ac-metadata-only: List path reads only session.yaml
  * - @session-summary-cache ac-active-refresh: Re-read metadata for active sessions on each request
+ * - @session-summary-cache ac-persist-on-close: Closed sessions read persisted stats from metadata
+ * - @session-summary-cache ac-live-counter: Active sessions serve event_count from in-memory counter
  */
 
 import * as path from "node:path";
@@ -49,6 +52,14 @@ export class SessionSummaryCache {
 
   /** In-flight promise for cache build to prevent concurrent builds */
   private buildPromise: Promise<void> | null = null;
+
+  /**
+   * Live event counters for active sessions.
+   * Incremented on each event append, served as event_count for active sessions.
+   * Discarded when a session closes (persisted value takes over).
+   * AC: @session-summary-cache ac-live-counter
+   */
+  private liveEventCounts = new Map<string, number>();
 
   /**
    * Get all session summaries, using cache when possible.
@@ -95,6 +106,33 @@ export class SessionSummaryCache {
     this.knownSessionIds.clear();
     this.initialized = false;
     this.buildPromise = null;
+    this.liveEventCounts.clear();
+  }
+
+  /**
+   * Increment the live event counter for an active session.
+   * Called when an event is appended to events.jsonl during a running invocation.
+   * AC: @session-summary-cache ac-live-counter
+   */
+  incrementEventCount(sessionId: string): void {
+    const current = this.liveEventCounts.get(sessionId) ?? 0;
+    this.liveEventCounts.set(sessionId, current + 1);
+  }
+
+  /**
+   * Discard the live event counter for a session.
+   * Called when a session closes — the persisted stats in session.yaml take over.
+   * AC: @session-summary-cache ac-live-counter
+   */
+  discardLiveCounter(sessionId: string): void {
+    this.liveEventCounts.delete(sessionId);
+  }
+
+  /**
+   * Get the current live event count for a session (for testing/inspection).
+   */
+  getLiveEventCount(sessionId: string): number {
+    return this.liveEventCounts.get(sessionId) ?? 0;
   }
 
   /**
@@ -268,9 +306,17 @@ export class SessionSummaryCache {
 
   /**
    * Return all cached summaries as an array.
+   * AC: @session-summary-cache ac-live-counter — Active sessions get event_count
+   * from the in-memory live counter instead of the (stale) metadata value.
    */
   private summaries(): SessionLogSummary[] {
-    return [...this.entries.values()].map((e) => e.summary);
+    return [...this.entries.values()].map((e) => {
+      const liveCount = this.liveEventCounts.get(e.summary.id);
+      if (e.summary.status === "active" && liveCount !== undefined) {
+        return { ...e.summary, event_count: liveCount };
+      }
+      return e.summary;
+    });
   }
 }
 

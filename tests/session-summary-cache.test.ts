@@ -10,6 +10,13 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { stringify as yamlStringify } from "yaml";
 import { SessionSummaryCache, getSessionCache } from "../src/sessions/cache.js";
+import {
+  createSession,
+  closeSession,
+  appendEvent,
+  getSession,
+  getSessionMetadataOnly,
+} from "../src/sessions/store.js";
 import { createTempDir } from "./helpers/cli.js";
 
 // Helper to create a session directory with metadata
@@ -495,6 +502,242 @@ describe("SessionSummaryCache", () => {
       for (const result of results) {
         expect(result).toHaveLength(2);
       }
+    });
+  });
+
+  // AC: @session-summary-cache ac-persist-on-close
+  describe("ac-persist-on-close: closed sessions have stats persisted in metadata", () => {
+    it("should read persisted event_count from session metadata", async () => {
+      // Simulate a session that was closed with stats persisted in session.yaml
+      await createTestSession(sessionsDir, "session-closed", {
+        status: "completed",
+        started_at: "2026-03-01T00:00:00.000Z",
+        ended_at: "2026-03-01T01:00:00.000Z",
+        event_count: 42,
+        iteration_count: 3,
+        tasks_completed: 1,
+      });
+
+      const summaries = await cache.getAll(sessionsDir);
+      const session = summaries.find((s) => s.id === "session-closed");
+      expect(session).toBeDefined();
+      expect(session!.event_count).toBe(42);
+      expect(session!.iteration_count).toBe(3);
+      expect(session!.tasks_completed).toBe(1);
+    });
+
+    it("should default to 0 when persisted stats are absent (legacy sessions)", async () => {
+      // Session without persisted stats (pre-feature sessions)
+      await createTestSession(sessionsDir, "session-legacy", {
+        status: "completed",
+        started_at: "2026-03-01T00:00:00.000Z",
+        ended_at: "2026-03-01T01:00:00.000Z",
+      });
+
+      const summaries = await cache.getAll(sessionsDir);
+      const session = summaries.find((s) => s.id === "session-legacy");
+      expect(session).toBeDefined();
+      expect(session!.event_count).toBe(0);
+      expect(session!.iteration_count).toBe(0);
+      expect(session!.tasks_completed).toBe(0);
+    });
+
+    it("should read persisted stats for failed/abandoned/timed_out sessions", async () => {
+      await createTestSession(sessionsDir, "session-failed", {
+        status: "failed",
+        started_at: "2026-03-01T00:00:00.000Z",
+        ended_at: "2026-03-01T00:30:00.000Z",
+        event_count: 15,
+        iteration_count: 1,
+        tasks_completed: 0,
+      });
+
+      await createTestSession(sessionsDir, "session-abandoned", {
+        status: "abandoned",
+        started_at: "2026-03-01T00:00:00.000Z",
+        ended_at: "2026-03-01T00:15:00.000Z",
+        event_count: 8,
+        iteration_count: 1,
+        tasks_completed: 0,
+      });
+
+      const summaries = await cache.getAll(sessionsDir);
+      const failed = summaries.find((s) => s.id === "session-failed");
+      expect(failed!.event_count).toBe(15);
+
+      const abandoned = summaries.find((s) => s.id === "session-abandoned");
+      expect(abandoned!.event_count).toBe(8);
+    });
+  });
+
+  // AC: @session-summary-cache ac-persist-on-close (store-level)
+  describe("ac-persist-on-close: closeSession writes stats to session.yaml", () => {
+    it("should persist event_count, iteration_count, tasks_completed on close", async () => {
+      // Create a session via store API
+      await createSession(sessionsDir, {
+        id: "session-stats",
+        agent_type: "test-agent",
+      });
+
+      // Add events so closeSession has something to count
+      await appendEvent(sessionsDir, {
+        type: "session.start",
+        session_id: "session-stats",
+        data: {},
+      });
+      await appendEvent(sessionsDir, {
+        type: "prompt.sent",
+        session_id: "session-stats",
+        data: {},
+      });
+      await appendEvent(sessionsDir, {
+        type: "tool.call",
+        session_id: "session-stats",
+        data: {},
+      });
+      await appendEvent(sessionsDir, {
+        type: "session.end",
+        session_id: "session-stats",
+        data: {},
+      });
+
+      // Close session — should compute and persist stats
+      const result = await closeSession(sessionsDir, "session-stats", "completed", "Test done");
+      expect(result).not.toBeNull();
+      expect(result!.event_count).toBe(4);
+      expect(result!.iteration_count).toBe(0); // no context-iter-*.json files
+      expect(result!.tasks_completed).toBe(0); // no task complete events
+
+      // Verify stats survive a round-trip (read from disk)
+      const reread = await getSession(sessionsDir, "session-stats");
+      expect(reread).not.toBeNull();
+      expect(reread!.event_count).toBe(4);
+      expect(reread!.iteration_count).toBe(0);
+      expect(reread!.tasks_completed).toBe(0);
+    });
+
+    it("should persist stats that getSessionMetadataOnly reads", async () => {
+      // Create session, add events, close
+      await createSession(sessionsDir, {
+        id: "session-roundtrip",
+        agent_type: "test-agent",
+      });
+
+      for (let i = 0; i < 5; i++) {
+        await appendEvent(sessionsDir, {
+          type: "prompt.sent",
+          session_id: "session-roundtrip",
+          data: {},
+        });
+      }
+
+      await closeSession(sessionsDir, "session-roundtrip", "completed", "Done");
+
+      // getSessionMetadataOnly should read persisted stats (not 0)
+      const summary = await getSessionMetadataOnly(sessionsDir, "session-roundtrip");
+      expect(summary).not.toBeNull();
+      expect(summary!.event_count).toBe(5);
+    });
+
+    it("should persist stats for failed sessions", async () => {
+      await createSession(sessionsDir, {
+        id: "session-fail",
+        agent_type: "test-agent",
+      });
+
+      await appendEvent(sessionsDir, {
+        type: "session.start",
+        session_id: "session-fail",
+        data: {},
+      });
+      await appendEvent(sessionsDir, {
+        type: "agent.failed",
+        session_id: "session-fail",
+        data: { error: "crash" },
+      });
+
+      const result = await closeSession(sessionsDir, "session-fail", "failed", "Crashed");
+      expect(result!.event_count).toBe(2);
+      expect(result!.status).toBe("failed");
+    });
+  });
+
+  // AC: @session-summary-cache ac-live-counter
+  describe("ac-live-counter: active sessions get event_count from in-memory counter", () => {
+    it("should serve live event_count for active sessions", async () => {
+      await createTestSession(sessionsDir, "session-active", {
+        status: "active",
+        started_at: "2026-03-01T00:00:00.000Z",
+        ended_at: undefined,
+      });
+
+      // Build cache — active session starts with event_count: 0 from metadata
+      const first = await cache.getAll(sessionsDir);
+      const activeFirst = first.find((s) => s.id === "session-active");
+      expect(activeFirst!.event_count).toBe(0);
+
+      // Simulate events being appended
+      cache.incrementEventCount("session-active");
+      cache.incrementEventCount("session-active");
+      cache.incrementEventCount("session-active");
+
+      // Refresh should now show live count for the active session
+      const second = await cache.getAll(sessionsDir);
+      const activeSecond = second.find((s) => s.id === "session-active");
+      expect(activeSecond!.event_count).toBe(3);
+    });
+
+    it("should not affect completed sessions", async () => {
+      await createTestSession(sessionsDir, "session-done", {
+        status: "completed",
+        started_at: "2026-03-01T00:00:00.000Z",
+        ended_at: "2026-03-01T01:00:00.000Z",
+        event_count: 42,
+      });
+
+      // Even if we increment (shouldn't happen, but testing defensive behavior)
+      cache.incrementEventCount("session-done");
+
+      const summaries = await cache.getAll(sessionsDir);
+      const session = summaries.find((s) => s.id === "session-done");
+      // Completed session uses persisted value, not live counter
+      expect(session!.event_count).toBe(42);
+    });
+
+    it("should discard live counter when session closes", async () => {
+      await createTestSession(sessionsDir, "session-closing", {
+        status: "active",
+        started_at: "2026-03-01T00:00:00.000Z",
+        ended_at: undefined,
+      });
+
+      // Build cache and increment counter
+      await cache.getAll(sessionsDir);
+      cache.incrementEventCount("session-closing");
+      cache.incrementEventCount("session-closing");
+      expect(cache.getLiveEventCount("session-closing")).toBe(2);
+
+      // Discard counter (as dispatch does after session close)
+      cache.discardLiveCounter("session-closing");
+      expect(cache.getLiveEventCount("session-closing")).toBe(0);
+    });
+
+    it("should clear live counters when cache is cleared", async () => {
+      cache.incrementEventCount("session-a");
+      cache.incrementEventCount("session-b");
+      expect(cache.getLiveEventCount("session-a")).toBe(1);
+      expect(cache.getLiveEventCount("session-b")).toBe(1);
+
+      cache.clear();
+      expect(cache.getLiveEventCount("session-a")).toBe(0);
+      expect(cache.getLiveEventCount("session-b")).toBe(0);
+    });
+
+    it("should accumulate event counts across multiple increments", async () => {
+      for (let i = 0; i < 100; i++) {
+        cache.incrementEventCount("session-busy");
+      }
+      expect(cache.getLiveEventCount("session-busy")).toBe(100);
     });
   });
 

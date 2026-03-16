@@ -93,6 +93,15 @@ export const SessionMetadataSchema = z.object({
 
   /** Reason for session close (normal exit, signal, error) */
   close_reason: z.string().optional(),
+
+  /**
+   * Persisted summary stats — written on session close so list endpoints
+   * can display counts without scanning events.jsonl.
+   * AC: @session-summary-cache ac-persist-on-close
+   */
+  event_count: z.number().int().nonnegative().optional(),
+  iteration_count: z.number().int().nonnegative().optional(),
+  tasks_completed: z.number().int().nonnegative().optional(),
 });
 
 export type SessionMetadata = z.infer<typeof SessionMetadataSchema>;
