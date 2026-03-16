@@ -1821,6 +1821,30 @@ reviews:
 
               3. Consider: should `subject-ref` filter also search `related_refs`?
             created_at: 2026-03-16T08:21:19.286Z
+      - _ulid: 01KKTVRR31F3408SRDYCT4Q6T0
+        kind: blocker
+        entries:
+          - _ulid: 01KKTVRR31JE2HFM6T2804XH6G
+            author: "@claude"
+            body: >-
+              **QUESTION: Context expansion route conflicts with single-file diff route**
+
+
+              The task-diff-api description specifies:
+
+              - `GET /api/diff/:base..:head/:path` — single-file diff (lazy loading)
+
+              - `GET /api/diff/:base..:head/context` — expanded context lines
+
+
+              If `:path` is a wildcard param, then `context` would be matched as a path value, not
+              as a literal route segment. These two routes conflict.
+
+
+              **Suggestion:** Use a query param approach for context expansion instead: `GET
+              /api/diff/:range/:path?expand=true&start=N&end=N`, or use a distinct route prefix like
+              `GET /api/diff/:range/expand-context?path=X&start=N&end=N`.
+            created_at: 2026-03-16T08:21:29.313Z
     checks: []
     verdicts: []
     events:
@@ -1851,7 +1875,14 @@ reviews:
         payload:
           thread_ulid: 01KKTVRE9NBER2D85VPVMRD3VE
           kind: blocker
+      - _ulid: 01KKTVRR3H81DAM7HQ6NKYVAS2
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T08:21:29.329Z
+        payload:
+          thread_ulid: 01KKTVRR31F3408SRDYCT4Q6T0
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T08:18:45.731Z
-    updated_at: 2026-03-16T08:21:19.286Z
+    updated_at: 2026-03-16T08:21:29.313Z
