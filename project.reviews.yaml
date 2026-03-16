@@ -2813,6 +2813,21 @@ reviews:
               that such commits appear in both timelines. This is probably the desired behavior but
               worth noting — a single commit can appear in multiple task timelines.
             created_at: 2026-03-16T20:17:10.884Z
+      - _ulid: 01KKW4QEAEEMD6RJEA9GPZ3JJ3
+        kind: nit
+        anchor:
+          type: structured
+          section: Tasks
+          ref: "@task-submission-linkage-dispatch-fallback"
+        entries:
+          - _ulid: 01KKW4QEAEV7J8ZZ3WKN2FYS3K
+            author: "@claude"
+            body: Task @task-submission-linkage-dispatch-fallback says "Add an AC to
+              @portable-task-submission-linkage" but the task slug doesn't match the naming pattern
+              of the other tasks. The slug uses "submission-linkage-dispatch-fallback" while the
+              spec uses "portable-task-submission-linkage". Minor naming inconsistency, no action
+              needed since kspec handles slug-ref mapping.
+            created_at: 2026-03-16T20:17:18.158Z
     checks: []
     verdicts: []
     events:
@@ -2843,7 +2858,14 @@ reviews:
         payload:
           thread_ulid: 01KKW4Q774QRRV0K5EVZ8RW7VC
           kind: nit
+      - _ulid: 01KKW4QEBEA062139PACC2TXRX
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T20:17:18.190Z
+        payload:
+          thread_ulid: 01KKW4QEAEEMD6RJEA9GPZ3JJ3
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T20:16:07.556Z
-    updated_at: 2026-03-16T20:17:10.884Z
+    updated_at: 2026-03-16T20:17:18.158Z
