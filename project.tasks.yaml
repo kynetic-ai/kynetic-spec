@@ -101393,3 +101393,47 @@
   notes: []
   todos: []
   automation: eligible
+- title: Make dispatch publication mode configurable
+  description: >-
+    The dispatch engine auto-detects publication mode based on whether gh CLI is installed and a
+    GitHub remote exists (resolvePublicationMode in src/agent-runtime/workspace.ts:411-414). When it
+    resolves to pull_request, the dispatch prompt explicitly instructs agents to create PRs
+    (buildPublicationInstructions in src/agent-runtime/dispatch.ts:294-304).
+
+
+    This overrides any skill or template instructions to the contrary. The manual_merge path already
+    exists and does the right thing — it tells workers 'do not open a PR' and tells reviewers to
+    merge locally.
+
+
+    Changes needed:
+
+    1. Add dispatch.publication_mode to kspec.config.yaml schema (src/parser/config.ts) — values:
+    pull_request, manual_merge, auto (default: auto preserves current behavior)
+
+    2. Update resolvePublicationMode() in src/agent-runtime/workspace.ts to check config first, only
+    auto-detect when set to auto
+
+    3. Set dispatch.publication_mode: manual_merge in this project's kspec.config.yaml
+
+
+    This is blocking dispatched agents from following the review-driven local merge flow.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 1
+  slugs: []
+  tags:
+    - dispatch
+    - config
+  depends_on: []
+  automation: eligible
+  _ulid: 01KKTZ0BF597PSYKT1H4VXPCPG
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-16T09:18:04.261Z
+  notes: []
+  todos: []
