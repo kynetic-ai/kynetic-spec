@@ -45,6 +45,7 @@ export interface ResolvedDispatchWorkspaceConfig {
   baseBranchStartPoint: string;
   baseBranchSource: "configured" | "remote-head" | "current-branch" | "default";
   worktreeRoot: string;
+  publicationMode: "pull_request" | "manual_merge" | "auto";
 }
 
 export interface DispatchWorkspaceMetadata {
@@ -408,7 +409,13 @@ function hasGitHubRemote(projectDir: string): boolean {
   return false;
 }
 
-function resolvePublicationMode(projectDir: string): DispatchWorkspacePublicationMode {
+function resolvePublicationMode(
+  projectDir: string,
+  configuredMode?: "pull_request" | "manual_merge" | "auto",
+): DispatchWorkspacePublicationMode {
+  if (configuredMode && configuredMode !== "auto") {
+    return configuredMode;
+  }
   return commandAvailable("gh") && hasGitHubRemote(projectDir)
     ? "pull_request"
     : "manual_merge";
@@ -417,15 +424,16 @@ function resolvePublicationMode(projectDir: string): DispatchWorkspacePublicatio
 function resolveWorkspacePublicationMode(
   projectDir: string,
   existingRecord: LoadedDispatchWorkspaceRecord | undefined,
+  configuredMode?: "pull_request" | "manual_merge" | "auto",
 ): DispatchWorkspacePublicationMode {
   if (!existingRecord) {
-    return resolvePublicationMode(projectDir);
+    return resolvePublicationMode(projectDir, configuredMode);
   }
 
   switch (existingRecord.integration.status) {
     case "pending":
     case "in_progress":
-      return resolvePublicationMode(projectDir);
+      return resolvePublicationMode(projectDir, configuredMode);
     default:
       return existingRecord.integration.publication_mode;
   }
@@ -1163,7 +1171,7 @@ async function recoverWorkspaceRecordFromMetadata(
     || metadata.integrationTargetCommit
     || metadata.canonicalBranchHead
     || resolvedConfig.baseBranchStartPoint;
-  const publicationMode = metadata.publicationMode ?? resolvePublicationMode(projectDir);
+  const publicationMode = metadata.publicationMode ?? resolvePublicationMode(projectDir, resolvedConfig.publicationMode);
   const integration: RegistryIntegrationRecord = {
     status: metadata.integrationState ?? "pending",
     target_branch: metadata.integrationTargetBranch || metadata.mergeTargetBranch || metadata.baseBranch || resolvedConfig.baseBranch,
@@ -1307,6 +1315,7 @@ export async function resolveDispatchWorkspaceConfig(
 ): Promise<ResolvedDispatchWorkspaceConfig> {
   const { config } = await loadProjectConfig(projectDir, projectDir);
   const configuredBaseBranch = config.dispatch.base_branch?.trim() || null;
+  const publicationMode = config.dispatch.publication_mode;
   const rawRoot = config.dispatch.worktree_root?.trim() || ".kspec-worktrees";
   const worktreeRoot = path.isAbsolute(rawRoot)
     ? rawRoot
@@ -1325,6 +1334,7 @@ export async function resolveDispatchWorkspaceConfig(
       baseBranchStartPoint: resolved.startPoint,
       baseBranchSource: "configured",
       worktreeRoot,
+      publicationMode,
     };
   }
 
@@ -1337,6 +1347,7 @@ export async function resolveDispatchWorkspaceConfig(
         baseBranchStartPoint: resolved.startPoint,
         baseBranchSource: "remote-head",
         worktreeRoot,
+        publicationMode,
       };
     }
   }
@@ -1352,6 +1363,7 @@ export async function resolveDispatchWorkspaceConfig(
       baseBranchStartPoint: resolved.startPoint,
       baseBranchSource: "current-branch",
       worktreeRoot,
+      publicationMode,
     };
   }
 
@@ -1363,6 +1375,7 @@ export async function resolveDispatchWorkspaceConfig(
       baseBranchStartPoint: resolved.startPoint,
       baseBranchSource: "default",
       worktreeRoot,
+      publicationMode,
     };
   }
   throw new DispatchWorkspaceError(
@@ -2060,7 +2073,7 @@ export async function provisionDispatchWorkspace(
   );
   const mergeTargetBranch = existingRecord?.integration.target_branch ?? baseBranch;
   const integrationTargetCommit = existingRecord?.integration.target_commit ?? baseBranchPoint;
-  const publicationMode = resolveWorkspacePublicationMode(projectDir, existingRecord);
+  const publicationMode = resolveWorkspacePublicationMode(projectDir, existingRecord, resolvedConfig.publicationMode);
   const now = new Date().toISOString();
   const provisioningRecord: DispatchWorkspaceRecord = {
     workspace_id: workspaceId,
@@ -2610,7 +2623,7 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
           ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
         const baseBranch = resolvedConfig.baseBranch;
         const baseBranchPoint = resolvedConfig.baseBranchStartPoint;
-        const publicationMode = resolvePublicationMode(projectDir);
+        const publicationMode = resolvePublicationMode(projectDir, resolvedConfig.publicationMode);
 
         const adoptedRecord: DispatchWorkspaceRecord = {
           workspace_id: workspaceId,
@@ -2709,7 +2722,7 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
           ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
         const baseBranch = resolvedConfig.baseBranch;
         const baseBranchPoint = resolvedConfig.baseBranchStartPoint;
-        const publicationMode = resolvePublicationMode(projectDir);
+        const publicationMode = resolvePublicationMode(projectDir, resolvedConfig.publicationMode);
 
         const remoteRecord: DispatchWorkspaceRecord = {
           workspace_id: workspaceId,
