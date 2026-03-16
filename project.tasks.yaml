@@ -101953,8 +101953,11 @@
   spec_ref: "@review-fix-cycle-diff"
   plan_ref: "@plan-task-activity-timeline"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Added examined_commit field to review records — schema, parser, CLI
+    (--examined-commit flag + KSPEC_DISPATCH_CANONICAL_HEAD env var fallback), JSON/human output,
+    and 3 integration tests covering all paths.
   depends_on: []
   context: []
   priority: 2
@@ -101975,6 +101978,7 @@
   created_at: 2026-03-16T20:19:35.835Z
   started_at: 2026-03-16T22:20:35.789Z
   submitted_at: 2026-03-16T22:25:53.853Z
+  completed_at: 2026-03-16T22:29:48.987Z
   notes:
     - _ulid: 01KKWC2ACCZD48SF53MDJGPJE0
       content: "Added examined_commit (string, nullable) to ReviewRecordSchema and
