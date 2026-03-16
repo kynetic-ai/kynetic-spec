@@ -1058,6 +1058,22 @@ reviews:
               This will mislead the implementing agent into looking for or creating files in the
               wrong directory. Fix all "How" sections to reference `packages/daemon/src/routes/`.
             created_at: 2026-03-16T07:46:29.696Z
+      - _ulid: 01KKTSRX3MA37CB0WRZ8JZMXYQ
+        kind: blocker
+        entries:
+          - _ulid: 01KKTSRX3NGTGV1MV25MV9S1V8
+            author: "@claude"
+            body: >-
+              **BLOCKER: Wrong function name in task-review-api-read**
+
+
+              The task says "Use loadReviews() from parser/reviews.ts". The actual function is
+              `loadReviewRecords()`, not `loadReviews()`. See src/parser/reviews.ts line 95.
+
+
+              This will cause a compilation error or lead the agent to create an unnecessary wrapper
+              function.
+            created_at: 2026-03-16T07:46:37.301Z
     checks: []
     verdicts: []
     events:
@@ -1081,7 +1097,14 @@ reviews:
         payload:
           thread_ulid: 01KKTSRNP0YK949MP75Q284DSV
           kind: blocker
+      - _ulid: 01KKTSRX41FPXJ6N1H22MQQY0S
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:46:37.313Z
+        payload:
+          thread_ulid: 01KKTSRX3MA37CB0WRZ8JZMXYQ
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T07:44:02.989Z
-    updated_at: 2026-03-16T07:46:29.696Z
+    updated_at: 2026-03-16T07:46:37.301Z
