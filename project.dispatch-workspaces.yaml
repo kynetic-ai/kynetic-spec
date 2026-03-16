@@ -6736,7 +6736,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 45e009274ddc58b9c173c7d353109c618981e336
     canonical_branch: dispatch/task/task-review-api-read/01kktw6f
-    canonical_branch_head: 45e009274ddc58b9c173c7d353109c618981e336
+    canonical_branch_head: b24573b76b7fe73764042d87322fdbf6dc368c43
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -6787,21 +6787,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-16T08:34:09.518Z
+      updated_at: 2026-03-16T08:49:08.904Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-16T08:34:10.089Z
+      updated_at: 2026-03-16T08:49:08.904Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-16T08:34:09.518Z
+      updated_at: 2026-03-16T08:49:08.904Z
     timestamps:
       created_at: 2026-03-16T08:34:09.518Z
-      updated_at: 2026-03-16T08:34:10.089Z
-      last_reconciled_at: 2026-03-16T08:34:10.089Z
+      updated_at: 2026-03-16T08:49:08.904Z
+      last_reconciled_at: 2026-03-16T08:49:08.904Z
       last_active_at: 2026-03-16T08:34:10.089Z
       closed_at: null
