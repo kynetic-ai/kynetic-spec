@@ -100878,7 +100878,7 @@
   spec_ref: "@review-records-daemon-api"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -100892,6 +100892,8 @@
   notes: []
   todos: []
   automation: eligible
+  started_at: 2026-03-16T08:34:50.233Z
+  session_id: 01KKTWFYZDJ9XB9YFQ8WNZWBH2
 - _ulid: 01KKTW6G1640H2J7RF82ZVSEXT
   slugs:
     - task-review-api-threads
