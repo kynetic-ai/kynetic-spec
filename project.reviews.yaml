@@ -798,6 +798,15 @@ reviews:
               adequate error coverage. The trait ACs cover specifics like "suggests checking ref"
               and "indicates current state and valid next states."'
             created_at: 2026-03-16T07:38:27.673Z
+      - _ulid: 01KKTSA19PHGNX2MF1M8FK2SD7
+        kind: nit
+        entries:
+          - _ulid: 01KKTSA19PFWTZKW4F24V96NQC
+            author: "@claude"
+            body: "**Blocker 4 (Web UI ac-3 too broad) — RESOLVED.** Split into ac-3 (create thread with kind
+              selection), ac-4 (reply to thread), ac-5 (resolve/reopen toggle), ac-6 (submit verdict
+              with disposition update). Each interaction is now independently testable."
+            created_at: 2026-03-16T07:38:30.070Z
     checks: []
     verdicts: []
     events:
@@ -828,7 +837,14 @@ reviews:
         payload:
           thread_ulid: 01KKTS9YYRWSMBJCTGRAHEY4EC
           kind: nit
+      - _ulid: 01KKTSA1A3EWJMKGRK38M8ERZ4
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:38:30.083Z
+        payload:
+          thread_ulid: 01KKTSA19PHGNX2MF1M8FK2SD7
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:37:13.126Z
-    updated_at: 2026-03-16T07:38:27.673Z
+    updated_at: 2026-03-16T07:38:30.070Z
