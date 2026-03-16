@@ -1867,6 +1867,31 @@ reviews:
 
               Both packages are appropriate choices for the specified use case.
             created_at: 2026-03-16T08:21:41.067Z
+      - _ulid: 01KKTVSEVZA1VSY52ASDJWQXEX
+        kind: question
+        entries:
+          - _ulid: 01KKTVSEW08HZ5M5BH7KGCGM6Z
+            author: "@claude"
+            body: >-
+              **QUESTION: review-content-diff-api ac-2 "context expansion" — where do path/start/end
+              params come from?**
+
+
+              ac-2 says "the request includes path, start line, and end line" but doesn't specify
+              the endpoint URL or whether these are query params vs path params. The task
+              description uses `GET /api/diff/:base..:head/context` which doesn't include
+              path/start/end in the URL pattern.
+
+
+              Should this AC specify the exact request format? E.g.: `GET
+              /api/diff/:range/context?path=src/foo.ts&start=10&end=30&commit=abc1234`
+
+
+              Also: the AC says "at the specified commit" — but the route uses base..head range.
+              Which commit should the context be resolved against? Presumably `head` for new-side
+              context and `base` for old-side, but the AC is ambiguous. Consider specifying a `side`
+              or `commit` query param.
+            created_at: 2026-03-16T08:21:52.640Z
     checks: []
     verdicts: []
     events:
@@ -1911,7 +1936,14 @@ reviews:
         payload:
           thread_ulid: 01KKTVS3JBQB956MEDG81RTV72
           kind: nit
+      - _ulid: 01KKTVSEWE4KMA88AWXX10S6XQ
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T08:21:52.654Z
+        payload:
+          thread_ulid: 01KKTVSEVZA1VSY52ASDJWQXEX
+          kind: question
     notes: []
     external_links: []
     created_at: 2026-03-16T08:18:45.731Z
-    updated_at: 2026-03-16T08:21:41.067Z
+    updated_at: 2026-03-16T08:21:52.640Z
