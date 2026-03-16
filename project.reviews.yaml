@@ -137,6 +137,8 @@ reviews:
               source lives in .kspec/skills/, which is outside this task's scope. Downgrading: not a
               blocker for this PR."
             created_at: 2026-03-16T06:37:38.481Z
+        resolved_at: 2026-03-16T06:37:47.353Z
+        resolved_by: "@claude"
     checks:
       - name: vitest
         status: fail
@@ -218,7 +220,13 @@ reviews:
         timestamp: 2026-03-16T06:37:45.020Z
         payload:
           thread_ulid: 01KKTMWB9A9YQC6H0MNKBCNMYX
+      - _ulid: 01KKTNTVYYJA5RCVVPAC862HXK
+        event_type: thread_resolved
+        actor: "@claude"
+        timestamp: 2026-03-16T06:37:47.358Z
+        payload:
+          thread_ulid: 01KKTMWK9067T28VEEWXJATHQ1
     notes: []
     external_links: []
     created_at: 2026-03-16T06:20:49.980Z
-    updated_at: 2026-03-16T06:37:45.017Z
+    updated_at: 2026-03-16T06:37:47.353Z
