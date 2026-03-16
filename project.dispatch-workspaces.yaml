@@ -6258,8 +6258,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
-    active_role: reviewer
+    lifecycle_state: closing
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-session-summary-stats-persistence-and-live-counters-01kksrdq
@@ -6300,28 +6300,28 @@ workspaces:
           steps: []
           failureMessage: null
     integration:
-      status: pending
+      status: merged
       target_branch: main
       target_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
       publication_mode: pull_request
-      outcome: pull_request
-      detail: null
-      updated_at: 2026-03-15T23:51:01.303Z
+      outcome: merged
+      detail: integration:merged
+      updated_at: 2026-03-16T00:02:14.791Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-15T23:51:01.303Z
+      updated_at: 2026-03-16T00:02:14.791Z
     cleanup:
-      status: not_scheduled
-      eligible: false
-      reason: null
-      detail: null
-      updated_at: 2026-03-15T23:51:01.303Z
+      status: scheduled
+      eligible: true
+      reason: integrated-into-base-branch
+      detail: integrated-into-base-branch
+      updated_at: 2026-03-16T00:02:14.791Z
     timestamps:
       created_at: 2026-03-15T23:30:41.721Z
-      updated_at: 2026-03-15T23:51:01.303Z
-      last_reconciled_at: 2026-03-15T23:51:01.303Z
+      updated_at: 2026-03-16T00:02:14.791Z
+      last_reconciled_at: 2026-03-16T00:02:14.791Z
       last_active_at: 2026-03-15T23:49:41.170Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKSW263S036SS7QFQ5RTN813
