@@ -2468,6 +2468,35 @@ reviews:
               Without addressing this conflict, importing this plan would create contradictory specs
               in the system.
             created_at: 2026-03-16T19:16:24.423Z
+      - _ulid: 01KKW18554QK0XEKRVR2KQE08B
+        kind: blocker
+        entries:
+          - _ulid: 01KKW185559QNKXNA23JK6PYA2
+            author: "@claude"
+            body: >-
+              **@shadow-commit-consistency duplicates @trait-shadow-commit ac-2 and ac-3**
+
+
+              The existing trait @trait-shadow-commit already specifies commit message format
+              requirements:
+
+              - ac-2: "message follows pattern operation-colon-ref-short with optional detail"
+
+              - ac-3: "commit message includes ULID prefix (8 chars) or primary slug"
+
+
+              The plan's @shadow-commit-consistency spec covers the same ground but as a standalone
+              requirement rather than referencing the existing trait. The real issue is narrower
+              than the spec implies: the task-add operation drops the ref from the commit message
+              (line 990 of shadow.ts: `Add task: ${detail || ref}` uses detail/title instead of
+              including the ref).
+
+
+              Recommendation: Instead of a new spec, this should be a bug fix task referencing
+              @trait-shadow-commit ac-2/ac-3. The trait already requires refs in commit messages —
+              the implementation just has a gap in the task-add case. Creating a parallel spec for
+              the same concern adds confusion.
+            created_at: 2026-03-16T19:16:31.525Z
     checks: []
     verdicts: []
     events:
@@ -2491,7 +2520,14 @@ reviews:
         payload:
           thread_ulid: 01KKW17Y77A0KPNRZAV0SHZJDN
           kind: blocker
+      - _ulid: 01KKW1856208728QA72TFK8Z3V
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T19:16:31.554Z
+        payload:
+          thread_ulid: 01KKW18554QK0XEKRVR2KQE08B
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T19:15:55.134Z
-    updated_at: 2026-03-16T19:16:24.423Z
+    updated_at: 2026-03-16T19:16:31.525Z
