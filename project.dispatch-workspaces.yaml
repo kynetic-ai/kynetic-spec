@@ -6320,8 +6320,8 @@ workspaces:
       updated_at: 2026-03-16T00:02:14.791Z
     timestamps:
       created_at: 2026-03-15T23:30:41.721Z
-      updated_at: 2026-03-16T00:02:14.791Z
-      last_reconciled_at: 2026-03-16T00:02:14.791Z
+      updated_at: 2026-03-16T00:02:47.705Z
+      last_reconciled_at: 2026-03-16T00:02:47.705Z
       last_active_at: 2026-03-15T23:49:41.170Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKSW263S036SS7QFQ5RTN813
