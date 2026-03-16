@@ -100794,6 +100794,7 @@
   plan_ref: null
   status: cancelled
   blocked_by: []
+  closed_reason: Created in error — changes going directly into the plan
   depends_on: []
   context: []
   priority: 2
@@ -100805,4 +100806,41 @@
   created_at: 2026-03-16T07:56:01.018Z
   notes: []
   todos: []
-  closed_reason: Created in error — changes going directly into the plan
+- title: Improve review skill to direct use of anchors in plan and code reviews
+  description: >-
+    The core review skill documents anchor CLI flags but doesn't direct reviewers to use them.
+    During plan review testing (4 rounds on @plan-review-records-web-ui), agents described locations
+    in comment body text instead of using structured anchors.
+
+
+    Changes needed to templates/skills/review/SKILL.md:
+
+    1. In the reviewer workflow section, direct using --section/--field for plan/spec reviews to
+    anchor findings to specific ACs or fields
+
+    2. In the reviewer workflow section, direct using --path/--line-start/--line-end for code
+    reviews to anchor findings to specific lines
+
+    3. Add examples showing anchored vs unanchored comments and why anchored is better
+    (machine-parseable, UI can render inline context)
+
+    4. In the finding quality standards section, add anchor as a recommended field alongside
+    path/line
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 3
+  slugs: []
+  tags:
+    - skills
+    - review
+  depends_on: []
+  _ulid: 01KKTTC2CTEPS5X2VPE7QVFA16
+  status: pending
+  blocked_by: []
+  context: []
+  vcs_refs: []
+  created_at: 2026-03-16T07:57:05.306Z
+  notes: []
+  todos: []
