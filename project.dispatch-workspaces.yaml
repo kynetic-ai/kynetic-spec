@@ -6502,7 +6502,7 @@ workspaces:
       adopted_at: null
       rehydrated: null
     lifecycle_state: integrating
-    active_role: null
+    active_role: reviewer
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-task-todo-checking-from-session-checkpoint-hook-01kkt03v
@@ -6554,7 +6554,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-16T00:31:08.326Z
+      updated_at: 2026-03-16T00:31:08.935Z
     cleanup:
       status: not_scheduled
       eligible: false
@@ -6563,7 +6563,7 @@ workspaces:
       updated_at: 2026-03-16T00:31:08.326Z
     timestamps:
       created_at: 2026-03-16T00:20:04.106Z
-      updated_at: 2026-03-16T00:31:08.595Z
-      last_reconciled_at: 2026-03-16T00:31:08.326Z
-      last_active_at: 2026-03-16T00:20:04.982Z
+      updated_at: 2026-03-16T00:31:08.935Z
+      last_reconciled_at: 2026-03-16T00:31:08.935Z
+      last_active_at: 2026-03-16T00:31:08.935Z
       closed_at: null
