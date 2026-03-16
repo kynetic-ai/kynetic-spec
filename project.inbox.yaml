@@ -5,52 +5,52 @@ inbox:
       tasks for core features. Options: (1) applies_to field on feature specs, (2) trait on entity
       types like @trait-searchable, (3) validation warning for missing coverage, (4) parent spec
       that entity types must satisfy. Surfaced when realizing search doesn't cover inbox."
-    created_at: 2026-01-21T21:25:59.163Z
     tags:
       - design
       - spec-model
       - meta
     added_by: "@claude"
+    created_at: 2026-01-21T21:25:59.163Z
   - _ulid: 01KFHJNZKSXJ2RNAT06VEAYR3R
     text: "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find specs/ACs that
       reference or are implemented by a given code path. Useful for bug fixes to quickly discover
       what specs need updating. Could scan for // AC: annotations and spec_ref links. Instructive,
       helps find already-instrumented code."
-    created_at: 2026-01-22T00:46:44.345Z
     tags:
       - dx
       - tooling
       - reflection
     added_by: "@claude"
+    created_at: 2026-01-22T00:46:44.345Z
   - _ulid: 01KFPDCY6FN46DHZ13E7FMK051
     text: "Add cross-platform CI matrix testing - run core functionality tests on Windows, macOS, and
       Linux. Would catch issues like Unix-specific commands (which, cp -r) before they reach PR
       review. Consider: matrix strategy in GitHub Actions, platform-specific test skips where
       needed, focus on CLI commands and daemon lifecycle."
-    created_at: 2026-01-23T21:50:37.263Z
     tags:
       - ci
       - testing
       - dx
     added_by: "@claude"
+    created_at: 2026-01-23T21:50:37.263Z
   - _ulid: 01KFQ5175HK1E74Y2DNQK9RXHY
     text: "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current approach
       conflicts with existing daemons. Should use high ephemeral port range and improve cleanup
       mechanism."
-    created_at: 2026-01-24T04:43:39.058Z
     tags:
       - e2e
       - testing
       - reflection
     added_by: "@claude"
+    created_at: 2026-01-24T04:43:39.058Z
   - _ulid: 01KFYAHFF2NZRP7F60JN8Q3DXC
     text: E2E test dev mode - configure Playwright to work with vite dev server instead of requiring
       full build for faster test iteration (12+ seconds to 1-2 seconds)
-    created_at: 2026-01-26T23:34:35.746Z
     tags:
       - e2e
       - dx
     added_by: "@claude"
+    created_at: 2026-01-26T23:34:35.746Z
   - _ulid: 01KGG6GYZAMZCTWRPZG2XM2YQ9
     text: "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for splitting.
       Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2) --max-acs N to
@@ -58,154 +58,154 @@ inbox:
       (cli-command, api-endpoint), (5) complexity warnings when specs are too large. See session
       research on task decomposition patterns from Linear, Atlassian, BDD/Example Mapping, and AI
       coding assistants."
-    created_at: 2026-02-02T22:10:44.331Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-02T22:10:44.331Z
   - _ulid: 01KGGEMM4XAZZ19JXBXPC3FY3P
     text: "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve start', (2)
       Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails to start
       within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D."
-    created_at: 2026-02-03T00:32:32.926Z
     tags:
       - daemon
       - dx
       - deferred
     added_by: "@claude"
+    created_at: 2026-02-03T00:32:32.926Z
   - _ulid: 01KGGF4YYFQSRX5SMSKRC9BFF0
     text: "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL (enable
       separate repo for specs), feature toggles, default values (author, priority), validation
       strictness. Enables multi-repo projects sharing specs and tailoring kspec to project needs.
       Consolidated from @01KFGVVJ, @01KFGVVN."
-    created_at: 2026-02-03T00:41:28.272Z
     tags:
       - feature
       - config
       - dx
       - deferred
     added_by: "@claude"
+    created_at: 2026-02-03T00:41:28.272Z
   - _ulid: 01KGGFB2MJKNJQ3ZPYCZHQRHQE
     text: "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for '// AC:
       @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check for
       review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6."
-    created_at: 2026-02-03T00:44:48.658Z
     tags:
       - cli
       - testing
       - dx
     added_by: "@claude"
+    created_at: 2026-02-03T00:44:48.658Z
   - _ulid: 01KGGG0KZWCGS6QQVGSZD7XKNG
     text: "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner sync, (2)
       Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1), (3)
       Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4."
-    created_at: 2026-02-03T00:56:34.557Z
     tags:
       - shadow
       - dx
       - cli
     added_by: "@claude"
+    created_at: 2026-02-03T00:56:34.557Z
   - _ulid: 01KGGKNX3XQ0TXYQZ4V2R7MVPT
     text: "CLI array field flag patterns: (1) Generic --clear <field> or --<field> [] for clearing
       arrays, (2) --add-<field> vs multiple flags for append semantics. Design unified approach for
       depends-on, tags, blocked-by, etc. Consolidated from @01KFGRV6, @01KFR0KN."
-    created_at: 2026-02-03T02:00:37.758Z
     tags:
       - cli
       - design
       - dx
     added_by: "@claude"
+    created_at: 2026-02-03T02:00:37.758Z
   - _ulid: 01KGGP9FAD0QQFQS47DEGC3QFK
     text: "Inbox CLI improvements: (1) Add filtering to list: --before/--after <date>, --author <name>
       (--tag exists), (2) Add merge command: 'kspec inbox merge @source @target' for consolidating
       duplicates, (3) Add --priority and --automation flags to promote command. Consolidated from
       @01KG95JP, @01KG95JQ, @01KG95JS."
-    created_at: 2026-02-03T02:46:16.141Z
     tags:
       - cli
       - inbox
       - dx
     added_by: "@claude"
+    created_at: 2026-02-03T02:46:16.141Z
   - _ulid: 01KGGPJ61YA22XXS5Z6QRZXCNK
     text: "Workflow CLI improvements: (1) 'workflow show' should infer active run like 'workflow next',
       (2) Warn when --input flags passed but step has no inputs defined, (3) Improve 'workflow show'
       output format with vertical display, status indicators, indented notes. Consolidated from
       @01KFKSF6, @01KFKSGC, @01KFKTNR."
-    created_at: 2026-02-03T02:51:01.566Z
     tags:
       - workflow
       - cli
       - dx
     added_by: "@claude"
+    created_at: 2026-02-03T02:51:01.566Z
   - _ulid: 01KGGPSRFPPH8WP42VRDC76Z5J
     text: "Spec item slug/addressing improvements: (1) Warn/error on slug collision when creating items,
       (2) Make nested requirements addressable by slug (currently kspec item ac add @slug fails for
       items under requirements:). Consolidated from @01KGDCRG, @01KGDCRJ."
-    created_at: 2026-02-03T02:55:09.815Z
     tags:
       - cli
       - validation
       - ux
     added_by: "@claude"
+    created_at: 2026-02-03T02:55:09.815Z
   - _ulid: 01KGGTT34ES3W098NNYE9Y8BZZ
     text: "Expand @trait-multi-ref-batch to remaining commands: trait add/remove, task set --automation,
       inbox delete, task note. Enables batch operations like 'kspec task note @ref1 @ref2 @ref3
       \"shared content\"'. Consolidated from @01KG71J2, @01KG95JM, @01KFVXBM."
-    created_at: 2026-02-03T04:05:15.022Z
     tags:
       - cli
       - batch
       - dx
     added_by: "@claude"
+    created_at: 2026-02-03T04:05:15.022Z
   - _ulid: 01KGKVK9TDARHY80HN3A8M8TEF
     text: Add --spec-ref filter to kspec task list command to filter tasks by linked spec item
-    created_at: 2026-02-04T08:16:44.365Z
     tags:
       - cli
       - reflection
     added_by: "@claude"
+    created_at: 2026-02-04T08:16:44.365Z
   - _ulid: 01KGQY6QYS94S2D9J983436MX6
     text: "Workflow lifecycle CLI design (from mining run 01KFS6MJ): kspec workflow complete @run-ref
       (mark run completed, archive), kspec workflow cancel @run-ref (cancel abandoned run), kspec
       workflow cleanup --older-than Nd (auto-cancel stale runs). Extends existing @01KFPH39
       auto-cleanup with concrete subcommand design."
-    created_at: 2026-02-05T22:19:16.313Z
     tags:
       - workflow
       - cli
       - dx
       - deferred
     added_by: "@claude"
+    created_at: 2026-02-05T22:19:16.313Z
   - _ulid: 01KGVK8R6J950C8Q6KVPY4K3Z0
     text: "Item list --module flag and tree view: kspec item list --module cli to scope output to a
       specific module. kspec item tree @module for hierarchical view (features -> requirements).
       Currently 50+ items display flat, making it hard to find the right parent for new specs.
       Friction: during automation triage had to grep YAML files to find parent specs."
-    created_at: 2026-02-07T08:25:05.490Z
     tags:
       - cli
       - dx
       - reflection
     added_by: "@claude"
+    created_at: 2026-02-07T08:25:05.490Z
   - _ulid: 01KGWG99FJBKHZJ1M6KPKMPNV9
     text: Define typed event data schemas per EventType — session.start, session.update (with
       tool_call/sessionUpdate variants), session.end, prompt.sent, tool.call, tool.result, note.
       Current z.unknown() data field makes it impossible to reliably query events without
       reverse-engineering from real JSONL files.
-    created_at: 2026-02-07T16:52:11.891Z
     tags:
       - reflection
       - sessions
       - schema
     added_by: "@claude"
+    created_at: 2026-02-07T16:52:11.891Z
   - _ulid: 01KGWQ2TS3KG96KCB3P3R6Q477
     text: "Session log compaction: at end of each ralph loop, replace raw events.jsonl with a compiled
       stats file (event counts by type, tool usage frequency, duration, task transitions, error
       summary). Keep session folders and context snapshots intact but prune the raw log. This gives
       trend analysis capability without unbounded log growth. Could be a kspec session compact
       command or automatic post-loop step."
-    created_at: 2026-02-07T18:51:00.259Z
     tags:
       - deferred
     added_by: "@claude"
+    created_at: 2026-02-07T18:51:00.259Z
   - _ulid: 01KGWZR76NDTG9N7A2GRSFB36J
     text: "Active context from meta: use the meta database (observations, conventions, patterns) as a
       dynamic context source that automatically surfaces relevant entries based on current activity.
@@ -214,99 +214,99 @@ inbox:
       Replaces manual markdown maintenance (AGENTS.md, skill docs) with structured data that stays
       current as observations accumulate. Could use conventions or a new meta item type for durable
       patterns distinct from one-off observations."
-    created_at: 2026-02-07T21:22:29.717Z
     tags:
       - reflection
       - meta
       - architecture
     added_by: "@claude"
+    created_at: 2026-02-07T21:22:29.717Z
   - _ulid: 01KH20S10H2ES5J1MCAQVXPTN1
     text: "Centralize daemon port default (3456) — currently hardcoded in 6 places: src/schema/spec.ts,
       src/cli/index.ts, src/cli/commands/serve.ts, packages/daemon/src/index.ts,
       packages/web-ui/src/lib/constants.ts, packages/web-ui/tests/fixtures/test-base.ts. Extract to
       a shared constant to prevent drift."
-    created_at: 2026-02-09T20:16:36.881Z
     tags:
       - code-hygiene
       - dx
     added_by: "@claude"
+    created_at: 2026-02-09T20:16:36.881Z
   - _ulid: 01KHA982WGBJHN6Q8EA6F3QSPD
     text: "Formalize CLI usage analysis as a repeatable workflow. Tools exist in .claude-research/tools/
       (parse-ralph-logs.mjs, parse-claude-logs.mjs, compile-data.mjs) plus interactive HTML report.
       Consider: kspec skill, CLI command, or standalone workflow. Re-run after implementing the 6
       CLI agent-UX improvements to measure impact."
-    created_at: 2026-02-13T01:18:34.385Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-13T01:18:34.385Z
   - _ulid: 01KHCYW7JZX2AAKDTBQPB3RRZZ
     text: "Add repeated-flag support to --status filter (ac-repeated-flag gap from PR #354).
       Commander.js .option() needs a collect function to accumulate repeated --status flags into an
       array. Currently only comma-separated works. Small fix: change .option('-s, --status
       <status>') to use Commander's variadic/collect pattern, then feed array into
       parseMultiStatus()."
-    created_at: 2026-02-14T02:15:03.519Z
     tags:
       - cli
       - dx
       - reflection
     added_by: "@claude"
+    created_at: 2026-02-14T02:15:03.519Z
   - _ulid: 01KHF37MC1Z94J4SV66CY7Q9PG
     text: Shadow branch diff/changelog — since .kspec/ is git-tracked, we could show changes to stored
       artifacts (workflows, tasks, specs, inbox) over time. Something like kspec history @ref or
       kspec diff --since '1 week ago' that leverages the git history on kspec-meta branch. Could
       show task state transitions, spec evolution, workflow modifications, etc.
-    created_at: 2026-02-14T22:09:40.225Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-14T22:09:40.225Z
   - _ulid: 01KHFCDS47KQRGMEAM90S9NWD9
     text: "Version pinning: all projects use whatever global kspec version is installed. No lock file or
       constraint resolution. Consider adding version constraints to kynetic.yaml manifest."
-    created_at: 2026-02-15T00:50:18.887Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-15T00:50:18.887Z
   - _ulid: 01KHFCDS4K3GHYWVMAG2PRT2MZ
     text: "Memory seeding: seed MEMORY.md with project-relevant starting notes during kspec setup. Could
       bootstrap agent effectiveness in new projects."
-    created_at: 2026-02-15T00:50:18.899Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-15T00:50:18.899Z
   - _ulid: 01KHG6F12ZN6SGAYRDTMW01Z37
     text: "Tech debt: Pre-existing test anti-patterns - daemon-api-projects.test.ts has 10 no-op tests
       behind existsSync guards. ralph.test.ts and ralph-context-refresh.test.ts have conditional
       assertions without preceding guard assertions. Not from ralph loop but should fix."
-    created_at: 2026-02-15T08:25:22.783Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-15T08:25:22.783Z
   - _ulid: 01KHHJ27CE4SNQXCZDZRJCFK4M
     text: "Fix daemon-executable.test.ts - bun build --compile fails when routes import from parent
       packages. Pre-existing failure, root cause: ESM imports from parent packages can't be bundled.
       AC-16 on @daemon-server claimed complete but test doesn't pass."
-    created_at: 2026-02-15T21:07:20.590Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-15T21:07:20.590Z
   - _ulid: 01KHHJMABXY8TC0PDX1SF781CZ
     text: kspec tasks assess automation --all should display stored automation status
       (eligible/needs_review/manual_only) alongside criteria recommendation. Currently only shows
       criteria-based recommendation even for already-assessed tasks, making it impossible to verify
       batch operations.
-    created_at: 2026-02-15T21:17:13.469Z
     tags:
       - kspec-cli
       - reflection
     added_by: "@claude"
+    created_at: 2026-02-15T21:17:13.469Z
   - _ulid: 01KHJ4RVVDYD0Y7NNAGA58RNYW
     text: "Silent error swallowing in setup pipeline: multiple bare catch {} blocks in setup.ts lose
       diagnostic info. At minimum should log at debug/verbose level for troubleshooting."
-    created_at: 2026-02-16T02:34:16.813Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-16T02:34:16.813Z
   - _ulid: 01KHJ4RVW38FP7HFAMQ4R0D8YB
     text: "Legacy renderClaudeCodeSkill diverges from claudeCodeRenderer: uses old writeRenderHash (not
       platform-specific), lacks outputDir support, returns old type. setup.ts still uses it. Should
       route through registry and deprecate standalone function."
-    created_at: 2026-02-16T02:34:16.835Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-16T02:34:16.835Z
   - _ulid: 01KHKTNJ0MR0F4NWMWKJAQN0N9
     text: >-
       Codex and Claude Code renderers share ~70% duplicated render logic (content loading,
@@ -320,134 +320,134 @@ inbox:
       Triage 2026-02-22: 8/13 sub-items RESOLVED by PRs #408 #412 #403. Remaining: getSetupStatus
       staleness, skill update mutation, naming inconsistency, redundant defaults, deprecated_target
       reuse.
-    created_at: 2026-02-16T18:16:11.540Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-16T18:16:11.540Z
   - _ulid: 01KHKTNJ2NTJ1C037GHF573AHR
     text: getSetupStatus always reports "current" if hash file exists, cannot detect staleness. Should
       load meta context and compare hash to detect when agents.md needs regeneration.
-    created_at: 2026-02-16T18:16:11.605Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-16T18:16:11.605Z
   - _ulid: 01KHKTNJ37P06E4SRQ3HBQ9PC3
     text: skill update mutates loaded skill objects in-place before saveMetaItem. If save fails partway,
       in-memory state diverges from disk. Should copy before mutation.
-    created_at: 2026-02-16T18:16:11.623Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-16T18:16:11.623Z
   - _ulid: 01KHKTNJ3WV66HWCJ76QXCRM3P
     text: "Naming inconsistency: isKspecManagedSkill (skill-render.ts) vs isKspecManaged (skill.ts) for
       same logic. Standardize to one name."
-    created_at: 2026-02-16T18:16:11.644Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-16T18:16:11.644Z
   - _ulid: 01KHKTNJ4YJEM1WJ0AWE8GHKXF
     text: Redundant platform/tags/depends_on defaults in skill CLI — manually set before
       SkillSchema.safeParse which already applies them. Remove manual defaults.
-    created_at: 2026-02-16T18:16:11.678Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-16T18:16:11.678Z
   - _ulid: 01KHKTNJ5CA819VJE5D2HK00KD
     text: deprecated_target warning type reused for skill-specific warnings (depends_on validation,
       orphaned dirs). Add proper skill warning types for better filtering.
-    created_at: 2026-02-16T18:16:11.692Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-16T18:16:11.692Z
   - _ulid: 01KHKVQGQJKNV5QAKNFC2XJG0T
     text: "Ralph loop consolidation pass: add a cleanup/consolidation iteration every N PRs or at loop
       end. The PR-by-PR review process misses cross-PR duplication accumulation — 32 PRs in last
       loop produced 24 inbox items of tech debt. A periodic consolidation step would catch dead
       code, duplicated utilities, and superseded implementations before they compound."
-    created_at: 2026-02-16T18:34:44.339Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-16T18:34:44.339Z
   - _ulid: 01KHPYJ2WP3BTTZ4QKNAFVHYAD
     text: "Codex skill: handle own-PR reviews — GitHub rejects REQUEST_CHANGES on your own PRs, Codex
       should use COMMENT event instead. Bundle this fix with skill importing refinement so it
       propagates to all projects."
-    created_at: 2026-02-17T23:21:55.357Z
     tags:
       - codex
       - skills
     added_by: "@claude"
+    created_at: 2026-02-17T23:21:55.357Z
   - _ulid: 01KHRTEVDN8R7Q2ET8BSRQFG0B
     text: "Task-specific ephemeral AC: Support acceptance criteria directly on tasks (not just via
       spec_ref). Useful for implementation requirements, refactoring criteria, and one-off work that
       doesn't warrant a spec item. Task ACs would be checked during review but wouldn't live in the
       spec hierarchy. Addresses the gap where plan-imported ACs are behavioral specs vs task-level
       implementation requirements."
-    created_at: 2026-02-18T16:48:43.957Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-18T16:48:43.957Z
   - _ulid: 01KHRX2P7YDCA743JDR9ZVEYPX
     text: skill-render.ts lines 492, 730, 924 have LF-only frontmatter regexes. Low risk in render path
       (kspec generates these files with LF) but should be hardened for consistency with the CRLF
       fixes in skill.ts/validate-skills.ts.
-    created_at: 2026-02-18T17:34:31.166Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-18T17:34:31.166Z
   - _ulid: 01KHSJJREJ657W37GKYQG4EY5Q
     text: "Feature request: ralph loop boundary tracking in session logs. Currently no easy way to see
       what happened in a ralph loop iteration without cross-referencing PR timestamps, git log, and
       task states. A session log showing PR-to-task mapping per loop iteration would help audit and
       review. Originated from imgen project observation."
-    created_at: 2026-02-18T23:50:17.810Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-18T23:50:17.810Z
   - _ulid: 01KHV3EX6G0G425ZX1JVF4RRX1
     text: "Design section configuration for agents generate — allow projects to control which sections
       appear (skills table, conventions, workflows, static templates). Key questions: where does
       config live, include vs exclude list, defaults, custom sections, ordering, data vs template
       distinction, migration path. See plan doc for full requirements."
-    created_at: 2026-02-19T14:04:31.825Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-19T14:04:31.825Z
   - _ulid: 01KHVCPEWG9XDW4NH17850SFJR
     text: "Inbox tag management: no way to add/remove tags on existing inbox items. Only settable at
       creation via inbox add --tag. Need: kspec inbox tag add @ref <tag> and kspec inbox tag remove
       @ref <tag>."
-    created_at: 2026-02-19T16:45:56.496Z
     tags:
       - inbox
       - dx
     added_by: "@claude"
+    created_at: 2026-02-19T16:45:56.496Z
   - _ulid: 01KHVCPEX1NTKSB3ABTTCD5CE5
     text: "Batch command arg naming inconsistency: inbox add accepts tag (singular) not tags. No
       documentation of which args each batch command accepts. Consider: consistent plural naming or
       better error messages with valid arg list."
-    created_at: 2026-02-19T16:45:56.513Z
     tags:
       - batch
       - dx
     added_by: "@claude"
+    created_at: 2026-02-19T16:45:56.513Z
   - _ulid: 01KHVCPEXGQ1E2WGE0FRS11R72
     text: "Stale workflow runs accumulate: no way to prune or auto-expire old runs. After many sessions,
       every workflow next command requires specifying a run ID because 7+ active runs exist. Need:
       kspec workflow prune (expire runs older than N days) or kspec workflow cancel @run-id."
-    created_at: 2026-02-19T16:45:56.528Z
     tags:
       - workflow
       - dx
     added_by: "@claude"
+    created_at: 2026-02-19T16:45:56.528Z
   - _ulid: 01KHVE47MW4BDDK1417YMM6BF6
     text: When spawning parallel review agents (e.g. Codex + /pr-review), instruct the /pr-review agent
       not to merge — only review. The parent agent should control the merge decision after all
       reviews complete. Update /pr-review skill or add a --no-merge flag.
-    created_at: 2026-02-19T17:10:56.412Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-19T17:10:56.412Z
   - _ulid: 01KHVQVVVMCVA1WKPB1H880YD4
     text: "Template/example repo for new kspec consumers: either a GitHub template repo or 'kspec
       create-project' command showing a fully configured consumer project (manifest, CLAUDE.md with
       @kspec-agents.md, skills, hooks). Real consumer projects (kynetic-bot, imgen,
       comfy-ecaj-nodes) serve as informal examples but a clean minimal template would lower
       onboarding friction."
-    created_at: 2026-02-19T20:01:07.957Z
     tags:
       - dx
       - external
       - adoption
     added_by: "@claude"
+    created_at: 2026-02-19T20:01:07.957Z
   - _ulid: 01KHVR5K9XCYYRDH0VB2FNE4GW
     text: "Per-module task files and task archiving: Original design intent was project.tasks.yaml for
       non-spec tasks, <module>.tasks.yaml for module-scoped tasks. Never fully implemented —
@@ -455,20 +455,20 @@ inbox:
       (comfy-ecaj-nodes has 97 tasks in one file) but requires reading more files. Related: need
       task archiving to move completed tasks out of the active file. Both address the same scaling
       problem (task files growing unbounded) from different angles."
-    created_at: 2026-02-19T20:06:26.877Z
     tags:
       - design
       - tasks
       - scaling
     added_by: "@claude"
+    created_at: 2026-02-19T20:06:26.877Z
   - _ulid: 01KHWTXFAFT10MXMNYS06JJNWV
     text: "kspec validate @spec or @task — targeted validation that checks a single spec/task's AC
       coverage against codebase. Not full approval, just verifies each AC has at least one // AC:
       annotation in test files. Would make trait AC gaps immediately visible during task-work. Could
       be used by local-review skill as a concrete check instead of relying on agent diligence."
-    created_at: 2026-02-20T06:13:40.815Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-20T06:13:40.815Z
   - _ulid: 01KHY9YB0NKASBKAEMRKKC7C0Y
     text: "Terminal exit code display in ralph CLI renderer — claude-agent-acp PR #316 adds
       _meta.terminal_exit.exit_code on Bash tool completions (opt-in via
@@ -476,18 +476,18 @@ inbox:
       cli-renderer.ts. Only concrete gain from the terminal streaming protocol — the output data
       itself is identical to existing _meta.claudeCode.toolResponse path. Worth adopting if Bash
       failure debugging becomes a pain point."
-    created_at: 2026-02-20T19:55:32.246Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-20T19:55:32.246Z
   - _ulid: 01KHYAGZM7KG19YH11G2SE44QD
     text: Bash code fence language change in claude-agent-acp v0.18.0 — formatted Bash output changed
       from ```sh to ```console. Check if ralph's noise suppression patterns, session log rendering,
       or any regex patterns in cli-renderer.ts or events.ts match on the code fence language. Low
       risk since ralph primarily reads from _meta.claudeCode.toolResponse not content blocks, but
       worth a grep.
-    created_at: 2026-02-20T20:05:43.175Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-20T20:05:43.175Z
   - _ulid: 01KHYAV7WNK1PC8WC3AQCJV69X
     text: >-
       Surface ACP usage/cost data in ralph session stats — after SDK bump to 0.14.x, new
@@ -504,9 +504,9 @@ inbox:
       works around this by scraping /context stderr (fragile regex). Upstream PR to claude-agent-acp
       is highest-value path — Anthropic API stream events contain usage data, just needs wiring to
       ACP protocol.
-    created_at: 2026-02-20T20:11:19.317Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-20T20:11:19.317Z
   - _ulid: 01KHYDW52QSMT52EJ6FKBF5TWP
     text: "Explore CLAUDE_CODE_SIMPLE mode for ralph loops — sets minimal system prompt with only Bash,
       file read, and file edit tools. Disables MCP tools, attachments, hooks, and CLAUDE.md. Could
@@ -514,9 +514,9 @@ inbox:
       (AGENTS.md rules, spec-first workflow, kspec conventions) into the prompt itself instead of
       relying on Claude Code's built-in mechanisms. Tradeoff: simpler/faster agent vs ralph becomes
       responsible for all context bootstrapping. Ref: anthropics/claude-code#27019"
-    created_at: 2026-02-20T21:04:14.935Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-20T21:04:14.935Z
   - _ulid: 01KHYFD9Q9Y4D3DHC61MJ506P3
     text: "Ralph worktree isolation for task work — spawn each agent in a git worktree under a
       gitignored .worktrees/ dir for branch isolation. Pattern proven in kynetic-internal with jj
@@ -526,78 +526,78 @@ inbox:
       isolated branches per task, parallel agent work, trivial cleanup of failed work, clean main
       branch. Unknowns: shadow branch commands from worktree context, git config inheritance,
       worktree lifecycle management in ralph."
-    created_at: 2026-02-20T21:31:05.321Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-20T21:31:05.321Z
   - _ulid: 01KHYTNNF4B67SGERG0WRZ2RBR
     text: "Single-source task state diagram: currently duplicated in AGENTS.md,
       templates/agents-sections/03-task-lifecycle.md, and src/cli/help/content.ts. Adding needs_work
       required updating all three independently. Generate from schema or single template to avoid
       triple-update when adding states."
-    created_at: 2026-02-21T00:47:53.828Z
     tags:
       - reflection
       - dx
       - agents
     added_by: "@claude"
+    created_at: 2026-02-21T00:47:53.828Z
   - _ulid: 01KHYTNNFYNQ74GHA9PBM31CAF
     text: "Distinguish behavioral vs testable ACs in kspec validate: workflow ACs (agent behavioral
       specs enforced by skills/prompts) get flagged as uncovered in test coverage, creating false
       MUST-FIX findings in reviews. Allow tagging ACs or specs as agent-enforced to report
       separately from code-testable ACs."
-    created_at: 2026-02-21T00:47:53.854Z
     tags:
       - reflection
       - validate
       - dx
     added_by: "@claude"
+    created_at: 2026-02-21T00:47:53.854Z
   - _ulid: 01KJ0K9CEX5EJYT9YYA9D04GX7
     text: "inbox promote missing --slug option: cannot set task slug during promotion, must use default
       auto-generated slug. Add --slug <slug> option to inbox promote command."
-    created_at: 2026-02-21T17:17:20.221Z
     tags:
       - cli
       - dx
       - reflection
     added_by: "@claude"
+    created_at: 2026-02-21T17:17:20.221Z
   - _ulid: 01KJ1RW37A4V1TV1KZK33YS46N
     text: "CLI gap: kspec skill set should support --id to rename a skill without delete+recreate"
-    created_at: 2026-02-22T04:14:10.666Z
     tags:
       - cli
       - skill
       - friction
     added_by: "@claude"
+    created_at: 2026-02-22T04:14:10.666Z
   - _ulid: 01KJ27VRA3ZY55X0JEXV4P06KT
     text: "Spec and test kspec behavior without git: ensure kspec works in projects without git
       initialized, and handles git being introduced into an existing project where kspec is already
       in use. Cover shadow branch initialization, worktree setup on first git init, migration of
       .kspec/ state when git appears, and graceful degradation of git-dependent features
       (auto-commit, sync, shadow status)."
-    created_at: 2026-02-22T08:36:08.131Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-22T08:36:08.131Z
   - _ulid: 01KJ3318Y1350NCQF6SK9GKHY7
     text: "Session checkpoint hook noise: fires repeatedly for intentionally uncommitted files (e.g.
       generated reports). No way to suppress for specific paths. Could support
       .kspec/checkpoint-ignore listing paths to exclude from dirty-tree check, or respect
       gitignore-like patterns. Fired 6+ times in one session for a triage report artifact."
-    created_at: 2026-02-22T16:31:00.545Z
     tags:
       - reflection
       - hooks
       - dx
     added_by: "@claude"
+    created_at: 2026-02-22T16:31:00.545Z
   - _ulid: 01KJ331EH4M78HCKVCABPM26NK
     text: "CLI parity: kspec task add requires --title flag but kspec inbox add accepts positional text
       argument. task add should accept positional title for consistency. Small change in
       Commander.js argument definition."
-    created_at: 2026-02-22T16:31:06.276Z
     tags:
       - reflection
       - cli
       - dx
     added_by: "@claude"
+    created_at: 2026-02-22T16:31:06.276Z
   - _ulid: 01KJ35CN8RKR2S26MSBB1WK4X0
     text: "Plugin registry tests: validate structurally instead of exact output matching. Current tests
       assert exact JSON shapes (e.g. source field structure) which breaks when Claude Code schema
@@ -607,9 +607,9 @@ inbox:
       known_marketplaces.json registry, test entry exists with valid path, not exact source object
       shape. Motivation: the source field assertion broke twice already (local → directory object)
       because tests coupled to implementation details."
-    created_at: 2026-02-22T17:12:10.776Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-22T17:12:10.776Z
   - _ulid: 01KJ43CPCNZZPFGWF6HHP2BJ0H
     text: "Include triage records in static snapshot (kspec-snapshot.json). Currently the snapshot
       format (KspecSnapshot type) doesn't include triage records, so the triage page in
@@ -617,164 +617,164 @@ inbox:
       triage decisions read-only. AC-8 of @interactive-triage-ui expects read-only display. Needs:
       add triage records to export snapshot, update KspecSnapshot type, add fetchTriageRecordsStatic
       to read from snapshot."
-    created_at: 2026-02-23T01:56:29.205Z
     tags:
       - feature
       - web-ui
       - static-mode
     added_by: "@claude"
+    created_at: 2026-02-23T01:56:29.205Z
   - _ulid: 01KJ4FFAWXJE5STMAAEDH0FG2B
     text: "Web UI list pages hardcode limit: 1000 with no pagination — triage page confirmed, likely
       affects inbox/tasks pages too. Silent truncation for large datasets. Need pagination or
       virtual scrolling pattern across all list views."
-    created_at: 2026-02-23T05:27:38.653Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-23T05:27:38.653Z
   - _ulid: 01KJ4KFAXR94SCYKWQ2KQWXH54
     text: "Trait AC annotation gaps on @triage-cli-commands: @trait-error-guidance ac-3,
       @trait-semantic-exit-codes ac-3/4/6/7, @trait-filterable-list ac-2, @trait-shadow-commit
       ac-2/3/4/6/7/8, @trait-dry-run ac-4/6. Pre-existing, not introduced by PR #458."
-    created_at: 2026-02-23T06:37:32.984Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-23T06:37:32.984Z
   - _ulid: 01KJ4TETN5XH8286FWZABW5ZX3
     text: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
       investigation into reconnection logic, heartbeat handling, or fallback to polling.
-    created_at: 2026-02-23T08:39:36.357Z
     tags:
       - bug
       - web-ui
       - daemon
     added_by: "@claude"
+    created_at: 2026-02-23T08:39:36.357Z
   - _ulid: 01KJ4TETP5C44S2YDBCR1P3075
     text: "Web UI triage page: add filter controls for triage action types (promote, delete, defer,
       spec-gap, duplicate). Currently no way to filter triage records by action."
-    created_at: 2026-02-23T08:39:36.389Z
     tags:
       - feature
       - web-ui
       - triage
     added_by: "@claude"
+    created_at: 2026-02-23T08:39:36.389Z
   - _ulid: 01KJ4TETPNXN6GZ4MT53BRZ1KA
     text: "Web UI: persist all filter state and current view in URL query params so refreshing the page
       preserves state. Applies to all list/filter pages (triage, inbox, tasks, etc)."
-    created_at: 2026-02-23T08:39:36.406Z
     tags:
       - feature
       - web-ui
       - dx
     added_by: "@claude"
+    created_at: 2026-02-23T08:39:36.406Z
   - _ulid: 01KJ4VDK6PQV9MNFQTXGQTS3Q0
     text: Triage promote action should optionally delete the inbox item after creating the task.
       Currently promoted items stay in inbox requiring manual cleanup. Consider --consume flag or
       making deletion the default for promote (with snapshot preserved in triage record).
-    created_at: 2026-02-23T08:56:24.534Z
     tags:
       - triage
       - dx
       - reflection
     added_by: "@claude"
+    created_at: 2026-02-23T08:56:24.534Z
   - _ulid: 01KJ4VHNAZDGTNTX7S7630S6B9
     text: "ULID short ref ambiguity in batch operations: when two ULIDs share a prefix (e.g. 01KJ4SNE9
       and 01KJ4SNEC), short refs like @01KJ4SNE fail. kspec already has a shortest-unique-ID utility
       — this should be used anywhere refs are displayed (triage list, task list, inbox list, promote
       result_ref, etc.) so that presented refs are always unambiguous and copy-pasteable into
       subsequent commands."
-    created_at: 2026-02-23T08:58:37.792Z
     tags:
       - cli
       - dx
       - batch
       - reflection
     added_by: "@claude"
+    created_at: 2026-02-23T08:58:37.792Z
   - _ulid: 01KJ63QDZSHSB8J8BAEEPV4EZQ
     text: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec plan get
       @plan-ref to read implementation notes, algorithm details, and context. Update task-work skill
       and task-work-loop workflow to include this step. Plans are the right place for rich
       implementation context instead of cramming it into task notes.
-    created_at: 2026-02-23T20:40:49.913Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-23T20:40:49.913Z
   - _ulid: 01KJ63RW5ZEQFM3PMXD224F9VG
     text: "Plan import --update replaces all ACs instead of merging. When extending an existing spec
       with a new AC via plan import, --update overwrites acceptance_criteria entirely. Need AC-merge
       strategy: append new AC IDs, preserve existing ones. Encountered during spec-plan for
       session-log-show ac-10."
-    created_at: 2026-02-23T20:41:37.216Z
     tags:
       - reflection
       - plan-import
     added_by: "@claude"
+    created_at: 2026-02-23T20:41:37.216Z
   - _ulid: 01KJ63RW6VJ8K1MTR4VC3GM4AQ
     text: Plan import warnings treated as errors in batch mode. The no YAML code block in specs section
       warning causes batch atomic rollback even though the task creation succeeded. Warnings should
       not cause batch failure — only actual errors should.
-    created_at: 2026-02-23T20:41:37.244Z
     tags:
       - reflection
       - batch
     added_by: "@claude"
+    created_at: 2026-02-23T20:41:37.244Z
   - _ulid: 01KJ67G4H6EHK6DZCXFM80BTXV
     text: "Ralph event handler iteration attribution should use session-scoped mapping instead of shared
       mutable currentIteration. Codex review on PR #484 identified that late updates from a previous
       ACP session can still be tagged with wrong iteration. Use session_id→iteration map or
       session-scoped listener. See PR #484 review comment."
-    created_at: 2026-02-23T21:46:45.158Z
     tags:
       - ralph
       - events
       - bug
     added_by: "@claude"
+    created_at: 2026-02-23T21:46:45.158Z
   - _ulid: 01KJ6KTDE6ADT92WQ0CXYF9NZG
     text: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
       depends_on). Currently batch commands reject underscore variants even though the error message
       suggests the kebab form. Normalizing both forms would reduce friction, especially for agents
       generating JSON batch payloads where underscore is the natural convention.
-    created_at: 2026-02-24T01:22:04.870Z
     tags:
       - cli
       - dx
     added_by: "@claude"
+    created_at: 2026-02-24T01:22:04.870Z
   - _ulid: 01KJ76Y81G54ASMF0A18Z5G35Y
     text: "Session-scoped workflow runs: workflow runs could carry a session_id, filtering workflow
       show/list to current session by default. Session end could auto-close orphaned runs. Reduces
       noise when multiple sessions active (ralph + interactive). Natural fit since workflows are
       already ephemeral."
-    created_at: 2026-02-24T06:56:13.360Z
     tags:
       - session
       - workflows
       - dx
     added_by: "@claude"
+    created_at: 2026-02-24T06:56:13.360Z
   - _ulid: 01KJ77S4BZYW0CYX68JHNAQ31X
     text: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
       hanging on stdin), ralph has no mechanism to detect or recover. A configurable per-iteration
       timeout (e.g., 15-20 min) that kills the stuck agent and logs the failure would prevent
       indefinite hangs. Separate from Claude Code's per-bash-command timeout which didn't prevent
       the kspec batch stdin hang.
-    created_at: 2026-02-24T07:10:54.335Z
     tags:
       - ralph
       - reliability
       - dx
     added_by: "@claude"
+    created_at: 2026-02-24T07:10:54.335Z
   - _ulid: 01KJ7CNAZQRSSS2BH4KWXT9G0R
     text: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results but
       failed on kspec item get. Possible write conflict or index corruption during ralph loop
       session. Investigate shadow branch integrity."
-    created_at: 2026-02-24T08:36:12.919Z
     tags:
       - shadow-branch
       - bug
     added_by: "@claude"
+    created_at: 2026-02-24T08:36:12.919Z
   - _ulid: 01KJ8N6842MXY0QBV3VPZGTAY1
     text: "Ralph CLI renderer: parallel tool calls produce confusing output. tool_result events render
       sequentially with no association to their tool_start, so when multiple tools run in parallel,
       results appear under the wrong header. Fix: include tool summary (e.g. filename) in the
       completed/failed status line so each result is self-identifying regardless of interleaving."
-    created_at: 2026-02-24T20:24:30.082Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-24T20:24:30.082Z
   - _ulid: 01KJ8NDTW6M80T7T07SACEP7F8
     text: "Tests fail when run inside ralph loop due to environment contamination: (1) ralph.test.ts
       KSPEC_RALPH_SESSION assertion expects null but env var is inherited from ralph process, (2)
@@ -782,142 +782,142 @@ inbox:
       session-budget-integration.test.ts references nonexistent task set-automation command. Tests
       should isolate from parent process env vars (KSPEC_RALPH_SESSION, KSPEC_SESSION_ID) to be
       reliable in all contexts."
-    created_at: 2026-02-24T20:28:38.662Z
     tags:
       - testing
       - ralph
       - environment
     added_by: "@claude"
+    created_at: 2026-02-24T20:28:38.662Z
   - _ulid: 01KJ8X526K52BVBGYENJKFFSM8
     text: "Session event log tool-level filtering: kspec session log show <id> --tool Read would avoid
       grep/python one-liners when debugging ralph event issues"
-    created_at: 2026-02-24T22:43:39.859Z
     tags:
       - cli
       - ralph
     added_by: "@claude"
+    created_at: 2026-02-24T22:43:39.859Z
   - _ulid: 01KJ93W2PWGATM2YVHQRBSSVK5
     text: kspec task set --priority accepts numbers (1-5) but all documentation, conventions, and plan
       documents use P1/P2/P3 notation. Error message says 'Priority must be a number between 1 and
       5' which is confusing when you've been writing P1 everywhere. Should either accept both
       formats or align documentation with the numeric API.
-    created_at: 2026-02-25T00:41:05.500Z
     tags:
       - dx
       - docs
     added_by: "@claude"
+    created_at: 2026-02-25T00:41:05.500Z
   - _ulid: 01KJ9BENECYW9DP5FP6Y5EJSVM
     text: "kspec meta set convention: add --update-rule and --remove-rule flags. Currently the only way
       to fix a rule is to delete the entire convention and recreate it. Surfaced during skill CLI
       lookups task when codex review caught a wording issue in one rule."
-    created_at: 2026-02-25T02:53:34.540Z
     tags:
       - cli
       - dx
     added_by: "@claude"
+    created_at: 2026-02-25T02:53:34.540Z
   - _ulid: 01KJ9NJC7QK6F0SAB11PNN3798
     text: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts. Either add a
       --agent flag (e.g. kspec setup --agent claude-code) to explicitly specify the agent type, or
       detect based on installed tooling (~/.claude exists) rather than requiring runtime env vars.
       Discovered while building containerized ralph runner — entrypoint bash script can't set
       CLAUDECODE=1 globally because claude blocks nested sessions.
-    created_at: 2026-02-25T05:50:21.943Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-25T05:50:21.943Z
   - _ulid: 01KJA6SXTB3DG19YC17E604J7X
     text: "kspec agents generate should include package version in content hash (or add --force flag) so
       version bumps during releases automatically trigger regeneration. Currently skips because
       content is identical, but the version comment in the header is stale. Workaround: manually
       edit the version line."
-    created_at: 2026-02-25T10:51:35.115Z
     tags:
       - cli
       - dx
       - release
     added_by: "@claude"
+    created_at: 2026-02-25T10:51:35.115Z
   - _ulid: 01KJA6SXVCSYQT1X48341636SC
     text: Ralph PR merge should auto-delete remote branches after merge. Currently accumulates stale
       branches (found 13 after one session). The gh pr merge command supports --delete-branch. Add
       to pr-review-loop workflow merge step.
-    created_at: 2026-02-25T10:51:35.149Z
     tags:
       - ralph
       - dx
     added_by: "@claude"
+    created_at: 2026-02-25T10:51:35.149Z
   - _ulid: 01KJA6SXW5DHXFFJHH6DYQYBVJ
     text: "Session summary/stats command — kspec session stats @id or kspec session show @id --summary.
       Parse events.jsonl to show: iteration count, tasks started/completed/blocked, PRs
       created/merged, total duration, exit reason. Currently requires custom python scripts to
       extract from 14k+ line event logs."
-    created_at: 2026-02-25T10:51:35.173Z
     tags:
       - cli
       - session
       - dx
     added_by: "@claude"
+    created_at: 2026-02-25T10:51:35.173Z
   - _ulid: 01KJBQ62SW8AJYGQJVC2Q7CMCF
     text: "@cmd-validate spec is stale — missing flags: --completeness, --staleness, --drift,
       --alignment, --skills, --conventions (all already implemented in code). Pre-existing drift,
       not introduced by trait AC task."
-    created_at: 2026-02-26T00:57:05.085Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-02-26T00:57:05.085Z
   - _ulid: 01KJCTQGQ6VA5DNT6NSGVZ5V99
     text: Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate slug.
       Pre-existing issue across main.
-    created_at: 2026-02-26T11:18:16.551Z
     tags:
       - bug
       - schema
     added_by: "@claude"
+    created_at: 2026-02-26T11:18:16.551Z
   - _ulid: 01KJCTQGRDZYNYRD66RHV5GGMX
     text: Triage API spec says ac-4 and ac-5 use PUT method but implementation uses POST /:ref/override
       and POST /:ref/act. Spec needs updating to match reality.
-    created_at: 2026-02-26T11:18:16.589Z
     tags:
       - bug
       - spec
     added_by: "@claude"
+    created_at: 2026-02-26T11:18:16.589Z
   - _ulid: 01KJCTQGSAZ8H0NZT9DR5628NX
     text: Triage ac-5 says sets result_ref but delete action may not produce one. Verify behavior and
       update spec or add test assertion.
-    created_at: 2026-02-26T11:18:16.618Z
     tags:
       - spec
       - cli
     added_by: "@claude"
+    created_at: 2026-02-26T11:18:16.618Z
   - _ulid: 01KJCXMR524W6YTGCEPHEZ97WH
     text: kspec task patch appears to hang indefinitely — had to kill and use task set + task note as
       workaround
-    created_at: 2026-02-26T12:09:11.586Z
     tags:
       - cli
       - bug
     added_by: "@claude"
+    created_at: 2026-02-26T12:09:11.586Z
   - _ulid: 01KJDFFJEED59WPDEZ7MZ98ZW9
     text: "Plan import: generate richer task descriptions from Implementation Notes section — include
       file paths, what to change, verification steps instead of generic 'See plan...' text"
-    created_at: 2026-02-26T17:20:56.270Z
     tags:
       - cli
       - reflection
     added_by: "@claude"
+    created_at: 2026-02-26T17:20:56.270Z
   - _ulid: 01KJDFFJF7BYFNDQVB96T7KFM9
     text: "Merge driver: auto-resolve .kspec-agents-hash file conflicts (deterministic hash, should
       always take latest)"
-    created_at: 2026-02-26T17:20:56.295Z
     tags:
       - infra
       - reflection
     added_by: "@claude"
+    created_at: 2026-02-26T17:20:56.295Z
   - _ulid: 01KJDFFJFXQWX51PQEGAPJ09AC
     text: "Shadow repair: handle missing /bin/sh — use direct git commands instead of spawning shell,
       fails on fish-only systems"
-    created_at: 2026-02-26T17:20:56.317Z
     tags:
       - cli
       - reflection
     added_by: "@claude"
+    created_at: 2026-02-26T17:20:56.317Z
   - _ulid: 01KJDZBAH3SPDFYWC8KX90P6TR
     text: "Add second mock adapter registration for ralph tests. Currently --adapter-cmd registers a
       single 'custom' adapter, making it impossible to test different adapter IDs in real
@@ -928,275 +928,275 @@ inbox:
       injection for both adapters with different harness targets), and ac-12 (different adapter IDs
       in session metadata). Currently these are covered by code-level AC annotations and dry-run
       output tests, but lack end-to-end verification with the mock ACP."
-    created_at: 2026-02-26T21:58:14.307Z
     tags:
       - testing
       - ralph
       - infra
     added_by: "@claude"
+    created_at: 2026-02-26T21:58:14.307Z
   - _ulid: 01KJF69VH0BZGHTJYQKRAAJN7W
     text: kspec validate should warn about items with identical titles in the same module — two items
       both named 'Generation Progress UX' with different ULIDs caused confusion during a fix session
       in imgen project
-    created_at: 2026-02-27T09:19:00.640Z
     tags:
       - cli
       - validation
     added_by: "@claude"
+    created_at: 2026-02-27T09:19:00.640Z
   - _ulid: 01KJHAFVNBDK5SP2HFKP5TXX77
     text: "Meta workflow editing gap: kspec meta set cannot update workflow steps. Agents must
       delete+recreate workflow to edit a step, which can churn workflow ULIDs and temporarily break
       references. Add safe step-level update support (e.g., --set-step <index> --content/--on-fail)
       or preserve ULID on replace to avoid reference drift."
-    created_at: 2026-02-28T05:10:40.560Z
     tags:
       - reflection
       - cli
       - workflow
     added_by: "@claude"
+    created_at: 2026-02-28T05:10:40.560Z
   - _ulid: 01KJGAE25EBJWC0NAWGN3Z89YE
     text: "derive_from_specs produces sparse tasks: derived tasks get null description, no tags,
       automation unassessed. Agents picking up these tasks lack context to work independently.
       Consider: auto-populate description from spec description, copy plan tags, or allow plan
       document to specify per-task fields."
-    created_at: 2026-02-27T19:50:27.246Z
     tags:
       - plan-import
       - automation
       - friction
     added_by: "@claude"
+    created_at: 2026-02-27T19:50:27.246Z
   - _ulid: 01KJGEEQ0WFHRKT7W1P6K9DG6G
     text: "Reflection follow-up: add explicit parent/ancestor context to kspec item get output (human
       and --json) so hierarchy is unambiguous without separate tree queries."
-    created_at: 2026-02-27T21:00:42.908Z
     tags:
       - reflection
       - cli
       - spec
     added_by: Jacob Chapel
+    created_at: 2026-02-27T21:00:42.908Z
   - _ulid: 01KJGEEQ21FYQYPJM9PEJB8GMJ
     text: "Reflection follow-up: add optional ancestor-chain display for kspec item list --tree --search
       so matched descendants show parent context and avoid false orphan interpretation."
-    created_at: 2026-02-27T21:00:42.945Z
     tags:
       - reflection
       - cli
       - ux
     added_by: Jacob Chapel
+    created_at: 2026-02-27T21:00:42.945Z
   - _ulid: 01KJGEEQ2YKB559MMXFZTVH4DF
     text: "Reflection follow-up: add validation check for trait/command-contract contradictions (e.g.,
       command AC prohibits --refs while applied traits require batch refs semantics)."
-    created_at: 2026-02-27T21:00:42.975Z
     tags:
       - reflection
       - validation
       - traits
     added_by: Jacob Chapel
+    created_at: 2026-02-27T21:00:42.975Z
   - _ulid: 01KJGFKJDSPR0FBVC92W4NXP87
     text: "Unified kspec get @ref dispatch: currently plans require 'kspec plan get' while specs/tasks
       use 'kspec item get' / 'kspec task get'. A single 'kspec get @ref' that auto-dispatches to the
       right entity type would reduce friction for agents and humans who don't know the entity type
       upfront."
-    created_at: 2026-02-27T21:20:50.617Z
     tags:
       - cli
       - ux
     added_by: "@claude"
+    created_at: 2026-02-27T21:20:50.617Z
   - _ulid: 01KJGW8Z9Q7MP8JNF2H2TBZ27V
     text: "Add stale-dist guard for CLI-based tests: detect outdated dist/cli build in
       tests/helpers/cli.ts and fail fast with actionable guidance (or optional auto-build) to avoid
       misleading failures."
-    created_at: 2026-02-28T01:02:14.839Z
     tags:
       - reflection
       - testing
       - cli
     added_by: Jacob Chapel
+    created_at: 2026-02-28T01:02:14.839Z
   - _ulid: 01KJJHARG2AFXP5DYTB9HV55P1
     text: "Worktree guard escape hatch: add env var KSPEC_GUARD_OVERRIDE_DONT_USE that bypasses the
       guard hook for intentional recovery operations (git reset, rebase in .kspec). Name
       deliberately long to discourage agent use — humans-only for recovery scenarios."
-    created_at: 2026-02-28T16:29:27.938Z
     tags:
       - infra
       - cli
       - reflection
     added_by: "@claude"
+    created_at: 2026-02-28T16:29:27.938Z
   - _ulid: 01KJK3YZ9KSNY37H0RSAQ9DWMP
     text: "Add commit-scope guard for automated task work: before committing, detect pre-existing staged
       files unrelated to the current task and prevent accidental inclusion (or require explicit
       acknowledgment). In this iteration, unrelated staged files were included because they were
       already in the index before git add on task files."
-    created_at: 2026-02-28T21:55:04.627Z
     tags:
       - reflection
       - git
       - automation
     added_by: "@claude"
+    created_at: 2026-02-28T21:55:04.627Z
   - _ulid: 01KJK5XG971KKFAZS459CJCXM4
     text: tests/ralph.test.ts helper runRalph splits args on whitespace, so quoted values (e.g., --focus
       "keep scope narrow") break and cause misleading unknown-command/option failures. Improve
       helper to accept argv arrays or robust shell-like parsing for test args.
-    created_at: 2026-02-28T22:29:13.640Z
     tags:
       - reflection
       - testing
       - ralph
     added_by: "@claude"
+    created_at: 2026-02-28T22:29:13.640Z
   - _ulid: 01KJK84YECKCKEHK22B7HR76GT
     text: "Reflection: fix-cycle ergonomics mismatch — task-work guidance says 're-submit' needs_work
       tasks, but CLI rejects kspec task submit when status is needs_work and requires explicit kspec
       task start first. Consider allowing direct submit from needs_work (auto-transition to
       in_progress) or improving error/help text to show required two-step command sequence."
-    created_at: 2026-02-28T23:08:14.675Z
     tags:
       - reflection
       - cli
       - tasks
     added_by: "@claude"
+    created_at: 2026-02-28T23:08:14.675Z
   - _ulid: 01KJKDBKNYSC80EW2ZGEKCPGRT
     text: "tests/cli/session-note-limit.test.ts has reproducible timeout instability in current
       baseline. During this iteration: full npm test timed out at lines 34/70/104, and isolated run
       timed out at lines 34/104 despite rebuilding. This appears separate from ralph prompt changes
       and indicates session-start note-limit path/perf regression or test flake that should be
       stabilized."
-    created_at: 2026-03-01T00:39:15.902Z
     tags:
       - reflection
       - testing
       - sessions
     added_by: Jacob Chapel
+    created_at: 2026-03-01T00:39:15.902Z
   - _ulid: 01KJKKCBBK5Y366SEHGR9M38MT
     text: "Reflection: add file-based payload input to task notes (e.g., kspec task note @ref --file
       <path> and/or --stdin). Current command only accepts positional message, which makes
       multiline/special-character notes brittle and conflicts with the convention to use file-based
       payloads for safe shell handling."
-    created_at: 2026-03-01T02:24:31.604Z
     tags:
       - reflection
       - cli
       - tasks
     added_by: Jacob Chapel
+    created_at: 2026-03-01T02:24:31.604Z
   - _ulid: 01KJN5MB6E6DCF3VMTDHHJ1ZWQ
     text: "Fix pre-existing test failure: tests/enhanced-setup.test.ts 'should render core skills to
       codex output when codex is detected' fails with ENOENT on .codex/config.toml — test expects
       setup to create codex config but it is not being created. Confirmed pre-existing (not
       introduced by recent changes). Investigate whether codex config generation is missing or test
       fixture setup is incomplete."
-    created_at: 2026-03-01T17:02:42.383Z
     tags:
       - reflection
     added_by: "@claude"
+    created_at: 2026-03-01T17:02:42.383Z
   - _ulid: 01KJP2PBKPF711A0QE8XBW0SG1
     text: CLI has no way to reparent a spec item (move it under a different parent). kspec item set has
       no --parent flag, kspec item patch doesn't accept parent_ref. If plan import places specs at
       the wrong level, the only fix is manual YAML editing — violating the 'use CLI, not manual
       edits' rule. Discovered during agent-runtime plan import review.
-    created_at: 2026-03-02T01:30:37.046Z
     tags:
       - cli
       - spec-management
     added_by: "@claude"
+    created_at: 2026-03-02T01:30:37.046Z
   - _ulid: 01KJQWJQ88GX81DRJVDP7TMFRM
     text: "kspec shadow restore command: dedicated recovery for restoring sessions/, specific files, or
       snapshots from remote/commit without raw git. Prevents agents from cd-ing into .kspec/ for
       recovery (which poisons shell CWD). Needs design work — what restore scenarios to support, how
       to handle conflicts, UX for choosing recovery point."
-    created_at: 2026-03-02T18:22:15.305Z
     tags:
       - shadow
       - cli
       - dx
     added_by: "@claude"
+    created_at: 2026-03-02T18:22:15.305Z
   - _ulid: 01KJQWT3RKA1MHS9SJD2BT0ETF
     text: "kspec cleanup command: umbrella command that runs all stale-data cleanup in one shot —
       workflow prune (stale runs), session pruning (old blobs), maybe inbox triage of old items.
       Similar to 'docker system prune'. Could run on session start or as a standalone command. Would
       have prevented 40+ stale workflow runs accumulating."
-    created_at: 2026-03-02T18:26:17.492Z
     tags:
       - cli
       - dx
       - maintenance
     added_by: "@claude"
+    created_at: 2026-03-02T18:26:17.492Z
   - _ulid: 01KJR89E17N9ZFVEDEG04RJTEH
     text: Create a 'cli-utilities' skill (or similar) that documents shared CLI helpers —
       parseIntOption, exit codes, output helpers — with when/how to use each. Add a meta convention
       reinforcing 'check this skill before implementing new CLI commands'. Prevents agents from
       reaching for parseInt+isNaN when parseIntOption exists.
-    created_at: 2026-03-02T21:46:53.863Z
     tags:
       - cli
       - skills
     added_by: "@claude"
+    created_at: 2026-03-02T21:46:53.863Z
   - _ulid: 01KJR8HNZ6RXT4H97HB0WZ100K
     text: "CLI filter options must be backed by schema fields — Zod strips unknown fields on parse, so
       --tag filtering silently returned nothing because tags wasn't in AgentSchema. Consider a lint
       rule or convention: before adding a --filter-by-X option, verify X exists in the relevant
       schema."
-    created_at: 2026-03-02T21:51:24.135Z
     tags:
       - cli
       - schema
     added_by: "@claude"
+    created_at: 2026-03-02T21:51:24.135Z
   - _ulid: 01KJS1XVH2AV1JX8X1QT9RMFC3
     text: kspec commands should support manifest discovery from nested task worktrees (or accept
       explicit --project-root). Running kspec validate/note/submit from isolated worktrees (e.g.,
       /tmp task worktrees) fails with No kspec manifest found. KSPEC_SPEC_DIR env var exists for
       batch mode but general CLI commands dont use it. Reported from imgen project task-work
       automation.
-    created_at: 2026-03-03T05:14:57.442Z
     tags:
       - worktree
       - manifest
       - dx
       - automation
     added_by: "@claude"
+    created_at: 2026-03-03T05:14:57.442Z
   - _ulid: 01KJS1XVKM3TH3RBDTPW065MTB
     text: "kspec validate trait AC coverage: inherited trait AC annotations in provider tests (e.g., //
       AC: @trait-slug ac-N in test files) are present but still reported as uncovered.
       Parser/indexer may not recognize trait annotations in Vitest files or may require specific
       file patterns. Distinct from behavioral-vs-testable AC distinction (01KHYTNNFY) — this is
       about annotations that ARE in test code but not detected. Reported from imgen project."
-    created_at: 2026-03-03T05:14:57.524Z
     tags:
       - validate
       - traits
       - ac-coverage
       - bug
     added_by: "@claude"
+    created_at: 2026-03-03T05:14:57.524Z
   - _ulid: 01KJS6CJSNQD6DPQRR31FCWRP3
     text: "kspec batch atomic mode cannot resolve refs created within the same batch — e.g., item add
       creates @new-slug but item trait add @new-slug in the same batch fails with item not found.
       Workaround: split into separate commands. Consider deferred ref resolution within batch
       execution or explicit batch-local ID aliases."
-    created_at: 2026-03-03T06:32:54.325Z
     tags:
       - batch
       - dx
       - reflection
     added_by: "@claude"
+    created_at: 2026-03-03T06:32:54.325Z
   - _ulid: 01KJS6CJW0KB7WW3EAS57N7XC4
     text: kspec triage act has no bulk mode — no --all or --status triaged flag to execute all pending
       triage decisions at once. Processing 42 items required manually listing all 42 refs across 4
       batch calls. Add kspec triage act --all or kspec triage act --status triaged for bulk
       execution.
-    created_at: 2026-03-03T06:32:54.400Z
     tags:
       - triage
       - dx
       - reflection
     added_by: "@claude"
+    created_at: 2026-03-03T06:32:54.400Z
   - _ulid: 01KJTB75K1532350ZAG271VC3X
     text: Document acp-mock.js bidirectional RPC pattern in testing conventions — the
       MOCK_ACP_SEND_PERMISSION_REQUEST env var and the pending-requests map pattern for agent→client
       requests. Prevents future developers rediscovering this from scratch.
-    created_at: 2026-03-03T17:16:34.273Z
     tags:
       - testing
       - docs
       - reflection
     added_by: "@claude"
+    created_at: 2026-03-03T17:16:34.273Z
   - _ulid: 01KJTBAHJ6Z2R14KEWQ9PNKZ5C
     text: "CLI usage telemetry: track kspec commands at a per-user level — command name, arguments shape
       (metadata, not full call data), success/error outcomes, and error messages. Goal: surface
@@ -1204,167 +1204,167 @@ inbox:
       prioritize UX improvements. Distinguish metadata (command + flag names) from actual call data
       (values) for privacy. Could be opt-in or local-only (written to shadow branch alongside
       tasks)."
-    created_at: 2026-03-03T17:18:24.838Z
     tags:
       - cli
       - analytics
       - observability
       - idea
     added_by: "@claude"
+    created_at: 2026-03-03T17:18:24.838Z
   - _ulid: 01KJTP6AB8ZDDGWEC8H42CV0XW
     text: "Codex-only: capture harness guidance to close completed subagents proactively (or auto-close
       after waits) to avoid thread-limit stalls."
-    created_at: 2026-03-03T20:28:20.712Z
     tags:
       - reflection
       - codex
     added_by: Jacob Chapel
+    created_at: 2026-03-03T20:28:20.712Z
   - _ulid: 01KJTTJRPD26GASZAVBQHNM47C
     text: "Restore clean kspec validate baseline: resolve duplicate @observations references, fix
       missing observations skill content, and clear orphan-skill warnings so validation output can
       reliably signal task-specific issues."
-    created_at: 2026-03-03T21:45:02.925Z
     tags:
       - reflection
       - validation
       - meta
     added_by: Jacob Chapel
+    created_at: 2026-03-03T21:45:02.925Z
   - _ulid: 01KJTTZT4NXD2W4FAR5DF59V5C
     text: "Make setup smarter when creating built-in agents: detect environment and choose appropriate
       default adapters (e.g., codex-acp vs claude-agent-acp), and/or allow explicit adapter
       overrides during setup."
-    created_at: 2026-03-03T21:52:10.390Z
     tags:
       - setup
       - agents
       - adapter
     added_by: Jacob Chapel
+    created_at: 2026-03-03T21:52:10.390Z
   - _ulid: 01KJTXY4K27V9SC8KHMP3QE9ZE
     text: " auto-creates redundant tasks on promote — when promoting inbox items where the spec already
       exists (common in triage-from-artifact workflows), the auto-created task is always immediately
       deleted. Need a --no-task or --skip-task flag on triage act to suppress task creation when the
       spec is already handled."
-    created_at: 2026-03-03T22:43:41.282Z
     tags:
       - triage
       - friction
       - session-reflect
     added_by: "@claude"
+    created_at: 2026-03-03T22:43:41.282Z
   - _ulid: 01KJTXY74TFC48ZNS1VY352MDK
     text: No batch triage flow — recording and acting on N items requires 2N sequential commands (record
       + act for each). A batch-triage command or --act flag on triage record would let record+act
       happen in one pass. In a 29-item triage session, this adds significant overhead.
-    created_at: 2026-03-03T22:43:43.899Z
     tags:
       - triage
       - friction
       - session-reflect
     added_by: "@claude"
+    created_at: 2026-03-03T22:43:43.899Z
   - _ulid: 01KJTXY9NS1DHR04VY0NTQ6ZKK
     text: "kspec batch format for triage commands: args expects object but triage record uses positional
       ref — tried to batch-triage 11 items and hit validation error 'Expected object, received array
       at args'. Need either documentation of correct batch format for triage or fixing the args
       shape."
-    created_at: 2026-03-03T22:43:46.489Z
     tags:
       - batch
       - friction
       - session-reflect
     added_by: "@claude"
+    created_at: 2026-03-03T22:43:46.489Z
   - _ulid: 01KJTY4BRADKK8YZZXBK990KGE
     text: "Improve PR creation resilience: when gh pr create returns false-negative GraphQL errors
       (blank sha/no commits) but branch compare is ahead, automatically fall back to REST
       create-pull and report deterministic recovery."
-    created_at: 2026-03-03T22:47:05.226Z
     tags:
       - reflection
       - cli
       - pr
     added_by: Jacob Chapel
+    created_at: 2026-03-03T22:47:05.226Z
   - _ulid: 01KJV1PFA7018D2FC5G7AFZYFQ
     text: "pr-review: when reviewer account authored the PR, avoid GitHub APPROVE event and post COMMENT
       review with full quality-gate summary instead"
-    created_at: 2026-03-03T23:49:24.423Z
     tags:
       - reflection
       - pr-review
       - automation
     added_by: Jacob Chapel
+    created_at: 2026-03-03T23:49:24.423Z
   - _ulid: 01KJV1PFC8CDMHHJ646R1RB6WB
     text: "workflow UX: allow `kspec workflow show` to default to the single active run when run-ref is
       omitted"
-    created_at: 2026-03-03T23:49:24.488Z
     tags:
       - reflection
       - workflow
       - cli
     added_by: Jacob Chapel
+    created_at: 2026-03-03T23:49:24.488Z
   - _ulid: 01KJV35Z3HCQW0GK6W7YMM557X
     text: "Reflection: in pr-review loop, detect self-review context and post COMMENT summary instead of
       attempting APPROVE on own PR; keep quality-gate semantics explicit in review body."
-    created_at: 2026-03-04T00:15:20.689Z
     tags:
       - reflection
       - pr-review
       - workflow
     added_by: Jacob Chapel
+    created_at: 2026-03-04T00:15:20.689Z
   - _ulid: 01KJV4R7S4BQBS9CGQTVHC5PFY
     text: "pr-review loop: detect self-authored PR and avoid APPROVE event (GitHub forbids approving own
       PR); use COMMENT and continue merge path when quality gates are clean."
-    created_at: 2026-03-04T00:42:47.973Z
     tags:
       - reflection
       - pr-review
       - github
     added_by: Jacob Chapel
+    created_at: 2026-03-04T00:42:47.973Z
   - _ulid: 01KJVB7XMKE0Q08X7YC196GWPJ
     text: Add a fast local test mode for focused vitest runs that skips full pretest build during fix
       cycles.
-    created_at: 2026-03-04T02:36:13.331Z
     tags:
       - reflection
       - testing
       - devx
     added_by: Jacob Chapel
+    created_at: 2026-03-04T02:36:13.331Z
   - _ulid: 01KJVFDRCWYX9S41335NHP93JK
     text: Disambiguate automation status vs lifecycle status in @triage-automation docs. Add explicit
       note that automation:needs_review is an eligibility flag (not lifecycle
       pending_review/needs_work), and replace legacy 'Ralph loop' wording with dispatch-worker
       terminology.
-    created_at: 2026-03-04T03:49:18.876Z
     tags:
       - docs
       - automation
       - dispatch
       - terminology
     added_by: Jacob Chapel
+    created_at: 2026-03-04T03:49:18.876Z
   - _ulid: 01KJVFDRDG6DYJHQ0YJ3FSXRH6
     text: Update @plan-review dispatch section to avoid role overload with pr-reviewer. Use explicit
       plan-worker/plan-reviewer naming and note distinction from pr-reviewer (which owns
       pending_review merge workflow), to prevent queue ownership confusion.
-    created_at: 2026-03-04T03:49:18.896Z
     tags:
       - docs
       - plan-review
       - dispatch
       - reviewer
     added_by: Jacob Chapel
+    created_at: 2026-03-04T03:49:18.896Z
   - _ulid: 01KJVP7W2N189NDC4SMQHR18GM
     text: "Reflection: Improve task note readability by supporting filtered views for superseded history
       (for example latest-only and/or hide-superseded) to reduce stale guidance noise during
       implementation."
-    created_at: 2026-03-04T05:48:26.069Z
     tags:
       - reflection
       - cli
       - notes
     added_by: Jacob Chapel
+    created_at: 2026-03-04T05:48:26.069Z
   - _ulid: 01KJVY4MRHGP0V4ZH4QSMP0Q4M
     text: "Dispatch: add refresh command to re-bootstrap engine state without stopping/starting (reload
       agents + re-evaluate in_progress tasks)."
-    created_at: 2026-03-04T08:06:28.881Z
     tags: []
     added_by: Jacob Chapel
+    created_at: 2026-03-04T08:06:28.881Z
   - _ulid: 01KJS7BGC9GX1E66JYK3QDH8R3
     text: "kspec agent run produces no visible output: (1) runInvocation is called without onUpdate, so
       no streaming to stdout during execution. (2) kspec session log show does not display
@@ -1372,13 +1372,13 @@ inbox:
       default for interactive use), print text blocks as they arrive. Also: session log show should
       support a --output or --text mode that replays the assistant text from session.update events.
       Workaround: jq/python one-liner on events.jsonl."
-    created_at: 2026-03-03T06:49:47.657Z
     tags:
       - cli
       - dx
       - agent
       - ux
     added_by: "@claude"
+    created_at: 2026-03-03T06:49:47.657Z
   - _ulid: 01KJTBNHYM8CTAG9Q9SWY87W2M
     text: "Race condition: process.env.KSPEC_SESSION_ID mutation in invocation.ts is not safe for
       concurrent multi-project agent dispatch. invocation.ts saves/restores KSPEC_SESSION_ID in
@@ -1388,7 +1388,6 @@ inbox:
       process.env mutation remains as a race vector. Fix: either remove the process.env mutation
       entirely (rely solely on adapter config injection + spawn env), or add a process-level lock
       around the env mutation window."
-    created_at: 2026-03-03T17:24:25.685Z
     tags:
       - bug
       - agent
@@ -1396,66 +1395,67 @@ inbox:
       - multi-project
       - concurrency
     added_by: "@claude"
+    created_at: 2026-03-03T17:24:25.685Z
   - _ulid: 01KKB9X155J0DJ8PFQ6DAFDG25
     text: "CLI DX: audit and normalize argument naming across all subcommands. Inconsistencies found:
       task note uses positional <message> but plan note uses --text flag; item ac set vs expected
       item ac update; task set --depends-on requires array but gives poor error on comma-separated
       string. Evaluate entire CLI surface area for consistency or add aliases based on
       actual/expected usage patterns."
-    created_at: 2026-03-10T07:20:38.821Z
     tags:
       - cli
       - dx
     added_by: "@claude"
+    created_at: 2026-03-10T07:20:38.821Z
   - _ulid: 01KKCG5C5R4WHZ5YS0E7E9C1NP
     text: "kspec batch with task add throws TypeError: Cannot read properties of undefined (reading
       'replace'). Requires falling back to sequential CLI calls. Known issue documented in MEMORY.md
       but not tracked as a bug task."
-    created_at: 2026-03-10T18:29:18.137Z
     tags:
       - bug
       - cli
     added_by: "@claude"
+    created_at: 2026-03-10T18:29:18.137Z
   - _ulid: 01KKCG5C7VMDNYF288QWKGM92A
     text: "kspec item add --under @parent does not set the parent relationship on the created item.
       Workaround: use item set --relates-to after creation. Needs investigation."
-    created_at: 2026-03-10T18:29:18.203Z
     tags:
       - bug
       - cli
     added_by: "@claude"
+    created_at: 2026-03-10T18:29:18.203Z
   - _ulid: 01KKD19GBG0WM588Z8TYR04PCE
     text: "Smart test filtering: run only tests affected by branch changes. Vitest --changed works for
       direct imports but misses CLI subprocess integration tests (majority of suite). Would need
       custom dependency graph that maps source files → test files including subprocess boundaries.
       Goal: faster agent feedback loops. See conversation analysis for full tradeoffs."
-    created_at: 2026-03-10T23:28:39.280Z
     tags:
       - infra
       - testing
       - post-mvp
     added_by: "@claude"
+    created_at: 2026-03-10T23:28:39.280Z
   - _ulid: 01KKDD9MBX12362C08K0Z6PKRT
     text: Session lifecycle management — add kspec session archive/purge commands. Sessions accumulate
       fast with dispatch (842 in ~2 months). Need age-based filtering (--before date), format/agent
       filtering (--agent id), dry-run preview, and configurable retention policy. Currently requires
       manual mv/rm. Mining script at ~/Projects/kspec-session-archive/mine-sessions.py can inform
       what's worth keeping vs purging.
-    created_at: 2026-03-11T02:58:26.301Z
     tags:
       - cli
       - sessions
       - dx
     added_by: "@claude"
+    created_at: 2026-03-11T02:58:26.301Z
   - _ulid: 01KKERNEEY3VWJABDM620YN1P9
     text: plan set should support --derived-tasks and --derived-specs flags to link work items without
       manual YAML edits. Currently requires bypassing the shadow branch pre-commit hook to populate
       these fields.
-    created_at: 2026-03-11T15:36:22.239Z
     tags:
       - cli
       - plan
     added_by: "@claude"
+    created_at: 2026-03-11T15:36:22.239Z
   - _ulid: 01KKF402MAHT1EMR1MEF3X75C6
     text: >-
       Dispatch queue does not sort by task priority (p1-p5). _compareQueueEntries sorts by status
@@ -1472,11 +1472,11 @@ inbox:
       Implementation matches spec — _compareQueueEntries sorts by STATUS_PRECEDENCE then FIFO
       (enqueue sequence). Fix: add AC to @dispatch-in-progress-priority requiring priority as
       secondary sort within each status bucket.
-    created_at: 2026-03-11T18:54:24.906Z
     tags:
       - dispatch
       - bug
     added_by: "@claude"
+    created_at: 2026-03-11T18:54:24.906Z
   - _ulid: 01KKFH3AZS3J258JVM3ZA8KQ3C
     text: "Improve discoverability/docs for editing and updating skills across the full pipeline.
       Current flow is hard to infer: core skills authored in templates/skills/ behave differently
@@ -1486,29 +1486,29 @@ inbox:
       install-core/update vs setup, how plugin-provided skills affect diff/verify behavior, and the
       expected regeneration steps after editing templates/skills/, .kspec/skills/, or rendered
       outputs."
-    created_at: 2026-03-11T22:43:23.257Z
     tags:
       - reflection
       - skills
       - docs
     added_by: Jacob Chapel
+    created_at: 2026-03-11T22:43:23.257Z
   - _ulid: 01KKFKT5TBTDEBHJW3D194V0PV
     text: plan import --into leaves source_path pointing at the temporary import file instead of
       reflecting the updated plan provenance or clearing stale file paths
-    created_at: 2026-03-11T23:30:48.779Z
     tags:
       - planning
       - bug
       - metadata
     added_by: Jacob Chapel
+    created_at: 2026-03-11T23:30:48.779Z
   - _ulid: 01KKFZD1TGR3YKR1DC8J2GQESR
     text: plan derive uses an explicit --module value to materialize specs, but the resulting plan
       record does not persist module_ref. The derive mutation updates status/derived refs/notes but
       leaves module_ref null, which weakens provenance and forces future derives or audits to
       rediscover the module context.
-    created_at: 2026-03-12T02:53:21.617Z
     tags: []
     added_by: Jacob Chapel
+    created_at: 2026-03-12T02:53:21.617Z
   - _ulid: 01KKHF53QMEE4FPJEXYJV7874X
     text: "GitHub Actions maintenance: fix Node.js 20 deprecation warnings in workflows. PR checks now
       show that actions/github-script@v7 is running on Node.js 20, which GitHub says will be forced
@@ -1516,16 +1516,16 @@ inbox:
       affected actions to Node 24-compatible versions or set FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true
       / ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true as an interim compatibility step where
       appropriate."
-    created_at: 2026-03-12T16:47:53.076Z
     tags: []
     added_by: Jacob Chapel
+    created_at: 2026-03-12T16:47:53.076Z
   - _ulid: 01KKJ0MSEWNKQDBTMG1QTZF509
     text: Add a public `kspec plan delete` command. Internal deletePlan support exists in the parser
       layer, but there is no CLI surface for deleting invalid/test/duplicate plans, which forced
       cleanup work to use internal APIs instead of the normal kspec workflow.
-    created_at: 2026-03-12T21:53:32.636Z
     tags: []
     added_by: Jacob Chapel
+    created_at: 2026-03-12T21:53:32.636Z
   - _ulid: 01KKK1TYYFP3S6R2GRD59B4N8T
     text: "Tests/fixtures should stop relying on broken-shadow fallback behavior. Several suites use
       setupTempFixtures()+initGitRepo(), which leaves copied .kspec directories without a real
@@ -1533,21 +1533,21 @@ inbox:
       mode. Follow-up: make test fixtures explicit about shadow mode vs non-shadow mode, add helper
       support for initializing real shadow repos when needed, and update affected tests to stop
       depending on disconnected .kspec directories."
-    created_at: 2026-03-13T07:33:37.871Z
     tags:
       - tests
       - shadow
       - fixtures
     added_by: Jacob Chapel
+    created_at: 2026-03-13T07:33:37.871Z
   - _ulid: 01KKM8Y2TKS97PZ89YGP0AZT8H
     text: Rewrite tests that assert on static prompt outputs (like dispatch orientation context) to
       focus on unique/dynamic parts being inserted correctly rather than matching full static
       strings. Fragile prompt assertion tests break on any formatting change.
-    created_at: 2026-03-13T18:56:54.611Z
     tags:
       - cli
       - testing
     added_by: "@claude"
+    created_at: 2026-03-13T18:56:54.611Z
   - _ulid: 01KKMJYM45E0CPNJVVXG66X2PZ
     text: Workspace registry management UI and CLI — expose dispatch workspace records
       (project.dispatch-workspaces.yaml) through both the web UI and CLI commands. Enable viewing,
@@ -1555,85 +1555,85 @@ inbox:
       bootstrap state, forcing re-provisioning) without manual YAML surgery. Motivated by daemon
       crash leaving a stale reviewer worktree record that blocked dispatch with no self-service
       recovery path.
-    created_at: 2026-03-13T21:51:58.086Z
     tags:
       - dispatch
       - cli
       - web-ui
     added_by: "@claude"
+    created_at: 2026-03-13T21:51:58.086Z
   - _ulid: 01KKNDFSNZ288SA77WFXPQ0HX6
     text: "Skill/workflow name collision: local-review exists as both a workflow (in meta) and a skill
       (in skills list). skill get local-review fails with 'Item local-review is not a skill' because
       the resolver finds the workflow first. skill render local-review also fails. This means the
       hardened local-review SKILL.md content may not be reaching agents that reference
       /local-review. Discovered during be-kynetic PR review audit."
-    created_at: 2026-03-14T05:35:43.807Z
     tags:
       - bug
       - skill-resolution
     added_by: "@claude"
+    created_at: 2026-03-14T05:35:43.807Z
   - _ulid: 01KKNQZ63EQE20TJDNQ2HYK004
     text: Add plan output CLI option to suppress specs/tasks YAML blocks — when agents use plan
       commands, the full specs and tasks blocks spam the output. Add a flag (e.g. --summary or
       --no-blocks) that shows plan details relevant to the task at hand without the raw YAML
       spec/task definitions. Useful for agent prompts and task-work sessions where the agent needs
       the plan context but not the import-format blocks.
-    created_at: 2026-03-14T08:38:53.807Z
     tags:
       - cli
       - plan
       - agent-ux
     added_by: "@claude"
+    created_at: 2026-03-14T08:38:53.807Z
   - _ulid: 01KKQD6BTSKP1M40MSA6ZGWRHE
     text: kspec validate does not scan monorepo package test directories (e.g.
       packages/backend/__tests__/) for AC annotations — only scans tests/ at repo root. This causes
       false 'uncovered trait AC' warnings in projects with monorepo structures. Need test_paths
       config or recursive scanning.
-    created_at: 2026-03-15T00:09:03.578Z
     tags:
       - bug
       - validate
     added_by: "@claude"
+    created_at: 2026-03-15T00:09:03.578Z
   - _ulid: 01KKQSA39WYM55BREEXP8S5728
     text: Plan derive does not carry implementation_notes from plan task definitions into the created
       task descriptions. Had to manually set descriptions on all 11 tasks after derive. The
       implementation_notes field in plan YAML is parsed but not mapped to task.description during
       derive.
-    created_at: 2026-03-15T03:40:48.828Z
     tags:
       - cli
       - plan
     added_by: "@claude"
+    created_at: 2026-03-15T03:40:48.828Z
   - _ulid: 01KKQSRQADYB6JJ7ARDK9PCFSD
     text: "Worktree guard blocks git push from within kspec worktrees even though push is safe.
       Workaround: push from main repo via git push origin <branch>. Guard should allow push
       operations — only reset/rebase/clean are genuinely dangerous to session state."
-    created_at: 2026-03-15T03:48:48.077Z
     tags:
       - bug
       - worktree-guard
     added_by: "@claude"
+    created_at: 2026-03-15T03:48:48.077Z
   - _ulid: 01KKR5PY7HZDRQGD9J1XD2C08A
     text: "SUGGESTION from PR #873: ws-invalidation module subscribes to topic 'tasks' but daemon
       broadcasts on 'tasks:updates'. Exact-match semantics in pubsub.ts means centralized WS
       invalidation for task/item/inbox queries never fires. Affects all TanStack Query migrated
       pages. Fix: align topic names between daemon broadcast and ws-invalidation subscribe."
-    created_at: 2026-03-15T07:17:32.529Z
     tags:
       - web-ui
       - bug
     added_by: "@claude"
+    created_at: 2026-03-15T07:17:32.529Z
   - _ulid: 01KKRWCKBMVK7EE4QXB7QNRVM8
     text: Session detail page triggers HTTP polling (/events?since_seq=N) on every WebSocket text chunk
       (debounced 3s) even though text chunks are for live streaming only. HTTP refresh should only
       trigger on agent_invocation lifecycle events, not text chunks. Also session events use manual
       fetch, not TanStack Query — bypasses cache/dedup infrastructure.
-    created_at: 2026-03-15T13:53:50.964Z
     tags:
       - web-ui
       - performance
       - tanstack-query
     added_by: "@claude"
+    created_at: 2026-03-15T13:53:50.964Z
   - _ulid: 01KKSGTNTQXYWGY4X0C7FNSVM5
     text: "Orphaned bun daemon processes from test runs — two root causes: (1) cli-serve.test.ts:583
       installed-package test starts daemon in isolated temp root but stop is mid-test-body, not in
@@ -1642,28 +1642,28 @@ inbox:
       PidFileManager(kspecDir) but PidFileManager expects config dir, while serve start/stop use
       ~/.config/kspec, so auto-start checks wrong pid file and can spawn duplicates. E2E fixture
       (test-base.ts:217) is safe — it stops in teardown."
-    created_at: 2026-03-15T19:51:03.768Z
     tags:
       - bug
       - testing
       - daemon
     added_by: "@claude"
+    created_at: 2026-03-15T19:51:03.768Z
   - _ulid: 01KKT10X5JS0Y3883M8HFBMZCR
     text: "Batch arg naming inconsistency: item ac add uses 'id' but item ac remove uses 'acId' for the
       same AC identifier parameter. Should be consistent across subcommands."
-    created_at: 2026-03-16T00:34:05.106Z
     tags:
       - cli
       - batch
     added_by: "@claude"
+    created_at: 2026-03-16T00:34:05.106Z
   - _ulid: 01KKT8W615Z6Z2SXG22RFXHA4Z
     text: "Plan lint command (kspec plan lint) — semantic diagnostics for plan documents: spec-task
       coverage gaps, dependency validity, orphan specs, priority inversions. Standalone for draft
       review, also callable from plan import --dry-run. Dry-run stays focused on import mechanics
       (what gets created), lint focuses on plan quality (is this well-structured)."
-    created_at: 2026-03-16T02:51:18.949Z
     tags: []
     added_by: "@claude"
+    created_at: 2026-03-16T02:51:18.949Z
   - _ulid: 01KKW3VQ7QBRDPX0AHBSM52A57
     text: Shadow branch commit messages could carry richer detail for auditability — e.g. field names
       changed in task-set, old/new status in transitions, review verdict details in
@@ -1673,12 +1673,12 @@ inbox:
       happened. Separate effort from the ref consistency fix — this is about enriching content, not
       fixing missing refs. Consider a spec under @trait-shadow-commit or a new requirement for
       structured commit messages with field-level change details.
-    created_at: 2026-03-16T20:02:09.783Z
     tags:
       - cli
       - schema
       - auditability
     added_by: "@claude"
+    created_at: 2026-03-16T20:02:09.783Z
   - _ulid: 01KKW7JKXEYM7F2Q8AN3R5A5EY
     text: "Plan text drifts from reality after post-derive edits to specs/tasks via CLI. Options: (1)
       stop storing raw YAML after derive and reconstruct via plan export from bound specs/tasks, (2)
@@ -1686,29 +1686,41 @@ inbox:
       sections from current spec/task state. The derive-is-final design is intentional — the
       question is how to keep the plan artifact useful as a reference after specs/tasks evolve
       independently."
-    created_at: 2026-03-16T21:07:05.775Z
     tags:
       - plan
       - cli
     added_by: "@claude"
+    created_at: 2026-03-16T21:07:05.775Z
   - _ulid: 01KKW7JM009ZAVDEQAMM48RC77
     text: Plan working files should use .kspec/artifacts/ (ephemeral storage) instead of root plans/
       directory. This avoids checkpoint hook flagging transient files as uncommitted changes. Update
       /kspec:plan skill to reference .kspec/artifacts/ as the working directory for plan
       import/export workflows.
-    created_at: 2026-03-16T21:07:05.856Z
     tags:
       - plan
       - cli
       - docs
     added_by: "@claude"
+    created_at: 2026-03-16T21:07:05.856Z
   - _ulid: 01KKW7JM22STNM216JC727W3W0
     text: Test runner (scripts/test.cjs) should default to writing full log to a temp file and showing
       lighter output (errors only + summary). Full log available for analysis without rerunning.
       Currently agents rerun the full suite multiple times with different reporter flags to find
       failures, which wastes minutes each time.
-    created_at: 2026-03-16T21:07:05.922Z
     tags:
       - testing
       - dx
     added_by: "@claude"
+    created_at: 2026-03-16T21:07:05.922Z
+  - _ulid: 01KKWCEPAFKA3232W433KPDVMM
+    text: "review add --base/--head flags override --subject-type, silently creating code subjects when
+      task subject was intended. parseSubjectFromOptions checks options.base before subjectType, so
+      passing version context for a task review creates the wrong subject type. Consider: separate
+      --version-base/--version-head from --base/--head, or validate that --base/--head are
+      incompatible with --subject-type task."
+    tags:
+      - cli
+      - reviews
+      - bug
+    added_by: "@claude"
+    created_at: 2026-03-16T22:32:20.047Z
