@@ -101487,7 +101487,10 @@
       supersedes: null
   todos: []
   automation: eligible
-- title: Enforce canonical field ordering in YAML serialization
+- _ulid: 01KKVW67Z85EXPGXYW7Z3BQ1EF
+  slugs: []
+  title: Enforce canonical field ordering in YAML serialization
+  type: task
   description: >-
     toYaml() in src/parser/yaml.ts uses sortMapEntries: false, relying on JS object insertion order
     to keep _ulid first. This is fragile — any code path that reconstructs objects with different
@@ -101504,20 +101507,17 @@
 
 
     Applies to all .kspec/ YAML files: project.tasks.yaml, project.inbox.yaml, modules/*.yaml.
-  type: task
-  spec_ref: null
+  spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 2
-  slugs: []
   tags:
     - cli
     - schema
-  depends_on: []
-  _ulid: 01KKVW67Z85EXPGXYW7Z3BQ1EF
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-16T17:48:05.992Z
   notes: []
