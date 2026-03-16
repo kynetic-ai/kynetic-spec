@@ -7724,6 +7724,35 @@ observations:
     author: "@claude"
     resolved: false
     resolution: null
+  - _ulid: 01KKTWGEC573CA2VF0F1VG2XDJ
+    type: friction
+    content: "Plugin cache staleness after npm link: ~/.claude/plugins/cache/ serves old skill content
+      even after rebuild + npm link + /reload-plugins. Required manual cache replacement. Need
+      either a cache-bust mechanism in the plugin reload flow, or a kspec command to update the
+      cache."
+    created_at: 2026-03-16T08:34:25.797Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KKTWGEGCD7ZVH2CYJZT6133Z
+    type: friction
+    content: "Review re-review cycle overhead: each plan review round required close old review, create
+      new, open new (3 commands). A kspec review reopen or kspec review new-round shortcut that
+      creates a linked follow-up review would reduce friction for iterative review workflows."
+    created_at: 2026-03-16T08:34:25.933Z
+    author: "@claude"
+    resolved: false
+    resolution: null
+  - _ulid: 01KKTWGEKK35SRJHRPX8P5JD1P
+    type: success
+    content: "Agent-as-reviewer for plans: spawning review agents that verify implementation details
+      (function names, file paths, route patterns) against the actual codebase caught 3 blockers in
+      round 3 and 3 more in round 7 that would have been painful during implementation. The review
+      skill + kspec review CLI provided enough structure for agents to produce actionable findings."
+    created_at: 2026-03-16T08:34:26.035Z
+    author: "@claude"
+    resolved: false
+    resolution: null
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     _type: skill
