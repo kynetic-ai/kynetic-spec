@@ -614,6 +614,22 @@ features:
         given: KSPEC_SPEC_DIR env var is set (batch atomic mode)
         when: initContext() runs
         then: config is still loaded from the real project root, not the temp spec dir
+      - id: ac-hooks-section
+        given: A kspec.config.yaml with a hooks section
+        when: kspec setup reads hook preferences
+        then: Each hook (checkpoint, prompt-check) can be independently enabled or disabled.
+      - id: ac-hooks-missing-keys
+        given: The hooks section exists but a specific hook key is absent
+        when: kspec setup determines installation for that hook
+        then: "The hook resolves to its default (prompt-check: enabled, checkpoint: disabled)."
+      - id: ac-hooks-no-config
+        given: No hooks section exists in kspec.config.yaml, or the config file is absent
+        when: kspec setup determines hook installation
+        then: All hooks resolve to their defaults.
+      - id: ac-hooks-validation
+        given: A hooks section contains an invalid value
+        when: kspec setup reads the configuration
+        then: A validation error is reported identifying the invalid field.
     depends_on: []
     implements: []
     relates_to: []
