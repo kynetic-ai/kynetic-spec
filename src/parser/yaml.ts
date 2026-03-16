@@ -4,6 +4,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { ulid } from "ulid";
 import * as YAML from "yaml";
+import type { Pair } from "yaml";
 import { withFileLock } from "./file-lock.js";
 import {
   accessBufferAware,
@@ -127,11 +128,106 @@ export function parseYaml<T>(content: string): T {
  * causes lines containing only spaces to grow. We post-process the output to filter
  * these whitespace-only lines. See: https://github.com/eemeli/yaml - stringifyString.ts
  */
+
+/**
+ * Canonical key priority tiers for YAML serialization.
+ * Keys are sorted by tier first, then alphabetically within each tier.
+ * _ulid is always first (tier 0). Keys not listed default to tier 50.
+ */
+const KEY_PRIORITY: Record<string, number> = {
+  // Tier 0: ULID — always first for record boundary detection
+  _ulid: 0,
+
+  // Tier 1: Identity fields
+  slugs: 1,
+  title: 2,
+  type: 3,
+
+  // Tier 2: Content / description
+  description: 10,
+  text: 10,
+  content: 10,
+
+  // Tier 3: Spec relationships
+  spec_ref: 15,
+  derivation: 16,
+  meta_ref: 17,
+  plan_ref: 18,
+  origin: 19,
+
+  // Tier 4: Status / state
+  status: 20,
+  maturity: 20,
+  blocked_by: 21,
+  closed_reason: 22,
+  disposition: 23,
+
+  // Tier 5: Relationships
+  depends_on: 25,
+  context: 26,
+  implements: 27,
+  relates_to: 28,
+  tests: 29,
+  traits: 30,
+  supersedes: 31,
+  acceptance_criteria: 32,
+
+  // Tier 6: Work metadata
+  priority: 35,
+  complexity: 36,
+  tags: 37,
+  assignee: 38,
+
+  // Tier 7: VCS / review
+  vcs_refs: 40,
+  review_url: 41,
+  review_ref: 42,
+  submission_linkage: 43,
+  session_id: 44,
+
+  // Tier 8: Timestamps
+  created: 60,
+  created_at: 60,
+  created_by: 61,
+  started_at: 62,
+  submitted_at: 63,
+  completed_at: 64,
+  updated_at: 65,
+  acted_at: 66,
+  deprecated_in: 67,
+  superseded_by: 68,
+  verified_at: 69,
+  verified_by: 70,
+
+  // Tier 9: Audit / append-only
+  notes: 80,
+  todos: 81,
+
+  // Tier 10: Automation / config
+  automation: 90,
+  traceability: 91,
+};
+
+/**
+ * Compare two YAML map entries for canonical field ordering.
+ * _ulid is always first. Known keys are ordered by priority tier,
+ * with alphabetical tiebreaking within the same tier.
+ * Unknown keys sort after tier 50 (alphabetically among themselves).
+ */
+export function canonicalKeyComparator(a: Pair, b: Pair): number {
+  const aKey = String(a.key);
+  const bKey = String(b.key);
+  const aPriority = KEY_PRIORITY[aKey] ?? 50;
+  const bPriority = KEY_PRIORITY[bKey] ?? 50;
+  if (aPriority !== bPriority) return aPriority - bPriority;
+  return aKey.localeCompare(bKey);
+}
+
 export function toYaml(obj: unknown): string {
   let yamlString = YAML.stringify(obj, {
     indent: 2,
     lineWidth: 100,
-    sortMapEntries: false,
+    sortMapEntries: canonicalKeyComparator,
   });
 
   // Post-process to fix yaml library blank line accumulation bug.
