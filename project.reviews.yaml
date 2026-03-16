@@ -2314,7 +2314,15 @@ reviews:
           head_commit: be7a988ce9d990284148d7f03083d7914ef3c15e
         created_at: 2026-03-16T16:16:31.016Z
         completed_at: 2026-03-16T16:16:31.016Z
-    verdicts: []
+    verdicts:
+      - reviewer: claude-reviewer@kspec
+        role: reviewer
+        decision: request_changes
+        applies_to_version:
+          type: code_compare
+          base_commit: c09189ec7386070eb3b6331251bf123e29698e81
+          head_commit: be7a988ce9d990284148d7f03083d7914ef3c15e
+        created_at: 2026-03-16T16:16:39.351Z
     events:
       - _ulid: 01KKVPK4EFE07WG8S22ZYFR99B
         event_type: lifecycle_change
@@ -2357,7 +2365,13 @@ reviews:
         payload:
           name: kspec-validate
           status: pass
+      - _ulid: 01KKVPYSY72BJCYKHXTEYE368N
+        event_type: verdict_submitted
+        actor: claude-reviewer@kspec
+        timestamp: 2026-03-16T16:16:39.367Z
+        payload:
+          decision: request_changes
     notes: []
     external_links: []
     created_at: 2026-03-16T16:10:16.911Z
-    updated_at: 2026-03-16T16:16:31.016Z
+    updated_at: 2026-03-16T16:16:39.351Z
