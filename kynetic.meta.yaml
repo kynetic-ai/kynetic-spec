@@ -7931,45 +7931,6 @@ skills:
     depends_on: []
     tags: []
     allowed_tools: []
-  - _ulid: 01KJEYQ2RZMF1BM1J5KG3G4JC4
-    _type: skill
-    id: local-review
-    name: local-review
-    description: Pre-PR quality review - verify AC coverage, test quality, E2E preference, and test isolation.
-    origin: project
-    platforms:
-      - claude-code
-      - codex
-    depends_on: []
-    tags: []
-    allowed_tools: []
-  - _ulid: 01KJEYQW5E3GES6RV21AR7JDQP
-    _type: skill
-    id: pr
-    name: pr
-    description: Create a pull request from current work. Handles branch creation, commits, push, and PR
-      creation. Detects branch protection and guides through the PR workflow.
-    origin: project
-    platforms:
-      - claude-code
-      - codex
-    depends_on: []
-    tags: []
-    allowed_tools: []
-  - _ulid: 01KJEYQX3W594DYQAJDW12ASQX
-    _type: skill
-    id: pr-review
-    name: pr-review
-    description: Review a PR linked to a kspec task, post findings as inline comments, and merge only
-      when all quality gates pass. You NEVER fix code — you review and comment. If issues found,
-      kick back to worker.
-    origin: project
-    platforms:
-      - claude-code
-      - codex
-    depends_on: []
-    tags: []
-    allowed_tools: []
   - _ulid: 01KJEYQY32N7Q062D91P3W34ST
     _type: skill
     id: release
@@ -8036,20 +7997,6 @@ skills:
     platforms:
       - droid
       - /tmp/tmp.OuD6TXPJvr
-    depends_on: []
-    tags: []
-    allowed_tools: []
-  - _ulid: 01KKQARZBMX2DSCAQXTKHK0ZM9
-    _type: skill
-    id: review-principles
-    name: Review Principles
-    description: Foundational code review principles — adversarial investigation, cognitive bias
-      countermeasures, structured exploration, anti-rubber-stamping. Building block for pr-review
-      and local-review.
-    origin: project
-    platforms:
-      - claude-code
-      - codex
     depends_on: []
     tags: []
     allowed_tools: []
