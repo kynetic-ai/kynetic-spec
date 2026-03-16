@@ -3145,6 +3145,18 @@ reviews:
         runner: grep
         created_at: 2026-03-16T21:38:15.992Z
         completed_at: 2026-03-16T21:38:15.992Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: ccc37fbb707d6094c607b58b390bc22ea4197a24
+          head_commit: 1f16d6c097c383806c4898cddd2e68a626aa419b
+        evidence: No new validation errors. 3 pre-existing reference errors in meta.yaml unrelated to this
+          change.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-16T21:38:26.026Z
+        completed_at: 2026-03-16T21:38:26.026Z
     events:
       - _ulid: 01KKW9ABKQZPFDQSYXPSXHK43R
         actor: "@claude"
@@ -3180,6 +3192,13 @@ reviews:
           status: pass
           name: stale-refs
         timestamp: 2026-03-16T21:38:16.026Z
+      - _ulid: 01KKW9C04N98XF879E6D2T7E08
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-16T21:38:26.070Z
     external_links: []
     lifecycle_state: open
     related_refs: []
@@ -3202,5 +3221,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-16T21:37:32.280Z
-    updated_at: 2026-03-16T21:38:15.992Z
+    updated_at: 2026-03-16T21:38:26.026Z
     notes: []
