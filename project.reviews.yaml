@@ -2778,7 +2778,25 @@ reviews:
       content_hash: ""
     author: "@claude"
     related_refs: []
-    threads: []
+    threads:
+      - _ulid: 01KKW4Q3EV9HJ5ZXVB9R5PEAEJ
+        kind: question
+        anchor:
+          type: structured
+          section: Review Lifecycle
+        entries:
+          - _ulid: 01KKW4Q3EVVKYHBS1S9V53ZXJ3
+            author: "@claude"
+            body: "Prior blocker verification: The plan adds spec @review-record-per-cycle-lifecycle with AC
+              describing the per-cycle model. Task @task-rewrite-review-lifecycle-ac3 rewrites the
+              conflicting ac-3 on @review-verdicts-and-resolution-lifecycle. The dependency chain
+              ensures the rewrite happens before per-cycle implementation. However, the new spec's
+              ac-1 says \"the review record automatically transitions from open to closed\" on
+              verdict — this auto-close behavior is new and goes beyond the existing spec's scope.
+              Confirm this is intentional new behavior, not just a spec alignment. (It appears
+              intentional based on the task description for @task-auto-close-review-on-verdict which
+              explains the rationale clearly.)"
+            created_at: 2026-03-16T20:17:07.035Z
     checks: []
     verdicts: []
     events:
@@ -2795,7 +2813,14 @@ reviews:
         payload:
           from: draft
           to: open
+      - _ulid: 01KKW4Q3FXVKBKZG1RVFE07DJC
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T20:17:07.069Z
+        payload:
+          thread_ulid: 01KKW4Q3EV9HJ5ZXVB9R5PEAEJ
+          kind: question
     notes: []
     external_links: []
     created_at: 2026-03-16T20:16:07.556Z
-    updated_at: 2026-03-16T20:16:16.898Z
+    updated_at: 2026-03-16T20:17:07.035Z
