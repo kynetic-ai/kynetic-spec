@@ -2278,6 +2278,19 @@ reviews:
               the core behavior the task implements — without tests, there's no regression guard if
               the resolution logic changes."
             created_at: 2026-03-16T16:16:07.212Z
+      - _ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
+        kind: question
+        entries:
+          - _ulid: 01KKVPY3V0CD7J279PWWQJWEXE
+            author: "@claude"
+            body: Task has no spec_ref and kspec validate flags it as 'automation without spec'. The
+              @dispatch-workspace-configuration spec covers base_branch and worktree_root but not
+              publication_mode. Consider extending that spec with a new AC for publication_mode
+              config (e.g., 'Given kspec.config.yaml sets dispatch.publication_mode to manual_merge,
+              When a task workspace is provisioned, Then the workspace uses manual_merge publication
+              regardless of gh CLI availability'). Not blocking since this task was created
+              standalone, but spec coverage would be valuable for future trait AC verification.
+            created_at: 2026-03-16T16:16:16.736Z
     checks: []
     verdicts: []
     events:
@@ -2301,7 +2314,14 @@ reviews:
         payload:
           thread_ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
           kind: blocker
+      - _ulid: 01KKVPY3VNRWJC8J9TKQBYKY01
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T16:16:16.757Z
+        payload:
+          thread_ulid: 01KKVPY3V0YHQ368GW0XCDK0KE
+          kind: question
     notes: []
     external_links: []
     created_at: 2026-03-16T16:10:16.911Z
-    updated_at: 2026-03-16T16:16:07.212Z
+    updated_at: 2026-03-16T16:16:16.736Z
