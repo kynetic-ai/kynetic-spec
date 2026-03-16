@@ -100378,6 +100378,7 @@
         - The hook installation in kspec setup — that's a separate task
       supersedes: null
   todos: []
+  automation: eligible
 - _ulid: 01KKT042895JSK5GS951Z5F1BR
   slugs: []
   title: Add hooks configuration to kspec.config.yaml and setup
@@ -100497,3 +100498,4 @@
         checks.
       supersedes: null
   todos: []
+  automation: eligible
