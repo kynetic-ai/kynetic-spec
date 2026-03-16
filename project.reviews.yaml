@@ -582,6 +582,30 @@ reviews:
               Recommendation: Add traits field to both specs in the plan. At minimum
               @trait-json-output and @trait-error-guidance for the API spec.
             created_at: 2026-03-16T07:33:18.166Z
+      - _ulid: 01KKTS0T2XHES1CMW4P2EY03T7
+        kind: nit
+        entries:
+          - _ulid: 01KKTS0T2XF5XAHKK45DHC8VR8
+            author: "@claude"
+            body: >-
+              **Task ordering is correct but missing a shared-types dependency step.**
+
+
+              The two tasks have the right dependency: web UI depends on daemon API. However, if
+              shared types (ReviewSummary, ReviewDetail, etc.) need to be defined in
+              @kynetic-ai/shared before either can be fully implemented, there's an implicit third
+              piece of work that should be either: (a) called out as part of the daemon API task, or
+              (b) a separate prerequisite task.
+
+
+              The existing plans route imports PlanSummary and PlanDetail from the shared package.
+              The review routes will need analogous types. This is a minor scope item but should be
+              explicit.
+
+
+              Recommendation: Add a note or expand the daemon API task scope to include shared type
+              definitions.
+            created_at: 2026-03-16T07:33:27.774Z
     checks: []
     verdicts: []
     events:
@@ -654,7 +678,14 @@ reviews:
         payload:
           thread_ulid: 01KKTS0GPPH0KPX50K1NZ4H7FF
           kind: blocker
+      - _ulid: 01KKTS0T354X8Z978TQ1MCJG9R
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:33:27.782Z
+        payload:
+          thread_ulid: 01KKTS0T2XHES1CMW4P2EY03T7
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:29:52.508Z
-    updated_at: 2026-03-16T07:33:18.166Z
+    updated_at: 2026-03-16T07:33:27.774Z
