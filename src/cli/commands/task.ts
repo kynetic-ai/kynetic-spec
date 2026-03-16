@@ -839,6 +839,9 @@ export function registerTaskCommands(program: Command): void {
           }
         }
 
+        // Load review records once — used for both active review display and activity timeline
+        const allReviews = await loadReviewRecords(ctx);
+
         // AC: @review-cli-task-linkage ac-1 — resolve active review for task
         let activeReview: {
           ref: string;
@@ -847,9 +850,8 @@ export function registerTaskCommands(program: Command): void {
           disposition: string;
         } | null = null;
         if (foundTask.review_ref) {
-          const reviews = await loadReviewRecords(ctx);
           const { computeDisposition } = await import("../../parser/index.js");
-          const found = findReviewByRef(reviews, foundTask.review_ref);
+          const found = findReviewByRef(allReviews, foundTask.review_ref);
           if (found) {
             activeReview = {
               ref: `@${found.slugs[0] || found._ulid}`,
@@ -870,10 +872,8 @@ export function registerTaskCommands(program: Command): void {
           activity = normalizeTaskActivity(rawCommits);
 
           // AC: @task-activity-timeline ac-3 — merge review events into timeline
-          const reviews = await loadReviewRecords(ctx);
           const taskRef = `@${foundTask.slugs[0] || foundTask._ulid}`;
-          const taskUlid = foundTask._ulid;
-          const linkedReviews = reviews.filter(
+          const linkedReviews = allReviews.filter(
             (r) =>
               r.related_refs.includes(taskRef) ||
               (r.subject.type === "task" && r.subject.ref === taskRef) ||
