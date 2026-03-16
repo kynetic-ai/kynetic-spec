@@ -988,14 +988,27 @@ export function registerReviewCommands(program: Command): void {
             created_at: now,
           };
 
+          // AC: @review-record-per-cycle-lifecycle ac-1 — auto-close on approve/request_changes
+          const shouldAutoClose =
+            options.decision === "approve" || options.decision === "request_changes";
+
           const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
             ...latest,
             verdicts: [...latest.verdicts, newVerdict],
+            ...(shouldAutoClose && { lifecycle_state: "closed" as ReviewLifecycleState }),
             events: [
               ...latest.events,
               createEvent("verdict_submitted", reviewer, {
                 decision: options.decision,
               }),
+              ...(shouldAutoClose
+                ? [
+                    createEvent("lifecycle_change", reviewer, {
+                      from: latest.lifecycle_state,
+                      to: "closed",
+                    }),
+                  ]
+                : []),
             ],
             updated_at: now,
           }));
@@ -1004,7 +1017,7 @@ export function registerReviewCommands(program: Command): void {
             ctx.shadow,
             "review-verdict",
             found.slugs[0] || found._ulid.slice(0, 8),
-            options.decision,
+            `${options.decision}${shouldAutoClose ? " (auto-closed)" : ""}`,
           );
 
           // AC: @review-task-lifecycle-integration ac-4
@@ -1027,9 +1040,12 @@ export function registerReviewCommands(program: Command): void {
           }
 
           output(
-            { decision: options.decision, reviewer, review_ulid: found._ulid },
+            { decision: options.decision, reviewer, review_ulid: found._ulid, lifecycle_state: updated.lifecycle_state },
             () => {
               success(`Recorded verdict "${options.decision}" by ${reviewer} on review ${shortReviewRef(found, reviews)}`);
+              if (shouldAutoClose) {
+                info(`Review auto-closed`);
+              }
               for (const t of transitioned.filter((t) => t.transitioned)) {
                 info(`Task @${t.slug || t.ulid} transitioned to needs_work`);
               }
