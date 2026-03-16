@@ -3984,9 +3984,22 @@ reviews:
           kind: nit
           thread_ulid: 01KKWEERM53HNGR625K67RG3BG
         timestamp: 2026-03-16T23:07:19.593Z
+      - _ulid: 01KKWEFKFYDMWSY6APXCXP9F5V
+        actor: "@claude"
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-16T23:07:47.070Z
+      - _ulid: 01KKWEFKFY4SRB6PWYKBFNP6GG
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-16T23:07:47.070Z
     examined_commit: f6e16b92e3cf47b7a6144407e45d3891435c0e05
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -4053,7 +4066,15 @@ reviews:
               mapped to a \"review_activity\" type."
             created_at: 2026-03-16T23:07:19.558Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: cbe983895b53a6ce995ff410cc91ff6982815c75
+          head_commit: f6e16b92e3cf47b7a6144407e45d3891435c0e05
+        decision: approve
+        reviewer: "@claude"
+        role: reviewer
+        created_at: 2026-03-16T23:07:47.035Z
     created_at: 2026-03-16T23:05:48.607Z
-    updated_at: 2026-03-16T23:07:19.558Z
+    updated_at: 2026-03-16T23:07:47.035Z
     notes: []
