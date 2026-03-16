@@ -1373,3 +1373,28 @@ reviews:
     external_links: []
     created_at: 2026-03-16T07:49:00.795Z
     updated_at: 2026-03-16T07:57:49.458Z
+  - _ulid: 01KKTTDFPJENJQP9GECWR26S7K
+    slugs: []
+    title: "Review: Review Records Web UI plan (round 5 — content rendering)"
+    lifecycle_state: draft
+    subject:
+      type: plan
+      ref: "@plan-review-records-web-ui"
+      shadow_commit: ""
+      content_hash: ""
+    author: "@claude"
+    related_refs: []
+    threads: []
+    checks: []
+    verdicts: []
+    events:
+      - _ulid: 01KKTTDFPJBH045TV4KGQH1HW6
+        event_type: lifecycle_change
+        actor: "@claude"
+        timestamp: 2026-03-16T07:57:51.698Z
+        payload:
+          to: draft
+    notes: []
+    external_links: []
+    created_at: 2026-03-16T07:57:51.698Z
+    updated_at: null
