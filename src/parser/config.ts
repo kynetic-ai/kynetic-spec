@@ -132,6 +132,13 @@ const DispatchConfigSchema = z
      */
     worktree_root: z.string().optional(),
     /**
+     * How dispatched agents publish completed work.
+     * - "pull_request": agents create GitHub PRs (requires gh CLI + GitHub remote)
+     * - "manual_merge": agents merge locally, no PRs created
+     * - "auto": detect based on environment (default, preserves existing behavior)
+     */
+    publication_mode: z.enum(["pull_request", "manual_merge", "auto"]).optional(),
+    /**
      * Dispatcher-owned workspace bootstrap contract.
      * Steps run before agent prompts are delivered.
      */
@@ -314,6 +321,11 @@ export interface ResolvedKspecConfig {
      * project root when dispatch workspaces are provisioned.
      */
     worktree_root: string;
+    /**
+     * How dispatched agents publish completed work.
+     * "auto" means detect based on environment (gh CLI + GitHub remote).
+     */
+    publication_mode: "pull_request" | "manual_merge" | "auto";
     bootstrap: {
       steps: Array<{
         run: string;
@@ -383,6 +395,7 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
   dispatch: {
     base_branch: null,
     worktree_root: ".kspec-worktrees",
+    publication_mode: "auto",
     bootstrap: {
       steps: [],
     },
@@ -590,6 +603,7 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
     dispatch: {
       base_branch: file.dispatch?.base_branch ?? DEFAULT_CONFIG.dispatch.base_branch,
       worktree_root: file.dispatch?.worktree_root ?? DEFAULT_CONFIG.dispatch.worktree_root,
+      publication_mode: file.dispatch?.publication_mode ?? DEFAULT_CONFIG.dispatch.publication_mode,
       bootstrap: {
         steps: (file.dispatch?.bootstrap?.steps ?? DEFAULT_CONFIG.dispatch.bootstrap.steps).map(
           (step) => ({
@@ -644,6 +658,7 @@ export function getDefaultConfig(): ResolvedKspecConfig {
     dispatch: {
       base_branch: DEFAULT_CONFIG.dispatch.base_branch,
       worktree_root: DEFAULT_CONFIG.dispatch.worktree_root,
+      publication_mode: DEFAULT_CONFIG.dispatch.publication_mode,
       bootstrap: {
         steps: DEFAULT_CONFIG.dispatch.bootstrap.steps.map((step) => ({ ...step })),
       },
