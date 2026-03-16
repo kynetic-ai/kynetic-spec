@@ -2665,7 +2665,14 @@ reviews:
               explicit ensures they don't get skipped during dispatch.
             created_at: 2026-03-16T19:17:46.144Z
     checks: []
-    verdicts: []
+    verdicts:
+      - reviewer: "@claude"
+        role: reviewer
+        decision: request_changes
+        applies_to_version:
+          type: entity_version
+          content_hash: plan-draft-1
+        created_at: 2026-03-16T19:18:04.909Z
     events:
       - _ulid: 01KKW171KYQB3C0EZ3CBYPSKTG
         event_type: lifecycle_change
@@ -2743,7 +2750,13 @@ reviews:
         payload:
           thread_ulid: 01KKW1AE10MKPQX34J4GTQ0247
           kind: nit
+      - _ulid: 01KKW1B0CA974F61Z2WW7XERAS
+        event_type: verdict_submitted
+        actor: "@claude"
+        timestamp: 2026-03-16T19:18:04.938Z
+        payload:
+          decision: request_changes
     notes: []
     external_links: []
     created_at: 2026-03-16T19:15:55.134Z
-    updated_at: 2026-03-16T19:17:46.144Z
+    updated_at: 2026-03-16T19:18:04.909Z
