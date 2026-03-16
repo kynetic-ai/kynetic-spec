@@ -343,7 +343,7 @@ reviews:
   - _ulid: 01KKTRT7VWQ9YDQQAK2FT3RV3Z
     slugs: []
     title: "Review: Review Records Web UI plan"
-    lifecycle_state: draft
+    lifecycle_state: open
     subject:
       type: plan
       ref: "@plan-review-records-web-ui"
@@ -361,7 +361,14 @@ reviews:
         timestamp: 2026-03-16T07:29:52.508Z
         payload:
           to: draft
+      - _ulid: 01KKTRTJRAJPJMGSY2MW069F89
+        event_type: lifecycle_change
+        actor: "@claude"
+        timestamp: 2026-03-16T07:30:03.658Z
+        payload:
+          from: draft
+          to: open
     notes: []
     external_links: []
     created_at: 2026-03-16T07:29:52.508Z
-    updated_at: null
+    updated_at: 2026-03-16T07:30:03.651Z
