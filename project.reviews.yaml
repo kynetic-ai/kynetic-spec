@@ -858,6 +858,16 @@ reviews:
               threads was not addressed, but this is an enhancement that can be added later — the
               core routing is specified.'
             created_at: 2026-03-16T07:38:47.665Z
+      - _ulid: 01KKTSANERBG5PMMCKWAC6VD6X
+        kind: nit
+        entries:
+          - _ulid: 01KKTSANER0E9YJ1BBN8DZXHMR
+            author: "@claude"
+            body: "**Question 2 (shared types) — ACCEPTABLE.** Implementation notes still don't explicitly
+              mention shared types in @kynetic-ai/shared, but \"follow existing daemon API
+              patterns\" is sufficient guidance. The implementer will see PlanSummary/PlanDetail
+              imports in the plans route and follow the same pattern. Not a gap worth blocking on."
+            created_at: 2026-03-16T07:38:50.712Z
     checks: []
     verdicts: []
     events:
@@ -930,7 +940,14 @@ reviews:
         payload:
           thread_ulid: 01KKTSAJFHT6XMJWN1ZPP8EKHN
           kind: nit
+      - _ulid: 01KKTSANF0KKMYC1PMC5QA893N
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:38:50.721Z
+        payload:
+          thread_ulid: 01KKTSANERBG5PMMCKWAC6VD6X
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:37:13.126Z
-    updated_at: 2026-03-16T07:38:47.665Z
+    updated_at: 2026-03-16T07:38:50.712Z
