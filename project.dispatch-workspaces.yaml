@@ -6591,12 +6591,7 @@ workspaces:
         branch_ref: dispatch/task/add-hooks-configuration-to-kspec-config-yaml-and-setup/01kkt042
         head: 6cb2e0ae3f075407e0b5c2d606efd448d6d9df1e
         last_seen_at: 2026-03-16T00:43:29.529Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-hooks-configuration-to-kspec-config-yaml-and-setup-01kkt042-review
-        branch_mode: detached
-        branch_ref: null
-        head: 6cb2e0ae3f075407e0b5c2d606efd448d6d9df1e
-        last_seen_at: 2026-03-16T00:43:29.529Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -6635,7 +6630,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-16T00:57:27.504Z
+      updated_at: 2026-03-16T00:57:49.207Z
     cleanup:
       status: scheduled
       eligible: true
@@ -6644,7 +6639,7 @@ workspaces:
       updated_at: 2026-03-16T00:57:27.504Z
     timestamps:
       created_at: 2026-03-16T00:31:43.445Z
-      updated_at: 2026-03-16T00:57:48.300Z
-      last_reconciled_at: 2026-03-16T00:57:48.300Z
+      updated_at: 2026-03-16T00:57:49.207Z
+      last_reconciled_at: 2026-03-16T00:57:49.207Z
       last_active_at: 2026-03-16T00:43:31.894Z
       closed_at: null
