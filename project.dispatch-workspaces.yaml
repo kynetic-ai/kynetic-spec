@@ -6582,7 +6582,7 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: closing
+    lifecycle_state: stale
     active_role: null
     worktrees:
       worker:
@@ -6625,21 +6625,26 @@ workspaces:
       publication_mode: pull_request
       outcome: merged
       detail: integration:merged
-      updated_at: 2026-03-16T00:57:27.504Z
+      updated_at: 2026-03-16T00:59:01.725Z
     health:
-      status: healthy
-      summary: Workspace record matches current git branch and worktree state.
-      issues: []
-      updated_at: 2026-03-16T00:57:49.207Z
+      status: stale
+      summary: Workspace registry record is stale and needs reconciliation.
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-hooks-configuration-to-kspec-config-yaml-and-setup-01kkt042"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      updated_at: 2026-03-16T00:59:01.725Z
     cleanup:
       status: scheduled
       eligible: true
       reason: integrated-into-base-branch
       detail: integrated-into-base-branch
-      updated_at: 2026-03-16T00:57:27.504Z
+      updated_at: 2026-03-16T00:59:01.725Z
     timestamps:
       created_at: 2026-03-16T00:31:43.445Z
-      updated_at: 2026-03-16T00:57:49.207Z
-      last_reconciled_at: 2026-03-16T00:57:49.207Z
+      updated_at: 2026-03-16T00:59:01.725Z
+      last_reconciled_at: 2026-03-16T00:59:01.725Z
       last_active_at: 2026-03-16T00:43:31.894Z
       closed_at: null
