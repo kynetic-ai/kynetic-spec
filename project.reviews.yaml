@@ -649,7 +649,14 @@ reviews:
               /reviews/:id?thread=:threadId or /reviews/:id#thread-:threadId).
             created_at: 2026-03-16T07:33:47.326Z
     checks: []
-    verdicts: []
+    verdicts:
+      - reviewer: plan-review-agent
+        role: reviewer
+        decision: request_changes
+        applies_to_version:
+          type: entity_version
+          content_hash: draft-no-hash
+        created_at: 2026-03-16T07:34:18.746Z
     events:
       - _ulid: 01KKTRT7VVSCS7WJCCYAA7G9WE
         event_type: lifecycle_change
@@ -741,7 +748,13 @@ reviews:
         payload:
           thread_ulid: 01KKTS1D5Y39TZ6HMTWZ426TDZ
           kind: question
+      - _ulid: 01KKTS2BW5CZFSF0VBXB9N4Z38
+        event_type: verdict_submitted
+        actor: plan-review-agent
+        timestamp: 2026-03-16T07:34:18.757Z
+        payload:
+          decision: request_changes
     notes: []
     external_links: []
     created_at: 2026-03-16T07:29:52.508Z
-    updated_at: 2026-03-16T07:33:47.326Z
+    updated_at: 2026-03-16T07:34:18.746Z
