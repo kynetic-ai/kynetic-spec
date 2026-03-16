@@ -269,3 +269,28 @@ reviews:
     external_links: []
     created_at: 2026-03-16T06:20:49.980Z
     updated_at: 2026-03-16T06:38:52.902Z
+  - _ulid: 01KKTNX37WQYMJWHJNNH7NF2GW
+    slugs: []
+    title: "Review cycle 2: rewrite core skills for review-driven architecture"
+    lifecycle_state: draft
+    subject:
+      type: task
+      ref: "@01KKTHZWHC2B628XA0ETE1XN8B"
+      shadow_commit: ""
+      content_hash: ""
+    author: "@claude"
+    related_refs: []
+    threads: []
+    checks: []
+    verdicts: []
+    events:
+      - _ulid: 01KKTNX37VRXNY7T1PX931RRXP
+        event_type: lifecycle_change
+        actor: "@claude"
+        timestamp: 2026-03-16T06:39:00.348Z
+        payload:
+          to: draft
+    notes: []
+    external_links: []
+    created_at: 2026-03-16T06:39:00.348Z
+    updated_at: null
