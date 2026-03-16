@@ -19117,8 +19117,15 @@ plans:
             invocation.stalled
           - session.ended, session.idle_timeout, session.cancelled
           - schedule.tick
-          - action.started, action.completed, action.failed (for non-invocation
-            action tracking)
+          - action.started, action.completed, action.failed (universal action
+            run tracking — every hook, schedule, and composition action produces
+            action run events regardless of action type)
+
+          Identity model: session_id and invocation_id are the same value.
+          A "session" in the dispatch context IS an invocation — they are not
+          separate entities. invocation.* events use session_id as the canonical
+          identifier. action.* events use action_run_id as their canonical
+          identifier and link to session_id when the action type is agent.
 
           All events carry the standard envelope defined by @dispatch-event-envelope.
         traits:
@@ -19187,9 +19194,10 @@ plans:
             when: |
               A consumer reads the payload
             then: |
-              The payload includes session_id, agent_id, trigger, and
-              duration_ms (for terminal events); task_ref is present when the
-              invocation is task-scoped, absent otherwise
+              The payload includes session_id (which is the invocation's
+              canonical identifier), agent_id, trigger, and duration_ms (for
+              terminal events); task_ref is present when the invocation is
+              task-scoped, absent otherwise
           - id: ac-3
             given: |
               A session.* event is emitted
@@ -19216,7 +19224,8 @@ plans:
             then: |
               The payload includes action_run_id, action_type, hook_id or
               schedule_id (source), duration_ms (for terminal events), and
-              invocation_id (when action type is agent)
+              session_id (when action type is agent, linking to the spawned
+              invocation's canonical identifier)
 
       # ─── Action Model ───
 
@@ -19502,7 +19511,9 @@ plans:
             when: |
               kspec validate runs
             then: |
-              A warning identifies the unresolvable agent reference
+              An error identifies the unresolvable agent reference; agent
+              refs in executable hooks and schedules are errors (not warnings)
+              because they will fail at runtime
           - id: ac-4
             given: |
               An existing meta manifest has no hooks section
@@ -19517,8 +19528,8 @@ plans:
         parent: "@dispatch-hook-schema"
         description: |
           Defines the filter language for hook payload matching. Filters
-          operate on event payload fields and use exact-match semantics
-          with array-contains for list fields.
+          operate on event envelope and payload fields and use exact-match
+          semantics with array-contains for list fields.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -19551,6 +19562,15 @@ plans:
               Any event matching the hook's event type fires
             then: |
               The hook matches all events of that type
+          - id: ac-5
+            given: |
+              A hook filter specifies source_type: "schedule_engine"
+            when: |
+              An event fires from a different source (e.g. manual emit)
+            then: |
+              The hook does not match; filters can target envelope fields
+              (source_type, source_id, correlation_id) in addition to
+              payload fields
 
       # ─── Schedules ───
 
@@ -19639,9 +19659,11 @@ plans:
               The daemon starts and evaluates schedule state
             then: |
               last_tick and run_count are reset to zero (volatile state);
-              if the schedule has backfill: true, the engine checks the
-              cron expression against current time and fires one catch-up
-              action if a tick was missed since daemon stop
+              if the schedule has backfill: true, the engine uses a best-effort
+              startup heuristic: it checks if the current time matches the cron
+              within the last interval and fires one catch-up action; this is
+              not precise (no persisted shutdown timestamp) but handles the
+              common "daemon was briefly down" case
           - id: ac-2
             given: |
               A schedule has a timezone configured and a DST transition occurs
@@ -19657,7 +19679,8 @@ plans:
             when: |
               The cron expression is evaluated
             then: |
-              The system's local timezone is used as the default
+              UTC is used as the default; this avoids surprises in containers
+              and CI where the system timezone may be undefined or unexpected
           - id: ac-4
             given: |
               A user manually triggers a schedule via CLI or API
@@ -19706,7 +19729,7 @@ plans:
             when: |
               kspec validate runs
             then: |
-              A warning identifies the unresolvable agent reference
+              An error identifies the unresolvable agent reference
           - id: ac-4
             given: |
               An existing meta manifest has no schedules section
@@ -19774,17 +19797,26 @@ plans:
           Defines how composition groups are created, how group_id propagates
           through chained actions, what counts toward the join threshold,
           and behavior on daemon restart.
+
+          Key distinction: a composition config (stored in meta YAML) defines
+          the join rules. A composition activation is a runtime instance of
+          that config with a unique activation_id. One config can have multiple
+          concurrent activations (e.g. a scheduled fan-out that runs nightly).
+          API/UI status refers to activations, not configs.
         acceptance_criteria:
           - id: ac-1
             given: |
-              A composition group is configured in kynetic.meta.yaml
+              A composition config exists and a triggering event matches
+              the config's activation criteria (e.g. a hook fires that is
+              tagged with the composition's config_id)
             when: |
-              Related actions are dispatched
+              The join accumulator processes the event
             then: |
-              A group_id is assigned (auto-generated per group activation or
-              inherited from the triggering event's correlation_id) and
-              propagated to all action runs and spawned invocations via
-              session metadata
+              A new activation is created with a unique activation_id;
+              the activation_id is propagated as group_id to all downstream
+              action runs and spawned invocations via session metadata;
+              subsequent action runs with matching group_id are tracked as
+              members of this activation
           - id: ac-2
             given: |
               An action run in a composition group completes successfully
@@ -19859,6 +19891,8 @@ plans:
           - trait-json-output
           - trait-error-guidance
           - trait-shadow-commit
+          - trait-filterable-list
+          - trait-semantic-exit-codes
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -19937,17 +19971,18 @@ plans:
             when: |
               GET /api/schedules/:id/status is called
             then: |
-              The response includes next_tick, last_tick, run_count, and
-              current overlap state (idle, running, buffered)
+              The response includes next_tick, last_tick, run_count,
+              active_run_count, active_run_ids (array), and current overlap
+              state (idle, running, running_buffered)
           - id: ac-3
             given: |
               A client manually triggers a schedule
             when: |
               POST /api/schedules/:id/trigger is called
             then: |
-              The schedule's action executes with overlap policy enforced;
-              the response confirms whether the trigger was accepted or
-              skipped
+              The response indicates the trigger outcome: accepted (action
+              started), buffered (queued behind active run), queued (agent
+              concurrency limit reached), or skipped (overlap policy rejected)
           - id: ac-4
             given: |
               A client queries recent events
@@ -19958,12 +19993,22 @@ plans:
               envelope and payload, filtered by event type if specified
           - id: ac-5
             given: |
-              A client requests composition group status
+              A client requests composition status
             when: |
-              GET /api/compositions/:id/status is called
+              GET /api/compositions/:config_id/activations is called
             then: |
-              The response includes join progress (completed/total), active
-              action runs, and timeout remaining
+              The response includes all active activations for the config,
+              each with activation_id, join progress (completed/total),
+              member action_run_ids, and timeout remaining
+          - id: ac-6
+            given: |
+              A client emits a test event
+            when: |
+              POST /api/events/emit is called with event type and payload
+            then: |
+              The event is emitted on the bus as a manual source; the response
+              includes matched hook names and their action_run_ids; outcomes
+              may not be available synchronously for async actions
 
       - title: Automation Event Stream
         slug: automation-event-stream
@@ -20038,7 +20083,8 @@ plans:
               The daemon is running
             then: |
               The schedule shows next tick time, last tick time, run count,
-              and current overlap state (idle, running, buffered)
+              active run count, and current overlap state (idle, running,
+              running_buffered)
           - id: ac-5
             given: |
               An agent dispatch trigger is shown in the automation view
@@ -20053,8 +20099,8 @@ plans:
             when: |
               The user views the automation view
             then: |
-              Each group shows join progress, active action runs, and
-              timeout status
+              Each config shows its active activations with join progress,
+              member action runs, and timeout status per activation
           - id: ac-7
             given: |
               Any automation event fires
@@ -20065,6 +20111,8 @@ plans:
       ```
 
       ## Tasks
+
+      derive_from_specs: false
 
       ```yaml
       - title: Implement event envelope and bus
@@ -20240,6 +20288,44 @@ plans:
 
           Covers: @dispatch-agent-action-input ac-1 through ac-4.
 
+      - title: Emit session lifecycle events
+        slug: task-session-events
+        priority: 1
+        tags: [dispatch, events, sessions]
+        spec_ref: "@dispatch-event-taxonomy"
+        depends_on:
+          - "@task-event-bus"
+        description: |
+          Emit session.ended, session.idle_timeout, and session.cancelled
+          events when dispatch sessions reach terminal states. Also define
+          the contract for how agent action runs close when their linked
+          invocation reaches a terminal state.
+
+          Why: End-of-session hooks are a headline goal. Without this task,
+          session.* events exist in the taxonomy but are never emitted. Also,
+          if action runs don't close on invocation terminal states, overlap
+          accounting and composition join counts hang indefinitely.
+
+          What: Hook into the invocation completion handlers (which already
+          emit invocation.completed/failed/stalled) to also emit the
+          corresponding session.* event with terminal_reason and work_summary.
+          Define the mapping: invocation.completed -> session.ended,
+          invocation.failed -> session.ended (with failure reason),
+          invocation.stalled -> session.idle_timeout. Agent-initiated
+          cancellation -> session.cancelled. Also: when an agent action run's
+          linked invocation reaches a terminal state, the action run is
+          closed (action.completed or action.failed emitted) so overlap
+          tracking and join accumulators can progress.
+
+          How: The session_id == invocation_id identity means we can emit
+          session events from the same completion handler. Work summary is
+          derived from session event log (task notes added, PRs created,
+          tasks completed — read from session metadata on close).
+
+          Covers: @dispatch-event-taxonomy ac-2,
+          @dispatch-event-payload ac-3,
+          @dispatch-action-model ac-4 (action run closure on invocation end).
+
       - title: Implement hook schema and meta manifest extension
         slug: task-hook-schema
         priority: 1
@@ -20332,9 +20418,10 @@ plans:
 
           What: ScheduleEngine with 60-second evaluation loop. Tracks per-
           schedule state: last_tick, next_tick, run_count (accepted runs),
-          active action_run_id, buffered_tick. Overlap checks against action
-          runs, not invocations — this works for command/kspec/notify too.
-          Config reload via versioned snapshot.
+          active_run_ids (array — multiple active runs possible with allow
+          policy), buffered_tick. Overlap checks against action runs, not
+          invocations — this works for command/kspec/notify too. Config
+          reload via versioned snapshot.
 
           How: Integrates with DispatchEngine lifecycle (start/stop). Subscribe
           to action.completed/failed events to clear active run state. All
@@ -20417,6 +20504,7 @@ plans:
         depends_on:
           - "@task-hook-executor"
           - "@task-schedule-engine"
+          - "@task-composition-join"
         description: |
           REST API endpoints for hooks, schedules, events, and composition
           status. Used by CLI and web UI.
@@ -20454,10 +20542,10 @@ plans:
           fields, and unknown template variables should surface during
           validation, not at runtime.
 
-          What: Validate hook agent action references resolve. Validate
-          schedule agent references resolve. Validate hook event types are in
-          registry. Warn on filter fields not available on the hook's event
-          type. Warn on template variables not available for the event type.
+          What: Error on unresolvable agent references in hooks and schedules
+          (these will fail at runtime). Error on unknown event types. Warn on
+          filter fields not available on the hook's event type. Warn on
+          template variables not available for the event type.
 
           Covers: @dispatch-hook-schema ac-3, @dispatch-hook-filter ac-3,
           @dispatch-schedule-schema ac-3, @dispatch-action-model ac-7.
@@ -20618,3 +20706,12 @@ plans:
           command form, agent action input contract, schedule runtime semantics, composition
           correlation, filter language spec, automation API/WebSocket specs, loop prevention, event
           emit test command"
+      - _ulid: 01KKTA88AK83WRC53T7V0870VC
+        created_at: 2026-03-16T03:15:23.091Z
+        author: "@claude"
+        content: "Final fix pass: identity model (session_id==invocation_id), session event emission task,
+          action run closure on invocation end, active_run_ids[] for allow overlap, richer trigger
+          outcomes (accepted/buffered/queued/skipped), best-effort backfill, UTC default timezone,
+          composition config vs activation distinction, event emit API endpoint, envelope filters,
+          agent refs as errors not warnings, filterable-list + semantic-exit-codes traits,
+          derive_from_specs: false"
