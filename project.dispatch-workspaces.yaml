@@ -6348,12 +6348,7 @@ workspaces:
         branch_ref: dispatch/task/implement-cross-agent-task-dispatch-exclusivity/01kksw26
         head: fa9b6e1f0a6d301cd0d8d7104b7d388c97d2584d
         last_seen_at: 2026-03-15T23:59:24.295Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-cross-agent-task-dispatch-exclusivity-01kksw26-review
-        branch_mode: detached
-        branch_ref: null
-        head: fa9b6e1f0a6d301cd0d8d7104b7d388c97d2584d
-        last_seen_at: 2026-03-15T23:59:24.295Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -6392,7 +6387,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-16T00:11:34.110Z
+      updated_at: 2026-03-16T00:11:49.441Z
     cleanup:
       status: scheduled
       eligible: true
@@ -6401,8 +6396,8 @@ workspaces:
       updated_at: 2026-03-16T00:11:34.110Z
     timestamps:
       created_at: 2026-03-15T23:50:16.242Z
-      updated_at: 2026-03-16T00:11:48.679Z
-      last_reconciled_at: 2026-03-16T00:11:48.679Z
+      updated_at: 2026-03-16T00:11:49.441Z
+      last_reconciled_at: 2026-03-16T00:11:49.441Z
       last_active_at: 2026-03-15T23:59:24.921Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKSGT1SGVWACS5ET75Q87NPX
