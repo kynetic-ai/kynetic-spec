@@ -101522,7 +101522,10 @@
   created_at: 2026-03-16T17:48:05.992Z
   notes: []
   todos: []
-- title: Ensure YAML round-trip stability
+- _ulid: 01KKVX1X4QVZDC1A8T19A5J5DE
+  slugs: []
+  title: Ensure YAML round-trip stability
+  type: task
   description: >-
     Verify and enforce that reading a YAML file and re-writing it without logical changes produces
     identical output. Without this, any kspec command that touches a file produces noisy diffs from
@@ -101532,20 +101535,47 @@
     Covers ac-3 of @yaml-serialization-invariants. Separate from the field ordering work (ac-1,
     ac-2, ac-4) because round-trip stability touches all YAML write paths and may require auditing
     multiple serialization call sites.
-  type: task
   spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 3
-  slugs: []
   tags:
     - schema
+  vcs_refs: []
+  created_at: 2026-03-16T18:03:12.406Z
+  notes: []
+  todos: []
+- title: Audit shadow commit messages for ref consistency gaps
+  description: >-
+    Audit all shadow branch auto-commit message patterns in generateCommitMessage()
+    (src/parser/shadow.ts) and their call sites. Identify every operation that drops or omits the
+    entity ref from the commit message.
+
+
+    Known gap: task-add uses "Add task: <title>" instead of including the ref (shadow.ts:990).
+
+
+    Output: A list of all inconsistencies, and one task per fix (or a single task if the fixes are
+    small enough to batch). Each fix should reference @trait-shadow-commit ac-2/ac-3.
+  type: task
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  priority: 2
+  slugs: []
+  tags:
+    - cli
+    - schema
   depends_on: []
-  _ulid: 01KKVX1X4QVZDC1A8T19A5J5DE
+  _ulid: 01KKW3VHJMRAESA5JEA2PV163M
   status: pending
   blocked_by: []
   context: []
   vcs_refs: []
-  created_at: 2026-03-16T18:03:12.406Z
+  created_at: 2026-03-16T20:02:03.988Z
   notes: []
   todos: []
