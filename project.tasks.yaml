@@ -100300,6 +100300,11 @@
   plan_ref: null
   status: completed
   blocked_by: []
+  closed_reason: "Merged in PR #891. Removed task status and todo completeness checking from session
+    checkpoint hook, keeping only uncommitted git changes detection. Narrowed CheckpointIssue type,
+    simplified format.ts, deleted obsolete session-checkpoint-scoping.test.ts (tested removed ACs),
+    added new session-checkpoint.test.ts covering ac-git-only. All 5464 tests pass, all CI checks
+    green."
   depends_on: []
   context: []
   priority: 3
@@ -100319,6 +100324,7 @@
   created_at: 2026-03-16T00:18:12.661Z
   started_at: 2026-03-16T00:20:23.929Z
   submitted_at: 2026-03-16T00:30:58.874Z
+  completed_at: 2026-03-16T00:43:46.761Z
   notes:
     - _ulid: 01KKT04RJWS5Q4CW8VGSSYE807
       created_at: 2026-03-16T00:18:42.908Z
@@ -100416,12 +100422,6 @@
       supersedes: null
   todos: []
   automation: eligible
-  completed_at: 2026-03-16T00:43:46.761Z
-  closed_reason: "Merged in PR #891. Removed task status and todo completeness checking from session
-    checkpoint hook, keeping only uncommitted git changes detection. Narrowed CheckpointIssue type,
-    simplified format.ts, deleted obsolete session-checkpoint-scoping.test.ts (tested removed ACs),
-    added new session-checkpoint.test.ts covering ac-git-only. All 5464 tests pass, all CI checks
-    green."
 - _ulid: 01KKT042895JSK5GS951Z5F1BR
   slugs: []
   title: Add hooks configuration to kspec.config.yaml and setup
@@ -100567,6 +100567,33 @@
         tests/enhanced-setup.test.ts
 
         - Verification: npm test passes, hooks config controls installation behavior
+      supersedes: null
+    - _ulid: 01KKT1K1KFRWXWS03RRKEE237E
+      created_at: 2026-03-16T00:43:59.473Z
+      author: "@claude"
+      content: >-
+        Implementation complete. PR #892 created.
+
+
+        Changes:
+
+        1. Added HooksConfigSchema to config.ts with checkpoint (default: false) and prompt_check
+        (default: true) fields
+
+        2. Wired hooks into KspecConfigSchema, ResolvedKspecConfig, resolveConfig(),
+        getDefaultConfig()
+
+        3. Updated installClaudeCodeHooks() in setup.ts to accept HooksPreferences and conditionally
+        install/remove hooks
+
+        4. runSetupPipeline() loads project config to pass hook preferences
+
+        5. 20 new config tests + 8 new setup tests covering all 4 hooks ACs
+
+        6. Updated 2 existing tests that assumed unconditional Stop hook installation
+
+
+        All tests pass. TypeScript compiles cleanly.
       supersedes: null
   todos: []
   automation: eligible
