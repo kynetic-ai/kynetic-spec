@@ -318,11 +318,11 @@ describe("AC-2: Thread resolution", () => {
 });
 
 // ==========================================================================
-// AC-3: Iterative re-review cycles with audit trail
+// Subject refresh and stale verdict handling (supports ac-7)
 // ==========================================================================
 
-describe("AC-3: Re-review cycles", () => {
-  // AC: @review-verdicts-and-resolution-lifecycle ac-3
+describe("subject refresh and stale verdict handling", () => {
+  // AC: @review-verdicts-and-resolution-lifecycle ac-7
   it("tracks subject refresh through event log", () => {
     const review = makeReview({ subject: codeSubject() });
     const newSubject = codeSubject(COMMIT_BASE_2, COMMIT_HEAD_2);
@@ -346,7 +346,7 @@ describe("AC-3: Re-review cycles", () => {
     });
   });
 
-  // AC: @review-verdicts-and-resolution-lifecycle ac-3
+  // AC: @review-verdicts-and-resolution-lifecycle ac-7
   it("preserves full audit trail across review → changes_requested → re-review", () => {
     let review = makeReview({ subject: codeSubject() });
 
@@ -383,7 +383,7 @@ describe("AC-3: Re-review cycles", () => {
     expect(review.verdicts).toHaveLength(2);
   });
 
-  // AC: @review-verdicts-and-resolution-lifecycle ac-3
+  // AC: @review-verdicts-and-resolution-lifecycle ac-7
   it("preserves entity subject re-review cycle", () => {
     let review = makeReview({ subject: taskSubject(CONTENT_HASH_1) });
 
