@@ -21741,26 +21741,18 @@ plans:
               the operation type (start, submit, complete, note, block, etc.)
               is parsed from the commit message into a structured activity type
 
-      # ─── Review Lifecycle (amends @review-verdicts-and-resolution-lifecycle) ───
+      # ─── Review Lifecycle ───
 
       - title: Review Record Per-Cycle Lifecycle
         slug: review-record-per-cycle-lifecycle
         type: requirement
         parent: "@tasks"
         description: |
-          Amends @review-verdicts-and-resolution-lifecycle ac-3 to replace
-          the single-record iteration model with a per-cycle model. Each
-          review cycle produces a self-contained review record that is opened,
-          investigated, verdicted, and closed. This is analogous to individual
-          PR reviews on GitHub — each reviewer's review is a discrete artifact,
-          and the collection of reviews across cycles comprises the full review
-          history for the task.
-
-          The existing ac-3 states "the same review record tracks iteration
-          through its event log." This was designed before the dispatch review
-          flow existed and doesn't account for automated review cycles. The
-          per-cycle model produces cleaner timeline artifacts and unambiguous
-          history.
+          Each review cycle produces a self-contained review record that is
+          opened, investigated, verdicted, and closed. This is analogous to
+          individual PR reviews on GitHub — each reviewer's review is a
+          discrete artifact, and the collection of reviews across cycles
+          comprises the full review history for the task.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -21883,11 +21875,39 @@ plans:
 
       # ─── Review Lifecycle ───
 
+      - title: Rewrite review-verdicts-and-resolution-lifecycle ac-3 for per-cycle model
+        slug: task-rewrite-review-lifecycle-ac3
+        priority: 1
+        tags: [spec, reviews]
+        description: |
+          Rewrite @review-verdicts-and-resolution-lifecycle ac-3 to describe the
+          per-cycle review model instead of the single-record iteration model.
+
+          Why: The current ac-3 states "the same review record tracks iteration
+          through its event log and compare context updates without losing the
+          audit trail." This conflicts with the per-cycle model where each review
+          cycle gets its own record. The original assumption predated the dispatch
+          review flow — review records were conceived as long-lived mutable
+          artifacts, but in practice each review cycle is a discrete assessment.
+
+          What: Rewrite ac-3 to describe that review cycles create new review
+          records, with the collection of records comprising the full review
+          history. Verify that existing code and tests referencing ac-3 are
+          compatible with the rewrite — the current implementation already
+          supports creating multiple reviews per task, so this is primarily a
+          spec alignment, not a code change.
+
+          How: Use kspec item ac set @review-verdicts-and-resolution-lifecycle
+          ac-3 to rewrite the AC text. Check tests tagged with this AC for
+          compatibility. Update any test annotations if needed.
+
       - title: Auto-close review records on verdict submission
         slug: task-auto-close-review-on-verdict
         priority: 2
         tags: [cli, reviews]
         spec_ref: "@review-record-per-cycle-lifecycle"
+        depends_on:
+          - "@task-rewrite-review-lifecycle-ac3"
         description: |
           When a reviewer submits an approve or request_changes verdict, the
           review record automatically transitions from open to closed.
@@ -22124,12 +22144,12 @@ plans:
          review records for a task (current + historical closed ones) and merges
          their events into the git-derived timeline by timestamp.
 
-      The per-cycle review model amends @review-verdicts-and-resolution-lifecycle
-      ac-3 which currently says "the same review record tracks iteration through
-      its event log." This was designed before dispatch review automation existed.
-      The per-cycle model is analogous to GitHub PR reviews: each reviewer's
-      review is a discrete artifact with a verdict, and the collection of reviews
-      across cycles comprises the full review history.
+      The per-cycle review model requires rewriting
+      @review-verdicts-and-resolution-lifecycle ac-3 which currently describes a
+      single-record iteration model. A separate task handles that rewrite to
+      remove the conflict. The per-cycle model is analogous to GitHub PR reviews:
+      each reviewer's review is a discrete artifact with a verdict, and the
+      collection of reviews across cycles comprises the full review history.
 
       Diff summaries (diffs against merge target and since prior review in the
       timeline view) are deferred to @plan-activity-timeline-diff-summaries to
@@ -22171,6 +22191,12 @@ plans:
           task-add ref is a bug fix against @trait-shadow-commit not a new spec, submission linkage
           folded into existing spec as new AC, diff summaries deferred to separate plan, explicit
           tasks with why/what/how, documentation tasks for convention reinforcement"
+      - _ulid: 01KKW4CNZ6WNHET0NN866XRWBA
+        created_at: 2026-03-16T20:11:25.542Z
+        author: "@claude"
+        content: Removed amends language from review spec, added task to rewrite
+          @review-verdicts-and-resolution-lifecycle ac-3 as prerequisite for review lifecycle
+          changes
   - _ulid: 01KKW3WRAH3VC30TWF5FKZ513Z
     slugs:
       - plan-activity-timeline-diff-summaries
