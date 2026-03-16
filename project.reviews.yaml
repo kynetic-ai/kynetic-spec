@@ -3564,3 +3564,29 @@ reviews:
     created_at: 2026-03-16T22:05:04.528Z
     updated_at: 2026-03-16T22:05:40.604Z
     notes: []
+  - _ulid: 01KKWBKHZKDDW10QJZKB2MYNJZ
+    slugs:
+      - review-per-cycle-tests
+    title: "Review: per-cycle review record tests"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKWBKHZJTQB1AZCA3APAS9SK
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-16T22:17:30.867Z
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-new-review-per-cycle"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-16T22:17:30.867Z
+    updated_at: null
+    notes: []
