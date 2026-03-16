@@ -78,7 +78,7 @@ reviews:
   - _ulid: 01KKTMVTDW2EBX0YHND7N5RM37
     slugs: []
     title: "Review: rewrite core skills for review-driven architecture"
-    lifecycle_state: open
+    lifecycle_state: closed
     subject:
       type: task
       ref: "@01KKTHZWHC2B628XA0ETE1XN8B"
@@ -258,7 +258,14 @@ reviews:
         timestamp: 2026-03-16T06:38:10.823Z
         payload:
           decision: approve
+      - _ulid: 01KKTNWVZCRFNSMV6NT3C368WZ
+        event_type: lifecycle_change
+        actor: "@claude"
+        timestamp: 2026-03-16T06:38:52.908Z
+        payload:
+          from: open
+          to: closed
     notes: []
     external_links: []
     created_at: 2026-03-16T06:20:49.980Z
-    updated_at: 2026-03-16T06:38:10.816Z
+    updated_at: 2026-03-16T06:38:52.902Z
