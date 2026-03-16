@@ -58,8 +58,6 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 				'message_start', 'message_progress',
 				'thinking_start', 'thinking_progress',
 				'tool_call_start',
-				// Legacy: kept for backwards compatibility during migration
-				'agent_text_chunk',
 			]);
 			if (streamingEvents.has(event.event)) {
 				return [];

@@ -193,7 +193,7 @@ describe("WebSocket invalidation wiring (@ui-data-freshness ac-3, ac-4)", () => 
 
   it("skips invalidation for streaming progress events", () => {
     expect(wsInvalidationSrc).toContain("message_progress");
-    expect(wsInvalidationSrc).toContain("agent_text_chunk");
+    expect(wsInvalidationSrc).not.toContain("agent_text_chunk");
   });
 
   it("maps task events to task and validation key invalidation", () => {

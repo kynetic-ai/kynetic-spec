@@ -102,19 +102,6 @@ export interface AgentInvocationEventData {
   timestamp: number;
 }
 
-/**
- * @deprecated Use typed session event data types instead.
- * Kept for backwards compatibility during migration.
- */
-export interface AgentTextChunkEventData {
-  session_id: string;
-  agent_id: string;
-  task_id: string | null;
-  task_title: string | null;
-  text: string;
-  timestamp: number;
-}
-
 // ─── Session Event Broadcast Types ──────────────────────────────────────────
 // AC: @session-event-broadcast ac-newline-streaming, ac-boundary-flush,
 //     ac-per-session-state, ac-tool-input-included, ac-replaces-text-chunks
