@@ -1679,3 +1679,36 @@ inbox:
       - schema
       - auditability
     added_by: "@claude"
+  - _ulid: 01KKW7JKXEYM7F2Q8AN3R5A5EY
+    text: "Plan text drifts from reality after post-derive edits to specs/tasks via CLI. Options: (1)
+      stop storing raw YAML after derive and reconstruct via plan export from bound specs/tasks, (2)
+      allow text-only updates to active plans, (3) plan export --regenerate that rebuilds the YAML
+      sections from current spec/task state. The derive-is-final design is intentional — the
+      question is how to keep the plan artifact useful as a reference after specs/tasks evolve
+      independently."
+    created_at: 2026-03-16T21:07:05.775Z
+    tags:
+      - plan
+      - cli
+    added_by: "@claude"
+  - _ulid: 01KKW7JM009ZAVDEQAMM48RC77
+    text: Plan working files should use .kspec/artifacts/ (ephemeral storage) instead of root plans/
+      directory. This avoids checkpoint hook flagging transient files as uncommitted changes. Update
+      /kspec:plan skill to reference .kspec/artifacts/ as the working directory for plan
+      import/export workflows.
+    created_at: 2026-03-16T21:07:05.856Z
+    tags:
+      - plan
+      - cli
+      - docs
+    added_by: "@claude"
+  - _ulid: 01KKW7JM22STNM216JC727W3W0
+    text: Test runner (scripts/test.cjs) should default to writing full log to a temp file and showing
+      lighter output (errors only + summary). Full log available for analysis without rerunning.
+      Currently agents rerun the full suite multiple times with different reporter flags to find
+      failures, which wastes minutes each time.
+    created_at: 2026-03-16T21:07:05.922Z
+    tags:
+      - testing
+      - dx
+    added_by: "@claude"
