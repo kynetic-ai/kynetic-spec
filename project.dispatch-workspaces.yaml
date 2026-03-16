@@ -6493,7 +6493,7 @@ workspaces:
     resolved_base_branch: main
     base_branch_point: 6f2b02df930df09e597db225bd51605b7f2a58e7
     canonical_branch: dispatch/task/remove-task-todo-checking-from-session-checkpoint-hook/01kkt03v
-    canonical_branch_head: 6f2b02df930df09e597db225bd51605b7f2a58e7
+    canonical_branch_head: c0fe4f6a82501d9cf6da5e1b0f8474b46f380c77
     branch_provenance:
       ownership: dispatcher-managed
       source: provisioned
@@ -6544,21 +6544,21 @@ workspaces:
       publication_mode: pull_request
       outcome: pull_request
       detail: null
-      updated_at: 2026-03-16T00:20:04.106Z
+      updated_at: 2026-03-16T00:31:02.120Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-16T00:20:04.982Z
+      updated_at: 2026-03-16T00:31:02.120Z
     cleanup:
       status: not_scheduled
       eligible: false
       reason: null
       detail: null
-      updated_at: 2026-03-16T00:20:04.106Z
+      updated_at: 2026-03-16T00:31:02.120Z
     timestamps:
       created_at: 2026-03-16T00:20:04.106Z
-      updated_at: 2026-03-16T00:20:04.982Z
-      last_reconciled_at: 2026-03-16T00:20:04.982Z
+      updated_at: 2026-03-16T00:31:02.120Z
+      last_reconciled_at: 2026-03-16T00:31:02.120Z
       last_active_at: 2026-03-16T00:20:04.982Z
       closed_at: null
