@@ -22170,9 +22170,25 @@ plans:
       - @01KKVW67 / @01KKVX1X: YAML serialization invariants (canonical field
         ordering enables reliable git log -L queries as an alternative to
         git log --grep)
-    status: approved
-    derived_tasks: []
-    derived_specs: []
+    status: active
+    derived_tasks:
+      - "@task-fix-task-add-commit-ref"
+      - "@task-submission-linkage-dispatch-fallback"
+      - "@task-rewrite-review-lifecycle-ac3"
+      - "@task-auto-close-review-on-verdict"
+      - "@task-new-review-per-cycle"
+      - "@task-review-examined-commit"
+      - "@task-review-diff-orientation"
+      - "@task-implement-activity-git-query"
+      - "@task-implement-activity-display"
+      - "@task-update-review-skill-docs"
+      - "@task-update-task-work-skill-docs"
+      - "@task-update-agents-review-conventions"
+    derived_specs:
+      - "@task-activity-timeline"
+      - "@task-activity-git-query"
+      - "@review-record-per-cycle-lifecycle"
+      - "@review-fix-cycle-diff"
     source_path: /home/chapel/Projects/kynetic-spec/plans/task-activity-timeline.md
     module_ref: "@tasks"
     created_at: 2026-03-16T18:50:49.680Z
@@ -22197,6 +22213,48 @@ plans:
         content: Removed amends language from review spec, added task to rewrite
           @review-verdicts-and-resolution-lifecycle ac-3 as prerequisite for review lifecycle
           changes
+      - _ulid: 01KKW4VTDGMHJCQEMTE738A7BW
+        created_at: 2026-03-16T20:19:41.616Z
+        author: "@claude"
+        content: |-
+          The activity timeline is derived from two sources merged chronologically:
+
+          1. Shadow branch git history: git log --grep filtered by task ref in the
+             .kspec worktree. Commit messages encode operation type and ref per
+             @trait-shadow-commit. The task-add ref bug is the only known gap.
+
+          2. Linked review records: review.events array provides lifecycle changes,
+             verdicts, and thread activity with timestamps. With the per-cycle model,
+             each review record is a discrete artifact — the timeline collects all
+             review records for a task (current + historical closed ones) and merges
+             their events into the git-derived timeline by timestamp.
+
+          The per-cycle review model requires rewriting
+          @review-verdicts-and-resolution-lifecycle ac-3 which currently describes a
+          single-record iteration model. A separate task handles that rewrite to
+          remove the conflict. The per-cycle model is analogous to GitHub PR reviews:
+          each reviewer's review is a discrete artifact with a verdict, and the
+          collection of reviews across cycles comprises the full review history.
+
+          Diff summaries (diffs against merge target and since prior review in the
+          timeline view) are deferred to @plan-activity-timeline-diff-summaries to
+          keep this plan focused. The review-fix-cycle-diff spec in this plan covers
+          the reviewer orientation use case (diff in the dispatch prompt), which is
+          the highest-value diff consumer.
+
+          Dependency ordering: task-add commit fix is a standalone foundation.
+          Submission linkage fallback is independent. Review lifecycle changes form
+          a chain (auto-close → new-per-cycle → examined-commit → diff orientation).
+          Timeline implementation depends on the commit fix. Documentation tasks
+          depend on the review lifecycle changes they document.
+
+          Related work not in this plan:
+          - @01KKW3VH: Audit all shadow commit messages for ref consistency gaps
+          - Inbox item @01KKW3VQ: Enriching commit message detail for auditability
+          - @plan-activity-timeline-diff-summaries: Diff summaries in the timeline
+          - @01KKVW67 / @01KKVX1X: YAML serialization invariants (canonical field
+            ordering enables reliable git log -L queries as an alternative to
+            git log --grep)
   - _ulid: 01KKW3WRAH3VC30TWF5FKZ513Z
     slugs:
       - plan-activity-timeline-diff-summaries

@@ -1156,6 +1156,149 @@ features:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KKW4VGMJVKDF3AMDG5JXY7NH
+    slugs:
+      - task-activity-timeline
+    title: Task Activity Timeline
+    type: feature
+    tags: []
+    description: |
+      Unified chronological view of all activity on a task derived from
+      shadow branch git history and linked review records. State transitions,
+      notes, review events, and submission changes are merged into a single
+      timeline. Recent activity shown by default in task get; full history
+      available via --activity flag.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          a task has had state transitions recorded via shadow branch commits
+        when: |
+          kspec task get @ref is run
+        then: |
+          the most recent activity entries are shown after the notes section,
+          including state changes, notes, and review events in reverse
+          chronological order, capped at a reasonable default count
+      - id: ac-2
+        given: |
+          a task has state transitions, notes, and linked review records
+        when: |
+          kspec task get @ref --activity is run
+        then: |
+          the full activity timeline is shown, merging shadow branch commit
+          history with review record events into a single chronological view
+      - id: ac-3
+        given: |
+          a task has linked review records (current and historical)
+        when: |
+          the activity timeline is rendered
+        then: |
+          review events (creation, verdict submission, thread resolution,
+          lifecycle changes) appear inline in the timeline with the same
+          chronological ordering as task state changes and notes
+      - id: ac-4
+        given: |
+          kspec task get @ref --json includes activity
+        when: |
+          the output is consumed programmatically
+        then: |
+          each activity entry is a structured object with type, timestamp,
+          author, and summary fields in a typed array
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-json-output"
+    notes: []
+    created: 2026-03-16T20:19:31.602Z
+    requirements:
+      - _ulid: 01KKW4VGNG68VSCE2E7XDJF768
+        slugs:
+          - task-activity-git-query
+        title: Task Activity Git Query
+        type: requirement
+        tags: []
+        description: |
+          The mechanism for deriving task activity from shadow branch git history.
+          Uses git log filtered by task ref in commit messages to extract state
+          transitions and mutations.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a task ref is provided
+            when: |
+              the activity query runs against the shadow branch
+            then: |
+              all commits whose message references the task ref are returned,
+              including the creation commit, state transitions, notes, and
+              field changes
+          - id: ac-2
+            given: |
+              multiple tasks exist in the same YAML file
+            when: |
+              activity is queried for a specific task
+            then: |
+              only commits whose message references that task's ref are
+              included; commits for other tasks are excluded
+          - id: ac-3
+            given: |
+              a commit message follows the shadow branch auto-commit format
+            when: |
+              the activity entry is constructed
+            then: |
+              the operation type (start, submit, complete, note, block, etc.)
+              is parsed from the commit message into a structured activity type
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-16T20:19:31.632Z
+      - _ulid: 01KKW4VGPTSX0Z2AQDX7R8PV0P
+        slugs:
+          - review-fix-cycle-diff
+        title: Review Fix-Cycle Diff Context
+        type: requirement
+        tags: []
+        description: |
+          When a reviewer examines work after a fix cycle, they receive context
+          about what changed since the prior review. The review record stores
+          the commit it examined so diffs can be computed across cycles.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              a review record is created for a task with dispatch workspace
+              metadata available
+            when: |
+              the review is initialized
+            then: |
+              the review record stores the examined commit (the HEAD of the
+              detached review snapshot) as metadata on the record; reviews
+              created without workspace context leave this field null
+          - id: ac-2
+            given: |
+              a prior closed review record with an examined_commit exists
+              for the same task
+            when: |
+              a new review cycle begins and the reviewer receives orientation
+            then: |
+              the reviewer prompt includes a summary of what changed between
+              the prior review's examined commit and the current submission HEAD
+          - id: ac-3
+            given: |
+              diffs are requested between review cycles
+            when: |
+              the merge target or prior examined commit is unreachable
+            then: |
+              the diff is gracefully omitted with a note rather than erroring
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        notes: []
+        created: 2026-03-16T20:19:31.674Z
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
@@ -1548,3 +1691,48 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KKW4VGP5AW2XR574G3W36HE5
+    slugs:
+      - review-record-per-cycle-lifecycle
+    title: Review Record Per-Cycle Lifecycle
+    type: requirement
+    tags: []
+    description: |
+      Each review cycle produces a self-contained review record that is
+      opened, investigated, verdicted, and closed. This is analogous to
+      individual PR reviews on GitHub — each reviewer's review is a
+      discrete artifact, and the collection of reviews across cycles
+      comprises the full review history for the task.
+    acceptance_criteria:
+      - id: ac-1
+        given: |
+          a reviewer submits an approve or request_changes verdict
+        when: |
+          the verdict is recorded on the review
+        then: |
+          the review record automatically transitions from open to closed,
+          preserving the verdict as a point-in-time artifact
+      - id: ac-2
+        given: |
+          a task re-enters pending_review after a fix cycle
+        when: |
+          a reviewer begins reviewing the updated work
+        then: |
+          a new review record is created and linked to the task via
+          review_ref; the previous review record remains closed as a
+          historical artifact accessible through the activity timeline
+      - id: ac-3
+        given: |
+          a task has multiple closed review records from successive cycles
+        when: |
+          the activity timeline is rendered
+        then: |
+          each review appears as a distinct entry with its own verdict,
+          disposition, and cycle context
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-16T20:19:31.653Z
