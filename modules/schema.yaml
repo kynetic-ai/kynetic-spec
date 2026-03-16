@@ -1494,4 +1494,19 @@ requirements:
     status:
       maturity: draft
       implementation: implemented
+  - _ulid: 01KKVX12DANP41G2J6QCEG4KQR
+    slugs:
+      - yaml-serialization-invariants
+    title: YAML Serialization Invariants
+    type: requirement
+    tags: []
+    description: Canonical field ordering and format guarantees for all kspec-managed YAML output,
+      ensuring predictable structure for tooling and stable diffs.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    notes: []
+    created: 2026-03-16T18:02:45.034Z
 acceptance_criteria: []
