@@ -1167,6 +1167,9 @@ features:
       notes, review events, and submission changes are merged into a single
       timeline. Recent activity shown by default in task get; full history
       available via --activity flag.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
