@@ -20948,11 +20948,11 @@ plans:
           sort, limit, offset. GET /api/reviews/:id returns the full review record
           including threads, checks, verdicts, events, and computed disposition.
 
-          How: Add routes to src/daemon/routes/. Use loadReviews() from
-          parser/reviews.ts. Create ReviewSummary and ReviewDetail types in
-          @kynetic-ai/shared following existing PlanSummary/TaskDetail patterns.
-          Pagination follows existing daemon conventions (limit/offset with total
-          count header).
+          How: Add routes to packages/daemon/src/routes/. Use loadReviewRecords()
+          from parser/reviews.ts. Create ReviewSummary and ReviewDetail types in
+          packages/shared/src/api.ts following existing PlanSummary/TaskDetail
+          patterns. Pagination follows existing tasks route conventions
+          (limit/offset with total count header).
 
           Covers: @review-records-daemon-api ac-1, ac-2.
 
@@ -21007,10 +21007,13 @@ plans:
           state: open, closed, archived). Invalid transitions return 400 with
           the reason.
 
-          How: Use submitVerdict(), addCheck(), transitionLifecycle() from
-          parser/review-operations.ts. Validate state transitions server-side
-          (e.g., can't archive from draft). Return recomputed disposition in
-          verdict responses so the UI can update immediately.
+          How: Use submitVerdict() and transitionLifecycle() from
+          parser/review-operations.ts, and createCheck()/createLocalCheck()
+          from review/checks.ts. All mutations need mutateReviewAtomically()
+          from parser/reviews.ts for persistence with file locking. Validate
+          state transitions server-side (e.g., can't archive from draft).
+          Return recomputed disposition in verdict responses so the UI can
+          update immediately.
 
           Covers: @review-records-daemon-api ac-6, ac-7, ac-8, ac-10.
 
@@ -21030,7 +21033,7 @@ plans:
           Without real-time events, users would need to manually refresh to see
           new threads, verdicts, or disposition changes from agent reviewers.
 
-          What: Add a "reviews" WebSocket topic. Emit events on review creation,
+          What: Add a "reviews:updates" WebSocket topic. Emit events on review creation,
           thread creation/update, verdict submission, check recording, and
           lifecycle transitions. Event types: review_created, review_updated,
           thread_created, thread_updated, verdict_submitted, check_recorded,
@@ -21067,7 +21070,7 @@ plans:
           Empty state when no reviews exist.
 
           How: TanStack Query for data fetching from GET /api/reviews.
-          WebSocket subscription to "reviews" topic for real-time invalidation.
+          WebSocket subscription to "reviews:updates" topic for real-time invalidation.
           Use goto() for URL param changes per project conventions. Follow
           existing list page patterns (tasks list, plans list).
 
@@ -21172,7 +21175,7 @@ plans:
       tracking).
 
       WebSocket events follow existing patterns (tasks and plans topics). The
-      "reviews" topic carries mutation type and review ULID for targeted query
+      "reviews:updates" topic carries mutation type and review ULID for targeted query
       invalidation.
 
       Web UI follows existing SvelteKit + TanStack Query patterns. Use goto()
@@ -21198,3 +21201,9 @@ plans:
         author: "@claude"
         content: "Granular tasks with why/what/how descriptions, derive_from_specs: false, explicit AC
           coverage per task, proper dependency chain"
+      - _ulid: 01KKTSWSDESG8ZKEEYQ9V45X6N
+        created_at: 2026-03-16T07:48:44.590Z
+        author: "@claude"
+        content: "Fix blockers: correct daemon route paths (packages/daemon/src/routes/), function names
+          (loadReviewRecords, createCheck/createLocalCheck), add mutateReviewAtomically for
+          persistence, fix WebSocket topic naming (reviews:updates)"
