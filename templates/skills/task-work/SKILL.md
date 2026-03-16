@@ -1,6 +1,6 @@
 # Task Work
 
-Structured workflow for working on tasks. Full lifecycle from start through PR merge.
+Structured workflow for working on tasks. Full lifecycle from start through completion.
 
 ## When to Use
 
@@ -37,8 +37,8 @@ pending → in_progress → pending_review → completed
 | Command | Transition | When |
 |---------|-----------|------|
 | `kspec task start @ref` | → in_progress | Beginning work |
-| `kspec task submit @ref` | → pending_review | Code done, ready for review |
-| `kspec task complete @ref --reason "..."` | → completed | PR merged |
+| `kspec task submit @ref` | → pending_review | Work done, ready for review |
+| `kspec task complete @ref --reason "..."` | → completed | Reviewed and merged |
 | `kspec task block @ref --reason "..."` | → blocked | External blocker |
 
 ## CLI Lookups
@@ -55,6 +55,7 @@ Use CLI commands to find information. **Do NOT search `.kspec/` YAML files manua
 | All traits | `kspec trait list` |
 | Task's linked spec | `kspec task get @ref` → read `spec_ref` field |
 | Task's linked plan | `kspec task get @ref` → if `plan_ref` is non-null, run `kspec plan get @plan-ref` |
+| Reviews for a task | `kspec review for-task @ref` |
 
 **Key pattern:** When `kspec item get` output shows "Inherited from @trait-slug", run `kspec item get @trait-slug` to see the trait's ACs. One command — do not grep YAML files.
 
@@ -64,7 +65,7 @@ Use CLI commands to find information. **Do NOT search `.kspec/` YAML files manua
 
 ```bash
 kspec tasks ready                # All ready tasks
-kspec tasks ready --eligible     # Automation-eligible only (loop mode)
+kspec tasks ready --eligible     # Automation-eligible only
 ```
 
 ### 2. Verify Work Is Needed
@@ -97,16 +98,16 @@ kspec plan get @plan-ref
 kspec task start @ref
 ```
 
-### 3.5 Branch Isolation (Required Before Edits)
+### 4. Branch Isolation (Required Before Edits)
 
-Immediately after `kspec task start` and before any file edits, create or switch to a dedicated branch for that task. Do not keep implementing on a branch that is tied to another pending-review task.
+Immediately after starting and before any file edits, create or switch to a dedicated branch.
 
 ```bash
 # Preferred: deterministic dispatch-compatible branch
 kspec task branch @ref
 ```
 
-`kspec task branch` creates or resumes the exact branch that the dispatch engine expects: `dispatch/task/<normalized-slug>/<short-task-ref>`. Using this command ensures:
+`kspec task branch` creates or resumes the branch `dispatch/task/<normalized-slug>/<short-task-ref>`. This ensures:
 
 - **Dispatch continuity** — reviewer and fix-cycle agents can find and resume the branch
 - **No naming collisions** — the branch name is deterministic from the task identity
@@ -114,7 +115,7 @@ kspec task branch @ref
 
 If you need a non-dispatch branch (e.g., for work not tied to a task), use conventional prefixes (`feat/`, `fix/`, etc.) instead.
 
-### 4. Work and Note
+### 5. Work and Note
 
 Read all ACs (own + trait) before implementing:
 
@@ -138,17 +139,47 @@ Note when you:
 - Encounter a blocker
 - Complete a significant piece
 
-For tasks that are missing standalone context (for example, generic derived notes), add one structured note before deep implementation work:
+### 6. AC Test Annotations
 
-```bash
-kspec task note @ref "Execution context:
-- Background: why this task matters
-- Scope: what is in/out for this task
-- Files: exact files expected to change
-- Verification: tests/commands that prove completion"
+Every acceptance criterion should have at least one test annotated with a comment linking it to the AC. Use the comment syntax appropriate for the language:
+
+```javascript
+// AC: @spec-ref ac-1
+it('should validate input when given invalid data', () => { ... });
 ```
 
-### 5. Regenerate Derived Files
+```python
+# AC: @spec-ref ac-1
+def test_validates_input():
+    ...
+```
+
+```sql
+-- AC: @spec-ref ac-1
+```
+
+```html
+<!-- AC: @spec-ref ac-1 -->
+```
+
+The pattern is always: language-appropriate comment + `AC: @spec-ref ac-N`.
+
+For **inherited trait ACs**, use the trait's ref, not the spec's ref:
+
+```javascript
+// AC: @trait-json-output ac-1
+it('should output valid JSON with --json flag', () => { ... });
+```
+
+If a trait AC genuinely doesn't apply, annotate it with a reason:
+
+```javascript
+// AC: @trait-json-output ac-3 — N/A: this command has no tabular output to format
+```
+
+Annotations must be standalone line comments, not embedded inside block comments or docstrings.
+
+### 7. Regenerate Derived Files
 
 If your task modified any of these source files, regenerate before committing:
 
@@ -157,9 +188,9 @@ If your task modified any of these source files, regenerate before committing:
 | `templates/skills/` or `.kspec/skills/` | `kspec skill render` |
 | `templates/agents-sections/`, conventions, or workflows | `kspec agents generate` |
 
-Commit the regenerated output alongside your source changes — reviewers and other agents consume the rendered files.
+Commit the regenerated output alongside your source changes.
 
-### 6. Commit
+### 8. Commit
 
 Include task and spec trailers:
 
@@ -174,12 +205,12 @@ Spec: @auth-feature
 
 Trailers enable `kspec log @ref` to find related commits.
 
-### 7. Local Review
+### 9. Quality Check
 
-Run quality checks before submitting. Verify:
+Before submitting, verify:
 
-- **Own AC coverage** — Each spec AC has a test annotated `// AC: @spec-ref ac-N`
-- **Trait AC coverage** — Each inherited trait AC has a test annotated `// AC: @trait-slug ac-N`
+- **Own AC coverage** — Each spec AC has an annotated test
+- **Trait AC coverage** — Each inherited trait AC has an annotated test (or N/A annotation)
 - **Tests pass** — Full test suite, not just new tests
 - **Code quality** — Matches existing patterns, no duplicated utilities
 - **No regressions** — Existing tests still pass
@@ -188,46 +219,33 @@ Run quality checks before submitting. Verify:
 kspec validate  # Reports uncovered trait ACs as warnings
 ```
 
-### 8. Submit and Create PR
+### 10. Submit
 
-Submit transitions the task to `pending_review`, then create the PR. This is the ownership handoff — the **worker** is done, the **reviewer** takes over.
+Submit transitions the task to `pending_review`. This signals that work is complete and ready for review.
 
 ```bash
-# 1. Submit (worker signals "ready for review")
 kspec task submit @ref
-
-# 2. Create PR (so the reviewer has something to review)
-gh pr create --title "feat: ..." --body "..."
 ```
 
-The sequence matters: `submit` first, then PR. The `pending_review` state is what triggers the pr-reviewer agent in dispatch mode. The PR is the artifact the reviewer acts on.
-
-### 9. Complete Task
-
-After PR is merged:
-
-```bash
-kspec task complete @ref --reason "Merged in PR #N. Summary of what was done."
-```
+The reviewer (human or agent) takes over from here. See `{skill:review}` for the review process and `{skill:merge}` for the merge process.
 
 ## Fix Cycle
 
-When inheriting a `needs_work` task:
+When inheriting a `needs_work` task, the review feedback lives in kspec review records:
 
-1. **Find the PR** — Check for review comments
+1. **Read the review** — Find and read review threads
    ```bash
-   gh pr list --search "Task: @task-ref" --json number,url
-   gh api repos/{owner}/{repo}/pulls/{number}/comments --jq '.[] | {path, line, body}'
+   kspec review for-task @ref              # Find linked review
+   kspec review get @review-ref            # Read full review with threads
    ```
 
-2. **Fix findings** — Address MUST-FIX and SHOULD-FIX items
+2. **Address blocker threads** — Blockers must be resolved before re-approval. Questions and nits are non-blocking but should be addressed.
 
 3. **Push fixes** — Commit with descriptive message
    ```bash
    git add <files> && git commit -m "fix: address review feedback
 
    Task: @task-slug"
-   git push
    ```
 
 4. **Re-submit** — `kspec task submit @ref` (back to pending_review, reviewer takes over again)
@@ -257,56 +275,7 @@ Tasks describe expected outcomes, not rigid boundaries:
 
 **When you notice something outside your task:** Capture it separately (`kspec inbox add` or `kspec task note`). Don't fix it inline — even small detours compound into drift.
 
-## AC Test Annotations
-
-Link tests to acceptance criteria:
-
-```javascript
-// AC: @spec-item ac-N
-it('should validate input', () => { ... });
-```
-
-```python
-# AC: @spec-item ac-N
-def test_validates_input():
-    ...
-```
-
-Every AC should have at least one test with this annotation.
-
-## Implementation Quality
-
-Before submitting:
-
-- **Search for existing utilities** — Don't duplicate helpers that already exist
-- **Match neighboring file style** — Naming conventions, error handling, imports
-- **Run full test suite** — Not just your new tests
-- **Validate** — `kspec validate` for spec alignment
-
-## Loop Mode
-
-Autonomous task execution without human confirmation.
-
-```bash
-kspec tasks ready --eligible  # Only automation-eligible tasks
-```
-
-### Task Selection Priority
-
-1. `needs_work` — Fix review feedback
-2. `in_progress` — Continue existing work
-3. Tasks that unblock others
-4. Highest priority ready task
-
-### Key Behaviors
-
-- Verify work is needed before starting (prevent duplicates)
-- Use `kspec task branch @ref` to create/switch to the dispatch-compatible branch before making code edits
-- Decisions auto-resolve without prompts
-- PR review handled externally (not this workflow)
-- All actions are logged and auditable
-
-### Blocking Rules
+## Blocking Rules
 
 **Block only for genuine external blockers:**
 - Human architectural decision needed
@@ -327,14 +296,6 @@ kspec tasks ready --eligible  # Check for other work
 # If empty: stop responding (agent dispatch exits automatically)
 ```
 
-### Turn Completion
-
-After submitting the task and creating the PR, **stop responding**. The `pending_review` transition triggers the pr-reviewer agent via dispatch — the worker does NOT review or merge its own PR.
-
-The agent dispatch engine continues automatically — it checks for remaining eligible tasks and exits when none remain.
-
-**Do NOT call `end-loop`** after creating a PR. That ends ALL remaining iterations. It's a rare escape hatch for when work is stalling across multiple iterations.
-
 ## Command Reference
 
 ```bash
@@ -351,18 +312,19 @@ kspec tasks ready
 kspec tasks ready --eligible
 kspec task get @ref
 
+# Review integration
+kspec review for-task @ref           # Find linked reviews
+kspec review get @review-ref         # Read review details
+
 # Validation
 kspec validate
 kspec validate --alignment
-
-# Session context
-kspec session start
 ```
 
 ## Integration
 
+- **`{skill:review}`** — Review process for submitted work
+- **`{skill:merge}`** — Merge approved work into integration branch
 - **`{skill:writing-specs}`** — Create specs before deriving tasks
 - **`{skill:plan}`** — Plans create specs that become tasks
-- **`{skill:review}`** — Review checks AC coverage and code quality
 - **`{skill:observe}`** — Capture friction found during task work
-- **`{skill:reflect}`** — Session reflection after completing tasks
