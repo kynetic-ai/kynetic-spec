@@ -1617,3 +1617,28 @@ reviews:
     external_links: []
     created_at: 2026-03-16T07:57:51.698Z
     updated_at: 2026-03-16T08:01:34.481Z
+  - _ulid: 01KKTTMBMPTDYTVJM92QHRBM5G
+    slugs: []
+    title: "Review: Review Records Web UI plan (round 6)"
+    lifecycle_state: draft
+    subject:
+      type: plan
+      ref: "@plan-review-records-web-ui"
+      shadow_commit: ""
+      content_hash: ""
+    author: "@claude"
+    related_refs: []
+    threads: []
+    checks: []
+    verdicts: []
+    events:
+      - _ulid: 01KKTTMBMN9J8S9C95BHDG3NB9
+        event_type: lifecycle_change
+        actor: "@claude"
+        timestamp: 2026-03-16T08:01:36.918Z
+        payload:
+          to: draft
+    notes: []
+    external_links: []
+    created_at: 2026-03-16T08:01:36.918Z
+    updated_at: null
