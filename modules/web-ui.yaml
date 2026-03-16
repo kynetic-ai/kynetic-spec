@@ -1625,9 +1625,10 @@ features:
           An active session with streaming output
         when: |
           The user views the session
-        then: |
-          Live text streams in real-time via agent_text_chunk WebSocket events,
-          with periodic structured refresh from events.jsonl
+        then: Live session activity streams in real-time via typed WebSocket session events
+          (message_start/progress/complete, thinking_start/progress/complete,
+          tool_call_start/complete) defined by @ws-session-event-streaming. No HTTP polling occurs
+          during live viewing.
       - id: ac-3
         given: |
           The session stream view
