@@ -101629,7 +101629,7 @@
   spec_ref: null
   plan_ref: "@plan-task-activity-timeline"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -101638,7 +101638,9 @@
     - cli
     - bug
   vcs_refs: []
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-16T20:19:31.701Z
+  started_at: 2026-03-16T21:42:01.641Z
   notes: []
   todos: []
 - _ulid: 01KKW4VHJ285WXV7YSPP5QN3WW
