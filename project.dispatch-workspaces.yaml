@@ -6501,8 +6501,8 @@ workspaces:
       adopted_from: null
       adopted_at: null
       rehydrated: null
-    lifecycle_state: integrating
-    active_role: reviewer
+    lifecycle_state: closing
+    active_role: null
     worktrees:
       worker:
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-task-todo-checking-from-session-checkpoint-hook-01kkt03v
@@ -6543,28 +6543,28 @@ workspaces:
           steps: []
           failureMessage: null
     integration:
-      status: pending
+      status: merged
       target_branch: main
       target_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
       publication_mode: pull_request
-      outcome: pull_request
-      detail: null
-      updated_at: 2026-03-16T00:32:01.543Z
+      outcome: merged
+      detail: integration:merged
+      updated_at: 2026-03-16T00:43:49.467Z
     health:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-16T00:32:01.543Z
+      updated_at: 2026-03-16T00:43:49.467Z
     cleanup:
-      status: not_scheduled
-      eligible: false
-      reason: null
-      detail: null
-      updated_at: 2026-03-16T00:32:01.543Z
+      status: scheduled
+      eligible: true
+      reason: integrated-into-base-branch
+      detail: integrated-into-base-branch
+      updated_at: 2026-03-16T00:43:49.467Z
     timestamps:
       created_at: 2026-03-16T00:20:04.106Z
-      updated_at: 2026-03-16T00:32:01.543Z
-      last_reconciled_at: 2026-03-16T00:32:01.543Z
+      updated_at: 2026-03-16T00:43:49.467Z
+      last_reconciled_at: 2026-03-16T00:43:49.467Z
       last_active_at: 2026-03-16T00:31:08.935Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKT042895JSK5GS951Z5F1BR
