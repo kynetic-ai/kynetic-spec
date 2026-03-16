@@ -4,214 +4,211 @@ slugs:
   - task-system
 title: Task System
 type: module
-status:
-  maturity: draft
-  implementation: implemented
 description: |
   Tasks are first-class items that track work. They can be derived
   from spec items or created standalone. The task system enables
   kspec to function as a work tracker, not just a spec format.
+status:
+  maturity: draft
+  implementation: implemented
 features:
   - _ulid: 01JHNKA4W0TTPE000000000000
     slugs:
       - task-types
     title: Task Types
     type: feature
+    description: |
+      Tasks have types that indicate their nature and relationship
+      to spec items. Some types expect spec linkage; others don't.
     status:
       maturity: draft
       implementation: implemented
+    acceptance_criteria:
+      - given: a task is created or derived
+        id: ac-1
+        then: "the type is stored as one of the supported task classifications: task, epic, bug, spike, or
+          infra"
+        when: its type field is validated
     priority: high
     tags:
       - mvp
       - tasks
-    description: |
-      Tasks have types that indicate their nature and relationship
-      to spec items. Some types expect spec linkage; others don't.
     requirements:
       - _ulid: 01JHNKA4W1TTPE100000000000
         slugs:
           - task-type-task
         title: Task Type - task
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           type: task
 
           Atomic unit of work. May be spec-derived or standalone.
           Default task type if not specified.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-types"
         acceptance_criteria:
-          - id: ac-1
-            given: a task with type 'task' is created
-            when: the task is validated
+          - given: a task with type 'task' is created
+            id: ac-1
             then: it is accepted as atomic unit of work with standard task lifecycle (pending -> in_progress ->
               completed)
-          - id: ac-2
-            given: a task has no type specified
-            when: the task is created or validated
+            when: the task is validated
+          - given: a task has no type specified
+            id: ac-2
             then: it defaults to type 'task'
+            when: the task is created or validated
       - _ulid: 01JHNKA4W2TTPE200000000000
         slugs:
           - task-type-epic
         title: Task Type - epic
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           type: epic
 
           Groups related tasks. Often derived from features.
           Can have subtasks that depends_on it.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-types"
         acceptance_criteria:
-          - id: ac-1
-            given: a task with type 'epic' is created
-            when: other tasks reference it via depends_on
+          - given: a task with type 'epic' is created
+            id: ac-1
             then: the epic serves as a container grouping related subtasks
-          - id: ac-2
-            given: an epic is often derived from a feature
-            when: the feature has child requirements
+            when: other tasks reference it via depends_on
+          - given: an epic is often derived from a feature
+            id: ac-2
             then: subtasks can be created with depends_on relationships to the epic
+            when: the feature has child requirements
       - _ulid: 01JHNKA4W3TTPE300000000000
         slugs:
           - task-type-bug
         title: Task Type - bug
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           type: bug
 
           Defect fix. May or may not link to spec item.
           Used for issues found after implementation.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-types"
         acceptance_criteria:
-          - id: ac-1
-            given: a task with type 'bug' is created
-            when: the task is validated
+          - given: a task with type 'bug' is created
+            id: ac-1
             then: it is accepted as defect fix work (may or may not have spec_ref depending on whether it
               reveals spec gap)
-          - id: ac-2
-            given: a bug is found after implementation
-            when: it doesn't correspond to existing spec item
+            when: the task is validated
+          - given: a bug is found after implementation
+            id: ac-2
             then: bug task can be created standalone without spec_ref
+            when: it doesn't correspond to existing spec item
       - _ulid: 01JHNKA4W4TTPE400000000000
         slugs:
           - task-type-spike
         title: Task Type - spike
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           type: spike
 
           Research or investigation task. Time-boxed exploration.
           Output is knowledge, not code.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-types"
         acceptance_criteria:
-          - id: ac-1
-            given: a task with type 'spike' is created
-            when: the task is time-boxed research or investigation
+          - given: a task with type 'spike' is created
+            id: ac-1
             then: it is validated as spike with expected output being knowledge/findings, not code
-          - id: ac-2
-            given: a spike task is completed
-            when: the completion note is added
+            when: the task is time-boxed research or investigation
+          - given: a spike task is completed
+            id: ac-2
             then: the note documents findings and recommendations (what was learned)
+            when: the completion note is added
       - _ulid: 01JHNKA4W5TTPE500000000000
         slugs:
           - task-type-infra
         title: Task Type - infra
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           type: infra
 
           Infrastructure or tooling work. Not spec-derived.
           Examples: CI setup, dependency updates, tooling.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-types"
         acceptance_criteria:
-          - id: ac-1
-            given: a task with type 'infra' is created
-            when: the task is validated
+          - given: a task with type 'infra' is created
+            id: ac-1
             then: "it is accepted as infrastructure/tooling work without requiring spec_ref (examples: CI setup,
               dependency updates)"
-    acceptance_criteria:
-      - id: ac-1
-        given: a task is created or derived
-        when: its type field is validated
-        then: "the type is stored as one of the supported task classifications: task, epic, bug, spike, or
-          infra"
+            when: the task is validated
   - _ulid: 01JHNKA4W6TSTA000000000000
     slugs:
       - task-states
       - state-machine
     title: Task States
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: high
-    tags:
-      - mvp
-      - tasks
     description: |
       Tasks have explicit states (set via commands) and derived
       states (computed from dependencies). The state machine
       controls valid transitions.
+    status:
+      maturity: draft
+      implementation: implemented
     acceptance_criteria:
-      - id: ac-state-1
-        given: a task in pending state
-        when: kspec task start is run
+      - given: a task in pending state
+        id: ac-state-1
         then: task transitions to in_progress
-      - id: ac-state-2
-        given: a task with depends_on another pending task
-        when: ready tasks are queried
+        when: kspec task start is run
+      - given: a task with depends_on another pending task
+        id: ac-state-2
         then: the dependent task is NOT in the ready list
-      - id: ac-state-3
-        given: a task blocked by dependencies
-        when: all dependencies complete
+        when: ready tasks are queried
+      - given: a task blocked by dependencies
+        id: ac-state-3
         then: task becomes ready (unblocked)
+        when: all dependencies complete
+    priority: high
+    tags:
+      - mvp
+      - tasks
     requirements:
       - _ulid: 01JHNKA4W7TSTA100000000000
         slugs:
           - state-pending
         title: State - pending
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           status: pending
 
           Initial state. Work not yet started.
           Transitions: start -> in_progress, cancel -> cancelled
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-states"
         acceptance_criteria:
-          - id: ac-1
-            given: a task has status pending
-            when: a user runs kspec task start or kspec task cancel
+          - given: a task has status pending
+            id: ac-1
             then: the task transitions to in_progress or cancelled respectively
+            when: a user runs kspec task start or kspec task cancel
       - _ulid: 01JHNKA4W8TSTA200000000000
         slugs:
           - state-in-progress
         title: State - in_progress
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           status: in_progress
 
@@ -220,21 +217,21 @@ features:
           - complete -> completed
           - block -> blocked
           - cancel -> cancelled
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-states"
         acceptance_criteria:
-          - id: ac-1
-            given: a task has status in_progress
-            when: a user runs kspec task submit, kspec task block, or kspec task cancel
+          - given: a task has status in_progress
+            id: ac-1
             then: the task transitions to pending_review, blocked, or cancelled respectively
+            when: a user runs kspec task submit, kspec task block, or kspec task cancel
       - _ulid: 01JHNKA4W9TSTA300000000000
         slugs:
           - state-blocked
         title: State - blocked
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           status: blocked
 
@@ -243,64 +240,64 @@ features:
           when depends_on items aren't completed.
 
           Transitions: unblock -> in_progress (or pending)
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-states"
         acceptance_criteria:
-          - id: ac-1
-            given: a task has status blocked
-            when: the blocker is cleared and the task is unblocked
+          - given: a task has status blocked
+            id: ac-1
             then: the task returns to pending or in_progress instead of transitioning directly to a terminal
               state
+            when: the blocker is cleared and the task is unblocked
       - _ulid: 01JHNKA5W0TSTA400000000000
         slugs:
           - state-completed
         title: State - completed
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           status: completed
 
           Work finished successfully. Terminal state.
           Should include closed_reason describing outcome.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-states"
         acceptance_criteria:
-          - id: ac-1
-            given: a task is marked completed
-            when: the completion is persisted
+          - given: a task is marked completed
+            id: ac-1
             then: the task remains in the terminal completed state and stores a closed_reason describing the
               outcome
+            when: the completion is persisted
       - _ulid: 01JHNKA5W1TSTA500000000000
         slugs:
           - state-cancelled
         title: State - cancelled
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           status: cancelled
 
           Work abandoned. Terminal state.
           Should include closed_reason explaining why.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-states"
         acceptance_criteria:
-          - id: ac-1
-            given: a task is cancelled
-            when: the cancellation is persisted
+          - given: a task is cancelled
+            id: ac-1
             then: the task remains in the terminal cancelled state and stores a closed_reason explaining why
               work stopped
+            when: the cancellation is persisted
       - _ulid: 01JHNKA5W2TSTA600000000000
         slugs:
           - derived-ready
         title: Derived State - ready
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |-
           "ready" is a computed view, not stored state:
           ready = (pending OR needs_work) + all depends_on completed + no blockers
@@ -309,168 +306,174 @@ features:
           This is the primary query for "what can I work on?"
 
           needs_work tasks are sorted before pending — fix cycles take priority.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-states"
         acceptance_criteria:
-          - id: ac-1
-            given: tasks exist in pending, needs_work, blocked, and unmet-dependency states
-            when: kspec tasks ready runs
+          - given: tasks exist in pending, needs_work, blocked, and unmet-dependency states
+            id: ac-1
             then: only pending or needs_work tasks with completed dependencies and no blockers are returned,
               with needs_work tasks listed before pending tasks
+            when: kspec tasks ready runs
       - _ulid: 01KF3H24BBZ5JXXMEP8JJS9SEJ
         slugs:
           - task-completion-guardrails
         title: Task Completion Guardrails
         type: requirement
-        tags:
-          - workflow
-          - dx
         description: When completing a task, CLI provides guardrails to ensure work is properly documented
           and aligned with spec.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: 2026-01-16T13:49:03.212Z
         acceptance_criteria:
-          - id: ac-2
-            given: A task with spec_ref is completed and the linked spec has acceptance_criteria
-            when: The task is marked completed
+          - given: A task with spec_ref is completed and the linked spec has acceptance_criteria
+            id: ac-2
             then: "CLI shows a reminder: 'Linked spec has N acceptance criteria - verify they are covered'"
-          - id: ac-3
-            given: A task without spec_ref is completed
             when: The task is marked completed
+          - given: A task without spec_ref is completed
+            id: ac-3
             then: No status update prompt is shown (only applies to spec-linked tasks)
-        status:
-          maturity: draft
-          implementation: implemented
+            when: The task is marked completed
+        tags:
+          - workflow
+          - dx
+        created: 2026-01-16T13:49:03.212Z
       - _ulid: 01KFCJRSTMPG1VTBVV74X2A2NK
         slugs:
           - pending-review-state
         title: Pending Review State
         type: requirement
-        tags:
-          - tasks
         description: Add pending_review status to task lifecycle. This state represents 'code complete,
           awaiting merge' - bridging the gap between in_progress (actively working) and completed
           (merged/shipped). Tasks transition to pending_review when work is done but PR needs
           review/merge, then to completed when actually shipped.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        notes: []
-        created: 2026-01-20T02:12:04.565Z
         acceptance_criteria:
-          - id: ac-1
-            given: TaskStatusSchema in common.ts
-            when: validating a task status value
+          - given: TaskStatusSchema in common.ts
+            id: ac-1
             then: pending_review is accepted as a valid enum value
-          - id: ac-2
-            given: a task with status pending_review
-            when: kspec task complete is run
+            when: validating a task status value
+          - given: a task with status pending_review
+            id: ac-2
             then: the task transitions to completed (pending_review is a valid pre-state for completion)
-          - id: ac-4
-            given: a task with status pending_review
-            when: ready tasks are queried via kspec tasks ready
+            when: kspec task complete is run
+          - given: a task with status pending_review
+            id: ac-4
             then: the pending_review task is NOT included (only pending tasks are ready)
-          - id: ac-5
-            given: tasks exist with status pending_review
-            when: kspec session start is run
+            when: ready tasks are queried via kspec tasks ready
+          - given: tasks exist with status pending_review
+            id: ac-5
             then: pending_review tasks are displayed in an 'Awaiting Review' or similar section separate from
               active work
-          - id: ac-6
-            given: a task with status pending_review
-            when: kspec tasks list --status pending_review is run
+            when: kspec session start is run
+          - given: a task with status pending_review
+            id: ac-6
             then: the task appears in the filtered list
-          - id: ac-7
-            given: the AGENTS.md task state diagram
-            when: describing task lifecycle
+            when: kspec tasks list --status pending_review is run
+          - given: the AGENTS.md task state diagram
+            id: ac-7
             then: pending_review appears between in_progress and completed with valid transition paths
-          - id: ac-8
-            given: the CLI help content for task commands
-            when: viewing help for task state transitions
+            when: describing task lifecycle
+          - given: the CLI help content for task commands
+            id: ac-8
             then: pending_review is documented with its purpose and valid transitions
-          - id: ac-9
-            given: a task with status in_progress
-            when: kspec task submit is run
+            when: viewing help for task state transitions
+          - given: a task with status in_progress
+            id: ac-9
             then: the task transitions to pending_review
-        status:
-          maturity: draft
-          implementation: implemented
+            when: kspec task submit is run
+        tags:
+          - tasks
+        created: 2026-01-20T02:12:04.565Z
+        notes: []
       - _ulid: 01KHYRCWD9CNW9FSGPFNH3NK2Y
         slugs: []
         title: Needs Work State
         type: requirement
-        tags:
-          - tasks
         description: The needs_work status represents 'reviewer found issues, worker must fix' - enabling a
           fix cycle between reviewer and worker in the ralph automation loop. Tasks transition to
           needs_work when a reviewer kicks back findings via kspec task needs-work, then back to
           in_progress when the worker picks up the fix via kspec task start.
+        status:
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
-        created: 2026-02-21T00:08:08.873Z
         acceptance_criteria:
-          - id: ac-1
-            given: TaskStatusSchema in common.ts
-            when: validating a task status value
+          - given: TaskStatusSchema in common.ts
+            id: ac-1
             then: needs_work is accepted as a valid enum value
-          - id: ac-2
-            given: a task with status pending_review
-            when: kspec task needs-work is run with --reason flag
+            when: validating a task status value
+          - given: a task with status pending_review
+            id: ac-2
             then: the task transitions to needs_work and a note is added with the reason and fix cycle count
-          - id: ac-3
-            given: a task with status needs_work
-            when: kspec task start is run
+            when: kspec task needs-work is run with --reason flag
+          - given: a task with status needs_work
+            id: ac-3
             then: the task transitions to in_progress (needs_work is a valid pre-state for starting)
-          - id: ac-4
-            given: a task with status that is NOT pending_review
-            when: kspec task needs-work is run
+            when: kspec task start is run
+          - given: a task with status that is NOT pending_review
+            id: ac-4
             then: the command rejects the transition with an error (only pending_review -> needs_work is valid)
-          - id: ac-5
-            given: tasks exist with status needs_work
-            when: kspec tasks active is run
+            when: kspec task needs-work is run
+          - given: tasks exist with status needs_work
+            id: ac-5
             then: needs_work tasks appear in the active task list alongside in_progress tasks
-          - id: ac-6
-            given: the CLI help content for task commands
-            when: viewing help for task state transitions
+            when: kspec tasks active is run
+          - given: the CLI help content for task commands
+            id: ac-6
             then: needs_work is documented with its purpose and valid transitions
-          - id: ac-7
-            given: a task is kicked back to needs_work multiple times
-            when: the fix cycle count in notes is tracked
+            when: viewing help for task state transitions
+          - given: a task is kicked back to needs_work multiple times
+            id: ac-7
             then: each kickback increments the FIX_CYCLE counter in the task note
-        status:
-          implementation: implemented
+            when: the fix cycle count in notes is tracked
+        tags:
+          - tasks
+        created: 2026-02-21T00:08:08.873Z
+        notes: []
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
       - task-structure
     title: Task Schema
     type: feature
+    description: |
+      Tasks are items with additional fields for work tracking.
+      Key principle: don't duplicate spec content, reference it.
     status:
       maturity: draft
       implementation: implemented
+    acceptance_criteria:
+      - given: a task implements a spec item
+        id: ac-1
+        then: the task keeps execution metadata plus a spec_ref link instead of duplicating the linked
+          spec's description and acceptance criteria
+        when: task data is stored
     priority: high
     tags:
       - mvp
       - tasks
-    description: |
-      Tasks are items with additional fields for work tracking.
-      Key principle: don't duplicate spec content, reference it.
     requirements:
       - _ulid: 01JHNKA5W4TSCH100000000000
         slugs:
           - task-spec-ref
         title: Spec Reference Field
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           spec_ref: "@feature-slug"
 
@@ -479,22 +482,22 @@ features:
           criteria, etc. Task adds only execution metadata.
 
           Optional for free-form tasks (bug, infra).
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-schema"
         acceptance_criteria:
-          - id: ac-1
-            given: a task implements a spec item or represents free-form work
-            when: the task schema is validated
+          - given: a task implements a spec item or represents free-form work
+            id: ac-1
             then: spec_ref points to the linked spec item when present and may be omitted for free-form bug or
               infra tasks
+            when: the task schema is validated
       - _ulid: 01JHNKA5W5TSCH200000000000
         slugs:
           - task-work-fields
         title: Work Metadata Fields
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Task-specific fields for work tracking:
 
@@ -505,22 +508,22 @@ features:
           - closed_reason: Why completed/cancelled
 
           These fields don't exist on regular spec items.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-schema"
         acceptance_criteria:
-          - id: ac-1
-            given: task-specific metadata is present
-            when: task schema validation runs
+          - given: task-specific metadata is present
+            id: ac-1
             then: priority, complexity, assignee, blocked_by, and closed_reason are accepted on tasks without
               becoming required fields on regular spec items
+            when: task schema validation runs
       - _ulid: 01JHNKA5W6TSCH300000000000
         slugs:
           - task-timestamps
         title: Task Timestamps
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Auto-populated timestamps:
 
@@ -529,22 +532,22 @@ features:
           - completed_at: When status became completed/cancelled
 
           Format: ISO 8601 (2025-01-14T10:00:00Z)
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-schema"
         acceptance_criteria:
-          - id: ac-1
-            given: a task is created, started, or completed or cancelled
-            when: task lifecycle commands persist the change
+          - given: a task is created, started, or completed or cancelled
+            id: ac-1
             then: created_at, started_at, and completed_at are auto-populated as ISO 8601 timestamps at the
               matching lifecycle transition
+            when: task lifecycle commands persist the change
       - _ulid: 01JHNKA5W7TSCH400000000000
         slugs:
           - task-vcs-refs
         title: VCS References
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           vcs_refs links tasks to git branches/commits/tags:
 
@@ -555,53 +558,47 @@ features:
               type: commit
 
           Minimal schema, extensible as needed.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-schema"
         acceptance_criteria:
-          - id: ac-1
-            given: vcs_refs are attached to a task
-            when: task data is validated
+          - given: vcs_refs are attached to a task
+            id: ac-1
             then: each vcs_refs entry stores a git reference string and a type such as branch, commit, or tag
-    acceptance_criteria:
-      - id: ac-1
-        given: a task implements a spec item
-        when: task data is stored
-        then: the task keeps execution metadata plus a spec_ref link instead of duplicating the linked
-          spec's description and acceptance criteria
+            when: task data is validated
   - _ulid: 01JHNKA5W8TDRV000000000000
     slugs:
       - task-derivation
       - derive-tasks
     title: Task Derivation
     type: feature
+    description: |
+      Tasks can be derived from spec items via explicit command.
+      Not automatic - you run `kspec derive @feature` when ready.
     status:
       maturity: draft
       implementation: implemented
+    acceptance_criteria:
+      - given: a feature without derived tasks
+        id: ac-derive-1
+        then: a task is created with spec_ref pointing to feature
+        when: kspec derive @feature runs
+      - given: a derived task exists for a feature
+        id: ac-derive-2
+        then: no duplicate is created (idempotent)
+        when: kspec derive @feature runs again
     priority: high
     tags:
       - mvp
       - tasks
-    description: |
-      Tasks can be derived from spec items via explicit command.
-      Not automatic - you run `kspec derive @feature` when ready.
-    acceptance_criteria:
-      - id: ac-derive-1
-        given: a feature without derived tasks
-        when: kspec derive @feature runs
-        then: a task is created with spec_ref pointing to feature
-      - id: ac-derive-2
-        given: a derived task exists for a feature
-        when: kspec derive @feature runs again
-        then: no duplicate is created (idempotent)
     requirements:
       - _ulid: 01JHNKA5W9TDRV100000000000
         slugs:
           - derive-command
         title: Derive Command
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           kspec derive <ref>     # Derive task for single item
           kspec derive --all    # Derive for all items without tasks
@@ -611,66 +608,66 @@ features:
           - type: task (or epic for features with children)
           - spec_ref: @<item>
           - derivation: auto
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-derivation"
         acceptance_criteria:
-          - id: ac-1
-            given: a user runs kspec derive @item or kspec derive --all
-            when: derivation creates work for an uncovered item
+          - given: a user runs kspec derive @item or kspec derive --all
+            id: ac-1
             then: the created task includes a derived title, task type, spec_ref, and derivation metadata
+            when: derivation creates work for an uncovered item
       - _ulid: 01JHNKA6W0TDRV200000000000
         slugs:
           - derive-idempotency
         title: Derivation Idempotency
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Derivation is idempotent:
           - If task with spec_ref to item exists, skip creation
           - Use --force to create additional task anyway
           - Useful for re-running derive without duplicates
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-derivation"
         acceptance_criteria:
-          - id: ac-1
-            given: a task already exists for an item's spec_ref
-            when: kspec derive is run again without --force
+          - given: a task already exists for an item's spec_ref
+            id: ac-1
             then: no duplicate task is created for that spec item
+            when: kspec derive is run again without --force
   - _ulid: 01KEZCJPJ4A4QG2DY5F3BBVFVB
     slugs:
       - task-notes
       - work-log
     title: Task Notes
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: medium
-    tags:
-      - tasks
     description: |
       Notes are append-only log entries on tasks. Track progress,
       findings, blockers. Critical for agent handoff.
+    status:
+      maturity: draft
+      implementation: implemented
     acceptance_criteria:
-      - id: ac-note-1
-        given: a task in progress
-        when: kspec task note @task "Found issue with X"
+      - given: a task in progress
+        id: ac-note-1
         then: note is appended to task's notes array
-      - id: ac-note-2
-        given: an earlier note that's wrong
-        when: new note added with --supersedes
+        when: kspec task note @task "Found issue with X"
+      - given: an earlier note that's wrong
+        id: ac-note-2
         then: new note links to old one (old preserved)
+        when: new note added with --supersedes
+    priority: medium
+    tags:
+      - tasks
     requirements:
       - _ulid: 01KEZCJPJ4WYTKPZZ9FY5A2G13
         slugs:
           - note-structure
         title: Note Structure
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Note entries have:
           - _ulid: Entry identifier
@@ -680,69 +677,69 @@ features:
           - supersedes: ULID of entry this corrects (optional)
 
           Notes are never deleted, only superseded.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-notes"
         acceptance_criteria:
-          - id: ac-1
-            given: a note is added to a task
-            when: the note is stored
+          - given: a note is added to a task
+            id: ac-1
             then: the entry records its ULID, created_at timestamp, author, content, and optional supersedes
               reference while preserving earlier notes
+            when: the note is stored
       - _ulid: 01KEZCJPJ4Y0CGNFZREY3QS225
         slugs:
           - note-cli
         title: Note CLI Commands
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           kspec task note <ref> "message"      # Add note
           kspec task note <ref> --supersedes <id> "correction"
           kspec task notes <ref>               # Show notes log
 
           JSON output available for all commands.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-notes"
         acceptance_criteria:
-          - id: ac-1
-            given: a user runs kspec task note @task "message" or kspec task notes @task
-            when: the command succeeds
+          - given: a user runs kspec task note @task "message" or kspec task notes @task
+            id: ac-1
             then: the note is appended to the task log and the notes command returns the append-only note
               history
+            when: the command succeeds
   - _ulid: 01KEZCJPJ41NHFPF7WV6PF68SW
     slugs:
       - task-todos
       - subtask-checklist
     title: Task Todos
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: medium
-    tags:
-      - tasks
     description: |
       Todos are lightweight checklist items that emerge during work.
       Start simple; promote to full tasks when complex.
+    status:
+      maturity: draft
+      implementation: implemented
     acceptance_criteria:
-      - id: ac-todo-1
-        given: a task in progress
-        when: kspec todo add @task "Write tests"
+      - given: a task in progress
+        id: ac-todo-1
         then: todo is added to task's todos array
-      - id: ac-todo-2
-        given: a todo that's complex
-        when: kspec todo promote @task <id>
+        when: kspec todo add @task "Write tests"
+      - given: a todo that's complex
+        id: ac-todo-2
         then: a new task is created, todo marked promoted_to
+        when: kspec todo promote @task <id>
+    priority: medium
+    tags:
+      - tasks
     requirements:
       - _ulid: 01KEZCJPJ43FJQJZM48Z5KS4NF
         slugs:
           - todo-structure
         title: Todo Structure
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Todo entries have:
           - id: Local numeric ID (within task)
@@ -752,22 +749,22 @@ features:
           - added_at: When created
           - added_by: Who added it
           - promoted_to: @ref if promoted to task (optional)
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-todos"
         acceptance_criteria:
-          - id: ac-1
-            given: a todo is added to a task and later marked done or not done
-            when: the todo entry is stored
+          - given: a todo is added to a task and later marked done or not done
+            id: ac-1
             then: it records a local id, text, done state, timestamps, author, and keeps the same identity
               across later status changes
+            when: the todo entry is stored
       - _ulid: 01KEZCJPJ4WPM1XREVKF00QM2K
         slugs:
           - todo-cli
         title: Todo CLI Commands
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           kspec todo add <ref> "text"     # Add todo
           kspec todo done <ref> <id>      # Mark complete
@@ -775,37 +772,43 @@ features:
           kspec task todos <ref>          # List todos
 
           Todos are for quick capture; promote when complex.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@task-todos"
         acceptance_criteria:
-          - id: ac-1
-            given: a user runs kspec task todo add, kspec task todo done, kspec task todo undone, or kspec task
+          - given: a user runs kspec task todo add, kspec task todo done, kspec task todo undone, or kspec task
               todos
-            when: the command succeeds
+            id: ac-1
             then: the task todo list is updated and the current todo entries can be listed from the task
+            when: the command succeeds
   - _ulid: 01JHNKA6W7TSTR000000000000
     slugs:
       - task-storage
     title: Task Storage
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: medium
-    tags:
-      - tasks
     description: |
       Tasks are stored alongside or separate from specs.
       Auto-adaptive: start alongside, separate when volume grows.
+    status:
+      maturity: draft
+      implementation: implemented
+    acceptance_criteria:
+      - given: a project uses the task system
+        id: ac-1
+        then: the system supports storing them either alongside module specs or in a dedicated tasks
+          directory without changing task semantics
+        when: tasks are persisted
+    priority: medium
+    tags:
+      - tasks
     requirements:
       - _ulid: 01JHNKA6W8TSTR100000000000
         slugs:
           - task-storage-alongside
         title: Storage - Alongside Specs
         type: requirement
-        status:
-          maturity: draft
-          implementation: in_progress
         description: |
           For smaller projects, tasks next to specs:
 
@@ -814,21 +817,21 @@ features:
             auth.tasks.yaml     # Tasks for auth module
 
           Simple, keeps related items together.
+        status:
+          maturity: draft
+          implementation: in_progress
         implements:
           - "@task-storage"
         acceptance_criteria:
-          - id: ac-1
-            given: a smaller project stores tasks alongside specs
-            when: a module has a companion .tasks.yaml file next to its spec file
+          - given: a smaller project stores tasks alongside specs
+            id: ac-1
             then: tasks for that module remain colocated with the related spec
+            when: a module has a companion .tasks.yaml file next to its spec file
       - _ulid: 01JHNKA6W9TSTR200000000000
         slugs:
           - task-storage-separate
         title: Storage - Separate Directory
         type: requirement
-        status:
-          maturity: draft
-          implementation: in_progress
         description: |
           For larger projects, separate tasks directory:
 
@@ -842,56 +845,50 @@ features:
               2025-01.yaml
 
           Separates concerns, enables archiving.
+        status:
+          maturity: draft
+          implementation: in_progress
         implements:
           - "@task-storage"
         acceptance_criteria:
-          - id: ac-1
-            given: a larger project uses separate task storage
-            when: tasks are persisted under tasks backlog, active, or archive files
+          - given: a larger project uses separate task storage
+            id: ac-1
             then: task data is stored separately from module spec files and can be archived independently
-    acceptance_criteria:
-      - id: ac-1
-        given: a project uses the task system
-        when: tasks are persisted
-        then: the system supports storing them either alongside module specs or in a dedicated tasks
-          directory without changing task semantics
+            when: tasks are persisted under tasks backlog, active, or archive files
   - _ulid: 01JHNKA7W0TQRY000000000000
     slugs:
       - task-queries
     title: Task Queries
     type: feature
+    description: |
+      The key task query: "what can I work on?"
+      `kspec tasks ready` is the primary interface for agents and humans.
     status:
       maturity: draft
       implementation: implemented
+    acceptance_criteria:
+      - given: tasks with various states and dependencies
+        id: ac-query-1
+        then: only tasks that are pending with met dependencies shown
+        when: kspec tasks ready runs
+      - given: ready tasks exist
+        id: ac-query-2
+        then: highest priority ready task returned
+        when: kspec tasks next runs
+      - given: multiple ready tasks exist with the same priority
+        id: ac-query-3
+        then: tasks are ordered by creation time ascending (oldest first within priority tier)
+        when: kspec tasks ready runs
     priority: high
     tags:
       - mvp
       - tasks
-    description: |
-      The key task query: "what can I work on?"
-      `kspec tasks ready` is the primary interface for agents and humans.
-    acceptance_criteria:
-      - id: ac-query-1
-        given: tasks with various states and dependencies
-        when: kspec tasks ready runs
-        then: only tasks that are pending with met dependencies shown
-      - id: ac-query-2
-        given: ready tasks exist
-        when: kspec tasks next runs
-        then: highest priority ready task returned
-      - id: ac-query-3
-        given: multiple ready tasks exist with the same priority
-        when: kspec tasks ready runs
-        then: tasks are ordered by creation time ascending (oldest first within priority tier)
     requirements:
       - _ulid: 01JHNKA7W1TQRY100000000000
         slugs:
           - query-ready
         title: Ready Tasks Query
         type: requirement
-        status:
-          maturity: draft
-          implementation: not_started
         description: |-
           kspec tasks ready
 
@@ -902,23 +899,23 @@ features:
           - sorted: needs_work first, then pending (fix cycles take priority)
 
           This is THE command for "what can I work on next?"
+        status:
+          maturity: draft
+          implementation: not_started
         implements:
           - "@task-queries"
         traits:
           - "@trait-task-readiness"
         acceptance_criteria:
-          - id: ac-1
-            given: tasks have mixed statuses, blockers, and dependencies
-            when: kspec tasks ready runs
+          - given: tasks have mixed statuses, blockers, and dependencies
+            id: ac-1
             then: it returns only ready tasks and orders needs_work ahead of pending
+            when: kspec tasks ready runs
       - _ulid: 01JHNKA7W2TQRY200000000000
         slugs:
           - query-next
         title: Next Task Query
         type: requirement
-        status:
-          maturity: draft
-          implementation: not_started
         description: |
           kspec tasks next
 
@@ -926,24 +923,24 @@ features:
           Sorting: priority (asc) -> created_at (asc)
 
           Useful for agents: "give me one thing to do"
+        status:
+          maturity: draft
+          implementation: not_started
         implements:
           - "@task-queries"
         traits:
           - "@trait-task-readiness"
         acceptance_criteria:
-          - id: ac-1
-            given: multiple ready tasks exist
-            when: kspec tasks next runs
+          - given: multiple ready tasks exist
+            id: ac-1
             then: it returns the single ready task with the highest priority, breaking ties by oldest created_at
               first
+            when: kspec tasks next runs
       - _ulid: 01JHNKA7W3TQRY300000000000
         slugs:
           - query-filters
         title: Task Query Filters
         type: requirement
-        status:
-          maturity: draft
-          implementation: not_started
         description: |
           kspec tasks list [filters]
 
@@ -955,15 +952,23 @@ features:
           - --spec-ref <ref>    # By linked spec item
 
           All queries support --json output.
+        status:
+          maturity: draft
+          implementation: not_started
         implements:
           - "@task-queries"
+        acceptance_criteria:
+          - given: a user runs kspec tasks list with --status, --type, --tag, or --meta-ref and optionally
+              --json
+            id: ac-1
+            then: only matching tasks are returned and JSON output remains available for the filtered result set
+            when: the query executes
         requirements:
           - _ulid: 01KHA83NGHKRZ287PGZ8HH6N0X
             slugs:
               - multi-value-status-filter
             title: Multi-Value Status Filter
             type: requirement
-            tags: []
             description: |
               The --status filter on list commands should accept multiple values via
               comma-separated syntax or repeated flags. The backend ItemIndex.query()
@@ -973,39 +978,9 @@ features:
               blocked, completed, cancelled) while item list uses ImplementationStatus
               values (not_started, in_progress, implemented, verified). Validation must
               use the correct enum per command.
-            acceptance_criteria:
-              - id: ac-comma-separated
-                given: User runs kspec tasks list --status in_progress,pending_review
-                when: A comma-separated status value is provided
-                then: Tasks matching ANY of the listed statuses are returned
-              - id: ac-repeated-flag
-                given: User runs kspec tasks list --status in_progress --status pending_review
-                when: The --status flag is provided multiple times
-                then: Tasks matching ANY of the listed statuses are returned (same as comma-separated)
-              - id: ac-single-value-unchanged
-                given: User runs kspec tasks list --status pending
-                when: A single status value is provided
-                then: Behavior is unchanged from current -- only tasks with that status are returned
-              - id: ac-invalid-task-status
-                given: User runs kspec tasks list --status invalid_value
-                when: An invalid TaskStatus name is provided
-                then: Error message lists valid TaskStatus values and exits non-zero
-              - id: ac-invalid-item-status
-                given: User runs kspec item list --status invalid_value
-                when: An invalid ImplementationStatus name is provided
-                then: Error message lists valid ImplementationStatus values and exits non-zero
-              - id: ac-item-list-parity
-                given: User runs kspec item list --status implemented,verified
-                when: Multi-value status is used on item list with ImplementationStatus values
-                then: Same comma-separated and repeated-flag behavior works for spec item listing
-              - id: ac-json-output
-                given: User runs kspec tasks list --status in_progress,pending --json
-                when: Combined with --json flag
-                then: JSON output contains only tasks matching the specified statuses
-              - id: ac-trailing-comma
-                given: User runs kspec tasks list --status in_progress, (trailing comma)
-                when: A trailing or leading comma produces an empty string after split
-                then: Empty strings are silently ignored, only valid status values are used
+            status:
+              maturity: draft
+              implementation: implemented
             depends_on: []
             implements: []
             relates_to: []
@@ -1013,427 +988,456 @@ features:
             traits:
               - "@trait-filterable-list"
               - "@trait-json-output"
-            notes: []
+            acceptance_criteria:
+              - given: User runs kspec tasks list --status in_progress,pending_review
+                id: ac-comma-separated
+                then: Tasks matching ANY of the listed statuses are returned
+                when: A comma-separated status value is provided
+              - given: User runs kspec tasks list --status in_progress --status pending_review
+                id: ac-repeated-flag
+                then: Tasks matching ANY of the listed statuses are returned (same as comma-separated)
+                when: The --status flag is provided multiple times
+              - given: User runs kspec tasks list --status pending
+                id: ac-single-value-unchanged
+                then: Behavior is unchanged from current -- only tasks with that status are returned
+                when: A single status value is provided
+              - given: User runs kspec tasks list --status invalid_value
+                id: ac-invalid-task-status
+                then: Error message lists valid TaskStatus values and exits non-zero
+                when: An invalid TaskStatus name is provided
+              - given: User runs kspec item list --status invalid_value
+                id: ac-invalid-item-status
+                then: Error message lists valid ImplementationStatus values and exits non-zero
+                when: An invalid ImplementationStatus name is provided
+              - given: User runs kspec item list --status implemented,verified
+                id: ac-item-list-parity
+                then: Same comma-separated and repeated-flag behavior works for spec item listing
+                when: Multi-value status is used on item list with ImplementationStatus values
+              - given: User runs kspec tasks list --status in_progress,pending --json
+                id: ac-json-output
+                then: JSON output contains only tasks matching the specified statuses
+                when: Combined with --json flag
+              - given: User runs kspec tasks list --status in_progress, (trailing comma)
+                id: ac-trailing-comma
+                then: Empty strings are silently ignored, only valid status values are used
+                when: A trailing or leading comma produces an empty string after split
+            tags: []
             created: 2026-02-13T00:58:41.041Z
-            status:
-              maturity: draft
-              implementation: implemented
-        acceptance_criteria:
-          - id: ac-1
-            given: a user runs kspec tasks list with --status, --type, --tag, or --meta-ref and optionally
-              --json
-            when: the query executes
-            then: only matching tasks are returned and JSON output remains available for the filtered result set
+            notes: []
   - _ulid: 01KFEJW283E3ADMC1G6WGV7MGC
     slugs:
       - tasks-assess-automation
     title: Task Automation Assessment
     type: feature
-    tags: []
     description: CLI command to assess task automation eligibility based on criteria (has spec_ref, spec
       has ACs, not spike). Provides visibility into task readiness for automation and enables fast
       triage of obvious cases via --auto mode.
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
-    notes: []
-    created: 2026-01-20T20:52:20.356Z
     acceptance_criteria:
-      - id: ac-1
-        given: kspec tasks assess automation is run
-        when: displaying results
+      - given: kspec tasks assess automation is run
+        id: ac-1
         then: lists pending tasks without automation field (unassessed) by default
-      - id: ac-2
-        given: kspec tasks assess automation is run
-        when: the --all flag is provided
+        when: displaying results
+      - given: kspec tasks assess automation is run
+        id: ac-2
         then: includes tasks that already have automation set
-      - id: ac-3
-        given: kspec tasks assess automation is run
-        when: displaying each task
+        when: the --all flag is provided
+      - given: kspec tasks assess automation is run
+        id: ac-3
         then: "shows criteria check results: has_spec_ref, spec_has_acs, not_spike with pass/fail status"
-      - id: ac-4
-        given: kspec tasks assess automation is run
         when: displaying each task
+      - given: kspec tasks assess automation is run
+        id: ac-4
         then: shows recommendation (review_for_eligible, needs_review, or manual_only)
-      - id: ac-5
-        given: kspec tasks assess automation is run
-        when: output completes
+        when: displaying each task
+      - given: kspec tasks assess automation is run
+        id: ac-5
         then: shows summary counts of recommendations at end
-      - id: ac-6
-        given: kspec tasks assess automation @task-ref is run
-        when: a specific task reference is provided
+        when: output completes
+      - given: kspec tasks assess automation @task-ref is run
+        id: ac-6
         then: assesses only that task
-      - id: ac-7
-        given: kspec tasks assess automation @task-ref is run
-        when: task is not found
+        when: a specific task reference is provided
+      - given: kspec tasks assess automation @task-ref is run
+        id: ac-7
         then: returns non-zero exit code
-      - id: ac-8
-        given: assessing a task
-        when: task has spec_ref pointing to resolvable spec
+        when: task is not found
+      - given: assessing a task
+        id: ac-8
         then: has_spec_ref criterion passes
-      - id: ac-9
-        given: assessing a task
-        when: spec_ref is missing or unresolvable
+        when: task has spec_ref pointing to resolvable spec
+      - given: assessing a task
+        id: ac-9
         then: has_spec_ref criterion fails
-      - id: ac-10
-        given: assessing a task with spec_ref
-        when: linked spec has at least one acceptance criterion
+        when: spec_ref is missing or unresolvable
+      - given: assessing a task with spec_ref
+        id: ac-10
         then: spec_has_acs criterion passes
-      - id: ac-11
-        given: assessing a task
-        when: task has no spec_ref
+        when: linked spec has at least one acceptance criterion
+      - given: assessing a task
+        id: ac-11
         then: spec_has_acs criterion is skipped (neutral)
-      - id: ac-12
-        given: assessing a task
-        when: task type is not spike
+        when: task has no spec_ref
+      - given: assessing a task
+        id: ac-12
         then: not_spike criterion passes
-      - id: ac-13
-        given: assessing a task
-        when: task type is spike
+        when: task type is not spike
+      - given: assessing a task
+        id: ac-13
         then: not_spike criterion fails
-      - id: ac-14
-        given: computing recommendation
-        when: task is a spike
+        when: task type is spike
+      - given: computing recommendation
+        id: ac-14
         then: recommends manual_only regardless of other criteria
-      - id: ac-15
-        given: computing recommendation
-        when: spec_ref is missing or spec has no ACs
+        when: task is a spike
+      - given: computing recommendation
+        id: ac-15
         then: recommends needs_review
-      - id: ac-16
-        given: computing recommendation
-        when: all criteria pass (has spec, has ACs, not spike)
+        when: spec_ref is missing or spec has no ACs
+      - given: computing recommendation
+        id: ac-16
         then: recommends review_for_eligible (agent/human must verify spec/AC adequacy)
-      - id: ac-17
-        given: kspec tasks assess automation --auto is run
-        when: processing tasks
+        when: all criteria pass (has spec, has ACs, not spike)
+      - given: kspec tasks assess automation --auto is run
+        id: ac-17
         then: "applies only obvious cases: spikes -> manual_only, missing criteria -> needs_review"
-      - id: ac-18
-        given: kspec tasks assess automation --auto is run
-        when: task passes all criteria
+        when: processing tasks
+      - given: kspec tasks assess automation --auto is run
+        id: ac-18
         then: does NOT mark task as eligible (requires agent/human review)
-      - id: ac-19
-        given: kspec tasks assess automation --auto is run
-        when: marking a task
-        then: adds note to task explaining the assessment
-      - id: ac-20
-        given: kspec tasks assess automation --auto is run
-        when: marking task as needs_review
-        then: note includes reason explaining what is missing
-      - id: ac-21
-        given: kspec tasks assess automation --auto is run
         when: task passes all criteria
+      - given: kspec tasks assess automation --auto is run
+        id: ac-19
+        then: adds note to task explaining the assessment
+        when: marking a task
+      - given: kspec tasks assess automation --auto is run
+        id: ac-20
+        then: note includes reason explaining what is missing
+        when: marking task as needs_review
+      - given: kspec tasks assess automation --auto is run
+        id: ac-21
         then: task appears with review_for_eligible recommendation but automation field is NOT modified
-      - id: ac-22
-        given: kspec tasks assess automation --dry-run is run
-        when: displaying output
+        when: task passes all criteria
+      - given: kspec tasks assess automation --dry-run is run
+        id: ac-22
         then: shows what would change without modifying tasks
-      - id: ac-23
-        given: kspec tasks assess automation --dry-run --auto is run
-        when: combining flags
+        when: displaying output
+      - given: kspec tasks assess automation --dry-run --auto is run
+        id: ac-23
         then: shows auto mode changes without applying them
-      - id: ac-24
-        given: kspec tasks assess automation --json is run
-        when: outputting results
+        when: combining flags
+      - given: kspec tasks assess automation --json is run
+        id: ac-24
         then: outputs structured JSON with criteria details for each task
-      - id: ac-25
-        given: kspec tasks assess automation --json is run
         when: outputting results
+      - given: kspec tasks assess automation --json is run
+        id: ac-25
         then: JSON includes summary counts of recommendations
-      - id: ac-26
-        given: kspec tasks assess automation is run
-        when: no unassessed pending tasks exist
+        when: outputting results
+      - given: kspec tasks assess automation is run
+        id: ac-26
         then: outputs 'No unassessed tasks' message
-      - id: ac-27
-        given: kspec tasks assess automation is run without --all
-        when: filtering tasks
+        when: no unassessed pending tasks exist
+      - given: kspec tasks assess automation is run without --all
+        id: ac-27
         then: tasks already marked eligible/needs_review/manual_only are skipped
-      - id: ac-28
-        given: kspec tasks assess automation is run
         when: filtering tasks
+      - given: kspec tasks assess automation is run
+        id: ac-28
         then: non-pending tasks (completed, cancelled, in_progress, blocked) are excluded
-    status:
-      maturity: draft
-      implementation: implemented
+        when: filtering tasks
+    tags: []
+    created: 2026-01-20T20:52:20.356Z
+    notes: []
   - _ulid: 01KKW4VGMJVKDF3AMDG5JXY7NH
     slugs:
       - task-activity-timeline
     title: Task Activity Timeline
     type: feature
-    tags: []
     description: |
       Unified chronological view of all activity on a task derived from
       shadow branch git history and linked review records. State transitions,
       notes, review events, and submission changes are merged into a single
       timeline. Recent activity shown by default in task get; full history
       available via --activity flag.
-    acceptance_criteria:
-      - id: ac-1
-        given: |
-          a task has had state transitions recorded via shadow branch commits
-        when: |
-          kspec task get @ref is run
-        then: |
-          the most recent activity entries are shown after the notes section,
-          including state changes, notes, and review events in reverse
-          chronological order, capped at a reasonable default count
-      - id: ac-2
-        given: |
-          a task has state transitions, notes, and linked review records
-        when: |
-          kspec task get @ref --activity is run
-        then: |
-          the full activity timeline is shown, merging shadow branch commit
-          history with review record events into a single chronological view
-      - id: ac-3
-        given: |
-          a task has linked review records (current and historical)
-        when: |
-          the activity timeline is rendered
-        then: |
-          review events (creation, verdict submission, thread resolution,
-          lifecycle changes) appear inline in the timeline with the same
-          chronological ordering as task state changes and notes
-      - id: ac-4
-        given: |
-          kspec task get @ref --json includes activity
-        when: |
-          the output is consumed programmatically
-        then: |
-          each activity entry is a structured object with type, timestamp,
-          author, and summary fields in a typed array
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits:
       - "@trait-json-output"
-    notes: []
-    created: 2026-03-16T20:19:31.602Z
+    acceptance_criteria:
+      - given: |
+          a task has had state transitions recorded via shadow branch commits
+        id: ac-1
+        then: |
+          the most recent activity entries are shown after the notes section,
+          including state changes, notes, and review events in reverse
+          chronological order, capped at a reasonable default count
+        when: |
+          kspec task get @ref is run
+      - given: |
+          a task has state transitions, notes, and linked review records
+        id: ac-2
+        then: |
+          the full activity timeline is shown, merging shadow branch commit
+          history with review record events into a single chronological view
+        when: |
+          kspec task get @ref --activity is run
+      - given: |
+          a task has linked review records (current and historical)
+        id: ac-3
+        then: |
+          review events (creation, verdict submission, thread resolution,
+          lifecycle changes) appear inline in the timeline with the same
+          chronological ordering as task state changes and notes
+        when: |
+          the activity timeline is rendered
+      - given: |
+          kspec task get @ref --json includes activity
+        id: ac-4
+        then: |
+          each activity entry is a structured object with type, timestamp,
+          author, and summary fields in a typed array
+        when: |
+          the output is consumed programmatically
+    tags: []
     requirements:
       - _ulid: 01KKW4VGNG68VSCE2E7XDJF768
         slugs:
           - task-activity-git-query
         title: Task Activity Git Query
         type: requirement
-        tags: []
         description: |-
           The mechanism for deriving task activity from shadow branch git history.
           Queries all commits that modified a task's data block to extract the
           complete history of state transitions and mutations, including manual
           edits and batch operations.
-        acceptance_criteria:
-          - id: ac-1
-            given: a task ref is provided
-            when: the activity query runs against the shadow branch
-            then: all commits that modified the task's data are returned, including the creation commit, state
-              transitions, notes, and field changes, regardless of commit message content
-          - id: ac-2
-            given: multiple tasks exist in the same file
-            when: activity is queried for a specific task
-            then: only commits that affected that task's data are included; changes to other tasks in the same
-              file are excluded
-          - id: ac-3
-            given: |
-              a commit message follows the shadow branch auto-commit format
-            when: |
-              the activity entry is constructed
-            then: |
-              the operation type (start, submit, complete, note, block, etc.)
-              is parsed from the commit message into a structured activity type
-          - id: ac-4
-            given: a commit's diff shows changes to specific task fields
-            when: the raw commit data is normalized into activity entries
-            then: each meaningful field change is translated into a typed activity entry that identifies what
-              changed, such as state transitions, notes added, review linkage, or submission updates
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
+        acceptance_criteria:
+          - given: a task ref is provided
+            id: ac-1
+            then: all commits that modified the task's data are returned, including the creation commit, state
+              transitions, notes, and field changes, regardless of commit message content
+            when: the activity query runs against the shadow branch
+          - given: multiple tasks exist in the same file
+            id: ac-2
+            then: only commits that affected that task's data are included; changes to other tasks in the same
+              file are excluded
+            when: activity is queried for a specific task
+          - given: |
+              a commit message follows the shadow branch auto-commit format
+            id: ac-3
+            then: |
+              the operation type (start, submit, complete, note, block, etc.)
+              is parsed from the commit message into a structured activity type
+            when: |
+              the activity entry is constructed
+          - given: a commit's diff shows changes to specific task fields
+            id: ac-4
+            then: each meaningful field change is translated into a typed activity entry that identifies what
+              changed, such as state transitions, notes added, review linkage, or submission updates
+            when: the raw commit data is normalized into activity entries
+        tags: []
         created: 2026-03-16T20:19:31.632Z
+        notes: []
       - _ulid: 01KKW4VGPTSX0Z2AQDX7R8PV0P
         slugs:
           - review-fix-cycle-diff
         title: Review Fix-Cycle Diff Context
         type: requirement
-        tags: []
         description: |
           When a reviewer examines work after a fix cycle, they receive context
           about what changed since the prior review. The review record stores
           the commit it examined so diffs can be computed across cycles.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              a review record is created for a task with dispatch workspace
-              metadata available
-            when: |
-              the review is initialized
-            then: |
-              the review record stores the examined commit (the HEAD of the
-              detached review snapshot) as metadata on the record; reviews
-              created without workspace context leave this field null
-          - id: ac-2
-            given: |
-              a prior closed review record with an examined_commit exists
-              for the same task
-            when: |
-              a new review cycle begins and the reviewer receives orientation
-            then: |
-              the reviewer prompt includes a summary of what changed between
-              the prior review's examined commit and the current submission HEAD
-          - id: ac-3
-            given: |
-              diffs are requested between review cycles
-            when: |
-              the merge target or prior examined commit is unreachable
-            then: |
-              the diff is gracefully omitted with a note rather than erroring
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
+        acceptance_criteria:
+          - given: |
+              a review record is created for a task with dispatch workspace
+              metadata available
+            id: ac-1
+            then: |
+              the review record stores the examined commit (the HEAD of the
+              detached review snapshot) as metadata on the record; reviews
+              created without workspace context leave this field null
+            when: |
+              the review is initialized
+          - given: |
+              a prior closed review record with an examined_commit exists
+              for the same task
+            id: ac-2
+            then: |
+              the reviewer prompt includes a summary of what changed between
+              the prior review's examined commit and the current submission HEAD
+            when: |
+              a new review cycle begins and the reviewer receives orientation
+          - given: |
+              diffs are requested between review cycles
+            id: ac-3
+            then: |
+              the diff is gracefully omitted with a note rather than erroring
+            when: |
+              the merge target or prior examined commit is unreachable
+        tags: []
         created: 2026-03-16T20:19:31.674Z
+        notes: []
+    created: 2026-03-16T20:19:31.602Z
+    notes: []
 requirements:
   - _ulid: 01KFBVD707HVYZZ240A0KMEZ3N
     slugs:
       - task-automation-eligibility
     title: Task Automation Eligibility
     type: requirement
-    tags: []
-    depends_on: []
-    implements: []
-    relates_to: []
-    tests: []
-    notes: []
-    created: 2026-01-19T19:23:47.591Z
     description: Tasks have an automation eligibility status that indicates whether they can be
       processed by unattended automation loops (like ralph). Eligibility is determined by human
       judgment during triage - assessing whether the task is unambiguous, appropriately scoped, and
       has sufficient context (spec + notes + description) to be standalone. This prevents automation
       from attempting tasks that require human decisions, clarification, or oversight.
-    acceptance_criteria:
-      - id: ac-1
-        given: a task exists
-        when: checking its schema
-        then: "it has an optional automation field with enum values: eligible, needs_review, manual_only"
-      - id: ac-2
-        given: a new task is created
-        when: no automation value is specified
-        then: the task has no automation field (treated as unassessed)
-      - id: ac-3
-        given: ralph is selecting tasks
-        when: filtering ready tasks
-        then: "only tasks with automation: eligible are presented to the agent"
-      - id: ac-4
-        given: an agent is working on an eligible task
-        when: the agent determines the task is not suitable for automation
-        then: the agent marks it as needs_review and adds a note explaining why (note is required)
-      - id: ac-5
-        given: a human is triaging tasks
-        when: assessing automation readiness
-        then: they can set automation to any value (eligible, needs_review, manual_only) or clear it
-      - id: ac-6
-        given: a task is marked needs_review
-        when: it needs to become eligible again
-        then: "a human must review and explicitly set automation: eligible"
-      - id: ac-7
-        given: ralph is selecting tasks
-        when: a task has no automation field (unassessed)
-        then: that task is not presented to the agent
-      - id: ac-8
-        given: ralph is selecting tasks
-        when: "a task has automation: needs_review"
-        then: that task is not presented to the agent
-      - id: ac-9
-        given: ralph is selecting tasks
-        when: "a task has automation: manual_only"
-        then: that task is not presented to the agent
-      - id: ac-10
-        given: ralph is running
-        when: "no tasks with automation: eligible exist in ready state"
-        then: ralph exits with a message indicating no eligible tasks available
-      - id: ac-11
-        given: a user wants to set automation status
-        when: running kspec task set @ref --automation eligible
-        then: the task's automation field is set to the specified value
-      - id: ac-12
-        given: a user wants to clear automation status
-        when: running kspec task set @ref --no-automation
-        then: the task's automation field is removed (returns to unassessed state)
-      - id: ac-13
-        given: a task is created via kspec task add
-        when: the --automation flag is provided
-        then: the task is created with the specified automation value
-      - id: ac-14
-        given: kspec tasks ready is run
-        when: displaying the ready tasks list
-        then: the automation status is shown for each task (showing 'unassessed' if not set)
-      - id: ac-15
-        given: a task is marked manual_only
-        when: it needs to become eligible
-        then: "a human must review and explicitly set automation: eligible"
-      - id: ac-16
-        given: an agent marks a task as needs_review during a ralph iteration
-        when: the marking is complete
-        then: the agent moves on to the next eligible task (does not exit the loop)
-      - id: ac-17
-        given: kspec task get @ref is run
-        when: displaying task details
-        then: the automation status is shown (or 'unassessed' if not set)
-      - id: ac-18
-        given: an agent or human marks a task as needs_review
-        when: setting the status
-        then: a note explaining why the task needs review is required (either via --reason or separate task
-          note command)
-      - id: ac-19
-        given: kspec tasks ready is run
-        when: the --eligible flag is provided
-        then: "only tasks with automation: eligible are shown"
-      - id: ac-20
-        given: kspec tasks ready is run
-        when: the --unassessed flag is provided
-        then: only tasks without an automation field are shown
-      - id: ac-21
-        given: kspec validate is run
-        when: "a non-terminal task (not completed or cancelled) has automation: eligible but no spec_ref"
-        then: a warning (not error) is emitted suggesting eligible tasks should have linked specs;
-          validation still passes. Completed and cancelled tasks are skipped.
-      - id: ac-22
-        given: a task's automation status needs to change
-        when: considering valid transitions
-        then: any status can transition to any other status; CLI auto-mode (kspec tasks assess automation
-          --auto) does NOT mark tasks eligible, but agents/humans reviewing interactively CAN mark
-          eligible via kspec task set
-      - id: ac-23
-        given: "a non-terminal task (not completed or cancelled) has automation: eligible"
-        when: its spec_ref is removed or the referenced spec is deleted
-        then: the automation status is preserved but kspec validate emits a warning. Completed and cancelled
-          tasks are skipped.
-      - id: ac-24
-        given: kspec tasks ready is run
-        when: the --needs-review flag is provided
-        then: "only tasks with automation: needs_review are shown (for human triage)"
-      - id: ac-25
-        given: ralph starts a new loop iteration
-        when: selecting the next task
-        then: "ralph re-reads task list and filters by automation: eligible (reflecting any status changes
-          from previous iterations)"
     status:
       maturity: draft
       implementation: implemented
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
     traits:
       - "@trait-task-readiness"
+    acceptance_criteria:
+      - given: a task exists
+        id: ac-1
+        then: "it has an optional automation field with enum values: eligible, needs_review, manual_only"
+        when: checking its schema
+      - given: a new task is created
+        id: ac-2
+        then: the task has no automation field (treated as unassessed)
+        when: no automation value is specified
+      - given: ralph is selecting tasks
+        id: ac-3
+        then: "only tasks with automation: eligible are presented to the agent"
+        when: filtering ready tasks
+      - given: an agent is working on an eligible task
+        id: ac-4
+        then: the agent marks it as needs_review and adds a note explaining why (note is required)
+        when: the agent determines the task is not suitable for automation
+      - given: a human is triaging tasks
+        id: ac-5
+        then: they can set automation to any value (eligible, needs_review, manual_only) or clear it
+        when: assessing automation readiness
+      - given: a task is marked needs_review
+        id: ac-6
+        then: "a human must review and explicitly set automation: eligible"
+        when: it needs to become eligible again
+      - given: ralph is selecting tasks
+        id: ac-7
+        then: that task is not presented to the agent
+        when: a task has no automation field (unassessed)
+      - given: ralph is selecting tasks
+        id: ac-8
+        then: that task is not presented to the agent
+        when: "a task has automation: needs_review"
+      - given: ralph is selecting tasks
+        id: ac-9
+        then: that task is not presented to the agent
+        when: "a task has automation: manual_only"
+      - given: ralph is running
+        id: ac-10
+        then: ralph exits with a message indicating no eligible tasks available
+        when: "no tasks with automation: eligible exist in ready state"
+      - given: a user wants to set automation status
+        id: ac-11
+        then: the task's automation field is set to the specified value
+        when: running kspec task set @ref --automation eligible
+      - given: a user wants to clear automation status
+        id: ac-12
+        then: the task's automation field is removed (returns to unassessed state)
+        when: running kspec task set @ref --no-automation
+      - given: a task is created via kspec task add
+        id: ac-13
+        then: the task is created with the specified automation value
+        when: the --automation flag is provided
+      - given: kspec tasks ready is run
+        id: ac-14
+        then: the automation status is shown for each task (showing 'unassessed' if not set)
+        when: displaying the ready tasks list
+      - given: a task is marked manual_only
+        id: ac-15
+        then: "a human must review and explicitly set automation: eligible"
+        when: it needs to become eligible
+      - given: an agent marks a task as needs_review during a ralph iteration
+        id: ac-16
+        then: the agent moves on to the next eligible task (does not exit the loop)
+        when: the marking is complete
+      - given: kspec task get @ref is run
+        id: ac-17
+        then: the automation status is shown (or 'unassessed' if not set)
+        when: displaying task details
+      - given: an agent or human marks a task as needs_review
+        id: ac-18
+        then: a note explaining why the task needs review is required (either via --reason or separate task
+          note command)
+        when: setting the status
+      - given: kspec tasks ready is run
+        id: ac-19
+        then: "only tasks with automation: eligible are shown"
+        when: the --eligible flag is provided
+      - given: kspec tasks ready is run
+        id: ac-20
+        then: only tasks without an automation field are shown
+        when: the --unassessed flag is provided
+      - given: kspec validate is run
+        id: ac-21
+        then: a warning (not error) is emitted suggesting eligible tasks should have linked specs;
+          validation still passes. Completed and cancelled tasks are skipped.
+        when: "a non-terminal task (not completed or cancelled) has automation: eligible but no spec_ref"
+      - given: a task's automation status needs to change
+        id: ac-22
+        then: any status can transition to any other status; CLI auto-mode (kspec tasks assess automation
+          --auto) does NOT mark tasks eligible, but agents/humans reviewing interactively CAN mark
+          eligible via kspec task set
+        when: considering valid transitions
+      - given: "a non-terminal task (not completed or cancelled) has automation: eligible"
+        id: ac-23
+        then: the automation status is preserved but kspec validate emits a warning. Completed and cancelled
+          tasks are skipped.
+        when: its spec_ref is removed or the referenced spec is deleted
+      - given: kspec tasks ready is run
+        id: ac-24
+        then: "only tasks with automation: needs_review are shown (for human triage)"
+        when: the --needs-review flag is provided
+      - given: ralph starts a new loop iteration
+        id: ac-25
+        then: "ralph re-reads task list and filters by automation: eligible (reflecting any status changes
+          from previous iterations)"
+        when: selecting the next task
+    tags: []
+    created: 2026-01-19T19:23:47.591Z
+    notes: []
   - _ulid: 01KFFFZTA9V1WPHADEDRYJ78XM
     slugs:
       - spec-task-reset
     title: Task Reset Command
     type: requirement
-    tags: []
+    description: New `kspec task reset` command to return any task to pending state, clearing
+      completion-related fields.
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
@@ -1442,50 +1446,50 @@ requirements:
       - "@trait-json-output"
       - "@trait-semantic-exit-codes"
       - "@trait-error-guidance"
-    notes: []
-    created: 2026-01-21T05:21:12.009Z
-    description: New `kspec task reset` command to return any task to pending state, clearing
-      completion-related fields.
     acceptance_criteria:
-      - id: ac-1
-        given: task has status blocked/cancelled/completed/in_progress/pending_review
-        when: kspec task reset @ref executed
+      - given: task has status blocked/cancelled/completed/in_progress/pending_review
+        id: ac-1
         then: status becomes pending, timestamps cleared (completed_at, started_at, closed_reason,
           blocked_by array)
-      - id: ac-2
-        given: task has status pending
         when: kspec task reset @ref executed
+      - given: task has status pending
+        id: ac-2
         then: "error: Task is already pending"
-      - id: ac-3
-        given: task reset succeeds
-        when: operation completes
+        when: kspec task reset @ref executed
+      - given: task reset succeeds
+        id: ac-3
         then: shadow commit with message task-reset
-      - id: ac-4
-        given: task reset succeeds
         when: operation completes
+      - given: task reset succeeds
+        id: ac-4
         then: "note auto-added: Reset from {previous_status} to pending (includes closed_reason if was
           cancelled)"
-      - id: ac-5
-        given: task A is completed, task B depends on A
-        when: kspec task reset @task-a executed
-        then: A becomes pending; B unaffected (dependency check happens on B's start)
-      - id: ac-6
-        given: JSON mode
-        when: kspec task reset @ref --json executed
-        then: output includes previous_status, new_status, cleared_fields array
-      - id: ac-author
-        given: note is auto-generated by command
         when: operation completes
+      - given: task A is completed, task B depends on A
+        id: ac-5
+        then: A becomes pending; B unaffected (dependency check happens on B's start)
+        when: kspec task reset @task-a executed
+      - given: JSON mode
+        id: ac-6
+        then: output includes previous_status, new_status, cleared_fields array
+        when: kspec task reset @ref --json executed
+      - given: note is auto-generated by command
+        id: ac-author
         then: note author is set via getAuthor() (KSPEC_AUTHOR env var, or git user fallback)
-    status:
-      maturity: draft
-      implementation: implemented
+        when: operation completes
+    tags: []
+    created: 2026-01-21T05:21:12.009Z
+    notes: []
   - _ulid: 01KFFG2WVCZY014JX2CN4S07GS
     slugs:
       - spec-completion-enforcement
     title: Task Completion State Enforcement
     type: requirement
-    tags: []
+    description: Enforce that tasks must go through pending_review before completion. The complete
+      command only accepts tasks in pending_review state.
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
@@ -1493,143 +1497,143 @@ requirements:
     traits:
       - "@trait-error-guidance"
       - "@trait-multi-ref-batch"
-    notes: []
-    created: 2026-01-21T05:22:52.908Z
-    description: Enforce that tasks must go through pending_review before completion. The complete
-      command only accepts tasks in pending_review state.
     acceptance_criteria:
-      - id: ac-1
-        given: task status is pending_review
-        when: kspec task complete @ref executed
+      - given: task status is pending_review
+        id: ac-1
         then: completes successfully
-      - id: ac-2
-        given: task status is in_progress
         when: kspec task complete @ref executed
+      - given: task status is in_progress
+        id: ac-2
         then: "error: Task must be submitted for review first. Use kspec task submit @ref"
-      - id: ac-3
-        given: task status is pending
         when: kspec task complete @ref executed
+      - given: task status is pending
+        id: ac-3
         then: "error: Task must be started and submitted first"
-      - id: ac-4
-        given: task status is blocked
         when: kspec task complete @ref executed
+      - given: task status is blocked
+        id: ac-4
         then: "error: Cannot complete blocked task"
-      - id: ac-5
-        given: task status is cancelled
         when: kspec task complete @ref executed
+      - given: task status is cancelled
+        id: ac-5
         then: "error: Cannot complete cancelled task. Use kspec task reset @ref first"
-      - id: ac-6
-        given: task status is completed
         when: kspec task complete @ref executed
+      - given: task status is completed
+        id: ac-6
         then: "error: Task is already completed"
-      - id: ac-7
-        given: user wants to skip review
-        when: kspec task complete @ref --skip-review --reason 'Hotfix, no review needed' executed
+        when: kspec task complete @ref executed
+      - given: user wants to skip review
+        id: ac-7
         then: bypasses enforcement, completes directly, reason documented in note
-      - id: ac-8
-        given: --skip-review provided without --reason
-        when: kspec task complete @ref --skip-review executed
+        when: kspec task complete @ref --skip-review --reason 'Hotfix, no review needed' executed
+      - given: --skip-review provided without --reason
+        id: ac-8
         then: "error: --skip-review requires --reason to document why"
-      - id: ac-9
-        given: batch mode with mixed states
-        when: kspec task complete --refs @a @b where @a is pending_review, @b is in_progress
+        when: kspec task complete @ref --skip-review executed
+      - given: batch mode with mixed states
+        id: ac-9
         then: "@a completes, @b fails with guidance error, exit code 1"
-      - id: ac-author
-        given: note is auto-generated by --skip-review
-        when: operation completes
+        when: kspec task complete --refs @a @b where @a is pending_review, @b is in_progress
+      - given: note is auto-generated by --skip-review
+        id: ac-author
         then: note author is set via getAuthor() (KSPEC_AUTHOR env var, or git user fallback)
-    status:
-      maturity: draft
-      implementation: implemented
+        when: operation completes
+    tags: []
+    created: 2026-01-21T05:22:52.908Z
+    notes: []
   - _ulid: 01KFFG78570JEVEXN6QF1B23Q8
     slugs:
       - spec-task-set-batch
     title: Task Set Batch Support
     type: requirement
-    tags: []
+    description: "Add --refs support to kspec task set for bulk updates. Note: status changes must use
+      dedicated commands (start, complete, etc.), not task set."
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits:
       - "@trait-multi-ref-batch"
-    notes: []
-    created: 2026-01-21T05:25:15.560Z
-    description: "Add --refs support to kspec task set for bulk updates. Note: status changes must use
-      dedicated commands (start, complete, etc.), not task set."
     acceptance_criteria:
-      - id: ac-1
-        given: multiple refs provided
-        when: kspec task set --refs @a @b @c --priority 1 executed
+      - given: multiple refs provided
+        id: ac-1
         then: all tasks updated with same field values
-      - id: ac-2
-        given: setting multiple fields
-        when: kspec task set --refs @a @b --priority 2 --tag urgent executed
+        when: kspec task set --refs @a @b @c --priority 1 executed
+      - given: setting multiple fields
+        id: ac-2
         then: all specified fields updated
-      - id: ac-3
-        given: attempting to set status
-        when: kspec task set --refs @a @b --status completed executed
+        when: kspec task set --refs @a @b --priority 2 --tag urgent executed
+      - given: attempting to set status
+        id: ac-3
         then: "error: Use state transition commands (start, complete, block, etc.) to change status"
-      - id: ac-4
-        given: no changes specified
-        when: kspec task set --refs @a @b (no field flags) executed
+        when: kspec task set --refs @a @b --status completed executed
+      - given: no changes specified
+        id: ac-4
         then: warns No changes specified for each, no changes saved
-      - id: ac-5
-        given: partial validation failure
-        when: --refs @a @b where @a has invalid spec-ref target executed
+        when: kspec task set --refs @a @b (no field flags) executed
+      - given: partial validation failure
+        id: ac-5
         then: "@b updated, @a fails with validation error, exit code 1"
-    status:
-      maturity: draft
-      implementation: implemented
+        when: --refs @a @b where @a has invalid spec-ref target executed
+    tags: []
+    created: 2026-01-21T05:25:15.560Z
+    notes: []
   - _ulid: 01KFFGAPXJNAGKWFS8B669PPBP
     slugs:
       - spec-task-add-description
     title: Task Add Description Flag
     type: requirement
-    tags: []
+    description: Add --description flag to kspec task add for setting initial task description.
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits:
       - "@trait-json-output"
-    notes: []
-    created: 2026-01-21T05:27:08.979Z
-    description: Add --description flag to kspec task add for setting initial task description.
     acceptance_criteria:
-      - id: ac-1
-        given: description provided
-        when: kspec task add --title X --description 'Details...' executed
+      - given: description provided
+        id: ac-1
         then: task created with description field populated
-      - id: ac-2
-        given: no description provided
-        when: kspec task add --title X executed
+        when: kspec task add --title X --description 'Details...' executed
+      - given: no description provided
+        id: ac-2
         then: task created without description (existing behavior)
-      - id: ac-3
-        given: multiline description
-        when: --description 'Line1\nLine2' or heredoc provided
+        when: kspec task add --title X executed
+      - given: multiline description
+        id: ac-3
         then: description preserves newlines
-      - id: ac-4
-        given: special characters in description
-        when: "--description 'Contains: colons, quotes, and doubles' provided"
+        when: --description 'Line1\nLine2' or heredoc provided
+      - given: special characters in description
+        id: ac-4
         then: description preserved correctly (proper YAML escaping)
-      - id: ac-5
-        given: JSON output with description
-        when: --description X --json provided
+        when: "--description 'Contains: colons, quotes, and doubles' provided"
+      - given: JSON output with description
+        id: ac-5
         then: JSON output includes description field
-      - id: ac-6
-        given: empty description
-        when: --description '' provided
+        when: --description X --json provided
+      - given: empty description
+        id: ac-6
         then: treated as no description (field omitted)
-    status:
-      maturity: draft
-      implementation: implemented
+        when: --description '' provided
+    tags: []
+    created: 2026-01-21T05:27:08.979Z
+    notes: []
   - _ulid: 01KFGF8XEDNW7Q9RTR1Z47ATRM
     slugs:
       - spec-task-clear-deps
     title: Clear Task Dependencies
     type: requirement
-    tags: []
+    description: Allow clearing all dependencies from a task via the task set command. Currently
+      --depends-on can only set dependencies to new values, not clear them to an empty list.
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
@@ -1637,101 +1641,100 @@ requirements:
     traits:
       - "@trait-json-output"
       - "@trait-multi-ref-batch"
-    notes: []
-    created: 2026-01-21T14:27:55.982Z
-    description: Allow clearing all dependencies from a task via the task set command. Currently
-      --depends-on can only set dependencies to new values, not clear them to an empty list.
     acceptance_criteria:
-      - id: ac-1
-        given: a task has dependencies
-        when: kspec task set @ref --clear-deps is executed
+      - given: a task has dependencies
+        id: ac-1
         then: depends_on is set to empty array, task note added, shadow committed
-      - id: ac-2
-        given: a task has no dependencies
         when: kspec task set @ref --clear-deps is executed
+      - given: a task has no dependencies
+        id: ac-2
         then: succeeds with no changes needed message
-      - id: ac-3
-        given: --clear-deps and --depends-on are both provided
-        when: command is executed
+        when: kspec task set @ref --clear-deps is executed
+      - given: --clear-deps and --depends-on are both provided
+        id: ac-3
         then: error indicating flags are mutually exclusive
-    status:
-      maturity: draft
-      implementation: implemented
+        when: command is executed
+    tags: []
+    created: 2026-01-21T14:27:55.982Z
+    notes: []
   - _ulid: 01KKB8FCJS8KJ5VZX7DJEYJ5JP
     slugs:
       - tasks-ac-backfill
     title: Task System AC Backfill
     type: requirement
-    tags: []
     description: |
       Add acceptance criteria to spec items under @tasks that lack them:
       task types, task schema, task storage, alignment system.
-    acceptance_criteria:
-      - id: ac-coverage
-        given: |
-          All feature and requirement items under @tasks module
-        when: |
-          kspec validate --completeness runs
-        then: |
-          Zero "missing acceptance criteria" warnings for @tasks descendants
-      - id: ac-testable
-        given: |
-          Each newly added AC
-        when: |
-          It is reviewed
-        then: It follows given/when/then format with concrete, observable outcomes
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
-    notes: []
+    acceptance_criteria:
+      - given: |
+          All feature and requirement items under @tasks module
+        id: ac-coverage
+        then: |
+          Zero "missing acceptance criteria" warnings for @tasks descendants
+        when: |
+          kspec validate --completeness runs
+      - given: |
+          Each newly added AC
+        id: ac-testable
+        then: It follows given/when/then format with concrete, observable outcomes
+        when: |
+          It is reviewed
+    tags: []
     created: 2026-03-10T06:55:43.193Z
-    status:
-      maturity: draft
-      implementation: implemented
+    notes: []
   - _ulid: 01KKW4VGP5AW2XR574G3W36HE5
     slugs:
       - review-record-per-cycle-lifecycle
     title: Review Record Per-Cycle Lifecycle
     type: requirement
-    tags: []
     description: |
       Each review cycle produces a self-contained review record that is
       opened, investigated, verdicted, and closed. This is analogous to
       individual PR reviews on GitHub — each reviewer's review is a
       discrete artifact, and the collection of reviews across cycles
       comprises the full review history for the task.
-    acceptance_criteria:
-      - id: ac-1
-        given: |
-          a reviewer submits an approve or request_changes verdict
-        when: |
-          the verdict is recorded on the review
-        then: |
-          the review record automatically transitions from open to closed,
-          preserving the verdict as a point-in-time artifact
-      - id: ac-2
-        given: |
-          a task re-enters pending_review after a fix cycle
-        when: |
-          a reviewer begins reviewing the updated work
-        then: |
-          a new review record is created and linked to the task via
-          review_ref; the previous review record remains closed as a
-          historical artifact accessible through the activity timeline
-      - id: ac-3
-        given: |
-          a task has multiple closed review records from successive cycles
-        when: |
-          the activity timeline is rendered
-        then: |
-          each review appears as a distinct entry with its own verdict,
-          disposition, and cycle context
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
-    notes: []
+    acceptance_criteria:
+      - given: |
+          a reviewer submits an approve or request_changes verdict
+        id: ac-1
+        then: |
+          the review record automatically transitions from open to closed,
+          preserving the verdict as a point-in-time artifact
+        when: |
+          the verdict is recorded on the review
+      - given: |
+          a task re-enters pending_review after a fix cycle
+        id: ac-2
+        then: |
+          a new review record is created and linked to the task via
+          review_ref; the previous review record remains closed as a
+          historical artifact accessible through the activity timeline
+        when: |
+          a reviewer begins reviewing the updated work
+      - given: |
+          a task has multiple closed review records from successive cycles
+        id: ac-3
+        then: |
+          each review appears as a distinct entry with its own verdict,
+          disposition, and cycle context
+        when: |
+          the activity timeline is rendered
+    tags: []
     created: 2026-03-16T20:19:31.653Z
+    notes: []
