@@ -2257,7 +2257,27 @@ reviews:
       content_hash: ""
     author: "@claude"
     related_refs: []
-    threads: []
+    threads:
+      - _ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
+        kind: blocker
+        anchor:
+          type: code
+          path: tests/dispatch-workspace-config.test.ts
+          side: head
+          line_start: 318
+          line_end: 318
+          commit: ""
+        entries:
+          - _ulid: 01KKVPXTHCXXKSKH9FQ6TE84N0
+            author: "@claude"
+            body: "No tests for the new publication_mode config option. The dispatch-workspace-config.test.ts
+              file tests base_branch and worktree_root config, but has zero tests for
+              publication_mode. At minimum, tests should verify: (1) publication_mode: manual_merge
+              overrides auto-detection even when gh CLI is available, (2) publication_mode: auto
+              preserves existing behavior, (3) omitted publication_mode defaults to auto. This is
+              the core behavior the task implements — without tests, there's no regression guard if
+              the resolution logic changes."
+            created_at: 2026-03-16T16:16:07.212Z
     checks: []
     verdicts: []
     events:
@@ -2274,7 +2294,14 @@ reviews:
         payload:
           from: draft
           to: open
+      - _ulid: 01KKVPXTJ176REMR1Z049ZP768
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T16:16:07.234Z
+        payload:
+          thread_ulid: 01KKVPXTHCXZ7MSA9WS3RKRVAQ
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T16:10:16.911Z
-    updated_at: 2026-03-16T16:10:23.941Z
+    updated_at: 2026-03-16T16:16:07.212Z
