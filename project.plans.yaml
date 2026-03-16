@@ -20918,6 +20918,49 @@ plans:
             then: |
               The reviews are shown with current disposition badge and link to the
               review detail page
+          - id: ac-8
+            given: |
+              A thread comment has a body containing markdown (headings, code blocks,
+              inline code, bold, lists, links)
+            when: |
+              The comment is rendered in the thread view
+            then: |
+              The body is rendered as formatted markdown with syntax highlighting
+              in code blocks
+          - id: ac-9
+            given: |
+              A thread has a code anchor (path, line-start, line-end, side, commit)
+            when: |
+              The thread is displayed
+            then: |
+              The file path and line range are shown as a clickable header, and a
+              code context snippet from the referenced lines is displayed alongside
+              the comment
+          - id: ac-10
+            given: |
+              A thread has a structured anchor (section, field, anchor-ref)
+            when: |
+              The thread is displayed
+            then: |
+              The anchor reference is shown as a navigable link with the section
+              and field context (e.g., "acceptance_criteria > ac-3 on @spec-ref")
+          - id: ac-11
+            given: |
+              A check has evidence text and runner information
+            when: |
+              The check is displayed in the checks section
+            then: |
+              The evidence is rendered with the runner name, status badge, and
+              staleness indicator if the check does not match the current subject
+              version
+          - id: ac-12
+            given: |
+              A verdict has a body or notes
+            when: |
+              The verdict is displayed
+            then: |
+              The verdict body is rendered as markdown alongside the decision badge
+              and reviewer identity
       ```
 
       ## Tasks
@@ -21106,7 +21149,7 @@ plans:
           conversation view. Disposition badge recomputes visually when
           verdicts/threads change via WebSocket.
 
-          Covers: @review-records-web-ui ac-2.
+          Covers: @review-records-web-ui ac-2, ac-8, ac-9, ac-10, ac-11, ac-12.
 
       - title: Add review interaction controls (comment, reply, resolve, verdict)
         slug: task-review-interaction
@@ -21207,3 +21250,9 @@ plans:
         content: "Fix blockers: correct daemon route paths (packages/daemon/src/routes/), function names
           (loadReviewRecords, createCheck/createLocalCheck), add mutateReviewAtomically for
           persistence, fix WebSocket topic naming (reviews:updates)"
+      - _ulid: 01KKTTD5EK3QFY4CD9DDKJMZ6J
+        created_at: 2026-03-16T07:57:41.203Z
+        author: "@claude"
+        content: "Add content rendering ACs to web UI spec: markdown rendering (ac-8), code anchor display
+          (ac-9), structured anchor display (ac-10), check evidence display (ac-11), verdict body
+          rendering (ac-12). Updated detail page task to cover new ACs."
