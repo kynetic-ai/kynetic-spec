@@ -16559,16 +16559,66 @@ plans:
       ## Implementation Notes
 
 
-      This plan should consume outcomes from:
+      ### Prerequisites (completed or in progress)
 
 
-      - dispatch worktree isolation and workspace tracking
+      - **Dispatch worktree isolation and workspace tracking** — implemented
 
-      - review record and gate modeling
+      - **Review record and gate modeling** — implemented, with per-cycle
+        review lifecycle improvements tracked in @plan-task-activity-timeline
+      - **`dispatch.publication_mode: manual_merge`** — landed (task @01KKTZ0B),
+        agents no longer create PRs; work merges locally to integration branch
+      - **`dispatch.base_branch: dev`** — configured, `dev` branch created and
+        pushed to remote
+
+      ### Integration branch as implicit grouping
 
 
-      It should avoid forcing a separate heavyweight task type unless the simpler grouped metadata
-      model is clearly insufficient.
+      The `dev` branch already provides a lightweight version of task grouping
+
+      without explicit group metadata. The flow:
+
+
+      1. Agent tasks merge individually to `dev` via local merge (reviewer agent)
+
+      2. Related work accumulates on `dev` over time
+
+      3. When a coherent set of changes is ready, a human creates a PR from
+         `dev` → `main` — this PR is the "human review package"
+
+      This gives implicit grouping by time window and branch scope. The question
+
+      for this plan is whether explicit group metadata (ac-1 of
+
+      @task-group-and-chain-affinity) adds enough value over this implicit
+
+      model to justify the complexity.
+
+
+      ### Activity timeline as review package data source
+
+
+      The task activity timeline (@plan-task-activity-timeline) provides the
+
+      per-task audit trail that the human review package would aggregate.
+
+      The "change summary" in @human-review-package ac-1 could be derived from:
+
+      - Activity timelines of constituent tasks (state changes, review history)
+
+      - `git log main..dev` for the commit-level view
+
+      - Linked spec refs and AC coverage from each task
+
+
+      ### Design considerations
+
+
+      - Avoid forcing a separate heavyweight task type unless the simpler
+        grouped metadata model is clearly insufficient
+      - Consider whether `dev` branch scope + `git log` is sufficient for
+        the review package, or whether explicit task-to-group linking is needed
+        for dispatch affinity (ac-2 of @task-group-and-chain-affinity)
     status: draft
     derived_tasks: []
     derived_specs: []
@@ -16577,7 +16627,13 @@ plans:
     created_at: 2026-03-11T23:15:33.520Z
     approved_at: null
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KKW5RDT3NP0VFASMKR0DVJF8
+        created_at: 2026-03-16T20:35:18.979Z
+        author: "@claude"
+        content: "Added implementation notes: completed prerequisites (publication mode, dev branch),
+          integration branch as implicit grouping model, activity timeline as review package data
+          source, design considerations"
   - _ulid: 01KKJE4HGC53027S7JXRX52GJX
     slugs:
       - plan-droid-platform-support
