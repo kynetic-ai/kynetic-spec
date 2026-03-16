@@ -1753,7 +1753,39 @@ reviews:
       content_hash: ""
     author: "@claude"
     related_refs: []
-    threads: []
+    threads:
+      - _ulid: 01KKTVR1XNKPF715NGARH06V3G
+        kind: blocker
+        entries:
+          - _ulid: 01KKTVR1XNA2VZ150A5ZK7X36K
+            author: "@claude"
+            body: >-
+              **BLOCKER: Diff API route pattern `/:base..:head` is not valid Elysia routing**
+
+
+              The plan specifies `GET /api/diff/:base..:head` but Elysia (the daemon's HTTP
+              framework) uses standard route params like `/:ref`. The `..` literal between two
+              params is not a valid Elysia route pattern — it would be interpreted as a single param
+              or fail to match.
+
+
+              **Options:**
+
+              1. Use query params: `GET /api/diff?base=abc&head=def`
+
+              2. Use two path segments: `GET /api/diff/:base/:head`
+
+              3. Use a single param and parse server-side: `GET /api/diff/:range` where range is
+              `abc..def`
+
+
+              Option 3 is closest to the git convention but requires manual parsing. Option 2 is
+              cleanest for Elysia. The same issue applies to `GET /api/diff/:base..:head/:path` and
+              `GET /api/diff/:base..:head/context`.
+
+
+              This affects: review-content-diff-api ac-1, ac-2, ac-3 and task-diff-api.
+            created_at: 2026-03-16T08:21:06.613Z
     checks: []
     verdicts: []
     events:
@@ -1770,7 +1802,14 @@ reviews:
         payload:
           from: draft
           to: open
+      - _ulid: 01KKTVR1Y78PZ3FJH6ESVRC4F7
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T08:21:06.631Z
+        payload:
+          thread_ulid: 01KKTVR1XNKPF715NGARH06V3G
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T08:18:45.731Z
-    updated_at: 2026-03-16T08:18:52.380Z
+    updated_at: 2026-03-16T08:21:06.613Z
