@@ -1656,3 +1656,11 @@ inbox:
       - cli
       - batch
     added_by: "@claude"
+  - _ulid: 01KKT8W615Z6Z2SXG22RFXHA4Z
+    text: "Plan lint command (kspec plan lint) — semantic diagnostics for plan documents: spec-task
+      coverage gaps, dependency validity, orphan specs, priority inversions. Standalone for draft
+      review, also callable from plan import --dry-run. Dry-run stays focused on import mechanics
+      (what gets created), lint focuses on plan quality (is this well-structured)."
+    created_at: 2026-03-16T02:51:18.949Z
+    tags: []
+    added_by: "@claude"
