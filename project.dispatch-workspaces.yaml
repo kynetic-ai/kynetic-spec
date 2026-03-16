@@ -6510,12 +6510,7 @@ workspaces:
         branch_ref: dispatch/task/remove-task-todo-checking-from-session-checkpoint-hook/01kkt03v
         head: c0fe4f6a82501d9cf6da5e1b0f8474b46f380c77
         last_seen_at: 2026-03-16T00:31:08.326Z
-      reviewer:
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-task-todo-checking-from-session-checkpoint-hook-01kkt03v-review
-        branch_mode: detached
-        branch_ref: null
-        head: c0fe4f6a82501d9cf6da5e1b0f8474b46f380c77
-        last_seen_at: 2026-03-16T00:31:08.326Z
+      reviewer: null
     bootstrap:
       status: succeeded
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
@@ -6554,7 +6549,7 @@ workspaces:
       status: healthy
       summary: Workspace record matches current git branch and worktree state.
       issues: []
-      updated_at: 2026-03-16T00:44:02.040Z
+      updated_at: 2026-03-16T00:44:04.958Z
     cleanup:
       status: scheduled
       eligible: true
@@ -6563,8 +6558,8 @@ workspaces:
       updated_at: 2026-03-16T00:44:02.040Z
     timestamps:
       created_at: 2026-03-16T00:20:04.106Z
-      updated_at: 2026-03-16T00:44:03.511Z
-      last_reconciled_at: 2026-03-16T00:44:03.511Z
+      updated_at: 2026-03-16T00:44:04.958Z
+      last_reconciled_at: 2026-03-16T00:44:04.958Z
       last_active_at: 2026-03-16T00:31:08.935Z
       closed_at: null
   - workspace_id: dispatch-workspace-01KKT042895JSK5GS951Z5F1BR
