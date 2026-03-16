@@ -1074,6 +1074,37 @@ reviews:
               This will cause a compilation error or lead the agent to create an unnecessary wrapper
               function.
             created_at: 2026-03-16T07:46:37.301Z
+      - _ulid: 01KKTSS75S23N6YZ9TD25ZXRJZ
+        kind: blocker
+        entries:
+          - _ulid: 01KKTSS75STS2F2917ST4XKB46
+            author: "@claude"
+            body: >-
+              **BLOCKER: Wrong function name and location in task-review-api-verdicts**
+
+
+              The task says "Use submitVerdict(), addCheck(), transitionLifecycle() from
+              parser/review-operations.ts". Two problems:
+
+
+              1. `addCheck()` does not exist in review-operations.ts or anywhere in the parser. The
+              check creation functions are `createCheck()` and `createLocalCheck()` in
+              `src/review/checks.ts` (not parser/review-operations.ts).
+
+
+              2. `submitVerdict()` and `transitionLifecycle()` do exist in review-operations.ts, but
+              they are **pure functions** that return new ReviewRecord objects -- they don't persist
+              anything. The route will need to use `mutateReviewAtomically()` from
+              `parser/reviews.ts` to wrap these mutations with file locking and persistence. The
+              task description doesn't mention this pattern, which could lead to data loss under
+              concurrent requests.
+
+
+              Compare with review-threads.ts which has both pure functions (addThread, addReply) AND
+              atomic wrappers (addThreadAtomic, addReplyAtomic) -- the atomic wrappers handle
+              locking and persistence. review-operations.ts does NOT have such wrappers, so the
+              route implementer needs to build that pattern.
+            created_at: 2026-03-16T07:46:47.610Z
     checks: []
     verdicts: []
     events:
@@ -1104,7 +1135,14 @@ reviews:
         payload:
           thread_ulid: 01KKTSRX3MA37CB0WRZ8JZMXYQ
           kind: blocker
+      - _ulid: 01KKTSS763K37QZ8CRFBQV94SN
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:46:47.619Z
+        payload:
+          thread_ulid: 01KKTSS75S23N6YZ9TD25ZXRJZ
+          kind: blocker
     notes: []
     external_links: []
     created_at: 2026-03-16T07:44:02.989Z
-    updated_at: 2026-03-16T07:46:37.301Z
+    updated_at: 2026-03-16T07:46:47.610Z
