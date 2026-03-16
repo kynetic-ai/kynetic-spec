@@ -3857,9 +3857,22 @@ reviews:
           status: pass
           name: full-suite-regression
         timestamp: 2026-03-16T22:54:51.031Z
+      - _ulid: 01KKWDR4482H9X88QNQWTGRWEB
+        actor: pr-reviewer-agent
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-16T22:54:57.672Z
+      - _ulid: 01KKWDR448MES3VE11PW1RHAFP
+        actor: pr-reviewer-agent
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-16T22:54:57.672Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -3867,7 +3880,15 @@ reviews:
       ref: "@task-implement-activity-git-query"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 9aef1ee768efc5a8e5a2797650be3d8fb04e4963
+          head_commit: 070cd9965c930bcc611e744d18c19745ea881db1
+        decision: approve
+        reviewer: pr-reviewer-agent
+        role: reviewer
+        created_at: 2026-03-16T22:54:57.629Z
     created_at: 2026-03-16T22:54:15.290Z
-    updated_at: 2026-03-16T22:54:50.991Z
+    updated_at: 2026-03-16T22:54:57.629Z
     notes: []
