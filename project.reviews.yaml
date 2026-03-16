@@ -3592,6 +3592,16 @@ reviews:
         runner: manual
         created_at: 2026-03-16T22:18:17.306Z
         completed_at: 2026-03-16T22:18:17.306Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: 4439a1d4
+        evidence: No new validation warnings from this change. Existing warnings are pre-existing.
+        name: kspec-validate
+        required: true
+        runner: manual
+        created_at: 2026-03-16T22:18:27.743Z
+        completed_at: 2026-03-16T22:18:27.743Z
     events:
       - _ulid: 01KKWBKHZJTQB1AZCA3APAS9SK
         actor: "@claude"
@@ -3627,6 +3637,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-16T22:18:17.350Z
+      - _ulid: 01KKWBN9J75RH2Z7DRFDE9DXYQ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-16T22:18:27.783Z
     external_links: []
     lifecycle_state: open
     related_refs: []
@@ -3648,5 +3665,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-16T22:17:30.867Z
-    updated_at: 2026-03-16T22:18:17.306Z
+    updated_at: 2026-03-16T22:18:27.743Z
     notes: []
