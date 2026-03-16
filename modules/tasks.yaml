@@ -1227,11 +1227,8 @@ features:
           - id: ac-1
             given: a task ref is provided
             when: the activity query runs against the shadow branch
-            then: |-
-              all commits that modified the task's YAML block are returned by
-              using git log -L with the task's _ulid as the block start boundary,
-              capturing the creation commit, state transitions, notes, and field
-              changes regardless of commit message content
+            then: all commits that modified the task's data are returned, including the creation commit, state
+              transitions, notes, and field changes, regardless of commit message content
           - id: ac-2
             given: multiple tasks exist in the same YAML file
             when: activity is queried for a specific task
