@@ -107,7 +107,9 @@ agents:
     adapter: codex-acp
     dispatch: []
     skills:
-      - pr-review
+      - review
+      - review-gates
+      - merge
     budget:
       timeout_minutes: 120
     concurrency:
@@ -199,7 +201,9 @@ agents:
     adapter: claude-agent-acp
     dispatch: []
     skills:
-      - pr-review
+      - review
+      - review-gates
+      - merge
     budget:
       timeout_minutes: 60
     concurrency:
@@ -272,8 +276,8 @@ agents:
     dispatch:
       - on: task.pending_review
     skills:
-      - pr-review
-      - review-principles
+      - review
+      - review-gates
       - merge
     budget:
       timeout_minutes: 60
@@ -306,6 +310,7 @@ agents:
           automation: eligible
     skills:
       - task-work
+      - work-gates
     budget:
       timeout_minutes: 60
     concurrency:
