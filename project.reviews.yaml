@@ -848,6 +848,16 @@ reviews:
               thread_created, thread_updated, verdict_submitted, check_recorded. This gives
               implementers clear guidance.'
             created_at: 2026-03-16T07:38:45.028Z
+      - _ulid: 01KKTSAJFHT6XMJWN1ZPP8EKHN
+        kind: nit
+        entries:
+          - _ulid: 01KKTSAJFHF79S9ERTXWT4DSC4
+            author: "@claude"
+            body: '**Question 11 (URL routing) — RESOLVED.** Description now states "Routes follow existing
+              patterns: /reviews for list, /reviews/[id] for detail." Deep-linking to specific
+              threads was not addressed, but this is an enhancement that can be added later — the
+              core routing is specified.'
+            created_at: 2026-03-16T07:38:47.665Z
     checks: []
     verdicts: []
     events:
@@ -913,7 +923,14 @@ reviews:
         payload:
           thread_ulid: 01KKTSAFX333M71FZ6WJRV0E25
           kind: nit
+      - _ulid: 01KKTSAJFZ44R63QMT70BS1VK4
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:38:47.679Z
+        payload:
+          thread_ulid: 01KKTSAJFHT6XMJWN1ZPP8EKHN
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:37:13.126Z
-    updated_at: 2026-03-16T07:38:45.028Z
+    updated_at: 2026-03-16T07:38:47.665Z
