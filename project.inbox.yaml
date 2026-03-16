@@ -1664,3 +1664,18 @@ inbox:
     created_at: 2026-03-16T02:51:18.949Z
     tags: []
     added_by: "@claude"
+  - _ulid: 01KKW3VQ7QBRDPX0AHBSM52A57
+    text: Shadow branch commit messages could carry richer detail for auditability — e.g. field names
+      changed in task-set, old/new status in transitions, review verdict details in
+      review-verdict-task-transition. Currently most operations use minimal messages like 'task-set
+      @ref' or 'Start @ref' without capturing what actually changed. This would make the git log
+      -based activity timeline more informative and reduce the need to diff YAML to understand what
+      happened. Separate effort from the ref consistency fix — this is about enriching content, not
+      fixing missing refs. Consider a spec under @trait-shadow-commit or a new requirement for
+      structured commit messages with field-level change details.
+    created_at: 2026-03-16T20:02:09.783Z
+    tags:
+      - cli
+      - schema
+      - auditability
+    added_by: "@claude"
