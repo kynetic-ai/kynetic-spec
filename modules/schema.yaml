@@ -1518,4 +1518,8 @@ requirements:
         given: any record is serialized to YAML
         when: the output is written
         then: keys follow a canonical, stable order that is consistent across all serialization paths
+      - id: ac-3
+        given: a YAML file is read and re-written without logical changes
+        when: the two serializations are compared
+        then: the output is identical (round-trip stability)
 acceptance_criteria: []
