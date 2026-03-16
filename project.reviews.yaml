@@ -1384,7 +1384,17 @@ reviews:
       content_hash: ""
     author: "@claude"
     related_refs: []
-    threads: []
+    threads:
+      - _ulid: 01KKTTFFMS6T3TEXJQMK11153Y
+        kind: nit
+        entries:
+          - _ulid: 01KKTTFFMSD1FW87MFTGZ4YJ3X
+            author: "@claude"
+            body: "**AC-8 (markdown rendering): Well-formed and testable.** The given/when/then is specific
+              about what markdown features must render (headings, code blocks, inline code, bold,
+              lists, links) and explicitly requires syntax highlighting in code blocks. This is
+              verifiable in E2E tests by checking rendered DOM elements. No issues."
+            created_at: 2026-03-16T07:58:57.177Z
     checks: []
     verdicts: []
     events:
@@ -1401,7 +1411,14 @@ reviews:
         payload:
           from: draft
           to: open
+      - _ulid: 01KKTTFFNEVAS9MGC5009SZWMH
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T07:58:57.198Z
+        payload:
+          thread_ulid: 01KKTTFFMS6T3TEXJQMK11153Y
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T07:57:51.698Z
-    updated_at: 2026-03-16T07:57:58.499Z
+    updated_at: 2026-03-16T07:58:57.177Z
