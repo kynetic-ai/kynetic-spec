@@ -8583,4 +8583,18 @@ skills:
     depends_on: []
     tags: []
     allowed_tools: []
+  - _ulid: 01KKTJMENZ0G5BBEB7JP4S7DYK
+    _type: skill
+    id: work-gates
+    name: Work Gates
+    description: Project-specific quality standards — MUST-FIX patterns, test rules, and code quality
+      checks for this codebase. Supplements core task-work skill.
+    origin: project
+    platforms:
+      - claude-code
+      - codex
+      - droid
+    depends_on: []
+    tags: []
+    allowed_tools: []
 includes: []
