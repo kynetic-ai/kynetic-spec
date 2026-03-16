@@ -2246,3 +2246,28 @@ reviews:
     external_links: []
     created_at: 2026-03-16T08:24:26.167Z
     updated_at: 2026-03-16T08:26:04.870Z
+  - _ulid: 01KKVPK4EFBKNMNQZZE9NRARD9
+    slugs: []
+    title: "Review: dispatch publication mode config"
+    lifecycle_state: draft
+    subject:
+      type: task
+      ref: "@01KKTZ0B"
+      shadow_commit: ""
+      content_hash: ""
+    author: "@claude"
+    related_refs: []
+    threads: []
+    checks: []
+    verdicts: []
+    events:
+      - _ulid: 01KKVPK4EFE07WG8S22ZYFR99B
+        event_type: lifecycle_change
+        actor: "@claude"
+        timestamp: 2026-03-16T16:10:16.911Z
+        payload:
+          to: draft
+    notes: []
+    external_links: []
+    created_at: 2026-03-16T16:10:16.911Z
+    updated_at: null
