@@ -2420,3 +2420,28 @@ reviews:
     external_links: []
     created_at: 2026-03-16T16:10:16.911Z
     updated_at: 2026-03-16T16:25:27.984Z
+  - _ulid: 01KKW171KY6Y7K2SH8S1HT42FK
+    slugs: []
+    title: "Review: Task Activity Timeline Plan"
+    lifecycle_state: draft
+    subject:
+      type: plan
+      ref: "@plan-task-activity-timeline"
+      shadow_commit: ""
+      content_hash: ""
+    author: "@claude"
+    related_refs: []
+    threads: []
+    checks: []
+    verdicts: []
+    events:
+      - _ulid: 01KKW171KYQB3C0EZ3CBYPSKTG
+        event_type: lifecycle_change
+        actor: "@claude"
+        timestamp: 2026-03-16T19:15:55.134Z
+        payload:
+          to: draft
+    notes: []
+    external_links: []
+    created_at: 2026-03-16T19:15:55.134Z
+    updated_at: null
