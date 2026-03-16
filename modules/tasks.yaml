@@ -1261,6 +1261,9 @@ features:
           When a reviewer examines work after a fix cycle, they receive context
           about what changed since the prior review. The review record stores
           the commit it examined so diffs can be computed across cycles.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
