@@ -100641,7 +100641,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -100689,3 +100689,12 @@
         - Rendered skills and regenerated kspec-agents.md
       supersedes: null
   todos: []
+  submitted_at: 2026-03-16T05:49:41.384Z
+  submission_linkage:
+    branch: dispatch/task/rewrite-core-skills-for-review-driven-architecture/01kkthzw
+    commit: 5fd00bce799e8bbf49a1f685764e56845774acf5
+    remote: null
+    remote_url: null
+    upstream_ref: null
+    review_url: null
+    captured_at: 2026-03-16T05:49:40.321Z
