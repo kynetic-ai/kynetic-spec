@@ -2597,6 +2597,27 @@ reviews:
               filtering. Current wording could be read as requiring git log to analyze per-file
               diffs.
             created_at: 2026-03-16T19:17:12.538Z
+      - _ulid: 01KKW19WJHGV7J0VBK8CVDSA7C
+        kind: nit
+        entries:
+          - _ulid: 01KKW19WJH9RAJPMH2HE30YEHS
+            author: "@claude"
+            body: >-
+              **@review-fix-cycle-diff ac-1 introduces examined_commit but the existing review
+              schema has no such field**
+
+
+              The plan correctly notes this is a schema addition (task @task-review-examined-commit
+              describes adding it). However, the spec itself doesn't mention backward compatibility.
+              Since the field is optional, existing reviews will simply have it as undefined, but
+              the AC should state this explicitly: "existing review records without examined_commit
+              are treated as if the field is null."
+
+
+              Also: the plan uses KSPEC_DISPATCH_CANONICAL_HEAD as the auto-detection env var, but
+              this variable doesn't currently exist in the codebase. The task description should
+              note this is a new convention, not an existing one.
+            created_at: 2026-03-16T19:17:28.273Z
     checks: []
     verdicts: []
     events:
@@ -2655,7 +2676,14 @@ reviews:
         payload:
           thread_ulid: 01KKW19D6T7CZJP3ERNTJXK5PH
           kind: nit
+      - _ulid: 01KKW19WKAHX59DCXAGQRXJ85T
+        event_type: thread_created
+        actor: "@claude"
+        timestamp: 2026-03-16T19:17:28.298Z
+        payload:
+          thread_ulid: 01KKW19WJHGV7J0VBK8CVDSA7C
+          kind: nit
     notes: []
     external_links: []
     created_at: 2026-03-16T19:15:55.134Z
-    updated_at: 2026-03-16T19:17:12.538Z
+    updated_at: 2026-03-16T19:17:28.273Z
