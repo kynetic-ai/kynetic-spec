@@ -6109,6 +6109,21 @@ reviews:
         runner: git merge-tree
         created_at: 2026-03-17T10:56:30.240Z
         completed_at: 2026-03-17T10:56:30.240Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 51465810f2fa4c44628dc52f6070812e43862a6f
+          head_commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
+        evidence: "All 4 task description items verified in templates/skills/review/SKILL.md: (1) reviewer
+          workflow step 5 directs --section/--field for plans, (2) step 5 directs
+          --path/--line-start/--line-end for code, (3) Why Anchors Matter section with 4 examples
+          (anchored vs unanchored for both code and plans), (4) Finding Quality includes Anchor
+          field. Rendered outputs match template."
+        name: template-review
+        required: true
+        runner: manual
+        created_at: 2026-03-17T10:56:39.092Z
+        completed_at: 2026-03-17T10:56:39.092Z
     events:
       - _ulid: 01KKXQ027Z0Y0C4ZKCR6P8S0W5
         actor: "@claude"
@@ -6144,6 +6159,13 @@ reviews:
           status: fail
           name: merge-conflict
         timestamp: 2026-03-17T10:56:30.305Z
+      - _ulid: 01KKXQ1JR7J5KW0TD02NJZKZDT
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: template-review
+        timestamp: 2026-03-17T10:56:39.175Z
     examined_commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
     external_links: []
     lifecycle_state: open
@@ -6176,5 +6198,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-17T10:55:49.504Z
-    updated_at: 2026-03-17T10:56:30.240Z
+    updated_at: 2026-03-17T10:56:39.092Z
     notes: []
