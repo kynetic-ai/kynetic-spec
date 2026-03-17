@@ -101191,6 +101191,32 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T08:57:13.619Z
+    - _ulid: 01KKXHRE1BNKEJZVVWK8JCVW3P
+      content: >-
+        Fix cycle 1 — addressed all review findings:
+
+
+        1. MUST-FIX (command injection): Replaced all execSync calls with execFileSync in git helper
+        functions (runGitDiff, getFileAtCommit, isValidGitRef). User-supplied HTTP query parameters
+        are now passed as array arguments, preventing shell injection.
+
+
+        2. MUST-FIX (ac-4 test coverage): Added 6 route-level tests for GET /api/reviews/:id/content
+        covering all 5 subject types (plan with sections/specs/tasks/notes, spec with
+        description/ACs/traits/metadata, code with diff_params, task with description/notes,
+        external with null content) plus 404 error case.
+
+
+        3. SHOULD-FIX (ac-2 test coverage): Added 5 route-level tests for GET /api/diff/context
+        covering valid range extraction with line numbers, boundary clamping, invalid line range
+        (400), non-existent file (404), and invalid ref (400).
+
+
+        4. Changed error response pattern from Elysia error() to set.status + return object for
+        Node.js/.handle() test compatibility, matching the pattern used by other daemon routes.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T09:24:16.555Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6JPAR1P0W78EAWX5482A
