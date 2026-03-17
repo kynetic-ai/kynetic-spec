@@ -748,4 +748,40 @@ describe('deduplicatePhasedToolCalls', () => {
     const result = deduplicatePhasedToolCalls(events);
     expect(result).toHaveLength(1);
   });
+
+  // AC: @ws-session-event-streaming ac-unified-event-parsing — ACP format tests
+  it('should handle ACP format events (data IS the SessionUpdate)', () => {
+    const events = [
+      // ACP format: data.sessionUpdate exists directly (no data.update wrapper)
+      { ts: 1000, seq: 0, type: 'session.update' as const, session_id: 'sess1', data: { sessionUpdate: 'tool_call', toolCallId: 'toolu_001', title: 'Bash', rawInput: {} } },
+      // Same tool_call with populated rawInput in ACP format
+      { ts: 1001, seq: 1, type: 'session.update' as const, session_id: 'sess1', data: { sessionUpdate: 'tool_call', toolCallId: 'toolu_001', title: 'Bash', rawInput: { command: 'npm test' } } },
+      // Different tool_call in ACP format
+      { ts: 1002, seq: 2, type: 'session.update' as const, session_id: 'sess1', data: { sessionUpdate: 'tool_call', toolCallId: 'toolu_002', title: 'Read', rawInput: { file_path: '/src/main.ts' } } },
+    ];
+
+    const result = deduplicatePhasedToolCalls(events);
+    expect(result).toHaveLength(2);
+    // The populated version should be kept
+    expect((result[0].data as any).rawInput.command).toBe('npm test');
+    // Different tool_call should be kept
+    expect((result[1].data as any).toolCallId).toBe('toolu_002');
+  });
+
+  it('should handle mixed ACP and legacy format events', () => {
+    const events = [
+      // Legacy format
+      { ts: 1000, seq: 0, type: 'session.update' as const, session_id: 'sess1', data: { update: { sessionUpdate: 'tool_call', toolCallId: 'toolu_001', rawInput: { command: 'ls' } } } },
+      // ACP format
+      { ts: 1001, seq: 1, type: 'session.update' as const, session_id: 'sess1', data: { sessionUpdate: 'tool_call', toolCallId: 'toolu_002', title: 'Bash', rawInput: {} } },
+      { ts: 1002, seq: 2, type: 'session.update' as const, session_id: 'sess1', data: { sessionUpdate: 'tool_call', toolCallId: 'toolu_002', title: 'Bash', rawInput: { command: 'npm test' } } },
+    ];
+
+    const result = deduplicatePhasedToolCalls(events);
+    expect(result).toHaveLength(2);
+    // Legacy event kept
+    expect((result[0].data as any).update.toolCallId).toBe('toolu_001');
+    // ACP populated version kept
+    expect((result[1].data as any).rawInput.command).toBe('npm test');
+  });
 });

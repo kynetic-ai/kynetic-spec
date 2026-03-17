@@ -32,6 +32,12 @@ import {
 import {
   sessionBranchAutoCommit,
 } from "../parser/session-branch.js";
+import {
+  unwrapSessionUpdate,
+  extractToolCallFields,
+  extractToolName,
+  isPopulatedInput,
+} from "../agent-runtime/session-event-fields.js";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
@@ -1201,14 +1207,11 @@ export function deduplicatePhasedToolCalls(
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
     if (event.type !== "session.update") continue;
-    const data = event.data as { update?: { sessionUpdate?: string; toolCallId?: string; tool_call_id?: string; id?: string; rawInput?: Record<string, unknown> } } | null;
-    const update = data?.update;
-    if (update?.sessionUpdate !== "tool_call") continue;
-    const toolCallId = update.toolCallId || update.tool_call_id || update.id;
+    const update = unwrapSessionUpdate(event.data as Record<string, unknown> | null);
+    if (!update || update.sessionUpdate !== "tool_call") continue;
+    const { toolCallId, rawInput } = extractToolCallFields(update);
     if (!toolCallId) continue;
-    const rawInput = update.rawInput;
-    const hasContent = rawInput && Object.keys(rawInput).length > 0;
-    if (hasContent) {
+    if (isPopulatedInput(rawInput)) {
       populatedToolCalls.set(toolCallId, i);
     } else if (!populatedToolCalls.has(toolCallId)) {
       // First (empty) version - track it in case no populated version exists
@@ -1219,10 +1222,9 @@ export function deduplicatePhasedToolCalls(
   // Second pass: keep only the best version per toolCallId
   return events.filter((event, i) => {
     if (event.type !== "session.update") return true;
-    const data = event.data as { update?: { sessionUpdate?: string; toolCallId?: string; tool_call_id?: string; id?: string; rawInput?: Record<string, unknown> } } | null;
-    const update = data?.update;
-    if (update?.sessionUpdate !== "tool_call") return true;
-    const toolCallId = update.toolCallId || update.tool_call_id || update.id;
+    const update = unwrapSessionUpdate(event.data as Record<string, unknown> | null);
+    if (!update || update.sessionUpdate !== "tool_call") return true;
+    const { toolCallId } = extractToolCallFields(update);
     if (!toolCallId) return true;
     // Keep this event only if it's the best version (populated or only version)
     return populatedToolCalls.get(toolCallId) === i;
@@ -1857,7 +1859,8 @@ async function countTaskCompletions(
       if (!line.includes("task complete")) continue;
       try {
         const event = JSON.parse(line);
-        const rawCommand = event?.data?.update?.rawInput?.command;
+        const update = unwrapSessionUpdate(event?.data);
+        const rawCommand = (update?.rawInput as Record<string, unknown> | undefined)?.command;
         // Normalize: string (claude-*-acp) or array like [bash, -lc, cmd] (codex-acp)
         const command =
           typeof rawCommand === "string"
@@ -2216,13 +2219,8 @@ function extractTaskTransitions(events: SessionEvent[]): {
 
   for (const event of events) {
     if (event.type === "session.update") {
-      const data = event.data as {
-        update?: {
-          sessionUpdate?: string;
-          rawInput?: { command?: string | string[] };
-        };
-      } | null;
-      const rawCommand = data?.update?.rawInput?.command;
+      const update = unwrapSessionUpdate(event.data as Record<string, unknown> | null);
+      const rawCommand = (update?.rawInput as Record<string, unknown> | undefined)?.command as string | string[] | undefined;
       // Normalize: string (claude-*-acp) or array like [bash, -lc, cmd] (codex-acp)
       const command =
         typeof rawCommand === "string"
@@ -2612,13 +2610,13 @@ export async function computeToolUsageStats(
         try {
           const event = JSON.parse(line);
           if (event?.type === "session.update") {
-            const update = event?.data?.update;
+            const update = unwrapSessionUpdate(event?.data);
             if (update?.sessionUpdate === "tool_call") {
               // Deduplicate phased tool_call events by toolCallId
-              const toolCallId = update?.toolCallId || update?.tool_call_id || update?.id;
+              const { toolCallId } = extractToolCallFields(update);
               if (toolCallId && seenToolCallIds.has(toolCallId)) continue;
               if (toolCallId) seenToolCallIds.add(toolCallId);
-              const toolName = update?._meta?.claudeCode?.toolName || "unknown";
+              const toolName = extractToolName(update);
               toolCounts[toolName] = (toolCounts[toolName] || 0) + 1;
               totalToolCalls++;
             }
@@ -2914,9 +2912,9 @@ export async function searchSessionEvents(
 
         // Deduplicate phased tool_call events
         if (event?.type === "session.update") {
-          const update = event?.data?.update;
+          const update = unwrapSessionUpdate(event?.data);
           if (update?.sessionUpdate === "tool_call") {
-            const toolCallId = update?.toolCallId || update?.tool_call_id || update?.id;
+            const { toolCallId } = extractToolCallFields(update);
             if (toolCallId) {
               if (seenToolCallIds.has(toolCallId)) continue;
               seenToolCallIds.add(toolCallId);
