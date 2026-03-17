@@ -100987,7 +100987,43 @@
   session_id: 01KKXHSTQ0H0S0QCWS7RE1185N
   created_at: 2026-03-16T08:28:59.814Z
   started_at: 2026-03-17T09:25:24.558Z
-  notes: []
+  notes:
+    - _ulid: 01KKXJKQ0NENQDRVDDVVYNQX65
+      content: >-
+        Implemented review thread mutation API endpoints covering ac-3, ac-4, ac-5, ac-9, ac-10.
+
+
+        Created packages/daemon/src/routes/reviews.ts with four endpoints:
+
+        - POST /api/reviews/:id/comments — creates thread (supports code/structured anchors, kind
+        validation)
+
+        - POST /api/reviews/:id/comments/:threadId/replies — adds reply with thread existence check
+
+        - PATCH /api/reviews/:id/comments/:threadId/resolve — resolves thread with 409 for
+        already-resolved
+
+        - PATCH /api/reviews/:id/comments/:threadId/reopen — reopens thread with 409 for
+        not-resolved
+
+
+        All endpoints follow existing daemon patterns: initContext for project scoping,
+        findReviewByRef for ref resolution, atomic persistence wrappers (addThreadAtomic etc.),
+        commitIfShadow for shadow branch commits, and pubsub.broadcast on reviews:updates topic for
+        WebSocket events.
+
+
+        Validation returns 400 with {error, details[{field, message}]} for empty/whitespace body,
+        invalid kind, invalid anchor type, and missing anchor fields. Returns 404 with suggestion
+        for not-found reviews/threads, and 409 for invalid state transitions.
+
+
+        E2E tests written (23 tests) covering all endpoints and error cases. Cannot run E2E tests in
+        dispatch context (daemon fixture blocked), but vitest suite passes with no regressions (5710
+        passed, 1 pre-existing failure in review-cli.test.ts unrelated to this task).
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T09:39:10.485Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6GRPMVH8M9WVGH9NTJCF
