@@ -103348,3 +103348,59 @@
   created_at: 2026-03-17T08:29:21.951Z
   notes: []
   todos: []
+- _ulid: 01KKXEMGJ20X5RB4GMFYGSQH6Y
+  slugs: []
+  title: Replace hardcoded branch names in merge skill template with dynamic references
+  type: task
+  description: >-
+    ## What
+
+
+    The merge skill template (`templates/skills/merge/SKILL.md`) hardcodes `dev` as the merge target
+    branch in example commands on lines 50, 57, and 97. When an agent reads this skill, it may
+    follow the hardcoded examples instead of the dispatch-provided integration target.
+
+
+    ## Why
+
+
+    The merge skill is used by both human-directed and dispatch-driven workflows. In dispatch mode,
+    the correct merge target comes from the workspace metadata (injected into the dispatch prompt).
+    But the skill's example commands showing `git checkout dev` and `git log origin/dev..HEAD`
+    create a competing source of truth that can mislead agents — especially if the dispatch target
+    is a different branch.
+
+
+    ## How
+
+
+    1. Replace hardcoded `dev` references in `templates/skills/merge/SKILL.md` with generic
+    placeholders like `<integration-branch>` or instructional text that tells the agent to use the
+    dispatch-provided target branch (from the `Integration target` line in the dispatch prompt
+    context, or from `KSPEC_DISPATCH_MERGE_TARGET` env var).
+
+
+    2. Add a note in the skill that in dispatch mode, the merge target is always provided in the
+    dispatch prompt context and should be used verbatim — never assumed.
+
+
+    3. Run `kspec skill render` to regenerate the rendered output in `.agents/skills/`.
+
+
+    4. Verify the rendered skill no longer contains hardcoded branch names.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - skills
+    - bug
+  vcs_refs: []
+  created_at: 2026-03-17T08:29:42.338Z
+  notes: []
+  todos: []
