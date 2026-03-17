@@ -7245,7 +7245,7 @@ workspaces:
         head: 82896f8489f79b6cac198ca9c0ed156634a2ca32
         last_seen_at: 2026-03-17T10:32:26.813Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-skill-table-from-kspec-agents-md-and-port-descriptions-to-skill-frontmatter-01kktk96
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 51465810f2fa4c44628dc52f6070812e43862a6f
     bootstrap:
       status: succeeded
@@ -7292,7 +7292,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T10:45:50.456Z
+      updated_at: 2026-03-17T10:45:51.094Z
     integration:
       status: pending
       detail: null
@@ -7307,10 +7307,10 @@ workspaces:
     task_slug: improve-review-skill-to-direct-use-of-anchors-in-plan-and-code-reviews
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-17T10:39:05.788Z
-      last_reconciled_at: 2026-03-17T10:45:50.456Z
+      last_active_at: 2026-03-17T10:45:51.094Z
+      last_reconciled_at: 2026-03-17T10:45:51.094Z
       created_at: 2026-03-17T10:39:05.009Z
-      updated_at: 2026-03-17T10:45:50.727Z
+      updated_at: 2026-03-17T10:45:51.094Z
     workspace_id: dispatch-workspace-01KKTTC2CTEPS5X2VPE7QVFA16
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
