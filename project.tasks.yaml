@@ -103429,7 +103429,22 @@
   session_id: 01KKXY6NQX0FAMVDSYPC2KV7BP
   created_at: 2026-03-17T06:05:26.319Z
   started_at: 2026-03-17T13:02:12.795Z
-  notes: []
+  notes:
+    - _ulid: 01KKY020B7Y949EJ6JJ9F546Z8
+      content: "Applied raw-data-preservation pattern to meta.ts mutation functions (saveObservation,
+        deleteObservation, saveMetaItem, deleteMetaItem). Key changes: (1) Added
+        extractRawMetaManifest/writeRawMetaManifest/findRawMetaItemIndex/mergeMetaItemPreservingRaw\
+        Shape helpers mirroring the review record pattern. (2) Mutation functions now read raw YAML
+        without schema validation, modify only the target section/item, and write back preserving
+        other sections as raw data. (3) Added withFileLock for TOCTOU safety. (4) The merge function
+        filters empty arrays, null/undefined, and false from non-raw fields while preserving
+        strings, numbers, true, and objects (which represent meaningful mutations like budget
+        settings). (5) Added 8 round-trip stability tests covering saveObservation,
+        deleteObservation, saveMetaItem update, saveMetaItem add, deleteMetaItem, and cross-section
+        mutation scenarios."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T13:34:10.280Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6CD2X6EKHGNE47Y8113HH
