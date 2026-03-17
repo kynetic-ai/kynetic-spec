@@ -6258,6 +6258,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKXQZH98JE29BK24DC8HKQQ7
         timestamp: 2026-03-17T11:13:00.773Z
+      - _ulid: 01KKXQZWAFGRMKWX35WWYESF01
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKXQZW8M5FNR0YJBQN3B1MWN
+        timestamp: 2026-03-17T11:13:12.015Z
     examined_commit: c41c0d7b7e96f9eaada13c57e8f69e0d21735038
     external_links: []
     lifecycle_state: open
@@ -6280,7 +6287,25 @@ reviews:
               neither unit nor E2E."
             created_at: 2026-03-17T11:13:00.712Z
         kind: blocker
+      - _ulid: 01KKXQZW8M5FNR0YJBQN3B1MWN
+        anchor:
+          type: code
+          commit: c41c0d7b7e96f9eaada13c57e8f69e0d21735038
+          line_end: 84
+          line_start: 47
+          path: packages/daemon/src/routes/reviews.ts
+          side: head
+        entries:
+          - _ulid: 01KKXQZW8NAKSMWB4KZEDBH4SX
+            author: "@claude"
+            body: Uses manual taskTitleMap instead of ReferenceIndex/resolveRefTitle. The tasks.ts endpoint uses
+              ReferenceIndex and resolveRefTitle for title resolution, which is the established
+              convention. The reviews endpoint manually builds a Map from loadAllTasks, which is
+              functionally equivalent but inconsistent with the codebase pattern. Consider using
+              ReferenceIndex for consistency.
+            created_at: 2026-03-17T11:13:11.957Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-17T11:03:20.600Z
-    updated_at: 2026-03-17T11:13:00.712Z
+    updated_at: 2026-03-17T11:13:11.957Z
     notes: []
