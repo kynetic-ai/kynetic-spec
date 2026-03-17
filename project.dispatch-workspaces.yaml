@@ -7201,12 +7201,22 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-17T10:40:28.368Z
+      updated_at: 2026-03-17T10:42:19.213Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T10:40:50.317Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch
+            "dispatch/task/remove-skill-table-from-kspec-agents-md-and-port-descriptions-to-skill-frontmatter/01kktk96"
+            is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-skill-table-from-kspec-agents-md-and-port-descriptions-to-skill-frontmatter-01kktk96"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-17T10:42:19.213Z
     integration:
       status: merged
       detail: integration:merged
@@ -7214,17 +7224,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-      updated_at: 2026-03-17T10:40:28.368Z
-    lifecycle_state: closing
+      updated_at: 2026-03-17T10:42:19.213Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KKTK96Z5M9T8WP900CPFWRNG"
     task_slug: remove-skill-table-from-kspec-agents-md-and-port-descriptions-to-skill-frontmatter
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T10:32:27.690Z
-      last_reconciled_at: 2026-03-17T10:40:50.317Z
+      last_reconciled_at: 2026-03-17T10:42:19.213Z
       created_at: 2026-03-17T10:12:06.108Z
-      updated_at: 2026-03-17T10:40:50.317Z
+      updated_at: 2026-03-17T10:42:19.213Z
     workspace_id: dispatch-workspace-01KKTK96Z5M9T8WP900CPFWRNG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
