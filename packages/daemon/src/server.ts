@@ -430,6 +430,7 @@ export async function createServer(options: ServerOptions) {
       '/specs',
       '/workflows',
       '/plans',
+      '/reviews', '/reviews/*',
       '/settings',
     ];
     for (const route of spaRoutes) {

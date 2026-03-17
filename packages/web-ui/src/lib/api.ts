@@ -31,6 +31,7 @@ import type {
 	AgentDefinition,
 	AgentUpdatePayload,
 	ValidationAggregation,
+	ReviewSummary,
 } from '@kynetic-ai/shared';
 import type { TriageRecord } from './types/triage';
 import {
@@ -1223,6 +1224,34 @@ export async function fetchSessionEventDetail(
 	}
 
 	const response = await fetch(`${API_BASE}/api/sessions/${id}/events/${seq}`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
+// Reviews API Functions
+// AC: @review-records-web-ui ac-7
+// ============================================================
+
+/**
+ * Fetch reviews linked to a task (via subject or related_refs).
+ * Used by the task detail page to show linked review history.
+ * AC: @review-records-web-ui ac-7
+ */
+export async function fetchReviewsForTask(taskRef: string): Promise<PaginatedResponse<ReviewSummary>> {
+	if (isStaticMode()) {
+		return { items: [], total: 0, offset: 0, limit: 0 };
+	}
+
+	const url = new URL(`${API_BASE}/api/reviews`);
+	url.searchParams.set('task', taskRef);
+
+	const response = await fetch(url.toString(), {
 		headers: getProjectHeaders()
 	});
 	if (!response.ok) {

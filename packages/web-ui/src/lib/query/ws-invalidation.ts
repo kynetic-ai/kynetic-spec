@@ -22,6 +22,7 @@ const INVALIDATION_TOPICS = [
 	'items:updates',
 	'inbox:updates',
 	'triage:updates',
+	'reviews:updates',
 	'agents',
 	'files:updates',
 ] as const;
@@ -50,6 +51,10 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 		case 'triage:updates':
 			// Triage changes affect the merged inbox view (triage status inline)
 			return [queryKeys.inbox.all];
+
+		case 'reviews:updates':
+			// Review changes affect review lists and task detail (review_ref display)
+			return [queryKeys.reviews.all, queryKeys.tasks.all];
 
 		case 'agents': {
 			// Streaming progress events don't need cache invalidation —
