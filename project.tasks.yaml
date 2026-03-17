@@ -103317,8 +103317,12 @@
   spec_ref: "@ws-session-event-streaming"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Unified tool call event parsing across HTTP and WebSocket paths via
+    shared extraction module (session-event-fields.ts). Fixed ACP format handling in 6 store.ts
+    functions. Added tool_call_input event emission in accumulator for phased streaming. Updated CLI
+    watch and web UI incrementalBlockUpdate. 56 new tests, all passing.
   depends_on: []
   context: []
   priority: 1
@@ -103341,6 +103345,7 @@
   created_at: 2026-03-17T08:28:22.679Z
   started_at: 2026-03-17T09:06:40.243Z
   submitted_at: 2026-03-17T09:06:43.955Z
+  completed_at: 2026-03-17T09:13:03.967Z
   notes:
     - _ulid: 01KKXFPRTGFW2YETFYJ289KFTT
       content: >-
