@@ -6818,6 +6818,18 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T12:04:46.585Z
         completed_at: 2026-03-17T12:04:46.585Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 96b8192a0391
+          head_commit: c5efe894e423
+        evidence: "All new tests annotated with AC: @task-activity-git-query ac-4. 5 new parseDiffChanges
+          tests + 1 normalizeTaskActivity integration test for submitted entry."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-17T12:04:49.873Z
+        completed_at: 2026-03-17T12:04:49.873Z
     events:
       - _ulid: 01KKXTWYHMB74YP1ZQZDNEQ19A
         actor: "@claude"
@@ -6853,6 +6865,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T12:04:46.724Z
+      - _ulid: 01KKXTYDPG39VQQ0PD39Q6BF5W
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-17T12:04:50.000Z
     examined_commit: c5efe894e4239535bfece91f2c452bf1dc2e44f7
     external_links: []
     lifecycle_state: open
@@ -6901,5 +6920,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T12:04:01.716Z
-    updated_at: 2026-03-17T12:04:46.585Z
+    updated_at: 2026-03-17T12:04:49.873Z
     notes: []
