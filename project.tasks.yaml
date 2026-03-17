@@ -101712,6 +101712,46 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-17T20:33:17.825Z
+    - _ulid: 01KKYR57BJJM8YP97M4JEZ9MXF
+      content: >-
+        Implemented review detail page at /reviews/[id] with all required sections:
+
+
+        1. Header with title, lifecycle badge, prominent disposition badge, subject info with ref
+        links, author, and relative timestamp
+
+        2. Threads section: kind badges (blocker=red, question=amber, nit=gray), resolution state,
+        conversation view with author/timestamp per entry, collapsed resolved threads, markdown
+        rendering with syntax highlighting via marked + highlight.js
+
+        3. Checks section: pass/fail/running/skipped badges, evidence text, staleness detection by
+        comparing check applies_to_version against current subject, optional badge for non-required
+        checks
+
+        4. Verdicts section: decision badges (approve=green, request_changes=red, comment=blue) with
+        reviewer identity and timestamp
+
+        5. Revision selector: dropdown listing sibling reviews for same subject, ordered by creation
+        date, navigates via goto()
+
+        6. Empty states for threads, checks, and verdicts sections
+
+        7. WebSocket subscription for real-time updates via query invalidation
+
+        8. TanStack Query data fetching with proper query keys
+
+
+        Added ReviewDetail interface and related types to shared package,
+        fetchReview/fetchReviewSiblings API functions. Enhanced test fixture with checks, verdicts,
+        markdown content, and sibling review. E2E tests cover all 5 assigned ACs (ac-2, ac-8, ac-9,
+        ac-10, ac-11).
+
+
+        Pre-existing test failures (dispatch engine timing, review CLI examined_commit, lifecycle
+        timeout) are unrelated to this change.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T20:35:21.586Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6KXATJ0TEV1SF98ZK8PN
