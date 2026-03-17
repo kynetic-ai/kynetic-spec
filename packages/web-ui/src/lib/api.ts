@@ -888,6 +888,8 @@ export async function fetchReviews(params?: {
 	status?: string | string[];
 	disposition?: string;
 	subject_type?: string;
+	subject_ref?: string;
+	head_branch?: string;
 	task?: string;
 	sort?: string;
 	sort_dir?: string;
@@ -956,28 +958,15 @@ export async function fetchReviewSiblings(params: {
 		return [];
 	}
 
-	const url = new URL(`${API_BASE}/api/reviews`);
-	url.searchParams.set('status', 'all');
-	url.searchParams.set('sort', 'created_at');
-	url.searchParams.set('sort_dir', 'asc');
-	url.searchParams.set('subject_type', params.subject_type);
-
-	const response = await fetch(url.toString(), {
-		headers: getProjectHeaders()
+	const data = await fetchReviews({
+		status: 'all',
+		sort: 'created_at',
+		sort_dir: 'asc',
+		subject_type: params.subject_type,
+		subject_ref: params.subject_ref,
+		head_branch: params.head_branch
 	});
-	if (!response.ok) {
-		await handleResponseError(response);
-	}
 
-	const data: PaginatedResponse<ReviewSummary> = await response.json();
-
-	// Client-side filter by subject_ref (for plan/task/spec) or head_branch (for code)
-	if (params.subject_ref) {
-		return data.items.filter((r) => r.subject_ref === params.subject_ref);
-	}
-
-	// For code reviews without subject_ref, return all code reviews
-	// (head_branch matching would need detail data not in summary)
 	return data.items;
 }
 

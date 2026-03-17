@@ -41,15 +41,15 @@
 	let headBranch = $derived(
 		review?.subject.type === 'code' ? review.subject.head_branch : undefined
 	);
+	let siblingFilters = $derived({
+		subject_type: subjectType,
+		subject_ref: subjectRef,
+		head_branch: headBranch
+	});
 
 	const siblingsQuery = createQuery(() => ({
-		queryKey: queryKeys.reviews.siblings(subjectRef || headBranch || ''),
-		queryFn: () =>
-			fetchReviewSiblings({
-				subject_type: subjectType,
-				subject_ref: subjectRef,
-				head_branch: headBranch,
-			}),
+		queryKey: queryKeys.reviews.siblings(siblingFilters),
+		queryFn: () => fetchReviewSiblings(siblingFilters),
 		enabled: isProjectInitialized() && !!review && (!!subjectRef || !!headBranch),
 	}));
 
@@ -283,7 +283,7 @@
 	<!-- Back navigation -->
 	<div>
 		<a
-			href="{base}/reviews"
+			href={`${base}/reviews`}
 			class="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
 			data-testid="back-to-reviews"
 		>

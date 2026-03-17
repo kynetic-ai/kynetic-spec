@@ -281,6 +281,8 @@ export interface ReviewSummary {
   disposition: string;
   subject_type: string;
   subject_ref?: string;
+  /** Code-review grouping key for revision navigation. */
+  head_branch?: string;
   author: string;
   related_refs: string[];
   /** Linked task ref (from subject_ref for task reviews, or first related_ref) */
