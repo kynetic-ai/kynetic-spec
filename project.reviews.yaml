@@ -5113,6 +5113,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-17T09:25:34.243Z
+      - _ulid: 01KKXJ2B12V8HKHT7TEP2P1YEH
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKXJ2AZPSQTAE5NVWJKBF3GG
+        timestamp: 2026-03-17T09:29:41.154Z
     examined_commit: 317b496da788fcf1679fe083957e29a5db407052
     external_links: []
     lifecycle_state: open
@@ -5124,8 +5131,20 @@ reviews:
       base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
       head_branch: dispatch/task/task-diff-api/01kktw6j
       head_commit: 317b496da788fcf1679fe083957e29a5db407052
-    threads: []
+    threads:
+      - _ulid: 01KKXJ2AZPSQTAE5NVWJKBF3GG
+        entries:
+          - _ulid: 01KKXJ2AZPZFT42QKV5NZ1NDEG
+            author: "@claude"
+            body: GET /api/diff/file route handler (diff.ts:141-221) has no route-level tests. The only ac-3
+              test (daemon-diff-api.test.ts:361) calls parseUnifiedDiff directly on git output — it
+              tests the parser, not the route. The route's validation (missing params 400, invalid
+              refs 400, empty diff 404, git error 500) is untested. Same validation pattern works in
+              the tested /api/diff/context endpoint, so the risk is moderate, but there is no direct
+              proof the file endpoint's plumbing works end-to-end.
+            created_at: 2026-03-17T09:29:41.110Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-17T09:25:27.001Z
-    updated_at: 2026-03-17T09:25:34.201Z
+    updated_at: 2026-03-17T09:29:41.110Z
     notes: []
