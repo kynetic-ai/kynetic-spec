@@ -101780,8 +101780,12 @@
   spec_ref: "@review-records-web-ui"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. AC-7 implemented: task detail page shows linked reviews with
+    disposition badges, thread summaries, links to /reviews/[id], current reviews prominent, closed
+    reviews collapsed. API: GET /api/reviews?task= filter, review_ref in task detail. Full E2E and
+    unit test coverage."
   depends_on:
     - "@task-review-api-read"
   context: []
@@ -101803,6 +101807,7 @@
   created_at: 2026-03-16T08:29:05.665Z
   started_at: 2026-03-17T12:42:10.154Z
   submitted_at: 2026-03-17T12:42:14.108Z
+  completed_at: 2026-03-17T13:12:55.855Z
   notes:
     - _ulid: 01KKXS9VRXT1PKPDNYWT072CAX
       content: "Implemented review links on task detail page. Changes: (1) Added ReviewSummary type to
