@@ -102033,7 +102033,17 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-16T20:19:36.662Z
   started_at: 2026-03-17T02:20:38.816Z
-  notes: []
+  notes:
+    - _ulid: 01KKWT67VY9Z38BVFX2338E6HF
+      content: "Implemented fix-cycle diff in reviewer orientation. Added findPriorExaminedCommit() to
+        find the most recent closed review's examined_commit, computeDiffStat() to run git diff
+        --stat between commits, and getFixCycleDiffSummary() to compose them.
+        buildOrientationContext() now accepts optional fixCycleDiffSummary and includes it as a ##
+        Fix-Cycle Diff section. _buildDispatchPrompt computes the diff for pending_review triggers.
+        All error paths return null gracefully per ac-3."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T02:32:23.167Z
   todos: []
 - _ulid: 01KKW4VPB0MV22C92JHNR7APJZ
   slugs:
