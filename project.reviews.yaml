@@ -4361,9 +4361,16 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-17T04:51:50.490Z
+      - _ulid: 01KKX25TGP35JDCH41497BQ0GR
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-17T04:51:58.102Z
     examined_commit: 5cfeef645f782c1220377ec5bdecf32122cb9be3
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs:
       - "@task-update-task-work-skill-docs"
     subject:
@@ -4374,5 +4381,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T04:51:50.490Z
-    updated_at: null
+    updated_at: 2026-03-17T04:51:58.059Z
     notes: []
