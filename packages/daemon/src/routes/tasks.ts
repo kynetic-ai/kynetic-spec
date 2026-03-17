@@ -190,6 +190,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
         // AC: @api-contract ac-5 - Return full task with notes, todos, dependencies
         // AC: @ui-task-board ac-3 - Include type, description, blocked_by, vcs_refs, plan_ref, session_ref
         // AC: @ui-api-ref-resolution ac-1, ac-2 - Include resolved titles for refs
+        // AC: @review-records-web-ui ac-7 - Include review_ref for task-review integration
         return {
           _ulid: task._ulid,
           slugs: task.slugs,
@@ -213,6 +214,7 @@ export function createTasksRoutes(options: TasksRouteOptions) {
           ),
           plan_ref: task.plan_ref,
           plan_title: resolveRefTitle(index, task.plan_ref),
+          review_ref: task.review_ref ?? null,
           session_ref: task.session_id,
           notes: task.notes,
           notes_count: task.notes?.length || 0,

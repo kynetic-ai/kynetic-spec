@@ -83,6 +83,8 @@ export interface TaskDetail extends TaskSummary {
   plan_ref?: string;
   /** Resolved title for plan_ref. Null if ref cannot be resolved. */
   plan_title?: string | null;
+  /** Current review record linked to this task. AC: @review-records-web-ui ac-7 */
+  review_ref?: string | null;
   session_ref?: string;
   notes: Note[];
   todos?: Todo[];
@@ -266,9 +268,10 @@ export interface PlanDetail extends PlanSummary {
 }
 
 /**
- * Review summary for list endpoints
+ * Review summary for list endpoints and task detail integration
  * AC: @review-records-daemon-api ac-1
  * AC: @review-records-web-ui ac-1
+ * AC: @review-records-web-ui ac-7
  */
 export interface ReviewSummary {
   _ulid: string;

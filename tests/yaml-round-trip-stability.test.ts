@@ -24,7 +24,6 @@ import {
   mutatePlanAtomically,
   deletePlan,
 } from "../src/parser/plans.js";
-import type { LoadedPlan } from "../src/parser/plans.js";
 import {
   createReviewRecord,
   loadReviewRecords,
