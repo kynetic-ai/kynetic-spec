@@ -101113,7 +101113,7 @@
   spec_ref: "@review-content-diff-api"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -101132,9 +101132,9 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: null
+  session_id: 01KKXGSVQEY8DZER75T3PW7R5B
   created_at: 2026-03-16T08:29:01.871Z
-  started_at: 2026-03-17T08:03:08.077Z
+  started_at: 2026-03-17T09:24:31.488Z
   submitted_at: 2026-03-17T08:19:41.172Z
   notes:
     - _ulid: 01KKXE1XDY5N4THAVH8RR2221W
