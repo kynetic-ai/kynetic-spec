@@ -101152,6 +101152,45 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T08:56:54.432Z
+    - _ulid: 01KKXG6X4KC9GG7S0XVPGWB1RC
+      content: >-
+        Review cycle 1 — request_changes. Two blocker findings:
+
+
+        1. MUST-FIX: Command injection in git helper functions (runGitDiff, getFileAtCommit,
+        isValidGitRef). User-supplied HTTP query parameters are string-interpolated into execSync
+        shell commands. Fix: use execFileSync with array arguments instead of execSync with string
+        interpolation.
+
+
+        2. MUST-FIX: No test coverage for ac-4 (GET /api/reviews/:id/content). The most complex
+        endpoint (~230 lines, 5 subject types) has zero tests. Need unit tests covering plan, spec,
+        task, code, and external subject types plus error cases.
+
+
+        One SHOULD-FIX: ac-2 context expansion tests only verify git show + slicing logic, not the
+        route handler's validation/clamping/error paths.
+
+
+        Evidence log:
+
+        - Files read: packages/daemon/src/routes/diff.ts, src/utils/git-diff-parser.ts,
+        src/utils/index.ts, tests/daemon-diff-api.test.ts, packages/daemon/src/server.ts,
+        src/utils/git.ts, src/schema/review-records.ts, src/parser/index.ts
+
+        - Commands run: npm test (5683 passed, 2 failed pre-existing), git diff stat, AC annotation
+        grep
+
+        - Claims verified: "13 tests passing" — confirmed 13 tests in daemon-diff-api.test.ts all
+        pass. "Pre-existing test timeouts" — confirmed neither failing test file was modified by
+        this commit.
+
+        - Categories searched: security (command injection found), correctness (parser logic
+        correct), edge cases (quoted filenames minor), error handling (good coverage in routes),
+        test quality (ac-4 untested, ac-2 tests weak), integration (imports and patterns consistent)
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T08:57:13.619Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6JPAR1P0W78EAWX5482A
