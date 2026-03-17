@@ -4517,6 +4517,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKX4XN4WR1BEEFF2ZKVQC733
         timestamp: 2026-03-17T05:39:56.231Z
+      - _ulid: 01KKX4Y06ZB09SAFSF0AFBZMEH
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKX4Y05BJK1GGRJ5M41BQH85
+        timestamp: 2026-03-17T05:40:07.519Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -4546,7 +4553,24 @@ reviews:
               limitation if the schema ever uses .passthrough()."
             created_at: 2026-03-17T05:39:56.188Z
         kind: nit
+      - _ulid: 01KKX4Y05BJK1GGRJ5M41BQH85
+        anchor:
+          type: code
+          commit: 3404721e7eaf94b5487e0718b18ed46f51d50a7f
+          line_end: 1116
+          line_start: 1114
+          path: src/parser/yaml.ts
+          side: head
+        entries:
+          - _ulid: 01KKX4Y05BTGWQ5HG8F2E5XP8P
+            author: "@claude"
+            body: "Minor: In deleteTask, the rawTasks.length === 0 check conflates 'file does not exist' with
+              'file exists but has zero tasks' — both produce the same 'Task file not found' error.
+              Not a bug (both are semantically 'task not found') but slightly misleading error
+              message for the empty-file case."
+            created_at: 2026-03-17T05:40:07.467Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-17T05:39:18.208Z
-    updated_at: 2026-03-17T05:39:56.188Z
+    updated_at: 2026-03-17T05:40:07.467Z
     notes: []
