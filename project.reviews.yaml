@@ -5542,6 +5542,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKXMTRJQHAVWSSJ08KZ12GQ0
         timestamp: 2026-03-17T10:17:58.676Z
+      - _ulid: 01KKXMV2K8H4H5Z8F25E4MRT35
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKXMV2HBQ185W55B3ZR4FHVJ
+        timestamp: 2026-03-17T10:18:08.872Z
     examined_commit: c8a90fd969018e380793aea63d62d3a760d98e3b
     external_links: []
     lifecycle_state: open
@@ -5575,9 +5582,28 @@ reviews:
               packages/daemon/src/routes/reviews.ts, lines 62-138 (verdicts) and 200-327 (checks)."
             created_at: 2026-03-17T10:17:58.616Z
         kind: blocker
+      - _ulid: 01KKXMV2HBQ185W55B3ZR4FHVJ
+        anchor:
+          type: code
+          commit: ""
+          line_end: 52
+          line_start: 47
+          path: packages/daemon/src/routes/reviews.ts
+          side: head
+        entries:
+          - _ulid: 01KKXMV2HB3C1DXAG1N8VGKN4G
+            author: "@claude"
+            body: The VALID_TRANSITIONS map is duplicated between packages/daemon/src/routes/reviews.ts (line
+              47) and src/parser/review-operations.ts (line 222). Both are currently identical, but
+              if either is updated independently, the route-level validation and library-level
+              validation could diverge. Consider importing a shared constant or re-exporting from
+              the parser module. Low risk currently but could cause subtle bugs if transitions are
+              ever modified.
+            created_at: 2026-03-17T10:18:08.811Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-17T10:03:20.738Z
-    updated_at: 2026-03-17T10:17:58.616Z
+    updated_at: 2026-03-17T10:18:08.811Z
     notes: []
   - _ulid: 01KKXMK34HGC8V9MBRPXMSD308
     slugs: []
