@@ -101362,8 +101362,13 @@
   spec_ref: "@review-records-daemon-api"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Added WebSocket broadcasts on reviews:updates topic for all 7 review
+    mutation endpoints (thread_created, thread_replied, thread_resolved, thread_reopened,
+    verdict_submitted, check_added, lifecycle_changed). Added typed event data interfaces in shared
+    package. 12 tests verify broadcast behavior including payload shape, negative cases, and
+    projectPath scoping.
   depends_on:
     - "@task-review-api-threads"
     - "@task-review-api-verdicts"
@@ -101387,6 +101392,7 @@
   created_at: 2026-03-16T08:29:01.199Z
   started_at: 2026-03-17T19:17:30.733Z
   submitted_at: 2026-03-17T19:42:01.560Z
+  completed_at: 2026-03-17T19:52:06.386Z
   notes:
     - _ulid: 01KKYN2KTE5QKZEEK3AYFPJH0E
       content: "WebSocket broadcasts were already implemented in reviews.ts routes (7 events:
