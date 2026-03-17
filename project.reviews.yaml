@@ -5989,6 +5989,20 @@ reviews:
         runner: kspec
         created_at: 2026-03-17T10:51:59.214Z
         completed_at: 2026-03-17T10:51:59.214Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
+          head_commit: adaaef6230426b5b880e6f3ab93d6882b96e9cc0
+        evidence: "Blocker fixed: archived review guard added for verdict (line 115) and check (line 265)
+          endpoints with 3 new tests (approve on archived, comment on archived, check on archived).
+          Nit addressed: VALID_TRANSITIONS imported from review-operations.ts instead of
+          duplicated."
+        name: cycle-1-fixes
+        required: true
+        runner: manual
+        created_at: 2026-03-17T10:52:07.621Z
+        completed_at: 2026-03-17T10:52:07.621Z
     events:
       - _ulid: 01KKXP2WE8PHTDZ77QKC74MQ16
         actor: "@claude"
@@ -6024,6 +6038,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-17T10:51:59.275Z
+      - _ulid: 01KKXPS9KZT2QY3RRVCTAAEPH7
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: cycle-1-fixes
+        timestamp: 2026-03-17T10:52:07.680Z
     examined_commit: adaaef6230426b5b880e6f3ab93d6882b96e9cc0
     external_links: []
     lifecycle_state: open
@@ -6036,5 +6057,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T10:39:53.288Z
-    updated_at: 2026-03-17T10:51:59.214Z
+    updated_at: 2026-03-17T10:52:07.621Z
     notes: []
