@@ -7536,6 +7536,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-17T13:04:21.716Z
+      - _ulid: 01KKXYNP8GSBYYDCFEXKG5HGTS
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKXYNP68R4ZVBY7369QK6C26
+        timestamp: 2026-03-17T13:09:58.160Z
     examined_commit: be90fb6f7d26432f16c5293770d55335abf1c92b
     external_links: []
     lifecycle_state: open
@@ -7545,8 +7552,30 @@ reviews:
       content_hash: ""
       ref: "@01KKX6C83WVQBYBZ5SWTXY1JKA"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKXYNP68R4ZVBY7369QK6C26
+        anchor:
+          type: code
+          commit: be90fb6f7d26
+          line_end: 2326
+          line_start: 2215
+          path: src/parser/yaml.ts
+          side: head
+        entries:
+          - _ulid: 01KKXYNP682DT01N9M1XVJCVX0
+            author: "@claude"
+            body: "Inbox raw-data-preservation pattern (extractRawInboxArray, writeRawInboxArray,
+              findRawInboxIndex, mergeInboxPreservingRawShape) was removed from yaml.ts.
+              saveInboxItem, mutateInboxItemAtomically, and deleteInboxItem are now reverted to the
+              old schema-normalize-everything pattern that loads via loadInboxItemsFromFile. This is
+              the same category of regression that was flagged for reviews.ts in cycle 1 —
+              previously merged work is being undone. On dev these 4 helpers exist (15 references);
+              on this branch they are completely absent (0 references). Fix: restore the inbox
+              raw-data-preservation helpers by checking out src/parser/yaml.ts inbox functions from
+              dev, or re-apply the same pattern."
+            created_at: 2026-03-17T13:09:58.088Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T13:04:09.565Z
-    updated_at: 2026-03-17T13:04:21.562Z
+    updated_at: 2026-03-17T13:09:58.088Z
     notes: []
