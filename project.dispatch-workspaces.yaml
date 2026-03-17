@@ -7536,7 +7536,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T12:06:23.213Z
+      updated_at: 2026-03-17T12:06:43.435Z
     integration:
       status: merged
       detail: integration:merged
@@ -7552,18 +7552,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T11:57:15.344Z
-      last_reconciled_at: 2026-03-17T12:06:42.612Z
+      last_reconciled_at: 2026-03-17T12:06:43.435Z
       created_at: 2026-03-17T11:46:10.784Z
-      updated_at: 2026-03-17T12:06:42.612Z
+      updated_at: 2026-03-17T12:06:43.435Z
     workspace_id: dispatch-workspace-01KKWG44FR0W955X7EFVBHPX6B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: c5efe894e4239535bfece91f2c452bf1dc2e44f7
-        last_seen_at: 2026-03-17T11:57:13.276Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-dead-submission-linkage-case-01kkwg44-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-fix-dead-submission-linkage-case/01kkwg44
