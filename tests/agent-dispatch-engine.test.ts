@@ -2465,6 +2465,50 @@ describe("Dispatch prompt orientation context and interpolation", () => {
       expect(result).toContain("(unavailable)");
       expect(result).toContain("## Task Context");
     });
+
+    // AC: @review-fix-cycle-diff ac-2
+    it("should include fix-cycle diff summary when provided for pending_review", () => {
+      const diffSummary = "Changes since prior review (abc123..def456):\n src/foo.ts | 5 ++---\n 1 file changed, 2 insertions(+), 3 deletions(-)";
+      const result = buildOrientationContext(
+        "@my-task",
+        "task.pending_review",
+        makeProvisionedWorkspace("@my-task", "reviewer"),
+        { title: "Review this" },
+        undefined,
+        undefined,
+        { fixCycleDiffSummary: diffSummary },
+      );
+      expect(result).toContain("## Fix-Cycle Diff");
+      expect(result).toContain("Changes since prior review");
+      expect(result).toContain("src/foo.ts");
+    });
+
+    // AC: @review-fix-cycle-diff ac-3
+    it("should omit fix-cycle diff section when summary is null", () => {
+      const result = buildOrientationContext(
+        "@my-task",
+        "task.pending_review",
+        makeProvisionedWorkspace("@my-task", "reviewer"),
+        { title: "Review this" },
+        undefined,
+        undefined,
+        { fixCycleDiffSummary: null },
+      );
+      expect(result).not.toContain("## Fix-Cycle Diff");
+    });
+
+    it("should not include fix-cycle diff for non-review triggers even if provided", () => {
+      const result = buildOrientationContext(
+        "@my-task",
+        "task.needs_work",
+        makeProvisionedWorkspace("@my-task"),
+        { title: "Fix it", notes: [] },
+        undefined,
+        undefined,
+        { fixCycleDiffSummary: "some diff" },
+      );
+      expect(result).not.toContain("## Fix-Cycle Diff");
+    });
   });
 
   // Integration: prompt includes orientation context via dispatch engine
