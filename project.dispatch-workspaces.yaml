@@ -6733,7 +6733,7 @@ workspaces:
         head: 5fd00bce799e8bbf49a1f685764e56845774acf5
         last_seen_at: 2026-03-16T06:29:52.979Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/rewrite-core-skills-for-review-driven-architecture-01kkthzw
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 45e009274ddc58b9c173c7d353109c618981e336
     bootstrap:
       status: succeeded
@@ -6781,7 +6781,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T08:02:39.283Z
+      updated_at: 2026-03-17T08:02:40.166Z
     integration:
       status: pending
       detail: null
@@ -6796,10 +6796,10 @@ workspaces:
     task_slug: task-review-api-read
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-16T09:03:08.178Z
-      last_reconciled_at: 2026-03-17T08:02:39.283Z
+      last_active_at: 2026-03-17T08:02:40.166Z
+      last_reconciled_at: 2026-03-17T08:02:40.166Z
       created_at: 2026-03-16T08:34:09.518Z
-      updated_at: 2026-03-17T08:02:39.662Z
+      updated_at: 2026-03-17T08:02:40.166Z
     workspace_id: dispatch-workspace-01KKTW6FA04X5BDGFWPX0HKRY4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
