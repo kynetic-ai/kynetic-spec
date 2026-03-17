@@ -4853,9 +4853,22 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-17T08:56:47.686Z
+      - _ulid: 01KKXG69BXCYW83RKMVZ01V94M
+        actor: agent@kspec-reviewer
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-17T08:56:53.373Z
+      - _ulid: 01KKXG69BXK77Y32KAWFE2F1WR
+        actor: agent@kspec-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-17T08:56:53.374Z
     examined_commit: bb450d49091846ff30ea2a935f49c0bc0bb70cfa
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -4976,7 +4989,15 @@ reviews:
               that exercises the route's validation and clamping logic.
             created_at: 2026-03-17T08:56:37.257Z
         kind: question
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: b0d1b7932b50
+          head_commit: bb450d490918
+        decision: request_changes
+        reviewer: agent@kspec-reviewer
+        role: reviewer
+        created_at: 2026-03-17T08:56:53.314Z
     created_at: 2026-03-17T08:55:51.580Z
-    updated_at: 2026-03-17T08:56:47.649Z
+    updated_at: 2026-03-17T08:56:53.314Z
     notes: []
