@@ -7823,7 +7823,7 @@ workspaces:
         head: 78d192c45905422e8fed57293774ea8ebc5fba4f
         last_seen_at: 2026-03-17T12:53:03.431Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-inbox-item-yaml-writes-01kkx6c9
-  - active_role: null
+  - active_role: worker
     base_branch_point: d7844f56824fc7f24dbf104390d14807a2a27582
     bootstrap:
       status: succeeded
@@ -7870,7 +7870,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T13:01:44.402Z
+      updated_at: 2026-03-17T13:01:46.286Z
     integration:
       status: pending
       detail: null
@@ -7879,16 +7879,16 @@ workspaces:
       target_branch: dev
       target_commit: d7844f56824fc7f24dbf104390d14807a2a27582
       updated_at: 2026-03-17T13:01:44.402Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KKX6CBDFNMXPC405SRZ3RG0N"
     task_slug: round-trip-stability-for-meta-manifest-yaml-writes
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-03-17T13:01:44.402Z
+      last_active_at: 2026-03-17T13:01:46.286Z
+      last_reconciled_at: 2026-03-17T13:01:46.286Z
       created_at: 2026-03-17T13:01:44.402Z
-      updated_at: 2026-03-17T13:01:45.206Z
+      updated_at: 2026-03-17T13:01:46.286Z
     workspace_id: dispatch-workspace-01KKX6CBDFNMXPC405SRZ3RG0N
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
