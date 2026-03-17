@@ -7054,9 +7054,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T10:12:06.041Z
-      last_reconciled_at: 2026-03-17T10:25:53.284Z
+      last_reconciled_at: 2026-03-17T10:26:07.298Z
       created_at: 2026-03-17T09:25:01.620Z
-      updated_at: 2026-03-17T10:25:53.284Z
+      updated_at: 2026-03-17T10:26:07.298Z
     workspace_id: dispatch-workspace-01KKTW6G1640H2J7RF82ZVSEXT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
