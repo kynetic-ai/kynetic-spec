@@ -7024,6 +7024,19 @@ reviews:
         runner: npm run build
         created_at: 2026-03-17T12:19:22.934Z
         completed_at: 2026-03-17T12:19:22.934Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
+          head_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
+        evidence: ac-7 annotated in 20+ locations across implementation (TaskDetailContent.svelte, api.ts,
+          tasks.ts, reviews.ts, reference.ts) and tests (tasks.spec.ts, api-tasks.spec.ts,
+          api-reviews-list.spec.ts, reference.test.ts)
+        name: ac-coverage
+        required: true
+        runner: grep
+        created_at: 2026-03-17T12:19:33.075Z
+        completed_at: 2026-03-17T12:19:33.075Z
     events:
       - _ulid: 01KKXVPDJ204CC7TN4ZJ3XP625
         actor: "@claude"
@@ -7073,6 +7086,13 @@ reviews:
           status: pass
           name: build
         timestamp: 2026-03-17T12:19:23.012Z
+      - _ulid: 01KKXVSC510EGAC5ZWWK8XZXHQ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-17T12:19:33.154Z
     examined_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
     external_links: []
     lifecycle_state: open
@@ -7139,5 +7159,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T12:17:56.291Z
-    updated_at: 2026-03-17T12:19:22.934Z
+    updated_at: 2026-03-17T12:19:33.075Z
     notes: []
