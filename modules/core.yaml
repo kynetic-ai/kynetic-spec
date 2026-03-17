@@ -1056,6 +1056,14 @@ features:
             then: the configured mode governs how agents publish work, overriding environment auto-detection
               when not set to auto
             when: the dispatcher resolves publication mode for a new or re-evaluated workspace
+          - given: A workspace was previously provisioned with a resolved base branch, and the operator has
+              since changed dispatch.base_branch in kspec.config.yaml to a different branch
+            id: ac-6
+            then: The dispatcher detects the mismatch between the workspace record's integration target and the
+              currently configured base branch, and either updates the workspace record to reflect
+              the new configuration or surfaces the conflict with actionable guidance so the
+              operator can decide whether to keep the original target or adopt the new one
+            when: The dispatcher re-provisions or reconciles that workspace for a new invocation
         tags: []
         created: 2026-03-12T02:33:43.875Z
         notes: []
