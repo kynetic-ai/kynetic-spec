@@ -1736,3 +1736,15 @@ inbox:
       - tasks
     added_by: "@claude"
     created_at: 2026-03-16T23:42:20.034Z
+  - _ulid: 01KKWSA9ANCMQJ2FT5ZP76JD79
+    text: Add integration test for @task-activity-timeline ac-3 (review events merged inline
+      chronologically). Requires a test that creates a task, creates a review record linked to it,
+      and verifies review events appear in the activity timeline output. Flagged during review of
+      @task-implement-activity-display — the most complex part of the implementation lacks dedicated
+      test coverage.
+    tags:
+      - cli
+      - tasks
+      - testing
+    added_by: "@claude"
+    created_at: 2026-03-17T02:17:07.158Z
