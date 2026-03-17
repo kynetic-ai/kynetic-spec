@@ -5111,6 +5111,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T09:29:49.484Z
         completed_at: 2026-03-17T09:29:49.484Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
+          head_commit: 317b496da788fcf1679fe083957e29a5db407052
+        evidence: All git calls use execFileSync with array args (no shell injection). Ref validation via
+          isValidGitRef before use. File paths passed as git arguments with -- separator. No shell
+          interpolation vectors.
+        name: security-review
+        required: false
+        runner: manual
+        created_at: 2026-03-17T09:29:56.970Z
+        completed_at: 2026-03-17T09:29:56.970Z
     events:
       - _ulid: 01KKXHTJTSQDHNVT79135F09KV
         actor: "@claude"
@@ -5139,6 +5152,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T09:29:49.528Z
+      - _ulid: 01KKXJ2THCWVBB5J5TB1BSNN77
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: security-review
+        timestamp: 2026-03-17T09:29:57.036Z
     examined_commit: 317b496da788fcf1679fe083957e29a5db407052
     external_links: []
     lifecycle_state: open
@@ -5165,5 +5185,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T09:25:27.001Z
-    updated_at: 2026-03-17T09:29:49.484Z
+    updated_at: 2026-03-17T09:29:56.970Z
     notes: []
