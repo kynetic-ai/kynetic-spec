@@ -6529,6 +6529,22 @@ reviews:
         runner: kspec
         created_at: 2026-03-17T11:46:16.914Z
         completed_at: 2026-03-17T11:46:16.914Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
+          head_commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
+        evidence: "AC @review-records-web-ui ac-7 is well-covered: 20 AC annotations across 8 files
+          including E2E API tests (api-reviews-list.spec.ts: task filter by slug, ULID, empty
+          result; api-tasks.spec.ts: review_ref present/null), E2E UI tests (tasks.spec.ts: reviews
+          section visible, disposition badge, empty state, navigation link), and unit tests
+          (reference.test.ts: review URL generation). Task scope is limited to ac-7; other ACs (ac-1
+          through ac-6, ac-8 through ac-11) are out of scope."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-17T11:46:45.822Z
+        completed_at: 2026-03-17T11:46:45.822Z
     events:
       - _ulid: 01KKXSDV98ZFHX1ZWR3P38MS6Q
         actor: "@claude"
@@ -6578,6 +6594,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-17T11:46:17.007Z
+      - _ulid: 01KKXSXB0CW9T2W2M48MZKQZRF
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-17T11:46:45.900Z
     examined_commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
     external_links: []
     lifecycle_state: open
@@ -6644,5 +6667,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T11:38:18.280Z
-    updated_at: 2026-03-17T11:46:16.914Z
+    updated_at: 2026-03-17T11:46:45.822Z
     notes: []
