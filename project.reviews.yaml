@@ -7022,6 +7022,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKXVQ4363CKB5Z0ATYSJY4C6
         timestamp: 2026-03-17T12:18:19.440Z
+      - _ulid: 01KKXVQKRTEG92TPM2QH90997G
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKXVQKPTXTS76K56QBCNE69K
+        timestamp: 2026-03-17T12:18:35.418Z
     examined_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
     external_links: []
     lifecycle_state: open
@@ -7052,7 +7059,25 @@ reviews:
               second `reviews` block (lines 93-99) entirely."
             created_at: 2026-03-17T12:18:19.366Z
         kind: blocker
+      - _ulid: 01KKXVQKPTXTS76K56QBCNE69K
+        anchor:
+          type: code
+          commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
+          line_end: 84
+          line_start: 82
+          path: packages/web-ui/src/lib/query/ws-invalidation.ts
+          side: head
+        entries:
+          - _ulid: 01KKXVQKPTBQT39T5MA16VEEBV
+            author: "@claude"
+            body: "Merge conflict artifact: duplicate `reviews:updates` case in switch statement. The first case
+              (line 55) correctly invalidates both `queryKeys.reviews.all` and
+              `queryKeys.tasks.all`. The second case (line 82) is unreachable dead code that only
+              invalidates reviews. No functional impact since the first case handles it correctly,
+              but dead code from a merge conflict should be removed. Fix: delete lines 82-84."
+            created_at: 2026-03-17T12:18:35.354Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-17T12:17:56.291Z
-    updated_at: 2026-03-17T12:18:19.366Z
+    updated_at: 2026-03-17T12:18:35.354Z
     notes: []
