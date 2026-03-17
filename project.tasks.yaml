@@ -103067,7 +103067,21 @@
   session_id: 01KKXSW9GSQDRRSN5FTXB1MJFW
   created_at: 2026-03-16T23:36:28.408Z
   started_at: 2026-03-17T11:46:44.977Z
-  notes: []
+  notes:
+    - _ulid: 01KKXTFJ3ZZ7NR2P44F5ARA2R1
+      content: "Fixed the dead submission_linkage case in diffChangesToEntries. Root cause:
+        parseDiffChanges used a regex that only matched scalar YAML fields (key: value on one line).
+        YAML map headers like 'submission_linkage:' (no inline value) were invisible — their nested
+        child fields (branch, commit, remote, captured_at) leaked as spurious top-level field
+        changes. Added map-aware detection that tracks map headers and their indentation, groups
+        child fields under the parent key, and emits a single map-level DiffChange. Added 5 unit
+        tests covering null→map, map→null, absent→map, mixed scalar+map diffs, and a
+        normalizeTaskActivity integration test confirming the submission_linkage case now produces a
+        'submitted' activity entry. Full test suite passes (1 pre-existing unrelated failure in
+        review-cli.test.ts about auto-populated examined_commit)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T11:56:43.007Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6C6BX3055XXKXYD33K4QA
