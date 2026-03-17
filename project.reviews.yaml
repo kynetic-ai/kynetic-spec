@@ -6249,6 +6249,18 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T11:13:23.591Z
         completed_at: 2026-03-17T11:13:23.591Z
+      - status: fail
+        applies_to_version:
+          type: code_compare
+          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
+          head_commit: c41c0d7b7e96f9eaada13c57e8f69e0d21735038
+        evidence: No test files contain AC annotations for @review-records-web-ui ac-1 or ac-10. AC
+          annotations exist only in implementation source files.
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-17T11:13:26.209Z
+        completed_at: 2026-03-17T11:13:26.209Z
     events:
       - _ulid: 01KKXQDTRRD2YXV67S7Q15985Z
         actor: "@claude"
@@ -6284,6 +6296,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T11:13:23.660Z
+      - _ulid: 01KKXR0A7VM81KD0DMPKFTV0S7
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: ac-coverage
+        timestamp: 2026-03-17T11:13:26.268Z
     examined_commit: c41c0d7b7e96f9eaada13c57e8f69e0d21735038
     external_links: []
     lifecycle_state: open
@@ -6326,5 +6345,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T11:03:20.600Z
-    updated_at: 2026-03-17T11:13:23.591Z
+    updated_at: 2026-03-17T11:13:26.209Z
     notes: []
