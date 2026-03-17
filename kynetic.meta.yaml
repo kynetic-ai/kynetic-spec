@@ -285,7 +285,7 @@ agents:
       - gh
   - _ulid: 01KKBVD4KQP5KH27QXR0C7WJG9
     description: Autonomous task worker. Picks up automation-eligible ready and needs_work tasks.
-    adapter: codex-acp
+    adapter: claude-agent-acp
     auto_approve: true
     budget:
       timeout_minutes: 60
