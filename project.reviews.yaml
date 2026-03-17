@@ -7831,3 +7831,29 @@ reviews:
     created_at: 2026-03-17T18:30:44.103Z
     updated_at: 2026-03-17T18:30:52.535Z
     notes: []
+  - _ulid: 01KKYH338DJ81TVY8G203C3XR6
+    slugs: []
+    title: Review round-trip stability for meta manifest YAML writes
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKYH338DXFJ04GKNMSY589KH
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T18:31:51.821Z
+    examined_commit: c24bc444e0cfe4b9cf8fca0d88d932c18c60684a
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKX6CBDFNMXPC405SRZ3RG0N"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T18:31:51.821Z
+    updated_at: null
+    notes: []
