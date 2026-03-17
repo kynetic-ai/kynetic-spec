@@ -100873,7 +100873,19 @@
   session_id: 01KKXP1DZ83988VR51XASSY0TD
   created_at: 2026-03-16T07:57:05.306Z
   started_at: 2026-03-17T10:39:24.801Z
-  notes: []
+  notes:
+    - _ulid: 01KKXPCT6TQH6302W9VR5TAHT7
+      content: "Implemented all four changes from the task description. Modified
+        templates/skills/review/SKILL.md to: (1) strengthen Code-Targeted Comments and Structured
+        Anchors sections with 'Always anchor' directives, (2) add documentation of common --section
+        values and --field/--anchor-ref usage, (3) add a new 'Why Anchors Matter' section with
+        side-by-side anchored vs unanchored examples for both code and plan/spec reviews, (4) add
+        Anchor as a recommended field in Finding Quality standards, (5) update reviewer workflow
+        summary step 5 to explicitly direct anchor usage. Rendered skill output and regenerated
+        kspec-agents.md."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T10:45:18.682Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6FA04X5BDGFWPX0HKRY4
