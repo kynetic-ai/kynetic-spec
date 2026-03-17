@@ -103364,6 +103364,36 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T08:48:24.913Z
+    - _ulid: 01KKXFV1W08HMM6M63JWJ3BG23
+      content: >-
+        Completed codebase analysis. Identified all affected areas:
+
+
+        1. **Core bug**: invocation.ts stores data as `data: update` (ACP format) but store.ts
+        functions access `data.update` (legacy format). Only web-ui parseEventsToBlocks handles both
+        correctly.
+
+
+        2. **Missing tool_call_input event**: Accumulator only emits tool_call_complete on status
+        transition, drops populated rawInput from phased tool_call_update events.
+
+
+        3. **6 functions in store.ts** use legacy `data.update` path: deduplicatePhasedToolCalls,
+        countTaskCompletions, extractTaskTransitions, computeToolUsageStats, session search.
+
+
+        4. **session/log.ts summarizeEventData** also uses legacy `data.update` path.
+
+
+        5. **CLI watch handler** and **incrementalBlockUpdate** both lack tool_call_input event
+        handling.
+
+
+        Plan: Create shared extraction module, add ToolCallInputEventData type, fix accumulator,
+        update all consumers.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T08:50:45.249Z
   todos: []
   automation: eligible
 - _ulid: 01KKXEKWMZN0E7E6V7458E0BV8
