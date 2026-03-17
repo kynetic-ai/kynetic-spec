@@ -8624,6 +8624,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-17T20:26:26.738Z
+      - _ulid: 01KKYQNF4MY4DHE8W2ZEHSJBG7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKYQNEYT49DJNAARMPBY7JXF
+        timestamp: 2026-03-17T20:26:45.268Z
     examined_commit: 8d513982815ee86e4f932a14474bbc31f467be00
     external_links: []
     lifecycle_state: open
@@ -8633,8 +8640,28 @@ reviews:
       content_hash: ""
       ref: "@01KKX6CD2X6EKHGNE47Y8113HH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKYQNEYT49DJNAARMPBY7JXF
+        anchor:
+          type: code
+          commit: 8d513982815ee86e4f932a14474bbc31f467be00
+          line_end: 528
+          line_start: 507
+          path: src/parser/dispatch-workspaces.ts
+          side: head
+        entries:
+          - _ulid: 01KKYQNEYT3QGHND7KT3EQDDF5
+            author: Jacob Chapel
+            body: This atomic mutate path no longer validates sibling records before writing. Before this
+              change,  schema-validated the entire registry, so a malformed non-target workspace
+              blocked the mutation. Now we only parse , so the mutation succeeds, rewrites the file,
+              and leaves an invalid sibling behind. I reproduced it against the built parser by
+              writing one valid workspace plus a second with ;  succeeded, and only a later reload
+              failed with . That is a behavior regression from the previous implementation and
+              breaks the stated malformed-registry rejection guarantee.
+            created_at: 2026-03-17T20:26:45.084Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T20:26:12.268Z
-    updated_at: 2026-03-17T20:26:26.536Z
+    updated_at: 2026-03-17T20:26:45.084Z
     notes: []
