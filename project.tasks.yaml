@@ -103288,6 +103288,17 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T12:43:03.281Z
+    - _ulid: 01KKXY5E4R3F81ZC889P64TZYX
+      content: "Fix cycle 1 addressed: (1) Restored reviews.ts raw-data-preservation pattern by checking
+        out the file from dev — extractRawReviewArray, writeRawReviewArray, findRawReviewIndex,
+        mergeReviewPreservingRawShape all restored with
+        saveReviewRecord/mutateReviewAtomically/deleteReviewRecord using them. (2) Added review
+        round-trip stability tests (5 tests) back alongside plan tests (6 tests) — test file now has
+        25 tests total. All round-trip stability tests pass. The pre-existing examined_commit
+        auto-detection failure in review-cli.test.ts is unrelated."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T13:01:05.560Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6C9RJHKN1ZMJW1ZWH2BRZ
