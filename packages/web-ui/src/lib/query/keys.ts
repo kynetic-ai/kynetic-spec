@@ -81,6 +81,8 @@ export const queryKeys = {
 		forTask: (taskRef: string) =>
 			[...queryKeys.reviews.all, 'forTask', taskRef] as const,
 		detail: (ref: string) => [...queryKeys.reviews.all, 'detail', ref] as const,
+		siblings: (subjectRef: string) =>
+			[...queryKeys.reviews.all, 'siblings', subjectRef] as const,
 	},
 
 	plans: {

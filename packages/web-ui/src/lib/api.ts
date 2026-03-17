@@ -27,6 +27,7 @@ import type {
 	PlanSummary,
 	PlanDetail,
 	ReviewSummary,
+	ReviewDetail,
 	ErrorResponse,
 	SearchResponse,
 	AgentDefinition,
@@ -919,6 +920,65 @@ export async function fetchReviews(params?: {
 	}
 
 	return response.json();
+}
+
+/**
+ * Fetch a single review by ID (ULID or slug).
+ * AC: @review-records-web-ui ac-2
+ */
+export async function fetchReview(id: string): Promise<ReviewDetail> {
+	if (isStaticMode()) {
+		throw new Error('Review detail not available in static mode');
+	}
+
+	const response = await fetch(`${API_BASE}/api/reviews/${encodeURIComponent(id)}`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch sibling reviews for the same subject (for revision selector).
+ * Returns all reviews matching the subject type, filtered client-side
+ * by subject_ref or head_branch depending on subject type.
+ * AC: @review-records-web-ui ac-11
+ */
+export async function fetchReviewSiblings(params: {
+	subject_type: string;
+	subject_ref?: string;
+	head_branch?: string;
+}): Promise<ReviewSummary[]> {
+	if (isStaticMode()) {
+		return [];
+	}
+
+	const url = new URL(`${API_BASE}/api/reviews`);
+	url.searchParams.set('status', 'all');
+	url.searchParams.set('sort', 'created_at');
+	url.searchParams.set('sort_dir', 'asc');
+	url.searchParams.set('subject_type', params.subject_type);
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	const data: PaginatedResponse<ReviewSummary> = await response.json();
+
+	// Client-side filter by subject_ref (for plan/task/spec) or head_branch (for code)
+	if (params.subject_ref) {
+		return data.items.filter((r) => r.subject_ref === params.subject_ref);
+	}
+
+	// For code reviews without subject_ref, return all code reviews
+	// (head_branch matching would need detail data not in summary)
+	return data.items;
 }
 
 // ============================================================
