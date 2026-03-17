@@ -4817,6 +4817,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKXG5CW9QT64HQGAS2QVNN9W
         timestamp: 2026-03-17T08:56:24.237Z
+      - _ulid: 01KKXG5SNFK93QSZZV9X1GH9W4
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKXG5SM9GH2KJP1MBMRVS09W
+        timestamp: 2026-03-17T08:56:37.295Z
     examined_commit: bb450d49091846ff30ea2a935f49c0bc0bb70cfa
     external_links: []
     lifecycle_state: open
@@ -4913,7 +4920,34 @@ reviews:
               6. Review not found → 404
             created_at: 2026-03-17T08:56:24.201Z
         kind: blocker
+      - _ulid: 01KKXG5SM9GH2KJP1MBMRVS09W
+        anchor:
+          type: code
+          commit: bb450d490918
+          line_end: 423
+          line_start: 381
+          path: tests/daemon-diff-api.test.ts
+          side: head
+        entries:
+          - _ulid: 01KKXG5SM9HMXRM0QSAV6PA1Q9
+            author: "@claude"
+            body: >-
+              **SHOULD-FIX: ac-2 context expansion tests don't test the endpoint**
+
+
+              The two tests annotated with `// AC: @review-content-diff-api ac-2` (lines 381-423)
+              verify the underlying `git show` + array slicing logic directly, but they don't test
+              the `/api/diff/context` route handler at all. The route handler contains parameter
+              validation (start/end must be positive integers with start <= end), error responses
+              for invalid refs and missing files, and clamping logic — none of which is exercised.
+
+
+              This is better than no coverage but the tests would pass even if the route handler had
+              bugs in validation, clamping, or error handling. Consider adding at least a unit test
+              that exercises the route's validation and clamping logic.
+            created_at: 2026-03-17T08:56:37.257Z
+        kind: question
     verdicts: []
     created_at: 2026-03-17T08:55:51.580Z
-    updated_at: 2026-03-17T08:56:24.201Z
+    updated_at: 2026-03-17T08:56:37.257Z
     notes: []
