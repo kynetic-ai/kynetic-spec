@@ -219,7 +219,7 @@ export function refreshSubject(
 // Lifecycle transitions
 // ---------------------------------------------------------------------------
 
-const VALID_TRANSITIONS: Record<ReviewLifecycleState, ReviewLifecycleState[]> =
+export const VALID_TRANSITIONS: Record<ReviewLifecycleState, ReviewLifecycleState[]> =
   {
     draft: ["open", "closed"],
     open: ["closed"],

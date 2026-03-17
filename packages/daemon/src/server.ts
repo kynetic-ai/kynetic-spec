@@ -322,7 +322,7 @@ export async function createServer(options: ServerOptions) {
     // AC: @review-content-diff-api ac-1, ac-2, ac-3, ac-4 - Diff and review content endpoints
     .use(createDiffRoutes())
 
-    // AC: @review-records-daemon-api ac-3, ac-4, ac-5, ac-9, ac-10 - Review thread mutation endpoints
+    // AC: @review-records-daemon-api ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-9, ac-10 - Review endpoints
     .use(createReviewsRoutes({ pubsub: pubsubManager }))
 
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
