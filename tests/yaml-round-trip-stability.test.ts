@@ -25,6 +25,13 @@ import {
   mutateReviewAtomically,
   deleteReviewRecord,
 } from "../src/parser/reviews.js";
+import {
+  saveDispatchWorkspaceRecord,
+  mutateDispatchWorkspaceRecordAtomically,
+  loadDispatchWorkspaceRegistry,
+  getDispatchWorkspaceRegistryPath,
+} from "../src/parser/dispatch-workspaces.js";
+import type { LoadedDispatchWorkspaceRecord } from "../src/parser/dispatch-workspaces.js";
 import type { KspecContext } from "../src/parser/yaml.js";
 import type { ReviewRecordInput } from "../src/schema/index.js";
 
@@ -916,6 +923,203 @@ describe("round-trip stability — saveInboxItem path", () => {
     const reloaded = await loadInboxItems(ctx);
     expect(reloaded).toHaveLength(1);
     expect(reloaded[0]._ulid).toBe(ulid2);
+  });
+});
+
+// AC: @yaml-serialization-invariants ac-3
+describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
+  function makeWorkspaceCtx(specDir: string): KspecContext {
+    return { specDir } as KspecContext;
+  }
+
+  /**
+   * Build a minimal dispatch workspace record that satisfies the schema.
+   * Only includes fields that are required — no Zod defaults.
+   */
+  function makeMinimalWorkspaceYaml(workspaceId: string, taskRef: string, overrides: Record<string, unknown> = {}) {
+    const now = "2026-03-01T00:00:00.000Z";
+    return {
+      workspace_id: workspaceId,
+      task_ref: taskRef,
+      task_slug: `task-${workspaceId}`,
+      worktree_root: `/tmp/ws/${workspaceId}`,
+      resolved_base_branch: "dev",
+      base_branch_point: "abc123",
+      canonical_branch: `dispatch/task/test/${workspaceId}`,
+      canonical_branch_head: "def456",
+      lifecycle_state: "active",
+      worktrees: {
+        worker: {
+          path: `/tmp/ws/${workspaceId}`,
+          branch_mode: "branch",
+        },
+      },
+      bootstrap: {
+        status: "succeeded",
+      },
+      integration: {
+        status: "pending",
+        target_branch: "dev",
+        target_commit: "abc123",
+        publication_mode: "manual_merge",
+        outcome: "manual_merge",
+        updated_at: now,
+      },
+      health: {
+        status: "healthy",
+        summary: "OK",
+        updated_at: now,
+      },
+      cleanup: {
+        status: "not_scheduled",
+        updated_at: now,
+      },
+      timestamps: {
+        created_at: now,
+        updated_at: now,
+      },
+      ...overrides,
+    };
+  }
+
+  it("saveDispatchWorkspaceRecord with no changes produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-dw-rt1");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeWorkspaceCtx(kspecDir);
+
+    // Write a dispatch workspaces file directly with minimal fields
+    const registryPath = path.join(kspecDir, "project.dispatch-workspaces.yaml");
+    const ws1 = makeMinimalWorkspaceYaml("ws-001", "@task-foo");
+    await writeYamlFilePreserveFormat(registryPath, {
+      kynetic_dispatch_workspaces: "1.0",
+      workspaces: [ws1],
+    });
+    const initialContent = await fs.readFile(registryPath, "utf-8");
+
+    // Load and save back with no modifications
+    const loaded = await loadDispatchWorkspaceRegistry(ctx);
+    expect(loaded).toHaveLength(1);
+    await saveDispatchWorkspaceRecord(ctx, loaded[0]);
+    const afterContent = await fs.readFile(registryPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("mutateDispatchWorkspaceRecordAtomically with identity function produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-dw-rt2");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeWorkspaceCtx(kspecDir);
+
+    const registryPath = path.join(kspecDir, "project.dispatch-workspaces.yaml");
+    const ws1 = makeMinimalWorkspaceYaml("ws-002", "@task-bar");
+    await writeYamlFilePreserveFormat(registryPath, {
+      kynetic_dispatch_workspaces: "1.0",
+      workspaces: [ws1],
+    });
+    const initialContent = await fs.readFile(registryPath, "utf-8");
+
+    // Identity mutation: return the record unchanged
+    await mutateDispatchWorkspaceRecordAtomically(ctx, "ws-002", (r) => r);
+    const afterContent = await fs.readFile(registryPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("saveDispatchWorkspaceRecord preserves file stability across multiple workspaces", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-dw-rt3");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeWorkspaceCtx(kspecDir);
+
+    const registryPath = path.join(kspecDir, "project.dispatch-workspaces.yaml");
+    const ws1 = makeMinimalWorkspaceYaml("ws-003", "@task-a");
+    const ws2 = makeMinimalWorkspaceYaml("ws-004", "@task-b");
+    await writeYamlFilePreserveFormat(registryPath, {
+      kynetic_dispatch_workspaces: "1.0",
+      workspaces: [ws1, ws2],
+    });
+    const initialContent = await fs.readFile(registryPath, "utf-8");
+
+    // Load and save each workspace individually — file should not change
+    const loaded = await loadDispatchWorkspaceRegistry(ctx);
+    for (const ws of loaded) {
+      await saveDispatchWorkspaceRecord(ctx, ws);
+    }
+    const afterContent = await fs.readFile(registryPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("non-target workspaces are not polluted with Zod defaults", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-dw-rt4");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeWorkspaceCtx(kspecDir);
+
+    // Write a dispatch workspaces file with minimal fields — no branch_provenance,
+    // no roleStates, no bootstrap.invalidationReasons, no bootstrap.steps, etc.
+    const registryPath = path.join(kspecDir, "project.dispatch-workspaces.yaml");
+    const ws1 = makeMinimalWorkspaceYaml("ws-005", "@task-c");
+    const ws2 = makeMinimalWorkspaceYaml("ws-006", "@task-d");
+    await writeYamlFilePreserveFormat(registryPath, {
+      kynetic_dispatch_workspaces: "1.0",
+      workspaces: [ws1, ws2],
+    });
+    const initialContent = await fs.readFile(registryPath, "utf-8");
+
+    // Mutate only the first workspace (change lifecycle_state)
+    await mutateDispatchWorkspaceRecordAtomically(ctx, "ws-005", (r) => ({
+      ...r,
+      lifecycle_state: "stale",
+    }));
+    const afterContent = await fs.readFile(registryPath, "utf-8");
+
+    // The second workspace should not gain any new fields from Zod defaults.
+    // branch_provenance is the key default that gets added by schema parsing.
+    // Count occurrences — only the mutated workspace should potentially have it.
+    const branchProvenanceMatches = afterContent.match(/branch_provenance:/g) || [];
+    // Neither workspace had branch_provenance originally; the mutated workspace
+    // may gain it through schema normalization + merge, but the non-target must not.
+    // Since the merge only adds non-trivial fields and branch_provenance is an object,
+    // the mutated workspace will get it — so at most 1 occurrence is acceptable.
+    expect(branchProvenanceMatches.length).toBeLessThanOrEqual(1);
+
+    // roleStates should not appear for non-target workspace
+    const roleStatesMatches = afterContent.match(/roleStates:/g) || [];
+    expect(roleStatesMatches.length).toBeLessThanOrEqual(1);
+
+    // But the mutation should have taken effect
+    const reloaded = await loadDispatchWorkspaceRegistry(ctx);
+    const ws5 = reloaded.find((w) => w.workspace_id === "ws-005");
+    const ws6 = reloaded.find((w) => w.workspace_id === "ws-006");
+    expect(ws5?.lifecycle_state).toBe("stale");
+    expect(ws6?.lifecycle_state).toBe("active");
+  });
+
+  it("write-then-read-then-write produces byte-identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-dw-rt5");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeWorkspaceCtx(kspecDir);
+
+    // Write a dispatch workspaces file, load one workspace, save it back
+    // without changes, and confirm the file is byte-identical.
+    const registryPath = path.join(kspecDir, "project.dispatch-workspaces.yaml");
+    const ws1 = makeMinimalWorkspaceYaml("ws-007", "@task-e");
+    const ws2 = makeMinimalWorkspaceYaml("ws-008", "@task-f");
+    await writeYamlFilePreserveFormat(registryPath, {
+      kynetic_dispatch_workspaces: "1.0",
+      workspaces: [ws1, ws2],
+    });
+    const initialContent = await fs.readFile(registryPath, "utf-8");
+
+    // Multiple round-trip cycles — save each workspace in turn
+    for (let cycle = 0; cycle < 3; cycle++) {
+      const loaded = await loadDispatchWorkspaceRegistry(ctx);
+      for (const ws of loaded) {
+        await saveDispatchWorkspaceRecord(ctx, ws);
+      }
+    }
+    const finalContent = await fs.readFile(registryPath, "utf-8");
+
+    expect(finalContent).toBe(initialContent);
   });
 });
 
