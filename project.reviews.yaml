@@ -7314,6 +7314,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-17T12:41:41.082Z
+      - _ulid: 01KKXX2A65GYF2NVZ4JCHHXENJ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKXX2A41Z7GM5FRME7G8HRNW
+        timestamp: 2026-03-17T12:41:54.629Z
     examined_commit: fa760b196f109d5827f3a7a9287dfc0edc65b932
     external_links: []
     lifecycle_state: open
@@ -7323,8 +7330,29 @@ reviews:
       content_hash: ""
       ref: "@01KKX6C83WVQBYBZ5SWTXY1JKA"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKXX2A41Z7GM5FRME7G8HRNW
+        anchor:
+          type: code
+          commit: fa760b196f109d5827f3a7a9287dfc0edc65b932
+          line_end: 203
+          line_start: 175
+          path: src/parser/reviews.ts
+          side: head
+        entries:
+          - _ulid: 01KKXX2A429E8TXAA6AGMNHPBJ
+            author: "@claude"
+            body: "Regression: reviews.ts raw-data-preservation pattern removed. On dev,
+              saveReviewRecord/mutateReviewAtomically/deleteReviewRecord all use
+              extractRawReviewArray, writeRawReviewArray, findRawReviewIndex, and
+              mergeReviewPreservingRawShape to prevent Zod default injection on non-target reviews.
+              This commit removes all of that, reverting reviews.ts to load ALL reviews via
+              loadReviewsFromFile (schema-normalizes everything) before writing. This undoes work
+              previously merged into dev and reintroduces the exact round-trip stability issue for
+              reviews that the task description says it's fixing for plans."
+            created_at: 2026-03-17T12:41:54.562Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T12:41:31.776Z
-    updated_at: 2026-03-17T12:41:41.011Z
+    updated_at: 2026-03-17T12:41:54.562Z
     notes: []
