@@ -8158,3 +8158,79 @@ workspaces:
         head: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
         last_seen_at: 2026-03-17T19:52:17.161Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-triage-record-yaml-writes-01kkx6ce
+  - active_role: null
+    base_branch_point: 392421a4da0b405f2fd37ed90bf6a62ff4e3effc
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/round-trip-stability-for-workflow-runs-yaml-writes/01kkx6cg
+    canonical_branch_head: 392421a4da0b405f2fd37ed90bf6a62ff4e3effc
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-17T19:52:55.532Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-17T19:52:55.532Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 392421a4da0b405f2fd37ed90bf6a62ff4e3effc
+      updated_at: 2026-03-17T19:52:55.532Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KKX6CGBRT6J6F804PJ1QJW3G"
+    task_slug: round-trip-stability-for-workflow-runs-yaml-writes
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-17T19:52:55.532Z
+      created_at: 2026-03-17T19:52:55.532Z
+      updated_at: 2026-03-17T19:52:55.532Z
+    workspace_id: dispatch-workspace-01KKX6CGBRT6J6F804PJ1QJW3G
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/round-trip-stability-for-workflow-runs-yaml-writes/01kkx6cg
+        head: 392421a4da0b405f2fd37ed90bf6a62ff4e3effc
+        last_seen_at: 2026-03-17T19:52:55.532Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-workflow-runs-yaml-writes-01kkx6cg
