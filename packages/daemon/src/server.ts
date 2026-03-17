@@ -32,6 +32,7 @@ import { createSessionRoutes } from './routes/sessions';
 import { createPlansRoutes } from './routes/plans';
 import { createAggregationRoutes } from './routes/aggregation';
 import { createRefsRoutes } from './routes/refs';
+import { createDiffRoutes } from './routes/diff';
 import { createReviewsRoutes } from './routes/reviews';
 import { ShadowSyncScheduler } from './shadow-sync';
 import { SessionSyncScheduler } from './session-sync';
@@ -317,6 +318,9 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
     .use(createRefsRoutes())
+
+    // AC: @review-content-diff-api ac-1, ac-2, ac-3, ac-4 - Diff and review content endpoints
+    .use(createDiffRoutes())
 
     // AC: @review-records-daemon-api ac-3, ac-4, ac-5, ac-9, ac-10 - Review thread mutation endpoints
     .use(createReviewsRoutes({ pubsub: pubsubManager }))

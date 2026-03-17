@@ -11,6 +11,31 @@
  * - @review-records-daemon-api ac-10: 400 with actionable error messages
  */
 
+// Trait N/A annotations — @review-records-daemon-api inherits traits that are CLI-oriented or tested elsewhere:
+// AC: @trait-json-output ac-1 — N/A: HTTP REST API always returns JSON; no --json flag concept for HTTP endpoints
+// AC: @trait-json-output ac-2 — N/A: HTTP REST API always returns full data; no human-readable vs JSON mode
+// AC: @trait-json-output ac-3 — N/A: HTTP REST API errors use HTTP status codes + JSON bodies, not --json flag
+// AC: @trait-json-output ac-4 — N/A: HTTP REST API references in JSON responses; @ prefix convention is CLI-specific
+// AC: @trait-json-output ac-5 — N/A: HTTP REST API timestamps are ISO 8601 by convention; not enforced via --json flag
+// AC: @trait-json-output ac-6 — N/A: HTTP REST API has no formatting flags; not applicable
+// AC: @trait-error-guidance ac-1 — N/A: CLI error message guidance; REST API uses JSON error bodies (tested in ac-10 E2E tests below)
+// AC: @trait-error-guidance ac-2 — N/A: CLI error message guidance; REST API uses suggestion field (tested in error handling E2E tests below)
+// AC: @trait-error-guidance ac-3 — N/A: CLI ref-not-found guidance; REST API uses 404 with suggestion (covered in 404 tests below)
+// AC: @trait-error-guidance ac-4 — N/A: CLI state-transition error guidance; REST API 409 format tested in resolve/reopen tests below
+// AC: @trait-error-guidance ac-5 — N/A: CLI validation error guidance; REST API 400 format tested in validation tests below
+// AC: @trait-error-guidance ac-6 — N/A: CLI error guidance in JSON mode; this is a CLI pattern not applicable to REST API endpoints
+// AC: @trait-localhost-security ac-1 — N/A: server binding tested in api-server E2E tests
+// AC: @trait-localhost-security ac-2 — N/A: non-localhost rejection tested in api-server E2E tests
+// AC: @trait-localhost-security ac-3 — N/A: external binding warning tested in api-server E2E tests
+// AC: @trait-websocket-protocol ac-1 — N/A: WebSocket protocol; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-2 — N/A: WebSocket subscribe command; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-3 — N/A: WebSocket broadcast events; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-4 — N/A: WebSocket heartbeat ping; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-5 — N/A: WebSocket ping/pong timeout; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-6 — N/A: WebSocket backpressure; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-7 — N/A: WebSocket close codes; tested separately in api-websocket E2E tests
+// AC: @trait-websocket-protocol ac-8 — N/A: WebSocket reconnection; tested separately in api-websocket E2E tests
+
 import { test, expect } from '../fixtures/test-base';
 
 // Fixture ULIDs
@@ -235,6 +260,128 @@ test.describe('Review Thread Mutation API', () => {
             body: 'Test',
             author: 'reviewer@test.com',
             anchor: { type: 'invalid' },
+          },
+        }
+      );
+
+      expect(response.status()).toBe(400);
+      const result = await response.json();
+      expect(result.error).toBe('validation_error');
+    });
+
+    // AC: @review-records-daemon-api ac-10 - invalid code anchor side
+    test('returns 400 for invalid code anchor side', async ({ request, daemon }) => {
+      const response = await request.post(
+        `${daemon.baseUrl}/api/reviews/${OPEN_REVIEW_ULID}/comments`,
+        {
+          data: {
+            body: 'Test',
+            author: 'reviewer@test.com',
+            anchor: {
+              type: 'code',
+              path: 'src/file.ts',
+              side: 'invalid',
+              line_start: 1,
+              line_end: 1,
+              commit: 'abc123',
+            },
+          },
+        }
+      );
+
+      expect(response.status()).toBe(400);
+      const result = await response.json();
+      expect(result.error).toBe('validation_error');
+      expect(result.details[0].field).toBe('anchor.side');
+    });
+
+    // AC: @review-records-daemon-api ac-10 - negative line_start
+    test('returns 400 for negative line_start', async ({ request, daemon }) => {
+      const response = await request.post(
+        `${daemon.baseUrl}/api/reviews/${OPEN_REVIEW_ULID}/comments`,
+        {
+          data: {
+            body: 'Test',
+            author: 'reviewer@test.com',
+            anchor: {
+              type: 'code',
+              path: 'src/file.ts',
+              side: 'head',
+              line_start: -1,
+              line_end: 5,
+              commit: 'abc123',
+            },
+          },
+        }
+      );
+
+      expect(response.status()).toBe(400);
+      const result = await response.json();
+      expect(result.error).toBe('validation_error');
+      expect(result.details[0].field).toBe('anchor.line_start');
+    });
+
+    // AC: @review-records-daemon-api ac-10 - float line_end
+    test('returns 400 for non-integer line_end', async ({ request, daemon }) => {
+      const response = await request.post(
+        `${daemon.baseUrl}/api/reviews/${OPEN_REVIEW_ULID}/comments`,
+        {
+          data: {
+            body: 'Test',
+            author: 'reviewer@test.com',
+            anchor: {
+              type: 'code',
+              path: 'src/file.ts',
+              side: 'head',
+              line_start: 1,
+              line_end: 1.5,
+              commit: 'abc123',
+            },
+          },
+        }
+      );
+
+      expect(response.status()).toBe(400);
+      const result = await response.json();
+      expect(result.error).toBe('validation_error');
+      expect(result.details[0].field).toBe('anchor.line_end');
+    });
+
+    // AC: @review-records-daemon-api ac-10 - line_end < line_start
+    test('returns 400 when line_end is less than line_start', async ({ request, daemon }) => {
+      const response = await request.post(
+        `${daemon.baseUrl}/api/reviews/${OPEN_REVIEW_ULID}/comments`,
+        {
+          data: {
+            body: 'Test',
+            author: 'reviewer@test.com',
+            anchor: {
+              type: 'code',
+              path: 'src/file.ts',
+              side: 'head',
+              line_start: 10,
+              line_end: 5,
+              commit: 'abc123',
+            },
+          },
+        }
+      );
+
+      expect(response.status()).toBe(400);
+      const result = await response.json();
+      expect(result.error).toBe('validation_error');
+      expect(result.details[0].field).toBe('anchor.line_end');
+    });
+
+    // AC: @review-records-daemon-api ac-10 - empty structured anchor
+    test('returns 400 for empty structured anchor', async ({ request, daemon }) => {
+      const response = await request.post(
+        `${daemon.baseUrl}/api/reviews/${OPEN_REVIEW_ULID}/comments`,
+        {
+          data: {
+            body: 'Test',
+            author: 'reviewer@test.com',
+            anchor: { type: 'structured' },
           },
         }
       );

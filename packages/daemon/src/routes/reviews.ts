@@ -100,6 +100,57 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
                 ],
               });
             }
+            // Validate side field
+            const validSides = ['base', 'head'];
+            if (!validSides.includes(body.anchor.side)) {
+              return errorResponse(400, {
+                error: 'validation_error',
+                message: `Invalid anchor side "${body.anchor.side}"`,
+                details: [
+                  {
+                    field: 'anchor.side',
+                    message: 'Side must be "base" or "head"',
+                  },
+                ],
+              });
+            }
+            // Validate line_start and line_end are positive integers with line_end >= line_start
+            if (!Number.isInteger(body.anchor.line_start) || body.anchor.line_start < 1) {
+              return errorResponse(400, {
+                error: 'validation_error',
+                message: 'Invalid anchor line_start: must be a positive integer',
+                details: [
+                  {
+                    field: 'anchor.line_start',
+                    message: 'line_start must be an integer greater than 0',
+                  },
+                ],
+              });
+            }
+            if (!Number.isInteger(body.anchor.line_end) || body.anchor.line_end < 1) {
+              return errorResponse(400, {
+                error: 'validation_error',
+                message: 'Invalid anchor line_end: must be a positive integer',
+                details: [
+                  {
+                    field: 'anchor.line_end',
+                    message: 'line_end must be an integer greater than 0',
+                  },
+                ],
+              });
+            }
+            if (body.anchor.line_end < body.anchor.line_start) {
+              return errorResponse(400, {
+                error: 'validation_error',
+                message: 'Invalid anchor: line_end must be >= line_start',
+                details: [
+                  {
+                    field: 'anchor.line_end',
+                    message: `line_end (${body.anchor.line_end}) must be greater than or equal to line_start (${body.anchor.line_start})`,
+                  },
+                ],
+              });
+            }
             anchor = {
               type: 'code',
               path: body.anchor.path,
@@ -109,6 +160,19 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
               commit: body.anchor.commit,
             };
           } else if (body.anchor.type === 'structured') {
+            // Require at least one meaningful field for structured anchors
+            if (!body.anchor.section && !body.anchor.field && !body.anchor.path && !body.anchor.ref) {
+              return errorResponse(400, {
+                error: 'validation_error',
+                message: 'Invalid structured anchor: at least one of section, field, path, or ref is required',
+                details: [
+                  {
+                    field: 'anchor',
+                    message: 'Structured anchor must have at least one of: section, field, path, ref',
+                  },
+                ],
+              });
+            }
             anchor = {
               type: 'structured',
               ...(body.anchor.section ? { section: body.anchor.section } : {}),
