@@ -103321,8 +103321,13 @@
   spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Applied raw-data-preservation pattern to saveInboxItem,
+    mutateInboxItemAtomically, and deleteInboxItem. Added extractRawInboxArray, writeRawInboxArray,
+    findRawInboxIndex, and mergeInboxPreservingRawShape helpers. 5 round-trip stability tests verify
+    byte-identical output after load/save cycles with no logical changes. All 24 round-trip tests
+    pass.
   depends_on: []
   context: []
   priority: 3
@@ -103343,6 +103348,7 @@
   created_at: 2026-03-17T06:05:24.626Z
   started_at: 2026-03-17T12:42:54.576Z
   submitted_at: 2026-03-17T12:52:39.066Z
+  completed_at: 2026-03-17T13:02:33.685Z
   notes:
     - _ulid: 01KKXXNQAD1N3NQ9SZXVBEPN4W
       content: "Applied the raw-data-preservation pattern to all three inbox item write functions
