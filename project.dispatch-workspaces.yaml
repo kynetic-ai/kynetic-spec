@@ -7120,12 +7120,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-17T10:54:27.410Z
+      updated_at: 2026-03-17T18:29:51.068Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T10:54:28.195Z
+      updated_at: 2026-03-17T18:29:51.068Z
     integration:
       status: pending
       detail: null
@@ -7133,7 +7133,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-      updated_at: 2026-03-17T10:54:27.410Z
+      updated_at: 2026-03-17T18:29:51.068Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KKTW6GRPMVH8M9WVGH9NTJCF"
@@ -7141,9 +7141,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T10:39:04.922Z
-      last_reconciled_at: 2026-03-17T10:54:28.195Z
+      last_reconciled_at: 2026-03-17T18:29:51.068Z
       created_at: 2026-03-17T09:39:47.651Z
-      updated_at: 2026-03-17T10:54:28.195Z
+      updated_at: 2026-03-17T18:29:51.068Z
     workspace_id: dispatch-workspace-01KKTW6GRPMVH8M9WVGH9NTJCF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -7152,7 +7152,7 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/task-review-api-verdicts/01kktw6g
         head: adaaef6230426b5b880e6f3ab93d6882b96e9cc0
-        last_seen_at: 2026-03-17T10:39:04.260Z
+        last_seen_at: 2026-03-17T18:29:51.068Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-verdicts-01kktw6g
   - active_role: null
     base_branch_point: 3a64769a2efda93e4e685368ef9c453100e596a2
