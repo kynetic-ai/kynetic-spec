@@ -101730,8 +101730,14 @@
   spec_ref: "@review-records-web-ui"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Review detail page at /reviews/[id] with threads (kind badges,
+    resolution state, conversation view), checks (pass/fail/stale), verdicts (decision badges),
+    disposition, markdown rendering (syntax highlighting), author/timestamps, empty states, and
+    revision selector for same-subject reviews. All 5 assigned ACs (ac-2, ac-8, ac-9, ac-10, ac-11)
+    covered. Two nits noted: ReviewDetail.notes type field mismatch, misleading fetchReviewSiblings
+    JSDoc comment."
   depends_on:
     - "@task-review-list-page"
     - "@task-review-api-threads"
@@ -101755,6 +101761,7 @@
   created_at: 2026-03-16T08:29:03.185Z
   started_at: 2026-03-17T20:07:11.132Z
   submitted_at: 2026-03-17T20:33:50.059Z
+  completed_at: 2026-03-17T23:52:38.177Z
   notes:
     - _ulid: 01KKYR1EG18FD5Y08JZYD4KHNZ
       content: "Completed review detail page finish-up: fixed the /reviews/[id] back link, moved revision
