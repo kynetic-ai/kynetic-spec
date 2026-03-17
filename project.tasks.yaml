@@ -101776,7 +101776,20 @@
   session_id: 01KKXR0ZJKS5Q4202HZBCN0G2S
   created_at: 2026-03-16T08:29:05.665Z
   started_at: 2026-03-17T11:14:24.976Z
-  notes: []
+  notes:
+    - _ulid: 01KKXS9VRXT1PKPDNYWT072CAX
+      content: "Implemented review links on task detail page. Changes: (1) Added ReviewSummary type to
+        shared API types, (2) Exposed review_ref in task detail API response, (3) Added GET
+        /api/reviews?task= list endpoint with disposition computation, (4) Added fetchReviewsForTask
+        to web-ui API client, (5) Added reviews section to TaskDetailContent.svelte showing current
+        reviews prominently with disposition badges and thread summaries, collapsed closed reviews
+        as history, (6) Added review query keys and WS invalidation wiring, (7) Added 'review' to
+        RefType with /reviews/[id] href routing, (8) Added /reviews and /reviews/* to daemon SPA
+        routes. Tests: E2E API tests for review list endpoint, E2E UI tests for task detail reviews
+        section, unit tests for review URL generation. All 5724 existing tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T11:36:07.709Z
   todos: []
   automation: eligible
 - _ulid: 01KKTZ0BF597PSYKT1H4VXPCPG
