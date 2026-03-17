@@ -8893,6 +8893,18 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T23:51:41.010Z
         completed_at: 2026-03-17T23:51:41.010Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 392421a4da0b
+          head_commit: 3b251d677f21
+        evidence: packages/shared tsc build succeeded, packages/web-ui vite build succeeded with
+          adapter-static output
+        name: build
+        required: true
+        runner: tsc+vite
+        created_at: 2026-03-17T23:51:43.525Z
+        completed_at: 2026-03-17T23:51:43.525Z
     events:
       - _ulid: 01KKZ30JMQFQZ634JMBJZ4C51K
         actor: "@claude"
@@ -8928,6 +8940,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T23:51:41.090Z
+      - _ulid: 01KKZ3CS87EJ5116NN4N1PJ86Y
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: build
+        timestamp: 2026-03-17T23:51:43.623Z
     examined_commit: 3b251d677f21cfc35c6db12a6bfb759c2889c7f5
     external_links: []
     lifecycle_state: open
@@ -8974,5 +8993,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T23:45:03.640Z
-    updated_at: 2026-03-17T23:51:41.010Z
+    updated_at: 2026-03-17T23:51:43.525Z
     notes: []
