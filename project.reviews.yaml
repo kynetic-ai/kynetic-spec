@@ -8263,6 +8263,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKYKXSMR3KXC349M5N9XMMZ1
         timestamp: 2026-03-17T19:21:23.974Z
+      - _ulid: 01KKYKY34Y4HQK7MCQ76NY7X4W
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKYKY31DC20BCZD9RZKEYGR1
+        timestamp: 2026-03-17T19:21:33.598Z
     examined_commit: 2502347497c8315a3f9d122b35cd3bee78592ff9
     external_links: []
     lifecycle_state: open
@@ -8295,7 +8302,25 @@ reviews:
               change) and restore the deleted test file."
             created_at: 2026-03-17T19:21:23.864Z
         kind: blocker
+      - _ulid: 01KKYKY31DC20BCZD9RZKEYGR1
+        anchor:
+          type: code
+          commit: 2502347497c8
+          line_end: 1
+          line_start: 1
+          path: tests/daemon-review-verdicts-api.test.ts
+          side: head
+        entries:
+          - _ulid: 01KKYKY31DEEHNTVVPGEVTWVE0
+            author: "@claude"
+            body: Deleted test file tests/daemon-review-verdicts-api.test.ts (695 lines) covers
+              @review-records-daemon-api ac-6, ac-7, ac-8, ac-9, ac-10 with 24 test cases. This
+              removal reduces test coverage for spec-covered functionality. The test file was
+              introduced by task @task-review-api-verdicts and should not be removed without a
+              deliberate separate task and spec update.
+            created_at: 2026-03-17T19:21:33.485Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T19:20:56.438Z
-    updated_at: 2026-03-17T19:21:23.864Z
+    updated_at: 2026-03-17T19:21:33.485Z
     notes: []
