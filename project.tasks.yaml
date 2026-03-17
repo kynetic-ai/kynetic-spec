@@ -101497,8 +101497,12 @@
   spec_ref: "@review-records-web-ui"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Review list page at /reviews with filterable, sortable table showing
+    lifecycle status, color-coded disposition badges, subject type, reviewer, and linked tasks. API
+    endpoints (GET /api/reviews, GET /api/reviews/:id) with pagination, filtering, sorting, and
+    ReferenceIndex title resolution. 22 E2E tests. Covers @review-records-web-ui ac-1 and ac-10.
   depends_on:
     - "@task-review-api-read"
   context: []
@@ -101520,6 +101524,7 @@
   created_at: 2026-03-16T08:29:02.538Z
   started_at: 2026-03-17T11:45:41.391Z
   submitted_at: 2026-03-17T11:45:45.052Z
+  completed_at: 2026-03-17T11:57:02.184Z
   notes:
     - _ulid: 01KKXQB6G5MA75ZAT3SHRT53DF
       content: Implemented /reviews list page covering ac-1 and ac-10. Found that the dependency task
