@@ -97,6 +97,7 @@ function toReviewSummary(review: ReviewRecord, index?: ReferenceIndex) {
     disposition,
     subject_type: review.subject.type,
     subject_ref: 'ref' in review.subject ? review.subject.ref : undefined,
+    head_branch: review.subject.type === 'code' ? review.subject.head_branch : undefined,
     author: review.author,
     related_refs: review.related_refs,
     task_ref: taskRef,
@@ -147,6 +148,18 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         if (query.subject_type) {
           const subjectFilters = Array.isArray(query.subject_type) ? query.subject_type : [query.subject_type];
           filtered = filtered.filter((r) => subjectFilters.includes(r.subject.type));
+        }
+
+        if (query.subject_ref) {
+          filtered = filtered.filter(
+            (r) => 'ref' in r.subject && r.subject.ref === query.subject_ref
+          );
+        }
+
+        if (query.head_branch) {
+          filtered = filtered.filter(
+            (r) => r.subject.type === 'code' && r.subject.head_branch === query.head_branch
+          );
         }
 
         // Reviewer filter
@@ -216,6 +229,8 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           status: t.Optional(t.Union([t.String(), t.Array(t.String())])),
           disposition: t.Optional(t.Union([t.String(), t.Array(t.String())])),
           subject_type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          subject_ref: t.Optional(t.String()),
+          head_branch: t.Optional(t.String()),
           reviewer: t.Optional(t.String()),
           task: t.Optional(t.String()),
           sort: t.Optional(t.String()),

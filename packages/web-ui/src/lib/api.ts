@@ -27,6 +27,7 @@ import type {
 	PlanSummary,
 	PlanDetail,
 	ReviewSummary,
+	ReviewDetail,
 	ErrorResponse,
 	SearchResponse,
 	AgentDefinition,
@@ -887,6 +888,8 @@ export async function fetchReviews(params?: {
 	status?: string | string[];
 	disposition?: string;
 	subject_type?: string;
+	subject_ref?: string;
+	head_branch?: string;
 	task?: string;
 	sort?: string;
 	sort_dir?: string;
@@ -919,6 +922,52 @@ export async function fetchReviews(params?: {
 	}
 
 	return response.json();
+}
+
+/**
+ * Fetch a single review by ID (ULID or slug).
+ * AC: @review-records-web-ui ac-2
+ */
+export async function fetchReview(id: string): Promise<ReviewDetail> {
+	if (isStaticMode()) {
+		throw new Error('Review detail not available in static mode');
+	}
+
+	const response = await fetch(`${API_BASE}/api/reviews/${encodeURIComponent(id)}`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch sibling reviews for the same subject (for revision selector).
+ * Returns all reviews matching the subject type, filtered client-side
+ * by subject_ref or head_branch depending on subject type.
+ * AC: @review-records-web-ui ac-11
+ */
+export async function fetchReviewSiblings(params: {
+	subject_type: string;
+	subject_ref?: string;
+	head_branch?: string;
+}): Promise<ReviewSummary[]> {
+	if (isStaticMode()) {
+		return [];
+	}
+
+	const data = await fetchReviews({
+		status: 'all',
+		sort: 'created_at',
+		sort_dir: 'asc',
+		subject_type: params.subject_type,
+		subject_ref: params.subject_ref,
+		head_branch: params.head_branch
+	});
+
+	return data.items;
 }
 
 // ============================================================
