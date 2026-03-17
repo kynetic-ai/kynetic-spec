@@ -1748,3 +1748,12 @@ inbox:
       - testing
     added_by: "@claude"
     created_at: 2026-03-17T02:17:07.158Z
+  - _ulid: 01KKX53FYCM0QHH9VMBZVYRX9M
+    text: "deleteTask error message conflates 'file missing' with 'file has zero tasks' —
+      extractRawTaskArray returns rawTasks: [] for both cases, so the error says 'Task file not
+      found' even when the file exists but is empty. Add distinct error messages for each case."
+    tags:
+      - cli
+      - schema
+    added_by: "@claude"
+    created_at: 2026-03-17T05:43:07.468Z
