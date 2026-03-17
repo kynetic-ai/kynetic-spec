@@ -101835,6 +101835,22 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T11:47:29.621Z
+    - _ulid: 01KKXV5KBHG5ECDKJZ7BPQF18C
+      content: "Fix cycle 1: Merged dev into task branch to resolve both blocker regressions. (1)
+        kspec-agents.md restored to v0.12.0 with Finding Information skill table. (2)
+        templates/skills/review/SKILL.md restored with full anchoring documentation (Why Anchors
+        Matter section + examples). (3) DRAFT_REVIEW_ULID nit resolved — constant is now used by
+        review detail API tests from dev. (4) Fixed fetchReviewsForTask to pass status=all so task
+        detail page shows complete review history (open + closed), not just open reviews. Merge
+        conflicts resolved in 3 files: reviews.ts routes (took dev's richer implementation with all
+        filters/sorting/detail endpoint, preserved ac-7 annotations), shared api.ts (combined both
+        ReviewSummary type expansions), and api-reviews-list.spec.ts (combined dev's comprehensive
+        tests with ac-7 task filter tests). All 5726 tests pass; 1 pre-existing env isolation
+        failure in review-cli.test.ts (KSPEC_DISPATCH_CANONICAL_HEAD leaks into test — passes with
+        env cleared)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T12:08:45.169Z
   todos: []
   automation: eligible
 - _ulid: 01KKTZ0BF597PSYKT1H4VXPCPG
