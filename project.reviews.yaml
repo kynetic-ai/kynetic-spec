@@ -5977,6 +5977,18 @@ reviews:
         runner: manual
         created_at: 2026-03-17T10:51:47.871Z
         completed_at: 2026-03-17T10:51:47.871Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
+          head_commit: adaaef6230426b5b880e6f3ab93d6882b96e9cc0
+        evidence: Validation errors are all pre-existing (3 broken refs in meta.yaml, 231 missing AC
+          coverage across project). No new warnings introduced by this task.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-17T10:51:59.214Z
+        completed_at: 2026-03-17T10:51:59.214Z
     events:
       - _ulid: 01KKXP2WE8PHTDZ77QKC74MQ16
         actor: "@claude"
@@ -6005,6 +6017,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-17T10:51:47.927Z
+      - _ulid: 01KKXPS1DBBR5RQ4BD82PZRKRT
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-17T10:51:59.275Z
     examined_commit: adaaef6230426b5b880e6f3ab93d6882b96e9cc0
     external_links: []
     lifecycle_state: open
@@ -6017,5 +6036,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T10:39:53.288Z
-    updated_at: 2026-03-17T10:51:47.871Z
+    updated_at: 2026-03-17T10:51:59.214Z
     notes: []
