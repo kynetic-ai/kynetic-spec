@@ -8412,6 +8412,19 @@ reviews:
         runner: npm run build
         created_at: 2026-03-17T19:33:48.703Z
         completed_at: 2026-03-17T19:33:48.703Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 65035b85142bbf7c16078777c730bc19413276a4
+          head_commit: 8dabdab7f3df4458dc0e630b24f21b733e532d75
+        evidence: "AC annotation present: // AC: @yaml-serialization-invariants ac-3 at line 510 of
+          tests/yaml-round-trip-stability.test.ts, covering the new savePlan path describe block
+          with 6 tests"
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-17T19:33:58.376Z
+        completed_at: 2026-03-17T19:33:58.376Z
     events:
       - _ulid: 01KKYMKPJQWFKZXGERM68WZEQS
         actor: "@claude"
@@ -8440,6 +8453,13 @@ reviews:
           status: pass
           name: build
         timestamp: 2026-03-17T19:33:48.787Z
+      - _ulid: 01KKYMMTHT2YV1GSPNQRXZEDRR
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-17T19:33:58.458Z
     examined_commit: 8dabdab7f3df4458dc0e630b24f21b733e532d75
     external_links: []
     lifecycle_state: open
@@ -8452,5 +8472,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T19:33:21.623Z
-    updated_at: 2026-03-17T19:33:48.703Z
+    updated_at: 2026-03-17T19:33:58.376Z
     notes: []
