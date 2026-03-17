@@ -6099,6 +6099,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-17T10:55:57.656Z
+      - _ulid: 01KKXQ0NFDW0KMQGTB80D8WXKX
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKXQ0NDFH8ZTY7396TDF7KZK
+        timestamp: 2026-03-17T10:56:09.197Z
     examined_commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
     external_links: []
     lifecycle_state: open
@@ -6108,8 +6115,28 @@ reviews:
       content_hash: ""
       ref: "@01KKTTC2CTEPS5X2VPE7QVFA16"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKXQ0NDFH8ZTY7396TDF7KZK
+        anchor:
+          type: code
+          commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
+          line_end: 1
+          line_start: 1
+          path: kspec-agents.md
+          side: head
+        entries:
+          - _ulid: 01KKXQ0NDFE6AVEY75T0SNR7S6
+            author: "@claude"
+            body: "Merge conflict in kspec-agents.md. Dev branch received commit 82896f848 (refactor: remove
+              skill table from kspec-agents.md generation) after this branch diverged. The task
+              commit only changed the timestamp in kspec-agents.md, but the three-way merge
+              conflicts because dev removed the skills table section while this branch still has it.
+              Resolution: after merge, take dev's version and regenerate with kspec agents generate.
+              This is a generated file conflict, not a semantic conflict in the actual template
+              work."
+            created_at: 2026-03-17T10:56:09.135Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T10:55:49.504Z
-    updated_at: 2026-03-17T10:55:57.596Z
+    updated_at: 2026-03-17T10:56:09.135Z
     notes: []
