@@ -6927,18 +6927,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/unify-tool-call-event-parsing-and-fix-phased-input-streaming/01kkxej2
-    canonical_branch_head: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
+    canonical_branch_head: c1865a388e42e3cb8bb05ba152eb135f06f70a9f
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-17T08:44:11.070Z
+      updated_at: 2026-03-17T09:05:15.077Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T08:44:11.611Z
+      updated_at: 2026-03-17T09:05:15.077Z
     integration:
       status: pending
       detail: null
@@ -6946,7 +6946,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-      updated_at: 2026-03-17T08:44:11.070Z
+      updated_at: 2026-03-17T09:05:15.077Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KKXEJ2RQ4HW9N8K0TB6WS2WY"
@@ -6954,9 +6954,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T08:44:11.611Z
-      last_reconciled_at: 2026-03-17T08:44:11.611Z
+      last_reconciled_at: 2026-03-17T09:05:15.077Z
       created_at: 2026-03-17T08:40:50.919Z
-      updated_at: 2026-03-17T08:44:11.611Z
+      updated_at: 2026-03-17T09:05:15.077Z
     workspace_id: dispatch-workspace-01KKXEJ2RQ4HW9N8K0TB6WS2WY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
