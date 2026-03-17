@@ -102338,7 +102338,15 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-16T20:19:40.729Z
   started_at: 2026-03-17T04:55:23.259Z
-  notes: []
+  notes:
+    - _ulid: 01KKX2DKSMJ1PH40V2V400MPDE
+      content: "Added fix-cycle note rule to notes convention via kspec meta set. Regenerated
+        kspec-agents.md. The new rule: 'Before resubmitting after a fix cycle, add a note
+        summarizing what changed and why — this becomes a key activity timeline entry for
+        reviewers'"
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T04:56:13.364Z
   todos: []
 - _ulid: 01KKW6PK9QFXKH69HE6KY8Q40Y
   slugs:
