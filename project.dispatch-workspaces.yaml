@@ -6776,12 +6776,17 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-17T08:44:07.780Z
+      updated_at: 2026-03-17T08:45:14.895Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T08:44:07.780Z
+      status: stale
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-read-01kktw6f"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-03-17T08:45:14.895Z
     integration:
       status: merged
       detail: integration:merged
@@ -6789,17 +6794,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: main
       target_commit: 45e009274ddc58b9c173c7d353109c618981e336
-      updated_at: 2026-03-17T08:44:07.780Z
-    lifecycle_state: closing
+      updated_at: 2026-03-17T08:45:14.895Z
+    lifecycle_state: stale
     resolved_base_branch: main
     task_ref: "@01KKTW6FA04X5BDGFWPX0HKRY4"
     task_slug: task-review-api-read
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T08:40:48.467Z
-      last_reconciled_at: 2026-03-17T08:44:07.780Z
+      last_reconciled_at: 2026-03-17T08:45:14.895Z
       created_at: 2026-03-16T08:34:09.518Z
-      updated_at: 2026-03-17T08:44:07.780Z
+      updated_at: 2026-03-17T08:45:14.895Z
     workspace_id: dispatch-workspace-01KKTW6FA04X5BDGFWPX0HKRY4
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
