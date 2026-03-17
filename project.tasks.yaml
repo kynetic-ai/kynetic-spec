@@ -100749,8 +100749,14 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Removed generateSkillsTable and its integration from kspec-agents.md
+    generation pipeline. Skills no longer appear in generated output or affect staleness hash. Skill
+    descriptions already existed in manifest.yaml metadata and rendered SKILL.md frontmatter. 8
+    files changed, -316/+30 lines. All tests pass (1 pre-existing failure in review-cli.test.ts:152
+    unrelated to this change). One nit: specs @agent-data-sections ac-1 and @agent-instruction-gen
+    ac-2 are now stale and should be cleaned up."
   depends_on: []
   context: []
   priority: 3
@@ -100772,6 +100778,7 @@
   created_at: 2026-03-16T05:53:11.653Z
   started_at: 2026-03-17T10:12:35.089Z
   submitted_at: 2026-03-17T10:32:06.431Z
+  completed_at: 2026-03-17T10:40:26.073Z
   notes:
     - _ulid: 01KKXNM9033QVGAN1CEVNVZEQQ
       content: Removed generateSkillsTable() and its integration from the agents generate pipeline. Skills
