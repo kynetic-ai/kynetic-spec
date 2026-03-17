@@ -5001,3 +5001,29 @@ reviews:
     created_at: 2026-03-17T08:55:51.580Z
     updated_at: 2026-03-17T08:56:53.314Z
     notes: []
+  - _ulid: 01KKXH1QJ4GYWV7HP2842A94D2
+    slugs: []
+    title: "Review: unify tool call event parsing and fix phased input streaming"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKXH1QJ45A6SSPPKJ3QEPX4Y
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T09:11:52.644Z
+    examined_commit: c1865a388e42e3cb8bb05ba152eb135f06f70a9f
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKXEJ2RQ4HW9N8K0TB6WS2WY"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T09:11:52.644Z
+    updated_at: null
+    notes: []
