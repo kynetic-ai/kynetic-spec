@@ -7972,7 +7972,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T20:17:25.666Z
+      updated_at: 2026-03-17T20:17:26.577Z
     integration:
       status: pending
       detail: null
@@ -7981,25 +7981,20 @@ workspaces:
       target_branch: dev
       target_commit: 1c7a8e7ffc47ad6c3eecc5f3f3ee8f21f65607b8
       updated_at: 2026-03-17T20:17:25.666Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KKX6CD2X6EKHGNE47Y8113HH"
     task_slug: round-trip-stability-for-dispatch-workspace-yaml-writes
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T20:11:01.524Z
-      last_reconciled_at: 2026-03-17T20:17:25.666Z
+      last_reconciled_at: 2026-03-17T20:17:26.577Z
       created_at: 2026-03-17T18:43:35.280Z
-      updated_at: 2026-03-17T20:17:25.666Z
+      updated_at: 2026-03-17T20:17:26.577Z
     workspace_id: dispatch-workspace-01KKX6CD2X6EKHGNE47Y8113HH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 8d513982815ee86e4f932a14474bbc31f467be00
-        last_seen_at: 2026-03-17T20:11:00.697Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-dispatch-workspace-yaml-writes-01kkx6cd-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/round-trip-stability-for-dispatch-workspace-yaml-writes/01kkx6cd
