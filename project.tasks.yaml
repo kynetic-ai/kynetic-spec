@@ -103439,6 +103439,71 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T08:50:45.249Z
+    - _ulid: 01KKXGNME4C7QHCXHMY9K9NPTM
+      content: >-
+        Implementation complete. Summary of changes:
+
+
+        **New file: src/agent-runtime/session-event-fields.ts** — Shared extraction module with:
+
+        - unwrapSessionUpdate(): handles ACP (data.sessionUpdate) and legacy
+        (data.update.sessionUpdate) formats
+
+        - extractToolCallFields(): resolves toolCallId/toolName/rawInput with fallback chains
+
+        - extractToolCallResult(): resolves rawOutput/status/isError/rawInput
+
+        - extractToolName(): includes _meta.claudeCode.toolName fallback
+
+        - isPopulatedInput(): checks for non-empty object
+
+
+        **Type additions:**
+
+        - ToolCallInputEventData in session-event-types.ts and shared/websocket.ts
+
+        - Added to SessionEventData union in both locations
+
+
+        **Accumulator fix (session-event-accumulator.ts):**
+
+        - tool_call_update handler now emits tool_call_input when rawInput is populated and no
+        status transition
+
+
+        **Web UI fixes (session-utils.ts, +page.svelte):**
+
+        - incrementalBlockUpdate handles tool_call_input — updates input in-place
+
+        - parseEventsToBlocks refactored to use local extraction helpers (same resolution order as
+        shared module)
+
+        - tool_call_input added to sessionEventTypes set
+
+
+        **store.ts ACP format fixes:**
+
+        - deduplicatePhasedToolCalls: now uses unwrapSessionUpdate (was silently broken for ACP
+        events)
+
+        - countTaskCompletions, extractTaskTransitions, computeToolUsageStats, session search: all
+        fixed
+
+        - Imported shared extractors
+
+
+        **CLI fixes (agent.ts, session/log.ts):**
+
+        - Watch handler now handles tool_call_input events
+
+        - summarizeEventData uses unwrapSessionUpdate + extractToolName
+
+
+        **Tests:** 56 new test cases across 3 files. Full suite: 5710 pass, 1 pre-existing failure
+        (review-cli examined_commit — unrelated).
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T09:05:16.228Z
   todos: []
   automation: eligible
 - _ulid: 01KKXEKWMZN0E7E6V7458E0BV8
