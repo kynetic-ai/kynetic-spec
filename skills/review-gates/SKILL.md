@@ -70,7 +70,8 @@ When running as an automated reviewer agent:
 
 - **Do NOT fix code** — post findings as review threads, transition to needs_work
 - **Do NOT push commits** — the worker handles fixes
-- After verdict, close the review or leave open for re-review
+- Verdicts auto-close the review — no manual close needed after approve/request_changes
+- Each fix cycle gets a **new** review record — do not reopen prior reviews
 - After merge, complete the task: `kspec task complete @ref --reason "Merged. Summary..."`
 
 ## Merge Criteria
