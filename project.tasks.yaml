@@ -103309,6 +103309,18 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T13:10:57.157Z
+    - _ulid: 01KKXYQXK1F6Z17G2GMCJAT8XS
+      content: "Review: request_changes (2 blockers, same pattern as cycle 1). (1) src/parser/yaml.ts
+        regression — inbox raw-data-preservation pattern removed (extractRawInboxArray,
+        writeRawInboxArray, findRawInboxIndex, mergeInboxPreservingRawShape deleted),
+        saveInboxItem/mutateInboxItemAtomically/deleteInboxItem reverted to old
+        schema-normalize-everything approach. Fix: restore inbox helpers from dev. (2)
+        tests/yaml-round-trip-stability.test.ts — inbox round-trip stability tests (5 tests)
+        deleted. Fix: restore alongside plan tests. Plans.ts changes are correct. Reviews.ts
+        restored correctly."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T13:11:11.201Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6C9RJHKN1ZMJW1ZWH2BRZ
