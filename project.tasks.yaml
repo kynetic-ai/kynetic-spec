@@ -101574,7 +101574,18 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-16T18:03:12.406Z
   started_at: 2026-03-17T05:06:51.683Z
-  notes: []
+  notes:
+    - _ulid: 01KKX43795NAQQ3FPXWJMW57WM
+      content: "Implemented round-trip stability fix in saveTask, mutateTaskAtomically, and deleteTask.
+        Root cause: TaskSchema.safeParse() added Zod defaults (blocked_by, context, vcs_refs) to
+        tasks loaded from YAML, polluting the file on save. Fix: extractRawTaskArray +
+        mergeTaskPreservingRawShape — non-target tasks are preserved as raw data, and target tasks
+        only include fields that were in the original file or carry non-default values. Added 13
+        tests covering toYaml round-trip, file-level round-trip, and saveTask/mutateTaskAtomically
+        no-op stability."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T05:25:30.021Z
   todos: []
 - _ulid: 01KKW3VHJMRAESA5JEA2PV163M
   slugs: []
