@@ -6240,6 +6240,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-17T11:03:37.106Z
+      - _ulid: 01KKXQZHB51M9ZQYJHEJ5KXWCP
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKXQZH98JE29BK24DC8HKQQ7
+        timestamp: 2026-03-17T11:13:00.773Z
     examined_commit: c41c0d7b7e96f9eaada13c57e8f69e0d21735038
     external_links: []
     lifecycle_state: open
@@ -6249,8 +6256,20 @@ reviews:
       content_hash: ""
       ref: "@01KKTW6JPAR1P0W78EAWX5482A"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKXQZH98JE29BK24DC8HKQQ7
+        entries:
+          - _ulid: 01KKXQZH98BDC9EHHTD26JZZE9
+            author: "@claude"
+            body: "Missing test annotations for covered ACs. The task claims coverage of @review-records-web-ui
+              ac-1 and ac-10, but AC annotations exist only in source files (implementation code),
+              not in any test files. Every AC MUST have at least one annotated test that proves the
+              behavior. Currently: zero test files contain 'AC: @review-records-web-ui' annotations.
+              The new daemon endpoints (GET /api/reviews, GET /api/reviews/:id) also have no tests —
+              neither unit nor E2E."
+            created_at: 2026-03-17T11:13:00.712Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T11:03:20.600Z
-    updated_at: 2026-03-17T11:03:37.044Z
+    updated_at: 2026-03-17T11:13:00.712Z
     notes: []
