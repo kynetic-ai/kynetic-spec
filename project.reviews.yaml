@@ -8479,9 +8479,22 @@ reviews:
           status: pass
           name: no-regression
         timestamp: 2026-03-17T19:34:06.763Z
+      - _ulid: 01KKYMNBAA1KP8Q8DNVD52JKRN
+        actor: agent@kspec-dispatch
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-17T19:34:15.626Z
+      - _ulid: 01KKYMNBAAC1Q6W69P14HPEKFR
+        actor: agent@kspec-dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-17T19:34:15.626Z
     examined_commit: 8dabdab7f3df4458dc0e630b24f21b733e532d75
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -8489,7 +8502,15 @@ reviews:
       ref: "@01KKX6C83WVQBYBZ5SWTXY1JKA"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 65035b85142bbf7c16078777c730bc19413276a4
+          head_commit: 8dabdab7f3df4458dc0e630b24f21b733e532d75
+        decision: approve
+        reviewer: agent@kspec-dispatch
+        role: reviewer
+        created_at: 2026-03-17T19:34:15.549Z
     created_at: 2026-03-17T19:33:21.623Z
-    updated_at: 2026-03-17T19:34:06.688Z
+    updated_at: 2026-03-17T19:34:15.549Z
     notes: []
