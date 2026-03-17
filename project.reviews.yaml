@@ -5815,3 +5815,29 @@ reviews:
     created_at: 2026-03-17T10:13:47.281Z
     updated_at: 2026-03-17T10:24:04.317Z
     notes: []
+  - _ulid: 01KKXNPRMRZ2MYYERA8ZXVBDCM
+    slugs: []
+    title: Review remove-skill-table-from-kspec-agents-md (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKXNPRMREFB130N767DZBEN4
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T10:33:16.184Z
+    examined_commit: 82896f8489f79b6cac198ca9c0ed156634a2ca32
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKTK96Z5M9T8WP900CPFWRNG"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T10:33:16.184Z
+    updated_at: null
+    notes: []
