@@ -7910,6 +7910,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-17T18:32:34.962Z
+      - _ulid: 01KKYH542FYJJX2DYQTK55R46Q
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKYH53XJ2D1NCZQFWHH13QXD
+        timestamp: 2026-03-17T18:32:58.191Z
     examined_commit: c24bc444e0cfe4b9cf8fca0d88d932c18c60684a
     external_links: []
     lifecycle_state: open
@@ -7919,8 +7926,28 @@ reviews:
       content_hash: ""
       ref: "@01KKX6CBDFNMXPC405SRZ3RG0N"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKYH53XJ2D1NCZQFWHH13QXD
+        entries:
+          - _ulid: 01KKYH53XJXVW1CJVMCQASW3G2
+            author: "@claude"
+            body: "Review evidence log: Files read: src/parser/meta.ts (full new helpers and all 4 CRUD
+              functions), tests/yaml-round-trip-stability.test.ts (all new test blocks). Commands
+              run: npm test (5740 pass, 2 pre-existing failures), git merge-tree (0 conflicts), git
+              diff merge-base..HEAD (confirmed actual scope is only meta.ts + test file — web
+              UI/yaml.ts diffs are merge-base artifacts). Claims verified: (1) Raw-data-preservation
+              pattern correctly implemented — extractRawMetaManifest reads without schema
+              validation, writeRawMetaManifest preserves original key order,
+              mergeMetaItemPreservingRawShape filters Zod defaults while preserving existing fields.
+              (2) withFileLock added for TOCTOU safety on all mutation paths. (3)
+              mergeMetaItemPreservingRawShape false-filter is correct — only affects schema-added
+              fields, not fields present in raw data. (4) getRawArray returns mutable reference when
+              field exists as array, ensuring wrapperObj stays in sync. Categories searched:
+              correctness (clean), edge cases (clean), error handling (clean), test quality (8 tests
+              prove AC behavior), integration (clean merge)."
+            created_at: 2026-03-17T18:32:58.034Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-17T18:31:51.821Z
-    updated_at: 2026-03-17T18:32:34.796Z
+    updated_at: 2026-03-17T18:32:58.034Z
     notes: []
