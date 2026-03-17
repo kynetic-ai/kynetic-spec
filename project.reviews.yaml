@@ -8401,6 +8401,17 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T19:33:41.212Z
         completed_at: 2026-03-17T19:33:41.212Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 65035b85142bbf7c16078777c730bc19413276a4
+          head_commit: 8dabdab7f3df4458dc0e630b24f21b733e532d75
+        evidence: Build completed cleanly with no errors
+        name: build
+        required: true
+        runner: npm run build
+        created_at: 2026-03-17T19:33:48.703Z
+        completed_at: 2026-03-17T19:33:48.703Z
     events:
       - _ulid: 01KKYMKPJQWFKZXGERM68WZEQS
         actor: "@claude"
@@ -8422,6 +8433,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T19:33:41.307Z
+      - _ulid: 01KKYMMH3KDQ9YFH5RMJ78FNHC
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: build
+        timestamp: 2026-03-17T19:33:48.787Z
     examined_commit: 8dabdab7f3df4458dc0e630b24f21b733e532d75
     external_links: []
     lifecycle_state: open
@@ -8434,5 +8452,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T19:33:21.623Z
-    updated_at: 2026-03-17T19:33:41.212Z
+    updated_at: 2026-03-17T19:33:48.703Z
     notes: []
