@@ -4810,6 +4810,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKXG51H3D0MJME4T5BC9EY9E
         timestamp: 2026-03-17T08:56:12.616Z
+      - _ulid: 01KKXG5CXD4GPD3Q1GNRCYWTAX
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKXG5CW9QT64HQGAS2QVNN9W
+        timestamp: 2026-03-17T08:56:24.237Z
     examined_commit: bb450d49091846ff30ea2a935f49c0bc0bb70cfa
     external_links: []
     lifecycle_state: open
@@ -4866,7 +4873,47 @@ reviews:
               injection vulnerability per OWASP top 10. Any local process can exploit it.
             created_at: 2026-03-17T08:56:12.580Z
         kind: blocker
+      - _ulid: 01KKXG5CW9QT64HQGAS2QVNN9W
+        anchor:
+          type: code
+          commit: bb450d490918
+          line_end: 463
+          line_start: 441
+          path: tests/daemon-diff-api.test.ts
+          side: head
+        entries:
+          - _ulid: 01KKXG5CW9S7VNK4S0N72A5DA2
+            author: "@claude"
+            body: >-
+              **MUST-FIX: No test coverage for ac-4 (GET /api/reviews/:id/content)**
+
+
+              The review content endpoint (lines 297-533) handles 5 subject types (plan, spec, code,
+              task, external) with ~230 lines of logic including entity loading, reference
+              resolution, and structured content assembly. It has zero test coverage — no test
+              annotations for ac-4 exist in the test file.
+
+
+              This is the most complex handler in the submission and the one most likely to have
+              bugs (it loads review records, resolves references, constructs structured section
+              arrays, handles optional fields like notes/traits/ACs). Unit tests should cover at
+              minimum:
+
+
+              1. Plan subject → returns sections with content, derived_specs, derived_tasks, notes
+
+              2. Spec subject → returns description, acceptance_criteria, traits, metadata
+
+              3. Task subject → returns description and notes
+
+              4. Code subject → returns diff_params redirect
+
+              5. Not-found cases for each subject type
+
+              6. Review not found → 404
+            created_at: 2026-03-17T08:56:24.201Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T08:55:51.580Z
-    updated_at: 2026-03-17T08:56:12.580Z
+    updated_at: 2026-03-17T08:56:24.201Z
     notes: []
