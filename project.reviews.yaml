@@ -4404,3 +4404,30 @@ reviews:
     created_at: 2026-03-17T04:51:50.490Z
     updated_at: 2026-03-17T04:52:24.583Z
     notes: []
+  - _ulid: 01KKX2F25CHK5BPSMH63EVRG7Z
+    slugs: []
+    title: "Review: agents review conventions"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKX2F25C6WEH7NVC0KJKA7P9
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T04:57:00.844Z
+    examined_commit: 08d667d94
+    external_links: []
+    lifecycle_state: draft
+    related_refs:
+      - "@task-update-agents-review-conventions"
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-update-agents-review-conventions"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T04:57:00.844Z
+    updated_at: null
+    notes: []
