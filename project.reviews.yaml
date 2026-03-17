@@ -5124,6 +5124,20 @@ reviews:
         runner: manual
         created_at: 2026-03-17T09:29:56.970Z
         completed_at: 2026-03-17T09:29:56.970Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
+          head_commit: 317b496da788fcf1679fe083957e29a5db407052
+        evidence: "ac-1: 8 parser tests + 3 git integration tests. ac-2: 2 git integration + 5 route-level
+          tests. ac-3: 1 parser-level test (route untested — nit filed). ac-4: 6 route-level tests
+          covering all subject types. Trait ACs: all annotated with valid N/A reasons or coverage
+          comments."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-17T09:30:05.805Z
+        completed_at: 2026-03-17T09:30:05.805Z
     events:
       - _ulid: 01KKXHTJTSQDHNVT79135F09KV
         actor: "@claude"
@@ -5159,6 +5173,13 @@ reviews:
           status: pass
           name: security-review
         timestamp: 2026-03-17T09:29:57.036Z
+      - _ulid: 01KKXJ334W8MAAVF1FEWAB1C25
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-17T09:30:05.853Z
     examined_commit: 317b496da788fcf1679fe083957e29a5db407052
     external_links: []
     lifecycle_state: open
@@ -5185,5 +5206,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T09:25:27.001Z
-    updated_at: 2026-03-17T09:29:56.970Z
+    updated_at: 2026-03-17T09:30:05.805Z
     notes: []
