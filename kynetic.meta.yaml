@@ -7305,6 +7305,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-16T22:32:20.116Z
+  - _ulid: 01KKWSF6QVJDHXGWX5K28H1193
+    type: success
+    content: "Subagent reviewer pattern: spawning reviewer with explicit skills (review, review-gates,
+      merge) and clear instructions produces genuine reviews that catch real issues. All 3 reviews
+      this session found actionable nits while correctly approving solid work."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-17T02:19:48.347Z
+  - _ulid: 01KKWSF6VY3MVYA4NGTXA3C8A4
+    type: success
+    content: "Sequential task pipeline with review gates: three dependent tasks (git query -> normalize
+      -> display) each reviewed and merged independently. Clean dependency chain kept each review
+      focused and each merge low-risk."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-17T02:19:48.478Z
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     description: Get help with kspec commands and workflows
