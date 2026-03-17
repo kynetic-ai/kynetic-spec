@@ -6097,6 +6097,18 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T10:56:22.735Z
         completed_at: 2026-03-17T10:56:22.735Z
+      - status: fail
+        applies_to_version:
+          type: code_compare
+          base_commit: 51465810f2fa4c44628dc52f6070812e43862a6f
+          head_commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
+        evidence: CONFLICT (content) in kspec-agents.md — dev removed skills table (82896f848), this branch
+          still has it. Generated file conflict, resolvable by regeneration after merge.
+        name: merge-conflict
+        required: true
+        runner: git merge-tree
+        created_at: 2026-03-17T10:56:30.240Z
+        completed_at: 2026-03-17T10:56:30.240Z
     events:
       - _ulid: 01KKXQ027Z0Y0C4ZKCR6P8S0W5
         actor: "@claude"
@@ -6125,6 +6137,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T10:56:22.804Z
+      - _ulid: 01KKXQ1A3168PZQFW3BG0NM94G
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: merge-conflict
+        timestamp: 2026-03-17T10:56:30.305Z
     examined_commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
     external_links: []
     lifecycle_state: open
@@ -6157,5 +6176,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-17T10:55:49.504Z
-    updated_at: 2026-03-17T10:56:22.735Z
+    updated_at: 2026-03-17T10:56:30.240Z
     notes: []
