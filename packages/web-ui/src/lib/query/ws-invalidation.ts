@@ -22,6 +22,7 @@ const INVALIDATION_TOPICS = [
 	'items:updates',
 	'inbox:updates',
 	'triage:updates',
+	'reviews:updates',
 	'agents',
 	'files:updates',
 ] as const;
@@ -73,6 +74,10 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 			// Agent lifecycle events (agent_invocation) also affect session lists
 			return [queryKeys.agents.all, queryKeys.sessions.all];
 		}
+
+		case 'reviews:updates':
+			// Review thread/verdict/check changes affect review lists and details
+			return [queryKeys.reviews.all];
 
 		case 'files:updates':
 			// File changes (e.g., settings save, meta edits) affect multiple caches
