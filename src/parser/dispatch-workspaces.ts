@@ -362,10 +362,16 @@ function isTrivialDefault(value: unknown): boolean {
  * YAML are only included if they carry non-default values. Nested objects
  * (like bootstrap, integration, etc.) are merged recursively so that
  * deeply nested Zod defaults don't leak into output.
+ *
+ * When `preMutationWorkspace` is provided (for atomic mutations), fields
+ * absent from raw data are compared against the pre-mutation record. If the
+ * value differs from pre-mutation, the callback explicitly set it and it
+ * must be persisted — even if `isTrivialDefault` would otherwise suppress it.
  */
 function mergeWorkspacePreservingRawShape(
   rawWorkspace: Record<string, unknown>,
   normalizedWorkspace: Record<string, unknown>,
+  preMutationWorkspace?: Record<string, unknown>,
 ): Record<string, unknown> {
   const result: Record<string, unknown> = {};
 
@@ -377,9 +383,13 @@ function mergeWorkspacePreservingRawShape(
         rawValue != null && typeof rawValue === "object" && !Array.isArray(rawValue) &&
         value != null && typeof value === "object" && !Array.isArray(value)
       ) {
+        const preMutationNested = preMutationWorkspace?.[key];
         result[key] = mergeWorkspacePreservingRawShape(
           rawValue as Record<string, unknown>,
           value as Record<string, unknown>,
+          preMutationNested != null && typeof preMutationNested === "object" && !Array.isArray(preMutationNested)
+            ? preMutationNested as Record<string, unknown>
+            : undefined,
         );
       } else {
         // Scalar, array, or type mismatch — use the normalized value
@@ -387,13 +397,38 @@ function mergeWorkspacePreservingRawShape(
       }
     } else {
       // Field was added by schema normalization — only include if non-trivial
+      // OR if the callback explicitly changed it from its pre-mutation value
       if (!isTrivialDefault(value)) {
+        result[key] = value;
+      } else if (preMutationWorkspace && !deepEqual(value, preMutationWorkspace[key])) {
+        // The callback changed this field from its Zod default — persist it
         result[key] = value;
       }
     }
   }
 
   return result;
+}
+
+/**
+ * Deep equality check for comparing pre/post-mutation values.
+ */
+function deepEqual(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (a == null || b == null) return a === b;
+  if (typeof a !== typeof b) return false;
+  if (typeof a !== "object") return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false;
+    return a.every((v, i) => deepEqual(v, b[i]));
+  }
+  const aObj = a as Record<string, unknown>;
+  const bObj = b as Record<string, unknown>;
+  const aKeys = Object.keys(aObj);
+  const bKeys = Object.keys(bObj);
+  if (aKeys.length !== bKeys.length) return false;
+  return aKeys.every((k) => k in bObj && deepEqual(aObj[k], bObj[k]));
 }
 
 /**
@@ -514,6 +549,19 @@ export async function mutateDispatchWorkspaceRecordAtomically(
       throw new Error(`Dispatch workspace registry not found: ${registryPath}`);
     }
 
+    // Validate existing registry content to catch corruption early.
+    // This ensures malformed sibling records are rejected before rewriting.
+    const registryCheck = DispatchWorkspaceRegistryFileSchema.safeParse(
+      normalizeLegacyRegistryRaw(
+        wrapperObj ? { ...wrapperObj, workspaces: rawWorkspaces } : { workspaces: rawWorkspaces },
+      ),
+    );
+    if (!registryCheck.success) {
+      throw new Error(formatRegistryValidationError(
+        wrapperObj ? { ...wrapperObj, workspaces: rawWorkspaces } : { workspaces: rawWorkspaces },
+      ));
+    }
+
     const wsIndex = findRawWorkspaceIndex(rawWorkspaces, workspaceId);
     if (wsIndex === -1) {
       throw new Error(`Dispatch workspace not found in registry: ${workspaceId}`);
@@ -531,13 +579,20 @@ export async function mutateDispatchWorkspaceRecordAtomically(
       _sourceFile: registryPath,
     };
 
+    // Snapshot the pre-mutation parsed record for detecting callback-set fields
+    const preMutationRecord = stripRuntimeMetadata(latestRecord);
+
     const mutated = await mutate(latestRecord);
     const cleanMutated = stripRuntimeMetadata(mutated);
 
-    // Merge onto raw data to avoid adding Zod defaults for absent fields
+    // Merge onto raw data to avoid adding Zod defaults for absent fields.
+    // Pass pre-mutation record so the merge can detect callback-added fields
+    // (fields that changed between pre-mutation and post-mutation are persisted
+    // even if they would otherwise be suppressed as trivial defaults).
     rawWorkspaces[wsIndex] = mergeWorkspacePreservingRawShape(
       rawTarget as Record<string, unknown>,
       cleanMutated as unknown as Record<string, unknown>,
+      preMutationRecord as unknown as Record<string, unknown>,
     );
 
     validateSingleOpenWorkspacePerTaskRaw(rawWorkspaces);

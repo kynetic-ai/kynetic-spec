@@ -1347,6 +1347,82 @@ describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
 
     expect(finalContent).toBe(initialContent);
   });
+
+  it("mutateDispatchWorkspaceRecordAtomically rejects malformed sibling records", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-dw-rt6");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeWorkspaceCtx(kspecDir);
+
+    // Write a registry with one valid workspace and one malformed sibling
+    // (integration.target_branch is a number instead of a string)
+    const registryPath = path.join(kspecDir, "project.dispatch-workspaces.yaml");
+    const validWs = makeMinimalWorkspaceYaml("ws-valid", "@task-ok");
+    const malformedWs = {
+      ...makeMinimalWorkspaceYaml("ws-bad", "@task-bad"),
+      integration: {
+        status: "pending",
+        target_branch: 123, // invalid: should be string
+        target_commit: "abc123",
+        publication_mode: "manual_merge",
+        outcome: "manual_merge",
+        updated_at: "2026-03-01T00:00:00.000Z",
+      },
+    };
+    await writeYamlFilePreserveFormat(registryPath, {
+      kynetic_dispatch_workspaces: "1.0",
+      workspaces: [validWs, malformedWs],
+    });
+
+    // Mutating the valid workspace should fail because the sibling is malformed
+    await expect(
+      mutateDispatchWorkspaceRecordAtomically(ctx, "ws-valid", (r) => ({
+        ...r,
+        lifecycle_state: "stale",
+      })),
+    ).rejects.toThrow(/Expected string, received number/);
+  });
+
+  it("mutate persists newly-added object fields on legacy records without branch_provenance", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-dw-rt7");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeWorkspaceCtx(kspecDir);
+
+    // Write a legacy workspace without branch_provenance
+    const registryPath = path.join(kspecDir, "project.dispatch-workspaces.yaml");
+    const legacyWs = makeMinimalWorkspaceYaml("ws-legacy", "@task-legacy");
+    // Confirm no branch_provenance in the raw data
+    expect(legacyWs).not.toHaveProperty("branch_provenance");
+    await writeYamlFilePreserveFormat(registryPath, {
+      kynetic_dispatch_workspaces: "1.0",
+      workspaces: [legacyWs],
+    });
+
+    // Mutate to add branch_provenance with meaningful data
+    await mutateDispatchWorkspaceRecordAtomically(ctx, "ws-legacy", (r) => ({
+      ...r,
+      branch_provenance: {
+        ownership: "adopted" as const,
+        source: "manual",
+        remote_ref: "origin/feat/x",
+        adopted_from: "feat/x",
+        adopted_at: "2026-03-01T12:00:00.000Z",
+        rehydrated: null,
+      },
+    }));
+
+    // Verify the branch_provenance was persisted
+    const afterContent = await fs.readFile(registryPath, "utf-8");
+    expect(afterContent).toContain("branch_provenance:");
+    expect(afterContent).toContain("ownership: adopted");
+    expect(afterContent).toContain("source: manual");
+    expect(afterContent).toContain("adopted_from: feat/x");
+
+    // Verify it round-trips correctly through load
+    const reloaded = await loadDispatchWorkspaceRegistry(ctx);
+    expect(reloaded[0].branch_provenance?.ownership).toBe("adopted");
+    expect(reloaded[0].branch_provenance?.source).toBe("manual");
+    expect(reloaded[0].branch_provenance?.adopted_from).toBe("feat/x");
+  });
 });
 
 describe("toYaml — shared object reference safety", () => {
