@@ -33,6 +33,7 @@ import { createPlansRoutes } from './routes/plans';
 import { createAggregationRoutes } from './routes/aggregation';
 import { createRefsRoutes } from './routes/refs';
 import { createDiffRoutes } from './routes/diff';
+import { createReviewsRoutes } from './routes/reviews';
 import { ShadowSyncScheduler } from './shadow-sync';
 import { SessionSyncScheduler } from './session-sync';
 import { join } from 'path';
@@ -320,6 +321,9 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @review-content-diff-api ac-1, ac-2, ac-3, ac-4 - Diff and review content endpoints
     .use(createDiffRoutes())
+
+    // AC: @review-records-daemon-api ac-6, ac-7, ac-8 - Review verdict, check, and lifecycle endpoints
+    .use(createReviewsRoutes({ pubsub: pubsubManager }))
 
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
     // AC: @daemon-agent-dispatch ac-3, ac-4 - Pass pubsub for WebSocket broadcast on invocation events
