@@ -103583,7 +103583,7 @@
   spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -103592,9 +103592,18 @@
     - schema
     - dispatch
   vcs_refs: []
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-17T19:05:39.682Z
+    commit: 65035b85142bbf7c16078777c730bc19413276a4
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
   session_id: 01KKYHRS29JW9FXN44NCRMGA8E
   created_at: 2026-03-17T06:05:28.029Z
   started_at: 2026-03-17T18:44:35.420Z
+  submitted_at: 2026-03-17T19:05:40.205Z
   notes:
     - _ulid: 01KKYJZZBS89292SFWC57CNVDK
       content: "Applied raw-data-preservation pattern to dispatch workspace YAML writes. Key difference
