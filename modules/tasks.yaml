@@ -1269,7 +1269,7 @@ features:
           the commit it examined so diffs can be computed across cycles.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
