@@ -7313,6 +7313,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T12:42:17.757Z
         completed_at: 2026-03-17T12:42:17.757Z
+      - status: fail
+        applies_to_version:
+          type: code_compare
+          base_commit: 8ee6537e0a4a38b0435f8cb18987f5043eb8cb0c
+          head_commit: fa760b196f109d5827f3a7a9287dfc0edc65b932
+        evidence: "Two MUST-FIX blockers: (1) reviews.ts raw-data-preservation pattern removed — regression
+          from dev, (2) review round-trip stability tests deleted instead of supplemented with plan
+          tests. Plans.ts implementation is correct and well-tested. No build or type errors."
+        name: code-review
+        required: true
+        runner: manual
+        created_at: 2026-03-17T12:42:31.051Z
+        completed_at: 2026-03-17T12:42:31.051Z
     events:
       - _ulid: 01KKXX1KVZP31JFYR3M0QDGFNP
         actor: "@claude"
@@ -7348,6 +7361,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T12:42:17.887Z
+      - _ulid: 01KKXX3DTX9QK3MVJYSP395ETM
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: code-review
+        timestamp: 2026-03-17T12:42:31.133Z
     examined_commit: fa760b196f109d5827f3a7a9287dfc0edc65b932
     external_links: []
     lifecycle_state: open
@@ -7400,5 +7420,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-17T12:41:31.776Z
-    updated_at: 2026-03-17T12:42:17.757Z
+    updated_at: 2026-03-17T12:42:31.051Z
     notes: []
