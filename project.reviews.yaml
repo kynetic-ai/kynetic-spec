@@ -6626,6 +6626,12 @@ reviews:
         payload:
           thread_ulid: 01KKXSTGV7H800QYV0ZFTAKPZF
         timestamp: 2026-03-17T12:08:26.961Z
+      - _ulid: 01KKXV5403WQX8ZWRFGB5ZY241
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKXSTSQA8SE4GAAYTGZY3ZJ2
+        timestamp: 2026-03-17T12:08:29.443Z
     examined_commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
     external_links: []
     lifecycle_state: closed
@@ -6699,6 +6705,11 @@ reviews:
               any test assertion. This is dead code — either add a test that uses it (e.g., verify
               the draft review appears in unfiltered results) or remove the unused constant.
             created_at: 2026-03-17T11:45:22.666Z
+          - _ulid: 01KKXV53Y5DH2XN42RRZ6F83NA
+            author: "@claude"
+            body: "Resolved by merge: DRAFT_REVIEW_ULID is now used by the review detail API tests that came
+              from dev."
+            created_at: 2026-03-17T12:08:29.381Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -6710,7 +6721,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-17T11:46:56.271Z
     created_at: 2026-03-17T11:38:18.280Z
-    updated_at: 2026-03-17T12:08:26.894Z
+    updated_at: 2026-03-17T12:08:29.381Z
     notes: []
   - _ulid: 01KKXTDXP689EPHR15X500SAJF
     slugs: []
