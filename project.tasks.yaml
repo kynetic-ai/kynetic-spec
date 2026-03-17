@@ -102848,3 +102848,115 @@
   notes: []
   todos: []
   automation: eligible
+- _ulid: 01KKX6QMN6CN74M8NFSBM73X1Q
+  slugs: []
+  title: Add explicit generateCommitMessage cases for all shadow operations
+  type: task
+  description: >-
+    generateCommitMessage() in shadow.ts has only 10 explicit switch cases but ~75 distinct
+    operation strings are used across the codebase. The remaining ~65 fall through to the default
+    case which produces 'operation @ref' — violating ac-2 (requires colon separator pattern). Add
+    explicit cases for every operation string, following the 'Operation: @ref' pattern. Group
+    related operations (e.g. all review-* ops, all plan-* ops, all meta-* ops) into shared
+    formatting logic where appropriate.
+
+
+    Operations needing cases: task-set, task-patch, task-start (already has one), task-submit,
+    task-needs-work, task-block, task-unblock, task-cancel, task-reset, task-delete, spec-sync,
+    review-add, review-comment, review-reply, review-check, review-verdict,
+    review-verdict-task-transition, review-resolve, review-reopen, review-open, review-close,
+    review-archive, review-refresh, review-task-link, plan-set, plan-note, plan-derive, plan-import,
+    inbox-delete, inbox-set, inbox-note, triage-record, triage-act, triage-override, meta-observe,
+    meta-observe-from-inbox, observation-promote, observation-resolve, meta-add-*, meta-set-*,
+    meta-delete-*, skill-add, skill-set, skill-delete, skill-import, skill-render,
+    skill-install-core, skill-update, trait-add, item-trait-add, item-trait-remove, item-note,
+    item-patch, item-ac-add, item-ac-set, item-ac-remove, module-add, workflow-start,
+    workflow-abort, workflow-complete, workflow-pause, workflow-resume, workflow-next,
+    workflow-prune, session-compact, tasks-assess, dispatch-workspace-registry.
+  spec_ref: "@trait-shadow-commit"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - schema
+  vcs_refs: []
+  created_at: 2026-03-17T06:11:36.230Z
+  notes: []
+  todos: []
+- _ulid: 01KKX6QPC0374PT4W93CMA7EMX
+  slugs: []
+  title: Fix shadow commit call sites that omit entity refs
+  type: task
+  description: >-
+    Several commitIfShadow() call sites violate ac-3 (commit message must include ULID prefix or
+    primary slug):
+
+
+    1. inbox-add (inbox.ts:108): passes ref=undefined. Fix: pass the newly created item's ULID after
+    saveInboxItem returns it.
+
+    2. workflow-* (workflow.ts:134,319,379,420,458,730,788,975): pass no ref at all. Fix: pass the
+    workflow run ULID or workflow ID.
+
+    3. setup skill-install-core (setup.ts:1182): passes ref='N core skills' which is a count, not a
+    ref. Fix: either omit ref (batch-like operation) or pass a meaningful identifier.
+
+    4. tasks-assess (tasks.ts:511): passes ref='automation' which is a label. Fix: pass the count as
+    detail and omit ref, or list affected task refs.
+
+
+    Each fix should ensure the commit message includes an entity ref when one exists, per
+    @trait-shadow-commit ac-3.
+  spec_ref: "@trait-shadow-commit"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - schema
+  vcs_refs: []
+  created_at: 2026-03-17T06:11:37.984Z
+  notes: []
+  todos: []
+- _ulid: 01KKX6QR02Z2YKJBPBXD4RCRKT
+  slugs: []
+  title: Fix link commands that bypass generateCommitMessage
+  type: task
+  description: >-
+    link.ts:125 and link.ts:394 pass raw human-readable strings as the operation parameter to
+    commitIfShadow() instead of using a structured operation+ref+detail pattern:
+
+
+    - link.ts:125: 'Add implements link: @from -> @to'
+
+    - link.ts:394: 'Remove implements, depends_on link: @from -> @to'
+
+
+    These bypass generateCommitMessage() entirely (fall through to default, which just emits the raw
+    string). Fix: use structured operations like 'link-add' and 'link-remove' with the from-ref as
+    the ref parameter and the relationship details as detail. Add corresponding cases to
+    generateCommitMessage().
+  spec_ref: "@trait-shadow-commit"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - schema
+  vcs_refs: []
+  created_at: 2026-03-17T06:11:39.650Z
+  notes: []
+  todos: []
