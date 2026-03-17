@@ -103154,7 +103154,17 @@
   session_id: 01KKXV71SVDXP7M5ARPH9XAEWZ
   created_at: 2026-03-17T06:05:21.149Z
   started_at: 2026-03-17T12:09:51.163Z
-  notes: []
+  notes:
+    - _ulid: 01KKXVP2NA8XY1CTSW2JB92KND
+      content: "Applied extractRaw + mergePreservingRawShape pattern from the task write path to all three
+        review record write functions (saveReviewRecord, mutateReviewAtomically,
+        deleteReviewRecord). Added 5 round-trip stability tests: no-change save, identity mutation,
+        multi-review stability, Zod-default-pollution prevention, and delete preservation. All 44
+        related tests pass. One pre-existing failure in review-cli.test.ts (examined_commit
+        auto-detection) is unrelated."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T12:17:45.130Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6C83WVQBYBZ5SWTXY1JKA
