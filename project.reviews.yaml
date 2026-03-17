@@ -7015,6 +7015,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-17T12:18:07.104Z
+      - _ulid: 01KKXVQ45G4C5CGR50V7GK8MW6
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKXVQ4363CKB5Z0ATYSJY4C6
+        timestamp: 2026-03-17T12:18:19.440Z
     examined_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
     external_links: []
     lifecycle_state: open
@@ -7024,8 +7031,28 @@ reviews:
       content_hash: ""
       ref: "@01KKTW6NR1WA12MZCR6FY1AGT8"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKXVQ4363CKB5Z0ATYSJY4C6
+        anchor:
+          type: code
+          commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
+          line_end: 99
+          line_start: 93
+          path: packages/web-ui/src/lib/query/keys.ts
+          side: head
+        entries:
+          - _ulid: 01KKXVQ436B3HHJ7454MD478V6
+            author: "@claude"
+            body: "Merge conflict artifact: duplicate `reviews` key in queryKeys object. The first definition
+              (line 76) includes `forTask` key for task-specific cache invalidation. The second
+              definition (line 93) does not. JavaScript object literal semantics mean the second
+              silently shadows the first, so `queryKeys.reviews.forTask` is undefined at runtime.
+              While `forTask` is not currently called anywhere, this is a latent bug — the key
+              factory was clearly added for this task's cache invalidation pattern. Fix: remove the
+              second `reviews` block (lines 93-99) entirely."
+            created_at: 2026-03-17T12:18:19.366Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T12:17:56.291Z
-    updated_at: 2026-03-17T12:18:07.040Z
+    updated_at: 2026-03-17T12:18:19.366Z
     notes: []
