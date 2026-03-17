@@ -238,11 +238,11 @@ The reviewer (human or agent) takes over from here. See `$kspec-review` for the 
 
 ## Fix Cycle
 
-When inheriting a `needs_work` task, the review feedback lives in kspec review records:
+When inheriting a `needs_work` task, the review feedback lives in kspec review records. Each fix cycle creates a new review record — the reviewer does not reopen the prior review.
 
 1. **Read the review** — Find and read review threads
    ```bash
-   kspec review for-task @ref              # Find linked review
+   kspec review for-task @ref              # Find all reviews (current + historical)
    kspec review get @review-ref            # Read full review with threads
    ```
 
@@ -255,7 +255,12 @@ When inheriting a `needs_work` task, the review feedback lives in kspec review r
    Task: @task-slug"
    ```
 
-4. **Re-submit** — `kspec task submit @ref` (back to pending_review, reviewer takes over again)
+4. **Note what changed** — Before resubmitting, add a task note summarizing what was fixed and why. This note becomes a key entry in the activity timeline and gives the next reviewer context on what changed since the prior review.
+   ```bash
+   kspec task note @ref "Fixed auth token validation: added null check before decode, updated test to cover expired token edge case. Addresses blocker thread on missing error handling."
+   ```
+
+5. **Re-submit** — `kspec task submit @ref` (back to pending_review, reviewer creates a new review record)
 
 You do NOT merge in a fix cycle. The reviewer handles merge decisions.
 
