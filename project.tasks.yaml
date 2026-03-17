@@ -101271,6 +101271,32 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T10:54:07.472Z
+    - _ulid: 01KKYG61HCXVG33E8YBE4P5T39
+      content: >-
+        Merge conflict resolution needed before landing on dev. The review is approved — code is
+        correct.
+
+
+        1. Rebase branch onto current dev HEAD
+
+        2. packages/daemon/src/routes/reviews.ts: add/add conflict — dev has list+detail+thread
+        routes (ac-1–5, 651 lines), branch has verdict+check+lifecycle routes (ac-6–8, 454 lines).
+        Combine both route sets into one file: merge imports, chain all routes in the Elysia group,
+        keep both sets of AC annotations.
+
+        3. packages/daemon/src/server.ts: AC comment conflict on .use(createReviewsRoutes(...)) line
+        — dev says ac-3,4,5, branch says ac-6,7,8. Combine to ac-3,4,5,6,7,8.
+
+        4. src/parser/review-operations.ts: branch exports VALID_TRANSITIONS (const → export const).
+        Apply this change — the route handler imports it.
+
+        5. Run tests: existing 28 verdict/check/lifecycle tests in
+        tests/daemon-review-verdicts-api.test.ts plus the thread tests must all pass after merge.
+
+        6. Resubmit for merge.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T18:15:59.788Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6HCFS1KY6X0KVF5F6RFP
