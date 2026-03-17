@@ -7113,9 +7113,22 @@ reviews:
           status: pass
           name: prior-review-blockers
         timestamp: 2026-03-17T12:19:47.038Z
+      - _ulid: 01KKXVTA2WWFTWF6MRAR1ERZV1
+        actor: pr-reviewer@kspec-dispatch
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-17T12:20:03.804Z
+      - _ulid: 01KKXVTA2WDGYCPWRW200REXFS
+        actor: pr-reviewer@kspec-dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-17T12:20:03.804Z
     examined_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -7177,7 +7190,15 @@ reviews:
               duplicate import on line 35."
             created_at: 2026-03-17T12:18:45.614Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
+          head_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
+        decision: request_changes
+        reviewer: pr-reviewer@kspec-dispatch
+        role: reviewer
+        created_at: 2026-03-17T12:20:03.687Z
     created_at: 2026-03-17T12:17:56.291Z
-    updated_at: 2026-03-17T12:19:46.967Z
+    updated_at: 2026-03-17T12:20:03.687Z
     notes: []
