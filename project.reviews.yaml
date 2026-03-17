@@ -7029,6 +7029,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKXVQKPTXTS76K56QBCNE69K
         timestamp: 2026-03-17T12:18:35.418Z
+      - _ulid: 01KKXVQXSESBEFN011QP7MW6K1
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKXVQXQDTMGHH3QCH4E17JGJ
+        timestamp: 2026-03-17T12:18:45.678Z
     examined_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
     external_links: []
     lifecycle_state: open
@@ -7077,7 +7084,23 @@ reviews:
               but dead code from a merge conflict should be removed. Fix: delete lines 82-84."
             created_at: 2026-03-17T12:18:35.354Z
         kind: nit
+      - _ulid: 01KKXVQXQDTMGHH3QCH4E17JGJ
+        anchor:
+          type: code
+          commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
+          line_end: 35
+          line_start: 35
+          path: packages/web-ui/src/lib/api.ts
+          side: head
+        entries:
+          - _ulid: 01KKXVQXQER5SYHCZV9G38QYG8
+            author: "@claude"
+            body: "Merge conflict artifact: `ReviewSummary` is imported twice from `@kynetic-ai/shared` (lines
+              29 and 35). The bundler silently deduplicates, but this is sloppy. Fix: remove the
+              duplicate import on line 35."
+            created_at: 2026-03-17T12:18:45.614Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-17T12:17:56.291Z
-    updated_at: 2026-03-17T12:18:35.354Z
+    updated_at: 2026-03-17T12:18:45.614Z
     notes: []
