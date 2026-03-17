@@ -101687,7 +101687,22 @@
   session_id: 01KKYPGR9N08JJYXPYZA7HHJ43
   created_at: 2026-03-16T08:29:03.185Z
   started_at: 2026-03-17T20:07:11.132Z
-  notes: []
+  notes:
+    - _ulid: 01KKYR1EG18FD5Y08JZYD4KHNZ
+      content: "Completed review detail page finish-up: fixed the /reviews/[id] back link, moved revision
+        sibling lookup to server-side subject_ref/head_branch filtering so code-review revisions do
+        not mix across branches, extended review summary data with head_branch, and added
+        fixture-backed review detail coverage plus API filter coverage for subject_ref/head_branch.
+        Verification: npm run build -w packages/shared and npm run build -w packages/web-ui both
+        pass after installing missing workspace deps. Playwright review E2E cannot run under
+        dispatch because the test fixture calls 'kspec serve start', which is guarded when
+        KSPEC_SESSION_ID is set. Full npm test in this worktree still reports pre-existing unrelated
+        failures outside this task (including tests/review-cli.test.ts,
+        tests/review-per-cycle-lifecycle.test.ts, and multiple tests/agent-dispatch-engine.test.ts
+        failures)."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-17T20:33:17.825Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6KXATJ0TEV1SF98ZK8PN
