@@ -100910,6 +100910,15 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T10:57:37.014Z
+    - _ulid: 01KKXQYVZ59CYWJE5ZM4VVW8X9
+      content: "Fix cycle 1: Merged dev into task branch to resolve kspec-agents.md merge conflict (caused
+        by concurrent task @01KKTK96 removing skill table). Regenerated kspec-agents.md with kspec
+        v0.12.0. Verified: (1) template changes in templates/skills/review/SKILL.md intact with all
+        4 anchor directives, (2) rendered skill output in .agents/skills/ matches, (3) test suite
+        passes (262/263 — 1 pre-existing failure in review-cli.test.ts:152 unrelated to this task)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T11:12:38.885Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6FA04X5BDGFWPX0HKRY4
