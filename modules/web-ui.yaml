@@ -319,7 +319,7 @@ features:
           enabling the web UI to display and interact with reviews.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
