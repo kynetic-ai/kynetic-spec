@@ -1,5 +1,5 @@
 /**
- * Review API Routes
+ * Review API Routes — List, Detail, and Thread Mutations
  *
  * REST endpoints for review record operations:
  * - GET /api/reviews - list reviews with filters and pagination
@@ -12,6 +12,7 @@
  * AC Coverage:
  * - @review-records-daemon-api ac-1: GET /api/reviews returns paginated list with filtering
  * - @review-records-daemon-api ac-2: GET /api/reviews/:id returns full review detail
+ * - @review-records-web-ui ac-7: GET /api/reviews?task= for task detail integration
  * - @review-records-daemon-api ac-3: POST /api/reviews/:id/comments creates thread
  * - @review-records-daemon-api ac-4: POST /api/reviews/:id/comments/:threadId/replies adds reply
  * - @review-records-daemon-api ac-5: PATCH resolve/reopen toggles resolution state
@@ -89,6 +90,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
   return new Elysia({ prefix: '/api/reviews' })
 
     // AC: @review-records-daemon-api ac-1 - List reviews with filters and pagination
+    // AC: @review-records-web-ui ac-7 - Task filter for task detail page integration
     .get(
       '/',
       async ({ query, projectContext }) => {
@@ -126,6 +128,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           filtered = filtered.filter((r) => r.author === query.reviewer);
         }
 
+        // AC: @review-records-web-ui ac-7 — Task filter for task detail page integration
         // Task filter (matches subject ref for task reviews, or related_refs)
         if (query.task) {
           const taskFilter = query.task;
@@ -224,6 +227,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         }),
       }
     )
+
 
     // AC: @review-records-daemon-api ac-3 - Create thread on review
     .post(

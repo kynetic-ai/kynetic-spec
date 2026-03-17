@@ -94,6 +94,7 @@ tasks:
       - test
     description: A task that is pending review
     spec_ref: "@test-feature"
+    review_ref: "@test-review-open"
     depends_on: []
     notes:
       - _ulid: 01KG0RRECC9N4YGP991WD7XSN1

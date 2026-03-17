@@ -52,6 +52,10 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 			// Triage changes affect the merged inbox view (triage status inline)
 			return [queryKeys.inbox.all];
 
+		case 'reviews:updates':
+			// Review changes affect review lists and task detail (review_ref display)
+			return [queryKeys.reviews.all, queryKeys.tasks.all];
+
 		case 'agents': {
 			// Streaming progress events don't need cache invalidation —
 			// they're consumed directly by components for real-time display.
@@ -74,10 +78,6 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 			// Agent lifecycle events (agent_invocation) also affect session lists
 			return [queryKeys.agents.all, queryKeys.sessions.all];
 		}
-
-		case 'reviews:updates':
-			// Review thread/verdict/check changes affect review lists and details
-			return [queryKeys.reviews.all];
 
 		case 'files:updates':
 			// File changes (e.g., settings save, meta edits) affect multiple caches

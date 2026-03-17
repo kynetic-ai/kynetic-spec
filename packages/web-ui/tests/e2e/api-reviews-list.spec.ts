@@ -7,6 +7,7 @@
  * - @review-records-daemon-api ac-1: GET /api/reviews returns paginated list with filtering
  * - @review-records-daemon-api ac-2: GET /api/reviews/:id returns full review detail
  * - @review-records-web-ui ac-1: Review list with filtering, sorting, disposition badges
+ * - @review-records-web-ui ac-7: GET /api/reviews?task= for task detail integration
  * - @review-records-web-ui ac-10: Empty state / empty results
  */
 
@@ -15,6 +16,7 @@ import { test, expect } from '../fixtures/test-base';
 // Fixture ULIDs from project.reviews.yaml
 const OPEN_REVIEW_ULID = '01KKTX0CA45ZT43W2T6HJMVA01';
 const DRAFT_REVIEW_ULID = '01KKTX9CA45ZT43W2T6HJMVA10';
+const PENDING_REVIEW_TASK_ULID = '01KG0RRDCC9N4YGP991WD7XSPR';
 
 test.describe('Review List API (GET /api/reviews)', () => {
   // AC: @review-records-daemon-api ac-1
@@ -249,6 +251,48 @@ test.describe('Review List API (GET /api/reviews)', () => {
     const response = await request.get(`${daemon.baseUrl}/api/reviews?status=all`);
     const contentType = response.headers()['content-type'] || '';
     expect(contentType).toContain('application/json');
+  });
+
+  // AC: @review-records-web-ui ac-7 — task filter by subject ref
+  test('GET /api/reviews?task= filters by task subject ref', async ({ request, daemon }) => {
+    // The open review has subject.ref = "@test-task-pending-review"
+    const response = await request.get(
+      `${daemon.baseUrl}/api/reviews?task=test-task-pending-review`
+    );
+    expect(response.status()).toBe(200);
+
+    const data = await response.json();
+    expect(data.items.length).toBeGreaterThanOrEqual(1);
+
+    const review = data.items.find((r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID);
+    expect(review).toBeDefined();
+    expect(review.title).toBe('Review of test task');
+  });
+
+  // AC: @review-records-web-ui ac-7 — task filter by ULID
+  test('GET /api/reviews?task= filters by task ULID', async ({ request, daemon }) => {
+    const response = await request.get(
+      `${daemon.baseUrl}/api/reviews?task=${PENDING_REVIEW_TASK_ULID}`
+    );
+    expect(response.status()).toBe(200);
+
+    const data = await response.json();
+    expect(data.items.length).toBeGreaterThanOrEqual(1);
+
+    const review = data.items.find((r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID);
+    expect(review).toBeDefined();
+  });
+
+  // AC: @review-records-web-ui ac-7 — task filter empty for unlinked task
+  test('GET /api/reviews?task= returns empty for unlinked task', async ({ request, daemon }) => {
+    const response = await request.get(
+      `${daemon.baseUrl}/api/reviews?task=test-task-completed`
+    );
+    expect(response.status()).toBe(200);
+
+    const data = await response.json();
+    expect(data.items.length).toBe(0);
+    expect(data.total).toBe(0);
   });
 });
 
