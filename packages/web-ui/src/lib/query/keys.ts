@@ -90,14 +90,6 @@ export const queryKeys = {
 		content: (ref: string) => [...queryKeys.plans.all, 'content', ref] as const,
 	},
 
-	reviews: {
-		all: ['reviews'] as const,
-		lists: () => [...queryKeys.reviews.all, 'list'] as const,
-		list: (filters?: Record<string, unknown>) =>
-			[...queryKeys.reviews.lists(), filters] as const,
-		detail: (ref: string) => [...queryKeys.reviews.all, 'detail', ref] as const,
-	},
-
 	workflows: {
 		all: ['workflows'] as const,
 	},

@@ -32,7 +32,6 @@ import type {
 	AgentDefinition,
 	AgentUpdatePayload,
 	ValidationAggregation,
-	ReviewSummary,
 } from '@kynetic-ai/shared';
 import type { TriageRecord } from './types/triage';
 import {
