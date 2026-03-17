@@ -103383,6 +103383,18 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T18:54:00.906Z
+    - _ulid: 01KKYJC0ET5M8C7Y4DS7P685VM
+      content: "Review: request_changes (1 blocker). The plans.ts raw-data-preservation pattern and its 6
+        round-trip tests are correct — prior cycle regressions to reviews.ts and yaml.ts are fully
+        restored (zero diff vs dev). However, the branch includes out-of-scope removal of
+        @review-records-web-ui ac-7 across 13 files (daemon routes, shared API types, web-ui
+        components, API client, query keys, WS invalidation, reference utils, E2E/unit tests). The
+        ac-7 spec still defines valid behavior. Fix: revert all changes outside src/parser/plans.ts
+        and tests/yaml-round-trip-stability.test.ts. The plans-specific changes are ready to merge
+        once the extraneous removals are reverted."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T18:54:12.443Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6C9RJHKN1ZMJW1ZWH2BRZ
