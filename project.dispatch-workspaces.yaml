@@ -6859,12 +6859,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-17T09:24:58.367Z
+      updated_at: 2026-03-17T09:25:00.925Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T09:24:58.367Z
+      updated_at: 2026-03-17T09:25:00.925Z
     integration:
       status: pending
       detail: null
@@ -6872,26 +6872,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-      updated_at: 2026-03-17T09:24:58.367Z
-    lifecycle_state: ready
+      updated_at: 2026-03-17T09:25:00.925Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKTW6J1F8NHGA7G7SJJ1ZFFS"
     task_slug: task-diff-api
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T09:07:34.839Z
-      last_reconciled_at: 2026-03-17T09:24:58.367Z
+      last_reconciled_at: 2026-03-17T09:25:00.925Z
       created_at: 2026-03-17T08:02:40.261Z
-      updated_at: 2026-03-17T09:24:58.367Z
+      updated_at: 2026-03-17T09:25:00.925Z
     workspace_id: dispatch-workspace-01KKTW6J1F8NHGA7G7SJJ1ZFFS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 317b496da788fcf1679fe083957e29a5db407052
+        last_seen_at: 2026-03-17T09:25:00.925Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-diff-api-01kktw6j-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-diff-api/01kktw6j
-        head: bb450d49091846ff30ea2a935f49c0bc0bb70cfa
-        last_seen_at: 2026-03-17T09:07:34.291Z
+        head: 317b496da788fcf1679fe083957e29a5db407052
+        last_seen_at: 2026-03-17T09:25:00.925Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-diff-api-01kktw6j
   - active_role: null
     base_branch_point: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
