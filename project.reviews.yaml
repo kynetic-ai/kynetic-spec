@@ -5615,9 +5615,22 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-17T10:18:49.926Z
+      - _ulid: 01KKXMXEYHJ8FZDW1C2C2B22NF
+        actor: pr-reviewer@kspec
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-17T10:19:27.057Z
+      - _ulid: 01KKXMXEYH98S4ZJQZGWVYTPVR
+        actor: pr-reviewer@kspec
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-17T10:19:27.057Z
     examined_commit: c8a90fd969018e380793aea63d62d3a760d98e3b
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -5679,9 +5692,17 @@ reviews:
               proof.
             created_at: 2026-03-17T10:18:18.164Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
+          head_commit: c8a90fd969018e380793aea63d62d3a760d98e3b
+        decision: request_changes
+        reviewer: pr-reviewer@kspec
+        role: reviewer
+        created_at: 2026-03-17T10:19:27.006Z
     created_at: 2026-03-17T10:03:20.738Z
-    updated_at: 2026-03-17T10:18:49.874Z
+    updated_at: 2026-03-17T10:19:27.006Z
     notes: []
   - _ulid: 01KKXMK34HGC8V9MBRPXMSD308
     slugs: []
