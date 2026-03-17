@@ -487,3 +487,24 @@ describe("round-trip stability — saveTask path", () => {
     expect(afterContent).toBe(initialContent);
   });
 });
+
+describe("toYaml — shared object reference safety", () => {
+  it("does not crash on shared JS object references that produce YAML anchors/aliases", () => {
+    // Regression: YAML.stringify with sortMapEntries can reorder keys such that
+    // an alias (*a1) appears before its anchor (&a1), causing
+    // "Unresolved alias (the anchor must be set before the alias): a1"
+    const shared = { status: "not_run" };
+    const data = {
+      roleStates: { worker: shared, reviewer: shared },
+    };
+    // Should not throw
+    const yaml = toYaml(data);
+    // Both values should be serialized independently (no alias)
+    expect(yaml).not.toContain("*a1");
+    expect(yaml).not.toContain("&a1");
+    // Values should still be correct
+    const parsed = parseYaml<typeof data>(yaml);
+    expect(parsed.roleStates.worker).toEqual({ status: "not_run" });
+    expect(parsed.roleStates.reviewer).toEqual({ status: "not_run" });
+  });
+});
