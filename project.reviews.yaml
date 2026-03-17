@@ -6503,7 +6503,20 @@ reviews:
     slugs: []
     title: Review task-review-task-integration (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
+          head_commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
+        evidence: 5726 tests passed, 3 skipped. 1 pre-existing failure in review-cli.test.ts
+          (examined_commit picks up current HEAD — not introduced by this change; file not in diff).
+          262 of 263 test files passed.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-17T11:46:06.618Z
+        completed_at: 2026-03-17T11:46:06.618Z
     events:
       - _ulid: 01KKXSDV98ZFHX1ZWR3P38MS6Q
         actor: "@claude"
@@ -6539,6 +6552,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKXSTSQA8SE4GAAYTGZY3ZJ2
         timestamp: 2026-03-17T11:45:22.726Z
+      - _ulid: 01KKXSW4Q3GFNCVBR1VWM8AVRZ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-17T11:46:06.691Z
     examined_commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
     external_links: []
     lifecycle_state: open
@@ -6605,5 +6625,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T11:38:18.280Z
-    updated_at: 2026-03-17T11:45:22.666Z
+    updated_at: 2026-03-17T11:46:06.618Z
     notes: []
