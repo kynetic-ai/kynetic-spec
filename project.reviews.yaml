@@ -6820,6 +6820,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-17T12:04:10.307Z
+      - _ulid: 01KKXTXHP9094GJSJ9R8DET0PP
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKXTXHM4Y8MBFB88J9GH6417
+        timestamp: 2026-03-17T12:04:21.321Z
     examined_commit: c5efe894e4239535bfece91f2c452bf1dc2e44f7
     external_links: []
     lifecycle_state: open
@@ -6829,8 +6836,25 @@ reviews:
       content_hash: ""
       ref: "@task-fix-dead-submission-linkage-case"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKXTXHM4Y8MBFB88J9GH6417
+        anchor:
+          type: code
+          commit: c5efe894e423
+          line_end: 432
+          line_start: 428
+          path: src/utils/activity.ts
+          side: head
+        entries:
+          - _ulid: 01KKXTXHM456ZB87VREF8NSBMV
+            author: "@claude"
+            body: Context lines between a map header and its children reset currentAddedMap/currentRemovedMap,
+              causing child fields to leak as top-level changes. In practice, kspec auto-commits
+              produce contiguous diff blocks so this path is not exercised, but it is a latent
+              fragility if diffs are ever produced by manual edits or rebases.
+            created_at: 2026-03-17T12:04:21.252Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-17T12:04:01.716Z
-    updated_at: 2026-03-17T12:04:10.247Z
+    updated_at: 2026-03-17T12:04:21.252Z
     notes: []
