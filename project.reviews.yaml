@@ -7443,3 +7443,29 @@ reviews:
     created_at: 2026-03-17T12:41:31.776Z
     updated_at: 2026-03-17T12:42:38.630Z
     notes: []
+  - _ulid: 01KKXY533DJXC3PXPMN2YNGBVJ
+    slugs: []
+    title: Review round-trip stability for inbox item YAML writes
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKXY533D8FAGWF5GEM8DKJ2Q
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T13:00:54.253Z
+    examined_commit: 78d192c45905422e8fed57293774ea8ebc5fba4f
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKX6C9RJHKN1ZMJW1ZWH2BRZ"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T13:00:54.253Z
+    updated_at: null
+    notes: []
