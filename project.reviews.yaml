@@ -7682,6 +7682,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T13:10:35.826Z
         completed_at: 2026-03-17T13:10:35.826Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
+          head_commit: 999094a4049af29dd08705ff671f9089a4e51132
+        evidence: AC-7 annotated across daemon routes (reviews.ts, tasks.ts), shared types (api.ts), web-ui
+          component (TaskDetailContent.svelte), API client (api.ts), E2E tests (api-reviews-list,
+          api-tasks, tasks.spec), and unit tests (reference.test.ts)
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-17T13:10:53.844Z
+        completed_at: 2026-03-17T13:10:53.844Z
     events:
       - _ulid: 01KKXYP3VT1W546R0WGMS05K06
         actor: "@claude"
@@ -7703,6 +7716,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T13:10:35.920Z
+      - _ulid: 01KKXYQCPV70F4ENNW6GHV7Z3C
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-17T13:10:53.915Z
     examined_commit: 999094a4049af29dd08705ff671f9089a4e51132
     external_links: []
     lifecycle_state: open
@@ -7715,5 +7735,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T13:10:12.091Z
-    updated_at: 2026-03-17T13:10:35.826Z
+    updated_at: 2026-03-17T13:10:53.844Z
     notes: []
