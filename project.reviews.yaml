@@ -6084,7 +6084,19 @@ reviews:
     slugs: []
     title: Review improve-review-skill-anchors (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 51465810f2fa4c44628dc52f6070812e43862a6f
+          head_commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
+        evidence: 5734 passed, 1 failed (pre-existing review-cli.test.ts:152 — detached HEAD env issue, not
+          introduced by this change), 3 skipped across 263 test files
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-17T10:56:22.735Z
+        completed_at: 2026-03-17T10:56:22.735Z
     events:
       - _ulid: 01KKXQ027Z0Y0C4ZKCR6P8S0W5
         actor: "@claude"
@@ -6106,6 +6118,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKXQ0NDFH8ZTY7396TDF7KZK
         timestamp: 2026-03-17T10:56:09.197Z
+      - _ulid: 01KKXQ12RM9XM52D5K0MZZB3QX
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-17T10:56:22.804Z
     examined_commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
     external_links: []
     lifecycle_state: open
@@ -6138,5 +6157,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-17T10:55:49.504Z
-    updated_at: 2026-03-17T10:56:09.135Z
+    updated_at: 2026-03-17T10:56:22.735Z
     notes: []
