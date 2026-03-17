@@ -7335,6 +7335,33 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-17T05:00:37.738Z
+  - _ulid: 01KKXCWJ34TZT5V54RE0750NMD
+    type: friction
+    content: Worker and reviewer both missed incomplete task scope — task said 'all YAML write paths'
+      but work only covered task files. Neither the worker nor reviewer caught the gap. Need better
+      scope-verification discipline, possibly a checklist item in work-gates or review-gates.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-17T07:59:08.900Z
+  - _ulid: 01KKXCWJ8W25Z0XNJ7ZFNDC88R
+    type: friction
+    content: "Dismissed shard 3 test failures as 'pre-existing flaky tests' without verifying against
+      main. They were actually regressions from the same dev branch. Rule: always verify failing
+      tests against the base branch before dismissing them."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-17T07:59:09.085Z
+  - _ulid: 01KKXCWJDB4J3M5526BE1AZ3GA
+    type: success
+    content: Bisecting test failures by checking main vs dev, then narrowing to exact commit, quickly
+      identified root cause of YAML anchor/alias crash. This should be the standard approach for any
+      CI failure — verify against base branch first.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-17T07:59:09.227Z
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     description: Get help with kspec commands and workflows
