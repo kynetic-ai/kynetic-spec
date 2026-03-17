@@ -5549,6 +5549,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKXMV2HBQ185W55B3ZR4FHVJ
         timestamp: 2026-03-17T10:18:08.872Z
+      - _ulid: 01KKXMVBQB3379X7ZBNB709KCY
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKXMVBNMPVR5FZCSGTTQW0M0
+        timestamp: 2026-03-17T10:18:18.219Z
     examined_commit: c8a90fd969018e380793aea63d62d3a760d98e3b
     external_links: []
     lifecycle_state: open
@@ -5601,9 +5608,21 @@ reviews:
               ever modified.
             created_at: 2026-03-17T10:18:08.811Z
         kind: nit
+      - _ulid: 01KKXMVBNMPVR5FZCSGTTQW0M0
+        entries:
+          - _ulid: 01KKXMVBNMMCT6YBH55JWYW5N8
+            author: "@claude"
+            body: AC-9 (WebSocket broadcast) is implemented in all three handlers via pubsub.broadcast() calls,
+              but no test verifies that broadcast was actually called. A PubSubManager spy/mock
+              could confirm the broadcast happens with correct topic and data. This follows the
+              existing codebase pattern (no other route tests verify broadcast either), so it is not
+              a regression — but it means AC-9 coverage relies on code inspection rather than test
+              proof.
+            created_at: 2026-03-17T10:18:18.164Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-17T10:03:20.738Z
-    updated_at: 2026-03-17T10:18:08.811Z
+    updated_at: 2026-03-17T10:18:18.164Z
     notes: []
   - _ulid: 01KKXMK34HGC8V9MBRPXMSD308
     slugs: []
