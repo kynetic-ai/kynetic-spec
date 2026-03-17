@@ -5233,7 +5233,19 @@ reviews:
     slugs: []
     title: Review task-review-api-threads (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b3def74fcec9
+          head_commit: d64977992f74
+        evidence: 5710 passed, 1 pre-existing failure (review-cli.test.ts:152 — examined_commit
+          env-dependent, file not modified in this commit), 3 skipped
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-17T09:51:34.733Z
+        completed_at: 2026-03-17T09:51:34.733Z
     events:
       - _ulid: 01KKXK84049R0DKVSNE3R10676
         actor: "@claude"
@@ -5283,6 +5295,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKXKA0P8DSXGMC51PX2P14KT
         timestamp: 2026-03-17T09:51:21.353Z
+      - _ulid: 01KKXKADVPG7NC1DAN0VGHSRMB
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-17T09:51:34.774Z
     examined_commit: d64977992f74f0cedcca191057909151a1803c27
     external_links: []
     lifecycle_state: open
@@ -5394,5 +5413,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T09:50:19.140Z
-    updated_at: 2026-03-17T09:51:21.289Z
+    updated_at: 2026-03-17T09:51:34.733Z
     notes: []
