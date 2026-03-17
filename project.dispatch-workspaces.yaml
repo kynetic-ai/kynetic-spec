@@ -7360,12 +7360,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-17T11:02:33.106Z
+      updated_at: 2026-03-17T11:02:36.103Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T11:02:33.106Z
+      updated_at: 2026-03-17T11:02:36.103Z
     integration:
       status: pending
       detail: null
@@ -7373,24 +7373,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-      updated_at: 2026-03-17T11:02:33.106Z
-    lifecycle_state: ready
+      updated_at: 2026-03-17T11:02:36.103Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKTW6JPAR1P0W78EAWX5482A"
     task_slug: task-review-list-page
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T10:45:52.326Z
-      last_reconciled_at: 2026-03-17T11:02:33.106Z
+      last_reconciled_at: 2026-03-17T11:02:36.103Z
       created_at: 2026-03-17T10:45:51.237Z
-      updated_at: 2026-03-17T11:02:33.106Z
+      updated_at: 2026-03-17T11:02:36.103Z
     workspace_id: dispatch-workspace-01KKTW6JPAR1P0W78EAWX5482A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: c41c0d7b7e96f9eaada13c57e8f69e0d21735038
+        last_seen_at: 2026-03-17T11:02:36.103Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-list-page-01kktw6j-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-review-list-page/01kktw6j
-        head: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-        last_seen_at: 2026-03-17T10:45:51.237Z
+        head: c41c0d7b7e96f9eaada13c57e8f69e0d21735038
+        last_seen_at: 2026-03-17T11:02:36.103Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-list-page-01kktw6j
