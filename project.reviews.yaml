@@ -8514,3 +8514,29 @@ reviews:
     created_at: 2026-03-17T19:33:21.623Z
     updated_at: 2026-03-17T19:34:15.549Z
     notes: []
+  - _ulid: 01KKYNMDDPXWRFFMPSSRGD01XF
+    slugs: []
+    title: Review task-review-api-websocket (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKYNMDDPZTH7FQ3C557WQZ3H
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T19:51:13.590Z
+    examined_commit: 761e941162ae4f892789085b2a60f1bb29d04fa1
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-review-api-websocket"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T19:51:13.590Z
+    updated_at: null
+    notes: []
