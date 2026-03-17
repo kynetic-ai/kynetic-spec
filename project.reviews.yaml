@@ -5549,3 +5549,29 @@ reviews:
     created_at: 2026-03-17T10:03:20.738Z
     updated_at: 2026-03-17T10:03:29.658Z
     notes: []
+  - _ulid: 01KKXMK34HGC8V9MBRPXMSD308
+    slugs: []
+    title: Review task-review-api-threads (cycle 2)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKXMK34G8SWSPWZD4FK7JZ7B
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T10:13:47.281Z
+    examined_commit: 74be26083a8b53469bddc8b643d21383c58bbfd1
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-review-api-threads"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T10:13:47.281Z
+    updated_at: null
+    notes: []
