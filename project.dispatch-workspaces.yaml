@@ -7823,3 +7823,79 @@ workspaces:
         head: 78d192c45905422e8fed57293774ea8ebc5fba4f
         last_seen_at: 2026-03-17T12:53:03.431Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-inbox-item-yaml-writes-01kkx6c9
+  - active_role: null
+    base_branch_point: d7844f56824fc7f24dbf104390d14807a2a27582
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/round-trip-stability-for-meta-manifest-yaml-writes/01kkx6cb
+    canonical_branch_head: d7844f56824fc7f24dbf104390d14807a2a27582
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-17T13:01:44.402Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-17T13:01:44.402Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: d7844f56824fc7f24dbf104390d14807a2a27582
+      updated_at: 2026-03-17T13:01:44.402Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KKX6CBDFNMXPC405SRZ3RG0N"
+    task_slug: round-trip-stability-for-meta-manifest-yaml-writes
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-17T13:01:44.402Z
+      created_at: 2026-03-17T13:01:44.402Z
+      updated_at: 2026-03-17T13:01:44.402Z
+    workspace_id: dispatch-workspace-01KKX6CBDFNMXPC405SRZ3RG0N
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/round-trip-stability-for-meta-manifest-yaml-writes/01kkx6cb
+        head: d7844f56824fc7f24dbf104390d14807a2a27582
+        last_seen_at: 2026-03-17T13:01:44.402Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-meta-manifest-yaml-writes-01kkx6cb
