@@ -8905,6 +8905,19 @@ reviews:
         runner: tsc+vite
         created_at: 2026-03-17T23:51:43.525Z
         completed_at: 2026-03-17T23:51:43.525Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 392421a4da0b
+          head_commit: 3b251d677f21
+        evidence: All 5 assigned ACs (ac-2, ac-8, ac-9, ac-10, ac-11) have both implementation annotations
+          in +page.svelte and test annotations across reviews-detail.spec.ts and
+          review-detail-page.spec.ts
+        name: ac-coverage
+        required: true
+        runner: grep
+        created_at: 2026-03-17T23:51:46.077Z
+        completed_at: 2026-03-17T23:51:46.077Z
     events:
       - _ulid: 01KKZ30JMQFQZ634JMBJZ4C51K
         actor: "@claude"
@@ -8947,6 +8960,13 @@ reviews:
           status: pass
           name: build
         timestamp: 2026-03-17T23:51:43.623Z
+      - _ulid: 01KKZ3CVQH82DW3V02YRDF9ZHX
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-17T23:51:46.161Z
     examined_commit: 3b251d677f21cfc35c6db12a6bfb759c2889c7f5
     external_links: []
     lifecycle_state: open
@@ -8993,5 +9013,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T23:45:03.640Z
-    updated_at: 2026-03-17T23:51:43.525Z
+    updated_at: 2026-03-17T23:51:46.077Z
     notes: []
