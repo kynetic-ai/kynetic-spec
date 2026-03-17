@@ -101297,6 +101297,17 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T18:15:59.788Z
+    - _ulid: 01KKYHQ6E40T177B5VKFE5TN4M
+      content: Resolved merge conflict with dev. Merged dev's list/detail/thread routes (ac-1-5) with this
+        branch's verdict/check/lifecycle routes (ac-6-8) into unified
+        packages/daemon/src/routes/reviews.ts. Combined imports from both branches, kept both route
+        sets, and merged AC annotations in server.ts. All 31 verdict/check/lifecycle tests pass, all
+        273 review-related tests pass (1 pre-existing examined_commit failure unchanged). Shard test
+        failures are pre-existing timeouts (setup-seeding, session-start-format,
+        session-iteration-stats) unrelated to these changes.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T18:42:50.436Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6HCFS1KY6X0KVF5F6RFP
