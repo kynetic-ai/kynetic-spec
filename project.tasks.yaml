@@ -101122,7 +101122,17 @@
   session_id: 01KKXD332S8SYD8YGEEHTN26TZ
   created_at: 2026-03-16T08:29:01.871Z
   started_at: 2026-03-17T08:03:08.077Z
-  notes: []
+  notes:
+    - _ulid: 01KKXE1XDY5N4THAVH8RR2221W
+      content: Implemented all four AC endpoints. The unified diff parser lives in
+        src/utils/git-diff-parser.ts as a shared utility. The daemon route file
+        (packages/daemon/src/routes/diff.ts) handles HTTP routing, git command execution, ref
+        validation, and review content resolution for plan/spec/task/code subject types. 13 tests
+        passing covering parser logic and git integration. Pre-existing test timeouts in
+        shadow/dispatch/session tests unrelated to this change.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T08:19:32.926Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6JPAR1P0W78EAWX5482A
