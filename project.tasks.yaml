@@ -100762,7 +100762,16 @@
   session_id: 01KKXMG1APKCJVMBAFM1BPFCZZ
   created_at: 2026-03-16T05:53:11.653Z
   started_at: 2026-03-17T10:12:35.089Z
-  notes: []
+  notes:
+    - _ulid: 01KKXNM9033QVGAN1CEVNVZEQQ
+      content: Removed generateSkillsTable() and its integration from the agents generate pipeline. Skills
+        no longer affect the generated kspec-agents.md or its staleness hash. Skill descriptions
+        already existed in the manifest.yaml metadata and are written to rendered SKILL.md
+        frontmatter by kspec skill render — no porting was needed. Updated all callers and tests.
+        The review-cli.test.ts:152 failure is pre-existing and unrelated.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T10:31:54.627Z
   todos: []
   automation: eligible
 - _ulid: 01KKTTA3KTQMPJFWXMPVYZ3TJN
