@@ -103840,6 +103840,19 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-17T20:29:30.237Z
+    - _ulid: 01KKZ3P1C8B4PHPXCZJ16FR1A4
+      content: "Fix cycle 2: Addressed both blocker threads from review @01KKYQMEXCESSPYSD8FGZR1R65. (1)
+        Restored full registry schema validation in mutateDispatchWorkspaceRecordAtomically —
+        malformed sibling records are now rejected before writing, matching the
+        saveDispatchWorkspaceRecord behavior. (2) Fixed mergeWorkspacePreservingRawShape to
+        distinguish Zod defaults from callback-set fields by passing the pre-mutation parsed record
+        and using deep equality comparison — newly-added object fields like branch_provenance with
+        real data are now persisted on legacy records. Added 2 regression tests covering both
+        issues. All 7 dispatch workspace round-trip tests pass. 3 pre-existing failures unchanged (2
+        in agent-dispatch-engine.test.ts, 1 in review-cli.test.ts)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T23:56:46.856Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6CEQFM17JX8AKKRPXQGR7
