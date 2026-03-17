@@ -7202,3 +7202,29 @@ reviews:
     created_at: 2026-03-17T12:17:56.291Z
     updated_at: 2026-03-17T12:20:03.687Z
     notes: []
+  - _ulid: 01KKXW6GVE2G9VDTYN45EE5JSH
+    slugs: []
+    title: Review round-trip stability for review record YAML writes
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKXW6GVEB8QPVK7XKRA7XC22
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T12:26:43.950Z
+    examined_commit: eb50234f3d54d3f9a8f7a711ccb19d020bfcbf3b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKX6C6BX3055XXKXYD33K4QA"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T12:26:43.950Z
+    updated_at: null
+    notes: []
