@@ -6801,3 +6801,29 @@ reviews:
     created_at: 2026-03-17T11:55:49.318Z
     updated_at: 2026-03-17T11:56:27.554Z
     notes: []
+  - _ulid: 01KKXTWYHMXZQ4MJTEDFZN4BHH
+    slugs: []
+    title: Review task-fix-dead-submission-linkage-case (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKXTWYHMB74YP1ZQZDNEQ19A
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T12:04:01.716Z
+    examined_commit: c5efe894e4239535bfece91f2c452bf1dc2e44f7
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-fix-dead-submission-linkage-case"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T12:04:01.716Z
+    updated_at: null
+    notes: []
