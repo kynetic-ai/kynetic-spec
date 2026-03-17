@@ -2938,7 +2938,7 @@ features:
       and HTTP polls for structured events every 3 seconds during live sessions.
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
