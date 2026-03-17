@@ -8823,6 +8823,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-17T23:27:47.043Z
+      - _ulid: 01KKZ2B15RBFZ92JA5ADNSRRJZ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKZ2B0ZZ1WJPBT1K0QRG33A5
+        timestamp: 2026-03-17T23:33:17.624Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -8832,8 +8839,20 @@ reviews:
       content_hash: ""
       ref: "@task-ralph-migration-guide"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKZ2B0ZZ1WJPBT1K0QRG33A5
+        entries:
+          - _ulid: 01KKZ2B100SDRXJ7P6QRFYN60A
+            author: Jacob Chapel
+            body: "MUST-FIX: npm test is not green on the submitted commit
+              f2f07a10939f5c22143bd187dbbd71d88549f9d3. During review, the suite failed in
+              tests/activity-display.test.ts (). Per review gates, all tests must pass before
+              approval, and a regression in an existing test blocks merge even if the task intent is
+              only Ralph trace cleanup. Fix the regression and resubmit with a clean passing npm
+              test run so the required check can be recorded against the reviewed version."
+            created_at: 2026-03-17T23:33:17.440Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T23:27:37.696Z
-    updated_at: 2026-03-17T23:27:46.860Z
+    updated_at: 2026-03-17T23:33:17.440Z
     notes: []
