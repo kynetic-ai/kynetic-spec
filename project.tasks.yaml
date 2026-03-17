@@ -101098,7 +101098,7 @@
   spec_ref: "@review-content-diff-api"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -101108,7 +101108,9 @@
     - api
     - diff
   vcs_refs: []
+  session_id: 01KKXD332S8SYD8YGEEHTN26TZ
   created_at: 2026-03-16T08:29:01.871Z
+  started_at: 2026-03-17T08:03:08.077Z
   notes: []
   todos: []
   automation: eligible
