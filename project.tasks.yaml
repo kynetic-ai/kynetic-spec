@@ -103290,7 +103290,80 @@
   session_id: 01KKXF8ZC9RPRJQ9GVAWV500JY
   created_at: 2026-03-17T08:28:22.679Z
   started_at: 2026-03-17T08:41:09.914Z
-  notes: []
+  notes:
+    - _ulid: 01KKXFPRTGFW2YETFYJ289KFTT
+      content: >-
+        Analysis complete, implementation blocked by tooling. All source files read and changes
+        fully planned:
+
+
+        ## Changes Required
+
+
+        ### 1. session-event-types.ts + shared/websocket.ts — Add ToolCallInputEventData type
+
+        - New interface: ToolCallInputEventData { type: 'tool_call_input', tool_call_id, tool_name,
+        tool_input }
+
+        - Add to SessionEventData union
+
+
+        ### 2. session-event-accumulator.ts — Emit tool_call_input on phased updates  
+
+        - In tool_call_update case (line 211-231): when rawInput is populated and no status change,
+        emit tool_call_input event
+
+        - Check: update.rawInput exists, is non-null, has keys, and status is NOT
+        'completed'/'failed'
+
+
+        ### 3. session-event-fields.ts (new shared module) — Unified field extraction
+
+        - unwrapSessionUpdate(data): handles both data.sessionUpdate (ACP) and
+        data.update.sessionUpdate (legacy)
+
+        - extractToolCallFields(update): resolves toolCallId/toolName/rawInput from multiple field
+        name variants  
+
+        - extractToolCallResult(update): resolves rawOutput/status/error
+
+
+        ### 4. parseEventsToBlocks — Refactor to use shared extractors
+
+        - Replace inline field resolution (lines 221-268) with calls to shared extractors
+
+        - Keeps behavior identical
+
+
+        ### 5. incrementalBlockUpdate — Add tool_call_input case
+
+        - Find existing block by toolCallId, update its input field in-place
+
+        - Pattern matches existing tool_call_complete handler
+
+
+        ### 6. deduplicatePhasedToolCalls — Fix ACP format handling
+
+        - Lines 1204-1206: only checks data.update.sessionUpdate (legacy), misses data.sessionUpdate
+        (ACP)
+
+        - Also fix inline dedup in getComputedStats (line 2615) and searchEvents (line 2917)
+
+
+        ### 7. CLI watch (agent.ts) — Add tool_call_input to sessionEventTypes set and switch case
+
+        - Add 'tool_call_input' to Set at line 940
+
+        - Add case that updates displayed tool input summary
+
+
+        ### 8. +page.svelte — Add tool_call_input to sessionEventTypes set (line 138)
+
+
+        Blocked because all Edit/Write tool calls fail with 'Stream closed' permission errors.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T08:48:24.913Z
   todos: []
   automation: eligible
 - _ulid: 01KKXEKWMZN0E7E6V7458E0BV8
