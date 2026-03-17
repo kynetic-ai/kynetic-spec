@@ -5962,6 +5962,21 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T10:51:37.119Z
         completed_at: 2026-03-17T10:51:37.119Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
+          head_commit: adaaef6230426b5b880e6f3ab93d6882b96e9cc0
+        evidence: "ac-6: 5 tests (verdict recording, comment, auto-close approve, auto-close
+          request_changes, slug ref). ac-7: 5 tests (passing check, failing check, non-required,
+          slug ref, applies_to_version). ac-8: 7 tests (draft→open, draft→closed, open→closed,
+          closed→open, closed→archived, slug ref, plus 3 invalid transitions). ac-10: 10+ validation
+          error tests. All trait ACs annotated N/A with valid reasons."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-17T10:51:47.871Z
+        completed_at: 2026-03-17T10:51:47.871Z
     events:
       - _ulid: 01KKXP2WE8PHTDZ77QKC74MQ16
         actor: "@claude"
@@ -5983,6 +5998,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T10:51:37.186Z
+      - _ulid: 01KKXPRPAQWH4YVQ5AEW0F7JSX
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-17T10:51:47.927Z
     examined_commit: adaaef6230426b5b880e6f3ab93d6882b96e9cc0
     external_links: []
     lifecycle_state: open
@@ -5995,5 +6017,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T10:39:53.288Z
-    updated_at: 2026-03-17T10:51:37.119Z
+    updated_at: 2026-03-17T10:51:47.871Z
     notes: []
