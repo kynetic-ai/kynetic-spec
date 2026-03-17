@@ -1064,6 +1064,12 @@ features:
               the new configuration or surfaces the conflict with actionable guidance so the
               operator can decide whether to keep the original target or adopt the new one
             when: The dispatcher re-provisions or reconciles that workspace for a new invocation
+          - given: A workspace record's integration target differs from the currently configured
+              dispatch.base_branch
+            id: ac-7
+            then: The dispatch prompt reflects the correct, current integration target — not a stale value from
+              the original provisioning — so agents merge into the intended branch
+            when: The dispatcher builds the dispatch prompt context for a worker or reviewer invocation
         tags: []
         created: 2026-03-12T02:33:43.875Z
         notes: []
