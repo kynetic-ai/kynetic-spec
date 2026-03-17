@@ -3,16 +3,20 @@
  *
  * Spec: @review-content-diff-api
  *
- * Tests the git diff parser and context extraction logic directly.
- * Route-level integration is tested via E2E tests.
+ * Tests the git diff parser, context extraction, and review content
+ * route handlers.
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { execSync } from 'node:child_process';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+import { Elysia } from 'elysia';
 import { parseUnifiedDiff } from '../src/utils/git-diff-parser';
-import { createTempDir, cleanupTempDir, initGitRepo } from './helpers/cli';
+import { createTempDir, cleanupTempDir, initGitRepo, testUlid } from './helpers/cli';
+import { projectContextMiddleware } from '../dist/daemon/middleware/project-context.ts';
+import { createDiffRoutes } from '../dist/daemon/routes/diff.ts';
 
 describe('parseUnifiedDiff', () => {
   // AC: @review-content-diff-api ac-1
@@ -437,6 +441,422 @@ describe('Diff API - Git Integration', () => {
     const result = parseUnifiedDiff(diffOutput, head, head);
     expect(result.files).toHaveLength(0);
     expect(result.stats.totalFiles).toBe(0);
+  });
+});
+
+describe('Diff API - Context Expansion Route', () => {
+  let tempDir: string;
+  let app: Elysia;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir('kspec-diff-context-route-');
+    initGitRepo(tempDir);
+
+    // Create .kspec/ so projectContextMiddleware accepts the directory
+    mkdirSync(path.join(tempDir, '.kspec'), { recursive: true });
+
+    // Create a file with known content
+    writeFileSync(
+      path.join(tempDir, 'example.ts'),
+      'line1\nline2\nline3\nline4\nline5\nline6\nline7\nline8\nline9\nline10\n',
+    );
+    execSync('git add -A && git commit -m "initial"', { cwd: tempDir, stdio: 'pipe' });
+
+    const { middleware } = projectContextMiddleware();
+    app = new Elysia().use(middleware).use(createDiffRoutes());
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @review-content-diff-api ac-2
+  it('should return context lines with line numbers for a valid range', async () => {
+    const head = execSync('git rev-parse HEAD', { cwd: tempDir, encoding: 'utf-8' }).trim();
+    const base = head; // base not used for context but required by route
+
+    const url = `http://localhost/api/diff/context?base=${base}&head=${head}&path=example.ts&start=2&end=5`;
+    const response = await app.handle(
+      new Request(url, { headers: { Host: 'localhost', 'X-Kspec-Dir': tempDir } }),
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.path).toBe('example.ts');
+    expect(body.startLine).toBe(2);
+    expect(body.endLine).toBe(5);
+    expect(body.lines).toHaveLength(4);
+    expect(body.lines[0]).toEqual({ lineNumber: 2, content: 'line2' });
+    expect(body.lines[3]).toEqual({ lineNumber: 5, content: 'line5' });
+    expect(body.totalLines).toBeGreaterThan(0);
+  });
+
+  // AC: @review-content-diff-api ac-2
+  it('should clamp range to file boundaries when end exceeds file length', async () => {
+    const head = execSync('git rev-parse HEAD', { cwd: tempDir, encoding: 'utf-8' }).trim();
+
+    const url = `http://localhost/api/diff/context?base=${head}&head=${head}&path=example.ts&start=8&end=999`;
+    const response = await app.handle(
+      new Request(url, { headers: { Host: 'localhost', 'X-Kspec-Dir': tempDir } }),
+    );
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.startLine).toBe(8);
+    // Should clamp to actual file length
+    expect(body.endLine).toBeLessThanOrEqual(body.totalLines);
+    expect(body.lines.length).toBeGreaterThan(0);
+    expect(body.lines.length).toBeLessThanOrEqual(body.totalLines - 7);
+  });
+
+  // AC: @review-content-diff-api ac-2
+  it('should return 400 for invalid line range (start > end)', async () => {
+    const head = execSync('git rev-parse HEAD', { cwd: tempDir, encoding: 'utf-8' }).trim();
+
+    const url = `http://localhost/api/diff/context?base=${head}&head=${head}&path=example.ts&start=5&end=2`;
+    const response = await app.handle(
+      new Request(url, { headers: { Host: 'localhost', 'X-Kspec-Dir': tempDir } }),
+    );
+
+    const text = await response.text();
+    expect(response.status).toBe(400);
+    const body = JSON.parse(text);
+    expect(body.error).toBe('validation_error');
+  });
+
+  // AC: @review-content-diff-api ac-2
+  it('should return 404 for non-existent file', async () => {
+    const head = execSync('git rev-parse HEAD', { cwd: tempDir, encoding: 'utf-8' }).trim();
+
+    const url = `http://localhost/api/diff/context?base=${head}&head=${head}&path=nonexistent.ts&start=1&end=5`;
+    const response = await app.handle(
+      new Request(url, { headers: { Host: 'localhost', 'X-Kspec-Dir': tempDir } }),
+    );
+
+    expect(response.status).toBe(404);
+    const body = await response.json();
+    expect(body.error).toBe('file_not_found');
+  });
+
+  // AC: @review-content-diff-api ac-2
+  it('should return 400 for invalid head ref', async () => {
+    const head = execSync('git rev-parse HEAD', { cwd: tempDir, encoding: 'utf-8' }).trim();
+
+    const url = `http://localhost/api/diff/context?base=${head}&head=nonexistent-ref&path=example.ts&start=1&end=5`;
+    const response = await app.handle(
+      new Request(url, { headers: { Host: 'localhost', 'X-Kspec-Dir': tempDir } }),
+    );
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.error).toBe('invalid_ref');
+  });
+});
+
+describe('Diff API - Review Content Route', () => {
+  const REVIEW_PLAN_ULID = testUlid('RVPK', 1);
+  const REVIEW_SPEC_ULID = testUlid('RVSP', 2);
+  const REVIEW_CODE_ULID = testUlid('RVCD', 3);
+  const REVIEW_TASK_ULID = testUlid('RVTK', 4);
+  const REVIEW_EXT_ULID = testUlid('RVXT', 5);
+  const PLAN_ULID = testUlid('PKАН'.replace(/[^0-9A-HJKMNP-TV-Z]/g, '0'), 6);
+  const SPEC_ULID = testUlid('SPEC', 7);
+  const TASK_ULID = testUlid('TASK', 8);
+
+  let tempDir: string;
+  let app: Elysia;
+
+  function makeRequest(reviewId: string) {
+    return app.handle(
+      new Request(`http://localhost/api/reviews/${reviewId}/content`, {
+        headers: { Host: 'localhost', 'X-Kspec-Dir': tempDir },
+      }),
+    );
+  }
+
+  beforeEach(async () => {
+    tempDir = await createTempDir('kspec-diff-review-content-');
+    initGitRepo(tempDir);
+
+    // Create .kspec/ so projectContextMiddleware accepts the directory
+    mkdirSync(path.join(tempDir, '.kspec'), { recursive: true });
+
+    // Create minimal kspec project structure
+    mkdirSync(path.join(tempDir, 'modules'), { recursive: true });
+
+    // Manifest
+    writeFileSync(
+      path.join(tempDir, 'kynetic.yaml'),
+      `kynetic: "1.0"
+project:
+  name: Test Project
+  version: "0.1.0"
+  status: draft
+includes:
+  - modules/test.yaml
+tasks_file: project.tasks.yaml
+`,
+    );
+
+    // Spec item
+    writeFileSync(
+      path.join(tempDir, 'modules', 'test.yaml'),
+      `features:
+  - _ulid: "${SPEC_ULID}"
+    slugs:
+      - test-feature
+    title: "Test Feature"
+    type: feature
+    description: "A test feature for review content tests"
+    acceptance_criteria:
+      - id: ac-1
+        given: "a condition"
+        when: "something happens"
+        then: "expected result"
+    traits:
+      - "@some-trait"
+    tags:
+      - test
+    created: "2026-01-01T00:00:00Z"
+`,
+    );
+
+    // Tasks
+    writeFileSync(
+      path.join(tempDir, 'project.tasks.yaml'),
+      `tasks:
+  - _ulid: "${TASK_ULID}"
+    slugs:
+      - task-test
+    title: "Test Task"
+    description: "A test task for review content"
+    status: in_progress
+    spec_ref: "@test-feature"
+    created_at: "2026-01-01T00:00:00Z"
+    notes:
+      - _ulid: "${testUlid('N0TE', 1)}"
+        created_at: "2026-01-02T00:00:00Z"
+        author: "@test"
+        content: "Started working on this task"
+`,
+    );
+
+    // Plans
+    writeFileSync(
+      path.join(tempDir, 'project.plans.yaml'),
+      `kynetic_plans: "1.0"
+plans:
+  - _ulid: "${PLAN_ULID}"
+    slugs:
+      - plan-test
+    title: "Test Plan"
+    content: "## Plan Content\\n\\nThis is the plan markdown body."
+    status: approved
+    derived_specs:
+      - "@test-feature"
+    derived_tasks:
+      - "@task-test"
+    created_at: "2026-01-01T00:00:00Z"
+    notes:
+      - _ulid: "${testUlid('PN0T', 1)}"
+        created_at: "2026-01-02T00:00:00Z"
+        author: "@test"
+        content: "Plan approved"
+`,
+    );
+
+    // Reviews — multiple subject types
+    writeFileSync(
+      path.join(tempDir, 'project.reviews.yaml'),
+      `kynetic_reviews: "1.0"
+reviews:
+  - _ulid: "${REVIEW_PLAN_ULID}"
+    slugs:
+      - review-plan
+    title: "Review plan"
+    lifecycle_state: open
+    author: "@test"
+    subject:
+      type: plan
+      ref: "@plan-test"
+      shadow_commit: "abc123"
+      content_hash: "hash1"
+    created_at: "2026-01-01T00:00:00Z"
+  - _ulid: "${REVIEW_SPEC_ULID}"
+    slugs:
+      - review-spec
+    title: "Review spec"
+    lifecycle_state: open
+    author: "@test"
+    subject:
+      type: spec
+      ref: "@test-feature"
+      shadow_commit: "abc123"
+      content_hash: "hash2"
+    created_at: "2026-01-01T00:00:00Z"
+  - _ulid: "${REVIEW_CODE_ULID}"
+    slugs:
+      - review-code
+    title: "Review code"
+    lifecycle_state: open
+    author: "@test"
+    subject:
+      type: code
+      base_commit: "aaa111"
+      head_commit: "bbb222"
+    created_at: "2026-01-01T00:00:00Z"
+  - _ulid: "${REVIEW_TASK_ULID}"
+    slugs:
+      - review-task
+    title: "Review task"
+    lifecycle_state: open
+    author: "@test"
+    subject:
+      type: task
+      ref: "@task-test"
+      shadow_commit: "abc123"
+      content_hash: "hash3"
+    created_at: "2026-01-01T00:00:00Z"
+  - _ulid: "${REVIEW_EXT_ULID}"
+    slugs:
+      - review-external
+    title: "Review external"
+    lifecycle_state: open
+    author: "@test"
+    subject:
+      type: external
+      url: "https://github.com/example/issue/1"
+      provider: github
+    created_at: "2026-01-01T00:00:00Z"
+`,
+    );
+
+    execSync('git add -A && git commit -m "kspec project setup"', { cwd: tempDir, stdio: 'pipe' });
+
+    const { middleware } = projectContextMiddleware();
+    app = new Elysia().use(middleware).use(createDiffRoutes());
+  });
+
+  afterEach(async () => {
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @review-content-diff-api ac-4
+  it('should return plan content with sections for plan subject', async () => {
+    const response = await makeRequest('review-plan');
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.review_id).toBe(REVIEW_PLAN_ULID);
+    expect(body.subject_type).toBe('plan');
+    expect(body.subject_ref).toBe('@plan-test');
+    expect(body.content.title).toBe('Test Plan');
+
+    const sections = body.content.sections;
+    const contentSection = sections.find((s: { id: string }) => s.id === 'content');
+    expect(contentSection).toBeDefined();
+    expect(contentSection.type).toBe('markdown');
+
+    const specsSection = sections.find((s: { id: string }) => s.id === 'specs');
+    expect(specsSection).toBeDefined();
+    expect(specsSection.type).toBe('ref_list');
+    expect(specsSection.refs).toContain('@test-feature');
+
+    const tasksSection = sections.find((s: { id: string }) => s.id === 'tasks');
+    expect(tasksSection).toBeDefined();
+    expect(tasksSection.refs).toContain('@task-test');
+
+    const notesSection = sections.find((s: { id: string }) => s.id === 'notes');
+    expect(notesSection).toBeDefined();
+    expect(notesSection.type).toBe('notes');
+  });
+
+  // AC: @review-content-diff-api ac-4
+  it('should return spec content with description, ACs, traits, and metadata for spec subject', async () => {
+    const response = await makeRequest('review-spec');
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.review_id).toBe(REVIEW_SPEC_ULID);
+    expect(body.subject_type).toBe('spec');
+    expect(body.subject_ref).toBe('@test-feature');
+    expect(body.content.title).toBe('Test Feature');
+
+    const sections = body.content.sections;
+    const descSection = sections.find((s: { id: string }) => s.id === 'description');
+    expect(descSection).toBeDefined();
+    expect(descSection.type).toBe('markdown');
+    expect(descSection.content).toContain('test feature');
+
+    const acSection = sections.find((s: { id: string }) => s.id === 'acceptance_criteria');
+    expect(acSection).toBeDefined();
+    expect(acSection.type).toBe('acceptance_criteria');
+    expect(acSection.criteria).toHaveLength(1);
+    expect(acSection.criteria[0].id).toBe('ac-1');
+
+    const traitsSection = sections.find((s: { id: string }) => s.id === 'traits');
+    expect(traitsSection).toBeDefined();
+    expect(traitsSection.refs).toContain('@some-trait');
+
+    const metaSection = sections.find((s: { id: string }) => s.id === 'metadata');
+    expect(metaSection).toBeDefined();
+    expect(metaSection.type).toBe('metadata');
+    expect(metaSection.metadata._ulid).toBe(SPEC_ULID);
+  });
+
+  // AC: @review-content-diff-api ac-4
+  it('should return diff_params for code subject (no entity content)', async () => {
+    const response = await makeRequest('review-code');
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.review_id).toBe(REVIEW_CODE_ULID);
+    expect(body.subject_type).toBe('code');
+    expect(body.content).toBeNull();
+    expect(body.diff_params.base).toBe('aaa111');
+    expect(body.diff_params.head).toBe('bbb222');
+  });
+
+  // AC: @review-content-diff-api ac-4
+  it('should return task content with description and notes for task subject', async () => {
+    const response = await makeRequest('review-task');
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.review_id).toBe(REVIEW_TASK_ULID);
+    expect(body.subject_type).toBe('task');
+    expect(body.subject_ref).toBe('@task-test');
+    expect(body.content.title).toBe('Test Task');
+
+    const sections = body.content.sections;
+    const descSection = sections.find((s: { id: string }) => s.id === 'description');
+    expect(descSection).toBeDefined();
+    expect(descSection.content).toContain('test task');
+
+    const notesSection = sections.find((s: { id: string }) => s.id === 'notes');
+    expect(notesSection).toBeDefined();
+    expect(notesSection.notes).toHaveLength(1);
+  });
+
+  // AC: @review-content-diff-api ac-4
+  it('should return null content for external subject', async () => {
+    const response = await makeRequest('review-external');
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.review_id).toBe(REVIEW_EXT_ULID);
+    expect(body.subject_type).toBe('external');
+    expect(body.content).toBeNull();
+  });
+
+  // AC: @review-content-diff-api ac-4
+  it('should return 404 for non-existent review', async () => {
+    const response = await makeRequest('nonexistent-review');
+
+    expect(response.status).toBe(404);
+    const body = await response.json();
+    expect(body.error).toBe('not_found');
+    expect(body.suggestion).toBeDefined();
   });
 });
 

@@ -12,7 +12,7 @@
  */
 
 import { Elysia, t } from 'elysia';
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 import {
   initContext,
   loadAllItems,
@@ -32,9 +32,11 @@ import { parseUnifiedDiff } from '../../utils/git-diff-parser.js';
  * Run git diff between two refs and return raw output.
  */
 function runGitDiff(base: string, head: string, cwd: string, filePath?: string): string {
-  const pathArg = filePath ? ` -- ${JSON.stringify(filePath)}` : '';
-  const cmd = `git diff ${base}..${head}${pathArg}`;
-  return execSync(cmd, {
+  const args = ['diff', `${base}..${head}`];
+  if (filePath) {
+    args.push('--', filePath);
+  }
+  return execFileSync('git', args, {
     cwd,
     encoding: 'utf-8',
     stdio: ['pipe', 'pipe', 'pipe'],
@@ -47,7 +49,7 @@ function runGitDiff(base: string, head: string, cwd: string, filePath?: string):
  */
 function getFileAtCommit(commit: string, filePath: string, cwd: string): string | null {
   try {
-    return execSync(`git show ${commit}:${filePath}`, {
+    return execFileSync('git', ['show', `${commit}:${filePath}`], {
       cwd,
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'pipe'],
@@ -63,7 +65,7 @@ function getFileAtCommit(commit: string, filePath: string, cwd: string): string 
  */
 function isValidGitRef(ref: string, cwd: string): boolean {
   try {
-    execSync(`git rev-parse --verify ${ref}`, {
+    execFileSync('git', ['rev-parse', '--verify', ref], {
       cwd,
       encoding: 'utf-8',
       stdio: ['pipe', 'pipe', 'pipe'],
@@ -82,34 +84,37 @@ export function createDiffRoutes() {
     // AC: @review-content-diff-api ac-1 - Full diff with file list, stats, and structured hunks
     .get(
       '/api/diff',
-      async ({ query, error: errorResponse, projectContext }) => {
+      async ({ query, set, projectContext }) => {
         const { base, head } = query;
 
         if (!base || !head) {
-          return errorResponse(400, {
+          set.status = 400;
+          return {
             error: 'validation_error',
             message: 'Both "base" and "head" query parameters are required',
             suggestion: 'Provide base and head commit refs, e.g. GET /api/diff?base=abc123&head=def456',
-          });
+          };
         }
 
         const projectPath = projectContext.path;
 
         // Validate refs exist
         if (!isValidGitRef(base, projectPath)) {
-          return errorResponse(400, {
+          set.status = 400;
+          return {
             error: 'invalid_ref',
             message: `Base ref "${base}" is not a valid git reference`,
             suggestion: 'Check the ref exists with: git rev-parse --verify <ref>',
-          });
+          };
         }
 
         if (!isValidGitRef(head, projectPath)) {
-          return errorResponse(400, {
+          set.status = 400;
+          return {
             error: 'invalid_ref',
             message: `Head ref "${head}" is not a valid git reference`,
             suggestion: 'Check the ref exists with: git rev-parse --verify <ref>',
-          });
+          };
         }
 
         try {
@@ -117,11 +122,12 @@ export function createDiffRoutes() {
           const parsed = parseUnifiedDiff(diffOutput, base, head);
           return parsed;
         } catch (err) {
-          return errorResponse(500, {
+          set.status = 500;
+          return {
             error: 'git_error',
             message: `Failed to compute diff: ${err instanceof Error ? err.message : String(err)}`,
             suggestion: 'Ensure both refs are valid and the repository is accessible',
-          });
+          };
         }
       },
       {
@@ -135,55 +141,60 @@ export function createDiffRoutes() {
     // AC: @review-content-diff-api ac-3 - Single file diff for lazy loading
     .get(
       '/api/diff/file',
-      async ({ query, error: errorResponse, projectContext }) => {
+      async ({ query, set, projectContext }) => {
         const { base, head, path: filePath } = query;
 
         if (!base || !head || !filePath) {
-          return errorResponse(400, {
+          set.status = 400;
+          return {
             error: 'validation_error',
             message: '"base", "head", and "path" query parameters are required',
             suggestion: 'Provide all parameters, e.g. GET /api/diff/file?base=abc&head=def&path=src/index.ts',
-          });
+          };
         }
 
         const projectPath = projectContext.path;
 
         if (!isValidGitRef(base, projectPath)) {
-          return errorResponse(400, {
+          set.status = 400;
+          return {
             error: 'invalid_ref',
             message: `Base ref "${base}" is not a valid git reference`,
             suggestion: 'Check the ref exists with: git rev-parse --verify <ref>',
-          });
+          };
         }
 
         if (!isValidGitRef(head, projectPath)) {
-          return errorResponse(400, {
+          set.status = 400;
+          return {
             error: 'invalid_ref',
             message: `Head ref "${head}" is not a valid git reference`,
             suggestion: 'Check the ref exists with: git rev-parse --verify <ref>',
-          });
+          };
         }
 
         try {
           const diffOutput = runGitDiff(base, head, projectPath, filePath);
 
           if (!diffOutput.trim()) {
-            return errorResponse(404, {
+            set.status = 404;
+            return {
               error: 'no_diff',
               message: `No diff found for file "${filePath}" between ${base} and ${head}`,
               suggestion: 'The file may not have changed between these refs',
-            });
+            };
           }
 
           const parsed = parseUnifiedDiff(diffOutput, base, head);
           const file = parsed.files[0];
 
           if (!file) {
-            return errorResponse(404, {
+            set.status = 404;
+            return {
               error: 'no_diff',
               message: `No diff found for file "${filePath}" between ${base} and ${head}`,
               suggestion: 'The file may not have changed between these refs',
-            });
+            };
           }
 
           return {
@@ -192,11 +203,12 @@ export function createDiffRoutes() {
             file,
           };
         } catch (err) {
-          return errorResponse(500, {
+          set.status = 500;
+          return {
             error: 'git_error',
             message: `Failed to compute file diff: ${err instanceof Error ? err.message : String(err)}`,
             suggestion: 'Ensure the file path and refs are valid',
-          });
+          };
         }
       },
       {
@@ -211,47 +223,51 @@ export function createDiffRoutes() {
     // AC: @review-content-diff-api ac-2 - Context expansion for a file region
     .get(
       '/api/diff/context',
-      async ({ query, error: errorResponse, projectContext }) => {
+      async ({ query, set, projectContext }) => {
         const { base, head, path: filePath, start, end } = query;
 
         if (!base || !head || !filePath || !start || !end) {
-          return errorResponse(400, {
+          set.status = 400;
+          return {
             error: 'validation_error',
             message: '"base", "head", "path", "start", and "end" query parameters are required',
             suggestion: 'Provide all parameters for context expansion',
-          });
+          };
         }
 
         const startLine = parseInt(start, 10);
         const endLine = parseInt(end, 10);
 
         if (isNaN(startLine) || isNaN(endLine) || startLine < 1 || endLine < startLine) {
-          return errorResponse(400, {
+          set.status = 400;
+          return {
             error: 'validation_error',
             message: '"start" and "end" must be positive integers with start <= end',
             suggestion: 'Line numbers are 1-based',
-          });
+          };
         }
 
         const projectPath = projectContext.path;
 
         if (!isValidGitRef(head, projectPath)) {
-          return errorResponse(400, {
+          set.status = 400;
+          return {
             error: 'invalid_ref',
             message: `Head ref "${head}" is not a valid git reference`,
             suggestion: 'Check the ref exists with: git rev-parse --verify <ref>',
-          });
+          };
         }
 
         try {
           const fileContent = getFileAtCommit(head, filePath, projectPath);
 
           if (fileContent === null) {
-            return errorResponse(404, {
+            set.status = 404;
+            return {
               error: 'file_not_found',
               message: `File "${filePath}" not found at commit ${head}`,
               suggestion: 'Check the file path and commit ref are correct',
-            });
+            };
           }
 
           const allLines = fileContent.split('\n');
@@ -276,11 +292,12 @@ export function createDiffRoutes() {
             lines: contextLines,
           };
         } catch (err) {
-          return errorResponse(500, {
+          set.status = 500;
+          return {
             error: 'git_error',
             message: `Failed to get file context: ${err instanceof Error ? err.message : String(err)}`,
             suggestion: 'Ensure the file path and commit ref are valid',
-          });
+          };
         }
       },
       {
@@ -297,17 +314,18 @@ export function createDiffRoutes() {
     // AC: @review-content-diff-api ac-4 - Review content (plans/specs)
     .get(
       '/api/reviews/:id/content',
-      async ({ params, error: errorResponse, projectContext }) => {
+      async ({ params, set, projectContext }) => {
         const ctx = await initContext(projectContext.path);
         const reviews = await loadReviewRecords(ctx);
         const review = findReviewByRef(reviews, params.id);
 
         if (!review) {
-          return errorResponse(404, {
+          set.status = 404;
+          return {
             error: 'not_found',
             message: `Review "${params.id}" not found`,
             suggestion: 'Use kspec review list or kspec search to find valid review references',
-          });
+          };
         }
 
         const subject = review.subject;
@@ -316,11 +334,12 @@ export function createDiffRoutes() {
         if (subject.type === 'plan') {
           const plan = await findPlanByRef(ctx, subject.ref);
           if (!plan) {
-            return errorResponse(404, {
+            set.status = 404;
+            return {
               error: 'not_found',
               message: `Plan "${subject.ref}" referenced by review not found`,
               suggestion: 'The plan may have been deleted or the reference is invalid',
-            });
+            };
           }
 
           return {
@@ -371,20 +390,22 @@ export function createDiffRoutes() {
           const resolved = index.resolve(subject.ref);
 
           if (!resolved.ok) {
-            return errorResponse(404, {
+            set.status = 404;
+            return {
               error: 'not_found',
               message: `Spec "${subject.ref}" referenced by review not found`,
               suggestion: 'The spec may have been deleted or the reference is invalid',
-            });
+            };
           }
 
           const specItem = items.find((i) => i._ulid === resolved.ulid);
           if (!specItem) {
-            return errorResponse(404, {
+            set.status = 404;
+            return {
               error: 'not_found',
               message: `Spec "${subject.ref}" not found in items`,
               suggestion: 'The reference might point to a task instead of a spec item',
-            });
+            };
           }
 
           const sections: Array<{
@@ -474,19 +495,21 @@ export function createDiffRoutes() {
           const resolved = index.resolve(subject.ref);
 
           if (!resolved.ok) {
-            return errorResponse(404, {
+            set.status = 404;
+            return {
               error: 'not_found',
               message: `Task "${subject.ref}" referenced by review not found`,
               suggestion: 'The task may have been deleted or the reference is invalid',
-            });
+            };
           }
 
           const task = tasks.find((t) => t._ulid === resolved.ulid);
           if (!task) {
-            return errorResponse(404, {
+            set.status = 404;
+            return {
               error: 'not_found',
               message: `Task "${subject.ref}" not found`,
-            });
+            };
           }
 
           return {
