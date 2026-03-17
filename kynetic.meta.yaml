@@ -7325,6 +7325,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-17T02:19:48.478Z
+  - _ulid: 01KKX2NNZ9X0W105XW1VBBR982
+    type: friction
+    content: "Core skill template→shadow sync is manual: after editing templates/skills/<id>/SKILL.md,
+      you must manually cp to .kspec/skills/<id>/SKILL.md for codex/droid renders to pick up
+      changes. kspec skill render reads from .kspec/skills/, not templates/. This step is easy to
+      forget and the render silently shows 'no changes needed' when the shadow copy is stale."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-17T05:00:37.738Z
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     description: Get help with kspec commands and workflows
