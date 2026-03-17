@@ -7802,7 +7802,18 @@ reviews:
     slugs: []
     title: Review round-trip stability for plan record YAML writes (cycle 3)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 8ee6537e0a4a
+          head_commit: 493fdd9943d7
+        evidence: All 30 round-trip stability tests pass, including 6 new plan tests
+        name: vitest (yaml-round-trip-stability)
+        required: true
+        runner: vitest
+        created_at: 2026-03-17T18:53:08.813Z
+        completed_at: 2026-03-17T18:53:08.813Z
     events:
       - _ulid: 01KKYH1147HA7E11N76WYM7HS9
         actor: "@claude"
@@ -7824,6 +7835,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKYJ9J6QTHS11H8CR1EVV8FN
         timestamp: 2026-03-17T18:52:52.501Z
+      - _ulid: 01KKYJA2GSQDJANQ2FWDGCKW6C
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest (yaml-round-trip-stability)
+        timestamp: 2026-03-17T18:53:09.017Z
     examined_commit: 493fdd9943d7fc65bb0400bfaa99c7ab322b31c5
     external_links: []
     lifecycle_state: open
@@ -7860,7 +7878,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-17T18:30:44.103Z
-    updated_at: 2026-03-17T18:52:52.313Z
+    updated_at: 2026-03-17T18:53:08.813Z
     notes: []
   - _ulid: 01KKYH338DJ81TVY8G203C3XR6
     slugs: []
