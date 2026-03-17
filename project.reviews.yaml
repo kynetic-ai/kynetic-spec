@@ -5276,6 +5276,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKXK9R2DBAS3F0AK7AG14SDQ
         timestamp: 2026-03-17T09:51:12.509Z
+      - _ulid: 01KKXKA0R9P9Q3Q584AKVKB2WX
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKXKA0P8DSXGMC51PX2P14KT
+        timestamp: 2026-03-17T09:51:21.353Z
     examined_commit: d64977992f74f0cedcca191057909151a1803c27
     external_links: []
     lifecycle_state: open
@@ -5366,7 +5373,26 @@ reviews:
               validation: check that both values are integers > 0, and that line_end >= line_start."
             created_at: 2026-03-17T09:51:12.461Z
         kind: blocker
+      - _ulid: 01KKXKA0P8DSXGMC51PX2P14KT
+        anchor:
+          type: code
+          commit: d64977992f74
+          line_end: 118
+          line_start: 111
+          path: packages/daemon/src/routes/reviews.ts
+          side: head
+        entries:
+          - _ulid: 01KKXKA0P8BV6SWNYV805XSQTA
+            author: "@claude"
+            body: "Empty structured anchor (type: 'structured' with no other fields) is accepted. The
+              conditional spread at lines 114-117 strips falsy values, so {type: 'structured'} with
+              no section/field/path/ref produces just {type: 'structured'} — a contextless anchor
+              with no target. This appears to be valid per the Zod schema (all fields optional), but
+              is worth considering whether at least one of section, field, path, or ref should be
+              required for the anchor to be meaningful."
+            created_at: 2026-03-17T09:51:21.289Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-17T09:50:19.140Z
-    updated_at: 2026-03-17T09:51:12.461Z
+    updated_at: 2026-03-17T09:51:21.289Z
     notes: []
