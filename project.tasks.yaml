@@ -101377,7 +101377,19 @@
   session_id: 01KKYKNXTN7VG2A5AQPN5D38JN
   created_at: 2026-03-16T08:29:01.199Z
   started_at: 2026-03-17T19:17:30.733Z
-  notes: []
+  notes:
+    - _ulid: 01KKYN2KTE5QKZEEK3AYFPJH0E
+      content: "WebSocket broadcasts were already implemented in reviews.ts routes (7 events:
+        thread_created, thread_replied, thread_resolved, thread_reopened, verdict_submitted,
+        check_added, lifecycle_changed) and client-side ws-invalidation.ts already handles
+        reviews:updates topic. Added typed event data interfaces (ReviewThreadCreatedEventData,
+        etc.) to packages/shared/src/websocket.ts for type safety. Created
+        daemon-review-websocket.test.ts with 12 tests verifying all broadcast behaviors: correct
+        topic, event type, payload shape, projectPath inclusion, and no-broadcast on error.
+        Pre-existing failure in review-cli.test.ts (examined_commit auto-population) is unrelated."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T19:41:30.318Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6J1F8NHGA7G7SJJ1ZFFS
