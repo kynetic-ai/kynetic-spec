@@ -7321,6 +7321,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKXX2A41Z7GM5FRME7G8HRNW
         timestamp: 2026-03-17T12:41:54.629Z
+      - _ulid: 01KKXX2KPE204FAJMH3EJGCD1J
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKXX2KME2PBY21ZQ2FG0N0AS
+        timestamp: 2026-03-17T12:42:04.366Z
     examined_commit: fa760b196f109d5827f3a7a9287dfc0edc65b932
     external_links: []
     lifecycle_state: open
@@ -7352,7 +7359,26 @@ reviews:
               reviews that the task description says it's fixing for plans."
             created_at: 2026-03-17T12:41:54.562Z
         kind: blocker
+      - _ulid: 01KKXX2KME2PBY21ZQ2FG0N0AS
+        anchor:
+          type: code
+          commit: fa760b196f109d5827f3a7a9287dfc0edc65b932
+          line_end: 499
+          line_start: 498
+          path: tests/yaml-round-trip-stability.test.ts
+          side: head
+        entries:
+          - _ulid: 01KKXX2KMEBCD6TDQ86HXTCGG7
+            author: "@claude"
+            body: Review round-trip stability tests deleted and replaced. The dev branch had a describe block
+              'round-trip stability — saveReviewRecord path' (6 tests covering identity save,
+              identity mutation, multi-review stability, Zod default pollution, delete
+              preservation). This commit deletes all of those tests and replaces them with plan
+              tests. The plan tests are correct and well-written, but they should be ADDED alongside
+              the review tests, not replace them. Review write-path coverage is now zero.
+            created_at: 2026-03-17T12:42:04.302Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T12:41:31.776Z
-    updated_at: 2026-03-17T12:41:54.562Z
+    updated_at: 2026-03-17T12:42:04.302Z
     notes: []
