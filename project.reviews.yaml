@@ -4599,7 +4599,21 @@ reviews:
     slugs: []
     title: Review fix-yaml-stringify-anchor-alias-crash
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: cb7b18fe1
+          head_commit: 5ec752de7
+        evidence: "All 38 tests passed in 4 targeted test files (yaml-round-trip-stability,
+          yaml-canonical-key-order, dispatch-runtime-bootstrap-contract,
+          dispatch-workspace-and-scheduler-flow). Full suite: 5668 passed, 4 flaky failures
+          unrelated to change (fake timer race + ENOTEMPTY race)."
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-17T07:41:08.740Z
+        completed_at: 2026-03-17T07:41:08.740Z
     events:
       - _ulid: 01KKXBTWBW3HBH0VB9KWG2ZX4V
         actor: "@claude"
@@ -4614,6 +4628,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-17T07:40:56.624Z
+      - _ulid: 01KKXBVK9RVFDRQX2T505TM0QK
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-17T07:41:08.792Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -4626,5 +4647,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T07:40:45.311Z
-    updated_at: 2026-03-17T07:40:56.571Z
+    updated_at: 2026-03-17T07:41:08.740Z
     notes: []
