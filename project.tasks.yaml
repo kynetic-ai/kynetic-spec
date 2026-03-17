@@ -103679,6 +103679,19 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T19:22:34.327Z
+    - _ulid: 01KKYNJ7EREXZ1P7X9G1RZNFD8
+      content: "Fix cycle 1: The out-of-scope changes (daemon review API routes removal, deleted test
+        file, unexported VALID_TRANSITIONS) were caused by the branch diverging from dev — the
+        branch was created before those changes were merged to dev. Merged current dev into the
+        branch to pick up the missing commits. The diff against dev now contains only the 2 in-scope
+        files: src/parser/dispatch-workspaces.ts (round-trip stability changes) and
+        tests/yaml-round-trip-stability.test.ts (5 new dispatch workspace tests). All 35 round-trip
+        stability tests pass, all 31 daemon review verdict tests pass. One pre-existing failure in
+        tests/review-cli.test.ts (examined_commit auto-populated when test expects null) is
+        unrelated — file is untouched by this branch."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T19:50:01.945Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6CEQFM17JX8AKKRPXQGR7
