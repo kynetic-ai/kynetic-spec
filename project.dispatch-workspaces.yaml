@@ -8129,12 +8129,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-17T19:52:15.017Z
+      updated_at: 2026-03-17T19:52:17.161Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T19:52:15.017Z
+      updated_at: 2026-03-17T19:52:17.161Z
     integration:
       status: pending
       detail: null
@@ -8142,7 +8142,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-      updated_at: 2026-03-17T19:52:15.017Z
+      updated_at: 2026-03-17T19:52:17.161Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KKX6CEQFM17JX8AKKRPXQGR7"
@@ -8150,9 +8150,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T19:51:21.209Z
-      last_reconciled_at: 2026-03-17T19:52:15.017Z
+      last_reconciled_at: 2026-03-17T19:52:17.161Z
       created_at: 2026-03-17T19:50:36.635Z
-      updated_at: 2026-03-17T19:52:15.017Z
+      updated_at: 2026-03-17T19:52:17.161Z
     workspace_id: dispatch-workspace-01KKX6CEQFM17JX8AKKRPXQGR7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -8161,5 +8161,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/round-trip-stability-for-triage-record-yaml-writes/01kkx6ce
         head: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-        last_seen_at: 2026-03-17T19:51:20.017Z
+        last_seen_at: 2026-03-17T19:52:17.161Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-triage-record-yaml-writes-01kkx6ce
