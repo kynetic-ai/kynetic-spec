@@ -103164,8 +103164,13 @@
   spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Applied raw-data-preservation pattern (extractRawReviewArray +
+    mergeReviewPreservingRawShape) to all three review record write paths (saveReviewRecord,
+    mutateReviewAtomically, deleteReviewRecord). Non-target reviews are no longer polluted with Zod
+    defaults. 5 new round-trip stability tests verify byte-identical output on no-op
+    saves/mutations.
   depends_on: []
   context: []
   priority: 3
@@ -103186,6 +103191,7 @@
   created_at: 2026-03-17T06:05:21.149Z
   started_at: 2026-03-17T12:09:51.163Z
   submitted_at: 2026-03-17T12:17:52.209Z
+  completed_at: 2026-03-17T12:28:03.472Z
   notes:
     - _ulid: 01KKXVP2NA8XY1CTSW2JB92KND
       content: "Applied extractRaw + mergePreservingRawShape pattern from the task write path to all three
