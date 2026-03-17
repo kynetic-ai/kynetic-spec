@@ -7032,12 +7032,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-17T10:12:03.252Z
+      updated_at: 2026-03-17T10:12:05.423Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T10:12:03.252Z
+      updated_at: 2026-03-17T10:12:05.423Z
     integration:
       status: pending
       detail: null
@@ -7045,26 +7045,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b3def74fcec96e5059b954fcc1d88e2daf357332
-      updated_at: 2026-03-17T10:12:03.252Z
-    lifecycle_state: ready
+      updated_at: 2026-03-17T10:12:05.423Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKTW6G1640H2J7RF82ZVSEXT"
     task_slug: task-review-api-threads
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T10:02:24.468Z
-      last_reconciled_at: 2026-03-17T10:12:03.252Z
+      last_reconciled_at: 2026-03-17T10:12:05.423Z
       created_at: 2026-03-17T09:25:01.620Z
-      updated_at: 2026-03-17T10:12:03.252Z
+      updated_at: 2026-03-17T10:12:05.423Z
     workspace_id: dispatch-workspace-01KKTW6G1640H2J7RF82ZVSEXT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 74be26083a8b53469bddc8b643d21383c58bbfd1
+        last_seen_at: 2026-03-17T10:12:05.423Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-threads-01kktw6g-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-review-api-threads/01kktw6g
-        head: d64977992f74f0cedcca191057909151a1803c27
-        last_seen_at: 2026-03-17T10:02:23.914Z
+        head: 74be26083a8b53469bddc8b643d21383c58bbfd1
+        last_seen_at: 2026-03-17T10:12:05.423Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-threads-01kktw6g
   - active_role: reviewer
     base_branch_point: 3a64769a2efda93e4e685368ef9c453100e596a2
