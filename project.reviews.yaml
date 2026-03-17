@@ -6827,6 +6827,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKXTXHM4Y8MBFB88J9GH6417
         timestamp: 2026-03-17T12:04:21.321Z
+      - _ulid: 01KKXTXMTET190CQV5W5814V55
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKXTXMQS2MZ09W9DD6WHTTX2
+        timestamp: 2026-03-17T12:04:24.526Z
     examined_commit: c5efe894e4239535bfece91f2c452bf1dc2e44f7
     external_links: []
     lifecycle_state: open
@@ -6854,7 +6861,26 @@ reviews:
               fragility if diffs are ever produced by manual edits or rebases.
             created_at: 2026-03-17T12:04:21.252Z
         kind: nit
+      - _ulid: 01KKXTXMQS2MZ09W9DD6WHTTX2
+        anchor:
+          type: code
+          commit: c5efe894e423
+          line_end: 329
+          line_start: 329
+          path: src/utils/activity.ts
+          side: head
+        entries:
+          - _ulid: 01KKXTXMQS7QQG0685HZXD4PB7
+            author: "@claude"
+            body: addedMapChildFields and removedMapChildFields share a single mapChildFields set. A field name
+              appearing as a child of a removed map will suppress a legitimately added top-level
+              scalar field with the same name. review_url exists both in SubmissionLinkageSchema and
+              as a top-level task field, making this collision possible in theory. Consider
+              separating into addedMapChildFields and removedMapChildFields in a future hardening
+              pass.
+            created_at: 2026-03-17T12:04:24.441Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-17T12:04:01.716Z
-    updated_at: 2026-03-17T12:04:21.252Z
+    updated_at: 2026-03-17T12:04:24.441Z
     notes: []
