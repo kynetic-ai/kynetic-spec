@@ -1018,7 +1018,6 @@ async function generateAgentInstructions(
 
     // Generate content using the canonical implementation from agents.ts
     const content = await generateAgentsContent(
-      metaCtx.skills,
       metaCtx.conventions,
       metaCtx.workflows,
       timestamp,
@@ -1028,7 +1027,6 @@ async function generateAgentInstructions(
     if (!dryRun) {
       // Compute meta hash for freshness tracking
       const metaHash = computeMetaHash(
-        metaCtx.skills,
         metaCtx.conventions,
         metaCtx.workflows,
         templateSections,
