@@ -32,6 +32,7 @@ import { createSessionRoutes } from './routes/sessions';
 import { createPlansRoutes } from './routes/plans';
 import { createAggregationRoutes } from './routes/aggregation';
 import { createRefsRoutes } from './routes/refs';
+import { createReviewsRoutes } from './routes/reviews';
 import { ShadowSyncScheduler } from './shadow-sync';
 import { SessionSyncScheduler } from './session-sync';
 import { join } from 'path';
@@ -316,6 +317,9 @@ export async function createServer(options: ServerOptions) {
 
     // AC: @ui-api-ref-resolution ac-4, ac-5 - Lightweight ref index endpoint
     .use(createRefsRoutes())
+
+    // AC: @review-records-daemon-api ac-3, ac-4, ac-5, ac-9, ac-10 - Review thread mutation endpoints
+    .use(createReviewsRoutes({ pubsub: pubsubManager }))
 
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
     // AC: @daemon-agent-dispatch ac-3, ac-4 - Pass pubsub for WebSocket broadcast on invocation events

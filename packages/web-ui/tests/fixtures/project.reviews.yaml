@@ -1,0 +1,79 @@
+kynetic_reviews: "1.0"
+reviews:
+  - _ulid: 01KKTX0CA45ZT43W2T6HJMVA01
+    slugs:
+      - test-review-open
+    title: "Review of test task"
+    lifecycle_state: open
+    subject:
+      type: task
+      ref: "@test-task-pending-review"
+      shadow_commit: "abc1234"
+      content_hash: "hash123"
+    author: "reviewer@test.com"
+    related_refs: []
+    threads:
+      - _ulid: 01KKTX1CA45ZT43W2T6HJMVA02
+        kind: blocker
+        entries:
+          - _ulid: 01KKTX2CA45ZT43W2T6HJMVA03
+            author: "reviewer@test.com"
+            body: "Missing error handling for edge case"
+            created_at: "2026-03-15T10:00:00Z"
+      - _ulid: 01KKTX3CA45ZT43W2T6HJMVA04
+        kind: nit
+        entries:
+          - _ulid: 01KKTX4CA45ZT43W2T6HJMVA05
+            author: "reviewer@test.com"
+            body: "Consider renaming this variable"
+            created_at: "2026-03-15T10:05:00Z"
+      - _ulid: 01KKTX5CA45ZT43W2T6HJMVA06
+        kind: question
+        resolved_at: "2026-03-15T11:00:00Z"
+        resolved_by: "worker@test.com"
+        entries:
+          - _ulid: 01KKTX6CA45ZT43W2T6HJMVA07
+            author: "reviewer@test.com"
+            body: "Why was this approach chosen?"
+            created_at: "2026-03-15T10:10:00Z"
+          - _ulid: 01KKTX7CA45ZT43W2T6HJMVA08
+            author: "worker@test.com"
+            body: "Because it handles concurrent writes better"
+            created_at: "2026-03-15T10:30:00Z"
+    checks: []
+    verdicts: []
+    events:
+      - _ulid: 01KKTX8CA45ZT43W2T6HJMVA09
+        event_type: lifecycle_change
+        actor: "reviewer@test.com"
+        timestamp: "2026-03-15T09:00:00Z"
+        payload:
+          from: draft
+          to: open
+    notes: []
+    external_links: []
+    examined_commit: null
+    created_at: "2026-03-15T09:00:00Z"
+    updated_at: "2026-03-15T11:00:00Z"
+
+  - _ulid: 01KKTX9CA45ZT43W2T6HJMVA10
+    slugs:
+      - test-review-draft
+    title: "Draft review"
+    lifecycle_state: draft
+    subject:
+      type: task
+      ref: "@test-task-ready"
+      shadow_commit: "def5678"
+      content_hash: "hash456"
+    author: "reviewer@test.com"
+    related_refs: []
+    threads: []
+    checks: []
+    verdicts: []
+    events: []
+    notes: []
+    external_links: []
+    examined_commit: null
+    created_at: "2026-03-15T08:00:00Z"
+    updated_at: null
