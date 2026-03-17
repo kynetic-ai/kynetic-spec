@@ -7579,3 +7579,79 @@ workspaces:
         head: c5efe894e4239535bfece91f2c452bf1dc2e44f7
         last_seen_at: 2026-03-17T11:57:13.276Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-dead-submission-linkage-case-01kkwg44
+  - active_role: null
+    base_branch_point: 8ee6537e0a4a38b0435f8cb18987f5043eb8cb0c
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/round-trip-stability-for-review-record-yaml-writes/01kkx6c6
+    canonical_branch_head: 8ee6537e0a4a38b0435f8cb18987f5043eb8cb0c
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-17T12:09:31.606Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-17T12:09:31.606Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 8ee6537e0a4a38b0435f8cb18987f5043eb8cb0c
+      updated_at: 2026-03-17T12:09:31.606Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KKX6C6BX3055XXKXYD33K4QA"
+    task_slug: round-trip-stability-for-review-record-yaml-writes
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-17T12:09:31.606Z
+      created_at: 2026-03-17T12:09:31.606Z
+      updated_at: 2026-03-17T12:09:31.606Z
+    workspace_id: dispatch-workspace-01KKX6C6BX3055XXKXYD33K4QA
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/round-trip-stability-for-review-record-yaml-writes/01kkx6c6
+        head: 8ee6537e0a4a38b0435f8cb18987f5043eb8cb0c
+        last_seen_at: 2026-03-17T12:09:31.606Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-review-record-yaml-writes-01kkx6c6
