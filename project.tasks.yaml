@@ -103196,7 +103196,7 @@
   spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -103205,7 +103205,9 @@
     - schema
     - plans
   vcs_refs: []
+  session_id: 01KKXVQ4FWFSV40ZJ20XH408CQ
   created_at: 2026-03-17T06:05:22.940Z
+  started_at: 2026-03-17T12:18:41.316Z
   notes: []
   todos: []
   automation: eligible
