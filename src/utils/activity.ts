@@ -320,9 +320,23 @@ export function parseDiffChanges(diff: string): DiffChange[] {
   const removed = new Map<string, string>();
   const added = new Map<string, string>();
 
+  // Track YAML map headers (keys with no scalar value, e.g. "submission_linkage:")
+  // whose nested child fields should be grouped under the parent key
+  const addedMaps = new Set<string>();
+  const removedMaps = new Set<string>();
+
+  // Track fields that are children of a map section (should be suppressed)
+  const mapChildFields = new Set<string>();
+
   // Detect new note insertions (new _ulid entries under notes)
   let inNotesSection = false;
   let foundNewNote = false;
+
+  // Track current map section context for grouping nested fields
+  // When we see "+  submission_linkage:" (map header), child fields like
+  // "+    branch: ..." are nested under it and should not be top-level
+  let currentAddedMap: { name: string; indent: number } | null = null;
+  let currentRemovedMap: { name: string; indent: number } | null = null;
 
   for (const line of lines) {
     // Skip diff headers
@@ -338,6 +352,7 @@ export function parseDiffChanges(diff: string): DiffChange[] {
     // Context and changed lines — detect section context
     const content = line.slice(1); // Remove +/- prefix
     const trimmed = content.trimStart();
+    const indent = content.length - trimmed.length;
 
     // Track if we're in the notes section
     if (/^\s*notes:/.test(content)) {
@@ -350,12 +365,52 @@ export function parseDiffChanges(diff: string): DiffChange[] {
     }
 
     if (line.startsWith("-")) {
+      // Check for map header (field with no scalar value): "key:" or "key: "
+      const mapHeaderMatch = trimmed.match(/^(\w[\w_]*?):\s*$/);
+      if (mapHeaderMatch && !inNotesSection) {
+        removedMaps.add(mapHeaderMatch[1]);
+        currentRemovedMap = { name: mapHeaderMatch[1], indent };
+        continue;
+      }
+
+      // Check if this is a child of a removed map section
+      if (currentRemovedMap && indent > currentRemovedMap.indent) {
+        mapChildFields.add(trimmed.match(/^-?\s*(\w[\w_]*?):/)?.[1] ?? "");
+        continue;
+      }
+      // Not a child — clear map context
+      currentRemovedMap = null;
+
       // Removed line — top-level scalar field (indented 2 spaces under list item)
       const scalarMatch = trimmed.match(/^(\w[\w_]*?):\s+(.+)$/);
       if (scalarMatch && !inNotesSection) {
         removed.set(scalarMatch[1], scalarMatch[2]);
       }
     } else if (line.startsWith("+")) {
+      // Check for map header (field with no scalar value): "key:" or "key: "
+      const mapHeaderMatch = trimmed.match(/^(\w[\w_]*?):\s*$/);
+      if (mapHeaderMatch && !inNotesSection) {
+        addedMaps.add(mapHeaderMatch[1]);
+        currentAddedMap = { name: mapHeaderMatch[1], indent };
+        continue;
+      }
+
+      // Check if this is a child of an added map section
+      if (currentAddedMap && indent > currentAddedMap.indent) {
+        mapChildFields.add(trimmed.match(/^-?\s*(\w[\w_]*?):/)?.[1] ?? "");
+
+        // Still detect new notes inside nested sections
+        if (
+          inNotesSection &&
+          (trimmed.startsWith("_ulid:") || trimmed.startsWith("- _ulid:"))
+        ) {
+          foundNewNote = true;
+        }
+        continue;
+      }
+      // Not a child — clear map context
+      currentAddedMap = null;
+
       // Added line
       const scalarMatch = trimmed.match(/^(\w[\w_]*?):\s+(.+)$/);
       if (scalarMatch && !inNotesSection) {
@@ -370,17 +425,52 @@ export function parseDiffChanges(diff: string): DiffChange[] {
       ) {
         foundNewNote = true;
       }
+    } else {
+      // Context line — reset map tracking
+      currentAddedMap = null;
+      currentRemovedMap = null;
     }
   }
 
-  // Produce changes for scalar fields that changed
+  // Produce changes for scalar fields that changed (excluding map children)
   for (const [field, newValue] of added) {
+    if (mapChildFields.has(field)) continue;
     const oldValue = removed.get(field);
     if (oldValue !== undefined && oldValue !== newValue) {
       changes.push({ field, oldValue, newValue });
     } else if (oldValue === undefined) {
       // Field was added (not present before)
       changes.push({ field, newValue });
+    }
+  }
+
+  // Produce changes for YAML map fields
+  // A map was added (null → map, or absent → map)
+  for (const mapField of addedMaps) {
+    const wasRemoved = removedMaps.has(mapField);
+    const wasScalarNull = removed.has(mapField);
+    if (wasRemoved) {
+      // Map replaced with a new map (unusual but handle it)
+      changes.push({ field: mapField, oldValue: "(map)", newValue: "(map)" });
+    } else if (wasScalarNull) {
+      // null → map (the common submission_linkage case)
+      changes.push({ field: mapField, oldValue: removed.get(mapField), newValue: "(map)" });
+    } else {
+      // Map added where field didn't exist before
+      changes.push({ field: mapField, newValue: "(map)" });
+    }
+  }
+
+  // A map was removed but not re-added (map → null or map → scalar)
+  for (const mapField of removedMaps) {
+    if (addedMaps.has(mapField)) continue; // Already handled above
+    const scalarValue = added.get(mapField);
+    if (scalarValue !== undefined) {
+      // map → scalar (e.g. submission_linkage map → submission_linkage: null)
+      changes.push({ field: mapField, oldValue: "(map)", newValue: scalarValue });
+    } else {
+      // Map removed entirely
+      changes.push({ field: mapField, oldValue: "(map)" });
     }
   }
 

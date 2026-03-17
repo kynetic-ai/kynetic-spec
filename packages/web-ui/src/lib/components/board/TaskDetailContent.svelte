@@ -9,7 +9,7 @@
   and the task list Dialog modal. Handles all task display, actions, and notes.
 -->
 <script lang="ts">
-	import type { TaskDetail } from '@kynetic-ai/shared';
+	import type { TaskDetail, ReviewSummary } from '@kynetic-ai/shared';
 	import { base } from '$app/paths';
 	import {
 		startTask,
@@ -18,6 +18,7 @@
 		blockTask,
 		addTaskNote,
 		fetchTaskSessions,
+		fetchReviewsForTask,
 		type SessionSummary
 	} from '$lib/api';
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
@@ -53,6 +54,12 @@
 	let relatedSessions = $state<SessionSummary[]>([]);
 	let sessionsLoading = $state(false);
 	let sessionsError = $state('');
+
+	// AC: @review-records-web-ui ac-7 — Review data for task detail
+	let linkedReviews = $state<ReviewSummary[]>([]);
+	let reviewsLoading = $state(false);
+	let reviewsError = $state('');
+	let showClosedReviews = $state(false);
 
 	// Note form
 	let noteContent = $state('');
@@ -96,6 +103,39 @@
 			})
 			.finally(() => {
 				if (!cancelled) sessionsLoading = false;
+			});
+
+		return () => {
+			cancelled = true;
+		};
+	});
+
+	// AC: @review-records-web-ui ac-7 — Fetch linked reviews when task changes
+	$effect(() => {
+		if (!task) {
+			linkedReviews = [];
+			reviewsLoading = false;
+			reviewsError = '';
+			showClosedReviews = false;
+			return;
+		}
+
+		let cancelled = false;
+		reviewsLoading = true;
+		reviewsError = '';
+
+		fetchReviewsForTask(task._ulid)
+			.then((response) => {
+				if (cancelled) return;
+				linkedReviews = response.items;
+			})
+			.catch((err) => {
+				if (cancelled) return;
+				reviewsError = err instanceof Error ? err.message : 'Failed to load reviews';
+				linkedReviews = [];
+			})
+			.finally(() => {
+				if (!cancelled) reviewsLoading = false;
 			});
 
 		return () => {
@@ -173,6 +213,36 @@
 	let statusInfo = $derived(task ? getStatusClasses(task.status) : null);
 	let slug = $derived(task?.slugs?.[0] ?? task?._ulid?.slice(0, 8) ?? '');
 	let readOnly = $derived(isStaticMode());
+
+	// AC: @review-records-web-ui ac-7 — Split reviews into current (open/draft) and closed
+	let currentReviews = $derived(
+		linkedReviews.filter((r) => r.lifecycle_state === 'open' || r.lifecycle_state === 'draft')
+	);
+	let closedReviews = $derived(
+		linkedReviews.filter((r) => r.lifecycle_state === 'closed' || r.lifecycle_state === 'archived')
+	);
+
+	function dispositionClasses(disposition: string): string {
+		switch (disposition) {
+			case 'approved':
+				return 'bg-status-completed text-status-completed-fg';
+			case 'changes_requested':
+				return 'bg-status-needs-work text-status-needs-work-fg';
+			default:
+				return 'bg-status-pending text-status-pending-fg';
+		}
+	}
+
+	function dispositionLabel(disposition: string): string {
+		switch (disposition) {
+			case 'approved':
+				return 'Approved';
+			case 'changes_requested':
+				return 'Changes Requested';
+			default:
+				return 'Pending';
+		}
+	}
 </script>
 
 {#if loading}
@@ -337,6 +407,84 @@
 			emptyMessage="No sessions have referenced this task yet."
 			dataTestId="task-related-sessions"
 		/>
+
+		<!-- AC: @review-records-web-ui ac-7 — Reviews linked to this task -->
+		<div data-testid="task-reviews">
+			<h3 class="text-sm font-semibold mb-2">Reviews</h3>
+
+			{#if reviewsLoading}
+				<div class="space-y-2" data-testid="task-reviews-loading">
+					{#each Array(2) as _}
+						<div class="h-14 rounded-md bg-muted ds-shimmer"></div>
+					{/each}
+				</div>
+			{:else if reviewsError}
+				<p class="rounded-md bg-destructive/10 p-3 text-sm text-destructive" data-testid="task-reviews-error">
+					{reviewsError}
+				</p>
+			{:else if linkedReviews.length === 0}
+				<p class="text-sm text-muted-foreground" data-testid="task-reviews-empty">No reviews linked to this task.</p>
+			{:else}
+				<!-- Current (open/draft) reviews shown prominently -->
+				{#if currentReviews.length > 0}
+					<div class="space-y-2" data-testid="task-reviews-current">
+						{#each currentReviews as review (review._ulid)}
+							<a
+								href={`${base}/reviews/${review._ulid}`}
+								class="flex items-center gap-3 rounded-md border p-3 transition-colors hover:bg-muted/40"
+								data-testid="task-review-row"
+							>
+								<Badge class={dispositionClasses(review.disposition)}>
+									{dispositionLabel(review.disposition)}
+								</Badge>
+								<div class="min-w-0 flex-1">
+									<div class="text-sm font-medium truncate">{review.title}</div>
+									<div class="text-xs text-muted-foreground">
+										{review.thread_count} {review.thread_count === 1 ? 'thread' : 'threads'}{#if review.unresolved_blocker_count > 0}, <span class="text-destructive">{review.unresolved_blocker_count} blocker{review.unresolved_blocker_count === 1 ? '' : 's'} unresolved</span>{/if}
+									</div>
+								</div>
+								<Badge variant="outline" class="text-xs">{review.lifecycle_state}</Badge>
+							</a>
+						{/each}
+					</div>
+				{/if}
+
+				<!-- Closed reviews collapsed as history -->
+				{#if closedReviews.length > 0}
+					<div class="mt-2" data-testid="task-reviews-closed">
+						<button
+							class="text-xs text-muted-foreground hover:text-foreground transition-colors"
+							onclick={() => (showClosedReviews = !showClosedReviews)}
+							data-testid="task-reviews-toggle-closed"
+						>
+							{showClosedReviews ? 'Hide' : 'Show'} {closedReviews.length} closed review{closedReviews.length === 1 ? '' : 's'}
+						</button>
+						{#if showClosedReviews}
+							<div class="space-y-2 mt-2">
+								{#each closedReviews as review (review._ulid)}
+									<a
+										href={`${base}/reviews/${review._ulid}`}
+										class="flex items-center gap-3 rounded-md border border-dashed p-3 opacity-70 transition-colors hover:bg-muted/40 hover:opacity-100"
+										data-testid="task-review-row-closed"
+									>
+										<Badge class={dispositionClasses(review.disposition)}>
+											{dispositionLabel(review.disposition)}
+										</Badge>
+										<div class="min-w-0 flex-1">
+											<div class="text-sm font-medium truncate">{review.title}</div>
+											<div class="text-xs text-muted-foreground">
+												{review.thread_count} {review.thread_count === 1 ? 'thread' : 'threads'}
+											</div>
+										</div>
+										<Badge variant="outline" class="text-xs">{review.lifecycle_state}</Badge>
+									</a>
+								{/each}
+							</div>
+						{/if}
+					</div>
+				{/if}
+			{/if}
+		</div>
 
 		<Separator />
 

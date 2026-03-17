@@ -222,7 +222,7 @@ Only blocker threads affect disposition. Unresolved nits and questions do not bl
 
 #### Code-Targeted Comments
 
-Anchor findings to specific lines for code reviews:
+**Always anchor code findings to specific lines.** Use `--path`, `--line-start`, and `--line-end` so the finding is machine-parseable and the UI can render inline context at the exact location:
 
 ```bash
 kspec review comment @review-ref --body "Off-by-one error" --kind blocker \
@@ -230,11 +230,53 @@ kspec review comment @review-ref --body "Off-by-one error" --kind blocker \
   --commit def5678
 ```
 
+For multi-line ranges, set `--line-start` and `--line-end` to span the relevant block.
+
 #### Structured Anchors (for plans/specs)
+
+**Always anchor plan and spec findings to specific sections and fields.** Use `--section`, `--field`, and `--anchor-ref` so the finding is tied to the exact AC, description field, or plan section — not just described in prose:
 
 ```bash
 kspec review comment @review-ref --body "AC is too vague" --kind blocker \
   --section acceptance_criteria --field ac-3 --anchor-ref @spec-ref
+```
+
+Common `--section` values: `acceptance_criteria`, `description`, `context`, `todos`. The `--field` identifies the specific item within that section (e.g., `ac-1`, `ac-2`). The `--anchor-ref` ties the anchor to a specific spec or plan item.
+
+#### Why Anchors Matter
+
+Anchored comments are machine-parseable and enable richer tooling: the UI can render findings inline at the exact location, agents can programmatically match findings to code or ACs, and fix-cycle workers can jump directly to the problem without re-reading the entire diff or spec.
+
+**Unanchored (avoid):**
+```bash
+# Finding describes location in body text — not machine-parseable
+kspec review comment @review-ref \
+  --body "In src/parser/validate.ts around line 42, there's an off-by-one error" \
+  --kind blocker
+```
+
+**Anchored (preferred):**
+```bash
+# Finding anchored to exact file and lines — UI renders inline, agents can match
+kspec review comment @review-ref \
+  --body "Off-by-one error: loop should use < instead of <=" --kind blocker \
+  --path src/parser/validate.ts --side head --line-start 42 --line-end 42 \
+  --commit def5678
+```
+
+**Unanchored plan comment (avoid):**
+```bash
+kspec review comment @review-ref \
+  --body "The third acceptance criterion on @spec-auth is too vague" \
+  --kind blocker
+```
+
+**Anchored plan comment (preferred):**
+```bash
+kspec review comment @review-ref \
+  --body "AC is too vague — 'handles errors properly' needs specific error types" \
+  --kind blocker \
+  --section acceptance_criteria --field ac-3 --anchor-ref @spec-auth
 ```
 
 ### Recording Checks
@@ -346,6 +388,7 @@ Before emitting any finding, apply the **claim-disprove-emit** cycle:
 
 Every finding must include:
 - **Path and line** — exactly where the issue is
+- **Anchor** — use CLI anchor flags (`--path`/`--line-start`/`--line-end` for code, `--section`/`--field`/`--anchor-ref` for plans/specs) so the finding is machine-parseable, not just described in body text
 - **Claim** — what is wrong, stated precisely
 - **Impact** — what breaks, what guarantee is lost
 - **Evidence** — what you observed that proves the claim
@@ -394,7 +437,9 @@ kspec task submit @ref  # Back to pending_review — reviewer creates a new revi
 2. **Create review** — `kspec review add --subject-type task --subject-ref @ref` (creates a new record each cycle)
 3. **Open review** — `kspec review open @review-ref`
 4. **Investigate** — deterministic checks, then analytical checks
-5. **Record findings** — `kspec review comment` for each finding with appropriate kind
+5. **Record findings** — `kspec review comment` for each finding with appropriate kind. **Always use anchors:**
+   - Code reviews: `--path`, `--line-start`, `--line-end`, `--commit` to pin findings to exact source locations
+   - Plan/spec reviews: `--section`, `--field`, `--anchor-ref` to pin findings to specific ACs or fields
 6. **Record checks** — `kspec review check` for test/lint results
 7. **Submit verdict** — `kspec review verdict` (approve or request_changes — auto-closes the review)
 

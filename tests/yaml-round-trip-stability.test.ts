@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach, afterEach } from "vitest";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { createTempDir, cleanupTempDir, testUlid } from "./helpers/cli.js";
+import { createTempDir, cleanupTempDir, testUlid, testUlids } from "./helpers/cli.js";
 import {
   toYaml,
   parseYaml,
@@ -12,8 +12,21 @@ import {
   saveTask,
   mutateTaskAtomically,
   loadAllTasks,
+  saveInboxItem,
+  mutateInboxItemAtomically,
+  deleteInboxItem,
+  loadInboxItems,
 } from "../src/parser/yaml.js";
-import type { LoadedTask } from "../src/parser/yaml.js";
+import type { LoadedTask, LoadedInboxItem } from "../src/parser/yaml.js";
+import {
+  createReviewRecord,
+  loadReviewRecords,
+  saveReviewRecord,
+  mutateReviewAtomically,
+  deleteReviewRecord,
+} from "../src/parser/reviews.js";
+import type { KspecContext } from "../src/parser/yaml.js";
+import type { ReviewRecordInput } from "../src/schema/index.js";
 
 /**
  * Round-trip stability tests for YAML serialization.
@@ -485,6 +498,424 @@ describe("round-trip stability — saveTask path", () => {
     const afterContent = await fs.readFile(taskFilePath, "utf-8");
 
     expect(afterContent).toBe(initialContent);
+  });
+});
+
+// AC: @yaml-serialization-invariants ac-3
+describe("round-trip stability — saveReviewRecord path", () => {
+  function makeReviewCtx(specDir: string): KspecContext {
+    return { specDir } as KspecContext;
+  }
+
+  function makeReviewInput(overrides: Partial<ReviewRecordInput> = {}): ReviewRecordInput {
+    return {
+      title: "Test Review",
+      author: "test-author",
+      subject: {
+        type: "code",
+        base_commit: "abc123",
+        head_commit: "def456",
+      },
+      ...overrides,
+    };
+  }
+
+  it("saveReviewRecord with no changes produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-review-rt1");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeReviewCtx(kspecDir);
+
+    const reviewUlid = testUlid("RRTK");
+    const review = createReviewRecord(makeReviewInput({
+      _ulid: reviewUlid,
+      slugs: ["no-change-review"],
+      lifecycle_state: "open",
+      related_refs: ["@some-task"],
+    }));
+
+    // Save review initially
+    await saveReviewRecord(ctx, { ...review });
+    const initialContent = await fs.readFile(
+      path.join(kspecDir, "project.reviews.yaml"),
+      "utf-8",
+    );
+
+    // Load and save back with no modifications
+    const loaded = await loadReviewRecords(ctx);
+    expect(loaded).toHaveLength(1);
+    await saveReviewRecord(ctx, loaded[0]);
+    const afterContent = await fs.readFile(
+      path.join(kspecDir, "project.reviews.yaml"),
+      "utf-8",
+    );
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("mutateReviewAtomically with identity function produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-review-rt2");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeReviewCtx(kspecDir);
+
+    const [reviewUlid, threadUlid, entryUlid] = testUlids("RRTM", 3);
+    const review = createReviewRecord(makeReviewInput({
+      _ulid: reviewUlid,
+      slugs: ["identity-mutate-review"],
+      lifecycle_state: "open",
+      threads: [{
+        _ulid: threadUlid,
+        kind: "blocker",
+        entries: [{
+          _ulid: entryUlid,
+          author: "reviewer",
+          body: "Needs fixing",
+          created_at: "2026-01-15T10:00:00.000Z",
+        }],
+      }],
+    }));
+
+    await saveReviewRecord(ctx, { ...review });
+    const initialContent = await fs.readFile(
+      path.join(kspecDir, "project.reviews.yaml"),
+      "utf-8",
+    );
+
+    // Identity mutation: return the review unchanged
+    const loaded = await loadReviewRecords(ctx);
+    await mutateReviewAtomically(ctx, loaded[0], (r) => r);
+    const afterContent = await fs.readFile(
+      path.join(kspecDir, "project.reviews.yaml"),
+      "utf-8",
+    );
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("saveReviewRecord preserves file stability across multiple reviews", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-review-rt3");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeReviewCtx(kspecDir);
+
+    const [ulid1, ulid2, ulid3] = testUlids("RRTX", 3);
+    const reviews = [
+      createReviewRecord(makeReviewInput({
+        _ulid: ulid1,
+        slugs: ["multi-review-1"],
+        lifecycle_state: "draft",
+      })),
+      createReviewRecord(makeReviewInput({
+        _ulid: ulid2,
+        slugs: ["multi-review-2"],
+        lifecycle_state: "open",
+        related_refs: ["@task-foo"],
+      })),
+      createReviewRecord(makeReviewInput({
+        _ulid: ulid3,
+        slugs: ["multi-review-3"],
+        lifecycle_state: "closed",
+      })),
+    ];
+
+    // Save all reviews initially
+    for (const review of reviews) {
+      await saveReviewRecord(ctx, { ...review });
+    }
+    const initialContent = await fs.readFile(
+      path.join(kspecDir, "project.reviews.yaml"),
+      "utf-8",
+    );
+
+    // Load and save each review individually — file should not change
+    const loaded = await loadReviewRecords(ctx);
+    for (const review of loaded) {
+      await saveReviewRecord(ctx, review);
+    }
+    const afterContent = await fs.readFile(
+      path.join(kspecDir, "project.reviews.yaml"),
+      "utf-8",
+    );
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("non-target reviews are not polluted with Zod defaults", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-review-rt4");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeReviewCtx(kspecDir);
+
+    // Write a minimal review file directly — only required fields
+    const reviewsPath = path.join(kspecDir, "project.reviews.yaml");
+    const [ulid1, ulid2] = testUlids("RRTP", 2);
+    await writeYamlFilePreserveFormat(reviewsPath, {
+      kynetic_reviews: "1.0",
+      reviews: [
+        {
+          _ulid: ulid1,
+          title: "Minimal review 1",
+          author: "test",
+          subject: { type: "code", base_commit: "aaa", head_commit: "bbb" },
+          lifecycle_state: "draft",
+          created_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          title: "Minimal review 2",
+          author: "test",
+          subject: { type: "code", base_commit: "ccc", head_commit: "ddd" },
+          lifecycle_state: "draft",
+          created_at: "2026-01-02T00:00:00.000Z",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(reviewsPath, "utf-8");
+
+    // Mutate only the first review
+    const loaded = await loadReviewRecords(ctx);
+    await mutateReviewAtomically(ctx, loaded[0], (r) => ({
+      ...r,
+      lifecycle_state: "open",
+    }));
+    const afterContent = await fs.readFile(reviewsPath, "utf-8");
+
+    // The second review should not gain any new fields (e.g. slugs, threads, checks, etc.)
+    expect(afterContent).not.toContain("slugs:");
+    expect(afterContent).not.toContain("threads:");
+    expect(afterContent).not.toContain("checks:");
+    expect(afterContent).not.toContain("verdicts:");
+    expect(afterContent).not.toContain("events:");
+    expect(afterContent).not.toContain("notes:");
+    expect(afterContent).not.toContain("external_links:");
+    expect(afterContent).not.toContain("examined_commit:");
+
+    // But the mutation should have taken effect
+    const reloaded = await loadReviewRecords(ctx);
+    expect(reloaded[0].lifecycle_state).toBe("open");
+    expect(reloaded[1].lifecycle_state).toBe("draft");
+  });
+
+  it("deleteReviewRecord preserves non-target reviews as raw data", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-review-rt5");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeReviewCtx(kspecDir);
+
+    // Write a minimal review file directly
+    const reviewsPath = path.join(kspecDir, "project.reviews.yaml");
+    const [ulid1, ulid2] = testUlids("RRTD", 2);
+    await writeYamlFilePreserveFormat(reviewsPath, {
+      kynetic_reviews: "1.0",
+      reviews: [
+        {
+          _ulid: ulid1,
+          title: "Review to delete",
+          author: "test",
+          subject: { type: "code", base_commit: "aaa", head_commit: "bbb" },
+          lifecycle_state: "draft",
+          created_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          title: "Review to keep",
+          author: "test",
+          subject: { type: "code", base_commit: "ccc", head_commit: "ddd" },
+          lifecycle_state: "open",
+          created_at: "2026-01-02T00:00:00.000Z",
+        },
+      ],
+    });
+
+    await deleteReviewRecord(ctx, ulid1);
+    const afterContent = await fs.readFile(reviewsPath, "utf-8");
+
+    // Remaining review should not gain Zod default fields
+    expect(afterContent).not.toContain("slugs:");
+    expect(afterContent).not.toContain("threads:");
+    expect(afterContent).not.toContain("checks:");
+
+    // Only one review should remain
+    const reloaded = await loadReviewRecords(ctx);
+    expect(reloaded).toHaveLength(1);
+    expect(reloaded[0]._ulid).toBe(ulid2);
+  });
+});
+
+// AC: @yaml-serialization-invariants ac-3
+describe("round-trip stability — saveInboxItem path", () => {
+  function makeInboxCtx(specDir: string): KspecContext {
+    return { specDir } as KspecContext;
+  }
+
+  it("saveInboxItem with no changes produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-inbox-rt1");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeInboxCtx(kspecDir);
+
+    // Write a minimal inbox file directly — only required fields, no tags
+    const inboxPath = path.join(kspecDir, "project.inbox.yaml");
+    const itemUlid = testUlid("INBX");
+    await writeYamlFilePreserveFormat(inboxPath, {
+      inbox: [
+        {
+          _ulid: itemUlid,
+          text: "An idea without tags",
+          created_at: "2026-01-01T00:00:00.000Z",
+          added_by: "@user",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(inboxPath, "utf-8");
+
+    // Load and save back with no modifications
+    const loaded = await loadInboxItems(ctx);
+    expect(loaded).toHaveLength(1);
+    await saveInboxItem(ctx, loaded[0]);
+    const afterContent = await fs.readFile(inboxPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("mutateInboxItemAtomically with identity function produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-inbox-rt2");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeInboxCtx(kspecDir);
+
+    const inboxPath = path.join(kspecDir, "project.inbox.yaml");
+    const itemUlid = testUlid("INBM");
+    await writeYamlFilePreserveFormat(inboxPath, {
+      inbox: [
+        {
+          _ulid: itemUlid,
+          text: "Idea for identity mutation test",
+          created_at: "2026-01-15T10:00:00.000Z",
+          added_by: "@agent",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(inboxPath, "utf-8");
+
+    // Identity mutation: return the item unchanged
+    const loaded = await loadInboxItems(ctx);
+    await mutateInboxItemAtomically(ctx, loaded[0], (i) => i);
+    const afterContent = await fs.readFile(inboxPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("saveInboxItem preserves file stability across multiple items", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-inbox-rt3");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeInboxCtx(kspecDir);
+
+    const inboxPath = path.join(kspecDir, "project.inbox.yaml");
+    const [ulid1, ulid2, ulid3] = testUlids("INBS", 3);
+    await writeYamlFilePreserveFormat(inboxPath, {
+      inbox: [
+        {
+          _ulid: ulid1,
+          text: "First inbox item",
+          created_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          text: "Second inbox item with tags",
+          created_at: "2026-01-02T00:00:00.000Z",
+          tags: ["mvp", "cli"],
+        },
+        {
+          _ulid: ulid3,
+          text: "Third inbox item",
+          created_at: "2026-01-03T00:00:00.000Z",
+          added_by: "@alice",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(inboxPath, "utf-8");
+
+    // Load and save each item individually — file should not change
+    const loaded = await loadInboxItems(ctx);
+    for (const item of loaded) {
+      await saveInboxItem(ctx, item);
+    }
+    const afterContent = await fs.readFile(inboxPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("non-target inbox items are not polluted with Zod defaults", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-inbox-rt4");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeInboxCtx(kspecDir);
+
+    // Write a minimal inbox file — items without tags field
+    const inboxPath = path.join(kspecDir, "project.inbox.yaml");
+    const [ulid1, ulid2] = testUlids("INBP", 2);
+    await writeYamlFilePreserveFormat(inboxPath, {
+      inbox: [
+        {
+          _ulid: ulid1,
+          text: "Minimal item 1",
+          created_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          text: "Minimal item 2",
+          created_at: "2026-01-02T00:00:00.000Z",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(inboxPath, "utf-8");
+
+    // Mutate only the first item (add tags)
+    const loaded = await loadInboxItems(ctx);
+    await mutateInboxItemAtomically(ctx, loaded[0], (i) => ({
+      ...i,
+      tags: ["important"],
+    }));
+    const afterContent = await fs.readFile(inboxPath, "utf-8");
+
+    // The second item should not gain a tags field
+    // Count occurrences of "tags:" — should be exactly 1 (from the mutated item)
+    const tagsMatches = afterContent.match(/tags:/g) || [];
+    expect(tagsMatches).toHaveLength(1);
+
+    // But the mutation should have taken effect
+    const reloaded = await loadInboxItems(ctx);
+    expect(reloaded[0].tags).toEqual(["important"]);
+    expect(reloaded[1].tags).toEqual([]); // Zod default when loaded, but not persisted
+  });
+
+  it("deleteInboxItem preserves non-target items as raw data", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-inbox-rt5");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeInboxCtx(kspecDir);
+
+    // Write a minimal inbox file directly
+    const inboxPath = path.join(kspecDir, "project.inbox.yaml");
+    const [ulid1, ulid2] = testUlids("INBD", 2);
+    await writeYamlFilePreserveFormat(inboxPath, {
+      inbox: [
+        {
+          _ulid: ulid1,
+          text: "Item to delete",
+          created_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          text: "Item to keep",
+          created_at: "2026-01-02T00:00:00.000Z",
+        },
+      ],
+    });
+
+    await deleteInboxItem(ctx, ulid1);
+    const afterContent = await fs.readFile(inboxPath, "utf-8");
+
+    // Remaining item should not gain Zod default fields (tags: [])
+    expect(afterContent).not.toContain("tags:");
+
+    // Only one item should remain
+    const reloaded = await loadInboxItems(ctx);
+    expect(reloaded).toHaveLength(1);
+    expect(reloaded[0]._ulid).toBe(ulid2);
   });
 });
 

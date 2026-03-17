@@ -48,9 +48,9 @@ describe('Agent Instruction Generation', () => {
       // Create initial file
       kspecFull('agents generate', tempDir);
 
-      // Create a skill to add content
+      // Add a convention to change the content
       kspecFull(
-        'skill add --id my-skill --name "My Skill" --description "Test skill"',
+        'meta add convention --domain test-overwrite --rule "Rule for overwrite test"',
         tempDir
       );
 
@@ -60,72 +60,26 @@ describe('Agent Instruction Generation', () => {
 
       const filePath = path.join(tempDir, 'kspec-agents.md');
       const content = await fs.readFile(filePath, 'utf-8');
-      expect(content).toContain('my-skill');
+      expect(content).toContain('Rule for overwrite test');
     });
   });
 
-  // AC: @agent-instruction-gen ac-2
-  describe('ac-2: output includes Finding Information table with row per skill', () => {
-    beforeEach(async () => {
-      // Create 3 skills
+  // Skill table removed — agent runtimes discover skills via rendered SKILL.md frontmatter.
+  // Descriptions live in skill metadata (manifest.yaml / kynetic.meta.yaml)
+  // and are written to rendered SKILL.md frontmatter by `kspec skill render`.
+  describe('skill table is no longer generated', () => {
+    it('should not include Finding Information table even when skills exist', async () => {
       kspecFull(
         'skill add --id task-work --name "Task Work" --description "Work on tasks with proper lifecycle"',
         tempDir
       );
-      kspecFull(
-        'skill add --id pr-review --name "PR Review" --description "Review and merge pull requests"',
-        tempDir
-      );
-      kspecFull(
-        'skill add --id spec-plan --name "Spec Plan" --description "Plan to spec translation"',
-        tempDir
-      );
-    });
-
-    it('should include Finding Information table', async () => {
       kspecFull('agents generate', tempDir);
 
       const filePath = path.join(tempDir, 'kspec-agents.md');
       const content = await fs.readFile(filePath, 'utf-8');
 
-      expect(content).toContain('## Finding Information');
-      expect(content).toContain('| Need | Where to look |');
-      expect(content).toContain('|------|---------------|');
-    });
-
-    it('should have a row per skill', async () => {
-      kspecFull('agents generate', tempDir);
-
-      const filePath = path.join(tempDir, 'kspec-agents.md');
-      const content = await fs.readFile(filePath, 'utf-8');
-
-      // Each skill should be listed with its description and /id reference
-      expect(content).toContain('Work on tasks with proper lifecycle');
-      expect(content).toContain('`/task-work` skill');
-
-      expect(content).toContain('Review and merge pull requests');
-      expect(content).toContain('`/pr-review` skill');
-
-      expect(content).toContain('Plan to spec translation');
-      expect(content).toContain('`/spec-plan` skill');
-    });
-
-    it('should not include Finding Information table when no skills exist', async () => {
-      // No skills in this test case (fresh fixture)
-      // Use a new temp dir
-      const freshDir = await setupTempFixtures();
-      await initGitRepo(freshDir);
-
-      // Don't add any skills
-      kspecFull('agents generate', freshDir);
-
-      const filePath = path.join(freshDir, 'kspec-agents.md');
-      const content = await fs.readFile(filePath, 'utf-8');
-
-      // Should NOT have Finding Information section
       expect(content).not.toContain('## Finding Information');
-
-      await cleanupTempDir(freshDir);
+      expect(content).not.toContain('| Need | Where to look |');
     });
   });
 
@@ -249,9 +203,9 @@ describe('Agent Instruction Generation', () => {
     it('should report stale when meta has changed since generation', async () => {
       kspecFull('agents generate', tempDir);
 
-      // Add a new skill (changes meta)
+      // Add a new convention (changes meta)
       kspecFull(
-        'skill add --id new-skill --name "New Skill" --description "A new skill"',
+        'meta add convention --domain stale-test --rule "Staleness test rule"',
         tempDir
       );
 
@@ -331,7 +285,6 @@ describe('Agent Instruction Generation', () => {
         .update(JSON.stringify(legacyData), 'utf-8')
         .digest('hex');
       const currentHash = computeMetaHash(
-        meta.skills,
         meta.conventions,
         meta.workflows,
         templateSections
@@ -368,9 +321,9 @@ describe('Agent Instruction Generation', () => {
     it('should become current again after regenerating', async () => {
       kspecFull('agents generate', tempDir);
 
-      // Add a skill to make it stale
+      // Add a convention to make it stale
       kspecFull(
-        'skill add --id another-skill --name "Another" --description "Another skill"',
+        'meta add convention --domain staleness-test --rule "Rule for staleness test"',
         tempDir
       );
 
@@ -422,9 +375,9 @@ describe('Agent Instruction Generation', () => {
     it('should regenerate when meta has changed', async () => {
       kspecFull('agents generate', tempDir);
 
-      // Add a skill to change meta
+      // Add a convention to change meta
       kspecFull(
-        'skill add --id skip-test-skill --name "Skip Test" --description "Test skill for skip"',
+        'meta add convention --domain skip-test-domain --rule "Skip test rule for regeneration"',
         tempDir,
       );
 
@@ -436,7 +389,7 @@ describe('Agent Instruction Generation', () => {
 
       const filePath = path.join(tempDir, 'kspec-agents.md');
       const content = await fs.readFile(filePath, 'utf-8');
-      expect(content).toContain('skip-test-skill');
+      expect(content).toContain('Skip test rule for regeneration');
     });
   });
 

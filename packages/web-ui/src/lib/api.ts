@@ -26,6 +26,7 @@ import type {
 	PaginatedResponse,
 	PlanSummary,
 	PlanDetail,
+	ReviewSummary,
 	ErrorResponse,
 	SearchResponse,
 	AgentDefinition,
@@ -874,6 +875,53 @@ export async function fetchPlanContent(ref: string): Promise<PlanDetail> {
 }
 
 // ============================================================
+// Reviews API Functions
+// AC: @review-records-web-ui ac-1
+// ============================================================
+
+/**
+ * Fetch reviews with optional filters
+ * AC: @review-records-web-ui ac-1
+ */
+export async function fetchReviews(params?: {
+	status?: string | string[];
+	disposition?: string;
+	subject_type?: string;
+	task?: string;
+	sort?: string;
+	sort_dir?: string;
+	limit?: number;
+	offset?: number;
+}): Promise<PaginatedResponse<ReviewSummary>> {
+	if (isStaticMode()) {
+		return { items: [], total: 0, offset: 0, limit: 0 };
+	}
+
+	const url = new URL(`${API_BASE}/api/reviews`);
+
+	if (params) {
+		Object.entries(params).forEach(([key, value]) => {
+			if (value !== undefined && value !== '') {
+				if (Array.isArray(value)) {
+					value.forEach((v) => url.searchParams.append(key, v));
+				} else {
+					url.searchParams.set(key, String(value));
+				}
+			}
+		});
+	}
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
 // Workflows API Functions
 // AC: @ui-workflows-view ac-1
 // ============================================================
@@ -1223,6 +1271,35 @@ export async function fetchSessionEventDetail(
 	}
 
 	const response = await fetch(`${API_BASE}/api/sessions/${id}/events/${seq}`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
+// Reviews API Functions
+// AC: @review-records-web-ui ac-7
+// ============================================================
+
+/**
+ * Fetch reviews linked to a task (via subject or related_refs).
+ * Used by the task detail page to show linked review history.
+ * AC: @review-records-web-ui ac-7
+ */
+export async function fetchReviewsForTask(taskRef: string): Promise<PaginatedResponse<ReviewSummary>> {
+	if (isStaticMode()) {
+		return { items: [], total: 0, offset: 0, limit: 0 };
+	}
+
+	const url = new URL(`${API_BASE}/api/reviews`);
+	url.searchParams.set('task', taskRef);
+	url.searchParams.set('status', 'all');
+
+	const response = await fetch(url.toString(), {
 		headers: getProjectHeaders()
 	});
 	if (!response.ok) {

@@ -371,7 +371,6 @@ export async function getSetupStatus(
             debugLog("Templates not available for staleness check", err);
           }
           const currentHash = computeMetaHash(
-            metaCtx.skills,
             metaCtx.conventions,
             metaCtx.workflows,
             templateSections

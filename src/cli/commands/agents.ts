@@ -2,7 +2,6 @@
  * Agent instruction generation commands.
  *
  * AC: @agent-instruction-gen ac-1 - kspec agents generate creates kspec-agents.md in project root
- * AC: @agent-instruction-gen ac-2 - output includes Finding Information table with row per skill
  * AC: @agent-instruction-gen ac-3 - output includes conventions section listing rules by domain
  * AC: @agent-instruction-gen ac-4 - output contains freshness comment with kspec version and timestamp
  * AC: @agent-instruction-gen ac-5 - kspec agents status reports stale when not regenerated after meta changes
@@ -26,12 +25,10 @@ import chalk from "chalk";
 import type { Command } from "commander";
 import {
   generateConventionsSummary,
-  generateSkillsTable,
   generateWorkflowsSummary,
   initContext,
   loadMetaContext,
   type LoadedConvention,
-  type LoadedSkill,
   type LoadedWorkflow,
 } from "../../parser/index.js";
 import { errors } from "../../strings/errors.js";
@@ -123,7 +120,6 @@ export function getPackageRoot(): string {
  * This is used to detect if the generated file is stale.
  */
 export function computeMetaHash(
-  skills: LoadedSkill[],
   conventions: LoadedConvention[],
   workflows: LoadedWorkflow[],
   templateSections?: string[],
@@ -131,13 +127,10 @@ export function computeMetaHash(
 ): string {
   // Create a stable representation of the meta content
   // AC: @cross-platform-and-version-robustness ac-4 - includes templates for staleness detection
+  // Skills excluded from hash — skill table removed from generated output.
+  // Skill descriptions live in rendered SKILL.md frontmatter instead.
   const data: Record<string, unknown> = {
     version: metaVersion,
-    skills: skills.map((s) => ({
-      id: s.id,
-      name: s.name,
-      description: s.description,
-    })),
     conventions: conventions.map((c) => ({
       domain: c.domain,
       rules: c.rules,
@@ -169,7 +162,6 @@ function generateFreshnessComment(timestamp: string): string {
  * AC: @agent-templates ac-2 - each template section appears in generated output
  */
 export async function generateAgentsContent(
-  skills: LoadedSkill[],
   conventions: LoadedConvention[],
   workflows: LoadedWorkflow[],
   timestamp: string,
@@ -186,11 +178,11 @@ export async function generateAgentsContent(
     "This file is auto-generated from kspec meta. Include it in your AGENTS.md or similar agent instruction file.\n\n",
   );
 
-  // AC: @agent-instruction-gen ac-2 - Skills table
   // AC: @agent-instruction-gen ac-3 - Conventions section
-  // Ensure blank line between each data section for valid markdown
+  // Skill table removed — agent runtimes discover skills via frontmatter.
+  // Descriptions live in skill metadata (manifest.yaml / kynetic.meta.yaml)
+  // and are written to rendered SKILL.md frontmatter by `kspec skill render`.
   const dataSections = [
-    generateSkillsTable(skills),
     generateConventionsSummary(conventions),
     generateWorkflowsSummary(workflows),
   ].filter(Boolean);
@@ -327,7 +319,6 @@ export function registerAgentsCommands(program: Command): void {
 
         // Generate content - now async due to template loading
         const content = await generateAgentsContent(
-          metaCtx.skills,
           metaCtx.conventions,
           metaCtx.workflows,
           timestamp,
@@ -336,7 +327,6 @@ export function registerAgentsCommands(program: Command): void {
 
         // Compute meta hash for freshness tracking (includes templates)
         const metaHash = computeMetaHash(
-          metaCtx.skills,
           metaCtx.conventions,
           metaCtx.workflows,
           templateSections,
@@ -462,7 +452,6 @@ export function registerAgentsCommands(program: Command): void {
 
         // Compute current meta hash (includes templates)
         const metaHash = computeMetaHash(
-          metaCtx.skills,
           metaCtx.conventions,
           metaCtx.workflows,
           templateSections,

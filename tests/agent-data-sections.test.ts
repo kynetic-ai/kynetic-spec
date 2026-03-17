@@ -1,168 +1,21 @@
 /**
  * Tests for Auto-Generated Data Sections library functions.
  *
- * AC: @agent-data-sections ac-1 - generateSkillsTable
  * AC: @agent-data-sections ac-2 - generateConventionsSummary
  * AC: @agent-data-sections ac-3 - generateWorkflowsSummary
  */
 
 import { describe, it, expect } from "vitest";
 import {
-  generateSkillsTable,
   generateConventionsSummary,
   generateWorkflowsSummary,
   CONVENTIONS_INTRO,
 } from "../src/parser/agent-data-sections.js";
 import { computeMetaHash } from "../src/cli/commands/agents.js";
 import type {
-  LoadedSkill,
   LoadedConvention,
   LoadedWorkflow,
 } from "../src/parser/meta.js";
-
-// AC: @agent-data-sections ac-1
-describe("generateSkillsTable", () => {
-  describe("ac-1: markdown table with skill name, description, and invocation", () => {
-    it("should return empty string when no skills provided", () => {
-      const result = generateSkillsTable([]);
-      expect(result).toBe("");
-    });
-
-    it("should return markdown table with header", () => {
-      const skills: LoadedSkill[] = [
-        {
-          id: "task-work",
-          name: "Task Work",
-          description: "Work on tasks with proper lifecycle",
-          _sourceFile: "skills.yaml",
-        },
-      ];
-
-      const result = generateSkillsTable(skills);
-
-      expect(result).toContain("## Finding Information");
-      expect(result).toContain("| Need | Where to look |");
-      expect(result).toContain("|------|---------------|");
-    });
-
-    it("should include skill description and invocation columns", () => {
-      const skills: LoadedSkill[] = [
-        {
-          id: "task-work",
-          name: "Task Work",
-          description: "Work on tasks with proper lifecycle",
-          _sourceFile: "skills.yaml",
-        },
-      ];
-
-      const result = generateSkillsTable(skills);
-
-      // Description appears in Need column
-      expect(result).toContain("Work on tasks with proper lifecycle");
-      // Invocation format /id appears in Where to look column
-      expect(result).toContain("`/task-work` skill");
-    });
-
-    it("should include one row per skill", () => {
-      const skills: LoadedSkill[] = [
-        {
-          id: "task-work",
-          name: "Task Work",
-          description: "Work on tasks",
-          _sourceFile: "skills.yaml",
-        },
-        {
-          id: "pr-review",
-          name: "PR Review",
-          description: "Review pull requests",
-          _sourceFile: "skills.yaml",
-        },
-        {
-          id: "spec-plan",
-          name: "Spec Plan",
-          description: "Plan to spec translation",
-          _sourceFile: "skills.yaml",
-        },
-      ];
-
-      const result = generateSkillsTable(skills);
-
-      expect(result).toContain("Work on tasks");
-      expect(result).toContain("`/task-work` skill");
-      expect(result).toContain("Review pull requests");
-      expect(result).toContain("`/pr-review` skill");
-      expect(result).toContain("Plan to spec translation");
-      expect(result).toContain("`/spec-plan` skill");
-    });
-
-    it("should use skill name as fallback when description is missing", () => {
-      const skills: LoadedSkill[] = [
-        {
-          id: "my-skill",
-          name: "My Skill",
-          _sourceFile: "skills.yaml",
-        },
-      ];
-
-      const result = generateSkillsTable(skills);
-
-      // Uses name as description
-      expect(result).toContain("My Skill");
-      expect(result).toContain("`/my-skill` skill");
-    });
-
-    it("should use /kspec:<id> invocation for core skills", () => {
-      const skills: LoadedSkill[] = [
-        {
-          id: "help",
-          name: "Kspec Help",
-          description: "Get help with kspec commands",
-          origin: "core",
-          _sourceFile: "skills.yaml",
-        },
-      ];
-
-      const result = generateSkillsTable(skills);
-
-      expect(result).toContain("`/kspec:help` skill");
-      expect(result).not.toContain("`/help` skill");
-    });
-
-    it("should use /<id> invocation for project skills (no prefix)", () => {
-      const skills: LoadedSkill[] = [
-        {
-          id: "task-work",
-          name: "Task Work",
-          description: "Work on tasks",
-          origin: "project",
-          _sourceFile: "skills.yaml",
-        },
-      ];
-
-      const result = generateSkillsTable(skills);
-
-      expect(result).toContain("`/task-work` skill");
-      expect(result).not.toContain("`/kspec:task-work` skill");
-    });
-
-    it("should include helpful footer text", () => {
-      const skills: LoadedSkill[] = [
-        {
-          id: "test",
-          name: "Test",
-          description: "Test skill",
-          _sourceFile: "skills.yaml",
-        },
-      ];
-
-      const result = generateSkillsTable(skills);
-
-      expect(result).toContain(
-        "Skills inject their full documentation when invoked",
-      );
-    });
-  });
-});
 
 // AC: @agent-data-sections ac-2
 describe("generateConventionsSummary", () => {
@@ -529,7 +382,6 @@ describe("generateWorkflowsSummary", () => {
 // AC: @cross-platform-and-version-robustness ac-4
 describe("computeMetaHash", () => {
   it("should produce different hashes when conventions differ only in examples", () => {
-    const skills: LoadedSkill[] = [];
     const workflows: LoadedWorkflow[] = [];
 
     const conventionsWithoutExamples: LoadedConvention[] = [
@@ -550,26 +402,23 @@ describe("computeMetaHash", () => {
       },
     ];
 
-    const hashWithout = computeMetaHash(skills, conventionsWithoutExamples, workflows);
-    const hashWith = computeMetaHash(skills, conventionsWithExamples, workflows);
+    const hashWithout = computeMetaHash(conventionsWithoutExamples, workflows);
+    const hashWith = computeMetaHash(conventionsWithExamples, workflows);
 
     expect(hashWithout).not.toBe(hashWith);
   });
 
   it("should produce different hashes when only package version differs", () => {
-    const skills: LoadedSkill[] = [];
     const conventions: LoadedConvention[] = [];
     const workflows: LoadedWorkflow[] = [];
 
     const hashV1 = computeMetaHash(
-      skills,
       conventions,
       workflows,
       undefined,
       "0.9.0",
     );
     const hashV2 = computeMetaHash(
-      skills,
       conventions,
       workflows,
       undefined,
