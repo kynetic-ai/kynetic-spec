@@ -321,6 +321,32 @@ describe('Review Verdicts API', () => {
     expect(body.error).toBe('not_found');
     expect(body.suggestion).toBeDefined();
   });
+
+  // AC: @review-records-daemon-api ac-10
+  it('should return 400 for verdict on archived review', async () => {
+    const response = await makeRequest('POST', `/api/reviews/${REVIEW_ARCHIVED_ULID}/verdicts`, {
+      decision: 'approve',
+      reviewer: 'test@example.com',
+    });
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.error).toBe('invalid_state');
+    expect(body.current_state).toBe('archived');
+    expect(body.suggestion).toContain('terminal state');
+  });
+
+  // AC: @review-records-daemon-api ac-10
+  it('should return 400 for comment verdict on archived review', async () => {
+    const response = await makeRequest('POST', `/api/reviews/${REVIEW_ARCHIVED_ULID}/verdicts`, {
+      decision: 'comment',
+      reviewer: 'test@example.com',
+    });
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.error).toBe('invalid_state');
+  });
 });
 
 describe('Review Checks API', () => {
@@ -456,6 +482,20 @@ describe('Review Checks API', () => {
     expect(response.status).toBe(404);
     const body = await response.json();
     expect(body.error).toBe('not_found');
+  });
+
+  // AC: @review-records-daemon-api ac-10
+  it('should return 400 for check on archived review', async () => {
+    const response = await makeRequest('POST', `/api/reviews/${REVIEW_ARCHIVED_ULID}/checks`, {
+      name: 'vitest',
+      status: 'pass',
+    });
+
+    expect(response.status).toBe(400);
+    const body = await response.json();
+    expect(body.error).toBe('invalid_state');
+    expect(body.current_state).toBe('archived');
+    expect(body.suggestion).toContain('terminal state');
   });
 });
 

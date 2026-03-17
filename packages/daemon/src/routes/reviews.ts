@@ -24,6 +24,7 @@ import {
   computeDisposition,
   loadAllTasks,
   handleVerdictTaskTransition,
+  VALID_TRANSITIONS,
 } from '../../parser/index.js';
 import { createCheck } from '../../review/checks.js';
 import { evaluateGates } from '../../review/checks.js';
@@ -44,12 +45,6 @@ interface ReviewsRouteOptions {
 const VALID_DECISIONS: ReviewVerdictDecision[] = ['approve', 'request_changes', 'comment'];
 const VALID_CHECK_STATUSES: ReviewCheckStatus[] = ['pass', 'fail', 'running', 'skipped'];
 const VALID_LIFECYCLE_TARGETS: ReviewLifecycleState[] = ['open', 'closed', 'archived'];
-const VALID_TRANSITIONS: Record<ReviewLifecycleState, ReviewLifecycleState[]> = {
-  draft: ['open', 'closed'],
-  open: ['closed'],
-  closed: ['open', 'archived'],
-  archived: [],
-};
 
 export function createReviewsRoutes(options: ReviewsRouteOptions) {
   const { pubsub } = options;
@@ -113,6 +108,17 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             error: 'not_found',
             message: `Review "${params.id}" not found`,
             suggestion: 'Use kspec review list to find valid review references',
+          };
+        }
+
+        // Guard: reject mutations on archived (terminal-state) reviews
+        if (review.lifecycle_state === 'archived') {
+          set.status = 400;
+          return {
+            error: 'invalid_state',
+            message: 'Cannot add verdicts to an archived review',
+            current_state: 'archived',
+            suggestion: '"archived" is a terminal state — archived reviews are immutable',
           };
         }
 
@@ -252,6 +258,17 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
             error: 'not_found',
             message: `Review "${params.id}" not found`,
             suggestion: 'Use kspec review list to find valid review references',
+          };
+        }
+
+        // Guard: reject mutations on archived (terminal-state) reviews
+        if (review.lifecycle_state === 'archived') {
+          set.status = 400;
+          return {
+            error: 'invalid_state',
+            message: 'Cannot add checks to an archived review',
+            current_state: 'archived',
+            suggestion: '"archived" is a terminal state — archived reviews are immutable',
           };
         }
 
