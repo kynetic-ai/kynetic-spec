@@ -6236,7 +6236,19 @@ reviews:
     slugs: []
     title: Review task-review-list-page
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
+          head_commit: c41c0d7b7e96f9eaada13c57e8f69e0d21735038
+        evidence: 5724 tests passed, 1 pre-existing failure (review-cli.test.ts:152 — examined_commit null
+          assertion, not modified in this branch), 3 skipped
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-17T11:13:23.591Z
+        completed_at: 2026-03-17T11:13:23.591Z
     events:
       - _ulid: 01KKXQDTRRD2YXV67S7Q15985Z
         actor: "@claude"
@@ -6265,6 +6277,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKXQZW8M5FNR0YJBQN3B1MWN
         timestamp: 2026-03-17T11:13:12.015Z
+      - _ulid: 01KKXR07PCVC4J2AR891BZNPB3
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-17T11:13:23.660Z
     examined_commit: c41c0d7b7e96f9eaada13c57e8f69e0d21735038
     external_links: []
     lifecycle_state: open
@@ -6307,5 +6326,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T11:03:20.600Z
-    updated_at: 2026-03-17T11:13:11.957Z
+    updated_at: 2026-03-17T11:13:23.591Z
     notes: []
