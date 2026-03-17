@@ -7701,12 +7701,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-17T12:31:50.311Z
+      updated_at: 2026-03-17T12:31:53.004Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T12:31:50.311Z
+      updated_at: 2026-03-17T12:31:53.004Z
     integration:
       status: pending
       detail: null
@@ -7714,24 +7714,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8ee6537e0a4a38b0435f8cb18987f5043eb8cb0c
-      updated_at: 2026-03-17T12:31:50.311Z
-    lifecycle_state: ready
+      updated_at: 2026-03-17T12:31:53.004Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKX6C83WVQBYBZ5SWTXY1JKA"
     task_slug: round-trip-stability-for-plan-record-yaml-writes
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T12:18:19.839Z
-      last_reconciled_at: 2026-03-17T12:31:50.311Z
+      last_reconciled_at: 2026-03-17T12:31:53.004Z
       created_at: 2026-03-17T12:18:18.813Z
-      updated_at: 2026-03-17T12:31:50.311Z
+      updated_at: 2026-03-17T12:31:53.004Z
     workspace_id: dispatch-workspace-01KKX6C83WVQBYBZ5SWTXY1JKA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: fa760b196f109d5827f3a7a9287dfc0edc65b932
+        last_seen_at: 2026-03-17T12:31:53.004Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-plan-record-yaml-writes-01kkx6c8-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/round-trip-stability-for-plan-record-yaml-writes/01kkx6c8
-        head: 8ee6537e0a4a38b0435f8cb18987f5043eb8cb0c
-        last_seen_at: 2026-03-17T12:18:18.813Z
+        head: fa760b196f109d5827f3a7a9287dfc0edc65b932
+        last_seen_at: 2026-03-17T12:31:53.004Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-plan-record-yaml-writes-01kkx6c8
