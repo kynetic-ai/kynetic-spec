@@ -5094,3 +5094,31 @@ reviews:
     created_at: 2026-03-17T09:11:52.644Z
     updated_at: 2026-03-17T09:12:24.157Z
     notes: []
+  - _ulid: 01KKXHTJTSXAZSBMK67W7Z937Y
+    slugs: []
+    title: Review diff content API (cycle 2)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKXHTJTSQDHNVT79135F09KV
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T09:25:27.001Z
+    examined_commit: 317b496da788fcf1679fe083957e29a5db407052
+    external_links: []
+    lifecycle_state: draft
+    related_refs:
+      - "@01KKTW6J1F8NHGA7G7SJJ1ZFFS"
+    subject:
+      type: code
+      base_branch: dev
+      base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
+      head_branch: dispatch/task/task-diff-api/01kktw6j
+      head_commit: 317b496da788fcf1679fe083957e29a5db407052
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T09:25:27.001Z
+    updated_at: null
+    notes: []
