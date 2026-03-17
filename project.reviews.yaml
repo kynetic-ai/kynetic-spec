@@ -5018,6 +5018,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T09:12:09.073Z
         completed_at: 2026-03-17T09:12:09.073Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0d1b7932b50
+          head_commit: c1865a388e42
+        evidence: "ac-tool-input-update: 4 test annotations (accumulator, incrementalBlockUpdate, CLI).
+          ac-unified-event-parsing: 8 test annotations (session-event-fields,
+          session-event-streaming, session-log-stats). All trait ACs pre-existing with coverage."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-17T09:12:17.033Z
+        completed_at: 2026-03-17T09:12:17.033Z
     events:
       - _ulid: 01KKXH1QJ45A6SSPPKJ3QEPX4Y
         actor: "@claude"
@@ -5039,6 +5052,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T09:12:09.113Z
+      - _ulid: 01KKXH2FDMXFBWFKAQEYRRA0FA
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-17T09:12:17.076Z
     examined_commit: c1865a388e42e3cb8bb05ba152eb135f06f70a9f
     external_links: []
     lifecycle_state: open
@@ -5051,5 +5071,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T09:11:52.644Z
-    updated_at: 2026-03-17T09:12:09.073Z
+    updated_at: 2026-03-17T09:12:17.033Z
     notes: []
