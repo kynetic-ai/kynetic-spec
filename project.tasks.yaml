@@ -101536,6 +101536,18 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T11:13:33.587Z
+    - _ulid: 01KKXSTW7XM08Z58CFQQFR7FZ0
+      content: "Fixed review feedback: (1) Added E2E test file api-reviews-list.spec.ts with 22 tests
+        covering GET /api/reviews list endpoint (pagination, filtering by
+        status/disposition/subject_type, sorting, task title resolution, computed counts) and GET
+        /api/reviews/:id detail endpoint (full review with threads/entries, computed disposition,
+        404 handling). All tests annotated with AC refs for @review-records-daemon-api ac-1/ac-2 and
+        @review-records-web-ui ac-1/ac-10. (2) Refactored reviews.ts to use ReferenceIndex +
+        resolveRefTitle instead of manual taskTitleMap, consistent with tasks.ts pattern. All 5724
+        tests pass (1 pre-existing failure in review-cli.test.ts:152 unchanged)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T11:45:25.246Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6KAHVDDR0XTZGG3EQYTM
