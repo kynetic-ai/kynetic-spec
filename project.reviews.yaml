@@ -4349,3 +4349,30 @@ reviews:
     created_at: 2026-03-17T04:45:13.321Z
     updated_at: 2026-03-17T04:47:35.229Z
     notes: []
+  - _ulid: 01KKX25K2TA66PPZMVSW46YMXS
+    slugs: []
+    title: "Review: task-work fix-cycle notes"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKX25K2ST0WXRCY310C7DDW9
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T04:51:50.490Z
+    examined_commit: 5cfeef645f782c1220377ec5bdecf32122cb9be3
+    external_links: []
+    lifecycle_state: draft
+    related_refs:
+      - "@task-update-task-work-skill-docs"
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-update-task-work-skill-docs"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T04:51:50.490Z
+    updated_at: null
+    notes: []
