@@ -5834,6 +5834,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-17T10:33:22.522Z
+      - _ulid: 01KKXP09ZZK9TVNZK6FQQSK2ND
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKXP09YBDBT0898P3SXBH7VR
+        timestamp: 2026-03-17T10:38:28.863Z
     examined_commit: 82896f8489f79b6cac198ca9c0ed156634a2ca32
     external_links: []
     lifecycle_state: open
@@ -5843,8 +5850,19 @@ reviews:
       content_hash: ""
       ref: "@01KKTK96Z5M9T8WP900CPFWRNG"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKXP09YBDBT0898P3SXBH7VR
+        entries:
+          - _ulid: 01KKXP09YB5DGHEC3GM5TMCPKJ
+            author: "@claude"
+            body: Specs @agent-data-sections ac-1 and @agent-instruction-gen ac-2 still describe the skill table
+              behavior that was removed. These ACs are now obsolete. The code correctly removed all
+              AC annotations referencing them, but the spec items themselves should be updated to
+              either remove or revise these ACs to reflect the new behavior. Recommend a follow-up
+              task to clean up these stale spec ACs.
+            created_at: 2026-03-17T10:38:28.811Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-17T10:33:16.184Z
-    updated_at: 2026-03-17T10:33:22.471Z
+    updated_at: 2026-03-17T10:38:28.811Z
     notes: []
