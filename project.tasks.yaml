@@ -103322,7 +103322,18 @@
   session_id: 01KKXX3FVPHTXF26202JXK1GD5
   created_at: 2026-03-17T06:05:24.626Z
   started_at: 2026-03-17T12:42:54.576Z
-  notes: []
+  notes:
+    - _ulid: 01KKXXNQAD1N3NQ9SZXVBEPN4W
+      content: "Applied the raw-data-preservation pattern to all three inbox item write functions
+        (saveInboxItem, mutateInboxItemAtomically, deleteInboxItem). Added extractRawInboxArray,
+        writeRawInboxArray, findRawInboxIndex, and mergeInboxPreservingRawShape helpers following
+        the same structure used in the task and review record write paths. Added 5 round-trip
+        stability tests: save with no changes, identity mutation, multi-item stability, non-target
+        Zod default pollution prevention, and delete preserving raw data. All 24 round-trip tests
+        pass, plus all inbox/triage CLI tests (58 total) pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T12:52:30.670Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6CBDFNMXPC405SRZ3RG0N
