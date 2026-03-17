@@ -103060,8 +103060,12 @@
   spec_ref: "@task-activity-git-query"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Map-aware detection added to parseDiffChanges for submission_linkage
+    YAML map headers. Child fields grouped under parent key, dead diffChangesToEntries case now
+    fires correctly. 2 non-blocking nits noted (context line map reset, shared mapChildFields set).
+    All tests pass.
   depends_on: []
   context: []
   priority: 3
@@ -103082,6 +103086,7 @@
   created_at: 2026-03-16T23:36:28.408Z
   started_at: 2026-03-17T11:46:44.977Z
   submitted_at: 2026-03-17T11:56:49.372Z
+  completed_at: 2026-03-17T12:06:20.878Z
   notes:
     - _ulid: 01KKXTFJ3ZZ7NR2P44F5ARA2R1
       content: "Fixed the dead submission_linkage case in diffChangesToEntries. Root cause:
