@@ -102974,7 +102974,10 @@
   created_at: 2026-03-17T06:11:39.650Z
   notes: []
   todos: []
-- title: Fix YAML.stringify anchor/alias crash when sortMapEntries reorders shared references
+- _ulid: 01KKXAFX9BARSE23FRNK6DMYQ9
+  slugs: []
+  title: Fix YAML.stringify anchor/alias crash when sortMapEntries reorders shared references
+  type: task
   description: >-
     ## Problem
 
@@ -103048,21 +103051,20 @@
 
     Option 1 is the safest systemic fix since any Zod schema with shared defaults could trigger
     this.
-  type: task
   spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
+  status: in_progress
+  blocked_by: []
+  depends_on: []
+  context: []
   priority: 1
-  slugs: []
   tags:
     - cli
     - schema
-  depends_on: []
-  _ulid: 01KKXAFX9BARSE23FRNK6DMYQ9
-  status: pending
-  blocked_by: []
-  context: []
   vcs_refs: []
   created_at: 2026-03-17T07:17:17.227Z
   notes: []
   todos: []
+  started_at: 2026-03-17T07:28:54.515Z
+  session_id: 01KJVJ866FAH439DBR6PRGBWGJ
