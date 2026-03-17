@@ -4193,9 +4193,16 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-17T02:34:34.546Z
+      - _ulid: 01KKWTAEVCAX8SC17ZC29XB1NR
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-17T02:34:41.388Z
     examined_commit: b7004833684b0a7f6a3fda8ce5ee8822fd7b3531
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs:
       - "@task-review-diff-orientation"
     subject:
@@ -4206,5 +4213,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T02:34:34.546Z
-    updated_at: null
+    updated_at: 2026-03-17T02:34:41.354Z
     notes: []
