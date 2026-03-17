@@ -882,10 +882,12 @@ function getHookInstallSkipMessage(agentType: AgentType): string {
  * Ensure built-in worker and reviewer agent definitions exist in the project meta.
  *
  * Creates task-worker and pr-reviewer agents with dispatch rules that match
- * ralph's behavior. Skips creation if agents already exist (idempotent).
+ * the prior built-in automation behavior. Skips creation if agents already
+ * exist (idempotent).
  *
  * AC: @ralph-replacement ac-2 — built-in worker and reviewer agent definitions
- * created in kynetic.meta.yaml with default dispatch rules matching ralph's behavior
+ * created in kynetic.meta.yaml with default dispatch rules matching the prior
+ * built-in automation behavior
  */
 async function ensureBuiltInAgents(
   projectDir: string,
@@ -909,7 +911,7 @@ async function ensureBuiltInAgents(
     const meta = await loadMetaContext(ctx);
     const existingIds = new Set((meta.agents || []).map((a) => a.id));
 
-    // Built-in agent definitions — match ralph's dispatch behavior
+    // Built-in agent definitions — preserve the prior built-in dispatch behavior
     const builtInAgents = [
       {
         id: "task-worker",

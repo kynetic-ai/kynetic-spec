@@ -11,8 +11,8 @@
 
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { z } from "zod";
 import * as YAML from "yaml";
+import { z } from "zod";
 import { getGitRoot } from "./shadow.js";
 
 // ── Schema ──────────────────────────────────────────────────────────────
@@ -139,7 +139,9 @@ const DispatchConfigSchema = z
      * - "manual_merge": agents merge locally, no PRs created
      * - "auto": detect based on environment (default, preserves existing behavior)
      */
-    publication_mode: z.enum(["pull_request", "manual_merge", "auto"]).optional(),
+    publication_mode: z
+      .enum(["pull_request", "manual_merge", "auto"])
+      .optional(),
     /**
      * Dispatcher-owned workspace bootstrap contract.
      * Steps run before agent prompts are delivered.
@@ -185,13 +187,13 @@ const HooksConfigSchema = z
   .optional();
 
 /**
- * Schema for ralph skill name overrides.
+ * Schema for agent skill name overrides.
  *
- * Ralph prompts reference skills by invocation name. These default to
+ * Agent prompts reference skills by invocation name. These default to
  * kspec: namespace core skills but can be overridden per-project for
  * projects that use project-specific skill names.
  */
-const RalphSkillsSchema = z
+const AgentSkillsSchema = z
   .object({
     /** Skill invocation for task-work (default: /kspec:task-work) */
     task_work: z.string().optional(),
@@ -204,12 +206,12 @@ const RalphSkillsSchema = z
   .optional();
 
 /**
- * Schema for ralph configuration.
+ * Schema for agent configuration.
  */
-const RalphConfigSchema = z
+const AgentConfigSchema = z
   .object({
     /** Skill invocation name overrides */
-    skills: RalphSkillsSchema,
+    skills: AgentSkillsSchema,
   })
   .strict()
   .optional();
@@ -231,8 +233,8 @@ export const KspecConfigSchema = z
     daemon: DaemonConfigSchema,
     /** Dispatch workspace configuration */
     dispatch: DispatchConfigSchema,
-    /** Ralph automation configuration */
-    ralph: RalphConfigSchema,
+    /** Agent configuration */
+    agent: AgentConfigSchema,
     /** Hooks installation configuration */
     hooks: HooksConfigSchema,
   })
@@ -370,7 +372,7 @@ export interface ResolvedKspecConfig {
      */
     remote_sync: boolean | null;
   };
-  ralph: {
+  agent: {
     skills: {
       /** Skill invocation for task-work (default: /kspec:task-work) */
       task_work: string;
@@ -435,7 +437,7 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
     sync_interval: 60, // AC: @dispatch-sync-configuration ac-sync-interval — default 60s
     remote_sync: null, // AC: @dispatch-sync-configuration ac-remote-sync-default — resolved at runtime
   },
-  ralph: {
+  agent: {
     skills: {
       task_work: "/kspec:task-work",
       reflect: "/kspec:reflect",
@@ -444,8 +446,8 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
   },
   hooks: {
     // AC: @project-config ac-hooks-no-config — defaults when no config
-    checkpoint: false,   // Disabled by default — dispatch handles task lifecycle
-    prompt_check: true,  // Enabled by default — lightweight spec-first reminder
+    checkpoint: false, // Disabled by default — dispatch handles task lifecycle
+    prompt_check: true, // Enabled by default — lightweight spec-first reminder
   },
 };
 
@@ -589,7 +591,9 @@ export async function loadProjectConfig(
  *
  * AC: @project-config ac-5 — env vars take precedence
  */
-export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConfig {
+export function resolveConfig(
+  fileConfig: KspecConfig | null,
+): ResolvedKspecConfig {
   const file = fileConfig || {};
 
   // Get env var overrides
@@ -610,11 +614,13 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
       branch: file.shadow?.branch ?? DEFAULT_CONFIG.shadow.branch,
       directory: file.shadow?.directory ?? DEFAULT_CONFIG.shadow.directory,
       remote: resolvedRemote,
-      sync_interval: file.shadow?.sync_interval ?? DEFAULT_CONFIG.shadow.sync_interval,
+      sync_interval:
+        file.shadow?.sync_interval ?? DEFAULT_CONFIG.shadow.sync_interval,
     },
     identity: {
       // AC: ac-5 — env var takes precedence
-      author: envAuthor ?? file.identity?.author ?? DEFAULT_CONFIG.identity.author,
+      author:
+        envAuthor ?? file.identity?.author ?? DEFAULT_CONFIG.identity.author,
     },
     validation: {
       // AC: @config-validation ac-2 ac-3 — strict_refs from config
@@ -622,7 +628,8 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
         file.validation?.strict_refs ?? DEFAULT_CONFIG.validation.strict_refs,
       // AC: @config-validation ac-1 — require_acceptance from config
       require_acceptance:
-        file.validation?.require_acceptance ?? DEFAULT_CONFIG.validation.require_acceptance,
+        file.validation?.require_acceptance ??
+        DEFAULT_CONFIG.validation.require_acceptance,
     },
     daemon: {
       // AC: ac-5 — env vars take precedence
@@ -636,37 +643,48 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
       auto_start: file.daemon?.auto_start ?? DEFAULT_CONFIG.daemon.auto_start,
     },
     dispatch: {
-      base_branch: file.dispatch?.base_branch ?? DEFAULT_CONFIG.dispatch.base_branch,
-      worktree_root: file.dispatch?.worktree_root ?? DEFAULT_CONFIG.dispatch.worktree_root,
-      publication_mode: file.dispatch?.publication_mode ?? DEFAULT_CONFIG.dispatch.publication_mode,
+      base_branch:
+        file.dispatch?.base_branch ?? DEFAULT_CONFIG.dispatch.base_branch,
+      worktree_root:
+        file.dispatch?.worktree_root ?? DEFAULT_CONFIG.dispatch.worktree_root,
+      publication_mode:
+        file.dispatch?.publication_mode ??
+        DEFAULT_CONFIG.dispatch.publication_mode,
       bootstrap: {
-        steps: (file.dispatch?.bootstrap?.steps ?? DEFAULT_CONFIG.dispatch.bootstrap.steps).map(
-          (step) => ({
-            run: step.run,
-            ...(step.name ? { name: step.name } : {}),
-            ...(step.roles ? { roles: step.roles } : {}),
-            idempotent: step.idempotent ?? false,
-            allow_tracked_changes: step.allow_tracked_changes ?? false,
-            reviewer_rerun_allowed: step.reviewer_rerun_allowed ?? false,
-          }),
-        ),
+        steps: (
+          file.dispatch?.bootstrap?.steps ??
+          DEFAULT_CONFIG.dispatch.bootstrap.steps
+        ).map((step) => ({
+          run: step.run,
+          ...(step.name ? { name: step.name } : {}),
+          ...(step.roles ? { roles: step.roles } : {}),
+          idempotent: step.idempotent ?? false,
+          allow_tracked_changes: step.allow_tracked_changes ?? false,
+          reviewer_rerun_allowed: step.reviewer_rerun_allowed ?? false,
+        })),
       },
       // AC: @dispatch-sync-configuration ac-sync-interval — from config or default 60s
       sync_interval: file.dispatch?.sync_interval ?? DEFAULT_CONFIG.dispatch.sync_interval,
       // AC: @dispatch-sync-configuration ac-remote-sync-default — explicit config or null for runtime resolution
       remote_sync: file.dispatch?.remote_sync ?? DEFAULT_CONFIG.dispatch.remote_sync,
     },
-    ralph: {
+    agent: {
       skills: {
-        task_work: file.ralph?.skills?.task_work ?? DEFAULT_CONFIG.ralph.skills.task_work,
-        reflect: file.ralph?.skills?.reflect ?? DEFAULT_CONFIG.ralph.skills.reflect,
-        pr_review: file.ralph?.skills?.pr_review ?? DEFAULT_CONFIG.ralph.skills.pr_review,
+        task_work:
+          file.agent?.skills?.task_work ??
+          DEFAULT_CONFIG.agent.skills.task_work,
+        reflect:
+          file.agent?.skills?.reflect ?? DEFAULT_CONFIG.agent.skills.reflect,
+        pr_review:
+          file.agent?.skills?.pr_review ??
+          DEFAULT_CONFIG.agent.skills.pr_review,
       },
     },
     hooks: {
       // AC: @project-config ac-hooks-missing-keys — absent keys resolve to defaults
       checkpoint: file.hooks?.checkpoint ?? DEFAULT_CONFIG.hooks.checkpoint,
-      prompt_check: file.hooks?.prompt_check ?? DEFAULT_CONFIG.hooks.prompt_check,
+      prompt_check:
+        file.hooks?.prompt_check ?? DEFAULT_CONFIG.hooks.prompt_check,
     },
   };
 }
@@ -723,13 +741,15 @@ export function getDefaultConfig(): ResolvedKspecConfig {
       worktree_root: DEFAULT_CONFIG.dispatch.worktree_root,
       publication_mode: DEFAULT_CONFIG.dispatch.publication_mode,
       bootstrap: {
-        steps: DEFAULT_CONFIG.dispatch.bootstrap.steps.map((step) => ({ ...step })),
+        steps: DEFAULT_CONFIG.dispatch.bootstrap.steps.map((step) => ({
+          ...step,
+        })),
       },
       sync_interval: DEFAULT_CONFIG.dispatch.sync_interval,
       remote_sync: DEFAULT_CONFIG.dispatch.remote_sync,
     },
-    ralph: {
-      skills: { ...DEFAULT_CONFIG.ralph.skills },
+    agent: {
+      skills: { ...DEFAULT_CONFIG.agent.skills },
     },
     hooks: { ...DEFAULT_CONFIG.hooks },
   };

@@ -31,7 +31,7 @@ export type SessionStatus = z.infer<typeof SessionStatusSchema>;
  *
  * Accepts any registered dispatch event type as a trigger, plus:
  * - manual: Started manually by user
- * - legacy: Old ralph sessions without explicit trigger
+ * - legacy: Old agent sessions without explicit trigger
  *
  * AC: @session-model-evolution ac-1, ac-2
  * AC: @dispatch-event-taxonomy ac-4 — existing trigger values unchanged

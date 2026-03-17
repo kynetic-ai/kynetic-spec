@@ -1773,7 +1773,8 @@ export interface SessionLogSummary {
   /** Agent definition ID (e.g. worker, pr-reviewer). AC: @session-list-pagination-api ac-filter-agent-id */
   agent_id?: string;
   /**
-   * Session type: "loop" for legacy ralph sessions, "invocation" for new agent runtime.
+   * Session type: "loop" for legacy agent sessions, "invocation" for the
+   * current runtime.
    * AC: @session-model-evolution ac-6
    */
   session_type: "loop" | "invocation";
@@ -2103,7 +2104,8 @@ export interface SessionLogDetail {
   status: SessionStatus;
   agent_type: string;
   /**
-   * Session type: "loop" for legacy ralph sessions, "invocation" for new agent runtime.
+   * Session type: "loop" for legacy agent sessions, "invocation" for the
+   * current runtime.
    * AC: @session-model-evolution ac-6
    */
   session_type: "loop" | "invocation";
@@ -2153,7 +2155,7 @@ function extractTaskRef(command: string): string | null {
 
 /**
  * Iteration boundary: a prompt.sent event with phase "task-work" that marks
- * the start of a new iteration in a ralph session.
+ * the start of a new iteration in a legacy loop session.
  */
 interface IterationBoundary {
   /** Array index in the events list */
@@ -2165,7 +2167,8 @@ interface IterationBoundary {
 /**
  * Find iteration boundaries from prompt.sent events with phase "task-work".
  *
- * Ralph emits these synchronously at the start of each iteration, so their
+ * The dispatch runtime emits these synchronously at the start of each
+ * iteration, so their
  * array positions are reliable even when concurrent fire-and-forget events
  * produce duplicate seq numbers.
  *
@@ -2247,7 +2250,7 @@ function extractTaskTransitions(events: SessionEvent[]): {
  * Legacy iteration grouping: groups events by their data.iteration field.
  *
  * Used as fallback for sessions that don't have prompt.sent boundary events
- * with phase "task-work" (pre-boundary sessions or non-ralph sessions).
+ * with phase "task-work" (pre-boundary sessions or non-loop sessions).
  *
  * AC: @session-log-show ac-2
  */
@@ -3418,7 +3421,8 @@ export function getFallbackInjectionInstructions(
 /**
  * Inject KSPEC_SESSION_ID via the appropriate mechanism for the given adapter.
  *
- * Ralph passes env vars to spawned agents via process environment, but some
+ * The legacy runtime passed env vars to spawned agents via process
+ * environment, but some
  * harnesses (Claude Code, Codex, etc.) sandbox child processes and don't
  * forward arbitrary parent env vars. This function writes the session ID to
  * the harness-specific config location so it reaches kspec subprocesses.

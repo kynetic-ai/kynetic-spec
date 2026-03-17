@@ -234,7 +234,7 @@ export const usageErrors = {
   // Log command
   logNeedRef: "Provide a reference or use --spec/--task",
 
-  // Ralph command
+  // Iteration command
   maxLoopsPositive: "--max-loops must be a positive integer",
   maxRetriesNonNegative: "--max-retries must be a non-negative integer",
   maxFailuresPositive: "--max-failures must be a positive integer",
@@ -356,8 +356,7 @@ export const operationFailures = {
   // Derive operations
   deriveTasks: "Failed to derive tasks",
 
-  // Ralph operations
-  ralphLoop: "Ralph loop failed",
+  // Iteration operations
   iterationFailed: (err: string) => `Iteration failed: ${err}`,
   iterationFailedAfterRetries: (
     iteration: number,

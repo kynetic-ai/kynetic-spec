@@ -598,9 +598,9 @@ title: Test Project
       expect(defaults.dispatch.sync_interval).toBe(60);
       // AC: @dispatch-sync-configuration ac-remote-sync-default — null for runtime resolution
       expect(defaults.dispatch.remote_sync).toBeNull();
-      expect(defaults.ralph.skills.task_work).toBe("/kspec:task-work");
-      expect(defaults.ralph.skills.reflect).toBe("/kspec:reflect");
-      expect(defaults.ralph.skills.pr_review).toBe("/kspec:review");
+      expect(defaults.agent.skills.task_work).toBe("/kspec:task-work");
+      expect(defaults.agent.skills.reflect).toBe("/kspec:reflect");
+      expect(defaults.agent.skills.pr_review).toBe("/kspec:review");
     });
 
     it("returns independent objects", () => {

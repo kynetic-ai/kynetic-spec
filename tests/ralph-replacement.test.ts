@@ -8,15 +8,15 @@
  * Spec: @ralph-replacement
  */
 
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { spawnSync } from "node:child_process";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import * as YAML from "yaml";
-import { spawnSync } from "node:child_process";
 import {
   CLI_PATH,
-  createTempDir,
   cleanupTempDir,
+  createTempDir,
   initGitRepo,
   kspec,
 } from "./helpers/cli.js";
@@ -216,14 +216,14 @@ describe("kspec setup built-in agents", () => {
 
 // AC: @ralph-replacement ac-6
 describe("agent dispatch template section", () => {
-  it("06-ralph-loop.md template references agent dispatch not ralph", async () => {
+  it("06-agent-dispatch-mode.md template references agent dispatch not ralph", async () => {
     // Resolve the template path relative to package root
     const templatePath = path.join(
       __dirname,
       "..",
       "templates",
       "agents-sections",
-      "06-ralph-loop.md",
+      "06-agent-dispatch-mode.md",
     );
     const content = await fs.readFile(templatePath, "utf-8");
     const lower = content.toLowerCase();
@@ -256,15 +256,15 @@ describe("uncommitted changes detection", () => {
     );
 
     // Session checkpoint should detect the dirty working tree and block
-    const result = await kspec(
-      "session checkpoint --json",
-      tempDir,
-    );
+    const result = await kspec("session checkpoint --json", tempDir);
 
     // In JSON mode, checkpoint exits 0 but outputs {"decision": "block", "reason": "..."}
     // when uncommitted changes are detected
     expect(result.exitCode).toBe(0);
-    const output = JSON.parse(result.stdout.trim()) as { decision: string; reason: string };
+    const output = JSON.parse(result.stdout.trim()) as {
+      decision: string;
+      reason: string;
+    };
     expect(output.decision).toBe("block");
     expect(output.reason).toContain("uncommitted changes");
   });
