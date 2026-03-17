@@ -340,6 +340,8 @@ conventions:
       - Include what was done, approach taken, and why
       - Note any deviations from plan or unexpected findings
       - Keep notes concise but informative for future context
+      - Before resubmitting after a fix cycle, add a note summarizing what changed and why — this
+        becomes a key activity timeline entry for reviewers
   - _ulid: 01KF782ZSJZB6HWGFS01TM2R0R
     domain: naming
     examples: []
