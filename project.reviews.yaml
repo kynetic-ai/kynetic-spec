@@ -7881,6 +7881,13 @@ reviews:
           status: pass
           name: regression check (reviews.ts, yaml.ts)
         timestamp: 2026-03-17T18:53:32.174Z
+      - _ulid: 01KKYJB386FS4Q94B2SV28MXZ0
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKYJB34AGDWAAHWHGZ0MFABW
+        timestamp: 2026-03-17T18:53:42.535Z
     examined_commit: 493fdd9943d7fc65bb0400bfaa99c7ab322b31c5
     external_links: []
     lifecycle_state: open
@@ -7915,9 +7922,27 @@ reviews:
               outside src/parser/plans.ts and tests/yaml-round-trip-stability.test.ts."
             created_at: 2026-03-17T18:52:52.313Z
         kind: blocker
+      - _ulid: 01KKYJB34AGDWAAHWHGZ0MFABW
+        anchor:
+          type: code
+          commit: 493fdd9943d7
+          line_end: 166
+          line_start: 82
+          path: src/parser/plans.ts
+          side: head
+        entries:
+          - _ulid: 01KKYJB34AXCYFMS4FGP4MSFAT
+            author: "@claude"
+            body: "Plans.ts raw-data-preservation implementation is correct and follows the established pattern
+              from tasks and reviews. extractRawPlanArray, writeRawPlanArray, findRawPlanIndex, and
+              mergePlanPreservingRawShape are well-structured. The 6 new round-trip tests are
+              thorough: identity save, Zod default suppression, identity mutation, multi-plan
+              stability, delete preservation, and multi-cycle stability. All pass."
+            created_at: 2026-03-17T18:53:42.410Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-17T18:30:44.103Z
-    updated_at: 2026-03-17T18:53:32.009Z
+    updated_at: 2026-03-17T18:53:42.410Z
     notes: []
   - _ulid: 01KKYH338DJ81TVY8G203C3XR6
     slugs: []
