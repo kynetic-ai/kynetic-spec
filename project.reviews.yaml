@@ -8902,6 +8902,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKZ3C6SP931SEN1AXYGGTFJ1
         timestamp: 2026-03-17T23:51:24.817Z
+      - _ulid: 01KKZ3CF0B9WMVCWHPCPREZMZ0
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKZ3CEXSPRHWE86QYZ9PDEJQ
+        timestamp: 2026-03-17T23:51:33.131Z
     examined_commit: 3b251d677f21cfc35c6db12a6bfb759c2889c7f5
     external_links: []
     lifecycle_state: open
@@ -8929,7 +8936,24 @@ reviews:
               rendering isn't part of the assigned ACs.
             created_at: 2026-03-17T23:51:24.726Z
         kind: nit
+      - _ulid: 01KKZ3CEXSPRHWE86QYZ9PDEJQ
+        anchor:
+          type: code
+          commit: 3b251d677f21
+          line_end: 950
+          line_start: 947
+          path: packages/web-ui/src/lib/api.ts
+          side: head
+        entries:
+          - _ulid: 01KKZ3CEXSSQMW7D6BWF6ND2AD
+            author: "@claude"
+            body: JSDoc says 'filtered client-side by subject_ref or head_branch' but the implementation
+              actually passes these as server-side query params (subject_ref/head_branch were added
+              to the daemon list endpoint). The comment is misleading — the filtering is
+              server-side.
+            created_at: 2026-03-17T23:51:33.049Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-17T23:45:03.640Z
-    updated_at: 2026-03-17T23:51:24.726Z
+    updated_at: 2026-03-17T23:51:33.049Z
     notes: []
