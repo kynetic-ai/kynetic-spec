@@ -4469,6 +4469,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T05:39:35.683Z
         completed_at: 2026-03-17T05:39:35.683Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: f0668ebfe6c36202f3f40870e9302980798ef213
+          head_commit: 3404721e7eaf94b5487e0718b18ed46f51d50a7f
+        evidence: "AC: @yaml-serialization-invariants ac-3 annotated on 3 describe blocks covering toYaml
+          round-trip, file-level round-trip, and saveTask/mutateTaskAtomically paths. No traits on
+          spec."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-17T05:39:44.817Z
+        completed_at: 2026-03-17T05:39:44.817Z
     events:
       - _ulid: 01KKX4WG200YSR13YJ70TS7TKH
         actor: "@claude"
@@ -4490,6 +4503,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T05:39:35.736Z
+      - _ulid: 01KKX4XA35CBP303J99BKZE1AV
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-17T05:39:44.870Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -4504,5 +4524,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T05:39:18.208Z
-    updated_at: 2026-03-17T05:39:35.683Z
+    updated_at: 2026-03-17T05:39:44.817Z
     notes: []
