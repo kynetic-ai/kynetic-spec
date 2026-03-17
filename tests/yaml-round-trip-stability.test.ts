@@ -21,6 +21,16 @@ import {
   mutateReviewAtomically,
   deleteReviewRecord,
 } from "../src/parser/reviews.js";
+import {
+  createObservation,
+  saveObservation,
+  deleteObservation,
+  saveMetaItem,
+  deleteMetaItem,
+  getMetaManifestPath,
+  loadMetaContext,
+} from "../src/parser/meta.js";
+import type { LoadedObservation, LoadedAgent, LoadedConvention } from "../src/parser/meta.js";
 import type { KspecContext } from "../src/parser/yaml.js";
 import type { ReviewRecordInput } from "../src/schema/index.js";
 
@@ -731,6 +741,327 @@ describe("round-trip stability — saveReviewRecord path", () => {
     const reloaded = await loadReviewRecords(ctx);
     expect(reloaded).toHaveLength(1);
     expect(reloaded[0]._ulid).toBe(ulid2);
+  });
+});
+
+// AC: @yaml-serialization-invariants ac-3
+describe("round-trip stability — saveObservation path", () => {
+  function makeMetaCtx(specDir: string): KspecContext {
+    return { specDir } as KspecContext;
+  }
+
+  it("saveObservation with no changes produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-meta-rt1");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeMetaCtx(kspecDir);
+
+    const obsUlid = testUlid("0BS1");
+    const obs = createObservation("friction", "Test observation content", {
+      author: "test-author",
+    });
+    (obs as Record<string, unknown>)._ulid = obsUlid;
+
+    // Save observation initially
+    await saveObservation(ctx, { ...obs });
+    const manifestPath = getMetaManifestPath(ctx);
+    const initialContent = await fs.readFile(manifestPath, "utf-8");
+
+    // Load and save back with no modifications
+    const meta = await loadMetaContext(ctx);
+    expect(meta.observations).toHaveLength(1);
+    await saveObservation(ctx, meta.observations[0]);
+    const afterContent = await fs.readFile(manifestPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("saveObservation does not add absent sections to file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-meta-rt2");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeMetaCtx(kspecDir);
+
+    // Write a minimal meta manifest with only observations
+    const manifestPath = getMetaManifestPath(ctx);
+    const obsUlid = testUlid("0BS2");
+    await writeYamlFilePreserveFormat(manifestPath, {
+      kynetic_meta: "1.0",
+      observations: [
+        {
+          _ulid: obsUlid,
+          type: "friction",
+          content: "Initial observation",
+          created_at: "2026-01-01T00:00:00.000Z",
+          author: "test",
+          resolved: false,
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(manifestPath, "utf-8");
+
+    // Mutate the observation (resolve it)
+    const meta = await loadMetaContext(ctx);
+    const obs = meta.observations[0];
+    obs.resolved = true;
+    obs.resolution = "Addressed in task";
+    await saveObservation(ctx, obs);
+    const afterContent = await fs.readFile(manifestPath, "utf-8");
+
+    // agents/workflows/conventions/skills/includes should NOT appear
+    expect(afterContent).not.toContain("agents:");
+    expect(afterContent).not.toContain("workflows:");
+    expect(afterContent).not.toContain("conventions:");
+    expect(afterContent).not.toContain("skills:");
+    expect(afterContent).not.toContain("includes:");
+
+    // But the mutation should have taken effect
+    const reloaded = await loadMetaContext(ctx);
+    expect(reloaded.observations[0].resolved).toBe(true);
+    expect(reloaded.observations[0].resolution).toBe("Addressed in task");
+  });
+
+  it("deleteObservation preserves non-target sections as raw data", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-meta-rt3");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeMetaCtx(kspecDir);
+
+    // Write a manifest with only observations (no agents/workflows/etc.)
+    const manifestPath = getMetaManifestPath(ctx);
+    const [ulid1, ulid2] = testUlids("0BS3", 2);
+    await writeYamlFilePreserveFormat(manifestPath, {
+      kynetic_meta: "1.0",
+      observations: [
+        {
+          _ulid: ulid1,
+          type: "friction",
+          content: "Observation to delete",
+          created_at: "2026-01-01T00:00:00.000Z",
+          author: "test",
+          resolved: false,
+        },
+        {
+          _ulid: ulid2,
+          type: "success",
+          content: "Observation to keep",
+          created_at: "2026-01-02T00:00:00.000Z",
+          author: "test",
+          resolved: false,
+        },
+      ],
+    });
+
+    await deleteObservation(ctx, ulid1);
+    const afterContent = await fs.readFile(manifestPath, "utf-8");
+
+    // Remaining content should not gain Zod default sections
+    expect(afterContent).not.toContain("agents:");
+    expect(afterContent).not.toContain("workflows:");
+    expect(afterContent).not.toContain("conventions:");
+    expect(afterContent).not.toContain("skills:");
+    expect(afterContent).not.toContain("includes:");
+
+    // Only one observation should remain
+    const reloaded = await loadMetaContext(ctx);
+    expect(reloaded.observations).toHaveLength(1);
+    expect(reloaded.observations[0]._ulid).toBe(ulid2);
+  });
+});
+
+// AC: @yaml-serialization-invariants ac-3
+describe("round-trip stability — saveMetaItem path", () => {
+  function makeMetaCtx(specDir: string): KspecContext {
+    return { specDir } as KspecContext;
+  }
+
+  it("saveMetaItem for agent does not add absent sections to file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-meta-rt4");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeMetaCtx(kspecDir);
+
+    // Write a minimal meta manifest with only agents
+    const manifestPath = getMetaManifestPath(ctx);
+    const agentUlid = testUlid("AG01");
+    await writeYamlFilePreserveFormat(manifestPath, {
+      kynetic_meta: "1.0",
+      agents: [
+        {
+          _ulid: agentUlid,
+          id: "test-worker",
+          name: "Test Worker",
+        },
+      ],
+    });
+
+    // Save a new convention — only conventions array should be added
+    const convUlid = testUlid("C0N1");
+    const convention: LoadedConvention = {
+      _ulid: convUlid,
+      domain: "testing",
+      rules: ["Rule 1"],
+      examples: [],
+    };
+    await saveMetaItem(ctx, convention, "convention");
+    const afterContent = await fs.readFile(manifestPath, "utf-8");
+
+    // observations/workflows/skills/includes should NOT appear
+    expect(afterContent).not.toContain("observations:");
+    expect(afterContent).not.toContain("workflows:");
+    expect(afterContent).not.toContain("skills:");
+    expect(afterContent).not.toContain("includes:");
+
+    // agents and conventions should be present
+    expect(afterContent).toContain("agents:");
+    expect(afterContent).toContain("conventions:");
+
+    // Verify data integrity
+    const reloaded = await loadMetaContext(ctx);
+    expect(reloaded.agents).toHaveLength(1);
+    expect(reloaded.conventions).toHaveLength(1);
+    expect(reloaded.conventions[0].domain).toBe("testing");
+  });
+
+  it("saveMetaItem update does not pollute existing items with Zod defaults", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-meta-rt5");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeMetaCtx(kspecDir);
+
+    // Write a minimal agent — only required fields
+    const manifestPath = getMetaManifestPath(ctx);
+    const agentUlid = testUlid("AG02");
+    await writeYamlFilePreserveFormat(manifestPath, {
+      kynetic_meta: "1.0",
+      agents: [
+        {
+          _ulid: agentUlid,
+          id: "minimal-agent",
+          name: "Minimal Agent",
+        },
+      ],
+    });
+
+    // Load and save back — should not add capabilities, tools, conventions, etc.
+    const meta = await loadMetaContext(ctx);
+    const agent = meta.agents[0];
+    // Modify the agent's name to trigger a save with actual changes
+    agent.name = "Updated Minimal Agent";
+    await saveMetaItem(ctx, agent, "agent");
+    const afterContent = await fs.readFile(manifestPath, "utf-8");
+
+    // Should not have gained Zod default fields (empty arrays, false)
+    expect(afterContent).not.toContain("capabilities:");
+    expect(afterContent).not.toContain("tools:");
+    expect(afterContent).not.toContain("dispatch:");
+    expect(afterContent).not.toContain("auto_approve:");
+
+    // Other sections should not appear
+    expect(afterContent).not.toContain("observations:");
+    expect(afterContent).not.toContain("workflows:");
+    expect(afterContent).not.toContain("conventions:");
+
+    // But the mutation should have taken effect
+    expect(afterContent).toContain("Updated Minimal Agent");
+  });
+
+  it("deleteMetaItem preserves non-target items as raw data", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-meta-rt6");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeMetaCtx(kspecDir);
+
+    // Write manifest with agents and conventions — no other sections
+    const manifestPath = getMetaManifestPath(ctx);
+    const [agentUlid1, agentUlid2] = testUlids("AG03", 2);
+    const convUlid = testUlid("C0N2");
+    await writeYamlFilePreserveFormat(manifestPath, {
+      kynetic_meta: "1.0",
+      agents: [
+        {
+          _ulid: agentUlid1,
+          id: "agent-to-delete",
+          name: "Agent to Delete",
+        },
+        {
+          _ulid: agentUlid2,
+          id: "agent-to-keep",
+          name: "Agent to Keep",
+        },
+      ],
+      conventions: [
+        {
+          _ulid: convUlid,
+          domain: "testing",
+          rules: ["Rule 1"],
+        },
+      ],
+    });
+
+    await deleteMetaItem(ctx, agentUlid1, "agent");
+    const afterContent = await fs.readFile(manifestPath, "utf-8");
+
+    // Should not gain absent sections
+    expect(afterContent).not.toContain("observations:");
+    expect(afterContent).not.toContain("workflows:");
+    expect(afterContent).not.toContain("skills:");
+    expect(afterContent).not.toContain("includes:");
+
+    // Remaining agent should not gain Zod defaults
+    expect(afterContent).not.toContain("capabilities:");
+    expect(afterContent).not.toContain("tools:");
+    expect(afterContent).not.toContain("dispatch:");
+
+    // Convention should still be present
+    expect(afterContent).toContain("conventions:");
+
+    // Verify data integrity
+    const reloaded = await loadMetaContext(ctx);
+    expect(reloaded.agents).toHaveLength(1);
+    expect(reloaded.agents[0].id).toBe("agent-to-keep");
+    expect(reloaded.conventions).toHaveLength(1);
+  });
+
+  it("multiple mutations across sections preserve file stability", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-meta-rt7");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeMetaCtx(kspecDir);
+
+    // Write manifest with only observations
+    const manifestPath = getMetaManifestPath(ctx);
+    const obsUlid = testUlid("0BS7");
+    await writeYamlFilePreserveFormat(manifestPath, {
+      kynetic_meta: "1.0",
+      observations: [
+        {
+          _ulid: obsUlid,
+          type: "idea",
+          content: "An idea to test",
+          created_at: "2026-01-01T00:00:00.000Z",
+          author: "test",
+          resolved: false,
+        },
+      ],
+    });
+
+    // Add a minimal agent (only required fields, no Zod defaults)
+    const agentUlid = testUlid("AG07");
+    const agent = {
+      _ulid: agentUlid,
+      id: "new-agent",
+      name: "New Agent",
+    } as unknown as LoadedAgent;
+    await saveMetaItem(ctx, agent, "agent");
+    const afterContent = await fs.readFile(manifestPath, "utf-8");
+
+    // Should have observations and agents, but NOT workflows/conventions/skills/includes
+    expect(afterContent).toContain("observations:");
+    expect(afterContent).toContain("agents:");
+    expect(afterContent).not.toContain("workflows:");
+    expect(afterContent).not.toContain("conventions:");
+    expect(afterContent).not.toContain("skills:");
+    expect(afterContent).not.toContain("includes:");
+
+    // Verify data integrity
+    const reloaded = await loadMetaContext(ctx);
+    expect(reloaded.observations).toHaveLength(1);
+    expect(reloaded.agents).toHaveLength(1);
+    expect(reloaded.agents[0].id).toBe("new-agent");
   });
 });
 

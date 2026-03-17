@@ -44,6 +44,7 @@ import {
   readYamlFile,
   writeYamlFilePreserveFormat,
 } from "./yaml.js";
+import { withFileLock } from "./file-lock.js";
 
 /**
  * Loaded agent with runtime metadata
@@ -454,18 +455,141 @@ export function isMetaItemType(type: string): boolean {
 }
 
 // ============================================================
-// META ITEM CRUD
+// RAW DATA PRESERVATION HELPERS
 // ============================================================
 
+/** Top-level array field names in the meta manifest. */
+const META_ARRAY_FIELDS = [
+  "agents",
+  "workflows",
+  "conventions",
+  "observations",
+  "skills",
+  "includes",
+] as const;
+
+type MetaArrayField = (typeof META_ARRAY_FIELDS)[number];
+
 /**
- * Save the entire meta manifest to file
+ * Extract the raw meta manifest data from a YAML file.
+ * Does NOT run schema validation — preserves original data for round-trip stability.
  */
-async function saveMetaManifest(
-  manifestPath: string,
-  manifest: MetaManifest,
-): Promise<void> {
-  await writeYamlFilePreserveFormat(manifestPath, manifest);
+async function extractRawMetaManifest(filePath: string): Promise<{
+  wrapperObj?: Record<string, unknown>;
+}> {
+  let existingRaw: unknown = null;
+
+  try {
+    existingRaw = await readYamlFile<unknown>(filePath);
+  } catch {
+    return {};
+  }
+
+  if (!existingRaw || typeof existingRaw !== "object") {
+    return {};
+  }
+
+  return {
+    wrapperObj: existingRaw as Record<string, unknown>,
+  };
 }
+
+/**
+ * Get a raw array from the wrapper object, defaulting to empty.
+ */
+function getRawArray(
+  wrapperObj: Record<string, unknown> | undefined,
+  field: MetaArrayField,
+): unknown[] {
+  if (!wrapperObj) return [];
+  const arr = wrapperObj[field];
+  return Array.isArray(arr) ? arr : [];
+}
+
+/**
+ * Write the meta manifest back to file, preserving wrapper metadata.
+ * Only includes array fields that were present in the original wrapper
+ * or that have non-empty values.
+ */
+async function writeRawMetaManifest(
+  filePath: string,
+  wrapperObj: Record<string, unknown> | undefined,
+  updates: Partial<Record<MetaArrayField, unknown[]>>,
+): Promise<void> {
+  const output: Record<string, unknown> = {};
+
+  if (wrapperObj) {
+    // Copy all existing top-level fields in their original order
+    for (const [key, value] of Object.entries(wrapperObj)) {
+      if (key in updates) {
+        // This field was mutated — use the updated value
+        output[key] = updates[key as MetaArrayField];
+      } else {
+        output[key] = value;
+      }
+    }
+    // Add any new fields from updates that weren't in the original
+    for (const [key, value] of Object.entries(updates)) {
+      if (!(key in output)) {
+        output[key] = value;
+      }
+    }
+  } else {
+    output.kynetic_meta = "1.0";
+    for (const [key, value] of Object.entries(updates)) {
+      output[key] = value;
+    }
+  }
+
+  await writeYamlFilePreserveFormat(filePath, output);
+}
+
+/**
+ * Find an item index in a raw array by ULID match.
+ */
+function findRawMetaItemIndex(rawItems: unknown[], itemUlid: string): number {
+  return rawItems.findIndex(
+    (item) =>
+      item &&
+      typeof item === "object" &&
+      (item as Record<string, unknown>)._ulid === itemUlid,
+  );
+}
+
+/**
+ * Merge a schema-normalized meta item onto the original raw data.
+ * Only adds fields that were in the original raw data or that contain
+ * non-default values. This prevents Zod defaults from polluting YAML
+ * output with fields that weren't originally present.
+ */
+function mergeMetaItemPreservingRawShape(
+  rawItem: Record<string, unknown>,
+  normalizedItem: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(normalizedItem)) {
+    if (key in rawItem) {
+      // Field existed in raw — always include (even if value changed)
+      result[key] = value;
+    } else {
+      // Field was added by schema normalization — only include if non-trivial.
+      // Skip empty arrays, null/undefined, and false (common Zod defaults).
+      const isEmptyArray = Array.isArray(value) && value.length === 0;
+      const isNull = value === null || value === undefined;
+      const isFalse = value === false;
+      if (!isEmptyArray && !isNull && !isFalse) {
+        result[key] = value;
+      }
+    }
+  }
+
+  return result;
+}
+
+// ============================================================
+// META ITEM CRUD
+// ============================================================
 
 /**
  * Strip runtime metadata before serialization
@@ -503,7 +627,8 @@ export function createObservation(
 }
 
 /**
- * Save an observation to the meta manifest
+ * Save an observation to the meta manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
  */
 export async function saveObservation(
   ctx: KspecContext,
@@ -511,75 +636,65 @@ export async function saveObservation(
 ): Promise<void> {
   const manifestPath = getMetaManifestPath(ctx);
 
-  // Ensure directory exists
-  const dir = path.dirname(manifestPath);
-  await fs.mkdir(dir, { recursive: true });
+  await withFileLock(manifestPath, async () => {
+    // Ensure directory exists
+    const dir = path.dirname(manifestPath);
+    await fs.mkdir(dir, { recursive: true });
 
-  // Load existing manifest
-  let manifest: MetaManifest = {
-    kynetic_meta: "1.0",
-    agents: [],
-    workflows: [],
-    conventions: [],
-    observations: [],
-    skills: [],
-    includes: [],
-  };
+    // Load raw manifest data without schema normalization
+    const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+    const rawObservations = getRawArray(wrapperObj, "observations");
 
-  try {
-    const raw = await readYamlFile<unknown>(manifestPath);
-    const parsed = MetaManifestSchema.safeParse(raw);
-    if (parsed.success) {
-      manifest = parsed.data;
+    // Strip runtime metadata and schema-parse only the target item
+    const cleanObs = stripMetaMetadata(observation);
+
+    // Update existing or add new — replace only the target observation
+    const existingIndex = findRawMetaItemIndex(rawObservations, observation._ulid);
+    if (existingIndex >= 0) {
+      const rawTarget = rawObservations[existingIndex] as Record<string, unknown>;
+      rawObservations[existingIndex] = mergeMetaItemPreservingRawShape(
+        rawTarget,
+        cleanObs as unknown as Record<string, unknown>,
+      );
+    } else {
+      rawObservations.push(cleanObs);
     }
-  } catch {
-    // File doesn't exist, use defaults
-  }
 
-  // Strip runtime metadata
-  const cleanObs = stripMetaMetadata(observation);
-
-  // Update or add
-  const existingIndex = manifest.observations.findIndex(
-    (o) => o._ulid === observation._ulid,
-  );
-  if (existingIndex >= 0) {
-    manifest.observations[existingIndex] = cleanObs as Observation;
-  } else {
-    manifest.observations.push(cleanObs as Observation);
-  }
-
-  await saveMetaManifest(manifestPath, manifest);
+    await writeRawMetaManifest(manifestPath, wrapperObj, {
+      observations: rawObservations,
+    });
+  });
 }
 
 /**
- * Delete an observation from the meta manifest
+ * Delete an observation from the meta manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
  */
 export async function deleteObservation(
   ctx: KspecContext,
-  ulid: string,
+  targetUlid: string,
 ): Promise<boolean> {
   const manifestPath = getMetaManifestPath(ctx);
 
-  try {
-    const raw = await readYamlFile<unknown>(manifestPath);
-    const parsed = MetaManifestSchema.safeParse(raw);
-    if (!parsed.success) {
+  return withFileLock(manifestPath, async () => {
+    try {
+      const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+      const rawObservations = getRawArray(wrapperObj, "observations");
+
+      const index = findRawMetaItemIndex(rawObservations, targetUlid);
+      if (index < 0) {
+        return false;
+      }
+
+      rawObservations.splice(index, 1);
+      await writeRawMetaManifest(manifestPath, wrapperObj, {
+        observations: rawObservations,
+      });
+      return true;
+    } catch {
       return false;
     }
-
-    const manifest = parsed.data;
-    const index = manifest.observations.findIndex((o) => o._ulid === ulid);
-    if (index < 0) {
-      return false;
-    }
-
-    manifest.observations.splice(index, 1);
-    await saveMetaManifest(manifestPath, manifest);
-    return true;
-  } catch {
-    return false;
-  }
+  });
 }
 
 /**
@@ -778,7 +893,17 @@ export type { Agent, Workflow, Convention, Observation, Skill, MetaItem };
 // ============================================================
 
 /**
- * Save any meta item (agent, workflow, convention, skill) to the manifest
+ * Map item type to manifest array field name.
+ */
+function itemTypeToField(
+  itemType: "agent" | "workflow" | "convention" | "observation" | "skill",
+): MetaArrayField {
+  return `${itemType}s` as MetaArrayField;
+}
+
+/**
+ * Save any meta item (agent, workflow, convention, skill) to the manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
  * AC: @skill-parser ac-1 - skill is appended to manifest.skills and written to disk
  * AC: @skill-parser ac-2 - .kspec/skills/<id>/ directory is created for skills
  */
@@ -789,59 +914,35 @@ export async function saveMetaItem(
 ): Promise<void> {
   const manifestPath = getMetaManifestPath(ctx);
 
-  // Ensure directory exists
-  const dir = path.dirname(manifestPath);
-  await fs.mkdir(dir, { recursive: true });
+  await withFileLock(manifestPath, async () => {
+    // Ensure directory exists
+    const dir = path.dirname(manifestPath);
+    await fs.mkdir(dir, { recursive: true });
 
-  // Load existing manifest
-  let manifest: MetaManifest = {
-    kynetic_meta: "1.0",
-    agents: [],
-    workflows: [],
-    conventions: [],
-    observations: [],
-    skills: [],
-    includes: [],
-  };
+    // Load raw manifest data without schema normalization
+    const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+    const field = itemTypeToField(itemType);
+    const rawItems = getRawArray(wrapperObj, field);
 
-  try {
-    const raw = await readYamlFile<unknown>(manifestPath);
-    const parsed = MetaManifestSchema.safeParse(raw);
-    if (parsed.success) {
-      manifest = parsed.data;
+    // Strip runtime metadata
+    const cleanItem = stripMetaMetadata(item);
+
+    // Update existing or add new — replace only the target item
+    const existingIndex = findRawMetaItemIndex(rawItems, item._ulid);
+    if (existingIndex >= 0) {
+      const rawTarget = rawItems[existingIndex] as Record<string, unknown>;
+      rawItems[existingIndex] = mergeMetaItemPreservingRawShape(
+        rawTarget,
+        cleanItem as unknown as Record<string, unknown>,
+      );
+    } else {
+      rawItems.push(cleanItem);
     }
-  } catch {
-    // File doesn't exist, use defaults
-  }
 
-  // Strip runtime metadata
-  const cleanItem = stripMetaMetadata(item);
-
-  // Get the appropriate array
-  const getArray = () => {
-    switch (itemType) {
-      case "agent":
-        return manifest.agents;
-      case "workflow":
-        return manifest.workflows;
-      case "convention":
-        return manifest.conventions;
-      case "skill":
-        return manifest.skills;
-    }
-  };
-
-  const array = getArray();
-
-  // Update or add
-  const existingIndex = array.findIndex((i) => i._ulid === item._ulid);
-  if (existingIndex >= 0) {
-    (array as unknown[])[existingIndex] = cleanItem;
-  } else {
-    (array as unknown[]).push(cleanItem);
-  }
-
-  await saveMetaManifest(manifestPath, manifest);
+    await writeRawMetaManifest(manifestPath, wrapperObj, {
+      [field]: rawItems,
+    });
+  });
 
   // AC: @skill-parser ac-2 - Create skill content directory
   if (itemType === "skill" && "id" in item) {
@@ -851,7 +952,8 @@ export async function saveMetaItem(
 }
 
 /**
- * Delete any meta item from the manifest
+ * Delete any meta item from the manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
  * AC: @skill-parser ac-3 - skill is removed from manifest.skills
  * AC: @skill-parser ac-4 - .kspec/skills/<id>/ directory is deleted for skills
  */
@@ -862,55 +964,44 @@ export async function deleteMetaItem(
 ): Promise<boolean> {
   const manifestPath = getMetaManifestPath(ctx);
 
-  try {
-    const raw = await readYamlFile<unknown>(manifestPath);
-    const parsed = MetaManifestSchema.safeParse(raw);
-    if (!parsed.success) {
-      return false;
-    }
-
-    const manifest = parsed.data;
-
-    const getArray = () => {
-      switch (itemType) {
-        case "agent":
-          return manifest.agents;
-        case "workflow":
-          return manifest.workflows;
-        case "convention":
-          return manifest.conventions;
-        case "observation":
-          return manifest.observations;
-        case "skill":
-          return manifest.skills;
+  return withFileLock(manifestPath, async () => {
+    try {
+      const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+      if (!wrapperObj) {
+        return false;
       }
-    };
 
-    const array = getArray();
-    const index = array.findIndex((i) => i._ulid === itemUlid);
-    if (index < 0) {
-      return false;
-    }
+      const field = itemTypeToField(itemType);
+      const rawItems = getRawArray(wrapperObj, field);
 
-    // AC: @skill-parser ac-4 - Delete skill directory before removing from manifest
-    if (itemType === "skill") {
-      const skill = array[index] as Skill;
-      if (skill.id) {
-        const skillDir = path.join(ctx.specDir, "skills", skill.id);
-        try {
-          await fs.rm(skillDir, { recursive: true, force: true });
-        } catch {
-          // Directory might not exist, that's fine
+      const index = findRawMetaItemIndex(rawItems, itemUlid);
+      if (index < 0) {
+        return false;
+      }
+
+      // AC: @skill-parser ac-4 - Delete skill directory before removing from manifest
+      if (itemType === "skill") {
+        const rawSkill = rawItems[index] as Record<string, unknown>;
+        const skillId = rawSkill.id as string | undefined;
+        if (skillId) {
+          const skillDir = path.join(ctx.specDir, "skills", skillId);
+          try {
+            await fs.rm(skillDir, { recursive: true, force: true });
+          } catch {
+            // Directory might not exist, that's fine
+          }
         }
       }
-    }
 
-    array.splice(index, 1);
-    await saveMetaManifest(manifestPath, manifest);
-    return true;
-  } catch {
-    return false;
-  }
+      rawItems.splice(index, 1);
+      await writeRawMetaManifest(manifestPath, wrapperObj, {
+        [field]: rawItems,
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  });
 }
 
 // ============================================================
