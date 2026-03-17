@@ -7240,7 +7240,7 @@ workspaces:
         head: 82896f8489f79b6cac198ca9c0ed156634a2ca32
         last_seen_at: 2026-03-17T10:32:26.813Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-skill-table-from-kspec-agents-md-and-port-descriptions-to-skill-frontmatter-01kktk96
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 51465810f2fa4c44628dc52f6070812e43862a6f
     bootstrap:
       status: succeeded
@@ -7281,34 +7281,34 @@ workspaces:
     canonical_branch: dispatch/task/improve-review-skill-to-direct-use-of-anchors-in-plan-and-code-reviews/01kkttc2
     canonical_branch_head: a7195c9f4b1dfebc2b96cbbf0fc50293619c698c
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-17T11:13:46.056Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-17T11:21:06.682Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T11:13:46.710Z
+      updated_at: 2026-03-17T11:21:06.682Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 51465810f2fa4c44628dc52f6070812e43862a6f
-      updated_at: 2026-03-17T11:13:46.056Z
-    lifecycle_state: integrating
+      updated_at: 2026-03-17T11:21:06.682Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KKTTC2CTEPS5X2VPE7QVFA16"
     task_slug: improve-review-skill-to-direct-use-of-anchors-in-plan-and-code-reviews
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T11:13:46.710Z
-      last_reconciled_at: 2026-03-17T11:13:46.710Z
+      last_reconciled_at: 2026-03-17T11:21:06.682Z
       created_at: 2026-03-17T10:39:05.009Z
-      updated_at: 2026-03-17T11:13:46.710Z
+      updated_at: 2026-03-17T11:21:06.682Z
     workspace_id: dispatch-workspace-01KKTTC2CTEPS5X2VPE7QVFA16
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
