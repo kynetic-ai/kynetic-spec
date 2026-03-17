@@ -103236,7 +103236,7 @@
   spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -103254,7 +103254,7 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: 01KKXXPPXASPN8V78HAH34MF4T
+  session_id: null
   created_at: 2026-03-17T06:05:22.940Z
   started_at: 2026-03-17T13:01:19.905Z
   submitted_at: 2026-03-17T13:01:23.668Z
@@ -103299,6 +103299,11 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T13:01:05.560Z
+    - _ulid: 01KKXYQ16SEKYTF4P1HR15R43C
+      content: "[FIX_CYCLE: 2] Review verdict: changes_requested by agent@kspec-dispatch"
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T13:10:42.137Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6C9RJHKN1ZMJW1ZWH2BRZ
