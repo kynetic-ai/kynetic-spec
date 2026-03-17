@@ -103120,3 +103120,165 @@
       author: "@claude"
       created_at: 2026-03-17T07:32:39.626Z
   todos: []
+- _ulid: 01KKXEJ2RQ4HW9N8K0TB6WS2WY
+  slugs: []
+  title: Unify tool call event parsing and fix phased input streaming
+  type: task
+  description: >-
+    ## What
+
+
+    Unify the dual tool call event parsing paths (HTTP batch via parseEventsToBlocks and WebSocket
+    live via incrementalBlockUpdate) into a single shared module, and fix the accumulator to
+    correctly propagate tool call input from ACP phased events so the web UI and CLI watch display
+    actual tool inputs instead of {}.
+
+
+    ## Why
+
+
+    The ACP SDK sends tool calls in three phases:
+
+    1. **Registration** — tool_call with rawInput: {} (empty, just announces a call will happen)
+
+    2. **Input** — tool_call_update with rawInput: {command: "...", ...} (actual parameters, the
+    real "start")
+
+    3. **Completion** — tool_call_update with status + rawOutput (the end, though intermediate
+    updates can precede it)
+
+
+    Currently:
+
+    - The SessionEventAccumulator reads rawInput from phase 1 (empty {}) and emits tool_call_start.
+    When phase 2 arrives with populated rawInput, the accumulator only checks for status transitions
+    and silently drops the input.
+
+    - The HTTP path (parseEventsToBlocks) correctly handles this at line 265-268 by updating
+    existing.input from tool_call_update events. But the WebSocket path (incrementalBlockUpdate) has
+    no equivalent — tool_call_complete only updates status/duration, never input.
+
+    - deduplicatePhasedToolCalls accesses data.update.sessionUpdate (legacy format) but ACP events
+    store data.sessionUpdate directly — it silently skips all ACP events.
+
+    - ToolCallView.svelte on-demand fetch only extracts output, never input. If block.input is {}
+    from streaming, expansion shows INPUT: {}.
+
+
+    The result: tool calls show no input preview during live streaming, and expanding completed tool
+    calls shows {}. The HTTP path works correctly for historical sessions but uses different parsing
+    logic than the streaming path, creating a maintenance burden and behavioral inconsistency.
+
+
+    ## How
+
+
+    ### 1. Create shared event field extraction module
+
+
+    Extract the field resolution logic from parseEventsToBlocks into a shared module (e.g.,
+    session-event-fields.ts or extend session-utils.ts):
+
+
+    - unwrapSessionUpdate(data) — normalize ACP (data.sessionUpdate) vs legacy
+    (data.update.sessionUpdate) format
+
+    - extractToolCallFields(update) — resolve toolCallId (toolCallId | tool_call_id | id), toolName
+    (title | tool | toolName | name), rawInput (rawInput | input) consistently
+
+    - extractToolCallResult(update) — resolve rawOutput (rawOutput | output | content), status,
+    error flags
+
+
+    Both parseEventsToBlocks and incrementalBlockUpdate should use these shared extractors. The
+    field resolution order should be defined once.
+
+
+    ### 2. Fix the SessionEventAccumulator to emit tool_call_input events
+
+
+    When the accumulator's tool_call_update handler receives an event with populated rawInput (and
+    no status transition), emit a new tool_call_input event containing tool_call_id, tool_name, and
+    tool_input. Add the ToolCallInputEventData type to session-event-types.ts.
+
+
+    ### 3. Update incrementalBlockUpdate to handle tool_call_input
+
+
+    Add a tool_call_input case that finds the existing block by toolCallId and updates its input
+    in-place. Add 'tool_call_input' to the sessionEventTypes set in the page component's
+    handleAgentEvent.
+
+
+    ### 4. Fix deduplicatePhasedToolCalls for ACP format
+
+
+    Use the shared unwrapSessionUpdate helper so it handles both data.sessionUpdate (ACP) and
+    data.update.sessionUpdate (legacy) correctly. Currently silently skips all ACP events.
+
+
+    ### 5. Update CLI watch handler
+
+
+    The CLI watch command (src/cli/commands/agent.ts) also consumes WebSocket events. Add
+    tool_call_input handling to update the displayed input for in-progress tool calls.
+
+
+    ### 6. Refactor parseEventsToBlocks to use shared extractors
+
+
+    Replace inline field resolution in parseEventsToBlocks with calls to the shared extraction
+    functions. This ensures any future field name changes or new ACP formats only need updating in
+    one place.
+
+
+    ### Key files
+
+
+    - src/agent-runtime/session-event-accumulator.ts — emit tool_call_input event
+
+    - src/agent-runtime/session-event-types.ts — add ToolCallInputEventData type
+
+    - packages/web-ui/src/lib/components/session/session-utils.ts — shared extractors, update
+    incrementalBlockUpdate
+
+    - packages/web-ui/src/routes/sessions/[id]/+page.svelte — add tool_call_input to WS event set
+
+    - src/sessions/store.ts — fix deduplicatePhasedToolCalls format handling
+
+    - src/cli/commands/agent.ts — handle tool_call_input in CLI watch
+
+    - packages/daemon/src/routes/agent-dispatch.ts — no changes needed (already broadcasts all
+    accumulator events)
+
+
+    ### Testing approach
+
+
+    - Unit test the shared extraction functions with both ACP and legacy format events
+
+    - Unit test the accumulator emits tool_call_input for phased events
+
+    - Unit test deduplicatePhasedToolCalls with ACP format events (currently silently broken)
+
+    - Unit test incrementalBlockUpdate handles tool_call_input correctly
+
+    - Verify parseEventsToBlocks produces identical blocks to sequential incrementalBlockUpdate
+    calls for the same event sequence
+  spec_ref: "@ws-session-event-streaming"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - cli
+    - web-ui
+    - daemon
+    - streaming
+  vcs_refs: []
+  created_at: 2026-03-17T08:28:22.679Z
+  notes: []
+  todos: []
