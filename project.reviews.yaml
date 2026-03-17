@@ -4788,7 +4788,29 @@ reviews:
     slugs: []
     title: Review diff content API (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0d1b7932b50
+          head_commit: bb450d490918
+        evidence: >-
+          5683 tests passed, 2 failed, 3 skipped. Both failures are pre-existing and unrelated to
+          this change:
+
+          1. agent-dispatch-engine.test.ts: "should include orientation context in dispatched
+          prompt" — flaky test, not modified
+
+          2. review-cli.test.ts: "should leave examined_commit null when not provided" —
+          pre-existing environment issue, not modified by this commit
+
+          Neither test file was changed in this commit (only 5 files changed: diff.ts, server.ts,
+          git-diff-parser.ts, utils/index.ts, daemon-diff-api.test.ts).
+        name: npm test
+        required: true
+        runner: vitest
+        created_at: 2026-03-17T08:56:47.649Z
+        completed_at: 2026-03-17T08:56:47.649Z
     events:
       - _ulid: 01KKXG4D0W60975D97N1KY8ZDR
         actor: "@claude"
@@ -4824,6 +4846,13 @@ reviews:
           kind: question
           thread_ulid: 01KKXG5SM9GH2KJP1MBMRVS09W
         timestamp: 2026-03-17T08:56:37.295Z
+      - _ulid: 01KKXG63T50S3D4M79ADKR0N6Z
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-17T08:56:47.686Z
     examined_commit: bb450d49091846ff30ea2a935f49c0bc0bb70cfa
     external_links: []
     lifecycle_state: open
@@ -4949,5 +4978,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-03-17T08:55:51.580Z
-    updated_at: 2026-03-17T08:56:37.257Z
+    updated_at: 2026-03-17T08:56:47.649Z
     notes: []
