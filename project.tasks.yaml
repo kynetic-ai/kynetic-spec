@@ -71592,6 +71592,14 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-04T20:15:41.061Z
+    - _ulid: 01KKZ0FM9S8ETED5QFB2D7G3J4
+      content: "Completed ralph→agent rename: renamed 06-ralph-loop.md→06-agent-dispatch-mode.md,
+        RalphConfigSchema→AgentConfigSchema, ralph:→agent: in config/schema/defaults, updated
+        dispatch.ts references, removed unused ralphLoop error, cleaned up legacy session comments.
+        All 5672 tests pass."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-17T23:00:51.129Z
   todos: []
   automation: manual_only
 - _ulid: 01KJQH689FXW590TEFZX98QVZ0
