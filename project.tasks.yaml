@@ -101164,8 +101164,16 @@
   spec_ref: "@review-records-daemon-api"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Merge conflict with dev. Another task (task-review-api-threads) merged reviews.ts with thread
+      mutation routes (ac-3, ac-4, ac-5) into dev at commit 51465810f. This task's branch also
+      creates packages/daemon/src/routes/reviews.ts with verdict/check/lifecycle routes (ac-6, ac-7,
+      ac-8). Both tasks created the same file independently. The merge requires combining both sets
+      of routes and imports into a single reviews.ts, plus resolving the server.ts AC comment
+      conflict (both reference different ACs on the same .use() line). Review approved — the code
+      itself is correct — but the merge needs a worker to resolve the conflict before landing on
+      dev.
   depends_on:
     - "@task-review-api-read"
   context: []
