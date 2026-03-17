@@ -8638,6 +8638,12 @@ reviews:
           kind: blocker
           thread_ulid: 01KKYQNFR0GKD5RRJSZB9F6XHE
         timestamp: 2026-03-17T20:26:46.081Z
+      - _ulid: 01KKYQP994M1KJPBQG9K66KBZW
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKYQNEYT49DJNAARMPBY7JXF
+        timestamp: 2026-03-17T20:27:12.036Z
     examined_commit: 8d513982815ee86e4f932a14474bbc31f467be00
     external_links: []
     lifecycle_state: open
@@ -8667,6 +8673,16 @@ reviews:
               failed with . That is a behavior regression from the previous implementation and
               breaks the stated malformed-registry rejection guarantee.
             created_at: 2026-03-17T20:26:45.084Z
+          - _ulid: 01KKYQP93HKJG30JW8W17PA9K2
+            author: Jacob Chapel
+            body: "Repro details: I wrote a registry with two workspaces, where the non-target sibling had
+              integration.target_branch as the number 123. Calling
+              mutateDispatchWorkspaceRecordAtomically on the valid workspace succeeded and rewrote
+              the file. A subsequent loadDispatchWorkspaceRegistry then failed with
+              'workspaces.1.integration.target_branch: Expected string, received number'. The
+              previous implementation loaded the full registry through loadRegistryFile before
+              mutating, so this write should have been rejected up front."
+            created_at: 2026-03-17T20:27:11.857Z
         kind: blocker
       - _ulid: 01KKYQNFR0GKD5RRJSZB9F6XHE
         anchor:
@@ -8689,5 +8705,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-17T20:26:12.268Z
-    updated_at: 2026-03-17T20:26:45.889Z
+    updated_at: 2026-03-17T20:27:11.857Z
     notes: []
