@@ -7151,7 +7151,7 @@ workspaces:
         head: c8a90fd969018e380793aea63d62d3a760d98e3b
         last_seen_at: 2026-03-17T10:02:24.524Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-verdicts-01kktw6g
-  - active_role: worker
+  - active_role: null
     base_branch_point: 3a64769a2efda93e4e685368ef9c453100e596a2
     bootstrap:
       status: succeeded
@@ -7193,12 +7193,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-17T10:32:16.025Z
+      updated_at: 2026-03-17T10:32:23.919Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T10:32:16.025Z
+      updated_at: 2026-03-17T10:32:23.919Z
     integration:
       status: pending
       detail: null
@@ -7206,17 +7206,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-      updated_at: 2026-03-17T10:32:16.025Z
-    lifecycle_state: active
+      updated_at: 2026-03-17T10:32:23.919Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KKTK96Z5M9T8WP900CPFWRNG"
     task_slug: remove-skill-table-from-kspec-agents-md-and-port-descriptions-to-skill-frontmatter
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T10:12:07.193Z
-      last_reconciled_at: 2026-03-17T10:32:16.025Z
+      last_reconciled_at: 2026-03-17T10:32:23.919Z
       created_at: 2026-03-17T10:12:06.108Z
-      updated_at: 2026-03-17T10:32:16.025Z
+      updated_at: 2026-03-17T10:32:23.919Z
     workspace_id: dispatch-workspace-01KKTK96Z5M9T8WP900CPFWRNG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
