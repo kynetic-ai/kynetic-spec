@@ -24,6 +24,8 @@ import {
   initContext,
   loadReviewRecords,
   loadAllTasks,
+  loadAllItems,
+  ReferenceIndex,
   findReviewByRef,
   computeDisposition,
   addThreadAtomic,
@@ -35,6 +37,7 @@ import { getUnresolvedBlockers } from '../../parser/review-threads.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import type { PubSubManager } from '../websocket/pubsub';
 import type { ReviewAnchor, ReviewRecord } from '../../schema/index.js';
+import { resolveRefTitle } from './ref-resolution.js';
 
 interface ReviewsRouteOptions {
   pubsub: PubSubManager;
@@ -44,7 +47,7 @@ interface ReviewsRouteOptions {
  * Build a ReviewSummary from a full ReviewRecord.
  * Extracts subject type, linked task ref, and computed counts.
  */
-function toReviewSummary(review: ReviewRecord, taskTitleMap?: Map<string, string>) {
+function toReviewSummary(review: ReviewRecord, index?: ReferenceIndex) {
   const disposition = computeDisposition(review);
   const unresolvedBlockers = getUnresolvedBlockers(review);
 
@@ -56,12 +59,8 @@ function toReviewSummary(review: ReviewRecord, taskTitleMap?: Map<string, string
     taskRef = review.related_refs[0];
   }
 
-  // Resolve task title if we have a map
-  let taskTitle: string | null | undefined;
-  if (taskRef && taskTitleMap) {
-    const cleanRef = taskRef.startsWith('@') ? taskRef.slice(1) : taskRef;
-    taskTitle = taskTitleMap.get(cleanRef) ?? null;
-  }
+  // Resolve task title via ReferenceIndex (consistent with tasks.ts pattern)
+  const taskTitle = taskRef ? resolveRefTitle(index!, taskRef) : null;
 
   return {
     _ulid: review._ulid,
@@ -96,15 +95,8 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         const ctx = await initContext(projectContext.path);
         const reviews = await loadReviewRecords(ctx);
         const tasks = await loadAllTasks(ctx);
-
-        // Build task title map for server-side resolution
-        const taskTitleMap = new Map<string, string>();
-        for (const task of tasks) {
-          taskTitleMap.set(task._ulid, task.title);
-          for (const slug of task.slugs) {
-            taskTitleMap.set(slug, task.title);
-          }
-        }
+        const specItems = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, specItems);
 
         // Apply filters
         let filtered = reviews;
@@ -186,7 +178,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         const limit = Number(query.limit) || total;
         const paginated = filtered.slice(offset, offset + limit);
 
-        const items = paginated.map((r) => toReviewSummary(r, taskTitleMap));
+        const items = paginated.map((r) => toReviewSummary(r, index));
 
         return { items, total, offset, limit };
       },
