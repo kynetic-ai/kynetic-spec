@@ -101152,6 +101152,19 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T10:19:28.011Z
+    - _ulid: 01KKXMY5YVKR1S7342PKAS7V00
+      content: "Review cycle 1 (review @01KKXKZZ): request_changes. One blocker: verdict and check
+        endpoints do not guard against mutations on archived (terminal-state) reviews.
+        Approve/request_changes verdicts on archived reviews trigger an unhandled 500 error
+        (transitionLifecycle throws for archived→closed). Comment verdicts silently succeed,
+        mutating a terminal-state review. Fix: add lifecycle state validation before mutations —
+        reject with 400 if review is archived. Two nits (non-blocking): duplicated VALID_TRANSITIONS
+        map, AC-9 broadcast untested (follows codebase pattern). Tests pass (pre-existing
+        review-cli.test.ts failure confirmed unrelated). AC coverage verified for ac-6,7,8,9,10.
+        Trait ACs properly annotated N/A."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T10:19:50.619Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6HCFS1KY6X0KVF5F6RFP
