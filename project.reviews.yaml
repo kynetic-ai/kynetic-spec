@@ -7000,7 +7000,19 @@ reviews:
     slugs: []
     title: Review task-review-task-integration (cycle 2)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
+          head_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
+        evidence: 5726 tests passed, 1 pre-existing failure (review-cli.test.ts env isolation —
+          KSPEC_DISPATCH_CANONICAL_HEAD leaks into test, not from this branch)
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-17T12:19:14.318Z
+        completed_at: 2026-03-17T12:19:14.318Z
     events:
       - _ulid: 01KKXVPDJ204CC7TN4ZJ3XP625
         actor: "@claude"
@@ -7036,6 +7048,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKXVQXQDTMGHH3QCH4E17JGJ
         timestamp: 2026-03-17T12:18:45.678Z
+      - _ulid: 01KKXVRSTFC627BJSZ3XJ6HZVM
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-17T12:19:14.384Z
     examined_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
     external_links: []
     lifecycle_state: open
@@ -7102,5 +7121,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T12:17:56.291Z
-    updated_at: 2026-03-17T12:18:45.614Z
+    updated_at: 2026-03-17T12:19:14.318Z
     notes: []
