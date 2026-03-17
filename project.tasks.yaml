@@ -101563,8 +101563,11 @@
   spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Implemented round-trip stability for YAML task save paths by
+    preserving raw data for non-target tasks and filtering Zod defaults on target tasks. 13 tests
+    covering toYaml, file-level, and saveTask/mutateTaskAtomically stability.
   depends_on: []
   context: []
   priority: 3
@@ -101584,6 +101587,7 @@
   created_at: 2026-03-16T18:03:12.406Z
   started_at: 2026-03-17T05:06:51.683Z
   submitted_at: 2026-03-17T05:25:56.322Z
+  completed_at: 2026-03-17T05:40:34.337Z
   notes:
     - _ulid: 01KKX43795NAQQ3FPXWJMW57WM
       content: "Implemented round-trip stability fix in saveTask, mutateTaskAtomically, and deleteTask.
