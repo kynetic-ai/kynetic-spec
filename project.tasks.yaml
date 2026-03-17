@@ -103351,6 +103351,17 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T13:11:11.201Z
+    - _ulid: 01KKYGY1GYJB5F5HA6EAY92GCC
+      content: "Fix cycle 2 addressed: (1) Restored yaml.ts from dev — inbox raw-data-preservation helpers
+        (extractRawInboxArray, writeRawInboxArray, findRawInboxIndex, mergeInboxPreservingRawShape)
+        and saveInboxItem/mutateInboxItemAtomically/deleteInboxItem using them are all restored. (2)
+        Restored inbox round-trip stability tests (5 tests) alongside plan tests (6 tests) — test
+        file now has 30 tests total, all passing. Root cause across cycles 1-2: git checkout of
+        files from dev was not applied to yaml.ts for inbox code. This cycle restored yaml.ts from
+        dev entirely (no diff) and added plan tests/imports as pure additions to the test file."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T18:29:06.206Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6C9RJHKN1ZMJW1ZWH2BRZ
