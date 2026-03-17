@@ -7324,7 +7324,7 @@ workspaces:
         head: a7195c9f4b1dfebc2b96cbbf0fc50293619c698c
         last_seen_at: 2026-03-17T11:13:46.056Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/improve-review-skill-to-direct-use-of-anchors-in-plan-and-code-reviews-01kkttc2
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
     bootstrap:
       status: succeeded
@@ -7369,12 +7369,12 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-17T11:57:04.422Z
+      updated_at: 2026-03-17T11:57:16.884Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T11:57:04.422Z
+      updated_at: 2026-03-17T11:57:16.884Z
     integration:
       status: merged
       detail: integration:merged
@@ -7382,7 +7382,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-      updated_at: 2026-03-17T11:57:04.422Z
+      updated_at: 2026-03-17T11:57:16.884Z
     lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KKTW6JPAR1P0W78EAWX5482A"
@@ -7390,9 +7390,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T11:46:10.711Z
-      last_reconciled_at: 2026-03-17T11:57:04.422Z
+      last_reconciled_at: 2026-03-17T11:57:16.884Z
       created_at: 2026-03-17T10:45:51.237Z
-      updated_at: 2026-03-17T11:57:04.422Z
+      updated_at: 2026-03-17T11:57:16.884Z
     workspace_id: dispatch-workspace-01KKTW6JPAR1P0W78EAWX5482A
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
