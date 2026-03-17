@@ -7827,6 +7827,18 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T18:53:22.405Z
         completed_at: 2026-03-17T18:53:22.405Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 8ee6537e0a4a
+          head_commit: 493fdd9943d7
+        evidence: Zero diff vs dev for src/parser/reviews.ts and src/parser/yaml.ts. Prior cycle regressions
+          fully restored.
+        name: regression check (reviews.ts, yaml.ts)
+        required: true
+        runner: git diff
+        created_at: 2026-03-17T18:53:32.009Z
+        completed_at: 2026-03-17T18:53:32.009Z
     events:
       - _ulid: 01KKYH1147HA7E11N76WYM7HS9
         actor: "@claude"
@@ -7862,6 +7874,13 @@ reviews:
           status: pass
           name: vitest (full suite)
         timestamp: 2026-03-17T18:53:22.641Z
+      - _ulid: 01KKYJAS4EM5ZY7KEYVCWXFFZX
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: regression check (reviews.ts, yaml.ts)
+        timestamp: 2026-03-17T18:53:32.174Z
     examined_commit: 493fdd9943d7fc65bb0400bfaa99c7ab322b31c5
     external_links: []
     lifecycle_state: open
@@ -7898,7 +7917,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-17T18:30:44.103Z
-    updated_at: 2026-03-17T18:53:22.405Z
+    updated_at: 2026-03-17T18:53:32.009Z
     notes: []
   - _ulid: 01KKYH338DJ81TVY8G203C3XR6
     slugs: []
