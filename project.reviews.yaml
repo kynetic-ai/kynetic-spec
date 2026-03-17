@@ -5455,3 +5455,29 @@ reviews:
     created_at: 2026-03-17T09:50:19.140Z
     updated_at: 2026-03-17T09:51:49.410Z
     notes: []
+  - _ulid: 01KKXKZZ92DKC77GXXTSAAQMFK
+    slugs: []
+    title: Review task-review-api-verdicts (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKXKZZ92PDP9MB9J9SADY7X8
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T10:03:20.738Z
+    examined_commit: c8a90fd969018e380793aea63d62d3a760d98e3b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKTW6GRPMVH8M9WVGH9NTJCF"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T10:03:20.738Z
+    updated_at: null
+    notes: []
