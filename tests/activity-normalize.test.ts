@@ -160,6 +160,102 @@ describe('parseDiffChanges — ac-4: extract field-level changes from diff', () 
     expect(changes.length).toBe(2);
     expect(changes.map(c => c.field).sort()).toEqual(['priority', 'status']);
   });
+
+  // AC: @task-activity-git-query ac-4
+  it('detects submission_linkage map added (null → map)', () => {
+    const diff = [
+      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
+      '@@ -5,3 +5,8 @@',
+      '   status: pending_review',
+      '-  submission_linkage: null',
+      '+  submission_linkage:',
+      '+    branch: dispatch/task/foo/01abc',
+      '+    commit: abc1234567890',
+      '+    remote: origin',
+      '+    captured_at: 2026-03-16T12:00:00Z',
+    ].join('\n');
+
+    const changes = parseDiffChanges(diff);
+    // Should produce a single submission_linkage change, not individual child fields
+    expect(changes).toContainEqual({
+      field: 'submission_linkage',
+      oldValue: 'null',
+      newValue: '(map)',
+    });
+    // Child fields should NOT appear as top-level changes
+    expect(changes.find(c => c.field === 'branch')).toBeUndefined();
+    expect(changes.find(c => c.field === 'commit')).toBeUndefined();
+    expect(changes.find(c => c.field === 'remote')).toBeUndefined();
+    expect(changes.find(c => c.field === 'captured_at')).toBeUndefined();
+  });
+
+  // AC: @task-activity-git-query ac-4
+  it('detects submission_linkage map removed (map → null)', () => {
+    const diff = [
+      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
+      '@@ -5,8 +5,3 @@',
+      '   status: in_progress',
+      '-  submission_linkage:',
+      '-    branch: dispatch/task/foo/01abc',
+      '-    commit: abc1234567890',
+      '-    remote: origin',
+      '-    captured_at: 2026-03-16T12:00:00Z',
+      '+  submission_linkage: null',
+    ].join('\n');
+
+    const changes = parseDiffChanges(diff);
+    expect(changes).toContainEqual({
+      field: 'submission_linkage',
+      oldValue: '(map)',
+      newValue: 'null',
+    });
+    expect(changes.find(c => c.field === 'branch')).toBeUndefined();
+    expect(changes.find(c => c.field === 'commit')).toBeUndefined();
+  });
+
+  // AC: @task-activity-git-query ac-4
+  it('detects submission_linkage map added where field was absent', () => {
+    const diff = [
+      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
+      '@@ -5,2 +5,7 @@',
+      '   status: pending_review',
+      '+  submission_linkage:',
+      '+    branch: dispatch/task/foo/01abc',
+      '+    commit: abc1234567890',
+      '+    captured_at: 2026-03-16T12:00:00Z',
+    ].join('\n');
+
+    const changes = parseDiffChanges(diff);
+    expect(changes).toContainEqual({
+      field: 'submission_linkage',
+      newValue: '(map)',
+    });
+    expect(changes.find(c => c.field === 'branch')).toBeUndefined();
+  });
+
+  // AC: @task-activity-git-query ac-4
+  it('handles scalar fields alongside map fields in same diff', () => {
+    const diff = [
+      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
+      '@@ -5,5 +5,10 @@',
+      '-  status: in_progress',
+      '+  status: pending_review',
+      '-  submission_linkage: null',
+      '+  submission_linkage:',
+      '+    branch: dispatch/task/foo/01abc',
+      '+    commit: abc1234567890',
+      '+    captured_at: 2026-03-16T12:00:00Z',
+      '   title: Test Task',
+    ].join('\n');
+
+    const changes = parseDiffChanges(diff);
+    // Both scalar change and map change should be detected
+    expect(changes.find(c => c.field === 'status')).toBeDefined();
+    expect(changes.find(c => c.field === 'submission_linkage')).toBeDefined();
+    // No child fields leaked
+    expect(changes.find(c => c.field === 'branch')).toBeUndefined();
+    expect(changes.find(c => c.field === 'commit')).toBeUndefined();
+  });
 });
 
 // AC: @task-activity-git-query ac-3, ac-4
@@ -290,5 +386,32 @@ describe('normalizeTaskActivity — integration', () => {
 
     // Creation has new fields but no old values — should produce entries or fall back
     expect(entries.length).toBeGreaterThanOrEqual(1);
+  });
+
+  // AC: @task-activity-git-query ac-4
+  it('produces "submitted" entry for submission_linkage map change', () => {
+    const diff = [
+      'diff --git a/project.tasks.yaml b/project.tasks.yaml',
+      '@@ -5,3 +5,8 @@',
+      '-  status: in_progress',
+      '+  status: pending_review',
+      '-  submission_linkage: null',
+      '+  submission_linkage:',
+      '+    branch: dispatch/task/foo/01abc',
+      '+    commit: abc1234567890',
+      '+    remote: origin',
+      '+    captured_at: 2026-03-16T12:00:00Z',
+    ].join('\n');
+
+    const commits = [makeCommit({ message: 'task-submit @task-foo', diff })];
+    const entries = normalizeTaskActivity(commits);
+
+    const types = entries.map(e => e.type);
+    expect(types).toContain('state_change');
+    expect(types).toContain('submitted');
+    // submission_linkage produces "submitted", not spurious "field_updated" for child fields
+    expect(entries.find(e => e.summary === 'Submission linkage captured')).toBeDefined();
+    expect(entries.find(e => e.type === 'field_updated' && e.detail?.field === 'branch')).toBeUndefined();
+    expect(entries.find(e => e.type === 'field_updated' && e.detail?.field === 'commit')).toBeUndefined();
   });
 });
