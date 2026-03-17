@@ -103629,3 +103629,52 @@
   notes: []
   todos: []
   automation: eligible
+- _ulid: 01KKXGPNP7R08EYVEQCERNX1HS
+  slugs: []
+  title: fix session cache invalidate leaves ghost in knownSessionIds
+  type: task
+  description: >-
+    SessionSummaryCache.invalidate() deletes the entry from this.entries but does NOT remove the
+    session ID from this.knownSessionIds. On the next refresh(), the session is not in entries (so
+    not treated as active or existing-non-active) but IS in knownSessionIds (so not treated as new).
+    It falls into a dead zone — invisible until a full cache rebuild (daemon restart).
+
+
+    **Root cause:** cache.ts:97-99 — invalidate() only calls this.entries.delete(sessionId), missing
+    this.knownSessionIds.delete(sessionId).
+
+
+    **Impact:** After dispatch completes an invocation and calls cache.invalidate(preSessionId)
+    (dispatch.ts:2258), the completed session disappears from the /api/sessions list. It reappears
+    only on daemon restart or cache clear.
+
+
+    **Fix:** Add this.knownSessionIds.delete(sessionId) to the invalidate() method. This causes the
+    next refresh() to classify the session as 'new' (line 202: currentIds has it, knownSessionIds
+    does not), re-read session.yaml from disk, and return it with correct completed status and
+    persisted stats.
+
+
+    **File:** src/sessions/cache.ts, invalidate() method (line 97-99).
+
+
+    **Verification:** Unit test that calls invalidate() then getAll() and confirms the session
+    reappears with updated status. Integration: watch a dispatch session complete and confirm it
+    appears in /api/sessions immediately.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - bug
+    - daemon
+    - sessions
+  vcs_refs: []
+  created_at: 2026-03-17T09:05:50.278Z
+  notes: []
+  todos: []
+  automation: eligible
