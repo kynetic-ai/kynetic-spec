@@ -8729,3 +8729,29 @@ reviews:
     created_at: 2026-03-17T20:26:12.268Z
     updated_at: 2026-03-17T20:29:30.897Z
     notes: []
+  - _ulid: 01KKZ15GXGTPMVSZ76DB88XG1K
+    slugs: []
+    title: Review task-ralph-migration-guide
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KKZ15GXGCCTRS6471DJDSE9Y
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T23:12:48.560Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-ralph-migration-guide"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T23:12:48.560Z
+    updated_at: null
+    notes: []
