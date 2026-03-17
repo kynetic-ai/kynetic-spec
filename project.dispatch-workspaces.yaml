@@ -7725,7 +7725,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T19:35:31.730Z
+      updated_at: 2026-03-17T19:35:36.958Z
     integration:
       status: merged
       detail: integration:merged
@@ -7741,18 +7741,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T19:17:04.500Z
-      last_reconciled_at: 2026-03-17T19:35:32.697Z
+      last_reconciled_at: 2026-03-17T19:35:36.958Z
       created_at: 2026-03-17T12:18:18.813Z
-      updated_at: 2026-03-17T19:35:32.697Z
+      updated_at: 2026-03-17T19:35:36.958Z
     workspace_id: dispatch-workspace-01KKX6C83WVQBYBZ5SWTXY1JKA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 8dabdab7f3df4458dc0e630b24f21b733e532d75
-        last_seen_at: 2026-03-17T19:17:03.469Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-plan-record-yaml-writes-01kkx6c8-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/round-trip-stability-for-plan-record-yaml-writes/01kkx6c8
