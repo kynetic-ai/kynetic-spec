@@ -432,7 +432,7 @@ features:
           entity content for structured display.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
