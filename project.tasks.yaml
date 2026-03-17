@@ -101817,6 +101817,19 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T11:46:57.319Z
+    - _ulid: 01KKXSYNPN6BF7R2VDNZK7F2AY
+      content: "Review cycle 1 complete (review @01KKXSDV). Verdict: request_changes. The ac-7
+        implementation is solid — API endpoint, client, Svelte component, fixtures, and tests are
+        all correct and well-structured. Two blockers found: (1) kspec-agents.md regressed from
+        v0.12.0 to v0.11.0, removing the Finding Information skill table that exists on dev. (2)
+        templates/skills/review/SKILL.md and rendered copies lost ~42 lines of anchoring
+        documentation that exists on dev. Both are out-of-scope regressions caused by the task
+        branch being based on a commit before these changes were merged to dev. Fix: rebase onto
+        current dev or restore the regressed files to match dev content. One nit: unused
+        DRAFT_REVIEW_ULID constant in api-reviews-list.spec.ts."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T11:47:29.621Z
   todos: []
   automation: eligible
 - _ulid: 01KKTZ0BF597PSYKT1H4VXPCPG
