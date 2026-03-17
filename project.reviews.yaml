@@ -6518,6 +6518,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-17T11:38:32.878Z
+      - _ulid: 01KKXST64YMNS9AVAHBBEV7SKM
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKXST63148RDTKZN02PY22JV
+        timestamp: 2026-03-17T11:45:02.622Z
     examined_commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
     external_links: []
     lifecycle_state: open
@@ -6527,8 +6534,27 @@ reviews:
       content_hash: ""
       ref: "@01KKTW6NR1WA12MZCR6FY1AGT8"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKXST63148RDTKZN02PY22JV
+        anchor:
+          type: code
+          commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
+          line_end: 1
+          line_start: 1
+          path: kspec-agents.md
+          side: head
+        entries:
+          - _ulid: 01KKXST632M6KBWC3NAZ8T43AN
+            author: "@claude"
+            body: This commit regresses kspec-agents.md from v0.12.0 (on dev) to v0.11.0, removing the 'Finding
+              Information' skill table section that was added by a previously merged task. The diff
+              shows 32 lines deleted from kspec-agents.md that exist on the integration branch. This
+              is likely caused by the task branch being based on a commit before the skill table was
+              merged to dev, and the worker not rebasing before committing. The regression must be
+              reverted — the v0.12.0 content from dev must be preserved.
+            created_at: 2026-03-17T11:45:02.562Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T11:38:18.280Z
-    updated_at: 2026-03-17T11:38:32.818Z
+    updated_at: 2026-03-17T11:45:02.562Z
     notes: []
