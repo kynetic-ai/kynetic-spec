@@ -101194,8 +101194,12 @@
   spec_ref: "@review-records-daemon-api"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Implemented review verdict (POST /api/reviews/:id/verdicts), check
+    (POST /api/reviews/:id/checks), and lifecycle (PATCH /api/reviews/:id/lifecycle) API endpoints.
+    Covers ac-6, ac-7, ac-8, ac-10 with 31 tests. Includes archived-state guards, auto-close on
+    approve/request_changes, WebSocket broadcasts, and actionable error messages.
   depends_on:
     - "@task-review-api-read"
   context: []
@@ -101218,6 +101222,7 @@
   created_at: 2026-03-16T08:29:00.566Z
   started_at: 2026-03-17T18:30:29.882Z
   submitted_at: 2026-03-17T18:42:58.191Z
+  completed_at: 2026-03-17T18:57:55.996Z
   notes:
     - _ulid: 01KKXKXD7RZJC5AT8AZ3Y6Y2XZ
       content: "Implemented review verdict, check, and lifecycle API endpoints. Created
