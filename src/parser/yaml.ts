@@ -224,7 +224,11 @@ export function canonicalKeyComparator(a: Pair, b: Pair): number {
 }
 
 export function toYaml(obj: unknown): string {
-  let yamlString = YAML.stringify(obj, {
+  // JSON round-trip breaks shared object references so the yaml library
+  // won't generate anchors/aliases that crash when sortMapEntries reorders keys.
+  // structuredClone preserves shared refs, so JSON.parse(JSON.stringify()) is needed.
+  const cloned = JSON.parse(JSON.stringify(obj));
+  let yamlString = YAML.stringify(cloned, {
     indent: 2,
     lineWidth: 100,
     sortMapEntries: canonicalKeyComparator,
