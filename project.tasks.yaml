@@ -101638,6 +101638,120 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T06:10:00.510Z
+    - _ulid: 01KKX6PKHG31ERW68D79MBBK35
+      content: >-
+        ## Audit Findings
+
+
+        ### generateCommitMessage() switch coverage
+
+        Only 10 of ~75 operation strings have explicit cases. The remaining ~65 fall through to the
+        default case which produces 'operation @ref' — violating ac-2 (no colon separator) and
+        producing inconsistent formatting.
+
+
+        ### Explicit cases (10):
+
+        task-start, task-complete, task-note, task-add, inbox-add, inbox-promote, item-add,
+        item-set, item-delete, derive
+
+
+        ### Issues found:
+
+
+        **1. inbox-add: missing ref (ac-3 violation)**
+
+        - inbox.ts:108 passes ref=undefined, detail=text
+
+        - Produces: 'Inbox: <text truncated>' — no entity ref at all
+
+        - Should include the inbox item ULID after creation
+
+
+        **2. task-add: conditional ref (ac-3 gap)**
+
+        - shadow.ts:990 — when ref is present, produces 'Add task @ref: title' (good)
+
+        - But fallback path (line 993) produces 'Add task: <title or ref>' — ambiguous, may drop ref
+
+        - Call site in task.ts:1155 always provides both ref and detail, so the fallback is dead
+        code from meta.ts:1126 which also provides both
+
+
+        **3. link add/remove: bypass generateCommitMessage entirely (ac-2 violation)**
+
+        - link.ts:125 passes raw string 'Add implements link: @from -> @to' as the operation
+
+        - link.ts:394 passes raw string 'Remove implements link: @from -> @to'
+
+        - These go to default case, producing the raw string directly — no @ prefix on refs,
+        inconsistent format
+
+
+        **4. setup skill-install-core: no entity ref (ac-3 violation)**
+
+        - setup.ts:1182 passes operation='skill-install-core', ref='N core skills'
+
+        - ref is a count string, not an entity ref
+
+
+        **5. batch: no entity ref (ac-3 N/A)**
+
+        - batch-exec.ts:818 uses shadowAutoCommit directly with 'batch: N commands'
+
+        - No specific entity — acceptable for batch operations
+
+
+        **6. workflow-*: no ref passed (ac-3 violation)**
+
+        - workflow.ts:134,319,379,420,458,730,788,975 — all pass operation only, no ref
+
+        - Produces: 'workflow-start', 'workflow-abort', etc. — no workflow run ref
+
+
+        **7. session-compact: uses session_id, not entity ref (ac-3 borderline)**
+
+        - session/compact.ts:200 — passes session_id slice or 'all'
+
+        - Technically includes a ref but it's a session ID not a spec/task ref
+
+
+        **8. tasks-assess: uses 'automation' as ref (ac-3 violation)**
+
+        - tasks.ts:511 — passes ref='automation', detail='N task(s)'
+
+        - Produces: 'tasks-assess @automation' — ref is a label, not an entity
+
+
+        **9. dispatch-workspace-registry: uses bareRef (ac-3 OK)**
+
+        - workspace.ts:1012 — passes bareRef (task slug)
+
+        - Falls through to default — produces 'dispatch-workspace-registry @ref'
+
+
+        **10. Default case format inconsistency (ac-2 violation)**
+
+        The default case produces 'operation @ref' (space-separated, no colon).
+
+        ac-2 requires 'operation: @ref-short' (colon separator).
+
+        ~65 operations use default and produce non-conforming messages.
+
+
+        ### Summary of violations:
+
+        - **ac-2 (format):** ~65 operations use default case with wrong separator. link commands
+        bypass entirely.
+
+        - **ac-3 (ref present):** inbox-add, workflow-*, setup skill-install, tasks-assess all miss
+        entity refs.
+
+        - **Known gap confirmed:** task-add fallback path (line 993) can drop ref, but currently all
+        call sites provide both args.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T06:11:02.321Z
   todos: []
 - _ulid: 01KKW4VGQNTEWDFVVFETA3D43D
   slugs:
