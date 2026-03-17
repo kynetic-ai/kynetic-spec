@@ -7817,6 +7817,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-17T18:30:52.638Z
+      - _ulid: 01KKYJ9JCN8J05D5XJ5JX7J7E7
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKYJ9J6QTHS11H8CR1EVV8FN
+        timestamp: 2026-03-17T18:52:52.501Z
     examined_commit: 493fdd9943d7fc65bb0400bfaa99c7ab322b31c5
     external_links: []
     lifecycle_state: open
@@ -7826,10 +7833,34 @@ reviews:
       content_hash: ""
       ref: "@01KKX6C83WVQBYBZ5SWTXY1JKA"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKYJ9J6QTHS11H8CR1EVV8FN
+        anchor:
+          type: code
+          commit: 493fdd9943d7
+          line_end: 1
+          line_start: 1
+          path: packages/web-ui/src/lib/components/board/TaskDetailContent.svelte
+          side: head
+        entries:
+          - _ulid: 01KKYJ9J6SEN1WGRKQ1TTS07PB
+            author: "@claude"
+            body: "Out-of-scope removal of @review-records-web-ui ac-7 implementation and tests. This task is
+              scoped to 'round-trip stability for plan record YAML writes' — applying the
+              raw-data-preservation pattern to src/parser/plans.ts. However, the first commit
+              (fa760b196) also removes all implementation and test coverage for
+              @review-records-web-ui ac-7 across 13 files: daemon routes (reviews.ts, tasks.ts),
+              shared API types, web-ui components (TaskDetailContent.svelte), API client
+              (fetchReviewsForTask), query keys, WS invalidation, reference utils, and E2E/unit
+              tests. The ac-7 spec still exists and defines valid behavior ('task detail page shows
+              linked reviews with disposition badge'). Removing this implementation and its tests is
+              a regression in coverage that was never requested. The worker must revert all changes
+              outside src/parser/plans.ts and tests/yaml-round-trip-stability.test.ts."
+            created_at: 2026-03-17T18:52:52.313Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T18:30:44.103Z
-    updated_at: 2026-03-17T18:30:52.535Z
+    updated_at: 2026-03-17T18:52:52.313Z
     notes: []
   - _ulid: 01KKYH338DJ81TVY8G203C3XR6
     slugs: []
