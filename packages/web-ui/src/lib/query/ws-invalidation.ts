@@ -79,6 +79,10 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 			return [queryKeys.agents.all, queryKeys.sessions.all];
 		}
 
+		case 'reviews:updates':
+			// Review thread/verdict/check changes affect review lists and details
+			return [queryKeys.reviews.all];
+
 		case 'files:updates':
 			// File changes (e.g., settings save, meta edits) affect multiple caches
 			// Observations and session context live in meta files

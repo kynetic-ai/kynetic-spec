@@ -1,15 +1,17 @@
 /**
- * Review API Routes — List and Thread Mutations
+ * Review API Routes — List, Detail, and Thread Mutations
  *
- * REST endpoints for review operations:
- * - GET /api/reviews - list with filters (task, status) and pagination
+ * REST endpoints for review record operations:
+ * - GET /api/reviews - list reviews with filters and pagination
+ * - GET /api/reviews/:id - get single review with full detail
  * - POST /api/reviews/:id/comments - create thread
  * - POST /api/reviews/:id/comments/:threadId/replies - add reply
  * - PATCH /api/reviews/:id/comments/:threadId/resolve - resolve thread
  * - PATCH /api/reviews/:id/comments/:threadId/reopen - reopen thread
  *
  * AC Coverage:
- * - @review-records-daemon-api ac-1: GET /api/reviews returns paginated list with filters
+ * - @review-records-daemon-api ac-1: GET /api/reviews returns paginated list with filtering
+ * - @review-records-daemon-api ac-2: GET /api/reviews/:id returns full review detail
  * - @review-records-web-ui ac-7: GET /api/reviews?task= for task detail integration
  * - @review-records-daemon-api ac-3: POST /api/reviews/:id/comments creates thread
  * - @review-records-daemon-api ac-4: POST /api/reviews/:id/comments/:threadId/replies adds reply
@@ -35,10 +37,51 @@ import {
 import { getUnresolvedBlockers } from '../../parser/review-threads.js';
 import { commitIfShadow } from '../../parser/shadow.js';
 import type { PubSubManager } from '../websocket/pubsub';
-import type { ReviewAnchor } from '../../schema/index.js';
+import type { ReviewAnchor, ReviewRecord } from '../../schema/index.js';
+import { resolveRefTitle } from './ref-resolution.js';
 
 interface ReviewsRouteOptions {
   pubsub: PubSubManager;
+}
+
+/**
+ * Build a ReviewSummary from a full ReviewRecord.
+ * Extracts subject type, linked task ref, and computed counts.
+ */
+function toReviewSummary(review: ReviewRecord, index?: ReferenceIndex) {
+  const disposition = computeDisposition(review);
+  const unresolvedBlockers = getUnresolvedBlockers(review);
+
+  // Determine linked task ref
+  let taskRef: string | undefined;
+  if (review.subject.type === 'task') {
+    taskRef = review.subject.ref;
+  } else if (review.related_refs.length > 0) {
+    taskRef = review.related_refs[0];
+  }
+
+  // Resolve task title via ReferenceIndex (consistent with tasks.ts pattern)
+  const taskTitle = taskRef ? resolveRefTitle(index!, taskRef) : null;
+
+  return {
+    _ulid: review._ulid,
+    slugs: review.slugs,
+    title: review.title,
+    lifecycle_state: review.lifecycle_state,
+    disposition,
+    subject_type: review.subject.type,
+    subject_ref: 'ref' in review.subject ? review.subject.ref : undefined,
+    author: review.author,
+    related_refs: review.related_refs,
+    task_ref: taskRef,
+    task_title: taskTitle,
+    thread_count: review.threads.length,
+    unresolved_blocker_count: unresolvedBlockers.length,
+    check_count: review.checks.length,
+    verdict_count: review.verdicts.length,
+    created_at: review.created_at,
+    updated_at: review.updated_at,
+  };
 }
 
 export function createReviewsRoutes(options: ReviewsRouteOptions) {
@@ -46,57 +89,91 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
 
   return new Elysia({ prefix: '/api/reviews' })
 
-    // AC: @review-records-daemon-api ac-1 - List reviews with filters
+    // AC: @review-records-daemon-api ac-1 - List reviews with filters and pagination
     // AC: @review-records-web-ui ac-7 - Task filter for task detail page integration
     .get(
       '/',
       async ({ query, projectContext }) => {
         const ctx = await initContext(projectContext.path);
         const reviews = await loadReviewRecords(ctx);
+        const tasks = await loadAllTasks(ctx);
+        const specItems = await loadAllItems(ctx);
+        const index = new ReferenceIndex(tasks, specItems);
 
+        // Apply filters
         let filtered = reviews;
 
-        // Filter by task: match reviews where subject.type === 'task' and subject.ref matches,
-        // or the task ref appears in related_refs
-        if (query.task) {
-          const taskRef = query.task.startsWith('@') ? query.task.slice(1) : query.task;
-          // Also resolve ULID/slug for the task
-          const tasks = await loadAllTasks(ctx);
-          const items = await loadAllItems(ctx);
-          const index = new ReferenceIndex(tasks, items);
-          const resolved = index.resolve(taskRef);
-          const taskUlid = resolved.ok ? resolved.ulid : null;
-          const taskSlugs = taskUlid
-            ? tasks.find((t) => t._ulid === taskUlid)?.slugs ?? []
-            : [];
-
-          filtered = filtered.filter((review) => {
-            // Check subject
-            if (review.subject.type === 'task') {
-              const subjectRef = (review.subject as { ref?: string }).ref;
-              if (subjectRef) {
-                const normSubject = subjectRef.startsWith('@') ? subjectRef.slice(1) : subjectRef;
-                if (normSubject === taskUlid || taskSlugs.includes(normSubject) || normSubject === taskRef) {
-                  return true;
-                }
-              }
-            }
-            // Check related_refs
-            return review.related_refs.some((r) => {
-              const normR = r.startsWith('@') ? r.slice(1) : r;
-              return normR === taskUlid || taskSlugs.includes(normR) || normR === taskRef;
-            });
-          });
-        }
-
-        // Filter by status (lifecycle_state)
-        if (query.status) {
-          const statusFilters = Array.isArray(query.status) ? query.status : [query.status];
+        // Status filter (lifecycle_state) — default to 'open' if not specified
+        const statusFilters = query.status
+          ? (Array.isArray(query.status) ? query.status : [query.status])
+          : ['open'];
+        if (statusFilters.length > 0 && statusFilters[0] !== 'all') {
           filtered = filtered.filter((r) => statusFilters.includes(r.lifecycle_state));
         }
 
-        // Sort by created_at descending (newest first)
-        filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        // Disposition filter (computed)
+        if (query.disposition) {
+          const dispFilters = Array.isArray(query.disposition) ? query.disposition : [query.disposition];
+          filtered = filtered.filter((r) => dispFilters.includes(computeDisposition(r)));
+        }
+
+        // Subject type filter
+        if (query.subject_type) {
+          const subjectFilters = Array.isArray(query.subject_type) ? query.subject_type : [query.subject_type];
+          filtered = filtered.filter((r) => subjectFilters.includes(r.subject.type));
+        }
+
+        // Reviewer filter
+        if (query.reviewer) {
+          filtered = filtered.filter((r) => r.author === query.reviewer);
+        }
+
+        // AC: @review-records-web-ui ac-7 — Task filter for task detail page integration
+        // Task filter (matches subject ref for task reviews, or related_refs)
+        if (query.task) {
+          const taskFilter = query.task;
+          filtered = filtered.filter((r) => {
+            if (r.subject.type === 'task' && 'ref' in r.subject) {
+              const ref = r.subject.ref;
+              if (ref === taskFilter || ref === `@${taskFilter}` || `@${ref}` === taskFilter) {
+                return true;
+              }
+            }
+            return r.related_refs.some((rr) =>
+              rr === taskFilter || rr === `@${taskFilter}` || `@${rr}` === taskFilter
+            );
+          });
+        }
+
+        // Sort
+        const sortField = query.sort || 'created_at';
+        const sortDir = query.sort_dir === 'asc' ? 1 : -1;
+        filtered.sort((a, b) => {
+          let aVal: string | number;
+          let bVal: string | number;
+          switch (sortField) {
+            case 'title':
+              aVal = a.title.toLowerCase();
+              bVal = b.title.toLowerCase();
+              break;
+            case 'lifecycle_state':
+              aVal = a.lifecycle_state;
+              bVal = b.lifecycle_state;
+              break;
+            case 'updated_at':
+              aVal = a.updated_at || a.created_at;
+              bVal = b.updated_at || b.created_at;
+              break;
+            case 'created_at':
+            default:
+              aVal = a.created_at;
+              bVal = b.created_at;
+              break;
+          }
+          if (aVal < bVal) return -sortDir;
+          if (aVal > bVal) return sortDir;
+          return 0;
+        });
 
         // Pagination
         const total = filtered.length;
@@ -104,40 +181,53 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         const limit = Number(query.limit) || total;
         const paginated = filtered.slice(offset, offset + limit);
 
-        const items = paginated.map((review) => {
-          const disposition = computeDisposition(review);
-          const unresolvedBlockers = getUnresolvedBlockers(review);
-          return {
-            _ulid: review._ulid,
-            slugs: review.slugs,
-            title: review.title,
-            lifecycle_state: review.lifecycle_state,
-            disposition,
-            subject_type: review.subject.type,
-            subject_ref: 'ref' in review.subject ? (review.subject as { ref?: string }).ref : undefined,
-            author: review.author,
-            thread_count: review.threads.length,
-            unresolved_blocker_count: unresolvedBlockers.length,
-            created_at: review.created_at,
-          };
-        });
+        const items = paginated.map((r) => toReviewSummary(r, index));
 
-        return {
-          items,
-          total,
-          offset,
-          limit,
-        };
+        return { items, total, offset, limit };
       },
       {
         query: t.Object({
-          task: t.Optional(t.String()),
           status: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          disposition: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          subject_type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          reviewer: t.Optional(t.String()),
+          task: t.Optional(t.String()),
+          sort: t.Optional(t.String()),
+          sort_dir: t.Optional(t.String()),
           limit: t.Optional(t.String()),
           offset: t.Optional(t.String()),
         }),
       }
     )
+
+    // AC: @review-records-daemon-api ac-2 - Get single review by ref
+    .get(
+      '/:id',
+      async ({ params, error: errorResponse, projectContext }) => {
+        const ctx = await initContext(projectContext.path);
+        const reviews = await loadReviewRecords(ctx);
+        const review = findReviewByRef(reviews, params.id);
+
+        if (!review) {
+          return errorResponse(404, {
+            error: 'not_found',
+            message: `Review "${params.id}" not found`,
+            suggestion: 'Use GET /api/reviews to list available reviews',
+          });
+        }
+
+        return {
+          ...review,
+          disposition: computeDisposition(review),
+        };
+      },
+      {
+        params: t.Object({
+          id: t.String(),
+        }),
+      }
+    )
+
 
     // AC: @review-records-daemon-api ac-3 - Create thread on review
     .post(

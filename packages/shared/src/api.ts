@@ -269,8 +269,9 @@ export interface PlanDetail extends PlanSummary {
 
 /**
  * Review summary for list endpoints and task detail integration
- * AC: @review-records-web-ui ac-7
  * AC: @review-records-daemon-api ac-1
+ * AC: @review-records-web-ui ac-1
+ * AC: @review-records-web-ui ac-7
  */
 export interface ReviewSummary {
   _ulid: string;
@@ -281,9 +282,17 @@ export interface ReviewSummary {
   subject_type: string;
   subject_ref?: string;
   author: string;
+  related_refs: string[];
+  /** Linked task ref (from subject_ref for task reviews, or first related_ref) */
+  task_ref?: string;
+  /** Resolved task title */
+  task_title?: string | null;
   thread_count: number;
   unresolved_blocker_count: number;
+  check_count: number;
+  verdict_count: number;
   created_at: string;
+  updated_at?: string;
 }
 
 export interface BatchSpecItemSummary {
