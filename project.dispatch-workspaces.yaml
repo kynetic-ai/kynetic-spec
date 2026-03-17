@@ -7579,7 +7579,7 @@ workspaces:
         head: c5efe894e4239535bfece91f2c452bf1dc2e44f7
         last_seen_at: 2026-03-17T11:57:13.276Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-dead-submission-linkage-case-01kkwg44
-  - active_role: worker
+  - active_role: null
     base_branch_point: 8ee6537e0a4a38b0435f8cb18987f5043eb8cb0c
     bootstrap:
       status: succeeded
@@ -7621,12 +7621,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-17T12:09:31.606Z
+      updated_at: 2026-03-17T12:18:12.899Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T12:09:32.836Z
+      updated_at: 2026-03-17T12:18:12.899Z
     integration:
       status: pending
       detail: null
@@ -7634,17 +7634,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8ee6537e0a4a38b0435f8cb18987f5043eb8cb0c
-      updated_at: 2026-03-17T12:09:31.606Z
-    lifecycle_state: active
+      updated_at: 2026-03-17T12:18:12.899Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KKX6C6BX3055XXKXYD33K4QA"
     task_slug: round-trip-stability-for-review-record-yaml-writes
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T12:09:32.836Z
-      last_reconciled_at: 2026-03-17T12:09:32.836Z
+      last_reconciled_at: 2026-03-17T12:18:12.899Z
       created_at: 2026-03-17T12:09:31.606Z
-      updated_at: 2026-03-17T12:09:32.836Z
+      updated_at: 2026-03-17T12:18:12.899Z
     workspace_id: dispatch-workspace-01KKX6C6BX3055XXKXYD33K4QA
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
