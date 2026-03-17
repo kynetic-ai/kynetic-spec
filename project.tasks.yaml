@@ -101873,6 +101873,17 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T12:20:36.639Z
+    - _ulid: 01KKXX2BGN7SEPGTA27PPPD51E
+      content: "Fix cycle 3: Removed three merge conflict artifacts from dev integration as identified in
+        review cycle 2. (1) Deleted duplicate reviews key in keys.ts (lines 93-99) that shadowed the
+        first block and lost the forTask key factory — this was the blocker. (2) Deleted unreachable
+        duplicate reviews:updates case in ws-invalidation.ts. (3) Deleted duplicate ReviewSummary
+        import in api.ts. All 5724 tests pass, build succeeds. Two pre-existing test failures remain
+        (KSPEC_DISPATCH_CANONICAL_HEAD env leakage in review-cli.test.ts, ENOTEMPTY rmdir flake in
+        dispatch orientation) — both documented in prior cycles."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T12:41:55.989Z
   todos: []
   automation: eligible
 - _ulid: 01KKTZ0BF597PSYKT1H4VXPCPG
