@@ -3056,6 +3056,20 @@ features:
           boundaries. Tool calls show name and status transitions.
         when: |
           An agent is actively working
+      - given: A tool call block is displayed in running state with empty input (from the registration
+          phase)
+        id: ac-tool-input-update
+        then: The tool call block updates its input in-place. The collapsed preview shows the input summary.
+          The expanded view shows the full input. No duplicate block is created.
+        when: The tool_call_input event arrives via WebSocket with populated input parameters
+      - given: Session events are parsed for display from either HTTP (historical/catch-up) or WebSocket
+          (live streaming)
+        id: ac-unified-event-parsing
+        then: A single shared parsing module handles tool call block construction for both paths. The same
+          field extraction logic (toolCallId, toolName, rawInput, rawOutput, status) is used
+          regardless of whether events arrive via HTTP batch or individual WebSocket messages. The
+          resulting DisplayBlocks are identical for the same event sequence.
+        when: Tool call events are processed
     tags: []
     requirements:
       - _ulid: 01KKSGSZ80XNJR06J3Y1GH0RZS
@@ -3123,6 +3137,19 @@ features:
               the new typed event stream.
             when: |
               An agent produces output
+          - given: "The ACP SDK sends tool calls in phases: registration (empty rawInput), input (populated
+              rawInput), and completion (rawOutput + status)"
+            id: ac-phased-tool-input
+            then: The accumulator emits a tool_call_input event with the populated input so WebSocket consumers
+              can update the tool call block. The initial tool_call_start event is emitted on
+              registration with whatever input is available (may be empty).
+            when: The accumulator receives the tool_call_update event containing populated rawInput
+          - given: Session events are stored in ACP format (data.sessionUpdate at top level) or legacy format
+              (data.update.sessionUpdate nested)
+            id: ac-phased-dedup-format
+            then: The deduplication logic handles both data formats correctly, identifying and merging phased
+              tool_call events regardless of wrapping.
+            when: Phased tool call deduplication runs on stored events
         tags: []
         created: 2026-03-15T19:50:40.640Z
         notes: []
