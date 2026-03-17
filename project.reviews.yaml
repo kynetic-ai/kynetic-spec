@@ -5180,9 +5180,22 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-17T09:30:05.853Z
+      - _ulid: 01KKXJ3AFTC8ZTSQK29F4KMAQP
+        actor: agent@kspec-reviewer
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-17T09:30:13.370Z
+      - _ulid: 01KKXJ3AFT6304YJS8JHX68BXC
+        actor: agent@kspec-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-17T09:30:13.370Z
     examined_commit: 317b496da788fcf1679fe083957e29a5db407052
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs:
       - "@01KKTW6J1F8NHGA7G7SJJ1ZFFS"
     subject:
@@ -5204,7 +5217,15 @@ reviews:
               proof the file endpoint's plumbing works end-to-end.
             created_at: 2026-03-17T09:29:41.110Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
+          head_commit: 317b496da788fcf1679fe083957e29a5db407052
+        decision: approve
+        reviewer: agent@kspec-reviewer
+        role: reviewer
+        created_at: 2026-03-17T09:30:13.328Z
     created_at: 2026-03-17T09:25:27.001Z
-    updated_at: 2026-03-17T09:30:05.805Z
+    updated_at: 2026-03-17T09:30:13.328Z
     notes: []
