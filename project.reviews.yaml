@@ -4181,3 +4181,30 @@ reviews:
     created_at: 2026-03-16T23:51:38.391Z
     updated_at: 2026-03-16T23:53:03.096Z
     notes: []
+  - _ulid: 01KKWTA85J22JSWC9ND019KXNB
+    slugs: []
+    title: "Review: fix-cycle diff orientation"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKWTA85HSKPTJ75QEEZXAZD5
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T02:34:34.546Z
+    examined_commit: b7004833684b0a7f6a3fda8ce5ee8822fd7b3531
+    external_links: []
+    lifecycle_state: draft
+    related_refs:
+      - "@task-review-diff-orientation"
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-review-diff-orientation"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T02:34:34.546Z
+    updated_at: null
+    notes: []
