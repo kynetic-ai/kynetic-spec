@@ -6517,6 +6517,18 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T11:46:06.618Z
         completed_at: 2026-03-17T11:46:06.618Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
+          head_commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
+        evidence: Schema OK, Skills OK. 3 reference errors and alignment warnings are all pre-existing (in
+          meta.yaml relates_to, not touched by this change). No new validation errors introduced.
+        name: kspec-validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-17T11:46:16.914Z
+        completed_at: 2026-03-17T11:46:16.914Z
     events:
       - _ulid: 01KKXSDV98ZFHX1ZWR3P38MS6Q
         actor: "@claude"
@@ -6559,6 +6571,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T11:46:06.691Z
+      - _ulid: 01KKXSWESE38QT1B6YPFDKJK02
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-17T11:46:17.007Z
     examined_commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
     external_links: []
     lifecycle_state: open
@@ -6625,5 +6644,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T11:38:18.280Z
-    updated_at: 2026-03-17T11:46:06.618Z
+    updated_at: 2026-03-17T11:46:16.914Z
     notes: []
