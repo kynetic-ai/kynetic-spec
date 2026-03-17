@@ -6385,6 +6385,17 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T11:19:42.055Z
         completed_at: 2026-03-17T11:19:42.055Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
+          head_commit: a7195c9f4b1dfebc2b96cbbf0fc50293619c698c
+        evidence: Template source, .agents/, and .factory/ rendered outputs are content-identical
+        name: template-rendered-parity
+        required: true
+        runner: diff
+        created_at: 2026-03-17T11:19:44.402Z
+        completed_at: 2026-03-17T11:19:44.402Z
     events:
       - _ulid: 01KKXRAKWZ07JKXN0G5ACE1BR4
         actor: "@claude"
@@ -6406,6 +6417,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T11:19:42.116Z
+      - _ulid: 01KKXRBVJEJ9P18BJZGNHADE4Z
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: template-rendered-parity
+        timestamp: 2026-03-17T11:19:44.462Z
     examined_commit: a7195c9f4b1dfebc2b96cbbf0fc50293619c698c
     external_links: []
     lifecycle_state: open
@@ -6418,5 +6436,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T11:19:03.839Z
-    updated_at: 2026-03-17T11:19:42.055Z
+    updated_at: 2026-03-17T11:19:44.402Z
     notes: []
