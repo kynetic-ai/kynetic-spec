@@ -102325,8 +102325,10 @@
   spec_ref: null
   plan_ref: "@plan-task-activity-timeline"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Reviewed and merged to dev. Convention rule accurately reflects fix-cycle note
+    requirement. Generated output verified against fresh kspec agents generate.
   depends_on:
     - "@task-update-review-skill-docs"
     - "@task-update-task-work-skill-docs"
@@ -102348,6 +102350,7 @@
   created_at: 2026-03-16T20:19:40.729Z
   started_at: 2026-03-17T04:55:23.259Z
   submitted_at: 2026-03-17T04:56:18.890Z
+  completed_at: 2026-03-17T04:57:50.391Z
   notes:
     - _ulid: 01KKX2DKSMJ1PH40V2V400MPDE
       content: "Added fix-cycle note rule to notes convention via kspec meta set. Regenerated
