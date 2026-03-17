@@ -4688,6 +4688,18 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T08:13:25.256Z
         completed_at: 2026-03-17T08:13:25.256Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 45e009274ddc
+          head_commit: 39d1d121096e
+        evidence: No validation errors or warnings specific to @review-records-daemon-api. Pre-existing
+          warnings in unrelated specs.
+        name: kspec-validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-17T08:13:31.545Z
+        completed_at: 2026-03-17T08:13:31.545Z
     events:
       - _ulid: 01KKXDNWKQY94PZVX48QXGD9Z2
         actor: "@claude"
@@ -4709,6 +4721,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T08:13:25.310Z
+      - _ulid: 01KKXDPWJA2677XJCTYK1F5FJR
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-17T08:13:31.594Z
     examined_commit: 39d1d121096e5d010137498c0d9257cc5bae8752
     external_links: []
     lifecycle_state: open
@@ -4721,5 +4740,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T08:12:58.872Z
-    updated_at: 2026-03-17T08:13:25.256Z
+    updated_at: 2026-03-17T08:13:31.545Z
     notes: []
