@@ -5269,6 +5269,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKXK9G8VSQW40TWSFT8V3K4J
         timestamp: 2026-03-17T09:51:04.521Z
+      - _ulid: 01KKXK9R3X9A9EDFE1TE4N3H09
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKXK9R2DBAS3F0AK7AG14SDQ
+        timestamp: 2026-03-17T09:51:12.509Z
     examined_commit: d64977992f74f0cedcca191057909151a1803c27
     external_links: []
     lifecycle_state: open
@@ -5340,7 +5347,26 @@ reviews:
               (!['base', 'head'].includes(body.anchor.side)) return 400."
             created_at: 2026-03-17T09:51:04.475Z
         kind: blocker
+      - _ulid: 01KKXK9R2DBAS3F0AK7AG14SDQ
+        anchor:
+          type: code
+          commit: d64977992f74
+          line_end: 91
+          line_start: 91
+          path: packages/daemon/src/routes/reviews.ts
+          side: head
+        entries:
+          - _ulid: 01KKXK9R2DNH8V2K63KB0462TF
+            author: "@claude"
+            body: "Code anchor line_start/line_end accept invalid values (negative, zero, float). The Elysia
+              schema uses t.Number() with no constraints, and the manual check (line 91) only tests
+              for null via '== null'. The Zod schema requires z.number().int().positive() (integer >
+              0), but this constraint is not enforced at write time — only when loading from YAML. A
+              client can send line_start: -1 or line_start: 1.5 and it will be persisted. Add
+              validation: check that both values are integers > 0, and that line_end >= line_start."
+            created_at: 2026-03-17T09:51:12.461Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T09:50:19.140Z
-    updated_at: 2026-03-17T09:51:04.475Z
+    updated_at: 2026-03-17T09:51:12.461Z
     notes: []
