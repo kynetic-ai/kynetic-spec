@@ -7517,3 +7517,29 @@ reviews:
     created_at: 2026-03-17T13:00:54.253Z
     updated_at: 2026-03-17T13:01:24.998Z
     notes: []
+  - _ulid: 01KKXYB1TX6AVC8B1JCD55WV02
+    slugs: []
+    title: Review round-trip stability for plan record YAML writes (cycle 2)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKXYB1TW45KEX5GAF3DXKW8H
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T13:04:09.565Z
+    examined_commit: be90fb6f7d26432f16c5293770d55335abf1c92b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKX6C83WVQBYBZ5SWTXY1JKA"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T13:04:09.565Z
+    updated_at: null
+    notes: []
