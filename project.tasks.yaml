@@ -103237,7 +103237,19 @@
   session_id: 01KKXVQ4FWFSV40ZJ20XH408CQ
   created_at: 2026-03-17T06:05:22.940Z
   started_at: 2026-03-17T12:18:41.316Z
-  notes: []
+  notes:
+    - _ulid: 01KKXWEY2JCH73MGQBPTX0SPGF
+      content: "Applied the raw-data-preservation pattern from task YAML writes to plan YAML writes.
+        Created extractRawPlanArray, writeRawPlanArray, findRawPlanIndex, and
+        mergePlanPreservingRawShape helpers following the exact same approach as the task
+        equivalents. Updated savePlan, mutatePlanAtomically, and deletePlan to use these. Added 6
+        round-trip stability tests to yaml-round-trip-stability.test.ts covering: identity save, no
+        Zod default injection, identity mutation, multi-plan stability, delete preserving non-target
+        plans, and multi-cycle stability. All pass. One pre-existing failure in review-cli.test.ts
+        (examined_commit auto-detection) is unrelated."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T12:31:19.634Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6C9RJHKN1ZMJW1ZWH2BRZ
