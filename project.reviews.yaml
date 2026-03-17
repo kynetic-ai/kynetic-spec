@@ -6996,3 +6996,29 @@ reviews:
     created_at: 2026-03-17T12:04:01.716Z
     updated_at: 2026-03-17T12:05:01.079Z
     notes: []
+  - _ulid: 01KKXVPDJ3JHK8GMAQTWRQYYC7
+    slugs: []
+    title: Review task-review-task-integration (cycle 2)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKXVPDJ204CC7TN4ZJ3XP625
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T12:17:56.291Z
+    examined_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKTW6NR1WA12MZCR6FY1AGT8"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T12:17:56.291Z
+    updated_at: null
+    notes: []
