@@ -4784,3 +4784,29 @@ reviews:
     created_at: 2026-03-17T08:12:58.872Z
     updated_at: 2026-03-17T08:13:46.864Z
     notes: []
+  - _ulid: 01KKXG4D0WKFWJRV3393JGHXZQ
+    slugs: []
+    title: Review diff content API (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKXG4D0W60975D97N1KY8ZDR
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T08:55:51.580Z
+    examined_commit: bb450d49091846ff30ea2a935f49c0bc0bb70cfa
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKTW6J1F8NHGA7G7SJJ1ZFFS"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T08:55:51.580Z
+    updated_at: null
+    notes: []
