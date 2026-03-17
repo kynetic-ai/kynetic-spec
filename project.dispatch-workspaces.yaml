@@ -7195,12 +7195,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-17T10:32:23.919Z
+      updated_at: 2026-03-17T10:32:26.813Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T10:32:23.919Z
+      updated_at: 2026-03-17T10:32:26.813Z
     integration:
       status: pending
       detail: null
@@ -7208,24 +7208,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-      updated_at: 2026-03-17T10:32:23.919Z
-    lifecycle_state: ready
+      updated_at: 2026-03-17T10:32:26.813Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKTK96Z5M9T8WP900CPFWRNG"
     task_slug: remove-skill-table-from-kspec-agents-md-and-port-descriptions-to-skill-frontmatter
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T10:12:07.193Z
-      last_reconciled_at: 2026-03-17T10:32:23.919Z
+      last_reconciled_at: 2026-03-17T10:32:26.813Z
       created_at: 2026-03-17T10:12:06.108Z
-      updated_at: 2026-03-17T10:32:23.919Z
+      updated_at: 2026-03-17T10:32:26.813Z
     workspace_id: dispatch-workspace-01KKTK96Z5M9T8WP900CPFWRNG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 82896f8489f79b6cac198ca9c0ed156634a2ca32
+        last_seen_at: 2026-03-17T10:32:26.813Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-skill-table-from-kspec-agents-md-and-port-descriptions-to-skill-frontmatter-01kktk96-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/remove-skill-table-from-kspec-agents-md-and-port-descriptions-to-skill-frontmatter/01kktk96
-        head: 3a64769a2efda93e4e685368ef9c453100e596a2
-        last_seen_at: 2026-03-17T10:12:06.108Z
+        head: 82896f8489f79b6cac198ca9c0ed156634a2ca32
+        last_seen_at: 2026-03-17T10:32:26.813Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-skill-table-from-kspec-agents-md-and-port-descriptions-to-skill-frontmatter-01kktk96
