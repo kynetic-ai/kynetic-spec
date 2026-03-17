@@ -7447,7 +7447,20 @@ reviews:
     slugs: []
     title: Review round-trip stability for inbox item YAML writes
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: d7844f56824fc7f24dbf104390d14807a2a27582
+          head_commit: 78d192c45905422e8fed57293774ea8ebc5fba4f
+        evidence: 5739 tests passed, 1 failed (pre-existing env issue in review-cli.test.ts -
+          KSPEC_DISPATCH_CANONICAL_HEAD pollutes examined_commit), 3 skipped. All 24 round-trip
+          stability tests pass. All inbox-related tests pass.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-17T13:01:14.311Z
+        completed_at: 2026-03-17T13:01:14.311Z
     events:
       - _ulid: 01KKXY533D8FAGWF5GEM8DKJ2Q
         actor: "@claude"
@@ -7462,6 +7475,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-17T13:01:01.480Z
+      - _ulid: 01KKXY5PS24D1AW2C1J13D7CZ0
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-17T13:01:14.402Z
     examined_commit: 78d192c45905422e8fed57293774ea8ebc5fba4f
     external_links: []
     lifecycle_state: open
@@ -7474,5 +7494,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T13:00:54.253Z
-    updated_at: 2026-03-17T13:01:01.397Z
+    updated_at: 2026-03-17T13:01:14.311Z
     notes: []
