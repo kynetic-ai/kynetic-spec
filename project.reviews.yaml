@@ -5262,6 +5262,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKXK97WYC7A9SPP0MGE554AF
         timestamp: 2026-03-17T09:50:55.949Z
+      - _ulid: 01KKXK9GA92P6ZXG0S41NWB3QM
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKXK9G8VSQW40TWSFT8V3K4J
+        timestamp: 2026-03-17T09:51:04.521Z
     examined_commit: d64977992f74f0cedcca191057909151a1803c27
     external_links: []
     lifecycle_state: open
@@ -5314,7 +5321,26 @@ reviews:
               file. This is a trait coverage gap that kspec validate would flag.
             created_at: 2026-03-17T09:50:55.902Z
         kind: blocker
+      - _ulid: 01KKXK9G8VSQW40TWSFT8V3K4J
+        anchor:
+          type: code
+          commit: d64977992f74
+          line_end: 110
+          line_start: 103
+          path: packages/daemon/src/routes/reviews.ts
+          side: head
+        entries:
+          - _ulid: 01KKXK9G8VPYJG60M1Y7CN84JW
+            author: "@claude"
+            body: "Code anchor 'side' field is not validated against allowed values. At line 106,
+              body.anchor.side is type-asserted as 'base' | 'head' without runtime validation. The
+              Zod schema (ReviewCodeAnchorSchema) constrains this to z.enum([\"base\", \"head\"]),
+              but the Elysia body schema uses t.Optional(t.String()) which accepts any string. An
+              API client can send side: \"invalid\" and it will be persisted. Add validation: if
+              (!['base', 'head'].includes(body.anchor.side)) return 400."
+            created_at: 2026-03-17T09:51:04.475Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T09:50:19.140Z
-    updated_at: 2026-03-17T09:50:55.902Z
+    updated_at: 2026-03-17T09:51:04.475Z
     notes: []
