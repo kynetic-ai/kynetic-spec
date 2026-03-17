@@ -2201,6 +2201,95 @@ function stripInboxMetadata(item: LoadedInboxItem | InboxItem): InboxItem {
 }
 
 /**
+ * Extract the raw inbox array and wrapper metadata from a YAML file.
+ * Does NOT run schema validation — preserves original data for round-trip stability.
+ */
+async function extractRawInboxArray(
+  filePath: string,
+): Promise<{ rawItems: unknown[]; wrapperObj?: Record<string, unknown> }> {
+  let existingRaw: unknown = null;
+
+  try {
+    existingRaw = await readYamlFile<unknown>(filePath);
+  } catch {
+    // File doesn't exist
+    return { rawItems: [] };
+  }
+
+  if (!existingRaw || typeof existingRaw !== "object") {
+    return { rawItems: [] };
+  }
+
+  const wrapper = existingRaw as Record<string, unknown>;
+  const inbox = wrapper.inbox;
+
+  // Handle { inbox: [...] } format
+  if (Array.isArray(inbox)) {
+    return { rawItems: inbox, wrapperObj: wrapper };
+  }
+
+  // Handle plain array format (legacy)
+  if (Array.isArray(existingRaw)) {
+    return { rawItems: existingRaw };
+  }
+
+  return { rawItems: [] };
+}
+
+/**
+ * Write raw inbox array back to file, preserving wrapper metadata.
+ */
+async function writeRawInboxArray(
+  filePath: string,
+  rawItems: unknown[],
+  wrapperObj?: Record<string, unknown>,
+): Promise<void> {
+  const output = wrapperObj
+    ? { ...wrapperObj, inbox: rawItems }
+    : { inbox: rawItems };
+  await writeYamlFilePreserveFormat(filePath, output);
+}
+
+/**
+ * Find inbox item index in a raw array by ULID match.
+ */
+function findRawInboxIndex(rawItems: unknown[], ulid: string): number {
+  return rawItems.findIndex(
+    (i) =>
+      i && typeof i === "object" && (i as Record<string, unknown>)._ulid === ulid,
+  );
+}
+
+/**
+ * Merge a schema-normalized inbox item onto the original raw item data.
+ * Only adds fields that were in the original raw data or that contain
+ * non-default values. This prevents Zod defaults from polluting YAML
+ * output with fields that weren't originally present.
+ */
+function mergeInboxPreservingRawShape(
+  rawItem: Record<string, unknown>,
+  normalizedItem: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(normalizedItem)) {
+    if (key in rawItem) {
+      // Field existed in raw — always include (even if value changed)
+      result[key] = value;
+    } else {
+      // Field was added by schema normalization — only include if non-trivial
+      const isEmptyArray = Array.isArray(value) && value.length === 0;
+      const isNull = value === null || value === undefined;
+      if (!isEmptyArray && !isNull) {
+        result[key] = value;
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
  * Save an inbox item (add or update).
  */
 export async function saveInboxItem(
@@ -2215,29 +2304,22 @@ export async function saveInboxItem(
     const dir = path.dirname(inboxPath);
     await fs.mkdir(dir, { recursive: true });
 
-    // Load existing items
-    let existingItems: InboxItem[] = [];
-
-    try {
-      existingItems = await loadInboxItemsFromFile(inboxPath);
-    } catch {
-      // File doesn't exist, start fresh
-    }
+    // Load raw inbox data without schema normalization
+    const { rawItems, wrapperObj } = await extractRawInboxArray(inboxPath);
 
     const cleanItem = stripInboxMetadata(item);
 
-    // Update existing or add new
-    const existingIndex = existingItems.findIndex(
-      (i) => i._ulid === item._ulid,
-    );
+    // Update existing or add new — replace only the target item
+    const existingIndex = findRawInboxIndex(rawItems, item._ulid);
     if (existingIndex >= 0) {
-      existingItems[existingIndex] = cleanItem;
+      // Merge onto raw data to avoid adding Zod defaults for absent fields
+      const rawTarget = rawItems[existingIndex] as Record<string, unknown>;
+      rawItems[existingIndex] = mergeInboxPreservingRawShape(rawTarget, cleanItem as Record<string, unknown>);
     } else {
-      existingItems.push(cleanItem);
+      rawItems.push(cleanItem);
     }
 
-    // Save with { inbox: [...] } format and format preservation
-    await writeYamlFilePreserveFormat(inboxPath, { inbox: existingItems });
+    await writeRawInboxArray(inboxPath, rawItems, wrapperObj);
   });
 }
 
@@ -2262,30 +2344,39 @@ export async function mutateInboxItemAtomically(
     const dir = path.dirname(inboxPath);
     await fs.mkdir(dir, { recursive: true });
 
-    let existingItems: InboxItem[] = [];
-    try {
-      existingItems = await loadInboxItemsFromFile(inboxPath);
-    } catch {
+    // Load raw inbox data without schema normalization for non-target items
+    const { rawItems, wrapperObj } = await extractRawInboxArray(inboxPath);
+
+    if (rawItems.length === 0) {
       throw new Error(`Inbox file not found: ${inboxPath}`);
     }
 
-    const itemIndex = existingItems.findIndex(
-      (existingItem) => existingItem._ulid === item._ulid,
-    );
+    const itemIndex = findRawInboxIndex(rawItems, item._ulid);
     if (itemIndex === -1) {
       throw new Error(`Inbox item not found in file: ${item._ulid}`);
     }
 
+    // Schema-parse only the target item for the mutation callback
+    const rawTarget = rawItems[itemIndex];
+    const parsed = InboxItemSchema.safeParse(rawTarget);
+    if (!parsed.success) {
+      throw new Error(`Invalid inbox item data for ${item._ulid}: ${parsed.error.message}`);
+    }
     const latestItem: LoadedInboxItem = {
-      ...existingItems[itemIndex],
+      ...parsed.data,
       _sourceFile: inboxPath,
     };
 
     const mutatedItem = await mutate(latestItem);
     const cleanMutatedItem = stripInboxMetadata(mutatedItem);
-    existingItems[itemIndex] = cleanMutatedItem;
 
-    await writeYamlFilePreserveFormat(inboxPath, { inbox: existingItems });
+    // Merge onto raw data to avoid adding Zod defaults for absent fields
+    rawItems[itemIndex] = mergeInboxPreservingRawShape(
+      rawTarget as Record<string, unknown>,
+      cleanMutatedItem as Record<string, unknown>,
+    );
+
+    await writeRawInboxArray(inboxPath, rawItems, wrapperObj);
 
     updatedItem = {
       ...cleanMutatedItem,
@@ -2312,15 +2403,16 @@ export async function deleteInboxItem(
   // Lock the file to prevent concurrent read-modify-write races
   return withFileLock(inboxPath, async () => {
     try {
-      const existingItems = await loadInboxItemsFromFile(inboxPath);
+      // Load raw inbox data without schema normalization for round-trip stability
+      const { rawItems, wrapperObj } = await extractRawInboxArray(inboxPath);
 
-      const index = existingItems.findIndex((i) => i._ulid === ulid);
+      const index = findRawInboxIndex(rawItems, ulid);
       if (index < 0) {
         return false;
       }
 
-      existingItems.splice(index, 1);
-      await writeYamlFilePreserveFormat(inboxPath, { inbox: existingItems });
+      rawItems.splice(index, 1);
+      await writeRawInboxArray(inboxPath, rawItems, wrapperObj);
       return true;
     } catch {
       return false;

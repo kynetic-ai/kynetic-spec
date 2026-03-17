@@ -12,8 +12,12 @@ import {
   saveTask,
   mutateTaskAtomically,
   loadAllTasks,
+  saveInboxItem,
+  mutateInboxItemAtomically,
+  deleteInboxItem,
+  loadInboxItems,
 } from "../src/parser/yaml.js";
-import type { LoadedTask } from "../src/parser/yaml.js";
+import type { LoadedTask, LoadedInboxItem } from "../src/parser/yaml.js";
 import {
   createReviewRecord,
   loadReviewRecords,
@@ -729,6 +733,187 @@ describe("round-trip stability — saveReviewRecord path", () => {
 
     // Only one review should remain
     const reloaded = await loadReviewRecords(ctx);
+    expect(reloaded).toHaveLength(1);
+    expect(reloaded[0]._ulid).toBe(ulid2);
+  });
+});
+
+// AC: @yaml-serialization-invariants ac-3
+describe("round-trip stability — saveInboxItem path", () => {
+  function makeInboxCtx(specDir: string): KspecContext {
+    return { specDir } as KspecContext;
+  }
+
+  it("saveInboxItem with no changes produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-inbox-rt1");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeInboxCtx(kspecDir);
+
+    // Write a minimal inbox file directly — only required fields, no tags
+    const inboxPath = path.join(kspecDir, "project.inbox.yaml");
+    const itemUlid = testUlid("INBX");
+    await writeYamlFilePreserveFormat(inboxPath, {
+      inbox: [
+        {
+          _ulid: itemUlid,
+          text: "An idea without tags",
+          created_at: "2026-01-01T00:00:00.000Z",
+          added_by: "@user",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(inboxPath, "utf-8");
+
+    // Load and save back with no modifications
+    const loaded = await loadInboxItems(ctx);
+    expect(loaded).toHaveLength(1);
+    await saveInboxItem(ctx, loaded[0]);
+    const afterContent = await fs.readFile(inboxPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("mutateInboxItemAtomically with identity function produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-inbox-rt2");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeInboxCtx(kspecDir);
+
+    const inboxPath = path.join(kspecDir, "project.inbox.yaml");
+    const itemUlid = testUlid("INBM");
+    await writeYamlFilePreserveFormat(inboxPath, {
+      inbox: [
+        {
+          _ulid: itemUlid,
+          text: "Idea for identity mutation test",
+          created_at: "2026-01-15T10:00:00.000Z",
+          added_by: "@agent",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(inboxPath, "utf-8");
+
+    // Identity mutation: return the item unchanged
+    const loaded = await loadInboxItems(ctx);
+    await mutateInboxItemAtomically(ctx, loaded[0], (i) => i);
+    const afterContent = await fs.readFile(inboxPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("saveInboxItem preserves file stability across multiple items", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-inbox-rt3");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeInboxCtx(kspecDir);
+
+    const inboxPath = path.join(kspecDir, "project.inbox.yaml");
+    const [ulid1, ulid2, ulid3] = testUlids("INBS", 3);
+    await writeYamlFilePreserveFormat(inboxPath, {
+      inbox: [
+        {
+          _ulid: ulid1,
+          text: "First inbox item",
+          created_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          text: "Second inbox item with tags",
+          created_at: "2026-01-02T00:00:00.000Z",
+          tags: ["mvp", "cli"],
+        },
+        {
+          _ulid: ulid3,
+          text: "Third inbox item",
+          created_at: "2026-01-03T00:00:00.000Z",
+          added_by: "@alice",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(inboxPath, "utf-8");
+
+    // Load and save each item individually — file should not change
+    const loaded = await loadInboxItems(ctx);
+    for (const item of loaded) {
+      await saveInboxItem(ctx, item);
+    }
+    const afterContent = await fs.readFile(inboxPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("non-target inbox items are not polluted with Zod defaults", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-inbox-rt4");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeInboxCtx(kspecDir);
+
+    // Write a minimal inbox file — items without tags field
+    const inboxPath = path.join(kspecDir, "project.inbox.yaml");
+    const [ulid1, ulid2] = testUlids("INBP", 2);
+    await writeYamlFilePreserveFormat(inboxPath, {
+      inbox: [
+        {
+          _ulid: ulid1,
+          text: "Minimal item 1",
+          created_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          text: "Minimal item 2",
+          created_at: "2026-01-02T00:00:00.000Z",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(inboxPath, "utf-8");
+
+    // Mutate only the first item (add tags)
+    const loaded = await loadInboxItems(ctx);
+    await mutateInboxItemAtomically(ctx, loaded[0], (i) => ({
+      ...i,
+      tags: ["important"],
+    }));
+    const afterContent = await fs.readFile(inboxPath, "utf-8");
+
+    // The second item should not gain a tags field
+    // Count occurrences of "tags:" — should be exactly 1 (from the mutated item)
+    const tagsMatches = afterContent.match(/tags:/g) || [];
+    expect(tagsMatches).toHaveLength(1);
+
+    // But the mutation should have taken effect
+    const reloaded = await loadInboxItems(ctx);
+    expect(reloaded[0].tags).toEqual(["important"]);
+    expect(reloaded[1].tags).toEqual([]); // Zod default when loaded, but not persisted
+  });
+
+  it("deleteInboxItem preserves non-target items as raw data", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-inbox-rt5");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeInboxCtx(kspecDir);
+
+    // Write a minimal inbox file directly
+    const inboxPath = path.join(kspecDir, "project.inbox.yaml");
+    const [ulid1, ulid2] = testUlids("INBD", 2);
+    await writeYamlFilePreserveFormat(inboxPath, {
+      inbox: [
+        {
+          _ulid: ulid1,
+          text: "Item to delete",
+          created_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          text: "Item to keep",
+          created_at: "2026-01-02T00:00:00.000Z",
+        },
+      ],
+    });
+
+    await deleteInboxItem(ctx, ulid1);
+    const afterContent = await fs.readFile(inboxPath, "utf-8");
+
+    // Remaining item should not gain Zod default fields (tags: [])
+    expect(afterContent).not.toContain("tags:");
+
+    // Only one item should remain
+    const reloaded = await loadInboxItems(ctx);
     expect(reloaded).toHaveLength(1);
     expect(reloaded[0]._ulid).toBe(ulid2);
   });
