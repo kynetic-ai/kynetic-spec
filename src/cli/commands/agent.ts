@@ -940,7 +940,7 @@ export function registerAgentCommands(program: Command): void {
           const sessionEventTypes = new Set([
             "message_start", "message_progress", "message_complete",
             "thinking_start", "thinking_progress", "thinking_complete",
-            "tool_call_start", "tool_call_complete",
+            "tool_call_start", "tool_call_input", "tool_call_complete",
           ]);
 
           if (sessionEventTypes.has(eventType) && msg.data) {
@@ -1005,6 +1005,16 @@ export function registerAgentCommands(program: Command): void {
                 const inputSummary = summarizeToolInput(data.tool_input);
                 startSpeakerSection(streamKey, prefix);
                 writeRaw(`  ⚡ Tool: ${toolName}${inputSummary}\n`);
+                break;
+              }
+              // AC: @ws-session-event-streaming ac-tool-input-update
+              case "tool_call_input": {
+                const toolName = data.tool_name ?? "unknown";
+                const inputSummary = summarizeToolInput(data.tool_input);
+                if (inputSummary) {
+                  startSpeakerSection(streamKey, prefix);
+                  writeRaw(`  ⚡ Tool: ${toolName}${inputSummary}\n`);
+                }
                 break;
               }
               case "tool_call_complete": {

@@ -157,6 +157,14 @@ export interface ToolCallStartEventData extends SessionEventBase {
   tool_input: unknown;
 }
 
+/** Tool call input updated (phased streaming: populated input arrives after registration). */
+export interface ToolCallInputEventData extends SessionEventBase {
+  type: 'tool_call_input';
+  tool_call_id: string;
+  tool_name: string;
+  tool_input: unknown;
+}
+
 /** Tool call finished. Includes status and duration; output excluded. */
 export interface ToolCallCompleteEventData extends SessionEventBase {
   type: 'tool_call_complete';
@@ -175,6 +183,7 @@ export type SessionEventData =
   | ThinkingProgressEventData
   | ThinkingCompleteEventData
   | ToolCallStartEventData
+  | ToolCallInputEventData
   | ToolCallCompleteEventData;
 
 /** All possible `event` field values for session events on the 'agents' topic. */

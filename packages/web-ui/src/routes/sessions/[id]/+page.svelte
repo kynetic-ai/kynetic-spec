@@ -138,7 +138,7 @@
 		const sessionEventTypes = new Set([
 			'message_start', 'message_progress', 'message_complete',
 			'thinking_start', 'thinking_progress', 'thinking_complete',
-			'tool_call_start', 'tool_call_complete',
+			'tool_call_start', 'tool_call_input', 'tool_call_complete',
 		]);
 
 		if (sessionEventTypes.has(event.event)) {

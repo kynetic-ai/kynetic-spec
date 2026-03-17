@@ -321,6 +321,108 @@ describe("SessionEventAccumulator", () => {
     });
   });
 
+  // AC: @ws-session-event-streaming ac-tool-input-update
+  describe("phased tool call input", () => {
+    function makeToolCallInputUpdate(id: string, rawInput: unknown): SessionUpdate {
+      return {
+        sessionUpdate: "tool_call_update",
+        toolCallId: id,
+        rawInput,
+      } as unknown as SessionUpdate;
+    }
+
+    it("emits tool_call_input when populated rawInput arrives without status transition", () => {
+      const ctx = makeCtx();
+
+      // Phase 1: registration with empty input
+      accumulator.handleUpdate(
+        ctx,
+        makeToolCallUpdate("tc-1", "Bash", {}),
+        emit,
+      );
+      events.length = 0;
+
+      // Phase 2: input update with populated rawInput
+      accumulator.handleUpdate(
+        ctx,
+        makeToolCallInputUpdate("tc-1", { command: "git status" }),
+        emit,
+      );
+
+      const inputEvent = events.find((e) => e.type === "tool_call_input") as any;
+      expect(inputEvent).toBeDefined();
+      expect(inputEvent.tool_call_id).toBe("tc-1");
+      expect(inputEvent.tool_name).toBe("Bash");
+      expect(inputEvent.tool_input).toEqual({ command: "git status" });
+    });
+
+    it("does not emit tool_call_input for empty rawInput", () => {
+      const ctx = makeCtx();
+
+      accumulator.handleUpdate(ctx, makeToolCallUpdate("tc-1", "Bash"), emit);
+      events.length = 0;
+
+      accumulator.handleUpdate(
+        ctx,
+        makeToolCallInputUpdate("tc-1", {}),
+        emit,
+      );
+
+      expect(events.filter((e) => e.type === "tool_call_input")).toHaveLength(0);
+    });
+
+    it("does not emit tool_call_input when status transitions to completed", () => {
+      const ctx = makeCtx();
+
+      accumulator.handleUpdate(ctx, makeToolCallUpdate("tc-1", "Bash"), emit);
+      events.length = 0;
+
+      // Update with both rawInput and completed status — should only emit tool_call_complete
+      accumulator.handleUpdate(ctx, {
+        sessionUpdate: "tool_call_update",
+        toolCallId: "tc-1",
+        rawInput: { command: "git status" },
+        status: "completed",
+      } as unknown as SessionUpdate, emit);
+
+      const types = events.map((e) => e.type);
+      expect(types).not.toContain("tool_call_input");
+      expect(types).toContain("tool_call_complete");
+    });
+
+    it("emits correct event sequence for phased tool call", () => {
+      const ctx = makeCtx();
+
+      // Phase 1: registration
+      accumulator.handleUpdate(
+        ctx,
+        makeToolCallUpdate("tc-1", "Read", null),
+        emit,
+      );
+
+      // Phase 2: input
+      accumulator.handleUpdate(
+        ctx,
+        makeToolCallInputUpdate("tc-1", { file_path: "/tmp/test.ts" }),
+        emit,
+      );
+
+      // Phase 3: completion
+      accumulator.handleUpdate(
+        ctx,
+        makeToolCallCompleteUpdate("tc-1", "completed"),
+        emit,
+      );
+
+      const types = events.map((e) => e.type);
+      expect(types).toEqual([
+        "tool_call_start",
+        "tool_call_input",
+        "tool_call_complete",
+      ]);
+    });
+  });
+
   // AC: @session-event-broadcast ac-replaces-text-chunks
   describe("lifecycle event sequence", () => {
     it("produces correct event sequence for message → tool → message", () => {

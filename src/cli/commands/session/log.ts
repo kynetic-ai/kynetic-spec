@@ -37,6 +37,7 @@ import {
   parseTimeSpec,
 } from "../../../utils/index.js";
 import { isObject } from "../../../acp/types.js";
+import { unwrapSessionUpdate, extractToolName } from "../../../agent-runtime/session-event-fields.js";
 import { EXIT_CODES } from "../../exit-codes.js";
 import { error, isStructuredMode, output, warn } from "../../output.js";
 
@@ -479,16 +480,9 @@ function summarizeEventData(event: SessionEvent): string {
 
   // Handle tool_call events
   if (event.type === "session.update") {
-    const update = data.update;
-    if (isObject(update) && update.sessionUpdate === "tool_call") {
-      const meta = update._meta;
-      let toolName = "unknown";
-      if (isObject(meta)) {
-        const claudeCode = meta.claudeCode;
-        if (isObject(claudeCode) && typeof claudeCode.toolName === "string") {
-          toolName = claudeCode.toolName;
-        }
-      }
+    const update = unwrapSessionUpdate(data as Record<string, unknown>);
+    if (update && update.sessionUpdate === "tool_call") {
+      const toolName = extractToolName(update);
       const rawInput = update.rawInput;
       if (isObject(rawInput) && typeof rawInput.command === "string") {
         const command = rawInput.command;
