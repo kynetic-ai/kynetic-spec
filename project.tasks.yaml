@@ -101190,6 +101190,18 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T10:19:50.619Z
+    - _ulid: 01KKXP029ZXZFKFAC4YQTAHE06
+      content: "Fixed blocker: added lifecycle state guard on verdict and check endpoints to reject
+        mutations on archived (terminal-state) reviews with 400 and actionable error message.
+        Previously approve/request_changes verdicts caused unhandled 500 (transitionLifecycle throws
+        for archived→closed), and comment verdicts silently mutated immutable archived reviews. Also
+        addressed nit by exporting VALID_TRANSITIONS from review-operations.ts and importing in the
+        route handler, eliminating the duplication divergence risk. Added 3 tests covering
+        archived-state guard for verdicts (approve + comment) and checks. All 31 route tests pass,
+        full suite passes (pre-existing review-cli.test.ts failure unchanged)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T10:38:20.991Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6HCFS1KY6X0KVF5F6RFP
