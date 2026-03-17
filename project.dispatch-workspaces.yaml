@@ -7278,18 +7278,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/improve-review-skill-to-direct-use-of-anchors-in-plan-and-code-reviews/01kkttc2
-    canonical_branch_head: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
+    canonical_branch_head: 8bcd93487dad2ef439407a2c9b214fc75a1ebb77
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-17T11:02:35.484Z
+      updated_at: 2026-03-17T11:05:16.404Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T11:02:36.046Z
+      updated_at: 2026-03-17T11:05:16.404Z
     integration:
       status: pending
       detail: null
@@ -7297,7 +7297,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 51465810f2fa4c44628dc52f6070812e43862a6f
-      updated_at: 2026-03-17T11:02:35.484Z
+      updated_at: 2026-03-17T11:05:16.404Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KKTTC2CTEPS5X2VPE7QVFA16"
@@ -7305,9 +7305,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T11:02:36.046Z
-      last_reconciled_at: 2026-03-17T11:02:36.046Z
+      last_reconciled_at: 2026-03-17T11:05:16.404Z
       created_at: 2026-03-17T10:39:05.009Z
-      updated_at: 2026-03-17T11:02:36.046Z
+      updated_at: 2026-03-17T11:05:16.404Z
     workspace_id: dispatch-workspace-01KKTTC2CTEPS5X2VPE7QVFA16
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
