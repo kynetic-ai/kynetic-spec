@@ -7368,9 +7368,22 @@ reviews:
           status: fail
           name: code-review
         timestamp: 2026-03-17T12:42:31.133Z
+      - _ulid: 01KKXX3N7FC61CYVQBD7XFKWTF
+        actor: agent@kspec-dispatch
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-17T12:42:38.703Z
+      - _ulid: 01KKXX3N7F0XNGTTH3SV4JXXXT
+        actor: agent@kspec-dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-17T12:42:38.703Z
     examined_commit: fa760b196f109d5827f3a7a9287dfc0edc65b932
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -7418,7 +7431,15 @@ reviews:
               the review tests, not replace them. Review write-path coverage is now zero.
             created_at: 2026-03-17T12:42:04.302Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 8ee6537e0a4a38b0435f8cb18987f5043eb8cb0c
+          head_commit: fa760b196f109d5827f3a7a9287dfc0edc65b932
+        decision: request_changes
+        reviewer: agent@kspec-dispatch
+        role: reviewer
+        created_at: 2026-03-17T12:42:38.630Z
     created_at: 2026-03-17T12:41:31.776Z
-    updated_at: 2026-03-17T12:42:31.051Z
+    updated_at: 2026-03-17T12:42:38.630Z
     notes: []
