@@ -102289,7 +102289,15 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-16T20:19:39.906Z
   started_at: 2026-03-17T04:49:49.330Z
-  notes: []
+  notes:
+    - _ulid: 01KKX23V2RGDFTVF339TJN6VK5
+      content: "Updated Fix Cycle section in task-work skill: added step 4 requiring a task note before
+        resubmitting, with example showing what a good fix-cycle note looks like. Updated intro text
+        to reference per-cycle review model. Updated step 5 (was step 4) re-submit text to mention
+        new review record. Rendered for codex and droid."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T04:50:53.144Z
   todos: []
 - _ulid: 01KKW4VSHS4JRSB3AMJN05QR10
   slugs:
