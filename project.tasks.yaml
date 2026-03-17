@@ -101039,6 +101039,39 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T09:51:50.479Z
+    - _ulid: 01KKXMEKS47HHW9RZ20Z0JA90T
+      content: >-
+        Fix cycle 1 addressed all 4 blockers and 1 nit:
+
+
+        1. Restored out-of-scope deleted files (diff.ts, git-diff-parser.ts,
+        daemon-diff-api.test.ts, utils/index.ts exports) belonging to completed
+        @review-content-diff-api task — used git checkout from dev to restore exact copies.
+
+
+        2. Added 24 trait AC N/A annotations to api-reviews-threads.spec.ts covering
+        @trait-json-output (6), @trait-error-guidance (6), @trait-localhost-security (3),
+        @trait-websocket-protocol (8).
+
+
+        3. Added runtime validation for code anchor 'side' field — must be 'base' or 'head'.
+
+
+        4. Added validation for line_start/line_end — must be positive integers with line_end >=
+        line_start.
+
+
+        5. (Nit) Added validation for empty structured anchors — requires at least one of section,
+        field, path, or ref.
+
+
+        6. Added 6 new E2E tests covering all new validation cases.
+
+
+        All 5734 tests pass (1 pre-existing failure in review-cli.test.ts unrelated to this task).
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T10:11:20.485Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6GRPMVH8M9WVGH9NTJCF
