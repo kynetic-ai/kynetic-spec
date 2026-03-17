@@ -100975,8 +100975,13 @@
   spec_ref: "@review-records-daemon-api"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Implements review thread mutation API endpoints: POST
+    /api/reviews/:id/comments (create thread), POST /api/reviews/:id/comments/:threadId/replies (add
+    reply), PATCH resolve/reopen. Covers ac-3, ac-4, ac-5, ac-9, ac-10 with 29 E2E tests and full
+    trait AC N/A annotations. Simple merge conflict in server.ts resolved (additive import + route
+    registration)."
   depends_on:
     - "@task-review-api-read"
   context: []
@@ -100999,6 +101004,7 @@
   created_at: 2026-03-16T08:28:59.814Z
   started_at: 2026-03-17T10:11:38.461Z
   submitted_at: 2026-03-17T10:11:42.207Z
+  completed_at: 2026-03-17T10:25:51.037Z
   notes:
     - _ulid: 01KKXJKQ0NENQDRVDDVVYNQX65
       content: >-
