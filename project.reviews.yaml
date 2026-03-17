@@ -7037,6 +7037,19 @@ reviews:
         runner: grep
         created_at: 2026-03-17T12:19:33.075Z
         completed_at: 2026-03-17T12:19:33.075Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
+          head_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
+        evidence: "Cycle 1 blockers resolved: (1) kspec-agents.md is v0.12.0 (was v0.11.0), (2)
+          templates/skills/review/SKILL.md has Why Anchors Matter section restored, (3)
+          DRAFT_REVIEW_ULID nit resolved (now used in tests from dev merge)"
+        name: prior-review-blockers
+        required: true
+        runner: manual
+        created_at: 2026-03-17T12:19:46.967Z
+        completed_at: 2026-03-17T12:19:46.967Z
     events:
       - _ulid: 01KKXVPDJ204CC7TN4ZJ3XP625
         actor: "@claude"
@@ -7093,6 +7106,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-17T12:19:33.154Z
+      - _ulid: 01KKXVSSPY43F3A27V5A9TES7S
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: prior-review-blockers
+        timestamp: 2026-03-17T12:19:47.038Z
     examined_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
     external_links: []
     lifecycle_state: open
@@ -7159,5 +7179,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T12:17:56.291Z
-    updated_at: 2026-03-17T12:19:33.075Z
+    updated_at: 2026-03-17T12:19:46.967Z
     notes: []
