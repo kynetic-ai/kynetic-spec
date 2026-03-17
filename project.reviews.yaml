@@ -5844,6 +5844,19 @@ reviews:
         runner: kspec
         created_at: 2026-03-17T10:38:47.393Z
         completed_at: 2026-03-17T10:38:47.393Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
+          head_commit: 82896f8489f79b6cac198ca9c0ed156634a2ca32
+        evidence: Searched entire codebase for generateSkillsTable — zero results. No stale imports,
+          exports, or references remain. LoadedSkill still used appropriately in skill-render,
+          validate, and meta modules.
+        name: dead-references
+        required: false
+        runner: manual
+        created_at: 2026-03-17T10:38:54.602Z
+        completed_at: 2026-03-17T10:38:54.602Z
     events:
       - _ulid: 01KKXNPRMREFB130N767DZBEN4
         actor: "@claude"
@@ -5879,6 +5892,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-17T10:38:47.448Z
+      - _ulid: 01KKXP13605J9VWXPQ46S2BQ8G
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: dead-references
+        timestamp: 2026-03-17T10:38:54.657Z
     examined_commit: 82896f8489f79b6cac198ca9c0ed156634a2ca32
     external_links: []
     lifecycle_state: open
@@ -5902,5 +5922,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-17T10:33:16.184Z
-    updated_at: 2026-03-17T10:38:47.393Z
+    updated_at: 2026-03-17T10:38:54.602Z
     notes: []
