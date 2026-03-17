@@ -14,6 +14,13 @@ import {
   loadAllTasks,
 } from "../src/parser/yaml.js";
 import type { LoadedTask } from "../src/parser/yaml.js";
+import {
+  loadPlans,
+  savePlan,
+  mutatePlanAtomically,
+  deletePlan,
+} from "../src/parser/plans.js";
+import type { LoadedPlan } from "../src/parser/plans.js";
 
 /**
  * Round-trip stability tests for YAML serialization.
@@ -483,6 +490,226 @@ describe("round-trip stability — saveTask path", () => {
       await saveTask(ctx, task);
     }
     const afterContent = await fs.readFile(taskFilePath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+});
+
+// AC: @yaml-serialization-invariants ac-3
+describe("round-trip stability — savePlan path", () => {
+  /**
+   * Helper: set up a minimal kspec context with a plans file.
+   */
+  async function setupPlanContext(plans: Record<string, unknown>[]) {
+    // Write manifest
+    const manifestPath = path.join(tempDir, "kynetic.yaml");
+    await writeYamlFile(manifestPath, {
+      name: "test-project",
+      modules: [],
+    });
+
+    // Write plans file with canonical wrapper format
+    const plansFilePath = path.join(tempDir, "project.plans.yaml");
+    await writeYamlFile(plansFilePath, { kynetic_plans: "1.0", plans });
+
+    // Get the content after initial canonical write
+    const initialContent = await fs.readFile(plansFilePath, "utf-8");
+
+    // Init context pointing at tempDir as specDir
+    const ctx = await initContext(tempDir);
+
+    return { ctx, plansFilePath, initialContent };
+  }
+
+  it("savePlan with no changes produces identical file", async () => {
+    const planData = {
+      _ulid: testUlid("PLAN", 1),
+      slugs: ["no-change-plan"],
+      title: "No change plan",
+      content: "Plan content that should not change.",
+      status: "draft",
+      created_at: "2026-01-01T00:00:00.000Z",
+    };
+
+    const { ctx, plansFilePath, initialContent } =
+      await setupPlanContext([planData]);
+
+    // Load plans and save the first one back with no modifications
+    const loadedPlans = await loadPlans(ctx);
+    expect(loadedPlans.length).toBe(1);
+
+    await savePlan(ctx, loadedPlans[0]);
+    const afterContent = await fs.readFile(plansFilePath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("savePlan with no changes does not add Zod default fields", async () => {
+    // Minimal plan — no slugs, no derived_tasks, no derived_specs, no notes
+    const planData = {
+      _ulid: testUlid("PLAN", 2),
+      title: "Minimal plan",
+      content: "Just the essentials.",
+      status: "draft",
+      created_at: "2026-01-01T00:00:00.000Z",
+    };
+
+    const { ctx, plansFilePath, initialContent } =
+      await setupPlanContext([planData]);
+
+    const loadedPlans = await loadPlans(ctx);
+    await savePlan(ctx, loadedPlans[0]);
+    const afterContent = await fs.readFile(plansFilePath, "utf-8");
+
+    // File should be identical — no slugs: [], derived_tasks: [], etc. added
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("mutatePlanAtomically with identity function produces identical file", async () => {
+    const planData = {
+      _ulid: testUlid("PLAN", 3),
+      slugs: ["identity-mutate-plan"],
+      title: "Identity mutation plan",
+      content: "A plan for testing identity mutation stability.",
+      status: "approved",
+      derived_tasks: ["@task-one"],
+      created_at: "2026-01-01T00:00:00.000Z",
+      approved_at: "2026-01-10T00:00:00.000Z",
+      notes: [
+        {
+          _ulid: testUlid("N0TE", 40),
+          created_at: "2026-01-05T00:00:00.000Z",
+          author: "@agent",
+          content: "Plan looks good.",
+        },
+      ],
+    };
+
+    const { ctx, plansFilePath, initialContent } =
+      await setupPlanContext([planData]);
+
+    const loadedPlans = await loadPlans(ctx);
+    // Identity mutation: return the plan unchanged
+    await mutatePlanAtomically(ctx, loadedPlans[0], (p) => p);
+    const afterContent = await fs.readFile(plansFilePath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("savePlan preserves file stability across multiple plans", async () => {
+    const plans = [
+      {
+        _ulid: testUlid("PLAN", 4),
+        slugs: ["multi-plan-1"],
+        title: "First of many plans",
+        content: "First plan content.",
+        status: "draft",
+        created_at: "2026-01-01T00:00:00.000Z",
+      },
+      {
+        _ulid: testUlid("PLAN", 5),
+        slugs: ["multi-plan-2"],
+        title: "Second of many plans",
+        content: "Second plan content.",
+        status: "approved",
+        derived_tasks: ["@task-x"],
+        created_at: "2026-01-02T00:00:00.000Z",
+        approved_at: "2026-01-05T00:00:00.000Z",
+        notes: [
+          {
+            _ulid: testUlid("N0TE", 41),
+            created_at: "2026-01-03T00:00:00.000Z",
+            author: "@agent",
+            content: "Approved for implementation.",
+          },
+        ],
+      },
+    ];
+
+    const { ctx, plansFilePath, initialContent } =
+      await setupPlanContext(plans);
+
+    // Load and save each plan individually — file should not change
+    const loadedPlans = await loadPlans(ctx);
+    for (const plan of loadedPlans) {
+      await savePlan(ctx, plan);
+    }
+    const afterContent = await fs.readFile(plansFilePath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("deletePlan preserves non-target plans as raw data", async () => {
+    const plans = [
+      {
+        _ulid: testUlid("PLAN", 6),
+        slugs: ["keep-plan"],
+        title: "Plan to keep",
+        content: "This plan stays.",
+        status: "draft",
+        created_at: "2026-01-01T00:00:00.000Z",
+      },
+      {
+        _ulid: testUlid("PLAN", 7),
+        slugs: ["delete-plan"],
+        title: "Plan to delete",
+        content: "This plan gets removed.",
+        status: "rejected",
+        created_at: "2026-01-02T00:00:00.000Z",
+      },
+    ];
+
+    const { ctx, plansFilePath } = await setupPlanContext(plans);
+
+    // Snapshot the first plan's raw YAML before deletion
+    const beforeContent = await fs.readFile(plansFilePath, "utf-8");
+
+    // Delete the second plan
+    const deleted = await deletePlan(ctx, testUlid("PLAN", 7));
+    expect(deleted).toBe(true);
+
+    const afterContent = await fs.readFile(plansFilePath, "utf-8");
+
+    // The remaining plan should be byte-identical in the output
+    // (no Zod defaults added to the surviving plan)
+    // Write a single-plan file for comparison
+    const singlePlanFile = path.join(tempDir, "single-plan.yaml");
+    await writeYamlFile(singlePlanFile, { kynetic_plans: "1.0", plans: [plans[0]] });
+    const expectedContent = await fs.readFile(singlePlanFile, "utf-8");
+
+    expect(afterContent).toBe(expectedContent);
+  });
+
+  it("multiple read-write cycles maintain stability", async () => {
+    const planData = {
+      _ulid: testUlid("PLAN", 8),
+      slugs: ["cycle-plan"],
+      title: "Plan for cycle testing",
+      content: "Multi-line content.\n\nWith paragraphs.\n\nAnd more.",
+      status: "active",
+      derived_tasks: ["@task-a", "@task-b"],
+      derived_specs: ["@spec-c"],
+      created_at: "2026-01-01T00:00:00.000Z",
+      approved_at: "2026-01-05T00:00:00.000Z",
+      notes: [
+        {
+          _ulid: testUlid("N0TE", 42),
+          created_at: "2026-01-02T00:00:00.000Z",
+          author: "@agent",
+          content: "Initial work note.",
+        },
+      ],
+    };
+
+    const { ctx, plansFilePath, initialContent } =
+      await setupPlanContext([planData]);
+
+    // Multiple cycles — load and save each time
+    for (let i = 0; i < 5; i++) {
+      const loadedPlans = await loadPlans(ctx);
+      await savePlan(ctx, loadedPlans[0]);
+    }
+    const afterContent = await fs.readFile(plansFilePath, "utf-8");
 
     expect(afterContent).toBe(initialContent);
   });
