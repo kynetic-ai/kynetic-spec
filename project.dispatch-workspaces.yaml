@@ -7411,7 +7411,7 @@ workspaces:
         head: 2a0fd3f2fce05613a9249e25603b6f38543d76e5
         last_seen_at: 2026-03-17T11:46:10.028Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-list-page-01kktw6j
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
     bootstrap:
       status: succeeded
@@ -7477,9 +7477,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-17T12:42:31.970Z
-      last_reconciled_at: 2026-03-17T13:13:21.329Z
+      last_reconciled_at: 2026-03-17T13:13:22.206Z
       created_at: 2026-03-17T11:13:46.783Z
-      updated_at: 2026-03-17T13:13:21.329Z
+      updated_at: 2026-03-17T13:13:22.206Z
     workspace_id: dispatch-workspace-01KKTW6NR1WA12MZCR6FY1AGT8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
