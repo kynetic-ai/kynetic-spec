@@ -5334,6 +5334,36 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-17T09:51:49.458Z
+      - _ulid: 01KKXME4BET0Y1N375PZG05G5D
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKXK8YZB86TNNG3VHZHJVB71
+        timestamp: 2026-03-17T10:11:04.686Z
+      - _ulid: 01KKXME4G35ESFRTKC67QT5W21
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKXK97WYC7A9SPP0MGE554AF
+        timestamp: 2026-03-17T10:11:04.835Z
+      - _ulid: 01KKXME4NGMGRBX24JP3ZE7SJN
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKXK9G8VSQW40TWSFT8V3K4J
+        timestamp: 2026-03-17T10:11:05.008Z
+      - _ulid: 01KKXME4RTEJDEAJ5Z4PAN6CJ5
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKXK9R2DBAS3F0AK7AG14SDQ
+        timestamp: 2026-03-17T10:11:05.114Z
+      - _ulid: 01KKXME4VY3548P7KWDWT4Y7WG
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKXKA0P8DSXGMC51PX2P14KT
+        timestamp: 2026-03-17T10:11:05.214Z
     examined_commit: d64977992f74f0cedcca191057909151a1803c27
     external_links: []
     lifecycle_state: closed
@@ -5364,6 +5394,12 @@ reviews:
               scope and should be reverted. If these files need to be removed, that should be a
               separate tracked task.
             created_at: 2026-03-17T09:50:46.763Z
+          - _ulid: 01KKXME49Z2DFX3YABWGZQVNRV
+            author: "@claude"
+            body: Fixed in 74be26083. Restored diff.ts, git-diff-parser.ts, daemon-diff-api.test.ts, and
+              src/utils/index.ts exports via git checkout from dev. Added diff route import and
+              registration back to server.ts alongside the new reviews routes.
+            created_at: 2026-03-17T10:11:04.638Z
         kind: blocker
       - _ulid: 01KKXK97WYC7A9SPP0MGE554AF
         anchor:
@@ -5385,6 +5421,13 @@ reviews:
               files that cover these traits. These annotations are entirely absent from the new test
               file. This is a trait coverage gap that kspec validate would flag.
             created_at: 2026-03-17T09:50:55.902Z
+          - _ulid: 01KKXME4E847CXRP1HMSXX62S9
+            author: "@claude"
+            body: Fixed in 74be26083. Added full trait AC N/A annotation block to api-reviews-threads.spec.ts
+              covering all 24 inherited trait ACs from @trait-json-output (ac-1 through ac-6),
+              @trait-error-guidance (ac-1 through ac-6), @trait-localhost-security (ac-1 through
+              ac-3), and @trait-websocket-protocol (ac-1 through ac-8).
+            created_at: 2026-03-17T10:11:04.776Z
         kind: blocker
       - _ulid: 01KKXK9G8VSQW40TWSFT8V3K4J
         anchor:
@@ -5404,6 +5447,12 @@ reviews:
               API client can send side: \"invalid\" and it will be persisted. Add validation: if
               (!['base', 'head'].includes(body.anchor.side)) return 400."
             created_at: 2026-03-17T09:51:04.475Z
+          - _ulid: 01KKXME4M4P3RGD0EXHJFG8SVH
+            author: "@claude"
+            body: "Fixed in 74be26083. Added explicit validation: side must be one of base or head, returning
+              400 with details[{field: anchor.side}] for invalid values. Added E2E test covering
+              invalid side."
+            created_at: 2026-03-17T10:11:04.964Z
         kind: blocker
       - _ulid: 01KKXK9R2DBAS3F0AK7AG14SDQ
         anchor:
@@ -5423,6 +5472,13 @@ reviews:
               client can send line_start: -1 or line_start: 1.5 and it will be persisted. Add
               validation: check that both values are integers > 0, and that line_end >= line_start."
             created_at: 2026-03-17T09:51:12.461Z
+          - _ulid: 01KKXME4QRB6FFQC99GDJQXGE1
+            author: "@claude"
+            body: "Fixed in 74be26083. Added validation for line_start and line_end: must be integers > 0
+              (Number.isInteger check + >= 1), and line_end must be >= line_start. Each check
+              returns 400 with specific field in details. Added E2E tests for negative, float, and
+              line_end < line_start cases."
+            created_at: 2026-03-17T10:11:05.080Z
         kind: blocker
       - _ulid: 01KKXKA0P8DSXGMC51PX2P14KT
         anchor:
@@ -5442,6 +5498,11 @@ reviews:
               is worth considering whether at least one of section, field, path, or ref should be
               required for the anchor to be meaningful."
             created_at: 2026-03-17T09:51:21.289Z
+          - _ulid: 01KKXME4TX80688BNAW684Q85W
+            author: "@claude"
+            body: Addressed in 74be26083. Added validation requiring at least one of section, field, path, or
+              ref for structured anchors. Returns 400 if all fields are absent. Added E2E test.
+            created_at: 2026-03-17T10:11:05.181Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -5453,7 +5514,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-17T09:51:49.410Z
     created_at: 2026-03-17T09:50:19.140Z
-    updated_at: 2026-03-17T09:51:49.410Z
+    updated_at: 2026-03-17T10:11:05.181Z
     notes: []
   - _ulid: 01KKXKZZ92DKC77GXXTSAAQMFK
     slugs: []
