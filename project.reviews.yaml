@@ -8202,9 +8202,22 @@ reviews:
           status: pass
           name: cycle-2-fixes
         timestamp: 2026-03-17T18:56:06.644Z
+      - _ulid: 01KKYJFQHT77SB5DX28NY8A5CZ
+        actor: pr-reviewer@kspec
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-17T18:56:14.394Z
+      - _ulid: 01KKYJFQHTXWVX1TPM51PZ49EE
+        actor: pr-reviewer@kspec
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-17T18:56:14.394Z
     examined_commit: fb60707189c2b783a28822ad5d8d8ec695d7a87a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -8212,7 +8225,15 @@ reviews:
       ref: "@01KKTW6GRPMVH8M9WVGH9NTJCF"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 1c7a8e7ffc47ad6c3eecc5f3f3ee8f21f65607b8
+          head_commit: fb60707189c2b783a28822ad5d8d8ec695d7a87a
+        decision: approve
+        reviewer: pr-reviewer@kspec
+        role: reviewer
+        created_at: 2026-03-17T18:56:14.180Z
     created_at: 2026-03-17T18:55:14.043Z
-    updated_at: 2026-03-17T18:56:06.424Z
+    updated_at: 2026-03-17T18:56:14.180Z
     notes: []
