@@ -71610,6 +71610,13 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-17T23:00:51.129Z
+    - _ulid: 01KKZ1H41Y8E9EK9NVM6SF4V4R
+      content: Committed ralph trace purge as f2f07a109 on branch
+        dispatch/task/task-ralph-migration-guide/01kjp279. Working tree is clean; task remains in
+        pending_review for reviewer pickup.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-17T23:19:08.606Z
   todos: []
   automation: manual_only
 - _ulid: 01KJQH689FXW590TEFZX98QVZ0
