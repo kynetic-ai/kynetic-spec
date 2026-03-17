@@ -6719,6 +6719,18 @@ reviews:
         runner: svelte-check
         created_at: 2026-03-17T11:56:13.163Z
         completed_at: 2026-03-17T11:56:13.163Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
+          head_commit: 2a0fd3f2fce05613a9249e25603b6f38543d76e5
+        evidence: "ac-1: 10+ test annotations in E2E tests, annotations in page.svelte and api.ts. ac-10: 2
+          test annotations, empty state implemented in page.svelte. Both scoped ACs fully covered."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-17T11:56:21.555Z
+        completed_at: 2026-03-17T11:56:21.555Z
     events:
       - _ulid: 01KKXTDXP6SXDX0KGXRDHF22ED
         actor: "@claude"
@@ -6747,6 +6759,13 @@ reviews:
           status: pass
           name: svelte-check
         timestamp: 2026-03-17T11:56:13.233Z
+      - _ulid: 01KKXTEX7P1M5V7PTJZS0R5TVM
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-17T11:56:21.622Z
     examined_commit: 2a0fd3f2fce05613a9249e25603b6f38543d76e5
     external_links: []
     lifecycle_state: open
@@ -6759,5 +6778,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-17T11:55:49.318Z
-    updated_at: 2026-03-17T11:56:13.163Z
+    updated_at: 2026-03-17T11:56:21.555Z
     notes: []
