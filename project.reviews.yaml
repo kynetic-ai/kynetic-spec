@@ -7534,6 +7534,20 @@ reviews:
         runner: vitest
         created_at: 2026-03-17T13:10:24.125Z
         completed_at: 2026-03-17T13:10:24.125Z
+      - status: fail
+        applies_to_version:
+          type: code_compare
+          base_commit: 8ee6537e0a4a
+          head_commit: be90fb6f7d26
+        evidence: "src/parser/yaml.ts: inbox raw-data-preservation pattern removed (4 helpers deleted,
+          saveInboxItem/mutateInboxItemAtomically/deleteInboxItem reverted to schema-normalize
+          pattern). tests/yaml-round-trip-stability.test.ts: 5 inbox round-trip stability tests
+          deleted."
+        name: regression-check
+        required: true
+        runner: manual
+        created_at: 2026-03-17T13:10:32.170Z
+        completed_at: 2026-03-17T13:10:32.170Z
     events:
       - _ulid: 01KKXYB1TW45KEX5GAF3DXKW8H
         actor: "@claude"
@@ -7569,6 +7583,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-17T13:10:24.197Z
+      - _ulid: 01KKXYPQHRE4JA93R71T01Y7BH
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: regression-check
+        timestamp: 2026-03-17T13:10:32.248Z
     examined_commit: be90fb6f7d26432f16c5293770d55335abf1c92b
     external_links: []
     lifecycle_state: open
@@ -7622,7 +7643,7 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-17T13:04:09.565Z
-    updated_at: 2026-03-17T13:10:24.125Z
+    updated_at: 2026-03-17T13:10:32.170Z
     notes: []
   - _ulid: 01KKXYP3VVH969GDT1Q0YMPK4Z
     slugs: []
