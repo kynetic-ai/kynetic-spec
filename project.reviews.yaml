@@ -6368,3 +6368,29 @@ reviews:
     created_at: 2026-03-17T11:03:20.600Z
     updated_at: 2026-03-17T11:13:32.548Z
     notes: []
+  - _ulid: 01KKXRAKWZTP8HNCDRBYTYXCF7
+    slugs: []
+    title: Review improve-review-skill-anchors (cycle 2)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKXRAKWZ07JKXN0G5ACE1BR4
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T11:19:03.839Z
+    examined_commit: a7195c9f4b1dfebc2b96cbbf0fc50293619c698c
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKTTC2CTEPS5X2VPE7QVFA16"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T11:19:03.839Z
+    updated_at: null
+    notes: []
