@@ -103236,7 +103236,7 @@
   spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -103249,7 +103249,7 @@
   submission_linkage:
     review_url: null
     branch: dev
-    captured_at: 2026-03-17T12:31:30.957Z
+    captured_at: 2026-03-17T13:01:23.309Z
     commit: d7844f56824fc7f24dbf104390d14807a2a27582
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -103257,7 +103257,7 @@
   session_id: 01KKXXPPXASPN8V78HAH34MF4T
   created_at: 2026-03-17T06:05:22.940Z
   started_at: 2026-03-17T13:01:19.905Z
-  submitted_at: 2026-03-17T12:31:31.326Z
+  submitted_at: 2026-03-17T13:01:23.668Z
   notes:
     - _ulid: 01KKXWEY2JCH73MGQBPTX0SPGF
       content: "Applied the raw-data-preservation pattern from task YAML writes to plan YAML writes.
