@@ -4,13 +4,14 @@ slugs:
   - schema-module
 title: Schema and Structure
 type: module
-status:
-  maturity: draft
-  implementation: implemented
 description: |
   Defines the schema layer: what item types exist, how validation
   works, the file structure options, and the status lifecycle
   for both specs and individual items.
+status:
+  maturity: draft
+  implementation: implemented
+acceptance_criteria: []
 features:
   - _ulid: 01JHNKA1W3TYPE000000000000
     slugs:
@@ -18,202 +19,208 @@ features:
       - type-system
     title: Item Type System
     type: feature
+    description: |
+      The type field classifies items. Core types are defined,
+      but the system is extensible for project-specific types.
     status:
       maturity: draft
       implementation: implemented
+    acceptance_criteria:
+      - given: A spec item is created with type set to a supported core item type
+        id: ac-1
+        then: The type is accepted and the item is classified according to that schema type for downstream
+          commands
+        when: The item is loaded and validated
+      - given: A spec item omits the type field or uses an unsupported type value
+        id: ac-2
+        then: Validation fails with an error indicating that a recognized item type is required
+        when: Schema validation runs
     priority: high
     tags:
       - mvp
       - schema
-    description: |
-      The type field classifies items. Core types are defined,
-      but the system is extensible for project-specific types.
     requirements:
       - _ulid: 01JHNKA1W4TYPE100000000000
         slugs:
           - type-module
         title: Module Type
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           type: module
 
           High-level organizational unit. Groups related features.
           Examples: "Authentication", "API", "Data Export"
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@item-types"
         acceptance_criteria:
-          - id: ac-1
-            given: a module-type item is created
-            when: validation runs
+          - given: a module-type item is created
+            id: ac-1
             then: module structure is validated (must have title, can have features array)
-          - id: ac-2
-            given: a module contains nested features and requirements
-            when: nesting depth is validated
+            when: validation runs
+          - given: a module contains nested features and requirements
+            id: ac-2
             then: modules can contain features, features can contain requirements (proper hierarchy enforced)
+            when: nesting depth is validated
       - _ulid: 01JHNKA1W5TYPE200000000000
         slugs:
           - type-feature
         title: Feature Type
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           type: feature
 
           User-facing capability. Something the system does.
           Examples: "User Login", "Data Export", "Search"
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@item-types"
         acceptance_criteria:
-          - id: ac-1
-            given: a feature-type item is created
-            when: validation runs
+          - given: a feature-type item is created
+            id: ac-1
             then: feature structure is validated (must have title, can have requirements array, can be nested in
               modules)
-          - id: ac-2
-            given: a feature has acceptance_criteria defined
-            when: the feature is displayed or validated
+            when: validation runs
+          - given: a feature has acceptance_criteria defined
+            id: ac-2
             then: AC are shown/validated as testable outcomes for the feature
+            when: the feature is displayed or validated
       - _ulid: 01JHNKA1W6TYPE300000000000
         slugs:
           - type-requirement
         title: Requirement Type
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           type: requirement
 
           Specific, testable requirement. Details how a feature works.
           Examples: "Passwords must be hashed with bcrypt"
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@item-types"
         acceptance_criteria:
-          - id: ac-1
-            given: a requirement-type item is created
-            when: validation runs
+          - given: a requirement-type item is created
+            id: ac-1
             then: requirement structure is validated (must have title and description, should have implements
               relationship to parent feature)
-          - id: ac-2
-            given: a requirement specifies testable details
-            when: the requirement describes how a feature works
+            when: validation runs
+          - given: a requirement specifies testable details
+            id: ac-2
             then: acceptance criteria can be added to define specific testable conditions
+            when: the requirement describes how a feature works
       - _ulid: 01JHNKA1W7TYPE400000000000
         slugs:
           - type-constraint
         title: Constraint Type
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           type: constraint
 
           Limitation or boundary the system must operate within.
           Examples: "Must support 10k concurrent users", "Must use PostgreSQL"
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@item-types"
         acceptance_criteria:
-          - id: ac-1
-            given: a constraint-type item is created
-            when: validation runs
+          - given: a constraint-type item is created
+            id: ac-1
             then: constraint structure is validated (must have title and description defining system boundary or
               limitation)
-          - id: ac-2
-            given: a constraint defines a system limitation
-            when: the constraint is enforced in implementation
+            when: validation runs
+          - given: a constraint defines a system limitation
+            id: ac-2
             then: the system operates within the defined boundary (e.g., 10k concurrent users, must use
               PostgreSQL)
+            when: the constraint is enforced in implementation
       - _ulid: 01JHNKA1W8TYPE500000000000
         slugs:
           - type-decision
         title: Decision Type
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           type: decision
 
           Architectural decision record (ADR-style).
           Captures why a choice was made, alternatives considered.
           Examples: "Use PostgreSQL for persistence", "Choose YAML over JSON"
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@item-types"
         acceptance_criteria:
-          - id: ac-1
-            given: a decision-type item is created
-            when: validation runs
+          - given: a decision-type item is created
+            id: ac-1
             then: decision structure is validated (must have title, description, should include why the choice
               was made and alternatives considered)
-          - id: ac-2
-            given: an architectural decision is documented
-            when: the decision is implemented
+            when: validation runs
+          - given: an architectural decision is documented
+            id: ac-2
             then: the decision record serves as ADR-style documentation explaining the rationale and context
+            when: the decision is implemented
       - _ulid: 01JHNKA1W9TYPE600000000000
         slugs:
           - type-task
         title: Task Type
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           type: task (and subtypes: epic, bug, spike, infra)
 
           Actionable work item. May be derived from spec items
           or created standalone. See @tasks module for details.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@item-types"
         relates_to:
           - "@tasks"
         acceptance_criteria:
-          - id: ac-1
-            given: a task-type spec item is created
-            when: validation runs
+          - given: a task-type spec item is created
+            id: ac-1
             then: task structure is validated (must have title, can have spec_ref to link to spec item, can have
               task-specific fields like priority and status)
-    acceptance_criteria:
-      - id: ac-1
-        given: A spec item is created with type set to a supported core item type
-        when: The item is loaded and validated
-        then: The type is accepted and the item is classified according to that schema type for downstream
-          commands
-      - id: ac-2
-        given: A spec item omits the type field or uses an unsupported type value
-        when: Schema validation runs
-        then: Validation fails with an error indicating that a recognized item type is required
+            when: validation runs
   - _ulid: 01JHNKA2W0STAT000000000000
     slugs:
       - status-lifecycle
       - item-status
     title: Status Lifecycle
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: high
-    tags:
-      - mvp
-      - schema
     description: |
       Items track two dimensions of status:
       - maturity: How stable/reviewed is the spec content?
       - implementation: Is it built? Tested?
+    status:
+      maturity: draft
+      implementation: implemented
+    acceptance_criteria:
+      - given: A spec item defines both status.maturity and status.implementation
+        id: ac-1
+        then: Both status dimensions are preserved and handled independently on the same item
+        when: The item is loaded, displayed, or updated
+      - given: A command changes only one status dimension on an item
+        id: ac-2
+        then: The targeted status dimension changes without overwriting the other status dimension
+        when: The update is written
+    priority: high
+    tags:
+      - mvp
+      - schema
     requirements:
       - _ulid: 01JHNKA2W1STAT100000000000
         slugs:
           - maturity-states
         title: Maturity States
         type: requirement
-        status:
-          maturity: draft
-          implementation: verified
         description: |-
           status.maturity tracks spec content stability:
 
@@ -226,29 +233,29 @@ features:
           Lifecycle: draft -> proposed -> stable -> deprecated
                       draft -> deferred (for stub specs)
                       deferred -> draft (when resuming work)
+        status:
+          maturity: draft
+          implementation: verified
         implements:
           - "@status-lifecycle"
         acceptance_criteria:
-          - id: ac-1
-            given: "a spec item with maturity: deferred"
-            when: viewing or filtering items
+          - given: "a spec item with maturity: deferred"
+            id: ac-1
             then: the deferred status is recognized and displayed correctly
-          - id: ac-2
-            given: creating or updating a spec item
-            when: setting maturity to deferred
+            when: viewing or filtering items
+          - given: creating or updating a spec item
+            id: ac-2
             then: the value is accepted and persisted
-          - id: ac-reject-invalid
-            given: a user sets maturity status via CLI to an invalid value
-            when: the command executes
+            when: setting maturity to deferred
+          - given: a user sets maturity status via CLI to an invalid value
+            id: ac-reject-invalid
             then: the command fails with a clear error listing valid values and no changes are written
+            when: the command executes
       - _ulid: 01JHNKA2W2STAT200000000000
         slugs:
           - implementation-states
         title: Implementation States
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           status.implementation tracks build progress:
 
@@ -258,90 +265,91 @@ features:
           - verified: Tests pass, reviewed
 
           This is informational; tasks track actual work.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@status-lifecycle"
         acceptance_criteria:
-          - id: ac-reject-invalid
-            given: a user sets implementation status via CLI to an invalid value (e.g. 'specified')
-            when: the command executes
+          - given: a user sets implementation status via CLI to an invalid value (e.g. 'specified')
+            id: ac-reject-invalid
             then: the command fails with a clear error listing valid values and no changes are written
+            when: the command executes
       - _ulid: 01KF3H95B873EP62X4A2GBD5FC
         slugs:
           - status-cascade
         title: Cascade Status Updates
         type: requirement
-        tags:
-          - dx
-          - cli
         description: When updating a parent item's implementation status, CLI offers to cascade the update
           to nested children. Prevents status drift between parent features and child requirements.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: 2026-01-16T13:52:53.609Z
         acceptance_criteria:
-          - id: ac-1
-            given: A parent item has children and user runs 'kspec item set @parent --implementation
+          - given: A parent item has children and user runs 'kspec item set @parent --implementation
               implemented'
-            when: The command completes
+            id: ac-1
             then: "CLI prompts: 'Update N child items to implemented? [y/n]'"
-          - id: ac-2
-            given: A parent item has children, user runs 'kspec item set @parent --implementation implemented',
+            when: The command completes
+          - given: A parent item has children, user runs 'kspec item set @parent --implementation implemented',
               and user responds 'y' to the cascade prompt
-            when: The cascade is accepted
+            id: ac-2
             then: All child items are updated to 'implemented' and each child update is logged
-          - id: ac-3
-            given: A parent item has children, user runs 'kspec item set @parent --implementation implemented',
+            when: The cascade is accepted
+          - given: A parent item has children, user runs 'kspec item set @parent --implementation implemented',
               and user responds 'n' to the cascade prompt
-            when: The cascade is rejected
+            id: ac-3
             then: Child items are NOT updated and retain their original status
-          - id: ac-4
-            given: A parent item has children and user runs 'kspec item set @parent --implementation implemented
+            when: The cascade is rejected
+          - given: A parent item has children and user runs 'kspec item set @parent --implementation implemented
               --json'
-            when: JSON mode is active
+            id: ac-4
             then: No cascade prompt is shown and children are NOT automatically updated
-          - id: ac-5
-            given: A parent item has NO children and user runs 'kspec item set @parent --implementation
+            when: JSON mode is active
+          - given: A parent item has NO children and user runs 'kspec item set @parent --implementation
               implemented'
-            when: The update completes
+            id: ac-5
             then: No cascade prompt is shown (since there are no children to cascade to)
-        status:
-          maturity: draft
-          implementation: implemented
-    acceptance_criteria:
-      - id: ac-1
-        given: A spec item defines both status.maturity and status.implementation
-        when: The item is loaded, displayed, or updated
-        then: Both status dimensions are preserved and handled independently on the same item
-      - id: ac-2
-        given: A command changes only one status dimension on an item
-        when: The update is written
-        then: The targeted status dimension changes without overwriting the other status dimension
+            when: The update completes
+        tags:
+          - dx
+          - cli
+        created: 2026-01-16T13:52:53.609Z
   - _ulid: 01KEZCJPJ3R05F1FTXTS8WS035
     slugs:
       - file-structure
       - spec-organization
     title: File Structure
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: medium
-    tags:
-      - schema
     description: |
       Specs can be organized as single files or directory trees.
       The structure is auto-adaptive: start simple, split when needed.
+    status:
+      maturity: draft
+      implementation: implemented
+    acceptance_criteria:
+      - given: A project stores its spec as a single manifest file or as a root manifest plus included files
+        id: ac-1
+        then: Both layouts are supported and produce the same logical spec graph
+        when: kspec loads the project spec
+      - given: A project begins with a small manifest and later needs to split spec content across files
+        id: ac-2
+        then: The file organization model supports starting simple and moving to a directory-based layout
+          without changing the spec model
+        when: The structure is reviewed for growth
+    priority: medium
+    tags:
+      - schema
     requirements:
       - _ulid: 01KEZCJPJ3N3M6XZC5F2HMQMF3
         slugs:
           - single-file-structure
         title: Single File Structure
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           For small projects, everything in one file:
 
@@ -349,22 +357,22 @@ features:
             kynetic.yaml    # Or kynetic.spec.yaml
 
           All items inline in the manifest.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@file-structure"
         acceptance_criteria:
-          - id: ac-1
-            given: A project keeps all spec content inline in a single kynetic.yaml or kynetic.spec.yaml
+          - given: A project keeps all spec content inline in a single kynetic.yaml or kynetic.spec.yaml
               manifest
-            when: kspec loads the project
+            id: ac-1
             then: Items are read from that single manifest without requiring includes
+            when: kspec loads the project
       - _ulid: 01KEZCJPJ3X51ZZADWKWFNV4R9
         slugs:
           - directory-structure
         title: Directory Structure
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           For larger projects, split into directories:
 
@@ -378,21 +386,21 @@ features:
                 ADR-001.yaml     # Decision records
 
           Uses `includes` field in manifest to reference files.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@file-structure"
         acceptance_criteria:
-          - id: ac-1
-            given: A root manifest declares includes for module or decision files
-            when: kspec loads the project
+          - given: A root manifest declares includes for module or decision files
+            id: ac-1
             then: The included files are resolved and merged into one loaded project spec
+            when: kspec loads the project
       - _ulid: 01KEZCJPJ3WDMJX9K17J63CYXS
         slugs:
           - auto-adaptive-structure
         title: Auto-Adaptive Structure
         type: requirement
-        status:
-          maturity: draft
-          implementation: not_started
         description: |
           The CLI can suggest splitting when specs grow:
           - Threshold: ~500 lines or 20+ items
@@ -400,31 +408,26 @@ features:
           - `kspec split --apply` restructures (with git-friendly renames)
 
           Not MVP - this is a convenience feature.
+        status:
+          maturity: draft
+          implementation: not_started
         implements:
           - "@file-structure"
         acceptance_criteria:
-          - id: ac-1
-            given: A project grows to roughly 500 lines or 20 or more items
-            when: A user runs kspec split --suggest
+          - given: A project grows to roughly 500 lines or 20 or more items
+            id: ac-1
             then: The CLI reports recommendations for which spec content should be split into separate files
-          - id: ac-2
-            given: A user accepts the recommended split plan
-            when: kspec split --apply runs
+            when: A user runs kspec split --suggest
+          - given: A user accepts the recommended split plan
+            id: ac-2
             then: Spec files are reorganized with git-friendly renames and manifest includes are updated to
               match the new layout
+            when: kspec split --apply runs
       - _ulid: 01KG385W7W2R2HV8ZG5XQHJMBF
         slugs:
           - manifest-discovery
         title: Manifest File Discovery
         type: requirement
-        tags: []
-        depends_on: []
-        implements: []
-        relates_to: []
-        tests: []
-        traits: []
-        notes: []
-        created: 2026-01-28T21:29:30.620Z
         description: >-
           Defines how kspec discovers manifest files in a project directory.
 
@@ -443,70 +446,74 @@ features:
 
           This provides backward compatibility while supporting project-specific naming like
           {slug}.yaml.
-        acceptance_criteria:
-          - id: ac-1
-            given: A directory with kynetic.yaml
-            when: Finding the manifest
-            then: Returns kynetic.yaml path
-          - id: ac-2
-            given: A directory with kynetic.spec.yaml but no kynetic.yaml
-            when: Finding the manifest
-            then: Returns kynetic.spec.yaml path
-          - id: ac-3
-            given: A directory with {slug}.yaml containing kynetic version field
-            when: Finding the manifest and no kynetic.yaml or kynetic.spec.yaml exists
-            then: Returns {slug}.yaml path
-          - id: ac-4
-            given: Multiple *.yaml files matching pattern
-            when: Finding the manifest
-            then: Returns first alphabetically after checking explicit names
-          - id: ac-5
-            given: A *.yaml file without kynetic version field
-            when: Finding the manifest
-            then: File is skipped as invalid manifest
-          - id: ac-6
-            given: Any production code path needs to read the project manifest
-            when: Resolving the manifest file path
-            then: Must use the manifest discovery API (findManifestInDir/findManifest), never hardcode a
-              filename like kynetic.yaml
         status:
           maturity: draft
           implementation: implemented
-    acceptance_criteria:
-      - id: ac-1
-        given: A project stores its spec as a single manifest file or as a root manifest plus included files
-        when: kspec loads the project spec
-        then: Both layouts are supported and produce the same logical spec graph
-      - id: ac-2
-        given: A project begins with a small manifest and later needs to split spec content across files
-        when: The structure is reviewed for growth
-        then: The file organization model supports starting simple and moving to a directory-based layout
-          without changing the spec model
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: A directory with kynetic.yaml
+            id: ac-1
+            then: Returns kynetic.yaml path
+            when: Finding the manifest
+          - given: A directory with kynetic.spec.yaml but no kynetic.yaml
+            id: ac-2
+            then: Returns kynetic.spec.yaml path
+            when: Finding the manifest
+          - given: A directory with {slug}.yaml containing kynetic version field
+            id: ac-3
+            then: Returns {slug}.yaml path
+            when: Finding the manifest and no kynetic.yaml or kynetic.spec.yaml exists
+          - given: Multiple *.yaml files matching pattern
+            id: ac-4
+            then: Returns first alphabetically after checking explicit names
+            when: Finding the manifest
+          - given: A *.yaml file without kynetic version field
+            id: ac-5
+            then: File is skipped as invalid manifest
+            when: Finding the manifest
+          - given: Any production code path needs to read the project manifest
+            id: ac-6
+            then: Must use the manifest discovery API (findManifestInDir/findManifest), never hardcode a
+              filename like kynetic.yaml
+            when: Resolving the manifest file path
+        tags: []
+        created: 2026-01-28T21:29:30.620Z
+        notes: []
   - _ulid: 01KEZCJPJ3K12YTFTPFB1EHC63
     slugs:
       - yaml-conventions
       - yaml-safety
     title: YAML Conventions
     type: feature
+    description: |
+      YAML has pitfalls (Norway problem, type coercion).
+      These conventions ensure safe, predictable parsing.
     status:
       maturity: draft
       implementation: implemented
+    acceptance_criteria:
+      - given: A manifest contains YAML values that are prone to implicit coercion or formatting ambiguity
+        id: ac-1
+        then: The YAML conventions preserve predictable values instead of silently changing their meaning
+        when: kspec parses or rewrites the file
+      - given: A project follows the quoting and literal-block conventions defined under @yaml-conventions
+        id: ac-2
+        then: The resulting file remains readable and semantically equivalent to the original content
+        when: Its YAML is round-tripped through kspec
     priority: high
     tags:
       - mvp
       - schema
-    description: |
-      YAML has pitfalls (Norway problem, type coercion).
-      These conventions ensure safe, predictable parsing.
     requirements:
       - _ulid: 01KEZCJPJ3Z9T0AWQGEJ3GW2WZ
         slugs:
           - yaml-version
         title: YAML 1.2 Required
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Parsers MUST use YAML 1.2 (not 1.1).
           YAML 1.1 has dangerous implicit typing:
@@ -515,25 +522,25 @@ features:
           - "3.14" might become float
 
           YAML 1.2 is stricter and safer.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@yaml-conventions"
         acceptance_criteria:
-          - id: ac-1
-            given: a YAML file is parsed by kspec
-            when: the parser initializes
+          - given: a YAML file is parsed by kspec
+            id: ac-1
             then: YAML 1.2 parser is used (not YAML 1.1) to avoid dangerous implicit typing
-          - id: ac-2
-            given: YAML content contains strings like 'NO', 'on', 'true'
-            when: parsed with YAML 1.2
+            when: the parser initializes
+          - given: YAML content contains strings like 'NO', 'on', 'true'
+            id: ac-2
             then: they are treated as strings, not booleans (YAML 1.2 is stricter and safer)
+            when: parsed with YAML 1.2
       - _ulid: 01KEZCJPJ3MFX4H51TN64GEB6T
         slugs:
           - yaml-quoting
         title: Quote Ambiguous Strings
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Strings that might be misinterpreted MUST be quoted:
           - "NO", "YES", "true", "false", "on", "off"
@@ -541,26 +548,26 @@ features:
           - Special values: "null", "~"
 
           The linter should catch unquoted ambiguous values.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@yaml-conventions"
         acceptance_criteria:
-          - id: ac-1
-            given: YAML content contains ambiguous values like 'NO', 'YES', '3.14', 'null'
-            when: the linter runs
+          - given: YAML content contains ambiguous values like 'NO', 'YES', '3.14', 'null'
+            id: ac-1
             then: warnings are emitted for unquoted ambiguous strings (they must be quoted to prevent
               misinterpretation)
-          - id: ac-2
-            given: YAML content has properly quoted ambiguous values
-            when: validation runs
+            when: the linter runs
+          - given: YAML content has properly quoted ambiguous values
+            id: ac-2
             then: quoted values are accepted without warnings (e.g., '"NO"', '"3.14"', '"null"')
+            when: validation runs
       - _ulid: 01KEZCJPJ3M7T6ZNEMTVYBWP96
         slugs:
           - yaml-multiline
         title: Multiline with Literal Blocks
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Multiline strings SHOULD use literal block style (|):
 
@@ -569,76 +576,67 @@ features:
             It preserves newlines.
 
           This is cleaner than quoted strings with \n.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@yaml-conventions"
         acceptance_criteria:
-          - id: ac-1
-            given: a spec item has multiline description
-            when: the YAML is written
+          - given: a spec item has multiline description
+            id: ac-1
             then: literal block style (|) is used for cleaner formatting (preserves newlines without \n escape
               sequences)
-          - id: ac-2
-            given: multiline content uses literal block style
-            when: the YAML is parsed
+            when: the YAML is written
+          - given: multiline content uses literal block style
+            id: ac-2
             then: newlines are preserved and the content is readable (recommended practice for descriptions and
               notes)
+            when: the YAML is parsed
     notes:
       - _ulid: 01KFF74KDRTV1HZMR7GRANXD3W
-        created_at: 2026-01-21T02:46:31.609Z
-        author: "@claude"
         content: The 'yaml' library (v2.8.2+) has a known behavior where block scalars containing
           whitespace-only lines accumulate extra blank lines on each parse-stringify cycle. This is
           expected library behavior, not a bug. The writeYamlFilePreserveFormat() function includes
           a workaround that filters whitespace-only lines from output. See src/parser/yaml.ts for
           implementation details.
         supersedes: null
-    acceptance_criteria:
-      - id: ac-1
-        given: A manifest contains YAML values that are prone to implicit coercion or formatting ambiguity
-        when: kspec parses or rewrites the file
-        then: The YAML conventions preserve predictable values instead of silently changing their meaning
-      - id: ac-2
-        given: A project follows the quoting and literal-block conventions defined under @yaml-conventions
-        when: Its YAML is round-tripped through kspec
-        then: The resulting file remains readable and semantically equivalent to the original content
+        author: "@claude"
+        created_at: 2026-01-21T02:46:31.609Z
   - _ulid: 01KEZCJPJ36HXNV019K1S25BNM
     slugs:
       - validation
       - schema-validation
     title: Schema Validation
     type: feature
+    description: |
+      Validation ensures specs conform to schema and conventions.
+      Schema is defined in Zod (source of truth), exported to JSON Schema.
     status:
       maturity: draft
       implementation: implemented
+    acceptance_criteria:
+      - given: a spec with all required fields
+        id: ac-valid-1
+        then: validation passes with exit code 0
+        when: kspec validate runs
+      - given: a spec with a broken @reference
+        id: ac-valid-2
+        then: validation fails with error listing broken ref
+        when: kspec validate --refs runs
+      - given: a task has automation=manual_only
+        id: ac-1
+        then: "warning issued: manual_only parent @X blocks eligible children @Y, @Z"
+        when: kspec validate runs and child tasks depend on this parent and are automation=eligible
     priority: high
     tags:
       - mvp
       - schema
-    description: |
-      Validation ensures specs conform to schema and conventions.
-      Schema is defined in Zod (source of truth), exported to JSON Schema.
-    acceptance_criteria:
-      - id: ac-valid-1
-        given: a spec with all required fields
-        when: kspec validate runs
-        then: validation passes with exit code 0
-      - id: ac-valid-2
-        given: a spec with a broken @reference
-        when: kspec validate --refs runs
-        then: validation fails with error listing broken ref
-      - id: ac-1
-        given: a task has automation=manual_only
-        when: kspec validate runs and child tasks depend on this parent and are automation=eligible
-        then: "warning issued: manual_only parent @X blocks eligible children @Y, @Z"
     requirements:
       - _ulid: 01KEZCJPJ3MRSVNT5E9ETQD72W
         slugs:
           - zod-schema
         title: Zod Schema Definition
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Schema is defined using Zod (TypeScript validation library):
           - Source of truth for item structure
@@ -646,24 +644,24 @@ features:
           - z.toJSONSchema() exports JSON Schema for docs/external tools
 
           Zod chosen for ecosystem size, type inference, JSON Schema export.
-        implements:
-          - "@validation"
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on:
           - "@spec-item"
+        implements:
+          - "@validation"
         acceptance_criteria:
-          - id: ac-1
-            given: Manifest or item data is loaded into kspec
-            when: Schema validation runs
+          - given: Manifest or item data is loaded into kspec
+            id: ac-1
             then: Zod definitions act as the source of truth for accepted structure and for any validation
               errors that are reported
+            when: Schema validation runs
       - _ulid: 01KEZCJPJ373KGN2PK8P3XQ929
         slugs:
           - validation-modes
         title: Validation Modes
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: >-
           `kspec validate` supports scoped and combinable mode flags.
 
@@ -700,29 +698,29 @@ features:
 
           CI should run `kspec validate` (full baseline) and may run scoped modes for focused
           debugging.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@validation"
         acceptance_criteria:
-          - id: ac-mode-default-all
-            given: No mode flags are passed to kspec validate
-            when: Validation runs
+          - given: No mode flags are passed to kspec validate
+            id: ac-mode-default-all
             then: All validation modes execute.
-          - id: ac-mode-flag-isolation
-            given: A single mode flag (for example --staleness or --completeness) is passed
             when: Validation runs
+          - given: A single mode flag (for example --staleness or --completeness) is passed
+            id: ac-mode-flag-isolation
             then: Only the selected mode's checks execute.
-          - id: ac-mode-flag-combination
-            given: Multiple mode flags are passed
             when: Validation runs
+          - given: Multiple mode flags are passed
+            id: ac-mode-flag-combination
             then: Validation executes the union of selected modes and does not run unselected modes.
+            when: Validation runs
       - _ulid: 01KEZCJPJ42RZQPFC962QV2TP3
         slugs:
           - validation-output
         title: Validation Output
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Validation output includes:
           - List of errors (must fix)
@@ -731,98 +729,104 @@ features:
 
           JSON output (--json) for programmatic consumption:
           { "valid": false, "errors": [...], "warnings": [...] }
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@validation"
         acceptance_criteria:
-          - id: ac-1
-            given: Validation finds schema, reference, or completeness issues
-            when: kspec validate finishes in text mode
+          - given: Validation finds schema, reference, or completeness issues
+            id: ac-1
             then: Output lists the errors, warnings, and summary counts needed to understand the result
-          - id: ac-2
-            given: A user runs kspec validate --json
-            when: Validation completes
+            when: kspec validate finishes in text mode
+          - given: A user runs kspec validate --json
+            id: ac-2
             then: Stdout contains valid JSON with validity, errors, and warnings fields for programmatic
               consumers
+            when: Validation completes
       - _ulid: 01KF3GST2YDS6MA1A04WK7A9FJ
         slugs:
           - spec-completeness
         title: Spec Completeness Validation
         type: requirement
-        tags: []
         description: Validation checks for spec quality beyond schema conformance. Warns about incomplete
           specs to help maintain spec-as-source-of-truth principle.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: 2026-01-16T13:44:30.558Z
         acceptance_criteria:
-          - id: ac-1
-            given: A spec item exists without acceptance_criteria
-            when: kspec validate --completeness runs
+          - given: A spec item exists without acceptance_criteria
+            id: ac-1
             then: "A warning is shown: 'Item @slug has no acceptance criteria'"
-          - id: ac-2
-            given: A spec item exists without a description
             when: kspec validate --completeness runs
+          - given: A spec item exists without a description
+            id: ac-2
             then: "A warning is shown: 'Item @slug has no description'"
-          - id: ac-3
-            given: A parent item has implementation:implemented but children have not_started
             when: kspec validate --completeness runs
+          - given: A parent item has implementation:implemented but children have not_started
+            id: ac-3
             then: A warning is shown about status inconsistency between parent and children
-          - id: ac-4
-            given: Multiple completeness issues exist
             when: kspec validate --completeness runs
+          - given: Multiple completeness issues exist
+            id: ac-4
             then: A summary is shown with counts by issue type (e.g., '3 items missing AC, 2 status mismatches')
-        status:
-          maturity: draft
-          implementation: implemented
+            when: kspec validate --completeness runs
+        tags: []
+        created: 2026-01-16T13:44:30.558Z
       - _ulid: 01KF3H9Z7Z2C1AQBCM4BJT1BAZ
         slugs:
           - alignment-guidance
         title: Alignment Guidance Enhancement
         type: requirement
-        tags:
-          - dx
-          - workflow
         description: Alignment guidance shown during task workflows includes reminder about test coverage
           for specs with acceptance criteria.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: 2026-01-16T13:53:20.127Z
         acceptance_criteria:
-          - id: ac-1
-            given: A task has spec_ref linking to a spec with acceptance_criteria
-            when: Alignment guidance is shown (e.g., during task complete)
+          - given: A task has spec_ref linking to a spec with acceptance_criteria
+            id: ac-1
             then: "Guidance includes: 'Linked spec has N acceptance criteria - consider test coverage'"
-        status:
-          maturity: draft
-          implementation: implemented
+            when: Alignment guidance is shown (e.g., during task complete)
+        tags:
+          - dx
+          - workflow
+        created: 2026-01-16T13:53:20.127Z
   - _ulid: 01JHNKA3W5VERS000000000000
     slugs:
       - versioning
       - spec-versions
     title: Versioning
     type: feature
-    status:
-      maturity: draft
-      implementation: implemented
-    priority: medium
-    tags:
-      - schema
     description: |
       Two version numbers: format version and spec version.
       Git provides history; tags provide baselines.
+    status:
+      maturity: draft
+      implementation: implemented
+    acceptance_criteria:
+      - given: A project defines format version, spec version, and git tag baselines
+        id: ac-1
+        then: Those three version signals are treated as distinct concerns for schema compatibility, spec
+          release tracking, and historical comparison
+        when: Version-aware tooling inspects the spec
+    priority: medium
+    tags:
+      - schema
     requirements:
       - _ulid: 01JHNKA3W6VERS100000000000
         slugs:
           - format-version
         title: Format Version
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           The `kynetic` field in manifest declares format version:
 
@@ -830,22 +834,22 @@ features:
 
           Tools use this to know which schema to apply.
           Breaking format changes bump major version.
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@versioning"
         acceptance_criteria:
-          - id: ac-1
-            given: A manifest declares a kynetic format version
-            when: kspec loads the manifest
+          - given: A manifest declares a kynetic format version
+            id: ac-1
             then: The declared format version determines which schema compatibility rules are applied to that
               file
+            when: kspec loads the manifest
       - _ulid: 01JHNKA3W7VERS200000000000
         slugs:
           - spec-version
         title: Spec Version
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           The `project.version` field tracks the spec's own version:
 
@@ -856,509 +860,511 @@ features:
           - MAJOR: Breaking requirement changes
           - MINOR: New requirements, non-breaking clarifications
           - PATCH: Typos, editorial
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@versioning"
         acceptance_criteria:
-          - id: ac-1
-            given: A manifest declares project.version as a semver string
-            when: The project spec is loaded or displayed
+          - given: A manifest declares project.version as a semver string
+            id: ac-1
             then: That version is preserved as the spec own-version separate from the manifest format version
+            when: The project spec is loaded or displayed
       - _ulid: 01JHNKA3W8VERS300000000000
         slugs:
           - git-baselines
         title: Git Tag Baselines
         type: requirement
-        status:
-          maturity: draft
-          implementation: implemented
         description: |
           Use annotated git tags for spec baselines:
 
           git tag -a spec-v1.0.0 -m "Initial stable release"
 
           Enables: kspec diff --since spec-v1.0.0
+        status:
+          maturity: draft
+          implementation: implemented
         implements:
           - "@versioning"
         acceptance_criteria:
-          - id: ac-1
-            given: A repository has annotated tags marking spec baselines
-            when: A user compares spec history against a baseline tag
+          - given: A repository has annotated tags marking spec baselines
+            id: ac-1
             then: The tagged revision can be used as the comparison point for spec diffs
-    acceptance_criteria:
-      - id: ac-1
-        given: A project defines format version, spec version, and git tag baselines
-        when: Version-aware tooling inspects the spec
-        then: Those three version signals are treated as distinct concerns for schema compatibility, spec
-          release tracking, and historical comparison
+            when: A user compares spec history against a baseline tag
   - _ulid: 01KFA4JCFV3NSEG6TMZFX1PCVH
     slugs:
       - alignment-system
     title: Spec-Task Alignment System
     type: feature
-    tags: []
     description: Bidirectional tracking and synchronization between spec items and implementing tasks.
       Provides automatic status updates, alignment validation, and implementation progress
       visibility.
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    created: 2026-01-19T03:25:25.371Z
+    acceptance_criteria:
+      - given: Tasks reference specs through spec_ref links
+        id: ac-1
+        then: The system can resolve both specs for a task and tasks for a spec from the same alignment
+          model
+        when: Alignment data is built or queried
+      - given: Linked task state changes or alignment validation runs
+        id: ac-2
+        then: The system exposes status synchronization, alignment warnings, and progress visibility for the
+          affected spec items
+        when: Implementation progress is summarized
+    tags: []
     requirements:
       - _ulid: 01KFA4JN8597CWFW7CTNE4T6A9
         slugs:
           - alignment-auto-sync
         title: Automatic Spec Status Synchronization
         type: requirement
-        tags: []
         description: When tasks referencing a spec item change state (start, complete, cancel), the spec's
           implementation status automatically updates to reflect progress.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: 2026-01-19T03:25:34.341Z
         acceptance_criteria:
-          - id: ac-1
-            given: A task with spec_ref is marked completed
-            when: syncSpecImplementationStatus is called
+          - given: A task with spec_ref is marked completed
+            id: ac-1
             then: Spec implementation status updates to 'implemented' if all linked tasks are completed
-          - id: ac-2
-            given: A task with spec_ref is marked in_progress
             when: syncSpecImplementationStatus is called
+          - given: A task with spec_ref is marked in_progress
+            id: ac-2
             then: Spec implementation status updates to 'in_progress'
-          - id: ac-3
-            given: Multiple tasks reference the same spec, some completed and some in_progress
             when: syncSpecImplementationStatus is called
+          - given: Multiple tasks reference the same spec, some completed and some in_progress
+            id: ac-3
             then: Spec implementation status is 'in_progress' (partial completion)
-        status:
-          maturity: draft
-          implementation: in_progress
+            when: syncSpecImplementationStatus is called
+        tags: []
+        created: 2026-01-19T03:25:34.341Z
       - _ulid: 01KFA4KB1QBJ1KFT5KEXQCATGQ
         slugs:
           - alignment-index
         title: Bidirectional Spec-Task Mapping
         type: requirement
-        tags: []
         description: "AlignmentIndex provides efficient bidirectional queries: find all tasks implementing a
           spec, or find the spec a task implements."
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: 2026-01-19T03:25:56.664Z
         acceptance_criteria:
-          - id: ac-1
-            given: AlignmentIndex is built with tasks and spec items
-            when: getTasksForSpec(specUlid) is called
+          - given: AlignmentIndex is built with tasks and spec items
+            id: ac-1
             then: Returns array of LoadedTask objects that reference the spec via spec_ref
-          - id: ac-2
-            given: A task has spec_ref field
-            when: getSpecForTask(taskUlid, refIndex) is called
+            when: getTasksForSpec(specUlid) is called
+          - given: A task has spec_ref field
+            id: ac-2
             then: Returns the LoadedSpecItem that task implements
-        status:
-          maturity: draft
-          implementation: in_progress
+            when: getSpecForTask(taskUlid, refIndex) is called
+        tags: []
+        created: 2026-01-19T03:25:56.664Z
       - _ulid: 01KFA4KTKFC1JW1F4002Q58VT9
         slugs:
           - alignment-warnings
         title: Alignment Validation and Warnings
         type: requirement
-        tags: []
         description: "Detect and report alignment issues: orphaned specs (no tasks), status mismatches (spec
           status doesn't match task progress), and stale implementation status."
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: 2026-01-19T03:26:12.591Z
         acceptance_criteria:
-          - id: ac-1
-            given: A spec item has no tasks with spec_ref pointing to it
-            when: findAlignmentWarnings is called
+          - given: A spec item has no tasks with spec_ref pointing to it
+            id: ac-1
             then: Returns warning with type='orphaned_spec' and spec details
-          - id: ac-2
-            given: A spec's current implementation status differs from expected status based on linked tasks
             when: findAlignmentWarnings is called
+          - given: A spec's current implementation status differs from expected status based on linked tasks
+            id: ac-2
             then: Returns warning with type='status_mismatch' explaining the discrepancy
-          - id: ac-3
-            given: A spec has no linked tasks and implementation status is 'implemented' or 'verified'
             when: findAlignmentWarnings is called
+          - given: A spec has no linked tasks and implementation status is 'implemented' or 'verified'
+            id: ac-3
             then: No warning is emitted — implemented/verified status is trusted as historical baseline
               predating the task system
-        status:
-          maturity: draft
-          implementation: in_progress
+            when: findAlignmentWarnings is called
+        tags: []
+        created: 2026-01-19T03:26:12.591Z
       - _ulid: 01KFA4M9J3FDXJ50PTMQQK82PT
         slugs:
           - alignment-summaries
         title: Implementation Progress Summaries
         type: requirement
-        tags: []
         description: Provide structured summaries of spec implementation status including linked tasks,
           current vs expected status, and alignment state.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: 2026-01-19T03:26:27.907Z
         acceptance_criteria:
-          - id: ac-1
-            given: A spec item exists with linked tasks
-            when: getImplementationSummary(specUlid) is called
+          - given: A spec item exists with linked tasks
+            id: ac-1
             then: Returns SpecImplementationSummary with currentStatus, expectedStatus, linkedTasks array, and
               isAligned boolean
-        status:
-          maturity: draft
-          implementation: in_progress
+            when: getImplementationSummary(specUlid) is called
+        tags: []
+        created: 2026-01-19T03:26:27.907Z
       - _ulid: 01KFA4MKV8QHT9ZAJQGZ8F7MQF
         slugs:
           - alignment-stats
         title: Alignment Statistics
         type: requirement
-        tags: []
         description: "Track aggregate statistics about spec-task alignment: total specs, specs with tasks,
           aligned specs, orphaned specs."
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        created: 2026-01-19T03:26:38.440Z
         acceptance_criteria:
-          - id: ac-1
-            given: AlignmentIndex is built
-            when: getStats is called
+          - given: AlignmentIndex is built
+            id: ac-1
             then: Returns object with totalSpecs, specsWithTasks, alignedSpecs, and orphanedSpecs counts
-        status:
-          maturity: draft
-          implementation: in_progress
-    status:
-      maturity: draft
-      implementation: implemented
-    acceptance_criteria:
-      - id: ac-1
-        given: Tasks reference specs through spec_ref links
-        when: Alignment data is built or queried
-        then: The system can resolve both specs for a task and tasks for a spec from the same alignment
-          model
-      - id: ac-2
-        given: Linked task state changes or alignment validation runs
-        when: Implementation progress is summarized
-        then: The system exposes status synchronization, alignment warnings, and progress visibility for the
-          affected spec items
+            when: getStats is called
+        tags: []
+        created: 2026-01-19T03:26:38.440Z
+    created: 2026-01-19T03:25:25.371Z
   - _ulid: 01KFC190RJFWPWSYTC128B8Y3N
     slugs:
       - spec-traits
     title: Spec Traits System
     type: feature
-    tags: []
     description: "Allow spec items to share acceptance criteria via reusable trait definitions. Traits
       are spec items with type: trait that define AC bundles. Other specs can declare traits they
       implement, and validation checks that all trait AC have test coverage. Display shows inherited
       trait AC inline when viewing specs or tasks."
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
-    notes: []
-    created: 2026-01-19T21:06:21.586Z
+    acceptance_criteria:
+      - given: A trait item defines acceptance criteria and another spec implements that trait
+        id: ac-1
+        then: Inherited trait acceptance criteria are shown inline with clear indication of their source
+          trait
+        when: The spec or a linked task is viewed
+      - given: A spec implements one or more traits but lacks test annotations for inherited trait AC
+        id: ac-2
+        then: Validation emits trait coverage warnings until each inherited AC is covered or explicitly
+          marked not applicable
+        when: kspec validate --completeness runs
+    tags: []
     requirements:
       - _ulid: 01KFC19DEC50EQ9PBG2QWJV125
         slugs:
           - trait-type
         title: Trait Type
         type: requirement
-        tags: []
         description: "Spec items can have type: trait to define reusable acceptance criteria bundles. Traits
           are validated for completeness (should have AC and description)."
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        notes: []
-        created: 2026-01-19T21:06:34.572Z
         acceptance_criteria:
-          - id: ac-1
-            given: trait item created
-            when: type is 'trait'
+          - given: trait item created
+            id: ac-1
             then: accepted by schema validation
-          - id: ac-2
-            given: trait item exists
+            when: type is 'trait'
+          - given: trait item exists
+            id: ac-2
+            then: validation emits completeness warning
             when: missing acceptance_criteria
+          - given: trait item exists
+            id: ac-3
             then: validation emits completeness warning
-          - id: ac-3
-            given: trait item exists
             when: missing description
-            then: validation emits completeness warning
-          - id: ac-4
-            given: non-trait item type (feature, requirement)
-            when: has traits field
+          - given: non-trait item type (feature, requirement)
+            id: ac-4
             then: accepted by schema (traits can be implemented by any item type)
-        status:
-          maturity: draft
-          implementation: implemented
+            when: has traits field
+        tags: []
+        created: 2026-01-19T21:06:34.572Z
+        notes: []
       - _ulid: 01KFC1A9NA56A1RFAMZ5S0JPNA
         slugs:
           - traits-field
         title: Traits Field on Specs
         type: requirement
-        tags: []
         description: Spec items have an optional traits field containing refs to trait-type items. This
           field is validated for valid refs that point to trait-type items.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        notes: []
-        created: 2026-01-19T21:07:03.467Z
         acceptance_criteria:
-          - id: ac-1
-            given: spec item
-            when: traits field contains refs
+          - given: spec item
+            id: ac-1
             then: refs must resolve to trait-type items
-          - id: ac-2
-            given: spec item
+            when: traits field contains refs
+          - given: spec item
+            id: ac-2
+            then: validation reports error
             when: traits ref is invalid (doesn't exist)
+          - given: spec item
+            id: ac-3
             then: validation reports error
-          - id: ac-3
-            given: spec item
             when: traits ref points to non-trait item
-            then: validation reports error
-          - id: ac-4
-            given: spec without traits field
-            when: schema validates
+          - given: spec without traits field
+            id: ac-4
             then: defaults to empty array
-          - id: ac-5
-            given: spec with same trait listed twice
-            when: validating
+            when: schema validates
+          - given: spec with same trait listed twice
+            id: ac-5
             then: warning emitted (duplicate)
-        status:
-          maturity: draft
-          implementation: implemented
+            when: validating
+        tags: []
+        created: 2026-01-19T21:07:03.467Z
+        notes: []
       - _ulid: 01KFC1B8DT80QA3V46340MT1BJ
         slugs:
           - trait-index
         title: TraitIndex
         type: requirement
-        tags: []
         description: Index class that tracks trait-type items and spec-trait relationships. Follows the
           pattern of ReferenceIndex and AlignmentIndex - built once from loaded items, queried
           efficiently.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        notes: []
-        created: 2026-01-19T21:07:34.970Z
         acceptance_criteria:
-          - id: ac-1
-            given: items loaded
-            when: TraitIndex built
+          - given: items loaded
+            id: ac-1
             then: indexes all trait-type items by ULID and slug
-          - id: ac-2
-            given: spec with traits
-            when: querying getInheritedAC()
+            when: TraitIndex built
+          - given: spec with traits
+            id: ac-2
             then: returns all AC from all implemented traits
-          - id: ac-3
-            given: trait ref
-            when: querying getSpecsForTrait()
+            when: querying getInheritedAC()
+          - given: trait ref
+            id: ac-3
             then: returns all specs that implement that trait
-        status:
-          maturity: draft
-          implementation: implemented
+            when: querying getSpecsForTrait()
+        tags: []
+        created: 2026-01-19T21:07:34.970Z
+        notes: []
       - _ulid: 01KFC1C406T11X5C4M954R7FP9
         slugs:
           - trait-display
         title: Trait Display in Spec/Task Output
         type: requirement
-        tags: []
         description: When viewing specs or tasks that implement traits, display shows inherited AC from
           traits in labeled sections. Ensures anyone working on the task sees the full picture of
           what needs to be tested.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        notes: []
-        created: 2026-01-19T21:08:03.206Z
         acceptance_criteria:
-          - id: ac-1
-            given: spec with traits
-            when: running item get (text mode)
+          - given: spec with traits
+            id: ac-1
             then: shows own AC followed by inherited AC per trait in labeled sections
-          - id: ac-2
-            given: spec with traits
-            when: running item get --json
+            when: running item get (text mode)
+          - given: spec with traits
+            id: ac-2
             then: includes inherited_traits array with resolved trait info and their AC
-          - id: ac-3
-            given: task linked to spec with traits
-            when: running task get
+            when: running item get --json
+          - given: task linked to spec with traits
+            id: ac-3
             then: shows inherited AC sections (same format as spec display)
-          - id: ac-4
-            given: trait AC displayed in text mode
-            when: showing
+            when: running task get
+          - given: trait AC displayed in text mode
+            id: ac-4
             then: labels each AC with source trait ref (e.g., 'from @trait-json-output')
-          - id: ac-5
-            given: spec with multiple traits
-            when: displaying
+            when: showing
+          - given: spec with multiple traits
+            id: ac-5
             then: each trait's AC shown in separate labeled section
-        status:
-          maturity: draft
-          implementation: implemented
+            when: displaying
+        tags: []
+        created: 2026-01-19T21:08:03.206Z
+        notes: []
       - _ulid: 01KFC1D57K060RM5XZNE9SV3QE
         slugs:
           - trait-validation
         title: Trait AC Coverage Validation
         type: requirement
-        tags: []
         description: Validation checks that specs implementing traits have test coverage for all trait AC.
           Uses the existing completeness check infrastructure with test annotation scanning.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        notes: []
-        created: 2026-01-19T21:08:37.236Z
         acceptance_criteria:
-          - id: ac-1
-            given: spec implementing trait
-            when: trait AC has no test annotation
+          - given: spec implementing trait
+            id: ac-1
             then: completeness warning emitted
-          - id: ac-2
-            given: spec implementing trait
-            when: "trait AC has test annotation '// AC: @trait-ref ac-N'"
+            when: trait AC has no test annotation
+          - given: spec implementing trait
+            id: ac-2
             then: no warning for that AC
-          - id: ac-3
-            given: kspec validate run
-            when: spec has traits
+            when: "trait AC has test annotation '// AC: @trait-ref ac-N'"
+          - given: kspec validate run
+            id: ac-3
             then: trait AC coverage included in completeness check (no special flag needed)
-          - id: ac-4
-            given: trait deleted
-            when: spec still references it
+            when: spec has traits
+          - given: trait deleted
+            id: ac-4
             then: validation reports broken ref error
-        status:
-          maturity: draft
-          implementation: implemented
+            when: spec still references it
+        tags: []
+        created: 2026-01-19T21:08:37.236Z
+        notes: []
       - _ulid: 01KFC1E178WYP06TTVGY12VVE4
         slugs:
           - trait-cli
         title: Trait CLI Commands
         type: requirement
-        tags: []
         description: "CLI commands for managing traits: creating traits, listing traits, and adding/removing
           traits from specs."
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        notes: []
-        created: 2026-01-19T21:09:05.896Z
         acceptance_criteria:
-          - id: ac-1
-            given: user runs 'kspec trait add <title>'
-            when: title provided
+          - given: user runs 'kspec trait add <title>'
+            id: ac-1
             then: "creates trait-type item with type: trait"
-          - id: ac-2
-            given: user runs 'kspec trait add <title>'
-            when: --description provided
+            when: title provided
+          - given: user runs 'kspec trait add <title>'
+            id: ac-2
             then: trait has description field set
-          - id: ac-3
-            given: user runs 'kspec trait list'
-            when: traits exist
+            when: --description provided
+          - given: user runs 'kspec trait list'
+            id: ac-3
             then: lists traits with AC counts
-          - id: ac-4
-            given: user runs 'kspec trait get @ref'
-            when: trait exists
+            when: traits exist
+          - given: user runs 'kspec trait get @ref'
+            id: ac-4
             then: shows trait details and acceptance criteria
-          - id: ac-5
-            given: user runs 'kspec item trait add @spec @trait'
-            when: valid refs
+            when: trait exists
+          - given: user runs 'kspec item trait add @spec @trait'
+            id: ac-5
             then: adds trait to spec's traits array
-          - id: ac-6
-            given: user runs 'kspec item trait add @spec @trait'
-            when: spec already has that trait
+            when: valid refs
+          - given: user runs 'kspec item trait add @spec @trait'
+            id: ac-6
             then: no duplicate added (idempotent operation)
-          - id: ac-7
-            given: user runs 'kspec item trait add @spec @trait'
-            when: trait doesn't exist
+            when: spec already has that trait
+          - given: user runs 'kspec item trait add @spec @trait'
+            id: ac-7
             then: error with descriptive message
-          - id: ac-8
-            given: user runs 'kspec item trait remove @spec @trait'
-            when: trait in spec's list
+            when: trait doesn't exist
+          - given: user runs 'kspec item trait remove @spec @trait'
+            id: ac-8
             then: removes trait from traits array
-          - id: ac-9
-            given: user runs kspec item trait add @spec @trait1 @trait2
-            when: multiple trait refs provided
+            when: trait in spec's list
+          - given: user runs kspec item trait add @spec @trait1 @trait2
+            id: ac-9
             then: all valid traits are added to the spec's traits array
-          - id: ac-10
-            given: user runs kspec item trait add @spec @trait1 @trait2
-            when: one trait already exists on spec and one is new
-            then: only the new trait is added; existing trait skipped without error
-          - id: ac-11
-            given: user runs kspec item trait remove @spec @trait1 @trait2
             when: multiple trait refs provided
+          - given: user runs kspec item trait add @spec @trait1 @trait2
+            id: ac-10
+            then: only the new trait is added; existing trait skipped without error
+            when: one trait already exists on spec and one is new
+          - given: user runs kspec item trait remove @spec @trait1 @trait2
+            id: ac-11
             then: all specified traits are removed from the spec's traits array
-          - id: ac-12
-            given: user runs kspec item trait add @spec @valid-trait @nonexistent
-            when: one trait ref cannot be resolved
+            when: multiple trait refs provided
+          - given: user runs kspec item trait add @spec @valid-trait @nonexistent
+            id: ac-12
             then: valid traits are still added; errors reported for unresolved refs; exit code 1
-        status:
-          maturity: draft
-          implementation: implemented
+            when: one trait ref cannot be resolved
+        tags: []
+        created: 2026-01-19T21:09:05.896Z
+        notes: []
       - _ulid: 01KFC1FGKR7S29HE1DYX8KJ8KT
         slugs:
           - trait-edge-cases
         title: Trait Edge Cases
         type: requirement
-        tags: []
         description: Handling of edge cases and error conditions for the traits system.
+        status:
+          maturity: draft
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
         tests: []
-        notes: []
-        created: 2026-01-19T21:09:54.424Z
         acceptance_criteria:
-          - id: ac-1
-            given: trait with no AC
-            when: validating
+          - given: trait with no AC
+            id: ac-1
             then: completeness warning emitted (trait should have AC)
-          - id: ac-2
-            given: "circular trait reference (trait A has traits: [@trait-B], trait B has traits: [@trait-A])"
-            when: loading or validating
-            then: error reported (cycles not allowed in traits field)
-          - id: ac-3
-            given: spec implements trait that gets deleted
             when: validating
+          - given: "circular trait reference (trait A has traits: [@trait-B], trait B has traits: [@trait-A])"
+            id: ac-2
+            then: error reported (cycles not allowed in traits field)
+            when: loading or validating
+          - given: spec implements trait that gets deleted
+            id: ac-3
             then: broken ref error reported
-          - id: ac-4
-            given: trait list empty
-            when: running 'kspec trait list'
+            when: validating
+          - given: trait list empty
+            id: ac-4
             then: shows 'No traits defined' message
-        status:
-          maturity: draft
-          implementation: implemented
-    status:
-      maturity: draft
-      implementation: implemented
-    acceptance_criteria:
-      - id: ac-1
-        given: A trait item defines acceptance criteria and another spec implements that trait
-        when: The spec or a linked task is viewed
-        then: Inherited trait acceptance criteria are shown inline with clear indication of their source
-          trait
-      - id: ac-2
-        given: A spec implements one or more traits but lacks test annotations for inherited trait AC
-        when: kspec validate --completeness runs
-        then: Validation emits trait coverage warnings until each inherited AC is covered or explicitly
-          marked not applicable
+            when: running 'kspec trait list'
+        tags: []
+        created: 2026-01-19T21:09:54.424Z
+        notes: []
+    created: 2026-01-19T21:06:21.586Z
+    notes: []
 requirements:
   - _ulid: 01KFFG4ZFPVR9GT7X321TH50FF
     slugs:
       - spec-item-delete-children
     title: Item Delete Child Check
     type: requirement
-    tags: []
+    description: Block item deletion when children exist. Require --cascade flag to recursively delete
+      item and all descendants. Children means nested YAML items (e.g., requirements under
+      features), NOT relationship refs like relates_to.
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
@@ -1367,61 +1373,59 @@ requirements:
       - "@trait-confirmation-prompt"
       - "@trait-json-output"
       - "@trait-semantic-exit-codes"
-    notes: []
-    created: 2026-01-21T05:24:01.143Z
-    description: Block item deletion when children exist. Require --cascade flag to recursively delete
-      item and all descendants. Children means nested YAML items (e.g., requirements under
-      features), NOT relationship refs like relates_to.
     acceptance_criteria:
-      - id: ac-1
-        given: item has child items (nested in YAML)
-        when: kspec item delete @ref executed
+      - given: item has child items (nested in YAML)
+        id: ac-1
         then: "error: Cannot delete: item has N children. Use --cascade to delete recursively"
-      - id: ac-2
-        given: item has child items
-        when: kspec item delete @ref --cascade executed
+        when: kspec item delete @ref executed
+      - given: item has child items
+        id: ac-2
         then: deletes item and all descendants, reports count
-      - id: ac-3
-        given: item has deeply nested children (A->B->C)
-        when: kspec item delete @A --cascade executed
-        then: all three items deleted, count shows 3 items deleted
-      - id: ac-4
-        given: item has no children
-        when: kspec item delete @ref executed
-        then: normal deletion (with confirmation prompt per trait)
-      - id: ac-5
-        given: cascade with no children
         when: kspec item delete @ref --cascade executed
-        then: same as normal deletion (--cascade is no-op)
-      - id: ac-6
-        given: cascade deletes multiple
-        when: operation completes
-        then: single shadow commit with all deletions
-      - id: ac-7
-        given: item is trait with implementors
-        when: kspec item delete @trait-ref executed
-        then: "error: Cannot delete: trait is used by N specs. Remove trait from specs first"
-      - id: ac-8
-        given: item has relates_to refs
+      - given: item has deeply nested children (A->B->C)
+        id: ac-3
+        then: all three items deleted, count shows 3 items deleted
+        when: kspec item delete @A --cascade executed
+      - given: item has no children
+        id: ac-4
+        then: normal deletion (with confirmation prompt per trait)
         when: kspec item delete @ref executed
+      - given: cascade with no children
+        id: ac-5
+        then: same as normal deletion (--cascade is no-op)
+        when: kspec item delete @ref --cascade executed
+      - given: cascade deletes multiple
+        id: ac-6
+        then: single shadow commit with all deletions
+        when: operation completes
+      - given: item is trait with implementors
+        id: ac-7
+        then: "error: Cannot delete: trait is used by N specs. Remove trait from specs first"
+        when: kspec item delete @trait-ref executed
+      - given: item has relates_to refs
+        id: ac-8
         then: deletion proceeds (relates_to is not parent-child)
-      - id: ac-9
-        given: cascade confirmation prompt
-        when: kspec item delete @ref --cascade (no --force) executed
+        when: kspec item delete @ref executed
+      - given: cascade confirmation prompt
+        id: ac-9
         then: "prompt: Delete @ref and N descendant items? [y/N]"
-      - id: ac-10
-        given: JSON mode with children error
-        when: kspec item delete @ref --json (has children) executed
+        when: kspec item delete @ref --cascade (no --force) executed
+      - given: JSON mode with children error
+        id: ac-10
         then: JSON error includes children array with refs
-    status:
-      maturity: draft
-      implementation: implemented
+        when: kspec item delete @ref --json (has children) executed
+    tags: []
+    created: 2026-01-21T05:24:01.143Z
+    notes: []
   - _ulid: 01KFFGCG6Q91D0TFGAJ3AB5VDK
     slugs:
       - spec-ac-delete-confirmation
     title: AC Delete Confirmation
     type: requirement
-    tags: []
+    description: Add confirmation prompt when removing acceptance criteria without --force.
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
@@ -1429,104 +1433,100 @@ requirements:
     traits:
       - "@trait-confirmation-prompt"
       - "@trait-semantic-exit-codes"
-    notes: []
-    created: 2026-01-21T05:28:07.640Z
-    description: Add confirmation prompt when removing acceptance criteria without --force.
     acceptance_criteria:
-      - id: ac-1
-        given: AC exists on spec
-        when: kspec item ac remove @spec ac-1 executed without --force
+      - given: AC exists on spec
+        id: ac-1
         then: "prompt: Remove acceptance criterion ac-1? [y/N]"
-      - id: ac-2
-        given: user confirms
-        when: enters y
+        when: kspec item ac remove @spec ac-1 executed without --force
+      - given: user confirms
+        id: ac-2
         then: AC removed, success message
-      - id: ac-3
-        given: user declines
-        when: enters n or empty
+        when: enters y
+      - given: user declines
+        id: ac-3
         then: operation cancelled, exit code 2
-      - id: ac-4
-        given: force flag provided
-        when: kspec item ac remove @spec ac-1 --force executed
+        when: enters n or empty
+      - given: force flag provided
+        id: ac-4
         then: no prompt, AC removed immediately
-      - id: ac-5
-        given: JSON mode without force
-        when: kspec item ac remove @spec ac-1 --json executed
+        when: kspec item ac remove @spec ac-1 --force executed
+      - given: JSON mode without force
+        id: ac-5
         then: "error: Confirmation required. Use --force with --json"
-      - id: ac-6
-        given: non-interactive environment
-        when: no TTY available
+        when: kspec item ac remove @spec ac-1 --json executed
+      - given: non-interactive environment
+        id: ac-6
         then: "error: Non-interactive environment. Use --force to proceed"
-    status:
-      maturity: draft
-      implementation: implemented
+        when: no TTY available
+    tags: []
+    created: 2026-01-21T05:28:07.640Z
+    notes: []
   - _ulid: 01KKB8FCF84PFF4PECR7B9W0H7
     slugs:
       - schema-ac-backfill
     title: Schema and Structure AC Backfill
     type: requirement
-    tags: []
     description: |
       Add acceptance criteria to spec items under @schema that lack them:
       file structure, YAML conventions, versioning, format version,
       spec version, git baselines, Zod schema validation.
-    acceptance_criteria:
-      - id: ac-coverage
-        given: |
-          All feature and requirement items under @schema module
-        when: |
-          kspec validate --completeness runs
-        then: |
-          Zero "missing acceptance criteria" warnings for @schema descendants
-      - id: ac-testable
-        given: |
-          Each newly added AC
-        when: |
-          It is reviewed
-        then: It follows given/when/then format with concrete, observable outcomes
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
-    notes: []
+    acceptance_criteria:
+      - given: |
+          All feature and requirement items under @schema module
+        id: ac-coverage
+        then: |
+          Zero "missing acceptance criteria" warnings for @schema descendants
+        when: |
+          kspec validate --completeness runs
+      - given: |
+          Each newly added AC
+        id: ac-testable
+        then: It follows given/when/then format with concrete, observable outcomes
+        when: |
+          It is reviewed
+    tags: []
     created: 2026-03-10T06:55:43.080Z
-    status:
-      maturity: draft
-      implementation: implemented
+    notes: []
   - _ulid: 01KKVX12DANP41G2J6QCEG4KQR
     slugs:
       - yaml-serialization-invariants
     title: YAML Serialization Invariants
     type: requirement
-    tags: []
     description: Canonical field ordering and format guarantees for all kspec-managed YAML output,
       ensuring predictable structure for tooling and stable diffs.
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
-    notes: []
-    created: 2026-03-16T18:02:45.034Z
     acceptance_criteria:
-      - id: ac-1
-        given: any record containing a _ulid field is serialized to YAML
-        when: the output is written
+      - given: any record containing a _ulid field is serialized to YAML
+        id: ac-1
         then: _ulid is the first key in that record, regardless of nesting depth
-      - id: ac-2
-        given: any record is serialized to YAML
         when: the output is written
+      - given: any record is serialized to YAML
+        id: ac-2
         then: keys follow a canonical, stable order that is consistent across all serialization paths
-      - id: ac-3
-        given: a YAML file is read and re-written without logical changes
-        when: the two serializations are compared
+        when: the output is written
+      - given: a YAML file is read and re-written without logical changes
+        id: ac-3
         then: the output is identical (round-trip stability)
-      - id: ac-4
-        given: records are serialized with canonical field ordering
-        when: tools query YAML file history for record boundaries
+        when: the two serializations are compared
+      - given: records are serialized with canonical field ordering
+        id: ac-4
         then: the _ulid-first invariant provides a reliable and stable delimiter between records
-    status:
-      maturity: draft
-      implementation: in_progress
-acceptance_criteria: []
+        when: tools query YAML file history for record boundaries
+    tags: []
+    created: 2026-03-16T18:02:45.034Z
+    notes: []
