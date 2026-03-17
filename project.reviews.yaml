@@ -8830,9 +8830,22 @@ reviews:
           kind: blocker
           thread_ulid: 01KKZ2B0ZZ1WJPBT1K0QRG33A5
         timestamp: 2026-03-17T23:33:17.624Z
+      - _ulid: 01KKZ2B7P4ZMCG8AH5W8G7S29G
+        actor: opencode@local
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-17T23:33:24.292Z
+      - _ulid: 01KKZ2B7P45JW3RTDK3VH549NC
+        actor: opencode@local
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-17T23:33:24.292Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -8852,7 +8865,14 @@ reviews:
               test run so the required check can be recorded against the reviewed version."
             created_at: 2026-03-17T23:33:17.440Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: f2f07a10939f5c22143bd187dbbd71d88549f9d3
+        decision: request_changes
+        reviewer: opencode@local
+        role: reviewer
+        created_at: 2026-03-17T23:33:24.078Z
     created_at: 2026-03-17T23:27:37.696Z
-    updated_at: 2026-03-17T23:33:17.440Z
+    updated_at: 2026-03-17T23:33:24.078Z
     notes: []
