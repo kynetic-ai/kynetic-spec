@@ -103419,6 +103419,20 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T18:54:12.443Z
+    - _ulid: 01KKYKMGHXV1JR5RJ8GAEJEFMS
+      content: "Fix cycle 4 addressed: The blocker about out-of-scope removal of @review-records-web-ui
+        ac-7 was caused by dev advancing after the branch diverged (commit 5ce43167f added review
+        links to task detail page on dev after our branch point). The branch never removed that code
+        — it simply didn't have it because it predated it. Merged dev into the task branch to
+        incorporate all new dev commits. Resolved merge conflict in
+        yaml-round-trip-stability.test.ts (plan imports and plan test block alongside review test
+        block). Branch now only modifies the two in-scope files (src/parser/plans.ts,
+        tests/yaml-round-trip-stability.test.ts) relative to dev. All 30 round-trip stability tests
+        pass. Pre-existing failures (review-cli examined_commit auto-detection,
+        session-iteration-stats timeout) remain unchanged."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T19:16:19.646Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6C9RJHKN1ZMJW1ZWH2BRZ
