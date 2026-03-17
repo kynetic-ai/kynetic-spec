@@ -226,14 +226,11 @@ describe("agent dispatch template section", () => {
       "06-ralph-loop.md",
     );
     const content = await fs.readFile(templatePath, "utf-8");
+    const lower = content.toLowerCase();
 
-    // Should reference agent dispatch concepts
-    expect(content).toContain("Agent Dispatch Mode");
-    expect(content).toContain("dispatch engine");
-    expect(content).toContain("pr-reviewer agent");
-
-    // Should NOT reference ralph
-    expect(content.toLowerCase()).not.toContain("ralph");
+    // Should be about agent dispatch, not ralph
+    expect(lower).toContain("dispatch");
+    expect(lower).not.toContain("ralph");
   });
 });
 

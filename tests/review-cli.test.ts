@@ -118,6 +118,40 @@ describe("Integration: review CLI commands", () => {
       expect(output).toContain("Created review:");
     });
 
+    // AC: @review-fix-cycle-diff ac-1
+    it("should store examined_commit when --examined-commit is provided", () => {
+      const result = kspecJson<{
+        examined_commit: string | null;
+      }>(
+        "review add --title 'Commit Review' --subject-ref @task-slug --examined-commit abc123def456",
+        tempDir,
+      );
+      expect(result.examined_commit).toBe("abc123def456");
+    });
+
+    // AC: @review-fix-cycle-diff ac-1
+    it("should store examined_commit from KSPEC_DISPATCH_CANONICAL_HEAD env var", () => {
+      const result = kspecJson<{
+        examined_commit: string | null;
+      }>(
+        "review add --title 'Env Commit Review' --subject-ref @task-slug",
+        tempDir,
+        { env: { KSPEC_DISPATCH_CANONICAL_HEAD: "envcommit789" } },
+      );
+      expect(result.examined_commit).toBe("envcommit789");
+    });
+
+    // AC: @review-fix-cycle-diff ac-1
+    it("should leave examined_commit null when not provided", () => {
+      const result = kspecJson<{
+        examined_commit: string | null;
+      }>(
+        "review add --title 'No Commit Review' --subject-ref @task-slug",
+        tempDir,
+      );
+      expect(result.examined_commit).toBeNull();
+    });
+
     // AC: @trait-error-guidance ac-1, ac-2, ac-5
     it("should error with guidance when subject is missing", () => {
       const result = kspecRun(
@@ -535,6 +569,57 @@ describe("Integration: review CLI commands", () => {
 
       const review = kspecJson<{ disposition: string }>(`review get @${reviewSlug}`, tempDir);
       expect(review.disposition).toBe("changes_requested");
+    });
+
+    // AC: @review-record-per-cycle-lifecycle ac-1
+    it("should auto-close review on approve verdict", () => {
+      kspec(
+        `review verdict @${reviewSlug} --decision approve --reviewer alice --version-base a1 --version-head b1`,
+        tempDir,
+      );
+
+      const review = kspecJson<{
+        lifecycle_state: string;
+        events: Array<{ event_type: string; payload?: Record<string, unknown> }>;
+      }>(`review get @${reviewSlug}`, tempDir);
+
+      expect(review.lifecycle_state).toBe("closed");
+      expect(review.events.some((e) => e.event_type === "lifecycle_change")).toBe(true);
+      const closeEvent = review.events.find(
+        (e) => e.event_type === "lifecycle_change" && e.payload?.to === "closed",
+      );
+      expect(closeEvent).toBeDefined();
+    });
+
+    // AC: @review-record-per-cycle-lifecycle ac-1
+    it("should auto-close review on request_changes verdict", () => {
+      kspec(
+        `review verdict @${reviewSlug} --decision request_changes --reviewer bob --version-base a1 --version-head b1`,
+        tempDir,
+      );
+
+      const review = kspecJson<{
+        lifecycle_state: string;
+      }>(`review get @${reviewSlug}`, tempDir);
+
+      expect(review.lifecycle_state).toBe("closed");
+    });
+
+    // AC: @review-record-per-cycle-lifecycle ac-1
+    it("should NOT auto-close review on comment verdict", () => {
+      // Open the review first (review add creates in draft state)
+      kspec(`review open @${reviewSlug}`, tempDir);
+
+      kspec(
+        `review verdict @${reviewSlug} --decision comment --reviewer carol --version-base a1 --version-head b1`,
+        tempDir,
+      );
+
+      const review = kspecJson<{
+        lifecycle_state: string;
+      }>(`review get @${reviewSlug}`, tempDir);
+
+      expect(review.lifecycle_state).toBe("open");
     });
 
     // AC: @trait-error-guidance ac-5

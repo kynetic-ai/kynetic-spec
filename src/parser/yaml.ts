@@ -4,6 +4,7 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { ulid } from "ulid";
 import * as YAML from "yaml";
+import type { Pair } from "yaml";
 import { withFileLock } from "./file-lock.js";
 import {
   accessBufferAware,
@@ -127,11 +128,110 @@ export function parseYaml<T>(content: string): T {
  * causes lines containing only spaces to grow. We post-process the output to filter
  * these whitespace-only lines. See: https://github.com/eemeli/yaml - stringifyString.ts
  */
+
+/**
+ * Canonical key priority tiers for YAML serialization.
+ * Keys are sorted by tier first, then alphabetically within each tier.
+ * _ulid is always first (tier 0). Keys not listed default to tier 50.
+ */
+const KEY_PRIORITY: Record<string, number> = {
+  // Tier 0: ULID — always first for record boundary detection
+  _ulid: 0,
+
+  // Tier 1: Identity fields
+  slugs: 1,
+  title: 2,
+  type: 3,
+
+  // Tier 2: Content / description
+  description: 10,
+  text: 10,
+  content: 10,
+
+  // Tier 3: Spec relationships
+  spec_ref: 15,
+  derivation: 16,
+  meta_ref: 17,
+  plan_ref: 18,
+  origin: 19,
+
+  // Tier 4: Status / state
+  status: 20,
+  maturity: 20,
+  blocked_by: 21,
+  closed_reason: 22,
+  disposition: 23,
+
+  // Tier 5: Relationships
+  depends_on: 25,
+  context: 26,
+  implements: 27,
+  relates_to: 28,
+  tests: 29,
+  traits: 30,
+  supersedes: 31,
+  acceptance_criteria: 32,
+
+  // Tier 6: Work metadata
+  priority: 35,
+  complexity: 36,
+  tags: 37,
+  assignee: 38,
+
+  // Tier 7: VCS / review
+  vcs_refs: 40,
+  review_url: 41,
+  review_ref: 42,
+  submission_linkage: 43,
+  session_id: 44,
+
+  // Tier 8: Timestamps
+  created: 60,
+  created_at: 60,
+  created_by: 61,
+  started_at: 62,
+  submitted_at: 63,
+  completed_at: 64,
+  updated_at: 65,
+  acted_at: 66,
+  deprecated_in: 67,
+  superseded_by: 68,
+  verified_at: 69,
+  verified_by: 70,
+
+  // Tier 9: Audit / append-only
+  notes: 80,
+  todos: 81,
+
+  // Tier 10: Automation / config
+  automation: 90,
+  traceability: 91,
+};
+
+/**
+ * Compare two YAML map entries for canonical field ordering.
+ * _ulid is always first. Known keys are ordered by priority tier,
+ * with alphabetical tiebreaking within the same tier.
+ * Unknown keys sort after tier 50 (alphabetically among themselves).
+ */
+export function canonicalKeyComparator(a: Pair, b: Pair): number {
+  const aKey = String(a.key);
+  const bKey = String(b.key);
+  const aPriority = KEY_PRIORITY[aKey] ?? 50;
+  const bPriority = KEY_PRIORITY[bKey] ?? 50;
+  if (aPriority !== bPriority) return aPriority - bPriority;
+  return aKey.localeCompare(bKey);
+}
+
 export function toYaml(obj: unknown): string {
-  let yamlString = YAML.stringify(obj, {
+  // JSON round-trip breaks shared object references so the yaml library
+  // won't generate anchors/aliases that crash when sortMapEntries reorders keys.
+  // structuredClone preserves shared refs, so JSON.parse(JSON.stringify()) is needed.
+  const cloned = JSON.parse(JSON.stringify(obj));
+  let yamlString = YAML.stringify(cloned, {
     indent: 2,
     lineWidth: 100,
-    sortMapEntries: false,
+    sortMapEntries: canonicalKeyComparator,
   });
 
   // Post-process to fix yaml library blank line accumulation bug.
@@ -785,8 +885,118 @@ function stripRuntimeMetadata(task: LoadedTask): Task {
 }
 
 /**
+ * Extract the raw task array and format info from a YAML file.
+ * Does NOT run schema validation — preserves original data for round-trip stability.
+ */
+async function extractRawTaskArray(
+  filePath: string,
+): Promise<{ rawTasks: unknown[]; useTasksWrapper: boolean; wrapperObj?: Record<string, unknown> }> {
+  let existingRaw: unknown = null;
+  let useTasksWrapper = false;
+
+  try {
+    existingRaw = await readYamlFile<unknown>(filePath);
+    if (
+      existingRaw &&
+      typeof existingRaw === "object" &&
+      "tasks" in existingRaw
+    ) {
+      useTasksWrapper = true;
+    }
+  } catch {
+    // File doesn't exist
+    return { rawTasks: [], useTasksWrapper: false };
+  }
+
+  if (!existingRaw) {
+    return { rawTasks: [], useTasksWrapper: false };
+  }
+
+  if (Array.isArray(existingRaw)) {
+    return { rawTasks: existingRaw, useTasksWrapper: false };
+  }
+
+  if (useTasksWrapper) {
+    const wrapper = existingRaw as Record<string, unknown>;
+    const tasks = wrapper.tasks;
+    return {
+      rawTasks: Array.isArray(tasks) ? tasks : [],
+      useTasksWrapper: true,
+      wrapperObj: wrapper,
+    };
+  }
+
+  return { rawTasks: [], useTasksWrapper: false };
+}
+
+/**
+ * Write raw task array back to file, preserving the wrapper format.
+ */
+async function writeRawTaskArray(
+  filePath: string,
+  rawTasks: unknown[],
+  useTasksWrapper: boolean,
+  wrapperObj?: Record<string, unknown>,
+): Promise<void> {
+  if (useTasksWrapper) {
+    // Preserve any extra top-level fields (e.g. kynetic_tasks version)
+    const output = wrapperObj ? { ...wrapperObj, tasks: rawTasks } : { tasks: rawTasks };
+    await writeYamlFilePreserveFormat(filePath, output);
+  } else {
+    await writeYamlFilePreserveFormat(filePath, rawTasks);
+  }
+}
+
+/**
+ * Find task index in a raw array by ULID match.
+ */
+function findRawTaskIndex(rawTasks: unknown[], ulid: string): number {
+  return rawTasks.findIndex(
+    (t) =>
+      t && typeof t === "object" && (t as Record<string, unknown>)._ulid === ulid,
+  );
+}
+
+/**
+ * Merge a schema-normalized task onto the original raw task data.
+ * Only adds fields that were in the original raw data or that contain
+ * non-default values. This prevents Zod defaults from polluting YAML
+ * output with fields that weren't originally present.
+ *
+ * Fields present in rawTask are always updated with the new value.
+ * Fields NOT in rawTask are only added if they carry meaningful data
+ * (i.e. non-empty arrays, non-null values, etc.).
+ */
+function mergeTaskPreservingRawShape(
+  rawTask: Record<string, unknown>,
+  normalizedTask: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(normalizedTask)) {
+    if (key in rawTask) {
+      // Field existed in raw — always include (even if value changed)
+      result[key] = value;
+    } else {
+      // Field was added by schema normalization — only include if non-trivial
+      const isEmptyArray = Array.isArray(value) && value.length === 0;
+      const isNull = value === null || value === undefined;
+      if (!isEmptyArray && !isNull) {
+        result[key] = value;
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
  * Save a task to its source file (or default location for new tasks).
  * Preserves file format (tasks: [...] wrapper vs plain array).
+ *
+ * Non-target tasks are preserved as raw data (no schema parsing) to ensure
+ * round-trip stability — fields not present in the original YAML won't be
+ * added by Zod defaults.
  */
 export async function saveTask(
   ctx: KspecContext,
@@ -801,73 +1011,24 @@ export async function saveTask(
     const dir = path.dirname(taskFilePath);
     await fs.mkdir(dir, { recursive: true });
 
-    // Load existing tasks from the target file
-    let existingRaw: unknown = null;
-    let useTasksWrapper = false;
-
-    try {
-      existingRaw = await readYamlFile<unknown>(taskFilePath);
-      // Detect if file uses { tasks: [...] } format
-      if (
-        existingRaw &&
-        typeof existingRaw === "object" &&
-        "tasks" in existingRaw
-      ) {
-        useTasksWrapper = true;
-      }
-    } catch {
-      // File doesn't exist, start fresh
-    }
-
-    // Parse existing tasks from file
-    let fileTasks: Task[] = [];
-
-    if (existingRaw) {
-      if (Array.isArray(existingRaw)) {
-        for (const t of existingRaw) {
-          const result = TaskSchema.safeParse(t);
-          if (result.success) {
-            fileTasks.push(result.data);
-          }
-        }
-      } else if (useTasksWrapper) {
-        // Try TasksFileSchema first (has kynetic_tasks version)
-        const parsed = TasksFileSchema.safeParse(existingRaw);
-        if (parsed.success) {
-          fileTasks = parsed.data.tasks;
-        } else {
-          // Fall back to raw tasks array (common format without version field)
-          const rawTasks = (existingRaw as { tasks: unknown[] }).tasks;
-          if (Array.isArray(rawTasks)) {
-            for (const t of rawTasks) {
-              const result = TaskSchema.safeParse(t);
-              if (result.success) {
-                fileTasks.push(result.data);
-              }
-            }
-          }
-        }
-      }
-    }
+    // Load raw task data without schema normalization
+    const { rawTasks, useTasksWrapper, wrapperObj } =
+      await extractRawTaskArray(taskFilePath);
 
     // Strip runtime metadata before saving
     const cleanTask = stripRuntimeMetadata(task);
 
-    // Update existing or add new
-    const existingIndex = fileTasks.findIndex((t) => t._ulid === task._ulid);
+    // Update existing or add new — replace only the target task
+    const existingIndex = findRawTaskIndex(rawTasks, task._ulid);
     if (existingIndex >= 0) {
-      fileTasks[existingIndex] = cleanTask;
+      // Merge onto raw data to avoid adding Zod defaults for absent fields
+      const rawTarget = rawTasks[existingIndex] as Record<string, unknown>;
+      rawTasks[existingIndex] = mergeTaskPreservingRawShape(rawTarget, cleanTask as Record<string, unknown>);
     } else {
-      fileTasks.push(cleanTask);
+      rawTasks.push(cleanTask);
     }
 
-    // Save in the same format as original (or tasks: wrapper for new files)
-    // Use format-preserving write to maintain formatting and comments
-    if (useTasksWrapper) {
-      await writeYamlFilePreserveFormat(taskFilePath, { tasks: fileTasks });
-    } else {
-      await writeYamlFilePreserveFormat(taskFilePath, fileTasks);
-    }
+    await writeRawTaskArray(taskFilePath, rawTasks, useTasksWrapper, wrapperObj);
   });
 }
 
@@ -876,6 +1037,9 @@ export async function saveTask(
  *
  * The callback receives the current task value while holding the task file lock,
  * so concurrent writers cannot clobber unrelated fields (for example status vs notes).
+ *
+ * Non-target tasks are preserved as raw data (no schema parsing) to ensure
+ * round-trip stability.
  */
 export async function mutateTaskAtomically(
   ctx: KspecContext,
@@ -890,41 +1054,33 @@ export async function mutateTaskAtomically(
     const dir = path.dirname(taskFilePath);
     await fs.mkdir(dir, { recursive: true });
 
-    // Preserve existing file format (tasks wrapper vs plain array)
-    let existingRaw: unknown = null;
-    let useTasksWrapper = false;
-    try {
-      existingRaw = await readYamlFile<unknown>(taskFilePath);
-      if (
-        existingRaw &&
-        typeof existingRaw === "object" &&
-        "tasks" in existingRaw
-      ) {
-        useTasksWrapper = true;
-      }
-    } catch {
-      throw new Error(`Task file not found: ${taskFilePath}`);
-    }
+    // Load raw task data without schema normalization for non-target tasks
+    const { rawTasks, useTasksWrapper, wrapperObj } =
+      await extractRawTaskArray(taskFilePath);
 
-    const fileTasks = await loadTasksFromFile(taskFilePath);
-    const taskIndex = fileTasks.findIndex((t) => t._ulid === task._ulid);
+    const taskIndex = findRawTaskIndex(rawTasks, task._ulid);
     if (taskIndex === -1) {
       throw new Error(`Task not found in file: ${task._ulid}`);
     }
 
-    const latestTask = fileTasks[taskIndex];
+    // Schema-parse only the target task for the mutation callback
+    const rawTarget = rawTasks[taskIndex];
+    const parsed = TaskSchema.safeParse(rawTarget);
+    if (!parsed.success) {
+      throw new Error(`Invalid task data for ${task._ulid}: ${parsed.error.message}`);
+    }
+    const latestTask: LoadedTask = { ...parsed.data, _sourceFile: taskFilePath };
+
     const mutatedTask = await mutate(latestTask);
     const cleanMutatedTask = stripRuntimeMetadata(mutatedTask as LoadedTask);
 
-    const serializedTasks = fileTasks.map((fileTask, index) =>
-      index === taskIndex ? cleanMutatedTask : stripRuntimeMetadata(fileTask),
+    // Merge onto raw data to avoid adding Zod defaults for absent fields
+    rawTasks[taskIndex] = mergeTaskPreservingRawShape(
+      rawTarget as Record<string, unknown>,
+      cleanMutatedTask as Record<string, unknown>,
     );
 
-    if (useTasksWrapper) {
-      await writeYamlFilePreserveFormat(taskFilePath, { tasks: serializedTasks });
-    } else {
-      await writeYamlFilePreserveFormat(taskFilePath, serializedTasks);
-    }
+    await writeRawTaskArray(taskFilePath, rawTasks, useTasksWrapper, wrapperObj);
 
     updatedTask = {
       ...cleanMutatedTask,
@@ -955,66 +1111,22 @@ export async function deleteTask(
 
   // Lock the file to prevent concurrent read-modify-write races
   await withFileLock(taskFilePath, async () => {
-    // Load existing file
-    let existingRaw: unknown = null;
-    let useTasksWrapper = false;
+    // Load raw task data without schema normalization for round-trip stability
+    const { rawTasks, useTasksWrapper, wrapperObj } =
+      await extractRawTaskArray(taskFilePath);
 
-    try {
-      existingRaw = await readYamlFile<unknown>(taskFilePath);
-      if (
-        existingRaw &&
-        typeof existingRaw === "object" &&
-        "tasks" in existingRaw
-      ) {
-        useTasksWrapper = true;
-      }
-    } catch {
+    if (rawTasks.length === 0) {
       throw new Error(`Task file not found: ${taskFilePath}`);
     }
 
-    // Parse existing tasks
-    let fileTasks: Task[] = [];
-
-    if (existingRaw) {
-      if (Array.isArray(existingRaw)) {
-        for (const t of existingRaw) {
-          const result = TaskSchema.safeParse(t);
-          if (result.success) {
-            fileTasks.push(result.data);
-          }
-        }
-      } else if (useTasksWrapper) {
-        const parsed = TasksFileSchema.safeParse(existingRaw);
-        if (parsed.success) {
-          fileTasks = parsed.data.tasks;
-        } else {
-          const rawTasks = (existingRaw as { tasks: unknown[] }).tasks;
-          if (Array.isArray(rawTasks)) {
-            for (const t of rawTasks) {
-              const result = TaskSchema.safeParse(t);
-              if (result.success) {
-                fileTasks.push(result.data);
-              }
-            }
-          }
-        }
-      }
-    }
-
-    // Remove the task
-    const originalCount = fileTasks.length;
-    fileTasks = fileTasks.filter((t) => t._ulid !== task._ulid);
-
-    if (fileTasks.length === originalCount) {
+    // Remove the task by ULID match on raw data
+    const taskIndex = findRawTaskIndex(rawTasks, task._ulid);
+    if (taskIndex === -1) {
       throw new Error(`Task not found in file: ${task._ulid}`);
     }
+    rawTasks.splice(taskIndex, 1);
 
-    // Save the modified file with format preservation
-    if (useTasksWrapper) {
-      await writeYamlFilePreserveFormat(taskFilePath, { tasks: fileTasks });
-    } else {
-      await writeYamlFilePreserveFormat(taskFilePath, fileTasks);
-    }
+    await writeRawTaskArray(taskFilePath, rawTasks, useTasksWrapper, wrapperObj);
   });
 }
 

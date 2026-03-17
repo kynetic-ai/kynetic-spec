@@ -245,6 +245,9 @@ export const ReviewRecordSchema = z.object({
   // External links (non-authoritative)
   external_links: z.array(ReviewExternalLinkSchema).default([]),
 
+  // AC: @review-fix-cycle-diff ac-1 — commit the reviewer examined
+  examined_commit: z.string().nullable().default(null),
+
   // Timestamps
   created_at: DateTimeSchema.default(() => new Date().toISOString()),
   updated_at: DateTimeSchema.nullable().optional(),
@@ -270,6 +273,8 @@ export const ReviewRecordInputSchema = z.object({
   events: z.array(ReviewEventSchema).optional(),
   notes: z.array(NoteSchema).optional(),
   external_links: z.array(ReviewExternalLinkSchema).optional(),
+
+  examined_commit: z.string().nullable().optional(),
 
   created_at: DateTimeSchema.optional(),
   updated_at: DateTimeSchema.nullable().optional(),

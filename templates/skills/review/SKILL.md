@@ -143,8 +143,22 @@ draft → open → closed
 |-------|---------|
 | `draft` | Review created but not yet started |
 | `open` | Active review in progress |
-| `closed` | Review concluded |
+| `closed` | Review concluded (auto-closed on approve/request_changes verdict) |
 | `archived` | Permanently archived |
+
+**Auto-close on verdict:** When a reviewer submits an `approve` or `request_changes` verdict, the review record automatically transitions to `closed`. A `comment` verdict leaves the review open since it doesn't represent a final assessment. Each closed review is a point-in-time artifact.
+
+### Per-Cycle Review Model
+
+Each review cycle produces its own review record. This is analogous to individual PR reviews on GitHub — each review is a discrete artifact with its own verdict, and the collection of reviews across cycles comprises the full review history for the task.
+
+**How it works:**
+- When a task enters `pending_review`, the reviewer creates a **new** review record
+- If a prior closed review exists, it remains as a historical artifact
+- The task's `review_ref` is updated to point to the new record
+- Historical reviews are accessible via `kspec review for-task @ref` (returns all linked reviews)
+
+**Do NOT reopen old reviews.** Instead, create a fresh review for each cycle. This keeps each review's findings, verdict, and context self-contained.
 
 ### Disposition (Computed)
 
@@ -277,25 +291,37 @@ kspec review resolve @review-ref --thread <thread-ulid>
 kspec review reopen @review-ref --thread <thread-ulid>
 ```
 
-### Re-review After Changes
+### Fix Cycles (Re-review After Changes)
 
-When the reviewed work has been updated:
+When a task returns to `pending_review` after a fix cycle, the reviewer creates a **new** review record rather than updating the old one:
 
 ```bash
-# Refresh the subject to bind to new state
-kspec review refresh @review-ref --head new-commit-sha
+# The old review is already closed (auto-closed on verdict)
+# Create a fresh review for the new cycle
+kspec review add --title "Review task-foo (cycle 2)" \
+  --subject-type task --subject-ref @task-foo
 
-# After refresh, old verdicts and checks become stale
-# New investigation and verdict needed
+# The task's review_ref now points to this new review
+# The prior review remains accessible via for-task
+kspec review for-task @task-foo  # Shows all reviews, current + historical
+```
+
+If dispatch workspace metadata is available, the new review's orientation will include a diff summary showing what changed since the prior review's examined commit.
+
+**Subject refresh** is still available for within-cycle updates (e.g., reviewer pushes a minor fix before verdicting):
+
+```bash
+kspec review refresh @review-ref --head new-commit-sha
 ```
 
 ### Task Integration
 
 Reviews integrate with the task lifecycle:
 
-- Creating a task review auto-sets `task.review_ref`
-- A `request_changes` verdict auto-transitions `pending_review` tasks to `needs_work`
-- `kspec review for-task @ref` finds linked reviews
+- Creating a task review auto-sets `task.review_ref` to the new review
+- A `request_changes` verdict auto-transitions `pending_review` tasks to `needs_work` and auto-closes the review
+- An `approve` verdict auto-closes the review
+- `kspec review for-task @ref` finds **all** linked reviews (current + historical)
 
 ---
 
@@ -333,8 +359,10 @@ Every finding must include:
 When your task is in `needs_work`:
 
 ```bash
-# Find the review
+# Find all reviews for the task (current + historical)
 kspec review for-task @ref
+
+# Read the most recent review (the one that kicked back to needs_work)
 kspec review get @review-ref
 
 # Focus on blocker threads — these must be resolved
@@ -343,9 +371,11 @@ kspec review get @review-ref
 kspec review reply @review-ref --thread <ulid> --body "Fixed in commit abc1234"
 ```
 
+**Historical context:** If the task has been through multiple fix cycles, `kspec review for-task @ref` returns all reviews. Each is a closed artifact with its own findings and verdict. Read prior reviews to understand the full review history and avoid re-introducing previously flagged issues.
+
 After fixing:
 ```bash
-kspec task submit @ref  # Back to pending_review
+kspec task submit @ref  # Back to pending_review — reviewer creates a new review record
 ```
 
 ---
@@ -353,13 +383,12 @@ kspec task submit @ref  # Back to pending_review
 ## Reviewer Workflow Summary
 
 1. **Discover context** — `kspec task get @ref`, `kspec item get @spec-ref`
-2. **Create review** — `kspec review add --subject-type task --subject-ref @ref`
+2. **Create review** — `kspec review add --subject-type task --subject-ref @ref` (creates a new record each cycle)
 3. **Open review** — `kspec review open @review-ref`
 4. **Investigate** — deterministic checks, then analytical checks
 5. **Record findings** — `kspec review comment` for each finding with appropriate kind
 6. **Record checks** — `kspec review check` for test/lint results
-7. **Submit verdict** — `kspec review verdict` (approve or request_changes)
-8. **Close review** — `kspec review close @review-ref` (after merge or final verdict)
+7. **Submit verdict** — `kspec review verdict` (approve or request_changes — auto-closes the review)
 
 ---
 

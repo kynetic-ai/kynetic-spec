@@ -18,6 +18,7 @@ import {
   loadAllTasks,
   loadMetaContext,
   areDependenciesMet,
+  loadReviewRecords,
   type LoadedTask,
   type LoadedAgent,
 } from "../parser/index.js";
@@ -347,6 +348,92 @@ async function buildRoleEntryContext(
 }
 
 /**
+ * Find the examined commit from the most recent closed review for a task.
+ * Returns null when no prior examined commit exists.
+ *
+ * AC: @review-fix-cycle-diff ac-2 — find prior review's examined commit
+ */
+export function findPriorExaminedCommit(
+  reviews: Array<{ lifecycle_state: string; examined_commit: string | null; subject: { type: string; ref?: string }; related_refs: string[]; created_at: string | null }>,
+  taskRef: string,
+): string | null {
+  const cleanRef = taskRef.startsWith("@") ? taskRef.slice(1) : taskRef;
+  const taskReviews = reviews.filter(
+    (r) =>
+      r.related_refs.includes(cleanRef)
+      || (r.subject.type === "task" && "ref" in r.subject && r.subject.ref === cleanRef),
+  );
+
+  const closedWithCommit = taskReviews
+    .filter((r) => r.lifecycle_state === "closed" && r.examined_commit)
+    .sort((a, b) => (b.created_at ?? "").localeCompare(a.created_at ?? ""));
+
+  if (closedWithCommit.length === 0) return null;
+  return closedWithCommit[0].examined_commit;
+}
+
+/**
+ * Compute a git diff --stat between two commits. Returns null on any error.
+ *
+ * AC: @review-fix-cycle-diff ac-3 — graceful omission on unreachable commits
+ */
+export function computeDiffStat(
+  fromCommit: string,
+  toCommit: string,
+  cwd: string,
+): string | null {
+  try {
+    const result = spawnSync(
+      "git",
+      ["diff", "--stat", fromCommit, toCommit],
+      { cwd, encoding: "utf-8", stdio: "pipe", timeout: 10_000 },
+    );
+
+    if (result.status !== 0) return null;
+
+    const stat = result.stdout?.trim();
+    if (!stat) return null;
+
+    return [
+      `Changes since prior review (${shortSha(fromCommit)}..${shortSha(toCommit)}):`,
+      stat,
+    ].join("\n");
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Compute a diff summary between the prior review's examined commit and the
+ * current canonical branch head. Returns null when no prior examined commit
+ * exists or when the diff cannot be computed (unreachable commits, etc.).
+ *
+ * AC: @review-fix-cycle-diff ac-2 — diff summary for reviewer orientation
+ * AC: @review-fix-cycle-diff ac-3 — graceful omission on unreachable commits
+ */
+export async function getFixCycleDiffSummary(
+  projectDir: string,
+  taskRef: string,
+  canonicalBranchHead: string | undefined,
+  workspaceCwd?: string,
+): Promise<string | null> {
+  if (!canonicalBranchHead) return null;
+
+  try {
+    const ctx = await initContext(projectDir);
+    const reviews = await loadReviewRecords(ctx);
+
+    const priorCommit = findPriorExaminedCommit(reviews, taskRef);
+    if (!priorCommit) return null;
+
+    return computeDiffStat(priorCommit, canonicalBranchHead, workspaceCwd ?? projectDir);
+  } catch {
+    // AC: @review-fix-cycle-diff ac-3 — graceful omission on any error
+    return null;
+  }
+}
+
+/**
  * Build orientation context block for a dispatch prompt.
  * Provides the agent with task title, trigger meaning, and relevant context.
  *
@@ -369,6 +456,7 @@ export function buildOrientationContext(
   } | DispatchWorkspaceMetadata,
   metadataOrRole?: DispatchWorkspaceMetadata | DispatchWorkspaceRole,
   explicitRole?: DispatchWorkspaceRole,
+  options?: { fixCycleDiffSummary?: string | null },
 ): string {
   const usingProvisionedWorkspace =
     typeof workspaceOrTask === "object"
@@ -470,6 +558,11 @@ export function buildOrientationContext(
     lines.push(
       `Cycle context: Review cycle on a detached snapshot. If changes are kicked back, the follow-up worker resumes ${metadata?.canonicalBranch ?? "(unavailable)"} and still publishes against ${metadata?.integrationTargetBranch ?? metadata?.mergeTargetBranch ?? "(unavailable)"}.`,
     );
+
+    // AC: @review-fix-cycle-diff ac-2 — Include fix-cycle diff summary for reviewer
+    if (options?.fixCycleDiffSummary) {
+      lines.push("", "## Fix-Cycle Diff", options.fixCycleDiffSummary);
+    }
   }
 
   if (trigger === "task.needs_work") {
@@ -1729,7 +1822,21 @@ export class DispatchEngine {
     const rawTemplate = agent.prompt_template ?? `Work on task ${taskRef}`;
     const basePrompt = interpolateTemplate(rawTemplate, templateVars);
 
-    const orientation = buildOrientationContext(taskRef, trigger, workspace, change.task);
+    // AC: @review-fix-cycle-diff ac-2 — Compute fix-cycle diff for reviewer orientation
+    let fixCycleDiffSummary: string | null = null;
+    if (trigger === "task.pending_review") {
+      fixCycleDiffSummary = await getFixCycleDiffSummary(
+        this.projectDir,
+        taskRef,
+        workspace.metadata.canonicalBranchHead,
+        workspace.cwd,
+      );
+    }
+
+    const orientation = buildOrientationContext(
+      taskRef, trigger, workspace, change.task,
+      undefined, undefined, { fixCycleDiffSummary },
+    );
     const roleEntry = await buildRoleEntryContext(
       this.projectDir,
       agent.adapter ?? "claude-agent-acp",
