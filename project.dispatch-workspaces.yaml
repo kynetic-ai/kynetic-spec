@@ -6815,7 +6815,7 @@ workspaces:
         head: 39d1d121096e5d010137498c0d9257cc5bae8752
         last_seen_at: 2026-03-17T08:40:47.809Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-read-01kktw6f
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
     bootstrap:
       status: succeeded
@@ -6865,7 +6865,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T09:25:00.925Z
+      updated_at: 2026-03-17T09:25:01.553Z
     integration:
       status: pending
       detail: null
@@ -6880,10 +6880,10 @@ workspaces:
     task_slug: task-diff-api
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-17T09:07:34.839Z
-      last_reconciled_at: 2026-03-17T09:25:00.925Z
+      last_active_at: 2026-03-17T09:25:01.553Z
+      last_reconciled_at: 2026-03-17T09:25:01.553Z
       created_at: 2026-03-17T08:02:40.261Z
-      updated_at: 2026-03-17T09:25:01.197Z
+      updated_at: 2026-03-17T09:25:01.553Z
     workspace_id: dispatch-workspace-01KKTW6J1F8NHGA7G7SJJ1ZFFS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
