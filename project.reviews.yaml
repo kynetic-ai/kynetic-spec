@@ -6601,9 +6601,22 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-17T11:46:45.900Z
+      - _ulid: 01KKXSXN6NBGGTP79ABWYB1ZFS
+        actor: pr-reviewer@kspec-dispatch
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-17T11:46:56.341Z
+      - _ulid: 01KKXSXN6N8H3MAJ2P9T58D9KA
+        actor: pr-reviewer@kspec-dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-17T11:46:56.341Z
     examined_commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -6665,7 +6678,15 @@ reviews:
               the draft review appears in unfiltered results) or remove the unused constant.
             created_at: 2026-03-17T11:45:22.666Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
+          head_commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
+        decision: request_changes
+        reviewer: pr-reviewer@kspec-dispatch
+        role: reviewer
+        created_at: 2026-03-17T11:46:56.271Z
     created_at: 2026-03-17T11:38:18.280Z
-    updated_at: 2026-03-17T11:46:45.822Z
+    updated_at: 2026-03-17T11:46:56.271Z
     notes: []
