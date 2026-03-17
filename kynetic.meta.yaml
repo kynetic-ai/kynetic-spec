@@ -262,7 +262,7 @@ agents:
       - git
   - _ulid: 01KKBVD4P3DSVN0YJF8VHCP22M
     description: Automated PR reviewer. Reviews pending_review tasks and merges when quality gates pass.
-    adapter: codex-acp
+    adapter: claude-agent-acp
     auto_approve: true
     budget:
       timeout_minutes: 60
