@@ -71530,7 +71530,7 @@
     remove ralphLoop error string, update any remaining code comments. This is the final cleanup
     after ralph→agent dispatch migration. No migration guide needed — ralph was internal tooling."
   plan_ref: "@plan-reactive-agent-runtime"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-ralph-replacement"
@@ -71544,14 +71544,14 @@
   submission_linkage:
     review_url: null
     branch: dispatch/task/task-ralph-migration-guide/01kjp279
-    captured_at: 2026-03-17T23:01:23.995Z
-    commit: 3c6e26905f256c6d648926e0ca5760692e79a373
+    captured_at: 2026-03-17T23:22:51.627Z
+    commit: f2f07a10939f5c22143bd187dbbd71d88549f9d3
     remote: null
     remote_url: null
     upstream_ref: dev
   created_at: 2026-03-02T01:22:23.358Z
   started_at: 2026-03-17T23:22:48.406Z
-  submitted_at: 2026-03-17T23:01:24.450Z
+  submitted_at: 2026-03-17T23:22:52.051Z
   notes:
     - _ulid: 01KJP2JZPGF5Z4RGQVTQHQW33N
       content: >-
