@@ -8876,3 +8876,29 @@ reviews:
     created_at: 2026-03-17T23:27:37.696Z
     updated_at: 2026-03-17T23:33:24.078Z
     notes: []
+  - _ulid: 01KKZ30JMRB16ZTFPAGJM73CY0
+    slugs: []
+    title: Review task-review-detail-page (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKZ30JMQFQZ634JMBJZ4C51K
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T23:45:03.640Z
+    examined_commit: 3b251d677f21cfc35c6db12a6bfb759c2889c7f5
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-review-detail-page"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T23:45:03.640Z
+    updated_at: null
+    notes: []
