@@ -103276,6 +103276,18 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-17T12:42:39.704Z
+    - _ulid: 01KKXX4D7HQEX9K4F7B5J3MTR4
+      content: "Review: request_changes (2 blockers). (1) src/parser/reviews.ts regression — the
+        raw-data-preservation pattern (extractRawReviewArray, mergeReviewPreservingRawShape, etc.)
+        that existed on dev was removed, reverting reviews.ts to schema-normalize all reviews on
+        every write. This undoes previously-merged work. Fix: restore the raw-data-preservation
+        helpers in reviews.ts. (2) tests/yaml-round-trip-stability.test.ts — the review round-trip
+        stability tests were deleted and replaced with plan tests instead of adding plan tests
+        alongside them. Fix: add the plan tests as a new describe block while keeping the existing
+        review tests. Plans.ts changes are correct and well-tested."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-17T12:43:03.281Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6C9RJHKN1ZMJW1ZWH2BRZ
