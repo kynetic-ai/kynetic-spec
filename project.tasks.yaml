@@ -101362,7 +101362,7 @@
   spec_ref: "@review-records-daemon-api"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-review-api-threads"
@@ -101374,7 +101374,9 @@
     - websocket
     - review
   vcs_refs: []
+  session_id: 01KKYKNXTN7VG2A5AQPN5D38JN
   created_at: 2026-03-16T08:29:01.199Z
+  started_at: 2026-03-17T19:17:30.733Z
   notes: []
   todos: []
   automation: eligible
