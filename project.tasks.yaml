@@ -102493,3 +102493,229 @@
   notes: []
   todos: []
   automation: eligible
+- _ulid: 01KKX6C6BX3055XXKXYD33K4QA
+  slugs: []
+  title: Round-trip stability for review record YAML writes
+  type: task
+  description: >-
+    reviews.ts saveReviewRecord, mutateReviewAtomically, and deleteReviewRecord all load
+    project.reviews.yaml through ReviewRecordsFileSchema.safeParse() before writing back. This adds
+    ~13 Zod defaults (kind, entries, threads, checks, verdicts, events, notes, external_links, etc.)
+    to every review record on each save, even records not being modified.
+
+
+    Apply the same raw-data-preservation pattern used in the task write path fix
+    (extractRawTaskArray + mergeTaskPreservingRawShape): load the raw YAML array, only schema-parse
+    the target review, merge the result onto raw data to suppress Zod defaults for fields not
+    originally present. Non-target reviews must be preserved as raw data.
+
+
+    Verify with tests: write a reviews file, load and save one review without changes, confirm file
+    is byte-identical.
+  spec_ref: "@yaml-serialization-invariants"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - schema
+    - reviews
+  vcs_refs: []
+  created_at: 2026-03-17T06:05:21.149Z
+  notes: []
+  todos: []
+- _ulid: 01KKX6C83WVQBYBZ5SWTXY1JKA
+  slugs: []
+  title: Round-trip stability for plan record YAML writes
+  type: task
+  description: >-
+    plans.ts savePlan, mutatePlanAtomically, and deletePlan all load project.plans.yaml through
+    PlansFileSchema.safeParse() before writing back. This adds ~7 Zod defaults (slugs, content,
+    status, derived_tasks, derived_specs, notes, created_at) to every plan record on each save.
+
+
+    Apply the same raw-data-preservation pattern: load the raw YAML array without schema
+    normalization, only schema-parse the target plan, merge onto raw data to suppress defaults.
+    Non-target plans stay as raw data.
+
+
+    Verify with tests: write a plans file, load and save one plan without changes, confirm file is
+    byte-identical.
+  spec_ref: "@yaml-serialization-invariants"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - schema
+    - plans
+  vcs_refs: []
+  created_at: 2026-03-17T06:05:22.940Z
+  notes: []
+  todos: []
+- _ulid: 01KKX6C9RJHKN1ZMJW1ZWH2BRZ
+  slugs: []
+  title: Round-trip stability for inbox item YAML writes
+  type: task
+  description: >-
+    yaml.ts saveInboxItem, mutateInboxItemAtomically, and deleteInboxItem load project.inbox.yaml
+    through InboxFileSchema.safeParse() before writing back. This adds at least tags: [] to inbox
+    items missing that field.
+
+
+    Apply the same raw-data-preservation pattern: load the raw YAML array without schema
+    normalization, only schema-parse the target item, merge onto raw data. Non-target items stay as
+    raw data.
+
+
+    Verify with tests: write an inbox file, load and save one item without changes, confirm file is
+    byte-identical.
+  spec_ref: "@yaml-serialization-invariants"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - schema
+    - inbox
+  vcs_refs: []
+  created_at: 2026-03-17T06:05:24.626Z
+  notes: []
+  todos: []
+- _ulid: 01KKX6CBDFNMXPC405SRZ3RG0N
+  slugs: []
+  title: Round-trip stability for meta manifest YAML writes
+  type: task
+  description: >-
+    meta.ts loads kynetic.meta.yaml through MetaManifestSchema.safeParse() on every mutation
+    (saveObservation, deleteObservation, agent/workflow/convention/skill CRUD). This adds ~7
+    top-level defaults (agents, workflows, conventions, observations, skills, includes,
+    kynetic_meta) even when those sections are absent from the file.
+
+
+    Apply the same raw-data-preservation pattern: read the raw YAML, only parse/normalize the
+    section being mutated, preserve other sections as raw data.
+
+
+    Verify with tests: write a meta manifest with only observations, mutate one observation, confirm
+    agents/workflows/etc. sections are not added to the file.
+  spec_ref: "@yaml-serialization-invariants"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - schema
+    - meta
+  vcs_refs: []
+  created_at: 2026-03-17T06:05:26.319Z
+  notes: []
+  todos: []
+- _ulid: 01KKX6CD2X6EKHGNE47Y8113HH
+  slugs: []
+  title: Round-trip stability for dispatch workspace YAML writes
+  type: task
+  description: >-
+    dispatch-workspaces.ts saveDispatchWorkspaceRecord and mutateDispatchWorkspaceRecordAtomically
+    load project.dispatch-workspaces.yaml through DispatchWorkspaceRegistryFileSchema.safeParse()
+    before writing back. This adds ~10 nested defaults (bootstrap status objects,
+    integration/cleanup states, invalidationReasons, steps, issues, branch_provenance) to every
+    workspace record on each save.
+
+
+    Apply the same raw-data-preservation pattern: load the raw YAML array without schema
+    normalization, only schema-parse the target workspace, merge onto raw data. Non-target
+    workspaces stay as raw data.
+
+
+    Verify with tests: write a dispatch workspaces file, load and save one workspace without
+    changes, confirm file is byte-identical.
+  spec_ref: "@yaml-serialization-invariants"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - schema
+    - dispatch
+  vcs_refs: []
+  created_at: 2026-03-17T06:05:28.029Z
+  notes: []
+  todos: []
+- _ulid: 01KKX6CEQFM17JX8AKKRPXQGR7
+  slugs: []
+  title: Round-trip stability for triage record YAML writes
+  type: task
+  description: >-
+    yaml.ts saveTriageRecord loads project.triage.yaml through TriageFileSchema.safeParse() before
+    writing back. While triage records have fewer defaults than other types, the same
+    read-parse-write pattern applies and any Zod defaults will accumulate.
+
+
+    Apply the same raw-data-preservation pattern: load the raw YAML array without schema
+    normalization, only modify the target record, preserve others as raw data.
+
+
+    Verify with tests: write a triage file, load and save one record without changes, confirm file
+    is byte-identical.
+  spec_ref: "@yaml-serialization-invariants"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - schema
+    - triage
+  vcs_refs: []
+  created_at: 2026-03-17T06:05:29.711Z
+  notes: []
+  todos: []
+- _ulid: 01KKX6CGBRT6J6F804PJ1QJW3G
+  slugs: []
+  title: Round-trip stability for workflow runs YAML writes
+  type: task
+  description: >-
+    meta.ts saveWorkflowRun loads kynetic.runs.yaml through WorkflowRunsFileSchema.safeParse()
+    before writing back. This adds defaults like step_results: [] to every run record on each save.
+
+
+    Apply the same raw-data-preservation pattern: load the raw YAML array without schema
+    normalization, only schema-parse the target run, merge onto raw data. Non-target runs stay as
+    raw data.
+
+
+    Verify with tests: write a runs file, load and save one run without changes, confirm file is
+    byte-identical.
+  spec_ref: "@yaml-serialization-invariants"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - schema
+    - meta
+  vcs_refs: []
+  created_at: 2026-03-17T06:05:31.384Z
+  notes: []
+  todos: []
