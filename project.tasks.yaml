@@ -102527,6 +102527,7 @@
   created_at: 2026-03-17T06:05:21.149Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKX6C83WVQBYBZ5SWTXY1JKA
   slugs: []
   title: Round-trip stability for plan record YAML writes
@@ -102559,6 +102560,7 @@
   created_at: 2026-03-17T06:05:22.940Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKX6C9RJHKN1ZMJW1ZWH2BRZ
   slugs: []
   title: Round-trip stability for inbox item YAML writes
@@ -102591,6 +102593,7 @@
   created_at: 2026-03-17T06:05:24.626Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKX6CBDFNMXPC405SRZ3RG0N
   slugs: []
   title: Round-trip stability for meta manifest YAML writes
@@ -102623,6 +102626,7 @@
   created_at: 2026-03-17T06:05:26.319Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKX6CD2X6EKHGNE47Y8113HH
   slugs: []
   title: Round-trip stability for dispatch workspace YAML writes
@@ -102657,6 +102661,7 @@
   created_at: 2026-03-17T06:05:28.029Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKX6CEQFM17JX8AKKRPXQGR7
   slugs: []
   title: Round-trip stability for triage record YAML writes
@@ -102688,6 +102693,7 @@
   created_at: 2026-03-17T06:05:29.711Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKX6CGBRT6J6F804PJ1QJW3G
   slugs: []
   title: Round-trip stability for workflow runs YAML writes
@@ -102719,3 +102725,4 @@
   created_at: 2026-03-17T06:05:31.384Z
   notes: []
   todos: []
+  automation: eligible
