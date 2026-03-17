@@ -4278,3 +4278,29 @@ reviews:
     created_at: 2026-03-17T02:34:34.546Z
     updated_at: 2026-03-17T02:35:16.055Z
     notes: []
+  - _ulid: 01KKX1SF79Z1D6P3DP5QH7TFED
+    slugs: []
+    title: "Review: update review skill docs"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKX1SF793K8FMYW9J8BENRNZ
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T04:45:13.321Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-update-review-skill-docs"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T04:45:13.321Z
+    updated_at: null
+    notes: []
