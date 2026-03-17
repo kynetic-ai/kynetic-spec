@@ -102276,8 +102276,11 @@
   spec_ref: null
   plan_ref: "@plan-task-activity-timeline"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Reviewed and merged to dev. Clean docs-only change: added fix-cycle note requirement
+    (step 4), per-cycle review model reference, and historical reviews comment. All three files
+    consistent."
   depends_on:
     - "@task-new-review-per-cycle"
   context: []
@@ -102299,6 +102302,7 @@
   created_at: 2026-03-16T20:19:39.906Z
   started_at: 2026-03-17T04:49:49.330Z
   submitted_at: 2026-03-17T04:50:58.798Z
+  completed_at: 2026-03-17T04:52:38.195Z
   notes:
     - _ulid: 01KKX23V2RGDFTVF339TJN6VK5
       content: "Updated Fix Cycle section in task-work skill: added step 4 requiring a task note before
