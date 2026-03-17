@@ -6893,7 +6893,7 @@ workspaces:
         head: bb450d49091846ff30ea2a935f49c0bc0bb70cfa
         last_seen_at: 2026-03-17T09:07:34.291Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-diff-api-01kktw6j
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
     bootstrap:
       status: succeeded
@@ -6940,7 +6940,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-17T09:07:34.899Z
+      updated_at: 2026-03-17T09:07:36.562Z
     integration:
       status: pending
       detail: null
@@ -6955,10 +6955,10 @@ workspaces:
     task_slug: unify-tool-call-event-parsing-and-fix-phased-input-streaming
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-17T08:44:11.611Z
-      last_reconciled_at: 2026-03-17T09:07:34.899Z
+      last_active_at: 2026-03-17T09:07:36.562Z
+      last_reconciled_at: 2026-03-17T09:07:36.562Z
       created_at: 2026-03-17T08:40:50.919Z
-      updated_at: 2026-03-17T09:07:35.894Z
+      updated_at: 2026-03-17T09:07:36.562Z
     workspace_id: dispatch-workspace-01KKXEJ2RQ4HW9N8K0TB6WS2WY
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
