@@ -6080,3 +6080,29 @@ reviews:
     created_at: 2026-03-17T10:39:53.288Z
     updated_at: 2026-03-17T10:52:17.666Z
     notes: []
+  - _ulid: 01KKXQ0280EMFD7TDDKBDSHDPX
+    slugs: []
+    title: Review improve-review-skill-anchors (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKXQ027Z0Y0C4ZKCR6P8S0W5
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-17T10:55:49.503Z
+    examined_commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKTTC2CTEPS5X2VPE7QVFA16"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-17T10:55:49.504Z
+    updated_at: null
+    notes: []
