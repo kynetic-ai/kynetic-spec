@@ -100861,8 +100861,13 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Review skill template updated with anchor directives: strengthened
+    Code-Targeted Comments and Structured Anchors sections with 'Always anchor' directives, added
+    Why Anchors Matter section with side-by-side examples, added Anchor to Finding Quality
+    standards, updated Reviewer Workflow Summary step 5. Prior review blocker (merge conflict)
+    resolved. All rendered outputs match source."
   depends_on: []
   context: []
   priority: 3
@@ -100883,6 +100888,7 @@
   created_at: 2026-03-16T07:57:05.306Z
   started_at: 2026-03-17T11:13:18.061Z
   submitted_at: 2026-03-17T11:13:21.638Z
+  completed_at: 2026-03-17T11:21:04.483Z
   notes:
     - _ulid: 01KKXPCT6TQH6302W9VR5TAHT7
       content: "Implemented all four changes from the task description. Modified
