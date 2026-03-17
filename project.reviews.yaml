@@ -5255,6 +5255,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKXK8YZB86TNNG3VHZHJVB71
         timestamp: 2026-03-17T09:50:46.825Z
+      - _ulid: 01KKXK97YCWR942C58X3NJ2KER
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKXK97WYC7A9SPP0MGE554AF
+        timestamp: 2026-03-17T09:50:55.949Z
     examined_commit: d64977992f74f0cedcca191057909151a1803c27
     external_links: []
     lifecycle_state: open
@@ -5286,7 +5293,28 @@ reviews:
               separate tracked task.
             created_at: 2026-03-17T09:50:46.763Z
         kind: blocker
+      - _ulid: 01KKXK97WYC7A9SPP0MGE554AF
+        anchor:
+          type: code
+          commit: d64977992f74
+          line_end: 14
+          line_start: 1
+          path: packages/web-ui/tests/e2e/api-reviews-threads.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KKXK97WYPER2WK581RE4SM3P
+            author: "@claude"
+            body: Missing trait AC annotations in api-reviews-threads.spec.ts. The established pattern across
+              all daemon API e2e spec files (api-meta.spec.ts, api-server.spec.ts,
+              api-websocket.spec.ts, api-agent-dispatch.spec.ts, etc.) requires a header block of
+              N/A annotations for @trait-json-output (ac-1 through ac-6), @trait-error-guidance
+              (ac-1 through ac-6), @trait-localhost-security (ac-1 through ac-3), and
+              @trait-websocket-protocol (ac-1 through ac-8) — deferring to the centralized test
+              files that cover these traits. These annotations are entirely absent from the new test
+              file. This is a trait coverage gap that kspec validate would flag.
+            created_at: 2026-03-17T09:50:55.902Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-17T09:50:19.140Z
-    updated_at: 2026-03-17T09:50:46.763Z
+    updated_at: 2026-03-17T09:50:55.902Z
     notes: []
