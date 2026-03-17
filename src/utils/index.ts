@@ -20,4 +20,12 @@ export {
 } from "./git.js";
 export type { GrepMatch } from "./grep.js";
 export { formatMatchedFields, grepItem } from "./grep.js";
+export type {
+  DiffChangeLine,
+  DiffFile,
+  DiffFileStats,
+  DiffHunk,
+  ParsedDiff,
+} from "./git-diff-parser.js";
+export { parseUnifiedDiff } from "./git-diff-parser.js";
 export { formatRelativeTime, parseTimeSpec } from "./time.js";
