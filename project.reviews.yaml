@@ -11787,6 +11787,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKZT1C0SMS73E3WW3YT3BNH5
         timestamp: 2026-03-18T06:27:27.001Z
+      - _ulid: 01KKZT1QGJZ9W66HA2CWJ18W4W
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKZT1QCZ136ZR7RPK64RSJTA
+        timestamp: 2026-03-18T06:27:38.642Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -11954,7 +11961,28 @@ reviews:
               work."
             created_at: 2026-03-18T06:27:26.873Z
         kind: nit
+      - _ulid: 01KKZT1QCZ136ZR7RPK64RSJTA
+        anchor:
+          type: structured
+          field: ac-transient-fetch-failure
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KKZT1QCZS7ZXRZ6G07QSCSRK
+            author: "@claude"
+            body: "Missing edge case: What happens when the remote is configured but requires authentication
+              that has expired or is missing? The current ACs cover 'no remote' (ac-no-remote) and
+              'transient fetch failure' (ac-transient-fetch-failure), but an auth failure is neither
+              transient nor 'no remote' — it's a persistent, recoverable-by-operator failure mode.
+              Should it be classified as transient (retried, eventually escalated) or should it
+              trigger degraded state? The plan description says 'transient error (network
+              unreachable, DNS failure, connection timeout)' which doesn't cover auth failures.
+              Consider either: (1) adding an AC for auth/permission failures, or (2) explicitly
+              stating in the description that auth failures are classified as transient failures for
+              the purposes of the retry/escalation logic."
+            created_at: 2026-03-18T06:27:38.527Z
+        kind: question
     verdicts: []
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:27:26.873Z
+    updated_at: 2026-03-18T06:27:38.527Z
     notes: []
