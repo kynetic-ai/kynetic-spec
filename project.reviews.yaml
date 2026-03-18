@@ -16830,9 +16830,22 @@ reviews:
           status: pass
           name: fix-cycle-verification
         timestamp: 2026-03-18T14:31:10.238Z
+      - _ulid: 01KM0NQ9BD3KM228G401FFRCGA
+        actor: pr-reviewer@kspec.local
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-18T14:31:16.589Z
+      - _ulid: 01KM0NQ9BDY1RYAP79FE83EADD
+        actor: pr-reviewer@kspec.local
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T14:31:16.589Z
     examined_commit: a62c4ab0363801c687c128e795c066e49de26f20
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -16840,7 +16853,15 @@ reviews:
       ref: "@task-daemon-api"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: b30b1a6f4492
+          head_commit: a62c4ab03638
+        decision: approve
+        reviewer: pr-reviewer@kspec.local
+        role: reviewer
+        created_at: 2026-03-18T14:31:16.432Z
     created_at: 2026-03-18T14:30:32.754Z
-    updated_at: 2026-03-18T14:31:10.087Z
+    updated_at: 2026-03-18T14:31:16.432Z
     notes: []
