@@ -1,6 +1,5 @@
 <script lang="ts">
 	// AC: @ui-agent-dispatch ac-1 — Agent card showing name, triggers, active/completed counts
-	// AC: @ui-agent-dispatch ac-4 — Edit button opens inline edit form
 	import type { AgentDefinition } from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
 	import { Badge } from '$lib/components/ui/badge';
@@ -9,6 +8,7 @@
 	import Bot from '@lucide/svelte/icons/bot';
 	import Zap from '@lucide/svelte/icons/zap';
 	import Pencil from '@lucide/svelte/icons/pencil';
+	import Settings from '@lucide/svelte/icons/settings';
 
 	interface Props {
 		agent: AgentDefinition;
@@ -84,6 +84,15 @@
 			<span class="text-xs text-muted-foreground">No triggers configured</span>
 		{/if}
 	</div>
+
+	<a
+		href="/automation"
+		class="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+		data-testid="configure-triggers-link"
+	>
+		<Settings class="h-3 w-3" />
+		Configure in Automation
+	</a>
 
 	<div class="flex items-center gap-4 text-sm border-t pt-3 mt-auto">
 		<div class="flex items-center gap-1.5" data-testid="agent-active-count">
