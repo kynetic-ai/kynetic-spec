@@ -9,6 +9,7 @@ export { registerDoctorCommand } from "./doctor.js";
 export { registerExportCommand } from "./export.js";
 export { registerGuardCommand } from "./guard.js";
 export { registerHelpCommand } from "./help.js";
+export { registerHookCommands } from "./hook.js";
 export { registerInboxCommands } from "./inbox.js";
 export { registerInitCommand } from "./init.js";
 export { registerItemCommands } from "./item.js";
