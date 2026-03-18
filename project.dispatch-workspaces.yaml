@@ -10365,12 +10365,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T14:24:03.466Z
+      updated_at: 2026-03-18T14:24:06.048Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T14:24:03.466Z
+      updated_at: 2026-03-18T14:24:06.048Z
     integration:
       status: pending
       detail: null
@@ -10378,26 +10378,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b30b1a6f4492bb79ec94a5e3832a9dc25699da01
-      updated_at: 2026-03-18T14:24:03.466Z
-    lifecycle_state: ready
+      updated_at: 2026-03-18T14:24:06.048Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKZPW1EFQEXCA5QXMDP802KX"
     task_slug: task-daemon-api
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T14:13:33.380Z
-      last_reconciled_at: 2026-03-18T14:24:03.466Z
+      last_reconciled_at: 2026-03-18T14:24:06.048Z
       created_at: 2026-03-18T13:25:25.713Z
-      updated_at: 2026-03-18T14:24:03.466Z
+      updated_at: 2026-03-18T14:24:06.048Z
     workspace_id: dispatch-workspace-01KKZPW1EFQEXCA5QXMDP802KX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: a62c4ab0363801c687c128e795c066e49de26f20
+        last_seen_at: 2026-03-18T14:24:06.048Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-api-01kkzpw1-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-api/01kkzpw1
-        head: 1fb3398c8601e4d12109d099515003199b2ea770
-        last_seen_at: 2026-03-18T14:13:32.620Z
+        head: a62c4ab0363801c687c128e795c066e49de26f20
+        last_seen_at: 2026-03-18T14:24:06.048Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-api-01kkzpw1
   - active_role: worker
     base_branch_point: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
