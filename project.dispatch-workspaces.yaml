@@ -8744,7 +8744,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T03:08:53.359Z
+      updated_at: 2026-03-18T03:08:59.878Z
     integration:
       status: pending
       detail: null
@@ -8753,25 +8753,20 @@ workspaces:
       target_branch: dev
       target_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
       updated_at: 2026-03-18T03:08:53.359Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KKTW6MH5PWQSPXA3J689NHDB"
     task_slug: task-code-diff-viewer
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T02:55:10.235Z
-      last_reconciled_at: 2026-03-18T03:08:53.359Z
+      last_reconciled_at: 2026-03-18T03:08:59.878Z
       created_at: 2026-03-18T02:32:34.958Z
-      updated_at: 2026-03-18T03:08:53.359Z
+      updated_at: 2026-03-18T03:08:59.878Z
     workspace_id: dispatch-workspace-01KKTW6MH5PWQSPXA3J689NHDB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: c78549495ec28d101a3f21193f7e53105b09f3b2
-        last_seen_at: 2026-03-18T02:55:08.842Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-code-diff-viewer-01kktw6m-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-code-diff-viewer/01kktw6m
