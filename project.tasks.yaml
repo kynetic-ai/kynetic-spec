@@ -102060,8 +102060,11 @@
   spec_ref: "@review-structured-content-viewer"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev (fca8525ea). Structured content viewer for plan/spec/task reviews with
+    section-level inline commenting, structured anchors, and thread positioning. 3 new Svelte
+    components, API types, query key, 41 tests — all ACs covered.
   depends_on:
     - "@task-diff-api"
     - "@task-review-detail-page"
@@ -102086,6 +102089,7 @@
   created_at: 2026-03-16T08:29:05.056Z
   started_at: 2026-03-18T03:01:29.009Z
   submitted_at: 2026-03-18T03:13:50.863Z
+  completed_at: 2026-03-18T03:36:34.323Z
   notes:
     - _ulid: 01KKZEYFQC2YH3F94X49MBZJPZ
       content: "Implemented structured content viewer for plan/spec/task reviews on the review detail
