@@ -5042,6 +5042,9 @@ modules:
               Schema definitions for hook configuration in kynetic.meta.yaml.
               Extends the meta manifest with an optional hooks array. Defines the
               filter language for payload matching.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
