@@ -103925,7 +103925,7 @@
   spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -103943,7 +103943,7 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: 01KKZATHCJVX3BJ8V8M0CACC4J
+  session_id: null
   created_at: 2026-03-17T06:05:29.711Z
   started_at: 2026-03-18T02:07:38.706Z
   submitted_at: 2026-03-18T02:07:52.940Z
@@ -104143,6 +104143,15 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T02:18:59.806Z
+    - _ulid: 01KKZBVVT0SAN1TEWYT7270QGT
+      content: "[FIX_CYCLE: 12] Review findings: Merge conflict in
+        tests/yaml-round-trip-stability.test.ts. Local dev has saveWorkflowRun tests (from
+        workflow-runs task merged locally in 8e8a1a565) at the same insertion point where
+        saveTriageRecord tests go. Merge local dev HEAD (c829472cb) into the task branch to resolve.
+        Both describe blocks should coexist. Only the test file needs conflict resolution."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T02:19:46.368Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6CGBRT6J6F804PJ1QJW3G
