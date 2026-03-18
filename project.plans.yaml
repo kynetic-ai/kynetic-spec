@@ -422,13 +422,7 @@ plans:
 
       - Inbox item: Observation count in session start output
     status: completed
-    derived_tasks:
-      - "@implement-command-group-default-actions"
-      - "@implement-multi-value-status-filter"
-      - "@implement-output-format-option"
-      - "@implement-module-scoped-item-listing"
-      - "@implement-unified-cross-reference-lookup"
-      - "@implement-observation-content-search"
+    approved_at: null
     derived_specs:
       - "@command-group-default-actions"
       - "@multi-value-status-filter"
@@ -436,14 +430,18 @@ plans:
       - "@module-scoped-item-listing"
       - "@unified-cross-reference-lookup"
       - "@observation-content-search"
+    derived_tasks:
+      - "@implement-command-group-default-actions"
+      - "@implement-multi-value-status-filter"
+      - "@implement-output-format-option"
+      - "@implement-module-scoped-item-listing"
+      - "@implement-unified-cross-reference-lookup"
+      - "@implement-observation-content-search"
     source_path: /home/chapel/Projects/kynetic-spec/plans/cli-agent-ux-improvements.md
     created_at: 2026-02-13T00:58:40.965Z
-    approved_at: null
     completed_at: 2026-02-14T10:55:07.757Z
     notes:
       - _ulid: 01KHA83NE52ADVDXW1593TPF16
-        created_at: 2026-02-13T00:58:40.965Z
-        author: "@claude"
         content: |-
           Implementation notes:
 
@@ -468,6 +466,8 @@ plans:
           ### Separate Deliverables (Not In This Plan)
           - Docs task: Update AGENTS.md and skill prompts for --json discoverability
           - Inbox item: Observation count in session start output
+        author: "@claude"
+        created_at: 2026-02-13T00:58:40.965Z
   - _ulid: 01KHFBSYF0Q6KPTK4K6P7C7N06
     slugs:
       - plan-portable-agent-integration-infrastructure
@@ -1286,31 +1286,7 @@ plans:
 
       permission bootstrapping, version pinning.
     status: completed
-    derived_tasks:
-      - "@implement-skill-meta-type"
-      - "@implement-skill-schema-definition"
-      - "@implement-skill-file-based-content-model"
-      - "@implement-skill-parser-integration"
-      - "@implement-skill-validation"
-      - "@implement-skill-cli-commands"
-      - "@implement-skill-add-command"
-      - "@implement-skill-set-command"
-      - "@implement-skill-import-command"
-      - "@implement-skill-meta-integration"
-      - "@implement-skill-rendering-pipeline"
-      - "@implement-skill-render-cli"
-      - "@implement-claude-code-skill-renderer"
-      - "@implement-skill-drift-detection"
-      - "@implement-agent-instruction-generation"
-      - "@implement-agents-cli-commands"
-      - "@implement-agent-template-system"
-      - "@implement-auto-generated-data-sections"
-      - "@implement-enhanced-setup-command"
-      - "@implement-full-hook-installation"
-      - "@implement-core-skill-installation"
-      - "@implement-core-skill-update"
-      - "@implement-package-distribution"
-      - "@implement-init-setup-integration"
+    approved_at: null
     derived_specs:
       - "@skill-meta-type"
       - "@skill-schema"
@@ -1336,14 +1312,36 @@ plans:
       - "@core-skill-update"
       - "@package-distribution"
       - "@init-setup-integration"
+    derived_tasks:
+      - "@implement-skill-meta-type"
+      - "@implement-skill-schema-definition"
+      - "@implement-skill-file-based-content-model"
+      - "@implement-skill-parser-integration"
+      - "@implement-skill-validation"
+      - "@implement-skill-cli-commands"
+      - "@implement-skill-add-command"
+      - "@implement-skill-set-command"
+      - "@implement-skill-import-command"
+      - "@implement-skill-meta-integration"
+      - "@implement-skill-rendering-pipeline"
+      - "@implement-skill-render-cli"
+      - "@implement-claude-code-skill-renderer"
+      - "@implement-skill-drift-detection"
+      - "@implement-agent-instruction-generation"
+      - "@implement-agents-cli-commands"
+      - "@implement-agent-template-system"
+      - "@implement-auto-generated-data-sections"
+      - "@implement-enhanced-setup-command"
+      - "@implement-full-hook-installation"
+      - "@implement-core-skill-installation"
+      - "@implement-core-skill-update"
+      - "@implement-package-distribution"
+      - "@implement-init-setup-integration"
     source_path: /home/chapel/.claude/plans/warm-inventing-crab.md
     created_at: 2026-02-15T00:39:28.991Z
-    approved_at: null
     completed_at: 2026-02-15T08:47:21.035Z
     notes:
       - _ulid: 01KHFBSYF0KTH59CZ7H49MS5S1
-        created_at: 2026-02-15T00:39:28.992Z
-        author: "@claude"
         content: >-
           Implementation notes:
 
@@ -1430,6 +1428,8 @@ plans:
           Out of scope (future work): Claude Code plugin, MCP server, cross-platform renderers,
 
           permission bootstrapping, version pinning.
+        author: "@claude"
+        created_at: 2026-02-15T00:39:28.992Z
   - _ulid: 01KHHQD5E9JX66CSKBX3CN2HP1
     slugs:
       - plan-multi-platform-skill-rendering-with-agent-skills-c
@@ -2097,16 +2097,7 @@ plans:
 
       5. Round-trip: import → render → compare original frontmatter with rendered output
     status: completed
-    derived_tasks:
-      - "@implement-consolidate-skill-render-implementations"
-      - "@implement-platform-renderer-contract"
-      - "@implement-extended-skill-schema"
-      - "@implement-claude-code-renderer-extended-frontmatte"
-      - "@implement-codex-skill-renderer"
-      - "@implement-multi-platform-render-cli"
-      - "@implement-import-frontmatter-stripping-and-full-fi"
-      - "@implement-supporting-files-convention"
-      - "@implement-skill-platform-config-cli"
+    approved_at: null
     derived_specs:
       - "@consolidate-skill-render"
       - "@platform-renderer-trait"
@@ -2117,14 +2108,21 @@ plans:
       - "@import-frontmatter-strip"
       - "@supporting-files-convention"
       - "@skill-platform-config-cli"
+    derived_tasks:
+      - "@implement-consolidate-skill-render-implementations"
+      - "@implement-platform-renderer-contract"
+      - "@implement-extended-skill-schema"
+      - "@implement-claude-code-renderer-extended-frontmatte"
+      - "@implement-codex-skill-renderer"
+      - "@implement-multi-platform-render-cli"
+      - "@implement-import-frontmatter-stripping-and-full-fi"
+      - "@implement-supporting-files-convention"
+      - "@implement-skill-platform-config-cli"
     source_path: /home/chapel/.claude/plans/parsed-booping-bengio.md
     created_at: 2026-02-15T22:40:41.929Z
-    approved_at: null
     completed_at: 2026-02-16T01:55:18.359Z
     notes:
       - _ulid: 01KHHQD5E9XVG8Q4379RJNQKN8
-        created_at: 2026-02-15T22:40:41.929Z
-        author: "@claude"
         content: >-
           Implementation notes:
 
@@ -2230,6 +2228,8 @@ plans:
           4. Modify rendered output → verify drift detected per-platform
 
           5. Round-trip: import → render → compare original frontmatter with rendered output
+        author: "@claude"
+        created_at: 2026-02-15T22:40:41.929Z
   - _ulid: 01KHQQTFN4WYF7W6DJ4MPFVR7H
     slugs:
       - plan-skill-system-portability
@@ -2481,7 +2481,7 @@ plans:
           Depends on skill-module-split.
       ```
     status: completed
-    derived_tasks: []
+    approved_at: null
     derived_specs:
       - "@dead-code-and-deduplication-sweep"
       - "@setup-pipeline-unification"
@@ -2489,14 +2489,12 @@ plans:
       - "@new-project-bootstrapping"
       - "@skill-module-split"
       - "@guard-script-and-diff-quality"
+    derived_tasks: []
     source_path: /home/chapel/Projects/kynetic-spec/plans/skill-portability.md
     created_at: 2026-02-18T06:43:24.963Z
-    approved_at: null
     completed_at: null
     notes:
       - _ulid: 01KHQQTFN4G55AS85ESCFHW09W
-        created_at: 2026-02-18T06:43:24.964Z
-        author: "@claude"
         content: |-
           Implementation notes:
 
@@ -2514,6 +2512,8 @@ plans:
           redundant defaults, warning types), 01KHKTNH (type guard), 01KHKTNT (lookup dedup,
           weak test), 01KHFCDS (permission bootstrap, memory seeding, version pinning),
           01KGQY6N (skill staleness).
+        author: "@claude"
+        created_at: 2026-02-18T06:43:24.964Z
   - _ulid: 01KHVXK253WJP2SAQZ1BNWA0H0
     slugs:
       - plan-project-level-configuration-system
@@ -2900,13 +2900,7 @@ plans:
       config should not contain tokens. Error messages should recommend remote names over inline
       URLs.
     status: completed
-    derived_tasks:
-      - "@implement-project-config-file"
-      - "@implement-configurable-shadow-branch"
-      - "@implement-configurable-author-identity"
-      - "@implement-configurable-validation-defaults"
-      - "@implement-configurable-daemon-settings"
-      - "@implement-clean-up-dead-manifest-config"
+    approved_at: null
     derived_specs:
       - "@project-config"
       - "@config-shadow"
@@ -2914,14 +2908,18 @@ plans:
       - "@config-validation"
       - "@config-daemon"
       - "@config-manifest-cleanup"
+    derived_tasks:
+      - "@implement-project-config-file"
+      - "@implement-configurable-shadow-branch"
+      - "@implement-configurable-author-identity"
+      - "@implement-configurable-validation-defaults"
+      - "@implement-configurable-daemon-settings"
+      - "@implement-clean-up-dead-manifest-config"
     source_path: /home/chapel/.claude/plans/giggly-strolling-quasar.md
     created_at: 2026-02-19T21:41:10.947Z
-    approved_at: null
     completed_at: 2026-02-20T03:29:36.697Z
     notes:
       - _ulid: 01KHVXK254D32X2CHAYXX7F5MG
-        created_at: 2026-02-19T21:41:10.948Z
-        author: "@claude"
         content: >-
           Implementation notes:
 
@@ -2949,6 +2947,8 @@ plans:
           URL; otherwise = remote name. Authentication for URLs is delegated to git credential
           helpers — config should not contain tokens. Error messages should recommend remote names
           over inline URLs.
+        author: "@claude"
+        created_at: 2026-02-19T21:41:10.948Z
   - _ulid: 01KHW2GZ2H0F66QCM6K9M3S3MH
     slugs:
       - plan-unified-health-check-command-kspec-doctor
@@ -3337,18 +3337,16 @@ plans:
 
       6. Break worktree link → `kspec doctor` — shadow shows error, overall unhealthy, exit 1
     status: completed
-    derived_tasks:
-      - "@impl-doctor-command"
+    approved_at: null
     derived_specs:
       - "@doctor-command"
+    derived_tasks:
+      - "@impl-doctor-command"
     source_path: /home/chapel/.claude/plans/velvet-jumping-puppy.md
     created_at: 2026-02-19T23:07:25.137Z
-    approved_at: null
     completed_at: 2026-02-20T03:54:31.134Z
     notes:
       - _ulid: 01KHW2GZ2HH9R6VEV9RD7RYV5X
-        created_at: 2026-02-19T23:07:25.137Z
-        author: "@claude"
         content: >-
           Implementation notes:
 
@@ -3563,6 +3561,8 @@ plans:
           5. Stop daemon → `kspec doctor` — daemon shows warning, overall still healthy
 
           6. Break worktree link → `kspec doctor` — shadow shows error, overall unhealthy, exit 1
+        author: "@claude"
+        created_at: 2026-02-19T23:07:25.137Z
   - _ulid: 01KJ3FXGMWH65CZGE2CX77QZK7
     slugs:
       - plan-interactive-triage-system
@@ -4094,13 +4094,7 @@ plans:
 
       persistent triage records, and the user can review/override via web UI.
     status: completed
-    derived_tasks:
-      - "@implement-interactive-triage-system"
-      - "@implement-triage-record-schema"
-      - "@implement-triage-cli-commands"
-      - "@implement-triage-daemon-api"
-      - "@implement-interactive-triage-ui"
-      - "@implement-triage-agent-export"
+    approved_at: null
     derived_specs:
       - "@interactive-triage"
       - "@triage-record-schema"
@@ -4108,14 +4102,18 @@ plans:
       - "@triage-daemon-api"
       - "@interactive-triage-ui"
       - "@triage-agent-export"
+    derived_tasks:
+      - "@implement-interactive-triage-system"
+      - "@implement-triage-record-schema"
+      - "@implement-triage-cli-commands"
+      - "@implement-triage-daemon-api"
+      - "@implement-interactive-triage-ui"
+      - "@implement-triage-agent-export"
     source_path: /home/chapel/Projects/kynetic-spec/triage-system-plan.md
     created_at: 2026-02-22T20:16:08.857Z
-    approved_at: null
     completed_at: 2026-02-23T02:07:33.821Z
     notes:
       - _ulid: 01KJ3FXGMWFBP6FGMJH2HRVYMP
-        created_at: 2026-02-22T20:16:08.860Z
-        author: "@claude"
         content: |-
           Implementation notes:
 
@@ -4136,6 +4134,8 @@ plans:
           to use kspec triage record + kspec triage act instead of directly calling
           kspec inbox promote/delete. The skill becomes the orchestrator that creates
           persistent triage records, and the user can review/override via web UI.
+        author: "@claude"
+        created_at: 2026-02-22T20:16:08.860Z
   - _ulid: 01KJ62NKM8X5S5TQ3GYQNNB1KV
     slugs:
       - plan-sequence-based-iteration-counting-for-session-anal
@@ -4301,17 +4301,15 @@ plans:
 
       4. Full suite: `npx vitest run`
     status: completed
+    approved_at: null
+    derived_specs: []
     derived_tasks:
       - "@task-iteration-boundary-counting"
-    derived_specs: []
     source_path: /home/chapel/.claude/plans/refactored-sauteeing-frog.md
     created_at: 2026-02-23T20:22:21.576Z
-    approved_at: null
     completed_at: 2026-02-23T23:02:12.592Z
     notes:
       - _ulid: 01KJ62NKM853RHMGMD1SSNYEZA
-        created_at: 2026-02-23T20:22:21.576Z
-        author: "@claude"
         content: |-
           Implementation notes:
 
@@ -4391,6 +4389,8 @@ plans:
              iterations (not "4 events" for most)
           3. Cross-check: `session log list` iteration counts match `session log show`
           4. Full suite: `npx vitest run`
+        author: "@claude"
+        created_at: 2026-02-23T20:22:21.576Z
   - _ulid: 01KJ6KKPE07SEYTT76JAKJ8T9T
     slugs:
       - plan-session-scoping-for-kspec
@@ -5057,6 +5057,14 @@ plans:
       bash wrapper that does the fast-path check (is the command even git-related?) and only invokes
       kspec for the actual guard logic. Monitor after implementation.
     status: completed
+    approved_at: null
+    derived_specs:
+      - "@session-creation-and-env-injection"
+      - "@session-scoped-task-claiming"
+      - "@task-budget-enforcement"
+      - "@session-end-loop-signal"
+      - "@native-guard-commands"
+      - "@ralph-session-budget-integration"
     derived_tasks:
       - "@extend-session-schema-with-task-budget"
       - "@add-session-id-to-task-schema"
@@ -5068,21 +5076,11 @@ plans:
       - "@update-setup-with-migration-cleanup"
       - "@simplify-ralph-with-session-budget"
       - "@add-multi-harness-env-injection"
-    derived_specs:
-      - "@session-creation-and-env-injection"
-      - "@session-scoped-task-claiming"
-      - "@task-budget-enforcement"
-      - "@session-end-loop-signal"
-      - "@native-guard-commands"
-      - "@ralph-session-budget-integration"
     source_path: /home/chapel/.claude/plans/bright-seeking-marble.md
     created_at: 2026-02-24T01:18:24.704Z
-    approved_at: null
     completed_at: 2026-02-24T21:40:11.396Z
     notes:
       - _ulid: 01KJ6KKPE1TNFTSZ1BVJPB0A2E
-        created_at: 2026-02-24T01:18:24.705Z
-        author: "@claude"
         content: >-
           Implementation notes:
 
@@ -5177,6 +5175,8 @@ plans:
           adds ~100-200ms latency vs ~10ms for the bash script. If this is problematic, we could
           keep a thin bash wrapper that does the fast-path check (is the command even git-related?)
           and only invokes kspec for the actual guard logic. Monitor after implementation.
+        author: "@claude"
+        created_at: 2026-02-24T01:18:24.705Z
   - _ulid: 01KJ74T827R52P5YQTSCE9NC2Q
     slugs:
       - plan-session-start-output-redesign
@@ -5368,19 +5368,19 @@ plans:
 
       derive_from_specs: true
     status: completed
-    derived_tasks:
-      - "@implement-session-start-dependency-display"
-      - "@implement-session-start-activity-timeline"
-      - "@implement-session-start-inbox-triage-awareness"
-      - "@implement-session-start-computed-json-fields"
+    approved_at: null
     derived_specs:
       - "@session-start-unlocks"
       - "@session-start-activity-timeline"
       - "@session-start-inbox-triage"
       - "@session-start-computed-json"
+    derived_tasks:
+      - "@implement-session-start-dependency-display"
+      - "@implement-session-start-activity-timeline"
+      - "@implement-session-start-inbox-triage-awareness"
+      - "@implement-session-start-computed-json-fields"
     source_path: /tmp/session-start-redesign-plan.md
     created_at: 2026-02-24T06:19:05.159Z
-    approved_at: null
     completed_at: 2026-02-25T00:15:45.775Z
     notes: []
   - _ulid: 01KJDCYRHYFE054XPT63HCVZGY
@@ -5648,22 +5648,20 @@ plans:
 
       - When `--no-yolo`: skip autoApproveArgs entirely
     status: completed
-    derived_tasks:
-      - "@implement-per-role-adapter-selection-for-ralph-loo"
-      - "@implement-per-adapter-auto-approve-arguments"
-      - "@implement-register-codex-acp-in-adapter-registry"
+    approved_at: null
     derived_specs:
       - "@ralph-per-role-adapters"
       - "@ralph-adapter-auto-approve"
       - "@codex-acp-adapter-registration"
+    derived_tasks:
+      - "@implement-per-role-adapter-selection-for-ralph-loo"
+      - "@implement-per-adapter-auto-approve-arguments"
+      - "@implement-register-codex-acp-in-adapter-registry"
     source_path: /home/chapel/.claude/plans/atomic-wishing-walrus.md
     created_at: 2026-02-26T16:36:48.318Z
-    approved_at: null
     completed_at: 2026-02-26T22:05:21.766Z
     notes:
       - _ulid: 01KJDCYRHYJGK717YS446K3BKF
-        created_at: 2026-02-26T16:36:48.318Z
-        author: "@claude"
         content: >-
           Implementation notes:
 
@@ -5711,6 +5709,8 @@ plans:
           - codex-acp: TBD (determine correct Codex ACP auto-approve flags)
 
           - When `--no-yolo`: skip autoApproveArgs entirely
+        author: "@claude"
+        created_at: 2026-02-26T16:36:48.318Z
   - _ulid: 01KJG4QB2Q95HB7CQ4GYZ777DV
     slugs:
       - plan-session-compact-command
@@ -5892,18 +5892,16 @@ plans:
 
       **Supersedes inbox item:** `01KGWQ2T` (session log compaction)
     status: completed
-    derived_tasks:
-      - "@implement-session-event-compaction"
+    approved_at: null
     derived_specs:
       - "@session-compact"
+    derived_tasks:
+      - "@implement-session-event-compaction"
     source_path: /home/chapel/.claude/plans/keen-wiggling-reef.md
     created_at: 2026-02-27T18:10:39.830Z
-    approved_at: null
     completed_at: 2026-02-27T18:49:55.005Z
     notes:
       - _ulid: 01KJG4QB2QRMN72CGAZ7GBJVK0
-        created_at: 2026-02-27T18:10:39.831Z
-        author: "@claude"
         content: >-
           Implementation notes:
 
@@ -5972,6 +5970,8 @@ plans:
 
 
           **Supersedes inbox item:** `01KGWQ2T` (session log compaction)
+        author: "@claude"
+        created_at: 2026-02-27T18:10:39.831Z
   - _ulid: 01KJGBWMZCX7EQFWP4JFN7MB8V
     slugs:
       - plan-auto-close-stale-active-sessions
@@ -6121,22 +6121,20 @@ plans:
       Prefer the same time-spec parsing style already used by session log and workflow prune
       commands.
     status: completed
-    derived_tasks:
-      - "@implement-stale-active-session-cleanup"
-      - "@implement-stale-session-candidate-criteria"
-      - "@implement-auto-abandon-metadata-and-audit-trail"
+    approved_at: null
     derived_specs:
       - "@session-stale-cleanup"
       - "@session-stale-criteria"
       - "@session-stale-close-metadata"
+    derived_tasks:
+      - "@implement-stale-active-session-cleanup"
+      - "@implement-stale-session-candidate-criteria"
+      - "@implement-auto-abandon-metadata-and-audit-trail"
     source_path: /tmp/session-stale-cleanup-plan.md
     created_at: 2026-02-27T20:15:53.836Z
-    approved_at: null
     completed_at: 2026-03-01T07:27:41.145Z
     notes:
       - _ulid: 01KJGBWMZCFGG7P1TWE5GP3G5G
-        created_at: 2026-02-27T20:15:53.836Z
-        author: Jacob Chapel
         content: >-
           Implementation notes:
 
@@ -6146,19 +6144,21 @@ plans:
 
           Prefer the same time-spec parsing style already used by session log and workflow prune
           commands.
-      - _ulid: 01KJGCHPGC1X0RAM6J1QAKH8NP
-        created_at: 2026-02-27T20:27:23.533Z
         author: Jacob Chapel
+        created_at: 2026-02-27T20:15:53.836Z
+      - _ulid: 01KJGCHPGC1X0RAM6J1QAKH8NP
         content: "Incorporated review feedback: clarified targeting semantics (<session-id> vs --all, no
           --refs), added explicit usage-error ACs, restricted criteria flags to relative durations,
           added corrupt events handling + liveness guard ACs, standardized close_reason format, and
           added task dependency edges so parent feature task waits on criteria+metadata tasks."
-      - _ulid: 01KJGCJZHWBB409R2GSCX2BTX3
-        created_at: 2026-02-27T20:28:05.564Z
         author: Jacob Chapel
+        created_at: 2026-02-27T20:27:23.533Z
+      - _ulid: 01KJGCJZHWBB409R2GSCX2BTX3
         content: "Review refinement: aligned batch semantics with traits by adding --refs support and
           @trait-multi-ref-batch; targeting contract is now <session-id> OR --refs OR --all
           (mutually exclusive), with --all --dry-run used for batch preview AC."
+        author: Jacob Chapel
+        created_at: 2026-02-27T20:28:05.564Z
   - _ulid: 01KJP2761QQZ6ZBQWEWHRV7EPD
     slugs:
       - plan-reactive-agent-runtime
@@ -6931,6 +6931,15 @@ plans:
       - **Bootstrap on start** — dispatch engine must evaluate existing task states on startup, not
       just react to future changes
     status: active
+    approved_at: null
+    derived_specs:
+      - "@agent-definition-schema"
+      - "@session-model-evolution"
+      - "@agent-invocation-lifecycle"
+      - "@agent-dispatch-engine"
+      - "@cli-agent-commands"
+      - "@daemon-agent-dispatch"
+      - "@ralph-replacement"
     derived_tasks:
       - "@implement-agent-definition-schema"
       - "@implement-session-model-evolution"
@@ -6940,22 +6949,11 @@ plans:
       - "@implement-daemon-agent-dispatch-integration"
       - "@implement-ralph-replacement"
       - "@task-ralph-migration-guide"
-    derived_specs:
-      - "@agent-definition-schema"
-      - "@session-model-evolution"
-      - "@agent-invocation-lifecycle"
-      - "@agent-dispatch-engine"
-      - "@cli-agent-commands"
-      - "@daemon-agent-dispatch"
-      - "@ralph-replacement"
     source_path: /home/chapel/.claude/plans/jiggly-frolicking-kahn.md
     created_at: 2026-03-02T01:22:19.831Z
-    approved_at: null
     completed_at: null
     notes:
       - _ulid: 01KJP2761REJ3DDP6JKQ9AHXWC
-        created_at: 2026-03-02T01:22:19.832Z
-        author: "@claude"
         content: >-
           Implementation notes:
 
@@ -7025,6 +7023,8 @@ plans:
 
           - **Bootstrap on start** — dispatch engine must evaluate existing task states on startup,
           not just react to future changes
+        author: "@claude"
+        created_at: 2026-03-02T01:22:19.832Z
   - _ulid: 01KJWX2BHT0D4VZQDMH0N1KXPD
     slugs:
       - plan-fix-batch-write-buffer-bypass
@@ -7349,11 +7349,11 @@ plans:
 
       ```
     status: completed
-    derived_tasks: []
+    approved_at: null
     derived_specs: []
+    derived_tasks: []
     source_path: null
     created_at: 2026-03-04T17:06:59.770Z
-    approved_at: null
     completed_at: 2026-03-04T18:26:50.372Z
     notes: []
   - _ulid: 01KJXDGN7HRPTWYMYE9Z0FAXHW
@@ -7362,20 +7362,20 @@ plans:
     title: Dispatch prompt quality + review_url
     content: ""
     status: completed
-    derived_tasks: []
+    approved_at: null
     derived_specs: []
+    derived_tasks: []
     source_path: null
     created_at: 2026-03-04T21:54:25.649Z
-    approved_at: null
     completed_at: 2026-03-04T22:38:32.584Z
     notes:
       - _ulid: 01KJXDJAQZ6BF9RK02TYSEARZ0
-        created_at: 2026-03-04T21:55:20.447Z
-        author: "@claude"
         content: "Plan details: Add review_url field to task schema + dispatch prompt orientation context
           (task title, trigger meaning, fix-cycle notes, review URL, template interpolation). Spec
           ACs added to @task-submit (ac-submit-1 through ac-submit-3) and @agent-dispatch-engine
           (ac-13 through ac-16). Full plan at ~/.claude/plans/resilient-wiggling-token.md"
+        author: "@claude"
+        created_at: 2026-03-04T21:55:20.447Z
   - _ulid: 01KJXSVF2YKCXMJGC55G1CPBV2
     slugs:
       - plan-ui-ux-revamp
@@ -7812,17 +7812,7 @@ plans:
 
       No aggregated activity API needed — merge recent data client-side.
     status: active
-    derived_tasks:
-      - "@implement-ui-design-system"
-      - "@implement-app-shell-and-navigation"
-      - "@implement-task-board-kanban"
-      - "@implement-session-stream-view"
-      - "@implement-agent-and-dispatch-view"
-      - "@implement-session-history"
-      - "@implement-enhanced-inbox-view"
-      - "@implement-plans-view"
-      - "@implement-validation-and-alignment-view"
-      - "@implement-dashboard-overview"
+    approved_at: null
     derived_specs:
       - "@ui-design-system"
       - "@ui-app-shell"
@@ -7834,14 +7824,22 @@ plans:
       - "@ui-plans-view"
       - "@ui-validation-view"
       - "@ui-dashboard-overview"
+    derived_tasks:
+      - "@implement-ui-design-system"
+      - "@implement-app-shell-and-navigation"
+      - "@implement-task-board-kanban"
+      - "@implement-session-stream-view"
+      - "@implement-agent-and-dispatch-view"
+      - "@implement-session-history"
+      - "@implement-enhanced-inbox-view"
+      - "@implement-plans-view"
+      - "@implement-validation-and-alignment-view"
+      - "@implement-dashboard-overview"
     source_path: /home/chapel/Projects/kynetic-spec/.kspec/artifacts/ui-revamp-import.md
     created_at: 2026-03-05T01:30:02.718Z
-    approved_at: null
     completed_at: null
     notes:
       - _ulid: 01KJXSVF2YDSBAM76XMSQHBCFX
-        created_at: 2026-03-05T01:30:02.718Z
-        author: "@claude"
         content: |-
           Implementation notes:
 
@@ -7898,6 +7896,8 @@ plans:
           Build last. Uses data from tasks, inbox, observations, validation APIs.
           Active work section reuses ActiveFleetRow from task board.
           No aggregated activity API needed — merge recent data client-side.
+        author: "@claude"
+        created_at: 2026-03-05T01:30:02.718Z
   - _ulid: 01KK5RDB3Q7XAAK8CEHBTZJ1SJ
     slugs:
       - plan-completeness-warning-debt-reduction
@@ -8307,11 +8307,11 @@ plans:
       At that point, `kspec validate --completeness` becomes a tractable review signal again instead
       of a bulk debt dump.
     status: approved
-    derived_tasks: []
+    approved_at: null
     derived_specs: []
+    derived_tasks: []
     source_path: null
     created_at: 2026-03-08T03:38:46.772Z
-    approved_at: null
     completed_at: null
     notes: []
   - _ulid: 01KK7T2BME7SZG4Z93TA6K1B8X
@@ -8876,6 +8876,14 @@ plans:
 
       Already local-only — no changes needed. They naturally move with the session directory.
     status: completed
+    approved_at: null
+    derived_specs:
+      - "@session-storage-modes"
+      - "@session-legacy-migration"
+      - "@session-storage-path-resolution"
+      - "@session-branch-worktree"
+      - "@session-remove-shadow-commits"
+      - "@session-spec-path-updates"
     derived_tasks:
       - "@add-sessions-storage-config-to-manifest-schema"
       - "@extract-session-path-resolution-from-specdir"
@@ -8886,21 +8894,11 @@ plans:
       - "@add-kspec-session-migrate-command"
       - "@update-tests-for-session-storage-separation"
       - "@implement-session-branch-worktree-mode"
-    derived_specs:
-      - "@session-storage-modes"
-      - "@session-legacy-migration"
-      - "@session-storage-path-resolution"
-      - "@session-branch-worktree"
-      - "@session-remove-shadow-commits"
-      - "@session-spec-path-updates"
     source_path: /home/chapel/Projects/kynetic-spec/plans/session-storage-separation.md
     created_at: 2026-03-08T22:46:12.878Z
-    approved_at: null
     completed_at: 2026-03-09T07:23:28.945Z
     notes:
       - _ulid: 01KK7T2BMFDAGDS0WND25D560H
-        created_at: 2026-03-08T22:46:12.879Z
-        author: "@claude"
         content: >-
           Implementation notes:
 
@@ -8966,6 +8964,8 @@ plans:
           ### Budget files
 
           Already local-only — no changes needed. They naturally move with the session directory.
+        author: "@claude"
+        created_at: 2026-03-08T22:46:12.879Z
   - _ulid: 01KKA7TQ0ZC72Y5BXEJVWT2JB9
     slugs:
       - plan-lazy-shadow-sync
@@ -9587,22 +9587,20 @@ plans:
       FETCH_HEAD (main repo's, not worktree's), so they do NOT interfere with the worktree drift
       check. This is a benefit of using the worktree-specific FETCH_HEAD path.
     status: completed
-    derived_tasks:
-      - "@implement-lazy-shadow-sync-on-reads"
-      - "@implement-always-sync-on-shadow-writes"
-      - "@implement-daemon-background-sync-pushes"
+    approved_at: null
     derived_specs:
       - "@shadow-lazy-read-sync"
       - "@shadow-write-sync"
       - "@shadow-daemon-push-sync"
+    derived_tasks:
+      - "@implement-lazy-shadow-sync-on-reads"
+      - "@implement-always-sync-on-shadow-writes"
+      - "@implement-daemon-background-sync-pushes"
     source_path: /home/chapel/Projects/kynetic-spec/plans/lazy-shadow-sync.md
     created_at: 2026-03-09T21:25:11.326Z
-    approved_at: null
     completed_at: 2026-03-09T23:53:18.619Z
     notes:
       - _ulid: 01KKA7TQ0ZPHEHZ89XNMMGVDWX
-        created_at: 2026-03-09T21:25:11.327Z
-        author: "@claude"
         content: >-
           Implementation notes:
 
@@ -9954,6 +9952,8 @@ plans:
           - Unrelated fetches (e.g., `git fetch` on main branch by the user) may update a different
           FETCH_HEAD (main repo's, not worktree's), so they do NOT interfere with the worktree drift
           check. This is a benefit of using the worktree-specific FETCH_HEAD path.
+        author: "@claude"
+        created_at: 2026-03-09T21:25:11.327Z
   - _ulid: 01KKB3PG8HHCTB2CEQ6ZW88E0V
     slugs:
       - plan-session-explorer-unified-session-browsing-filterin
@@ -10491,14 +10491,7 @@ plans:
       since the load-all behavior changes to paginated. The existing AC describes
       what fields are shown; the new specs describe how loading and filtering work.
     status: completed
-    derived_tasks:
-      - "@implement-session-list-pagination-api"
-      - "@implement-session-summary-cache"
-      - "@implement-session-list-infinite-scroll-ui"
-      - "@implement-session-filter-controls"
-      - "@implement-session-cli-unified-filtering"
-      - "@implement-task-and-spec-session-context"
-      - "@implement-session-text-search"
+    approved_at: null
     derived_specs:
       - "@session-list-pagination-api"
       - "@session-summary-cache"
@@ -10507,14 +10500,19 @@ plans:
       - "@session-cli-unified-filtering"
       - "@task-spec-session-context"
       - "@session-text-search"
+    derived_tasks:
+      - "@implement-session-list-pagination-api"
+      - "@implement-session-summary-cache"
+      - "@implement-session-list-infinite-scroll-ui"
+      - "@implement-session-filter-controls"
+      - "@implement-session-cli-unified-filtering"
+      - "@implement-task-and-spec-session-context"
+      - "@implement-session-text-search"
     source_path: /home/chapel/Projects/kynetic-spec/plans/session-explorer.md
     created_at: 2026-03-10T05:32:13.457Z
-    approved_at: null
     completed_at: 2026-03-11T06:58:00.140Z
     notes:
       - _ulid: 01KKB3PG8HAWDDJYD4BG6CECCC
-        created_at: 2026-03-10T05:32:13.457Z
-        author: "@claude"
         content: |-
           Implementation notes:
 
@@ -10539,6 +10537,8 @@ plans:
           The existing @ui-session-history ac-1 will need updating after this work
           since the load-all behavior changes to paginated. The existing AC describes
           what fields are shown; the new specs describe how loading and filtering work.
+        author: "@claude"
+        created_at: 2026-03-10T05:32:13.457Z
   - _ulid: 01KKB5HX581832QPZ1XGCFS3VC
     slugs:
       - plan-ui-wide-markdown-rendering-plan-embedded-views
@@ -11141,6 +11141,14 @@ plans:
       9. Trait attachment to existing specs (update @ui-session-stream, @ui-plans-view,
       @web-dashboard)
     status: active
+    approved_at: null
+    derived_specs:
+      - "@trait-markdown-rendering"
+      - "@prose-typography-setup"
+      - "@streaming-markdown-component"
+      - "@batch-item-fetch-api"
+      - "@plan-embedded-views"
+      - "@markdown-ui-adoption"
     derived_tasks:
       - "@implement-markdown-rendering-trait"
       - "@implement-prose-typography-setup"
@@ -11149,21 +11157,11 @@ plans:
       - "@implement-plan-content-embedded-views"
       - "@implement-markdown-adoption-across-ui-surfaces"
       - "@task-add-markdown-trait"
-    derived_specs:
-      - "@trait-markdown-rendering"
-      - "@prose-typography-setup"
-      - "@streaming-markdown-component"
-      - "@batch-item-fetch-api"
-      - "@plan-embedded-views"
-      - "@markdown-ui-adoption"
     source_path: /home/chapel/Projects/kynetic-spec/plan-markdown-ui.md
     created_at: 2026-03-10T06:04:39.976Z
-    approved_at: null
     completed_at: null
     notes:
       - _ulid: 01KKB5HX58VGPXYZXJVR9Y8JRN
-        created_at: 2026-03-10T06:04:39.976Z
-        author: "@claude"
         content: >-
           Implementation notes:
 
@@ -11262,6 +11260,8 @@ plans:
 
           9. Trait attachment to existing specs (update @ui-session-stream, @ui-plans-view,
           @web-dashboard)
+        author: "@claude"
+        created_at: 2026-03-10T06:04:39.976Z
   - _ulid: 01KKB8FCD2B6EWJWRHND4EYJXC
     slugs:
       - plan-spec-reconciliation-close-validate-completeness-ga
@@ -11516,15 +11516,7 @@ plans:
       Priority order for AC backfill: @core (foundational) → @schema → @tasks → @cli →
       @meta/@shadow-branch. Each is scoped to one module so agents can work them independently.
     status: active
-    derived_tasks:
-      - "@implement-spec-completeness-policy"
-      - "@implement-core-primitives-ac-backfill"
-      - "@implement-schema-and-structure-ac-backfill"
-      - "@implement-cli-ac-backfill"
-      - "@implement-task-system-ac-backfill"
-      - "@implement-meta-and-shadow-branch-ac-backfill"
-      - "@implement-test-coverage-annotation-sweep"
-      - "@implement-missing-description-backfill"
+    approved_at: null
     derived_specs:
       - "@spec-completeness-policy"
       - "@core-ac-backfill"
@@ -11534,14 +11526,20 @@ plans:
       - "@meta-shadow-ac-backfill"
       - "@test-annotation-sweep"
       - "@description-backfill"
+    derived_tasks:
+      - "@implement-spec-completeness-policy"
+      - "@implement-core-primitives-ac-backfill"
+      - "@implement-schema-and-structure-ac-backfill"
+      - "@implement-cli-ac-backfill"
+      - "@implement-task-system-ac-backfill"
+      - "@implement-meta-and-shadow-branch-ac-backfill"
+      - "@implement-test-coverage-annotation-sweep"
+      - "@implement-missing-description-backfill"
     source_path: /home/chapel/Projects/kynetic-spec/plan-spec-reconciliation.md
     created_at: 2026-03-10T06:55:43.010Z
-    approved_at: null
     completed_at: null
     notes:
       - _ulid: 01KKB8FCD3NCZPCENV5S6XCF2C
-        created_at: 2026-03-10T06:55:43.011Z
-        author: "@claude"
         content: >-
           Implementation notes:
 
@@ -11570,14 +11568,16 @@ plans:
 
           Priority order for AC backfill: @core (foundational) → @schema → @tasks → @cli →
           @meta/@shadow-branch. Each is scoped to one module so agents can work them independently.
-      - _ulid: 01KKB963S0G5994EMVQ7VWJFK6
-        created_at: 2026-03-10T07:08:07.840Z
         author: "@claude"
+        created_at: 2026-03-10T06:55:43.011Z
+      - _ulid: 01KKB963S0G5994EMVQ7VWJFK6
         content: "Review fixes applied. Out-of-scope items handled by separate tasks:
           automation-eligible-no-spec warnings (@01KKB8A2), @observations slug ambiguity
           (@01KKB8BJ), status mismatches (@01KKB8CF). Meta+shadow backfill split into two
           independent tasks. All backfill tasks depend on @implement-spec-completeness-policy; sweep
           depends on all backfills."
+        author: "@claude"
+        created_at: 2026-03-10T07:08:07.840Z
   - _ulid: 01KKCYMBT2TBFYZP1CZPQGDJ2Y
     slugs:
       - plan-iterative-plan-editing
@@ -12392,24 +12392,22 @@ plans:
       `.kspec/project.plans.yaml` provide version history. A future `kspec plan history @ref` or
       `kspec plan diff @ref` could surface this but is not needed for initial iteration.
     status: completed
-    derived_tasks:
-      - "@implement-plan-export-command"
-      - "@implement-plan-import-into-existing-plan"
-      - "@implement-plan-import-content-only-storage"
-      - "@implement-enhanced-plan-derivation"
+    approved_at: null
     derived_specs:
       - "@plan-export"
       - "@plan-import-into"
       - "@plan-import-content-only"
       - "@plan-derive-enhanced"
+    derived_tasks:
+      - "@implement-plan-export-command"
+      - "@implement-plan-import-into-existing-plan"
+      - "@implement-plan-import-content-only-storage"
+      - "@implement-enhanced-plan-derivation"
     source_path: /home/chapel/Projects/kynetic-spec/.kspec/artifacts/plan-iterative-planning.md
     created_at: 2026-03-10T22:42:09.346Z
-    approved_at: null
     completed_at: 2026-03-11T21:42:55.140Z
     notes:
       - _ulid: 01KKCYMBT304MRW0C8AJX3KBM5
-        created_at: 2026-03-10T22:42:09.347Z
-        author: "@claude"
         content: >-
           Implementation notes:
 
@@ -12654,6 +12652,8 @@ plans:
           Since all plan mutations auto-commit to shadow branch, `git log` and `git diff` on
           `.kspec/project.plans.yaml` provide version history. A future `kspec plan history @ref` or
           `kspec plan diff @ref` could surface this but is not needed for initial iteration.
+        author: "@claude"
+        created_at: 2026-03-10T22:42:09.347Z
   - _ulid: 01KKER17PWKBFQF457JTBNPM4H
     slugs:
       - plan-initial-activity-watchdog-for-agent-invocations
@@ -12906,23 +12906,23 @@ plans:
 
       re-evaluates eligibility and re-dispatches if appropriate.
     status: completed
+    approved_at: null
+    derived_specs:
+      - "@invocation-initial-activity-watchdog"
     derived_tasks:
       - "@task-implement-stall-watchdog"
       - "@task-test-stall-watchdog"
-    derived_specs:
-      - "@invocation-initial-activity-watchdog"
-    source_path: /tmp/kspec-plans/initial-activity-watchdog.md
     module_ref: null
+    source_path: /tmp/kspec-plans/initial-activity-watchdog.md
     created_at: 2026-03-11T15:25:19.964Z
-    approved_at: null
     completed_at: 2026-03-11T16:13:29.455Z
     notes:
       - _ulid: 01KKER4FT5KP7VAA4XJ8CSHESA
-        created_at: 2026-03-11T15:27:06.566Z
-        author: "@claude"
         content: "Manually created spec and tasks (enhanced derive not yet merged). Spec:
           @invocation-initial-activity-watchdog (5 ACs). Tasks: @task-implement-stall-watchdog,
           @task-test-stall-watchdog. Both tasks have plan_ref set."
+        author: "@claude"
+        created_at: 2026-03-11T15:27:06.566Z
   - _ulid: 01KKFJY0ZS26PY4QC9594S9K2E
     slugs:
       - plan-dispatch-worktree-isolation-and-scheduling
@@ -13922,6 +13922,19 @@ plans:
       - chain-of-work ancestry that intentionally forks work from something other than the
       configured base branch
     status: active
+    approved_at: 2026-03-12T02:32:35.603Z
+    derived_specs:
+      - "@dispatch-workspace-configuration"
+      - "@canonical-task-workspace-contract"
+      - "@dispatch-workspace-registry"
+      - "@dispatch-invocation-worktree-isolation"
+      - "@dispatch-branch-integration-contract"
+      - "@dispatch-workspace-cleanup-policy"
+      - "@dispatch-runtime-bootstrap-contract"
+      - "@dispatch-workspace-orientation-prompt"
+      - "@dispatch-role-workflow-entry-contract"
+      - "@scoped-dispatch-shadow-serialization"
+      - "@dispatch-scheduling-priority-model"
     derived_tasks:
       - "@task-design-dispatch-workspace-config"
       - "@task-design-canonical-task-workspace-contract"
@@ -13938,49 +13951,34 @@ plans:
       - "@task-scope-dispatch-shadow-serialization"
       - "@task-implement-priority-aware-dispatch-scheduler"
       - "@task-test-dispatch-workspace-and-scheduler-flow"
-    derived_specs:
-      - "@dispatch-workspace-configuration"
-      - "@canonical-task-workspace-contract"
-      - "@dispatch-workspace-registry"
-      - "@dispatch-invocation-worktree-isolation"
-      - "@dispatch-branch-integration-contract"
-      - "@dispatch-workspace-cleanup-policy"
-      - "@dispatch-runtime-bootstrap-contract"
-      - "@dispatch-workspace-orientation-prompt"
-      - "@dispatch-role-workflow-entry-contract"
-      - "@scoped-dispatch-shadow-serialization"
-      - "@dispatch-scheduling-priority-model"
-    source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-worktree-isolation-and-scheduling.md
     module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-worktree-isolation-and-scheduling.md
     created_at: 2026-03-11T23:15:26.329Z
-    approved_at: 2026-03-12T02:32:35.603Z
     completed_at: null
     notes:
       - _ulid: 01KKFKGMJM1HBXQDE0BDPZ2E7B
-        created_at: 2026-03-11T23:25:36.212Z
-        author: Jacob Chapel
         content: Tighten workspace identity, registry persistence, bootstrap boundaries, scheduler contract,
           and prerequisite task ordering after holistic review
-      - _ulid: 01KKFKJDN1BKMJN72RABHAF515
-        created_at: 2026-03-11T23:26:34.658Z
         author: Jacob Chapel
+        created_at: 2026-03-11T23:25:36.212Z
+      - _ulid: 01KKFKJDN1BKMJN72RABHAF515
         content: Clarify canonical branch format, explicit workspace lifecycle transitions, and end-to-end
           test coverage for orientation and role entrypoints
+        author: Jacob Chapel
+        created_at: 2026-03-11T23:26:34.658Z
       - _ulid: 01KKFQ9YXZN35ZX08C8NZ3VY44
+        content: Content updated from file
+        author: Jacob Chapel
         created_at: 2026-03-12T00:31:51.743Z
-        author: Jacob Chapel
-        content: Content updated from file
       - _ulid: 01KKFQBKPTCFQMRPKNZB9RVPXY
+        content: Content updated from file
+        author: chapel
         created_at: 2026-03-12T00:32:45.786Z
-        author: chapel
-        content: Content updated from file
       - _ulid: 01KKFQENQQS7X0KNY49ADVCPAG
-        created_at: 2026-03-12T00:34:26.167Z
-        author: chapel
         content: Content updated from file
+        author: chapel
+        created_at: 2026-03-12T00:34:26.167Z
       - _ulid: 01KKFY9KQ4SC6K0TBADFZ1934R
-        created_at: 2026-03-12T02:34:00.292Z
-        author: Jacob Chapel
         content: >-
           ### Scope boundaries
 
@@ -14096,6 +14094,8 @@ plans:
 
           - chain-of-work ancestry that intentionally forks work from something other than the
           configured base branch
+        author: Jacob Chapel
+        created_at: 2026-03-12T02:34:00.292Z
   - _ulid: 01KKFJY4FKCRQH1YPZNMRCTPNR
     slugs:
       - plan-review-records-and-gates
@@ -15670,6 +15670,20 @@ plans:
 
       synchronization can follow in later plans.
     status: active
+    approved_at: 2026-03-14T08:45:16.499Z
+    derived_specs:
+      - "@review-record-core-model"
+      - "@review-record-storage-and-identity"
+      - "@review-subject-bindings"
+      - "@review-comment-threads-and-anchors"
+      - "@review-checks-and-gate-evaluation"
+      - "@review-verdicts-and-resolution-lifecycle"
+      - "@review-record-validation"
+      - "@review-task-lifecycle-integration"
+      - "@review-cli-commands"
+      - "@review-cli-creation-and-query"
+      - "@review-cli-mutation-commands"
+      - "@review-cli-task-linkage"
     derived_tasks:
       - "@task-implement-review-record-core"
       - "@task-implement-review-storage-and-identity"
@@ -15684,60 +15698,44 @@ plans:
       - "@task-implement-review-cli-mutations"
       - "@task-implement-review-cli-task-linkage"
       - "@task-create-review-skill"
-    derived_specs:
-      - "@review-record-core-model"
-      - "@review-record-storage-and-identity"
-      - "@review-subject-bindings"
-      - "@review-comment-threads-and-anchors"
-      - "@review-checks-and-gate-evaluation"
-      - "@review-verdicts-and-resolution-lifecycle"
-      - "@review-record-validation"
-      - "@review-task-lifecycle-integration"
-      - "@review-cli-commands"
-      - "@review-cli-creation-and-query"
-      - "@review-cli-mutation-commands"
-      - "@review-cli-task-linkage"
-    source_path: /home/chapel/Projects/kynetic-spec/plans/review-records-and-gates.md
     module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/review-records-and-gates.md
     created_at: 2026-03-11T23:15:29.907Z
-    approved_at: 2026-03-14T08:45:16.499Z
     completed_at: null
     notes:
       - _ulid: 01KKJV44NWWSBDZWN74QRJEXFC
-        created_at: 2026-03-13T05:36:18.620Z
-        author: Jacob Chapel
         content: Refine scope, task semantics, and integration contracts
+        author: Jacob Chapel
+        created_at: 2026-03-13T05:36:18.620Z
       - _ulid: 01KKM3AF150CF90P3TS4Z0HW26
-        created_at: 2026-03-13T17:18:48.869Z
-        author: Jacob Chapel
         content: Add minimal CLI surface for review records
+        author: Jacob Chapel
+        created_at: 2026-03-13T17:18:48.869Z
       - _ulid: 01KKM3VS4TW94C67P9DFW60MEH
-        created_at: 2026-03-13T17:28:16.282Z
-        author: Jacob Chapel
         content: Address review feedback on storage, identity, traits, and lifecycle semantics
-      - _ulid: 01KKM4C0MZ49PP6CCYY8RVBEXC
-        created_at: 2026-03-13T17:37:08.256Z
         author: Jacob Chapel
+        created_at: 2026-03-13T17:28:16.282Z
+      - _ulid: 01KKM4C0MZ49PP6CCYY8RVBEXC
         content: Convert plan tasks from design work to execution work
+        author: Jacob Chapel
+        created_at: 2026-03-13T17:37:08.256Z
       - _ulid: 01KKN6FTN1XFTQFYP5MGQF2CQ5
-        created_at: 2026-03-14T03:33:24.769Z
-        author: "@claude"
         content: "Addressed review feedback: removed redundant trait-error-guidance from child CLI specs
           (inherited from parent), added trait-confirmation-prompt to mutation commands for
           destructive op safety, added implementation notes for iterative validation approach and
           subject type extensibility as open discriminated union"
-      - _ulid: 01KKN7395N95AETAMGEQEG3M70
-        created_at: 2026-03-14T03:44:02.229Z
         author: "@claude"
+        created_at: 2026-03-14T03:33:24.769Z
+      - _ulid: 01KKN7395N95AETAMGEQEG3M70
         content: "Expanded implementation notes with concrete guidance: storage location
           (project.reviews.yaml), schema structure (Zod discriminated unions, nested schemas),
           parser layer (file-locked mutations following plans.ts pattern), reference system
           integration (ReferenceIndex update), CLI command surface (kspec review subcommands with
           markMutating), batch support, testing approach, and task lifecycle integration (review_ref
           field)"
-      - _ulid: 01KKN8KDMHY99H777BHJSMDJ9D
-        created_at: 2026-03-14T04:10:19.665Z
         author: "@claude"
+        created_at: 2026-03-14T03:44:02.229Z
+      - _ulid: 01KKN8KDMHY99H777BHJSMDJ9D
         content: "Fixed all issues from deep review: (1) storage format key kynetic_reviews, (2) NoteSchema
           import path corrected to task.ts, (3) ctx.shadow not ctx.shadowConfig, (4) added missing
           dep task-implement-review-cli-create-query -> subject-bindings, (5) added
@@ -15746,9 +15744,9 @@ plans:
           ULIDs, (8) defined reviewer identity as plain string matching git author convention, (9)
           added archived to status enum, (10) relaxed CLI surface task dep to unblock scaffolding,
           (11) tightened storage ac-3 into testable behavior"
-      - _ulid: 01KKNHA44D9TVMXQZ0Q702WYNQ
-        created_at: 2026-03-14T06:42:32.206Z
         author: "@claude"
+        created_at: 2026-03-14T04:10:19.665Z
+      - _ulid: 01KKNHA44D9TVMXQZ0Q702WYNQ
         content: "Major rework incorporating external review feedback: (1) git-backed compare semantics for
           code subjects (base_commit + head_commit + merge_base_commit), (2) per-entity content
           hashing for shadow-branch subject staleness instead of HEAD, (3) split lifecycle_state
@@ -15759,9 +15757,9 @@ plans:
           needs_work on request_changes), (9) CLI commands for close/archive/open/refresh, (10)
           consistent naming (request_changes not request-changes), (11) explicit --slug support for
           batch workflows, (12) v1 scoped to committed code only, hardcoded gate policy only"
-      - _ulid: 01KKNQRGTMN9PCADB1ZR42BZG7
-        created_at: 2026-03-14T08:35:15.412Z
         author: "@claude"
+        created_at: 2026-03-14T06:42:32.206Z
+      - _ulid: 01KKNQRGTMN9PCADB1ZR42BZG7
         content: "Final review fixes: (1) generic applies_to_version as discriminated union of code_compare
           and entity_version for non-code reviews, (2) full compare identity staleness — both
           base_commit + head_commit must match, (3) verdict supersession — only latest verdict per
@@ -15770,19 +15768,19 @@ plans:
           semantic content hash with excluded fields per entity type, (7) removed rejected from v1
           disposition, (8) unified event type list, (9) validation checks structure not freshness,
           (10) review refresh as authoritative staleness trigger"
-      - _ulid: 01KKNR66C3NVD1CE8XA8TP2KJW
-        created_at: 2026-03-14T08:42:43.459Z
         author: "@claude"
+        created_at: 2026-03-14T08:35:15.412Z
+      - _ulid: 01KKNR66C3NVD1CE8XA8TP2KJW
         content: "Added task-create-review-skill: create templates/skills/review.md for agent instructions,
           depends on all CLI tasks, auto-surfaces via kspec agents generate"
-      - _ulid: 01KKNRB3CEN36XGMZ2W2TC34H2
-        created_at: 2026-03-14T08:45:24.239Z
         author: "@claude"
+        created_at: 2026-03-14T08:42:43.459Z
+      - _ulid: 01KKNRB3CEN36XGMZ2W2TC34H2
         content: Approved after 4 review rounds (internal + external reviewer). All structural, accuracy,
           and semantic issues resolved. Ready for spec/task derivation.
-      - _ulid: 01KKNRC67AK8Y85ZSCSZW0RMW9
-        created_at: 2026-03-14T08:45:59.914Z
         author: "@claude"
+        created_at: 2026-03-14T08:45:24.239Z
+      - _ulid: 01KKNRC67AK8Y85ZSCSZW0RMW9
         content: >-
           ### Storage location and file structure
 
@@ -16447,6 +16445,8 @@ plans:
           rendering, interaction design, policy configuration, and provider-specific
 
           synchronization can follow in later plans.
+        author: "@claude"
+        created_at: 2026-03-14T08:45:59.914Z
   - _ulid: 01KKFJY80GMJZKN10AMDJ2WDNC
     slugs:
       - plan-grouped-work-and-human-handoff
@@ -16620,20 +16620,20 @@ plans:
         the review package, or whether explicit task-to-group linking is needed
         for dispatch affinity (ac-2 of @task-group-and-chain-affinity)
     status: draft
-    derived_tasks: []
-    derived_specs: []
-    source_path: /home/chapel/Projects/kynetic-spec/plans/grouped-work-and-human-handoff.md
-    module_ref: null
-    created_at: 2026-03-11T23:15:33.520Z
     approved_at: null
+    derived_specs: []
+    derived_tasks: []
+    module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/grouped-work-and-human-handoff.md
+    created_at: 2026-03-11T23:15:33.520Z
     completed_at: null
     notes:
       - _ulid: 01KKW5RDT3NP0VFASMKR0DVJF8
-        created_at: 2026-03-16T20:35:18.979Z
-        author: "@claude"
         content: "Added implementation notes: completed prerequisites (publication mode, dev branch),
           integration branch as implicit grouping model, activity timeline as review package data
           source, design considerations"
+        author: "@claude"
+        created_at: 2026-03-16T20:35:18.979Z
   - _ulid: 01KKJE4HGC53027S7JXRX52GJX
     slugs:
       - plan-droid-platform-support
@@ -17143,17 +17143,7 @@ plans:
           - `src/cli/commands/session/commands.ts` — agent-type option
           - `templates/skills/manifest.yaml` — platforms arrays
     status: active
-    derived_tasks:
-      - "@implement-droid-platform-config-schema"
-      - "@implement-droid-agent-detection"
-      - "@implement-droid-acp-adapter"
-      - "@implement-droid-skill-renderer"
-      - "@implement-droid-setup-integration"
-      - "@implement-core-skills-droid-platform-registration"
-      - "@implement-portable-skill-reference-resolution"
-      - "@implement-droid-core-skill-install-support"
-      - "@implement-droid-setup-status-reporting"
-      - "@implement-droid-skill-import-support"
+    approved_at: 2026-03-13T03:25:04.088Z
     derived_specs:
       - "@droid-platform-config"
       - "@droid-agent-detection"
@@ -17165,21 +17155,29 @@ plans:
       - "@droid-core-skill-install"
       - "@droid-setup-status"
       - "@droid-skill-import"
-    source_path: /home/chapel/Projects/kynetic-spec/droid-platform-plan.md
+    derived_tasks:
+      - "@implement-droid-platform-config-schema"
+      - "@implement-droid-agent-detection"
+      - "@implement-droid-acp-adapter"
+      - "@implement-droid-skill-renderer"
+      - "@implement-droid-setup-integration"
+      - "@implement-core-skills-droid-platform-registration"
+      - "@implement-portable-skill-reference-resolution"
+      - "@implement-droid-core-skill-install-support"
+      - "@implement-droid-setup-status-reporting"
+      - "@implement-droid-skill-import-support"
     module_ref: "@agent-integration"
+    source_path: /home/chapel/Projects/kynetic-spec/droid-platform-plan.md
     created_at: 2026-03-13T01:49:20.268Z
-    approved_at: 2026-03-13T03:25:04.088Z
     completed_at: null
     notes:
       - _ulid: 01KKJJKGVG40C40ZQHASVW0XCW
-        created_at: 2026-03-13T03:07:25.425Z
-        author: Jacob Chapel
         content: "Address review gaps: added 4 new specs (core-skill-install, setup-status, skill-import,
           prompts mapping), expanded ACs for detection priority, frontmatter generation, utility
           functions, and comprehensive file change list"
-      - _ulid: 01KKJKMC80DFMQ0ZV141FXXNH8
-        created_at: 2026-03-13T03:25:22.049Z
         author: Jacob Chapel
+        created_at: 2026-03-13T03:07:25.425Z
+      - _ulid: 01KKJKMC80DFMQ0ZV141FXXNH8
         content: >-
           Key research findings that inform the design:
 
@@ -17228,6 +17226,8 @@ plans:
               - `src/cli/commands/skill-crud.ts` — import platform detection
               - `src/cli/commands/session/commands.ts` — agent-type option
               - `templates/skills/manifest.yaml` — platforms arrays
+        author: Jacob Chapel
+        created_at: 2026-03-13T03:25:22.049Z
   - _ulid: 01KKK5KNET8MD91734EZH92P62
     slugs:
       - plan-dispatch-branch-adoption-and-deterministic-task-br
@@ -17713,6 +17713,14 @@ plans:
 
       depends on it.
     status: active
+    approved_at: 2026-03-13T09:15:50.526Z
+    derived_specs:
+      - "@portable-task-submission-linkage"
+      - "@adopt-existing-task-branch-lineage"
+      - "@branch-provenance-in-dispatch-workspace-registry"
+      - "@adopted-branch-cleanup-and-recoverability"
+      - "@review-and-fix-cycle-workspace-discovery-before-discard"
+      - "@deterministic-task-branch-helper"
     derived_tasks:
       - "@implement-portable-task-submission-linkage"
       - "@implement-adopt-existing-task-branch-lineage-for-r"
@@ -17723,26 +17731,16 @@ plans:
       - "@update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches"
       - "@add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-rev\
         iew"
-    derived_specs:
-      - "@portable-task-submission-linkage"
-      - "@adopt-existing-task-branch-lineage"
-      - "@branch-provenance-in-dispatch-workspace-registry"
-      - "@adopted-branch-cleanup-and-recoverability"
-      - "@review-and-fix-cycle-workspace-discovery-before-discard"
-      - "@deterministic-task-branch-helper"
-    source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-branch-adoption-and-deterministic-task-branches.md
     module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-branch-adoption-and-deterministic-task-branches.md
     created_at: 2026-03-13T08:39:33.082Z
-    approved_at: 2026-03-13T09:15:50.526Z
     completed_at: null
     notes:
       - _ulid: 01KKK5YMXAXZZN87WFJ3EMY72H
-        created_at: 2026-03-13T08:45:32.970Z
-        author: Jacob Chapel
         content: Content updated from file
-      - _ulid: 01KKK7RF88Q5MAMZN026MVJ6S9
-        created_at: 2026-03-13T09:17:07.720Z
         author: Jacob Chapel
+        created_at: 2026-03-13T08:45:32.970Z
+      - _ulid: 01KKK7RF88Q5MAMZN026MVJ6S9
         content: |-
           Treat this as a staged capability, not a one-shot branch-discovery patch.
 
@@ -17780,6 +17778,8 @@ plans:
           rendered agent instructions or skill output if their sources change. The helper
           command should explain both the naming contract and why dispatch continuity
           depends on it.
+        author: Jacob Chapel
+        created_at: 2026-03-13T09:17:07.720Z
   - _ulid: 01KKQMT3P4SDNQKFQRV62V6EM7
     slugs:
       - plan-ui-data-layer-rework
@@ -18319,6 +18319,11 @@ plans:
       ```
 
     status: active
+    approved_at: 2026-03-15T03:27:56.658Z
+    derived_specs:
+      - "@ui-api-ref-resolution"
+      - "@ui-api-aggregation"
+      - "@ui-data-freshness"
     derived_tasks:
       - "@task-ui-data-layer-skill"
       - "@task-tanstack-setup"
@@ -18331,48 +18336,43 @@ plans:
       - "@task-migrate-complex-pages"
       - "@task-migrate-inbox-triage"
       - "@task-cleanup-legacy-fetches"
-    derived_specs:
-      - "@ui-api-ref-resolution"
-      - "@ui-api-aggregation"
-      - "@ui-data-freshness"
-    source_path: /home/chapel/Projects/kynetic-spec/plans/ui-data-layer-rework.md
     module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/ui-data-layer-rework.md
     created_at: 2026-03-15T02:22:10.628Z
-    approved_at: 2026-03-15T03:27:56.658Z
     completed_at: null
     notes:
       - _ulid: 01KKQPAFENGBHVJ0S21FPV5BVA
-        created_at: 2026-03-15T02:48:35.541Z
-        author: "@claude"
         content: Add formal depends_on to task definitions
-      - _ulid: 01KKQPC4Y3XWM6GDGXMGZ7AAWZ
-        created_at: 2026-03-15T02:49:30.307Z
         author: "@claude"
+        created_at: 2026-03-15T02:48:35.541Z
+      - _ulid: 01KKQPC4Y3XWM6GDGXMGZ7AAWZ
         content: "Set derive_from_specs: false — explicit tasks cover all work, spec-derived tasks would be
           redundant"
-      - _ulid: 01KKQPST4XQHQKD9S34C7Y43RG
-        created_at: 2026-03-15T02:56:58.013Z
         author: "@claude"
+        created_at: 2026-03-15T02:49:30.307Z
+      - _ulid: 01KKQPST4XQHQKD9S34C7Y43RG
         content: "Restructure: 6 specs → 3 behavioral specs, move implementation details to task acceptance
           gates"
+        author: "@claude"
+        created_at: 2026-03-15T02:56:58.013Z
       - _ulid: 01KKQQ7SNWDNVQ8YX7E3R99WH1
-        created_at: 2026-03-15T03:04:36.284Z
-        author: "@claude"
         content: Remove 'currently' sections from spec descriptions — stale after implementation
+        author: "@claude"
+        created_at: 2026-03-15T03:04:36.284Z
       - _ulid: 01KKQQABN6887N31R8X9QRZ545
-        created_at: 2026-03-15T03:06:00.230Z
-        author: "@claude"
         content: Require skill task to research actual TanStack docs online, include references
-      - _ulid: 01KKQQKGBWS6P82BH8E2C5SN8R
-        created_at: 2026-03-15T03:10:59.964Z
         author: "@claude"
+        created_at: 2026-03-15T03:06:00.230Z
+      - _ulid: 01KKQQKGBWS6P82BH8E2C5SN8R
         content: Move context to top, remove implementation notes section, convention added to development
           rules
-      - _ulid: 01KKQQXX3BWT7V639D7XHMMF4M
-        created_at: 2026-03-15T03:16:40.683Z
         author: "@claude"
+        created_at: 2026-03-15T03:10:59.964Z
+      - _ulid: 01KKQQXX3BWT7V639D7XHMMF4M
         content: "Apply review fixes: remove duplicate ac-5, fix ac-3 then clause, fix ac-4 temporal
           framing, add cleanup acceptance gates, add ref-index dep to inbox-triage"
+        author: "@claude"
+        created_at: 2026-03-15T03:16:40.683Z
   - _ulid: 01KKSGS17KH64HEDSMB81XH0M9
     slugs:
       - plan-session-stream-redesign-websocket-first-with-on-de
@@ -18950,25 +18950,23 @@ plans:
       - **Shared types** (`@kynetic-ai/shared`): New BroadcastEvent types, deprecate
       agent_text_chunk.
     status: active
+    approved_at: 2026-03-15T19:50:16.828Z
+    derived_specs:
+      - "@ws-session-event-streaming"
+      - "@session-event-broadcast"
+      - "@session-event-detail-endpoint"
     derived_tasks:
       - "@task-session-event-accumulator"
       - "@task-session-event-detail-endpoint"
       - "@task-session-stream-ws-ui"
       - "@task-cli-watch-ws-events"
       - "@task-update-session-stream-spec-cleanup"
-    derived_specs:
-      - "@ws-session-event-streaming"
-      - "@session-event-broadcast"
-      - "@session-event-detail-endpoint"
-    source_path: /home/chapel/Projects/kynetic-spec/plans/session-stream-redesign.md
     module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/session-stream-redesign.md
     created_at: 2026-03-15T19:50:09.906Z
-    approved_at: 2026-03-15T19:50:16.828Z
     completed_at: null
     notes:
       - _ulid: 01KKSGT2DZE2K0GK30PY3RWKB8
-        created_at: 2026-03-15T19:50:43.903Z
-        author: "@claude"
         content: >-
           ### Newline-Boundary Streaming
 
@@ -19071,6 +19069,8 @@ plans:
 
           - **Shared types** (`@kynetic-ai/shared`): New BroadcastEvent types, deprecate
           agent_text_chunk.
+        author: "@claude"
+        created_at: 2026-03-15T19:50:43.903Z
   - _ulid: 01KKSZ5E32Z86Y1NM88XGE0XTS
     slugs:
       - plan-dispatch-event-system-expansion
@@ -20749,51 +20749,51 @@ plans:
 
       Existing task 01KKBD6GBCWTZA2ECFWN62F92F (dispatch trigger expansion)
       is subsumed and should be cancelled after plan approval.
-    status: draft
-    derived_tasks: []
+    status: approved
+    approved_at: 2026-03-18T05:31:35.024Z
     derived_specs: []
-    source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-event-expansion.md
+    derived_tasks: []
     module_ref: "@agent-integration"
+    source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-event-expansion.md
     created_at: 2026-03-16T00:01:36.354Z
-    approved_at: null
     completed_at: null
     notes:
       - _ulid: 01KKT08E8VP442BP35K7JHZMFE
-        created_at: 2026-03-16T00:20:43.419Z
-        author: "@claude"
         content: Rewritten with behavioral ACs, UI spec, manual tasks with detailed descriptions and
           dependencies
-      - _ulid: 01KKT0KZQMM4M5Y9E85AGGTZ2Y
-        created_at: 2026-03-16T00:27:01.748Z
         author: "@claude"
+        created_at: 2026-03-16T00:20:43.419Z
+      - _ulid: 01KKT0KZQMM4M5Y9E85AGGTZ2Y
         content: "Addressed review: added action model spec, event payload spec, composition schema, shell
           injection AC, shadow mutex AC, dedup clarification, hot reload ACs, validate integration
           task, UI spec migration, overlap/allow clarification"
-      - _ulid: 01KKT2PY3YHJ0VBBM55YFCZYP8
-        created_at: 2026-03-16T01:03:35.551Z
         author: "@claude"
+        created_at: 2026-03-16T00:27:01.748Z
+      - _ulid: 01KKT2PY3YHJ0VBBM55YFCZYP8
         content: "Comprehensive revision addressing all review feedback: event envelope with
           causation/correlation, session lifecycle events, action run abstraction, structured
           command form, agent action input contract, schedule runtime semantics, composition
           correlation, filter language spec, automation API/WebSocket specs, loop prevention, event
           emit test command"
-      - _ulid: 01KKTA88AK83WRC53T7V0870VC
-        created_at: 2026-03-16T03:15:23.091Z
         author: "@claude"
+        created_at: 2026-03-16T01:03:35.551Z
+      - _ulid: 01KKTA88AK83WRC53T7V0870VC
         content: "Final fix pass: identity model (session_id==invocation_id), session event emission task,
           action run closure on invocation end, active_run_ids[] for allow overlap, richer trigger
           outcomes (accepted/buffered/queued/skipped), best-effort backfill, UTC default timezone,
           composition config vs activation distinction, event emit API endpoint, envelope filters,
           agent refs as errors not warnings, filterable-list + semantic-exit-codes traits,
           derive_from_specs: false"
-      - _ulid: 01KKTBRXVB58SJDV95DM0MWDMA
-        created_at: 2026-03-16T03:41:57.995Z
         author: "@claude"
+        created_at: 2026-03-16T03:15:23.091Z
+      - _ulid: 01KKTBRXVB58SJDV95DM0MWDMA
         content: "Deep review fixes: correlation propagation via KSPEC_CORRELATION_ID for CLI re-entry loop
           prevention, scoped shadow mutex (per-mutation not per-command), envelope fields always
           valid in filter validation, AC coverage gaps closed (hook-filter ac-5, automation-api
           ac-6, composition ac-1/ac-4), misattributed task coverage corrected, command action shadow
           pre-commit hook safety net noted"
+        author: "@claude"
+        created_at: 2026-03-16T03:41:57.995Z
   - _ulid: 01KKTR7F6HX6EE2WZ8SMV84N37
     slugs:
       - plan-review-records-web-ui
@@ -21584,6 +21584,13 @@ plans:
       Markdown rendering with syntax highlighting in code blocks.
       Use goto() for URL state per project conventions.
     status: active
+    approved_at: 2026-03-16T08:28:16.048Z
+    derived_specs:
+      - "@review-records-daemon-api"
+      - "@review-content-diff-api"
+      - "@review-records-web-ui"
+      - "@review-code-diff-viewer"
+      - "@review-structured-content-viewer"
     derived_tasks:
       - "@task-review-api-read"
       - "@task-review-api-threads"
@@ -21596,63 +21603,54 @@ plans:
       - "@task-code-diff-viewer"
       - "@task-structured-content-viewer"
       - "@task-review-task-integration"
-    derived_specs:
-      - "@review-records-daemon-api"
-      - "@review-content-diff-api"
-      - "@review-records-web-ui"
-      - "@review-code-diff-viewer"
-      - "@review-structured-content-viewer"
-    source_path: /home/chapel/Projects/kynetic-spec/plans/review-records-web-ui.md
     module_ref: null
+    source_path: /home/chapel/Projects/kynetic-spec/plans/review-records-web-ui.md
     created_at: 2026-03-16T07:19:37.425Z
-    approved_at: 2026-03-16T08:28:16.048Z
     completed_at: null
     notes:
       - _ulid: 01KKTS73R0SQC2ZSMCB8MJ6866
-        created_at: 2026-03-16T07:36:54.272Z
-        author: "@claude"
         content: "Address review feedback: split broad ACs, add error handling, add traits, specify routes
           and WebSocket topics"
-      - _ulid: 01KKTSKWFBX6SADCPVH3C42XQT
-        created_at: 2026-03-16T07:43:52.812Z
         author: "@claude"
+        created_at: 2026-03-16T07:36:54.272Z
+      - _ulid: 01KKTSKWFBX6SADCPVH3C42XQT
         content: "Granular tasks with why/what/how descriptions, derive_from_specs: false, explicit AC
           coverage per task, proper dependency chain"
-      - _ulid: 01KKTSWSDESG8ZKEEYQ9V45X6N
-        created_at: 2026-03-16T07:48:44.590Z
         author: "@claude"
+        created_at: 2026-03-16T07:43:52.812Z
+      - _ulid: 01KKTSWSDESG8ZKEEYQ9V45X6N
         content: "Fix blockers: correct daemon route paths (packages/daemon/src/routes/), function names
           (loadReviewRecords, createCheck/createLocalCheck), add mutateReviewAtomically for
           persistence, fix WebSocket topic naming (reviews:updates)"
-      - _ulid: 01KKTTD5EK3QFY4CD9DDKJMZ6J
-        created_at: 2026-03-16T07:57:41.203Z
         author: "@claude"
+        created_at: 2026-03-16T07:48:44.590Z
+      - _ulid: 01KKTTD5EK3QFY4CD9DDKJMZ6J
         content: "Add content rendering ACs to web UI spec: markdown rendering (ac-8), code anchor display
           (ac-9), structured anchor display (ac-10), check evidence display (ac-11), verdict body
           rendering (ac-12). Updated detail page task to cover new ACs."
-      - _ulid: 01KKTTM2S0TXNGC2CMHNQTZCHM
-        created_at: 2026-03-16T08:01:27.841Z
         author: "@claude"
+        created_at: 2026-03-16T07:57:41.203Z
+      - _ulid: 01KKTTM2S0TXNGC2CMHNQTZCHM
         content: "Fix round 5 blockers: simplify ac-9 to metadata-only display (no source snippets), replace
           ac-12 verdict body (schema doesn't support it) with thread entry author/timestamp display,
           add ac-13 for empty states"
-      - _ulid: 01KKTVKDE2872V63Z98V1V50HG
-        created_at: 2026-03-16T08:18:34.563Z
         author: "@claude"
+        created_at: 2026-03-16T08:01:27.841Z
+      - _ulid: 01KKTVKDE2872V63Z98V1V50HG
         content: "Major update: add diff viewer spec (code + structured content), revision selector UX,
           inline commenting on diff lines and content sections. New specs: review-content-diff-api,
           review-code-diff-viewer, review-structured-content-viewer. New tasks: task-diff-api,
           task-code-diff-viewer, task-structured-content-viewer. Updated ac-9 from metadata-only to
           proper diff context. Added ac-11 revision selector."
-      - _ulid: 01KKTVXWADFFSYFEB2J4SGS6CJ
-        created_at: 2026-03-16T08:24:17.485Z
         author: "@claude"
+        created_at: 2026-03-16T08:18:34.563Z
+      - _ulid: 01KKTVXWADFFSYFEB2J4SGS6CJ
         content: "Fix round 7 blockers: use query params for diff routes (not path segments with ..), add
           subject-branch filter for code review revision queries, fix context/file route conflict,
           clarify content API response shape"
-      - _ulid: 01KKTW6PC35R0XGV7FXR26AW03
-        created_at: 2026-03-16T08:29:06.307Z
         author: "@claude"
+        created_at: 2026-03-16T08:24:17.485Z
+      - _ulid: 01KKTW6PC35R0XGV7FXR26AW03
         content: |-
           ### Architecture
 
@@ -21702,6 +21700,8 @@ plans:
           nit=gray. Diff colors: added=green, deleted=red, unchanged=default.
           Markdown rendering with syntax highlighting in code blocks.
           Use goto() for URL state per project conventions.
+        author: "@claude"
+        created_at: 2026-03-16T08:29:06.307Z
   - _ulid: 01KKVZS3EGT96MMQTX7BX0GTVA
     slugs:
       - plan-task-activity-timeline
@@ -22227,6 +22227,12 @@ plans:
         ordering enables reliable git log -L queries as an alternative to
         git log --grep)
     status: active
+    approved_at: 2026-03-16T20:19:23.671Z
+    derived_specs:
+      - "@task-activity-timeline"
+      - "@task-activity-git-query"
+      - "@review-record-per-cycle-lifecycle"
+      - "@review-fix-cycle-diff"
     derived_tasks:
       - "@task-fix-task-add-commit-ref"
       - "@task-submission-linkage-dispatch-fallback"
@@ -22240,38 +22246,30 @@ plans:
       - "@task-update-review-skill-docs"
       - "@task-update-task-work-skill-docs"
       - "@task-update-agents-review-conventions"
-    derived_specs:
-      - "@task-activity-timeline"
-      - "@task-activity-git-query"
-      - "@review-record-per-cycle-lifecycle"
-      - "@review-fix-cycle-diff"
-    source_path: /home/chapel/Projects/kynetic-spec/plans/task-activity-timeline.md
     module_ref: "@tasks"
+    source_path: /home/chapel/Projects/kynetic-spec/plans/task-activity-timeline.md
     created_at: 2026-03-16T18:50:49.680Z
-    approved_at: 2026-03-16T20:19:23.671Z
     completed_at: null
     notes:
       - _ulid: 01KKW0JZ2892P48CXK2KZ2RV90
-        created_at: 2026-03-16T19:04:57.160Z
-        author: "@claude"
         content: "Revised per feedback: explicit tasks with why/what/how, separated review convention vs
           code changes, added diff summaries, per-cycle review model, documentation tasks"
-      - _ulid: 01KKW40KQG4AWK0FBQCKWF6NDB
-        created_at: 2026-03-16T20:04:50.032Z
         author: "@claude"
+        created_at: 2026-03-16T19:04:57.160Z
+      - _ulid: 01KKW40KQG4AWK0FBQCKWF6NDB
         content: "Revised per review feedback: amend existing review lifecycle spec instead of conflicting,
           task-add ref is a bug fix against @trait-shadow-commit not a new spec, submission linkage
           folded into existing spec as new AC, diff summaries deferred to separate plan, explicit
           tasks with why/what/how, documentation tasks for convention reinforcement"
-      - _ulid: 01KKW4CNZ6WNHET0NN866XRWBA
-        created_at: 2026-03-16T20:11:25.542Z
         author: "@claude"
+        created_at: 2026-03-16T20:04:50.032Z
+      - _ulid: 01KKW4CNZ6WNHET0NN866XRWBA
         content: Removed amends language from review spec, added task to rewrite
           @review-verdicts-and-resolution-lifecycle ac-3 as prerequisite for review lifecycle
           changes
-      - _ulid: 01KKW4VTDGMHJCQEMTE738A7BW
-        created_at: 2026-03-16T20:19:41.616Z
         author: "@claude"
+        created_at: 2026-03-16T20:11:25.542Z
+      - _ulid: 01KKW4VTDGMHJCQEMTE738A7BW
         content: |-
           The activity timeline is derived from two sources merged chronologically:
 
@@ -22311,25 +22309,25 @@ plans:
           - @01KKVW67 / @01KKVX1X: YAML serialization invariants (canonical field
             ordering enables reliable git log -L queries as an alternative to
             git log --grep)
-      - _ulid: 01KKW6C76N54EP601D1SCDJ2PX
-        created_at: 2026-03-16T20:46:07.573Z
         author: "@claude"
+        created_at: 2026-03-16T20:19:41.616Z
+      - _ulid: 01KKW6C76N54EP601D1SCDJ2PX
         content: "Revision: Switched git query mechanism from git log --grep (commit message filtering) to
           git log -L (YAML block boundary tracking). This captures complete history regardless of
           commit message content, works retroactively, and handles manual edits/batch operations.
           Prerequisite changed from @task-fix-task-add-commit-ref to @01KKVW67 (YAML field
           ordering). Specs and tasks updated directly via CLI. Plan text reflects the change but
           could not be re-imported (active plan)."
-      - _ulid: 01KKW6Q478B0FX9KBA1ZF6PT79
-        created_at: 2026-03-16T20:52:04.968Z
         author: "@claude"
+        created_at: 2026-03-16T20:46:07.573Z
+      - _ulid: 01KKW6Q478B0FX9KBA1ZF6PT79
         content: "Split @task-implement-activity-git-query into two tasks: raw git extraction (ac-1, ac-2)
           stays on the original task, normalization of diffs into typed activity entries is now
           @task-normalize-activity-entries (ac-3, ac-4). Display task depends on normalizer. Added
           ac-4 to spec for field-level diff translation."
-      - _ulid: 01KKW6XQSS3N570750A91Z5G0N
-        created_at: 2026-03-16T20:55:41.625Z
         author: "@claude"
+        created_at: 2026-03-16T20:52:04.968Z
+      - _ulid: 01KKW6XQSS3N570750A91Z5G0N
         content: >-
           Post-derive changes summary:
 
@@ -22358,6 +22356,8 @@ plans:
 
           Total: 5 specs (13 ACs), 13 tasks (was 12). Plan text could not be re-imported (active
           plan) but specs/tasks updated directly via CLI.
+        author: "@claude"
+        created_at: 2026-03-16T20:55:41.625Z
   - _ulid: 01KKW3WRAH3VC30TWF5FKZ513Z
     slugs:
       - plan-activity-timeline-diff-summaries
@@ -22496,11 +22496,11 @@ plans:
 
       The design questions above should be resolved before refining this plan.
     status: draft
-    derived_tasks: []
-    derived_specs: []
-    source_path: /home/chapel/Projects/kynetic-spec/plans/activity-diff-summaries.md
-    module_ref: "@tasks"
-    created_at: 2026-03-16T20:02:43.665Z
     approved_at: null
+    derived_specs: []
+    derived_tasks: []
+    module_ref: "@tasks"
+    source_path: /home/chapel/Projects/kynetic-spec/plans/activity-diff-summaries.md
+    created_at: 2026-03-16T20:02:43.665Z
     completed_at: null
     notes: []
