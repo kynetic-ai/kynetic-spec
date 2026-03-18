@@ -106759,6 +106759,17 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T10:22:06.999Z
+    - _ulid: 01KM07G675CEJYM5V6NTE1146A
+      content: "Review cycle 1 — request_changes (review @01KM07CS). MUST-FIX (1 blocker): _reconcile()
+        does not gate sync on _isTargetSyncStale() — syncs on every reconciliation pass instead of
+        respecting sync_interval. Violates ac-pull-target-periodic. Fix: add _isTargetSyncStale()
+        check to the reconcile sync guard (line 1211). The test for ac-pull-target-periodic should
+        also exercise the _reconcile() path, not just _syncTargetBranch() directly. SUGGESTIONS
+        (non-blocking): dead code on non-zero exit path (lines 2582-2588), misleading GIT_WORK_TREE
+        comment (line 2573)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T10:22:43.942Z
   todos: []
   automation: eligible
 - _ulid: 01KKZWB80XVKFH4V056NHB9H6T
