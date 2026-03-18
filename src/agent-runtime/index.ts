@@ -58,3 +58,11 @@ export {
   type HookExecutorOptions,
   type HookConfigSnapshot,
 } from "./hook-executor.js";
+
+export {
+  JoinAccumulator,
+  type JoinAccumulatorOptions,
+  type GroupState,
+  type GroupMemberRun,
+  type MemberRunStatus,
+} from "./join-accumulator.js";
