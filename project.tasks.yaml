@@ -106343,6 +106343,7 @@
   created_at: 2026-03-18T07:07:45.922Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZWB75X6Q1X1ZZC5S6KBH6B
   slugs:
     - task-dispatch-target-sync
@@ -106391,6 +106392,7 @@
   created_at: 2026-03-18T07:07:46.749Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZWB80XVKFH4V056NHB9H6T
   slugs:
     - task-dispatch-degraded-state
@@ -106445,6 +106447,7 @@
   created_at: 2026-03-18T07:07:47.613Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZWB8VH6WS0SSR11DGBMR0R
   slugs:
     - task-dispatch-branch-push
@@ -106502,3 +106505,4 @@
   created_at: 2026-03-18T07:07:48.465Z
   notes: []
   todos: []
+  automation: eligible
