@@ -12808,7 +12808,19 @@ reviews:
     slugs: []
     title: Review round-trip stability for meta manifest YAML writes (cycle 2)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: d7844f56824fc7f24dbf104390d14807a2a27582
+          head_commit: 9bbc04d7ab08b2c26aed873d58a40332421cb0d7
+        evidence: 5864 tests passed, 1 failed (pre-existing review-cli examined_commit env-dependent issue).
+          All 56 round-trip stability tests pass including 7 new meta manifest tests.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T08:04:04.087Z
+        completed_at: 2026-03-18T08:04:04.087Z
     events:
       - _ulid: 01KKZZGZQFHYWV9BEBT5394E2D
         actor: "@claude"
@@ -12830,6 +12842,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKZZHYD8N7HKKWJ04W89SDH2
         timestamp: 2026-03-18T08:03:53.080Z
+      - _ulid: 01KKZZJ9HKMEXD9M8S179QYCM8
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T08:04:04.275Z
     examined_commit: 9bbc04d7ab08b2c26aed873d58a40332421cb0d7
     external_links: []
     lifecycle_state: open
@@ -12895,5 +12914,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T08:03:21.455Z
-    updated_at: 2026-03-18T08:03:52.873Z
+    updated_at: 2026-03-18T08:04:04.087Z
     notes: []
