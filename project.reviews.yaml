@@ -14434,6 +14434,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T10:33:23.776Z
         completed_at: 2026-03-18T10:33:23.776Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0bc7850b39feba9a789c532f971f7cd7d808d2e
+          head_commit: 190e97ec96364c8eb3579b117d34e7ba3fac2f61
+        evidence: "AC: @dispatch-event-taxonomy ac-2 covered by 16 test annotations. AC:
+          @dispatch-event-payload ac-3 covered by 11 test annotations. @trait-error-guidance ac-1
+          through ac-6 annotated N/A with valid reasoning (bus emissions, not CLI)."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T10:33:33.060Z
+        completed_at: 2026-03-18T10:33:33.060Z
     events:
       - _ulid: 01KM07JT7T9T52N83QFPDDRZEN
         actor: "@claude"
@@ -14455,6 +14468,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T10:33:23.988Z
+      - _ulid: 01KM0840AZG8N5VCK16S9STB58
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T10:33:33.279Z
     examined_commit: 190e97ec96364c8eb3579b117d34e7ba3fac2f61
     external_links: []
     lifecycle_state: open
@@ -14467,7 +14487,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T10:24:09.979Z
-    updated_at: 2026-03-18T10:33:23.776Z
+    updated_at: 2026-03-18T10:33:33.060Z
     notes: []
   - _ulid: 01KM07Z44G8EQ91B7K22VVP50C
     slugs: []
