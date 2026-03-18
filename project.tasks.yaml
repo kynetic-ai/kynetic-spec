@@ -103976,6 +103976,17 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T00:57:50.539Z
+    - _ulid: 01KKZ7PGQBVVTT9GXPTV2QWV3M
+      content: "Review cycle 4: Code approved (review @01KKZ7K8, verdict approve). Implementation is
+        correct, follows established raw-data-preservation pattern, tests are thorough. Merge to dev
+        FAILED with textual conflict in tests/yaml-round-trip-stability.test.ts. Dev now has a
+        saveWorkflowRun describe block (from a concurrent merge) at the same insertion point where
+        the saveTriageRecord describe block needs to go. Both blocks should coexist — the triage
+        tests should be placed after the workflow run tests. Resolution: merge from current dev to
+        resolve test file conflict. No changes needed to src/parser/yaml.ts."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T01:06:56.876Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6CGBRT6J6F804PJ1QJW3G
