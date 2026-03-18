@@ -101949,8 +101949,12 @@
   spec_ref: "@review-code-diff-viewer"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Merge to dev has textual conflict in +page.svelte with structured-content-viewer feature.
+      Review approved (review @01KKZKJN), but merge requires manual conflict resolution in the main
+      worktree where dev is checked out. Both features are additive — resolution is to include both
+      sets of changes.
   depends_on:
     - "@task-diff-api"
     - "@task-review-detail-page"
