@@ -106172,6 +106172,40 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T12:09:14.048Z
+    - _ulid: 01KM0DMA7CXQEM06GK5WBT1X7H
+      content: >-
+        Review cycle 1: request_changes. Review ref: @01KM0DGC.
+
+
+        BLOCKER: Out-of-scope removal of @dispatch-agent-action-input implementation. The commit
+        deletes prompt_template, task_binding, group_id, and buildDefaultAgentPrompt from
+        action-executor.ts and action.ts, plus the entire agent-action-input.test.ts (626 lines).
+        These features belong to the already-completed @task-agent-action-input and are needed for
+        pipeline chaining (@dispatch-composition-patterns). Also removes outcome and group_id from
+        KNOWN_EVENT_FIELDS.
+
+
+        FIX REQUIRED: Restore all @dispatch-agent-action-input code that was removed. The hook
+        executor implementation itself is correct — only the out-of-scope deletions need reverting.
+
+
+        Evidence log:
+
+        Files read: hook-executor.ts, action-executor.ts, action.ts, hooks.ts, index.ts,
+        hook-executor.test.ts, full diff
+
+        Commands run: npm test (277/278 pass, 1 pre-existing), kspec validate, hook-executor tests
+        (23/23), action-model tests (49/49)
+
+        Claims verified: 23 tests covering all 5 ACs confirmed. N/A trait annotations confirmed
+        valid.
+
+        Categories: Correctness OK, Edge cases OK, Error handling OK, Test quality OK, Integration
+        FAIL (removals break agent-action-input), Regressions FAIL (schema fields removed, test file
+        deleted)
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T12:09:50.573Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVTFW73DTR2RC1NQZEF13
