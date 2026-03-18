@@ -9284,9 +9284,22 @@ reviews:
           kind: nit
           thread_ulid: 01KKZ58G18BZPPSDDD0AFGQWEG
         timestamp: 2026-03-18T00:24:20.355Z
+      - _ulid: 01KKZ58QZFGW2GYWFJK07SKRDA
+        actor: pr-reviewer@kspec-dispatch
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-18T00:24:28.399Z
+      - _ulid: 01KKZ58QZF7AXR5T6D45V4V1GP
+        actor: pr-reviewer@kspec-dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T00:24:28.399Z
     examined_commit: 9a8ef3b3aaa8174957c0fd61fe641149fc6cc222
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -9380,7 +9393,15 @@ reviews:
               reference ac-3."
             created_at: 2026-03-18T00:24:20.265Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 392421a4da0b
+          head_commit: 9a8ef3b3aaa8
+        decision: request_changes
+        reviewer: pr-reviewer@kspec-dispatch
+        role: reviewer
+        created_at: 2026-03-18T00:24:28.314Z
     created_at: 2026-03-18T00:23:15.710Z
-    updated_at: 2026-03-18T00:24:20.265Z
+    updated_at: 2026-03-18T00:24:28.314Z
     notes: []
