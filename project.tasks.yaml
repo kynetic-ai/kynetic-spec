@@ -103886,7 +103886,19 @@
   session_id: 01KKZ3QA5S7JNTD86HSBFA7HZ1
   created_at: 2026-03-17T06:05:29.711Z
   started_at: 2026-03-17T23:57:52.251Z
-  notes: []
+  notes:
+    - _ulid: 01KKZ48498CCH769SWBAA1Q02K
+      content: "Applied raw-data-preservation pattern to saveTriageRecord in src/parser/yaml.ts. Added 5
+        helper functions (extractRawTriageArray, writeRawTriageArray, findRawTriageIndex,
+        findRawTriageIndexByInboxRef, mergeTriagePreservingRawShape) following the same approach
+        used for inbox/plan/review records. The key Zod default prevented is evidence_refs: [] which
+        would otherwise pollute records that didn't originally have the field. Added 5 round-trip
+        stability tests covering: single record save, non-target pollution prevention, multi-record
+        stability, multiple save cycles, and new record addition. All 5783 passing tests remain
+        passing (1 pre-existing failure in review-cli.test.ts unrelated to this change)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T00:06:39.656Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6CGBRT6J6F804PJ1QJW3G
