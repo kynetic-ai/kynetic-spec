@@ -10582,6 +10582,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T02:16:28.317Z
         completed_at: 2026-03-18T02:16:28.317Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
+          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+        evidence: "AC: @yaml-serialization-invariants ac-3 annotated on describe block at
+          tests/yaml-round-trip-stability.test.ts:1150 with 5 tests covering single record,
+          non-target pollution, multi-record stability, multi-cycle, and new record addition"
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T02:16:58.364Z
+        completed_at: 2026-03-18T02:16:58.364Z
     events:
       - _ulid: 01KKZBN1CSZVGQMACM9G0F7WBE
         actor: "@claude"
@@ -10603,6 +10616,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T02:16:28.590Z
+      - _ulid: 01KKZBPQVF832D27B9VJY00D0Z
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T02:16:58.479Z
     examined_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
     external_links: []
     lifecycle_state: open
@@ -10615,5 +10635,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T02:16:02.713Z
-    updated_at: 2026-03-18T02:16:28.317Z
+    updated_at: 2026-03-18T02:16:58.364Z
     notes: []
