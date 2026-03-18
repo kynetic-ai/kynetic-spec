@@ -11373,9 +11373,22 @@ reviews:
           status: fail
           name: e2e
         timestamp: 2026-03-18T03:42:01.123Z
+      - _ulid: 01KKZGJPPGA5DM1F8TQZS3GRCM
+        actor: pr-reviewer@kspec
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-18T03:42:09.104Z
+      - _ulid: 01KKZGJPPG5CYF6ACQKEEGKW97
+        actor: pr-reviewer@kspec
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T03:42:09.104Z
     examined_commit: f8ff6b04d1c3d5a47cd87ec248123e81023fb1c3
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -11403,7 +11416,15 @@ reviews:
               line 541."
             created_at: 2026-03-18T03:41:25.144Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 1ef4b993a2d9
+          head_commit: f8ff6b04d1c3
+        decision: request_changes
+        reviewer: pr-reviewer@kspec
+        role: reviewer
+        created_at: 2026-03-18T03:42:09.008Z
     created_at: 2026-03-18T03:41:04.033Z
-    updated_at: 2026-03-18T03:42:01.020Z
+    updated_at: 2026-03-18T03:42:09.008Z
     notes: []
