@@ -17105,7 +17105,20 @@ reviews:
     slugs: []
     title: Review task-schedule-cli
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 2ad3fe1812d5
+          head_commit: b8a2609de8d3
+        evidence: 283 test files passed, 6437 tests passed, 3 skipped. 1 pre-existing failure in
+          review-cli.test.ts (examined_commit ambient git state issue, not introduced by this
+          commit).
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T15:05:02.515Z
+        completed_at: 2026-03-18T15:05:02.515Z
     events:
       - _ulid: 01KM0QK249A470ATYQKC1FKZ53
         actor: "@claude"
@@ -17134,6 +17147,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM0QM1M16G46G70JVVFKR7GX
         timestamp: 2026-03-18T15:04:27.795Z
+      - _ulid: 01KM0QN41ZNHRNWGEVR8YH2KAT
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T15:05:02.783Z
     examined_commit: b8a2609de8d38a948f6d47d4d7fab9b05e941f08
     external_links: []
     lifecycle_state: open
@@ -17168,5 +17188,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-18T15:03:55.273Z
-    updated_at: 2026-03-18T15:04:27.522Z
+    updated_at: 2026-03-18T15:05:02.515Z
     notes: []
