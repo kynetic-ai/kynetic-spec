@@ -12,6 +12,12 @@
   AC: @review-structured-content-viewer ac-2 — Spec content rendered with targetable sections
   AC: @review-structured-content-viewer ac-3 — Comment creates thread with structured anchor
   AC: @review-structured-content-viewer ac-4 — Threads shown inline at anchored section positions
+  AC: @review-code-diff-viewer ac-1 — File list with diff stats, expandable to show diff content
+  AC: @review-code-diff-viewer ac-2 — Unified diff with syntax highlighting, line numbers, color coding
+  AC: @review-code-diff-viewer ac-3 — Collapsed unchanged regions with "Show N more lines"
+  AC: @review-code-diff-viewer ac-4 — Click-to-comment on diff lines creates thread with code anchor
+  AC: @review-code-diff-viewer ac-5 — Existing threads shown inline at anchor positions in diff
+  AC: @review-code-diff-viewer ac-6 — Lazy loading for 20+ changed files
 -->
 <script lang="ts">
 	import { page } from '$app/stores';
@@ -37,6 +43,7 @@
 	import { renderMarkdown } from '$lib/utils/markdown';
 	import { shortRef, normalizeRef, refHref } from '$lib/utils/reference';
 	import { StructuredContentViewer } from '$lib/components/content';
+	import { CodeDiffViewer } from '$lib/components/diff';
 
 	let reviewId = $derived($page.params.id);
 
@@ -423,6 +430,15 @@
 		review != null &&
 		(review.subject.type === 'plan' || review.subject.type === 'spec' || review.subject.type === 'task')
 	);
+
+	// AC: @review-code-diff-viewer ac-1 — Detect code review subject for diff viewer
+	let isCodeReview = $derived(review?.subject.type === 'code');
+	let baseCommit = $derived(
+		review?.subject.type === 'code' ? review.subject.base_commit : ''
+	);
+	let headCommitValue = $derived(
+		review?.subject.type === 'code' ? review.subject.head_commit : ''
+	);
 </script>
 
 <div class="flex flex-col gap-6 p-6 min-w-0">
@@ -531,6 +547,20 @@
 				<h2 class="text-lg font-semibold mb-3">Content</h2>
 				<StructuredContentViewer
 					{review}
+					threads={review.threads}
+					{isInteractive}
+				/>
+			</section>
+		{/if}
+
+		<!-- AC: @review-code-diff-viewer ac-1, ac-2, ac-3, ac-4, ac-5, ac-6 — Code Diff Viewer -->
+		{#if isCodeReview && review}
+			<section data-testid="diff-viewer-section">
+				<h2 class="text-lg font-semibold mb-3">Changed Files</h2>
+				<CodeDiffViewer
+					{review}
+					{baseCommit}
+					headCommit={headCommitValue}
 					threads={review.threads}
 					{isInteractive}
 				/>

@@ -89,6 +89,16 @@ export const queryKeys = {
 		}) => [...queryKeys.reviews.all, 'siblings', filters] as const,
 	},
 
+	diff: {
+		all: ['diff'] as const,
+		full: (base: string, head: string) =>
+			[...queryKeys.diff.all, 'full', base, head] as const,
+		file: (base: string, head: string, path: string) =>
+			[...queryKeys.diff.all, 'file', base, head, path] as const,
+		context: (base: string, head: string, path: string, start: number, end: number) =>
+			[...queryKeys.diff.all, 'context', base, head, path, start, end] as const,
+	},
+
 	plans: {
 		all: ['plans'] as const,
 		lists: () => [...queryKeys.plans.all, 'list'] as const,

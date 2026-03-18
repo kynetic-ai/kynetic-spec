@@ -972,6 +972,144 @@ export async function fetchReviewSiblings(params: {
 }
 
 // ============================================================
+// Diff API Functions
+// AC: @review-code-diff-viewer ac-1, ac-2, ac-3, ac-6
+// ============================================================
+
+/**
+ * Diff types matching the daemon's parsed diff format.
+ * AC: @review-code-diff-viewer ac-1, ac-2
+ */
+export interface DiffChangeLine {
+	type: 'added' | 'deleted' | 'unchanged';
+	content: string;
+	oldLineNumber: number | null;
+	newLineNumber: number | null;
+}
+
+export interface DiffHunk {
+	header: string;
+	oldStart: number;
+	oldCount: number;
+	newStart: number;
+	newCount: number;
+	changes: DiffChangeLine[];
+}
+
+export interface DiffFile {
+	oldPath: string;
+	newPath: string;
+	status: 'added' | 'deleted' | 'modified' | 'renamed';
+	stats: { additions: number; deletions: number };
+	hunks: DiffHunk[];
+}
+
+export interface ParsedDiff {
+	base: string;
+	head: string;
+	files: DiffFile[];
+	stats: {
+		totalFiles: number;
+		totalAdditions: number;
+		totalDeletions: number;
+	};
+}
+
+export interface DiffContextLine {
+	lineNumber: number;
+	content: string;
+}
+
+export interface DiffContextResponse {
+	base: string;
+	head: string;
+	path: string;
+	startLine: number;
+	endLine: number;
+	totalLines: number;
+	lines: DiffContextLine[];
+}
+
+/**
+ * Fetch full diff between two commits.
+ * AC: @review-code-diff-viewer ac-1
+ */
+export async function fetchDiff(base: string, head: string): Promise<ParsedDiff> {
+	if (isStaticMode()) {
+		throw new Error('Diff not available in static mode');
+	}
+
+	const url = new URL(`${API_BASE}/api/diff`);
+	url.searchParams.set('base', base);
+	url.searchParams.set('head', head);
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch diff for a single file (lazy loading).
+ * AC: @review-code-diff-viewer ac-6
+ */
+export async function fetchFileDiff(base: string, head: string, path: string): Promise<{ base: string; head: string; file: DiffFile }> {
+	if (isStaticMode()) {
+		throw new Error('File diff not available in static mode');
+	}
+
+	const url = new URL(`${API_BASE}/api/diff/file`);
+	url.searchParams.set('base', base);
+	url.searchParams.set('head', head);
+	url.searchParams.set('path', path);
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Fetch expanded context lines for a file region.
+ * AC: @review-code-diff-viewer ac-3
+ */
+export async function fetchDiffContext(
+	base: string,
+	head: string,
+	path: string,
+	start: number,
+	end: number
+): Promise<DiffContextResponse> {
+	if (isStaticMode()) {
+		throw new Error('Diff context not available in static mode');
+	}
+
+	const url = new URL(`${API_BASE}/api/diff/context`);
+	url.searchParams.set('base', base);
+	url.searchParams.set('head', head);
+	url.searchParams.set('path', path);
+	url.searchParams.set('start', String(start));
+	url.searchParams.set('end', String(end));
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
 // Workflows API Functions
 // AC: @ui-workflows-view ac-1
 // ============================================================
