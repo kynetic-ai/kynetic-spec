@@ -11982,6 +11982,12 @@ reviews:
         payload:
           thread_ulid: 01KKZT2EQRTQR2MNF6J08DENZN
         timestamp: 2026-03-18T06:47:17.083Z
+      - _ulid: 01KKZV5RKGZK29FFM8BNR5RE8E
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKZT2WV4A05C8ABR6VW4AX07
+        timestamp: 2026-03-18T06:47:19.408Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -12311,6 +12317,11 @@ reviews:
               This mirrors how the reference plan separates @task-event-bus (core runtime) from
               @task-event-schema (structural definitions)."
             created_at: 2026-03-18T06:28:16.868Z
+          - _ulid: 01KKZV5RFCQVW1YHXJBJE02GRA
+            author: "@claude"
+            body: "Split into task-dispatch-target-sync (7 ACs: sync mechanics) and task-dispatch-degraded-state
+              (9 ACs: state machine + status surfaces). Degraded state depends on target sync."
+            created_at: 2026-03-18T06:47:19.276Z
         kind: blocker
       - _ulid: 01KKZT39DKWVJ7B2ARE19PSSWD
         anchor:
@@ -12402,5 +12413,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-18T06:31:04.294Z
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:47:16.959Z
+    updated_at: 2026-03-18T06:47:19.276Z
     notes: []
