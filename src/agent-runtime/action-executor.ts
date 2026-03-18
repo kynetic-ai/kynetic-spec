@@ -198,7 +198,7 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "correlation_id",
     "causation_id",
   ]),
-  // Task event payload fields
+  // Task event payload fields — AC: @dispatch-event-payload ac-1
   "task": new Set([
     "task_id",
     "task_ref",
@@ -209,7 +209,7 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "priority",
     "automation",
   ]),
-  // Invocation event payload fields
+  // Invocation event payload fields — AC: @dispatch-event-payload ac-2
   "invocation": new Set([
     "session_id",
     "agent_id",
@@ -226,20 +226,22 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "terminal_reason",
     "work_summary",
   ]),
-  // Action event payload fields
+  // Action event payload fields — AC: @dispatch-event-payload ac-5
   "action": new Set([
     "action_run_id",
     "action_type",
-    "status",
-    "duration_ms",
+    "hook_id",
+    "schedule_id",
     "source_name",
+    "duration_ms",
     "session_id",
   ]),
-  // Schedule event payload fields
+  // Schedule event payload fields — AC: @dispatch-event-payload ac-4
   "schedule": new Set([
     "schedule_id",
     "schedule_name",
-    "tick_at",
+    "tick_time",
+    "run_count",
   ]),
 };
 
