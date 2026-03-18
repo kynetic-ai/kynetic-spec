@@ -14711,6 +14711,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T10:47:49.243Z
+      - _ulid: 01KM09HAQ838437596TGH3FSK2
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM09HAJVZEVZ6C4Z1TSCVVZY
+        timestamp: 2026-03-18T10:58:18.472Z
     examined_commit: 5232b0cf0e354072aea5cc041e6e7e774d077e5d
     external_links: []
     lifecycle_state: open
@@ -14720,8 +14727,27 @@ reviews:
       content_hash: ""
       ref: "@01KKZWB8VH6WS0SSR11DGBMR0R"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM09HAJVZEVZ6C4Z1TSCVVZY
+        anchor:
+          type: code
+          commit: 5232b0cf0e35
+          line_end: 383
+          line_start: 357
+          path: tests/dispatch-branch-push-lifecycle.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM09HAJVWRK47W8HMCV37E9F
+            author: "@claude"
+            body: Serialization test (ac-target-push-serialization) does not exercise the targetPushInProgress
+              guard on DispatchEngine. It calls pushIntegrationTarget twice sequentially (both skip
+              as up-to-date), proving idempotency but not serialization. The guard is a private
+              field on the engine class and all git ops are synchronous so true concurrency cannot
+              occur — the implementation is correct, but the test doesn't prove the AC. Consider
+              testing via the engine or extracting the guard to make it testable.
+            created_at: 2026-03-18T10:58:18.331Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T10:47:41.708Z
-    updated_at: 2026-03-18T10:47:49.121Z
+    updated_at: 2026-03-18T10:58:18.331Z
     notes: []
