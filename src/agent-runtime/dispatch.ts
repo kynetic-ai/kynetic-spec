@@ -1206,9 +1206,9 @@ export class DispatchEngine {
    * AC: @dispatch-remote-branch-sync ac-pull-target-periodic, ac-pull-target-periodic-deferred
    */
   private async _reconcile(): Promise<void> {
-    // AC: @dispatch-remote-branch-sync ac-pull-target-periodic — sync target as first step
+    // AC: @dispatch-remote-branch-sync ac-pull-target-periodic — sync target when stale
     // AC: @dispatch-remote-branch-sync ac-pull-target-periodic-deferred — skip if reviewer active
-    if (this._remoteSyncEnabled && !this._hasActiveReviewerInvocation()) {
+    if (this._remoteSyncEnabled && this._isTargetSyncStale() && !this._hasActiveReviewerInvocation()) {
       await this._syncTargetBranch();
     }
 
@@ -2570,7 +2570,8 @@ export class DispatchEngine {
           timeout: 10_000,
           env: {
             ...process.env,
-            // Ensure we're merging into the correct branch
+            // Override GIT_WORK_TREE so git operates on the project root,
+            // not a worktree that may be the cwd of the calling process
             GIT_WORK_TREE: this.projectDir,
           },
         },
@@ -2579,14 +2580,6 @@ export class DispatchEngine {
       if (mergeResult.status !== 0) {
         const stderr = mergeResult.stderr?.trim() ?? "";
         const stdout = mergeResult.stdout?.trim() ?? "";
-        const isAlreadyUpToDate =
-          stdout.includes("Already up to date") || stdout.includes("Already up-to-date");
-
-        if (isAlreadyUpToDate) {
-          this._consecutiveTransientFailures = 0;
-          this._lastTargetSyncTimestamp = Date.now();
-          return "up_to_date";
-        }
 
         // Divergence detected — the degraded state task handles the state machine
         console.warn(

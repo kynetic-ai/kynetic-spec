@@ -183,7 +183,7 @@ describe("dispatch target branch sync", () => {
   });
 
   // AC: @dispatch-remote-branch-sync ac-pull-target-periodic
-  it("syncs target branch during periodic reconciliation when no reviewer is active", async () => {
+  it("syncs target branch during periodic reconciliation when stale and no reviewer is active", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
     git(projectDir, "checkout dev");
@@ -209,12 +209,19 @@ describe("dispatch target branch sync", () => {
       await cleanupTempDir(cloneDir);
     }
 
-    // Call _syncTargetBranch directly to simulate reconciliation sync
-    const result = await engine._syncTargetBranch();
-    expect(result === "synced" || result === "up_to_date").toBe(true);
+    // Reconcile when sync is NOT stale — should NOT sync
+    // (engine.start() just synced, so _lastTargetSyncTimestamp is recent)
+    await (engine as any)._reconcile();
+    const tipAfterFreshReconcile = git(projectDir, "rev-parse dev");
+    expect(tipAfterFreshReconcile).toBe(afterStartTip);
 
-    const afterSyncTip = git(projectDir, "rev-parse dev");
-    expect(afterSyncTip).not.toBe(afterStartTip);
+    // Make sync stale by backdating the timestamp beyond sync_interval
+    (engine as any)._lastTargetSyncTimestamp = Date.now() - 120_000;
+
+    // Reconcile when sync IS stale — should sync
+    await (engine as any)._reconcile();
+    const tipAfterStaleReconcile = git(projectDir, "rev-parse dev");
+    expect(tipAfterStaleReconcile).not.toBe(afterStartTip);
 
     await engine.stop();
   });
@@ -262,13 +269,16 @@ describe("dispatch target branch sync", () => {
 
     const tipBefore = git(projectDir, "rev-parse dev");
 
+    // Make sync stale so the only gate tested is the reviewer check
+    (engine as any)._lastTargetSyncTimestamp = Date.now() - 120_000;
+
     // Trigger reconciliation — sync should be skipped because reviewer is active
     await (engine as any)._reconcile();
 
     const tipAfter = git(projectDir, "rev-parse dev");
     expect(tipAfter).toBe(tipBefore); // Should NOT have synced
 
-    // Remove the reviewer and reconcile again — now it should sync
+    // Remove the reviewer and reconcile again — now it should sync (still stale)
     invocationDetails.delete("test-reviewer-session");
     expect((engine as any)._hasActiveReviewerInvocation()).toBe(false);
 
