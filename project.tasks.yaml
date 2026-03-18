@@ -106603,7 +106603,37 @@
   session_id: 01KM0QA63T6EEA6THYANC50QY4
   created_at: 2026-03-18T05:32:04.992Z
   started_at: 2026-03-18T14:59:28.909Z
-  notes: []
+  notes:
+    - _ulid: 01KM0R02TVK1YENQQX5MBF0E0P
+      content: >-
+        Implemented all three event CLI commands:
+
+
+        1. `kspec event types` — reads from the static EVENT_REGISTRY in
+        src/schema/event-registry.ts. Supports --domain filter, --count, and --json. No daemon
+        required.
+
+
+        2. `kspec event log` — calls GET /api/events/recent on the daemon. Validates --type filter
+        against the registry before making the request. Supports --limit, --offset, --count, and
+        --json.
+
+
+        3. `kspec event emit <type>` — calls POST /api/events/emit on the daemon. Validates event
+        type against registry, supports --payload (JSON object) and --field key=value (repeatable).
+        Reports matched hooks.
+
+
+        Pattern followed: modeled after hook.ts CLI commands. Used PidFileManager for daemon
+        connection detection (same pattern as agent.ts).
+
+
+        24 tests pass covering AC-5, AC-6, trait ACs (json-output, error-guidance,
+        semantic-exit-codes, filterable-list). Shadow-commit trait ACs marked N/A (event commands
+        are read-only). Pre-existing review-cli test failure unrelated to changes.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T15:11:01.979Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPW1EFQEXCA5QXMDP802KX
