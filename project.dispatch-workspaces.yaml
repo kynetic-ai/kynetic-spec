@@ -8773,7 +8773,7 @@ workspaces:
         head: c78549495ec28d101a3f21193f7e53105b09f3b2
         last_seen_at: 2026-03-18T02:55:08.842Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-code-diff-viewer-01kktw6m
-  - active_role: worker
+  - active_role: null
     base_branch_point: 3074c95391dd533e480c7d7bb14c575e4dc34ffc
     bootstrap:
       status: succeeded
@@ -8815,12 +8815,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T03:13:41.777Z
+      updated_at: 2026-03-18T03:14:10.126Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T03:13:41.777Z
+      updated_at: 2026-03-18T03:14:10.126Z
     integration:
       status: pending
       detail: null
@@ -8828,17 +8828,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3074c95391dd533e480c7d7bb14c575e4dc34ffc
-      updated_at: 2026-03-18T03:13:41.777Z
-    lifecycle_state: active
+      updated_at: 2026-03-18T03:14:10.126Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KKTW6N50TFB9MFMG7T5KZT6N"
     task_slug: task-structured-content-viewer
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T02:55:11.825Z
-      last_reconciled_at: 2026-03-18T03:13:41.777Z
+      last_reconciled_at: 2026-03-18T03:14:10.126Z
       created_at: 2026-03-18T02:55:10.116Z
-      updated_at: 2026-03-18T03:13:41.777Z
+      updated_at: 2026-03-18T03:14:10.126Z
     workspace_id: dispatch-workspace-01KKTW6N50TFB9MFMG7T5KZT6N
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
