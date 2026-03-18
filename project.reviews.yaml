@@ -13007,6 +13007,19 @@ reviews:
         runner: manual
         created_at: 2026-03-18T08:17:18.877Z
         completed_at: 2026-03-18T08:17:18.877Z
+      - status: fail
+        applies_to_version:
+          type: code_compare
+          base_commit: 8d087368e
+          head_commit: 14505dad0
+        evidence: Out-of-scope changes to src/parser/meta.ts (~250 lines deleted, ~130 added) and
+          tests/yaml-round-trip-stability.test.ts (~327 tests deleted). These changes revert
+          recently-merged round-trip stability work and break @yaml-serialization-invariants ac-3.
+        name: scope-integrity
+        required: true
+        runner: manual
+        created_at: 2026-03-18T08:17:26.652Z
+        completed_at: 2026-03-18T08:17:26.652Z
     events:
       - _ulid: 01KM008EENEX48JN61RBTTQ86N
         actor: "@claude"
@@ -13056,6 +13069,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T08:17:18.990Z
+      - _ulid: 01KM00AS75RKX7J14A3PCG04A7
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: scope-integrity
+        timestamp: 2026-03-18T08:17:26.758Z
     examined_commit: 14505dad0ba356bbfd037257e46aa75b3d9ebbbc
     external_links: []
     lifecycle_state: open
@@ -13134,5 +13154,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T08:16:10.197Z
-    updated_at: 2026-03-18T08:17:18.877Z
+    updated_at: 2026-03-18T08:17:26.652Z
     notes: []
