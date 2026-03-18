@@ -18455,7 +18455,17 @@ reviews:
     slugs: []
     title: Review task-review-skill-version-docs (cycle 3)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: 8902b7aa1f3e
+        evidence: 6510/6511 tests pass, 285/286 files pass. Single failure is pre-existing on dev.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T16:59:56.770Z
+        completed_at: 2026-03-18T16:59:56.770Z
     events:
       - _ulid: 01KM0Y63EC6F8XV3PXDBQ7SC9Y
         actor: "@claude"
@@ -18470,6 +18480,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T16:59:19.039Z
+      - _ulid: 01KM0Y7GM7JQCYEDVQGSMYXZKS
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T16:59:56.936Z
     examined_commit: 8902b7aa1f3e228f12750aa934dd24ec51b853f4
     external_links: []
     lifecycle_state: open
@@ -18482,5 +18499,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T16:59:10.669Z
-    updated_at: 2026-03-18T16:59:18.883Z
+    updated_at: 2026-03-18T16:59:56.770Z
     notes: []
