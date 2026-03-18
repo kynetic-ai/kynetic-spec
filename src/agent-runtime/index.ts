@@ -52,3 +52,12 @@ export {
   type SubscriptionPattern,
   type EventHandler,
 } from "./event-bus.js";
+
+export {
+  ScheduleEngine,
+  EVALUATION_INTERVAL_MS,
+  type ScheduleEngineOptions,
+  type ScheduleLoader,
+  type ScheduleRuntimeState,
+  type ScheduleStatus,
+} from "./schedule-engine.js";
