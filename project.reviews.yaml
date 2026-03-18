@@ -10821,6 +10821,17 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T02:49:08.018Z
         completed_at: 2026-03-18T02:49:08.018Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: c829472cb
+          head_commit: 9f539356d7db
+        evidence: TypeScript build succeeded, all packages compiled cleanly
+        name: build
+        required: true
+        runner: tsc
+        created_at: 2026-03-18T02:49:10.792Z
+        completed_at: 2026-03-18T02:49:10.792Z
     events:
       - _ulid: 01KKZDGTYHZ06K4VCA96Q223WD
         actor: "@claude"
@@ -10842,6 +10853,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T02:49:08.136Z
+      - _ulid: 01KKZDHPZY52STQR62079QX311
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: build
+        timestamp: 2026-03-18T02:49:10.910Z
     examined_commit: 9f539356d7db57d8c6f6e8f0e94d487138f27c65
     external_links: []
     lifecycle_state: open
@@ -10854,5 +10872,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T02:48:42.193Z
-    updated_at: 2026-03-18T02:49:08.018Z
+    updated_at: 2026-03-18T02:49:10.792Z
     notes: []
