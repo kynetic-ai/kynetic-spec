@@ -17501,7 +17501,19 @@ reviews:
     slugs: []
     title: Review task-schedule-cli (cycle 2)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b8a2609de
+          head_commit: b9a663d5e
+        evidence: 283 files passed, 6437 tests passed (1 pre-existing environmental failure in
+          review-cli.test.ts unrelated to this task)
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T15:21:59.704Z
+        completed_at: 2026-03-18T15:21:59.704Z
     events:
       - _ulid: 01KM0RKEW9PXMBEFZ62YBY4H0P
         actor: "@claude"
@@ -17516,6 +17528,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T15:21:50.049Z
+      - _ulid: 01KM0RM5DRNWBJPPRA4J9GXYMT
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T15:21:59.992Z
     examined_commit: b9a663d5e5afc91e08a0b7fdf051d666559bdd27
     external_links: []
     lifecycle_state: open
@@ -17528,5 +17547,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T15:21:36.906Z
-    updated_at: 2026-03-18T15:21:49.783Z
+    updated_at: 2026-03-18T15:21:59.704Z
     notes: []
