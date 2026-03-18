@@ -14107,6 +14107,19 @@ reviews:
         runner: kspec
         created_at: 2026-03-18T10:03:06.080Z
         completed_at: 2026-03-18T10:03:06.080Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: c9ead12eb04ffb581ba086d839a42abe111db2b1
+          head_commit: 4df9b9bc1dc87af31cae226b68c226d27bf71394
+        evidence: "AC: @dispatch-event-taxonomy ac-2 — 15 test annotations. AC: @dispatch-event-payload ac-3
+          — 11 test annotations. AC: @trait-error-guidance ac-1 through ac-6 — all N/A with valid
+          justification (bus emissions, not CLI commands)."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T10:03:13.245Z
+        completed_at: 2026-03-18T10:03:13.245Z
     events:
       - _ulid: 01KM06BBZAA4D66JMX8WB8YYPM
         actor: "@claude"
@@ -14135,6 +14148,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-18T10:03:06.191Z
+      - _ulid: 01KM06CF2D4TKW56VP9NBYCFA3
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T10:03:13.357Z
     examined_commit: 4df9b9bc1dc87af31cae226b68c226d27bf71394
     external_links: []
     lifecycle_state: open
@@ -14147,5 +14167,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T10:02:37.419Z
-    updated_at: 2026-03-18T10:03:06.080Z
+    updated_at: 2026-03-18T10:03:13.245Z
     notes: []
