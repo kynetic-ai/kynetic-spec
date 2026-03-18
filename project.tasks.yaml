@@ -105611,6 +105611,7 @@
   created_at: 2026-03-18T05:31:53.588Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPVP61ABDF4Y79Q88T357P
   slugs:
     - task-session-events
@@ -105752,6 +105753,7 @@
   created_at: 2026-03-18T05:31:57.939Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPVTFW73DTR2RC1NQZEF13
   slugs:
     - task-schedule-schema
@@ -105836,6 +105838,7 @@
   created_at: 2026-03-18T05:32:00.733Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPVX7D9A14ZFGSFSXS8X6Z
   slugs:
     - task-hook-cli
@@ -105986,6 +105989,7 @@
   created_at: 2026-03-18T05:32:06.479Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPW2T4TGQ47DHFHKV012SY
   slugs:
     - task-validate-integration
@@ -106067,6 +106071,7 @@
   created_at: 2026-03-18T05:32:09.262Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPW5J7YNTE7PD2JK0KRAPF
   slugs:
     - task-automation-view
@@ -106104,6 +106109,7 @@
   created_at: 2026-03-18T05:32:10.695Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPW71H0KTRJY3HFF7YDNT9
   slugs:
     - task-migrate-triggers
@@ -106141,6 +106147,7 @@
   created_at: 2026-03-18T05:32:12.209Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPW8ER84M8MY528CFW576N
   slugs:
     - task-cancel-old-trigger-task
