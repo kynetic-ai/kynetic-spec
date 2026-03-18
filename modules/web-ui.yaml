@@ -3489,6 +3489,9 @@ requirements:
           entity content with identifiable sections that support anchored
           commenting, similar to how the diff viewer enables line-level
           comments on code.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
