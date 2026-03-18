@@ -5375,7 +5375,7 @@ modules:
              outcomes enable different follow-up paths.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
