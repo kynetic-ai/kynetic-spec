@@ -102058,7 +102058,21 @@
   session_id: 01KKZDWQ84JRTVVNWHM0YA9YDM
   created_at: 2026-03-16T08:29:05.056Z
   started_at: 2026-03-18T03:01:29.009Z
-  notes: []
+  notes:
+    - _ulid: 01KKZEYFQC2YH3F94X49MBZJPZ
+      content: "Implemented structured content viewer for plan/spec/task reviews on the review detail
+        page. Components: StructuredContentViewer (orchestrator fetching from GET
+        /api/reviews/:id/content via TanStack Query, renders sections with inline commenting),
+        ContentCommentForm (kind selector + body textarea), ContentInlineThread (collapsible thread
+        display with reply/resolve/reopen). Supports 5 section types from the API: markdown,
+        acceptance_criteria (each AC individually targetable), ref_list, notes, metadata. Comments
+        create threads with structured anchors (section, field, anchor-ref). Existing threads with
+        matching structured anchors render inline at their anchored position. Updated
+        createReviewThread to accept anchor parameter. Added reviews.content query key. 41 static
+        analysis tests covering all 4 ACs."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T03:13:38.028Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6NR1WA12MZCR6FY1AGT8
