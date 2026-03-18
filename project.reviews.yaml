@@ -15650,3 +15650,29 @@ reviews:
     created_at: 2026-03-18T12:07:41.447Z
     updated_at: 2026-03-18T12:09:12.890Z
     notes: []
+  - _ulid: 01KM0FDVZGKT1MYX77VA0VDRNH
+    slugs: []
+    title: Review task-schedule-engine (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0FDVZF9G2JX9JH0J0N3K78
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T12:41:16.527Z
+    examined_commit: 36102927dc6f09beee40fb944f562d6452dfa0bb
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-schedule-engine"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T12:41:16.528Z
+    updated_at: null
+    notes: []
