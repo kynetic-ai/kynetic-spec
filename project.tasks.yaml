@@ -106597,8 +106597,12 @@
   spec_ref: "@dispatch-event-cli"
   plan_ref: "@plan-dispatch-event-system-expansion"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Implemented kspec event types (static registry listing with domain
+    filter, count mode, JSON output), kspec event log (daemon ring buffer query with type filter,
+    pagination, count mode), and kspec event emit (manual event emission with payload/field options
+    and hook match reporting). 24 tests covering ac-5, ac-6, and all trait ACs.
   depends_on:
     - "@task-event-schema"
     - "@task-daemon-api"
@@ -106621,6 +106625,7 @@
   created_at: 2026-03-18T05:32:04.992Z
   started_at: 2026-03-18T14:59:28.909Z
   submitted_at: 2026-03-18T15:11:08.875Z
+  completed_at: 2026-03-18T15:20:02.727Z
   notes:
     - _ulid: 01KM0R02TVK1YENQQX5MBF0E0P
       content: >-
