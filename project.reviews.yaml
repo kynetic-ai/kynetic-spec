@@ -17882,6 +17882,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM0TWEX7CD74QA3ZWZ7V4088
         timestamp: 2026-03-18T16:01:29.147Z
+      - _ulid: 01KM0TWHVBG8K7QHY8NQW16EQM
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0TWHNZQYXFV33FGMATAEVY
+        timestamp: 2026-03-18T16:01:32.011Z
     examined_commit: 7656f7bb405dee7c1feaae24f00f312fb5d4fedf
     external_links: []
     lifecycle_state: open
@@ -18019,7 +18026,24 @@ reviews:
               never referenced in the template."
             created_at: 2026-03-18T16:01:29.000Z
         kind: nit
+      - _ulid: 01KM0TWHNZQYXFV33FGMATAEVY
+        anchor:
+          type: code
+          commit: ""
+          line_end: 14
+          line_start: 6
+          path: packages/web-ui/src/lib/components/automation/CompositionsSection.svelte
+          side: head
+        entries:
+          - _ulid: 01KM0TWHNZKK465MXF1AH4MNTS
+            author: "@claude"
+            body: "CompositionsSection.svelte: Imports createQuery, useQueryClient, fetchAgentDefinitions, and
+              queryKeys but none of them are used. The component uses raw $effect + fetch instead of
+              TanStack Query, which is inconsistent with every other data-fetching component in the
+              web UI."
+            created_at: 2026-03-18T16:01:31.839Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T16:00:37.212Z
-    updated_at: 2026-03-18T16:01:29.000Z
+    updated_at: 2026-03-18T16:01:31.839Z
     notes: []
