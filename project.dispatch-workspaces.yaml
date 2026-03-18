@@ -8520,3 +8520,79 @@ workspaces:
         head: c7f0fed80c4192706ed6dc4c428abbfdb4f9fe88
         last_seen_at: 2026-03-18T01:28:43.990Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/replace-hardcoded-branch-names-in-merge-skill-template-with-dynamic-references-01kkxemg
+  - active_role: null
+    base_branch_point: 81daafe8a38dc2ac5fe460ef396d2b565f4799af
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/fix-session-cache-invalidate-leaves-ghost-in-knownsessionids/01kkxgpn
+    canonical_branch_head: 81daafe8a38dc2ac5fe460ef396d2b565f4799af
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-18T01:28:44.963Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-18T01:28:44.963Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 81daafe8a38dc2ac5fe460ef396d2b565f4799af
+      updated_at: 2026-03-18T01:28:44.963Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KKXGPNP7R08EYVEQCERNX1HS"
+    task_slug: fix-session-cache-invalidate-leaves-ghost-in-knownsessionids
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-18T01:28:44.963Z
+      created_at: 2026-03-18T01:28:44.963Z
+      updated_at: 2026-03-18T01:28:44.963Z
+    workspace_id: dispatch-workspace-01KKXGPNP7R08EYVEQCERNX1HS
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/fix-session-cache-invalidate-leaves-ghost-in-knownsessionids/01kkxgpn
+        head: 81daafe8a38dc2ac5fe460ef396d2b565f4799af
+        last_seen_at: 2026-03-18T01:28:44.963Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-session-cache-invalidate-leaves-ghost-in-knownsessionids-01kkxgpn
