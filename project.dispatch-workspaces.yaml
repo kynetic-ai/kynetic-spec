@@ -10660,7 +10660,7 @@ workspaces:
         head: b8a2609de8d38a948f6d47d4d7fab9b05e941f08
         last_seen_at: 2026-03-18T14:56:01.354Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-schedule-cli-01kkzpvy
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 2dcce1c1b50abdac83c5d5dd1add93610e82e8e4
     bootstrap:
       status: succeeded
@@ -10707,7 +10707,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T14:58:58.836Z
+      updated_at: 2026-03-18T14:59:01.494Z
     integration:
       status: pending
       detail: null
@@ -10722,10 +10722,10 @@ workspaces:
     task_slug: task-spec-review-version-auto-derive
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-18T14:56:03.408Z
-      last_reconciled_at: 2026-03-18T14:58:58.836Z
+      last_active_at: 2026-03-18T14:59:01.494Z
+      last_reconciled_at: 2026-03-18T14:59:01.494Z
       created_at: 2026-03-18T14:56:02.381Z
-      updated_at: 2026-03-18T14:58:59.897Z
+      updated_at: 2026-03-18T14:59:01.494Z
     workspace_id: dispatch-workspace-01KM0NT8VQZM8NJS2E6EM3Q0QQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
