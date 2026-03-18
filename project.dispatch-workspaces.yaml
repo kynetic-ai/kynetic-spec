@@ -9429,12 +9429,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T10:23:06.882Z
+      updated_at: 2026-03-18T10:23:09.697Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T10:23:06.882Z
+      updated_at: 2026-03-18T10:23:09.697Z
     integration:
       status: pending
       detail: null
@@ -9442,26 +9442,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c9ead12eb04ffb581ba086d839a42abe111db2b1
-      updated_at: 2026-03-18T10:23:06.882Z
-    lifecycle_state: ready
+      updated_at: 2026-03-18T10:23:09.697Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKZPVP61ABDF4Y79Q88T357P"
     task_slug: task-session-events
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T10:13:48.563Z
-      last_reconciled_at: 2026-03-18T10:23:06.882Z
+      last_reconciled_at: 2026-03-18T10:23:09.697Z
       created_at: 2026-03-18T09:31:38.376Z
-      updated_at: 2026-03-18T10:23:06.882Z
+      updated_at: 2026-03-18T10:23:09.697Z
     workspace_id: dispatch-workspace-01KKZPVP61ABDF4Y79Q88T357P
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 190e97ec96364c8eb3579b117d34e7ba3fac2f61
+        last_seen_at: 2026-03-18T10:23:09.697Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-events-01kkzpvp-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-session-events/01kkzpvp
-        head: 4df9b9bc1dc87af31cae226b68c226d27bf71394
-        last_seen_at: 2026-03-18T10:13:47.882Z
+        head: 190e97ec96364c8eb3579b117d34e7ba3fac2f61
+        last_seen_at: 2026-03-18T10:23:09.697Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-events-01kkzpvp
   - active_role: worker
     base_branch_point: b0bc7850b39feba9a789c532f971f7cd7d808d2e
