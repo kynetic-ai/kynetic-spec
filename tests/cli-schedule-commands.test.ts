@@ -728,6 +728,8 @@ describe("trait-error-guidance", () => {
     expect(err.details).toBeDefined();
     expect(err.details.hint).toContain("schedule list");
   });
+
+  // AC: @trait-error-guidance ac-4 — N/A: schedules are configuration items with no state transitions; invalid state transition errors do not apply
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -768,6 +770,7 @@ describe("trait-semantic-exit-codes", () => {
   // AC: @trait-semantic-exit-codes ac-6 — N/A: Commander handles invalid flag errors with its own exit behavior
 
   // AC: @trait-semantic-exit-codes ac-3 — N/A: schedule commands have no interactive confirmation prompts
+  // AC: @trait-semantic-exit-codes ac-4 — N/A: schedule commands use EXIT_CODES.ERROR (1) for runtime errors; exit code 3 is NOT_FOUND in this project's exit code scheme
   // AC: @trait-semantic-exit-codes ac-7 — N/A: schedule commands don't perform batch operations
   // AC: @trait-semantic-exit-codes ac-8 — exit code meanings are documented in exit-codes.ts (covered by that file's own tests)
 });
