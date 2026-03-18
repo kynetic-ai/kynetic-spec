@@ -5373,6 +5373,9 @@ modules:
              action runs to complete before triggering a synthesis action.
           4. Conditional routing: Separate hooks for success vs failure
              outcomes enable different follow-up paths.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
