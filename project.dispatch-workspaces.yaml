@@ -8823,12 +8823,20 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-18T03:36:52.484Z
+      updated_at: 2026-03-18T03:38:42.688Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T03:37:03.932Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/task-structured-content-viewer/01kktw6n" is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-structured-content-viewer-01kktw6n"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-18T03:38:42.688Z
     integration:
       status: merged
       detail: integration:merged
@@ -8836,17 +8844,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 3074c95391dd533e480c7d7bb14c575e4dc34ffc
-      updated_at: 2026-03-18T03:36:52.484Z
-    lifecycle_state: closing
+      updated_at: 2026-03-18T03:38:42.688Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KKTW6N50TFB9MFMG7T5KZT6N"
     task_slug: task-structured-content-viewer
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T03:14:14.540Z
-      last_reconciled_at: 2026-03-18T03:37:03.932Z
+      last_reconciled_at: 2026-03-18T03:38:42.688Z
       created_at: 2026-03-18T02:55:10.116Z
-      updated_at: 2026-03-18T03:37:03.932Z
+      updated_at: 2026-03-18T03:38:42.688Z
     workspace_id: dispatch-workspace-01KKTW6N50TFB9MFMG7T5KZT6N
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
