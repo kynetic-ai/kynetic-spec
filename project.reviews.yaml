@@ -14727,6 +14727,25 @@ reviews:
         runner: manual
         created_at: 2026-03-18T10:58:46.349Z
         completed_at: 2026-03-18T10:58:46.349Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0bc7850b
+          head_commit: 5232b0cf0e35
+        evidence: "Implementation aligns with spec for all 9 covered ACs. pushDispatchBranch correctly
+          detects first-push vs subsequent-push via hasUpstreamTracking, uses --force-with-lease for
+          stale ref replacement, and checks isLocalBranchAheadOfUpstream before subsequent pushes.
+          pushIntegrationTarget handles both post-merge and periodic triggers with -u flag.
+          deleteRemoteDispatchBranch checks upstream tracking before attempting deletion. All push
+          failures are non-fatal (return error in result object, never throw). Integration with
+          DispatchEngine: post-invocation push fires only on completed invocations, reviewer
+          invocations also push integration target, periodic reconciliation retries failed pushes,
+          cleanup deletes remote ref before local branch."
+        name: spec-alignment
+        required: true
+        runner: manual
+        created_at: 2026-03-18T10:58:56.622Z
+        completed_at: 2026-03-18T10:58:56.622Z
     events:
       - _ulid: 01KM08XWWCKC6M8K7HE7WE3EM1
         actor: "@claude"
@@ -14769,6 +14788,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T10:58:46.464Z
+      - _ulid: 01KM09JG39EDEACZMA2HAE267R
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: spec-alignment
+        timestamp: 2026-03-18T10:58:56.746Z
     examined_commit: 5232b0cf0e354072aea5cc041e6e7e774d077e5d
     external_links: []
     lifecycle_state: open
@@ -14820,5 +14846,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T10:47:41.708Z
-    updated_at: 2026-03-18T10:58:46.349Z
+    updated_at: 2026-03-18T10:58:56.622Z
     notes: []
