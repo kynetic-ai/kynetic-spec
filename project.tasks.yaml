@@ -102042,7 +102042,7 @@
   spec_ref: "@review-structured-content-viewer"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-diff-api"
@@ -102055,9 +102055,18 @@
     - review
     - content
   vcs_refs: []
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-18T03:13:50.453Z
+    commit: 3074c95391dd533e480c7d7bb14c575e4dc34ffc
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
   session_id: 01KKZDWQ84JRTVVNWHM0YA9YDM
   created_at: 2026-03-16T08:29:05.056Z
   started_at: 2026-03-18T03:01:29.009Z
+  submitted_at: 2026-03-18T03:13:50.863Z
   notes:
     - _ulid: 01KKZEYFQC2YH3F94X49MBZJPZ
       content: "Implemented structured content viewer for plan/spec/task reviews on the review detail
