@@ -705,6 +705,11 @@ export function registerAgentCommands(program: Command): void {
           running: boolean;
           activeInvocations: number;
           queuedInvocations: number;
+          degraded?: {
+            active: boolean;
+            reason: string;
+            enteredAt: string | null;
+          };
         };
 
         // Get loaded agents
@@ -721,6 +726,18 @@ export function registerAgentCommands(program: Command): void {
         output(fullData, () => {
           console.log(chalk.bold("Dispatch Status"));
           console.log();
+          // AC: @dispatch-remote-branch-sync ac-degraded-status-api — prominent warning
+          if (statusData.degraded?.active) {
+            console.log(chalk.bgRed.white.bold("  ⚠ DEGRADED  ") + " " + chalk.red("New workspace provisioning is paused"));
+            console.log(`  ${chalk.red("Reason:")} ${statusData.degraded.reason}`);
+            if (statusData.degraded.enteredAt) {
+              const enteredAt = new Date(statusData.degraded.enteredAt);
+              const durationMs = Date.now() - enteredAt.getTime();
+              const durationMin = Math.round(durationMs / 60_000);
+              console.log(`  ${chalk.red("Since:")} ${enteredAt.toLocaleString()} (${durationMin}m ago)`);
+            }
+            console.log();
+          }
           console.log(`  Engine:             ${statusData.running ? chalk.green("enabled") : chalk.yellow("disabled")}`);
           console.log(`  Active invocations: ${chalk.cyan(String(statusData.activeInvocations))}`);
           console.log(`  Queued invocations: ${chalk.cyan(String(statusData.queuedInvocations))}`);
