@@ -104051,6 +104051,17 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T00:24:50.883Z
+    - _ulid: 01KKZ6PMWTPEK6AHRNX1GDM7GN
+      content: "Fix cycle 1: Merged dev into task branch to resolve divergence. The branch had forked
+        before dispatch workspace round-trip work and review detail page were merged to dev. Without
+        the merge, merging back to dev would have deleted those changes. After merge, the diff
+        against dev is now scoped to exactly the workflow runs changes (meta.ts + test file). Both
+        review blockers resolved: (1) dispatch-workspaces.ts raw-data-preservation is intact, (2) no
+        out-of-scope deletions. Pre-existing review-cli.test.ts examined_commit failure remains (not
+        introduced by this task)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T00:49:32.571Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6QMN6CN74M8NFSBM73X1Q
