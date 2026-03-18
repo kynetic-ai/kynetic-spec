@@ -18240,6 +18240,18 @@ reviews:
         runner: manual
         created_at: 2026-03-18T16:15:44.180Z
         completed_at: 2026-03-18T16:15:44.180Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate shows 3 pre-existing reference errors, 1 reference warning, 30 alignment
+          warnings, 396 completeness warnings. All pre-existing. Skills validation passes (9 files
+          checked). No new issues introduced by this commit.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-18T16:15:52.448Z
+        completed_at: 2026-03-18T16:15:52.448Z
     events:
       - _ulid: 01KM0V1N7DPWZGG73TFJ1QBB30
         actor: "@claude"
@@ -18282,6 +18294,13 @@ reviews:
           status: fail
           name: rendered-output-sync
         timestamp: 2026-03-18T16:15:44.360Z
+      - _ulid: 01KM0VPT8N8D7W0HA2595ZWP9M
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-18T16:15:52.597Z
     examined_commit: 23174dc3b0ba99026d590e7f1bb9244bcdd28726
     external_links: []
     lifecycle_state: open
@@ -18318,5 +18337,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-18T16:04:19.310Z
-    updated_at: 2026-03-18T16:15:44.180Z
+    updated_at: 2026-03-18T16:15:52.448Z
     notes: []
