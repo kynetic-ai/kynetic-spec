@@ -13852,6 +13852,22 @@ reviews:
         runner: manual
         created_at: 2026-03-18T09:24:55.250Z
         completed_at: 2026-03-18T09:24:55.250Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
+          head_commit: c3b3d1b39059489fb174035e4bec6527043323cc
+        evidence: "Implementation matches spec for all 4 ACs. ac-1: schema has command (string), args
+          (string[]), optional cwd, shell defaults false. ac-2: spawn with shell:false + per-arg
+          template interpolation = literal argv. ac-3: KSPEC_ENV_ALLOWLIST has 12 fields matching
+          spec; buildKspecEnvVars truncates at 1KB; env ordering process.env→kspecEnv→action.env
+          gives correct precedence. ac-4: command runs in projectDir, not .kspec/; no mutex
+          acquisition."
+        name: spec-alignment
+        required: true
+        runner: manual
+        created_at: 2026-03-18T09:25:06.666Z
+        completed_at: 2026-03-18T09:25:06.666Z
     events:
       - _ulid: 01KM043KNET4TFVNZ9ASYW4FTX
         actor: "@claude"
@@ -13887,6 +13903,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T09:24:55.362Z
+      - _ulid: 01KM046P3D6XH4WZKY3FGJ8W6J
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: spec-alignment
+        timestamp: 2026-03-18T09:25:06.797Z
     examined_commit: c3b3d1b39059489fb174035e4bec6527043323cc
     external_links: []
     lifecycle_state: open
@@ -13921,5 +13944,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T09:23:25.998Z
-    updated_at: 2026-03-18T09:24:55.250Z
+    updated_at: 2026-03-18T09:25:06.666Z
     notes: []
