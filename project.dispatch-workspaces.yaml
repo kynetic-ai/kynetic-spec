@@ -10868,12 +10868,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T15:24:43.414Z
+      updated_at: 2026-03-18T15:24:45.086Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T15:24:43.414Z
+      updated_at: 2026-03-18T15:24:45.086Z
     integration:
       status: pending
       detail: null
@@ -10881,24 +10881,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2dcce1c1b50abdac83c5d5dd1add93610e82e8e4
-      updated_at: 2026-03-18T15:24:43.414Z
-    lifecycle_state: ready
+      updated_at: 2026-03-18T15:24:45.086Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM0NTQE36W7XMHAZB0V7KTXN"
     task_slug: task-cli-verdict-auto-version
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T15:14:28.167Z
-      last_reconciled_at: 2026-03-18T15:24:43.414Z
+      last_reconciled_at: 2026-03-18T15:24:45.086Z
       created_at: 2026-03-18T15:14:26.848Z
-      updated_at: 2026-03-18T15:24:43.414Z
+      updated_at: 2026-03-18T15:24:45.086Z
     workspace_id: dispatch-workspace-01KM0NTQE36W7XMHAZB0V7KTXN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f69c7a49a39ebcde4741cd522585570956f32f22
+        last_seen_at: 2026-03-18T15:24:45.086Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-verdict-auto-version-01km0ntq-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-cli-verdict-auto-version/01km0ntq
-        head: 2dcce1c1b50abdac83c5d5dd1add93610e82e8e4
-        last_seen_at: 2026-03-18T15:14:26.848Z
+        head: f69c7a49a39ebcde4741cd522585570956f32f22
+        last_seen_at: 2026-03-18T15:24:45.086Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-verdict-auto-version-01km0ntq
