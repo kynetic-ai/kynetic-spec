@@ -9942,7 +9942,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T12:00:36.974Z
+      updated_at: 2026-03-18T12:00:47.680Z
     integration:
       status: merged
       detail: integration:merged
@@ -9958,18 +9958,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T11:50:13.316Z
-      last_reconciled_at: 2026-03-18T12:00:46.743Z
+      last_reconciled_at: 2026-03-18T12:00:47.680Z
       created_at: 2026-03-18T11:38:00.250Z
-      updated_at: 2026-03-18T12:00:46.743Z
+      updated_at: 2026-03-18T12:00:47.680Z
     workspace_id: dispatch-workspace-01KKZPVMVM269XTHFNX9GRPA5N
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 9abea94245dd4172258e016289afe7572c0d0a3a
-        last_seen_at: 2026-03-18T11:50:12.328Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-agent-action-input-01kkzpvm-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-agent-action-input/01kkzpvm
