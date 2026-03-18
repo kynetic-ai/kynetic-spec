@@ -17875,6 +17875,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM0TW6MQEZK4FJTJPFE2YMY2
         timestamp: 2026-03-18T16:01:20.679Z
+      - _ulid: 01KM0TWF1VZ2QQ9189QNEZNVBJ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0TWEX7CD74QA3ZWZ7V4088
+        timestamp: 2026-03-18T16:01:29.147Z
     examined_commit: 7656f7bb405dee7c1feaae24f00f312fb5d4fedf
     external_links: []
     lifecycle_state: open
@@ -17997,7 +18004,22 @@ reviews:
               dead automation:updates topic or add a note explaining it's for future use.
             created_at: 2026-03-18T16:01:20.535Z
         kind: nit
+      - _ulid: 01KM0TWEX7CD74QA3ZWZ7V4088
+        anchor:
+          type: code
+          commit: ""
+          line_end: 65
+          line_start: 63
+          path: packages/web-ui/src/lib/components/automation/CompositionsSection.svelte
+          side: head
+        entries:
+          - _ulid: 01KM0TWEX7FRXSWDZ9EHFP32K6
+            author: "@claude"
+            body: "CompositionsSection.svelte: Unused variable 'hasActivations' is declared as $derived but
+              never referenced in the template."
+            created_at: 2026-03-18T16:01:29.000Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T16:00:37.212Z
-    updated_at: 2026-03-18T16:01:20.535Z
+    updated_at: 2026-03-18T16:01:29.000Z
     notes: []
