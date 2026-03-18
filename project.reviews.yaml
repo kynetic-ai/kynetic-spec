@@ -11469,6 +11469,17 @@ reviews:
         runner: manual
         created_at: 2026-03-18T04:05:06.148Z
         completed_at: 2026-03-18T04:05:06.148Z
+      - status: skipped
+        applies_to_version:
+          type: code_compare
+          base_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
+          head_commit: 3f6587548ba602b8300fbd2fddd94ec6c9ea46a6
+        evidence: Cannot run in dispatch agent env (daemon start blocked). 17 tests structurally verified.
+        name: e2e
+        required: false
+        runner: playwright
+        created_at: 2026-03-18T04:05:08.728Z
+        completed_at: 2026-03-18T04:05:08.728Z
     events:
       - _ulid: 01KKZHCCVGMAJBBRA17YMA93WX
         actor: "@claude"
@@ -11504,6 +11515,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T04:05:06.241Z
+      - _ulid: 01KKZHWT2WDMSY983S87ADD2KS
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: skipped
+          name: e2e
+        timestamp: 2026-03-18T04:05:08.828Z
     examined_commit: 3f6587548ba602b8300fbd2fddd94ec6c9ea46a6
     external_links: []
     lifecycle_state: open
@@ -11516,5 +11534,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T03:56:10.993Z
-    updated_at: 2026-03-18T04:05:06.148Z
+    updated_at: 2026-03-18T04:05:08.728Z
     notes: []
