@@ -4769,6 +4769,9 @@ modules:
 
           Template variables use {{var}} syntax resolved from the triggering
           event's envelope and payload.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
