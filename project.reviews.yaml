@@ -17929,9 +17929,22 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-18T16:01:51.696Z
+      - _ulid: 01KM0TXFQ8F7531A99PKJWWRX4
+        actor: pr-reviewer@dispatch
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-18T16:02:02.600Z
+      - _ulid: 01KM0TXFQ8FRRGBVRX2RH1M6N8
+        actor: pr-reviewer@dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T16:02:02.600Z
     examined_commit: 7656f7bb405dee7c1feaae24f00f312fb5d4fedf
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -18083,9 +18096,17 @@ reviews:
               web UI."
             created_at: 2026-03-18T16:01:31.839Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 20cb7666e4d9c456dc6dc33edf108a0d1feec779
+          head_commit: 7656f7bb405dee7c1feaae24f00f312fb5d4fedf
+        decision: request_changes
+        reviewer: pr-reviewer@dispatch
+        role: reviewer
+        created_at: 2026-03-18T16:02:02.437Z
     created_at: 2026-03-18T16:00:37.212Z
-    updated_at: 2026-03-18T16:01:51.527Z
+    updated_at: 2026-03-18T16:02:02.437Z
     notes: []
   - _ulid: 01KM0TWVZN7JR1ZZCFGBGHNVX4
     slugs: []
