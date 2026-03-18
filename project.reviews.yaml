@@ -13984,6 +13984,17 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T09:50:04.381Z
         completed_at: 2026-03-18T09:50:04.381Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: ca266e824eb760fa55bd42cf3ceb953a6b93c35b
+          head_commit: c790bb1ffcfe44d0be13719ab8884a5655f5055b
+        evidence: "npm run build succeeded: tsc, shared, daemon, web-ui, plugin all clean."
+        name: build
+        required: true
+        runner: tsc
+        created_at: 2026-03-18T09:50:11.904Z
+        completed_at: 2026-03-18T09:50:11.904Z
     events:
       - _ulid: 01KM04M3PEJHRTEH4NZ6CCWY2Q
         actor: "@claude"
@@ -14005,6 +14016,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T09:50:04.526Z
+      - _ulid: 01KM05MM54K2ZV53Q2D5V6C5YC
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: build
+        timestamp: 2026-03-18T09:50:12.132Z
     examined_commit: c790bb1ffcfe44d0be13719ab8884a5655f5055b
     external_links: []
     lifecycle_state: open
@@ -14017,5 +14035,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T09:32:26.703Z
-    updated_at: 2026-03-18T09:50:04.381Z
+    updated_at: 2026-03-18T09:50:11.904Z
     notes: []
