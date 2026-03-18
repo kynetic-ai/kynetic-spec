@@ -16,8 +16,10 @@ import {
   mutateInboxItemAtomically,
   deleteInboxItem,
   loadInboxItems,
+  loadTriageRecords,
+  saveTriageRecord,
 } from "../src/parser/yaml.js";
-import type { LoadedTask, LoadedInboxItem } from "../src/parser/yaml.js";
+import type { LoadedTask, LoadedInboxItem, LoadedTriageRecord } from "../src/parser/yaml.js";
 import {
   loadPlans,
   savePlan,
@@ -1142,6 +1144,293 @@ describe("round-trip stability — saveInboxItem path", () => {
     const reloaded = await loadInboxItems(ctx);
     expect(reloaded).toHaveLength(1);
     expect(reloaded[0]._ulid).toBe(ulid2);
+  });
+});
+
+// AC: @yaml-serialization-invariants ac-3
+describe("round-trip stability — saveTriageRecord path", () => {
+  function makeTriageCtx(specDir: string): KspecContext {
+    return { specDir } as KspecContext;
+  }
+
+  it("saveTriageRecord on a record with updated_at preserves non-default fields only", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-triage-rt1");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeTriageCtx(kspecDir);
+
+    // Write a triage file with a record that already has updated_at
+    const triagePath = path.join(kspecDir, "project.triage.yaml");
+    const recordUlid = testUlid("TRIA");
+    const inboxRef = testUlid("INBR");
+    await writeYamlFilePreserveFormat(triagePath, {
+      kynetic_triage: "1.0",
+      triage: [
+        {
+          _ulid: recordUlid,
+          inbox_ref: inboxRef,
+          item_snapshot: "Test inbox item",
+          status: "pending",
+          created_at: "2026-01-01T00:00:00.000Z",
+          updated_at: "2026-01-01T00:00:00.000Z",
+        },
+      ],
+    });
+
+    // Load and save back — saveTriageRecord always sets updated_at,
+    // but evidence_refs: [] (Zod default) should NOT appear in the output
+    const loaded = await loadTriageRecords(ctx);
+    expect(loaded).toHaveLength(1);
+    await saveTriageRecord(ctx, loaded[0]);
+    const afterContent = await fs.readFile(triagePath, "utf-8");
+
+    // evidence_refs should not appear (it's a Zod default of [])
+    expect(afterContent).not.toContain("evidence_refs");
+
+    // The record should still load correctly
+    const reloaded = await loadTriageRecords(ctx);
+    expect(reloaded).toHaveLength(1);
+    expect(reloaded[0]._ulid).toBe(recordUlid);
+  });
+
+  it("saveTriageRecord does not pollute non-target records with Zod defaults", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-triage-rt2");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeTriageCtx(kspecDir);
+
+    const triagePath = path.join(kspecDir, "project.triage.yaml");
+    const [ulid1, ulid2] = testUlids("TRGP", 2);
+    const [inboxRef1, inboxRef2] = testUlids("TIRP", 2);
+    await writeYamlFilePreserveFormat(triagePath, {
+      kynetic_triage: "1.0",
+      triage: [
+        {
+          _ulid: ulid1,
+          inbox_ref: inboxRef1,
+          item_snapshot: "First triage item",
+          status: "pending",
+          created_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          inbox_ref: inboxRef2,
+          item_snapshot: "Second triage item",
+          status: "pending",
+          created_at: "2026-01-02T00:00:00.000Z",
+        },
+      ],
+    });
+
+    // Mutate only the first record (add action + reasoning to simulate triage)
+    const loaded = await loadTriageRecords(ctx);
+    const mutated: LoadedTriageRecord = {
+      ...loaded[0],
+      status: "triaged",
+      action: "promote",
+      reasoning: "Promoting to spec",
+      decided_by: "@agent",
+    };
+    await saveTriageRecord(ctx, mutated);
+    const afterContent = await fs.readFile(triagePath, "utf-8");
+
+    // The second record should NOT gain evidence_refs: [] from Zod default
+    const evidenceMatches = afterContent.match(/evidence_refs:/g) || [];
+    expect(evidenceMatches).toHaveLength(0);
+
+    // But the mutation should have taken effect
+    const reloaded = await loadTriageRecords(ctx);
+    expect(reloaded[0].status).toBe("triaged");
+    expect(reloaded[0].action).toBe("promote");
+    expect(reloaded[1].status).toBe("pending");
+  });
+
+  it("saveTriageRecord preserves file stability across multiple records", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-triage-rt3");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeTriageCtx(kspecDir);
+
+    const triagePath = path.join(kspecDir, "project.triage.yaml");
+    const [ulid1, ulid2, ulid3] = testUlids("TRGS", 3);
+    const [iref1, iref2, iref3] = testUlids("TIRS", 3);
+    await writeYamlFilePreserveFormat(triagePath, {
+      kynetic_triage: "1.0",
+      triage: [
+        {
+          _ulid: ulid1,
+          inbox_ref: iref1,
+          item_snapshot: "First item",
+          status: "pending",
+          created_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          inbox_ref: iref2,
+          item_snapshot: "Second item with action",
+          status: "triaged",
+          action: "defer",
+          reasoning: "Later",
+          decided_by: "@user",
+          created_at: "2026-01-02T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid3,
+          inbox_ref: iref3,
+          item_snapshot: "Third item",
+          status: "pending",
+          created_at: "2026-01-03T00:00:00.000Z",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(triagePath, "utf-8");
+
+    // Load all records — verify none gain Zod defaults just from loading+saving
+    const loaded = await loadTriageRecords(ctx);
+    expect(loaded).toHaveLength(3);
+
+    // Save each record back — the target record gets updated_at set by saveTriageRecord,
+    // but non-target records should be untouched
+    // To verify non-target stability, save only the second (already-triaged) record
+    await saveTriageRecord(ctx, loaded[1]);
+    const afterContent = await fs.readFile(triagePath, "utf-8");
+
+    // Non-target records (1st and 3rd) should not gain evidence_refs from Zod defaults
+    // Count evidence_refs occurrences — should be 0 (none of the records had it originally)
+    const evidenceMatches = afterContent.match(/evidence_refs:/g) || [];
+    expect(evidenceMatches).toHaveLength(0);
+
+    // Verify all records still load correctly
+    const reloaded = await loadTriageRecords(ctx);
+    expect(reloaded).toHaveLength(3);
+    expect(reloaded[0]._ulid).toBe(ulid1);
+    expect(reloaded[1]._ulid).toBe(ulid2);
+    expect(reloaded[2]._ulid).toBe(ulid3);
+  });
+
+  it("multiple save cycles maintain stability for non-target records", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-triage-rt4");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeTriageCtx(kspecDir);
+
+    const triagePath = path.join(kspecDir, "project.triage.yaml");
+    const [ulid1, ulid2] = testUlids("TRGM", 2);
+    const [iref1, iref2] = testUlids("TIRM", 2);
+    await writeYamlFilePreserveFormat(triagePath, {
+      kynetic_triage: "1.0",
+      triage: [
+        {
+          _ulid: ulid1,
+          inbox_ref: iref1,
+          item_snapshot: "Stable item",
+          status: "pending",
+          created_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          inbox_ref: iref2,
+          item_snapshot: "Mutated item",
+          status: "pending",
+          created_at: "2026-01-02T00:00:00.000Z",
+        },
+      ],
+    });
+
+    // Capture what the first (non-target) record looks like in YAML
+    const initialContent = await fs.readFile(triagePath, "utf-8");
+    const initialFirstRecordYaml = initialContent.split("- _ulid: " + ulid2)[0];
+
+    // Save the second record multiple times through different mutations
+    const loaded = await loadTriageRecords(ctx);
+    const mutated1: LoadedTriageRecord = {
+      ...loaded[1],
+      status: "triaged",
+      action: "promote",
+      reasoning: "First pass",
+      decided_by: "@agent",
+    };
+    await saveTriageRecord(ctx, mutated1);
+
+    // Save again with more changes
+    const reloaded = await loadTriageRecords(ctx);
+    const mutated2: LoadedTriageRecord = {
+      ...reloaded[1],
+      reasoning: "Updated reasoning",
+    };
+    await saveTriageRecord(ctx, mutated2);
+
+    // Third save cycle
+    const reloaded2 = await loadTriageRecords(ctx);
+    const mutated3: LoadedTriageRecord = {
+      ...reloaded2[1],
+      status: "acted_on",
+      acted_at: "2026-01-15T00:00:00.000Z",
+    };
+    await saveTriageRecord(ctx, mutated3);
+
+    const finalContent = await fs.readFile(triagePath, "utf-8");
+
+    // The first record should not have gained evidence_refs or other Zod defaults
+    // after 3 save cycles targeting the second record
+    const evidenceInFirstRecord = finalContent.split("- _ulid: " + ulid2)[0];
+    expect(evidenceInFirstRecord).not.toContain("evidence_refs");
+
+    // Verify data integrity
+    const final = await loadTriageRecords(ctx);
+    expect(final).toHaveLength(2);
+    expect(final[0].status).toBe("pending");
+    expect(final[1].status).toBe("acted_on");
+    expect(final[1].reasoning).toBe("Updated reasoning");
+  });
+
+  it("new triage record does not add Zod defaults to existing records", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-triage-rt5");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeTriageCtx(kspecDir);
+
+    const triagePath = path.join(kspecDir, "project.triage.yaml");
+    const existingUlid = testUlid("TRGE");
+    const existingInboxRef = testUlid("TIRE");
+    await writeYamlFilePreserveFormat(triagePath, {
+      kynetic_triage: "1.0",
+      triage: [
+        {
+          _ulid: existingUlid,
+          inbox_ref: existingInboxRef,
+          item_snapshot: "Existing minimal record",
+          status: "pending",
+          created_at: "2026-01-01T00:00:00.000Z",
+        },
+      ],
+    });
+
+    // Add a new record (not updating existing)
+    const newUlid = testUlid("TRGN");
+    const newInboxRef = testUlid("TIRN");
+    const newRecord: LoadedTriageRecord = {
+      _ulid: newUlid,
+      inbox_ref: newInboxRef,
+      item_snapshot: "New triage record",
+      status: "triaged",
+      action: "promote",
+      reasoning: "Important item",
+      decided_by: "@agent",
+      evidence_refs: [],
+      created_at: "2026-01-15T00:00:00.000Z",
+    };
+    await saveTriageRecord(ctx, newRecord);
+
+    const afterContent = await fs.readFile(triagePath, "utf-8");
+
+    // The existing record should not gain evidence_refs: []
+    // Only the new record might have it (since it was explicitly in the input)
+    // But since evidence_refs: [] is an empty array and this is a new record (not merged),
+    // it will appear in the file. The key is the existing record is untouched.
+    const existingRecordYaml = afterContent.split("- _ulid: " + newUlid)[0];
+    expect(existingRecordYaml).not.toContain("evidence_refs");
+
+    // Verify both records load correctly
+    const reloaded = await loadTriageRecords(ctx);
+    expect(reloaded).toHaveLength(2);
+    expect(reloaded[0]._ulid).toBe(existingUlid);
+    expect(reloaded[1]._ulid).toBe(newUlid);
   });
 });
 
