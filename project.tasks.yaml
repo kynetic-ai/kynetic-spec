@@ -106505,8 +106505,13 @@
   spec_ref: "@dispatch-sync-configuration"
   plan_ref: "@plan-dispatch-remote-sync"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Added dispatch sync configuration: sync_interval (int >= 0, default
+    60) and remote_sync (optional bool, null for runtime resolution) to DispatchConfigSchema,
+    DEFAULT_CONFIG, resolveConfig(), getDefaultConfig(), and new resolveDispatchRemoteSync() helper.
+    21 new tests cover all 4 own ACs and trait-error-guidance ac-5. Clean implementation following
+    existing config patterns."
   depends_on: []
   context: []
   priority: 1
@@ -106527,6 +106532,7 @@
   created_at: 2026-03-18T07:07:45.922Z
   started_at: 2026-03-18T08:59:00.852Z
   submitted_at: 2026-03-18T09:08:37.807Z
+  completed_at: 2026-03-18T09:15:42.011Z
   notes:
     - _ulid: 01KM0388AY432VAYE3JTS5Y2W2
       content: "Implemented dispatch sync config: added sync_interval (int >= 0, default 60) and
