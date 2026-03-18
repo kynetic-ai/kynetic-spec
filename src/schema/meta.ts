@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { DateTimeSchema, RefSchema, UlidSchema } from "./common.js";
 import { HookSchema } from "./hooks.js";
+import { DispatchEventTypeSchema } from "./event-registry.js";
 
 /**
  * ULID schema for meta items - uses the same strict validation as core items.
@@ -18,15 +19,16 @@ export const SessionProtocolSchema = z.object({
 });
 
 /**
- * Agent dispatch event types - lifecycle events that can trigger agent spawning
+ * Agent dispatch event types - lifecycle events that can trigger agent spawning.
+ *
+ * Accepts any registered event type from the dispatch event registry.
+ * The original 4 task events remain valid; the expanded registry adds
+ * invocation.*, session.*, schedule.*, and action.* events.
+ *
  * AC: @agent-definition-schema ac-2
+ * AC: @dispatch-event-taxonomy ac-4 — existing dispatch rules unchanged
  */
-export const AgentDispatchEventSchema = z.enum([
-  "task.in_progress",
-  "task.ready",
-  "task.needs_work",
-  "task.pending_review",
-]);
+export const AgentDispatchEventSchema = DispatchEventTypeSchema;
 
 /**
  * Agent dispatch filter - constraints for matching tasks during dispatch

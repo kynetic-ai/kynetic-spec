@@ -11,37 +11,20 @@
 import { z } from "zod";
 import { UlidSchema } from "./common.js";
 import { ActionSchema } from "./action.js";
+import {
+  DispatchEventTypeSchema,
+  PAYLOAD_FIELDS_BY_EVENT_TYPE,
+} from "./event-registry.js";
 
-// ─── Event Type Registry ─────────────────────────────────────────────────────
+// ─── Event Type Schema ───────────────────────────────────────────────────────
 
 /**
  * All valid event types in the dispatch event system.
- * Events use dotted-namespace domains.
+ * Derived from the canonical event registry in event-registry.ts.
  *
  * Spec: @dispatch-event-taxonomy
  */
-export const HookEventTypeSchema = z.enum([
-  // Task lifecycle events (existing, from agent dispatch)
-  "task.ready",
-  "task.in_progress",
-  "task.needs_work",
-  "task.pending_review",
-  // Invocation lifecycle events
-  "invocation.started",
-  "invocation.completed",
-  "invocation.failed",
-  "invocation.stalled",
-  // Session lifecycle events
-  "session.ended",
-  "session.idle_timeout",
-  "session.cancelled",
-  // Schedule events
-  "schedule.tick",
-  // Action run tracking events
-  "action.started",
-  "action.completed",
-  "action.failed",
-]);
+export const HookEventTypeSchema = DispatchEventTypeSchema;
 
 // ─── Event Envelope & Payload Field Registry ─────────────────────────────────
 
@@ -63,33 +46,14 @@ export const ENVELOPE_FIELDS = [
 
 /**
  * Known payload fields per event type domain.
+ * Derived from the canonical event registry.
  * Used for filter validation — unknown filter fields on known event types
  * produce warnings.
  *
  * AC: @dispatch-hook-filter ac-3
  */
-export const PAYLOAD_FIELDS_BY_EVENT: Record<string, readonly string[]> = {
-  // Task events carry task metadata
-  "task.ready": ["task_id", "task_ref", "status", "agent_id", "tags", "priority", "automation", "spec_ref"],
-  "task.in_progress": ["task_id", "task_ref", "status", "agent_id", "tags", "priority", "automation", "spec_ref"],
-  "task.needs_work": ["task_id", "task_ref", "status", "agent_id", "tags", "priority", "automation", "spec_ref"],
-  "task.pending_review": ["task_id", "task_ref", "status", "agent_id", "tags", "priority", "automation", "spec_ref"],
-  // Invocation events carry session/agent metadata
-  "invocation.started": ["session_id", "agent_id", "task_ref"],
-  "invocation.completed": ["session_id", "agent_id", "task_ref", "outcome", "duration_ms"],
-  "invocation.failed": ["session_id", "agent_id", "task_ref", "error", "duration_ms"],
-  "invocation.stalled": ["session_id", "agent_id", "task_ref", "duration_ms"],
-  // Session events
-  "session.ended": ["session_id", "agent_id", "task_ref", "duration", "reason"],
-  "session.idle_timeout": ["session_id", "agent_id", "task_ref", "duration"],
-  "session.cancelled": ["session_id", "agent_id", "task_ref", "reason"],
-  // Schedule events
-  "schedule.tick": ["schedule_id", "schedule_name"],
-  // Action run events
-  "action.started": ["action_run_id", "action_type", "source_name", "source_event_type"],
-  "action.completed": ["action_run_id", "action_type", "source_name", "source_event_type", "duration_ms"],
-  "action.failed": ["action_run_id", "action_type", "source_name", "source_event_type", "error", "failure_reason"],
-};
+export const PAYLOAD_FIELDS_BY_EVENT: Record<string, readonly string[]> =
+  PAYLOAD_FIELDS_BY_EVENT_TYPE;
 
 /**
  * Get all valid filter fields for a given event type.
