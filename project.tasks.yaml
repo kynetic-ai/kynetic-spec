@@ -107031,6 +107031,18 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T16:02:03.736Z
+    - _ulid: 01KM0TY16V8RGM7JFH6281MQFE
+      content: "Review cycle 1 — request_changes (5 blockers, 3 nits). BLOCKERS: (1) Missing +page.ts for
+        /automation route — SSR not disabled, will cause hydration errors. (2) CompositionsSection
+        compositionConfigIds never populated — AC-6 is non-functional. (3) Out-of-scope review CLI
+        changes (review.ts, review-cli.test.ts, review-per-cycle-lifecycle.test.ts) should be
+        separate task — also bypasses transitionLifecycle validation. (4) Division by zero in
+        progress bar when total_members=0. (5) AC-3 partially implemented — hooks/schedules have no
+        inline editing, only trigger editing works. NITS: dead automation:updates WS topic, unused
+        hasActivations variable, unused imports in CompositionsSection."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T16:02:20.507Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPW71H0KTRJY3HFF7YDNT9
