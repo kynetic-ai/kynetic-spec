@@ -11829,6 +11829,13 @@ reviews:
           kind: question
           thread_ulid: 01KKZT3MFBSCXD24FHCVE65RD7
         timestamp: 2026-03-18T06:28:41.200Z
+      - _ulid: 01KKZT3ZWS0ZV96RA5B51DY0K2
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKZT3ZRFVB59V8EPCCG63SZN
+        timestamp: 2026-03-18T06:28:52.761Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -12121,7 +12128,29 @@ reviews:
               implementing agent."
             created_at: 2026-03-18T06:28:41.068Z
         kind: question
+      - _ulid: 01KKZT3ZRFVB59V8EPCCG63SZN
+        anchor:
+          type: structured
+          field: ac-push-first-invocation
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KKZT3ZRGES7B2PCSFMF9Q1YH
+            author: "@claude"
+            body: "Several ACs reference specific git commands in their then-clauses, which leaks
+              implementation: ac-push-first-invocation says 'pushes with git push -u',
+              ac-remote-branch-stale says 'push uses --force-with-lease', ac-cleanup-remote-branch
+              says 'git push origin --delete <branch>', ac-divergence-detection says 'git merge
+              --ff-only fails.' The reference plan's ACs describe behavior, not commands — e.g. 'the
+              process is terminated and an action.failed event is emitted' not 'kill -9 is sent.'
+              Rewrite these to describe the observable outcome: 'upstream tracking is established'
+              instead of 'git push -u'; 'stale remote ref is replaced safely (single-writer
+              guarantee)' instead of '--force-with-lease'; 'remote ref is removed' instead of 'git
+              push origin --delete.' The git commands belong in task descriptions and implementation
+              notes, not ACs."
+            created_at: 2026-03-18T06:28:52.624Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:28:41.068Z
+    updated_at: 2026-03-18T06:28:52.624Z
     notes: []
