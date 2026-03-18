@@ -107088,8 +107088,13 @@
   spec_ref: "@ui-automation-view"
   plan_ref: "@plan-dispatch-event-system-expansion"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Dispatch trigger editing migrated from agents view to automation
+    view. @ui-agent-dispatch ac-4 through ac-9 removed (superseded by @ui-automation-view ac-5).
+    AgentEditForm retains agent-only fields. AgentCard shows read-only trigger badges with
+    'Configure in Automation' link. DispatchTriggersSection upgraded to full-featured editing. E2E
+    tests migrated. One nit noted: stale ac-4 annotation in AgentCard.svelte line 43."
   depends_on:
     - "@task-automation-view"
   context: []
@@ -107112,6 +107117,7 @@
   created_at: 2026-03-18T05:32:12.209Z
   started_at: 2026-03-18T16:52:13.131Z
   submitted_at: 2026-03-18T17:08:51.058Z
+  completed_at: 2026-03-18T17:15:58.351Z
   notes:
     - _ulid: 01KM0YQ5VWSWNGK05GM6DC7SSG
       content: >-
