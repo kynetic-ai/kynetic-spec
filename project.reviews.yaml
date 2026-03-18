@@ -11738,6 +11738,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKZSYZV5J3W4D118AS03YDME
         timestamp: 2026-03-18T06:26:09.003Z
+      - _ulid: 01KKZSZAVXF1FWCTPJFC55T1CS
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKZSZAQG5FP9VP15B6FQRMYC
+        timestamp: 2026-03-18T06:26:20.157Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -11768,7 +11775,26 @@ reviews:
               cycle detection plus different log message formats."
             created_at: 2026-03-18T06:26:08.870Z
         kind: blocker
+      - _ulid: 01KKZSZAQG5FP9VP15B6FQRMYC
+        anchor:
+          type: structured
+          field: ac-degraded-status
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KKZSZAQG2V1QPJXM6NBCGEKT
+            author: "@claude"
+            body: "ac-degraded-status bundles three observation surfaces and a display concern into one AC: (1)
+              CLI output, (2) REST API response, (3) WebSocket broadcast, and (4) CLI display
+              formatting with resolution steps. Each surface could independently regress and
+              deserves its own test. The reference plan keeps each output surface as a separate AC —
+              e.g. @dispatch-event-payload has per-domain ACs (ac-1 through ac-5), each testing one
+              payload shape. Split into: ac-degraded-status-api (REST response includes degraded
+              flag/reason/timestamp), ac-degraded-status-cli (CLI shows warning with resolution
+              steps), ac-degraded-status-ws (WebSocket broadcast includes degraded state)."
+            created_at: 2026-03-18T06:26:20.016Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:26:08.870Z
+    updated_at: 2026-03-18T06:26:20.016Z
     notes: []
