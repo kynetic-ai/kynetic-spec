@@ -105888,7 +105888,21 @@
   session_id: 01KM04JNJM816GGPA9PPY94GKW
   created_at: 2026-03-18T05:31:54.945Z
   started_at: 2026-03-18T09:32:16.170Z
-  notes: []
+  notes:
+    - _ulid: 01KM05XRE7EF1DS1SQN8FKRQMB
+      content: "Implemented session lifecycle event emission. Changes: (1) dispatch.ts captures
+        runInvocation() result and calls new _emitSessionLifecycleEvent() method after invocation
+        terminal events. Maps: success→session.ended, timed_out→session.ended, failed→session.ended
+        (or session.cancelled if shutdown abort), stalled→session.idle_timeout. Payload includes
+        session_id, agent_id, task_ref, duration_ms, terminal_reason, and work_summary (event_count,
+        iteration_count, tasks_completed from session metadata). (2) Updated PAYLOAD_FIELDS_BY_EVENT
+        in hooks.ts to align field names with spec (duration_ms, terminal_reason, work_summary). (3)
+        Updated KNOWN_EVENT_FIELDS in action-executor.ts for consistency. (4) 24 tests covering all
+        AC requirements including outcome mapping, payload contract, field registry consistency,
+        filter matching, and action run closure contract."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T09:55:11.431Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVQM496HTQQ054B0S18SN
