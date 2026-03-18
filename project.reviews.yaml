@@ -13361,3 +13361,29 @@ reviews:
     created_at: 2026-03-18T08:36:01.650Z
     updated_at: 2026-03-18T08:37:13.327Z
     notes: []
+  - _ulid: 01KM0243JZG3PSR9Q8MP96Q4K6
+    slugs: []
+    title: Review task-event-bus (cycle 2)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0243JZANAMSG2J03PVSH87
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T08:48:45.151Z
+    examined_commit: 14505dad0ba356bbfd037257e46aa75b3d9ebbbc
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKZPVDW4F4YDP0M32CAV2T7F"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T08:48:45.151Z
+    updated_at: null
+    notes: []
