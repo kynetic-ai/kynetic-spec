@@ -339,6 +339,39 @@ export function createAutomationRoutes() {
 
     // ─── Compositions ────────────────────────────────────────────────────────
 
+    // AC: @ui-automation-view ac-6 — List composition configs for discovery
+    // AC: @trait-api-endpoint ac-1 — Returns 2xx with JSON body
+    // AC: @trait-api-endpoint ac-4 — Pagination support
+    .get('/compositions', async ({ query, projectContext }) => {
+      const ctx = await initContext(projectContext.path);
+      const meta = await loadMetaContext(ctx);
+
+      const compositions = meta.compositions.map((comp) => ({
+        id: comp.id,
+        name: comp.name,
+        join_count: comp.join_count,
+        timeout_ms: comp.timeout_ms ?? null,
+        enabled: comp.enabled,
+      }));
+
+      const total = compositions.length;
+      const offset = Number(query.offset) || 0;
+      const limit = Number(query.limit) || total;
+      const paginated = compositions.slice(offset, offset + limit);
+
+      return {
+        items: paginated,
+        total,
+        offset,
+        limit,
+      };
+    }, {
+      query: t.Object({
+        limit: t.Optional(t.String()),
+        offset: t.Optional(t.String()),
+      }),
+    })
+
     // AC: @automation-api ac-5 — Composition activation status
     // AC: @trait-api-endpoint ac-1 — Returns 2xx with JSON body
     // AC: @trait-api-endpoint ac-2 — 404 if composition not found

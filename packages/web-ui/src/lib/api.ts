@@ -991,6 +991,31 @@ export async function fetchRecentEvents(params?: {
 }
 
 /**
+ * Composition config summary from GET /api/compositions
+ */
+export interface CompositionConfigSummary {
+	id: string;
+	name: string;
+	join_count: number;
+	timeout_ms: number | null;
+	enabled: boolean;
+}
+
+/**
+ * Fetch composition configs
+ * AC: @ui-automation-view ac-6
+ */
+export async function fetchCompositionConfigs(): Promise<PaginatedResponse<CompositionConfigSummary>> {
+	const response = await fetch(`${API_BASE}/api/compositions`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
  * Fetch composition activations
  * AC: @ui-automation-view ac-6
  */

@@ -3,10 +3,11 @@
   member action runs, and timeout status
 -->
 <script lang="ts">
-	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery } from '@tanstack/svelte-query';
 	import {
-		fetchAgentDefinitions,
+		fetchCompositionConfigs,
 		fetchCompositionActivations,
+		type CompositionConfigSummary,
 		type CompositionActivation
 	} from '$lib/api';
 	import { isStaticMode } from '$lib/stores/mode.svelte';
@@ -16,33 +17,31 @@
 	import { Card } from '$lib/components/ui/card';
 	import Layers from '@lucide/svelte/icons/layers';
 
-	// We need to detect composition configs from meta. The daemon API requires
-	// a config_id to query activations. We'll fetch agent definitions which
-	// come from meta loading that also includes compositions.
-	// For now, we need to discover composition config IDs from the manifest.
-	// Since there's no dedicated "list compositions" endpoint, we'll try to
-	// fetch from a known set of composition IDs discovered at runtime.
+	// AC: @ui-automation-view ac-6 — Fetch composition configs to discover available IDs
+	const compositionConfigsQuery = createQuery(() => ({
+		queryKey: queryKeys.automation.compositionConfigs(),
+		queryFn: () => fetchCompositionConfigs(),
+		enabled: isProjectInitialized() && !isStaticMode(),
+	}));
 
-	// Track known composition config IDs (populated by parent or user interaction)
-	let compositionConfigIds = $state<string[]>([]);
+	let compositionConfigs = $derived<CompositionConfigSummary[]>(
+		compositionConfigsQuery.data?.items ?? []
+	);
+
+	// Track activations per config ID
 	let activationsByConfig = $state<Record<string, CompositionActivation[]>>({});
 	let loadError = $state('');
 
-	// Attempt to load composition configs from the meta endpoint
-	// The schedules/hooks meta includes compositions in the same manifest.
-	// We need a list endpoint — for now, show empty state with guidance.
-
-	// AC: @ui-automation-view ac-6 — If composition IDs are known, fetch their activations
+	// AC: @ui-automation-view ac-6 — Fetch activations for each known config ID
 	$effect(() => {
 		if (isStaticMode() || !isProjectInitialized()) return;
 
-		// Fetch activations for each known config ID
-		for (const configId of compositionConfigIds) {
-			fetchCompositionActivations(configId)
+		for (const config of compositionConfigs) {
+			fetchCompositionActivations(config.id)
 				.then((result) => {
 					activationsByConfig = {
 						...activationsByConfig,
-						[configId]: result.activations,
+						[config.id]: result.activations,
 					};
 				})
 				.catch((err) => {
@@ -60,13 +59,19 @@
 		return `${minutes}m ${seconds % 60}s remaining`;
 	}
 
-	let hasActivations = $derived(
-		Object.values(activationsByConfig).some((a) => a.length > 0)
-	);
+	function progressPercent(completed: number, total: number): number {
+		if (total === 0) return 0;
+		return (completed / total) * 100;
+	}
 </script>
 
 <section data-testid="compositions-section">
-	<h2 class="text-lg font-semibold mb-3">Composition Groups</h2>
+	<h2 class="text-lg font-semibold mb-3">
+		Composition Groups
+		{#if compositionConfigs.length > 0}
+			<span class="text-sm font-normal text-muted-foreground">({compositionConfigs.length})</span>
+		{/if}
+	</h2>
 
 	{#if loadError}
 		<div class="bg-destructive/10 text-destructive text-sm p-3 rounded-lg mb-3" role="alert">
@@ -74,7 +79,9 @@
 		</div>
 	{/if}
 
-	{#if compositionConfigIds.length === 0}
+	{#if compositionConfigsQuery.isLoading}
+		<div class="text-sm text-muted-foreground">Loading compositions...</div>
+	{:else if compositionConfigs.length === 0}
 		<div
 			class="flex flex-col items-center justify-center py-8 text-center border rounded-lg"
 			data-testid="compositions-empty-state"
@@ -88,17 +95,29 @@
 		</div>
 	{:else}
 		<div class="flex flex-col gap-3">
-			{#each compositionConfigIds as configId (configId)}
-				{@const activations = activationsByConfig[configId] ?? []}
-				<Card class="p-4" data-testid="composition-card-{configId}">
+			{#each compositionConfigs as config (config.id)}
+				{@const activations = activationsByConfig[config.id] ?? []}
+				<Card class="p-4" data-testid="composition-card-{config.id}">
 					<div class="flex items-center justify-between mb-2">
 						<div class="flex items-center gap-2">
 							<Layers class="h-4 w-4 text-muted-foreground" />
-							<h3 class="font-medium text-sm">{configId}</h3>
+							<h3 class="font-medium text-sm">{config.name}</h3>
+							<span class="text-xs text-muted-foreground font-mono">({config.id})</span>
 						</div>
-						<Badge variant="secondary" class="text-xs">
-							{activations.length} activation{activations.length !== 1 ? 's' : ''}
-						</Badge>
+						<div class="flex items-center gap-2">
+							<Badge variant="secondary" class="text-xs">
+								join: {config.join_count}
+							</Badge>
+							<Badge
+								variant={config.enabled ? 'default' : 'outline'}
+								class="text-xs"
+							>
+								{config.enabled ? 'Enabled' : 'Disabled'}
+							</Badge>
+							<Badge variant="outline" class="text-xs">
+								{activations.length} activation{activations.length !== 1 ? 's' : ''}
+							</Badge>
+						</div>
 					</div>
 
 					{#if activations.length === 0}
@@ -125,7 +144,7 @@
 										<div class="flex-1 h-2 bg-muted rounded-full overflow-hidden">
 											<div
 												class="h-full bg-primary rounded-full transition-all"
-												style="width: {(activation.completed_count / activation.total_members) * 100}%"
+												style="width: {progressPercent(activation.completed_count, activation.total_members)}%"
 											></div>
 										</div>
 										<span class="font-medium">

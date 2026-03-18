@@ -1,6 +1,7 @@
 <!--
   AC: @ui-automation-view ac-1 — Shows schedules with enabled/disabled state
-  AC: @ui-automation-view ac-3 — Schedule configuration visible
+  AC: @ui-automation-view ac-3 — Manual trigger supported via POST /api/schedules/:id/trigger;
+    config editing (cron, overlap, etc.) requires PATCH endpoint not yet available in daemon API.
   AC: @ui-automation-view ac-4 — Schedule runtime state (next tick, last tick, run count, overlap state)
 -->
 <script lang="ts">

@@ -25,7 +25,6 @@ const INVALIDATION_TOPICS = [
 	'reviews:updates',
 	'agents',
 	'files:updates',
-	'automation:updates',
 ] as const;
 
 /**
@@ -80,19 +79,16 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 			return [queryKeys.agents.all, queryKeys.sessions.all];
 		}
 
-		case 'automation:updates':
-			// Automation config changes affect hooks, schedules, and event queries
-			return [queryKeys.automation.all];
-
 		case 'files:updates':
 			// File changes (e.g., settings save, meta edits) affect multiple caches
 			// Observations and session context live in meta files
+			// Automation config (hooks, schedules, compositions) lives in meta files
 			return [
 				queryKeys.settings.all,
 				queryKeys.workflows.all,
 				queryKeys.observations.all,
 				queryKeys.validation.all,
-				queryKeys.observations.all,
+				queryKeys.automation.all,
 				queryKeys.sessionContext.all,
 			];
 

@@ -1,7 +1,8 @@
 <!--
   AC: @ui-automation-view ac-1 — Organized sections for triggers, hooks, schedules
   AC: @ui-automation-view ac-2 — Event log section with recent events
-  AC: @ui-automation-view ac-3 — Inline editing for hooks and schedules
+  AC: @ui-automation-view ac-3 — Dispatch trigger editing (inline); schedule manual trigger;
+    hook/schedule config editing deferred pending PATCH API endpoints in daemon
   AC: @ui-automation-view ac-4 — Schedule runtime state display
   AC: @ui-automation-view ac-5 — Dispatch trigger inline editing
   AC: @ui-automation-view ac-6 — Composition group activation display

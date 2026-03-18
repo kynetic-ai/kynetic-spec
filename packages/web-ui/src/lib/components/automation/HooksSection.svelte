@@ -1,6 +1,7 @@
 <!--
   AC: @ui-automation-view ac-1 — Shows hooks with enabled/disabled state
-  AC: @ui-automation-view ac-3 — Hooks visible in automation view (editing via config)
+  AC: @ui-automation-view ac-3 — N/A for hooks: no PATCH /api/hooks endpoint exists yet;
+    hooks are read-only config from kynetic.meta.yaml. Inline editing requires backend support.
 -->
 <script lang="ts">
 	import type { HookSummary } from '$lib/api';

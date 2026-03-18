@@ -106,6 +106,7 @@ export const queryKeys = {
 		scheduleStatus: (id: string) => [...queryKeys.automation.all, 'scheduleStatus', id] as const,
 		events: (filters?: Record<string, unknown>) =>
 			[...queryKeys.automation.all, 'events', filters] as const,
+		compositionConfigs: () => [...queryKeys.automation.all, 'compositionConfigs'] as const,
 		compositionActivations: (configId: string) =>
 			[...queryKeys.automation.all, 'compositionActivations', configId] as const,
 	},
