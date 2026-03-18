@@ -4998,6 +4998,9 @@ modules:
           Hooks run asynchronously and independently. Multiple hooks can
           match the same event. Hook failures are isolated. Configuration
           changes take effect on the next event without daemon restart.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
