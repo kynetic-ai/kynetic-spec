@@ -15522,9 +15522,22 @@ reviews:
           status: fail
           name: regression-check
         timestamp: 2026-03-18T12:09:06.065Z
+      - _ulid: 01KM0DK5J25DVF84X90NVRTBVB
+        actor: pr-reviewer@dispatch
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-18T12:09:13.026Z
+      - _ulid: 01KM0DK5J2ZW9256CQJPQ8JA41
+        actor: pr-reviewer@dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T12:09:13.026Z
     examined_commit: b8ba5c896287d16de213398aefa3a81c50460faa
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -15625,7 +15638,15 @@ reviews:
               referencing {{outcome}} in invocation contexts."
             created_at: 2026-03-18T12:08:40.819Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 4aaa260c9aae
+          head_commit: b8ba5c896287
+        decision: request_changes
+        reviewer: pr-reviewer@dispatch
+        role: reviewer
+        created_at: 2026-03-18T12:09:12.890Z
     created_at: 2026-03-18T12:07:41.447Z
-    updated_at: 2026-03-18T12:09:05.915Z
+    updated_at: 2026-03-18T12:09:12.890Z
     notes: []
