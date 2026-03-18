@@ -89044,8 +89044,11 @@
     triggers, (3) File-watch triggers for spec/code changes. Deliverable: spec items with ACs
     covering trigger registration, scheduling, and execution semantics. No implementation yet."
   spec_ref: null
-  status: pending
+  status: cancelled
   blocked_by: []
+  closed_reason: Subsumed by @plan-dispatch-event-system-expansion which comprehensively covers
+    trigger expansion (hooks, schedules, compositions). Plan is approved and foundational work has
+    begun.
   depends_on: []
   context: []
   priority: 3
