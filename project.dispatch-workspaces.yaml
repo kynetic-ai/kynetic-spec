@@ -10542,7 +10542,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T14:39:17.231Z
+      updated_at: 2026-03-18T14:39:18.872Z
     integration:
       status: pending
       detail: null
@@ -10551,25 +10551,20 @@ workspaces:
       target_branch: dev
       target_commit: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
       updated_at: 2026-03-18T14:39:17.231Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KKZPW8ER84M8MY528CFW576N"
     task_slug: task-cancel-old-trigger-task
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T14:32:30.654Z
-      last_reconciled_at: 2026-03-18T14:39:17.231Z
+      last_reconciled_at: 2026-03-18T14:39:18.872Z
       created_at: 2026-03-18T14:27:36.254Z
-      updated_at: 2026-03-18T14:39:17.231Z
+      updated_at: 2026-03-18T14:39:18.872Z
     workspace_id: dispatch-workspace-01KKZPW8ER84M8MY528CFW576N
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
-        last_seen_at: 2026-03-18T14:32:29.552Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cancel-old-trigger-task-01kkzpw8-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-cancel-old-trigger-task/01kkzpw8
