@@ -14984,3 +14984,29 @@ reviews:
     created_at: 2026-03-18T11:08:25.666Z
     updated_at: 2026-03-18T11:09:16.060Z
     notes: []
+  - _ulid: 01KM0B33SCJD6B63X8501A39HE
+    slugs: []
+    title: Review dispatch degraded state (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0B33SCPNTM3APGFVX4ZK3S
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T11:25:29.772Z
+    examined_commit: 8f12b6fdd9df0871ef29d7b862a896d405e5b106
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-dispatch-degraded-state"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T11:25:29.772Z
+    updated_at: null
+    notes: []
