@@ -105398,6 +105398,7 @@
   created_at: 2026-03-18T05:31:46.436Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPVFA3XPDTRV5CDFWKGVD8
   slugs:
     - task-event-schema
@@ -105527,6 +105528,7 @@
   created_at: 2026-03-18T05:31:50.770Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPVKH0KPXZCQH7SGZ2B92S
   slugs:
     - task-command-action
@@ -105568,6 +105570,7 @@
   created_at: 2026-03-18T05:31:52.224Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPVMVM269XTHFNX9GRPA5N
   slugs:
     - task-agent-action-input
