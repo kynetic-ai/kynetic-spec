@@ -14988,7 +14988,19 @@ reviews:
     slugs: []
     title: Review dispatch degraded state (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 5b3ea9fa6739
+          head_commit: 8f12b6fdd9df
+        evidence: All 6169 tests passed (1 pre-existing failure in review-cli.test.ts:152 unrelated to this
+          task — examined_commit field). 13 new degraded-state tests all pass.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T11:25:46.660Z
+        completed_at: 2026-03-18T11:25:46.660Z
     events:
       - _ulid: 01KM0B33SCPNTM3APGFVX4ZK3S
         actor: "@claude"
@@ -15003,6 +15015,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T11:25:37.036Z
+      - _ulid: 01KM0B3MCYA2P1JD9WXW5BWYME
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T11:25:46.783Z
     examined_commit: 8f12b6fdd9df0871ef29d7b862a896d405e5b106
     external_links: []
     lifecycle_state: open
@@ -15015,5 +15034,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T11:25:29.772Z
-    updated_at: 2026-03-18T11:25:36.908Z
+    updated_at: 2026-03-18T11:25:46.660Z
     notes: []
