@@ -15290,3 +15290,29 @@ reviews:
     created_at: 2026-03-18T11:43:19.651Z
     updated_at: 2026-03-18T11:43:58.149Z
     notes: []
+  - _ulid: 01KM0CJ6M6D6K9VXS90J3X7XF4
+    slugs: []
+    title: Review agent action input contract
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0CJ6M6W68S4CE0D76VNM1P
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T11:51:12.774Z
+    examined_commit: 9abea94245dd4172258e016289afe7572c0d0a3a
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKZPVMVM269XTHFNX9GRPA5N"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T11:51:12.774Z
+    updated_at: null
+    notes: []
