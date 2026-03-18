@@ -71,6 +71,14 @@ export interface ScheduleStatus {
 }
 
 /**
+ * Detailed status for a single schedule including active run IDs.
+ * AC: @automation-api ac-2
+ */
+export interface ScheduleDetailedStatus extends ScheduleStatus {
+  active_run_ids: string[];
+}
+
+/**
  * Function signature for loading schedules from config.
  * Abstracted for testability — production code uses loadMetaContext,
  * tests can inject a mock.
@@ -260,6 +268,31 @@ export class ScheduleEngine {
       });
     }
     return statuses;
+  }
+
+  /**
+   * Get detailed status for a single schedule by ID.
+   * Returns null if the schedule is not found.
+   * AC: @automation-api ac-2
+   */
+  getScheduleStatus(scheduleId: string): ScheduleDetailedStatus | null {
+    const record = this.schedules.get(scheduleId);
+    if (!record) return null;
+
+    return {
+      id: record.schedule.id,
+      name: record.schedule.name,
+      enabled: record.schedule.enabled,
+      cron: record.schedule.cron,
+      timezone: record.schedule.timezone,
+      overlap_policy: record.schedule.overlap_policy,
+      last_tick: record.state.last_tick?.toISOString() ?? null,
+      next_tick: record.state.next_tick?.toISOString() ?? null,
+      run_count: record.state.run_count,
+      active_run_count: record.state.active_run_ids.length,
+      buffered: record.state.buffered_tick !== null,
+      active_run_ids: [...record.state.active_run_ids],
+    };
   }
 
   /**
