@@ -91,6 +91,7 @@ Priority: `needs_work` > `in_progress` > `pending`. Always inherit existing work
 - Tests are failing (fix them)
 - Service needs running (start it)
 - Another task is in review (not a formal dependency)
+- Merge conflicts that you can resolve (resolve them — see `$kspec-merge` conflict handling)
 
 **After blocking a task:**
 ```bash
