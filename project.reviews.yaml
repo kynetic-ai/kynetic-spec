@@ -11609,6 +11609,20 @@ reviews:
         runner: svelte-check
         created_at: 2026-03-18T04:35:03.384Z
         completed_at: 2026-03-18T04:35:03.384Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
+          head_commit: 082679500792a34a7e102e1fd6ff07e8cc5bbc3f
+        evidence: 6/6 ACs annotated in E2E test file (code-diff-viewer.spec.ts) with 17 tests. All ACs also
+          annotated in implementation files (CodeDiffViewer, DiffFileList, DiffFileView,
+          DiffHunkView, DiffInlineThread, DiffCommentForm, api.ts, +page.svelte). Each test proves
+          its AC — verified test assertions match AC behavior requirements.
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T04:35:11.929Z
+        completed_at: 2026-03-18T04:35:11.929Z
     events:
       - _ulid: 01KKZKJNSN7Q07ESNJDSW5QHFJ
         actor: "@claude"
@@ -11637,6 +11651,13 @@ reviews:
           status: pass
           name: svelte-check
         timestamp: 2026-03-18T04:35:03.514Z
+      - _ulid: 01KKZKKV1W3H88P8ENN616SJA7
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T04:35:12.060Z
     examined_commit: 082679500792a34a7e102e1fd6ff07e8cc5bbc3f
     external_links: []
     lifecycle_state: open
@@ -11649,5 +11670,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T04:34:33.910Z
-    updated_at: 2026-03-18T04:35:03.384Z
+    updated_at: 2026-03-18T04:35:11.929Z
     notes: []
