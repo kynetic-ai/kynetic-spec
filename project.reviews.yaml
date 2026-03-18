@@ -17627,6 +17627,17 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T15:34:32.989Z
         completed_at: 2026-03-18T15:34:32.989Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: f69c7a49a39e
+        evidence: Pre-existing warnings only (ref errors in meta.yaml, orphaned specs). No new issues from
+          this change.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-18T15:34:43.440Z
+        completed_at: 2026-03-18T15:34:43.440Z
     events:
       - _ulid: 01KM0S9Z1ED2PSP5SEW4HGKEMM
         actor: "@claude"
@@ -17648,6 +17659,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-18T15:34:33.136Z
+      - _ulid: 01KM0SBF43KQ2ZGRPH8FRNNBBB
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-18T15:34:43.587Z
     examined_commit: f69c7a49a39ebcde4741cd522585570956f32f22
     external_links: []
     lifecycle_state: open
@@ -17660,5 +17678,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T15:33:54.350Z
-    updated_at: 2026-03-18T15:34:32.989Z
+    updated_at: 2026-03-18T15:34:43.440Z
     notes: []
