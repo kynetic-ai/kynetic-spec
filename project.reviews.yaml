@@ -11138,7 +11138,21 @@ reviews:
     slugs: []
     title: Review task-structured-content-viewer
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 3074c95391dd
+          head_commit: d2788245a89f
+        evidence: Task test file (web-ui-structured-content-viewer.test.ts) passes all 41 tests. 5
+          pre-existing test file failures in unrelated files (agent-dispatch-engine,
+          plan-inbox-mutation-serialization, review-cli, review-per-cycle-lifecycle) — none in files
+          changed by this task.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T03:35:29.880Z
+        completed_at: 2026-03-18T03:35:29.880Z
     events:
       - _ulid: 01KKZF1E5FN5MRTKAS65X05NAM
         actor: "@claude"
@@ -11160,6 +11174,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKZG673ZH6DBZH3C04GJRRV7
         timestamp: 2026-03-18T03:35:20.037Z
+      - _ulid: 01KKZG6GY4V53721GBEM5CFW00
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T03:35:29.988Z
     examined_commit: d2788245a89f2337803328c66afeb9d7393669bf
     external_links: []
     lifecycle_state: open
@@ -11187,5 +11208,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T03:15:14.735Z
-    updated_at: 2026-03-18T03:35:19.935Z
+    updated_at: 2026-03-18T03:35:29.880Z
     notes: []
