@@ -9469,7 +9469,7 @@ workspaces:
         head: 190e97ec96364c8eb3579b117d34e7ba3fac2f61
         last_seen_at: 2026-03-18T10:23:09.697Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-events-01kkzpvp
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: b0bc7850b39feba9a789c532f971f7cd7d808d2e
     bootstrap:
       status: succeeded
@@ -9519,7 +9519,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T10:30:31.096Z
+      updated_at: 2026-03-18T10:30:32.001Z
     integration:
       status: pending
       detail: null
@@ -9534,10 +9534,10 @@ workspaces:
     task_slug: task-dispatch-target-sync
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-18T10:23:09.589Z
-      last_reconciled_at: 2026-03-18T10:30:31.096Z
+      last_active_at: 2026-03-18T10:30:32.001Z
+      last_reconciled_at: 2026-03-18T10:30:32.001Z
       created_at: 2026-03-18T09:55:47.971Z
-      updated_at: 2026-03-18T10:30:31.478Z
+      updated_at: 2026-03-18T10:30:32.001Z
     workspace_id: dispatch-workspace-01KKZWB75X6Q1X1ZZC5S6KBH6B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
