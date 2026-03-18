@@ -14290,9 +14290,22 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T10:21:58.900Z
+      - _ulid: 01KM07F14D6XM4DPC8V0VH8STF
+        actor: dispatch-reviewer
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-18T10:22:05.965Z
+      - _ulid: 01KM07F14DCV9RT8VCGVDTJRYM
+        actor: dispatch-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T10:22:05.965Z
     examined_commit: a8052bd5b059db13078127383a5d80362dc490c5
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -14392,7 +14405,15 @@ reviews:
               up-to-date case properly.
             created_at: 2026-03-18T10:21:32.880Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: b0bc7850b39f
+          head_commit: a8052bd5b059
+        decision: request_changes
+        reviewer: dispatch-reviewer
+        role: reviewer
+        created_at: 2026-03-18T10:22:05.854Z
     created_at: 2026-03-18T10:20:52.748Z
-    updated_at: 2026-03-18T10:21:58.779Z
+    updated_at: 2026-03-18T10:22:05.854Z
     notes: []
