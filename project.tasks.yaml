@@ -106531,7 +106531,17 @@
   session_id: 01KM0NSJH7QVZ1KV43HNEK25NP
   created_at: 2026-03-18T05:32:03.570Z
   started_at: 2026-03-18T14:32:53.925Z
-  notes: []
+  notes:
+    - _ulid: 01KM0Q3P37G1SGPTCZYYGACWFR
+      content: Implemented all 7 schedule CLI commands (list, add, get, set, enable, disable, remove,
+        trigger). Schedule list merges config with daemon runtime data when daemon is running, falls
+        back to config-only otherwise. Trigger requires daemon. Extended META_ARRAY_FIELDS and added
+        saveSchedule/deleteSchedule/resolveScheduleRef to parser/meta.ts. 45 E2E tests covering all
+        commands with AC annotations for @dispatch-event-cli ac-2, ac-3 and all inherited trait ACs.
+        Pre-existing review-cli.test.ts failure is unrelated (ambient git state issue).
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T14:55:31.431Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPW000MZT1YMECENJX42A0
