@@ -15321,6 +15321,22 @@ reviews:
         runner: kspec
         created_at: 2026-03-18T11:59:22.627Z
         completed_at: 2026-03-18T11:59:22.627Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 478f79b47784ab18d3c13c8be520212246def812
+          head_commit: 9abea94245dd4172258e016289afe7572c0d0a3a
+        evidence: "All 4 ACs (@dispatch-agent-action-input ac-1 through ac-4) have annotated tests in
+          tests/agent-action-input.test.ts. ac-1: 5 tests (prompt interpolation, prompt_template,
+          precedence, default prompt). ac-2: 4 tests (invocation.completed default prompt variants).
+          ac-3: 5 tests (task_binding true/false/undefined, precedence). ac-4: 5 tests
+          (correlation_id, group_id, both, missing). Source annotations present in action.ts and
+          action-executor.ts."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T11:59:33.103Z
+        completed_at: 2026-03-18T11:59:33.103Z
     events:
       - _ulid: 01KM0CJ6M6W68S4CE0D76VNM1P
         actor: "@claude"
@@ -15349,6 +15365,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-18T11:59:22.843Z
+      - _ulid: 01KM0D1FCMBEB1BB4CEH70CC3K
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T11:59:33.268Z
     examined_commit: 9abea94245dd4172258e016289afe7572c0d0a3a
     external_links: []
     lifecycle_state: open
@@ -15361,5 +15384,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T11:51:12.774Z
-    updated_at: 2026-03-18T11:59:22.627Z
+    updated_at: 2026-03-18T11:59:33.103Z
     notes: []
