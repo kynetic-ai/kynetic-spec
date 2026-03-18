@@ -106125,8 +106125,13 @@
   spec_ref: "@dispatch-schedule-schema"
   plan_ref: "@plan-dispatch-event-system-expansion"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Schedule schema implements all 4 ACs: ScheduleSchema with
+    croner-based 5-field cron validation (ac-1), 6-field rejection with specific error (ac-2),
+    cross-ref agent validation via validateScheduleAgentRefs (ac-3), and MetaManifestSchema
+    extension with empty default (ac-4). 33 tests, all passing. One nit recorded (unchecked nextRun
+    return value)."
   depends_on: []
   context: []
   priority: 2
@@ -106148,6 +106153,7 @@
   created_at: 2026-03-18T05:31:59.356Z
   started_at: 2026-03-18T11:18:46.679Z
   submitted_at: 2026-03-18T11:37:33.899Z
+  completed_at: 2026-03-18T11:44:55.572Z
   notes:
     - _ulid: 01KM0BRXVB3B3CN4GEQZCT17H6
       content: "Implemented ScheduleSchema in src/schema/schedules.ts with croner-based cron validation.
