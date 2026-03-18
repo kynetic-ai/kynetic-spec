@@ -5533,7 +5533,7 @@ modules:
           shadow branch auto-commit, and batch compatibility.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
