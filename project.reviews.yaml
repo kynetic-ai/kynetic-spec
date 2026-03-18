@@ -9842,6 +9842,20 @@ reviews:
         runner: kspec
         created_at: 2026-03-18T00:57:52.589Z
         completed_at: 2026-03-18T00:57:52.589Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
+          head_commit: ba6b05e773b949f2ce81fc36a7a887c836c3e88f
+        evidence: AC @yaml-serialization-invariants ac-3 covered by 8 test describe blocks in
+          yaml-round-trip-stability.test.ts (lines 67, 240, 366, 523, 743, 980, 1161, 1441). New
+          workflow run tests at line 1161 cover saveWorkflowRun, mutateWorkflowRunAtomically, and
+          deleteWorkflowRuns paths.
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T00:57:55.422Z
+        completed_at: 2026-03-18T00:57:55.422Z
     events:
       - _ulid: 01KKZ6SFR1DQY78A57W6SSZ2BS
         actor: "@claude"
@@ -9870,6 +9884,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-18T00:57:52.688Z
+      - _ulid: 01KKZ7601RPJZ23HNWGP1P5ZP3
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T00:57:55.512Z
     examined_commit: ba6b05e773b949f2ce81fc36a7a887c836c3e88f
     external_links: []
     lifecycle_state: open
@@ -9882,5 +9903,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T00:51:05.602Z
-    updated_at: 2026-03-18T00:57:52.589Z
+    updated_at: 2026-03-18T00:57:55.422Z
     notes: []
