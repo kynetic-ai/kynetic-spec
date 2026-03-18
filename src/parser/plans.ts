@@ -15,12 +15,10 @@ import {
   type Plan,
   type PlanInput,
   PlanSchema,
-  type PlansFile,
   PlansFileSchema,
 } from "../schema/index.js";
 import type { KspecContext } from "./yaml.js";
 import {
-  getAuthor,
   readYamlFile,
   writeYamlFilePreserveFormat,
 } from "./yaml.js";
@@ -75,6 +73,96 @@ function parsePlansFromRaw(raw: unknown): Plan[] {
 async function loadPlansFromFile(plansPath: string): Promise<Plan[]> {
   const raw = await readYamlFile<unknown>(plansPath);
   return parsePlansFromRaw(raw);
+}
+
+/**
+ * Extract the raw plan array and format info from a YAML file.
+ * Does NOT run schema validation — preserves original data for round-trip stability.
+ */
+async function extractRawPlanArray(
+  filePath: string,
+): Promise<{ rawPlans: unknown[]; wrapperObj?: Record<string, unknown> }> {
+  let existingRaw: unknown = null;
+
+  try {
+    existingRaw = await readYamlFile<unknown>(filePath);
+  } catch {
+    // File doesn't exist
+    return { rawPlans: [] };
+  }
+
+  if (!existingRaw || typeof existingRaw !== "object") {
+    return { rawPlans: [] };
+  }
+
+  if ("plans" in existingRaw) {
+    const wrapper = existingRaw as Record<string, unknown>;
+    const plans = wrapper.plans;
+    return {
+      rawPlans: Array.isArray(plans) ? plans : [],
+      wrapperObj: wrapper,
+    };
+  }
+
+  return { rawPlans: [] };
+}
+
+/**
+ * Write raw plan array back to file, preserving the wrapper format.
+ */
+async function writeRawPlanArray(
+  filePath: string,
+  rawPlans: unknown[],
+  wrapperObj?: Record<string, unknown>,
+): Promise<void> {
+  // Plans always use wrapper format { kynetic_plans, plans }
+  const output = wrapperObj
+    ? { ...wrapperObj, plans: rawPlans }
+    : { kynetic_plans: "1.0", plans: rawPlans };
+  await writeYamlFilePreserveFormat(filePath, output);
+}
+
+/**
+ * Find plan index in a raw array by ULID match.
+ */
+function findRawPlanIndex(rawPlans: unknown[], ulid: string): number {
+  return rawPlans.findIndex(
+    (p) =>
+      p && typeof p === "object" && (p as Record<string, unknown>)._ulid === ulid,
+  );
+}
+
+/**
+ * Merge a schema-normalized plan onto the original raw plan data.
+ * Only adds fields that were in the original raw data or that contain
+ * non-default values. This prevents Zod defaults from polluting YAML
+ * output with fields that weren't originally present.
+ *
+ * Fields present in rawPlan are always updated with the new value.
+ * Fields NOT in rawPlan are only added if they carry meaningful data
+ * (i.e. non-empty arrays, non-null values, etc.).
+ */
+function mergePlanPreservingRawShape(
+  rawPlan: Record<string, unknown>,
+  normalizedPlan: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(normalizedPlan)) {
+    if (key in rawPlan) {
+      // Field existed in raw — always include (even if value changed)
+      result[key] = value;
+    } else {
+      // Field was added by schema normalization — only include if non-trivial
+      const isEmptyArray = Array.isArray(value) && value.length === 0;
+      const isNull = value === null || value === undefined;
+      if (!isEmptyArray && !isNull) {
+        result[key] = value;
+      }
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -154,6 +242,10 @@ export function createPlan(input: PlanInput, author?: string): Plan {
  * Save a single plan (create or update)
  * AC: @plan-crud ac-1, ac-3 - save plan changes
  * Uses file lock to prevent TOCTOU race on concurrent writes.
+ *
+ * Non-target plans are preserved as raw data (no schema parsing) to ensure
+ * round-trip stability — fields not present in the original YAML won't be
+ * added by Zod defaults.
  */
 export async function savePlan(
   ctx: KspecContext,
@@ -167,31 +259,23 @@ export async function savePlan(
     const dir = path.dirname(plansPath);
     await fs.mkdir(dir, { recursive: true });
 
-    // Load existing plans (inside lock to prevent TOCTOU)
-    let plans: Plan[] = [];
-    try {
-      plans = await loadPlansFromFile(plansPath);
-    } catch {
-      // File doesn't exist yet, start fresh
-    }
+    // Load raw plan data without schema normalization
+    const { rawPlans, wrapperObj } = await extractRawPlanArray(plansPath);
 
+    // Strip runtime metadata before saving
     const cleanPlan = stripPlanMetadata(plan);
 
-    // Update or add
-    const existingIndex = plans.findIndex((p) => p._ulid === plan._ulid);
+    // Update existing or add new — replace only the target plan
+    const existingIndex = findRawPlanIndex(rawPlans, plan._ulid);
     if (existingIndex >= 0) {
-      plans[existingIndex] = cleanPlan;
+      // Merge onto raw data to avoid adding Zod defaults for absent fields
+      const rawTarget = rawPlans[existingIndex] as Record<string, unknown>;
+      rawPlans[existingIndex] = mergePlanPreservingRawShape(rawTarget, cleanPlan as Record<string, unknown>);
     } else {
-      plans.push(cleanPlan);
+      rawPlans.push(cleanPlan);
     }
 
-    // Save back to file
-    const plansFile: PlansFile = {
-      kynetic_plans: "1.0",
-      plans,
-    };
-
-    await writeYamlFilePreserveFormat(plansPath, plansFile);
+    await writeRawPlanArray(plansPath, rawPlans, wrapperObj);
   });
 }
 
@@ -200,6 +284,9 @@ export async function savePlan(
  *
  * The callback receives the current plan value while holding the plan file lock,
  * so concurrent writers do not clobber unrelated fields (for example status vs notes).
+ *
+ * Non-target plans are preserved as raw data (no schema parsing) to ensure
+ * round-trip stability.
  */
 export async function mutatePlanAtomically(
   ctx: KspecContext,
@@ -214,32 +301,32 @@ export async function mutatePlanAtomically(
     const dir = path.dirname(plansPath);
     await fs.mkdir(dir, { recursive: true });
 
-    let plans: Plan[] = [];
-    try {
-      plans = await loadPlansFromFile(plansPath);
-    } catch {
-      throw new Error(`Plans file not found: ${plansPath}`);
-    }
+    // Load raw plan data without schema normalization for non-target plans
+    const { rawPlans, wrapperObj } = await extractRawPlanArray(plansPath);
 
-    const planIndex = plans.findIndex((candidate) => candidate._ulid === plan._ulid);
+    const planIndex = findRawPlanIndex(rawPlans, plan._ulid);
     if (planIndex === -1) {
       throw new Error(`Plan not found in file: ${plan._ulid}`);
     }
 
-    const latestPlan: LoadedPlan = {
-      ...plans[planIndex],
-      _sourceFile: plansPath,
-    };
+    // Schema-parse only the target plan for the mutation callback
+    const rawTarget = rawPlans[planIndex];
+    const parsed = PlanSchema.safeParse(rawTarget);
+    if (!parsed.success) {
+      throw new Error(`Invalid plan data for ${plan._ulid}: ${parsed.error.message}`);
+    }
+    const latestPlan: LoadedPlan = { ...parsed.data, _sourceFile: plansPath };
 
     const mutatedPlan = await mutate(latestPlan);
     const cleanMutatedPlan = stripPlanMetadata(mutatedPlan);
-    plans[planIndex] = cleanMutatedPlan;
 
-    const plansFile: PlansFile = {
-      kynetic_plans: "1.0",
-      plans,
-    };
-    await writeYamlFilePreserveFormat(plansPath, plansFile);
+    // Merge onto raw data to avoid adding Zod defaults for absent fields
+    rawPlans[planIndex] = mergePlanPreservingRawShape(
+      rawTarget as Record<string, unknown>,
+      cleanMutatedPlan as Record<string, unknown>,
+    );
+
+    await writeRawPlanArray(plansPath, rawPlans, wrapperObj);
 
     updatedPlan = {
       ...cleanMutatedPlan,
@@ -255,7 +342,10 @@ export async function mutatePlanAtomically(
 }
 
 /**
- * Delete a plan by ULID
+ * Delete a plan by ULID.
+ *
+ * Non-target plans are preserved as raw data (no schema parsing) to ensure
+ * round-trip stability.
  */
 export async function deletePlan(
   ctx: KspecContext,
@@ -266,24 +356,19 @@ export async function deletePlan(
   // Lock the file to prevent concurrent read-modify-write races
   return withFileLock(plansPath, async () => {
     try {
-      const plans = await loadPlansFromFile(plansPath);
+      // Load raw plan data without schema normalization
+      const { rawPlans, wrapperObj } = await extractRawPlanArray(plansPath);
 
-      // Find plan to delete
-      const index = plans.findIndex((p) => p._ulid === planUlid);
+      // Find plan to delete by ULID match on raw data
+      const index = findRawPlanIndex(rawPlans, planUlid);
       if (index < 0) {
         return false;
       }
 
       // Remove plan
-      plans.splice(index, 1);
+      rawPlans.splice(index, 1);
 
-      // Save back
-      const plansFile: PlansFile = {
-        kynetic_plans: "1.0",
-        plans,
-      };
-
-      await writeYamlFilePreserveFormat(plansPath, plansFile);
+      await writeRawPlanArray(plansPath, rawPlans, wrapperObj);
       return true;
     } catch {
       return false;

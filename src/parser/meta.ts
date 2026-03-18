@@ -34,8 +34,10 @@ import {
   type WorkflowRun,
   type WorkflowRunsFile,
   WorkflowRunsFileSchema,
+  WorkflowRunSchema,
   WorkflowSchema,
 } from "../schema/index.js";
+import { withFileLock } from "./file-lock.js";
 import type { KspecContext } from "./yaml.js";
 import {
   expandIncludePattern,
@@ -1086,6 +1088,91 @@ export function getWorkflowRunsPath(ctx: KspecContext): string {
 }
 
 /**
+ * Extract the raw workflow run array and format info from a YAML file.
+ * Does NOT run schema validation — preserves original data for round-trip stability.
+ */
+async function extractRawRunArray(
+  filePath: string,
+): Promise<{ rawRuns: unknown[]; wrapperObj?: Record<string, unknown> }> {
+  let existingRaw: unknown = null;
+
+  try {
+    existingRaw = await readYamlFile<unknown>(filePath);
+  } catch {
+    // File doesn't exist
+    return { rawRuns: [] };
+  }
+
+  if (!existingRaw || typeof existingRaw !== "object") {
+    return { rawRuns: [] };
+  }
+
+  if ("runs" in existingRaw) {
+    const wrapper = existingRaw as Record<string, unknown>;
+    const runs = wrapper.runs;
+    return {
+      rawRuns: Array.isArray(runs) ? runs : [],
+      wrapperObj: wrapper,
+    };
+  }
+
+  return { rawRuns: [] };
+}
+
+/**
+ * Write raw workflow run array back to file, preserving the wrapper format.
+ */
+async function writeRawRunArray(
+  filePath: string,
+  rawRuns: unknown[],
+  wrapperObj?: Record<string, unknown>,
+): Promise<void> {
+  const output = wrapperObj
+    ? { ...wrapperObj, runs: rawRuns }
+    : { kynetic_runs: "1.0", runs: rawRuns };
+  await writeYamlFilePreserveFormat(filePath, output);
+}
+
+/**
+ * Find workflow run index in a raw array by ULID match.
+ */
+function findRawRunIndex(rawRuns: unknown[], ulid: string): number {
+  return rawRuns.findIndex(
+    (r) =>
+      r && typeof r === "object" && (r as Record<string, unknown>)._ulid === ulid,
+  );
+}
+
+/**
+ * Merge a schema-normalized workflow run onto the original raw run data.
+ * Only adds fields that were in the original raw data or that contain
+ * non-default values. This prevents Zod defaults from polluting YAML
+ * output with fields that weren't originally present.
+ */
+function mergeRunPreservingRawShape(
+  rawRun: Record<string, unknown>,
+  normalizedRun: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(normalizedRun)) {
+    if (key in rawRun) {
+      // Field existed in raw — always include (even if value changed)
+      result[key] = value;
+    } else {
+      // Field was added by schema normalization — only include if non-trivial
+      const isEmptyArray = Array.isArray(value) && value.length === 0;
+      const isNull = value === null || value === undefined;
+      if (!isEmptyArray && !isNull) {
+        result[key] = value;
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
  * Load workflow runs from file
  */
 export async function loadWorkflowRuns(
@@ -1110,6 +1197,10 @@ export async function loadWorkflowRuns(
 
 /**
  * Save a workflow run (create or update)
+ *
+ * Non-target runs are preserved as raw data (no schema parsing) to ensure
+ * round-trip stability — fields not present in the original YAML won't be
+ * added by Zod defaults.
  */
 export async function saveWorkflowRun(
   ctx: KspecContext,
@@ -1117,24 +1208,25 @@ export async function saveWorkflowRun(
 ): Promise<void> {
   const runsPath = getWorkflowRunsPath(ctx);
 
-  // Load existing runs
-  const runs = await loadWorkflowRuns(ctx);
+  await withFileLock(runsPath, async () => {
+    const dir = path.dirname(runsPath);
+    await fs.mkdir(dir, { recursive: true });
 
-  // Update or add
-  const existingIndex = runs.findIndex((r) => r._ulid === run._ulid);
-  if (existingIndex >= 0) {
-    runs[existingIndex] = run;
-  } else {
-    runs.push(run);
-  }
+    // Load raw run data without schema normalization
+    const { rawRuns, wrapperObj } = await extractRawRunArray(runsPath);
 
-  // Save back
-  const runsFile: WorkflowRunsFile = {
-    kynetic_runs: "1.0",
-    runs,
-  };
+    // Update existing or add new — replace only the target run
+    const existingIndex = findRawRunIndex(rawRuns, run._ulid);
+    if (existingIndex >= 0) {
+      // Merge onto raw data to avoid adding Zod defaults for absent fields
+      const rawTarget = rawRuns[existingIndex] as Record<string, unknown>;
+      rawRuns[existingIndex] = mergeRunPreservingRawShape(rawTarget, run as unknown as Record<string, unknown>);
+    } else {
+      rawRuns.push(run);
+    }
 
-  await writeYamlFilePreserveFormat(runsPath, runsFile);
+    await writeRawRunArray(runsPath, rawRuns, wrapperObj);
+  });
 }
 
 /**
@@ -1145,6 +1237,63 @@ export async function updateWorkflowRun(
   run: WorkflowRun,
 ): Promise<void> {
   await saveWorkflowRun(ctx, run);
+}
+
+/**
+ * Atomically mutate a workflow run using the latest on-disk state.
+ *
+ * The callback receives the current run value while holding the runs file lock,
+ * so concurrent writers do not clobber unrelated fields.
+ *
+ * Non-target runs are preserved as raw data (no schema parsing) to ensure
+ * round-trip stability.
+ */
+export async function mutateWorkflowRunAtomically(
+  ctx: KspecContext,
+  run: WorkflowRun,
+  mutate: (latestRun: WorkflowRun) => WorkflowRun | Promise<WorkflowRun>,
+): Promise<WorkflowRun> {
+  const runsPath = getWorkflowRunsPath(ctx);
+  let updatedRun: WorkflowRun | undefined;
+
+  await withFileLock(runsPath, async () => {
+    const dir = path.dirname(runsPath);
+    await fs.mkdir(dir, { recursive: true });
+
+    // Load raw run data without schema normalization for non-target runs
+    const { rawRuns, wrapperObj } = await extractRawRunArray(runsPath);
+
+    const runIndex = findRawRunIndex(rawRuns, run._ulid);
+    if (runIndex === -1) {
+      throw new Error(`Workflow run not found in file: ${run._ulid}`);
+    }
+
+    // Schema-parse only the target run for the mutation callback
+    const rawTarget = rawRuns[runIndex];
+    const parsed = WorkflowRunSchema.safeParse(rawTarget);
+    if (!parsed.success) {
+      throw new Error(`Invalid workflow run data for ${run._ulid}: ${parsed.error.message}`);
+    }
+    const latestRun = parsed.data;
+
+    const mutatedRun = await mutate(latestRun);
+
+    // Merge onto raw data to avoid adding Zod defaults for absent fields
+    rawRuns[runIndex] = mergeRunPreservingRawShape(
+      rawTarget as Record<string, unknown>,
+      mutatedRun as unknown as Record<string, unknown>,
+    );
+
+    await writeRawRunArray(runsPath, rawRuns, wrapperObj);
+
+    updatedRun = mutatedRun;
+  });
+
+  if (!updatedRun) {
+    throw new Error(`Failed to mutate workflow run atomically: ${run._ulid}`);
+  }
+
+  return updatedRun;
 }
 
 /**
@@ -1176,6 +1325,9 @@ export async function findActiveRuns(
 
 /**
  * Delete workflow runs by ULIDs
+ *
+ * Non-target runs are preserved as raw data (no schema parsing) to ensure
+ * round-trip stability.
  * AC: @workflow-prune ac-1, ac-2, ac-3, ac-4
  */
 export async function deleteWorkflowRuns(
@@ -1183,16 +1335,17 @@ export async function deleteWorkflowRuns(
   ulidsToDelete: string[],
 ): Promise<void> {
   const runsPath = getWorkflowRunsPath(ctx);
-  const runs = await loadWorkflowRuns(ctx);
 
-  // Filter out runs to delete
-  const remainingRuns = runs.filter((r) => !ulidsToDelete.includes(r._ulid));
+  await withFileLock(runsPath, async () => {
+    const { rawRuns, wrapperObj } = await extractRawRunArray(runsPath);
 
-  // Save back
-  const runsFile: WorkflowRunsFile = {
-    kynetic_runs: "1.0",
-    runs: remainingRuns,
-  };
+    // Filter out runs to delete using raw ULID field
+    const remainingRuns = rawRuns.filter((r) => {
+      if (!r || typeof r !== "object") return true;
+      const runUlid = (r as Record<string, unknown>)._ulid;
+      return typeof runUlid !== "string" || !ulidsToDelete.includes(runUlid);
+    });
 
-  await writeYamlFilePreserveFormat(runsPath, runsFile);
+    await writeRawRunArray(runsPath, remainingRuns, wrapperObj);
+  });
 }

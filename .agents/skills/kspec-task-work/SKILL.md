@@ -122,6 +122,24 @@ kspec task branch @ref
 
 If you need a non-dispatch branch (e.g., for work not tied to a task), use conventional prefixes (`feat/`, `fix/`, etc.) instead.
 
+### 4a. Rebase on Target (Required Before Starting Work)
+
+Before writing any code, rebase onto the integration target to stay current:
+
+```bash
+git fetch origin
+git rebase origin/<integration-branch>  # e.g., dev or main
+```
+
+In dispatch mode, the dispatch engine handles branch creation (step 4), so only the rebase in this step is needed.
+
+This keeps your branch fresh with the latest integrated work and lets you resolve conflicts early — while you have full context of your changes. If the rebase has conflicts:
+
+- **Simple textual conflicts** — resolve them inline. You have the best context for your own changes.
+- **Complex semantic conflicts** — resolve if you understand both sides. If genuinely uncertain about the correct resolution, block with a reason explaining the conflict.
+
+Do this every time you start or resume work on a task, not just the first time.
+
 ### 5. Work and Note
 
 Read all ACs (own + trait) before implementing:

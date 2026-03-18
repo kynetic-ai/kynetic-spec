@@ -2201,6 +2201,95 @@ function stripInboxMetadata(item: LoadedInboxItem | InboxItem): InboxItem {
 }
 
 /**
+ * Extract the raw inbox array and wrapper metadata from a YAML file.
+ * Does NOT run schema validation — preserves original data for round-trip stability.
+ */
+async function extractRawInboxArray(
+  filePath: string,
+): Promise<{ rawItems: unknown[]; wrapperObj?: Record<string, unknown> }> {
+  let existingRaw: unknown = null;
+
+  try {
+    existingRaw = await readYamlFile<unknown>(filePath);
+  } catch {
+    // File doesn't exist
+    return { rawItems: [] };
+  }
+
+  if (!existingRaw || typeof existingRaw !== "object") {
+    return { rawItems: [] };
+  }
+
+  const wrapper = existingRaw as Record<string, unknown>;
+  const inbox = wrapper.inbox;
+
+  // Handle { inbox: [...] } format
+  if (Array.isArray(inbox)) {
+    return { rawItems: inbox, wrapperObj: wrapper };
+  }
+
+  // Handle plain array format (legacy)
+  if (Array.isArray(existingRaw)) {
+    return { rawItems: existingRaw };
+  }
+
+  return { rawItems: [] };
+}
+
+/**
+ * Write raw inbox array back to file, preserving wrapper metadata.
+ */
+async function writeRawInboxArray(
+  filePath: string,
+  rawItems: unknown[],
+  wrapperObj?: Record<string, unknown>,
+): Promise<void> {
+  const output = wrapperObj
+    ? { ...wrapperObj, inbox: rawItems }
+    : { inbox: rawItems };
+  await writeYamlFilePreserveFormat(filePath, output);
+}
+
+/**
+ * Find inbox item index in a raw array by ULID match.
+ */
+function findRawInboxIndex(rawItems: unknown[], ulid: string): number {
+  return rawItems.findIndex(
+    (i) =>
+      i && typeof i === "object" && (i as Record<string, unknown>)._ulid === ulid,
+  );
+}
+
+/**
+ * Merge a schema-normalized inbox item onto the original raw item data.
+ * Only adds fields that were in the original raw data or that contain
+ * non-default values. This prevents Zod defaults from polluting YAML
+ * output with fields that weren't originally present.
+ */
+function mergeInboxPreservingRawShape(
+  rawItem: Record<string, unknown>,
+  normalizedItem: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(normalizedItem)) {
+    if (key in rawItem) {
+      // Field existed in raw — always include (even if value changed)
+      result[key] = value;
+    } else {
+      // Field was added by schema normalization — only include if non-trivial
+      const isEmptyArray = Array.isArray(value) && value.length === 0;
+      const isNull = value === null || value === undefined;
+      if (!isEmptyArray && !isNull) {
+        result[key] = value;
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
  * Save an inbox item (add or update).
  */
 export async function saveInboxItem(
@@ -2215,29 +2304,22 @@ export async function saveInboxItem(
     const dir = path.dirname(inboxPath);
     await fs.mkdir(dir, { recursive: true });
 
-    // Load existing items
-    let existingItems: InboxItem[] = [];
-
-    try {
-      existingItems = await loadInboxItemsFromFile(inboxPath);
-    } catch {
-      // File doesn't exist, start fresh
-    }
+    // Load raw inbox data without schema normalization
+    const { rawItems, wrapperObj } = await extractRawInboxArray(inboxPath);
 
     const cleanItem = stripInboxMetadata(item);
 
-    // Update existing or add new
-    const existingIndex = existingItems.findIndex(
-      (i) => i._ulid === item._ulid,
-    );
+    // Update existing or add new — replace only the target item
+    const existingIndex = findRawInboxIndex(rawItems, item._ulid);
     if (existingIndex >= 0) {
-      existingItems[existingIndex] = cleanItem;
+      // Merge onto raw data to avoid adding Zod defaults for absent fields
+      const rawTarget = rawItems[existingIndex] as Record<string, unknown>;
+      rawItems[existingIndex] = mergeInboxPreservingRawShape(rawTarget, cleanItem as Record<string, unknown>);
     } else {
-      existingItems.push(cleanItem);
+      rawItems.push(cleanItem);
     }
 
-    // Save with { inbox: [...] } format and format preservation
-    await writeYamlFilePreserveFormat(inboxPath, { inbox: existingItems });
+    await writeRawInboxArray(inboxPath, rawItems, wrapperObj);
   });
 }
 
@@ -2262,30 +2344,39 @@ export async function mutateInboxItemAtomically(
     const dir = path.dirname(inboxPath);
     await fs.mkdir(dir, { recursive: true });
 
-    let existingItems: InboxItem[] = [];
-    try {
-      existingItems = await loadInboxItemsFromFile(inboxPath);
-    } catch {
+    // Load raw inbox data without schema normalization for non-target items
+    const { rawItems, wrapperObj } = await extractRawInboxArray(inboxPath);
+
+    if (rawItems.length === 0) {
       throw new Error(`Inbox file not found: ${inboxPath}`);
     }
 
-    const itemIndex = existingItems.findIndex(
-      (existingItem) => existingItem._ulid === item._ulid,
-    );
+    const itemIndex = findRawInboxIndex(rawItems, item._ulid);
     if (itemIndex === -1) {
       throw new Error(`Inbox item not found in file: ${item._ulid}`);
     }
 
+    // Schema-parse only the target item for the mutation callback
+    const rawTarget = rawItems[itemIndex];
+    const parsed = InboxItemSchema.safeParse(rawTarget);
+    if (!parsed.success) {
+      throw new Error(`Invalid inbox item data for ${item._ulid}: ${parsed.error.message}`);
+    }
     const latestItem: LoadedInboxItem = {
-      ...existingItems[itemIndex],
+      ...parsed.data,
       _sourceFile: inboxPath,
     };
 
     const mutatedItem = await mutate(latestItem);
     const cleanMutatedItem = stripInboxMetadata(mutatedItem);
-    existingItems[itemIndex] = cleanMutatedItem;
 
-    await writeYamlFilePreserveFormat(inboxPath, { inbox: existingItems });
+    // Merge onto raw data to avoid adding Zod defaults for absent fields
+    rawItems[itemIndex] = mergeInboxPreservingRawShape(
+      rawTarget as Record<string, unknown>,
+      cleanMutatedItem as Record<string, unknown>,
+    );
+
+    await writeRawInboxArray(inboxPath, rawItems, wrapperObj);
 
     updatedItem = {
       ...cleanMutatedItem,
@@ -2312,15 +2403,16 @@ export async function deleteInboxItem(
   // Lock the file to prevent concurrent read-modify-write races
   return withFileLock(inboxPath, async () => {
     try {
-      const existingItems = await loadInboxItemsFromFile(inboxPath);
+      // Load raw inbox data without schema normalization for round-trip stability
+      const { rawItems, wrapperObj } = await extractRawInboxArray(inboxPath);
 
-      const index = existingItems.findIndex((i) => i._ulid === ulid);
+      const index = findRawInboxIndex(rawItems, ulid);
       if (index < 0) {
         return false;
       }
 
-      existingItems.splice(index, 1);
-      await writeYamlFilePreserveFormat(inboxPath, { inbox: existingItems });
+      rawItems.splice(index, 1);
+      await writeRawInboxArray(inboxPath, rawItems, wrapperObj);
       return true;
     } catch {
       return false;
@@ -2367,6 +2459,105 @@ export interface LoadedTriageRecord extends TriageRecord {
  */
 export function getTriageFilePath(ctx: KspecContext): string {
   return path.join(ctx.specDir, "project.triage.yaml");
+}
+
+/**
+ * Extract the raw triage array and wrapper metadata from a YAML file.
+ * Does NOT run schema validation — preserves original data for round-trip stability.
+ */
+async function extractRawTriageArray(
+  filePath: string,
+): Promise<{ rawRecords: unknown[]; wrapperObj?: Record<string, unknown> }> {
+  let existingRaw: unknown = null;
+
+  try {
+    existingRaw = await readYamlFile<unknown>(filePath);
+  } catch {
+    // File doesn't exist
+    return { rawRecords: [] };
+  }
+
+  if (!existingRaw || typeof existingRaw !== "object") {
+    return { rawRecords: [] };
+  }
+
+  const wrapper = existingRaw as Record<string, unknown>;
+  const triage = wrapper.triage;
+
+  // Handle { kynetic_triage: "1.0", triage: [...] } format
+  if (Array.isArray(triage)) {
+    return { rawRecords: triage, wrapperObj: wrapper };
+  }
+
+  // Handle plain array format (legacy)
+  if (Array.isArray(existingRaw)) {
+    return { rawRecords: existingRaw };
+  }
+
+  return { rawRecords: [] };
+}
+
+/**
+ * Write raw triage array back to file, preserving wrapper metadata.
+ */
+async function writeRawTriageArray(
+  filePath: string,
+  rawRecords: unknown[],
+  wrapperObj?: Record<string, unknown>,
+): Promise<void> {
+  const output = wrapperObj
+    ? { ...wrapperObj, triage: rawRecords }
+    : { kynetic_triage: "1.0", triage: rawRecords };
+  await writeYamlFilePreserveFormat(filePath, output);
+}
+
+/**
+ * Find triage record index in a raw array by ULID match.
+ */
+function findRawTriageIndex(rawRecords: unknown[], ulid: string): number {
+  return rawRecords.findIndex(
+    (r) =>
+      r && typeof r === "object" && (r as Record<string, unknown>)._ulid === ulid,
+  );
+}
+
+/**
+ * Find triage record index in a raw array by inbox_ref match.
+ */
+function findRawTriageIndexByInboxRef(rawRecords: unknown[], inboxRef: string): number {
+  return rawRecords.findIndex(
+    (r) =>
+      r && typeof r === "object" && (r as Record<string, unknown>).inbox_ref === inboxRef,
+  );
+}
+
+/**
+ * Merge a schema-normalized triage record onto the original raw record data.
+ * Only adds fields that were in the original raw data or that contain
+ * non-default values. This prevents Zod defaults from polluting YAML
+ * output with fields that weren't originally present.
+ */
+function mergeTriagePreservingRawShape(
+  rawRecord: Record<string, unknown>,
+  normalizedRecord: Record<string, unknown>,
+): Record<string, unknown> {
+  const result: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(normalizedRecord)) {
+    if (key in rawRecord) {
+      // Field existed in raw — always include (even if value changed)
+      result[key] = value;
+    } else {
+      // Field was added by schema normalization — only include if non-trivial
+      const isEmptyArray = Array.isArray(value) && value.length === 0;
+      const isNull = value === null || value === undefined;
+      if (!isEmptyArray && !isNull) {
+        result[key] = value;
+      }
+    }
+  }
+
+  return result;
 }
 
 /**
@@ -2423,6 +2614,7 @@ function stripTriageMetadata(record: LoadedTriageRecord): TriageRecord {
  * Save a triage record (add or update).
  * AC: @triage-record-schema ac-8 — upsert on inbox_ref (one record per inbox item)
  * AC: @triage-record-schema ac-9 — sets updated_at on every mutation
+ * AC: @yaml-serialization-invariants ac-3 — round-trip stability via raw-data-preservation
  */
 export async function saveTriageRecord(
   ctx: KspecContext,
@@ -2436,27 +2628,8 @@ export async function saveTriageRecord(
     const dir = path.dirname(triagePath);
     await fs.mkdir(dir, { recursive: true });
 
-    // Load existing records
-    let existingRecords: TriageRecord[] = [];
-
-    try {
-      const raw = await readYamlFile<unknown>(triagePath);
-      if (raw && typeof raw === "object" && "triage" in raw) {
-        const parsed = TriageFileSchema.safeParse(raw);
-        if (parsed.success) {
-          existingRecords = parsed.data.triage;
-        }
-      } else if (Array.isArray(raw)) {
-        for (const item of raw) {
-          const result = TriageRecordSchema.safeParse(item);
-          if (result.success) {
-            existingRecords.push(result.data);
-          }
-        }
-      }
-    } catch {
-      // File doesn't exist, start fresh
-    }
+    // Load raw triage data without schema normalization
+    const { rawRecords, wrapperObj } = await extractRawTriageArray(triagePath);
 
     const cleanRecord = stripTriageMetadata(record);
 
@@ -2464,34 +2637,35 @@ export async function saveTriageRecord(
     cleanRecord.updated_at = new Date().toISOString();
 
     // AC: ac-8 — upsert: check for existing record by ULID first, then by inbox_ref
-    const existingByUlid = existingRecords.findIndex(
-      (r) => r._ulid === record._ulid,
-    );
+    const existingByUlid = findRawTriageIndex(rawRecords, record._ulid);
     if (existingByUlid >= 0) {
-      existingRecords[existingByUlid] = cleanRecord;
+      // Merge onto raw data to avoid adding Zod defaults for absent fields
+      const rawTarget = rawRecords[existingByUlid] as Record<string, unknown>;
+      rawRecords[existingByUlid] = mergeTriagePreservingRawShape(
+        rawTarget,
+        cleanRecord as unknown as Record<string, unknown>,
+      );
     } else {
       // Check for existing record with same inbox_ref (uniqueness constraint)
       // Preserve existing identity (_ulid, created_at) when upserting by inbox_ref
-      const existingByInboxRef = existingRecords.findIndex(
-        (r) => r.inbox_ref === record.inbox_ref,
-      );
+      const existingByInboxRef = findRawTriageIndexByInboxRef(rawRecords, record.inbox_ref);
       if (existingByInboxRef >= 0) {
-        const existing = existingRecords[existingByInboxRef];
-        existingRecords[existingByInboxRef] = {
+        const rawExisting = rawRecords[existingByInboxRef] as Record<string, unknown>;
+        const mergedRecord = {
           ...cleanRecord,
-          _ulid: existing._ulid,
-          created_at: existing.created_at,
+          _ulid: rawExisting._ulid as string,
+          created_at: rawExisting.created_at as string,
         };
+        rawRecords[existingByInboxRef] = mergeTriagePreservingRawShape(
+          rawExisting,
+          mergedRecord as unknown as Record<string, unknown>,
+        );
       } else {
-        existingRecords.push(cleanRecord);
+        rawRecords.push(cleanRecord);
       }
     }
 
-    // Save with { kynetic_triage: "1.0", triage: [...] } format
-    await writeYamlFilePreserveFormat(triagePath, {
-      kynetic_triage: "1.0",
-      triage: existingRecords,
-    });
+    await writeRawTriageArray(triagePath, rawRecords, wrapperObj);
   });
 }
 

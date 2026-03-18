@@ -73,19 +73,27 @@ export const queryKeys = {
 			[...queryKeys.sessions.all, 'eventDetail', id, seq] as const,
 	},
 
-	plans: {
-		all: ['plans'] as const,
-		lists: () => [...queryKeys.plans.all, 'list'] as const,
-		detail: (ref: string) => [...queryKeys.plans.all, 'detail', ref] as const,
-		content: (ref: string) => [...queryKeys.plans.all, 'content', ref] as const,
-	},
-
 	reviews: {
 		all: ['reviews'] as const,
 		lists: () => [...queryKeys.reviews.all, 'list'] as const,
 		list: (filters?: Record<string, unknown>) =>
 			[...queryKeys.reviews.lists(), filters] as const,
+		forTask: (taskRef: string) =>
+			[...queryKeys.reviews.all, 'forTask', taskRef] as const,
 		detail: (ref: string) => [...queryKeys.reviews.all, 'detail', ref] as const,
+		content: (ref: string) => [...queryKeys.reviews.all, 'content', ref] as const,
+		siblings: (filters: {
+			subject_type: string;
+			subject_ref?: string;
+			head_branch?: string;
+		}) => [...queryKeys.reviews.all, 'siblings', filters] as const,
+	},
+
+	plans: {
+		all: ['plans'] as const,
+		lists: () => [...queryKeys.plans.all, 'list'] as const,
+		detail: (ref: string) => [...queryKeys.plans.all, 'detail', ref] as const,
+		content: (ref: string) => [...queryKeys.plans.all, 'content', ref] as const,
 	},
 
 	workflows: {
