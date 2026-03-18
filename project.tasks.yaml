@@ -106322,7 +106322,31 @@
   session_id: 01KM0D6ADM1WQ1M0JETENZA97E
   created_at: 2026-03-18T05:32:00.733Z
   started_at: 2026-03-18T12:02:38.314Z
-  notes: []
+  notes:
+    - _ulid: 01KM0EK31F90CQX9KWZ1BQK2MM
+      content: >-
+        Implemented ScheduleEngine in src/agent-runtime/schedule-engine.ts. Key design decisions:
+
+        - ScheduleLoader abstraction for testability (accepts injected config loader, defaults to
+        loadMetaContext)
+
+        - Per-schedule volatile runtime state (last_tick, next_tick, run_count, active_run_ids,
+        buffered_tick)
+
+        - Overlap enforcement against ActionRun status, not invocation status
+
+        - Backfill uses croner previousRuns(1) heuristic (not previousRun which tracks actual
+        executions)
+
+        - Integrated with daemon routes: starts/stops alongside DispatchEngine
+
+        - 22 tests covering all 11 ACs (6 entities + 5 runtime) plus trait-error-guidance N/A
+        annotations
+
+        - One pre-existing test failure in review-cli.test.ts (unrelated to schedule engine)
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T12:26:39.024Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVX7D9A14ZFGSFSXS8X6Z
