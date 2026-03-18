@@ -18329,3 +18329,29 @@ reviews:
     created_at: 2026-03-18T16:30:24.623Z
     updated_at: 2026-03-18T16:39:09.561Z
     notes: []
+  - _ulid: 01KM0XDVXAGYN37B7YKGR73W29
+    slugs: []
+    title: Review task-remediate-review-versions
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0XDVX913WRJBVM5DBC887M
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T16:45:56.521Z
+    examined_commit: e5df80e26f4b1c62b427f72f4cb94bb2feaa23ff
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-remediate-review-versions"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T16:45:56.522Z
+    updated_at: null
+    notes: []
