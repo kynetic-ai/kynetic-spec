@@ -11880,6 +11880,12 @@ reviews:
         payload:
           thread_ulid: 01KKZSZAQG5FP9VP15B6FQRMYC
         timestamp: 2026-03-18T06:44:35.341Z
+      - _ulid: 01KKZV0V2VBDB4JBXKN83Z9T7Y
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKZSZPY4HKP15905ENDD6E51
+        timestamp: 2026-03-18T06:44:38.107Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -11962,6 +11968,13 @@ reviews:
               on agents topic). The log assertion can fold into the recovery AC as a natural
               side-effect."
             created_at: 2026-03-18T06:26:32.516Z
+          - _ulid: 01KKZV0TYFEYG34S596CXHYW72
+            author: "@claude"
+            body: Split into ac-degraded-auto-recover (exit degraded + resume dispatch) and
+              ac-degraded-recovery-logged (log recovery with duration). Broadcast covered by
+              ac-degraded-status-broadcast. Queue drain is part of 'resume normal dispatch
+              operations.'
+            created_at: 2026-03-18T06:44:37.967Z
         kind: blocker
       - _ulid: 01KKZT03TJ9A868GW1W7950BAW
         anchor:
@@ -12234,5 +12247,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-18T06:31:04.294Z
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:44:35.206Z
+    updated_at: 2026-03-18T06:44:37.967Z
     notes: []
