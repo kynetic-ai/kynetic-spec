@@ -10402,3 +10402,79 @@ workspaces:
         head: 1fb3398c8601e4d12109d099515003199b2ea770
         last_seen_at: 2026-03-18T13:51:51.556Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-api-01kkzpw1
+  - active_role: null
+    base_branch_point: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-hook-cli/01kkzpvx
+    canonical_branch_head: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-18T13:51:52.582Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-18T13:51:52.582Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
+      updated_at: 2026-03-18T13:51:52.582Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KKZPVX7D9A14ZFGSFSXS8X6Z"
+    task_slug: task-hook-cli
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-18T13:51:52.582Z
+      created_at: 2026-03-18T13:51:52.582Z
+      updated_at: 2026-03-18T13:51:52.582Z
+    workspace_id: dispatch-workspace-01KKZPVX7D9A14ZFGSFSXS8X6Z
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-hook-cli/01kkzpvx
+        head: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
+        last_seen_at: 2026-03-18T13:51:52.582Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-hook-cli-01kkzpvx
