@@ -18608,6 +18608,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T17:14:11.621Z
+      - _ulid: 01KM0Z1XJY13M61G8FNV2TVPZA
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0Z1XDVV75YMNPFQWKJV68Z
+        timestamp: 2026-03-18T17:14:22.174Z
     examined_commit: cae35ae3ffd1e6af9095ae533906687eaef9b211
     external_links: []
     lifecycle_state: open
@@ -18617,8 +18624,25 @@ reviews:
       content_hash: ""
       ref: "@task-migrate-triggers"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM0Z1XDVV75YMNPFQWKJV68Z
+        anchor:
+          type: code
+          commit: cae35ae3ffd1e6af9095ae533906687eaef9b211
+          line_end: 43
+          line_start: 43
+          path: packages/web-ui/src/lib/components/agents/AgentCard.svelte
+          side: head
+        entries:
+          - _ulid: 01KM0Z1XDVHJJDG3F3YCF74S17
+            author: "@claude"
+            body: "Stale AC annotation: references @ui-agent-dispatch ac-4 which no longer exists in the spec.
+              This file was modified in this commit (the ac-4 annotation was removed from the script
+              block at line 2 but this one in the template was missed). Should be removed or
+              replaced with a comment that doesn't use AC annotation syntax."
+            created_at: 2026-03-18T17:14:22.011Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T17:14:03.926Z
-    updated_at: 2026-03-18T17:14:11.461Z
+    updated_at: 2026-03-18T17:14:22.011Z
     notes: []
