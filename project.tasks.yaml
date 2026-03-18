@@ -107959,8 +107959,12 @@
   spec_ref: "@review-cli-commands"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Replaced local computeDisposition and computeGateState in CLI with
+    shared implementations from parser/review-operations.ts and review/checks.ts. Updated 3 test
+    assertions for vacuous-truth gate_state change (pending→passing for no required checks). CLI now
+    agrees with daemon on disposition and gate state computation.
   depends_on:
     - "@task-cli-verdict-auto-version"
   context: []
@@ -107983,6 +107987,7 @@
   created_at: 2026-03-18T14:33:44.710Z
   started_at: 2026-03-18T15:50:11.277Z
   submitted_at: 2026-03-18T16:00:40.340Z
+  completed_at: 2026-03-18T16:09:27.699Z
   notes:
     - _ulid: 01KM0TTR2J2BVC5YJY7MEA59H9
       content: Replaced local computeDisposition with shared import from parser/review-operations.ts (via
