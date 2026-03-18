@@ -107540,11 +107540,43 @@
     - task-cli-verdict-auto-version
   title: Remove version flags from CLI review verdict command
   type: task
-  description: "Remove --version-base, --version-head, --version-hash from kspec review verdict in
-    src/cli/commands/review.ts. Use submitVerdict() from src/parser/review-operations.ts instead of
-    manual verdict construction. Restructure mutateReviewAtomically callback to two-step pattern:
-    submitVerdict then transitionLifecycle for auto-close. See @plan-review-version-auto-derivation
-    for full implementation steps."
+  description: >-
+    Remove --version-base, --version-head, and --version-hash from the kspec review verdict command
+    in src/cli/commands/review.ts. Replace the manual verdict construction with a call to
+    submitVerdict() from src/parser/review-operations.ts, which auto-derives applies_to_version via
+    extractSubjectVersion(review.subject).
+
+
+    Currently the CLI verdict command (line 993 of review.ts) calls parseVersionFromOptions() to
+    build a version from caller-provided flags, then manually constructs the verdict object (lines
+    995-1001). The daemon API already uses submitVerdict() correctly
+    (packages/daemon/src/routes/reviews.ts line 771).
+
+
+    Why: The CLI manually constructs verdicts with caller-provided versions. When the reviewer agent
+    creates a task-subject review but passes code branch commits as --version-base/--version-head,
+    the verdict gets a code_compare version on an entity_version subject. The shared
+    computeDisposition() in src/parser/review-operations.ts treats this type mismatch as stale,
+    making approved reviews appear as changes_requested in the daemon and web UI.
+
+
+    How:
+
+    1. Remove the three --version-* option definitions from the verdict command (lines 970-972 of
+    src/cli/commands/review.ts)
+
+    2. Remove the parseVersionFromOptions call (line 993)
+
+    3. Restructure the mutateReviewAtomically callback to use the daemon's two-step pattern (see
+    reviews.ts:770-783): a) Call submitVerdict(latest, { reviewer, decision, role }) to get the
+    record with correct applies_to_version. b) Conditionally call transitionLifecycle(withVerdict,
+    'closed', reviewer) on the result for auto-close. The current flat spread won't work because
+    submitVerdict owns the verdict construction including applies_to_version derivation.
+
+    4. Keep the task transition logic (handleVerdictTaskTransition) after the atomic mutation
+
+    5. Update tests that pass version flags to verdict commands — remove version flags and verify
+    the auto-derived version matches the review subject type
   spec_ref: "@review-cli-mutation-commands"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
