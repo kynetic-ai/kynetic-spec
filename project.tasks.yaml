@@ -107484,7 +107484,7 @@
     auto-derived from the review subject, never passed by callers. See
     @plan-review-version-auto-derivation for full AC-by-AC changes on @review-cli-mutation-commands,
     @review-verdicts-and-resolution-lifecycle, and @review-cli-commands.
-  spec_ref: null
+  spec_ref: "@review-cli-mutation-commands"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
   status: pending
@@ -107510,7 +107510,7 @@
     manual verdict construction. Restructure mutateReviewAtomically callback to two-step pattern:
     submitVerdict then transitionLifecycle for auto-close. See @plan-review-version-auto-derivation
     for full implementation steps."
-  spec_ref: null
+  spec_ref: "@review-cli-mutation-commands"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
   status: pending
@@ -107537,7 +107537,7 @@
     src/cli/commands/review.ts. Auto-derive via extractSubjectVersion(review.subject). Delete
     parseVersionFromOptions() (zero remaining callers). See @plan-review-version-auto-derivation for
     full steps.
-  spec_ref: null
+  spec_ref: "@review-cli-mutation-commands"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
   status: pending
@@ -107565,7 +107565,7 @@
     src/review/checks.ts. evaluateGates returns GateEvaluationResult object — extract .state.
     Changes gate_state from pending to passing for check-less reviews (intentional, aligns with
     daemon). See @plan-review-version-auto-derivation.
-  spec_ref: null
+  spec_ref: "@review-cli-commands"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
   status: pending
@@ -107592,7 +107592,7 @@
     templates/skills/review/SKILL.md (lines 280-317). Update text to explain versions are
     auto-derived from review subject. Run kspec skill render to regenerate .agents/skills/. See
     @plan-review-version-auto-derivation.
-  spec_ref: null
+  spec_ref: "@review-cli-mutation-commands"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
   status: pending
@@ -107619,7 +107619,7 @@
     mismatches. 110 reviews affected — daemon shows 4 approved vs correct 76. Handle both directions
     (code_compare on entity, entity_version on code). Verify via daemon API after. Delete script
     when done. See @plan-review-version-auto-derivation.
-  spec_ref: null
+  spec_ref: "@review-verdicts-and-resolution-lifecycle"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
   status: pending
