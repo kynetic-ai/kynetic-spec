@@ -106511,7 +106511,7 @@
   spec_ref: "@dispatch-event-cli"
   plan_ref: "@plan-dispatch-event-system-expansion"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-schedule-engine"
@@ -106523,7 +106523,9 @@
     - schedules
     - cli
   vcs_refs: []
+  session_id: 01KM0NSJH7QVZ1KV43HNEK25NP
   created_at: 2026-03-18T05:32:03.570Z
+  started_at: 2026-03-18T14:32:53.925Z
   notes: []
   todos: []
   automation: eligible
