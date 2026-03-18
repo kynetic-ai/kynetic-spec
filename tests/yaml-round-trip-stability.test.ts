@@ -33,6 +33,19 @@ import {
   mutateReviewAtomically,
   deleteReviewRecord,
 } from "../src/parser/reviews.js";
+import {
+  loadWorkflowRuns,
+  saveWorkflowRun,
+  mutateWorkflowRunAtomically,
+  deleteWorkflowRuns,
+} from "../src/parser/meta.js";
+import {
+  saveDispatchWorkspaceRecord,
+  mutateDispatchWorkspaceRecordAtomically,
+  loadDispatchWorkspaceRegistry,
+  getDispatchWorkspaceRegistryPath,
+} from "../src/parser/dispatch-workspaces.js";
+import type { LoadedDispatchWorkspaceRecord } from "../src/parser/dispatch-workspaces.js";
 import type { KspecContext } from "../src/parser/yaml.js";
 import type { ReviewRecordInput } from "../src/schema/index.js";
 
@@ -1431,6 +1444,559 @@ describe("round-trip stability — saveTriageRecord path", () => {
     expect(reloaded).toHaveLength(2);
     expect(reloaded[0]._ulid).toBe(existingUlid);
     expect(reloaded[1]._ulid).toBe(newUlid);
+  });
+});
+
+// AC: @yaml-serialization-invariants ac-3
+describe("round-trip stability — saveWorkflowRun path", () => {
+  function makeRunCtx(specDir: string): KspecContext {
+    return { specDir, manifestPath: path.join(specDir, "kynetic.yaml") } as KspecContext;
+  }
+
+  it("saveWorkflowRun with no changes produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-run-rt1");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeRunCtx(kspecDir);
+
+    // Write a minimal runs file directly — no step_results field
+    const runsPath = path.join(kspecDir, "kynetic.runs.yaml");
+    const runUlid = testUlid("WKRN");
+    await writeYamlFilePreserveFormat(runsPath, {
+      kynetic_runs: "1.0",
+      runs: [
+        {
+          _ulid: runUlid,
+          workflow_ref: "@session-start",
+          status: "completed",
+          current_step: 2,
+          total_steps: 2,
+          started_at: "2026-01-01T00:00:00.000Z",
+          completed_at: "2026-01-01T00:05:00.000Z",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(runsPath, "utf-8");
+
+    // Load and save back with no modifications
+    const loaded = await loadWorkflowRuns(ctx);
+    expect(loaded).toHaveLength(1);
+    await saveWorkflowRun(ctx, loaded[0]);
+    const afterContent = await fs.readFile(runsPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("saveWorkflowRun with no changes does not add Zod default fields", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-run-rt2");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeRunCtx(kspecDir);
+
+    // Minimal run — no step_results, no initiated_by, no abort_reason, no task_ref, no result
+    const runsPath = path.join(kspecDir, "kynetic.runs.yaml");
+    const runUlid = testUlid("WKRM");
+    await writeYamlFilePreserveFormat(runsPath, {
+      kynetic_runs: "1.0",
+      runs: [
+        {
+          _ulid: runUlid,
+          workflow_ref: "@task-lifecycle",
+          status: "active",
+          current_step: 0,
+          total_steps: 3,
+          started_at: "2026-01-01T00:00:00.000Z",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(runsPath, "utf-8");
+
+    const loaded = await loadWorkflowRuns(ctx);
+    await saveWorkflowRun(ctx, loaded[0]);
+    const afterContent = await fs.readFile(runsPath, "utf-8");
+
+    // File should be identical — no step_results: [] added
+    expect(afterContent).toBe(initialContent);
+    expect(afterContent).not.toContain("step_results:");
+  });
+
+  it("mutateWorkflowRunAtomically with identity function produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-run-rt3");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeRunCtx(kspecDir);
+
+    const runsPath = path.join(kspecDir, "kynetic.runs.yaml");
+    const runUlid = testUlid("WKRI");
+    await writeYamlFilePreserveFormat(runsPath, {
+      kynetic_runs: "1.0",
+      runs: [
+        {
+          _ulid: runUlid,
+          workflow_ref: "@session-start",
+          status: "active",
+          current_step: 1,
+          total_steps: 3,
+          started_at: "2026-01-15T10:00:00.000Z",
+          initiated_by: "@agent",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(runsPath, "utf-8");
+
+    // Identity mutation: return the run unchanged
+    const loaded = await loadWorkflowRuns(ctx);
+    await mutateWorkflowRunAtomically(ctx, loaded[0], (r) => r);
+    const afterContent = await fs.readFile(runsPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("saveWorkflowRun preserves file stability across multiple runs", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-run-rt4");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeRunCtx(kspecDir);
+
+    const runsPath = path.join(kspecDir, "kynetic.runs.yaml");
+    const [ulid1, ulid2, ulid3] = testUlids("WKRS", 3);
+    await writeYamlFilePreserveFormat(runsPath, {
+      kynetic_runs: "1.0",
+      runs: [
+        {
+          _ulid: ulid1,
+          workflow_ref: "@session-start",
+          status: "completed",
+          current_step: 2,
+          total_steps: 2,
+          started_at: "2026-01-01T00:00:00.000Z",
+          completed_at: "2026-01-01T00:05:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          workflow_ref: "@task-lifecycle",
+          status: "active",
+          current_step: 1,
+          total_steps: 4,
+          started_at: "2026-01-02T00:00:00.000Z",
+          initiated_by: "@worker",
+        },
+        {
+          _ulid: ulid3,
+          workflow_ref: "@codebase-audit",
+          status: "aborted",
+          current_step: 3,
+          total_steps: 5,
+          started_at: "2026-01-03T00:00:00.000Z",
+          abort_reason: "User cancelled",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(runsPath, "utf-8");
+
+    // Load and save each run individually — file should not change
+    const loaded = await loadWorkflowRuns(ctx);
+    for (const run of loaded) {
+      await saveWorkflowRun(ctx, run);
+    }
+    const afterContent = await fs.readFile(runsPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("non-target runs are not polluted with Zod defaults", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-run-rt5");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeRunCtx(kspecDir);
+
+    // Write minimal runs — no step_results field on either
+    const runsPath = path.join(kspecDir, "kynetic.runs.yaml");
+    const [ulid1, ulid2] = testUlids("WKRP", 2);
+    await writeYamlFilePreserveFormat(runsPath, {
+      kynetic_runs: "1.0",
+      runs: [
+        {
+          _ulid: ulid1,
+          workflow_ref: "@session-start",
+          status: "active",
+          current_step: 0,
+          total_steps: 2,
+          started_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          workflow_ref: "@task-lifecycle",
+          status: "active",
+          current_step: 0,
+          total_steps: 3,
+          started_at: "2026-01-02T00:00:00.000Z",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(runsPath, "utf-8");
+
+    // Mutate only the first run
+    const loaded = await loadWorkflowRuns(ctx);
+    await mutateWorkflowRunAtomically(ctx, loaded[0], (r) => ({
+      ...r,
+      current_step: 1,
+    }));
+    const afterContent = await fs.readFile(runsPath, "utf-8");
+
+    // The second run should not gain step_results: []
+    // Count occurrences of "step_results:" — should be 0 (neither run had it originally)
+    const stepResultsMatches = afterContent.match(/step_results:/g) || [];
+    expect(stepResultsMatches).toHaveLength(0);
+
+    // But the mutation should have taken effect
+    const reloaded = await loadWorkflowRuns(ctx);
+    expect(reloaded[0].current_step).toBe(1);
+    expect(reloaded[1].current_step).toBe(0);
+  });
+
+  it("deleteWorkflowRuns preserves non-target runs as raw data", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-run-rt6");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeRunCtx(kspecDir);
+
+    // Write minimal runs — no step_results field
+    const runsPath = path.join(kspecDir, "kynetic.runs.yaml");
+    const [ulid1, ulid2] = testUlids("WKRD", 2);
+    await writeYamlFilePreserveFormat(runsPath, {
+      kynetic_runs: "1.0",
+      runs: [
+        {
+          _ulid: ulid1,
+          workflow_ref: "@session-start",
+          status: "completed",
+          current_step: 2,
+          total_steps: 2,
+          started_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          workflow_ref: "@task-lifecycle",
+          status: "active",
+          current_step: 1,
+          total_steps: 3,
+          started_at: "2026-01-02T00:00:00.000Z",
+        },
+      ],
+    });
+
+    await deleteWorkflowRuns(ctx, [ulid1]);
+    const afterContent = await fs.readFile(runsPath, "utf-8");
+
+    // Remaining run should not gain Zod default fields (step_results: [])
+    expect(afterContent).not.toContain("step_results:");
+
+    // Only one run should remain
+    const reloaded = await loadWorkflowRuns(ctx);
+    expect(reloaded).toHaveLength(1);
+    expect(reloaded[0]._ulid).toBe(ulid2);
+  });
+
+  it("multiple read-write cycles maintain stability", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-run-rt7");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeRunCtx(kspecDir);
+
+    const runsPath = path.join(kspecDir, "kynetic.runs.yaml");
+    const runUlid = testUlid("WKRC");
+    await writeYamlFilePreserveFormat(runsPath, {
+      kynetic_runs: "1.0",
+      runs: [
+        {
+          _ulid: runUlid,
+          workflow_ref: "@session-start",
+          status: "completed",
+          current_step: 2,
+          total_steps: 2,
+          started_at: "2026-01-01T00:00:00.000Z",
+          completed_at: "2026-01-01T00:05:00.000Z",
+          initiated_by: "@user",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(runsPath, "utf-8");
+
+    // Multiple cycles — load and save each time
+    for (let i = 0; i < 5; i++) {
+      const loaded = await loadWorkflowRuns(ctx);
+      await saveWorkflowRun(ctx, loaded[0]);
+    }
+    const afterContent = await fs.readFile(runsPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+});
+
+// AC: @yaml-serialization-invariants ac-3
+describe("round-trip stability — saveDispatchWorkspaceRecord path", () => {
+  function makeWorkspaceCtx(specDir: string): KspecContext {
+    return { specDir } as KspecContext;
+  }
+
+  /**
+   * Build a minimal dispatch workspace record that satisfies the schema.
+   * Only includes fields that are required — no Zod defaults.
+   */
+  function makeMinimalWorkspaceYaml(workspaceId: string, taskRef: string, overrides: Record<string, unknown> = {}) {
+    const now = "2026-03-01T00:00:00.000Z";
+    return {
+      workspace_id: workspaceId,
+      task_ref: taskRef,
+      task_slug: `task-${workspaceId}`,
+      worktree_root: `/tmp/ws/${workspaceId}`,
+      resolved_base_branch: "dev",
+      base_branch_point: "abc123",
+      canonical_branch: `dispatch/task/test/${workspaceId}`,
+      canonical_branch_head: "def456",
+      lifecycle_state: "active",
+      worktrees: {
+        worker: {
+          path: `/tmp/ws/${workspaceId}`,
+          branch_mode: "branch",
+        },
+      },
+      bootstrap: {
+        status: "succeeded",
+      },
+      integration: {
+        status: "pending",
+        target_branch: "dev",
+        target_commit: "abc123",
+        publication_mode: "manual_merge",
+        outcome: "manual_merge",
+        updated_at: now,
+      },
+      health: {
+        status: "healthy",
+        summary: "OK",
+        updated_at: now,
+      },
+      cleanup: {
+        status: "not_scheduled",
+        updated_at: now,
+      },
+      timestamps: {
+        created_at: now,
+        updated_at: now,
+      },
+      ...overrides,
+    };
+  }
+
+  it("saveDispatchWorkspaceRecord with no changes produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-dw-rt1");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeWorkspaceCtx(kspecDir);
+
+    // Write a dispatch workspaces file directly with minimal fields
+    const registryPath = path.join(kspecDir, "project.dispatch-workspaces.yaml");
+    const ws1 = makeMinimalWorkspaceYaml("ws-001", "@task-foo");
+    await writeYamlFilePreserveFormat(registryPath, {
+      kynetic_dispatch_workspaces: "1.0",
+      workspaces: [ws1],
+    });
+    const initialContent = await fs.readFile(registryPath, "utf-8");
+
+    // Load and save back with no modifications
+    const loaded = await loadDispatchWorkspaceRegistry(ctx);
+    expect(loaded).toHaveLength(1);
+    await saveDispatchWorkspaceRecord(ctx, loaded[0]);
+    const afterContent = await fs.readFile(registryPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("mutateDispatchWorkspaceRecordAtomically with identity function produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-dw-rt2");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeWorkspaceCtx(kspecDir);
+
+    const registryPath = path.join(kspecDir, "project.dispatch-workspaces.yaml");
+    const ws1 = makeMinimalWorkspaceYaml("ws-002", "@task-bar");
+    await writeYamlFilePreserveFormat(registryPath, {
+      kynetic_dispatch_workspaces: "1.0",
+      workspaces: [ws1],
+    });
+    const initialContent = await fs.readFile(registryPath, "utf-8");
+
+    // Identity mutation: return the record unchanged
+    await mutateDispatchWorkspaceRecordAtomically(ctx, "ws-002", (r) => r);
+    const afterContent = await fs.readFile(registryPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("saveDispatchWorkspaceRecord preserves file stability across multiple workspaces", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-dw-rt3");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeWorkspaceCtx(kspecDir);
+
+    const registryPath = path.join(kspecDir, "project.dispatch-workspaces.yaml");
+    const ws1 = makeMinimalWorkspaceYaml("ws-003", "@task-a");
+    const ws2 = makeMinimalWorkspaceYaml("ws-004", "@task-b");
+    await writeYamlFilePreserveFormat(registryPath, {
+      kynetic_dispatch_workspaces: "1.0",
+      workspaces: [ws1, ws2],
+    });
+    const initialContent = await fs.readFile(registryPath, "utf-8");
+
+    // Load and save each workspace individually — file should not change
+    const loaded = await loadDispatchWorkspaceRegistry(ctx);
+    for (const ws of loaded) {
+      await saveDispatchWorkspaceRecord(ctx, ws);
+    }
+    const afterContent = await fs.readFile(registryPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("non-target workspaces are not polluted with Zod defaults", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-dw-rt4");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeWorkspaceCtx(kspecDir);
+
+    // Write a dispatch workspaces file with minimal fields — no branch_provenance,
+    // no roleStates, no bootstrap.invalidationReasons, no bootstrap.steps, etc.
+    const registryPath = path.join(kspecDir, "project.dispatch-workspaces.yaml");
+    const ws1 = makeMinimalWorkspaceYaml("ws-005", "@task-c");
+    const ws2 = makeMinimalWorkspaceYaml("ws-006", "@task-d");
+    await writeYamlFilePreserveFormat(registryPath, {
+      kynetic_dispatch_workspaces: "1.0",
+      workspaces: [ws1, ws2],
+    });
+    const initialContent = await fs.readFile(registryPath, "utf-8");
+
+    // Mutate only the first workspace (change lifecycle_state)
+    await mutateDispatchWorkspaceRecordAtomically(ctx, "ws-005", (r) => ({
+      ...r,
+      lifecycle_state: "stale",
+    }));
+    const afterContent = await fs.readFile(registryPath, "utf-8");
+
+    // The second workspace should not gain any new fields from Zod defaults.
+    // branch_provenance is the key default that gets added by schema parsing.
+    // Count occurrences — only the mutated workspace should potentially have it.
+    const branchProvenanceMatches = afterContent.match(/branch_provenance:/g) || [];
+    // Neither workspace had branch_provenance originally; the mutated workspace
+    // may gain it through schema normalization + merge, but the non-target must not.
+    // Since the merge only adds non-trivial fields and branch_provenance is an object,
+    // the mutated workspace will get it — so at most 1 occurrence is acceptable.
+    expect(branchProvenanceMatches.length).toBeLessThanOrEqual(1);
+
+    // roleStates should not appear for non-target workspace
+    const roleStatesMatches = afterContent.match(/roleStates:/g) || [];
+    expect(roleStatesMatches.length).toBeLessThanOrEqual(1);
+
+    // But the mutation should have taken effect
+    const reloaded = await loadDispatchWorkspaceRegistry(ctx);
+    const ws5 = reloaded.find((w) => w.workspace_id === "ws-005");
+    const ws6 = reloaded.find((w) => w.workspace_id === "ws-006");
+    expect(ws5?.lifecycle_state).toBe("stale");
+    expect(ws6?.lifecycle_state).toBe("active");
+  });
+
+  it("write-then-read-then-write produces byte-identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-dw-rt5");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeWorkspaceCtx(kspecDir);
+
+    // Write a dispatch workspaces file, load one workspace, save it back
+    // without changes, and confirm the file is byte-identical.
+    const registryPath = path.join(kspecDir, "project.dispatch-workspaces.yaml");
+    const ws1 = makeMinimalWorkspaceYaml("ws-007", "@task-e");
+    const ws2 = makeMinimalWorkspaceYaml("ws-008", "@task-f");
+    await writeYamlFilePreserveFormat(registryPath, {
+      kynetic_dispatch_workspaces: "1.0",
+      workspaces: [ws1, ws2],
+    });
+    const initialContent = await fs.readFile(registryPath, "utf-8");
+
+    // Multiple round-trip cycles — save each workspace in turn
+    for (let cycle = 0; cycle < 3; cycle++) {
+      const loaded = await loadDispatchWorkspaceRegistry(ctx);
+      for (const ws of loaded) {
+        await saveDispatchWorkspaceRecord(ctx, ws);
+      }
+    }
+    const finalContent = await fs.readFile(registryPath, "utf-8");
+
+    expect(finalContent).toBe(initialContent);
+  });
+
+  it("mutateDispatchWorkspaceRecordAtomically rejects malformed sibling records", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-dw-rt6");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeWorkspaceCtx(kspecDir);
+
+    // Write a registry with one valid workspace and one malformed sibling
+    // (integration.target_branch is a number instead of a string)
+    const registryPath = path.join(kspecDir, "project.dispatch-workspaces.yaml");
+    const validWs = makeMinimalWorkspaceYaml("ws-valid", "@task-ok");
+    const malformedWs = {
+      ...makeMinimalWorkspaceYaml("ws-bad", "@task-bad"),
+      integration: {
+        status: "pending",
+        target_branch: 123, // invalid: should be string
+        target_commit: "abc123",
+        publication_mode: "manual_merge",
+        outcome: "manual_merge",
+        updated_at: "2026-03-01T00:00:00.000Z",
+      },
+    };
+    await writeYamlFilePreserveFormat(registryPath, {
+      kynetic_dispatch_workspaces: "1.0",
+      workspaces: [validWs, malformedWs],
+    });
+
+    // Mutating the valid workspace should fail because the sibling is malformed
+    await expect(
+      mutateDispatchWorkspaceRecordAtomically(ctx, "ws-valid", (r) => ({
+        ...r,
+        lifecycle_state: "stale",
+      })),
+    ).rejects.toThrow(/Expected string, received number/);
+  });
+
+  it("mutate persists newly-added object fields on legacy records without branch_provenance", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-dw-rt7");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeWorkspaceCtx(kspecDir);
+
+    // Write a legacy workspace without branch_provenance
+    const registryPath = path.join(kspecDir, "project.dispatch-workspaces.yaml");
+    const legacyWs = makeMinimalWorkspaceYaml("ws-legacy", "@task-legacy");
+    // Confirm no branch_provenance in the raw data
+    expect(legacyWs).not.toHaveProperty("branch_provenance");
+    await writeYamlFilePreserveFormat(registryPath, {
+      kynetic_dispatch_workspaces: "1.0",
+      workspaces: [legacyWs],
+    });
+
+    // Mutate to add branch_provenance with meaningful data
+    await mutateDispatchWorkspaceRecordAtomically(ctx, "ws-legacy", (r) => ({
+      ...r,
+      branch_provenance: {
+        ownership: "adopted" as const,
+        source: "manual",
+        remote_ref: "origin/feat/x",
+        adopted_from: "feat/x",
+        adopted_at: "2026-03-01T12:00:00.000Z",
+        rehydrated: null,
+      },
+    }));
+
+    // Verify the branch_provenance was persisted
+    const afterContent = await fs.readFile(registryPath, "utf-8");
+    expect(afterContent).toContain("branch_provenance:");
+    expect(afterContent).toContain("ownership: adopted");
+    expect(afterContent).toContain("source: manual");
+    expect(afterContent).toContain("adopted_from: feat/x");
+
+    // Verify it round-trips correctly through load
+    const reloaded = await loadDispatchWorkspaceRegistry(ctx);
+    expect(reloaded[0].branch_provenance?.ownership).toBe("adopted");
+    expect(reloaded[0].branch_provenance?.source).toBe("manual");
+    expect(reloaded[0].branch_provenance?.adopted_from).toBe("feat/x");
   });
 });
 

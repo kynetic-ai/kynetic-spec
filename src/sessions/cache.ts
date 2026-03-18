@@ -96,6 +96,8 @@ export class SessionSummaryCache {
    */
   invalidate(sessionId: string): void {
     this.entries.delete(sessionId);
+    this.knownSessionIds.delete(sessionId);
+    this.liveEventCounts.delete(sessionId);
   }
 
   /**

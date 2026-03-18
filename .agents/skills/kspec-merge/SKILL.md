@@ -44,6 +44,15 @@ If any gate fails, do not merge. Address the issue first:
 - Required check failing → fix and re-run
 - Unresolved blocker → resolve the thread or fix the issue
 
+## Determining the Integration Branch
+
+The merge target depends on context:
+
+- **Dispatch mode** — The integration branch is provided in the dispatch prompt context (the `Integration target:` line) and via the `KSPEC_DISPATCH_MERGE_TARGET` environment variable. **Use the dispatch-provided target verbatim — never assume a branch name.**
+- **Manual mode** — The integration branch is typically `dev`, but check your project's branching convention or ask if unsure.
+
+In the examples below, `<integration-branch>` is a placeholder for the actual target branch.
+
 ## Merge Process
 
 ### 1. Verify Branch State
@@ -54,14 +63,14 @@ git branch --show-current
 
 # Ensure branch is up to date with target
 git fetch origin
-git log --oneline origin/dev..HEAD  # What will be merged
+git log --oneline origin/<integration-branch>..HEAD  # What will be merged
 ```
 
 ### 2. Merge to Integration Branch
 
 ```bash
 # Switch to target branch
-git checkout dev
+git checkout <integration-branch>
 
 # Merge with merge commit (preserves trailers)
 git merge --no-ff <task-branch>
@@ -101,7 +110,7 @@ git commit  # Completes the merge
 After successful merge:
 
 ```bash
-kspec task complete @ref --reason "Merged to dev. Summary of what was done."
+kspec task complete @ref --reason "Merged to <integration-branch>. Summary of what was done."
 ```
 
 ### 5. Close the Review

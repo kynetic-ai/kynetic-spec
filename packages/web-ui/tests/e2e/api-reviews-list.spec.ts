@@ -16,6 +16,9 @@ import { test, expect } from '../fixtures/test-base';
 // Fixture ULIDs from project.reviews.yaml
 const OPEN_REVIEW_ULID = '01KKTX0CA45ZT43W2T6HJMVA01';
 const DRAFT_REVIEW_ULID = '01KKTX9CA45ZT43W2T6HJMVA10';
+const SIBLING_REVIEW_ULID = '01KKV0TCA45ZT43W2T6HJMVB03';
+const CODE_REVIEW_ULID = '01KKV1ACA45ZT43W2T6HJMVB10';
+const CODE_REVIEW_SIBLING_ULID = '01KKV1BCA45ZT43W2T6HJMVB11';
 const PENDING_REVIEW_TASK_ULID = '01KG0RRDCC9N4YGP991WD7XSPR';
 
 test.describe('Review List API (GET /api/reviews)', () => {
@@ -227,11 +230,11 @@ test.describe('Review List API (GET /api/reviews)', () => {
       (r: { _ulid: string }) => r._ulid === OPEN_REVIEW_ULID
     );
     expect(openReview).toBeDefined();
-    // Open review fixture has 3 threads, 1 unresolved blocker, 0 checks, 0 verdicts
-    expect(openReview.thread_count).toBe(3);
-    expect(openReview.unresolved_blocker_count).toBe(1);
-    expect(openReview.check_count).toBe(0);
-    expect(openReview.verdict_count).toBe(0);
+    // Open review fixture has 4 threads, 2 unresolved blockers, 3 checks, 1 verdict
+    expect(openReview.thread_count).toBe(4);
+    expect(openReview.unresolved_blocker_count).toBe(2);
+    expect(openReview.check_count).toBe(3);
+    expect(openReview.verdict_count).toBe(1);
   });
 
   // AC: @review-records-web-ui ac-1 — disposition badge values
@@ -294,6 +297,37 @@ test.describe('Review List API (GET /api/reviews)', () => {
     expect(data.items.length).toBe(0);
     expect(data.total).toBe(0);
   });
+
+  // AC: @review-records-web-ui ac-11 — sibling lookup by subject_ref
+  test('filters reviews by subject_ref for revision navigation', async ({ request, daemon }) => {
+    const response = await request.get(
+      `${daemon.baseUrl}/api/reviews?status=all&subject_type=task&subject_ref=%40test-task-pending-review`
+    );
+    expect(response.status()).toBe(200);
+
+    const data = await response.json();
+    expect(data.items).toHaveLength(2);
+    expect(data.items.map((r: { _ulid: string }) => r._ulid)).toEqual(
+      expect.arrayContaining([OPEN_REVIEW_ULID, SIBLING_REVIEW_ULID])
+    );
+  });
+
+  // AC: @review-records-web-ui ac-11 — sibling lookup by head_branch for code reviews
+  test('filters code reviews by head_branch for revision navigation', async ({ request, daemon }) => {
+    const response = await request.get(
+      `${daemon.baseUrl}/api/reviews?status=all&subject_type=code&head_branch=feat%2Freview-detail`
+    );
+    expect(response.status()).toBe(200);
+
+    const data = await response.json();
+    expect(data.items).toHaveLength(2);
+    expect(data.items.map((r: { _ulid: string }) => r._ulid)).toEqual(
+      expect.arrayContaining([CODE_REVIEW_ULID, CODE_REVIEW_SIBLING_ULID])
+    );
+    expect(
+      data.items.every((r: { head_branch?: string }) => r.head_branch === 'feat/review-detail')
+    ).toBe(true);
+  });
 });
 
 test.describe('Review Detail API (GET /api/reviews/:id)', () => {
@@ -324,13 +358,14 @@ test.describe('Review Detail API (GET /api/reviews/:id)', () => {
     expect(response.status()).toBe(200);
 
     const review = await response.json();
-    expect(review.threads.length).toBe(3);
+    expect(review.threads.length).toBe(4);
 
-    // Blocker thread
+    // First blocker thread
     const blockerThread = review.threads.find(
-      (t: { kind: string }) => t.kind === 'blocker'
+      (t: { _ulid: string }) => t._ulid === '01KKTX1CA45ZT43W2T6HJMVA02'
     );
     expect(blockerThread).toBeDefined();
+    expect(blockerThread.kind).toBe('blocker');
     expect(blockerThread.entries.length).toBeGreaterThan(0);
     expect(blockerThread.entries[0].body).toBe('Missing error handling for edge case');
 
@@ -352,8 +387,8 @@ test.describe('Review Detail API (GET /api/reviews/:id)', () => {
     expect(response.status()).toBe(200);
 
     const review = await response.json();
-    // No verdicts → disposition is 'pending'
-    expect(review.disposition).toBe('pending');
+    // Has request_changes verdict → disposition is 'changes_requested'
+    expect(review.disposition).toBe('changes_requested');
   });
 
   // AC: @review-records-daemon-api ac-2 — detail for empty review

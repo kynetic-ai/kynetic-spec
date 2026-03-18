@@ -281,6 +281,8 @@ export interface ReviewSummary {
   disposition: string;
   subject_type: string;
   subject_ref?: string;
+  /** Code-review grouping key for revision navigation. */
+  head_branch?: string;
   author: string;
   related_refs: string[];
   /** Linked task ref (from subject_ref for task reviews, or first related_ref) */
@@ -293,6 +295,137 @@ export interface ReviewSummary {
   verdict_count: number;
   created_at: string;
   updated_at?: string;
+}
+
+/**
+ * Review thread entry (individual comment within a thread)
+ * AC: @review-records-web-ui ac-2
+ * AC: @review-records-web-ui ac-9
+ */
+export interface ReviewThreadEntry {
+  _ulid: string;
+  author: string;
+  body: string;
+  created_at: string;
+}
+
+/**
+ * Review anchor — locates a thread within a specific file or structured content
+ * AC: @review-records-web-ui ac-2
+ */
+export type ReviewAnchor =
+  | {
+      type: 'code';
+      path: string;
+      side: 'base' | 'head';
+      line_start: number;
+      line_end: number;
+      commit: string;
+    }
+  | {
+      type: 'structured';
+      section?: string;
+      field?: string;
+      path?: string;
+      ref?: string;
+    };
+
+/**
+ * Review thread with entries and resolution state
+ * AC: @review-records-web-ui ac-2
+ */
+export interface ReviewThread {
+  _ulid: string;
+  kind: 'blocker' | 'question' | 'nit';
+  anchor?: ReviewAnchor;
+  entries: ReviewThreadEntry[];
+  resolved_at?: string | null;
+  resolved_by?: string | null;
+}
+
+/**
+ * Subject version for checks and verdicts
+ */
+export type ReviewSubjectVersion =
+  | { type: 'code_compare'; base_commit: string; head_commit: string }
+  | { type: 'entity_version'; content_hash: string };
+
+/**
+ * Review check result
+ * AC: @review-records-web-ui ac-2
+ */
+export interface ReviewCheck {
+  name: string;
+  status: 'pass' | 'fail' | 'running' | 'skipped';
+  required: boolean;
+  runner?: string;
+  evidence?: string;
+  applies_to_version: ReviewSubjectVersion;
+  created_at: string;
+  completed_at?: string | null;
+}
+
+/**
+ * Review verdict
+ * AC: @review-records-web-ui ac-2
+ */
+export interface ReviewVerdict {
+  reviewer: string;
+  role: string;
+  decision: 'approve' | 'request_changes' | 'comment';
+  applies_to_version: ReviewSubjectVersion;
+  created_at: string;
+}
+
+/**
+ * Review subject binding
+ * AC: @review-records-web-ui ac-2
+ */
+export type ReviewSubject =
+  | { type: 'code'; base_commit: string; head_commit: string; merge_base_commit?: string; base_branch?: string; head_branch?: string }
+  | { type: 'plan'; ref: string; shadow_commit: string; content_hash: string }
+  | { type: 'task'; ref: string; shadow_commit: string; content_hash: string }
+  | { type: 'spec'; ref: string; shadow_commit: string; content_hash: string }
+  | { type: 'external'; url: string; external_id?: string; provider?: string };
+
+/**
+ * Full review detail for the detail endpoint
+ * AC: @review-records-daemon-api ac-2
+ * AC: @review-records-web-ui ac-2
+ */
+export interface ReviewDetail {
+  _ulid: string;
+  slugs: string[];
+  title: string;
+  lifecycle_state: string;
+  disposition: string;
+  subject: ReviewSubject;
+  author: string;
+  related_refs: string[];
+  threads: ReviewThread[];
+  checks: ReviewCheck[];
+  verdicts: ReviewVerdict[];
+  events: Array<{
+    _ulid: string;
+    event_type: string;
+    actor: string;
+    timestamp: string;
+    payload: Record<string, unknown>;
+  }>;
+  notes: Array<{
+    author: string;
+    body: string;
+    created_at: string;
+  }>;
+  external_links: Array<{
+    url: string;
+    provider?: string;
+    external_id?: string;
+    label?: string;
+  }>;
+  examined_commit: string | null;
+  created_at: string;
+  updated_at?: string | null;
 }
 
 export interface BatchSpecItemSummary {
