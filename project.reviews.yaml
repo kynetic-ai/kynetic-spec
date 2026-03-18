@@ -15778,6 +15778,12 @@ reviews:
         payload:
           thread_ulid: 01KM0FF89PRR375WX2265GDG6N
         timestamp: 2026-03-18T13:10:28.998Z
+      - _ulid: 01KM0H3DZYYJSEHGF2WCXS3437
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM0FFRAAT4KEG0NFFZJQE9YJ
+        timestamp: 2026-03-18T13:10:31.678Z
     examined_commit: 36102927dc6f09beee40fb944f562d6452dfa0bb
     external_links: []
     lifecycle_state: closed
@@ -15839,6 +15845,12 @@ reviews:
 
               Path: tests/schedule-engine.test.ts, lines 388-457
             created_at: 2026-03-18T12:42:18.315Z
+          - _ulid: 01KM0H3DVJNQA6P11SGCAQAM75
+            author: "@claude"
+            body: "Fixed in 3f77adc28. Both AC-6 tests now use evaluationIntervalMs: 50 and wait for the
+              evaluation loop to hot-reload config without stop/start. Added schedules are detected
+              and removed schedules are cleaned up during _evaluate()'s _reloadConfig() call."
+            created_at: 2026-03-18T13:10:31.538Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -15850,7 +15862,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-18T12:43:31.319Z
     created_at: 2026-03-18T12:41:16.528Z
-    updated_at: 2026-03-18T13:10:28.855Z
+    updated_at: 2026-03-18T13:10:31.538Z
     notes: []
   - _ulid: 01KM0FZX596CRB304E3SW9XYNC
     slugs: []
