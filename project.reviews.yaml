@@ -11289,6 +11289,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T03:41:12.152Z
+      - _ulid: 01KKZGHBW5X1M5GCN2R6NWQVJ9
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKZGHBRR0B6SYR594DFP2H58
+        timestamp: 2026-03-18T03:41:25.253Z
     examined_commit: f8ff6b04d1c3d5a47cd87ec248123e81023fb1c3
     external_links: []
     lifecycle_state: open
@@ -11298,8 +11305,28 @@ reviews:
       content_hash: ""
       ref: "@task-code-diff-viewer"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKZGHBRR0B6SYR594DFP2H58
+        anchor:
+          type: code
+          commit: f8ff6b04d1c3
+          line_end: 541
+          line_start: 541
+          path: packages/web-ui/tests/e2e/code-diff-viewer.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KKZGHBRR0CHV4XW6YE61WZTY
+            author: "@claude"
+            body: "E2E test for AC-4 (click-to-comment) mocks the wrong API route. The test intercepts
+              `**/api/reviews/${CODE_REVIEW_ULID}/threads` but the actual API client
+              (`createReviewThread` in api.ts) posts to `**/api/reviews/${id}/comments`. The
+              Playwright route intercept never fires, so `threadRequest` remains `null` and the
+              assertion `expect(threadRequest).not.toBeNull()` will fail when this E2E test actually
+              runs against a live daemon. Fix: change `/threads` to `/comments` in the route mock at
+              line 541."
+            created_at: 2026-03-18T03:41:25.144Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T03:41:04.033Z
-    updated_at: 2026-03-18T03:41:12.057Z
+    updated_at: 2026-03-18T03:41:25.144Z
     notes: []
