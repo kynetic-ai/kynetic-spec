@@ -10318,3 +10318,79 @@ workspaces:
         head: f49c87c4a33f25afd5f3a95918b46e9a674eabca
         last_seen_at: 2026-03-18T13:25:24.611Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-integration-01kkzpw2
+  - active_role: null
+    base_branch_point: b30b1a6f4492bb79ec94a5e3832a9dc25699da01
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-daemon-api/01kkzpw1
+    canonical_branch_head: b30b1a6f4492bb79ec94a5e3832a9dc25699da01
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-18T13:25:25.713Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-18T13:25:25.713Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: b30b1a6f4492bb79ec94a5e3832a9dc25699da01
+      updated_at: 2026-03-18T13:25:25.713Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KKZPW1EFQEXCA5QXMDP802KX"
+    task_slug: task-daemon-api
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-18T13:25:25.713Z
+      created_at: 2026-03-18T13:25:25.713Z
+      updated_at: 2026-03-18T13:25:25.713Z
+    workspace_id: dispatch-workspace-01KKZPW1EFQEXCA5QXMDP802KX
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-daemon-api/01kkzpw1
+        head: b30b1a6f4492bb79ec94a5e3832a9dc25699da01
+        last_seen_at: 2026-03-18T13:25:25.713Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-api-01kkzpw1
