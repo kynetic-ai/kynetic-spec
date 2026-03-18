@@ -23608,7 +23608,7 @@ plans:
       `"pending"` to `"passing"`. This is intentional — vacuous truth (no gates to fail = passing)
       is the correct semantics and matches the daemon. Tests asserting `"pending"` for check-less
       reviews should be updated.
-    status: approved
+    status: active
     approved_at: 2026-03-18T14:32:14.460Z
     derived_specs: []
     derived_tasks:
