@@ -14547,6 +14547,20 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T10:40:09.694Z
         completed_at: 2026-03-18T10:40:09.694Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0bc7850b39feba9a789c532f971f7cd7d808d2e
+          head_commit: 95f59903248481497072cc172341366343df7aaa
+        evidence: "All 7 in-scope ACs annotated in tests: ac-pull-target-on-start (L102), ac-pull-ff-only
+          (L147+L516), ac-pull-target-periodic (L185), ac-pull-target-periodic-deferred (L229),
+          ac-pull-target-before-provision (L293), ac-transient-no-degrade (L322+L355), ac-no-remote
+          (L391+L463). Source annotations present in dispatch.ts for all ACs."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T10:40:13.702Z
+        completed_at: 2026-03-18T10:40:13.702Z
     events:
       - _ulid: 01KM07Z44FRNN6GNPKJV3Q6QQV
         actor: "@claude"
@@ -14582,6 +14596,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T10:40:09.804Z
+      - _ulid: 01KM08G7FSA2YKCR7K6220B80W
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T10:40:13.817Z
     examined_commit: 95f59903248481497072cc172341366343df7aaa
     external_links: []
     lifecycle_state: open
@@ -14627,5 +14648,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T10:30:53.328Z
-    updated_at: 2026-03-18T10:40:09.694Z
+    updated_at: 2026-03-18T10:40:13.702Z
     notes: []
