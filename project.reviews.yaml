@@ -16318,6 +16318,17 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T13:33:05.059Z
         completed_at: 2026-03-18T13:33:05.059Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 66f28f712
+          head_commit: f49c87c4a33f
+        evidence: tsc --noEmit clean, no type errors
+        name: tsc
+        required: true
+        runner: tsc
+        created_at: 2026-03-18T13:33:11.482Z
+        completed_at: 2026-03-18T13:33:11.482Z
     events:
       - _ulid: 01KM0JBZTYQ0FTNC4ADP7V46ZC
         actor: "@claude"
@@ -16339,6 +16350,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T13:33:05.202Z
+      - _ulid: 01KM0JCY2CH9F866WWWH6CD8CJ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: tsc
+        timestamp: 2026-03-18T13:33:11.629Z
     examined_commit: f49c87c4a33f25afd5f3a95918b46e9a674eabca
     external_links: []
     lifecycle_state: open
@@ -16351,5 +16369,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T13:32:40.670Z
-    updated_at: 2026-03-18T13:33:05.059Z
+    updated_at: 2026-03-18T13:33:11.482Z
     notes: []
