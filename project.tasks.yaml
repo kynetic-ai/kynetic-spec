@@ -105860,7 +105860,36 @@
   session_id: 01KM0BT1JJKE360A1N1V4NPDXR
   created_at: 2026-03-18T05:31:53.588Z
   started_at: 2026-03-18T11:38:28.740Z
-  notes: []
+  notes:
+    - _ulid: 01KM0CF33WENFDV2XDVD44KVY8
+      content: >-
+        Implemented agent action input contract. Changes:
+
+
+        1. Schema: Added prompt_template and task_binding fields to AgentActionSchema, added
+        group_id to ActionEventContext and AgentSpawner.
+
+        2. Prompt resolution (AC-1): executeAgent now resolves in order: prompt > prompt_template >
+        default. Both prompt and prompt_template are interpolated with event envelope and payload
+        variables via resolveTemplateVars.
+
+        3. invocation.completed default prompt (AC-2): buildDefaultAgentPrompt generates a prompt
+        with upstream session_id, agent_id, task_ref, trigger, duration, and outcome when triggered
+        by invocation.completed.
+
+        4. task_binding (AC-3): When task_binding: true and event has task_ref, the spawned
+        invocation is task-scoped. Explicit action.task_ref takes precedence.
+
+        5. correlation/group propagation (AC-4): Both correlation_id and group_id from the
+        triggering event propagate to the spawned invocation's session metadata via the AgentSpawner
+        callback.
+
+
+        26 new tests covering all 4 ACs. All 49 existing action-model tests pass. One pre-existing
+        failure in review-cli.test.ts (examined_commit in worktree context) is unrelated.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T11:49:30.876Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVP61ABDF4Y79Q88T357P
