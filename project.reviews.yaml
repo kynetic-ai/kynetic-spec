@@ -15433,6 +15433,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM0DH0JFHF8Q52T39TAD1E3N
         timestamp: 2026-03-18T12:08:02.514Z
+      - _ulid: 01KM0DH9BSNCNS1PP40RVYDEK7
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM0DH97TZ8Y2CZ6WVZ61HTKD
+        timestamp: 2026-03-18T12:08:11.385Z
     examined_commit: b8ba5c896287d16de213398aefa3a81c50460faa
     external_links: []
     lifecycle_state: open
@@ -15466,7 +15473,27 @@ reviews:
               and composition patterns.
             created_at: 2026-03-18T12:08:02.383Z
         kind: blocker
+      - _ulid: 01KM0DH97TZ8Y2CZ6WVZ61HTKD
+        anchor:
+          type: code
+          commit: ""
+          line_end: 1
+          line_start: 1
+          path: tests/agent-action-input.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM0DH97TAVQWC2X37V6DVBAQ
+            author: "@claude"
+            body: "Deleted test file tests/agent-action-input.test.ts (626 lines) covering
+              @dispatch-agent-action-input ac-1 through ac-4. This was the sole test coverage for
+              the agent action input contract. Removing it means: (1) prompt_template interpolation
+              for agent actions is untested, (2) task_binding behavior (deriving task_ref from
+              events) is untested, (3) group_id propagation to spawned invocations is untested, (4)
+              default prompt generation (including invocation.completed context) is untested. These
+              were all passing tests from a completed task."
+            created_at: 2026-03-18T12:08:11.258Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T12:07:41.447Z
-    updated_at: 2026-03-18T12:08:02.383Z
+    updated_at: 2026-03-18T12:08:11.258Z
     notes: []
