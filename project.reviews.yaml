@@ -17404,3 +17404,29 @@ reviews:
     created_at: 2026-03-18T15:06:54.524Z
     updated_at: 2026-03-18T15:07:54.739Z
     notes: []
+  - _ulid: 01KM0RE6Q82Z1D7TH15FCMXG6J
+    slugs: []
+    title: Review task-event-cli
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0RE6Q8C81P25AMWDJESF06
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T15:18:44.712Z
+    examined_commit: 2b12a78869dce6fc1d0f3f4d90926a3fd620cf54
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-event-cli"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T15:18:44.712Z
+    updated_at: null
+    notes: []
