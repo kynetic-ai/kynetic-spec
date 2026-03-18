@@ -15440,6 +15440,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM0DH97TZ8Y2CZ6WVZ61HTKD
         timestamp: 2026-03-18T12:08:11.385Z
+      - _ulid: 01KM0DHKD798N0VFHCC19KPWH1
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM0DHK92EPW96QEXCDYS5KFK
+        timestamp: 2026-03-18T12:08:21.671Z
     examined_commit: b8ba5c896287d16de213398aefa3a81c50460faa
     external_links: []
     lifecycle_state: open
@@ -15493,7 +15500,26 @@ reviews:
               were all passing tests from a completed task."
             created_at: 2026-03-18T12:08:11.258Z
         kind: blocker
+      - _ulid: 01KM0DHK92EPW96QEXCDYS5KFK
+        anchor:
+          type: code
+          commit: ""
+          line_end: 64
+          line_start: 54
+          path: src/schema/action.ts
+          side: head
+        entries:
+          - _ulid: 01KM0DHK9291Y1MBPS64XTZVJ6
+            author: "@claude"
+            body: AgentActionSchema fields prompt_template and task_binding removed from schema. On the dev
+              branch, AgentActionSchema includes prompt_template (z.string().optional()),
+              task_binding (z.boolean().optional()), and associated JSDoc with AC annotations. This
+              commit strips them to just agent_id, prompt, task_ref, and timeout_minutes. This is a
+              schema regression — any existing hook/schedule configurations using prompt_template or
+              task_binding would silently fail Zod validation after this change.
+            created_at: 2026-03-18T12:08:21.538Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T12:07:41.447Z
-    updated_at: 2026-03-18T12:08:11.258Z
+    updated_at: 2026-03-18T12:08:21.538Z
     notes: []
