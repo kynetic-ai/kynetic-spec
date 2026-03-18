@@ -17526,6 +17526,22 @@ reviews:
         runner: kspec
         created_at: 2026-03-18T15:22:07.769Z
         completed_at: 2026-03-18T15:22:07.769Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b8a2609de
+          head_commit: b9a663d5e
+        evidence: "All own ACs covered: @dispatch-event-cli ac-2 (test:84, test:102, test:116), ac-3
+          (test:650). All trait ACs covered or annotated N/A: @trait-json-output ac-1 through ac-6,
+          @trait-filterable-list ac-1 through ac-8, @trait-error-guidance ac-1 through ac-6,
+          @trait-shadow-commit ac-1 through ac-8, @trait-semantic-exit-codes ac-1 through ac-8. Both
+          prior blocker findings resolved: @trait-error-guidance ac-4 N/A and
+          @trait-semantic-exit-codes ac-4 N/A annotations added."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T15:22:18.253Z
+        completed_at: 2026-03-18T15:22:18.253Z
     events:
       - _ulid: 01KM0RKEW9PXMBEFZ62YBY4H0P
         actor: "@claude"
@@ -17554,6 +17570,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-18T15:22:08.051Z
+      - _ulid: 01KM0RMQGN39HEPH71D25G7VWR
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T15:22:18.517Z
     examined_commit: b9a663d5e5afc91e08a0b7fdf051d666559bdd27
     external_links: []
     lifecycle_state: open
@@ -17566,5 +17589,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T15:21:36.906Z
-    updated_at: 2026-03-18T15:22:07.769Z
+    updated_at: 2026-03-18T15:22:18.253Z
     notes: []
