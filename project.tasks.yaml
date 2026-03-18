@@ -106601,6 +106601,18 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T14:03:23.372Z
+    - _ulid: 01KM0M4VX95N3PYZD1RW4SAH3M
+      content: "Review cycle 1 completed. 1 blocker: timeout_remaining_ms in GET
+        /api/compositions/:config_id/activations computes elapsed time instead of remaining time
+        (automation.ts:377-380). GroupState lacks timeout_ms from composition config, so the
+        remaining time cannot be computed correctly. Fix requires either adding timeout_ms to
+        GroupState or reading it from the composition config in the route handler. Non-blocking:
+        queued trigger outcome not implemented (AC-3 spec gap), dead pubsub option in
+        AutomationRouteOptions. Tests pass (19/19 automation tests, pre-existing failures in
+        unrelated files)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T14:03:44.425Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPW2T4TGQ47DHFHKV012SY
