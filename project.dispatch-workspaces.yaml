@@ -10862,18 +10862,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-cli-verdict-auto-version/01km0ntq
-    canonical_branch_head: 2dcce1c1b50abdac83c5d5dd1add93610e82e8e4
+    canonical_branch_head: f69c7a49a39ebcde4741cd522585570956f32f22
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T15:14:26.848Z
+      updated_at: 2026-03-18T15:24:39.742Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T15:14:28.167Z
+      updated_at: 2026-03-18T15:24:39.742Z
     integration:
       status: pending
       detail: null
@@ -10881,7 +10881,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2dcce1c1b50abdac83c5d5dd1add93610e82e8e4
-      updated_at: 2026-03-18T15:14:26.848Z
+      updated_at: 2026-03-18T15:24:39.742Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM0NTQE36W7XMHAZB0V7KTXN"
@@ -10889,9 +10889,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T15:14:28.167Z
-      last_reconciled_at: 2026-03-18T15:14:28.167Z
+      last_reconciled_at: 2026-03-18T15:24:39.742Z
       created_at: 2026-03-18T15:14:26.848Z
-      updated_at: 2026-03-18T15:14:28.167Z
+      updated_at: 2026-03-18T15:24:39.742Z
     workspace_id: dispatch-workspace-01KM0NTQE36W7XMHAZB0V7KTXN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
