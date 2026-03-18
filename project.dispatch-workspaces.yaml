@@ -9180,7 +9180,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T09:16:02.205Z
+      updated_at: 2026-03-18T09:16:03.183Z
     integration:
       status: pending
       detail: null
@@ -9189,25 +9189,20 @@ workspaces:
       target_branch: dev
       target_commit: 296c476aec116f02ae511dac10e12e32a3510eec
       updated_at: 2026-03-18T09:16:02.205Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KKZWB6C22Z7DDQWR1C3GWDFF"
     task_slug: task-dispatch-sync-config
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T09:08:58.188Z
-      last_reconciled_at: 2026-03-18T09:16:02.205Z
+      last_reconciled_at: 2026-03-18T09:16:03.183Z
       created_at: 2026-03-18T08:58:40.204Z
-      updated_at: 2026-03-18T09:16:02.205Z
+      updated_at: 2026-03-18T09:16:03.183Z
     workspace_id: dispatch-workspace-01KKZWB6C22Z7DDQWR1C3GWDFF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 4e5c1aa1ee992c219ec562b1b9f030e88a53b3fe
-        last_seen_at: 2026-03-18T09:08:57.327Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-sync-config-01kkzwb6-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-dispatch-sync-config/01kkzwb6
