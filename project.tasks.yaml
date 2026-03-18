@@ -107595,3 +107595,30 @@
   created_at: 2026-03-18T14:33:56.660Z
   notes: []
   todos: []
+- _ulid: 01KM0NWK9Q2HKKF679ASD081B8
+  slugs:
+    - task-remediate-review-versions
+  title: Remediate existing review data with version mismatches
+  type: task
+  description: Write one-time script to fix applies_to_version on existing verdicts/checks with type
+    mismatches. 110 reviews affected — daemon shows 4 approved vs correct 76. Handle both directions
+    (code_compare on entity, entity_version on code). Verify via daemon API after. Delete script
+    when done. See @plan-review-version-auto-derivation.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: "@plan-review-version-auto-derivation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cli-verdict-auto-version"
+    - "@task-cli-check-auto-version"
+  context: []
+  priority: 1
+  tags:
+    - data
+    - review
+    - migration
+  vcs_refs: []
+  created_at: 2026-03-18T14:34:10.615Z
+  notes: []
+  todos: []
