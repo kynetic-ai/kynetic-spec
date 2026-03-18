@@ -9,6 +9,7 @@ import * as path from "node:path";
 import {
   AgentSchema,
   ConventionSchema,
+  HookSchema,
   isSkill,
   ManifestSchema,
   MetaManifestSchema,
@@ -20,7 +21,8 @@ import {
   UlidSchema,
   WorkflowSchema,
 } from "../schema/index.js";
-import { findMetaManifest, getSkillContentPath, loadMetaContext, type LoadedSkill } from "./meta.js";
+import { validateHookFilter } from "../schema/hooks.js";
+import { findMetaManifest, getSkillContentPath, loadMetaContext, type LoadedHook, type LoadedSkill } from "./meta.js";
 import { loadPlans } from "./plans.js";
 import { findReviewFiles, validateReviewsFile } from "./review-validation.js";
 import {
@@ -123,6 +125,7 @@ export interface ValidationResult {
     conventions: number;
     observations: number;
     skills: number;
+    hooks: number;
   };
 }
 
@@ -489,6 +492,44 @@ async function validateMetaManifestFile(
             errors.push({
               file: filePath,
               path: `skills[${i}]._ulid`,
+              message: "Invalid ULID format (expected 26 characters)",
+            });
+          }
+        }
+      }
+    }
+
+    // AC: @dispatch-hook-schema ac-1, ac-2 - validate each hook with strict ULID validation
+    if (
+      raw &&
+      typeof raw === "object" &&
+      "hooks" in raw &&
+      Array.isArray((raw as Record<string, unknown>).hooks)
+    ) {
+      const hooks = (raw as Record<string, unknown>).hooks as unknown[];
+      for (let i = 0; i < hooks.length; i++) {
+        const hook = hooks[i];
+        const hookResult = HookSchema.safeParse(hook);
+        if (!hookResult.success) {
+          for (const issue of hookResult.error.issues) {
+            errors.push({
+              file: filePath,
+              path: `hooks[${i}].${issue.path.join(".")}`,
+              message: issue.message,
+              details: issue,
+            });
+          }
+        }
+
+        // Strict ULID validation
+        if (hook && typeof hook === "object" && "_ulid" in hook) {
+          const ulidResult = UlidSchema.safeParse(
+            (hook as Record<string, unknown>)._ulid,
+          );
+          if (!ulidResult.success) {
+            errors.push({
+              file: filePath,
+              path: `hooks[${i}]._ulid`,
               message: "Invalid ULID format (expected 26 characters)",
             });
           }
@@ -1640,6 +1681,69 @@ async function findOrphanedSkillDirectories(
 }
 
 // ============================================================
+// HOOK VALIDATION
+// ============================================================
+
+/**
+ * Validate hook agent action references against known agents.
+ * Agent refs in hooks are errors (not warnings) because they will fail at runtime.
+ *
+ * AC: @dispatch-hook-schema ac-3
+ */
+function validateHookAgentRefs(
+  hooks: LoadedHook[],
+  agents: { id: string }[],
+): { file: string; path: string; message: string }[] {
+  const errors: { file: string; path: string; message: string }[] = [];
+  const knownAgentIds = new Set(agents.map(a => a.id));
+
+  for (let i = 0; i < hooks.length; i++) {
+    const hook = hooks[i];
+    if (hook.action.type === "agent") {
+      const agentId = hook.action.agent_id;
+      if (!knownAgentIds.has(agentId)) {
+        errors.push({
+          file: hook._sourceFile || "kynetic.meta.yaml",
+          path: `hooks[${i}].action.agent_id`,
+          message: `Hook '${hook.name}' references non-existent agent '${agentId}'. Known agents: ${[...knownAgentIds].join(", ") || "(none)"}`,
+        });
+      }
+    }
+  }
+
+  return errors;
+}
+
+/**
+ * Validate hook filter fields against known fields for their event types.
+ * Unknown filter fields produce warnings.
+ *
+ * AC: @dispatch-hook-filter ac-3
+ */
+function validateHookFilters(
+  hooks: LoadedHook[],
+): { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] {
+  const warnings: { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] = [];
+
+  for (const hook of hooks) {
+    if (!hook.filter) continue;
+
+    const filterWarnings = validateHookFilter(hook.name, hook.on, hook.filter);
+    for (const w of filterWarnings) {
+      warnings.push({
+        ref: `@${hook.name}`,
+        sourceFile: hook._sourceFile,
+        field: w.field,
+        warning: "deprecated_target",
+        message: w.message,
+      });
+    }
+  }
+
+  return warnings;
+}
+
+// ============================================================
 // MAIN VALIDATION
 // ============================================================
 
@@ -1908,6 +2012,7 @@ export async function validate(
       conventions: metaCtx.conventions.length,
       observations: metaCtx.observations.length,
       skills: metaCtx.skills.length,
+      hooks: metaCtx.hooks.length,
     };
 
     // Validate meta manifest schema with strict ULID validation
@@ -1929,6 +2034,20 @@ export async function validate(
       // AC: @skill-validation ac-3 - detect orphaned skill directories
       const orphanedSkillWarnings = await findOrphanedSkillDirectories(ctx, metaCtx.skills);
       result.refWarnings.push(...orphanedSkillWarnings);
+    }
+
+    // AC: @dispatch-hook-schema ac-3 - validate hook agent action references
+    // AC: @dispatch-hook-filter ac-3 - validate hook filter fields
+    if (metaCtx.hooks.length > 0) {
+      const hookErrors = validateHookAgentRefs(metaCtx.hooks, metaCtx.agents);
+      result.schemaErrors.push(...hookErrors.map(e => ({
+        file: e.file,
+        path: e.path,
+        message: e.message,
+      })));
+
+      const hookFilterWarnings = validateHookFilters(metaCtx.hooks);
+      result.refWarnings.push(...hookFilterWarnings);
     }
   }
 

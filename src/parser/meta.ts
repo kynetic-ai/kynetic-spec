@@ -37,6 +37,7 @@ import {
   WorkflowRunSchema,
   WorkflowSchema,
 } from "../schema/index.js";
+import { type Hook, HookSchema } from "../schema/hooks.js";
 import { withFileLock } from "./file-lock.js";
 import type { KspecContext } from "./yaml.js";
 import {
@@ -83,6 +84,13 @@ export interface LoadedSkill extends Skill {
 }
 
 /**
+ * Loaded hook with runtime metadata
+ */
+export interface LoadedHook extends Hook {
+  _sourceFile?: string;
+}
+
+/**
  * Any loaded meta item
  */
 export type LoadedMetaItem =
@@ -103,6 +111,7 @@ export interface MetaContext {
   conventions: LoadedConvention[];
   observations: LoadedObservation[];
   skills: LoadedSkill[];
+  hooks: LoadedHook[];
 }
 
 /**
@@ -188,6 +197,7 @@ async function loadMetaFile(filePath: string): Promise<{
   conventions: LoadedConvention[];
   observations: LoadedObservation[];
   skills: LoadedSkill[];
+  hooks: LoadedHook[];
 }> {
   const result: {
     agents: LoadedAgent[];
@@ -195,12 +205,14 @@ async function loadMetaFile(filePath: string): Promise<{
     conventions: LoadedConvention[];
     observations: LoadedObservation[];
     skills: LoadedSkill[];
+    hooks: LoadedHook[];
   } = {
     agents: [],
     workflows: [],
     conventions: [],
     observations: [],
     skills: [],
+    hooks: [],
   };
 
   try {
@@ -261,6 +273,17 @@ async function loadMetaFile(filePath: string): Promise<{
         }
       }
     }
+
+    // Parse hooks
+    // AC: @dispatch-hook-schema ac-1 - hooks parsed with typed fields
+    if (Array.isArray(obj.hooks)) {
+      for (const hook of obj.hooks) {
+        const parsed = HookSchema.safeParse(hook);
+        if (parsed.success) {
+          result.hooks.push({ ...parsed.data, _sourceFile: filePath });
+        }
+      }
+    }
   } catch {
     // File doesn't exist or parse error
   }
@@ -282,6 +305,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
     conventions: [],
     observations: [],
     skills: [],
+    hooks: [],
   };
 
   const manifestPath = await findMetaManifest(ctx.specDir);
@@ -302,6 +326,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
       result.conventions.push(...items.conventions);
       result.observations.push(...items.observations);
       result.skills.push(...items.skills);
+      result.hooks.push(...items.hooks);
       return result;
     }
 
@@ -314,6 +339,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
     result.conventions.push(...manifestItems.conventions);
     result.observations.push(...manifestItems.observations);
     result.skills.push(...manifestItems.skills);
+    result.hooks.push(...manifestItems.hooks);
 
     // Process includes
     const includes = parsed.data.includes || [];
@@ -329,6 +355,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
         result.conventions.push(...items.conventions);
         result.observations.push(...items.observations);
         result.skills.push(...items.skills);
+        result.hooks.push(...items.hooks);
       }
     }
   } catch {
@@ -887,7 +914,7 @@ export async function listSkillSupportingDirs(
 
 // Re-export the getMetaItemType and isSkill functions
 export { getMetaItemType, isSkill };
-export type { Agent, Workflow, Convention, Observation, Skill, MetaItem };
+export type { Agent, Workflow, Convention, Observation, Skill, Hook, MetaItem };
 
 // ============================================================
 // GENERIC META ITEM CRUD
