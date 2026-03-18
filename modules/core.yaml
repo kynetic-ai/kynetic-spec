@@ -1005,7 +1005,7 @@ features:
           base branch selection and dispatcher-managed worktree placement.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
