@@ -11759,6 +11759,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKZT03TJ9A868GW1W7950BAW
         timestamp: 2026-03-18T06:26:45.850Z
+      - _ulid: 01KKZT0EEYMRZ25P7YWNX6R1PT
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKZT0EAYZ9HK62N4693BR9JJ
+        timestamp: 2026-03-18T06:26:56.606Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -11849,7 +11856,28 @@ reviews:
               ac-transient-fetch-failure's then-clause."
             created_at: 2026-03-18T06:26:45.714Z
         kind: blocker
+      - _ulid: 01KKZT0EAYZ9HK62N4693BR9JJ
+        anchor:
+          type: structured
+          field: ac-task-merge-conflict
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KKZT0EB26JHDFCBD54QS9Y5K
+            author: "@claude"
+            body: "ac-task-merge-conflict bundles four actions: (1) task blocked with reason listing conflicting
+              files, (2) dispatch branch pushed to remote, (3) engine continues dispatching, (4)
+              engine does NOT enter degraded state. These are orthogonal behaviors. The
+              push-on-conflict behavior is a durability concern independent of the blocking
+              behavior. The 'no degraded state' is a negative assertion about engine scope. Split
+              into: ac-merge-conflict-blocks-task (conflict → task blocked with file list and branch
+              names), ac-merge-conflict-push (conflict → branch pushed for human access),
+              ac-merge-conflict-engine-continues (engine continues without degraded state). The
+              reference plan keeps action-scope and engine-scope effects in separate ACs — see
+              @dispatch-action-model ac-9 (failure isolation) vs individual action ACs."
+            created_at: 2026-03-18T06:26:56.482Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:26:45.714Z
+    updated_at: 2026-03-18T06:26:56.482Z
     notes: []
