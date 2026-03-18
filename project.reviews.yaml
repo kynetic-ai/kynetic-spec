@@ -13177,3 +13177,29 @@ reviews:
     created_at: 2026-03-18T08:16:10.197Z
     updated_at: 2026-03-18T08:17:36.742Z
     notes: []
+  - _ulid: 01KM01CSZJVYS0F0M9G4ETP64Y
+    slugs: []
+    title: Review task-action-model
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM01CSZHVA6K4YP5H9F05S95
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T08:36:01.649Z
+    examined_commit: e33ebbbffa0bf82e7955605e1a0669a3004c1f31
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-action-model"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T08:36:01.650Z
+    updated_at: null
+    notes: []
