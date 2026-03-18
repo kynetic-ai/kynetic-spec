@@ -11166,6 +11166,18 @@ reviews:
         runner: manual
         created_at: 2026-03-18T03:35:36.428Z
         completed_at: 2026-03-18T03:35:36.428Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 3074c95391dd
+          head_commit: d2788245a89f
+        evidence: kspec validate shows pre-existing reference errors and completeness warnings only. No new
+          validation issues introduced by this change.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-18T03:35:44.179Z
+        completed_at: 2026-03-18T03:35:44.179Z
     events:
       - _ulid: 01KKZF1E5FN5MRTKAS65X05NAM
         actor: "@claude"
@@ -11201,6 +11213,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T03:35:36.533Z
+      - _ulid: 01KKZG6YWQGCGPZREC90FBHQKE
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-18T03:35:44.279Z
     examined_commit: d2788245a89f2337803328c66afeb9d7393669bf
     external_links: []
     lifecycle_state: open
@@ -11228,5 +11247,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T03:15:14.735Z
-    updated_at: 2026-03-18T03:35:36.428Z
+    updated_at: 2026-03-18T03:35:44.179Z
     notes: []
