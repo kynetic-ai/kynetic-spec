@@ -9226,3 +9226,29 @@ reviews:
     created_at: 2026-03-18T00:13:57.222Z
     updated_at: 2026-03-18T00:14:34.833Z
     notes: []
+  - _ulid: 01KKZ56GZY78J5S9Y1MV7XV19X
+    slugs: []
+    title: Review round-trip stability for workflow runs YAML writes
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKZ56GZYZGF1AGRVSEZXZ9ZK
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T00:23:15.710Z
+    examined_commit: 9a8ef3b3aaa8174957c0fd61fe641149fc6cc222
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKX6CGBRT6J6F804PJ1QJW3G"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T00:23:15.710Z
+    updated_at: null
+    notes: []
