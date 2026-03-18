@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { DateTimeSchema, RefSchema, UlidSchema } from "./common.js";
 import { HookSchema } from "./hooks.js";
+import { ScheduleSchema } from "./schedules.js";
 import { DispatchEventTypeSchema } from "./event-registry.js";
 
 /**
@@ -409,6 +410,7 @@ export const WorkflowRunsFileSchema = z.object({
 /**
  * Meta manifest schema - the root structure for kynetic.meta.yaml
  * AC: @dispatch-hook-schema ac-4 — hooks defaults to empty array
+ * AC: @dispatch-schedule-schema ac-4 — schedules defaults to empty array
  */
 export const MetaManifestSchema = z.object({
   kynetic_meta: z.string().default("1.0"),
@@ -418,6 +420,7 @@ export const MetaManifestSchema = z.object({
   observations: z.array(ObservationSchema).default([]),
   skills: z.array(SkillSchema).default([]),
   hooks: z.array(HookSchema).default([]),
+  schedules: z.array(ScheduleSchema).default([]),
   includes: z.array(z.string()).default([]),
 });
 
