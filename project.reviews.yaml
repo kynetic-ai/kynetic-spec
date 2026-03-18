@@ -10362,3 +10362,29 @@ reviews:
     created_at: 2026-03-18T01:34:28.694Z
     updated_at: 2026-03-18T01:35:20.299Z
     notes: []
+  - _ulid: 01KKZ9SD26MACSRNBGTBW8MAAJ
+    slugs: []
+    title: Review fix-session-cache-invalidate-leaves-ghost-in-knownsessionids
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKZ9SD25EACSA559D9B2NPBH
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T01:43:28.582Z
+    examined_commit: e3e45dd016439fdc78dd4e028bffbeea1b786a93
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKXGPNP7R08EYVEQCERNX1HS"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T01:43:28.582Z
+    updated_at: null
+    notes: []
