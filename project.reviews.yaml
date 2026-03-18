@@ -18210,6 +18210,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T16:30:32.715Z
+      - _ulid: 01KM0X08SE8BP55310VDT354S8
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM0X08MMS7RYMRYNMNFHBBKT
+        timestamp: 2026-03-18T16:38:30.958Z
     examined_commit: adc729f02246ea1eda02dd89a2591ecb2395d5af
     external_links: []
     lifecycle_state: open
@@ -18219,8 +18226,35 @@ reviews:
       content_hash: ""
       ref: "@task-review-skill-version-docs"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM0X08MMS7RYMRYNMNFHBBKT
+        anchor:
+          type: code
+          commit: adc729f02246ea1eda02dd89a2591ecb2395d5af
+          line_end: 144
+          line_start: 119
+          path: src/cli/commands/review.ts
+          side: head
+        entries:
+          - _ulid: 01KM0X08MMKF3NK5JTW3G89DAK
+            author: "@claude"
+            body: "Scope creep: This task is scoped as documentation-only (remove --version-base/--version-head
+              from skill docs), but commits include code changes in src/cli/commands/review.ts that
+              replace shared computeDisposition() and evaluateGates() imports with local simplified
+              versions. The local computeDisposition() ignores version staleness
+              (getEffectiveVerdicts), gate state, and unresolved blocker threads — it only checks
+              verdict decisions. The local computeGateState() ignores version staleness entirely and
+              changes behavior when no required checks exist (returns 'pending' instead of shared
+              'passing'). This means: (1) disposition can report 'approved' even when gates are
+              failing or blocker threads exist, (2) stale verdicts are counted as current, (3) 'no
+              required checks' now returns 'pending' instead of 'passing' (vacuous truth). The
+              shared implementations in src/parser/review-operations.ts and src/review/checks.ts
+              remain unchanged and are still used elsewhere (e.g. task.ts). Fix: revert the code
+              changes in src/cli/commands/review.ts and tests/review-cli.test.ts — restore the
+              shared imports. The documentation changes are correct and should be kept."
+            created_at: 2026-03-18T16:38:30.804Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T16:30:24.623Z
-    updated_at: 2026-03-18T16:30:32.559Z
+    updated_at: 2026-03-18T16:38:30.804Z
     notes: []
