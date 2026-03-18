@@ -9230,7 +9230,18 @@ reviews:
     slugs: []
     title: Review round-trip stability for workflow runs YAML writes
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 392421a4da0b
+          head_commit: 9a8ef3b3aaa8
+        evidence: 5797 passed, 1 failed (pre-existing review-cli.test.ts examined_commit issue), 3 skipped
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T00:24:10.236Z
+        completed_at: 2026-03-18T00:24:10.236Z
     events:
       - _ulid: 01KKZ56GZYZGF1AGRVSEZXZ9ZK
         actor: "@claude"
@@ -9259,6 +9270,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKZ57X51MW328022BSRSRJK3
         timestamp: 2026-03-18T00:24:01.011Z
+      - _ulid: 01KKZ586AETMF5WZZECNKQ0ZSZ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T00:24:10.318Z
     examined_commit: 9a8ef3b3aaa8174957c0fd61fe641149fc6cc222
     external_links: []
     lifecycle_state: open
@@ -9342,5 +9360,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-18T00:23:15.710Z
-    updated_at: 2026-03-18T00:24:00.930Z
+    updated_at: 2026-03-18T00:24:10.236Z
     notes: []
