@@ -12534,6 +12534,17 @@ reviews:
         required: true
         created_at: 2026-03-18T06:56:55.645Z
         completed_at: 2026-03-18T06:56:55.645Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: 537c5f637817
+        evidence: All 30 ACs have single primary assertions. Borderline cases (ac-push-non-fatal,
+          ac-pull-target-on-start) are facets of one behavior, not separate assertions. Matches
+          reference plan quality.
+        name: ac-size-scan
+        required: true
+        created_at: 2026-03-18T06:56:58.576Z
+        completed_at: 2026-03-18T06:56:58.576Z
     events:
       - _ulid: 01KKZV6V96F7RVB0JX539PQ21H
         actor: "@claude"
@@ -12569,6 +12580,13 @@ reviews:
           status: pass
           name: blockers-fixed-task-split
         timestamp: 2026-03-18T06:56:55.780Z
+      - _ulid: 01KKZVQEAS3RSWC4H3Y7N8SP4D
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-size-scan
+        timestamp: 2026-03-18T06:56:58.713Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -12581,5 +12599,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T06:47:54.918Z
-    updated_at: 2026-03-18T06:56:55.645Z
+    updated_at: 2026-03-18T06:56:58.576Z
     notes: []
