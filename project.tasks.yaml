@@ -106565,6 +106565,14 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T15:06:01.986Z
+    - _ulid: 01KM0R552G7SFN8WNZVAN6Q90F
+      content: "Fixed both blocker findings from review @01KM0QK2: added N/A annotations for
+        @trait-error-guidance ac-4 (schedules have no state transitions) and
+        @trait-semantic-exit-codes ac-4 (exit code 3 is NOT_FOUND in this project, not runtime
+        error). All 45 schedule CLI tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T15:13:48.112Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPW000MZT1YMECENJX42A0
