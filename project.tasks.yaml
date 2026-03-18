@@ -108049,7 +108049,17 @@
   session_id: 01KM0TVN8Q1MXXJ8H9K5AK35DD
   created_at: 2026-03-18T14:33:56.660Z
   started_at: 2026-03-18T16:01:19.907Z
-  notes: []
+  notes:
+    - _ulid: 01KM0TYZA4Y2DKBEG06MDM5KS2
+      content: Removed --version-base and --version-head from all check examples (3 examples) and verdict
+        examples (3 examples) in templates/skills/review/SKILL.md. Updated explanatory text for both
+        sections to explain that applies_to_version is auto-derived from the review subject
+        (code_compare for code subjects, entity_version for task/plan/spec subjects). Ran kspec
+        skill render (updated 2 rendered skills) and kspec agents generate. Committed source +
+        rendered output together.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T16:02:51.332Z
   todos: []
   automation: eligible
 - _ulid: 01KM0NWK9Q2HKKF679ASD081B8
