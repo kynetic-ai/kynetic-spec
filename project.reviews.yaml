@@ -13394,6 +13394,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM025A5W2D4QJ922EKQCNM1X
         timestamp: 2026-03-18T08:49:24.774Z
+      - _ulid: 01KM025DRR8HTDFXF3P6VGJJMF
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM025DK9DJPDJENWPJJ5B77C
+        timestamp: 2026-03-18T08:49:28.344Z
     examined_commit: 14505dad0ba356bbfd037257e46aa75b3d9ebbbc
     external_links: []
     lifecycle_state: open
@@ -13465,7 +13472,28 @@ reviews:
               on dedup rejection.
             created_at: 2026-03-18T08:49:24.669Z
         kind: nit
+      - _ulid: 01KM025DK9DJPDJENWPJJ5B77C
+        anchor:
+          type: code
+          commit: ""
+          line_end: 364
+          line_start: 364
+          path: src/agent-runtime/event-bus.ts
+          side: head
+        entries:
+          - _ulid: 01KM025DK99X2MGSJVM7A7E0B3
+            author: "@claude"
+            body: >-
+              SUGGESTION: RingBuffer private field access via string indexing
+
+
+              clear() method at line 364 accesses this.ringBuffer["capacity"] using bracket notation
+              to bypass TypeScript's private check. This works at runtime but is fragile — if
+              RingBuffer is refactored, this breaks silently. Consider adding a public getter or
+              readonly property for capacity.
+            created_at: 2026-03-18T08:49:28.169Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T08:48:45.151Z
-    updated_at: 2026-03-18T08:49:24.669Z
+    updated_at: 2026-03-18T08:49:28.169Z
     notes: []
