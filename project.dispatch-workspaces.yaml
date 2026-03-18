@@ -9301,7 +9301,7 @@ workspaces:
         head: c3b3d1b39059489fb174035e4bec6527043323cc
         last_seen_at: 2026-03-18T09:18:25.757Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-command-action-01kkzpvk
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: ca266e824eb760fa55bd42cf3ceb953a6b93c35b
     bootstrap:
       status: succeeded
@@ -9343,7 +9343,7 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T09:31:34.874Z
+      updated_at: 2026-03-18T09:31:38.643Z
     health:
       status: stale
       issues:
@@ -9353,7 +9353,7 @@ workspaces:
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-18T09:31:38.282Z
+      updated_at: 2026-03-18T09:31:38.643Z
     integration:
       status: pending
       detail: null
@@ -9361,7 +9361,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ca266e824eb760fa55bd42cf3ceb953a6b93c35b
-      updated_at: 2026-03-18T09:31:34.874Z
+      updated_at: 2026-03-18T09:31:38.643Z
     lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KKZPVFA3XPDTRV5CDFWKGVD8"
@@ -9369,9 +9369,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T09:31:38.282Z
-      last_reconciled_at: 2026-03-18T09:31:38.282Z
+      last_reconciled_at: 2026-03-18T09:31:38.643Z
       created_at: 2026-03-18T09:18:26.734Z
-      updated_at: 2026-03-18T09:31:38.282Z
+      updated_at: 2026-03-18T09:31:38.643Z
     workspace_id: dispatch-workspace-01KKZPVFA3XPDTRV5CDFWKGVD8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
