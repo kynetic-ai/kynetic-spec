@@ -26,3 +26,14 @@ export {
   type TaskStateChange,
   type TaskStatus,
 } from "./dispatch.js";
+
+export {
+  EventBus,
+  type EventBusOptions,
+  type EventEnvelope,
+  type EventSourceType,
+  type EmitOptions,
+  type EmitResult,
+  type SubscriptionPattern,
+  type EventHandler,
+} from "./event-bus.js";
