@@ -9277,6 +9277,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T00:24:10.318Z
+      - _ulid: 01KKZ58G43CFGBXWMQ6BJ4ENAE
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKZ58G18BZPPSDDD0AFGQWEG
+        timestamp: 2026-03-18T00:24:20.355Z
     examined_commit: 9a8ef3b3aaa8174957c0fd61fe641149fc6cc222
     external_links: []
     lifecycle_state: open
@@ -9358,7 +9365,22 @@ reviews:
               separate task with proper spec tracking.
             created_at: 2026-03-18T00:24:00.930Z
         kind: blocker
+      - _ulid: 01KKZ58G18BZPPSDDD0AFGQWEG
+        entries:
+          - _ulid: 01KKZ58G18BR6074D7V22HJY05
+            author: "@claude"
+            body: "**Positive: workflow runs implementation is correct and well-tested.** The core task
+              deliverable — applying the raw-data-preservation pattern to `saveWorkflowRun`,
+              `deleteWorkflowRuns`, and the new `mutateWorkflowRunAtomically` — is well implemented.
+              The helpers (`extractRawRunArray`, `writeRawRunArray`, `findRawRunIndex`,
+              `mergeRunPreservingRawShape`) follow the established pattern. File locking via
+              `withFileLock` was correctly added. The 7 new tests comprehensively cover: identity
+              save, Zod default suppression, identity mutation, multi-run stability, non-target
+              pollution prevention, delete preservation, and multi-cycle stability. AC annotations
+              reference ac-3."
+            created_at: 2026-03-18T00:24:20.265Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T00:23:15.710Z
-    updated_at: 2026-03-18T00:24:10.236Z
+    updated_at: 2026-03-18T00:24:20.265Z
     notes: []
