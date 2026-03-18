@@ -13995,6 +13995,19 @@ reviews:
         runner: tsc
         created_at: 2026-03-18T09:50:11.904Z
         completed_at: 2026-03-18T09:50:11.904Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: ca266e824eb760fa55bd42cf3ceb953a6b93c35b
+          head_commit: c790bb1ffcfe44d0be13719ab8884a5655f5055b
+        evidence: "All 5 own ACs (ac-1 through ac-5) annotated and tested in tests/event-registry.test.ts. 3
+          trait ACs tested (ac-1, ac-2, ac-5), 3 N/A with valid reasons (ac-3: not ref lookup, ac-4:
+          not state transitions, ac-6: not JSON mode)."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T09:50:21.496Z
+        completed_at: 2026-03-18T09:50:21.496Z
     events:
       - _ulid: 01KM04M3PEJHRTEH4NZ6CCWY2Q
         actor: "@claude"
@@ -14023,6 +14036,13 @@ reviews:
           status: pass
           name: build
         timestamp: 2026-03-18T09:50:12.132Z
+      - _ulid: 01KM05MXG16AX0F8J1HEW7T0D7
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T09:50:21.698Z
     examined_commit: c790bb1ffcfe44d0be13719ab8884a5655f5055b
     external_links: []
     lifecycle_state: open
@@ -14035,5 +14055,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T09:32:26.703Z
-    updated_at: 2026-03-18T09:50:11.904Z
+    updated_at: 2026-03-18T09:50:21.496Z
     notes: []
