@@ -11173,7 +11173,7 @@ workspaces:
         head: e34b1ad7fc6b947dd15381d2d76a4e63da9fd611
         last_seen_at: 2026-03-18T16:01:00.640Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-shared-disposition-01km0nvt
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 96603948244358b7704e3319071dc50f19c7613b
     bootstrap:
       status: succeeded
@@ -11239,9 +11239,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T16:51:44.413Z
-      last_reconciled_at: 2026-03-18T17:01:40.400Z
+      last_reconciled_at: 2026-03-18T17:01:48.924Z
       created_at: 2026-03-18T16:01:01.743Z
-      updated_at: 2026-03-18T17:01:40.400Z
+      updated_at: 2026-03-18T17:01:48.924Z
     workspace_id: dispatch-workspace-01KM0NW5NMJJDWRHKVQGDERHQM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
