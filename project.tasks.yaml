@@ -107825,8 +107825,12 @@
   spec_ref: "@review-cli-mutation-commands"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Removed --version-base/--version-head/--version-hash from review
+    check command. Auto-derives applies_to_version via extractSubjectVersion(). Tests updated. Note:
+    parseVersionFromOptions() is now dead code (zero callers after both check and verdict tasks
+    merged) — should be cleaned up."
   depends_on:
     - "@task-spec-review-version-auto-derive"
   context: []
@@ -107849,6 +107853,7 @@
   created_at: 2026-03-18T14:33:18.518Z
   started_at: 2026-03-18T15:25:11.172Z
   submitted_at: 2026-03-18T15:34:55.494Z
+  completed_at: 2026-03-18T15:46:08.663Z
   notes:
     - _ulid: 01KM0SAZ981DY57MBBVM315AA2
       content: Removed --version-base, --version-head, --version-hash options from the review check
