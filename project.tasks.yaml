@@ -107777,10 +107777,44 @@
     - task-remediate-review-versions
   title: Remediate existing review data with version mismatches
   type: task
-  description: Write one-time script to fix applies_to_version on existing verdicts/checks with type
-    mismatches. 110 reviews affected — daemon shows 4 approved vs correct 76. Handle both directions
-    (code_compare on entity, entity_version on code). Verify via daemon API after. Delete script
-    when done. See @plan-review-version-auto-derivation.
+  description: >-
+    Write a one-time migration script to fix applies_to_version on existing verdicts and checks that
+    have type mismatches with their review's subject. Of 110 existing reviews, the daemon computes
+    only 4 as approved (correct: 76) because verdicts/checks were stamped with code_compare versions
+    on task-subject reviews.
+
+
+    The daemon computes disposition dynamically via computeDisposition() in
+    src/parser/review-operations.ts, so correcting the stored applies_to_version will immediately
+    fix the web UI display without any daemon code changes.
+
+
+    Why: After the CLI fix (@task-cli-verdict-auto-version and @task-cli-check-auto-version), new
+    reviews will have correct versions, but the 110 existing reviews will remain broken in the web
+    UI. The data must be corrected for the reviews index to show accurate dispositions.
+
+
+    How:
+
+    1. Write a script that loads all review records from the shadow branch via loadReviewRecords()
+
+    2. For each review, extract the subject version via extractSubjectVersion(review.subject) from
+    src/review/subject-bindings.ts
+
+    3. For each verdict and check, compare applies_to_version.type with the subject version type
+
+    4. If mismatched in either direction (code_compare on entity subject, or entity_version on code
+    subject), replace applies_to_version with the version derived from the review subject. Note: if
+    the review subject itself has changed since the verdict was created (e.g. via refreshSubject),
+    the corrected version will still be 'stale' relative to the current subject — this is correct
+    behavior, not a bug
+
+    5. Save the corrected reviews and commit to shadow branch
+
+    6. Verify daemon API now returns correct dispositions by querying GET /api/reviews?status=all
+    and checking disposition counts
+
+    7. Delete the script after use — it's a one-time fix
   spec_ref: "@review-verdicts-and-resolution-lifecycle"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
