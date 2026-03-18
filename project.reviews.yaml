@@ -11862,6 +11862,12 @@ reviews:
         payload:
           thread_ulid: 01KKZSYZV5J3W4D118AS03YDME
         timestamp: 2026-03-18T06:44:12.141Z
+      - _ulid: 01KKZV04858Y3XAYJB1N4S5P31
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KKZSYZV5J3W4D118AS03YDME
+        timestamp: 2026-03-18T06:44:14.725Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -11897,6 +11903,8 @@ reviews:
               (log message classification). Each is independently testable.
             created_at: 2026-03-18T06:44:12.007Z
         kind: blocker
+        resolved_at: 2026-03-18T06:44:14.599Z
+        resolved_by: "@claude"
       - _ulid: 01KKZSZAQG5FP9VP15B6FQRMYC
         anchor:
           type: structured
@@ -12207,5 +12215,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-18T06:31:04.294Z
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:44:12.007Z
+    updated_at: 2026-03-18T06:44:14.599Z
     notes: []
