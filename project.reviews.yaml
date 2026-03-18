@@ -18460,6 +18460,13 @@ reviews:
           status: pass
           name: merge-safety
         timestamp: 2026-03-18T16:31:48.516Z
+      - _ulid: 01KM0WMECSCN8NAKTJZ0G70WZ3
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0WME36NVF80K6AYHPKKQ5M
+        timestamp: 2026-03-18T16:32:03.481Z
     examined_commit: 8e507045fbc1f80007de114d9870557c44780f70
     external_links: []
     lifecycle_state: open
@@ -18471,10 +18478,26 @@ reviews:
       base_commit: 20cb7666e4d9
       head_branch: dispatch/task/task-automation-view/01kkzpw5
       head_commit: 8e507045fbc1
-    threads: []
+    threads:
+      - _ulid: 01KM0WME36NVF80K6AYHPKKQ5M
+        entries:
+          - _ulid: 01KM0WME36Q79GPVNPFHD7AA2D
+            author: "@claude"
+            body: Out-of-scope review CLI changes (review.ts, review-cli.test.ts,
+              review-per-cycle-lifecycle.test.ts) are still present in this branch. These add
+              explicit --version-base/--version-head/--version-hash flags and local
+              computeDisposition/computeGateState implementations. However, dev has since merged
+              commits (e34b1ad7f, 798e489df, f69c7a49a) that take the opposite approach
+              (auto-derive, shared implementations). git merge-tree confirms the merge is clean and
+              dev newer code wins — the task branch changes to these files are effectively discarded
+              at merge time. Worker fix cycle note incorrectly claimed these were "not in the diff
+              (false positive)" — they ARE in the diff, but the merge outcome is safe. Not blocking
+              since merge handles it correctly.
+            created_at: 2026-03-18T16:32:03.175Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T16:19:00.290Z
-    updated_at: 2026-03-18T16:31:48.229Z
+    updated_at: 2026-03-18T16:32:03.175Z
     notes: []
   - _ulid: 01KM0WHDVFD2HGFQYR9E986EKC
     slugs: []
