@@ -11432,7 +11432,19 @@ reviews:
     slugs: []
     title: Review task-code-diff-viewer (cycle 3)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
+          head_commit: 3f6587548ba602b8300fbd2fddd94ec6c9ea46a6
+        evidence: 5809 passed, 3 skipped, 3 failed (all failures pre-existing in
+          agent-dispatch-engine.test.ts and review-cli.test.ts — task did not modify those files)
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T04:05:00.464Z
+        completed_at: 2026-03-18T04:05:00.464Z
     events:
       - _ulid: 01KKZHCCVGMAJBBRA17YMA93WX
         actor: "@claude"
@@ -11447,6 +11459,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T03:56:19.146Z
+      - _ulid: 01KKZHWJ0GTHWTTQKY84KNRQ2Z
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T04:05:00.560Z
     examined_commit: 3f6587548ba602b8300fbd2fddd94ec6c9ea46a6
     external_links: []
     lifecycle_state: open
@@ -11459,5 +11478,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T03:56:10.993Z
-    updated_at: 2026-03-18T03:56:19.038Z
+    updated_at: 2026-03-18T04:05:00.464Z
     notes: []
