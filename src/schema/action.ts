@@ -50,15 +50,32 @@ export const KspecActionSchema = z.object({
 /**
  * Agent action — spawns a new agent invocation.
  * AC: @dispatch-action-model ac-4, ac-5
+ * AC: @dispatch-agent-action-input ac-1, ac-3
  */
 export const AgentActionSchema = z.object({
   type: z.literal("agent"),
   /** The agent definition ID to spawn */
   agent_id: z.string().min(1, "Agent ID is required"),
-  /** Optional prompt override */
+  /** Optional prompt override (takes precedence over prompt_template) */
   prompt: z.string().optional(),
+  /**
+   * Optional prompt template with {{variable}} placeholders.
+   * Interpolated with event envelope and payload variables at execution time.
+   * If neither prompt nor prompt_template is configured, a default prompt
+   * is generated from the event context.
+   * AC: @dispatch-agent-action-input ac-1
+   */
+  prompt_template: z.string().optional(),
   /** Optional task reference to scope the invocation */
   task_ref: z.string().optional(),
+  /**
+   * When true and the triggering event has a task_ref, the spawned
+   * invocation is task-scoped and subject to per-task exclusivity.
+   * Without task_binding, the invocation is non-task-scoped (unless
+   * task_ref is set explicitly above).
+   * AC: @dispatch-agent-action-input ac-3
+   */
+  task_binding: z.boolean().optional(),
   /** Optional timeout in minutes */
   timeout_minutes: z.number().positive().optional(),
 });
