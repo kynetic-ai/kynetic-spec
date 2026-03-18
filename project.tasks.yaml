@@ -103931,7 +103931,7 @@
   spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -103944,15 +103944,15 @@
   submission_linkage:
     review_url: null
     branch: dev
-    captured_at: 2026-03-18T02:07:51.825Z
-    commit: c829472cb105c3047739feb9542b4c83a5ac9b73
+    captured_at: 2026-03-18T02:32:13.473Z
+    commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
   session_id: 01KKZBWQ6PG6HKDSJ7WG9MHDA5
   created_at: 2026-03-17T06:05:29.711Z
   started_at: 2026-03-18T02:32:02.562Z
-  submitted_at: 2026-03-18T02:07:52.940Z
+  submitted_at: 2026-03-18T02:32:13.963Z
   notes:
     - _ulid: 01KKZ48498CCH769SWBAA1Q02K
       content: "Applied raw-data-preservation pattern to saveTriageRecord in src/parser/yaml.ts. Added 5
