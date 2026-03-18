@@ -1504,7 +1504,7 @@ requirements:
       ensuring predictable structure for tooling and stable diffs.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
