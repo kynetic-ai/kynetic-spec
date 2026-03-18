@@ -1834,3 +1834,22 @@ inbox:
       - derive
     added_by: "@claude"
     created_at: 2026-03-18T14:38:52.287Z
+  - _ulid: 01KM0PS4CGKW9JJQXFQS2PAY7H
+    text: "Plan reviewer skill: Create a /plan-review skill for two use cases: (1) Structured plan
+      review before approval — evaluate problem diagnosis, spec change coverage, task completeness,
+      dependency ordering, risk assessment. Currently done ad-hoc by spawning a general agent with
+      manual instructions. A skill would standardize the review criteria and finding format. (2)
+      Post-derive validation — verify derived tasks match the plan document: full descriptions
+      transferred (not truncated), priorities set, spec_refs attached, depends_on graph correct,
+      plan_ref bidirectionally linked, automation eligibility set. The validation agent in this
+      session checked structural properties (exists, priority, deps) but missed that task
+      descriptions were truncated summaries instead of the full what/why/how from the plan. The
+      skill should diff plan task content against derived task descriptions to catch this class of
+      issue."
+    tags:
+      - skill
+      - plan
+      - review
+      - automation
+    added_by: "@claude"
+    created_at: 2026-03-18T14:49:45.616Z
