@@ -7,6 +7,7 @@ export * from "./event-payloads.js";
 export * from "./event-registry.js";
 export * from "./hooks.js";
 export * from "./inbox.js";
+export * from "./schedules.js";
 export * from "./meta.js";
 export * from "./plan.js";
 export * from "./spec.js";

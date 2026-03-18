@@ -22,7 +22,7 @@ import {
   WorkflowSchema,
 } from "../schema/index.js";
 import { validateHookFilter } from "../schema/hooks.js";
-import { findMetaManifest, getSkillContentPath, loadMetaContext, type LoadedHook, type LoadedSkill } from "./meta.js";
+import { findMetaManifest, getSkillContentPath, loadMetaContext, type LoadedHook, type LoadedSchedule, type LoadedSkill } from "./meta.js";
 import { loadPlans } from "./plans.js";
 import { findReviewFiles, validateReviewsFile } from "./review-validation.js";
 import {
@@ -126,6 +126,7 @@ export interface ValidationResult {
     observations: number;
     skills: number;
     hooks: number;
+    schedules: number;
   };
 }
 
@@ -1744,6 +1745,40 @@ function validateHookFilters(
 }
 
 // ============================================================
+// SCHEDULE VALIDATION
+// ============================================================
+
+/**
+ * Validate schedule agent action references against known agents.
+ * Agent refs in schedules are errors (not warnings) because they will fail at runtime.
+ *
+ * AC: @dispatch-schedule-schema ac-3
+ */
+function validateScheduleAgentRefs(
+  schedules: LoadedSchedule[],
+  agents: { id: string }[],
+): { file: string; path: string; message: string }[] {
+  const errors: { file: string; path: string; message: string }[] = [];
+  const knownAgentIds = new Set(agents.map(a => a.id));
+
+  for (let i = 0; i < schedules.length; i++) {
+    const schedule = schedules[i];
+    if (schedule.action.type === "agent") {
+      const agentId = schedule.action.agent_id;
+      if (!knownAgentIds.has(agentId)) {
+        errors.push({
+          file: schedule._sourceFile || "kynetic.meta.yaml",
+          path: `schedules[${i}].action.agent_id`,
+          message: `Schedule '${schedule.name}' references non-existent agent '${agentId}'. Known agents: ${[...knownAgentIds].join(", ") || "(none)"}`,
+        });
+      }
+    }
+  }
+
+  return errors;
+}
+
+// ============================================================
 // MAIN VALIDATION
 // ============================================================
 
@@ -2013,6 +2048,7 @@ export async function validate(
       observations: metaCtx.observations.length,
       skills: metaCtx.skills.length,
       hooks: metaCtx.hooks.length,
+      schedules: metaCtx.schedules.length,
     };
 
     // Validate meta manifest schema with strict ULID validation
@@ -2048,6 +2084,16 @@ export async function validate(
 
       const hookFilterWarnings = validateHookFilters(metaCtx.hooks);
       result.refWarnings.push(...hookFilterWarnings);
+    }
+
+    // AC: @dispatch-schedule-schema ac-3 - validate schedule agent action references
+    if (metaCtx.schedules.length > 0) {
+      const scheduleErrors = validateScheduleAgentRefs(metaCtx.schedules, metaCtx.agents);
+      result.schemaErrors.push(...scheduleErrors.map(e => ({
+        file: e.file,
+        path: e.path,
+        message: e.message,
+      })));
     }
   }
 

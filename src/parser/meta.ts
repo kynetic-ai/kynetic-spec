@@ -38,6 +38,7 @@ import {
   WorkflowSchema,
 } from "../schema/index.js";
 import { type Hook, HookSchema } from "../schema/hooks.js";
+import { type Schedule, ScheduleSchema } from "../schema/schedules.js";
 import { withFileLock } from "./file-lock.js";
 import type { KspecContext } from "./yaml.js";
 import {
@@ -91,6 +92,13 @@ export interface LoadedHook extends Hook {
 }
 
 /**
+ * Loaded schedule with runtime metadata
+ */
+export interface LoadedSchedule extends Schedule {
+  _sourceFile?: string;
+}
+
+/**
  * Any loaded meta item
  */
 export type LoadedMetaItem =
@@ -112,6 +120,7 @@ export interface MetaContext {
   observations: LoadedObservation[];
   skills: LoadedSkill[];
   hooks: LoadedHook[];
+  schedules: LoadedSchedule[];
 }
 
 /**
@@ -198,6 +207,7 @@ async function loadMetaFile(filePath: string): Promise<{
   observations: LoadedObservation[];
   skills: LoadedSkill[];
   hooks: LoadedHook[];
+  schedules: LoadedSchedule[];
 }> {
   const result: {
     agents: LoadedAgent[];
@@ -206,6 +216,7 @@ async function loadMetaFile(filePath: string): Promise<{
     observations: LoadedObservation[];
     skills: LoadedSkill[];
     hooks: LoadedHook[];
+    schedules: LoadedSchedule[];
   } = {
     agents: [],
     workflows: [],
@@ -213,6 +224,7 @@ async function loadMetaFile(filePath: string): Promise<{
     observations: [],
     skills: [],
     hooks: [],
+    schedules: [],
   };
 
   try {
@@ -284,6 +296,17 @@ async function loadMetaFile(filePath: string): Promise<{
         }
       }
     }
+
+    // Parse schedules
+    // AC: @dispatch-schedule-schema ac-1 - schedules parsed with typed fields
+    if (Array.isArray(obj.schedules)) {
+      for (const schedule of obj.schedules) {
+        const parsed = ScheduleSchema.safeParse(schedule);
+        if (parsed.success) {
+          result.schedules.push({ ...parsed.data, _sourceFile: filePath });
+        }
+      }
+    }
   } catch {
     // File doesn't exist or parse error
   }
@@ -306,6 +329,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
     observations: [],
     skills: [],
     hooks: [],
+    schedules: [],
   };
 
   const manifestPath = await findMetaManifest(ctx.specDir);
@@ -327,6 +351,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
       result.observations.push(...items.observations);
       result.skills.push(...items.skills);
       result.hooks.push(...items.hooks);
+      result.schedules.push(...items.schedules);
       return result;
     }
 
@@ -340,6 +365,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
     result.observations.push(...manifestItems.observations);
     result.skills.push(...manifestItems.skills);
     result.hooks.push(...manifestItems.hooks);
+    result.schedules.push(...manifestItems.schedules);
 
     // Process includes
     const includes = parsed.data.includes || [];
@@ -356,6 +382,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
         result.observations.push(...items.observations);
         result.skills.push(...items.skills);
         result.hooks.push(...items.hooks);
+        result.schedules.push(...items.schedules);
       }
     }
   } catch {
