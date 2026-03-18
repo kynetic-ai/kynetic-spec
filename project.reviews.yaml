@@ -18467,6 +18467,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM0WME36NVF80K6AYHPKKQ5M
         timestamp: 2026-03-18T16:32:03.481Z
+      - _ulid: 01KM0WMRTJYZ8MHK92H7BGAGMW
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0WMRHP3B7YHZN7KAAG1HNN
+        timestamp: 2026-03-18T16:32:14.162Z
     examined_commit: 8e507045fbc1f80007de114d9870557c44780f70
     external_links: []
     lifecycle_state: open
@@ -18495,9 +18502,20 @@ reviews:
               since merge handles it correctly.
             created_at: 2026-03-18T16:32:03.175Z
         kind: nit
+      - _ulid: 01KM0WMRHP3B7YHZN7KAAG1HNN
+        entries:
+          - _ulid: 01KM0WMRHPXQ6XDGEVQ3BJ0V2Y
+            author: "@claude"
+            body: CompositionsSection uses $effect with fire-and-forget fetch calls in a for loop (lines 36-51).
+              Each .then() spreads activationsByConfig, which could race if multiple fetches resolve
+              simultaneously. In practice this is unlikely to cause visible bugs (Svelte state reads
+              current value at resolution time), but the pattern is fragile. Consider using
+              createQueries or Promise.all for more predictable behavior in future iterations.
+            created_at: 2026-03-18T16:32:13.878Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T16:19:00.290Z
-    updated_at: 2026-03-18T16:32:03.175Z
+    updated_at: 2026-03-18T16:32:13.878Z
     notes: []
   - _ulid: 01KM0WHDVFD2HGFQYR9E986EKC
     slugs: []
