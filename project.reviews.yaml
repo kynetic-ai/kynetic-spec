@@ -13823,7 +13823,19 @@ reviews:
     slugs: []
     title: Review task-command-action
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
+          head_commit: c3b3d1b39059489fb174035e4bec6527043323cc
+        evidence: "All 25 new command-action tests pass. Full suite: 6028 passed, 1 failed (pre-existing
+          review-cli.test.ts failure unrelated to this task — no diff on that file vs dev)."
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T09:24:43.595Z
+        completed_at: 2026-03-18T09:24:43.595Z
     events:
       - _ulid: 01KM043KNET4TFVNZ9ASYW4FTX
         actor: "@claude"
@@ -13845,6 +13857,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM045AF0XM8BTN2MDDMAYB55
         timestamp: 2026-03-18T09:24:22.232Z
+      - _ulid: 01KM045ZHXPE150FDN55D793FK
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T09:24:43.710Z
     examined_commit: c3b3d1b39059489fb174035e4bec6527043323cc
     external_links: []
     lifecycle_state: open
@@ -13879,5 +13898,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T09:23:25.998Z
-    updated_at: 2026-03-18T09:24:22.112Z
+    updated_at: 2026-03-18T09:24:43.595Z
     notes: []
