@@ -107723,10 +107723,37 @@
     - task-review-skill-version-docs
   title: Update review skill documentation
   type: task
-  description: Remove --version-base/--version-head from all verdict and check examples in
-    templates/skills/review/SKILL.md (lines 280-317). Update text to explain versions are
-    auto-derived from review subject. Run kspec skill render to regenerate .agents/skills/. See
-    @plan-review-version-auto-derivation.
+  description: >-
+    Update the review skill source at templates/skills/review/SKILL.md to remove --version-base and
+    --version-head from all verdict and check command examples (lines 280-317 of SKILL.md). Update
+    explanatory text to say versions are auto-derived from the review subject. Run kspec skill
+    render to regenerate the rendered output at .agents/skills/kspec-review/SKILL.md.
+
+
+    Current examples teach agents to pass version flags on every verdict and check command, which is
+    the direct cause of agents creating mismatched applies_to_version types.
+
+
+    Why: The skill documentation is the primary interface agents use to learn CLI commands. If the
+    --version-* flags are removed from the CLI (in @task-cli-verdict-auto-version and
+    @task-cli-check-auto-version) without updating the skill, agent invocations will fail on
+    unrecognized flags. The skill must match the CLI surface.
+
+
+    How:
+
+    1. Edit templates/skills/review/SKILL.md
+
+    2. Remove --version-base and --version-head from all check examples (lines 280-292)
+
+    3. Remove --version-base and --version-head from all verdict examples (lines 305-317)
+
+    4. Update the explanatory text near those examples — explain that applies_to_version is
+    auto-derived from the review subject, so callers don't need to provide version info
+
+    5. Run kspec skill render to regenerate .agents/skills/
+
+    6. Commit both the source and rendered output together
   spec_ref: "@review-cli-mutation-commands"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
