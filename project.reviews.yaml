@@ -16765,6 +16765,21 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T14:30:52.289Z
         completed_at: 2026-03-18T14:30:52.289Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b30b1a6f4492
+          head_commit: a62c4ab03638
+        evidence: "All 6 own ACs (ac-1 through ac-6) have annotated tests. All trait ACs covered:
+          @trait-api-endpoint ac-1 through ac-6 (4 tested, 2 N/A with valid reasons),
+          @trait-localhost-security ac-1 through ac-3 (all N/A — server-level), @trait-json-output
+          ac-1 through ac-6 (ac-5 tested, rest N/A — API endpoints not CLI). No kspec validate
+          warnings for automation-api."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T14:31:00.713Z
+        completed_at: 2026-03-18T14:31:00.713Z
     events:
       - _ulid: 01KM0NNYHHBXGMKWKTAS64QKZM
         actor: "@claude"
@@ -16786,6 +16801,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T14:30:52.442Z
+      - _ulid: 01KM0NPSZWA0NF1CV31EPSQ3V4
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T14:31:00.860Z
     examined_commit: a62c4ab0363801c687c128e795c066e49de26f20
     external_links: []
     lifecycle_state: open
@@ -16798,5 +16820,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T14:30:32.754Z
-    updated_at: 2026-03-18T14:30:52.289Z
+    updated_at: 2026-03-18T14:31:00.713Z
     notes: []
