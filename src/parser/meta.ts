@@ -46,7 +46,6 @@ import {
   readYamlFile,
   writeYamlFilePreserveFormat,
 } from "./yaml.js";
-import { withFileLock } from "./file-lock.js";
 
 /**
  * Loaded agent with runtime metadata
