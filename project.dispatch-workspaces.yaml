@@ -9517,12 +9517,20 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-18T10:47:36.558Z
+      updated_at: 2026-03-18T10:49:37.720Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T10:47:53.714Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/task-dispatch-target-sync/01kkzwb7" is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-target-sync-01kkzwb7"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-18T10:49:37.720Z
     integration:
       status: merged
       detail: integration:merged
@@ -9530,17 +9538,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b0bc7850b39feba9a789c532f971f7cd7d808d2e
-      updated_at: 2026-03-18T10:47:36.558Z
-    lifecycle_state: closing
+      updated_at: 2026-03-18T10:49:37.720Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KKZWB75X6Q1X1ZZC5S6KBH6B"
     task_slug: task-dispatch-target-sync
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T10:30:32.001Z
-      last_reconciled_at: 2026-03-18T10:47:53.714Z
+      last_reconciled_at: 2026-03-18T10:49:37.720Z
       created_at: 2026-03-18T09:55:47.971Z
-      updated_at: 2026-03-18T10:47:53.714Z
+      updated_at: 2026-03-18T10:49:37.720Z
     workspace_id: dispatch-workspace-01KKZWB75X6Q1X1ZZC5S6KBH6B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
