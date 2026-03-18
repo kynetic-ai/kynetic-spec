@@ -1853,3 +1853,13 @@ inbox:
       - automation
     added_by: "@claude"
     created_at: 2026-03-18T14:49:45.616Z
+  - _ulid: 01KM0PW2K9C209DDPB3V87KXP2
+    text: Add kspec plan patch command — plans are not patchable via any CLI command. item patch rejects
+      plan-specific fields (derived_tasks, module_ref, etc.) as unknown keys. Need either a
+      dedicated plan patch or extend item patch to recognize plan schema. Currently the only way to
+      fix plan metadata is manual YAML editing with --no-verify hook bypass.
+    tags:
+      - cli
+      - plan
+    added_by: "@claude"
+    created_at: 2026-03-18T14:51:22.089Z
