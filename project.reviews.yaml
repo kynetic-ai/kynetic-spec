@@ -9036,3 +9036,29 @@ reviews:
     created_at: 2026-03-17T23:45:03.640Z
     updated_at: 2026-03-17T23:51:52.373Z
     notes: []
+  - _ulid: 01KKZ489FBSPK1FCMQ584MNE8B
+    slugs: []
+    title: Review round-trip stability for dispatch workspace YAML writes (cycle 3)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKZ489FBCFK2BQ4G97JXY4A1
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T00:06:44.971Z
+    examined_commit: 3dbacf0c5528decc53469825dcab657686f308b1
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKX6CD2X6EKHGNE47Y8113HH"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T00:06:44.971Z
+    updated_at: null
+    notes: []
