@@ -10941,6 +10941,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKZEGXR8ZBXDDMTSHQF7CS9B
         timestamp: 2026-03-18T03:06:13.933Z
+      - _ulid: 01KKZEHFQ2TGRCAT29K531PY25
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKZEHFF5RFD7CNBWYTKDSMF2
+        timestamp: 2026-03-18T03:06:32.035Z
     examined_commit: c78549495ec28d101a3f21193f7e53105b09f3b2
     external_links: []
     lifecycle_state: open
@@ -10964,7 +10971,22 @@ reviews:
               annotate implementation code.
             created_at: 2026-03-18T03:06:13.641Z
         kind: blocker
+      - _ulid: 01KKZEHFF5RFD7CNBWYTKDSMF2
+        anchor:
+          type: code
+          commit: c78549495ec2
+          line_end: 11
+          line_start: 11
+          path: packages/web-ui/src/lib/components/diff/DiffFileView.svelte
+          side: head
+        entries:
+          - _ulid: 01KKZEHFF6KGCQDJ18AB44VRZ5
+            author: "@claude"
+            body: "Unused import: normalizeLanguage is imported but never used. The component defines its own
+              detectLanguage function instead."
+            created_at: 2026-03-18T03:06:31.782Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T03:05:31.212Z
-    updated_at: 2026-03-18T03:06:13.641Z
+    updated_at: 2026-03-18T03:06:31.782Z
     notes: []
