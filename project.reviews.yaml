@@ -11904,6 +11904,12 @@ reviews:
         payload:
           thread_ulid: 01KKZT03TJ9A868GW1W7950BAW
         timestamp: 2026-03-18T06:44:46.199Z
+      - _ulid: 01KKZV15FFXVHWX0C5VNS3Q1YD
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKZT0EAYZ9HK62N4693BR9JJ
+        timestamp: 2026-03-18T06:44:48.751Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -12045,6 +12051,12 @@ reviews:
               reference plan keeps action-scope and engine-scope effects in separate ACs — see
               @dispatch-action-model ac-9 (failure isolation) vs individual action ACs."
             created_at: 2026-03-18T06:26:56.482Z
+          - _ulid: 01KKZV15BAGHCFM4PGX35VKPMJ
+            author: "@claude"
+            body: Split into ac-merge-conflict-blocks-task (block with reason), ac-merge-conflict-pushes-branch
+              (push to remote), ac-merge-conflict-engine-continues (engine not degraded). Three
+              independent assertions.
+            created_at: 2026-03-18T06:44:48.617Z
         kind: blocker
       - _ulid: 01KKZT0RHJB35N3XNZF9SHX0WD
         anchor:
@@ -12275,5 +12287,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-18T06:31:04.294Z
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:44:46.069Z
+    updated_at: 2026-03-18T06:44:48.617Z
     notes: []
