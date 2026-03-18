@@ -56,7 +56,7 @@
 	let loading = $derived(agentStatusQuery.isLoading || agentDefsQuery.isLoading);
 	let error = $state('');
 
-	// AC: @ui-agent-dispatch ac-4 — Edit form state
+	// Agent edit dialog state
 	let editDialogOpen = $state(false);
 	let editingAgent = $state<AgentDefinition | null>(null);
 
@@ -144,7 +144,6 @@
 		}
 	}
 
-	// AC: @ui-agent-dispatch ac-4 — Open edit dialog for an agent
 	function handleEditAgent(agent: AgentDefinition) {
 		editingAgent = agent;
 		editDialogOpen = true;
@@ -288,7 +287,6 @@
 		</section>
 	{/if}
 
-	<!-- AC: @ui-agent-dispatch ac-4 — Agent edit dialog -->
 	{#if editingAgent}
 		<AgentEditForm
 			bind:open={editDialogOpen}
