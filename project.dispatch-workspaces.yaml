@@ -9559,7 +9559,7 @@ workspaces:
         head: 95f59903248481497072cc172341366343df7aaa
         last_seen_at: 2026-03-18T10:30:31.096Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-target-sync-01kkzwb7
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: b0bc7850b39feba9a789c532f971f7cd7d808d2e
     bootstrap:
       status: succeeded
@@ -9622,9 +9622,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T10:46:44.034Z
-      last_reconciled_at: 2026-03-18T11:00:41.521Z
+      last_reconciled_at: 2026-03-18T11:00:42.277Z
       created_at: 2026-03-18T10:30:32.116Z
-      updated_at: 2026-03-18T11:00:41.521Z
+      updated_at: 2026-03-18T11:00:42.277Z
     workspace_id: dispatch-workspace-01KKZWB8VH6WS0SSR11DGBMR0R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
