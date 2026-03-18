@@ -106123,7 +106123,7 @@
   spec_ref: "@dispatch-schedule-schema"
   plan_ref: "@plan-dispatch-event-system-expansion"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -106133,9 +106133,18 @@
     - schedules
     - schema
   vcs_refs: []
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-18T11:37:33.454Z
+    commit: 478f79b47784ab18d3c13c8be520212246def812
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
   session_id: 01KM0AP7669GBTSS3JWS6S26XS
   created_at: 2026-03-18T05:31:59.356Z
   started_at: 2026-03-18T11:18:46.679Z
+  submitted_at: 2026-03-18T11:37:33.899Z
   notes:
     - _ulid: 01KM0BRXVB3B3CN4GEQZCT17H6
       content: "Implemented ScheduleSchema in src/schema/schedules.ts with croner-based cron validation.
