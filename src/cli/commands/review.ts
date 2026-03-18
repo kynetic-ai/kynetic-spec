@@ -30,6 +30,7 @@ import {
   transitionLifecycle,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
+import { extractSubjectVersion } from "../../review/subject-bindings.js";
 import type {
   ReviewAnchor,
   ReviewCheck,
@@ -889,9 +890,6 @@ export function registerReviewCommands(program: Command): void {
       .option("--no-required", "Mark check as not required")
       .option("--runner <runner>", "Check runner identifier")
       .option("--evidence <evidence>", "Evidence payload or link")
-      .option("--version-base <commit>", "Applies-to version: base commit (for code)")
-      .option("--version-head <commit>", "Applies-to version: head commit (for code)")
-      .option("--version-hash <hash>", "Applies-to version: content hash (for entities)")
       .option("--author <author>", "Actor for the event")
       .action(async (ref: string, options) => {
         try {
@@ -913,7 +911,8 @@ export function registerReviewCommands(program: Command): void {
             );
           }
 
-          const version = parseVersionFromOptions(options);
+          // AC: @review-cli-mutation-commands ac-2 — auto-derive version from review subject
+          const version = extractSubjectVersion(found.subject);
 
           const newCheck: ReviewCheck = {
             name: options.name,
