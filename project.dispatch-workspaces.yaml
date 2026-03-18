@@ -10789,12 +10789,20 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-18T15:20:39.850Z
+      updated_at: 2026-03-18T15:21:48.632Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T15:20:39.850Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/task-event-cli/01kkzpw0" is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-event-cli-01kkzpw0"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-18T15:21:48.632Z
     integration:
       status: merged
       detail: integration:merged
@@ -10802,17 +10810,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2dcce1c1b50abdac83c5d5dd1add93610e82e8e4
-      updated_at: 2026-03-18T15:20:39.850Z
-    lifecycle_state: closing
+      updated_at: 2026-03-18T15:21:48.632Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KKZPW000MZT1YMECENJX42A0"
     task_slug: task-event-cli
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T15:11:31.006Z
-      last_reconciled_at: 2026-03-18T15:20:39.850Z
+      last_reconciled_at: 2026-03-18T15:21:48.632Z
       created_at: 2026-03-18T14:59:01.764Z
-      updated_at: 2026-03-18T15:20:39.850Z
+      updated_at: 2026-03-18T15:21:48.632Z
     workspace_id: dispatch-workspace-01KKZPW000MZT1YMECENJX42A0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
