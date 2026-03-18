@@ -106136,7 +106136,19 @@
   session_id: 01KM0AP7669GBTSS3JWS6S26XS
   created_at: 2026-03-18T05:31:59.356Z
   started_at: 2026-03-18T11:18:46.679Z
-  notes: []
+  notes:
+    - _ulid: 01KM0BRXVB3B3CN4GEQZCT17H6
+      content: "Implemented ScheduleSchema in src/schema/schedules.ts with croner-based cron validation.
+        Schema fields: _ulid, id, name, cron (5-field only via CronExpressionSchema), timezone
+        (default UTC), action (shared ActionSchema), overlap_policy (skip|buffer_one|allow, default
+        skip), backfill (default false), enabled (default true). Extended MetaManifestSchema with
+        schedules array (defaults to empty). Added LoadedSchedule type and schedule loading in
+        parser/meta.ts. Added validateScheduleAgentRefs in parser/validate.ts for cross-ref agent
+        validation. 33 tests cover all 4 ACs. Full test suite passes (1 pre-existing failure in
+        review-cli.test.ts unrelated to changes)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T11:37:24.587Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVVTX82AVEVSDAKYKFC2W
