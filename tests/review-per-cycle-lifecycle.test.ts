@@ -45,7 +45,7 @@ describe("review per-cycle lifecycle", () => {
 
     // Reviewer submits request_changes verdict (auto-closes review, kicks task to needs_work)
     kspec(
-      "review verdict @cycle1-review --decision request_changes --reviewer alice --version-hash hash1",
+      "review verdict @cycle1-review --decision request_changes --reviewer alice",
       tempDir,
     );
 
@@ -102,7 +102,7 @@ describe("review per-cycle lifecycle", () => {
       tempDir,
     );
     kspec(
-      "review verdict @hist-review-1 --decision request_changes --reviewer alice --version-hash hash1",
+      "review verdict @hist-review-1 --decision request_changes --reviewer alice",
       tempDir,
     );
 
@@ -116,7 +116,7 @@ describe("review per-cycle lifecycle", () => {
       tempDir,
     );
     kspec(
-      "review verdict @hist-review-2 --decision approve --reviewer bob --version-hash hash2",
+      "review verdict @hist-review-2 --decision approve --reviewer bob",
       tempDir,
     );
 
@@ -157,7 +157,7 @@ describe("review per-cycle lifecycle", () => {
       tempDir,
     );
     kspec(
-      "review verdict @indep-r1 --decision request_changes --reviewer alice --version-hash hash1",
+      "review verdict @indep-r1 --decision request_changes --reviewer alice",
       tempDir,
     );
     kspec("task start @indep-test", tempDir);
@@ -169,7 +169,7 @@ describe("review per-cycle lifecycle", () => {
       tempDir,
     );
     kspec(
-      "review verdict @indep-r2 --decision request_changes --reviewer alice --version-hash hash2",
+      "review verdict @indep-r2 --decision request_changes --reviewer alice",
       tempDir,
     );
     kspec("task start @indep-test", tempDir);
@@ -181,7 +181,7 @@ describe("review per-cycle lifecycle", () => {
       tempDir,
     );
     kspec(
-      "review verdict @indep-r3 --decision approve --reviewer bob --version-hash hash3",
+      "review verdict @indep-r3 --decision approve --reviewer bob",
       tempDir,
     );
 

@@ -537,9 +537,9 @@ describe("Integration: review CLI commands", () => {
     });
 
     // AC: @review-cli-mutation-commands ac-3
-    it("should set an approve verdict with version binding", () => {
+    it("should set an approve verdict with auto-derived version", () => {
       kspec(
-        `review verdict @${reviewSlug} --decision approve --reviewer alice --version-base a1 --version-head b1`,
+        `review verdict @${reviewSlug} --decision approve --reviewer alice`,
         tempDir,
       );
 
@@ -547,7 +547,7 @@ describe("Integration: review CLI commands", () => {
         verdicts: Array<{
           reviewer: string;
           decision: string;
-          applies_to_version: { type: string };
+          applies_to_version: { type: string; base_commit?: string; head_commit?: string };
         }>;
         disposition: string;
         events: Array<{ event_type: string }>;
@@ -556,14 +556,17 @@ describe("Integration: review CLI commands", () => {
       expect(review.verdicts).toHaveLength(1);
       expect(review.verdicts[0].reviewer).toBe("alice");
       expect(review.verdicts[0].decision).toBe("approve");
+      // Version auto-derived from code subject (--base a1 --head b1 on review add)
       expect(review.verdicts[0].applies_to_version.type).toBe("code_compare");
+      expect(review.verdicts[0].applies_to_version.base_commit).toBe("a1");
+      expect(review.verdicts[0].applies_to_version.head_commit).toBe("b1");
       expect(review.disposition).toBe("approved");
       expect(review.events.some((e) => e.event_type === "verdict_submitted")).toBe(true);
     });
 
     it("should compute changes_requested disposition", () => {
       kspec(
-        `review verdict @${reviewSlug} --decision request_changes --version-base a1 --version-head b1`,
+        `review verdict @${reviewSlug} --decision request_changes`,
         tempDir,
       );
 
@@ -574,7 +577,7 @@ describe("Integration: review CLI commands", () => {
     // AC: @review-record-per-cycle-lifecycle ac-1
     it("should auto-close review on approve verdict", () => {
       kspec(
-        `review verdict @${reviewSlug} --decision approve --reviewer alice --version-base a1 --version-head b1`,
+        `review verdict @${reviewSlug} --decision approve --reviewer alice`,
         tempDir,
       );
 
@@ -594,7 +597,7 @@ describe("Integration: review CLI commands", () => {
     // AC: @review-record-per-cycle-lifecycle ac-1
     it("should auto-close review on request_changes verdict", () => {
       kspec(
-        `review verdict @${reviewSlug} --decision request_changes --reviewer bob --version-base a1 --version-head b1`,
+        `review verdict @${reviewSlug} --decision request_changes --reviewer bob`,
         tempDir,
       );
 
@@ -611,7 +614,7 @@ describe("Integration: review CLI commands", () => {
       kspec(`review open @${reviewSlug}`, tempDir);
 
       kspec(
-        `review verdict @${reviewSlug} --decision comment --reviewer carol --version-base a1 --version-head b1`,
+        `review verdict @${reviewSlug} --decision comment --reviewer carol`,
         tempDir,
       );
 
@@ -625,7 +628,7 @@ describe("Integration: review CLI commands", () => {
     // AC: @trait-error-guidance ac-5
     it("should error on invalid decision", () => {
       const result = kspecRun(
-        `review verdict @${reviewSlug} --decision invalid --version-base a1 --version-head b1`,
+        `review verdict @${reviewSlug} --decision invalid`,
         tempDir,
         { expectFail: true },
       );
