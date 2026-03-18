@@ -339,18 +339,34 @@ describe("AC: @dispatch-schedule-entities ac-3 — buffer_one overlap policy", (
 
 describe("AC: @dispatch-schedule-entities ac-4 — disabled schedules", () => {
   // AC: @dispatch-schedule-entities ac-4
-  it("should not fire ticks for disabled schedules", async () => {
+  it("should skip disabled schedules during evaluation loop", async () => {
+    // Use a schedule whose cron always matches (next_tick will be ≤ now by the
+    // time the evaluation fires). Short interval so the eval loop runs quickly.
     const schedule = makeSchedule({ enabled: false, cron: "* * * * *" });
-    const { engine, executeCalls } = createEngine([schedule]);
+    const { executor, executeCalls } = createMockActionExecutor();
     const tickEvents = collectEvents(eventBus, "schedule.tick");
 
+    const engine = new ScheduleEngine({
+      projectDir: "/tmp/test-project",
+      eventBus,
+      actionExecutor: executor,
+      evaluationIntervalMs: 50, // short interval — evaluation fires quickly
+      scheduleLoader: async () => [schedule],
+    });
+
     await engine.start();
+
+    // Wait for at least one evaluation cycle to run
+    await new Promise((r) => setTimeout(r, 200));
+
+    // The evaluation loop should have skipped the disabled schedule
+    expect(tickEvents.length).toBe(0);
+    expect(executeCalls.length).toBe(0);
 
     const status = engine.getStatus();
     expect(status.length).toBe(1);
     expect(status[0].enabled).toBe(false);
-    expect(tickEvents.length).toBe(0);
-    expect(executeCalls.length).toBe(0);
+    expect(status[0].run_count).toBe(0);
 
     await engine.stop();
   });
@@ -387,7 +403,7 @@ describe("AC: @dispatch-schedule-entities ac-5 — allow overlap policy", () => 
 
 describe("AC: @dispatch-schedule-entities ac-6 — config reload", () => {
   // AC: @dispatch-schedule-entities ac-6
-  it("should detect added schedules after config reload", async () => {
+  it("should detect added schedules via hot-reload during evaluation", async () => {
     const schedule1 = makeSchedule({ id: "schedule-1", name: "Schedule 1" });
     let currentSchedules: LoadedSchedule[] = [schedule1];
     const { executor } = createMockActionExecutor();
@@ -396,16 +412,18 @@ describe("AC: @dispatch-schedule-entities ac-6 — config reload", () => {
       projectDir: "/tmp/test-project",
       eventBus,
       actionExecutor: executor,
-      evaluationIntervalMs: 100_000,
+      evaluationIntervalMs: 50, // short interval for hot-reload
       scheduleLoader: async () => currentSchedules,
     });
 
     await engine.start();
     expect(engine.getStatus().length).toBe(1);
 
+    // schedule-2 doesn't exist yet
     let result = await engine.triggerSchedule("schedule-2");
     expect(result.accepted).toBe(false);
 
+    // Add schedule-2 to config — the evaluation loop should pick it up
     const schedule2 = makeSchedule({
       _ulid: "01TEST00000000000000000002",
       id: "schedule-2",
@@ -413,10 +431,10 @@ describe("AC: @dispatch-schedule-entities ac-6 — config reload", () => {
     });
     currentSchedules = [schedule1, schedule2];
 
-    // Restart picks up new config
-    await engine.stop();
-    await engine.start();
+    // Wait for evaluation cycle to hot-reload (no stop/start)
+    await new Promise((r) => setTimeout(r, 200));
 
+    // Config reload during evaluation should have detected the new schedule
     expect(engine.getStatus().length).toBe(2);
     result = await engine.triggerSchedule("schedule-2");
     expect(result.accepted).toBe(true);
@@ -425,7 +443,7 @@ describe("AC: @dispatch-schedule-entities ac-6 — config reload", () => {
   });
 
   // AC: @dispatch-schedule-entities ac-6
-  it("should remove schedules that are no longer in config", async () => {
+  it("should remove schedules via hot-reload during evaluation", async () => {
     const schedule1 = makeSchedule({ id: "schedule-1", name: "Schedule 1" });
     const schedule2 = makeSchedule({
       _ulid: "01TEST00000000000000000002",
@@ -439,17 +457,20 @@ describe("AC: @dispatch-schedule-entities ac-6 — config reload", () => {
       projectDir: "/tmp/test-project",
       eventBus,
       actionExecutor: executor,
-      evaluationIntervalMs: 100_000,
+      evaluationIntervalMs: 50, // short interval for hot-reload
       scheduleLoader: async () => currentSchedules,
     });
 
     await engine.start();
     expect(engine.getStatus().length).toBe(2);
 
+    // Remove schedule-2 from config
     currentSchedules = [schedule1];
-    await engine.stop();
-    await engine.start();
 
+    // Wait for evaluation cycle to hot-reload (no stop/start)
+    await new Promise((r) => setTimeout(r, 200));
+
+    // Config reload during evaluation should have removed schedule-2
     expect(engine.getStatus().length).toBe(1);
     expect(engine.getStatus()[0].id).toBe("schedule-1");
 
