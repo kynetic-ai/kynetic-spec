@@ -103982,6 +103982,16 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T07:26:28.961Z
+    - _ulid: 01KKZYS3CJ6P9Y01D6TCMTT4ZB
+      content: "[FIX_CYCLE: 1] Merged latest dev into task branch, resolved merge conflicts in
+        tests/yaml-round-trip-stability.test.ts (combined our meta manifest tests with new
+        inbox/triage/workflow-run/dispatch-workspace tests from dev). Fixed duplicate withFileLock
+        import in meta.ts. All 56 round-trip stability tests pass. Full suite: 5864 passed, 1 failed
+        (pre-existing review-cli examined_commit environment-dependent failure, same as noted in
+        prior review)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T07:50:18.770Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6CD2X6EKHGNE47Y8113HH
