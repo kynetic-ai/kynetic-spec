@@ -14561,6 +14561,20 @@ reviews:
         runner: manual
         created_at: 2026-03-18T10:40:13.702Z
         completed_at: 2026-03-18T10:40:13.702Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0bc7850b39feba9a789c532f971f7cd7d808d2e
+          head_commit: 95f59903248481497072cc172341366343df7aaa
+        evidence: "Cycle 1 MUST-FIX blocker resolved: _reconcile() now gates sync on _isTargetSyncStale()
+          (line 1211). Test for ac-pull-target-periodic exercises _reconcile() path directly,
+          verifying fresh timestamp skips sync and stale timestamp triggers it. Suggestions also
+          addressed: dead code removed, GIT_WORK_TREE comment clarified."
+        name: cycle-1-fix
+        required: true
+        runner: manual
+        created_at: 2026-03-18T10:40:16.649Z
+        completed_at: 2026-03-18T10:40:16.649Z
     events:
       - _ulid: 01KM07Z44FRNN6GNPKJV3Q6QQV
         actor: "@claude"
@@ -14603,6 +14617,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T10:40:13.817Z
+      - _ulid: 01KM08GABYYA9TDZ8YEMJP4GVX
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: cycle-1-fix
+        timestamp: 2026-03-18T10:40:16.766Z
     examined_commit: 95f59903248481497072cc172341366343df7aaa
     external_links: []
     lifecycle_state: open
@@ -14648,5 +14669,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T10:30:53.328Z
-    updated_at: 2026-03-18T10:40:13.702Z
+    updated_at: 2026-03-18T10:40:16.649Z
     notes: []
