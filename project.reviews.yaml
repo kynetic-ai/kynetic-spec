@@ -18354,6 +18354,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-18T16:53:34.216Z
         completed_at: 2026-03-18T16:53:34.216Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: none
+        evidence: 365 code_compare entries converted to entity_version on non-code subjects. 14 code_compare
+          preserved on 4 code-subject reviews. Dispositions improved from ~4 to 86 approved.
+        name: data-integrity
+        required: true
+        runner: manual
+        created_at: 2026-03-18T16:53:37.915Z
+        completed_at: 2026-03-18T16:53:37.915Z
     events:
       - _ulid: 01KM0XDVX913WRJBVM5DBC887M
         actor: "@claude"
@@ -18382,6 +18393,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-18T16:53:34.529Z
+      - _ulid: 01KM0XVYRTB38DQ9C4PXYPPKNZ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: data-integrity
+        timestamp: 2026-03-18T16:53:38.202Z
     examined_commit: e5df80e26f4b1c62b427f72f4cb94bb2feaa23ff
     external_links: []
     lifecycle_state: open
@@ -18394,5 +18412,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T16:45:56.522Z
-    updated_at: 2026-03-18T16:53:34.216Z
+    updated_at: 2026-03-18T16:53:37.915Z
     notes: []
