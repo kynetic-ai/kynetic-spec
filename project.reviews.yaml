@@ -18164,9 +18164,22 @@ reviews:
           status: pass
           name: typescript
         timestamp: 2026-03-18T16:07:34.726Z
+      - _ulid: 01KM0V89WB5FMP0AG6Z35VAAQG
+        actor: agent@kspec-reviewer
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-18T16:07:57.067Z
+      - _ulid: 01KM0V89WBNS958V74NDNJPM1S
+        actor: agent@kspec-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T16:07:57.067Z
     examined_commit: e34b1ad7fc6b947dd15381d2d76a4e63da9fd611
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -18174,9 +18187,17 @@ reviews:
       ref: "@task-cli-shared-disposition"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 96603948244358b7704e3319071dc50f19c7613b
+          head_commit: e34b1ad7fc6b947dd15381d2d76a4e63da9fd611
+        decision: approve
+        reviewer: agent@kspec-reviewer
+        role: reviewer
+        created_at: 2026-03-18T16:07:56.762Z
     created_at: 2026-03-18T16:01:42.389Z
-    updated_at: 2026-03-18T16:07:34.557Z
+    updated_at: 2026-03-18T16:07:56.762Z
     notes: []
   - _ulid: 01KM0V1N7EGRR82VGBGR0DEP2W
     slugs: []
