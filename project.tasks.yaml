@@ -103951,6 +103951,17 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T00:23:44.409Z
+    - _ulid: 01KKZ5VEV1WJC32A5RNEVJMFZE
+      content: "Review cycle 2: Code approved — implementation is correct, tests are thorough, AC coverage
+        verified. However, merge into dev failed with a textual conflict in
+        tests/yaml-round-trip-stability.test.ts. The conflict: dev now has the
+        saveDispatchWorkspaceRecord round-trip tests (from 42a4d277), and this branch replaced the
+        same location with saveTriageRecord tests. Both describe blocks must coexist. Resolution:
+        rebase or merge from current dev (42a4d277), keeping BOTH the dispatch workspace tests and
+        the triage tests. Only the test file and its imports need conflict resolution."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T00:34:41.633Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6CGBRT6J6F804PJ1QJW3G
