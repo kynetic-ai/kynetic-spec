@@ -12018,6 +12018,12 @@ reviews:
         payload:
           thread_ulid: 01KKZT3MFBSCXD24FHCVE65RD7
         timestamp: 2026-03-18T06:47:32.709Z
+      - _ulid: 01KKZV681P7YKCNY44F2A07GVR
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKZT3ZRFVB59V8EPCCG63SZN
+        timestamp: 2026-03-18T06:47:35.222Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -12433,6 +12439,13 @@ reviews:
               push origin --delete.' The git commands belong in task descriptions and implementation
               notes, not ACs."
             created_at: 2026-03-18T06:28:52.624Z
+          - _ulid: 01KKZV67X6B7FH5YGWW3PKE1FS
+            author: "@claude"
+            body: Removed all git commands from AC then-clauses. ACs now describe observable behavior (e.g.
+              'pushes with upstream tracking established' not 'git push -u', 'safely replaces stale
+              remote ref' not '--force-with-lease'). Implementation details moved to task How
+              sections.
+            created_at: 2026-03-18T06:47:35.078Z
         kind: blocker
       - _ulid: 01KKZT73SR8S5YFBP5M6H6XCR4
         anchor:
@@ -12460,5 +12473,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-18T06:31:04.294Z
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:47:32.575Z
+    updated_at: 2026-03-18T06:47:35.078Z
     notes: []
