@@ -14696,7 +14696,20 @@ reviews:
     slugs: []
     title: Review dispatch branch push lifecycle
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0bc7850b
+          head_commit: 5232b0cf0e35
+        evidence: 271 test files passed (6118 tests passed, 3 skipped). 1 failure in review-cli.test.ts is
+          pre-existing (unmodified file — examined_commit auto-detection behavior), not a regression
+          from this commit.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T10:58:36.905Z
+        completed_at: 2026-03-18T10:58:36.905Z
     events:
       - _ulid: 01KM08XWWCKC6M8K7HE7WE3EM1
         actor: "@claude"
@@ -14725,6 +14738,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM09HHNRP9JE9KBB2EBJ2504
         timestamp: 2026-03-18T10:58:25.719Z
+      - _ulid: 01KM09HWVS7N97X6VKHYJ9FYQW
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T10:58:37.049Z
     examined_commit: 5232b0cf0e354072aea5cc041e6e7e774d077e5d
     external_links: []
     lifecycle_state: open
@@ -14776,5 +14796,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T10:47:41.708Z
-    updated_at: 2026-03-18T10:58:25.592Z
+    updated_at: 2026-03-18T10:58:36.905Z
     notes: []
