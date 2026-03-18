@@ -17307,6 +17307,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-18T15:07:24.646Z
+      - _ulid: 01KM0QT4H29RFPAKQC3FJEV6A7
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0QT48C20XPVM92STAQSVN4
+        timestamp: 2026-03-18T15:07:47.106Z
     examined_commit: 2dcce1c1b50abdac83c5d5dd1add93610e82e8e4
     external_links: []
     lifecycle_state: open
@@ -17316,8 +17323,63 @@ reviews:
       content_hash: ""
       ref: "@task-spec-review-version-auto-derive"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM0QT48C20XPVM92STAQSVN4
+        entries:
+          - _ulid: 01KM0QT48CVY8310TBEP49PM68
+            author: "@claude"
+            body: >-
+              Review Evidence Log
+
+
+              Files read:
+
+              - kspec item get @review-cli-mutation-commands (ac-2, ac-3 updated)
+
+              - kspec item get @review-verdicts-and-resolution-lifecycle (ac-1, ac-5 updated)
+
+              - kspec item get @review-cli-commands (ac-2 updated)
+
+              - tests/review-cli.test.ts:144-153 (investigated test failure)
+
+
+              Commands run:
+
+              - npm test — 283/284 files passed, 6442/6446 tests. 1 failure is pre-existing env
+              isolation bug (KSPEC_DISPATCH_CANONICAL_HEAD leaks into test that expects null
+              examined_commit)
+
+              - kspec validate — pre-existing reference errors only, no new issues
+
+              - git diff origin/dev..HEAD — confirmed no code changes in this task (branch is at dev
+              HEAD, all changes are in shadow branch ACs)
+
+
+              Claims verified:
+
+              - Worker claim: "All updates done via kspec batch (single atomic shadow branch
+              commit)" — verified via kspec-meta shadow log showing batch commit
+
+              - Worker claim: "No code changes in this task" — verified via git diff showing branch
+              HEAD == dev HEAD
+
+              - Each of 5 AC changes matches task description specification
+
+
+              Categories searched:
+
+              - Correctness: AC text accurately describes auto-derivation behavior with correct
+              subject type mapping (code_compare vs entity_version)
+
+              - Spec alignment: All 5 ACs match the behavior described in the task description
+
+              - Integration: @review-cli-commands ac-2 correctly adds shared library function
+              requirement (computeDisposition, evaluateGates)
+
+              - Completeness: All 5 ACs listed in task description were updated, no extras or misses
+            created_at: 2026-03-18T15:07:46.828Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T15:06:54.524Z
-    updated_at: 2026-03-18T15:07:24.421Z
+    updated_at: 2026-03-18T15:07:46.828Z
     notes: []
