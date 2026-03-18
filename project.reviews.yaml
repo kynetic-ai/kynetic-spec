@@ -16077,9 +16077,22 @@ reviews:
           kind: nit
           thread_ulid: 01KM0H25Z32PVY4F9VT2DJJ8GQ
         timestamp: 2026-03-18T13:09:50.835Z
+      - _ulid: 01KM0H2C6WH5KF3H2ABEVSJRWA
+        actor: pr-reviewer@dispatch
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-18T13:09:57.084Z
+      - _ulid: 01KM0H2C6WCMAYR04WDTZYP175
+        actor: pr-reviewer@dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T13:09:57.084Z
     examined_commit: ef2de07afb865a97e51fc45a65ef8f53a68d0afe
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -16107,7 +16120,15 @@ reviews:
               test correctly validates practical behavior."
             created_at: 2026-03-18T13:09:50.692Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 263970e4d
+          head_commit: ef2de07af
+        decision: approve
+        reviewer: pr-reviewer@dispatch
+        role: reviewer
+        created_at: 2026-03-18T13:09:56.947Z
     created_at: 2026-03-18T13:03:05.181Z
-    updated_at: 2026-03-18T13:09:50.692Z
+    updated_at: 2026-03-18T13:09:56.947Z
     notes: []
