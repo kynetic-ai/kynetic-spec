@@ -11080,7 +11080,7 @@ workspaces:
         head: 7656f7bb405dee7c1feaae24f00f312fb5d4fedf
         last_seen_at: 2026-03-18T16:03:27.387Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-automation-view-01kkzpw5
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 96603948244358b7704e3319071dc50f19c7613b
     bootstrap:
       status: succeeded
@@ -11143,9 +11143,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T16:01:01.615Z
-      last_reconciled_at: 2026-03-18T16:09:40.168Z
+      last_reconciled_at: 2026-03-18T16:09:50.191Z
       created_at: 2026-03-18T15:49:51.553Z
-      updated_at: 2026-03-18T16:09:40.168Z
+      updated_at: 2026-03-18T16:09:50.191Z
     workspace_id: dispatch-workspace-01KM0NVT06TE182ZWP2B5KNA6N
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
