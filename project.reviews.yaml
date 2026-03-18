@@ -12523,6 +12523,17 @@ reviews:
         required: true
         created_at: 2026-03-18T06:56:52.862Z
         completed_at: 2026-03-18T06:56:52.862Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: 537c5f637817
+        evidence: Original 10-AC task split into target-sync (7 ACs) + degraded-state (9 ACs).
+          Degraded-state is large but tightly coupled state machine — further splitting would
+          fragment.
+        name: blockers-fixed-task-split
+        required: true
+        created_at: 2026-03-18T06:56:55.645Z
+        completed_at: 2026-03-18T06:56:55.645Z
     events:
       - _ulid: 01KKZV6V96F7RVB0JX539PQ21H
         actor: "@claude"
@@ -12551,6 +12562,13 @@ reviews:
           status: pass
           name: blockers-fixed-impl-leakage
         timestamp: 2026-03-18T06:56:52.999Z
+      - _ulid: 01KKZVQBF4FPHEGBXHK5VWW4Q2
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: blockers-fixed-task-split
+        timestamp: 2026-03-18T06:56:55.780Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -12563,5 +12581,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T06:47:54.918Z
-    updated_at: 2026-03-18T06:56:52.862Z
+    updated_at: 2026-03-18T06:56:55.645Z
     notes: []
