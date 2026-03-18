@@ -11780,6 +11780,13 @@ reviews:
           kind: question
           thread_ulid: 01KKZT12ZNFM0GQYG2ZVZREAB7
         timestamp: 2026-03-18T06:27:17.755Z
+      - _ulid: 01KKZT1C4SEAFBT1ANS9RB2WSR
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKZT1C0SMS73E3WW3YT3BNH5
+        timestamp: 2026-03-18T06:27:27.001Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -11929,7 +11936,25 @@ reviews:
               them.
             created_at: 2026-03-18T06:27:17.621Z
         kind: question
+      - _ulid: 01KKZT1C0SMS73E3WW3YT3BNH5
+        anchor:
+          type: structured
+          field: ac-push-first-invocation
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KKZT1C0SRGYHQH4ZAGKK6Y9V
+            author: "@claude"
+            body: "Several ACs are well-sized and follow the reference plan's style closely:
+              ac-push-first-invocation, ac-push-after-invocation, ac-push-target-after-merge,
+              ac-pull-target-on-start, ac-degraded-no-provision, ac-no-remote,
+              ac-cleanup-remote-branch, and all four @dispatch-sync-configuration ACs
+              (ac-sync-interval, ac-remote-sync-disabled, ac-remote-sync-default, ac-validation).
+              These each test one observable behavior with clear given/when/then separation. Good
+              work."
+            created_at: 2026-03-18T06:27:26.873Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:27:17.621Z
+    updated_at: 2026-03-18T06:27:26.873Z
     notes: []
