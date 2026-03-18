@@ -4869,6 +4869,9 @@ modules:
               use explicit program + args, not shell strings, to eliminate
               injection risks. Environment variables from the event payload use
               a namespaced allowlist.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
