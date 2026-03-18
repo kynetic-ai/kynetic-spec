@@ -17814,3 +17814,29 @@ reviews:
     created_at: 2026-03-18T15:43:59.401Z
     updated_at: 2026-03-18T15:44:57.776Z
     notes: []
+  - _ulid: 01KM0TTWAWA3WKZYQ1S91JM8PQ
+    slugs: []
+    title: Review task-automation-view (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0TTWAVDEBPSC42HE6V1SGF
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T16:00:37.212Z
+    examined_commit: 7656f7bb405dee7c1feaae24f00f312fb5d4fedf
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-automation-view"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T16:00:37.212Z
+    updated_at: null
+    notes: []
