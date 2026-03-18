@@ -13819,3 +13819,29 @@ reviews:
     created_at: 2026-03-18T09:13:59.926Z
     updated_at: 2026-03-18T09:14:40.306Z
     notes: []
+  - _ulid: 01KM043KNE5VCKKWNPRHP53165
+    slugs: []
+    title: Review task-command-action
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM043KNET4TFVNZ9ASYW4FTX
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T09:23:25.998Z
+    examined_commit: c3b3d1b39059489fb174035e4bec6527043323cc
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-command-action"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T09:23:25.998Z
+    updated_at: null
+    notes: []
