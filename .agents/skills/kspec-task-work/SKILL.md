@@ -131,7 +131,7 @@ git fetch origin
 git rebase origin/<integration-branch>  # e.g., dev or main
 ```
 
-In dispatch mode, the branch is already set up by the dispatch engine — skip step 4 but still rebase here.
+In dispatch mode, the dispatch engine handles branch creation (step 4), so only the rebase in this step is needed.
 
 This keeps your branch fresh with the latest integrated work and lets you resolve conflicts early — while you have full context of your changes. If the rebase has conflicts:
 
