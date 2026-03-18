@@ -17028,3 +17028,29 @@ reviews:
     created_at: 2026-03-18T14:33:03.679Z
     updated_at: 2026-03-18T14:34:06.755Z
     notes: []
+  - _ulid: 01KM0NX4MZX2J9KC7K2AN3J78Z
+    slugs: []
+    title: Review task-cancel-old-trigger-task (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0NX4MZTZH9EZY4J3XE8269
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T14:34:28.383Z
+    examined_commit: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKZPW8ER84M8MY528CFW576N"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T14:34:28.383Z
+    updated_at: null
+    notes: []
