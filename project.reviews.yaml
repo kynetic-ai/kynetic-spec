@@ -13217,6 +13217,20 @@ reviews:
         runner: kspec
         created_at: 2026-03-18T08:36:56.991Z
         completed_at: 2026-03-18T08:36:56.991Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 8166d8d65
+          head_commit: e33ebbbff
+        evidence: All 9 own ACs (ac-1 through ac-9) have annotated tests in tests/action-model.test.ts. All
+          6 trait ACs (@trait-error-guidance ac-1 through ac-6) annotated as N/A with valid
+          justifications — ActionExecutor is a library component, not a CLI command; error
+          formatting is the responsibility of CLI consumers.
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T08:37:05.680Z
+        completed_at: 2026-03-18T08:37:05.680Z
     events:
       - _ulid: 01KM01CSZHVA6K4YP5H9F05S95
         actor: "@claude"
@@ -13266,6 +13280,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-18T08:36:57.102Z
+      - _ulid: 01KM01ERMYY7XHWP6P6RQH2GC8
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T08:37:05.823Z
     examined_commit: e33ebbbffa0bf82e7955605e1a0669a3004c1f31
     external_links: []
     lifecycle_state: open
@@ -13317,5 +13338,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T08:36:01.650Z
-    updated_at: 2026-03-18T08:36:56.991Z
+    updated_at: 2026-03-18T08:37:05.680Z
     notes: []
