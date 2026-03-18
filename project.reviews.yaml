@@ -11988,6 +11988,12 @@ reviews:
         payload:
           thread_ulid: 01KKZT2WV4A05C8ABR6VW4AX07
         timestamp: 2026-03-18T06:47:19.408Z
+      - _ulid: 01KKZV5V21XVF8QW3RSM50D7DB
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KKZT2WV4A05C8ABR6VW4AX07
+        timestamp: 2026-03-18T06:47:21.921Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -12323,6 +12329,8 @@ reviews:
               (9 ACs: state machine + status surfaces). Degraded state depends on target sync."
             created_at: 2026-03-18T06:47:19.276Z
         kind: blocker
+        resolved_at: 2026-03-18T06:47:21.788Z
+        resolved_by: "@claude"
       - _ulid: 01KKZT39DKWVJ7B2ARE19PSSWD
         anchor:
           type: structured
@@ -12413,5 +12421,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-18T06:31:04.294Z
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:47:19.276Z
+    updated_at: 2026-03-18T06:47:21.788Z
     notes: []
