@@ -105440,6 +105440,7 @@
   created_at: 2026-03-18T05:31:47.907Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPVGQBTNWQK6NCTG0N349A
   slugs:
     - task-event-payloads
@@ -105483,6 +105484,7 @@
   created_at: 2026-03-18T05:31:49.355Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPVJ3JRVBGVQSQZW86C6D7
   slugs:
     - task-action-model
@@ -105664,6 +105666,7 @@
   created_at: 2026-03-18T05:31:54.945Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPVQM496HTQQ054B0S18SN
   slugs:
     - task-hook-schema
@@ -105703,6 +105706,7 @@
   created_at: 2026-03-18T05:31:56.420Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPVS3KNNR0DF6VWXKDP4DT
   slugs:
     - task-hook-executor
@@ -105784,6 +105788,7 @@
   created_at: 2026-03-18T05:31:59.356Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPVVTX82AVEVSDAKYKFC2W
   slugs:
     - task-schedule-engine
@@ -105862,6 +105867,7 @@
   created_at: 2026-03-18T05:32:02.157Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPVYKJDC94YH6XAPNDWV69
   slugs:
     - task-schedule-cli
@@ -105898,6 +105904,7 @@
   created_at: 2026-03-18T05:32:03.570Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPW000MZT1YMECENJX42A0
   slugs:
     - task-event-cli
@@ -105934,6 +105941,7 @@
   created_at: 2026-03-18T05:32:04.992Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPW1EFQEXCA5QXMDP802KX
   slugs:
     - task-daemon-api
@@ -106015,6 +106023,7 @@
   created_at: 2026-03-18T05:32:07.876Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKZPW45E2RJ5PQFP3AEVS35F
   slugs:
     - task-composition-join
@@ -106157,3 +106166,4 @@
   created_at: 2026-03-18T05:32:13.656Z
   notes: []
   todos: []
+  automation: eligible
