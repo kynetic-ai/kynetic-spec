@@ -105712,7 +105712,38 @@
   session_id: 01KM039544WKKWBB85YXDP2H70
   created_at: 2026-03-18T05:31:52.224Z
   started_at: 2026-03-18T09:09:24.374Z
-  notes: []
+  notes:
+    - _ulid: 01KM03SNZ42V9HKTV04R8B70BE
+      content: >-
+        Implemented command action with structured form. Changes:
+
+
+        1. Schema (ac-1): Added shell field (boolean, default false) to CommandActionSchema. Program
+        specified via 'command' field, args as string array, optional cwd override.
+
+
+        2. Template interpolation (ac-2): Already handled by existing resolveTemplateVars per-arg —
+        verified with injection-safety tests proving shell metacharacters and command injection
+        strings are passed as literal argv elements.
+
+
+        3. Environment variables (ac-3): Added buildKspecEnvVars() with KSPEC_ENV_ALLOWLIST (12
+        fields: event_type, event_id, session_id, correlation_id, causation_id, source_type,
+        source_id, task_id, task_ref, from_status, to_status, agent_id). Values > 1KB are truncated
+        with safe multi-byte handling. Injected into spawn env with action.env taking precedence.
+
+
+        4. Shadow branch safety (ac-4): Command runs in project dir via spawn with shell:false by
+        default — no shadow branch mutex interaction. Tests verify cwd defaults to projectDir, not
+        .kspec/.
+
+
+        Note: review-cli.test.ts has a pre-existing failure (examined_commit auto-populates from git
+        HEAD) unrelated to these changes. All 25 new tests and all 49 existing action-model tests
+        pass.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T09:18:00.676Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVMVM269XTHFNX9GRPA5N
