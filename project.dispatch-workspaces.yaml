@@ -9522,7 +9522,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T10:47:36.558Z
+      updated_at: 2026-03-18T10:47:53.714Z
     integration:
       status: merged
       detail: integration:merged
@@ -9538,18 +9538,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T10:30:32.001Z
-      last_reconciled_at: 2026-03-18T10:47:52.879Z
+      last_reconciled_at: 2026-03-18T10:47:53.714Z
       created_at: 2026-03-18T09:55:47.971Z
-      updated_at: 2026-03-18T10:47:52.879Z
+      updated_at: 2026-03-18T10:47:53.714Z
     workspace_id: dispatch-workspace-01KKZWB75X6Q1X1ZZC5S6KBH6B
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 95f59903248481497072cc172341366343df7aaa
-        last_seen_at: 2026-03-18T10:30:31.096Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-target-sync-01kkzwb7-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-dispatch-target-sync/01kkzwb7
