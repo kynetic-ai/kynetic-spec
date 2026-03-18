@@ -8386,12 +8386,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T00:48:08.330Z
+      updated_at: 2026-03-18T00:58:33.528Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T00:48:10.456Z
+      updated_at: 2026-03-18T00:58:33.528Z
     integration:
       status: pending
       detail: null
@@ -8399,7 +8399,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
-      updated_at: 2026-03-18T00:48:08.330Z
+      updated_at: 2026-03-18T00:58:33.528Z
     lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KKXEKWMZN0E7E6V7458E0BV8"
@@ -8407,9 +8407,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T00:37:42.362Z
-      last_reconciled_at: 2026-03-18T00:48:10.456Z
+      last_reconciled_at: 2026-03-18T00:58:33.528Z
       created_at: 2026-03-18T00:24:21.425Z
-      updated_at: 2026-03-18T00:48:10.456Z
+      updated_at: 2026-03-18T00:58:33.528Z
     workspace_id: dispatch-workspace-01KKXEKWMZN0E7E6V7458E0BV8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -8418,5 +8418,5 @@ workspaces:
         branch_mode: branch
         branch_ref: dispatch/task/detect-stale-integration-target-when-dispatch-base-branch-config-changes/01kkxekw
         head: 0856c70e3db6aa88fb57b661fab8bba626e3e153
-        last_seen_at: 2026-03-18T00:37:39.865Z
+        last_seen_at: 2026-03-18T00:58:33.528Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/detect-stale-integration-target-when-dispatch-base-branch-config-changes-01kkxekw
