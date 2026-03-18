@@ -22,7 +22,11 @@ import {
   WorkflowSchema,
 } from "../schema/index.js";
 import { validateHookFilter } from "../schema/hooks.js";
-import { findMetaManifest, getSkillContentPath, loadMetaContext, type LoadedHook, type LoadedSchedule, type LoadedSkill } from "./meta.js";
+import {
+  extractActionTemplates,
+  validateActionTemplates,
+} from "../agent-runtime/action-executor.js";
+import { findMetaManifest, getSkillContentPath, loadMetaContext, type LoadedHook, type LoadedSchedule, type LoadedComposition, type LoadedSkill } from "./meta.js";
 import { loadPlans } from "./plans.js";
 import { findReviewFiles, validateReviewsFile } from "./review-validation.js";
 import {
@@ -127,6 +131,7 @@ export interface ValidationResult {
     skills: number;
     hooks: number;
     schedules: number;
+    compositions: number;
   };
 }
 
@@ -1779,6 +1784,108 @@ function validateScheduleAgentRefs(
 }
 
 // ============================================================
+// COMPOSITION VALIDATION
+// ============================================================
+
+/**
+ * Validate composition on_complete action agent references against known agents.
+ * Agent refs in compositions are errors (not warnings) because they will fail at runtime.
+ *
+ * AC: @dispatch-hook-schema ac-3 — reuses same pattern for composition actions
+ */
+function validateCompositionAgentRefs(
+  compositions: LoadedComposition[],
+  agents: { id: string }[],
+): { file: string; path: string; message: string }[] {
+  const errors: { file: string; path: string; message: string }[] = [];
+  const knownAgentIds = new Set(agents.map(a => a.id));
+
+  for (let i = 0; i < compositions.length; i++) {
+    const comp = compositions[i];
+    if (comp.on_complete.type === "agent") {
+      const agentId = comp.on_complete.agent_id;
+      if (!knownAgentIds.has(agentId)) {
+        errors.push({
+          file: comp._sourceFile || "kynetic.meta.yaml",
+          path: `compositions[${i}].on_complete.agent_id`,
+          message: `Composition '${comp.name}' on_complete references non-existent agent '${agentId}'. Known agents: ${[...knownAgentIds].join(", ") || "(none)"}`,
+        });
+      }
+    }
+  }
+
+  return errors;
+}
+
+// ============================================================
+// TEMPLATE VARIABLE VALIDATION
+// ============================================================
+
+/**
+ * Validate template variables in hook, schedule, and composition actions.
+ * Unknown template variables produce warnings (not errors) because
+ * they pass through unchanged at runtime (AC: @dispatch-action-model ac-8).
+ *
+ * AC: @dispatch-action-model ac-7 — warn on unknown template variables
+ */
+function validateTemplateVars(
+  hooks: LoadedHook[],
+  schedules: LoadedSchedule[],
+  compositions: LoadedComposition[],
+): { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] {
+  const warnings: { ref: string; sourceFile?: string; field: string; warning: "deprecated_target"; message: string }[] = [];
+
+  // Validate hook action templates
+  for (const hook of hooks) {
+    const templates = extractActionTemplates(hook.action);
+    const templateWarnings = validateActionTemplates(templates, hook.on);
+    for (const w of templateWarnings) {
+      warnings.push({
+        ref: `@${hook.name}`,
+        sourceFile: hook._sourceFile,
+        field: `action.${w.variable}`,
+        warning: "deprecated_target",
+        message: `Hook '${hook.name}' action template references unknown variable '{{${w.variable}}}' for event type '${hook.on}'. Available fields: ${w.available_fields.join(", ")}`,
+      });
+    }
+  }
+
+  // Validate schedule action templates (schedules don't have an event type context
+  // since they fire schedule.tick — use that as the event type)
+  for (const schedule of schedules) {
+    const templates = extractActionTemplates(schedule.action);
+    const templateWarnings = validateActionTemplates(templates, "schedule.tick");
+    for (const w of templateWarnings) {
+      warnings.push({
+        ref: `@${schedule.name}`,
+        sourceFile: schedule._sourceFile,
+        field: `action.${w.variable}`,
+        warning: "deprecated_target",
+        message: `Schedule '${schedule.name}' action template references unknown variable '{{${w.variable}}}' for event type 'schedule.tick'. Available fields: ${w.available_fields.join(", ")}`,
+      });
+    }
+  }
+
+  // Validate composition on_complete action templates (no specific event type context)
+  for (const comp of compositions) {
+    const templates = extractActionTemplates(comp.on_complete);
+    // Compositions don't have a specific event type; validate against all known fields
+    const templateWarnings = validateActionTemplates(templates);
+    for (const w of templateWarnings) {
+      warnings.push({
+        ref: `@${comp.name}`,
+        sourceFile: comp._sourceFile,
+        field: `on_complete.${w.variable}`,
+        warning: "deprecated_target",
+        message: `Composition '${comp.name}' on_complete action template references unknown variable '{{${w.variable}}}'. Available fields: ${w.available_fields.join(", ")}`,
+      });
+    }
+  }
+
+  return warnings;
+}
+
+// ============================================================
 // MAIN VALIDATION
 // ============================================================
 
@@ -2049,6 +2156,7 @@ export async function validate(
       skills: metaCtx.skills.length,
       hooks: metaCtx.hooks.length,
       schedules: metaCtx.schedules.length,
+      compositions: metaCtx.compositions.length,
     };
 
     // Validate meta manifest schema with strict ULID validation
@@ -2095,6 +2203,24 @@ export async function validate(
         message: e.message,
       })));
     }
+
+    // Validate composition on_complete agent action references
+    if (metaCtx.compositions.length > 0) {
+      const compositionErrors = validateCompositionAgentRefs(metaCtx.compositions, metaCtx.agents);
+      result.schemaErrors.push(...compositionErrors.map(e => ({
+        file: e.file,
+        path: e.path,
+        message: e.message,
+      })));
+    }
+
+    // AC: @dispatch-action-model ac-7 - validate template variables in actions
+    const templateWarnings = validateTemplateVars(
+      metaCtx.hooks,
+      metaCtx.schedules,
+      metaCtx.compositions,
+    );
+    result.refWarnings.push(...templateWarnings);
   }
 
   // Set valid flag
