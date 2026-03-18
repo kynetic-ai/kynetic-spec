@@ -9598,12 +9598,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T10:46:40.950Z
+      updated_at: 2026-03-18T10:46:43.066Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T10:46:40.950Z
+      updated_at: 2026-03-18T10:46:43.066Z
     integration:
       status: pending
       detail: null
@@ -9611,24 +9611,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b0bc7850b39feba9a789c532f971f7cd7d808d2e
-      updated_at: 2026-03-18T10:46:40.950Z
-    lifecycle_state: ready
+      updated_at: 2026-03-18T10:46:43.066Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKZWB8VH6WS0SSR11DGBMR0R"
     task_slug: task-dispatch-branch-push
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T10:30:33.095Z
-      last_reconciled_at: 2026-03-18T10:46:40.950Z
+      last_reconciled_at: 2026-03-18T10:46:43.066Z
       created_at: 2026-03-18T10:30:32.116Z
-      updated_at: 2026-03-18T10:46:40.950Z
+      updated_at: 2026-03-18T10:46:43.066Z
     workspace_id: dispatch-workspace-01KKZWB8VH6WS0SSR11DGBMR0R
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 5232b0cf0e354072aea5cc041e6e7e774d077e5d
+        last_seen_at: 2026-03-18T10:46:43.066Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-branch-push-01kkzwb8-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-dispatch-branch-push/01kkzwb8
-        head: b0bc7850b39feba9a789c532f971f7cd7d808d2e
-        last_seen_at: 2026-03-18T10:30:32.116Z
+        head: 5232b0cf0e354072aea5cc041e6e7e774d077e5d
+        last_seen_at: 2026-03-18T10:46:43.066Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-branch-push-01kkzwb8
