@@ -13196,6 +13196,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T08:36:17.218Z
+      - _ulid: 01KM01DMEX3T24C300GQRJ5G9C
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM01DMB873PY8BXP28E0PV32
+        timestamp: 2026-03-18T08:36:28.765Z
     examined_commit: e33ebbbffa0bf82e7955605e1a0669a3004c1f31
     external_links: []
     lifecycle_state: open
@@ -13205,8 +13212,29 @@ reviews:
       content_hash: ""
       ref: "@task-action-model"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM01DMB873PY8BXP28E0PV32
+        anchor:
+          type: code
+          commit: e33ebbbff
+          line_end: 544
+          line_start: 476
+          path: src/agent-runtime/action-executor.ts
+          side: head
+        entries:
+          - _ulid: 01KM01DMB8STBJ1Y7AD0HSWDDQ
+            author: "@claude"
+            body: "Potential double action.failed event emission: Both the 'error' and 'close' event handlers on
+              the child process emit action.failed events independently. When a process fails to
+              spawn (e.g., ENOENT), Node.js fires both events. The promise resolve is idempotent
+              (second call is a no-op), so the return value is correct, but onActionRunEvent fires
+              twice with action.failed for the same action_run_id. Event consumers counting or
+              logging failures would see duplicates. Same pattern exists in executeKspec. Fix: add a
+              'settled' boolean guard to prevent duplicate event emission after the first terminal
+              event."
+            created_at: 2026-03-18T08:36:28.648Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T08:36:01.650Z
-    updated_at: 2026-03-18T08:36:17.111Z
+    updated_at: 2026-03-18T08:36:28.648Z
     notes: []
