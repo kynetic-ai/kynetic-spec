@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { DateTimeSchema, RefSchema, UlidSchema } from "./common.js";
+import { HookSchema } from "./hooks.js";
 
 /**
  * ULID schema for meta items - uses the same strict validation as core items.
@@ -405,6 +406,7 @@ export const WorkflowRunsFileSchema = z.object({
 
 /**
  * Meta manifest schema - the root structure for kynetic.meta.yaml
+ * AC: @dispatch-hook-schema ac-4 — hooks defaults to empty array
  */
 export const MetaManifestSchema = z.object({
   kynetic_meta: z.string().default("1.0"),
@@ -413,6 +415,7 @@ export const MetaManifestSchema = z.object({
   conventions: z.array(ConventionSchema).default([]),
   observations: z.array(ObservationSchema).default([]),
   skills: z.array(SkillSchema).default([]),
+  hooks: z.array(HookSchema).default([]),
   includes: z.array(z.string()).default([]),
 });
 

@@ -81,6 +81,11 @@ export const ActionSchema = z.discriminatedUnion("type", [
   NotifyActionSchema,
 ]);
 
+/**
+ * Valid action type identifiers.
+ */
+export const ACTION_TYPES = ["command", "kspec", "agent", "notify"] as const;
+
 // ─── Action Run Schema ───────────────────────────────────────────────────────
 
 /**
