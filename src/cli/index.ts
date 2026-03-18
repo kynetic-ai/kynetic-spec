@@ -21,6 +21,7 @@ import {
   registerCloneForTestingCommand,
   registerDeriveCommand,
   registerDoctorCommand,
+  registerEventCommands,
   registerExportCommand,
   registerGuardCommand,
   registerHelpCommand,
@@ -321,6 +322,7 @@ registerMergeDriverCommand(program);
 registerExportCommand(program);
 registerGuardCommand(program);
 registerHookCommands(program);
+registerEventCommands(program);
 registerUtilCommands(program);
 registerBatchCommand(program);
 registerSkillCommands(program);

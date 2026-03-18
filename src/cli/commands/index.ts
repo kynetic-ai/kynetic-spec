@@ -6,6 +6,7 @@ export { registerBatchCommand } from "./batch.js";
 export { registerCloneForTestingCommand } from "./clone-for-testing.js";
 export { registerDeriveCommand } from "./derive.js";
 export { registerDoctorCommand } from "./doctor.js";
+export { registerEventCommands } from "./event.js";
 export { registerExportCommand } from "./export.js";
 export { registerGuardCommand } from "./guard.js";
 export { registerHelpCommand } from "./help.js";
