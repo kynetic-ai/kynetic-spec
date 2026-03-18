@@ -18417,9 +18417,22 @@ reviews:
           status: pass
           name: script-cleanup
         timestamp: 2026-03-18T16:53:53.367Z
+      - _ulid: 01KM0XWN29N9MXQF8284S85ZND
+        actor: pr-reviewer@kspec.local
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-18T16:54:01.033Z
+      - _ulid: 01KM0XWN2976PP2098T61W524Z
+        actor: pr-reviewer@kspec.local
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T16:54:01.033Z
     examined_commit: e5df80e26f4b1c62b427f72f4cb94bb2feaa23ff
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -18427,7 +18440,14 @@ reviews:
       ref: "@task-remediate-review-versions"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: none
+        decision: approve
+        reviewer: pr-reviewer@kspec.local
+        role: reviewer
+        created_at: 2026-03-18T16:54:00.727Z
     created_at: 2026-03-18T16:45:56.522Z
-    updated_at: 2026-03-18T16:53:53.082Z
+    updated_at: 2026-03-18T16:54:00.727Z
     notes: []
