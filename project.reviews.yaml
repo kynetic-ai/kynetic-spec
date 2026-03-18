@@ -9856,6 +9856,19 @@ reviews:
         runner: manual
         created_at: 2026-03-18T00:57:55.422Z
         completed_at: 2026-03-18T00:57:55.422Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
+          head_commit: ba6b05e773b949f2ce81fc36a7a887c836c3e88f
+        evidence: "Blocker 1 (dispatch workspace regression): dispatch-workspaces.ts identical to dev (zero
+          diff). Blocker 2 (out-of-scope deletions): merge commit ba6b05e77 brings all dev content;
+          diff against dev now scoped to meta.ts + tests only."
+        name: prior-blockers-resolved
+        required: true
+        runner: manual
+        created_at: 2026-03-18T00:57:57.924Z
+        completed_at: 2026-03-18T00:57:57.924Z
     events:
       - _ulid: 01KKZ6SFR1DQY78A57W6SSZ2BS
         actor: "@claude"
@@ -9891,6 +9904,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T00:57:55.512Z
+      - _ulid: 01KKZ762GNJAJ3PSDF7CQDV2EJ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: prior-blockers-resolved
+        timestamp: 2026-03-18T00:57:58.037Z
     examined_commit: ba6b05e773b949f2ce81fc36a7a887c836c3e88f
     external_links: []
     lifecycle_state: open
@@ -9903,5 +9923,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T00:51:05.602Z
-    updated_at: 2026-03-18T00:57:55.422Z
+    updated_at: 2026-03-18T00:57:57.924Z
     notes: []
