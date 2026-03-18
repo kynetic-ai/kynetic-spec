@@ -2935,6 +2935,9 @@ modules:
           Non-goals: persistent event store, guaranteed delivery, replay.
           Events are transient (daemon lifetime). Session event logs provide
           the durable audit trail.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
