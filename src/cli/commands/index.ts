@@ -21,6 +21,7 @@ export { registerPlanCommands } from "./plan.js";
 export { registerRalphCommand } from "./ralph.js";
 export { registerRefsCommand } from "./refs.js";
 export { registerReviewCommands } from "./review.js";
+export { registerScheduleCommands } from "./schedule.js";
 export { registerSearchCommand } from "./search.js";
 export { registerServeCommands } from "./serve.js";
 export { registerSessionCommands } from "./session.js";

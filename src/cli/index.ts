@@ -37,6 +37,7 @@ import {
   registerRalphCommand,
   registerRefsCommand,
   registerReviewCommands,
+  registerScheduleCommands,
   registerSearchCommand,
   registerServeCommands,
   registerSessionCommands,
@@ -322,6 +323,7 @@ registerGuardCommand(program);
 registerUtilCommands(program);
 registerBatchCommand(program);
 registerSkillCommands(program);
+registerScheduleCommands(program);
 registerAgentsCommands(program);
 registerAgentCommands(program);
 
