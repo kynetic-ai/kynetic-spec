@@ -23,7 +23,7 @@ import {
   type LoadedAgent,
 } from "../parser/index.js";
 import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
-import { loadProjectConfig } from "../parser/config.js";
+import { loadProjectConfig, resolveDispatchRemoteSync } from "../parser/config.js";
 import type { InvocationOptions } from "./invocation.js";
 import { SessionEventAccumulator } from "./session-event-accumulator.js";
 import type { SessionEventData } from "./session-event-types.js";
@@ -674,6 +674,17 @@ interface ActiveInvocationRecord {
 type DedupKey = `${string}:${string}:${string}`;
 
 /**
+ * Result of a target branch sync operation.
+ * AC: @dispatch-remote-branch-sync ac-pull-target-on-start through ac-no-remote
+ */
+export type TargetSyncResult =
+  | "synced"
+  | "up_to_date"
+  | "skipped"
+  | "transient_failure"
+  | "diverged";
+
+/**
  * Invocation lifecycle event payload.
  * AC: @daemon-agent-dispatch ac-3, ac-4
  */
@@ -803,6 +814,24 @@ export class DispatchEngine {
   /** Central event bus for structured event emission and subscription. AC: @dispatch-event-envelope ac-1 through ac-6 */
   private _eventBus: EventBus;
 
+  // ─── Target Branch Sync State ───────────────────────────────────────────────
+  // AC: @dispatch-remote-branch-sync ac-pull-target-on-start through ac-no-remote
+
+  /** Whether a target sync is currently in progress (running guard). */
+  private _targetSyncRunning = false;
+  /** Timestamp of last successful target sync (ms since epoch). 0 = never synced. */
+  private _lastTargetSyncTimestamp = 0;
+  /** Counter of consecutive transient sync failures. Reset on any success. */
+  private _consecutiveTransientFailures = 0;
+  /** Resolved remote sync config (cached at start). */
+  private _remoteSyncEnabled: boolean | null = null;
+  /** Resolved remote name for sync operations (cached at start). */
+  private _syncRemote: string | null = null;
+  /** Resolved base branch for sync operations (cached at start). */
+  private _syncBaseBranch: string | null = null;
+  /** Configured sync interval in milliseconds. */
+  private _syncIntervalMs = 0;
+
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
     this.specDir = options.specDir ?? path.join(options.projectDir, ".kspec");
@@ -841,6 +870,9 @@ export class DispatchEngine {
    */
   async start(): Promise<void> {
     this.running = true;
+
+    // AC: @dispatch-remote-branch-sync ac-pull-target-on-start — resolve sync config and sync before bootstrap
+    await this._initTargetSync();
 
     try {
       const ctx = await initContext(this.projectDir);
@@ -1171,8 +1203,15 @@ export class DispatchEngine {
    * Periodic reconciliation: re-evaluate all task states against dispatch rules.
    * Enqueues tasks that match but have no active or queued invocation.
    * AC: @agent-dispatch-engine ac-19
+   * AC: @dispatch-remote-branch-sync ac-pull-target-periodic, ac-pull-target-periodic-deferred
    */
   private async _reconcile(): Promise<void> {
+    // AC: @dispatch-remote-branch-sync ac-pull-target-periodic — sync target as first step
+    // AC: @dispatch-remote-branch-sync ac-pull-target-periodic-deferred — skip if reviewer active
+    if (this._remoteSyncEnabled && !this._hasActiveReviewerInvocation()) {
+      await this._syncTargetBranch();
+    }
+
     try {
       const ctx = await initContext(this.projectDir);
       const tasks = await loadAllTasks(ctx);
@@ -1979,6 +2018,11 @@ export class DispatchEngine {
     const role: DispatchWorkspaceRole =
       entry.change.toStatus === "pending_review" ? "reviewer" : "worker";
     try {
+      // AC: @dispatch-remote-branch-sync ac-pull-target-before-provision — sync if stale
+      if (this._remoteSyncEnabled && this._isTargetSyncStale()) {
+        await this._syncTargetBranch();
+      }
+
       try {
         workspace = await provisionDispatchWorkspace({
           projectDir: this.projectDir,
@@ -2415,5 +2459,256 @@ export class DispatchEngine {
         this.inFlightTaskKeys.delete(inFlightKey);
       }
     }
+  }
+
+  // ─── Target Branch Sync ───────────────────────────────────────────────────
+
+  /**
+   * Initialize target sync config at engine start time. Resolves effective
+   * remote sync setting, remote name, and base branch once so they don't
+   * change mid-run. Then performs the initial sync before bootstrap.
+   *
+   * AC: @dispatch-remote-branch-sync ac-pull-target-on-start
+   * AC: @dispatch-remote-branch-sync ac-no-remote
+   */
+  private async _initTargetSync(): Promise<void> {
+    try {
+      const { config } = await loadProjectConfig(this.projectDir, this.projectDir);
+      this._syncIntervalMs = config.dispatch.sync_interval * 1000;
+
+      // Detect remote
+      const remotes = this._listGitRemotes();
+      const hasRemote = remotes.length > 0;
+      this._remoteSyncEnabled = resolveDispatchRemoteSync(config, hasRemote);
+
+      if (!this._remoteSyncEnabled) {
+        // AC: @dispatch-remote-branch-sync ac-no-remote — skip silently
+        return;
+      }
+
+      this._syncRemote = remotes[0] ?? null;
+      this._syncBaseBranch = config.dispatch.base_branch ?? this._resolveDefaultBaseBranch();
+
+      if (!this._syncBaseBranch || !this._syncRemote) {
+        // Can't sync without a base branch or remote
+        this._remoteSyncEnabled = false;
+        return;
+      }
+
+      console.log(
+        `[dispatch] Target sync enabled: ${this._syncRemote}/${this._syncBaseBranch} (interval: ${config.dispatch.sync_interval}s)`,
+      );
+
+      // AC: @dispatch-remote-branch-sync ac-pull-target-on-start — sync before bootstrap
+      await this._syncTargetBranch();
+    } catch (err) {
+      console.error("[dispatch] Failed to initialize target sync:", err);
+      // Non-fatal: engine continues without sync
+    }
+  }
+
+  /**
+   * Sync the integration target branch from remote using fetch + fast-forward merge.
+   * Uses a running guard so slow fetches don't stack.
+   *
+   * AC: @dispatch-remote-branch-sync ac-pull-ff-only
+   * AC: @dispatch-remote-branch-sync ac-transient-no-degrade
+   * AC: @dispatch-remote-branch-sync ac-no-remote
+   */
+  async _syncTargetBranch(): Promise<TargetSyncResult> {
+    // AC: @dispatch-remote-branch-sync ac-no-remote — skip when no remote
+    if (!this._remoteSyncEnabled || !this._syncRemote || !this._syncBaseBranch) {
+      return "skipped";
+    }
+
+    // Running guard — if a sync is already in progress, skip
+    if (this._targetSyncRunning) {
+      return "skipped";
+    }
+
+    this._targetSyncRunning = true;
+    try {
+      // Step 1: Fetch the target branch from remote
+      const fetchResult = spawnSync(
+        "git",
+        ["fetch", this._syncRemote, this._syncBaseBranch],
+        {
+          cwd: this.projectDir,
+          encoding: "utf-8",
+          stdio: "pipe",
+          timeout: 30_000,
+        },
+      );
+
+      if (fetchResult.status !== 0) {
+        // AC: @dispatch-remote-branch-sync ac-transient-no-degrade — warn and continue
+        this._consecutiveTransientFailures++;
+        const stderr = fetchResult.stderr?.trim() ?? "";
+        console.warn(
+          `[dispatch] Target sync fetch failed (attempt ${this._consecutiveTransientFailures}): ${stderr}`,
+        );
+
+        // AC: @dispatch-remote-branch-sync (escalation is handled by degraded-state task)
+        if (this._consecutiveTransientFailures >= 5) {
+          console.warn(
+            `[dispatch] Persistent target sync failures: ${this._consecutiveTransientFailures} consecutive failures`,
+          );
+        }
+
+        return "transient_failure";
+      }
+
+      // Step 2: Fast-forward merge the target branch
+      // AC: @dispatch-remote-branch-sync ac-pull-ff-only — no merge commits
+      const mergeResult = spawnSync(
+        "git",
+        ["merge", "--ff-only", `${this._syncRemote}/${this._syncBaseBranch}`],
+        {
+          cwd: this.projectDir,
+          encoding: "utf-8",
+          stdio: "pipe",
+          timeout: 10_000,
+          env: {
+            ...process.env,
+            // Ensure we're merging into the correct branch
+            GIT_WORK_TREE: this.projectDir,
+          },
+        },
+      );
+
+      if (mergeResult.status !== 0) {
+        const stderr = mergeResult.stderr?.trim() ?? "";
+        const stdout = mergeResult.stdout?.trim() ?? "";
+        const isAlreadyUpToDate =
+          stdout.includes("Already up to date") || stdout.includes("Already up-to-date");
+
+        if (isAlreadyUpToDate) {
+          this._consecutiveTransientFailures = 0;
+          this._lastTargetSyncTimestamp = Date.now();
+          return "up_to_date";
+        }
+
+        // Divergence detected — the degraded state task handles the state machine
+        console.warn(
+          `[dispatch] Target branch fast-forward failed (divergence): ${stderr || stdout}`,
+        );
+        return "diverged";
+      }
+
+      // Success
+      this._consecutiveTransientFailures = 0;
+      this._lastTargetSyncTimestamp = Date.now();
+
+      const stdout = mergeResult.stdout?.trim() ?? "";
+      if (stdout.includes("Already up to date") || stdout.includes("Already up-to-date")) {
+        return "up_to_date";
+      }
+
+      console.log(`[dispatch] Target branch synced: ${this._syncRemote}/${this._syncBaseBranch}`);
+      return "synced";
+    } finally {
+      this._targetSyncRunning = false;
+    }
+  }
+
+  /**
+   * Check whether the last target sync is stale relative to the sync interval.
+   * AC: @dispatch-remote-branch-sync ac-pull-target-before-provision
+   */
+  private _isTargetSyncStale(): boolean {
+    if (this._syncIntervalMs <= 0) return false;
+    if (this._lastTargetSyncTimestamp === 0) return true;
+    return (Date.now() - this._lastTargetSyncTimestamp) > this._syncIntervalMs;
+  }
+
+  /**
+   * Check whether a reviewer invocation is currently active.
+   * AC: @dispatch-remote-branch-sync ac-pull-target-periodic-deferred
+   */
+  private _hasActiveReviewerInvocation(): boolean {
+    for (const record of this.activeInvocationDetails.values()) {
+      if (record.role === "reviewer") {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * List git remotes from the project directory, origin first.
+   */
+  private _listGitRemotes(): string[] {
+    const result = spawnSync("git", ["remote"], {
+      cwd: this.projectDir,
+      encoding: "utf-8",
+      stdio: "pipe",
+    });
+    if (result.status !== 0 || !result.stdout) {
+      return [];
+    }
+    const remotes = result.stdout
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .sort();
+    const originFirst = remotes.filter((r) => r === "origin");
+    const rest = remotes.filter((r) => r !== "origin");
+    return [...originFirst, ...rest];
+  }
+
+  /**
+   * Resolve the default base branch when dispatch.base_branch is not configured.
+   * Uses the same fallback chain as workspace config resolution.
+   */
+  private _resolveDefaultBaseBranch(): string | null {
+    if (!this._syncRemote) return null;
+
+    // Try remote HEAD
+    const headResult = spawnSync(
+      "git",
+      ["symbolic-ref", "--quiet", `refs/remotes/${this._syncRemote}/HEAD`],
+      { cwd: this.projectDir, encoding: "utf-8", stdio: "pipe" },
+    );
+    if (headResult.status === 0 && headResult.stdout) {
+      const prefix = `refs/remotes/${this._syncRemote}/`;
+      const stdout = headResult.stdout.trim();
+      if (stdout.startsWith(prefix)) {
+        return stdout.slice(prefix.length);
+      }
+    }
+
+    // Try current branch
+    const branchResult = spawnSync(
+      "git",
+      ["symbolic-ref", "--quiet", "--short", "HEAD"],
+      { cwd: this.projectDir, encoding: "utf-8", stdio: "pipe" },
+    );
+    if (branchResult.status === 0 && branchResult.stdout) {
+      return branchResult.stdout.trim();
+    }
+
+    // Default
+    return "main";
+  }
+
+  /**
+   * Get the current target sync state for external status queries.
+   */
+  getTargetSyncStatus(): {
+    enabled: boolean;
+    remote: string | null;
+    baseBranch: string | null;
+    lastSyncTimestamp: number;
+    consecutiveFailures: number;
+    syncRunning: boolean;
+  } {
+    return {
+      enabled: this._remoteSyncEnabled ?? false,
+      remote: this._syncRemote,
+      baseBranch: this._syncBaseBranch,
+      lastSyncTimestamp: this._lastTargetSyncTimestamp,
+      consecutiveFailures: this._consecutiveTransientFailures,
+      syncRunning: this._targetSyncRunning,
+    };
   }
 }
