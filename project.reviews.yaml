@@ -16301,3 +16301,29 @@ reviews:
     created_at: 2026-03-18T13:16:51.412Z
     updated_at: 2026-03-18T13:17:44.476Z
     notes: []
+  - _ulid: 01KM0JBZTY019C9WSC4HSG8KGZ
+    slugs: []
+    title: Review task-validate-integration (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0JBZTYQ0FTNC4ADP7V46ZC
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T13:32:40.670Z
+    examined_commit: f49c87c4a33f25afd5f3a95918b46e9a674eabca
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-validate-integration"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T13:32:40.670Z
+    updated_at: null
+    notes: []
