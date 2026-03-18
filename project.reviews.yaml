@@ -11731,6 +11731,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T06:24:57.995Z
+      - _ulid: 01KKZSYZZBMGRNEYQB42XHWF80
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKZSYZV5J3W4D118AS03YDME
+        timestamp: 2026-03-18T06:26:09.003Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -11740,8 +11747,28 @@ reviews:
       content_hash: ""
       ref: "@plan-dispatch-remote-sync"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKZSYZV5J3W4D118AS03YDME
+        anchor:
+          type: structured
+          field: ac-divergence-detection
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KKZSYZV66A39WW82D2950NHK
+            author: "@claude"
+            body: "ac-divergence-detection bundles two distinct behaviors in one AC: (1) detecting that ff-only
+              merge fails and entering degraded state, and (2) producing a log message that
+              distinguishes between 'local has unpushed merges' vs 'remote was force-pushed.' These
+              are independently testable: one test for the degraded state transition, another for
+              the log message classification. Split into ac-divergence-enters-degraded (ff-only
+              fails → degraded state, no merge created) and ac-divergence-diagnosis (degraded log
+              message distinguishes local-ahead vs remote-force-pushed). Compare: the reference
+              plan's @dispatch-event-envelope ac-5 tests one thing — cycle detection rejection — not
+              cycle detection plus different log message formats."
+            created_at: 2026-03-18T06:26:08.870Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:24:57.865Z
+    updated_at: 2026-03-18T06:26:08.870Z
     notes: []
