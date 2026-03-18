@@ -77720,12 +77720,12 @@
     - schedules
     - cli
   vcs_refs: []
+  session_id: 01KM0NSJH7QVZ1KV43HNEK25NP
   created_at: 2026-03-18T05:32:03.570Z
+  started_at: 2026-03-18T14:32:53.925Z
   notes: []
   todos: []
   automation: eligible
-  session_id: 01KM0NSJH7QVZ1KV43HNEK25NP
-  started_at: 2026-03-18T14:32:53.925Z
 - _ulid: 01KKZPW000MZT1YMECENJX42A0
   slugs:
     - task-event-cli
@@ -78562,5 +78562,28 @@
     - bug
   vcs_refs: []
   created_at: 2026-03-18T14:33:09.314Z
+  notes: []
+  todos: []
+- _ulid: 01KM0NV0DPS9AS0HY7VB9K2EYS
+  slugs:
+    - task-cli-check-auto-version
+  title: Remove version flags from CLI review check command
+  type: task
+  description: Remove --version-base, --version-head, --version-hash from kspec review check in src/cli/commands/review.ts. Auto-derive via extractSubjectVersion(review.subject). Delete parseVersionFromOptions() (zero remaining callers). See @plan-review-version-auto-derivation for full steps.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: "@plan-review-version-auto-derivation"
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-spec-review-version-auto-derive"
+  context: []
+  priority: 1
+  tags:
+    - cli
+    - review
+    - bug
+  vcs_refs: []
+  created_at: 2026-03-18T14:33:18.518Z
   notes: []
   todos: []
