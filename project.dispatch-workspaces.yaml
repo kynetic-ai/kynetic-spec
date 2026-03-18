@@ -10446,7 +10446,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T14:23:41.415Z
+      updated_at: 2026-03-18T14:23:44.355Z
     integration:
       status: pending
       detail: null
@@ -10455,25 +10455,20 @@ workspaces:
       target_branch: dev
       target_commit: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
       updated_at: 2026-03-18T14:23:41.415Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KKZPVX7D9A14ZFGSFSXS8X6Z"
     task_slug: task-hook-cli
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T14:13:34.741Z
-      last_reconciled_at: 2026-03-18T14:23:41.415Z
+      last_reconciled_at: 2026-03-18T14:23:44.355Z
       created_at: 2026-03-18T13:51:52.582Z
-      updated_at: 2026-03-18T14:23:41.415Z
+      updated_at: 2026-03-18T14:23:44.355Z
     workspace_id: dispatch-workspace-01KKZPVX7D9A14ZFGSFSXS8X6Z
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 5241398e3334e6af2260fad4a0fde83e3de7c87b
-        last_seen_at: 2026-03-18T14:13:33.470Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-hook-cli-01kkzpvx-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-hook-cli/01kkzpvx
