@@ -2031,10 +2031,11 @@ features:
           - given: |
               One or more reviewers act on a review
             id: ac-1
-            then: |
-              Their verdicts are recorded with the applies_to_version context
-              (base_commit and head_commit) identifying the reviewed state, and
-              stored distinctly from the overall review disposition
+            then: Their verdicts are recorded with an applies_to_version that is auto-derived from the review's
+              subject type — code_compare (base_commit and head_commit) for code subjects,
+              entity_version (content_hash) for task/plan/spec subjects — identifying the reviewed
+              state. The caller does not provide version information; the system derives it.
+              Verdicts are stored distinctly from the overall review disposition
             when: |
               They approve, request changes, or leave non-blocking comments
           - given: |
@@ -2062,18 +2063,11 @@ features:
           - given: |
               Multiple reviewers have recorded verdicts on the same review
             id: ac-5
-            then: >
-              The default aggregation rule is that any changes_requested verdict
-
-              whose applies_to_version matches the subject's current version (both base_commit and
-              head_commit
-
-              for code subjects, or content_hash for entity subjects) blocks
-
-              approval and at least one explicit approve verdict matching the
-
-              current head_commit is required for the review to be considered
-
+            then: The default aggregation rule is that any changes_requested verdict whose applies_to_version
+              matches the subject's current version (base_commit and head_commit for code subjects,
+              or content_hash for entity subjects — both derived from the review subject, not
+              provided by the verdict submitter) blocks approval, and at least one explicit approve
+              verdict matching the current version is required for the review to be considered
               approved
             when: |
               The aggregate review disposition is computed

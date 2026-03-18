@@ -9542,10 +9542,11 @@ features:
       - given: |
           Review records are rendered through the CLI
         id: ac-2
-        then: |
-          The output includes the subject, lifecycle state, computed
-          disposition, computed gate state, thread state, and external linkage
-          needed to understand the review without opening raw storage
+        then: The output includes the subject, lifecycle state, computed disposition, computed gate state,
+          thread state, and external linkage needed to understand the review without opening raw
+          storage. Computed disposition and gate state must use the shared library functions
+          (computeDisposition from src/parser/review-operations.ts and evaluateGates from
+          src/review/checks.ts), not local reimplementations
         when: |
           A command prints review data
       - given: |
@@ -9676,23 +9677,20 @@ features:
           - given: |
               Verification evidence exists for a review
             id: ac-2
-            then: |
-              The review stores the check result with normalized status, evidence
-              details, and the applies_to_version binding
-            when: |
-              A user or agent runs kspec review check add with name, status,
-              and the current compare context
+            then: The review stores the check result with normalized status, evidence details, and an
+              applies_to_version that is auto-derived from the review's subject (code_compare for
+              code subjects, entity_version for task/plan/spec subjects) — callers do not provide
+              version information
+            when: A user or agent runs kspec review check add with name, status, and optional evidence details
           - given: |
               A reviewer needs to approve, request changes, or leave a
               non-blocking verdict
             id: ac-3
-            then: |
-              The individual verdict is recorded with applies_to_version and the
-              computed disposition is updated according to aggregation, gate, and
-              blocker rules
-            when: |
-              They run kspec review verdict set with the decision and compare
-              context
+            then: The individual verdict is recorded with an applies_to_version that is auto-derived from the
+              review's subject (code_compare for code subjects, entity_version for task/plan/spec
+              subjects), and the computed disposition is updated according to aggregation, gate, and
+              blocker rules — callers do not provide version information
+            when: They run kspec review verdict set with the decision
           - given: |
               A review thread has been addressed or needs to be reopened
             id: ac-4
