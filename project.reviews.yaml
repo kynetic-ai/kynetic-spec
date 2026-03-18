@@ -17818,7 +17818,21 @@ reviews:
     slugs: []
     title: Review task-automation-view (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: code_compare
+          base_commit: 20cb7666e4d9c456dc6dc33edf108a0d1feec779
+          head_commit: 7656f7bb405dee7c1feaae24f00f312fb5d4fedf
+        evidence: "1 test failed: review-cli.test.ts 'should leave examined_commit null when not provided' —
+          AssertionError: expected HEAD commit hash to be null. Environment-dependent failure
+          (KSPEC_DISPATCH_CANONICAL_HEAD set in dispatch worktree). 6511 passed, 1 failed, 3
+          skipped."
+        name: npm test
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T16:01:48.564Z
+        completed_at: 2026-03-18T16:01:48.564Z
     events:
       - _ulid: 01KM0TTWAVDEBPSC42HE6V1SGF
         actor: "@claude"
@@ -17889,6 +17903,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM0TWHNZQYXFV33FGMATAEVY
         timestamp: 2026-03-18T16:01:32.011Z
+      - _ulid: 01KM0TX25A1WTBRCRYXYZFH0MN
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-18T16:01:48.714Z
     examined_commit: 7656f7bb405dee7c1feaae24f00f312fb5d4fedf
     external_links: []
     lifecycle_state: open
@@ -18045,7 +18066,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T16:00:37.212Z
-    updated_at: 2026-03-18T16:01:31.839Z
+    updated_at: 2026-03-18T16:01:48.564Z
     notes: []
   - _ulid: 01KM0TWVZN7JR1ZZCFGBGHNVX4
     slugs: []
