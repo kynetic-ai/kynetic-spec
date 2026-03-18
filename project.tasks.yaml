@@ -103917,6 +103917,24 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T00:06:39.656Z
+    - _ulid: 01KKZ4RSQGN63FXGDD3813PSW1
+      content: >-
+        Review approved — code is correct and well-tested. Merge to dev failed with a textual
+        conflict in tests/yaml-round-trip-stability.test.ts.
+
+
+        Conflict: Both this branch and the dispatch-workspace round-trip stability branch (merged to
+        dev as 42a4d2777) added new describe blocks at the same insertion point (after the inbox
+        tests, around line 1153). Both should coexist.
+
+
+        Resolution: Rebase onto current dev, keeping BOTH the dispatch workspace tests (from dev)
+        and the new triage tests (from this branch). The triage describe block should be added after
+        the dispatch workspace block. Only the test file needs conflict resolution — no changes to
+        yaml.ts.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T00:15:45.904Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6CGBRT6J6F804PJ1QJW3G
