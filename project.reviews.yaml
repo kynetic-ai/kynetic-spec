@@ -14209,6 +14209,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T10:21:02.069Z
+      - _ulid: 01KM07DEQ5D990AE36E7QTTKWM
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM07DEKK7K75A4KYX1JWD6S1
+        timestamp: 2026-03-18T10:21:14.341Z
     examined_commit: a8052bd5b059db13078127383a5d80362dc490c5
     external_links: []
     lifecycle_state: open
@@ -14218,8 +14225,47 @@ reviews:
       content_hash: ""
       ref: "@01KKZWB75X6Q1X1ZZC5S6KBH6B"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM07DEKK7K75A4KYX1JWD6S1
+        anchor:
+          type: code
+          commit: ""
+          line_end: 1213
+          line_start: 1211
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KM07DEKKXS46Y4SW47WY1AYQ
+            author: "@claude"
+            body: >-
+              MUST-FIX: _reconcile() does not gate sync on _isTargetSyncStale() — violates
+              ac-pull-target-periodic
+
+
+              The periodic sync in _reconcile() (line 1211) checks:
+                if (this._remoteSyncEnabled && !this._hasActiveReviewerInvocation())
+
+              But it does NOT check _isTargetSyncStale(). This means the sync runs on EVERY
+              reconciliation pass, not just when the configured sync_interval has elapsed.
+
+
+              ac-pull-target-periodic says: "When the configured sync interval elapses" — the
+              implementation must respect the sync interval.
+
+
+              If reconcileIntervalMs is 5s and sync_interval is 60s, the git fetch would run every
+              5s instead of every 60s, which is wasteful and doesn't match spec.
+
+
+              The before-provision path (line 2022) correctly uses _isTargetSyncStale(). The
+              reconcile path should do the same:
+                if (this._remoteSyncEnabled && this._isTargetSyncStale() && !this._hasActiveReviewerInvocation())
+
+              The test for ac-pull-target-periodic (line 186) calls _syncTargetBranch() directly
+              rather than going through _reconcile(), so it does not catch this bug.
+            created_at: 2026-03-18T10:21:14.227Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T10:20:52.748Z
-    updated_at: 2026-03-18T10:21:01.856Z
+    updated_at: 2026-03-18T10:21:14.227Z
     notes: []
