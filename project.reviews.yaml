@@ -15070,6 +15070,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM0B4D9M60PZ65HMEVJD5X47
         timestamp: 2026-03-18T11:26:12.407Z
+      - _ulid: 01KM0B4RH12R2CMKTJZAZFWTMM
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0B4RD2GKA5TM3TN1EY18NW
+        timestamp: 2026-03-18T11:26:23.777Z
     examined_commit: 8f12b6fdd9df0871ef29d7b862a896d405e5b106
     external_links: []
     lifecycle_state: open
@@ -15097,7 +15104,29 @@ reviews:
               mergeOutput or remove it since the rev-list approach is actually more reliable.
             created_at: 2026-03-18T11:26:12.276Z
         kind: nit
+      - _ulid: 01KM0B4RD2GKA5TM3TN1EY18NW
+        anchor:
+          type: code
+          commit: 8f12b6fdd9df
+          line_end: 207
+          line_start: 201
+          path: tests/dispatch-degraded-state.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM0B4RD2V5SQWKPV1RJPZ3QC
+            author: "@claude"
+            body: "Case 1 (localAhead > 0, remoteAhead === 0) and Case 2 (localAhead === 0, remoteAhead > 0) in
+              _classifyDivergence are effectively unreachable when called from the divergence path:
+              ff-only merge only fails when both sides have diverged (localAhead > 0 AND remoteAhead
+              > 0). Having the cases is reasonable as defensive code, but the test comment at line
+              201 ('Case 1: Local has unpushed commits') is misleading — createDivergence creates
+              mutual divergence hitting Case 3, which happens to contain 'unpushed merges' in its
+              text. Similarly, createRemoteRewrite also produces mutual divergence (Case 3) rather
+              than Case 2. Not a correctness issue since the messages are appropriate for all
+              divergence scenarios."
+            created_at: 2026-03-18T11:26:23.650Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T11:25:29.772Z
-    updated_at: 2026-03-18T11:26:12.276Z
+    updated_at: 2026-03-18T11:26:23.650Z
     notes: []
