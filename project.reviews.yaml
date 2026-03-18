@@ -85,9 +85,8 @@ reviews:
     checks:
       - status: fail
         applies_to_version:
-          type: code_compare
-          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-          head_commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
+          type: entity_version
+          content_hash: ""
         evidence: "3 test failures in tests/agents-instruction-gen.test.ts: template renamed without
           updating tests."
         name: vitest
@@ -97,9 +96,8 @@ reviews:
         completed_at: 2026-03-16T06:21:30.734Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-          head_commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
+          type: entity_version
+          content_hash: ""
         evidence: All 5563 tests passed (253 files, 3 skipped). Full npm test at canonical HEAD e07e8ab29.
         name: vitest
         required: true
@@ -255,17 +253,15 @@ reviews:
         resolved_by: "@claude"
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-          head_commit: bfd4dd13451a691bf55a1e6b412a3ee4c1fb89fc
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@kspec.local
         role: reviewer
         created_at: 2026-03-16T06:21:37.669Z
       - applies_to_version:
-          type: code_compare
-          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-          head_commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec.local
         role: reviewer
@@ -280,9 +276,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-          head_commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
+          type: entity_version
+          content_hash: ""
         evidence: All 5563 tests passed (253 files, 3 skipped). Full npm test at canonical HEAD e07e8ab29.
         name: vitest
         required: true
@@ -335,9 +330,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
-          head_commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec.local
         role: reviewer
@@ -2289,9 +2283,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c09189ec7386070eb3b6331251bf123e29698e81
-          head_commit: be7a988ce9d990284148d7f03083d7914ef3c15e
+          type: entity_version
+          content_hash: ""
         evidence: 253 test files, 5563 tests passed, 3 skipped, 0 failures
         name: vitest
         required: true
@@ -2300,9 +2293,8 @@ reviews:
         completed_at: 2026-03-16T16:16:28.218Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c09189ec7386070eb3b6331251bf123e29698e81
-          head_commit: be7a988ce9d990284148d7f03083d7914ef3c15e
+          type: entity_version
+          content_hash: ""
         evidence: Schema OK, reference errors and alignment warnings are all pre-existing (verified on main)
         name: kspec-validate
         required: false
@@ -2447,9 +2439,8 @@ reviews:
         resolved_by: "@claude"
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: c09189ec7386070eb3b6331251bf123e29698e81
-          head_commit: be7a988ce9d990284148d7f03083d7914ef3c15e
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: claude-reviewer@kspec
         role: reviewer
@@ -3004,9 +2995,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: f1b9d9b3d
-          head_commit: c6138a963
+          type: entity_version
+          content_hash: ""
         evidence: All 15 tests passed (29ms)
         name: "vitest: yaml-canonical-key-order"
         required: true
@@ -3015,9 +3005,8 @@ reviews:
         completed_at: 2026-03-16T21:27:26.180Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: f1b9d9b3d
-          head_commit: c6138a963
+          type: entity_version
+          content_hash: ""
         evidence: "All related serialization tests pass: yaml-atomic-write (1), task-mutation-serialization
           (5), spec-item-mutation-serialization (4), plan-inbox-mutation-serialization (2)"
         name: "vitest: regression - serialization tests"
@@ -3027,9 +3016,8 @@ reviews:
         completed_at: 2026-03-16T21:27:28.646Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: f1b9d9b3d
-          head_commit: c6138a963
+          type: entity_version
+          content_hash: ""
         evidence: "All 4 ACs annotated: ac-1 (line 34), ac-2 (line 98), ac-3 (line 173), ac-4 (line 255)"
         name: AC coverage
         required: true
@@ -3038,9 +3026,8 @@ reviews:
         completed_at: 2026-03-16T21:27:31.123Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: f1b9d9b3d
-          head_commit: c6138a963
+          type: entity_version
+          content_hash: ""
         evidence: No new errors. 3 pre-existing ref errors in meta.yaml, unrelated to this change.
         name: kspec validate
         required: false
@@ -3148,9 +3135,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: f1b9d9b3d
-          head_commit: c6138a963
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -3165,9 +3151,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: ccc37fbb707d6094c607b58b390bc22ea4197a24
-          head_commit: 1f16d6c097c383806c4898cddd2e68a626aa419b
+          type: entity_version
+          content_hash: ""
         evidence: All 73 tests passed in review-verdicts-resolution.test.ts
         name: vitest
         required: true
@@ -3176,9 +3161,8 @@ reviews:
         completed_at: 2026-03-16T21:38:06.566Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: ccc37fbb707d6094c607b58b390bc22ea4197a24
-          head_commit: 1f16d6c097c383806c4898cddd2e68a626aa419b
+          type: entity_version
+          content_hash: ""
         evidence: Zero remaining references to old ac-3 meaning in codebase
         name: stale-refs
         required: true
@@ -3187,9 +3171,8 @@ reviews:
         completed_at: 2026-03-16T21:38:15.992Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: ccc37fbb707d6094c607b58b390bc22ea4197a24
-          head_commit: 1f16d6c097c383806c4898cddd2e68a626aa419b
+          type: entity_version
+          content_hash: ""
         evidence: No new validation errors. 3 pre-existing reference errors in meta.yaml unrelated to this
           change.
         name: kspec-validate
@@ -3275,9 +3258,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: ccc37fbb707d6094c607b58b390bc22ea4197a24
-          head_commit: 1f16d6c097c383806c4898cddd2e68a626aa419b
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec-agent
         role: reviewer
@@ -3396,9 +3378,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3997a56ae521f947483e867f45ba0e0059237196
-          head_commit: 7176f3ab35ea73ae593941eb0d824ba6da12b653
+          type: entity_version
+          content_hash: ""
         evidence: All 13 tests passed in task-submission-linkage.test.ts including 2 new ac-5 tests
         name: vitest
         required: true
@@ -3407,9 +3388,8 @@ reviews:
         completed_at: 2026-03-16T21:55:09.313Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3997a56ae521f947483e867f45ba0e0059237196
-          head_commit: 7176f3ab35ea73ae593941eb0d824ba6da12b653
+          type: entity_version
+          content_hash: ""
         evidence: No new validation errors. 3 pre-existing reference errors in meta.yaml unrelated to this
           change.
         name: kspec-validate
@@ -3419,9 +3399,8 @@ reviews:
         completed_at: 2026-03-16T21:55:17.844Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3997a56ae521f947483e867f45ba0e0059237196
-          head_commit: 7176f3ab35ea73ae593941eb0d824ba6da12b653
+          type: entity_version
+          content_hash: ""
         evidence: "ac-5 has 2 test annotations: fallback test (line 319) and precedence test (line 345).
           Both tests exercise the behavior described in the AC."
         name: ac-coverage
@@ -3489,9 +3468,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 3997a56ae521f947483e867f45ba0e0059237196
-          head_commit: 7176f3ab35ea73ae593941eb0d824ba6da12b653
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -3506,9 +3484,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: dev
-          head_commit: 02e5983cf
+          type: entity_version
+          content_hash: ""
         evidence: 84/84 tests passed in review-cli test suites
         name: vitest-review-cli
         required: true
@@ -3517,9 +3494,8 @@ reviews:
         completed_at: 2026-03-16T22:05:21.244Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: dev
-          head_commit: 02e5983cf
+          type: entity_version
+          content_hash: ""
         evidence: No new validation errors; 3 pre-existing reference errors unrelated to this change
         name: kspec-validate
         required: false
@@ -3528,9 +3504,8 @@ reviews:
         completed_at: 2026-03-16T22:05:27.759Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: dev
-          head_commit: 02e5983cf
+          type: entity_version
+          content_hash: ""
         evidence: "AC: @review-record-per-cycle-lifecycle ac-1 covered by 3 tests: approve auto-closes,
           request_changes auto-closes, comment stays open"
         name: ac-coverage
@@ -3598,9 +3573,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: dev
-          head_commit: 02e5983cf
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer-agent
         role: reviewer
@@ -3739,9 +3713,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: cf51fadb
-          head_commit: e6bcac94
+          type: entity_version
+          content_hash: ""
         evidence: All 163 tests passed across 4 relevant test files
         name: vitest
         required: true
@@ -3750,9 +3723,8 @@ reviews:
         completed_at: 2026-03-16T22:29:19.023Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: cf51fadb
-          head_commit: e6bcac94
+          type: entity_version
+          content_hash: ""
         evidence: "3 tests annotated with AC: @review-fix-cycle-diff ac-1 covering explicit flag, env var
           fallback, and null default"
         name: ac-coverage
@@ -3813,9 +3785,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: cf51fadb
-          head_commit: e6bcac94
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -3830,9 +3801,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 9aef1ee768efc5a8e5a2797650be3d8fb04e4963
-          head_commit: 070cd9965c930bcc611e744d18c19745ea881db1
+          type: entity_version
+          content_hash: ""
         evidence: 13/13 tests passed in activity-git-query.test.ts
         name: vitest-activity
         required: true
@@ -3841,9 +3811,8 @@ reviews:
         completed_at: 2026-03-16T22:54:43.755Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 9aef1ee768efc5a8e5a2797650be3d8fb04e4963
-          head_commit: 070cd9965c930bcc611e744d18c19745ea881db1
+          type: entity_version
+          content_hash: ""
         evidence: 5599/5599 tests passed. 3 failing test files are pre-existing on dev
           (dispatch-workspace-and-scheduler-flow, dispatch-runtime-bootstrap-contract,
           agent-dispatch-engine). No regressions.
@@ -3905,9 +3874,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 9aef1ee768efc5a8e5a2797650be3d8fb04e4963
-          head_commit: 070cd9965c930bcc611e744d18c19745ea881db1
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer-agent
         role: reviewer
@@ -3922,9 +3890,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: cbe983895b53a6ce995ff410cc91ff6982815c75
-          head_commit: f6e16b92e3cf47b7a6144407e45d3891435c0e05
+          type: entity_version
+          content_hash: ""
         evidence: 11 patterns in MESSAGE_PATTERNS, 14+1 test cases. All task-lifecycle operations covered.
         name: "ac-3: commit message parsing"
         required: true
@@ -3932,9 +3899,8 @@ reviews:
         completed_at: 2026-03-16T23:06:24.856Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: cbe983895b53a6ce995ff410cc91ff6982815c75
-          head_commit: f6e16b92e3cf47b7a6144407e45d3891435c0e05
+          type: entity_version
+          content_hash: ""
         evidence: parseDiffChanges extracts scalar field changes and note insertions. 7 diff test cases + 6
           integration tests.
         name: "ac-4: diff-based field change detection"
@@ -3943,9 +3909,8 @@ reviews:
         completed_at: 2026-03-16T23:06:32.027Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: cbe983895b53a6ce995ff410cc91ff6982815c75
-          head_commit: f6e16b92e3cf47b7a6144407e45d3891435c0e05
+          type: entity_version
+          content_hash: ""
         evidence: 30/30 tests pass
         name: tests pass
         required: true
@@ -4091,9 +4056,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: cbe983895b53a6ce995ff410cc91ff6982815c75
-          head_commit: f6e16b92e3cf47b7a6144407e45d3891435c0e05
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: "@claude"
         role: reviewer
@@ -4194,9 +4158,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 3cacc14e2e6491ac608c4c7de0f4222092bb3497
-          head_commit: 38bc6aae2c263297dbf412cc5365d0fec558cbd6
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: "@claude"
         role: reviewer
@@ -4291,9 +4254,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: f53ece6937210e83175f3eb2fbc389d0b4005f00
-          head_commit: b7004833684b0a7f6a3fda8ce5ee8822fd7b3531
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: "@claude"
         role: reviewer
@@ -4362,9 +4324,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: cc05f86747ddf667f8ec375e7babc7f03ed8fd93
-          head_commit: 7c22bca2fc6bcd2eb8ac76b62f9f7236c9881ece
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: "@claude"
         role: reviewer
@@ -4417,9 +4378,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 9985252448f5d213d58155879086bc357f870456
-          head_commit: 5cfeef645f782c1220377ec5bdecf32122cb9be3
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: "@claude"
         role: reviewer
@@ -4465,9 +4425,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 6a240913607ce7c56287a60e55dabc05c0c6d8fb
-          head_commit: 08d667d94
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: "@claude"
         role: reviewer
@@ -4625,9 +4584,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: cb7b18fe1
-          head_commit: 5ec752de7
+          type: entity_version
+          content_hash: ""
         evidence: "All 38 tests passed in 4 targeted test files (yaml-round-trip-stability,
           yaml-canonical-key-order, dispatch-runtime-bootstrap-contract,
           dispatch-workspace-and-scheduler-flow). Full suite: 5668 passed, 4 flaky failures
@@ -4683,9 +4641,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: cb7b18fe1
-          head_commit: 5ec752de7
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: claude-opus-4-6@anthropic.com
         role: reviewer
@@ -4700,9 +4657,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 45e009274ddc
-          head_commit: 39d1d121096e
+          type: entity_version
+          content_hash: ""
         evidence: 252 test files passed, 5560 tests passed, 3 skipped. 1 file with 3 pre-existing flaky
           failures in agent-dispatch-engine.test.ts (ENOTEMPTY race condition) — not introduced by
           this diff.
@@ -4713,9 +4669,8 @@ reviews:
         completed_at: 2026-03-17T08:13:25.256Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 45e009274ddc
-          head_commit: 39d1d121096e
+          type: entity_version
+          content_hash: ""
         evidence: No validation errors or warnings specific to @review-records-daemon-api. Pre-existing
           warnings in unrelated specs.
         name: kspec-validate
@@ -4725,9 +4680,8 @@ reviews:
         completed_at: 2026-03-17T08:13:31.545Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 45e009274ddc
-          head_commit: 39d1d121096e
+          type: entity_version
+          content_hash: ""
         evidence: "ac-1: 13 tests covering all filter types, pagination, sorting, defaults, empty results.
           ac-2: 10 tests covering slug/ULID lookup, threads, checks, verdicts, events, subject,
           notes, external_links, disposition, 404. All trait ACs annotated with N/A reasons or
@@ -4797,9 +4751,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 45e009274ddc
-          head_commit: 39d1d121096e
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -4814,9 +4767,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b50
-          head_commit: bb450d490918
+          type: entity_version
+          content_hash: ""
         evidence: >-
           5683 tests passed, 2 failed, 3 skipped. Both failures are pre-existing and unrelated to
           this change:
@@ -5014,9 +4966,8 @@ reviews:
         kind: question
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b50
-          head_commit: bb450d490918
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: agent@kspec-reviewer
         role: reviewer
@@ -5031,9 +4982,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b50
-          head_commit: c1865a388e42
+          type: entity_version
+          content_hash: ""
         evidence: 5710 tests passed, 1 pre-existing failure (review-cli.test.ts examined_commit
           auto-populates in worktree — unrelated to changes)
         name: vitest
@@ -5043,9 +4993,8 @@ reviews:
         completed_at: 2026-03-17T09:12:09.073Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b50
-          head_commit: c1865a388e42
+          type: entity_version
+          content_hash: ""
         evidence: "ac-tool-input-update: 4 test annotations (accumulator, incrementalBlockUpdate, CLI).
           ac-unified-event-parsing: 8 test annotations (session-event-fields,
           session-event-streaming, session-log-stats). All trait ACs pre-existing with coverage."
@@ -5107,9 +5056,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b50
-          head_commit: c1865a388e42
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -5259,9 +5207,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b3def74fcec9
-          head_commit: d64977992f74
+          type: entity_version
+          content_hash: ""
         evidence: 5710 passed, 1 pre-existing failure (review-cli.test.ts:152 — examined_commit
           env-dependent, file not modified in this commit), 3 skipped
         name: vitest
@@ -5271,9 +5218,8 @@ reviews:
         completed_at: 2026-03-17T09:51:34.733Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b3def74fcec9
-          head_commit: d64977992f74
+          type: entity_version
+          content_hash: ""
         evidence: No new validation errors introduced. Pre-existing alignment warnings (26) and completeness
           warnings (396) unrelated to this task.
         name: kspec-validate
@@ -5529,9 +5475,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: b3def74fcec9
-          head_commit: d64977992f74
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -5546,9 +5491,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-          head_commit: c8a90fd969018e380793aea63d62d3a760d98e3b
+          type: entity_version
+          content_hash: ""
         evidence: 5762 passed, 1 failed (pre-existing review-cli.test.ts examined_commit failure — not in
           this branch's diff, confirmed unchanged). 3 skipped.
         name: vitest
@@ -5558,9 +5502,8 @@ reviews:
         completed_at: 2026-03-17T10:18:30.546Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-          head_commit: c8a90fd969018e380793aea63d62d3a760d98e3b
+          type: entity_version
+          content_hash: ""
         evidence: "Own ACs: ac-6 (5 tests), ac-7 (5 tests), ac-8 (7+ tests), ac-9 (code inspection, no test
           spy), ac-10 (10+ tests). Trait ACs: all 23 trait ACs annotated as N/A with valid
           justifications (API endpoints vs CLI commands for json-output/error-guidance;
@@ -5572,9 +5515,8 @@ reviews:
         completed_at: 2026-03-17T10:18:41.602Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-          head_commit: c8a90fd969018e380793aea63d62d3a760d98e3b
+          type: entity_version
+          content_hash: ""
         evidence: kspec validate shows pre-existing issues (3 reference errors, alignment warnings, missing
           AC coverage on unrelated specs). No new issues introduced by this change.
         name: kspec-validate
@@ -5717,9 +5659,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-          head_commit: c8a90fd969018e380793aea63d62d3a760d98e3b
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -5734,9 +5675,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b3def74fcec96e5059b954fcc1d88e2daf357332
-          head_commit: 74be26083a8b53469bddc8b643d21383c58bbfd1
+          type: entity_version
+          content_hash: ""
         evidence: 5734 tests passed, 1 pre-existing failure in review-cli.test.ts (unmodified by this branch)
         name: vitest
         required: true
@@ -5745,9 +5685,8 @@ reviews:
         completed_at: 2026-03-17T10:23:38.407Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b3def74fcec96e5059b954fcc1d88e2daf357332
-          head_commit: 74be26083a8b53469bddc8b643d21383c58bbfd1
+          type: entity_version
+          content_hash: ""
         evidence: All validation issues are pre-existing (reference errors in meta.yaml, existing AC
           coverage gaps). No new issues from this task.
         name: kspec-validate
@@ -5757,9 +5696,8 @@ reviews:
         completed_at: 2026-03-17T10:23:49.664Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b3def74fcec96e5059b954fcc1d88e2daf357332
-          head_commit: 74be26083a8b53469bddc8b643d21383c58bbfd1
+          type: entity_version
+          content_hash: ""
         evidence: "Own ACs covered: ac-3 (5 tests), ac-4 (5 tests), ac-5 (5 tests), ac-9 (broadcast calls
           verified in code), ac-10 (13 validation tests). Trait ACs: all 24 annotated N/A with valid
           justifications (REST API, not CLI)."
@@ -5828,9 +5766,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: b3def74fcec96e5059b954fcc1d88e2daf357332
-          head_commit: 74be26083a8b53469bddc8b643d21383c58bbfd1
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -5845,9 +5782,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-          head_commit: 82896f8489f79b6cac198ca9c0ed156634a2ca32
+          type: entity_version
+          content_hash: ""
         evidence: 5724 passed, 3 skipped, 1 failed (pre-existing review-cli.test.ts:152 — not modified by
           this branch). All agent-data-sections and agents-instruction-gen tests pass.
         name: vitest
@@ -5857,9 +5793,8 @@ reviews:
         completed_at: 2026-03-17T10:38:40.575Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-          head_commit: 82896f8489f79b6cac198ca9c0ed156634a2ca32
+          type: entity_version
+          content_hash: ""
         evidence: "Validation issues all pre-existing (3 reference errors, alignment/completeness warnings).
           No new issues introduced. Skills: OK."
         name: kspec-validate
@@ -5869,9 +5804,8 @@ reviews:
         completed_at: 2026-03-17T10:38:47.393Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-          head_commit: 82896f8489f79b6cac198ca9c0ed156634a2ca32
+          type: entity_version
+          content_hash: ""
         evidence: Searched entire codebase for generateSkillsTable — zero results. No stale imports,
           exports, or references remain. LoadedSkill still used appropriately in skill-render,
           validate, and meta modules.
@@ -5958,9 +5892,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-          head_commit: 82896f8489f79b6cac198ca9c0ed156634a2ca32
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -5975,9 +5908,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-          head_commit: adaaef6230426b5b880e6f3ab93d6882b96e9cc0
+          type: entity_version
+          content_hash: ""
         evidence: 5765 tests passed, 1 pre-existing failure in review-cli.test.ts (examined_commit
           auto-populate, not modified by this branch)
         name: vitest
@@ -5987,9 +5919,8 @@ reviews:
         completed_at: 2026-03-17T10:51:37.119Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-          head_commit: adaaef6230426b5b880e6f3ab93d6882b96e9cc0
+          type: entity_version
+          content_hash: ""
         evidence: "ac-6: 5 tests (verdict recording, comment, auto-close approve, auto-close
           request_changes, slug ref). ac-7: 5 tests (passing check, failing check, non-required,
           slug ref, applies_to_version). ac-8: 7 tests (draft→open, draft→closed, open→closed,
@@ -6002,9 +5933,8 @@ reviews:
         completed_at: 2026-03-17T10:51:47.871Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-          head_commit: adaaef6230426b5b880e6f3ab93d6882b96e9cc0
+          type: entity_version
+          content_hash: ""
         evidence: Validation errors are all pre-existing (3 broken refs in meta.yaml, 231 missing AC
           coverage across project). No new warnings introduced by this task.
         name: kspec-validate
@@ -6014,9 +5944,8 @@ reviews:
         completed_at: 2026-03-17T10:51:59.214Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-          head_commit: adaaef6230426b5b880e6f3ab93d6882b96e9cc0
+          type: entity_version
+          content_hash: ""
         evidence: "Blocker fixed: archived review guard added for verdict (line 115) and check (line 265)
           endpoints with 3 new tests (approve on archived, comment on archived, check on archived).
           Nit addressed: VALID_TRANSITIONS imported from review-operations.ts instead of
@@ -6093,9 +6022,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 3a64769a2efda93e4e685368ef9c453100e596a2
-          head_commit: adaaef6230426b5b880e6f3ab93d6882b96e9cc0
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -6110,9 +6038,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 51465810f2fa4c44628dc52f6070812e43862a6f
-          head_commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
+          type: entity_version
+          content_hash: ""
         evidence: 5734 passed, 1 failed (pre-existing review-cli.test.ts:152 — detached HEAD env issue, not
           introduced by this change), 3 skipped across 263 test files
         name: vitest
@@ -6122,9 +6049,8 @@ reviews:
         completed_at: 2026-03-17T10:56:22.735Z
       - status: fail
         applies_to_version:
-          type: code_compare
-          base_commit: 51465810f2fa4c44628dc52f6070812e43862a6f
-          head_commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
+          type: entity_version
+          content_hash: ""
         evidence: CONFLICT (content) in kspec-agents.md — dev removed skills table (82896f848), this branch
           still has it. Generated file conflict, resolvable by regeneration after merge.
         name: merge-conflict
@@ -6134,9 +6060,8 @@ reviews:
         completed_at: 2026-03-17T10:56:30.240Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 51465810f2fa4c44628dc52f6070812e43862a6f
-          head_commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
+          type: entity_version
+          content_hash: ""
         evidence: "All 4 task description items verified in templates/skills/review/SKILL.md: (1) reviewer
           workflow step 5 directs --section/--field for plans, (2) step 5 directs
           --path/--line-start/--line-end for code, (3) Why Anchors Matter section with 4 examples
@@ -6245,9 +6170,8 @@ reviews:
         kind: blocker
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 51465810f2fa4c44628dc52f6070812e43862a6f
-          head_commit: b5d5cf721238a68b6d1248b19f6d3d86ddaf1f9f
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -6262,9 +6186,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: c41c0d7b7e96f9eaada13c57e8f69e0d21735038
+          type: entity_version
+          content_hash: ""
         evidence: 5724 tests passed, 1 pre-existing failure (review-cli.test.ts:152 — examined_commit null
           assertion, not modified in this branch), 3 skipped
         name: vitest
@@ -6274,9 +6197,8 @@ reviews:
         completed_at: 2026-03-17T11:13:23.591Z
       - status: fail
         applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: c41c0d7b7e96f9eaada13c57e8f69e0d21735038
+          type: entity_version
+          content_hash: ""
         evidence: No test files contain AC annotations for @review-records-web-ui ac-1 or ac-10. AC
           annotations exist only in implementation source files.
         name: ac-coverage
@@ -6381,9 +6303,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: c41c0d7b7e96f9eaada13c57e8f69e0d21735038
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@kspec.agent
         role: reviewer
@@ -6398,9 +6319,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-          head_commit: a7195c9f4b1dfebc2b96cbbf0fc50293619c698c
+          type: entity_version
+          content_hash: ""
         evidence: 262/263 tests passed, 1 pre-existing failure (review-cli.test.ts:152 — examined_commit
           null assertion, present on dev)
         name: vitest
@@ -6410,9 +6330,8 @@ reviews:
         completed_at: 2026-03-17T11:19:42.055Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-          head_commit: a7195c9f4b1dfebc2b96cbbf0fc50293619c698c
+          type: entity_version
+          content_hash: ""
         evidence: Template source, .agents/, and .factory/ rendered outputs are content-identical
         name: template-rendered-parity
         required: true
@@ -6421,9 +6340,8 @@ reviews:
         completed_at: 2026-03-17T11:19:44.402Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-          head_commit: a7195c9f4b1dfebc2b96cbbf0fc50293619c698c
+          type: entity_version
+          content_hash: ""
         evidence: Dev merged into branch, kspec-agents.md regenerated with kspec v0.12.0, only version stamp
           changed
         name: merge-conflict-resolved
@@ -6433,9 +6351,8 @@ reviews:
         completed_at: 2026-03-17T11:19:46.888Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-          head_commit: a7195c9f4b1dfebc2b96cbbf0fc50293619c698c
+          type: entity_version
+          content_hash: ""
         evidence: "All 4 task description items verified: (1) reviewer workflow directs --section/--field
           for plan/spec, (2) reviewer workflow directs --path/--line-start/--line-end for code, (3)
           Why Anchors Matter section with anchored vs unanchored examples added, (4) Anchor added to
@@ -6512,9 +6429,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-          head_commit: a7195c9f4b1dfebc2b96cbbf0fc50293619c698c
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -6529,9 +6445,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
+          type: entity_version
+          content_hash: ""
         evidence: 5726 tests passed, 3 skipped. 1 pre-existing failure in review-cli.test.ts
           (examined_commit picks up current HEAD — not introduced by this change; file not in diff).
           262 of 263 test files passed.
@@ -6542,9 +6457,8 @@ reviews:
         completed_at: 2026-03-17T11:46:06.618Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
+          type: entity_version
+          content_hash: ""
         evidence: Schema OK, Skills OK. 3 reference errors and alignment warnings are all pre-existing (in
           meta.yaml relates_to, not touched by this change). No new validation errors introduced.
         name: kspec-validate
@@ -6554,9 +6468,8 @@ reviews:
         completed_at: 2026-03-17T11:46:16.914Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
+          type: entity_version
+          content_hash: ""
         evidence: "AC @review-records-web-ui ac-7 is well-covered: 20 AC annotations across 8 files
           including E2E API tests (api-reviews-list.spec.ts: task filter by slug, ULID, empty
           result; api-tasks.spec.ts: review_ref present/null), E2E UI tests (tasks.spec.ts: reviews
@@ -6736,9 +6649,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: 5ce43167fc89c20b74a6f2d60094eb6c723da765
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -6753,9 +6665,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: 2a0fd3f2fce05613a9249e25603b6f38543d76e5
+          type: entity_version
+          content_hash: ""
         evidence: 5723 tests passed, 2 pre-existing failures (cli-serve.test.ts:232, review-cli.test.ts:152
           — neither file modified by this branch)
         name: vitest
@@ -6765,9 +6676,8 @@ reviews:
         completed_at: 2026-03-17T11:56:06.694Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: 2a0fd3f2fce05613a9249e25603b6f38543d76e5
+          type: entity_version
+          content_hash: ""
         evidence: No errors in changed files. All 44 errors are in pre-existing code (api-static.test.ts,
           coverage-test fixture, api.ts pre-existing lines).
         name: svelte-check
@@ -6777,9 +6687,8 @@ reviews:
         completed_at: 2026-03-17T11:56:13.163Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: 2a0fd3f2fce05613a9249e25603b6f38543d76e5
+          type: entity_version
+          content_hash: ""
         evidence: "ac-1: 10+ test annotations in E2E tests, annotations in page.svelte and api.ts. ac-10: 2
           test annotations, empty state implemented in page.svelte. Both scoped ACs fully covered."
         name: ac-coverage
@@ -6847,9 +6756,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: 2a0fd3f2fce05613a9249e25603b6f38543d76e5
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec.agent
         role: reviewer
@@ -6864,9 +6772,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 96b8192a0391
-          head_commit: c5efe894e423
+          type: entity_version
+          content_hash: ""
         evidence: "5729 tests passed, 3 skipped. 1 failure in review-cli.test.ts is pre-existing on dev
           (verified: zero changes to that file on task branch)"
         name: vitest
@@ -6876,9 +6783,8 @@ reviews:
         completed_at: 2026-03-17T12:04:46.585Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 96b8192a0391
-          head_commit: c5efe894e423
+          type: entity_version
+          content_hash: ""
         evidence: "All new tests annotated with AC: @task-activity-git-query ac-4. 5 new parseDiffChanges
           tests + 1 normalizeTaskActivity integration test for submitted entry."
         name: ac-coverage
@@ -6888,9 +6794,8 @@ reviews:
         completed_at: 2026-03-17T12:04:49.873Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 96b8192a0391
-          head_commit: c5efe894e423
+          type: entity_version
+          content_hash: ""
         evidence: ac-4 requires field changes translated to typed activity entries. Fix correctly produces
           'submitted' entries for submission_linkage map changes instead of leaking child fields as
           spurious field_updated.
@@ -7009,9 +6914,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 96b8192a0391
-          head_commit: c5efe894e423
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: agent:pr-reviewer
         role: reviewer
@@ -7026,9 +6930,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-          head_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
+          type: entity_version
+          content_hash: ""
         evidence: 5726 tests passed, 1 pre-existing failure (review-cli.test.ts env isolation —
           KSPEC_DISPATCH_CANONICAL_HEAD leaks into test, not from this branch)
         name: vitest
@@ -7038,9 +6941,8 @@ reviews:
         completed_at: 2026-03-17T12:19:14.318Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-          head_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
+          type: entity_version
+          content_hash: ""
         evidence: Build completed successfully — SvelteKit adapter-static wrote site to build directory
         name: build
         required: true
@@ -7049,9 +6951,8 @@ reviews:
         completed_at: 2026-03-17T12:19:22.934Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-          head_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
+          type: entity_version
+          content_hash: ""
         evidence: ac-7 annotated in 20+ locations across implementation (TaskDetailContent.svelte, api.ts,
           tasks.ts, reviews.ts, reference.ts) and tests (tasks.spec.ts, api-tasks.spec.ts,
           api-reviews-list.spec.ts, reference.test.ts)
@@ -7062,9 +6963,8 @@ reviews:
         completed_at: 2026-03-17T12:19:33.075Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-          head_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
+          type: entity_version
+          content_hash: ""
         evidence: "Cycle 1 blockers resolved: (1) kspec-agents.md is v0.12.0 (was v0.11.0), (2)
           templates/skills/review/SKILL.md has Why Anchors Matter section restored, (3)
           DRAFT_REVIEW_ULID nit resolved (now used in tests from dev merge)"
@@ -7215,9 +7115,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-          head_commit: 0cba26e28485f623dc86714d1579ffe655b4ddcb
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -7232,9 +7131,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8ee6537e0a4a
-          head_commit: eb50234f3d54
+          type: entity_version
+          content_hash: ""
         evidence: 262/263 test files passed (5734/5735 tests). 1 pre-existing failure in review-cli.test.ts
           (examined_commit auto-detection) — not introduced by this change.
         name: vitest
@@ -7244,9 +7142,8 @@ reviews:
         completed_at: 2026-03-17T12:27:09.631Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8ee6537e0a4a
-          head_commit: eb50234f3d54
+          type: entity_version
+          content_hash: ""
         evidence: "AC: @yaml-serialization-invariants ac-3 annotated at
           tests/yaml-round-trip-stability.test.ts:500. 5 new tests cover saveReviewRecord,
           mutateReviewAtomically, deleteReviewRecord round-trip stability."
@@ -7308,9 +7205,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 8ee6537e0a4a
-          head_commit: eb50234f3d54
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer-agent
         role: reviewer
@@ -7325,9 +7221,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8ee6537e0a4a38b0435f8cb18987f5043eb8cb0c
-          head_commit: fa760b196f109d5827f3a7a9287dfc0edc65b932
+          type: entity_version
+          content_hash: ""
         evidence: "5733 passed, 3 failed (all 3 pre-existing: plan-inbox-mutation-serialization env issue,
           review-cli examined_commit env pollution, review-per-cycle-lifecycle timeout). No
           regressions caused by this commit."
@@ -7338,9 +7233,8 @@ reviews:
         completed_at: 2026-03-17T12:42:17.757Z
       - status: fail
         applies_to_version:
-          type: code_compare
-          base_commit: 8ee6537e0a4a38b0435f8cb18987f5043eb8cb0c
-          head_commit: fa760b196f109d5827f3a7a9287dfc0edc65b932
+          type: entity_version
+          content_hash: ""
         evidence: "Two MUST-FIX blockers: (1) reviews.ts raw-data-preservation pattern removed — regression
           from dev, (2) review round-trip stability tests deleted instead of supplemented with plan
           tests. Plans.ts implementation is correct and well-tested. No build or type errors."
@@ -7456,9 +7350,8 @@ reviews:
         kind: blocker
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 8ee6537e0a4a38b0435f8cb18987f5043eb8cb0c
-          head_commit: fa760b196f109d5827f3a7a9287dfc0edc65b932
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: agent@kspec-dispatch
         role: reviewer
@@ -7473,9 +7366,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: d7844f56824fc7f24dbf104390d14807a2a27582
-          head_commit: 78d192c45905422e8fed57293774ea8ebc5fba4f
+          type: entity_version
+          content_hash: ""
         evidence: 5739 tests passed, 1 failed (pre-existing env issue in review-cli.test.ts -
           KSPEC_DISPATCH_CANONICAL_HEAD pollutes examined_commit), 3 skipped. All 24 round-trip
           stability tests pass. All inbox-related tests pass.
@@ -7530,9 +7422,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: d7844f56824fc7f24dbf104390d14807a2a27582
-          head_commit: 78d192c45905422e8fed57293774ea8ebc5fba4f
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: "@claude"
         role: reviewer
@@ -7547,9 +7438,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8ee6537e0a4a
-          head_commit: be90fb6f7d26
+          type: entity_version
+          content_hash: ""
         evidence: 5740 passed, 1 failed (pre-existing examined_commit auto-detection in review-cli.test.ts —
           verified same on dev), 3 skipped
         name: vitest
@@ -7559,9 +7449,8 @@ reviews:
         completed_at: 2026-03-17T13:10:24.125Z
       - status: fail
         applies_to_version:
-          type: code_compare
-          base_commit: 8ee6537e0a4a
-          head_commit: be90fb6f7d26
+          type: entity_version
+          content_hash: ""
         evidence: "src/parser/yaml.ts: inbox raw-data-preservation pattern removed (4 helpers deleted,
           saveInboxItem/mutateInboxItemAtomically/deleteInboxItem reverted to schema-normalize
           pattern). tests/yaml-round-trip-stability.test.ts: 5 inbox round-trip stability tests
@@ -7679,9 +7568,8 @@ reviews:
         kind: blocker
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 8ee6537e0a4a
-          head_commit: be90fb6f7d26
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: agent@kspec-dispatch
         role: reviewer
@@ -7696,9 +7584,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: 999094a4049af29dd08705ff671f9089a4e51132
+          type: entity_version
+          content_hash: ""
         evidence: 5726 passed, 1 pre-existing failure (review-cli.test.ts env leakage), 3 skipped
         name: vitest
         required: true
@@ -7707,9 +7594,8 @@ reviews:
         completed_at: 2026-03-17T13:10:35.826Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: 999094a4049af29dd08705ff671f9089a4e51132
+          type: entity_version
+          content_hash: ""
         evidence: AC-7 annotated across daemon routes (reviews.ts, tasks.ts), shared types (api.ts), web-ui
           component (TaskDetailContent.svelte), API client (api.ts), E2E tests (api-reviews-list,
           api-tasks, tasks.spec), and unit tests (reference.test.ts)
@@ -7720,9 +7606,8 @@ reviews:
         completed_at: 2026-03-17T13:10:53.844Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: 999094a4049af29dd08705ff671f9089a4e51132
+          type: entity_version
+          content_hash: ""
         evidence: Pre-existing validation warnings only (3 orphaned refs in meta.yaml, alignment warnings).
           No new issues introduced.
         name: kspec-validate
@@ -7732,9 +7617,8 @@ reviews:
         completed_at: 2026-03-17T13:11:01.717Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: 999094a4049af29dd08705ff671f9089a4e51132
+          type: entity_version
+          content_hash: ""
         evidence: "Cycle 1: kspec-agents.md v0.12.0 restored, review SKILL.md anchoring docs restored. Cycle
           2: duplicate reviews key in keys.ts removed, duplicate reviews:updates case in
           ws-invalidation.ts removed, duplicate ReviewSummary import in api.ts removed. All verified
@@ -7811,9 +7695,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
-          head_commit: 999094a4049af29dd08705ff671f9089a4e51132
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -7828,9 +7711,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8ee6537e0a4a
-          head_commit: 493fdd9943d7
+          type: entity_version
+          content_hash: ""
         evidence: All 30 round-trip stability tests pass, including 6 new plan tests
         name: vitest (yaml-round-trip-stability)
         required: true
@@ -7839,9 +7721,8 @@ reviews:
         completed_at: 2026-03-17T18:53:08.813Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8ee6537e0a4a
-          head_commit: 493fdd9943d7
+          type: entity_version
+          content_hash: ""
         evidence: "5724 passed, 22 failed (all pre-existing: agent-dispatch-engine, review-cli,
           task-system-ac-backfill timeouts, session-start-unlocks timeouts). No failures introduced
           by this branch."
@@ -7852,9 +7733,8 @@ reviews:
         completed_at: 2026-03-17T18:53:22.405Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8ee6537e0a4a
-          head_commit: 493fdd9943d7
+          type: entity_version
+          content_hash: ""
         evidence: Zero diff vs dev for src/parser/reviews.ts and src/parser/yaml.ts. Prior cycle regressions
           fully restored.
         name: regression check (reviews.ts, yaml.ts)
@@ -7978,9 +7858,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 8ee6537e0a4a
-          head_commit: 493fdd9943d7
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: agent@kspec-dispatch
         role: reviewer
@@ -7995,9 +7874,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: d7844f56824fc7f24dbf104390d14807a2a27582
-          head_commit: c24bc444e0cfe4b9cf8fca0d88d932c18c60684a
+          type: entity_version
+          content_hash: ""
         evidence: "5740 passed, 2 failed (pre-existing/environmental: agent-dispatch-engine role entry test
           flaky, review-cli examined_commit test environment-dependent), 3 skipped. No regressions
           from task changes."
@@ -8008,9 +7886,8 @@ reviews:
         completed_at: 2026-03-17T18:32:13.609Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: d7844f56824fc7f24dbf104390d14807a2a27582
-          head_commit: c24bc444e0cfe4b9cf8fca0d88d932c18c60684a
+          type: entity_version
+          content_hash: ""
         evidence: git merge-tree shows 0 conflicts between dev and task branch HEAD. Clean merge expected.
         name: merge-conflict
         required: true
@@ -8019,9 +7896,8 @@ reviews:
         completed_at: 2026-03-17T18:32:22.829Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: d7844f56824fc7f24dbf104390d14807a2a27582
-          head_commit: c24bc444e0cfe4b9cf8fca0d88d932c18c60684a
+          type: entity_version
+          content_hash: ""
         evidence: "AC: @yaml-serialization-invariants ac-3 annotated on both new describe blocks
           (saveObservation path line 747, saveMetaItem path line 869). 8 tests cover:
           saveObservation no-change roundtrip, saveObservation absent sections, deleteObservation
@@ -8119,9 +7995,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: d7844f56824fc7f24dbf104390d14807a2a27582
-          head_commit: c24bc444e0cfe4b9cf8fca0d88d932c18c60684a
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -8136,9 +8011,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1c7a8e7ffc47ad6c3eecc5f3f3ee8f21f65607b8
-          head_commit: fb60707189c2b783a28822ad5d8d8ec695d7a87a
+          type: entity_version
+          content_hash: ""
         evidence: 31/31 task tests pass, 5769 total passed, 4 pre-existing failures (review-cli
           examined_commit, agent-dispatch-engine flaky)
         name: vitest
@@ -8148,9 +8022,8 @@ reviews:
         completed_at: 2026-03-17T18:56:04.870Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1c7a8e7ffc47ad6c3eecc5f3f3ee8f21f65607b8
-          head_commit: fb60707189c2b783a28822ad5d8d8ec695d7a87a
+          type: entity_version
+          content_hash: ""
         evidence: ac-6 (5 tests), ac-7 (5 tests), ac-8 (7 tests), ac-10 (14 tests), ac-9 (pubsub.broadcast
           calls present, follows codebase pattern). All trait ACs annotated N/A with valid reasons.
         name: ac-coverage
@@ -8160,9 +8033,8 @@ reviews:
         completed_at: 2026-03-17T18:56:05.415Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1c7a8e7ffc47ad6c3eecc5f3f3ee8f21f65607b8
-          head_commit: fb60707189c2b783a28822ad5d8d8ec695d7a87a
+          type: entity_version
+          content_hash: ""
         evidence: No new validation errors. Pre-existing reference errors (3), alignment warnings (25),
           completeness warnings (397) — all unrelated to this task.
         name: kspec-validate
@@ -8172,9 +8044,8 @@ reviews:
         completed_at: 2026-03-17T18:56:05.951Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1c7a8e7ffc47ad6c3eecc5f3f3ee8f21f65607b8
-          head_commit: fb60707189c2b783a28822ad5d8d8ec695d7a87a
+          type: entity_version
+          content_hash: ""
         evidence: Cycle 2 was approved — merge conflict resolved correctly. Combined both route sets
           (threads + verdicts/checks/lifecycle) into unified reviews.ts. Imports merged. AC
           annotations combined in server.ts.
@@ -8250,9 +8121,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 1c7a8e7ffc47ad6c3eecc5f3f3ee8f21f65607b8
-          head_commit: fb60707189c2b783a28822ad5d8d8ec695d7a87a
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -8267,9 +8137,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 65035b85
-          head_commit: 2502347497c8
+          type: entity_version
+          content_hash: ""
         evidence: "53 tests passed: yaml-round-trip-stability (29 tests) and dispatch-workspace-registry (24
           tests). All 5 new dispatch workspace round-trip tests pass."
         name: vitest (task-relevant)
@@ -8279,9 +8148,8 @@ reviews:
         completed_at: 2026-03-17T19:21:53.607Z
       - status: fail
         applies_to_version:
-          type: code_compare
-          base_commit: 65035b85
-          head_commit: 2502347497c8
+          type: entity_version
+          content_hash: ""
         evidence: 9 tests failed in 3 files (agent-dispatch-engine.test.ts, review-cli.test.ts,
           task-needs-work.test.ts). All failures are in files NOT changed by this task —
           pre-existing failures on dev branch. 5738 passed, 3 skipped.
@@ -8397,9 +8265,8 @@ reviews:
         kind: blocker
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 65035b85
-          head_commit: 2502347497c8
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -8414,9 +8281,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 65035b85142bbf7c16078777c730bc19413276a4
-          head_commit: 8dabdab7f3df4458dc0e630b24f21b733e532d75
+          type: entity_version
+          content_hash: ""
         evidence: 262 test files passed, 5777 tests passed, 2 pre-existing failures (agent-dispatch-engine
           orientation test, review-cli examined_commit auto-detection)
         name: vitest
@@ -8426,9 +8292,8 @@ reviews:
         completed_at: 2026-03-17T19:33:41.212Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 65035b85142bbf7c16078777c730bc19413276a4
-          head_commit: 8dabdab7f3df4458dc0e630b24f21b733e532d75
+          type: entity_version
+          content_hash: ""
         evidence: Build completed cleanly with no errors
         name: build
         required: true
@@ -8437,9 +8302,8 @@ reviews:
         completed_at: 2026-03-17T19:33:48.703Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 65035b85142bbf7c16078777c730bc19413276a4
-          head_commit: 8dabdab7f3df4458dc0e630b24f21b733e532d75
+          type: entity_version
+          content_hash: ""
         evidence: "AC annotation present: // AC: @yaml-serialization-invariants ac-3 at line 510 of
           tests/yaml-round-trip-stability.test.ts, covering the new savePlan path describe block
           with 6 tests"
@@ -8450,9 +8314,8 @@ reviews:
         completed_at: 2026-03-17T19:33:58.376Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 65035b85142bbf7c16078777c730bc19413276a4
-          head_commit: 8dabdab7f3df4458dc0e630b24f21b733e532d75
+          type: entity_version
+          content_hash: ""
         evidence: git diff dev..HEAD -- src/parser/yaml.ts src/parser/reviews.ts produces zero output — no
           regressions to inbox or review raw-data-preservation patterns
         name: no-regression
@@ -8527,9 +8390,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 65035b85142bbf7c16078777c730bc19413276a4
-          head_commit: 8dabdab7f3df4458dc0e630b24f21b733e532d75
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: agent@kspec-dispatch
         role: reviewer
@@ -8544,9 +8406,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 65035b85142b
-          head_commit: 761e941162ae
+          type: entity_version
+          content_hash: ""
         evidence: 5782 tests passed, 3 skipped, 3 pre-existing failures (agent-dispatch-engine, cli-serve,
           review-cli — none in changed files)
         name: vitest
@@ -8556,9 +8417,8 @@ reviews:
         completed_at: 2026-03-17T19:51:31.861Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 65035b85142b
-          head_commit: 761e941162ae
+          type: entity_version
+          content_hash: ""
         evidence: Pre-existing reference errors and alignment warnings only — none related to changed files
         name: kspec-validate
         required: false
@@ -8618,9 +8478,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 65035b85142b
-          head_commit: 761e941162ae
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: claude-reviewer@dispatch
         role: reviewer
@@ -8913,9 +8772,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 392421a4da0b
-          head_commit: 3b251d677f21
+          type: entity_version
+          content_hash: ""
         evidence: 5790 passed, 1 failed (pre-existing review-cli.test.ts failure unrelated to this task), 3
           skipped
         name: vitest
@@ -8925,9 +8783,8 @@ reviews:
         completed_at: 2026-03-17T23:51:41.010Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 392421a4da0b
-          head_commit: 3b251d677f21
+          type: entity_version
+          content_hash: ""
         evidence: packages/shared tsc build succeeded, packages/web-ui vite build succeeded with
           adapter-static output
         name: build
@@ -8937,9 +8794,8 @@ reviews:
         completed_at: 2026-03-17T23:51:43.525Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 392421a4da0b
-          head_commit: 3b251d677f21
+          type: entity_version
+          content_hash: ""
         evidence: All 5 assigned ACs (ac-2, ac-8, ac-9, ac-10, ac-11) have both implementation annotations
           in +page.svelte and test annotations across reviews-detail.spec.ts and
           review-detail-page.spec.ts
@@ -9056,9 +8912,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 392421a4da0b
-          head_commit: 3b251d677f21
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -9073,9 +8928,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1c7a8e7ffc47
-          head_commit: 3dbacf0c5528
+          type: entity_version
+          content_hash: ""
         evidence: 5785 tests passed, 1 failed (pre-existing in review-cli.test.ts:152 — unrelated to this
           branch), 3 skipped
         name: vitest
@@ -9156,9 +9010,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 1c7a8e7ffc47
-          head_commit: 3dbacf0c5528
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -9173,9 +9026,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: 4df83454a0a173332e2e8d7c66ad6989a15dbb08
+          type: entity_version
+          content_hash: ""
         evidence: 5783 tests passed (1 pre-existing failure in review-cli.test.ts unrelated to this change)
         name: vitest
         required: true
@@ -9184,9 +9036,8 @@ reviews:
         completed_at: 2026-03-18T00:14:20.041Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: 4df83454a0a173332e2e8d7c66ad6989a15dbb08
+          type: entity_version
+          content_hash: ""
         evidence: No conflicts detected in 3-way merge (dev + task branch)
         name: merge-preview
         required: true
@@ -9246,9 +9097,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: 4df83454a0a173332e2e8d7c66ad6989a15dbb08
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -9263,9 +9113,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 392421a4da0b
-          head_commit: 9a8ef3b3aaa8
+          type: entity_version
+          content_hash: ""
         evidence: 5797 passed, 1 failed (pre-existing review-cli.test.ts examined_commit issue), 3 skipped
         name: vitest
         required: true
@@ -9425,9 +9274,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 392421a4da0b
-          head_commit: 9a8ef3b3aaa8
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -9442,9 +9290,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         evidence: 5795 tests passed (1 pre-existing failure in review-cli.test.ts — not modified by this
           branch)
         name: vitest
@@ -9454,9 +9301,8 @@ reviews:
         completed_at: 2026-03-18T00:32:13.125Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         evidence: Pre-existing reference errors and alignment warnings only; no new issues from this task
         name: kspec-validate
         required: false
@@ -9465,9 +9311,8 @@ reviews:
         completed_at: 2026-03-18T00:32:25.925Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         evidence: "AC: @yaml-serialization-invariants ac-3 annotated at
           tests/yaml-round-trip-stability.test.ts:1150 and src/parser/yaml.ts:2617. 5 test cases
           cover single record stability, non-target pollution, multi-record, multi-cycle, and new
@@ -9537,9 +9382,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: claude-reviewer@dispatch
         role: reviewer
@@ -9639,9 +9483,8 @@ reviews:
         resolved_by: "@claude"
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: claude-reviewer@dispatch
         role: reviewer
@@ -9656,9 +9499,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 42a4d2777452
-          head_commit: 0856c70e3db6
+          type: entity_version
+          content_hash: ""
         evidence: All 18 tests in dispatch-workspace-config.test.ts passed (5 new stale target tests + 13
           existing)
         name: vitest (task-specific)
@@ -9668,9 +9510,8 @@ reviews:
         completed_at: 2026-03-18T00:46:42.893Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 42a4d2777452
-          head_commit: 0856c70e3db6
+          type: entity_version
+          content_hash: ""
         evidence: 5802 passed, 3 skipped, 1 failed (pre-existing failure in review-cli.test.ts unrelated to
           this task — tests/review-cli.test.ts was not modified)
         name: vitest (full suite)
@@ -9680,9 +9521,8 @@ reviews:
         completed_at: 2026-03-18T00:46:45.482Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 42a4d2777452
-          head_commit: 0856c70e3db6
+          type: entity_version
+          content_hash: ""
         evidence: "ac-6: 4 annotated tests (auto-update, active conflict, error guidance,
           config-matches-no-op). ac-7: 2 annotated tests (describe-level + prompt reflection test).
           trait-error-guidance ac-1/ac-2: covered by error guidance test. ac-3 through ac-6 N/A
@@ -9832,9 +9672,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 42a4d2777452
-          head_commit: 0856c70e3db6
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -9849,9 +9688,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
-          head_commit: ba6b05e773b949f2ce81fc36a7a887c836c3e88f
+          type: entity_version
+          content_hash: ""
         evidence: "5803 passed, 2 failed (pre-existing: agent-dispatch-engine.test.ts AC-12 flaky,
           review-cli.test.ts examined_commit environment-sensitive). 3 skipped. No regressions from
           this change."
@@ -9862,9 +9700,8 @@ reviews:
         completed_at: 2026-03-18T00:57:49.514Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
-          head_commit: ba6b05e773b949f2ce81fc36a7a887c836c3e88f
+          type: entity_version
+          content_hash: ""
         evidence: 3 reference errors (pre-existing in meta.yaml). 396 completeness warnings (pre-existing).
           No new issues introduced.
         name: kspec-validate
@@ -9874,9 +9711,8 @@ reviews:
         completed_at: 2026-03-18T00:57:52.589Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
-          head_commit: ba6b05e773b949f2ce81fc36a7a887c836c3e88f
+          type: entity_version
+          content_hash: ""
         evidence: AC @yaml-serialization-invariants ac-3 covered by 8 test describe blocks in
           yaml-round-trip-stability.test.ts (lines 67, 240, 366, 523, 743, 980, 1161, 1441). New
           workflow run tests at line 1161 cover saveWorkflowRun, mutateWorkflowRunAtomically, and
@@ -9888,9 +9724,8 @@ reviews:
         completed_at: 2026-03-18T00:57:55.422Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
-          head_commit: ba6b05e773b949f2ce81fc36a7a887c836c3e88f
+          type: entity_version
+          content_hash: ""
         evidence: "Blocker 1 (dispatch workspace regression): dispatch-workspaces.ts identical to dev (zero
           diff). Blocker 2 (out-of-scope deletions): merge commit ba6b05e77 brings all dev content;
           diff against dev now scoped to meta.ts + tests only."
@@ -9966,9 +9801,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
-          head_commit: ba6b05e773b949f2ce81fc36a7a887c836c3e88f
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -9983,9 +9817,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 392421a4da0b405f2fd37ed90bf6a62ff4e3effc
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         evidence: 5795 passed, 1 pre-existing failure (review-cli.test.ts examined_commit null check —
           unrelated to this change)
         name: vitest
@@ -9995,9 +9828,8 @@ reviews:
         completed_at: 2026-03-18T01:05:25.227Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 392421a4da0b405f2fd37ed90bf6a62ff4e3effc
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         evidence: "AC: @yaml-serialization-invariants ac-3 annotated at
           tests/yaml-round-trip-stability.test.ts:1150. 5 triage-specific tests covering: single
           record save, non-target pollution prevention, multi-record stability, multiple save
@@ -10009,9 +9841,8 @@ reviews:
         completed_at: 2026-03-18T01:05:35.833Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 392421a4da0b405f2fd37ed90bf6a62ff4e3effc
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         evidence: "Files: src/parser/yaml.ts (+158/-39), tests/yaml-round-trip-stability.test.ts (+291/-1).
           Implementation follows established raw-data-preservation pattern identical to
           mergeInboxPreservingRawShape. 5 helper functions added (extractRawTriageArray,
@@ -10084,9 +9915,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 392421a4da0b405f2fd37ed90bf6a62ff4e3effc
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: claude-reviewer@dispatch
         role: reviewer
@@ -10101,9 +9931,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
-          head_commit: dd1a83cf431c45c1b19f24260b313b16ed42e96d
+          type: entity_version
+          content_hash: ""
         evidence: All 18 tests pass in dispatch-workspace-config.test.ts including 5 new stale integration
           target tests
         name: vitest (task-specific)
@@ -10113,9 +9942,8 @@ reviews:
         completed_at: 2026-03-18T01:22:23.941Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
-          head_commit: dd1a83cf431c45c1b19f24260b313b16ed42e96d
+          type: entity_version
+          content_hash: ""
         evidence: 5802 pass, 1 fail (pre-existing review-cli.test.ts environment issue in detached worktree
           — not related to task changes), 3 skipped
         name: vitest (full suite)
@@ -10125,9 +9953,8 @@ reviews:
         completed_at: 2026-03-18T01:22:30.214Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
-          head_commit: dd1a83cf431c45c1b19f24260b313b16ed42e96d
+          type: entity_version
+          content_hash: ""
         evidence: "Own ACs: ac-6 has 4 test annotations + 2 source annotations, ac-7 has 1 test annotation.
           Trait ACs: @trait-error-guidance ac-1 and ac-2 annotated on tests, ac-3 through ac-6
           annotated as N/A with reasons."
@@ -10138,9 +9965,8 @@ reviews:
         completed_at: 2026-03-18T01:22:37.409Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
-          head_commit: dd1a83cf431c45c1b19f24260b313b16ed42e96d
+          type: entity_version
+          content_hash: ""
         evidence: "BLOCKER 1: resolveIntegrationRecord line 696 now only preserves existing target_commit
           when target_branch unchanged; caller at line 2141 resolves commit from new base branch.
           BLOCKER 2: Test at lines 513-515 verifies target_commit updates to devHead after
@@ -10217,9 +10043,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
-          head_commit: dd1a83cf431c45c1b19f24260b313b16ed42e96d
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -10234,9 +10059,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         evidence: 5795 tests pass, 1 pre-existing failure in review-cli.test.ts (examined_commit null check)
         name: vitest
         required: true
@@ -10245,9 +10069,8 @@ reviews:
         completed_at: 2026-03-18T01:28:47.890Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         evidence: "AC: @yaml-serialization-invariants ac-3 annotated on src/parser/yaml.ts:2617 and
           tests/yaml-round-trip-stability.test.ts:1150. 5 round-trip tests prove evidence_refs Zod
           default is suppressed."
@@ -10309,9 +10132,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: claude-reviewer@dispatch
         role: reviewer
@@ -10326,9 +10148,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8e8a1a565e469d277f1a05f0b69359cdd6c26c5d
-          head_commit: c7f0fed80c4192706ed6dc4c428abbfdb4f9fe88
+          type: entity_version
+          content_hash: ""
         evidence: 5804 passed, 3 skipped, 1 pre-existing failure (review-cli.test.ts examined_commit
           auto-detect — not introduced by this commit)
         name: vitest
@@ -10382,9 +10203,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 8e8a1a565e469d277f1a05f0b69359cdd6c26c5d
-          head_commit: c7f0fed80c4192706ed6dc4c428abbfdb4f9fe88
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -10399,9 +10219,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 81daafe8a38dc2ac5fe460ef396d2b565f4799af
-          head_commit: e3e45dd016439fdc78dd4e028bffbeea1b786a93
+          type: entity_version
+          content_hash: ""
         evidence: All 37 session-summary-cache tests passed, including 2 new regression tests
         name: vitest (session-summary-cache)
         required: true
@@ -10410,9 +10229,8 @@ reviews:
         completed_at: 2026-03-18T01:44:05.277Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 81daafe8a38dc2ac5fe460ef396d2b565f4799af
-          head_commit: e3e45dd016439fdc78dd4e028bffbeea1b786a93
+          type: entity_version
+          content_hash: ""
         evidence: "5810 passed, 2 failed (pre-existing: agent-dispatch-engine AC-12 mutex test + review-cli
           examined_commit environmental test), 3 skipped. No regressions from this change."
         name: vitest (full suite)
@@ -10473,9 +10291,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 81daafe8a38dc2ac5fe460ef396d2b565f4799af
-          head_commit: e3e45dd016439fdc78dd4e028bffbeea1b786a93
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: claude-reviewer@kynetic.ai
         role: reviewer
@@ -10490,9 +10307,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 392421a4da0b405f2fd37ed90bf6a62ff4e3effc
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         evidence: 5794 tests passed, 2 pre-existing failures (review-cli.test.ts examined_commit null,
           ENOTEMPTY in dispatch-role-entry) — both unrelated to this change and present on dev
         name: vitest
@@ -10502,9 +10318,8 @@ reviews:
         completed_at: 2026-03-18T01:54:42.794Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 392421a4da0b405f2fd37ed90bf6a62ff4e3effc
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         evidence: git merge-tree clean (no conflicts), git log HEAD..origin/dev shows 0 new commits,
           origin/dev already merged into branch
         name: merge-path
@@ -10514,9 +10329,8 @@ reviews:
         completed_at: 2026-03-18T01:54:51.459Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 392421a4da0b405f2fd37ed90bf6a62ff4e3effc
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         evidence: "AC: @yaml-serialization-invariants ac-3 annotated in src/parser/yaml.ts:2617 and
           tests/yaml-round-trip-stability.test.ts:1150. 5 tests cover: single record save,
           non-target pollution, multi-record stability, multiple save cycles, new record addition."
@@ -10585,9 +10399,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 392421a4da0b405f2fd37ed90bf6a62ff4e3effc
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: claude-reviewer@dispatch
         role: reviewer
@@ -10602,9 +10415,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         evidence: "5793 tests passed, 3 failed (all pre-existing on dev: agent-dispatch-engine.test.ts,
           review-cli.test.ts, review-per-cycle-lifecycle.test.ts — zero diff against origin/dev)"
         name: vitest
@@ -10614,9 +10426,8 @@ reviews:
         completed_at: 2026-03-18T02:16:28.317Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         evidence: "AC: @yaml-serialization-invariants ac-3 annotated on describe block at
           tests/yaml-round-trip-stability.test.ts:1150 with 5 tests covering single record,
           non-target pollution, multi-record stability, multi-cycle, and new record addition"
@@ -10627,9 +10438,8 @@ reviews:
         completed_at: 2026-03-18T02:16:58.364Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         evidence: git log HEAD..origin/dev shows 0 commits, git merge --no-commit --no-ff origin/dev reports
           Already up to date. Clean merge path confirmed.
         name: merge-path
@@ -10697,9 +10507,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: claude-reviewer@dispatch
         role: reviewer
@@ -10714,9 +10523,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c829472cb105
-          head_commit: b8e97880d569
+          type: entity_version
+          content_hash: ""
         evidence: 5801 pass, 11 fail (all pre-existing on dev), 3 skipped. Zero regressions from this task.
         name: vitest
         required: true
@@ -10725,9 +10533,8 @@ reviews:
         completed_at: 2026-03-18T02:24:29.121Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c829472cb105
-          head_commit: b8e97880d569
+          type: entity_version
+          content_hash: ""
         evidence: 0 errors (pre-existing fixture errors excluded)
         name: svelte-check
         required: true
@@ -10736,9 +10543,8 @@ reviews:
         completed_at: 2026-03-18T02:24:39.181Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c829472cb105
-          head_commit: b8e97880d569
+          type: entity_version
+          content_hash: ""
         evidence: Build succeeded in 16.33s, adapter-static output written
         name: vite-build
         required: true
@@ -10747,9 +10553,8 @@ reviews:
         completed_at: 2026-03-18T02:24:48.104Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c829472cb105
-          head_commit: b8e97880d569
+          type: entity_version
+          content_hash: ""
         evidence: "No new validation errors. Pre-existing: 3 ref errors, 24 orphaned specs, 394 completeness
           warnings — all unrelated to this task."
         name: kspec-validate
@@ -10824,9 +10629,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: c829472cb105
-          head_commit: b8e97880d569
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: agent:pr-reviewer
         role: reviewer
@@ -10841,9 +10645,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c829472cb
-          head_commit: 9f539356d7db
+          type: entity_version
+          content_hash: ""
         evidence: 5812 tests passed, 2 pre-existing failures in review-cli.test.ts and
           agent-dispatch-engine.test.ts (unrelated, zero diff from dev)
         name: vitest
@@ -10853,9 +10656,8 @@ reviews:
         completed_at: 2026-03-18T02:49:08.018Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c829472cb
-          head_commit: 9f539356d7db
+          type: entity_version
+          content_hash: ""
         evidence: TypeScript build succeeded, all packages compiled cleanly
         name: build
         required: true
@@ -10864,9 +10666,8 @@ reviews:
         completed_at: 2026-03-18T02:49:10.792Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c829472cb
-          head_commit: 9f539356d7db
+          type: entity_version
+          content_hash: ""
         evidence: "AC: @yaml-serialization-invariants ac-3 annotated at
           tests/yaml-round-trip-stability.test.ts:1163 and src/parser/yaml.ts:2617. 5 tests verify
           round-trip stability."
@@ -10935,9 +10736,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: c829472cb
-          head_commit: 9f539356d7db
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: claude-reviewer@dispatch
         role: reviewer
@@ -10952,9 +10752,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a
-          head_commit: c78549495ec2
+          type: entity_version
+          content_hash: ""
         evidence: 5806 tests passed, 6 failed (all failures pre-existing in agent-dispatch-engine.test.ts
           and review-cli.test.ts — not related to this PR). No test files were modified by this
           commit.
@@ -10965,9 +10764,8 @@ reviews:
         completed_at: 2026-03-18T03:07:21.977Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a
-          head_commit: c78549495ec2
+          type: entity_version
+          content_hash: ""
         evidence: No errors in any diff viewer component files. 57 pre-existing errors in other files.
         name: svelte-check
         required: true
@@ -10976,9 +10774,8 @@ reviews:
         completed_at: 2026-03-18T03:07:30.077Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a
-          head_commit: c78549495ec2
+          type: entity_version
+          content_hash: ""
         evidence: Web UI build completed successfully (vite build + adapter-static). Output written to
           build/.
         name: vite-build
@@ -10988,9 +10785,8 @@ reviews:
         completed_at: 2026-03-18T03:07:38.499Z
       - status: fail
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a
-          head_commit: c78549495ec2
+          type: entity_version
+          content_hash: ""
         evidence: Zero AC test annotations found in test files. All 6 ACs (ac-1 through ac-6) have
           annotations only in implementation source files, not in test files. No unit or E2E tests
           exist for any diff viewer component.
@@ -11154,9 +10950,8 @@ reviews:
         kind: question
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a
-          head_commit: c78549495ec2
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -11171,9 +10966,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3074c95391dd
-          head_commit: d2788245a89f
+          type: entity_version
+          content_hash: ""
         evidence: Task test file (web-ui-structured-content-viewer.test.ts) passes all 41 tests. 5
           pre-existing test file failures in unrelated files (agent-dispatch-engine,
           plan-inbox-mutation-serialization, review-cli, review-per-cycle-lifecycle) — none in files
@@ -11185,9 +10979,8 @@ reviews:
         completed_at: 2026-03-18T03:35:29.880Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3074c95391dd
-          head_commit: d2788245a89f
+          type: entity_version
+          content_hash: ""
         evidence: All 4 ACs (ac-1 through ac-4) have test annotations in
           tests/web-ui-structured-content-viewer.test.ts and implementation annotations in source
           files. No trait ACs to cover.
@@ -11198,9 +10991,8 @@ reviews:
         completed_at: 2026-03-18T03:35:36.428Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 3074c95391dd
-          head_commit: d2788245a89f
+          type: entity_version
+          content_hash: ""
         evidence: kspec validate shows pre-existing reference errors and completeness warnings only. No new
           validation issues introduced by this change.
         name: kspec-validate
@@ -11290,9 +11082,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 3074c95391dd
-          head_commit: d2788245a89f
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -11307,9 +11098,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d9
-          head_commit: f8ff6b04d1c3
+          type: entity_version
+          content_hash: ""
         evidence: 5809 passed, 3 failed (all 3 failures pre-existing in agent-dispatch-engine.test.ts and
           review-cli.test.ts — not related to diff viewer changes)
         name: vitest
@@ -11319,9 +11109,8 @@ reviews:
         completed_at: 2026-03-18T03:41:35.022Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d9
-          head_commit: f8ff6b04d1c3
+          type: entity_version
+          content_hash: ""
         evidence: 57 errors all pre-existing in unchanged files (AgentEditForm, SessionFilters,
           PlanEmbeddedBlocks, etc). Zero errors in new diff components.
         name: svelte-check
@@ -11331,9 +11120,8 @@ reviews:
         completed_at: 2026-03-18T03:41:43.885Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d9
-          head_commit: f8ff6b04d1c3
+          type: entity_version
+          content_hash: ""
         evidence: All 6 ACs have test annotations in code-diff-viewer.spec.ts (ac-1 through ac-6).
           Implementation components also have AC annotations. AC coverage complete.
         name: ac-coverage
@@ -11343,9 +11131,8 @@ reviews:
         completed_at: 2026-03-18T03:41:51.934Z
       - status: fail
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d9
-          head_commit: f8ff6b04d1c3
+          type: entity_version
+          content_hash: ""
         evidence: All 17 E2E tests fail with 'Failed to start daemon' — infrastructure issue in detached
           worktree. Tests cannot be verified in review snapshot. Additionally, AC-4 test has route
           mock bug (/threads should be /comments) — test would fail even with working daemon.
@@ -11448,9 +11235,8 @@ reviews:
         kind: blocker
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d9
-          head_commit: f8ff6b04d1c3
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -11465,9 +11251,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
-          head_commit: 3f6587548ba602b8300fbd2fddd94ec6c9ea46a6
+          type: entity_version
+          content_hash: ""
         evidence: 5809 passed, 3 skipped, 3 failed (all failures pre-existing in
           agent-dispatch-engine.test.ts and review-cli.test.ts — task did not modify those files)
         name: vitest
@@ -11477,9 +11262,8 @@ reviews:
         completed_at: 2026-03-18T04:05:00.464Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
-          head_commit: 3f6587548ba602b8300fbd2fddd94ec6c9ea46a6
+          type: entity_version
+          content_hash: ""
         evidence: All diff component files clean. 57 errors in other pre-existing files — none in
           task-modified files
         name: svelte-check
@@ -11489,9 +11273,8 @@ reviews:
         completed_at: 2026-03-18T04:05:03.412Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
-          head_commit: 3f6587548ba602b8300fbd2fddd94ec6c9ea46a6
+          type: entity_version
+          content_hash: ""
         evidence: All 6 ACs annotated in code-diff-viewer.spec.ts and implementation components. 17 E2E
           tests.
         name: ac-coverage
@@ -11501,9 +11284,8 @@ reviews:
         completed_at: 2026-03-18T04:05:06.148Z
       - status: skipped
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
-          head_commit: 3f6587548ba602b8300fbd2fddd94ec6c9ea46a6
+          type: entity_version
+          content_hash: ""
         evidence: Cannot run in dispatch agent env (daemon start blocked). 17 tests structurally verified.
         name: e2e
         required: false
@@ -11599,9 +11381,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
-          head_commit: 3f6587548ba602b8300fbd2fddd94ec6c9ea46a6
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -11616,9 +11397,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
-          head_commit: 082679500792a34a7e102e1fd6ff07e8cc5bbc3f
+          type: entity_version
+          content_hash: ""
         evidence: 5809 passed, 3 skipped, 3 failed (all pre-existing in agent-dispatch-engine.test.ts and
           review-cli.test.ts — no files touched by this task)
         name: vitest
@@ -11628,9 +11408,8 @@ reviews:
         completed_at: 2026-03-18T04:34:55.465Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
-          head_commit: 082679500792a34a7e102e1fd6ff07e8cc5bbc3f
+          type: entity_version
+          content_hash: ""
         evidence: All errors pre-existing (ReviewThread/ReviewDetail/ReviewSummary imports from
           @kynetic-ai/shared existed in base commit). No new type errors introduced by diff
           components.
@@ -11641,9 +11420,8 @@ reviews:
         completed_at: 2026-03-18T04:35:03.384Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
-          head_commit: 082679500792a34a7e102e1fd6ff07e8cc5bbc3f
+          type: entity_version
+          content_hash: ""
         evidence: 6/6 ACs annotated in E2E test file (code-diff-viewer.spec.ts) with 17 tests. All ACs also
           annotated in implementation files (CodeDiffViewer, DiffFileList, DiffFileView,
           DiffHunkView, DiffInlineThread, DiffCommentForm, api.ts, +page.svelte). Each test proves
@@ -11655,9 +11433,8 @@ reviews:
         completed_at: 2026-03-18T04:35:11.929Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
-          head_commit: 082679500792a34a7e102e1fd6ff07e8cc5bbc3f
+          type: entity_version
+          content_hash: ""
         evidence: All validation errors/warnings pre-existing (broken meta.yaml references, orphaned specs,
           invalid AC annotations in test helpers). No new issues from this task.
         name: kspec-validate
@@ -11732,9 +11509,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
-          head_commit: 082679500792a34a7e102e1fd6ff07e8cc5bbc3f
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -12684,9 +12460,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
-          head_commit: 3a134c292f6b4907a5072a8b14ede10505561779
+          type: entity_version
+          content_hash: ""
         evidence: 5857 pass, 1 fail (pre-existing review-cli.test.ts examined_commit null check), 3 skipped
         name: vitest
         required: true
@@ -12695,9 +12470,8 @@ reviews:
         completed_at: 2026-03-18T07:48:25.115Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
-          head_commit: 3a134c292f6b4907a5072a8b14ede10505561779
+          type: entity_version
+          content_hash: ""
         evidence: Zero errors in diff components; all errors are pre-existing in other files
         name: svelte-check
         required: true
@@ -12706,9 +12480,8 @@ reviews:
         completed_at: 2026-03-18T07:48:32.573Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
-          head_commit: 3a134c292f6b4907a5072a8b14ede10505561779
+          type: entity_version
+          content_hash: ""
         evidence: All 6 ACs (ac-1 through ac-6) annotated in both implementation (7 files) and test
           (code-diff-viewer.spec.ts, 17 E2E tests)
         name: ac-coverage
@@ -12718,9 +12491,8 @@ reviews:
         completed_at: 2026-03-18T07:48:40.551Z
       - status: skipped
         applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
-          head_commit: 3a134c292f6b4907a5072a8b14ede10505561779
+          type: entity_version
+          content_hash: ""
         evidence: E2E tests require daemon; skipped in dispatch env (daemon-blocked)
         name: e2e
         required: false
@@ -12794,9 +12566,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
-          head_commit: 3a134c292f6b4907a5072a8b14ede10505561779
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -12811,9 +12582,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: d7844f56824fc7f24dbf104390d14807a2a27582
-          head_commit: 9bbc04d7ab08b2c26aed873d58a40332421cb0d7
+          type: entity_version
+          content_hash: ""
         evidence: 5864 tests passed, 1 failed (pre-existing review-cli examined_commit env-dependent issue).
           All 56 round-trip stability tests pass including 7 new meta manifest tests.
         name: vitest
@@ -12823,9 +12593,8 @@ reviews:
         completed_at: 2026-03-18T08:04:04.087Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: d7844f56824fc7f24dbf104390d14807a2a27582
-          head_commit: 9bbc04d7ab08b2c26aed873d58a40332421cb0d7
+          type: entity_version
+          content_hash: ""
         evidence: All 4 @yaml-serialization-invariants ACs have test annotations. ac-3 covered by 11 test
           describe blocks in yaml-round-trip-stability.test.ts (including 2 new meta manifest
           blocks). ac-1, ac-2, ac-4 covered in yaml-canonical-key-order.test.ts.
@@ -12836,9 +12605,8 @@ reviews:
         completed_at: 2026-03-18T08:04:12.000Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: d7844f56824fc7f24dbf104390d14807a2a27582
-          head_commit: 9bbc04d7ab08b2c26aed873d58a40332421cb0d7
+          type: entity_version
+          content_hash: ""
         evidence: Worker resolved merge with dev cleanly. Merge commit 872e1d0ec shows combined test
           additions from dev (inbox, triage, workflow-run, dispatch-workspace) with task tests (meta
           manifest). Fix commit 9bbc04d7a removes duplicate withFileLock import.
@@ -12967,9 +12735,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: d7844f56824fc7f24dbf104390d14807a2a27582
-          head_commit: 9bbc04d7ab08b2c26aed873d58a40332421cb0d7
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -12984,9 +12751,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8d087368e
-          head_commit: 14505dad0
+          type: entity_version
+          content_hash: ""
         evidence: "5893 passed, 1 failed (pre-existing: review-cli.test.ts examined_commit null assertion —
           not caused by this change), 3 skipped"
         name: vitest
@@ -12996,9 +12762,8 @@ reviews:
         completed_at: 2026-03-18T08:17:10.060Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8d087368e
-          head_commit: 14505dad0
+          type: entity_version
+          content_hash: ""
         evidence: "All 6 ACs from @dispatch-event-envelope have annotated tests in tests/event-bus.test.ts.
           AC annotations verified: ac-1 (5 tests), ac-2 (5 tests), ac-3 (5 tests), ac-4 (3 tests),
           ac-5 (5 tests), ac-6 (5 tests)"
@@ -13009,9 +12774,8 @@ reviews:
         completed_at: 2026-03-18T08:17:18.877Z
       - status: fail
         applies_to_version:
-          type: code_compare
-          base_commit: 8d087368e
-          head_commit: 14505dad0
+          type: entity_version
+          content_hash: ""
         evidence: Out-of-scope changes to src/parser/meta.ts (~250 lines deleted, ~130 added) and
           tests/yaml-round-trip-stability.test.ts (~327 tests deleted). These changes revert
           recently-merged round-trip stability work and break @yaml-serialization-invariants ac-3.
@@ -13167,9 +12931,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 8d087368e
-          head_commit: 14505dad0
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -13184,9 +12947,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8166d8d65
-          head_commit: e33ebbbff
+          type: entity_version
+          content_hash: ""
         evidence: 5913 passed, 1 failed (pre-existing review-cli.test.ts failure unrelated to this change —
           git diff confirms zero changes to that file), 3 skipped. All 49 action-model tests pass.
         name: vitest
@@ -13196,9 +12958,8 @@ reviews:
         completed_at: 2026-03-18T08:36:45.162Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8166d8d65
-          head_commit: e33ebbbff
+          type: entity_version
+          content_hash: ""
         evidence: npx tsc --noEmit completed with zero errors
         name: typescript
         required: true
@@ -13207,9 +12968,8 @@ reviews:
         completed_at: 2026-03-18T08:36:50.236Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8166d8d65
-          head_commit: e33ebbbff
+          type: entity_version
+          content_hash: ""
         evidence: No warnings or errors for @dispatch-action-model spec. Pre-existing validation issues
           (orphaned specs, missing AC coverage for other specs) unrelated to this change.
         name: kspec-validate
@@ -13219,9 +12979,8 @@ reviews:
         completed_at: 2026-03-18T08:36:56.991Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8166d8d65
-          head_commit: e33ebbbff
+          type: entity_version
+          content_hash: ""
         evidence: All 9 own ACs (ac-1 through ac-9) have annotated tests in tests/action-model.test.ts. All
           6 trait ACs (@trait-error-guidance ac-1 through ac-6) annotated as N/A with valid
           justifications — ActionExecutor is a library component, not a CLI command; error
@@ -13351,9 +13110,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 8166d8d65
-          head_commit: e33ebbbff
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: agent@kspec-dispatch
         role: reviewer
@@ -13368,9 +13126,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8d087368e
-          head_commit: 14505dad0
+          type: entity_version
+          content_hash: ""
         evidence: 5893 tests passed, 3 skipped, 1 pre-existing failure (review-cli.test.ts — zero diff from
           dev). All 36 event-bus tests pass. All 117 dispatch engine tests pass.
         name: vitest
@@ -13380,9 +13137,8 @@ reviews:
         completed_at: 2026-03-18T08:49:36.330Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8d087368e
-          head_commit: 14505dad0
+          type: entity_version
+          content_hash: ""
         evidence: All 6 ACs (ac-1 through ac-6) have annotated tests in tests/event-bus.test.ts. kspec
           validate shows no coverage warnings for @dispatch-event-envelope.
         name: ac-coverage
@@ -13392,9 +13148,8 @@ reviews:
         completed_at: 2026-03-18T08:49:38.911Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8d087368e
-          head_commit: 14505dad0
+          type: entity_version
+          content_hash: ""
         evidence: "git diff 8d087368e..14505dad0 --stat shows exactly 4 files changed:
           src/agent-runtime/event-bus.ts (new), src/agent-runtime/dispatch.ts (integration),
           src/agent-runtime/index.ts (re-exports), tests/event-bus.test.ts (new). No out-of-scope
@@ -13406,9 +13161,8 @@ reviews:
         completed_at: 2026-03-18T08:49:41.569Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8d087368e
-          head_commit: 14505dad0
+          type: entity_version
+          content_hash: ""
         evidence: kspec validate shows no new errors or warnings related to dispatch-event-envelope.
           Pre-existing reference errors and orphaned specs are unrelated to this task.
         name: kspec-validate
@@ -13586,9 +13340,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 8d087368e
-          head_commit: 14505dad0
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -13603,9 +13356,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8166d8d659867217b31b97296d530899f07a433e
-          head_commit: ee6c73c68771b1867ff4a16b04c3062ca2d4b1d9
+          type: entity_version
+          content_hash: ""
         evidence: 5918 tests passed, 1 pre-existing failure in review-cli.test.ts (not modified by this
           commit)
         name: vitest
@@ -13615,9 +13367,8 @@ reviews:
         completed_at: 2026-03-18T09:06:49.868Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8166d8d659867217b31b97296d530899f07a433e
-          head_commit: ee6c73c68771b1867ff4a16b04c3062ca2d4b1d9
+          type: entity_version
+          content_hash: ""
         evidence: Schema OK. Exit code 4 from pre-existing reference errors unrelated to hooks. No new
           errors.
         name: kspec-validate
@@ -13627,9 +13378,8 @@ reviews:
         completed_at: 2026-03-18T09:06:52.838Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 8166d8d659867217b31b97296d530899f07a433e
-          head_commit: ee6c73c68771b1867ff4a16b04c3062ca2d4b1d9
+          type: entity_version
+          content_hash: ""
         evidence: "All 9 ACs annotated: dispatch-hook-schema ac-1 to ac-4, dispatch-hook-filter ac-1 to
           ac-5. Tests prove each AC."
         name: ac-coverage
@@ -13697,9 +13447,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 8166d8d659867217b31b97296d530899f07a433e
-          head_commit: ee6c73c68771b1867ff4a16b04c3062ca2d4b1d9
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -13714,9 +13463,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
-          head_commit: 4e5c1aa1ee992c219ec562b1b9f030e88a53b3fe
+          type: entity_version
+          content_hash: ""
         evidence: 5972 tests passed, 1 pre-existing failure in review-cli.test.ts (unrelated to this task —
           file not modified), 3 skipped
         name: vitest
@@ -13726,9 +13474,8 @@ reviews:
         completed_at: 2026-03-18T09:14:15.563Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
-          head_commit: 4e5c1aa1ee992c219ec562b1b9f030e88a53b3fe
+          type: entity_version
+          content_hash: ""
         evidence: Pre-existing validation issues only (3 reference errors, orphaned specs, missing AC
           coverage). No new issues from this task.
         name: kspec-validate
@@ -13738,9 +13485,8 @@ reviews:
         completed_at: 2026-03-18T09:14:22.462Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
-          head_commit: 4e5c1aa1ee992c219ec562b1b9f030e88a53b3fe
+          type: entity_version
+          content_hash: ""
         evidence: "All 4 own ACs annotated with tests (ac-sync-interval, ac-remote-sync-disabled,
           ac-remote-sync-default, ac-validation). All 6 trait ACs covered: ac-5 has test,
           ac-1/2/3/4/6 annotated N/A with valid reasons."
@@ -13809,9 +13555,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
-          head_commit: 4e5c1aa1ee992c219ec562b1b9f030e88a53b3fe
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -13826,9 +13571,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
-          head_commit: c3b3d1b39059489fb174035e4bec6527043323cc
+          type: entity_version
+          content_hash: ""
         evidence: "All 25 new command-action tests pass. Full suite: 6028 passed, 1 failed (pre-existing
           review-cli.test.ts failure unrelated to this task — no diff on that file vs dev)."
         name: vitest
@@ -13838,9 +13582,8 @@ reviews:
         completed_at: 2026-03-18T09:24:43.595Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
-          head_commit: c3b3d1b39059489fb174035e4bec6527043323cc
+          type: entity_version
+          content_hash: ""
         evidence: "All 4 ACs (ac-1 through ac-4) have test annotations in tests/command-action.test.ts and
           implementation annotations in src/. ac-1: 7 tests covering schema validation (program,
           args, cwd, shell default). ac-2: 4 tests covering template interpolation as literal
@@ -13854,9 +13597,8 @@ reviews:
         completed_at: 2026-03-18T09:24:55.250Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
-          head_commit: c3b3d1b39059489fb174035e4bec6527043323cc
+          type: entity_version
+          content_hash: ""
         evidence: "Implementation matches spec for all 4 ACs. ac-1: schema has command (string), args
           (string[]), optional cwd, shell defaults false. ac-2: spawn with shell:false + per-arg
           template interpolation = literal argv. ac-3: KSPEC_ENV_ALLOWLIST has 12 fields matching
@@ -13957,9 +13699,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
-          head_commit: c3b3d1b39059489fb174035e4bec6527043323cc
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -13974,9 +13715,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: ca266e824eb760fa55bd42cf3ceb953a6b93c35b
-          head_commit: c790bb1ffcfe44d0be13719ab8884a5655f5055b
+          type: entity_version
+          content_hash: ""
         evidence: 48 event-registry tests passed. 6073 total passed. 2 failures pre-existing (review-cli
           examined_commit env, dispatch-engine tmpdir). Neither modified by this branch.
         name: vitest
@@ -13986,9 +13726,8 @@ reviews:
         completed_at: 2026-03-18T09:50:04.381Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: ca266e824eb760fa55bd42cf3ceb953a6b93c35b
-          head_commit: c790bb1ffcfe44d0be13719ab8884a5655f5055b
+          type: entity_version
+          content_hash: ""
         evidence: "npm run build succeeded: tsc, shared, daemon, web-ui, plugin all clean."
         name: build
         required: true
@@ -13997,9 +13736,8 @@ reviews:
         completed_at: 2026-03-18T09:50:11.904Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: ca266e824eb760fa55bd42cf3ceb953a6b93c35b
-          head_commit: c790bb1ffcfe44d0be13719ab8884a5655f5055b
+          type: entity_version
+          content_hash: ""
         evidence: "All 5 own ACs (ac-1 through ac-5) annotated and tested in tests/event-registry.test.ts. 3
           trait ACs tested (ac-1, ac-2, ac-5), 3 N/A with valid reasons (ac-3: not ref lookup, ac-4:
           not state transitions, ac-6: not JSON mode)."
@@ -14068,9 +13806,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: ca266e824eb760fa55bd42cf3ceb953a6b93c35b
-          head_commit: c790bb1ffcfe44d0be13719ab8884a5655f5055b
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -14085,9 +13822,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c9ead12eb04ffb581ba086d839a42abe111db2b1
-          head_commit: 4df9b9bc1dc87af31cae226b68c226d27bf71394
+          type: entity_version
+          content_hash: ""
         evidence: 6075 tests passed, 1 failed (pre-existing review-cli.test.ts:152 — not modified by this
           commit)
         name: vitest
@@ -14097,9 +13833,8 @@ reviews:
         completed_at: 2026-03-18T10:02:58.099Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c9ead12eb04ffb581ba086d839a42abe111db2b1
-          head_commit: 4df9b9bc1dc87af31cae226b68c226d27bf71394
+          type: entity_version
+          content_hash: ""
         evidence: No validation issues related to dispatch-event-taxonomy or dispatch-event-payload.
           Pre-existing warnings unrelated to this task.
         name: kspec-validate
@@ -14109,9 +13844,8 @@ reviews:
         completed_at: 2026-03-18T10:03:06.080Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: c9ead12eb04ffb581ba086d839a42abe111db2b1
-          head_commit: 4df9b9bc1dc87af31cae226b68c226d27bf71394
+          type: entity_version
+          content_hash: ""
         evidence: "AC: @dispatch-event-taxonomy ac-2 — 15 test annotations. AC: @dispatch-event-payload ac-3
           — 11 test annotations. AC: @trait-error-guidance ac-1 through ac-6 — all N/A with valid
           justification (bus emissions, not CLI commands)."
@@ -14180,9 +13914,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: c9ead12eb04ffb581ba086d839a42abe111db2b1
-          head_commit: 4df9b9bc1dc87af31cae226b68c226d27bf71394
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: agent-reviewer@kspec
         role: reviewer
@@ -14197,9 +13930,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b39f
-          head_commit: a8052bd5b059
+          type: entity_version
+          content_hash: ""
         evidence: 271/272 tests pass (6113 passed, 3 skipped). 1 failure in review-cli.test.ts is
           pre-existing (examined_commit test, not touched by this task).
         name: vitest
@@ -14209,9 +13941,8 @@ reviews:
         completed_at: 2026-03-18T10:21:42.308Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b39f
-          head_commit: a8052bd5b059
+          type: entity_version
+          content_hash: ""
         evidence: "No new validation errors. Pre-existing: 3 reference errors in meta.yaml, 29 orphaned
           specs (none related to this task or spec)."
         name: kspec-validate
@@ -14221,9 +13952,8 @@ reviews:
         completed_at: 2026-03-18T10:21:49.898Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b39f
-          head_commit: a8052bd5b059
+          type: entity_version
+          content_hash: ""
         evidence: "All 7 task-scoped ACs have test annotations: ac-pull-target-on-start,
           ac-pull-target-periodic, ac-pull-target-periodic-deferred,
           ac-pull-target-before-provision, ac-pull-ff-only, ac-transient-no-degrade, ac-no-remote.
@@ -14407,9 +14137,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b39f
-          head_commit: a8052bd5b059
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: dispatch-reviewer
         role: reviewer
@@ -14424,9 +14153,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b39feba9a789c532f971f7cd7d808d2e
-          head_commit: 190e97ec96364c8eb3579b117d34e7ba3fac2f61
+          type: entity_version
+          content_hash: ""
         evidence: 6123 tests passed, 1 pre-existing failure in review-cli.test.ts:152 (unrelated to this
           task). 24 new session lifecycle event tests all pass.
         name: vitest
@@ -14436,9 +14164,8 @@ reviews:
         completed_at: 2026-03-18T10:33:23.776Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b39feba9a789c532f971f7cd7d808d2e
-          head_commit: 190e97ec96364c8eb3579b117d34e7ba3fac2f61
+          type: entity_version
+          content_hash: ""
         evidence: "AC: @dispatch-event-taxonomy ac-2 covered by 16 test annotations. AC:
           @dispatch-event-payload ac-3 covered by 11 test annotations. @trait-error-guidance ac-1
           through ac-6 annotated N/A with valid reasoning (bus emissions, not CLI)."
@@ -14449,9 +14176,8 @@ reviews:
         completed_at: 2026-03-18T10:33:33.060Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b39feba9a789c532f971f7cd7d808d2e
-          head_commit: 190e97ec96364c8eb3579b117d34e7ba3fac2f61
+          type: entity_version
+          content_hash: ""
         evidence: "kspec validate: all issues pre-existing (3 reference errors in meta.yaml, 242 missing AC
           coverage for unrelated specs, 164 invalid AC annotations in test fixtures). No new
           validation errors from this task."
@@ -14520,9 +14246,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b39feba9a789c532f971f7cd7d808d2e
-          head_commit: 190e97ec96364c8eb3579b117d34e7ba3fac2f61
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -14537,9 +14262,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b39feba9a789c532f971f7cd7d808d2e
-          head_commit: 95f59903248481497072cc172341366343df7aaa
+          type: entity_version
+          content_hash: ""
         evidence: 271/272 pass. 1 failure in review-cli.test.ts is pre-existing (not modified by this task).
           All 14 dispatch-target-sync tests pass.
         name: vitest
@@ -14549,9 +14273,8 @@ reviews:
         completed_at: 2026-03-18T10:40:09.694Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b39feba9a789c532f971f7cd7d808d2e
-          head_commit: 95f59903248481497072cc172341366343df7aaa
+          type: entity_version
+          content_hash: ""
         evidence: "All 7 in-scope ACs annotated in tests: ac-pull-target-on-start (L102), ac-pull-ff-only
           (L147+L516), ac-pull-target-periodic (L185), ac-pull-target-periodic-deferred (L229),
           ac-pull-target-before-provision (L293), ac-transient-no-degrade (L322+L355), ac-no-remote
@@ -14563,9 +14286,8 @@ reviews:
         completed_at: 2026-03-18T10:40:13.702Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b39feba9a789c532f971f7cd7d808d2e
-          head_commit: 95f59903248481497072cc172341366343df7aaa
+          type: entity_version
+          content_hash: ""
         evidence: "Cycle 1 MUST-FIX blocker resolved: _reconcile() now gates sync on _isTargetSyncStale()
           (line 1211). Test for ac-pull-target-periodic exercises _reconcile() path directly,
           verifying fresh timestamp skips sync and stale timestamp triggers it. Suggestions also
@@ -14682,9 +14404,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b39feba9a789c532f971f7cd7d808d2e
-          head_commit: 95f59903248481497072cc172341366343df7aaa
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: dispatch-reviewer
         role: reviewer
@@ -14699,9 +14420,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b
-          head_commit: 5232b0cf0e35
+          type: entity_version
+          content_hash: ""
         evidence: 271 test files passed (6118 tests passed, 3 skipped). 1 failure in review-cli.test.ts is
           pre-existing (unmodified file — examined_commit auto-detection behavior), not a regression
           from this commit.
@@ -14712,9 +14432,8 @@ reviews:
         completed_at: 2026-03-18T10:58:36.905Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b
-          head_commit: 5232b0cf0e35
+          type: entity_version
+          content_hash: ""
         evidence: "All 9 task-scoped ACs have test annotations and implementation. All 6
           trait-error-guidance ACs have valid N/A annotations. AC mapping:
           ac-first-push-sets-tracking (test:105), ac-first-push-replaces-stale-ref (test:133),
@@ -14729,9 +14448,8 @@ reviews:
         completed_at: 2026-03-18T10:58:46.349Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b
-          head_commit: 5232b0cf0e35
+          type: entity_version
+          content_hash: ""
         evidence: "Implementation aligns with spec for all 9 covered ACs. pushDispatchBranch correctly
           detects first-push vs subsequent-push via hasUpstreamTracking, uses --force-with-lease for
           stale ref replacement, and checks isLocalBranchAheadOfUpstream before subsequent pushes.
@@ -14859,9 +14577,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: b0bc7850b
-          head_commit: 5232b0cf0e35
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: dispatch-reviewer@kspec
         role: reviewer
@@ -14876,9 +14593,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 4e3f9aadf
-          head_commit: e12343839
+          type: entity_version
+          content_hash: ""
         evidence: 6193/6197 passing (1 pre-existing review-cli failure unrelated to this task, 3 skipped).
           All 56 new event-payloads tests pass.
         name: vitest
@@ -14888,9 +14604,8 @@ reviews:
         completed_at: 2026-03-18T11:08:51.945Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 4e3f9aadf
-          head_commit: e12343839
+          type: entity_version
+          content_hash: ""
         evidence: All 5 ACs (ac-1 through ac-5) have test annotations in tests/event-payloads.test.ts and
           schema annotations in src/schema/event-payloads.ts. Additional ac-3 coverage in
           tests/session-lifecycle-events.test.ts.
@@ -14901,9 +14616,8 @@ reviews:
         completed_at: 2026-03-18T11:08:59.525Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 4e3f9aadf
-          head_commit: e12343839
+          type: entity_version
+          content_hash: ""
         evidence: "Each AC verified against schema fields: ac-1 (8 task fields match), ac-2 (invocation
           started/terminal split with optional task_ref and terminal duration_ms), ac-3 (6 session
           fields including work_summary with passthrough), ac-4 (4 schedule fields including
@@ -14974,9 +14688,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 4e3f9aadf
-          head_commit: e12343839
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: agent@kspec-dispatch
         role: reviewer
@@ -14991,9 +14704,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 5b3ea9fa6739
-          head_commit: 8f12b6fdd9df
+          type: entity_version
+          content_hash: ""
         evidence: All 6169 tests passed (1 pre-existing failure in review-cli.test.ts:152 unrelated to this
           task — examined_commit field). 13 new degraded-state tests all pass.
         name: vitest
@@ -15003,9 +14715,8 @@ reviews:
         completed_at: 2026-03-18T11:25:46.660Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 5b3ea9fa6739
-          head_commit: 8f12b6fdd9df
+          type: entity_version
+          content_hash: ""
         evidence: npx tsc --noEmit succeeded with zero errors.
         name: tsc
         required: true
@@ -15014,9 +14725,8 @@ reviews:
         completed_at: 2026-03-18T11:25:53.167Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 5b3ea9fa6739
-          head_commit: 8f12b6fdd9df
+          type: entity_version
+          content_hash: ""
         evidence: "All 9 task ACs have annotated tests: ac-divergence-enters-degraded,
           ac-divergence-log-guidance (2 tests), ac-degraded-no-provision, ac-degraded-status-api,
           ac-degraded-status-broadcast, ac-degraded-auto-recover, ac-degraded-recovery-logged,
@@ -15141,9 +14851,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 5b3ea9fa6739
-          head_commit: 8f12b6fdd9df
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec-dispatch
         role: reviewer
@@ -15158,9 +14867,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 36a39d0aecbb
-          head_commit: 4099ad8b9432
+          type: entity_version
+          content_hash: ""
         evidence: 275/276 test files pass (6245 tests). 1 pre-existing failure in review-cli.test.ts
           unrelated to this change (not modified in this commit).
         name: vitest
@@ -15170,9 +14878,8 @@ reviews:
         completed_at: 2026-03-18T11:43:45.782Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 36a39d0aecbb
-          head_commit: 4099ad8b9432
+          type: entity_version
+          content_hash: ""
         evidence: kspec validate reports no schedule-related errors or warnings. No trait AC coverage gaps
           for @dispatch-schedule-schema.
         name: kspec-validate
@@ -15182,9 +14889,8 @@ reviews:
         completed_at: 2026-03-18T11:43:48.726Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 36a39d0aecbb
-          head_commit: 4099ad8b9432
+          type: entity_version
+          content_hash: ""
         evidence: "All 4 ACs (@dispatch-schedule-schema ac-1 through ac-4) have annotated tests in
           tests/schedule-schema.test.ts. No traits on spec. ac-1: lines 26-145 (valid cron
           acceptance, invalid cron rejection with examples). ac-2: lines 148-187 (6-field rejection
@@ -15280,9 +14986,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 36a39d0aecbb
-          head_commit: 4099ad8b9432
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: agent@kspec-dispatch
         role: reviewer
@@ -15297,9 +15002,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 478f79b47784ab18d3c13c8be520212246def812
-          head_commit: 9abea94245dd4172258e016289afe7572c0d0a3a
+          type: entity_version
+          content_hash: ""
         evidence: "6251 tests passed, 1 pre-existing failure in review-cli.test.ts (examined_commit in
           worktree context), 3 skipped. 276/277 test files passed. agent-action-input.test.ts: 26/26
           passed. action-model.test.ts: 49/49 passed."
@@ -15310,9 +15014,8 @@ reviews:
         completed_at: 2026-03-18T11:59:13.423Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 478f79b47784ab18d3c13c8be520212246def812
-          head_commit: 9abea94245dd4172258e016289afe7572c0d0a3a
+          type: entity_version
+          content_hash: ""
         evidence: Exit code 4 — all errors and warnings are pre-existing (3 dangling refs in meta.yaml,
           orphaned skill dir, missing AC coverage for other specs). No new validation errors
           introduced by this task. dispatch-agent-action-input ACs have full coverage.
@@ -15323,9 +15026,8 @@ reviews:
         completed_at: 2026-03-18T11:59:22.627Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 478f79b47784ab18d3c13c8be520212246def812
-          head_commit: 9abea94245dd4172258e016289afe7572c0d0a3a
+          type: entity_version
+          content_hash: ""
         evidence: "All 4 ACs (@dispatch-agent-action-input ac-1 through ac-4) have annotated tests in
           tests/agent-action-input.test.ts. ac-1: 5 tests (prompt interpolation, prompt_template,
           precedence, default prompt). ac-2: 4 tests (invocation.completed default prompt variants).
@@ -15397,9 +15099,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 478f79b47784ab18d3c13c8be520212246def812
-          head_commit: 9abea94245dd4172258e016289afe7572c0d0a3a
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: agent-pr-reviewer
         role: reviewer
@@ -15414,9 +15115,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 4aaa260c9aae
-          head_commit: b8ba5c896287
+          type: entity_version
+          content_hash: ""
         evidence: 277/278 test files pass, 6281/6282 tests pass. 1 failure in tests/review-cli.test.ts is
           pre-existing on dev (test not modified by this branch). All 23 new hook-executor tests
           pass. All 49 existing action-model tests pass.
@@ -15427,9 +15127,8 @@ reviews:
         completed_at: 2026-03-18T12:08:50.167Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 4aaa260c9aae
-          head_commit: b8ba5c896287
+          type: entity_version
+          content_hash: ""
         evidence: "Own AC coverage: @dispatch-hook-system ac-1 through ac-5 all have annotated tests in
           tests/hook-executor.test.ts. Trait AC coverage: @trait-error-guidance ac-1 through ac-6
           all annotated as N/A with valid reasoning (internal engine component)."
@@ -15440,9 +15139,8 @@ reviews:
         completed_at: 2026-03-18T12:08:57.975Z
       - status: fail
         applies_to_version:
-          type: code_compare
-          base_commit: 4aaa260c9aae
-          head_commit: b8ba5c896287
+          type: entity_version
+          content_hash: ""
         evidence: "REGRESSION: This commit removes the completed @dispatch-agent-action-input implementation
           — prompt_template, task_binding, group_id, buildDefaultAgentPrompt, and 626 lines of
           passing tests. These features are needed for pipeline chaining
@@ -15640,9 +15338,8 @@ reviews:
         kind: blocker
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 4aaa260c9aae
-          head_commit: b8ba5c896287
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -15657,9 +15354,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 263970e4d2877f3e31aebf638a3d949568dd39cc
-          head_commit: 36102927dc6f09beee40fb944f562d6452dfa0bb
+          type: entity_version
+          content_hash: ""
         evidence: 278/279 test files pass (6306 tests), 1 pre-existing failure in review-cli.test.ts
           (examined_commit null assertion — unrelated to schedule engine, no changes to that file)
         name: npm test
@@ -15669,9 +15365,8 @@ reviews:
         completed_at: 2026-03-18T12:42:29.172Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 263970e4d2877f3e31aebf638a3d949568dd39cc
-          head_commit: 36102927dc6f09beee40fb944f562d6452dfa0bb
+          type: entity_version
+          content_hash: ""
         evidence: Clean TypeScript compilation, no errors
         name: tsc --noEmit
         required: true
@@ -15680,9 +15375,8 @@ reviews:
         completed_at: 2026-03-18T12:42:37.443Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 263970e4d2877f3e31aebf638a3d949568dd39cc
-          head_commit: 36102927dc6f09beee40fb944f562d6452dfa0bb
+          type: entity_version
+          content_hash: ""
         evidence: No validation issues for @dispatch-schedule-entities or @dispatch-schedule-runtime specs.
           Pre-existing validation errors (3 stale references, orphaned specs) are unrelated.
         name: kspec validate
@@ -15692,9 +15386,8 @@ reviews:
         completed_at: 2026-03-18T12:42:46.009Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 263970e4d2877f3e31aebf638a3d949568dd39cc
-          head_commit: 36102927dc6f09beee40fb944f562d6452dfa0bb
+          type: entity_version
+          content_hash: ""
         evidence: All 11 own ACs annotated and tested (6 entities + 5 runtime). All 6 trait-error-guidance
           ACs annotated as N/A with valid reasoning (internal runtime engine, not CLI). No coverage
           gaps.
@@ -15854,9 +15547,8 @@ reviews:
         kind: blocker
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 263970e4d2877f3e31aebf638a3d949568dd39cc
-          head_commit: 36102927dc6f09beee40fb944f562d6452dfa0bb
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -15871,9 +15563,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 263970e4d2877f3e31aebf638a3d949568dd39cc
-          head_commit: 8ec6ec10449aeda9152a5a76eba090012d848290
+          type: entity_version
+          content_hash: ""
         evidence: 278/279 pass, 1 pre-existing failure in review-cli.test.ts (not modified by this branch).
           23/23 hook-executor tests pass.
         name: vitest
@@ -15883,9 +15574,8 @@ reviews:
         completed_at: 2026-03-18T12:52:01.006Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 263970e4d2877f3e31aebf638a3d949568dd39cc
-          head_commit: 8ec6ec10449aeda9152a5a76eba090012d848290
+          type: entity_version
+          content_hash: ""
         evidence: 3 reference errors and completeness warnings are all pre-existing, not introduced by this
           branch. No new validation errors.
         name: kspec-validate
@@ -15895,9 +15585,8 @@ reviews:
         completed_at: 2026-03-18T12:52:03.886Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 263970e4d2877f3e31aebf638a3d949568dd39cc
-          head_commit: 8ec6ec10449aeda9152a5a76eba090012d848290
+          type: entity_version
+          content_hash: ""
         evidence: All 5 own ACs (ac-1 through ac-5) have annotated tests in hook-executor.test.ts. All 6
           trait-error-guidance ACs annotated as N/A with valid reasons (internal engine component,
           not CLI).
@@ -16004,9 +15693,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 263970e4d2877f3e31aebf638a3d949568dd39cc
-          head_commit: 8ec6ec10449aeda9152a5a76eba090012d848290
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -16021,9 +15709,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 263970e4d
-          head_commit: ef2de07af
+          type: entity_version
+          content_hash: ""
         evidence: All 25 composition-join tests pass. 8 pre-existing failures in 3 unrelated test files
           (agent-dispatch-engine, plan-inbox-mutation-serialization, review-cli). No files modified
           by this task are involved in any failures.
@@ -16034,9 +15721,8 @@ reviews:
         completed_at: 2026-03-18T13:09:26.648Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 263970e4d
-          head_commit: ef2de07af
+          type: entity_version
+          content_hash: ""
         evidence: kspec validate shows no new issues from this task. All errors/warnings are pre-existing
           (broken references in meta.yaml, orphaned specs, test fixture annotations). No
           composition-specific validation failures.
@@ -16047,9 +15733,8 @@ reviews:
         completed_at: 2026-03-18T13:09:33.583Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 263970e4d
-          head_commit: ef2de07af
+          type: entity_version
+          content_hash: ""
         evidence: "All in-scope ACs have annotated tests: schema ac-1 (3 tests), schema ac-2 (2 tests),
           patterns ac-2 (2 tests), patterns ac-3 (1 test), correlation ac-1 (2 tests), correlation
           ac-2 (1 test), correlation ac-3 (1 test), correlation ac-4 (1 test). Tests substantively
@@ -16146,9 +15831,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 263970e4d
-          head_commit: ef2de07af
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -16163,9 +15847,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 66f28f7127d7
-          head_commit: 3f77adc28aaa
+          type: entity_version
+          content_hash: ""
         evidence: 6306/6307 tests pass (1 pre-existing failure in review-cli.test.ts unrelated to this task)
         name: npm test
         required: true
@@ -16174,9 +15857,8 @@ reviews:
         completed_at: 2026-03-18T13:17:18.023Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 66f28f7127d7
-          head_commit: 3f77adc28aaa
+          type: entity_version
+          content_hash: ""
         evidence: Clean — no type errors
         name: tsc --noEmit
         required: true
@@ -16185,9 +15867,8 @@ reviews:
         completed_at: 2026-03-18T13:17:23.431Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 66f28f7127d7
-          head_commit: 3f77adc28aaa
+          type: entity_version
+          content_hash: ""
         evidence: No new errors or warnings from this task. All issues are pre-existing (3 reference errors,
           alignment/completeness warnings all in other specs).
         name: kspec validate
@@ -16197,9 +15878,8 @@ reviews:
         completed_at: 2026-03-18T13:17:29.635Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 66f28f7127d7
-          head_commit: 3f77adc28aaa
+          type: entity_version
+          content_hash: ""
         evidence: "All 11 ACs (6 entities + 5 runtime) have annotated tests. 22 total test cases. Trait
           @trait-error-guidance ACs annotated as N/A with valid reasoning (internal runtime engine,
           not CLI). Fix cycle findings from cycle 1 both addressed: AC-4 now exercises eval loop
@@ -16291,9 +15971,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 66f28f7127d7
-          head_commit: 3f77adc28aaa
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -16308,9 +15987,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 66f28f712
-          head_commit: f49c87c4a33f
+          type: entity_version
+          content_hash: ""
         evidence: "6350 tests passed, 1 pre-existing failure in review-cli.test.ts (not modified by this
           task). validate-integration.test.ts: all 18 tests pass."
         name: vitest
@@ -16320,9 +15998,8 @@ reviews:
         completed_at: 2026-03-18T13:33:05.059Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 66f28f712
-          head_commit: f49c87c4a33f
+          type: entity_version
+          content_hash: ""
         evidence: tsc --noEmit clean, no type errors
         name: tsc
         required: true
@@ -16331,9 +16008,8 @@ reviews:
         completed_at: 2026-03-18T13:33:11.482Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 66f28f712
-          head_commit: f49c87c4a33f
+          type: entity_version
+          content_hash: ""
         evidence: "All 4 ACs annotated: @dispatch-hook-schema ac-3 (tests/validate-integration.test.ts:37),
           @dispatch-hook-filter ac-3 (tests/validate-integration.test.ts:108),
           @dispatch-schedule-schema ac-3 (tests/validate-integration.test.ts:162),
@@ -16404,9 +16080,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 66f28f712
-          head_commit: f49c87c4a33f
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -16421,9 +16096,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b30b1a6f4492
-          head_commit: 1fb3398c8601
+          type: entity_version
+          content_hash: ""
         evidence: "6372 tests passed, 2 failed (both pre-existing: cli-serve foreground exit code flake,
           review-cli examined_commit — neither test file was modified in this commit). 3 skipped.
           All 19 automation route tests passed."
@@ -16434,9 +16108,8 @@ reviews:
         completed_at: 2026-03-18T14:02:57.261Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b30b1a6f4492
-          head_commit: 1fb3398c8601
+          type: entity_version
+          content_hash: ""
         evidence: Pre-existing reference errors and completeness warnings only. No new validation issues
           introduced by this change.
         name: kspec-validate
@@ -16446,9 +16119,8 @@ reviews:
         completed_at: 2026-03-18T14:03:05.293Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b30b1a6f4492
-          head_commit: 1fb3398c8601
+          type: entity_version
+          content_hash: ""
         evidence: "All 6 own ACs (@automation-api ac-1 through ac-6) have annotated tests. Trait ACs:
           @trait-api-endpoint ac-1,2,3,4 tested; ac-5,6 N/A with valid justification.
           @trait-localhost-security ac-1,2,3 N/A (server-level middleware). @trait-json-output
@@ -16596,9 +16268,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: b30b1a6f4492
-          head_commit: 1fb3398c8601
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@kspec.local
         role: reviewer
@@ -16613,9 +16284,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 7e797cb1b7e3
-          head_commit: "5241398e3334"
+          type: entity_version
+          content_hash: ""
         evidence: 282/283 test files pass, 6421 tests pass. 1 failure in review-cli.test.ts is pre-existing
           (detached HEAD picks up commit hash for examined_commit); not related to hook CLI changes.
         name: vitest
@@ -16625,9 +16295,8 @@ reviews:
         completed_at: 2026-03-18T14:22:55.213Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 7e797cb1b7e3
-          head_commit: "5241398e3334"
+          type: entity_version
+          content_hash: ""
         evidence: kspec validate reports pre-existing issues (3 ref errors, alignment/completeness
           warnings). No new issues from hook CLI changes. No trait AC coverage warnings specific to
           @dispatch-event-cli.
@@ -16738,9 +16407,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 7e797cb1b7e3
-          head_commit: "5241398e3334"
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: claude-reviewer@kspec
         role: reviewer
@@ -16755,9 +16423,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b30b1a6f4492
-          head_commit: a62c4ab03638
+          type: entity_version
+          content_hash: ""
         evidence: 281 test files passed, 6374 tests passed. 1 pre-existing failure in review-cli.test.ts
           (examined_commit) unrelated to this task. All 20 automation route tests pass.
         name: vitest
@@ -16767,9 +16434,8 @@ reviews:
         completed_at: 2026-03-18T14:30:52.289Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b30b1a6f4492
-          head_commit: a62c4ab03638
+          type: entity_version
+          content_hash: ""
         evidence: "All 6 own ACs (ac-1 through ac-6) have annotated tests. All trait ACs covered:
           @trait-api-endpoint ac-1 through ac-6 (4 tested, 2 N/A with valid reasons),
           @trait-localhost-security ac-1 through ac-3 (all N/A — server-level), @trait-json-output
@@ -16782,9 +16448,8 @@ reviews:
         completed_at: 2026-03-18T14:31:00.713Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b30b1a6f4492
-          head_commit: a62c4ab03638
+          type: entity_version
+          content_hash: ""
         evidence: Prior blocker (timeout_remaining_ms computing elapsed instead of remaining) is fixed.
           timeout_ms now stored on GroupState from composition config. Route handler computes
           remaining = timeout_ms - elapsed. Regression test verifies remaining > 50000 for 60000ms
@@ -16855,9 +16520,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: b30b1a6f4492
-          head_commit: a62c4ab03638
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec.local
         role: reviewer
@@ -16872,9 +16536,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
-          head_commit: 1fc288f90d15d04de5646ec39c46130d715d86f8
+          type: entity_version
+          content_hash: ""
         evidence: 6422 tests passed, 1 pre-existing failure in review-cli.test.ts (unrelated to changeset —
           examined_commit auto-population in worktree)
         name: vitest
@@ -16884,9 +16547,8 @@ reviews:
         completed_at: 2026-03-18T14:33:26.318Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
-          head_commit: 1fc288f90d15d04de5646ec39c46130d715d86f8
+          type: entity_version
+          content_hash: ""
         evidence: Pre-existing reference errors only (3 in meta.yaml). No new validation errors introduced
           by changeset. Schema OK, Skills OK.
         name: kspec-validate
@@ -17018,9 +16680,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
-          head_commit: 1fc288f90d15d04de5646ec39c46130d715d86f8
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: claude-reviewer@kspec
         role: reviewer
@@ -17035,9 +16696,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
-          head_commit: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
+          type: entity_version
+          content_hash: ""
         evidence: 6372 passed, 1 pre-existing failure (review-cli.test.ts examined_commit null check —
           unrelated to this task which has zero code changes)
         name: vitest
@@ -17091,9 +16751,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
-          head_commit: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -17108,9 +16767,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 2ad3fe1812d5
-          head_commit: b8a2609de8d3
+          type: entity_version
+          content_hash: ""
         evidence: 283 test files passed, 6437 tests passed, 3 skipped. 1 pre-existing failure in
           review-cli.test.ts (examined_commit ambient git state issue, not introduced by this
           commit).
@@ -17121,9 +16779,8 @@ reviews:
         completed_at: 2026-03-18T15:05:02.515Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 2ad3fe1812d5
-          head_commit: b8a2609de8d3
+          type: entity_version
+          content_hash: ""
         evidence: No new validation warnings or errors introduced by this commit. Pre-existing reference
           errors (3) and alignment warnings (31) are unrelated to schedule CLI.
         name: kspec-validate
@@ -17133,9 +16790,8 @@ reviews:
         completed_at: 2026-03-18T15:05:11.092Z
       - status: fail
         applies_to_version:
-          type: code_compare
-          base_commit: 2ad3fe1812d5
-          head_commit: b8a2609de8d3
+          type: entity_version
+          content_hash: ""
         evidence: "Own ACs: ac-2 and ac-3 covered. Trait ACs: all annotated EXCEPT @trait-error-guidance
           ac-4 and @trait-semantic-exit-codes ac-4 which are missing N/A annotations."
         name: ac-coverage
@@ -17239,9 +16895,8 @@ reviews:
         kind: blocker
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 2ad3fe1812d5
-          head_commit: b8a2609de8d3
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -17256,9 +16911,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e
-          head_commit: 2dcce1c1b
+          type: entity_version
+          content_hash: ""
         evidence: 283/284 test files passed, 6442/6446 tests passed. 1 failure in review-cli.test.ts is a
           pre-existing environment isolation issue (KSPEC_DISPATCH_CANONICAL_HEAD env leak into test
           runner) — not related to this spec-only task.
@@ -17269,9 +16923,8 @@ reviews:
         completed_at: 2026-03-18T15:07:13.810Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e
-          head_commit: 2dcce1c1b
+          type: entity_version
+          content_hash: ""
         evidence: kspec validate found 3 reference errors and warnings — all pre-existing. No new errors
           introduced by this spec-only task.
         name: kspec-validate
@@ -17394,9 +17047,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: e08cc7b0e
-          head_commit: 2dcce1c1b
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer
         role: reviewer
@@ -17411,9 +17063,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 2dcce1c1b50a
-          head_commit: 2b12a78869dc
+          type: entity_version
+          content_hash: ""
         evidence: 6466 tests passed, 1 pre-existing failure in review-cli.test.ts
           (KSPEC_DISPATCH_CANONICAL_HEAD env leaking — unrelated to event CLI changes)
         name: vitest
@@ -17423,9 +17074,8 @@ reviews:
         completed_at: 2026-03-18T15:19:15.122Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 2dcce1c1b50a
-          head_commit: 2b12a78869dc
+          type: entity_version
+          content_hash: ""
         evidence: "ac-5: 3 test annotations (list, payload fields, domain filter). ac-6: 1 test annotation
           (validation). All trait ACs covered by tests or annotated N/A with valid reasons.
           shadow-commit all N/A (read-only commands)."
@@ -17487,9 +17137,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 2dcce1c1b50a
-          head_commit: 2b12a78869dc
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: agent:pr-reviewer
         role: reviewer
@@ -17504,9 +17153,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b8a2609de
-          head_commit: b9a663d5e
+          type: entity_version
+          content_hash: ""
         evidence: 283 files passed, 6437 tests passed (1 pre-existing environmental failure in
           review-cli.test.ts unrelated to this task)
         name: vitest
@@ -17516,9 +17164,8 @@ reviews:
         completed_at: 2026-03-18T15:21:59.704Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b8a2609de
-          head_commit: b9a663d5e
+          type: entity_version
+          content_hash: ""
         evidence: Validate exit 4 due to pre-existing reference errors in meta.yaml and missing AC coverage
           for unrelated specs. No new errors introduced by this task.
         name: kspec-validate
@@ -17528,9 +17175,8 @@ reviews:
         completed_at: 2026-03-18T15:22:07.769Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: b8a2609de
-          head_commit: b9a663d5e
+          type: entity_version
+          content_hash: ""
         evidence: "All own ACs covered: @dispatch-event-cli ac-2 (test:84, test:102, test:116), ac-3
           (test:650). All trait ACs covered or annotated N/A: @trait-json-output ac-1 through ac-6,
           @trait-filterable-list ac-1 through ac-8, @trait-error-guidance ac-1 through ac-6,
@@ -17602,9 +17248,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: b8a2609de
-          head_commit: b9a663d5e
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@kspec
         role: reviewer
@@ -17710,9 +17355,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 20cb7666e4d9
-          head_commit: 798e489dff19
+          type: entity_version
+          content_hash: ""
         evidence: 6510 passed, 3 skipped, 1 pre-existing failure (examined_commit in review add — unrelated)
         name: vitest
         required: true
@@ -17721,9 +17365,8 @@ reviews:
         completed_at: 2026-03-18T15:44:34.570Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 20cb7666e4d9
-          head_commit: 798e489dff19
+          type: entity_version
+          content_hash: ""
         evidence: All warnings pre-existing (reference errors in meta.yaml, orphaned specs, broad coverage
           gaps). No new issues introduced.
         name: kspec-validate
@@ -17733,9 +17376,8 @@ reviews:
         completed_at: 2026-03-18T15:44:42.071Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 20cb7666e4d9
-          head_commit: 798e489dff19
+          type: entity_version
+          content_hash: ""
         evidence: ac-2 annotated in source (review.ts:881,913) and test (review-cli.test.ts:465). Removed
           error-guidance test correctly — version no longer caller-provided. Trait annotations all
           present.
@@ -17804,9 +17446,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 20cb7666e4d9
-          head_commit: 798e489dff19
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -17821,9 +17462,8 @@ reviews:
     checks:
       - status: fail
         applies_to_version:
-          type: code_compare
-          base_commit: 20cb7666e4d9c456dc6dc33edf108a0d1feec779
-          head_commit: 7656f7bb405dee7c1feaae24f00f312fb5d4fedf
+          type: entity_version
+          content_hash: ""
         evidence: "1 test failed: review-cli.test.ts 'should leave examined_commit null when not provided' —
           AssertionError: expected HEAD commit hash to be null. Environment-dependent failure
           (KSPEC_DISPATCH_CANONICAL_HEAD set in dispatch worktree). 6511 passed, 1 failed, 3
@@ -17835,9 +17475,8 @@ reviews:
         completed_at: 2026-03-18T16:01:48.564Z
       - status: fail
         applies_to_version:
-          type: code_compare
-          base_commit: 20cb7666e4d9c456dc6dc33edf108a0d1feec779
-          head_commit: 7656f7bb405dee7c1feaae24f00f312fb5d4fedf
+          type: entity_version
+          content_hash: ""
         evidence: Reference errors (3) and completeness warnings (396) are pre-existing. No new validation
           errors introduced by this commit.
         name: kspec validate
@@ -18098,9 +17737,8 @@ reviews:
         kind: nit
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 20cb7666e4d9c456dc6dc33edf108a0d1feec779
-          head_commit: 7656f7bb405dee7c1feaae24f00f312fb5d4fedf
+          type: entity_version
+          content_hash: ""
         decision: request_changes
         reviewer: pr-reviewer@dispatch
         role: reviewer
@@ -18115,9 +17753,8 @@ reviews:
     checks:
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 96603948244358b7704e3319071dc50f19c7613b
-          head_commit: e34b1ad7fc6b947dd15381d2d76a4e63da9fd611
+          type: entity_version
+          content_hash: ""
         evidence: 6510 tests passed, 1 pre-existing failure (examined_commit env leak unrelated to this
           change)
         name: vitest
@@ -18127,9 +17764,8 @@ reviews:
         completed_at: 2026-03-18T16:07:27.310Z
       - status: pass
         applies_to_version:
-          type: code_compare
-          base_commit: 96603948244358b7704e3319071dc50f19c7613b
-          head_commit: e34b1ad7fc6b947dd15381d2d76a4e63da9fd611
+          type: entity_version
+          content_hash: ""
         evidence: "tsc --noEmit: clean, zero errors"
         name: typescript
         required: true
@@ -18189,9 +17825,8 @@ reviews:
     threads: []
     verdicts:
       - applies_to_version:
-          type: code_compare
-          base_commit: 96603948244358b7704e3319071dc50f19c7613b
-          head_commit: e34b1ad7fc6b947dd15381d2d76a4e63da9fd611
+          type: entity_version
+          content_hash: ""
         decision: approve
         reviewer: agent@kspec-reviewer
         role: reviewer
