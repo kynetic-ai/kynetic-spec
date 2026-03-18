@@ -8699,7 +8699,7 @@ workspaces:
         head: b8e97880d56954391d89ba68716ead3c757cefd8
         last_seen_at: 2026-03-18T02:01:34.517Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-interaction-01kktw6k
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
     bootstrap:
       status: succeeded
@@ -8765,9 +8765,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T07:41:08.510Z
-      last_reconciled_at: 2026-03-18T07:50:35.957Z
+      last_reconciled_at: 2026-03-18T07:50:45.461Z
       created_at: 2026-03-18T02:32:34.958Z
-      updated_at: 2026-03-18T07:50:35.957Z
+      updated_at: 2026-03-18T07:50:45.461Z
     workspace_id: dispatch-workspace-01KKTW6MH5PWQSPXA3J689NHDB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
