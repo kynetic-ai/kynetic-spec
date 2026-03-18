@@ -106452,7 +106452,15 @@
   session_id: 01KM0KF6706GAXHSCNVTWGJX1F
   created_at: 2026-03-18T05:32:02.157Z
   started_at: 2026-03-18T13:52:16.397Z
-  notes: []
+  notes:
+    - _ulid: 01KM0MMYFW2BKTKF8NF6BFWC55
+      content: "Implemented hook CLI commands: list, add, get, set, enable, disable, remove. Added
+        saveHook/deleteHook to parser/meta.ts. 49 E2E tests covering all spec ACs (ac-1, ac-4) and
+        trait ACs (json-output, error-guidance, filterable-list, semantic-exit-codes,
+        shadow-commit). All tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T14:12:31.356Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVYKJDC94YH6XAPNDWV69
