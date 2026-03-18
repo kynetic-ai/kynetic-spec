@@ -11801,6 +11801,13 @@ reviews:
           kind: question
           thread_ulid: 01KKZT23FWWWJZRZB0GM3QFJZK
         timestamp: 2026-03-18T06:27:51.035Z
+      - _ulid: 01KKZT2EVY3SNXYH86QY76JA3J
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKZT2EQRTQR2MNF6J08DENZN
+        timestamp: 2026-03-18T06:28:02.558Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -12008,7 +12015,28 @@ reviews:
               interaction between reviewer-active guards and the before-provision sync."
             created_at: 2026-03-18T06:27:50.908Z
         kind: question
+      - _ulid: 01KKZT2EQRTQR2MNF6J08DENZN
+        anchor:
+          type: structured
+          field: ac-push-target-periodic
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KKZT2EQRE1JTSAPGKV8XEW1P
+            author: "@claude"
+            body: ac-push-target-periodic's given clause says 'the local integration target branch is ahead of
+              its remote tracking ref (has unpushed merge commits)' — but this check
+              (isAheadOfUpstream) itself requires a fetch to have current remote ref info. The AC
+              doesn't specify whether the periodic sync does fetch-then-check-ahead-then-push or
+              just checks local ref state. If it only checks local refs without fetching first, it
+              might attempt a push when remote has advanced (e.g., another developer pushed to the
+              target), which would fail. The fetch is covered by ac-pull-target-periodic for the
+              pull side, but the ordering dependency (fetch first, then check ahead, then push) is
+              implicit. Consider making this explicit or noting that the push happens after the
+              periodic fetch.
+            created_at: 2026-03-18T06:28:02.424Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:27:50.908Z
+    updated_at: 2026-03-18T06:28:02.424Z
     notes: []
