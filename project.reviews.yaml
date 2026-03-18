@@ -12821,6 +12821,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T08:04:04.087Z
         completed_at: 2026-03-18T08:04:04.087Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: d7844f56824fc7f24dbf104390d14807a2a27582
+          head_commit: 9bbc04d7ab08b2c26aed873d58a40332421cb0d7
+        evidence: All 4 @yaml-serialization-invariants ACs have test annotations. ac-3 covered by 11 test
+          describe blocks in yaml-round-trip-stability.test.ts (including 2 new meta manifest
+          blocks). ac-1, ac-2, ac-4 covered in yaml-canonical-key-order.test.ts.
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T08:04:12.000Z
+        completed_at: 2026-03-18T08:04:12.000Z
     events:
       - _ulid: 01KKZZGZQFHYWV9BEBT5394E2D
         actor: "@claude"
@@ -12849,6 +12862,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T08:04:04.275Z
+      - _ulid: 01KKZZJH79PNDHCJQF1VMHBM3X
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T08:04:12.137Z
     examined_commit: 9bbc04d7ab08b2c26aed873d58a40332421cb0d7
     external_links: []
     lifecycle_state: open
@@ -12914,5 +12934,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T08:03:21.455Z
-    updated_at: 2026-03-18T08:04:04.087Z
+    updated_at: 2026-03-18T08:04:12.000Z
     notes: []
