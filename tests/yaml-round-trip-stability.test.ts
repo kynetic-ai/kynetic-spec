@@ -32,6 +32,12 @@ import {
   deleteReviewRecord,
 } from "../src/parser/reviews.js";
 import {
+  loadWorkflowRuns,
+  saveWorkflowRun,
+  mutateWorkflowRunAtomically,
+  deleteWorkflowRuns,
+} from "../src/parser/meta.js";
+import {
   saveDispatchWorkspaceRecord,
   mutateDispatchWorkspaceRecordAtomically,
   loadDispatchWorkspaceRegistry,
@@ -1149,6 +1155,286 @@ describe("round-trip stability — saveInboxItem path", () => {
     const reloaded = await loadInboxItems(ctx);
     expect(reloaded).toHaveLength(1);
     expect(reloaded[0]._ulid).toBe(ulid2);
+  });
+});
+
+// AC: @yaml-serialization-invariants ac-3
+describe("round-trip stability — saveWorkflowRun path", () => {
+  function makeRunCtx(specDir: string): KspecContext {
+    return { specDir, manifestPath: path.join(specDir, "kynetic.yaml") } as KspecContext;
+  }
+
+  it("saveWorkflowRun with no changes produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-run-rt1");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeRunCtx(kspecDir);
+
+    // Write a minimal runs file directly — no step_results field
+    const runsPath = path.join(kspecDir, "kynetic.runs.yaml");
+    const runUlid = testUlid("WKRN");
+    await writeYamlFilePreserveFormat(runsPath, {
+      kynetic_runs: "1.0",
+      runs: [
+        {
+          _ulid: runUlid,
+          workflow_ref: "@session-start",
+          status: "completed",
+          current_step: 2,
+          total_steps: 2,
+          started_at: "2026-01-01T00:00:00.000Z",
+          completed_at: "2026-01-01T00:05:00.000Z",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(runsPath, "utf-8");
+
+    // Load and save back with no modifications
+    const loaded = await loadWorkflowRuns(ctx);
+    expect(loaded).toHaveLength(1);
+    await saveWorkflowRun(ctx, loaded[0]);
+    const afterContent = await fs.readFile(runsPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("saveWorkflowRun with no changes does not add Zod default fields", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-run-rt2");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeRunCtx(kspecDir);
+
+    // Minimal run — no step_results, no initiated_by, no abort_reason, no task_ref, no result
+    const runsPath = path.join(kspecDir, "kynetic.runs.yaml");
+    const runUlid = testUlid("WKRM");
+    await writeYamlFilePreserveFormat(runsPath, {
+      kynetic_runs: "1.0",
+      runs: [
+        {
+          _ulid: runUlid,
+          workflow_ref: "@task-lifecycle",
+          status: "active",
+          current_step: 0,
+          total_steps: 3,
+          started_at: "2026-01-01T00:00:00.000Z",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(runsPath, "utf-8");
+
+    const loaded = await loadWorkflowRuns(ctx);
+    await saveWorkflowRun(ctx, loaded[0]);
+    const afterContent = await fs.readFile(runsPath, "utf-8");
+
+    // File should be identical — no step_results: [] added
+    expect(afterContent).toBe(initialContent);
+    expect(afterContent).not.toContain("step_results:");
+  });
+
+  it("mutateWorkflowRunAtomically with identity function produces identical file", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-run-rt3");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeRunCtx(kspecDir);
+
+    const runsPath = path.join(kspecDir, "kynetic.runs.yaml");
+    const runUlid = testUlid("WKRI");
+    await writeYamlFilePreserveFormat(runsPath, {
+      kynetic_runs: "1.0",
+      runs: [
+        {
+          _ulid: runUlid,
+          workflow_ref: "@session-start",
+          status: "active",
+          current_step: 1,
+          total_steps: 3,
+          started_at: "2026-01-15T10:00:00.000Z",
+          initiated_by: "@agent",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(runsPath, "utf-8");
+
+    // Identity mutation: return the run unchanged
+    const loaded = await loadWorkflowRuns(ctx);
+    await mutateWorkflowRunAtomically(ctx, loaded[0], (r) => r);
+    const afterContent = await fs.readFile(runsPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("saveWorkflowRun preserves file stability across multiple runs", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-run-rt4");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeRunCtx(kspecDir);
+
+    const runsPath = path.join(kspecDir, "kynetic.runs.yaml");
+    const [ulid1, ulid2, ulid3] = testUlids("WKRS", 3);
+    await writeYamlFilePreserveFormat(runsPath, {
+      kynetic_runs: "1.0",
+      runs: [
+        {
+          _ulid: ulid1,
+          workflow_ref: "@session-start",
+          status: "completed",
+          current_step: 2,
+          total_steps: 2,
+          started_at: "2026-01-01T00:00:00.000Z",
+          completed_at: "2026-01-01T00:05:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          workflow_ref: "@task-lifecycle",
+          status: "active",
+          current_step: 1,
+          total_steps: 4,
+          started_at: "2026-01-02T00:00:00.000Z",
+          initiated_by: "@worker",
+        },
+        {
+          _ulid: ulid3,
+          workflow_ref: "@codebase-audit",
+          status: "aborted",
+          current_step: 3,
+          total_steps: 5,
+          started_at: "2026-01-03T00:00:00.000Z",
+          abort_reason: "User cancelled",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(runsPath, "utf-8");
+
+    // Load and save each run individually — file should not change
+    const loaded = await loadWorkflowRuns(ctx);
+    for (const run of loaded) {
+      await saveWorkflowRun(ctx, run);
+    }
+    const afterContent = await fs.readFile(runsPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
+  });
+
+  it("non-target runs are not polluted with Zod defaults", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-run-rt5");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeRunCtx(kspecDir);
+
+    // Write minimal runs — no step_results field on either
+    const runsPath = path.join(kspecDir, "kynetic.runs.yaml");
+    const [ulid1, ulid2] = testUlids("WKRP", 2);
+    await writeYamlFilePreserveFormat(runsPath, {
+      kynetic_runs: "1.0",
+      runs: [
+        {
+          _ulid: ulid1,
+          workflow_ref: "@session-start",
+          status: "active",
+          current_step: 0,
+          total_steps: 2,
+          started_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          workflow_ref: "@task-lifecycle",
+          status: "active",
+          current_step: 0,
+          total_steps: 3,
+          started_at: "2026-01-02T00:00:00.000Z",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(runsPath, "utf-8");
+
+    // Mutate only the first run
+    const loaded = await loadWorkflowRuns(ctx);
+    await mutateWorkflowRunAtomically(ctx, loaded[0], (r) => ({
+      ...r,
+      current_step: 1,
+    }));
+    const afterContent = await fs.readFile(runsPath, "utf-8");
+
+    // The second run should not gain step_results: []
+    // Count occurrences of "step_results:" — should be 0 (neither run had it originally)
+    const stepResultsMatches = afterContent.match(/step_results:/g) || [];
+    expect(stepResultsMatches).toHaveLength(0);
+
+    // But the mutation should have taken effect
+    const reloaded = await loadWorkflowRuns(ctx);
+    expect(reloaded[0].current_step).toBe(1);
+    expect(reloaded[1].current_step).toBe(0);
+  });
+
+  it("deleteWorkflowRuns preserves non-target runs as raw data", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-run-rt6");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeRunCtx(kspecDir);
+
+    // Write minimal runs — no step_results field
+    const runsPath = path.join(kspecDir, "kynetic.runs.yaml");
+    const [ulid1, ulid2] = testUlids("WKRD", 2);
+    await writeYamlFilePreserveFormat(runsPath, {
+      kynetic_runs: "1.0",
+      runs: [
+        {
+          _ulid: ulid1,
+          workflow_ref: "@session-start",
+          status: "completed",
+          current_step: 2,
+          total_steps: 2,
+          started_at: "2026-01-01T00:00:00.000Z",
+        },
+        {
+          _ulid: ulid2,
+          workflow_ref: "@task-lifecycle",
+          status: "active",
+          current_step: 1,
+          total_steps: 3,
+          started_at: "2026-01-02T00:00:00.000Z",
+        },
+      ],
+    });
+
+    await deleteWorkflowRuns(ctx, [ulid1]);
+    const afterContent = await fs.readFile(runsPath, "utf-8");
+
+    // Remaining run should not gain Zod default fields (step_results: [])
+    expect(afterContent).not.toContain("step_results:");
+
+    // Only one run should remain
+    const reloaded = await loadWorkflowRuns(ctx);
+    expect(reloaded).toHaveLength(1);
+    expect(reloaded[0]._ulid).toBe(ulid2);
+  });
+
+  it("multiple read-write cycles maintain stability", async () => {
+    const kspecDir = path.join(tempDir, ".kspec-run-rt7");
+    await fs.mkdir(kspecDir, { recursive: true });
+    const ctx = makeRunCtx(kspecDir);
+
+    const runsPath = path.join(kspecDir, "kynetic.runs.yaml");
+    const runUlid = testUlid("WKRC");
+    await writeYamlFilePreserveFormat(runsPath, {
+      kynetic_runs: "1.0",
+      runs: [
+        {
+          _ulid: runUlid,
+          workflow_ref: "@session-start",
+          status: "completed",
+          current_step: 2,
+          total_steps: 2,
+          started_at: "2026-01-01T00:00:00.000Z",
+          completed_at: "2026-01-01T00:05:00.000Z",
+          initiated_by: "@user",
+        },
+      ],
+    });
+    const initialContent = await fs.readFile(runsPath, "utf-8");
+
+    // Multiple cycles — load and save each time
+    for (let i = 0; i < 5; i++) {
+      const loaded = await loadWorkflowRuns(ctx);
+      await saveWorkflowRun(ctx, loaded[0]);
+    }
+    const afterContent = await fs.readFile(runsPath, "utf-8");
+
+    expect(afterContent).toBe(initialContent);
   });
 });
 
