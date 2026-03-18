@@ -23611,7 +23611,13 @@ plans:
     status: approved
     approved_at: 2026-03-18T14:32:14.460Z
     derived_specs: []
-    derived_tasks: []
+    derived_tasks:
+      - "@task-spec-review-version-auto-derive"
+      - "@task-cli-verdict-auto-version"
+      - "@task-cli-check-auto-version"
+      - "@task-cli-shared-disposition"
+      - "@task-review-skill-version-docs"
+      - "@task-remediate-review-versions"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/.kspec/artifacts/plan-review-version-auto-derivation.md
     created_at: 2026-03-18T14:15:27.928Z
