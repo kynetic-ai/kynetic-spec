@@ -10934,6 +10934,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T03:05:56.257Z
+      - _ulid: 01KKZEGY1D978H2KJ5Y6BH5ZH2
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKZEGXR8ZBXDDMTSHQF7CS9B
+        timestamp: 2026-03-18T03:06:13.933Z
     examined_commit: c78549495ec28d101a3f21193f7e53105b09f3b2
     external_links: []
     lifecycle_state: open
@@ -10943,8 +10950,21 @@ reviews:
       content_hash: ""
       ref: "@task-code-diff-viewer"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKZEGXR8ZBXDDMTSHQF7CS9B
+        entries:
+          - _ulid: 01KKZEGXR98ZBEDF94VKW64AEX
+            author: "@claude"
+            body: No test coverage for any acceptance criteria (ac-1 through ac-6). All AC annotations are in
+              implementation source files, not in test files. The review-gates require every AC to
+              have at least one annotated test that proves the behavior. Zero tests exist for any of
+              the 6 new diff viewer components (CodeDiffViewer, DiffFileList, DiffFileView,
+              DiffHunkView, DiffInlineThread, DiffCommentForm) or for the 3 new API functions
+              (fetchDiff, fetchFileDiff, fetchDiffContext). Tests must prove AC behavior, not just
+              annotate implementation code.
+            created_at: 2026-03-18T03:06:13.641Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T03:05:31.212Z
-    updated_at: 2026-03-18T03:05:56.035Z
+    updated_at: 2026-03-18T03:06:13.641Z
     notes: []
