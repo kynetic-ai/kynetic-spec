@@ -5000,7 +5000,7 @@ modules:
           changes take effect on the next event without daemon restart.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
