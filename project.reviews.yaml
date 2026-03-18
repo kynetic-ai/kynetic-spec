@@ -11745,6 +11745,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKZSZAQG5FP9VP15B6FQRMYC
         timestamp: 2026-03-18T06:26:20.157Z
+      - _ulid: 01KKZSZQ2MPCN2J0VH3738W653
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKZSZPY4HKP15905ENDD6E51
+        timestamp: 2026-03-18T06:26:32.660Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -11794,7 +11801,27 @@ reviews:
               steps), ac-degraded-status-ws (WebSocket broadcast includes degraded state)."
             created_at: 2026-03-18T06:26:20.016Z
         kind: blocker
+      - _ulid: 01KKZSZPY4HKP15905ENDD6E51
+        anchor:
+          type: structured
+          field: ac-degraded-auto-recover
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KKZSZPY4PTFT77YZ0MR4F99X
+            author: "@claude"
+            body: "ac-degraded-auto-recover packs four assertions into the then-clause: (1) exits degraded
+              state, (2) logs recovery, (3) broadcasts recovery event on WebSocket, and (4) resumes
+              dispatch including draining queued tasks. These are distinct behaviors. Recovery
+              logging and WebSocket broadcast are independently testable from the state transition
+              and queue drain. Split into at least: ac-degraded-recovery (sync succeeds → exits
+              degraded state, resumes provisioning), ac-degraded-recovery-drain (queued tasks are
+              dispatched after recovery), ac-degraded-recovery-broadcast (recovery event broadcast
+              on agents topic). The log assertion can fold into the recovery AC as a natural
+              side-effect."
+            created_at: 2026-03-18T06:26:32.516Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:26:20.016Z
+    updated_at: 2026-03-18T06:26:32.516Z
     notes: []
