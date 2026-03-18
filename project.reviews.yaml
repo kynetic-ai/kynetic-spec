@@ -13838,6 +13838,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T09:23:32.533Z
+      - _ulid: 01KM045AJRR5C5XAFJ9YPCW3H2
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM045AF0XM8BTN2MDDMAYB55
+        timestamp: 2026-03-18T09:24:22.232Z
     examined_commit: c3b3d1b39059489fb174035e4bec6527043323cc
     external_links: []
     lifecycle_state: open
@@ -13847,8 +13854,30 @@ reviews:
       content_hash: ""
       ref: "@task-command-action"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM045AF0XM8BTN2MDDMAYB55
+        anchor:
+          type: code
+          commit: c3b3d1b39059489fb174035e4bec6527043323cc
+          line_end: 467
+          line_start: 451
+          path: tests/command-action.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM045AF0A0X7SFQKN5MEBWRQ
+            author: "@claude"
+            body: Multi-byte truncation test (line 451) uses emoji.repeat(300) = 1200 bytes. Since 1024 % 4 ==
+              0, the slice always lands on a clean UTF-8 boundary and never produces a replacement
+              character. An adversarial input (e.g., 1023 ASCII chars + a 4-byte emoji) would slice
+              mid-character, producing a U+FFFD replacement char (3 bytes) and a result of 1026
+              bytes — exceeding the 1024 limit by 2 bytes. The spec says 'truncated' without
+              byte-exact precision, so the implementation satisfies the AC. However, the test
+              doesn't actually exercise the broken-boundary path it claims to test ('truncates
+              multi-byte characters safely at 1KB boundary'). Nit — the test description slightly
+              overstates its coverage.
+            created_at: 2026-03-18T09:24:22.112Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T09:23:25.998Z
-    updated_at: 2026-03-18T09:23:32.420Z
+    updated_at: 2026-03-18T09:24:22.112Z
     notes: []
