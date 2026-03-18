@@ -39,6 +39,7 @@ import {
 } from "../schema/index.js";
 import { type Hook, HookSchema } from "../schema/hooks.js";
 import { type Schedule, ScheduleSchema } from "../schema/schedules.js";
+import { type Composition, CompositionSchema } from "../schema/composition.js";
 import { withFileLock } from "./file-lock.js";
 import type { KspecContext } from "./yaml.js";
 import {
@@ -99,6 +100,13 @@ export interface LoadedSchedule extends Schedule {
 }
 
 /**
+ * Loaded composition with runtime metadata
+ */
+export interface LoadedComposition extends Composition {
+  _sourceFile?: string;
+}
+
+/**
  * Any loaded meta item
  */
 export type LoadedMetaItem =
@@ -121,6 +129,7 @@ export interface MetaContext {
   skills: LoadedSkill[];
   hooks: LoadedHook[];
   schedules: LoadedSchedule[];
+  compositions: LoadedComposition[];
 }
 
 /**
@@ -208,6 +217,7 @@ async function loadMetaFile(filePath: string): Promise<{
   skills: LoadedSkill[];
   hooks: LoadedHook[];
   schedules: LoadedSchedule[];
+  compositions: LoadedComposition[];
 }> {
   const result: {
     agents: LoadedAgent[];
@@ -217,6 +227,7 @@ async function loadMetaFile(filePath: string): Promise<{
     skills: LoadedSkill[];
     hooks: LoadedHook[];
     schedules: LoadedSchedule[];
+    compositions: LoadedComposition[];
   } = {
     agents: [],
     workflows: [],
@@ -225,6 +236,7 @@ async function loadMetaFile(filePath: string): Promise<{
     skills: [],
     hooks: [],
     schedules: [],
+    compositions: [],
   };
 
   try {
@@ -307,6 +319,17 @@ async function loadMetaFile(filePath: string): Promise<{
         }
       }
     }
+
+    // Parse compositions
+    // AC: @dispatch-composition-schema ac-1 - compositions parsed with typed fields
+    if (Array.isArray(obj.compositions)) {
+      for (const composition of obj.compositions) {
+        const parsed = CompositionSchema.safeParse(composition);
+        if (parsed.success) {
+          result.compositions.push({ ...parsed.data, _sourceFile: filePath });
+        }
+      }
+    }
   } catch {
     // File doesn't exist or parse error
   }
@@ -330,6 +353,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
     skills: [],
     hooks: [],
     schedules: [],
+    compositions: [],
   };
 
   const manifestPath = await findMetaManifest(ctx.specDir);
@@ -352,6 +376,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
       result.skills.push(...items.skills);
       result.hooks.push(...items.hooks);
       result.schedules.push(...items.schedules);
+      result.compositions.push(...items.compositions);
       return result;
     }
 
@@ -366,6 +391,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
     result.skills.push(...manifestItems.skills);
     result.hooks.push(...manifestItems.hooks);
     result.schedules.push(...manifestItems.schedules);
+    result.compositions.push(...manifestItems.compositions);
 
     // Process includes
     const includes = parsed.data.includes || [];
@@ -383,6 +409,7 @@ export async function loadMetaContext(ctx: KspecContext): Promise<MetaContext> {
         result.skills.push(...items.skills);
         result.hooks.push(...items.hooks);
         result.schedules.push(...items.schedules);
+        result.compositions.push(...items.compositions);
       }
     }
   } catch {
