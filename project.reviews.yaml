@@ -9081,9 +9081,22 @@ reviews:
           kind: nit
           thread_ulid: 01KKZ495F1Q1WHG0QDWWQ3GCHN
         timestamp: 2026-03-18T00:07:13.752Z
+      - _ulid: 01KKZ49BDK3MK45DR8WH0VGNXY
+        actor: pr-reviewer@kspec-dispatch
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-18T00:07:19.731Z
+      - _ulid: 01KKZ49BDM5Y02TV3JZVC44HTQ
+        actor: pr-reviewer@kspec-dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T00:07:19.732Z
     examined_commit: 3dbacf0c5528decc53469825dcab657686f308b1
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -9111,7 +9124,15 @@ reviews:
               catch pattern would be more defensively correct.
             created_at: 2026-03-18T00:07:13.634Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 1c7a8e7ffc47
+          head_commit: 3dbacf0c5528
+        decision: approve
+        reviewer: pr-reviewer@kspec-dispatch
+        role: reviewer
+        created_at: 2026-03-18T00:07:19.650Z
     created_at: 2026-03-18T00:06:44.971Z
-    updated_at: 2026-03-18T00:07:13.634Z
+    updated_at: 2026-03-18T00:07:19.650Z
     notes: []
