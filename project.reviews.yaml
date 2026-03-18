@@ -18555,9 +18555,22 @@ reviews:
           status: pass
           name: source-rendered-consistency
         timestamp: 2026-03-18T17:00:13.694Z
+      - _ulid: 01KM0Y8H0VMT6YTN60KD7RESVX
+        actor: pr-reviewer-agent
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-18T17:00:30.107Z
+      - _ulid: 01KM0Y8H0VNJKJZ4NNXFQ937JK
+        actor: pr-reviewer-agent
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T17:00:30.107Z
     examined_commit: 8902b7aa1f3e228f12750aa934dd24ec51b853f4
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -18565,7 +18578,14 @@ reviews:
       ref: "@task-review-skill-version-docs"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: 8902b7aa1f3e
+        decision: approve
+        reviewer: pr-reviewer-agent
+        role: reviewer
+        created_at: 2026-03-18T17:00:29.927Z
     created_at: 2026-03-18T16:59:10.669Z
-    updated_at: 2026-03-18T17:00:13.540Z
+    updated_at: 2026-03-18T17:00:29.927Z
     notes: []
