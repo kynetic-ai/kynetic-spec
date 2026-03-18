@@ -15447,6 +15447,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM0DHK92EPW96QEXCDYS5KFK
         timestamp: 2026-03-18T12:08:21.671Z
+      - _ulid: 01KM0DHXP167VF5VBGQT97CYRD
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0DHXH3S5JKGWNB56QVC8XX
+        timestamp: 2026-03-18T12:08:32.193Z
     examined_commit: b8ba5c896287d16de213398aefa3a81c50460faa
     external_links: []
     lifecycle_state: open
@@ -15519,7 +15526,20 @@ reviews:
               task_binding would silently fail Zod validation after this change.
             created_at: 2026-03-18T12:08:21.538Z
         kind: blocker
+      - _ulid: 01KM0DHXH3S5JKGWNB56QVC8XX
+        entries:
+          - _ulid: 01KM0DHXH3F20WYJ8C3BYVJX7V
+            author: "@claude"
+            body: The HookExecutor implementation itself (src/agent-runtime/hook-executor.ts) is well-structured
+              and correct. Event subscription via wildcard pattern, hook matching logic, filter
+              evaluation via matchesFilter, disabled hook skipping, fire-and-forget with defensive
+              catch, versioned config snapshot with reloadHooks(), in-flight action tracking, and
+              correlation_id/causation_id propagation all match the spec. The 23 tests in
+              hook-executor.test.ts provide solid coverage of all 5 ACs. The trait N/A annotations
+              for @trait-error-guidance are well-reasoned (internal engine component, not CLI).
+            created_at: 2026-03-18T12:08:32.035Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T12:07:41.447Z
-    updated_at: 2026-03-18T12:08:21.538Z
+    updated_at: 2026-03-18T12:08:32.035Z
     notes: []
