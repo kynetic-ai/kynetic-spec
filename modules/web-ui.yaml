@@ -3209,6 +3209,9 @@ features:
       REST API endpoints for hook, schedule, and event management. Used
       by the CLI (for schedule runtime queries and manual triggers) and
       the web UI (for CRUD and status).
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
