@@ -106637,7 +106637,50 @@
   session_id: 01KM0FKVTFPK9PZ0ESQW6VZGYW
   created_at: 2026-03-18T05:32:09.262Z
   started_at: 2026-03-18T12:45:22.341Z
-  notes: []
+  notes:
+    - _ulid: 01KM0GF29E5RDD7F7X4CS3VJNG
+      content: >-
+        Implemented composition join accumulator with full AC coverage:
+
+
+        Schema:
+
+        - CompositionSchema with _ulid, id, name, join_count, on_complete (shared ActionSchema),
+        timeout_ms, enabled
+
+        - Added compositions array to MetaManifestSchema (defaults to empty per ac-2)
+
+
+        Runtime (JoinAccumulator):
+
+        - Subscribes to action.completed and action.failed on EventBus
+
+        - Matches events to groups via group_id + config_id in payload
+
+        - Tracks successful completions vs failures separately (only successes count toward
+        threshold per correlation ac-2)
+
+        - Fires on_complete via ActionExecutor when threshold met, with all run IDs and session IDs
+
+        - Timeout starts when first run begins (not config load) per correlation ac-3
+
+        - Timeout fires on_complete with partial results (completed, failed counts) per patterns
+        ac-3
+
+        - State is volatile (Map in memory), cleared on stop per correlation ac-4
+
+        - Separate activations per group_id, unique activation_id propagated in context
+
+        - Config reload preserves in-flight groups
+
+        - Source name passed as composition:<config_id>
+
+
+        25 tests pass. Pre-existing review-cli.test.ts failure unrelated (git HEAD auto-detection in
+        test worktree).
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T12:59:24.334Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPW5J7YNTE7PD2JK0KRAPF
