@@ -13076,9 +13076,22 @@ reviews:
           status: fail
           name: scope-integrity
         timestamp: 2026-03-18T08:17:26.758Z
+      - _ulid: 01KM00B32R6V0BE2N729T27MGH
+        actor: pr-reviewer@kspec-dispatch
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-18T08:17:36.857Z
+      - _ulid: 01KM00B32SE07YE22JTWG684KV
+        actor: pr-reviewer@kspec-dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T08:17:36.857Z
     examined_commit: 14505dad0ba356bbfd037257e46aa75b3d9ebbbc
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -13152,7 +13165,15 @@ reviews:
               index.ts."
             created_at: 2026-03-18T08:17:00.413Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 8d087368e
+          head_commit: 14505dad0
+        decision: request_changes
+        reviewer: pr-reviewer@kspec-dispatch
+        role: reviewer
+        created_at: 2026-03-18T08:17:36.742Z
     created_at: 2026-03-18T08:16:10.197Z
-    updated_at: 2026-03-18T08:17:26.652Z
+    updated_at: 2026-03-18T08:17:36.742Z
     notes: []
