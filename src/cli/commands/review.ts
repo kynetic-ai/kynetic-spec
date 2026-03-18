@@ -26,6 +26,8 @@ import {
   mutateReviewAtomically,
   saveReviewRecord,
   shortestUniqueUlid,
+  submitVerdict,
+  transitionLifecycle,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import type {
@@ -38,7 +40,6 @@ import type {
   ReviewSubjectVersion,
   ReviewThread,
   ReviewThreadKind,
-  ReviewVerdict,
   ReviewVerdictDecision,
 } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
@@ -967,16 +968,12 @@ export function registerReviewCommands(program: Command): void {
       .requiredOption("--decision <decision>", "Verdict: approve, request_changes, comment")
       .option("--reviewer <reviewer>", "Reviewer identity")
       .option("--role <role>", "Reviewer role", "reviewer")
-      .option("--version-base <commit>", "Applies-to version: base commit (for code)")
-      .option("--version-head <commit>", "Applies-to version: head commit (for code)")
-      .option("--version-hash <hash>", "Applies-to version: content hash (for entities)")
       .action(async (ref: string, options) => {
         try {
           const ctx = await initContext();
           const reviews = await loadReviewRecords(ctx);
           const found = resolveReviewRef(ref, reviews);
           const reviewer = options.reviewer || getAuthor(ctx.config?.identity?.author) || "unknown";
-          const now = new Date().toISOString();
 
           // Validate decision
           // AC: @trait-error-guidance ac-5
@@ -990,40 +987,24 @@ export function registerReviewCommands(program: Command): void {
             );
           }
 
-          const version = parseVersionFromOptions(options);
-
-          const newVerdict: ReviewVerdict = {
-            reviewer,
-            role: options.role,
-            decision: options.decision as ReviewVerdictDecision,
-            applies_to_version: version,
-            created_at: now,
-          };
-
           // AC: @review-record-per-cycle-lifecycle ac-1 — auto-close on approve/request_changes
           const shouldAutoClose =
             options.decision === "approve" || options.decision === "request_changes";
 
-          const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
-            ...latest,
-            verdicts: [...latest.verdicts, newVerdict],
-            ...(shouldAutoClose && { lifecycle_state: "closed" as ReviewLifecycleState }),
-            events: [
-              ...latest.events,
-              createEvent("verdict_submitted", reviewer, {
-                decision: options.decision,
-              }),
-              ...(shouldAutoClose
-                ? [
-                    createEvent("lifecycle_change", reviewer, {
-                      from: latest.lifecycle_state,
-                      to: "closed",
-                    }),
-                  ]
-                : []),
-            ],
-            updated_at: now,
-          }));
+          const updated = await mutateReviewAtomically(ctx, found, (latest) => {
+            const withVerdict = submitVerdict(latest, {
+              reviewer,
+              decision: options.decision as ReviewVerdictDecision,
+              role: options.role,
+            });
+
+            // Auto-close if approve or request_changes
+            if (shouldAutoClose && withVerdict.lifecycle_state !== "closed") {
+              return transitionLifecycle(withVerdict, "closed", reviewer);
+            }
+
+            return withVerdict;
+          });
 
           await commitIfShadow(
             ctx.shadow,
