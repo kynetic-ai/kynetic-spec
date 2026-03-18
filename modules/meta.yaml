@@ -4933,6 +4933,9 @@ modules:
             description: |
               Defines how agent actions supply prompt context, manage session
               strategy, and propagate correlation metadata to spawned invocations.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
