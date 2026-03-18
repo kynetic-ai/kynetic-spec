@@ -27,6 +27,7 @@ import { loadProjectConfig } from "../parser/config.js";
 import type { InvocationOptions } from "./invocation.js";
 import { SessionEventAccumulator } from "./session-event-accumulator.js";
 import type { SessionEventData } from "./session-event-types.js";
+import { EventBus, type EventBusOptions, type EventEnvelope, type EmitOptions } from "./event-bus.js";
 import {
   interpolateTemplate,
   rewriteSkillReferencesForAdapter,
@@ -731,6 +732,11 @@ export interface DispatchEngineOptions {
    * AC: @daemon-agent-dispatch ac-8
    */
   onSessionEvent?: (event: SessionEventData) => void;
+  /**
+   * Configuration for the event bus (chain depth, ring buffer, dedup).
+   * AC: @dispatch-event-envelope ac-5, ac-6
+   */
+  eventBusOptions?: EventBusOptions;
 }
 
 // ─── DispatchEngine ───────────────────────────────────────────────────────────
@@ -794,6 +800,8 @@ export class DispatchEngine {
   private drainInProgress = false;
   /** Whether another drain was requested while one is already running. AC: @per-task-dispatch-drain-coalescing ac-8 */
   private drainPending = false;
+  /** Central event bus for structured event emission and subscription. AC: @dispatch-event-envelope ac-1 through ac-6 */
+  private _eventBus: EventBus;
 
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
@@ -808,9 +816,22 @@ export class DispatchEngine {
     this.kspecCliPath = options.kspecCliPath;
     this.onInvocationEvent = options.onInvocationEvent;
     this.onSessionEvent = options.onSessionEvent;
+    // AC: @dispatch-event-envelope ac-1 through ac-6
+    this._eventBus = new EventBus({
+      dedupWindowMs: this.dedupWindowMs,
+      ...options.eventBusOptions,
+    });
   }
 
   // ─── Public API ─────────────────────────────────────────────────────────────
+
+  /**
+   * Access the event bus for subscribing to events or querying recent events.
+   * AC: @dispatch-event-envelope ac-6
+   */
+  get eventBus(): EventBus {
+    return this._eventBus;
+  }
 
   /**
    * Start the dispatch engine.
@@ -894,10 +915,34 @@ export class DispatchEngine {
       }
     }
 
-    // AC: @agent-dispatch-engine ac-1 - Match against dispatch rules
-    const agents = await this._loadAgents();
+    // AC: @dispatch-event-envelope ac-1, ac-2 - Emit through event bus
     const eventType = STATUS_TO_EVENT[change.toStatus];
     if (!eventType) return;
+
+    // AC: @dispatch-event-envelope ac-2 - Propagate correlation chain via env var
+    const envCorrelationId = process.env.KSPEC_CORRELATION_ID ?? null;
+    const busResult = this._eventBus.emit({
+      event_type: eventType,
+      source_type: change.task ? "task_watcher" : "api",
+      source_id: change.taskRef,
+      payload: {
+        taskId: change.taskId,
+        taskRef: change.taskRef,
+        fromStatus: change.fromStatus,
+        toStatus: change.toStatus,
+      },
+      correlation_id: envCorrelationId,
+      causation_id: envCorrelationId,
+      // Engine already performed dedup; skip bus-level dedup to avoid double-filtering
+      skipDedup: true,
+    });
+    if (!busResult.accepted) {
+      // Event rejected by bus (chain depth limit or bus-level dedup)
+      return;
+    }
+
+    // AC: @agent-dispatch-engine ac-1 - Match against dispatch rules
+    const agents = await this._loadAgents();
 
     // Load all tasks for filter evaluation (needed for dependency checks)
     let allTasks: LoadedTask[] | undefined;
@@ -2084,7 +2129,7 @@ export class DispatchEngine {
       const emitStartedEvent = (): void => {
         if (startedEventEmitted) return;
         startedEventEmitted = true;
-        this.onInvocationEvent?.({
+        const invEvent: InvocationEvent = {
           type: "started",
           session_id: preSessionId,
           agent_id: agentId,
@@ -2092,6 +2137,14 @@ export class DispatchEngine {
           task_title: entry.change.task?.title ?? null,
           status: "started",
           timestamp: Date.now(),
+        };
+        this.onInvocationEvent?.(invEvent);
+        // AC: @dispatch-event-envelope ac-1 - Route invocation lifecycle through bus
+        this._eventBus.emit({
+          event_type: "invocation.started",
+          source_type: "invocation_lifecycle",
+          source_id: preSessionId,
+          payload: { ...invEvent },
         });
       };
 
@@ -2306,6 +2359,13 @@ export class DispatchEngine {
           }
           if (terminalEvent) {
             this.onInvocationEvent?.(terminalEvent);
+            // AC: @dispatch-event-envelope ac-1 - Route invocation lifecycle through bus
+            this._eventBus.emit({
+              event_type: `invocation.${terminalEvent.type}`,
+              source_type: "invocation_lifecycle",
+              source_id: terminalEvent.session_id,
+              payload: { ...terminalEvent },
+            });
           }
         })
         .then(async () => {

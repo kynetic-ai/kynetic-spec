@@ -41,3 +41,14 @@ export {
   type AgentSpawner,
   type TemplateValidationWarning,
 } from "./action-executor.js";
+
+export {
+  EventBus,
+  type EventBusOptions,
+  type EventEnvelope,
+  type EventSourceType,
+  type EmitOptions,
+  type EmitResult,
+  type SubscriptionPattern,
+  type EventHandler,
+} from "./event-bus.js";
