@@ -11214,34 +11214,34 @@ workspaces:
     canonical_branch: dispatch/task/task-review-skill-version-docs/01km0nw5
     canonical_branch_head: 8902b7aa1f3e228f12750aa934dd24ec51b853f4
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-18T16:51:43.350Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-18T17:01:40.400Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T16:51:44.413Z
+      updated_at: 2026-03-18T17:01:40.400Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 96603948244358b7704e3319071dc50f19c7613b
-      updated_at: 2026-03-18T16:51:43.350Z
-    lifecycle_state: integrating
+      updated_at: 2026-03-18T17:01:40.400Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KM0NW5NMJJDWRHKVQGDERHQM"
     task_slug: task-review-skill-version-docs
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T16:51:44.413Z
-      last_reconciled_at: 2026-03-18T16:51:44.413Z
+      last_reconciled_at: 2026-03-18T17:01:40.400Z
       created_at: 2026-03-18T16:01:01.743Z
-      updated_at: 2026-03-18T16:51:44.413Z
+      updated_at: 2026-03-18T17:01:40.400Z
     workspace_id: dispatch-workspace-01KM0NW5NMJJDWRHKVQGDERHQM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
