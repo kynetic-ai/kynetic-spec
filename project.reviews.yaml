@@ -9245,6 +9245,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T00:23:23.476Z
+      - _ulid: 01KKZ57BXGCYD2NMP7351JBS91
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKZ57BSZ3TSZGKWRXH2SYR94
+        timestamp: 2026-03-18T00:23:43.280Z
     examined_commit: 9a8ef3b3aaa8174957c0fd61fe641149fc6cc222
     external_links: []
     lifecycle_state: open
@@ -9254,8 +9261,34 @@ reviews:
       content_hash: ""
       ref: "@01KKX6CGBRT6J6F804PJ1QJW3G"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKZ57BSZ3TSZGKWRXH2SYR94
+        anchor:
+          type: code
+          commit: 9a8ef3b3aaa8
+          line_end: 311
+          line_start: 221
+          path: src/parser/dispatch-workspaces.ts
+          side: head
+        entries:
+          - _ulid: 01KKZ57BSZ2A6WGZGKQBCX05QJ
+            author: "@claude"
+            body: "**Regression: dispatch workspace round-trip stability removed.** This commit removes the
+              raw-data-preservation pattern from `dispatch-workspaces.ts` — the functions
+              `normalizeLegacyWorkspaceRaw`, `extractRawWorkspaceArray`, `writeRawWorkspaceArray`,
+              `findRawWorkspaceIndex`, `mergeWorkspacePreservingRawShape`, `deepEqual`,
+              `isTrivialDefault`, `isRawClosedBeyondRetention`, and
+              `validateSingleOpenWorkspacePerTaskRaw` are all deleted. The
+              `saveDispatchWorkspaceRecord` and `mutateDispatchWorkspaceRecordAtomically` functions
+              now use `loadRegistryFile` which schema-parses ALL workspaces through
+              `DispatchWorkspaceRegistryFileSchema.safeParse()`, re-introducing Zod defaults (e.g.
+              `branch_provenance`, `roleStates`) on every write. The tests covering dispatch
+              workspace round-trip stability (7 tests) are also deleted. This is a direct regression
+              against ac-3 of @yaml-serialization-invariants for the dispatch workspace path, which
+              was the subject of a prior completed task."
+            created_at: 2026-03-18T00:23:43.167Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T00:23:15.710Z
-    updated_at: 2026-03-18T00:23:23.375Z
+    updated_at: 2026-03-18T00:23:43.167Z
     notes: []
