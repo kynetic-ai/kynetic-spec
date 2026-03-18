@@ -13967,3 +13967,29 @@ reviews:
     created_at: 2026-03-18T09:23:25.998Z
     updated_at: 2026-03-18T09:25:17.462Z
     notes: []
+  - _ulid: 01KM04M3PF8FE3K6TG22VZBF5A
+    slugs: []
+    title: Review task-event-schema (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM04M3PEJHRTEH4NZ6CCWY2Q
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T09:32:26.702Z
+    examined_commit: c790bb1ffcfe44d0be13719ab8884a5655f5055b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-event-schema"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T09:32:26.703Z
+    updated_at: null
+    notes: []
