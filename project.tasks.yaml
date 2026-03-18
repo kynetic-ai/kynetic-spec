@@ -101949,12 +101949,8 @@
   spec_ref: "@review-code-diff-viewer"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: blocked
-  blocked_by:
-    - Merge to dev has textual conflict in +page.svelte with structured-content-viewer feature.
-      Review approved (review @01KKZKJN), but merge requires manual conflict resolution in the main
-      worktree where dev is checked out. Both features are additive — resolution is to include both
-      sets of changes.
+  status: pending
+  blocked_by: []
   depends_on:
     - "@task-diff-api"
     - "@task-review-detail-page"
@@ -101975,7 +101971,7 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: 01KKZJKBAANQHFW1NPPAS9WKGS
+  session_id: null
   created_at: 2026-03-16T08:29:04.421Z
   started_at: 2026-03-18T04:26:05.910Z
   submitted_at: 2026-03-18T04:26:29.066Z
