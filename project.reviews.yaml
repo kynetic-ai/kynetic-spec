@@ -11311,6 +11311,19 @@ reviews:
         runner: manual
         created_at: 2026-03-18T03:41:51.934Z
         completed_at: 2026-03-18T03:41:51.934Z
+      - status: fail
+        applies_to_version:
+          type: code_compare
+          base_commit: 1ef4b993a2d9
+          head_commit: f8ff6b04d1c3
+        evidence: All 17 E2E tests fail with 'Failed to start daemon' — infrastructure issue in detached
+          worktree. Tests cannot be verified in review snapshot. Additionally, AC-4 test has route
+          mock bug (/threads should be /comments) — test would fail even with working daemon.
+        name: e2e
+        required: true
+        runner: playwright
+        created_at: 2026-03-18T03:42:01.020Z
+        completed_at: 2026-03-18T03:42:01.020Z
     events:
       - _ulid: 01KKZGGQ51BGHD89M5VC5020G7
         actor: "@claude"
@@ -11353,6 +11366,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T03:41:52.028Z
+      - _ulid: 01KKZGJEX3WJ5G1GRV972D037J
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: e2e
+        timestamp: 2026-03-18T03:42:01.123Z
     examined_commit: f8ff6b04d1c3d5a47cd87ec248123e81023fb1c3
     external_links: []
     lifecycle_state: open
@@ -11385,5 +11405,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-18T03:41:04.033Z
-    updated_at: 2026-03-18T03:41:51.934Z
+    updated_at: 2026-03-18T03:42:01.020Z
     notes: []
