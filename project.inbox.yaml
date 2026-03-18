@@ -1777,3 +1777,16 @@ inbox:
       - cli
     added_by: "@claude"
     created_at: 2026-03-18T06:08:17.480Z
+  - _ulid: 01KKZX5X64D8BFGBMCCXB5BEQ7
+    text: "Review API read endpoints (@task-review-api-read) had a richer implementation on local dev
+      (256c5edb5, 110ce4c15) that was superseded when remote re-implemented with simpler types.
+      Local version had: gate_state, subject_title, resolved_related_refs, granular thread counts in
+      ReviewSummary, plus a ReviewDetail type. Remote simplified these for the UI layer. Preserved
+      on branch local-dev-review-api-read. Evaluate whether the richer API fields should be restored
+      — the UI and review gates may benefit from them."
+    tags:
+      - review
+      - api
+      - daemon
+    added_by: "@claude"
+    created_at: 2026-03-18T07:22:21.252Z
