@@ -107553,7 +107553,43 @@
   session_id: 01KM0Q4N7NN007KF3NVFQ98NRQ
   created_at: 2026-03-18T14:32:54.391Z
   started_at: 2026-03-18T14:56:37.313Z
-  notes: []
+  notes:
+    - _ulid: 01KM0Q8X0QJ2859MFZWYMG0J55
+      content: >-
+        Updated all 5 acceptance criteria across 3 specs as specified in the task description:
+
+
+        1. @review-cli-mutation-commands ac-2: Removed 'current compare context' language from When
+        clause. Updated Then to say applies_to_version is auto-derived from the review's subject,
+        callers do not provide version information.
+
+
+        2. @review-cli-mutation-commands ac-3: Removed 'compare context' from When clause. Updated
+        Then to say applies_to_version is auto-derived from the review's subject, callers do not
+        provide version information.
+
+
+        3. @review-verdicts-and-resolution-lifecycle ac-1: Replaced 'with the applies_to_version
+        context (base_commit and head_commit)' with explicit description of auto-derivation by
+        subject type (code_compare for code, entity_version for task/plan/spec). Added 'The caller
+        does not provide version information; the system derives it.'
+
+
+        4. @review-verdicts-and-resolution-lifecycle ac-5: Added parenthetical clarifying that
+        version types (base_commit/head_commit for code, content_hash for entity) are 'derived from
+        the review subject, not provided by the verdict submitter'.
+
+
+        5. @review-cli-commands ac-2: Added requirement that computed disposition and gate state
+        must use shared library functions (computeDisposition from review-operations.ts,
+        evaluateGates from checks.ts), not local reimplementations.
+
+
+        All updates done via kspec batch (single atomic shadow branch commit). No code changes in
+        this task — spec-only updates as prerequisite for the behavior changes in dependent tasks.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T14:58:22.360Z
   todos: []
   automation: eligible
 - _ulid: 01KM0NTQE36W7XMHAZB0V7KTXN
