@@ -7371,6 +7371,42 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-18T06:08:17.560Z
+  - _ulid: 01KKZXHEZ6YS41SX77SEQX2GFZ
+    type: friction
+    content: Session checkpoint hook repeatedly warns about plans/ files being uncommitted, but plan
+      files are not meant to be committed (shadow branch is the durable record). Hook does not know
+      about this convention. Happened 5+ times in one session.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-18T07:28:39.910Z
+  - _ulid: 01KKZXHF4Y2QR066JCFV51QNKN
+    type: friction
+    content: Resolving review threads requires individual reply+resolve calls per thread. Resolving 16
+      threads took 16 pairs of commands. A batch resolve (kspec review resolve-all or batch support
+      for review resolve) would save significant time in fix cycles.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-18T07:28:40.094Z
+  - _ulid: 01KKZXHF9F07Q4X9AW00W334V0
+    type: friction
+    content: kspec plan derive --tasks creates auto-generated implement-* stub tasks for each spec even
+      when the plan document already defines explicit tasks covering those specs. Had to cancel 2
+      redundant stubs. Derive should detect overlapping spec_ref coverage and skip auto-generation.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-18T07:28:40.239Z
+  - _ulid: 01KKZXHFE1Z5AP6Z9DG91BR8F1
+    type: success
+    content: Plan-review-fix cycle using kspec review records + spawned reviewer agents was effective.
+      Two passes caught real issues (oversized ACs, implementation leakage, task granularity). Using
+      a reference plan as quality bar gave concrete evaluation criteria.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-18T07:28:40.385Z
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     description: Get help with kspec commands and workflows
