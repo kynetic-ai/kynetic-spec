@@ -107557,8 +107557,13 @@
   spec_ref: "@review-cli-mutation-commands"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Approved and merged (no-op merge — spec-only task with no code changes). All 5 AC
+    updates across 3 specs verified: @review-cli-mutation-commands ac-2/ac-3,
+    @review-verdicts-and-resolution-lifecycle ac-1/ac-5, @review-cli-commands ac-2. AC text now
+    correctly describes applies_to_version as auto-derived from the review subject, removing
+    language that implied callers provide version information."
   depends_on: []
   context: []
   priority: 1
@@ -107579,6 +107584,7 @@
   created_at: 2026-03-18T14:32:54.391Z
   started_at: 2026-03-18T14:56:37.313Z
   submitted_at: 2026-03-18T14:58:32.196Z
+  completed_at: 2026-03-18T15:08:28.438Z
   notes:
     - _ulid: 01KM0Q8X0QJ2859MFZWYMG0J55
       content: >-
