@@ -106725,8 +106725,13 @@
   spec_ref: "@dispatch-remote-branch-sync"
   plan_ref: "@plan-dispatch-remote-sync"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev (commit 4e3f9aadf). Implements integration target branch sync with 3
+    trigger points: engine start, periodic reconciliation (gated on sync_interval and
+    reviewer-active check), and pre-provision staleness check. Uses git fetch + merge --ff-only for
+    fast-forward-only semantics. 14 tests covering all 7 in-scope ACs. Merge conflict with parallel
+    session-events task resolved (additive imports + additive class sections)."
   depends_on:
     - "@task-dispatch-sync-config"
   context: []
@@ -106748,6 +106753,7 @@
   created_at: 2026-03-18T07:07:46.749Z
   started_at: 2026-03-18T10:23:32.464Z
   submitted_at: 2026-03-18T10:30:12.273Z
+  completed_at: 2026-03-18T10:47:21.542Z
   notes:
     - _ulid: 01KM06YXWFN18M78HM7M65M5B5
       content: "Implemented syncTargetBranch() in DispatchEngine with three trigger points: (1) engine
