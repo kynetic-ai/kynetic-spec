@@ -10066,7 +10066,7 @@ workspaces:
         head: 8ec6ec10449aeda9152a5a76eba090012d848290
         last_seen_at: 2026-03-18T12:44:30.566Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-hook-executor-01kkzpvs
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 263970e4d2877f3e31aebf638a3d949568dd39cc
     bootstrap:
       status: succeeded
@@ -10116,7 +10116,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T13:11:15.629Z
+      updated_at: 2026-03-18T13:11:16.588Z
     integration:
       status: pending
       detail: null
@@ -10131,10 +10131,10 @@ workspaces:
     task_slug: task-schedule-engine
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-18T13:00:50.690Z
-      last_reconciled_at: 2026-03-18T13:11:15.629Z
+      last_active_at: 2026-03-18T13:11:16.588Z
+      last_reconciled_at: 2026-03-18T13:11:16.588Z
       created_at: 2026-03-18T12:02:11.071Z
-      updated_at: 2026-03-18T13:11:15.980Z
+      updated_at: 2026-03-18T13:11:16.588Z
     workspace_id: dispatch-workspace-01KKZPVVTX82AVEVSDAKYKFC2W
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
