@@ -101997,6 +101997,17 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T03:07:56.488Z
+    - _ulid: 01KKZEMQKQJ9FNR2J6VDDC8SD5
+      content: "Review cycle 1 completed (review @01KKZEFM). Verdict: request_changes. Implementation
+        quality is solid — all 6 components build cleanly, svelte-check passes, and existing tests
+        continue to pass. The MUST-FIX blocker is missing test coverage: zero test files exist for
+        any of the 6 ACs. AC annotations appear only in implementation files, not in tests.
+        Additionally: unused import (normalizeLanguage in DiffFileView.svelte), unused prop
+        (expandedContextLines in DiffHunkView.svelte), and totalFileLines prop never passed so
+        bottom-of-file context expansion is dead code (ac-3 partial gap)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T03:08:18.423Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6N50TFB9MFMG7T5KZT6N
