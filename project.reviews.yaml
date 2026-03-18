@@ -16447,6 +16447,13 @@ reviews:
           kind: question
           thread_ulid: 01KM0M2S4Y9C9H7E89HTHHRKHP
         timestamp: 2026-03-18T14:02:36.212Z
+      - _ulid: 01KM0M340KXJ47ZXDNJEF09TWA
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0M33VZN8EQ58AW0ZAB4DMF
+        timestamp: 2026-03-18T14:02:47.188Z
     examined_commit: 1fb3398c8601e4d12109d099515003199b2ea770
     external_links: []
     lifecycle_state: open
@@ -16495,7 +16502,25 @@ reviews:
               comments that 'queued' is deferred pending agent concurrency tracking.
             created_at: 2026-03-18T14:02:36.063Z
         kind: question
+      - _ulid: 01KM0M33VZN8EQ58AW0ZAB4DMF
+        anchor:
+          type: code
+          commit: 1fb3398c8601
+          line_end: 28
+          line_start: 22
+          path: packages/daemon/src/routes/automation.ts
+          side: head
+        entries:
+          - _ulid: 01KM0M33VZNB728PA9B2ZVHWRB
+            author: "@claude"
+            body: "AutomationRouteOptions accepts pubsub?: PubSubManager but it's never used in any route
+              handler — dead code. The PubSubManager import is also unused. The task notes claim
+              coverage of @automation-event-stream ac-1, ac-2 but no WebSocket automation topic
+              streaming was implemented. Recommend: either remove the unused pubsub option and
+              correct the task notes, or implement the automation topic broadcasting."
+            created_at: 2026-03-18T14:02:47.039Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T13:52:49.236Z
-    updated_at: 2026-03-18T14:02:36.063Z
+    updated_at: 2026-03-18T14:02:47.039Z
     notes: []
