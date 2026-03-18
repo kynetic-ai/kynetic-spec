@@ -121,7 +121,7 @@ After checking out or creating your task branch, rebase onto the integration tar
 
 ```bash
 git fetch origin
-git rebase origin/dev
+git rebase origin/<integration-branch>  # e.g., dev or main
 ```
 
 This keeps your branch fresh with the latest integrated work and lets you resolve conflicts early — while you have full context of your changes. If the rebase has conflicts:
