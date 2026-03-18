@@ -4632,6 +4632,9 @@ modules:
           identifier and link to session_id when the action type is agent.
 
           All events carry the standard envelope defined by @dispatch-event-envelope.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
