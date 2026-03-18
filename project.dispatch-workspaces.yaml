@@ -9808,3 +9808,79 @@ workspaces:
         head: 8f12b6fdd9df0871ef29d7b862a896d405e5b106
         last_seen_at: 2026-03-18T11:18:25.340Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-degraded-state-01kkzwb8
+  - active_role: null
+    base_branch_point: 36a39d0aecbb46f119c5f4c721586dd6bfc068c6
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-schedule-schema/01kkzpvt
+    canonical_branch_head: 36a39d0aecbb46f119c5f4c721586dd6bfc068c6
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-18T11:18:26.305Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-18T11:18:26.305Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 36a39d0aecbb46f119c5f4c721586dd6bfc068c6
+      updated_at: 2026-03-18T11:18:26.305Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KKZPVTFW73DTR2RC1NQZEF13"
+    task_slug: task-schedule-schema
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-18T11:18:26.305Z
+      created_at: 2026-03-18T11:18:26.305Z
+      updated_at: 2026-03-18T11:18:26.305Z
+    workspace_id: dispatch-workspace-01KKZPVTFW73DTR2RC1NQZEF13
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-schedule-schema/01kkzpvt
+        head: 36a39d0aecbb46f119c5f4c721586dd6bfc068c6
+        last_seen_at: 2026-03-18T11:18:26.305Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-schedule-schema-01kkzpvt
