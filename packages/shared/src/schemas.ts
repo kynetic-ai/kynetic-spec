@@ -67,19 +67,36 @@ export type ObservationType =
   | 'idea';
 
 /**
- * Agent dispatch event values — mirrors AgentDispatchEventSchema enum from src/schema/meta.ts.
- * When AgentDispatchEventSchema adds new events, update this union + AGENT_DISPATCH_EVENTS.
+ * Agent dispatch event values — mirrors DispatchEventTypeSchema from src/schema/event-registry.ts.
+ * When the event registry adds new events, update this union + AGENT_DISPATCH_EVENTS.
  * AC: @ui-agent-dispatch ac-4 — shared type for schema-driven edit form
+ * AC: @dispatch-event-taxonomy ac-4 — existing values unchanged
  */
 export type AgentDispatchEvent =
+  // Task lifecycle events (existing, unchanged)
   | 'task.in_progress'
   | 'task.ready'
   | 'task.needs_work'
-  | 'task.pending_review';
+  | 'task.pending_review'
+  // Invocation lifecycle events
+  | 'invocation.started'
+  | 'invocation.completed'
+  | 'invocation.failed'
+  | 'invocation.stalled'
+  // Session lifecycle events
+  | 'session.ended'
+  | 'session.idle_timeout'
+  | 'session.cancelled'
+  // Schedule events
+  | 'schedule.tick'
+  // Action run tracking events
+  | 'action.started'
+  | 'action.completed'
+  | 'action.failed';
 
 /**
  * All valid dispatch events as a const array — for form dropdowns and validation.
- * Single source of truth for the web layer; mirrors AgentDispatchEventSchema values.
+ * Single source of truth for the web layer; mirrors DispatchEventTypeSchema values.
  * AC: @ui-agent-dispatch ac-4
  */
 export const AGENT_DISPATCH_EVENTS: readonly AgentDispatchEvent[] = [
@@ -87,6 +104,17 @@ export const AGENT_DISPATCH_EVENTS: readonly AgentDispatchEvent[] = [
   'task.ready',
   'task.needs_work',
   'task.pending_review',
+  'invocation.started',
+  'invocation.completed',
+  'invocation.failed',
+  'invocation.stalled',
+  'session.ended',
+  'session.idle_timeout',
+  'session.cancelled',
+  'schedule.tick',
+  'action.started',
+  'action.completed',
+  'action.failed',
 ] as const;
 
 /**
