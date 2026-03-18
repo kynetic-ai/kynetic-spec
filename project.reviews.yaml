@@ -9136,3 +9136,29 @@ reviews:
     created_at: 2026-03-18T00:06:44.971Z
     updated_at: 2026-03-18T00:07:19.650Z
     notes: []
+  - _ulid: 01KKZ4NFK6YCFB2KPG8TNTR3FB
+    slugs: []
+    title: Review round-trip stability for triage record YAML writes
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKZ4NFK6VZEMP9SY9JY57K2D
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T00:13:57.222Z
+    examined_commit: 4df83454a0a173332e2e8d7c66ad6989a15dbb08
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKX6CEQFM17JX8AKKRPXQGR7"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T00:13:57.222Z
+    updated_at: null
+    notes: []
