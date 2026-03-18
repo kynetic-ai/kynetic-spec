@@ -5531,6 +5531,9 @@ modules:
 
           All commands follow existing CLI patterns for output formatting,
           shadow branch auto-commit, and batch compatibility.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
