@@ -104803,6 +104803,22 @@
       supersedes: null
       author: pr-reviewer@dispatch
       created_at: 2026-03-18T00:47:50.986Z
+    - _ulid: 01KKZ8231N0AY6RG508BN916P6
+      content: "Fix cycle 1: Addressed both blockers from review @01KKZ6FM. BLOCKER 1:
+        resolveIntegrationRecord line 696 used nullish coalescing
+        (existingRecord?.integration.target_commit ?? targetCommit) which always preserved the stale
+        target_commit when an existing record existed. Fixed by only preserving existing
+        target_commit when target_branch hasn't changed; when retargeting, the fresh targetCommit
+        parameter is used. Also fixed the caller in provisionDispatchWorkspace to resolve the target
+        commit from the new base branch start point (resolvedConfig.baseBranchStartPoint) rather
+        than the stale baseBranchPoint from the existing record. BLOCKER 2: Enhanced the auto-update
+        test to add a commit on dev so its tip differs from main, then asserts both that
+        target_commit differs from the original and equals the dev branch head. NIT: Added N/A
+        annotations for @trait-error-guidance ac-3 through ac-6 on the stale integration target
+        describe block."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T01:13:16.085Z
   todos: []
   automation: eligible
 - _ulid: 01KKXEMGJ20X5RB4GMFYGSQH6Y
