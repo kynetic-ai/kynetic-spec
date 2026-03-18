@@ -105421,7 +105421,7 @@
   spec_ref: "@dispatch-event-envelope"
   plan_ref: "@plan-dispatch-event-system-expansion"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -105435,7 +105435,7 @@
   submission_linkage:
     review_url: null
     branch: dev
-    captured_at: 2026-03-18T08:11:06.313Z
+    captured_at: 2026-03-18T08:36:34.033Z
     commit: 8166d8d659867217b31b97296d530899f07a433e
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -105443,7 +105443,7 @@
   session_id: 01KM011KV02E3F9W5X4YR94XV0
   created_at: 2026-03-18T05:31:46.436Z
   started_at: 2026-03-18T08:36:26.254Z
-  submitted_at: 2026-03-18T08:11:06.729Z
+  submitted_at: 2026-03-18T08:36:34.494Z
   notes:
     - _ulid: 01KKZZYAYVXCVF3PHNYG1K76SM
       content: "Implemented EventBus class in src/agent-runtime/event-bus.ts with: (1) EventEnvelope type
