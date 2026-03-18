@@ -13380,6 +13380,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T08:48:52.902Z
+      - _ulid: 01KM0251W7HHR9WS0B8ZJK4T2P
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0251RRMD97WFSGC7A5AKZW
+        timestamp: 2026-03-18T08:49:16.167Z
     examined_commit: 14505dad0ba356bbfd037257e46aa75b3d9ebbbc
     external_links: []
     lifecycle_state: open
@@ -13389,8 +13396,38 @@ reviews:
       content_hash: ""
       ref: "@01KKZPVDW4F4YDP0M32CAV2T7F"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM0251RRMD97WFSGC7A5AKZW
+        anchor:
+          type: code
+          commit: ""
+          line_end: 1091
+          line_start: 1091
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KM0251RRZ5JKH0MPV88A33AR
+            author: "@claude"
+            body: >-
+              SHOULD-FIX: Missing _eventBus.clear() in DispatchEngine.stop()
+
+
+              The stop() method (dispatch.ts:1045-1091) clears all engine state — queues,
+              recentEvents, activeCount, invocationAbortControllers, activeInvocationDetails,
+              coalesceTimers — but does NOT call this._eventBus.clear(). After stop(), the event bus
+              retains: all subscribers, ring buffer contents (~500 events), task dedup entries,
+              chain depth tracking, and pending delivery promise chains.
+
+
+              This is inconsistent with the cleanup pattern of every other piece of state in stop()
+              and represents a resource leak in test teardown or daemon restart scenarios where
+              DispatchEngine instances are created/destroyed.
+
+
+              Fix: Add this._eventBus.clear() at the end of stop().
+            created_at: 2026-03-18T08:49:16.056Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T08:48:45.151Z
-    updated_at: 2026-03-18T08:48:52.789Z
+    updated_at: 2026-03-18T08:49:16.056Z
     notes: []
