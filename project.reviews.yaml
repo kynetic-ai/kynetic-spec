@@ -11773,6 +11773,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKZT0RHJB35N3XNZF9SHX0WD
         timestamp: 2026-03-18T06:27:07.052Z
+      - _ulid: 01KKZT133V99D5WXQE300XCBM2
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKZT12ZNFM0GQYG2ZVZREAB7
+        timestamp: 2026-03-18T06:27:17.755Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -11903,7 +11910,26 @@ reviews:
               belongs."
             created_at: 2026-03-18T06:27:06.930Z
         kind: blocker
+      - _ulid: 01KKZT12ZNFM0GQYG2ZVZREAB7
+        anchor:
+          type: structured
+          field: ac-integration-push-serialization
+          ref: "@dispatch-remote-branch-sync"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KKZT12ZNETAQG8BZTJA30PCS
+            author: "@claude"
+            body: ac-integration-push-serialization's then-clause describes both the serialization mechanism AND
+              the skip-if-in-flight optimization. The skip behavior is a distinct optimization on
+              top of serialization. A pure serialization AC would just say 'at most one push runs at
+              a time; the second waits.' The skip-if-in-flight is an additional behavior (the second
+              operation skips because the in-flight push delivers same-or-newer state). These could
+              be one AC if the skip semantics are considered intrinsic to the serialization design,
+              but if you want to test serialization independently from the skip optimization, split
+              them.
+            created_at: 2026-03-18T06:27:17.621Z
+        kind: question
     verdicts: []
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:27:06.930Z
+    updated_at: 2026-03-18T06:27:17.621Z
     notes: []
