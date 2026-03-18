@@ -108143,6 +108143,18 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T16:39:28.477Z
+    - _ulid: 01KM0XQ6E9BQRYTMVB8HEZCBTD
+      content: "Fix cycle 3: Reverted out-of-scope code changes in src/cli/commands/review.ts and
+        tests/review-cli.test.ts. Restored shared computeDisposition() and evaluateGates() imports,
+        removing the simplified local replacements that introduced behavioral regressions (ignored
+        version staleness, gate state, unresolved blockers). Restored test expectations for
+        vacuous-truth gate state. Branch now contains only documentation changes:
+        templates/skills/review/SKILL.md (source), .agents/skills/kspec-review/SKILL.md and
+        .factory/skills/kspec-review/SKILL.md (rendered), and kspec-agents.md (regenerated). No code
+        or test changes remain. Addresses the MUST-FIX blocker from review cycle 2."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T16:51:02.218Z
   todos: []
   automation: eligible
 - _ulid: 01KM0NWK9Q2HKKF679ASD081B8
