@@ -16444,6 +16444,21 @@ reviews:
         runner: kspec
         created_at: 2026-03-18T14:03:05.293Z
         completed_at: 2026-03-18T14:03:05.293Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b30b1a6f4492
+          head_commit: 1fb3398c8601
+        evidence: "All 6 own ACs (@automation-api ac-1 through ac-6) have annotated tests. Trait ACs:
+          @trait-api-endpoint ac-1,2,3,4 tested; ac-5,6 N/A with valid justification.
+          @trait-localhost-security ac-1,2,3 N/A (server-level middleware). @trait-json-output
+          ac-1-6 N/A (CLI-specific trait). One blocker: timeout_remaining_ms calculation is
+          incorrect in ac-5 endpoint."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T14:03:14.793Z
+        completed_at: 2026-03-18T14:03:14.793Z
     events:
       - _ulid: 01KM0KGW2MPWAQ32Z598RRKE7A
         actor: "@claude"
@@ -16493,6 +16508,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-18T14:03:05.445Z
+      - _ulid: 01KM0M3Z3QZ7RRXW7EH2VKGRR2
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T14:03:14.935Z
     examined_commit: 1fb3398c8601e4d12109d099515003199b2ea770
     external_links: []
     lifecycle_state: open
@@ -16561,5 +16583,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T13:52:49.236Z
-    updated_at: 2026-03-18T14:03:05.293Z
+    updated_at: 2026-03-18T14:03:14.793Z
     notes: []
