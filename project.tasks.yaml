@@ -106555,7 +106555,7 @@
   spec_ref: "@automation-api"
   plan_ref: "@plan-dispatch-event-system-expansion"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-hook-executor"
@@ -106568,7 +106568,9 @@
     - daemon
     - api
   vcs_refs: []
+  session_id: 01KM0HYR2K6NNXETVGF6P103G4
   created_at: 2026-03-18T05:32:06.479Z
+  started_at: 2026-03-18T13:25:46.052Z
   notes: []
   todos: []
   automation: eligible
