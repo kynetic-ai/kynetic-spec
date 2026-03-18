@@ -26,3 +26,18 @@ export {
   type TaskStateChange,
   type TaskStatus,
 } from "./dispatch.js";
+
+export {
+  ActionExecutor,
+  resolveTemplateVars,
+  extractTemplateVars,
+  validateActionTemplates,
+  extractActionTemplates,
+  KNOWN_EVENT_FIELDS,
+  type ActionEventContext,
+  type ActionRunEvent,
+  type ActionExecutorOptions,
+  type NotifyBroadcast,
+  type AgentSpawner,
+  type TemplateValidationWarning,
+} from "./action-executor.js";
