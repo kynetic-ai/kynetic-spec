@@ -107658,11 +107658,48 @@
     - task-cli-shared-disposition
   title: Replace CLI local computeDisposition with shared implementation
   type: task
-  description: Replace naive local computeDisposition (line 117) and computeGateState (line 132) in
-    src/cli/commands/review.ts with shared implementations from src/parser/review-operations.ts and
-    src/review/checks.ts. evaluateGates returns GateEvaluationResult object — extract .state.
-    Changes gate_state from pending to passing for check-less reviews (intentional, aligns with
-    daemon). See @plan-review-version-auto-derivation.
+  description: >-
+    Replace the naive local computeDisposition (line 117 of src/cli/commands/review.ts) and
+    computeGateState (line 132) with the shared implementations: computeDisposition from
+    src/parser/review-operations.ts and evaluateGates from src/review/checks.ts.
+
+
+    The local computeDisposition ignores version staleness, gate state, and unresolved blockers — it
+    just checks if any verdict is request_changes or approve. The local computeGateState ignores
+    version staleness on checks.
+
+
+    The shared computeDisposition considers effective verdicts (filtered by version staleness), gate
+    evaluation, and unresolved blocker threads. The shared evaluateGates handles check staleness and
+    returns a GateEvaluationResult object (not a string).
+
+
+    Why: The CLI, daemon (packages/daemon/src/routes/reviews.ts), and web UI must agree on
+    disposition and gate state. The local reimplementations produce different results — the CLI
+    shows 76 approved reviews while the daemon shows 4. This makes the CLI output unreliable and
+    masks data inconsistencies.
+
+
+    How:
+
+    1. Remove the local computeDisposition function (lines 117-126 of src/cli/commands/review.ts)
+
+    2. Remove the local computeGateState function (lines 132-137)
+
+    3. Import computeDisposition from ../parser/review-operations.js
+
+    4. Import evaluateGates from ../review/checks.js and extractSubjectVersion from
+    ../review/subject-bindings.js
+
+    5. Replace computeGateState calls with evaluateGates + version extraction. evaluateGates returns
+    a GateEvaluationResult object (with .state, .checks, .summary) — extract .state for the current
+    gate_state string usage
+
+    6. Verify all review list and detail output uses the shared logic
+
+    7. This intentionally changes semantics for reviews with no required checks — gate_state goes
+    from 'pending' to 'passing' (vacuous truth: no gates to fail = passing). This aligns with the
+    daemon. Update any tests that assert 'pending' for check-less reviews.
   spec_ref: "@review-cli-commands"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
