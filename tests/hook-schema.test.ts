@@ -396,7 +396,7 @@ describe("HookFilter", () => {
       const warnings = validateHookFilter(
         "test-hook",
         "task.ready",
-        { agent_id: "worker", tags: ["mvp"] },
+        { task_title: "My task", tags: ["mvp"] },
       );
 
       expect(warnings).toHaveLength(0);
@@ -414,7 +414,7 @@ describe("HookFilter", () => {
     });
 
     it("should warn on payload field from a different event type", () => {
-      // agent_id is a task.* payload field but not a schedule.tick payload field
+      // agent_id is an invocation.* payload field but not a schedule.tick payload field
       const warnings = validateHookFilter(
         "test-hook",
         "schedule.tick",
@@ -531,7 +531,8 @@ describe("HookFilter", () => {
     it("should return payload fields for known event types", () => {
       const fields = getValidFilterFields("task.ready");
       expect(fields).toContain("task_id");
-      expect(fields).toContain("agent_id");
+      expect(fields).toContain("from_status");
+      expect(fields).toContain("task_title");
       expect(fields).toContain("tags");
     });
 

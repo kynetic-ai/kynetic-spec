@@ -20,6 +20,15 @@
  */
 
 import { z } from "zod";
+import {
+  TASK_PAYLOAD_FIELDS,
+  INVOCATION_STARTED_PAYLOAD_FIELDS,
+  INVOCATION_TERMINAL_PAYLOAD_FIELDS,
+  SESSION_PAYLOAD_FIELDS,
+  SCHEDULE_TICK_PAYLOAD_FIELDS,
+  ACTION_STARTED_PAYLOAD_FIELDS,
+  ACTION_TERMINAL_PAYLOAD_FIELDS,
+} from "./event-payloads.js";
 
 // ─── Event Domains ────────────────────────────────────────────────────────────
 
@@ -65,105 +74,110 @@ export interface EventRegistryEntry {
 export const EVENT_REGISTRY: readonly EventRegistryEntry[] = [
   // ─── Task domain (existing, unchanged) ────────────────────────────────
   // AC: @dispatch-event-taxonomy ac-4 — existing dispatch rules unchanged
+  // AC: @dispatch-event-payload ac-1 — task payload includes enriched metadata
   {
     event_type: "task.ready",
     domain: "task",
     description: "A task became ready for work (pending status)",
-    payload_fields: ["task_id", "task_ref", "status", "agent_id", "tags", "priority", "automation", "spec_ref"],
+    payload_fields: TASK_PAYLOAD_FIELDS,
   },
   {
     event_type: "task.in_progress",
     domain: "task",
     description: "A task transitioned to in-progress",
-    payload_fields: ["task_id", "task_ref", "status", "agent_id", "tags", "priority", "automation", "spec_ref"],
+    payload_fields: TASK_PAYLOAD_FIELDS,
   },
   {
     event_type: "task.needs_work",
     domain: "task",
     description: "A task needs work (fix cycle from review)",
-    payload_fields: ["task_id", "task_ref", "status", "agent_id", "tags", "priority", "automation", "spec_ref"],
+    payload_fields: TASK_PAYLOAD_FIELDS,
   },
   {
     event_type: "task.pending_review",
     domain: "task",
     description: "A task is pending review",
-    payload_fields: ["task_id", "task_ref", "status", "agent_id", "tags", "priority", "automation", "spec_ref"],
+    payload_fields: TASK_PAYLOAD_FIELDS,
   },
 
   // ─── Invocation domain ────────────────────────────────────────────────
   // AC: @dispatch-event-taxonomy ac-1 — invocation terminal state events
+  // AC: @dispatch-event-payload ac-2 — invocation payload fields
   {
     event_type: "invocation.started",
     domain: "invocation",
     description: "An agent invocation has started",
-    payload_fields: ["session_id", "agent_id", "task_ref"],
+    payload_fields: INVOCATION_STARTED_PAYLOAD_FIELDS,
   },
   {
     event_type: "invocation.completed",
     domain: "invocation",
     description: "An agent invocation completed successfully",
-    payload_fields: ["session_id", "agent_id", "task_ref", "outcome", "duration_ms"],
+    payload_fields: [...INVOCATION_TERMINAL_PAYLOAD_FIELDS, "outcome"],
   },
   {
     event_type: "invocation.failed",
     domain: "invocation",
     description: "An agent invocation failed with an error",
-    payload_fields: ["session_id", "agent_id", "task_ref", "error", "duration_ms"],
+    payload_fields: [...INVOCATION_TERMINAL_PAYLOAD_FIELDS, "error"],
   },
   {
     event_type: "invocation.stalled",
     domain: "invocation",
     description: "An agent invocation stalled (no progress detected)",
-    payload_fields: ["session_id", "agent_id", "task_ref", "duration_ms"],
+    payload_fields: INVOCATION_TERMINAL_PAYLOAD_FIELDS,
   },
 
   // ─── Session domain ───────────────────────────────────────────────────
   // AC: @dispatch-event-taxonomy ac-2 — session terminal state events
+  // AC: @dispatch-event-payload ac-3 — session payload fields
   {
     event_type: "session.ended",
     domain: "session",
     description: "A dispatch session ended normally (agent responded)",
-    payload_fields: ["session_id", "agent_id", "task_ref", "duration_ms", "terminal_reason", "work_summary"],
+    payload_fields: SESSION_PAYLOAD_FIELDS,
   },
   {
     event_type: "session.idle_timeout",
     domain: "session",
     description: "A dispatch session ended due to idle timeout",
-    payload_fields: ["session_id", "agent_id", "task_ref", "duration_ms", "terminal_reason", "work_summary"],
+    payload_fields: SESSION_PAYLOAD_FIELDS,
   },
   {
     event_type: "session.cancelled",
     domain: "session",
     description: "A dispatch session was cancelled",
-    payload_fields: ["session_id", "agent_id", "task_ref", "duration_ms", "terminal_reason", "work_summary"],
+    payload_fields: SESSION_PAYLOAD_FIELDS,
   },
 
   // ─── Schedule domain ──────────────────────────────────────────────────
+  // AC: @dispatch-event-payload ac-4 — schedule tick payload fields
   {
     event_type: "schedule.tick",
     domain: "schedule",
     description: "A scheduled trigger fired",
-    payload_fields: ["schedule_id", "schedule_name"],
+    payload_fields: SCHEDULE_TICK_PAYLOAD_FIELDS,
   },
 
   // ─── Action domain ────────────────────────────────────────────────────
+  // AC: @dispatch-event-payload ac-5 — action payload fields
   {
     event_type: "action.started",
     domain: "action",
     description: "An action run started (hook, schedule, or composition action)",
-    payload_fields: ["action_run_id", "action_type", "source_name", "source_event_type"],
+    payload_fields: [...ACTION_STARTED_PAYLOAD_FIELDS, "source_event_type"],
   },
   {
     event_type: "action.completed",
     domain: "action",
     description: "An action run completed successfully",
-    payload_fields: ["action_run_id", "action_type", "source_name", "source_event_type", "duration_ms"],
+    payload_fields: [...ACTION_TERMINAL_PAYLOAD_FIELDS, "source_event_type"],
   },
   {
     event_type: "action.failed",
     domain: "action",
     description: "An action run failed",
-    payload_fields: ["action_run_id", "action_type", "source_name", "source_event_type", "error", "failure_reason"],
+    payload_fields: [...ACTION_TERMINAL_PAYLOAD_FIELDS, "source_event_type", "error", "failure_reason"],
   },
 ] as const;
 
