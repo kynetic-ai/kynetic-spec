@@ -11940,6 +11940,12 @@ reviews:
         payload:
           thread_ulid: 01KKZT12ZNFM0GQYG2ZVZREAB7
         timestamp: 2026-03-18T06:46:58.228Z
+      - _ulid: 01KKZV56F4RP1J43FECPK0MF2E
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KKZT1C0SMS73E3WW3YT3BNH5
+        timestamp: 2026-03-18T06:47:00.837Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -12161,6 +12167,8 @@ reviews:
               work."
             created_at: 2026-03-18T06:27:26.873Z
         kind: nit
+        resolved_at: 2026-03-18T06:47:00.704Z
+        resolved_by: "@claude"
       - _ulid: 01KKZT1QCZ136ZR7RPK64RSJTA
         anchor:
           type: structured
@@ -12334,5 +12342,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-18T06:31:04.294Z
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:46:58.101Z
+    updated_at: 2026-03-18T06:47:00.704Z
     notes: []
