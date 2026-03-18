@@ -17421,6 +17421,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T15:19:15.122Z
         completed_at: 2026-03-18T15:19:15.122Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 2dcce1c1b50a
+          head_commit: 2b12a78869dc
+        evidence: "ac-5: 3 test annotations (list, payload fields, domain filter). ac-6: 1 test annotation
+          (validation). All trait ACs covered by tests or annotated N/A with valid reasons.
+          shadow-commit all N/A (read-only commands)."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T15:19:22.831Z
+        completed_at: 2026-03-18T15:19:22.831Z
     events:
       - _ulid: 01KM0RE6Q8C81P25AMWDJESF06
         actor: "@claude"
@@ -17442,6 +17455,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T15:19:15.276Z
+      - _ulid: 01KM0RFC30C5AVPHS9G44VMDNX
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T15:19:22.976Z
     examined_commit: 2b12a78869dce6fc1d0f3f4d90926a3fd620cf54
     external_links: []
     lifecycle_state: open
@@ -17454,5 +17474,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T15:18:44.712Z
-    updated_at: 2026-03-18T15:19:15.122Z
+    updated_at: 2026-03-18T15:19:22.831Z
     notes: []
