@@ -8750,12 +8750,20 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-18T07:50:35.957Z
+      updated_at: 2026-03-18T07:52:35.882Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T07:50:46.327Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/task-code-diff-viewer/01kktw6m" is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-code-diff-viewer-01kktw6m"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-18T07:52:35.882Z
     integration:
       status: merged
       detail: integration:merged
@@ -8763,17 +8771,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
-      updated_at: 2026-03-18T07:50:35.957Z
-    lifecycle_state: closing
+      updated_at: 2026-03-18T07:52:35.882Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KKTW6MH5PWQSPXA3J689NHDB"
     task_slug: task-code-diff-viewer
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T07:41:08.510Z
-      last_reconciled_at: 2026-03-18T07:50:46.327Z
+      last_reconciled_at: 2026-03-18T07:52:35.882Z
       created_at: 2026-03-18T02:32:34.958Z
-      updated_at: 2026-03-18T07:50:46.327Z
+      updated_at: 2026-03-18T07:52:35.882Z
     workspace_id: dispatch-workspace-01KKTW6MH5PWQSPXA3J689NHDB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
