@@ -16258,9 +16258,22 @@ reviews:
           status: pass
           name: AC coverage
         timestamp: 2026-03-18T13:17:38.993Z
+      - _ulid: 01KM0HGMSH4XHXJRSJWRSAYK8P
+        actor: pr-reviewer@kspec
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-18T13:17:44.625Z
+      - _ulid: 01KM0HGMSH8YJM6KQHMDCJ8175
+        actor: pr-reviewer@kspec
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T13:17:44.625Z
     examined_commit: 3f77adc28aaab00f2bd7b123d89ad803857fffe8
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -16276,7 +16289,15 @@ reviews:
               but never used in the file. Zero correctness impact."
             created_at: 2026-03-18T13:17:09.275Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 66f28f7127d7
+          head_commit: 3f77adc28aaa
+        decision: approve
+        reviewer: pr-reviewer@kspec
+        role: reviewer
+        created_at: 2026-03-18T13:17:44.476Z
     created_at: 2026-03-18T13:16:51.412Z
-    updated_at: 2026-03-18T13:17:38.848Z
+    updated_at: 2026-03-18T13:17:44.476Z
     notes: []
