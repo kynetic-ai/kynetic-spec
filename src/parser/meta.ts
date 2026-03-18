@@ -780,6 +780,78 @@ export async function deleteObservation(
 }
 
 /**
+ * Save a hook to the meta manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
+ * AC: @dispatch-event-cli ac-4 — hook is persisted and available for event matching
+ */
+export async function saveHook(
+  ctx: KspecContext,
+  hook: LoadedHook,
+): Promise<void> {
+  const manifestPath = getMetaManifestPath(ctx);
+
+  await withFileLock(manifestPath, async () => {
+    const dir = path.dirname(manifestPath);
+    await fs.mkdir(dir, { recursive: true });
+
+    const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+    const rawHooks = wrapperObj
+      ? (Array.isArray(wrapperObj.hooks) ? wrapperObj.hooks as unknown[] : [])
+      : [];
+
+    const { _sourceFile: _, ...cleanHook } = hook;
+
+    const existingIndex = findRawMetaItemIndex(rawHooks, hook._ulid);
+    if (existingIndex >= 0) {
+      const rawTarget = rawHooks[existingIndex] as Record<string, unknown>;
+      rawHooks[existingIndex] = mergeMetaItemPreservingRawShape(
+        rawTarget,
+        cleanHook as unknown as Record<string, unknown>,
+      );
+    } else {
+      rawHooks.push(cleanHook);
+    }
+
+    await writeRawMetaManifest(manifestPath, wrapperObj, {
+      hooks: rawHooks,
+    } as unknown as Partial<Record<MetaArrayField, unknown[]>>);
+  });
+}
+
+/**
+ * Delete a hook from the meta manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
+ */
+export async function deleteHook(
+  ctx: KspecContext,
+  targetUlid: string,
+): Promise<boolean> {
+  const manifestPath = getMetaManifestPath(ctx);
+
+  return withFileLock(manifestPath, async () => {
+    try {
+      const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+      const rawHooks = wrapperObj
+        ? (Array.isArray(wrapperObj.hooks) ? wrapperObj.hooks as unknown[] : [])
+        : [];
+
+      const index = findRawMetaItemIndex(rawHooks, targetUlid);
+      if (index < 0) {
+        return false;
+      }
+
+      rawHooks.splice(index, 1);
+      await writeRawMetaManifest(manifestPath, wrapperObj, {
+        hooks: rawHooks,
+      } as unknown as Partial<Record<MetaArrayField, unknown[]>>);
+      return true;
+    } catch {
+      return false;
+    }
+  });
+}
+
+/**
  * Get the path for skill content file.
  * Skills are stored in .kspec/skills/<id>/SKILL.md
  */

@@ -24,6 +24,7 @@ import {
   registerExportCommand,
   registerGuardCommand,
   registerHelpCommand,
+  registerHookCommands,
   registerInboxCommands,
   registerInitCommand,
   registerItemCommands,
@@ -319,6 +320,7 @@ registerWorkflowCommand(program);
 registerMergeDriverCommand(program);
 registerExportCommand(program);
 registerGuardCommand(program);
+registerHookCommands(program);
 registerUtilCommands(program);
 registerBatchCommand(program);
 registerSkillCommands(program);
