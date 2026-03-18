@@ -18366,7 +18366,20 @@ reviews:
     slugs: []
     title: Review task-automation-view (cycle 2)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 20cb7666e4d9
+          head_commit: 8e507045fbc1
+        evidence: 285/286 test files passed (6511/6515 tests). 1 failure is pre-existing env sensitivity
+          (examined_commit auto-detection via KSPEC_DISPATCH_CANONICAL_HEAD leak), not caused by
+          this task.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T16:31:13.903Z
+        completed_at: 2026-03-18T16:31:13.903Z
     events:
       - _ulid: 01KM0VWHJ1NSWGEJDZ7932YZXQ
         actor: "@claude"
@@ -18381,6 +18394,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T16:19:08.382Z
+      - _ulid: 01KM0WJY86332P1FHERGB5D7R5
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T16:31:14.182Z
     examined_commit: 8e507045fbc1f80007de114d9870557c44780f70
     external_links: []
     lifecycle_state: open
@@ -18395,7 +18415,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T16:19:00.290Z
-    updated_at: 2026-03-18T16:19:08.225Z
+    updated_at: 2026-03-18T16:31:13.903Z
     notes: []
   - _ulid: 01KM0WHDVFD2HGFQYR9E986EKC
     slugs: []
