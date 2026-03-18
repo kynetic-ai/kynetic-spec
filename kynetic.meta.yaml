@@ -7407,6 +7407,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-18T07:28:40.385Z
+  - _ulid: 01KM0JHEZHR3Y0JWTYPXYC8F24
+    type: success
+    content: Merge conflict handling instructions update — traced root cause across 3 instruction
+      sources, updated 4 source files propagated to 11 rendered outputs, review agent approved with
+      zero findings. The build → install-core → render pipeline works once you know the sequence.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-18T13:35:40.018Z
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     description: Get help with kspec commands and workflows
