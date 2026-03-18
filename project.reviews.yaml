@@ -18466,6 +18466,16 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T16:59:56.770Z
         completed_at: 2026-03-18T16:59:56.770Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: 8902b7aa1f3e
+        evidence: "kspec validate: pre-existing warnings only. Skills validation: OK (9 files checked)."
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-18T17:00:04.325Z
+        completed_at: 2026-03-18T17:00:04.325Z
     events:
       - _ulid: 01KM0Y63EC6F8XV3PXDBQ7SC9Y
         actor: "@claude"
@@ -18487,6 +18497,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T16:59:56.936Z
+      - _ulid: 01KM0Y7R073RP9RRQZWR163Q0N
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-18T17:00:04.488Z
     examined_commit: 8902b7aa1f3e228f12750aa934dd24ec51b853f4
     external_links: []
     lifecycle_state: open
@@ -18499,5 +18516,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T16:59:10.669Z
-    updated_at: 2026-03-18T16:59:56.770Z
+    updated_at: 2026-03-18T17:00:04.325Z
     notes: []
