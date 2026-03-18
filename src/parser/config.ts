@@ -118,6 +118,8 @@ const DispatchBootstrapConfigSchema = z
 
 /**
  * Schema for dispatch workspace configuration.
+ *
+ * AC: @dispatch-sync-configuration — sync_interval, remote_sync configurable
  */
 const DispatchConfigSchema = z
   .object({
@@ -143,6 +145,23 @@ const DispatchConfigSchema = z
      * Steps run before agent prompts are delivered.
      */
     bootstrap: DispatchBootstrapConfigSchema,
+    /**
+     * Interval in seconds for periodic target branch sync in dispatch mode.
+     * Set to 0 to disable periodic sync (on-start and before-provision syncs
+     * still run). Default: 60.
+     *
+     * AC: @dispatch-sync-configuration ac-sync-interval
+     */
+    sync_interval: z.number().int().min(0).optional(),
+    /**
+     * Whether remote push/pull operations are enabled for dispatch.
+     * When false, the engine operates in local-only mode.
+     * When omitted, resolved at runtime: true if a remote exists, false otherwise.
+     *
+     * AC: @dispatch-sync-configuration ac-remote-sync-disabled
+     * AC: @dispatch-sync-configuration ac-remote-sync-default
+     */
+    remote_sync: z.boolean().optional(),
   })
   .strict()
   .optional();
@@ -336,6 +355,20 @@ export interface ResolvedKspecConfig {
         reviewer_rerun_allowed: boolean;
       }>;
     };
+    /**
+     * Interval in seconds for periodic target branch sync.
+     * 0 disables periodic sync. Default: 60.
+     * AC: @dispatch-sync-configuration ac-sync-interval
+     */
+    sync_interval: number;
+    /**
+     * Whether remote sync is enabled for dispatch branches and target.
+     * Null means "not yet resolved" — runtime resolution determines the
+     * effective value based on whether a git remote exists.
+     * AC: @dispatch-sync-configuration ac-remote-sync-disabled
+     * AC: @dispatch-sync-configuration ac-remote-sync-default
+     */
+    remote_sync: boolean | null;
   };
   ralph: {
     skills: {
@@ -399,6 +432,8 @@ const DEFAULT_CONFIG: ResolvedKspecConfig = {
     bootstrap: {
       steps: [],
     },
+    sync_interval: 60, // AC: @dispatch-sync-configuration ac-sync-interval — default 60s
+    remote_sync: null, // AC: @dispatch-sync-configuration ac-remote-sync-default — resolved at runtime
   },
   ralph: {
     skills: {
@@ -616,6 +651,10 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
           }),
         ),
       },
+      // AC: @dispatch-sync-configuration ac-sync-interval — from config or default 60s
+      sync_interval: file.dispatch?.sync_interval ?? DEFAULT_CONFIG.dispatch.sync_interval,
+      // AC: @dispatch-sync-configuration ac-remote-sync-default — explicit config or null for runtime resolution
+      remote_sync: file.dispatch?.remote_sync ?? DEFAULT_CONFIG.dispatch.remote_sync,
     },
     ralph: {
       skills: {
@@ -630,6 +669,30 @@ export function resolveConfig(fileConfig: KspecConfig | null): ResolvedKspecConf
       prompt_check: file.hooks?.prompt_check ?? DEFAULT_CONFIG.hooks.prompt_check,
     },
   };
+}
+
+/**
+ * Resolve the effective remote_sync value for dispatch.
+ *
+ * When config explicitly sets remote_sync to true or false, that value is used.
+ * When remote_sync is null (unset), it defaults based on whether a git remote exists:
+ * true if a remote exists, false otherwise.
+ *
+ * AC: @dispatch-sync-configuration ac-remote-sync-default — defaults based on remote existence
+ * AC: @dispatch-sync-configuration ac-remote-sync-disabled — explicit false disables sync
+ *
+ * @param config Resolved config (remote_sync may be null)
+ * @param hasRemote Whether the project has at least one git remote
+ * @returns The effective remote_sync value (never null)
+ */
+export function resolveDispatchRemoteSync(
+  config: ResolvedKspecConfig,
+  hasRemote: boolean,
+): boolean {
+  if (config.dispatch.remote_sync !== null) {
+    return config.dispatch.remote_sync;
+  }
+  return hasRemote;
 }
 
 /**
@@ -662,6 +725,8 @@ export function getDefaultConfig(): ResolvedKspecConfig {
       bootstrap: {
         steps: DEFAULT_CONFIG.dispatch.bootstrap.steps.map((step) => ({ ...step })),
       },
+      sync_interval: DEFAULT_CONFIG.dispatch.sync_interval,
+      remote_sync: DEFAULT_CONFIG.dispatch.remote_sync,
     },
     ralph: {
       skills: { ...DEFAULT_CONFIG.ralph.skills },

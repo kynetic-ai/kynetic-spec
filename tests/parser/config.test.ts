@@ -12,6 +12,10 @@
  * - @config-author ac-1: config author used when no env var
  * - @config-author ac-2: env var wins over config author
  * - @config-author ac-3: fallback to git/OS when no config author
+ * - @dispatch-sync-configuration ac-sync-interval: sync interval config and default
+ * - @dispatch-sync-configuration ac-remote-sync-disabled: explicit false disables sync
+ * - @dispatch-sync-configuration ac-remote-sync-default: runtime resolution from remote
+ * - @dispatch-sync-configuration ac-validation: negative/non-integer rejected
  */
 
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
@@ -20,6 +24,7 @@ import * as path from "node:path";
 import {
   loadProjectConfig,
   resolveConfig,
+  resolveDispatchRemoteSync,
   getDefaultConfig,
   KspecConfigSchema,
   type ResolvedKspecConfig,
@@ -344,7 +349,27 @@ daemon:
       expect(config.dispatch.base_branch).toBeNull();
       expect(config.dispatch.worktree_root).toBe(".kspec-worktrees");
       expect(config.dispatch.bootstrap.steps).toEqual([]);
+      expect(config.dispatch.sync_interval).toBe(60); // default
+      expect(config.dispatch.remote_sync).toBeNull(); // default, runtime resolved
       expect(config.shadow.branch).toBe("kspec-meta"); // default
+    });
+
+    // AC: @dispatch-sync-configuration ac-sync-interval
+    it("resolves dispatch sync_interval from config", () => {
+      const config = resolveConfig({
+        dispatch: { sync_interval: 120 },
+      });
+
+      expect(config.dispatch.sync_interval).toBe(120);
+    });
+
+    // AC: @dispatch-sync-configuration ac-remote-sync-disabled
+    it("resolves dispatch remote_sync from config", () => {
+      const config = resolveConfig({
+        dispatch: { remote_sync: false },
+      });
+
+      expect(config.dispatch.remote_sync).toBe(false);
     });
 
     it("applies env var overrides", () => {
@@ -445,6 +470,63 @@ daemon:
 
       expect(result.success).toBe(false);
     });
+
+    // AC: @dispatch-sync-configuration ac-sync-interval
+    it("validates dispatch sync_interval as non-negative integer", () => {
+      const valid = KspecConfigSchema.safeParse({
+        dispatch: { sync_interval: 120 },
+      });
+      expect(valid.success).toBe(true);
+
+      const zero = KspecConfigSchema.safeParse({
+        dispatch: { sync_interval: 0 },
+      });
+      expect(zero.success).toBe(true);
+    });
+
+    // AC: @dispatch-sync-configuration ac-validation
+    it("rejects negative dispatch sync_interval", () => {
+      const result = KspecConfigSchema.safeParse({
+        dispatch: { sync_interval: -5 },
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        const issue = result.error.issues[0];
+        expect(issue.message).toMatch(/too_small|greater|minimum/i);
+      }
+    });
+
+    // AC: @dispatch-sync-configuration ac-validation
+    it("rejects non-integer dispatch sync_interval", () => {
+      const result = KspecConfigSchema.safeParse({
+        dispatch: { sync_interval: 45.7 },
+      });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        const issue = result.error.issues[0];
+        expect(issue.message).toMatch(/integer/i);
+      }
+    });
+
+    // AC: @dispatch-sync-configuration ac-remote-sync-disabled
+    it("validates dispatch remote_sync as boolean", () => {
+      const trueVal = KspecConfigSchema.safeParse({
+        dispatch: { remote_sync: true },
+      });
+      expect(trueVal.success).toBe(true);
+
+      const falseVal = KspecConfigSchema.safeParse({
+        dispatch: { remote_sync: false },
+      });
+      expect(falseVal.success).toBe(true);
+    });
+
+    it("rejects non-boolean dispatch remote_sync", () => {
+      const result = KspecConfigSchema.safeParse({
+        dispatch: { remote_sync: "yes" },
+      });
+      expect(result.success).toBe(false);
+    });
   });
 
   // AC: @project-config ac-2 - full integration test
@@ -512,6 +594,10 @@ title: Test Project
       expect(defaults.dispatch.base_branch).toBeNull();
       expect(defaults.dispatch.worktree_root).toBe(".kspec-worktrees");
       expect(defaults.dispatch.bootstrap.steps).toEqual([]);
+      // AC: @dispatch-sync-configuration ac-sync-interval — default 60s
+      expect(defaults.dispatch.sync_interval).toBe(60);
+      // AC: @dispatch-sync-configuration ac-remote-sync-default — null for runtime resolution
+      expect(defaults.dispatch.remote_sync).toBeNull();
       expect(defaults.ralph.skills.task_work).toBe("/kspec:task-work");
       expect(defaults.ralph.skills.reflect).toBe("/kspec:reflect");
       expect(defaults.ralph.skills.pr_review).toBe("/kspec:review");
@@ -713,6 +799,171 @@ dispatch:
 
       expect(result.config.dispatch.base_branch).toBeNull();
       expect(result.config.dispatch.worktree_root).toBe(".kspec-worktrees");
+    });
+  });
+
+  // AC: @dispatch-sync-configuration — dispatch sync configuration
+  describe("dispatch sync config", () => {
+    // AC: @dispatch-sync-configuration ac-sync-interval
+    it("loads sync_interval from config", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+dispatch:
+  sync_interval: 120
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toBeNull();
+      expect(result.config.dispatch.sync_interval).toBe(120);
+    });
+
+    // AC: @dispatch-sync-configuration ac-sync-interval
+    it("defaults sync_interval to 60 when not set", async () => {
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.dispatch.sync_interval).toBe(60);
+    });
+
+    // AC: @dispatch-sync-configuration ac-sync-interval
+    it("allows sync_interval of 0 to disable periodic sync", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+dispatch:
+  sync_interval: 0
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toBeNull();
+      expect(result.config.dispatch.sync_interval).toBe(0);
+    });
+
+    // AC: @dispatch-sync-configuration ac-validation
+    it("rejects negative sync_interval", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+dispatch:
+  sync_interval: -1
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toContain("Config validation failed");
+      // Falls back to defaults
+      expect(result.config.dispatch.sync_interval).toBe(60);
+    });
+
+    // AC: @dispatch-sync-configuration ac-validation
+    it("rejects non-integer sync_interval", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+dispatch:
+  sync_interval: 30.5
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toContain("Config validation failed");
+      expect(result.config.dispatch.sync_interval).toBe(60);
+    });
+
+    // AC: @dispatch-sync-configuration ac-remote-sync-disabled
+    it("loads remote_sync false from config", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+dispatch:
+  remote_sync: false
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toBeNull();
+      expect(result.config.dispatch.remote_sync).toBe(false);
+    });
+
+    // AC: @dispatch-sync-configuration ac-remote-sync-disabled
+    it("loads remote_sync true from config", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+dispatch:
+  remote_sync: true
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toBeNull();
+      expect(result.config.dispatch.remote_sync).toBe(true);
+    });
+
+    // AC: @dispatch-sync-configuration ac-remote-sync-default
+    it("defaults remote_sync to null when not set (for runtime resolution)", async () => {
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.config.dispatch.remote_sync).toBeNull();
+    });
+
+    it("loads both sync_interval and remote_sync together", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+dispatch:
+  sync_interval: 30
+  remote_sync: true
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toBeNull();
+      expect(result.config.dispatch.sync_interval).toBe(30);
+      expect(result.config.dispatch.remote_sync).toBe(true);
+    });
+  });
+
+  describe("resolveDispatchRemoteSync", () => {
+    // AC: @dispatch-sync-configuration ac-remote-sync-disabled
+    it("returns false when config explicitly sets remote_sync to false", () => {
+      const config = getDefaultConfig();
+      config.dispatch.remote_sync = false;
+
+      expect(resolveDispatchRemoteSync(config, true)).toBe(false);
+    });
+
+    // AC: @dispatch-sync-configuration ac-remote-sync-disabled
+    it("returns true when config explicitly sets remote_sync to true", () => {
+      const config = getDefaultConfig();
+      config.dispatch.remote_sync = true;
+
+      expect(resolveDispatchRemoteSync(config, false)).toBe(true);
+    });
+
+    // AC: @dispatch-sync-configuration ac-remote-sync-default
+    it("defaults to true when remote_sync is null and remote exists", () => {
+      const config = getDefaultConfig();
+      // remote_sync is null by default
+
+      expect(resolveDispatchRemoteSync(config, true)).toBe(true);
+    });
+
+    // AC: @dispatch-sync-configuration ac-remote-sync-default
+    it("defaults to false when remote_sync is null and no remote exists", () => {
+      const config = getDefaultConfig();
+      // remote_sync is null by default
+
+      expect(resolveDispatchRemoteSync(config, false)).toBe(false);
     });
   });
 
@@ -956,4 +1207,62 @@ hooks:
       expect(result.success).toBe(false);
     });
   });
+
+  // ── Trait AC coverage for @dispatch-sync-configuration ────────────────
+
+  // AC: @trait-error-guidance ac-1 — N/A: config loading returns warnings, not command errors; validation errors describe what went wrong via Zod issue messages
+  // AC: @trait-error-guidance ac-2 — N/A: config loading falls back to defaults with "Using defaults" guidance; not a command error path
+  // AC: @trait-error-guidance ac-3 — N/A: no reference lookups in config schema
+  // AC: @trait-error-guidance ac-4 — N/A: no state transitions in config schema
+  // AC: @trait-error-guidance ac-5
+  describe("trait: error-guidance ac-5 — validation errors indicate field/value", () => {
+    it("validation warning for negative sync_interval identifies the field and constraint", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+dispatch:
+  sync_interval: -10
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toContain("Config validation failed");
+      expect(result.warning).toContain("dispatch");
+      expect(result.warning).toContain("sync_interval");
+    });
+
+    it("validation warning for non-integer sync_interval identifies the constraint", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+dispatch:
+  sync_interval: 1.5
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toContain("Config validation failed");
+      expect(result.warning).toContain("dispatch");
+      expect(result.warning).toContain("sync_interval");
+    });
+
+    it("validation warning for non-boolean remote_sync identifies the field", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+dispatch:
+  remote_sync: "yes"
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toContain("Config validation failed");
+      expect(result.warning).toContain("dispatch");
+      expect(result.warning).toContain("remote_sync");
+    });
+  });
+  // AC: @trait-error-guidance ac-6 — N/A: config loading does not support --json mode
 });
