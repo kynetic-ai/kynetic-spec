@@ -10457,7 +10457,19 @@ reviews:
     slugs: []
     title: Review round-trip stability for triage record YAML writes (cycle 6)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 392421a4da0b405f2fd37ed90bf6a62ff4e3effc
+          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+        evidence: 5794 tests passed, 2 pre-existing failures (review-cli.test.ts examined_commit null,
+          ENOTEMPTY in dispatch-role-entry) — both unrelated to this change and present on dev
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T01:54:42.794Z
+        completed_at: 2026-03-18T01:54:42.794Z
     events:
       - _ulid: 01KKZADDQYS55Z925KK37GXKNX
         actor: "@claude"
@@ -10472,6 +10484,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T01:54:33.628Z
+      - _ulid: 01KKZADZHTHDZ1JDBARMKPFQ87
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T01:54:42.875Z
     examined_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
     external_links: []
     lifecycle_state: open
@@ -10484,5 +10503,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T01:54:24.638Z
-    updated_at: 2026-03-18T01:54:33.540Z
+    updated_at: 2026-03-18T01:54:42.794Z
     notes: []
