@@ -7,6 +7,7 @@
 <script lang="ts">
 	import type { DiffFile, DiffHunk } from '$lib/api';
 	import type { ReviewThread } from '@kynetic-ai/shared';
+	import { getFilePath as getFilePathUtil } from '$lib/utils/diff';
 	import DiffHunkView from './DiffHunkView.svelte';
 
 	interface Props {
@@ -66,8 +67,7 @@
 	}
 
 	function getFilePath(): string {
-		if (file.newPath && file.newPath !== '/dev/null') return file.newPath;
-		return file.oldPath;
+		return getFilePathUtil(file);
 	}
 
 	function getDisplayPath(): string {

@@ -4,6 +4,7 @@
 -->
 <script lang="ts">
 	import type { DiffFile } from '$lib/api';
+	import { getFilePath } from '$lib/utils/diff';
 
 	interface Props {
 		files: Array<{ oldPath: string; newPath: string; status: DiffFile['status']; stats: DiffFile['stats'] }>;
@@ -31,11 +32,6 @@
 			case 'renamed': return 'text-blue-600 dark:text-blue-400';
 			default: return 'text-muted-foreground';
 		}
-	}
-
-	function getFilePath(file: { oldPath: string; newPath: string }): string {
-		if (file.newPath && file.newPath !== '/dev/null') return file.newPath;
-		return file.oldPath;
 	}
 
 	function getDisplayPath(file: { oldPath: string; newPath: string; status: DiffFile['status'] }): string {

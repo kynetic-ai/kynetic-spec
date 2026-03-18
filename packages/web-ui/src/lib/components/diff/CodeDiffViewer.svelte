@@ -24,6 +24,7 @@
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
 	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { queryKeys } from '$lib/query/keys.js';
+	import { getFilePath } from '$lib/utils/diff';
 	import DiffFileList from './DiffFileList.svelte';
 	import DiffFileView from './DiffFileView.svelte';
 
@@ -62,11 +63,6 @@
 	// Track which files have their full diff loaded (for lazy mode)
 	let lazyLoadedFiles = $state<Map<string, DiffFile>>(new Map());
 	let lazyLoadingFiles = $state<Set<string>>(new Set());
-
-	function getFilePath(file: { oldPath: string; newPath: string }): string {
-		if (file.newPath && file.newPath !== '/dev/null') return file.newPath;
-		return file.oldPath;
-	}
 
 	// Get the effective file data: either from full diff or lazy loaded
 	function getFileData(filePath: string): DiffFile | null {
