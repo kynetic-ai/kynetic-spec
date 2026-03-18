@@ -688,6 +688,28 @@ export type TargetSyncResult =
   | "diverged";
 
 /**
+ * Degraded state descriptor for the dispatch engine.
+ * AC: @dispatch-remote-branch-sync ac-degraded-status-api
+ */
+export interface DegradedState {
+  active: boolean;
+  reason: string;
+  enteredAt: Date | null;
+}
+
+/**
+ * Sync state event emitted when the engine enters or exits degraded state.
+ * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+ */
+export interface SyncStateEvent {
+  type: "sync_state";
+  degraded: boolean;
+  reason: string;
+  enteredAt: string | null;
+  recoveredAfterMs?: number;
+}
+
+/**
  * Invocation lifecycle event payload.
  * AC: @daemon-agent-dispatch ac-3, ac-4
  */
@@ -747,6 +769,11 @@ export interface DispatchEngineOptions {
    */
   onSessionEvent?: (event: SessionEventData) => void;
   /**
+   * Optional callback invoked when the engine enters or exits degraded state.
+   * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+   */
+  onSyncStateEvent?: (event: SyncStateEvent) => void;
+  /**
    * Configuration for the event bus (chain depth, ring buffer, dedup).
    * AC: @dispatch-event-envelope ac-5, ac-6
    */
@@ -777,6 +804,7 @@ export class DispatchEngine {
   private kspecCliPath?: string;
   private onInvocationEvent?: (event: InvocationEvent) => void;
   private onSessionEvent?: (event: SessionEventData) => void;
+  private onSyncStateEvent?: (event: SyncStateEvent) => void;
   /** Per-session text accumulator for newline-boundary streaming. */
   private accumulator = new SessionEventAccumulator();
 
@@ -845,6 +873,18 @@ export class DispatchEngine {
   private _syncBaseBranch: string | null = null;
   /** Configured sync interval in milliseconds. */
   private _syncIntervalMs = 0;
+  /** Timestamp of first consecutive transient failure (ms since epoch). 0 = no failures. */
+  private _firstTransientFailureTimestamp = 0;
+
+  // ─── Degraded State ──────────────────────────────────────────────────────
+  // AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded through ac-degraded-auto-recover
+
+  /** Whether the engine is in degraded state. */
+  private _degraded = false;
+  /** Human-readable reason for degraded state. */
+  private _degradedReason = "";
+  /** Timestamp when degraded state was entered. */
+  private _degradedEnteredAt: Date | null = null;
 
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
@@ -859,6 +899,7 @@ export class DispatchEngine {
     this.kspecCliPath = options.kspecCliPath;
     this.onInvocationEvent = options.onInvocationEvent;
     this.onSessionEvent = options.onSessionEvent;
+    this.onSyncStateEvent = options.onSyncStateEvent;
     // AC: @dispatch-event-envelope ac-1 through ac-6
     this._eventBus = new EventBus({
       dedupWindowMs: this.dedupWindowMs,
@@ -1974,6 +2015,13 @@ export class DispatchEngine {
     // Prevent new invocation starts during/after shutdown.
     if (!this.running) return;
 
+    // AC: @dispatch-remote-branch-sync ac-degraded-no-provision
+    // When degraded, skip provisioning new workspaces. Tasks remain queued.
+    // Existing in-flight invocations continue normally.
+    if (this._degraded) {
+      return;
+    }
+
     // AC: @agent-dispatch-engine ac-17 - Load current tasks once for staleness + readiness checks
     let currentTasks: LoadedTask[] | undefined;
     let currentTaskStates: Map<string, TaskStatus> | undefined;
@@ -2787,18 +2835,24 @@ export class DispatchEngine {
       if (fetchResult.status !== 0) {
         // AC: @dispatch-remote-branch-sync ac-transient-no-degrade — warn and continue
         this._consecutiveTransientFailures++;
+        if (this._firstTransientFailureTimestamp === 0) {
+          this._firstTransientFailureTimestamp = Date.now();
+        }
         const stderr = fetchResult.stderr?.trim() ?? "";
         console.warn(
           `[dispatch] Target sync fetch failed (attempt ${this._consecutiveTransientFailures}): ${stderr}`,
         );
 
-        // AC: @dispatch-remote-branch-sync (escalation is handled by degraded-state task)
+        // AC: @dispatch-remote-branch-sync ac-repeated-transient-escalation
         if (this._consecutiveTransientFailures >= 5) {
+          const failureDurationMs = Date.now() - this._firstTransientFailureTimestamp;
           console.warn(
-            `[dispatch] Persistent target sync failures: ${this._consecutiveTransientFailures} consecutive failures`,
+            `[dispatch] Persistent connectivity issues: ${this._consecutiveTransientFailures} consecutive sync failures over ${Math.round(failureDurationMs / 1000)}s`,
           );
         }
 
+        // AC: @dispatch-remote-branch-sync ac-repeated-transient-no-degrade
+        // Transient failures never enter degraded state
         return "transient_failure";
       }
 
@@ -2825,16 +2879,22 @@ export class DispatchEngine {
         const stderr = mergeResult.stderr?.trim() ?? "";
         const stdout = mergeResult.stdout?.trim() ?? "";
 
-        // Divergence detected — the degraded state task handles the state machine
-        console.warn(
-          `[dispatch] Target branch fast-forward failed (divergence): ${stderr || stdout}`,
-        );
+        // AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded
+        // AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
+        const reason = this._classifyDivergence(stderr || stdout);
+        this._enterDegradedState(reason);
         return "diverged";
       }
 
       // Success
       this._consecutiveTransientFailures = 0;
+      this._firstTransientFailureTimestamp = 0;
       this._lastTargetSyncTimestamp = Date.now();
+
+      // AC: @dispatch-remote-branch-sync ac-degraded-auto-recover
+      if (this._degraded) {
+        this._exitDegradedState();
+      }
 
       const stdout = mergeResult.stdout?.trim() ?? "";
       if (stdout.includes("Already up to date") || stdout.includes("Already up-to-date")) {
@@ -2846,6 +2906,120 @@ export class DispatchEngine {
     } finally {
       this._targetSyncRunning = false;
     }
+  }
+
+  /**
+   * Classify a divergence based on the git merge --ff-only error output.
+   * Distinguishes "local has unpushed merges" from "remote history was rewritten".
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
+   */
+  private _classifyDivergence(_mergeOutput: string): string {
+    const remote = this._syncRemote;
+    const branch = this._syncBaseBranch;
+
+    // Count commits local has that remote doesn't, and vice versa
+    let localAhead = 0;
+    let remoteAhead = 0;
+    try {
+      const aheadResult = spawnSync(
+        "git",
+        ["rev-list", "--count", `${remote}/${branch}..${branch}`],
+        { cwd: this.projectDir, encoding: "utf-8", stdio: "pipe" },
+      );
+      localAhead = parseInt(aheadResult.stdout?.trim() ?? "0", 10);
+
+      const behindResult = spawnSync(
+        "git",
+        ["rev-list", "--count", `${branch}..${remote}/${branch}`],
+        { cwd: this.projectDir, encoding: "utf-8", stdio: "pipe" },
+      );
+      remoteAhead = parseInt(behindResult.stdout?.trim() ?? "0", 10);
+    } catch {
+      // If we can't determine counts, fall through to generic divergence message
+    }
+
+    // Case 1: Local has commits not on remote (unpushed merges from dispatcher)
+    // This is the common case — the reviewer merged work locally and the push
+    // to remote failed or hasn't happened yet, then remote advanced independently.
+    if (localAhead > 0 && remoteAhead === 0) {
+      return `Integration target '${branch}' has ${localAhead} unpushed local commit(s) not on ${remote}/${branch} (unpushed merges). Resolution: push the integration target to remote with 'git push ${remote} ${branch}', or if the local commits should be discarded, reset with 'git checkout ${branch} && git reset --hard ${remote}/${branch}'.`;
+    }
+
+    // Case 2: Remote has different history (force push / rewrite)
+    // Either remote-only divergence (localAhead=0, remoteAhead>0) or mutual
+    // divergence where local has commits AND remote was rewritten.
+    if (localAhead === 0 && remoteAhead > 0) {
+      return `Integration target '${branch}' has diverged from ${remote}/${branch} — remote history appears rewritten (force push). Resolution: verify the remote state is correct, then reset the local branch with 'git checkout ${branch} && git reset --hard ${remote}/${branch}'.`;
+    }
+
+    // Case 3: Mutual divergence — both local and remote have unique commits
+    if (localAhead > 0 && remoteAhead > 0) {
+      return `Integration target '${branch}' has diverged: ${localAhead} local unpushed commit(s) and ${remoteAhead} remote commit(s) not in local (unpushed merges combined with remote changes). Resolution: push local merges first with 'git push ${remote} ${branch}', or if the remote state is authoritative, reset with 'git checkout ${branch} && git reset --hard ${remote}/${branch}'.`;
+    }
+
+    // Fallback
+    return `Integration target '${branch}' has diverged from ${remote}/${branch}. Fast-forward merge failed. Resolution: inspect the branch state and resolve manually — either push local changes or reset to match remote.`;
+  }
+
+  /**
+   * Enter degraded state with a descriptive reason.
+   * AC: @dispatch-remote-branch-sync ac-divergence-enters-degraded
+   * AC: @dispatch-remote-branch-sync ac-divergence-log-guidance
+   * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+   */
+  private _enterDegradedState(reason: string): void {
+    if (this._degraded) return; // Already degraded — don't re-enter
+
+    this._degraded = true;
+    this._degradedReason = reason;
+    this._degradedEnteredAt = new Date();
+
+    console.warn(`[dispatch] DEGRADED: ${reason}`);
+
+    // AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+    const event: SyncStateEvent = {
+      type: "sync_state",
+      degraded: true,
+      reason,
+      enteredAt: this._degradedEnteredAt.toISOString(),
+    };
+    this.onSyncStateEvent?.(event);
+  }
+
+  /**
+   * Exit degraded state on successful sync (auto-recovery).
+   * AC: @dispatch-remote-branch-sync ac-degraded-auto-recover
+   * AC: @dispatch-remote-branch-sync ac-degraded-recovery-logged
+   * AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+   */
+  private _exitDegradedState(): void {
+    const durationMs = this._degradedEnteredAt
+      ? Date.now() - this._degradedEnteredAt.getTime()
+      : 0;
+
+    // AC: @dispatch-remote-branch-sync ac-degraded-recovery-logged
+    console.log(
+      `[dispatch] Recovered from degraded state after ${Math.round(durationMs / 1000)}s. Resuming normal dispatch operations.`,
+    );
+
+    this._degraded = false;
+    this._degradedReason = "";
+    this._degradedEnteredAt = null;
+
+    // AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+    const event: SyncStateEvent = {
+      type: "sync_state",
+      degraded: false,
+      reason: "",
+      enteredAt: null,
+      recoveredAfterMs: durationMs,
+    };
+    this.onSyncStateEvent?.(event);
+
+    // AC: @dispatch-remote-branch-sync ac-degraded-auto-recover — drain queued tasks
+    this._serializedDrain().catch((err) => {
+      console.error("[dispatch] Post-recovery drain error:", err);
+    });
   }
 
   /**
@@ -2930,6 +3104,7 @@ export class DispatchEngine {
 
   /**
    * Get the current target sync state for external status queries.
+   * AC: @dispatch-remote-branch-sync ac-degraded-status-api
    */
   getTargetSyncStatus(): {
     enabled: boolean;
@@ -2938,6 +3113,11 @@ export class DispatchEngine {
     lastSyncTimestamp: number;
     consecutiveFailures: number;
     syncRunning: boolean;
+    degraded: {
+      active: boolean;
+      reason: string;
+      enteredAt: string | null;
+    };
   } {
     return {
       enabled: this._remoteSyncEnabled ?? false,
@@ -2946,6 +3126,23 @@ export class DispatchEngine {
       lastSyncTimestamp: this._lastTargetSyncTimestamp,
       consecutiveFailures: this._consecutiveTransientFailures,
       syncRunning: this._targetSyncRunning,
+      degraded: {
+        active: this._degraded,
+        reason: this._degradedReason,
+        enteredAt: this._degradedEnteredAt?.toISOString() ?? null,
+      },
+    };
+  }
+
+  /**
+   * Get the current degraded state. Convenience accessor for external consumers.
+   * AC: @dispatch-remote-branch-sync ac-degraded-status-api
+   */
+  getDegradedState(): DegradedState {
+    return {
+      active: this._degraded,
+      reason: this._degradedReason,
+      enteredAt: this._degradedEnteredAt,
     };
   }
 }

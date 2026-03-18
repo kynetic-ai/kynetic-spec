@@ -22,7 +22,7 @@
 import path from 'node:path';
 import { Elysia, t } from 'elysia';
 import { DispatchEngine } from '../../agent-runtime/dispatch.js';
-import type { TaskStateChange, TaskStatus, InvocationEvent } from '../../agent-runtime/dispatch.js';
+import type { TaskStateChange, TaskStatus, InvocationEvent, SyncStateEvent } from '../../agent-runtime/dispatch.js';
 import { DEFAULT_KSPEC_CLI_PATH } from '../../agent-runtime/invocation.js';
 import { initContext, loadMetaContext, loadAllTasks, loadAllItems, ReferenceIndex, resolveProjectRoots } from '../../parser/index.js';
 import { getCompletedSessionCountsByAgent } from '../../sessions/store.js';
@@ -72,6 +72,12 @@ function createEngine(
     // AC: @cli-agent-commands ac-13, @daemon-agent-dispatch ac-8
     onSessionEvent: pubsub
       ? (event: SessionEventData) => {
+          pubsub.broadcast('agents', event.type, event, projectDir);
+        }
+      : undefined,
+    // AC: @dispatch-remote-branch-sync ac-degraded-status-broadcast
+    onSyncStateEvent: pubsub
+      ? (event: SyncStateEvent) => {
           pubsub.broadcast('agents', event.type, event, projectDir);
         }
       : undefined,
@@ -261,6 +267,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
     })
 
     // Get dispatch engine status (internal format)
+    // AC: @dispatch-remote-branch-sync ac-degraded-status-api
     .get('/dispatch/status', ({ projectContext }) => {
       const engine = engines.get(projectContext.path);
 
@@ -270,17 +277,29 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           activeInvocations: 0,
           queuedInvocations: 0,
           invocations: [],
+          degraded: { active: false, reason: '', enteredAt: null },
         };
       }
 
-      return engine.getStatus();
+      const status = engine.getStatus();
+      const degraded = engine.getDegradedState();
+      return {
+        ...status,
+        degraded: {
+          active: degraded.active,
+          reason: degraded.reason,
+          enteredAt: degraded.enteredAt?.toISOString() ?? null,
+        },
+      };
     })
 
     // AC: @daemon-agent-dispatch ac-5 - Public status endpoint
     // AC: @ui-api-ref-resolution ac-1 - Include task_title for active invocations
+    // AC: @dispatch-remote-branch-sync ac-degraded-status-api
     .get('/status', async ({ projectContext }) => {
       const projectDir = projectContext.path;
-      const engineStatus = engines.get(projectDir)?.getStatus();
+      const engine = engines.get(projectDir);
+      const engineStatus = engine?.getStatus();
 
       let agentDefinitions: Array<{ id: string; name: string; adapter: string; completed_sessions: number }> = [];
       let completedCounts: Record<string, number> = {};
@@ -305,6 +324,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         // Agent definitions unavailable — return empty array
       }
 
+      const degradedState = engine?.getDegradedState();
       return {
         dispatch_enabled: engineStatus?.running ?? false,
         active_invocations: engineStatus?.invocations?.map((inv) => {
@@ -325,6 +345,12 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         }) ?? [],
         queue_depth: engineStatus?.queuedInvocations ?? 0,
         agent_definitions: agentDefinitions,
+        // AC: @dispatch-remote-branch-sync ac-degraded-status-api
+        degraded: degradedState ? {
+          active: degradedState.active,
+          reason: degradedState.reason,
+          enteredAt: degradedState.enteredAt?.toISOString() ?? null,
+        } : { active: false, reason: '', enteredAt: null },
       };
     });
 }
