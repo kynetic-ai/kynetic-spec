@@ -217,13 +217,14 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "duration_ms",
     "task_ref",
   ]),
-  // Session event payload fields
+  // Session event payload fields — AC: @dispatch-event-payload ac-3
   "session": new Set([
     "session_id",
     "agent_id",
     "task_ref",
-    "duration",
-    "reason",
+    "duration_ms",
+    "terminal_reason",
+    "work_summary",
   ]),
   // Action event payload fields
   "action": new Set([

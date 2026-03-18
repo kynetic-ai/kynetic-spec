@@ -113,8 +113,9 @@ describe("ac-2: session terminal state events", () => {
     expect(entry!.payload_fields).toContain("session_id");
     expect(entry!.payload_fields).toContain("agent_id");
     expect(entry!.payload_fields).toContain("task_ref");
-    expect(entry!.payload_fields).toContain("duration");
-    expect(entry!.payload_fields).toContain("reason");
+    expect(entry!.payload_fields).toContain("duration_ms");
+    expect(entry!.payload_fields).toContain("terminal_reason");
+    expect(entry!.payload_fields).toContain("work_summary");
   });
 
   it("should register session.idle_timeout event", () => {
@@ -123,7 +124,9 @@ describe("ac-2: session terminal state events", () => {
     expect(entry).toBeDefined();
     expect(entry!.domain).toBe("session");
     expect(entry!.payload_fields).toContain("session_id");
-    expect(entry!.payload_fields).toContain("duration");
+    expect(entry!.payload_fields).toContain("duration_ms");
+    expect(entry!.payload_fields).toContain("terminal_reason");
+    expect(entry!.payload_fields).toContain("work_summary");
   });
 
   it("should register session.cancelled event", () => {
@@ -132,7 +135,9 @@ describe("ac-2: session terminal state events", () => {
     expect(entry).toBeDefined();
     expect(entry!.domain).toBe("session");
     expect(entry!.payload_fields).toContain("session_id");
-    expect(entry!.payload_fields).toContain("reason");
+    expect(entry!.payload_fields).toContain("duration_ms");
+    expect(entry!.payload_fields).toContain("terminal_reason");
+    expect(entry!.payload_fields).toContain("work_summary");
   });
 
   it("should emit session events through the event bus with standard envelope", () => {
@@ -146,8 +151,9 @@ describe("ac-2: session terminal state events", () => {
         session_id: "session-456",
         agent_id: "task-worker",
         task_ref: "@task-foo",
-        duration: 120000,
-        reason: "agent_responded",
+        duration_ms: 120000,
+        terminal_reason: "completed",
+        work_summary: {},
       },
     });
 
@@ -157,8 +163,9 @@ describe("ac-2: session terminal state events", () => {
       session_id: "session-456",
       agent_id: "task-worker",
       task_ref: "@task-foo",
-      duration: 120000,
-      reason: "agent_responded",
+      duration_ms: 120000,
+      terminal_reason: "completed",
+      work_summary: {},
     });
   });
 });

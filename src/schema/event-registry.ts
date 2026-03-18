@@ -123,19 +123,19 @@ export const EVENT_REGISTRY: readonly EventRegistryEntry[] = [
     event_type: "session.ended",
     domain: "session",
     description: "A dispatch session ended normally (agent responded)",
-    payload_fields: ["session_id", "agent_id", "task_ref", "duration", "reason"],
+    payload_fields: ["session_id", "agent_id", "task_ref", "duration_ms", "terminal_reason", "work_summary"],
   },
   {
     event_type: "session.idle_timeout",
     domain: "session",
     description: "A dispatch session ended due to idle timeout",
-    payload_fields: ["session_id", "agent_id", "task_ref", "duration"],
+    payload_fields: ["session_id", "agent_id", "task_ref", "duration_ms", "terminal_reason", "work_summary"],
   },
   {
     event_type: "session.cancelled",
     domain: "session",
     description: "A dispatch session was cancelled",
-    payload_fields: ["session_id", "agent_id", "task_ref", "reason"],
+    payload_fields: ["session_id", "agent_id", "task_ref", "duration_ms", "terminal_reason", "work_summary"],
   },
 
   // ─── Schedule domain ──────────────────────────────────────────────────
