@@ -18380,6 +18380,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T16:31:13.903Z
         completed_at: 2026-03-18T16:31:13.903Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 20cb7666e4d9
+          head_commit: 8e507045fbc1
+        evidence: 57 pre-existing type errors in unrelated files. Zero errors in automation-specific files
+          (routes/automation/, components/automation/, api.ts automation section, query/keys.ts,
+          ws-invalidation.ts).
+        name: svelte-check
+        required: true
+        runner: svelte-check
+        created_at: 2026-03-18T16:31:23.717Z
+        completed_at: 2026-03-18T16:31:23.717Z
     events:
       - _ulid: 01KM0VWHJ1NSWGEJDZ7932YZXQ
         actor: "@claude"
@@ -18401,6 +18414,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T16:31:14.182Z
+      - _ulid: 01KM0WK7TW5A0AYGQN39QVMB52
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: svelte-check
+        timestamp: 2026-03-18T16:31:23.996Z
     examined_commit: 8e507045fbc1f80007de114d9870557c44780f70
     external_links: []
     lifecycle_state: open
@@ -18415,7 +18435,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T16:19:00.290Z
-    updated_at: 2026-03-18T16:31:13.903Z
+    updated_at: 2026-03-18T16:31:23.717Z
     notes: []
   - _ulid: 01KM0WHDVFD2HGFQYR9E986EKC
     slugs: []
