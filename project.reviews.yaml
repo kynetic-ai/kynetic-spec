@@ -16632,6 +16632,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM0N7FBWR1KPWVC3DP6E11VZ
         timestamp: 2026-03-18T14:22:38.634Z
+      - _ulid: 01KM0N7Q1EGYRH1TT6NEW15KSC
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0N7PWQG5VYMS674DX3J7KD
+        timestamp: 2026-03-18T14:22:46.318Z
     examined_commit: 5241398e3334e6af2260fad4a0fde83e3de7c87b
     external_links: []
     lifecycle_state: open
@@ -16662,7 +16669,22 @@ reviews:
               exists at hook.ts:236-238 but has no corresponding test annotation."
             created_at: 2026-03-18T14:22:38.460Z
         kind: blocker
+      - _ulid: 01KM0N7PWQG5VYMS674DX3J7KD
+        anchor:
+          type: code
+          commit: "5241398e3334"
+          line_end: 27
+          line_start: 23
+          path: tests/hook-cli.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM0N7PWQVXXY45SB5M85Y188
+            author: "@claude"
+            body: writeMetaWithHooks helper function is defined at line 23 but never used in any test. Dead code
+              that should be removed.
+            created_at: 2026-03-18T14:22:46.167Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T14:22:11.440Z
-    updated_at: 2026-03-18T14:22:38.460Z
+    updated_at: 2026-03-18T14:22:46.167Z
     notes: []
