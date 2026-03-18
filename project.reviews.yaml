@@ -13390,6 +13390,20 @@ reviews:
         runner: manual
         created_at: 2026-03-18T08:49:38.911Z
         completed_at: 2026-03-18T08:49:38.911Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 8d087368e
+          head_commit: 14505dad0
+        evidence: "git diff 8d087368e..14505dad0 --stat shows exactly 4 files changed:
+          src/agent-runtime/event-bus.ts (new), src/agent-runtime/dispatch.ts (integration),
+          src/agent-runtime/index.ts (re-exports), tests/event-bus.test.ts (new). No out-of-scope
+          changes. Prior cycle's meta.ts/yaml-round-trip-stability blockers confirmed absent."
+        name: scope-check
+        required: true
+        runner: manual
+        created_at: 2026-03-18T08:49:41.569Z
+        completed_at: 2026-03-18T08:49:41.569Z
     events:
       - _ulid: 01KM0243JZANAMSG2J03PVSH87
         actor: "@claude"
@@ -13439,6 +13453,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T08:49:39.024Z
+      - _ulid: 01KM025TSG8W0HV4ETBFD0P2PB
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: scope-check
+        timestamp: 2026-03-18T08:49:41.680Z
     examined_commit: 14505dad0ba356bbfd037257e46aa75b3d9ebbbc
     external_links: []
     lifecycle_state: open
@@ -13533,5 +13554,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T08:48:45.151Z
-    updated_at: 2026-03-18T08:49:38.911Z
+    updated_at: 2026-03-18T08:49:41.569Z
     notes: []
