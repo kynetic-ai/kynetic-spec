@@ -19,15 +19,10 @@
 import { Elysia, t } from 'elysia';
 import { initContext, loadMetaContext } from '../../parser/index.js';
 import { getDispatchEngine, getScheduleEngine, getJoinAccumulator } from './agent-dispatch.js';
-import type { PubSubManager } from '../websocket/pubsub.js';
 import type { EventEnvelope } from '../../agent-runtime/event-bus.js';
 import { matchesFilter, type Hook } from '../../schema/hooks.js';
 
-export interface AutomationRouteOptions {
-  pubsub?: PubSubManager;
-}
-
-export function createAutomationRoutes(options: AutomationRouteOptions = {}) {
+export function createAutomationRoutes() {
   return new Elysia({ prefix: '/api' })
 
     // ─── Hooks ───────────────────────────────────────────────────────────────
@@ -147,12 +142,16 @@ export function createAutomationRoutes(options: AutomationRouteOptions = {}) {
         };
       }
 
-      // AC: @automation-api ac-3 — Response indicates trigger outcome
-      let outcome: 'accepted' | 'buffered' | 'skipped';
+      // AC: @automation-api ac-3 — Response indicates trigger outcome.
+      // 'queued' outcome (agent concurrency limit) is not yet emitted by the
+      // schedule engine — reserved for future agent concurrency support.
+      let outcome: 'accepted' | 'buffered' | 'queued' | 'skipped';
       if (result.accepted) {
         outcome = 'accepted';
       } else if (result.reason?.includes('Buffered')) {
         outcome = 'buffered';
+      } else if (result.reason?.includes('Queued') || result.reason?.includes('concurrency')) {
+        outcome = 'queued';
       } else {
         outcome = 'skipped';
       }
@@ -374,9 +373,9 @@ export function createAutomationRoutes(options: AutomationRouteOptions = {}) {
 
         // Calculate timeout remaining if applicable
         let timeoutRemaining: number | null = null;
-        if (group.first_run_at && group.timeout_handle) {
+        if (group.first_run_at && group.timeout_ms) {
           const elapsed = Date.now() - group.first_run_at;
-          timeoutRemaining = Math.max(0, elapsed);
+          timeoutRemaining = Math.max(0, group.timeout_ms - elapsed);
         }
 
         activations.push({

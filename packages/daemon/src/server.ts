@@ -331,7 +331,7 @@ export async function createServer(options: ServerOptions) {
     .use(createAgentDispatchRoutes({ pubsub: pubsubManager }))
 
     // AC: @automation-api ac-1 through ac-6 - Automation management endpoints
-    .use(createAutomationRoutes({ pubsub: pubsubManager }))
+    .use(createAutomationRoutes())
 
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>('/ws', {

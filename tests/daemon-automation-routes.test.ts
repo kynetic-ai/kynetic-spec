@@ -684,6 +684,67 @@ describe('Automation API routes', () => {
       expect(data.activations).toEqual([]);
     });
 
+    // AC: @automation-api ac-5 — timeout_remaining_ms computation
+    it('returns timeout_remaining_ms as remaining time, not elapsed', async () => {
+      const rootDir = await setupAutomationProject('kspec-auto-comp-timeout-', {
+        compositions: [
+          {
+            _ulid: testUlid('compto'),
+            id: 'timeout-join',
+            name: 'Timeout Join',
+            join_count: 3,
+            on_complete: { type: 'command', command: 'echo done' },
+            timeout_ms: 60000,
+            enabled: true,
+          },
+        ],
+      });
+      tempDirs.push(rootDir);
+
+      const app = createTestApp();
+      await makeRequest(app, '/api/agent/dispatch', {
+        method: 'POST',
+        headers: { 'X-Kspec-Dir': rootDir },
+        body: { action: 'start' },
+      });
+
+      // Emit an action.completed event with group_id to create an active group
+      const engine = getDispatchEngine(rootDir)!;
+      engine.eventBus.emit({
+        event_type: 'action.completed',
+        source_type: 'action_executor',
+        source_id: 'test',
+        payload: {
+          action_run_id: 'run-1',
+          action_type: 'command',
+          group_id: 'test-group-1',
+          config_id: 'timeout-join',
+        },
+      });
+
+      // Allow the event handler to process
+      await new Promise((resolve) => setTimeout(resolve, 50));
+
+      const response = await makeRequest(app, '/api/compositions/timeout-join/activations', {
+        headers: { 'X-Kspec-Dir': rootDir },
+      });
+
+      expect(response.status).toBe(200);
+      const data = await response.json();
+      expect(data.activations).toHaveLength(1);
+
+      const activation = data.activations[0];
+      expect(activation.completed_count).toBe(1);
+      expect(activation.total_members).toBe(1);
+      expect(activation.member_action_run_ids).toEqual(['run-1']);
+
+      // timeout_remaining_ms should be close to 60000 (the full timeout),
+      // not close to 0 (which is what elapsed time would give)
+      expect(activation.timeout_remaining_ms).toBeGreaterThan(50000);
+      expect(activation.timeout_remaining_ms).toBeLessThanOrEqual(60000);
+      expect(activation.first_run_at).toBeTruthy();
+    });
+
     it('returns 404 when no engine running', async () => {
       const rootDir = await setupAutomationProject('kspec-auto-comp-noeng-');
       tempDirs.push(rootDir);

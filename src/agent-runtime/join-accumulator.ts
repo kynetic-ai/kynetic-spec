@@ -66,6 +66,8 @@ export interface GroupState {
   fired: boolean;
   /** Timeout handle for cleanup */
   timeout_handle: ReturnType<typeof setTimeout> | null;
+  /** Timeout duration from composition config (null if no timeout configured) */
+  timeout_ms: number | null;
 }
 
 /**
@@ -222,6 +224,7 @@ export class JoinAccumulator {
         first_run_at: null,
         fired: false,
         timeout_handle: null,
+        timeout_ms: config.timeout_ms ?? null,
       };
       this.groups.set(groupId, group);
     }
