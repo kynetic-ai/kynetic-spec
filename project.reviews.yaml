@@ -17192,9 +17192,22 @@ reviews:
           status: fail
           name: ac-coverage
         timestamp: 2026-03-18T15:05:19.162Z
+      - _ulid: 01KM0QNW4ZXG2XQ3QDHX9TP91D
+        actor: pr-reviewer@kspec
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-18T15:05:27.455Z
+      - _ulid: 01KM0QNW4Z788PCTDDC8ZE12A7
+        actor: pr-reviewer@kspec
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T15:05:27.455Z
     examined_commit: b8a2609de8d38a948f6d47d4d7fab9b05e941f08
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -17224,7 +17237,15 @@ reviews:
               handled by catch blocks with EXIT_CODES.ERROR, consistent with other CLI commands"
             created_at: 2026-03-18T15:04:27.522Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 2ad3fe1812d5
+          head_commit: b8a2609de8d3
+        decision: request_changes
+        reviewer: pr-reviewer@kspec
+        role: reviewer
+        created_at: 2026-03-18T15:05:27.309Z
     created_at: 2026-03-18T15:03:55.273Z
-    updated_at: 2026-03-18T15:05:18.997Z
+    updated_at: 2026-03-18T15:05:27.309Z
     notes: []
