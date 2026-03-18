@@ -822,6 +822,193 @@ export async function actOnTriageRecord(
 }
 
 // ============================================================
+// Automation API Functions
+// AC: @ui-automation-view ac-1 through ac-7
+// ============================================================
+
+/**
+ * Hook summary from GET /api/hooks
+ */
+export interface HookSummary {
+	id: string;
+	name: string;
+	on: string;
+	filter: Record<string, unknown> | null;
+	action_type: string;
+	enabled: boolean;
+}
+
+/**
+ * Schedule summary from GET /api/schedules
+ */
+export interface ScheduleSummary {
+	id: string;
+	name: string;
+	enabled: boolean;
+	cron: string;
+	timezone: string;
+	overlap_policy: 'skip' | 'buffer_one' | 'allow';
+	next_tick: number | null;
+	last_tick: number | null;
+	run_count: number;
+	active_run_count: number;
+}
+
+/**
+ * Schedule runtime status from GET /api/schedules/:id/status
+ */
+export interface ScheduleRuntimeStatus extends ScheduleSummary {
+	active_run_ids: string[];
+	overlap_state: 'idle' | 'running' | 'running_buffered';
+}
+
+/**
+ * Event envelope from GET /api/events/recent
+ */
+export interface EventEnvelopeSummary {
+	event_id: string;
+	event_type: string;
+	emitted_at: string;
+	source_type: string;
+	source_id: string;
+	causation_id: string | null;
+	correlation_id: string | null;
+	payload: Record<string, unknown>;
+}
+
+/**
+ * Composition activation from GET /api/compositions/:config_id/activations
+ */
+export interface CompositionActivation {
+	activation_id: string;
+	group_id: string;
+	completed_count: number;
+	failed_count: number;
+	total_members: number;
+	member_action_run_ids: string[];
+	timeout_remaining_ms: number | null;
+	first_run_at: string | null;
+}
+
+/**
+ * Fetch all hooks
+ * AC: @ui-automation-view ac-1
+ */
+export async function fetchHooks(params?: {
+	limit?: number;
+	offset?: number;
+}): Promise<PaginatedResponse<HookSummary>> {
+	const url = new URL(`${API_BASE}/api/hooks`);
+	if (params?.limit !== undefined) url.searchParams.set('limit', String(params.limit));
+	if (params?.offset !== undefined) url.searchParams.set('offset', String(params.offset));
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch all schedules
+ * AC: @ui-automation-view ac-1, ac-4
+ */
+export async function fetchSchedules(params?: {
+	limit?: number;
+	offset?: number;
+}): Promise<PaginatedResponse<ScheduleSummary>> {
+	const url = new URL(`${API_BASE}/api/schedules`);
+	if (params?.limit !== undefined) url.searchParams.set('limit', String(params.limit));
+	if (params?.offset !== undefined) url.searchParams.set('offset', String(params.offset));
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch schedule runtime status
+ * AC: @ui-automation-view ac-4
+ */
+export async function fetchScheduleStatus(id: string): Promise<ScheduleRuntimeStatus> {
+	const response = await fetch(`${API_BASE}/api/schedules/${encodeURIComponent(id)}/status`, {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Manually trigger a schedule
+ * AC: @ui-automation-view ac-3
+ */
+export async function triggerSchedule(id: string): Promise<{
+	outcome: 'accepted' | 'buffered' | 'queued' | 'skipped';
+	accepted: boolean;
+	reason: string | null;
+}> {
+	assertWritable('trigger schedule');
+
+	const response = await fetch(`${API_BASE}/api/schedules/${encodeURIComponent(id)}/trigger`, {
+		method: 'POST',
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch recent events from the event ring buffer
+ * AC: @ui-automation-view ac-2
+ */
+export async function fetchRecentEvents(params?: {
+	type?: string;
+	limit?: number;
+	offset?: number;
+}): Promise<PaginatedResponse<EventEnvelopeSummary>> {
+	const url = new URL(`${API_BASE}/api/events/recent`);
+	if (params?.type) url.searchParams.set('type', params.type);
+	if (params?.limit !== undefined) url.searchParams.set('limit', String(params.limit));
+	if (params?.offset !== undefined) url.searchParams.set('offset', String(params.offset));
+
+	const response = await fetch(url.toString(), {
+		headers: getProjectHeaders()
+	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+/**
+ * Fetch composition activations
+ * AC: @ui-automation-view ac-6
+ */
+export async function fetchCompositionActivations(configId: string): Promise<{
+	config_id: string;
+	activations: CompositionActivation[];
+}> {
+	const response = await fetch(
+		`${API_BASE}/api/compositions/${encodeURIComponent(configId)}/activations`,
+		{ headers: getProjectHeaders() }
+	);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+	return response.json();
+}
+
+// ============================================================
 // Plans API Functions
 // AC: @ui-plans-view ac-1
 // ============================================================
