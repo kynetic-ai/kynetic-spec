@@ -105617,7 +105617,18 @@
   session_id: 01KM08W5JVMMGMNN3JN88BK3NX
   created_at: 2026-03-18T05:31:49.355Z
   started_at: 2026-03-18T10:47:04.316Z
-  notes: []
+  notes:
+    - _ulid: 01KM09SGE43W92HR22CQDPP22W
+      content: Implemented typed Zod payload schemas for all 5 event domains (task, invocation, session,
+        schedule, action). Schemas define the guaranteed payload contract per AC-1 through AC-5.
+        Registry payload_fields now derive from schema shape keys plus per-event extras (outcome,
+        error, failure_reason, source_event_type). Added validateEventPayload() for runtime
+        validation. Updated KNOWN_EVENT_FIELDS in action-executor and hook-schema tests to align
+        with new field set. 56 new tests, 6193/6197 passing (1 pre-existing review-cli failure
+        unrelated to changes).
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T11:02:46.468Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVJ3JRVBGVQSQZW86C6D7
