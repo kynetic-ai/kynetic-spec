@@ -14450,3 +14450,29 @@ reviews:
     created_at: 2026-03-18T10:24:09.979Z
     updated_at: 2026-03-18T10:24:17.564Z
     notes: []
+  - _ulid: 01KM07Z44G8EQ91B7K22VVP50C
+    slugs: []
+    title: Review task-dispatch-target-sync (cycle 2)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM07Z44FRNN6GNPKJV3Q6QQV
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T10:30:53.327Z
+    examined_commit: 95f59903248481497072cc172341366343df7aaa
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKZWB75X6Q1X1ZZC5S6KBH6B"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T10:30:53.328Z
+    updated_at: null
+    notes: []
