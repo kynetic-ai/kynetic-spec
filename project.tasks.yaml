@@ -106706,7 +106706,7 @@
   spec_ref: "@dispatch-remote-branch-sync"
   plan_ref: "@plan-dispatch-remote-sync"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-dispatch-sync-config"
@@ -106716,9 +106716,18 @@
     - dispatch
     - git
   vcs_refs: []
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-18T10:13:26.164Z
+    commit: b0bc7850b39feba9a789c532f971f7cd7d808d2e
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
   session_id: 01KM05YWYPEYB0M4GX9DNHDYCY
   created_at: 2026-03-18T07:07:46.749Z
   started_at: 2026-03-18T09:56:09.867Z
+  submitted_at: 2026-03-18T10:13:26.554Z
   notes:
     - _ulid: 01KM06YXWFN18M78HM7M65M5B5
       content: "Implemented syncTargetBranch() in DispatchEngine with three trigger points: (1) engine
