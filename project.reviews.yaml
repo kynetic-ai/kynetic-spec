@@ -17616,7 +17616,17 @@ reviews:
     slugs: []
     title: Review task-cli-verdict-auto-version (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: f69c7a49a39e
+        evidence: 6441 passed, 2 failed (both pre-existing). No regressions.
+        name: npm test
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T15:34:32.989Z
+        completed_at: 2026-03-18T15:34:32.989Z
     events:
       - _ulid: 01KM0S9Z1ED2PSP5SEW4HGKEMM
         actor: "@claude"
@@ -17631,6 +17641,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T15:34:03.260Z
+      - _ulid: 01KM0SB4XGRG1TPXATT3AG0G4B
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-18T15:34:33.136Z
     examined_commit: f69c7a49a39ebcde4741cd522585570956f32f22
     external_links: []
     lifecycle_state: open
@@ -17643,5 +17660,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T15:33:54.350Z
-    updated_at: 2026-03-18T15:34:03.075Z
+    updated_at: 2026-03-18T15:34:32.989Z
     notes: []
