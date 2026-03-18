@@ -108205,8 +108205,12 @@
   spec_ref: "@review-verdicts-and-resolution-lifecycle"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Approved. Shadow branch data migration corrected 365 applies_to_version entries (101
+    verdicts, 264 checks) across 100 reviews from code_compare to entity_version type. No source
+    code changes. Review dispositions now compute correctly (86 approved vs ~4 before fix).
+    Migration script deleted after use.
   depends_on:
     - "@task-cli-verdict-auto-version"
     - "@task-cli-check-auto-version"
@@ -108230,6 +108234,7 @@
   created_at: 2026-03-18T14:34:10.615Z
   started_at: 2026-03-18T16:30:18.735Z
   submitted_at: 2026-03-18T16:44:52.471Z
+  completed_at: 2026-03-18T16:54:18.810Z
   notes:
     - _ulid: 01KM0X0SD0VH9XJS36S8F3EK61
       content: Migration completed successfully. Script fixed 101 verdicts and 264 checks across 100
