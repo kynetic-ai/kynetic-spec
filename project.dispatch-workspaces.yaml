@@ -8961,3 +8961,79 @@ workspaces:
         head: 14505dad0ba356bbfd037257e46aa75b3d9ebbbc
         last_seen_at: 2026-03-18T08:11:26.535Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-event-bus-01kkzpvd
+  - active_role: null
+    base_branch_point: 8166d8d659867217b31b97296d530899f07a433e
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-action-model/01kkzpvj
+    canonical_branch_head: 8166d8d659867217b31b97296d530899f07a433e
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-18T08:11:27.384Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-18T08:11:27.384Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 8166d8d659867217b31b97296d530899f07a433e
+      updated_at: 2026-03-18T08:11:27.384Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KKZPVJ3JRVBGVQSQZW86C6D7"
+    task_slug: task-action-model
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-18T08:11:27.384Z
+      created_at: 2026-03-18T08:11:27.384Z
+      updated_at: 2026-03-18T08:11:27.384Z
+    workspace_id: dispatch-workspace-01KKZPVJ3JRVBGVQSQZW86C6D7
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-action-model/01kkzpvj
+        head: 8166d8d659867217b31b97296d530899f07a433e
+        last_seen_at: 2026-03-18T08:11:27.384Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-action-model-01kkzpvj
