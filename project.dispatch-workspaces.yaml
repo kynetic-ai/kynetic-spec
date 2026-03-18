@@ -8520,7 +8520,7 @@ workspaces:
         head: c7f0fed80c4192706ed6dc4c428abbfdb4f9fe88
         last_seen_at: 2026-03-18T01:28:43.990Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/replace-hardcoded-branch-names-in-merge-skill-template-with-dynamic-references-01kkxemg
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 81daafe8a38dc2ac5fe460ef396d2b565f4799af
     bootstrap:
       status: succeeded
@@ -8558,34 +8558,34 @@ workspaces:
     canonical_branch: dispatch/task/fix-session-cache-invalidate-leaves-ghost-in-knownsessionids/01kkxgpn
     canonical_branch_head: e3e45dd016439fdc78dd4e028bffbeea1b786a93
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-18T01:37:06.839Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-18T01:45:04.941Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T01:37:08.961Z
+      updated_at: 2026-03-18T01:45:04.941Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 81daafe8a38dc2ac5fe460ef396d2b565f4799af
-      updated_at: 2026-03-18T01:37:06.839Z
-    lifecycle_state: integrating
+      updated_at: 2026-03-18T01:45:04.941Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KKXGPNP7R08EYVEQCERNX1HS"
     task_slug: fix-session-cache-invalidate-leaves-ghost-in-knownsessionids
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T01:37:08.961Z
-      last_reconciled_at: 2026-03-18T01:37:08.961Z
+      last_reconciled_at: 2026-03-18T01:45:04.941Z
       created_at: 2026-03-18T01:28:44.963Z
-      updated_at: 2026-03-18T01:37:08.961Z
+      updated_at: 2026-03-18T01:45:04.941Z
     workspace_id: dispatch-workspace-01KKXGPNP7R08EYVEQCERNX1HS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
