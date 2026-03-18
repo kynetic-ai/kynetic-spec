@@ -5179,6 +5179,9 @@ modules:
           (queue at most one), allow (start subject to concurrency limits).
 
           Schedule evaluation has minute-level resolution.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
