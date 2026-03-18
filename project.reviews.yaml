@@ -11039,9 +11039,22 @@ reviews:
           status: fail
           name: ac-test-coverage
         timestamp: 2026-03-18T03:07:46.729Z
+      - _ulid: 01KKZEM0V5RHGZ0WD3PKCCX7DH
+        actor: pr-reviewer@kspec
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-18T03:07:55.109Z
+      - _ulid: 01KKZEM0V5Y212E9PTQBM6NFHP
+        actor: pr-reviewer@kspec
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T03:07:55.109Z
     examined_commit: c78549495ec28d101a3f21193f7e53105b09f3b2
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -11109,7 +11122,15 @@ reviews:
               hunks and above the first hunk works correctly, but bottom-of-file expansion is dead."
             created_at: 2026-03-18T03:07:10.827Z
         kind: question
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 1ef4b993a
+          head_commit: c78549495ec2
+        decision: request_changes
+        reviewer: pr-reviewer@kspec
+        role: reviewer
+        created_at: 2026-03-18T03:07:54.985Z
     created_at: 2026-03-18T03:05:31.212Z
-    updated_at: 2026-03-18T03:07:46.608Z
+    updated_at: 2026-03-18T03:07:54.985Z
     notes: []
