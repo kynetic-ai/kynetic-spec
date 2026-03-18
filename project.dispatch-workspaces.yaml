@@ -11294,12 +11294,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T16:45:13.444Z
+      updated_at: 2026-03-18T16:45:16.141Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T16:45:13.444Z
+      updated_at: 2026-03-18T16:45:16.141Z
     integration:
       status: pending
       detail: null
@@ -11307,24 +11307,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e5df80e26f4b1c62b427f72f4cb94bb2feaa23ff
-      updated_at: 2026-03-18T16:45:13.444Z
-    lifecycle_state: ready
+      updated_at: 2026-03-18T16:45:16.141Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM0NWK9Q2HKKF679ASD081B8"
     task_slug: task-remediate-review-versions
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T16:29:56.556Z
-      last_reconciled_at: 2026-03-18T16:45:13.444Z
+      last_reconciled_at: 2026-03-18T16:45:16.141Z
       created_at: 2026-03-18T16:29:55.247Z
-      updated_at: 2026-03-18T16:45:13.444Z
+      updated_at: 2026-03-18T16:45:16.141Z
     workspace_id: dispatch-workspace-01KM0NWK9Q2HKKF679ASD081B8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: e5df80e26f4b1c62b427f72f4cb94bb2feaa23ff
+        last_seen_at: 2026-03-18T16:45:16.141Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remediate-review-versions-01km0nwk-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-remediate-review-versions/01km0nwk
         head: e5df80e26f4b1c62b427f72f4cb94bb2feaa23ff
-        last_seen_at: 2026-03-18T16:29:55.247Z
+        last_seen_at: 2026-03-18T16:45:16.141Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remediate-review-versions-01km0nwk
