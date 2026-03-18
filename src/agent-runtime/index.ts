@@ -74,4 +74,5 @@ export {
   type ScheduleLoader,
   type ScheduleRuntimeState,
   type ScheduleStatus,
+  type ScheduleDetailedStatus,
 } from "./schedule-engine.js";

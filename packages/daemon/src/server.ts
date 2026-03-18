@@ -28,6 +28,7 @@ import { createValidationRoutes } from './routes/validation';
 import { createProjectsRoutes } from './routes/projects';
 import { createTriageRoutes } from './routes/triage';
 import { createAgentDispatchRoutes, getDispatchEngine, stopAllEngines } from './routes/agent-dispatch';
+import { createAutomationRoutes } from './routes/automation';
 import { createSessionRoutes } from './routes/sessions';
 import { createPlansRoutes } from './routes/plans';
 import { createAggregationRoutes } from './routes/aggregation';
@@ -328,6 +329,9 @@ export async function createServer(options: ServerOptions) {
     // AC: @agent-dispatch-engine ac-4 - Agent dispatch API endpoints
     // AC: @daemon-agent-dispatch ac-3, ac-4 - Pass pubsub for WebSocket broadcast on invocation events
     .use(createAgentDispatchRoutes({ pubsub: pubsubManager }))
+
+    // AC: @automation-api ac-1 through ac-6 - Automation management endpoints
+    .use(createAutomationRoutes())
 
     // AC-4: WebSocket endpoint for real-time updates
     .ws<ConnectionData>('/ws', {

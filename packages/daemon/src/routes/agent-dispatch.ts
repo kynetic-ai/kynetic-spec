@@ -24,6 +24,8 @@ import { Elysia, t } from 'elysia';
 import { DispatchEngine } from '../../agent-runtime/dispatch.js';
 import type { TaskStateChange, TaskStatus, InvocationEvent, SyncStateEvent } from '../../agent-runtime/dispatch.js';
 import { ScheduleEngine } from '../../agent-runtime/schedule-engine.js';
+import { HookExecutor } from '../../agent-runtime/hook-executor.js';
+import { JoinAccumulator } from '../../agent-runtime/join-accumulator.js';
 import { ActionExecutor } from '../../agent-runtime/action-executor.js';
 import { DEFAULT_KSPEC_CLI_PATH } from '../../agent-runtime/invocation.js';
 import { initContext, loadMetaContext, loadAllTasks, loadAllItems, ReferenceIndex, resolveProjectRoots } from '../../parser/index.js';
@@ -39,6 +41,10 @@ const VALID_TASK_STATUSES = new Set<string>([
 const engines: Map<string, DispatchEngine> = new Map();
 // Singleton schedule engine per project path (started alongside dispatch)
 const scheduleEngines: Map<string, ScheduleEngine> = new Map();
+// Singleton hook executor per project path (started alongside dispatch)
+const hookExecutors: Map<string, HookExecutor> = new Map();
+// Singleton join accumulator per project path (started alongside dispatch)
+const joinAccumulators: Map<string, JoinAccumulator> = new Map();
 
 export interface AgentDispatchRouteOptions {
   defaultProjectPath?: string;
@@ -143,6 +149,127 @@ async function stopScheduleEngine(projectDir: string): Promise<void> {
   if (scheduleEngine) {
     await scheduleEngine.stop();
     scheduleEngines.delete(projectDir);
+  }
+}
+
+/**
+ * Start the hook executor for a project, wired to the dispatch engine's event bus.
+ * AC: @automation-api ac-1, ac-6
+ */
+async function startHookExecutor(
+  projectDir: string,
+  engine: DispatchEngine,
+  pubsub?: PubSubManager,
+): Promise<void> {
+  const ctx = await initContext(projectDir);
+  const meta = await loadMetaContext(ctx);
+
+  const actionExecutor = new ActionExecutor({
+    projectDir,
+    kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
+    onActionRunEvent: (event) => {
+      engine.eventBus.emit({
+        event_type: event.type,
+        source_type: "api",
+        source_id: event.event_context.source_id ?? "hook-executor",
+        payload: {
+          action_run_id: event.action_run.action_run_id,
+          action_type: event.action_run.action_type,
+          source_name: event.action_run.source_name,
+          ...(event.action_run.duration_ms !== undefined && { duration_ms: event.action_run.duration_ms }),
+          ...(event.action_run.invocation_id && { session_id: event.action_run.invocation_id }),
+        },
+        causation_id: event.event_context.causation_id,
+        correlation_id: event.event_context.correlation_id,
+      });
+    },
+    notifyBroadcast: pubsub
+      ? (topic, event, data) => {
+          pubsub.broadcast(topic, event, data, projectDir);
+        }
+      : undefined,
+  });
+
+  const hookExecutor = new HookExecutor({
+    eventBus: engine.eventBus,
+    actionExecutor,
+    hooks: meta.hooks,
+  });
+  hookExecutor.start();
+  hookExecutors.set(projectDir, hookExecutor);
+}
+
+/**
+ * Stop the hook executor for a project.
+ */
+function stopHookExecutor(projectDir: string): void {
+  const hookExecutor = hookExecutors.get(projectDir);
+  if (hookExecutor) {
+    hookExecutor.stop();
+    hookExecutors.delete(projectDir);
+  }
+}
+
+/**
+ * Start the join accumulator for a project, wired to the dispatch engine's event bus.
+ * AC: @automation-api ac-5
+ */
+async function startJoinAccumulator(
+  projectDir: string,
+  engine: DispatchEngine,
+  pubsub?: PubSubManager,
+): Promise<void> {
+  const ctx = await initContext(projectDir);
+  const meta = await loadMetaContext(ctx);
+
+  // Compositions are on the parsed manifest, not on MetaContext
+  const compositions = meta.manifest?.compositions ?? [];
+  if (compositions.length === 0) return;
+
+  const actionExecutor = new ActionExecutor({
+    projectDir,
+    kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
+    onActionRunEvent: (event) => {
+      engine.eventBus.emit({
+        event_type: event.type,
+        source_type: "api",
+        source_id: event.event_context.source_id ?? "join-accumulator",
+        payload: {
+          action_run_id: event.action_run.action_run_id,
+          action_type: event.action_run.action_type,
+          source_name: event.action_run.source_name,
+          group_id: event.event_context.group_id,
+          config_id: event.event_context.config_id,
+          ...(event.action_run.duration_ms !== undefined && { duration_ms: event.action_run.duration_ms }),
+          ...(event.action_run.invocation_id && { session_id: event.action_run.invocation_id }),
+        },
+        causation_id: event.event_context.causation_id,
+        correlation_id: event.event_context.correlation_id,
+      });
+    },
+    notifyBroadcast: pubsub
+      ? (topic, event, data) => {
+          pubsub.broadcast(topic, event, data, projectDir);
+        }
+      : undefined,
+  });
+
+  const accumulator = new JoinAccumulator({
+    eventBus: engine.eventBus,
+    actionExecutor,
+  });
+  accumulator.start(compositions);
+  joinAccumulators.set(projectDir, accumulator);
+}
+
+/**
+ * Stop the join accumulator for a project.
+ */
+function stopJoinAccumulator(projectDir: string): void {
+  const accumulator = joinAccumulators.get(projectDir);
+  if (accumulator) {
+    accumulator.stop();
+    joinAccumulators.delete(projectDir);
   }
 }
 
@@ -259,6 +386,8 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         engines.set(projectDir, engine);
         await engine.start();
         await startScheduleEngine(projectDir, engine, pubsub);
+        await startHookExecutor(projectDir, engine, pubsub);
+        await startJoinAccumulator(projectDir, engine, pubsub);
 
         return { dispatch_enabled: true };
       } else {
@@ -267,6 +396,8 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           return { dispatch_enabled: false, reason: 'No engine running' };
         }
 
+        stopJoinAccumulator(projectDir);
+        stopHookExecutor(projectDir);
         await stopScheduleEngine(projectDir);
         await engine.stop();
         engines.delete(projectDir);
@@ -312,6 +443,8 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
 
       await engine.start();
       await startScheduleEngine(projectDir, engine, pubsub);
+      await startHookExecutor(projectDir, engine, pubsub);
+      await startJoinAccumulator(projectDir, engine, pubsub);
 
       return { started: true, status: engine.getStatus() };
     })
@@ -325,6 +458,8 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         return { stopped: false, reason: 'No engine running' };
       }
 
+      stopJoinAccumulator(projectDir);
+      stopHookExecutor(projectDir);
       await stopScheduleEngine(projectDir);
       await engine.stop();
       engines.delete(projectDir);
@@ -429,12 +564,44 @@ export function getDispatchEngine(projectDir: string): DispatchEngine | undefine
 }
 
 /**
+ * Get the schedule engine for a project path (for automation API).
+ */
+export function getScheduleEngine(projectDir: string): ScheduleEngine | undefined {
+  return scheduleEngines.get(projectDir);
+}
+
+/**
+ * Get the hook executor for a project path (for automation API).
+ */
+export function getHookExecutor(projectDir: string): HookExecutor | undefined {
+  return hookExecutors.get(projectDir);
+}
+
+/**
+ * Get the join accumulator for a project path (for automation API).
+ */
+export function getJoinAccumulator(projectDir: string): JoinAccumulator | undefined {
+  return joinAccumulators.get(projectDir);
+}
+
+/**
  * Stop all active dispatch engines. Called on daemon shutdown.
  * AC: @agent-dispatch-engine ac-11 - daemon shutdown stops active engines
  */
 export async function stopAllEngines(): Promise<void> {
+  // Stop hook executors and join accumulators first (synchronous)
+  for (const [, hookExecutor] of hookExecutors) {
+    hookExecutor.stop();
+  }
+  hookExecutors.clear();
+
+  for (const [, accumulator] of joinAccumulators) {
+    accumulator.stop();
+  }
+  joinAccumulators.clear();
+
   const stopPromises: Promise<void>[] = [];
-  // Stop schedule engines first
+  // Stop schedule engines
   for (const [projectDir, scheduleEngine] of scheduleEngines) {
     stopPromises.push(
       scheduleEngine.stop().catch((err) => {
