@@ -28,21 +28,36 @@ export type SessionStatus = z.infer<typeof SessionStatusSchema>;
 
 /**
  * Trigger source enum — what caused this agent session to be dispatched.
+ *
+ * Accepts any registered dispatch event type as a trigger, plus:
  * - manual: Started manually by user
- * - task.in_progress: Dispatched because a task is already in progress
- * - task.ready: Dispatched because a task became ready
- * - task.needs_work: Dispatched because a task needs work (fix cycle)
- * - task.pending_review: Dispatched for PR review
  * - legacy: Old ralph sessions without explicit trigger
  *
  * AC: @session-model-evolution ac-1, ac-2
+ * AC: @dispatch-event-taxonomy ac-4 — existing trigger values unchanged
  */
 export const SessionTriggerSchema = z.enum([
   "manual",
+  // Task lifecycle events (existing, unchanged)
   "task.in_progress",
   "task.ready",
   "task.needs_work",
   "task.pending_review",
+  // Invocation lifecycle events
+  "invocation.started",
+  "invocation.completed",
+  "invocation.failed",
+  "invocation.stalled",
+  // Session lifecycle events
+  "session.ended",
+  "session.idle_timeout",
+  "session.cancelled",
+  // Schedule events
+  "schedule.tick",
+  // Action run tracking events
+  "action.started",
+  "action.completed",
+  "action.failed",
   "legacy",
 ]);
 
