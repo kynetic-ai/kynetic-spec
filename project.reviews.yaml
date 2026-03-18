@@ -16379,9 +16379,22 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T13:33:19.775Z
+      - _ulid: 01KM0JDCMMYKT9WJDK76M2HE08
+        actor: pr-reviewer@dispatch
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-18T13:33:26.548Z
+      - _ulid: 01KM0JDCMMBX732P95V8F7BZ4M
+        actor: pr-reviewer@dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T13:33:26.548Z
     examined_commit: f49c87c4a33f25afd5f3a95918b46e9a674eabca
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -16389,7 +16402,15 @@ reviews:
       ref: "@task-validate-integration"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 66f28f712
+          head_commit: f49c87c4a33f
+        decision: approve
+        reviewer: pr-reviewer@dispatch
+        role: reviewer
+        created_at: 2026-03-18T13:33:26.402Z
     created_at: 2026-03-18T13:32:40.670Z
-    updated_at: 2026-03-18T13:33:19.633Z
+    updated_at: 2026-03-18T13:33:26.402Z
     notes: []
