@@ -10068,7 +10068,19 @@ reviews:
     slugs: []
     title: Review detect-stale-integration-target (cycle 2)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
+          head_commit: dd1a83cf431c45c1b19f24260b313b16ed42e96d
+        evidence: All 18 tests pass in dispatch-workspace-config.test.ts including 5 new stale integration
+          target tests
+        name: vitest (task-specific)
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T01:22:23.941Z
+        completed_at: 2026-03-18T01:22:23.941Z
     events:
       - _ulid: 01KKZ8557VRK0T0V9FAZEW8C42
         actor: "@claude"
@@ -10083,6 +10095,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T01:15:05.234Z
+      - _ulid: 01KKZ8JT4RBSYJ2SF4N3J7ZZM1
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest (task-specific)
+        timestamp: 2026-03-18T01:22:24.025Z
     examined_commit: dd1a83cf431c45c1b19f24260b313b16ed42e96d
     external_links: []
     lifecycle_state: open
@@ -10095,5 +10114,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T01:14:56.635Z
-    updated_at: 2026-03-18T01:15:05.064Z
+    updated_at: 2026-03-18T01:22:23.941Z
     notes: []
