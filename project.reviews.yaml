@@ -12981,7 +12981,19 @@ reviews:
     slugs: []
     title: Review task-event-bus (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 8d087368e
+          head_commit: 14505dad0
+        evidence: "5893 passed, 1 failed (pre-existing: review-cli.test.ts examined_commit null assertion —
+          not caused by this change), 3 skipped"
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T08:17:10.060Z
+        completed_at: 2026-03-18T08:17:10.060Z
     events:
       - _ulid: 01KM008EENEX48JN61RBTTQ86N
         actor: "@claude"
@@ -13017,6 +13029,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM009ZFXC2VMXXQY1GZMDHJ0
         timestamp: 2026-03-18T08:17:00.530Z
+      - _ulid: 01KM00A90JP2WZFBBDTSZZAKFD
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T08:17:10.162Z
     examined_commit: 14505dad0ba356bbfd037257e46aa75b3d9ebbbc
     external_links: []
     lifecycle_state: open
@@ -13095,5 +13114,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T08:16:10.197Z
-    updated_at: 2026-03-18T08:17:00.413Z
+    updated_at: 2026-03-18T08:17:10.060Z
     notes: []
