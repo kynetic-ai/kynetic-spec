@@ -104122,6 +104122,20 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T02:07:18.911Z
+    - _ulid: 01KKZBSZ92E416QT0N5RPQZQAA
+      content: "Review cycle 7: Code approved (review @01KKZBN1, verdict approve, all checks pass). Merge
+        to local dev FAILED with textual conflict in tests/yaml-round-trip-stability.test.ts. Local
+        dev is 18 commits ahead of origin/dev with other dispatched task merges. The conflict: local
+        dev has a saveWorkflowRun describe block (from
+        round-trip-stability-for-workflow-runs-yaml-writes task, merged locally in commit 8e8a1a565)
+        at the same insertion point (after inbox tests, line ~1161) where the saveTriageRecord
+        describe block goes. Both blocks should coexist — the triage tests should be placed after
+        the workflow run tests. Resolution: merge local dev HEAD (c829472cb) into the task branch to
+        resolve the test file conflict. Only the test file needs conflict resolution — no changes
+        needed to src/parser/yaml.ts."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T02:18:44.386Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6CGBRT6J6F804PJ1QJW3G
