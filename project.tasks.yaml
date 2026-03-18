@@ -103764,8 +103764,15 @@
   spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Dispatch workspace YAML writes now use raw-data-preservation pattern:
+    load raw YAML without schema normalization, schema-parse only the target workspace, merge onto
+    raw data with recursive shape preservation. Non-target workspaces stay as raw data. Sibling
+    validation restored, callback-set fields preserved via pre-mutation comparison. 7 tests verify
+    byte-identical round-trip stability, identity mutation, multi-workspace preservation, non-target
+    pollution prevention, multi-cycle stability, malformed sibling rejection, and newly-added object
+    field persistence."
   depends_on: []
   context: []
   priority: 3
@@ -103786,6 +103793,7 @@
   created_at: 2026-03-17T06:05:28.029Z
   started_at: 2026-03-17T23:57:00.111Z
   submitted_at: 2026-03-17T23:57:06.858Z
+  completed_at: 2026-03-18T00:08:10.485Z
   notes:
     - _ulid: 01KKYJZZBS89292SFWC57CNVDK
       content: "Applied raw-data-preservation pattern to dispatch workspace YAML writes. Key difference
