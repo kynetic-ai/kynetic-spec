@@ -11170,7 +11170,7 @@ workspaces:
         head: e34b1ad7fc6b947dd15381d2d76a4e63da9fd611
         last_seen_at: 2026-03-18T16:01:00.640Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-shared-disposition-01km0nvt
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 96603948244358b7704e3319071dc50f19c7613b
     bootstrap:
       status: succeeded
@@ -11220,7 +11220,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T16:29:54.141Z
+      updated_at: 2026-03-18T16:29:55.433Z
     integration:
       status: pending
       detail: null
@@ -11235,10 +11235,10 @@ workspaces:
     task_slug: task-review-skill-version-docs
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-18T16:17:48.451Z
-      last_reconciled_at: 2026-03-18T16:29:54.141Z
+      last_active_at: 2026-03-18T16:29:55.433Z
+      last_reconciled_at: 2026-03-18T16:29:55.433Z
       created_at: 2026-03-18T16:01:01.743Z
-      updated_at: 2026-03-18T16:29:54.594Z
+      updated_at: 2026-03-18T16:29:55.433Z
     workspace_id: dispatch-workspace-01KM0NW5NMJJDWRHKVQGDERHQM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
