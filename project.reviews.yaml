@@ -17253,7 +17253,20 @@ reviews:
     slugs: []
     title: Review task-spec-review-version-auto-derive
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: e08cc7b0e
+          head_commit: 2dcce1c1b
+        evidence: 283/284 test files passed, 6442/6446 tests passed. 1 failure in review-cli.test.ts is a
+          pre-existing environment isolation issue (KSPEC_DISPATCH_CANONICAL_HEAD env leak into test
+          runner) — not related to this spec-only task.
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T15:07:13.810Z
+        completed_at: 2026-03-18T15:07:13.810Z
     events:
       - _ulid: 01KM0QRH5WQ6K96FR61XAA9S29
         actor: "@claude"
@@ -17268,6 +17281,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T15:07:03.181Z
+      - _ulid: 01KM0QS45EK3MBCG5Q4R8FTSTW
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T15:07:13.966Z
     examined_commit: 2dcce1c1b50abdac83c5d5dd1add93610e82e8e4
     external_links: []
     lifecycle_state: open
@@ -17280,5 +17300,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T15:06:54.524Z
-    updated_at: 2026-03-18T15:07:03.029Z
+    updated_at: 2026-03-18T15:07:13.810Z
     notes: []
