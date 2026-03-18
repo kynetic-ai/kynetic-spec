@@ -15654,7 +15654,19 @@ reviews:
     slugs: []
     title: Review task-schedule-engine (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 263970e4d2877f3e31aebf638a3d949568dd39cc
+          head_commit: 36102927dc6f09beee40fb944f562d6452dfa0bb
+        evidence: 278/279 test files pass (6306 tests), 1 pre-existing failure in review-cli.test.ts
+          (examined_commit null assertion — unrelated to schedule engine, no changes to that file)
+        name: npm test
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T12:42:29.172Z
+        completed_at: 2026-03-18T12:42:29.172Z
     events:
       - _ulid: 01KM0FDVZF9G2JX9JH0J0N3K78
         actor: "@claude"
@@ -15683,6 +15695,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM0FFRAAT4KEG0NFFZJQE9YJ
         timestamp: 2026-03-18T12:42:18.496Z
+      - _ulid: 01KM0FG3217W0Q3782Z57WYWSC
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-18T12:42:29.313Z
     examined_commit: 36102927dc6f09beee40fb944f562d6452dfa0bb
     external_links: []
     lifecycle_state: open
@@ -15741,5 +15760,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-18T12:41:16.528Z
-    updated_at: 2026-03-18T12:42:18.315Z
+    updated_at: 2026-03-18T12:42:29.172Z
     notes: []
