@@ -17833,6 +17833,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T16:00:45.590Z
+      - _ulid: 01KM0TVEX0GESFHZB1WPMQVPJY
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM0TVER2J8PJV89YDSXTA64K
+        timestamp: 2026-03-18T16:00:56.224Z
     examined_commit: 7656f7bb405dee7c1feaae24f00f312fb5d4fedf
     external_links: []
     lifecycle_state: open
@@ -17842,8 +17849,26 @@ reviews:
       content_hash: ""
       ref: "@task-automation-view"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM0TVER2J8PJV89YDSXTA64K
+        anchor:
+          type: code
+          commit: ""
+          line_end: 1
+          line_start: 1
+          path: packages/web-ui/src/routes/automation/
+          side: head
+        entries:
+          - _ulid: 01KM0TVER328BVC3X7F9K5BA92
+            author: "@claude"
+            body: "Missing +page.ts file for /automation route. Every other route in the web UI has a +page.ts
+              file that disables SSR (export const ssr = false) to prevent Svelte 5 hydration
+              issues. The automation route will fail at build-time or produce hydration errors in
+              production. File needed: packages/web-ui/src/routes/automation/+page.ts with 'export
+              const ssr = false;'"
+            created_at: 2026-03-18T16:00:56.067Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T16:00:37.212Z
-    updated_at: 2026-03-18T16:00:45.441Z
+    updated_at: 2026-03-18T16:00:56.067Z
     notes: []
