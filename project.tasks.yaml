@@ -106898,8 +106898,15 @@
   spec_ref: "@dispatch-remote-branch-sync"
   plan_ref: "@plan-dispatch-remote-sync"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Implemented dispatch branch push lifecycle: pushDispatchBranch (first
+    push with --force-with-lease and upstream tracking, subsequent push with ahead-of-upstream
+    check), pushIntegrationTarget (post-merge and periodic with serialization guard),
+    deleteRemoteDispatchBranch (cleanup), and resolveDispatchRemote. Integrated into DispatchEngine
+    post-invocation, periodic reconciliation, and workspace cleanup paths. All push failures are
+    non-fatal. 9 ACs covered with 19 tests. Two nit findings on test quality recorded (serialization
+    test proves idempotency not guard behavior, integration cleanup test is vacuously passing)."
   depends_on:
     - "@task-dispatch-sync-config"
   context: []
@@ -106921,6 +106928,7 @@
   created_at: 2026-03-18T07:07:48.465Z
   started_at: 2026-03-18T10:31:12.501Z
   submitted_at: 2026-03-18T10:46:16.666Z
+  completed_at: 2026-03-18T11:00:18.727Z
   notes:
     - _ulid: 01KM08M0NH04AE74CJ9XAFQ527
       content: "Implementation approach: Added pushDispatchBranch(), pushIntegrationTarget(),
