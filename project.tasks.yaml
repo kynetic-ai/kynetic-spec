@@ -108054,7 +108054,7 @@
   spec_ref: "@review-cli-mutation-commands"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-cli-check-auto-version"
@@ -108069,15 +108069,15 @@
   submission_linkage:
     review_url: null
     branch: dev
-    captured_at: 2026-03-18T16:03:02.414Z
-    commit: 96603948244358b7704e3319071dc50f19c7613b
+    captured_at: 2026-03-18T16:29:38.461Z
+    commit: e5df80e26f4b1c62b427f72f4cb94bb2feaa23ff
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
   session_id: 01KM0VTBA3YAAYNH17RC5P6ENB
   created_at: 2026-03-18T14:33:56.660Z
   started_at: 2026-03-18T16:29:34.669Z
-  submitted_at: 2026-03-18T16:03:03.161Z
+  submitted_at: 2026-03-18T16:29:38.868Z
   notes:
     - _ulid: 01KM0TYZA4Y2DKBEG06MDM5KS2
       content: Removed --version-base and --version-head from all check examples (3 examples) and verdict
