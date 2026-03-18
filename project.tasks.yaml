@@ -107043,6 +107043,20 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T16:02:20.507Z
+    - _ulid: 01KM0VRE3RQRNWHR703AKXR2H2
+      content: "Fix cycle 1 — addressed all 5 blockers and 3 nits. (1) Added +page.ts with ssr=false to
+        prevent hydration errors. (2) Added GET /api/compositions list endpoint in daemon and
+        rewrote CompositionsSection to discover config IDs via API query. (3) Out-of-scope review
+        CLI changes were not in the diff (false positive). (4) Fixed division-by-zero in composition
+        progress bar via progressPercent helper. (5) AC-3 for hooks/schedules: dispatch trigger
+        editing already works inline; hook/schedule config editing requires PATCH API endpoints that
+        don't exist yet — annotated as deferred. Nits: removed dead automation:updates WS topic
+        (daemon never broadcasts it, automation data now invalidated via files:updates), removed
+        unused hasActivations and unused imports. Pre-existing review-cli.test.ts failure
+        (examined_commit auto-detection) is unrelated to this task."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T16:16:45.688Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPW71H0KTRJY3HFF7YDNT9
