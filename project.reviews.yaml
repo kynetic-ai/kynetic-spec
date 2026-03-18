@@ -9191,9 +9191,22 @@ reviews:
           status: pass
           name: merge-preview
         timestamp: 2026-03-18T00:14:27.420Z
+      - _ulid: 01KKZ4PMD7820XS4MBZC1VQ2W9
+        actor: pr-reviewer@dispatch
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-18T00:14:34.919Z
+      - _ulid: 01KKZ4PMD72SDVPT6C6Z64TF13
+        actor: pr-reviewer@dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T00:14:34.919Z
     examined_commit: 4df83454a0a173332e2e8d7c66ad6989a15dbb08
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -9201,7 +9214,15 @@ reviews:
       ref: "@01KKX6CEQFM17JX8AKKRPXQGR7"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
+          head_commit: 4df83454a0a173332e2e8d7c66ad6989a15dbb08
+        decision: approve
+        reviewer: pr-reviewer@dispatch
+        role: reviewer
+        created_at: 2026-03-18T00:14:34.833Z
     created_at: 2026-03-18T00:13:57.222Z
-    updated_at: 2026-03-18T00:14:27.332Z
+    updated_at: 2026-03-18T00:14:34.833Z
     notes: []
