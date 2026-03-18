@@ -102042,6 +102042,16 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T03:42:28.173Z
+    - _ulid: 01KKZH9QCV3H4C3EEWDRRKXEVD
+      content: "Fix cycle 2 addressed: (1) BLOCKER — Fixed E2E test AC-4 route mock: changed intercepted
+        URL from /threads to /comments to match the actual createReviewThread API endpoint
+        (api.ts:1534). (2) Also discovered and fixed a bug in diff components: deleted files showed
+        /dev/null as their path because the pattern newPath || oldPath picked /dev/null (truthy)
+        instead of falling back to oldPath. Added getFilePath() helper across DiffFileList,
+        DiffFileView, and CodeDiffViewer to skip /dev/null. All 17 E2E tests now pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T03:54:43.483Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6N50TFB9MFMG7T5KZT6N
