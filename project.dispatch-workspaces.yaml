@@ -9339,34 +9339,34 @@ workspaces:
     canonical_branch: dispatch/task/task-event-schema/01kkzpvf
     canonical_branch_head: c790bb1ffcfe44d0be13719ab8884a5655f5055b
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-18T09:51:16.515Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-18T09:51:36.457Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T09:51:18.246Z
+      updated_at: 2026-03-18T09:51:36.457Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ca266e824eb760fa55bd42cf3ceb953a6b93c35b
-      updated_at: 2026-03-18T09:51:16.515Z
-    lifecycle_state: ready
+      updated_at: 2026-03-18T09:51:36.457Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KKZPVFA3XPDTRV5CDFWKGVD8"
     task_slug: task-event-schema
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T09:31:42.616Z
-      last_reconciled_at: 2026-03-18T09:51:18.246Z
+      last_reconciled_at: 2026-03-18T09:51:36.457Z
       created_at: 2026-03-18T09:18:26.734Z
-      updated_at: 2026-03-18T09:51:18.246Z
+      updated_at: 2026-03-18T09:51:36.457Z
     workspace_id: dispatch-workspace-01KKZPVFA3XPDTRV5CDFWKGVD8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
