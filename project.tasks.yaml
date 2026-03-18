@@ -107480,10 +107480,45 @@
     - task-spec-review-version-auto-derive
   title: Update specs for review version auto-derivation
   type: task
-  description: Update acceptance criteria on three specs to reflect that applies_to_version is always
-    auto-derived from the review subject, never passed by callers. See
-    @plan-review-version-auto-derivation for full AC-by-AC changes on @review-cli-mutation-commands,
-    @review-verdicts-and-resolution-lifecycle, and @review-cli-commands.
+  description: >-
+    Update acceptance criteria on three specs to reflect that applies_to_version is always
+    auto-derived from the review subject, never passed by callers:
+
+
+    @review-cli-mutation-commands ac-2: Change 'with the current compare context' to say the version
+    is auto-derived from the review's subject. Remove implication that
+    --version-base/--version-head/--version-hash flags exist.
+
+
+    @review-cli-mutation-commands ac-3: Same — remove 'compare context' language, say
+    applies_to_version is derived from the review subject automatically.
+
+
+    @review-verdicts-and-resolution-lifecycle ac-1: Change 'with the applies_to_version context
+    (base_commit and head_commit)' to say applies_to_version is derived from the review's subject
+    type — code_compare for code subjects, entity_version for task/plan/spec. The caller does not
+    provide this.
+
+
+    @review-verdicts-and-resolution-lifecycle ac-5: Clarify that the version types described
+    (base_commit/head_commit for code, content_hash for entity) are derived from the subject, not
+    provided by the verdict submitter.
+
+
+    @review-cli-commands ac-2: Add that computed disposition and gate state must use the shared
+    library functions from src/parser/review-operations.ts and src/review/checks.ts, not local
+    reimplementations.
+
+
+    Why: Current AC language says 'with the current compare context' which implies callers provide
+    version info. This led to the CLI exposing --version-base/--version-head/--version-hash flags
+    that agents use incorrectly, creating type mismatches that corrupt disposition computation.
+    Specs must be corrected before changing behavior.
+
+
+    How: Use kspec item ac set to update each AC listed above. The key change in each is removing
+    language that implies callers provide version context and replacing it with language that says
+    the system derives it from the review subject.
   spec_ref: "@review-cli-mutation-commands"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
