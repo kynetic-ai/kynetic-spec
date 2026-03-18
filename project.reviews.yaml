@@ -16440,6 +16440,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM0M2ETMD25AH19CAZSJYRYS
         timestamp: 2026-03-18T14:02:25.685Z
+      - _ulid: 01KM0M2S9MH1V2W723YR9DM5J0
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KM0M2S4Y9C9H7E89HTHHRKHP
+        timestamp: 2026-03-18T14:02:36.212Z
     examined_commit: 1fb3398c8601e4d12109d099515003199b2ea770
     external_links: []
     lifecycle_state: open
@@ -16469,7 +16476,26 @@ reviews:
               time instead of shrinking."
             created_at: 2026-03-18T14:02:25.493Z
         kind: blocker
+      - _ulid: 01KM0M2S4Y9C9H7E89HTHHRKHP
+        anchor:
+          type: code
+          commit: 1fb3398c8601
+          line_end: 158
+          line_start: 151
+          path: packages/daemon/src/routes/automation.ts
+          side: head
+        entries:
+          - _ulid: 01KM0M2S4Z9Q2HATW5X9AKHFJV
+            author: "@claude"
+            body: AC-3 specifies 4 trigger outcomes (accepted, buffered, queued, skipped) but only 3 are
+              implemented. The 'queued' outcome (agent concurrency limit reached) is missing from
+              the type union and logic. The schedule engine's triggerSchedule doesn't surface agent
+              concurrency, so this may require upstream work. At minimum, add 'queued' to the
+              outcome type and map any future concurrency-rejected results, or document in code
+              comments that 'queued' is deferred pending agent concurrency tracking.
+            created_at: 2026-03-18T14:02:36.063Z
+        kind: question
     verdicts: []
     created_at: 2026-03-18T13:52:49.236Z
-    updated_at: 2026-03-18T14:02:25.493Z
+    updated_at: 2026-03-18T14:02:36.063Z
     notes: []
