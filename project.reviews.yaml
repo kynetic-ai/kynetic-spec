@@ -12611,9 +12611,22 @@ reviews:
           kind: nit
           thread_ulid: 01KKZVQM5QXJX9MTP5MF9NZXXP
         timestamp: 2026-03-18T06:57:04.829Z
+      - _ulid: 01KKZVR6MZDNZ8FK6CQM5AVA9E
+        actor: plan-reviewer@kspec
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-18T06:57:23.616Z
+      - _ulid: 01KKZVR6N09126VS08FDHFEN5Q
+        actor: plan-reviewer@kspec
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T06:57:23.616Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -12630,7 +12643,14 @@ reviews:
               applies.' under stale workspace handling should be updated or removed.
             created_at: 2026-03-18T06:57:04.695Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: 537c5f637817
+        decision: approve
+        reviewer: plan-reviewer@kspec
+        role: reviewer
+        created_at: 2026-03-18T06:57:23.477Z
     created_at: 2026-03-18T06:47:54.918Z
-    updated_at: 2026-03-18T06:57:04.695Z
+    updated_at: 2026-03-18T06:57:23.477Z
     notes: []
