@@ -106497,7 +106497,7 @@
   spec_ref: "@dispatch-sync-configuration"
   plan_ref: "@plan-dispatch-remote-sync"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -106506,7 +106506,9 @@
     - dispatch
     - config
   vcs_refs: []
+  session_id: 01KM02P9GVNG1JMJ48WXK8EFWE
   created_at: 2026-03-18T07:07:45.922Z
+  started_at: 2026-03-18T08:59:00.852Z
   notes: []
   todos: []
   automation: eligible
