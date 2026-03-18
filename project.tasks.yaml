@@ -103949,8 +103949,13 @@
   spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev (8166d8d65). Applied raw-data-preservation pattern to all meta manifest
+    mutation functions (saveObservation, deleteObservation, saveMetaItem, deleteMetaItem). Mutations
+    now read raw YAML, modify only the target section/item, and preserve other sections as raw data
+    — preventing Zod schema defaults from polluting YAML output with absent sections. 7 new
+    round-trip stability tests cover all mutation paths. All gates passed.
   depends_on: []
   context: []
   priority: 3
@@ -103971,6 +103976,7 @@
   created_at: 2026-03-17T06:05:26.319Z
   started_at: 2026-03-18T07:50:33.077Z
   submitted_at: 2026-03-18T07:50:40.356Z
+  completed_at: 2026-03-18T08:05:21.771Z
   notes:
     - _ulid: 01KKY020B7Y949EJ6JJ9F546Z8
       content: "Applied raw-data-preservation pattern to meta.ts mutation functions (saveObservation,
