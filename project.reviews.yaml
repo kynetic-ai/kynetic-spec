@@ -14869,3 +14869,29 @@ reviews:
     created_at: 2026-03-18T10:47:41.708Z
     updated_at: 2026-03-18T10:59:03.058Z
     notes: []
+  - _ulid: 01KM0A3VP2A5X21RPYTQZSF5W0
+    slugs: []
+    title: "Review: Define event payload schemas"
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0A3VP2NVMCG310XMR3JNPT
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T11:08:25.666Z
+    examined_commit: e12343839501de77cb22fc5d810ca6b17cdb6378
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKZPVGQBTNWQK6NCTG0N349A"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T11:08:25.666Z
+    updated_at: null
+    notes: []
