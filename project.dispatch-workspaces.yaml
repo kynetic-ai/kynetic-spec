@@ -11344,7 +11344,7 @@ workspaces:
         head: e5df80e26f4b1c62b427f72f4cb94bb2feaa23ff
         last_seen_at: 2026-03-18T16:45:16.141Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remediate-review-versions-01km0nwk
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 9d5e929d1472e459b4ecb77108c3ba012ed963f9
     bootstrap:
       status: succeeded
@@ -11391,7 +11391,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T17:09:17.141Z
+      updated_at: 2026-03-18T17:09:18.227Z
     integration:
       status: pending
       detail: null
@@ -11406,10 +11406,10 @@ workspaces:
     task_slug: task-migrate-triggers
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-18T16:51:45.731Z
-      last_reconciled_at: 2026-03-18T17:09:17.141Z
+      last_active_at: 2026-03-18T17:09:18.227Z
+      last_reconciled_at: 2026-03-18T17:09:18.227Z
       created_at: 2026-03-18T16:51:44.574Z
-      updated_at: 2026-03-18T17:09:17.598Z
+      updated_at: 2026-03-18T17:09:18.227Z
     workspace_id: dispatch-workspace-01KKZPW71H0KTRJY3HFF7YDNT9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
