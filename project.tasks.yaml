@@ -104721,6 +104721,43 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T00:46:58.687Z
+    - _ulid: 01KKZ6KHPAE5TPBWNRHR843FRV
+      content: >-
+        Review cycle 1 — request_changes (review @01KKZ6FM).
+
+
+        BLOCKER 1: resolveIntegrationRecord (workspace.ts:696) always prefers
+        existingRecord.integration.target_commit over the fresh targetCommit parameter via nullish
+        coalescing. When the integration target branch is updated (e.g. main→dev), the caller
+        correctly computes a new baseBranchPoint but resolveIntegrationRecord ignores it. Result:
+        target_branch updates correctly but target_commit stays stale.
+
+
+        BLOCKER 2: No test verifies target_commit is updated after retargeting. The auto-update test
+        checks target_branch and resolved_base_branch but not target_commit — this would catch
+        blocker 1.
+
+
+        NIT: Missing N/A annotations for @trait-error-guidance ac-3 through ac-6 in the new describe
+        block.
+
+
+        Evidence log:
+
+        Files read: workspace.ts (442-489, 684-702, 916-965, 2090-2180, 2225-2245),
+        dispatch-workspace-config.test.ts (full), review-cli.test.ts (140-165)
+
+        Commands run: npm test (full), npm test dispatch-workspace-config.test.ts, kspec validate,
+        kspec item get @dispatch-workspace-configuration
+
+        Claims verified: toMetadata reads integration.target_branch at line 938-939 — confirmed, but
+        target_commit staleness undermines the claim.
+
+        Categories: correctness (bug found), edge cases (OK), error handling (OK), test quality
+        (gap), integration (bug), AC coverage (own+trait OK)
+      supersedes: null
+      author: pr-reviewer@dispatch
+      created_at: 2026-03-18T00:47:50.986Z
   todos: []
   automation: eligible
 - _ulid: 01KKXEMGJ20X5RB4GMFYGSQH6Y
