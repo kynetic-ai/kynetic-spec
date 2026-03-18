@@ -12996,6 +12996,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T08:16:18.110Z
+      - _ulid: 01KM0096HK1R663KP1SKKJZSE8
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM0096ECC7D1TAJVM20VSEW5
+        timestamp: 2026-03-18T08:16:34.867Z
     examined_commit: 14505dad0ba356bbfd037257e46aa75b3d9ebbbc
     external_links: []
     lifecycle_state: open
@@ -13005,8 +13012,37 @@ reviews:
       content_hash: ""
       ref: "@task-event-bus"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM0096ECC7D1TAJVM20VSEW5
+        entries:
+          - _ulid: 01KM0096EC3PA5XRAN2YWQQVAE
+            author: "@claude"
+            body: >-
+              Out-of-scope destructive refactor of src/parser/meta.ts. This file was substantially
+              rewritten: ~250 lines deleted, ~130 lines added. The changes remove the
+              raw-data-preservation pattern (extractRawMetaManifest, getRawArray,
+              writeRawMetaManifest, findRawMetaItemIndex, mergeMetaItemPreservingRawShape,
+              itemTypeToField) and replace it with a naive load-parse-save-entire-manifest approach.
+              This breaks @yaml-serialization-invariants ac-3 (round-trip stability) because the new
+              code runs data through MetaManifestSchema.safeParse() which adds Zod-default empty
+              arrays for absent sections (agents, workflows, conventions, skills, includes), and
+              then writes the full manifest back. The withFileLock concurrency guard was also
+              removed from saveObservation, deleteObservation, saveMetaItem, and deleteMetaItem.
+
+
+              This is especially concerning because dev HEAD is literally 'Merge
+              dispatch/task/round-trip-stability-for-meta-manifest-yaml-writes/01kkx6cb into dev' —
+              the immediately preceding merge added the round-trip stability guarantees that this
+              commit reverts.
+
+
+              This change is entirely outside the scope of @task-event-bus which covers
+              @dispatch-event-envelope ac-1 through ac-6 (event envelope, causation, dedup,
+              ordering, chain depth, ring buffer). The meta.ts refactor has zero relationship to the
+              event bus functionality.
+            created_at: 2026-03-18T08:16:34.764Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T08:16:10.197Z
-    updated_at: 2026-03-18T08:16:18.012Z
+    updated_at: 2026-03-18T08:16:34.764Z
     notes: []
