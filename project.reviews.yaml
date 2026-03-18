@@ -11892,6 +11892,12 @@ reviews:
         payload:
           thread_ulid: 01KKZSZPY4HKP15905ENDD6E51
         timestamp: 2026-03-18T06:44:40.899Z
+      - _ulid: 01KKZV10FPYH1H462MBGJZZMAF
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKZT03TJ9A868GW1W7950BAW
+        timestamp: 2026-03-18T06:44:43.638Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -12004,6 +12010,12 @@ reviews:
               consecutive failures) and fold the 'no degraded state' guarantee into
               ac-transient-fetch-failure's then-clause."
             created_at: 2026-03-18T06:26:45.714Z
+          - _ulid: 01KKZV10BBF8220QKNPJXYMHJ2
+            author: "@claude"
+            body: Split into ac-repeated-transient-escalation (escalated warning with count/duration) and
+              ac-repeated-transient-no-degrade (no degraded state for transient failures). Each
+              independently testable.
+            created_at: 2026-03-18T06:44:43.499Z
         kind: blocker
       - _ulid: 01KKZT0EAYZ9HK62N4693BR9JJ
         anchor:
@@ -12255,5 +12267,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-18T06:31:04.294Z
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:44:40.759Z
+    updated_at: 2026-03-18T06:44:43.499Z
     notes: []
