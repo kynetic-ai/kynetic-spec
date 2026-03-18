@@ -14219,6 +14219,21 @@ reviews:
         runner: kspec
         created_at: 2026-03-18T10:21:49.898Z
         completed_at: 2026-03-18T10:21:49.898Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0bc7850b39f
+          head_commit: a8052bd5b059
+        evidence: "All 7 task-scoped ACs have test annotations: ac-pull-target-on-start,
+          ac-pull-target-periodic, ac-pull-target-periodic-deferred,
+          ac-pull-target-before-provision, ac-pull-ff-only, ac-transient-no-degrade, ac-no-remote.
+          Trait @trait-error-guidance is N/A for this task (internal engine behavior, no CLI
+          commands added). Source annotations present for all ACs."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T10:21:58.779Z
+        completed_at: 2026-03-18T10:21:58.779Z
     events:
       - _ulid: 01KM07CSMC4ARJHS0H4P4X1D67
         actor: "@claude"
@@ -14268,6 +14283,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-18T10:21:50.022Z
+      - _ulid: 01KM07ET7KCBK5TPZ96TK3EJDY
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T10:21:58.900Z
     examined_commit: a8052bd5b059db13078127383a5d80362dc490c5
     external_links: []
     lifecycle_state: open
@@ -14372,5 +14394,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T10:20:52.748Z
-    updated_at: 2026-03-18T10:21:49.898Z
+    updated_at: 2026-03-18T10:21:58.779Z
     notes: []
