@@ -17249,3 +17249,29 @@ reviews:
     created_at: 2026-03-18T15:03:55.273Z
     updated_at: 2026-03-18T15:05:27.309Z
     notes: []
+  - _ulid: 01KM0QRH5WQRH14NRH61K3M96A
+    slugs: []
+    title: Review task-spec-review-version-auto-derive
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0QRH5WQ6K96FR61XAA9S29
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T15:06:54.524Z
+    examined_commit: 2dcce1c1b50abdac83c5d5dd1add93610e82e8e4
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-spec-review-version-auto-derive"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T15:06:54.524Z
+    updated_at: null
+    notes: []
