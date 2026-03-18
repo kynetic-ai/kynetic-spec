@@ -12491,3 +12491,29 @@ reviews:
     created_at: 2026-03-18T06:24:50.713Z
     updated_at: 2026-03-18T06:47:40.493Z
     notes: []
+  - _ulid: 01KKZV6V96V281PFNMW0915Z32
+    slugs: []
+    title: Review dispatch-remote-sync plan (pass 2)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKZV6V96F7RVB0JX539PQ21H
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T06:47:54.918Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-dispatch-remote-sync"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T06:47:54.918Z
+    updated_at: null
+    notes: []
