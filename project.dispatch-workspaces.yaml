@@ -7898,7 +7898,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T08:05:38.875Z
+      updated_at: 2026-03-18T08:05:51.400Z
     integration:
       status: merged
       detail: integration:merged
@@ -7914,18 +7914,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T07:50:57.784Z
-      last_reconciled_at: 2026-03-18T08:05:49.639Z
+      last_reconciled_at: 2026-03-18T08:05:51.400Z
       created_at: 2026-03-17T13:01:44.402Z
-      updated_at: 2026-03-18T08:05:49.639Z
+      updated_at: 2026-03-18T08:05:51.400Z
     workspace_id: dispatch-workspace-01KKX6CBDFNMXPC405SRZ3RG0N
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 9bbc04d7ab08b2c26aed873d58a40332421cb0d7
-        last_seen_at: 2026-03-18T07:50:56.949Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-meta-manifest-yaml-writes-01kkx6cb-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/round-trip-stability-for-meta-manifest-yaml-writes/01kkx6cb
