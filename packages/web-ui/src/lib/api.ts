@@ -28,6 +28,7 @@ import type {
 	PlanDetail,
 	ReviewSummary,
 	ReviewDetail,
+	ReviewThread,
 	ErrorResponse,
 	SearchResponse,
 	AgentDefinition,
@@ -1351,6 +1352,160 @@ export async function fetchReviewsForTask(taskRef: string): Promise<PaginatedRes
 	const response = await fetch(url.toString(), {
 		headers: getProjectHeaders()
 	});
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
+// Review Interaction API Functions
+// AC: @review-records-web-ui ac-3, ac-4, ac-5, ac-6
+// ============================================================
+
+/**
+ * Create a new thread (comment) on a review.
+ * AC: @review-records-web-ui ac-3
+ */
+export async function createReviewThread(
+	reviewId: string,
+	data: { body: string; kind?: 'blocker' | 'question' | 'nit'; author?: string }
+): Promise<ReviewThread> {
+	assertWritable('add comment to review');
+
+	const response = await fetch(
+		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments`,
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				...getProjectHeaders()
+			},
+			body: JSON.stringify(data)
+		}
+	);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Reply to an existing thread on a review.
+ * AC: @review-records-web-ui ac-4
+ */
+export async function replyToReviewThread(
+	reviewId: string,
+	threadId: string,
+	data: { body: string; author?: string }
+): Promise<ReviewThread> {
+	assertWritable('reply to review thread');
+
+	const response = await fetch(
+		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments/${encodeURIComponent(threadId)}/replies`,
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				...getProjectHeaders()
+			},
+			body: JSON.stringify(data)
+		}
+	);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Resolve a thread on a review.
+ * AC: @review-records-web-ui ac-5
+ */
+export async function resolveReviewThread(
+	reviewId: string,
+	threadId: string,
+	actor?: string
+): Promise<ReviewThread> {
+	assertWritable('resolve review thread');
+
+	const response = await fetch(
+		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments/${encodeURIComponent(threadId)}/resolve`,
+		{
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+				...getProjectHeaders()
+			},
+			body: JSON.stringify({ actor: actor || 'anonymous' })
+		}
+	);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Reopen a resolved thread on a review.
+ * AC: @review-records-web-ui ac-5
+ */
+export async function reopenReviewThread(
+	reviewId: string,
+	threadId: string,
+	actor?: string
+): Promise<ReviewThread> {
+	assertWritable('reopen review thread');
+
+	const response = await fetch(
+		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/comments/${encodeURIComponent(threadId)}/reopen`,
+		{
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json',
+				...getProjectHeaders()
+			},
+			body: JSON.stringify({ actor: actor || 'anonymous' })
+		}
+	);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+/**
+ * Submit a verdict on a review.
+ * AC: @review-records-web-ui ac-6
+ */
+export async function submitReviewVerdict(
+	reviewId: string,
+	data: { decision: 'approve' | 'request_changes' | 'comment'; reviewer: string; role?: string }
+): Promise<{
+	review_ulid: string;
+	decision: string;
+	reviewer: string;
+	lifecycle_state: string;
+	disposition: string;
+}> {
+	assertWritable('submit review verdict');
+
+	const response = await fetch(
+		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/verdicts`,
+		{
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				...getProjectHeaders()
+			},
+			body: JSON.stringify(data)
+		}
+	);
 	if (!response.ok) {
 		await handleResponseError(response);
 	}

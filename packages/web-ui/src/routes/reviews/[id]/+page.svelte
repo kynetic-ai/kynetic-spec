@@ -1,5 +1,9 @@
 <!--
   AC: @review-records-web-ui ac-2 — Review detail page with threads, checks, verdicts, disposition
+  AC: @review-records-web-ui ac-3 — Add Comment: create new thread with body and kind selection
+  AC: @review-records-web-ui ac-4 — Reply: add reply to existing thread
+  AC: @review-records-web-ui ac-5 — Resolve/Reopen: toggle thread resolution state
+  AC: @review-records-web-ui ac-6 — Verdict submission with disposition update
   AC: @review-records-web-ui ac-8 — Markdown rendering with syntax highlighting in thread bodies
   AC: @review-records-web-ui ac-9 — Author identity and relative timestamp on thread entries
   AC: @review-records-web-ui ac-10 — Empty state messages for sections with no items
@@ -11,11 +15,20 @@
 	import { goto } from '$app/navigation';
 	import { onMount, onDestroy } from 'svelte';
 	import type { ReviewDetail, ReviewSummary, ReviewThread, BroadcastEvent } from '@kynetic-ai/shared';
-	import { createQuery, useQueryClient } from '@tanstack/svelte-query';
+	import { createQuery, createMutation, useQueryClient } from '@tanstack/svelte-query';
 	import { Badge } from '$lib/components/ui/badge';
-	import { fetchReview, fetchReviewSiblings } from '$lib/api';
+	import {
+		fetchReview,
+		fetchReviewSiblings,
+		createReviewThread,
+		replyToReviewThread,
+		resolveReviewThread,
+		reopenReviewThread,
+		submitReviewVerdict,
+	} from '$lib/api';
 	import { subscribe, unsubscribe, on, off } from '$lib/stores/connection.svelte';
 	import { isInitialized as isProjectInitialized } from '$lib/stores/project.svelte';
+	import { isStaticMode, ReadOnlyModeError } from '$lib/stores/mode.svelte';
 	import { queryKeys } from '$lib/query/keys.js';
 	import { renderMarkdown } from '$lib/utils/markdown';
 	import { shortRef, normalizeRef, refHref } from '$lib/utils/reference';
@@ -277,6 +290,128 @@
 	function navigateToRevision(ulid: string) {
 		goto(`${base}/reviews/${ulid}`);
 	}
+
+	// --- Interaction state ---
+	let mutationError = $state('');
+
+	// AC: @review-records-web-ui ac-3 — Add Comment form state
+	let showAddComment = $state(false);
+	let commentBody = $state('');
+	let commentKind = $state<'blocker' | 'question' | 'nit'>('nit');
+
+	const addCommentMutation = createMutation(() => ({
+		mutationFn: (data: { body: string; kind: 'blocker' | 'question' | 'nit' }) =>
+			createReviewThread(reviewId, data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.reviews.detail(reviewId) });
+			showAddComment = false;
+			commentBody = '';
+			commentKind = 'nit';
+			mutationError = '';
+		},
+		onError: (err: Error) => {
+			mutationError = err instanceof ReadOnlyModeError
+				? err.message
+				: err.message || 'Failed to add comment';
+		},
+	}));
+
+	function handleAddComment() {
+		if (!commentBody.trim()) return;
+		mutationError = '';
+		addCommentMutation.mutate({ body: commentBody.trim(), kind: commentKind });
+	}
+
+	// AC: @review-records-web-ui ac-4 — Reply form state (per-thread)
+	let replyingToThread = $state<string | null>(null);
+	let replyBody = $state('');
+
+	const replyMutation = createMutation(() => ({
+		mutationFn: (data: { threadId: string; body: string }) =>
+			replyToReviewThread(reviewId, data.threadId, { body: data.body }),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.reviews.detail(reviewId) });
+			replyingToThread = null;
+			replyBody = '';
+			mutationError = '';
+		},
+		onError: (err: Error) => {
+			mutationError = err instanceof ReadOnlyModeError
+				? err.message
+				: err.message || 'Failed to reply';
+		},
+	}));
+
+	function handleReply(threadId: string) {
+		if (!replyBody.trim()) return;
+		mutationError = '';
+		replyMutation.mutate({ threadId, body: replyBody.trim() });
+	}
+
+	function openReplyForm(threadId: string) {
+		replyingToThread = threadId;
+		replyBody = '';
+	}
+
+	// AC: @review-records-web-ui ac-5 — Resolve/Reopen thread
+	const resolveMutation = createMutation(() => ({
+		mutationFn: (threadId: string) => resolveReviewThread(reviewId, threadId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.reviews.detail(reviewId) });
+			mutationError = '';
+		},
+		onError: (err: Error) => {
+			mutationError = err instanceof ReadOnlyModeError
+				? err.message
+				: err.message || 'Failed to resolve thread';
+		},
+	}));
+
+	const reopenMutation = createMutation(() => ({
+		mutationFn: (threadId: string) => reopenReviewThread(reviewId, threadId),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.reviews.detail(reviewId) });
+			mutationError = '';
+		},
+		onError: (err: Error) => {
+			mutationError = err instanceof ReadOnlyModeError
+				? err.message
+				: err.message || 'Failed to reopen thread';
+		},
+	}));
+
+	// AC: @review-records-web-ui ac-6 — Verdict submission state
+	let verdictDecision = $state<'approve' | 'request_changes' | 'comment'>('approve');
+	let verdictReviewer = $state('');
+
+	const verdictMutation = createMutation(() => ({
+		mutationFn: (data: { decision: 'approve' | 'request_changes' | 'comment'; reviewer: string }) =>
+			submitReviewVerdict(reviewId, data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: queryKeys.reviews.detail(reviewId) });
+			queryClient.invalidateQueries({ queryKey: queryKeys.reviews.all });
+			verdictReviewer = '';
+			mutationError = '';
+		},
+		onError: (err: Error) => {
+			mutationError = err instanceof ReadOnlyModeError
+				? err.message
+				: err.message || 'Failed to submit verdict';
+		},
+	}));
+
+	function handleSubmitVerdict() {
+		if (!verdictReviewer.trim()) return;
+		mutationError = '';
+		verdictMutation.mutate({ decision: verdictDecision, reviewer: verdictReviewer.trim() });
+	}
+
+	// Check if review is in a state that accepts interactions
+	let isInteractive = $derived(
+		review != null &&
+		review.lifecycle_state !== 'archived' &&
+		!isStaticMode()
+	);
 </script>
 
 <div class="flex flex-col gap-6 p-6 min-w-0">
@@ -297,6 +432,12 @@
 	{#if error}
 		<div class="bg-destructive/10 text-destructive p-4 rounded-lg" data-testid="error-message" role="alert">
 			{error}
+		</div>
+	{/if}
+
+	{#if mutationError}
+		<div class="bg-destructive/10 text-destructive p-4 rounded-lg" data-testid="mutation-error" role="alert">
+			{mutationError}
 		</div>
 	{/if}
 
@@ -375,14 +516,80 @@
 
 		<!-- Threads Section -->
 		<section data-testid="threads-section">
-			<h2 class="text-lg font-semibold mb-3">
-				Threads
-				{#if review.threads.length > 0}
-					<span class="text-sm font-normal text-muted-foreground ml-1">
-						({unresolvedThreads.length} open, {resolvedThreads.length} resolved)
-					</span>
+			<div class="flex items-center justify-between mb-3">
+				<h2 class="text-lg font-semibold">
+					Threads
+					{#if review.threads.length > 0}
+						<span class="text-sm font-normal text-muted-foreground ml-1">
+							({unresolvedThreads.length} open, {resolvedThreads.length} resolved)
+						</span>
+					{/if}
+				</h2>
+				<!-- AC: @review-records-web-ui ac-3 — Add Comment button -->
+				{#if isInteractive}
+					<button
+						type="button"
+						class="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+						data-testid="add-comment-button"
+						onclick={() => { showAddComment = !showAddComment; }}
+					>
+						<svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M12 5v14M5 12h14"/>
+						</svg>
+						Add Comment
+					</button>
 				{/if}
-			</h2>
+			</div>
+
+			<!-- AC: @review-records-web-ui ac-3 — Add Comment form -->
+			{#if showAddComment}
+				<div class="border rounded-lg p-4 mb-4" data-testid="add-comment-form">
+					<div class="flex flex-col gap-3">
+						<div>
+							<label for="comment-kind" class="block text-sm font-medium mb-1">Kind</label>
+							<select
+								id="comment-kind"
+								class="rounded-md border bg-background px-3 py-1.5 text-sm w-full max-w-xs"
+								data-testid="comment-kind-select"
+								bind:value={commentKind}
+							>
+								<option value="nit">Nit</option>
+								<option value="question">Question</option>
+								<option value="blocker">Blocker</option>
+							</select>
+						</div>
+						<div>
+							<label for="comment-body" class="block text-sm font-medium mb-1">Comment</label>
+							<textarea
+								id="comment-body"
+								class="w-full rounded-md border bg-background px-3 py-2 text-sm min-h-[80px] resize-y"
+								data-testid="comment-body-input"
+								placeholder="Write your comment..."
+								bind:value={commentBody}
+							></textarea>
+						</div>
+						<div class="flex items-center gap-2">
+							<button
+								type="button"
+								class="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+								data-testid="comment-submit-button"
+								disabled={!commentBody.trim() || addCommentMutation.isPending}
+								onclick={handleAddComment}
+							>
+								{addCommentMutation.isPending ? 'Submitting...' : 'Submit'}
+							</button>
+							<button
+								type="button"
+								class="rounded-md border px-3 py-1.5 text-sm font-medium hover:bg-muted transition-colors"
+								data-testid="comment-cancel-button"
+								onclick={() => { showAddComment = false; commentBody = ''; }}
+							>
+								Cancel
+							</button>
+						</div>
+					</div>
+				</div>
+			{/if}
 
 			<!-- AC: @review-records-web-ui ac-10 — Empty state for threads -->
 			{#if review.threads.length === 0}
@@ -403,7 +610,7 @@
 						>
 							<!-- Thread header -->
 							<div class="flex items-center gap-2 px-4 py-2 bg-muted/30 border-b">
-								<!-- AC: @review-records-web-ui ac-2 — Kind badges (blocker=red, question=amber, nit=gray) -->
+								<!-- AC: @review-records-web-ui ac-2 — Kind badges -->
 								<Badge data-testid="thread-kind-badge" class={getKindColor(thread.kind)}>
 									{formatKind(thread.kind)}
 								</Badge>
@@ -412,19 +619,26 @@
 										{anchorText}
 									</span>
 								{/if}
-								<!-- AC: @review-records-web-ui ac-2 — Resolution state -->
-								<span class="ml-auto text-xs" data-testid="thread-status">
-									{#if thread.resolved_at}
-										<span class="text-emerald-600 dark:text-emerald-400">Resolved</span>
-									{:else}
-										<span class="text-amber-600 dark:text-amber-400">Open</span>
+								<div class="ml-auto flex items-center gap-2">
+									<!-- AC: @review-records-web-ui ac-5 — Resolve button for blocker/question threads -->
+									{#if isInteractive && (thread.kind === 'blocker' || thread.kind === 'question')}
+										<button
+											type="button"
+											class="text-xs rounded px-2 py-0.5 border hover:bg-muted transition-colors disabled:opacity-50"
+											data-testid="thread-resolve-button"
+											disabled={resolveMutation.isPending}
+											onclick={() => resolveMutation.mutate(thread._ulid)}
+										>
+											Resolve
+										</button>
 									{/if}
-								</span>
+									<span class="text-xs" data-testid="thread-status">
+										<span class="text-amber-600 dark:text-amber-400">Open</span>
+									</span>
+								</div>
 							</div>
 
-							<!-- AC: @review-records-web-ui ac-2 — Thread entries as conversation view -->
-							<!-- AC: @review-records-web-ui ac-8 — Markdown rendering in bodies -->
-							<!-- AC: @review-records-web-ui ac-9 — Author and relative timestamp -->
+							<!-- Thread entries -->
 							<div class="divide-y">
 								{#each thread.entries as entry (entry._ulid)}
 									<div class="px-4 py-3" data-testid="thread-entry">
@@ -449,6 +663,50 @@
 									</div>
 								{/each}
 							</div>
+
+							<!-- AC: @review-records-web-ui ac-4 — Reply form -->
+							{#if isInteractive}
+								<div class="border-t px-4 py-2">
+									{#if replyingToThread === thread._ulid}
+										<div class="flex flex-col gap-2" data-testid="reply-form">
+											<textarea
+												class="w-full rounded-md border bg-background px-3 py-2 text-sm min-h-[60px] resize-y"
+												data-testid="reply-body-input"
+												placeholder="Write your reply..."
+												bind:value={replyBody}
+											></textarea>
+											<div class="flex items-center gap-2">
+												<button
+													type="button"
+													class="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+													data-testid="reply-submit-button"
+													disabled={!replyBody.trim() || replyMutation.isPending}
+													onclick={() => handleReply(thread._ulid)}
+												>
+													{replyMutation.isPending ? 'Submitting...' : 'Reply'}
+												</button>
+												<button
+													type="button"
+													class="rounded-md border px-3 py-1.5 text-sm font-medium hover:bg-muted transition-colors"
+													data-testid="reply-cancel-button"
+													onclick={() => { replyingToThread = null; replyBody = ''; }}
+												>
+													Cancel
+												</button>
+											</div>
+										</div>
+									{:else}
+										<button
+											type="button"
+											class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+											data-testid="thread-reply-button"
+											onclick={() => openReplyForm(thread._ulid)}
+										>
+											Reply
+										</button>
+									{/if}
+								</div>
+							{/if}
 						</div>
 					{/each}
 
@@ -476,9 +734,23 @@
 													{anchorText}
 												</span>
 											{/if}
-											<span class="ml-auto text-xs text-emerald-600 dark:text-emerald-400" data-testid="thread-status">
-												Resolved
-											</span>
+											<div class="ml-auto flex items-center gap-2">
+												<!-- AC: @review-records-web-ui ac-5 — Reopen button for resolved blocker/question threads -->
+												{#if isInteractive && (thread.kind === 'blocker' || thread.kind === 'question')}
+													<button
+														type="button"
+														class="text-xs rounded px-2 py-0.5 border hover:bg-muted transition-colors disabled:opacity-50"
+														data-testid="thread-reopen-button"
+														disabled={reopenMutation.isPending}
+														onclick={() => reopenMutation.mutate(thread._ulid)}
+													>
+														Reopen
+													</button>
+												{/if}
+												<span class="text-xs text-emerald-600 dark:text-emerald-400" data-testid="thread-status">
+													Resolved
+												</span>
+											</div>
 										</div>
 										<div class="divide-y">
 											{#each thread.entries as entry (entry._ulid)}
@@ -504,6 +776,50 @@
 												</div>
 											{/each}
 										</div>
+
+										<!-- AC: @review-records-web-ui ac-4 — Reply form on resolved threads -->
+										{#if isInteractive}
+											<div class="border-t px-4 py-2">
+												{#if replyingToThread === thread._ulid}
+													<div class="flex flex-col gap-2" data-testid="reply-form">
+														<textarea
+															class="w-full rounded-md border bg-background px-3 py-2 text-sm min-h-[60px] resize-y"
+															data-testid="reply-body-input"
+															placeholder="Write your reply..."
+															bind:value={replyBody}
+														></textarea>
+														<div class="flex items-center gap-2">
+															<button
+																type="button"
+																class="rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+																data-testid="reply-submit-button"
+																disabled={!replyBody.trim() || replyMutation.isPending}
+																onclick={() => handleReply(thread._ulid)}
+															>
+																{replyMutation.isPending ? 'Submitting...' : 'Reply'}
+															</button>
+															<button
+																type="button"
+																class="rounded-md border px-3 py-1.5 text-sm font-medium hover:bg-muted transition-colors"
+																data-testid="reply-cancel-button"
+																onclick={() => { replyingToThread = null; replyBody = ''; }}
+															>
+																Cancel
+															</button>
+														</div>
+													</div>
+												{:else}
+													<button
+														type="button"
+														class="text-sm text-muted-foreground hover:text-foreground transition-colors"
+														data-testid="thread-reply-button"
+														onclick={() => openReplyForm(thread._ulid)}
+													>
+														Reply
+													</button>
+												{/if}
+											</div>
+										{/if}
 									</div>
 								{/each}
 							</div>
@@ -613,5 +929,51 @@
 				</div>
 			{/if}
 		</section>
+
+		<!-- AC: @review-records-web-ui ac-6 — Verdict submission panel -->
+		{#if isInteractive}
+			<section data-testid="verdict-submission-section">
+				<h2 class="text-lg font-semibold mb-3">Submit Verdict</h2>
+				<div class="border rounded-lg p-4" data-testid="verdict-form">
+					<div class="flex flex-col gap-3">
+						<div>
+							<label for="verdict-decision" class="block text-sm font-medium mb-1">Decision</label>
+							<select
+								id="verdict-decision"
+								class="rounded-md border bg-background px-3 py-1.5 text-sm w-full max-w-xs"
+								data-testid="verdict-decision-select"
+								bind:value={verdictDecision}
+							>
+								<option value="approve">Approve</option>
+								<option value="request_changes">Request Changes</option>
+								<option value="comment">Comment</option>
+							</select>
+						</div>
+						<div>
+							<label for="verdict-reviewer" class="block text-sm font-medium mb-1">Reviewer</label>
+							<input
+								id="verdict-reviewer"
+								type="text"
+								class="w-full max-w-sm rounded-md border bg-background px-3 py-1.5 text-sm"
+								data-testid="verdict-reviewer-input"
+								placeholder="your@email.com"
+								bind:value={verdictReviewer}
+							/>
+						</div>
+						<div>
+							<button
+								type="button"
+								class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+								data-testid="verdict-submit-button"
+								disabled={!verdictReviewer.trim() || verdictMutation.isPending}
+								onclick={handleSubmitVerdict}
+							>
+								{verdictMutation.isPending ? 'Submitting...' : 'Submit Verdict'}
+							</button>
+						</div>
+					</div>
+				</div>
+			</section>
+		{/if}
 	{/if}
 </div>
