@@ -18593,7 +18593,18 @@ reviews:
     slugs: []
     title: Review task-migrate-triggers (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 9d5e929d1472e459b4ecb77108c3ba012ed963f9
+          head_commit: cae35ae3ffd1e6af9095ae533906687eaef9b211
+        evidence: 6510 tests passed, 1 pre-existing failure (review-cli.test.ts unrelated to task), 3 skipped
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T17:14:34.560Z
+        completed_at: 2026-03-18T17:14:34.560Z
     events:
       - _ulid: 01KM0Z1BRPYK5VBE50QW32NEJ1
         actor: "@claude"
@@ -18615,6 +18626,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM0Z1XDVV75YMNPFQWKJV68Z
         timestamp: 2026-03-18T17:14:22.174Z
+      - _ulid: 01KM0Z29VJ0E5X6K8ZVJG64TJQ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T17:14:34.738Z
     examined_commit: cae35ae3ffd1e6af9095ae533906687eaef9b211
     external_links: []
     lifecycle_state: open
@@ -18644,5 +18662,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T17:14:03.926Z
-    updated_at: 2026-03-18T17:14:22.011Z
+    updated_at: 2026-03-18T17:14:34.560Z
     notes: []
