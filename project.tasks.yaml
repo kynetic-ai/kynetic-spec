@@ -107499,6 +107499,7 @@
   created_at: 2026-03-18T14:32:54.391Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM0NTQE36W7XMHAZB0V7KTXN
   slugs:
     - task-cli-verdict-auto-version
@@ -107526,6 +107527,7 @@
   created_at: 2026-03-18T14:33:09.314Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM0NV0DPS9AS0HY7VB9K2EYS
   slugs:
     - task-cli-check-auto-version
@@ -107552,6 +107554,7 @@
   created_at: 2026-03-18T14:33:18.518Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM0NVT06TE182ZWP2B5KNA6N
   slugs:
     - task-cli-shared-disposition
@@ -107579,6 +107582,7 @@
   created_at: 2026-03-18T14:33:44.710Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM0NW5NMJJDWRHKVQGDERHQM
   slugs:
     - task-review-skill-version-docs
@@ -107605,6 +107609,7 @@
   created_at: 2026-03-18T14:33:56.660Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM0NWK9Q2HKKF679ASD081B8
   slugs:
     - task-remediate-review-versions
@@ -107632,3 +107637,4 @@
   created_at: 2026-03-18T14:34:10.615Z
   notes: []
   todos: []
+  automation: eligible
