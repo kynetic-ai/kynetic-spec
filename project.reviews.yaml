@@ -16021,6 +16021,20 @@ reviews:
         runner: kspec
         created_at: 2026-03-18T13:09:33.583Z
         completed_at: 2026-03-18T13:09:33.583Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 263970e4d
+          head_commit: ef2de07af
+        evidence: "All in-scope ACs have annotated tests: schema ac-1 (3 tests), schema ac-2 (2 tests),
+          patterns ac-2 (2 tests), patterns ac-3 (1 test), correlation ac-1 (2 tests), correlation
+          ac-2 (1 test), correlation ac-3 (1 test), correlation ac-4 (1 test). Tests substantively
+          prove their ACs — assertions match AC language."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T13:09:40.910Z
+        completed_at: 2026-03-18T13:09:40.910Z
     events:
       - _ulid: 01KM0GNSYXVS484DY6DB8KBQ1N
         actor: "@claude"
@@ -16049,6 +16063,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-18T13:09:33.725Z
+      - _ulid: 01KM0H1WJ25WHK5DK9SPN8PHR4
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T13:09:41.058Z
     examined_commit: ef2de07afb865a97e51fc45a65ef8f53a68d0afe
     external_links: []
     lifecycle_state: open
@@ -16061,5 +16082,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T13:03:05.181Z
-    updated_at: 2026-03-18T13:09:33.583Z
+    updated_at: 2026-03-18T13:09:40.910Z
     notes: []
