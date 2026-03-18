@@ -15425,6 +15425,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T12:08:50.167Z
         completed_at: 2026-03-18T12:08:50.167Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 4aaa260c9aae
+          head_commit: b8ba5c896287
+        evidence: "Own AC coverage: @dispatch-hook-system ac-1 through ac-5 all have annotated tests in
+          tests/hook-executor.test.ts. Trait AC coverage: @trait-error-guidance ac-1 through ac-6
+          all annotated as N/A with valid reasoning (internal engine component)."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T12:08:57.975Z
+        completed_at: 2026-03-18T12:08:57.975Z
     events:
       - _ulid: 01KM0DGC46DFH57BDZ3M644S5T
         actor: "@claude"
@@ -15481,6 +15494,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T12:08:50.301Z
+      - _ulid: 01KM0DJPZRDSD3K6ZAZR216TA5
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T12:08:58.104Z
     examined_commit: b8ba5c896287d16de213398aefa3a81c50460faa
     external_links: []
     lifecycle_state: open
@@ -15586,5 +15606,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-18T12:07:41.447Z
-    updated_at: 2026-03-18T12:08:50.167Z
+    updated_at: 2026-03-18T12:08:57.975Z
     notes: []
