@@ -106770,6 +106770,18 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T10:22:43.942Z
+    - _ulid: 01KM07XQRQRBAMMAGQ3S7Y163K
+      content: "Fixed MUST-FIX blocker from review cycle 1: added _isTargetSyncStale() gate to
+        _reconcile() sync guard (line 1211) so sync respects sync_interval instead of running every
+        reconciliation pass. Updated ac-pull-target-periodic test to exercise _reconcile() path
+        directly — verifies fresh timestamp skips sync, stale timestamp triggers it. Updated
+        ac-pull-target-periodic-deferred test to backdate timestamp before reconcile calls. Also
+        addressed suggestions: removed dead code (already-up-to-date check in non-zero exit path,
+        lines 2582-2588) and clarified GIT_WORK_TREE comment (line 2573). Full suite: 271/272 pass
+        (1 pre-existing review-cli.test.ts failure, unrelated)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T10:30:07.895Z
   todos: []
   automation: eligible
 - _ulid: 01KKZWB80XVKFH4V056NHB9H6T
