@@ -3605,7 +3605,7 @@ requirements:
           and inline comment threading anchored to specific diff lines.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
