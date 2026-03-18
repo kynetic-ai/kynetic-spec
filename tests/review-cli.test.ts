@@ -49,7 +49,8 @@ describe("Integration: review CLI commands", () => {
       expect(result.subject.ref).toBe("@task-slug");
       expect(result.author).toBeDefined();
       expect(result.disposition).toBe("pending");
-      expect(result.gate_state).toBe("pending");
+      // No required checks → gate is trivially passing (vacuous truth, aligns with shared evaluateGates)
+      expect(result.gate_state).toBe("passing");
     });
 
     // AC: @review-cli-creation-and-query ac-2
@@ -205,7 +206,8 @@ describe("Integration: review CLI commands", () => {
       expect(result.title).toBe("Detail Review");
       expect(result.lifecycle_state).toBe("draft");
       expect(result.disposition).toBe("pending");
-      expect(result.gate_state).toBe("pending");
+      // No required checks → gate is trivially passing (vacuous truth, aligns with shared evaluateGates)
+      expect(result.gate_state).toBe("passing");
       expect(result.subject.type).toBe("code");
       expect(result.thread_state).toBeDefined();
       expect(result.thread_state.total).toBe(0);
@@ -502,8 +504,8 @@ describe("Integration: review CLI commands", () => {
       }>(`review get @${reviewSlug}`, tempDir);
 
       expect(review.checks[0].required).toBe(false);
-      // Gate should be pending (no required checks)
-      expect(review.gate_state).toBe("pending");
+      // No required checks → gate is trivially passing (vacuous truth, aligns with shared evaluateGates)
+      expect(review.gate_state).toBe("passing");
     });
 
     it("should compute failing gate state", () => {

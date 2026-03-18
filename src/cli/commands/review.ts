@@ -14,6 +14,7 @@ import type { Command } from "commander";
 import { ulid } from "ulid";
 import { markMutating } from "../command-annotations.js";
 import {
+  computeDisposition,
   createReviewRecord,
   findReviewByRef,
   getAuthor,
@@ -30,6 +31,7 @@ import {
   transitionLifecycle,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
+import { evaluateGates } from "../../review/checks.js";
 import { extractSubjectVersion } from "../../review/subject-bindings.js";
 import type {
   ReviewAnchor,
@@ -113,34 +115,12 @@ function shortReviewRef(
 }
 
 /**
- * Compute disposition from verdicts.
- * AC: @review-cli-commands ac-2
- */
-function computeDisposition(review: ReviewRecord): string {
-  if (review.verdicts.length === 0) return "pending";
-  const hasChangesRequested = review.verdicts.some(
-    (v) => v.decision === "request_changes",
-  );
-  if (hasChangesRequested) return "changes_requested";
-  const hasApproval = review.verdicts.some((v) => v.decision === "approve");
-  if (hasApproval) return "approved";
-  return "pending";
-}
-
-/**
- * Compute gate state from checks.
+ * Compute gate state from checks using shared evaluateGates.
  * AC: @review-cli-commands ac-2
  */
 function computeGateState(review: ReviewRecord): string {
-  const requiredChecks = review.checks.filter((c) => c.required);
-  if (requiredChecks.length === 0) return "pending";
-  const allPassing = requiredChecks.every((c) => c.status === "pass");
-  if (allPassing) return "passing";
-  const hasFailing = requiredChecks.some(
-    (c) => c.status === "fail",
-  );
-  if (hasFailing) return "failing";
-  return "pending";
+  const currentVersion = extractSubjectVersion(review.subject);
+  return evaluateGates(review.checks, currentVersion).state;
 }
 
 /**
