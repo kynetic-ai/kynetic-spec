@@ -15924,9 +15924,22 @@ reviews:
           kind: nit
           thread_ulid: 01KM0G25WAT0M99XMDQ85RCXBJ
         timestamp: 2026-03-18T12:52:22.169Z
+      - _ulid: 01KM0G2F846C44BW95GK9P6GJE
+        actor: pr-reviewer@dispatch
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-18T12:52:31.620Z
+      - _ulid: 01KM0G2F84YF013TB9KMWW8966
+        actor: pr-reviewer@dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T12:52:31.621Z
     examined_commit: 8ec6ec10449aeda9152a5a76eba090012d848290
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -15965,7 +15978,15 @@ reviews:
               export correct, no regressions to existing files).
             created_at: 2026-03-18T12:52:22.027Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 263970e4d2877f3e31aebf638a3d949568dd39cc
+          head_commit: 8ec6ec10449aeda9152a5a76eba090012d848290
+        decision: approve
+        reviewer: pr-reviewer@dispatch
+        role: reviewer
+        created_at: 2026-03-18T12:52:31.449Z
     created_at: 2026-03-18T12:51:07.561Z
-    updated_at: 2026-03-18T12:52:22.027Z
+    updated_at: 2026-03-18T12:52:31.449Z
     notes: []
