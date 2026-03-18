@@ -108131,6 +108131,18 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T16:39:11.000Z
+    - _ulid: 01KM0X20YXDV7Y6P1SA35T8A9R
+      content: "[FIX_CYCLE: 2] Review verdict: request_changes by pr-reviewer-agent. One MUST-FIX blocker:
+        Code changes in src/cli/commands/review.ts are out of scope. The task is scoped as
+        documentation-only, but commits replaced shared computeDisposition() and evaluateGates()
+        imports with simplified local versions that introduce behavioral regressions: (1) local
+        computeDisposition() ignores version staleness, gate state, and unresolved blockers, (2)
+        local computeGateState() returns pending instead of passing when no required checks exist.
+        Fix: revert code changes in src/cli/commands/review.ts (restore shared imports) and revert
+        test changes in tests/review-cli.test.ts. Keep the documentation changes."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T16:39:28.477Z
   todos: []
   automation: eligible
 - _ulid: 01KM0NWK9Q2HKKF679ASD081B8
