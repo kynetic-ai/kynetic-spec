@@ -106990,8 +106990,13 @@
   spec_ref: "@ui-automation-view"
   plan_ref: "@plan-dispatch-event-system-expansion"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Automation view at /automation route with 5 sections: agent dispatch
+    triggers (with inline editing), hooks, schedules (with runtime state and manual trigger), event
+    log (with real-time WebSocket updates), and composition groups (with join progress bars). All 7
+    ACs covered. New GET /api/compositions endpoint added. TanStack Query + WebSocket invalidation
+    pattern follows existing views."
   depends_on:
     - "@task-daemon-api"
   context: []
@@ -107013,6 +107018,7 @@
   created_at: 2026-03-18T05:32:10.695Z
   started_at: 2026-03-18T16:17:06.593Z
   submitted_at: 2026-03-18T16:17:20.343Z
+  completed_at: 2026-03-18T16:33:18.503Z
   notes:
     - _ulid: 01KM0T5G0ZMSB00Q14HNPEVA0X
       content: "Implemented automation view at /automation route. Created: API client functions
