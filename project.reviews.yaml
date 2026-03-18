@@ -14692,3 +14692,29 @@ reviews:
     created_at: 2026-03-18T10:30:53.328Z
     updated_at: 2026-03-18T10:40:25.477Z
     notes: []
+  - _ulid: 01KM08XWWCQFHJT7D697F0XGHA
+    slugs: []
+    title: Review dispatch branch push lifecycle
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM08XWWCKC6M8K7HE7WE3EM1
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T10:47:41.708Z
+    examined_commit: 5232b0cf0e354072aea5cc041e6e7e774d077e5d
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKZWB8VH6WS0SSR11DGBMR0R"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T10:47:41.708Z
+    updated_at: null
+    notes: []
