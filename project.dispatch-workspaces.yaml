@@ -8140,12 +8140,17 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-18T02:50:41.470Z
+      updated_at: 2026-03-18T02:52:41.770Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T02:50:44.957Z
+      status: stale
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-triage-record-yaml-writes-01kkx6ce"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-03-18T02:52:41.770Z
     integration:
       status: merged
       detail: integration:merged
@@ -8153,17 +8158,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
-      updated_at: 2026-03-18T02:50:41.470Z
-    lifecycle_state: closing
+      updated_at: 2026-03-18T02:52:41.770Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KKX6CEQFM17JX8AKKRPXQGR7"
     task_slug: round-trip-stability-for-triage-record-yaml-writes
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T02:32:34.839Z
-      last_reconciled_at: 2026-03-18T02:50:44.957Z
+      last_reconciled_at: 2026-03-18T02:52:41.770Z
       created_at: 2026-03-17T19:50:36.635Z
-      updated_at: 2026-03-18T02:50:44.957Z
+      updated_at: 2026-03-18T02:52:41.770Z
     workspace_id: dispatch-workspace-01KKX6CEQFM17JX8AKKRPXQGR7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
