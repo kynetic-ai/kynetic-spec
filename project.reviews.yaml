@@ -12012,6 +12012,12 @@ reviews:
         payload:
           thread_ulid: 01KKZT3MFBSCXD24FHCVE65RD7
         timestamp: 2026-03-18T06:47:29.923Z
+      - _ulid: 01KKZV65K4FA1PKDJE22BJNHF7
+        actor: "@claude"
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KKZT3MFBSCXD24FHCVE65RD7
+        timestamp: 2026-03-18T06:47:32.709Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -12404,6 +12410,8 @@ reviews:
               decisions.
             created_at: 2026-03-18T06:47:29.785Z
         kind: question
+        resolved_at: 2026-03-18T06:47:32.575Z
+        resolved_by: "@claude"
       - _ulid: 01KKZT3ZRFVB59V8EPCCG63SZN
         anchor:
           type: structured
@@ -12452,5 +12460,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-18T06:31:04.294Z
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:47:29.785Z
+    updated_at: 2026-03-18T06:47:32.575Z
     notes: []
