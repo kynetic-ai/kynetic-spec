@@ -13203,6 +13203,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM01DMB873PY8BXP28E0PV32
         timestamp: 2026-03-18T08:36:28.765Z
+      - _ulid: 01KM01DW9BSNJQ6JJYVVRRQHR1
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM01DW5V129XEY6TKB7HRMNF
+        timestamp: 2026-03-18T08:36:36.779Z
     examined_commit: e33ebbbffa0bf82e7955605e1a0669a3004c1f31
     external_links: []
     lifecycle_state: open
@@ -13234,7 +13241,25 @@ reviews:
               event."
             created_at: 2026-03-18T08:36:28.648Z
         kind: nit
+      - _ulid: 01KM01DW5V129XEY6TKB7HRMNF
+        anchor:
+          type: code
+          commit: e33ebbbff
+          line_end: 559
+          line_start: 559
+          path: src/agent-runtime/action-executor.ts
+          side: head
+        entries:
+          - _ulid: 01KM01DW5V6SPJ4SGNAZQC7QQ9
+            author: "@claude"
+            body: kspec command splitting uses simple whitespace split (resolvedCommand.split(/\s+/)) which
+              doesn't handle quoted arguments. For example, 'task note @ref --message "hello world"'
+              would split incorrectly. This is acceptable for the typical simple kspec commands
+              shown in the spec examples, but worth noting for future consumers. Not a spec
+              violation since the schema defines command as a single string.
+            created_at: 2026-03-18T08:36:36.667Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T08:36:01.650Z
-    updated_at: 2026-03-18T08:36:28.648Z
+    updated_at: 2026-03-18T08:36:36.667Z
     notes: []
