@@ -106373,6 +106373,29 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T12:43:32.451Z
+    - _ulid: 01KM0FJZRWK2SDXV34965PK5WG
+      content: >-
+        Review cycle 1 (review @01KM0FDV): request_changes.
+
+
+        Implementation is correct — ScheduleEngine works as designed. Two test quality findings
+        (blocker threads):
+
+
+        1. AC-4 test (disabled schedules, line 340-357): Doesn't exercise evaluation loop's enabled
+        check. Fix: verify disabled schedule behavior through triggerSchedule() or a short
+        evaluation cycle.
+
+
+        2. AC-6 tests (config reload, lines 388-457): Use stop/start instead of hot-reload during
+        evaluation. Fix: trigger evaluation without restarting.
+
+
+        All checks pass: npm test (6306/6307, 1 pre-existing), tsc clean, kspec validate clean, full
+        AC coverage.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T12:44:04.252Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVX7D9A14ZFGSFSXS8X6Z
