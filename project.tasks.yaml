@@ -103918,26 +103918,8 @@
   spec_ref: "@yaml-serialization-invariants"
   meta_ref: null
   plan_ref: null
-  status: blocked
-  blocked_by:
-    - >-
-      Merge conflict in tests/yaml-round-trip-stability.test.ts when merging
-      dispatch/task/round-trip-stability-for-meta-manifest-yaml-writes/01kkx6cb into dev. 
-
-
-      Cause: The inbox round-trip stability task (commit 78d192c45) was merged to dev after this
-      branch forked, adding inbox tests at the same file location where this branch adds meta
-      manifest tests. Three conflict regions at lines 752, 815, and 1021 — all in the test file, all
-      additive (both sides add new describe blocks and test cases).
-
-
-      Resolution: Keep BOTH sets of tests — the inbox tests from dev AND the meta manifest tests
-      from this branch. The conflict is purely positional (adjacent additions), not semantic. No
-      source code files conflict.
-
-
-      Review status: Review 01KKYH33 approved. Code changes are correct. Only the merge step
-      remains.
+  status: pending
+  blocked_by: []
   depends_on: []
   context: []
   priority: 3
@@ -103954,7 +103936,7 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: 01KKXY6NQX0FAMVDSYPC2KV7BP
+  session_id: null
   created_at: 2026-03-17T06:05:26.319Z
   started_at: 2026-03-17T13:02:12.795Z
   submitted_at: 2026-03-17T13:34:17.130Z
