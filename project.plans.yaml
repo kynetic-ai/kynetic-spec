@@ -22621,8 +22621,7 @@ plans:
           - Individual task merge conflicts block the task, not the engine.
             Target branch divergence degrades the engine, not individual tasks.
           - Existing workspaces provisioned from an older target commit are not
-            rebased; staleness resolves naturally at merge time. If the merge
-            conflicts, ac-merge-conflict-blocks-task applies.
+            rebased; staleness resolves naturally at merge time.
           - The dispatcher detects merge conflicts post-hoc after reviewer
             invocations complete, rather than owning the merge operation directly.
             Dispatcher-owned merge is a future direction that would require
@@ -23213,3 +23212,7 @@ plans:
           desired behavior. Task blocking left to reviewer agent/operator.
         author: "@claude"
         created_at: 2026-03-18T06:53:24.567Z
+      - _ulid: 01KKZVSAQGTN6M34SPF2FGD72J
+        content: Fix stale reference to removed ac-merge-conflict-blocks-task in spec description
+        author: "@claude"
+        created_at: 2026-03-18T06:58:00.560Z
