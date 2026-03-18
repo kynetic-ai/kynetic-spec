@@ -9000,12 +9000,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T08:29:52.542Z
+      updated_at: 2026-03-18T08:29:55.049Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T08:29:52.542Z
+      updated_at: 2026-03-18T08:29:55.049Z
     integration:
       status: pending
       detail: null
@@ -9013,24 +9013,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 8166d8d659867217b31b97296d530899f07a433e
-      updated_at: 2026-03-18T08:29:52.542Z
-    lifecycle_state: ready
+      updated_at: 2026-03-18T08:29:55.049Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKZPVJ3JRVBGVQSQZW86C6D7"
     task_slug: task-action-model
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T08:11:28.295Z
-      last_reconciled_at: 2026-03-18T08:29:52.542Z
+      last_reconciled_at: 2026-03-18T08:29:55.049Z
       created_at: 2026-03-18T08:11:27.384Z
-      updated_at: 2026-03-18T08:29:52.542Z
+      updated_at: 2026-03-18T08:29:55.049Z
     workspace_id: dispatch-workspace-01KKZPVJ3JRVBGVQSQZW86C6D7
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: e33ebbbffa0bf82e7955605e1a0669a3004c1f31
+        last_seen_at: 2026-03-18T08:29:55.049Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-action-model-01kkzpvj-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-action-model/01kkzpvj
-        head: 8166d8d659867217b31b97296d530899f07a433e
-        last_seen_at: 2026-03-18T08:11:27.384Z
+        head: e33ebbbffa0bf82e7955605e1a0669a3004c1f31
+        last_seen_at: 2026-03-18T08:29:55.049Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-action-model-01kkzpvj
