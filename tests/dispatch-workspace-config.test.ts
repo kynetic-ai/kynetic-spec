@@ -4,7 +4,7 @@ import { execSync } from "node:child_process";
 import * as path from "node:path";
 import * as YAML from "yaml";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
-import { DispatchEngine } from "../src/agent-runtime/dispatch.js";
+import { buildOrientationContext, DispatchEngine } from "../src/agent-runtime/dispatch.js";
 import {
   DispatchWorkspaceError,
   resolveDispatchWorkspaceConfig,
@@ -444,5 +444,238 @@ describe("dispatch publication mode configuration", () => {
     });
 
     expect(workspace.metadata.publicationMode).toBe("pull_request");
+  });
+});
+
+// AC: @dispatch-workspace-configuration ac-6
+// AC: @dispatch-workspace-configuration ac-7
+describe("stale integration target detection", () => {
+  let tempDir: string;
+
+  beforeEach(async () => {
+    tempDir = await createTempDir("kspec-dispatch-stale-target-");
+  });
+
+  afterEach(async () => {
+    vi.restoreAllMocks();
+    await cleanupTempDir(tempDir);
+  });
+
+  // AC: @dispatch-workspace-configuration ac-6
+  it("auto-updates integration target when config changes and integration is pending", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b dev");
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n",
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 60)}`;
+
+    // Initial provision with base_branch=main
+    const first = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Stale Target Test", slugs: ["task-stale-target"] },
+    });
+    const firstRecord = await readWorkspaceRecord(first.metadataPath, taskRef);
+    expect(firstRecord.integration?.target_branch).toBe("main");
+
+    // Change config to base_branch=dev
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: dev\n",
+      "utf-8",
+    );
+
+    // Re-provision — should auto-update since integration is pending
+    const second = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Stale Target Test", slugs: ["task-stale-target"] },
+    });
+    const secondRecord = await readWorkspaceRecord(second.metadataPath, taskRef);
+
+    expect(secondRecord.integration?.target_branch).toBe("dev");
+    expect(secondRecord.resolved_base_branch).toBe("dev");
+  });
+
+  // AC: @dispatch-workspace-configuration ac-6
+  it("throws with actionable guidance when config changes but integration is active", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b dev");
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n",
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 61)}`;
+
+    // Initial provision with base_branch=main
+    const first = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Active Integration Test", slugs: ["task-active-integration"] },
+    });
+
+    // Mutate the registry to simulate active integration (merged state)
+    const raw = YAML.parse(await fs.readFile(first.metadataPath, "utf-8")) as {
+      workspaces: Array<Record<string, any>>;
+    };
+    const ws = raw.workspaces.find((w) => w.task_ref === taskRef);
+    ws!.integration.status = "merged";
+    await fs.writeFile(first.metadataPath, YAML.stringify(raw), "utf-8");
+
+    // Change config to base_branch=dev
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: dev\n",
+      "utf-8",
+    );
+
+    // Re-provision — should throw since integration is active
+    await expect(
+      provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: { title: "Active Integration Test", slugs: ["task-active-integration"] },
+      }),
+    ).rejects.toMatchObject({
+      name: "DispatchWorkspaceError",
+      message: expect.stringContaining("cannot be silently retargeted"),
+      suggestion: expect.stringContaining("revert dispatch.base_branch"),
+    } satisfies Partial<DispatchWorkspaceError>);
+  });
+
+  // AC: @dispatch-workspace-configuration ac-6
+  // AC: @trait-error-guidance ac-1
+  // AC: @trait-error-guidance ac-2
+  it("error includes description and suggested resolution for active integration conflict", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b dev");
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n",
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 62)}`;
+    const first = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Error Guidance Test", slugs: ["task-error-guidance"] },
+    });
+
+    // Mutate to in_progress integration
+    const raw = YAML.parse(await fs.readFile(first.metadataPath, "utf-8")) as {
+      workspaces: Array<Record<string, any>>;
+    };
+    const ws = raw.workspaces.find((w) => w.task_ref === taskRef);
+    ws!.integration.status = "in_progress";
+    await fs.writeFile(first.metadataPath, YAML.stringify(raw), "utf-8");
+
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: dev\n",
+      "utf-8",
+    );
+
+    try {
+      await provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: { title: "Error Guidance Test", slugs: ["task-error-guidance"] },
+      });
+      expect.unreachable("should have thrown");
+    } catch (err) {
+      const error = err as DispatchWorkspaceError;
+      // AC: @trait-error-guidance ac-1 — includes description of what went wrong
+      expect(error.message).toContain("main");
+      expect(error.message).toContain("dev");
+      expect(error.message).toContain("in_progress");
+      // AC: @trait-error-guidance ac-2 — includes suggested action to resolve
+      expect(error.suggestion).toContain("revert dispatch.base_branch");
+      expect(error.suggestion).toContain("reset the workspace integration state");
+    }
+  });
+
+  // AC: @dispatch-workspace-configuration ac-7
+  it("dispatch prompt reflects updated integration target after re-provisioning", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b dev");
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n",
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 63)}`;
+
+    // Initial provision targeting main
+    await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Prompt Target Test", slugs: ["task-prompt-target"] },
+    });
+
+    // Change config to dev
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: dev\n",
+      "utf-8",
+    );
+
+    // Re-provision — should update target to dev
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Prompt Target Test", slugs: ["task-prompt-target"] },
+    });
+
+    // Verify metadata reflects the updated target
+    expect(workspace.metadata.integrationTargetBranch).toBe("dev");
+    expect(workspace.metadata.mergeTargetBranch).toBe("dev");
+
+    // Verify the orientation context (dispatch prompt) reflects the update
+    const orientation = buildOrientationContext(
+      taskRef,
+      "task.ready",
+      { title: "Prompt Target Test" },
+      workspace.metadata,
+      "worker",
+    );
+
+    expect(orientation).toContain("Integration target: dev");
+    expect(orientation).not.toContain("Integration target: main");
+  });
+
+  // AC: @dispatch-workspace-configuration ac-6
+  it("preserves integration target when config matches existing record", async () => {
+    await seedRepo(tempDir);
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n",
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 64)}`;
+
+    const first = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "No Change Test", slugs: ["task-no-change"] },
+    });
+
+    // Re-provision with same config — should keep same target
+    const second = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "No Change Test", slugs: ["task-no-change"] },
+    });
+
+    const record = await readWorkspaceRecord(second.metadataPath, taskRef);
+    expect(record.integration?.target_branch).toBe("main");
   });
 });

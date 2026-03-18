@@ -439,6 +439,55 @@ function resolveWorkspacePublicationMode(
   }
 }
 
+// AC: @dispatch-workspace-configuration ac-6 — detect and handle stale integration target
+// When an existing workspace record's integration.target_branch differs from an
+// explicitly configured dispatch.base_branch, either auto-update (if integration is
+// still pending) or surface the conflict as an error (if integration is active).
+// Only triggers for explicitly configured base branches — auto-detected values
+// (remote-head, current-branch, default) are inherently unstable and should not
+// cause retargeting.
+function resolveStaleIntegrationTarget(
+  existingRecord: LoadedDispatchWorkspaceRecord | undefined,
+  configuredBaseBranch: string,
+  baseBranchSource: ResolvedDispatchWorkspaceConfig["baseBranchSource"],
+  resolvedBaseBranch: string,
+): string {
+  if (!existingRecord) {
+    return resolvedBaseBranch;
+  }
+
+  const recordedTarget = existingRecord.integration.target_branch;
+
+  // Only detect staleness when base_branch is explicitly configured.
+  // Auto-detected sources (remote-head, current-branch, default) are unstable
+  // and should not override a previously recorded target.
+  if (baseBranchSource !== "configured") {
+    return recordedTarget;
+  }
+
+  // No mismatch — the workspace already targets the configured branch
+  if (recordedTarget === configuredBaseBranch) {
+    return recordedTarget;
+  }
+
+  // Mismatch detected: config changed since workspace was provisioned.
+  // When integration is still pending, auto-update to the current config.
+  if (existingRecord.integration.status === "pending") {
+    return configuredBaseBranch;
+  }
+
+  // Active integration state — cannot silently retarget. Surface the conflict.
+  throw new DispatchWorkspaceError(
+    `Workspace for ${existingRecord.task_ref} targets integration branch "${recordedTarget}" ` +
+      `but dispatch.base_branch is now "${configuredBaseBranch}". ` +
+      `The workspace has active integration state (${existingRecord.integration.status}) ` +
+      `and cannot be silently retargeted.`,
+    `Either revert dispatch.base_branch to "${recordedTarget}" to match the existing workspace, ` +
+      `or reset the workspace integration state before re-provisioning ` +
+      `(kspec dispatch workspace reset ${existingRecord.task_ref}).`,
+  );
+}
+
 // AC: @adopt-existing-task-branch-lineage ac-2 — rehydrate adopted branch from remote
 function rehydrateAdoptedBranch(
   projectDir: string,
@@ -2064,15 +2113,30 @@ export async function provisionDispatchWorkspace(
     ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
   const reviewerWorktreeDir = existingRecord?.worktrees.reviewer?.path
     ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}-review`);
-  const baseBranch = existingRecord?.resolved_base_branch ?? resolvedConfig.baseBranch;
+  // AC: @dispatch-workspace-configuration ac-6 — detect stale integration target
+  // when dispatch.base_branch config has changed since the workspace was provisioned.
+  const mergeTargetBranch = resolveStaleIntegrationTarget(
+    existingRecord,
+    resolvedConfig.baseBranch,
+    resolvedConfig.baseBranchSource,
+    existingRecord?.resolved_base_branch ?? resolvedConfig.baseBranch,
+  );
+  // When the integration target was updated to match config, also update resolved_base_branch.
+  const baseBranch = mergeTargetBranch === resolvedConfig.baseBranch
+    ? resolvedConfig.baseBranch
+    : (existingRecord?.resolved_base_branch ?? resolvedConfig.baseBranch);
   const baseBranchPoint = resolveBaseBranchPoint(
     projectDir,
     canonicalBranch,
     resolvedConfig.baseBranchStartPoint,
     existingRecord,
   );
-  const mergeTargetBranch = existingRecord?.integration.target_branch ?? baseBranch;
-  const integrationTargetCommit = existingRecord?.integration.target_commit ?? baseBranchPoint;
+  // When the integration target changed, use the new base branch point.
+  const integrationTargetUpdated = existingRecord
+    && existingRecord.integration.target_branch !== mergeTargetBranch;
+  const integrationTargetCommit = integrationTargetUpdated
+    ? baseBranchPoint
+    : (existingRecord?.integration.target_commit ?? baseBranchPoint);
   const publicationMode = resolveWorkspacePublicationMode(projectDir, existingRecord, resolvedConfig.publicationMode);
   const now = new Date().toISOString();
   const provisioningRecord: DispatchWorkspaceRecord = {
