@@ -10007,18 +10007,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-hook-executor/01kkzpvs
-    canonical_branch_head: 4aaa260c9aae4746e75a5d4ef29c6b591522364a
+    canonical_branch_head: b8ba5c896287d16de213398aefa3a81c50460faa
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T12:02:08.214Z
+      updated_at: 2026-03-18T12:02:10.030Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T12:02:08.214Z
+      updated_at: 2026-03-18T12:02:10.030Z
     integration:
       status: pending
       detail: null
@@ -10026,24 +10026,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 4aaa260c9aae4746e75a5d4ef29c6b591522364a
-      updated_at: 2026-03-18T12:02:08.214Z
-    lifecycle_state: ready
+      updated_at: 2026-03-18T12:02:10.030Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKZPVS3KNNR0DF6VWXKDP4DT"
     task_slug: task-hook-executor
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T11:50:14.354Z
-      last_reconciled_at: 2026-03-18T12:02:08.214Z
+      last_reconciled_at: 2026-03-18T12:02:10.030Z
       created_at: 2026-03-18T11:50:13.234Z
-      updated_at: 2026-03-18T12:02:08.214Z
+      updated_at: 2026-03-18T12:02:10.030Z
     workspace_id: dispatch-workspace-01KKZPVS3KNNR0DF6VWXKDP4DT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: b8ba5c896287d16de213398aefa3a81c50460faa
+        last_seen_at: 2026-03-18T12:02:10.030Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-hook-executor-01kkzpvs-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-hook-executor/01kkzpvs
-        head: 4aaa260c9aae4746e75a5d4ef29c6b591522364a
-        last_seen_at: 2026-03-18T11:50:13.234Z
+        head: b8ba5c896287d16de213398aefa3a81c50460faa
+        last_seen_at: 2026-03-18T12:02:10.030Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-hook-executor-01kkzpvs
