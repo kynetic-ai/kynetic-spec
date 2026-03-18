@@ -101949,8 +101949,13 @@
   spec_ref: "@review-code-diff-viewer"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Merge conflict in packages/web-ui/src/routes/reviews/[id]/+page.svelte when merging into dev.
+      Conflict is with the @review-structured-content-viewer feature that was merged to dev while
+      this task was in review. Both features add AC annotations, imports, derived state, and
+      conditional component sections to the same file. Resolution is straightforward (include both
+      side by side) but requires human confirmation per merge protocol.
   depends_on:
     - "@task-diff-api"
     - "@task-review-detail-page"
