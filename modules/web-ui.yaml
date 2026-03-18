@@ -3200,6 +3200,192 @@ features:
         notes: []
     created: 2026-03-15T19:50:40.601Z
     notes: []
+  - _ulid: 01KKZPVDMZFRX0MQ56N2WS9FYH
+    slugs:
+      - automation-api
+    title: Automation API
+    type: feature
+    description: |
+      REST API endpoints for hook, schedule, and event management. Used
+      by the CLI (for schedule runtime queries and manual triggers) and
+      the web UI (for CRUD and status).
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-api-endpoint"
+      - "@trait-localhost-security"
+      - "@trait-json-output"
+    acceptance_criteria:
+      - given: |
+          A client requests the list of hooks
+        id: ac-1
+        then: |
+          The response includes all configured hooks with their current
+          enabled state
+        when: |
+          GET /api/hooks is called
+      - given: |
+          A client requests schedule runtime status
+        id: ac-2
+        then: |
+          The response includes next_tick, last_tick, run_count,
+          active_run_count, active_run_ids (array), and current overlap
+          state (idle, running, running_buffered)
+        when: |
+          GET /api/schedules/:id/status is called
+      - given: |
+          A client manually triggers a schedule
+        id: ac-3
+        then: |
+          The response indicates the trigger outcome: accepted (action
+          started), buffered (queued behind active run), queued (agent
+          concurrency limit reached), or skipped (overlap policy rejected)
+        when: |
+          POST /api/schedules/:id/trigger is called
+      - given: |
+          A client queries recent events
+        id: ac-4
+        then: |
+          The response includes events from the ring buffer with full
+          envelope and payload, filtered by event type if specified
+        when: |
+          GET /api/events/recent is called with optional type filter
+      - given: |
+          A client requests composition status
+        id: ac-5
+        then: |
+          The response includes all active activations for the config,
+          each with activation_id, join progress (completed/total),
+          member action_run_ids, and timeout remaining
+        when: |
+          GET /api/compositions/:config_id/activations is called
+      - given: |
+          A client emits a test event
+        id: ac-6
+        then: |
+          The event is emitted on the bus as a manual source; the response
+          includes matched hook names and their action_run_ids; outcomes
+          may not be available synchronously for async actions
+        when: |
+          POST /api/events/emit is called with event type and payload
+    tags: []
+    requirements:
+      - _ulid: 01KKZPVDQF1MWY37HRXCCS0BMH
+        slugs:
+          - automation-event-stream
+        title: Automation Event Stream
+        type: requirement
+        description: |
+          WebSocket event stream for real-time automation updates. Clients
+          subscribe to the "automation" topic to receive event bus activity.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits:
+          - "@trait-websocket-protocol"
+        acceptance_criteria:
+          - given: |
+              A WebSocket client subscribes to the "automation" topic
+            id: ac-1
+            then: |
+              The client receives the event with full envelope and payload
+            when: |
+              An event is emitted on the bus
+          - given: |
+              An action run starts or completes
+            id: ac-2
+            then: |
+              The client receives action.started and action.completed/failed
+              events with the action run details
+            when: |
+              The client is subscribed
+        tags: []
+        created: 2026-03-18T05:31:46.287Z
+        notes: []
+    created: 2026-03-18T05:31:46.207Z
+    notes: []
+  - _ulid: 01KKZPVDSM48QR9QPXHR7BTAJG
+    slugs:
+      - ui-automation-view
+    title: Automation View
+    type: feature
+    description: |
+      A dedicated web UI view for the dispatch event system. Consolidates
+      all automation configuration and monitoring: agent dispatch triggers
+      (moved from agents view), hooks, schedules, event log, and
+      composition group status.
+
+      The agents view retains agent definition management (name, adapter,
+      capabilities, tools, skills, budget) but dispatch trigger editing
+      moves here.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          A user navigates to the automation view
+        id: ac-1
+        then: |
+          The view shows agent dispatch triggers, hooks, and schedules
+          in organized sections with their enabled/disabled state
+        when: |
+          Agents, hooks, and schedules are configured
+      - given: |
+          A user views the event log section
+        id: ac-2
+        then: |
+          Recent events are shown in reverse chronological order with
+          event type, source, timestamp, and linked entity references
+        when: |
+          The daemon is running and events have been processed
+      - given: |
+          A user edits a hook or schedule from the automation view
+        id: ac-3
+        then: |
+          The configuration is persisted via the API and the view
+          updates to reflect the change
+        when: |
+          They save changes
+      - given: |
+          A user views a schedule
+        id: ac-4
+        then: |
+          The schedule shows next tick time, last tick time, run count,
+          active run count, and current overlap state (idle, running,
+          running_buffered)
+        when: |
+          The daemon is running
+      - given: |
+          An agent dispatch trigger is shown in the automation view
+        id: ac-5
+        then: |
+          The trigger's event type and filter criteria are editable
+          inline, consistent with the dispatch rule schema
+        when: |
+          The user edits it
+      - given: |
+          Composition groups are configured
+        id: ac-6
+        then: |
+          Each config shows its active activations with join progress,
+          member action runs, and timeout status per activation
+        when: |
+          The user views the automation view
+      - given: |
+          Any automation event fires
+        id: ac-7
+        then: |
+          The event log updates in real-time via WebSocket
+        when: |
+          The automation view is open
+    tags: []
+    created: 2026-03-18T05:31:46.356Z
+    notes: []
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:

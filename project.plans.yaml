@@ -20749,10 +20749,49 @@ plans:
 
       Existing task 01KKBD6GBCWTZA2ECFWN62F92F (dispatch trigger expansion)
       is subsumed and should be cancelled after plan approval.
-    status: approved
+    status: active
     approved_at: 2026-03-18T05:31:35.024Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@dispatch-event-envelope"
+      - "@dispatch-event-taxonomy"
+      - "@dispatch-event-payload"
+      - "@dispatch-action-model"
+      - "@dispatch-command-action"
+      - "@dispatch-agent-action-input"
+      - "@dispatch-hook-system"
+      - "@dispatch-hook-schema"
+      - "@dispatch-hook-filter"
+      - "@dispatch-schedule-entities"
+      - "@dispatch-schedule-runtime"
+      - "@dispatch-schedule-schema"
+      - "@dispatch-composition-patterns"
+      - "@dispatch-composition-correlation"
+      - "@dispatch-composition-schema"
+      - "@dispatch-event-cli"
+      - "@automation-api"
+      - "@automation-event-stream"
+      - "@ui-automation-view"
+    derived_tasks:
+      - "@task-event-bus"
+      - "@task-event-schema"
+      - "@task-event-payloads"
+      - "@task-action-model"
+      - "@task-command-action"
+      - "@task-agent-action-input"
+      - "@task-session-events"
+      - "@task-hook-schema"
+      - "@task-hook-executor"
+      - "@task-schedule-schema"
+      - "@task-schedule-engine"
+      - "@task-hook-cli"
+      - "@task-schedule-cli"
+      - "@task-event-cli"
+      - "@task-daemon-api"
+      - "@task-validate-integration"
+      - "@task-composition-join"
+      - "@task-automation-view"
+      - "@task-migrate-triggers"
+      - "@task-cancel-old-trigger-task"
     module_ref: "@agent-integration"
     source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-event-expansion.md
     created_at: 2026-03-16T00:01:36.354Z
@@ -20794,6 +20833,47 @@ plans:
           pre-commit hook safety net noted"
         author: "@claude"
         created_at: 2026-03-16T03:41:57.995Z
+      - _ulid: 01KKZPW9W4SYT0SH3A79D933Q4
+        content: |-
+          This plan expands the dispatch engine's event system across lifecycle
+          hooks, cron schedules, and multi-agent composition.
+
+          Architecture: A unified event bus with standard envelope (identity,
+          causation chain, loop prevention) that all sources publish to. A shared
+          action model with action run tracking (works for all action types, not
+          just agent invocations). Hooks and dispatch rules as independent bus
+          subscribers. Schedules as a time-based event source.
+
+          Key contracts added based on review:
+          1. Event envelope with event_id, correlation_id, causation_id for
+             identity, lineage, and loop prevention (max chain depth).
+          2. Session lifecycle events (session.ended, session.idle_timeout,
+             session.cancelled) — distinct from invocation events.
+          3. Action runs as the uniform abstraction for all action executions,
+             not just invocations. Overlap policies key off action runs.
+          4. Structured command form (program + args[], not shell strings) to
+             eliminate injection by construction.
+          5. Agent action input contract with prompt templating, task_binding
+             opt-in, and correlation/group propagation.
+          6. Schedule runtime state is explicitly volatile (daemon lifetime).
+             Backfill is best-effort. tick_time is scheduled wall-clock time.
+          7. Composition correlation semantics: group_id propagation, success-only
+             join counting, timeout from first run, volatile state.
+          8. Hook filter language: exact-match for scalars, contains-all for
+             arrays. Validate warns on unknown fields.
+          9. Automation API and event stream as proper specs with API/WebSocket
+             traits, not just implementation tasks.
+          10. kspec event emit for testing hook configurations.
+
+          Industry patterns: Claude Code hooks (declarative config, handler types),
+          Temporal Schedules (schedule as entity, overlap policies), LangGraph
+          scatter-gather (fan-out/fan-in without DAG), CloudEvents envelope
+          (identity, source, causation).
+
+          Existing task 01KKBD6GBCWTZA2ECFWN62F92F (dispatch trigger expansion)
+          is subsumed and should be cancelled after plan approval.
+        author: "@claude"
+        created_at: 2026-03-18T05:32:15.108Z
   - _ulid: 01KKTR7F6HX6EE2WZ8SMV84N37
     slugs:
       - plan-review-records-web-ui
