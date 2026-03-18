@@ -18226,6 +18226,20 @@ reviews:
         runner: manual
         created_at: 2026-03-18T16:15:34.686Z
         completed_at: 2026-03-18T16:15:34.686Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Both .agents/skills/kspec-review/SKILL.md and .factory/skills/kspec-review/SKILL.md still
+          contain 6 instances of --version-base/--version-head (3 in check examples, 3 in verdict
+          examples). The old explanatory text is also present instead of the updated auto-derivation
+          text. kspec skill render was run but did not propagate these source changes to rendered
+          output.
+        name: rendered-output-sync
+        required: true
+        runner: manual
+        created_at: 2026-03-18T16:15:44.180Z
+        completed_at: 2026-03-18T16:15:44.180Z
     events:
       - _ulid: 01KM0V1N7DPWZGG73TFJ1QBB30
         actor: "@claude"
@@ -18261,6 +18275,13 @@ reviews:
           status: pass
           name: skill-source-correctness
         timestamp: 2026-03-18T16:15:34.892Z
+      - _ulid: 01KM0VPJ78XB5EJJ87STH0Y7Y5
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: rendered-output-sync
+        timestamp: 2026-03-18T16:15:44.360Z
     examined_commit: 23174dc3b0ba99026d590e7f1bb9244bcdd28726
     external_links: []
     lifecycle_state: open
@@ -18297,5 +18318,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-18T16:04:19.310Z
-    updated_at: 2026-03-18T16:15:34.686Z
+    updated_at: 2026-03-18T16:15:44.180Z
     notes: []
