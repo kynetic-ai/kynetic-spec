@@ -11623,6 +11623,18 @@ reviews:
         runner: manual
         created_at: 2026-03-18T04:35:11.929Z
         completed_at: 2026-03-18T04:35:11.929Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
+          head_commit: 082679500792a34a7e102e1fd6ff07e8cc5bbc3f
+        evidence: All validation errors/warnings pre-existing (broken meta.yaml references, orphaned specs,
+          invalid AC annotations in test helpers). No new issues from this task.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-18T04:35:19.430Z
+        completed_at: 2026-03-18T04:35:19.430Z
     events:
       - _ulid: 01KKZKJNSN7Q07ESNJDSW5QHFJ
         actor: "@claude"
@@ -11658,6 +11670,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T04:35:12.060Z
+      - _ulid: 01KKZKM2CDNEA6NAHHHC2872XQ
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-18T04:35:19.566Z
     examined_commit: 082679500792a34a7e102e1fd6ff07e8cc5bbc3f
     external_links: []
     lifecycle_state: open
@@ -11670,5 +11689,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T04:34:33.910Z
-    updated_at: 2026-03-18T04:35:11.929Z
+    updated_at: 2026-03-18T04:35:19.430Z
     notes: []
