@@ -105434,7 +105434,23 @@
   session_id: 01KKZYTAF5EG4TJ56PJBC5P3NE
   created_at: 2026-03-18T05:31:46.436Z
   started_at: 2026-03-18T07:51:55.334Z
-  notes: []
+  notes:
+    - _ulid: 01KKZZYAYVXCVF3PHNYG1K76SM
+      content: "Implemented EventBus class in src/agent-runtime/event-bus.ts with: (1) EventEnvelope type
+        with event_id, event_type, emitted_at, source_type, source_id, causation_id, correlation_id
+        (ac-1), (2) Causation/correlation chain tracking with auto-resolution from ring buffer and
+        KSPEC_CORRELATION_ID env var support (ac-2), (3) Task event dedup using
+        (taskId:fromStatus:toStatus) key within configurable window, non-task events skip dedup
+        (ac-3), (4) Per-source sequential delivery via promise chains ensuring emission order
+        (ac-4), (5) Chain depth limit via correlation_id tracking with configurable max (default 5)
+        and logged warning on rejection (ac-5), (6) Configurable ring buffer (default 500) for
+        recent event retention (ac-6). Integrated into DispatchEngine: task state changes and
+        invocation lifecycle events now emit through the bus. Engine-level dedup preserved for
+        backward compat; bus skipDedup flag avoids double-filtering. 36 tests with AC annotations
+        covering all 6 ACs, all 117 existing dispatch engine tests still pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T08:10:38.939Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVFA3XPDTRV5CDFWKGVD8
