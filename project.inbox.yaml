@@ -1790,3 +1790,34 @@ inbox:
       - daemon
     added_by: "@claude"
     created_at: 2026-03-18T07:22:21.252Z
+  - _ulid: 01KM0JH552M3G8B291Z65EG74V
+    text: kspec setup clobbers custom hooks in .claude/settings.json — ran setup instead of skill
+      install-core and it stripped the Stop hook. Setup should preserve user-added hooks or at least
+      warn before overwriting.
+    tags:
+      - cli
+      - hooks
+      - bug
+    added_by: "@claude"
+    created_at: 2026-03-18T13:35:29.954Z
+  - _ulid: 01KM0JH570296JGYB340RH6ATX
+    text: Skill render pipeline requires non-obvious build step — editing templates/skills/ does not
+      propagate to .agents/skills/ until npm run build + kspec skill install-core + kspec skill
+      render --force. Consider having render detect stale templates or documenting the pipeline more
+      visibly.
+    tags:
+      - cli
+      - skills
+      - dx
+    added_by: "@claude"
+    created_at: 2026-03-18T13:35:30.016Z
+  - _ulid: 01KM0JH58DS1VPH5GV8KSESEK8
+    text: No direct blocked → needs_work task transition — requires 4 commands (unblock → start → submit
+      → needs-work). Consider a shortcut like kspec task unblock @ref --to needs_work or allowing
+      needs-work from blocked state.
+    tags:
+      - cli
+      - tasks
+      - dx
+    added_by: "@claude"
+    created_at: 2026-03-18T13:35:30.061Z
