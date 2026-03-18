@@ -11808,6 +11808,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKZT2EQRTQR2MNF6J08DENZN
         timestamp: 2026-03-18T06:28:02.558Z
+      - _ulid: 01KKZT2WYZKYPSGA1429EJ6S7P
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKZT2WV4A05C8ABR6VW4AX07
+        timestamp: 2026-03-18T06:28:16.991Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -12036,7 +12043,29 @@ reviews:
               periodic fetch.
             created_at: 2026-03-18T06:28:02.424Z
         kind: nit
+      - _ulid: 01KKZT2WV4A05C8ABR6VW4AX07
+        anchor:
+          type: structured
+          field: task-dispatch-target-sync
+          ref: "@dispatch-remote-branch-sync"
+          section: tasks
+        entries:
+          - _ulid: 01KKZT2WV4V30J1AZPG8EMG3XS
+            author: "@claude"
+            body: "task-dispatch-target-sync covers 10 ACs, which is very heavy for a single task. Compare with
+              the reference plan where tasks typically cover 3-6 ACs. The degraded state surface
+              area alone (detection, no-provision, status across 3 surfaces, auto-recovery,
+              transient handling, escalation) is enough for its own task. Consider splitting into:
+              (1) task-dispatch-target-sync — core sync logic (ac-pull-target-on-start,
+              ac-pull-target-periodic, ac-pull-target-before-provision, ac-no-remote) and (2)
+              task-dispatch-degraded-state — degraded state machine and surfaces
+              (ac-divergence-detection, ac-degraded-no-provision, ac-degraded-status,
+              ac-degraded-auto-recover, ac-transient-fetch-failure, ac-repeated-transient-failures).
+              This mirrors how the reference plan separates @task-event-bus (core runtime) from
+              @task-event-schema (structural definitions)."
+            created_at: 2026-03-18T06:28:16.868Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:28:02.424Z
+    updated_at: 2026-03-18T06:28:16.868Z
     notes: []
