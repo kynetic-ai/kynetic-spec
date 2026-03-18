@@ -101965,7 +101965,23 @@
   session_id: 01KKZCKJVEQAGZHWJ5SJB81ZWX
   created_at: 2026-03-16T08:29:04.421Z
   started_at: 2026-03-18T02:33:52.821Z
-  notes: []
+  notes:
+    - _ulid: 01KKZDVJBFKDZ6TFPMQQA2R0VA
+      content: "Implemented code diff viewer with inline commenting for code reviews. Components created:
+        CodeDiffViewer (orchestrator with TanStack Query data fetching and mutations), DiffFileList
+        (file list sidebar with stats), DiffFileView (per-file expandable diff), DiffHunkView
+        (unified diff renderer with syntax highlighting via highlight.js), DiffInlineThread (inline
+        thread display at anchor positions), DiffCommentForm (inline comment creation form). API
+        client extended with fetchDiff, fetchFileDiff, fetchDiffContext functions and anchor-aware
+        createReviewThread. Query keys added for diff caching. Integrated into review detail page
+        conditionally for code review subjects. All 6 ACs covered: file list with stats (ac-1),
+        unified diff with highlighting (ac-2), context expansion (ac-3), click-to-comment with code
+        anchors (ac-4), inline thread rendering (ac-5), lazy loading for 20+ files (ac-6).
+        Pre-existing test failure in review-cli.test.ts (examined_commit null check) unrelated to
+        changes."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T02:54:33.839Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6N50TFB9MFMG7T5KZT6N
