@@ -106879,7 +106879,22 @@
   session_id: 01KM09TC4XXY6KZB1YAESACFDN
   created_at: 2026-03-18T07:07:47.613Z
   started_at: 2026-03-18T11:03:39.839Z
-  notes: []
+  notes:
+    - _ulid: 01KM0AN7SD815NW2AWYDBKG42R
+      content: "Implemented degraded state machine for the dispatch engine. Key design decisions: (1)
+        Divergence classification uses git rev-list to count local-ahead and remote-ahead commits,
+        distinguishing three cases: unpushed merges (local only), remote rewrite (remote only), and
+        mutual divergence. Each case includes operator-actionable resolution steps. (2) Transient
+        failures track both count and first-failure timestamp for duration reporting in escalation
+        warnings at threshold 5 — these never enter degraded state per spec. (3) Recovery triggers a
+        queue drain so pending tasks get processed immediately. (4) WebSocket broadcast uses a new
+        SyncStateEvent type on the 'agents' topic. (5) CLI shows prominent DEGRADED banner with
+        reason, resolution, and duration. All 13 new tests pass; all 14 existing target-sync tests
+        pass; full suite has 1 pre-existing failure in review-cli.test.ts (examined_commit field,
+        unrelated)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T11:17:55.117Z
   todos: []
   automation: eligible
 - _ulid: 01KKZWB8VH6WS0SSR11DGBMR0R
