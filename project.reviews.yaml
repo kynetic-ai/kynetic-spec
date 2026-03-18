@@ -17101,3 +17101,29 @@ reviews:
     created_at: 2026-03-18T14:34:28.383Z
     updated_at: 2026-03-18T14:38:37.022Z
     notes: []
+  - _ulid: 01KM0QK24969CJR419EW0JMJ36
+    slugs: []
+    title: Review task-schedule-cli
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0QK249A470ATYQKC1FKZ53
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T15:03:55.273Z
+    examined_commit: b8a2609de8d38a948f6d47d4d7fab9b05e941f08
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-schedule-cli"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T15:03:55.273Z
+    updated_at: null
+    notes: []
