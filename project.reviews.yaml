@@ -16414,3 +16414,29 @@ reviews:
     created_at: 2026-03-18T13:32:40.670Z
     updated_at: 2026-03-18T13:33:26.402Z
     notes: []
+  - _ulid: 01KM0KGW2MVN4FYG16VCTGP89K
+    slugs: []
+    title: Review task-daemon-api
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0KGW2MPWAQ32Z598RRKE7A
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T13:52:49.236Z
+    examined_commit: 1fb3398c8601e4d12109d099515003199b2ea770
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-daemon-api"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T13:52:49.236Z
+    updated_at: null
+    notes: []
