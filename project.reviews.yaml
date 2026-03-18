@@ -15180,6 +15180,21 @@ reviews:
         runner: kspec
         created_at: 2026-03-18T11:43:48.726Z
         completed_at: 2026-03-18T11:43:48.726Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 36a39d0aecbb
+          head_commit: 4099ad8b9432
+        evidence: "All 4 ACs (@dispatch-schedule-schema ac-1 through ac-4) have annotated tests in
+          tests/schedule-schema.test.ts. No traits on spec. ac-1: lines 26-145 (valid cron
+          acceptance, invalid cron rejection with examples). ac-2: lines 148-187 (6-field rejection
+          with specific error). ac-3: lines 492-562 (integration tests with kspec validate CLI).
+          ac-4: lines 408-476 (empty default, manifest with schedules, coexistence with hooks)."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T11:43:51.415Z
+        completed_at: 2026-03-18T11:43:51.415Z
     events:
       - _ulid: 01KM0C3RK37SZAW53ZZFYQ75AF
         actor: "@claude"
@@ -15215,6 +15230,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-18T11:43:48.852Z
+      - _ulid: 01KM0C4QQDPJKJEEPCHGC5XGRV
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T11:43:51.533Z
     examined_commit: 4099ad8b9432a3a482229d2d9dca435206ed06c2
     external_links: []
     lifecycle_state: open
@@ -15245,5 +15267,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T11:43:19.651Z
-    updated_at: 2026-03-18T11:43:48.726Z
+    updated_at: 2026-03-18T11:43:51.415Z
     notes: []
