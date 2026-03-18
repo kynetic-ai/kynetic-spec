@@ -4692,6 +4692,9 @@ modules:
               Defines the typed payload fields guaranteed for each event domain,
               beyond the universal envelope. These are the fields that hook filters
               can match on and template variables can reference.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
