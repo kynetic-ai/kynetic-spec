@@ -105839,8 +105839,12 @@
   spec_ref: "@dispatch-hook-schema"
   plan_ref: "@plan-dispatch-event-system-expansion"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Implemented hook schema (HookSchema, HookFilterSchema,
+    HookEventTypeSchema) and shared action model (ActionSchema). Extended MetaManifestSchema with
+    hooks array. Added hook validation (agent ref errors, filter field warnings). All 9 ACs covered
+    with 54 tests. Simple additive merge conflict in action.ts resolved.
   depends_on: []
   context: []
   priority: 1
@@ -105862,6 +105866,7 @@
   created_at: 2026-03-18T05:31:56.420Z
   started_at: 2026-03-18T08:37:41.327Z
   submitted_at: 2026-03-18T08:58:16.430Z
+  completed_at: 2026-03-18T09:08:31.272Z
   notes:
     - _ulid: 01KM02N8Q4PQ412ZDK2QXNE3EP
       content: "Implemented hook schema and meta manifest extension. Created src/schema/action.ts (shared
