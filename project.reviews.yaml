@@ -10293,7 +10293,19 @@ reviews:
     slugs: []
     title: Review replace-hardcoded-branch-names (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 8e8a1a565e469d277f1a05f0b69359cdd6c26c5d
+          head_commit: c7f0fed80c4192706ed6dc4c428abbfdb4f9fe88
+        evidence: 5804 passed, 3 skipped, 1 pre-existing failure (review-cli.test.ts examined_commit
+          auto-detect — not introduced by this commit)
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T01:35:13.766Z
+        completed_at: 2026-03-18T01:35:13.766Z
     events:
       - _ulid: 01KKZ98XTPVA652JQGF5XDHD60
         actor: "@claude"
@@ -10308,6 +10320,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T01:34:51.185Z
+      - _ulid: 01KKZ9A9Y45N3G18WJG9AZ0RDC
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T01:35:13.860Z
     examined_commit: c7f0fed80c4192706ed6dc4c428abbfdb4f9fe88
     external_links: []
     lifecycle_state: open
@@ -10320,5 +10339,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T01:34:28.694Z
-    updated_at: 2026-03-18T01:34:51.020Z
+    updated_at: 2026-03-18T01:35:13.766Z
     notes: []
