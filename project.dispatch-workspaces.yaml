@@ -10321,7 +10321,7 @@ workspaces:
         head: f49c87c4a33f25afd5f3a95918b46e9a674eabca
         last_seen_at: 2026-03-18T13:25:24.611Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-integration-01kkzpw2
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: b30b1a6f4492bb79ec94a5e3832a9dc25699da01
     bootstrap:
       status: succeeded
@@ -10368,7 +10368,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T13:51:51.556Z
+      updated_at: 2026-03-18T13:51:52.479Z
     integration:
       status: pending
       detail: null
@@ -10383,10 +10383,10 @@ workspaces:
     task_slug: task-daemon-api
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-18T13:25:26.819Z
-      last_reconciled_at: 2026-03-18T13:51:51.556Z
+      last_active_at: 2026-03-18T13:51:52.479Z
+      last_reconciled_at: 2026-03-18T13:51:52.479Z
       created_at: 2026-03-18T13:25:25.713Z
-      updated_at: 2026-03-18T13:51:51.925Z
+      updated_at: 2026-03-18T13:51:52.479Z
     workspace_id: dispatch-workspace-01KKZPW1EFQEXCA5QXMDP802KX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
