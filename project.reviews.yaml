@@ -16433,6 +16433,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T13:52:56.949Z
+      - _ulid: 01KM0M2F0MPKEK18ABAEPVGHDH
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM0M2ETMD25AH19CAZSJYRYS
+        timestamp: 2026-03-18T14:02:25.685Z
     examined_commit: 1fb3398c8601e4d12109d099515003199b2ea770
     external_links: []
     lifecycle_state: open
@@ -16442,8 +16449,27 @@ reviews:
       content_hash: ""
       ref: "@task-daemon-api"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM0M2ETMD25AH19CAZSJYRYS
+        anchor:
+          type: code
+          commit: 1fb3398c8601
+          line_end: 380
+          line_start: 377
+          path: packages/daemon/src/routes/automation.ts
+          side: head
+        entries:
+          - _ulid: 01KM0M2ETNYGVPGCZF0W5QKQ77
+            author: "@claude"
+            body: "timeout_remaining_ms calculation is inverted: computes elapsed time (Date.now() -
+              first_run_at) instead of remaining time (timeout_ms - elapsed). The GroupState doesn't
+              carry timeout_ms from the composition config, so the remaining time cannot be
+              computed. Currently returns elapsed time labeled as 'timeout_remaining_ms'. Impact:
+              clients using this field get wrong values — they'd see timeout_remaining growing over
+              time instead of shrinking."
+            created_at: 2026-03-18T14:02:25.493Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T13:52:49.236Z
-    updated_at: 2026-03-18T13:52:56.795Z
+    updated_at: 2026-03-18T14:02:25.493Z
     notes: []
