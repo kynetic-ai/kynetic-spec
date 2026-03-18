@@ -16922,6 +16922,13 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-18T14:33:29.292Z
+      - _ulid: 01KM0NW1YJ0CCB5WS368BDTA6K
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0NW1QVNF1WK7W08B54VABG
+        timestamp: 2026-03-18T14:33:52.850Z
     examined_commit: 1fc288f90d15d04de5646ec39c46130d715d86f8
     external_links: []
     lifecycle_state: open
@@ -16931,8 +16938,72 @@ reviews:
       content_hash: ""
       ref: "@task-hook-cli"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM0NW1QVNF1WK7W08B54VABG
+        entries:
+          - _ulid: 01KM0NW1QVD1TX8KVJ6FVC5KMV
+            author: "@claude"
+            body: >-
+              Review Evidence Log:
+
+
+              Files read: src/cli/commands/hook.ts, src/cli/commands/index.ts, src/cli/index.ts,
+              src/parser/meta.ts, tests/hook-cli.test.ts, src/cli/exit-codes.ts,
+              src/parser/index.ts, src/schema/index.ts, src/schema/hooks.ts, src/cli/output.ts,
+              src/parser/shadow.ts
+
+
+              Commands run: npm test, kspec validate, git diff dev..HEAD, git diff
+              5241398e3..1fc288f90, kspec task get @01KKZPVX, kspec review get @01KM0N6M, kspec
+              review for-task @01KKZPVX
+
+
+              Claims verified:
+
+              - "All tests pass" — Verified: 6422 passed. 1 failure in review-cli.test.ts is
+              pre-existing (not in changeset files, examined_commit auto-population in detached
+              worktree)
+
+              - "50 tests" — Verified: hook-cli.test.ts contains 50 test cases
+
+              - "Fixed N/A annotations" — Verified: diff between commits shows added annotations for
+              trait-json-output ac-4/ac-5, trait-shadow-commit ac-2/ac-3, trait-semantic-exit-codes
+              ac-6
+
+              - "Removed dead writeMetaWithHooks helper" — Verified: removed from diff along with
+              unused fs/path imports
+
+
+              Categories searched:
+
+              - Correctness: Code matches spec behavior for ac-1 (list shows name, event, action
+              type, enabled) and ac-4 (hook persisted via saveHook). All CRUD operations work
+              correctly.
+
+              - Edge cases: Duplicate name check on add and rename. Already-enabled/disabled
+              idempotent handling. ULID prefix resolution with case-insensitive matching. Empty
+              filter clearing with {}.
+
+              - Error handling: All error paths use appropriate exit codes (NOT_FOUND=3,
+              VALIDATION_FAILED=4, CONFLICT=5). JSON parse errors caught with descriptive messages.
+              Schema validation errors surface field-level detail.
+
+              - Security: JSON.parse wrapped in try-catch. All user input validated through Zod
+              schemas before persistence. No injection vectors.
+
+              - Test quality: Tests prove their ACs — e.g., ac-1 test verifies
+              name/event/action/enabled all appear in output, ac-4 test adds hook then verifies it
+              persists across commands. N/A annotations have valid justifications.
+
+              - Integration: saveHook/deleteHook follow established raw-data-preservation pattern
+              (withFileLock, extractRawMetaManifest, mergeMetaItemPreservingRawShape). Imports
+              resolve correctly through parser/index.ts and schema/index.ts.
+
+              - Prior review findings: Both items addressed (missing N/A annotations: fixed; dead
+              code: removed).
+            created_at: 2026-03-18T14:33:52.635Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T14:33:03.679Z
-    updated_at: 2026-03-18T14:33:29.141Z
+    updated_at: 2026-03-18T14:33:52.635Z
     notes: []
