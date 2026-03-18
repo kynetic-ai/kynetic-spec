@@ -23,7 +23,7 @@ import {
   type LoadedAgent,
 } from "../parser/index.js";
 import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
-import { loadProjectConfig } from "../parser/config.js";
+import { loadProjectConfig, resolveDispatchRemoteSync } from "../parser/config.js";
 import type { InvocationOptions } from "./invocation.js";
 import { SessionEventAccumulator } from "./session-event-accumulator.js";
 import type { SessionEventData } from "./session-event-types.js";
@@ -48,6 +48,9 @@ import {
   cleanupReviewerDispatchWorkspace,
   reconcileDispatchWorkspaceArtifacts,
   discoverWorkspaceForReviewOrFixCycle,
+  pushDispatchBranch,
+  pushIntegrationTarget,
+  resolveDispatchRemote,
 } from "./workspace.js";
 import {
   ensureWorkspaceBootstrap,
@@ -802,6 +805,17 @@ export class DispatchEngine {
   private drainPending = false;
   /** Central event bus for structured event emission and subscription. AC: @dispatch-event-envelope ac-1 through ac-6 */
   private _eventBus: EventBus;
+  /**
+   * Whether a push to the integration target is currently in progress.
+   * AC: @dispatch-remote-branch-sync ac-target-push-serialization
+   */
+  private targetPushInProgress = false;
+  /** Resolved effective remote_sync value (set once at start time). */
+  private remoteSyncEnabled = false;
+  /** Resolved remote name for push operations (null = no remote). */
+  private dispatchRemote: string | null = null;
+  /** Resolved integration target branch for push operations. */
+  private integrationTargetBranch: string | null = null;
 
   constructor(options: DispatchEngineOptions) {
     this.projectDir = options.projectDir;
@@ -857,6 +871,19 @@ export class DispatchEngine {
     await reconcileDispatchWorkspaceArtifacts(this.projectDir, {
       activeTaskRefs: this._activeTaskRefs(),
     });
+
+    // AC: @dispatch-remote-branch-sync ac-no-remote — resolve remote sync at start time
+    try {
+      const { config } = await loadProjectConfig(this.projectDir);
+      this.dispatchRemote = resolveDispatchRemote(this.projectDir);
+      this.remoteSyncEnabled = resolveDispatchRemoteSync(config, this.dispatchRemote !== null);
+      this.integrationTargetBranch = config.dispatch.base_branch ?? null;
+    } catch (err) {
+      console.warn("[dispatch] Failed to resolve remote sync config, defaulting to disabled:", err);
+      this.remoteSyncEnabled = false;
+      this.dispatchRemote = null;
+      this.integrationTargetBranch = null;
+    }
 
     // AC: @agent-dispatch-engine ac-8 - Bootstrap: evaluate existing task states
     await this._bootstrap();
@@ -1192,12 +1219,108 @@ export class DispatchEngine {
     await reconcileDispatchWorkspaceArtifacts(this.projectDir, {
       activeTaskRefs: this._activeTaskRefs(),
     });
+    // AC: @dispatch-remote-branch-sync ac-push-target-periodic
+    // Push the integration target if it has unpushed commits (retries failed post-merge pushes).
+    if (this.remoteSyncEnabled && this.dispatchRemote) {
+      this._pushIntegrationTargetAsync("periodic-sync");
+    }
+
     const enqueued = await this._evaluateAllTasks({ skipIfActive: true });
     if (enqueued > 0) {
       console.log(`[dispatch] Reconciliation enqueued ${enqueued} task(s)`);
       // AC: @agent-dispatch-engine ac-27 — all drains go through _serializedDrain()
       await this._serializedDrain();
     }
+  }
+
+  // ─── Dispatch Branch Push Helpers ─────────────────────────────────────────
+
+  /**
+   * Fire-and-forget push of a dispatch branch to remote.
+   * Logs warnings on failure but never throws or blocks the dispatch loop.
+   *
+   * AC: @dispatch-remote-branch-sync ac-first-push-sets-tracking
+   * AC: @dispatch-remote-branch-sync ac-first-push-replaces-stale-ref
+   * AC: @dispatch-remote-branch-sync ac-subsequent-push
+   * AC: @dispatch-remote-branch-sync ac-push-non-fatal
+   */
+  private _pushDispatchBranchAsync(canonicalBranch: string, taskRef: string): void {
+    try {
+      const result = pushDispatchBranch(
+        this.projectDir,
+        canonicalBranch,
+        this.dispatchRemote!,
+      );
+      if (result.error) {
+        // AC: @dispatch-remote-branch-sync ac-push-non-fatal
+        console.warn(
+          `[dispatch] Push failed for ${canonicalBranch} (task ${taskRef}): ${result.error}`,
+        );
+      } else if (result.pushed) {
+        console.log(
+          `[dispatch] Pushed ${canonicalBranch}${result.firstPush ? " (first push, tracking established)" : ""}`,
+        );
+      }
+    } catch (err) {
+      // AC: @dispatch-remote-branch-sync ac-push-non-fatal
+      console.warn(
+        `[dispatch] Unexpected error pushing ${canonicalBranch} (task ${taskRef}):`,
+        err,
+      );
+    }
+  }
+
+  /**
+   * Push the integration target branch to remote with serialization.
+   * If a push is already in progress, the call is skipped (not queued).
+   *
+   * AC: @dispatch-remote-branch-sync ac-push-target-after-merge
+   * AC: @dispatch-remote-branch-sync ac-push-target-periodic
+   * AC: @dispatch-remote-branch-sync ac-target-push-serialization
+   * AC: @dispatch-remote-branch-sync ac-push-non-fatal
+   */
+  private _pushIntegrationTargetAsync(trigger: string): void {
+    // AC: @dispatch-remote-branch-sync ac-target-push-serialization
+    if (this.targetPushInProgress) {
+      return;
+    }
+    this.targetPushInProgress = true;
+    try {
+      const config = this._resolveBaseBranch();
+      if (!config) {
+        return;
+      }
+      const result = pushIntegrationTarget(
+        this.projectDir,
+        config,
+        this.dispatchRemote!,
+      );
+      if (result.error) {
+        // AC: @dispatch-remote-branch-sync ac-push-non-fatal
+        console.warn(
+          `[dispatch] Integration target push failed (${trigger}): ${result.error}`,
+        );
+      } else if (result.pushed) {
+        console.log(
+          `[dispatch] Pushed integration target "${config}" (${trigger})`,
+        );
+      }
+    } catch (err) {
+      // AC: @dispatch-remote-branch-sync ac-push-non-fatal
+      console.warn(
+        `[dispatch] Unexpected error pushing integration target (${trigger}):`,
+        err,
+      );
+    } finally {
+      this.targetPushInProgress = false;
+    }
+  }
+
+  /**
+   * Resolve the dispatch base branch from the cached config. Returns null if unavailable.
+   */
+  private _resolveBaseBranch(): string | null {
+    return this.integrationTargetBranch;
   }
 
   /**
@@ -2366,6 +2489,23 @@ export class DispatchEngine {
               source_id: terminalEvent.session_id,
               payload: { ...terminalEvent },
             });
+          }
+
+          // AC: @dispatch-remote-branch-sync ac-first-push-sets-tracking,
+          //     ac-subsequent-push, ac-push-non-fatal, ac-no-remote
+          // Fire-and-forget: push dispatch branch to remote after invocation completes.
+          // Does not block re-evaluation or queue drain.
+          if (this.remoteSyncEnabled && this.dispatchRemote && terminalEvent?.type === "completed") {
+            this._pushDispatchBranchAsync(
+              workspace.metadata.canonicalBranch,
+              entry.change.taskRef,
+            );
+            // AC: @dispatch-remote-branch-sync ac-push-target-after-merge
+            // When a reviewer invocation completes, push the integration target
+            // (the reviewer may have merged into it).
+            if (role === "reviewer") {
+              this._pushIntegrationTargetAsync("post-merge");
+            }
           }
         })
         .then(async () => {

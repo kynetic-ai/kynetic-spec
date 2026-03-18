@@ -1737,6 +1737,188 @@ function deleteRehydratedAdoptedBranch(projectDir: string, branch: string): void
   );
 }
 
+// ─── Dispatch Branch Push Lifecycle ──────────────────────────────────────────
+
+/**
+ * Check whether a branch has upstream tracking configured.
+ * AC: @dispatch-remote-branch-sync ac-first-push-sets-tracking
+ */
+function hasUpstreamTracking(projectDir: string, branch: string): boolean {
+  const result = runGit(projectDir, ["rev-parse", "--verify", "--quiet", `${branch}@{u}`]);
+  return result.status === 0;
+}
+
+/**
+ * Check whether a local branch has commits ahead of its upstream.
+ * Returns false when there is no upstream or on error.
+ */
+function isLocalBranchAheadOfUpstream(projectDir: string, branch: string): boolean {
+  const result = runGit(projectDir, [
+    "rev-list", "--left-right", "--count", `${branch}...${branch}@{u}`,
+  ]);
+  if (result.status !== 0) return false;
+  const [aheadStr] = result.stdout.trim().split("\t");
+  const ahead = parseInt(aheadStr, 10);
+  return ahead > 0;
+}
+
+export interface PushDispatchBranchResult {
+  pushed: boolean;
+  firstPush: boolean;
+  error: string | null;
+}
+
+/**
+ * Push a dispatch branch to remote after an invocation completes.
+ *
+ * Detects whether upstream tracking exists to decide first-push vs normal-push:
+ * - First push: uses --force-with-lease to safely replace stale remote refs,
+ *   then sets upstream tracking with -u.
+ * - Subsequent push: normal push (tracking already established).
+ *
+ * AC: @dispatch-remote-branch-sync ac-first-push-sets-tracking
+ * AC: @dispatch-remote-branch-sync ac-first-push-replaces-stale-ref
+ * AC: @dispatch-remote-branch-sync ac-subsequent-push
+ * AC: @dispatch-remote-branch-sync ac-push-non-fatal
+ * AC: @dispatch-remote-branch-sync ac-no-remote
+ */
+export function pushDispatchBranch(
+  projectDir: string,
+  canonicalBranch: string,
+  remote: string,
+): PushDispatchBranchResult {
+  // AC: @dispatch-remote-branch-sync ac-no-remote
+  if (!remote) {
+    return { pushed: false, firstPush: false, error: null };
+  }
+
+  const isFirstPush = !hasUpstreamTracking(projectDir, canonicalBranch);
+
+  if (isFirstPush) {
+    // AC: @dispatch-remote-branch-sync ac-first-push-sets-tracking
+    // AC: @dispatch-remote-branch-sync ac-first-push-replaces-stale-ref
+    // Use --force-with-lease to safely replace stale remote refs from previous runs.
+    // --force-with-lease verifies the remote ref hasn't been updated by a concurrent
+    // writer (it succeeds if the remote ref is empty or matches our expected value).
+    const result = runGit(projectDir, [
+      "push", "-u", "--force-with-lease", remote, canonicalBranch,
+    ]);
+    if (result.status !== 0) {
+      // AC: @dispatch-remote-branch-sync ac-push-non-fatal
+      return {
+        pushed: false,
+        firstPush: true,
+        error: result.stderr || result.stdout || "push failed",
+      };
+    }
+    return { pushed: true, firstPush: true, error: null };
+  }
+
+  // AC: @dispatch-remote-branch-sync ac-subsequent-push
+  // Check if there are commits to push before attempting
+  if (!isLocalBranchAheadOfUpstream(projectDir, canonicalBranch)) {
+    return { pushed: false, firstPush: false, error: null };
+  }
+  const result = runGit(projectDir, ["push", remote, canonicalBranch]);
+  if (result.status !== 0) {
+    // AC: @dispatch-remote-branch-sync ac-push-non-fatal
+    return {
+      pushed: false,
+      firstPush: false,
+      error: result.stderr || result.stdout || "push failed",
+    };
+  }
+  return { pushed: true, firstPush: false, error: null };
+}
+
+export interface PushIntegrationTargetResult {
+  pushed: boolean;
+  skipped: boolean;
+  error: string | null;
+}
+
+/**
+ * Push the integration target branch to remote.
+ *
+ * Called after reviewer merges and during periodic sync when the local
+ * integration target has commits not yet on the remote.
+ *
+ * AC: @dispatch-remote-branch-sync ac-push-target-after-merge
+ * AC: @dispatch-remote-branch-sync ac-push-target-periodic
+ * AC: @dispatch-remote-branch-sync ac-push-non-fatal
+ * AC: @dispatch-remote-branch-sync ac-no-remote
+ */
+export function pushIntegrationTarget(
+  projectDir: string,
+  integrationBranch: string,
+  remote: string,
+): PushIntegrationTargetResult {
+  // AC: @dispatch-remote-branch-sync ac-no-remote
+  if (!remote) {
+    return { pushed: false, skipped: true, error: null };
+  }
+
+  // Check if the local branch is ahead of remote before pushing
+  const hasTracking = hasUpstreamTracking(projectDir, integrationBranch);
+  if (hasTracking && !isLocalBranchAheadOfUpstream(projectDir, integrationBranch)) {
+    return { pushed: false, skipped: true, error: null };
+  }
+
+  // For integration target, always use -u to ensure tracking is established
+  const result = runGit(projectDir, ["push", "-u", remote, integrationBranch]);
+  if (result.status !== 0) {
+    // AC: @dispatch-remote-branch-sync ac-push-non-fatal
+    return {
+      pushed: false,
+      skipped: false,
+      error: result.stderr || result.stdout || "push failed",
+    };
+  }
+  return { pushed: true, skipped: false, error: null };
+}
+
+/**
+ * Delete a remote dispatch branch ref during workspace cleanup.
+ * Non-fatal: logs a warning on failure but does not throw.
+ *
+ * AC: @dispatch-remote-branch-sync ac-cleanup-remote-branch
+ * AC: @dispatch-remote-branch-sync ac-no-remote
+ */
+export function deleteRemoteDispatchBranch(
+  projectDir: string,
+  canonicalBranch: string,
+  remote: string,
+): { deleted: boolean; error: string | null } {
+  // AC: @dispatch-remote-branch-sync ac-no-remote
+  if (!remote) {
+    return { deleted: false, error: null };
+  }
+
+  // Only delete if the branch has been pushed (has upstream tracking)
+  if (!hasUpstreamTracking(projectDir, canonicalBranch)) {
+    return { deleted: false, error: null };
+  }
+
+  const result = runGit(projectDir, ["push", remote, "--delete", canonicalBranch]);
+  if (result.status !== 0) {
+    // AC: @dispatch-remote-branch-sync ac-cleanup-remote-branch — deletion failure is non-fatal
+    return {
+      deleted: false,
+      error: result.stderr || result.stdout || "remote branch deletion failed",
+    };
+  }
+  return { deleted: true, error: null };
+}
+
+/**
+ * Resolve the first configured git remote name, or null if none.
+ * AC: @dispatch-remote-branch-sync ac-no-remote
+ */
+export function resolveDispatchRemote(projectDir: string): string | null {
+  const remotes = listGitRemotes(projectDir);
+  return remotes.length > 0 ? remotes[0] : null;
+}
+
 function listDispatchBranches(projectDir: string): string[] {
   const result = runGit(projectDir, [
     "for-each-ref",
@@ -1913,6 +2095,25 @@ export async function reapDispatchWorkspace(
     existing.metadata.worktreeRoot,
     existing.workerWorktreeDir,
   );
+  // AC: @dispatch-remote-branch-sync ac-cleanup-remote-branch
+  // Delete the remote dispatch branch before deleting the local one.
+  // Non-fatal: failure is logged but does not block cleanup.
+  if (existing.metadata.branchProvenance.ownership !== "adopted") {
+    const remote = resolveDispatchRemote(projectDir);
+    if (remote) {
+      const remoteResult = deleteRemoteDispatchBranch(
+        projectDir,
+        existing.metadata.canonicalBranch,
+        remote,
+      );
+      if (remoteResult.error) {
+        console.warn(
+          `[dispatch] Failed to delete remote branch "${existing.metadata.canonicalBranch}" on ${remote}: ${remoteResult.error}`,
+        );
+      }
+    }
+  }
+
   // AC: @adopted-branch-cleanup-and-recoverability ac-1, ac-2, ac-4
   // Dispatcher-managed branches are always deleted on cleanup.
   // Adopted branches are preserved unless they were rehydrated (local ref
