@@ -106719,7 +106719,21 @@
   session_id: 01KM05YWYPEYB0M4GX9DNHDYCY
   created_at: 2026-03-18T07:07:46.749Z
   started_at: 2026-03-18T09:56:09.867Z
-  notes: []
+  notes:
+    - _ulid: 01KM06YXWFN18M78HM7M65M5B5
+      content: "Implemented syncTargetBranch() in DispatchEngine with three trigger points: (1) engine
+        start — syncs before bootstrap evaluation, (2) periodic reconciliation — syncs as first
+        step, deferred when reviewer invocation is active, (3) before workspace provisioning — syncs
+        when lastSyncTimestamp exceeds sync_interval. Uses spawnSync for git fetch + merge --ff-only
+        in project dir (not worktree). Running guard prevents overlapping syncs. Returns
+        TargetSyncResult enum (synced/up_to_date/skipped/transient_failure/diverged) for downstream
+        consumers (degraded state task). All 14 new tests pass covering ac-pull-target-on-start,
+        ac-pull-target-periodic, ac-pull-target-periodic-deferred, ac-pull-target-before-provision,
+        ac-pull-ff-only, ac-transient-no-degrade, ac-no-remote. Full suite: 271/272 pass, 1
+        pre-existing failure in review-cli.test.ts unrelated to changes."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T10:13:18.352Z
   todos: []
   automation: eligible
 - _ulid: 01KKZWB80XVKFH4V056NHB9H6T
