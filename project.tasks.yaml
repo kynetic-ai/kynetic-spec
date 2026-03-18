@@ -105874,7 +105874,7 @@
   spec_ref: "@dispatch-event-taxonomy"
   plan_ref: "@plan-dispatch-event-system-expansion"
   origin: derived
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on:
     - "@task-event-bus"
@@ -105894,7 +105894,7 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: 01KM04JNJM816GGPA9PPY94GKW
+  session_id: null
   created_at: 2026-03-18T05:31:54.945Z
   started_at: 2026-03-18T09:32:16.170Z
   submitted_at: 2026-03-18T09:55:27.551Z
@@ -105913,6 +105913,19 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T09:55:11.431Z
+    - _ulid: 01KM06FFXGM3DWH7E82YV4PR90
+      content: "[FIX_CYCLE: 1] Review findings: Merge conflict with dev in src/schema/hooks.ts. On dev,
+        PAYLOAD_FIELDS_BY_EVENT was refactored to reference PAYLOAD_FIELDS_BY_EVENT_TYPE from
+        src/schema/event-registry.ts (via the command-action task merge). This task updated the
+        inline PAYLOAD_FIELDS_BY_EVENT with correct session field names (duration_ms,
+        terminal_reason, work_summary), but the inline definition no longer exists on dev. To
+        resolve: rebase onto dev, then update src/schema/event-registry.ts to change session event
+        payload_fields from [duration, reason] to [duration_ms, terminal_reason, work_summary] for
+        session.ended, session.idle_timeout, and session.cancelled. The hooks.ts re-export will then
+        automatically pick up the correct fields."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T10:04:52.528Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVQM496HTQQ054B0S18SN
