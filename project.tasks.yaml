@@ -107600,10 +107600,41 @@
     - task-cli-check-auto-version
   title: Remove version flags from CLI review check command
   type: task
-  description: Remove --version-base, --version-head, --version-hash from kspec review check in
-    src/cli/commands/review.ts. Auto-derive via extractSubjectVersion(review.subject). Delete
-    parseVersionFromOptions() (zero remaining callers). See @plan-review-version-auto-derivation for
-    full steps.
+  description: >-
+    Remove --version-base, --version-head, and --version-hash from the kspec review check command in
+    src/cli/commands/review.ts. Replace the caller-provided version with auto-derivation via
+    extractSubjectVersion(review.subject) from src/review/subject-bindings.ts.
+
+
+    Currently the CLI check command (line 915 of review.ts) calls parseVersionFromOptions() to build
+    a version from caller-provided flags. The daemon API already auto-derives correctly
+    (packages/daemon/src/routes/reviews.ts line 915).
+
+
+    Also delete parseVersionFromOptions() (line 412 of review.ts) — verified that review refresh
+    uses its own --head/--base flags with different semantics and does not call this function. After
+    both the verdict and check tasks, it will have zero callers.
+
+
+    Why: Same root cause as the verdict command — callers pass wrong version types, creating type
+    mismatches between applies_to_version and the review subject. The daemon check endpoint already
+    auto-derives via extractSubjectVersion(). The CLI should match.
+
+
+    How:
+
+    1. Remove the three --version-* option definitions from the check command (lines 891-893 of
+    src/cli/commands/review.ts)
+
+    2. Remove the parseVersionFromOptions call (line 915)
+
+    3. Import extractSubjectVersion from src/review/subject-bindings.ts and use
+    extractSubjectVersion(found.subject) for applies_to_version
+
+    4. Delete parseVersionFromOptions() (line 412) — zero remaining callers after this task
+
+    5. Update tests that pass version flags to check commands — remove version flags and verify the
+    auto-derived version matches the review subject type
   spec_ref: "@review-cli-mutation-commands"
   meta_ref: null
   plan_ref: "@plan-review-version-auto-derivation"
