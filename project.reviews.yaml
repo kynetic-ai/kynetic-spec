@@ -17127,6 +17127,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM0QKRMM8VX9NC5KMGBGD4Q4
         timestamp: 2026-03-18T15:04:18.602Z
+      - _ulid: 01KM0QM1WKD85XE76ZW5JZ5G50
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM0QM1M16G46G70JVVFKR7GX
+        timestamp: 2026-03-18T15:04:27.795Z
     examined_commit: b8a2609de8d38a948f6d47d4d7fab9b05e941f08
     external_links: []
     lifecycle_state: open
@@ -17148,7 +17155,18 @@ reviews:
               transitions; enable/disable is a boolean toggle"
             created_at: 2026-03-18T15:04:18.325Z
         kind: blocker
+      - _ulid: 01KM0QM1M16G46G70JVVFKR7GX
+        entries:
+          - _ulid: 01KM0QM1M29W8VSCABBP8HSG6E
+            author: "@claude"
+            body: "Missing N/A annotation for @trait-semantic-exit-codes ac-4 (runtime error exit code). The
+              schedule commands do handle runtime errors via catch blocks (using EXIT_CODES.ERROR =
+              1), which is consistent with other CLI commands. But the annotation is missing from
+              the test file. Add: // AC: @trait-semantic-exit-codes ac-4 — N/A: runtime errors
+              handled by catch blocks with EXIT_CODES.ERROR, consistent with other CLI commands"
+            created_at: 2026-03-18T15:04:27.522Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T15:03:55.273Z
-    updated_at: 2026-03-18T15:04:18.325Z
+    updated_at: 2026-03-18T15:04:27.522Z
     notes: []
