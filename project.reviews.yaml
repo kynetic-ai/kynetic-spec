@@ -10213,6 +10213,19 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T01:28:47.890Z
         completed_at: 2026-03-18T01:28:47.890Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
+          head_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
+        evidence: "AC: @yaml-serialization-invariants ac-3 annotated on src/parser/yaml.ts:2617 and
+          tests/yaml-round-trip-stability.test.ts:1150. 5 round-trip tests prove evidence_refs Zod
+          default is suppressed."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T01:28:56.212Z
+        completed_at: 2026-03-18T01:28:56.212Z
     events:
       - _ulid: 01KKZ8XYFKY80MKY86MPMXKC0H
         actor: "@claude"
@@ -10234,6 +10247,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T01:28:47.982Z
+      - _ulid: 01KKZ8YS7J6SK0BX43NQEYA0XA
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T01:28:56.306Z
     examined_commit: a8319add715b74b46cf30ee1da60a5fb551ee1e8
     external_links: []
     lifecycle_state: open
@@ -10246,5 +10266,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T01:28:28.915Z
-    updated_at: 2026-03-18T01:28:47.890Z
+    updated_at: 2026-03-18T01:28:56.212Z
     notes: []
