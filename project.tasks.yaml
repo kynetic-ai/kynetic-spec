@@ -106616,7 +106616,7 @@
   spec_ref: "@dispatch-composition-patterns"
   plan_ref: "@plan-dispatch-event-system-expansion"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-action-model"
@@ -106627,7 +106627,9 @@
     - dispatch
     - composition
   vcs_refs: []
+  session_id: 01KM0FKVTFPK9PZ0ESQW6VZGYW
   created_at: 2026-03-18T05:32:09.262Z
+  started_at: 2026-03-18T12:45:22.341Z
   notes: []
   todos: []
   automation: eligible
