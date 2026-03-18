@@ -8651,6 +8651,9 @@ features:
             instructions, not by the dispatcher.
           - Existing workspaces provisioned from an older target commit are not
             rebased; staleness resolves naturally at merge time.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
