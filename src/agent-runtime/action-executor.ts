@@ -34,6 +34,8 @@ export interface ActionEventContext {
   causation_id?: string;
   source_type?: string;
   source_id?: string;
+  /** Composition group identifier, propagated to spawned invocations. AC: @dispatch-agent-action-input ac-4 */
+  group_id?: string;
   /** Event payload fields (flattened for template access) */
   [key: string]: string | number | boolean | undefined;
 }
@@ -61,6 +63,7 @@ export type NotifyBroadcast = (
  * Callback for spawning agent invocations (agent action).
  * Returns the invocation/session ID on success.
  * AC: @dispatch-action-model ac-4, ac-5
+ * AC: @dispatch-agent-action-input ac-4
  */
 export type AgentSpawner = (options: {
   agent_id: string;
@@ -68,6 +71,8 @@ export type AgentSpawner = (options: {
   task_ref?: string;
   timeout_minutes?: number;
   correlation_id?: string;
+  /** Composition group identifier propagated from triggering event. AC: @dispatch-agent-action-input ac-4 */
+  group_id?: string;
 }) => Promise<{ invocation_id: string }>;
 
 /**
@@ -166,6 +171,48 @@ export function resolveTemplateVars(
 }
 
 /**
+ * Build a default prompt from event context when no prompt or prompt_template
+ * is configured on the agent action.
+ *
+ * For invocation.completed events, the default prompt includes the upstream
+ * invocation's session_id, agent_id, task_ref, and outcome summary so the
+ * downstream agent has context about the completed work.
+ *
+ * For other events, the default prompt includes the event type and key
+ * payload fields.
+ *
+ * AC: @dispatch-agent-action-input ac-1, ac-2
+ */
+export function buildDefaultAgentPrompt(
+  context: ActionEventContext,
+): string {
+  const eventType = context.event_type;
+
+  // AC: @dispatch-agent-action-input ac-2 — invocation.completed default prompt
+  if (eventType === "invocation.completed") {
+    const parts = [
+      `Upstream invocation completed.`,
+    ];
+    if (context.session_id) parts.push(`Session: ${context.session_id}`);
+    if (context.agent_id) parts.push(`Agent: ${context.agent_id}`);
+    if (context.task_ref) parts.push(`Task: ${context.task_ref}`);
+    if (context.trigger) parts.push(`Trigger: ${context.trigger}`);
+    if (context.duration_ms !== undefined) parts.push(`Duration: ${context.duration_ms}ms`);
+    // Outcome summary: include any outcome/terminal_reason fields from the payload
+    if (context.outcome) parts.push(`Outcome: ${context.outcome}`);
+    if (context.terminal_reason) parts.push(`Terminal reason: ${context.terminal_reason}`);
+    return parts.join("\n");
+  }
+
+  // Default prompt for other event types
+  const parts = [`Event: ${eventType}`];
+  if (context.task_ref) parts.push(`Task: ${context.task_ref}`);
+  if (context.task_title) parts.push(`Title: ${context.task_title}`);
+  if (context.source_id) parts.push(`Source: ${context.source_id}`);
+  return parts.join("\n");
+}
+
+/**
  * Extract all template variable names from a string.
  * Used by validation to check for unknown variables.
  * AC: @dispatch-action-model ac-7
@@ -197,6 +244,7 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "source_id",
     "correlation_id",
     "causation_id",
+    "group_id",
   ]),
   // Task event payload fields — AC: @dispatch-event-payload ac-1
   "task": new Set([
@@ -216,6 +264,7 @@ export const KNOWN_EVENT_FIELDS: Record<string, Set<string>> = {
     "trigger",
     "duration_ms",
     "task_ref",
+    "outcome",
   ]),
   // Session event payload fields — AC: @dispatch-event-payload ac-3
   "session": new Set([
@@ -327,6 +376,7 @@ export function extractActionTemplates(action: Action): string[] {
       break;
     case "agent":
       if (action.prompt) templates.push(action.prompt);
+      if (action.prompt_template) templates.push(action.prompt_template);
       break;
     case "notify":
       templates.push(action.message);
@@ -757,6 +807,10 @@ export class ActionExecutor {
   /**
    * Execute an agent action — spawns a new invocation.
    * AC: @dispatch-action-model ac-4, ac-5
+   * AC: @dispatch-agent-action-input ac-1 (prompt interpolation & default generation)
+   * AC: @dispatch-agent-action-input ac-2 (invocation.completed default prompt)
+   * AC: @dispatch-agent-action-input ac-3 (task_binding)
+   * AC: @dispatch-agent-action-input ac-4 (correlation_id & group_id propagation)
    */
   private async executeAgent(
     action: AgentAction,
@@ -778,16 +832,39 @@ export class ActionExecutor {
       return failedRun;
     }
 
-    const resolvedPrompt = action.prompt
-      ? resolveTemplateVars(action.prompt, eventContext)
-      : undefined;
+    // AC: @dispatch-agent-action-input ac-1 — Prompt resolution order:
+    // 1. action.prompt (literal, interpolated with event context)
+    // 2. action.prompt_template (template, interpolated with event context)
+    // 3. Default prompt generated from event context
+    let resolvedPrompt: string | undefined;
+    if (action.prompt) {
+      resolvedPrompt = resolveTemplateVars(action.prompt, eventContext);
+    } else if (action.prompt_template) {
+      resolvedPrompt = resolveTemplateVars(action.prompt_template, eventContext);
+    } else {
+      // AC: @dispatch-agent-action-input ac-1, ac-2 — generate default prompt from event context
+      resolvedPrompt = buildDefaultAgentPrompt(eventContext);
+    }
 
+    // AC: @dispatch-agent-action-input ac-3 — task_binding: derive task_ref from event
+    // when task_binding is true and the triggering event has a task_ref.
+    // Explicit action.task_ref takes precedence over event-derived task_ref.
+    let effectiveTaskRef = action.task_ref;
+    if (action.task_binding && !effectiveTaskRef) {
+      const eventTaskRef = eventContext.task_ref;
+      if (eventTaskRef && typeof eventTaskRef === "string") {
+        effectiveTaskRef = eventTaskRef;
+      }
+    }
+
+    // AC: @dispatch-agent-action-input ac-4 — propagate correlation_id and group_id
     const result = await this.agentSpawner({
       agent_id: action.agent_id,
       prompt: resolvedPrompt,
-      task_ref: action.task_ref,
+      task_ref: effectiveTaskRef,
       timeout_minutes: action.timeout_minutes,
       correlation_id: eventContext.correlation_id,
+      group_id: eventContext.group_id,
     });
 
     const completedAt = new Date().toISOString();
