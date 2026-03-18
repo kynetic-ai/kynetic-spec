@@ -102008,6 +102008,24 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T03:08:18.423Z
+    - _ulid: 01KKZG2VEJ6ZGVYAN6K96XMV5V
+      content: "Fix cycle 1 addressed: (1) BLOCKER — Added comprehensive E2E test suite with 17 tests
+        covering all 6 ACs (ac-1: file list with stats + expansion, ac-2: unified diff with line
+        numbers + syntax highlighting + color coding, ac-3: collapsed regions with 'Show N more
+        lines' between hunks and above first hunk, ac-4: click-to-comment with code anchor
+        verification, ac-5: inline thread rendering at anchor positions with kind badges, ac-6: lazy
+        loading for 21+ files with on-expand fetch). Tests use Playwright route mocking (same
+        pattern as reviews-detail.spec.ts) for deterministic rendering. (2) NITS — Removed unused
+        normalizeLanguage import from DiffFileView, removed unused expandedContextLines prop from
+        DiffHunkView, removed unused DiffChangeLine type import from DiffFileView. (3) QUESTION —
+        Removed dead totalFileLines/hiddenLinesAfter/isLastHunk code from DiffHunkView that was
+        never wired up (totalFileLines never passed). Between-hunk expansion
+        (expand-context-between) and above-hunk expansion (expand-context-up) still fully work for
+        ac-3. Build passes, svelte-check clean on diff components, existing unit tests pass
+        (pre-existing failures in unrelated test files unchanged)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T03:33:29.682Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6N50TFB9MFMG7T5KZT6N
