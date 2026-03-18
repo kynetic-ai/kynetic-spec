@@ -22622,30 +22622,53 @@ plans:
             Target branch divergence degrades the engine, not individual tasks.
           - Existing workspaces provisioned from an older target commit are not
             rebased; staleness resolves naturally at merge time. If the merge
-            conflicts, ac-task-merge-conflict applies.
+            conflicts, ac-merge-conflict-blocks-task applies.
+          - The dispatcher detects merge conflicts post-hoc after reviewer
+            invocations complete, rather than owning the merge operation directly.
+            Dispatcher-owned merge is a future direction that would require
+            refactoring the reviewer role entry contract.
         acceptance_criteria:
-          - id: ac-push-first-invocation
+          # ─── Dispatch Branch Push ───
+          - id: ac-first-push-sets-tracking
             given: |
               An agent invocation completes on a canonical task branch that has
-              never been pushed to remote, and the repository has a configured
-              remote with remote sync enabled
+              never been pushed to remote, and remote sync is enabled
             when: |
               The dispatch engine processes the invocation completion
             then: |
               The dispatcher pushes the canonical branch to remote with upstream
-              tracking (git push -u), establishing the remote ref for subsequent
-              pushes; push failure is non-fatal and logged as a warning
-          - id: ac-push-after-invocation
+              tracking established for subsequent pushes
+          - id: ac-first-push-replaces-stale-ref
             given: |
-              An agent invocation completes (success or failure) on a canonical
-              task branch that already has an upstream tracking ref, and the
-              branch has new commits not yet on the remote
+              A remote branch with the same dispatch/task/ name already exists
+              from a previous run (e.g. leftover from incomplete cleanup)
+            when: |
+              The first invocation push sets upstream tracking
+            then: |
+              The push replaces the stale remote ref safely (verifying no
+              concurrent writer), rather than failing on ref mismatch
+          - id: ac-subsequent-push
+            given: |
+              An agent invocation completes on a canonical task branch that
+              already has upstream tracking, and the branch has new commits
+              not yet on the remote
             when: |
               The dispatch engine processes the invocation completion
             then: |
-              The dispatcher pushes the canonical branch to remote; push failure
-              is non-fatal and logged as a warning, retried on next invocation
-              completion
+              The dispatcher pushes the canonical branch to remote
+          - id: ac-push-non-fatal
+            given: |
+              Any dispatch branch push or integration target push fails
+              (network error, auth failure, remote rejection)
+            when: |
+              The push error is caught
+            then: |
+              The failure is logged as a warning with error details; the
+              dispatch engine continues normal operation; the push is retried
+              on the next applicable trigger (invocation completion or periodic
+              sync)
+
+          # ─── Integration Target Push ───
           - id: ac-push-target-after-merge
             given: |
               A reviewer agent merges a task branch into the integration target
@@ -22653,39 +22676,53 @@ plans:
             when: |
               The merge completes successfully
             then: |
-              The dispatcher pushes the integration target branch to remote;
-              push failure is non-fatal and logged as a warning
+              The dispatcher pushes the integration target branch to remote
           - id: ac-push-target-periodic
             given: |
-              The periodic sync runs and the local integration target branch is
-              ahead of its remote tracking ref (has unpushed merge commits)
+              The periodic sync runs and the local integration target branch
+              has commits not yet on the remote
             when: |
-              The sync cycle completes its fetch and fast-forward
+              The sync cycle completes
             then: |
               The dispatcher pushes the integration target branch to remote,
-              ensuring failed post-merge pushes are retried without waiting for
-              the next merge event
+              retrying any previously failed post-merge pushes
+          - id: ac-target-push-serialization
+            given: |
+              A post-merge push and a periodic sync push both target the
+              integration target branch concurrently
+            when: |
+              The second push operation is initiated
+            then: |
+              The second operation is skipped; at most one push to the
+              integration target runs at a time
+
+          # ─── Integration Target Pull ───
           - id: ac-pull-target-on-start
             given: |
-              The dispatch engine starts and a remote is configured with remote
-              sync enabled
+              The dispatch engine starts and remote sync is enabled
             when: |
-              The engine initializes, before evaluating tasks for bootstrap dispatch
+              The engine initializes, before evaluating tasks for bootstrap
+              dispatch
             then: |
-              The engine fetches the integration target branch from remote and
-              fast-forward merges local to match; bootstrap task evaluation uses
-              the synced state
+              The engine syncs the integration target branch from remote;
+              bootstrap task evaluation uses the synced state
           - id: ac-pull-target-periodic
             given: |
               The dispatch engine is running and no reviewer invocation is
-              currently active (worker invocations do not block target sync
-              since they operate on isolated worktrees)
+              currently active
             when: |
               The configured sync interval elapses
             then: |
-              The engine fetches the integration target branch from remote and
-              fast-forward merges local to match; if a reviewer invocation is
-              active, the sync is deferred to the next interval
+              The engine syncs the integration target branch from remote
+          - id: ac-pull-target-periodic-deferred
+            given: |
+              The configured sync interval elapses while a reviewer invocation
+              is active
+            when: |
+              The sync would normally run
+            then: |
+              The sync is deferred to the next interval; worker invocations
+              do not block sync since they operate on isolated worktrees
           - id: ac-pull-target-before-provision
             given: |
               A new task workspace is about to be provisioned and the last
@@ -22693,40 +22730,61 @@ plans:
             when: |
               The dispatcher prepares the workspace
             then: |
-              The engine syncs the integration target branch from remote before
-              creating the task branch, ensuring the workspace starts from
-              current remote state
-          - id: ac-divergence-detection
+              The engine syncs the integration target branch from remote
+              before creating the task branch
+          - id: ac-pull-ff-only
             given: |
               The integration target branch is being synced from remote
             when: |
-              The local branch has diverged from the remote (git merge --ff-only
-              fails because local has commits not in the remote history, or
-              remote has been force-pushed)
+              The sync completes
             then: |
-              The sync fails explicitly with no merge commit created; the engine
-              enters degraded state; the log message distinguishes between
-              "local has unpushed merges" (push the target) and "remote was
-              force-pushed" (operator must reconcile)
+              The local branch is advanced to match the remote only if the
+              remote history is a strict superset of local; no merge commits
+              are created
+
+          # ─── Degraded State ───
+          - id: ac-divergence-enters-degraded
+            given: |
+              The integration target branch sync detects that local and remote
+              have diverged (local has commits not in remote, or remote history
+              was rewritten)
+            when: |
+              The fast-forward sync fails
+            then: |
+              The engine enters degraded state with a reason describing the
+              divergence
+          - id: ac-divergence-log-guidance
+            given: |
+              The engine enters degraded state due to target branch divergence
+            when: |
+              The failure is logged
+            then: |
+              The log message distinguishes between "local has unpushed merges"
+              and "remote history was rewritten" and includes resolution steps
+              for each case
           - id: ac-degraded-no-provision
             given: |
-              The dispatch engine is in degraded state due to integration target
-              divergence
+              The dispatch engine is in degraded state
             when: |
               A new task becomes eligible for dispatch
             then: |
               No new workspaces are provisioned; the task remains in the queue;
               existing in-flight invocations continue to completion normally
-          - id: ac-degraded-status
+          - id: ac-degraded-status-api
             given: |
               The dispatch engine is in degraded state
             when: |
-              kspec agent dispatch status is run, or GET /api/agent/status is
-              called, or a WebSocket client is subscribed to the agents topic
+              The dispatch status is queried (CLI or API)
             then: |
               The response includes the degraded flag, the failure reason, and
-              the timestamp when degraded state was entered; the CLI displays
-              a prominent warning with resolution steps
+              the timestamp when degraded state was entered
+          - id: ac-degraded-status-broadcast
+            given: |
+              The dispatch engine enters or exits degraded state
+            when: |
+              The state transition occurs
+            then: |
+              A sync state event is broadcast on the agents WebSocket topic
           - id: ac-degraded-auto-recover
             given: |
               The engine is in degraded state due to target branch divergence
@@ -22734,85 +22792,93 @@ plans:
               A subsequent periodic sync succeeds (the operator resolved the
               divergence externally)
             then: |
-              The engine automatically exits degraded state, logs the recovery,
-              broadcasts a recovery event on the agents WebSocket topic, and
-              resumes normal dispatch operations including draining any queued
-              tasks
-          - id: ac-transient-fetch-failure
+              The engine exits degraded state and resumes normal dispatch
+              operations, including evaluating queued tasks for provisioning
+          - id: ac-degraded-recovery-logged
             given: |
-              A remote fetch fails due to a transient error (network unreachable,
-              DNS failure, connection timeout)
+              The engine exits degraded state via successful sync
+            when: |
+              The recovery occurs
+            then: |
+              The recovery is logged with the duration the engine was degraded
+
+          # ─── Transient Failures ───
+          - id: ac-transient-no-degrade
+            given: |
+              A remote fetch fails due to a transient error (network
+              unreachable, DNS failure, connection timeout)
             when: |
               The sync interval fires
             then: |
-              The failure is logged as a warning with the error details, the
-              engine remains in normal state, and sync retries on the next
-              interval; a single transient failure does not trigger degraded state
-          - id: ac-repeated-transient-failures
+              The failure is logged as a warning with error details; the
+              engine remains in normal state and retries on the next interval
+          - id: ac-repeated-transient-escalation
             given: |
-              Remote fetch or push operations have failed consecutively for more
-              than 5 sync intervals (configurable)
+              Remote sync operations have failed consecutively for more than
+              a configurable threshold (default 5 intervals)
             when: |
               The next sync attempt also fails
             then: |
-              The engine logs an escalated warning indicating persistent remote
-              connectivity issues, distinct from the per-failure warning; the
-              warning includes the failure count and duration; the engine does
-              not enter degraded state (the remote may recover) but the operator
-              has clear signal that sync durability guarantees are not being met
-          - id: ac-task-merge-conflict
+              The engine logs an escalated warning indicating persistent
+              connectivity issues, including the failure count and duration
+          - id: ac-repeated-transient-no-degrade
+            given: |
+              Consecutive transient failures have exceeded the escalation
+              threshold
+            when: |
+              The engine evaluates its health state
+            then: |
+              The engine does not enter degraded state; transient failures
+              may resolve without operator intervention
+
+          # ─── Merge Conflict Handling ───
+          - id: ac-merge-conflict-blocks-task
             given: |
               A reviewer agent attempts to merge a task branch into the
               integration target and the merge produces conflicts
             when: |
               The merge fails
             then: |
-              The task is blocked with a reason describing the conflicting files
-              and the branches involved; the dispatch branch is pushed to remote
-              (so a human can access it for resolution); the engine continues
-              dispatching other eligible tasks without entering degraded state
+              The task is blocked with a reason describing the conflicting
+              files and the branches involved
+          - id: ac-merge-conflict-pushes-branch
+            given: |
+              A task is blocked due to a merge conflict with the integration
+              target
+            when: |
+              The block is recorded
+            then: |
+              The dispatch branch is pushed to remote so a human can access
+              it for conflict resolution
+          - id: ac-merge-conflict-engine-continues
+            given: |
+              A task is blocked due to a merge conflict
+            when: |
+              The engine evaluates remaining work
+            then: |
+              The engine continues dispatching other eligible tasks; merge
+              conflicts are task-scoped and do not trigger degraded state
+
+          # ─── No Remote ───
           - id: ac-no-remote
             given: |
               The repository has no configured git remote
             when: |
               The dispatch engine starts or any sync operation is triggered
             then: |
-              All remote sync operations (push and pull) are skipped silently;
-              the engine operates in local-only mode with no degraded state
-              or warnings
-          - id: ac-remote-branch-stale
-            given: |
-              A dispatch workspace is being provisioned and a remote branch
-              with the same dispatch/task/ name already exists from a previous
-              run (e.g. leftover from a cleaned-up workspace)
-            when: |
-              The first invocation push attempts to set upstream tracking
-            then: |
-              The push uses --force-with-lease for the initial push only,
-              replacing the stale remote ref; subsequent pushes use normal
-              (non-force) push; this is safe because dispatch branches are
-              single-writer
+              All remote sync operations are skipped silently; the engine
+              operates in local-only mode with no degraded state or warnings
+
+          # ─── Cleanup ───
           - id: ac-cleanup-remote-branch
             given: |
-              A task reaches a terminal state (completed or cancelled) and its
-              dispatch branch has been pushed to remote
+              A task reaches a terminal state (completed or cancelled) and
+              its dispatch branch has been pushed to remote
             when: |
               The workspace cleanup runs
             then: |
-              The remote dispatch branch is deleted (git push origin --delete
-              <branch>); deletion failure is non-fatal and logged as a warning
-          - id: ac-integration-push-serialization
-            given: |
-              A reviewer merge to the integration target completes and triggers
-              a push, while a periodic sync is also attempting to push the
-              same branch
-            when: |
-              Both operations target the integration target branch concurrently
-            then: |
-              Integration target push operations are serialized; at most one
-              push to the target branch runs at a time; if a push is already
-              in-flight, the second operation skips (the in-flight push will
-              deliver the same or newer state)
+              The remote dispatch branch is deleted; deletion failure is
+              non-fatal and logged as a warning
 
       # ─── Configuration ───
 
@@ -22843,8 +22909,7 @@ plans:
               The dispatch engine runs and an invocation completes
             then: |
               No remote push or pull operations execute; the engine operates
-              in local-only mode identical to pre-sync behavior; no degraded
-              state is possible since sync is not attempted
+              in local-only mode identical to pre-sync behavior
           - id: ac-remote-sync-default
             given: |
               dispatch.remote_sync is not set in kspec.config.yaml and the
@@ -22856,7 +22921,8 @@ plans:
               false; the resolved value is logged at engine startup
           - id: ac-validation
             given: |
-              dispatch.sync_interval is set to a negative number or a non-integer
+              dispatch.sync_interval is set to a negative number or a
+              non-integer
             when: |
               kspec validate runs or the config is loaded
             then: |
@@ -22896,7 +22962,7 @@ plans:
           Covers: @dispatch-sync-configuration ac-sync-interval,
           ac-remote-sync-disabled, ac-remote-sync-default, ac-validation.
 
-      - title: "Implement integration target branch sync and degraded state"
+      - title: "Implement integration target branch sync"
         slug: task-dispatch-target-sync
         spec_ref: "@dispatch-remote-branch-sync"
         priority: 1
@@ -22907,38 +22973,70 @@ plans:
           Why: The integration target branch (dispatch.base_branch) is captured
           at workspace provisioning and never updated. Over time it drifts from
           remote, making merges increasingly stale and conflict-prone. The engine
-          needs to keep it fresh and handle structural failures gracefully.
+          needs to keep it fresh.
 
-          What: Periodic fetch + fast-forward merge of the integration target
-          from remote. Sync on engine start (before bootstrap), periodically
-          when no reviewer is active, and before workspace provisioning when
-          stale. Fast-forward only — divergence enters degraded state that
-          blocks new provisioning but lets in-flight work finish. Auto-recovers
-          when divergence is resolved externally. Exposes degraded state in
-          dispatch status CLI, /api/agent/status response, and agents WebSocket
-          broadcasts.
+          What: Fetch + fast-forward sync of the integration target from remote
+          at three trigger points: engine start (before bootstrap), periodically
+          when no reviewer is active (deferred when reviewer is active), and
+          before workspace provisioning when stale. Fast-forward only — no merge
+          commits created. Transient fetch failures warn but don't degrade.
 
           How: Add a syncTargetBranch() method to DispatchEngine that runs
           git fetch <remote> <base_branch> followed by git merge --ff-only
           <remote>/<base_branch> in the project dir (not a worktree). Track
-          lastSyncTimestamp and a degraded state object { active: boolean,
-          reason: string, enteredAt: Date }. Hook sync into three places:
-          (1) start() — sync before bootstrap evaluation (existing ac-8);
-          (2) reconcile timer — sync as first step of reconciliation pass
-          (skip if reviewer invocation active); (3) workspace provisioning
-          path — sync if lastSyncTimestamp > sync_interval ago. Use a running
-          guard (like ShadowSyncScheduler) so slow fetches don't stack.
-          Classify failures: ff-only rejection = degraded; fetch error =
-          transient warning. Track consecutive transient failure count for
-          the escalated warning (ac-repeated-transient-failures, threshold 5).
-          On degraded recovery, drain queued tasks. Extend status() response
-          and the status CLI format to include degraded info.
+          lastSyncTimestamp to gate before-provision syncs. Hook sync into
+          three places: (1) start() — sync before bootstrap evaluation;
+          (2) reconcile timer — sync as first step of reconciliation pass,
+          skip if reviewer invocation active; (3) workspace provisioning path —
+          sync if lastSyncTimestamp > sync_interval ago. Use a running guard
+          (like ShadowSyncScheduler) so slow fetches don't stack. When no
+          remote is configured, all sync operations are skipped silently.
 
           Covers: @dispatch-remote-branch-sync ac-pull-target-on-start,
-          ac-pull-target-periodic, ac-pull-target-before-provision,
-          ac-divergence-detection, ac-degraded-no-provision, ac-degraded-status,
-          ac-degraded-auto-recover, ac-transient-fetch-failure,
-          ac-repeated-transient-failures, ac-no-remote.
+          ac-pull-target-periodic, ac-pull-target-periodic-deferred,
+          ac-pull-target-before-provision, ac-pull-ff-only,
+          ac-transient-no-degrade, ac-no-remote.
+
+      - title: "Implement dispatch engine degraded state"
+        slug: task-dispatch-degraded-state
+        spec_ref: "@dispatch-remote-branch-sync"
+        priority: 1
+        depends_on:
+          - "@task-dispatch-target-sync"
+        tags: [dispatch, git]
+        description: |
+          Why: When the integration target branch diverges from remote (local
+          has unpushed merges, or remote was force-pushed), the engine cannot
+          provision workspaces from a reliable base. It needs a degraded state
+          that blocks new work while letting in-flight work finish, with clear
+          operator guidance and automatic recovery.
+
+          What: A degraded state machine for the dispatch engine. Enters
+          degraded when fast-forward sync fails due to divergence. Blocks new
+          workspace provisioning. Exposes degraded status via CLI and API.
+          Broadcasts state transitions on WebSocket. Auto-recovers when the
+          next periodic sync succeeds. Tracks consecutive transient failure
+          count for escalated warnings (threshold 5) without entering degraded.
+
+          How: Add a degraded state object to DispatchEngine: { active: boolean,
+          reason: string, enteredAt: Date | null }. In syncTargetBranch(),
+          classify failures: ff-only rejection with local-ahead = "unpushed
+          merges" guidance, ff-only rejection with remote-rewritten = "force
+          push" guidance. When degraded is active, the drain loop skips
+          provisioning but continues processing in-flight invocations. On
+          successful sync while degraded, clear the state and trigger a queue
+          drain. Track consecutiveTransientFailures counter (reset on any
+          success); log escalated warning when threshold exceeded. Extend
+          status() response with { degraded: { active, reason, enteredAt } }.
+          Extend the dispatch status CLI to show a prominent warning line.
+          Broadcast sync_state events on the agents WebSocket topic on
+          enter/exit.
+
+          Covers: @dispatch-remote-branch-sync ac-divergence-enters-degraded,
+          ac-divergence-log-guidance, ac-degraded-no-provision,
+          ac-degraded-status-api, ac-degraded-status-broadcast,
+          ac-degraded-auto-recover, ac-degraded-recovery-logged,
+          ac-repeated-transient-escalation, ac-repeated-transient-no-degrade.
 
       - title: "Implement dispatch branch push lifecycle"
         slug: task-dispatch-branch-push
@@ -22955,34 +23053,34 @@ plans:
           supports (tryRestoreBranchFromRemote).
 
           What: Push dispatch branches to remote at key lifecycle points:
-          first invocation completion (with -u to set tracking, --force-with-lease
-          to handle stale remote refs from previous runs), subsequent invocation
+          first invocation completion (set upstream tracking, safely replace
+          stale remote refs from previous runs), subsequent invocation
           completions (normal push), and the integration target after reviewer
           merges. Also push the integration target during periodic sync when
-          it's ahead of remote (retry for failed post-merge pushes). Delete
+          it has unpushed commits (retry for failed post-merge pushes). Delete
           remote dispatch branches on workspace cleanup. Serialize integration
-          target pushes to prevent concurrent push races.
+          target pushes so at most one runs at a time. All push failures are
+          non-fatal.
 
           How: Add pushDispatchBranch() and pushIntegrationTarget() helpers.
           pushDispatchBranch detects whether upstream tracking exists (via
-          git rev-parse @{u}) to decide -u vs normal push, and uses
-          --force-with-lease on first push to handle stale refs
-          (ac-remote-branch-stale). Hook into dispatch.ts post-invocation
-          path (after invocation promise resolves, fire-and-forget with error
-          logging). pushIntegrationTarget uses a dedicated mutex (separate
-          from shadowMutex) to serialize concurrent pushes
-          (ac-integration-push-serialization). Hook into: (1) reviewer merge
-          completion, (2) periodic sync (check isAheadOfUpstream before
-          pushing). For cleanup (ac-cleanup-remote-branch), extend the existing
-          workspace cleanup in workspace.ts to run git push origin --delete
-          <branch> when the workspace has a remote tracking ref. All push
-          failures are non-fatal — warn and continue.
+          git rev-parse @{u}) to decide first-push vs normal-push behavior.
+          First push uses --force-with-lease to safely handle stale remote
+          refs (ac-first-push-replaces-stale-ref). Hook into dispatch.ts
+          post-invocation path (fire-and-forget with error logging).
+          pushIntegrationTarget uses a dedicated mutex (separate from
+          shadowMutex) so concurrent pushes skip rather than queue. Hook into:
+          (1) reviewer merge completion, (2) periodic sync (check
+          isAheadOfUpstream before pushing). For cleanup
+          (ac-cleanup-remote-branch), extend the existing workspace cleanup in
+          workspace.ts to delete the remote ref when the workspace has upstream
+          tracking. Respect remote_sync config toggle. Skip when no remote.
 
-          Covers: @dispatch-remote-branch-sync ac-push-first-invocation,
-          ac-push-after-invocation, ac-push-target-after-merge,
-          ac-push-target-periodic, ac-remote-branch-stale,
-          ac-cleanup-remote-branch, ac-integration-push-serialization,
-          ac-no-remote.
+          Covers: @dispatch-remote-branch-sync ac-first-push-sets-tracking,
+          ac-first-push-replaces-stale-ref, ac-subsequent-push,
+          ac-push-non-fatal, ac-push-target-after-merge,
+          ac-push-target-periodic, ac-target-push-serialization,
+          ac-cleanup-remote-branch, ac-no-remote.
 
       - title: "Implement task merge conflict detection with block and push"
         slug: task-dispatch-merge-conflict-handling
@@ -22990,7 +23088,7 @@ plans:
         priority: 2
         depends_on:
           - "@task-dispatch-branch-push"
-          - "@task-dispatch-target-sync"
+          - "@task-dispatch-degraded-state"
         tags: [dispatch, git, review]
         description: |
           Why: When a reviewer agent's local merge to the integration target
@@ -23001,26 +23099,25 @@ plans:
           dispatching. This keeps the engine healthy while giving operators
           everything they need to resolve the conflict.
 
-          What: Detect merge conflicts during the reviewer's local merge of a
-          task branch into the integration target. When a conflict occurs:
-          (1) abort the merge, (2) block the task with a reason listing the
-          conflicting files and branches, (3) push the dispatch branch to
-          remote so a human can check it out and resolve, (4) continue
-          dispatching other eligible tasks.
+          What: Detect merge conflicts after reviewer invocations complete.
+          When a conflict is detected: (1) abort the merge, (2) block the task
+          with a reason listing the conflicting files and branches, (3) push
+          the dispatch branch to remote so a human can check it out and
+          resolve, (4) engine continues dispatching other eligible tasks.
 
           How: The reviewer currently merges via the merge skill instructions
           rendered by the dispatch role entry contract. This task adds
-          dispatcher-level conflict detection in workspace.ts or dispatch.ts.
-          After a reviewer invocation completes, check the integration target
-          for merge markers or uncommitted state. Alternatively, if the
-          dispatcher owns the merge operation directly (rather than the agent),
-          wrap the git merge call with conflict detection. On conflict:
-          git merge --abort, then kspec task block @ref --reason with the
-          list of conflicting paths (from git diff --name-only --diff-filter=U),
-          then pushDispatchBranch(). The engine's degraded state is NOT
-          triggered — this is task-scoped, not engine-scoped.
+          post-hoc conflict detection in dispatch.ts. After a reviewer
+          invocation completes, inspect the integration target for merge
+          conflict state (unmerged paths in git status). If conflicts are
+          detected: abort the merge (git merge --abort), run kspec task block
+          @ref with the list of conflicting paths, then call
+          pushDispatchBranch() to ensure the branch is accessible remotely.
+          The engine's degraded state is NOT triggered — merge conflicts are
+          task-scoped per ac-merge-conflict-engine-continues.
 
-          Covers: @dispatch-remote-branch-sync ac-task-merge-conflict.
+          Covers: @dispatch-remote-branch-sync ac-merge-conflict-blocks-task,
+          ac-merge-conflict-pushes-branch, ac-merge-conflict-engine-continues.
       ```
 
       ## Implementation Notes
@@ -23043,9 +23140,9 @@ plans:
 
       **Stale workspace handling:** Workspaces provisioned from an older target
       commit are NOT rebased. Staleness resolves at merge time. If the merge
-      conflicts, the task is blocked per ac-task-merge-conflict. This is simpler
-      and safer than mid-flight rebasing, which risks invalidating in-progress
-      work.
+      conflicts, the task is blocked per ac-merge-conflict-blocks-task. This is
+      simpler and safer than mid-flight rebasing, which risks invalidating
+      in-progress work.
 
       **Reconciliation integration:** Target sync runs as the first step of the
       existing reconciliation pass rather than a separate timer. One interval
@@ -23054,6 +23151,20 @@ plans:
       reconciliation passes — if a sync is already in progress, the reconcile
       skips it and proceeds with task evaluation.
 
+      **Merge conflict detection:** The dispatcher detects conflicts post-hoc
+      after the reviewer invocation completes, rather than owning the merge
+      operation directly. This avoids refactoring the reviewer role entry
+      contract. Dispatcher-owned merge is a future direction.
+
+      **Before-provision sync with active reviewer:** The before-provision sync
+      (ac-pull-target-before-provision) checks lastSyncTimestamp staleness, not
+      reviewer activity. If a reviewer IS active and the sync is stale, the
+      provision sync still runs — it's safe because the provision creates a new
+      worktree from HEAD of the target, which doesn't interfere with the
+      reviewer's in-progress merge on a separate worktree. The periodic sync
+      skips during reviewer activity to avoid moving the target while a merge
+      is landing; the provision sync has no such concern.
+
       ### For @task-dispatch-sync-config
       Config follows the existing shadow.sync_interval pattern. The remote_sync
       default resolution needs to happen at dispatch engine start time (not
@@ -23061,6 +23172,12 @@ plans:
       resolved effective value so it doesn't change mid-run.
 
       ### For @task-dispatch-target-sync
+      The sync method should return a result enum: `synced`, `up_to_date`,
+      `skipped` (reviewer active / already running), `transient_failure`,
+      `diverged`. The degraded state task consumes this result to decide state
+      transitions.
+
+      ### For @task-dispatch-degraded-state
       The degraded state needs to be:
       - Visible in `kspec agent dispatch status` (prominent warning line)
       - Included in `GET /api/agent/status` response (degraded object with
@@ -23079,14 +23196,10 @@ plans:
       to avoid unnecessary contention between unrelated operations.
 
       ### For @task-dispatch-merge-conflict-handling
-      This task may require a design decision about who owns the merge: the
-      agent (via merge skill) or the dispatcher directly. If the agent owns it,
-      the dispatcher detects conflicts post-hoc by inspecting repo state after
-      the reviewer invocation. If the dispatcher owns it, the merge is a
-      first-class dispatch operation. The latter is cleaner but requires
-      refactoring the reviewer role entry. Start with post-hoc detection of
-      the agent-driven merge, with a note that dispatcher-owned merge is the
-      long-term direction.
+      Post-hoc detection inspects git status of the integration target after a
+      reviewer invocation ends. If unmerged paths exist, the reviewer left a
+      conflicted merge state. The dispatcher aborts, blocks, pushes, and moves
+      on. This approach requires no changes to the reviewer role entry contract.
     status: draft
     approved_at: null
     derived_specs: []
@@ -23095,4 +23208,10 @@ plans:
     source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-remote-sync.md
     created_at: 2026-03-18T06:16:05.500Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KKZTXAAZ5HJQHKBWGNSW4GTY
+        content: "Address review blockers: split 6 large ACs, remove implementation leakage from ACs, split
+          target-sync task into sync + degraded-state, clarify before-provision vs reviewer-active
+          interaction, commit to post-hoc merge detection"
+        author: "@claude"
+        created_at: 2026-03-18T06:42:42.655Z
