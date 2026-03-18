@@ -17408,7 +17408,19 @@ reviews:
     slugs: []
     title: Review task-event-cli
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 2dcce1c1b50a
+          head_commit: 2b12a78869dc
+        evidence: 6466 tests passed, 1 pre-existing failure in review-cli.test.ts
+          (KSPEC_DISPATCH_CANONICAL_HEAD env leaking — unrelated to event CLI changes)
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T15:19:15.122Z
+        completed_at: 2026-03-18T15:19:15.122Z
     events:
       - _ulid: 01KM0RE6Q8C81P25AMWDJESF06
         actor: "@claude"
@@ -17423,6 +17435,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T15:18:53.345Z
+      - _ulid: 01KM0RF4JCXP063N0WDG9KBP3G
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T15:19:15.276Z
     examined_commit: 2b12a78869dce6fc1d0f3f4d90926a3fd620cf54
     external_links: []
     lifecycle_state: open
@@ -17435,5 +17454,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T15:18:44.712Z
-    updated_at: 2026-03-18T15:18:53.202Z
+    updated_at: 2026-03-18T15:19:15.122Z
     notes: []
