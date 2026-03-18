@@ -52,3 +52,9 @@ export {
   type SubscriptionPattern,
   type EventHandler,
 } from "./event-bus.js";
+
+export {
+  HookExecutor,
+  type HookExecutorOptions,
+  type HookConfigSnapshot,
+} from "./hook-executor.js";
