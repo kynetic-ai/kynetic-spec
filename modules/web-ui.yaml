@@ -1969,39 +1969,18 @@ features:
           Dispatch status shows as stopped with no active invocations
         when: |
           The agents page renders
-      - given: An agent definition card on the /agents page
-        id: ac-4
-        then: An inline form or modal opens allowing editing of all agent fields (name, description,
-          adapter, dispatch triggers, capabilities, tools, skills, budget, concurrency,
-          auto_approve, prompt_template). Saving persists changes via API and updates the card.
-        when: The user clicks the edit icon on the card
-      - given: the user is editing an agent's dispatch triggers in the edit form
-        id: ac-5
-        then: each trigger row displays its filter criteria (automation status, tags, priority) with inline
-          editing controls — automation defaults to 'eligible' for new triggers
-        when: a dispatch rule is shown
-      - given: the user adds a new dispatch trigger via the edit form
-        id: ac-6
-        then: "the filter automatically includes automation: eligible as the default, shown as a pre-filled
-          badge the user can modify or remove"
-        when: the trigger is for task.ready or task.needs_work
-      - given: the user is editing a dispatch trigger's filter
-        id: ac-7
-        then: the agent only receives tasks matching ALL specified tags — tags are shown as removable chips
-          with an add input
-        when: they add tag filter criteria
-      - given: the user is editing a dispatch trigger's filter
-        id: ac-8
-        then: the agent only receives tasks with priority at or above (numerically <=) the specified
-          threshold
-        when: they set a priority filter
-      - given: the user saves an agent with dispatch filters configured
-        id: ac-9
-        then: the full dispatch rule including filter object is persisted — filters are not silently dropped
-        when: the save request is sent to the API
     tags: []
     created: 2026-03-05T01:30:02.782Z
-    notes: []
+    notes:
+      - _ulid: 01KM0XZXTYA3QCMT6FCDG1PPFM
+        content: Removed ac-4 through ac-9 (agent editing, dispatch trigger editing, filter editing, tag
+          filter, priority filter, save persistence). These behaviors are superseded by
+          @ui-automation-view ac-5 — all dispatch trigger editing now lives in the automation view.
+          Agent cards retain read-only trigger display (ac-1) with a link to the automation view for
+          editing.
+        supersedes: null
+        author: "@claude"
+        created_at: 2026-03-18T16:55:48.319Z
   - _ulid: 01KJXSVF5CPD38NH05CPXG4NFY
     slugs:
       - ui-session-history
