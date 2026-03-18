@@ -2021,7 +2021,7 @@ features:
           notes and git config (e.g. "user@example.com" or "agent-name").
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
