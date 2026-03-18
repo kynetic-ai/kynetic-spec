@@ -13596,3 +13596,29 @@ reviews:
     created_at: 2026-03-18T08:48:45.151Z
     updated_at: 2026-03-18T08:49:52.312Z
     notes: []
+  - _ulid: 01KM0344Y6XMSFGTV2NE7Y1RB5
+    slugs: []
+    title: Review task-hook-schema (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0344Y6JT51W0TE56J4CCAN
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T09:06:15.110Z
+    examined_commit: ee6c73c68771b1867ff4a16b04c3062ca2d4b1d9
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKZPVQM496HTQQ054B0S18SN"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T09:06:15.110Z
+    updated_at: null
+    notes: []
