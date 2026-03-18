@@ -7811,7 +7811,7 @@ plans:
       Active work section reuses ActiveFleetRow from task board.
 
       No aggregated activity API needed — merge recent data client-side.
-    status: active
+    status: completed
     approved_at: null
     derived_specs:
       - "@ui-design-system"
@@ -11515,7 +11515,7 @@ plans:
 
       Priority order for AC backfill: @core (foundational) → @schema → @tasks → @cli →
       @meta/@shadow-branch. Each is scoped to one module so agents can work them independently.
-    status: active
+    status: completed
     approved_at: null
     derived_specs:
       - "@spec-completeness-policy"
@@ -13921,7 +13921,7 @@ plans:
 
       - chain-of-work ancestry that intentionally forks work from something other than the
       configured base branch
-    status: active
+    status: completed
     approved_at: 2026-03-12T02:32:35.603Z
     derived_specs:
       - "@dispatch-workspace-configuration"
@@ -15669,7 +15669,7 @@ plans:
       rendering, interaction design, policy configuration, and provider-specific
 
       synchronization can follow in later plans.
-    status: active
+    status: completed
     approved_at: 2026-03-14T08:45:16.499Z
     derived_specs:
       - "@review-record-core-model"
@@ -17142,7 +17142,7 @@ plans:
           - `src/cli/commands/skill-crud.ts` — import platform detection
           - `src/cli/commands/session/commands.ts` — agent-type option
           - `templates/skills/manifest.yaml` — platforms arrays
-    status: active
+    status: completed
     approved_at: 2026-03-13T03:25:04.088Z
     derived_specs:
       - "@droid-platform-config"
@@ -17712,7 +17712,7 @@ plans:
       command should explain both the naming contract and why dispatch continuity
 
       depends on it.
-    status: active
+    status: completed
     approved_at: 2026-03-13T09:15:50.526Z
     derived_specs:
       - "@portable-task-submission-linkage"
@@ -18318,7 +18318,7 @@ plans:
           - "@task-migrate-inbox-triage"
       ```
 
-    status: active
+    status: completed
     approved_at: 2026-03-15T03:27:56.658Z
     derived_specs:
       - "@ui-api-ref-resolution"
@@ -18949,7 +18949,7 @@ plans:
 
       - **Shared types** (`@kynetic-ai/shared`): New BroadcastEvent types, deprecate
       agent_text_chunk.
-    status: active
+    status: completed
     approved_at: 2026-03-15T19:50:16.828Z
     derived_specs:
       - "@ws-session-event-streaming"
@@ -21663,7 +21663,7 @@ plans:
       nit=gray. Diff colors: added=green, deleted=red, unchanged=default.
       Markdown rendering with syntax highlighting in code blocks.
       Use goto() for URL state per project conventions.
-    status: active
+    status: completed
     approved_at: 2026-03-16T08:28:16.048Z
     derived_specs:
       - "@review-records-daemon-api"
@@ -22306,7 +22306,7 @@ plans:
       - @01KKVW67 / @01KKVX1X: YAML serialization invariants (canonical field
         ordering enables reliable git log -L queries as an alternative to
         git log --grep)
-    status: active
+    status: completed
     approved_at: 2026-03-16T20:19:23.671Z
     derived_specs:
       - "@task-activity-timeline"
@@ -23122,7 +23122,7 @@ plans:
       The integration target push mutex is separate from the shadow branch mutex
       to avoid unnecessary contention between unrelated operations.
 
-    status: active
+    status: completed
     approved_at: 2026-03-18T07:07:03.905Z
     derived_specs:
       - "@dispatch-remote-branch-sync"
