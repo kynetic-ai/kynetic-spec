@@ -14710,6 +14710,23 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T10:58:36.905Z
         completed_at: 2026-03-18T10:58:36.905Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b0bc7850b
+          head_commit: 5232b0cf0e35
+        evidence: "All 9 task-scoped ACs have test annotations and implementation. All 6
+          trait-error-guidance ACs have valid N/A annotations. AC mapping:
+          ac-first-push-sets-tracking (test:105), ac-first-push-replaces-stale-ref (test:133),
+          ac-subsequent-push (tests:176,210), ac-push-non-fatal (tests:233,334),
+          ac-push-target-after-merge (test:263), ac-push-target-periodic (tests:293,317),
+          ac-target-push-serialization (test:357), ac-cleanup-remote-branch (tests:387,418,439,494),
+          ac-no-remote (tests:253,346,464,474,482)."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T10:58:46.349Z
+        completed_at: 2026-03-18T10:58:46.349Z
     events:
       - _ulid: 01KM08XWWCKC6M8K7HE7WE3EM1
         actor: "@claude"
@@ -14745,6 +14762,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T10:58:37.049Z
+      - _ulid: 01KM09J61ZXR6TD2444MWYG6J9
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T10:58:46.464Z
     examined_commit: 5232b0cf0e354072aea5cc041e6e7e774d077e5d
     external_links: []
     lifecycle_state: open
@@ -14796,5 +14820,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T10:47:41.708Z
-    updated_at: 2026-03-18T10:58:36.905Z
+    updated_at: 2026-03-18T10:58:46.349Z
     notes: []
