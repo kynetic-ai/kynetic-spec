@@ -8742,12 +8742,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T04:26:43.978Z
+      updated_at: 2026-03-18T04:26:50.294Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T04:26:43.978Z
+      updated_at: 2026-03-18T04:26:50.294Z
     integration:
       status: pending
       detail: null
@@ -8755,26 +8755,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
-      updated_at: 2026-03-18T04:26:43.978Z
-    lifecycle_state: ready
+      updated_at: 2026-03-18T04:26:50.294Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKTW6MH5PWQSPXA3J689NHDB"
     task_slug: task-code-diff-viewer
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T04:17:27.527Z
-      last_reconciled_at: 2026-03-18T04:26:43.978Z
+      last_reconciled_at: 2026-03-18T04:26:50.294Z
       created_at: 2026-03-18T02:32:34.958Z
-      updated_at: 2026-03-18T04:26:43.978Z
+      updated_at: 2026-03-18T04:26:50.294Z
     workspace_id: dispatch-workspace-01KKTW6MH5PWQSPXA3J689NHDB
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 082679500792a34a7e102e1fd6ff07e8cc5bbc3f
+        last_seen_at: 2026-03-18T04:26:50.294Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-code-diff-viewer-01kktw6m-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-code-diff-viewer/01kktw6m
-        head: 3f6587548ba602b8300fbd2fddd94ec6c9ea46a6
-        last_seen_at: 2026-03-18T04:17:26.666Z
+        head: 082679500792a34a7e102e1fd6ff07e8cc5bbc3f
+        last_seen_at: 2026-03-18T04:26:50.294Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-code-diff-viewer-01kktw6m
   - active_role: null
     base_branch_point: 3074c95391dd533e480c7d7bb14c575e4dc34ffc
