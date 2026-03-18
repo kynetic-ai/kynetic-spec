@@ -14549,6 +14549,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T10:31:03.440Z
+      - _ulid: 01KM08FP9AV072VZARMY8ZX1JK
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM08FP5KQ33VX4YSR8MJ0Y9B
+        timestamp: 2026-03-18T10:39:56.202Z
     examined_commit: 95f59903248481497072cc172341366343df7aaa
     external_links: []
     lifecycle_state: open
@@ -14558,8 +14565,22 @@ reviews:
       content_hash: ""
       ref: "@01KKZWB75X6Q1X1ZZC5S6KBH6B"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM08FP5KQ33VX4YSR8MJ0Y9B
+        anchor:
+          type: code
+          commit: 95f59903248481497072cc172341366343df7aaa
+          line_end: 11
+          line_start: 11
+          path: tests/dispatch-target-sync.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM08FP5KK792N6F0FHVQFY9K
+            author: "@claude"
+            body: "Unused import: testUlid is imported on line 11 but never used in the test file."
+            created_at: 2026-03-18T10:39:56.083Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T10:30:53.328Z
-    updated_at: 2026-03-18T10:31:03.321Z
+    updated_at: 2026-03-18T10:39:56.083Z
     notes: []
