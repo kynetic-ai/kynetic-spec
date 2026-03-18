@@ -17577,9 +17577,22 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T15:22:18.517Z
+      - _ulid: 01KM0RMZ8YJH5TM1CEMBCWS896
+        actor: pr-reviewer@kspec
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-18T15:22:26.462Z
+      - _ulid: 01KM0RMZ8Y7VA1G0XVW6Y3D96T
+        actor: pr-reviewer@kspec
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T15:22:26.462Z
     examined_commit: b9a663d5e5afc91e08a0b7fdf051d666559bdd27
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -17587,7 +17600,15 @@ reviews:
       ref: "@task-schedule-cli"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: b8a2609de
+          head_commit: b9a663d5e
+        decision: approve
+        reviewer: pr-reviewer@kspec
+        role: reviewer
+        created_at: 2026-03-18T15:22:26.198Z
     created_at: 2026-03-18T15:21:36.906Z
-    updated_at: 2026-03-18T15:22:18.253Z
+    updated_at: 2026-03-18T15:22:26.198Z
     notes: []
