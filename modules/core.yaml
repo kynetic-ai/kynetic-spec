@@ -1081,6 +1081,9 @@ features:
               Configuration surface for dispatch remote sync behavior in
               kspec.config.yaml. Controls sync interval and whether remote
               sync is enabled. Extends the existing dispatch config section.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
