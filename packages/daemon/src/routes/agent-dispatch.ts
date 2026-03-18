@@ -23,6 +23,8 @@ import path from 'node:path';
 import { Elysia, t } from 'elysia';
 import { DispatchEngine } from '../../agent-runtime/dispatch.js';
 import type { TaskStateChange, TaskStatus, InvocationEvent, SyncStateEvent } from '../../agent-runtime/dispatch.js';
+import { ScheduleEngine } from '../../agent-runtime/schedule-engine.js';
+import { ActionExecutor } from '../../agent-runtime/action-executor.js';
 import { DEFAULT_KSPEC_CLI_PATH } from '../../agent-runtime/invocation.js';
 import { initContext, loadMetaContext, loadAllTasks, loadAllItems, ReferenceIndex, resolveProjectRoots } from '../../parser/index.js';
 import { getCompletedSessionCountsByAgent } from '../../sessions/store.js';
@@ -35,6 +37,8 @@ const VALID_TASK_STATUSES = new Set<string>([
 
 // Singleton dispatch engine per project path
 const engines: Map<string, DispatchEngine> = new Map();
+// Singleton schedule engine per project path (started alongside dispatch)
+const scheduleEngines: Map<string, ScheduleEngine> = new Map();
 
 export interface AgentDispatchRouteOptions {
   defaultProjectPath?: string;
@@ -82,6 +86,64 @@ function createEngine(
         }
       : undefined,
   });
+}
+
+/**
+ * Start the schedule engine for a project, integrating with the dispatch engine's event bus.
+ * AC: @dispatch-schedule-entities ac-1 through ac-6
+ */
+async function startScheduleEngine(
+  projectDir: string,
+  engine: DispatchEngine,
+  pubsub?: PubSubManager,
+): Promise<void> {
+  // Create action executor wired to the event bus
+  const actionExecutor = new ActionExecutor({
+    projectDir,
+    kspecCliPath: DEFAULT_KSPEC_CLI_PATH,
+    onActionRunEvent: (event) => {
+      // Emit action lifecycle events on the shared bus
+      engine.eventBus.emit({
+        event_type: event.type,
+        source_type: "schedule_engine",
+        source_id: event.event_context.source_id ?? "schedule-engine",
+        payload: {
+          action_run_id: event.action_run.action_run_id,
+          action_type: event.action_run.action_type,
+          schedule_id: event.event_context.schedule_id,
+          source_name: event.action_run.source_name,
+          ...(event.action_run.duration_ms !== undefined && { duration_ms: event.action_run.duration_ms }),
+          ...(event.action_run.invocation_id && { session_id: event.action_run.invocation_id }),
+        },
+        causation_id: event.event_context.causation_id,
+        correlation_id: event.event_context.correlation_id,
+      });
+    },
+    notifyBroadcast: pubsub
+      ? (topic, event, data) => {
+          pubsub.broadcast(topic, event, data, projectDir);
+        }
+      : undefined,
+  });
+
+  const scheduleEngine = new ScheduleEngine({
+    projectDir,
+    eventBus: engine.eventBus,
+    actionExecutor,
+  });
+  scheduleEngines.set(projectDir, scheduleEngine);
+  await scheduleEngine.start();
+}
+
+/**
+ * Stop the schedule engine for a project.
+ */
+async function stopScheduleEngine(projectDir: string): Promise<void> {
+  const scheduleEngine = scheduleEngines.get(projectDir);
+  if (scheduleEngine) {
+    await scheduleEngine.stop();
+    scheduleEngines.delete(projectDir);
+  }
 }
 
 const stateChangeBodySchema = t.Object({
@@ -196,6 +258,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         engine = createEngine(projectDir, requestedCwd, pubsub);
         engines.set(projectDir, engine);
         await engine.start();
+        await startScheduleEngine(projectDir, engine, pubsub);
 
         return { dispatch_enabled: true };
       } else {
@@ -204,6 +267,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
           return { dispatch_enabled: false, reason: 'No engine running' };
         }
 
+        await stopScheduleEngine(projectDir);
         await engine.stop();
         engines.delete(projectDir);
 
@@ -247,6 +311,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
       engines.set(projectDir, engine);
 
       await engine.start();
+      await startScheduleEngine(projectDir, engine, pubsub);
 
       return { started: true, status: engine.getStatus() };
     })
@@ -260,6 +325,7 @@ export function createAgentDispatchRoutes(options: AgentDispatchRouteOptions = {
         return { stopped: false, reason: 'No engine running' };
       }
 
+      await stopScheduleEngine(projectDir);
       await engine.stop();
       engines.delete(projectDir);
 
@@ -368,15 +434,28 @@ export function getDispatchEngine(projectDir: string): DispatchEngine | undefine
  */
 export async function stopAllEngines(): Promise<void> {
   const stopPromises: Promise<void>[] = [];
+  // Stop schedule engines first
+  for (const [projectDir, scheduleEngine] of scheduleEngines) {
+    stopPromises.push(
+      scheduleEngine.stop().catch((err) => {
+        console.error(`[schedule-engine] Error stopping for ${projectDir}:`, err);
+      })
+    );
+  }
+  await Promise.all(stopPromises);
+  scheduleEngines.clear();
+
+  // Then stop dispatch engines
+  const dispatchStopPromises: Promise<void>[] = [];
   for (const [projectDir, engine] of engines) {
     console.log(`[dispatch] Stopping engine for ${projectDir}...`);
-    stopPromises.push(
+    dispatchStopPromises.push(
       engine.stop().catch((err) => {
         console.error(`[dispatch] Error stopping engine for ${projectDir}:`, err);
       })
     );
   }
-  await Promise.all(stopPromises);
+  await Promise.all(dispatchStopPromises);
   engines.clear();
   console.log('[dispatch] All engines stopped');
 }

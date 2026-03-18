@@ -66,3 +66,12 @@ export {
   type GroupMemberRun,
   type MemberRunStatus,
 } from "./join-accumulator.js";
+
+export {
+  ScheduleEngine,
+  EVALUATION_INTERVAL_MS,
+  type ScheduleEngineOptions,
+  type ScheduleLoader,
+  type ScheduleRuntimeState,
+  type ScheduleStatus,
+} from "./schedule-engine.js";
