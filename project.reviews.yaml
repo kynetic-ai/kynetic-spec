@@ -9252,6 +9252,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKZ57BSZ3TSZGKWRXH2SYR94
         timestamp: 2026-03-18T00:23:43.280Z
+      - _ulid: 01KKZ57X7KSF0BSTEYFS73HNEX
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKZ57X51MW328022BSRSRJK3
+        timestamp: 2026-03-18T00:24:01.011Z
     examined_commit: 9a8ef3b3aaa8174957c0fd61fe641149fc6cc222
     external_links: []
     lifecycle_state: open
@@ -9288,7 +9295,52 @@ reviews:
               was the subject of a prior completed task."
             created_at: 2026-03-18T00:23:43.167Z
         kind: blocker
+      - _ulid: 01KKZ57X51MW328022BSRSRJK3
+        entries:
+          - _ulid: 01KKZ57X52AQSX5AACFDZGP966
+            author: "@claude"
+            body: >-
+              **Out-of-scope deletions: review detail page, shared API types, daemon route filters,
+              E2E tests, and fixtures.** This commit deletes ~1850 lines of code unrelated to the
+              task "Round-trip stability for workflow runs YAML writes":
+
+
+              - `packages/web-ui/src/routes/reviews/[id]/+page.svelte` (617 lines) — entire review
+              detail page
+
+              - `packages/web-ui/src/routes/reviews/[id]/+page.ts` — page config
+
+              - `packages/web-ui/tests/e2e/review-detail-page.spec.ts` (88 lines) — E2E tests
+
+              - `packages/web-ui/tests/e2e/reviews-detail.spec.ts` (599 lines) — route-mocked E2E
+              tests
+
+              - `packages/shared/src/api.ts` — `ReviewDetail`, `ReviewThread`, `ReviewThreadEntry`,
+              `ReviewAnchor`, `ReviewCheck`, `ReviewVerdict`, `ReviewSubject`,
+              `ReviewSubjectVersion` type interfaces removed (133 lines)
+
+              - `packages/web-ui/src/lib/api.ts` — `fetchReview`, `fetchReviewSiblings` functions
+              removed (49 lines)
+
+              - `packages/web-ui/src/lib/query/keys.ts` — `siblings` query key removed
+
+              - `packages/daemon/src/routes/reviews.ts` — `head_branch` field and
+              `subject_ref`/`head_branch` filters removed (15 lines)
+
+              - `packages/web-ui/tests/fixtures/project.reviews.yaml` — 3 review fixtures removed,
+              existing fixture data simplified (153→21 lines)
+
+              - `packages/web-ui/tests/e2e/api-reviews-list.spec.ts` — sibling/filter tests removed,
+              assertion counts adjusted
+
+
+              None of these changes relate to workflow runs YAML round-trip stability. These
+              deletions remove AC coverage for `@review-records-web-ui` (ac-2, ac-8, ac-9, ac-10,
+              ac-11) and `@review-records-daemon-api` (ac-2). They must be reverted or handled as a
+              separate task with proper spec tracking.
+            created_at: 2026-03-18T00:24:00.930Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T00:23:15.710Z
-    updated_at: 2026-03-18T00:23:43.167Z
+    updated_at: 2026-03-18T00:24:00.930Z
     notes: []
