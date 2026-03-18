@@ -10741,7 +10741,7 @@ workspaces:
         head: 2dcce1c1b50abdac83c5d5dd1add93610e82e8e4
         last_seen_at: 2026-03-18T14:58:58.836Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-review-version-auto-derive-01km0nt8
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 2dcce1c1b50abdac83c5d5dd1add93610e82e8e4
     bootstrap:
       status: succeeded
@@ -10788,7 +10788,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T15:11:29.717Z
+      updated_at: 2026-03-18T15:11:31.006Z
     integration:
       status: pending
       detail: null
@@ -10803,10 +10803,10 @@ workspaces:
     task_slug: task-event-cli
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-18T14:59:04.681Z
-      last_reconciled_at: 2026-03-18T15:11:29.717Z
+      last_active_at: 2026-03-18T15:11:31.006Z
+      last_reconciled_at: 2026-03-18T15:11:31.006Z
       created_at: 2026-03-18T14:59:01.764Z
-      updated_at: 2026-03-18T15:11:30.300Z
+      updated_at: 2026-03-18T15:11:31.006Z
     workspace_id: dispatch-workspace-01KKZPW000MZT1YMECENJX42A0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
