@@ -12604,6 +12604,13 @@ reviews:
           status: pass
           name: task-ac-coverage
         timestamp: 2026-03-18T06:57:01.807Z
+      - _ulid: 01KKZVQM9WMTE9V8MPC2NGPCWQ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKZVQM5QXJX9MTP5MF9NZXXP
+        timestamp: 2026-03-18T06:57:04.829Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -12613,8 +12620,17 @@ reviews:
       content_hash: ""
       ref: "@plan-dispatch-remote-sync"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKZVQM5QXJX9MTP5MF9NZXXP
+        entries:
+          - _ulid: 01KKZVQM5QRHJ13PKANN579BCG
+            author: "@claude"
+            body: Spec description still references ac-merge-conflict-blocks-task which was removed per user
+              feedback. The sentence 'If the merge conflicts, ac-merge-conflict-blocks-task
+              applies.' under stale workspace handling should be updated or removed.
+            created_at: 2026-03-18T06:57:04.695Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T06:47:54.918Z
-    updated_at: 2026-03-18T06:57:01.649Z
+    updated_at: 2026-03-18T06:57:04.695Z
     notes: []
