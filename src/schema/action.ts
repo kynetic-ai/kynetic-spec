@@ -15,13 +15,15 @@ import { UlidSchema, DateTimeSchema } from "./common.js";
 
 /**
  * Command action — runs an executable as a child process.
+ * Uses structured program + args form (no shell by default) to eliminate injection risks.
  * AC: @dispatch-action-model ac-1, ac-2
+ * AC: @dispatch-command-action ac-1
  */
 export const CommandActionSchema = z.object({
   type: z.literal("command"),
-  /** The executable to run */
+  /** The executable path or name (program to run) */
   command: z.string().min(1, "Command is required"),
-  /** Arguments to pass to the command */
+  /** Arguments to pass to the command — each is a separate argv element */
   args: z.array(z.string()).default([]),
   /** Optional timeout in milliseconds. Process is killed if exceeded. */
   timeout_ms: z.number().int().positive().optional(),
@@ -29,6 +31,8 @@ export const CommandActionSchema = z.object({
   cwd: z.string().optional(),
   /** Optional environment variables */
   env: z.record(z.string(), z.string()).optional(),
+  /** Whether to run in shell mode — false by default for injection safety */
+  shell: z.boolean().default(false),
 });
 
 /**

@@ -86,6 +86,65 @@ export interface ActionExecutorOptions {
   agentSpawner?: AgentSpawner;
 }
 
+// ─── KSPEC_* Environment Variable Injection ─────────────────────────────────
+
+/**
+ * Maximum size in bytes for a single KSPEC_* environment variable value.
+ * Values exceeding this limit are truncated.
+ * AC: @dispatch-command-action ac-3
+ */
+export const ENV_VALUE_MAX_BYTES = 1024;
+
+/**
+ * Allowlisted event fields exposed as KSPEC_* environment variables.
+ * Derived from the event envelope and payload schemas.
+ * AC: @dispatch-command-action ac-3
+ */
+export const KSPEC_ENV_ALLOWLIST: ReadonlySet<string> = new Set([
+  // Envelope fields
+  "event_type",
+  "event_id",
+  "session_id",
+  "correlation_id",
+  "causation_id",
+  "source_type",
+  "source_id",
+  // Task payload fields
+  "task_id",
+  "task_ref",
+  "from_status",
+  "to_status",
+  // Invocation payload fields
+  "agent_id",
+]);
+
+/**
+ * Build KSPEC_* namespaced environment variables from event context.
+ * Only allowlisted fields are exposed. Values exceeding 1KB are truncated.
+ * AC: @dispatch-command-action ac-3
+ */
+export function buildKspecEnvVars(
+  eventContext: ActionEventContext,
+): Record<string, string> {
+  const env: Record<string, string> = {};
+  for (const field of KSPEC_ENV_ALLOWLIST) {
+    const value = eventContext[field];
+    if (value !== undefined) {
+      const key = `KSPEC_${field.toUpperCase()}`;
+      let strValue = String(value);
+      // Truncate values exceeding 1KB
+      const byteLength = Buffer.byteLength(strValue, "utf-8");
+      if (byteLength > ENV_VALUE_MAX_BYTES) {
+        // Truncate by encoding, slicing, and decoding safely
+        const buf = Buffer.from(strValue, "utf-8");
+        strValue = buf.subarray(0, ENV_VALUE_MAX_BYTES).toString("utf-8");
+      }
+      env[key] = strValue;
+    }
+  }
+  return env;
+}
+
 // ─── Template Interpolation ──────────────────────────────────────────────────
 
 /**
@@ -408,7 +467,9 @@ export class ActionExecutor {
 
   /**
    * Execute a command action — spawns an async child process.
+   * Uses structured program + args form with shell: false by default.
    * AC: @dispatch-action-model ac-1, ac-2
+   * AC: @dispatch-command-action ac-1, ac-2, ac-3, ac-4
    */
   private executeCommand(
     action: CommandAction,
@@ -416,6 +477,8 @@ export class ActionExecutor {
     run: ActionRun,
   ): Promise<ActionRun> {
     return new Promise<ActionRun>((resolve) => {
+      // AC: @dispatch-command-action ac-2 — each arg is a separate array element;
+      // template values are interpolated as literal strings, never shell syntax
       const resolvedCommand = resolveTemplateVars(action.command, eventContext);
       const resolvedArgs = action.args.map((arg) =>
         resolveTemplateVars(arg, eventContext),
@@ -424,15 +487,21 @@ export class ActionExecutor {
         ? resolveTemplateVars(action.cwd, eventContext)
         : this.projectDir;
 
+      // AC: @dispatch-command-action ac-3 — inject KSPEC_* namespaced env vars
+      const kspecEnv = buildKspecEnvVars(eventContext);
+
       let child: ChildProcess;
       try {
+        // AC: @dispatch-command-action ac-1 — shell is false by default
         child = spawn(resolvedCommand, resolvedArgs, {
           cwd,
           env: {
             ...process.env,
+            ...kspecEnv,
             ...action.env,
           },
           stdio: "pipe",
+          shell: action.shell ?? false,
         });
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
