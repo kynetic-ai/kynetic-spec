@@ -16070,6 +16070,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T13:09:41.058Z
+      - _ulid: 01KM0H263KKDY5MH7NHQN3TS7F
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0H25Z32PVY4F9VT2DJJ8GQ
+        timestamp: 2026-03-18T13:09:50.835Z
     examined_commit: ef2de07afb865a97e51fc45a65ef8f53a68d0afe
     external_links: []
     lifecycle_state: open
@@ -16079,8 +16086,28 @@ reviews:
       content_hash: ""
       ref: "@01KKZPW45E2RJ5PQFP3AEVS35F"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM0H25Z32PVY4F9VT2DJJ8GQ
+        anchor:
+          type: code
+          commit: ""
+          line_end: 168
+          line_start: 158
+          path: src/agent-runtime/join-accumulator.ts
+          side: head
+        entries:
+          - _ulid: 01KM0H25Z4KMZQPQRQSVTEF1AG
+            author: "@claude"
+            body: "reload() docstring says 'Existing in-flight groups continue with their original config' but
+              the implementation always fetches config fresh from this.configs on each event via
+              handleActionEvent(). In-flight groups will see updated configs on their next event,
+              not their original config. The docstring is misleading — consider updating it to
+              reflect actual behavior, or storing a config snapshot per-group if the documented
+              behavior is intended. Non-blocking: the spec doesn't mandate either behavior, and the
+              test correctly validates practical behavior."
+            created_at: 2026-03-18T13:09:50.692Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T13:03:05.181Z
-    updated_at: 2026-03-18T13:09:40.910Z
+    updated_at: 2026-03-18T13:09:50.692Z
     notes: []
