@@ -79,10 +79,10 @@ export const PAYLOAD_FIELDS_BY_EVENT: Record<string, readonly string[]> = {
   "invocation.completed": ["session_id", "agent_id", "task_ref", "outcome", "duration_ms"],
   "invocation.failed": ["session_id", "agent_id", "task_ref", "error", "duration_ms"],
   "invocation.stalled": ["session_id", "agent_id", "task_ref", "duration_ms"],
-  // Session events
-  "session.ended": ["session_id", "agent_id", "task_ref", "duration", "reason"],
-  "session.idle_timeout": ["session_id", "agent_id", "task_ref", "duration"],
-  "session.cancelled": ["session_id", "agent_id", "task_ref", "reason"],
+  // Session events — AC: @dispatch-event-payload ac-3
+  "session.ended": ["session_id", "agent_id", "task_ref", "duration_ms", "terminal_reason", "work_summary"],
+  "session.idle_timeout": ["session_id", "agent_id", "task_ref", "duration_ms", "terminal_reason", "work_summary"],
+  "session.cancelled": ["session_id", "agent_id", "task_ref", "duration_ms", "terminal_reason", "work_summary"],
   // Schedule events
   "schedule.tick": ["schedule_id", "schedule_name"],
   // Action run events

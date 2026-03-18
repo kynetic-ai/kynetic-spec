@@ -24,7 +24,7 @@ import {
 } from "../parser/index.js";
 import { DEFAULT_KSPEC_CLI_PATH, runInvocation } from "./invocation.js";
 import { loadProjectConfig } from "../parser/config.js";
-import type { InvocationOptions } from "./invocation.js";
+import type { InvocationOptions, InvocationResult } from "./invocation.js";
 import { SessionEventAccumulator } from "./session-event-accumulator.js";
 import type { SessionEventData } from "./session-event-types.js";
 import { EventBus, type EventBusOptions, type EventEnvelope, type EmitOptions } from "./event-bus.js";
@@ -2214,6 +2214,8 @@ export class DispatchEngine {
       };
 
       let terminalEvent: InvocationEvent | null = null;
+      /** AC: @dispatch-event-taxonomy ac-2 — captured invocation result for session event emission */
+      let invocationResult: InvocationResult | null = null;
       let releasedInFlightKey = false;
       const markActivePromise = this.shadowMutex.runExclusive(async () => {
         try {
@@ -2245,7 +2247,7 @@ export class DispatchEngine {
             markInvocationStarted();
             emitStartedEvent();
             await markActivePromise;
-            await runInvocation(options);
+            invocationResult = await runInvocation(options);
             // Reset retry count on success
             entry.retryCount = 0;
             entry.starvationDeferrals = 0;
@@ -2366,6 +2368,15 @@ export class DispatchEngine {
               source_id: terminalEvent.session_id,
               payload: { ...terminalEvent },
             });
+
+            // AC: @dispatch-event-taxonomy ac-2 — Emit corresponding session.* event
+            // AC: @dispatch-event-payload ac-3 — Session payload includes session_id,
+            // agent_id, task_ref, duration_ms, terminal_reason, and work_summary
+            this._emitSessionLifecycleEvent(
+              terminalEvent,
+              invocationResult,
+              trackingRecord.startedAtMs,
+            );
           }
         })
         .then(async () => {
@@ -2415,5 +2426,98 @@ export class DispatchEngine {
         this.inFlightTaskKeys.delete(inFlightKey);
       }
     }
+  }
+
+  // ─── Session Lifecycle Events ──────────────────────────────────────────────
+
+  /**
+   * Map invocation outcomes to session event types and emit session lifecycle events.
+   *
+   * Mapping:
+   *   invocation completed (success) → session.ended
+   *   invocation completed (timed_out) → session.ended (with timeout reason)
+   *   invocation completed (failed) → session.ended (with failure reason)
+   *   invocation completed (stalled) → session.idle_timeout
+   *   invocation aborted (shutdown) → session.cancelled
+   *
+   * Session identity: session_id == invocation_id (same value).
+   *
+   * AC: @dispatch-event-taxonomy ac-2
+   * AC: @dispatch-event-payload ac-3
+   */
+  private _emitSessionLifecycleEvent(
+    terminalEvent: InvocationEvent,
+    invocationResult: InvocationResult | null,
+    startedAtMs: number,
+  ): void {
+    const outcome = invocationResult?.outcome ?? (terminalEvent.type === "completed" ? "success" : "failed");
+    const durationMs = invocationResult?.durationMs ?? (Date.now() - startedAtMs);
+
+    // Determine session event type from invocation outcome
+    let sessionEventType: string;
+    let terminalReason: string;
+    switch (outcome) {
+      case "success":
+        sessionEventType = "session.ended";
+        terminalReason = "completed";
+        break;
+      case "timed_out":
+        sessionEventType = "session.ended";
+        terminalReason = "timed_out";
+        break;
+      case "failed": {
+        // Distinguish abort (cancellation) from other failures
+        const isAborted = invocationResult?.error?.includes("aborted by shutdown") ?? false;
+        if (isAborted) {
+          sessionEventType = "session.cancelled";
+          terminalReason = "shutdown";
+        } else {
+          sessionEventType = "session.ended";
+          terminalReason = invocationResult?.error ?? "failed";
+        }
+        break;
+      }
+      case "stalled":
+        sessionEventType = "session.idle_timeout";
+        terminalReason = invocationResult?.error ?? "no initial response";
+        break;
+      default:
+        sessionEventType = "session.ended";
+        terminalReason = "unknown";
+        break;
+    }
+
+    // Build work summary from session metadata if available
+    // AC: @dispatch-event-payload ac-3 — work_summary includes task notes, tasks completed, etc.
+    const workSummary: Record<string, unknown> = {};
+    if (invocationResult?.session) {
+      const session = invocationResult.session;
+      if (session.event_count !== undefined) {
+        workSummary.event_count = session.event_count;
+      }
+      if (session.iteration_count !== undefined) {
+        workSummary.iteration_count = session.iteration_count;
+      }
+      if (session.tasks_completed !== undefined) {
+        workSummary.tasks_completed = session.tasks_completed;
+      }
+    }
+
+    // AC: @dispatch-event-payload ac-3 — session payload fields
+    const payload: Record<string, unknown> = {
+      session_id: terminalEvent.session_id,
+      agent_id: terminalEvent.agent_id,
+      task_ref: terminalEvent.task_id ?? undefined,
+      duration_ms: durationMs,
+      terminal_reason: terminalReason,
+      work_summary: workSummary,
+    };
+
+    this._eventBus.emit({
+      event_type: sessionEventType,
+      source_type: "invocation_lifecycle",
+      source_id: terminalEvent.session_id,
+      payload,
+    });
   }
 }
