@@ -8510,7 +8510,7 @@ workspaces:
         head: c7f0fed80c4192706ed6dc4c428abbfdb4f9fe88
         last_seen_at: 2026-03-18T01:28:43.990Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/replace-hardcoded-branch-names-in-merge-skill-template-with-dynamic-references-01kkxemg
-  - active_role: worker
+  - active_role: null
     base_branch_point: 81daafe8a38dc2ac5fe460ef396d2b565f4799af
     bootstrap:
       status: succeeded
@@ -8552,12 +8552,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T01:36:36.483Z
+      updated_at: 2026-03-18T01:37:02.929Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T01:36:36.483Z
+      updated_at: 2026-03-18T01:37:02.929Z
     integration:
       status: pending
       detail: null
@@ -8565,17 +8565,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 81daafe8a38dc2ac5fe460ef396d2b565f4799af
-      updated_at: 2026-03-18T01:36:36.483Z
-    lifecycle_state: active
+      updated_at: 2026-03-18T01:37:02.929Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KKXGPNP7R08EYVEQCERNX1HS"
     task_slug: fix-session-cache-invalidate-leaves-ghost-in-knownsessionids
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T01:28:46.443Z
-      last_reconciled_at: 2026-03-18T01:36:36.483Z
+      last_reconciled_at: 2026-03-18T01:37:02.929Z
       created_at: 2026-03-18T01:28:44.963Z
-      updated_at: 2026-03-18T01:36:36.483Z
+      updated_at: 2026-03-18T01:37:02.929Z
     workspace_id: dispatch-workspace-01KKXGPNP7R08EYVEQCERNX1HS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
