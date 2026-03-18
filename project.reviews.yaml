@@ -16329,6 +16329,21 @@ reviews:
         runner: tsc
         created_at: 2026-03-18T13:33:11.482Z
         completed_at: 2026-03-18T13:33:11.482Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 66f28f712
+          head_commit: f49c87c4a33f
+        evidence: "All 4 ACs annotated: @dispatch-hook-schema ac-3 (tests/validate-integration.test.ts:37),
+          @dispatch-hook-filter ac-3 (tests/validate-integration.test.ts:108),
+          @dispatch-schedule-schema ac-3 (tests/validate-integration.test.ts:162),
+          @dispatch-action-model ac-7 (tests/validate-integration.test.ts:335,512,546,563). Tests
+          exercise real CLI pipeline."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T13:33:19.633Z
+        completed_at: 2026-03-18T13:33:19.633Z
     events:
       - _ulid: 01KM0JBZTYQ0FTNC4ADP7V46ZC
         actor: "@claude"
@@ -16357,6 +16372,13 @@ reviews:
           status: pass
           name: tsc
         timestamp: 2026-03-18T13:33:11.629Z
+      - _ulid: 01KM0JD60ZF9VE10Q31JD80F9Q
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T13:33:19.775Z
     examined_commit: f49c87c4a33f25afd5f3a95918b46e9a674eabca
     external_links: []
     lifecycle_state: open
@@ -16369,5 +16391,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T13:32:40.670Z
-    updated_at: 2026-03-18T13:33:11.482Z
+    updated_at: 2026-03-18T13:33:19.633Z
     notes: []
