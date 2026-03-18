@@ -14899,6 +14899,21 @@ reviews:
         runner: manual
         created_at: 2026-03-18T11:08:59.525Z
         completed_at: 2026-03-18T11:08:59.525Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 4e3f9aadf
+          head_commit: e12343839
+        evidence: "Each AC verified against schema fields: ac-1 (8 task fields match), ac-2 (invocation
+          started/terminal split with optional task_ref and terminal duration_ms), ac-3 (6 session
+          fields including work_summary with passthrough), ac-4 (4 schedule fields including
+          tick_time and run_count), ac-5 (action started/terminal split with hook_id/schedule_id
+          source and optional session_id for agent type)."
+        name: spec-alignment
+        required: true
+        runner: manual
+        created_at: 2026-03-18T11:09:08.864Z
+        completed_at: 2026-03-18T11:09:08.864Z
     events:
       - _ulid: 01KM0A3VP2NVMCG310XMR3JNPT
         actor: "@claude"
@@ -14927,6 +14942,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T11:08:59.664Z
+      - _ulid: 01KM0A55ZRZ177SPT9G2GRP1X8
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: spec-alignment
+        timestamp: 2026-03-18T11:09:08.984Z
     examined_commit: e12343839501de77cb22fc5d810ca6b17cdb6378
     external_links: []
     lifecycle_state: open
@@ -14939,5 +14961,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T11:08:25.666Z
-    updated_at: 2026-03-18T11:08:59.525Z
+    updated_at: 2026-03-18T11:09:08.864Z
     notes: []
