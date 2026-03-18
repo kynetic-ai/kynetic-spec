@@ -101949,8 +101949,17 @@
   spec_ref: "@review-code-diff-viewer"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Code diff viewer with inline commenting fully implemented: 6 Svelte
+    components (CodeDiffViewer, DiffFileList, DiffFileView, DiffHunkView, DiffInlineThread,
+    DiffCommentForm), 3 API functions (fetchDiff, fetchFileDiff, fetchDiffContext), shared
+    getFilePath utility, TanStack Query keys, and page integration. All 6 ACs covered: file list
+    with stats (ac-1), unified diff with syntax highlighting (ac-2), collapsed context expansion
+    (ac-3), click-to-comment with code anchors (ac-4), inline thread rendering (ac-5), lazy loading
+    for 20+ files (ac-6). 17 E2E tests in code-diff-viewer.spec.ts. 5 review cycles total — cycles
+    1-2 added tests and fixed route mock, cycle 3 identified shared utility nit, cycle 4 rebased
+    onto dev after structured-content-viewer merge, cycle 5 clean approval and merge."
   depends_on:
     - "@task-diff-api"
     - "@task-review-detail-page"
@@ -101975,6 +101984,7 @@
   created_at: 2026-03-16T08:29:04.421Z
   started_at: 2026-03-18T07:40:19.625Z
   submitted_at: 2026-03-18T07:40:29.567Z
+  completed_at: 2026-03-18T07:50:30.973Z
   notes:
     - _ulid: 01KKZDVJBFKDZ6TFPMQQA2R0VA
       content: "Implemented code diff viewer with inline commenting for code reviews. Components created:
