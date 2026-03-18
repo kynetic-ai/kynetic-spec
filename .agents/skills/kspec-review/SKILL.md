@@ -281,23 +281,20 @@ kspec review comment @review-ref \
 
 ### Recording Checks
 
-Checks record verification evidence bound to the reviewed state:
+Checks record verification evidence bound to the reviewed state. The `applies_to_version` is auto-derived from the review's subject — `code_compare` for code subjects, `entity_version` for task/plan/spec subjects — so callers do not provide version information.
 
 ```bash
 # Passing test run
 kspec review check @review-ref --name "vitest" --status pass \
-  --runner vitest --evidence "All 342 tests passed" \
-  --version-base abc1234 --version-head def5678
+  --runner vitest --evidence "All 342 tests passed"
 
 # Failing check
 kspec review check @review-ref --name "lint" --status fail \
-  --runner eslint --evidence "3 errors found" \
-  --version-base abc1234 --version-head def5678
+  --runner eslint --evidence "3 errors found"
 
 # Informational (non-required) check
 kspec review check @review-ref --name "coverage" --status pass \
-  --no-required --evidence "87% coverage" \
-  --version-base abc1234 --version-head def5678
+  --no-required --evidence "87% coverage"
 ```
 
 **Check statuses:** `pass`, `fail`, `running`, `skipped`
@@ -306,23 +303,20 @@ Checks whose `applies_to_version` does not match the current subject version are
 
 ### Submitting Verdicts
 
-Verdicts record individual reviewer decisions:
+Verdicts record individual reviewer decisions. Like checks, the `applies_to_version` is auto-derived from the review's subject, so callers do not provide version information.
 
 ```bash
 # Approve
 kspec review verdict @review-ref --decision approve \
-  --reviewer agent@example.com \
-  --version-base abc1234 --version-head def5678
+  --reviewer agent@example.com
 
 # Request changes (triggers needs_work on linked task)
 kspec review verdict @review-ref --decision request_changes \
-  --reviewer agent@example.com \
-  --version-base abc1234 --version-head def5678
+  --reviewer agent@example.com
 
 # Comment (non-blocking)
 kspec review verdict @review-ref --decision comment \
-  --reviewer agent@example.com \
-  --version-base abc1234 --version-head def5678
+  --reviewer agent@example.com
 ```
 
 Verdicts are per-reviewer. A later verdict from the same reviewer replaces the earlier one for the same version. Verdicts not matching the current subject version are stale.
