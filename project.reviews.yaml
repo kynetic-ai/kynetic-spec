@@ -13003,6 +13003,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM0096ECC7D1TAJVM20VSEW5
         timestamp: 2026-03-18T08:16:34.867Z
+      - _ulid: 01KM009GQ1KKV2N0436RQAVX2A
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM009GKYNTJ0VF86SZ4C528V
+        timestamp: 2026-03-18T08:16:45.281Z
     examined_commit: 14505dad0ba356bbfd037257e46aa75b3d9ebbbc
     external_links: []
     lifecycle_state: open
@@ -13042,7 +13049,25 @@ reviews:
               event bus functionality.
             created_at: 2026-03-18T08:16:34.764Z
         kind: blocker
+      - _ulid: 01KM009GKYNTJ0VF86SZ4C528V
+        entries:
+          - _ulid: 01KM009GKYTQ8SNFVNYAGGSST5
+            author: "@claude"
+            body: >-
+              Deletion of ~327 lines of passing tests from tests/yaml-round-trip-stability.test.ts.
+              Three full test suites were removed: 'round-trip stability — saveObservation path' (3
+              tests), 'round-trip stability — saveMetaItem path' (5 tests covering agents,
+              conventions, Zod-default pollution, deleteMetaItem preservation, and cross-section
+              stability). All were annotated with AC: @yaml-serialization-invariants ac-3. The
+              remaining test file drops from 1309 to 980 lines.
+
+
+              These tests were recently added as part of the round-trip stability task that was just
+              merged into dev. Deleting them is a coverage regression — not just removing dead
+              tests, but removing tests that validate behavior the new meta.ts code breaks.
+            created_at: 2026-03-18T08:16:45.182Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T08:16:10.197Z
-    updated_at: 2026-03-18T08:16:34.764Z
+    updated_at: 2026-03-18T08:16:45.182Z
     notes: []
