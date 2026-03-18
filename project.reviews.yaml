@@ -10948,6 +10948,13 @@ reviews:
           kind: nit
           thread_ulid: 01KKZEHFF5RFD7CNBWYTKDSMF2
         timestamp: 2026-03-18T03:06:32.035Z
+      - _ulid: 01KKZEJANER55B3KYFRQACC31X
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKZEJAE4R0JNNMH80B4HZM2T
+        timestamp: 2026-03-18T03:06:59.630Z
     examined_commit: c78549495ec28d101a3f21193f7e53105b09f3b2
     external_links: []
     lifecycle_state: open
@@ -10986,7 +10993,22 @@ reviews:
               detectLanguage function instead."
             created_at: 2026-03-18T03:06:31.782Z
         kind: nit
+      - _ulid: 01KKZEJAE4R0JNNMH80B4HZM2T
+        anchor:
+          type: code
+          commit: c78549495ec2
+          line_end: 30
+          line_start: 30
+          path: packages/web-ui/src/lib/components/diff/DiffHunkView.svelte
+          side: head
+        entries:
+          - _ulid: 01KKZEJAE4TYEKR99X7YA2QRQT
+            author: "@claude"
+            body: "Unused prop: expandedContextLines is declared in the Props interface but never referenced
+              anywhere in the component template or script. Dead code."
+            created_at: 2026-03-18T03:06:59.396Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T03:05:31.212Z
-    updated_at: 2026-03-18T03:06:31.782Z
+    updated_at: 2026-03-18T03:06:59.396Z
     notes: []
