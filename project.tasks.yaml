@@ -106476,6 +106476,15 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T14:23:11.757Z
+    - _ulid: 01KM0NFG6H7B3GZ2D32QDTN20R
+      content: "Fixed review feedback: Added missing N/A annotations for @trait-json-output ac-4/ac-5 (no
+        references or timestamps in hook output), @trait-shadow-commit ac-2/ac-3 (centrally tested),
+        @trait-semantic-exit-codes ac-6 (Commander.js handles). Added test for
+        @trait-filterable-list ac-7 (summary line). Removed dead writeMetaWithHooks helper and
+        unused imports. All 50 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T14:27:01.457Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVYKJDC94YH6XAPNDWV69
