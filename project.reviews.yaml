@@ -11579,3 +11579,29 @@ reviews:
     created_at: 2026-03-18T03:56:10.993Z
     updated_at: 2026-03-18T04:05:28.506Z
     notes: []
+  - _ulid: 01KKZKJNSP5ZRTQP63C2Q4J3Q7
+    slugs: []
+    title: Review task-code-diff-viewer (cycle 4)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKZKJNSN7Q07ESNJDSW5QHFJ
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T04:34:33.910Z
+    examined_commit: 082679500792a34a7e102e1fd6ff07e8cc5bbc3f
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKTW6MH5PWQSPXA3J689NHDB"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T04:34:33.910Z
+    updated_at: null
+    notes: []
