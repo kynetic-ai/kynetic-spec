@@ -12769,9 +12769,22 @@ reviews:
           status: skipped
           name: e2e
         timestamp: 2026-03-18T07:48:48.303Z
+      - _ulid: 01KKZYPJV4H98EZB2D9MFZ99XX
+        actor: pr-reviewer@kspec
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-18T07:48:56.293Z
+      - _ulid: 01KKZYPJV5EM5SB9C2GWSQYN2E
+        actor: pr-reviewer@kspec
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T07:48:56.293Z
     examined_commit: 3a134c292f6b4907a5072a8b14ede10505561779
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -12779,7 +12792,15 @@ reviews:
       ref: "@task-code-diff-viewer"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: e08cc7b0e9e0efe77bdad81933884065f37f8367
+          head_commit: 3a134c292f6b4907a5072a8b14ede10505561779
+        decision: approve
+        reviewer: pr-reviewer@kspec
+        role: reviewer
+        created_at: 2026-03-18T07:48:56.175Z
     created_at: 2026-03-18T07:48:04.371Z
-    updated_at: 2026-03-18T07:48:48.170Z
+    updated_at: 2026-03-18T07:48:56.175Z
     notes: []
