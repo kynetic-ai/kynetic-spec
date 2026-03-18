@@ -547,6 +547,9 @@ const META_ARRAY_FIELDS = [
   "conventions",
   "observations",
   "skills",
+  "hooks",
+  "schedules",
+  "compositions",
   "includes",
 ] as const;
 
@@ -1036,6 +1039,95 @@ export async function listSkillSupportingDirs(
   }
 
   return dirs;
+}
+
+// ============================================================
+// SCHEDULE / HOOK CRUD
+// ============================================================
+
+/**
+ * Save a schedule to the meta manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
+ */
+export async function saveSchedule(
+  ctx: KspecContext,
+  schedule: LoadedSchedule,
+): Promise<void> {
+  const manifestPath = getMetaManifestPath(ctx);
+
+  await withFileLock(manifestPath, async () => {
+    const dir = path.dirname(manifestPath);
+    await fs.mkdir(dir, { recursive: true });
+
+    const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+    const rawSchedules = getRawArray(wrapperObj, "schedules");
+
+    const { _sourceFile, ...cleanSchedule } = schedule;
+
+    const existingIndex = findRawMetaItemIndex(rawSchedules, schedule._ulid);
+    if (existingIndex >= 0) {
+      const rawTarget = rawSchedules[existingIndex] as Record<string, unknown>;
+      rawSchedules[existingIndex] = mergeMetaItemPreservingRawShape(
+        rawTarget,
+        cleanSchedule as unknown as Record<string, unknown>,
+      );
+    } else {
+      rawSchedules.push(cleanSchedule);
+    }
+
+    await writeRawMetaManifest(manifestPath, wrapperObj, {
+      schedules: rawSchedules,
+    });
+  });
+}
+
+/**
+ * Delete a schedule from the meta manifest.
+ * Uses raw-data-preservation pattern to avoid adding Zod defaults for absent sections.
+ */
+export async function deleteSchedule(
+  ctx: KspecContext,
+  targetUlid: string,
+): Promise<boolean> {
+  const manifestPath = getMetaManifestPath(ctx);
+
+  return withFileLock(manifestPath, async () => {
+    try {
+      const { wrapperObj } = await extractRawMetaManifest(manifestPath);
+      const rawSchedules = getRawArray(wrapperObj, "schedules");
+
+      const index = findRawMetaItemIndex(rawSchedules, targetUlid);
+      if (index < 0) {
+        return false;
+      }
+
+      rawSchedules.splice(index, 1);
+      await writeRawMetaManifest(manifestPath, wrapperObj, {
+        schedules: rawSchedules,
+      });
+      return true;
+    } catch {
+      return false;
+    }
+  });
+}
+
+/**
+ * Resolve a schedule reference by id, ULID, or ULID prefix.
+ */
+export function resolveScheduleRef(
+  meta: MetaContext,
+  ref: string,
+): LoadedSchedule | undefined {
+  const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
+
+  for (const schedule of meta.schedules) {
+    if (schedule._ulid === cleanRef) return schedule;
+    if (schedule._ulid.toLowerCase().startsWith(cleanRef.toLowerCase())) return schedule;
+    if (schedule.id === cleanRef) return schedule;
+  }
+
+  return undefined;
 }
 
 // Re-export the getMetaItemType and isSkill functions
