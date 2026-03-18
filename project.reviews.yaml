@@ -9632,6 +9632,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKZ6GFSFF1P9TQWS3KEKFA10
         timestamp: 2026-03-18T00:46:10.856Z
+      - _ulid: 01KKZ6GSR2Y382S01C8662QSJM
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKZ6GSMPFCDW2WZ19Z1JM4EV
+        timestamp: 2026-03-18T00:46:20.930Z
     examined_commit: 0856c70e3db6aa88fb57b661fab8bba626e3e153
     external_links: []
     lifecycle_state: open
@@ -9682,7 +9689,26 @@ reviews:
               finding.
             created_at: 2026-03-18T00:46:10.735Z
         kind: blocker
+      - _ulid: 01KKZ6GSMPFCDW2WZ19Z1JM4EV
+        anchor:
+          type: code
+          commit: 0856c70e3db6
+          line_end: 451
+          line_start: 449
+          path: tests/dispatch-workspace-config.test.ts
+          side: head
+        entries:
+          - _ulid: 01KKZ6GSMPH0MVR9B2G9V6BM0K
+            author: "@claude"
+            body: "The stale integration target detection describe block is missing N/A annotations for
+              @trait-error-guidance ac-3 through ac-6. All other dispatch-workspace test files
+              include these file-level N/A annotations (e.g. dispatch-workspace-cleanup.test.ts
+              lines 390-393, dispatch-workspace-branch-provenance.test.ts lines 29-32). Note: the
+              existing describe blocks in this file also lack them, so this is a pre-existing gap —
+              but the new describe block should follow the established pattern."
+            created_at: 2026-03-18T00:46:20.822Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T00:45:42.329Z
-    updated_at: 2026-03-18T00:46:10.735Z
+    updated_at: 2026-03-18T00:46:20.822Z
     notes: []
