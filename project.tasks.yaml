@@ -105868,7 +105868,7 @@
   spec_ref: "@dispatch-event-taxonomy"
   plan_ref: "@plan-dispatch-event-system-expansion"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-event-bus"
@@ -105879,7 +105879,9 @@
     - events
     - sessions
   vcs_refs: []
+  session_id: 01KM04JNJM816GGPA9PPY94GKW
   created_at: 2026-03-18T05:31:54.945Z
+  started_at: 2026-03-18T09:32:16.170Z
   notes: []
   todos: []
   automation: eligible
