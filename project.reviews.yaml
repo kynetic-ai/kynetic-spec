@@ -17261,9 +17261,16 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-18T15:06:54.524Z
+      - _ulid: 01KM0QRSMD02CSTJXD6Y7H5V34
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: open
+        timestamp: 2026-03-18T15:07:03.181Z
     examined_commit: 2dcce1c1b50abdac83c5d5dd1add93610e82e8e4
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: open
     related_refs: []
     subject:
       type: task
@@ -17273,5 +17280,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T15:06:54.524Z
-    updated_at: null
+    updated_at: 2026-03-18T15:07:03.029Z
     notes: []
