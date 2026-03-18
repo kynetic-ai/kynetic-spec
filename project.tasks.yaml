@@ -106219,8 +106219,11 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Updated merge skill, task-work skill, review-gates, and blocking rules
+    so agents resolve simple merge conflicts instead of blocking, and workers rebase before starting
+    work.
   depends_on: []
   context: []
   priority: 2
@@ -106241,6 +106244,7 @@
   created_at: 2026-03-18T06:38:43.349Z
   started_at: 2026-03-18T06:40:54.908Z
   submitted_at: 2026-03-18T07:07:49.832Z
+  completed_at: 2026-03-18T07:08:00.863Z
   notes:
     - _ulid: 01KKZV675HD69HG440145BQ7KV
       content: "Updated 4 instruction sources (templates + rendered): (1) task-work skill: added step 4a
