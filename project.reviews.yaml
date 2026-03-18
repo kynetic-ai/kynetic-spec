@@ -10064,3 +10064,29 @@ reviews:
     created_at: 2026-03-18T01:05:10.222Z
     updated_at: 2026-03-18T01:05:50.914Z
     notes: []
+  - _ulid: 01KKZ8557VAZWQEH6ES260S5B7
+    slugs: []
+    title: Review detect-stale-integration-target (cycle 2)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKZ8557VRK0T0V9FAZEW8C42
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T01:14:56.635Z
+    examined_commit: dd1a83cf431c45c1b19f24260b313b16ed42e96d
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKXEKWMZN0E7E6V7458E0BV8"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T01:14:56.635Z
+    updated_at: null
+    notes: []
