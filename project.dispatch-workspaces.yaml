@@ -10186,12 +10186,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T13:00:48.137Z
+      updated_at: 2026-03-18T13:00:50.802Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T13:00:48.137Z
+      updated_at: 2026-03-18T13:00:50.802Z
     integration:
       status: pending
       detail: null
@@ -10199,24 +10199,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 263970e4d2877f3e31aebf638a3d949568dd39cc
-      updated_at: 2026-03-18T13:00:48.137Z
-    lifecycle_state: ready
+      updated_at: 2026-03-18T13:00:50.802Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKZPW45E2RJ5PQFP3AEVS35F"
     task_slug: task-composition-join
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T12:44:33.080Z
-      last_reconciled_at: 2026-03-18T13:00:48.137Z
+      last_reconciled_at: 2026-03-18T13:00:50.802Z
       created_at: 2026-03-18T12:44:31.900Z
-      updated_at: 2026-03-18T13:00:48.137Z
+      updated_at: 2026-03-18T13:00:50.802Z
     workspace_id: dispatch-workspace-01KKZPW45E2RJ5PQFP3AEVS35F
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: ef2de07afb865a97e51fc45a65ef8f53a68d0afe
+        last_seen_at: 2026-03-18T13:00:50.802Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-composition-join-01kkzpw4-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-composition-join/01kkzpw4
-        head: 263970e4d2877f3e31aebf638a3d949568dd39cc
-        last_seen_at: 2026-03-18T12:44:31.900Z
+        head: ef2de07afb865a97e51fc45a65ef8f53a68d0afe
+        last_seen_at: 2026-03-18T13:00:50.802Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-composition-join-01kkzpw4
