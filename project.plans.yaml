@@ -23122,10 +23122,18 @@ plans:
       The integration target push mutex is separate from the shadow branch mutex
       to avoid unnecessary contention between unrelated operations.
 
-    status: approved
+    status: active
     approved_at: 2026-03-18T07:07:03.905Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@dispatch-remote-branch-sync"
+      - "@dispatch-sync-configuration"
+    derived_tasks:
+      - "@implement-dispatch-remote-branch-sync"
+      - "@implement-dispatch-sync-configuration"
+      - "@task-dispatch-sync-config"
+      - "@task-dispatch-target-sync"
+      - "@task-dispatch-degraded-state"
+      - "@task-dispatch-branch-push"
     module_ref: null
     source_path: /home/chapel/Projects/kynetic-spec/plans/dispatch-remote-sync.md
     created_at: 2026-03-18T06:16:05.500Z
@@ -23151,3 +23159,74 @@ plans:
           merge conflicts via merge skill instructions with escalation
         author: "@claude"
         created_at: 2026-03-18T07:05:43.965Z
+      - _ulid: 01KKZWB9NZX3PPRPAAH09JKJHD
+        content: |-
+          ### Design decisions
+
+          **Sync remote selection:** Use the first git remote (typically origin). The
+          same convention as shadow sync. If multi-remote support is needed later,
+          add dispatch.remote to config. Not needed now.
+
+          **Periodic sync scope:** The periodic sync does both pull AND push of the
+          integration target. Pull keeps it fresh from remote. Push retries any
+          failed post-merge pushes. This eliminates the "failed push, no retry"
+          gap without a separate push scheduler.
+
+          **Idle definition for periodic sync:** "No reviewer invocation active"
+          rather than "no invocation active." Workers operate on isolated worktrees
+          and don't touch the integration target, so syncing it while workers run
+          is safe. Only reviewer merges interact with the target branch.
+
+          **Stale workspace handling:** Workspaces provisioned from an older target
+          commit are NOT rebased. Staleness resolves at merge time. If the merge
+          conflicts, the task is blocked per ac-merge-conflict-blocks-task. This is
+          simpler and safer than mid-flight rebasing, which risks invalidating
+          in-progress work.
+
+          **Reconciliation integration:** Target sync runs as the first step of the
+          existing reconciliation pass rather than a separate timer. One interval
+          config, one timer, no races between independent schedulers. The sync has
+          a running guard so slow network operations don't block subsequent
+          reconciliation passes — if a sync is already in progress, the reconcile
+          skips it and proceeds with task evaluation.
+
+          **Before-provision sync with active reviewer:** The before-provision sync
+          (ac-pull-target-before-provision) checks lastSyncTimestamp staleness, not
+          reviewer activity. If a reviewer IS active and the sync is stale, the
+          provision sync still runs — it's safe because the provision creates a new
+          worktree from HEAD of the target, which doesn't interfere with the
+          reviewer's in-progress merge on a separate worktree. The periodic sync
+          skips during reviewer activity to avoid moving the target while a merge
+          is landing; the provision sync has no such concern.
+
+          ### For @task-dispatch-sync-config
+          Config follows the existing shadow.sync_interval pattern. The remote_sync
+          default resolution needs to happen at dispatch engine start time (not
+          config parse time) since remote availability is a runtime check. Store the
+          resolved effective value so it doesn't change mid-run.
+
+          ### For @task-dispatch-target-sync
+          The sync method should return a result enum: `synced`, `up_to_date`,
+          `skipped` (reviewer active / already running), `transient_failure`,
+          `diverged`. The degraded state task consumes this result to decide state
+          transitions.
+
+          ### For @task-dispatch-degraded-state
+          The degraded state needs to be:
+          - Visible in `kspec agent dispatch status` (prominent warning line)
+          - Included in `GET /api/agent/status` response (degraded object with
+            active, reason, enteredAt fields)
+          - Broadcast on the agents WebSocket topic (sync_state event)
+          - Logged clearly with resolution steps that distinguish divergence causes
+
+          The consecutive transient failure counter resets on any successful sync
+          operation (fetch or push).
+
+          ### For @task-dispatch-branch-push
+          Push operations are fire-and-forget with respect to the dispatch loop —
+          they must not delay task evaluation or invocation spawning. Use
+          Promise-based async with error catch/log, not await in the critical path.
+          The integration target push mutex is separate from the shadow branch mutex
+          to avoid unnecessary contention between unrelated operations.
+        author: "@claude"
+        created_at: 2026-03-18T07:07:49.311Z

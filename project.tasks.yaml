@@ -106246,3 +106246,243 @@
       author: "@claude"
       created_at: 2026-03-18T06:47:34.321Z
   todos: []
+- _ulid: 01KKZWB4NQMQ3JYPNSKANZXYT2
+  slugs:
+    - implement-dispatch-remote-branch-sync
+  title: Implement Dispatch Remote Branch Sync
+  type: task
+  spec_ref: "@dispatch-remote-branch-sync"
+  derivation: auto
+  plan_ref: "@plan-dispatch-remote-sync"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-18T07:07:44.183Z
+  notes: []
+  todos: []
+- _ulid: 01KKZWB5HXB722QKC2VV5Z7WTP
+  slugs:
+    - implement-dispatch-sync-configuration
+  title: Implement Dispatch Sync Configuration
+  type: task
+  spec_ref: "@dispatch-sync-configuration"
+  derivation: auto
+  plan_ref: "@plan-dispatch-remote-sync"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-18T07:07:45.085Z
+  notes: []
+  todos: []
+- _ulid: 01KKZWB6C22Z7DDQWR1C3GWDFF
+  slugs:
+    - task-dispatch-sync-config
+  title: Add dispatch sync configuration schema and defaults
+  type: task
+  description: |
+    Why: The dispatch engine needs configuration for remote sync behavior
+    before any sync logic can be implemented. Without config schema, the
+    sync features have no way to be enabled/disabled or tuned.
+
+    What: Extend DispatchConfigSchema in src/parser/config.ts with two
+    new fields: sync_interval (non-negative integer, default 60 seconds)
+    and remote_sync (optional boolean, resolved at runtime). Add defaults
+    to DEFAULT_CONFIG.dispatch. Wire through resolveConfig() with runtime
+    remote detection for the default value. Update the typed config
+    interface. Add Zod validation for sync_interval constraints.
+
+    How: Follow the existing shadow.sync_interval pattern in config.ts
+    (line 44). Add sync_interval and remote_sync to DispatchConfigSchema
+    (line 122-148). Add defaults at line 396 (DEFAULT_CONFIG.dispatch).
+    In resolveConfig() (~line 604), wire the new fields with fallback
+    to defaults. The remote_sync runtime resolution (checking for git
+    remote existence) should use the same listGitRemotes() from
+    workspace.ts that the dispatch engine already uses. Add a validation
+    test for negative/non-integer sync_interval values.
+
+    Covers: @dispatch-sync-configuration ac-sync-interval,
+    ac-remote-sync-disabled, ac-remote-sync-default, ac-validation.
+  spec_ref: "@dispatch-sync-configuration"
+  plan_ref: "@plan-dispatch-remote-sync"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - config
+  vcs_refs: []
+  created_at: 2026-03-18T07:07:45.922Z
+  notes: []
+  todos: []
+- _ulid: 01KKZWB75X6Q1X1ZZC5S6KBH6B
+  slugs:
+    - task-dispatch-target-sync
+  title: Implement integration target branch sync
+  type: task
+  description: |
+    Why: The integration target branch (dispatch.base_branch) is captured
+    at workspace provisioning and never updated. Over time it drifts from
+    remote, making merges increasingly stale and conflict-prone. The engine
+    needs to keep it fresh.
+
+    What: Fetch + fast-forward sync of the integration target from remote
+    at three trigger points: engine start (before bootstrap), periodically
+    when no reviewer is active (deferred when reviewer is active), and
+    before workspace provisioning when stale. Fast-forward only — no merge
+    commits created. Transient fetch failures warn but don't degrade.
+
+    How: Add a syncTargetBranch() method to DispatchEngine that runs
+    git fetch <remote> <base_branch> followed by git merge --ff-only
+    <remote>/<base_branch> in the project dir (not a worktree). Track
+    lastSyncTimestamp to gate before-provision syncs. Hook sync into
+    three places: (1) start() — sync before bootstrap evaluation;
+    (2) reconcile timer — sync as first step of reconciliation pass,
+    skip if reviewer invocation active; (3) workspace provisioning path —
+    sync if lastSyncTimestamp > sync_interval ago. Use a running guard
+    (like ShadowSyncScheduler) so slow fetches don't stack. When no
+    remote is configured, all sync operations are skipped silently.
+
+    Covers: @dispatch-remote-branch-sync ac-pull-target-on-start,
+    ac-pull-target-periodic, ac-pull-target-periodic-deferred,
+    ac-pull-target-before-provision, ac-pull-ff-only,
+    ac-transient-no-degrade, ac-no-remote.
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-dispatch-remote-sync"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-dispatch-sync-config"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - git
+  vcs_refs: []
+  created_at: 2026-03-18T07:07:46.749Z
+  notes: []
+  todos: []
+- _ulid: 01KKZWB80XVKFH4V056NHB9H6T
+  slugs:
+    - task-dispatch-degraded-state
+  title: Implement dispatch engine degraded state
+  type: task
+  description: |
+    Why: When the integration target branch diverges from remote (local
+    has unpushed merges, or remote was force-pushed), the engine cannot
+    provision workspaces from a reliable base. It needs a degraded state
+    that blocks new work while letting in-flight work finish, with clear
+    operator guidance and automatic recovery.
+
+    What: A degraded state machine for the dispatch engine. Enters
+    degraded when fast-forward sync fails due to divergence. Blocks new
+    workspace provisioning. Exposes degraded status via CLI and API.
+    Broadcasts state transitions on WebSocket. Auto-recovers when the
+    next periodic sync succeeds. Tracks consecutive transient failure
+    count for escalated warnings (threshold 5) without entering degraded.
+
+    How: Add a degraded state object to DispatchEngine: { active: boolean,
+    reason: string, enteredAt: Date | null }. In syncTargetBranch(),
+    classify failures: ff-only rejection with local-ahead = "unpushed
+    merges" guidance, ff-only rejection with remote-rewritten = "force
+    push" guidance. When degraded is active, the drain loop skips
+    provisioning but continues processing in-flight invocations. On
+    successful sync while degraded, clear the state and trigger a queue
+    drain. Track consecutiveTransientFailures counter (reset on any
+    success); log escalated warning when threshold exceeded. Extend
+    status() response with { degraded: { active, reason, enteredAt } }.
+    Extend the dispatch status CLI to show a prominent warning line.
+    Broadcast sync_state events on the agents WebSocket topic on
+    enter/exit.
+
+    Covers: @dispatch-remote-branch-sync ac-divergence-enters-degraded,
+    ac-divergence-log-guidance, ac-degraded-no-provision,
+    ac-degraded-status-api, ac-degraded-status-broadcast,
+    ac-degraded-auto-recover, ac-degraded-recovery-logged,
+    ac-repeated-transient-escalation, ac-repeated-transient-no-degrade.
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-dispatch-remote-sync"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-dispatch-target-sync"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - git
+  vcs_refs: []
+  created_at: 2026-03-18T07:07:47.613Z
+  notes: []
+  todos: []
+- _ulid: 01KKZWB8VH6WS0SSR11DGBMR0R
+  slugs:
+    - task-dispatch-branch-push
+  title: Implement dispatch branch push lifecycle
+  type: task
+  description: |
+    Why: Dispatch branches exist only locally. If the host dies or the
+    worktree is cleaned up, all in-flight work is lost. Pushing to remote
+    provides durability, visibility for other developers/CI, and enables
+    the resume-from-remote path that workspace.ts already partially
+    supports (tryRestoreBranchFromRemote).
+
+    What: Push dispatch branches to remote at key lifecycle points:
+    first invocation completion (set upstream tracking, safely replace
+    stale remote refs from previous runs), subsequent invocation
+    completions (normal push), and the integration target after reviewer
+    merges. Also push the integration target during periodic sync when
+    it has unpushed commits (retry for failed post-merge pushes). Delete
+    remote dispatch branches on workspace cleanup. Serialize integration
+    target pushes so at most one runs at a time. All push failures are
+    non-fatal.
+
+    How: Add pushDispatchBranch() and pushIntegrationTarget() helpers.
+    pushDispatchBranch detects whether upstream tracking exists (via
+    git rev-parse @{u}) to decide first-push vs normal-push behavior.
+    First push uses --force-with-lease to safely handle stale remote
+    refs (ac-first-push-replaces-stale-ref). Hook into dispatch.ts
+    post-invocation path (fire-and-forget with error logging).
+    pushIntegrationTarget uses a dedicated mutex (separate from
+    shadowMutex) so concurrent pushes skip rather than queue. Hook into:
+    (1) reviewer merge completion, (2) periodic sync (check
+    isAheadOfUpstream before pushing). For cleanup
+    (ac-cleanup-remote-branch), extend the existing workspace cleanup in
+    workspace.ts to delete the remote ref when the workspace has upstream
+    tracking. Respect remote_sync config toggle. Skip when no remote.
+
+    Covers: @dispatch-remote-branch-sync ac-first-push-sets-tracking,
+    ac-first-push-replaces-stale-ref, ac-subsequent-push,
+    ac-push-non-fatal, ac-push-target-after-merge,
+    ac-push-target-periodic, ac-target-push-serialization,
+    ac-cleanup-remote-branch, ac-no-remote.
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-dispatch-remote-sync"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-dispatch-sync-config"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - git
+  vcs_refs: []
+  created_at: 2026-03-18T07:07:48.465Z
+  notes: []
+  todos: []

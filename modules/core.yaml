@@ -1071,6 +1071,61 @@ features:
               the original provisioning — so agents merge into the intended branch
             when: The dispatcher builds the dispatch prompt context for a worker or reviewer invocation
         tags: []
+        requirements:
+          - _ulid: 01KKZWB4MH4D60RC0EG8TPGN2A
+            slugs:
+              - dispatch-sync-configuration
+            title: Dispatch Sync Configuration
+            type: requirement
+            description: |
+              Configuration surface for dispatch remote sync behavior in
+              kspec.config.yaml. Controls sync interval and whether remote
+              sync is enabled. Extends the existing dispatch config section.
+            depends_on: []
+            implements: []
+            relates_to: []
+            tests: []
+            traits:
+              - "@trait-error-guidance"
+            acceptance_criteria:
+              - given: |
+                  kspec.config.yaml sets dispatch.sync_interval to 120
+                id: ac-sync-interval
+                then: |
+                  The periodic target branch sync runs every 120 seconds; the
+                  default when unset is 60 seconds; setting to 0 disables periodic
+                  sync entirely (on-start and before-provision syncs still run)
+                when: |
+                  The dispatch engine starts and begins periodic sync
+              - given: |
+                  kspec.config.yaml sets dispatch.remote_sync to false
+                id: ac-remote-sync-disabled
+                then: |
+                  No remote push or pull operations execute; the engine operates
+                  in local-only mode identical to pre-sync behavior
+                when: |
+                  The dispatch engine runs and an invocation completes
+              - given: |
+                  dispatch.remote_sync is not set in kspec.config.yaml and the
+                  repository has a remote named origin
+                id: ac-remote-sync-default
+                then: |
+                  Remote sync defaults to true; if no remote exists, defaults to
+                  false; the resolved value is logged at engine startup
+                when: |
+                  The dispatch engine resolves its effective configuration
+              - given: |
+                  dispatch.sync_interval is set to a negative number or a
+                  non-integer
+                id: ac-validation
+                then: |
+                  A validation error identifies the invalid value and states the
+                  constraint (non-negative integer, in seconds)
+                when: |
+                  kspec validate runs or the config is loaded
+            tags: []
+            created: 2026-03-18T07:07:44.145Z
+            notes: []
         created: 2026-03-12T02:33:43.875Z
         notes: []
     requirements:
