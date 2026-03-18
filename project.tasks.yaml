@@ -102031,6 +102031,17 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T03:42:10.167Z
+    - _ulid: 01KKZGK9AC9Z5RYQJ9A68HRRV8
+      content: "[FIX_CYCLE: 2] Review verdict: request_changes by pr-reviewer@kspec. Review @01KKZGGQ.
+        Single MUST-FIX blocker: E2E test for AC-4 (code-diff-viewer.spec.ts line 541) mocks the
+        wrong API route — intercepts /threads but the actual createReviewThread API posts to
+        /comments. Fix: change the Playwright route mock from /threads to /comments. Implementation
+        quality is solid — all 6 diff viewer components, API types, query keys, and page integration
+        are correct. Unit tests pass, svelte-check clean on diff components. Only the E2E route mock
+        needs fixing."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T03:42:28.173Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6N50TFB9MFMG7T5KZT6N
