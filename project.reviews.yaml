@@ -16172,6 +16172,17 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T13:17:18.023Z
         completed_at: 2026-03-18T13:17:18.023Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 66f28f7127d7
+          head_commit: 3f77adc28aaa
+        evidence: Clean — no type errors
+        name: tsc --noEmit
+        required: true
+        runner: tsc
+        created_at: 2026-03-18T13:17:23.431Z
+        completed_at: 2026-03-18T13:17:23.431Z
     events:
       - _ulid: 01KM0HF0TK5QPYQJCDKW646MY1
         actor: "@claude"
@@ -16200,6 +16211,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-18T13:17:18.161Z
+      - _ulid: 01KM0HG07F8SY1011Q9JHPB4VH
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: tsc --noEmit
+        timestamp: 2026-03-18T13:17:23.567Z
     examined_commit: 3f77adc28aaab00f2bd7b123d89ad803857fffe8
     external_links: []
     lifecycle_state: open
@@ -16220,5 +16238,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T13:16:51.412Z
-    updated_at: 2026-03-18T13:17:18.023Z
+    updated_at: 2026-03-18T13:17:23.431Z
     notes: []
