@@ -3324,6 +3324,9 @@ features:
       The agents view retains agent definition management (name, adapter,
       capabilities, tools, skills, budget) but dispatch trigger editing
       moves here.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
