@@ -102088,6 +102088,31 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T04:35:55.241Z
+    - _ulid: 01KKZKQJ84XAT769NCA9PKP6N0
+      content: >-
+        Merge to dev blocked by textual conflict in
+        packages/web-ui/src/routes/reviews/[id]/+page.svelte. The structured-content-viewer feature
+        (dispatch/task/task-structured-content-viewer/01kktw6n, merged to dev as fca8525ea) adds AC
+        annotations, imports, derived state, and component sections to the same regions where this
+        task adds its own. Conflict areas:
+
+
+        1. AC comment block (top of file): both add AC annotations after ac-11
+
+        2. Import section: both add a component import after the reference utils import
+
+        3. Derived state block: both add derived state after isInteractive
+
+        4. Template section: both add a new section after the existing content block
+
+
+        Both features are purely additive and should coexist — include both AC annotations, both
+        imports, both derived state blocks, and both conditional component sections. The merge
+        resolution is straightforward but requires manual conflict resolution which the reviewer is
+        not authorized to perform per dispatch protocol.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T04:37:14.116Z
   todos: []
   automation: eligible
 - _ulid: 01KKTW6N50TFB9MFMG7T5KZT6N
