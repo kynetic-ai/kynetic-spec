@@ -9911,9 +9911,22 @@ reviews:
           status: pass
           name: prior-blockers-resolved
         timestamp: 2026-03-18T00:57:58.037Z
+      - _ulid: 01KKZ76B5WXC1G0HEJ081NR5CJ
+        actor: pr-reviewer@kspec-dispatch
+        event_type: verdict_submitted
+        payload:
+          decision: approve
+        timestamp: 2026-03-18T00:58:06.909Z
+      - _ulid: 01KKZ76B5X9G724AB24527RF1J
+        actor: pr-reviewer@kspec-dispatch
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T00:58:06.909Z
     examined_commit: ba6b05e773b949f2ce81fc36a7a887c836c3e88f
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -9921,7 +9934,15 @@ reviews:
       ref: "@01KKX6CGBRT6J6F804PJ1QJW3G"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: 42a4d2777452d52a41990f9cde2c39326bf86295
+          head_commit: ba6b05e773b949f2ce81fc36a7a887c836c3e88f
+        decision: approve
+        reviewer: pr-reviewer@kspec-dispatch
+        role: reviewer
+        created_at: 2026-03-18T00:58:06.808Z
     created_at: 2026-03-18T00:51:05.602Z
-    updated_at: 2026-03-18T00:57:57.924Z
+    updated_at: 2026-03-18T00:58:06.808Z
     notes: []
