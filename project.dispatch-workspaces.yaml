@@ -11002,7 +11002,7 @@ workspaces:
         head: 798e489dff19e5e47a237697f75997ac80195b22
         last_seen_at: 2026-03-18T15:35:13.258Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-check-auto-version-01km0nv0
-  - active_role: worker
+  - active_role: null
     base_branch_point: 20cb7666e4d9c456dc6dc33edf108a0d1feec779
     bootstrap:
       status: succeeded
@@ -11046,12 +11046,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T16:16:40.234Z
+      updated_at: 2026-03-18T16:17:45.934Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T16:16:40.234Z
+      updated_at: 2026-03-18T16:17:45.934Z
     integration:
       status: pending
       detail: null
@@ -11059,17 +11059,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 20cb7666e4d9c456dc6dc33edf108a0d1feec779
-      updated_at: 2026-03-18T16:16:40.234Z
-    lifecycle_state: active
+      updated_at: 2026-03-18T16:17:45.934Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KKZPW5J7YNTE7PD2JK0KRAPF"
     task_slug: task-automation-view
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T16:03:29.320Z
-      last_reconciled_at: 2026-03-18T16:16:40.234Z
+      last_reconciled_at: 2026-03-18T16:17:45.934Z
       created_at: 2026-03-18T15:35:14.400Z
-      updated_at: 2026-03-18T16:16:40.234Z
+      updated_at: 2026-03-18T16:17:45.934Z
     workspace_id: dispatch-workspace-01KKZPW5J7YNTE7PD2JK0KRAPF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
