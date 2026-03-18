@@ -15012,6 +15012,22 @@ reviews:
         runner: tsc
         created_at: 2026-03-18T11:25:53.167Z
         completed_at: 2026-03-18T11:25:53.167Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 5b3ea9fa6739
+          head_commit: 8f12b6fdd9df
+        evidence: "All 9 task ACs have annotated tests: ac-divergence-enters-degraded,
+          ac-divergence-log-guidance (2 tests), ac-degraded-no-provision, ac-degraded-status-api,
+          ac-degraded-status-broadcast, ac-degraded-auto-recover, ac-degraded-recovery-logged,
+          ac-repeated-transient-escalation (2 tests), ac-repeated-transient-no-degrade. Trait ACs
+          not applicable to this internal state machine (no user-facing CLI error paths
+          introduced)."
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T11:26:01.596Z
+        completed_at: 2026-03-18T11:26:01.596Z
     events:
       - _ulid: 01KM0B33SCPNTM3APGFVX4ZK3S
         actor: "@claude"
@@ -15040,6 +15056,13 @@ reviews:
           status: pass
           name: tsc
         timestamp: 2026-03-18T11:25:53.289Z
+      - _ulid: 01KM0B430BCFWVHSYEBJ0NCQG0
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T11:26:01.740Z
     examined_commit: 8f12b6fdd9df0871ef29d7b862a896d405e5b106
     external_links: []
     lifecycle_state: open
@@ -15052,5 +15075,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T11:25:29.772Z
-    updated_at: 2026-03-18T11:25:53.167Z
+    updated_at: 2026-03-18T11:26:01.596Z
     notes: []
