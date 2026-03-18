@@ -106868,8 +106868,13 @@
   spec_ref: "@dispatch-remote-branch-sync"
   plan_ref: "@plan-dispatch-remote-sync"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev (478f79b47). Implements degraded state machine for the dispatch
+    engine: divergence classification via git rev-list, enter/exit degraded with WebSocket
+    broadcast, blocks provisioning while degraded, auto-recovery on successful sync, transient
+    failure counter with escalation threshold. All 9 ACs covered by 13 new tests. 2 nits recorded
+    (unused _mergeOutput param, misleading test comments on divergence case classification)."
   depends_on:
     - "@task-dispatch-target-sync"
   context: []
@@ -106891,6 +106896,7 @@
   created_at: 2026-03-18T07:07:47.613Z
   started_at: 2026-03-18T11:03:39.839Z
   submitted_at: 2026-03-18T11:18:03.395Z
+  completed_at: 2026-03-18T11:27:23.697Z
   notes:
     - _ulid: 01KM0AN7SD815NW2AWYDBKG42R
       content: "Implemented degraded state machine for the dispatch engine. Key design decisions: (1)
