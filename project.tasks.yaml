@@ -107955,7 +107955,17 @@
   session_id: 01KM0T76SYJHPQWVZ6QK4C37WX
   created_at: 2026-03-18T14:33:44.710Z
   started_at: 2026-03-18T15:50:11.277Z
-  notes: []
+  notes:
+    - _ulid: 01KM0TTR2J2BVC5YJY7MEA59H9
+      content: Replaced local computeDisposition with shared import from parser/review-operations.ts (via
+        parser barrel). Replaced local computeGateState with a thin wrapper that calls evaluateGates
+        from review/checks.ts and extracts .state. Updated 3 test assertions in review-cli.test.ts
+        where gate_state changed from 'pending' to 'passing' for reviews with no required checks
+        (vacuous truth, aligns with daemon). One pre-existing test failure (examined_commit leaking
+        from KSPEC_DISPATCH_CANONICAL_HEAD env var) is unrelated to this change.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T16:00:32.851Z
   todos: []
   automation: eligible
 - _ulid: 01KM0NW5NMJJDWRHKVQGDERHQM
