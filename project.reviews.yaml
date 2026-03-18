@@ -9625,6 +9625,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KKZ6G7MCKFV07962KEEH3QRQ
         timestamp: 2026-03-18T00:46:02.465Z
+      - _ulid: 01KKZ6GFX88ESCP6MWZDSZ3P2C
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KKZ6GFSFF1P9TQWS3KEKFA10
+        timestamp: 2026-03-18T00:46:10.856Z
     examined_commit: 0856c70e3db6aa88fb57b661fab8bba626e3e153
     external_links: []
     lifecycle_state: open
@@ -9657,7 +9664,25 @@ reviews:
               (line 940) into the dispatch prompt context."
             created_at: 2026-03-18T00:46:02.381Z
         kind: blocker
+      - _ulid: 01KKZ6GFSFF1P9TQWS3KEKFA10
+        anchor:
+          type: code
+          commit: 0856c70e3db6
+          line_end: 494
+          line_start: 493
+          path: tests/dispatch-workspace-config.test.ts
+          side: head
+        entries:
+          - _ulid: 01KKZ6GFSFGTKXE6VBVNYP9HPD
+            author: "@claude"
+            body: No test verifies that target_commit is updated when the integration target branch changes. The
+              auto-update test (line 465) checks target_branch and resolved_base_branch but not
+              target_commit. A test asserting secondRecord.integration.target_commit points to the
+              dev branch tip (not the original main branch tip) would catch the bug in the previous
+              finding.
+            created_at: 2026-03-18T00:46:10.735Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T00:45:42.329Z
-    updated_at: 2026-03-18T00:46:02.381Z
+    updated_at: 2026-03-18T00:46:10.735Z
     notes: []
