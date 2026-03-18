@@ -10785,34 +10785,34 @@ workspaces:
     canonical_branch: dispatch/task/task-event-cli/01kkzpw0
     canonical_branch_head: 2b12a78869dce6fc1d0f3f4d90926a3fd620cf54
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-18T15:20:21.833Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-18T15:20:39.850Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T15:20:22.905Z
+      updated_at: 2026-03-18T15:20:39.850Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 2dcce1c1b50abdac83c5d5dd1add93610e82e8e4
-      updated_at: 2026-03-18T15:20:21.833Z
-    lifecycle_state: ready
+      updated_at: 2026-03-18T15:20:39.850Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KKZPW000MZT1YMECENJX42A0"
     task_slug: task-event-cli
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T15:11:31.006Z
-      last_reconciled_at: 2026-03-18T15:20:22.905Z
+      last_reconciled_at: 2026-03-18T15:20:39.850Z
       created_at: 2026-03-18T14:59:01.764Z
-      updated_at: 2026-03-18T15:20:22.905Z
+      updated_at: 2026-03-18T15:20:39.850Z
     workspace_id: dispatch-workspace-01KKZPW000MZT1YMECENJX42A0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
