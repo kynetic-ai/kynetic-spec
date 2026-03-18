@@ -45,7 +45,8 @@
 		Workflow,
 		Settings,
 		ChevronDown,
-		MessageSquareText
+		MessageSquareText,
+		Zap
 	} from 'lucide-svelte';
 
 	// AC: @ui-app-shell ac-1 — Grouped navigation sections
@@ -69,6 +70,7 @@
 				{ path: '/tasks', label: 'Tasks', icon: ListTodo, badgeKey: 'pendingReview' },
 				{ path: '/reviews', label: 'Reviews', icon: MessageSquareText },
 				{ path: '/agents', label: 'Agents', icon: Bot },
+				{ path: '/automation', label: 'Automation', icon: Zap },
 				{ path: '/sessions', label: 'Sessions', icon: Terminal }
 			]
 		},

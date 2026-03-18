@@ -82,12 +82,13 @@ function getInvalidationKeys(topic: string, event: BroadcastEvent): readonly (re
 		case 'files:updates':
 			// File changes (e.g., settings save, meta edits) affect multiple caches
 			// Observations and session context live in meta files
+			// Automation config (hooks, schedules, compositions) lives in meta files
 			return [
 				queryKeys.settings.all,
 				queryKeys.workflows.all,
 				queryKeys.observations.all,
 				queryKeys.validation.all,
-				queryKeys.observations.all,
+				queryKeys.automation.all,
 				queryKeys.sessionContext.all,
 			];
 
