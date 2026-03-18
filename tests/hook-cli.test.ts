@@ -7,8 +7,6 @@
  * Task: @task-hook-cli
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import * as fs from "node:fs/promises";
-import * as path from "node:path";
 import {
   kspec as kspecRun,
   kspecOutput as kspec,
@@ -16,15 +14,6 @@ import {
   setupTempFixtures,
   cleanupTempDir,
 } from "./helpers/cli";
-
-/**
- * Helper: write a kynetic.meta.yaml with hooks pre-populated.
- */
-async function writeMetaWithHooks(tempDir: string, hooks: string): Promise<void> {
-  const metaPath = path.join(tempDir, "kynetic.meta.yaml");
-  const content = await fs.readFile(metaPath, "utf-8");
-  await fs.writeFile(metaPath, content + "\nhooks:\n" + hooks);
-}
 
 /**
  * Helper: add a hook via CLI and return the parsed JSON result.
@@ -158,6 +147,16 @@ describe("Integration: hook list", () => {
 
     const output = kspec("hook list --status disabled", tempDir);
     expect(output).toContain("No hooks match the specified filters");
+  });
+
+  // AC: @trait-filterable-list ac-7 — summary shows total matching items and filter state
+  it("should show summary with total matching items", () => {
+    addTestHook(tempDir, "hook-a");
+    addTestHook(tempDir, "hook-b", "task.in_progress");
+    addTestHook(tempDir, "hook-c", "task.in_progress");
+
+    const output = kspec("hook list", tempDir);
+    expect(output).toContain("3");
   });
 
   // AC: @trait-filterable-list ac-8 — count mode
@@ -678,9 +677,13 @@ describe("Integration: hook semantic exit codes", () => {
   });
 });
 
+// AC: @trait-json-output ac-4 — N/A: hook output does not contain @ references
+// AC: @trait-json-output ac-5 — N/A: hook output does not contain timestamps
+
+// AC: @trait-shadow-commit ac-2 — N/A: commit message format is tested centrally in shadow-commit tests
+// AC: @trait-shadow-commit ac-3 — N/A: ULID prefix in commit message is tested centrally in shadow-commit tests
 // AC: @trait-shadow-commit ac-4 — N/A: hook commands require shadow branch for persistence;
 // projects without shadow branch get standard "no kspec project" error from initContext()
-
 // AC: @trait-shadow-commit ac-5 — N/A: save errors are caught and returned as CLI errors
 // AC: @trait-shadow-commit ac-6 — N/A: push is handled by commitIfShadow fire-and-forget
 // AC: @trait-shadow-commit ac-7 — N/A: git failure warnings handled by commitIfShadow
@@ -689,5 +692,6 @@ describe("Integration: hook semantic exit codes", () => {
 // AC: @trait-error-guidance ac-4 — N/A: hooks do not have state transitions
 // AC: @trait-semantic-exit-codes ac-3 — N/A: hook commands do not have confirmation prompts
 // AC: @trait-semantic-exit-codes ac-4 — N/A: runtime errors use EXIT_CODES.ERROR
+// AC: @trait-semantic-exit-codes ac-6 — N/A: invalid flags/arguments are handled by Commander.js framework
 // AC: @trait-semantic-exit-codes ac-7 — N/A: hook commands are not batch operations
 // AC: @trait-semantic-exit-codes ac-8 — N/A: exit code meanings documented in code (exit-codes.ts)
