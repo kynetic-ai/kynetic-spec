@@ -18365,6 +18365,16 @@ reviews:
         runner: manual
         created_at: 2026-03-18T16:53:37.915Z
         completed_at: 2026-03-18T16:53:37.915Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: none
+        evidence: No migration/remediation script files remain in codebase.
+        name: script-cleanup
+        required: false
+        runner: manual
+        created_at: 2026-03-18T16:53:53.082Z
+        completed_at: 2026-03-18T16:53:53.082Z
     events:
       - _ulid: 01KM0XDVX913WRJBVM5DBC887M
         actor: "@claude"
@@ -18400,6 +18410,13 @@ reviews:
           status: pass
           name: data-integrity
         timestamp: 2026-03-18T16:53:38.202Z
+      - _ulid: 01KM0XWDJQ5Y6P5VK7BXQJBJRE
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: script-cleanup
+        timestamp: 2026-03-18T16:53:53.367Z
     examined_commit: e5df80e26f4b1c62b427f72f4cb94bb2feaa23ff
     external_links: []
     lifecycle_state: open
@@ -18412,5 +18429,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T16:45:56.522Z
-    updated_at: 2026-03-18T16:53:37.915Z
+    updated_at: 2026-03-18T16:53:53.082Z
     notes: []
