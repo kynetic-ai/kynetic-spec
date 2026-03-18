@@ -16865,3 +16865,29 @@ reviews:
     created_at: 2026-03-18T14:30:32.754Z
     updated_at: 2026-03-18T14:31:16.432Z
     notes: []
+  - _ulid: 01KM0NTHXZTNRXBTD50MMQS164
+    slugs: []
+    title: Review task-hook-cli (cycle 2)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM0NTHXZAT7BBVC87ZPWZXP6
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T14:33:03.679Z
+    examined_commit: 1fc288f90d15d04de5646ec39c46130d715d86f8
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@task-hook-cli"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T14:33:03.679Z
+    updated_at: null
+    notes: []
