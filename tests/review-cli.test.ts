@@ -463,9 +463,9 @@ describe("Integration: review CLI commands", () => {
     });
 
     // AC: @review-cli-mutation-commands ac-2
-    it("should add a check result with version binding", () => {
+    it("should add a check result with auto-derived version", () => {
       const result = kspecJson<{ check_name: string; status: string }>(
-        `review check @${reviewSlug} --name 'tests' --status pass --version-base a1 --version-head b1`,
+        `review check @${reviewSlug} --name 'tests' --status pass`,
         tempDir,
       );
 
@@ -492,7 +492,7 @@ describe("Integration: review CLI commands", () => {
 
     it("should add an optional check", () => {
       kspec(
-        `review check @${reviewSlug} --name 'lint' --status fail --no-required --version-base a1 --version-head b1`,
+        `review check @${reviewSlug} --name 'lint' --status fail --no-required`,
         tempDir,
       );
 
@@ -508,7 +508,7 @@ describe("Integration: review CLI commands", () => {
 
     it("should compute failing gate state", () => {
       kspec(
-        `review check @${reviewSlug} --name 'tests' --status fail --version-base a1 --version-head b1`,
+        `review check @${reviewSlug} --name 'tests' --status fail`,
         tempDir,
       );
 
@@ -516,16 +516,6 @@ describe("Integration: review CLI commands", () => {
       expect(review.gate_state).toBe("failing");
     });
 
-    // AC: @trait-error-guidance ac-5
-    it("should error when version context is missing", () => {
-      const result = kspecRun(
-        `review check @${reviewSlug} --name 'tests' --status pass`,
-        tempDir,
-        { expectFail: true },
-      );
-      expect(result.exitCode).not.toBe(0);
-      expect(result.stderr).toContain("Version context is required");
-    });
   });
 
   describe("review verdict", () => {
