@@ -104692,7 +104692,20 @@
   session_id: 01KKZ58KKTZ5VR4SJX1JP7XVFZ
   created_at: 2026-03-17T08:29:21.951Z
   started_at: 2026-03-18T00:24:44.453Z
-  notes: []
+  notes:
+    - _ulid: 01KKZ5ZYRSFBX7V52W7M94HA8M
+      content: "Implemented stale integration target detection in provisionDispatchWorkspace. Added
+        resolveStaleIntegrationTarget function that compares existing workspace record's
+        integration.target_branch against the currently configured dispatch.base_branch.
+        Auto-updates when integration is pending; throws DispatchWorkspaceError with actionable
+        guidance when integration is active (in_progress, merged, etc.). Only triggers for
+        explicitly configured base branches — auto-detected sources are inherently unstable. AC-7 is
+        satisfied transitively since toMetadata reads from the record's integration.target_branch,
+        which is now kept in sync. Added 5 tests: auto-update on config change, active integration
+        conflict, error guidance content, prompt reflection, and no-op when config matches."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T00:37:09.017Z
   todos: []
   automation: eligible
 - _ulid: 01KKXEMGJ20X5RB4GMFYGSQH6Y
