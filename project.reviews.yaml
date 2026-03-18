@@ -15170,6 +15170,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T11:43:27.221Z
+      - _ulid: 01KM0C4A76VYHQVYQ6WPG81EJ4
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0C4A3EJZNGNP84VMK4KKNE
+        timestamp: 2026-03-18T11:43:37.702Z
     examined_commit: 4099ad8b9432a3a482229d2d9dca435206ed06c2
     external_links: []
     lifecycle_state: open
@@ -15179,8 +15186,26 @@ reviews:
       content_hash: ""
       ref: "@01KKZPVTFW73DTR2RC1NQZEF13"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM0C4A3EJZNGNP84VMK4KKNE
+        anchor:
+          type: code
+          commit: 4099ad8b9432a3a482229d2d9dca435206ed06c2
+          line_end: 47
+          line_start: 47
+          path: src/schema/schedules.ts
+          side: head
+        entries:
+          - _ulid: 01KM0C4A3E3642GM1GDE8W2W65
+            author: "@claude"
+            body: In validateCronExpression (src/schema/schedules.ts:47), the comment says "Also validate it
+              actually produces a next run" but job.nextRun() return value is never checked. This
+              means expressions like "0 0 30 2 *" (Feb 30) pass validation despite never firing. Not
+              a spec violation (syntactically valid 5-field cron), but the comment is misleading.
+              Consider either checking the return value or updating the comment.
+            created_at: 2026-03-18T11:43:37.582Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T11:43:19.651Z
-    updated_at: 2026-03-18T11:43:27.099Z
+    updated_at: 2026-03-18T11:43:37.582Z
     notes: []
