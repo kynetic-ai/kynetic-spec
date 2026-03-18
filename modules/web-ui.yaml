@@ -3417,6 +3417,9 @@ requirements:
           A GitHub-style unified diff viewer for code reviews. Shows per-file
           diffs with syntax highlighting, line numbers, expandable context,
           and inline comment threading anchored to specific diff lines.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
