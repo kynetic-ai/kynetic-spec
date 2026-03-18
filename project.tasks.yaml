@@ -105937,6 +105937,16 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T10:05:02.746Z
+    - _ulid: 01KM07FTP66EZ32TA3KYBBB4ZD
+      content: "[FIX_CYCLE: 2] Merged dev into branch to incorporate task-event-schema changes (commit
+        c790bb1ff). Resolved hooks.ts conflict: accepted the re-export from event-registry.ts
+        (PAYLOAD_FIELDS_BY_EVENT = PAYLOAD_FIELDS_BY_EVENT_TYPE). Updated event-registry.ts session
+        event payload_fields from placeholder names (duration, reason) to spec-aligned names
+        (duration_ms, terminal_reason, work_summary). Updated event-registry tests to match. All
+        6123 tests pass (1 pre-existing failure in review-cli.test.ts:152 unrelated to this task)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T10:22:32.134Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVQM496HTQQ054B0S18SN
