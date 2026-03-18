@@ -11522,6 +11522,13 @@ reviews:
           status: skipped
           name: e2e
         timestamp: 2026-03-18T04:05:08.828Z
+      - _ulid: 01KKZHX660AM562FBWNCJGWQX7
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKZHX63370BVGGANA85RRPZD
+        timestamp: 2026-03-18T04:05:21.216Z
     examined_commit: 3f6587548ba602b8300fbd2fddd94ec6c9ea46a6
     external_links: []
     lifecycle_state: open
@@ -11531,8 +11538,23 @@ reviews:
       content_hash: ""
       ref: "@task-code-diff-viewer"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKZHX63370BVGGANA85RRPZD
+        anchor:
+          type: code
+          commit: 3f6587548ba602b8300fbd2fddd94ec6c9ea46a6
+          line_end: 69
+          line_start: 66
+          path: packages/web-ui/src/lib/components/diff/CodeDiffViewer.svelte
+          side: head
+        entries:
+          - _ulid: 01KKZHX6334RYR9NMGGR56MQFA
+            author: "@claude"
+            body: getFilePath() helper is duplicated in 3 component files (CodeDiffViewer, DiffFileList,
+              DiffFileView). Consider extracting to a shared utility. Non-blocking.
+            created_at: 2026-03-18T04:05:21.123Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T03:56:10.993Z
-    updated_at: 2026-03-18T04:05:08.728Z
+    updated_at: 2026-03-18T04:05:21.123Z
     notes: []
