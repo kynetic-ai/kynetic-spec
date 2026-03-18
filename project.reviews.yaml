@@ -15426,6 +15426,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T12:07:49.359Z
+      - _ulid: 01KM0DH0PJQWYKJHRKRCJ40DD4
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM0DH0JFHF8Q52T39TAD1E3N
+        timestamp: 2026-03-18T12:08:02.514Z
     examined_commit: b8ba5c896287d16de213398aefa3a81c50460faa
     external_links: []
     lifecycle_state: open
@@ -15435,8 +15442,31 @@ reviews:
       content_hash: ""
       ref: "@task-hook-executor"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM0DH0JFHF8Q52T39TAD1E3N
+        anchor:
+          type: code
+          commit: ""
+          line_end: 791
+          line_start: 781
+          path: src/agent-runtime/action-executor.ts
+          side: head
+        entries:
+          - _ulid: 01KM0DH0JFQC34Q1G1ANJAJ4P5
+            author: "@claude"
+            body: Out-of-scope removal of @dispatch-agent-action-input implementation. This commit deletes the
+              entire agent-action-input.test.ts (626 lines, covering @dispatch-agent-action-input
+              ac-1 through ac-4) and removes prompt_template, task_binding, group_id, and
+              buildDefaultAgentPrompt from action-executor.ts and action.ts. These features were
+              implemented by the already-completed @task-agent-action-input task. The hook executor
+              task scope is @dispatch-hook-system ac-1 through ac-5 — it should not be reverting a
+              completed task's work. The removed features (prompt_template on AgentAction,
+              task_binding for event-derived task_ref, group_id propagation, default prompt
+              generation) are part of the agent action input contract needed for pipeline chaining
+              and composition patterns.
+            created_at: 2026-03-18T12:08:02.383Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T12:07:41.447Z
-    updated_at: 2026-03-18T12:07:49.208Z
+    updated_at: 2026-03-18T12:08:02.383Z
     notes: []
