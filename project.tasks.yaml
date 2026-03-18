@@ -105926,6 +105926,17 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T10:04:52.528Z
+    - _ulid: 01KM06FSWTGYXW8NF9WT46EZF3
+      content: "Review approved (verdict: approve, review: @01KM06BB). Code changes are correct — all ACs
+        covered, tests pass (6075 passed, 1 pre-existing failure unrelated to this task), mappings
+        match spec. However, merge to dev failed due to semantic conflict in src/schema/hooks.ts:
+        the dev branch refactored PAYLOAD_FIELDS_BY_EVENT to reference event-registry.ts, while this
+        task updated the old inline definition. Worker needs to rebase onto dev and update
+        event-registry.ts session event payload_fields to use duration_ms, terminal_reason, and
+        work_summary instead of duration and reason."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T10:05:02.746Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVQM496HTQQ054B0S18SN
