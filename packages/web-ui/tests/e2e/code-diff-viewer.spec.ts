@@ -538,7 +538,7 @@ test.describe('Code Diff Viewer', () => {
 
 			// Track the thread creation request
 			let threadRequest: any = null;
-			await page.route(`**/api/reviews/${CODE_REVIEW_ULID}/threads`, (route: any) => {
+			await page.route(`**/api/reviews/${CODE_REVIEW_ULID}/comments`, (route: any) => {
 				const request = route.request();
 				threadRequest = JSON.parse(request.postData() || '{}');
 				route.fulfill({

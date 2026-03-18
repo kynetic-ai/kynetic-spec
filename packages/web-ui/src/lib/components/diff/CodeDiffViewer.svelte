@@ -63,6 +63,11 @@
 	let lazyLoadedFiles = $state<Map<string, DiffFile>>(new Map());
 	let lazyLoadingFiles = $state<Set<string>>(new Set());
 
+	function getFilePath(file: { oldPath: string; newPath: string }): string {
+		if (file.newPath && file.newPath !== '/dev/null') return file.newPath;
+		return file.oldPath;
+	}
+
 	// Get the effective file data: either from full diff or lazy loaded
 	function getFileData(filePath: string): DiffFile | null {
 		if (!diff) return null;
@@ -73,7 +78,7 @@
 		}
 
 		// For non-lazy mode or summary data, use the full diff
-		const file = diff.files.find((f) => (f.newPath || f.oldPath) === filePath);
+		const file = diff.files.find((f) => getFilePath(f) === filePath);
 		return file ?? null;
 	}
 
@@ -316,8 +321,8 @@
 
 			<!-- Per-file diff views -->
 			<div class="flex flex-col gap-3" data-testid="diff-files-container">
-				{#each diff.files as file (file.newPath || file.oldPath)}
-					{@const filePath = file.newPath || file.oldPath}
+				{#each diff.files as file (getFilePath(file))}
+					{@const filePath = getFilePath(file)}
 					{@const effectiveFile = getFileData(filePath) ?? file}
 					{@const expanded = expandedFiles.has(filePath)}
 					{@const fileHasHunks = useLazyLoading ? isFileLoaded(filePath) : true}

@@ -65,11 +65,16 @@
 		}
 	}
 
+	function getFilePath(): string {
+		if (file.newPath && file.newPath !== '/dev/null') return file.newPath;
+		return file.oldPath;
+	}
+
 	function getDisplayPath(): string {
 		if (file.status === 'renamed' && file.oldPath !== file.newPath) {
 			return `${file.oldPath} → ${file.newPath}`;
 		}
-		return file.newPath || file.oldPath;
+		return getFilePath();
 	}
 
 	// Detect language from file extension for syntax highlighting
@@ -96,13 +101,13 @@
 		return extMap[ext];
 	}
 
-	let language = $derived(detectLanguage(file.newPath || file.oldPath));
+	let language = $derived(detectLanguage(getFilePath()));
 
 	// Filter threads for this file
 	let fileThreads = $derived(
 		threads.filter((t) =>
 			t.anchor?.type === 'code' &&
-			t.anchor.path === (file.newPath || file.oldPath)
+			t.anchor.path === getFilePath()
 		)
 	);
 
@@ -126,19 +131,19 @@
 	function handleAddComment(data: { body: string; kind: 'blocker' | 'question' | 'nit'; lineNumber: number; side: 'base' | 'head' }) {
 		onAddComment({
 			...data,
-			path: file.newPath || file.oldPath,
+			path: getFilePath(),
 		});
 	}
 
 	function handleExpandContext(direction: 'up' | 'down', hunkIndex: number, lineNumber: number) {
-		onExpandContext?.(file.newPath || file.oldPath, direction, hunkIndex, lineNumber);
+		onExpandContext?.(getFilePath(), direction, hunkIndex, lineNumber);
 	}
 
 	let threadCount = $derived(fileThreads.length);
 	let unresolvedCount = $derived(fileThreads.filter(t => !t.resolved_at).length);
 </script>
 
-<div class="border rounded-lg overflow-hidden" data-testid="diff-file-view" data-file-path={file.newPath || file.oldPath}>
+<div class="border rounded-lg overflow-hidden" data-testid="diff-file-view" data-file-path={getFilePath()}>
 	<!-- File header (always visible) -->
 	<button
 		type="button"
@@ -211,7 +216,7 @@
 
 					<DiffHunkView
 						{hunk}
-						filePath={file.newPath || file.oldPath}
+						filePath={getFilePath()}
 						{language}
 						threads={fileThreads}
 						{headCommit}

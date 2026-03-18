@@ -33,11 +33,16 @@
 		}
 	}
 
+	function getFilePath(file: { oldPath: string; newPath: string }): string {
+		if (file.newPath && file.newPath !== '/dev/null') return file.newPath;
+		return file.oldPath;
+	}
+
 	function getDisplayPath(file: { oldPath: string; newPath: string; status: DiffFile['status'] }): string {
 		if (file.status === 'renamed' && file.oldPath !== file.newPath) {
 			return `${file.oldPath} → ${file.newPath}`;
 		}
-		return file.newPath || file.oldPath;
+		return getFilePath(file);
 	}
 
 	let totalAdditions = $derived(files.reduce((sum, f) => sum + f.stats.additions, 0));
@@ -60,8 +65,8 @@
 
 	<!-- File entries -->
 	<div class="divide-y max-h-[400px] overflow-y-auto">
-		{#each files as file (file.newPath || file.oldPath)}
-			{@const filePath = file.newPath || file.oldPath}
+		{#each files as file (getFilePath(file))}
+			{@const filePath = getFilePath(file)}
 			<button
 				type="button"
 				class="w-full text-left px-4 py-2 hover:bg-muted/50 transition-colors flex items-center gap-2 text-sm {selectedFile === filePath ? 'bg-muted/70' : ''}"
