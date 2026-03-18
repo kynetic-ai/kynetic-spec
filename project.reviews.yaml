@@ -15454,6 +15454,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM0DHXH3S5JKGWNB56QVC8XX
         timestamp: 2026-03-18T12:08:32.193Z
+      - _ulid: 01KM0DJ67VMZ0BFJCW5ZB1A9W6
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM0DJ63KYTNJNSNEB7FZNFXT
+        timestamp: 2026-03-18T12:08:40.955Z
     examined_commit: b8ba5c896287d16de213398aefa3a81c50460faa
     external_links: []
     lifecycle_state: open
@@ -15539,7 +15546,25 @@ reviews:
               for @trait-error-guidance are well-reasoned (internal engine component, not CLI).
             created_at: 2026-03-18T12:08:32.035Z
         kind: nit
+      - _ulid: 01KM0DJ63KYTNJNSNEB7FZNFXT
+        anchor:
+          type: code
+          commit: ""
+          line_end: 220
+          line_start: 190
+          path: src/agent-runtime/action-executor.ts
+          side: head
+        entries:
+          - _ulid: 01KM0DJ63K9QSAGE2S3KRY2SJ2
+            author: "@claude"
+            body: "KNOWN_EVENT_FIELDS removals: 'group_id' was removed from the universal envelope fields and
+              'outcome' from invocation fields. These are part of the @dispatch-agent-action-input
+              and @dispatch-event-payload specs. The 'outcome' field removal from KNOWN_EVENT_FIELDS
+              means template validation would produce false-positive warnings for templates
+              referencing {{outcome}} in invocation contexts."
+            created_at: 2026-03-18T12:08:40.819Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-18T12:07:41.447Z
-    updated_at: 2026-03-18T12:08:32.035Z
+    updated_at: 2026-03-18T12:08:40.819Z
     notes: []
