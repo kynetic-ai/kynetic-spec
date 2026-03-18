@@ -11223,7 +11223,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T17:01:40.400Z
+      updated_at: 2026-03-18T17:01:49.880Z
     integration:
       status: merged
       detail: integration:merged
@@ -11239,18 +11239,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T16:51:44.413Z
-      last_reconciled_at: 2026-03-18T17:01:48.924Z
+      last_reconciled_at: 2026-03-18T17:01:49.880Z
       created_at: 2026-03-18T16:01:01.743Z
-      updated_at: 2026-03-18T17:01:48.924Z
+      updated_at: 2026-03-18T17:01:49.880Z
     workspace_id: dispatch-workspace-01KM0NW5NMJJDWRHKVQGDERHQM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 8902b7aa1f3e228f12750aa934dd24ec51b853f4
-        last_seen_at: 2026-03-18T16:51:43.350Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-skill-version-docs-01km0nw5-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-review-skill-version-docs/01km0nw5
