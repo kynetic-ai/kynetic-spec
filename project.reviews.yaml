@@ -12502,7 +12502,17 @@ reviews:
     slugs: []
     title: Review dispatch-remote-sync plan (pass 2)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: 537c5f637817
+        evidence: All 6 bundled ACs from first review have been split into independently testable ACs with
+          single primary assertions.
+        name: blockers-fixed-ac-splits
+        required: true
+        created_at: 2026-03-18T06:56:31.132Z
+        completed_at: 2026-03-18T06:56:31.132Z
     events:
       - _ulid: 01KKZV6V96F7RVB0JX539PQ21H
         actor: "@claude"
@@ -12517,6 +12527,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T06:48:06.847Z
+      - _ulid: 01KKZVPKHPWYKC7MZHMYTAG293
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: blockers-fixed-ac-splits
+        timestamp: 2026-03-18T06:56:31.286Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -12529,5 +12546,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T06:47:54.918Z
-    updated_at: 2026-03-18T06:48:06.712Z
+    updated_at: 2026-03-18T06:56:31.132Z
     notes: []
