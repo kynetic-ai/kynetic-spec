@@ -105479,6 +105479,20 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T08:18:06.986Z
+    - _ulid: 01KM01CS43138WKXRFYBMJTHJ9
+      content: "Fix cycle 1 investigation: Both review blockers (out-of-scope meta.ts refactor and deleted
+        yaml-round-trip-stability tests) do NOT exist in the current commit (14505dad0). git diff
+        8d087368e..14505dad0 shows only 4 files changed: src/agent-runtime/event-bus.ts,
+        src/agent-runtime/dispatch.ts, src/agent-runtime/index.ts, tests/event-bus.test.ts. git diff
+        origin/dev -- src/parser/meta.ts tests/yaml-round-trip-stability.test.ts produces zero
+        output — both files are identical to dev. All 49 yaml-round-trip-stability tests pass. All
+        36 event-bus tests pass. The 2 test failures (cli-serve.test.ts and review-cli.test.ts) are
+        pre-existing on dev (identical files, zero diff). The review findings may have been based on
+        intermediate worktree state that was cleaned up before the final commit. No code changes
+        needed — resubmitting as-is."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T08:36:00.771Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVFA3XPDTRV5CDFWKGVD8
