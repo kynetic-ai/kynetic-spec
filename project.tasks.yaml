@@ -104898,8 +104898,12 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Replaced 3 hardcoded 'dev' branch references in merge skill template
+    command examples with '<integration-branch>' placeholder. Added 'Determining the Integration
+    Branch' section explaining dispatch vs manual mode. Rendered outputs (.agents/ and .factory/)
+    regenerated and consistent.
   depends_on: []
   context: []
   priority: 3
@@ -104921,6 +104925,7 @@
   created_at: 2026-03-17T08:29:42.338Z
   started_at: 2026-03-18T01:19:16.478Z
   submitted_at: 2026-03-18T01:28:27.064Z
+  completed_at: 2026-03-18T01:36:16.885Z
   notes:
     - _ulid: 01KKZ8XN13QKAQRHTE4QE6Z26B
       content: Replaced three hardcoded 'dev' references in merge skill command examples (lines 50, 57,
