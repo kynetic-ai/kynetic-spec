@@ -10715,6 +10715,18 @@ reviews:
         runner: vite
         created_at: 2026-03-18T02:24:48.104Z
         completed_at: 2026-03-18T02:24:48.104Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: c829472cb105
+          head_commit: b8e97880d569
+        evidence: "No new validation errors. Pre-existing: 3 ref errors, 24 orphaned specs, 394 completeness
+          warnings — all unrelated to this task."
+        name: kspec-validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-18T02:24:56.799Z
+        completed_at: 2026-03-18T02:24:56.799Z
     events:
       - _ulid: 01KKZC3RBE7GV0TPDFG3CHSCT0
         actor: "@claude"
@@ -10750,6 +10762,13 @@ reviews:
           status: pass
           name: vite-build
         timestamp: 2026-03-18T02:24:48.218Z
+      - _ulid: 01KKZC5B26W6XQ7E88DFZTHGS6
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-18T02:24:56.902Z
     examined_commit: b8e97880d56954391d89ba68716ead3c757cefd8
     external_links: []
     lifecycle_state: open
@@ -10762,5 +10781,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T02:24:04.974Z
-    updated_at: 2026-03-18T02:24:48.104Z
+    updated_at: 2026-03-18T02:24:56.799Z
     notes: []
