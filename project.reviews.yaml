@@ -13613,6 +13613,18 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T09:06:49.868Z
         completed_at: 2026-03-18T09:06:49.868Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 8166d8d659867217b31b97296d530899f07a433e
+          head_commit: ee6c73c68771b1867ff4a16b04c3062ca2d4b1d9
+        evidence: Schema OK. Exit code 4 from pre-existing reference errors unrelated to hooks. No new
+          errors.
+        name: kspec-validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-18T09:06:52.838Z
+        completed_at: 2026-03-18T09:06:52.838Z
     events:
       - _ulid: 01KM0344Y6JT51W0TE56J4CCAN
         actor: "@claude"
@@ -13634,6 +13646,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T09:06:50.007Z
+      - _ulid: 01KM0359XY7NS2HY2RAYJE9R0M
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-18T09:06:52.991Z
     examined_commit: ee6c73c68771b1867ff4a16b04c3062ca2d4b1d9
     external_links: []
     lifecycle_state: open
@@ -13646,5 +13665,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T09:06:15.110Z
-    updated_at: 2026-03-18T09:06:49.868Z
+    updated_at: 2026-03-18T09:06:52.838Z
     notes: []
