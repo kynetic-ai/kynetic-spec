@@ -106232,5 +106232,17 @@
   session_id: 01KJVJ866FAH439DBR6PRGBWGJ
   created_at: 2026-03-18T06:38:43.349Z
   started_at: 2026-03-18T06:40:54.908Z
-  notes: []
+  notes:
+    - _ulid: 01KKZV675HD69HG440145BQ7KV
+      content: "Updated 4 instruction sources (templates + rendered): (1) task-work skill: added step 4a
+        'Rebase on Target' requiring workers to rebase on integration target after branch checkout,
+        every time they start/resume. (2) merge skill: rewrote conflict handling — simple conflicts
+        should be resolved by both reviewers and workers; complex conflicts escalated as MUST-FIX
+        (reviewer) or best-effort then block (worker). (3) review-gates: added 'DO resolve simple
+        merge conflicts' carve-out to role boundary. (4) agents-sections blocking rules: added merge
+        conflicts to 'do NOT block for' list. All renders propagated via build + setup
+        install-core."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T06:47:34.321Z
   todos: []
