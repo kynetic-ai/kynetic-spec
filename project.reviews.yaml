@@ -9074,6 +9074,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T00:07:01.139Z
+      - _ulid: 01KKZ495JQNQXY6F1C4Z20PGB9
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KKZ495F1Q1WHG0QDWWQ3GCHN
+        timestamp: 2026-03-18T00:07:13.752Z
     examined_commit: 3dbacf0c5528decc53469825dcab657686f308b1
     external_links: []
     lifecycle_state: open
@@ -9083,8 +9090,28 @@ reviews:
       content_hash: ""
       ref: "@01KKX6CD2X6EKHGNE47Y8113HH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KKZ495F1Q1WHG0QDWWQ3GCHN
+        anchor:
+          type: code
+          commit: 3dbacf0c5528
+          line_end: 304
+          line_start: 302
+          path: src/parser/dispatch-workspaces.ts
+          side: head
+        entries:
+          - _ulid: 01KKZ495F23S4YXY663T5SFDDQ
+            author: "@claude"
+            body: extractRawWorkspaceArray catches ALL errors (bare catch at line 302), not just ENOENT. This
+              differs from the original loadRegistryFile which only caught ENOENT and re-threw other
+              errors. A YAML parse error would silently return an empty array; in
+              saveDispatchWorkspaceRecord this could overwrite a corrupted file with just the target
+              record, losing sibling data. The risk is low since YAML parse errors on
+              previously-valid registries are very unusual, but matching the original ENOENT-only
+              catch pattern would be more defensively correct.
+            created_at: 2026-03-18T00:07:13.634Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T00:06:44.971Z
-    updated_at: 2026-03-18T00:07:01.056Z
+    updated_at: 2026-03-18T00:07:13.634Z
     notes: []
