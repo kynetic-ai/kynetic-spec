@@ -10289,3 +10289,29 @@ reviews:
     created_at: 2026-03-18T01:28:28.915Z
     updated_at: 2026-03-18T01:29:03.605Z
     notes: []
+  - _ulid: 01KKZ98XTPRHZCKE8ERR19DJYW
+    slugs: []
+    title: Review replace-hardcoded-branch-names (cycle 1)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KKZ98XTPVA652JQGF5XDHD60
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T01:34:28.694Z
+    examined_commit: c7f0fed80c4192706ed6dc4c428abbfdb4f9fe88
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKXEMGJ20X5RB4GMFYGSQH6Y"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T01:34:28.694Z
+    updated_at: null
+    notes: []
