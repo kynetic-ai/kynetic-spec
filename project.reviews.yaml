@@ -10693,6 +10693,17 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T02:24:29.121Z
         completed_at: 2026-03-18T02:24:29.121Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: c829472cb105
+          head_commit: b8e97880d569
+        evidence: 0 errors (pre-existing fixture errors excluded)
+        name: svelte-check
+        required: true
+        runner: svelte-check
+        created_at: 2026-03-18T02:24:39.181Z
+        completed_at: 2026-03-18T02:24:39.181Z
     events:
       - _ulid: 01KKZC3RBE7GV0TPDFG3CHSCT0
         actor: "@claude"
@@ -10714,6 +10725,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T02:24:29.236Z
+      - _ulid: 01KKZC4SWKE75CAWJ35AGYQAVK
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: svelte-check
+        timestamp: 2026-03-18T02:24:39.315Z
     examined_commit: b8e97880d56954391d89ba68716ead3c757cefd8
     external_links: []
     lifecycle_state: open
@@ -10726,5 +10744,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T02:24:04.974Z
-    updated_at: 2026-03-18T02:24:29.121Z
+    updated_at: 2026-03-18T02:24:39.181Z
     notes: []
