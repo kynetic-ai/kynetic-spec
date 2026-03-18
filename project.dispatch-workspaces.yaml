@@ -8606,7 +8606,7 @@ workspaces:
         head: e3e45dd016439fdc78dd4e028bffbeea1b786a93
         last_seen_at: 2026-03-18T01:37:06.839Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-session-cache-invalidate-leaves-ghost-in-knownsessionids-01kkxgpn
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: c829472cb105c3047739feb9542b4c83a5ac9b73
     bootstrap:
       status: succeeded
@@ -8669,9 +8669,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T02:01:41.903Z
-      last_reconciled_at: 2026-03-18T02:26:39.638Z
+      last_reconciled_at: 2026-03-18T02:26:40.014Z
       created_at: 2026-03-18T01:47:39.508Z
-      updated_at: 2026-03-18T02:26:39.638Z
+      updated_at: 2026-03-18T02:26:40.014Z
     workspace_id: dispatch-workspace-01KKTW6KXATJ0TEV1SF98ZK8PN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
