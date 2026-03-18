@@ -11118,34 +11118,34 @@ workspaces:
     canonical_branch: dispatch/task/task-cli-shared-disposition/01km0nvt
     canonical_branch_head: e34b1ad7fc6b947dd15381d2d76a4e63da9fd611
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-18T16:01:00.640Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-18T16:09:40.168Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T16:01:01.615Z
+      updated_at: 2026-03-18T16:09:40.168Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 96603948244358b7704e3319071dc50f19c7613b
-      updated_at: 2026-03-18T16:01:00.640Z
-    lifecycle_state: integrating
+      updated_at: 2026-03-18T16:09:40.168Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KM0NVT06TE182ZWP2B5KNA6N"
     task_slug: task-cli-shared-disposition
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T16:01:01.615Z
-      last_reconciled_at: 2026-03-18T16:01:01.615Z
+      last_reconciled_at: 2026-03-18T16:09:40.168Z
       created_at: 2026-03-18T15:49:51.553Z
-      updated_at: 2026-03-18T16:01:01.615Z
+      updated_at: 2026-03-18T16:09:40.168Z
     workspace_id: dispatch-workspace-01KM0NVT06TE182ZWP2B5KNA6N
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
