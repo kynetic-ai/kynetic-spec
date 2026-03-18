@@ -13387,6 +13387,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM0251RRMD97WFSGC7A5AKZW
         timestamp: 2026-03-18T08:49:16.167Z
+      - _ulid: 01KM025A96EPBD5WK9C4VGVP90
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM025A5W2D4QJ922EKQCNM1X
+        timestamp: 2026-03-18T08:49:24.774Z
     examined_commit: 14505dad0ba356bbfd037257e46aa75b3d9ebbbc
     external_links: []
     lifecycle_state: open
@@ -13427,7 +13434,38 @@ reviews:
               Fix: Add this._eventBus.clear() at the end of stop().
             created_at: 2026-03-18T08:49:16.056Z
         kind: nit
+      - _ulid: 01KM025A5W2D4QJ922EKQCNM1X
+        anchor:
+          type: code
+          commit: ""
+          line_end: 291
+          line_start: 237
+          path: src/agent-runtime/event-bus.ts
+          side: head
+        entries:
+          - _ulid: 01KM025A5W7848EJQZ2WBMWPHB
+            author: "@claude"
+            body: >-
+              SHOULD-FIX: Chain depth counter incremented before dedup check in emit()
+
+
+              In event-bus.ts emit(), line 253 increments chainDepths.set(correlation_id, newDepth)
+              BEFORE the task dedup check at lines 270-291. If a task event with a correlation_id
+              passes the chain depth check but is then rejected by dedup, the depth counter has been
+              incremented for an event that was never actually emitted.
+
+
+              This is currently latent — all DispatchEngine callers either use skipDedup: true for
+              task events or emit non-task events (invocation.*) that bypass the dedup path — but
+              the public API contract is incorrect. Future direct EventBus users could hit false
+              positives on chain depth limits.
+
+
+              Fix: Move the task dedup check before the chain depth check, or decrement the counter
+              on dedup rejection.
+            created_at: 2026-03-18T08:49:24.669Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T08:48:45.151Z
-    updated_at: 2026-03-18T08:49:16.056Z
+    updated_at: 2026-03-18T08:49:24.669Z
     notes: []
