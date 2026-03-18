@@ -105845,7 +105845,7 @@
   spec_ref: "@dispatch-agent-action-input"
   plan_ref: "@plan-dispatch-event-system-expansion"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-action-model"
@@ -105857,9 +105857,18 @@
     - actions
     - agents
   vcs_refs: []
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-18T11:49:54.709Z
+    commit: 4aaa260c9aae4746e75a5d4ef29c6b591522364a
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
   session_id: 01KM0BT1JJKE360A1N1V4NPDXR
   created_at: 2026-03-18T05:31:53.588Z
   started_at: 2026-03-18T11:38:28.740Z
+  submitted_at: 2026-03-18T11:49:55.197Z
   notes:
     - _ulid: 01KM0CF33WENFDV2XDVD44KVY8
       content: >-
