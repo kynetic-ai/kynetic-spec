@@ -108080,6 +108080,17 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T16:16:03.326Z
+    - _ulid: 01KM0VQXTH6FTMRYA5G60Y2GGD
+      content: "Review verdict: request_changes (review @01KM0V1N). One MUST-FIX blocker: The rendered
+        skill output files (.agents/skills/kspec-review/SKILL.md and
+        .factory/skills/kspec-review/SKILL.md) still contain --version-base/--version-head in all 6
+        check and verdict examples. The source template was correctly updated (zero version flag
+        references), but kspec skill render did not propagate these changes to the rendered output.
+        Fix: re-run kspec skill render (possibly with --force) to ensure rendered output matches the
+        source, then commit the updated rendered files."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T16:16:29.009Z
   todos: []
   automation: eligible
 - _ulid: 01KM0NWK9Q2HKKF679ASD081B8
