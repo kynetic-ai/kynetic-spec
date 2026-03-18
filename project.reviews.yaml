@@ -10956,6 +10956,19 @@ reviews:
         runner: vite
         created_at: 2026-03-18T03:07:38.499Z
         completed_at: 2026-03-18T03:07:38.499Z
+      - status: fail
+        applies_to_version:
+          type: code_compare
+          base_commit: 1ef4b993a
+          head_commit: c78549495ec2
+        evidence: Zero AC test annotations found in test files. All 6 ACs (ac-1 through ac-6) have
+          annotations only in implementation source files, not in test files. No unit or E2E tests
+          exist for any diff viewer component.
+        name: ac-test-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T03:07:46.608Z
+        completed_at: 2026-03-18T03:07:46.608Z
     events:
       - _ulid: 01KKZEFMAC5MDX171QS48BQV17
         actor: "@claude"
@@ -11019,6 +11032,13 @@ reviews:
           status: pass
           name: vite-build
         timestamp: 2026-03-18T03:07:38.623Z
+      - _ulid: 01KKZEKRN9Y9WVTSF7NKS7T002
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: ac-test-coverage
+        timestamp: 2026-03-18T03:07:46.729Z
     examined_commit: c78549495ec28d101a3f21193f7e53105b09f3b2
     external_links: []
     lifecycle_state: open
@@ -11091,5 +11111,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-03-18T03:05:31.212Z
-    updated_at: 2026-03-18T03:07:38.499Z
+    updated_at: 2026-03-18T03:07:46.608Z
     notes: []
