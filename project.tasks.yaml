@@ -101850,8 +101850,12 @@
   spec_ref: "@review-records-web-ui"
   plan_ref: "@plan-review-records-web-ui"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Added review interaction controls: Add Comment (ac-3), Reply (ac-4),
+    Resolve/Reopen (ac-5), Verdict submission (ac-6). All mutations use TanStack Query with
+    invalidation. isInteractive gate excludes archived and static mode. Build, svelte-check, and
+    test suite clean (pre-existing failures unrelated)."
   depends_on:
     - "@task-review-detail-page"
   context: []
@@ -101873,6 +101877,7 @@
   created_at: 2026-03-16T08:29:03.786Z
   started_at: 2026-03-18T01:48:22.423Z
   submitted_at: 2026-03-18T02:01:15.590Z
+  completed_at: 2026-03-18T02:26:08.460Z
   notes:
     - _ulid: 01KKZASNT6VGM94XFSHCWN417R
       content: >-
