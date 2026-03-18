@@ -11822,6 +11822,13 @@ reviews:
           kind: question
           thread_ulid: 01KKZT39DKWVJ7B2ARE19PSSWD
         timestamp: 2026-03-18T06:28:29.891Z
+      - _ulid: 01KKZT3MKGSW2Y6MVC5PCE95XQ
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KKZT3MFBSCXD24FHCVE65RD7
+        timestamp: 2026-03-18T06:28:41.200Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -12093,7 +12100,28 @@ reviews:
               task."
             created_at: 2026-03-18T06:28:29.747Z
         kind: question
+      - _ulid: 01KKZT3MFBSCXD24FHCVE65RD7
+        anchor:
+          type: structured
+          field: task-dispatch-merge-conflict-handling
+          ref: "@dispatch-remote-branch-sync"
+          section: tasks
+        entries:
+          - _ulid: 01KKZT3MFCNK5NF68RFSD8E5N7
+            author: "@claude"
+            body: "task-dispatch-merge-conflict-handling's description acknowledges an open design question:
+              'who owns the merge — the agent or the dispatcher?' The task says to start with
+              post-hoc detection but notes dispatcher-owned merge is the long-term direction. This
+              is fine as a pragmatic approach, but the AC (ac-task-merge-conflict) is written as if
+              the dispatcher detects the conflict directly ('a reviewer agent attempts to merge...
+              the merge produces conflicts'). If the agent owns the merge, the dispatcher only knows
+              about it after the fact by inspecting state. The AC should be rewritten to match the
+              chosen detection mechanism, or the description should commit to one approach and defer
+              the other. An AC that doesn't match the implementation approach will confuse the
+              implementing agent."
+            created_at: 2026-03-18T06:28:41.068Z
+        kind: question
     verdicts: []
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:28:29.747Z
+    updated_at: 2026-03-18T06:28:41.068Z
     notes: []
