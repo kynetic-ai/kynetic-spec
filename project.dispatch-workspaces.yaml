@@ -11046,12 +11046,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T16:17:45.934Z
+      updated_at: 2026-03-18T16:17:48.539Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T16:17:45.934Z
+      updated_at: 2026-03-18T16:17:48.539Z
     integration:
       status: pending
       detail: null
@@ -11059,26 +11059,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 20cb7666e4d9c456dc6dc33edf108a0d1feec779
-      updated_at: 2026-03-18T16:17:45.934Z
-    lifecycle_state: ready
+      updated_at: 2026-03-18T16:17:48.539Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKZPW5J7YNTE7PD2JK0KRAPF"
     task_slug: task-automation-view
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T16:03:29.320Z
-      last_reconciled_at: 2026-03-18T16:17:45.934Z
+      last_reconciled_at: 2026-03-18T16:17:48.539Z
       created_at: 2026-03-18T15:35:14.400Z
-      updated_at: 2026-03-18T16:17:45.934Z
+      updated_at: 2026-03-18T16:17:48.539Z
     workspace_id: dispatch-workspace-01KKZPW5J7YNTE7PD2JK0KRAPF
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 8e507045fbc1f80007de114d9870557c44780f70
+        last_seen_at: 2026-03-18T16:17:48.539Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-automation-view-01kkzpw5-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-automation-view/01kkzpw5
-        head: 7656f7bb405dee7c1feaae24f00f312fb5d4fedf
-        last_seen_at: 2026-03-18T16:03:27.387Z
+        head: 8e507045fbc1f80007de114d9870557c44780f70
+        last_seen_at: 2026-03-18T16:17:48.539Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-automation-view-01kkzpw5
   - active_role: null
     base_branch_point: 96603948244358b7704e3319071dc50f19c7613b
