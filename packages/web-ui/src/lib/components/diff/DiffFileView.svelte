@@ -5,10 +5,9 @@
   AC: @review-code-diff-viewer ac-6 — Diff content loaded on expand (lazy loading)
 -->
 <script lang="ts">
-	import type { DiffFile, DiffHunk, DiffChangeLine } from '$lib/api';
+	import type { DiffFile, DiffHunk } from '$lib/api';
 	import type { ReviewThread } from '@kynetic-ai/shared';
 	import DiffHunkView from './DiffHunkView.svelte';
-	import { normalizeLanguage } from '$lib/utils/highlight';
 
 	interface Props {
 		file: DiffFile;
@@ -223,7 +222,6 @@
 						{onReopen}
 						hunkIndex={i}
 						isFirstHunk={i === 0}
-						isLastHunk={i === file.hunks.length - 1}
 						onExpandContext={onExpandContext ? handleExpandContext : undefined}
 					/>
 				{/each}

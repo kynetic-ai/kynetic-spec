@@ -27,12 +27,9 @@
 		onReply: (threadId: string, body: string) => void;
 		onResolve: (threadId: string) => void;
 		onReopen: (threadId: string) => void;
-		expandedContextLines?: Map<string, DiffChangeLine[]>;
 		onExpandContext?: (direction: 'up' | 'down', hunkIndex: number, lineNumber: number) => void;
 		hunkIndex: number;
 		isFirstHunk: boolean;
-		isLastHunk: boolean;
-		totalFileLines?: number;
 	}
 
 	let {
@@ -46,12 +43,9 @@
 		onReply,
 		onResolve,
 		onReopen,
-		expandedContextLines,
 		onExpandContext,
 		hunkIndex,
 		isFirstHunk,
-		isLastHunk,
-		totalFileLines,
 	}: Props = $props();
 
 	// Comment form state
@@ -140,13 +134,6 @@
 			: 0
 	);
 
-	let hiddenLinesAfter = $derived.by(() => {
-		if (!isLastHunk || !totalFileLines) return 0;
-		const lastChange = hunk.changes[hunk.changes.length - 1];
-		if (!lastChange) return 0;
-		const lastNewLine = lastChange.newLineNumber ?? (hunk.newStart + hunk.newCount - 1);
-		return Math.max(0, totalFileLines - lastNewLine);
-	});
 </script>
 
 <div class="diff-hunk" data-testid="diff-hunk" data-hunk-index={hunkIndex}>
@@ -250,19 +237,4 @@
 		{/if}
 	{/each}
 
-	<!-- AC: @review-code-diff-viewer ac-3 — Show N more lines button (after hunk) -->
-	{#if hiddenLinesAfter > 0 && onExpandContext}
-		<button
-			type="button"
-			class="w-full text-center py-1 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors border-t bg-muted/20"
-			data-testid="expand-context-down"
-			onclick={() => {
-				const lastChange = hunk.changes[hunk.changes.length - 1];
-				const lastLine = lastChange?.newLineNumber ?? (hunk.newStart + hunk.newCount - 1);
-				onExpandContext?.('down', hunkIndex, lastLine);
-			}}
-		>
-			Show {hiddenLinesAfter} more line{hiddenLinesAfter === 1 ? '' : 's'} below
-		</button>
-	{/if}
 </div>
