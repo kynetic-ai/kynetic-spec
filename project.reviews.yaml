@@ -13378,6 +13378,18 @@ reviews:
         runner: vitest
         created_at: 2026-03-18T08:49:36.330Z
         completed_at: 2026-03-18T08:49:36.330Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 8d087368e
+          head_commit: 14505dad0
+        evidence: All 6 ACs (ac-1 through ac-6) have annotated tests in tests/event-bus.test.ts. kspec
+          validate shows no coverage warnings for @dispatch-event-envelope.
+        name: ac-coverage
+        required: true
+        runner: manual
+        created_at: 2026-03-18T08:49:38.911Z
+        completed_at: 2026-03-18T08:49:38.911Z
     events:
       - _ulid: 01KM0243JZANAMSG2J03PVSH87
         actor: "@claude"
@@ -13420,6 +13432,13 @@ reviews:
           status: pass
           name: vitest
         timestamp: 2026-03-18T08:49:36.441Z
+      - _ulid: 01KM025R6G6DQGAAMXTYGEKNJE
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: ac-coverage
+        timestamp: 2026-03-18T08:49:39.024Z
     examined_commit: 14505dad0ba356bbfd037257e46aa75b3d9ebbbc
     external_links: []
     lifecycle_state: open
@@ -13514,5 +13533,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T08:48:45.151Z
-    updated_at: 2026-03-18T08:49:36.330Z
+    updated_at: 2026-03-18T08:49:38.911Z
     notes: []
