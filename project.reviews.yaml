@@ -18203,7 +18203,17 @@ reviews:
     slugs: []
     title: Review task-review-skill-version-docs
     author: "@claude"
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "1 test failure: pre-existing (not caused by this commit). 285 files passed, 1 failed."
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T16:15:24.566Z
+        completed_at: 2026-03-18T16:15:24.566Z
     events:
       - _ulid: 01KM0V1N7DPWZGG73TFJ1QBB30
         actor: "@claude"
@@ -18225,6 +18235,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM0VKWQBMA9EE25HHMCW8FS1
         timestamp: 2026-03-18T16:14:17.116Z
+      - _ulid: 01KM0VNZ1QFBH4SEKV78Q2ERSV
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: fail
+          name: vitest
+        timestamp: 2026-03-18T16:15:24.728Z
     examined_commit: 23174dc3b0ba99026d590e7f1bb9244bcdd28726
     external_links: []
     lifecycle_state: open
@@ -18261,5 +18278,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-18T16:04:19.310Z
-    updated_at: 2026-03-18T16:14:16.812Z
+    updated_at: 2026-03-18T16:15:24.566Z
     notes: []
