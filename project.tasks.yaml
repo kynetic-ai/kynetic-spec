@@ -105466,6 +105466,19 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T08:17:37.876Z
+    - _ulid: 01KM00C0GAD1SGJ6WMM28FBXEE
+      content: "Review cycle 1 — request_changes (review @01KM008E). Event bus implementation is solid and
+        correctly implements all 6 ACs. Two MUST-FIX blockers: (1) Revert out-of-scope meta.ts
+        refactor — removed raw-data-preservation pattern, file locking, and breaks
+        @yaml-serialization-invariants ac-3 by adding Zod-default empty arrays to absent sections.
+        This reverts the round-trip stability work merged in the immediately preceding dev commit.
+        (2) Restore ~327 lines of deleted tests from yaml-round-trip-stability.test.ts covering
+        saveObservation, saveMetaItem, deleteMetaItem paths. Fix: git checkout dev --
+        src/parser/meta.ts tests/yaml-round-trip-stability.test.ts, then recommit with only event
+        bus changes."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T08:18:06.986Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPVFA3XPDTRV5CDFWKGVD8
