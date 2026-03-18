@@ -18301,9 +18301,25 @@ reviews:
           status: pass
           name: kspec-validate
         timestamp: 2026-03-18T16:15:52.597Z
+      - _ulid: 01KM0VQ3S2DHB4EZ8RCWQH2MEA
+        actor: pr-reviewer-agent
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-18T16:16:02.338Z
+      - _ulid: 01KM0VQ3S213RJ1J724Q2W73T4
+        actor: pr-reviewer-agent
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T16:16:02.338Z
     examined_commit: 23174dc3b0ba99026d590e7f1bb9244bcdd28726
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -18335,7 +18351,14 @@ reviews:
               version flags that no longer exist on the CLI.
             created_at: 2026-03-18T16:14:16.812Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: pr-reviewer-agent
+        role: reviewer
+        created_at: 2026-03-18T16:16:02.338Z
     created_at: 2026-03-18T16:04:19.310Z
-    updated_at: 2026-03-18T16:15:52.448Z
+    updated_at: 2026-03-18T16:16:02.338Z
     notes: []
