@@ -14417,3 +14417,29 @@ reviews:
     created_at: 2026-03-18T10:20:52.748Z
     updated_at: 2026-03-18T10:22:05.854Z
     notes: []
+  - _ulid: 01KM07JT7VDDQZK9S1EQT17S4C
+    slugs: []
+    title: Review task-session-events (cycle 2)
+    author: "@claude"
+    checks: []
+    events:
+      - _ulid: 01KM07JT7T9T52N83QFPDDRZEN
+        actor: "@claude"
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-18T10:24:09.978Z
+    examined_commit: 190e97ec96364c8eb3579b117d34e7ba3fac2f61
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKZPVP61ABDF4Y79Q88T357P"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-18T10:24:09.979Z
+    updated_at: null
+    notes: []
