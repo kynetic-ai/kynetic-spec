@@ -1360,6 +1360,92 @@ export async function fetchReviewsForTask(taskRef: string): Promise<PaginatedRes
 }
 
 // ============================================================
+// Review Content API Functions
+// AC: @review-structured-content-viewer ac-1, ac-2
+// ============================================================
+
+/**
+ * Content section types returned by GET /api/reviews/:id/content
+ */
+export interface ContentSectionMarkdown {
+	id: string;
+	type: 'markdown';
+	title: string;
+	content: string;
+}
+
+export interface ContentSectionRefList {
+	id: string;
+	type: 'ref_list';
+	title: string;
+	refs: string[];
+}
+
+export interface ContentSectionAcceptanceCriteria {
+	id: string;
+	type: 'acceptance_criteria';
+	title: string;
+	criteria: Array<{ id: string; given?: string; when?: string; then?: string }>;
+}
+
+export interface ContentSectionNotes {
+	id: string;
+	type: 'notes';
+	title: string;
+	notes: Array<{ author: string; body: string; created_at: string }>;
+}
+
+export interface ContentSectionMetadata {
+	id: string;
+	type: 'metadata';
+	title: string;
+	metadata: Record<string, unknown>;
+}
+
+export type ContentSection =
+	| ContentSectionMarkdown
+	| ContentSectionRefList
+	| ContentSectionAcceptanceCriteria
+	| ContentSectionNotes
+	| ContentSectionMetadata;
+
+export interface ReviewContentResponse {
+	review_id: string;
+	subject_type: string;
+	subject_ref: string | null;
+	content: {
+		title: string;
+		sections: ContentSection[];
+	} | null;
+	diff_params?: {
+		base: string;
+		head: string;
+	};
+}
+
+/**
+ * Fetch structured content for a review (plan/spec/task subjects).
+ * AC: @review-structured-content-viewer ac-1, ac-2
+ */
+export async function fetchReviewContent(reviewId: string): Promise<ReviewContentResponse> {
+	if (isStaticMode()) {
+		throw new Error('Review content not available in static mode');
+	}
+
+	const response = await fetch(
+		`${API_BASE}/api/reviews/${encodeURIComponent(reviewId)}/content`,
+		{
+			headers: getProjectHeaders()
+		}
+	);
+	if (!response.ok) {
+		await handleResponseError(response);
+	}
+
+	return response.json();
+}
+
+// ============================================================
 // Review Interaction API Functions
 // AC: @review-records-web-ui ac-3, ac-4, ac-5, ac-6
 // ============================================================
@@ -1370,7 +1456,25 @@ export async function fetchReviewsForTask(taskRef: string): Promise<PaginatedRes
  */
 export async function createReviewThread(
 	reviewId: string,
-	data: { body: string; kind?: 'blocker' | 'question' | 'nit'; author?: string }
+	data: {
+		body: string;
+		kind?: 'blocker' | 'question' | 'nit';
+		author?: string;
+		anchor?: {
+			type: 'code';
+			path: string;
+			side: 'base' | 'head';
+			line_start: number;
+			line_end: number;
+			commit: string;
+		} | {
+			type: 'structured';
+			section?: string;
+			field?: string;
+			path?: string;
+			ref?: string;
+		};
+	}
 ): Promise<ReviewThread> {
 	assertWritable('add comment to review');
 

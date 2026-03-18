@@ -8,6 +8,10 @@
   AC: @review-records-web-ui ac-9 — Author identity and relative timestamp on thread entries
   AC: @review-records-web-ui ac-10 — Empty state messages for sections with no items
   AC: @review-records-web-ui ac-11 — Revision dropdown for same-subject reviews
+  AC: @review-structured-content-viewer ac-1 — Plan content rendered with identifiable sections
+  AC: @review-structured-content-viewer ac-2 — Spec content rendered with targetable sections
+  AC: @review-structured-content-viewer ac-3 — Comment creates thread with structured anchor
+  AC: @review-structured-content-viewer ac-4 — Threads shown inline at anchored section positions
 -->
 <script lang="ts">
 	import { page } from '$app/stores';
@@ -32,6 +36,7 @@
 	import { queryKeys } from '$lib/query/keys.js';
 	import { renderMarkdown } from '$lib/utils/markdown';
 	import { shortRef, normalizeRef, refHref } from '$lib/utils/reference';
+	import { StructuredContentViewer } from '$lib/components/content';
 
 	let reviewId = $derived($page.params.id);
 
@@ -412,6 +417,12 @@
 		review.lifecycle_state !== 'archived' &&
 		!isStaticMode()
 	);
+
+	// AC: @review-structured-content-viewer ac-1, ac-2 — Detect entity reviews for structured content
+	let hasStructuredContent = $derived(
+		review != null &&
+		(review.subject.type === 'plan' || review.subject.type === 'spec' || review.subject.type === 'task')
+	);
 </script>
 
 <div class="flex flex-col gap-6 p-6 min-w-0">
@@ -513,6 +524,18 @@
 				</div>
 			{/if}
 		</div>
+
+		<!-- AC: @review-structured-content-viewer ac-1, ac-2, ac-3, ac-4 — Structured Content Viewer -->
+		{#if hasStructuredContent && review}
+			<section data-testid="structured-content-section">
+				<h2 class="text-lg font-semibold mb-3">Content</h2>
+				<StructuredContentViewer
+					{review}
+					threads={review.threads}
+					{isInteractive}
+				/>
+			</section>
+		{/if}
 
 		<!-- Threads Section -->
 		<section data-testid="threads-section">
