@@ -106636,6 +106636,18 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-18T14:03:44.425Z
+    - _ulid: 01KM0N8WJKWTVRNTYJR519YT3S
+      content: "Fix cycle 1 addressed: (1) BLOCKER — timeout_remaining_ms was computing elapsed time
+        instead of remaining time. Added timeout_ms field to GroupState (set from composition config
+        at group creation). Route handler now computes remaining = timeout_ms - elapsed. Added
+        regression test verifying remaining time is close to full timeout for new activations. (2)
+        QUESTION — Added 'queued' to trigger outcome type union for AC-3 spec completeness;
+        detection logic ready for future agent concurrency support. (3) NIT — Removed unused pubsub
+        option (AutomationRouteOptions interface and PubSubManager import). All 20 automation tests
+        pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T14:23:24.755Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPW2T4TGQ47DHFHKV012SY
