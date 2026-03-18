@@ -16515,9 +16515,22 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T14:03:14.935Z
+      - _ulid: 01KM0M46BBXS2DN2ZH8KJRXVKA
+        actor: pr-reviewer@kspec.local
+        event_type: verdict_submitted
+        payload:
+          decision: request_changes
+        timestamp: 2026-03-18T14:03:22.348Z
+      - _ulid: 01KM0M46BCZJBFJTH55PBDMKFP
+        actor: pr-reviewer@kspec.local
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-18T14:03:22.348Z
     examined_commit: 1fb3398c8601e4d12109d099515003199b2ea770
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -16581,7 +16594,15 @@ reviews:
               correct the task notes, or implement the automation topic broadcasting."
             created_at: 2026-03-18T14:02:47.039Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: code_compare
+          base_commit: b30b1a6f4492
+          head_commit: 1fb3398c8601
+        decision: request_changes
+        reviewer: pr-reviewer@kspec.local
+        role: reviewer
+        created_at: 2026-03-18T14:03:22.210Z
     created_at: 2026-03-18T13:52:49.236Z
-    updated_at: 2026-03-18T14:03:14.793Z
+    updated_at: 2026-03-18T14:03:22.210Z
     notes: []
