@@ -14082,7 +14082,19 @@ reviews:
     slugs: []
     title: Review task-session-events (cycle 1)
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: c9ead12eb04ffb581ba086d839a42abe111db2b1
+          head_commit: 4df9b9bc1dc87af31cae226b68c226d27bf71394
+        evidence: 6075 tests passed, 1 failed (pre-existing review-cli.test.ts:152 — not modified by this
+          commit)
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T10:02:58.099Z
+        completed_at: 2026-03-18T10:02:58.099Z
     events:
       - _ulid: 01KM06BBZAA4D66JMX8WB8YYPM
         actor: "@claude"
@@ -14097,6 +14109,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-18T10:02:47.313Z
+      - _ulid: 01KM06C0905WEEYQYQD8FHXHFW
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T10:02:58.208Z
     examined_commit: 4df9b9bc1dc87af31cae226b68c226d27bf71394
     external_links: []
     lifecycle_state: open
@@ -14109,5 +14128,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-18T10:02:37.419Z
-    updated_at: 2026-03-18T10:02:47.203Z
+    updated_at: 2026-03-18T10:02:58.099Z
     notes: []
