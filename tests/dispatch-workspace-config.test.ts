@@ -449,6 +449,10 @@ describe("dispatch publication mode configuration", () => {
 
 // AC: @dispatch-workspace-configuration ac-6
 // AC: @dispatch-workspace-configuration ac-7
+// AC: @trait-error-guidance ac-3 — N/A: stale target errors reference config keys, not kspec item refs
+// AC: @trait-error-guidance ac-4 — N/A: stale target detection is not a state transition error
+// AC: @trait-error-guidance ac-5 — N/A: stale target detection is not a field validation error
+// AC: @trait-error-guidance ac-6 — N/A: stale target error is thrown before any CLI output mode applies
 describe("stale integration target detection", () => {
   let tempDir: string;
 
@@ -465,6 +469,11 @@ describe("stale integration target detection", () => {
   it("auto-updates integration target when config changes and integration is pending", async () => {
     await seedRepo(tempDir);
     git(tempDir, "checkout -b dev");
+    // Add a commit on dev so its tip differs from main
+    await fs.writeFile(path.join(tempDir, "dev-file.txt"), "dev\n", "utf-8");
+    git(tempDir, "add dev-file.txt");
+    git(tempDir, 'commit -m "dev commit"');
+    const devHead = git(tempDir, "rev-parse HEAD");
     await fs.writeFile(
       path.join(tempDir, "kspec.config.yaml"),
       "dispatch:\n  base_branch: main\n",
@@ -481,6 +490,8 @@ describe("stale integration target detection", () => {
     });
     const firstRecord = await readWorkspaceRecord(first.metadataPath, taskRef);
     expect(firstRecord.integration?.target_branch).toBe("main");
+    const mainCommit = firstRecord.integration?.target_commit as string;
+    expect(mainCommit).toBeTruthy();
 
     // Change config to base_branch=dev
     await fs.writeFile(
@@ -499,6 +510,9 @@ describe("stale integration target detection", () => {
 
     expect(secondRecord.integration?.target_branch).toBe("dev");
     expect(secondRecord.resolved_base_branch).toBe("dev");
+    // target_commit must also update to the new branch's tip, not stay stale
+    expect(secondRecord.integration?.target_commit).not.toBe(mainCommit);
+    expect(secondRecord.integration?.target_commit).toBe(devHead);
   });
 
   // AC: @dispatch-workspace-configuration ac-6

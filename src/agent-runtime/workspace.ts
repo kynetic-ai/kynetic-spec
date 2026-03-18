@@ -693,7 +693,9 @@ function resolveIntegrationRecord(
   return {
     status,
     target_branch: targetBranch,
-    target_commit: existingRecord?.integration.target_commit ?? targetCommit,
+    target_commit: (existingRecord && existingRecord.integration.target_branch === targetBranch)
+      ? existingRecord.integration.target_commit
+      : targetCommit,
     publication_mode: publicationMode,
     outcome: resolveIntegrationOutcome(publicationMode, status),
     detail: cleanupState?.integrationState ? `integration:${cleanupState.integrationState}` : existingRecord?.integration.detail ?? null,
@@ -2131,11 +2133,12 @@ export async function provisionDispatchWorkspace(
     resolvedConfig.baseBranchStartPoint,
     existingRecord,
   );
-  // When the integration target changed, use the new base branch point.
+  // When the integration target changed, resolve the commit from the new base branch
+  // rather than reusing the stale base_branch_point from the existing record.
   const integrationTargetUpdated = existingRecord
     && existingRecord.integration.target_branch !== mergeTargetBranch;
   const integrationTargetCommit = integrationTargetUpdated
-    ? baseBranchPoint
+    ? resolveCommit(projectDir, resolvedConfig.baseBranchStartPoint)
     : (existingRecord?.integration.target_commit ?? baseBranchPoint);
   const publicationMode = resolveWorkspacePublicationMode(projectDir, existingRecord, resolvedConfig.publicationMode);
   const now = new Date().toISOString();
