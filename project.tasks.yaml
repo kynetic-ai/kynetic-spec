@@ -106609,7 +106609,35 @@
   session_id: 01KM0H4TRTKPQA7QP3TN32W555
   created_at: 2026-03-18T05:32:07.876Z
   started_at: 2026-03-18T13:11:54.525Z
-  notes: []
+  notes:
+    - _ulid: 01KM0HXR24C64ZZ4VRVEZ4QAGQ
+      content: >-
+        Implemented hook/schedule/composition validation integration:
+
+
+        1. Added LoadedComposition type and compositions field to MetaContext
+
+        2. Updated loadMetaFile/loadMetaContext to parse and propagate compositions
+
+        3. Added validateCompositionAgentRefs() for composition on_complete agent refs (errors)
+
+        4. Added validateTemplateVars() for template variable validation across hooks, schedules,
+        and compositions (warnings)
+
+        5. Wired both into the validate pipeline alongside existing hook/schedule validation
+
+        6. Added compositions count to metaStats
+
+        7. 18 E2E and unit tests covering all 4 ACs with AC annotations
+
+
+        Existing validation (hook agent refs, hook filter fields, schedule agent refs) was already
+        implemented by prior tasks — preserved as-is. Template variable validation reuses
+        extractActionTemplates() and validateActionTemplates() from action-executor.ts which were
+        built but not yet wired into the validate command.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-18T13:24:53.956Z
   todos: []
   automation: eligible
 - _ulid: 01KKZPW45E2RJ5PQFP3AEVS35F
