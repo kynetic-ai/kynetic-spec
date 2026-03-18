@@ -105700,8 +105700,12 @@
   spec_ref: "@dispatch-command-action"
   plan_ref: "@plan-dispatch-event-system-expansion"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev. Implemented command action with structured program+args form: shell
+    field (default false) on CommandActionSchema, KSPEC_* env var injection via allowlist with 1KB
+    truncation, spawn() with shell:false for injection safety. All 4 ACs covered by 25 tests. One
+    nit noted about multi-byte truncation test boundary coverage."
   depends_on:
     - "@task-action-model"
   context: []
@@ -105724,6 +105728,7 @@
   created_at: 2026-03-18T05:31:52.224Z
   started_at: 2026-03-18T09:09:24.374Z
   submitted_at: 2026-03-18T09:18:09.812Z
+  completed_at: 2026-03-18T09:26:44.323Z
   notes:
     - _ulid: 01KM03SNZ42V9HKTV04R8B70BE
       content: >-
