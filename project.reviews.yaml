@@ -13404,6 +13404,18 @@ reviews:
         runner: manual
         created_at: 2026-03-18T08:49:41.569Z
         completed_at: 2026-03-18T08:49:41.569Z
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: 8d087368e
+          head_commit: 14505dad0
+        evidence: kspec validate shows no new errors or warnings related to dispatch-event-envelope.
+          Pre-existing reference errors and orphaned specs are unrelated to this task.
+        name: kspec-validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-18T08:49:44.318Z
+        completed_at: 2026-03-18T08:49:44.318Z
     events:
       - _ulid: 01KM0243JZANAMSG2J03PVSH87
         actor: "@claude"
@@ -13460,6 +13472,13 @@ reviews:
           status: pass
           name: scope-check
         timestamp: 2026-03-18T08:49:41.680Z
+      - _ulid: 01KM025XF852Z640N1WSPCASGS
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec-validate
+        timestamp: 2026-03-18T08:49:44.425Z
     examined_commit: 14505dad0ba356bbfd037257e46aa75b3d9ebbbc
     external_links: []
     lifecycle_state: open
@@ -13554,5 +13573,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T08:48:45.151Z
-    updated_at: 2026-03-18T08:49:41.569Z
+    updated_at: 2026-03-18T08:49:44.318Z
     notes: []
