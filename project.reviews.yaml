@@ -11958,6 +11958,12 @@ reviews:
         payload:
           thread_ulid: 01KKZT1QCZ136ZR7RPK64RSJTA
         timestamp: 2026-03-18T06:47:06.107Z
+      - _ulid: 01KKZV5EH2ND0VA1GZ03WNTQW7
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKZT23FWWWJZRZB0GM3QFJZK
+        timestamp: 2026-03-18T06:47:09.090Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -12228,6 +12234,13 @@ reviews:
               the reviewer's merge to conflict with a concurrently updated target. Clarify the
               interaction between reviewer-active guards and the before-provision sync."
             created_at: 2026-03-18T06:27:50.908Z
+          - _ulid: 01KKZV5ECK4MQHSE1N1K5W609Y
+            author: "@claude"
+            body: "Clarified in implementation notes: before-provision sync checks lastSyncTimestamp staleness,
+              NOT reviewer activity. Safe because provision creates a new worktree from HEAD, not
+              interfering with reviewer merge. Periodic sync skips during reviewer to avoid moving
+              target mid-merge."
+            created_at: 2026-03-18T06:47:08.947Z
         kind: question
       - _ulid: 01KKZT2EQRTQR2MNF6J08DENZN
         anchor:
@@ -12362,5 +12375,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-18T06:31:04.294Z
     created_at: 2026-03-18T06:24:50.713Z
-    updated_at: 2026-03-18T06:47:05.977Z
+    updated_at: 2026-03-18T06:47:08.947Z
     notes: []
