@@ -11380,18 +11380,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-migrate-triggers/01kkzpw7
-    canonical_branch_head: 9d5e929d1472e459b4ecb77108c3ba012ed963f9
+    canonical_branch_head: cae35ae3ffd1e6af9095ae533906687eaef9b211
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-18T17:09:15.533Z
+      updated_at: 2026-03-18T17:09:17.141Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-18T17:09:15.533Z
+      updated_at: 2026-03-18T17:09:17.141Z
     integration:
       status: pending
       detail: null
@@ -11399,24 +11399,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9d5e929d1472e459b4ecb77108c3ba012ed963f9
-      updated_at: 2026-03-18T17:09:15.533Z
-    lifecycle_state: ready
+      updated_at: 2026-03-18T17:09:17.141Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKZPW71H0KTRJY3HFF7YDNT9"
     task_slug: task-migrate-triggers
     timestamps:
       closed_at: null
       last_active_at: 2026-03-18T16:51:45.731Z
-      last_reconciled_at: 2026-03-18T17:09:15.533Z
+      last_reconciled_at: 2026-03-18T17:09:17.141Z
       created_at: 2026-03-18T16:51:44.574Z
-      updated_at: 2026-03-18T17:09:15.533Z
+      updated_at: 2026-03-18T17:09:17.141Z
     workspace_id: dispatch-workspace-01KKZPW71H0KTRJY3HFF7YDNT9
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: cae35ae3ffd1e6af9095ae533906687eaef9b211
+        last_seen_at: 2026-03-18T17:09:17.141Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-triggers-01kkzpw7-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-migrate-triggers/01kkzpw7
-        head: 9d5e929d1472e459b4ecb77108c3ba012ed963f9
-        last_seen_at: 2026-03-18T16:51:44.574Z
+        head: cae35ae3ffd1e6af9095ae533906687eaef9b211
+        last_seen_at: 2026-03-18T17:09:17.141Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-triggers-01kkzpw7
