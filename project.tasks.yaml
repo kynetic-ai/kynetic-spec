@@ -106866,7 +106866,7 @@
   spec_ref: "@dispatch-remote-branch-sync"
   plan_ref: "@plan-dispatch-remote-sync"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-dispatch-target-sync"
@@ -106876,9 +106876,18 @@
     - dispatch
     - git
   vcs_refs: []
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-18T11:18:03.005Z
+    commit: 36a39d0aecbb46f119c5f4c721586dd6bfc068c6
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
   session_id: 01KM09TC4XXY6KZB1YAESACFDN
   created_at: 2026-03-18T07:07:47.613Z
   started_at: 2026-03-18T11:03:39.839Z
+  submitted_at: 2026-03-18T11:18:03.395Z
   notes:
     - _ulid: 01KM0AN7SD815NW2AWYDBKG42R
       content: "Implemented degraded state machine for the dispatch engine. Key design decisions: (1)
