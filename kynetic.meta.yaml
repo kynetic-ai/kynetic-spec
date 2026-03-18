@@ -7362,6 +7362,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-17T07:59:09.227Z
+  - _ulid: 01KKZRY9MR68WBN6FF42RRMS51
+    type: success
+    content: "Parallel agent research pattern: launching codebase exploration + industry research agents
+      simultaneously during spec-plan-design gives comprehensive foundation in one round-trip. Used
+      effectively in dispatch event expansion planning session."
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-18T06:08:17.560Z
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     description: Get help with kspec commands and workflows
