@@ -15063,6 +15063,13 @@ reviews:
           status: pass
           name: ac-coverage
         timestamp: 2026-03-18T11:26:01.740Z
+      - _ulid: 01KM0B4DDQ95426PB9A6VT2V8C
+        actor: "@claude"
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM0B4D9M60PZ65HMEVJD5X47
+        timestamp: 2026-03-18T11:26:12.407Z
     examined_commit: 8f12b6fdd9df0871ef29d7b862a896d405e5b106
     external_links: []
     lifecycle_state: open
@@ -15072,8 +15079,25 @@ reviews:
       content_hash: ""
       ref: "@task-dispatch-degraded-state"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM0B4D9M60PZ65HMEVJD5X47
+        anchor:
+          type: code
+          commit: 8f12b6fdd9df
+          line_end: 2916
+          line_start: 2916
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KM0B4D9MM08MD7QJFGCEZ5ME
+            author: "@claude"
+            body: The _classifyDivergence method receives _mergeOutput (underscore-prefixed = unused parameter)
+              but uses git rev-list counting instead. The docstring says 'based on the git merge
+              --ff-only error output' which is misleading since the parameter is ignored. Rename to
+              mergeOutput or remove it since the rev-list approach is actually more reliable.
+            created_at: 2026-03-18T11:26:12.276Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-18T11:25:29.772Z
-    updated_at: 2026-03-18T11:26:01.596Z
+    updated_at: 2026-03-18T11:26:12.276Z
     notes: []
