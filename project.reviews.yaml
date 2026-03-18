@@ -16418,7 +16418,20 @@ reviews:
     slugs: []
     title: Review task-daemon-api
     author: "@claude"
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: code_compare
+          base_commit: b30b1a6f4492
+          head_commit: 1fb3398c8601
+        evidence: "6372 tests passed, 2 failed (both pre-existing: cli-serve foreground exit code flake,
+          review-cli examined_commit — neither test file was modified in this commit). 3 skipped.
+          All 19 automation route tests passed."
+        name: vitest
+        required: true
+        runner: vitest
+        created_at: 2026-03-18T14:02:57.261Z
+        completed_at: 2026-03-18T14:02:57.261Z
     events:
       - _ulid: 01KM0KGW2MPWAQ32Z598RRKE7A
         actor: "@claude"
@@ -16454,6 +16467,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM0M33VZN8EQ58AW0ZAB4DMF
         timestamp: 2026-03-18T14:02:47.188Z
+      - _ulid: 01KM0M3E0RPVAW5GX6347WDYPW
+        actor: "@claude"
+        event_type: check_added
+        payload:
+          status: pass
+          name: vitest
+        timestamp: 2026-03-18T14:02:57.432Z
     examined_commit: 1fb3398c8601e4d12109d099515003199b2ea770
     external_links: []
     lifecycle_state: open
@@ -16522,5 +16542,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-18T13:52:49.236Z
-    updated_at: 2026-03-18T14:02:47.039Z
+    updated_at: 2026-03-18T14:02:57.261Z
     notes: []
