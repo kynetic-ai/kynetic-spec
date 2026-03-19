@@ -12384,18 +12384,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-route-dispatch-sync-through-targeting-path/01km3zme
-    canonical_branch_head: f90477c9945db0317d11955393f6089b4fed466a
+    canonical_branch_head: 4f77d10bfc9991aadf35dd05a1c5b67a8804b477
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T23:07:29.975Z
+      updated_at: 2026-03-19T23:07:34.020Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T23:07:29.975Z
+      updated_at: 2026-03-19T23:07:34.020Z
     integration:
       status: pending
       detail: null
@@ -12403,24 +12403,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f90477c9945db0317d11955393f6089b4fed466a
-      updated_at: 2026-03-19T23:07:29.975Z
-    lifecycle_state: ready
+      updated_at: 2026-03-19T23:07:34.020Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM3ZMEMA53X21SYPSRWRF6E8"
     task_slug: task-route-dispatch-sync-through-targeting-path
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T22:59:06.505Z
-      last_reconciled_at: 2026-03-19T23:07:29.975Z
+      last_reconciled_at: 2026-03-19T23:07:34.020Z
       created_at: 2026-03-19T22:59:05.165Z
-      updated_at: 2026-03-19T23:07:29.975Z
+      updated_at: 2026-03-19T23:07:34.020Z
     workspace_id: dispatch-workspace-01KM3ZMEMA53X21SYPSRWRF6E8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 4f77d10bfc9991aadf35dd05a1c5b67a8804b477
+        last_seen_at: 2026-03-19T23:07:34.020Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-route-dispatch-sync-through-targeting-path-01km3zme-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-route-dispatch-sync-through-targeting-path/01km3zme
-        head: f90477c9945db0317d11955393f6089b4fed466a
-        last_seen_at: 2026-03-19T22:59:05.165Z
+        head: 4f77d10bfc9991aadf35dd05a1c5b67a8804b477
+        last_seen_at: 2026-03-19T23:07:34.020Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-route-dispatch-sync-through-targeting-path-01km3zme
