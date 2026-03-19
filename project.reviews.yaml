@@ -19609,3 +19609,29 @@ reviews:
     created_at: 2026-03-19T05:36:41.668Z
     updated_at: 2026-03-19T05:40:05.583Z
     notes: []
+  - _ulid: 01KM2AK1EJ0XE086PNJBGKQBPK
+    slugs: []
+    title: Review handle git worktree collisions between multiple project checkouts (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM2AK1EHBA41SQEH4ZZH9VN9
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-19T05:55:11.954Z
+    examined_commit: c6a9f65fc8ec1d98cd25e81b6c318b02a4b6392b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM26DB8RCM6D2T1SYZGZJR9X"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-19T05:55:11.954Z
+    updated_at: null
+    notes: []
