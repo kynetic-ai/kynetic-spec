@@ -19311,6 +19311,13 @@ reviews:
           status: pass
           name: workspace-focused-tests
         timestamp: 2026-03-19T05:16:09.861Z
+      - _ulid: 01KM28DHEPD7EYHEB57AJ92AMJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM28DH0D3YVEZS8CRM86CWGJ
+        timestamp: 2026-03-19T05:17:14.582Z
     examined_commit: 0e22dbfff8e98a3aeb3bf8f73c4a569d5b0748b1
     external_links: []
     lifecycle_state: open
@@ -19341,7 +19348,28 @@ reviews:
               worktree creation.
             created_at: 2026-03-19T05:15:35.160Z
         kind: blocker
+      - _ulid: 01KM28DH0D3YVEZS8CRM86CWGJ
+        anchor:
+          type: code
+          commit: 0e22dbfff8e98a3aeb3bf8f73c4a569d5b0748b1
+          line_end: 2378
+          line_start: 2374
+          path: src/agent-runtime/workspace.ts
+          side: head
+        entries:
+          - _ulid: 01KM28DH0DTP9W5N2B6VPJTGY8
+            author: Jacob Chapel
+            body: "Scoping lookup to the current `worktree_root` here means a sibling checkout's open record is
+              now treated as missing, so provisioning falls through to creating a fresh workspace
+              record. Registry persistence still enforces a global single-open-record-per-task rule
+              in `validateSingleOpenWorkspacePerTaskRaw` (`src/parser/dispatch-workspaces.ts`), so
+              once a foreign-root record already exists this path still fails with `Task <ref> has
+              multiple active dispatch workspace records ...`. That leaves the cross-checkout
+              collision unresolved: the second checkout no longer dies in `git worktree add`, but it
+              still cannot provision successfully."
+            created_at: 2026-03-19T05:17:14.125Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-19T05:09:07.021Z
-    updated_at: 2026-03-19T05:16:09.521Z
+    updated_at: 2026-03-19T05:17:14.125Z
     notes: []
