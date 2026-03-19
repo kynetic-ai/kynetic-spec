@@ -104616,6 +104616,7 @@
   created_at: 2026-03-17T06:11:39.650Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKXAFX9BARSE23FRNK6DMYQ9
   slugs: []
   title: Fix YAML.stringify anchor/alias crash when sortMapEntries reorders shared references
