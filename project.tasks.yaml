@@ -71717,6 +71717,15 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T07:47:25.083Z
+    - _ulid: 01KM2HC5GMX04C8GMKCTFX34MT
+      content: "Fix cycle 6: rebased dispatch/task/task-ralph-migration-guide/01kjp279 onto origin/dev to
+        drop unrelated branch drift from the review snapshot. Current origin/dev..HEAD diff is
+        scoped to the remaining ralph cleanup only; the prior unrelated packages/daemon review
+        surface is gone. Verified with full npm test (286 files, 6603 tests passed). kspec validate
+        still reports pre-existing repo-wide reference/completeness debt unrelated to this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T07:53:46.773Z
   todos: []
   automation: eligible
 - _ulid: 01KJQH689FXW590TEFZX98QVZ0
