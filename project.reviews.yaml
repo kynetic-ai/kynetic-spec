@@ -22822,6 +22822,12 @@ reviews:
         payload:
           thread_ulid: 01KM47Y4MMVDNA3AEGTDXF1ZTJ
         timestamp: 2026-03-19T23:57:41.885Z
+      - _ulid: 01KM48H5QGBZXRN46MY74W0QYY
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM47Y9C33G656DP5PTVMT0R2
+        timestamp: 2026-03-19T23:57:42.512Z
     examined_commit: 4a8578499560b6d5d05eb62f749dfddb16422f43
     external_links: []
     lifecycle_state: closed
@@ -22872,6 +22878,11 @@ reviews:
               behavior regresses for plan_ref-only links. Categories searched: correctness, edge
               cases, test quality, integration, error handling."
             created_at: 2026-03-19T23:47:23.651Z
+          - _ulid: 01KM48H5HH3V4Z51AJS82YD9YE
+            author: Jacob Chapel
+            body: Addressed with the same fix in c7627d0da and regression coverage for plan_ref-only linkage
+              across shared helper, CLI, and export surfaces.
+            created_at: 2026-03-19T23:57:42.321Z
         kind: nit
     verdicts:
       - applies_to_version:
@@ -22882,5 +22893,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T23:47:35.825Z
     created_at: 2026-03-19T23:43:02.217Z
-    updated_at: 2026-03-19T23:57:41.678Z
+    updated_at: 2026-03-19T23:57:42.321Z
     notes: []
