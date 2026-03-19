@@ -22500,6 +22500,19 @@ reviews:
         runner: manual
         created_at: 2026-03-19T23:25:43.521Z
         completed_at: 2026-03-19T23:25:43.521Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full suite timed out on tests/activity-display.test.ts and
+          tests/review-per-cycle-lifecycle.test.ts in this snapshot. Isolated rerun of
+          activity-display + review-per-cycle-lifecycle passed, so the failure looks
+          non-local/flaky, but the required full-suite gate was not green in this review run.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-19T23:25:44.360Z
+        completed_at: 2026-03-19T23:25:44.360Z
     events:
       - _ulid: 01KM4687QD2RFBJWXMJRM578YS
         actor: Jacob Chapel
@@ -22528,6 +22541,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-19T23:25:43.789Z
+      - _ulid: 01KM46PMT1H26JEFTTY4Q0BCBD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-19T23:25:44.641Z
     examined_commit: b167ae34f9dbeed3ee5ae740d478c06917a1188b
     external_links: []
     lifecycle_state: open
@@ -22562,5 +22582,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-19T23:17:52.493Z
-    updated_at: 2026-03-19T23:25:43.521Z
+    updated_at: 2026-03-19T23:25:44.360Z
     notes: []
