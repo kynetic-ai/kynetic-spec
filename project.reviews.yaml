@@ -21530,6 +21530,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-19T20:51:43.053Z
+      - _ulid: 01KM3XXQTWZEPQQHJRTKGVR74W
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM3XXQKSB1C7CXZ0PK4CB04D
+        timestamp: 2026-03-19T20:52:19.933Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -21539,8 +21546,19 @@ reviews:
       content_hash: ""
       ref: "@plan-dispatch-integration-checkout-boundaries"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM3XXQKSB1C7CXZ0PK4CB04D
+        entries:
+          - _ulid: 01KM3XXQKS95TCPNW3MT6N88T3
+            author: Jacob Chapel
+            body: The plan still mentions separate full clones repeatedly in the top-level narrative, design
+              decisions, and implementation notes. That keeps a deployment-topology choice inside
+              the plan text even though the stated scope is shared-checkout robustness only. Remove
+              the separate-clone discussion from the plan body or move it fully out of the
+              spec-facing document.
+            created_at: 2026-03-19T20:52:19.706Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-19T20:51:34.543Z
-    updated_at: 2026-03-19T20:51:42.832Z
+    updated_at: 2026-03-19T20:52:19.706Z
     notes: []
