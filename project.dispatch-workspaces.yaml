@@ -11428,7 +11428,7 @@ workspaces:
         head: cae35ae3ffd1e6af9095ae533906687eaef9b211
         last_seen_at: 2026-03-18T17:09:17.141Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-triggers-01kkzpw7
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: bb5471acddfb9905490cdced154f7a52a26a0fdc
     bootstrap:
       status: succeeded
@@ -11480,7 +11480,7 @@ workspaces:
             is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-19T04:33:22.656Z
+      updated_at: 2026-03-19T04:33:24.021Z
     integration:
       status: pending
       detail: null
@@ -11495,10 +11495,10 @@ workspaces:
     task_slug: remove-dead-parseversionfromoptions-function
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-19T03:52:05.581Z
-      last_reconciled_at: 2026-03-19T04:33:22.656Z
+      last_active_at: 2026-03-19T04:33:24.021Z
+      last_reconciled_at: 2026-03-19T04:33:24.021Z
       created_at: 2026-03-19T03:52:04.161Z
-      updated_at: 2026-03-19T04:33:23.092Z
+      updated_at: 2026-03-19T04:33:24.021Z
     workspace_id: dispatch-workspace-01KM21D00SD4D9WW2G1BFC1YB0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
