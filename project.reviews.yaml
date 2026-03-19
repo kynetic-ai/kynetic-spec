@@ -22268,6 +22268,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-19T23:01:35.900Z
+      - _ulid: 01KM4664VS6VQ2C87CRCNQZ9WM
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM45A29SEP6DM93N6BXBCH35
+        timestamp: 2026-03-19T23:16:44.025Z
     examined_commit: 78900aef21e89648268c95ed253d28ce277ab87d
     external_links: []
     lifecycle_state: closed
@@ -22296,6 +22302,14 @@ reviews:
               downstream files remain unchanged, which violates AC 's requirement that operators
               never observe a partially applied cancellation."
             created_at: 2026-03-19T23:01:23.897Z
+          - _ulid: 01KM4664KSP3VC907DMTSCW020
+            author: Jacob Chapel
+            body: Fixed in commit b167ae34f. mutateTasksAtomically now stages multi-file task writes through the
+              batch write buffer and flushes once after all touched task files are prepared, so
+              cancellation cleanup is no longer persisted one file at a time. Added a regression
+              test that moves the downstream task into a separate shadow task file and verifies task
+              cancel still updates both files in one cancellation commit.
+            created_at: 2026-03-19T23:16:43.768Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -22306,7 +22320,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T23:01:35.899Z
     created_at: 2026-03-19T23:00:36.278Z
-    updated_at: 2026-03-19T23:01:35.900Z
+    updated_at: 2026-03-19T23:16:43.768Z
     notes: []
   - _ulid: 01KM45Q35X2V5484H9AJNCFDAH
     slugs: []
