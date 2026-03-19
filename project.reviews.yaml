@@ -19362,6 +19362,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-19T05:17:19.078Z
+      - _ulid: 01KM2AF5Z621TZ3MVYF2KAVKDC
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM28AGBQVF6F8ZGGBDSYHMAD
+        timestamp: 2026-03-19T05:53:05.510Z
     examined_commit: 0e22dbfff8e98a3aeb3bf8f73c4a569d5b0748b1
     external_links: []
     lifecycle_state: closed
@@ -19391,6 +19397,13 @@ reviews:
               provision successfully; it just fails later during registry persistence instead of git
               worktree creation.
             created_at: 2026-03-19T05:15:35.160Z
+          - _ulid: 01KM2AF5S28J1BCASWSZ86S63Y
+            author: Jacob Chapel
+            body: Addressed in c6a9f65fc8ec1d98cd25e81b6c318b02a4b6392b. Restored the global
+              single-open-workspace-per-task registry invariant and added an early provisioning
+              guard for foreign-root open workspace records, so the collision now surfaces as
+              actionable ownership guidance instead of a late registry write failure.
+            created_at: 2026-03-19T05:53:05.313Z
         kind: blocker
       - _ulid: 01KM28DH0D3YVEZS8CRM86CWGJ
         anchor:
@@ -19443,7 +19456,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T05:17:19.077Z
     created_at: 2026-03-19T05:09:07.021Z
-    updated_at: 2026-03-19T05:17:19.078Z
+    updated_at: 2026-03-19T05:53:05.313Z
     notes: []
   - _ulid: 01KM29H5643TKANBE63KBNECQ6
     slugs: []
