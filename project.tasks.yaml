@@ -71530,7 +71530,7 @@
     remove ralphLoop error string, update any remaining code comments. This is the final cleanup
     after ralph→agent dispatch migration. No migration guide needed — ralph was internal tooling."
   plan_ref: "@plan-reactive-agent-runtime"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@implement-ralph-replacement"
@@ -71544,15 +71544,15 @@
   submission_linkage:
     review_url: null
     branch: dev
-    captured_at: 2026-03-19T06:24:05.040Z
-    commit: b90454547ad1951c1f8cdd0677196add75195667
+    captured_at: 2026-03-19T06:52:44.025Z
+    commit: 53be2094bc46d5c352d60c095941b9033e61d079
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
   session_id: 01KM2D7W5JY6N10YVDKD9MWJFB
   created_at: 2026-03-02T01:22:23.358Z
   started_at: 2026-03-19T06:42:13.365Z
-  submitted_at: 2026-03-19T06:24:05.499Z
+  submitted_at: 2026-03-19T06:52:44.471Z
   notes:
     - _ulid: 01KJP2JZPGF5Z4RGQVTQHQW33N
       content: >-
