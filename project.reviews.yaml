@@ -20358,6 +20358,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM2EY11W7295JG19ZB4YBJ50
         timestamp: 2026-03-19T07:11:06.487Z
+      - _ulid: 01KM2EY1TGN85SVYJRZR8S2YW4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM2EY1NBGF2FZ3282Q3CJMC4
+        timestamp: 2026-03-19T07:11:07.088Z
     examined_commit: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
     external_links: []
     lifecycle_state: open
@@ -20383,7 +20390,24 @@ reviews:
               Categories searched: correctness, AC alignment, test quality, integration."
             created_at: 2026-03-19T07:11:06.301Z
         kind: nit
+      - _ulid: 01KM2EY1NBGF2FZ3282Q3CJMC4
+        anchor:
+          type: code
+          commit: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
+          line_end: 273
+          line_start: 273
+          path: tests/canonical-task-workspace-contract.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM2EY1NB5HTEZF1SBE0SD10H
+            author: Jacob Chapel
+            body: A second required test-suite failure is a timeout in \, so the full repository test gate is
+              not green. This appears unrelated to the shadow-commit call-site diff, which is why I
+              am blocking the task on external test instability rather than requesting code-local
+              changes.
+            created_at: 2026-03-19T07:11:06.923Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-19T07:04:26.710Z
-    updated_at: 2026-03-19T07:11:06.301Z
+    updated_at: 2026-03-19T07:11:06.923Z
     notes: []
