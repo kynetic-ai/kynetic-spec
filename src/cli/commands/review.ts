@@ -40,7 +40,6 @@ import type {
   ReviewLifecycleState,
   ReviewRecord,
   ReviewSubject,
-  ReviewSubjectVersion,
   ReviewThread,
   ReviewThreadKind,
   ReviewVerdictDecision,
@@ -386,32 +385,6 @@ function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubjec
     shadow_commit: "",
     content_hash: "",
   };
-}
-
-/**
- * Parse applies_to_version from CLI flags.
- */
-function parseVersionFromOptions(options: Record<string, unknown>): ReviewSubjectVersion {
-  if (options.versionBase && options.versionHead) {
-    return {
-      type: "code_compare" as const,
-      base_commit: options.versionBase as string,
-      head_commit: options.versionHead as string,
-    };
-  }
-  if (options.versionHash) {
-    return {
-      type: "entity_version" as const,
-      content_hash: options.versionHash as string,
-    };
-  }
-  // Default code compare with empty commits (must be provided)
-  exitWithGuidance(
-    "Version context is required. Provide --version-base and --version-head for code, or --version-hash for entity",
-    EXIT_CODES.USAGE_ERROR,
-    "Usage: --version-base <commit> --version-head <commit> OR --version-hash <hash>",
-    { field: "version", value: "missing" },
-  );
 }
 
 // --- Command Registration ---
