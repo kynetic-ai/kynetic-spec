@@ -22457,3 +22457,29 @@ reviews:
     created_at: 2026-03-19T23:08:30.781Z
     updated_at: 2026-03-19T23:12:27.830Z
     notes: []
+  - _ulid: 01KM4687QDVE5QSA4ZBP6FATHJ
+    slugs: []
+    title: Review task-implement-cancelled-task-dependency-cleanup (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM4687QD2RFBJWXMJRM578YS
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-19T23:17:52.493Z
+    examined_commit: b167ae34f9dbeed3ee5ae740d478c06917a1188b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM43VYQXEFJMMYK2184MR7FH"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-19T23:17:52.493Z
+    updated_at: null
+    notes: []
