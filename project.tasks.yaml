@@ -71694,6 +71694,24 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T07:19:11.660Z
+    - _ulid: 01KM2GGHY04AYHMSKFA484F5NB
+      content: "Fix cycle 5: removed the registered kspec ralph command entirely by deleting
+        src/cli/commands/ralph.ts and moving the migration guidance into the unknown-command
+        handler, so 'kspec ralph ...' now errors as a removed command instead of shipping a live
+        command surface. Also updated triage-automation skill source plus tracked generated
+        codex/droid outputs to replace the last shipped 'Ralph loop' wording. Verification: rebuilt
+        CLI/shared/daemon/plugin artifacts with 'tsc && chmod +x dist/cli/index.js && npm run
+        build:shared && npm run build:daemon && npm run build:plugin'; focused 'SKIP_BUILD=1 npm
+        test -- tests/ralph-replacement.test.ts tests/parser/config.test.ts
+        tests/cli-agent-commands.test.ts' passed (165 tests); full 'SKIP_BUILD=1 npm test' passed
+        (286 files, 6600 passed, 3 skipped). 'kspec validate' still reports the repo's pre-existing
+        meta reference/completeness baseline issues unrelated to this task, and the default npm test
+        build path is still blocked by an unrelated packages/web-ui SvelteKit ENOENT build failure
+        in this worktree, so I used the fresh partial rebuild plus SKIP_BUILD=1 to verify the
+        task-local changes."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T07:38:41.984Z
   todos: []
   automation: eligible
 - _ulid: 01KJQH689FXW590TEFZX98QVZ0
