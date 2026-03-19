@@ -20349,6 +20349,17 @@ reviews:
         runner: npm
         created_at: 2026-03-19T07:11:31.704Z
         completed_at: 2026-03-19T07:11:31.704Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Task-local regression file passed: tests/shadow-commit-call-site-regression.test.ts (4
+          passed, 0 failed)."
+        name: shadow commit regression
+        required: true
+        runner: npm
+        created_at: 2026-03-19T07:11:32.280Z
+        completed_at: 2026-03-19T07:11:32.280Z
     events:
       - _ulid: 01KM2EHTTPYB40KHMRXMGZGYV4
         actor: Jacob Chapel
@@ -20405,6 +20416,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-19T07:11:31.900Z
+      - _ulid: 01KM2EYTMBA1QG7QY8XC9R1BCW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: shadow commit regression
+        timestamp: 2026-03-19T07:11:32.491Z
     examined_commit: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
     external_links: []
     lifecycle_state: open
@@ -20508,5 +20526,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-19T07:04:26.710Z
-    updated_at: 2026-03-19T07:11:31.704Z
+    updated_at: 2026-03-19T07:11:32.280Z
     notes: []
