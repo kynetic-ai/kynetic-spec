@@ -1415,7 +1415,8 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
     }
   });
 
-  it("throws when dispatch workspace blocking cannot be executed successfully", async () => {
+  // AC: @agent-dispatch-engine ac-8
+  it("does not throw when dispatch workspace blocking cannot be executed successfully", async () => {
     const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
     await setupProjectWithAgents(testDir, [agent]);
     await fs.mkdir(path.join(testDir, ".kspec"), { recursive: true });
@@ -1437,11 +1438,59 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
       const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
       const runSpy = vi.spyOn(invocationModule, "runInvocation");
       vi.spyOn(console, "error").mockImplementation(() => {});
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
       type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
-      await expect((engine as unknown as EngineInternal)._spawnInvocation(agent, entry)).rejects.toThrow(
-        /Failed to run `kspec task block/,
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      expect(spawned).toBe(false);
+      expect(runSpy).not.toHaveBeenCalled();
+      expect(warnSpy).toHaveBeenCalledWith(
+        expect.stringContaining("Failed to block task"),
       );
+
+      const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
+      const noteCall = calls.find((c) => c.args.includes("task") && c.args.includes("note") && c.args.includes(taskRef));
+      const blockCall = calls.find((c) => c.args.includes("task") && c.args.includes("block") && c.args.includes(taskRef));
+
+      expect(noteCall).toBeDefined();
+      expect(blockCall).toBeDefined();
+    } finally {
+      delete process.env.KSPEC_CAPTURE_FILE;
+      delete process.env.KSPEC_CAPTURE_FAIL_ON;
+      vi.restoreAllMocks();
+    }
+  });
+
+  // AC: @agent-dispatch-engine ac-8
+  it("continues recovery blocking when adding the workspace failure note also fails", async () => {
+    const agent = makeTestAgent({ dispatch: [{ on: "task.ready" }] });
+    await setupProjectWithAgents(testDir, [agent]);
+    await fs.mkdir(path.join(testDir, ".kspec"), { recursive: true });
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: main\n  worktree_root: .kspec/worktrees\n",
+      "utf-8",
+    );
+
+    const captureFile = path.join(testDir, "kspec-workspace-note-failure-capture.json");
+    process.env.KSPEC_CAPTURE_FILE = captureFile;
+    process.env.KSPEC_CAPTURE_FAIL_ON = "task:note";
+
+    try {
+      const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
+      (engine as unknown as { running: boolean }).running = true;
+      const taskRef = `@${testUlid("TASK", 35)}`;
+      const change = makeStateChange({ toStatus: "pending", fromStatus: "in_progress", taskRef });
+      const entry = { agent, change, retryCount: 0, nextRetryAt: 0 };
+      const runSpy = vi.spyOn(invocationModule, "runInvocation");
+      vi.spyOn(console, "error").mockImplementation(() => {});
+      vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      type EngineInternal = { _spawnInvocation: (a: unknown, e: unknown) => Promise<boolean> };
+      const spawned = await (engine as unknown as EngineInternal)._spawnInvocation(agent, entry);
+
+      expect(spawned).toBe(false);
       expect(runSpy).not.toHaveBeenCalled();
 
       const calls = JSON.parse(fsSync.readFileSync(captureFile, "utf-8")) as Array<{ args: string[] }>;
@@ -1450,6 +1499,7 @@ describe("AC-10: Unresolvable adapter skips invocation with error log", () => {
 
       expect(noteCall).toBeDefined();
       expect(blockCall).toBeDefined();
+      expect(blockCall!.args.join(" ")).toContain("Dispatch workspace provisioning failed");
     } finally {
       delete process.env.KSPEC_CAPTURE_FILE;
       delete process.env.KSPEC_CAPTURE_FAIL_ON;
