@@ -20084,9 +20084,25 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-19T06:46:02.090Z
+      - _ulid: 01KM2DGGAM45K9ZN2DAS76F499
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-19T06:46:14.612Z
+      - _ulid: 01KM2DGGAM4RQ7WFET6PYY6NHW
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-19T06:46:14.612Z
     examined_commit: b15aecdd0776108089c14b6486d969e2bce3abe6
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -20094,7 +20110,14 @@ reviews:
       ref: "@01KKX6QMN6CN74M8NFSBM73X1Q"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-19T06:46:14.611Z
     created_at: 2026-03-19T06:45:25.911Z
-    updated_at: 2026-03-19T06:46:01.908Z
+    updated_at: 2026-03-19T06:46:14.612Z
     notes: []
