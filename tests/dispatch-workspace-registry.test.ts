@@ -382,6 +382,96 @@ describe("dispatch workspace registry", () => {
     ).rejects.toThrow(/multiple active dispatch workspace records/i);
   });
 
+  // AC: @dispatch-workspace-configuration ac-8
+  it("ignores foreign workspace records during registry reconciliation", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: agent-dev\n  worktree_root: .dispatch-root\n",
+      "utf-8",
+    );
+
+    const ctx = await initContext(tempDir);
+    const registryPath = getDispatchWorkspaceRegistryPath(ctx);
+    const now = "2026-03-18T00:00:00.000Z";
+    const taskRef = `@${testUlid("TASK", 27)}`;
+    const foreignRoot = path.join(tempDir, ".foreign-worktrees");
+
+    await fs.writeFile(
+      registryPath,
+      YAML.stringify({
+        kynetic_dispatch_workspaces: "1.0",
+        workspaces: [
+          {
+            workspace_id: "dispatch-workspace-foreign",
+            task_ref: taskRef,
+            task_slug: "task-foreign-worktree",
+            worktree_root: foreignRoot,
+            resolved_base_branch: "agent-dev",
+            base_branch_point: "abc123",
+            canonical_branch: "dispatch/task/task-foreign-worktree/01task00",
+            canonical_branch_head: "abc123",
+            lifecycle_state: "ready",
+            active_role: null,
+            worktrees: {
+              worker: {
+                path: path.join(foreignRoot, "task-foreign-worktree-01task00"),
+                branch_mode: "branch",
+                branch_ref: "dispatch/task/task-foreign-worktree/01task00",
+                head: "abc123",
+                last_seen_at: now,
+              },
+              reviewer: null,
+            },
+            bootstrap: {
+              status: "not_run",
+              detail: null,
+              updated_at: now,
+            },
+            integration: {
+              status: "pending",
+              target_branch: "agent-dev",
+              target_commit: "abc123",
+              publication_mode: "manual_merge",
+              outcome: "manual_merge",
+              detail: null,
+              updated_at: now,
+            },
+            health: {
+              status: "healthy",
+              summary: "healthy",
+              issues: [],
+              updated_at: now,
+            },
+            cleanup: {
+              status: "not_scheduled",
+              eligible: false,
+              reason: null,
+              detail: null,
+              updated_at: now,
+            },
+            timestamps: {
+              created_at: now,
+              updated_at: now,
+              last_reconciled_at: now,
+              last_active_at: null,
+              closed_at: null,
+            },
+          },
+        ],
+      }),
+      "utf-8",
+    );
+
+    await reconcileDispatchWorkspaceRegistry(tempDir);
+
+    const [record] = await loadDispatchWorkspaceRegistry(ctx);
+    expect(record.health.status).toBe("healthy");
+    expect(record.timestamps.updated_at).toBe(now);
+    expect(record.worktree_root).toBe(foreignRoot);
+  });
+
   it("hydrates legacy integration metadata when older registry records are reloaded", async () => {
     const ctx = await initContext(tempDir);
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);

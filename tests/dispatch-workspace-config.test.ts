@@ -336,6 +336,41 @@ describe("dispatch workspace configuration", () => {
       suggestion: "Set dispatch.worktree_root to a directory outside .kspec/.",
     } satisfies Partial<DispatchWorkspaceError>);
   });
+
+  // AC: @dispatch-workspace-configuration ac-8
+  // AC: @trait-error-guidance ac-1
+  // AC: @trait-error-guidance ac-2
+  it("fails with actionable guidance when the canonical branch is already attached in a foreign checkout", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: agent-dev\n  worktree_root: .dispatch-root\n",
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 5)}`;
+    const slug = "foreign-collision-task";
+    const canonicalBranch = `dispatch/task/${slug}/${taskRef.slice(1, 9).toLowerCase()}`;
+    const foreignRoot = path.join(tempDir, ".foreign-worktrees");
+    const foreignWorktreeDir = path.join(foreignRoot, `${slug}-${taskRef.slice(1, 9).toLowerCase()}`);
+    await fs.mkdir(foreignRoot, { recursive: true });
+    git(tempDir, `worktree add -b ${canonicalBranch} ${foreignWorktreeDir} agent-dev`);
+
+    await expect(
+      provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: { title: "Foreign Collision Task", slugs: [slug] },
+      }),
+    ).rejects.toMatchObject({
+      name: "DispatchWorkspaceError",
+      message:
+        `Dispatch canonical branch "${canonicalBranch}" is already attached to foreign worktree "${foreignWorktreeDir}" outside this checkout's worktree root "${path.join(tempDir, ".dispatch-root")}".`,
+      suggestion:
+        `Remove or relocate the foreign worktree in the other checkout, then retry dispatch from "${path.join(tempDir, ".dispatch-root")}".`,
+    } satisfies Partial<DispatchWorkspaceError>);
+  });
 });
 
 // AC: @dispatch-workspace-configuration ac-5
