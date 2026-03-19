@@ -23651,12 +23651,12 @@ plans:
 
       ## Context
 
-      The current remote sync and integration push logic assumes that running
-      git commands with `cwd = projectDir` is enough to target the intended
-      repository state. That is not a strong enough invariant when dispatch is
-      started from a linked worktree, when git location environment variables
-      leak in from the launcher, or when different codepaths advance the
-      integration branch through different mechanisms.
+      The current remote sync and integration push logic relies too heavily on
+      launch context to determine which repository state gets mutated. That is
+      not a strong enough invariant when dispatch is started from a linked
+      worktree, when inherited environment state can redirect git context, or
+      when different codepaths advance the integration branch through
+      different mechanisms.
 
       The project already has the right high-level boundaries:
 
@@ -23674,10 +23674,9 @@ plans:
       1. **Shared-checkout mode is a first-class product contract.** Dispatch
          must behave correctly when it mutates the configured integration
          branch from the checkout it is running in.
-      2. **Git execution context is centralized and sanitized.** Integration
-         branch operations must use one helper that strips inherited `GIT_*`
-         location variables and targets the intended repository state
-         deterministically.
+      2. **Git targeting must be deterministic.** Integration-branch
+         operations must apply to the intended checkout and branch state
+         regardless of launch context or inherited environment state.
       3. **Shared-checkout repair behavior must be observable.** Drift repair
          cannot be specified as an abstract "safe repair path"; the contract
          must state what dispatch proves about branch ref, index, working
@@ -23722,48 +23721,44 @@ plans:
               Task worktrees remain execution surfaces for task work, not the
               mutation surface for the configured integration branch
 
-      - title: Dispatch Git Execution Context Contract
-        slug: dispatch-git-execution-context
+      - title: Dispatch Git Targeting Isolation Contract
+        slug: dispatch-git-targeting-isolation
         type: requirement
         parent: "@dispatch-remote-branch-sync"
         description: |
-          All integration-branch git operations run through a centralized
-          helper that resolves the intended repository context explicitly and
-          strips inherited git location environment variables. This prevents a
-          worker worktree, launcher shell, or leaked git env from redirecting
-          integration-branch operations to the wrong gitdir, index, or working
-          tree.
+          Integration-branch mutation is isolated from accidental launch
+          context. Dispatch must resolve the intended checkout and branch state
+          deterministically instead of letting inherited environment or
+          worktree context redirect which repository state gets mutated.
         acceptance_criteria:
           - id: ac-1
             given: |
-              Dispatch is about to run an integration-branch git command such
-              as fetch, merge --ff-only, push, status, rev-parse, or drift
-              repair
+              Dispatch is running in a shared checkout and is about to perform
+              integration-branch sync, publish, health, or repair work
             when: |
-              The command is spawned
+              The integration-branch operation executes
             then: |
-              The command is executed through one centralized helper rather
-              than ad hoc spawnSync calls with mixed cwd or environment logic
+              The operation mutates the repository state of the checkout
+              dispatch is running in, not some other repository state implied
+              by launch context
           - id: ac-2
             given: |
-              Dispatch inherits environment variables from a shell, daemon
-              launcher, or worktree context
+              Dispatch inherits launcher or shell state that would otherwise
+              redirect repository targeting
             when: |
-              The integration git helper builds the child process environment
+              An integration-branch operation executes
             then: |
-              The helper removes git location variables that can redirect repo
-              selection or index state, including GIT_DIR, GIT_WORK_TREE,
-              GIT_COMMON_DIR, and GIT_INDEX_FILE, before launching git
+              The inherited state does not change which checkout, branch ref,
+              index, or working tree the operation applies to
           - id: ac-3
             given: |
               Dispatch was started from a linked worktree or another cwd that
-              is not itself the intended integration branch mutation surface
+              is not itself the intended mutation surface
             when: |
-              The integration git helper runs
+              An integration-branch operation executes
             then: |
-              The integration branch operation still targets the intended
-              repository state deterministically and does not mutate the
-              launching worktree by accident
+              The operation does not mutate that launching worktree by
+              accident
           - id: ac-4
             given: |
               The intended repository context for integration-branch mutation
@@ -23771,9 +23766,9 @@ plans:
             when: |
               A sync or push operation is attempted
             then: |
-              Dispatch fails with actionable guidance naming the resolved
-              branch and repository context problem instead of silently
-              mutating an ambiguous checkout
+              Dispatch fails with actionable guidance naming the configured
+              branch and repository context problem instead of mutating an
+              ambiguous checkout
 
       - title: Dispatch Shared-Checkout Safety and Drift Repair
         slug: dispatch-shared-checkout-safety
@@ -23795,8 +23790,8 @@ plans:
               The operation completes successfully in a shared checkout
             then: |
               The branch ref, index, and working tree all reflect the same
-              commit; dispatch does not leave the checkout in a staged-only
-              drift state
+              commit, and dispatch does not introduce checkout status noise
+              caused solely by its own branch mutation
           - id: ac-2
             given: |
               The integration branch ref points at a newer commit while the
@@ -23806,9 +23801,10 @@ plans:
               Dispatch evaluates checkout health during startup, sync, or an
               explicit repair path
             then: |
-              Dispatch refreshes the checkout so the branch ref, index, and
-              working tree all point at the current branch tip, and the
-              resulting checkout status shows no staged-only drift
+              Dispatch restores the checkout to a coherent state where the
+              branch ref, index, and working tree all point at the current
+              branch tip, and checkout status no longer shows drift caused
+              solely by the stale branch transition
           - id: ac-3
             given: |
               The checkout has local modifications or staged changes that
@@ -23853,47 +23849,47 @@ plans:
           contract, and define crisp operator-visible outcomes for unhealthy
           checkout states.
 
-      - title: Centralize sanitized git execution for integration branch operations
-        slug: task-centralize-dispatch-git-execution-context
+      - title: Isolate integration-branch git targeting from launch context
+        slug: task-isolate-dispatch-git-targeting
         priority: 1
         tags: [dispatch, git, runtime]
-        spec_ref: "@dispatch-git-execution-context"
+        spec_ref: "@dispatch-git-targeting-isolation"
         depends_on:
           - "@task-design-dispatch-shared-checkout-contract"
         description: |
-          What: Introduce one helper for integration-branch git commands and
-          route fetch, merge, push, status, and branch-inspection operations
-          through it.
+          What: Make integration-branch operations resolve and mutate the
+          intended checkout deterministically, independent of launcher cwd,
+          worktree context, or inherited repo-selection state.
 
-          Why: The current mix of direct spawnSync calls and partial env
-          overrides is fragile. A single helper is the only reliable way to
-          guarantee that integration-branch commands always target the
-          intended repository state.
+          Why: The current mix of direct call sites and partial environment
+          overrides is fragile. Dispatch needs one consistent targeting model
+          so sync, publish, health, and repair operations act on the same
+          repository state every time.
 
-          How: Strip inherited git location variables such as GIT_DIR,
-          GIT_WORK_TREE, GIT_COMMON_DIR, and GIT_INDEX_FILE before invoking
-          git, and replace ad hoc integration sync and push command sites with
-          the helper.
+          How: Introduce a shared git execution path for integration
+          operations, neutralize inherited repo-selection variables, and
+          replace ad hoc sync/push/repair invocations with that common path.
 
-      - title: Route target sync and integration push behavior through the git helper
-        slug: task-route-dispatch-sync-through-git-helper
+      - title: Route target sync and integration push through the isolated targeting path
+        slug: task-route-dispatch-sync-through-targeting-path
         priority: 1
         tags: [dispatch, sync, git]
         spec_ref: "@dispatch-remote-branch-sync"
         depends_on:
-          - "@task-centralize-dispatch-git-execution-context"
+          - "@task-isolate-dispatch-git-targeting"
         description: |
           What: Update target sync and integration-target push flows so they
-          all operate through the centralized git execution helper while
+          all operate through the isolated targeting path while
           preserving the existing fast-forward-only and non-fatal push
           semantics.
 
-          Why: Helper introduction alone does not change behavior unless the
+          Why: Targeting isolation alone does not change behavior unless the
           real sync and publish paths stop using ad hoc git invocations.
 
           How: Audit remote sync start-up, before-provision sync, periodic
           sync, and post-merge push paths. Make them read and mutate the
-          configured integration branch only through the new helper.
+          configured integration branch only through the shared targeting
+          path.
 
       - title: Implement shared-checkout drift detection and safe repair
         slug: task-implement-dispatch-shared-checkout-safety
@@ -23901,20 +23897,20 @@ plans:
         tags: [dispatch, repair, health]
         spec_ref: "@dispatch-shared-checkout-safety"
         depends_on:
-          - "@task-centralize-dispatch-git-execution-context"
-          - "@task-route-dispatch-sync-through-git-helper"
+          - "@task-isolate-dispatch-git-targeting"
+          - "@task-route-dispatch-sync-through-targeting-path"
         description: |
-          What: Detect staged-only drift between the integration branch ref and
-          the checkout tree, repair clean checkouts automatically, and surface
-          degraded or unhealthy state when repair would overwrite local
-          changes.
+          What: Detect checkout drift caused by stale integration-branch
+          transitions, restore coherent state when the checkout is otherwise
+          clean, and surface degraded or unhealthy state when repair would
+          overwrite local changes.
 
           Why: This is the user-visible failure mode that triggered the plan.
           Shared-checkout mode is only credible if dispatch handles this state
           explicitly and safely.
 
-          How: Define a checkout-health probe, implement safe repair for clean
-          drifted checkouts, and route unsafe cases into existing degraded or
+          How: Define operator-visible coherence checks, repair clean drifted
+          checkouts, and route unsafe cases into existing degraded or
           health-reporting surfaces with precise operator guidance.
 
       - title: Test shared-checkout safety and git context hardening
@@ -23922,8 +23918,8 @@ plans:
         priority: 1
         tags: [dispatch, test, git]
         depends_on:
-          - "@task-centralize-dispatch-git-execution-context"
-          - "@task-route-dispatch-sync-through-git-helper"
+          - "@task-isolate-dispatch-git-targeting"
+          - "@task-route-dispatch-sync-through-targeting-path"
           - "@task-implement-dispatch-shared-checkout-safety"
         description: |
           What: Add end-to-end and unit coverage for worktree-launched
@@ -24002,3 +23998,8 @@ plans:
           contract language, and make drift repair AC observable"
         author: Jacob Chapel
         created_at: 2026-03-19T19:44:42.106Z
+      - _ulid: 01KM3WR0WXXCC4Q6W0HHVQJYVJ
+        content: Reduce implementation detail leakage by rewriting spec language around observable targeting
+          and coherence behavior
+        author: Jacob Chapel
+        created_at: 2026-03-19T20:31:44.029Z
