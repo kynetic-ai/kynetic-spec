@@ -23712,54 +23712,53 @@ plans:
               Task worktrees remain execution surfaces for task work, not the
               mutation surface for the configured integration branch
 
-      - title: Dispatch Git Targeting Isolation Contract
-        slug: dispatch-git-targeting-isolation
+      - title: Dispatch Integration Mutation Scope Contract
+        slug: dispatch-integration-mutation-scope
         type: requirement
         parent: "@dispatch-remote-branch-sync"
         description: |
-          Integration-branch mutation is isolated from accidental launch
-          context. Dispatch must resolve the intended checkout and branch state
-          deterministically instead of letting inherited environment or
-          worktree context redirect which repository state gets mutated.
+          Integration-branch operations mutate only the shared checkout state
+          that dispatch owns for the configured integration branch. They do
+          not spill into unrelated repository state, and they fail safely when
+          the intended mutation surface is ambiguous.
         acceptance_criteria:
           - id: ac-1
             given: |
-              Dispatch is running in a shared checkout and is about to perform
-              integration-branch sync, publish, health, or repair work
+              Dispatch performs integration-branch sync, publish, health, or
+              repair work in a shared checkout
             when: |
-              The integration-branch operation executes
+              The operation completes
             then: |
-              The operation mutates the repository state of the checkout
-              dispatch is running in, not some other repository state implied
-              by launch context
+              The resulting branch ref, index, and working tree changes are
+              limited to the shared checkout running dispatch
           - id: ac-2
             given: |
-              Dispatch inherits launcher or shell state that would otherwise
-              redirect repository targeting
+              Worker and reviewer task worktrees exist for active task work
             when: |
               An integration-branch operation executes
             then: |
-              The inherited state does not change which checkout, branch ref,
-              index, or working tree the operation applies to
+              Those task worktrees do not have their branch ref, index, or
+              working tree mutated as a side effect of the integration-branch
+              operation
           - id: ac-3
             given: |
-              Dispatch was started from a linked worktree or another cwd that
-              is not itself the intended mutation surface
+              Dispatch performs the same integration-branch operation against
+              the same repository state at different times during one daemon
+              run
             when: |
-              An integration-branch operation executes
+              Each operation completes successfully
             then: |
-              The operation does not mutate that launching worktree by
-              accident
+              The operation applies to the same shared checkout mutation
+              surface each time
           - id: ac-4
             given: |
-              The intended repository context for integration-branch mutation
-              cannot be resolved safely
+              Dispatch cannot determine a safe mutation surface for the
+              configured integration branch
             when: |
               A sync or push operation is attempted
             then: |
-              Dispatch fails with actionable guidance naming the configured
-              branch and repository context problem instead of mutating an
-              ambiguous checkout
+              Dispatch refuses the operation and reports actionable guidance
+              instead of mutating an ambiguous checkout
 
       - title: Dispatch Shared-Checkout Safety and Drift Repair
         slug: dispatch-shared-checkout-safety
@@ -23840,26 +23839,24 @@ plans:
           contract, and define crisp operator-visible outcomes for unhealthy
           checkout states.
 
-      - title: Isolate integration-branch git targeting from launch context
+      - title: Constrain integration-branch mutation scope
         slug: task-isolate-dispatch-git-targeting
         priority: 1
         tags: [dispatch, git, runtime]
-        spec_ref: "@dispatch-git-targeting-isolation"
+        spec_ref: "@dispatch-integration-mutation-scope"
         depends_on:
           - "@task-design-dispatch-shared-checkout-contract"
         description: |
           What: Make integration-branch operations resolve and mutate the
-          intended checkout deterministically, independent of launcher cwd,
-          worktree context, or inherited repo-selection state.
+          intended shared-checkout state deterministically.
 
-          Why: The current mix of direct call sites and partial environment
-          overrides is fragile. Dispatch needs one consistent targeting model
-          so sync, publish, health, and repair operations act on the same
-          repository state every time.
+          Why: Dispatch needs one consistent mutation scope so sync, publish,
+          health, and repair operations always act on the same checkout and
+          never spill into task worktrees or ambiguous repository state.
 
-          How: Introduce a shared git execution path for integration
-          operations, neutralize inherited repo-selection variables, and
-          replace ad hoc sync/push/repair invocations with that common path.
+          How: Consolidate integration-branch operations behind one shared
+          dispatch-owned execution boundary and enforce the mutation-scope
+          contract there.
 
       - title: Route target sync and integration push through the isolated targeting path
         slug: task-route-dispatch-sync-through-targeting-path
@@ -23996,3 +23993,8 @@ plans:
           problem statement
         author: Jacob Chapel
         created_at: 2026-03-19T20:54:56.116Z
+      - _ulid: 01KM3YR21N681W7PJAWYT6CYEJ
+        content: Rewrite mutation-scope spec as pure observable behavior and soften remaining
+          mechanism-heavy task wording
+        author: Jacob Chapel
+        created_at: 2026-03-19T21:06:42.357Z
