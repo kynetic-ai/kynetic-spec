@@ -108663,3 +108663,48 @@
   notes: []
   todos: []
   automation: eligible
+- _ulid: 01KM28A020C9M06YC8MA2E96NW
+  slugs: []
+  title: Auto-unregister projects when watcher detects permanent directory removal
+  type: feature
+  description: >-
+    **What:** When the file watcher determines a project's `.kspec/` directory is permanently
+    unavailable (ac-34), the daemon should proactively unregister the project instead of leaving a
+    stale entry. Currently the watcher stops itself but the project remains registered as a ghost in
+    ProjectContextManager.
+
+
+    **Why:** Ephemeral test directories and accidentally registered projects leave stale entries
+    that pollute the project picker, trigger recovery loops, and waste watcher resources. Existing
+    ac-20 handles reactive cleanup (on next request), but the daemon should also clean up
+    proactively when it already knows the directory is gone.
+
+
+    **How:**
+
+    - Add an optional `onPermanentFailure` callback to `KspecWatcher`
+    (packages/daemon/src/watcher.ts)
+
+    - In `handleWatcherError()`, after exhausting retries and confirming the directory is gone,
+    invoke the callback with the project path
+
+    - In `ProjectContextManager.startWatcher()` (packages/daemon/src/project-context.ts), pass a
+    callback that calls `unregisterProject()` for that path
+
+    - `unregisterProject()` already handles stopping the watcher, removing from registry, and
+    cleaning up — just needs to be triggered from the watcher death path
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - daemon
+  vcs_refs: []
+  created_at: 2026-03-19T05:15:18.464Z
+  notes: []
+  todos: []
+  automation: eligible
