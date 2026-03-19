@@ -12221,18 +12221,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-isolate-dispatch-git-targeting/01km3zmd
-    canonical_branch_head: 71f83468591d8b2c6a5a3e488dd2f31651bf7222
+    canonical_branch_head: 6a48f8bc1ecd8493d2083089c52904db25f9d6cf
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T22:45:05.375Z
+      updated_at: 2026-03-19T22:45:08.626Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T22:45:05.375Z
+      updated_at: 2026-03-19T22:45:08.626Z
     integration:
       status: pending
       detail: null
@@ -12240,24 +12240,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
-      updated_at: 2026-03-19T22:45:05.375Z
-    lifecycle_state: ready
+      updated_at: 2026-03-19T22:45:08.626Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM3ZMDYZB4RYWVX78Z8YVTE6"
     task_slug: task-isolate-dispatch-git-targeting
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T22:29:15.956Z
-      last_reconciled_at: 2026-03-19T22:45:05.375Z
+      last_reconciled_at: 2026-03-19T22:45:08.626Z
       created_at: 2026-03-19T22:02:52.692Z
-      updated_at: 2026-03-19T22:45:05.375Z
+      updated_at: 2026-03-19T22:45:08.626Z
     workspace_id: dispatch-workspace-01KM3ZMDYZB4RYWVX78Z8YVTE6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 6a48f8bc1ecd8493d2083089c52904db25f9d6cf
+        last_seen_at: 2026-03-19T22:45:08.626Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-isolate-dispatch-git-targeting-01km3zmd-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-isolate-dispatch-git-targeting/01km3zmd
-        head: 71f83468591d8b2c6a5a3e488dd2f31651bf7222
-        last_seen_at: 2026-03-19T22:29:14.632Z
+        head: 6a48f8bc1ecd8493d2083089c52904db25f9d6cf
+        last_seen_at: 2026-03-19T22:45:08.626Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-isolate-dispatch-git-targeting-01km3zmd
