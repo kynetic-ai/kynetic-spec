@@ -22228,6 +22228,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-19T23:01:02.103Z
+      - _ulid: 01KM45A2Q0PKDEXA35KDEVX0DP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM45A29SEP6DM93N6BXBCH35
+        timestamp: 2026-03-19T23:01:24.320Z
     examined_commit: 78900aef21e89648268c95ed253d28ce277ab87d
     external_links: []
     lifecycle_state: open
@@ -22237,8 +22244,27 @@ reviews:
       content_hash: ""
       ref: "@01KM43VYQXEFJMMYK2184MR7FH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM45A29SEP6DM93N6BXBCH35
+        anchor:
+          type: code
+          commit: 78900aef21e89648268c95ed253d28ce277ab87d
+          line_end: 1223
+          line_start: 1211
+          path: src/parser/yaml.ts
+          side: head
+        entries:
+          - _ulid: 01KM45A29S2S9EN1Q9ZNV1T975
+            author: Jacob Chapel
+            body: " is not actually atomic when the affected tasks live in different task files.  explicitly
+              supports loading tasks from multiple YAML files, but this helper writes each touched
+              file sequentially and has no rollback path if a later  fails. In that case the
+              cancelled task and some downstream cleanup notes are already persisted while later
+              downstream files remain unchanged, which violates AC 's requirement that operators
+              never observe a partially applied cancellation."
+            created_at: 2026-03-19T23:01:23.897Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-19T23:00:36.278Z
-    updated_at: 2026-03-19T23:01:01.548Z
+    updated_at: 2026-03-19T23:01:23.897Z
     notes: []
