@@ -23631,26 +23631,23 @@ plans:
   - _ulid: 01KM3KX3MH35QC7TR0PEVF5WY7
     slugs:
       - plan-dispatch-integration-checkout-boundaries
-    title: Dispatch Integration Branch Robustness
+    title: Dispatch Shared-Checkout Safety and Git Context Hardening
     content: |
-      # Dispatch Integration Branch Robustness
+      # Dispatch Shared-Checkout Safety and Git Context Hardening
 
       This plan hardens how dispatch mutates the configured integration branch
-      without assuming any specific repository topology. The immediate trigger
-      is a stale-checkout failure mode: the integration branch ref can advance
+      when dispatch is running in a shared checkout. The immediate trigger is a
+      stale-checkout failure mode: the integration branch ref can advance
       while a checked-out tree and index remain on an older commit, which
       surfaces as a large staged diff in the checkout running dispatch.
 
-      The plan is intentionally topology-agnostic:
+      This plan is intentionally narrow:
 
-      - dispatch may run in a shared user checkout
-      - dispatch may run in a separate full clone for stronger isolation
+      - shared-checkout dispatch is a supported product mode
       - worker and reviewer task worktrees remain isolated under the existing
         dispatch worktree root
-
-      What the spec should guarantee is robustness. Whether an operator prefers
-      a shared checkout or a separate clone is an operational choice, not a
-      behavioral requirement of the product.
+      - separate full clones may still be recommended operationally, but they
+        are not part of the behavioral contract defined here
 
       ## Context
 
@@ -23666,7 +23663,7 @@ plans:
       - worker/reviewer code execution happens in isolated task worktrees
       - dispatch owns integration-branch sync and publish behavior
       - the configured integration branch comes from `dispatch.base_branch`
-      - operators decide what local topology to run dispatch in
+      - operators may still choose stronger isolation operationally
 
       What is missing is an explicit contract for how dispatch targets git
       operations, how it detects checkout drift, and how it repairs or reports
@@ -23674,60 +23671,48 @@ plans:
 
       ## Design Decisions
 
-      1. **Repository topology is operator-controlled.** The product supports
-         both shared-checkout and separate-clone deployments. The spec does
-         not require dispatch to run in a dedicated checkout.
+      1. **Shared-checkout mode is a first-class product contract.** Dispatch
+         must behave correctly when it mutates the configured integration
+         branch from the checkout it is running in.
       2. **Git execution context is centralized and sanitized.** Integration
          branch operations must use one helper that strips inherited `GIT_*`
          location variables and targets the intended repository state
          deterministically.
-      3. **Shared-checkout mode must be safe.** If dispatch runs in the same
-         checkout a human uses, it must avoid leaving the checkout in a stale
-         ref/index/tree state and must refuse destructive repair when local
-         edits would be overwritten.
-      4. **Separate clones remain an operational isolation option.** Running
-         dispatch in a separate full clone is valid and may reduce contention,
-         but that remains documentation and deployment guidance rather than a
-         required product contract.
+      3. **Shared-checkout repair behavior must be observable.** Drift repair
+         cannot be specified as an abstract "safe repair path"; the contract
+         must state what dispatch proves about branch ref, index, working
+         tree, and operator-visible status after repair.
+      4. **Separate clones remain operational guidance only.** Running
+         dispatch in a separate full clone may reduce contention, but that
+         belongs in documentation and deployment guidance rather than in the
+         behavioral spec.
 
       ## Specs
 
       ```yaml
-      - title: Dispatch Integration Repository Topology Contract
-        slug: dispatch-integration-repository-topology
+      - title: Dispatch Shared-Checkout Contract
+        slug: dispatch-shared-checkout-contract
         type: decision
         parent: "@dispatch-remote-branch-sync"
         description: |
-          Defines the supported repository topologies for dispatch integration
-          branch mutation.
+          Defines the product contract for dispatch integration-branch
+          mutation when dispatch is running in a shared checkout.
 
-          Dispatch behavior is topology-agnostic: the product must behave
-          correctly whether dispatch runs in a shared user checkout or in a
-          separate full clone. The operator may choose stronger isolation, but
-          the product must not require it in order to remain correct.
+          The product guarantee in scope is shared-checkout correctness.
+          Separate full clones may still be a recommended deployment choice,
+          but they are outside the behavioral contract of this plan.
         acceptance_criteria:
           - id: ac-1
             given: |
-              An operator runs dispatch from the same checkout they also use
-              for manual work
+              Dispatch is running in a shared checkout that a user may also
+              inspect or use for manual work
             when: |
               Dispatch performs integration-branch sync, publish, or health
               checks
             then: |
-              The behavior remains correct and supported; shared-checkout mode
-              is not treated as undefined behavior
+              Shared-checkout mode is treated as a supported product mode, not
+              as undefined or best-effort behavior
           - id: ac-2
-            given: |
-              An operator runs dispatch from a separate full clone of the
-              repository
-            when: |
-              Dispatch performs integration-branch sync, publish, or health
-              checks
-            then: |
-              The behavior remains correct and supported; using a separate
-              full clone is treated as an operational isolation choice rather
-              than as a required product mode
-          - id: ac-3
             given: |
               Worker and reviewer task worktrees already exist under the
               dispatch worktree root
@@ -23735,7 +23720,7 @@ plans:
               Dispatch mutates the configured integration branch
             then: |
               Task worktrees remain execution surfaces for task work, not the
-              implied target for integration-branch mutation
+              mutation surface for the configured integration branch
 
       - title: Dispatch Git Execution Context Contract
         slug: dispatch-git-execution-context
@@ -23821,8 +23806,9 @@ plans:
               Dispatch evaluates checkout health during startup, sync, or an
               explicit repair path
             then: |
-              Dispatch refreshes the checkout to the current branch tip using
-              a safe repair path and logs that the drift was repaired
+              Dispatch refreshes the checkout so the branch ref, index, and
+              working tree all point at the current branch tip, and the
+              resulting checkout status shows no staged-only drift
           - id: ac-3
             given: |
               The checkout has local modifications or staged changes that
@@ -23841,15 +23827,6 @@ plans:
             then: |
               The reported state includes the configured integration branch,
               the drift reason, and the recommended next action
-          - id: ac-5
-            given: |
-              Dispatch is running in a separate full clone of the repository
-            when: |
-              Integration-branch mutation completes successfully
-            then: |
-              That clone's branch ref, index, and working tree all reflect a
-              coherent post-mutation state; the safety contract applies in
-              this topology as well
       ```
 
       ## Tasks
@@ -23857,23 +23834,24 @@ plans:
       derive_from_specs: false
 
       ```yaml
-      - title: Design topology-agnostic integration branch robustness contract
-        slug: task-design-dispatch-integration-branch-robustness
+      - title: Design shared-checkout integration branch contract
+        slug: task-design-dispatch-shared-checkout-contract
         priority: 1
         tags: [dispatch, design, git]
-        spec_ref: "@dispatch-integration-repository-topology"
+        spec_ref: "@dispatch-shared-checkout-contract"
         description: |
-          What: Define the behavioral boundary between product guarantees and
-          operator deployment choices for dispatch branch mutation.
+          What: Define the behavioral contract for dispatch integration-branch
+          mutation in a shared checkout.
 
-          Why: The spec should not require a separate checkout, but it also
-          should not leave shared-checkout behavior ambiguous. This design
-          task clarifies that distinction before implementation work begins.
+          Why: Shared-checkout correctness is the product behavior in scope.
+          The implementation needs an explicit contract for what dispatch may
+          mutate, what task worktrees are not allowed to own, and what health
+          guarantees users can rely on.
 
           How: Align the plan with existing dispatch remote sync and worktree
-          isolation specs, explicitly treat separate full clones as optional
-          deployment guidance, and make shared-checkout correctness part of
-          the product contract.
+          isolation specs, keep deployment guidance out of the behavioral
+          contract, and define crisp operator-visible outcomes for unhealthy
+          checkout states.
 
       - title: Centralize sanitized git execution for integration branch operations
         slug: task-centralize-dispatch-git-execution-context
@@ -23881,7 +23859,7 @@ plans:
         tags: [dispatch, git, runtime]
         spec_ref: "@dispatch-git-execution-context"
         depends_on:
-          - "@task-design-dispatch-integration-branch-robustness"
+          - "@task-design-dispatch-shared-checkout-contract"
         description: |
           What: Introduce one helper for integration-branch git commands and
           route fetch, merge, push, status, and branch-inspection operations
@@ -23939,8 +23917,8 @@ plans:
           drifted checkouts, and route unsafe cases into existing degraded or
           health-reporting surfaces with precise operator guidance.
 
-      - title: Test shared-checkout robustness and optional separate-clone behavior
-        slug: task-test-dispatch-integration-branch-robustness
+      - title: Test shared-checkout safety and git context hardening
+        slug: task-test-dispatch-shared-checkout-safety
         priority: 1
         tags: [dispatch, test, git]
         depends_on:
@@ -23950,30 +23928,30 @@ plans:
         description: |
           What: Add end-to-end and unit coverage for worktree-launched
           dispatch processes, sanitized git execution context, clean drift
-          auto-repair, unsafe drift refusal, and equivalent behavior when
-          dispatch runs from a separate full clone.
+          auto-repair, and unsafe drift refusal.
 
           Why: These behaviors are easy to regress because they depend on git
-          environment, multiple checkouts, and cross-checkout state changes.
+          environment, worktree context, and branch/index/tree state changes.
           The plan should not rely on manual operator observation to know it
           still works.
 
           How: Extend the existing dispatch target sync and degraded-state
           fixtures to model shared-checkout mode, leaked git env, out-of-band
-          branch ref movement, and a separate-clone deployment with equivalent
-          behavior.
+          branch ref movement, and repair refusal when local changes would be
+          overwritten.
       ```
 
       ## Implementation Notes
 
       ### Product boundary
 
-      This plan treats repository topology as an operator choice:
+      This plan treats shared-checkout correctness as the product contract:
 
       - shared checkout is supported and must be robust
-      - a separate full clone is optional operational isolation
       - linked task worktrees remain part of the dispatch execution model, but
         they do not define the integration-branch mutation contract
+      - separate full clones may still be useful operationally, but that is
+        not behavior this plan needs to specify
 
       ### Why this plan does not require a separate checkout
 
@@ -23989,11 +23967,11 @@ plans:
       is a dispatcher concern. The runtime must keep those responsibilities
       separate even when dispatch is running from a shared checkout.
 
-      ### Optional operational guidance
+      ### Out of scope
 
-      Running dispatch from a separate full clone can still be good practice
-      for early adoption or stronger isolation, but that belongs in operator
-      guidance and documentation rather than in the behavioral spec.
+      - prescribing a required repository topology for dispatch deployment
+      - specifying separate-clone behavior as part of the product contract
+      - replacing shared-checkout robustness with operational workarounds
     status: draft
     approved_at: null
     derived_specs: []
@@ -24019,3 +23997,8 @@ plans:
         content: Normalize acceptance criteria so each rule reads independently without relational phrasing
         author: Jacob Chapel
         created_at: 2026-03-19T19:10:24.010Z
+      - _ulid: 01KM3T1X3TBJ05Q79P248ZBCZZ
+        content: "Address review blockers: narrow scope to shared-checkout behavior, remove separate-clone
+          contract language, and make drift repair AC observable"
+        author: Jacob Chapel
+        created_at: 2026-03-19T19:44:42.106Z
