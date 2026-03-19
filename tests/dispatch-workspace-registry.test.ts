@@ -320,12 +320,13 @@ describe("dispatch workspace registry", () => {
     const registryPath = getDispatchWorkspaceRegistryPath(ctx);
     const now = new Date().toISOString();
     const taskRef = `@${testUlid("TASK", 22)}`;
+    const worktreeRoot = path.join(tempDir, ".kspec-worktrees");
 
     const makeRecord = (workspaceId: string, lifecycleState: DispatchWorkspaceMetadata["lifecycleState"]) => ({
       workspace_id: workspaceId,
       task_ref: taskRef,
       task_slug: "task-duplicate-dispatch-registry",
-      worktree_root: path.join(tempDir, ".kspec-worktrees"),
+      worktree_root: worktreeRoot,
       resolved_base_branch: "main",
       base_branch_point: "abc123",
       canonical_branch: `dispatch/task/task-duplicate-dispatch-registry/${workspaceId.slice(-8).toLowerCase()}`,
@@ -334,7 +335,7 @@ describe("dispatch workspace registry", () => {
       active_role: null,
       worktrees: {
         worker: {
-          path: path.join(tempDir, ".kspec-worktrees", workspaceId),
+          path: path.join(worktreeRoot, workspaceId),
           branch_mode: "branch" as const,
           branch_ref: "dispatch/task/task-duplicate/01task00",
           head: "abc123",

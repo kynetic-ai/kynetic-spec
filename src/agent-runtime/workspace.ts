@@ -1291,6 +1291,22 @@ async function loadWorkspaceRecordForWorktreeRoot(
     .sort((a, b) => a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1)[0];
 }
 
+async function loadForeignOpenWorkspaceRecord(
+  projectDir: string,
+  taskRef: string,
+  worktreeRoot: string,
+): Promise<LoadedDispatchWorkspaceRecord | undefined> {
+  const ctx = await initContext(projectDir);
+  const records = await loadDispatchWorkspaceRegistry(ctx);
+  return records
+    .filter((record) =>
+      record.task_ref === taskRef
+      && record.lifecycle_state !== "closed"
+      && !workspaceRecordBelongsToWorktreeRoot(record, worktreeRoot)
+    )
+    .sort((a, b) => a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1)[0];
+}
+
 /**
  * Save a workspace record to the registry file and update worktree metadata.
  * Does NOT acquire the dispatch shadow mutation lock or trigger a shadow commit.
@@ -2687,8 +2703,18 @@ export async function provisionDispatchWorkspace(
     taskRef,
     resolvedConfig.worktreeRoot,
   );
+  const foreignOpenRecord = existingRecord
+    ? undefined
+    : await loadForeignOpenWorkspaceRecord(projectDir, taskRef, resolvedConfig.worktreeRoot);
   const taskSlug = existingRecord?.task_slug ?? normalizeTaskSlug(taskRef, task);
   const shortId = shortTaskId(taskRef);
+
+  if (foreignOpenRecord) {
+    throw new DispatchWorkspaceError(
+      `Task ${taskRef} already has an open dispatch workspace in foreign worktree root "${foreignOpenRecord.worktree_root}" (${foreignOpenRecord.worktrees.worker.path}).`,
+      `Resume work from that checkout, or close/reset workspace "${foreignOpenRecord.workspace_id}" before provisioning under "${resolvedConfig.worktreeRoot}".`,
+    );
+  }
 
   // AC: @adopt-existing-task-branch-lineage ac-1, ac-2, ac-3, ac-4
   // When no workspace record exists but submission linkage provides a branch,

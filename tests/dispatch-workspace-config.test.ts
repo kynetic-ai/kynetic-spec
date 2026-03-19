@@ -11,6 +11,11 @@ import {
   provisionDispatchWorkspace,
 } from "../src/agent-runtime/workspace.js";
 import {
+  getDispatchWorkspaceRegistryPath,
+  loadDispatchWorkspaceRegistry,
+} from "../src/parser/dispatch-workspaces.js";
+import { initContext } from "../src/parser/index.js";
+import {
   cleanupTempDir,
   createTempDir,
   initGitRepo,
@@ -181,6 +186,106 @@ describe("dispatch workspace configuration", () => {
     expect(second.cwd).toBe(first.cwd);
     expect(metadataAgain.resolved_base_branch).toBe("agent-dev");
     expect(metadataAgain.integration?.target_branch).toBe("agent-dev");
+  });
+
+  // AC: @dispatch-workspace-configuration ac-8
+  it("fails with actionable guidance when a foreign-root registry record already exists for the task", async () => {
+    await seedRepo(tempDir);
+    git(tempDir, "checkout -b agent-dev");
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      "dispatch:\n  base_branch: agent-dev\n  worktree_root: .dispatch-root\n",
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 30)}`;
+    const ctx = await initContext(tempDir);
+    const registryPath = getDispatchWorkspaceRegistryPath(ctx);
+    const now = "2026-03-18T00:00:00.000Z";
+    const foreignRoot = path.join(tempDir, ".foreign-worktrees");
+    const shortId = taskRef.slice(1, 9).toLowerCase();
+    const canonicalBranch = `dispatch/task/task-foreign-record-provisioning/${shortId}`;
+
+    await fs.writeFile(
+      registryPath,
+      YAML.stringify({
+        kynetic_dispatch_workspaces: "1.0",
+        workspaces: [
+          {
+            workspace_id: "dispatch-workspace-foreign",
+            task_ref: taskRef,
+            task_slug: "task-foreign-record-provisioning",
+            worktree_root: foreignRoot,
+            resolved_base_branch: "agent-dev",
+            base_branch_point: "abc123",
+            canonical_branch: canonicalBranch,
+            canonical_branch_head: "abc123",
+            lifecycle_state: "ready",
+            active_role: null,
+            worktrees: {
+              worker: {
+                path: path.join(foreignRoot, `task-foreign-record-provisioning-${shortId}`),
+                branch_mode: "branch",
+                branch_ref: canonicalBranch,
+                head: "abc123",
+                last_seen_at: now,
+              },
+              reviewer: null,
+            },
+            bootstrap: {
+              status: "not_run",
+              detail: null,
+              updated_at: now,
+            },
+            integration: {
+              status: "pending",
+              target_branch: "agent-dev",
+              target_commit: "abc123",
+              publication_mode: "manual_merge",
+              outcome: "manual_merge",
+              detail: null,
+              updated_at: now,
+            },
+            health: {
+              status: "healthy",
+              summary: "healthy",
+              issues: [],
+              updated_at: now,
+            },
+            cleanup: {
+              status: "not_scheduled",
+              eligible: false,
+              reason: null,
+              detail: null,
+              updated_at: now,
+            },
+            timestamps: {
+              created_at: now,
+              updated_at: now,
+              last_reconciled_at: now,
+              last_active_at: null,
+              closed_at: null,
+            },
+          },
+        ],
+      }),
+      "utf-8",
+    );
+
+    await expect(
+      provisionDispatchWorkspace({
+        projectDir: tempDir,
+        taskRef,
+        task: { title: "Foreign Record Provisioning", slugs: ["task-foreign-record-provisioning"] },
+      }),
+    ).rejects.toMatchObject({
+      message: `Task ${taskRef} already has an open dispatch workspace in foreign worktree root "${foreignRoot}" (${path.join(foreignRoot, `task-foreign-record-provisioning-${shortId}`)}).`,
+      suggestion: `Resume work from that checkout, or close/reset workspace "dispatch-workspace-foreign" before provisioning under "${path.join(tempDir, ".dispatch-root")}".`,
+    });
+
+    const records = await loadDispatchWorkspaceRegistry(ctx);
+    expect(records.filter((record) => record.task_ref === taskRef)).toHaveLength(1);
+    expect(records[0]?.worktree_root).toBe(foreignRoot);
   });
 
   // AC: @dispatch-workspace-configuration ac-1
