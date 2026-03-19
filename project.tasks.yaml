@@ -104642,7 +104642,15 @@
   session_id: 01KM2DYE9TGXX0B7AQN5WDP8XC
   created_at: 2026-03-17T06:11:37.984Z
   started_at: 2026-03-19T06:54:35.584Z
-  notes: []
+  notes:
+    - _ulid: 01KM2E4ED9GZADJ06ABPY6AQXC
+      content: "Found the expected bad shadow-commit call sites plus a parallel skill-install-core path in
+        skill-install.ts using a count as ref. Fix plan: pass created inbox/run ULIDs where
+        available, omit ref for batch-only operations, and add regression tests that inspect actual
+        shadow commit subjects."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T06:57:08.009Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6QR02Z2YKJBPBXD4RCRKT
