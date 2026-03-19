@@ -109316,6 +109316,20 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T23:25:57.337Z
+    - _ulid: 01KM4845DRA0XT401N0Q21JHWY
+      content: "[FIX_CYCLE: 3] Rebased
+        dispatch/task/task-implement-cancelled-task-dependency-cleanup/01km43vy onto origin/dev to
+        clear the prior branch-conflation review blocker; the branch diff against dev is now limited
+        to src/cli/commands/task.ts, src/parser/yaml.ts, and
+        tests/task-cancel-dependency-cleanup.test.ts. Verification: npm test --
+        task-cancel-dependency-cleanup passed. Full npm test still fails on unrelated repo-wide 15s
+        timeouts in tests/activity-display.test.ts, tests/cli-schedule-commands.test.ts,
+        tests/dispatch-runtime-bootstrap-contract.test.ts, tests/review-per-cycle-lifecycle.test.ts,
+        and tests/task-needs-work.test.ts, so this task cannot clear the required global test gate
+        in the current snapshot."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T23:50:36.216Z
   todos: []
   automation: eligible
 - _ulid: 01KM46GRK3CYYA4V37D8Y32G4K
