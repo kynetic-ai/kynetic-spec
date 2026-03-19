@@ -109407,5 +109407,16 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T23:47:39.757Z
+    - _ulid: 01KM48H3SFB3R0NFRTDXFYD57X
+      content: "[FIX_CYCLE: 1] Restored plan summary linkage semantics so metrics resolve linked tasks
+        from both plan.derived_tasks and task.plan_ref, then apply cancelled-task exclusion on top.
+        Updated the shared helper used by export, daemon plan routes, and CLI plan list, and added
+        regressions for plan_ref-only links plus cancelled-task filtering. Verification: npm test --
+        tests/plan-summary.test.ts tests/cli-plan.test.ts tests/export/json.test.ts passed. kspec
+        validate still reports pre-existing repo-wide reference/completeness debt unrelated to this
+        task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T23:57:40.527Z
   todos: []
   automation: eligible
