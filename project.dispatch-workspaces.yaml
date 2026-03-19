@@ -11600,7 +11600,7 @@ workspaces:
         head: 0a4f8ab9550dfed4eec1c249f3cdd926b13ee0c2
         last_seen_at: 2026-03-19T04:45:30.640Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-default-kspec-cli-path-pointing-to-nonexistent-bin-kspec-cjs-01km24pw
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 02a1386fbddabc850a1a31b24dc1765480bb0a53
     bootstrap:
       status: succeeded
@@ -11666,9 +11666,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T05:36:07.238Z
-      last_reconciled_at: 2026-03-19T05:41:24.566Z
+      last_reconciled_at: 2026-03-19T05:41:37.551Z
       created_at: 2026-03-19T04:45:32.059Z
-      updated_at: 2026-03-19T05:41:24.566Z
+      updated_at: 2026-03-19T05:41:37.551Z
     workspace_id: dispatch-workspace-01KM26C8WX6CMY7S9XD3RJZ003
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
