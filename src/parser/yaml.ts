@@ -5,7 +5,7 @@ import * as path from "node:path";
 import { ulid } from "ulid";
 import * as YAML from "yaml";
 import type { Pair } from "yaml";
-import { withFileLock } from "./file-lock.js";
+import { acquireFileLock, withFileLock } from "./file-lock.js";
 import {
   accessBufferAware,
   getActiveBatchBuffer,
@@ -1093,6 +1093,139 @@ export async function mutateTaskAtomically(
   }
 
   return updatedTask;
+}
+
+/**
+ * Atomically mutate multiple tasks as one write transaction.
+ *
+ * Acquires all affected task-file locks in sorted order, loads the latest on-disk
+ * state for each target task, lets the caller compute the updated records, then
+ * writes each touched file once before releasing the locks.
+ */
+export async function mutateTasksAtomically(
+  ctx: KspecContext,
+  tasks: LoadedTask[],
+  mutate: (
+    latestTasks: LoadedTask[],
+  ) => Array<Task | LoadedTask> | Promise<Array<Task | LoadedTask>>,
+): Promise<LoadedTask[]> {
+  const uniqueTasks = tasks.filter((task, index, arr) =>
+    arr.findIndex((candidate) => candidate._ulid === task._ulid) === index
+  );
+
+  if (uniqueTasks.length === 0) {
+    return [];
+  }
+
+  const taskFileByUlid = new Map<string, string>();
+  for (const task of uniqueTasks) {
+    taskFileByUlid.set(task._ulid, task._sourceFile || getDefaultTaskFilePath(ctx));
+  }
+
+  const filePaths = [...new Set(taskFileByUlid.values())].sort();
+  const releases: Array<() => Promise<void>> = [];
+
+  try {
+    for (const filePath of filePaths) {
+      releases.push(await acquireFileLock(filePath));
+    }
+
+    const fileStates = new Map<string, {
+      rawTasks: unknown[];
+      useTasksWrapper: boolean;
+      wrapperObj?: Record<string, unknown>;
+    }>();
+
+    for (const filePath of filePaths) {
+      const dir = path.dirname(filePath);
+      await fs.mkdir(dir, { recursive: true });
+      fileStates.set(filePath, await extractRawTaskArray(filePath));
+    }
+
+    const latestTasks = uniqueTasks.map((task) => {
+      const taskFilePath = taskFileByUlid.get(task._ulid);
+      if (!taskFilePath) {
+        throw new Error(`No task file path found for ${task._ulid}`);
+      }
+
+      const fileState = fileStates.get(taskFilePath);
+      if (!fileState) {
+        throw new Error(`Task file state not loaded for ${taskFilePath}`);
+      }
+
+      const taskIndex = findRawTaskIndex(fileState.rawTasks, task._ulid);
+      if (taskIndex === -1) {
+        throw new Error(`Task not found in file: ${task._ulid}`);
+      }
+
+      const rawTarget = fileState.rawTasks[taskIndex];
+      const parsed = TaskSchema.safeParse(rawTarget);
+      if (!parsed.success) {
+        throw new Error(`Invalid task data for ${task._ulid}: ${parsed.error.message}`);
+      }
+
+      return {
+        ...parsed.data,
+        _sourceFile: taskFilePath,
+      };
+    });
+
+    const mutatedTasks = await mutate(latestTasks);
+    if (mutatedTasks.length !== latestTasks.length) {
+      throw new Error(
+        `Expected ${latestTasks.length} mutated tasks, received ${mutatedTasks.length}`,
+      );
+    }
+
+    const updatedTasks = mutatedTasks.map((mutatedTask, index) => {
+      const latestTask = latestTasks[index];
+      if (mutatedTask._ulid !== latestTask._ulid) {
+        throw new Error(
+          `Mutated task order mismatch: expected ${latestTask._ulid}, received ${mutatedTask._ulid}`,
+        );
+      }
+
+      const cleanMutatedTask = stripRuntimeMetadata(mutatedTask as LoadedTask);
+      const taskFilePath = latestTask._sourceFile || getDefaultTaskFilePath(ctx);
+      const fileState = fileStates.get(taskFilePath);
+      if (!fileState) {
+        throw new Error(`Task file state not loaded for ${taskFilePath}`);
+      }
+
+      const taskIndex = findRawTaskIndex(fileState.rawTasks, latestTask._ulid);
+      if (taskIndex === -1) {
+        throw new Error(`Task not found in file: ${latestTask._ulid}`);
+      }
+
+      fileState.rawTasks[taskIndex] = mergeTaskPreservingRawShape(
+        fileState.rawTasks[taskIndex] as Record<string, unknown>,
+        cleanMutatedTask as Record<string, unknown>,
+      );
+
+      return {
+        ...cleanMutatedTask,
+        _sourceFile: taskFilePath,
+      };
+    });
+
+    for (const filePath of filePaths) {
+      const fileState = fileStates.get(filePath);
+      if (!fileState) {
+        throw new Error(`Task file state not loaded for ${filePath}`);
+      }
+
+      await writeRawTaskArray(
+        filePath,
+        fileState.rawTasks,
+        fileState.useTasksWrapper,
+        fileState.wrapperObj,
+      );
+    }
+
+    return updatedTasks;
+  } finally {
+    await Promise.allSettled(releases.reverse().map((release) => release()));
+  }
 }
 
 /**
