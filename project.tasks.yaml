@@ -108635,6 +108635,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T05:17:21.950Z
+    - _ulid: 01KM2AE4J847YHX2RGCJ93FWVD
+      content: "Addressed fix-cycle blocker by restoring the global single-open-workspace-per-task
+        registry invariant and moving foreign-checkout handling into provisioning. Provisioning now
+        fails early with actionable guidance when a foreign-root open workspace record already
+        exists, instead of falling through to a late duplicate-record write failure. Verification:
+        npm test -- tests/dispatch-workspace-config.test.ts
+        tests/dispatch-workspace-registry.test.ts passes. Full npm test still reproduces the
+        pre-existing unrelated failure in tests/review-cli.test.ts ('should leave examined_commit
+        null when not provided')."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T05:52:31.304Z
   todos: []
   automation: eligible
 - _ulid: 01KM289GY9589XH063SSFMBJFQ
