@@ -331,6 +331,34 @@ describe("dispatch branch push lifecycle", () => {
       expect(result.error).toBeNull();
     });
 
+    // AC: @dispatch-integration-mutation-scope ac-4
+    it("refuses integration target push with actionable guidance when shared checkout is on another branch", async () => {
+      await seedRepo(tempDir);
+      git(tempDir, "checkout -b dev");
+
+      git(remoteDir, "init --bare");
+      git(tempDir, `remote add origin "${remoteDir}"`);
+      git(tempDir, "push -u origin dev");
+
+      await fs.writeFile(path.join(tempDir, "local-merge.txt"), "merge\n", "utf-8");
+      git(tempDir, "add local-merge.txt");
+      git(tempDir, 'commit -m "local merge"');
+      const localDevHead = git(tempDir, "rev-parse dev");
+
+      git(tempDir, "checkout -b human-feature");
+
+      const result = pushIntegrationTarget(tempDir, "dev", "origin");
+
+      expect(result.pushed).toBe(false);
+      expect(result.skipped).toBe(false);
+      expect(result.error).toContain('current branch is "human-feature"');
+      expect(result.error).toContain('Check out "dev"');
+
+      git(tempDir, "fetch origin");
+      expect(git(tempDir, "rev-parse dev")).toBe(localDevHead);
+      expect(git(tempDir, "rev-parse origin/dev")).not.toBe(localDevHead);
+    });
+
     // AC: @dispatch-remote-branch-sync ac-push-non-fatal
     it("returns error details on push failure without throwing", async () => {
       await seedRepo(tempDir);

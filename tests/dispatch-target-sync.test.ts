@@ -3,6 +3,7 @@ import * as fs from "node:fs/promises";
 import { execSync } from "node:child_process";
 import * as path from "node:path";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
+import * as workspaceModule from "../src/agent-runtime/workspace.js";
 import { DispatchEngine, type TargetSyncResult } from "../src/agent-runtime/dispatch.js";
 import {
   cleanupTempDir,
@@ -495,6 +496,49 @@ describe("dispatch target branch sync", () => {
 
     // Engine still running — not degraded
     expect(engine.getStatus().running).toBe(true);
+
+    await engine.stop();
+  });
+
+  it("preserves fetch and ff-only merge timeouts through the isolated target helper", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout dev");
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    const targetGitSpy = vi.spyOn(workspaceModule, "runDispatchIntegrationTargetGit");
+
+    await pushRemoteCommit(
+      remoteDir,
+      "dev",
+      "timeout-check.txt",
+      "timeout\n",
+      "timeout check",
+    );
+
+    const result = await engine._syncTargetBranch();
+
+    expect(result).toBe("synced");
+    expect(targetGitSpy).toHaveBeenNthCalledWith(
+      1,
+      projectDir,
+      "dev",
+      ["fetch", "origin", "dev"],
+      { timeout: 30_000 },
+    );
+    expect(targetGitSpy).toHaveBeenNthCalledWith(
+      2,
+      projectDir,
+      "dev",
+      ["merge", "--ff-only", "origin/dev"],
+      { timeout: 10_000 },
+    );
 
     await engine.stop();
   });

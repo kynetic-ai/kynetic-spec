@@ -40,6 +40,10 @@ interface GitResult {
   status: number | null;
 }
 
+interface RunGitOptions {
+  timeout?: number;
+}
+
 const DISPATCH_GIT_ENV_KEYS = [
   "GIT_ALTERNATE_OBJECT_DIRECTORIES",
   "GIT_COMMON_DIR",
@@ -254,12 +258,13 @@ export class DispatchWorkspaceError extends Error {
   }
 }
 
-function runGit(cwd: string, args: string[]): GitResult {
+function runGit(cwd: string, args: string[], options: RunGitOptions = {}): GitResult {
   const result = spawnSync("git", args, {
     cwd,
     env: buildDispatchGitEnv(),
     encoding: "utf-8",
     stdio: "pipe",
+    ...(options.timeout !== undefined ? { timeout: options.timeout } : {}),
   });
   return {
     stdout: (result.stdout ?? "").trim(),
@@ -1489,6 +1494,16 @@ export function resolveDispatchIntegrationMutationScope(
   };
 }
 
+export function runDispatchIntegrationTargetGit(
+  projectDir: string,
+  integrationBranch: string,
+  args: string[],
+  options: RunGitOptions = {},
+): GitResult {
+  const scope = resolveDispatchIntegrationMutationScope(projectDir, integrationBranch);
+  return runGit(scope.projectDir, args, options);
+}
+
 export function resolveDispatchWorkspaceCleanupState(
   options: ResolveDispatchWorkspaceCleanupStateOptions,
 ): DispatchWorkspaceCleanupState {
@@ -1918,7 +1933,24 @@ export function pushIntegrationTarget(
   }
 
   // For integration target, always use -u to ensure tracking is established
-  const result = runGit(projectDir, ["push", "-u", remote, integrationBranch]);
+  let result: GitResult;
+  try {
+    result = runDispatchIntegrationTargetGit(projectDir, integrationBranch, [
+      "push",
+      "-u",
+      remote,
+      integrationBranch,
+    ]);
+  } catch (err) {
+    if (err instanceof DispatchWorkspaceError) {
+      return {
+        pushed: false,
+        skipped: false,
+        error: `${err.message} Resolution: ${err.suggestion}`,
+      };
+    }
+    throw err;
+  }
   if (result.status !== 0) {
     // AC: @dispatch-remote-branch-sync ac-push-non-fatal
     return {
