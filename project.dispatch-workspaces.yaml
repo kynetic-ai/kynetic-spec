@@ -11879,18 +11879,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/add-explicit-generatecommitmessage-cases-for-all-shadow-operations/01kkx6qm
-    canonical_branch_head: b90454547ad1951c1f8cdd0677196add75195667
+    canonical_branch_head: b15aecdd0776108089c14b6486d969e2bce3abe6
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T06:24:41.100Z
+      updated_at: 2026-03-19T06:41:03.270Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T06:24:42.170Z
+      updated_at: 2026-03-19T06:41:03.270Z
     integration:
       status: pending
       detail: null
@@ -11898,7 +11898,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b90454547ad1951c1f8cdd0677196add75195667
-      updated_at: 2026-03-19T06:24:41.100Z
+      updated_at: 2026-03-19T06:41:03.270Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KKX6QMN6CN74M8NFSBM73X1Q"
@@ -11906,9 +11906,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T06:24:42.170Z
-      last_reconciled_at: 2026-03-19T06:24:42.170Z
+      last_reconciled_at: 2026-03-19T06:41:03.270Z
       created_at: 2026-03-19T06:24:41.100Z
-      updated_at: 2026-03-19T06:24:42.170Z
+      updated_at: 2026-03-19T06:41:03.270Z
     workspace_id: dispatch-workspace-01KKX6QMN6CN74M8NFSBM73X1Q
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
