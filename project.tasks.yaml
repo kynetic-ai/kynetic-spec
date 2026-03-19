@@ -104738,6 +104738,16 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T07:16:13.492Z
+    - _ulid: 01KM2FR33T7P8PFZ6YKM7PDAPE
+      content: "Replaced link create/delete shadow commits with structured link-add/link-remove operations
+        so generateCommitMessage() formats semantic subjects instead of falling back to raw human
+        text. Added formatter coverage in shadow.test.ts and CLI-level shadow commit assertions in
+        integration.test.ts. Verification: npm test passed; kspec validate still reports
+        pre-existing unrelated meta/completeness/reference debt in .kspec/modules/meta.yaml and AC
+        coverage warnings outside this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T07:25:20.378Z
   todos: []
   automation: eligible
 - _ulid: 01KKXAFX9BARSE23FRNK6DMYQ9
