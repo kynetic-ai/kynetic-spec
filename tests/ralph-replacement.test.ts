@@ -1,7 +1,7 @@
 /**
- * Tests for ralph replacement — kspec ralph deprecation and built-in agent setup.
+ * Tests for ralph replacement — removed kspec ralph guidance and built-in agent setup.
  *
- * Verifies that kspec ralph commands show a helpful migration error, and that
+ * Verifies that removed kspec ralph commands show a helpful migration error, and that
  * kspec setup creates built-in task-worker and pr-reviewer agent definitions.
  *
  * Task: @implement-ralph-replacement
@@ -71,7 +71,7 @@ async function setupMinimalProject(dir: string): Promise<void> {
 // ─── Tests ────────────────────────────────────────────────────────────────────
 
 // AC: @ralph-replacement ac-1
-describe("kspec ralph deprecation", () => {
+describe("removed kspec ralph command guidance", () => {
   it("shows migration error when kspec ralph run is invoked", () => {
     const result = runCli(["ralph", "run"], process.cwd());
 

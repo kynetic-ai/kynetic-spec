@@ -36,7 +36,6 @@ import {
   registerMetaCommands,
   registerModuleCommands,
   registerPlanCommands,
-  registerRalphCommand,
   registerRefsCommand,
   registerReviewCommands,
   registerScheduleCommands,
@@ -198,6 +197,37 @@ async function maybeAutoStartDaemon(): Promise<void> {
   }
 }
 
+function showRemovedRalphCommandError(): never {
+  const header = chalk.red("✗ kspec ralph has been replaced by kspec agent");
+  const msg = [
+    chalk.red("error: unknown command 'ralph'"),
+    "",
+    header,
+    "",
+    chalk.bold("kspec ralph has been removed.") +
+      " Use " +
+      chalk.cyan("kspec agent") +
+      " for equivalent functionality.",
+    "",
+    chalk.bold("Equivalent commands:"),
+    `  ${chalk.yellow("kspec ralph run")}      → ${chalk.cyan("kspec agent dispatch start")}`,
+    `  ${chalk.yellow("kspec ralph --dry-run")} → ${chalk.cyan("kspec agent dispatch start --dry-run")}`,
+    `  ${chalk.yellow("kspec ralph end-loop")} → ${chalk.cyan("kspec agent end-loop")}`,
+    "",
+    chalk.bold("Getting started:"),
+    `  List configured agents:  ${chalk.cyan("kspec agent list")}`,
+    `  Run a specific agent:    ${chalk.cyan("kspec agent run <agent-id>")}`,
+    `  Start dispatch engine:   ${chalk.cyan("kspec agent dispatch start")}`,
+    `  Check dispatch status:   ${chalk.cyan("kspec agent dispatch status")}`,
+    "",
+    `Run ${chalk.cyan("kspec setup")} to create built-in worker and reviewer agent definitions.`,
+    `Run ${chalk.cyan("kspec agent --help")} for full documentation.`,
+  ].join("\n");
+
+  process.stderr.write(msg + "\n");
+  process.exit(EXIT_CODES.ERROR);
+}
+
 program
   .name("kspec")
   .description("Kynetic Spec - Structured specification format CLI")
@@ -311,7 +341,6 @@ registerLogCommand(program);
 registerSearchCommand(program);
 registerRefsCommand(program);
 registerServeCommands(program);
-registerRalphCommand(program);
 registerMetaCommands(program);
 registerLinkCommands(program);
 registerModuleCommands(program);
@@ -334,6 +363,10 @@ registerAgentCommands(program);
 // Handle unknown commands with suggestions
 program.on("command:*", (operands) => {
   const unknownCommand = operands[0];
+
+  if (unknownCommand === "ralph") {
+    showRemovedRalphCommandError();
+  }
 
   // Check for direct alias match
   if (COMMAND_ALIASES[unknownCommand]) {
