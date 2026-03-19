@@ -20747,6 +20747,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-19T07:19:10.504Z
+      - _ulid: 01KM2GHDRBYD75KYB8XV2G20KE
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM2FBDRPBANPR3DN6HZBJY3Z
+        timestamp: 2026-03-19T07:39:10.476Z
     examined_commit: 883713aaf1ef6f3d218fc11570e50753efddd447
     external_links: []
     lifecycle_state: closed
@@ -20792,6 +20798,13 @@ reviews:
               impossible to approve this task as a clean "purge remaining ralph traces" change and
               risks merging unrelated behavior under the wrong task/review history.
             created_at: 2026-03-19T07:18:25.303Z
+          - _ulid: 01KM2GHDJ9HMWZQ6F1PYQ2YBJB
+            author: Jacob Chapel
+            body: Updated in a576e0c5bc4f07ffb2ad7b7cf9945f08a6ae28b4. The current branch diff against
+              origin/dev is now limited to this task's ralph-cleanup changes (29 files, all within
+              the migration/purge scope); the earlier unrelated 178-file snapshot issue does not
+              apply to the resubmission.
+            created_at: 2026-03-19T07:39:10.281Z
         kind: blocker
       - _ulid: 01KM2FBEVJTWWAA5Y5PT1JCHKH
         anchor:
@@ -20835,7 +20848,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T07:19:10.503Z
     created_at: 2026-03-19T07:16:14.542Z
-    updated_at: 2026-03-19T07:19:10.504Z
+    updated_at: 2026-03-19T07:39:10.281Z
     notes: []
   - _ulid: 01KM2FTFXZ88QBT8PNVW5AQZYR
     slugs: []
