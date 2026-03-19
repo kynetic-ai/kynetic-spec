@@ -21793,3 +21793,29 @@ reviews:
     created_at: 2026-03-19T21:07:44.052Z
     updated_at: null
     notes: []
+  - _ulid: 01KM3YY73WRXSBJS0XH35YS0GF
+    slugs: []
+    title: Review Dispatch Shared-Checkout Safety and Git Context Hardening (cycle 4)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM3YY73W8E6Z2ZQ5D0W42XCT
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-19T21:10:04.156Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-dispatch-integration-checkout-boundaries"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-19T21:10:04.156Z
+    updated_at: null
+    notes: []
