@@ -19838,6 +19838,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM2CR10EFK04G3EGNBH36HJN
         timestamp: 2026-03-19T06:32:52.690Z
+      - _ulid: 01KM2CR1V0V5ENXHEBNFM3W23B
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM2CR1KGWWB1BHWHAMCMMDZ3
+        timestamp: 2026-03-19T06:32:53.344Z
     examined_commit: 61ca7bb5b8609e78888aef803da22b303c93ca8b
     external_links: []
     lifecycle_state: open
@@ -19866,7 +19873,25 @@ reviews:
               cleanup is not actually finished."
             created_at: 2026-03-19T06:32:52.495Z
         kind: blocker
+      - _ulid: 01KM2CR1KGWWB1BHWHAMCMMDZ3
+        anchor:
+          type: code
+          commit: 61ca7bb5b8609e78888aef803da22b303c93ca8b
+          line_end: 679
+          line_start: 671
+          path: src/parser/config.ts
+          side: head
+        entries:
+          - _ulid: 01KM2CR1KGWGG6VZ32456KGQJ7
+            author: Jacob Chapel
+            body: This drops support for the existing  config key with no compatibility shim or migration path.
+              I verified it by loading a temp  containing ; after this change,  ignores the override
+              and resolves  back to the default . That silently breaks projects and test fixtures
+              that still use the legacy key, so the rename is a behavioral regression rather than a
+              pure trace cleanup.
+            created_at: 2026-03-19T06:32:53.104Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-19T06:25:10.398Z
-    updated_at: 2026-03-19T06:32:52.495Z
+    updated_at: 2026-03-19T06:32:53.104Z
     notes: []
