@@ -12354,7 +12354,7 @@ workspaces:
         head: b167ae34f9dbeed3ee5ae740d478c06917a1188b
         last_seen_at: 2026-03-19T23:17:12.280Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-cancelled-task-dependency-cleanup-01km43vy
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: f90477c9945db0317d11955393f6089b4fed466a
     bootstrap:
       status: succeeded
@@ -12404,7 +12404,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T23:26:17.852Z
+      updated_at: 2026-03-19T23:26:19.306Z
     integration:
       status: pending
       detail: null
@@ -12419,10 +12419,10 @@ workspaces:
     task_slug: task-route-dispatch-sync-through-targeting-path
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-19T23:17:12.142Z
-      last_reconciled_at: 2026-03-19T23:26:17.852Z
+      last_active_at: 2026-03-19T23:26:19.306Z
+      last_reconciled_at: 2026-03-19T23:26:19.306Z
       created_at: 2026-03-19T22:59:05.165Z
-      updated_at: 2026-03-19T23:26:18.394Z
+      updated_at: 2026-03-19T23:26:19.306Z
     workspace_id: dispatch-workspace-01KM3ZMEMA53X21SYPSRWRF6E8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
