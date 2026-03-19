@@ -11809,12 +11809,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T06:24:35.973Z
+      updated_at: 2026-03-19T06:24:39.996Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T06:24:35.973Z
+      updated_at: 2026-03-19T06:24:39.996Z
     integration:
       status: pending
       detail: null
@@ -11822,24 +11822,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-      updated_at: 2026-03-19T06:24:35.973Z
-    lifecycle_state: ready
+      updated_at: 2026-03-19T06:24:39.996Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KJP279FYHBM6995ZVMYGM7M2"
     task_slug: task-ralph-migration-guide
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T05:54:08.872Z
-      last_reconciled_at: 2026-03-19T06:24:35.973Z
+      last_reconciled_at: 2026-03-19T06:24:39.996Z
       created_at: 2026-03-19T05:54:07.938Z
-      updated_at: 2026-03-19T06:24:35.973Z
+      updated_at: 2026-03-19T06:24:39.996Z
     workspace_id: dispatch-workspace-01KJP279FYHBM6995ZVMYGM7M2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 61ca7bb5b8609e78888aef803da22b303c93ca8b
+        last_seen_at: 2026-03-19T06:24:39.996Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ralph-migration-guide-01kjp279-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-ralph-migration-guide/01kjp279
-        head: 83d649f7f3b6eb2f8fd4c99ec98a262f3629391c
-        last_seen_at: 2026-03-19T05:54:07.938Z
+        head: 61ca7bb5b8609e78888aef803da22b303c93ca8b
+        last_seen_at: 2026-03-19T06:24:39.996Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ralph-migration-guide-01kjp279
