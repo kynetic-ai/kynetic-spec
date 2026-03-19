@@ -34,7 +34,7 @@ function makeContext(specDir: string): KspecContext {
       identity: { author: null },
       validation: { strict_refs: true, require_acceptance: false },
       daemon: { port: 3456, host: 'localhost', auto_start: true },
-      ralph: {
+      agent: {
         skills: {
           task_work: '/kspec:task-work',
           reflect: '/kspec:reflect',

@@ -215,7 +215,7 @@ agent:
       expect(result.config.agent.skills.pr_review).toBe("/pr-review");
     });
 
-    it("uses kspec: namespace defaults when ralph config omitted", async () => {
+    it("uses kspec: namespace defaults when agent config omitted", async () => {
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
         `
@@ -231,7 +231,7 @@ daemon:
       expect(result.config.agent.skills.pr_review).toBe("/kspec:review");
     });
 
-    it("allows partial ralph skill overrides", async () => {
+    it("allows partial agent skill overrides", async () => {
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
         `
@@ -246,6 +246,43 @@ agent:
       expect(result.config.agent.skills.task_work).toBe("/kspec:task-work");
       expect(result.config.agent.skills.reflect).toBe("/kspec:reflect");
       expect(result.config.agent.skills.pr_review).toBe("/my-review");
+    });
+
+    it("accepts legacy ralph skill overrides for backward compatibility", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+ralph:
+  skills:
+    reflect: "/legacy-reflect"
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toBeNull();
+      expect(result.config.agent.skills.task_work).toBe("/kspec:task-work");
+      expect(result.config.agent.skills.reflect).toBe("/legacy-reflect");
+      expect(result.config.agent.skills.pr_review).toBe("/kspec:review");
+    });
+
+    it("prefers agent config when both agent and legacy ralph config exist", async () => {
+      await fs.writeFile(
+        path.join(tempDir, "kspec.config.yaml"),
+        `
+agent:
+  skills:
+    reflect: "/agent-reflect"
+ralph:
+  skills:
+    reflect: "/legacy-reflect"
+`
+      );
+
+      const result = await loadProjectConfig(tempDir);
+
+      expect(result.warning).toBeNull();
+      expect(result.config.agent.skills.reflect).toBe("/agent-reflect");
     });
 
     // AC: @project-config ac-5

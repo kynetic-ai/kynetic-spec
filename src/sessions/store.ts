@@ -1749,7 +1749,7 @@ export async function applyAutoAbandonMetadata(
 /**
  * Determine session type from metadata for display.
  * - "invocation": New agent runtime session (has trigger != "legacy" or agent_id)
- * - "loop": Legacy ralph loop session (no trigger, or trigger === "legacy")
+ * - "loop": Legacy dispatch loop session (no trigger, or trigger === "legacy")
  *
  * AC: @session-model-evolution ac-6
  */
@@ -3685,8 +3685,8 @@ export async function incrementBudget(
 /**
  * Reset the budget counter to 0 for a new cycle/iteration.
  *
- * Called by ralph at iteration boundaries. Single-writer guarantee:
- * ralph only resets between iterations when the agent is not running.
+ * Called by the dispatch loop at iteration boundaries. Single-writer guarantee:
+ * the loop only resets between iterations when the agent is not running.
  *
  * AC: @task-budget-enforcement ac-reset
  * AC: @task-budget-enforcement ac-atomic-write

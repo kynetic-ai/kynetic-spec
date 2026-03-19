@@ -217,6 +217,14 @@ const AgentConfigSchema = z
   .optional();
 
 /**
+ * Legacy alias for agent configuration.
+ *
+ * Kept only so existing `ralph:` config blocks continue to parse while the
+ * resolved runtime shape stays on `config.agent`.
+ */
+const LegacyRalphConfigSchema = AgentConfigSchema;
+
+/**
  * Complete schema for kspec.config.yaml.
  *
  * AC: @project-config ac-4 — unknown fields are ignored via passthrough
@@ -235,6 +243,8 @@ export const KspecConfigSchema = z
     dispatch: DispatchConfigSchema,
     /** Agent configuration */
     agent: AgentConfigSchema,
+    /** Legacy alias for agent configuration */
+    ralph: LegacyRalphConfigSchema,
     /** Hooks installation configuration */
     hooks: HooksConfigSchema,
   })
@@ -595,6 +605,7 @@ export function resolveConfig(
   fileConfig: KspecConfig | null,
 ): ResolvedKspecConfig {
   const file = fileConfig || {};
+  const agentConfig = file.agent ?? file.ralph;
 
   // Get env var overrides
   const envAuthor = process.env.KSPEC_AUTHOR;
@@ -671,12 +682,12 @@ export function resolveConfig(
     agent: {
       skills: {
         task_work:
-          file.agent?.skills?.task_work ??
+          agentConfig?.skills?.task_work ??
           DEFAULT_CONFIG.agent.skills.task_work,
         reflect:
-          file.agent?.skills?.reflect ?? DEFAULT_CONFIG.agent.skills.reflect,
+          agentConfig?.skills?.reflect ?? DEFAULT_CONFIG.agent.skills.reflect,
         pr_review:
-          file.agent?.skills?.pr_review ??
+          agentConfig?.skills?.pr_review ??
           DEFAULT_CONFIG.agent.skills.pr_review,
       },
     },
