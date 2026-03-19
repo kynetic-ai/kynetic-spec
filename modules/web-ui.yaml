@@ -1592,6 +1592,12 @@ features:
         id: ac-33
         then: The command operates normally, ignoring KSPEC_NO_DAEMON
         when: An explicit daemon management command is run (kspec serve start, stop, status, restart)
+      - given: A registered project's .kspec/ directory no longer exists while the daemon is running
+        id: ac-34
+        then: The daemon proactively unregisters the project and releases associated resources, rather than
+          leaving a stale registration until the next API request
+        when: The file watcher determines the directory is permanently unavailable and cannot continue
+          operating
     tags:
       - daemon
       - architecture
