@@ -20188,6 +20188,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM2E5AZX0094R0TAPVW4F5HR
         timestamp: 2026-03-19T06:57:37.461Z
+      - _ulid: 01KM2E5BRS3S4M2J6KERJD7340
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM2E5BKEHSXB3TFHTE056CND
+        timestamp: 2026-03-19T06:57:38.073Z
     examined_commit: bbaff772decfe825189f288ef9911d9f5696a240
     external_links: []
     lifecycle_state: open
@@ -20218,7 +20225,33 @@ reviews:
               scoped out, the task cannot be considered done.
             created_at: 2026-03-19T06:57:37.278Z
         kind: blocker
+      - _ulid: 01KM2E5BKEHSXB3TFHTE056CND
+        entries:
+          - _ulid: 01KM2E5BKEX3PPR0XR5VD2F1W8
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              - Files read: AGENTS.md; docs/agents-eval-scenarios.md; src/parser/config.ts;
+              src/sessions/store.ts; src/sessions/types.ts; tests/parser/config.test.ts;
+              tests/cli-agent-commands.test.ts; tests/triage-parser.test.ts
+
+              - Commands run: `git diff --stat
+              b0d1b7932b5096c72399b0f6e69bb310e3edb33d..bbaff772decfe825189f288ef9911d9f5696a240`;
+              `git diff
+              61ca7bb5b8609e78888aef803da22b303c93ca8b..bbaff772decfe825189f288ef9911d9f5696a240 --
+              ...`; `rg -n "ralph|Ralph" -S .`; `kspec item get @ralph-replacement`; `npm test`;
+              `kspec validate`
+
+              - Claims verified: the prior config-compat blocker is fixed by resolving `file.ralph
+              ?? file.agent` into `config.agent`, covered by new parser tests; the branch still
+              leaves documented `ralph` references behind
+
+              - Categories searched: correctness, backward compatibility, docs/task-scope
+              completeness, tests, validation baseline
+            created_at: 2026-03-19T06:57:37.902Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-19T06:54:26.418Z
-    updated_at: 2026-03-19T06:57:37.278Z
+    updated_at: 2026-03-19T06:57:37.902Z
     notes: []
