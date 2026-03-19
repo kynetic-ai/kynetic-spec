@@ -76414,7 +76414,7 @@
       author: Jacob Chapel
       created_at: 2026-03-19T23:59:14.150Z
   todos: []
-  automation: eligible
+  automation: manual_only
 - _ulid: 01KKX6QR02Z2YKJBPBXD4RCRKT
   slugs: []
   title: Fix link commands that bypass generateCommitMessage
