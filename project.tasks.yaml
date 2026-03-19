@@ -108475,3 +108475,56 @@
   notes: []
   todos: []
   automation: eligible
+- _ulid: 01KM26DB8RCM6D2T1SYZGZJR9X
+  slugs: []
+  title: Handle git worktree collisions between multiple project checkouts
+  type: bug
+  description: >-
+    **What:** When two checkouts of the same repo (e.g., `kynetic-spec` and `kynetic-spec-dispatch`)
+    each run dispatch, git worktrees are repo-global — a worktree created from one checkout is
+    visible to the other via the shared `.git/worktrees` pool. If one checkout provisions a worktree
+    at a path, the other checkout's `git worktree add` fails with "path already exists and is not a
+    registered git worktree."
+
+
+    **Why:** This caused a live dispatch failure: an accidental dispatch run in `kynetic-spec`
+    created a worktree at `kynetic-spec/.kspec-worktrees/<task-slug>`. When
+    `kynetic-spec-dispatch`'s engine later tried to provision for the same task, it resolved a
+    different `worktree_root` (correctly, to `kynetic-spec-dispatch/.kspec-worktrees/`) but found no
+    collision there. However, the git repo already had a worktree registered at the first path, and
+    provisioning failed when it tried to create a second worktree on the same branch. The engine
+    should scope workspace identity to its own `projectDir` and treat worktrees owned by other
+    checkouts as foreign.
+
+
+    **How:** During workspace provisioning, when `git worktree add` fails due to a path conflict:
+
+    1. Check if the existing worktree path is under a different project's `worktree_root` (compare
+    against `this.projectDir`)
+
+    2. If so, treat it as a foreign worktree — don't reuse it, don't error fatally
+
+    3. Either provision at the engine's own `worktree_root` with a disambiguated path, or surface a
+    clear error explaining the cross-checkout collision with actionable guidance
+
+
+    Also consider: the workspace registry in `.kspec/` is shared (same shadow branch). Records with
+    `worktree_root` pointing to a different checkout should be ignored by the current engine during
+    reconciliation and health checks. New spec AC ac-8 on `@dispatch-workspace-configuration` covers
+    this behavior.
+  spec_ref: "@dispatch-workspace-configuration"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - agent-runtime
+    - dispatch
+  vcs_refs: []
+  created_at: 2026-03-19T04:42:11.096Z
+  notes: []
+  todos: []
+  automation: eligible
