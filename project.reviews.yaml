@@ -21562,6 +21562,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-19T20:52:20.589Z
+      - _ulid: 01KM3XXRSY40NGXV1ZW9BDVTD0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM3XXQP0NZQVDC6G7ZJACKB1
+        timestamp: 2026-03-19T20:52:20.926Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -21592,7 +21599,16 @@ reviews:
               descriptions?  still reads a bit mechanism-shaped compared with the rest of the plan.
             created_at: 2026-03-19T20:52:19.770Z
         kind: question
+      - _ulid: 01KM3XXQP0NZQVDC6G7ZJACKB1
+        entries:
+          - _ulid: 01KM3XXQP1CHVJDS4Q7YFE1KMN
+            author: Jacob Chapel
+            body: The plan title is accurate, but the intro still repeats the stale-checkout scenario in terms
+              of checked-out trees, indexes, and launch context. Consider trimming that repetition
+              so the opening stays purely behavioral and less implementation-adjacent.
+            created_at: 2026-03-19T20:52:19.777Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-19T20:51:34.543Z
-    updated_at: 2026-03-19T20:52:19.784Z
+    updated_at: 2026-03-19T20:52:19.777Z
     notes: []
