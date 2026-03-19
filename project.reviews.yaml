@@ -18708,7 +18708,19 @@ reviews:
     slugs: []
     title: Review remove dead parseVersionFromOptions function
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Changed file src/cli/commands/review.ts only removes dead parseVersionFromOptions helper
+          and unused ReviewSubjectVersion import. tests/review-cli.test.ts passes when run with
+          dispatch/session env cleared, confirming no regression in the touched command surface.
+        name: review-cli impacted suite
+        required: true
+        runner: npm
+        created_at: 2026-03-19T04:42:51.849Z
+        completed_at: 2026-03-19T04:42:51.849Z
     events:
       - _ulid: 01KM25YR8RD12DAT803J8BJBE7
         actor: Jacob Chapel
@@ -18730,6 +18742,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM26EJCCAC3EJ4ZVZ7CXJQWE
         timestamp: 2026-03-19T04:42:51.358Z
+      - _ulid: 01KM26EK8DSFMTRS9G3CW8YR4S
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-cli impacted suite
+        timestamp: 2026-03-19T04:42:52.045Z
     examined_commit: fb1c18c7b0784d61a8710960326b0117145b8e95
     external_links: []
     lifecycle_state: open
@@ -18767,5 +18786,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-19T04:34:12.890Z
-    updated_at: 2026-03-19T04:42:51.148Z
+    updated_at: 2026-03-19T04:42:51.849Z
     notes: []
