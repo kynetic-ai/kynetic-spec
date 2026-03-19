@@ -22378,9 +22378,25 @@ reviews:
           status: fail
           name: kspec-validate
         timestamp: 2026-03-19T23:12:14.065Z
+      - _ulid: 01KM45YANN4JQ6PEQCQHW2H514
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-19T23:12:27.830Z
+      - _ulid: 01KM45YANPPVEERZK0SCV21827
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-19T23:12:27.830Z
     examined_commit: 4f77d10bfc9991aadf35dd05a1c5b67a8804b477
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -22408,7 +22424,14 @@ reviews:
               timeout semantics (or add equivalent timeout support in the helper).
             created_at: 2026-03-19T23:12:09.782Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-19T23:12:27.829Z
     created_at: 2026-03-19T23:08:30.781Z
-    updated_at: 2026-03-19T23:12:13.579Z
+    updated_at: 2026-03-19T23:12:27.830Z
     notes: []
