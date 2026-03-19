@@ -18721,6 +18721,20 @@ reviews:
         runner: npm
         created_at: 2026-03-19T04:42:51.849Z
         completed_at: 2026-03-19T04:42:51.849Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite in dispatch reviewer workspace failed in unrelated areas:
+          tests/agent-dispatch-engine.test.ts (2 failures in dispatch prompt/runInvocation behavior)
+          and tests/review-cli.test.ts examined_commit assertion due injected
+          KSPEC_DISPATCH_CANONICAL_HEAD. The review-cli failure disappears when rerun with
+          dispatch/session env cleared; agent-dispatch-engine failures are outside this diff."
+        name: npm test (full suite)
+        required: false
+        runner: npm
+        created_at: 2026-03-19T04:42:53.822Z
+        completed_at: 2026-03-19T04:42:53.822Z
     events:
       - _ulid: 01KM25YR8RD12DAT803J8BJBE7
         actor: Jacob Chapel
@@ -18765,6 +18779,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-19T04:42:52.760Z
+      - _ulid: 01KM26EN6D9YCEMDD8T4B8WMAP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test (full suite)
+        timestamp: 2026-03-19T04:42:54.029Z
     examined_commit: fb1c18c7b0784d61a8710960326b0117145b8e95
     external_links: []
     lifecycle_state: closed
@@ -18809,5 +18830,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T04:42:52.760Z
     created_at: 2026-03-19T04:34:12.890Z
-    updated_at: 2026-03-19T04:42:52.760Z
+    updated_at: 2026-03-19T04:42:53.822Z
     notes: []
