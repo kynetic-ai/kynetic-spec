@@ -19012,3 +19012,29 @@ reviews:
     created_at: 2026-03-19T04:46:14.863Z
     updated_at: 2026-03-19T04:51:24.342Z
     notes: []
+  - _ulid: 01KM274TXQTQ8CXMV1VSGDT1EA
+    slugs: []
+    title: Review dispatch-engine-cli-calls-must-not-crash-the-engine-on-failure
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM274TXQXREHKXDE9EDNTJ89
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-19T04:55:00.791Z
+    examined_commit: 32fd0963c67aa3a50ecfb6b21f84c544a96bf7e1
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM26C8WX6CMY7S9XD3RJZ003"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-19T04:55:00.791Z
+    updated_at: null
+    notes: []
