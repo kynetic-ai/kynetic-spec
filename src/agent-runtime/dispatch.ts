@@ -34,6 +34,7 @@ import {
 } from "./prompts.js";
 import { getAdapter } from "../agents/adapters.js";
 import {
+  buildDispatchGitEnv,
   provisionDispatchWorkspace,
   DispatchWorkspaceError,
   getDispatchShadowMutationLockPath,
@@ -50,7 +51,9 @@ import {
   discoverWorkspaceForReviewOrFixCycle,
   pushDispatchBranch,
   pushIntegrationTarget,
+  resolveDispatchIntegrationMutationScope,
   resolveDispatchRemote,
+  resolveDispatchWorkspaceConfig,
 } from "./workspace.js";
 import {
   ensureWorkspaceBootstrap,
@@ -685,7 +688,8 @@ export type TargetSyncResult =
   | "up_to_date"
   | "skipped"
   | "transient_failure"
-  | "diverged";
+  | "diverged"
+  | "unsafe_target";
 
 /**
  * Degraded state descriptor for the dispatch engine.
@@ -947,10 +951,11 @@ export class DispatchEngine {
 
     // AC: @dispatch-remote-branch-sync ac-no-remote — resolve remote sync at start time
     try {
+      const resolvedConfig = await resolveDispatchWorkspaceConfig(this.projectDir);
       const { config } = await loadProjectConfig(this.projectDir);
       this.dispatchRemote = resolveDispatchRemote(this.projectDir);
       this.remoteSyncEnabled = resolveDispatchRemoteSync(config, this.dispatchRemote !== null);
-      this.integrationTargetBranch = config.dispatch.base_branch ?? null;
+      this.integrationTargetBranch = resolvedConfig.baseBranch;
     } catch (err) {
       console.warn("[dispatch] Failed to resolve remote sync config, defaulting to disabled:", err);
       this.remoteSyncEnabled = false;
@@ -1368,6 +1373,14 @@ export class DispatchEngine {
     try {
       const config = this._resolveBaseBranch();
       if (!config) {
+        return;
+      }
+      try {
+        resolveDispatchIntegrationMutationScope(this.projectDir, config);
+      } catch (err) {
+        const reason = this._formatUnsafeMutationScopeReason(err, config);
+        this._enterDegradedState(reason);
+        console.warn(`[dispatch] Integration target push skipped (${trigger}): ${reason}`);
         return;
       }
       const result = pushIntegrationTarget(
@@ -2788,6 +2801,7 @@ export class DispatchEngine {
    */
   private async _initTargetSync(): Promise<void> {
     try {
+      const resolvedConfig = await resolveDispatchWorkspaceConfig(this.projectDir);
       const { config } = await loadProjectConfig(this.projectDir, this.projectDir);
       this._syncIntervalMs = config.dispatch.sync_interval * 1000;
 
@@ -2802,7 +2816,7 @@ export class DispatchEngine {
       }
 
       this._syncRemote = remotes[0] ?? null;
-      this._syncBaseBranch = config.dispatch.base_branch ?? this._resolveDefaultBaseBranch();
+      this._syncBaseBranch = resolvedConfig.baseBranch;
 
       if (!this._syncBaseBranch || !this._syncRemote) {
         // Can't sync without a base branch or remote
@@ -2843,12 +2857,25 @@ export class DispatchEngine {
 
     this._targetSyncRunning = true;
     try {
+      let mutationScope;
+      try {
+        mutationScope = resolveDispatchIntegrationMutationScope(
+          this.projectDir,
+          this._syncBaseBranch,
+        );
+      } catch (err) {
+        const reason = this._formatUnsafeMutationScopeReason(err, this._syncBaseBranch);
+        this._enterDegradedState(reason);
+        return "unsafe_target";
+      }
+
       // Step 1: Fetch the target branch from remote
       const fetchResult = spawnSync(
         "git",
         ["fetch", this._syncRemote, this._syncBaseBranch],
         {
-          cwd: this.projectDir,
+          cwd: mutationScope.projectDir,
+          env: buildDispatchGitEnv(),
           encoding: "utf-8",
           stdio: "pipe",
           timeout: 30_000,
@@ -2885,16 +2912,11 @@ export class DispatchEngine {
         "git",
         ["merge", "--ff-only", `${this._syncRemote}/${this._syncBaseBranch}`],
         {
-          cwd: this.projectDir,
+          cwd: mutationScope.projectDir,
+          env: buildDispatchGitEnv(),
           encoding: "utf-8",
           stdio: "pipe",
           timeout: 10_000,
-          env: {
-            ...process.env,
-            // Override GIT_WORK_TREE so git operates on the project root,
-            // not a worktree that may be the cwd of the calling process
-            GIT_WORK_TREE: this.projectDir,
-          },
         },
       );
 
@@ -3074,6 +3096,7 @@ export class DispatchEngine {
   private _listGitRemotes(): string[] {
     const result = spawnSync("git", ["remote"], {
       cwd: this.projectDir,
+      env: buildDispatchGitEnv(),
       encoding: "utf-8",
       stdio: "pipe",
     });
@@ -3090,39 +3113,15 @@ export class DispatchEngine {
     return [...originFirst, ...rest];
   }
 
-  /**
-   * Resolve the default base branch when dispatch.base_branch is not configured.
-   * Uses the same fallback chain as workspace config resolution.
-   */
-  private _resolveDefaultBaseBranch(): string | null {
-    if (!this._syncRemote) return null;
-
-    // Try remote HEAD
-    const headResult = spawnSync(
-      "git",
-      ["symbolic-ref", "--quiet", `refs/remotes/${this._syncRemote}/HEAD`],
-      { cwd: this.projectDir, encoding: "utf-8", stdio: "pipe" },
-    );
-    if (headResult.status === 0 && headResult.stdout) {
-      const prefix = `refs/remotes/${this._syncRemote}/`;
-      const stdout = headResult.stdout.trim();
-      if (stdout.startsWith(prefix)) {
-        return stdout.slice(prefix.length);
-      }
+  private _formatUnsafeMutationScopeReason(
+    err: unknown,
+    branch: string,
+  ): string {
+    if (err instanceof DispatchWorkspaceError) {
+      return `${err.message} Resolution: ${err.suggestion}`;
     }
-
-    // Try current branch
-    const branchResult = spawnSync(
-      "git",
-      ["symbolic-ref", "--quiet", "--short", "HEAD"],
-      { cwd: this.projectDir, encoding: "utf-8", stdio: "pipe" },
-    );
-    if (branchResult.status === 0 && branchResult.stdout) {
-      return branchResult.stdout.trim();
-    }
-
-    // Default
-    return "main";
+    const detail = err instanceof Error ? err.message : String(err);
+    return `Dispatch cannot determine a safe mutation surface for integration target "${branch}". Resolution: ${detail}`;
   }
 
   /**

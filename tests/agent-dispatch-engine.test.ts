@@ -341,6 +341,16 @@ async function installFakeGh(dir: string): Promise<{ restore: () => void }> {
   };
 }
 
+async function waitForMockCall(
+  spy: { mock: { calls: unknown[] } },
+  timeoutMs = 2_000,
+): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+  while (spy.mock.calls.length === 0 && Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+}
+
 /**
  * Write tasks to the project tasks file.
  */
@@ -1827,26 +1837,26 @@ describe("AC-12: Shadow branch mutations serialized via mutex", () => {
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
     await engine.start();
 
-    const taskId = testUlid("TASK");
-    await engine.handleStateChange({
-      taskId,
-      taskRef: `@${taskId}`,
-      fromStatus: "in_progress",
-      toStatus: "pending",
-      timestamp: Date.now(),
-      task: { automation: "eligible", tags: [] } as any,
-    });
+    try {
+      const taskId = testUlid("TASK");
+      await engine.handleStateChange({
+        taskId,
+        taskRef: `@${taskId}`,
+        fromStatus: "in_progress",
+        toStatus: "pending",
+        timestamp: Date.now(),
+        task: { automation: "eligible", tags: [] } as any,
+      });
 
-    for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 5));
+      await waitForMockCall(runSpy);
+
+      expect(runSpy).toHaveBeenCalled();
+      expect(runSpy.mock.calls[0][0].mutationLockFile).toBe(
+        path.join(testDir, ".kspec-dispatch-shadow-mutation"),
+      );
+    } finally {
+      await engine.stop();
     }
-
-    expect(runSpy).toHaveBeenCalled();
-    expect(runSpy.mock.calls[0][0].mutationLockFile).toBe(
-      path.join(testDir, ".kspec-dispatch-shadow-mutation"),
-    );
-
-    await engine.stop();
   });
 });
 
@@ -2765,30 +2775,30 @@ describe("Dispatch role workflow entrypoints", () => {
       });
 
       await engine.start();
-      const taskId = testUlid("TASK");
-      await engine.handleStateChange({
-        taskId,
-        taskRef: `@${taskId}`,
-        fromStatus: "in_progress",
-        toStatus: "pending",
-        timestamp: Date.now(),
-        task: { _ulid: taskId, title: "Worker role task", slugs: ["worker-role-task"], status: "pending", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
-      });
+      try {
+        const taskId = testUlid("TASK");
+        await engine.handleStateChange({
+          taskId,
+          taskRef: `@${taskId}`,
+          fromStatus: "in_progress",
+          toStatus: "pending",
+          timestamp: Date.now(),
+          task: { _ulid: taskId, title: "Worker role task", slugs: ["worker-role-task"], status: "pending", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
+        });
 
-      for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 5));
+        await waitForMockCall(runSpy);
+
+        expect(runSpy).toHaveBeenCalled();
+        const invocation = runSpy.mock.calls[0][0];
+        expect(invocation.prompt).toContain("## Role Entry");
+        expect(invocation.prompt).toContain("Workflow entrypoint: `$kspec-task-work`");
+        expect(invocation.prompt).toContain("Publication mode: `pull_request`");
+        expect(invocation.prompt).toContain("Publish target: `main`");
+        expect(invocation.prompt).toContain("create or update a PR");
+        expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("pull_request");
+      } finally {
+        await engine.stop();
       }
-
-      expect(runSpy).toHaveBeenCalled();
-      const invocation = runSpy.mock.calls[0][0];
-      expect(invocation.prompt).toContain("## Role Entry");
-      expect(invocation.prompt).toContain("Workflow entrypoint: `$kspec-task-work`");
-      expect(invocation.prompt).toContain("Publication mode: `pull_request`");
-      expect(invocation.prompt).toContain("Publish target: `main`");
-      expect(invocation.prompt).toContain("create or update a PR");
-      expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("pull_request");
-
-      await engine.stop();
     } finally {
       fakeGh.restore();
     }
@@ -2828,35 +2838,35 @@ describe("Dispatch role workflow entrypoints", () => {
     });
 
     await engine.start();
-    const taskId = testUlid("TASK");
-    await provisionDispatchWorkspace({
-      projectDir: testDir,
-      taskRef: `@${taskId}`,
-      task: { title: "Reviewer role task", slugs: ["reviewer-role-task"] },
-    });
-    await engine.handleStateChange({
-      taskId,
-      taskRef: `@${taskId}`,
-      fromStatus: "in_progress",
-      toStatus: "pending_review",
-      timestamp: Date.now(),
-      task: { _ulid: taskId, title: "Reviewer role task", slugs: ["reviewer-role-task"], status: "pending_review", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible", review_url: "https://example.com/pr/1" } as any,
-    });
+    try {
+      const taskId = testUlid("TASK");
+      await provisionDispatchWorkspace({
+        projectDir: testDir,
+        taskRef: `@${taskId}`,
+        task: { title: "Reviewer role task", slugs: ["reviewer-role-task"] },
+      });
+      await engine.handleStateChange({
+        taskId,
+        taskRef: `@${taskId}`,
+        fromStatus: "in_progress",
+        toStatus: "pending_review",
+        timestamp: Date.now(),
+        task: { _ulid: taskId, title: "Reviewer role task", slugs: ["reviewer-role-task"], status: "pending_review", type: "task", priority: 1, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible", review_url: "https://example.com/pr/1" } as any,
+      });
 
-    for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 5));
+      await waitForMockCall(runSpy);
+
+      expect(runSpy).toHaveBeenCalled();
+      const invocation = runSpy.mock.calls[0][0];
+      expect(invocation.prompt).toContain("Workflow entrypoint: `/pr-review`");
+      expect(invocation.prompt).not.toContain("{skill:pr-review}");
+      expect(invocation.prompt).toContain("Publication mode: `manual_merge`");
+      expect(invocation.prompt).toContain("git merge --abort");
+      expect(invocation.prompt).toContain("needs_work");
+      expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("manual_merge");
+    } finally {
+      await engine.stop();
     }
-
-    expect(runSpy).toHaveBeenCalled();
-    const invocation = runSpy.mock.calls[0][0];
-    expect(invocation.prompt).toContain("Workflow entrypoint: `/pr-review`");
-    expect(invocation.prompt).not.toContain("{skill:pr-review}");
-    expect(invocation.prompt).toContain("Publication mode: `manual_merge`");
-    expect(invocation.prompt).toContain("git merge --abort");
-    expect(invocation.prompt).toContain("needs_work");
-    expect(invocation.env?.KSPEC_DISPATCH_PUBLICATION_MODE).toBe("manual_merge");
-
-    await engine.stop();
   });
 
   // AC: @dispatch-role-workflow-entry-contract ac-4

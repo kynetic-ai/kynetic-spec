@@ -40,6 +40,16 @@ interface GitResult {
   status: number | null;
 }
 
+const DISPATCH_GIT_ENV_KEYS = [
+  "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+  "GIT_COMMON_DIR",
+  "GIT_DIR",
+  "GIT_INDEX_FILE",
+  "GIT_OBJECT_DIRECTORY",
+  "GIT_PREFIX",
+  "GIT_WORK_TREE",
+] as const;
+
 export interface ResolvedDispatchWorkspaceConfig {
   baseBranch: string;
   baseBranchStartPoint: string;
@@ -247,6 +257,7 @@ export class DispatchWorkspaceError extends Error {
 function runGit(cwd: string, args: string[]): GitResult {
   const result = spawnSync("git", args, {
     cwd,
+    env: buildDispatchGitEnv(),
     encoding: "utf-8",
     stdio: "pipe",
   });
@@ -255,6 +266,16 @@ function runGit(cwd: string, args: string[]): GitResult {
     stderr: (result.stderr ?? "").trim(),
     status: result.status,
   };
+}
+
+export function buildDispatchGitEnv(
+  baseEnv: NodeJS.ProcessEnv = process.env,
+): NodeJS.ProcessEnv {
+  const env: NodeJS.ProcessEnv = { ...baseEnv };
+  for (const key of DISPATCH_GIT_ENV_KEYS) {
+    delete env[key];
+  }
+  return env;
 }
 
 function resolveDispatchMutationLockTimeoutMs(): number | undefined {
@@ -1434,6 +1455,38 @@ export async function resolveDispatchWorkspaceConfig(
       'no current branch, and default "main" does not exist.',
     "Set dispatch.base_branch in kspec.config.yaml, or ensure the repository has a main branch.",
   );
+}
+
+export interface DispatchIntegrationMutationScope {
+  projectDir: string;
+  integrationBranch: string;
+  currentBranch: string;
+}
+
+export function resolveDispatchIntegrationMutationScope(
+  projectDir: string,
+  integrationBranch: string,
+): DispatchIntegrationMutationScope {
+  const currentBranch = resolveCurrentBranch(projectDir);
+  if (!currentBranch) {
+    throw new DispatchWorkspaceError(
+      `Dispatch cannot determine a safe mutation surface for integration target "${integrationBranch}" in ${projectDir}.`,
+      `Check out "${integrationBranch}" in the shared dispatch checkout at ${projectDir} and retry.`,
+    );
+  }
+
+  if (currentBranch !== integrationBranch) {
+    throw new DispatchWorkspaceError(
+      `Dispatch refuses to mutate integration target "${integrationBranch}" from shared checkout ${projectDir} because the current branch is "${currentBranch}".`,
+      `Check out "${integrationBranch}" in ${projectDir}, or restart dispatch from a shared checkout that already has "${integrationBranch}" checked out.`,
+    );
+  }
+
+  return {
+    projectDir,
+    integrationBranch,
+    currentBranch,
+  };
 }
 
 export function resolveDispatchWorkspaceCleanupState(

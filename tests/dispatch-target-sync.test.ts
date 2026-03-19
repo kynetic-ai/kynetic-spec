@@ -81,6 +81,27 @@ async function setupProjectFiles(projectDir: string, baseBranch = "dev"): Promis
   );
 }
 
+async function pushRemoteCommit(
+  remoteDir: string,
+  branch: string,
+  fileName: string,
+  content: string,
+  message: string,
+): Promise<string> {
+  const cloneDir = await createTempDir("kspec-target-sync-clone-");
+  try {
+    git(cloneDir, `clone "${remoteDir}" .`);
+    git(cloneDir, `checkout ${branch}`);
+    await fs.writeFile(path.join(cloneDir, fileName), content, "utf-8");
+    git(cloneDir, `add ${fileName}`);
+    git(cloneDir, `commit -m "${message}"`);
+    git(cloneDir, `push origin ${branch}`);
+    return git(cloneDir, `rev-parse ${branch}`);
+  } finally {
+    await cleanupTempDir(cloneDir);
+  }
+}
+
 describe("dispatch target branch sync", () => {
   let projectDir: string;
   let remoteDir: string;
@@ -105,17 +126,13 @@ describe("dispatch target branch sync", () => {
     await setupProjectFiles(projectDir);
 
     // Push a new commit to remote via a clone so local is behind
-    const cloneDir = await createTempDir("kspec-target-sync-clone-");
-    try {
-      git(cloneDir, `clone "${remoteDir}" .`);
-      git(cloneDir, "checkout dev");
-      await fs.writeFile(path.join(cloneDir, "new-feature.txt"), "feature\n", "utf-8");
-      git(cloneDir, "add new-feature.txt");
-      git(cloneDir, 'commit -m "new feature on remote"');
-      git(cloneDir, "push origin dev");
-    } finally {
-      await cleanupTempDir(cloneDir);
-    }
+    await pushRemoteCommit(
+      remoteDir,
+      "dev",
+      "new-feature.txt",
+      "feature\n",
+      "new feature on remote",
+    );
 
     // Confirm local is behind
     const localBefore = git(projectDir, "rev-parse dev");
@@ -140,6 +157,136 @@ describe("dispatch target branch sync", () => {
     const syncStatus = engine.getTargetSyncStatus();
     expect(syncStatus.enabled).toBe(true);
     expect(syncStatus.lastSyncTimestamp).toBeGreaterThan(0);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-1
+  // AC: @dispatch-integration-mutation-scope ac-2
+  it("syncs only the shared checkout while leaving task worktrees untouched", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout dev");
+
+    const taskWorktreeDir = `${projectDir}-task-worktree`;
+    execSync(`git worktree add "${taskWorktreeDir}" -b feat/task-sync-surface`, {
+      cwd: projectDir,
+      stdio: "pipe",
+    });
+
+    try {
+      const taskHeadBefore = git(taskWorktreeDir, "rev-parse HEAD");
+      const taskStatusBefore = git(taskWorktreeDir, "status --short");
+      const remoteTip = await pushRemoteCommit(
+        remoteDir,
+        "dev",
+        "shared-checkout.txt",
+        "shared\n",
+        "shared checkout sync",
+      );
+
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
+      expect(git(taskWorktreeDir, "rev-parse HEAD")).toBe(taskHeadBefore);
+      expect(git(taskWorktreeDir, "status --short")).toBe(taskStatusBefore);
+
+      await engine.stop();
+    } finally {
+      git(projectDir, `worktree remove --force "${taskWorktreeDir}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-3
+  it("reuses the same shared checkout mutation surface across repeated syncs", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout dev");
+
+    const taskWorktreeDir = `${projectDir}-task-worktree-repeat`;
+    execSync(`git worktree add "${taskWorktreeDir}" -b feat/task-sync-repeat`, {
+      cwd: projectDir,
+      stdio: "pipe",
+    });
+
+    try {
+      const taskHeadBefore = git(taskWorktreeDir, "rev-parse HEAD");
+      const firstRemoteTip = await pushRemoteCommit(
+        remoteDir,
+        "dev",
+        "first-sync.txt",
+        "first\n",
+        "first sync commit",
+      );
+
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(git(projectDir, "branch --show-current")).toBe("dev");
+      expect(git(projectDir, "rev-parse dev")).toBe(firstRemoteTip);
+      expect(git(taskWorktreeDir, "rev-parse HEAD")).toBe(taskHeadBefore);
+
+      const secondRemoteTip = await pushRemoteCommit(
+        remoteDir,
+        "dev",
+        "second-sync.txt",
+        "second\n",
+        "second sync commit",
+      );
+      const result = await engine._syncTargetBranch();
+
+      expect(result).toBe("synced");
+      expect(git(projectDir, "branch --show-current")).toBe("dev");
+      expect(git(projectDir, "rev-parse dev")).toBe(secondRemoteTip);
+      expect(git(taskWorktreeDir, "rev-parse HEAD")).toBe(taskHeadBefore);
+
+      await engine.stop();
+    } finally {
+      git(projectDir, `worktree remove --force "${taskWorktreeDir}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-4
+  it("refuses sync with actionable guidance when the shared checkout is on another branch", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    await pushRemoteCommit(
+      remoteDir,
+      "dev",
+      "remote-ahead.txt",
+      "ahead\n",
+      "remote ahead",
+    );
+
+    const humanHeadBefore = git(projectDir, "rev-parse human-feature");
+    const localDevBefore = git(projectDir, "rev-parse dev");
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    const result = await engine._syncTargetBranch();
+
+    expect(result).toBe("unsafe_target");
+    expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
+    expect(git(projectDir, "rev-parse dev")).toBe(localDevBefore);
+    expect(engine.getDegradedState().active).toBe(true);
+    expect(engine.getDegradedState().reason).toContain('current branch is "human-feature"');
+    expect(engine.getDegradedState().reason).toContain('Check out "dev"');
 
     await engine.stop();
   });
