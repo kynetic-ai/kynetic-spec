@@ -21392,6 +21392,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM3SW1BWP9NRTM8KAD21V73Z
         timestamp: 2026-03-19T19:41:30.581Z
+      - _ulid: 01KM3SWEG2BZS0P86S1A4WZGN4
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM3SWE9WTBZMQR9BG5V1RSFA
+        timestamp: 2026-03-19T19:41:43.298Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -21446,7 +21453,20 @@ reviews:
               explicit precondition and postcondition before implementation can be reviewed."
             created_at: 2026-03-19T19:41:29.852Z
         kind: blocker
+      - _ulid: 01KM3SWE9WTBZMQR9BG5V1RSFA
+        anchor:
+          type: structured
+          ref: "@01KM3KX3"
+          section: title
+        entries:
+          - _ulid: 01KM3SWE9X9EWG4DG7J56WRSR3
+            author: Jacob Chapel
+            body: "Nit: the plan title is broader than the document's concrete scope. The actual contract is
+              shared-checkout safety, sanitized git execution, and drift repair. A title that names
+              checkout safety more explicitly would make the plan easier to scan."
+            created_at: 2026-03-19T19:41:43.101Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-19T19:40:03.588Z
-    updated_at: 2026-03-19T19:41:29.852Z
+    updated_at: 2026-03-19T19:41:43.101Z
     notes: []
