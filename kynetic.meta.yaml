@@ -7437,6 +7437,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-18T14:51:22.490Z
+  - _ulid: 01KM26JD7FRQ4ED86Y66CRYJN1
+    type: friction
+    content: review-cli integration tests assume KSPEC_DISPATCH_CANONICAL_HEAD is unset, but dispatch
+      worker environments export it, so 'review add leaves examined_commit null when not provided'
+      fails under dispatch even though the runtime fix here is unrelated.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-19T04:44:56.943Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
