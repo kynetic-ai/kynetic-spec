@@ -19464,6 +19464,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-19T05:37:01.553Z
+      - _ulid: 01KM29Q67TREX990GXPB086M9K
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM29Q625NEJMDTVWSF0DXNRQ
+        timestamp: 2026-03-19T05:39:59.354Z
     examined_commit: f300f92933f25b97eb4bc9f54bfc3ec2bef1166b
     external_links: []
     lifecycle_state: open
@@ -19473,8 +19480,33 @@ reviews:
       content_hash: ""
       ref: "@01KM26C8WX6CMY7S9XD3RJZ003"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM29Q625NEJMDTVWSF0DXNRQ
+        entries:
+          - _ulid: 01KM29Q625M2E3FV1NSVNWRE7V
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/invocation.ts,
+              tests/agent-dispatch-engine.test.ts, tests/agent-invocation-lifecycle.test.ts,
+              tests/helpers/cli.ts
+
+              Commands run: git diff --stat/name-only, git diff on touched files, kspec task get,
+              kspec review for-task/get, kspec validate, grep for AC annotations, npm test, targeted
+              source/context reads, branch head verification
+
+              Claims verified: workspace-provisioning recovery no longer throws on task note/block
+              failure; default dispatch CLI path now resolves to dist/cli/index.js; dispatch-review
+              test environment no longer inherits KSPEC_DISPATCH_CANONICAL_HEAD and destabilizes
+              review CLI tests
+
+              Categories searched: correctness, error handling, test quality, integration, edge
+              cases. No blocking findings.
+            created_at: 2026-03-19T05:39:59.173Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-19T05:36:41.668Z
-    updated_at: 2026-03-19T05:37:01.380Z
+    updated_at: 2026-03-19T05:39:59.173Z
     notes: []
