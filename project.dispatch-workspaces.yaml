@@ -12230,7 +12230,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T22:29:10.215Z
+      updated_at: 2026-03-19T22:29:11.477Z
     integration:
       status: pending
       detail: null
@@ -12239,25 +12239,20 @@ workspaces:
       target_branch: dev
       target_commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
       updated_at: 2026-03-19T22:29:10.215Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM3ZMDYZB4RYWVX78Z8YVTE6"
     task_slug: task-isolate-dispatch-git-targeting
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T22:16:54.260Z
-      last_reconciled_at: 2026-03-19T22:29:10.215Z
+      last_reconciled_at: 2026-03-19T22:29:11.477Z
       created_at: 2026-03-19T22:02:52.692Z
-      updated_at: 2026-03-19T22:29:10.215Z
+      updated_at: 2026-03-19T22:29:11.477Z
     workspace_id: dispatch-workspace-01KM3ZMDYZB4RYWVX78Z8YVTE6
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 71f83468591d8b2c6a5a3e488dd2f31651bf7222
-        last_seen_at: 2026-03-19T22:16:47.316Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-isolate-dispatch-git-targeting-01km3zmd-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-isolate-dispatch-git-targeting/01km3zmd
