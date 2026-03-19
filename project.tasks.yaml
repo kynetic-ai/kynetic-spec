@@ -109054,6 +109054,15 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T22:27:23.944Z
+    - _ulid: 01KM44B8713ECSM9JW216Y2KGH
+      content: "Fix cycle: stabilized dispatch-engine async regression tests around integration-target
+        startup by waiting on actual invocation delivery and ensuring engine.stop() runs in finally
+        blocks. This removes cross-test bleed from late reviewer/worker invocations, and full
+        verification is now green: npm test passed (286 files, 6606 tests). kspec validate still
+        reports the same pre-existing repo-wide reference/completeness debt unrelated to this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T22:44:34.146Z
   todos: []
   automation: eligible
 - _ulid: 01KM3ZMEMA53X21SYPSRWRF6E8
