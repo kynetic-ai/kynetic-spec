@@ -1,5 +1,8 @@
 import { execSync } from "node:child_process";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import * as YAML from "yaml";
 import {
   cleanupTempDir,
   initGitRepo,
@@ -128,6 +131,84 @@ describe("Integration: task cancel dependency cleanup", () => {
     expect(child.depends_on).toEqual([]);
     expect(
       child.notes.some((note) => note.content.includes("Cancelled dependency cleanup")),
+    ).toBe(true);
+  });
+
+  // AC: @cancelled-task-dependency-cleanup ac-2
+  // AC: @cancelled-task-dependency-cleanup ac-3
+  // AC: @cancelled-task-dependency-cleanup ac-6
+  it("buffers cross-file downstream cleanup until the cancellation flushes once", async () => {
+    execSync('git add . && git commit -m "initial"', {
+      cwd: tempDir,
+      encoding: "utf-8",
+      stdio: "pipe",
+    });
+    kspec("init --no-prompt", tempDir);
+
+    kspec('task add --title "Split upstream" --slug split-upstream', tempDir);
+    kspec('task add --title "Split downstream" --slug split-downstream --depends-on @split-upstream', tempDir);
+
+    const shadowDir = path.join(tempDir, ".kspec");
+    const primaryTaskFile = path.join(shadowDir, "project.tasks.yaml");
+    const secondaryTaskFile = path.join(shadowDir, "tasks", "split-downstream.tasks.yaml");
+    const primaryDoc = YAML.parse(await fs.readFile(primaryTaskFile, "utf-8")) as {
+      tasks?: Array<Record<string, unknown>>;
+    } | Array<Record<string, unknown>>;
+    const primaryTasks = Array.isArray(primaryDoc) ? primaryDoc : (primaryDoc.tasks ?? []);
+    const downstreamTask = primaryTasks.find((task) =>
+      Array.isArray(task.slugs) && task.slugs.includes("split-downstream")
+    );
+
+    expect(downstreamTask).toBeDefined();
+
+    const remainingPrimaryTasks = primaryTasks.filter((task) => task !== downstreamTask);
+    await fs.mkdir(path.dirname(secondaryTaskFile), { recursive: true });
+    await fs.writeFile(
+      primaryTaskFile,
+      YAML.stringify(
+        Array.isArray(primaryDoc)
+          ? remainingPrimaryTasks
+          : { ...primaryDoc, tasks: remainingPrimaryTasks },
+      ),
+      "utf-8",
+    );
+    await fs.writeFile(
+      secondaryTaskFile,
+      YAML.stringify({ tasks: [downstreamTask] }),
+      "utf-8",
+    );
+
+    const commitsBefore = Number.parseInt(
+      execSync("git rev-list --count HEAD", { cwd: shadowDir, encoding: "utf-8" }).trim(),
+      10,
+    );
+
+    kspec('task cancel @split-upstream --reason "Cross-file atomic cancel"', tempDir);
+
+    const commitsAfter = Number.parseInt(
+      execSync("git rev-list --count HEAD", { cwd: shadowDir, encoding: "utf-8" }).trim(),
+      10,
+    );
+    expect(commitsAfter).toBe(commitsBefore + 1);
+
+    const downstream = kspecJson<{ depends_on: string[]; notes: Array<{ content: string }> }>(
+      "task get @split-downstream",
+      tempDir,
+    );
+    expect(downstream.depends_on).toEqual([]);
+    expect(
+      downstream.notes.some((note) => note.content.includes("Cross-file atomic cancel")),
+    ).toBe(true);
+
+    const downstreamFileDoc = YAML.parse(
+      await fs.readFile(secondaryTaskFile, "utf-8"),
+    ) as { tasks: Array<{ slugs?: string[]; depends_on?: string[]; notes?: Array<{ content: string }> }> };
+    const persistedDownstream = downstreamFileDoc.tasks.find((task) =>
+      task.slugs?.includes("split-downstream")
+    );
+    expect(persistedDownstream?.depends_on).toEqual([]);
+    expect(
+      persistedDownstream?.notes?.some((note) => note.content.includes("Cancelled dependency cleanup")),
     ).toBe(true);
   });
 });

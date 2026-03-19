@@ -8,6 +8,8 @@ import type { Pair } from "yaml";
 import { acquireFileLock, withFileLock } from "./file-lock.js";
 import {
   accessBufferAware,
+  activateBatchBuffer,
+  deactivateBatchBuffer,
   getActiveBatchBuffer,
   readdirBufferAware,
 } from "../cli/batch-write-buffer.js";
@@ -1124,6 +1126,23 @@ export async function mutateTasksAtomically(
 
   const filePaths = [...new Set(taskFileByUlid.values())].sort();
   const releases: Array<() => Promise<void>> = [];
+  const existingBuffer = getActiveBatchBuffer();
+  const batchBufferScope = filePaths.length > 1
+    ? filePaths.reduce((commonPath, filePath) => {
+        let candidate = commonPath;
+        while (
+          candidate !== path.dirname(candidate) &&
+          !filePath.startsWith(`${candidate}${path.sep}`) &&
+          filePath !== candidate
+        ) {
+          candidate = path.dirname(candidate);
+        }
+        return candidate;
+      }, path.dirname(filePaths[0]))
+    : null;
+  const localBatchBuffer = !existingBuffer && batchBufferScope
+    ? activateBatchBuffer(batchBufferScope)
+    : null;
 
   try {
     for (const filePath of filePaths) {
@@ -1222,8 +1241,20 @@ export async function mutateTasksAtomically(
       );
     }
 
+    if (localBatchBuffer) {
+      await localBatchBuffer.flush();
+    }
+
     return updatedTasks;
+  } catch (error) {
+    if (localBatchBuffer) {
+      localBatchBuffer.discard();
+    }
+    throw error;
   } finally {
+    if (localBatchBuffer) {
+      deactivateBatchBuffer();
+    }
     await Promise.allSettled(releases.reverse().map((release) => release()));
   }
 }
