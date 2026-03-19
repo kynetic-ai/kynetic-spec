@@ -21105,6 +21105,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-19T07:46:53.019Z
+      - _ulid: 01KM2H0DMR6RXKP0ZZDQBA07VZ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM2H0DAG8K6C6CQJP7BBHQQK
+        timestamp: 2026-03-19T07:47:21.880Z
     examined_commit: a576e0c5bc4f07ffb2ad7b7cf9945f08a6ae28b4
     external_links: []
     lifecycle_state: open
@@ -21133,7 +21140,33 @@ reviews:
               branch before it can pass review.
             created_at: 2026-03-19T07:46:41.849Z
         kind: blocker
+      - _ulid: 01KM2H0DAG8K6C6CQJP7BBHQQK
+        entries:
+          - _ulid: 01KM2H0DAHQ4WEDW84Y81BYAS3
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              - Files read: kspec-agents.md; src/cli/index.ts; src/cli/commands/index.ts;
+              tests/ralph-replacement.test.ts; tests/meta.test.ts;
+              packages/daemon/src/routes/reviews.ts
+
+              - Commands run: git status --short --branch; git show --stat --summary a576e0c5; git
+              diff b0d1b793..a576e0c5 -- <task files>; git diff --stat b0d1b793..a576e0c5; git
+              rev-list --count b0d1b793..a576e0c5; git log --oneline --reverse b0d1b793..a576e0c5;
+              kspec item get @ralph-replacement; kspec review for-task @01KJP279FYHBM6995ZVMYGM7M2;
+              kspec review get @01KM2C9X; kspec review get @01KM2DZG; kspec review get @01KM2F7E; rg
+              -n "ralph" src tests templates .agents .factory packages docs AGENTS.md
+              kspec-agents.md; kspec validate; npm test
+
+              - Claims verified: the branch is still far broader than this task (confirmed by
+              155-commit diff vs dev and unrelated review API/UI files); the snapshot test suite is
+              failing (confirmed by npm test failure in tests/agent-dispatch-engine.test.ts)
+
+              - Categories searched: correctness, test quality, integration, scope/merge safety
+            created_at: 2026-03-19T07:47:21.553Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-19T07:40:46.510Z
-    updated_at: 2026-03-19T07:46:52.775Z
+    updated_at: 2026-03-19T07:47:21.553Z
     notes: []
