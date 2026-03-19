@@ -21112,9 +21112,25 @@ reviews:
           kind: nit
           thread_ulid: 01KM2H0DAG8K6C6CQJP7BBHQQK
         timestamp: 2026-03-19T07:47:21.880Z
+      - _ulid: 01KM2H0EQZ9G4TRY36XH8JBWTP
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-19T07:47:23.007Z
+      - _ulid: 01KM2H0EQZHR0WKB5HG7MQ2ZCT
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-19T07:47:23.007Z
     examined_commit: a576e0c5bc4f07ffb2ad7b7cf9945f08a6ae28b4
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -21166,7 +21182,14 @@ reviews:
               - Categories searched: correctness, test quality, integration, scope/merge safety
             created_at: 2026-03-19T07:47:21.553Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-03-19T07:47:23.007Z
     created_at: 2026-03-19T07:40:46.510Z
-    updated_at: 2026-03-19T07:47:21.553Z
+    updated_at: 2026-03-19T07:47:23.007Z
     notes: []
