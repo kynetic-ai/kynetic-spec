@@ -11470,12 +11470,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T04:02:23.005Z
+      updated_at: 2026-03-19T04:03:00.117Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T04:02:23.005Z
+      updated_at: 2026-03-19T04:03:00.117Z
     integration:
       status: pending
       detail: null
@@ -11483,17 +11483,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bb5471acddfb9905490cdced154f7a52a26a0fdc
-      updated_at: 2026-03-19T04:02:23.005Z
-    lifecycle_state: ready
+      updated_at: 2026-03-19T04:03:00.117Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM21D00SD4D9WW2G1BFC1YB0"
     task_slug: remove-dead-parseversionfromoptions-function
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T03:52:05.581Z
-      last_reconciled_at: 2026-03-19T04:02:23.005Z
+      last_reconciled_at: 2026-03-19T04:03:00.117Z
       created_at: 2026-03-19T03:52:04.161Z
-      updated_at: 2026-03-19T04:02:23.005Z
+      updated_at: 2026-03-19T04:03:00.117Z
     workspace_id: dispatch-workspace-01KM21D00SD4D9WW2G1BFC1YB0
     worktree_root: /home/chapel/Projects/kynetic-spec/.kspec-worktrees
     worktrees:
