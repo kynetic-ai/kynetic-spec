@@ -1835,8 +1835,9 @@ inbox:
     added_by: "@claude"
     created_at: 2026-03-18T14:38:52.287Z
   - _ulid: 01KM0PS4CGKW9JJQXFQS2PAY7H
-    text: "Plan reviewer skill: Create a /plan-review skill for two use cases: (1) Structured plan
-      review before approval — evaluate problem diagnosis, spec change coverage, task completeness,
+    text: >-
+      Plan reviewer skill: Create a /plan-review skill for two use cases: (1) Structured plan review
+      before approval — evaluate problem diagnosis, spec change coverage, task completeness,
       dependency ordering, risk assessment. Currently done ad-hoc by spawning a general agent with
       manual instructions. A skill would standardize the review criteria and finding format. (2)
       Post-derive validation — verify derived tasks match the plan document: full descriptions
@@ -1845,7 +1846,18 @@ inbox:
       session checked structural properties (exists, priority, deps) but missed that task
       descriptions were truncated summaries instead of the full what/why/how from the plan. The
       skill should diff plan task content against derived task descriptions to catch this class of
-      issue."
+      issue.
+
+
+      ---
+
+
+      Additional failure mode from @plan-dispatch-integration-checkout-boundaries: post-derive
+      review approved a task that merely restated plan/spec design work ('Design shared-checkout
+      integration branch contract') instead of producing executable implementation work. Plan review
+      guidance should explicitly reject derived tasks whose What/Why/How only reproduce the
+      already-approved plan or spec contract, especially leading design tasks that become dependency
+      gates for real implementation tasks.
     tags:
       - skill
       - plan
