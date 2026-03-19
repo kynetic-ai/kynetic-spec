@@ -104542,6 +104542,7 @@
   created_at: 2026-03-17T06:11:36.230Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KKX6QPC0374PT4W93CMA7EMX
   slugs: []
   title: Fix shadow commit call sites that omit entity refs
