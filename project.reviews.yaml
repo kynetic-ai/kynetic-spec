@@ -22664,6 +22664,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-19T23:31:58.706Z
         completed_at: 2026-03-19T23:31:58.706Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test passed: 286 files, 6608 tests, 3 skipped. Exit 0. Also verified targeted
+          dispatch suites: tests/dispatch-target-sync.test.ts and
+          tests/dispatch-branch-push-lifecycle.test.ts passed (38 tests)."
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-03-19T23:31:59.562Z
+        completed_at: 2026-03-19T23:31:59.562Z
     events:
       - _ulid: 01KM46SQDT8A1EXQC6JD43GHCQ
         actor: Jacob Chapel
@@ -22692,6 +22704,13 @@ reviews:
           status: fail
           name: kspec-validate
         timestamp: 2026-03-19T23:31:58.966Z
+      - _ulid: 01KM4723651G7RCC5H8A6KWXX2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm-test
+        timestamp: 2026-03-19T23:31:59.813Z
     examined_commit: fadb999f740f18d9877355ad928dc71183a41c15
     external_links: []
     lifecycle_state: open
@@ -22704,5 +22723,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-19T23:27:25.626Z
-    updated_at: 2026-03-19T23:31:58.706Z
+    updated_at: 2026-03-19T23:31:59.562Z
     notes: []
