@@ -113,6 +113,7 @@ export function kspec(args: string, cwd: string, options: KspecOptions = {}): Ks
   const DISPATCH_ENV_VARS = [
     'KSPEC_RALPH_SESSION',
     'KSPEC_SESSION_ID',
+    'KSPEC_DISPATCH_CANONICAL_HEAD',
     'KSPEC_SHADOW_MUTATION_LOCK_FILE',
     'KSPEC_SHADOW_MUTATION_LOCK_TIMEOUT_MS',
   ];

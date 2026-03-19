@@ -2171,6 +2171,21 @@ export class DispatchEngine {
     }
   }
 
+  private _runRecoveryTaskCommand(
+    taskRef: string,
+    action: string,
+    run: () => void,
+  ): void {
+    try {
+      run();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.warn(
+        `[dispatch] Failed to ${action} for ${taskRef} during recovery: ${message}`,
+      );
+    }
+  }
+
   /**
    * Spawn a single invocation for a queue entry.
    * Returns true if an invocation was actually started, false if skipped.
@@ -2220,13 +2235,21 @@ export class DispatchEngine {
         console.error(
           `[dispatch] Failed to provision workspace for ${entry.change.taskRef}: ${message}`,
         );
-        this._addTaskNote(
+        this._runRecoveryTaskCommand(
           entry.change.taskRef,
-          `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
+          "add task note",
+          () => this._addTaskNote(
+            entry.change.taskRef,
+            `[DISPATCH-WORKSPACE] ${message} Suggested action: ${guidance}`,
+          ),
         );
-        this._blockTask(
+        this._runRecoveryTaskCommand(
           entry.change.taskRef,
-          `Dispatch workspace provisioning failed: ${message}. Suggested action: ${guidance}`,
+          "block task",
+          () => this._blockTask(
+            entry.change.taskRef,
+            `Dispatch workspace provisioning failed: ${message}. Suggested action: ${guidance}`,
+          ),
         );
         return false;
       }
