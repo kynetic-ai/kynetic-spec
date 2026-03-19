@@ -474,7 +474,9 @@ Updated body.
 
       expect(commitsAfter).toBe(commitsBefore + 1);
       expect(getShadowStatus(shadowDir)).toBe("");
-      expect(getShadowHeadSubject(shadowDir)).toContain("plan-import");
+      expect(getShadowHeadSubject(shadowDir)).toBe(
+        "Import Plan: @plan-shadow-plan - Shadow Plan Updated",
+      );
     } finally {
       await cleanupTempDir(shadowDir);
     }
