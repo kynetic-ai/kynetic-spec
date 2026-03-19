@@ -22327,6 +22327,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-19T23:08:51.404Z
+      - _ulid: 01KM45XSEMXDS2R9ZZWHAAJ9F0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM45XS1PC6FSYWCSKV7W2EJN
+        timestamp: 2026-03-19T23:12:10.196Z
     examined_commit: 4f77d10bfc9991aadf35dd05a1c5b67a8804b477
     external_links: []
     lifecycle_state: open
@@ -22336,8 +22343,28 @@ reviews:
       content_hash: ""
       ref: "@01KM3ZMEMA53X21SYPSRWRF6E8"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM45XS1PC6FSYWCSKV7W2EJN
+        anchor:
+          type: code
+          commit: 4f77d10bfc9991aadf35dd05a1c5b67a8804b477
+          line_end: 2905
+          line_start: 2870
+          path: src/agent-runtime/dispatch.ts
+          side: head
+        entries:
+          - _ulid: 01KM45XS1PW3K1TEHEBZP8XESW
+            author: Jacob Chapel
+            body: This refactor routes target sync through the isolated-target helper, but it also drops the
+              explicit 30s fetch timeout and 10s ff-merge timeout that `_syncTargetBranch()` had
+              before. If the remote stalls instead of returning an immediate git error, dispatch now
+              blocks inside `git fetch`/`git merge` rather than reporting a transient sync failure
+              and retrying on the next interval, which regresses the non-fatal sync behavior this
+              task is supposed to preserve. Keep the targeting helper, but preserve the previous
+              timeout semantics (or add equivalent timeout support in the helper).
+            created_at: 2026-03-19T23:12:09.782Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-19T23:08:30.781Z
-    updated_at: 2026-03-19T23:08:51.148Z
+    updated_at: 2026-03-19T23:12:09.782Z
     notes: []
