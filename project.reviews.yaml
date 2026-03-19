@@ -21385,6 +21385,13 @@ reviews:
           kind: question
           thread_ulid: 01KM3SW1CE48HSA7YFHK1R0RKG
         timestamp: 2026-03-19T19:41:30.301Z
+      - _ulid: 01KM3SW22N06T0HRTNCZ6RAES2
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM3SW1BWP9NRTM8KAD21V73Z
+        timestamp: 2026-03-19T19:41:30.581Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -21424,7 +21431,22 @@ reviews:
               optional deployment guidance."
             created_at: 2026-03-19T19:41:29.871Z
         kind: question
+      - _ulid: 01KM3SW1BWP9NRTM8KAD21V73Z
+        anchor:
+          type: structured
+          field: ac-2
+          ref: "@01KM3KX3"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KM3SW1BWMJMEG8WS944R0P2A
+            author: Jacob Chapel
+            body: "Blocker: AC-2 in  is underspecified. 'Safe repair path' is not an observable contract yet: it
+              does not say what state qualifies as safe, what command family is allowed, or what
+              postcondition proves the checkout matches the integration branch. This needs an
+              explicit precondition and postcondition before implementation can be reviewed."
+            created_at: 2026-03-19T19:41:29.852Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-19T19:40:03.588Z
-    updated_at: 2026-03-19T19:41:29.871Z
+    updated_at: 2026-03-19T19:41:29.852Z
     notes: []
