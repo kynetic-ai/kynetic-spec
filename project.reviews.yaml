@@ -21708,9 +21708,16 @@ reviews:
           from: closed
           to: open
         timestamp: 2026-03-19T21:07:51.910Z
+      - _ulid: 01KM3YXEPM5GJJ3TAR5PJBBKYM
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-19T21:09:39.157Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -21758,7 +21765,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T20:57:28.062Z
     created_at: 2026-03-19T20:56:14.634Z
-    updated_at: 2026-03-19T21:07:51.682Z
+    updated_at: 2026-03-19T21:09:38.959Z
     notes: []
   - _ulid: 01KM3YSY9M2QQCF89ZKAD611RX
     slugs: []
