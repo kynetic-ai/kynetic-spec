@@ -20020,6 +20020,17 @@ reviews:
         runner: npm
         created_at: 2026-03-19T06:45:59.066Z
         completed_at: 2026-03-19T06:45:59.066Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Fails on pre-existing repo-wide meta/reference/completeness debt in untouched .kspec
+          files; not introduced by this diff.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-19T06:45:59.611Z
+        completed_at: 2026-03-19T06:45:59.611Z
     events:
       - _ulid: 01KM2DF0RPVMMS8D975GVCCQGZ
         actor: Jacob Chapel
@@ -20041,6 +20052,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-19T06:45:59.245Z
+      - _ulid: 01KM2DG1V27R1GYVK8R5D69PE0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-19T06:45:59.778Z
     examined_commit: b15aecdd0776108089c14b6486d969e2bce3abe6
     external_links: []
     lifecycle_state: open
@@ -20053,5 +20071,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-19T06:45:25.911Z
-    updated_at: 2026-03-19T06:45:59.066Z
+    updated_at: 2026-03-19T06:45:59.611Z
     notes: []
