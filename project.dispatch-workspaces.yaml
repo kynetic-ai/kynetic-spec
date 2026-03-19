@@ -12098,7 +12098,7 @@ workspaces:
         head: 74fd5f54aaf39ed84821a89b9ea659e02e7b3890
         last_seen_at: 2026-03-19T07:26:07.420Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-link-commands-that-bypass-generatecommitmessage-01kkx6qr
-  - active_role: null
+  - active_role: worker
     base_branch_point: 146e2709913aa6c8f2e597da2e98c9d224b4255d
     bootstrap:
       status: succeeded
@@ -12145,7 +12145,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T21:51:41.266Z
+      updated_at: 2026-03-19T21:51:42.474Z
     integration:
       status: pending
       detail: null
@@ -12154,16 +12154,16 @@ workspaces:
       target_branch: dev
       target_commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
       updated_at: 2026-03-19T21:51:41.266Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM3ZMD8K6VNEVT4VR9R9YZQG"
     task_slug: task-design-dispatch-shared-checkout-contract
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-03-19T21:51:41.266Z
+      last_active_at: 2026-03-19T21:51:42.474Z
+      last_reconciled_at: 2026-03-19T21:51:42.474Z
       created_at: 2026-03-19T21:51:41.266Z
-      updated_at: 2026-03-19T21:51:41.838Z
+      updated_at: 2026-03-19T21:51:42.474Z
     workspace_id: dispatch-workspace-01KM3ZMD8K6VNEVT4VR9R9YZQG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
