@@ -109138,6 +109138,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T23:12:30.743Z
+    - _ulid: 01KM46P2QAJF0A8FJNBCP8H9QD
+      content: "[FIX_CYCLE: 1] Restored the target-sync timeout semantics that were lost in the
+        isolated-target refactor by threading timeout support through
+        runDispatchIntegrationTargetGit() and passing the original 30s fetch / 10s ff-only merge
+        limits from _syncTargetBranch(). Added a regression test that asserts those exact timeout
+        options still flow through the shared targeting helper. Verification: npm run build passed;
+        npm test -- tests/dispatch-target-sync.test.ts passed; npm test --
+        tests/dispatch-branch-push-lifecycle.test.ts passed; full npm test hit one unrelated timeout
+        in tests/cli-schedule-commands.test.ts, and that file passed on immediate isolated rerun."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T23:25:26.122Z
   todos: []
   automation: eligible
 - _ulid: 01KM3ZMF9C5B3JEDTE4AR74K46
