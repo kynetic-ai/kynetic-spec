@@ -1,8 +1,3 @@
-kynetic: "1.0"
-project:
-  name: Kynetic Spec
-  version: 0.1.0
-  status: draft
 traits:
   - _ulid: 01KFDZSHF748JN4K9PAVM60NQ8
     slugs:
@@ -10,126 +5,126 @@ traits:
     title: JSON Output Mode
     type: trait
     description: Commands support --json flag for structured JSON output with consistent formatting
-    acceptance_criteria:
-      - id: ac-1
-        given: command supports JSON mode
-        when: --json flag is provided
-        then: output is valid JSON with no ANSI color codes
-      - id: ac-2
-        given: JSON mode is active
-        when: command completes successfully
-        then: output includes all data available in human-readable mode
-      - id: ac-3
-        given: JSON mode is active
-        when: command encounters an error
-        then: error is returned as JSON object with error field
-      - id: ac-4
-        given: JSON output contains references
-        when: output is generated
-        then: references use @ prefix consistently
-      - id: ac-5
-        given: JSON output contains timestamps
-        when: output is generated
-        then: timestamps use ISO 8601 format
-      - id: ac-6
-        given: command supports --json
-        when: used with other formatting flags
-        then: --json takes precedence over other format options
+    status:
+      maturity: draft
+      implementation: implemented
     traits:
       - _ulid: 01KJN1WT94B23HXX1R5KVD9BVC
         slugs: []
         title: Test Trait
         type: trait
-        tags: []
+        description: Test-only trait for validating trait inheritance mechanics in the kspec system. Used by
+          test fixtures to verify that traits correctly propagate acceptance criteria to inheriting
+          specs.
         depends_on: []
         implements: []
         relates_to: []
         tests: []
         traits: []
-        notes: []
+        tags: []
         created: 2026-03-01T15:57:25.668Z
-        description: Test-only trait for validating trait inheritance mechanics in the kspec system. Used by
-          test fixtures to verify that traits correctly propagate acceptance criteria to inheriting
-          specs.
-    status:
-      maturity: draft
-      implementation: implemented
+        notes: []
+    acceptance_criteria:
+      - given: command supports JSON mode
+        id: ac-1
+        then: output is valid JSON with no ANSI color codes
+        when: --json flag is provided
+      - given: JSON mode is active
+        id: ac-2
+        then: output includes all data available in human-readable mode
+        when: command completes successfully
+      - given: JSON mode is active
+        id: ac-3
+        then: error is returned as JSON object with error field
+        when: command encounters an error
+      - given: JSON output contains references
+        id: ac-4
+        then: references use @ prefix consistently
+        when: output is generated
+      - given: JSON output contains timestamps
+        id: ac-5
+        then: timestamps use ISO 8601 format
+        when: output is generated
+      - given: command supports --json
+        id: ac-6
+        then: --json takes precedence over other format options
+        when: used with other formatting flags
   - _ulid: 01KFDZSHFAV02EW1F6Y20MAF51
     slugs:
       - trait-multi-ref-batch
     title: Multi-Reference Batch Operations
     type: trait
     description: Commands support --refs flag to operate on multiple items in a single invocation
-    acceptance_criteria:
-      - id: ac-1
-        given: command supports batch mode
-        when: --refs @ref1 @ref2 @ref3 is provided
-        then: command operates on all provided references
-      - id: ac-2
-        given: batch operation encounters errors
-        when: processing multiple refs
-        then: continue processing remaining refs and report all failures
-      - id: ac-3
-        given: batch operation is running
-        when: all refs succeed
-        then: exit code 0 is returned
-      - id: ac-4
-        given: batch operation is running
-        when: any refs fail
-        then: exit code 1 is returned
-      - id: ac-5
-        given: batch operation output
-        when: operation completes
-        then: success and failure counts are reported
-      - id: ac-6
-        given: --refs is provided
-        when: used with positional ref argument
-        then: error indicating mutually exclusive options
-      - id: ac-7
-        given: batch operation in JSON mode
-        when: --json --refs @a @b provided
-        then: output array contains result for each ref
-      - id: ac-8
-        given: batch operation with duplicate refs
-        when: --refs @a @a @b provided
-        then: each ref processed once only
     status:
       maturity: draft
       implementation: implemented
+    acceptance_criteria:
+      - given: command supports batch mode
+        id: ac-1
+        then: command operates on all provided references
+        when: --refs @ref1 @ref2 @ref3 is provided
+      - given: batch operation encounters errors
+        id: ac-2
+        then: continue processing remaining refs and report all failures
+        when: processing multiple refs
+      - given: batch operation is running
+        id: ac-3
+        then: exit code 0 is returned
+        when: all refs succeed
+      - given: batch operation is running
+        id: ac-4
+        then: exit code 1 is returned
+        when: any refs fail
+      - given: batch operation output
+        id: ac-5
+        then: success and failure counts are reported
+        when: operation completes
+      - given: --refs is provided
+        id: ac-6
+        then: error indicating mutually exclusive options
+        when: used with positional ref argument
+      - given: batch operation in JSON mode
+        id: ac-7
+        then: output array contains result for each ref
+        when: --json --refs @a @b provided
+      - given: batch operation with duplicate refs
+        id: ac-8
+        then: each ref processed once only
+        when: --refs @a @a @b provided
   - _ulid: 01KFDZSHFANRHKH2PJGT0907PC
     slugs:
       - trait-confirmation-prompt
     title: Confirmation Prompt for Destructive Operations
     type: trait
     description: Commands prompt for confirmation before destructive operations unless --force is provided
-    acceptance_criteria:
-      - id: ac-1
-        given: command is destructive
-        when: executed without --force
-        then: prompt for user confirmation before proceeding
-      - id: ac-2
-        given: confirmation prompt is shown
-        when: user confirms (y/yes)
-        then: operation proceeds
-      - id: ac-3
-        given: confirmation prompt is shown
-        when: user declines (n/no)
-        then: operation is cancelled with exit code 2
-      - id: ac-4
-        given: command is destructive
-        when: --force flag is provided
-        then: no confirmation prompt shown and operation proceeds
-      - id: ac-5
-        given: batch operation is destructive
-        when: --refs provided without --force
-        then: single confirmation covers all refs
-      - id: ac-6
-        given: command supports --force
-        when: used in non-interactive environment
-        then: operations require explicit --force flag
     status:
       maturity: draft
       implementation: implemented
+    acceptance_criteria:
+      - given: command is destructive
+        id: ac-1
+        then: prompt for user confirmation before proceeding
+        when: executed without --force
+      - given: confirmation prompt is shown
+        id: ac-2
+        then: operation proceeds
+        when: user confirms (y/yes)
+      - given: confirmation prompt is shown
+        id: ac-3
+        then: operation is cancelled with exit code 2
+        when: user declines (n/no)
+      - given: command is destructive
+        id: ac-4
+        then: no confirmation prompt shown and operation proceeds
+        when: --force flag is provided
+      - given: batch operation is destructive
+        id: ac-5
+        then: single confirmation covers all refs
+        when: --refs provided without --force
+      - given: command supports --force
+        id: ac-6
+        then: operations require explicit --force flag
+        when: used in non-interactive environment
   - _ulid: 01KFDZSHFAP21C8TDCQ54Z1R0T
     slugs:
       - trait-filterable-list
@@ -137,39 +132,39 @@ traits:
     type: trait
     description: List commands support filtering, pagination, and sorting options
     acceptance_criteria:
-      - id: ac-1
-        given: list command supports filtering
-        when: --status <value> provided
+      - given: list command supports filtering
+        id: ac-1
         then: only items with matching status shown
-      - id: ac-2
-        given: list command supports filtering
-        when: --tag <value> provided
+        when: --status <value> provided
+      - given: list command supports filtering
+        id: ac-2
         then: only items with matching tag shown
-      - id: ac-3
-        given: list command supports pagination
-        when: --limit N provided
+        when: --tag <value> provided
+      - given: list command supports pagination
+        id: ac-3
         then: output shows at most N items
-      - id: ac-4
-        given: list command supports pagination
-        when: --offset N provided
+        when: --limit N provided
+      - given: list command supports pagination
+        id: ac-4
         then: output skips first N items
-      - id: ac-5
-        given: multiple filters provided
-        when: --status X --tag Y used together
+        when: --offset N provided
+      - given: multiple filters provided
+        id: ac-5
         then: output shows items matching all filters (AND logic)
-      - id: ac-6
-        given: no items match filters
-        when: list command executes
+        when: --status X --tag Y used together
+      - given: no items match filters
+        id: ac-6
         then: empty list shown with informative message
-      - id: ac-7
-        given: list command output
-        when: results are displayed
+        when: list command executes
+      - given: list command output
+        id: ac-7
         then: summary shows total matching items and filter state
-      - id: ac-8
-        given: list command supports count mode
-        when: --count flag is provided
+        when: results are displayed
+      - given: list command supports count mode
+        id: ac-8
         then: 'outputs only the total number of matching items as a plain integer (no item details); ignores
           --limit and --offset; in JSON mode outputs {"count": N}'
+        when: --count flag is provided
   - _ulid: 01KFDZSHFAEN1ATTA5QKQVGCVJ
     slugs:
       - trait-priority-parameter
@@ -177,40 +172,40 @@ traits:
     type: trait
     description: Commands support --priority flag with 1-5 scale where 1 is highest priority
     acceptance_criteria:
-      - id: ac-1
-        given: command accepts priority
-        when: --priority N where 1 <= N <= 5
+      - given: command accepts priority
+        id: ac-1
         then: priority is set to specified value
-      - id: ac-2
-        given: command accepts priority
-        when: --priority N where N < 1 or N > 5
+        when: --priority N where 1 <= N <= 5
+      - given: command accepts priority
+        id: ac-2
         then: error indicates valid range is 1-5
-      - id: ac-3
-        given: priority is displayed
-        when: item is shown
+        when: --priority N where N < 1 or N > 5
+      - given: priority is displayed
+        id: ac-3
         then: lower numbers shown as higher priority
-      - id: ac-4
-        given: priority is not specified
-        when: item is created
+        when: item is shown
+      - given: priority is not specified
+        id: ac-4
         then: default priority applied per item type
-      - id: ac-5
-        given: items are sorted by priority
-        when: list is displayed
+        when: item is created
+      - given: items are sorted by priority
+        id: ac-5
         then: priority 1 items shown before priority 5
-      - id: ac-6
-        given: legacy priority values exist
-        when: command encounters high/medium/low
+        when: list is displayed
+      - given: legacy priority values exist
+        id: ac-6
         then: mapped to 1/3/5 respectively
-      - id: ac-7
-        given: command accepts priority
-        when: --priority P1 through P5 (case-insensitive) provided
+        when: command encounters high/medium/low
+      - given: command accepts priority
+        id: ac-7
         then: P-notation normalized to numeric equivalent (P1→1, P2→2, etc.) using shared parsePriority
           helper
-      - id: ac-8
-        given: command accepts priority via batch or CLI
-        when: priority value uses P-notation
+        when: --priority P1 through P5 (case-insensitive) provided
+      - given: command accepts priority via batch or CLI
+        id: ac-8
         then: normalization handled by shared parsePriority validator, not per-layer conversion; batch layer
           does not duplicate normalization logic
+        when: priority value uses P-notation
   - _ulid: 01KFDZSHFA5KYRM58WCP6RJCQE
     slugs:
       - trait-dry-run
@@ -218,30 +213,30 @@ traits:
     type: trait
     description: Commands support --dry-run flag to preview changes without applying them
     acceptance_criteria:
-      - id: ac-1
-        given: command supports dry run
-        when: --dry-run flag is provided
+      - given: command supports dry run
+        id: ac-1
         then: show what would be changed without applying
-      - id: ac-2
-        given: dry run mode is active
-        when: command completes
+        when: --dry-run flag is provided
+      - given: dry run mode is active
+        id: ac-2
         then: no files are modified
-      - id: ac-3
-        given: dry run mode is active
-        when: output is shown
+        when: command completes
+      - given: dry run mode is active
+        id: ac-3
         then: clear indication that this is a preview
-      - id: ac-4
-        given: dry run mode is active
-        when: command would error
+        when: output is shown
+      - given: dry run mode is active
+        id: ac-4
         then: error shown but no state changed
-      - id: ac-5
-        given: --dry-run and --force both provided
-        when: command executes
+        when: command would error
+      - given: --dry-run and --force both provided
+        id: ac-5
         then: dry run takes precedence (no changes made)
-      - id: ac-6
-        given: dry run in JSON mode
-        when: --dry-run --json provided
+        when: command executes
+      - given: dry run in JSON mode
+        id: ac-6
         then: JSON output includes dry_run boolean field
+        when: --dry-run --json provided
   - _ulid: 01KFDZSHFATXZJ577K8Q7DSJSR
     slugs:
       - trait-semantic-exit-codes
@@ -249,38 +244,38 @@ traits:
     type: trait
     description: Commands use consistent exit codes to indicate different types of outcomes
     acceptance_criteria:
-      - id: ac-1
-        given: command completes successfully
-        when: operation succeeds
+      - given: command completes successfully
+        id: ac-1
         then: exit code 0
-      - id: ac-2
-        given: command encounters validation error
+        when: operation succeeds
+      - given: command encounters validation error
+        id: ac-2
+        then: exit code 1
         when: user input is invalid
-        then: exit code 1
-      - id: ac-3
-        given: command is cancelled by user
-        when: confirmation prompt declined
+      - given: command is cancelled by user
+        id: ac-3
         then: exit code 2
-      - id: ac-4
-        given: command encounters runtime error
-        when: operation fails during execution
+        when: confirmation prompt declined
+      - given: command encounters runtime error
+        id: ac-4
         then: exit code 3
-      - id: ac-5
-        given: command finds nothing
-        when: query returns no results
+        when: operation fails during execution
+      - given: command finds nothing
+        id: ac-5
         then: exit code 0 with empty result set
-      - id: ac-6
-        given: command used incorrectly
-        when: invalid flags or arguments provided
+        when: query returns no results
+      - given: command used incorrectly
+        id: ac-6
         then: exit code 1 with usage information
-      - id: ac-7
-        given: batch operation completes
-        when: partial failures occur
+        when: invalid flags or arguments provided
+      - given: batch operation completes
+        id: ac-7
         then: exit code 1
-      - id: ac-8
-        given: command documentation
-        when: developers implement commands
+        when: partial failures occur
+      - given: command documentation
+        id: ac-8
         then: exit code meanings documented in code
+        when: developers implement commands
   - _ulid: 01KFDZSHFBEGRP3JKBHH31NYJT
     slugs:
       - trait-error-guidance
@@ -288,70 +283,73 @@ traits:
     type: trait
     description: Error messages include actionable suggestions for resolution
     acceptance_criteria:
-      - id: ac-1
-        given: command encounters error
-        when: error message is shown
+      - given: command encounters error
+        id: ac-1
         then: includes description of what went wrong
-      - id: ac-2
-        given: command encounters error
         when: error message is shown
+      - given: command encounters error
+        id: ac-2
         then: includes suggested action to resolve
-      - id: ac-3
-        given: reference not found
-        when: error is shown
+        when: error message is shown
+      - given: reference not found
+        id: ac-3
         then: suggests checking ref with kspec search or kspec <type> list
-      - id: ac-4
-        given: invalid state transition
         when: error is shown
+      - given: invalid state transition
+        id: ac-4
         then: indicates current state and valid next states
-      - id: ac-5
-        given: validation error
         when: error is shown
+      - given: validation error
+        id: ac-5
         then: indicates which field/value failed validation
-      - id: ac-6
-        given: error in JSON mode
-        when: --json is active
+        when: error is shown
+      - given: error in JSON mode
+        id: ac-6
         then: guidance included in structured error object
+        when: --json is active
   - _ulid: 01KFMFAQ94G3162ZKGB2N02K3W
     slugs:
       - trait-shadow-commit
     title: Shadow Branch Auto-Commit
     type: trait
     description: Commands that modify shadow branch state automatically commit changes with semantic messages
+    status:
+      maturity: draft
+      implementation: in_progress
     acceptance_criteria:
-      - id: ac-1
-        given: command modifies state in shadow worktree
-        when: save operation completes successfully
+      - given: command modifies state in shadow worktree
+        id: ac-1
         then: git commit is created in shadow branch with semantic message
-      - id: ac-2
-        given: shadow commit is created
-        when: commit message is generated
+        when: save operation completes successfully
+      - given: shadow commit is created
+        id: ac-2
         then: message follows pattern operation-colon-ref-short with optional detail
-      - id: ac-3
-        given: shadow commit is created
-        when: item reference is available
+        when: commit message is generated
+      - given: shadow commit is created
+        id: ac-3
         then: commit message includes ULID prefix (8 chars) or primary slug
-      - id: ac-4
-        given: the project is operating without an initialized shadow branch
-        when: a command that would normally commit shadow state runs
+        when: item reference is available
+      - given: the project is operating without an initialized shadow branch
+        id: ac-4
         then: the command completes successfully without attempting git operations; repositories with an
           existing but broken shadow branch instead surface actionable shadow recovery errors
-      - id: ac-5
-        given: save operation fails
-        when: validation or IO error occurs
+        when: a command that would normally commit shadow state runs
+      - given: save operation fails
+        id: ac-5
         then: no commit is attempted and error is returned
-      - id: ac-6
-        given: shadow has remote configured
-        when: commit succeeds
+        when: validation or IO error occurs
+      - given: shadow has remote configured
+        id: ac-6
         then: push is attempted in fire-and-forget mode (failure doesn't block command)
-      - id: ac-7
-        given: commit or push fails
-        when: save succeeded but git operation failed
+        when: commit succeeds
+      - given: commit or push fails
+        id: ac-7
         then: command succeeds but outputs warning about sync state
-      - id: ac-8
-        given: command performs multiple related saves
-        when: all saves complete successfully
+        when: save succeeded but git operation failed
+      - given: command performs multiple related saves
+        id: ac-8
         then: single atomic commit covers all changes
+        when: all saves complete successfully
   - _ulid: 01KFMKZFTXSK4QFH74GQ461G9A
     slugs:
       - trait-websocket-protocol
@@ -360,42 +358,42 @@ traits:
     description: WebSocket connection patterns including lifecycle management, topic-based pub/sub,
       heartbeat ping/pong, sequence tracking for deduplication, and backpressure handling. Based on
       proven patterns from kynetic project.
-    acceptance_criteria:
-      - id: ac-1
-        given: WebSocket connection is established
-        when: client connects
-        then: server assigns unique connection ID and sends connected event with session_id
-      - id: ac-2
-        given: client wants notifications
-        when: subscribe command sent with topics array
-        then: server tracks subscription and sends ack with request_id
-      - id: ac-3
-        given: client is subscribed to topic
-        when: relevant change occurs
-        then: server broadcasts event with format {msg_id, seq, timestamp, topic, event, data}
-      - id: ac-4
-        given: WebSocket connection is active
-        when: 30 seconds pass without activity
-        then: server sends ping frame
-      - id: ac-5
-        given: ping was sent
-        when: no pong received within 90 seconds
-        then: connection is closed with code 1001
-      - id: ac-6
-        given: server sends events
-        when: client cannot keep up (backpressure)
-        then: server pauses non-critical broadcasts until drain event
-      - id: ac-7
-        given: connection is closing
-        when: close initiated
-        then: use code 1000 for clean close, 1001 for timeout, 1011 for error
-      - id: ac-8
-        given: client reconnects after disconnect
-        when: new connection established
-        then: client resets sequence tracking (lastSeqProcessed = -1) since server generates new sequence
     status:
       maturity: draft
       implementation: implemented
+    acceptance_criteria:
+      - given: WebSocket connection is established
+        id: ac-1
+        then: server assigns unique connection ID and sends connected event with session_id
+        when: client connects
+      - given: client wants notifications
+        id: ac-2
+        then: server tracks subscription and sends ack with request_id
+        when: subscribe command sent with topics array
+      - given: client is subscribed to topic
+        id: ac-3
+        then: server broadcasts event with format {msg_id, seq, timestamp, topic, event, data}
+        when: relevant change occurs
+      - given: WebSocket connection is active
+        id: ac-4
+        then: server sends ping frame
+        when: 30 seconds pass without activity
+      - given: ping was sent
+        id: ac-5
+        then: connection is closed with code 1001
+        when: no pong received within 90 seconds
+      - given: server sends events
+        id: ac-6
+        then: server pauses non-critical broadcasts until drain event
+        when: client cannot keep up (backpressure)
+      - given: connection is closing
+        id: ac-7
+        then: use code 1000 for clean close, 1001 for timeout, 1011 for error
+        when: close initiated
+      - given: client reconnects after disconnect
+        id: ac-8
+        then: client resets sequence tracking (lastSeqProcessed = -1) since server generates new sequence
+        when: new connection established
   - _ulid: 01KFMKZFTYTRK4ENHFKWGR5RF6
     slugs:
       - trait-api-endpoint
@@ -404,30 +402,30 @@ traits:
     description: Consistent patterns for REST API endpoints including response format, error handling,
       pagination, and request validation
     acceptance_criteria:
-      - id: ac-1
-        given: API endpoint receives valid request
-        when: processing succeeds
+      - given: API endpoint receives valid request
+        id: ac-1
         then: returns 2xx status with JSON body
-      - id: ac-2
-        given: API endpoint receives invalid ref
-        when: ref not found
+        when: processing succeeds
+      - given: API endpoint receives invalid ref
+        id: ac-2
         then: returns 404 with {error, message, suggestion} including similar refs if available
-      - id: ac-3
-        given: API endpoint receives invalid body
-        when: validation fails
+        when: ref not found
+      - given: API endpoint receives invalid body
+        id: ac-3
         then: returns 400 with {error, details:[{field, message}]} array
-      - id: ac-4
-        given: list endpoint is called
-        when: pagination supported
+        when: validation fails
+      - given: list endpoint is called
+        id: ac-4
         then: accepts limit and offset query params, returns {items, total, offset, limit} wrapper
-      - id: ac-5
-        given: API endpoint mutates state
-        when: change persists
+        when: pagination supported
+      - given: API endpoint mutates state
+        id: ac-5
         then: shadow commit occurs with semantic message
-      - id: ac-6
-        given: API request is processed
-        when: response generated
+        when: change persists
+      - given: API request is processed
+        id: ac-6
         then: includes X-Request-Id header for tracing
+        when: response generated
   - _ulid: 01KFMKZFTYKPEXCHSAK9MTZX5Z
     slugs:
       - trait-localhost-security
@@ -436,249 +434,249 @@ traits:
     description: Security pattern for services that bind only to localhost, providing authentication
       through network isolation
     acceptance_criteria:
-      - id: ac-1
-        given: server is starting
-        when: binding to network interface
+      - given: server is starting
+        id: ac-1
         then: only accepts connections from 127.0.0.1 and ::1 (IPv6 localhost)
-      - id: ac-2
-        given: connection attempt from non-localhost
-        when: request received
+        when: binding to network interface
+      - given: connection attempt from non-localhost
+        id: ac-2
         then: connection rejected with 403 Forbidden
-      - id: ac-3
-        given: server is configured
-        when: configuration allows external binding
+        when: request received
+      - given: server is configured
+        id: ac-3
         then: warning displayed about security implications
+        when: configuration allows external binding
   - _ulid: 01KFMXM08H4GK6328W515RBQAJ
     slugs:
       - trait-retrospective
     title: Retrospective Verification
     type: trait
-    tags: []
     description: "Applied to specs describing already-implemented functionality where implementation
       predates formal task tracking. Common scenarios: bootstrap specs, legacy adoption,
       reverse-engineered specs from existing code. Specs with this trait: do not require linked
       implementation tasks, must have verified_at and verified_by fields, status is manually set
       rather than derived from task completion."
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
-    notes: []
-    created: 2026-01-23T07:55:37.105Z
     acceptance_criteria:
-      - id: ac-1
-        given: a spec item uses @trait-retrospective
-        when: validation runs alignment checks
+      - given: a spec item uses @trait-retrospective
+        id: ac-1
         then: no 'orphaned spec' warning is generated for missing tasks
-      - id: ac-2
-        given: a spec uses @trait-retrospective
-        when: status is set to implemented or verified
+        when: validation runs alignment checks
+      - given: a spec uses @trait-retrospective
+        id: ac-2
         then: verified_at (ISO timestamp) and verified_by (agent ref) are required
-      - id: ac-3
-        given: a spec uses @trait-retrospective without verified_at/verified_by
-        when: validation runs
+        when: status is set to implemented or verified
+      - given: a spec uses @trait-retrospective without verified_at/verified_by
+        id: ac-3
         then: warning indicates missing verification metadata
-      - id: ac-4
-        given: a retrospective spec exists
-        when: viewing item details (kspec item get)
+        when: validation runs
+      - given: a retrospective spec exists
+        id: ac-4
         then: output indicates retrospective verification source
-    status:
-      maturity: draft
-      implementation: implemented
+        when: viewing item details (kspec item get)
+    tags: []
+    created: 2026-01-23T07:55:37.105Z
+    notes: []
   - _ulid: 01KHHQD5FHEC53CVAA6C1FS69P
     slugs:
       - platform-renderer-trait
     title: Platform Renderer Contract
     type: trait
-    tags: []
     description: Defines the contract all platform-specific skill renderers must implement. Each
       renderer writes platform-specific output (SKILL.md with frontmatter, sidecar config files,
       supporting directories) to a configurable output directory. Renderers support dry-run mode,
       drift detection via per-platform hashes, and idempotent output (no file modification when
       content unchanged).
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
-    notes: []
-    created: 2026-02-15T22:40:41.969Z
     acceptance_criteria:
-      - id: ac-1
-        given: a renderer implementation for platform X
-        when: render is called with a skill and project context
+      - given: a renderer implementation for platform X
+        id: ac-1
         then: platform-specific output files are written to the configured output directory
-      - id: ac-2
-        given: a renderer
-        when: render completes
+        when: render is called with a skill and project context
+      - given: a renderer
+        id: ac-2
         then: a PlatformRenderResult is returned with id, platform, action
           (created/updated/unchanged/skipped), and output paths
-      - id: ac-3
-        given: a skill with supporting directories (references/, scripts/, assets/)
-        when: rendered for any platform
+        when: render completes
+      - given: a skill with supporting directories (references/, scripts/, assets/)
+        id: ac-3
         then: supporting directories are copied to the platform output directory
-      - id: ac-4
-        given: dryRun option is true
-        when: render is called
+        when: rendered for any platform
+      - given: dryRun option is true
+        id: ac-4
         then: no files are written to disk and result action reflects what would happen
-      - id: ac-5
-        given: a custom outputDir is provided
         when: render is called
+      - given: a custom outputDir is provided
+        id: ac-5
         then: output goes to the custom path instead of the platform default
-      - id: ac-6
-        given: a render completes successfully
-        when: the hash is stored
+        when: render is called
+      - given: a render completes successfully
+        id: ac-6
         then: a per-platform render hash is written to .kspec/skills/<id>/.render-hash-<platform>
-    status:
-      maturity: draft
-      implementation: implemented
+        when: the hash is stored
+    tags: []
+    created: 2026-02-15T22:40:41.969Z
+    notes: []
   - _ulid: 01KK7WM78BVYN7W8W9CJ37CV6H
     slugs:
       - trait-task-readiness
     title: Task Readiness Contract
     type: trait
-    tags:
-      - tasks
-      - dispatch
-      - trait
     description: "Cross-cutting contract for determining whether a task is ready to be picked up. Any
       system that selects tasks for work must apply this base readiness check before
       consumer-specific filters (automation, tags, priority). Canonical definition: ready = (pending
       OR needs_work) + all depends_on completed + not blocked."
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
-    notes: []
-    created: 2026-03-08T23:30:55.371Z
     acceptance_criteria:
-      - id: ac-status
-        given: A system evaluates whether a task can be picked up for work
-        when: It checks the task status
+      - given: A system evaluates whether a task can be picked up for work
+        id: ac-status
         then: Only tasks with status pending or needs_work are considered ready. All other statuses
           (in_progress, pending_review, completed, blocked, cancelled) are excluded.
-      - id: ac-deps
-        given: A task has depends_on references to other tasks
-        when: Readiness is evaluated
+        when: It checks the task status
+      - given: A task has depends_on references to other tasks
+        id: ac-deps
         then: All depends_on tasks must have status completed. If any dependency has a non-completed status
           (pending, in_progress, needs_work, pending_review, blocked, cancelled), the task is not
           ready.
-      - id: ac-not-blocked
-        given: A task has a blocked_by array
         when: Readiness is evaluated
+      - given: A task has a blocked_by array
+        id: ac-not-blocked
         then: The blocked_by array must be empty. Any entry in blocked_by prevents readiness regardless of
           other conditions.
-      - id: ac-composable
-        given: A consumer applies additional filters (automation status, tags, priority thresholds)
-        when: It selects tasks for work
+        when: Readiness is evaluated
+      - given: A consumer applies additional filters (automation status, tags, priority thresholds)
+        id: ac-composable
         then: Consumer-specific filters are applied on top of base readiness, never instead of it. A task
           must pass base readiness before any consumer filter is evaluated.
-    status:
-      maturity: draft
-      implementation: implemented
+        when: It selects tasks for work
+    tags:
+      - tasks
+      - dispatch
+      - trait
+    created: 2026-03-08T23:30:55.371Z
+    notes: []
   - _ulid: 01KKB5HX59RKS2EVNG7DPND7YE
     slugs:
       - trait-markdown-rendering
     title: Markdown Rendering Trait
     type: trait
-    tags: []
     description: |
       Cross-cutting trait defining quality requirements for any UI component
       that renders user or agent-authored markdown content. Ensures consistent
       rendering, syntax highlighting, sanitization, and dark mode support
       across all markdown surfaces.
-    acceptance_criteria:
-      - id: ac-1
-        given: |
-          a component renders markdown content
-        when: |
-          the content includes GFM elements (headings, lists, tables, links,
-          emphasis, strikethrough, task lists, blockquotes)
-        then: |
-          all GFM elements render with correct semantic HTML and Tailwind
-          prose typography styling
-      - id: ac-2
-        given: |
-          markdown content contains fenced code blocks with a language tag
-        when: |
-          the content is rendered
-        then: |
-          code blocks display with syntax highlighting for the specified
-          language using highlight.js, with at least 15 common languages
-          supported (bash, typescript, javascript, python, rust, go, json,
-          yaml, sql, css, html, java, c, cpp, diff)
-      - id: ac-3
-        given: |
-          markdown content contains inline code spans
-        when: |
-          the content is rendered
-        then: |
-          inline code renders with a visually distinct background and
-          monospace font, distinguishable from surrounding prose
-      - id: ac-4
-        given: |
-          markdown content contains any HTML including script tags,
-          event handlers, or javascript: URLs
-        when: |
-          the content is rendered
-        then: |
-          all unsafe HTML is stripped via DOMPurify sanitization while
-          preserving safe structural markup (p, strong, em, code, pre,
-          lists, tables, blockquotes)
-      - id: ac-5
-        given: |
-          the UI is in dark mode
-        when: |
-          markdown content is rendered
-        then: |
-          prose typography and syntax highlighting use dark-mode-compatible
-          color schemes (prose-invert, dark highlight theme)
-      - id: ac-6
-        given: |
-          markdown content contains external links (href starting with
-          http://, https://, or //)
-        when: |
-          the content is rendered
-        then: |
-          external links include target="_blank" and rel="noopener noreferrer"
-          attributes for security
-      - id: ac-7
-        given: |
-          a component receives empty or undefined content
-        when: |
-          the markdown renderer is invoked
-        then: |
-          the component renders an empty container with no errors or
-          console warnings
-      - id: ac-8
-        given: |
-          markdown content contains malformed or unclosed syntax
-          (e.g., unclosed code fences, broken table rows)
-        when: |
-          the content is rendered
-        then: |
-          the content renders gracefully with best-effort formatting
-          and no runtime errors
-      - id: ac-9
-        given: |
-          markdown content is very long (10,000+ lines or 500KB+)
-        when: |
-          the content is rendered
-        then: |
-          the component renders without blocking the main thread for
-          more than 100ms and does not cause memory errors
+    status:
+      maturity: draft
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
     tests: []
     traits: []
-    notes: []
+    acceptance_criteria:
+      - given: |
+          a component renders markdown content
+        id: ac-1
+        then: |
+          all GFM elements render with correct semantic HTML and Tailwind
+          prose typography styling
+        when: |
+          the content includes GFM elements (headings, lists, tables, links,
+          emphasis, strikethrough, task lists, blockquotes)
+      - given: |
+          markdown content contains fenced code blocks with a language tag
+        id: ac-2
+        then: |
+          code blocks display with syntax highlighting for the specified
+          language using highlight.js, with at least 15 common languages
+          supported (bash, typescript, javascript, python, rust, go, json,
+          yaml, sql, css, html, java, c, cpp, diff)
+        when: |
+          the content is rendered
+      - given: |
+          markdown content contains inline code spans
+        id: ac-3
+        then: |
+          inline code renders with a visually distinct background and
+          monospace font, distinguishable from surrounding prose
+        when: |
+          the content is rendered
+      - given: |
+          markdown content contains any HTML including script tags,
+          event handlers, or javascript: URLs
+        id: ac-4
+        then: |
+          all unsafe HTML is stripped via DOMPurify sanitization while
+          preserving safe structural markup (p, strong, em, code, pre,
+          lists, tables, blockquotes)
+        when: |
+          the content is rendered
+      - given: |
+          the UI is in dark mode
+        id: ac-5
+        then: |
+          prose typography and syntax highlighting use dark-mode-compatible
+          color schemes (prose-invert, dark highlight theme)
+        when: |
+          markdown content is rendered
+      - given: |
+          markdown content contains external links (href starting with
+          http://, https://, or //)
+        id: ac-6
+        then: |
+          external links include target="_blank" and rel="noopener noreferrer"
+          attributes for security
+        when: |
+          the content is rendered
+      - given: |
+          a component receives empty or undefined content
+        id: ac-7
+        then: |
+          the component renders an empty container with no errors or
+          console warnings
+        when: |
+          the markdown renderer is invoked
+      - given: |
+          markdown content contains malformed or unclosed syntax
+          (e.g., unclosed code fences, broken table rows)
+        id: ac-8
+        then: |
+          the content renders gracefully with best-effort formatting
+          and no runtime errors
+        when: |
+          the content is rendered
+      - given: |
+          markdown content is very long (10,000+ lines or 500KB+)
+        id: ac-9
+        then: |
+          the component renders without blocking the main thread for
+          more than 100ms and does not cause memory errors
+        when: |
+          the content is rendered
+    tags: []
     created: 2026-03-10T06:04:39.977Z
-    status:
-      maturity: draft
-      implementation: implemented
+    notes: []
 includes:
   - modules/core.yaml
   - modules/schema.yaml
@@ -687,3 +685,8 @@ includes:
   - modules/meta.yaml
   - modules/shadow.yaml
   - modules/web-ui.yaml
+kynetic: "1.0"
+project:
+  status: draft
+  name: Kynetic Spec
+  version: 0.1.0
