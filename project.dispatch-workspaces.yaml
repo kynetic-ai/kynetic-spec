@@ -1,3 +1,9 @@
+# CONFLICT: Field "workspaces" modified with different values in both branches
+# Path: workspaces
+# Ours:   [137 items]
+# Theirs: [137 items]
+# Resolution: Using ours (run merge interactively to resolve)
+
 kynetic_dispatch_workspaces: "1.0"
 workspaces:
   - active_role: null
@@ -49,13 +55,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-test-dispatch-workspace-and-scheduler-flow/01kkfy9k"
-            is missing.
+          message: Canonical branch "dispatch/task/task-test-dispatch-workspace-and-scheduler-flow/01kkfy9k" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-dispatch-workspace-and-scheduler-flow-01kkfy9k"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-dispatch-workspace-and-scheduler-flow-01kkfy9k" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:16.196Z
@@ -136,9 +139,7 @@ workspaces:
           message: Canonical branch "dispatch/task/implement-droid-agent-detection/01kkjkm6" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-agent-detection-01kkjkm6"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-agent-detection-01kkjkm6" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:16.458Z
@@ -219,18 +220,13 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/reconcile-legacy-dispatch-workspaces-and-spec-gaps/01kkjp6e" is missing.
+          message: Canonical branch "dispatch/task/reconcile-legacy-dispatch-workspaces-and-spec-gaps/01kkjp6e" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/reconcile-legacy-dispatch-workspaces-and-spec-gaps-01kkjp6e"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/reconcile-legacy-dispatch-workspaces-and-spec-gaps-01kkjp6e" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
         - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/reconcile-legacy-dispatch-workspaces-and-spec-gaps-01kkjp6e-review"
-            is missing or no longer registered.
+          message: Reviewer worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/reconcile-legacy-dispatch-workspaces-and-spec-gaps-01kkjp6e-review" is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:16.719Z
@@ -316,9 +312,7 @@ workspaces:
           message: Canonical branch "dispatch/task/implement-droid-acp-adapter/01kkjkm7" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-acp-adapter-01kkjkm7"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-acp-adapter-01kkjkm7" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:16.928Z
@@ -402,9 +396,7 @@ workspaces:
           message: Canonical branch "dispatch/task/implement-droid-skill-renderer/01kkjkm7" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-skill-renderer-01kkjkm7"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-skill-renderer-01kkjkm7" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:17.157Z
@@ -488,9 +480,7 @@ workspaces:
           message: Canonical branch "dispatch/task/implement-droid-setup-integration/01kkjkm8" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-setup-integration-01kkjkm8"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-setup-integration-01kkjkm8" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:17.394Z
@@ -568,13 +558,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/implement-test-coverage-annotation-sweep/01kkb8fg" is
-            missing.
+          message: Canonical branch "dispatch/task/implement-test-coverage-annotation-sweep/01kkb8fg" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-test-coverage-annotation-sweep-01kkb8fg"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-test-coverage-annotation-sweep-01kkb8fg" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-14T22:12:56.495Z
@@ -655,14 +642,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/durably-shadow-commit-dispatch-workspace-registry-writes/01kkjt2v" is
-            missing.
+          message: Canonical branch "dispatch/task/durably-shadow-commit-dispatch-workspace-registry-writes/01kkjt2v" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/durably-shadow-commit-dispatch-workspace-registry-writes-01kkjt2v"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/durably-shadow-commit-dispatch-workspace-registry-writes-01kkjt2v" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:17.719Z
@@ -742,18 +725,13 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/implement-droid-platform-config-schema/01kkjkm6" is
-            missing.
+          message: Canonical branch "dispatch/task/implement-droid-platform-config-schema/01kkjkm6" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-platform-config-schema-01kkjkm6"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-platform-config-schema-01kkjkm6" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
         - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-platform-config-schema-01kkjkm6-review"
-            is missing or no longer registered.
+          message: Reviewer worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-platform-config-schema-01kkjkm6-review" is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:18.133Z
@@ -836,18 +814,13 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-honor-derive-from-specs-false-in-plan-derive/01kkfz61"
-            is missing.
+          message: Canonical branch "dispatch/task/task-honor-derive-from-specs-false-in-plan-derive/01kkfz61" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-honor-derive-from-specs-false-in-plan-derive-01kkfz61"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-honor-derive-from-specs-false-in-plan-derive-01kkfz61" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
         - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-honor-derive-from-specs-false-in-plan-derive-01kkfz61-review"
-            is missing or no longer registered.
+          message: Reviewer worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-honor-derive-from-specs-false-in-plan-derive-01kkfz61-review" is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:18.490Z
@@ -930,18 +903,13 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-implement-dispatch-bootstrap-contract/01kkfy9g" is
-            missing.
+          message: Canonical branch "dispatch/task/task-implement-dispatch-bootstrap-contract/01kkfy9g" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-bootstrap-contract-01kkfy9g"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-bootstrap-contract-01kkfy9g" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
         - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-bootstrap-contract-01kkfy9g-review"
-            is missing or no longer registered.
+          message: Reviewer worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-bootstrap-contract-01kkfy9g-review" is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:18.929Z
@@ -1024,18 +992,13 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/task-implement-dispatch-branch-integration-contract/01kkfy9f" is missing.
+          message: Canonical branch "dispatch/task/task-implement-dispatch-branch-integration-contract/01kkfy9f" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-branch-integration-contract-01kkfy9f"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-branch-integration-contract-01kkfy9f" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
         - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-branch-integration-contract-01kkfy9f-review"
-            is missing or no longer registered.
+          message: Reviewer worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-branch-integration-contract-01kkfy9f-review" is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:19.163Z
@@ -1118,18 +1081,13 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-implement-dispatch-orientation-prompt/01kkfy9g" is
-            missing.
+          message: Canonical branch "dispatch/task/task-implement-dispatch-orientation-prompt/01kkfy9g" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-orientation-prompt-01kkfy9g"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-orientation-prompt-01kkfy9g" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
         - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-orientation-prompt-01kkfy9g-review"
-            is missing or no longer registered.
+          message: Reviewer worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-orientation-prompt-01kkfy9g-review" is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:19.399Z
@@ -1212,18 +1170,13 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-implement-dispatch-role-entrypoints/01kkfy9h" is
-            missing.
+          message: Canonical branch "dispatch/task/task-implement-dispatch-role-entrypoints/01kkfy9h" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-role-entrypoints-01kkfy9h"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-role-entrypoints-01kkfy9h" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
         - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-role-entrypoints-01kkfy9h-review"
-            is missing or no longer registered.
+          message: Reviewer worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-role-entrypoints-01kkfy9h-review" is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:19.945Z
@@ -1306,18 +1259,13 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-implement-dispatch-workspace-cleanup/01kkfy9f" is
-            missing.
+          message: Canonical branch "dispatch/task/task-implement-dispatch-workspace-cleanup/01kkfy9f" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-workspace-cleanup-01kkfy9f"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-workspace-cleanup-01kkfy9f" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
         - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-workspace-cleanup-01kkfy9f-review"
-            is missing or no longer registered.
+          message: Reviewer worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-workspace-cleanup-01kkfy9f-review" is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:20.166Z
@@ -1400,18 +1348,13 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-implement-dispatch-worktree-provisioning/01kkfy9e" is
-            missing.
+          message: Canonical branch "dispatch/task/task-implement-dispatch-worktree-provisioning/01kkfy9e" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-worktree-provisioning-01kkfy9e"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-worktree-provisioning-01kkfy9e" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
         - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-worktree-provisioning-01kkfy9e-review"
-            is missing or no longer registered.
+          message: Reviewer worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-worktree-provisioning-01kkfy9e-review" is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:20.403Z
@@ -1494,18 +1437,13 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-implement-priority-aware-dispatch-scheduler/01kkfy9j"
-            is missing.
+          message: Canonical branch "dispatch/task/task-implement-priority-aware-dispatch-scheduler/01kkfy9j" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-priority-aware-dispatch-scheduler-01kkfy9j"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-priority-aware-dispatch-scheduler-01kkfy9j" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
         - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-priority-aware-dispatch-scheduler-01kkfy9j-review"
-            is missing or no longer registered.
+          message: Reviewer worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-priority-aware-dispatch-scheduler-01kkfy9j-review" is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:20.666Z
@@ -1588,18 +1526,13 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-plan-embedded-views-mixed-task-precedence/01kkg0sn" is
-            missing.
+          message: Canonical branch "dispatch/task/task-plan-embedded-views-mixed-task-precedence/01kkg0sn" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-embedded-views-mixed-task-precedence-01kkg0sn"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-embedded-views-mixed-task-precedence-01kkg0sn" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
         - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-embedded-views-mixed-task-precedence-01kkg0sn-review"
-            is missing or no longer registered.
+          message: Reviewer worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-plan-embedded-views-mixed-task-precedence-01kkg0sn-review" is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-14T22:12:58.386Z
@@ -1682,18 +1615,13 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-scope-dispatch-shadow-serialization/01kkfy9h" is
-            missing.
+          message: Canonical branch "dispatch/task/task-scope-dispatch-shadow-serialization/01kkfy9h" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scope-dispatch-shadow-serialization-01kkfy9h"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scope-dispatch-shadow-serialization-01kkfy9h" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
         - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scope-dispatch-shadow-serialization-01kkfy9h-review"
-            is missing or no longer registered.
+          message: Reviewer worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-scope-dispatch-shadow-serialization-01kkfy9h-review" is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:20.911Z
@@ -1776,13 +1704,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/implement-core-skills-droid-platform-registration/01kkjkm9"
-            is missing.
+          message: Canonical branch "dispatch/task/implement-core-skills-droid-platform-registration/01kkjkm9" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-core-skills-droid-platform-registration-01kkjkm9"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-core-skills-droid-platform-registration-01kkjkm9" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:21.152Z
@@ -1860,13 +1785,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/implement-portable-skill-reference-resolution/01kkjkm9" is
-            missing.
+          message: Canonical branch "dispatch/task/implement-portable-skill-reference-resolution/01kkjkm9" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-portable-skill-reference-resolution-01kkjkm9"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-portable-skill-reference-resolution-01kkjkm9" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:21.369Z
@@ -1944,13 +1866,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/implement-droid-core-skill-install-support/01kkjkma" is
-            missing.
+          message: Canonical branch "dispatch/task/implement-droid-core-skill-install-support/01kkjkma" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-core-skill-install-support-01kkjkma"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-core-skill-install-support-01kkjkma" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:21.593Z
@@ -2031,9 +1950,7 @@ workspaces:
           message: Canonical branch "dispatch/task/fix-broken-shadow-safety/01kkjzw9" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-broken-shadow-safety-01kkjzw9"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-broken-shadow-safety-01kkjzw9" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:21.828Z
@@ -2114,13 +2031,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/implement-portable-task-submission-linkage/01kkk7r6" is
-            missing.
+          message: Canonical branch "dispatch/task/implement-portable-task-submission-linkage/01kkk7r6" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-portable-task-submission-linkage-01kkk7r6"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-portable-task-submission-linkage-01kkk7r6" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:22.065Z
@@ -2201,13 +2115,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/implement-droid-setup-status-reporting/01kkjkmb" is
-            missing.
+          message: Canonical branch "dispatch/task/implement-droid-setup-status-reporting/01kkjkmb" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-setup-status-reporting-01kkjkmb"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-setup-status-reporting-01kkjkmb" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:22.399Z
@@ -2291,9 +2202,7 @@ workspaces:
           message: Canonical branch "dispatch/task/implement-droid-skill-import-support/01kkjkmb" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-skill-import-support-01kkjkmb"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-droid-skill-import-support-01kkjkmb" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:22.781Z
@@ -2374,13 +2283,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/implement-branch-provenance-in-dispatch-workspace/01kkk7r8"
-            is missing.
+          message: Canonical branch "dispatch/task/implement-branch-provenance-in-dispatch-workspace/01kkk7r8" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-branch-provenance-in-dispatch-workspace-01kkk7r8"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-branch-provenance-in-dispatch-workspace-01kkk7r8" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:23.150Z
@@ -2459,13 +2365,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/implement-adopt-existing-task-branch-lineage-for-r/01kkk7r7" is missing.
+          message: Canonical branch "dispatch/task/implement-adopt-existing-task-branch-lineage-for-r/01kkk7r7" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-adopt-existing-task-branch-lineage-for-r-01kkk7r7"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-adopt-existing-task-branch-lineage-for-r-01kkk7r7" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:24.290Z
@@ -2543,14 +2446,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/implement-inline-registry-purge-for-closed-dispatch-workspace-records/01kkm1ca"
-            is missing.
+          message: Canonical branch "dispatch/task/implement-inline-registry-purge-for-closed-dispatch-workspace-records/01kkm1ca" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-inline-registry-purge-for-closed-dispatch-workspace-records-01kkm1ca"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-inline-registry-purge-for-closed-dispatch-workspace-records-01kkm1ca" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:24.860Z
@@ -2628,14 +2527,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/task-remote-branch-fallback-in-workspace-health-reconci/01kkjyee" is
-            missing.
+          message: Canonical branch "dispatch/task/task-remote-branch-fallback-in-workspace-health-reconci/01kkjyee" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remote-branch-fallback-in-workspace-health-reconci-01kkjyee"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remote-branch-fallback-in-workspace-health-reconci-01kkjyee" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:25.072Z
@@ -2713,13 +2608,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/implement-review-and-fix-cycle-workspace-discovery/01kkk7ra" is missing.
+          message: Canonical branch "dispatch/task/implement-review-and-fix-cycle-workspace-discovery/01kkk7ra" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-review-and-fix-cycle-workspace-discovery-01kkk7ra"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-review-and-fix-cycle-workspace-discovery-01kkk7ra" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:25.413Z
@@ -2800,13 +2692,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/implement-adopted-branch-cleanup-and-recoverabilit/01kkk7r9" is missing.
+          message: Canonical branch "dispatch/task/implement-adopted-branch-cleanup-and-recoverabilit/01kkk7r9" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-adopted-branch-cleanup-and-recoverabilit-01kkk7r9"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-adopted-branch-cleanup-and-recoverabilit-01kkk7r9" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:25.812Z
@@ -2884,13 +2773,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/implement-deterministic-task-branch-helper/01kkk7rc" is
-            missing.
+          message: Canonical branch "dispatch/task/implement-deterministic-task-branch-helper/01kkk7rc" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-deterministic-task-branch-helper-01kkk7rc"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-deterministic-task-branch-helper-01kkk7rc" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:26.033Z
@@ -2968,14 +2854,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches/01kkk7rd"
-            is missing.
+          message: Canonical branch "dispatch/task/update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches/01kkk7rd" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches-01kkk7rd"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches-01kkk7rd" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:26.264Z
@@ -3056,14 +2938,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-review/01kkk7re"
-            is missing.
+          message: Canonical branch "dispatch/task/add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-review/01kkk7re" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-review-01kkk7re"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-regression-coverage-for-adopted-manual-branches-and-fallback-independent-dispatch-review-01kkk7re" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:26.609Z
@@ -3142,13 +3020,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/implement-per-task-dispatch-drain-coalescing/01kkn32p" is
-            missing.
+          message: Canonical branch "dispatch/task/implement-per-task-dispatch-drain-coalescing/01kkn32p" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-per-task-dispatch-drain-coalescing-01kkn32p"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-per-task-dispatch-drain-coalescing-01kkn32p" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:27.014Z
@@ -3227,13 +3102,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/fix-daemon-session-sync-hardcoded-manifest-path/01kknktf"
-            is missing.
+          message: Canonical branch "dispatch/task/fix-daemon-session-sync-hardcoded-manifest-path/01kknktf" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-daemon-session-sync-hardcoded-manifest-path-01kknktf"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-daemon-session-sync-hardcoded-manifest-path-01kknktf" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:27.335Z
@@ -3315,9 +3187,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-implement-review-record-core/01kknrby" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-record-core-01kknrby"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-record-core-01kknrby" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:27.765Z
@@ -3399,13 +3269,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-implement-review-storage-and-identity/01kknrbz" is
-            missing.
+          message: Canonical branch "dispatch/task/task-implement-review-storage-and-identity/01kknrbz" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-storage-and-identity-01kknrbz"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-storage-and-identity-01kknrbz" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:27.990Z
@@ -3484,13 +3351,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-implement-review-subject-bindings/01kknrbz" is
-            missing.
+          message: Canonical branch "dispatch/task/task-implement-review-subject-bindings/01kknrbz" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-subject-bindings-01kknrbz"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-subject-bindings-01kknrbz" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:28.212Z
@@ -3574,9 +3438,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-implement-review-validation/01kknrc2" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-validation-01kknrc2"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-validation-01kknrc2" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:28.443Z
@@ -3658,9 +3520,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-implement-review-cli-surface/01kknrc3" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-surface-01kknrc3"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-surface-01kknrc3" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:28.673Z
@@ -3742,9 +3602,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-implement-review-comment-threads/01kknrc0" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-comment-threads-01kknrc0"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-comment-threads-01kknrc0" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:28.930Z
@@ -3823,13 +3681,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-implement-review-checks-and-gates/01kknrc1" is
-            missing.
+          message: Canonical branch "dispatch/task/task-implement-review-checks-and-gates/01kknrc1" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-checks-and-gates-01kknrc1"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-checks-and-gates-01kknrc1" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:29.166Z
@@ -3911,13 +3766,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-implement-review-cli-create-query/01kknrc3" is
-            missing.
+          message: Canonical branch "dispatch/task/task-implement-review-cli-create-query/01kknrc3" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-create-query-01kknrc3"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-create-query-01kknrc3" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:29.399Z
@@ -3999,13 +3851,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-implement-review-verdicts-and-resolution/01kknrc1" is
-            missing.
+          message: Canonical branch "dispatch/task/task-implement-review-verdicts-and-resolution/01kknrc1" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-verdicts-and-resolution-01kknrc1"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-verdicts-and-resolution-01kknrc1" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:29.629Z
@@ -4087,13 +3936,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-implement-review-task-integration/01kknrc2" is
-            missing.
+          message: Canonical branch "dispatch/task/task-implement-review-task-integration/01kknrc2" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-task-integration-01kknrc2"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-task-integration-01kknrc2" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:29.860Z
@@ -4178,9 +4024,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-implement-review-cli-mutations/01kknrc4" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-mutations-01kknrc4"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-mutations-01kknrc4" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:30.094Z
@@ -4259,13 +4103,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-implement-review-cli-task-linkage/01kknrc5" is
-            missing.
+          message: Canonical branch "dispatch/task/task-implement-review-cli-task-linkage/01kknrc5" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-task-linkage-01kknrc5"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-review-cli-task-linkage-01kknrc5" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:30.328Z
@@ -4347,9 +4188,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-create-review-skill/01kknrc5" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-create-review-skill-01kknrc5"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-create-review-skill-01kknrc5" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:30.550Z
@@ -4428,14 +4267,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/suppress-no-op-workspace-registry-writes-during-periodic-reconciliation/01kkq4rk"
-            is missing.
+          message: Canonical branch "dispatch/task/suppress-no-op-workspace-registry-writes-during-periodic-reconciliation/01kkq4rk" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/suppress-no-op-workspace-registry-writes-during-periodic-reconciliation-01kkq4rk"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/suppress-no-op-workspace-registry-writes-during-periodic-reconciliation-01kkq4rk" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:30.928Z
@@ -4514,14 +4349,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/fix-double-in-dispatch-workspace-registry-shadow-commit-messages/01kkq6we"
-            is missing.
+          message: Canonical branch "dispatch/task/fix-double-in-dispatch-workspace-registry-shadow-commit-messages/01kkq6we" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-double-in-dispatch-workspace-registry-shadow-commit-messages-01kkq6we"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-double-in-dispatch-workspace-registry-shadow-commit-messages-01kkq6we" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:31.312Z
@@ -4606,9 +4437,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-ui-data-layer-skill/01kkqrk0" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-data-layer-skill-01kkqrk0"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ui-data-layer-skill-01kkqrk0" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:31.538Z
@@ -4690,9 +4519,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-server-resolve/01kkqrk1" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-server-resolve-01kkqrk1"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-server-resolve-01kkqrk1" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:31.768Z
@@ -4777,9 +4604,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-ref-index-endpoint/01kkqrk2" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ref-index-endpoint-01kkqrk2"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ref-index-endpoint-01kkqrk2" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:32.023Z
@@ -4864,9 +4689,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-tanstack-setup/01kkqrk0" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tanstack-setup-01kkqrk0"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-tanstack-setup-01kkqrk0" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:32.256Z
@@ -4951,9 +4774,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-server-aggregation/01kkqrk2" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-server-aggregation-01kkqrk2"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-server-aggregation-01kkqrk2" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:32.490Z
@@ -5035,9 +4856,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-ws-enrichment/01kkqrk3" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ws-enrichment-01kkqrk3"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ws-enrichment-01kkqrk3" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:32.703Z
@@ -5122,9 +4941,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-migrate-core-pages/01kkqrk3" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-core-pages-01kkqrk3"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-core-pages-01kkqrk3" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:32.934Z
@@ -5206,9 +5023,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-migrate-sidebar/01kkqrk4" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-sidebar-01kkqrk4"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-sidebar-01kkqrk4" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:33.171Z
@@ -5293,9 +5108,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-migrate-complex-pages/01kkqrk5" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-complex-pages-01kkqrk5"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-complex-pages-01kkqrk5" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:33.401Z
@@ -5377,9 +5190,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-migrate-inbox-triage/01kkqrk5" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-inbox-triage-01kkqrk5"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-inbox-triage-01kkqrk5" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:33.657Z
@@ -5461,9 +5272,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-cleanup-legacy-fetches/01kkqrk6" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cleanup-legacy-fetches-01kkqrk6"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cleanup-legacy-fetches-01kkqrk6" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:33.898Z
@@ -5542,13 +5351,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/remove-process-cwd-web-ui-resolution-from-daemon/01kkrp45"
-            is missing.
+          message: Canonical branch "dispatch/task/remove-process-cwd-web-ui-resolution-from-daemon/01kkrp45" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-process-cwd-web-ui-resolution-from-daemon-01kkrp45"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-process-cwd-web-ui-resolution-from-daemon-01kkrp45" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:34.112Z
@@ -5627,14 +5433,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/add-unfiltered-total-to-sessions-api-response-to-eliminate-extra-limit-0-request/01kkrtss"
-            is missing.
+          message: Canonical branch "dispatch/task/add-unfiltered-total-to-sessions-api-response-to-eliminate-extra-limit-0-request/01kkrtss" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-unfiltered-total-to-sessions-api-response-to-eliminate-extra-limit-0-request-01kkrtss"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-unfiltered-total-to-sessions-api-response-to-eliminate-extra-limit-0-request-01kkrtss" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:34.340Z
@@ -5713,14 +5515,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/disable-ssr-globally-to-fix-hard-refresh-stuck-on-loading/01kkrvzq" is
-            missing.
+          message: Canonical branch "dispatch/task/disable-ssr-globally-to-fix-hard-refresh-stuck-on-loading/01kkrvzq" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/disable-ssr-globally-to-fix-hard-refresh-stuck-on-loading-01kkrvzq"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/disable-ssr-globally-to-fix-hard-refresh-stuck-on-loading-01kkrvzq" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:34.580Z
@@ -5802,9 +5600,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-fix-dispatch-engine-stop-await/01kks7am" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-dispatch-engine-stop-await-01kks7am"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-dispatch-engine-stop-await-01kks7am" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:34.808Z
@@ -5883,8 +5679,7 @@ workspaces:
       status: stale
       issues:
         - code: missing_worker_worktree
-          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch" is missing or no longer
-            registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is stale and needs reconciliation.
       updated_at: 2026-03-19T03:51:35.051Z
@@ -5969,9 +5764,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-session-event-accumulator/01kksgsz" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-event-accumulator-01kksgsz"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-event-accumulator-01kksgsz" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:35.286Z
@@ -6056,9 +5849,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-session-event-detail-endpoint/01kksgsz" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-event-detail-endpoint-01kksgsz"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-event-detail-endpoint-01kksgsz" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:35.508Z
@@ -6140,9 +5931,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-cli-watch-ws-events/01kksgt1" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-watch-ws-events-01kksgt1"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-watch-ws-events-01kksgt1" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:35.742Z
@@ -6227,9 +6016,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-session-stream-ws-ui/01kksgt0" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-stream-ws-ui-01kksgt0"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-stream-ws-ui-01kksgt0" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:35.963Z
@@ -6311,9 +6098,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-yaml-seed-session-tests/01kks7bd" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-yaml-seed-session-tests-01kks7bd"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-yaml-seed-session-tests-01kks7bd" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:36.192Z
@@ -6395,9 +6180,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-validate-default-base-branch/01kks7ce" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-default-base-branch-01kks7ce"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-default-base-branch-01kks7ce" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:36.436Z
@@ -6476,14 +6259,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/fix-max-concurrent-violation-from-concurrent-drain-paths/01kksw2q" is
-            missing.
+          message: Canonical branch "dispatch/task/fix-max-concurrent-violation-from-concurrent-drain-paths/01kksw2q" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-max-concurrent-violation-from-concurrent-drain-paths-01kksw2q"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-max-concurrent-violation-from-concurrent-drain-paths-01kksw2q" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:36.664Z
@@ -6562,14 +6341,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/implement-session-summary-stats-persistence-and-live-counters/01kksrdq"
-            is missing.
+          message: Canonical branch "dispatch/task/implement-session-summary-stats-persistence-and-live-counters/01kksrdq" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-session-summary-stats-persistence-and-live-counters-01kksrdq"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-session-summary-stats-persistence-and-live-counters-01kksrdq" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:51:59.902Z
@@ -6648,13 +6423,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/implement-cross-agent-task-dispatch-exclusivity/01kksw26"
-            is missing.
+          message: Canonical branch "dispatch/task/implement-cross-agent-task-dispatch-exclusivity/01kksw26" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-cross-agent-task-dispatch-exclusivity-01kksw26"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-cross-agent-task-dispatch-exclusivity-01kksw26" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:52:00.142Z
@@ -6733,13 +6505,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/task-update-session-stream-spec-cleanup/01kksgt1" is
-            missing.
+          message: Canonical branch "dispatch/task/task-update-session-stream-spec-cleanup/01kksgt1" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-session-stream-spec-cleanup-01kksgt1"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-update-session-stream-spec-cleanup-01kksgt1" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:52:00.376Z
@@ -6818,14 +6587,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/remove-task-todo-checking-from-session-checkpoint-hook/01kkt03v" is
-            missing.
+          message: Canonical branch "dispatch/task/remove-task-todo-checking-from-session-checkpoint-hook/01kkt03v" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-task-todo-checking-from-session-checkpoint-hook-01kkt03v"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-task-todo-checking-from-session-checkpoint-hook-01kkt03v" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:52:00.608Z
@@ -6904,14 +6669,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/add-hooks-configuration-to-kspec-config-yaml-and-setup/01kkt042" is
-            missing.
+          message: Canonical branch "dispatch/task/add-hooks-configuration-to-kspec-config-yaml-and-setup/01kkt042" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-hooks-configuration-to-kspec-config-yaml-and-setup-01kkt042"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-hooks-configuration-to-kspec-config-yaml-and-setup-01kkt042" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:52:00.837Z
@@ -6990,15 +6751,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_adopted_branch
-          message: Adopted canonical branch
-            "dispatch/task/rewrite-core-skills-for-review-driven-architecture/01kkthzw" is missing
-            locally and no remote locator is recorded.
-          suggestion: Locate the original branch source and manually restore it, or re-submit the task with
-            updated submission linkage.
+          message: Adopted canonical branch "dispatch/task/rewrite-core-skills-for-review-driven-architecture/01kkthzw" is missing locally and no remote locator is recorded.
+          suggestion: Locate the original branch source and manually restore it, or re-submit the task with updated submission linkage.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/rewrite-core-skills-for-review-driven-architecture-01kkthzw"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/rewrite-core-skills-for-review-driven-architecture-01kkthzw" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-19T03:52:01.074Z
@@ -7078,9 +6834,7 @@ workspaces:
       status: stale
       issues:
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-read-01kktw6f"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-read-01kktw6f" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is stale and needs reconciliation.
       updated_at: 2026-03-19T03:53:07.648Z
@@ -7165,9 +6919,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-diff-api/01kktw6j" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-diff-api-01kktw6j" is
-            missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-diff-api-01kktw6j" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-17T09:32:15.761Z
@@ -7246,14 +6998,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/unify-tool-call-event-parsing-and-fix-phased-input-streaming/01kkxej2" is
-            missing.
+          message: Canonical branch "dispatch/task/unify-tool-call-event-parsing-and-fix-phased-input-streaming/01kkxej2" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/unify-tool-call-event-parsing-and-fix-phased-input-streaming-01kkxej2"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/unify-tool-call-event-parsing-and-fix-phased-input-streaming-01kkxej2" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-17T09:15:15.393Z
@@ -7338,9 +7086,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-review-api-threads/01kktw6g" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-threads-01kktw6g"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-threads-01kktw6g" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-17T10:27:15.872Z
@@ -7425,9 +7171,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-review-api-verdicts/01kktw6g" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-verdicts-01kktw6g"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-verdicts-01kktw6g" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-17T19:00:26.902Z
@@ -7506,14 +7250,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/remove-skill-table-from-kspec-agents-md-and-port-descriptions-to-skill-frontmatter/01kktk96"
-            is missing.
+          message: Canonical branch "dispatch/task/remove-skill-table-from-kspec-agents-md-and-port-descriptions-to-skill-frontmatter/01kktk96" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-skill-table-from-kspec-agents-md-and-port-descriptions-to-skill-frontmatter-01kktk96"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/remove-skill-table-from-kspec-agents-md-and-port-descriptions-to-skill-frontmatter-01kktk96" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-17T10:42:19.213Z
@@ -7595,9 +7335,7 @@ workspaces:
       status: stale
       issues:
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/improve-review-skill-to-direct-use-of-anchors-in-plan-and-code-reviews-01kkttc2"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/improve-review-skill-to-direct-use-of-anchors-in-plan-and-code-reviews-01kkttc2" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is stale and needs reconciliation.
       updated_at: 2026-03-17T11:23:16.101Z
@@ -7682,9 +7420,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-review-list-page/01kktw6j" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-list-page-01kktw6j"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-list-page-01kktw6j" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-17T11:59:18.703Z
@@ -7769,9 +7505,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-review-task-integration/01kktw6n" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-task-integration-01kktw6n"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-task-integration-01kktw6n" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-17T13:15:20.809Z
@@ -7853,9 +7587,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-fix-dead-submission-linkage-case/01kkwg44" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-dead-submission-linkage-case-01kkwg44"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-dead-submission-linkage-case-01kkwg44" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-17T12:08:16.281Z
@@ -7934,13 +7666,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/round-trip-stability-for-review-record-yaml-writes/01kkx6c6" is missing.
+          message: Canonical branch "dispatch/task/round-trip-stability-for-review-record-yaml-writes/01kkx6c6" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-review-record-yaml-writes-01kkx6c6"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-review-record-yaml-writes-01kkx6c6" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-17T12:30:16.478Z
@@ -8022,13 +7751,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/round-trip-stability-for-plan-record-yaml-writes/01kkx6c8"
-            is missing.
+          message: Canonical branch "dispatch/task/round-trip-stability-for-plan-record-yaml-writes/01kkx6c8" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-plan-record-yaml-writes-01kkx6c8"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-plan-record-yaml-writes-01kkx6c8" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-17T19:37:26.397Z
@@ -8107,13 +7833,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch "dispatch/task/round-trip-stability-for-inbox-item-yaml-writes/01kkx6c9"
-            is missing.
+          message: Canonical branch "dispatch/task/round-trip-stability-for-inbox-item-yaml-writes/01kkx6c9" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-inbox-item-yaml-writes-01kkx6c9"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-inbox-item-yaml-writes-01kkx6c9" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-17T13:04:20.690Z
@@ -8195,13 +7918,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/round-trip-stability-for-meta-manifest-yaml-writes/01kkx6cb" is missing.
+          message: Canonical branch "dispatch/task/round-trip-stability-for-meta-manifest-yaml-writes/01kkx6cb" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-meta-manifest-yaml-writes-01kkx6cb"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-meta-manifest-yaml-writes-01kkx6cb" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T08:07:35.950Z
@@ -8282,14 +8002,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/round-trip-stability-for-dispatch-workspace-yaml-writes/01kkx6cd" is
-            missing.
+          message: Canonical branch "dispatch/task/round-trip-stability-for-dispatch-workspace-yaml-writes/01kkx6cd" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-dispatch-workspace-yaml-writes-01kkx6cd"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-dispatch-workspace-yaml-writes-01kkx6cd" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T00:10:38.509Z
@@ -8371,9 +8087,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-review-api-websocket/01kktw6h" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-websocket-01kktw6h"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-api-websocket-01kktw6h" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-17T19:53:26.742Z
@@ -8454,9 +8168,7 @@ workspaces:
       status: stale
       issues:
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-triage-record-yaml-writes-01kkx6ce"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-triage-record-yaml-writes-01kkx6ce" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is stale and needs reconciliation.
       updated_at: 2026-03-18T02:52:41.770Z
@@ -8538,13 +8250,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/round-trip-stability-for-workflow-runs-yaml-writes/01kkx6cg" is missing.
+          message: Canonical branch "dispatch/task/round-trip-stability-for-workflow-runs-yaml-writes/01kkx6cg" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-workflow-runs-yaml-writes-01kkx6cg"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/round-trip-stability-for-workflow-runs-yaml-writes-01kkx6cg" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T01:00:41.578Z
@@ -8627,9 +8336,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-review-detail-page/01kktw6k" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-detail-page-01kktw6k"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-detail-page-01kktw6k" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-17T23:54:37.189Z
@@ -8711,14 +8418,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/detect-stale-integration-target-when-dispatch-base-branch-config-changes/01kkxekw"
-            is missing.
+          message: Canonical branch "dispatch/task/detect-stale-integration-target-when-dispatch-base-branch-config-changes/01kkxekw" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/detect-stale-integration-target-when-dispatch-base-branch-config-changes-01kkxekw"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/detect-stale-integration-target-when-dispatch-base-branch-config-changes-01kkxekw" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T01:25:42.944Z
@@ -8797,14 +8500,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/replace-hardcoded-branch-names-in-merge-skill-template-with-dynamic-references/01kkxemg"
-            is missing.
+          message: Canonical branch "dispatch/task/replace-hardcoded-branch-names-in-merge-skill-template-with-dynamic-references/01kkxemg" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/replace-hardcoded-branch-names-in-merge-skill-template-with-dynamic-references-01kkxemg"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/replace-hardcoded-branch-names-in-merge-skill-template-with-dynamic-references-01kkxemg" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T01:38:43.851Z
@@ -8883,14 +8582,10 @@ workspaces:
       status: invalid
       issues:
         - code: missing_canonical_branch
-          message: Canonical branch
-            "dispatch/task/fix-session-cache-invalidate-leaves-ghost-in-knownsessionids/01kkxgpn" is
-            missing.
+          message: Canonical branch "dispatch/task/fix-session-cache-invalidate-leaves-ghost-in-knownsessionids/01kkxgpn" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-session-cache-invalidate-leaves-ghost-in-knownsessionids-01kkxgpn"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-session-cache-invalidate-leaves-ghost-in-knownsessionids-01kkxgpn" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T01:46:36.483Z
@@ -8972,9 +8667,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-review-interaction/01kktw6k" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-interaction-01kktw6k"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-interaction-01kktw6k" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T02:28:48.432Z
@@ -9059,9 +8752,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-code-diff-viewer/01kktw6m" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-code-diff-viewer-01kktw6m"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-code-diff-viewer-01kktw6m" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T07:52:35.882Z
@@ -9143,9 +8834,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-structured-content-viewer/01kktw6n" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-structured-content-viewer-01kktw6n"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-structured-content-viewer-01kktw6n" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T03:38:42.688Z
@@ -9228,9 +8917,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-event-bus/01kkzpvd" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-event-bus-01kkzpvd"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-event-bus-01kkzpvd" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T08:52:37.696Z
@@ -9312,9 +8999,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-action-model/01kkzpvj" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-action-model-01kkzpvj"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-action-model-01kkzpvj" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T08:39:36.238Z
@@ -9396,9 +9081,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-hook-schema/01kkzpvq" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-hook-schema-01kkzpvq"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-hook-schema-01kkzpvq" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T09:10:39.798Z
@@ -9480,9 +9163,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-dispatch-sync-config/01kkzwb6" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-sync-config-01kkzwb6"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-sync-config-01kkzwb6" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T09:17:36.139Z
@@ -9564,9 +9245,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-command-action/01kkzpvk" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-command-action-01kkzpvk"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-command-action-01kkzpvk" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T09:28:40.308Z
@@ -9648,9 +9327,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-event-schema/01kkzpvf" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-event-schema-01kkzpvf"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-event-schema-01kkzpvf" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T09:52:40.523Z
@@ -9735,9 +9412,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-session-events/01kkzpvp" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-events-01kkzpvp"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-session-events-01kkzpvp" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T10:36:36.797Z
@@ -9822,9 +9497,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-dispatch-target-sync/01kkzwb7" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-target-sync-01kkzwb7"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-target-sync-01kkzwb7" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T10:49:37.720Z
@@ -9906,9 +9579,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-dispatch-branch-push/01kkzwb8" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-branch-push-01kkzwb8"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-branch-push-01kkzwb8" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T11:02:36.622Z
@@ -9990,9 +9661,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-event-payloads/01kkzpvg" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-event-payloads-01kkzpvg"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-event-payloads-01kkzpvg" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T11:11:36.634Z
@@ -10074,9 +9743,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-dispatch-degraded-state/01kkzwb8" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-degraded-state-01kkzwb8"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-dispatch-degraded-state-01kkzwb8" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T11:29:36.752Z
@@ -10158,9 +9825,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-schedule-schema/01kkzpvt" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-schedule-schema-01kkzpvt"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-schedule-schema-01kkzpvt" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T11:46:41.263Z
@@ -10242,9 +9907,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-agent-action-input/01kkzpvm" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-agent-action-input-01kkzpvm"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-agent-action-input-01kkzpvm" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T12:02:36.843Z
@@ -10329,9 +9992,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-hook-executor/01kkzpvs" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-hook-executor-01kkzpvs"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-hook-executor-01kkzpvs" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T12:55:36.808Z
@@ -10416,9 +10077,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-schedule-engine/01kkzpvv" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-schedule-engine-01kkzpvv"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-schedule-engine-01kkzpvv" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T13:20:38.170Z
@@ -10500,9 +10159,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-composition-join/01kkzpw4" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-composition-join-01kkzpw4"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-composition-join-01kkzpw4" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T13:12:42.061Z
@@ -10584,9 +10241,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-validate-integration/01kkzpw2" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-integration-01kkzpw2"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-validate-integration-01kkzpw2" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T13:37:37.132Z
@@ -10671,9 +10326,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-daemon-api/01kkzpw1" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-api-01kkzpw1"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-api-01kkzpw1" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T14:33:39.458Z
@@ -10758,9 +10411,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-hook-cli/01kkzpvx" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-hook-cli-01kkzpvx" is
-            missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-hook-cli-01kkzpvx" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T14:36:40.382Z
@@ -10842,9 +10493,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-cancel-old-trigger-task/01kkzpw8" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cancel-old-trigger-task-01kkzpw8"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cancel-old-trigger-task-01kkzpw8" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T14:40:39.479Z
@@ -10929,9 +10578,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-schedule-cli/01kkzpvy" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-schedule-cli-01kkzpvy"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-schedule-cli-01kkzpvy" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T15:25:39.700Z
@@ -11013,9 +10660,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-spec-review-version-auto-derive/01km0nt8" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-review-version-auto-derive-01km0nt8"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-spec-review-version-auto-derive-01km0nt8" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T15:10:39.663Z
@@ -11097,9 +10742,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-event-cli/01kkzpw0" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-event-cli-01kkzpw0"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-event-cli-01kkzpw0" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T15:21:48.632Z
@@ -11181,9 +10824,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-cli-verdict-auto-version/01km0ntq" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-verdict-auto-version-01km0ntq"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-verdict-auto-version-01km0ntq" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T15:38:40.019Z
@@ -11265,9 +10906,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-cli-check-auto-version/01km0nv0" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-check-auto-version-01km0nv0"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-check-auto-version-01km0nv0" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T15:47:40.001Z
@@ -11352,9 +10991,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-automation-view/01kkzpw5" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-automation-view-01kkzpw5"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-automation-view-01kkzpw5" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T16:35:40.419Z
@@ -11436,9 +11073,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-cli-shared-disposition/01km0nvt" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-shared-disposition-01km0nvt"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-shared-disposition-01km0nvt" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T16:11:40.052Z
@@ -11523,9 +11158,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-review-skill-version-docs/01km0nw5" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-skill-version-docs-01km0nw5"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-review-skill-version-docs-01km0nw5" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T17:03:47.955Z
@@ -11607,9 +11240,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-remediate-review-versions/01km0nwk" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remediate-review-versions-01km0nwk"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-remediate-review-versions-01km0nwk" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T16:55:40.533Z
@@ -11691,9 +11322,7 @@ workspaces:
           message: Canonical branch "dispatch/task/task-migrate-triggers/01kkzpw7" is missing.
           suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
         - code: missing_worker_worktree
-          message: Worker worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-triggers-01kkzpw7"
-            is missing or no longer registered.
+          message: Worker worktree "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-triggers-01kkzpw7" is missing or no longer registered.
           suggestion: Re-provision the worker worktree from the recorded canonical branch.
       summary: Workspace registry record is invalid because required git state is missing.
       updated_at: 2026-03-18T17:17:40.290Z
