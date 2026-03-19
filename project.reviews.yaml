@@ -20457,6 +20457,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-19T07:11:55.316Z
+      - _ulid: 01KM2F01F3WHZEKMWRPZFTKTHS
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM2EY29TD7GF8A1FZJW08K1F
+        timestamp: 2026-03-19T07:12:12.260Z
     examined_commit: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
     external_links: []
     lifecycle_state: closed
@@ -20521,6 +20527,8 @@ reviews:
                 npm help run fails in \ with multiple assertion regressions and cleanup errors, so this snapshot is not merge-ready even though the task-local shadow commit changes look correct. Evidence: the suite reported 7 failures in this file, including unexpected invocation spawning and missed post-invocation re-evaluation, which prevents approval under the repo's review gates.
             created_at: 2026-03-19T07:11:07.578Z
         kind: blocker
+        resolved_at: 2026-03-19T07:12:11.941Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM2EYC9715WPS8JN28CQG8XF
         anchor:
           type: code
@@ -20567,5 +20575,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T07:11:42.918Z
     created_at: 2026-03-19T07:04:26.710Z
-    updated_at: 2026-03-19T07:11:54.982Z
+    updated_at: 2026-03-19T07:12:11.941Z
     notes: []
