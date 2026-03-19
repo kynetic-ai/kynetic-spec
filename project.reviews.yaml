@@ -20360,6 +20360,17 @@ reviews:
         runner: npm
         created_at: 2026-03-19T07:11:32.280Z
         completed_at: 2026-03-19T07:11:32.280Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation reports pre-existing repository-wide reference/completeness issues (3 reference
+          errors, 398 completeness warnings); no task-specific validation regression isolated.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-19T07:11:32.920Z
+        completed_at: 2026-03-19T07:11:32.920Z
     events:
       - _ulid: 01KM2EHTTPYB40KHMRXMGZGYV4
         actor: Jacob Chapel
@@ -20423,6 +20434,13 @@ reviews:
           status: pass
           name: shadow commit regression
         timestamp: 2026-03-19T07:11:32.491Z
+      - _ulid: 01KM2EYV7ZH96ZGJXDAB1E63TT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-19T07:11:33.120Z
     examined_commit: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
     external_links: []
     lifecycle_state: open
@@ -20526,5 +20544,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-19T07:04:26.710Z
-    updated_at: 2026-03-19T07:11:32.280Z
+    updated_at: 2026-03-19T07:11:32.920Z
     notes: []
