@@ -22752,7 +22752,19 @@ reviews:
     slugs: []
     title: Review cancelled-task exclusion in plan summary metrics
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Reproduced generateJsonSnapshot() returning task_count=0 and zeroed task_progress for
+          plan-one when project.plans.yaml has derived_tasks: [] and project.tasks.yaml contains a
+          non-cancelled task with plan_ref: @plan-one."
+        name: export plan_ref linkage reproduction
+        required: true
+        runner: node
+        created_at: 2026-03-19T23:47:20.970Z
+        completed_at: 2026-03-19T23:47:20.970Z
     events:
       - _ulid: 01KM47PA2996MFTY9K47HWG88P
         actor: Jacob Chapel
@@ -22774,6 +22786,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM47Y4MMVDNA3AEGTDXF1ZTJ
         timestamp: 2026-03-19T23:47:19.261Z
+      - _ulid: 01KM47Y7MXS0MMJ2GQ6XFAZ81Q
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: export plan_ref linkage reproduction
+        timestamp: 2026-03-19T23:47:21.886Z
     examined_commit: 4a8578499560b6d5d05eb62f749dfddb16422f43
     external_links: []
     lifecycle_state: open
@@ -22806,5 +22825,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-19T23:43:02.217Z
-    updated_at: 2026-03-19T23:47:18.805Z
+    updated_at: 2026-03-19T23:47:20.970Z
     notes: []
