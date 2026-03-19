@@ -11514,7 +11514,7 @@ workspaces:
         head: fb1c18c7b0784d61a8710960326b0117145b8e95
         last_seen_at: 2026-03-19T04:33:22.656Z
         path: /home/chapel/Projects/kynetic-spec/.kspec-worktrees/remove-dead-parseversionfromoptions-function-01km21d0
-  - active_role: worker
+  - active_role: null
     base_branch_point: bb5471acddfb9905490cdced154f7a52a26a0fdc
     bootstrap:
       status: succeeded
@@ -11556,12 +11556,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T04:45:20.077Z
+      updated_at: 2026-03-19T04:45:24.507Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T04:45:20.077Z
+      updated_at: 2026-03-19T04:45:24.507Z
     integration:
       status: pending
       detail: null
@@ -11569,17 +11569,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bb5471acddfb9905490cdced154f7a52a26a0fdc
-      updated_at: 2026-03-19T04:45:20.077Z
-    lifecycle_state: active
+      updated_at: 2026-03-19T04:45:24.507Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM24PWVNKNRR0P0BDKB643ZT"
     task_slug: fix-default-kspec-cli-path-pointing-to-nonexistent-bin-kspec-cjs
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T04:33:26.671Z
-      last_reconciled_at: 2026-03-19T04:45:20.077Z
+      last_reconciled_at: 2026-03-19T04:45:24.507Z
       created_at: 2026-03-19T04:33:24.141Z
-      updated_at: 2026-03-19T04:45:20.077Z
+      updated_at: 2026-03-19T04:45:24.507Z
     workspace_id: dispatch-workspace-01KM24PWVNKNRR0P0BDKB643ZT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
