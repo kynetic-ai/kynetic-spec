@@ -108953,8 +108953,10 @@
   spec_ref: "@dispatch-shared-checkout-contract"
   plan_ref: "@plan-dispatch-integration-checkout-boundaries"
   origin: derived
-  status: blocked
+  status: cancelled
   blocked_by: []
+  closed_reason: Not needed. The approved plan and derived specs already contain the design work; this
+    task only restates that contract and adds no unique implementation or validation artifact.
   depends_on: []
   context: []
   priority: 1
