@@ -11638,18 +11638,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/dispatch-engine-cli-calls-must-not-crash-the-engine-on-failure/01km26c8
-    canonical_branch_head: 32fd0963c67aa3a50ecfb6b21f84c544a96bf7e1
+    canonical_branch_head: 5af01ff7d3058bc6753ef054141f1b9b27390392
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T05:08:41.410Z
+      updated_at: 2026-03-19T05:09:20.079Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T05:08:42.281Z
+      updated_at: 2026-03-19T05:09:20.079Z
     integration:
       status: pending
       detail: null
@@ -11657,7 +11657,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 02a1386fbddabc850a1a31b24dc1765480bb0a53
-      updated_at: 2026-03-19T05:08:41.410Z
+      updated_at: 2026-03-19T05:09:20.079Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM26C8WX6CMY7S9XD3RJZ003"
@@ -11665,9 +11665,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T05:08:42.281Z
-      last_reconciled_at: 2026-03-19T05:08:42.281Z
+      last_reconciled_at: 2026-03-19T05:09:20.079Z
       created_at: 2026-03-19T04:45:32.059Z
-      updated_at: 2026-03-19T05:08:42.281Z
+      updated_at: 2026-03-19T05:09:20.079Z
     workspace_id: dispatch-workspace-01KM26C8WX6CMY7S9XD3RJZ003
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
