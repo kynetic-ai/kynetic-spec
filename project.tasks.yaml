@@ -108415,6 +108415,14 @@
   session_id: 01KM25XB109EN8EE0R6RQJYN8C
   created_at: 2026-03-19T04:12:26.869Z
   started_at: 2026-03-19T04:33:55.497Z
-  notes: []
+  notes:
+    - _ulid: 01KM260RF6K2DXZHHQVME9ECXY
+      content: Investigated DEFAULT_KSPEC_CLI_PATH usage. The production fix is to target the package bin
+        entrypoint under cli/, but source-mode tests load src/ directly, so the implementation will
+        prefer ../cli/index.js and fall back to ../cli/index.ts to keep both runtime and test
+        execution working.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T04:35:18.631Z
   todos: []
   automation: eligible
