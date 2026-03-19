@@ -22569,9 +22569,25 @@ reviews:
           status: pass
           name: targeted regressions
         timestamp: 2026-03-19T23:25:45.472Z
+      - _ulid: 01KM46PZS13K30K0HYCQ37XXA9
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-19T23:25:55.873Z
+      - _ulid: 01KM46PZS1C15MWZWFZTHJ9VEG
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-19T23:25:55.873Z
     examined_commit: b167ae34f9dbeed3ee5ae740d478c06917a1188b
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -22601,7 +22617,14 @@ reviews:
               branch before resubmitting.
             created_at: 2026-03-19T23:25:42.724Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-19T23:25:55.872Z
     created_at: 2026-03-19T23:17:52.493Z
-    updated_at: 2026-03-19T23:25:45.221Z
+    updated_at: 2026-03-19T23:25:55.873Z
     notes: []
