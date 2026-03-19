@@ -108617,3 +108617,49 @@
       created_at: 2026-03-19T05:08:11.191Z
   todos: []
   automation: eligible
+- _ulid: 01KM289GY9589XH063SSFMBJFQ
+  slugs: []
+  title: Implement KSPEC_NO_DAEMON to suppress incidental daemon communication
+  type: feature
+  description: >-
+    **What:** Implement the `KSPEC_NO_DAEMON` environment variable (ac-32, ac-33) so CLI commands
+    skip all incidental daemon communication when set. Explicit `kspec serve` commands must remain
+    unaffected.
+
+
+    **Why:** Tests running in `/tmp/` directories auto-register with the live daemon via
+    `postDispatchEvent()` and middleware auto-registration. This pollutes the project list, starts
+    watchers for ephemeral directories, and causes ENOENT recovery loops when tests clean up. All
+    daemon communication flows through `isDaemonRunning()` in `src/cli/pid-utils.ts` — guarding
+    there covers all paths.
+
+
+    **How:** 
+
+    - In `isDaemonRunning()`, return `false` early when `KSPEC_NO_DAEMON` is truthy — this gates
+    `postDispatchEvent()`, `getDaemonUrl()` (agent.ts, event.ts, schedule.ts), daemon auto-start in
+    `cli/index.ts`, and status queries
+
+    - Leave `kspec serve` commands unaffected (they call `isDaemonRunning()` for operational checks,
+    not side-effects — verify each call site)
+
+    - Set `KSPEC_NO_DAEMON=1` in `tests/setup.ts` as a default for all vitest tests
+
+    - Verify E2E fixtures (`packages/web-ui/tests/fixtures/test-base.ts`) unset it since they manage
+    their own daemon
+  spec_ref: "@multi-directory-daemon"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - cli
+    - daemon
+  vcs_refs: []
+  created_at: 2026-03-19T05:15:02.985Z
+  notes: []
+  todos: []
+  automation: eligible
