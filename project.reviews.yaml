@@ -20372,6 +20372,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM2EY29TD7GF8A1FZJW08K1F
         timestamp: 2026-03-19T07:11:07.750Z
+      - _ulid: 01KM2EYCFJ9EH1KNTQTTKVRWMH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM2EYC9715WPS8JN28CQG8XF
+        timestamp: 2026-03-19T07:11:18.002Z
     examined_commit: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
     external_links: []
     lifecycle_state: open
@@ -20436,7 +20443,26 @@ reviews:
                 npm help run fails in \ with multiple assertion regressions and cleanup errors, so this snapshot is not merge-ready even though the task-local shadow commit changes look correct. Evidence: the suite reported 7 failures in this file, including unexpected invocation spawning and missed post-invocation re-evaluation, which prevents approval under the repo's review gates.
             created_at: 2026-03-19T07:11:07.578Z
         kind: blocker
+      - _ulid: 01KM2EYC9715WPS8JN28CQG8XF
+        anchor:
+          type: code
+          commit: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
+          line_end: 2921
+          line_start: 2921
+          path: tests/agent-dispatch-engine.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM2EYC978DXM67W4TA144AHP
+            author: Jacob Chapel
+            body: "Required merge gate is red: an independent npm test run fails in
+              tests/agent-dispatch-engine.test.ts with multiple assertion regressions and cleanup
+              errors, so this snapshot is not merge-ready even though the task-local shadow commit
+              changes look correct. Evidence: the suite reported 7 failures in this file, including
+              unexpected invocation spawning and missed post-invocation re-evaluation, which
+              prevents approval under the repo's review gates."
+            created_at: 2026-03-19T07:11:17.799Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-19T07:04:26.710Z
-    updated_at: 2026-03-19T07:11:07.578Z
+    updated_at: 2026-03-19T07:11:17.799Z
     notes: []
