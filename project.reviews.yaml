@@ -21639,7 +21639,17 @@ reviews:
     slugs: []
     title: Review Dispatch Shared-Checkout Safety and Git Context Hardening
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repo-wide validation failures unrelated to this plan
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-19T20:57:22.323Z
+        completed_at: 2026-03-19T20:57:22.323Z
     events:
       - _ulid: 01KM3Y4X195AM23R2CV0E42PXC
         actor: Jacob Chapel
@@ -21668,6 +21678,13 @@ reviews:
           kind: question
           thread_ulid: 01KM3Y6S9TP0C2GSADM9F3BXGY
         timestamp: 2026-03-19T20:57:16.848Z
+      - _ulid: 01KM3Y6ZBHXE78P0MQ50NJXKKH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-19T20:57:22.545Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -21711,5 +21728,5 @@ reviews:
         kind: question
     verdicts: []
     created_at: 2026-03-19T20:56:14.634Z
-    updated_at: 2026-03-19T20:57:16.346Z
+    updated_at: 2026-03-19T20:57:22.323Z
     notes: []
