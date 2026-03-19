@@ -108408,8 +108408,11 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev at 9b61b4de2. Updated DEFAULT_KSPEC_CLI_PATH to resolve the built
+    dist/cli/index.js entrypoint instead of the nonexistent bin/kspec.cjs path, and added resolver
+    coverage for both source and dist module locations.
   depends_on: []
   context: []
   priority: 2
@@ -108430,6 +108433,7 @@
   created_at: 2026-03-19T04:12:26.869Z
   started_at: 2026-03-19T04:33:55.497Z
   submitted_at: 2026-03-19T04:45:13.937Z
+  completed_at: 2026-03-19T04:52:59.841Z
   notes:
     - _ulid: 01KM260RF6K2DXZHHQVME9ECXY
       content: Investigated DEFAULT_KSPEC_CLI_PATH usage. The production fix is to target the package bin
