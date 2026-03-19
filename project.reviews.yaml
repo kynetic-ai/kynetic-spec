@@ -20181,6 +20181,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-19T06:54:46.117Z
+      - _ulid: 01KM2E5B5NAS72FFZ1K7WXHZQ8
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM2E5AZX0094R0TAPVW4F5HR
+        timestamp: 2026-03-19T06:57:37.461Z
     examined_commit: bbaff772decfe825189f288ef9911d9f5696a240
     external_links: []
     lifecycle_state: open
@@ -20190,8 +20197,28 @@ reviews:
       content_hash: ""
       ref: "@01KJP279FYHBM6995ZVMYGM7M2"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM2E5AZX0094R0TAPVW4F5HR
+        anchor:
+          type: code
+          commit: bbaff772decfe825189f288ef9911d9f5696a240
+          line_end: 41
+          line_start: 41
+          path: AGENTS.md
+          side: head
+        entries:
+          - _ulid: 01KM2E5AZYW765HB8ZRBN52MJG
+            author: Jacob Chapel
+            body: This task is still incomplete. Its description says to "remove all remaining ralph references"
+              and "update any remaining code comments," but this snapshot still leaves user-facing
+              references behind. `AGENTS.md` still documents the templates as including a "ralph
+              loop", and `docs/agents-eval-scenarios.md` still teaches "ralph loop mode" / `kspec
+              ralph end-loop`. A repo-wide `rg -n "ralph|Ralph"` also still finds many additional
+              untouched references. Until those remaining traces are either removed or explicitly
+              scoped out, the task cannot be considered done.
+            created_at: 2026-03-19T06:57:37.278Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-19T06:54:26.418Z
-    updated_at: 2026-03-19T06:54:45.844Z
+    updated_at: 2026-03-19T06:57:37.278Z
     notes: []
