@@ -8922,6 +8922,9 @@ features:
               that dispatch owns for the configured integration branch. They do
               not spill into unrelated repository state, and they fail safely when
               the intended mutation surface is ambiguous.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
