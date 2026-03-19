@@ -13,6 +13,7 @@ import * as fs from "node:fs/promises";
 import * as fsSync from "node:fs";
 import * as path from "node:path";
 import * as os from "node:os";
+import { pathToFileURL } from "node:url";
 import { EventEmitter } from "node:events";
 import * as YAML from "yaml";
 import {
@@ -25,7 +26,12 @@ import {
   isSessionBlobPointer,
 } from "../src/sessions/store.js";
 import * as storeModule from "../src/sessions/store.js";
-import { runInvocation, InvocationTimeoutError } from "../src/agent-runtime/invocation.js";
+import {
+  runInvocation,
+  InvocationTimeoutError,
+  DEFAULT_KSPEC_CLI_PATH,
+  resolveDefaultKspecCliPath,
+} from "../src/agent-runtime/invocation.js";
 import { resolveSkills, buildPromptWithSkills } from "../src/agent-runtime/prompts.js";
 import { registerAdapter } from "../src/agents/adapters.js";
 import * as spawnerModule from "../src/agents/spawner.js";
@@ -96,6 +102,37 @@ async function seedInvocationOutcome(
   await closeSession(sessionsDir, sessionId, status, `Seeded ${status} outcome`);
   await new Promise((resolve) => setTimeout(resolve, 2));
 }
+
+describe("DEFAULT_KSPEC_CLI_PATH resolution", () => {
+  it("should resolve to the cli entrypoint instead of the removed bin/kspec.cjs path", () => {
+    expect(DEFAULT_KSPEC_CLI_PATH).toMatch(new RegExp(`dist\\${path.sep}cli\\${path.sep}index\\.js$`));
+    expect(DEFAULT_KSPEC_CLI_PATH).not.toContain(`${path.sep}bin${path.sep}kspec.cjs`);
+  });
+
+  it("should resolve the built cli entrypoint from both source and dist module locations", async () => {
+    const testDir = await createTempDir("kspec-cli-path-");
+    try {
+      const srcAgentRuntimeDir = path.join(testDir, "src", "agent-runtime");
+      const agentRuntimeDir = path.join(testDir, "dist", "agent-runtime");
+      const cliDir = path.join(testDir, "dist", "cli");
+      await fs.mkdir(srcAgentRuntimeDir, { recursive: true });
+      await fs.mkdir(agentRuntimeDir, { recursive: true });
+      await fs.mkdir(cliDir, { recursive: true });
+
+      const fakeSourceModule = path.join(srcAgentRuntimeDir, "invocation.ts");
+      const fakeInvocationModule = path.join(agentRuntimeDir, "invocation.js");
+      const builtCli = path.join(cliDir, "index.js");
+      await fs.writeFile(fakeSourceModule, "", "utf-8");
+      await fs.writeFile(fakeInvocationModule, "", "utf-8");
+      await fs.writeFile(builtCli, "", "utf-8");
+
+      expect(resolveDefaultKspecCliPath(pathToFileURL(fakeSourceModule).href)).toBe(builtCli);
+      expect(resolveDefaultKspecCliPath(pathToFileURL(fakeInvocationModule).href)).toBe(builtCli);
+    } finally {
+      await cleanupTempDir(testDir);
+    }
+  });
+});
 
 // ─── AC-1: Session creation with trigger, agent_id, task_id ──────────────────
 
