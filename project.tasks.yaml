@@ -108316,3 +108316,37 @@
       created_at: 2026-03-18T16:44:44.667Z
   todos: []
   automation: eligible
+- _ulid: 01KM21D00SD4D9WW2G1BFC1YB0
+  slugs: []
+  title: Remove dead parseVersionFromOptions function
+  type: infra
+  description: >-
+    **What:** Delete the `parseVersionFromOptions()` function (~line 394 in
+    `src/cli/commands/review.ts`). It has zero callers after the version auto-derivation work
+    completed.
+
+
+    **Why:** The function was supposed to be deleted as part of @task-cli-check-auto-version per the
+    plan, but was missed. It references the now-removed
+    `--version-base`/`--version-head`/`--version-hash` CLI flags in its error messages, making it
+    confusing dead code.
+
+
+    **How:** Remove the function definition and any associated type imports that become unused after
+    deletion. Run tests to confirm nothing breaks.
+  spec_ref: "@review-cli-mutation-commands"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - cleanup
+  vcs_refs: []
+  created_at: 2026-03-19T03:14:36.697Z
+  notes: []
+  todos: []
+  automation: eligible
