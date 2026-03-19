@@ -38,7 +38,7 @@ kynetic-spec/
 | Source | What it provides | How to change |
 |--------|-----------------|---------------|
 | **Dynamic data** (from `.kspec/`) | Conventions, workflows, skills | `kspec meta set`, `kspec meta add` |
-| **Static templates** (`templates/agents-sections/`) | Quick start, shadow branch, task lifecycle, PR workflow, commit convention, ralph loop, batch usage | Edit the markdown files directly |
+| **Static templates** (`templates/agents-sections/`) | Quick start, shadow branch, task lifecycle, PR workflow, commit convention, agent dispatch mode, batch usage | Edit the markdown files directly |
 
 Templates ship with the npm package and provide the structural documentation that doesn't change per-project. Dynamic data is project-specific and lives in the shadow branch.
 

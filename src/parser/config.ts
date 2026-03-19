@@ -217,12 +217,12 @@ const AgentConfigSchema = z
   .optional();
 
 /**
- * Legacy alias for agent configuration.
+ * Legacy alias schema for agent configuration.
  *
  * Kept only so existing `ralph:` config blocks continue to parse while the
  * resolved runtime shape stays on `config.agent`.
  */
-const LegacyRalphConfigSchema = AgentConfigSchema;
+const LegacyAgentConfigAliasSchema = AgentConfigSchema;
 
 /**
  * Complete schema for kspec.config.yaml.
@@ -244,7 +244,7 @@ export const KspecConfigSchema = z
     /** Agent configuration */
     agent: AgentConfigSchema,
     /** Legacy alias for agent configuration */
-    ralph: LegacyRalphConfigSchema,
+    ralph: LegacyAgentConfigAliasSchema,
     /** Hooks installation configuration */
     hooks: HooksConfigSchema,
   })

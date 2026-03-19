@@ -15,7 +15,7 @@
  * AC: @enhanced-setup ac-6 - --dry-run displays planned actions without changes
  * AC: @enhanced-setup ac-7 - --status reports current state including agent detected
  * AC: @enhanced-setup ac-8 - --status shows hooks status, skills rendered count, agents.md freshness
- * AC: @enhanced-setup ac-9 - skills referenced by ralph (task-work, reflect) are present
+ * AC: @enhanced-setup ac-9 - skills referenced by built-in agent workflows (task-work, reflect) are present
  */
 
 import * as fs from "node:fs/promises";

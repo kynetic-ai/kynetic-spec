@@ -28,7 +28,7 @@ describe('getIterationStats', () => {
     kspec('task start @test-task-pending', tempDir);
     kspec('task complete @test-task-pending --reason "Test completion"', tempDir);
 
-    // The iteration stats would be queried internally by ralph
+    // The iteration stats would be queried internally by the dispatch engine
     // We can verify the task is completed by checking task list
     // Note: tasks list --json returns an array directly
     const tasks = kspecJson<Task[]>('tasks list --json', tempDir);
