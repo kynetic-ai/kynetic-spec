@@ -19839,6 +19839,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-19T06:33:30.665Z
         completed_at: 2026-03-19T06:33:30.665Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fail: loading a temp kspec.config.yaml with ralph.skills.pr_review=/my-review still
+          resolves agent.skills.pr_review to the default /kspec:review after this change, so the
+          legacy config key is silently ignored."
+        name: manual compatibility
+        required: true
+        runner: manual
+        created_at: 2026-03-19T06:34:10.832Z
+        completed_at: 2026-03-19T06:34:10.832Z
     events:
       - _ulid: 01KM2C9XQXFTQWVCRN1R2DS1H4
         actor: Jacob Chapel
@@ -19881,6 +19893,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-19T06:33:30.977Z
+      - _ulid: 01KM2CTE19STFX7EAZC2EX0EPB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual compatibility
+        timestamp: 2026-03-19T06:34:11.370Z
     examined_commit: 61ca7bb5b8609e78888aef803da22b303c93ca8b
     external_links: []
     lifecycle_state: open
@@ -19929,5 +19948,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-19T06:25:10.398Z
-    updated_at: 2026-03-19T06:33:30.665Z
+    updated_at: 2026-03-19T06:34:10.832Z
     notes: []
