@@ -23643,10 +23643,12 @@ plans:
       The intended operating model after this plan:
 
       - humans keep their normal checkout on `main`
-      - dispatch owns a separate integration checkout attached to `dev`
+      - dispatch owns a separate integration checkout attached to the
+        configured integration branch from `dispatch.base_branch`
       - worker and reviewer task worktrees remain isolated under the existing
         dispatch worktree root
-      - promotion from `dev` to `main` remains an explicit human action
+      - promotion from the configured integration branch to `main` remains an
+        explicit human action
 
       This plan focuses on the behavioral contract for checkout ownership,
       sanitized git execution, and safe repair of stale integration checkouts.
@@ -23667,7 +23669,8 @@ plans:
 
       - worker/reviewer code execution happens in isolated task worktrees
       - dispatch owns branch sync and integration push behavior
-      - humans decide when work graduates from `dev` to `main`
+      - humans decide when work graduates from the configured integration
+        branch to `main`
 
       What is missing is an explicit contract for the repository instance that
       dispatch is allowed to mutate and the git execution rules that keep that
@@ -23727,9 +23730,11 @@ plans:
           - id: ac-2
             given: |
               A human keeps a normal checkout on `main` while dispatch owns a
-              separate checkout on `dev`
+              separate checkout on the configured integration branch from
+              dispatch.base_branch
             when: |
-              The dispatcher syncs or publishes `dev`
+              The dispatcher syncs or publishes the configured integration
+              branch
             then: |
               The human checkout remains untouched; branch mutation is isolated
               to the dispatch-owned checkout
@@ -24037,8 +24042,8 @@ plans:
 
           How: Extend the existing dispatch target sync and degraded-state
           test fixtures to model a human checkout on main, a dispatch-owned
-          checkout on dev, leaked git env, and out-of-band branch ref
-          movement.
+          checkout on the configured integration branch, leaked git env, and
+          out-of-band branch ref movement.
       ```
 
       ## Implementation Notes
@@ -24046,9 +24051,11 @@ plans:
       ### Intended operator model
 
       - Human checkout stays on `main`
-      - Dispatch-owned integration checkout stays on `dev`
+      - Dispatch-owned integration checkout stays on the configured
+        integration branch from `dispatch.base_branch`
       - Worker and reviewer worktrees remain under `dispatch.worktree_root`
-      - Promotion from `dev` to `main` remains a deliberate human action
+      - Promotion from the configured integration branch to `main` remains a
+        deliberate human action
 
       ### Why not a bare repo in this plan
 
@@ -24079,4 +24086,8 @@ plans:
     source_path: /tmp/dispatch-integration-checkout-boundaries-plan.md
     created_at: 2026-03-19T17:57:13.489Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KM3M5KHS90CVHXC1QPKDDRDH
+        content: Replace hardcoded dev references with configured integration branch semantics
+        author: Jacob Chapel
+        created_at: 2026-03-19T18:01:51.930Z
