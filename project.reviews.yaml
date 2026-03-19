@@ -21537,6 +21537,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM3XXQKSB1C7CXZ0PK4CB04D
         timestamp: 2026-03-19T20:52:19.933Z
+      - _ulid: 01KM3XXR5NA0EV43F9YT8E7NCQ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: question
+          thread_ulid: 01KM3XXQNT4BP11DW8NMGPQQF4
+        timestamp: 2026-03-19T20:52:20.277Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -21558,7 +21565,16 @@ reviews:
               spec-facing document.
             created_at: 2026-03-19T20:52:19.706Z
         kind: blocker
+      - _ulid: 01KM3XXQNT4BP11DW8NMGPQQF4
+        entries:
+          - _ulid: 01KM3XXQNT1WSD4F5X6N53RY2N
+            author: Jacob Chapel
+            body: Should the git-targeting contract stay at the current level of behavior, or should the
+              launch-context / repo-selection wording be pushed entirely into the task
+              descriptions?  still reads a bit mechanism-shaped compared with the rest of the plan.
+            created_at: 2026-03-19T20:52:19.770Z
+        kind: question
     verdicts: []
     created_at: 2026-03-19T20:51:34.543Z
-    updated_at: 2026-03-19T20:52:19.706Z
+    updated_at: 2026-03-19T20:52:19.770Z
     notes: []
