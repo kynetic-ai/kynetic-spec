@@ -108581,7 +108581,7 @@
   spec_ref: "@dispatch-workspace-configuration"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -108590,9 +108590,18 @@
     - agent-runtime
     - dispatch
   vcs_refs: []
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-19T05:08:26.793Z
+    commit: 9b61b4de21aa6ce5379eb0858f6da63558a9a578
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
   session_id: 01KM273G4SMQ5SKRAWB77012CX
   created_at: 2026-03-19T04:42:11.096Z
   started_at: 2026-03-19T04:54:48.464Z
+  submitted_at: 2026-03-19T05:08:27.260Z
   notes:
     - _ulid: 01KM27WYSQF397B7XZ7AHQDTQP
       content: "Scoped dispatch workspace ownership to the current checkout's resolved worktree_root so
