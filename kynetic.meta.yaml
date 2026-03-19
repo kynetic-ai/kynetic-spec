@@ -7484,6 +7484,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-19T06:52:06.414Z
+  - _ulid: 01KM41GXNAM4VYDZDJMYSRQBZJ
+    type: friction
+    content: "Post-derive review missed a semantically empty task in
+      @plan-dispatch-integration-checkout-boundaries: @task-design-dispatch-shared-checkout-contract
+      only restated the approved plan/spec contract and created a useless dependency gate ahead of
+      real implementation work. Structural review of derived output is insufficient; plan/task
+      review needs an explicit rule rejecting tasks that merely re-describe already-approved design
+      instead of producing a concrete artifact or behavior change."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-19T21:55:14.218Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
