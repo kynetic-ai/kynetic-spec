@@ -19016,7 +19016,19 @@ reviews:
     slugs: []
     title: Review dispatch-engine-cli-calls-must-not-crash-the-engine-on-failure
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate exited 4 with pre-existing repository-wide issues unrelated to this diff:
+          3 missing references in .kspec/modules/meta.yaml, orphaned skill warning, and existing
+          completeness/alignment warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-19T05:01:16.173Z
+        completed_at: 2026-03-19T05:01:16.173Z
     events:
       - _ulid: 01KM274TXQXREHKXDE9EDNTJ89
         actor: Jacob Chapel
@@ -19038,6 +19050,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM27G8ZB9ZPDSG5CN3X8DVT8
         timestamp: 2026-03-19T05:01:15.793Z
+      - _ulid: 01KM27G9N8S9Z2XJ0PQ0PG5MAC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-19T05:01:16.328Z
     examined_commit: 32fd0963c67aa3a50ecfb6b21f84c544a96bf7e1
     external_links: []
     lifecycle_state: open
@@ -19078,5 +19097,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-19T04:55:00.791Z
-    updated_at: 2026-03-19T05:01:15.627Z
+    updated_at: 2026-03-19T05:01:16.173Z
     notes: []
