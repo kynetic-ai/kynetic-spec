@@ -8885,7 +8885,7 @@ features:
               The product guarantee in scope is shared-checkout correctness.
             status:
               maturity: draft
-              implementation: in_progress
+              implementation: not_started
             depends_on: []
             implements: []
             relates_to: []
