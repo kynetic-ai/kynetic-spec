@@ -21223,6 +21223,19 @@ reviews:
         runner: kspec
         created_at: 2026-03-19T07:59:17.096Z
         completed_at: 2026-03-19T07:59:17.096Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Ran full npm test in this worktree. Test runner completed after rebuilding missing
+          dependencies/dist and emitted passing output across the full suite, including changed
+          coverage areas (config parsing, removed ralph command guidance, setup/native guard
+          migration, dispatch entrypoint resolution).
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-19T07:59:17.743Z
+        completed_at: 2026-03-19T07:59:17.743Z
     events:
       - _ulid: 01KM2HDY4G4RYX25X3KFW0SEQS
         actor: Jacob Chapel
@@ -21258,6 +21271,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-19T07:59:17.278Z
+      - _ulid: 01KM2HP8XKT6R9TSMNGR89RPJG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-19T07:59:17.939Z
     examined_commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
     external_links: []
     lifecycle_state: open
@@ -21307,5 +21327,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-19T07:54:44.753Z
-    updated_at: 2026-03-19T07:59:17.096Z
+    updated_at: 2026-03-19T07:59:17.743Z
     notes: []
