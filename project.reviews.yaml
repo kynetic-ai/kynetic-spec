@@ -20190,6 +20190,16 @@ reviews:
         runner: reviewer
         created_at: 2026-03-19T06:57:39.126Z
         completed_at: 2026-03-19T06:57:39.126Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full suite passed in reviewer snapshot (6516 tests passed, 3 skipped).
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-19T06:57:39.755Z
+        completed_at: 2026-03-19T06:57:39.755Z
     events:
       - _ulid: 01KM2DZGKH30NQE2M27HF1A68R
         actor: Jacob Chapel
@@ -20232,6 +20242,13 @@ reviews:
           status: fail
           name: manual completeness
         timestamp: 2026-03-19T06:57:39.316Z
+      - _ulid: 01KM2E5DJWEA4FAQ172KQXN1FS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-19T06:57:39.932Z
     examined_commit: bbaff772decfe825189f288ef9911d9f5696a240
     external_links: []
     lifecycle_state: open
@@ -20290,5 +20307,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-19T06:54:26.418Z
-    updated_at: 2026-03-19T06:57:39.126Z
+    updated_at: 2026-03-19T06:57:39.755Z
     notes: []
