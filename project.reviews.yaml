@@ -20631,7 +20631,18 @@ reviews:
     slugs: []
     title: Review @01KJP279FYHBM6995ZVMYGM7M2
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Bootstrapped missing node_modules/dist, then the full npm test suite ran successfully in
+          this review workspace for snapshot 883713aaf1ef.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-19T07:18:53.215Z
+        completed_at: 2026-03-19T07:18:53.215Z
     events:
       - _ulid: 01KM2F7E2E6R109WVFQHC7JPKE
         actor: Jacob Chapel
@@ -20667,6 +20678,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM2FBEVJTWWAA5Y5PT1JCHKH
         timestamp: 2026-03-19T07:18:26.753Z
+      - _ulid: 01KM2FC97P5FHDE9G4TZTJT0AR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-19T07:18:53.430Z
     examined_commit: 883713aaf1ef6f3d218fc11570e50753efddd447
     external_links: []
     lifecycle_state: open
@@ -20732,5 +20750,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-19T07:16:14.542Z
-    updated_at: 2026-03-19T07:18:26.419Z
+    updated_at: 2026-03-19T07:18:53.215Z
     notes: []
