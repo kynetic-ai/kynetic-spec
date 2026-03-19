@@ -11848,7 +11848,7 @@ workspaces:
         head: 61ca7bb5b8609e78888aef803da22b303c93ca8b
         last_seen_at: 2026-03-19T06:24:39.996Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ralph-migration-guide-01kjp279
-  - active_role: null
+  - active_role: worker
     base_branch_point: b90454547ad1951c1f8cdd0677196add75195667
     bootstrap:
       status: succeeded
@@ -11895,7 +11895,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T06:24:41.100Z
+      updated_at: 2026-03-19T06:24:42.170Z
     integration:
       status: pending
       detail: null
@@ -11904,16 +11904,16 @@ workspaces:
       target_branch: dev
       target_commit: b90454547ad1951c1f8cdd0677196add75195667
       updated_at: 2026-03-19T06:24:41.100Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KKX6QMN6CN74M8NFSBM73X1Q"
     task_slug: add-explicit-generatecommitmessage-cases-for-all-shadow-operations
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-03-19T06:24:41.100Z
+      last_active_at: 2026-03-19T06:24:42.170Z
+      last_reconciled_at: 2026-03-19T06:24:42.170Z
       created_at: 2026-03-19T06:24:41.100Z
-      updated_at: 2026-03-19T06:24:41.742Z
+      updated_at: 2026-03-19T06:24:42.170Z
     workspace_id: dispatch-workspace-01KKX6QMN6CN74M8NFSBM73X1Q
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
