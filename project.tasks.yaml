@@ -109024,6 +109024,21 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T22:02:42.801Z
+    - _ulid: 01KM42PZR01M1NGCXW3EMAKP61
+      content: "Centralized integration-branch mutation targeting in the workspace layer and routed
+        dispatch sync/startup through it. Dispatch now refuses sync/push when the shared checkout is
+        not on the configured integration branch, strips inherited GIT_* targeting env from these
+        git calls, and uses the same base-branch resolution path as workspace provisioning. Added
+        regression coverage proving sync only updates the shared checkout, leaves task worktrees
+        untouched, reuses the same mutation surface across repeated syncs, and returns actionable
+        guidance for ambiguous checkout state. Verification: npm test (full suite), npm test --
+        tests/dispatch-target-sync.test.ts tests/dispatch-degraded-state.test.ts
+        tests/dispatch-branch-push-lifecycle.test.ts tests/dispatch-workspace-config.test.ts, npm
+        run typecheck. kspec validate still reports pre-existing repo-wide reference/completeness
+        debt unrelated to this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T22:16:01.536Z
   todos: []
   automation: eligible
 - _ulid: 01KM3ZMEMA53X21SYPSRWRF6E8
