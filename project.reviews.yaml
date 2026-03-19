@@ -19227,6 +19227,55 @@ reviews:
         runner: kspec
         created_at: 2026-03-19T05:15:39.944Z
         completed_at: 2026-03-19T05:15:39.944Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          > @kynetic-ai/spec@0.11.0 test
+
+          > node scripts/test.cjs tests/dispatch-workspace-config.test.ts
+          tests/dispatch-workspace-registry.test.ts
+
+
+           RUN  v4.0.17 /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/handle-git-worktree-collisions-between-multiple-project-checkouts-01km26db-review
+
+           ✓ tests/dispatch-workspace-registry.test.ts (25 tests) 24316ms
+               ✓ persists canonical workspace records in the shadow registry with required fields  442ms
+               ✓ persists a provisioning lifecycle record before the final ready snapshot  511ms
+               ✓ reloads registry state on startup and marks missing worktrees stale with recovery data  873ms
+               ✓ preserves a live active workspace role during periodic reconciliation  845ms
+               ✓ persists lifecycle transitions across explicit dispatch workspace lifecycle states  4042ms
+               ✓ keeps closing lifecycle when reviewer cleanup sees stale worker metadata  742ms
+               ✓ durably commits provisioning and reconciliation registry writes on the shadow branch  1938ms
+               ✓ raises actionable guidance when the registry write cannot be durably committed  1451ms
+               ✓ uses the shared dispatch shadow mutation lock for runtime registry writes  1311ms
+               ✓ suppresses registry write and commit when reconciliation produces no meaningful change  2330ms
+               ✓ performs registry write when a meaningful field changes between reconciliations  5711ms
+               ✓ does not create a shadow commit when reconciliation state is unchanged  3787ms
+           ✓ tests/dispatch-workspace-config.test.ts (19 tests) 31910ms
+               ✓ falls back to remote HEAD when dispatch.base_branch is unset  330ms
+               ✓ provisions a task worktree and records the resolved merge target without drift  2333ms
+               ✓ uses the provisioned worktree cwd for dispatched invocations  1861ms
+               ✓ fails with actionable guidance when the canonical branch is already attached in a foreign checkout  410ms
+               ✓ manual_merge config overrides auto-detection when gh is available  1322ms
+               ✓ pull_request config overrides auto-detection when gh is unavailable  1435ms
+               ✓ auto preserves environment-based detection  1403ms
+               ✓ auto-updates integration target when config changes and integration is pending  2453ms
+               ✓ throws with actionable guidance when config changes but integration is active  1873ms
+               ✓ error includes description and suggested resolution for active integration conflict  2211ms
+               ✓ dispatch prompt reflects updated integration target after re-provisioning  8416ms
+               ✓ preserves integration target when config matches existing record  6967ms
+
+           Test Files  2 passed (2)
+                Tests  44 passed (44)
+             Start at  22:15:35
+             Duration  33.10s (transform 1.70s, setup 15ms, import 2.13s, tests 56.23s, environment 0ms) passed (2 files, 44 tests).
+        name: workspace-focused-tests
+        required: true
+        runner: npm
+        created_at: 2026-03-19T05:16:09.521Z
+        completed_at: 2026-03-19T05:16:09.521Z
     events:
       - _ulid: 01KM27YNADPM2JD6W7B49DA3RQ
         actor: Jacob Chapel
@@ -19255,6 +19304,13 @@ reviews:
           status: fail
           name: kspec-validate
         timestamp: 2026-03-19T05:15:40.250Z
+      - _ulid: 01KM28BJ846QWMPWVAK60BF6KW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: workspace-focused-tests
+        timestamp: 2026-03-19T05:16:09.861Z
     examined_commit: 0e22dbfff8e98a3aeb3bf8f73c4a569d5b0748b1
     external_links: []
     lifecycle_state: open
@@ -19287,5 +19343,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-19T05:09:07.021Z
-    updated_at: 2026-03-19T05:15:39.944Z
+    updated_at: 2026-03-19T05:16:09.521Z
     notes: []
