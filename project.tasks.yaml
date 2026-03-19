@@ -71649,6 +71649,14 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-17T23:42:48.521Z
+    - _ulid: 01KM2C56JP822A5PK7EPFEPV5P
+      content: Rebased the branch onto current dev, replayed the ralph cleanup on top of the current
+        config/runtime shape, renamed remaining agent config fixtures from ralph->agent, and updated
+        stale runtime/session comments. Verified with npm test (286 files, 6514 tests passing, 3
+        skipped).
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T06:22:35.606Z
   todos: []
   automation: eligible
 - _ulid: 01KJQH689FXW590TEFZX98QVZ0
