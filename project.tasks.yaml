@@ -108337,8 +108337,12 @@
   spec_ref: "@review-cli-mutation-commands"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev. Reviewed removal of dead parseVersionFromOptions helper from
+    src/cli/commands/review.ts, verified active review CLI paths still derive applies_to_version
+    from subject bindings, and merged
+    dispatch/task/remove-dead-parseversionfromoptions-function/01km21d0 into dev.
   depends_on: []
   context: []
   priority: 3
@@ -108359,6 +108363,7 @@
   created_at: 2026-03-19T03:14:36.697Z
   started_at: 2026-03-19T03:52:39.536Z
   submitted_at: 2026-03-19T04:02:10.801Z
+  completed_at: 2026-03-19T04:43:31.726Z
   notes:
     - _ulid: 01KM243VN3RP9M0NYG93CYSH49
       content: Removed parseVersionFromOptions() function (~line 394 in review.ts) and its unused
