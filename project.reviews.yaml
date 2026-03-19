@@ -19923,6 +19923,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-19T06:34:30.179Z
+      - _ulid: 01KM2DVZG8WHC4M9EC30M0QJS7
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM2CR1KGWWB1BHWHAMCMMDZ3
+        timestamp: 2026-03-19T06:52:30.600Z
     examined_commit: 61ca7bb5b8609e78888aef803da22b303c93ca8b
     external_links: []
     lifecycle_state: closed
@@ -19968,6 +19974,13 @@ reviews:
               that still use the legacy key, so the rename is a behavioral regression rather than a
               pure trace cleanup.
             created_at: 2026-03-19T06:32:53.104Z
+          - _ulid: 01KM2DVZATXY0YGYTHA6FGX1Q3
+            author: Jacob Chapel
+            body: "Fixed in commit bbaff772d. src/parser/config.ts now accepts legacy top-level ralph: blocks as
+              a compatibility alias for agent: during config parse/resolution, with explicit agent
+              settings taking precedence when both are present. Added parser coverage for legacy
+              alias support and precedence in tests/parser/config.test.ts."
+            created_at: 2026-03-19T06:52:30.425Z
         kind: blocker
       - _ulid: 01KM2CTF5NKWY0PB9Y64GPXNGK
         entries:
@@ -20003,7 +20016,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T06:34:30.178Z
     created_at: 2026-03-19T06:25:10.398Z
-    updated_at: 2026-03-19T06:34:30.179Z
+    updated_at: 2026-03-19T06:52:30.425Z
     notes: []
   - _ulid: 01KM2DF0RQVSXJ6B0FRYTJ2BJN
     slugs: []
