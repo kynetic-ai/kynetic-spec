@@ -109343,16 +109343,25 @@
   spec_ref: "@01KM46FW"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
   priority: 3
   tags: []
   vcs_refs: []
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-19T23:41:56.262Z
+    commit: 674cabcd8646e873f128fa67b9d2db44ae74797a
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
   session_id: 01KM46QSE6ZG3F6J2PS1XM0MDE
   created_at: 2026-03-19T23:22:31.906Z
   started_at: 2026-03-19T23:26:52.208Z
+  submitted_at: 2026-03-19T23:41:56.823Z
   notes:
     - _ulid: 01KM46S696V7ENDJYV9KC8126X
       content: Started implementation review. Rebasing showed the task branch is already current with
