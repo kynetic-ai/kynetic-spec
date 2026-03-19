@@ -20660,6 +20660,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM2FBDRPBANPR3DN6HZBJY3Z
         timestamp: 2026-03-19T07:18:25.629Z
+      - _ulid: 01KM2FBF612N8BR4X91BJRTT9A
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM2FBEVJTWWAA5Y5PT1JCHKH
+        timestamp: 2026-03-19T07:18:26.753Z
     examined_commit: 883713aaf1ef6f3d218fc11570e50753efddd447
     external_links: []
     lifecycle_state: open
@@ -20706,7 +20713,24 @@ reviews:
               risks merging unrelated behavior under the wrong task/review history.
             created_at: 2026-03-19T07:18:25.303Z
         kind: blocker
+      - _ulid: 01KM2FBEVJTWWAA5Y5PT1JCHKH
+        anchor:
+          type: code
+          commit: 883713aaf1ef6f3d218fc11570e50753efddd447
+          line_end: 141
+          line_start: 141
+          path: .agents/skills/kspec-triage-automation/SKILL.md
+          side: head
+        entries:
+          - _ulid: 01KM2FBEVK6FRDTFGRPFFJ8ZQN
+            author: Jacob Chapel
+            body: 'The migration is also incomplete in generated agent guidance: this rendered skill still says
+              "Ralph loop". That leaves an explicit ralph reference in the shipped agent
+              instructions, which contradicts the task goal of purging remaining ralph traces from
+              workflows/skills/instructions.'
+            created_at: 2026-03-19T07:18:26.419Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-19T07:16:14.542Z
-    updated_at: 2026-03-19T07:18:25.303Z
+    updated_at: 2026-03-19T07:18:26.419Z
     notes: []
