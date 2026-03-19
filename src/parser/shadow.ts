@@ -1043,6 +1043,10 @@ export function generateCommitMessage(
       return formatCommitOperation("Add Trait", effectiveRef, effectiveDetail);
     case "module-add":
       return formatCommitOperation("Add Module", effectiveRef, effectiveDetail);
+    case "link-add":
+      return formatCommitOperation("Add Link", effectiveRef, effectiveDetail);
+    case "link-remove":
+      return formatCommitOperation("Remove Link", effectiveRef, effectiveDetail);
     case "derive":
       return formatCommitOperation("Derive", effectiveRef, effectiveDetail);
     case "spec-sync":

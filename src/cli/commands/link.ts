@@ -124,7 +124,9 @@ export function registerLinkCommands(program: Command): void {
         await updateSpecItem(ctx, fromSpecItem, updates);
         await commitIfShadow(
           ctx.shadow,
-          `Add ${relType} link: ${fromRef} -> ${toRef}`,
+          "link-add",
+          fromRef,
+          `${relType} ${toRef}`,
         );
 
         success(`Created relationship: ${fromRef} --[${relType}]--> ${toRef}`, {
@@ -393,7 +395,9 @@ export function registerLinkCommands(program: Command): void {
         await updateSpecItem(ctx, fromSpecItem, updates);
         await commitIfShadow(
           ctx.shadow,
-          `Remove ${removed.join(", ")} link: ${fromRef} -> ${toRef}`,
+          "link-remove",
+          fromRef,
+          `${removed.join(", ")} ${toRef}`,
         );
 
         const typesStr = removed.join(", ");
