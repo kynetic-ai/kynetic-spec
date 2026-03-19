@@ -108598,8 +108598,13 @@
   spec_ref: "@dispatch-workspace-configuration"
   meta_ref: null
   plan_ref: null
-  status: pending_review
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Review found no task-local code regressions, but merge is blocked by repo-level test
+      instability outside this diff. Full npm test fails on unrelated
+      action-model/agent-dispatch-engine failures, and review-cli failure depends on dispatch-only
+      KSPEC_DISPATCH_CANONICAL_HEAD environment leakage. Focused workspace suites pass; unblock
+      after the shared test gate is green.
   depends_on: []
   context: []
   priority: 2
