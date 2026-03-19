@@ -20898,9 +20898,25 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-19T07:29:48.815Z
+      - _ulid: 01KM2G0EVT4799C3RV8YYFMX2C
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-19T07:29:54.555Z
+      - _ulid: 01KM2G0EVVVSTA6AMC1PXVFWXJ
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-19T07:29:54.555Z
     examined_commit: 74fd5f54aaf39ed84821a89b9ea659e02e7b3890
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -20933,7 +20949,14 @@ reviews:
               unrelated meta/completeness debt outside this diff.
             created_at: 2026-03-19T07:29:47.380Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-19T07:29:54.554Z
     created_at: 2026-03-19T07:26:39.039Z
-    updated_at: 2026-03-19T07:29:48.622Z
+    updated_at: 2026-03-19T07:29:54.555Z
     notes: []
