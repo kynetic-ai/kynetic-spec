@@ -18925,6 +18925,13 @@ reviews:
           status: pass
           name: review-cli-env-leak
         timestamp: 2026-03-19T04:50:05.896Z
+      - _ulid: 01KM26WM6F1V3E5RN28R1S22FR
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM26WKSWX8H9AN8950Q619ZM
+        timestamp: 2026-03-19T04:50:31.759Z
     examined_commit: 0a4f8ab9550dfed4eec1c249f3cdd926b13ee0c2
     external_links: []
     lifecycle_state: open
@@ -18934,8 +18941,33 @@ reviews:
       content_hash: ""
       ref: "@01KM24PWVNKNRR0P0BDKB643ZT"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM26WKSWX8H9AN8950Q619ZM
+        entries:
+          - _ulid: 01KM26WKSW5ASR52ZN1ARAE1CF
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/agent-runtime/invocation.ts, tests/agent-invocation-lifecycle.test.ts
+
+              Commands run: git diff --stat, git diff, kspec task get, kspec item get
+              @agent-invocation-lifecycle, rg AC annotations, kspec validate, npm test, env -u
+              KSPEC_DISPATCH_CANONICAL_HEAD npm test -- tests/review-cli.test.ts, env -u
+              KSPEC_DISPATCH_CANONICAL_HEAD npm test -- tests/agent-invocation-lifecycle.test.ts,
+              node path existence check
+
+              Claims verified: old default path targets nonexistent bin/kspec.cjs while
+              dist/cli/index.js exists; env-scrubbed review-cli passes, so the full-suite review-cli
+              failure is dispatch-env noise; focused invocation lifecycle tests pass with the new
+              resolver
+
+              Categories searched: correctness (no issues), edge cases (source vs dist module URLs
+              covered), error handling (no regressions found), test quality (new tests prove
+              resolved path behavior), integration (path now matches built CLI layout)
+            created_at: 2026-03-19T04:50:31.356Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-19T04:46:14.863Z
-    updated_at: 2026-03-19T04:50:05.559Z
+    updated_at: 2026-03-19T04:50:31.356Z
     notes: []
