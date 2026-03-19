@@ -7474,6 +7474,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-19T05:34:30.836Z
+  - _ulid: 01KM2DV7WECM64AS22A3Q84BWA
+    type: friction
+    content: kspec skill render --force updated unrelated rendered review skills but did not regenerate
+      .agents/skills/kspec-triage-automation from the edited
+      templates/skills/triage-automation/SKILL.md in this worktree, so the skill source/render path
+      is unclear during task work.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-19T06:52:06.414Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
