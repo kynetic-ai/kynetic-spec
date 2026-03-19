@@ -11644,12 +11644,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T05:35:59.587Z
+      updated_at: 2026-03-19T05:36:05.196Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T05:35:59.587Z
+      updated_at: 2026-03-19T05:36:05.196Z
     integration:
       status: pending
       detail: null
@@ -11657,26 +11657,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 02a1386fbddabc850a1a31b24dc1765480bb0a53
-      updated_at: 2026-03-19T05:35:59.587Z
-    lifecycle_state: ready
+      updated_at: 2026-03-19T05:36:05.196Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM26C8WX6CMY7S9XD3RJZ003"
     task_slug: dispatch-engine-cli-calls-must-not-crash-the-engine-on-failure
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T05:08:42.281Z
-      last_reconciled_at: 2026-03-19T05:35:59.587Z
+      last_reconciled_at: 2026-03-19T05:36:05.196Z
       created_at: 2026-03-19T04:45:32.059Z
-      updated_at: 2026-03-19T05:35:59.587Z
+      updated_at: 2026-03-19T05:36:05.196Z
     workspace_id: dispatch-workspace-01KM26C8WX6CMY7S9XD3RJZ003
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: f300f92933f25b97eb4bc9f54bfc3ec2bef1166b
+        last_seen_at: 2026-03-19T05:36:05.196Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/dispatch-engine-cli-calls-must-not-crash-the-engine-on-failure-01km26c8-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/dispatch-engine-cli-calls-must-not-crash-the-engine-on-failure/01km26c8
-        head: 32fd0963c67aa3a50ecfb6b21f84c544a96bf7e1
-        last_seen_at: 2026-03-19T05:08:41.410Z
+        head: f300f92933f25b97eb4bc9f54bfc3ec2bef1166b
+        last_seen_at: 2026-03-19T05:36:05.196Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/dispatch-engine-cli-calls-must-not-crash-the-engine-on-failure-01km26c8
   - active_role: worker
     base_branch_point: 9b61b4de21aa6ce5379eb0858f6da63558a9a578
