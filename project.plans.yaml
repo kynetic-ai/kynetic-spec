@@ -23953,10 +23953,18 @@ plans:
 
       - prescribing a required repository topology for dispatch deployment
       - replacing shared-checkout robustness with operational workarounds
-    status: approved
+    status: active
     approved_at: 2026-03-19T21:22:06.778Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@dispatch-shared-checkout-contract"
+      - "@dispatch-integration-mutation-scope"
+      - "@dispatch-shared-checkout-safety"
+    derived_tasks:
+      - "@task-design-dispatch-shared-checkout-contract"
+      - "@task-isolate-dispatch-git-targeting"
+      - "@task-route-dispatch-sync-through-targeting-path"
+      - "@task-implement-dispatch-shared-checkout-safety"
+      - "@task-test-dispatch-shared-checkout-safety"
     module_ref: "@agent-integration"
     source_path: /tmp/dispatch-integration-checkout-boundaries-plan.md
     created_at: 2026-03-19T17:57:13.489Z
@@ -23998,3 +24006,33 @@ plans:
           mechanism-heavy task wording
         author: Jacob Chapel
         created_at: 2026-03-19T21:06:42.357Z
+      - _ulid: 01KM3ZMGM7CVPVG54780BBFG64
+        content: |-
+          ### Product boundary
+
+          This plan treats shared-checkout correctness as the product contract:
+
+          - shared checkout is supported and must be robust
+          - linked task worktrees remain part of the dispatch execution model, but
+            they do not define the integration-branch mutation contract
+
+          ### Why this plan does not require a separate checkout
+
+          Requiring a dedicated checkout would overfit one operator workflow into
+          the product contract and would interact awkwardly with the existing
+          `.kspec` identity model, project-root resolution, and task worktree
+          behavior. The right product-level requirement is correctness, not one
+          mandatory topology.
+
+          ### Key runtime boundary
+
+          Task worktrees are for task code execution. Integration-branch mutation
+          is a dispatcher concern. The runtime must keep those responsibilities
+          separate even when dispatch is running from a shared checkout.
+
+          ### Out of scope
+
+          - prescribing a required repository topology for dispatch deployment
+          - replacing shared-checkout robustness with operational workarounds
+        author: Jacob Chapel
+        created_at: 2026-03-19T21:22:14.791Z

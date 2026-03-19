@@ -108932,3 +108932,179 @@
   notes: []
   todos: []
   automation: eligible
+- _ulid: 01KM3ZMD8K6VNEVT4VR9R9YZQG
+  slugs:
+    - task-design-dispatch-shared-checkout-contract
+  title: Design shared-checkout integration branch contract
+  type: task
+  description: |
+    What: Define the behavioral contract for dispatch integration-branch
+    mutation in a shared checkout.
+
+    Why: Shared-checkout correctness is the product behavior in scope.
+    The implementation needs an explicit contract for what dispatch may
+    mutate, what task worktrees are not allowed to own, and what health
+    guarantees users can rely on.
+
+    How: Align the plan with existing dispatch remote sync and worktree
+    isolation specs, keep deployment guidance out of the behavioral
+    contract, and define crisp operator-visible outcomes for unhealthy
+    checkout states.
+  spec_ref: "@dispatch-shared-checkout-contract"
+  plan_ref: "@plan-dispatch-integration-checkout-boundaries"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - design
+    - git
+  vcs_refs: []
+  created_at: 2026-03-19T21:22:11.347Z
+  notes: []
+  todos: []
+- _ulid: 01KM3ZMDYZB4RYWVX78Z8YVTE6
+  slugs:
+    - task-isolate-dispatch-git-targeting
+  title: Constrain integration-branch mutation scope
+  type: task
+  description: |
+    What: Make integration-branch operations resolve and mutate the
+    intended shared-checkout state deterministically.
+
+    Why: Dispatch needs one consistent mutation scope so sync, publish,
+    health, and repair operations always act on the same checkout and
+    never spill into task worktrees or ambiguous repository state.
+
+    How: Consolidate integration-branch operations behind one shared
+    dispatch-owned execution boundary and enforce the mutation-scope
+    contract there.
+  spec_ref: "@dispatch-integration-mutation-scope"
+  plan_ref: "@plan-dispatch-integration-checkout-boundaries"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-design-dispatch-shared-checkout-contract"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - git
+    - runtime
+  vcs_refs: []
+  created_at: 2026-03-19T21:22:12.063Z
+  notes: []
+  todos: []
+- _ulid: 01KM3ZMEMA53X21SYPSRWRF6E8
+  slugs:
+    - task-route-dispatch-sync-through-targeting-path
+  title: Route target sync and integration push through the isolated targeting path
+  type: task
+  description: |
+    What: Update target sync and integration-target push flows so they
+    all operate through the isolated targeting path while
+    preserving the existing fast-forward-only and non-fatal push
+    semantics.
+
+    Why: Targeting isolation alone does not change behavior unless the
+    real sync and publish paths stop using ad hoc git invocations.
+
+    How: Audit remote sync start-up, before-provision sync, periodic
+    sync, and post-merge push paths. Make them read and mutate the
+    configured integration branch only through the shared targeting
+    path.
+  spec_ref: "@dispatch-remote-branch-sync"
+  plan_ref: "@plan-dispatch-integration-checkout-boundaries"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-isolate-dispatch-git-targeting"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - sync
+    - git
+  vcs_refs: []
+  created_at: 2026-03-19T21:22:12.746Z
+  notes: []
+  todos: []
+- _ulid: 01KM3ZMF9C5B3JEDTE4AR74K46
+  slugs:
+    - task-implement-dispatch-shared-checkout-safety
+  title: Implement shared-checkout drift detection and safe repair
+  type: task
+  description: |
+    What: Detect checkout drift caused by stale integration-branch
+    transitions, restore coherent state when the checkout is otherwise
+    clean, and surface degraded or unhealthy state when repair would
+    overwrite local changes.
+
+    Why: This is the user-visible failure mode that triggered the plan.
+    Shared-checkout mode is only credible if dispatch handles this state
+    explicitly and safely.
+
+    How: Define operator-visible coherence checks, repair clean drifted
+    checkouts, and route unsafe cases into existing degraded or
+    health-reporting surfaces with precise operator guidance.
+  spec_ref: "@dispatch-shared-checkout-safety"
+  plan_ref: "@plan-dispatch-integration-checkout-boundaries"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-isolate-dispatch-git-targeting"
+    - "@task-route-dispatch-sync-through-targeting-path"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - repair
+    - health
+  vcs_refs: []
+  created_at: 2026-03-19T21:22:13.420Z
+  notes: []
+  todos: []
+- _ulid: 01KM3ZMFYDXR42KW2KGZ09RYYD
+  slugs:
+    - task-test-dispatch-shared-checkout-safety
+  title: Test shared-checkout safety and git context hardening
+  type: task
+  description: |
+    What: Add end-to-end and unit coverage for worktree-launched
+    dispatch processes, sanitized git execution context, clean drift
+    auto-repair, and unsafe drift refusal.
+
+    Why: These behaviors are easy to regress because they depend on git
+    environment, worktree context, and branch/index/tree state changes.
+    The plan should not rely on manual operator observation to know it
+    still works.
+
+    How: Extend the existing dispatch target sync and degraded-state
+    fixtures to model shared-checkout mode, leaked git env, out-of-band
+    branch ref movement, and repair refusal when local changes would be
+    overwritten.
+  spec_ref: null
+  plan_ref: "@plan-dispatch-integration-checkout-boundaries"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-isolate-dispatch-git-targeting"
+    - "@task-route-dispatch-sync-through-targeting-path"
+    - "@task-implement-dispatch-shared-checkout-safety"
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - test
+    - git
+  vcs_refs: []
+  created_at: 2026-03-19T21:22:14.093Z
+  notes: []
+  todos: []
