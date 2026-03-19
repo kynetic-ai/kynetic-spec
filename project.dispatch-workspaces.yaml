@@ -12008,7 +12008,7 @@ workspaces:
         head: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
         last_seen_at: 2026-03-19T07:02:46.950Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-shadow-commit-call-sites-that-omit-entity-refs-01kkx6qp
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 53be2094bc46d5c352d60c095941b9033e61d079
     bootstrap:
       status: succeeded
@@ -12055,7 +12055,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T07:26:07.420Z
+      updated_at: 2026-03-19T07:26:08.675Z
     integration:
       status: pending
       detail: null
@@ -12070,10 +12070,10 @@ workspaces:
     task_slug: fix-link-commands-that-bypass-generatecommitmessage
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-19T07:15:36.380Z
-      last_reconciled_at: 2026-03-19T07:26:07.420Z
+      last_active_at: 2026-03-19T07:26:08.675Z
+      last_reconciled_at: 2026-03-19T07:26:08.675Z
       created_at: 2026-03-19T07:15:35.218Z
-      updated_at: 2026-03-19T07:26:07.954Z
+      updated_at: 2026-03-19T07:26:08.675Z
     workspace_id: dispatch-workspace-01KKX6QR02Z2YKJBPBXD4RCRKT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
