@@ -22793,6 +22793,13 @@ reviews:
           status: fail
           name: export plan_ref linkage reproduction
         timestamp: 2026-03-19T23:47:21.886Z
+      - _ulid: 01KM47YA0EW6BCPV8J4226M91P
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM47Y9C33G656DP5PTVMT0R2
+        timestamp: 2026-03-19T23:47:24.302Z
     examined_commit: 4a8578499560b6d5d05eb62f749dfddb16422f43
     external_links: []
     lifecycle_state: open
@@ -22823,7 +22830,22 @@ reviews:
               but this change also drops non-cancelled linked tasks from export summaries."
             created_at: 2026-03-19T23:47:18.805Z
         kind: blocker
+      - _ulid: 01KM47Y9C33G656DP5PTVMT0R2
+        entries:
+          - _ulid: 01KM47Y9C317SE92P7DR3PNQGZ
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/export/json.ts, src/lib/plan-summary.ts,
+              packages/daemon/src/routes/plans.ts, src/cli/commands/plan.ts,
+              src/cli/commands/task.ts, tests/cli-plan.test.ts, tests/export/json.test.ts,
+              packages/web-ui/tests/e2e/plans.spec.ts. Commands run: git diff --stat, git diff,
+              kspec task get, kspec item get, kspec review for-task, kspec validate, rg for AC
+              annotations, npm test, targeted node reproduction for generateJsonSnapshot(). Claims
+              verified: cancelled-task AC annotations exist across CLI/export/E2E; export summary
+              behavior regresses for plan_ref-only links. Categories searched: correctness, edge
+              cases, test quality, integration, error handling."
+            created_at: 2026-03-19T23:47:23.651Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-19T23:43:02.217Z
-    updated_at: 2026-03-19T23:47:20.970Z
+    updated_at: 2026-03-19T23:47:23.651Z
     notes: []
