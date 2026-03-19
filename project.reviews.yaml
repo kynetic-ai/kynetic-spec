@@ -21371,6 +21371,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-19T19:40:13.903Z
+      - _ulid: 01KM3SW1H1A54EB5P2GRNPW986
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM3SW1B24GDQ7VQQ2AVRYE52
+        timestamp: 2026-03-19T19:41:30.017Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -21380,8 +21387,23 @@ reviews:
       content_hash: ""
       ref: "@plan-dispatch-integration-checkout-boundaries"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM3SW1B24GDQ7VQQ2AVRYE52
+        anchor:
+          type: structured
+          field: ac-2
+          ref: "@01KM3KX3"
+          section: acceptance_criteria
+        entries:
+          - _ulid: 01KM3SW1B2WXA988K58JFCM0Y0
+            author: Jacob Chapel
+            body: "Blocker: this spec still turns an operator deployment choice into product behavior. The
+              separate-full-clone scenario belongs in operator guidance or implementation notes, not
+              in the behavioral contract. As written, it forces implementation/test coverage for a
+              topology the user explicitly wants to keep user-controlled."
+            created_at: 2026-03-19T19:41:29.826Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-19T19:40:03.588Z
-    updated_at: 2026-03-19T19:40:13.704Z
+    updated_at: 2026-03-19T19:41:29.826Z
     notes: []
