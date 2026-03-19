@@ -20771,6 +20771,12 @@ reviews:
         payload:
           thread_ulid: 01KM2FBDRPBANPR3DN6HZBJY3Z
         timestamp: 2026-03-19T07:39:13.224Z
+      - _ulid: 01KM2GHH2HEXN4HG06N73J1P4P
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM2FBCNAHA9XSA05YG5BNAWF
+        timestamp: 2026-03-19T07:39:13.873Z
     examined_commit: 883713aaf1ef6f3d218fc11570e50753efddd447
     external_links: []
     lifecycle_state: closed
@@ -20806,6 +20812,8 @@ reviews:
               instead of shipping a live command.
             created_at: 2026-03-19T07:39:10.870Z
         kind: blocker
+        resolved_at: 2026-03-19T07:39:13.683Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM2FBDRPBANPR3DN6HZBJY3Z
         anchor:
           type: code
@@ -20883,7 +20891,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T07:19:10.503Z
     created_at: 2026-03-19T07:16:14.542Z
-    updated_at: 2026-03-19T07:39:13.029Z
+    updated_at: 2026-03-19T07:39:13.683Z
     notes: []
   - _ulid: 01KM2FTFXZ88QBT8PNVW5AQZYR
     slugs: []
