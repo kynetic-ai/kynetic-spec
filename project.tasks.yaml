@@ -71680,6 +71680,15 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T06:58:04.668Z
+    - _ulid: 01KM2F4WED35410SRJ59HEQRNQ
+      content: "Fix cycle 4: removed stale ralph wording from AGENTS guidance, agent eval scenarios, and
+        leftover non-functional code/test comments; renamed the legacy config alias schema to
+        agent-focused naming while preserving the legacy ralph config key for backward
+        compatibility. Verified remaining ralph matches are intentional compatibility/spec fixtures.
+        Full npm test passed on the rebased branch (6600 passed, 3 skipped)."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T07:14:50.957Z
   todos: []
   automation: eligible
 - _ulid: 01KJQH689FXW590TEFZX98QVZ0
