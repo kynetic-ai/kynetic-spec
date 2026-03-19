@@ -11470,12 +11470,17 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T04:03:00.117Z
+      updated_at: 2026-03-19T04:33:20.013Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T04:03:00.117Z
+      status: stale
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec/.kspec-worktrees/remove-dead-parseversionfromoptions-function-01km21d0"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-03-19T04:33:20.013Z
     integration:
       status: pending
       detail: null
@@ -11483,17 +11488,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bb5471acddfb9905490cdced154f7a52a26a0fdc
-      updated_at: 2026-03-19T04:03:00.117Z
-    lifecycle_state: integrating
+      updated_at: 2026-03-19T04:33:20.013Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KM21D00SD4D9WW2G1BFC1YB0"
     task_slug: remove-dead-parseversionfromoptions-function
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T03:52:05.581Z
-      last_reconciled_at: 2026-03-19T04:03:00.117Z
+      last_reconciled_at: 2026-03-19T04:33:20.013Z
       created_at: 2026-03-19T03:52:04.161Z
-      updated_at: 2026-03-19T04:03:00.117Z
+      updated_at: 2026-03-19T04:33:20.013Z
     workspace_id: dispatch-workspace-01KM21D00SD4D9WW2G1BFC1YB0
     worktree_root: /home/chapel/Projects/kynetic-spec/.kspec-worktrees
     worktrees:
