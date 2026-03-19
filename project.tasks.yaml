@@ -109072,6 +109072,7 @@
   created_at: 2026-03-19T21:22:13.420Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM3ZMFYDXR42KW2KGZ09RYYD
   slugs:
     - task-test-dispatch-shared-checkout-safety
