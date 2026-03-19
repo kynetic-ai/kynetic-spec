@@ -19638,6 +19638,21 @@ reviews:
         runner: kspec validate
         created_at: 2026-03-19T06:07:28.306Z
         completed_at: 2026-03-19T06:07:28.306Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite remains red in this snapshot. With dispatch env present: review-cli
+          examined_commit test fails and agent-dispatch-engine role-entrypoint test times out. With
+          KSPEC_DISPATCH_CANONICAL_HEAD unset: unrelated full-suite failures remain in
+          tests/action-model.test.ts and tests/agent-dispatch-engine.test.ts despite isolated reruns
+          of the affected files passing. Merge gate is blocked by external/pre-existing suite
+          instability, not by a task-local regression found in the diff."
+        name: npm-test
+        required: true
+        runner: npm test
+        created_at: 2026-03-19T06:07:28.927Z
+        completed_at: 2026-03-19T06:07:28.927Z
     events:
       - _ulid: 01KM2AK1EHBA41SQEH4ZZH9VN9
         actor: Jacob Chapel
@@ -19666,6 +19681,13 @@ reviews:
           status: fail
           name: kspec-validate
         timestamp: 2026-03-19T06:07:28.483Z
+      - _ulid: 01KM2B9HA6GZ6R7SARN6F42H93
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm-test
+        timestamp: 2026-03-19T06:07:29.094Z
     examined_commit: c6a9f65fc8ec1d98cd25e81b6c318b02a4b6392b
     external_links: []
     lifecycle_state: open
@@ -19678,5 +19700,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-19T05:55:11.954Z
-    updated_at: 2026-03-19T06:07:28.306Z
+    updated_at: 2026-03-19T06:07:28.927Z
     notes: []
