@@ -18860,6 +18860,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-19T04:50:02.800Z
         completed_at: 2026-03-19T04:50:02.800Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: dist/cli/index.js exists and bin/kspec.cjs does not; DEFAULT_KSPEC_CLI_PATH now resolves
+          to dist/cli/index.js
+        name: resolver-path-verification
+        required: true
+        runner: node
+        created_at: 2026-03-19T04:50:04.143Z
+        completed_at: 2026-03-19T04:50:04.143Z
     events:
       - _ulid: 01KM26MSAEKSSCYA3YMQPPY09K
         actor: Jacob Chapel
@@ -18888,6 +18899,13 @@ reviews:
           status: fail
           name: kspec-validate
         timestamp: 2026-03-19T04:50:03.226Z
+      - _ulid: 01KM26VSKMJAN3GKHM7RSGH3QP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: resolver-path-verification
+        timestamp: 2026-03-19T04:50:04.532Z
     examined_commit: 0a4f8ab9550dfed4eec1c249f3cdd926b13ee0c2
     external_links: []
     lifecycle_state: open
@@ -18900,5 +18918,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-19T04:46:14.863Z
-    updated_at: 2026-03-19T04:50:02.800Z
+    updated_at: 2026-03-19T04:50:04.143Z
     notes: []
