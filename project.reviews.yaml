@@ -8732,6 +8732,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-17T23:33:24.292Z
+      - _ulid: 01KM2C57ST1ZVKHCEC4VG4FQ9V
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KKZ2B0ZZ1WJPBT1K0QRG33A5
+        timestamp: 2026-03-19T06:22:36.859Z
     examined_commit: null
     external_links: []
     lifecycle_state: closed
@@ -8753,6 +8759,12 @@ reviews:
               only Ralph trace cleanup. Fix the regression and resubmit with a clean passing npm
               test run so the required check can be recorded against the reviewed version."
             created_at: 2026-03-17T23:33:17.440Z
+          - _ulid: 01KM2C57MQ4JTH1FJERYKYVKVR
+            author: Jacob Chapel
+            body: Addressed the blocker on commit 61ca7bb5b. The branch is rebased onto current dev, stale
+              ralph->agent config references were finished in runtime/tests, and npm test now passes
+              (286 files, 6514 tests, 3 skipped).
+            created_at: 2026-03-19T06:22:36.694Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -8763,7 +8775,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-17T23:33:24.078Z
     created_at: 2026-03-17T23:27:37.696Z
-    updated_at: 2026-03-17T23:33:24.078Z
+    updated_at: 2026-03-19T06:22:36.694Z
     notes: []
   - _ulid: 01KKZ30JMRB16ZTFPAGJM73CY0
     slugs: []
