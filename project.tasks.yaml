@@ -109259,8 +109259,11 @@
   spec_ref: "@cancelled-task-dependency-cleanup"
   meta_ref: null
   plan_ref: null
-  status: in_progress
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - Full npm test is failing on unrelated repo-wide timeout regressions after a clean rebase onto
+      origin/dev. Task-local cancelled-task dependency cleanup regressions pass, and the branch diff
+      is now task-scoped, but review gates cannot pass until the shared test suite is green.
   depends_on: []
   context: []
   priority: 1
