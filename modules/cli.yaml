@@ -6391,6 +6391,9 @@ features:
         type: requirement
         description: Defines shared semantics for plan-linked task counts and progress metrics across
           interfaces.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
