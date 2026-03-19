@@ -20643,6 +20643,18 @@ reviews:
         runner: npm
         created_at: 2026-03-19T07:18:53.215Z
         completed_at: 2026-03-19T07:18:53.215Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation fails in this snapshot due to existing repo-wide reference/completeness issues
+          (for example unresolved relates_to refs in .kspec/modules/meta.yaml), so it is not a
+          task-specific merge gate for this review.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-19T07:18:53.852Z
+        completed_at: 2026-03-19T07:18:53.852Z
     events:
       - _ulid: 01KM2F7E2E6R109WVFQHC7JPKE
         actor: Jacob Chapel
@@ -20685,6 +20697,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-19T07:18:53.430Z
+      - _ulid: 01KM2FC9WJVVF0HM1NAAABKAFT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-19T07:18:54.098Z
     examined_commit: 883713aaf1ef6f3d218fc11570e50753efddd447
     external_links: []
     lifecycle_state: open
@@ -20750,5 +20769,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-19T07:16:14.542Z
-    updated_at: 2026-03-19T07:18:53.215Z
+    updated_at: 2026-03-19T07:18:53.852Z
     notes: []
