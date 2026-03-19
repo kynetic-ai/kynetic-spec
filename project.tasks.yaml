@@ -108349,6 +108349,15 @@
   session_id: 01KM23HKYRWQ5WZ91MPGBYGEAT
   created_at: 2026-03-19T03:14:36.697Z
   started_at: 2026-03-19T03:52:39.536Z
-  notes: []
+  notes:
+    - _ulid: 01KM243VN3RP9M0NYG93CYSH49
+      content: Removed parseVersionFromOptions() function (~line 394 in review.ts) and its unused
+        ReviewSubjectVersion type import. Function had zero callers — confirmed via grep across
+        entire codebase and test suite. No tests referenced the function. Two pre-existing test
+        failures (review-cli examined_commit env sensitivity, dispatch-engine temp dir cleanup) are
+        unrelated to this change.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-19T04:02:03.044Z
   todos: []
   automation: eligible
