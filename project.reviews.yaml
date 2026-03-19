@@ -21417,9 +21417,25 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-19T19:41:53.460Z
+      - _ulid: 01KM3SWRPVFNBK26Z8SX8RC5GQ
+        actor: jacob.chapel@example.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-19T19:41:53.756Z
+      - _ulid: 01KM3SWRPWB5FM0CM6GNEF43NN
+        actor: jacob.chapel@example.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-19T19:41:53.756Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -21484,7 +21500,14 @@ reviews:
               checkout safety more explicitly would make the plan easier to scan."
             created_at: 2026-03-19T19:41:43.101Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: jacob.chapel@example.com
+        role: reviewer
+        created_at: 2026-03-19T19:41:53.755Z
     created_at: 2026-03-19T19:40:03.588Z
-    updated_at: 2026-03-19T19:41:53.271Z
+    updated_at: 2026-03-19T19:41:53.756Z
     notes: []
