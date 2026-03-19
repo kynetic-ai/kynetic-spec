@@ -20777,6 +20777,12 @@ reviews:
         payload:
           thread_ulid: 01KM2FBCNAHA9XSA05YG5BNAWF
         timestamp: 2026-03-19T07:39:13.873Z
+      - _ulid: 01KM2GHJ0K747RNMSJ3AN8YPK5
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM2FBEVJTWWAA5Y5PT1JCHKH
+        timestamp: 2026-03-19T07:39:14.835Z
     examined_commit: 883713aaf1ef6f3d218fc11570e50753efddd447
     external_links: []
     lifecycle_state: closed
@@ -20866,6 +20872,8 @@ reviews:
               wording with 'Agent dispatch'.
             created_at: 2026-03-19T07:39:11.571Z
         kind: blocker
+        resolved_at: 2026-03-19T07:39:14.559Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM2FCB295PS16G126TQXMR6K
         entries:
           - _ulid: 01KM2FCB2AH1CZW4MV58TCCVJE
@@ -20891,7 +20899,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T07:19:10.503Z
     created_at: 2026-03-19T07:16:14.542Z
-    updated_at: 2026-03-19T07:39:13.683Z
+    updated_at: 2026-03-19T07:39:14.559Z
     notes: []
   - _ulid: 01KM2FTFXZ88QBT8PNVW5AQZYR
     slugs: []
