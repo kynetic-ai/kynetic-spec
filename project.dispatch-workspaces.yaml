@@ -12395,7 +12395,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T23:13:13.122Z
+      updated_at: 2026-03-19T23:13:15.856Z
     integration:
       status: pending
       detail: null
@@ -12404,25 +12404,20 @@ workspaces:
       target_branch: dev
       target_commit: f90477c9945db0317d11955393f6089b4fed466a
       updated_at: 2026-03-19T23:13:13.122Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM3ZMEMA53X21SYPSRWRF6E8"
     task_slug: task-route-dispatch-sync-through-targeting-path
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T23:07:35.402Z
-      last_reconciled_at: 2026-03-19T23:13:13.122Z
+      last_reconciled_at: 2026-03-19T23:13:15.856Z
       created_at: 2026-03-19T22:59:05.165Z
-      updated_at: 2026-03-19T23:13:13.122Z
+      updated_at: 2026-03-19T23:13:15.856Z
     workspace_id: dispatch-workspace-01KM3ZMEMA53X21SYPSRWRF6E8
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 4f77d10bfc9991aadf35dd05a1c5b67a8804b477
-        last_seen_at: 2026-03-19T23:07:34.020Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-route-dispatch-sync-through-targeting-path-01km3zme-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-route-dispatch-sync-through-targeting-path/01km3zme
