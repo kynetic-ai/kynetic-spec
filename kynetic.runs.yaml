@@ -13810,7 +13810,7 @@ runs:
     started_at: 2026-03-13T16:24:41.786Z
   - _ulid: 01KM46K1F19D0ARHJRZJH72QK7
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -13823,7 +13823,15 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-19T23:26:03.224Z
-        completed_at: 2026-03-19T23:26:03.224Z
+        completed_at: 2026-03-19T23:26:19.607Z
+        notes: "Friction: (1) kspec batch live execution still crashes on task add with a known TypeError
+          even when dry-run succeeds; had to split batch and normal CLI calls. (2) Immediately after
+          creating @plan-summary-metrics, task add could not resolve the slug ref and only succeeded
+          with the new item's ULID ref."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-19T23:26:19.607Z
+        completed_at: 2026-03-19T23:26:19.607Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-19T23:23:46.529Z
