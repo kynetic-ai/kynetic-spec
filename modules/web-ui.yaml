@@ -1582,6 +1582,12 @@ features:
         id: ac-31
         then: The manifest is resolved via the discovery API, not by hardcoding kynetic.yaml
         when: The daemon needs to read that project manifest
+      - given: KSPEC_NO_DAEMON is set to a truthy value
+        id: ac-32
+        then: All incidental daemon communication is suppressed — the CLI behaves as if no daemon is
+          running, completing its primary operation gracefully
+        when: Any CLI command would normally communicate with a running daemon as a side-effect (posting
+          state change events, querying daemon status, auto-starting the daemon)
     tags:
       - daemon
       - architecture
