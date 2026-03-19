@@ -13810,7 +13810,7 @@ runs:
     started_at: 2026-03-13T16:24:41.786Z
   - _ulid: 01KM46K1F19D0ARHJRZJH72QK7
     status: active
-    current_step: 3
+    current_step: 4
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -13836,10 +13836,16 @@ runs:
           slug-ref failure after creating @plan-summary-metrics appears untracked; broad slug
           resolution spec exists, but no existing task/inbox item was found for newly created item
           refs failing in follow-on commands."
-      - status: completed
+      - status: skipped
         step_index: 3
         started_at: 2026-03-19T23:26:34.004Z
-        completed_at: 2026-03-19T23:26:34.004Z
+        completed_at: 2026-03-19T23:26:44.515Z
+        notes: No untracked friction to propose. Batch task add crash is already tracked in inbox 01KKCG5C5,
+          and immediate new-item slug resolution is already covered by @slug-resolution ac-1.
+      - status: completed
+        step_index: 4
+        started_at: 2026-03-19T23:26:44.515Z
+        completed_at: 2026-03-19T23:26:44.515Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-19T23:23:46.529Z
