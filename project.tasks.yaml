@@ -109296,3 +109296,39 @@
       created_at: 2026-03-19T23:16:26.654Z
   todos: []
   automation: eligible
+- _ulid: 01KM46GRK3CYYA4V37D8Y32G4K
+  slugs:
+    - implement-cancelled-task-exclusion-in-plan-summary-metrics
+  title: Implement cancelled-task exclusion in plan summary metrics
+  type: task
+  description: >-
+    Implement the shared plan summary metric behavior defined by @plan-summary-metrics across all
+    plan surfaces.
+
+
+    What: Update plan summary aggregation so linked task counts, progress totals, and status
+    breakdown metrics exclude cancelled tasks unless a metric explicitly reports cancelled-task
+    status.
+
+
+    Why: Current plan summaries count cancelled tasks against overall totals, which misrepresents
+    plan progress and produces inconsistent results across UI, API, CLI, and export/static outputs.
+
+
+    How: Update each code path that computes or serializes plan summary metrics to apply the
+    @plan-summary-metrics rule consistently, then add coverage using plan/task fixtures that include
+    cancelled linked tasks so the behavior stays aligned across surfaces.
+  spec_ref: "@01KM46FW"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags: []
+  vcs_refs: []
+  created_at: 2026-03-19T23:22:31.906Z
+  notes: []
+  todos: []
+  automation: eligible
