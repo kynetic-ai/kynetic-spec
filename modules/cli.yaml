@@ -6384,6 +6384,27 @@ features:
         tags: []
         created: 2026-03-10T22:42:09.670Z
         notes: []
+      - _ulid: 01KM46FW0CJA9STCV2K0ZCWYXT
+        slugs:
+          - plan-summary-metrics
+        title: Plan Summary Metrics
+        type: requirement
+        description: Defines shared semantics for plan-linked task counts and progress metrics across
+          interfaces.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: a plan has linked tasks in multiple statuses, including cancelled tasks
+            id: ac-1
+            then: cancelled tasks are excluded from any plan metric that is not explicitly reporting
+              cancelled-task status
+            when: plan-linked task counts or progress metrics are presented in any interface
+        tags: []
+        created: 2026-03-19T23:22:02.637Z
+        notes: []
     created: 2026-02-04T07:43:15.186Z
     notes: []
   - _ulid: 01KHA83NNJVB9F830HM0K7VBTC
