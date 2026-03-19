@@ -19626,6 +19626,18 @@ reviews:
         runner: npm test
         created_at: 2026-03-19T06:07:27.737Z
         completed_at: 2026-03-19T06:07:27.737Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repo-wide pre-existing validation failures unrelated to this task: missing references in
+          .kspec/modules/meta.yaml, orphaned skills entry, and broad completeness/alignment
+          warnings. No new task-specific validation failure was isolated."
+        name: kspec-validate
+        required: false
+        runner: kspec validate
+        created_at: 2026-03-19T06:07:28.306Z
+        completed_at: 2026-03-19T06:07:28.306Z
     events:
       - _ulid: 01KM2AK1EHBA41SQEH4ZZH9VN9
         actor: Jacob Chapel
@@ -19647,6 +19659,13 @@ reviews:
           status: pass
           name: workspace-focused-tests
         timestamp: 2026-03-19T06:07:27.911Z
+      - _ulid: 01KM2B9GQ20XJN1K897XREYE4J
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec-validate
+        timestamp: 2026-03-19T06:07:28.483Z
     examined_commit: c6a9f65fc8ec1d98cd25e81b6c318b02a4b6392b
     external_links: []
     lifecycle_state: open
@@ -19659,5 +19678,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-19T05:55:11.954Z
-    updated_at: 2026-03-19T06:07:27.737Z
+    updated_at: 2026-03-19T06:07:28.306Z
     notes: []
