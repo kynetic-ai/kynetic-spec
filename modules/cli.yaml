@@ -8883,6 +8883,9 @@ features:
               mutation when dispatch is running in a shared checkout.
 
               The product guarantee in scope is shared-checkout correctness.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
