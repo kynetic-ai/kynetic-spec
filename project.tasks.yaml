@@ -71663,6 +71663,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T06:34:33.108Z
+    - _ulid: 01KM2DVY9H668ED10DDW7VS83E
+      content: "Fix cycle 3: restored backward compatibility for legacy top-level ralph config blocks by
+        parsing them as an alias for agent config while preferring explicit agent settings when both
+        are present. Also removed the remaining stale ralph wording from session budget/session-type
+        comments and updated dispatch-related test fixtures to use config.agent. Verified with npm
+        test -- tests/parser/config.test.ts tests/cli-agent-commands.test.ts
+        tests/triage-parser.test.ts, full npm test (286 files / 6516 tests passed / 3 skipped), and
+        kspec validate still shows the repo's pre-existing reference/completeness baseline issues
+        unrelated to this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T06:52:29.362Z
   todos: []
   automation: eligible
 - _ulid: 01KJQH689FXW590TEFZX98QVZ0
