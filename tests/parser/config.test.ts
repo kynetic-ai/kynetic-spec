@@ -195,11 +195,11 @@ another_unknown:
       expect(result.config.shadow.branch).toBe("kspec-meta");
     });
 
-    it("parses ralph skill overrides from config file", async () => {
+    it("parses agent skill overrides from config file", async () => {
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
         `
-ralph:
+agent:
   skills:
     task_work: "/task-work"
     reflect: "/reflect"
@@ -210,9 +210,9 @@ ralph:
       const result = await loadProjectConfig(tempDir);
 
       expect(result.warning).toBeNull();
-      expect(result.config.ralph.skills.task_work).toBe("/task-work");
-      expect(result.config.ralph.skills.reflect).toBe("/reflect");
-      expect(result.config.ralph.skills.pr_review).toBe("/pr-review");
+      expect(result.config.agent.skills.task_work).toBe("/task-work");
+      expect(result.config.agent.skills.reflect).toBe("/reflect");
+      expect(result.config.agent.skills.pr_review).toBe("/pr-review");
     });
 
     it("uses kspec: namespace defaults when ralph config omitted", async () => {
@@ -226,16 +226,16 @@ daemon:
 
       const result = await loadProjectConfig(tempDir);
 
-      expect(result.config.ralph.skills.task_work).toBe("/kspec:task-work");
-      expect(result.config.ralph.skills.reflect).toBe("/kspec:reflect");
-      expect(result.config.ralph.skills.pr_review).toBe("/kspec:review");
+      expect(result.config.agent.skills.task_work).toBe("/kspec:task-work");
+      expect(result.config.agent.skills.reflect).toBe("/kspec:reflect");
+      expect(result.config.agent.skills.pr_review).toBe("/kspec:review");
     });
 
     it("allows partial ralph skill overrides", async () => {
       await fs.writeFile(
         path.join(tempDir, "kspec.config.yaml"),
         `
-ralph:
+agent:
   skills:
     pr_review: "/my-review"
 `
@@ -243,9 +243,9 @@ ralph:
 
       const result = await loadProjectConfig(tempDir);
 
-      expect(result.config.ralph.skills.task_work).toBe("/kspec:task-work");
-      expect(result.config.ralph.skills.reflect).toBe("/kspec:reflect");
-      expect(result.config.ralph.skills.pr_review).toBe("/my-review");
+      expect(result.config.agent.skills.task_work).toBe("/kspec:task-work");
+      expect(result.config.agent.skills.reflect).toBe("/kspec:reflect");
+      expect(result.config.agent.skills.pr_review).toBe("/my-review");
     });
 
     // AC: @project-config ac-5

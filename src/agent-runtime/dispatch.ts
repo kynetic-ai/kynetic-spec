@@ -270,8 +270,8 @@ async function resolveRoleEntrypoint(
   config: Awaited<ReturnType<typeof loadProjectConfig>>["config"],
 ): Promise<string> {
   const rawEntrypoint = role === "reviewer"
-    ? config.ralph.skills.pr_review
-    : config.ralph.skills.task_work;
+    ? config.agent.skills.pr_review
+    : config.agent.skills.task_work;
   const rendered = await renderEntrypointForAdapter(
     rawEntrypoint,
     adapterId,
@@ -280,7 +280,7 @@ async function resolveRoleEntrypoint(
   if (!rendered) {
     throw new DispatchPromptError(
       `No valid ${role} entrypoint is configured for adapter "${adapterId}".`,
-      `Set ralph.skills.${role === "reviewer" ? "pr_review" : "task_work"} in kspec.config.yaml to a non-empty workflow or skill entrypoint.`,
+      `Set agent.skills.${role === "reviewer" ? "pr_review" : "task_work"} in kspec.config.yaml to a non-empty workflow or skill entrypoint.`,
     );
   }
   return rendered;

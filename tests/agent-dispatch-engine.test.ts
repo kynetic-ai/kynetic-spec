@@ -2740,7 +2740,7 @@ describe("Dispatch role workflow entrypoints", () => {
       [
         "dispatch:",
         "  base_branch: main",
-        "ralph:",
+        "agent:",
         "  skills:",
         "    task_work: \"/kspec:task-work\"",
       ].join("\n"),
@@ -2807,7 +2807,7 @@ describe("Dispatch role workflow entrypoints", () => {
       [
         "dispatch:",
         "  base_branch: main",
-        "ralph:",
+        "agent:",
         "  skills:",
         "    pr_review: \"{skill:pr-review}\"",
       ].join("\n"),
@@ -2872,7 +2872,7 @@ describe("Dispatch role workflow entrypoints", () => {
       [
         "dispatch:",
         "  base_branch: main",
-        "ralph:",
+        "agent:",
         "  skills:",
         "    task_work: \"   \"",
       ].join("\n"),
@@ -2946,7 +2946,7 @@ describe("Dispatch role workflow entrypoints", () => {
       [
         "dispatch:",
         "  base_branch: main",
-        "ralph:",
+        "agent:",
         "  skills:",
         "    task_work: \"/kspec:task-work\"",
       ].join("\n"),
