@@ -1070,6 +1070,14 @@ features:
             then: The dispatch prompt reflects the correct, current integration target — not a stale value from
               the original provisioning — so agents merge into the intended branch
             when: The dispatcher builds the dispatch prompt context for a worker or reviewer invocation
+          - given: Multiple checkouts of the same repository each run their own dispatch engine with independent
+              worktree roots
+            id: ac-8
+            then: The engine detects the collision, treats it as a foreign worktree it does not own, and either
+              provisions at an alternate path or surfaces actionable guidance — it does not fail
+              with an opaque git error or attempt to reuse the foreign worktree
+            when: A dispatch engine provisions a workspace and a git worktree already exists at the target path
+              (registered by a different checkout)
         tags: []
         requirements:
           - _ulid: 01KKZWB4MH4D60RC0EG8TPGN2A
