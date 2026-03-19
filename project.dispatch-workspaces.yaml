@@ -12308,18 +12308,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-implement-cancelled-task-dependency-cleanup/01km43vy
-    canonical_branch_head: 78900aef21e89648268c95ed253d28ce277ab87d
+    canonical_branch_head: 0c5583dc528a02fad61505c15ddd2ad6cb91b47f
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T23:07:32.982Z
+      updated_at: 2026-03-19T23:08:50.424Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T23:07:33.902Z
+      updated_at: 2026-03-19T23:08:50.424Z
     integration:
       status: pending
       detail: null
@@ -12327,7 +12327,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
-      updated_at: 2026-03-19T23:07:32.982Z
+      updated_at: 2026-03-19T23:08:50.424Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM43VYQXEFJMMYK2184MR7FH"
@@ -12335,9 +12335,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T23:07:33.902Z
-      last_reconciled_at: 2026-03-19T23:07:33.902Z
+      last_reconciled_at: 2026-03-19T23:08:50.424Z
       created_at: 2026-03-19T22:45:09.789Z
-      updated_at: 2026-03-19T23:07:33.902Z
+      updated_at: 2026-03-19T23:08:50.424Z
     workspace_id: dispatch-workspace-01KM43VYQXEFJMMYK2184MR7FH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
