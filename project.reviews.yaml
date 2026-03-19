@@ -18883,6 +18883,17 @@ reviews:
         runner: npm
         created_at: 2026-03-19T04:50:05.559Z
         completed_at: 2026-03-19T04:50:05.559Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "env -u KSPEC_DISPATCH_CANONICAL_HEAD npm test -- tests/agent-dispatch-engine.test.ts:
+          117/117 passed; full-suite failure appears to be suite interaction, not this diff"
+        name: agent-dispatch-engine
+        required: false
+        runner: npm
+        created_at: 2026-03-19T04:51:23.610Z
+        completed_at: 2026-03-19T04:51:23.610Z
     events:
       - _ulid: 01KM26MSAEKSSCYA3YMQPPY09K
         actor: Jacob Chapel
@@ -18932,6 +18943,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM26WKSWX8H9AN8950Q619ZM
         timestamp: 2026-03-19T04:50:31.759Z
+      - _ulid: 01KM26Y70CCXSAAJMQ78116J9G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: agent-dispatch-engine
+        timestamp: 2026-03-19T04:51:23.788Z
     examined_commit: 0a4f8ab9550dfed4eec1c249f3cdd926b13ee0c2
     external_links: []
     lifecycle_state: open
@@ -18969,5 +18987,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-19T04:46:14.863Z
-    updated_at: 2026-03-19T04:50:31.356Z
+    updated_at: 2026-03-19T04:51:23.610Z
     notes: []
