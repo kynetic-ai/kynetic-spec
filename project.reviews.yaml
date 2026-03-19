@@ -22482,7 +22482,24 @@ reviews:
     slugs: []
     title: Review task-implement-cancelled-task-dependency-cleanup (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/task.ts, src/parser/yaml.ts, src/agent-runtime/dispatch.ts,
+          src/agent-runtime/workspace.ts, tests/task-cancel-dependency-cleanup.test.ts,
+          tests/dispatch-target-sync.test.ts, tests/agent-dispatch-engine.test.ts. Commands run:
+          kspec task get, kspec item get, kspec validate, rg AC annotations, git diff/stat/log/show,
+          npm test (full and targeted). Claims verified: cancellation cleanup is implemented and
+          covered; cross-file batch buffering regression test passes; branch also contains unrelated
+          dispatch commits. Categories searched: correctness, atomicity, edge cases, test quality,
+          integration, scope/merge safety."
+        name: review-evidence
+        required: false
+        runner: manual
+        created_at: 2026-03-19T23:25:43.521Z
+        completed_at: 2026-03-19T23:25:43.521Z
     events:
       - _ulid: 01KM4687QD2RFBJWXMJRM578YS
         actor: Jacob Chapel
@@ -22504,6 +22521,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM46PJY42SWXVW9STKWNN810
         timestamp: 2026-03-19T23:25:42.984Z
+      - _ulid: 01KM46PKZDN34Y8GEDARNVR7EA
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-19T23:25:43.789Z
     examined_commit: b167ae34f9dbeed3ee5ae740d478c06917a1188b
     external_links: []
     lifecycle_state: open
@@ -22538,5 +22562,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-19T23:17:52.493Z
-    updated_at: 2026-03-19T23:25:42.724Z
+    updated_at: 2026-03-19T23:25:43.521Z
     notes: []
