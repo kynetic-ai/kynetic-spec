@@ -20724,6 +20724,13 @@ reviews:
           status: fail
           name: manual completeness
         timestamp: 2026-03-19T07:18:54.788Z
+      - _ulid: 01KM2FCB847FMB1E0G66W91NMJ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM2FCB295PS16G126TQXMR6K
+        timestamp: 2026-03-19T07:18:55.492Z
     examined_commit: 883713aaf1ef6f3d218fc11570e50753efddd447
     external_links: []
     lifecycle_state: open
@@ -20787,7 +20794,23 @@ reviews:
               workflows/skills/instructions.'
             created_at: 2026-03-19T07:18:26.419Z
         kind: blocker
+      - _ulid: 01KM2FCB295PS16G126TQXMR6K
+        entries:
+          - _ulid: 01KM2FCB2AH1CZW4MV58TCCVJE
+            author: Jacob Chapel
+            body: "Evidence log:\\n- Files read: kspec-agents.md; src/cli/index.ts; src/cli/commands/ralph.ts;
+              src/parser/config.ts; .agents/skills/kspec-triage-automation/SKILL.md;
+              templates/skills/review/SKILL.md; docs/agents-eval-scenarios.md;
+              tests/ralph-replacement.test.ts\\n- Commands run: kspec review for-task; kspec review
+              get; kspec review add/open; kspec item get @ralph-replacement --json; git diff --stat;
+              git diff --name-only; git diff on focused files; git grep -n -i ralph; kspec validate;
+              npm test\\n- Claims verified: the snapshot still ships live ralph
+              command/config/instruction references; the branch also includes 178 changed files of
+              unrelated feature work\\n- Categories searched: correctness/spec alignment, scope
+              isolation, generated docs/skills, test/validation status, integration risk"
+            created_at: 2026-03-19T07:18:55.306Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-19T07:16:14.542Z
-    updated_at: 2026-03-19T07:18:54.569Z
+    updated_at: 2026-03-19T07:18:55.306Z
     notes: []
