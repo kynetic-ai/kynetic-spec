@@ -71650,7 +71650,7 @@
       author: Jacob Chapel
       created_at: 2026-03-17T23:42:48.521Z
   todos: []
-  automation: manual_only
+  automation: eligible
 - _ulid: 01KJQH689FXW590TEFZX98QVZ0
   slugs: []
   title: Fix tasks ready to include needs_work status
