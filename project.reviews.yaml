@@ -20031,6 +20031,24 @@ reviews:
         runner: kspec
         created_at: 2026-03-19T06:45:59.611Z
         completed_at: 2026-03-19T06:45:59.611Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/parser/shadow.ts, tests/shadow.test.ts, tests/cli-plan-derive.test.ts,
+          tests/cli-plan-import.test.ts, selected call sites in
+          src/cli/commands/{item,plan,plan-import,review,meta,skill-diff,skill-install,setup,tasks}.
+          Commands run: git diff/stat/check, kspec task get, kspec review for-task, kspec validate,
+          rg commitIfShadow, npm test. Claims verified: all changed operations now use explicit
+          colon-formatted messages; detail-only callers (bulk deletes, skill render/install/update,
+          task assess) preserve intended formatting; plan shadow commit subjects match exact
+          expected strings. Categories searched: correctness, edge cases, test quality, integration;
+          no blocking issues found."
+        name: review-evidence
+        required: false
+        runner: manual
+        created_at: 2026-03-19T06:46:01.908Z
+        completed_at: 2026-03-19T06:46:01.908Z
     events:
       - _ulid: 01KM2DF0RPVMMS8D975GVCCQGZ
         actor: Jacob Chapel
@@ -20059,6 +20077,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-19T06:45:59.778Z
+      - _ulid: 01KM2DG43AFDMWJX2M05QX59S6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-19T06:46:02.090Z
     examined_commit: b15aecdd0776108089c14b6486d969e2bce3abe6
     external_links: []
     lifecycle_state: open
@@ -20071,5 +20096,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-19T06:45:25.911Z
-    updated_at: 2026-03-19T06:45:59.611Z
+    updated_at: 2026-03-19T06:46:01.908Z
     notes: []
