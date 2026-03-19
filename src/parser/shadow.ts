@@ -973,52 +973,264 @@ export function generateCommitMessage(
   ref?: string,
   detail?: string,
 ): string {
-  const parts: string[] = [];
+  const normalizedRef = normalizeCommitRef(ref);
+  const detailFromRef = !detail && shouldTreatRefAsDetail(ref) ? ref : undefined;
+  const effectiveRef = detailFromRef ? undefined : normalizedRef;
+  const effectiveDetail = detail ?? detailFromRef;
 
   switch (operation) {
     case "task-start":
-      parts.push(`Start @${ref}`);
-      break;
+      return formatCommitOperation("Start Task", effectiveRef, effectiveDetail);
     case "task-complete":
-      parts.push(`Complete @${ref}`);
-      if (detail) parts.push(`: ${detail}`);
-      break;
+      return formatCommitOperation("Complete Task", effectiveRef, effectiveDetail);
     case "task-note":
-      parts.push(`Note on @${ref}`);
-      break;
+      return formatCommitOperation("Note Task", effectiveRef, effectiveDetail);
     case "task-add":
-      if (ref && detail) {
-        parts.push(`Add task @${ref}: ${detail}`);
-      } else {
-        parts.push(`Add task: ${detail || ref}`);
-      }
-      break;
+      return formatCommitOperation("Add Task", effectiveRef, effectiveDetail);
+    case "task-set":
+      return formatCommitOperation("Update Task", effectiveRef, effectiveDetail);
+    case "task-patch":
+      return formatCommitOperation("Patch Task", effectiveRef, effectiveDetail);
+    case "task-submit":
+      return formatCommitOperation("Submit Task", effectiveRef, effectiveDetail);
+    case "task-needs-work":
+      return formatCommitOperation("Needs Work Task", effectiveRef, effectiveDetail);
+    case "task-block":
+      return formatCommitOperation("Block Task", effectiveRef, effectiveDetail);
+    case "task-unblock":
+      return formatCommitOperation("Unblock Task", effectiveRef, effectiveDetail);
+    case "task-cancel":
+      return formatCommitOperation("Cancel Task", effectiveRef, effectiveDetail);
+    case "task-reset":
+      return formatCommitOperation("Reset Task", effectiveRef, effectiveDetail);
+    case "task-delete":
+      return formatCommitOperation("Delete Task", effectiveRef, effectiveDetail);
     case "inbox-add":
-      parts.push(
-        `Inbox: ${detail?.slice(0, 50)}${(detail?.length || 0) > 50 ? "..." : ""}`,
+      return formatCommitOperation(
+        "Add Inbox Item",
+        effectiveRef,
+        truncateCommitDetail(effectiveDetail),
       );
-      break;
     case "inbox-promote":
-      parts.push(`Promote to @${ref}`);
-      break;
+      return formatCommitOperation("Promote Inbox Item", effectiveRef, effectiveDetail);
+    case "inbox-delete":
+      return formatCommitOperation("Delete Inbox Item", effectiveRef, effectiveDetail);
+    case "inbox-set":
+      return formatCommitOperation("Update Inbox Item", effectiveRef, effectiveDetail);
+    case "inbox-note":
+      return formatCommitOperation("Note Inbox Item", effectiveRef, effectiveDetail);
     case "item-add":
-      parts.push(`Add @${ref}`);
-      break;
+      return formatCommitOperation("Add Item", effectiveRef, effectiveDetail);
     case "item-set":
-      parts.push(`Update @${ref}`);
-      break;
+      return formatCommitOperation("Update Item", effectiveRef, effectiveDetail);
     case "item-delete":
-      parts.push(`Delete @${ref}`);
-      break;
+      return formatCommitOperation("Delete Item", effectiveRef, effectiveDetail);
+    case "item-patch":
+      return formatCommitOperation("Patch Item", effectiveRef, effectiveDetail);
+    case "item-note":
+      return formatCommitOperation("Note Item", effectiveRef, effectiveDetail);
+    case "item-ac-add":
+      return formatCommitOperation("Add Item AC", effectiveRef, effectiveDetail);
+    case "item-ac-set":
+      return formatCommitOperation("Update Item AC", effectiveRef, effectiveDetail);
+    case "item-ac-remove":
+      return formatCommitOperation("Remove Item AC", effectiveRef, effectiveDetail);
+    case "item-trait-add":
+      return formatCommitOperation("Add Item Trait", effectiveRef, effectiveDetail);
+    case "item-trait-remove":
+      return formatCommitOperation("Remove Item Trait", effectiveRef, effectiveDetail);
+    case "trait-add":
+      return formatCommitOperation("Add Trait", effectiveRef, effectiveDetail);
+    case "module-add":
+      return formatCommitOperation("Add Module", effectiveRef, effectiveDetail);
     case "derive":
-      parts.push(`Derive from @${ref}`);
-      break;
+      return formatCommitOperation("Derive", effectiveRef, effectiveDetail);
+    case "spec-sync":
+      return formatCommitOperation("Sync Spec", effectiveRef, effectiveDetail);
+    case "review-add":
+      return formatCommitOperation("Add Review", effectiveRef, effectiveDetail);
+    case "review-comment":
+      return formatCommitOperation("Comment Review", effectiveRef, effectiveDetail);
+    case "review-reply":
+      return formatCommitOperation("Reply Review", effectiveRef, effectiveDetail);
+    case "review-check":
+      return formatCommitOperation("Check Review", effectiveRef, effectiveDetail);
+    case "review-verdict":
+      return formatCommitOperation("Verdict Review", effectiveRef, effectiveDetail);
+    case "review-verdict-task-transition":
+      return formatCommitOperation(
+        "Review Verdict Task Transition",
+        effectiveRef,
+        effectiveDetail,
+      );
+    case "review-resolve":
+      return formatCommitOperation("Resolve Review", effectiveRef, effectiveDetail);
+    case "review-reopen":
+      return formatCommitOperation("Reopen Review", effectiveRef, effectiveDetail);
+    case "review-open":
+      return formatCommitOperation("Open Review", effectiveRef, effectiveDetail);
+    case "review-close":
+      return formatCommitOperation("Close Review", effectiveRef, effectiveDetail);
+    case "review-archive":
+      return formatCommitOperation("Archive Review", effectiveRef, effectiveDetail);
+    case "review-refresh":
+      return formatCommitOperation("Refresh Review", effectiveRef, effectiveDetail);
+    case "review-task-link":
+      return formatCommitOperation("Link Review Task", effectiveRef, effectiveDetail);
+    case "plan-add":
+      return formatCommitOperation("Add Plan", effectiveRef, effectiveDetail);
+    case "plan-set":
+      return formatCommitOperation("Update Plan", effectiveRef, effectiveDetail);
+    case "plan-note":
+      return formatCommitOperation("Note Plan", effectiveRef, effectiveDetail);
+    case "plan-derive":
+      return formatCommitOperation("Derive Plan", effectiveRef, effectiveDetail);
+    case "plan-import":
+      return formatCommitOperation("Import Plan", effectiveRef, effectiveDetail);
+    case "triage-record":
+      return formatCommitOperation("Record Triage", effectiveRef, effectiveDetail);
+    case "triage-act":
+      return formatCommitOperation("Act Triage", effectiveRef, effectiveDetail);
+    case "triage-override":
+      return formatCommitOperation("Override Triage", effectiveRef, effectiveDetail);
+    case "meta-observe":
+      return formatCommitOperation("Observe Meta", effectiveRef, effectiveDetail);
+    case "meta-observe-from-inbox":
+      return formatCommitOperation(
+        "Observe Meta from Inbox",
+        effectiveRef,
+        effectiveDetail,
+      );
+    case "observation-promote":
+      return formatCommitOperation(
+        "Promote Observation",
+        effectiveRef,
+        effectiveDetail,
+      );
+    case "observation-resolve":
+      return formatCommitOperation(
+        "Resolve Observation",
+        effectiveRef,
+        effectiveDetail,
+      );
+    case "skill-add":
+      return formatCommitOperation("Add Skill", effectiveRef, effectiveDetail);
+    case "skill-set":
+      return formatCommitOperation("Update Skill", effectiveRef, effectiveDetail);
+    case "skill-delete":
+      return formatCommitOperation("Delete Skill", effectiveRef, effectiveDetail);
+    case "skill-import":
+      return formatCommitOperation("Import Skill", effectiveRef, effectiveDetail);
+    case "skill-render":
+      return formatCommitOperation("Render Skill", effectiveRef, effectiveDetail);
+    case "skill-install-core":
+      return formatCommitOperation("Install Core Skill", effectiveRef, effectiveDetail);
+    case "skill-update":
+      return formatCommitOperation("Update Skill", effectiveRef, effectiveDetail);
+    case "hook-add":
+      return formatCommitOperation("Add Hook", effectiveRef, effectiveDetail);
+    case "hook-set":
+      return formatCommitOperation("Update Hook", effectiveRef, effectiveDetail);
+    case "hook-enable":
+      return formatCommitOperation("Enable Hook", effectiveRef, effectiveDetail);
+    case "hook-disable":
+      return formatCommitOperation("Disable Hook", effectiveRef, effectiveDetail);
+    case "hook-remove":
+      return formatCommitOperation("Remove Hook", effectiveRef, effectiveDetail);
+    case "schedule-add":
+      return formatCommitOperation("Add Schedule", effectiveRef, effectiveDetail);
+    case "schedule-set":
+      return formatCommitOperation("Update Schedule", effectiveRef, effectiveDetail);
+    case "schedule-enable":
+      return formatCommitOperation("Enable Schedule", effectiveRef, effectiveDetail);
+    case "schedule-disable":
+      return formatCommitOperation("Disable Schedule", effectiveRef, effectiveDetail);
+    case "schedule-remove":
+      return formatCommitOperation("Remove Schedule", effectiveRef, effectiveDetail);
+    case "workflow-start":
+      return formatCommitOperation("Start Workflow", effectiveRef, effectiveDetail);
+    case "workflow-abort":
+      return formatCommitOperation("Abort Workflow", effectiveRef, effectiveDetail);
+    case "workflow-complete":
+      return formatCommitOperation("Complete Workflow", effectiveRef, effectiveDetail);
+    case "workflow-pause":
+      return formatCommitOperation("Pause Workflow", effectiveRef, effectiveDetail);
+    case "workflow-resume":
+      return formatCommitOperation("Resume Workflow", effectiveRef, effectiveDetail);
+    case "workflow-next":
+      return formatCommitOperation("Advance Workflow", effectiveRef, effectiveDetail);
+    case "workflow-prune":
+      return formatCommitOperation("Prune Workflow", effectiveRef, effectiveDetail);
+    case "session-compact":
+      return formatCommitOperation("Compact Session", effectiveRef, effectiveDetail);
+    case "tasks-assess":
+      return formatCommitOperation("Assess Tasks", effectiveRef, effectiveDetail);
+    case "dispatch-workspace-registry":
+      return formatCommitOperation(
+        "Update Dispatch Workspace Registry",
+        effectiveRef,
+        effectiveDetail,
+      );
     default:
-      parts.push(operation);
-      if (ref) parts.push(` @${ref}`);
+      if (operation.startsWith("meta-add-")) {
+        return formatCommitOperation(
+          `Add ${titleizeOperationSuffix(operation, "meta-add-")}`,
+          effectiveRef,
+          effectiveDetail,
+        );
+      }
+      if (operation.startsWith("meta-set-")) {
+        return formatCommitOperation(
+          `Update ${titleizeOperationSuffix(operation, "meta-set-")}`,
+          effectiveRef,
+          effectiveDetail,
+        );
+      }
+      if (operation.startsWith("meta-delete-")) {
+        return formatCommitOperation(
+          `Delete ${titleizeOperationSuffix(operation, "meta-delete-")}`,
+          effectiveRef,
+          effectiveDetail,
+        );
+      }
+      return operation + (effectiveRef ? ` ${effectiveRef}` : "");
   }
+}
 
-  return parts.join("");
+function normalizeCommitRef(ref?: string): string | undefined {
+  if (!ref) return undefined;
+  const trimmed = ref.trim();
+  if (!trimmed) return undefined;
+  return trimmed.startsWith("@") ? trimmed : `@${trimmed}`;
+}
+
+function shouldTreatRefAsDetail(ref?: string): boolean {
+  return Boolean(ref && ref.includes(" "));
+}
+
+function formatCommitOperation(
+  label: string,
+  ref?: string,
+  detail?: string,
+): string {
+  if (ref && detail) return `${label}: ${ref} - ${detail}`;
+  if (ref) return `${label}: ${ref}`;
+  if (detail) return `${label}: ${detail}`;
+  return label;
+}
+
+function truncateCommitDetail(detail?: string): string | undefined {
+  if (!detail) return undefined;
+  return `${detail.slice(0, 50)}${detail.length > 50 ? "..." : ""}`;
+}
+
+function titleizeOperationSuffix(operation: string, prefix: string): string {
+  return operation
+    .slice(prefix.length)
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 }
 
 /**

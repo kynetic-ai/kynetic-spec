@@ -354,7 +354,9 @@ describe("Integration: enhanced plan derive", () => {
 
       expect(commitsAfter).toBe(commitsBefore + 1);
       expect(getShadowStatus(shadowDir)).toBe("");
-      expect(getShadowHeadSubject(shadowDir)).toContain("plan-derive");
+      expect(getShadowHeadSubject(shadowDir)).toBe(
+        "Derive Plan: @plan-shadow-derive - 1 specs",
+      );
     } finally {
       await cleanupTempDir(shadowDir);
     }

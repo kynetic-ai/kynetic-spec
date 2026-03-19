@@ -118,62 +118,138 @@ describe('Shadow Branch', () => {
   });
 
   describe('generateCommitMessage', () => {
-    it('generates task-start message', () => {
-      const msg = generateCommitMessage('task-start', 'my-task');
-      expect(msg).toBe('Start @my-task');
-    });
-
-    it('generates task-complete message with reason', () => {
-      const msg = generateCommitMessage('task-complete', 'my-task', 'Done with implementation');
-      expect(msg).toBe('Complete @my-task: Done with implementation');
-    });
-
-    it('generates task-note message', () => {
-      const msg = generateCommitMessage('task-note', 'my-task');
-      expect(msg).toBe('Note on @my-task');
-    });
-
     // AC: @trait-shadow-commit ac-2
     // AC: @trait-shadow-commit ac-3
-    it('generates task-add message with ref and title', () => {
-      const msg = generateCommitMessage('task-add', 'my-task', 'New feature');
-      expect(msg).toBe('Add task @my-task: New feature');
+    it.each([
+      ['task-start', 'task-123', undefined, 'Start Task: @task-123'],
+      ['task-complete', 'task-123', 'Done with implementation', 'Complete Task: @task-123 - Done with implementation'],
+      ['task-note', 'task-123', undefined, 'Note Task: @task-123'],
+      ['task-add', 'task-123', 'New feature', 'Add Task: @task-123 - New feature'],
+      ['task-set', 'task-123', 'priority', 'Update Task: @task-123 - priority'],
+      ['task-patch', 'task-123', undefined, 'Patch Task: @task-123'],
+      ['task-submit', 'task-123', undefined, 'Submit Task: @task-123'],
+      ['task-needs-work', 'task-123', 'fix blockers', 'Needs Work Task: @task-123 - fix blockers'],
+      ['task-block', 'task-123', 'waiting on dependency', 'Block Task: @task-123 - waiting on dependency'],
+      ['task-unblock', 'task-123', undefined, 'Unblock Task: @task-123'],
+      ['task-cancel', 'task-123', 'superseded', 'Cancel Task: @task-123 - superseded'],
+      ['task-reset', 'task-123', undefined, 'Reset Task: @task-123'],
+      ['task-delete', 'task-123', undefined, 'Delete Task: @task-123'],
+      ['spec-sync', 'spec-123', 'implemented', 'Sync Spec: @spec-123 - implemented'],
+      ['review-add', 'review-123', 'Review title', 'Add Review: @review-123 - Review title'],
+      ['review-comment', 'review-123', undefined, 'Comment Review: @review-123'],
+      ['review-reply', 'review-123', undefined, 'Reply Review: @review-123'],
+      ['review-check', 'review-123', 'vitest', 'Check Review: @review-123 - vitest'],
+      ['review-verdict', 'review-123', 'approve', 'Verdict Review: @review-123 - approve'],
+      ['review-verdict-task-transition', 'review-123', 'needs_work', 'Review Verdict Task Transition: @review-123 - needs_work'],
+      ['review-resolve', 'review-123', undefined, 'Resolve Review: @review-123'],
+      ['review-reopen', 'review-123', undefined, 'Reopen Review: @review-123'],
+      ['review-open', 'review-123', undefined, 'Open Review: @review-123'],
+      ['review-close', 'review-123', undefined, 'Close Review: @review-123'],
+      ['review-archive', 'review-123', undefined, 'Archive Review: @review-123'],
+      ['review-refresh', 'review-123', undefined, 'Refresh Review: @review-123'],
+      ['review-task-link', 'review-123', 'linked to 2 task(s)', 'Link Review Task: @review-123 - linked to 2 task(s)'],
+      ['plan-add', 'plan-123', 'Roadmap', 'Add Plan: @plan-123 - Roadmap'],
+      ['plan-set', 'plan-123', 'status=approved', 'Update Plan: @plan-123 - status=approved'],
+      ['plan-note', 'plan-123', undefined, 'Note Plan: @plan-123'],
+      ['plan-derive', 'plan-123', undefined, 'Derive Plan: @plan-123'],
+      ['plan-import', 'plan-123', 'Imported Plan', 'Import Plan: @plan-123 - Imported Plan'],
+      ['inbox-promote', 'task-123', undefined, 'Promote Inbox Item: @task-123'],
+      ['inbox-delete', '01ABCDEF', undefined, 'Delete Inbox Item: @01ABCDEF'],
+      ['inbox-set', '01ABCDEF', undefined, 'Update Inbox Item: @01ABCDEF'],
+      ['inbox-note', '01ABCDEF', undefined, 'Note Inbox Item: @01ABCDEF'],
+      ['triage-record', '01ABCDEF', 'promote', 'Record Triage: @01ABCDEF - promote'],
+      ['triage-act', '01ABCDEF', 'promote', 'Act Triage: @01ABCDEF - promote'],
+      ['triage-override', '01ABCDEF', 'defer', 'Override Triage: @01ABCDEF - defer'],
+      ['meta-observe', '01ABCDEF', 'friction', 'Observe Meta: @01ABCDEF - friction'],
+      ['meta-observe-from-inbox', '01ABCDEF', 'Convert inbox item to friction observation', 'Observe Meta from Inbox: @01ABCDEF - Convert inbox item to friction observation'],
+      ['observation-promote', '01ABCDEF', undefined, 'Promote Observation: @01ABCDEF'],
+      ['observation-resolve', '01ABCDEF', undefined, 'Resolve Observation: @01ABCDEF'],
+      ['meta-add-agent', '01ABCDEF', 'worker', 'Add Agent: @01ABCDEF - worker'],
+      ['meta-add-workflow', '01ABCDEF', 'task-lifecycle', 'Add Workflow: @01ABCDEF - task-lifecycle'],
+      ['meta-add-convention', '01ABCDEF', 'testing', 'Add Convention: @01ABCDEF - testing'],
+      ['meta-set-agent', '01ABCDEF', undefined, 'Update Agent: @01ABCDEF'],
+      ['meta-set-workflow', '01ABCDEF', undefined, 'Update Workflow: @01ABCDEF'],
+      ['meta-set-convention', '01ABCDEF', undefined, 'Update Convention: @01ABCDEF'],
+      ['meta-delete-agent', '01ABCDEF', undefined, 'Delete Agent: @01ABCDEF'],
+      ['meta-delete-workflow', '01ABCDEF', undefined, 'Delete Workflow: @01ABCDEF'],
+      ['meta-delete-convention', '01ABCDEF', undefined, 'Delete Convention: @01ABCDEF'],
+      ['meta-delete-observation', '01ABCDEF', undefined, 'Delete Observation: @01ABCDEF'],
+      ['skill-add', 'skill-123', 'My Skill', 'Add Skill: @skill-123 - My Skill'],
+      ['skill-set', 'skill-123', 'My Skill', 'Update Skill: @skill-123 - My Skill'],
+      ['skill-delete', 'skill-123', undefined, 'Delete Skill: @skill-123'],
+      ['skill-import', 'skill-123', 'My Skill', 'Import Skill: @skill-123 - My Skill'],
+      ['skill-update', 'skill-123', 'My Skill', 'Update Skill: @skill-123 - My Skill'],
+      ['trait-add', 'trait-123', undefined, 'Add Trait: @trait-123'],
+      ['item-add', 'item-123', undefined, 'Add Item: @item-123'],
+      ['item-set', 'item-123', undefined, 'Update Item: @item-123'],
+      ['item-delete', 'item-123', undefined, 'Delete Item: @item-123'],
+      ['item-trait-add', 'item-123', undefined, 'Add Item Trait: @item-123'],
+      ['item-trait-remove', 'item-123', undefined, 'Remove Item Trait: @item-123'],
+      ['item-note', 'item-123', undefined, 'Note Item: @item-123'],
+      ['item-patch', 'item-123', undefined, 'Patch Item: @item-123'],
+      ['item-ac-add', 'item-123', undefined, 'Add Item AC: @item-123'],
+      ['item-ac-set', 'item-123', undefined, 'Update Item AC: @item-123'],
+      ['item-ac-remove', 'item-123', undefined, 'Remove Item AC: @item-123'],
+      ['module-add', 'module-123', undefined, 'Add Module: @module-123'],
+      ['workflow-start', 'workflow-123', undefined, 'Start Workflow: @workflow-123'],
+      ['workflow-abort', 'workflow-123', undefined, 'Abort Workflow: @workflow-123'],
+      ['workflow-complete', 'workflow-123', undefined, 'Complete Workflow: @workflow-123'],
+      ['workflow-pause', 'workflow-123', undefined, 'Pause Workflow: @workflow-123'],
+      ['workflow-resume', 'workflow-123', undefined, 'Resume Workflow: @workflow-123'],
+      ['workflow-next', 'workflow-123', undefined, 'Advance Workflow: @workflow-123'],
+      ['workflow-prune', 'workflow-123', undefined, 'Prune Workflow: @workflow-123'],
+      ['session-compact', 'session-123', undefined, 'Compact Session: @session-123'],
+      ['tasks-assess', 'tasks-123', undefined, 'Assess Tasks: @tasks-123'],
+      ['dispatch-workspace-registry', '01KKNRC5KR8DTW5JVETBX9CMS8', undefined, 'Update Dispatch Workspace Registry: @01KKNRC5KR8DTW5JVETBX9CMS8'],
+      ['hook-add', '01HOOK01', 'Build Hook', 'Add Hook: @01HOOK01 - Build Hook'],
+      ['hook-set', '01HOOK01', 'Build Hook', 'Update Hook: @01HOOK01 - Build Hook'],
+      ['hook-enable', '01HOOK01', 'Build Hook', 'Enable Hook: @01HOOK01 - Build Hook'],
+      ['hook-disable', '01HOOK01', 'Build Hook', 'Disable Hook: @01HOOK01 - Build Hook'],
+      ['hook-remove', '01HOOK01', 'Build Hook', 'Remove Hook: @01HOOK01 - Build Hook'],
+      ['schedule-add', 'nightly', 'Nightly Build', 'Add Schedule: @nightly - Nightly Build'],
+      ['schedule-set', 'nightly', 'Nightly Build', 'Update Schedule: @nightly - Nightly Build'],
+      ['schedule-enable', 'nightly', undefined, 'Enable Schedule: @nightly'],
+      ['schedule-disable', 'nightly', undefined, 'Disable Schedule: @nightly'],
+      ['schedule-remove', 'nightly', undefined, 'Remove Schedule: @nightly'],
+      ['derive', 'spec-item', undefined, 'Derive: @spec-item'],
+    ])('formats %s with explicit colon-separated messaging', (operation, ref, detail, expected) => {
+      expect(generateCommitMessage(operation, ref, detail)).toBe(expected);
     });
 
-    it('generates task-add message with only detail (no ref)', () => {
-      const msg = generateCommitMessage('task-add', undefined, 'New feature');
-      expect(msg).toBe('Add task: New feature');
+    it('formats detail-only operations without inventing a ref', () => {
+      expect(generateCommitMessage('task-add', undefined, 'New feature')).toBe(
+        'Add Task: New feature',
+      );
+      expect(generateCommitMessage('skill-render', '2 skills')).toBe(
+        'Render Skill: 2 skills',
+      );
+      expect(generateCommitMessage('skill-install-core', '3 core skills')).toBe(
+        'Install Core Skill: 3 core skills',
+      );
+      expect(generateCommitMessage('item-delete', '3 items')).toBe(
+        'Delete Item: 3 items',
+      );
     });
 
     it('generates inbox-add message with truncation', () => {
       const longText = 'a'.repeat(100);
       const msg = generateCommitMessage('inbox-add', undefined, longText);
-      expect(msg).toBe(`Inbox: ${'a'.repeat(50)}...`);
+      expect(msg).toBe(`Add Inbox Item: ${'a'.repeat(50)}...`);
     });
 
-    it('generates inbox-promote message', () => {
-      const msg = generateCommitMessage('inbox-promote', 'new-task');
-      expect(msg).toBe('Promote to @new-task');
-    });
-
-    it('generates derive message', () => {
-      const msg = generateCommitMessage('derive', 'spec-item');
-      expect(msg).toBe('Derive from @spec-item');
+    it('normalizes @-prefixed refs to a single marker', () => {
+      const msg = generateCommitMessage(
+        'dispatch-workspace-registry',
+        '@01KKNRC5KR8DTW5JVETBX9CMS8',
+      );
+      expect(msg).toBe(
+        'Update Dispatch Workspace Registry: @01KKNRC5KR8DTW5JVETBX9CMS8',
+      );
     });
 
     it('handles unknown operation', () => {
       const msg = generateCommitMessage('custom-op', 'ref');
       expect(msg).toBe('custom-op @ref');
-    });
-
-    it('produces single @ for dispatch-workspace-registry with bare ref', () => {
-      const msg = generateCommitMessage('dispatch-workspace-registry', '01KKNRC5KR8DTW5JVETBX9CMS8');
-      expect(msg).toBe('dispatch-workspace-registry @01KKNRC5KR8DTW5JVETBX9CMS8');
-    });
-
-    it('would double @@ if caller passes @-prefixed ref (callers must strip)', () => {
-      const msg = generateCommitMessage('dispatch-workspace-registry', '@01KKNRC5KR8DTW5JVETBX9CMS8');
-      expect(msg).toBe('dispatch-workspace-registry @@01KKNRC5KR8DTW5JVETBX9CMS8');
     });
   });
 
