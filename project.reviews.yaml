@@ -22834,6 +22834,12 @@ reviews:
         payload:
           thread_ulid: 01KM47Y4MMVDNA3AEGTDXF1ZTJ
         timestamp: 2026-03-19T23:57:44.484Z
+      - _ulid: 01KM48H8GY9JB85A7HDZXT6V5F
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM47Y9C33G656DP5PTVMT0R2
+        timestamp: 2026-03-19T23:57:45.374Z
     examined_commit: 4a8578499560b6d5d05eb62f749dfddb16422f43
     external_links: []
     lifecycle_state: closed
@@ -22892,6 +22898,8 @@ reviews:
               across shared helper, CLI, and export surfaces.
             created_at: 2026-03-19T23:57:42.321Z
         kind: nit
+        resolved_at: 2026-03-19T23:57:45.156Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -22901,5 +22909,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T23:47:35.825Z
     created_at: 2026-03-19T23:43:02.217Z
-    updated_at: 2026-03-19T23:57:44.286Z
+    updated_at: 2026-03-19T23:57:45.156Z
     notes: []
