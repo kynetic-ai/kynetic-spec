@@ -11814,12 +11814,17 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T05:54:07.938Z
+      updated_at: 2026-03-19T05:55:01.382Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T05:54:08.872Z
+      status: stale
+      issues:
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ralph-migration-guide-01kjp279"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is stale and needs reconciliation.
+      updated_at: 2026-03-19T05:55:01.382Z
     integration:
       status: pending
       detail: null
@@ -11827,17 +11832,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-      updated_at: 2026-03-19T05:54:07.938Z
-    lifecycle_state: active
+      updated_at: 2026-03-19T05:55:01.382Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KJP279FYHBM6995ZVMYGM7M2"
     task_slug: task-ralph-migration-guide
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T05:54:08.872Z
-      last_reconciled_at: 2026-03-19T05:54:08.872Z
+      last_reconciled_at: 2026-03-19T05:55:01.382Z
       created_at: 2026-03-19T05:54:07.938Z
-      updated_at: 2026-03-19T05:54:08.872Z
+      updated_at: 2026-03-19T05:55:01.382Z
     workspace_id: dispatch-workspace-01KJP279FYHBM6995ZVMYGM7M2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
