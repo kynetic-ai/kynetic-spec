@@ -19929,6 +19929,12 @@ reviews:
         payload:
           thread_ulid: 01KM2CR1KGWWB1BHWHAMCMMDZ3
         timestamp: 2026-03-19T06:52:30.600Z
+      - _ulid: 01KM2DW02JTT8N7BKH1C1AQVM9
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM2CR10EFK04G3EGNBH36HJN
+        timestamp: 2026-03-19T06:52:31.186Z
     examined_commit: 61ca7bb5b8609e78888aef803da22b303c93ca8b
     external_links: []
     lifecycle_state: closed
@@ -19956,6 +19962,12 @@ reviews:
               leaving obvious  strings behind in a file already edited by this branch means the
               cleanup is not actually finished."
             created_at: 2026-03-19T06:32:52.495Z
+          - _ulid: 01KM2DVZX0PE4QEJWBYX5KK1HN
+            author: Jacob Chapel
+            body: Fixed in commit bbaff772d. The two stale session-store references were updated from legacy
+              ralph wording to legacy dispatch-loop wording at the cited comment and resetBudget
+              docs.
+            created_at: 2026-03-19T06:52:31.007Z
         kind: blocker
       - _ulid: 01KM2CR1KGWWB1BHWHAMCMMDZ3
         anchor:
@@ -20016,7 +20028,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T06:34:30.178Z
     created_at: 2026-03-19T06:25:10.398Z
-    updated_at: 2026-03-19T06:52:30.425Z
+    updated_at: 2026-03-19T06:52:31.007Z
     notes: []
   - _ulid: 01KM2DF0RQVSXJ6B0FRYTJ2BJN
     slugs: []
