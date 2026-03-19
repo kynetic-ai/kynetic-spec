@@ -104656,6 +104656,17 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T06:57:08.009Z
+    - _ulid: 01KM2EDXFVBQNBKYSDKP6T53ZM
+      content: "Implemented shadow commit call-site fixes: inbox add now commits with the created inbox
+        ULID, workflow lifecycle mutations commit with run ULIDs, workflow prune uses the single run
+        ULID when available, and batch-only tasks/core-skill installs now keep count text in detail
+        instead of fabricating refs. Added regression coverage in
+        tests/shadow-commit-call-site-regression.test.ts and ran npm test successfully. kspec
+        validate still reports pre-existing repo-wide reference/completeness warnings in
+        meta.yaml/tests unrelated to this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T07:02:18.363Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6QR02Z2YKJBPBXD4RCRKT
