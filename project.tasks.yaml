@@ -108590,7 +108590,7 @@
   spec_ref: "@dispatch-workspace-configuration"
   meta_ref: null
   plan_ref: null
-  status: needs_work
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -108608,9 +108608,9 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: null
+  session_id: 01KM29G16XKP77YE7P3NWEZY6R
   created_at: 2026-03-19T04:42:11.096Z
-  started_at: 2026-03-19T04:54:48.464Z
+  started_at: 2026-03-19T05:36:44.955Z
   submitted_at: 2026-03-19T05:08:27.260Z
   notes:
     - _ulid: 01KM27WYSQF397B7XZ7AHQDTQP
