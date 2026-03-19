@@ -23718,13 +23718,15 @@ plans:
               is not treated as undefined behavior
           - id: ac-2
             given: |
-              An operator instead runs dispatch from a separate full clone of
-              the same repository
+              An operator runs dispatch from a separate full clone of the
+              repository
             when: |
-              Dispatch performs the same integration-branch operations
+              Dispatch performs integration-branch sync, publish, or health
+              checks
             then: |
-              Behavior is equivalent at the product-contract level; the clone
-              is an operational isolation choice, not a required feature mode
+              The behavior remains correct and supported; using a separate
+              full clone is treated as an operational isolation choice rather
+              than as a required product mode
           - id: ac-3
             given: |
               Worker and reviewer task worktrees already exist under the
@@ -23841,14 +23843,13 @@ plans:
               the drift reason, and the recommended next action
           - id: ac-5
             given: |
-              Dispatch is running in a separate full clone rather than a
-              shared checkout
+              Dispatch is running in a separate full clone of the repository
             when: |
               Integration-branch mutation completes successfully
             then: |
-              The same coherence guarantees hold for that clone's branch ref,
-              index, and working tree; the safety contract is not limited to
-              one deployment topology
+              That clone's branch ref, index, and working tree all reflect a
+              coherent post-mutation state; the safety contract applies in
+              this topology as well
       ```
 
       ## Tasks
@@ -24014,3 +24015,7 @@ plans:
         content: Reframe plan around shared-checkout robustness and topology-agnostic dispatch behavior
         author: Jacob Chapel
         created_at: 2026-03-19T18:46:52.665Z
+      - _ulid: 01KM3R338AJ5WAE0WK09F61CE8
+        content: Normalize acceptance criteria so each rule reads independently without relational phrasing
+        author: Jacob Chapel
+        created_at: 2026-03-19T19:10:24.010Z
