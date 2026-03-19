@@ -22652,6 +22652,18 @@ reviews:
         runner: reviewer
         created_at: 2026-03-19T23:31:57.872Z
         completed_at: 2026-03-19T23:31:57.872Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "kspec validate fails on pre-existing repo-wide issues unrelated to this diff: 3 broken
+          relates_to refs in .kspec/modules/meta.yaml, 1 orphaned skill dir warning, 29 orphaned
+          specs, 402 completeness warnings including existing AC annotation fixtures."
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-19T23:31:58.706Z
+        completed_at: 2026-03-19T23:31:58.706Z
     events:
       - _ulid: 01KM46SQDT8A1EXQC6JD43GHCQ
         actor: Jacob Chapel
@@ -22673,6 +22685,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-19T23:31:58.130Z
+      - _ulid: 01KM4722BP6PAEZF2ARJBQ0EYF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec-validate
+        timestamp: 2026-03-19T23:31:58.966Z
     examined_commit: fadb999f740f18d9877355ad928dc71183a41c15
     external_links: []
     lifecycle_state: open
@@ -22685,5 +22704,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-19T23:27:25.626Z
-    updated_at: 2026-03-19T23:31:57.872Z
+    updated_at: 2026-03-19T23:31:58.706Z
     notes: []
