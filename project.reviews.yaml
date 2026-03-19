@@ -21866,3 +21866,29 @@ reviews:
     created_at: 2026-03-19T21:10:04.156Z
     updated_at: 2026-03-19T21:10:32.443Z
     notes: []
+  - _ulid: 01KM3ZNA7FNXPMEH1KPQGVHP7G
+    slugs: []
+    title: Review derived output for dispatch shared-checkout plan
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM3ZNA7FTCZ42YST9K6S5AJK
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-19T21:22:41.007Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-dispatch-integration-checkout-boundaries"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-19T21:22:41.007Z
+    updated_at: null
+    notes: []
