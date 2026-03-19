@@ -20336,7 +20336,19 @@ reviews:
     slugs: []
     title: Review fix shadow commit call sites that omit entity refs
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Independent full-suite run failed: 8 tests failed across
+          tests/agent-dispatch-engine.test.ts and tests/canonical-task-workspace-contract.test.ts;
+          6594 passed, 3 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-19T07:11:31.704Z
+        completed_at: 2026-03-19T07:11:31.704Z
     events:
       - _ulid: 01KM2EHTTPYB40KHMRXMGZGYV4
         actor: Jacob Chapel
@@ -20386,6 +20398,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM2EYCVASY7XPW57MYF1ZK4F
         timestamp: 2026-03-19T07:11:18.566Z
+      - _ulid: 01KM2EYT1WY7YHWK12T01KV0RM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-19T07:11:31.900Z
     examined_commit: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
     external_links: []
     lifecycle_state: open
@@ -20489,5 +20508,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-19T07:04:26.710Z
-    updated_at: 2026-03-19T07:11:18.379Z
+    updated_at: 2026-03-19T07:11:31.704Z
     notes: []
