@@ -18871,6 +18871,18 @@ reviews:
         runner: node
         created_at: 2026-03-19T04:50:04.143Z
         completed_at: 2026-03-19T04:50:04.143Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full npm test under dispatch env fails in tests/review-cli.test.ts because
+          KSPEC_DISPATCH_CANONICAL_HEAD is set; env -u KSPEC_DISPATCH_CANONICAL_HEAD npm test --
+          tests/review-cli.test.ts passes 64/64
+        name: review-cli-env-leak
+        required: false
+        runner: npm
+        created_at: 2026-03-19T04:50:05.559Z
+        completed_at: 2026-03-19T04:50:05.559Z
     events:
       - _ulid: 01KM26MSAEKSSCYA3YMQPPY09K
         actor: Jacob Chapel
@@ -18906,6 +18918,13 @@ reviews:
           status: pass
           name: resolver-path-verification
         timestamp: 2026-03-19T04:50:04.532Z
+      - _ulid: 01KM26VTY73RE7DSA3AWP6S7ZZ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-cli-env-leak
+        timestamp: 2026-03-19T04:50:05.896Z
     examined_commit: 0a4f8ab9550dfed4eec1c249f3cdd926b13ee0c2
     external_links: []
     lifecycle_state: open
@@ -18918,5 +18937,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-19T04:46:14.863Z
-    updated_at: 2026-03-19T04:50:04.143Z
+    updated_at: 2026-03-19T04:50:05.559Z
     notes: []
