@@ -21356,7 +21356,18 @@ reviews:
     slugs: []
     title: Review Dispatch Integration Branch Robustness
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repo-wide validation reported unrelated existing schema/reference warnings and errors
+          outside this plan review; not used as a plan gate.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-19T19:41:53.271Z
+        completed_at: 2026-03-19T19:41:53.271Z
     events:
       - _ulid: 01KM3SSD44NBJQ2FF4MQM40PB8
         actor: Jacob Chapel
@@ -21399,6 +21410,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM3SWE9WTBZMQR9BG5V1RSFA
         timestamp: 2026-03-19T19:41:43.298Z
+      - _ulid: 01KM3SWRDMPK8DP08K0PQZVQF2
+        actor: jacob.chapel@example.com
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-19T19:41:53.460Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -21468,5 +21486,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-19T19:40:03.588Z
-    updated_at: 2026-03-19T19:41:43.101Z
+    updated_at: 2026-03-19T19:41:53.271Z
     notes: []
