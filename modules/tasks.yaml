@@ -454,6 +454,9 @@ features:
         description: Cancelling a task removes stale downstream dependency links and records that cleanup as
           part of the same cancellation operation. This keeps ready semantics unchanged while
           repairing the task graph when abandoned work is removed.
+        status:
+          maturity: draft
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
