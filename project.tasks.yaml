@@ -108593,6 +108593,17 @@
   session_id: 01KM273G4SMQ5SKRAWB77012CX
   created_at: 2026-03-19T04:42:11.096Z
   started_at: 2026-03-19T04:54:48.464Z
-  notes: []
+  notes:
+    - _ulid: 01KM27WYSQF397B7XZ7AHQDTQP
+      content: "Scoped dispatch workspace ownership to the current checkout's resolved worktree_root so
+        provisioning, discovery, health, and lifecycle updates ignore foreign registry
+        records/worktrees from sibling checkouts. Added regressions for foreign canonical-branch
+        collisions and registry reconciliation ignoring foreign-root records. Verification: targeted
+        dispatch workspace config/registry tests passed; full npm test still has the pre-existing
+        review CLI failure where examined_commit is non-null when omitted, and a dispatch-engine
+        timeout did not reproduce when rerun in isolation."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T05:08:11.191Z
   todos: []
   automation: eligible
