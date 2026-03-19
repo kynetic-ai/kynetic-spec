@@ -108539,6 +108539,15 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T05:01:28.044Z
+    - _ulid: 01KM29DPVDQY2PVRMNX732ST0Q
+      content: Addressed the fix-cycle gate by hardening dispatch-related test coverage under dispatch-run
+        environments. Stripped KSPEC_DISPATCH_CANONICAL_HEAD from inherited CLI test env so review
+        add null-path tests stay deterministic, widened async wait windows in the dispatch engine
+        prompt/event tests, stubbed target-sync enablement in the role-entry prompt test, and re-ran
+        npm test successfully (286 files, 6514 tests).
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T05:34:48.686Z
   todos: []
   automation: eligible
 - _ulid: 01KM26DB8RCM6D2T1SYZGZJR9X
