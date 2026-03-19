@@ -1588,6 +1588,10 @@ features:
           running, completing its primary operation gracefully
         when: Any CLI command would normally communicate with a running daemon as a side-effect (posting
           state change events, querying daemon status, auto-starting the daemon)
+      - given: KSPEC_NO_DAEMON is set to a truthy value
+        id: ac-33
+        then: The command operates normally, ignoring KSPEC_NO_DAEMON
+        when: An explicit daemon management command is run (kspec serve start, stop, status, restart)
     tags:
       - daemon
       - architecture
