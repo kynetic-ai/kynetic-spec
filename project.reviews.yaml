@@ -22103,6 +22103,18 @@ reviews:
         runner: rg
         created_at: 2026-03-19T22:49:49.656Z
         completed_at: 2026-03-19T22:49:49.656Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate still exits 4 with pre-existing repo-wide reference/completeness debt in
+          .kspec/meta coverage unrelated to this task's changed files or
+          @dispatch-integration-mutation-scope annotations.
+        name: validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-19T22:49:52.493Z
+        completed_at: 2026-03-19T22:49:52.493Z
     events:
       - _ulid: 01KM44E3J0DF6DEK13ZG6H255X
         actor: Jacob Chapel
@@ -22131,6 +22143,13 @@ reviews:
           status: pass
           name: spec-ac-coverage
         timestamp: 2026-03-19T22:49:49.853Z
+      - _ulid: 01KM44MZA4AWQBXPESDBTMTHNP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: validate
+        timestamp: 2026-03-19T22:49:52.708Z
     examined_commit: 6a48f8bc1ecd8493d2083089c52904db25f9d6cf
     external_links: []
     lifecycle_state: open
@@ -22143,5 +22162,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-19T22:46:07.680Z
-    updated_at: 2026-03-19T22:49:49.656Z
+    updated_at: 2026-03-19T22:49:52.493Z
     notes: []
