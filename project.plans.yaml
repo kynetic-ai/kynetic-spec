@@ -23637,17 +23637,15 @@ plans:
 
       This plan hardens how dispatch mutates the configured integration branch
       when dispatch is running in a shared checkout. The immediate trigger is a
-      stale-checkout failure mode: the integration branch ref can advance
-      while a checked-out tree and index remain on an older commit, which
-      surfaces as a large staged diff in the checkout running dispatch.
+      checkout-drift failure mode where dispatch advances the integration
+      branch but leaves the checkout looking locally dirty even though the
+      change came from dispatch itself.
 
       This plan is intentionally narrow:
 
       - shared-checkout dispatch is a supported product mode
       - worker and reviewer task worktrees remain isolated under the existing
         dispatch worktree root
-      - separate full clones may still be recommended operationally, but they
-        are not part of the behavioral contract defined here
 
       ## Context
 
@@ -23663,7 +23661,6 @@ plans:
       - worker/reviewer code execution happens in isolated task worktrees
       - dispatch owns integration-branch sync and publish behavior
       - the configured integration branch comes from `dispatch.base_branch`
-      - operators may still choose stronger isolation operationally
 
       What is missing is an explicit contract for how dispatch targets git
       operations, how it detects checkout drift, and how it repairs or reports
@@ -23681,10 +23678,6 @@ plans:
          cannot be specified as an abstract "safe repair path"; the contract
          must state what dispatch proves about branch ref, index, working
          tree, and operator-visible status after repair.
-      4. **Separate clones remain operational guidance only.** Running
-         dispatch in a separate full clone may reduce contention, but that
-         belongs in documentation and deployment guidance rather than in the
-         behavioral spec.
 
       ## Specs
 
@@ -23698,8 +23691,6 @@ plans:
           mutation when dispatch is running in a shared checkout.
 
           The product guarantee in scope is shared-checkout correctness.
-          Separate full clones may still be a recommended deployment choice,
-          but they are outside the behavioral contract of this plan.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -23946,8 +23937,6 @@ plans:
       - shared checkout is supported and must be robust
       - linked task worktrees remain part of the dispatch execution model, but
         they do not define the integration-branch mutation contract
-      - separate full clones may still be useful operationally, but that is
-        not behavior this plan needs to specify
 
       ### Why this plan does not require a separate checkout
 
@@ -23966,7 +23955,6 @@ plans:
       ### Out of scope
 
       - prescribing a required repository topology for dispatch deployment
-      - specifying separate-clone behavior as part of the product contract
       - replacing shared-checkout robustness with operational workarounds
     status: draft
     approved_at: null
@@ -24003,3 +23991,8 @@ plans:
           and coherence behavior
         author: Jacob Chapel
         created_at: 2026-03-19T20:31:44.029Z
+      - _ulid: 01KM3Y2GBMBEYRM4QWH1ME9BAT
+        content: Remove remaining topology guidance from plan-facing text and compress intro to behavioral
+          problem statement
+        author: Jacob Chapel
+        created_at: 2026-03-19T20:54:56.116Z
