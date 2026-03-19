@@ -19449,7 +19449,17 @@ reviews:
     slugs: []
     title: Review dispatch-engine-cli-calls-must-not-crash-the-engine-on-failure (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 286 files, 6514 tests passed; 3 skipped.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-19T05:39:59.773Z
+        completed_at: 2026-03-19T05:39:59.773Z
     events:
       - _ulid: 01KM29H563TQ7ZWQSGW32FH2E6
         actor: Jacob Chapel
@@ -19471,6 +19481,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM29Q625NEJMDTVWSF0DXNRQ
         timestamp: 2026-03-19T05:39:59.354Z
+      - _ulid: 01KM29Q6TN34E3CV7T0TPR2342
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-19T05:39:59.958Z
     examined_commit: f300f92933f25b97eb4bc9f54bfc3ec2bef1166b
     external_links: []
     lifecycle_state: open
@@ -19508,5 +19525,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-19T05:36:41.668Z
-    updated_at: 2026-03-19T05:39:59.173Z
+    updated_at: 2026-03-19T05:39:59.773Z
     notes: []
