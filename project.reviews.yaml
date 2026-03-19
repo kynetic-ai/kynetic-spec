@@ -19460,6 +19460,17 @@ reviews:
         runner: npm
         created_at: 2026-03-19T05:39:59.773Z
         completed_at: 2026-03-19T05:39:59.773Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Fails on pre-existing repo-wide reference/completeness debt in .kspec/meta/test fixtures;
+          no task-local validation regression observed.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-19T05:40:02.703Z
+        completed_at: 2026-03-19T05:40:02.703Z
     events:
       - _ulid: 01KM29H563TQ7ZWQSGW32FH2E6
         actor: Jacob Chapel
@@ -19488,6 +19499,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-19T05:39:59.958Z
+      - _ulid: 01KM29Q9PJ4EYBAMXVCDKT161K
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-19T05:40:02.898Z
     examined_commit: f300f92933f25b97eb4bc9f54bfc3ec2bef1166b
     external_links: []
     lifecycle_state: open
@@ -19525,5 +19543,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-19T05:36:41.668Z
-    updated_at: 2026-03-19T05:39:59.773Z
+    updated_at: 2026-03-19T05:40:02.703Z
     notes: []
