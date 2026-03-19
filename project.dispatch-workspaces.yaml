@@ -12140,12 +12140,21 @@ workspaces:
       detail: task-abandoned
       eligible: true
       reason: task-abandoned
-      updated_at: 2026-03-19T21:57:41.579Z
+      updated_at: 2026-03-19T21:58:49.541Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T21:57:41.579Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/task-design-dispatch-shared-checkout-contract/01km3zmd" is
+            missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-design-dispatch-shared-checkout-contract-01km3zmd"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-19T21:58:49.541Z
     integration:
       status: abandoned
       detail: integration:abandoned
@@ -12153,17 +12162,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
-      updated_at: 2026-03-19T21:57:41.579Z
-    lifecycle_state: closing
+      updated_at: 2026-03-19T21:58:49.541Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KM3ZMD8K6VNEVT4VR9R9YZQG"
     task_slug: task-design-dispatch-shared-checkout-contract
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T21:51:42.474Z
-      last_reconciled_at: 2026-03-19T21:57:41.579Z
+      last_reconciled_at: 2026-03-19T21:58:49.541Z
       created_at: 2026-03-19T21:51:41.266Z
-      updated_at: 2026-03-19T21:57:41.579Z
+      updated_at: 2026-03-19T21:58:49.541Z
     workspace_id: dispatch-workspace-01KM3ZMD8K6VNEVT4VR9R9YZQG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
