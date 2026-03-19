@@ -1489,6 +1489,15 @@ export function resolveDispatchIntegrationMutationScope(
   };
 }
 
+export function runDispatchIntegrationTargetGit(
+  projectDir: string,
+  integrationBranch: string,
+  args: string[],
+): GitResult {
+  const scope = resolveDispatchIntegrationMutationScope(projectDir, integrationBranch);
+  return runGit(scope.projectDir, args);
+}
+
 export function resolveDispatchWorkspaceCleanupState(
   options: ResolveDispatchWorkspaceCleanupStateOptions,
 ): DispatchWorkspaceCleanupState {
@@ -1918,7 +1927,24 @@ export function pushIntegrationTarget(
   }
 
   // For integration target, always use -u to ensure tracking is established
-  const result = runGit(projectDir, ["push", "-u", remote, integrationBranch]);
+  let result: GitResult;
+  try {
+    result = runDispatchIntegrationTargetGit(projectDir, integrationBranch, [
+      "push",
+      "-u",
+      remote,
+      integrationBranch,
+    ]);
+  } catch (err) {
+    if (err instanceof DispatchWorkspaceError) {
+      return {
+        pushed: false,
+        skipped: false,
+        error: `${err.message} Resolution: ${err.suggestion}`,
+      };
+    }
+    throw err;
+  }
   if (result.status !== 0) {
     // AC: @dispatch-remote-branch-sync ac-push-non-fatal
     return {

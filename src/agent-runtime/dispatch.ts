@@ -51,6 +51,7 @@ import {
   discoverWorkspaceForReviewOrFixCycle,
   pushDispatchBranch,
   pushIntegrationTarget,
+  runDispatchIntegrationTargetGit,
   resolveDispatchIntegrationMutationScope,
   resolveDispatchRemote,
   resolveDispatchWorkspaceConfig,
@@ -2857,12 +2858,8 @@ export class DispatchEngine {
 
     this._targetSyncRunning = true;
     try {
-      let mutationScope;
       try {
-        mutationScope = resolveDispatchIntegrationMutationScope(
-          this.projectDir,
-          this._syncBaseBranch,
-        );
+        resolveDispatchIntegrationMutationScope(this.projectDir, this._syncBaseBranch);
       } catch (err) {
         const reason = this._formatUnsafeMutationScopeReason(err, this._syncBaseBranch);
         this._enterDegradedState(reason);
@@ -2870,16 +2867,10 @@ export class DispatchEngine {
       }
 
       // Step 1: Fetch the target branch from remote
-      const fetchResult = spawnSync(
-        "git",
+      const fetchResult = runDispatchIntegrationTargetGit(
+        this.projectDir,
+        this._syncBaseBranch,
         ["fetch", this._syncRemote, this._syncBaseBranch],
-        {
-          cwd: mutationScope.projectDir,
-          env: buildDispatchGitEnv(),
-          encoding: "utf-8",
-          stdio: "pipe",
-          timeout: 30_000,
-        },
       );
 
       if (fetchResult.status !== 0) {
@@ -2908,16 +2899,10 @@ export class DispatchEngine {
 
       // Step 2: Fast-forward merge the target branch
       // AC: @dispatch-remote-branch-sync ac-pull-ff-only — no merge commits
-      const mergeResult = spawnSync(
-        "git",
+      const mergeResult = runDispatchIntegrationTargetGit(
+        this.projectDir,
+        this._syncBaseBranch,
         ["merge", "--ff-only", `${this._syncRemote}/${this._syncBaseBranch}`],
-        {
-          cwd: mutationScope.projectDir,
-          env: buildDispatchGitEnv(),
-          encoding: "utf-8",
-          stdio: "pipe",
-          timeout: 10_000,
-        },
       );
 
       if (mergeResult.status !== 0) {
@@ -2961,22 +2946,25 @@ export class DispatchEngine {
   private _classifyDivergence(_mergeOutput: string): string {
     const remote = this._syncRemote;
     const branch = this._syncBaseBranch;
+    if (!remote || !branch) {
+      return "Integration target divergence detected, but remote or branch context is unavailable.";
+    }
 
     // Count commits local has that remote doesn't, and vice versa
     let localAhead = 0;
     let remoteAhead = 0;
     try {
-      const aheadResult = spawnSync(
-        "git",
+      const aheadResult = runDispatchIntegrationTargetGit(
+        this.projectDir,
+        branch,
         ["rev-list", "--count", `${remote}/${branch}..${branch}`],
-        { cwd: this.projectDir, encoding: "utf-8", stdio: "pipe" },
       );
       localAhead = parseInt(aheadResult.stdout?.trim() ?? "0", 10);
 
-      const behindResult = spawnSync(
-        "git",
+      const behindResult = runDispatchIntegrationTargetGit(
+        this.projectDir,
+        branch,
         ["rev-list", "--count", `${branch}..${remote}/${branch}`],
-        { cwd: this.projectDir, encoding: "utf-8", stdio: "pipe" },
       );
       remoteAhead = parseInt(behindResult.stdout?.trim() ?? "0", 10);
     } catch {
