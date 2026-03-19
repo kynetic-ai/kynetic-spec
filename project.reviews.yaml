@@ -21352,3 +21352,29 @@ reviews:
     created_at: 2026-03-19T07:54:44.753Z
     updated_at: 2026-03-19T07:59:18.597Z
     notes: []
+  - _ulid: 01KM3SSD440G7BF2VMYG1W9XHK
+    slugs: []
+    title: Review Dispatch Integration Branch Robustness
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM3SSD44NBJQ2FF4MQM40PB8
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-19T19:40:03.588Z
+    examined_commit: null
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: plan
+      content_hash: ""
+      ref: "@plan-dispatch-integration-checkout-boundaries"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-19T19:40:03.588Z
+    updated_at: null
+    notes: []
