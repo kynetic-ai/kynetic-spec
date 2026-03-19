@@ -11817,7 +11817,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T08:00:13.338Z
+      updated_at: 2026-03-19T08:00:51.935Z
     integration:
       status: merged
       detail: integration:merged
@@ -11833,18 +11833,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T07:54:05.668Z
-      last_reconciled_at: 2026-03-19T08:00:50.955Z
+      last_reconciled_at: 2026-03-19T08:00:51.935Z
       created_at: 2026-03-19T05:54:07.938Z
-      updated_at: 2026-03-19T08:00:50.955Z
+      updated_at: 2026-03-19T08:00:51.935Z
     workspace_id: dispatch-workspace-01KJP279FYHBM6995ZVMYGM7M2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 146e2709913aa6c8f2e597da2e98c9d224b4255d
-        last_seen_at: 2026-03-19T07:54:00.681Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ralph-migration-guide-01kjp279-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-ralph-migration-guide/01kjp279
