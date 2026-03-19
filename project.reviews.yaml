@@ -20653,6 +20653,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM2FBCNAHA9XSA05YG5BNAWF
         timestamp: 2026-03-19T07:18:24.491Z
+      - _ulid: 01KM2FBE2XN8SBPQVEZ8KW37AP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM2FBDRPBANPR3DN6HZBJY3Z
+        timestamp: 2026-03-19T07:18:25.629Z
     examined_commit: 883713aaf1ef6f3d218fc11570e50753efddd447
     external_links: []
     lifecycle_state: open
@@ -20681,7 +20688,25 @@ reviews:
               implementation rather than eliminating it."
             created_at: 2026-03-19T07:18:24.171Z
         kind: blocker
+      - _ulid: 01KM2FBDRPBANPR3DN6HZBJY3Z
+        anchor:
+          type: code
+          commit: 883713aaf1ef6f3d218fc11570e50753efddd447
+          line_end: 39
+          line_start: 39
+          path: src/cli/index.ts
+          side: head
+        entries:
+          - _ulid: 01KM2FBDRQSGAF6PM2HEAQG93P
+            author: Jacob Chapel
+            body: This review snapshot is not scoped to the submitted task. Besides the minor ralph-related
+              edits, the branch also introduces unrelated event/hook/schedule/review/diff feature
+              work across 178 changed files, including new command registrations here. That makes it
+              impossible to approve this task as a clean "purge remaining ralph traces" change and
+              risks merging unrelated behavior under the wrong task/review history.
+            created_at: 2026-03-19T07:18:25.303Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-19T07:16:14.542Z
-    updated_at: 2026-03-19T07:18:24.171Z
+    updated_at: 2026-03-19T07:18:25.303Z
     notes: []
