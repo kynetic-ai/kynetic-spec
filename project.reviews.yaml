@@ -21051,6 +21051,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-19T07:46:43.069Z
         completed_at: 2026-03-19T07:46:43.069Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test failed in this snapshot: 285 test files passed and 1 failed; 6598 tests passed,
+          2 failed, 3 skipped. Failures: tests/agent-dispatch-engine.test.ts cases at lines 2798 and
+          2863."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-19T07:46:52.775Z
+        completed_at: 2026-03-19T07:46:52.775Z
     events:
       - _ulid: 01KM2GMBHE2E3D035B1236MWR9
         actor: Jacob Chapel
@@ -21086,6 +21098,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-19T07:46:43.251Z
+      - _ulid: 01KM2GZHEVKRZRZG8XYS217NGP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-19T07:46:53.019Z
     examined_commit: a576e0c5bc4f07ffb2ad7b7cf9945f08a6ae28b4
     external_links: []
     lifecycle_state: open
@@ -21116,5 +21135,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-19T07:40:46.510Z
-    updated_at: 2026-03-19T07:46:43.069Z
+    updated_at: 2026-03-19T07:46:52.775Z
     notes: []
