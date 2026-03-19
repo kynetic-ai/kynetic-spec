@@ -19653,6 +19653,18 @@ reviews:
         runner: npm test
         created_at: 2026-03-19T06:07:28.927Z
         completed_at: 2026-03-19T06:07:28.927Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed in isolation with KSPEC_DISPATCH_CANONICAL_HEAD unset: tests/review-cli.test.ts
+          (64/64). The failing full-suite assertion depends on dispatch-only environment leakage,
+          not this task's workspace changes."
+        name: review-cli-env-isolated
+        required: false
+        runner: npm test
+        created_at: 2026-03-19T06:07:28.933Z
+        completed_at: 2026-03-19T06:07:28.933Z
     events:
       - _ulid: 01KM2AK1EHBA41SQEH4ZZH9VN9
         actor: Jacob Chapel
@@ -19688,6 +19700,13 @@ reviews:
           status: fail
           name: npm-test
         timestamp: 2026-03-19T06:07:29.094Z
+      - _ulid: 01KM2B9HM95QZV8BZ3XY8Z1QYC
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-cli-env-isolated
+        timestamp: 2026-03-19T06:07:29.418Z
     examined_commit: c6a9f65fc8ec1d98cd25e81b6c318b02a4b6392b
     external_links: []
     lifecycle_state: open
@@ -19700,5 +19719,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-19T05:55:11.954Z
-    updated_at: 2026-03-19T06:07:28.927Z
+    updated_at: 2026-03-19T06:07:28.933Z
     notes: []
