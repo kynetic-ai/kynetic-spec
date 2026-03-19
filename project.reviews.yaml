@@ -19380,6 +19380,12 @@ reviews:
         payload:
           thread_ulid: 01KM28DH0D3YVEZS8CRM86CWGJ
         timestamp: 2026-03-19T05:53:18.056Z
+      - _ulid: 01KM2AFJTPE7Q6HK4DVBWBCS1Q
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM28AGBQVF6F8ZGGBDSYHMAD
+        timestamp: 2026-03-19T05:53:18.678Z
     examined_commit: 0e22dbfff8e98a3aeb3bf8f73c4a569d5b0748b1
     external_links: []
     lifecycle_state: closed
@@ -19417,6 +19423,8 @@ reviews:
               actionable ownership guidance instead of a late registry write failure.
             created_at: 2026-03-19T05:53:05.313Z
         kind: blocker
+        resolved_at: 2026-03-19T05:53:18.490Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM28DH0D3YVEZS8CRM86CWGJ
         anchor:
           type: code
@@ -19476,7 +19484,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T05:17:19.077Z
     created_at: 2026-03-19T05:09:07.021Z
-    updated_at: 2026-03-19T05:53:17.874Z
+    updated_at: 2026-03-19T05:53:18.490Z
     notes: []
   - _ulid: 01KM29H5643TKANBE63KBNECQ6
     slugs: []
