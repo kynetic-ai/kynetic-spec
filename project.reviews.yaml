@@ -22422,6 +22422,12 @@ reviews:
         payload:
           thread_ulid: 01KM45XS1PC6FSYWCSKV7W2EJN
         timestamp: 2026-03-19T23:25:37.866Z
+      - _ulid: 01KM46PEZJXVBQ6EKZSP4DAY7M
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM45XS1PC6FSYWCSKV7W2EJN
+        timestamp: 2026-03-19T23:25:38.674Z
     examined_commit: 4f77d10bfc9991aadf35dd05a1c5b67a8804b477
     external_links: []
     lifecycle_state: closed
@@ -22451,6 +22457,13 @@ reviews:
               task is supposed to preserve. Keep the targeting helper, but preserve the previous
               timeout semantics (or add equivalent timeout support in the helper).
             created_at: 2026-03-19T23:12:09.782Z
+          - _ulid: 01KM46PER38TEFKVXBY9JD65YB
+            author: Jacob Chapel
+            body: Fixed in commit fadb999f7. Restored the original 30s fetch timeout and 10s ff-only merge
+              timeout while keeping target sync on runDispatchIntegrationTargetGit(), and added a
+              regression test that asserts those timeout options are still passed through the
+              isolated targeting helper.
+            created_at: 2026-03-19T23:25:38.435Z
         kind: blocker
         resolved_at: 2026-03-19T23:25:37.604Z
         resolved_by: Jacob Chapel
@@ -22463,7 +22476,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T23:12:27.829Z
     created_at: 2026-03-19T23:08:30.781Z
-    updated_at: 2026-03-19T23:25:37.604Z
+    updated_at: 2026-03-19T23:25:38.435Z
     notes: []
   - _ulid: 01KM4687QDVE5QSA4ZBP6FATHJ
     slugs: []
