@@ -20166,7 +20166,18 @@ reviews:
     slugs: []
     title: Review @01KJP279FYHBM6995ZVMYGM7M2
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repo baseline still has unrelated reference/completeness failures: 3 broken refs in
+          .kspec/modules/meta.yaml plus existing alignment/completeness warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-19T06:57:38.515Z
+        completed_at: 2026-03-19T06:57:38.515Z
     events:
       - _ulid: 01KM2DZGKH30NQE2M27HF1A68R
         actor: Jacob Chapel
@@ -20195,6 +20206,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM2E5BKEHSXB3TFHTE056CND
         timestamp: 2026-03-19T06:57:38.073Z
+      - _ulid: 01KM2E5CBTDMM5TTMBC8CQRW7P
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-19T06:57:38.682Z
     examined_commit: bbaff772decfe825189f288ef9911d9f5696a240
     external_links: []
     lifecycle_state: open
@@ -20253,5 +20271,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-19T06:54:26.418Z
-    updated_at: 2026-03-19T06:57:37.902Z
+    updated_at: 2026-03-19T06:57:38.515Z
     notes: []
