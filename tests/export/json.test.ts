@@ -176,7 +176,7 @@ describe("JSON Export", () => {
     });
 
     // AC: @01KM46FW ac-1
-    it("excludes cancelled linked tasks from exported plan summary metrics", async () => {
+    it("excludes cancelled tasks while preserving plan_ref-linked export metrics", async () => {
       await fs.writeFile(
         path.join(tempDir, "project.plans.yaml"),
         `kynetic_plans: "1.0"
@@ -188,11 +188,7 @@ plans:
     content: |
       # Active Plan
     status: active
-    derived_tasks:
-      - "@test-task-in-progress"
-      - "@test-task-completed"
-      - "@test-task-ready"
-      - "@test-task-cancelled"
+    derived_tasks: []
     derived_specs: []
     source_path: null
     created_at: "2026-01-15T10:00:00Z"
@@ -211,6 +207,7 @@ plans:
     type: task
     status: in_progress
     priority: 3
+    plan_ref: "@test-plan-active"
     depends_on: []
     notes: []
     todos: []
@@ -222,6 +219,7 @@ plans:
     type: task
     status: completed
     priority: 3
+    plan_ref: "@01KG0RRPCA45ZT43W2T6HJMVP1"
     depends_on: []
     notes: []
     todos: []
@@ -233,6 +231,7 @@ plans:
     type: task
     status: pending
     priority: 2
+    plan_ref: "@test-plan-active"
     depends_on: []
     notes: []
     todos: []
@@ -244,6 +243,7 @@ plans:
     type: task
     status: cancelled
     priority: 2
+    plan_ref: "@test-plan-active"
     tags:
       - test
     description: A cancelled task linked to the active plan

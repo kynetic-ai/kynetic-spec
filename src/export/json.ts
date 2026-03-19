@@ -29,7 +29,11 @@ import {
 } from "../parser/index.js";
 import { loadSessionContext } from "../parser/meta.js";
 import { TraitIndex } from "../parser/traits.js";
-import { countPlanTaskProgress, isCountedInPlanSummary } from "../lib/plan-summary.js";
+import {
+  countPlanTaskProgress,
+  getLinkedPlanSummaryTasks,
+  isCountedInPlanSummary,
+} from "../lib/plan-summary.js";
 import type {
   ExportedItem,
   ExportedTask,
@@ -186,30 +190,12 @@ function convertValidationResult(
   };
 }
 
-function buildTaskRefMap(tasks: LoadedTask[]) {
-  const tasksByRef = new Map<string, LoadedTask>();
-  for (const task of tasks) {
-    tasksByRef.set(task._ulid, task);
-    for (const slug of task.slugs) {
-      tasksByRef.set(slug, task);
-    }
-  }
-  return tasksByRef;
-}
-
 function expandPlans(
   plans: Awaited<ReturnType<typeof loadPlans>>,
   tasks: LoadedTask[]
 ) {
-  const tasksByRef = buildTaskRefMap(tasks);
-
   return plans.map((plan) => {
-    const linkedTasks = plan.derived_tasks
-      .map((ref) => {
-        const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
-        return tasksByRef.get(cleanRef);
-      })
-      .filter((task): task is LoadedTask => task != null);
+    const linkedTasks = getLinkedPlanSummaryTasks(plan, tasks);
     const countedTasks = linkedTasks.filter((task) => isCountedInPlanSummary(task));
 
     return {

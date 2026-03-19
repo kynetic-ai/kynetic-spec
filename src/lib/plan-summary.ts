@@ -6,8 +6,53 @@ export interface PlanTaskProgress {
   blocked: number;
 }
 
+export interface PlanSummaryPlan {
+  _ulid: string;
+  slugs: string[];
+  derived_tasks: string[];
+}
+
 export interface PlanSummaryTask {
+  _ulid: string;
+  slugs: string[];
+  plan_ref?: string | null;
   status: string;
+}
+
+function normalizeSummaryRef(ref: string | null | undefined): string | null {
+  if (!ref) {
+    return null;
+  }
+  return ref.startsWith("@") ? ref.slice(1) : ref;
+}
+
+export function getLinkedPlanSummaryTasks<T extends PlanSummaryTask>(
+  plan: PlanSummaryPlan,
+  tasks: Iterable<T>,
+): T[] {
+  const linkedTaskRefs = new Set<string>();
+  const linkedPlanRefs = new Set<string>([plan._ulid, ...plan.slugs]);
+  const linkedTasks: T[] = [];
+
+  for (const ref of plan.derived_tasks) {
+    const normalizedRef = normalizeSummaryRef(ref);
+    if (normalizedRef) {
+      linkedTaskRefs.add(normalizedRef);
+    }
+  }
+
+  for (const task of tasks) {
+    const taskPlanRef = normalizeSummaryRef(task.plan_ref);
+    const matchesPlanRef = taskPlanRef != null && linkedPlanRefs.has(taskPlanRef);
+    const matchesDerivedTask =
+      linkedTaskRefs.has(task._ulid) || task.slugs.some((slug) => linkedTaskRefs.has(slug));
+
+    if (matchesPlanRef || matchesDerivedTask) {
+      linkedTasks.push(task);
+    }
+  }
+
+  return linkedTasks;
 }
 
 export function isCountedInPlanSummary(task: PlanSummaryTask): boolean {

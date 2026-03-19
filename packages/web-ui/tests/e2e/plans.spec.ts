@@ -710,12 +710,27 @@ Runtime fetch coverage should observe the real batch request.
 	});
 
 	// AC: @01KM46FW ac-1
-	test('GET /api/plans/:ref excludes cancelled tasks from summary metrics', async ({ request, daemon }) => {
+	test('GET /api/plans/:ref excludes cancelled tasks while preserving plan_ref links', async ({ request, daemon }) => {
 		const tasksPath = `${daemon.tempDir}/project.tasks.yaml`;
+		const plansPath = `${daemon.tempDir}/project.plans.yaml`;
 		const taskContent = await fs.readFile(tasksPath, 'utf-8');
+		const planContent = await fs.readFile(plansPath, 'utf-8');
+
+		await fs.writeFile(
+			plansPath,
+			planContent.replace(
+				`derived_tasks:
+      - "@test-task-in-progress"
+      - "@test-task-completed"
+      - "@test-task-ready"`,
+				'derived_tasks: []'
+			)
+		);
 		await fs.writeFile(
 			tasksPath,
-			taskContent.replace('status: pending', 'status: cancelled')
+			taskContent
+				.replace('status: pending', 'status: cancelled')
+				.replace('status: completed', 'status: completed\n    plan_ref: "@test-plan-active"')
 		);
 
 		const response = await request.get(`${daemon.baseUrl}/api/plans/test-plan-active`, {

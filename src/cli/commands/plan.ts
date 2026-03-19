@@ -48,7 +48,10 @@ import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, isJsonMode, output, success, warn } from "../output.js";
 import { ulid } from "ulid";
 import { registerPlanImportCommand } from "./plan-import.js";
-import { isCountedInPlanSummary } from "../../lib/plan-summary.js";
+import {
+  getLinkedPlanSummaryTasks,
+  isCountedInPlanSummary,
+} from "../../lib/plan-summary.js";
 
 /**
  * Format relative time for display
@@ -90,34 +93,6 @@ function shortPlanRef(plan: LoadedPlan, plans: LoadedPlan[]): string {
     plan._ulid,
     plans.map((candidate) => candidate._ulid),
   );
-}
-
-function buildTaskStatusMap(tasks: Array<{ _ulid: string; slugs: string[]; status: string }>) {
-  const tasksByRef = new Map<string, { status: string }>();
-  for (const task of tasks) {
-    tasksByRef.set(task._ulid, { status: task.status });
-    for (const slug of task.slugs) {
-      tasksByRef.set(slug, { status: task.status });
-    }
-  }
-  return tasksByRef;
-}
-
-function countPlanListTasks(
-  derivedTasks: string[],
-  tasksByRef: Map<string, { status: string }>,
-): number {
-  let count = 0;
-
-  for (const ref of derivedTasks) {
-    const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
-    const task = tasksByRef.get(cleanRef);
-    if (task && isCountedInPlanSummary(task)) {
-      count += 1;
-    }
-  }
-
-  return count;
 }
 
 async function resolveDeriveModuleRef(
@@ -1026,7 +1001,7 @@ Examples:
       try {
         const ctx = await initContext();
         let plans = await loadPlans(ctx);
-        const tasksByRef = buildTaskStatusMap(await loadAllTasks(ctx));
+        const tasks = await loadAllTasks(ctx);
 
         // AC: @plan-crud ac-7 - status filter
         if (options.status) {
@@ -1051,12 +1026,14 @@ Examples:
           for (const p of plans) {
             const ref = shortPlanRef(p, plans);
             const age = formatRelativeTime(p.created_at);
-            const taskCount = countPlanListTasks(p.derived_tasks, tasksByRef);
-            const tasks =
+            const taskCount = getLinkedPlanSummaryTasks(p, tasks).filter((task) =>
+              isCountedInPlanSummary(task),
+            ).length;
+            const taskLabel =
               taskCount > 0 ? ` [${taskCount} task${taskCount > 1 ? "s" : ""}]` : "";
 
             console.log(
-              `  ${ref} [${p.status}]${tasks} ${p.title}`,
+              `  ${ref} [${p.status}]${taskLabel} ${p.title}`,
             );
             console.log(`         Created ${age}`);
 

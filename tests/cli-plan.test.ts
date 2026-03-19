@@ -574,46 +574,21 @@ describe("Integration: plan commands", () => {
     });
 
     // AC: @01KM46FW ac-1
-    it("excludes cancelled linked tasks from plan list task counts", async () => {
+    it("excludes cancelled tasks while preserving plan_ref-linked plan list counts", async () => {
       const isolatedTempDir = await setupTempFixtures();
       kspec(
         'plan add --title "Plan Metrics" --content "Metrics" --slug plan-metrics',
         isolatedTempDir,
       );
       kspec(
-        'task add --title "Active work" --slug active-work',
+        'task add --title "Active work" --slug active-work --plan-ref @plan-metrics',
         isolatedTempDir,
       );
       kspec(
-        'task add --title "Cancelled work" --slug cancelled-work',
+        'task add --title "Cancelled work" --slug cancelled-work --plan-ref @plan-metrics',
         isolatedTempDir,
       );
       kspec('task cancel @cancelled-work --reason "No longer needed"', isolatedTempDir);
-
-      const planPathCandidates = [
-        path.join(isolatedTempDir, ".kspec", "project.plans.yaml"),
-        path.join(isolatedTempDir, "project.plans.yaml"),
-      ];
-      const plansPath =
-        (await Promise.all(
-          planPathCandidates.map(async (candidate) => {
-            try {
-              await fs.access(candidate);
-              return candidate;
-            } catch {
-              return null;
-            }
-          }),
-        )).find((candidate): candidate is string => candidate != null) ?? planPathCandidates[0];
-
-      const plansContent = await fs.readFile(plansPath, "utf-8");
-      await fs.writeFile(
-        plansPath,
-        plansContent.replace(
-          "derived_tasks: []",
-          'derived_tasks:\n      - "@active-work"\n      - "@cancelled-work"',
-        ),
-      );
 
       const output = kspec("plan list", isolatedTempDir);
       expect(output).toContain('[1 task] Plan Metrics');
