@@ -29,6 +29,7 @@ import {
 } from "../parser/index.js";
 import { loadSessionContext } from "../parser/meta.js";
 import { TraitIndex } from "../parser/traits.js";
+import { countPlanTaskProgress, isCountedInPlanSummary } from "../lib/plan-summary.js";
 import type {
   ExportedItem,
   ExportedTask,
@@ -185,56 +186,31 @@ function convertValidationResult(
   };
 }
 
-function normalizeRef(ref: string | null | undefined): string | null {
-  if (!ref) return null;
-  return ref.startsWith("@") ? ref.slice(1) : ref;
-}
-
-function matchesTaskPlan(task: LoadedTask, planRef: string): boolean {
-  const normalizedPlanRef = normalizeRef(planRef);
-  const normalizedTaskPlan = normalizeRef(task.plan_ref);
-
-  if (!normalizedPlanRef || !normalizedTaskPlan) return false;
-  return (
-    normalizedTaskPlan === normalizedPlanRef ||
-    normalizedTaskPlan.toUpperCase().startsWith(normalizedPlanRef.toUpperCase())
-  );
-}
-
-function countTaskProgress(tasks: LoadedTask[]) {
-  return tasks.reduce(
-    (counts, task) => {
-      counts.total += 1;
-      switch (task.status) {
-        case "completed":
-          counts.completed += 1;
-          break;
-        case "in_progress":
-        case "pending_review":
-        case "needs_work":
-          counts.in_progress += 1;
-          break;
-        case "blocked":
-          counts.blocked += 1;
-          break;
-        default:
-          counts.pending += 1;
-          break;
-      }
-      return counts;
-    },
-    { total: 0, completed: 0, in_progress: 0, pending: 0, blocked: 0 }
-  );
+function buildTaskRefMap(tasks: LoadedTask[]) {
+  const tasksByRef = new Map<string, LoadedTask>();
+  for (const task of tasks) {
+    tasksByRef.set(task._ulid, task);
+    for (const slug of task.slugs) {
+      tasksByRef.set(slug, task);
+    }
+  }
+  return tasksByRef;
 }
 
 function expandPlans(
   plans: Awaited<ReturnType<typeof loadPlans>>,
   tasks: LoadedTask[]
 ) {
+  const tasksByRef = buildTaskRefMap(tasks);
+
   return plans.map((plan) => {
-    const linkedTasks = tasks.filter((task) =>
-      matchesTaskPlan(task, plan.slugs[0] ? `@${plan.slugs[0]}` : `@${plan._ulid}`)
-    );
+    const linkedTasks = plan.derived_tasks
+      .map((ref) => {
+        const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
+        return tasksByRef.get(cleanRef);
+      })
+      .filter((task): task is LoadedTask => task != null);
+    const countedTasks = linkedTasks.filter((task) => isCountedInPlanSummary(task));
 
     return {
       _ulid: plan._ulid,
@@ -247,8 +223,8 @@ function expandPlans(
       derived_specs: plan.derived_specs,
       derived_tasks: plan.derived_tasks,
       spec_count: plan.derived_specs.length,
-      task_count: linkedTasks.length,
-      task_progress: countTaskProgress(linkedTasks),
+      task_count: countedTasks.length,
+      task_progress: countPlanTaskProgress(linkedTasks),
       content: plan.content,
       module_ref: plan.module_ref ?? null,
       source_path: plan.source_path ?? null,

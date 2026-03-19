@@ -18,6 +18,7 @@ import {
   findPlanByRef,
   type LoadedPlan,
 } from '../../parser/index.js';
+import { countPlanTaskProgress, isCountedInPlanSummary } from '../../lib/plan-summary.js';
 import type { PlanSummary, PlanDetail } from '@kynetic-ai/shared';
 
 interface PlansRouteOptions {}
@@ -39,23 +40,16 @@ function buildTaskStatusMap(tasks: Array<{ _ulid: string; slugs: string[]; statu
 /**
  * Compute task progress for a plan's derived tasks.
  */
-function computeTaskProgress(
+function getLinkedTasks(
   derivedTasks: string[],
   tasksByRef: Map<string, { status: string }>
 ) {
-  const progress = { total: 0, completed: 0, in_progress: 0, pending: 0, blocked: 0 };
-  for (const ref of derivedTasks) {
-    const cleanRef = ref.startsWith('@') ? ref.slice(1) : ref;
-    const task = tasksByRef.get(cleanRef);
-    if (task) {
-      progress.total++;
-      if (task.status === 'completed') progress.completed++;
-      else if (task.status === 'in_progress' || task.status === 'pending_review' || task.status === 'needs_work') progress.in_progress++;
-      else if (task.status === 'blocked') progress.blocked++;
-      else progress.pending++;
-    }
-  }
-  return progress;
+  return derivedTasks
+    .map((ref) => {
+      const cleanRef = ref.startsWith('@') ? ref.slice(1) : ref;
+      return tasksByRef.get(cleanRef);
+    })
+    .filter((task): task is { status: string } => task != null);
 }
 
 /**
@@ -76,8 +70,9 @@ function toPlanSummary(
     derived_specs: plan.derived_specs,
     derived_tasks: plan.derived_tasks,
     spec_count: plan.derived_specs.length,
-    task_count: plan.derived_tasks.length,
-    task_progress: computeTaskProgress(plan.derived_tasks, tasksByRef),
+    task_count: getLinkedTasks(plan.derived_tasks, tasksByRef)
+      .filter((task) => isCountedInPlanSummary(task)).length,
+    task_progress: countPlanTaskProgress(getLinkedTasks(plan.derived_tasks, tasksByRef)),
   };
 }
 
