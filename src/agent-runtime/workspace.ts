@@ -40,6 +40,10 @@ interface GitResult {
   status: number | null;
 }
 
+interface RunGitOptions {
+  timeout?: number;
+}
+
 const DISPATCH_GIT_ENV_KEYS = [
   "GIT_ALTERNATE_OBJECT_DIRECTORIES",
   "GIT_COMMON_DIR",
@@ -254,12 +258,13 @@ export class DispatchWorkspaceError extends Error {
   }
 }
 
-function runGit(cwd: string, args: string[]): GitResult {
+function runGit(cwd: string, args: string[], options: RunGitOptions = {}): GitResult {
   const result = spawnSync("git", args, {
     cwd,
     env: buildDispatchGitEnv(),
     encoding: "utf-8",
     stdio: "pipe",
+    ...(options.timeout !== undefined ? { timeout: options.timeout } : {}),
   });
   return {
     stdout: (result.stdout ?? "").trim(),
@@ -1493,9 +1498,10 @@ export function runDispatchIntegrationTargetGit(
   projectDir: string,
   integrationBranch: string,
   args: string[],
+  options: RunGitOptions = {},
 ): GitResult {
   const scope = resolveDispatchIntegrationMutationScope(projectDir, integrationBranch);
-  return runGit(scope.projectDir, args);
+  return runGit(scope.projectDir, args, options);
 }
 
 export function resolveDispatchWorkspaceCleanupState(

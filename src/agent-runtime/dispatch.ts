@@ -2871,6 +2871,7 @@ export class DispatchEngine {
         this.projectDir,
         this._syncBaseBranch,
         ["fetch", this._syncRemote, this._syncBaseBranch],
+        { timeout: 30_000 },
       );
 
       if (fetchResult.status !== 0) {
@@ -2903,6 +2904,7 @@ export class DispatchEngine {
         this.projectDir,
         this._syncBaseBranch,
         ["merge", "--ff-only", `${this._syncRemote}/${this._syncBaseBranch}`],
+        { timeout: 10_000 },
       );
 
       if (mergeResult.status !== 0) {
