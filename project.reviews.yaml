@@ -20265,6 +20265,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-19T06:58:03.429Z
+      - _ulid: 01KM2F5GCTF3MG837PSK73T8RN
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM2E5AZX0094R0TAPVW4F5HR
+        timestamp: 2026-03-19T07:15:11.386Z
     examined_commit: bbaff772decfe825189f288ef9911d9f5696a240
     external_links: []
     lifecycle_state: closed
@@ -20294,6 +20300,14 @@ reviews:
               untouched references. Until those remaining traces are either removed or explicitly
               scoped out, the task cannot be considered done.
             created_at: 2026-03-19T06:57:37.278Z
+          - _ulid: 01KM2F5G69YRWJRS9NC1ZDKMWV
+            author: Jacob Chapel
+            body: Addressed in commit 883713aaf. Removed stale user-facing ralph wording from AGENTS.md and
+              docs/agents-eval-scenarios.md, cleaned remaining non-functional ralph comments/helper
+              text, and renamed the legacy config alias schema while keeping the legacy ralph config
+              key for backward compatibility. Verified the remaining rg hits are intentional
+              compatibility/spec fixtures only.
+            created_at: 2026-03-19T07:15:11.177Z
         kind: blocker
       - _ulid: 01KM2E5BKEHSXB3TFHTE056CND
         entries:
@@ -20330,7 +20344,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T06:58:03.428Z
     created_at: 2026-03-19T06:54:26.418Z
-    updated_at: 2026-03-19T06:58:03.429Z
+    updated_at: 2026-03-19T07:15:11.177Z
     notes: []
   - _ulid: 01KM2EHTTP6JEBECF639E3JKER
     slugs: []
