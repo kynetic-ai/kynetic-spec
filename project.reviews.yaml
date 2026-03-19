@@ -21211,6 +21211,18 @@ reviews:
         runner: manual
         created_at: 2026-03-19T07:59:16.508Z
         completed_at: 2026-03-19T07:59:16.508Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fails on pre-existing repo baseline issues unrelated to this task: 3 reference errors in
+          .kspec/modules/meta.yaml plus long-standing completeness/alignment warnings. No new
+          task-local validate regression found on the reviewed diff."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-19T07:59:17.096Z
+        completed_at: 2026-03-19T07:59:17.096Z
     events:
       - _ulid: 01KM2HDY4G4RYX25X3KFW0SEQS
         actor: Jacob Chapel
@@ -21239,6 +21251,13 @@ reviews:
           status: pass
           name: manual scope
         timestamp: 2026-03-19T07:59:16.705Z
+      - _ulid: 01KM2HP88XDPCD0CWB4Y18YQNK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-19T07:59:17.278Z
     examined_commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
     external_links: []
     lifecycle_state: open
@@ -21288,5 +21307,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-19T07:54:44.753Z
-    updated_at: 2026-03-19T07:59:16.508Z
+    updated_at: 2026-03-19T07:59:17.096Z
     notes: []
