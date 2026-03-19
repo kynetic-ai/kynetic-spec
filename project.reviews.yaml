@@ -21028,7 +21028,18 @@ reviews:
     slugs: []
     title: Review task-ralph-migration-guide cycle
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Compared a576e0c5 against dev b0d1b793: branch is 155 commits ahead and includes
+          unrelated review API/UI changes outside the submitted ralph-cleanup task."
+        name: manual scope
+        required: true
+        runner: review
+        created_at: 2026-03-19T07:46:42.455Z
+        completed_at: 2026-03-19T07:46:42.455Z
     events:
       - _ulid: 01KM2GMBHE2E3D035B1236MWR9
         actor: Jacob Chapel
@@ -21050,6 +21061,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM2GZ6HRGDF3X150YRSHVSPS
         timestamp: 2026-03-19T07:46:42.048Z
+      - _ulid: 01KM2GZ7AQW53V31GNG61SP3B7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: manual scope
+        timestamp: 2026-03-19T07:46:42.647Z
     examined_commit: a576e0c5bc4f07ffb2ad7b7cf9945f08a6ae28b4
     external_links: []
     lifecycle_state: open
@@ -21080,5 +21098,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-19T07:40:46.510Z
-    updated_at: 2026-03-19T07:46:41.849Z
+    updated_at: 2026-03-19T07:46:42.455Z
     notes: []
