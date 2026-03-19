@@ -1180,7 +1180,8 @@ async function installCoreSkillsForSetup(
       await commitIfShadow(
         ctx2.shadow,
         "skill-install-core",
-        `${installed} core skills`
+        undefined,
+        `${installed} core skills`,
       );
     }
 

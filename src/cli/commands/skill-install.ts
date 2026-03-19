@@ -510,7 +510,8 @@ export function registerSkillInstallCommands(skill: Command): void {
           await commitIfShadow(
             ctx.shadow,
             "skill-install-core",
-            `${results.filter((r) => r.action !== "skipped" && r.action !== "failed").length} core skills`
+            undefined,
+            `${results.filter((r) => r.action !== "skipped" && r.action !== "failed").length} core skills`,
           );
         }
 

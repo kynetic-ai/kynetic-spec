@@ -105,7 +105,7 @@ Examples:
 
         const item = createInboxItem(input, ctx.config?.identity?.author);
         await saveInboxItem(ctx, item);
-        await commitIfShadow(ctx.shadow, "inbox-add", undefined, text);
+        await commitIfShadow(ctx.shadow, "inbox-add", item._ulid, text);
         const inboxItems = await loadInboxItems(ctx);
         const itemRef = shortInboxRef(item, inboxItems);
 
