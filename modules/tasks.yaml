@@ -446,6 +446,50 @@ features:
           - tasks
         created: 2026-02-21T00:08:08.873Z
         notes: []
+      - _ulid: 01KM43VQ3J6FHAGE29XRZHGNRX
+        slugs:
+          - cancelled-task-dependency-cleanup
+        title: Cancelled Task Dependency Cleanup
+        type: requirement
+        description: Cancelling a task removes stale downstream dependency links and records that cleanup as
+          part of the same cancellation operation. This keeps ready semantics unchanged while
+          repairing the task graph when abandoned work is removed.
+        depends_on: []
+        implements: []
+        relates_to: []
+        tests: []
+        traits: []
+        acceptance_criteria:
+          - given: task B has depends_on including task A
+            id: ac-1
+            then: task A is removed from task B's depends_on
+            when: task A is cancelled
+          - given: multiple tasks depend on task A
+            id: ac-2
+            then: task A is removed from each downstream task's depends_on
+            when: task A is cancelled
+          - given: a downstream task had a cancelled dependency removed
+            id: ac-3
+            then: the downstream task records an audit note or activity entry explaining that the dependency was
+              cleared because the upstream task was cancelled
+            when: the cancellation operation completes
+          - given: removing a cancelled dependency leaves a downstream task with no remaining unmet dependencies
+              and no blockers
+            id: ac-4
+            then: the downstream task becomes ready under the normal ready rules
+            when: ready tasks are queried or dispatch reconciles
+          - given: task A is cancelled and no tasks depend on it
+            id: ac-5
+            then: no unrelated tasks are modified
+            when: the cancellation operation completes
+          - given: cancelling task A requires updating task A and one or more downstream tasks
+            id: ac-6
+            then: the cancellation status change, dependency cleanup, and audit notes are persisted as one
+              atomic shadow mutation so operators do not observe a partially applied cancellation
+            when: the cancellation operation completes
+        tags: []
+        created: 2026-03-19T22:36:05.106Z
+        notes: []
   - _ulid: 01JHNKA5W3TSCH000000000000
     slugs:
       - task-schema
