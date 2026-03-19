@@ -11600,7 +11600,7 @@ workspaces:
         head: 0a4f8ab9550dfed4eec1c249f3cdd926b13ee0c2
         last_seen_at: 2026-03-19T04:45:30.640Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-default-kspec-cli-path-pointing-to-nonexistent-bin-kspec-cjs-01km24pw
-  - active_role: worker
+  - active_role: null
     base_branch_point: 02a1386fbddabc850a1a31b24dc1765480bb0a53
     bootstrap:
       status: succeeded
@@ -11644,12 +11644,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T05:35:20.954Z
+      updated_at: 2026-03-19T05:35:59.587Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T05:35:20.954Z
+      updated_at: 2026-03-19T05:35:59.587Z
     integration:
       status: pending
       detail: null
@@ -11657,17 +11657,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 02a1386fbddabc850a1a31b24dc1765480bb0a53
-      updated_at: 2026-03-19T05:35:20.954Z
-    lifecycle_state: active
+      updated_at: 2026-03-19T05:35:59.587Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM26C8WX6CMY7S9XD3RJZ003"
     task_slug: dispatch-engine-cli-calls-must-not-crash-the-engine-on-failure
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T05:08:42.281Z
-      last_reconciled_at: 2026-03-19T05:35:20.954Z
+      last_reconciled_at: 2026-03-19T05:35:59.587Z
       created_at: 2026-03-19T04:45:32.059Z
-      updated_at: 2026-03-19T05:35:20.954Z
+      updated_at: 2026-03-19T05:35:59.587Z
     workspace_id: dispatch-workspace-01KM26C8WX6CMY7S9XD3RJZ003
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
