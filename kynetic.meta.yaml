@@ -7446,6 +7446,34 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-19T04:44:56.943Z
+  - _ulid: 01KM29D5465PFHYQ8YVWFD0EQ7
+    type: friction
+    content: No daemon log access from CLI. kspec serve has no log subcommand and the daemon runs as a
+      background Bun process. Debugging dispatch issues required the user to manually find and share
+      daemon stdout. A cancelled task @01KFMMMN existed for this.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-19T05:34:30.534Z
+  - _ulid: 01KM29D592DYQFP1544BWN47EC
+    type: friction
+    content: getDaemonUrl() is duplicated across agent.ts, event.ts, and schedule.ts with identical
+      implementations. Any behavioral gate (like KSPEC_NO_DAEMON) must be applied in multiple places
+      unless routed through isDaemonRunning().
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-19T05:34:30.691Z
+  - _ulid: 01KM29D5DMM10QN9BBCGD1YTJ5
+    type: success
+    content: Iterative AC refinement with user produced clean behavioral specs. Starting from
+      implementation-focused ACs, user feedback drove removal of implementation details, splitting
+      of concerns (separate AC for serve command exemption), and precise wording (persistent errors
+      vs file watcher detects).
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-19T05:34:30.836Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
