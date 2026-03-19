@@ -19031,6 +19031,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-19T04:55:15.501Z
+      - _ulid: 01KM27G94HAH4RQ3V3RBT09GTF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM27G8ZB9ZPDSG5CN3X8DVT8
+        timestamp: 2026-03-19T05:01:15.793Z
     examined_commit: 32fd0963c67aa3a50ecfb6b21f84c544a96bf7e1
     external_links: []
     lifecycle_state: open
@@ -19040,8 +19047,36 @@ reviews:
       content_hash: ""
       ref: "@01KM26C8WX6CMY7S9XD3RJZ003"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM27G8ZB9ZPDSG5CN3X8DVT8
+        entries:
+          - _ulid: 01KM27G8ZBX8F0ZEG4MZYHSG87
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: src/agent-runtime/dispatch.ts, tests/agent-dispatch-engine.test.ts,
+              tests/mocks/kspec-capture-mock.cjs, scripts/test.cjs, package.json
+
+              Commands run: git diff --stat, git diff, kspec task get, kspec review for-task, rg AC
+              annotations, kspec validate, npm test, npm test --
+              tests/agent-dispatch-engine.test.ts, npm test -- tests/agent-dispatch-engine.test.ts
+              -t "emits started before terminal invocation events even for quiet success and early
+              failure", npm test -- tests/agent-dispatch-engine.test.ts -t "does not throw when
+              dispatch workspace blocking cannot be executed successfully|continues recovery
+              blocking when adding the workspace failure note also fails}"
+
+              Claims verified: verified the new recovery wrapper is only applied in the
+              workspace-provisioning recovery path; verified both new recovery tests pass in
+              isolation; verified full npm test is red on this snapshot
+
+              Categories searched: correctness (no task-local bug found), error handling (recovery
+              path hardened as intended), test quality (new tests exercise both note and block
+              failure paths), integration (snapshot still fails required test gate)
+            created_at: 2026-03-19T05:01:15.627Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-19T04:55:00.791Z
-    updated_at: 2026-03-19T04:55:15.277Z
+    updated_at: 2026-03-19T05:01:15.627Z
     notes: []
