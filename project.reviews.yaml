@@ -22632,7 +22632,26 @@ reviews:
     slugs: []
     title: Review task-route-dispatch-sync-through-targeting-path (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+          tests/dispatch-target-sync.test.ts, tests/dispatch-branch-push-lifecycle.test.ts. Commands
+          run: git diff --stat/name-only/unified, kspec task get, kspec item get
+          @dispatch-remote-branch-sync, kspec review get prior review, grep AC annotations, kspec
+          validate, npm test, npm test -- tests/dispatch-target-sync.test.ts
+          tests/dispatch-branch-push-lifecycle.test.ts. Claims verified: previous blocker fixed by
+          confirming _syncTargetBranch still passes 30s fetch and 10s ff-only merge timeouts through
+          runDispatchIntegrationTargetGit; integration-target pushes now reject unsafe shared
+          checkout with actionable guidance. Categories searched: correctness, edge cases, error
+          handling, test quality, integration; no blocking findings."
+        name: review-evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-03-19T23:31:57.872Z
+        completed_at: 2026-03-19T23:31:57.872Z
     events:
       - _ulid: 01KM46SQDT8A1EXQC6JD43GHCQ
         actor: Jacob Chapel
@@ -22647,6 +22666,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-19T23:28:01.593Z
+      - _ulid: 01KM4721HJWEZ9XB0RK3G3MWNP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-19T23:31:58.130Z
     examined_commit: fadb999f740f18d9877355ad928dc71183a41c15
     external_links: []
     lifecycle_state: open
@@ -22659,5 +22685,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-19T23:27:25.626Z
-    updated_at: 2026-03-19T23:28:01.320Z
+    updated_at: 2026-03-19T23:31:57.872Z
     notes: []
