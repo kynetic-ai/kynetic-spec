@@ -18836,7 +18836,18 @@ reviews:
     slugs: []
     title: Review fix-default-kspec-cli-path-pointing-to-nonexistent-bin-kspec-cjs
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "env -u KSPEC_DISPATCH_CANONICAL_HEAD npm test --
+          tests/agent-invocation-lifecycle.test.ts: 49/49 passed"
+        name: agent-invocation-lifecycle
+        required: true
+        runner: npm
+        created_at: 2026-03-19T04:50:01.554Z
+        completed_at: 2026-03-19T04:50:01.554Z
     events:
       - _ulid: 01KM26MSAEKSSCYA3YMQPPY09K
         actor: Jacob Chapel
@@ -18851,6 +18862,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-19T04:46:40.838Z
+      - _ulid: 01KM26VQ0BYC88ZZXP4E85C2XD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: agent-invocation-lifecycle
+        timestamp: 2026-03-19T04:50:01.867Z
     examined_commit: 0a4f8ab9550dfed4eec1c249f3cdd926b13ee0c2
     external_links: []
     lifecycle_state: open
@@ -18863,5 +18881,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-19T04:46:14.863Z
-    updated_at: 2026-03-19T04:46:40.636Z
+    updated_at: 2026-03-19T04:50:01.554Z
     notes: []
