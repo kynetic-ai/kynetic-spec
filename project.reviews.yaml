@@ -21197,7 +21197,20 @@ reviews:
     slugs: []
     title: Review task-ralph-migration-guide
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Reviewed current origin/dev..HEAD surface (29 files, 231 insertions/203 deletions). Diff
+          is scoped to ralph cleanup: removed ralph CLI stub, switched runtime config shape to agent
+          with legacy alias support, updated docs/templates/tests, and no unrelated daemon/UI drift
+          remains."
+        name: manual scope
+        required: true
+        runner: manual
+        created_at: 2026-03-19T07:59:16.508Z
+        completed_at: 2026-03-19T07:59:16.508Z
     events:
       - _ulid: 01KM2HDY4G4RYX25X3KFW0SEQS
         actor: Jacob Chapel
@@ -21219,6 +21232,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM2HN6PWDG8QWGV6QD6CGPDA
         timestamp: 2026-03-19T07:58:43.110Z
+      - _ulid: 01KM2HP7Q1NW5W8BM3TB38J2AM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: manual scope
+        timestamp: 2026-03-19T07:59:16.705Z
     examined_commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
     external_links: []
     lifecycle_state: open
@@ -21268,5 +21288,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-19T07:54:44.753Z
-    updated_at: 2026-03-19T07:58:42.908Z
+    updated_at: 2026-03-19T07:59:16.508Z
     notes: []
