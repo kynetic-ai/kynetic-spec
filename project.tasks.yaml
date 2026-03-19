@@ -108492,8 +108492,12 @@
   spec_ref: "@agent-dispatch-engine"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev as b90454547ad1951c1f8cdd0677196add75195667 after review approval.
+    Verified npm test passes (286 files, 6514 tests). Dispatch workspace recovery CLI failures now
+    log warnings instead of crashing the engine, and dispatch-review test coverage was stabilized
+    for inherited dispatch env state and timing sensitivity.
   depends_on: []
   context: []
   priority: 1
@@ -108514,6 +108518,7 @@
   created_at: 2026-03-19T04:41:35.901Z
   started_at: 2026-03-19T05:35:22.928Z
   submitted_at: 2026-03-19T05:35:33.639Z
+  completed_at: 2026-03-19T05:41:08.619Z
   notes:
     - _ulid: 01KM26TGC1G206Q5308FT7Q88Z
       content: Made workspace-provisioning recovery CLI calls best-effort in
