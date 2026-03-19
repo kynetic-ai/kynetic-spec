@@ -109104,7 +109104,15 @@
   session_id: 01KM455W1K1KYHBQTY9NZB8Y4R
   created_at: 2026-03-19T21:22:12.746Z
   started_at: 2026-03-19T22:59:35.458Z
-  notes: []
+  notes:
+    - _ulid: 01KM45BYETZXBZM8HWJRY7MX77
+      content: Routed integration-target sync and push commands through a shared workspace-owned targeting
+        helper so fetch/merge/push all resolve the dispatch mutation surface the same way. Added a
+        push-side regression test for wrong-branch shared checkout refusal to prove the isolated
+        targeting path is enforced beyond sync.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T23:02:25.498Z
   todos: []
   automation: eligible
 - _ulid: 01KM3ZMF9C5B3JEDTE4AR74K46
