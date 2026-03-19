@@ -183,6 +183,8 @@ describe('Shadow Branch', () => {
       ['item-add', 'item-123', undefined, 'Add Item: @item-123'],
       ['item-set', 'item-123', undefined, 'Update Item: @item-123'],
       ['item-delete', 'item-123', undefined, 'Delete Item: @item-123'],
+      ['link-add', 'item-123', 'implements @item-456', 'Add Link: @item-123 - implements @item-456'],
+      ['link-remove', 'item-123', 'implements, depends_on @item-456', 'Remove Link: @item-123 - implements, depends_on @item-456'],
       ['item-trait-add', 'item-123', undefined, 'Add Item Trait: @item-123'],
       ['item-trait-remove', 'item-123', undefined, 'Remove Item Trait: @item-123'],
       ['item-note', 'item-123', undefined, 'Note Item: @item-123'],
