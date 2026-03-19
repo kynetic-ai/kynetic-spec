@@ -18723,6 +18723,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-19T04:34:27.746Z
+      - _ulid: 01KM26EJJX28WXFY1PXSH08A8D
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM26EJCCAC3EJ4ZVZ7CXJQWE
+        timestamp: 2026-03-19T04:42:51.358Z
     examined_commit: fb1c18c7b0784d61a8710960326b0117145b8e95
     external_links: []
     lifecycle_state: open
@@ -18732,8 +18739,33 @@ reviews:
       content_hash: ""
       ref: "@01KM21D00SD4D9WW2G1BFC1YB0"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM26EJCCAC3EJ4ZVZ7CXJQWE
+        entries:
+          - _ulid: 01KM26EJCCEP6HAWZMJ9DV3YVB
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/cli/commands/review.ts, tests/review-cli.test.ts,
+              tests/agent-dispatch-engine.test.ts
+
+              Commands run: git diff base...head, git log -- src/cli/commands/review.ts, kspec task
+              get, kspec item get, kspec validate, npm test, env-cleared targeted npm test on
+              review-cli and agent-dispatch-engine
+
+              Claims verified: parseVersionFromOptions had zero remaining references; active review
+              check path derives applies_to_version via extractSubjectVersion(found.subject); base
+              dev already defaulted examined_commit from KSPEC_DISPATCH_CANONICAL_HEAD, so that
+              failing assertion is pre-existing dispatch-env sensitivity
+
+              Categories searched: correctness, dead-code reachability, CLI behavior/spec alignment,
+              test quality, environment sensitivity, integration risk
+
+              Result: no task-scoped findings in this snapshot
+            created_at: 2026-03-19T04:42:51.148Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-19T04:34:12.890Z
-    updated_at: 2026-03-19T04:34:27.527Z
+    updated_at: 2026-03-19T04:42:51.148Z
     notes: []
