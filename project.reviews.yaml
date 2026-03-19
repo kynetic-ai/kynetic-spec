@@ -22513,6 +22513,20 @@ reviews:
         runner: npm
         created_at: 2026-03-19T23:25:44.360Z
         completed_at: 2026-03-19T23:25:44.360Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- task-cancel-dependency-cleanup dispatch-target-sync agent-dispatch-engine
+          passed. npm test -- activity-display review-per-cycle-lifecycle also passed when rerun in
+          isolation. Verified cancellation cleanup AC coverage is present in
+          tests/task-cancel-dependency-cleanup.test.ts and the new cross-file atomic regression
+          passes.
+        name: targeted regressions
+        required: false
+        runner: npm
+        created_at: 2026-03-19T23:25:45.221Z
+        completed_at: 2026-03-19T23:25:45.221Z
     events:
       - _ulid: 01KM4687QD2RFBJWXMJRM578YS
         actor: Jacob Chapel
@@ -22548,6 +22562,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-19T23:25:44.641Z
+      - _ulid: 01KM46PNM0Y0YXBZ8V9TWX4PE6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted regressions
+        timestamp: 2026-03-19T23:25:45.472Z
     examined_commit: b167ae34f9dbeed3ee5ae740d478c06917a1188b
     external_links: []
     lifecycle_state: open
@@ -22582,5 +22603,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-19T23:17:52.493Z
-    updated_at: 2026-03-19T23:25:44.360Z
+    updated_at: 2026-03-19T23:25:45.221Z
     notes: []
