@@ -11725,3 +11725,79 @@ workspaces:
         head: cae35ae3ffd1e6af9095ae533906687eaef9b211
         last_seen_at: 2026-03-18T17:09:17.141Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-triggers-01kkzpw7
+  - active_role: null
+    base_branch_point: bb5471acddfb9905490cdced154f7a52a26a0fdc
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/remove-dead-parseversionfromoptions-function/01km21d0
+    canonical_branch_head: bb5471acddfb9905490cdced154f7a52a26a0fdc
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-19T03:52:04.161Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-19T03:52:04.161Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: bb5471acddfb9905490cdced154f7a52a26a0fdc
+      updated_at: 2026-03-19T03:52:04.161Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KM21D00SD4D9WW2G1BFC1YB0"
+    task_slug: remove-dead-parseversionfromoptions-function
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-19T03:52:04.161Z
+      created_at: 2026-03-19T03:52:04.161Z
+      updated_at: 2026-03-19T03:52:04.161Z
+    workspace_id: dispatch-workspace-01KM21D00SD4D9WW2G1BFC1YB0
+    worktree_root: /home/chapel/Projects/kynetic-spec/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/remove-dead-parseversionfromoptions-function/01km21d0
+        head: bb5471acddfb9905490cdced154f7a52a26a0fdc
+        last_seen_at: 2026-03-19T03:52:04.161Z
+        path: /home/chapel/Projects/kynetic-spec/.kspec-worktrees/remove-dead-parseversionfromoptions-function-01km21d0
