@@ -23628,3 +23628,455 @@ plans:
           priority to all tasks. Addressed review findings F1-F4, F7.
         author: "@claude"
         created_at: 2026-03-18T14:30:23.173Z
+  - _ulid: 01KM3KX3MH35QC7TR0PEVF5WY7
+    slugs:
+      - plan-dispatch-integration-checkout-boundaries
+    title: Dispatch Integration Checkout Boundaries
+    content: |
+      # Dispatch Integration Checkout Boundaries
+
+      This plan hardens how dispatch owns and mutates the integration branch.
+      The immediate trigger is a stale-checkout failure mode: the integration
+      branch ref can advance while a checked-out tree and index remain on an
+      older commit, which surfaces as a large staged diff in a human checkout.
+
+      The intended operating model after this plan:
+
+      - humans keep their normal checkout on `main`
+      - dispatch owns a separate integration checkout attached to `dev`
+      - worker and reviewer task worktrees remain isolated under the existing
+        dispatch worktree root
+      - promotion from `dev` to `main` remains an explicit human action
+
+      This plan focuses on the behavioral contract for checkout ownership,
+      sanitized git execution, and safe repair of stale integration checkouts.
+      It does not adopt a bare integration repo in this iteration; that can be
+      revisited later if the normal-checkout model proves insufficient.
+
+      ## Context
+
+      The current remote sync and integration push logic assumes that running
+      git commands with `cwd = projectDir` is enough to target the intended
+      checkout. That is not a strong enough invariant when dispatch is started
+      from a linked worktree or when different codepaths move the integration
+      branch ref through different mechanisms. The result is avoidable drift:
+      the integration branch tip changes, but the checkout attached to that
+      branch is not refreshed.
+
+      The project already has the right high-level boundaries:
+
+      - worker/reviewer code execution happens in isolated task worktrees
+      - dispatch owns branch sync and integration push behavior
+      - humans decide when work graduates from `dev` to `main`
+
+      What is missing is an explicit contract for the repository instance that
+      dispatch is allowed to mutate and the git execution rules that keep that
+      instance coherent.
+
+      ## Design Decisions
+
+      1. **Dispatch owns one explicit integration checkout.** Branch-mutating
+         operations against the integration target run only in a dispatcher-owned
+         checkout, not in whichever checkout happened to launch the daemon.
+      2. **Normal checkout first, bare repo deferred.** This plan adopts a
+         dispatcher-owned normal checkout rather than a bare repo. A normal
+         checkout keeps sync, merge, drift repair, and operational debugging
+         simpler while still separating dispatch ownership from human checkouts.
+      3. **Git execution context is centralized and sanitized.** Integration
+         branch operations must use one helper that strips inherited `GIT_*`
+         location variables and always targets the resolved integration checkout.
+      4. **Auto-repair is safe-first.** Dispatch may repair a stale integration
+         checkout only when the checkout is otherwise clean. If repair would
+         overwrite human or unknown local changes, dispatch must refuse, surface
+         actionable guidance, and avoid destructive resets.
+
+      ## Specs
+
+      ```yaml
+      - title: Dispatch Integration Repository Ownership Model
+        slug: dispatch-integration-repository-ownership
+        type: decision
+        parent: "@dispatch-remote-branch-sync"
+        description: |
+          Defines which local repository instance dispatch is allowed to mutate
+          when synchronizing and publishing the integration target branch.
+
+          Dispatch owns a dedicated integration checkout for branch-mutating
+          operations. Human checkouts and task worktrees may inspect the same
+          repository history, but they are not the place where dispatch
+          fetches, fast-forwards, repairs drift, or pushes the integration
+          target.
+
+          This plan intentionally keeps the integration repository as a normal
+          checkout rather than a bare repo. A bare repo remains a valid future
+          direction, but it is deferred so the runtime can first establish
+          strong checkout ownership and repair semantics with lower operational
+          complexity.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              Dispatch is configured with an integration target branch and at
+              least one worker or reviewer worktree exists
+            when: |
+              The dispatcher runs a branch-mutating operation such as target
+              sync, drift repair, or integration push
+            then: |
+              The operation runs only against the resolved dispatcher-owned
+              integration checkout, never against a worker worktree, reviewer
+              snapshot, or whichever checkout launched the daemon by accident
+          - id: ac-2
+            given: |
+              A human keeps a normal checkout on `main` while dispatch owns a
+              separate checkout on `dev`
+            when: |
+              The dispatcher syncs or publishes `dev`
+            then: |
+              The human checkout remains untouched; branch mutation is isolated
+              to the dispatch-owned checkout
+          - id: ac-3
+            given: |
+              The dispatcher resolves its repository ownership model for
+              integration branch operations
+            when: |
+              The plan is applied
+            then: |
+              A dedicated normal checkout is the supported model for this
+              iteration; a bare integration repo is explicitly out of scope
+              and deferred rather than implied by accident
+
+      - title: Dispatch Integration Checkout Contract
+        slug: dispatch-integration-checkout
+        type: feature
+        parent: "@dispatch-workspace-configuration"
+        description: |
+          kspec.config.yaml can name a dispatcher-owned integration checkout
+          used for integration branch fetch, fast-forward sync, repair, and
+          push operations. This separates dispatch branch mutation from human
+          checkouts without changing the existing isolated task worktree model.
+        traits:
+          - trait-error-guidance
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              kspec.config.yaml sets dispatch.integration_checkout to a
+              relative or absolute path
+            when: |
+              The dispatcher resolves the integration checkout
+            then: |
+              Relative paths resolve from the project root, absolute paths are
+              used as-is, and the resolved path becomes the sole checkout used
+              for integration branch mutation
+          - id: ac-2
+            given: |
+              dispatch.integration_checkout is not configured
+            when: |
+              The dispatcher resolves its integration checkout
+            then: |
+              The existing project root checkout remains the integration
+              checkout for backward compatibility
+          - id: ac-3
+            given: |
+              The configured integration checkout path is missing, is not a
+              git checkout for the same repository, or is otherwise unusable
+            when: |
+              Dispatch starts or performs an integration branch operation
+            then: |
+              Dispatch fails with actionable guidance naming the resolved path,
+              the integration target branch, and the repair action instead of
+              silently falling back to another checkout
+          - id: ac-4
+            given: |
+              The integration checkout is resolved successfully
+            when: |
+              Task workspaces are provisioned under dispatch.worktree_root
+            then: |
+              Worker and reviewer worktrees remain distinct from the
+              integration checkout and are never repurposed as the integration
+              branch mutation surface
+
+      - title: Dispatch Git Execution Context Contract
+        slug: dispatch-git-execution-context
+        type: requirement
+        parent: "@dispatch-integration-checkout"
+        description: |
+          All integration-branch git operations run through a centralized
+          helper that targets the resolved integration checkout explicitly and
+          strips inherited git location environment variables. This prevents a
+          worker worktree or leaked shell state from redirecting integration
+          branch operations to the wrong gitdir, index, or working tree.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              Dispatch is about to run an integration-branch git command such
+              as fetch, merge --ff-only, push, status, rev-parse, or drift
+              repair
+            when: |
+              The command is spawned
+            then: |
+              The command is executed through one centralized helper using the
+              resolved integration checkout path rather than ad hoc spawnSync
+              calls with mixed cwd or environment logic
+          - id: ac-2
+            given: |
+              Dispatch inherits environment variables from a shell or worktree
+              context
+            when: |
+              The integration git helper builds the child process environment
+            then: |
+              The helper removes git location variables that can redirect repo
+              selection or index state, including GIT_DIR, GIT_WORK_TREE,
+              GIT_COMMON_DIR, and GIT_INDEX_FILE, before launching git
+          - id: ac-3
+            given: |
+              Dispatch was started from a linked worktree or from a cwd that
+              is not the integration checkout
+            when: |
+              The integration git helper runs
+            then: |
+              The integration branch operation still targets the resolved
+              integration checkout deterministically and does not mutate the
+              launching worktree by accident
+          - id: ac-4
+            given: |
+              The integration git helper cannot execute because the checkout is
+              missing or invalid
+            when: |
+              A sync or push operation is attempted
+            then: |
+              The surfaced error names the targeted checkout path and points to
+              dispatch.integration_checkout or checkout repair as the next
+              operator action
+
+      - title: Dispatch Integration Checkout Drift Detection and Repair
+        slug: dispatch-integration-checkout-drift-repair
+        type: requirement
+        parent: "@dispatch-integration-checkout"
+        description: |
+          Dispatch detects when the integration checkout's branch ref and
+          checked-out tree have drifted apart and repairs that state when it is
+          safe to do so. The goal is to prevent the "stale tree appears as a
+          giant staged diff" failure mode without silently discarding human
+          work.
+        traits:
+          - trait-error-guidance
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              Dispatch advances the integration target branch through a sync or
+              another dispatcher-owned branch mutation
+            when: |
+              The operation completes successfully
+            then: |
+              The integration checkout's branch ref, index, and working tree
+              all reflect the same commit; the checkout is not left in a
+              staged-only drift state
+          - id: ac-2
+            given: |
+              The integration target branch ref points at a newer commit while
+              the integration checkout's index and working tree still reflect
+              an older commit, and the checkout is otherwise clean
+            when: |
+              Dispatch evaluates integration checkout health during startup,
+              sync, or an explicit repair path
+            then: |
+              Dispatch refreshes the checkout to the current branch tip using a
+              non-destructive repair path suitable for a clean checkout and
+              logs that the drift was repaired
+          - id: ac-3
+            given: |
+              The integration checkout has local modifications or staged
+              changes that would be overwritten by an automatic repair
+            when: |
+              Dispatch detects branch drift
+            then: |
+              Dispatch refuses automatic destructive repair, marks the checkout
+              unhealthy or degraded with a specific reason, and surfaces
+              actionable guidance instead of silently hard-resetting
+          - id: ac-4
+            given: |
+              The integration checkout is unhealthy because of unrepaired
+              branch drift
+            when: |
+              Dispatch status or health is queried
+            then: |
+              The reported state includes the integration checkout path, target
+              branch, drift reason, and recommended next action
+      ```
+
+      ## Tasks
+
+      derive_from_specs: false
+
+      ```yaml
+      - title: Design dispatch integration checkout ownership and config surface
+        slug: task-design-dispatch-integration-checkout-model
+        priority: 1
+        tags: [dispatch, config, design]
+        spec_ref: "@dispatch-integration-repository-ownership"
+        description: |
+          What: Define the operator-facing model for a dispatch-owned
+          integration checkout, including how dispatch.integration_checkout
+          resolves, how it relates to dispatch.worktree_root, and why a normal
+          checkout is the chosen design for this iteration.
+
+          Why: The runtime currently has ambiguous checkout ownership. The
+          implementation needs a crisp behavioral contract before code changes
+          start wiring paths and helper functions through the sync path.
+
+          How: Review the existing dispatch workspace and remote sync specs,
+          align the new config surface with current project-root resolution,
+          and document the explicit non-goal that bare integration repos are
+          deferred for now.
+
+      - title: Implement integration checkout resolution and validation
+        slug: task-implement-dispatch-integration-checkout-config
+        priority: 1
+        tags: [dispatch, config]
+        spec_ref: "@dispatch-integration-checkout"
+        depends_on:
+          - "@task-design-dispatch-integration-checkout-model"
+        description: |
+          What: Extend config parsing and dispatch startup to resolve
+          dispatch.integration_checkout, validate that it points to a usable
+          checkout of the same repository, and thread the resolved path into
+          runtime state.
+
+          Why: Dispatch cannot own a distinct integration surface until the
+          path is first-class configuration with explicit validation and error
+          handling.
+
+          How: Reuse existing project-root and worktree resolution patterns,
+          fail early with actionable guidance when the path is wrong, and keep
+          projectDir fallback behavior for backward compatibility when the new
+          field is unset.
+
+      - title: Centralize sanitized git execution for integration branch operations
+        slug: task-centralize-dispatch-git-execution-context
+        priority: 1
+        tags: [dispatch, git, runtime]
+        spec_ref: "@dispatch-git-execution-context"
+        depends_on:
+          - "@task-implement-dispatch-integration-checkout-config"
+        description: |
+          What: Introduce one helper for integration-branch git commands and
+          route fetch, merge, push, status, and branch-inspection operations
+          through it.
+
+          Why: The current mix of direct spawnSync calls and partial env
+          overrides is fragile. A single helper is the only reliable way to
+          guarantee that integration-branch commands always target the
+          dispatch-owned checkout.
+
+          How: Use explicit checkout targeting and strip inherited git
+          location variables such as GIT_DIR, GIT_WORK_TREE, GIT_COMMON_DIR,
+          and GIT_INDEX_FILE before invoking git. Replace ad hoc integration
+          sync and push command sites with the helper.
+
+      - title: Route target sync and integration push behavior through the owned checkout
+        slug: task-route-dispatch-sync-through-integration-checkout
+        priority: 1
+        tags: [dispatch, sync, git]
+        spec_ref: "@dispatch-remote-branch-sync"
+        depends_on:
+          - "@task-centralize-dispatch-git-execution-context"
+        description: |
+          What: Update target sync and integration-target push flows so they
+          operate only through the resolved integration checkout and preserve
+          the existing fast-forward-only and non-fatal push semantics.
+
+          Why: Config resolution and git helper work are not enough unless the
+          actual sync and push paths stop assuming that projectDir or launcher
+          cwd is the mutable integration surface.
+
+          How: Audit remote sync start-up, before-provision sync, periodic
+          sync, and post-merge push paths. Make them read and mutate the
+          integration branch only through the new helper and resolved checkout
+          state.
+
+      - title: Implement drift detection and safe integration checkout repair
+        slug: task-implement-dispatch-integration-checkout-drift-repair
+        priority: 1
+        tags: [dispatch, repair, health]
+        spec_ref: "@dispatch-integration-checkout-drift-repair"
+        depends_on:
+          - "@task-centralize-dispatch-git-execution-context"
+          - "@task-route-dispatch-sync-through-integration-checkout"
+        description: |
+          What: Detect staged-only drift between the integration branch ref and
+          the integration checkout tree, repair clean checkouts automatically,
+          and surface degraded or unhealthy state when repair would overwrite
+          local changes.
+
+          Why: This is the user-visible failure mode that triggered the plan.
+          Dispatch needs explicit behavioral handling for stale integration
+          checkouts instead of leaving operators to notice a giant staged diff
+          after the fact.
+
+          How: Define a checkout-health probe, implement safe repair for clean
+          drifted checkouts, and route unsafe cases into existing degraded or
+          health-reporting surfaces with precise operator guidance.
+
+      - title: Test dedicated checkout ownership, env isolation, and drift recovery
+        slug: task-test-dispatch-integration-checkout-boundaries
+        priority: 1
+        tags: [dispatch, test, git]
+        depends_on:
+          - "@task-implement-dispatch-integration-checkout-config"
+          - "@task-centralize-dispatch-git-execution-context"
+          - "@task-route-dispatch-sync-through-integration-checkout"
+          - "@task-implement-dispatch-integration-checkout-drift-repair"
+        description: |
+          What: Add end-to-end and unit coverage for dedicated integration
+          checkout config, worktree-launched dispatch processes, sanitized git
+          execution context, clean drift auto-repair, and unsafe drift refusal.
+
+          Why: These behaviors are easy to regress because they depend on git
+          environment, multiple checkouts, and cross-checkout state changes.
+          The plan should not rely on manual operator observation to know it
+          still works.
+
+          How: Extend the existing dispatch target sync and degraded-state
+          test fixtures to model a human checkout on main, a dispatch-owned
+          checkout on dev, leaked git env, and out-of-band branch ref
+          movement.
+      ```
+
+      ## Implementation Notes
+
+      ### Intended operator model
+
+      - Human checkout stays on `main`
+      - Dispatch-owned integration checkout stays on `dev`
+      - Worker and reviewer worktrees remain under `dispatch.worktree_root`
+      - Promotion from `dev` to `main` remains a deliberate human action
+
+      ### Why not a bare repo in this plan
+
+      Bare repos are a plausible future improvement, but they create a second
+      class of repository behavior right when the runtime still lacks an
+      explicit contract for checkout ownership and repair. A normal
+      integration checkout lets dispatch establish:
+
+      - explicit path ownership
+      - coherent ref/index/worktree repair behavior
+      - easier operator inspection when something goes wrong
+      - simpler reuse of existing fetch / merge --ff-only / push logic
+
+      If this normal-checkout model later proves too constraining, a follow-up
+      plan can replace the integration checkout with a bare repo and keep the
+      same ownership and git-helper contracts.
+
+      ### Key runtime boundary
+
+      Task worktrees are for task code execution. The integration checkout is
+      for branch mutation on the integration target. Those are different
+      surfaces and should stay different.
+    status: draft
+    approved_at: null
+    derived_specs: []
+    derived_tasks: []
+    module_ref: "@agent-integration"
+    source_path: /tmp/dispatch-integration-checkout-boundaries-plan.md
+    created_at: 2026-03-19T17:57:13.489Z
+    completed_at: null
+    notes: []
