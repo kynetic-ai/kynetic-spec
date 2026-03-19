@@ -21829,9 +21829,25 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-19T21:10:23.665Z
+      - _ulid: 01KM3YZ2QTXJCA7SY0NM9TD4A1
+        actor: jacob.chapel@example.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-19T21:10:32.443Z
+      - _ulid: 01KM3YZ2QVZGSR2TY9B4RYC26B
+        actor: jacob.chapel@example.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-19T21:10:32.443Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: plan
@@ -21839,7 +21855,14 @@ reviews:
       ref: "@plan-dispatch-integration-checkout-boundaries"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: jacob.chapel@example.com
+        role: reviewer
+        created_at: 2026-03-19T21:10:32.442Z
     created_at: 2026-03-19T21:10:04.156Z
-    updated_at: 2026-03-19T21:10:23.460Z
+    updated_at: 2026-03-19T21:10:32.443Z
     notes: []
