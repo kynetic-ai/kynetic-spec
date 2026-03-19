@@ -13810,9 +13810,20 @@ runs:
     started_at: 2026-03-13T16:24:41.786Z
   - _ulid: 01KM46K1F19D0ARHJRZJH72QK7
     status: active
-    current_step: 0
+    current_step: 1
     initiated_by: Jacob Chapel
-    step_results: []
+    step_results:
+      - status: completed
+        step_index: 0
+        started_at: 2026-03-19T23:23:46.529Z
+        completed_at: 2026-03-19T23:26:03.224Z
+        notes: "Worked well: moving the rule from @ui-plans-view to a new shared requirement under
+          @plan-support kept the behavior definition cross-surface and avoided overloading a UI-only
+          spec."
+      - status: completed
+        step_index: 1
+        started_at: 2026-03-19T23:26:03.224Z
+        completed_at: 2026-03-19T23:26:03.224Z
     total_steps: 6
     workflow_ref: "@01KFKS5NT2T98M70QQ4FZB2VTW"
     started_at: 2026-03-19T23:23:46.529Z
