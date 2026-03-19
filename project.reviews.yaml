@@ -21870,7 +21870,17 @@ reviews:
     slugs: []
     title: Review derived output for dispatch shared-checkout plan
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repo-wide validation failures are unrelated to the derived plan output
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-19T21:23:15.664Z
+        completed_at: 2026-03-19T21:23:15.664Z
     events:
       - _ulid: 01KM3ZNA7FTCZ42YST9K6S5AJK
         actor: Jacob Chapel
@@ -21885,6 +21895,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-19T21:22:51.018Z
+      - _ulid: 01KM3ZPC90ZHFVQHS6YE2CV8TD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-19T21:23:15.872Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -21897,5 +21914,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-19T21:22:41.007Z
-    updated_at: 2026-03-19T21:22:50.776Z
+    updated_at: 2026-03-19T21:23:15.664Z
     notes: []
