@@ -19735,6 +19735,13 @@ reviews:
             content_hash: ""
           decision: comment
         timestamp: 2026-03-19T06:08:01.719Z
+      - _ulid: 01KM2BAJ84F78JEGFA8PB1DXKW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM2BAJ2QXM4A3D5T174KYEWS
+        timestamp: 2026-03-19T06:08:02.820Z
     examined_commit: c6a9f65fc8ec1d98cd25e81b6c318b02a4b6392b
     external_links: []
     lifecycle_state: open
@@ -19744,7 +19751,36 @@ reviews:
       content_hash: ""
       ref: "@01KM26DB8RCM6D2T1SYZGZJR9X"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM2BAJ2QXM4A3D5T174KYEWS
+        entries:
+          - _ulid: 01KM2BAJ2RPWV88QMQ5JBT3QY0
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/agent-runtime/workspace.ts, src/parser/dispatch-workspaces.ts,
+              tests/dispatch-workspace-config.test.ts, tests/dispatch-workspace-registry.test.ts
+
+              Commands run: git diff --stat/dev diff, kspec task get, kspec item get, kspec review
+              get/for-task, kspec validate, npm test -- tests/dispatch-workspace-config.test.ts
+              tests/dispatch-workspace-registry.test.ts, npm test --
+              tests/agent-dispatch-engine.test.ts, npm test -- tests/review-cli.test.ts, env -u
+              KSPEC_DISPATCH_CANONICAL_HEAD npm test -- tests/review-cli.test.ts, npm test, env -u
+              KSPEC_DISPATCH_CANONICAL_HEAD npm test
+
+              Claims verified: previous blocker resolved by preserving global single-open-workspace
+              invariant in parser/dispatch-workspaces.ts while moving foreign-checkout rejection
+              into provisioning; ac-8 behavior covered by deterministic foreign-record and
+              foreign-worktree tests
+
+              Categories searched: correctness (no task-local regression found), edge cases (foreign
+              registry/worktree ownership), error handling (actionable DispatchWorkspaceError
+              guidance), test quality (new assertions prove rejection paths and registry
+              non-mutation), integration (full-suite gate remains blocked by unrelated/pre-existing
+              failures)
+            created_at: 2026-03-19T06:08:02.648Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -19754,5 +19790,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-19T06:08:01.719Z
     created_at: 2026-03-19T05:55:11.954Z
-    updated_at: 2026-03-19T06:08:01.719Z
+    updated_at: 2026-03-19T06:08:02.648Z
     notes: []
