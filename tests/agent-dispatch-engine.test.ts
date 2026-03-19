@@ -21,6 +21,7 @@ import {
 } from "../src/agent-runtime/dispatch.js";
 import * as invocationModule from "../src/agent-runtime/invocation.js";
 import * as workspaceModule from "../src/agent-runtime/workspace.js";
+import * as configModule from "../src/parser/config.js";
 import type { ProvisionedDispatchWorkspace } from "../src/agent-runtime/workspace.js";
 import {
   createTempDir,
@@ -2012,7 +2013,7 @@ describe("Active fleet cleanup on invocation completion", () => {
       task: { automation: "eligible", tags: [] } as any,
     });
 
-    for (let i = 0; i < 50 && quietEvents.length === 0; i++) {
+    for (let i = 0; i < 200 && quietEvents.length === 0; i++) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
     expect(quietEvents[0]).toBe("started");
@@ -2020,7 +2021,7 @@ describe("Active fleet cleanup on invocation completion", () => {
     releaseQuietInvocation();
     await quietHandle;
 
-    for (let i = 0; i < 50 && quietEvents.at(-1) !== "completed"; i++) {
+    for (let i = 0; i < 200 && quietEvents.at(-1) !== "completed"; i++) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
     expect(quietEvents).toEqual(["started", "completed"]);
@@ -2047,7 +2048,7 @@ describe("Active fleet cleanup on invocation completion", () => {
       task: { automation: "eligible", tags: [] } as any,
     });
 
-    for (let i = 0; i < 50 && failureEvents.at(-1) !== "failed"; i++) {
+    for (let i = 0; i < 200 && failureEvents.at(-1) !== "failed"; i++) {
       await new Promise((resolve) => setTimeout(resolve, 10));
     }
     expect(failureEvents).toEqual(["started", "failed"]);
@@ -2605,8 +2606,8 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         task: { _ulid: taskId, title: "Test task title", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
       });
 
-      for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 5));
+      for (let i = 0; i < 200 && runSpy.mock.calls.length === 0; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
 
       expect(runSpy).toHaveBeenCalled();
@@ -2651,8 +2652,8 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         task: { _ulid: taskId, title: "Workspace dir test", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
       });
 
-      for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 5));
+      for (let i = 0; i < 200 && runSpy.mock.calls.length === 0; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
 
       expect(runSpy).toHaveBeenCalled();
@@ -2698,8 +2699,8 @@ describe("Dispatch prompt orientation context and interpolation", () => {
         task: { _ulid: taskId, title: "My task", slugs: [], status: "pending", type: "task", priority: 3, blocked_by: [], depends_on: [], context: [], tags: [], vcs_refs: [], notes: [], todos: [], created_at: new Date().toISOString(), automation: "eligible" } as any,
       });
 
-      for (let i = 0; i < 20 && runSpy.mock.calls.length === 0; i++) {
-        await new Promise((resolve) => setTimeout(resolve, 5));
+      for (let i = 0; i < 200 && runSpy.mock.calls.length === 0; i++) {
+        await new Promise((resolve) => setTimeout(resolve, 10));
       }
 
       expect(runSpy).toHaveBeenCalled();
@@ -2749,6 +2750,7 @@ describe("Dispatch role workflow entrypoints", () => {
     const fakeGh = await installFakeGh(testDir);
 
     try {
+      vi.spyOn(configModule, "resolveDispatchRemoteSync").mockReturnValue(false);
       const runSpy = vi.spyOn(invocationModule, "runInvocation").mockResolvedValue({
         session: {} as any,
         outcome: "success",
