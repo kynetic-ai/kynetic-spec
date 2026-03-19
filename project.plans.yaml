@@ -23642,13 +23642,14 @@ plans:
 
       The intended operating model after this plan:
 
-      - humans keep their normal checkout on `main`
+      - humans keep their normal checkout on a human-owned branch that
+        dispatch does not mutate
       - dispatch owns a separate integration checkout attached to the
         configured integration branch from `dispatch.base_branch`
       - worker and reviewer task worktrees remain isolated under the existing
         dispatch worktree root
-      - promotion from the configured integration branch to `main` remains an
-        explicit human action
+      - promotion from the configured integration branch to the project's
+        human-owned promotion branch remains an explicit human action
 
       This plan focuses on the behavioral contract for checkout ownership,
       sanitized git execution, and safe repair of stale integration checkouts.
@@ -23670,7 +23671,7 @@ plans:
       - worker/reviewer code execution happens in isolated task worktrees
       - dispatch owns branch sync and integration push behavior
       - humans decide when work graduates from the configured integration
-        branch to `main`
+        branch to the project's human-owned promotion branch
 
       What is missing is an explicit contract for the repository instance that
       dispatch is allowed to mutate and the git execution rules that keep that
@@ -23729,9 +23730,9 @@ plans:
               snapshot, or whichever checkout launched the daemon by accident
           - id: ac-2
             given: |
-              A human keeps a normal checkout on `main` while dispatch owns a
-              separate checkout on the configured integration branch from
-              dispatch.base_branch
+              A human keeps a normal checkout on a branch that dispatch does
+              not mutate while dispatch owns a separate checkout on the
+              configured integration branch from dispatch.base_branch
             when: |
               The dispatcher syncs or publishes the configured integration
               branch
@@ -24041,21 +24042,22 @@ plans:
           still works.
 
           How: Extend the existing dispatch target sync and degraded-state
-          test fixtures to model a human checkout on main, a dispatch-owned
-          checkout on the configured integration branch, leaked git env, and
-          out-of-band branch ref movement.
+          test fixtures to model a human-owned checkout on a non-dispatch
+          branch, a dispatch-owned checkout on the configured integration
+          branch, leaked git env, and out-of-band branch ref movement.
       ```
 
       ## Implementation Notes
 
       ### Intended operator model
 
-      - Human checkout stays on `main`
+      - Human checkout stays on a human-owned branch that dispatch does not
+        mutate
       - Dispatch-owned integration checkout stays on the configured
         integration branch from `dispatch.base_branch`
       - Worker and reviewer worktrees remain under `dispatch.worktree_root`
-      - Promotion from the configured integration branch to `main` remains a
-        deliberate human action
+      - Promotion from the configured integration branch to the project's
+        human-owned promotion branch remains a deliberate human action
 
       ### Why not a bare repo in this plan
 
@@ -24091,3 +24093,7 @@ plans:
         content: Replace hardcoded dev references with configured integration branch semantics
         author: Jacob Chapel
         created_at: 2026-03-19T18:01:51.930Z
+      - _ulid: 01KM3MCWBK6TSTX1VFD3MQ66ZY
+        content: Remove hardcoded main assumptions and generalize to human-owned promotion branch semantics
+        author: Jacob Chapel
+        created_at: 2026-03-19T18:05:50.323Z
