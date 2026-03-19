@@ -21212,6 +21212,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-19T07:55:21.326Z
+      - _ulid: 01KM2HN6X6D8WNZ35E9KBEHWPZ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM2HN6PWDG8QWGV6QD6CGPDA
+        timestamp: 2026-03-19T07:58:43.110Z
     examined_commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
     external_links: []
     lifecycle_state: open
@@ -21221,8 +21228,45 @@ reviews:
       content_hash: ""
       ref: "@01KJP279FYHBM6995ZVMYGM7M2"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM2HN6PWDG8QWGV6QD6CGPDA
+        entries:
+          - _ulid: 01KM2HN6PWC3FK40A6CCV70F7G
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              - Files read: AGENTS.md; kspec-agents.md; src/parser/config.ts; src/cli/index.ts;
+              src/cli/commands/index.ts; src/cli/commands/setup.ts; src/agent-runtime/dispatch.ts;
+              src/strings/errors.ts; src/sessions/store.ts; src/sessions/types.ts;
+              templates/agents-sections/06-agent-dispatch-mode.md; tests/parser/config.test.ts;
+              tests/ralph-replacement.test.ts; tests/agent-dispatch-engine.test.ts;
+              tests/cli-agent-commands.test.ts; tests/triage-parser.test.ts;
+              src/parser/setup-status.ts.
+
+              - Commands run: kspec task get @01KJP279FYHBM6995ZVMYGM7M2; kspec review
+              add/open/get/for-task; git diff --stat
+              b0d1b7932b5096c72399b0f6e69bb310e3edb33d..146e2709913aa6c8f2e597da2e98c9d224b4255d;
+              git diff --stat origin/dev..HEAD; git diff origin/dev..HEAD -- <changed files>; git
+              log --oneline --decorate --graph --max-count=20 --all; git fetch origin; kspec item
+              get @ralph-replacement; kspec validate; npm test; node dist/cli/index.js ralph run; rg
+              -n "config\.ralph|RalphConfigSchema|ralphLoop|06-ralph-loop|Ralph loop|ralph
+              loop|kspec ralph" src tests templates packages docs AGENTS.md kspec.config.yaml
+              .agents .factory; node probes for loadProjectConfig alias resolution.
+
+              - Claims verified: `kspec ralph` now errors as a removed command with migration
+              guidance; `agent:` config is the resolved runtime shape while legacy `ralph:` still
+              aliases correctly inside a git project; current origin/dev..HEAD diff is scoped to the
+              cleanup task rather than the prior unrelated daemon/UI surface.
+
+              - Categories searched: correctness (no blocker found after alias/runtime checks);
+              compatibility (legacy `ralph:` config still works, intentional old script names remain
+              only for migration detection); test quality (updated coverage exists for config alias
+              and removed-command behavior); integration (dispatch entrypoint resolution now reads
+              config.agent and matches kspec.config.yaml).
+            created_at: 2026-03-19T07:58:42.908Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-19T07:54:44.753Z
-    updated_at: 2026-03-19T07:55:21.098Z
+    updated_at: 2026-03-19T07:58:42.908Z
     notes: []
