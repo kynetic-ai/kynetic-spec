@@ -11556,12 +11556,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T04:45:24.507Z
+      updated_at: 2026-03-19T04:45:30.640Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T04:45:24.507Z
+      updated_at: 2026-03-19T04:45:30.640Z
     integration:
       status: pending
       detail: null
@@ -11569,24 +11569,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bb5471acddfb9905490cdced154f7a52a26a0fdc
-      updated_at: 2026-03-19T04:45:24.507Z
-    lifecycle_state: ready
+      updated_at: 2026-03-19T04:45:30.640Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM24PWVNKNRR0P0BDKB643ZT"
     task_slug: fix-default-kspec-cli-path-pointing-to-nonexistent-bin-kspec-cjs
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T04:33:26.671Z
-      last_reconciled_at: 2026-03-19T04:45:24.507Z
+      last_reconciled_at: 2026-03-19T04:45:30.640Z
       created_at: 2026-03-19T04:33:24.141Z
-      updated_at: 2026-03-19T04:45:24.507Z
+      updated_at: 2026-03-19T04:45:30.640Z
     workspace_id: dispatch-workspace-01KM24PWVNKNRR0P0BDKB643ZT
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 0a4f8ab9550dfed4eec1c249f3cdd926b13ee0c2
+        last_seen_at: 2026-03-19T04:45:30.640Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-default-kspec-cli-path-pointing-to-nonexistent-bin-kspec-cjs-01km24pw-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-default-kspec-cli-path-pointing-to-nonexistent-bin-kspec-cjs/01km24pw
-        head: bb5471acddfb9905490cdced154f7a52a26a0fdc
-        last_seen_at: 2026-03-19T04:33:24.141Z
+        head: 0a4f8ab9550dfed4eec1c249f3cdd926b13ee0c2
+        last_seen_at: 2026-03-19T04:45:30.640Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-default-kspec-cli-path-pointing-to-nonexistent-bin-kspec-cjs-01km24pw
