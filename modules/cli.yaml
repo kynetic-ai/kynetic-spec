@@ -9008,6 +9008,9 @@ features:
               must leave the checkout in a coherent state. Dispatch detects when
               the branch ref, index, and working tree have drifted apart and
               repairs that state when it is safe to do so.
+            status:
+              maturity: draft
+              implementation: in_progress
             depends_on: []
             implements: []
             relates_to: []
