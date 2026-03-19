@@ -11647,7 +11647,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T05:01:42.297Z
+      updated_at: 2026-03-19T05:01:43.314Z
     integration:
       status: pending
       detail: null
@@ -11656,25 +11656,20 @@ workspaces:
       target_branch: dev
       target_commit: 02a1386fbddabc850a1a31b24dc1765480bb0a53
       updated_at: 2026-03-19T05:01:42.297Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM26C8WX6CMY7S9XD3RJZ003"
     task_slug: dispatch-engine-cli-calls-must-not-crash-the-engine-on-failure
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T04:54:14.842Z
-      last_reconciled_at: 2026-03-19T05:01:42.297Z
+      last_reconciled_at: 2026-03-19T05:01:43.314Z
       created_at: 2026-03-19T04:45:32.059Z
-      updated_at: 2026-03-19T05:01:42.297Z
+      updated_at: 2026-03-19T05:01:43.314Z
     workspace_id: dispatch-workspace-01KM26C8WX6CMY7S9XD3RJZ003
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 32fd0963c67aa3a50ecfb6b21f84c544a96bf7e1
-        last_seen_at: 2026-03-19T04:54:13.448Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/dispatch-engine-cli-calls-must-not-crash-the-engine-on-failure-01km26c8-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/dispatch-engine-cli-calls-must-not-crash-the-engine-on-failure/01km26c8
