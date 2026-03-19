@@ -19900,6 +19900,13 @@ reviews:
           status: fail
           name: manual compatibility
         timestamp: 2026-03-19T06:34:11.370Z
+      - _ulid: 01KM2CTFJNVPK2AE12EYVKA1HA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM2CTF5NKWY0PB9Y64GPXNGK
+        timestamp: 2026-03-19T06:34:12.950Z
     examined_commit: 61ca7bb5b8609e78888aef803da22b303c93ca8b
     external_links: []
     lifecycle_state: open
@@ -19946,7 +19953,32 @@ reviews:
               pure trace cleanup.
             created_at: 2026-03-19T06:32:53.104Z
         kind: blocker
+      - _ulid: 01KM2CTF5NKWY0PB9Y64GPXNGK
+        entries:
+          - _ulid: 01KM2CTF5NHFGNWWSMH0MGWT5J
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              - Files read: kspec-agents.md; kspec.config.yaml; src/parser/config.ts;
+              src/sessions/store.ts; src/agent-runtime/dispatch.ts; src/agent-runtime/prompts.ts;
+              src/cli/commands/session/types.ts; src/cli/commands/setup.ts; src/strings/errors.ts;
+              templates/agents-sections/06-agent-dispatch-mode.md; tests/parser/config.test.ts;
+              tests/agent-dispatch-engine.test.ts; tests/cli-agent-commands.test.ts;
+              tests/triage-parser.test.ts; tests/ralph-replacement.test.ts
+
+              - Commands run: git diff/stat/log/show; rg for remaining ralph references; kspec item
+              get @ralph-replacement; kspec search "ralph replacement"; kspec validate; npm test; a
+              temp loadProjectConfig() reproduction using node --import tsx
+
+              - Claims verified: full test suite passes; ralph: config overrides are ignored after
+              this change; touched files still contain leftover ralph references
+
+              - Categories searched: correctness, compatibility, task/spec alignment, test quality,
+              integration
+            created_at: 2026-03-19T06:34:12.533Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-19T06:25:10.398Z
-    updated_at: 2026-03-19T06:34:10.832Z
+    updated_at: 2026-03-19T06:34:12.533Z
     notes: []
