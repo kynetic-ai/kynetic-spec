@@ -108426,3 +108426,52 @@
       created_at: 2026-03-19T04:35:18.631Z
   todos: []
   automation: eligible
+- _ulid: 01KM26C8WX6CMY7S9XD3RJZ003
+  slugs: []
+  title: Dispatch engine CLI calls must not crash the engine on failure
+  type: bug
+  description: >-
+    **What:** Any kspec CLI call from the dispatch engine (`_runKspecCommand`, `_addTaskNote`,
+    `_blockTask`) that fails must not crash the engine. Currently, `_blockTask` throws a
+    `DispatchMutationError` when the CLI exits non-zero. When this happens inside the workspace
+    provisioning catch block in `_spawnInvocation`, the throw escapes and propagates through
+    `_drainQueues` → `_serializedDrain` → `_bootstrap`, crashing the entire engine startup. The same
+    pattern exists in `_addTaskNote` and anywhere `_runKspecCommand` is called from error recovery
+    paths.
+
+
+    **Why:** This crashed a live dispatch engine: workspace provisioning failed (pre-existing
+    worktree), the engine tried to block the task via CLI, the CLI failed (broken `bin/kspec.cjs`
+    path), `_blockTask` threw, and the bootstrap crashed. The engine appeared "running" but could
+    never drain queues again. Tasks sat queued for 12+ minutes with no invocations spawning.
+
+
+    **How:** Make `_blockTask` and `_addTaskNote` non-throwing when called from error recovery
+    paths. Options:
+
+    1. Wrap all `_blockTask`/`_addTaskNote` calls in try/catch at their call sites in
+    `_spawnInvocation` error handlers — log warnings on failure but always return gracefully
+
+    2. Or make `_blockTask`/`_addTaskNote` themselves catch and log rather than throw (simpler, but
+    changes their contract for callers that want strict behavior)
+
+
+    Option 1 is safer — keep the strict throw behavior for non-recovery paths but ensure error
+    handlers never propagate. Also audit all `_runKspecCommand` call sites in dispatch.ts to verify
+    none can crash the engine.
+  spec_ref: "@agent-dispatch-engine"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - agent-runtime
+    - dispatch
+  vcs_refs: []
+  created_at: 2026-03-19T04:41:35.901Z
+  notes: []
+  todos: []
+  automation: eligible
