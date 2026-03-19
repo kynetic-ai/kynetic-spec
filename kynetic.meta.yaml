@@ -7437,6 +7437,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-18T14:51:22.490Z
+schedules:
+  - _ulid: 01KM23DEE19G916QCSW8PV3YD9
+    action:
+      type: kspec
+      command: shadow status
+    backfill: false
+    cron: "*/30 * * * *"
+    enabled: true
+    id: shadow-health-check
+    name: Shadow branch health check
+    overlap_policy: skip
+    timezone: America/Chicago
 skills:
   - _ulid: 01KJ1Q8KJ7AWEXWTPV9WV350WK
     description: Get help with kspec commands and workflows
