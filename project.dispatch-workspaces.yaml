@@ -11812,12 +11812,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T07:54:00.681Z
+      updated_at: 2026-03-19T07:54:03.316Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T07:54:00.681Z
+      updated_at: 2026-03-19T07:54:03.316Z
     integration:
       status: pending
       detail: null
@@ -11825,7 +11825,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: b0d1b7932b5096c72399b0f6e69bb310e3edb33d
-      updated_at: 2026-03-19T07:54:00.681Z
+      updated_at: 2026-03-19T07:54:03.316Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KJP279FYHBM6995ZVMYGM7M2"
@@ -11833,22 +11833,17 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T07:48:17.946Z
-      last_reconciled_at: 2026-03-19T07:54:00.681Z
+      last_reconciled_at: 2026-03-19T07:54:03.316Z
       created_at: 2026-03-19T05:54:07.938Z
-      updated_at: 2026-03-19T07:54:00.681Z
+      updated_at: 2026-03-19T07:54:03.316Z
     workspace_id: dispatch-workspace-01KJP279FYHBM6995ZVMYGM7M2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 146e2709913aa6c8f2e597da2e98c9d224b4255d
-        last_seen_at: 2026-03-19T07:54:00.681Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ralph-migration-guide-01kjp279-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-ralph-migration-guide/01kjp279
-        head: 146e2709913aa6c8f2e597da2e98c9d224b4255d
+        head: a576e0c5bc4f07ffb2ad7b7cf9945f08a6ae28b4
         last_seen_at: 2026-03-19T07:54:00.681Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-ralph-migration-guide-01kjp279
   - active_role: null
