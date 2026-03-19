@@ -109002,8 +109002,7 @@
   origin: derived
   status: pending
   blocked_by: []
-  depends_on:
-    - "@task-design-dispatch-shared-checkout-contract"
+  depends_on: []
   context: []
   priority: 1
   tags:
@@ -109020,6 +109019,11 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T21:59:32.052Z
+    - _ulid: 01KM41YKQHP0C1YY9ZC23KD983
+      content: "Dependencies cleared (was: @task-design-dispatch-shared-checkout-contract)"
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T22:02:42.801Z
   todos: []
   automation: eligible
 - _ulid: 01KM3ZMEMA53X21SYPSRWRF6E8
