@@ -108429,6 +108429,17 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T04:35:18.631Z
+    - _ulid: 01KM26JEAJXM6J7X2538THGXZ1
+      content: Fixed DEFAULT_KSPEC_CLI_PATH resolution in src/agent-runtime/invocation.ts by resolving the
+        built dist/cli/index.js entrypoint from both source and dist module locations, eliminating
+        the dead bin/kspec.cjs target. Added invocation lifecycle tests covering the default
+        resolver and verified agent-invocation-lifecycle plus agent-dispatch-engine suites. Full npm
+        test reached one unrelated failure in tests/review-cli.test.ts because dispatch exports
+        KSPEC_DISPATCH_CANONICAL_HEAD, which causes examined_commit to auto-populate instead of
+        staying null.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T04:44:58.066Z
   todos: []
   automation: eligible
 - _ulid: 01KM26C8WX6CMY7S9XD3RJZ003
