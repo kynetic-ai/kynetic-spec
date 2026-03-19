@@ -22331,6 +22331,18 @@ reviews:
         required: false
         created_at: 2026-03-19T23:12:11.537Z
         completed_at: 2026-03-19T23:12:11.537Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate reports pre-existing repo-wide reference/completeness failures (for example
+          unresolved relates_to refs in .kspec/modules/meta.yaml and broad existing AC coverage
+          debt); this review did not find a new validation regression in the submitted diff.
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-19T23:12:13.579Z
+        completed_at: 2026-03-19T23:12:13.579Z
     events:
       - _ulid: 01KM45Q35X3AH176YEVQV0SW9M
         actor: Jacob Chapel
@@ -22359,6 +22371,13 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-19T23:12:12.040Z
+      - _ulid: 01KM45XX7HRR5GRZSMD4AFYFAY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec-validate
+        timestamp: 2026-03-19T23:12:14.065Z
     examined_commit: 4f77d10bfc9991aadf35dd05a1c5b67a8804b477
     external_links: []
     lifecycle_state: open
@@ -22391,5 +22410,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-19T23:08:30.781Z
-    updated_at: 2026-03-19T23:12:11.537Z
+    updated_at: 2026-03-19T23:12:13.579Z
     notes: []
