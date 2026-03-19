@@ -109362,5 +109362,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T23:27:08.071Z
+    - _ulid: 01KM47KVQD6DZVPR4RT7CBMH2K
+      content: "Implemented shared cancelled-task exclusion for plan summary metrics. Added a shared
+        plan-summary helper and wired daemon plan routes, JSON/static export generation, and CLI
+        plan list counts to ignore cancelled linked tasks unless cancelled status is explicitly
+        reported. Added AC-tagged regression coverage for export snapshots, CLI plan list output,
+        and the plans API route. Verification: npm test -- tests/cli-plan.test.ts
+        tests/export/json.test.ts passed. kspec validate still reports pre-existing repo
+        validation/reference debt unrelated to this task. npm run test:e2e --
+        packages/web-ui/tests/e2e/plans.spec.ts is blocked in dispatch mode because the Playwright
+        fixture tries to start kspec serve, which this environment forbids."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-19T23:41:41.997Z
   todos: []
   automation: eligible
