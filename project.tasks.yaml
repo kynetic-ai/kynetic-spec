@@ -109090,8 +109090,12 @@
   spec_ref: "@dispatch-remote-branch-sync"
   plan_ref: "@plan-dispatch-integration-checkout-boundaries"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev after review approval. Verified isolated integration-target sync still
+    preserves the 30s fetch and 10s ff-only merge timeouts, confirmed integration-target pushes now
+    run through the shared isolated targeting helper, and npm test passed cleanly (286 files, 6608
+    tests).
   depends_on:
     - "@task-isolate-dispatch-git-targeting"
   context: []
@@ -109114,6 +109118,7 @@
   created_at: 2026-03-19T21:22:12.746Z
   started_at: 2026-03-19T23:17:48.924Z
   submitted_at: 2026-03-19T23:25:52.339Z
+  completed_at: 2026-03-19T23:32:58.304Z
   notes:
     - _ulid: 01KM45BYETZXBZM8HWJRY7MX77
       content: Routed integration-target sync and push commands through a shared workspace-owned targeting
