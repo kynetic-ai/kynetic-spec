@@ -30503,6 +30503,12 @@ reviews:
         payload:
           thread_ulid: 01KM66JKZS79QHA0Y9FJ69ASAH
         timestamp: 2026-03-20T18:13:07.302Z
+      - _ulid: 01KM6770KCZF2A3491XXJCC7H8
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM66JP9ZME06CKH2PWHMP2A9
+        timestamp: 2026-03-20T18:13:09.868Z
     examined_commit: da5c883a711417c070887f27271be92cd51ba7c5
     external_links: []
     lifecycle_state: closed
@@ -30604,6 +30610,8 @@ reviews:
               framework boundary instead of silently returning empty results.
             created_at: 2026-03-20T18:12:55.123Z
         kind: blocker
+        resolved_at: 2026-03-20T18:13:09.633Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -30613,7 +30621,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T18:02:46.272Z
     created_at: 2026-03-20T17:57:31.038Z
-    updated_at: 2026-03-20T18:13:07.047Z
+    updated_at: 2026-03-20T18:13:09.633Z
     notes: []
   - _ulid: 01KM66Q672GTMDNG9S132WCM1N
     slugs: []
