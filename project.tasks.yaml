@@ -110107,7 +110107,7 @@
     coverage that missing worktree or branch state for in_progress tasks is repaired rather than
     discarded when recovery remains possible."
   spec_ref: "@dispatch-workspace-registry"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -110126,7 +110126,7 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: 01KM4SYS8ZMJ14RDKJTPQ5C4N3
+  session_id: null
   created_at: 2026-03-20T03:45:11.499Z
   started_at: 2026-03-20T05:02:43.738Z
   submitted_at: 2026-03-20T05:11:41.631Z
@@ -110142,6 +110142,11 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T05:11:24.817Z
+    - _ulid: 01KM4TTV08Q95JZ79NK4YJ29WT
+      content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex"
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T05:17:33.576Z
   todos: []
   automation: eligible
 - _ulid: 01KM4PZRFGV4WZ5HPZ9VZ3HBDN
