@@ -26402,6 +26402,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T05:50:12.449Z
+      - _ulid: 01KM4X718B3171ZHPS1QXGJ60A
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM4WNA9SV0EDBFSZEH7YP5EC
+        timestamp: 2026-03-20T05:59:10.348Z
     examined_commit: 818b53f420eda826592758a52a7691fd0b055d75
     external_links: []
     lifecycle_state: closed
@@ -26432,6 +26438,8 @@ reviews:
               the fallback watcher that runs on Linux.
             created_at: 2026-03-20T05:49:29.785Z
         kind: blocker
+        resolved_at: 2026-03-20T05:59:10.127Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM4WP1TSJ6YSK75FETVE6D7P
         entries:
           - _ulid: 01KM4WP1TS2DYFKHABG97BCEMY
@@ -26462,7 +26470,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T05:50:12.449Z
     created_at: 2026-03-20T05:44:13.482Z
-    updated_at: 2026-03-20T05:50:12.449Z
+    updated_at: 2026-03-20T05:59:10.127Z
     notes: []
   - _ulid: 01KM4WWY3S73JQJN638ZCHQD6E
     slugs: []
