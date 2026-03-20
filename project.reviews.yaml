@@ -23519,7 +23519,18 @@ reviews:
     slugs: []
     title: Review task-implement-cancelled-task-dependency-cleanup (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Known repository-wide validation failures remain unrelated to this task: 3 reference
+          errors in .kspec/modules/meta.yaml plus broader completeness warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T00:31:14.709Z
+        completed_at: 2026-03-20T00:31:14.709Z
     events:
       - _ulid: 01KM4ADFZ9M8VMQF5GZDPA05N6
         actor: Jacob Chapel
@@ -23541,6 +23552,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM4AEJ1JMVN27G5NJEZR275E
         timestamp: 2026-03-20T00:31:14.203Z
+      - _ulid: 01KM4AEJZZS4HP68V27DCBHT0X
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T00:31:14.943Z
     examined_commit: 86035071daccf934787a0b9f1fe7a029e343d28a
     external_links: []
     lifecycle_state: open
@@ -23574,5 +23592,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T00:30:39.082Z
-    updated_at: 2026-03-20T00:31:13.971Z
+    updated_at: 2026-03-20T00:31:14.709Z
     notes: []
