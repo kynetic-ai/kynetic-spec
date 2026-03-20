@@ -31546,6 +31546,17 @@ reviews:
         runner: npm
         created_at: 2026-03-20T20:39:13.592Z
         completed_at: 2026-03-20T20:39:13.592Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation passed with existing repo-level warnings only (exit 6): no reference errors or
+          task-specific coverage regressions found."
+        name: kspec validate
+        required: true
+        runner: kspec
+        created_at: 2026-03-20T20:39:16.688Z
+        completed_at: 2026-03-20T20:39:16.688Z
     events:
       - _ulid: 01KM6FB0WXDS09V36CAWDSW3GD
         actor: Jacob Chapel
@@ -31574,6 +31585,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T20:39:13.844Z
+      - _ulid: 01KM6FJJ6DBX6R1AX9G4FJQHXH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-20T20:39:16.941Z
     examined_commit: 42888ca3f06655b7f48977f6bfe33781805ab5f4
     external_links: []
     lifecycle_state: open
@@ -31606,5 +31624,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T20:35:09.854Z
-    updated_at: 2026-03-20T20:39:13.592Z
+    updated_at: 2026-03-20T20:39:16.688Z
     notes: []
