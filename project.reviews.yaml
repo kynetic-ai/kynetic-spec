@@ -29291,7 +29291,17 @@ reviews:
     slugs: []
     title: Review task-schema-derived-types
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Test Files 292 passed; Tests 6669 passed, 3 skipped. Exit status 0.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T16:25:36.024Z
+        completed_at: 2026-03-20T16:25:36.024Z
     events:
       - _ulid: 01KM60V178R7HF039PAYY49V1A
         actor: Jacob Chapel
@@ -29313,6 +29323,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM612190HA4BY06GPFJDVFT5
         timestamp: 2026-03-20T16:25:35.503Z
+      - _ulid: 01KM61228QNMN5NM2DCA8XJ4EX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T16:25:36.279Z
     examined_commit: cef00da87ceba5a7f6cc96733b0f9de12a6f6f29
     external_links: []
     lifecycle_state: open
@@ -29344,5 +29361,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-20T16:21:45.833Z
-    updated_at: 2026-03-20T16:25:35.264Z
+    updated_at: 2026-03-20T16:25:36.024Z
     notes: []
