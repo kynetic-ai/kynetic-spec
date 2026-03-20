@@ -12867,3 +12867,79 @@ workspaces:
         head: 44d11f272a18ce4c02be15bc1a33a12cb3fcc310
         last_seen_at: 2026-03-20T04:22:19.067Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-shared-checkout-integration-branch-targeting-when-current-branch-differs-01km4pzr
+  - active_role: null
+    base_branch_point: 5c99aae155547908523751e1996ca00fc11ee2fe
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/fix-review-add-subject-type-precedence-with-version-context/01km4kpq
+    canonical_branch_head: 5c99aae155547908523751e1996ca00fc11ee2fe
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-20T04:22:36.306Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-20T04:22:36.306Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 5c99aae155547908523751e1996ca00fc11ee2fe
+      updated_at: 2026-03-20T04:22:36.306Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KM4KPQ4CJS24TH0NTVXJA1V3"
+    task_slug: fix-review-add-subject-type-precedence-with-version-context
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-20T04:22:36.306Z
+      created_at: 2026-03-20T04:22:36.306Z
+      updated_at: 2026-03-20T04:22:36.306Z
+    workspace_id: dispatch-workspace-01KM4KPQ4CJS24TH0NTVXJA1V3
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/fix-review-add-subject-type-precedence-with-version-context/01km4kpq
+        head: 5c99aae155547908523751e1996ca00fc11ee2fe
+        last_seen_at: 2026-03-20T04:22:36.306Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-review-add-subject-type-precedence-with-version-context-01km4kpq
