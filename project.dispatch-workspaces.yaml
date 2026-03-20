@@ -12782,18 +12782,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/fix-shared-checkout-integration-branch-targeting-when-current-branch-differs/01km4pzr
-    canonical_branch_head: 44d11f272a18ce4c02be15bc1a33a12cb3fcc310
+    canonical_branch_head: e05f78fc53850b715197a28a285d793c6f56f310
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T04:32:09.625Z
+      updated_at: 2026-03-20T04:35:55.230Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T04:32:10.577Z
+      updated_at: 2026-03-20T04:35:55.230Z
     integration:
       status: pending
       detail: null
@@ -12801,7 +12801,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5c99aae155547908523751e1996ca00fc11ee2fe
-      updated_at: 2026-03-20T04:32:09.625Z
+      updated_at: 2026-03-20T04:35:55.230Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM4PZRFGV4WZ5HPZ9VZ3HBDN"
@@ -12809,9 +12809,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T04:32:10.577Z
-      last_reconciled_at: 2026-03-20T04:32:10.577Z
+      last_reconciled_at: 2026-03-20T04:35:55.230Z
       created_at: 2026-03-20T04:11:58.300Z
-      updated_at: 2026-03-20T04:32:10.577Z
+      updated_at: 2026-03-20T04:35:55.230Z
     workspace_id: dispatch-workspace-01KM4PZRFGV4WZ5HPZ9VZ3HBDN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
