@@ -24992,6 +24992,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T04:27:50.439Z
+      - _ulid: 01KM4REB5K5K1DPV372SGW5081
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM4QZAGJDTSGYJ045T1JGE6R
+        timestamp: 2026-03-20T04:35:46.995Z
     examined_commit: 44d11f272a18ce4c02be15bc1a33a12cb3fcc310
     external_links: []
     lifecycle_state: closed
@@ -25023,6 +25029,15 @@ reviews:
               explicit safety guard for 'branch checked out elsewhere' (or a different
               implementation) plus regression coverage."
             created_at: 2026-03-20T04:27:34.803Z
+          - _ulid: 01KM4REAY5QTVGXVMXQSXG7ZHD
+            author: Jacob Chapel
+            body: Fixed in commit e05f78fc53850b715197a28a285d793c6f56f310.
+              resolveDispatchIntegrationMutationScope() now refuses the non-checked-out fast-forward
+              path when Git reports the integration branch is checked out in another worktree, so
+              dispatch no longer uses update-ref in a topology that would advance a foreign worktree
+              HEAD. Added regression coverage in tests/dispatch-target-sync.test.ts for that exact
+              topology and verified the foreign worktree stays untouched.
+            created_at: 2026-03-20T04:35:46.757Z
         kind: blocker
       - _ulid: 01KM4QZB73XMK870EFA4MSNYQE
         entries:
@@ -25051,7 +25066,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T04:27:50.439Z
     created_at: 2026-03-20T04:23:27.197Z
-    updated_at: 2026-03-20T04:27:50.439Z
+    updated_at: 2026-03-20T04:35:46.757Z
     notes: []
   - _ulid: 01KM4R91N0N1EBTV11XSYCDZFQ
     slugs: []
