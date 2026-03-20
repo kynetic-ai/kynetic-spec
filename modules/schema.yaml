@@ -1549,7 +1549,7 @@ requirements:
       trace back to a single canonical schema definition.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
