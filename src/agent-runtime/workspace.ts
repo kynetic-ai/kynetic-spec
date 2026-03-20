@@ -1,4 +1,5 @@
 import * as fs from "node:fs/promises";
+import * as fsSync from "node:fs";
 import * as path from "node:path";
 import { spawnSync } from "node:child_process";
 import { initContext } from "../parser/index.js";
@@ -33,6 +34,7 @@ import type {
 const DISPATCH_WORKSPACE_METADATA_FILE = ".kspec-dispatch-workspace.json";
 const DISPATCH_BRANCH_PREFIX = "dispatch/task/";
 const DISPATCH_SHADOW_MUTATION_LOCK_FILE = ".kspec-dispatch-shadow-mutation";
+const DISPATCH_CHECKOUT_COHERENCE_FILE = "kspec-dispatch-checkout-coherence.json";
 
 interface GitResult {
   stdout: string;
@@ -42,6 +44,17 @@ interface GitResult {
 
 interface RunGitOptions {
   timeout?: number;
+}
+
+interface DispatchCheckoutCoherenceSnapshot {
+  headCommit: string;
+  tree: string;
+  recordedAt: string;
+}
+
+interface DispatchCheckoutCoherenceState {
+  version: 1;
+  branches: Record<string, DispatchCheckoutCoherenceSnapshot>;
 }
 
 const DISPATCH_GIT_ENV_KEYS = [
@@ -378,6 +391,217 @@ function resolveRemoteHeadBranch(projectDir: string): string | null {
 function resolveCurrentBranch(projectDir: string): string | null {
   const result = runGit(projectDir, ["symbolic-ref", "--quiet", "--short", "HEAD"]);
   return result.status === 0 && result.stdout ? result.stdout : null;
+}
+
+interface DispatchCheckoutCoherenceResult {
+  repaired: boolean;
+  drifted: boolean;
+  previousCommit: string | null;
+}
+
+function resolveDispatchCheckoutCoherencePath(projectDir: string): string | null {
+  const result = runGit(projectDir, ["rev-parse", "--git-path", DISPATCH_CHECKOUT_COHERENCE_FILE]);
+  if (result.status !== 0 || !result.stdout) {
+    return null;
+  }
+  return path.isAbsolute(result.stdout)
+    ? result.stdout
+    : path.join(projectDir, result.stdout);
+}
+
+function loadDispatchCheckoutCoherenceSnapshot(
+  projectDir: string,
+  branch: string,
+): DispatchCheckoutCoherenceSnapshot | null {
+  const coherencePath = resolveDispatchCheckoutCoherencePath(projectDir);
+  if (!coherencePath || !fsSync.existsSync(coherencePath)) {
+    return null;
+  }
+
+  try {
+    const raw = fsSync.readFileSync(coherencePath, "utf-8");
+    const parsed = JSON.parse(raw) as Partial<DispatchCheckoutCoherenceState>;
+    if (parsed.version !== 1 || !parsed.branches || typeof parsed.branches !== "object") {
+      return null;
+    }
+    const snapshot = parsed.branches[branch];
+    if (!snapshot || typeof snapshot.headCommit !== "string" || typeof snapshot.tree !== "string") {
+      return null;
+    }
+    return snapshot;
+  } catch {
+    return null;
+  }
+}
+
+function persistDispatchCheckoutCoherenceSnapshot(
+  projectDir: string,
+  branch: string,
+  snapshot: DispatchCheckoutCoherenceSnapshot,
+): void {
+  const coherencePath = resolveDispatchCheckoutCoherencePath(projectDir);
+  if (!coherencePath) {
+    return;
+  }
+
+  let state: DispatchCheckoutCoherenceState = { version: 1, branches: {} };
+  if (fsSync.existsSync(coherencePath)) {
+    try {
+      const raw = fsSync.readFileSync(coherencePath, "utf-8");
+      const parsed = JSON.parse(raw) as Partial<DispatchCheckoutCoherenceState>;
+      if (parsed.version === 1 && parsed.branches && typeof parsed.branches === "object") {
+        state = {
+          version: 1,
+          branches: parsed.branches as Record<string, DispatchCheckoutCoherenceSnapshot>,
+        };
+      }
+    } catch {
+      state = { version: 1, branches: {} };
+    }
+  }
+
+  state.branches[branch] = snapshot;
+  fsSync.writeFileSync(coherencePath, `${JSON.stringify(state, null, 2)}\n`, "utf-8");
+}
+
+function resolveBranchTree(projectDir: string, ref: string): string | null {
+  const result = runGit(projectDir, ["rev-parse", `${ref}^{tree}`]);
+  return result.status === 0 && result.stdout ? result.stdout : null;
+}
+
+function resolveIndexTree(projectDir: string): string | null {
+  const result = runGit(projectDir, ["write-tree"]);
+  return result.status === 0 && result.stdout ? result.stdout : null;
+}
+
+function listRecentBranchReflogCommits(projectDir: string, branch: string, limit = 20): string[] {
+  const result = runGit(projectDir, ["reflog", "show", "--format=%H", `-n${limit}`, branch]);
+  if (result.status !== 0 || !result.stdout) {
+    return [];
+  }
+  return Array.from(new Set(
+    result.stdout
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean),
+  ));
+}
+
+function buildUnsafeCheckoutDriftError(
+  integrationBranch: string,
+  detail: string,
+  suggestion: string,
+): DispatchWorkspaceError {
+  return new DispatchWorkspaceError(
+    `Dispatch detected shared-checkout drift for integration target "${integrationBranch}" but refused automatic repair because ${detail}.`,
+    suggestion,
+  );
+}
+
+export function ensureDispatchIntegrationTargetCheckoutCoherence(
+  projectDir: string,
+  integrationBranch: string,
+): DispatchCheckoutCoherenceResult {
+  const headCommit = resolveCommit(projectDir, "HEAD");
+  const status = runGit(projectDir, ["status", "--porcelain"]);
+  if (status.status !== 0) {
+    throw new DispatchWorkspaceError(
+      `Dispatch could not inspect shared checkout state for integration target "${integrationBranch}".`,
+      `Run 'git status' in ${projectDir}, fix the git error, and retry dispatch.`,
+    );
+  }
+  const headTree = resolveBranchTree(projectDir, "HEAD");
+  if (!status.stdout) {
+    if (headTree) {
+      persistDispatchCheckoutCoherenceSnapshot(projectDir, integrationBranch, {
+        headCommit,
+        tree: headTree,
+        recordedAt: new Date().toISOString(),
+      });
+    }
+    return { repaired: false, drifted: false, previousCommit: null };
+  }
+
+  const worktreeDiff = runGit(projectDir, ["diff", "--quiet"]);
+  if (worktreeDiff.status !== 0 && worktreeDiff.status !== 1) {
+    throw new DispatchWorkspaceError(
+      `Dispatch could not compare the working tree against the index for integration target "${integrationBranch}".`,
+      `Run 'git diff' in ${projectDir}, resolve the git error, and retry dispatch.`,
+    );
+  }
+  if (worktreeDiff.status === 1) {
+    throw buildUnsafeCheckoutDriftError(
+      integrationBranch,
+      "the working tree has tracked modifications",
+      `Review the local changes in ${projectDir}, then commit/stash/discard them before retrying. If the branch tip is authoritative, run 'git checkout ${integrationBranch} && git reset --hard ${integrationBranch}'.`,
+    );
+  }
+
+  const indexTree = resolveIndexTree(projectDir);
+  if (!indexTree || !headTree) {
+    throw new DispatchWorkspaceError(
+      `Dispatch could not compare index state against HEAD for integration target "${integrationBranch}".`,
+      `Run 'git status' in ${projectDir}, repair the repository state, and retry dispatch.`,
+    );
+  }
+  if (indexTree === headTree) {
+    persistDispatchCheckoutCoherenceSnapshot(projectDir, integrationBranch, {
+      headCommit,
+      tree: headTree,
+      recordedAt: new Date().toISOString(),
+    });
+    return { repaired: false, drifted: false, previousCommit: null };
+  }
+
+  const snapshot = loadDispatchCheckoutCoherenceSnapshot(projectDir, integrationBranch);
+  if (snapshot?.headCommit === headCommit) {
+    throw buildUnsafeCheckoutDriftError(
+      integrationBranch,
+      "the index contains staged tracked changes after dispatch already observed this branch tip as coherent",
+      `Inspect 'git status' and 'git diff --cached' in ${projectDir}. Commit/stash/discard those staged changes before retrying. If the branch tip is authoritative and the staged changes should be discarded, run 'git checkout ${integrationBranch} && git reset --hard ${integrationBranch}'.`,
+    );
+  }
+
+  const candidateCommits = snapshot?.headCommit
+    ? [snapshot.headCommit]
+    : listRecentBranchReflogCommits(projectDir, integrationBranch);
+  for (const commit of candidateCommits) {
+    if (commit === headCommit) continue;
+    if (resolveBranchTree(projectDir, commit) !== indexTree) continue;
+
+    const repair = runGit(projectDir, ["reset", "--hard", "HEAD"]);
+    if (repair.status !== 0) {
+      throw new DispatchWorkspaceError(
+        `Dispatch detected shared-checkout drift for integration target "${integrationBranch}" but failed to repair it automatically.`,
+        `Run 'git checkout ${integrationBranch} && git reset --hard ${integrationBranch}' in ${projectDir}, then retry dispatch.`,
+      );
+    }
+
+    const repairedWorktreeDiff = runGit(projectDir, ["diff", "--quiet"]);
+    const repairedIndexDiff = runGit(projectDir, ["diff", "--cached", "--quiet"]);
+    if (
+      repairedWorktreeDiff.status !== 0 ||
+      repairedIndexDiff.status !== 0
+    ) {
+      throw new DispatchWorkspaceError(
+        `Dispatch repaired shared-checkout drift for integration target "${integrationBranch}" but tracked checkout drift is still present.`,
+        `Inspect 'git diff' and 'git diff --cached' in ${projectDir}, clear any remaining tracked changes, and retry dispatch.`,
+      );
+    }
+
+    persistDispatchCheckoutCoherenceSnapshot(projectDir, integrationBranch, {
+      headCommit,
+      tree: headTree,
+      recordedAt: new Date().toISOString(),
+    });
+    return { repaired: true, drifted: true, previousCommit: commit };
+  }
+
+  throw buildUnsafeCheckoutDriftError(
+    integrationBranch,
+    "the index contains staged or drifted tracked changes that do not match a known prior branch tip",
+    `Inspect 'git status' and 'git diff --cached' in ${projectDir}. Commit/stash/discard those changes, then retry dispatch. If the branch tip is authoritative, run 'git checkout ${integrationBranch} && git reset --hard ${integrationBranch}'.`,
+  );
 }
 
 function normalizeTaskSlug(taskRef: string, task?: { title?: string; slugs?: string[] }): string {
@@ -1486,6 +1710,8 @@ export function resolveDispatchIntegrationMutationScope(
       `Check out "${integrationBranch}" in ${projectDir}, or restart dispatch from a shared checkout that already has "${integrationBranch}" checked out.`,
     );
   }
+
+  ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, integrationBranch);
 
   return {
     projectDir,
