@@ -30463,6 +30463,12 @@ reviews:
         payload:
           thread_ulid: 01KM66JKZS79QHA0Y9FJ69ASAH
         timestamp: 2026-03-20T18:02:38.087Z
+      - _ulid: 01KM66KRCGYKFT6J081JVXS3KR
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM66JP9ZME06CKH2PWHMP2A9
+        timestamp: 2026-03-20T18:02:38.864Z
     examined_commit: da5c883a711417c070887f27271be92cd51ba7c5
     external_links: []
     lifecycle_state: open
@@ -30538,8 +30544,18 @@ reviews:
               of a schema error. That leaves  outside the input hardening promised by this task and
               still violates ."
             created_at: 2026-03-20T18:02:03.967Z
+          - _ulid: 01KM66KR5913XME4634CHKWM2C
+            author: Jacob Chapel
+            body: "`subject_type` is also a constrained field and should be derived from the canonical review
+              subject discriminator. `ReviewSubjectSchema` only permits `code`, `plan`, `task`,
+              `spec`, and `external` in src/schema/review-records.ts:72-77, but `/api/reviews` still
+              declares `subject_type` as free-form text. As a result,
+              `/api/reviews?subject_type=bogus` still reaches the handler and silently returns zero
+              rows instead of a framework validation error, which is exactly the failure mode this
+              task is meant to eliminate for typed filters."
+            created_at: 2026-03-20T18:02:38.632Z
         kind: blocker
     verdicts: []
     created_at: 2026-03-20T17:57:31.038Z
-    updated_at: 2026-03-20T18:02:37.849Z
+    updated_at: 2026-03-20T18:02:38.632Z
     notes: []
