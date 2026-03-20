@@ -14521,7 +14521,7 @@ workspaces:
         head: 4a87401efe44bca228accf5120399874fa80f101
         last_seen_at: 2026-03-20T16:54:39.466Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-read-side-validation-warnings-01km5z4p
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 89942c26e4d0033049772e411e7235ee37407e86
     bootstrap:
       status: succeeded
@@ -14631,7 +14631,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T17:37:03.027Z
+      updated_at: 2026-03-20T17:37:09.015Z
     integration:
       status: pending
       detail: null
@@ -14646,10 +14646,10 @@ workspaces:
     task_slug: task-cli-mutation-input-validation
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-20T17:22:37.821Z
-      last_reconciled_at: 2026-03-20T17:37:03.027Z
+      last_active_at: 2026-03-20T17:37:09.015Z
+      last_reconciled_at: 2026-03-20T17:37:09.015Z
       created_at: 2026-03-20T17:22:32.589Z
-      updated_at: 2026-03-20T17:37:07.128Z
+      updated_at: 2026-03-20T17:37:09.015Z
     workspace_id: dispatch-workspace-01KM5Z4JVEFXG9SJ8P7RANZDNV
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
