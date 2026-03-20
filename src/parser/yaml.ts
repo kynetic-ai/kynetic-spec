@@ -24,9 +24,11 @@ import {
   type Note,
   type SpecItem,
   type SpecItemInput,
+  SpecItemInputSchema,
   SpecItemSchema,
   type Task,
   type TaskInput,
+  TaskInputSchema,
   TaskSchema,
   TasksFileSchema,
   TriageFileSchema,
@@ -114,17 +116,21 @@ function getIssueValue(issue: ZodError["issues"][number]): unknown {
   return undefined;
 }
 
+function formatValidationIssues(error: ZodError): string {
+  return error.issues.map((issue) => {
+    const fieldPath = formatIssuePath(issue.path);
+    const invalidValue = formatIssueValue(getIssueValue(issue));
+    return `${fieldPath}=${invalidValue} (${issue.message})`;
+  }).join("; ");
+}
+
 export function warnSkippedRecord(
   entityType: string,
   id: string,
   source: string,
   error: ZodError,
 ): void {
-  const details = error.issues.map((issue) => {
-    const fieldPath = formatIssuePath(issue.path);
-    const invalidValue = formatIssueValue(getIssueValue(issue));
-    return `${fieldPath}=${invalidValue} (${issue.message})`;
-  }).join("; ");
+  const details = formatValidationIssues(error);
 
   console.warn(
     `[kspec] Warning: skipped invalid ${entityType} ${id} from ${source}: ${details}. `
@@ -1369,23 +1375,29 @@ export async function deleteTask(
  * Create a new task with auto-generated fields
  */
 export function createTask(input: TaskInput): Task {
+  const parsed = TaskInputSchema.safeParse(input);
+  if (!parsed.success) {
+    throw new Error(`Invalid task input: ${formatValidationIssues(parsed.error)}`);
+  }
+
+  const validatedInput = parsed.data;
   const now = new Date().toISOString();
 
   return {
-    ...input,
-    _ulid: input._ulid || ulid(),
-    slugs: input.slugs || [],
-    type: input.type || "task",
-    status: input.status || "pending",
-    blocked_by: input.blocked_by || [],
-    depends_on: input.depends_on || [],
-    context: input.context || [],
-    priority: input.priority || 3,
-    tags: input.tags || [],
-    vcs_refs: input.vcs_refs || [],
-    created_at: input.created_at || now,
-    notes: input.notes || [],
-    todos: input.todos || [],
+    ...validatedInput,
+    _ulid: validatedInput._ulid || ulid(),
+    slugs: validatedInput.slugs || [],
+    type: validatedInput.type || "task",
+    status: validatedInput.status || "pending",
+    blocked_by: validatedInput.blocked_by || [],
+    depends_on: validatedInput.depends_on || [],
+    context: validatedInput.context || [],
+    priority: validatedInput.priority || 3,
+    tags: validatedInput.tags || [],
+    vcs_refs: validatedInput.vcs_refs || [],
+    created_at: validatedInput.created_at || now,
+    notes: validatedInput.notes || [],
+    todos: validatedInput.todos || [],
   };
 }
 
@@ -2011,24 +2023,30 @@ function findItemInStructure(
  * Create a new spec item with auto-generated fields
  */
 export function createSpecItem(input: SpecItemInput): SpecItem {
+  const parsed = SpecItemInputSchema.safeParse(input);
+  if (!parsed.success) {
+    throw new Error(`Invalid spec item input: ${formatValidationIssues(parsed.error)}`);
+  }
+
+  const validatedInput = parsed.data;
   return {
-    _ulid: input._ulid || ulid(),
-    slugs: input.slugs || [],
-    title: input.title,
-    type: input.type,
-    status: input.status,
-    priority: input.priority,
-    tags: input.tags || [],
-    description: input.description,
-    acceptance_criteria: input.acceptance_criteria,
-    depends_on: input.depends_on || [],
-    implements: input.implements || [],
-    relates_to: input.relates_to || [],
-    tests: input.tests || [],
-    traits: input.traits || [],
-    notes: input.notes || [],
-    created: input.created || new Date().toISOString(),
-    created_by: input.created_by,
+    _ulid: validatedInput._ulid || ulid(),
+    slugs: validatedInput.slugs || [],
+    title: validatedInput.title,
+    type: validatedInput.type,
+    status: validatedInput.status,
+    priority: validatedInput.priority,
+    tags: validatedInput.tags || [],
+    description: validatedInput.description,
+    acceptance_criteria: validatedInput.acceptance_criteria,
+    depends_on: validatedInput.depends_on || [],
+    implements: validatedInput.implements || [],
+    relates_to: validatedInput.relates_to || [],
+    tests: validatedInput.tests || [],
+    traits: validatedInput.traits || [],
+    notes: validatedInput.notes || [],
+    created: validatedInput.created || new Date().toISOString(),
+    created_by: validatedInput.created_by,
   };
 }
 
