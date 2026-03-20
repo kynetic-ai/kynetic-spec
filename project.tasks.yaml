@@ -109330,7 +109330,18 @@
   session_id: 01KM4GE7FZ0SC2GJB521C07N74
   created_at: 2026-03-19T21:22:14.093Z
   started_at: 2026-03-20T02:16:29.488Z
-  notes: []
+  notes:
+    - _ulid: 01KM4GY08302F7NGBVY9RY91XT
+      content: "Added shared-checkout targeting coverage in tests/dispatch-target-sync.test.ts. New
+        coverage proves dispatch strips inherited GIT_DIR/GIT_WORK_TREE/GIT_INDEX_FILE when running
+        integration-target git commands, and that a linked worktree checkout still syncs the
+        intended integration branch even when inherited git env points at another repo.
+        Verification: npm test -- tests/dispatch-target-sync.test.ts passed. Full npm test still
+        reports unrelated failures in tests/action-model.test.ts (extra emitted event count) and
+        tests/cli-plan.test.ts (plan-ref lookup regression for cancelled-work fixture)."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T02:24:31.491Z
   todos: []
   automation: eligible
 - _ulid: 01KM43VYQXEFJMMYK2184MR7FH
