@@ -26379,6 +26379,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-20T05:49:32.837Z
+      - _ulid: 01KM4WP26RTKMG26MZBZ9P38H3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM4WP1TSJ6YSK75FETVE6D7P
+        timestamp: 2026-03-20T05:49:54.264Z
     examined_commit: 818b53f420eda826592758a52a7691fd0b055d75
     external_links: []
     lifecycle_state: open
@@ -26409,7 +26416,28 @@ reviews:
               the fallback watcher that runs on Linux.
             created_at: 2026-03-20T05:49:29.785Z
         kind: blocker
+      - _ulid: 01KM4WP1TSJ6YSK75FETVE6D7P
+        entries:
+          - _ulid: 01KM4WP1TS2DYFKHABG97BCEMY
+            author: Jacob Chapel
+            body: "Evidence log: Files read: packages/daemon/src/project-context.ts,
+              packages/daemon/src/session-watcher.ts, packages/daemon/src/websocket/pubsub.ts,
+              packages/web-ui/src/lib/query/ws-invalidation.ts,
+              packages/web-ui/src/lib/stores/connection.svelte.ts,
+              packages/web-ui/src/routes/sessions/+page.svelte,
+              packages/web-ui/tests/e2e/api-watcher.spec.ts,
+              packages/web-ui/tests/e2e/sessions.spec.ts, tests/session-watcher.test.ts,
+              tests/web-ui-tanstack-query.test.ts. Commands run: git diff against dev base, kspec
+              task get, kspec validate, rg AC annotation search, npm run typecheck, npm test, npm
+              test -- tests/web-ui-tanstack-query.test.ts tests/session-watcher.test.ts, and a tsx
+              repro that created one session directory plus session.yaml and observed two watcher
+              callbacks. Claims verified: source-agnostic sessions topic wiring exists in daemon and
+              UI; targeted tests and full suite pass; duplicate watcher callbacks are reproducible.
+              Categories searched: correctness, edge cases, test quality, integration, error
+              handling."
+            created_at: 2026-03-20T05:49:53.881Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T05:44:13.482Z
-    updated_at: 2026-03-20T05:49:32.490Z
+    updated_at: 2026-03-20T05:49:53.881Z
     notes: []
