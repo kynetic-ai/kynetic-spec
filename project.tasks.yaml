@@ -109774,6 +109774,14 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T05:46:40.672Z
+    - _ulid: 01KM4WTAYBA9HX5TZHGSKTV6N0
+      content: Implemented the item ac remove positional arg rename from id metadata acId -> id to match
+        item ac add. Added batch-schema regression coverage for item ac remove arg validation and
+        updated the writing-specs skill reference to show item ac remove <ref> <id>. Verified with
+        npm test -- tests/batch-schema.test.ts and full npm test.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T05:52:14.283Z
   todos: []
   automation: eligible
 - _ulid: 01KM4KPQ4CJS24TH0NTVXJA1V3
