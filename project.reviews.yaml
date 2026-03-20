@@ -30774,6 +30774,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-20T18:19:56.863Z
+      - _ulid: 01KM67KETC2CX48NYFPWRW7NZF
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM67KEK39NBV8G6QC03RSE1Q
+        timestamp: 2026-03-20T18:19:57.644Z
     examined_commit: 8334eae8de18d4abe39d8b6e91fcbe1f0642553f
     external_links: []
     lifecycle_state: open
@@ -30783,8 +30790,21 @@ reviews:
       content_hash: ""
       ref: "@01KM5Z4M7YQN173XSB98TPV8Y2"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM67KEK39NBV8G6QC03RSE1Q
+        entries:
+          - _ulid: 01KM67KEK4V09PM95S34BDZSG4
+            author: Jacob Chapel
+            body: |-
+              Review evidence log
+
+              Files read: packages/daemon/src/middleware/project-context.ts, packages/daemon/src/routes/{enum-utils,items,meta,plans,reviews,sessions,tasks,triage,validation,agent-dispatch}.ts, tests/{daemon-api-input-validation,daemon-agent-dispatch-routes,daemon-review-verdicts-api,cli-mutation-input-validation}.test.ts
+              Commands run: git diff/stat, kspec task get, kspec item get, kspec review get/for-task, grep AC annotations, kspec validate, npm test, git worktree list
+              Claims verified: prior blockers fixed by validating /api/reviews subject_type against canonical review subject types and preserving the legacy dispatched session trigger alias at the framework boundary; verified in route schemas and daemon-api-input-validation coverage
+              Categories searched: correctness, edge cases, error handling, test quality, integration; no new findings.
+            created_at: 2026-03-20T18:19:57.412Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T18:15:04.722Z
-    updated_at: 2026-03-20T18:19:56.635Z
+    updated_at: 2026-03-20T18:19:57.412Z
     notes: []
