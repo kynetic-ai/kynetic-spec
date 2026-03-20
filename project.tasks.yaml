@@ -109532,3 +109532,25 @@
   created_at: 2026-03-20T00:00:27.200Z
   notes: []
   todos: []
+- _ulid: 01KM4A3W025YNGAGH5JT6483HZ
+  slugs:
+    - task-investigate-npm-test-teardown-hang-after-green-suite-run
+  title: Investigate npm test teardown hang after green suite run
+  type: task
+  description: Diagnose why npm test can remain alive in teardown after green suite output, identify
+    the stuck handle or process, and restore a reliably terminating required test gate.
+  spec_ref: null
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - testing
+    - infra
+  vcs_refs: []
+  created_at: 2026-03-20T00:25:23.714Z
+  notes: []
+  todos: []
