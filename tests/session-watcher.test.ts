@@ -69,6 +69,40 @@ describeOrSkip('SessionWatcher', () => {
 		await watcher.stop();
 	});
 
+	it('coalesces one logical session creation into a single callback', async () => {
+		const onSessionChange = vi.fn();
+		const sessionsDir = join(projectDir, '.kspec-sessions');
+		await mkdir(sessionsDir, { recursive: true });
+		const watcher = new SessionWatcher({
+			sessionsDir,
+			onSessionChange,
+			onError: vi.fn()
+		});
+
+		await watcher.start();
+
+		const sessionDir = join(projectDir, '.kspec-sessions', '01JTESTSESSIONWATCHER0000003');
+		const metadataPath = join(sessionDir, 'session.yaml');
+		await mkdir(sessionDir, { recursive: true });
+		await writeFile(
+			metadataPath,
+			[
+				'id: 01JTESTSESSIONWATCHER0000003',
+				'agent_type: task-worker',
+				'status: active',
+				'started_at: "2026-03-19T12:00:00.000Z"',
+				''
+			].join('\n')
+		);
+
+		await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
+
+		expect(onSessionChange).toHaveBeenCalledTimes(1);
+		expect(onSessionChange).toHaveBeenCalledWith(sessionDir);
+
+		await watcher.stop();
+	});
+
 	it('stops emitting after watcher stop', async () => {
 		const onSessionChange = vi.fn();
 		const watcher = new SessionWatcher({

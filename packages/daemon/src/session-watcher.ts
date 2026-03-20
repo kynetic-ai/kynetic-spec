@@ -7,7 +7,7 @@
 
 import { existsSync, watch, type FSWatcher } from 'fs';
 import chokidar, { type FSWatcher as ChokidarWatcher } from 'chokidar';
-import { join } from 'path';
+import { join, relative, sep } from 'path';
 
 export interface SessionWatcherOptions {
 	sessionsDir: string;
@@ -77,18 +77,39 @@ export class SessionWatcher {
 	}
 
 	private handleFileChange(filePath: string): void {
-		const existingTimer = this.debounceTimers.get(filePath);
+		const debounceKey = this.getDebounceKey(filePath);
+		const existingTimer = this.debounceTimers.get(debounceKey);
 		if (existingTimer) {
 			clearTimeout(existingTimer);
 		}
 
 		const timer = setTimeout(() => {
-			this.debounceTimers.delete(filePath);
-			this.options.onSessionChange(filePath);
+			this.debounceTimers.delete(debounceKey);
+			this.options.onSessionChange(this.getBroadcastPath(filePath));
 			this.retryCount = 0;
 		}, this.debounceMs);
 
-		this.debounceTimers.set(filePath, timer);
+		this.debounceTimers.set(debounceKey, timer);
+	}
+
+	private getDebounceKey(filePath: string): string {
+		const sessionRoot = this.getSessionRoot(filePath);
+		return sessionRoot ?? filePath;
+	}
+
+	private getBroadcastPath(filePath: string): string {
+		const sessionRoot = this.getSessionRoot(filePath);
+		return sessionRoot ?? filePath;
+	}
+
+	private getSessionRoot(filePath: string): string | null {
+		const relativePath = relative(this.options.sessionsDir, filePath);
+		if (!relativePath || relativePath === '.' || relativePath.startsWith('..')) {
+			return null;
+		}
+
+		const [sessionId] = relativePath.split(sep).filter(Boolean);
+		return sessionId ? join(this.options.sessionsDir, sessionId) : null;
 	}
 
 	private async handleWatcherError(error: Error): Promise<void> {
