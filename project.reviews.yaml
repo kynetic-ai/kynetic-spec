@@ -30639,6 +30639,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-20T18:13:58.634Z
         completed_at: 2026-03-20T18:13:58.634Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Initial full-suite run hit a non-reproducing failure in
+          tests/agent-dispatch-engine.test.ts; reran that file successfully, then reran full npm
+          test successfully: 294 files passed, 6678 tests passed, 3 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T18:13:58.634Z
+        completed_at: 2026-03-20T18:13:58.634Z
     events:
       - _ulid: 01KM66Q6721SHDQ9N7YD5CNVFD
         actor: Jacob Chapel
@@ -30660,6 +30672,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-20T18:13:58.877Z
+      - _ulid: 01KM678GW3AJBF1849Z8XJZK7G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T18:13:59.300Z
     examined_commit: 6b9464befb19bc5ba24e78f661a6110b8d673ff3
     external_links: []
     lifecycle_state: open
