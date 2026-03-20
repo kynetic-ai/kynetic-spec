@@ -3423,6 +3423,9 @@ features:
       validation because it is declarative, cannot be bypassed by handler
       code paths, and produces consistent error responses. Existing
       handler-level validation may remain as defense-in-depth.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
