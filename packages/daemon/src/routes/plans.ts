@@ -19,12 +19,14 @@ import {
   type LoadedPlan,
   type LoadedTask,
 } from '../../parser/index.js';
+import { PlanStatusSchema } from '../../schema/plan.js';
 import {
   countPlanTaskProgress,
   getLinkedPlanSummaryTasks,
   isCountedInPlanSummary,
 } from '../../lib/plan-summary.js';
 import type { PlanSummary, PlanDetail } from '@kynetic-ai/shared';
+import { enumArrayUnion } from './enum-utils.js';
 
 interface PlansRouteOptions {}
 
@@ -85,7 +87,7 @@ export function createPlansRoutes(options: PlansRouteOptions = {}) {
       },
       {
         query: t.Object({
-          status: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          status: t.Optional(enumArrayUnion(PlanStatusSchema.options)),
         }),
       }
     )

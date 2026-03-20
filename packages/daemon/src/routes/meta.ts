@@ -29,9 +29,9 @@ import {
 } from '../../parser/index.js';
 import { commitIfShadow, getShadowStatus, hasRemoteTracking } from '../../parser/shadow.js';
 import type { Agent } from '../../schema/meta.js';
-import { AgentDispatchEventSchema } from '../../schema/meta.js';
+import { AgentDispatchEventSchema, ObservationTypeSchema } from '../../schema/meta.js';
 import { AgentDispatchAutomationFilterSchema } from '../../schema/task.js';
-import { enumUnion } from './enum-utils.js';
+import { enumArrayUnion, enumUnion } from './enum-utils.js';
 
 interface MetaRouteOptions {}
 
@@ -190,7 +190,7 @@ export function createMetaRoutes(options: MetaRouteOptions = {}) {
       {
         query: t.Object({
           resolved: t.Optional(t.String()),
-          type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          type: t.Optional(enumArrayUnion(ObservationTypeSchema.options)),
         }),
       }
     )

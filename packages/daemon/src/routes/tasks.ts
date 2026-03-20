@@ -33,7 +33,10 @@ import {
   type LoadedTask,
 } from '../../parser/index.js';
 import { commitIfShadow } from '../../parser/shadow.js';
+import { TaskStatusSchema, TaskTypeSchema } from '../../schema/common.js';
+import { AutomationStatusSchema } from '../../schema/task.js';
 import type { PubSubManager } from '../websocket/pubsub';
+import { enumArrayUnion, enumUnion } from './enum-utils.js';
 import { getRelatedSessionsForTask } from './session-related.js';
 import { resolveRefTitle, resolveRefEntries } from './ref-resolution.js';
 
@@ -143,10 +146,10 @@ export function createTasksRoutes(options: TasksRouteOptions) {
       },
       {
         query: t.Object({
-          status: t.Optional(t.Union([t.String(), t.Array(t.String())])),
-          type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          status: t.Optional(enumArrayUnion(TaskStatusSchema.options)),
+          type: t.Optional(enumArrayUnion(TaskTypeSchema.options)),
           tag: t.Optional(t.Union([t.String(), t.Array(t.String())])),
-          automation: t.Optional(t.String()),
+          automation: t.Optional(enumUnion(AutomationStatusSchema.options)),
           plan: t.Optional(t.String()),
           limit: t.Optional(t.String()),
           offset: t.Optional(t.String()),

@@ -28,6 +28,12 @@ import {
   type LoadedSpecItem,
   type LoadedTask,
 } from '../../parser/index.js';
+import {
+  ImplementationStatusSchema,
+  ItemTypeSchema,
+  MaturitySchema,
+} from '../../schema/common.js';
+import { enumArrayUnion } from './enum-utils.js';
 import { getRelatedSessionsForItem } from './session-related.js';
 
 interface ItemsRouteOptions {}
@@ -242,9 +248,9 @@ export function createItemsRoutes(options: ItemsRouteOptions = {}) {
       },
       {
         query: t.Object({
-          type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
-          maturity: t.Optional(t.Union([t.String(), t.Array(t.String())])),
-          implementation: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          type: t.Optional(enumArrayUnion(ItemTypeSchema.options)),
+          maturity: t.Optional(enumArrayUnion(MaturitySchema.options)),
+          implementation: t.Optional(enumArrayUnion(ImplementationStatusSchema.options)),
           tag: t.Optional(t.Union([t.String(), t.Array(t.String())])),
           plan: t.Optional(t.String()),
           limit: t.Optional(t.String()),

@@ -44,8 +44,14 @@ import {
 } from '../../parser/index.js';
 import { resolveRefTitle } from './ref-resolution.js';
 import { getSessionCache } from '../../sessions/cache.js';
-import { SessionStatusSchema } from '../../sessions/types.js';
+import { SessionStatusSchema, SessionTriggerSchema } from '../../sessions/types.js';
 import { parseTimeSpec } from '../../utils/time.js';
+import { enumArrayUnion } from './enum-utils.js';
+
+const VALID_SESSION_TRIGGER_FILTERS = [
+  ...SessionTriggerSchema.options,
+  'dispatched',
+] as const;
 
 type SessionListQuery = {
   status?: string | string[];
@@ -311,10 +317,11 @@ export function createSessionRoutes() {
       };
     }, {
       query: t.Object({
-        status: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+        status: t.Optional(enumArrayUnion(SessionStatusSchema.options)),
         agent_type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
         agent_id: t.Optional(t.Union([t.String(), t.Array(t.String())])),
-        trigger: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+        // Preserve the existing "dispatched" shorthand for any task.* trigger.
+        trigger: t.Optional(enumArrayUnion(VALID_SESSION_TRIGGER_FILTERS)),
         task_id: t.Optional(t.String()),
         spec_ref: t.Optional(t.String()),
         since: t.Optional(t.String()),
@@ -358,10 +365,11 @@ export function createSessionRoutes() {
     }, {
       query: t.Object({
         q: t.String(),
-        status: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+        status: t.Optional(enumArrayUnion(SessionStatusSchema.options)),
         agent_type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
         agent_id: t.Optional(t.Union([t.String(), t.Array(t.String())])),
-        trigger: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+        // Preserve the existing "dispatched" shorthand for any task.* trigger.
+        trigger: t.Optional(enumArrayUnion(VALID_SESSION_TRIGGER_FILTERS)),
         task_id: t.Optional(t.String()),
         spec_ref: t.Optional(t.String()),
         since: t.Optional(t.String()),
