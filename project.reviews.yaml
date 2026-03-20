@@ -25919,6 +25919,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM4VM908ZR5D6144W8GSWT8N
         timestamp: 2026-03-20T05:31:27.320Z
+      - _ulid: 01KM4VM9Y60PCPBH8WT7HMBBWD
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM4VM9QTSG6CWBMCXBJPBSFH
+        timestamp: 2026-03-20T05:31:28.070Z
     examined_commit: 148c2d03728085839fd9a47a6ad7cc129ef789a4
     external_links: []
     lifecycle_state: open
@@ -25965,7 +25972,29 @@ reviews:
               indicator. That violates the scrolled-update behavior required for non-top viewers.
             created_at: 2026-03-20T05:31:27.112Z
         kind: blocker
+      - _ulid: 01KM4VM9QTSG6CWBMCXBJPBSFH
+        entries:
+          - _ulid: 01KM4VM9QTT4YPSVENYD23CD2V
+            author: Jacob Chapel
+            body: "Evidence log\\nFiles read: packages/daemon/src/project-context.ts,
+              packages/daemon/src/session-watcher.ts,
+              packages/web-ui/src/lib/query/ws-invalidation.ts,
+              packages/web-ui/src/lib/stores/connection.svelte.ts,
+              packages/web-ui/src/routes/sessions/+page.svelte,
+              packages/web-ui/tests/e2e/sessions.spec.ts,
+              packages/web-ui/tests/e2e/api-watcher.spec.ts, tests/session-watcher.test.ts,
+              tests/web-ui-tanstack-query.test.ts,
+              packages/daemon/src/routes/sessions.ts.\\nCommands run: git diff --stat, git diff
+              base..head, kspec task get, kspec validate, rg AC annotations, npm run typecheck, npm
+              test.\\nClaims verified: worker claim that typecheck passes (confirmed); worker claim
+              that full npm test still has an unrelated baseline failure (confirmed, now a single
+              failing cli-plan test in this snapshot).\\nCategories searched: correctness (found
+              blocker), edge cases (checked scrolled/not-at-top path), test quality/AC coverage
+              (found blocker), integration (checked watcher -> WS invalidation -> page path), error
+              handling (reviewed watcher recovery/error events)."
+            created_at: 2026-03-20T05:31:27.866Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T05:26:57.283Z
-    updated_at: 2026-03-20T05:31:27.112Z
+    updated_at: 2026-03-20T05:31:27.866Z
     notes: []
