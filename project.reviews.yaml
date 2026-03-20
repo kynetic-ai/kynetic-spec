@@ -29390,6 +29390,12 @@ reviews:
         payload:
           thread_ulid: 01KM612190HA4BY06GPFJDVFT5
         timestamp: 2026-03-20T16:43:37.694Z
+      - _ulid: 01KM62332PPGKTXRKR32Q25MPQ
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM6122S62YYHVDAVKYKYEG0J
+        timestamp: 2026-03-20T16:43:38.455Z
     examined_commit: cef00da87ceba5a7f6cc96733b0f9de12a6f6f29
     external_links: []
     lifecycle_state: closed
@@ -29452,6 +29458,8 @@ reviews:
               debt noted in the prior review evidence."
             created_at: 2026-03-20T16:43:36.705Z
         kind: nit
+        resolved_at: 2026-03-20T16:43:38.220Z
+        resolved_by: Jacob Chapel
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -29461,7 +29469,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T16:26:00.099Z
     created_at: 2026-03-20T16:21:45.833Z
-    updated_at: 2026-03-20T16:43:37.460Z
+    updated_at: 2026-03-20T16:43:38.220Z
     notes: []
   - _ulid: 01KM61J0E012X86GNSKPR826D5
     slugs: []
