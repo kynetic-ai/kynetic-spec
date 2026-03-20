@@ -1376,6 +1376,11 @@ features:
             id: ac-1
             then: The task leaves the blocked state and clears its `blocked_by` entries.
             when: The user runs `kspec task unblock <ref>`.
+          - given: A blocked task is being restored to fix-cycle follow-up rather than fresh pending work
+            id: ac-2
+            then: the task may return to needs_work instead of pending so follow-up work remains visible as
+              fix-cycle work
+            when: the task is unblocked through a supported exception path
       - _ulid: 01JHNKA9W2CTSK600000000000
         slugs:
           - task-cancel
@@ -8281,6 +8286,12 @@ features:
                   must not trigger a write or commit on its own.
                 when: The computed state (health, lifecycle_state, active_role, cleanup, integration,
                   canonical_branch_head) is identical to the currently persisted record
+              - given: An automation-eligible task is already in_progress and its recorded branch or workspace is
+                  missing when the dispatcher tries to resume it
+                id: ac-11
+                then: the dispatcher attempts to recover or re-provision the canonical workspace and branch lineage
+                  instead of discarding the in_progress queue entry as workspace missing
+                when: the dispatcher reconstructs active workspace state for that task
             tags: []
             requirements:
               - _ulid: 01KKFY93ZNBHPNV5S09KQEXBFA
