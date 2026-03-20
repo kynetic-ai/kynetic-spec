@@ -13760,18 +13760,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/align-item-ac-add-remove-ac-identifier-naming/01km4kpp
-    canonical_branch_head: ea83d724ada00aeefe0660987edd7a32c1c879c5
+    canonical_branch_head: 50ebf0b9ccf89045e5c51b97347f276509a4091e
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T06:26:00.688Z
+      updated_at: 2026-03-20T06:37:08.498Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T06:26:00.688Z
+      updated_at: 2026-03-20T06:37:08.498Z
     integration:
       status: pending
       detail: null
@@ -13779,7 +13779,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ce5e2029ce243ddab6173a031bf47c297c334690
-      updated_at: 2026-03-20T06:26:00.688Z
+      updated_at: 2026-03-20T06:37:08.498Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM4KPPDWB2PQ1YQNYQDK3SJH"
@@ -13787,9 +13787,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T06:25:08.674Z
-      last_reconciled_at: 2026-03-20T06:26:00.688Z
+      last_reconciled_at: 2026-03-20T06:37:08.498Z
       created_at: 2026-03-20T05:43:51.367Z
-      updated_at: 2026-03-20T06:26:00.688Z
+      updated_at: 2026-03-20T06:37:08.498Z
     workspace_id: dispatch-workspace-01KM4KPPDWB2PQ1YQNYQDK3SJH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
