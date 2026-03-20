@@ -110925,8 +110925,11 @@
   spec_ref: "@parser-write-type-safety"
   plan_ref: "@plan-input-validation-hardening"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev after approved review 01KM67QH. Added parser write-path schema
+    validation for task/spec creation, tightened plan spec type validation, and verified with npm
+    test plus manual invalid-input check.
   depends_on:
     - "@task-schema-derived-types"
   context: []
@@ -110948,6 +110951,7 @@
   created_at: 2026-03-20T15:52:03.764Z
   started_at: 2026-03-20T18:14:51.749Z
   submitted_at: 2026-03-20T18:21:03.530Z
+  completed_at: 2026-03-20T18:28:07.839Z
   notes:
     - _ulid: 01KM67E2M3MAVPY11QGFD7PNB0
       content: Added schema validation at parser write paths before entity construction. createTask() and
