@@ -28109,6 +28109,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-20T06:50:59.960Z
+      - _ulid: 01KM506EYNYPW0GJ26AKAMCAN7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM506EQK5QZQC4F7R6JM1M4Z
+        timestamp: 2026-03-20T06:51:17.334Z
     examined_commit: 6d437fe5f92df763c535b4aff2f82663d3635e36
     external_links: []
     lifecycle_state: open
@@ -28139,7 +28146,28 @@ reviews:
               subscription accounting.
             created_at: 2026-03-20T06:50:57.322Z
         kind: blocker
+      - _ulid: 01KM506EQK5QZQC4F7R6JM1M4Z
+        entries:
+          - _ulid: 01KM506EQKCM9YDH1HB1NKRB5D
+            author: Jacob Chapel
+            body: "Evidence log:\\nFiles read: packages/web-ui/src/routes/sessions/+page.svelte,
+              packages/web-ui/src/lib/query/ws-invalidation.ts,
+              packages/web-ui/src/lib/websocket/manager.ts,
+              packages/web-ui/src/routes/+layout.svelte, packages/daemon/src/project-context.ts,
+              packages/daemon/src/session-watcher.ts, src/parser/shadow.ts,
+              src/cli/commands/setup.ts, src/agent-runtime/dispatch.ts,
+              src/agent-runtime/workspace.ts, packages/web-ui/tests/e2e/sessions.spec.ts,
+              packages/web-ui/tests/e2e/api-watcher.spec.ts, tests/session-watcher.test.ts,
+              tests/daemon-context-manager.test.ts.\\nCommands run: kspec task get, kspec review
+              for-task, git diff against dev base, kspec validate, AC annotation grep, npm run
+              typecheck, npm test, targeted source inspections with sed/nl.\\nClaims verified: full
+              suite passes on this snapshot; typecheck passes; layout-level setupWsInvalidation owns
+              global topic subscriptions; WebSocketManager unsubscribe is not
+              reference-counted.\\nCategories searched: correctness, integration, test quality, edge
+              cases, error handling."
+            created_at: 2026-03-20T06:51:17.107Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T06:46:46.644Z
-    updated_at: 2026-03-20T06:50:59.735Z
+    updated_at: 2026-03-20T06:51:17.107Z
     notes: []
