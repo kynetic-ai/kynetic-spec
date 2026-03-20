@@ -109916,8 +109916,11 @@
   spec_ref: "@triage-cli-commands"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev as 8d98a994f365ceef2e620571967d82c60cf8cdef after approved review.
+    Verified the triage re-record path now returns the persisted record ULID, interactive triage
+    uses persisted refs, manual repro passes, and npm test passed (6639 tests).
   depends_on: []
   context: []
   priority: 2
@@ -109939,6 +109942,7 @@
   created_at: 2026-03-20T03:28:25.761Z
   started_at: 2026-03-20T04:45:57.324Z
   submitted_at: 2026-03-20T04:52:59.933Z
+  completed_at: 2026-03-20T04:59:20.390Z
   notes:
     - _ulid: 01KM4S8JWFYNEQWRCPVZV90ZR1
       content: Investigated triage record persistence mismatch. The YAML save path was already upserting
