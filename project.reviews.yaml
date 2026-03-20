@@ -25963,6 +25963,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T05:31:41.966Z
+      - _ulid: 01KM4W95ZYCAWEMZQDCBS55ZNC
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM4VM908ZR5D6144W8GSWT8N
+        timestamp: 2026-03-20T05:42:52.158Z
     examined_commit: 148c2d03728085839fd9a47a6ad7cc129ef789a4
     external_links: []
     lifecycle_state: closed
@@ -26008,6 +26014,13 @@ reviews:
               so `processLiveRefresh()` returns early and never freezes the list or shows the
               indicator. That violates the scrolled-update behavior required for non-top viewers.
             created_at: 2026-03-20T05:31:27.112Z
+          - _ulid: 01KM4W95Q9X1AYX2VYFVKXTWN5
+            author: Jacob Chapel
+            body: Fixed in commit 818b53f420eda826592758a52a7691fd0b055d75. The scrolled freshness path now
+              fingerprints the loaded session rows (ids plus status/timing/counters) and search
+              results instead of only comparing total and first-row id, so in-place status/order
+              changes still freeze the visible list and surface the non-blocking indicator.
+            created_at: 2026-03-20T05:42:51.881Z
         kind: blocker
       - _ulid: 01KM4VM9QTSG6CWBMCXBJPBSFH
         entries:
@@ -26040,7 +26053,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T05:31:41.966Z
     created_at: 2026-03-20T05:26:57.283Z
-    updated_at: 2026-03-20T05:31:41.966Z
+    updated_at: 2026-03-20T05:42:51.881Z
     notes: []
   - _ulid: 01KM4W0PKQGFRN5AFC2CR76ZGC
     slugs: []
