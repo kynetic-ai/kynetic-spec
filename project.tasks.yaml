@@ -110504,5 +110504,15 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T07:04:32.231Z
+    - _ulid: 01KM51ECQNVWJFA54ACCGMVQH0
+      content: "Addressed the cycle-6 blocker by replacing the brittle source-agnostic sessions E2E with a
+        real .kspec-sessions fixture mutation in the isolated daemon project. The test now verifies
+        /sessions freshness through the daemon session watcher and centralized TanStack Query
+        invalidation path instead of synthetic WebSocket injection. Verification: npm test passed
+        (290 files, 6659 tests). Playwright remains blocked in dispatch because the E2E fixture
+        cannot start/stop the daemon from inside an agent invocation."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T07:13:05.781Z
   todos: []
   automation: eligible
