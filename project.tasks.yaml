@@ -110519,5 +110519,16 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T07:17:47.719Z
+    - _ulid: 01KM524X0EV0HCFC7HQP1DHA8Z
+      content: "Fix cycle update: session watcher now stays live when the daemon starts before
+        .kspec-sessions exists. Instead of returning early, it polls for directory creation,
+        attaches the real watcher once the directory appears, and emits any already-present session
+        roots so the first runtime-created session still broadcasts freshness updates. Added a
+        regression test that starts without .kspec-sessions, creates the first session later, and
+        verifies the watcher emits exactly once. Verification: npm run typecheck; npm test --
+        tests/session-watcher.test.ts tests/web-ui-tanstack-query.test.ts; npm test."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T07:25:23.342Z
   todos: []
   automation: eligible
