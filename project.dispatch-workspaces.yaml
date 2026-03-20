@@ -12528,9 +12528,10 @@ workspaces:
       canonicalBranchHead: 05e31856c8a3ccf29936c1b0df5efe5902a98977
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
-      invalidationReasons: []
-      lastRole: reviewer
-      lastRunAt: 2026-03-20T00:10:14.642Z
+      invalidationReasons:
+        - canonical-branch-head-changed
+      lastRole: worker
+      lastRunAt: 2026-03-20T00:26:12.384Z
       roleStates:
         reviewer:
           status: succeeded
@@ -12542,11 +12543,12 @@ workspaces:
           steps: []
         worker:
           status: succeeded
-          canonicalBranchHead: 674cabcd8646e873f128fa67b9d2db44ae74797a
+          canonicalBranchHead: 05e31856c8a3ccf29936c1b0df5efe5902a98977
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
-          invalidationReasons: []
-          lastRunAt: 2026-03-19T23:58:21.497Z
+          invalidationReasons:
+            - canonical-branch-head-changed
+          lastRunAt: 2026-03-20T00:26:12.384Z
           steps: []
       steps: []
     branch_provenance:
@@ -12586,7 +12588,7 @@ workspaces:
       last_active_at: 2026-03-20T00:10:15.518Z
       last_reconciled_at: 2026-03-20T00:26:10.618Z
       created_at: 2026-03-19T23:58:20.872Z
-      updated_at: 2026-03-20T00:26:10.618Z
+      updated_at: 2026-03-20T00:26:12.384Z
     workspace_id: dispatch-workspace-01KM3ZMF9C5B3JEDTE4AR74K46
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
