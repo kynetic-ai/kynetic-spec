@@ -24929,7 +24929,18 @@ reviews:
     slugs: []
     title: Review fix-shared-checkout integration targeting
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- tests/dispatch-target-sync.test.ts
+          tests/dispatch-branch-push-lifecycle.test.ts passed (43 tests).
+        name: dispatch targeted tests
+        required: true
+        runner: npm
+        created_at: 2026-03-20T04:27:36.299Z
+        completed_at: 2026-03-20T04:27:36.299Z
     events:
       - _ulid: 01KM4QQRPWNC31K2XPPEDNKCS4
         actor: Jacob Chapel
@@ -24958,6 +24969,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM4QZB73XMK870EFA4MSNYQE
         timestamp: 2026-03-20T04:27:35.801Z
+      - _ulid: 01KM4QZC6SEWCSDJ59BMVP0WVH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: dispatch targeted tests
+        timestamp: 2026-03-20T04:27:36.537Z
     examined_commit: 44d11f272a18ce4c02be15bc1a33a12cb3fcc310
     external_links: []
     lifecycle_state: open
@@ -25010,5 +25028,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T04:23:27.197Z
-    updated_at: 2026-03-20T04:27:35.523Z
+    updated_at: 2026-03-20T04:27:36.299Z
     notes: []
