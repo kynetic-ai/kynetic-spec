@@ -27745,6 +27745,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T06:33:56.192Z
+      - _ulid: 01KM4ZV7C7ZQV4G38H0JEF2AV0
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM4Z0YV8BZCTAHMJ66YVSEWD
+        timestamp: 2026-03-20T06:45:09.127Z
     examined_commit: 972087fb3f745be8663ade6f6a05d502f993e091
     external_links: []
     lifecycle_state: closed
@@ -27772,6 +27778,12 @@ reviews:
               double-watch the same project and leak file handles. Please stop any already-started
               watcher before rethrowing here."
             created_at: 2026-03-20T06:30:48.424Z
+          - _ulid: 01KM4ZV74N5W6MS9CZM9KFQCQG
+            author: Jacob Chapel
+            body: Fixed in commit 6d437fe5f92df763c535b4aff2f82663d3635e36 by rolling back any already-started
+              watchers before rethrowing startup errors in ProjectContextManager.startWatcher().
+              Added regression coverage for the partial-startup failure path.
+            created_at: 2026-03-20T06:45:08.885Z
         kind: blocker
       - _ulid: 01KM4Z2XW21FZMMBVTVPW8M4FQ
         entries:
@@ -27827,7 +27839,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T06:33:56.191Z
     created_at: 2026-03-20T06:26:01.525Z
-    updated_at: 2026-03-20T06:33:56.192Z
+    updated_at: 2026-03-20T06:45:08.885Z
     notes: []
   - _ulid: 01KM4ZGKRHFZRRABZ0PJPGY8X2
     slugs: []
