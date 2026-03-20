@@ -24714,6 +24714,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-20T02:23:49.006Z
         completed_at: 2026-03-20T02:23:49.006Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Passed npm test -- tests/dispatch-workspace-config.test.ts
+          tests/dispatch-workspace-registry.test.ts (45 tests).
+        name: workspace-focused-tests
+        required: false
+        runner: npm
+        created_at: 2026-03-20T02:23:49.701Z
+        completed_at: 2026-03-20T02:23:49.701Z
     events:
       - _ulid: 01KM4GJW6CDETRFKPV2FAASDNQ
         actor: Jacob Chapel
@@ -24749,6 +24760,13 @@ reviews:
           status: fail
           name: kspec-validate
         timestamp: 2026-03-20T02:23:49.208Z
+      - _ulid: 01KM4GWQMFVFR8P8KX9C3M5YVT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: workspace-focused-tests
+        timestamp: 2026-03-20T02:23:49.903Z
     examined_commit: 3d36ababa8aa4443911217f748d355cc64601336
     external_links: []
     lifecycle_state: open
@@ -24788,5 +24806,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T02:18:26.892Z
-    updated_at: 2026-03-20T02:23:49.006Z
+    updated_at: 2026-03-20T02:23:49.701Z
     notes: []
