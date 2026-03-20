@@ -808,17 +808,17 @@ features:
           - item-ac
         title: kspec item ac
         type: requirement
-        description: >-
+        description: |-
           kspec item ac <subcommand>
 
-
           Subcommands:
+          - add <ref> --given '...' --when '...' --then '...': Add acceptance criterion
+          - list <ref>: List acceptance criteria for an item
+          - set <ref> <ac-id> [options]: Update an acceptance criterion
+          - remove <ref> <id> [--force]: Remove an acceptance criterion
 
-          - add <ref> --given '...' --when '...' --then '...': Add acceptance criterion\n- list
-          <ref>: List acceptance criteria for an item\n- set <ref> <ac-id> [options]: Update an
-          acceptance criterion\n- remove <ref> <id> [--force]: Remove an acceptance
-          criterion\n\nManages acceptance criteria on spec items via CLI.\nHandles proper YAML
-          escaping to prevent formatting errors.
+          Manages acceptance criteria on spec items via CLI.
+          Handles proper YAML escaping to prevent formatting errors.
         status:
           maturity: draft
           implementation: implemented
