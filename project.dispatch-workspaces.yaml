@@ -13988,7 +13988,7 @@ workspaces:
         head: 7846cea81ec4fe369c73b3afe876b13407fbb609
         last_seen_at: 2026-03-20T06:14:20.303Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/ignore-transient-plans-directory-during-plan-sessions-01km4msh
-  - active_role: worker
+  - active_role: null
     base_branch_point: afb99935cbc5b9605c1f0538421a39bda2884823
     bootstrap:
       status: succeeded
@@ -14053,12 +14053,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T14:32:59.594Z
+      updated_at: 2026-03-20T14:34:08.626Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T14:32:59.594Z
+      updated_at: 2026-03-20T14:34:08.626Z
     integration:
       status: pending
       detail: null
@@ -14066,17 +14066,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: afb99935cbc5b9605c1f0538421a39bda2884823
-      updated_at: 2026-03-20T14:32:59.594Z
-    lifecycle_state: active
+      updated_at: 2026-03-20T14:34:08.626Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM289GY9589XH063SSFMBJFQ"
     task_slug: task-implement-kspec-no-daemon
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T14:23:08.550Z
-      last_reconciled_at: 2026-03-20T14:32:59.594Z
+      last_reconciled_at: 2026-03-20T14:34:08.626Z
       created_at: 2026-03-20T13:58:41.354Z
-      updated_at: 2026-03-20T14:32:59.594Z
+      updated_at: 2026-03-20T14:34:08.626Z
     workspace_id: dispatch-workspace-01KM289GY9589XH063SSFMBJFQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
