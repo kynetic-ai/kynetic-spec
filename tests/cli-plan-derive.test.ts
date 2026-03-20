@@ -528,6 +528,56 @@ derive_from_specs: false
     expect(derivedPlan.derived_tasks).toEqual(["@migration-guide"]);
   });
 
+  it("derives manual tasks from a task-only plan without requiring a specs block or module", async () => {
+    // AC: @plan-derive-enhanced ac-task-only-derive, ac-task-only-derive-empty-spec-results, ac-task-only-derive-plan-linkage
+    const planPath = await writePlanFile(
+      tempDir,
+      "task-only-plan.md",
+      `# Task Only Plan
+
+## Tasks
+
+derive_from_specs: false
+
+\`\`\`yaml
+- title: Update review version linkage
+  slug: update-review-version-linkage
+  priority: 2
+\`\`\`
+`,
+    );
+
+    kspec(`plan import "${planPath}" --status approved`, tempDir);
+
+    const result = kspecJson<{
+      module_ref: string;
+      created_specs: string[];
+      created_tasks: string[];
+    }>("plan derive @plan-task-only-plan --tasks", tempDir);
+
+    expect(result.module_ref).toBe("");
+    expect(result.created_specs).toEqual([]);
+    expect(result.created_tasks).toEqual(["@update-review-version-linkage"]);
+
+    const task = kspecJson<{
+      plan_ref: string;
+      spec_ref: string | null;
+      priority: number;
+    }>("task get @update-review-version-linkage", tempDir);
+    expect(task.plan_ref).toBe("@plan-task-only-plan");
+    expect(task.spec_ref).toBeNull();
+    expect(task.priority).toBe(2);
+
+    const derivedPlan = kspecJson<{
+      status: string;
+      derived_specs: string[];
+      derived_tasks: string[];
+    }>("plan get @plan-task-only-plan", tempDir);
+    expect(derivedPlan.status).toBe("active");
+    expect(derivedPlan.derived_specs).toEqual([]);
+    expect(derivedPlan.derived_tasks).toEqual(["@update-review-version-linkage"]);
+  });
+
   it("supports dry-run and structured JSON output without mutating plan state", async () => {
     // AC: @plan-derive-enhanced ac-dry-run, ac-json-output
     // AC: @trait-dry-run ac-1, ac-2, ac-3, ac-6
@@ -626,7 +676,7 @@ derive_from_specs: false
     expect(dependencySpec.depends_on).toEqual(["@ghost-spec"]);
   });
 
-  it("errors when plan content has no specs section or fenced YAML block", async () => {
+  it("errors when plan content defines no derivable specs or tasks", async () => {
     // AC: @plan-derive-enhanced ac-no-specs-content
     // AC: @trait-error-guidance ac-5
     const planPath = await writePlanFile(
@@ -650,7 +700,8 @@ Just prose, no structured specs section.
     );
 
     expect(result.exitCode).toBe(2);
-    expect(result.stderr).toContain("No specs found in plan content");
+    expect(result.stderr).toContain("Plan does not define derivable work");
+    expect(result.stderr).toContain("re-run with --tasks");
   });
 
   it("includes actionable ref guidance in text and JSON errors when the plan ref does not resolve", () => {
