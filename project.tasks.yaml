@@ -111014,8 +111014,12 @@
   spec_ref: "@read-side-validation-warnings"
   plan_ref: "@plan-input-validation-hardening"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged dispatch/task/task-read-side-validation-warnings/01km5z4p into dev as
+    52f57a70e817ac22b082a3fa0f759cb97fbe56b1 after approving review @01KM62RF. Added read-side
+    validation warnings for task/spec/inbox/triage/plan loaders and regression coverage for
+    invalid-value reporting.
   depends_on: []
   context: []
   priority: 3
@@ -111037,6 +111041,7 @@
   created_at: 2026-03-20T15:52:05.135Z
   started_at: 2026-03-20T16:45:01.036Z
   submitted_at: 2026-03-20T16:53:43.804Z
+  completed_at: 2026-03-20T17:05:45.386Z
   notes:
     - _ulid: 01KM618VWM3N4MZ2RWBZX99JPV
       content: Implemented read-side validation warnings for task/spec/inbox/triage/plan loaders. Added a
