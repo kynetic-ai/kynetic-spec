@@ -3634,7 +3634,7 @@ describe("Self-trigger suppression", () => {
 
     // Run task start WITHOUT KSPEC_SESSION_ID — event should be posted
     kspec(`task start @${taskId}`, testDir, {
-      env: { ...isolated.env, ...specDirEnv },
+      env: { ...isolated.env, ...specDirEnv, KSPEC_NO_DAEMON: "0" },
     });
     // Give async fire-and-forget fetch time to complete
     await new Promise((r) => setTimeout(r, 200));
@@ -3661,7 +3661,12 @@ describe("Self-trigger suppression", () => {
 
     // Run task start WITH KSPEC_SESSION_ID — event should be suppressed
     kspec(`task start @${taskId}`, testDir, {
-      env: { ...isolated.env, ...specDirEnv, KSPEC_SESSION_ID: "test-session-id" },
+      env: {
+        ...isolated.env,
+        ...specDirEnv,
+        KSPEC_NO_DAEMON: "0",
+        KSPEC_SESSION_ID: "test-session-id",
+      },
     });
     await new Promise((r) => setTimeout(r, 200));
     expect(receivedEvents.length).toBe(0);

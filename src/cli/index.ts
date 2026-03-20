@@ -65,7 +65,7 @@ import {
   findClosestCommand,
   getAllCommands,
 } from "./suggest.js";
-import { PidFileManager } from "./pid-utils.js";
+import { isNoDaemonModeEnabled, PidFileManager } from "./pid-utils.js";
 import { getAlwaysSyncAnnotation, getMutatingAnnotation } from "./command-annotations.js";
 import { setSyncMode, clearSyncMode } from "./sync-mode.js";
 import { spawn } from "child_process";
@@ -156,6 +156,11 @@ async function maybeAutoStartDaemon(): Promise<void> {
 
     // AC: @config-daemon ac-3 — auto_start from config (defaults to true)
     if (!daemonConfig.auto_start) {
+      return;
+    }
+
+    // AC: @multi-directory-daemon ac-32
+    if (isNoDaemonModeEnabled()) {
       return;
     }
 
