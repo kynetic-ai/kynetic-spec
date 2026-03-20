@@ -49,6 +49,7 @@ import {
   cleanupReviewerDispatchWorkspace,
   reconcileDispatchWorkspaceArtifacts,
   discoverWorkspaceForReviewOrFixCycle,
+  fastForwardDispatchIntegrationBranch,
   pushDispatchBranch,
   pushIntegrationTarget,
   runDispatchIntegrationTargetGit,
@@ -2858,8 +2859,9 @@ export class DispatchEngine {
 
     this._targetSyncRunning = true;
     try {
+      let mutationScope;
       try {
-        resolveDispatchIntegrationMutationScope(this.projectDir, this._syncBaseBranch);
+        mutationScope = resolveDispatchIntegrationMutationScope(this.projectDir, this._syncBaseBranch);
       } catch (err) {
         const reason = this._formatUnsafeMutationScopeReason(err, this._syncBaseBranch);
         this._enterDegradedState(reason);
@@ -2900,12 +2902,18 @@ export class DispatchEngine {
 
       // Step 2: Fast-forward merge the target branch
       // AC: @dispatch-remote-branch-sync ac-pull-ff-only — no merge commits
-      const mergeResult = runDispatchIntegrationTargetGit(
-        this.projectDir,
-        this._syncBaseBranch,
-        ["merge", "--ff-only", `${this._syncRemote}/${this._syncBaseBranch}`],
-        { timeout: 10_000 },
-      );
+      const mergeResult = mutationScope.targetBranchCheckedOut
+        ? runDispatchIntegrationTargetGit(
+            this.projectDir,
+            this._syncBaseBranch,
+            ["merge", "--ff-only", `${this._syncRemote}/${this._syncBaseBranch}`],
+            { timeout: 10_000 },
+          )
+        : fastForwardDispatchIntegrationBranch(
+            this.projectDir,
+            this._syncBaseBranch,
+            `${this._syncRemote}/${this._syncBaseBranch}`,
+          );
 
       if (mergeResult.status !== 0) {
         const stderr = mergeResult.stderr?.trim() ?? "";
