@@ -111793,5 +111793,36 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-20T20:19:42.430Z
+    - _ulid: 01KM6F8WPW41B77FVK3XH5DGFV
+      content: >-
+        Implemented ac-11: dangling reference cleanup on item deletion.
+
+
+        Added cleanupDanglingRefs() function in src/cli/commands/item.ts that runs after item
+        deletion but before the shadow commit. It:
+
+        1. Collects all ULIDs and slugs of deleted items
+
+        2. Reloads remaining spec items and scans relationship fields (relates_to, depends_on,
+        implements, tests, traits, supersedes)
+
+        3. Uses updateSpecItem() to remove matching references from spec items
+
+        4. Uses mutateTasksAtomically() to clean task references (depends_on, context, blocked_by,
+        spec_ref)
+
+        5. Reports cleanup count in both human-readable and JSON output
+
+
+        Follows the existing task cancel cleanup pattern (src/cli/commands/task.ts:2282-2307). All
+        reference removals are included in the same shadow commit as the deletion itself (satisfying
+        ac-6).
+
+
+        Added 6 new tests covering: single ref cleanup, multi-item cleanup, cascade cleanup, JSON
+        output, no-op case, and supersedes field cleanup. All 6696 tests pass.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-20T20:34:00.028Z
   todos: []
   automation: eligible
