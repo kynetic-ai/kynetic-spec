@@ -15755,7 +15755,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T22:11:17.491Z
+      updated_at: 2026-03-20T22:11:18.983Z
     integration:
       status: pending
       detail: null
@@ -15764,25 +15764,20 @@ workspaces:
       target_branch: dev
       target_commit: 68e74dc59de2d01a3e1c7b9577526657470cb1c6
       updated_at: 2026-03-20T22:11:17.491Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM6KM0AAVDTJHPFEZGYA59PD"
     task_slug: restore-pre-block-status-on-task-unblock
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T22:05:49.215Z
-      last_reconciled_at: 2026-03-20T22:11:17.491Z
+      last_reconciled_at: 2026-03-20T22:11:18.983Z
       created_at: 2026-03-20T21:51:38.667Z
-      updated_at: 2026-03-20T22:11:17.491Z
+      updated_at: 2026-03-20T22:11:18.983Z
     workspace_id: dispatch-workspace-01KM6KM0AAVDTJHPFEZGYA59PD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 470ed5083bbcb2e24854070eff6cb630ef16e690
-        last_seen_at: 2026-03-20T22:05:43.483Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/restore-pre-block-status-on-task-unblock-01km6km0-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/restore-pre-block-status-on-task-unblock/01km6km0
