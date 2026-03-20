@@ -111614,5 +111614,16 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-20T19:28:59.392Z
+    - _ulid: 01KM6CB2SCM24MSW62FP45C2XD
+      content: "Fixed all three issues: (1) health check URL corrected from /health to /api/health in
+        mode.svelte.ts, (2) added /automation to SPA fallback routes in daemon server.ts, (3)
+        removed redundant !isStaticMode() from TanStack Query enabled gates in 8 files (6 page
+        components + 2 automation sub-components). Updated the static analysis test in
+        web-ui-tanstack-query.test.ts that expected !isStaticMode() in settings page. All 160
+        web-ui-tanstack-query tests pass. The cli-serve test failure seen in full suite run was a
+        pre-existing flaky test unrelated to these changes (passed on rerun)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-20T19:42:46.060Z
   todos: []
   automation: eligible
