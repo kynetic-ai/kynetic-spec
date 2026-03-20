@@ -110034,8 +110034,12 @@
     install-core and it stripped the Stop hook. Setup should preserve user-added hooks or at least
     warn before overwriting.
   spec_ref: "@project-config"
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev after approved review. Preserved user-defined Stop hooks by matching
+    only the exact kspec-managed checkpoint entry shape in setup reconciliation and setup-status
+    detection; added regression coverage for preserving custom Stop hooks and installing the managed
+    hook alongside them.
   depends_on: []
   context: []
   priority: 2
@@ -110057,6 +110061,7 @@
   created_at: 2026-03-20T03:40:12.786Z
   started_at: 2026-03-20T04:53:57.404Z
   submitted_at: 2026-03-20T05:01:27.339Z
+  completed_at: 2026-03-20T05:07:18.698Z
   notes:
     - _ulid: 01KM4N8K3PX7JE0MP9G2TDT6V1
       content: "Validated and clarified on 2026-03-19: kspec setup should only remove or rewrite Stop hook
