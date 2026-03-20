@@ -30497,6 +30497,12 @@ reviews:
         payload:
           thread_ulid: 01KM66JP9ZME06CKH2PWHMP2A9
         timestamp: 2026-03-20T18:12:55.377Z
+      - _ulid: 01KM676Y360XRMZC52H5NFQP62
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM66JKZS79QHA0Y9FJ69ASAH
+        timestamp: 2026-03-20T18:13:07.302Z
     examined_commit: da5c883a711417c070887f27271be92cd51ba7c5
     external_links: []
     lifecycle_state: closed
@@ -30541,6 +30547,8 @@ reviews:
               of regressing to 400s.
             created_at: 2026-03-20T18:12:54.304Z
         kind: blocker
+        resolved_at: 2026-03-20T18:13:07.047Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM66JMS4X669GZCG5R2Z7881
         entries:
           - _ulid: 01KM66JMS4TWRKS9W3F0463XPC
@@ -30605,7 +30613,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T18:02:46.272Z
     created_at: 2026-03-20T17:57:31.038Z
-    updated_at: 2026-03-20T18:12:55.123Z
+    updated_at: 2026-03-20T18:13:07.047Z
     notes: []
   - _ulid: 01KM66Q672GTMDNG9S132WCM1N
     slugs: []
