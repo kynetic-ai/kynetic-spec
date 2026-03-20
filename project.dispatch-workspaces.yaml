@@ -14264,7 +14264,7 @@ workspaces:
         head: 28988e187a61dfc78211068ce94987f0fcdb39fe
         last_seen_at: 2026-03-20T14:23:08.694Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-auto-unregister-stale-projects-01km28a0
-  - active_role: worker
+  - active_role: null
     base_branch_point: 7b22df38c8925c8238f48b2e96fe60804d3e9875
     bootstrap:
       status: succeeded
@@ -14327,12 +14327,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T17:16:20.975Z
+      updated_at: 2026-03-20T17:16:36.682Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T17:16:20.975Z
+      updated_at: 2026-03-20T17:16:36.682Z
     integration:
       status: pending
       detail: null
@@ -14340,17 +14340,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 7b22df38c8925c8238f48b2e96fe60804d3e9875
-      updated_at: 2026-03-20T17:16:20.975Z
-    lifecycle_state: active
+      updated_at: 2026-03-20T17:16:36.682Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM5Z4NK56J72PS2YVKP5EJ8G"
     task_slug: task-schema-derived-types
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T17:11:23.136Z
-      last_reconciled_at: 2026-03-20T17:16:20.975Z
+      last_reconciled_at: 2026-03-20T17:16:36.682Z
       created_at: 2026-03-20T15:53:04.773Z
-      updated_at: 2026-03-20T17:16:20.975Z
+      updated_at: 2026-03-20T17:16:36.682Z
     workspace_id: dispatch-workspace-01KM5Z4NK56J72PS2YVKP5EJ8G
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
