@@ -13301,7 +13301,7 @@ workspaces:
         head: 783b22ef544bed092175027cb2c631b044760c73
         last_seen_at: 2026-03-20T04:53:18.386Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-triage-record-cli-reporting-success-without-persisted-record-01km4mk0
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 82c29e1ab95912c9340f50d9aa649fbdc6fed8af
     bootstrap:
       status: succeeded
@@ -13402,34 +13402,34 @@ workspaces:
     canonical_branch: dispatch/task/preserve-user-defined-stop-hooks-during-kspec-setup/01km4n8k
     canonical_branch_head: d06d4de00e8aab12d98d39a3ab0632650990df40
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-20T05:02:04.309Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-20T05:07:21.061Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T05:02:08.968Z
+      updated_at: 2026-03-20T05:07:21.061Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 82c29e1ab95912c9340f50d9aa649fbdc6fed8af
-      updated_at: 2026-03-20T05:02:04.309Z
-    lifecycle_state: integrating
+      updated_at: 2026-03-20T05:07:21.061Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KM4N8K3JS9YR423HKSG2119K"
     task_slug: preserve-user-defined-stop-hooks-during-kspec-setup
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T05:02:08.968Z
-      last_reconciled_at: 2026-03-20T05:02:08.968Z
+      last_reconciled_at: 2026-03-20T05:07:21.061Z
       created_at: 2026-03-20T04:53:23.689Z
-      updated_at: 2026-03-20T05:02:08.968Z
+      updated_at: 2026-03-20T05:07:21.061Z
     workspace_id: dispatch-workspace-01KM4N8K3JS9YR423HKSG2119K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
