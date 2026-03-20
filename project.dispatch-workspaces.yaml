@@ -12998,7 +12998,7 @@ workspaces:
         head: 111d29d52180ca272c6a43ec08f0adf130cd218a
         last_seen_at: 2026-03-20T04:32:10.808Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-review-add-subject-type-precedence-with-version-context-01km4kpq
-  - active_role: worker
+  - active_role: null
     base_branch_point: 5c99aae155547908523751e1996ca00fc11ee2fe
     bootstrap:
       status: succeeded
@@ -13082,12 +13082,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T04:44:55.575Z
+      updated_at: 2026-03-20T04:45:04.926Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T04:44:55.575Z
+      updated_at: 2026-03-20T04:45:04.926Z
     integration:
       status: pending
       detail: null
@@ -13095,17 +13095,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5c99aae155547908523751e1996ca00fc11ee2fe
-      updated_at: 2026-03-20T04:44:55.575Z
-    lifecycle_state: active
+      updated_at: 2026-03-20T04:45:04.926Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM4KPQ6B10BAYD44D6HAG0GC"
     task_slug: allow-plan-derive-task-only-plans-without-specs-block
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T04:37:03.424Z
-      last_reconciled_at: 2026-03-20T04:44:55.575Z
+      last_reconciled_at: 2026-03-20T04:45:04.926Z
       created_at: 2026-03-20T04:36:52.890Z
-      updated_at: 2026-03-20T04:44:55.575Z
+      updated_at: 2026-03-20T04:45:04.926Z
     workspace_id: dispatch-workspace-01KM4KPQ6B10BAYD44D6HAG0GC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
