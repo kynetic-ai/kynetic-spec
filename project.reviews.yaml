@@ -25097,6 +25097,19 @@ reviews:
         runner: npm
         created_at: 2026-03-20T04:36:37.510Z
         completed_at: 2026-03-20T04:36:37.510Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repository-wide pre-existing validation failures unrelated to this task: 3 reference
+          errors in .kspec/modules/meta.yaml, 1 orphaned skill directory warning, 34 alignment
+          warnings, and existing completeness warnings. No task-specific
+          review-cli-creation-and-query regression found in the submitted changes."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T04:36:38.247Z
+        completed_at: 2026-03-20T04:36:38.247Z
     events:
       - _ulid: 01KM4R91MZZ8HD647KVA6F6F90
         actor: Jacob Chapel
@@ -25118,6 +25131,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T04:36:37.742Z
+      - _ulid: 01KM4RFXEA4QEJWHJNYS38X1HF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T04:36:38.474Z
     examined_commit: 111d29d52180ca272c6a43ec08f0adf130cd218a
     external_links: []
     lifecycle_state: open
@@ -25130,5 +25150,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T04:32:53.408Z
-    updated_at: 2026-03-20T04:36:37.510Z
+    updated_at: 2026-03-20T04:36:38.247Z
     notes: []
