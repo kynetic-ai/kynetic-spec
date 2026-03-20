@@ -44,12 +44,16 @@ import type {
   ReviewThreadKind,
   ReviewVerdictDecision,
 } from "../../schema/index.js";
-import { ReviewThreadKindSchema } from "../../schema/index.js";
+import {
+  ReviewCheckStatusSchema,
+  ReviewThreadKindSchema,
+} from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { describeEnumValues } from "../enum-help.js";
 import { error, info, isJsonMode, output, success, warn } from "../output.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
+import { validateEnumOption } from "../validators.js";
 
 // --- Helpers ---
 
@@ -924,12 +928,16 @@ export function registerReviewCommands(program: Command): void {
 
           // Validate check status
           // AC: @trait-error-guidance ac-5
-          const validStatuses = ["pass", "fail", "running", "skipped"];
-          if (!validStatuses.includes(options.status)) {
+          const statusResult = validateEnumOption(
+            options.status,
+            ReviewCheckStatusSchema.options,
+            "check status",
+          );
+          if (!statusResult.ok) {
             exitWithGuidance(
-              `Invalid check status: ${options.status}`,
-              EXIT_CODES.USAGE_ERROR,
-              `Valid statuses: ${validStatuses.join(", ")}`,
+              statusResult.error,
+              EXIT_CODES.VALIDATION_FAILED,
+              `Valid statuses: ${ReviewCheckStatusSchema.options.join(", ")}`,
               { field: "status", value: options.status },
             );
           }
@@ -939,13 +947,13 @@ export function registerReviewCommands(program: Command): void {
 
           const newCheck: ReviewCheck = {
             name: options.name,
-            status: options.status as ReviewCheck["status"],
+            status: statusResult.value as ReviewCheck["status"],
             required: options.required !== false,
             ...(options.runner ? { runner: options.runner } : {}),
             ...(options.evidence ? { evidence: options.evidence } : {}),
             applies_to_version: version,
             created_at: now,
-            completed_at: options.status !== "running" ? now : null,
+            completed_at: statusResult.value !== "running" ? now : null,
           };
 
           const updated = await mutateReviewAtomically(ctx, found, (latest) => ({
@@ -955,7 +963,7 @@ export function registerReviewCommands(program: Command): void {
               ...latest.events,
               createEvent("check_added", author, {
                 name: options.name,
-                status: options.status,
+                status: statusResult.value,
               }),
             ],
             updated_at: now,
@@ -969,9 +977,9 @@ export function registerReviewCommands(program: Command): void {
           );
 
           output(
-            { check_name: options.name, status: options.status, review_ulid: found._ulid },
+            { check_name: options.name, status: statusResult.value, review_ulid: found._ulid },
             () => {
-              success(`Added check "${options.name}" (${options.status}) to review ${shortReviewRef(found, reviews)}`);
+              success(`Added check "${options.name}" (${statusResult.value}) to review ${shortReviewRef(found, reviews)}`);
             },
           );
         } catch (err) {

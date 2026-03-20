@@ -35,7 +35,7 @@ import type {
   Maturity,
   SpecItemInput,
 } from "../../schema/index.js";
-import { SpecItemPatchSchema } from "../../schema/index.js";
+import { ItemTypeSchema, SpecItemPatchSchema } from "../../schema/index.js";
 import {
   ImplementationStatusSchema,
   MaturitySchema,
@@ -46,6 +46,7 @@ import { formatMatchedFields, grepItem } from "../../utils/grep.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, isJsonMode, output, showChangeDiff, success, warn } from "../output.js";
 import { parseTagsArray } from "../parse-utils.js";
+import { validateEnumOption } from "../validators.js";
 
 /**
  * Serialize a LoadedSpecItem for JSON output.
@@ -705,7 +706,16 @@ Examples:
         const ctx = await initContext();
         const { refIndex, items } = await buildIndexes(ctx);
         const isRootAdd = Boolean(options.root);
-        const itemType = options.type as ItemType;
+        const itemTypeResult = validateEnumOption(
+          options.type || "feature",
+          ItemTypeSchema.options,
+          "item type",
+        );
+        if (!itemTypeResult.ok) {
+          error(itemTypeResult.error);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+        const itemType = itemTypeResult.value as ItemType;
 
         const exitWithUsageGuidance = (
           message: string,
@@ -1086,7 +1096,18 @@ Examples:
         const updates: Partial<SpecItemInput> = {};
 
         if (options.title) updates.title = options.title;
-        if (options.type) updates.type = options.type as ItemType;
+        if (options.type) {
+          const typeResult = validateEnumOption(
+            options.type,
+            ItemTypeSchema.options,
+            "item type",
+          );
+          if (!typeResult.ok) {
+            error(typeResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          updates.type = typeResult.value as ItemType;
+        }
         if (options.slug || options.removeSlug) {
           let slugs = [...(foundItem.slugs || [])];
           if (options.removeSlug) {
@@ -1141,31 +1162,43 @@ Examples:
         // AC: @implementation-states ac-reject-invalid
         // AC: @maturity-states ac-reject-invalid
         // Validate enum values before writing
+        let statusValue: ImplementationStatus | undefined;
         if (options.status) {
-          const valid = ImplementationStatusSchema.options as readonly string[];
-          if (!valid.includes(options.status)) {
-            error(`Invalid implementation status: '${options.status}'. Valid values: ${valid.join(", ")}`);
-            process.exit(EXIT_CODES.USAGE_ERROR);
+          const statusResult = validateEnumOption(
+            options.status,
+            ImplementationStatusSchema.options,
+            "implementation status",
+          );
+          if (!statusResult.ok) {
+            error(statusResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
+          statusValue = statusResult.value as ImplementationStatus;
         }
+        let maturityValue: Maturity | undefined;
         if (options.maturity) {
-          const valid = MaturitySchema.options as readonly string[];
-          if (!valid.includes(options.maturity)) {
-            error(`Invalid maturity: '${options.maturity}'. Valid values: ${valid.join(", ")}`);
-            process.exit(EXIT_CODES.USAGE_ERROR);
+          const maturityResult = validateEnumOption(
+            options.maturity,
+            MaturitySchema.options,
+            "maturity",
+          );
+          if (!maturityResult.ok) {
+            error(maturityResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
           }
+          maturityValue = maturityResult.value as Maturity;
         }
 
         // Handle status updates
-        if (options.status || options.maturity) {
+        if (statusValue || maturityValue) {
           const currentStatus =
             foundItem.status && typeof foundItem.status === "object"
               ? foundItem.status
-              : {};
+              : undefined;
           updates.status = {
-            ...currentStatus,
-            ...(options.status && { implementation: options.status }),
-            ...(options.maturity && { maturity: options.maturity }),
+            implementation:
+              statusValue ?? currentStatus?.implementation ?? "not_started",
+            maturity: maturityValue ?? currentStatus?.maturity ?? "draft",
           };
         }
 
