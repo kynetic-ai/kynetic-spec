@@ -7580,6 +7580,24 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-20T16:02:21.677Z
+  - _ulid: 01KM6FY72V5GZCJ48GNP09FYXY
+    type: friction
+    content: Hardcoded SPA fallback route list in daemon server.ts requires manual update for every new
+      web UI route. Caused /automation 404 on hard refresh. Same pattern caused prior sidebar nav
+      issues. A wildcard fallback or auto-discovery from the SvelteKit build would eliminate the
+      class of bug.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-20T20:45:38.780Z
+  - _ulid: 01KM6FY77BFS3JEPMTPW1EN1M2
+    type: success
+    content: Detailed task notes with what/why/how and specific file paths enabled dispatch workers to
+      complete @01KM6AR9 and @01KM6EDZ autonomously on first attempt without human intervention.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-20T20:45:38.923Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
