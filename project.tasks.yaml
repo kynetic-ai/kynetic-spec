@@ -109933,3 +109933,31 @@
       author: Jacob Chapel
       created_at: 2026-03-20T03:40:12.790Z
   todos: []
+- _ulid: 01KM4NHPTCMTXAVKH0STBCVF22
+  slugs: []
+  title: Recover missing workspace for automation-eligible in-progress tasks
+  type: bug
+  description: "What: extend dispatch workspace recovery so automation-eligible tasks already
+    in_progress are treated like resumable work when their recorded branch or workspace is missing.
+    The dispatcher should attempt to recover metadata-backed lineage or re-provision the canonical
+    workspace instead of discarding the queue entry as workspace missing. Why: in-progress tasks
+    represent active work already claimed by the system or a user; dropping them because the
+    workspace disappeared breaks continuity and leaves resumable work stranded. How: route
+    in_progress recovery through the same canonical workspace reconstruction path used for restart
+    reconciliation and fix-cycle lineage reuse, persist the recovered registry state, and add
+    coverage that missing worktree or branch state for in_progress tasks is repaired rather than
+    discarded when recovery remains possible."
+  spec_ref: "@dispatch-workspace-registry"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - dispatch
+    - workspace
+    - bug
+  vcs_refs: []
+  created_at: 2026-03-20T03:45:11.499Z
+  notes: []
+  todos: []
