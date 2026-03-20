@@ -107,4 +107,21 @@ describe('session checkpoint: git-only checking', () => {
     expect(result.exitCode).toBe(0);
     expect(result.stdout.trim()).toBe('');
   });
+
+  it('should ignore transient plan files when plans/ is gitignored', () => {
+    kspec('init --name test-project --no-prompt', tempDir);
+
+    fs.mkdirSync(path.join(tempDir, 'plans'), { recursive: true });
+    fs.writeFileSync(
+      path.join(tempDir, 'plans', 'transient-plan.md'),
+      '# Working plan\n',
+    );
+
+    const result = kspec('session checkpoint --json', tempDir, {
+      expectFail: true,
+    });
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout.trim()).toBe('');
+  });
 });
