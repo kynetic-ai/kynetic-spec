@@ -110680,7 +110680,15 @@
   session_id: 01KM64AFAVFG0X3J4D30CEV4TA
   created_at: 2026-03-20T15:52:01.646Z
   started_at: 2026-03-20T17:23:09.339Z
-  notes: []
+  notes:
+    - _ulid: 01KM64HDAKZ9F4TB71XS0ME51A
+      content: Implemented schema-derived enum validation for task add, item add/set, inbox promote, plan
+        add/set, and review check mutations using validateEnumOption. Added end-to-end regression
+        tests to verify invalid values fail before persistence and valid/default values still
+        execute normally.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T17:26:24.851Z
   todos: []
   automation: eligible
 - _ulid: 01KM5Z4KJQ7CF8F2P48711SY91
