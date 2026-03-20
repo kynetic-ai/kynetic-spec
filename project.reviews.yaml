@@ -28283,9 +28283,25 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T07:04:13.249Z
+      - _ulid: 01KM50YNWCHZMG1AK441TR2X8M
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-20T07:04:30.860Z
+      - _ulid: 01KM50YNWC8DKY3ABK5Q6ZWNQ2
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T07:04:30.860Z
     examined_commit: 47d46a5f52f53d6fa2ae2257220d411f898f631a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -28337,7 +28353,14 @@ reviews:
               handling."
             created_at: 2026-03-20T07:04:12.253Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-20T07:04:30.860Z
     created_at: 2026-03-20T07:03:32.007Z
-    updated_at: 2026-03-20T07:04:13.014Z
+    updated_at: 2026-03-20T07:04:30.860Z
     notes: []
