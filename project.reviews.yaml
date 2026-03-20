@@ -29059,6 +29059,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM5TYESA7MNQSHZ84DV71J10
         timestamp: 2026-03-20T14:38:46.799Z
+      - _ulid: 01KM5TYWHSWRQ1H2EJC0D4C666
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM5TYW9YTB79N0W3WSSE51AJ
+        timestamp: 2026-03-20T14:39:00.665Z
     examined_commit: 7bc399755cf9835545a3e8124d3b915965f36e2d
     external_links: []
     lifecycle_state: open
@@ -29106,7 +29113,26 @@ reviews:
               or race a live daemon instead of reliably reporting 'already running'."
             created_at: 2026-03-20T14:38:46.570Z
         kind: blocker
+      - _ulid: 01KM5TYW9YTB79N0W3WSSE51AJ
+        anchor:
+          type: code
+          commit: 7bc399755cf9835545a3e8124d3b915965f36e2d
+          line_end: 323
+          line_start: 319
+          path: src/cli/commands/serve.ts
+          side: head
+        entries:
+          - _ulid: 01KM5TYW9YTCJY8TKPFJS924K5
+            author: Jacob Chapel
+            body: serve start still propagates KSPEC_NO_DAEMON into the spawned daemon process. That means the
+              daemon-side PID collision path in packages/daemon/src/pid.ts will treat an existing
+              live PID file as stale and remove it, because its isDaemonRunning() check now becomes
+              false under no-daemon mode. Explicit serve commands are supposed to ignore this env
+              var entirely, so KSPEC_NO_DAEMON=1 kspec serve start can still corrupt PID state or
+              race a live daemon instead of reliably reporting already running.
+            created_at: 2026-03-20T14:39:00.414Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T14:38:04.197Z
-    updated_at: 2026-03-20T14:38:46.570Z
+    updated_at: 2026-03-20T14:39:00.414Z
     notes: []
