@@ -110044,3 +110044,60 @@
       created_at: 2026-03-20T04:14:29.062Z
   todos: []
   automation: eligible
+- _ulid: 01KM4QGVTQR64KQPQ0S24AHV0S
+  slugs:
+    - task-fix-sessions-live-freshness
+  title: Fix sessions page real-time freshness across session origins
+  type: bug
+  description: >-
+    Why:
+
+    The /sessions page currently falls out of date and requires manual refresh when session list
+    data changes without an effective live-update path reaching the page. Existing specs already
+    require live update behavior for the sessions view, but the current behavior is inconsistent and
+    appears biased toward specific runtime paths.
+
+
+    What:
+
+    - Align /sessions with the live-update behavior required by @session-list-infinite-scroll.
+
+    - Extend freshness coverage so session list updates are source-agnostic rather than tied to one
+    runtime path.
+
+    - Ensure counts, status changes, and newly visible sessions update correctly under active
+    filters and current sort order.
+
+    - Preserve good UX when the user is scrolled away from the top of the list.
+
+
+    How:
+
+    - Trace all server-side paths that can create or close sessions and identify which ones emit
+    real-time signals today.
+
+    - Establish one freshness path that covers list-visible session changes across those paths.
+
+    - Update the sessions page so live updates affect rendered list data and counts without
+    requiring a browser refresh.
+
+    - Cover both immediate top-of-list updates and scrolled-state indicator behavior.
+
+    - Add tests for new session creation, completion or status changes, filtered views, cross-origin
+    session changes, and scrolled-position behavior.
+  spec_ref: "@session-list-infinite-scroll"
+  meta_ref: null
+  plan_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - bug
+    - web-ui
+    - sessions
+  vcs_refs: []
+  created_at: 2026-03-20T04:19:41.015Z
+  notes: []
+  todos: []

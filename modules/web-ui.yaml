@@ -2083,15 +2083,27 @@ features:
               Total count updates to reflect filtered results.
             when: |
               The filter value updates
-          - given: |
-              A new session is created while the user is on /sessions
+          - given: A session matching the current view is created, changes status, or completes while the user
+              is on /sessions
             id: ac-live-update
-            then: |
-              The total count updates. If the user is at the top of the list,
-              the new session appears. Otherwise a "new sessions available"
-              indicator shows.
-            when: |
-              The WebSocket broadcasts a session update
+            then: The sessions view updates without a manual page refresh. Counts remain accurate, and matching
+              sessions appear or update in the list according to the current filters and sort order.
+            when: The UI receives a real-time update that session list data has changed
+          - given: A matching session is newly added or updated while the user is viewing /sessions
+            id: ac-live-update-visible-position
+            then: The visible list updates immediately to include the newest matching result in the correct
+              position.
+            when: The user is at the top of the list
+          - given: A matching session is newly added or updated while the user is viewing /sessions
+            id: ac-live-update-scrolled
+            then: The UI preserves the user reading position and shows a non-blocking indicator that newer
+              matching session results are available.
+            when: The user is not at the top of the list
+          - given: Sessions may be started or completed by different runtime paths
+            id: ac-live-update-source-agnostic
+            then: The /sessions view reflects the change with the same freshness behavior regardless of session
+              origin.
+            when: Any path changes data that affects the session list
         tags: []
         created: 2026-03-10T05:32:13.505Z
         notes: []
@@ -2914,6 +2926,11 @@ features:
           the page renders data. No SSR hydration mismatch prevents reactive state updates from
           propagating.
         when: The app initializes from scratch (no prior client state)
+      - given: An entity can change through more than one server-side execution path
+        id: ac-10
+        then: The active view stays fresh without a manual reload, and the freshness contract does not
+          depend on which internal path produced the change.
+        when: Any path changes list-visible data for an active view
     tags: []
     created: 2026-03-15T03:28:12.161Z
     notes: []
