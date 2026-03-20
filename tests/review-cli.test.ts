@@ -68,6 +68,22 @@ describe("Integration: review CLI commands", () => {
       expect(result.subject.head_commit).toBe("def456");
     });
 
+    // AC: @review-cli-creation-and-query ac-ref-subject-remains-ref-subject
+    // AC: @review-cli-creation-and-query ac-version-context-does-not-change-subject
+    it("should keep a ref-backed subject when review context is provided separately", () => {
+      const result = kspecJson<{
+        subject: { type: string; ref: string };
+        examined_commit: string | null;
+      }>(
+        "review add --title 'Task Review With Context' --subject-ref @task-slug --subject-type task --examined-commit abc123def456",
+        tempDir,
+      );
+
+      expect(result.subject.type).toBe("task");
+      expect(result.subject.ref).toBe("@task-slug");
+      expect(result.examined_commit).toBe("abc123def456");
+    });
+
     // AC: @review-cli-creation-and-query ac-2
     it("should accept merge-base and branch metadata for code subjects", () => {
       const result = kspecJson<{
@@ -86,6 +102,20 @@ describe("Integration: review CLI commands", () => {
       expect(result.subject.merge_base_commit).toBe("000aaa");
       expect(result.subject.base_branch).toBe("main");
       expect(result.subject.head_branch).toBe("feat/test");
+    });
+
+    // AC: @review-cli-creation-and-query ac-code-subject-created-only-when-requested
+    it("should create a code subject when code comparison inputs are the selected subject", () => {
+      const result = kspecJson<{
+        subject: { type: string; base_commit: string; head_commit: string };
+      }>(
+        "review add --title 'Explicit Code Review' --subject-type code --base abc123 --head def456",
+        tempDir,
+      );
+
+      expect(result.subject.type).toBe("code");
+      expect(result.subject.base_commit).toBe("abc123");
+      expect(result.subject.head_commit).toBe("def456");
     });
 
     // AC: @review-cli-creation-and-query ac-5
@@ -173,6 +203,31 @@ describe("Integration: review CLI commands", () => {
       );
       expect(result.exitCode).not.toBe(0);
       expect(result.stderr).toContain("--base and --head");
+    });
+
+    // AC: @review-cli-creation-and-query ac-ambiguous-review-subject-rejected
+    it("should reject ambiguous inferred subject inputs", () => {
+      const result = kspecRun(
+        "review add --title 'Ambiguous Review' --subject-ref @task-slug --base abc123 --head def456",
+        tempDir,
+        { expectFail: true },
+      );
+
+      expect(result.exitCode).toBe(2);
+      expect(result.stderr).toContain("Ambiguous review subject");
+    });
+
+    // AC: @review-cli-creation-and-query ac-ambiguous-review-subject-rejected
+    it("should reject code flags when an explicit task subject is selected", () => {
+      const result = kspecRun(
+        "review add --title 'Conflicting Task Review' --subject-type task --subject-ref @task-slug --base abc123 --head def456",
+        tempDir,
+        { expectFail: true },
+      );
+
+      expect(result.exitCode).toBe(2);
+      expect(result.stderr).toContain("Subject type task cannot be combined");
+      expect(result.stderr).toContain("--examined-commit");
     });
   });
 
