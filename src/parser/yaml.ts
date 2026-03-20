@@ -5,6 +5,7 @@ import * as path from "node:path";
 import { ulid } from "ulid";
 import * as YAML from "yaml";
 import type { Pair } from "yaml";
+import type { ZodError } from "zod";
 import { acquireFileLock, withFileLock } from "./file-lock.js";
 import {
   accessBufferAware,
@@ -65,6 +66,58 @@ function debugLog(prefix: string, message: string): void {
   if (process.env.KSPEC_DEBUG === "1") {
     console.error(`[DEBUG] ${prefix}: ${message}`);
   }
+}
+
+function formatIssuePath(pathParts: PropertyKey[]): string {
+  if (pathParts.length === 0) {
+    return "(root)";
+  }
+
+  let path = "";
+  for (const part of pathParts) {
+    if (typeof part === "number") {
+      path = `${path}[${part}]`;
+      continue;
+    }
+
+    path = path ? `${path}.${String(part)}` : String(part);
+  }
+
+  return path;
+}
+
+function formatIssueValue(value: unknown): string {
+  if (typeof value === "string") {
+    return JSON.stringify(value);
+  }
+
+  if (value === undefined) {
+    return "undefined";
+  }
+
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+
+export function warnSkippedRecord(
+  entityType: string,
+  id: string,
+  source: string,
+  error: ZodError,
+): void {
+  const details = error.issues.map((issue) => {
+    const fieldPath = formatIssuePath(issue.path);
+    const invalidValue = formatIssueValue(("input" in issue) ? issue.input : undefined);
+    return `${fieldPath}=${invalidValue} (${issue.message})`;
+  }).join("; ");
+
+  console.warn(
+    `[kspec] Warning: skipped invalid ${entityType} ${id} from ${source}: ${details}. `
+    + "Suggested action: fix the invalid field in the YAML record and rerun the command.",
+  );
 }
 
 /**
@@ -743,6 +796,12 @@ async function loadTasksFromFile(filePath: string): Promise<LoadedTask[]> {
       if (result.success) {
         // Add _sourceFile metadata
         tasks.push({ ...result.data, _sourceFile: filePath });
+      } else {
+        const rawTask = taskData as Record<string, unknown> | null;
+        const taskId = rawTask && typeof rawTask._ulid === "string"
+          ? rawTask._ulid
+          : "<unknown-task>";
+        warnSkippedRecord("task", taskId, filePath, result.error);
       }
     }
   } catch {
@@ -1630,6 +1689,11 @@ export function extractItemsFromRaw(
         _sourceFile: sourceFile,
         _path: currentPath || undefined,
       });
+    } else {
+      const itemId = typeof rawObj._ulid === "string"
+        ? rawObj._ulid
+        : (currentPath || "<unknown-item>");
+      warnSkippedRecord("spec item", itemId, sourceFile, result.error);
     }
 
     // Even if the item itself was added, also extract nested items
@@ -2271,7 +2335,10 @@ export function getInboxFilePath(ctx: KspecContext): string {
  *
  * Supports canonical { inbox: [...] } shape and legacy plain-array shape.
  */
-function parseInboxItemsFromRaw(raw: unknown): InboxItem[] {
+function parseInboxItemsFromRaw(
+  raw: unknown,
+  source = "project.inbox.yaml",
+): InboxItem[] {
   // Handle { inbox: [...] } format
   if (raw && typeof raw === "object" && "inbox" in raw) {
     const parsed = InboxFileSchema.safeParse(raw);
@@ -2286,6 +2353,12 @@ function parseInboxItemsFromRaw(raw: unknown): InboxItem[] {
         const result = InboxItemSchema.safeParse(item);
         if (result.success) {
           items.push(result.data);
+        } else {
+          const rawItem = item as Record<string, unknown> | null;
+          const itemId = rawItem && typeof rawItem._ulid === "string"
+            ? rawItem._ulid
+            : "<unknown-inbox-item>";
+          warnSkippedRecord("inbox item", itemId, source, result.error);
         }
       }
       return items;
@@ -2299,6 +2372,12 @@ function parseInboxItemsFromRaw(raw: unknown): InboxItem[] {
       const result = InboxItemSchema.safeParse(item);
       if (result.success) {
         items.push(result.data);
+      } else {
+        const rawItem = item as Record<string, unknown> | null;
+        const itemId = rawItem && typeof rawItem._ulid === "string"
+          ? rawItem._ulid
+          : "<unknown-inbox-item>";
+        warnSkippedRecord("inbox item", itemId, source, result.error);
       }
     }
     return items;
@@ -2312,7 +2391,7 @@ function parseInboxItemsFromRaw(raw: unknown): InboxItem[] {
  */
 async function loadInboxItemsFromFile(inboxPath: string): Promise<InboxItem[]> {
   const raw = await readYamlFile<unknown>(inboxPath);
-  return parseInboxItemsFromRaw(raw);
+  return parseInboxItemsFromRaw(raw, inboxPath);
 }
 
 /**
@@ -2745,6 +2824,24 @@ export async function loadTriageRecords(
           _sourceFile: triagePath,
         }));
       }
+
+      const fallbackRecords = (raw as { triage?: unknown }).triage;
+      if (Array.isArray(fallbackRecords)) {
+        const records: LoadedTriageRecord[] = [];
+        for (const item of fallbackRecords) {
+          const result = TriageRecordSchema.safeParse(item);
+          if (result.success) {
+            records.push({ ...result.data, _sourceFile: triagePath });
+          } else {
+            const rawRecord = item as Record<string, unknown> | null;
+            const recordId = rawRecord && typeof rawRecord._ulid === "string"
+              ? rawRecord._ulid
+              : "<unknown-triage-record>";
+            warnSkippedRecord("triage record", recordId, triagePath, result.error);
+          }
+        }
+        return records;
+      }
     }
 
     // Handle plain array format
@@ -2754,6 +2851,12 @@ export async function loadTriageRecords(
         const result = TriageRecordSchema.safeParse(item);
         if (result.success) {
           records.push({ ...result.data, _sourceFile: triagePath });
+        } else {
+          const rawRecord = item as Record<string, unknown> | null;
+          const recordId = rawRecord && typeof rawRecord._ulid === "string"
+            ? rawRecord._ulid
+            : "<unknown-triage-record>";
+          warnSkippedRecord("triage record", recordId, triagePath, result.error);
         }
       }
       return records;
