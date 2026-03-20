@@ -26822,3 +26822,29 @@ reviews:
     created_at: 2026-03-20T06:00:24.685Z
     updated_at: 2026-03-20T06:07:01.264Z
     notes: []
+  - _ulid: 01KM4Y3NET6V4RD2EWVBX7W68G
+    slugs: []
+    title: Review ignore transient plans directory during plan sessions
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM4Y3NETVBFQTYGT8T3KX64F
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T06:14:48.538Z
+    examined_commit: 7846cea81ec4fe369c73b3afe876b13407fbb609
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM4MSHAM7WJS8J9S05XPYA7D"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T06:14:48.538Z
+    updated_at: null
+    notes: []
