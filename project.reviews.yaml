@@ -23064,3 +23064,29 @@ reviews:
     created_at: 2026-03-20T00:01:15.182Z
     updated_at: 2026-03-20T00:03:18.379Z
     notes: []
+  - _ulid: 01KM490E7AQ54TEGMQ6EWDGHQK
+    slugs: []
+    title: Review fix shadow commit call sites that omit entity refs (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM490E798218ZWKPHA2KCR9T
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T00:06:02.729Z
+    examined_commit: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KKX6QPC0374PT4W93CMA7EMX"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T00:06:02.730Z
+    updated_at: null
+    notes: []
