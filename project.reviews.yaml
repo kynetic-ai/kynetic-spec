@@ -30408,6 +30408,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM66JKZS79QHA0Y9FJ69ASAH
         timestamp: 2026-03-20T18:02:01.843Z
+      - _ulid: 01KM66JN109PG7Y4DJ18P1YH9J
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM66JMS4X669GZCG5R2Z7881
+        timestamp: 2026-03-20T18:02:02.656Z
     examined_commit: da5c883a711417c070887f27271be92cd51ba7c5
     external_links: []
     lifecycle_state: open
@@ -30435,7 +30442,28 @@ reviews:
               E2E tests rely on ( covers the shorthand)."
             created_at: 2026-03-20T18:02:01.593Z
         kind: blocker
+      - _ulid: 01KM66JMS4X669GZCG5R2Z7881
+        entries:
+          - _ulid: 01KM66JMS4TWRKS9W3F0463XPC
+            author: Jacob Chapel
+            body: "Review evidence log\\n\\nFiles read: packages/daemon/src/middleware/project-context.ts;
+              packages/daemon/src/routes/{tasks,items,reviews,triage,plans,sessions,validation,meta\
+              ,agent-dispatch}.ts; src/sessions/types.ts; src/schema/review-records.ts;
+              tests/daemon-api-input-validation.test.ts; tests/daemon-review-verdicts-api.test.ts;
+              packages/web-ui/tests/e2e/{api-sessions-pagination,sessions,api-reviews-list}.spec.ts.\
+              \\n\\nCommands run: kspec task get @01KM5Z4M7YQN173XSB98TPV8Y2; kspec review for-task
+              @01KM5Z4M7YQN173XSB98TPV8Y2; git diff/stat against dev base; rg for AC annotations and
+              enum/string route schemas; kspec item get @trait-type-safe-input; kspec validate; npm
+              test.\\n\\nClaims verified: worker note that full npm test passed (confirmed); note
+              that session agent_type remains open by canonical schema (confirmed in
+              src/sessions/types.ts); note that daemon enum validation was tightened in listed
+              routes (confirmed by diff).\\n\\nCategories searched: correctness (found 2
+              regressions), edge cases (shorthand trigger alias), error handling (validation
+              formatter shape/status), test quality (new tests miss the session shorthand and review
+              subject_type gaps), integration (UI/E2E dependence on trigger=dispatched)."
+            created_at: 2026-03-20T18:02:02.404Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T17:57:31.038Z
-    updated_at: 2026-03-20T18:02:01.593Z
+    updated_at: 2026-03-20T18:02:02.404Z
     notes: []
