@@ -109806,6 +109806,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T04:25:27.928Z
+    - _ulid: 01KM4R6QGQWY0535FHHQSZ4G6G
+      content: "Completed fix for review add subject precedence. Explicit ref-backed subjects no longer
+        get silently reclassified by code/external selector flags; mixed inferred selector inputs
+        now fail with usage guidance, and review CLI regression tests cover explicit task context,
+        explicit code selection, and ambiguous subject rejection. Verification: npm test --
+        tests/review-cli.test.ts passed; npm test -- tests/cli-serve.test.ts passed on retry after a
+        full-suite run exposed a likely unrelated foreground-shutdown flake in that file; kspec
+        validate still reports pre-existing repository-wide reference/completeness issues unrelated
+        to this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T04:31:37.495Z
   todos: []
   automation: eligible
 - _ulid: 01KM4KPQ6B10BAYD44D6HAG0GC
