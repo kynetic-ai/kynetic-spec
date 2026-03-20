@@ -25605,6 +25605,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T05:03:32.436Z
+      - _ulid: 01KM4T70EQVDG7XQBKVD6YXRR5
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM4T70582J9RAMAP9DA1MFDK
+        timestamp: 2026-03-20T05:06:43.800Z
     examined_commit: d06d4de00e8aab12d98d39a3ab0632650990df40
     external_links: []
     lifecycle_state: open
@@ -25614,8 +25621,31 @@ reviews:
       content_hash: ""
       ref: "@01KM4N8K3JS9YR423HKSG2119K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM4T70582J9RAMAP9DA1MFDK
+        entries:
+          - _ulid: 01KM4T70586FCQNS83J44SDT4H
+            author: Jacob Chapel
+            body: >-
+              Evidence log
+
+
+              Files read: src/cli/commands/setup.ts, src/parser/setup-status.ts,
+              src/lib/claude-hooks.ts, tests/enhanced-setup.test.ts
+
+              Commands run: git diff --stat/name-only/patch, kspec task get, kspec item get
+              @project-config, rg AC annotations in tests, kspec validate, npm test
+
+              Claims verified: worker claim about full test failure was disproved by a clean npm
+              test run; new regression tests cover preserving user Stop hooks and coexisting managed
+              hook installation
+
+              Categories searched: correctness (no issue found), edge cases (custom matcher
+              preserved), error handling (unchanged surface), test quality (new tests exercise
+              behavior rather than internals), integration (setup/status share exact-shape matcher)
+            created_at: 2026-03-20T05:06:43.496Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T05:02:48.933Z
-    updated_at: 2026-03-20T05:03:32.209Z
+    updated_at: 2026-03-20T05:06:43.496Z
     notes: []
