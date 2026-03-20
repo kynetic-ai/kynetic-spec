@@ -111653,5 +111653,16 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T19:49:11.198Z
+    - _ulid: 01KM6CYVB6R01G912N8WEY4DDS
+      content: "[DISPATCH-BOOTSTRAP] Dispatch shadow mutation lock unavailable while committing workspace
+        registry for @01KM6BGYMGZ518JENMCRACJPX3: Timed out waiting for file lock on
+        /home/chapel/Projects/kynetic-spec-dispatch/.kspec-dispatch-shadow-mutation after 5000ms. If
+        no other kspec process is running, remove
+        /home/chapel/Projects/kynetic-spec-dispatch/.kspec-dispatch-shadow-mutation.lock manually.
+        Suggested action: Inspect dispatch bootstrap configuration, dependency prerequisites, and
+        workspace health."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T19:53:33.798Z
   todos: []
   automation: eligible
