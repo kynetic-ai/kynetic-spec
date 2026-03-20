@@ -47,6 +47,11 @@ import {
 import {
   getSetupStatus as getSharedSetupStatus,
 } from "../../parser/setup-status.js";
+import {
+  type ClaudeHookEntry,
+  KSPEC_STOP_HOOK_COMMAND,
+  isKspecManagedStopHookEntry,
+} from "../../lib/claude-hooks.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output, success, warn } from "../output.js";
@@ -336,12 +341,11 @@ async function installClaudeCodeHooks(
     // AC: @project-config ac-hooks-section — checkpoint independently controllable
     // Default: disabled (dispatch handles task lifecycle)
     const checkpointEnabled = hooksPrefs?.checkpoint ?? false;
-    const stopHookCommand = "kspec session checkpoint --json";
     const existingStopHooks = hooks.Stop as
-      | Array<{ matcher?: string; hooks?: Array<{ command?: string }> }>
+      | ClaudeHookEntry[]
       | undefined;
-    const stopAlreadyInstalled = existingStopHooks?.some((entry) =>
-      entry.hooks?.some((hook) => hook.command?.includes("session checkpoint")),
+    const stopAlreadyInstalled = existingStopHooks?.some(
+      isKspecManagedStopHookEntry,
     );
 
     if (checkpointEnabled) {
@@ -354,7 +358,7 @@ async function installClaudeCodeHooks(
             hooks: [
               {
                 type: "command",
-                command: stopHookCommand,
+                command: KSPEC_STOP_HOOK_COMMAND,
               },
             ],
           },
@@ -366,12 +370,9 @@ async function installClaudeCodeHooks(
     } else {
       // AC: @project-config ac-hooks-section — remove if disabled and previously installed
       if (stopAlreadyInstalled) {
-        const filtered = (existingStopHooks || []).map((entry) => ({
-          ...entry,
-          hooks: entry.hooks?.filter(
-            (hook) => !hook.command?.includes("session checkpoint"),
-          ),
-        })).filter((entry) => entry.hooks && entry.hooks.length > 0);
+        const filtered = (existingStopHooks || []).filter(
+          (entry) => !isKspecManagedStopHookEntry(entry),
+        );
         if (filtered.length > 0) {
           hooks.Stop = filtered;
         } else {
