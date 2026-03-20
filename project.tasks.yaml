@@ -110120,7 +110120,18 @@
   session_id: 01KM4SYS8ZMJ14RDKJTPQ5C4N3
   created_at: 2026-03-20T03:45:11.499Z
   started_at: 2026-03-20T05:02:43.738Z
-  notes: []
+  notes:
+    - _ulid: 01KM4TFJWHQTW71XJ0H7954JR7
+      content: "Extended dispatch workspace eligibility so in_progress tasks use the same
+        recovery/discovery path as pending_review and needs_work before queue pruning. Added
+        regression coverage for two continuity cases: metadata-backed legacy branch recovery for
+        in_progress worker tasks, and stale in_progress worker worktrees being treated as
+        recoverable instead of discarded. Verification: npm test -- agent-dispatch-engine.test.ts
+        passed; full npm test passed (289 files, 6642 tests); kspec validate still reports
+        pre-existing project-wide reference/alignment/completeness debt unrelated to this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T05:11:24.817Z
   todos: []
   automation: eligible
 - _ulid: 01KM4PZRFGV4WZ5HPZ9VZ3HBDN
