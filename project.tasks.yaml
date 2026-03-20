@@ -109797,6 +109797,16 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T06:00:08.133Z
+    - _ulid: 01KM4ZCB4HHKAXWXJJ3JCTYG8G
+      content: "Fix cycle update: regenerated the tracked kspec-writing-specs skill snapshot so the
+        rendered command reference now matches item ac remove <ref> <id>. Also fixed an unrelated
+        stale cli-plan fixture that used a short plan ULID prefix; switched it to the stable
+        @plan-metrics slug so full npm test is green again. Verification: npm test passed (289
+        files, 6654 tests); kspec validate still reports pre-existing repo-wide
+        reference/completeness issues unrelated to @item-ac."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T06:37:01.458Z
   todos: []
   automation: eligible
 - _ulid: 01KM4KPQ4CJS24TH0NTVXJA1V3
