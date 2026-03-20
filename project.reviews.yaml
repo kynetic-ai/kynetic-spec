@@ -28855,3 +28855,29 @@ reviews:
     created_at: 2026-03-20T14:15:21.074Z
     updated_at: 2026-03-20T14:16:46.127Z
     notes: []
+  - _ulid: 01KM5T3FJH33R78DYCX9K49WCD
+    slugs: []
+    title: Review auto-unregister stale projects
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM5T3FJHFF1YR1RTG194QY0Z
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T14:24:02.641Z
+    examined_commit: 28988e187a61dfc78211068ce94987f0fcdb39fe
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM28A020C9M06YC8MA2E96NW"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T14:24:02.641Z
+    updated_at: null
+    notes: []
