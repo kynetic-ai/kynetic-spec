@@ -25726,6 +25726,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T05:13:02.612Z
+      - _ulid: 01KM4TT5ZC5V04RNAWE35MMJX7
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM4TT5PKE3AK6DZC2D7BKMB9
+        timestamp: 2026-03-20T05:17:12.045Z
     examined_commit: 4bf313b436b3c043e28c31e7c6c88ecd5222fa7b
     external_links: []
     lifecycle_state: open
@@ -25735,8 +25742,27 @@ reviews:
       content_hash: ""
       ref: "@01KM4NHPTCMTXAVKH0STBCVF22"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM4TT5PKE3AK6DZC2D7BKMB9
+        anchor:
+          type: code
+          commit: 4bf313b436b3c043e28c31e7c6c88ecd5222fa7b
+          line_end: 4001
+          line_start: 3933
+          path: tests/agent-dispatch-engine.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM4TT5PK3ZJ37SQVEW6VP4AT
+            author: codex
+            body: This test does not prove the behavior claimed by AC-11. It calls  directly and only asserts
+              that the helper returns  while the worker worktree is still missing. That never
+              exercises queue pruning, dispatch, or workspace reprovisioning, so a regression
+              where  entries are still discarded or fail to recreate the missing worker workspace
+              would still pass. Because this task adds  recovery support, AC-11 needs an end-to-end
+              assertion through the real dispatch path.
+            created_at: 2026-03-20T05:17:11.763Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T05:12:46.124Z
-    updated_at: 2026-03-20T05:13:02.381Z
+    updated_at: 2026-03-20T05:17:11.763Z
     notes: []
