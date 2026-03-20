@@ -15287,15 +15287,10 @@ workspaces:
       reason: null
       updated_at: 2026-03-20T19:53:49.078Z
     health:
-      status: stale
-      issues:
-        - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-reviews-api-status-filter-validation-mismatch-01km6ar9-review"
-            is missing or no longer registered.
-          suggestion: Recreate the detached reviewer snapshot before running review again.
-      summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-20T19:53:49.078Z
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-20T19:53:52.112Z
     integration:
       status: pending
       detail: null
@@ -15304,25 +15299,20 @@ workspaces:
       target_branch: dev
       target_commit: da0fbf18378b893f4b1036d23282f691beaccf56
       updated_at: 2026-03-20T19:53:49.078Z
-    lifecycle_state: stale
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM6AR90T6NH9Q6RWF35J63DD"
     task_slug: fix-reviews-api-status-filter-validation-mismatch
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T19:53:48.331Z
-      last_reconciled_at: 2026-03-20T19:53:49.078Z
+      last_reconciled_at: 2026-03-20T19:53:52.112Z
       created_at: 2026-03-20T19:17:06.568Z
-      updated_at: 2026-03-20T19:53:49.078Z
+      updated_at: 2026-03-20T19:53:52.112Z
     workspace_id: dispatch-workspace-01KM6AR90T6NH9Q6RWF35J63DD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: cd1cae22e3b5390bb4c808ccc8e30f4c25f682b4
-        last_seen_at: 2026-03-20T19:53:41.019Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-reviews-api-status-filter-validation-mismatch-01km6ar9-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-reviews-api-status-filter-validation-mismatch/01km6ar9
