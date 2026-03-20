@@ -25053,3 +25053,29 @@ reviews:
     created_at: 2026-03-20T04:23:27.197Z
     updated_at: 2026-03-20T04:27:50.439Z
     notes: []
+  - _ulid: 01KM4R91N0N1EBTV11XSYCDZFQ
+    slugs: []
+    title: Review fix-review-add-subject-type-precedence-with-version-context
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM4R91MZZ8HD647KVA6F6F90
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T04:32:53.407Z
+    examined_commit: 111d29d52180ca272c6a43ec08f0adf130cd218a
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM4KPQ4CJS24TH0NTVXJA1V3"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T04:32:53.408Z
+    updated_at: null
+    notes: []
