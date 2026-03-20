@@ -24352,6 +24352,8 @@ plans:
         tags:
           - cli
           - validation
+        depends_on:
+          - "@task-schema-derived-types"
         description: |
           **What:** Add validateEnumOption() checks to all CLI mutation commands
           that accept typed options without runtime validation. Audit identified
@@ -24438,6 +24440,8 @@ plans:
           - daemon
           - validation
           - web-ui
+        depends_on:
+          - "@task-schema-derived-types"
         description: |
           **What:** Replace loose t.String() with strict t.Union([t.Literal(...)])
           in Elysia schemas for all daemon API endpoints that accept typed fields.
@@ -24491,7 +24495,7 @@ plans:
           - parser
           - validation
         depends_on:
-          - "@task-cli-mutation-input-validation"
+          - "@task-schema-derived-types"
         description: |
           **What:** Add schema validation to createTask() and createSpecItem()
           in src/parser/yaml.ts, and tighten PlanSpecSchema.type from
@@ -24523,7 +24527,7 @@ plans:
       - title: Consolidate type definitions to schema source of truth
         slug: task-schema-derived-types
         spec_ref: "@schema-derived-type-definitions"
-        priority: 2
+        priority: 1
         tags:
           - schema
           - validation
@@ -24681,3 +24685,7 @@ plans:
           details only in tasks
         author: "@claude"
         created_at: 2026-03-20T15:39:18.512Z
+      - _ulid: 01KM5YKD1H8269A8EBD0B6FPQV
+        content: Schema consolidation is P1 prerequisite — all validation tasks now depend on it
+        author: "@claude"
+        created_at: 2026-03-20T15:42:38.641Z
