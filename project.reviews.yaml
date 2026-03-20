@@ -23531,6 +23531,17 @@ reviews:
         runner: kspec
         created_at: 2026-03-20T00:31:14.709Z
         completed_at: 2026-03-20T00:31:14.709Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "node scripts/test.cjs passed in this review workspace: 287 files, 6613 tests passed, 3
+          skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T00:31:15.421Z
+        completed_at: 2026-03-20T00:31:15.421Z
     events:
       - _ulid: 01KM4ADFZ9M8VMQF5GZDPA05N6
         actor: Jacob Chapel
@@ -23559,6 +23570,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-20T00:31:14.943Z
+      - _ulid: 01KM4AEKQ0CXJ3D60ADGRB5X1K
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T00:31:15.680Z
     examined_commit: 86035071daccf934787a0b9f1fe7a029e343d28a
     external_links: []
     lifecycle_state: open
@@ -23592,5 +23610,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T00:30:39.082Z
-    updated_at: 2026-03-20T00:31:14.709Z
+    updated_at: 2026-03-20T00:31:15.421Z
     notes: []
