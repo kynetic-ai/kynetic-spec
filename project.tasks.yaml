@@ -109396,6 +109396,21 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T00:11:03.806Z
+    - _ulid: 01KM4A22E1SJ2X9XSV3SGRAB8Y
+      content: "[FIX_CYCLE: 4] Cleared the prior review blocker by restacking onto origin/dev; the branch
+        diff is now limited to src/cli/commands/task.ts, src/parser/yaml.ts, and
+        tests/task-cancel-dependency-cleanup.test.ts. Replied to and resolved the old
+        branch-conflation thread on review @01KM4687QDVE5QSA4ZBP6FATHJ. Verification: npm test --
+        task-cancel-dependency-cleanup passed; full npm test streamed green through the task suite
+        and the previously cited timeout files (activity-display, cli-schedule-commands,
+        dispatch-runtime-bootstrap-contract, review-per-cycle-lifecycle, task-needs-work), but the
+        shared runner then remained alive in teardown as lingering node scripts/test.cjs process
+        125463. Filed follow-up priority task
+        @task-investigate-npm-test-teardown-hang-after-green-suite-run for that shared gate issue
+        rather than re-blocking this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T00:24:24.769Z
   todos: []
   automation: eligible
 - _ulid: 01KM46GRK3CYYA4V37D8Y32G4K
