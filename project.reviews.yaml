@@ -30269,6 +30269,18 @@ reviews:
         runner: npm
         created_at: 2026-03-20T17:41:48.475Z
         completed_at: 2026-03-20T17:41:48.475Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Pre-existing repo baseline failures unrelated to this diff: missing refs in
+          .kspec/modules/meta.yaml, orphaned skill directory warning, and existing
+          completeness/alignment warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T17:41:53.974Z
+        completed_at: 2026-03-20T17:41:53.974Z
     events:
       - _ulid: 01KM655PQKHWSW753NX5X2GSHS
         actor: Jacob Chapel
@@ -30304,6 +30316,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T17:41:48.713Z
+      - _ulid: 01KM65DRXJ091E3TGZQPS51W5H
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T17:41:54.226Z
     examined_commit: 309c8b97751cd0c81c183ee7c48db2673e10e999
     external_links: []
     lifecycle_state: open
@@ -30338,5 +30357,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T17:37:29.843Z
-    updated_at: 2026-03-20T17:41:48.475Z
+    updated_at: 2026-03-20T17:41:53.974Z
     notes: []
