@@ -28218,7 +28218,19 @@ reviews:
     slugs: []
     title: Review @01KM4QGVTQR64KQPQ0S24AHV0S (cycle 6)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repository-level baseline validation failures remain: 3 broken references in
+          .kspec/modules/meta.yaml plus existing completeness/alignment warnings unrelated to this
+          task."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T07:04:10.680Z
+        completed_at: 2026-03-20T07:04:10.680Z
     events:
       - _ulid: 01KM50WWD7ZYM1MGF39DCQ5F72
         actor: Jacob Chapel
@@ -28233,6 +28245,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM50Y1CQ9NN8FW01B3SW08F5
         timestamp: 2026-03-20T07:04:10.132Z
+      - _ulid: 01KM50Y2DV3DVQ1VMX2ZB25AXN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T07:04:10.939Z
     examined_commit: 47d46a5f52f53d6fa2ae2257220d411f898f631a
     external_links: []
     lifecycle_state: draft
@@ -28264,5 +28283,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-20T07:03:32.007Z
-    updated_at: 2026-03-20T07:04:09.879Z
+    updated_at: 2026-03-20T07:04:10.680Z
     notes: []
