@@ -14668,7 +14668,7 @@ workspaces:
         head: 309c8b97751cd0c81c183ee7c48db2673e10e999
         last_seen_at: 2026-03-20T17:37:03.027Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-mutation-input-validation-01km5z4j
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 89942c26e4d0033049772e411e7235ee37407e86
     bootstrap:
       status: succeeded
@@ -14760,7 +14760,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T18:13:53.852Z
+      updated_at: 2026-03-20T18:14:05.484Z
     integration:
       status: pending
       detail: null
@@ -14775,10 +14775,10 @@ workspaces:
     task_slug: task-daemon-api-input-validation
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-20T18:03:46.150Z
-      last_reconciled_at: 2026-03-20T18:13:53.852Z
+      last_active_at: 2026-03-20T18:14:05.484Z
+      last_reconciled_at: 2026-03-20T18:14:05.484Z
       created_at: 2026-03-20T17:37:09.383Z
-      updated_at: 2026-03-20T18:14:01.875Z
+      updated_at: 2026-03-20T18:14:05.484Z
     workspace_id: dispatch-workspace-01KM5Z4M7YQN173XSB98TPV8Y2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
