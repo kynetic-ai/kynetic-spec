@@ -24848,6 +24848,18 @@ reviews:
         runner: npm
         created_at: 2026-03-20T02:32:37.207Z
         completed_at: 2026-03-20T02:32:37.207Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation still reports pre-existing shadow-state issues unrelated to this diff: 3
+          broken refs plus existing warnings. Reviewed code diff is test-only and does not modify
+          .kspec state."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T02:32:37.918Z
+        completed_at: 2026-03-20T02:32:37.918Z
     events:
       - _ulid: 01KM4H3CAP14XWJ4MA48KTGW40
         actor: Jacob Chapel
@@ -24869,6 +24881,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T02:32:37.405Z
+      - _ulid: 01KM4HCVG15H3YGVRY3DBY0H9W
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T02:32:38.146Z
     examined_commit: 71a378aa525231a491e7c353dc542c159e2c980f
     external_links: []
     lifecycle_state: open
@@ -24881,5 +24900,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T02:27:27.703Z
-    updated_at: 2026-03-20T02:32:37.207Z
+    updated_at: 2026-03-20T02:32:37.918Z
     notes: []
