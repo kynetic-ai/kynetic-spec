@@ -109486,6 +109486,17 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T00:03:19.582Z
+    - _ulid: 01KM49NN1T84G3QMK0DMFMQT65
+      content: "[FIX_CYCLE: 3] Restored short-ULID plan_ref matching in shared plan summary linkage so
+        plan_ref-only tasks continue to resolve across CLI, export, and daemon surfaces before
+        cancelled-task exclusion is applied. Added AC-tagged regressions in
+        tests/plan-summary.test.ts plus CLI/export coverage that uses @<short-ulid> plan refs
+        directly. Verification: npm test -- tests/plan-summary.test.ts tests/cli-plan.test.ts
+        tests/export/json.test.ts passed; full npm test passed. kspec validate still reports
+        pre-existing repo-wide reference/alignment/completeness debt unrelated to this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T00:17:37.850Z
   todos: []
   automation: eligible
 - _ulid: 01KM48P6J1KQEPB0WR12SS6Y3H
