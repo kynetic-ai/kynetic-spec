@@ -109206,6 +109206,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T00:01:33.868Z
+    - _ulid: 01KM496TAY6HNEC9T78QPXD4TT
+      content: Implemented shared-checkout drift detection in the integration-target mutation scope.
+        Dispatch now inspects branch/index/worktree coherence before sync/push operations,
+        auto-repairs clean stale branch transitions by resetting tracked state to the current
+        integration-branch tip, and refuses destructive repair with branch-specific guidance when
+        tracked local changes would be overwritten. Added regression coverage for clean drift repair
+        during target sync and for degraded-state reporting when repair is unsafe. Full npm test
+        passed; kspec validate still reports pre-existing unrelated reference/completeness issues in
+        meta/spec coverage outside this task.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T00:09:31.742Z
   todos: []
   automation: eligible
 - _ulid: 01KM3ZMFYDXR42KW2KGZ09RYYD
