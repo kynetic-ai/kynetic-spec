@@ -110835,7 +110835,15 @@
   session_id: 01KM655P095P5HDD91PN3WAT7C
   created_at: 2026-03-20T15:52:03.070Z
   started_at: 2026-03-20T17:38:02.713Z
-  notes: []
+  notes:
+    - _ulid: 01KM65GM62PJ96MV3HQ5E87EDK
+      content: Tightening daemon route schemas to use canonical enum options through shared enum helpers.
+        Scope includes task/item/review/triage/plan/session/search/meta route filters plus review
+        and triage mutation bodies; session agent_type remains unconstrained because the canonical
+        session schema defines it as an open string, not an enum.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T17:43:27.682Z
   todos: []
   automation: eligible
 - _ulid: 01KM5Z4MXMC234763SFZZHK7GH
