@@ -110107,7 +110107,7 @@
     coverage that missing worktree or branch state for in_progress tasks is repaired rather than
     discarded when recovery remains possible."
   spec_ref: "@dispatch-workspace-registry"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -110121,7 +110121,7 @@
   submission_linkage:
     review_url: null
     branch: dev
-    captured_at: 2026-03-20T05:11:41.217Z
+    captured_at: 2026-03-20T05:37:17.603Z
     commit: ce5e2029ce243ddab6173a031bf47c297c334690
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -110129,7 +110129,7 @@
   session_id: 01KM4VB5708RVJ8RECM1ZH3BXY
   created_at: 2026-03-20T03:45:11.499Z
   started_at: 2026-03-20T05:37:09.970Z
-  submitted_at: 2026-03-20T05:11:41.631Z
+  submitted_at: 2026-03-20T05:37:18.015Z
   notes:
     - _ulid: 01KM4TFJWHQTW71XJ0H7954JR7
       content: "Extended dispatch workspace eligibility so in_progress tasks use the same
