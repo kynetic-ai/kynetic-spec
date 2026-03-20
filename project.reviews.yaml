@@ -26650,7 +26650,17 @@ reviews:
     slugs: []
     title: Review task-fix-sessions-live-freshness (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run typecheck passed.
+        name: typecheck
+        required: true
+        runner: tsc
+        created_at: 2026-03-20T06:05:03.148Z
+        completed_at: 2026-03-20T06:05:03.148Z
     events:
       - _ulid: 01KM4X99VCX2APDM3TK4CTYW22
         actor: Jacob Chapel
@@ -26665,6 +26675,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T06:00:48.119Z
+      - _ulid: 01KM4XHT1W9EKTJ9GRFG9YN28F
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: typecheck
+        timestamp: 2026-03-20T06:05:03.420Z
     examined_commit: 0bcd918c06e70e6113027d0909aa473c02c705e8
     external_links: []
     lifecycle_state: open
@@ -26677,5 +26694,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T06:00:24.685Z
-    updated_at: 2026-03-20T06:00:47.900Z
+    updated_at: 2026-03-20T06:05:03.148Z
     notes: []
