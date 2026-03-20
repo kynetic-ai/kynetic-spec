@@ -12452,7 +12452,7 @@ workspaces:
         head: fadb999f740f18d9877355ad928dc71183a41c15
         last_seen_at: 2026-03-19T23:26:17.852Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-route-dispatch-sync-through-targeting-path-01km3zme
-  - active_role: null
+  - active_role: worker
     base_branch_point: f90477c9945db0317d11955393f6089b4fed466a
     bootstrap:
       status: succeeded
@@ -12502,7 +12502,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T01:46:11.459Z
+      updated_at: 2026-03-20T01:46:12.567Z
     integration:
       status: pending
       detail: null
@@ -12511,16 +12511,16 @@ workspaces:
       target_branch: dev
       target_commit: f90477c9945db0317d11955393f6089b4fed466a
       updated_at: 2026-03-20T01:46:11.459Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM46GRK3CYYA4V37D8Y32G4K"
     task_slug: implement-cancelled-task-exclusion-in-plan-summary-metrics
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-20T00:19:01.820Z
-      last_reconciled_at: 2026-03-20T01:46:11.459Z
+      last_active_at: 2026-03-20T01:46:12.567Z
+      last_reconciled_at: 2026-03-20T01:46:12.567Z
       created_at: 2026-03-19T23:26:19.487Z
-      updated_at: 2026-03-20T01:46:11.810Z
+      updated_at: 2026-03-20T01:46:12.567Z
     workspace_id: dispatch-workspace-01KM46GRK3CYYA4V37D8Y32G4K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
