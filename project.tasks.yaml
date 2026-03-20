@@ -110628,3 +110628,340 @@
       created_at: 2026-03-20T07:25:23.342Z
   todos: []
   automation: eligible
+- _ulid: 01KM5Z4JVEFXG9SJ8P7RANZDNV
+  slugs:
+    - task-cli-mutation-input-validation
+  title: Add CLI mutation input validation
+  type: task
+  description: |
+    **What:** Add validateEnumOption() checks to all CLI mutation commands
+    that accept typed options without runtime validation. Audit identified
+    9 unvalidated enum options across mutation commands: task add --type,
+    item add --type, item set --type/--status/--maturity, inbox promote
+    --type, plan add/set --status, review check add --status.
+
+    **Why:** These commands persist invalid values to shadow branch YAML
+    files. On next read, safeParse drops those records silently — the
+    primary data corruption vector reported in GitHub #899. Fixing
+    mutations is highest priority because it prevents new corruption.
+
+    **How:** Each fix follows the existing validated pattern at
+    src/cli/commands/task.ts line 1067 (task add --automation):
+    1. Import the Zod schema (e.g. TaskTypeSchema from ../../schema/common.js)
+    2. Call validateEnumOption(value, Schema.options, "field name") before
+       the value is used
+    3. On failure: call error() with the result message and process.exit()
+    4. On success: use the validated value
+
+    Specific locations:
+    - src/cli/commands/task.ts ~line 1147: task add --type (TaskTypeSchema)
+    - src/cli/commands/item.ts line 708: item add --type (ItemTypeSchema)
+    - src/cli/commands/item.ts line 1089: item set --type (ItemTypeSchema)
+    - src/cli/commands/item.ts: item set --status (ImplementationStatusSchema),
+      --maturity (MaturitySchema)
+    - src/cli/commands/inbox.ts: inbox promote --type (TaskTypeSchema)
+    - src/cli/commands/plan.ts: plan add/set --status (PlanStatusSchema)
+    - src/cli/commands/review.ts: review check add --status (ReviewCheckStatusSchema)
+
+    Covers: @cli-input-type-safety ac-1, ac-3.
+  spec_ref: "@cli-input-type-safety"
+  plan_ref: "@plan-input-validation-hardening"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-schema-derived-types"
+  context: []
+  priority: 1
+  tags:
+    - cli
+    - validation
+  vcs_refs: []
+  created_at: 2026-03-20T15:52:01.646Z
+  notes: []
+  todos: []
+- _ulid: 01KM5Z4KJQ7CF8F2P48711SY91
+  slugs:
+    - task-cli-filter-input-validation
+  title: Add CLI filter input validation
+  type: task
+  description: |
+    **What:** Add validateEnumOption() checks to all CLI list/search
+    commands that accept typed filter options without validation. Audit
+    identified 14 unvalidated filter options across 9 commands: task list
+    --status/--type, tasks ready --status/--type, item list --type,
+    plan list --status, review list --status/--disposition, triage list
+    --status/--action, search --type/--status, schedule list --status,
+    agent list --status.
+
+    **Why:** Typos in filter values (e.g., --status "pending_revew")
+    silently return empty results. Users think there are no matching items
+    when really the filter value was invalid. Early validation with a clear
+    error saves debugging time.
+
+    **How:** Same validateEnumOption pattern as mutation validation.
+    Validation happens early in each command's action handler, before
+    loading data from the shadow branch. For schedule list --status
+    (enabled/disabled) and agent list --status (eligible/ineligible),
+    verify whether Zod schemas exist or create inline allowed-value arrays.
+
+    Specific files and schemas:
+    - src/cli/commands/task.ts: task list --status (TaskStatusSchema),
+      --type (TaskTypeSchema); tasks ready --status, --type
+    - src/cli/commands/item.ts: item list --type (ItemTypeSchema)
+    - src/cli/commands/plan.ts: plan list --status (PlanStatusSchema)
+    - src/cli/commands/review.ts: review list --status
+      (ReviewLifecycleStateSchema), --disposition (ReviewDispositionSchema)
+    - src/cli/commands/triage.ts: triage list --status (TriageStatusSchema),
+      --action (TriageActionSchema)
+    - src/cli/commands/search.ts: search --type (ItemTypeSchema),
+      --status (TaskStatusSchema)
+    - src/cli/commands/schedule.ts: schedule list --status
+    - src/cli/commands/agent.ts: agent list --status
+
+    Covers: @cli-input-type-safety ac-2, ac-3.
+  spec_ref: "@cli-input-type-safety"
+  plan_ref: "@plan-input-validation-hardening"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-cli-mutation-input-validation"
+  context: []
+  priority: 2
+  tags:
+    - cli
+    - validation
+    - dx
+  vcs_refs: []
+  created_at: 2026-03-20T15:52:02.391Z
+  notes: []
+  todos: []
+- _ulid: 01KM5Z4M7YQN173XSB98TPV8Y2
+  slugs:
+    - task-daemon-api-input-validation
+  title: Tighten daemon API input schemas
+  type: task
+  description: |
+    **What:** Replace loose t.String() with strict t.Union([t.Literal(...)])
+    in Elysia schemas for all daemon API endpoints that accept typed fields.
+    This covers both mutation endpoints (8 with loose enum body fields) and
+    query endpoints (7+ routes with loose enum filter params).
+
+    **Why:** The web UI uses these endpoints. Loose t.String() schemas mean
+    arbitrary values are accepted. For mutations, this risks data corruption.
+    For queries, this causes silent empty results on typos — the same problem
+    as CLI filters. Framework-level Elysia validation rejects requests before
+    the handler runs.
+
+    **How:** For each endpoint, replace loose Elysia types with strict unions
+    derived from Zod schemas. Reference pattern exists at
+    packages/daemon/src/routes/meta.ts (PATCH /api/meta/agents/:id) which
+    uses Schema.options.map(v => t.Literal(v)).
+
+    Mutation endpoints:
+    - packages/daemon/src/routes/reviews.ts:
+      POST /comments: kind, anchor.type, anchor.side
+      POST /verdicts: decision
+      POST /checks: status
+      PATCH /lifecycle: target
+    - packages/daemon/src/routes/triage.ts:
+      POST /: action
+      POST /:ref/override: action
+    - packages/daemon/src/routes/agent-dispatch.ts:
+      POST /events: from_status, to_status
+
+    Query/filter endpoints:
+    - packages/daemon/src/routes/tasks.ts: GET /api/tasks — status, type,
+      automation filter params
+    - packages/daemon/src/routes/items.ts: GET /api/items — type, maturity,
+      implementation filter params
+    - packages/daemon/src/routes/reviews.ts: GET /api/reviews — status,
+      disposition filter params
+    - packages/daemon/src/routes/triage.ts: GET /api/triage — status, action
+    - packages/daemon/src/routes/plans.ts: GET /api/plans — status
+    - packages/daemon/src/routes/sessions routes — status, agent_type
+    - packages/daemon/src/routes/validation.ts: search — type, status
+
+    Keep existing manual handler validation as defense-in-depth.
+
+    Covers: @api-input-type-safety ac-1 through ac-4.
+  spec_ref: "@api-input-type-safety"
+  plan_ref: "@plan-input-validation-hardening"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-schema-derived-types"
+  context: []
+  priority: 2
+  tags:
+    - daemon
+    - validation
+    - web-ui
+  vcs_refs: []
+  created_at: 2026-03-20T15:52:03.070Z
+  notes: []
+  todos: []
+- _ulid: 01KM5Z4MXMC234763SFZZHK7GH
+  slugs:
+    - task-parser-write-validation
+  title: Add parser write-path schema validation
+  type: task
+  description: |
+    **What:** Add schema validation to createTask() and createSpecItem()
+    in src/parser/yaml.ts, and tighten PlanSpecSchema.type from
+    z.string().optional() to ItemTypeSchema.optional() in
+    src/parser/plan-document.ts.
+
+    **Why:** Defense-in-depth. Primary validation happens at CLI and API
+    boundaries, but programmatic callers — batch execution, plan derive,
+    and future code paths — can bypass boundary validation using TypeScript
+    "as Type" casts. The parser layer is the last defense before invalid
+    data reaches disk.
+
+    **How:**
+    1. In createTask() (~line 1300 of src/parser/yaml.ts):
+       - Add TaskInputSchema.safeParse(input) at function entry
+       - On failure: throw new Error with formatted Zod error issues
+       - Import TaskInputSchema from ../schema/task.js
+
+    2. In createSpecItem() (~line 1937 of src/parser/yaml.ts):
+       - Add SpecItemInputSchema.safeParse(input) at function entry
+       - On failure: throw new Error with formatted Zod error issues
+
+    3. In src/parser/plan-document.ts line 22:
+       - Change `type: z.string().optional()` to `type: ItemTypeSchema.optional()`
+       - Import ItemTypeSchema from ../../schema/common.js
+
+    Covers: @parser-write-type-safety ac-1, ac-2, ac-3.
+  spec_ref: "@parser-write-type-safety"
+  plan_ref: "@plan-input-validation-hardening"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on:
+    - "@task-schema-derived-types"
+  context: []
+  priority: 2
+  tags:
+    - parser
+    - validation
+  vcs_refs: []
+  created_at: 2026-03-20T15:52:03.764Z
+  notes: []
+  todos: []
+- _ulid: 01KM5Z4NK56J72PS2YVKP5EJ8G
+  slugs:
+    - task-schema-derived-types
+  title: Consolidate type definitions to schema source of truth
+  type: task
+  description: |
+    **What:** Replace all hardcoded enum arrays, Elysia literal unions,
+    CLI help text values, and type assertions with derivations from the
+    canonical Zod schemas. Also resolve the automation status divergence
+    where three independent Zod schemas define incompatible value sets
+    for the same semantic concept.
+
+    **Why:** The audit found 5 hardcoded enum arrays in daemon routes,
+    10+ CLI help strings with hardcoded values, and type assertions in
+    aggregation routes — all duplicating what Zod schemas already define.
+    Worse, there are 3 incompatible "automation" enums:
+    - AutomationStatusSchema (task.ts): eligible, needs_review, manual_only
+    - TaskEventPayload automation (event-payloads.ts): eligible, not_eligible, assisted
+    - AgentDispatchFilterSchema (meta.ts): eligible, ineligible
+    Only "eligible" overlaps across all three. These must be reconciled.
+
+    **How:**
+    1. Reconcile automation enums — determine the canonical set and
+       derive the others from it, or document why they are intentionally
+       different domains
+
+    2. Replace hardcoded arrays in daemon routes with schema derivations:
+       - packages/daemon/src/routes/agent-dispatch.ts: VALID_TASK_STATUSES
+         → derive from TaskStatusSchema.options
+       - packages/daemon/src/routes/reviews.ts: VALID_DECISIONS,
+         VALID_CHECK_STATUSES, VALID_LIFECYCLE_TARGETS, validKinds,
+         validSides → derive from corresponding Review*Schema.options
+       - packages/daemon/src/routes/aggregation.ts: remove type assertions
+         with hardcoded enum values
+
+    3. Replace Elysia hardcoded literals:
+       - packages/daemon/src/routes/meta.ts line 108: automation literal
+         union → derive from schema like line 105 does for dispatch events
+
+    4. Make CLI help text derive from schemas. Either:
+       (a) Generate help strings: `"Task type (${TaskTypeSchema.options.join(', ')})"` or
+       (b) Accept that help text is documentation and may list a subset,
+           but validation must use the schema
+
+    5. Follow existing correct patterns:
+       - src/triage/constants.ts: `VALID_ACTIONS = TriageActionSchema.options`
+       - meta.ts:105: `t.Union(Schema.options.map(v => t.Literal(v)))`
+
+    Covers: @schema-derived-type-definitions ac-1 through ac-4.
+  spec_ref: "@schema-derived-type-definitions"
+  plan_ref: "@plan-input-validation-hardening"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - schema
+    - validation
+    - maintenance
+  vcs_refs: []
+  created_at: 2026-03-20T15:52:04.453Z
+  notes: []
+  todos: []
+- _ulid: 01KM5Z4P8FV3JEDM2KRN6A0AKN
+  slugs:
+    - task-read-side-validation-warnings
+  title: Add read-side validation warnings
+  type: task
+  description: |
+    **What:** When safeParse fails during YAML file loading, emit a stderr
+    warning identifying the dropped record and the validation error, instead
+    of silently skipping it. Affects loader functions for tasks, spec items,
+    inbox items, triage records, and plan records in src/parser/yaml.ts.
+
+    **Why:** Silent data loss is the root symptom of GitHub #899. A record
+    disappearing with no explanation forces users to manually inspect YAML.
+    A warning on stderr immediately tells users what happened, which record
+    was dropped, and which field failed — enough to fix it.
+
+    **How:**
+    1. Create a shared helper in src/parser/yaml.ts:
+       ```
+       function warnSkippedRecord(entityType: string, id: string,
+         source: string, error: z.ZodError): void
+       ```
+
+    2. Add else branches to safeParse checks in each loader:
+       - loadTasksFromFile() ~line 742
+       - extractItemsFromRaw() ~line 1626
+       - parseInboxItemsFromRaw() ~lines 2286/2299
+       - Triage record loader ~line 2754
+       - Plan record loader (verify location)
+
+    Valid records continue to load normally — warnings are non-breaking.
+
+    Covers: @read-side-validation-warnings ac-1, ac-2, ac-3.
+  spec_ref: "@read-side-validation-warnings"
+  plan_ref: "@plan-input-validation-hardening"
+  origin: derived
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - parser
+    - dx
+    - validation
+  vcs_refs: []
+  created_at: 2026-03-20T15:52:05.135Z
+  notes: []
+  todos: []

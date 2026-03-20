@@ -9999,6 +9999,66 @@ features:
         notes: []
     created: 2026-03-14T08:45:51.838Z
     notes: []
+  - _ulid: 01KM5Z4JFESXSFWZ4MNTHBHQ1P
+    slugs:
+      - cli-input-type-safety
+    title: CLI Input Type Safety
+    type: feature
+    description: |
+      All CLI commands must validate their inputs against the defined type
+      constraints before executing. This applies to both mutation commands
+      (which persist data) and query commands (which filter data). When a
+      command accepts an option or argument with a constrained type — an
+      enum, a number within a range, a reference format, or any value with
+      a schema-defined shape — it must reject invalid values with a clear
+      error rather than passing them through unchecked.
+
+      Mutation commands that accept invalid input cause data corruption:
+      values are written to YAML and silently dropped on next read. Query
+      commands that accept invalid filters silently return empty results,
+      wasting the user's time debugging "missing" data.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-type-safe-input"
+      - "@trait-error-guidance"
+      - "@trait-semantic-exit-codes"
+    acceptance_criteria:
+      - given: |
+          A CLI mutation command accepts a typed option
+        id: ac-1
+        then: |
+          The command exits with non-zero status and stderr describes the
+          invalid value and lists what is valid, before any write occurs
+        when: |
+          The provided value does not match the option's type constraint
+      - given: |
+          A CLI query command accepts a typed filter option
+        id: ac-2
+        then: |
+          The command exits with non-zero status and stderr describes the
+          invalid value, rather than silently returning empty results
+        when: |
+          The provided value does not match the filter's type constraint
+      - given: |
+          A CLI command accepts a typed option
+        id: ac-3
+        then: |
+          The command executes normally
+        when: |
+          The provided value satisfies the type constraint
+      - given: |
+          A CLI command option has a default value
+        id: ac-4
+        then: |
+          The default value itself satisfies the type constraint
+        when: |
+          The default is applied
+    tags: []
+    created: 2026-03-20T15:52:01.262Z
+    notes: []
 requirements:
   - _ulid: 01KF109BR2PZACTM1Y91NWEEJQ
     slugs:
@@ -10718,4 +10778,95 @@ requirements:
           It is reviewed
     tags: []
     created: 2026-03-10T06:55:43.097Z
+    notes: []
+  - _ulid: 01KM5Z4JM40VSG9JE4NFERJA52
+    slugs:
+      - parser-write-type-safety
+    title: Parser Write-Path Type Safety
+    type: requirement
+    description: |
+      Entity creation and import functions must validate their inputs
+      against the canonical schema before constructing entities. This is
+      a defense-in-depth layer that catches invalid data from programmatic
+      callers that bypass CLI or API boundary validation — including batch
+      execution, plan derivation, and internal code paths that construct
+      entities directly.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          An entity creation function receives input with an invalid
+          field value
+        id: ac-1
+        then: |
+          It throws an error identifying the invalid field and what
+          valid input looks like
+        when: |
+          The function validates the input against the entity schema
+      - given: |
+          An entity creation function receives valid input
+        id: ac-2
+        then: |
+          The entity is created normally
+        when: |
+          The function validates the input
+      - given: |
+          A structured document is imported (e.g., a plan document
+          containing entity definitions)
+        id: ac-3
+        then: |
+          Import fails with an error identifying the invalid field
+          and listing valid values
+        when: |
+          The document contains a field value that violates a type
+          constraint
+    tags: []
+    created: 2026-03-20T15:52:01.412Z
+    notes: []
+  - _ulid: 01KM5Z4JR6ZAKNYDSJYXJZHX83
+    slugs:
+      - read-side-validation-warnings
+    title: Read-Side Validation Warnings
+    type: requirement
+    description: |
+      When persisted records fail schema validation during loading, the
+      system must warn the user rather than silently dropping them. This
+      is a safety net for data that was corrupted before write-time
+      validation was in place, or that was edited manually. Valid records
+      must still load normally — warnings are non-breaking and informational.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-error-guidance"
+    acceptance_criteria:
+      - given: |
+          A data file contains a record with an invalid field value
+        id: ac-1
+        then: |
+          A warning is emitted to stderr identifying the record and the
+          validation error
+        when: |
+          The loader parses the file
+      - given: |
+          A data file contains both valid and invalid records
+        id: ac-2
+        then: |
+          Valid records are returned normally and warnings are emitted
+          only for the invalid records
+        when: |
+          The loader parses the file
+      - given: |
+          All records in a data file are valid
+        id: ac-3
+        then: |
+          No warnings are emitted
+        when: |
+          The loader parses the file
+    tags: []
+    created: 2026-03-20T15:52:01.542Z
     notes: []

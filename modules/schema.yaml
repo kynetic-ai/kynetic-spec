@@ -1530,3 +1530,65 @@ requirements:
     tags: []
     created: 2026-03-16T18:02:45.034Z
     notes: []
+  - _ulid: 01KM5Z4JQJ2D0YDGSBZBX8WP6R
+    slugs:
+      - schema-derived-type-definitions
+    title: Schema-Derived Type Definitions
+    type: requirement
+    description: |
+      Every surface that references a constrained type — CLI option help
+      text, API route schemas, runtime validation arrays, type assertions
+      — must derive its definition from the canonical schema rather than
+      maintaining a separate copy. When multiple representations of the
+      same type exist, they drift independently and create silent
+      inconsistencies.
+
+      This includes hardcoded arrays used for validation, API framework
+      type definitions, CLI help strings that list valid values, and
+      type assertions that enumerate possible values. All of these must
+      trace back to a single canonical schema definition.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-type-safe-input"
+    acceptance_criteria:
+      - given: |
+          A runtime validation check references a set of valid values
+          for a type that has a canonical schema definition
+        id: ac-1
+        then: |
+          They are derived from the canonical schema rather than
+          maintained as a separate hardcoded array or set
+        when: |
+          The valid values are determined
+      - given: |
+          An API endpoint defines the allowed values for a field
+        id: ac-2
+        then: |
+          They are derived from the canonical schema definition,
+          not hardcoded independently
+        when: |
+          The allowed values are specified
+      - given: |
+          A CLI command's help text lists valid values for an option
+        id: ac-3
+        then: |
+          The listed values are derived from the canonical schema so
+          they stay in sync when the schema changes
+        when: |
+          The help text is generated
+      - given: |
+          Two or more schema definitions exist for the same semantic
+          concept
+        id: ac-4
+        then: |
+          They share a single source definition or one is explicitly
+          derived from the other, with no independent incompatible
+          copies
+        when: |
+          The definitions are compared
+    tags: []
+    created: 2026-03-20T15:52:01.522Z
+    notes: []

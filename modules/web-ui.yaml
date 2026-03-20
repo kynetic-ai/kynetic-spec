@@ -3404,6 +3404,67 @@ features:
     tags: []
     created: 2026-03-18T05:31:46.356Z
     notes: []
+  - _ulid: 01KM5Z4JK0XX5BWAXEF4RVCFXS
+    slugs:
+      - api-input-type-safety
+    title: API Input Type Safety
+    type: feature
+    description: |
+      All daemon API endpoints must enforce type constraints on input
+      fields at the framework schema level, not through manual checks in
+      handler code. This applies to both mutation endpoints (request body
+      fields) and query endpoints (filter parameters). When an input
+      contains a field with a constrained type — an enum, a bounded
+      number, a structured object with required shape — the framework
+      must reject invalid values before the handler executes. This
+      applies to HTTP endpoints and WebSocket message handlers.
+
+      Framework-level validation is preferred over handler-level
+      validation because it is declarative, cannot be bypassed by handler
+      code paths, and produces consistent error responses. Existing
+      handler-level validation may remain as defense-in-depth.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits:
+      - "@trait-type-safe-input"
+      - "@trait-api-endpoint"
+    acceptance_criteria:
+      - given: |
+          An API mutation endpoint accepts a field with a type constraint
+        id: ac-1
+        then: |
+          The framework returns a validation error before the handler
+          executes, and no data is persisted
+        when: |
+          The request body contains a value that violates the constraint
+      - given: |
+          An API mutation endpoint accepts a field with a type constraint
+        id: ac-2
+        then: |
+          The handler executes normally
+        when: |
+          The request body contains a valid value
+      - given: |
+          An API query endpoint accepts a typed filter parameter
+        id: ac-3
+        then: |
+          The framework returns a validation error rather than silently
+          returning empty results
+        when: |
+          The provided value does not match the filter's type constraint
+      - given: |
+          An API endpoint's type constraints are defined
+        id: ac-4
+        then: |
+          The API type constraints are derived from the canonical
+          schema definition
+        when: |
+          The constraints are implemented
+    tags: []
+    created: 2026-03-20T15:52:01.376Z
+    notes: []
 requirements:
   - _ulid: 01KJZH33ZQ6DS7KTNFCRBBBBVX
     slugs:

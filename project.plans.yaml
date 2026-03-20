@@ -24638,10 +24638,22 @@ plans:
       unvalidated input type. Non-enum typed inputs (number ranges like priority 1-5,
       ref format validation, date formats) are valid future work under the same trait
       but are not tasked here.
-    status: approved
+    status: active
     approved_at: 2026-03-20T14:23:44.459Z
-    derived_specs: []
-    derived_tasks: []
+    derived_specs:
+      - "@trait-type-safe-input"
+      - "@cli-input-type-safety"
+      - "@api-input-type-safety"
+      - "@parser-write-type-safety"
+      - "@schema-derived-type-definitions"
+      - "@read-side-validation-warnings"
+    derived_tasks:
+      - "@task-cli-mutation-input-validation"
+      - "@task-cli-filter-input-validation"
+      - "@task-daemon-api-input-validation"
+      - "@task-parser-write-validation"
+      - "@task-schema-derived-types"
+      - "@task-read-side-validation-warnings"
     module_ref: "@cli"
     source_path: /home/chapel/Projects/kynetic-spec/plans/input-validation-hardening.md
     created_at: 2026-03-20T14:22:28.455Z
@@ -24689,3 +24701,28 @@ plans:
         content: Schema consolidation is P1 prerequisite — all validation tasks now depend on it
         author: "@claude"
         created_at: 2026-03-20T15:42:38.641Z
+      - _ulid: 01KM5Z4PXBET3DDM011EJ2XMC6
+        content: |-
+          This plan addresses GitHub issue #899 and a systemic audit that found 25 of 27
+          CLI enum options and 8 daemon API endpoints lack proper input type validation.
+
+          Root cause: Zod schemas define valid types but are only enforced on READ
+          (via safeParse which silently drops invalid records). Write paths use
+          TypeScript "as Type" casts with zero runtime validation.
+
+          The fix is layered:
+          1. Boundary validation (CLI + daemon API) rejects invalid input before persistence
+          2. Defense-in-depth (parser) catches anything that slips through boundaries
+          3. Observability (read warnings) surfaces already-corrupted data
+
+          Priority ordering: P1 mutations (prevent corruption), P2 filters + daemon + parser
+          (UX and defense), P3 read warnings (safety net for existing data).
+
+          Scope note: The trait @trait-type-safe-input is intentionally broad (covering
+          enums, numbers, formats, etc.) but the tasks in this plan focus on enum validation
+          as the immediate priority — it is the source of GitHub #899 and the most common
+          unvalidated input type. Non-enum typed inputs (number ranges like priority 1-5,
+          ref format validation, date formats) are valid future work under the same trait
+          but are not tasked here.
+        author: "@claude"
+        created_at: 2026-03-20T15:52:05.803Z

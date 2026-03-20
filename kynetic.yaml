@@ -677,6 +677,58 @@ traits:
     tags: []
     created: 2026-03-10T06:04:39.977Z
     notes: []
+  - _ulid: 01KM5Z4JEWP3RWESZNPDHW9X04
+    slugs:
+      - trait-type-safe-input
+    title: Type-Safe Input Boundaries
+    type: trait
+    description: |
+      Cross-cutting contract for any surface that accepts external input —
+      CLI options, HTTP request bodies, WebSocket messages, or programmatic
+      function arguments. Every input field with a defined type constraint
+      (enum, number range, string format, required/optional, array element
+      type) must be validated at the boundary before the input reaches
+      business logic or persistence.
+
+      Validation must be schema-derived — the source of truth for what
+      constitutes valid input is the canonical schema definition, not a
+      separate hardcoded check. Error messages must be actionable,
+      identifying what was wrong and what is expected.
+    depends_on: []
+    implements: []
+    relates_to: []
+    tests: []
+    traits: []
+    acceptance_criteria:
+      - given: |
+          Any input surface accepts a field with a defined type constraint
+        id: ac-1
+        then: |
+          The operation is rejected before any data is persisted or
+          state is mutated
+        when: |
+          The provided value does not satisfy the constraint
+      - given: |
+          An input validation error occurs for a constrained field
+        id: ac-2
+        then: |
+          The message includes the set of valid alternatives for the
+          field, not just the field name and invalid value (extends
+          @trait-error-guidance ac-5 which requires identifying the
+          field/value but not listing valid alternatives)
+        when: |
+          The error is reported to the caller
+      - given: |
+          A field's type constraint is defined in a canonical schema
+        id: ac-3
+        then: |
+          The validation is derived from that schema definition rather
+          than a separately maintained check
+        when: |
+          Validation logic checks the field
+    tags: []
+    created: 2026-03-20T15:52:01.244Z
+    notes: []
 includes:
   - modules/core.yaml
   - modules/schema.yaml
