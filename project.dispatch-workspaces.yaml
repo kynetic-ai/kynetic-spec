@@ -14938,7 +14938,7 @@ workspaces:
         head: 6b9464befb19bc5ba24e78f661a6110b8d673ff3
         last_seen_at: 2026-03-20T18:03:46.314Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-plans-page-progress-bar-using-unreliable-tailwind-arbitrary-value-classes-01km65j5
-  - active_role: worker
+  - active_role: null
     base_branch_point: a507fc148a704f8aa708f7e5599780cbbac0622f
     bootstrap:
       status: succeeded
@@ -15022,12 +15022,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T18:20:53.621Z
+      updated_at: 2026-03-20T18:21:26.242Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T18:20:53.621Z
+      updated_at: 2026-03-20T18:21:26.242Z
     integration:
       status: pending
       detail: null
@@ -15035,17 +15035,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a507fc148a704f8aa708f7e5599780cbbac0622f
-      updated_at: 2026-03-20T18:20:53.621Z
-    lifecycle_state: active
+      updated_at: 2026-03-20T18:21:26.242Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM5Z4MXMC234763SFZZHK7GH"
     task_slug: task-parser-write-validation
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T18:14:17.020Z
-      last_reconciled_at: 2026-03-20T18:20:53.621Z
+      last_reconciled_at: 2026-03-20T18:21:26.242Z
       created_at: 2026-03-20T18:14:06.435Z
-      updated_at: 2026-03-20T18:20:53.621Z
+      updated_at: 2026-03-20T18:21:26.242Z
     workspace_id: dispatch-workspace-01KM5Z4MXMC234763SFZZHK7GH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
