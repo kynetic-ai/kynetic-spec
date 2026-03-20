@@ -15093,7 +15093,7 @@ workspaces:
         head: a0bf72cf5aec046fb671938f44c6982741caacbf
         last_seen_at: 2026-03-20T18:21:30.717Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-parser-write-validation-01km5z4m
-  - active_role: worker
+  - active_role: null
     base_branch_point: 1cb15865407997d672327c8e8d457f65057241f3
     bootstrap:
       status: succeeded
@@ -15177,12 +15177,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T18:32:55.392Z
+      updated_at: 2026-03-20T18:34:02.379Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T18:32:55.392Z
+      updated_at: 2026-03-20T18:34:02.379Z
     integration:
       status: pending
       detail: null
@@ -15190,24 +15190,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1cb15865407997d672327c8e8d457f65057241f3
-      updated_at: 2026-03-20T18:32:55.392Z
-    lifecycle_state: active
+      updated_at: 2026-03-20T18:34:02.379Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM5Z4KJQ7CF8F2P48711SY91"
     task_slug: task-cli-filter-input-validation
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T18:21:55.345Z
-      last_reconciled_at: 2026-03-20T18:32:55.392Z
+      last_reconciled_at: 2026-03-20T18:34:02.379Z
       created_at: 2026-03-20T18:21:36.747Z
-      updated_at: 2026-03-20T18:32:55.392Z
+      updated_at: 2026-03-20T18:34:02.379Z
     workspace_id: dispatch-workspace-01KM5Z4KJQ7CF8F2P48711SY91
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 80518667626a6529e0eb127a4d99fa19d3260061
+        last_seen_at: 2026-03-20T18:34:02.379Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-filter-input-validation-01km5z4k-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-cli-filter-input-validation/01km5z4k
-        head: 1cb15865407997d672327c8e8d457f65057241f3
-        last_seen_at: 2026-03-20T18:21:36.747Z
+        head: 80518667626a6529e0eb127a4d99fa19d3260061
+        last_seen_at: 2026-03-20T18:34:02.379Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-filter-input-validation-01km5z4k
