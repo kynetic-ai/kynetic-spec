@@ -7517,6 +7517,17 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-20T01:33:05.568Z
+  - _ulid: 01KM4DZTNW3MW73EBK9YZ5ZAZJ
+    type: friction
+    content: The task-work skill says a needs_work task can be resubmitted directly with 'kspec task
+      submit @ref', but the CLI currently rejects submit from needs_work and requires an explicit
+      'kspec task start @ref' transition back to in_progress first. The documented fix-cycle
+      workflow and CLI behavior should match so agents and humans do not hit avoidable resubmission
+      failures.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-20T01:33:05.596Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
