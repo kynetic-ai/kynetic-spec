@@ -17,6 +17,8 @@
  * - @ui-url-panel-state ac-4: Filter URL mutations use goto() and stay reactive.
  */
 
+import { mkdir, writeFile } from 'fs/promises';
+import { join } from 'path';
 import { test, expect } from '../fixtures/test-base';
 
 /** Generate a session with a specific index for stable ordering. */
@@ -202,6 +204,38 @@ function mockSearchRoute() {
 			})
 		});
 	};
+}
+
+async function writeSessionFixture(
+	projectRoot: string,
+	options: {
+		id: string;
+		status: 'active' | 'completed' | 'abandoned' | 'timed_out' | 'failed';
+		startedAt: string;
+		endedAt?: string;
+		agentType?: string;
+		agentId?: string;
+		trigger?: string;
+		taskId?: string;
+	}
+) {
+	const sessionDir = join(projectRoot, '.kspec-sessions', options.id);
+	await mkdir(sessionDir, { recursive: true });
+	const endedAtLine = options.endedAt ? `ended_at: "${options.endedAt}"\n` : '';
+	const taskIdLine = options.taskId ? `task_id: "${options.taskId}"\n` : '';
+
+	await writeFile(
+		join(sessionDir, 'session.yaml'),
+		`id: "${options.id}"
+${taskIdLine}agent_type: "${options.agentType ?? 'task-worker'}"
+agent_id: "${options.agentId ?? 'worker'}"
+trigger: "${options.trigger ?? 'manual'}"
+status: "${options.status}"
+started_at: "${options.startedAt}"
+${endedAtLine}`,
+		'utf-8'
+	);
+	await writeFile(join(sessionDir, 'events.jsonl'), '', 'utf-8');
 }
 
 test.describe('Session History View', () => {
@@ -954,89 +988,29 @@ test.describe('Session History View', () => {
 
 		// AC: @session-list-infinite-scroll ac-live-update-source-agnostic
 		test('refreshes from sessions-topic updates as well as agent-origin updates', async ({ page, daemon }) => {
-			let requestCount = 0;
-			const initialSessions = [makeSession(1)];
-			const refreshedSessions = [
-				makeSession(2, {
-					status: 'active',
-					started_at: '2026-03-28T10:00:00.000Z',
-					ended_at: undefined,
-					duration_ms: 60000
-				}),
-				...initialSessions
-			];
-
-			await page.route('**/api/sessions*', (route) => {
-				requestCount++;
-				const sessions = requestCount > 1 ? refreshedSessions : initialSessions;
-				route.fulfill({
-					status: 200,
-					contentType: 'application/json',
-					body: JSON.stringify({
-						items: sessions,
-						total: sessions.length,
-						offset: 0,
-						limit: 25,
-					}),
-				});
+			const agentType = 'source-agnostic-worker';
+			await writeSessionFixture(daemon.tempDir, {
+				id: '01JTESTSOURCEAGNTSESSION000001',
+				status: 'completed',
+				startedAt: '2026-03-20T10:00:00.000Z',
+				endedAt: '2026-03-20T10:05:00.000Z',
+				agentType
 			});
 
-			// Track WebSocket subscribe messages
-			const wsMessages: string[] = [];
-			page.on('websocket', ws => {
-				ws.on('framesent', frame => {
-					if (typeof frame.payload === 'string') {
-						wsMessages.push(frame.payload);
-					}
-				});
-			});
-
-			await page.goto('/sessions');
+			await page.goto(`/sessions?agent_type=${agentType}`);
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
 			await expect(page.getByTestId('sessions-count')).toContainText('1 of 1 session');
+			await expect(page.getByTestId('session-row').first()).toContainText('01JTESTSOURCEAGNTSESSION000001');
 
-			// Wait for WebSocket subscription to be sent
-			await page.waitForTimeout(1000);
-
-			// Should subscribe to both legacy and source-agnostic session topics.
-			const subscribeMessages = wsMessages.filter(msg => {
-				try {
-					const parsed = JSON.parse(msg);
-					return parsed.command === 'subscribe';
-				} catch { return false; }
+			await writeSessionFixture(daemon.tempDir, {
+				id: '01JTESTSOURCEAGNTSESSION000002',
+				status: 'active',
+				startedAt: '2026-03-20T10:10:00.000Z',
+				agentType
 			});
-			expect(subscribeMessages.length).toBeGreaterThan(0);
-
-			const topics = new Set<string>();
-			for (const message of subscribeMessages) {
-				const parsed = JSON.parse(message);
-				for (const topic of parsed.topics ?? []) topics.add(topic);
-			}
-			expect(topics.has('agents')).toBe(true);
-			expect(topics.has('sessions')).toBe(true);
-
-			const injected = await page.evaluate(() => {
-				const instances = (window as any).__test_ws_instances as WebSocket[];
-				const ws = instances?.find((s) => s.readyState === WebSocket.OPEN);
-				if (!ws) return false;
-
-				const msg = JSON.stringify({
-					msg_id: 'test-live-source-agnostic',
-					seq: 99995,
-					timestamp: new Date().toISOString(),
-					topic: 'sessions',
-					event: 'session_changed',
-					data: {
-						session_id: 'new-session-source-agnostic',
-						path: '.kspec-sessions/new-session-source-agnostic/session.yaml'
-					}
-				});
-				ws.dispatchEvent(new MessageEvent('message', { data: msg }));
-				return true;
-			});
-			expect(injected).toBe(true);
 
 			await expect(page.getByTestId('sessions-count')).toContainText('2 of 2 sessions', { timeout: 3000 });
+			await expect(page.getByTestId('session-row').first()).toContainText('01JTESTSOURCEAGNTSESSION000002', { timeout: 3000 });
 			await expect(page.getByTestId('session-row').first()).toContainText('active');
 		});
 
