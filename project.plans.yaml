@@ -24060,9 +24060,9 @@ plans:
           business logic or persistence.
 
           Validation must be schema-derived — the source of truth for what
-          constitutes valid input is the Zod schema definition, not a separate
-          hardcoded check. Error messages must be actionable, identifying what
-          was wrong and what is expected.
+          constitutes valid input is the canonical schema definition, not a
+          separate hardcoded check. Error messages must be actionable,
+          identifying what was wrong and what is expected.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -24084,11 +24084,11 @@ plans:
               field/value but not listing valid alternatives)
           - id: ac-3
             given: |
-              A field's type constraint is defined in a Zod schema
+              A field's type constraint is defined in a canonical schema
             when: |
               Validation logic checks the field
             then: |
-              The validation is derived from the schema definition rather
+              The validation is derived from that schema definition rather
               than a separately maintained check
 
       # ─── CLI input type safety ─────────────────────────────────
@@ -24199,7 +24199,7 @@ plans:
             when: |
               The constraints are implemented
             then: |
-              The API type constraints are derived from the canonical Zod
+              The API type constraints are derived from the canonical
               schema definition
 
       # ─── Parser defense-in-depth ───────────────────────────────
@@ -24253,49 +24253,48 @@ plans:
           - trait-type-safe-input
         description: |
           Every surface that references a constrained type — CLI option help
-          text, daemon API route schemas, runtime validation arrays, type
-          assertions — must derive its definition from the canonical Zod
-          schema rather than maintaining a separate copy. When multiple
-          representations of the same type exist, they drift independently
-          and create silent inconsistencies.
+          text, API route schemas, runtime validation arrays, type assertions
+          — must derive its definition from the canonical schema rather than
+          maintaining a separate copy. When multiple representations of the
+          same type exist, they drift independently and create silent
+          inconsistencies.
 
-          This includes hardcoded enum arrays used for validation, Elysia
-          literal unions used for API schema enforcement, CLI help strings
-          that list valid values, and TypeScript type assertions that
-          enumerate possible values. All of these must trace back to a
-          single Zod schema definition.
+          This includes hardcoded arrays used for validation, API framework
+          type definitions, CLI help strings that list valid values, and
+          type assertions that enumerate possible values. All of these must
+          trace back to a single canonical schema definition.
         acceptance_criteria:
           - id: ac-1
             given: |
               A runtime validation check references a set of valid values
-              for a type that has a Zod schema definition
+              for a type that has a canonical schema definition
             when: |
               The valid values are determined
             then: |
-              They are derived from the schema (e.g. Schema.options) rather
-              than maintained as a separate hardcoded array or set
+              They are derived from the canonical schema rather than
+              maintained as a separate hardcoded array or set
           - id: ac-2
             given: |
-              An API framework schema defines the allowed values for a field
+              An API endpoint defines the allowed values for a field
             when: |
-              The schema is constructed
+              The allowed values are specified
             then: |
-              The allowed values are derived from the Zod schema definition,
-              not hardcoded as separate literals
+              They are derived from the canonical schema definition,
+              not hardcoded independently
           - id: ac-3
             given: |
               A CLI command's help text lists valid values for an option
             when: |
               The help text is generated
             then: |
-              The listed values are derived from the schema definition so
+              The listed values are derived from the canonical schema so
               they stay in sync when the schema changes
           - id: ac-4
             given: |
-              Two or more Zod schemas define allowed values for the same
-              semantic concept
+              Two or more schema definitions exist for the same semantic
+              concept
             when: |
-              The schemas are compared
+              The definitions are compared
             then: |
               They share a single source definition or one is explicitly
               derived from the other, with no independent incompatible
@@ -24677,3 +24676,8 @@ plans:
           automation status divergence, derive all type references from canonical Zod schemas
         author: "@claude"
         created_at: 2026-03-20T15:37:58.873Z
+      - _ulid: 01KM5YD9KGJF96CBVVKNH4N71C
+        content: Remove Zod/Elysia references from specs — specs are technology-agnostic, implementation
+          details only in tasks
+        author: "@claude"
+        created_at: 2026-03-20T15:39:18.512Z
