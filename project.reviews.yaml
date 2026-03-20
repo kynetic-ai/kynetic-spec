@@ -28799,6 +28799,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T14:16:46.127Z
+      - _ulid: 01KM5TM9YJRZXZGS1E7Y46M9CM
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM5SNG71KD4H83A7KZJT5R9J
+        timestamp: 2026-03-20T14:33:13.938Z
     examined_commit: e9c0e7d53b1db9ecdc659db4b0297a5c04e98893
     external_links: []
     lifecycle_state: closed
@@ -28826,6 +28832,12 @@ reviews:
               block, 'validate' prints the warning with no env var, but prints nothing on stderr
               with KSPEC_NO_DAEMON=1."
             created_at: 2026-03-20T14:16:24.546Z
+          - _ulid: 01KM5TM9PWABHJVQBK9YRQDB68
+            author: Jacob Chapel
+            body: Fixed in commit 7bc399755. maybeAutoStartDaemon() now loads context and emits the manifest
+              daemon deprecation warning before honoring KSPEC_NO_DAEMON, so @config-daemon ac-4
+              still holds while incidental daemon communication stays suppressed.
+            created_at: 2026-03-20T14:33:13.692Z
         kind: blocker
       - _ulid: 01KM5SNGZ6DSNG9JEFX928BNPB
         entries:
@@ -28853,7 +28865,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T14:16:46.126Z
     created_at: 2026-03-20T14:15:21.074Z
-    updated_at: 2026-03-20T14:16:46.127Z
+    updated_at: 2026-03-20T14:33:13.692Z
     notes: []
   - _ulid: 01KM5T3FJH33R78DYCX9K49WCD
     slugs: []
