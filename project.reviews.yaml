@@ -25456,7 +25456,23 @@ reviews:
     slugs: []
     title: Review fix-triage-record-cli-reporting-success-without-persisted-record
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/triage.ts, tests/triage-cli.test.ts, src/parser/yaml.ts,
+          tests/triage-parser.test.ts, tests/yaml-round-trip-stability.test.ts. Commands run: git
+          diff --stat, git diff on changed files, kspec task get, kspec item get, rg for AC
+          annotations, kspec validate, manual dist CLI repro, npm test. Claims verified: the CLI now
+          reports the persisted triage ULID after re-recording and interactive triage uses persisted
+          refs too. Categories searched: correctness, edge cases, error handling, test quality,
+          integration; no task-specific defects found."
+        name: review evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-03-20T04:58:03.031Z
+        completed_at: 2026-03-20T04:58:03.031Z
     events:
       - _ulid: 01KM4SGGRNF50VTWTMWDBTQX5W
         actor: Jacob Chapel
@@ -25471,6 +25487,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T04:54:44.367Z
+      - _ulid: 01KM4SQ48K3PBS149V0PXGXV51
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review evidence
+        timestamp: 2026-03-20T04:58:03.411Z
     examined_commit: 783b22ef544bed092175027cb2c631b044760c73
     external_links: []
     lifecycle_state: open
@@ -25483,5 +25506,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T04:54:26.837Z
-    updated_at: 2026-03-20T04:54:44.109Z
+    updated_at: 2026-03-20T04:58:03.031Z
     notes: []
