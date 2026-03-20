@@ -110680,6 +110680,7 @@
   created_at: 2026-03-20T15:52:01.646Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM5Z4KJQ7CF8F2P48711SY91
   slugs:
     - task-cli-filter-input-validation
@@ -110737,6 +110738,7 @@
   created_at: 2026-03-20T15:52:02.391Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM5Z4M7YQN173XSB98TPV8Y2
   slugs:
     - task-daemon-api-input-validation
@@ -110803,6 +110805,7 @@
   created_at: 2026-03-20T15:52:03.070Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM5Z4MXMC234763SFZZHK7GH
   slugs:
     - task-parser-write-validation
@@ -110851,6 +110854,7 @@
   created_at: 2026-03-20T15:52:03.764Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM5Z4NK56J72PS2YVKP5EJ8G
   slugs:
     - task-schema-derived-types
@@ -110916,6 +110920,7 @@
   created_at: 2026-03-20T15:52:04.453Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM5Z4P8FV3JEDM2KRN6A0AKN
   slugs:
     - task-read-side-validation-warnings
@@ -110965,3 +110970,4 @@
   created_at: 2026-03-20T15:52:05.135Z
   notes: []
   todos: []
+  automation: eligible
