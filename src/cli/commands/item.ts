@@ -15,10 +15,13 @@ import {
   findDescendantItems,
   findTraitImplementors,
   initContext,
+  type KspecContext,
   type LoadedSpecItem,
+  type LoadedTask,
   loadAllItems,
   loadMetaContext,
   loadAllTasks,
+  mutateTasksAtomically,
   type PatchOperation,
   patchSpecItems,
   ReferenceIndex,
@@ -1322,6 +1325,137 @@ Examples:
       }
     });
 
+  // AC: @spec-item-delete-children ac-11 - Clean up dangling references on item deletion
+  async function cleanupDanglingRefs(
+    ctx: KspecContext,
+    refIndex: ReferenceIndex,
+    deletedUlids: Set<string>,
+    deletedSlugs: Set<string>,
+  ): Promise<{ totalRefsRemoved: number; itemsUpdated: number }> {
+    // Check if a reference string points to any deleted item
+    function isDeletedRef(ref: string): boolean {
+      const cleanRef = ref.startsWith("@") ? ref.slice(1) : ref;
+      if (deletedSlugs.has(cleanRef)) return true;
+      // Try resolving via index - if it resolves to a deleted ULID, it's a match
+      const resolved = refIndex.resolve(cleanRef);
+      if (resolved.ok && deletedUlids.has(resolved.ulid)) return true;
+      // Direct ULID match (full or prefix)
+      if (deletedUlids.has(cleanRef)) return true;
+      for (const ulid of deletedUlids) {
+        if (ulid.startsWith(cleanRef) && cleanRef.length >= 4) return true;
+      }
+      return false;
+    }
+
+    const arrayRefFields = ["depends_on", "implements", "relates_to", "tests", "traits"] as const;
+    let totalRefsRemoved = 0;
+    let itemsUpdated = 0;
+
+    // Reload items from disk after deletions
+    const remainingItems = await loadAllItems(ctx);
+
+    for (const item of remainingItems) {
+      if (deletedUlids.has(item._ulid)) continue;
+
+      let refsRemovedFromItem = 0;
+      const updates: Record<string, unknown> = {};
+
+      // Check array reference fields
+      for (const field of arrayRefFields) {
+        const arr = (item as unknown as Record<string, string[]>)[field];
+        if (!Array.isArray(arr) || arr.length === 0) continue;
+
+        const filtered = arr.filter((ref) => !isDeletedRef(ref));
+        const removed = arr.length - filtered.length;
+        if (removed > 0) {
+          updates[field] = filtered;
+          refsRemovedFromItem += removed;
+        }
+      }
+
+      // Check supersedes (single nullable ref)
+      if (item.supersedes && isDeletedRef(item.supersedes)) {
+        updates.supersedes = null;
+        refsRemovedFromItem += 1;
+      }
+
+      if (refsRemovedFromItem > 0) {
+        await updateSpecItem(ctx, item, updates as Partial<SpecItemInput>);
+        totalRefsRemoved += refsRemovedFromItem;
+        itemsUpdated++;
+      }
+    }
+
+    // Also clean task references (depends_on, context, spec_ref, blocked_by)
+    const tasks = await loadAllTasks(ctx);
+    const tasksToClean: LoadedTask[] = [];
+
+    for (const task of tasks) {
+      let hasDeletedRef = false;
+
+      for (const ref of task.depends_on) {
+        if (isDeletedRef(ref)) { hasDeletedRef = true; break; }
+      }
+      if (!hasDeletedRef && task.context) {
+        for (const ref of task.context) {
+          if (isDeletedRef(ref)) { hasDeletedRef = true; break; }
+        }
+      }
+      if (!hasDeletedRef && task.spec_ref && isDeletedRef(task.spec_ref)) {
+        hasDeletedRef = true;
+      }
+      if (!hasDeletedRef && task.blocked_by) {
+        for (const ref of task.blocked_by) {
+          if (isDeletedRef(ref)) { hasDeletedRef = true; break; }
+        }
+      }
+
+      if (hasDeletedRef) {
+        tasksToClean.push(task);
+      }
+    }
+
+    if (tasksToClean.length > 0) {
+      await mutateTasksAtomically(ctx, tasksToClean, (latestTasks) => {
+        return latestTasks.map((task) => {
+          let refsRemovedFromTask = 0;
+          const origDepsLen = task.depends_on.length;
+          const filteredDeps = task.depends_on.filter((ref) => !isDeletedRef(ref));
+          refsRemovedFromTask += origDepsLen - filteredDeps.length;
+
+          const origCtxLen = (task.context || []).length;
+          const filteredCtx = (task.context || []).filter((ref) => !isDeletedRef(ref));
+          refsRemovedFromTask += origCtxLen - filteredCtx.length;
+
+          const origBlockedLen = (task.blocked_by || []).length;
+          const filteredBlocked = (task.blocked_by || []).filter((ref) => !isDeletedRef(ref));
+          refsRemovedFromTask += origBlockedLen - filteredBlocked.length;
+
+          let specRef = task.spec_ref;
+          if (specRef && isDeletedRef(specRef)) {
+            specRef = null;
+            refsRemovedFromTask += 1;
+          }
+
+          if (refsRemovedFromTask === 0) return task;
+
+          totalRefsRemoved += refsRemovedFromTask;
+          itemsUpdated++;
+
+          return {
+            ...task,
+            depends_on: filteredDeps,
+            context: filteredCtx,
+            blocked_by: filteredBlocked,
+            spec_ref: specRef,
+          };
+        });
+      });
+    }
+
+    return { totalRefsRemoved, itemsUpdated };
+  }
+
   // kspec item delete - delete a spec item
   markMutating(item.command("delete <ref>"))
     .description("Delete a spec item (including nested items)")
@@ -1462,6 +1596,17 @@ Examples:
         }
 
         if (deletedCount > 0) {
+          // AC: @spec-item-delete-children ac-11 - Clean up dangling references
+          const deletedUlids = new Set(itemsToDelete.map((i) => i._ulid));
+          const deletedSlugs = new Set(itemsToDelete.flatMap((i) => i.slugs));
+
+          const cleanupResult = await cleanupDanglingRefs(
+            ctx,
+            refIndex,
+            deletedUlids,
+            deletedSlugs,
+          );
+
           // AC: @spec-item-delete-children ac-6 - Single shadow commit with all deletions
           const itemSlug =
             foundItem.slugs[0] || refIndex.shortUlid(foundItem._ulid);
@@ -1469,15 +1614,23 @@ Examples:
             deletedCount > 1 ? `${deletedCount} items` : itemSlug;
           await commitIfShadow(ctx.shadow, "item-delete", commitMsg);
 
+          const cleanedMsg = cleanupResult.totalRefsRemoved > 0
+            ? `. Cleaned ${cleanupResult.totalRefsRemoved} reference${cleanupResult.totalRefsRemoved === 1 ? "" : "s"} from ${cleanupResult.itemsUpdated} item${cleanupResult.itemsUpdated === 1 ? "" : "s"}`
+            : "";
+
           if (deletedCount > 1) {
-            success(`Deleted ${deletedCount} items`, {
+            success(`Deleted ${deletedCount} items${cleanedMsg}`, {
               deleted: deletedCount,
               root_ulid: foundItem._ulid,
+              refs_cleaned: cleanupResult.totalRefsRemoved,
+              items_cleaned: cleanupResult.itemsUpdated,
             });
           } else {
-            success(`Deleted item: ${foundItem.title}`, {
+            success(`Deleted item: ${foundItem.title}${cleanedMsg}`, {
               deleted: true,
               ulid: foundItem._ulid,
+              refs_cleaned: cleanupResult.totalRefsRemoved,
+              items_cleaned: cleanupResult.itemsUpdated,
             });
           }
         } else {
