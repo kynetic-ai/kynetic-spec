@@ -13701,3 +13701,79 @@ workspaces:
         head: 818b53f420eda826592758a52a7691fd0b055d75
         last_seen_at: 2026-03-20T05:43:38.544Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-freshness-01km4qgv
+  - active_role: null
+    base_branch_point: ce5e2029ce243ddab6173a031bf47c297c334690
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/align-item-ac-add-remove-ac-identifier-naming/01km4kpp
+    canonical_branch_head: ce5e2029ce243ddab6173a031bf47c297c334690
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-20T05:43:51.367Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-20T05:43:51.367Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: ce5e2029ce243ddab6173a031bf47c297c334690
+      updated_at: 2026-03-20T05:43:51.367Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KM4KPPDWB2PQ1YQNYQDK3SJH"
+    task_slug: align-item-ac-add-remove-ac-identifier-naming
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-20T05:43:51.367Z
+      created_at: 2026-03-20T05:43:51.367Z
+      updated_at: 2026-03-20T05:43:51.367Z
+    workspace_id: dispatch-workspace-01KM4KPPDWB2PQ1YQNYQDK3SJH
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/align-item-ac-add-remove-ac-identifier-naming/01km4kpp
+        head: ce5e2029ce243ddab6173a031bf47c297c334690
+        last_seen_at: 2026-03-20T05:43:51.367Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/align-item-ac-add-remove-ac-identifier-naming-01km4kpp
