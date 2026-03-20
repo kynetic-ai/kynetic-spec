@@ -15417,18 +15417,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates/01km6bgy
-    canonical_branch_head: da0fbf18378b893f4b1036d23282f691beaccf56
+    canonical_branch_head: c9465133970dc4c422a4631a0cc4fc016a5fb9ca
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T19:43:09.310Z
+      updated_at: 2026-03-20T19:43:16.990Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T19:43:09.310Z
+      updated_at: 2026-03-20T19:43:16.990Z
     integration:
       status: pending
       detail: null
@@ -15436,24 +15436,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: da0fbf18378b893f4b1036d23282f691beaccf56
-      updated_at: 2026-03-20T19:43:09.310Z
-    lifecycle_state: ready
+      updated_at: 2026-03-20T19:43:16.990Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM6BGYMGZ518JENMCRACJPX3"
     task_slug: fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T19:31:10.163Z
-      last_reconciled_at: 2026-03-20T19:43:09.310Z
+      last_reconciled_at: 2026-03-20T19:43:16.990Z
       created_at: 2026-03-20T19:30:54.853Z
-      updated_at: 2026-03-20T19:43:09.310Z
+      updated_at: 2026-03-20T19:43:16.990Z
     workspace_id: dispatch-workspace-01KM6BGYMGZ518JENMCRACJPX3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: c9465133970dc4c422a4631a0cc4fc016a5fb9ca
+        last_seen_at: 2026-03-20T19:43:16.990Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates-01km6bgy-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates/01km6bgy
-        head: da0fbf18378b893f4b1036d23282f691beaccf56
-        last_seen_at: 2026-03-20T19:30:54.853Z
+        head: c9465133970dc4c422a4631a0cc4fc016a5fb9ca
+        last_seen_at: 2026-03-20T19:43:16.990Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates-01km6bgy
