@@ -162,6 +162,127 @@ describe('Item Delete with Children', () => {
     expect(output.details.children[0]).toHaveProperty('ref');
   });
 
+  // AC: @spec-item-delete-children ac-11
+  it('should clean up dangling relates_to references when deleting an item', () => {
+    // Create two items
+    kspec('item add --under @test-core --title "Item A" --type requirement --slug item-a', tempDir);
+    kspec('item add --under @test-core --title "Item B" --type requirement --slug item-b', tempDir);
+
+    // Add relates_to reference from B to A via patch
+    kspec('item patch @item-b --data \'{"relates_to": ["@item-a"]}\'', tempDir);
+
+    // Verify the reference exists
+    const beforeGet = kspec('item get @item-b --json', tempDir);
+    const beforeData = JSON.parse(beforeGet.stdout);
+    expect(beforeData.relates_to).toContain('@item-a');
+
+    // Delete item A
+    const result = kspec('item delete @item-a --force', tempDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('Deleted item');
+    expect(result.stdout).toContain('Cleaned 1 reference');
+
+    // Verify the reference was cleaned from item B
+    const afterGet = kspec('item get @item-b --json', tempDir);
+    const afterData = JSON.parse(afterGet.stdout);
+    expect(afterData.relates_to).not.toContain('@item-a');
+  });
+
+  // AC: @spec-item-delete-children ac-11
+  it('should clean up dangling references from multiple items', () => {
+    // Create three items where B and C both reference A
+    kspec('item add --under @test-core --title "Item A" --type requirement --slug item-a', tempDir);
+    kspec('item add --under @test-core --title "Item B" --type requirement --slug item-b', tempDir);
+    kspec('item add --under @test-core --title "Item C" --type requirement --slug item-c', tempDir);
+
+    // Both B and C reference A
+    kspec('item patch @item-b --data \'{"relates_to": ["@item-a"]}\'', tempDir);
+    kspec('item patch @item-c --data \'{"depends_on": ["@item-a"]}\'', tempDir);
+
+    // Delete item A
+    const result = kspec('item delete @item-a --force', tempDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('Cleaned 2 references from 2 items');
+
+    // Verify both references were cleaned
+    const bData = JSON.parse(kspec('item get @item-b --json', tempDir).stdout);
+    expect(bData.relates_to).not.toContain('@item-a');
+
+    const cData = JSON.parse(kspec('item get @item-c --json', tempDir).stdout);
+    expect(cData.depends_on).not.toContain('@item-a');
+  });
+
+  // AC: @spec-item-delete-children ac-11
+  it('should clean up references when cascade deleting multiple items', () => {
+    // Create parent with child, and another item referencing both
+    kspec('item add --under @test-core --title "Parent" --type feature --slug parent-feat', tempDir);
+    kspec('item add --under @parent-feat --title "Child" --type requirement --slug child-req', tempDir);
+    kspec('item add --under @test-core --title "Other" --type requirement --slug other-item', tempDir);
+
+    // Other references both parent and child
+    kspec('item patch @other-item --data \'{"relates_to": ["@parent-feat", "@child-req"]}\'', tempDir);
+
+    // Cascade delete parent (also deletes child)
+    const result = kspec('item delete @parent-feat --cascade --force', tempDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('Deleted 2 items');
+    expect(result.stdout).toContain('Cleaned 2 references from 1 item');
+
+    // Verify references were cleaned from other item
+    const otherData = JSON.parse(kspec('item get @other-item --json', tempDir).stdout);
+    expect(otherData.relates_to).toEqual([]);
+  });
+
+  // AC: @spec-item-delete-children ac-11
+  it('should include cleanup count in JSON output', () => {
+    // Create two items with reference
+    kspec('item add --under @test-core --title "Item A" --type requirement --slug item-a', tempDir);
+    kspec('item add --under @test-core --title "Item B" --type requirement --slug item-b', tempDir);
+    kspec('item patch @item-b --data \'{"relates_to": ["@item-a"]}\'', tempDir);
+
+    // Delete item A with --json --force
+    const result = kspec('item delete @item-a --force --json', tempDir);
+
+    expect(result.exitCode).toBe(0);
+    const output = JSON.parse(result.stdout);
+    expect(output.refs_cleaned).toBe(1);
+    expect(output.items_cleaned).toBe(1);
+  });
+
+  // AC: @spec-item-delete-children ac-11
+  it('should report zero cleaned references when no dangling refs exist', () => {
+    // Create item with no references to it
+    kspec('item add --under @test-core --title "Standalone" --type requirement --slug standalone-item', tempDir);
+
+    const result = kspec('item delete @standalone-item --force', tempDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('Deleted item');
+    // Should not mention cleaning since nothing was cleaned
+    expect(result.stdout).not.toContain('Cleaned');
+  });
+
+  // AC: @spec-item-delete-children ac-11
+  it('should clean up supersedes reference when deleting referenced item', () => {
+    // Create two items where B supersedes A
+    kspec('item add --under @test-core --title "Old Item" --type requirement --slug old-item', tempDir);
+    kspec('item add --under @test-core --title "New Item" --type requirement --slug new-item', tempDir);
+    kspec('item patch @new-item --data \'{"supersedes": "@old-item"}\'', tempDir);
+
+    // Delete old item
+    const result = kspec('item delete @old-item --force', tempDir);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain('Cleaned 1 reference');
+
+    // Verify supersedes was cleaned
+    const newData = JSON.parse(kspec('item get @new-item --json', tempDir).stdout);
+    expect(newData.supersedes).toBeNull();
+  });
+
   // Additional tests for edge cases
   it('should error in JSON mode with --cascade but without --force', () => {
     kspec('item add --under @test-core --title "Parent Feature" --type feature --slug parent-feature', tempDir);
