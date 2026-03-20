@@ -32242,6 +32242,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T22:25:18.571Z
+      - _ulid: 01KM6NMQJ1SXPZETDFE17FH558
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM6NMQ9A2ETVTAB2T6TRYQG9
+        timestamp: 2026-03-20T22:25:19.426Z
     examined_commit: 7dc74516c25a93fb51023be448ef5e7494b37e3a
     external_links: []
     lifecycle_state: open
@@ -32251,8 +32258,35 @@ reviews:
       content_hash: ""
       ref: "@01KM6KM0AAVDTJHPFEZGYA59PD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM6NMQ9A2ETVTAB2T6TRYQG9
+        entries:
+          - _ulid: 01KM6NMQ9ARXBEVDTCQATANT4W
+            author: Jacob Chapel
+            body: >-
+              Review evidence log:
+
+              Files read: src/schema/task.ts, src/cli/commands/task.ts, src/cli/help/content.ts,
+              tests/task-unblock-prior-status.test.ts, tests/task-system-ac-backfill.test.ts,
+              tests/session-scoped-task-claiming.test.ts
+
+              Commands run: git diff --stat dev...HEAD; git diff --unified=80 dev...HEAD -- <changed
+              files>; kspec task get @01KM6KM0AAVDTJHPFEZGYA59PD; kspec item get @task-unblock;
+              kspec validate; kspec validate --warnings-ok; rg -n "AC: @task-unblock|AC:
+              @state-blocked|AC: @trait-json-output|AC: @trait-semantic-exit-codes|AC:
+              @trait-error-guidance" tests; npm test; git worktree list
+
+              Claims verified: re-blocking preserves the original pre-block state; unblock restores
+              prior_status or falls back to pending; help text now matches runtime behavior; reset
+              clears prior_status. Verified by diff inspection plus passing integration coverage in
+              tests/task-unblock-prior-status.test.ts, tests/task-system-ac-backfill.test.ts, and
+              tests/session-scoped-task-claiming.test.ts.
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No blocking issues found.
+            created_at: 2026-03-20T22:25:19.146Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T22:21:18.130Z
-    updated_at: 2026-03-20T22:25:18.286Z
+    updated_at: 2026-03-20T22:25:19.146Z
     notes: []
