@@ -109327,13 +109327,8 @@
   spec_ref: "@cancelled-task-dependency-cleanup"
   meta_ref: null
   plan_ref: null
-  status: blocked
-  blocked_by:
-    - "Approved, but merge blocked: integration branch dev is checked out in
-      /home/chapel/Projects/kynetic-spec-dispatch with uncommitted unrelated changes
-      (src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
-      tests/dispatch-branch-push-lifecycle.test.ts, tests/dispatch-target-sync.test.ts,
-      .kspec-dispatch-shadow-mutation.lock/). Safe manual merge requires a clean dev worktree."
+  status: pending_review
+  blocked_by: []
   depends_on: []
   context: []
   priority: 1
