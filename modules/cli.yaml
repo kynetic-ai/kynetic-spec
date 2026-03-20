@@ -10017,6 +10017,9 @@ features:
       values are written to YAML and silently dropped on next read. Query
       commands that accept invalid filters silently return empty results,
       wasting the user's time debugging "missing" data.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
