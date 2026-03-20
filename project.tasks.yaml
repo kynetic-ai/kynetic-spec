@@ -110907,8 +110907,11 @@
   spec_ref: "@schema-derived-type-definitions"
   plan_ref: "@plan-input-validation-hardening"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged dispatch/task/task-schema-derived-types/01km5z4n into dev after approved
+    review 01KM640S. Verified npm test passed (293 files, 6673 tests, 3 skipped). Schema-derived
+    enum consumers and automation status definitions are now consolidated to canonical schemas.
   depends_on: []
   context: []
   priority: 1
@@ -110930,6 +110933,7 @@
   created_at: 2026-03-20T15:52:04.453Z
   started_at: 2026-03-20T17:12:43.265Z
   submitted_at: 2026-03-20T17:16:24.034Z
+  completed_at: 2026-03-20T17:22:02.910Z
   notes:
     - _ulid: 01KM60QX9RMYB1XKR5YTAAZ7Q0
       content: "Consolidated schema-derived enum consumers across daemon routes, CLI help text, and
