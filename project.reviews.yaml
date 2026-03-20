@@ -29990,6 +29990,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM63J6S6B5XR549M43NQV407
         timestamp: 2026-03-20T17:09:22.601Z
+      - _ulid: 01KM63K0H8T1H1NKN1HVW75D9Q
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM63K03Q5WTEMTRRVEFPMX06
+        timestamp: 2026-03-20T17:09:48.712Z
     examined_commit: cdb70fae4e3fc3481147505e3f19023b1113c5fc
     external_links: []
     lifecycle_state: open
@@ -30018,7 +30025,26 @@ reviews:
               though runtime validation/help text were updated."
             created_at: 2026-03-20T17:09:22.342Z
         kind: blocker
+      - _ulid: 01KM63K03Q5WTEMTRRVEFPMX06
+        entries:
+          - _ulid: 01KM63K03QX13T867MMMZF89G9
+            author: Jacob Chapel
+            body: "Review evidence log: Files read included
+              packages/daemon/src/routes/{agent-dispatch,aggregation,meta,reviews}.ts,
+              src/schema/{task,event-payloads,meta,review-records}.ts,
+              src/cli/commands/{task,agent,review}.ts, src/cli/enum-help.ts, and the new/updated
+              tests covering schema-derived types and review/dispatch APIs. Commands run: git diff
+              7b22df38c...cdb70fae4, kspec task get, kspec item get
+              @schema-derived-type-definitions, kspec review get @01KM625X0SET7QS06QEF1V0S20, grep
+              AC annotations in tests, rg searches for remaining enum drift, npm test, kspec
+              validate. Claims verified: full test suite reproducibly passes on commit
+              cdb70fae4e3fc3481147505e3f19023b1113c5fc; kspec validate still reports pre-existing
+              repo debt. Categories searched: correctness, test coverage and AC mapping,
+              input-validation behavior, and drift between schema, CLI, daemon routes, and event
+              payload types."
+            created_at: 2026-03-20T17:09:48.279Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T17:04:43.695Z
-    updated_at: 2026-03-20T17:09:22.342Z
+    updated_at: 2026-03-20T17:09:48.279Z
     notes: []
