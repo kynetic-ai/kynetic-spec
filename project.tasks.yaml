@@ -111686,6 +111686,15 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T21:19:12.702Z
+    - _ulid: 01KM6J9A137HB4Z123Y0CAS4SW
+      content: "Fix cycle 2: Added !isStaticMode() query gates to two automation sub-components missed in
+        cycle 1. CompositionsSection.svelte (line 24) and SchedulesSection.svelte (line 40) had
+        their queries gated only by isProjectInitialized(), which is true in static exports via
+        initializeForStaticMode(). Both now include !isStaticMode() consistent with all other
+        daemon-only query enabled conditions. All 6690 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-20T21:26:39.396Z
   todos: []
   automation: eligible
 - _ulid: 01KM6EDZF8S463CZME2XD4065Y
