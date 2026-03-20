@@ -15325,12 +15325,21 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-20T20:00:33.211Z
+      updated_at: 2026-03-20T20:01:31.924Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T20:00:33.211Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/fix-reviews-api-status-filter-validation-mismatch/01km6ar9"
+            is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-reviews-api-status-filter-validation-mismatch-01km6ar9"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-20T20:01:31.924Z
     integration:
       status: merged
       detail: integration:merged
@@ -15338,17 +15347,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: da0fbf18378b893f4b1036d23282f691beaccf56
-      updated_at: 2026-03-20T20:00:33.211Z
-    lifecycle_state: closing
+      updated_at: 2026-03-20T20:01:31.924Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KM6AR90T6NH9Q6RWF35J63DD"
     task_slug: fix-reviews-api-status-filter-validation-mismatch
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T19:53:59.737Z
-      last_reconciled_at: 2026-03-20T20:00:33.211Z
+      last_reconciled_at: 2026-03-20T20:01:31.924Z
       created_at: 2026-03-20T19:17:06.568Z
-      updated_at: 2026-03-20T20:00:33.211Z
+      updated_at: 2026-03-20T20:01:31.924Z
     workspace_id: dispatch-workspace-01KM6AR90T6NH9Q6RWF35J63DD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
