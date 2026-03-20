@@ -29840,6 +29840,18 @@ reviews:
         required: false
         created_at: 2026-03-20T17:04:19.114Z
         completed_at: 2026-03-20T17:04:19.114Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Second full run passed: 292 files, 6669 passed, 3 skipped. The first full run hit a
+          timeout in tests/dispatch-runtime-bootstrap-contract.test.ts, which passed in isolated
+          rerun and on full rerun, matching the task note about pre-existing flakiness."
+        name: npm test
+        required: true
+        runner: vitest
+        created_at: 2026-03-20T17:04:21.186Z
+        completed_at: 2026-03-20T17:04:21.186Z
     events:
       - _ulid: 01KM62RFW26ZK4GCGY5C6KW8GB
         actor: Jacob Chapel
@@ -29877,6 +29889,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T17:04:20.141Z
+      - _ulid: 01KM6390X9X588RKJ5DJNJ5WFK
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T17:04:21.417Z
     examined_commit: 4a87401efe44bca228accf5120399874fa80f101
     external_links: []
     lifecycle_state: closed
@@ -29896,5 +29915,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T17:04:20.140Z
     created_at: 2026-03-20T16:55:19.683Z
-    updated_at: 2026-03-20T17:04:20.141Z
+    updated_at: 2026-03-20T17:04:21.186Z
     notes: []
