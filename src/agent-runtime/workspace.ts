@@ -5,7 +5,6 @@ import { spawnSync } from "node:child_process";
 import { initContext } from "../parser/index.js";
 import { acquireFileLock } from "../parser/file-lock.js";
 import {
-  findDispatchWorkspaceByTaskRef,
   getDispatchWorkspaceRegistryPath,
   loadDispatchWorkspaceRegistry,
   saveDispatchWorkspaceRecord,
@@ -849,6 +848,28 @@ function findExistingWorktreeForBranch(projectDir: string, canonicalBranch: stri
   return parseWorktreeList(projectDir).find((entry) => entry.branch === branchRef)?.path ?? null;
 }
 
+function findExistingWorktreeForBranchUnderRoot(
+  projectDir: string,
+  canonicalBranch: string,
+  worktreeRoot: string,
+): string | null {
+  const branchRef = `refs/heads/${canonicalBranch}`;
+  return parseWorktreeList(projectDir).find((entry) =>
+    entry.branch === branchRef && isPathInside(worktreeRoot, entry.path)
+  )?.path ?? null;
+}
+
+function findForeignWorktreeForBranch(
+  projectDir: string,
+  canonicalBranch: string,
+  worktreeRoot: string,
+): string | null {
+  const branchRef = `refs/heads/${canonicalBranch}`;
+  return parseWorktreeList(projectDir).find((entry) =>
+    entry.branch === branchRef && !isPathInside(worktreeRoot, entry.path)
+  )?.path ?? null;
+}
+
 function findWorktreeByPath(projectDir: string, worktreeDir: string): { path: string; branch: string | null } | null {
   const normalized = path.resolve(worktreeDir);
   return parseWorktreeList(projectDir).find((entry) => path.resolve(entry.path) === normalized) ?? null;
@@ -858,6 +879,34 @@ function pathExists(targetPath: string): boolean {
   return spawnSync("bash", ["-lc", `test -e "${targetPath.replace(/(["\\$`])/g, "\\$1")}"`], {
     stdio: "ignore",
   }).status === 0;
+}
+
+function workspaceRecordBelongsToWorktreeRoot(
+  record: DispatchWorkspaceRecord | LoadedDispatchWorkspaceRecord,
+  worktreeRoot: string,
+): boolean {
+  if (path.resolve(record.worktree_root) !== path.resolve(worktreeRoot)) {
+    return false;
+  }
+  if (!isPathInside(worktreeRoot, record.worktrees.worker.path)) {
+    return false;
+  }
+  return record.worktrees.reviewer == null
+    || isPathInside(worktreeRoot, record.worktrees.reviewer.path);
+}
+
+function metadataBelongsToWorktreeRoot(
+  metadata: DispatchWorkspaceMetadata,
+  worktreeRoot: string,
+): boolean {
+  if (path.resolve(metadata.worktreeRoot) !== path.resolve(worktreeRoot)) {
+    return false;
+  }
+  if (!isPathInside(worktreeRoot, metadata.workerWorktreeDir)) {
+    return false;
+  }
+  return metadata.reviewerWorktreeDir == null
+    || isPathInside(worktreeRoot, metadata.reviewerWorktreeDir);
 }
 
 function defaultBranchProvenance(): DispatchWorkspaceBranchProvenance {
@@ -1126,7 +1175,11 @@ function reconcileWorkspaceHealth(
     }
   }
 
-  const workerRegistered = findExistingWorktreeForBranch(projectDir, record.canonical_branch);
+  const workerRegistered = findExistingWorktreeForBranchUnderRoot(
+    projectDir,
+    record.canonical_branch,
+    record.worktree_root,
+  );
   const workerExists = pathExists(record.worktrees.worker.path);
   if (!workerExists || (!workerRegistered && record.lifecycle_state !== "closed")) {
     issues.push(buildIssue(
@@ -1224,12 +1277,34 @@ function toMetadata(record: DispatchWorkspaceRecord): DispatchWorkspaceMetadata 
   };
 }
 
-async function loadWorkspaceRecord(
+async function loadWorkspaceRecordForWorktreeRoot(
   projectDir: string,
   taskRef: string,
+  worktreeRoot: string,
 ): Promise<LoadedDispatchWorkspaceRecord | undefined> {
   const ctx = await initContext(projectDir);
-  return findDispatchWorkspaceByTaskRef(ctx, taskRef, { includeClosed: true });
+  const records = await loadDispatchWorkspaceRegistry(ctx);
+  return records
+    .filter((record) =>
+      record.task_ref === taskRef && workspaceRecordBelongsToWorktreeRoot(record, worktreeRoot)
+    )
+    .sort((a, b) => a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1)[0];
+}
+
+async function loadForeignOpenWorkspaceRecord(
+  projectDir: string,
+  taskRef: string,
+  worktreeRoot: string,
+): Promise<LoadedDispatchWorkspaceRecord | undefined> {
+  const ctx = await initContext(projectDir);
+  const records = await loadDispatchWorkspaceRegistry(ctx);
+  return records
+    .filter((record) =>
+      record.task_ref === taskRef
+      && record.lifecycle_state !== "closed"
+      && !workspaceRecordBelongsToWorktreeRoot(record, worktreeRoot)
+    )
+    .sort((a, b) => a.timestamps.updated_at < b.timestamps.updated_at ? 1 : -1)[0];
 }
 
 /**
@@ -1346,7 +1421,11 @@ export async function persistDispatchWorkspaceMetadata(
   projectDir: string,
   metadata: DispatchWorkspaceMetadata,
 ): Promise<string> {
-  const existingRecord = await loadWorkspaceRecord(projectDir, metadata.taskRef);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    metadata.taskRef,
+    metadata.worktreeRoot,
+  );
   if (!existingRecord) {
     throw new DispatchWorkspaceError(
       `Cannot persist dispatch metadata for ${metadata.taskRef}: workspace registry record is missing.`,
@@ -1376,31 +1455,44 @@ async function findWorkspaceRegistrationByTaskRef(
   taskRef: string,
   task?: { title?: string; slugs?: string[] },
 ): Promise<{ canonicalBranch: string; workerWorktreeDir: string; metadata: DispatchWorkspaceMetadata } | null> {
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
   // Try the deterministic dispatch/task/* branch first (most common path).
   const slug = normalizeTaskSlug(taskRef, task);
   const shortId = shortTaskId(taskRef);
   const syntheticBranch = `dispatch/task/${slug}/${shortId}`;
-  const workerWorktreeDir = findExistingWorktreeForBranch(projectDir, syntheticBranch);
+  const workerWorktreeDir = findExistingWorktreeForBranchUnderRoot(
+    projectDir,
+    syntheticBranch,
+    resolvedConfig.worktreeRoot,
+  );
   if (workerWorktreeDir) {
     const metadata = await readWorkspaceMetadata(workerWorktreeDir);
-    if (metadata) {
+    if (metadata && metadataBelongsToWorktreeRoot(metadata, resolvedConfig.worktreeRoot)) {
       return { canonicalBranch: syntheticBranch, workerWorktreeDir, metadata };
     }
   }
 
   // Fall back to registry lookup — adopted branches use a non-dispatch canonical
   // branch name, so the synthetic prefix won't match.
-  const record = await loadWorkspaceRecord(projectDir, taskRef);
+  const record = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (!record) {
     return null;
   }
   const registryBranch = record.canonical_branch;
-  const registryWorktreeDir = findExistingWorktreeForBranch(projectDir, registryBranch);
+  const registryWorktreeDir = findExistingWorktreeForBranchUnderRoot(
+    projectDir,
+    registryBranch,
+    resolvedConfig.worktreeRoot,
+  );
   if (!registryWorktreeDir) {
     return null;
   }
   const metadata = await readWorkspaceMetadata(registryWorktreeDir);
-  if (!metadata) {
+  if (!metadata || !metadataBelongsToWorktreeRoot(metadata, resolvedConfig.worktreeRoot)) {
     return null;
   }
   return { canonicalBranch: registryBranch, workerWorktreeDir: registryWorktreeDir, metadata };
@@ -1416,7 +1508,11 @@ async function recoverWorkspaceRecordFromMetadata(
     return null;
   }
 
-  const existingRecord = await loadWorkspaceRecord(projectDir, metadata.taskRef);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    metadata.taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (existingRecord) {
     return existingRecord;
   }
@@ -1595,12 +1691,25 @@ async function ensureUsableWorktreeRoot(
   }
 }
 
-async function assertPathSafeForWorktree(worktreeDir: string, projectDir: string): Promise<void> {
+async function assertPathSafeForWorktree(
+  worktreeDir: string,
+  projectDir: string,
+  expectedBranch?: string,
+): Promise<void> {
   const existing = await fs.stat(worktreeDir).catch(() => null);
   if (!existing) return;
 
-  const registered = parseWorktreeList(projectDir).some((entry) => entry.path === worktreeDir);
-  if (registered) return;
+  const registration = findWorktreeByPath(projectDir, worktreeDir);
+  if (registration) {
+    const registeredBranch = normalizeBranchRef(registration.branch);
+    if (expectedBranch && registeredBranch !== expectedBranch) {
+      throw new DispatchWorkspaceError(
+        `Dispatch worktree path "${worktreeDir}" is already registered to branch "${registeredBranch ?? "(detached)"}", not "${expectedBranch}".`,
+        "Remove the conflicting worktree or choose a different dispatch.worktree_root before retrying.",
+      );
+    }
+    return;
+  }
 
   const entries = await fs.readdir(worktreeDir).catch(() => []);
   if (entries.length > 0) {
@@ -1872,9 +1981,13 @@ export async function reconcileDispatchWorkspaceRegistry(
   taskStatusByRef?: Map<string, ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"]>,
   activeRoleByTaskRef?: Map<string, RegistryRole>,
 ): Promise<void> {
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
   const ctx = await initContext(projectDir);
   const records = await loadDispatchWorkspaceRegistry(ctx);
-  const nonClosedRecords = records.filter((r) => r.lifecycle_state !== "closed");
+  const nonClosedRecords = records.filter((r) =>
+    r.lifecycle_state !== "closed"
+    && workspaceRecordBelongsToWorktreeRoot(r, resolvedConfig.worktreeRoot)
+  );
   if (nonClosedRecords.length === 0) return;
 
   // Use the first non-closed record's task_ref for lock/commit attribution.
@@ -2246,7 +2359,12 @@ export async function reconcileDispatchWorkspaceLifecycle(
   options: ReconcileDispatchWorkspaceLifecycleOptions,
 ): Promise<ProvisionedDispatchWorkspace | null> {
   const { projectDir, taskRef, cleanupState, task } = options;
-  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (!existingRecord) {
     return null;
   }
@@ -2306,7 +2424,12 @@ export async function cleanupReviewerDispatchWorkspace(
   task?: { title?: string; slugs?: string[] },
 ): Promise<DispatchWorkspaceReapResult> {
   const existing = await findWorkspaceRegistrationByTaskRef(projectDir, taskRef, task);
-  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (!existing || !existing.metadata.reviewerWorktreeDir || !existingRecord) {
     return { taskRef, action: "none", blockedReason: null };
   }
@@ -2321,7 +2444,11 @@ export async function cleanupReviewerDispatchWorkspace(
   // concurrent writer (e.g. handleStateChange → reconcileDispatchWorkspaceLifecycle)
   // updates the registry between our initial read and the write below.
   await withDispatchShadowMutationLock(projectDir, taskRef, async () => {
-    const latestRecord = await loadWorkspaceRecord(projectDir, taskRef);
+    const latestRecord = await loadWorkspaceRecordForWorktreeRoot(
+      projectDir,
+      taskRef,
+      resolvedConfig.worktreeRoot,
+    );
     if (!latestRecord) return;
 
     const now = new Date().toISOString();
@@ -2514,6 +2641,14 @@ export async function reconcileDispatchWorkspaceArtifacts(
     if (findWorktreeByPath(projectDir, candidate)) {
       continue;
     }
+    const metadata = await readWorkspaceMetadata(candidate);
+    if (metadata && !metadataBelongsToWorktreeRoot(metadata, resolvedConfig.worktreeRoot)) {
+      continue;
+    }
+    const gitMarker = await fs.stat(path.join(candidate, ".git")).catch(() => null);
+    if (gitMarker) {
+      continue;
+    }
     await fs.rm(candidate, { recursive: true, force: true });
   }
 
@@ -2563,9 +2698,23 @@ export async function provisionDispatchWorkspace(
   const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
   await ensureUsableWorktreeRoot(projectDir, resolvedConfig.worktreeRoot);
 
-  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    taskRef,
+    resolvedConfig.worktreeRoot,
+  );
+  const foreignOpenRecord = existingRecord
+    ? undefined
+    : await loadForeignOpenWorkspaceRecord(projectDir, taskRef, resolvedConfig.worktreeRoot);
   const taskSlug = existingRecord?.task_slug ?? normalizeTaskSlug(taskRef, task);
   const shortId = shortTaskId(taskRef);
+
+  if (foreignOpenRecord) {
+    throw new DispatchWorkspaceError(
+      `Task ${taskRef} already has an open dispatch workspace in foreign worktree root "${foreignOpenRecord.worktree_root}" (${foreignOpenRecord.worktrees.worker.path}).`,
+      `Resume work from that checkout, or close/reset workspace "${foreignOpenRecord.workspace_id}" before provisioning under "${resolvedConfig.worktreeRoot}".`,
+    );
+  }
 
   // AC: @adopt-existing-task-branch-lineage ac-1, ac-2, ac-3, ac-4
   // When no workspace record exists but submission linkage provides a branch,
@@ -2623,7 +2772,7 @@ export async function provisionDispatchWorkspace(
       : defaultBranchProvenance());
   const workspaceId = existingRecord?.workspace_id ?? workspaceIdFor(taskRef);
   const workerWorktreeDir = existingRecord?.worktrees.worker.path
-    ?? findExistingWorktreeForBranch(projectDir, canonicalBranch)
+    ?? findExistingWorktreeForBranchUnderRoot(projectDir, canonicalBranch, resolvedConfig.worktreeRoot)
     ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
   const reviewerWorktreeDir = existingRecord?.worktrees.reviewer?.path
     ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}-review`);
@@ -2697,8 +2846,23 @@ export async function provisionDispatchWorkspace(
   };
   // Perform git worktree operations before acquiring the shadow mutation lock
   // so we don't hold the lock during potentially slow git operations.
-  await assertPathSafeForWorktree(workerWorktreeDir, projectDir);
-  const existingWorkerWorktree = findExistingWorktreeForBranch(projectDir, canonicalBranch);
+  await assertPathSafeForWorktree(workerWorktreeDir, projectDir, canonicalBranch);
+  const existingWorkerWorktree = findExistingWorktreeForBranchUnderRoot(
+    projectDir,
+    canonicalBranch,
+    resolvedConfig.worktreeRoot,
+  );
+  const foreignWorkerWorktree = findForeignWorktreeForBranch(
+    projectDir,
+    canonicalBranch,
+    resolvedConfig.worktreeRoot,
+  );
+  if (!existingWorkerWorktree && foreignWorkerWorktree) {
+    throw new DispatchWorkspaceError(
+      `Dispatch canonical branch "${canonicalBranch}" is already attached to foreign worktree "${foreignWorkerWorktree}" outside this checkout's worktree root "${resolvedConfig.worktreeRoot}".`,
+      `Remove or relocate the foreign worktree in the other checkout, then retry dispatch from "${resolvedConfig.worktreeRoot}".`,
+    );
+  }
   if (!existingWorkerWorktree) {
     const branchExists = refExists(projectDir, `refs/heads/${canonicalBranch}`);
     if (branchExists) {
@@ -2806,7 +2970,12 @@ export async function markDispatchWorkspaceActive(options: {
   taskRef: string;
   role: DispatchWorkspaceRole;
 }): Promise<ProvisionedDispatchWorkspace | null> {
-  const existingRecord = await loadWorkspaceRecord(options.projectDir, options.taskRef);
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(options.projectDir);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    options.projectDir,
+    options.taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (!existingRecord) return null;
 
   const now = new Date().toISOString();
@@ -2856,7 +3025,12 @@ export async function markDispatchWorkspaceIdle(options: {
   taskRef: string;
   taskStatus: ResolveDispatchWorkspaceCleanupStateOptions["taskStatus"] | null;
 }): Promise<ProvisionedDispatchWorkspace | null> {
-  const existingRecord = await loadWorkspaceRecord(options.projectDir, options.taskRef);
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(options.projectDir);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    options.projectDir,
+    options.taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (!existingRecord) return null;
 
   // If a lifecycle reconciliation (e.g. task completed/cancelled) has already
@@ -2929,7 +3103,12 @@ export async function getDispatchWorkspaceHealth(
   options: ProvisionDispatchWorkspaceOptions,
 ): Promise<DispatchWorkspaceHealth> {
   const { projectDir, taskRef, role = "worker" } = options;
-  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (!existingRecord) {
     return {
       exists: false,
@@ -3072,10 +3251,15 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
   const { projectDir, taskRef, role = "worker", task } = options;
   const diagnostics: WorkspaceDiscoveryDiagnostic[] = [];
   const branchSignals: BranchSignal[] = [];
+  const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
 
   // Phase 1: Registry state — the highest precedence source.
   // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1, ac-4
-  const existingRecord = await loadWorkspaceRecord(projectDir, taskRef);
+  const existingRecord = await loadWorkspaceRecordForWorktreeRoot(
+    projectDir,
+    taskRef,
+    resolvedConfig.worktreeRoot,
+  );
   if (existingRecord) {
     branchSignals.push({
       source: "registry-state",
@@ -3109,7 +3293,6 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
   // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1
   let metadataCandidate: { branch: string; worktreeDir: string } | null = null;
   try {
-    const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
     const worktreeEntries = parseWorktreeList(projectDir);
     const entriesUnderRoot = worktreeEntries.filter((entry) =>
       isPathInside(resolvedConfig.worktreeRoot, entry.path)
@@ -3136,7 +3319,6 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
   // to reconstruct the registry record from the worktree metadata.
   if (metadataCandidate && !existingRecord) {
     try {
-      const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
       const recovered = await recoverWorkspaceRecordFromMetadata(
         projectDir,
         resolvedConfig,
@@ -3193,12 +3375,15 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
     if (branchAvailable && !existingRecord) {
       // Adopt the submission branch as the canonical branch for this task.
       try {
-        const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
         const now = new Date().toISOString();
         const taskSlug = normalizeTaskSlug(taskRef, task);
         const shortId = shortTaskId(taskRef);
         const workspaceId = workspaceIdFor(taskRef);
-        const workerWorktreeDir = findExistingWorktreeForBranch(projectDir, submissionLinkage.branch)
+        const workerWorktreeDir = findExistingWorktreeForBranchUnderRoot(
+          projectDir,
+          submissionLinkage.branch,
+          resolvedConfig.worktreeRoot,
+        )
           ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
         const baseBranch = resolvedConfig.baseBranch;
         const baseBranchPoint = resolvedConfig.baseBranchStartPoint;
@@ -3294,10 +3479,13 @@ export async function discoverWorkspaceForReviewOrFixCycle(options: {
         branch: syntheticBranch,
       });
       try {
-        const resolvedConfig = await resolveDispatchWorkspaceConfig(projectDir);
         const now = new Date().toISOString();
         const workspaceId = workspaceIdFor(taskRef);
-        const workerWorktreeDir = findExistingWorktreeForBranch(projectDir, syntheticBranch)
+        const workerWorktreeDir = findExistingWorktreeForBranchUnderRoot(
+          projectDir,
+          syntheticBranch,
+          resolvedConfig.worktreeRoot,
+        )
           ?? path.join(resolvedConfig.worktreeRoot, `${taskSlug}-${shortId}`);
         const baseBranch = resolvedConfig.baseBranch;
         const baseBranchPoint = resolvedConfig.baseBranchStartPoint;
