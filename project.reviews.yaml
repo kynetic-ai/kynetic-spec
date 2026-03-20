@@ -24976,9 +24976,25 @@ reviews:
           status: pass
           name: dispatch targeted tests
         timestamp: 2026-03-20T04:27:36.537Z
+      - _ulid: 01KM4QZSS7TSWR3NK8S5FGMXRX
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-20T04:27:50.439Z
+      - _ulid: 01KM4QZSS76CF5PQAAK1YM29PE
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T04:27:50.439Z
     examined_commit: 44d11f272a18ce4c02be15bc1a33a12cb3fcc310
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -25026,7 +25042,14 @@ reviews:
               quality/integration (missing regression coverage for that topology)."
             created_at: 2026-03-20T04:27:35.523Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-20T04:27:50.439Z
     created_at: 2026-03-20T04:23:27.197Z
-    updated_at: 2026-03-20T04:27:36.299Z
+    updated_at: 2026-03-20T04:27:50.439Z
     notes: []
