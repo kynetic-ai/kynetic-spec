@@ -30738,3 +30738,29 @@ reviews:
     created_at: 2026-03-20T18:04:31.330Z
     updated_at: 2026-03-20T18:14:12.434Z
     notes: []
+  - _ulid: 01KM67AGRJ58Q4A1FBWDT2V6FM
+    slugs: []
+    title: Review task-daemon-api-input-validation (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM67AGRH46X5VG4M1JG9CQ56
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T18:15:04.722Z
+    examined_commit: 8334eae8de18d4abe39d8b6e91fcbe1f0642553f
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM5Z4M7YQN173XSB98TPV8Y2"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T18:15:04.722Z
+    updated_at: null
+    notes: []
