@@ -110034,7 +110034,7 @@
     install-core and it stripped the Stop hook. Setup should preserve user-added hooks or at least
     warn before overwriting.
   spec_ref: "@project-config"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -110044,9 +110044,18 @@
     - hooks
     - bug
   vcs_refs: []
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-20T05:01:26.916Z
+    commit: 8d98a994f365ceef2e620571967d82c60cf8cdef
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
   session_id: 01KM4SEQKP10EVJARN7XD205V7
   created_at: 2026-03-20T03:40:12.786Z
   started_at: 2026-03-20T04:53:57.404Z
+  submitted_at: 2026-03-20T05:01:27.339Z
   notes:
     - _ulid: 01KM4N8K3PX7JE0MP9G2TDT6V1
       content: "Validated and clarified on 2026-03-19: kspec setup should only remove or rewrite Stop hook
