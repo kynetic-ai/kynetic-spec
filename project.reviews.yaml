@@ -28465,9 +28465,25 @@ reviews:
         payload:
           thread_ulid: 01KM51NSPVHZ62H00WJ4JEY1AT
         timestamp: 2026-03-20T07:17:33.611Z
+      - _ulid: 01KM51PYV9BK4JDBBJMTY3TYMY
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-20T07:17:46.473Z
+      - _ulid: 01KM51PYV9GAME868SVHW59Z28
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T07:17:46.474Z
     examined_commit: f72a88e05ba5cc38eb65066e8950095cb4364d24
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -28526,7 +28542,14 @@ reviews:
               they do not exercise daemon startup before that directory exists."
             created_at: 2026-03-20T07:17:33.410Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-20T07:17:46.473Z
     created_at: 2026-03-20T07:14:23.845Z
-    updated_at: 2026-03-20T07:17:33.410Z
+    updated_at: 2026-03-20T07:17:46.473Z
     notes: []
