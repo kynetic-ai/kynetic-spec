@@ -26937,6 +26937,87 @@ reviews:
         runner: tsc
         created_at: 2026-03-20T06:30:50.083Z
         completed_at: 2026-03-20T06:30:50.083Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          ✗ Validation failed
+
+          ────────────────────────────────────────
+
+          Files checked: 10
+
+          Items checked: 559
+
+          Tasks checked: 0
+
+          Meta: 10 agents, 11 workflows, 10 conventions
+
+
+          Schema: OK
+
+
+          Reference errors: 3
+            ✗ @01KFM9SNV2QRRGREJ1HMZWXCFT
+              Reference "@01KFM9SNV2QRRGREJ1HMZWXCFT" not found
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml (relates_to)
+            ✗ @01KFM9X3C64AHJAD6J2YJZ3YA6
+              Reference "@01KFM9X3C64AHJAD6J2YJZ3YA6" not found
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml (relates_to)
+            ✗ @01KFM9G3BR4VFNBM2G7BGE5BZY
+              Reference "@01KFM9G3BR4VFNBM2G7BGE5BZY" not found
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/modules/meta.yaml (relates_to)
+
+          Reference warnings: 1
+            ⚠ @skills
+              Orphaned skill directory 'skills' has no corresponding meta entry
+              in: /home/chapel/Projects/kynetic-spec-dispatch/.kspec/skills/skills (directory)
+
+          Alignment warnings: 30
+            Orphaned specs (no tasks): 29
+              ○ Test Trait
+              ○ Filterable List Commands
+              ○ Dry Run Preview Mode
+              ... and 26 more
+            Status mismatches: 1
+              ! kspec item ac
+                Spec "kspec item ac" status is "implemented" but should be "in_progress" based on task progress
+
+          Alignment stats: 423/559 specs have tasks, 422 aligned
+
+
+          Completeness warnings: 400
+            Missing acceptance criteria: 1
+              ○ @01KJN1WT - Test Trait
+            Missing own AC coverage: 234
+              ! @spec-item - Spec Item
+                Uncovered: ac-item-1, ac-item-2
+              ! @ulid-system - ULID Identifier System
+                Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+              ! @slug-system - Slug Alias System
+                Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+              ... and 231 more
+            Invalid AC annotations: 165
+              ! AC annotation references '@slug' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-freshness-01km4qgv-review/tests/ac-annotation-validation.test.ts:6
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-freshness-01km4qgv-review/tests/ac-annotation-validation.test.ts:88
+              ! AC annotation references '@my-spec' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-freshness-01km4qgv-review/tests/ac-annotation-validation.test.ts:91
+              ! AC annotation references '@spec-a' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-freshness-01km4qgv-review/tests/ac-annotation-validation.test.ts:124
+              ! AC annotation references '@spec-b' which cannot be resolved
+                /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-freshness-01km4qgv-review/tests/ac-annotation-validation.test.ts:128
+              ... and 160 more
+          Skills: OK (9 files checked) reports existing repository-wide reference/completeness
+          errors in this snapshot; no task-specific validation regression was isolated from that
+          baseline during review.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T06:30:58.313Z
+        completed_at: 2026-03-20T06:30:58.313Z
     events:
       - _ulid: 01KM4YR6NNQBCJWSJ5VEXVSJRG
         actor: Jacob Chapel
@@ -26965,6 +27046,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-03-20T06:30:50.631Z
+      - _ulid: 01KM4Z19T4FAP21SNJ95DZN0BH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T06:30:59.652Z
     examined_commit: 972087fb3f745be8663ade6f6a05d502f993e091
     external_links: []
     lifecycle_state: open
@@ -26995,5 +27083,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-20T06:26:01.525Z
-    updated_at: 2026-03-20T06:30:50.083Z
+    updated_at: 2026-03-20T06:30:58.313Z
     notes: []
