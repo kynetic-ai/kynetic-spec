@@ -32017,6 +32017,13 @@ reviews:
           from: draft
           to: closed
         timestamp: 2026-03-20T22:10:48.078Z
+      - _ulid: 01KM6MTP95Z98TTFWT1TH14HEE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM6MTP0HZ6JY1M615T0VZZNV
+        timestamp: 2026-03-20T22:11:06.149Z
     examined_commit: 470ed5083bbcb2e24854070eff6cb630ef16e690
     external_links: []
     lifecycle_state: closed
@@ -32168,6 +32175,26 @@ reviews:
               reset/help surfaces).
             created_at: 2026-03-20T22:10:44.984Z
         kind: nit
+      - _ulid: 01KM6MTP0HZ6JY1M615T0VZZNV
+        anchor:
+          type: code
+          commit: 470ed5083bbcb2e24854070eff6cb630ef16e690
+          line_end: 2121
+          line_start: 2116
+          path: src/cli/commands/task.ts
+          side: head
+        entries:
+          - _ulid: 01KM6MTP0H1SPMK8WYEXX0PBWH
+            author: Jacob Chapel
+            body: "Re-blocking an already blocked task overwrites the saved pre-block state with 'blocked'.
+              Reproduction in a temp fixture project: start -> block('First blocker') ->
+              block('Second blocker') -> unblock. After the second block, the task JSON shows
+              prior_status='blocked'; unblock then returns success but leaves status='blocked' with
+              blocked_by=[]. That violates the new unblock contract for a normal CLI flow where
+              another blocker is added before the original one is cleared. Preserve the first
+              non-blocked prior status instead of replacing it on repeated block calls."
+            created_at: 2026-03-20T22:11:05.873Z
+        kind: blocker
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -32177,5 +32204,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T22:10:48.077Z
     created_at: 2026-03-20T22:09:59.194Z
-    updated_at: 2026-03-20T22:10:48.078Z
+    updated_at: 2026-03-20T22:11:05.873Z
     notes: []
