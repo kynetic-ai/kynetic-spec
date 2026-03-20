@@ -15507,7 +15507,7 @@ workspaces:
         head: c9465133970dc4c422a4631a0cc4fc016a5fb9ca
         last_seen_at: 2026-03-20T19:53:18.581Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates-01km6bgy
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: c6a9e8e762c6937ecabbb3488d34fb7d36f1e771
     bootstrap:
       status: succeeded
@@ -15617,7 +15617,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T20:34:41.468Z
+      updated_at: 2026-03-20T20:34:47.137Z
     integration:
       status: pending
       detail: null
@@ -15632,10 +15632,10 @@ workspaces:
     task_slug: clean-up-dangling-references-on-item-deletion
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-20T20:20:42.384Z
-      last_reconciled_at: 2026-03-20T20:34:41.468Z
+      last_active_at: 2026-03-20T20:34:47.137Z
+      last_reconciled_at: 2026-03-20T20:34:47.137Z
       created_at: 2026-03-20T20:20:37.231Z
-      updated_at: 2026-03-20T20:34:45.653Z
+      updated_at: 2026-03-20T20:34:47.137Z
     workspace_id: dispatch-workspace-01KM6EDZF8S463CZME2XD4065Y
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
