@@ -109008,7 +109008,15 @@
   session_id: 01KM5SA0AJPNP9J6ZSEXTHZQ1C
   created_at: 2026-03-19T05:15:18.464Z
   started_at: 2026-03-20T14:10:46.407Z
-  notes: []
+  notes:
+    - _ulid: 01KM5SGB4E00A1BN0WQWR54J9T
+      content: Implemented watcher-driven stale project cleanup for @multi-directory-daemon ac-34. Added
+        optional KspecWatcher permanent-failure callback, wired ProjectContextManager to unregister
+        projects when .kspec is permanently gone, and added focused tests for both the watcher
+        exhaustion path and manager unregister behavior.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T14:13:35.502Z
   todos: []
   automation: eligible
 - _ulid: 01KM3ZMD8K6VNEVT4VR9R9YZQG
