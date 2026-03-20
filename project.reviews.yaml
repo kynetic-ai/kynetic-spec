@@ -25257,9 +25257,25 @@ reviews:
           status: pass
           name: dispatch targeted tests
         timestamp: 2026-03-20T04:43:49.032Z
+      - _ulid: 01KM4RXATW0JZNMCPB6S10Y40Z
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-20T04:43:58.172Z
+      - _ulid: 01KM4RXATW82CH6X6X7PQKJQGN
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T04:43:58.172Z
     examined_commit: e05f78fc53850b715197a28a285d793c6f56f310
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -25303,7 +25319,14 @@ reviews:
               regression found in changed area).
             created_at: 2026-03-20T04:43:46.554Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-20T04:43:58.171Z
     created_at: 2026-03-20T04:37:16.979Z
-    updated_at: 2026-03-20T04:43:48.805Z
+    updated_at: 2026-03-20T04:43:58.172Z
     notes: []
