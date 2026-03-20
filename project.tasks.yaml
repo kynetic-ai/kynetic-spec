@@ -108799,8 +108799,11 @@
   spec_ref: "@dispatch-workspace-configuration"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev in commit a5c26a4a3. Scoped dispatch workspace ownership to the current
+    checkout worktree root, blocked foreign-root workspace reuse with actionable guidance, and added
+    regression coverage for foreign registry/worktree collisions.
   depends_on: []
   context: []
   priority: 2
@@ -108821,6 +108824,7 @@
   created_at: 2026-03-19T04:42:11.096Z
   started_at: 2026-03-20T02:03:34.387Z
   submitted_at: 2026-03-20T02:15:41.794Z
+  completed_at: 2026-03-20T02:25:31.298Z
   notes:
     - _ulid: 01KM27WYSQF397B7XZ7AHQDTQP
       content: "Scoped dispatch workspace ownership to the current checkout's resolved worktree_root so
