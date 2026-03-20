@@ -15240,7 +15240,7 @@ workspaces:
         head: 80518667626a6529e0eb127a4d99fa19d3260061
         last_seen_at: 2026-03-20T18:34:02.379Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-filter-input-validation-01km5z4k
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: da0fbf18378b893f4b1036d23282f691beaccf56
     bootstrap:
       status: succeeded
@@ -15285,7 +15285,7 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T19:53:41.019Z
+      updated_at: 2026-03-20T19:53:49.078Z
     health:
       status: stale
       issues:
@@ -15295,7 +15295,7 @@ workspaces:
             is missing or no longer registered.
           suggestion: Recreate the detached reviewer snapshot before running review again.
       summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-20T19:53:48.331Z
+      updated_at: 2026-03-20T19:53:49.078Z
     integration:
       status: pending
       detail: null
@@ -15303,7 +15303,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: da0fbf18378b893f4b1036d23282f691beaccf56
-      updated_at: 2026-03-20T19:53:41.019Z
+      updated_at: 2026-03-20T19:53:49.078Z
     lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KM6AR90T6NH9Q6RWF35J63DD"
@@ -15311,9 +15311,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T19:53:48.331Z
-      last_reconciled_at: 2026-03-20T19:53:48.331Z
+      last_reconciled_at: 2026-03-20T19:53:49.078Z
       created_at: 2026-03-20T19:17:06.568Z
-      updated_at: 2026-03-20T19:53:48.331Z
+      updated_at: 2026-03-20T19:53:49.078Z
     workspace_id: dispatch-workspace-01KM6AR90T6NH9Q6RWF35J63DD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
