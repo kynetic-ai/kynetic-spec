@@ -28299,6 +28299,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T07:04:30.860Z
+      - _ulid: 01KM51EBQ35VAESQ1EBWWRPDP9
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM50Y1CQ9NN8FW01B3SW08F5
+        timestamp: 2026-03-20T07:13:04.739Z
     examined_commit: 47d46a5f52f53d6fa2ae2257220d411f898f631a
     external_links: []
     lifecycle_state: closed
@@ -28327,6 +28333,13 @@ reviews:
               suite actually runs. That means the claimed regression coverage for source-agnostic
               freshness is currently broken rather than proving the behavior.
             created_at: 2026-03-20T07:04:09.879Z
+          - _ulid: 01KM51EBFTP3T2N1P4VD6CJ30R
+            author: Jacob Chapel
+            body: Fixed in commit f72a88e05. The source-agnostic Playwright case no longer depends on
+              window.__test_ws_instances; it now writes real session fixture files under the daemon
+              temp project so the update flows through the session watcher and shared query
+              invalidation layer.
+            created_at: 2026-03-20T07:13:04.505Z
         kind: blocker
       - _ulid: 01KM50Y3PXBNK0MT8GBC9WY283
         entries:
@@ -28362,5 +28375,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T07:04:30.860Z
     created_at: 2026-03-20T07:03:32.007Z
-    updated_at: 2026-03-20T07:04:30.860Z
+    updated_at: 2026-03-20T07:13:04.505Z
     notes: []
