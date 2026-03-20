@@ -23458,6 +23458,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-20T00:29:43.643Z
+      - _ulid: 01KM4ABTHP3EM8HKS3VFPS75G0
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM4ABT9GA6BCR0RNZWRHRVKY
+        timestamp: 2026-03-20T00:29:44.374Z
     examined_commit: 362db738bf59d0946d8c77d89942f03b20b7acdc
     external_links: []
     lifecycle_state: open
@@ -23486,7 +23493,25 @@ reviews:
               workspace."
             created_at: 2026-03-20T00:29:42.692Z
         kind: blocker
+      - _ulid: 01KM4ABT9GA6BCR0RNZWRHRVKY
+        entries:
+          - _ulid: 01KM4ABT9GP1DC18JYH2VWHNER
+            author: Jacob Chapel
+            body: "Evidence log: Files read: src/lib/plan-summary.ts, src/export/json.ts,
+              src/cli/commands/plan.ts, packages/daemon/src/routes/plans.ts,
+              packages/web-ui/tests/e2e/plans.spec.ts, tests/plan-summary.test.ts,
+              tests/cli-plan.test.ts, tests/export/json.test.ts, src/agent-runtime/dispatch.ts,
+              src/agent-runtime/workspace.ts, tests/dispatch-target-sync.test.ts,
+              tests/dispatch-branch-push-lifecycle.test.ts, tests/cli-serve.test.ts. Commands run:
+              git diff/stat/log, kspec task get, kspec item get, kspec review for-task/get, rg AC
+              lookups, kspec validate, npm test twice, npm test -- tests/cli-serve.test.ts. Claims
+              verified: cancelled tasks are excluded from plan summary counts/progress across CLI,
+              export, and daemon/API, while plan_ref and short-ULID linkage semantics remain
+              preserved. Categories searched: correctness, edge cases, error handling, test quality,
+              integration; no new task-specific defects found."
+            created_at: 2026-03-20T00:29:44.112Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T00:29:20.636Z
-    updated_at: 2026-03-20T00:29:43.422Z
+    updated_at: 2026-03-20T00:29:44.112Z
     notes: []
