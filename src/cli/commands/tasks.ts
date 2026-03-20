@@ -508,7 +508,7 @@ export function registerTasksCommands(program: Command): void {
             await commitIfShadow(
               ctx.shadow,
               "tasks-assess",
-              "automation",
+              undefined,
               `${changeCount} task(s)`,
             );
           }

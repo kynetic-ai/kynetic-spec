@@ -131,7 +131,7 @@ async function workflowStart(
   await saveWorkflowRun(ctx, run);
 
   // Commit to shadow
-  await commitIfShadow(ctx.shadow, "workflow-start");
+  await commitIfShadow(ctx.shadow, "workflow-start", run._ulid);
 
   // Output result
   if (isJsonMode()) {
@@ -316,7 +316,7 @@ async function workflowAbort(
   run.completed_at = new Date().toISOString();
 
   await updateWorkflowRun(ctx, run);
-  await commitIfShadow(ctx.shadow, "workflow-abort");
+  await commitIfShadow(ctx.shadow, "workflow-abort", run._ulid);
 
   if (isJsonMode()) {
     output({ run_id: run._ulid, status: run.status });
@@ -376,7 +376,7 @@ async function workflowComplete(
   }
 
   await updateWorkflowRun(ctx, run);
-  await commitIfShadow(ctx.shadow, "workflow-complete");
+  await commitIfShadow(ctx.shadow, "workflow-complete", run._ulid);
 
   if (isJsonMode()) {
     output({
@@ -417,7 +417,7 @@ async function workflowPause(runRef: string, _options: { json?: boolean }) {
   run.paused_at = new Date().toISOString();
 
   await updateWorkflowRun(ctx, run);
-  await commitIfShadow(ctx.shadow, "workflow-pause");
+  await commitIfShadow(ctx.shadow, "workflow-pause", run._ulid);
 
   if (isJsonMode()) {
     output({ run_id: run._ulid, status: run.status, paused_at: run.paused_at });
@@ -455,7 +455,7 @@ async function workflowResume(runRef: string, _options: { json?: boolean }) {
   run.paused_at = undefined;
 
   await updateWorkflowRun(ctx, run);
-  await commitIfShadow(ctx.shadow, "workflow-resume");
+  await commitIfShadow(ctx.shadow, "workflow-resume", run._ulid);
 
   // Get workflow definition to show current step
   const workflow = metaCtx.workflows.find(
@@ -727,7 +727,7 @@ async function workflowNext(
     run.completed_at = new Date().toISOString();
 
     await updateWorkflowRun(ctx, run);
-    await commitIfShadow(ctx.shadow, "workflow-next");
+    await commitIfShadow(ctx.shadow, "workflow-next", run._ulid);
 
     // Calculate summary stats
     const totalDuration =
@@ -785,7 +785,7 @@ async function workflowNext(
     run.step_results.push(nextStepStub);
 
     await updateWorkflowRun(ctx, run);
-    await commitIfShadow(ctx.shadow, "workflow-next");
+    await commitIfShadow(ctx.shadow, "workflow-next", run._ulid);
 
     if (isJsonMode()) {
       output({
@@ -972,7 +972,12 @@ async function workflowPrune(options: {
 
   const ulidsToDelete = toPrune.map((r) => r._ulid);
   await deleteWorkflowRuns(ctx, ulidsToDelete);
-  await commitIfShadow(ctx.shadow, 'workflow-prune');
+  await commitIfShadow(
+    ctx.shadow,
+    "workflow-prune",
+    toPrune.length === 1 ? toPrune[0]._ulid : undefined,
+    `${toPrune.length} run(s)`,
+  );
 
   if (isJsonMode()) {
     output({ deleted: toPrune.length });
