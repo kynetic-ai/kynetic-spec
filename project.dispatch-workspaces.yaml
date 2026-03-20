@@ -14264,3 +14264,79 @@ workspaces:
         head: 28988e187a61dfc78211068ce94987f0fcdb39fe
         last_seen_at: 2026-03-20T14:23:08.694Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-auto-unregister-stale-projects-01km28a0
+  - active_role: null
+    base_branch_point: 7b22df38c8925c8238f48b2e96fe60804d3e9875
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/task-schema-derived-types/01km5z4n
+    canonical_branch_head: 7b22df38c8925c8238f48b2e96fe60804d3e9875
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-20T15:53:04.773Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-20T15:53:04.773Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 7b22df38c8925c8238f48b2e96fe60804d3e9875
+      updated_at: 2026-03-20T15:53:04.773Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KM5Z4NK56J72PS2YVKP5EJ8G"
+    task_slug: task-schema-derived-types
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-20T15:53:04.773Z
+      created_at: 2026-03-20T15:53:04.773Z
+      updated_at: 2026-03-20T15:53:04.773Z
+    workspace_id: dispatch-workspace-01KM5Z4NK56J72PS2YVKP5EJ8G
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/task-schema-derived-types/01km5z4n
+        head: 7b22df38c8925c8238f48b2e96fe60804d3e9875
+        last_seen_at: 2026-03-20T15:53:04.773Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-schema-derived-types-01km5z4n
