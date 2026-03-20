@@ -109625,4 +109625,14 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T00:53:22.176Z
+    - _ulid: 01KM4C6HZBWQB8RMYCHH0H2BS7
+      content: Hardened dependency freshness checks across bootstrap, test, and dispatch flows. Added
+        manifest-aware direct dependency detection so new packages like croner invalidate stale
+        node_modules, taught dispatch bootstrap to run an implicit npm ci repair step before prompt
+        delivery when a worktree is missing declared deps, and added regression coverage for
+        bootstrap/test runner detection plus dispatch workspace repair reuse. Verified with focused
+        tests and full npm test.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T01:01:48.907Z
   todos: []
