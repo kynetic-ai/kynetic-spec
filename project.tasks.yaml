@@ -104736,6 +104736,15 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T00:03:53.873Z
+    - _ulid: 01KM49JHN9N827HMEF41XAFSK5
+      content: "Approved in review @01KM490E after clean rerun of npm test, but manual merge into dev is
+        blocked by pre-existing local modifications in the dev worktree:
+        src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+        tests/dispatch-branch-push-lifecycle.test.ts, tests/dispatch-target-sync.test.ts. Git
+        refused merge because those changes would be overwritten."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T00:15:56.073Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6QR02Z2YKJBPBXD4RCRKT
