@@ -29434,7 +29434,18 @@ reviews:
     slugs: []
     title: Review task-read-side-validation-warnings
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: tests/read-side-validation-warnings.test.ts annotates @read-side-validation-warnings
+          ac-1/ac-2/ac-3 and @trait-error-guidance ac-1/ac-2/ac-5, with ac-3/ac-4/ac-6 marked N/A.
+        name: AC annotation coverage
+        required: false
+        runner: grep
+        created_at: 2026-03-20T16:38:18.603Z
+        completed_at: 2026-03-20T16:38:18.603Z
     events:
       - _ulid: 01KM61J0E0RJZHXGTQ8RCTKPKG
         actor: Jacob Chapel
@@ -29449,6 +29460,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T16:38:18.077Z
+      - _ulid: 01KM61SAYGVZTC305RT776N2HY
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC annotation coverage
+        timestamp: 2026-03-20T16:38:18.832Z
     examined_commit: 1e4e7d7ea6611fa27c20fcdb3608375d296daa01
     external_links: []
     lifecycle_state: open
@@ -29461,5 +29479,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T16:34:18.688Z
-    updated_at: 2026-03-20T16:38:17.842Z
+    updated_at: 2026-03-20T16:38:18.603Z
     notes: []
