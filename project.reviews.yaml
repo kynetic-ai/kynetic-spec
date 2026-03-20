@@ -31681,6 +31681,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM6HTK8YSA7RP0TRHGPEGH4X
         timestamp: 2026-03-20T21:18:37.598Z
+      - _ulid: 01KM6HTM9WGJMEYNHWZHNQSF00
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM6HTM2G96HVQCYD5YDREEVB
+        timestamp: 2026-03-20T21:18:38.397Z
     examined_commit: faf60b38d295340053d86214b6e13d69e0ced421
     external_links: []
     lifecycle_state: draft
@@ -31710,7 +31717,26 @@ reviews:
               static-data path before enabling the query.
             created_at: 2026-03-20T21:18:37.342Z
         kind: blocker
+      - _ulid: 01KM6HTM2G96HVQCYD5YDREEVB
+        anchor:
+          type: code
+          commit: faf60b38d295340053d86214b6e13d69e0ced421
+          line_end: 40
+          line_start: 40
+          path: packages/web-ui/src/lib/components/automation/SchedulesSection.svelte
+          side: head
+        entries:
+          - _ulid: 01KM6HTM2HSGKA0DVGCGNGCK4T
+            author: Jacob Chapel
+            body: This query has the same static-mode regression as the one fixed in the previous review. In
+              static mode initializeForStaticMode() makes isProjectInitialized() true, so expanding
+              a schedule now issues fetchScheduleStatus() against /api/schedules/:id/status. That
+              API helper has no static fallback, so the read-only export starts making daemon
+              requests again. The !isStaticMode() guard still needs to be part of the enabled
+              condition for daemon-only status fetching.
+            created_at: 2026-03-20T21:18:38.161Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T21:16:12.935Z
-    updated_at: 2026-03-20T21:18:37.342Z
+    updated_at: 2026-03-20T21:18:38.161Z
     notes: []
