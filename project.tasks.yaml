@@ -111471,6 +111471,19 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T19:33:09.004Z
+    - _ulid: 01KM6CW69B4BVFYDNQPWCT3XJZ
+      content: "Fix cycle 1: Addressed blocker from review @01KM6BJQXPTK0ZH5WBHAYJA6N6. Restored the
+        open-by-default backend contract for GET /api/reviews (per @review-records-daemon-api ac-1).
+        The previous fix incorrectly changed the backend to return all reviews when no status param
+        was sent. Now the backend preserves its original default of filtering to open reviews. UI
+        callers that need all lifecycle states (fetchReviewsForTask, reviews page 'All statuses'
+        option) now send all four valid status values explicitly (draft, open, closed, archived)
+        instead of relying on param omission. Updated E2E tests to match: default behavior test
+        verifies open-only, and tests needing cross-lifecycle results explicitly request all
+        statuses. All 6690 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-20T19:52:06.699Z
   todos: []
   automation: eligible
 - _ulid: 01KM6BGYMGZ518JENMCRACJPX3
