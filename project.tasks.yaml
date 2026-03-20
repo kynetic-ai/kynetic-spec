@@ -110347,7 +110347,7 @@
   spec_ref: "@session-list-infinite-scroll"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -110366,7 +110366,7 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: 01KM4WVEDPZKT2FZT168PRJTMP
+  session_id: null
   created_at: 2026-03-20T04:19:41.015Z
   started_at: 2026-03-20T05:53:37.882Z
   submitted_at: 2026-03-20T05:59:21.283Z
@@ -110418,5 +110418,10 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T05:59:08.931Z
+    - _ulid: 01KM4XM8NNGH2P1XKNA5NFM6PF
+      content: "[FIX_CYCLE: 3] Review verdict: changes_requested by codex@openai"
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T06:06:23.925Z
   todos: []
   automation: eligible
