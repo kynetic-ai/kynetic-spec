@@ -6341,16 +6341,11 @@ features:
               resolution.
             when: |
               kspec plan derive @plan-ref --module @mod is run
-          - given: |
-              A plan has content but no ## Specs section or no fenced
-              YAML code block in the ## Specs section
+          - given: A plan has no Specs section or no fenced YAML code block in its Specs section and does not
+              define derivable tasks
             id: ac-no-specs-content
-            then: |
-              Command fails with EXIT_CODES.USAGE_ERROR and message
-              "No specs found in plan content. Ensure ## Specs section
-              contains a fenced YAML code block."
-            when: |
-              kspec plan derive @plan-ref --module @mod is run
+            then: the command fails with guidance that the plan must define work to derive
+            when: the user runs plan derive for that plan
           - given: |
               A plan has been derived with specs and/or tasks
             id: ac-bidirectional-links
@@ -6381,6 +6376,19 @@ features:
             then: No auto per-spec "Implement <spec title>" tasks are created. Only the additional tasks are
               materialized, with plan_ref, spec_ref, and depends_on mappings preserved.
             when: kspec plan derive @plan-ref --module @mod --tasks is run
+          - given: An approved plan defines implementation tasks in its Tasks section and does not define new
+              specs
+            id: ac-task-only-derive
+            then: the plan creates those tasks successfully without requiring a Specs section
+            when: the user derives work from the plan with task creation enabled
+          - given: A task-only plan is derived successfully
+            id: ac-task-only-derive-empty-spec-results
+            then: it reports no created specs and reports the created tasks
+            when: the result is shown
+          - given: Tasks are created from a task-only plan
+            id: ac-task-only-derive-plan-linkage
+            then: the created tasks are linked back to the plan and the plan records those derived tasks
+            when: derivation completes
         tags: []
         created: 2026-03-10T22:42:09.670Z
         notes: []
@@ -9819,6 +9827,22 @@ features:
               commands
             when: |
               The review is created
+          - given: A user creates a review for a task, plan, or spec by providing a ref-backed subject
+            id: ac-ref-subject-remains-ref-subject
+            then: the created review remains bound to that ref-backed subject
+            when: they also provide review version context
+          - given: A user creates a review with code comparison inputs
+            id: ac-code-subject-created-only-when-requested
+            then: the created review is bound to committed code
+            when: they intend a code review rather than a review of a task, plan, or spec
+          - given: A review command includes inputs that imply more than one subject kind
+            id: ac-ambiguous-review-subject-rejected
+            then: the command is rejected with guidance to make the subject explicit
+            when: the intended subject cannot be determined unambiguously
+          - given: A user supplies version-related context while creating a review
+            id: ac-version-context-does-not-change-subject
+            then: that version context does not change the subject kind the user selected
+            when: the review is created
         tags: []
         parent: "@review-cli-commands"
         created: 2026-03-14T08:45:51.934Z
