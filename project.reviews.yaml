@@ -28481,6 +28481,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T07:17:46.474Z
+      - _ulid: 01KM525A6FEGGF2PEMY3AMD8PC
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM51NR51QEQF0ZNQ8DGJF3HC
+        timestamp: 2026-03-20T07:25:36.847Z
     examined_commit: f72a88e05ba5cc38eb65066e8950095cb4364d24
     external_links: []
     lifecycle_state: closed
@@ -28515,6 +28521,15 @@ reviews:
               creates .kspec-sessions, no watcher is ever attached, so the resulting session_changed
               broadcast never happens and the /sessions page does not refresh until restart."
             created_at: 2026-03-20T07:17:32.678Z
+          - _ulid: 01KM5259Z8G12BX9SKP0YM5SJ8
+            author: Jacob Chapel
+            body: "Fixed in commit 3fc75afeb. SessionWatcher.start() no longer exits permanently when
+              .kspec-sessions is missing: it now schedules a bootstrap poll, attaches the real
+              watcher once the directory appears, and emits any already-present session roots so the
+              first later runtime-created session still broadcasts session_changed for /sessions
+              freshness. Added tests/session-watcher.test.ts coverage for daemon startup before
+              .kspec-sessions exists."
+            created_at: 2026-03-20T07:25:36.616Z
         kind: blocker
       - _ulid: 01KM51NSPVHZ62H00WJ4JEY1AT
         entries:
@@ -28551,5 +28566,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T07:17:46.473Z
     created_at: 2026-03-20T07:14:23.845Z
-    updated_at: 2026-03-20T07:17:46.473Z
+    updated_at: 2026-03-20T07:25:36.616Z
     notes: []
