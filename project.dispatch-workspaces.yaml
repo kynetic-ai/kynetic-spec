@@ -12634,7 +12634,7 @@ workspaces:
         head: fb63a8129fdc268cc392a6428a06b5d57b366898
         last_seen_at: 2026-03-20T01:40:28.472Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-shared-checkout-safety-01km3zmf
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 6385dea4f2dc4387f33bb3cb4dd8a99645d1e339
     bootstrap:
       status: succeeded
@@ -12681,7 +12681,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T02:25:09.660Z
+      updated_at: 2026-03-20T02:25:10.948Z
     integration:
       status: pending
       detail: null
@@ -12696,10 +12696,10 @@ workspaces:
     task_slug: task-test-dispatch-shared-checkout-safety
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-20T02:15:54.788Z
-      last_reconciled_at: 2026-03-20T02:25:09.660Z
+      last_active_at: 2026-03-20T02:25:10.948Z
+      last_reconciled_at: 2026-03-20T02:25:10.948Z
       created_at: 2026-03-20T02:15:53.422Z
-      updated_at: 2026-03-20T02:25:10.057Z
+      updated_at: 2026-03-20T02:25:10.948Z
     workspace_id: dispatch-workspace-01KM3ZMFYDXR42KW2KGZ09RYYD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
