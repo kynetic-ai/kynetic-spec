@@ -29573,6 +29573,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T16:39:26.855Z
+      - _ulid: 01KM62N1X53KA22J8AG2AFE5KX
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM61SYD9H18PCHKE2SPV6W7D
+        timestamp: 2026-03-20T16:53:27.077Z
     examined_commit: 1e4e7d7ea6611fa27c20fcdb3608375d296daa01
     external_links: []
     lifecycle_state: closed
@@ -29603,6 +29609,12 @@ reviews:
               automation: 'ineligible' }) returns an issue with received='ineligible', and the full
               test suite emitted that exact automation=undefined warning."
             created_at: 2026-03-20T16:38:38.761Z
+          - _ulid: 01KM62N1N6YDM90NYKEMWKF2XZ
+            author: Jacob Chapel
+            body: "Fixed in commit 4a87401ef: read-side warnings now prefer Zod issue.input and fall back to
+              issue.received, so invalid enum values like automation='ineligible' are reported
+              instead of undefined. Added a regression test covering the enum issue shape."
+            created_at: 2026-03-20T16:53:26.822Z
         kind: blocker
       - _ulid: 01KM61T5XQNF28HEN8E9V99F5R
         entries:
@@ -29628,7 +29640,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T16:39:26.854Z
     created_at: 2026-03-20T16:34:18.688Z
-    updated_at: 2026-03-20T16:39:26.855Z
+    updated_at: 2026-03-20T16:53:26.822Z
     notes: []
   - _ulid: 01KM625X0SET7QS06QEF1V0S20
     slugs: []
