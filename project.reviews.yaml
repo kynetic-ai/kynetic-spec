@@ -28601,6 +28601,17 @@ reviews:
         runner: tsc
         created_at: 2026-03-20T07:30:36.614Z
         completed_at: 2026-03-20T07:30:36.614Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Fails due to pre-existing project-wide reference/completeness issues in .kspec metadata
+          unrelated to this task diff; no new task-specific validation regression identified.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T07:30:37.377Z
+        completed_at: 2026-03-20T07:30:37.377Z
     events:
       - _ulid: 01KM52DE4FER830EGRA71AEN5K
         actor: Jacob Chapel
@@ -28636,6 +28647,13 @@ reviews:
           status: pass
           name: npm run typecheck
         timestamp: 2026-03-20T07:30:36.846Z
+      - _ulid: 01KM52EFX4C59TTCA1SM8KNPSM
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T07:30:37.605Z
     examined_commit: 3fc75afebf2523867deedbea012605cfdf64f0f2
     external_links: []
     lifecycle_state: open
@@ -28672,5 +28690,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T07:30:03.023Z
-    updated_at: 2026-03-20T07:30:36.614Z
+    updated_at: 2026-03-20T07:30:37.377Z
     notes: []
