@@ -111972,5 +111972,15 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-20T21:50:23.692Z
+    - _ulid: 01KM6MFEHVQ3F1T7MED4KQCBFB
+      content: Implemented prior_status restoration on task unblock. Added prior_status field to
+        TaskSchema/TaskInputSchema. Block handler saves current status before transitioning to
+        blocked. Unblock handler restores prior_status (falls back to pending for backwards compat).
+        Reset handler clears prior_status. Updated 2 existing tests and added 7 new tests covering
+        all pre-block statuses (in_progress, needs_work, pending_review, pending), backwards compat,
+        and JSON output. Full test suite passes (297 files, 6703 tests).
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-20T22:04:57.788Z
   todos: []
   automation: eligible
