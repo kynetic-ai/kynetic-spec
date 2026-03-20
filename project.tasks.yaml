@@ -108858,6 +108858,15 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T00:11:03.886Z
+    - _ulid: 01KM4EPGH1V9BAKP9W0XMNARCZ
+      content: "[FIX_CYCLE: 2] Rebased the canonical worker branch onto origin/dev and re-ran the required
+        full test gate. npm test now passes on head 47883f95b (288 files, 6623 tests), including the
+        dispatch workspace config/registry coverage for ac-8. No task-local code changes were
+        required in this cycle; the previously recorded npm-test failure was transient/shared suite
+        state that no longer reproduces on current integration."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T01:45:28.866Z
   todos: []
   automation: eligible
 - _ulid: 01KM289GY9589XH063SSFMBJFQ
