@@ -28226,6 +28226,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-20T07:03:32.007Z
+      - _ulid: 01KM50Y1MMGWB1EQ43QSNZD5PH
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM50Y1CQ9NN8FW01B3SW08F5
+        timestamp: 2026-03-20T07:04:10.132Z
     examined_commit: 47d46a5f52f53d6fa2ae2257220d411f898f631a
     external_links: []
     lifecycle_state: draft
@@ -28235,8 +28242,27 @@ reviews:
       content_hash: ""
       ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM50Y1CQ9NN8FW01B3SW08F5
+        anchor:
+          type: code
+          commit: 47d46a5f52f53d6fa2ae2257220d411f898f631a
+          line_end: 1036
+          line_start: 1018
+          path: packages/web-ui/tests/e2e/sessions.spec.ts
+          side: head
+        entries:
+          - _ulid: 01KM50Y1CQ2YZMDCKZPCMCZ7BD
+            author: Jacob Chapel
+            body: The new ac-live-update-source-agnostic Playwright case injects its event through
+              window.__test_ws_instances, but this test never installs the addInitScript proxy that
+              populates that array. In this file the surrounding live-update tests all set that hook
+              up first; here injected will stay false and the test will fail as soon as the E2E
+              suite actually runs. That means the claimed regression coverage for source-agnostic
+              freshness is currently broken rather than proving the behavior.
+            created_at: 2026-03-20T07:04:09.879Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T07:03:32.007Z
-    updated_at: null
+    updated_at: 2026-03-20T07:04:09.879Z
     notes: []
