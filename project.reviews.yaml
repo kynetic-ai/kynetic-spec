@@ -28453,6 +28453,12 @@ reviews:
           kind: nit
           thread_ulid: 01KM51NSPVHZ62H00WJ4JEY1AT
         timestamp: 2026-03-20T07:17:08.673Z
+      - _ulid: 01KM51PHK8PKH6GPAYFHRJET88
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM51NR51QEQF0ZNQ8DGJF3HC
+        timestamp: 2026-03-20T07:17:32.904Z
     examined_commit: f72a88e05ba5cc38eb65066e8950095cb4364d24
     external_links: []
     lifecycle_state: open
@@ -28480,6 +28486,13 @@ reviews:
               refresh or daemon restart. The new coverage only exercises changes after the directory
               already exists, so this gap is still untested."
             created_at: 2026-03-20T07:17:06.850Z
+          - _ulid: 01KM51PHC606ANJEK4XH2ZMFKC
+            author: Jacob Chapel
+            body: "Clarification: SessionWatcher.start() exits early when the .kspec-sessions directory is
+              missing. If the daemon starts in that state and the first later session creation also
+              creates .kspec-sessions, no watcher is ever attached, so the resulting session_changed
+              broadcast never happens and the /sessions page does not refresh until restart."
+            created_at: 2026-03-20T07:17:32.678Z
         kind: blocker
       - _ulid: 01KM51NSPVHZ62H00WJ4JEY1AT
         entries:
@@ -28502,5 +28515,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T07:14:23.845Z
-    updated_at: 2026-03-20T07:17:08.444Z
+    updated_at: 2026-03-20T07:17:32.678Z
     notes: []
