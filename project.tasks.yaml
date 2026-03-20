@@ -109777,8 +109777,13 @@
     Consider: separate --version-base/--version-head from --base/--head, or validate that
     --base/--head are incompatible with --subject-type task."
   spec_ref: "@review-cli-creation-and-query"
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: "Merged to dev after review approval. Verified review subject parsing now preserves
+    explicit task/plan/spec subjects when review context is supplied separately, rejects ambiguous
+    mixed subject selectors with usage guidance, and retains explicit code-subject creation
+    behavior. Evidence: npm test passed (289 files, 6636 tests), review 01KM4R91 approved; kspec
+    validate still reports unrelated pre-existing repository issues."
   depends_on: []
   context: []
   priority: 2
@@ -109800,6 +109805,7 @@
   created_at: 2026-03-20T03:12:58.508Z
   started_at: 2026-03-20T04:23:34.721Z
   submitted_at: 2026-03-20T04:31:39.599Z
+  completed_at: 2026-03-20T04:37:25.717Z
   notes:
     - _ulid: 01KM4KPQ4G5256MKWZW9E73R78
       content: "Validated on 2026-03-19: src/cli/commands/review.ts parseSubjectFromOptions() treats any
