@@ -28991,3 +28991,29 @@ reviews:
     created_at: 2026-03-20T14:24:02.641Z
     updated_at: 2026-03-20T14:28:21.579Z
     notes: []
+  - _ulid: 01KM5TX5D5Q816RTTKJ1MGJY8R
+    slugs: []
+    title: Review task-implement-kspec-no-daemon (cycle 2)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM5TX5D4BQX2HCSMXQRMA5MP
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T14:38:04.197Z
+    examined_commit: 7bc399755cf9835545a3e8124d3b915965f36e2d
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM289GY9589XH063SSFMBJFQ"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T14:38:04.197Z
+    updated_at: null
+    notes: []
