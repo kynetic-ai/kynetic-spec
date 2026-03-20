@@ -109767,6 +109767,13 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T03:56:46.517Z
+    - _ulid: 01KM4WG54Z1EVW3PSCFM0CY93D
+      content: Linked task to @item-ac and added AC ac-item-ac-id-arg-consistency to make the CLI
+        identifier naming contract explicit before code changes. The mismatch affects command
+        introspection and batch arg validation because Commander positional names become metadata.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T05:46:40.672Z
   todos: []
   automation: eligible
 - _ulid: 01KM4KPQ4CJS24TH0NTVXJA1V3
