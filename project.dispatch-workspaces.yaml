@@ -12558,12 +12558,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T01:40:21.229Z
+      updated_at: 2026-03-20T01:40:28.472Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T01:40:21.229Z
+      updated_at: 2026-03-20T01:40:28.472Z
     integration:
       status: pending
       detail: null
@@ -12571,7 +12571,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 674cabcd8646e873f128fa67b9d2db44ae74797a
-      updated_at: 2026-03-20T01:40:21.229Z
+      updated_at: 2026-03-20T01:40:28.472Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM3ZMF9C5B3JEDTE4AR74K46"
@@ -12579,16 +12579,21 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T00:37:47.389Z
-      last_reconciled_at: 2026-03-20T01:40:21.229Z
+      last_reconciled_at: 2026-03-20T01:40:28.472Z
       created_at: 2026-03-19T23:58:20.872Z
-      updated_at: 2026-03-20T01:40:21.229Z
+      updated_at: 2026-03-20T01:40:28.472Z
     workspace_id: dispatch-workspace-01KM3ZMF9C5B3JEDTE4AR74K46
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: fb63a8129fdc268cc392a6428a06b5d57b366898
+        last_seen_at: 2026-03-20T01:40:28.472Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-shared-checkout-safety-01km3zmf-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-implement-dispatch-shared-checkout-safety/01km3zmf
         head: fb63a8129fdc268cc392a6428a06b5d57b366898
-        last_seen_at: 2026-03-20T00:37:45.263Z
+        last_seen_at: 2026-03-20T01:40:28.472Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-dispatch-shared-checkout-safety-01km3zmf
