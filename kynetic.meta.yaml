@@ -7538,6 +7538,15 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-20T02:02:07.127Z
+  - _ulid: 01KM4YT72C8P979RZSEMDBRCB5
+    type: friction
+    content: kspec skill render writing-specs --force reported no changes even though
+      .agents/skills/kspec-writing-specs/SKILL.md was stale relative to
+      templates/skills/writing-specs/SKILL.md on this branch.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-20T06:27:07.469Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
