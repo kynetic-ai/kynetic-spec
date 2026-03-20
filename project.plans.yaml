@@ -24436,6 +24436,9 @@ plans:
       ## Tasks
 
 
+      derive_from_specs: false
+
+
       ```yaml
 
       - title: Add CLI mutation enum validation
@@ -24619,3 +24622,7 @@ plans:
         content: Remove derive_from_specs and redundant trait creation task
         author: "@claude"
         created_at: 2026-03-20T14:25:17.908Z
+      - _ulid: 01KM5T7WSMAR7WJXA6HCB7YYXF
+        content: "Set derive_from_specs: false, revert to draft"
+        author: "@claude"
+        created_at: 2026-03-20T14:26:27.252Z
