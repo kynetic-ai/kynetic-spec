@@ -25723,6 +25723,18 @@ reviews:
         runner: npm
         created_at: 2026-03-20T05:17:13.345Z
         completed_at: 2026-03-20T05:17:13.345Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fails in this snapshot due to pre-existing project-wide validation debt unrelated to this
+          diff: 3 reference errors in .kspec/modules/meta.yaml, 29 alignment warnings, 401
+          completeness warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T05:17:14.028Z
+        completed_at: 2026-03-20T05:17:14.028Z
     events:
       - _ulid: 01KM4TJ29BJWJ88E7M03EQXV38
         actor: Jacob Chapel
@@ -25758,6 +25770,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T05:17:13.542Z
+      - _ulid: 01KM4TT84B17S597GTZXBJH3DD
+        actor: codex
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T05:17:14.252Z
     examined_commit: 4bf313b436b3c043e28c31e7c6c88ecd5222fa7b
     external_links: []
     lifecycle_state: open
@@ -25806,5 +25825,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T05:12:46.124Z
-    updated_at: 2026-03-20T05:17:13.345Z
+    updated_at: 2026-03-20T05:17:14.028Z
     notes: []
