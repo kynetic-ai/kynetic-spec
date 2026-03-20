@@ -29701,9 +29701,25 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-20T16:50:00.628Z
+      - _ulid: 01KM62F6QR6JRPQ88FG5TDPBJE
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-20T16:50:15.416Z
+      - _ulid: 01KM62F6QRACYTDNFQQ4YTTK9Z
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T16:50:15.416Z
     examined_commit: cdb70fae4e3fc3481147505e3f19023b1113c5fc
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -29738,7 +29754,14 @@ reviews:
               behavior."
             created_at: 2026-03-20T16:49:59.666Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-20T16:50:15.416Z
     created_at: 2026-03-20T16:45:10.553Z
-    updated_at: 2026-03-20T16:50:00.401Z
+    updated_at: 2026-03-20T16:50:15.416Z
     notes: []
