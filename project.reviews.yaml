@@ -22992,6 +22992,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T00:03:18.379Z
+      - _ulid: 01KM49PAJA7F8HT5QVW777PS6P
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM48V5J4HSGE8RF88GWQW5K8
+        timestamp: 2026-03-20T00:17:59.882Z
     examined_commit: c7627d0da34617524b4cedc03341c6229b69a164
     external_links: []
     lifecycle_state: closed
@@ -23059,6 +23065,12 @@ reviews:
               CLI, daemon, and export surfaces, the regression breaks the task's shared linkage
               semantics across interfaces."
             created_at: 2026-03-20T00:03:10.020Z
+          - _ulid: 01KM49PABCKQVQ9S8FQ1WG6E2P
+            author: Jacob Chapel
+            body: Fixed in 362db73. Added regressions for short-ULID plan_ref linkage in
+              tests/plan-summary.test.ts, tests/cli-plan.test.ts, and tests/export/json.test.ts so
+              shared metrics keep honoring @<short-ulid> references while excluding cancelled tasks.
+            created_at: 2026-03-20T00:17:59.660Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -23069,7 +23081,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T00:03:18.378Z
     created_at: 2026-03-20T00:01:15.182Z
-    updated_at: 2026-03-20T00:03:18.379Z
+    updated_at: 2026-03-20T00:17:59.660Z
     notes: []
   - _ulid: 01KM490E7AQ54TEGMQ6EWDGHQK
     slugs: []
