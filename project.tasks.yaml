@@ -109250,6 +109250,17 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T00:16:52.687Z
+    - _ulid: 01KM4ASJTACENKWT4EM8EFZ15V
+      content: "[FIX_CYCLE: 2] Tightened shared-checkout repair safety by persisting the last
+        dispatch-observed coherent tree per integration branch and only auto-repairing when the
+        current index still matches that known-good prior tip. This prevents staged user changes on
+        the current HEAD from being mistaken for stale branch drift. Added a regression that proves
+        staged tracked changes now degrade instead of resetting. Verification: npm test passed on
+        rerun (286 files, 6611 tests, 3 skipped); kspec validate still reports the same pre-existing
+        repo-wide reference/alignment/completeness issues unrelated to this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T00:37:15.210Z
   todos: []
   automation: eligible
 - _ulid: 01KM3ZMFYDXR42KW2KGZ09RYYD
