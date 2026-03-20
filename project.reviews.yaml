@@ -24702,6 +24702,18 @@ reviews:
         runner: npm
         created_at: 2026-03-20T02:23:48.258Z
         completed_at: 2026-03-20T02:23:48.258Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repo-wide baseline validation failures remain outside this task: 3 missing references in
+          .kspec/modules/meta.yaml plus existing completeness/alignment warnings. No new validation
+          regressions in the reviewed diff."
+        name: kspec-validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T02:23:49.006Z
+        completed_at: 2026-03-20T02:23:49.006Z
     events:
       - _ulid: 01KM4GJW6CDETRFKPV2FAASDNQ
         actor: Jacob Chapel
@@ -24730,6 +24742,13 @@ reviews:
           status: pass
           name: npm-test
         timestamp: 2026-03-20T02:23:48.488Z
+      - _ulid: 01KM4GWPYRS7YJ6Q4Q78NFY5YE
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec-validate
+        timestamp: 2026-03-20T02:23:49.208Z
     examined_commit: 3d36ababa8aa4443911217f748d355cc64601336
     external_links: []
     lifecycle_state: open
@@ -24769,5 +24788,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T02:18:26.892Z
-    updated_at: 2026-03-20T02:23:48.258Z
+    updated_at: 2026-03-20T02:23:49.006Z
     notes: []
