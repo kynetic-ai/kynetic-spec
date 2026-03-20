@@ -12521,7 +12521,7 @@ workspaces:
         head: c7627d0da34617524b4cedc03341c6229b69a164
         last_seen_at: 2026-03-20T00:10:10.437Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/implement-cancelled-task-exclusion-in-plan-summary-metrics-01km46gr
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 674cabcd8646e873f128fa67b9d2db44ae74797a
     bootstrap:
       status: succeeded
@@ -12568,7 +12568,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T00:10:11.587Z
+      updated_at: 2026-03-20T00:10:15.518Z
     integration:
       status: pending
       detail: null
@@ -12583,10 +12583,10 @@ workspaces:
     task_slug: task-implement-dispatch-shared-checkout-safety
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-19T23:58:22.183Z
-      last_reconciled_at: 2026-03-20T00:10:11.587Z
+      last_active_at: 2026-03-20T00:10:15.518Z
+      last_reconciled_at: 2026-03-20T00:10:15.518Z
       created_at: 2026-03-19T23:58:20.872Z
-      updated_at: 2026-03-20T00:10:14.642Z
+      updated_at: 2026-03-20T00:10:15.518Z
     workspace_id: dispatch-workspace-01KM3ZMF9C5B3JEDTE4AR74K46
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
