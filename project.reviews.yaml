@@ -26102,7 +26102,17 @@ reviews:
     slugs: []
     title: Review recover missing workspace for automation-eligible in-progress tasks
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed on rerun: 289 files, 6644 tests passed, 3 skipped, 0 failed."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T05:46:14.486Z
+        completed_at: 2026-03-20T05:46:14.486Z
     events:
       - _ulid: 01KM4W0PKQQ95WGK6QN2G35GWN
         actor: Jacob Chapel
@@ -26140,6 +26150,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T05:46:12.542Z
+      - _ulid: 01KM4WFBZBH0BR2SJAT3JEC61R
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T05:46:14.891Z
     examined_commit: 88c10fd9b74b568a8ec2aeb6ac3e51a8f0f8967d
     external_links: []
     lifecycle_state: closed
@@ -26193,7 +26210,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T05:46:12.541Z
     created_at: 2026-03-20T05:38:14.263Z
-    updated_at: 2026-03-20T05:46:12.542Z
+    updated_at: 2026-03-20T05:46:14.486Z
     notes: []
   - _ulid: 01KM4WBNDAJSEXSZWACXX74JEM
     slugs: []
