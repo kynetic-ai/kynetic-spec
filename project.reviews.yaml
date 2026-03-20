@@ -31280,6 +31280,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T19:48:18.728Z
+      - _ulid: 01KM6CNVMAQ8PFZZGYE2CKBS8C
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM6CNVCA6W0VZNRPMWFXJG63
+        timestamp: 2026-03-20T19:48:39.178Z
     examined_commit: c9465133970dc4c422a4631a0cc4fc016a5fb9ca
     external_links: []
     lifecycle_state: open
@@ -31289,8 +31296,30 @@ reviews:
       content_hash: ""
       ref: "@01KM6BGYMGZ518JENMCRACJPX3"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM6CNVCA6W0VZNRPMWFXJG63
+        anchor:
+          type: code
+          commit: c9465133970dc4c422a4631a0cc4fc016a5fb9ca
+          line_end: 94
+          line_start: 91
+          path: packages/web-ui/src/routes/+page.svelte
+          side: head
+        entries:
+          - _ulid: 01KM6CNVCBKDBNVK14Q0DD3R61
+            author: Jacob Chapel
+            body: "This change reintroduces daemon HTTP requests in static exports. +layout.svelte calls
+              initializeForStaticMode() after initMode(), so isProjectInitialized() becomes true on
+              exported builds. With the !isStaticMode() guard removed here, this query now runs in
+              static mode, but fetchAgentStatus() still performs a live /api/agent/status request
+              instead of serving snapshot data. The same pattern was applied to agents, automation,
+              settings, sessions, and the automation subcomponents, where the newly enabled queries
+              either hit live /api/* endpoints or throw in static mode (fetchSession). That breaks
+              @ui-data-freshness ac-6 and @gh-pages-export ac-24/ac-25: static mode should not
+              attempt daemon HTTP calls once initialization completes."
+            created_at: 2026-03-20T19:48:38.923Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T19:47:58.740Z
-    updated_at: 2026-03-20T19:48:18.461Z
+    updated_at: 2026-03-20T19:48:38.923Z
     notes: []
