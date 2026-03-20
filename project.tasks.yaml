@@ -109206,8 +109206,12 @@
   spec_ref: "@dispatch-shared-checkout-safety"
   plan_ref: "@plan-dispatch-integration-checkout-boundaries"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev at ae2ba5d88b0c023a543d0c3b045b91dc70a65216 after approved review.
+    Verified shared-checkout drift repair now preserves staged tracked changes, clean drift is
+    auto-repaired, degraded status includes branch-specific guidance, and full npm test passed on
+    rerun.
   depends_on:
     - "@task-isolate-dispatch-git-targeting"
     - "@task-route-dispatch-sync-through-targeting-path"
@@ -109231,6 +109235,7 @@
   created_at: 2026-03-19T21:22:13.420Z
   started_at: 2026-03-20T00:36:54.348Z
   submitted_at: 2026-03-20T00:37:25.236Z
+  completed_at: 2026-03-20T01:53:22.285Z
   notes:
     - _ulid: 01KM48R7NBFTMH7XV88X9XAFS6
       content: "Implementing shared-checkout drift repair by probing branch/index/worktree coherence in
