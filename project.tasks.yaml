@@ -109868,6 +109868,14 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T03:12:58.574Z
+    - _ulid: 01KM4RND8038123QGC8CTZF3B0
+      content: Adjusted plan derive flow so specless plans only require derivable manual tasks with
+        --tasks, and module resolution is now conditional on actual spec materialization. Added a
+        regression test for task-only plan derivation plus updated the empty-plan failure
+        expectation.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T04:39:38.497Z
   todos: []
   automation: eligible
 - _ulid: 01KM4MK0N1K71YCJ2PFVZGTSTE
