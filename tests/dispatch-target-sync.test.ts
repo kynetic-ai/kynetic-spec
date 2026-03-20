@@ -275,6 +275,11 @@ describe("dispatch target branch sync", () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
     git(projectDir, "checkout dev");
+    expect(await workspaceModule.ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, "dev")).toEqual({
+      repaired: false,
+      drifted: false,
+      previousCommit: null,
+    });
 
     const previousTip = git(projectDir, "rev-parse dev");
     const branchTip = await pushRemoteCommit(
@@ -316,6 +321,33 @@ describe("dispatch target branch sync", () => {
     });
 
     await engine.stop();
+  });
+
+  // AC: @dispatch-shared-checkout-safety ac-3
+  it("refuses automatic repair when staged tracked changes appear after a known coherent branch tip", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout dev");
+
+    const previousTip = git(projectDir, "rev-parse dev");
+    await fs.writeFile(path.join(projectDir, "dev.txt"), "dev\nsynced\n", "utf-8");
+    git(projectDir, "add dev.txt");
+    git(projectDir, 'commit -m "advance dev tip"');
+
+    expect(await workspaceModule.ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, "dev")).toEqual({
+      repaired: false,
+      drifted: false,
+      previousCommit: null,
+    });
+
+    git(projectDir, `checkout ${previousTip} -- dev.txt`);
+    git(projectDir, "add dev.txt");
+
+    expect(() => workspaceModule.ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, "dev")).toThrowError(
+      /staged tracked changes after dispatch already observed this branch tip as coherent/,
+    );
+    expect(git(projectDir, "diff --cached --name-only")).toContain("dev.txt");
+    expect(git(projectDir, "rev-parse HEAD")).not.toBe(previousTip);
   });
 
   // AC: @dispatch-integration-mutation-scope ac-4

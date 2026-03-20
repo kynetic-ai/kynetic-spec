@@ -1,4 +1,5 @@
 import * as fs from "node:fs/promises";
+import * as fsSync from "node:fs";
 import * as path from "node:path";
 import { spawnSync } from "node:child_process";
 import { initContext } from "../parser/index.js";
@@ -33,6 +34,7 @@ import type {
 const DISPATCH_WORKSPACE_METADATA_FILE = ".kspec-dispatch-workspace.json";
 const DISPATCH_BRANCH_PREFIX = "dispatch/task/";
 const DISPATCH_SHADOW_MUTATION_LOCK_FILE = ".kspec-dispatch-shadow-mutation";
+const DISPATCH_CHECKOUT_COHERENCE_FILE = "kspec-dispatch-checkout-coherence.json";
 
 interface GitResult {
   stdout: string;
@@ -42,6 +44,17 @@ interface GitResult {
 
 interface RunGitOptions {
   timeout?: number;
+}
+
+interface DispatchCheckoutCoherenceSnapshot {
+  headCommit: string;
+  tree: string;
+  recordedAt: string;
+}
+
+interface DispatchCheckoutCoherenceState {
+  version: 1;
+  branches: Record<string, DispatchCheckoutCoherenceSnapshot>;
 }
 
 const DISPATCH_GIT_ENV_KEYS = [
@@ -386,6 +399,71 @@ interface DispatchCheckoutCoherenceResult {
   previousCommit: string | null;
 }
 
+function resolveDispatchCheckoutCoherencePath(projectDir: string): string | null {
+  const result = runGit(projectDir, ["rev-parse", "--git-path", DISPATCH_CHECKOUT_COHERENCE_FILE]);
+  if (result.status !== 0 || !result.stdout) {
+    return null;
+  }
+  return path.isAbsolute(result.stdout)
+    ? result.stdout
+    : path.join(projectDir, result.stdout);
+}
+
+function loadDispatchCheckoutCoherenceSnapshot(
+  projectDir: string,
+  branch: string,
+): DispatchCheckoutCoherenceSnapshot | null {
+  const coherencePath = resolveDispatchCheckoutCoherencePath(projectDir);
+  if (!coherencePath || !fsSync.existsSync(coherencePath)) {
+    return null;
+  }
+
+  try {
+    const raw = fsSync.readFileSync(coherencePath, "utf-8");
+    const parsed = JSON.parse(raw) as Partial<DispatchCheckoutCoherenceState>;
+    if (parsed.version !== 1 || !parsed.branches || typeof parsed.branches !== "object") {
+      return null;
+    }
+    const snapshot = parsed.branches[branch];
+    if (!snapshot || typeof snapshot.headCommit !== "string" || typeof snapshot.tree !== "string") {
+      return null;
+    }
+    return snapshot;
+  } catch {
+    return null;
+  }
+}
+
+function persistDispatchCheckoutCoherenceSnapshot(
+  projectDir: string,
+  branch: string,
+  snapshot: DispatchCheckoutCoherenceSnapshot,
+): void {
+  const coherencePath = resolveDispatchCheckoutCoherencePath(projectDir);
+  if (!coherencePath) {
+    return;
+  }
+
+  let state: DispatchCheckoutCoherenceState = { version: 1, branches: {} };
+  if (fsSync.existsSync(coherencePath)) {
+    try {
+      const raw = fsSync.readFileSync(coherencePath, "utf-8");
+      const parsed = JSON.parse(raw) as Partial<DispatchCheckoutCoherenceState>;
+      if (parsed.version === 1 && parsed.branches && typeof parsed.branches === "object") {
+        state = {
+          version: 1,
+          branches: parsed.branches as Record<string, DispatchCheckoutCoherenceSnapshot>,
+        };
+      }
+    } catch {
+      state = { version: 1, branches: {} };
+    }
+  }
+
+  state.branches[branch] = snapshot;
+  fsSync.writeFileSync(coherencePath, `${JSON.stringify(state, null, 2)}\n`, "utf-8");
+}
+
 function resolveBranchTree(projectDir: string, ref: string): string | null {
   const result = runGit(projectDir, ["rev-parse", `${ref}^{tree}`]);
   return result.status === 0 && result.stdout ? result.stdout : null;
@@ -424,6 +502,7 @@ export function ensureDispatchIntegrationTargetCheckoutCoherence(
   projectDir: string,
   integrationBranch: string,
 ): DispatchCheckoutCoherenceResult {
+  const headCommit = resolveCommit(projectDir, "HEAD");
   const status = runGit(projectDir, ["status", "--porcelain"]);
   if (status.status !== 0) {
     throw new DispatchWorkspaceError(
@@ -431,7 +510,15 @@ export function ensureDispatchIntegrationTargetCheckoutCoherence(
       `Run 'git status' in ${projectDir}, fix the git error, and retry dispatch.`,
     );
   }
+  const headTree = resolveBranchTree(projectDir, "HEAD");
   if (!status.stdout) {
+    if (headTree) {
+      persistDispatchCheckoutCoherenceSnapshot(projectDir, integrationBranch, {
+        headCommit,
+        tree: headTree,
+        recordedAt: new Date().toISOString(),
+      });
+    }
     return { repaired: false, drifted: false, previousCommit: null };
   }
 
@@ -451,7 +538,6 @@ export function ensureDispatchIntegrationTargetCheckoutCoherence(
   }
 
   const indexTree = resolveIndexTree(projectDir);
-  const headTree = resolveBranchTree(projectDir, "HEAD");
   if (!indexTree || !headTree) {
     throw new DispatchWorkspaceError(
       `Dispatch could not compare index state against HEAD for integration target "${integrationBranch}".`,
@@ -459,11 +545,28 @@ export function ensureDispatchIntegrationTargetCheckoutCoherence(
     );
   }
   if (indexTree === headTree) {
+    persistDispatchCheckoutCoherenceSnapshot(projectDir, integrationBranch, {
+      headCommit,
+      tree: headTree,
+      recordedAt: new Date().toISOString(),
+    });
     return { repaired: false, drifted: false, previousCommit: null };
   }
 
-  for (const commit of listRecentBranchReflogCommits(projectDir, integrationBranch)) {
-    if (commit === resolveCommit(projectDir, "HEAD")) continue;
+  const snapshot = loadDispatchCheckoutCoherenceSnapshot(projectDir, integrationBranch);
+  if (snapshot?.headCommit === headCommit) {
+    throw buildUnsafeCheckoutDriftError(
+      integrationBranch,
+      "the index contains staged tracked changes after dispatch already observed this branch tip as coherent",
+      `Inspect 'git status' and 'git diff --cached' in ${projectDir}. Commit/stash/discard those staged changes before retrying. If the branch tip is authoritative and the staged changes should be discarded, run 'git checkout ${integrationBranch} && git reset --hard ${integrationBranch}'.`,
+    );
+  }
+
+  const candidateCommits = snapshot?.headCommit
+    ? [snapshot.headCommit]
+    : listRecentBranchReflogCommits(projectDir, integrationBranch);
+  for (const commit of candidateCommits) {
+    if (commit === headCommit) continue;
     if (resolveBranchTree(projectDir, commit) !== indexTree) continue;
 
     const repair = runGit(projectDir, ["reset", "--hard", "HEAD"]);
@@ -486,6 +589,11 @@ export function ensureDispatchIntegrationTargetCheckoutCoherence(
       );
     }
 
+    persistDispatchCheckoutCoherenceSnapshot(projectDir, integrationBranch, {
+      headCommit,
+      tree: headTree,
+      recordedAt: new Date().toISOString(),
+    });
     return { repaired: true, drifted: true, previousCommit: commit };
   }
 
