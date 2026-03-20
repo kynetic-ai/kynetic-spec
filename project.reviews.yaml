@@ -31005,9 +31005,25 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T18:34:55.410Z
+      - _ulid: 01KM68MDH24NE0D4SYKY8M4XHP
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-20T18:37:57.666Z
+      - _ulid: 01KM68MDH3P6NWW2PC9H317Z0B
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T18:37:57.667Z
     examined_commit: 80518667626a6529e0eb127a4d99fa19d3260061
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -31015,7 +31031,14 @@ reviews:
       ref: "@01KM5Z4KJQ7CF8F2P48711SY91"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-20T18:37:57.666Z
     created_at: 2026-03-20T18:34:34.803Z
-    updated_at: 2026-03-20T18:34:55.174Z
+    updated_at: 2026-03-20T18:37:57.667Z
     notes: []
