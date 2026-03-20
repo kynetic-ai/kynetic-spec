@@ -111336,5 +111336,95 @@
     - bug
   vcs_refs: []
   created_at: 2026-03-20T19:15:01.274Z
-  notes: []
+  notes:
+    - _ulid: 01KM6ARYB40FXZ0THQZPG167J0
+      content: >-
+        ## What
+
+
+        The reviews API status filter sends 'all' as a query param value, but the Elysia validation
+        schema only accepts valid ReviewLifecycleState values: draft, open, closed, archived. This
+        causes validation_error on two code paths:
+
+
+        1. **Reviews list page** (`packages/web-ui/src/routes/reviews/+page.svelte:31`):
+        `getStatusFilter()` returns literal 'all' when user selects "All statuses", sent as
+        `?status=all`.
+
+        2. **Task detail modal** (`packages/web-ui/src/lib/api.ts:1700`): `fetchReviewsForTask()`
+        hardcodes `url.searchParams.set('status', 'all')` to fetch all reviews for a task regardless
+        of lifecycle state.
+
+
+        The daemon route handler (`packages/daemon/src/routes/reviews.ts:154`) has logic to treat
+        'all' as "skip filtering", but Elysia's schema validation
+        (`enumArrayUnion(ReviewLifecycleStateSchema.options)` at line 246) rejects the request
+        before the handler runs.
+
+
+        ## Why
+
+
+        This was introduced by the input validation hardening work
+        (@plan-input-validation-hardening). The validation correctly restricts to valid enum values,
+        but the UI was relying on a non-enum sentinel value 'all' that predated the validation.
+
+
+        ## How
+
+
+        Three coordinated changes:
+
+
+        ### 1. Backend: Change no-param default from 'open' to 'no filter'
+
+        **File:** `packages/daemon/src/routes/reviews.ts` lines 150-156
+
+        - Currently: no status param → defaults to `['open']`
+
+        - Change to: no status param → no filtering (show all)
+
+        - Remove the `statusFilters[0] !== 'all'` special case (dead code after validation was
+        added)
+
+
+        ### 2. UI reviews page: Flip the default/all semantics
+
+        **File:** `packages/web-ui/src/routes/reviews/+page.svelte`
+
+        - Default page load: navigate with explicit `?status=open` (so "Open" is still the landing
+        view)
+
+        - "All statuses" option: remove the status param entirely (no param = no filter = all)
+
+        - Update `getStatusFilter()` (line 30-34): remove the `'all'` return path; when URL has no
+        status param, treat as "all" (undefined → no param sent to API)
+
+        - The page should load with `?status=open` on initial navigation (or redirect if no status
+        param) so the user still sees open reviews by default
+
+
+        ### 3. Task modal: Remove hardcoded status=all
+
+        **File:** `packages/web-ui/src/lib/api.ts` line 1700
+
+        - Remove `url.searchParams.set('status', 'all')` — with the backend change, no status param
+        means all reviews
+
+
+        ### Verification
+
+        - Navigate to /reviews → should show open reviews, URL has `?status=open`
+
+        - Select "All statuses" → URL loses status param, shows all reviews, no validation error
+
+        - Select specific status → URL has that status, filters correctly
+
+        - Open task modal → Reviews section loads without validation error
+
+        - All other filter pages (tasks, sessions) are unaffected (they already convert 'all' to
+        param deletion)
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-20T19:15:23.108Z
   todos: []
