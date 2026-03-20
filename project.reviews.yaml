@@ -26550,6 +26550,13 @@ reviews:
           status: pass
           name: AC coverage
         timestamp: 2026-03-20T05:59:54.386Z
+      - _ulid: 01KM4X8D1TX1GNPEF5ASNC176T
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM4X8CTD5SKNZKNJJM1X0PG5
+        timestamp: 2026-03-20T05:59:55.194Z
     examined_commit: dd5d3ee05e0e9b18dd64fba50fcf2ad200e6e1f0
     external_links: []
     lifecycle_state: open
@@ -26578,7 +26585,22 @@ reviews:
               inconsistent with the command metadata it just updated."
             created_at: 2026-03-20T05:59:52.087Z
         kind: blocker
+      - _ulid: 01KM4X8CTD5SKNZKNJJM1X0PG5
+        entries:
+          - _ulid: 01KM4X8CTDEJX4SPHW7GV9GGBK
+            author: Jacob Chapel
+            body: "Evidence log:\\nFiles read: src/cli/commands/item.ts, tests/batch-schema.test.ts,
+              templates/skills/writing-specs/SKILL.md, .agents/skills/kspec-writing-specs/SKILL.md,
+              AGENTS.md, kspec-agents.md\\nCommands run: git diff --stat/name-only/full diff, kspec
+              task get @01KM4KPPDWB2PQ1YQNYQDK3SJH, kspec item get @item-ac, grep/rg for AC coverage
+              and acId/id usage, kspec validate, npm test\\nClaims verified: item ac remove now
+              exposes positional metadata as id in Commander; batch validation accepts id and
+              suggests id for legacy acId; rendered skill output was not regenerated\\nCategories
+              searched: correctness, test quality, documentation/rendered-output integrity,
+              integration, review gates"
+            created_at: 2026-03-20T05:59:54.957Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T05:53:39.449Z
-    updated_at: 2026-03-20T05:59:54.151Z
+    updated_at: 2026-03-20T05:59:54.957Z
     notes: []
