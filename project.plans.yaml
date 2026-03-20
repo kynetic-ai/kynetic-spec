@@ -24048,333 +24048,190 @@ plans:
       ```yaml
       # ─── Cross-cutting trait ───────────────────────────────────
 
-      - title: Validated Enum Input
-        slug: trait-validated-enum-input
+      - title: Type-Safe Input Boundaries
+        slug: trait-type-safe-input
         type: trait
         description: |
-          Cross-cutting contract for any surface that accepts an enum-constrained
-          value as user input. Enum fields include entity types, statuses,
-          priorities, maturity levels, automation eligibility, review dispositions,
-          triage actions, and similar constrained values defined by Zod schemas.
+          Cross-cutting contract for any surface that accepts external input —
+          CLI options, HTTP request bodies, WebSocket messages, or programmatic
+          function arguments. Every input field with a defined type constraint
+          (enum, number range, string format, required/optional, array element
+          type) must be validated at the boundary before the input reaches
+          business logic or persistence.
 
-          Invalid enum values must be rejected at the input boundary before
-          reaching persistence. Error messages must be actionable — naming the
-          field, the invalid value, and all valid alternatives. The set of valid
-          values must be derived from the canonical schema definition so validation
-          stays in sync as schemas evolve.
+          Validation must be schema-derived — the source of truth for what
+          constitutes valid input is the Zod schema definition, not a separate
+          hardcoded check. Error messages must be actionable, identifying what
+          was wrong and what is expected.
         acceptance_criteria:
           - id: ac-1
             given: |
-              Any input surface accepts an enum-constrained field
+              Any input surface accepts a field with a defined type constraint
             when: |
-              The user provides a value not in the field's allowed set
+              The provided value does not satisfy the constraint
             then: |
-              The operation is rejected before any data is persisted
+              The operation is rejected before any data is persisted or
+              state is mutated
           - id: ac-2
             given: |
-              An enum validation error occurs at a CLI command
+              An input validation error occurs
             when: |
-              The error is reported
+              The error is reported to the caller
             then: |
-              The message includes the field name, the invalid value, and the
-              complete list of valid values
+              The message identifies the field, the invalid value, and what
+              valid input looks like
           - id: ac-3
             given: |
-              An enum validation error occurs at an API endpoint
+              A field's type constraint is defined in a Zod schema
             when: |
-              The error response is returned
+              Validation logic checks the field
             then: |
-              The response identifies the invalid field and valid alternatives
-          - id: ac-4
-            given: |
-              Code validates an enum field at any boundary
-            when: |
-              The set of allowed values is determined
-            then: |
-              Allowed values are derived from the canonical schema definition
-              rather than a separate hardcoded array
+              The validation is derived from the schema definition rather
+              than a separately maintained check
 
-      # ─── CLI mutation validation ───────────────────────────────
+      # ─── CLI input type safety ─────────────────────────────────
 
-      - title: CLI Mutation Enum Validation
-        slug: cli-mutation-enum-validation
+      - title: CLI Input Type Safety
+        slug: cli-input-type-safety
         type: feature
         parent: "@cli"
         traits:
-          - trait-validated-enum-input
+          - trait-type-safe-input
           - trait-error-guidance
           - trait-semantic-exit-codes
         description: |
-          CLI commands that persist data must validate all enum-constrained
-          options before writing. This covers task type, item type, item
-          implementation status, item maturity, inbox promotion type, plan
-          status, and review check status — any mutation command where the
-          user supplies a value that maps to a schema-defined enum.
+          All CLI commands must validate their inputs against the defined type
+          constraints before executing. This applies to both mutation commands
+          (which persist data) and query commands (which filter data). When a
+          command accepts an option or argument with a constrained type — an
+          enum, a number within a range, a reference format, or any value with
+          a schema-defined shape — it must reject invalid values with a clear
+          error rather than passing them through unchecked.
+
+          Mutation commands that accept invalid input cause data corruption:
+          values are written to YAML and silently dropped on next read. Query
+          commands that accept invalid filters silently return empty results,
+          wasting the user's time debugging "missing" data.
         acceptance_criteria:
           - id: ac-1
             given: |
-              User creates a task with an invalid type value
+              A CLI mutation command accepts a typed option
             when: |
-              The type is not one of the valid task types
+              The provided value does not match the option's type constraint
             then: |
-              The command exits with non-zero status and stderr lists valid task types
+              The command exits with non-zero status and stderr describes the
+              invalid value and lists what is valid, before any write occurs
           - id: ac-2
             given: |
-              User creates a spec item with an invalid type value
+              A CLI query command accepts a typed filter option
             when: |
-              The type is not one of the valid item types
+              The provided value does not match the filter's type constraint
             then: |
-              The command exits with non-zero status and stderr lists valid item types
+              The command exits with non-zero status and stderr describes the
+              invalid value, rather than silently returning empty results
           - id: ac-3
             given: |
-              User updates a spec item's type to an invalid value
+              A CLI command accepts a typed option
             when: |
-              The type is not one of the valid item types
+              The provided value satisfies the type constraint
             then: |
-              The command exits with non-zero status before any write occurs
+              The command executes normally
           - id: ac-4
             given: |
-              User updates a spec item's implementation status to an invalid value
+              A CLI command option has a default value
             when: |
-              The status is not one of the valid implementation statuses
+              The default is applied
             then: |
-              The command exits with non-zero status and stderr lists valid statuses
-          - id: ac-5
-            given: |
-              User updates a spec item's maturity to an invalid value
-            when: |
-              The maturity is not one of the valid maturity levels
-            then: |
-              The command exits with non-zero status and stderr lists valid maturity levels
-          - id: ac-6
-            given: |
-              User promotes an inbox item to a task with an invalid type value
-            when: |
-              The type is not one of the valid task types
-            then: |
-              The command exits with non-zero status and stderr lists valid task types
-          - id: ac-7
-            given: |
-              User creates or updates a plan with an invalid status value
-            when: |
-              The status is not one of the valid plan statuses
-            then: |
-              The command exits with non-zero status and stderr lists valid plan statuses
-          - id: ac-8
-            given: |
-              User adds a review check with an invalid status value
-            when: |
-              The status is not one of the valid review check statuses
-            then: |
-              The command exits with non-zero status and stderr lists valid check statuses
-          - id: ac-9
-            given: |
-              User creates a task with a valid type value
-            when: |
-              The type is one of the valid task types
-            then: |
-              The task is created normally
+              The default value itself satisfies the type constraint
 
-      # ─── CLI filter validation ─────────────────────────────────
+      # ─── API input type safety ─────────────────────────────────
 
-      - title: CLI Filter Enum Validation
-        slug: cli-filter-enum-validation
-        type: feature
-        parent: "@cli"
-        traits:
-          - trait-validated-enum-input
-          - trait-error-guidance
-          - trait-semantic-exit-codes
-        description: |
-          CLI list and search commands accept enum filter options for status,
-          type, disposition, and action. When a user provides an invalid or
-          mistyped filter value, the command should reject it with a clear
-          error rather than silently returning empty results.
-        acceptance_criteria:
-          - id: ac-1
-            given: |
-              User lists tasks with an invalid status filter
-            when: |
-              The status value is not one of the valid task statuses
-            then: |
-              The command exits with non-zero status and stderr lists valid statuses
-          - id: ac-2
-            given: |
-              User lists tasks with an invalid type filter
-            when: |
-              The type value is not one of the valid task types
-            then: |
-              The command exits with non-zero status and stderr lists valid task types
-          - id: ac-3
-            given: |
-              User lists spec items with an invalid type filter
-            when: |
-              The type value is not one of the valid item types
-            then: |
-              The command exits with non-zero status and stderr lists valid item types
-          - id: ac-4
-            given: |
-              User lists plans with an invalid status filter
-            when: |
-              The status value is not one of the valid plan statuses
-            then: |
-              The command exits with non-zero status and stderr lists valid plan statuses
-          - id: ac-5
-            given: |
-              User lists reviews with an invalid status or disposition filter
-            when: |
-              The value is not in the corresponding allowed set
-            then: |
-              The command exits with non-zero status and stderr lists valid values
-          - id: ac-6
-            given: |
-              User lists triage records with an invalid status or action filter
-            when: |
-              The value is not in the corresponding allowed set
-            then: |
-              The command exits with non-zero status and stderr lists valid values
-          - id: ac-7
-            given: |
-              User searches with an invalid type or status filter
-            when: |
-              The value is not in the corresponding allowed set
-            then: |
-              The command exits with non-zero status and stderr lists valid values
-          - id: ac-8
-            given: |
-              User lists tasks with a valid status filter
-            when: |
-              The status value is one of the valid task statuses
-            then: |
-              Matching tasks are listed normally
-
-      # ─── Daemon API validation ─────────────────────────────────
-
-      - title: Daemon API Enum Schema Tightening
-        slug: daemon-api-enum-validation
+      - title: API Input Type Safety
+        slug: api-input-type-safety
         type: feature
         parent: "@web-ui"
         traits:
-          - trait-validated-enum-input
+          - trait-type-safe-input
           - trait-api-endpoint
         description: |
-          Daemon API mutation endpoints must validate enum-constrained fields
-          at the framework schema level, not through manual post-hoc checks
-          in handlers. This ensures the web UI cannot submit invalid enum
-          values that bypass intended constraints. Affected enum fields include
-          review thread kind, review verdict decision, review check status,
-          review lifecycle target, review anchor type and side, triage action,
-          and task status on dispatch events.
+          All daemon API mutation endpoints must enforce type constraints on
+          request body fields at the framework schema level, not through manual
+          checks in handler code. When a request body contains a field with a
+          constrained type — an enum, a bounded number, a structured object
+          with required shape — the framework must reject invalid values before
+          the handler executes. This applies to HTTP endpoints and WebSocket
+          message handlers.
+
+          Framework-level validation is preferred over handler-level validation
+          because it is declarative, cannot be bypassed by handler code paths,
+          and produces consistent error responses.
         acceptance_criteria:
           - id: ac-1
             given: |
-              A client submits a review comment with an invalid kind value
+              An API mutation endpoint accepts a field with a type constraint
             when: |
-              The kind is not one of the valid review thread kinds
+              The request body contains a value that violates the constraint
             then: |
-              The API returns a validation error before the handler executes
+              The framework returns a validation error before the handler
+              executes, and no data is persisted
           - id: ac-2
             given: |
-              A client submits a review verdict with an invalid decision value
+              An API mutation endpoint accepts a field with a type constraint
             when: |
-              The decision is not one of the valid verdict decisions
+              The request body contains a valid value
             then: |
-              The API returns a validation error before the handler executes
+              The handler executes normally
           - id: ac-3
             given: |
-              A client submits a review check with an invalid status value
+              An API endpoint's type constraints are defined
             when: |
-              The status is not one of the valid check statuses
+              The constraints are compared to the canonical Zod schema
             then: |
-              The API returns a validation error before the handler executes
-          - id: ac-4
-            given: |
-              A client updates review lifecycle with an invalid target state
-            when: |
-              The target is not one of the valid lifecycle states
-            then: |
-              The API returns a validation error before the handler executes
-          - id: ac-5
-            given: |
-              A client submits a triage decision with an invalid action value
-            when: |
-              The action is not one of the valid triage actions
-            then: |
-              The API returns a validation error before the handler executes
-          - id: ac-6
-            given: |
-              A client submits a dispatch event with an invalid task status
-            when: |
-              The status value is not one of the valid task statuses
-            then: |
-              The API returns a validation error before the handler executes
-          - id: ac-7
-            given: |
-              A client submits a review comment with an invalid anchor type
-            when: |
-              The anchor type is not one of the valid anchor types
-            then: |
-              The API returns a validation error before the handler executes
-          - id: ac-8
-            given: |
-              A client submits a review verdict with a valid decision value
-            when: |
-              The decision is one of the valid verdict decisions
-            then: |
-              The verdict is persisted normally
+              The API schema and Zod schema agree on what constitutes valid
+              input for every constrained field
 
       # ─── Parser defense-in-depth ───────────────────────────────
 
-      - title: Parser Write-Path Schema Validation
-        slug: parser-write-validation
+      - title: Parser Write-Path Type Safety
+        slug: parser-write-type-safety
         type: requirement
         parent: "@cli"
         description: |
-          Entity creation functions must validate input against the canonical
-          schema before constructing and returning the entity. This is a
-          defense-in-depth layer that catches invalid data from programmatic
-          callers that bypass CLI or API boundary validation. Additionally,
-          plan document parsing must constrain spec type values to valid item
-          types rather than accepting arbitrary strings.
+          Entity creation and import functions must validate their inputs
+          against the canonical schema before constructing entities. This is
+          a defense-in-depth layer that catches invalid data from programmatic
+          callers that bypass CLI or API boundary validation — including batch
+          execution, plan derivation, and internal code paths that construct
+          entities directly.
         acceptance_criteria:
           - id: ac-1
             given: |
-              A task is created programmatically with an invalid type value
+              An entity creation function receives input with an invalid
+              field value
             when: |
-              The creation function validates the input
+              The function validates the input against the entity schema
             then: |
-              It throws an error identifying the invalid field and valid values
+              It throws an error identifying the invalid field and what
+              valid input looks like
           - id: ac-2
             given: |
-              A spec item is created programmatically with an invalid type value
+              An entity creation function receives valid input
             when: |
-              The creation function validates the input
-            then: |
-              It throws an error identifying the invalid field and valid values
-          - id: ac-3
-            given: |
-              A task is created programmatically with valid input
-            when: |
-              The creation function validates the input
+              The function validates the input
             then: |
               The entity is created normally
-          - id: ac-4
+          - id: ac-3
             given: |
-              A plan document contains a spec with an invalid type value
+              A structured document is imported (e.g., a plan document
+              containing entity definitions)
             when: |
-              The plan is imported
+              The document contains a field value that violates a type
+              constraint
             then: |
-              Import fails with an error identifying the invalid type and
-              listing valid item types
-          - id: ac-5
-            given: |
-              A plan document contains a spec with a valid type value
-            when: |
-              The plan is imported
-            then: |
-              The spec is accepted normally
+              Import fails with an error identifying the invalid field
+              and listing valid values
 
-      # ─── Read-side warnings ───────────────────────────────────
+      # ─── Read-side resilience ──────────────────────────────────
 
       - title: Read-Side Validation Warnings
         slug: read-side-validation-warnings
@@ -24385,42 +24242,33 @@ plans:
         description: |
           When persisted records fail schema validation during loading, the
           system must warn the user rather than silently dropping them. This
-          applies to tasks, spec items, and inbox items. Valid records must
-          still load normally — warnings are non-breaking. This is a safety
-          net for data that was corrupted before write-time validation was
-          in place.
+          is a safety net for data that was corrupted before write-time
+          validation was in place, or that was edited manually. Valid records
+          must still load normally — warnings are non-breaking and informational.
         acceptance_criteria:
           - id: ac-1
             given: |
-              A task file contains a task with an invalid field value
-            when: |
-              The task loader parses the file
-            then: |
-              A warning is emitted to stderr identifying the task and the
-              validation error, and all other valid tasks are still loaded
-          - id: ac-2
-            given: |
-              A spec file contains an item with an invalid field value
-            when: |
-              The item loader parses the file
-            then: |
-              A warning is emitted to stderr identifying the item and the
-              validation error, and all other valid items are still loaded
-          - id: ac-3
-            given: |
-              An inbox file contains an item with an invalid field value
-            when: |
-              The inbox loader parses the file
-            then: |
-              A warning is emitted to stderr identifying the item and the
-              validation error, and all other valid inbox items are still loaded
-          - id: ac-4
-            given: |
-              All records in a file are valid
+              A data file contains a record with an invalid field value
             when: |
               The loader parses the file
             then: |
-              No warnings are emitted and all records are returned normally
+              A warning is emitted to stderr identifying the record and the
+              validation error
+          - id: ac-2
+            given: |
+              A data file contains both valid and invalid records
+            when: |
+              The loader parses the file
+            then: |
+              Valid records are returned normally and warnings are emitted
+              only for the invalid records
+          - id: ac-3
+            given: |
+              All records in a data file are valid
+            when: |
+              The loader parses the file
+            then: |
+              No warnings are emitted
       ```
 
       ## Tasks
@@ -24428,78 +24276,74 @@ plans:
       derive_from_specs: false
 
       ```yaml
-      - title: Add CLI mutation enum validation
-        slug: task-cli-mutation-enum-validation
-        spec_ref: "@cli-mutation-enum-validation"
+      - title: Add CLI mutation input validation
+        slug: task-cli-mutation-input-validation
+        spec_ref: "@cli-input-type-safety"
         priority: 1
         tags:
           - cli
           - validation
         description: |
-          **What:** Add validateEnumOption() checks to 9 CLI mutation commands
-          that currently accept enum values without runtime validation: task add
-          --type, item add --type, item set --type/--status/--maturity, inbox
-          promote --type, plan add/set --status, review check add --status.
+          **What:** Add validateEnumOption() checks to all CLI mutation commands
+          that accept typed options without runtime validation. Audit identified
+          9 unvalidated enum options across mutation commands: task add --type,
+          item add --type, item set --type/--status/--maturity, inbox promote
+          --type, plan add/set --status, review check add --status.
 
-          **Why:** These commands persist invalid enum values to shadow branch
-          YAML files. On next read, safeParse drops those records silently.
-          This is the primary data corruption vector reported in GitHub #899.
-          Fixing mutations is highest priority because it prevents new corruption.
+          **Why:** These commands persist invalid values to shadow branch YAML
+          files. On next read, safeParse drops those records silently — the
+          primary data corruption vector reported in GitHub #899. Fixing
+          mutations is highest priority because it prevents new corruption.
 
-          **How:** Each fix follows the existing pattern at src/cli/commands/task.ts
-          line 1067 (task add --automation validation):
+          **How:** Each fix follows the existing validated pattern at
+          src/cli/commands/task.ts line 1067 (task add --automation):
           1. Import the Zod schema (e.g. TaskTypeSchema from ../../schema/common.js)
-          2. Call validateEnumOption(value, Schema.options, "field name") before the
-             value is used
+          2. Call validateEnumOption(value, Schema.options, "field name") before
+             the value is used
           3. On failure: call error() with the result message and process.exit()
           4. On success: use the validated value
 
           Specific locations:
-          - src/cli/commands/task.ts ~line 1147: replace `type: options.type` with
-            validated result value
-          - src/cli/commands/item.ts line 708: replace `options.type as ItemType`
-            with validateEnumOption result
-          - src/cli/commands/item.ts line 1089: replace `options.type as ItemType`
-            in item set handler
-          - src/cli/commands/item.ts: add --status and --maturity validation in
-            item set handler
-          - src/cli/commands/inbox.ts: add --type validation in inbox promote handler
-          - src/cli/commands/plan.ts: add --status validation in plan add and plan
-            set handlers
-          - src/cli/commands/review.ts: add --status validation in review check add
+          - src/cli/commands/task.ts ~line 1147: task add --type (TaskTypeSchema)
+          - src/cli/commands/item.ts line 708: item add --type (ItemTypeSchema)
+          - src/cli/commands/item.ts line 1089: item set --type (ItemTypeSchema)
+          - src/cli/commands/item.ts: item set --status (ImplementationStatusSchema),
+            --maturity (MaturitySchema)
+          - src/cli/commands/inbox.ts: inbox promote --type (TaskTypeSchema)
+          - src/cli/commands/plan.ts: plan add/set --status (PlanStatusSchema)
+          - src/cli/commands/review.ts: review check add --status (ReviewCheckStatusSchema)
 
-          Covers: @cli-mutation-enum-validation ac-1 through ac-9.
+          Covers: @cli-input-type-safety ac-1, ac-3.
 
-      - title: Add CLI filter enum validation
-        slug: task-cli-filter-enum-validation
-        spec_ref: "@cli-filter-enum-validation"
+      - title: Add CLI filter input validation
+        slug: task-cli-filter-input-validation
+        spec_ref: "@cli-input-type-safety"
         priority: 2
         tags:
           - cli
           - validation
           - dx
         depends_on:
-          - "@task-cli-mutation-enum-validation"
+          - "@task-cli-mutation-input-validation"
         description: |
-          **What:** Add validateEnumOption() checks to 14 CLI filter options
-          across 9 list/search commands that accept enum values without validation:
-          task list --status/--type, tasks ready --status/--type, item list --type,
+          **What:** Add validateEnumOption() checks to all CLI list/search
+          commands that accept typed filter options without validation. Audit
+          identified 14 unvalidated filter options across 9 commands: task list
+          --status/--type, tasks ready --status/--type, item list --type,
           plan list --status, review list --status/--disposition, triage list
           --status/--action, search --type/--status, schedule list --status,
           agent list --status.
 
-          **Why:** When a user mistypes a filter value (e.g., --status "pending_revew"),
-          the command silently returns empty results. The user thinks there are no
-          matching items when really the filter value was invalid. Early validation
-          with a clear error message saves debugging time and prevents user confusion.
+          **Why:** Typos in filter values (e.g., --status "pending_revew")
+          silently return empty results. Users think there are no matching items
+          when really the filter value was invalid. Early validation with a clear
+          error saves debugging time.
 
-          **How:** Same validateEnumOption pattern as mutation validation. Validation
-          happens early in each command's action handler, before loading data from
-          the shadow branch:
-          1. Parse the filter option value
-          2. Call validateEnumOption(value, Schema.options, "field name")
-          3. On failure: error() + process.exit()
-          4. On success: use validated value as the filter
+          **How:** Same validateEnumOption pattern as mutation validation.
+          Validation happens early in each command's action handler, before
+          loading data from the shadow branch. For schedule list --status
+          (enabled/disabled) and agent list --status (eligible/ineligible),
+          verify whether Zod schemas exist or create inline allowed-value arrays.
 
           Specific files and schemas:
           - src/cli/commands/task.ts: task list --status (TaskStatusSchema),
@@ -24512,42 +24356,35 @@ plans:
             --action (TriageActionSchema)
           - src/cli/commands/search.ts: search --type (ItemTypeSchema),
             --status (TaskStatusSchema)
-          - src/cli/commands/schedule.ts: schedule list --status (enabled/disabled)
-          - src/cli/commands/agent.ts: agent list --status (eligible/ineligible)
+          - src/cli/commands/schedule.ts: schedule list --status
+          - src/cli/commands/agent.ts: agent list --status
 
-          Covers: @cli-filter-enum-validation ac-1 through ac-8.
+          Covers: @cli-input-type-safety ac-2, ac-3.
 
-      - title: Tighten daemon API Elysia enum schemas
-        slug: task-daemon-api-enum-validation
-        spec_ref: "@daemon-api-enum-validation"
+      - title: Tighten daemon API input schemas
+        slug: task-daemon-api-input-validation
+        spec_ref: "@api-input-type-safety"
         priority: 2
         tags:
           - daemon
           - validation
           - web-ui
         description: |
-          **What:** Replace t.String() with t.Union([t.Literal(...)]) in Elysia
-          body schemas for 8 daemon API mutation endpoints that accept enum fields:
-          5 review endpoints, 2 triage endpoints, 1 agent dispatch endpoint.
+          **What:** Replace loose t.String() with strict t.Union([t.Literal(...)])
+          in Elysia body schemas for all daemon API mutation endpoints that accept
+          typed fields. Audit identified 8 endpoints with loose enum fields across
+          reviews (5), triage (2), and agent dispatch (1) routes.
 
           **Why:** The web UI posts to these endpoints. Loose t.String() schemas
-          mean the UI can submit arbitrary string values. Although some handlers
-          do manual post-hoc validation, this is inconsistent across endpoints
-          and creates a window where invalid data could be processed before the
-          handler's check runs. Framework-level Elysia validation is more reliable
-          — it rejects the request before the handler executes.
+          mean the UI can submit arbitrary values. Some handlers do manual post-hoc
+          validation, but this is inconsistent and the handler executes before
+          validation. Framework-level Elysia validation rejects requests before
+          the handler runs.
 
-          **How:** For each endpoint, replace the loose Elysia type with a strict
-          union derived from the Zod schema. The reference pattern exists at
-          packages/daemon/src/routes/meta.ts (PATCH /api/meta/agents/:id):
-
-          ```
-          // Current (loose):
-          kind: t.Optional(t.String())
-
-          // Fixed (strict, derived from Zod schema):
-          kind: t.Optional(t.Union(ReviewThreadKindSchema.options.map(v => t.Literal(v))))
-          ```
+          **How:** For each endpoint, replace loose Elysia types with strict unions
+          derived from Zod schemas. Reference pattern exists at
+          packages/daemon/src/routes/meta.ts (PATCH /api/meta/agents/:id) which
+          uses Schema.options.map(v => t.Literal(v)).
 
           Specific endpoints:
           - packages/daemon/src/routes/reviews.ts:
@@ -24561,52 +24398,46 @@ plans:
           - packages/daemon/src/routes/agent-dispatch.ts:
             POST /events: from_status, to_status
 
-          Keep existing manual handler validation as defense-in-depth — do not
-          remove it.
+          Keep existing manual handler validation as defense-in-depth.
 
-          Covers: @daemon-api-enum-validation ac-1 through ac-8.
+          Covers: @api-input-type-safety ac-1, ac-2, ac-3.
 
       - title: Add parser write-path schema validation
         slug: task-parser-write-validation
-        spec_ref: "@parser-write-validation"
+        spec_ref: "@parser-write-type-safety"
         priority: 2
         tags:
           - parser
           - validation
         depends_on:
-          - "@task-cli-mutation-enum-validation"
+          - "@task-cli-mutation-input-validation"
         description: |
           **What:** Add schema validation to createTask() and createSpecItem()
           in src/parser/yaml.ts, and tighten PlanSpecSchema.type from
           z.string().optional() to ItemTypeSchema.optional() in
           src/parser/plan-document.ts.
 
-          **Why:** These are defense-in-depth measures. The primary validation
-          happens at CLI and API boundaries, but programmatic callers — kspec
-          batch execution (src/cli/batch-exec.ts), plan derive, and future
-          code paths — can bypass boundary validation using TypeScript "as Type"
-          casts. The parser layer is the last line of defense before invalid
-          data reaches disk. The PlanSpecSchema gap means plan documents can
-          contain specs with arbitrary type values that are accepted during
-          import.
+          **Why:** Defense-in-depth. Primary validation happens at CLI and API
+          boundaries, but programmatic callers — batch execution, plan derive,
+          and future code paths — can bypass boundary validation using TypeScript
+          "as Type" casts. The parser layer is the last defense before invalid
+          data reaches disk.
 
           **How:**
           1. In createTask() (~line 1300 of src/parser/yaml.ts):
              - Add TaskInputSchema.safeParse(input) at function entry
              - On failure: throw new Error with formatted Zod error issues
-             - On success: use validated data for task construction
              - Import TaskInputSchema from ../schema/task.js
 
           2. In createSpecItem() (~line 1937 of src/parser/yaml.ts):
              - Add SpecItemInputSchema.safeParse(input) at function entry
              - On failure: throw new Error with formatted Zod error issues
-             - Import SpecItemInputSchema from the schema module
 
           3. In src/parser/plan-document.ts line 22:
              - Change `type: z.string().optional()` to `type: ItemTypeSchema.optional()`
              - Import ItemTypeSchema from ../../schema/common.js
 
-          Covers: @parser-write-validation ac-1 through ac-5.
+          Covers: @parser-write-type-safety ac-1, ac-2, ac-3.
 
       - title: Add read-side validation warnings
         slug: task-read-side-validation-warnings
@@ -24618,47 +24449,40 @@ plans:
           - validation
         description: |
           **What:** When safeParse fails during YAML file loading, emit a stderr
-          warning identifying the dropped record and the specific validation error,
-          instead of silently skipping it. Affects three loader functions in
-          src/parser/yaml.ts.
+          warning identifying the dropped record and the validation error, instead
+          of silently skipping it. Affects loader functions for tasks, spec items,
+          inbox items, triage records, and plan records in src/parser/yaml.ts.
 
-          **Why:** Silent data loss is the worst user-visible symptom of GitHub
-          issue #899. A task disappearing with no explanation forces users to
-          manually inspect YAML files. Even a simple warning on stderr immediately
-          tells users what happened: which record was dropped, from which file,
-          and exactly which field failed validation.
+          **Why:** Silent data loss is the root symptom of GitHub #899. A record
+          disappearing with no explanation forces users to manually inspect YAML.
+          A warning on stderr immediately tells users what happened, which record
+          was dropped, and which field failed — enough to fix it.
 
           **How:**
           1. Create a shared helper in src/parser/yaml.ts:
              ```
              function warnSkippedRecord(entityType: string, id: string,
-               source: string, error: z.ZodError): void {
-               const issues = error.issues.map(i =>
-                 `${i.path.join('.')}: ${i.message}`).join('; ');
-               console.error(`Warning: Skipping invalid ${entityType} "${id}"
-                 in ${source}: ${issues}`);
-             }
+               source: string, error: z.ZodError): void
              ```
 
-          2. In loadTasksFromFile() (~line 742): add else branch to safeParse
-             that calls warnSkippedRecord with the task's _ulid or title
-
-          3. In extractItemsFromRaw() (~line 1626): same pattern for spec items
-
-          4. In parseInboxItemsFromRaw() (~lines 2286 and 2299): same pattern
-             for inbox items, using text substring as fallback identifier
+          2. Add else branches to safeParse checks in each loader:
+             - loadTasksFromFile() ~line 742
+             - extractItemsFromRaw() ~line 1626
+             - parseInboxItemsFromRaw() ~lines 2286/2299
+             - Triage record loader ~line 2754
+             - Plan record loader (verify location)
 
           Valid records continue to load normally — warnings are non-breaking.
 
-          Covers: @read-side-validation-warnings ac-1 through ac-4.
+          Covers: @read-side-validation-warnings ac-1, ac-2, ac-3.
       ```
 
       ## Implementation Notes
 
       This plan addresses GitHub issue #899 and a systemic audit that found 25 of 27
-      CLI enum options and 8 daemon API endpoints lack proper enum validation.
+      CLI enum options and 8 daemon API endpoints lack proper input type validation.
 
-      Root cause: Zod schemas define valid enums but are only enforced on READ
+      Root cause: Zod schemas define valid types but are only enforced on READ
       (via safeParse which silently drops invalid records). Write paths use
       TypeScript "as Type" casts with zero runtime validation.
 
@@ -24696,3 +24520,8 @@ plans:
           Implementation specifics only in tasks.
         author: "@claude"
         created_at: 2026-03-20T14:38:52.572Z
+      - _ulid: 01KM5X4019RXHXPJAQZFMJDS8B
+        content: Generalized specs to behavioral contracts — not enum-specific, covers all typed inputs
+          across all surfaces. Specs describe what, not how.
+        author: "@claude"
+        created_at: 2026-03-20T15:16:45.225Z
