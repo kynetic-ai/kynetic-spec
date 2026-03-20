@@ -31833,6 +31833,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T21:28:49.389Z
+      - _ulid: 01KM6JKCHHN4KYVFZFHRJEKST9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM6JKC9BBZGF7H1R8B6CYJ31
+        timestamp: 2026-03-20T21:32:09.649Z
     examined_commit: 8d5b720a96036aec20d843268d56bfef5cbc1e8f
     external_links: []
     lifecycle_state: open
@@ -31842,8 +31849,38 @@ reviews:
       content_hash: ""
       ref: "@01KM6BGYMGZ518JENMCRACJPX3"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM6JKC9BBZGF7H1R8B6CYJ31
+        entries:
+          - _ulid: 01KM6JKC9C34E3A0DQ336RQ25S
+            author: Jacob Chapel
+            body: >-
+              Evidence log
+
+
+              Files read: packages/web-ui/src/lib/stores/mode.svelte.ts,
+              packages/daemon/src/server.ts, packages/web-ui/src/routes/automation/+page.svelte,
+              tests/daemon-path-validation-middleware.test.ts,
+              packages/web-ui/tests/e2e/automation.spec.ts,
+              packages/web-ui/tests/e2e/static-mode.spec.ts,
+              packages/web-ui/tests/e2e/sessions.spec.ts
+
+
+              Commands run: git diff --stat/base diff, kspec task get, kspec review for-task/get,
+              kspec validate, npm test, rg automation/health searches
+
+
+              Claims verified: /api/health is the live daemon health endpoint and the mode store now
+              probes it; /automation is part of the SPA fallback list and there are no nested
+              automation routes in this snapshot requiring an additional wildcard; static-mode query
+              guards remain in place for automation queries.
+
+
+              Categories searched: correctness, regression risk, route coverage, static-mode
+              behavior, test coverage.
+            created_at: 2026-03-20T21:32:09.388Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T21:28:33.807Z
-    updated_at: 2026-03-20T21:28:49.060Z
+    updated_at: 2026-03-20T21:32:09.388Z
     notes: []
