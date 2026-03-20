@@ -12497,18 +12497,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/implement-cancelled-task-exclusion-in-plan-summary-metrics/01km46gr
-    canonical_branch_head: 362db738bf59d0946d8c77d89942f03b20b7acdc
+    canonical_branch_head: f2266e8aba0af3d0f269a2ac8b391fb8dc517c3e
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T01:46:11.459Z
+      updated_at: 2026-03-20T01:46:34.750Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T01:46:12.567Z
+      updated_at: 2026-03-20T01:46:34.750Z
     integration:
       status: pending
       detail: null
@@ -12516,7 +12516,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: f90477c9945db0317d11955393f6089b4fed466a
-      updated_at: 2026-03-20T01:46:11.459Z
+      updated_at: 2026-03-20T01:46:34.750Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM46GRK3CYYA4V37D8Y32G4K"
@@ -12524,9 +12524,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T01:46:12.567Z
-      last_reconciled_at: 2026-03-20T01:46:12.567Z
+      last_reconciled_at: 2026-03-20T01:46:34.750Z
       created_at: 2026-03-19T23:26:19.487Z
-      updated_at: 2026-03-20T01:46:12.567Z
+      updated_at: 2026-03-20T01:46:34.750Z
     workspace_id: dispatch-workspace-01KM46GRK3CYYA4V37D8Y32G4K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
