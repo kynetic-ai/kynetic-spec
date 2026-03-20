@@ -24015,6 +24015,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T01:47:29.386Z
+      - _ulid: 01KM4F5K7EAC174BY5S63PXKV3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM4F5JY8FP6MFDVCV93H4WVV
+        timestamp: 2026-03-20T01:53:43.150Z
     examined_commit: 47883f95b96085dff4a90d0147498b14a5f8da6f
     external_links: []
     lifecycle_state: open
@@ -24024,8 +24031,335 @@ reviews:
       content_hash: ""
       ref: "@01KM26DB8RCM6D2T1SYZGZJR9X"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM4F5JY8FP6MFDVCV93H4WVV
+        anchor:
+          type: code
+          commit: 47883f95b96085dff4a90d0147498b14a5f8da6f
+          line_end: 228
+          line_start: 200
+          path: src/cli/index.ts
+          side: head
+        entries:
+          - _ulid: 01KM4F5JY8GKKT2GXZAV8RBTF8
+            author: Jacob Chapel
+            body: >-
+              This task branch is not isolated to @01KM26DB8RCM6D2T1SYZGZJR9X. commit
+              47883f95b96085dff4a90d0147498b14a5f8da6f
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Mar 18 22:52:41 2026 -0700
+
+                  fix(dispatch): surface foreign workspace ownership early
+                  Keep the registry single-owner per task and fail provisioning with
+                  clear guidance when another checkout already owns the open workspace.
+                  Task: @01KM26DB8RCM6D2T1SYZGZJR9X
+                  Spec: @dispatch-workspace-configuration
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit aca2bc39c73c529401b3fa23d651963cb4b0c86f
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Mar 18 22:08:19 2026 -0700
+
+                  fix(dispatch): ignore foreign checkout worktrees
+                  Scope dispatch workspace records and git worktree discovery to the current checkout's resolved worktree root. Surface actionable guidance when the canonical branch is already attached from a sibling checkout and avoid deleting foreign git worktrees during reconciliation.
+                  Task: @01KM26DB8RCM6D2T1SYZGZJR9X
+                  Spec: @dispatch-workspace-configuration
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 35dabeaac850546d1b6e09fa28b540c69a2c0216
+
+              Merge: 67dcdb7a9 aa68e5be7
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 18:31:43 2026 -0700
+
+                  Merge branch 'dispatch/task/fix-dispatch-checkout-dependency-drift-after-new-npm-deps/01km4bk8' into dev
+
+              commit aa68e5be7cc0c4ca8dc88a9ca11048740c46ce94
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 18:23:51 2026 -0700
+
+                  fix(dispatch): avoid synthetic bootstrap rerun after repair
+                  Keep transient dependency-repair invalidation out of the persisted bootstrap config hash so healthy follow-up runs reuse prior bootstrap success.
+                  Task: @01KM4BK8
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 80cdd01f190bf85879672f2974392709437e5785
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 18:01:57 2026 -0700
+
+                  fix(dispatch): repair dependency drift detection
+                  Add manifest-aware dependency checks for bootstrap and test flows, and teach dispatch workspace bootstrap to repair missing worktree installs with an implicit npm ci before prompt delivery.
+                  Task: @01KM4BK8
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 67dcdb7a9ca818e09418da20a3eea4341b1b549d
+
+              Merge: 24a6fe24d 86035071d
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 17:45:34 2026 -0700
+
+                  merge: cancelled-task dependency cleanup
+
+              commit 24a6fe24d23950a6a0e510f6d21161ae03f832ae
+
+              Merge: 674cabcd8 5ac40253e
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 17:45:34 2026 -0700
+
+                  merge: shadow commit call-site fixes
+
+              commit 86035071daccf934787a0b9f1fe7a029e343d28a
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 16:16:25 2026 -0700
+
+                  fix: buffer multi-file task cancellation writes
+                  Stage cross-file task mutations through the batch write buffer before flush so cancellation cleanup is not persisted file-by-file. Add a regression test that splits upstream and downstream tasks across different shadow task files.
+                  Task: @01KM43VYQXEFJMMYK2184MR7FH
+                  Spec: @cancelled-task-dependency-cleanup
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit b6343e3821ceaefe65520742187c03cfe0ee379f
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 15:58:12 2026 -0700
+
+                  fix: clean up dependencies when cancelling tasks
+                  Remove cancelled task refs from downstream depends_on arrays and record cleanup notes as part of the same cancellation mutation.
+                  Task: @01KM43VYQXEFJMMYK2184MR7FH
+                  Spec: @cancelled-task-dependency-cleanup
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 674cabcd8646e873f128fa67b9d2db44ae74797a
+
+              Merge: f90477c99 fadb999f7
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 16:32:45 2026 -0700
+
+                  Merge branch 'dispatch/task/task-route-dispatch-sync-through-targeting-path/01km3zme' into HEAD
+
+              commit fadb999f740f18d9877355ad928dc71183a41c15
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 16:25:24 2026 -0700
+
+                  fix(dispatch): restore target sync timeouts
+                  Preserve the prior fetch and ff-only merge timeout semantics while keeping
+                  sync operations on the isolated integration-target helper.
+                  Task: @01KM3ZMEMA53X21SYPSRWRF6E8
+                  Spec: @dispatch-remote-branch-sync
+
+              commit 4f77d10bfc9991aadf35dd05a1c5b67a8804b477
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 16:06:54 2026 -0700
+
+                  fix(dispatch): route target sync through isolated targeting path
+                  Route integration-target fetch, merge, divergence reads, and push operations through the shared dispatch targeting helper so sync and publish paths enforce the same shared-checkout mutation surface.
+                  Task: @01KM3ZMEMA53X21SYPSRWRF6E8
+                  Spec: @dispatch-remote-branch-sync
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit f90477c9945db0317d11955393f6089b4fed466a
+
+              Merge: 146e27099 6a48f8bc1
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 15:50:55 2026 -0700
+
+                  Merge branch 'dispatch/task/task-isolate-dispatch-git-targeting/01km3zmd' into dev
+
+              commit 6a48f8bc1ecd8493d2083089c52904db25f9d6cf
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 15:44:50 2026 -0700
+
+                  fix(dispatch): stabilize invocation timing tests
+                  Tighten dispatch-engine async assertions around invocation delivery and ensure engine shutdown runs in finally blocks so late reviewer/worker invocations cannot bleed into later tests.
+                  Task: @01KM3ZMDYZB4RYWVX78Z8YVTE6
+                  Spec: @dispatch-integration-mutation-scope
+
+              commit 71f83468591d8b2c6a5a3e488dd2f31651bf7222
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 15:16:11 2026 -0700
+
+                  fix(dispatch): isolate integration-branch mutation scope
+                  Route dispatch sync targeting through a shared workspace-owned mutation scope, sanitize inherited git targeting environment, and refuse ambiguous shared-checkout mutations with actionable guidance.
+                  Task: @01KM3ZMDYZB4RYWVX78Z8YVTE6
+                  Spec: @dispatch-integration-mutation-scope
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 146e2709913aa6c8f2e597da2e98c9d224b4255d
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 00:38:28 2026 -0700
+
+                  fix: remove live ralph command surface
+                  Task: @01KJP279FYHBM6995ZVMYGM7M2
+                  Spec: @ralph-replacement
+
+              commit cfc92a11d3864bb2319d61bac70717b55e629a20
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 00:14:50 2026 -0700
+
+                  fix: remove stale ralph references
+                  Clean up remaining non-functional ralph wording in docs and comments while keeping intentional compatibility references intact.
+                  Task: @01KJP279FYHBM6995ZVMYGM7M2
+                  Spec: @ralph-replacement
+
+              commit 7218464d1ff09a1739f912ce4bfc95d3635672f0
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Mar 18 23:52:06 2026 -0700
+
+                  fix: restore legacy agent config alias
+                  Restore backward compatibility for legacy ralph config blocks while keeping the runtime config shape on agent, and finish the leftover dispatch-session wording cleanup.
+                  Task: @01KJP279FYHBM6995ZVMYGM7M2
+                  Spec: @ralph-replacement
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 3f27bb40d4f3ad91147865a07624c529b5e66547
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Mar 18 23:22:00 2026 -0700
+
+                  fix: finish ralph cleanup rename
+                  Rebased the task onto current dev, completed the remaining config/test rename work, and verified the branch with targeted reruns plus a full passing npm test run.
+                  Task: @01KJP279FYHBM6995ZVMYGM7M2
+                  Plan: @plan-reactive-agent-runtime
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit ff8a46e14b4d4bd6c42718e2ddbede760e08f66c
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Tue Mar 17 16:19:00 2026 -0700
+
+                  refactor: purge remaining ralph traces
+                  Complete the ralph-to-agent cleanup so configuration, template naming, and legacy session comments match the dispatch runtime terminology.
+                  Task: @task-ralph-migration-guide
+                  Plan: @plan-reactive-agent-runtime
+
+              commit 8fc594f7559d758601ec378b0968e0a26deaec07
+
+              Merge: 53be2094b 74fd5f54a
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 00:30:38 2026 -0700
+
+                  Merge branch 'dispatch/task/fix-link-commands-that-bypass-generatecommitmessage/01kkx6qr' into dev
+
+              commit 74fd5f54aaf39ed84821a89b9ea659e02e7b3890
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 00:25:19 2026 -0700
+
+                  fix: route link shadow commits through formatter
+                  Use structured link-add/link-remove shadow commit operations so link commands no longer bypass generateCommitMessage. Add formatter and CLI shadow-commit regression coverage.
+                  Task: @01KKX6QR02Z2YKJBPBXD4RCRKT
+                  Spec: @trait-shadow-commit
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 5ac40253e2bb3528cd818e098ca4a5639062d7fc
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Thu Mar 19 00:02:17 2026 -0700
+
+                  fix: pass entity refs to shadow commit call sites
+                  Pass created inbox/run ULIDs into shadow auto-commit sites and keep batch-only operations detail-only so commit subjects do not invent non-entity refs.
+                  Task: @01KKX6QPC0374PT4W93CMA7EMX
+                  Spec: @trait-shadow-commit
+
+              commit 53be2094bc46d5c352d60c095941b9033e61d079
+
+              Merge: b90454547 b15aecdd0
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Mar 18 23:46:40 2026 -0700
+
+                  Merge branch 'dispatch/task/add-explicit-generatecommitmessage-cases-for-all-shadow-operations/01kkx6qm' into dev
+
+              commit b15aecdd0776108089c14b6486d969e2bce3abe6
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Mar 18 23:40:57 2026 -0700
+
+                  fix: cover shadow commit message operations
+                  Add explicit generateCommitMessage handling for all current shadow write operations and align regression coverage with the new colon-separated commit subject format.
+                  Task: @01KKX6QMN6CN74M8NFSBM73X1Q
+                  Spec: @trait-shadow-commit
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit b90454547ad1951c1f8cdd0677196add75195667
+
+              Merge: 9b61b4de2 f300f9293
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Mar 18 22:40:54 2026 -0700
+
+                  Merge branch 'dispatch/task/dispatch-engine-cli-calls-must-not-crash-the-engine-on-failure/01km26c8' into HEAD
+
+              commit f300f92933f25b97eb4bc9f54bfc3ec2bef1166b
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Mar 18 22:35:00 2026 -0700
+
+                  fix: stabilize dispatch recovery test coverage
+                  Harden dispatch-related CLI and engine tests for dispatch-run environments so the task branch can clear the required full-suite gate after the recovery crash fix.
+                  Task: @01KM26C8WX6CMY7S9XD3RJZ003
+                  Spec: @agent-dispatch-engine
+                  Co-Authored-By: OpenAI Codex <codex@openai.com>
+
+              commit 5af01ff7d3058bc6753ef054141f1b9b27390392
+
+              Author: Jacob Chapel <jacob.chapel@gmail.com>
+
+              Date:   Wed Mar 18 21:53:43 2026 -0700
+
+                  fix: prevent dispatch recovery CLI crashes
+                  Keep workspace-provisioning recovery best-effort so failed task note/block CLI calls do not escape the dispatch engine drain/bootstrap path.
+                  Task: @01KM26C8WX6CMY7S9XD3RJZ003
+                  Spec: @agent-dispatch-engine
+                  Co-Authored-By: OpenAI Codex <codex@openai.com> shows unrelated commits from other tasks, including the ralph removal stack, shadow-commit fixes, task-cancel cleanup, integration-target mutation-scope changes, and dependency-drift repair. Merging this review snapshot into dev would ship those unrelated tasks with it, so the task cannot advance until the branch is restacked or narrowed to only the workspace-collision work.
+            created_at: 2026-03-20T01:53:42.856Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T01:47:09.977Z
-    updated_at: 2026-03-20T01:47:28.967Z
+    updated_at: 2026-03-20T01:53:42.856Z
     notes: []
