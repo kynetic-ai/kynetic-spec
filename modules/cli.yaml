@@ -1368,7 +1368,7 @@ features:
           Clears blocked_by array.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         implements:
           - "@task-commands"
         traits:
