@@ -22948,6 +22948,13 @@ reviews:
           status: fail
           name: short-ULID plan_ref linkage reproduction
         timestamp: 2026-03-20T00:02:42.003Z
+      - _ulid: 01KM48TAWAGEF45GEWVF4GE605
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM48TANDRJXPCS08SAS26YYW
+        timestamp: 2026-03-20T00:02:42.698Z
     examined_commit: c7627d0da34617524b4cedc03341c6229b69a164
     external_links: []
     lifecycle_state: open
@@ -22957,8 +22964,28 @@ reviews:
       content_hash: ""
       ref: "@01KM46GRK3CYYA4V37D8Y32G4K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM48TANDRJXPCS08SAS26YYW
+        anchor:
+          type: code
+          commit: c7627d0da34617524b4cedc03341c6229b69a164
+          line_end: 46
+          line_start: 34
+          path: src/lib/plan-summary.ts
+          side: head
+        entries:
+          - _ulid: 01KM48TANDDBDXSQH01CYZ5232
+            author: Jacob Chapel
+            body: "The shared matcher now treats plan_ref as an exact match against only the full plan ULID or
+              slug, which drops tasks linked with a short ULID ref.  explicitly accepts short ULIDs,
+              and the previous export implementation matched them via ULID-prefix comparison. Repro:
+              create a plan, capture its short ULID, create a task with , then run  or  and the new
+              helper reports task_count 0 / zero progress for that plan. Because this helper feeds
+              CLI, daemon, and export surfaces, the regression breaks the task's shared linkage
+              semantics across interfaces."
+            created_at: 2026-03-20T00:02:42.477Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T00:01:15.182Z
-    updated_at: 2026-03-20T00:02:41.778Z
+    updated_at: 2026-03-20T00:02:42.477Z
     notes: []
