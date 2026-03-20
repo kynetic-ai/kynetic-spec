@@ -25473,6 +25473,18 @@ reviews:
         runner: reviewer
         created_at: 2026-03-20T04:58:03.031Z
         completed_at: 2026-03-20T04:58:03.031Z
+      - status: skipped
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repo-wide baseline validation failures remain in .kspec/modules/meta.yaml unresolved
+          references plus unrelated completeness warnings; changed files did not introduce new
+          task-specific validation issues.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T04:58:05.720Z
+        completed_at: 2026-03-20T04:58:05.720Z
     events:
       - _ulid: 01KM4SGGRNF50VTWTMWDBTQX5W
         actor: Jacob Chapel
@@ -25494,6 +25506,13 @@ reviews:
           status: pass
           name: review evidence
         timestamp: 2026-03-20T04:58:03.411Z
+      - _ulid: 01KM4SQ6WPKSVM5PC0MAPM4F3T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: skipped
+          name: kspec validate
+        timestamp: 2026-03-20T04:58:06.102Z
     examined_commit: 783b22ef544bed092175027cb2c631b044760c73
     external_links: []
     lifecycle_state: open
@@ -25506,5 +25525,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T04:54:26.837Z
-    updated_at: 2026-03-20T04:58:03.031Z
+    updated_at: 2026-03-20T04:58:05.720Z
     notes: []
