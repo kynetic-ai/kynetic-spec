@@ -108786,13 +108786,8 @@
   spec_ref: "@dispatch-workspace-configuration"
   meta_ref: null
   plan_ref: null
-  status: blocked
-  blocked_by:
-    - Review found no task-local code regressions, but merge is blocked by repo-level test
-      instability outside this diff. Full npm test fails on unrelated
-      action-model/agent-dispatch-engine failures, and review-cli failure depends on dispatch-only
-      KSPEC_DISPATCH_CANONICAL_HEAD environment leakage. Focused workspace suites pass; unblock
-      after the shared test gate is green.
+  status: needs_work
+  blocked_by: []
   depends_on: []
   context: []
   priority: 2
@@ -108809,7 +108804,7 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: 01KM29G16XKP77YE7P3NWEZY6R
+  session_id: null
   created_at: 2026-03-19T04:42:11.096Z
   started_at: 2026-03-19T05:36:44.955Z
   submitted_at: 2026-03-19T05:53:31.934Z
@@ -108851,7 +108846,7 @@
       author: Jacob Chapel
       created_at: 2026-03-20T00:11:03.886Z
   todos: []
-  automation: manual_only
+  automation: eligible
 - _ulid: 01KM289GY9589XH063SSFMBJFQ
   slugs: []
   title: Implement KSPEC_NO_DAEMON to suppress incidental daemon communication
