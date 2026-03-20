@@ -14066,18 +14066,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-implement-kspec-no-daemon/01km289g
-    canonical_branch_head: afb99935cbc5b9605c1f0538421a39bda2884823
+    canonical_branch_head: e9c0e7d53b1db9ecdc659db4b0297a5c04e98893
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T14:09:35.239Z
+      updated_at: 2026-03-20T14:09:41.597Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T14:09:35.239Z
+      updated_at: 2026-03-20T14:09:41.597Z
     integration:
       status: pending
       detail: null
@@ -14085,24 +14085,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: afb99935cbc5b9605c1f0538421a39bda2884823
-      updated_at: 2026-03-20T14:09:35.239Z
-    lifecycle_state: ready
+      updated_at: 2026-03-20T14:09:41.597Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM289GY9589XH063SSFMBJFQ"
     task_slug: task-implement-kspec-no-daemon
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T13:58:46.450Z
-      last_reconciled_at: 2026-03-20T14:09:35.239Z
+      last_reconciled_at: 2026-03-20T14:09:41.597Z
       created_at: 2026-03-20T13:58:41.354Z
-      updated_at: 2026-03-20T14:09:35.239Z
+      updated_at: 2026-03-20T14:09:41.597Z
     workspace_id: dispatch-workspace-01KM289GY9589XH063SSFMBJFQ
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: e9c0e7d53b1db9ecdc659db4b0297a5c04e98893
+        last_seen_at: 2026-03-20T14:09:41.597Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-kspec-no-daemon-01km289g-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-implement-kspec-no-daemon/01km289g
-        head: afb99935cbc5b9605c1f0538421a39bda2884823
-        last_seen_at: 2026-03-20T13:58:41.354Z
+        head: e9c0e7d53b1db9ecdc659db4b0297a5c04e98893
+        last_seen_at: 2026-03-20T14:09:41.597Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-kspec-no-daemon-01km289g
