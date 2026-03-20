@@ -26826,7 +26826,24 @@ reviews:
     slugs: []
     title: Review ignore transient plans directory during plan sessions
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: .gitignore, src/parser/shadow.ts, src/cli/commands/setup.ts,
+          src/cli/commands/session/checkpoint.ts, tests/cli/session-checkpoint.test.ts,
+          tests/enhanced-setup.test.ts, tests/init-setup-sessions-dir.test.ts. Commands run: git
+          diff/stat/log, kspec task get, kspec validate, targeted npm test for changed suites, full
+          npm test. Claims verified: init/setup now backfill plans/ into root .gitignore and
+          checkpoint stays clean for transient plans files because git status ignores them once the
+          entry exists. Categories searched: correctness, regression risk, edge cases, test quality,
+          integration. Full suite result: 289 files passed, 6652 tests passed, 3 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T06:19:50.998Z
+        completed_at: 2026-03-20T06:19:50.998Z
     events:
       - _ulid: 01KM4Y3NETVBFQTYGT8T3KX64F
         actor: Jacob Chapel
@@ -26841,6 +26858,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T06:15:10.097Z
+      - _ulid: 01KM4YCX1KG447H1HKANK0NZZB
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T06:19:51.219Z
     examined_commit: 7846cea81ec4fe369c73b3afe876b13407fbb609
     external_links: []
     lifecycle_state: open
@@ -26853,5 +26877,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T06:14:48.538Z
-    updated_at: 2026-03-20T06:15:09.814Z
+    updated_at: 2026-03-20T06:19:50.998Z
     notes: []
