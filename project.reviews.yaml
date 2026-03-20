@@ -29330,6 +29330,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T16:25:36.279Z
+      - _ulid: 01KM61230GGNEVN8733ZZRB42G
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM6122S62YYHVDAVKYKYEG0J
+        timestamp: 2026-03-20T16:25:37.040Z
     examined_commit: cef00da87ceba5a7f6cc96733b0f9de12a6f6f29
     external_links: []
     lifecycle_state: open
@@ -29359,7 +29366,25 @@ reviews:
               schema-derived validation without bypassing the review API’s invalid-input contract.
             created_at: 2026-03-20T16:25:35.264Z
         kind: blocker
+      - _ulid: 01KM6122S62YYHVDAVKYKYEG0J
+        entries:
+          - _ulid: 01KM6122S6CB7AY6Z4M4PSZPHF
+            author: Jacob Chapel
+            body: "Review evidence log: files read included the changed schema/route/CLI files and targeted
+              tests, especially packages/daemon/src/routes/reviews.ts,
+              packages/daemon/src/routes/agent-dispatch.ts, src/schema/task.ts,
+              src/schema/event-payloads.ts, src/schema/meta.ts, src/agent-runtime/dispatch.ts, and
+              the new/updated tests covering schema-derived type definitions and review APIs.
+              Commands run: kspec task get, kspec item get @schema-derived-type-definitions, kspec
+              item get @trait-type-safe-input, rg for AC annotations/usages, git diff against dev
+              base, kspec validate, and npm test. Claims verified: the new enums are derived from
+              canonical schemas in the touched surfaces; npm test passes; invalid enum inputs on
+              review verdict/check/lifecycle now return 422 via framework validation, which exposes
+              the comment-route contract regression. Categories searched: correctness, API boundary
+              validation, spec alignment, test quality, and integration with automation filtering."
+            created_at: 2026-03-20T16:25:36.806Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T16:21:45.833Z
-    updated_at: 2026-03-20T16:25:36.024Z
+    updated_at: 2026-03-20T16:25:36.806Z
     notes: []
