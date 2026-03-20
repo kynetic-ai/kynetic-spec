@@ -79679,18 +79679,9 @@
     - repair
     - health
   vcs_refs: []
-  submission_linkage:
-    review_url: null
-    branch: dev
-    captured_at: 2026-03-20T00:09:53.267Z
-    commit: 674cabcd8646e873f128fa67b9d2db44ae74797a
-    remote: origin
-    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
-    upstream_ref: refs/heads/dev
   session_id: 01KM48JCC9943NQQ6AFRHNWSZ6
   created_at: 2026-03-19T21:22:13.420Z
   started_at: 2026-03-19T23:58:53.538Z
-  submitted_at: 2026-03-20T00:09:53.689Z
   notes:
     - _ulid: 01KM48R7NBFTMH7XV88X9XAFS6
       content: "Implementing shared-checkout drift repair by probing branch/index/worktree coherence in the integration-target mutation path. Plan: detect clean stale branch transitions by comparing the current index tree to recent reflog commits for the integration branch, auto-repair with a reset to current HEAD when the checkout is otherwise clean, and degrade with branch-specific guidance whenever repair would overwrite local tracked changes."
@@ -79704,6 +79695,15 @@
       created_at: 2026-03-20T00:09:31.742Z
   todos: []
   automation: eligible
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-20T00:09:53.267Z
+    commit: 674cabcd8646e873f128fa67b9d2db44ae74797a
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
+  submitted_at: 2026-03-20T00:09:53.689Z
   review_ref: "@01KM4990NW27N2DBW6TFE9MZCY"
 - _ulid: 01KM3ZMFYDXR42KW2KGZ09RYYD
   slugs:
@@ -79808,6 +79808,11 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T23:50:36.216Z
+    - _ulid: 01KM499M7YXCSGPYCQKYSJBZ3G
+      content: "Normalizing shared test-gate failure out of blocked state. Treat the required npm-test failure as active follow-up work: either fix/prove isolation of the shared gate issue from this task, or file/link a priority task for the gate failure rather than re-blocking this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T00:11:03.806Z
   todos: []
   automation: eligible
 - _ulid: 01KM46GRK3CYYA4V37D8Y32G4K
