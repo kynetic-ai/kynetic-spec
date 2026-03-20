@@ -108945,7 +108945,8 @@
   todos: []
   automation: eligible
 - _ulid: 01KM28A020C9M06YC8MA2E96NW
-  slugs: []
+  slugs:
+    - task-auto-unregister-stale-projects
   title: Auto-unregister projects when watcher detects permanent directory removal
   type: task
   description: >-
