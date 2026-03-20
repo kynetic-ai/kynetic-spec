@@ -12,6 +12,7 @@
 import { parse as parseYaml } from "yaml";
 import { z } from "zod";
 import { AcceptanceCriterionSchema } from "../schema/spec.js";
+import { ItemTypeSchema } from "../schema/common.js";
 
 /**
  * Spec definition from plan document
@@ -19,7 +20,7 @@ import { AcceptanceCriterionSchema } from "../schema/spec.js";
 export const PlanSpecSchema = z.object({
   title: z.string(),
   slug: z.string().optional(),
-  type: z.string().optional(),
+  type: ItemTypeSchema.optional(),
   parent: z.string().optional(),
   description: z.string().optional(),
   priority: z.number().int().min(1).max(5).optional(),
