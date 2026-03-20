@@ -24998,6 +24998,12 @@ reviews:
         payload:
           thread_ulid: 01KM4QZAGJDTSGYJ045T1JGE6R
         timestamp: 2026-03-20T04:35:46.995Z
+      - _ulid: 01KM4REBVP116XJ0W65MCBP0Z0
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM4QZAGJDTSGYJ045T1JGE6R
+        timestamp: 2026-03-20T04:35:47.702Z
     examined_commit: 44d11f272a18ce4c02be15bc1a33a12cb3fcc310
     external_links: []
     lifecycle_state: closed
@@ -25039,6 +25045,8 @@ reviews:
               topology and verified the foreign worktree stays untouched.
             created_at: 2026-03-20T04:35:46.757Z
         kind: blocker
+        resolved_at: 2026-03-20T04:35:47.495Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM4QZB73XMK870EFA4MSNYQE
         entries:
           - _ulid: 01KM4QZB73DQDH5R7QBCCVJX0M
@@ -25066,7 +25074,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T04:27:50.439Z
     created_at: 2026-03-20T04:23:27.197Z
-    updated_at: 2026-03-20T04:35:46.757Z
+    updated_at: 2026-03-20T04:35:47.495Z
     notes: []
   - _ulid: 01KM4R91N0N1EBTV11XSYCDZFQ
     slugs: []
