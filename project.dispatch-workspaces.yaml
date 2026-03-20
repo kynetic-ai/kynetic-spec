@@ -11979,12 +11979,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T07:13:18.986Z
+      updated_at: 2026-03-20T00:04:37.115Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T07:13:19.942Z
+      updated_at: 2026-03-20T00:04:37.115Z
     integration:
       status: pending
       detail: null
@@ -11992,26 +11992,31 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 53be2094bc46d5c352d60c095941b9033e61d079
-      updated_at: 2026-03-19T07:13:18.986Z
-    lifecycle_state: ready
+      updated_at: 2026-03-20T00:04:37.115Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KKX6QPC0374PT4W93CMA7EMX"
     task_slug: fix-shadow-commit-call-sites-that-omit-entity-refs
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T07:02:48.428Z
-      last_reconciled_at: 2026-03-19T07:13:19.942Z
+      last_reconciled_at: 2026-03-20T00:04:37.115Z
       created_at: 2026-03-19T06:53:50.346Z
-      updated_at: 2026-03-19T07:13:19.942Z
+      updated_at: 2026-03-20T00:04:37.115Z
     workspace_id: dispatch-workspace-01KKX6QPC0374PT4W93CMA7EMX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
+        last_seen_at: 2026-03-20T00:04:37.115Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-shadow-commit-call-sites-that-omit-entity-refs-01kkx6qp-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-shadow-commit-call-sites-that-omit-entity-refs/01kkx6qp
         head: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
-        last_seen_at: 2026-03-19T07:02:46.950Z
+        last_seen_at: 2026-03-20T00:04:37.115Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-shadow-commit-call-sites-that-omit-entity-refs-01kkx6qp
   - active_role: null
     base_branch_point: 53be2094bc46d5c352d60c095941b9033e61d079
