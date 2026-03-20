@@ -108898,9 +108898,10 @@
   todos: []
   automation: eligible
 - _ulid: 01KM289GY9589XH063SSFMBJFQ
-  slugs: []
+  slugs:
+    - task-implement-kspec-no-daemon
   title: Implement KSPEC_NO_DAEMON to suppress incidental daemon communication
-  type: feature
+  type: task
   description: >-
     **What:** Implement the `KSPEC_NO_DAEMON` environment variable (ac-32, ac-33) so CLI commands
     skip all incidental daemon communication when set. Explicit `kspec serve` commands must remain
@@ -108946,7 +108947,7 @@
 - _ulid: 01KM28A020C9M06YC8MA2E96NW
   slugs: []
   title: Auto-unregister projects when watcher detects permanent directory removal
-  type: feature
+  type: task
   description: >-
     **What:** When the file watcher determines a project's `.kspec/` directory is permanently
     unavailable (ac-34), the daemon should proactively unregister the project instead of leaving a
