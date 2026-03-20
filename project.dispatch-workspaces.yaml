@@ -13445,7 +13445,7 @@ workspaces:
         head: d06d4de00e8aab12d98d39a3ab0632650990df40
         last_seen_at: 2026-03-20T05:02:04.309Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/preserve-user-defined-stop-hooks-during-kspec-setup-01km4n8k
-  - active_role: null
+  - active_role: worker
     base_branch_point: 8d98a994f365ceef2e620571967d82c60cf8cdef
     bootstrap:
       status: succeeded
@@ -13534,7 +13534,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T05:02:09.620Z
+      updated_at: 2026-03-20T05:02:14.411Z
     integration:
       status: pending
       detail: null
@@ -13543,16 +13543,16 @@ workspaces:
       target_branch: dev
       target_commit: 8d98a994f365ceef2e620571967d82c60cf8cdef
       updated_at: 2026-03-20T05:02:09.620Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM4NHPTCMTXAVKH0STBCVF22"
     task_slug: recover-missing-workspace-for-automation-eligible-in-progress-tasks
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-03-20T05:02:09.620Z
+      last_active_at: 2026-03-20T05:02:14.411Z
+      last_reconciled_at: 2026-03-20T05:02:14.411Z
       created_at: 2026-03-20T05:02:09.620Z
-      updated_at: 2026-03-20T05:02:13.614Z
+      updated_at: 2026-03-20T05:02:14.411Z
     workspace_id: dispatch-workspace-01KM4NHPTCMTXAVKH0STBCVF22
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
