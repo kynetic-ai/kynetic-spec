@@ -29446,6 +29446,17 @@ reviews:
         runner: grep
         created_at: 2026-03-20T16:38:18.603Z
         completed_at: 2026-03-20T16:38:18.603Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repo-wide pre-existing reference/completeness debt: 3 reference errors, 408 completeness
+          warnings, and invalid AC annotation fixtures unrelated to this diff."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T16:38:19.366Z
+        completed_at: 2026-03-20T16:38:19.366Z
     events:
       - _ulid: 01KM61J0E0RJZHXGTQ8RCTKPKG
         actor: Jacob Chapel
@@ -29467,6 +29478,13 @@ reviews:
           status: pass
           name: AC annotation coverage
         timestamp: 2026-03-20T16:38:18.832Z
+      - _ulid: 01KM61SBP8AB4JQK6FF13K9M87
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T16:38:19.592Z
     examined_commit: 1e4e7d7ea6611fa27c20fcdb3608375d296daa01
     external_links: []
     lifecycle_state: open
@@ -29479,5 +29497,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T16:34:18.688Z
-    updated_at: 2026-03-20T16:38:18.603Z
+    updated_at: 2026-03-20T16:38:19.366Z
     notes: []
