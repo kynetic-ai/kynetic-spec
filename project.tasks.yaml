@@ -109003,8 +109003,11 @@
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev via manual merge commit. Approved review @01KM5T3F after verifying
+    watcher-driven permanent-failure unregister flow, focused AC-34 tests, and a full passing npm
+    test run.
   depends_on: []
   context: []
   priority: 3
@@ -109024,6 +109027,7 @@
   created_at: 2026-03-19T05:15:18.464Z
   started_at: 2026-03-20T14:10:46.407Z
   submitted_at: 2026-03-20T14:22:23.580Z
+  completed_at: 2026-03-20T14:29:03.474Z
   notes:
     - _ulid: 01KM5SGB4E00A1BN0WQWR54J9T
       content: Implemented watcher-driven stale project cleanup for @multi-directory-daemon ac-34. Added
