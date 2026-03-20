@@ -14354,7 +14354,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T17:11:00.625Z
+      updated_at: 2026-03-20T17:11:03.234Z
     integration:
       status: pending
       detail: null
@@ -14363,25 +14363,20 @@ workspaces:
       target_branch: dev
       target_commit: 7b22df38c8925c8238f48b2e96fe60804d3e9875
       updated_at: 2026-03-20T17:11:00.625Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM5Z4NK56J72PS2YVKP5EJ8G"
     task_slug: task-schema-derived-types
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T17:04:04.218Z
-      last_reconciled_at: 2026-03-20T17:11:00.625Z
+      last_reconciled_at: 2026-03-20T17:11:03.234Z
       created_at: 2026-03-20T15:53:04.773Z
-      updated_at: 2026-03-20T17:11:00.625Z
+      updated_at: 2026-03-20T17:11:03.234Z
     workspace_id: dispatch-workspace-01KM5Z4NK56J72PS2YVKP5EJ8G
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: cdb70fae4e3fc3481147505e3f19023b1113c5fc
-        last_seen_at: 2026-03-20T17:03:59.020Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-schema-derived-types-01km5z4n-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-schema-derived-types/01km5z4n
