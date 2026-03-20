@@ -25912,6 +25912,13 @@ reviews:
           status: pass
           name: typecheck
         timestamp: 2026-03-20T05:31:26.645Z
+      - _ulid: 01KM4VM96R5A33BD9CR6FB5Y2H
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM4VM908ZR5D6144W8GSWT8N
+        timestamp: 2026-03-20T05:31:27.320Z
     examined_commit: 148c2d03728085839fd9a47a6ad7cc129ef789a4
     external_links: []
     lifecycle_state: open
@@ -25940,7 +25947,25 @@ reviews:
               is not actually covered."
             created_at: 2026-03-20T05:31:25.056Z
         kind: blocker
+      - _ulid: 01KM4VM908ZR5D6144W8GSWT8N
+        anchor:
+          type: code
+          commit: 148c2d03728085839fd9a47a6ad7cc129ef789a4
+          line_end: 285
+          line_start: 251
+          path: packages/web-ui/src/routes/sessions/+page.svelte
+          side: head
+        entries:
+          - _ulid: 01KM4VM908RCKQFKYRHQQMTEB6
+            author: Jacob Chapel
+            body: Scrolled-state freshness only treats the list as changed when the total count or first row id
+              changes. A matching session can update in-place without affecting either value (for
+              example, a visible row changing status while still matching the current filter/sort),
+              so `processLiveRefresh()` returns early and never freezes the list or shows the
+              indicator. That violates the scrolled-update behavior required for non-top viewers.
+            created_at: 2026-03-20T05:31:27.112Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T05:26:57.283Z
-    updated_at: 2026-03-20T05:31:26.445Z
+    updated_at: 2026-03-20T05:31:27.112Z
     notes: []
