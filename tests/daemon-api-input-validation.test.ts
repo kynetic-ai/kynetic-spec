@@ -131,6 +131,8 @@ conventions: []
 `,
   );
 
+  mkdirSync(path.join(tempDir, '.kspec-sessions'), { recursive: true });
+
   execSync('git add -A && git commit -m "kspec project setup"', { cwd: tempDir, stdio: 'pipe' });
 }
 
@@ -208,6 +210,7 @@ describe('Daemon API input validation', () => {
       ['/api/tasks?status=invalid_status', 'pending'],
       ['/api/items?type=invalid_type', 'feature'],
       ['/api/reviews?status=invalid_status', 'open'],
+      ['/api/reviews?subject_type=invalid_type', 'task'],
       ['/api/triage?status=invalid_status', 'triaged'],
       ['/api/plans?status=invalid_status', 'draft'],
       ['/api/sessions?status=invalid_status', 'active'],
@@ -230,6 +233,7 @@ describe('Daemon API input validation', () => {
       ['packages/daemon/src/routes/tasks.ts', 'TaskStatusSchema.options'],
       ['packages/daemon/src/routes/tasks.ts', 'AutomationStatusSchema.options'],
       ['packages/daemon/src/routes/items.ts', 'ItemTypeSchema.options'],
+      ['packages/daemon/src/routes/reviews.ts', 'ReviewSubjectSchema.options'],
       ['packages/daemon/src/routes/reviews.ts', 'ReviewVerdictDecisionSchema.options'],
       ['packages/daemon/src/routes/triage.ts', 'TriageActionSchema.options'],
       ['packages/daemon/src/routes/plans.ts', 'PlanStatusSchema.options'],
@@ -241,5 +245,15 @@ describe('Daemon API input validation', () => {
       const source = readFileSync(path.join(process.cwd(), relativePath), 'utf8');
       expect(source, relativePath).toContain(snippet);
     }
+  });
+
+  // AC: @api-input-type-safety ac-2
+  it('keeps the supported dispatched session-trigger alias valid at the framework boundary', async () => {
+    const response = await makeRequest('/api/sessions?trigger=dispatched');
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(body.items).toEqual([]);
+    expect(body.total).toBe(0);
   });
 });

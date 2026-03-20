@@ -48,6 +48,11 @@ import { SessionStatusSchema, SessionTriggerSchema } from '../../sessions/types.
 import { parseTimeSpec } from '../../utils/time.js';
 import { enumArrayUnion } from './enum-utils.js';
 
+const VALID_SESSION_TRIGGER_FILTERS = [
+  ...SessionTriggerSchema.options,
+  'dispatched',
+] as const;
+
 type SessionListQuery = {
   status?: string | string[];
   agent_type?: string | string[];
@@ -315,7 +320,8 @@ export function createSessionRoutes() {
         status: t.Optional(enumArrayUnion(SessionStatusSchema.options)),
         agent_type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
         agent_id: t.Optional(t.Union([t.String(), t.Array(t.String())])),
-        trigger: t.Optional(enumArrayUnion(SessionTriggerSchema.options)),
+        // Preserve the existing "dispatched" shorthand for any task.* trigger.
+        trigger: t.Optional(enumArrayUnion(VALID_SESSION_TRIGGER_FILTERS)),
         task_id: t.Optional(t.String()),
         spec_ref: t.Optional(t.String()),
         since: t.Optional(t.String()),
@@ -362,7 +368,8 @@ export function createSessionRoutes() {
         status: t.Optional(enumArrayUnion(SessionStatusSchema.options)),
         agent_type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
         agent_id: t.Optional(t.Union([t.String(), t.Array(t.String())])),
-        trigger: t.Optional(enumArrayUnion(SessionTriggerSchema.options)),
+        // Preserve the existing "dispatched" shorthand for any task.* trigger.
+        trigger: t.Optional(enumArrayUnion(VALID_SESSION_TRIGGER_FILTERS)),
         task_id: t.Optional(t.String()),
         spec_ref: t.Optional(t.String()),
         since: t.Optional(t.String()),

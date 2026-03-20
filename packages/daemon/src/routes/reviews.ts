@@ -66,6 +66,7 @@ import {
   ReviewCodeAnchorSideSchema,
   ReviewDispositionSchema,
   ReviewLifecycleStateSchema,
+  ReviewSubjectSchema,
   ReviewThreadKindSchema,
   ReviewVerdictDecisionSchema,
 } from '../../schema/index.js';
@@ -81,6 +82,7 @@ const VALID_CHECK_STATUSES: readonly ReviewCheckStatus[] = ReviewCheckStatusSche
 const VALID_THREAD_KINDS = ReviewThreadKindSchema.options;
 const VALID_ANCHOR_TYPES = ReviewAnchorTypeSchema.options;
 const VALID_CODE_ANCHOR_SIDES = ReviewCodeAnchorSideSchema.options;
+const VALID_REVIEW_SUBJECT_TYPES = ReviewSubjectSchema.options.map((option) => option.shape.type.value);
 const VALID_LIFECYCLE_TARGETS: readonly ReviewLifecycleState[] = [
   ...ReviewLifecycleStateSchema.options.filter((state) => state !== 'draft'),
 ];
@@ -243,7 +245,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         query: t.Object({
           status: t.Optional(enumArrayUnion(ReviewLifecycleStateSchema.options)),
           disposition: t.Optional(enumArrayUnion(ReviewDispositionSchema.options)),
-          subject_type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          subject_type: t.Optional(enumArrayUnion(VALID_REVIEW_SUBJECT_TYPES)),
           subject_ref: t.Optional(t.String()),
           head_branch: t.Optional(t.String()),
           reviewer: t.Optional(t.String()),
