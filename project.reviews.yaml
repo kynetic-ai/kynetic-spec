@@ -31940,3 +31940,29 @@ reviews:
     created_at: 2026-03-20T21:28:33.807Z
     updated_at: 2026-03-20T21:32:44.651Z
     notes: []
+  - _ulid: 01KM6MRMWTRAF8YA71WDNV0BH2
+    slugs: []
+    title: Review restore pre-block status on task unblock
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM6MRMWT72P16A0BRX4CF4B5
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T22:09:59.194Z
+    examined_commit: 470ed5083bbcb2e24854070eff6cb630ef16e690
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM6KM0AAVDTJHPFEZGYA59PD"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T22:09:59.194Z
+    updated_at: null
+    notes: []
