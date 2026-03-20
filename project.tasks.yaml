@@ -109847,8 +109847,11 @@
     skip spec materialization when no specs are present and proceed to task creation from the ##
     Tasks block."
   spec_ref: "@plan-derive-enhanced"
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev after approval. Verified task-only plan derivation without a Specs
+    block now succeeds with --tasks, empty plans still fail with guidance, and full npm test passed
+    in the reviewer snapshot.
   depends_on: []
   context: []
   priority: 2
@@ -109870,6 +109873,7 @@
   created_at: 2026-03-20T03:12:58.571Z
   started_at: 2026-03-20T04:37:32.250Z
   submitted_at: 2026-03-20T04:44:49.411Z
+  completed_at: 2026-03-20T04:49:31.541Z
   notes:
     - _ulid: 01KM4KPQ6ET68WGTD352QVF882
       content: "Validated on 2026-03-19: src/cli/commands/plan.ts still exits with 'No specs found in plan
