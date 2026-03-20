@@ -23373,6 +23373,12 @@ reviews:
         payload:
           thread_ulid: 01KM49KPEQGXR7ZQCXQYZN8PAW
         timestamp: 2026-03-20T00:37:16.576Z
+      - _ulid: 01KM4ASMS85VF3YBY5J31QHZGP
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM49KPEQGXR7ZQCXQYZN8PAW
+        timestamp: 2026-03-20T00:37:17.224Z
     examined_commit: 05e31856c8a3ccf29936c1b0df5efe5902a98977
     external_links: []
     lifecycle_state: closed
@@ -23406,6 +23412,13 @@ reviews:
               staged-change guard or a stronger drift predicate, and cover the staged-only case in
               tests."
             created_at: 2026-03-20T00:16:33.751Z
+          - _ulid: 01KM4ASMK00Y3PQKGZJDH1F2JM
+            author: Jacob Chapel
+            body: Fixed in commit fb63a8129. Dispatch now records the last coherent shared-checkout snapshot and
+              only auto-repairs when index drift still matches that prior dispatch-observed tip;
+              staged changes on the current HEAD now degrade instead of resetting. Added a
+              staged-only regression test.
+            created_at: 2026-03-20T00:37:17.024Z
         kind: blocker
         resolved_at: 2026-03-20T00:37:16.355Z
         resolved_by: Jacob Chapel
@@ -23418,7 +23431,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T00:16:51.424Z
     created_at: 2026-03-20T00:10:43.772Z
-    updated_at: 2026-03-20T00:37:16.355Z
+    updated_at: 2026-03-20T00:37:17.024Z
     notes: []
   - _ulid: 01KM4AB3BW2ZC6SNWKYRMSTDTP
     slugs: []
