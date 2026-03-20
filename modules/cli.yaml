@@ -10837,6 +10837,9 @@ requirements:
       is a safety net for data that was corrupted before write-time
       validation was in place, or that was edited manually. Valid records
       must still load normally — warnings are non-breaking and informational.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
