@@ -28055,6 +28055,18 @@ reviews:
         runner: npm
         created_at: 2026-03-20T06:50:58.980Z
         completed_at: 2026-03-20T06:50:58.980Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repo-wide baseline validation still reports unrelated reference/completeness issues
+          (meta.yaml broken refs, orphan skills dir, broad AC coverage warnings); not introduced by
+          this task.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T06:50:59.735Z
+        completed_at: 2026-03-20T06:50:59.735Z
     events:
       - _ulid: 01KM4ZY6KKDNRJF4ZQCZF4NVZV
         actor: Jacob Chapel
@@ -28090,6 +28102,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T06:50:59.190Z
+      - _ulid: 01KM505XZRHHCBE524SKV3FE0M
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T06:50:59.960Z
     examined_commit: 6d437fe5f92df763c535b4aff2f82663d3635e36
     external_links: []
     lifecycle_state: open
@@ -28122,5 +28141,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-20T06:46:46.644Z
-    updated_at: 2026-03-20T06:50:58.980Z
+    updated_at: 2026-03-20T06:50:59.735Z
     notes: []
