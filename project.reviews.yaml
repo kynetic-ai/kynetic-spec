@@ -26250,6 +26250,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T05:44:34.171Z
+      - _ulid: 01KM4WNAH9K7BSSWMR35QMC9RY
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM4WNA9SV0EDBFSZEH7YP5EC
+        timestamp: 2026-03-20T05:49:30.025Z
     examined_commit: 818b53f420eda826592758a52a7691fd0b055d75
     external_links: []
     lifecycle_state: open
@@ -26259,8 +26266,28 @@ reviews:
       content_hash: ""
       ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM4WNA9SV0EDBFSZEH7YP5EC
+        anchor:
+          type: code
+          commit: 818b53f420eda826592758a52a7691fd0b055d75
+          line_end: 71
+          line_start: 67
+          path: packages/daemon/src/session-watcher.ts
+          side: head
+        entries:
+          - _ulid: 01KM4WNA9SXF66CQ43AZK58X97
+            author: Jacob Chapel
+            body: A single logical session creation now emits multiple  broadcasts because the Chokidar fallback
+              treats both  and  as session changes and debounces per filesystem path. I reproduced
+              this in the review snapshot by creating one new session directory and writing ;  fired
+              twice (once for the directory, once for the file). On , each broadcast runs  and
+              increments , so one new session can show up as multiple 'new sessions' and trigger
+              duplicate refresh work. This breaks the source-agnostic freshness path specifically on
+              the fallback watcher that runs on Linux.
+            created_at: 2026-03-20T05:49:29.785Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T05:44:13.482Z
-    updated_at: 2026-03-20T05:44:33.898Z
+    updated_at: 2026-03-20T05:49:29.785Z
     notes: []
