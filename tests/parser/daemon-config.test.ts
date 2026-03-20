@@ -299,10 +299,10 @@ daemon:
       );
 
       // Run a CLI command that triggers maybeAutoStartDaemon()
-      // Using 'validate' since it doesn't require init and loads context
+      // Using 'validate' since it doesn't require init and loads context.
+      // AC: @multi-directory-daemon ac-32 - warning still emits even when incidental daemon traffic is suppressed.
       const result = kspec("validate", tempDir, {
         expectFail: true,
-        env: { KSPEC_NO_DAEMON: "0" },
       });
 
       // Should contain the deprecation warning in stderr

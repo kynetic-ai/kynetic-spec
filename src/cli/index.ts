@@ -130,11 +130,6 @@ async function maybeAcquireDispatchMutationLock(isMutating: boolean): Promise<vo
  */
 async function maybeAutoStartDaemon(): Promise<void> {
   try {
-    // AC: @multi-directory-daemon ac-32
-    if (isNoDaemonModeEnabled()) {
-      return;
-    }
-
     // Load context to get daemon config from kspec.config.yaml
     const context = await initContext();
     const daemonConfig = context.config.daemon;
@@ -161,6 +156,11 @@ async function maybeAutoStartDaemon(): Promise<void> {
 
     // AC: @config-daemon ac-3 — auto_start from config (defaults to true)
     if (!daemonConfig.auto_start) {
+      return;
+    }
+
+    // AC: @multi-directory-daemon ac-32
+    if (isNoDaemonModeEnabled()) {
       return;
     }
 

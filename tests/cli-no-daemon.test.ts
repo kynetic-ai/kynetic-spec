@@ -32,14 +32,18 @@ describe("KSPEC_NO_DAEMON", () => {
   it("allows explicit serve status to ignore KSPEC_NO_DAEMON", async () => {
     const isolatedHome = await createIsolatedKspecHome(tempDir);
     writeFileSync(isolatedHome.daemonPidFilePath, `${process.pid}\n`, "utf-8");
-    writeFileSync(isolatedHome.daemonPortFilePath, "3456\n", "utf-8");
 
     const result = kspec(`serve status --json --kspec-dir ${join(tempDir, ".kspec")}`, tempDir, {
       env: isolatedHome.env,
     });
-    const status = JSON.parse(result.stdout) as { running: boolean; pid: number | null };
+    const status = JSON.parse(result.stdout) as {
+      running: boolean;
+      pid: number | null;
+      port: number | null;
+    };
 
     expect(status.running).toBe(true);
     expect(status.pid).toBe(process.pid);
+    expect(status.port).toBeNull();
   });
 });
