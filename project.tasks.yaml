@@ -76408,6 +76408,11 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-19T07:02:18.363Z
+    - _ulid: 01KM48WGCHC8P8V0YXYG0BMBTW
+      content: "Review/merge path: keep this out of blocked state while finishing review. If review or merge still uncovers a concrete test gate issue that requires more changes on this task, move it to needs_work with a note describing the remaining failure."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T00:03:53.873Z
   todos: []
   automation: eligible
 - _ulid: 01KKX6QR02Z2YKJBPBXD4RCRKT
