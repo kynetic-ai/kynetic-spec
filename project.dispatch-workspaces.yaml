@@ -14733,12 +14733,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T18:13:50.459Z
+      updated_at: 2026-03-20T18:13:53.852Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T18:13:50.459Z
+      updated_at: 2026-03-20T18:13:53.852Z
     integration:
       status: pending
       detail: null
@@ -14746,7 +14746,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 89942c26e4d0033049772e411e7235ee37407e86
-      updated_at: 2026-03-20T18:13:50.459Z
+      updated_at: 2026-03-20T18:13:53.852Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM5Z4M7YQN173XSB98TPV8Y2"
@@ -14754,18 +14754,23 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T18:03:46.150Z
-      last_reconciled_at: 2026-03-20T18:13:50.459Z
+      last_reconciled_at: 2026-03-20T18:13:53.852Z
       created_at: 2026-03-20T17:37:09.383Z
-      updated_at: 2026-03-20T18:13:50.459Z
+      updated_at: 2026-03-20T18:13:53.852Z
     workspace_id: dispatch-workspace-01KM5Z4M7YQN173XSB98TPV8Y2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 8334eae8de18d4abe39d8b6e91fcbe1f0642553f
+        last_seen_at: 2026-03-20T18:13:53.852Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-api-input-validation-01km5z4m-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-api-input-validation/01km5z4m
-        head: da5c883a711417c070887f27271be92cd51ba7c5
-        last_seen_at: 2026-03-20T18:03:43.774Z
+        head: 8334eae8de18d4abe39d8b6e91fcbe1f0642553f
+        last_seen_at: 2026-03-20T18:13:53.852Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-api-input-validation-01km5z4m
   - active_role: reviewer
     base_branch_point: a507fc148a704f8aa708f7e5599780cbbac0622f
