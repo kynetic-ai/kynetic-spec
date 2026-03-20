@@ -13918,18 +13918,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/ignore-transient-plans-directory-during-plan-sessions/01km4msh
-    canonical_branch_head: ae077977e2b5f008e5c9d4c9357ebd8e45074f7c
+    canonical_branch_head: 7846cea81ec4fe369c73b3afe876b13407fbb609
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T05:59:51.387Z
+      updated_at: 2026-03-20T06:14:01.792Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T06:00:01.636Z
+      updated_at: 2026-03-20T06:14:01.792Z
     integration:
       status: pending
       detail: null
@@ -13937,7 +13937,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ae077977e2b5f008e5c9d4c9357ebd8e45074f7c
-      updated_at: 2026-03-20T05:59:51.387Z
+      updated_at: 2026-03-20T06:14:01.792Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM4MSHAM7WJS8J9S05XPYA7D"
@@ -13945,9 +13945,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T06:00:01.636Z
-      last_reconciled_at: 2026-03-20T06:00:01.636Z
+      last_reconciled_at: 2026-03-20T06:14:01.792Z
       created_at: 2026-03-20T05:59:51.387Z
-      updated_at: 2026-03-20T06:00:01.636Z
+      updated_at: 2026-03-20T06:14:01.792Z
     workspace_id: dispatch-workspace-01KM4MSHAM7WJS8J9S05XPYA7D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
