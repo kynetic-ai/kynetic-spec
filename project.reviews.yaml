@@ -23098,6 +23098,18 @@ reviews:
         runner: npm
         created_at: 2026-03-20T00:14:39.457Z
         completed_at: 2026-03-20T00:14:39.457Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repo-wide pre-existing validation failures remain: 3 broken references in
+          .kspec/modules/meta.yaml plus longstanding alignment/completeness warnings; no new
+          task-specific validation issue identified in this snapshot."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T00:14:42.517Z
+        completed_at: 2026-03-20T00:14:42.517Z
     events:
       - _ulid: 01KM490E798218ZWKPHA2KCR9T
         actor: Jacob Chapel
@@ -23133,6 +23145,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM49G8CDVZK6BACJ7PATMBVY
         timestamp: 2026-03-20T00:14:41.506Z
+      - _ulid: 01KM49GA9A8Q8BTKMC7W5JAT0D
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T00:14:42.987Z
     examined_commit: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
     external_links: []
     lifecycle_state: open
@@ -23166,7 +23185,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T00:06:02.730Z
-    updated_at: 2026-03-20T00:14:41.037Z
+    updated_at: 2026-03-20T00:14:42.517Z
     notes: []
   - _ulid: 01KM4990NW27N2DBW6TFE9MZCY
     slugs: []
