@@ -109798,6 +109798,14 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T03:12:58.512Z
+    - _ulid: 01KM4QVEKR4MSGA07XR6KCEETT
+      content: Updated review add subject parsing to separate explicit subject selection from implicit
+        inference. Ref-backed subjects now reject conflicting code/external selector flags,
+        ambiguous mixed inputs are rejected with guidance, and regression coverage was added for
+        explicit task/code subject precedence and review context handling.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T04:25:27.928Z
   todos: []
   automation: eligible
 - _ulid: 01KM4KPQ6B10BAYD44D6HAG0GC
