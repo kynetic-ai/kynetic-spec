@@ -975,8 +975,7 @@ features:
               implementation: implemented
             depends_on: []
             implements: []
-            relates_to:
-              - "@01KFM9SNV2QRRGREJ1HMZWXCFT"
+            relates_to: []
             tests: []
             traits: []
             acceptance_criteria:
@@ -1091,9 +1090,7 @@ features:
               implementation: implemented
             depends_on: []
             implements: []
-            relates_to:
-              - "@01KFM9X3C64AHJAD6J2YJZ3YA6"
-              - "@01KFM9G3BR4VFNBM2G7BGE5BZY"
+            relates_to: []
             tests: []
             traits: []
             acceptance_criteria:
