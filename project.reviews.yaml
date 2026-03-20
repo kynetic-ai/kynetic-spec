@@ -28132,6 +28132,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T06:51:25.536Z
+      - _ulid: 01KM50QP0TJ7YKGHBWED1Y1F48
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM505VD9SMM8XYD6R70PF1W3
+        timestamp: 2026-03-20T07:00:41.626Z
     examined_commit: 6d437fe5f92df763c535b4aff2f82663d3635e36
     external_links: []
     lifecycle_state: closed
@@ -28161,6 +28167,12 @@ reviews:
               do not call subscribe()/unsubscribe() here unless the manager learns shared
               subscription accounting.
             created_at: 2026-03-20T06:50:57.322Z
+          - _ulid: 01KM50QNSJ23TJ20DK6B5EKAWV
+            author: Jacob Chapel
+            body: Fixed in commit 47d46a5f5. The /sessions page no longer calls subscribe()/unsubscribe() for
+              globally owned agents/sessions topics; it only registers local on/off handlers so
+              teardown cannot drop app-wide invalidation.
+            created_at: 2026-03-20T07:00:41.394Z
         kind: blocker
       - _ulid: 01KM506EQK5QZQC4F7R6JM1M4Z
         entries:
@@ -28192,5 +28204,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T06:51:25.535Z
     created_at: 2026-03-20T06:46:46.644Z
-    updated_at: 2026-03-20T06:51:25.536Z
+    updated_at: 2026-03-20T07:00:41.394Z
     notes: []
