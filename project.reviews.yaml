@@ -28049,6 +28049,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T06:47:08.282Z
+      - _ulid: 01KM505VPFD30SZTQ3C27612K9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM505VD9SMM8XYD6R70PF1W3
+        timestamp: 2026-03-20T06:50:57.615Z
     examined_commit: 6d437fe5f92df763c535b4aff2f82663d3635e36
     external_links: []
     lifecycle_state: open
@@ -28058,8 +28065,28 @@ reviews:
       content_hash: ""
       ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM505VD9SMM8XYD6R70PF1W3
+        anchor:
+          type: code
+          commit: 6d437fe5f92df763c535b4aff2f82663d3635e36
+          line_end: 406
+          line_start: 388
+          path: packages/web-ui/src/routes/sessions/+page.svelte
+          side: head
+        entries:
+          - _ulid: 01KM505VDAE4MJBCS8F4BJC29S
+            author: Jacob Chapel
+            body: This page now owns the transport-level subscription for 'agents' and 'sessions', but those
+              topics are already subscribed globally in +layout via setupWsInvalidation().
+              WebSocketManager.unsubscribe() is not reference-counted, so when /sessions unmounts it
+              sends an unsubscribe for both topics and drops app-wide query invalidation for later
+              views until the socket reconnects. Keep the page-level on/off handlers if needed, but
+              do not call subscribe()/unsubscribe() here unless the manager learns shared
+              subscription accounting.
+            created_at: 2026-03-20T06:50:57.322Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T06:46:46.644Z
-    updated_at: 2026-03-20T06:47:08.047Z
+    updated_at: 2026-03-20T06:50:57.322Z
     notes: []
