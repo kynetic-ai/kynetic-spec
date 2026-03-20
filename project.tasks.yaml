@@ -109777,7 +109777,7 @@
     Consider: separate --version-base/--version-head from --base/--head, or validate that
     --base/--head are incompatible with --subject-type task."
   spec_ref: "@review-cli-creation-and-query"
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -109787,9 +109787,18 @@
     - reviews
     - bug
   vcs_refs: []
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-20T04:31:39.192Z
+    commit: 5c99aae155547908523751e1996ca00fc11ee2fe
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
   session_id: 01KM4QPPBDTA14DBC6SYX6ATXG
   created_at: 2026-03-20T03:12:58.508Z
   started_at: 2026-03-20T04:23:34.721Z
+  submitted_at: 2026-03-20T04:31:39.599Z
   notes:
     - _ulid: 01KM4KPQ4G5256MKWZW9E73R78
       content: "Validated on 2026-03-19: src/cli/commands/review.ts parseSubjectFromOptions() treats any
