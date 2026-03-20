@@ -10,6 +10,7 @@
 import { existsSync } from 'fs';
 import { isAbsolute, join, normalize, relative } from 'path';
 import { KspecWatcher } from './watcher';
+import { SessionWatcher } from './session-watcher';
 import type { PubSubManager } from './websocket/pubsub';
 
 /**
@@ -37,7 +38,7 @@ export interface ProjectContext {
  */
 export class ProjectContextManager {
   private projects: Map<string, ProjectContext> = new Map();
-  private watchers: Map<string, KspecWatcher> = new Map();
+  private watchers: Map<string, { kspec: KspecWatcher; sessions: SessionWatcher }> = new Map();
   private defaultProjectPath: string | null = null;
   private pubsub: PubSubManager | null = null;
   /** Optional callback for file changes (used by dispatch engine). AC: @agent-dispatch-engine ac-5 */
@@ -88,10 +89,13 @@ export class ProjectContextManager {
     }
 
     const kspecDir = join(normalizedPath, '.kspec');
+    const sessionsDir = join(normalizedPath, '.kspec-sessions');
+    let kspecWatcher: KspecWatcher | null = null;
+    let sessionWatcher: SessionWatcher | null = null;
 
     try {
       // AC: @multi-directory-daemon ac-17, ac-18 - Create watcher with project-scoped broadcasts
-      const watcher = new KspecWatcher({
+      kspecWatcher = new KspecWatcher({
         kspecDir,
         onFileChange: (file, content) => {
           // AC: @multi-directory-daemon ac-17 - File changes trigger events scoped to project
@@ -119,8 +123,31 @@ export class ProjectContextManager {
         }
       });
 
-      await watcher.start();
-      this.watchers.set(normalizedPath, watcher);
+      sessionWatcher = new SessionWatcher({
+        sessionsDir,
+        onSessionChange: (file) => {
+          if (this.pubsub) {
+            const relativePath = relative(sessionsDir, file);
+            this.pubsub.broadcast('sessions', 'session_changed', {
+              ref: relativePath,
+              action: 'modified'
+            }, normalizedPath);
+          }
+        },
+        onError: (error, file) => {
+          if (this.pubsub) {
+            const relativePath = file ? relative(sessionsDir, file) : undefined;
+            this.pubsub.broadcast('sessions', 'session_error', {
+              ref: relativePath,
+              error: error.message
+            }, normalizedPath);
+          }
+        }
+      });
+
+      await kspecWatcher.start();
+      await sessionWatcher.start();
+      this.watchers.set(normalizedPath, { kspec: kspecWatcher, sessions: sessionWatcher });
 
       // Update context
       const context = this.projects.get(normalizedPath);
@@ -128,6 +155,13 @@ export class ProjectContextManager {
         context.watcherActive = true;
       }
     } catch (error: unknown) {
+      if (sessionWatcher) {
+        await sessionWatcher.stop().catch(() => undefined);
+      }
+      if (kspecWatcher) {
+        await kspecWatcher.stop().catch(() => undefined);
+      }
+
       // AC: @multi-directory-daemon ac-19 - Handle OS limits (EMFILE/ENFILE)
       const code = error instanceof Error && 'code' in error ? (error as NodeJS.ErrnoException).code : undefined;
       if (code === 'EMFILE' || code === 'ENFILE') {
@@ -149,7 +183,8 @@ export class ProjectContextManager {
     const watcher = this.watchers.get(normalizedPath);
 
     if (watcher) {
-      await watcher.stop();
+      await watcher.kspec.stop();
+      await watcher.sessions.stop();
       this.watchers.delete(normalizedPath);
 
       // Update context

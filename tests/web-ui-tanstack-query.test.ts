@@ -184,6 +184,7 @@ describe("WebSocket invalidation wiring (@ui-data-freshness ac-3, ac-4)", () => 
     expect(wsInvalidationSrc).toContain("items");
     expect(wsInvalidationSrc).toContain("inbox");
     expect(wsInvalidationSrc).toContain("agents");
+    expect(wsInvalidationSrc).toContain("sessions");
     expect(wsInvalidationSrc).toContain("files");
   });
 
@@ -199,6 +200,11 @@ describe("WebSocket invalidation wiring (@ui-data-freshness ac-3, ac-4)", () => 
   it("maps task events to task and validation key invalidation", () => {
     expect(wsInvalidationSrc).toContain("queryKeys.tasks.all");
     expect(wsInvalidationSrc).toContain("queryKeys.validation.all");
+  });
+
+  it("maps session events to session query invalidation", () => {
+    expect(wsInvalidationSrc).toContain("case 'sessions'");
+    expect(wsInvalidationSrc).toContain("queryKeys.sessions.all");
   });
 
   // AC: @ui-data-freshness ac-4
@@ -718,15 +724,17 @@ describe("sessions list page migration (@ui-data-freshness ac-1)", () => {
     expect(sessionsSrc).not.toContain("async function loadNextPage");
   });
 
-  it("does not have manual WS subscription (handled by centralized wiring)", () => {
-    expect(sessionsSrc).not.toContain("subscribe(");
-    expect(sessionsSrc).not.toContain("unsubscribe(");
-    expect(sessionsSrc).not.toContain("on('agents'");
-    expect(sessionsSrc).not.toContain("off('agents'");
+  it("registers local agents and sessions handlers without owning global topic transport", () => {
+    expect(sessionsSrc).toContain("on('agents', agentsHandler)");
+    expect(sessionsSrc).toContain("on('sessions', sessionsHandler)");
+    expect(sessionsSrc).toContain("off('agents', agentsHandler)");
+    expect(sessionsSrc).toContain("off('sessions', sessionsHandler)");
+    expect(sessionsSrc).not.toContain("subscribe(['agents', 'sessions'])");
+    expect(sessionsSrc).not.toContain("unsubscribe(['agents', 'sessions'])");
   });
 
-  it("does not import unused onMount", () => {
-    expect(sessionsSrc).not.toContain("onMount");
+  it("uses onMount to scope live freshness subscriptions to the browser", () => {
+    expect(sessionsSrc).toContain("onMount");
   });
 
   it("derives sessions from infinite query pages", () => {
