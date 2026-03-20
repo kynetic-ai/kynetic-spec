@@ -31276,6 +31276,30 @@ reviews:
         runner: npm
         created_at: 2026-03-20T19:48:46.376Z
         completed_at: 2026-03-20T19:48:46.376Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Exited 6 with warnings only; no validation errors. Warnings are repo-wide/pre-existing
+          (orphaned skill dir, orphaned specs, uncovered/invalid AC annotations). Files read:
+          packages/daemon/src/server.ts; packages/web-ui/src/lib/stores/mode.svelte.ts;
+          packages/web-ui/src/lib/stores/project.svelte.ts;
+          packages/web-ui/src/routes/+layout.svelte; packages/web-ui/src/routes/+page.svelte;
+          packages/web-ui/src/routes/agents/+page.svelte;
+          packages/web-ui/src/routes/automation/+page.svelte;
+          packages/web-ui/src/routes/settings/+page.svelte;
+          packages/web-ui/src/routes/sessions/[id]/+page.svelte;
+          packages/web-ui/src/lib/components/automation/CompositionsSection.svelte;
+          packages/web-ui/src/lib/components/automation/SchedulesSection.svelte;
+          packages/web-ui/src/lib/api.ts; tests/web-ui-tanstack-query.test.ts. Claims verified:
+          /api/health endpoint exists; /automation SPA route added; static mode initializes project
+          store and newly ungated queries call daemon-only APIs. Categories searched: correctness,
+          static-mode edge cases, error handling, integration, test quality."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T19:49:00.317Z
+        completed_at: 2026-03-20T19:49:00.317Z
     events:
       - _ulid: 01KM6CMM4KYH0SQTSSSZV8SCD3
         actor: Jacob Chapel
@@ -31304,6 +31328,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T19:48:46.651Z
+      - _ulid: 01KM6CPGQS4RB1Q7SBV6DFPWT6
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-20T19:49:00.794Z
     examined_commit: c9465133970dc4c422a4631a0cc4fc016a5fb9ca
     external_links: []
     lifecycle_state: open
@@ -31338,5 +31369,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-20T19:47:58.740Z
-    updated_at: 2026-03-20T19:48:46.376Z
+    updated_at: 2026-03-20T19:49:00.317Z
     notes: []
