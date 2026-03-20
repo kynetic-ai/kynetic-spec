@@ -25549,9 +25549,25 @@ reviews:
           status: pass
           name: manual repro
         timestamp: 2026-03-20T04:58:21.228Z
+      - _ulid: 01KM4SQXKWDQ334JW874YGGFHW
+        actor: codex-reviewer
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-20T04:58:29.372Z
+      - _ulid: 01KM4SQXKWW2QPHNN5XJJ06PCV
+        actor: codex-reviewer
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T04:58:29.372Z
     examined_commit: 783b22ef544bed092175027cb2c631b044760c73
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -25559,7 +25575,14 @@ reviews:
       ref: "@01KM4MK0N1K71YCJ2PFVZGTSTE"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex-reviewer
+        role: reviewer
+        created_at: 2026-03-20T04:58:29.371Z
     created_at: 2026-03-20T04:54:26.837Z
-    updated_at: 2026-03-20T04:58:20.850Z
+    updated_at: 2026-03-20T04:58:29.372Z
     notes: []
