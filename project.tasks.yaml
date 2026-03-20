@@ -110844,6 +110844,17 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T17:43:27.682Z
+    - _ulid: 01KM667FDRTKJ729C1WZRF3PRJ
+      content: "Tightened daemon enum validation at the framework boundary for
+        task/item/review/triage/plan/session/search/meta routes, plus review and triage mutation
+        bodies. Added shared middleware formatting so Elysia validation errors return
+        daemon-standard {error, details} responses with valid alternatives. Verification: targeted
+        daemon suites passed; full npm test rerun passed (294 files, 6677 tests, 3 skipped). kspec
+        validate still reports pre-existing project-wide reference/completeness debt unrelated to
+        this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T17:55:56.472Z
   todos: []
   automation: eligible
 - _ulid: 01KM5Z4MXMC234763SFZZHK7GH
