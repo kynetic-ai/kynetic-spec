@@ -109849,3 +109849,31 @@
   created_at: 2026-03-20T03:28:25.761Z
   notes: []
   todos: []
+- _ulid: 01KM4MSH97B855EH05P000Q1XG
+  slugs: []
+  title: Differentiate empty task file vs missing task file in deleteTask errors
+  type: bug
+  description: "deleteTask error message conflates 'file missing' with 'file has zero tasks' —
+    extractRawTaskArray returns rawTasks: [] for both cases, so the error says 'Task file not found'
+    even when the file exists but is empty. Add distinct error messages for each case."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - schema
+    - bug
+  vcs_refs: []
+  created_at: 2026-03-20T03:31:59.398Z
+  notes:
+    - _ulid: 01KM4MSH9SZZ19KRF0YG9APK0R
+      content: "Validated on 2026-03-19: src/parser/yaml.ts deleteTask() throws 'Task file not found'
+        whenever extractRawTaskArray() returns an empty array, which conflates a missing file with
+        an existing but empty task file."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T03:31:59.417Z
+  todos: []
