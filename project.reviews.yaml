@@ -23717,9 +23717,25 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-20T01:15:31.830Z
+      - _ulid: 01KM4CZSH5JG8RNNJF8F8XNSJP
+        actor: jacob.chapel@gmail.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-20T01:15:35.845Z
+      - _ulid: 01KM4CZSH6QDVF5A3K1MTPY2F5
+        actor: jacob.chapel@gmail.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T01:15:35.846Z
     examined_commit: null
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -23748,7 +23764,14 @@ reviews:
               and can re-run non-idempotent steps."
             created_at: 2026-03-20T01:14:31.019Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: jacob.chapel@gmail.com
+        role: reviewer
+        created_at: 2026-03-20T01:15:35.845Z
     created_at: 2026-03-20T01:12:34.714Z
-    updated_at: 2026-03-20T01:15:31.347Z
+    updated_at: 2026-03-20T01:15:35.846Z
     notes: []
