@@ -31739,9 +31739,25 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T21:19:00.544Z
+      - _ulid: 01KM6HVMMT8RNB2ZQA6HSG2SAE
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-20T21:19:11.514Z
+      - _ulid: 01KM6HVMMVJ0K6098KA6MY7QHH
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T21:19:11.515Z
     examined_commit: faf60b38d295340053d86214b6e13d69e0ced421
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -31787,7 +31803,14 @@ reviews:
               condition for daemon-only status fetching.
             created_at: 2026-03-20T21:18:38.161Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-20T21:19:11.514Z
     created_at: 2026-03-20T21:16:12.935Z
-    updated_at: 2026-03-20T21:19:00.305Z
+    updated_at: 2026-03-20T21:19:11.515Z
     notes: []
