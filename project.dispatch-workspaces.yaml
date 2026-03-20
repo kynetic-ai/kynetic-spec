@@ -13548,7 +13548,7 @@ workspaces:
         head: 4bf313b436b3c043e28c31e7c6c88ecd5222fa7b
         last_seen_at: 2026-03-20T05:26:27.555Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/recover-missing-workspace-for-automation-eligible-in-progress-tasks-01km4nhp
-  - active_role: null
+  - active_role: worker
     base_branch_point: ce5e2029ce243ddab6173a031bf47c297c334690
     bootstrap:
       status: succeeded
@@ -13618,7 +13618,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T05:37:39.061Z
+      updated_at: 2026-03-20T05:37:39.977Z
     integration:
       status: pending
       detail: null
@@ -13627,16 +13627,16 @@ workspaces:
       target_branch: dev
       target_commit: ce5e2029ce243ddab6173a031bf47c297c334690
       updated_at: 2026-03-20T05:37:39.061Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
     task_slug: task-fix-sessions-live-freshness
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-20T05:26:34.232Z
-      last_reconciled_at: 2026-03-20T05:37:39.061Z
+      last_active_at: 2026-03-20T05:37:39.977Z
+      last_reconciled_at: 2026-03-20T05:37:39.977Z
       created_at: 2026-03-20T05:12:07.929Z
-      updated_at: 2026-03-20T05:37:39.444Z
+      updated_at: 2026-03-20T05:37:39.977Z
     workspace_id: dispatch-workspace-01KM4QGVTQR64KQPQ0S24AHV0S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
