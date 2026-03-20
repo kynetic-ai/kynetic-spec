@@ -580,12 +580,13 @@ describe("Integration: plan commands", () => {
         'plan add --title "Plan Metrics" --content "Metrics" --slug plan-metrics',
         isolatedTempDir,
       );
+      const planRef = "@plan-metrics";
       kspec(
-        'task add --title "Active work" --slug active-work --plan-ref @plan-metrics',
+        `task add --title "Active work" --slug active-work --plan-ref ${planRef}`,
         isolatedTempDir,
       );
       kspec(
-        'task add --title "Cancelled work" --slug cancelled-work --plan-ref @plan-metrics',
+        `task add --title "Cancelled work" --slug cancelled-work --plan-ref ${planRef}`,
         isolatedTempDir,
       );
       kspec('task cancel @cancelled-work --reason "No longer needed"', isolatedTempDir);

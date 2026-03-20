@@ -18,7 +18,7 @@
   AC: @ui-data-freshness ac-3 — WS events invalidate session queries via centralized wiring
 -->
 <script lang="ts">
-	import { on, off, subscribe, unsubscribe } from '$lib/stores/connection.svelte';
+	import { on, off } from '$lib/stores/connection.svelte';
 	import { onDestroy, onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
@@ -390,7 +390,6 @@
 		if (!isStaticMode()) {
 			off('agents', agentsHandler);
 			off('sessions', sessionsHandler);
-			unsubscribe(['agents', 'sessions']);
 		}
 		scrollContainer?.removeEventListener('scroll', updateNearTopState);
 	});
@@ -403,7 +402,6 @@
 			return;
 		}
 
-		subscribe(['agents', 'sessions']);
 		on('agents', agentsHandler);
 		on('sessions', sessionsHandler);
 	});
