@@ -7555,6 +7555,31 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-20T14:20:27.633Z
+  - _ulid: 01KM5ZQG3K1TNBJVEW1AVXVMBN
+    type: success
+    content: Parallel explore agents (3 concurrent) for audit gave comprehensive cross-validated
+      coverage of CLI write paths, schema definitions, and daemon routes in one round
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-20T16:02:21.427Z
+  - _ulid: 01KM5ZQG80P5W7JT4G8QP4CATJ
+    type: success
+    content: Agent-based plan review caught trait AC overlap with @trait-error-guidance and missing
+      triage/plan record loader coverage that the author missed
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-20T16:02:21.568Z
+  - _ulid: 01KM5ZQGBD0YXCH1C05QC7858S
+    type: friction
+    content: Specs started too implementation-specific (file paths, API endpoints, technology names).
+      Took 3+ revision rounds to reach behavioral abstraction. Should study gold standard plans
+      before writing specs.
+    author: "@claude"
+    resolution: null
+    resolved: false
+    created_at: 2026-03-20T16:02:21.677Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:

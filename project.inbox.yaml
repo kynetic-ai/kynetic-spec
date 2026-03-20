@@ -1794,3 +1794,14 @@ inbox:
       - plan
     added_by: "@claude"
     created_at: 2026-03-18T14:51:22.089Z
+  - _ulid: 01KM5ZQGF17W83BVF2NNCVG201
+    text: "task patch cannot repair records that fail schema validation (invisible to CLI). Need a
+      raw/force mode or repair command that operates on YAML directly, bypassing schema validation
+      on lookup. Discovered when two tasks with type: feature were invisible to all CLI queries
+      including task patch."
+    tags:
+      - cli
+      - dx
+      - validation
+    added_by: "@claude"
+    created_at: 2026-03-20T16:02:21.794Z
