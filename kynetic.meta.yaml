@@ -7547,6 +7547,14 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-20T06:27:07.469Z
+  - _ulid: 01KM5SWXKH5ZHKD8B89A6HN0DS
+    type: friction
+    content: Full npm test intermittently times out in cli-schedule-commands while isolated reruns pass,
+      which makes task verification noisy and obscures unrelated daemon/watcher work.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-20T14:20:27.633Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
