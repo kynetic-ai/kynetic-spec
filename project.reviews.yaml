@@ -23086,6 +23086,18 @@ reviews:
         runner: npm
         created_at: 2026-03-20T00:14:13.852Z
         completed_at: 2026-03-20T00:14:13.852Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full npm test passed on rerun: 287 files, 6602 tests passed, 3 skipped. Initial
+          full-suite run failed once in tests/agent-dispatch-engine.test.ts AC-12, but the isolated
+          rerun of that case passed and the subsequent clean full rerun passed."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T00:14:39.457Z
+        completed_at: 2026-03-20T00:14:39.457Z
     events:
       - _ulid: 01KM490E798218ZWKPHA2KCR9T
         actor: Jacob Chapel
@@ -23107,6 +23119,13 @@ reviews:
           status: pass
           name: shadow commit regression
         timestamp: 2026-03-20T00:14:14.250Z
+      - _ulid: 01KM49G79VJ7R5YYWRA3KK80K8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T00:14:39.932Z
     examined_commit: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
     external_links: []
     lifecycle_state: open
@@ -23119,7 +23138,7 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T00:06:02.730Z
-    updated_at: 2026-03-20T00:14:13.852Z
+    updated_at: 2026-03-20T00:14:39.457Z
     notes: []
   - _ulid: 01KM4990NW27N2DBW6TFE9MZCY
     slugs: []
