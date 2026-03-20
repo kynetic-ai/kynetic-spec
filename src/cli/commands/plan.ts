@@ -41,11 +41,13 @@ import type {
   SpecItemInput,
   TaskInput,
 } from "../../schema/index.js";
+import { PlanStatusSchema } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { fieldLabels } from "../../strings/labels.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, isJsonMode, output, success, warn } from "../output.js";
+import { validateEnumOption } from "../validators.js";
 import { ulid } from "ulid";
 import { registerPlanImportCommand } from "./plan-import.js";
 import {
@@ -717,10 +719,20 @@ Examples:
           }
         }
 
+        const statusResult = validateEnumOption(
+          options.status || "draft",
+          PlanStatusSchema.options,
+          "plan status",
+        );
+        if (!statusResult.ok) {
+          error(statusResult.error);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
         const input: PlanInput = {
           title: options.title,
           content,
-          status: options.status || "draft",
+          status: statusResult.value,
           slugs: [planSlug],
         };
 
@@ -914,12 +926,26 @@ Examples:
           return;
         }
 
+        let statusValue: LoadedPlan["status"] | undefined;
+        if (options.status) {
+          const statusResult = validateEnumOption(
+            options.status,
+            PlanStatusSchema.options,
+            "plan status",
+          );
+          if (!statusResult.ok) {
+            error(statusResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          statusValue = statusResult.value;
+        }
+
         let updatedPlan: LoadedPlan;
         try {
           updatedPlan = await mutatePlanAtomically(ctx, foundPlan, (latestPlan) => {
             // AC: @plan-crud ac-4 - prevent transitions from terminal states
             if (
-              options.status &&
+              statusValue &&
               (latestPlan.status === "completed" ||
                 latestPlan.status === "rejected")
             ) {
@@ -939,13 +965,13 @@ Examples:
               changes.push("title");
             }
 
-            if (options.status) {
+            if (statusValue) {
               const oldStatus = latestPlan.status;
-              nextPlan.status = options.status;
-              changes.push(`status: ${oldStatus} → ${options.status}`);
+              nextPlan.status = statusValue;
+              changes.push(`status: ${oldStatus} → ${statusValue}`);
 
               // AC: @plan-crud ac-3 - set approved_at timestamp when transitioning to approved
-              if (options.status === "approved" && !nextPlan.approved_at) {
+              if (statusValue === "approved" && !nextPlan.approved_at) {
                 nextPlan.approved_at = new Date().toISOString();
               }
             }

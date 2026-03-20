@@ -32,7 +32,11 @@ import { describeEnumValues } from "../enum-help.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success } from "../output.js";
 import { parseTagsArray } from "../parse-utils.js";
-import { parseIntOption, validateSpecRef } from "../validators.js";
+import {
+  parseIntOption,
+  validateEnumOption,
+  validateSpecRef,
+} from "../validators.js";
 
 /**
  * Format relative time for display (wrapper for utils function)
@@ -231,6 +235,16 @@ Examples:
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
+        const taskTypeResult = validateEnumOption(
+          options.type || "task",
+          TaskTypeSchema.options,
+          "task type",
+        );
+        if (!taskTypeResult.ok) {
+          error(taskTypeResult.error);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
         // Validate spec_ref if provided — must point to a spec item
         if (options.specRef) {
           const allTasks = await loadAllTasks(ctx);
@@ -264,7 +278,7 @@ Examples:
         // Create the task
         const taskInput: TaskInput = {
           title,
-          type: options.type,
+          type: taskTypeResult.value,
           priority: priorityResult.value,
           spec_ref: options.specRef || null,
           tags: options.tag ? parseTagsArray(options.tag) : item.tags, // Inherit tags from inbox item if not specified

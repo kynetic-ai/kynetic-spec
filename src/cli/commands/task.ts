@@ -1139,6 +1139,16 @@ Examples:
           process.exit(EXIT_CODES.VALIDATION_FAILED);
         }
 
+        const taskTypeResult = validateEnumOption(
+          options.type || "task",
+          TaskTypeSchema.options,
+          "task type",
+        );
+        if (!taskTypeResult.ok) {
+          error(taskTypeResult.error);
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
         // AC: @spec-task-add-description ac-6 - Omit description if empty string
         const descriptionValue =
           options.description && options.description.trim() !== ""
@@ -1148,7 +1158,7 @@ Examples:
         const input: TaskInput = {
           title: options.title,
           description: descriptionValue,
-          type: options.type,
+          type: taskTypeResult.value,
           spec_ref: options.specRef ? normalizeRefInput(options.specRef) : null,
           meta_ref: options.metaRef ? normalizeRefInput(options.metaRef) : null,
           plan_ref: options.planRef ? normalizeRefInput(options.planRef) : null,
