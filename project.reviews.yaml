@@ -29676,6 +29676,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-20T16:49:59.155Z
+      - _ulid: 01KM62EQJB4KQK0MMC4KCG069Q
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM62EQBHM2G6738BBMVKZXFK
+        timestamp: 2026-03-20T16:49:59.883Z
     examined_commit: cdb70fae4e3fc3481147505e3f19023b1113c5fc
     external_links: []
     lifecycle_state: open
@@ -29697,7 +29704,23 @@ reviews:
               npm test exits 0 consistently for the submitted commit.
             created_at: 2026-03-20T16:49:58.171Z
         kind: blocker
+      - _ulid: 01KM62EQBHM2G6738BBMVKZXFK
+        entries:
+          - _ulid: 01KM62EQBJ6FPY1RBGX5PP72SB
+            author: Jacob Chapel
+            body: "Review evidence log: Files read included the changed schema files, daemon
+              review/meta/dispatch routes, CLI command surfaces, and the new/updated tests covering
+              schema-derived enums and review API validation. Commands run: git diff vs dev, kspec
+              task get/item get/review get, kspec validate, full npm test, targeted npm test --
+              tests/ac-delete-confirmation.test.ts. Claim verified: the prior review blocker on
+              review API enum validation was fixed by moving transport validation back into handlers
+              while keeping valid option lists schema-derived, confirmed in code and the updated
+              verdict/check/lifecycle API tests. Categories searched: correctness, test quality,
+              input validation, API error handling, dispatch automation semantics, and integration
+              behavior."
+            created_at: 2026-03-20T16:49:59.666Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T16:45:10.553Z
-    updated_at: 2026-03-20T16:49:58.908Z
+    updated_at: 2026-03-20T16:49:59.666Z
     notes: []
