@@ -110870,6 +110870,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T18:02:47.409Z
+    - _ulid: 01KM676KFXDHT1951HEFH5E2Q8
+      content: "Fix cycle: preserved the supported session trigger alias by validating session trigger
+        filters against canonical SessionTriggerSchema options plus the legacy dispatched shorthand,
+        and tightened /api/reviews subject_type against the canonical ReviewSubjectSchema
+        discriminator. Added daemon API regression coverage for invalid review subject_type filters
+        and for keeping trigger=dispatched accepted at the framework boundary. Verification: npm
+        test -- daemon-api-input-validation passed; npm test failed in unrelated dispatch/bootstrap
+        and cli-serve suites, and isolated reruns of agent-dispatch-engine and
+        dispatch-runtime-bootstrap-contract passed."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T18:12:56.445Z
   todos: []
   automation: eligible
 - _ulid: 01KM5Z4MXMC234763SFZZHK7GH
