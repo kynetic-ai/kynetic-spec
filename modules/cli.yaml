@@ -867,6 +867,10 @@ features:
             id: ac-item-ac-remove-confirm
             then: prompts for confirmation before removing
             when: kspec item ac remove @ref ac-1 runs (no --force)
+          - given: a user manages acceptance criteria via item ac subcommands
+            id: ac-item-ac-id-arg-consistency
+            then: the AC identifier parameter is exposed as id consistently across those commands
+            when: they inspect or batch the add and remove commands
         tags: []
         created: 2026-01-16T10:55:32.034Z
       - _ulid: 01KF3E3QPARGX5QWJMT231DCC5

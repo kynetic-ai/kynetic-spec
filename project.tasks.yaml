@@ -109739,7 +109739,7 @@
   type: task
   description: "Batch arg naming inconsistency: item ac add uses 'id' but item ac remove uses 'acId'
     for the same AC identifier parameter. Should be consistent across subcommands."
-  spec_ref: null
+  spec_ref: "@item-ac"
   status: in_progress
   blocked_by: []
   depends_on: []
