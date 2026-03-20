@@ -24565,3 +24565,29 @@ reviews:
     created_at: 2026-03-20T01:47:09.977Z
     updated_at: 2026-03-20T01:55:11.193Z
     notes: []
+  - _ulid: 01KM4FQXBAAKMWZ0P0MZB625T5
+    slugs: []
+    title: Review cancelled-task exclusion in plan summary metrics (cycle 4)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM4FQXBAEDYVN790A6K3NE4Y
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T02:03:43.338Z
+    examined_commit: f2266e8aba0af3d0f269a2ac8b391fb8dc517c3e
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM46GRK3CYYA4V37D8Y32G4K"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T02:03:43.338Z
+    updated_at: null
+    notes: []
