@@ -110058,6 +110058,14 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T03:56:49.512Z
+    - _ulid: 01KM4XPNFFVB2AH8GD1EYV65RX
+      content: Implemented transient plan workspace ignores by adding plans/ to the repo root .gitignore
+        and extending init/setup gitignore helpers so existing and newly initialized projects both
+        ignore plan working files. Added regression coverage for gitignore helpers, setup
+        dry-run/backfill behavior, and session checkpoint behavior with transient plan files.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T06:07:42.575Z
   todos: []
   automation: eligible
 - _ulid: 01KM4N8K3JS9YR423HKSG2119K
