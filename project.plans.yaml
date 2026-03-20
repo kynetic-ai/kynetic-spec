@@ -24074,12 +24074,14 @@ plans:
               state is mutated
           - id: ac-2
             given: |
-              An input validation error occurs
+              An input validation error occurs for a constrained field
             when: |
               The error is reported to the caller
             then: |
-              The message identifies the field, the invalid value, and what
-              valid input looks like
+              The message includes the set of valid alternatives for the
+              field, not just the field name and invalid value (extends
+              @trait-error-guidance ac-5 which requires identifying the
+              field/value but not listing valid alternatives)
           - id: ac-3
             given: |
               A field's type constraint is defined in a Zod schema
@@ -24154,17 +24156,19 @@ plans:
           - trait-type-safe-input
           - trait-api-endpoint
         description: |
-          All daemon API mutation endpoints must enforce type constraints on
-          request body fields at the framework schema level, not through manual
-          checks in handler code. When a request body contains a field with a
-          constrained type — an enum, a bounded number, a structured object
-          with required shape — the framework must reject invalid values before
-          the handler executes. This applies to HTTP endpoints and WebSocket
-          message handlers.
+          All daemon API endpoints must enforce type constraints on input
+          fields at the framework schema level, not through manual checks in
+          handler code. This applies to both mutation endpoints (request body
+          fields) and query endpoints (filter parameters). When an input
+          contains a field with a constrained type — an enum, a bounded
+          number, a structured object with required shape — the framework
+          must reject invalid values before the handler executes. This
+          applies to HTTP endpoints and WebSocket message handlers.
 
-          Framework-level validation is preferred over handler-level validation
-          because it is declarative, cannot be bypassed by handler code paths,
-          and produces consistent error responses.
+          Framework-level validation is preferred over handler-level
+          validation because it is declarative, cannot be bypassed by handler
+          code paths, and produces consistent error responses. Existing
+          handler-level validation may remain as defense-in-depth.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -24183,12 +24187,20 @@ plans:
               The handler executes normally
           - id: ac-3
             given: |
+              An API query endpoint accepts a typed filter parameter
+            when: |
+              The provided value does not match the filter's type constraint
+            then: |
+              The framework returns a validation error rather than silently
+              returning empty results
+          - id: ac-4
+            given: |
               An API endpoint's type constraints are defined
             when: |
-              The constraints are compared to the canonical Zod schema
+              The constraints are implemented
             then: |
-              The API schema and Zod schema agree on what constitutes valid
-              input for every constrained field
+              The API type constraints are derived from the canonical Zod
+              schema definition
 
       # ─── Parser defense-in-depth ───────────────────────────────
 
@@ -24371,14 +24383,14 @@ plans:
           - web-ui
         description: |
           **What:** Replace loose t.String() with strict t.Union([t.Literal(...)])
-          in Elysia body schemas for all daemon API mutation endpoints that accept
-          typed fields. Audit identified 8 endpoints with loose enum fields across
-          reviews (5), triage (2), and agent dispatch (1) routes.
+          in Elysia schemas for all daemon API endpoints that accept typed fields.
+          This covers both mutation endpoints (8 with loose enum body fields) and
+          query endpoints (7+ routes with loose enum filter params).
 
-          **Why:** The web UI posts to these endpoints. Loose t.String() schemas
-          mean the UI can submit arbitrary values. Some handlers do manual post-hoc
-          validation, but this is inconsistent and the handler executes before
-          validation. Framework-level Elysia validation rejects requests before
+          **Why:** The web UI uses these endpoints. Loose t.String() schemas mean
+          arbitrary values are accepted. For mutations, this risks data corruption.
+          For queries, this causes silent empty results on typos — the same problem
+          as CLI filters. Framework-level Elysia validation rejects requests before
           the handler runs.
 
           **How:** For each endpoint, replace loose Elysia types with strict unions
@@ -24386,7 +24398,7 @@ plans:
           packages/daemon/src/routes/meta.ts (PATCH /api/meta/agents/:id) which
           uses Schema.options.map(v => t.Literal(v)).
 
-          Specific endpoints:
+          Mutation endpoints:
           - packages/daemon/src/routes/reviews.ts:
             POST /comments: kind, anchor.type, anchor.side
             POST /verdicts: decision
@@ -24398,9 +24410,21 @@ plans:
           - packages/daemon/src/routes/agent-dispatch.ts:
             POST /events: from_status, to_status
 
+          Query/filter endpoints:
+          - packages/daemon/src/routes/tasks.ts: GET /api/tasks — status, type,
+            automation filter params
+          - packages/daemon/src/routes/items.ts: GET /api/items — type, maturity,
+            implementation filter params
+          - packages/daemon/src/routes/reviews.ts: GET /api/reviews — status,
+            disposition filter params
+          - packages/daemon/src/routes/triage.ts: GET /api/triage — status, action
+          - packages/daemon/src/routes/plans.ts: GET /api/plans — status
+          - packages/daemon/src/routes/sessions routes — status, agent_type
+          - packages/daemon/src/routes/validation.ts: search — type, status
+
           Keep existing manual handler validation as defense-in-depth.
 
-          Covers: @api-input-type-safety ac-1, ac-2, ac-3.
+          Covers: @api-input-type-safety ac-1 through ac-4.
 
       - title: Add parser write-path schema validation
         slug: task-parser-write-validation
@@ -24493,6 +24517,13 @@ plans:
 
       Priority ordering: P1 mutations (prevent corruption), P2 filters + daemon + parser
       (UX and defense), P3 read warnings (safety net for existing data).
+
+      Scope note: The trait @trait-type-safe-input is intentionally broad (covering
+      enums, numbers, formats, etc.) but the tasks in this plan focus on enum validation
+      as the immediate priority — it is the source of GitHub #899 and the most common
+      unvalidated input type. Non-enum typed inputs (number ranges like priority 1-5,
+      ref format validation, date formats) are valid future work under the same trait
+      but are not tasked here.
     status: draft
     approved_at: 2026-03-20T14:23:44.459Z
     derived_specs: []
@@ -24525,3 +24556,8 @@ plans:
           across all surfaces. Specs describe what, not how.
         author: "@claude"
         created_at: 2026-03-20T15:16:45.225Z
+      - _ulid: 01KM5XRB2S0MMCJWMPQWMH7ED6
+        content: "Address review: fix trait ac-2 overlap with error-guidance, add daemon API filter
+          endpoints to scope, add non-enum scope deferral note"
+        author: "@claude"
+        created_at: 2026-03-20T15:27:51.897Z
