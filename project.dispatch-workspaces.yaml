@@ -15617,7 +15617,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T20:40:32.454Z
+      updated_at: 2026-03-20T20:40:41.151Z
     integration:
       status: merged
       detail: integration:merged
@@ -15633,18 +15633,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T20:34:47.137Z
-      last_reconciled_at: 2026-03-20T20:40:33.292Z
+      last_reconciled_at: 2026-03-20T20:40:41.151Z
       created_at: 2026-03-20T20:20:37.231Z
-      updated_at: 2026-03-20T20:40:33.292Z
+      updated_at: 2026-03-20T20:40:41.151Z
     workspace_id: dispatch-workspace-01KM6EDZF8S463CZME2XD4065Y
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 42888ca3f06655b7f48977f6bfe33781805ab5f4
-        last_seen_at: 2026-03-20T20:34:41.468Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/clean-up-dangling-references-on-item-deletion-01km6edz-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/clean-up-dangling-references-on-item-deletion/01km6edz
