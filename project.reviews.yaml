@@ -30469,9 +30469,25 @@ reviews:
         payload:
           thread_ulid: 01KM66JP9ZME06CKH2PWHMP2A9
         timestamp: 2026-03-20T18:02:38.864Z
+      - _ulid: 01KM66KZM06JCTEB754W09PQ0X
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-20T18:02:46.272Z
+      - _ulid: 01KM66KZM19EZF15DYJ3K7DX5T
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T18:02:46.273Z
     examined_commit: da5c883a711417c070887f27271be92cd51ba7c5
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -30555,7 +30571,14 @@ reviews:
               task is meant to eliminate for typed filters."
             created_at: 2026-03-20T18:02:38.632Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-20T18:02:46.272Z
     created_at: 2026-03-20T17:57:31.038Z
-    updated_at: 2026-03-20T18:02:38.632Z
+    updated_at: 2026-03-20T18:02:46.273Z
     notes: []
