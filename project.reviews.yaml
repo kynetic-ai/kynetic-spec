@@ -29430,3 +29430,29 @@ reviews:
     created_at: 2026-03-20T16:21:45.833Z
     updated_at: 2026-03-20T16:26:00.100Z
     notes: []
+  - _ulid: 01KM61J0E012X86GNSKPR826D5
+    slugs: []
+    title: Review task-read-side-validation-warnings
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM61J0E0RJZHXGTQ8RCTKPKG
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T16:34:18.688Z
+    examined_commit: 1e4e7d7ea6611fa27c20fcdb3608375d296daa01
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM5Z4P8FV3JEDM2KRN6A0AKN"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T16:34:18.688Z
+    updated_at: null
+    notes: []
