@@ -111669,6 +111669,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T19:53:33.798Z
+    - _ulid: 01KM6HCR6XJ2ZWWEDCWXFZTHPJ
+      content: "Fix cycle 1: Restored !isStaticMode() query gates for daemon-only endpoints. The reviewer
+        correctly identified that removing these guards would cause daemon HTTP requests in static
+        exports (initializeForStaticMode() makes isProjectInitialized() true). The actual root cause
+        of the first-navigation loading bug was the health check URL mismatch (fix 1 in the original
+        commit), not the query gates. With the health check URL corrected (/health → /api/health),
+        mode resolves via the success path and the !isStaticMode() reactive dependency no longer
+        causes timing issues. Net change from this branch: (1) health check URL fix, (2) /automation
+        SPA route addition. Query gates are unchanged from dev."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-20T21:11:03.645Z
   todos: []
   automation: eligible
 - _ulid: 01KM6EDZF8S463CZME2XD4065Y
