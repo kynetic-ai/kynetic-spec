@@ -26941,6 +26941,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T06:26:27.020Z
+      - _ulid: 01KM4Z0Z86DJ0JKNANEDXHJTQ7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM4Z0YV8BZCTAHMJ66YVSEWD
+        timestamp: 2026-03-20T06:30:48.839Z
     examined_commit: 972087fb3f745be8663ade6f6a05d502f993e091
     external_links: []
     lifecycle_state: open
@@ -26950,8 +26957,26 @@ reviews:
       content_hash: ""
       ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM4Z0YV8BZCTAHMJ66YVSEWD
+        anchor:
+          type: code
+          commit: 972087fb3f745be8663ade6f6a05d502f993e091
+          line_end: 161
+          line_start: 146
+          path: packages/daemon/src/project-context.ts
+          side: head
+        entries:
+          - _ulid: 01KM4Z0YV8XZYQ72FKTJC6QWKN
+            author: Jacob Chapel
+            body: " now starts the existing .kspec watcher before starting the new session watcher, but the
+              catch path never rolls the first watcher back if  throws. That leaves an untracked
+              .kspec watcher running even though project registration failed, so a later retry can
+              double-watch the same project and leak file handles. Please stop any already-started
+              watcher before rethrowing here."
+            created_at: 2026-03-20T06:30:48.424Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T06:26:01.525Z
-    updated_at: 2026-03-20T06:26:26.785Z
+    updated_at: 2026-03-20T06:30:48.424Z
     notes: []
