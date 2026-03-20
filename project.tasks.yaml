@@ -110932,7 +110932,15 @@
   session_id: 01KM6791K4VM6XC91HDH3TZWRE
   created_at: 2026-03-20T15:52:03.764Z
   started_at: 2026-03-20T18:14:51.749Z
-  notes: []
+  notes:
+    - _ulid: 01KM67E2M3MAVPY11QGFD7PNB0
+      content: Added schema validation at parser write paths before entity construction. createTask() and
+        createSpecItem() now safe-parse against canonical input schemas and throw formatted
+        field-level errors on invalid input; PlanSpecSchema.type now uses ItemTypeSchema so plan
+        imports reject invalid item types before derive persists them.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T18:17:01.316Z
   todos: []
   automation: eligible
 - _ulid: 01KM5Z4NK56J72PS2YVKP5EJ8G
