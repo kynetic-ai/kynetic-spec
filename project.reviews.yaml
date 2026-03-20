@@ -32001,9 +32001,25 @@ reviews:
           kind: nit
           thread_ulid: 01KM6MT1KREV5TBZJSBKJH25E2
         timestamp: 2026-03-20T22:10:45.257Z
+      - _ulid: 01KM6MT4MEVV8HE95H2RGMD1C9
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-20T22:10:48.078Z
+      - _ulid: 01KM6MT4MES2G32CCQQRPSJ7VH
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: draft
+          to: closed
+        timestamp: 2026-03-20T22:10:48.078Z
     examined_commit: 470ed5083bbcb2e24854070eff6cb630ef16e690
     external_links: []
-    lifecycle_state: draft
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -32152,7 +32168,14 @@ reviews:
               reset/help surfaces).
             created_at: 2026-03-20T22:10:44.984Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-20T22:10:48.077Z
     created_at: 2026-03-20T22:09:59.194Z
-    updated_at: 2026-03-20T22:10:44.984Z
+    updated_at: 2026-03-20T22:10:48.078Z
     notes: []
