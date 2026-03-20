@@ -27848,6 +27848,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T06:40:17.566Z
+      - _ulid: 01KM4ZSNX387GKBESHTXPH7H7B
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM4ZSNKAS4KGDPGNW9000JC5
+        timestamp: 2026-03-20T06:44:18.467Z
     examined_commit: 50ebf0b9ccf89045e5c51b97347f276509a4091e
     external_links: []
     lifecycle_state: open
@@ -27857,8 +27864,33 @@ reviews:
       content_hash: ""
       ref: "@01KM4KPPDWB2PQ1YQNYQDK3SJH"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM4ZSNKAS4KGDPGNW9000JC5
+        entries:
+          - _ulid: 01KM4ZSNKABDVPZKZ0FSN7KNP2
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/cli/commands/item.ts, tests/batch-schema.test.ts,
+              templates/skills/writing-specs/SKILL.md, .agents/skills/kspec-writing-specs/SKILL.md,
+              tests/cli-plan.test.ts
+
+              Commands run: git diff --name-only dev...HEAD; git show --stat ea83d724a; git show
+              --stat 50ebf0b9c; kspec item get @item-ac; rg -n "AC: @item-ac|AC: @trait-" tests;
+              kspec validate; npm test
+
+              Claims verified: confirmed item ac remove now exposes positional arg metadata as id in
+              src/cli/commands/item.ts; confirmed batch validation accepts id and rejects legacy
+              acId with suggestion; confirmed rendered writing-specs snapshot now documents item ac
+              remove <ref> <id>; confirmed full test suite passes on this snapshot
+
+              Categories searched: correctness (no issue), test quality (no issue), integration (no
+              issue), edge cases (legacy acId suggestion covered), error handling (legacy arg
+              rejected with suggestion)
+            created_at: 2026-03-20T06:44:18.154Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T06:39:21.361Z
-    updated_at: 2026-03-20T06:40:17.265Z
+    updated_at: 2026-03-20T06:44:18.154Z
     notes: []
