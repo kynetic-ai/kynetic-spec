@@ -25733,6 +25733,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM4TT5PKE3AK6DZC2D7BKMB9
         timestamp: 2026-03-20T05:17:12.045Z
+      - _ulid: 01KM4TT6RHZVME71N27R7E1SH0
+        actor: codex
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM4TT6HWA4BH6K1572TCB01K
+        timestamp: 2026-03-20T05:17:12.849Z
     examined_commit: 4bf313b436b3c043e28c31e7c6c88ecd5222fa7b
     external_links: []
     lifecycle_state: open
@@ -25762,7 +25769,24 @@ reviews:
               assertion through the real dispatch path.
             created_at: 2026-03-20T05:17:11.763Z
         kind: blocker
+      - _ulid: 01KM4TT6HWA4BH6K1572TCB01K
+        entries:
+          - _ulid: 01KM4TT6HWZZ29TR85NDG8E3Q5
+            author: codex
+            body: 'Evidence log\n\nFiles read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+              tests/agent-dispatch-engine.test.ts, kspec-agents.md, AGENTS.md.\nCommands run: kspec
+              task get @01KM4NHPTCMTXAVKH0STBCVF22; kspec item get @dispatch-workspace-registry;
+              kspec review for-task @01KM4NHPTCMTXAVKH0STBCVF22; git diff
+              8d98a994f365ceef2e620571967d82c60cf8cdef...4bf313b436b3c043e28c31e7c6c88ecd5222fa7b;
+              rg -n "AC: @dispatch-workspace-registry|AC: @trait-error-guidance" tests src -S; kspec
+              validate; npm test.\nClaims verified: the diff broadens workspace discovery to ; AC-11
+              annotations exist; full test suite passes; validate failures are pre-existing and not
+              introduced by this task.\nCategories searched: correctness, edge cases, test quality,
+              integration. Finding: AC-11 coverage is incomplete for the missing-worktree recovery
+              path.'
+            created_at: 2026-03-20T05:17:12.636Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T05:12:46.124Z
-    updated_at: 2026-03-20T05:17:11.763Z
+    updated_at: 2026-03-20T05:17:12.636Z
     notes: []
