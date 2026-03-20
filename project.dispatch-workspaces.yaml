@@ -15171,18 +15171,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-cli-filter-input-validation/01km5z4k
-    canonical_branch_head: 1cb15865407997d672327c8e8d457f65057241f3
+    canonical_branch_head: 80518667626a6529e0eb127a4d99fa19d3260061
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T18:21:36.747Z
+      updated_at: 2026-03-20T18:32:55.392Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T18:21:55.345Z
+      updated_at: 2026-03-20T18:32:55.392Z
     integration:
       status: pending
       detail: null
@@ -15190,7 +15190,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 1cb15865407997d672327c8e8d457f65057241f3
-      updated_at: 2026-03-20T18:21:36.747Z
+      updated_at: 2026-03-20T18:32:55.392Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM5Z4KJQ7CF8F2P48711SY91"
@@ -15198,9 +15198,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T18:21:55.345Z
-      last_reconciled_at: 2026-03-20T18:21:55.345Z
+      last_reconciled_at: 2026-03-20T18:32:55.392Z
       created_at: 2026-03-20T18:21:36.747Z
-      updated_at: 2026-03-20T18:21:55.345Z
+      updated_at: 2026-03-20T18:32:55.392Z
     workspace_id: dispatch-workspace-01KM5Z4KJQ7CF8F2P48711SY91
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
