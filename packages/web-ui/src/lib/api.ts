@@ -1697,7 +1697,6 @@ export async function fetchReviewsForTask(taskRef: string): Promise<PaginatedRes
 
 	const url = new URL(`${API_BASE}/api/reviews`);
 	url.searchParams.set('task', taskRef);
-	url.searchParams.set('status', 'all');
 
 	const response = await fetch(url.toString(), {
 		headers: getProjectHeaders()
