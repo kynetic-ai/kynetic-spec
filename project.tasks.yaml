@@ -109763,3 +109763,33 @@
       author: Jacob Chapel
       created_at: 2026-03-20T03:12:57.792Z
   todos: []
+- _ulid: 01KM4KPQ4CJS24TH0NTVXJA1V3
+  slugs: []
+  title: Fix review add subject-type precedence with version context
+  type: bug
+  description: "review add --base/--head flags override --subject-type, silently creating code
+    subjects when task subject was intended. parseSubjectFromOptions checks options.base before
+    subjectType, so passing version context for a task review creates the wrong subject type.
+    Consider: separate --version-base/--version-head from --base/--head, or validate that
+    --base/--head are incompatible with --subject-type task."
+  spec_ref: "@review-cli-creation-and-query"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - cli
+    - reviews
+    - bug
+  vcs_refs: []
+  created_at: 2026-03-20T03:12:58.508Z
+  notes:
+    - _ulid: 01KM4KPQ4G5256MKWZW9E73R78
+      content: "Validated on 2026-03-19: src/cli/commands/review.ts parseSubjectFromOptions() treats any
+        --base flag as a code subject before honoring --subject-type, so task/spec/plan reviews can
+        be misclassified when version context is supplied."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T03:12:58.512Z
+  todos: []
