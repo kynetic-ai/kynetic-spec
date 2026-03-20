@@ -6930,7 +6930,7 @@ plans:
 
       - **Bootstrap on start** — dispatch engine must evaluate existing task states on startup, not
       just react to future changes
-    status: active
+    status: completed
     approved_at: null
     derived_specs:
       - "@agent-definition-schema"
@@ -20749,7 +20749,7 @@ plans:
 
       Existing task 01KKBD6GBCWTZA2ECFWN62F92F (dispatch trigger expansion)
       is subsumed and should be cancelled after plan approval.
-    status: active
+    status: completed
     approved_at: 2026-03-18T05:31:35.024Z
     derived_specs:
       - "@dispatch-event-envelope"
@@ -23608,7 +23608,7 @@ plans:
       `"pending"` to `"passing"`. This is intentional — vacuous truth (no gates to fail = passing)
       is the correct semantics and matches the daemon. Tests asserting `"pending"` for check-less
       reviews should be updated.
-    status: active
+    status: completed
     approved_at: 2026-03-18T14:32:14.460Z
     derived_specs: []
     derived_tasks:
@@ -23953,7 +23953,7 @@ plans:
 
       - prescribing a required repository topology for dispatch deployment
       - replacing shared-checkout robustness with operational workarounds
-    status: active
+    status: completed
     approved_at: 2026-03-19T21:22:06.778Z
     derived_specs:
       - "@dispatch-shared-checkout-contract"
@@ -24638,7 +24638,7 @@ plans:
       unvalidated input type. Non-enum typed inputs (number ranges like priority 1-5,
       ref format validation, date formats) are valid future work under the same trait
       but are not tasked here.
-    status: active
+    status: completed
     approved_at: 2026-03-20T14:23:44.459Z
     derived_specs:
       - "@trait-type-safe-input"
