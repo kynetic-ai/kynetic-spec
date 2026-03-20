@@ -24,6 +24,7 @@ import {
   AlignmentIndex,
   areDependenciesMet,
 } from '../../parser/index.js';
+import { TriageActionSchema, TriageStatusSchema } from '../../schema/index.js';
 import type {
   TaskStatusSummary,
   ValidationAggregation,
@@ -162,10 +163,14 @@ export function createAggregationRoutes(options: AggregationRouteOptions = {}) {
         };
 
         if (triageRecord) {
+          const triageStatus = TriageStatusSchema.safeParse(triageRecord.status);
+          const triageAction = triageRecord.action
+            ? TriageActionSchema.safeParse(triageRecord.action)
+            : null;
           result.triage = {
             _ulid: triageRecord._ulid,
-            status: triageRecord.status as 'pending' | 'triaged' | 'acted_on',
-            action: triageRecord.action as 'promote' | 'delete' | 'defer' | 'spec-gap' | 'duplicate' | undefined,
+            status: triageStatus.success ? triageStatus.data : 'pending',
+            action: triageAction?.success ? triageAction.data : undefined,
             reasoning: triageRecord.reasoning,
             decided_by: triageRecord.decided_by,
             acted_at: triageRecord.acted_at,

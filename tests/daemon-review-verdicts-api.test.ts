@@ -283,7 +283,8 @@ describe('Review Verdicts API', () => {
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 400 for invalid decision', async () => {
+  // AC: @schema-derived-type-definitions ac-1
+  it('should return 400 with valid alternatives for invalid decision', async () => {
     const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
       decision: 'invalid_decision',
       reviewer: 'test@example.com',
@@ -292,8 +293,8 @@ describe('Review Verdicts API', () => {
     expect(response.status).toBe(400);
     const body = await response.json();
     expect(body.error).toBe('validation_error');
-    expect(body.details).toBeDefined();
     expect(body.details[0].field).toBe('decision');
+    expect(body.details[0].message).toContain('approve');
   });
 
   // AC: @review-records-daemon-api ac-10
@@ -447,7 +448,7 @@ describe('Review Checks API', () => {
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 400 for invalid check status', async () => {
+  it('should return 400 with valid alternatives for invalid check status', async () => {
     const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
       name: 'test',
       status: 'invalid_status',
@@ -457,6 +458,7 @@ describe('Review Checks API', () => {
     const body = await response.json();
     expect(body.error).toBe('validation_error');
     expect(body.details[0].field).toBe('status');
+    expect(body.details[0].message).toContain('pass');
   });
 
   // AC: @review-records-daemon-api ac-10
@@ -594,15 +596,16 @@ describe('Review Lifecycle API', () => {
   });
 
   // AC: @review-records-daemon-api ac-8, ac-10 - invalid transition returns 400
-  it('should return 400 for invalid transition open → draft', async () => {
+  it('should return 400 with valid alternatives for invalid transition target open → draft', async () => {
     const response = await makeRequest('PATCH', `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
       target: 'draft',
     });
 
-    // 'draft' is not in VALID_LIFECYCLE_TARGETS — so it returns validation error
     expect(response.status).toBe(400);
     const body = await response.json();
-    expect(body.error).toBeDefined();
+    expect(body.error).toBe('validation_error');
+    expect(body.details[0].field).toBe('target');
+    expect(body.details[0].message).toContain('open');
   });
 
   // AC: @review-records-daemon-api ac-8, ac-10 - invalid transition returns 400
@@ -646,7 +649,7 @@ describe('Review Lifecycle API', () => {
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 400 for invalid target value', async () => {
+  it('should return 400 with valid alternatives for invalid target value', async () => {
     const response = await makeRequest('PATCH', `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
       target: 'invalid_state',
     });
@@ -655,6 +658,7 @@ describe('Review Lifecycle API', () => {
     const body = await response.json();
     expect(body.error).toBe('validation_error');
     expect(body.details[0].field).toBe('target');
+    expect(body.details[0].message).toContain('closed');
   });
 
   // AC: @review-records-daemon-api ac-10

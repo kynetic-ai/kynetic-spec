@@ -65,6 +65,7 @@ import type {
   AgentDispatchRule,
   AgentDispatchFilter,
 } from "../schema/meta.js";
+import { matchesAutomationFilter } from "../schema/task.js";
 import type { SessionTrigger } from "../sessions/types.js";
 import { getSessionCache } from "../sessions/cache.js";
 
@@ -1593,7 +1594,12 @@ export class DispatchEngine {
 
     // Automation filter
     if (effectiveAutomation !== undefined) {
-      if ((task as LoadedTask & { automation?: string }).automation !== effectiveAutomation) {
+      if (
+        !matchesAutomationFilter(
+          task.automation,
+          effectiveAutomation,
+        )
+      ) {
         return false;
       }
     }

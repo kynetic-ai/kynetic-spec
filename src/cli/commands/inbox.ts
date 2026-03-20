@@ -20,10 +20,15 @@ import {
   shortestUniqueUlid,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import type { InboxItemInput, TaskInput } from "../../schema/index.js";
+import {
+  TaskTypeSchema,
+  type InboxItemInput,
+  type TaskInput,
+} from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { fieldLabels } from "../../strings/labels.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
+import { describeEnumValues } from "../enum-help.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success } from "../output.js";
 import { parseTagsArray } from "../parse-utils.js";
@@ -192,7 +197,11 @@ Examples:
       "Task description (defaults to inbox item text)",
     )
     .option("--priority <n>", "Priority (1-5)", "3")
-    .option("--type <type>", "Task type (task, bug, spike, etc.)", "task")
+    .option(
+      "--type <type>",
+      describeEnumValues("Task type", TaskTypeSchema.options),
+      "task",
+    )
     .option("--spec-ref <ref>", "Link to spec item")
     .option("--tag <tag...>", "Tags for the task")
     .option("--note <text>", "Add initial note to the created task")

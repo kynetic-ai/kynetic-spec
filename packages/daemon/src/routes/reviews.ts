@@ -60,15 +60,29 @@ import type {
   ReviewAnchor,
   ReviewRecord,
 } from '../../schema/index.js';
+import {
+  ReviewAnchorTypeSchema,
+  ReviewCheckStatusSchema,
+  ReviewCodeAnchorSideSchema,
+  ReviewLifecycleStateSchema,
+  ReviewThreadKindSchema,
+  ReviewVerdictDecisionSchema,
+} from '../../schema/index.js';
 import { resolveRefTitle } from './ref-resolution.js';
+import { enumUnion } from './enum-utils.js';
 
 interface ReviewsRouteOptions {
   pubsub: PubSubManager;
 }
 
-const VALID_DECISIONS: ReviewVerdictDecision[] = ['approve', 'request_changes', 'comment'];
-const VALID_CHECK_STATUSES: ReviewCheckStatus[] = ['pass', 'fail', 'running', 'skipped'];
-const VALID_LIFECYCLE_TARGETS: ReviewLifecycleState[] = ['open', 'closed', 'archived'];
+const VALID_DECISIONS: readonly ReviewVerdictDecision[] = ReviewVerdictDecisionSchema.options;
+const VALID_CHECK_STATUSES: readonly ReviewCheckStatus[] = ReviewCheckStatusSchema.options;
+const VALID_THREAD_KINDS = ReviewThreadKindSchema.options;
+const VALID_ANCHOR_TYPES = ReviewAnchorTypeSchema.options;
+const VALID_CODE_ANCHOR_SIDES = ReviewCodeAnchorSideSchema.options;
+const VALID_LIFECYCLE_TARGETS: readonly ReviewLifecycleState[] = [
+  ...ReviewLifecycleStateSchema.options.filter((state) => state !== 'draft'),
+];
 
 /**
  * Build a ReviewSummary from a full ReviewRecord.
@@ -302,15 +316,14 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         }
 
         // Validate kind if provided
-        const validKinds = ['blocker', 'question', 'nit'];
-        if (body.kind && !validKinds.includes(body.kind)) {
+        if (body.kind && !VALID_THREAD_KINDS.includes(body.kind)) {
           return errorResponse(400, {
             error: 'validation_error',
             message: `Invalid thread kind "${body.kind}"`,
             details: [
               {
                 field: 'kind',
-                message: `Kind must be one of: ${validKinds.join(', ')}`,
+                message: `Kind must be one of: ${VALID_THREAD_KINDS.join(', ')}`,
               },
             ],
           });
@@ -319,6 +332,32 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         // Build anchor if provided
         let anchor: ReviewAnchor | undefined;
         if (body.anchor) {
+          if (!body.anchor.type || typeof body.anchor.type !== 'string') {
+            return errorResponse(400, {
+              error: 'validation_error',
+              message: 'Invalid anchor type',
+              details: [
+                {
+                  field: 'anchor.type',
+                  message: `Anchor type must be one of: ${VALID_ANCHOR_TYPES.join(', ')}`,
+                },
+              ],
+            });
+          }
+
+          if (!VALID_ANCHOR_TYPES.includes(body.anchor.type)) {
+            return errorResponse(400, {
+              error: 'validation_error',
+              message: `Invalid anchor type "${body.anchor.type}"`,
+              details: [
+                {
+                  field: 'anchor.type',
+                  message: `Anchor type must be one of: ${VALID_ANCHOR_TYPES.join(', ')}`,
+                },
+              ],
+            });
+          }
+
           if (body.anchor.type === 'code') {
             if (!body.anchor.path || !body.anchor.side || body.anchor.line_start == null || body.anchor.line_end == null || !body.anchor.commit) {
               return errorResponse(400, {
@@ -333,15 +372,14 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
               });
             }
             // Validate side field
-            const validSides = ['base', 'head'];
-            if (!validSides.includes(body.anchor.side)) {
+            if (!VALID_CODE_ANCHOR_SIDES.includes(body.anchor.side)) {
               return errorResponse(400, {
                 error: 'validation_error',
                 message: `Invalid anchor side "${body.anchor.side}"`,
                 details: [
                   {
                     field: 'anchor.side',
-                    message: 'Side must be "base" or "head"',
+                    message: `Side must be one of: ${VALID_CODE_ANCHOR_SIDES.join(', ')}`,
                   },
                 ],
               });
@@ -454,7 +492,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           kind: t.Optional(t.String()),
           author: t.Optional(t.String()),
           anchor: t.Optional(t.Object({
-            type: t.String(),
+            type: t.Optional(t.String()),
             path: t.Optional(t.String()),
             side: t.Optional(t.String()),
             line_start: t.Optional(t.Number()),

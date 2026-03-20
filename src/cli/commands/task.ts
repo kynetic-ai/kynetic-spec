@@ -25,8 +25,12 @@ import {
   syncSpecImplementationStatus,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import { normalizeRefInput } from "../../schema/index.js";
-import type { Task, TaskInput } from "../../schema/index.js";
+import {
+  AutomationStatusSchema,
+  normalizeRefInput,
+  TaskTypeSchema,
+} from "../../schema/index.js";
+import type { AutomationStatus, Task, TaskInput } from "../../schema/index.js";
 import { alignmentCheck, errors } from "../../strings/index.js";
 import {
   formatCommitGuidance,
@@ -52,6 +56,7 @@ import {
   validateEnumOption,
   validateSpecRef,
 } from "../validators.js";
+import { describeEnumValues } from "../enum-help.js";
 import { addListOptions, listTasksAction } from "./tasks.js";
 import { findClosestCommand } from "../suggest.js";
 import { checkBudget, incrementBudget, isEndLoopRequested } from "../../sessions/store.js";
@@ -499,11 +504,11 @@ async function setTaskFields(
     // AC: @task-automation-eligibility ac-5, ac-11, ac-12, ac-18
     // Handle automation status changes
     // Note: --no-automation sets options.automation to false, so check that first
-    let validatedAutomation: "eligible" | "needs_review" | "manual_only" | undefined;
+    let validatedAutomation: AutomationStatus | undefined;
     if (options.automation !== undefined && options.automation !== false) {
       const automationResult = validateEnumOption(
         options.automation,
-        ["eligible", "needs_review", "manual_only"] as const,
+        AutomationStatusSchema.options,
         "automation status",
       );
       if (!automationResult.ok) {
@@ -969,7 +974,7 @@ export function registerTaskCommands(program: Command): void {
     .option("--description <description>", "Task description")
     .option(
       "--type <type>",
-      "Task type (task, epic, bug, spike, infra)",
+      describeEnumValues("Task type", TaskTypeSchema.options),
       "task",
     )
     .option("--spec-ref <ref>", "Reference to spec item")
@@ -984,7 +989,10 @@ export function registerTaskCommands(program: Command): void {
     .option("--depends-on <refs...>", "Set task dependencies")
     .option(
       "--automation <status>",
-      "Automation eligibility (eligible, needs_review, manual_only)",
+      describeEnumValues(
+        "Automation eligibility",
+        AutomationStatusSchema.options,
+      ),
     )
     .addHelpText(
       "after",
@@ -1058,15 +1066,11 @@ Examples:
         }
 
         // AC: @task-automation-eligibility ac-13 - validate automation if provided
-        let automationValue:
-          | "eligible"
-          | "needs_review"
-          | "manual_only"
-          | undefined;
+        let automationValue: AutomationStatus | undefined;
         if (options.automation) {
           const automationResult = validateEnumOption(
             options.automation,
-            ["eligible", "needs_review", "manual_only"] as const,
+            AutomationStatusSchema.options,
             "automation status",
           );
           if (!automationResult.ok) {
@@ -1205,7 +1209,10 @@ Examples:
     .option("--clear-deps", "Clear all dependencies")
     .option(
       "--automation <status>",
-      "Set automation eligibility (eligible, needs_review, manual_only)",
+      describeEnumValues(
+        "Set automation eligibility",
+        AutomationStatusSchema.options,
+      ),
     )
     .option("--no-automation", "Clear automation status (return to unassessed)")
     .option(

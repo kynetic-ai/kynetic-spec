@@ -361,7 +361,7 @@ describe("ac-4: hooks with filters skip non-matching events", () => {
     executor.start();
 
     // Emit event with non-matching automation value
-    await emitAndDrain(eventBus, "task.ready", { automation: "not_eligible" });
+    await emitAndDrain(eventBus, "task.ready", { automation: "manual_only" });
 
     expect(executeSpy).not.toHaveBeenCalled();
 

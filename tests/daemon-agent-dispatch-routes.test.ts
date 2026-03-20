@@ -156,6 +156,42 @@ describe('Agent dispatch routes', () => {
       error: 'Dispatch cwd must belong to the same git project',
     });
   });
+
+  // AC: @schema-derived-type-definitions ac-2
+  // AC: @trait-type-safe-input ac-1
+  it('rejects invalid task statuses at the API boundary', async () => {
+    const { rootDir, worktreeDir } = await setupProjectWithWorktree('kspec-daemon-dispatch-invalid-status-');
+    tempDirs.push(rootDir, worktreeDir);
+
+    const { middleware } = projectContextMiddleware();
+    const app = new Elysia().use(middleware).use(createAgentDispatchRoutes());
+
+    await app.handle(new Request('http://localhost/api/agent/dispatch/start', {
+      method: 'POST',
+      headers: {
+        Host: 'localhost',
+        'X-Kspec-Dir': rootDir,
+        'X-Kspec-Cwd': worktreeDir,
+      },
+    }));
+
+    const response = await app.handle(new Request('http://localhost/api/agent/events', {
+      method: 'POST',
+      headers: {
+        Host: 'localhost',
+        'X-Kspec-Dir': rootDir,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        task_id: '01JXXXXXXXXXXXXXXXXXXXXXXXXX',
+        from_status: 'invalid_status',
+        to_status: 'pending',
+        timestamp: Date.now(),
+      }),
+    }));
+
+    expect(response.status).toBe(422);
+  });
 });
 
 describe('resolveDispatchCwd', () => {

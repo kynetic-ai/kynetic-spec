@@ -30,12 +30,12 @@ import { ActionExecutor } from '../../agent-runtime/action-executor.js';
 import { DEFAULT_KSPEC_CLI_PATH } from '../../agent-runtime/invocation.js';
 import { initContext, loadMetaContext, loadAllTasks, loadAllItems, ReferenceIndex, resolveProjectRoots } from '../../parser/index.js';
 import { getCompletedSessionCountsByAgent } from '../../sessions/store.js';
+import { TaskStatusSchema } from '../../schema/common.js';
 import type { PubSubManager } from '../websocket/pubsub.js';
 import type { SessionEventData } from '@kynetic-ai/shared';
+import { enumUnion } from './enum-utils.js';
 
-const VALID_TASK_STATUSES = new Set<string>([
-  "pending", "in_progress", "pending_review", "needs_work", "blocked", "completed", "cancelled",
-]);
+const VALID_TASK_STATUSES = new Set(TaskStatusSchema.options);
 
 // Singleton dispatch engine per project path
 const engines: Map<string, DispatchEngine> = new Map();
@@ -276,8 +276,8 @@ function stopJoinAccumulator(projectDir: string): void {
 const stateChangeBodySchema = t.Object({
   task_id: t.String(),
   task_ref: t.Optional(t.String()),
-  from_status: t.String(),
-  to_status: t.String(),
+  from_status: enumUnion(TaskStatusSchema.options),
+  to_status: enumUnion(TaskStatusSchema.options),
   timestamp: t.Optional(t.Number()),
 });
 

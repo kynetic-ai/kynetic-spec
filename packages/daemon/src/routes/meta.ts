@@ -30,6 +30,8 @@ import {
 import { commitIfShadow, getShadowStatus, hasRemoteTracking } from '../../parser/shadow.js';
 import type { Agent } from '../../schema/meta.js';
 import { AgentDispatchEventSchema } from '../../schema/meta.js';
+import { AgentDispatchAutomationFilterSchema } from '../../schema/task.js';
+import { enumUnion } from './enum-utils.js';
 
 interface MetaRouteOptions {}
 
@@ -105,7 +107,7 @@ export function createMetaRoutes(options: MetaRouteOptions = {}) {
                 on: t.Union(AgentDispatchEventSchema.options.map((v) => t.Literal(v))),
                 filter: t.Optional(
                   t.Object({
-                    automation: t.Optional(t.Union([t.Literal('eligible'), t.Literal('ineligible')])),
+                    automation: t.Optional(enumUnion(AgentDispatchAutomationFilterSchema.options)),
                     tags: t.Optional(t.Array(t.String())),
                     priority: t.Optional(t.Number()),
                   })
