@@ -29306,6 +29306,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T16:22:09.802Z
+      - _ulid: 01KM6121GFESVMQTRD8FZ721E5
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM612190HA4BY06GPFJDVFT5
+        timestamp: 2026-03-20T16:25:35.503Z
     examined_commit: cef00da87ceba5a7f6cc96733b0f9de12a6f6f29
     external_links: []
     lifecycle_state: open
@@ -29315,8 +29322,27 @@ reviews:
       content_hash: ""
       ref: "@01KM5Z4NK56J72PS2YVKP5EJ8G"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM612190HA4BY06GPFJDVFT5
+        anchor:
+          type: code
+          commit: cef00da87ceba5a7f6cc96733b0f9de12a6f6f29
+          line_end: 470
+          line_start: 463
+          path: packages/daemon/src/routes/reviews.ts
+          side: head
+        entries:
+          - _ulid: 01KM6121907KSR1VZBKQPTTRC3
+            author: Jacob Chapel
+            body: Changing the comment route body schema to enum-backed Elysia unions makes invalid // values
+              fail at framework validation time before the custom AC-10 error handling above can
+              run. That regresses this endpoint from the documented  + actionable  contract to
+              generic  responses, the same shift now asserted for verdict/check/lifecycle invalid
+              enums. The task’s schema-derivation goal is fine, but this route still needs
+              schema-derived validation without bypassing the review API’s invalid-input contract.
+            created_at: 2026-03-20T16:25:35.264Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T16:21:45.833Z
-    updated_at: 2026-03-20T16:22:09.564Z
+    updated_at: 2026-03-20T16:25:35.264Z
     notes: []
