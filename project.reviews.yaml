@@ -27080,6 +27080,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-20T06:31:57.166Z
+      - _ulid: 01KM4Z3HWR7WQNP90TA4X4G38B
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM4Z3H1TY8SV7XMXN8FC9034
+        timestamp: 2026-03-20T06:32:13.464Z
     examined_commit: 972087fb3f745be8663ade6f6a05d502f993e091
     external_links: []
     lifecycle_state: open
@@ -27136,7 +27143,24 @@ reviews:
               integration.
             created_at: 2026-03-20T06:31:52.962Z
         kind: nit
+      - _ulid: 01KM4Z3H1TY8SV7XMXN8FC9034
+        anchor:
+          type: code
+          commit: 972087fb3f745be8663ade6f6a05d502f993e091
+          line_end: 185
+          line_start: 149
+          path: tests/review-per-cycle-lifecycle.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM4Z3H1TWNYD5R5GGKN4NVMN
+            author: Jacob Chapel
+            body: "This snapshot still fails the required merge gate: npm test times out in this test when run
+              as part of the full suite, even though the file passes in isolation. Until the suite
+              is stable under the real merge command, the branch is not mergeable and the worker
+              note claiming a clean full run is not yet true."
+            created_at: 2026-03-20T06:32:12.602Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T06:26:01.525Z
-    updated_at: 2026-03-20T06:31:56.011Z
+    updated_at: 2026-03-20T06:32:12.602Z
     notes: []
