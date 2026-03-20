@@ -24726,3 +24726,828 @@ plans:
           but are not tasked here.
         author: "@claude"
         created_at: 2026-03-20T15:52:05.803Z
+  - _ulid: 01KM6QDHSG2EMW89CKWPPDEPPR
+    slugs:
+      - plan-task-storage-split-per-task-directory-architecture
+    title: "Task Storage Split: Per-Task Directory Architecture"
+    content: >
+      # Task Storage Split: Per-Task Directory Architecture
+
+
+      ## Specs
+
+
+      ```yaml
+
+      # ─── Storage Architecture ───
+
+
+      - title: Per-Task Directory Storage
+        slug: task-directory-storage
+        type: feature
+        parent: "@tasks"
+        description: |
+          Tasks are stored as individual directories under .kspec/tasks/<ulid>/,
+          with separate files for core data, notes, and future extensible
+          content like assets. The monolithic project.tasks.yaml becomes a lean
+          index containing only the fields needed for listing and filtering.
+
+          This replaces the current single-file storage where all tasks, notes,
+          and metadata live in one YAML file that grows unboundedly.
+
+          Non-goals: changing task semantics, altering the CLI surface for
+          end users, or modifying the task schema types visible to consumers.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A task exists in the system
+            when: |
+              The task is persisted
+            then: |
+              The task's core data lives in .kspec/tasks/<full-ulid>/task.yaml
+              and its notes live in .kspec/tasks/<full-ulid>/notes.yaml; the
+              directory uses the task's full ULID as its name
+          - id: ac-2
+            given: |
+              A task directory exists with task.yaml and notes.yaml
+            when: |
+              Additional content is placed in the directory (e.g. an assets/
+              subdirectory with images or reference documents)
+            then: |
+              The task system ignores unknown files and directories within the
+              task directory; they are preserved across reads and writes
+          - id: ac-3
+            given: |
+              A task is deleted
+            when: |
+              The deletion is persisted
+            then: |
+              The task's entire directory is removed and the index entry is
+              removed in a single atomic shadow branch commit
+
+      - title: Task Index File
+        slug: task-index-file
+        type: requirement
+        parent: "@task-directory-storage"
+        description: |
+          project.tasks.yaml serves as a lean index optimized for listing and
+          filtering. It contains only the fields needed to answer list queries
+          without reading individual task directories. The index is the
+          authoritative source for filterable fields; per-task files are the
+          authoritative source for full task data.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              Tasks exist in the system
+            when: |
+              project.tasks.yaml is read
+            then: |
+              Each entry contains only: _ulid, slugs, title, status, priority,
+              type, tags, spec_ref, plan_ref, review_ref, depends_on, automation,
+              and timestamps (created_at, started_at, submitted_at, completed_at)
+          - id: ac-2
+            given: |
+              A task's filterable field changes (status, priority, tags, etc.)
+            when: |
+              The mutation is persisted
+            then: |
+              Both the index entry in project.tasks.yaml and the corresponding
+              field in tasks/<ulid>/task.yaml are updated in the same atomic
+              operation
+          - id: ac-3
+            given: |
+              A task's non-indexed data changes (notes, history entries)
+            when: |
+              The mutation is persisted
+            then: |
+              Only the per-task file is written; the index is not modified
+          - id: ac-4
+            given: |
+              A new task is created
+            when: |
+              The creation is persisted
+            then: |
+              The task directory is created with task.yaml and notes.yaml,
+              and an index entry is appended to project.tasks.yaml, in a
+              single atomic operation
+          - id: ac-5
+            given: |
+              The index and a per-task file disagree on a filterable field value
+            when: |
+              The task is loaded for detailed view
+            then: |
+              The per-task file is authoritative; the index is a derived cache
+              that can be rebuilt from per-task files
+
+      - title: Per-Task Core Data File
+        slug: task-core-data-file
+        type: requirement
+        parent: "@task-directory-storage"
+        description: |
+          tasks/<ulid>/task.yaml contains the complete task record excluding
+          notes. This includes all current field values plus an append-only
+          history section that records field-level changes with metadata.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A task's field is modified (status, priority, tags, spec_ref,
+              depends_on, automation, or any other mutable field)
+            when: |
+              The mutation is persisted to task.yaml
+            then: |
+              The current field value is updated in-place and a history entry
+              is appended recording the timestamp, author, command that made
+              the change, the field name, the previous value, and the new value
+          - id: ac-2
+            given: |
+              A task is loaded for detailed view
+            when: |
+              The caller requests activity information
+            then: |
+              The history section provides a complete audit trail of all field
+              changes without requiring git log operations
+          - id: ac-3
+            given: |
+              A history entry is recorded
+            when: |
+              The entry is read back
+            then: |
+              The entry includes: timestamp (ISO 8601), author (who made the
+              change), command (the kspec command or API call that triggered
+              it), and a changes object mapping field names to their previous
+              and new values
+
+      - title: Per-Task Notes File
+        slug: task-notes-file
+        type: requirement
+        parent: "@task-directory-storage"
+        description: |
+          tasks/<ulid>/notes.yaml contains the task's append-only notes array.
+          Notes are the largest growth vector in task data and isolating them
+          keeps task.yaml small and its git history focused on field changes.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A note is added to a task
+            when: |
+              The note is persisted
+            then: |
+              The note is appended to tasks/<ulid>/notes.yaml; the task.yaml
+              file is not modified
+          - id: ac-2
+            given: |
+              A task has no notes
+            when: |
+              The notes file is read
+            then: |
+              The file contains an empty notes array or does not exist; both
+              are treated as zero notes
+          - id: ac-3
+            given: |
+              A note is superseded
+            when: |
+              The supersession is persisted
+            then: |
+              The original note is updated in-place in notes.yaml with its
+              superseded_by field; the superseding note is appended
+
+      # ─── Task Data Manager ───
+
+
+      - title: Task Data Manager
+        slug: task-data-manager
+        type: feature
+        parent: "@tasks"
+        description: |
+          A single library module that owns all task storage operations. The
+          CLI, daemon API, batch system, and any other consumer reads and
+          writes tasks exclusively through this module. It encapsulates the
+          split storage format (index + per-task directories) behind a
+          consistent interface.
+
+          This replaces the current pattern where task I/O is spread across
+          loadAllTasks, saveTask, mutateTaskAtomically, and mutateTasksAtomically
+          in yaml.ts, with callers managing file paths and locking directly.
+        traits:
+          - trait-error-guidance
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              Any code path needs to read task data
+            when: |
+              It calls the task data manager
+            then: |
+              The manager provides list operations that read only the index
+              and detail operations that read index plus per-task files; callers
+              do not know or care about the underlying file structure
+          - id: ac-2
+            given: |
+              Any code path needs to mutate task data
+            when: |
+              It calls the task data manager
+            then: |
+              The manager handles all file writes (index and per-task files),
+              file locking, and shadow branch commits as a single coordinated
+              operation; callers provide the mutation, not the I/O strategy
+          - id: ac-3
+            given: |
+              Multiple mutations target different tasks concurrently
+            when: |
+              They are executed
+            then: |
+              Per-task file locking allows non-overlapping mutations to proceed
+              without contention; only mutations to the same task or the shared
+              index file serialize
+          - id: ac-4
+            given: |
+              A mutation affects both indexed fields and non-indexed data
+              (e.g. status change that also adds a note)
+            when: |
+              The mutation is persisted
+            then: |
+              The index update, task.yaml write, and notes.yaml write happen
+              within a single atomic operation that either all succeed or all
+              roll back
+
+      - title: Atomic Multi-File Task Writes
+        slug: task-atomic-writes
+        type: requirement
+        parent: "@task-data-manager"
+        description: |
+          Task mutations that span multiple files (index + task.yaml + notes.yaml)
+          must be atomic. The write buffer system already provides this for
+          batch operations; this extends the same guarantee to all task writes.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A task mutation requires writing to the index and a per-task file
+            when: |
+              The write is executed
+            then: |
+              Both files are written within a single buffered transaction that
+              commits atomically to the shadow branch
+          - id: ac-2
+            given: |
+              A write to the per-task file succeeds but the index write fails
+            when: |
+              The transaction is evaluated
+            then: |
+              Neither write is persisted; the shadow branch state is unchanged
+          - id: ac-3
+            given: |
+              A batch operation modifies multiple tasks
+            when: |
+              The batch is executed
+            then: |
+              All index updates and all per-task file writes are collected in
+              the write buffer and flushed as a single shadow branch commit
+
+      - title: Task Listing Performance
+        slug: task-listing-performance
+        type: requirement
+        parent: "@task-data-manager"
+        description: |
+          Listing and filtering tasks reads only the index file, not individual
+          task directories. This keeps list operations fast regardless of how
+          many tasks exist or how much data each task contains.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A caller requests a filtered list of tasks (by status, tag,
+              priority, automation eligibility, or any combination)
+            when: |
+              The list is computed
+            then: |
+              Only project.tasks.yaml is read; no per-task directory is accessed
+          - id: ac-2
+            given: |
+              The system has over 1000 tasks with extensive notes and history
+            when: |
+              A filtered task list is requested
+            then: |
+              The response time is proportional to the number of index entries,
+              not the total volume of task data across all per-task directories
+
+      - title: Task Detail Loading
+        slug: task-detail-loading
+        type: requirement
+        parent: "@task-data-manager"
+        description: |
+          Loading a single task's full details reads the index entry plus the
+          per-task directory contents. This is the only operation that accesses
+          per-task files.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A caller requests full details for a specific task
+            when: |
+              The task is loaded
+            then: |
+              The manager reads the index entry for filterable fields and the
+              per-task directory (task.yaml + notes.yaml) for complete data;
+              the result is a unified task object indistinguishable from the
+              current monolithic format
+          - id: ac-2
+            given: |
+              A per-task directory is missing but an index entry exists
+            when: |
+              The task detail is requested
+            then: |
+              The manager returns the index data with a warning indicating
+              the per-task directory is missing; it does not fail silently
+              or throw an unrecoverable error
+
+      # ─── Activity Timeline ───
+
+
+      - title: In-File Task Activity
+        slug: task-activity-in-file
+        type: requirement
+        parent: "@task-directory-storage"
+        description: |
+          Task activity is recorded directly in the per-task files rather than
+          reconstructed from git history. Field changes are recorded in
+          task.yaml's history section. Note additions are evident from
+          notes.yaml. This eliminates the need for git log -L operations.
+
+          For supplementary git-based activity (e.g. correlating with code
+          commits), git log -- tasks/<ulid>/ provides per-task commit history
+          without the expensive line-range tracking that git log -L requires
+          on monolithic files.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A task's activity timeline is requested
+            when: |
+              The timeline is assembled
+            then: |
+              Field changes come from task.yaml history entries and note events
+              come from notes.yaml entries; no git log -L operation is performed
+          - id: ac-2
+            given: |
+              A task has been through multiple status transitions, note additions,
+              priority changes, and review linkages
+            when: |
+              The full activity timeline is requested
+            then: |
+              All changes are present in chronological order with timestamps,
+              authors, commands, and field-level details
+          - id: ac-3
+            given: |
+              A task created before the storage migration has no history entries
+              in task.yaml
+            when: |
+              The activity timeline is requested
+            then: |
+              The system falls back to git log -- tasks/<ulid>/ for post-migration
+              commits; pre-migration activity may be incomplete and is noted as such
+
+      ```
+
+
+      ## Tasks
+
+
+      derive_from_specs: false
+
+
+      ```yaml
+
+      # ─── Phase 1: Foundation ───
+
+
+      - title: Implement task data manager module
+        slug: task-impl-data-manager
+        priority: 1
+        tags: [tasks, storage, foundation]
+        spec_ref: "@task-data-manager"
+        description: |
+          Create the task data manager as a single library module that will
+          become the exclusive interface for all task I/O operations.
+
+          Why: Task I/O is currently spread across loadAllTasks, saveTask,
+          mutateTaskAtomically, and mutateTasksAtomically in yaml.ts, with
+          callers managing file paths and locking. The split storage format
+          requires coordinated writes across multiple files (index + task.yaml
+          + notes.yaml), which is unsustainable if every caller implements
+          its own I/O strategy.
+
+          What: Create a TaskDataManager class/module that encapsulates:
+          - listTasks(filters): reads only the index, returns summary records
+          - getTask(ref): reads index + per-task directory, returns full record
+          - createTask(input): writes task directory + index entry atomically
+          - mutateTask(ref, mutation): atomic read-modify-write with locking
+          - mutateTasks(refs, mutation): batch atomic operation
+          - deleteTask(ref): removes directory + index entry atomically
+          - addNote(ref, note): writes only to notes.yaml (no index update)
+
+          How: Start by wrapping the existing monolithic file operations behind
+          this interface. The initial implementation reads/writes the monolithic
+          file — the split format comes later. This lets us migrate all callers
+          to the new interface without changing storage format, then swap the
+          storage backend independently.
+
+          The interface must support the existing write buffer system for batch
+          operations. File locking moves inside the manager — callers no longer
+          acquire locks directly.
+
+      - title: Migrate CLI task commands to task data manager
+        slug: task-migrate-cli
+        priority: 1
+        tags: [tasks, cli, migration]
+        spec_ref: "@task-data-manager"
+        depends_on:
+          - "@task-impl-data-manager"
+        description: |
+          Replace all direct yaml.ts task function calls in src/cli/commands/task.ts
+          with task data manager calls.
+
+          Why: The CLI is the largest consumer of task I/O — every task
+          subcommand (add, set, start, submit, complete, block, cancel, reset,
+          note, branch, get, list) calls into yaml.ts directly. These must go
+          through the manager before the storage format changes.
+
+          What: For each task CLI command, replace calls to loadAllTasks,
+          saveTask, mutateTaskAtomically, mutateTasksAtomically, and deleteTask
+          with the corresponding task data manager method. The CLI behavior
+          must be identical — same output, same exit codes, same shadow branch
+          commits.
+
+          How: Methodical find-and-replace within task.ts. Each command handler
+          currently loads context, calls yaml.ts functions, then formats output.
+          The load/save calls change; the context and formatting stay the same.
+          Run the full test suite after each command migration to catch regressions.
+
+      - title: Migrate daemon API to task data manager
+        slug: task-migrate-daemon
+        priority: 1
+        tags: [tasks, daemon, migration]
+        spec_ref: "@task-data-manager"
+        depends_on:
+          - "@task-impl-data-manager"
+        description: |
+          Replace all direct task loading/saving in the daemon routes with task
+          data manager calls.
+
+          Why: The daemon is the second major consumer of task I/O. Its routes
+          in packages/daemon/src/routes/tasks.ts call loadAllTasks and saveTask
+          directly. These must go through the manager for the same reason as
+          the CLI.
+
+          What: Replace direct yaml.ts calls in daemon task routes (GET /api/tasks,
+          GET /api/tasks/:ref, POST /api/tasks/:ref/start, /note, /submit,
+          /complete, /block) with task data manager methods. The daemon should
+          use listTasks for the list endpoint (index-only read) and getTask
+          for the detail endpoint (full read).
+
+          How: The daemon already uses initContext() on each route which
+          provides the project context. The task data manager receives this
+          context and handles all I/O. The daemon routes become thin wrappers:
+          validate input, call manager, format response, broadcast WebSocket.
+
+      - title: Migrate supporting modules to task data manager
+        slug: task-migrate-supporting
+        priority: 1
+        tags: [tasks, migration]
+        spec_ref: "@task-data-manager"
+        depends_on:
+          - "@task-impl-data-manager"
+        description: |
+          Replace direct task I/O in all remaining consumers: review-task
+          integration, plan derive, validation, alignment, batch execution,
+          and dispatch.
+
+          Why: These modules also call loadAllTasks and mutateTaskAtomically
+          directly. All task I/O must flow through the manager before the
+          storage format can change.
+
+          What: Update imports and calls in:
+          - src/parser/review-task-integration.ts (linkReviewToTasks,
+            handleVerdictTaskTransition)
+          - src/cli/commands/derive.ts (task creation during plan derive)
+          - src/parser/validate.ts (task loading for validation)
+          - src/parser/align.ts (spec-task alignment)
+          - src/cli/batch-exec.ts (batch write buffer integration)
+          - Any other files that import task functions from yaml.ts
+
+          How: Same pattern as CLI migration — replace direct calls with
+          manager methods. These modules tend to have simpler task interactions
+          (load all, find one, mutate one) so the changes are straightforward.
+
+      # ─── Phase 2: Split Storage Format ───
+
+
+      - title: Implement split storage backend
+        slug: task-impl-split-storage
+        priority: 1
+        tags: [tasks, storage, foundation]
+        spec_ref: "@task-directory-storage"
+        depends_on:
+          - "@task-migrate-cli"
+          - "@task-migrate-daemon"
+          - "@task-migrate-supporting"
+        description: |
+          Implement the per-task directory storage format inside the task data
+          manager. This is the core change — all callers already go through
+          the manager, so this is a backend swap with no consumer changes.
+
+          Why: All callers now use the task data manager. The internal storage
+          can change from monolithic file to split directories without any
+          caller modifications.
+
+          What: Implement the file layout:
+          - .kspec/tasks/<full-ulid>/task.yaml — core data + history
+          - .kspec/tasks/<full-ulid>/notes.yaml — append-only notes
+          - project.tasks.yaml — lean index (filterable fields only)
+
+          The manager's listTasks reads only the index. getTask reads index +
+          per-task directory. createTask writes both. mutateTask handles the
+          routing: indexed field changes update both files, note additions
+          write only notes.yaml.
+
+          How: The task data manager gets a storage backend abstraction. The
+          new backend implements read/write operations for the split format.
+          Atomic writes use the existing write buffer — buffer all file writes,
+          flush as one shadow branch commit. Per-task file locking replaces
+          whole-file locking for better concurrency.
+
+      - title: Implement task index file operations
+        slug: task-impl-index
+        priority: 1
+        tags: [tasks, storage]
+        spec_ref: "@task-index-file"
+        depends_on:
+          - "@task-impl-split-storage"
+        description: |
+          Implement the index file read/write operations within the split
+          storage backend.
+
+          Why: The index is what makes list operations fast. Without it,
+          listing tasks requires scanning every task directory and reading
+          every task.yaml file.
+
+          What: Define which fields are indexed (ulid, slugs, title, status,
+          priority, type, tags, spec_ref, plan_ref, review_ref, depends_on,
+          automation, timestamps). Implement index reads for listTasks and
+          index writes that keep the index in sync with per-task mutations.
+
+          How: The index is a standard YAML array in project.tasks.yaml with
+          the same schema validation as today but fewer fields per entry. On
+          mutations that affect indexed fields, the manager reads the index,
+          updates the matching entry, writes it back. On note-only mutations,
+          the index is untouched. The index write is included in the same
+          write buffer transaction as the per-task file writes.
+
+      - title: Implement per-task core data and notes files
+        slug: task-impl-per-task-files
+        priority: 1
+        tags: [tasks, storage]
+        spec_ref: "@task-core-data-file"
+        depends_on:
+          - "@task-impl-split-storage"
+        description: |
+          Implement task.yaml and notes.yaml read/write operations within the
+          split storage backend.
+
+          Why: These are the per-task files that replace the monolithic blob.
+          task.yaml holds core data plus the append-only history section.
+          notes.yaml holds the notes array separately to keep task.yaml small.
+
+          What: task.yaml contains all current task fields minus notes, plus a
+          history array. Each history entry has timestamp, author, command,
+          and a changes object with field names mapped to previous/new values.
+          notes.yaml contains the notes array in the current schema format.
+
+          How: On field mutations, update the field in-place and append a
+          history entry. On note additions, append to notes.yaml only. On
+          task reads, merge task.yaml fields with notes.yaml notes to produce
+          the unified task object that callers expect.
+
+      - title: Implement in-file activity timeline
+        slug: task-impl-activity
+        priority: 1
+        tags: [tasks, activity]
+        spec_ref: "@task-activity-in-file"
+        depends_on:
+          - "@task-impl-per-task-files"
+        description: |
+          Replace the git log -L based activity extraction with history entries
+          from task.yaml.
+
+          Why: git log -L on the monolithic file takes 35+ seconds for old
+          tasks. The in-file history provides instant activity timelines.
+
+          What: Update getRawTaskCommits and normalizeTaskActivity (or their
+          replacements) to read history entries from task.yaml instead of
+          running git log -L. Merge note timestamps from notes.yaml into the
+          timeline. For tasks migrated from the old format, fall back to
+          git log -- tasks/<ulid>/ (per-directory git log, which is fast).
+
+          How: The activity module reads task.yaml history entries and
+          notes.yaml timestamps, merges them chronologically, and produces
+          the same ActivityEntry[] format the CLI and daemon already consume.
+          The git log -L codepath is removed. A lightweight git log fallback
+          handles pre-migration tasks that lack history entries.
+
+      # ─── Phase 3: Atomic Write Support ───
+
+
+      - title: Extend write buffer for multi-file task transactions
+        slug: task-extend-write-buffer
+        priority: 1
+        tags: [tasks, storage, atomicity]
+        spec_ref: "@task-atomic-writes"
+        depends_on:
+          - "@task-impl-split-storage"
+        description: |
+          Extend the existing write buffer system to handle multi-file task
+          transactions where a single logical operation touches the index,
+          task.yaml, and notes.yaml.
+
+          Why: A status change that also adds a note must update three files
+          atomically (index + task.yaml + notes.yaml). If any write fails,
+          none should persist. The existing write buffer handles this for
+          batch operations but needs to be the default for all task mutations.
+
+          What: Ensure that every task mutation — not just batch operations —
+          uses a write buffer. The manager opens a buffer, queues all file
+          writes, then flushes as one shadow branch commit. This replaces the
+          current pattern where single-task mutations write files individually.
+
+          How: The task data manager wraps each mutation in a write buffer
+          scope. For single-task operations this is lightweight (2-3 files).
+          For batch operations the existing batch write buffer continues to
+          work — the manager detects when a batch buffer is already active
+          and uses it instead of creating a nested one.
+
+      # ─── Phase 4: Migration ───
+
+
+      - title: Build migration command
+        slug: task-build-migration
+        priority: 1
+        tags: [tasks, migration, cli]
+        depends_on:
+          - "@task-impl-index"
+          - "@task-impl-per-task-files"
+          - "@task-extend-write-buffer"
+        description: |
+          Build the kspec task migrate command that transforms the monolithic
+          project.tasks.yaml into the split per-task directory format.
+
+          Why: Existing projects need a migration path. The migration must
+          handle 1000+ tasks with extensive notes and produce a clean result
+          in a single shadow branch commit.
+
+          What: A CLI command that reads the monolithic file, creates per-task
+          directories with task.yaml and notes.yaml, rewrites project.tasks.yaml
+          as a lean index, and commits everything atomically. Supports dry-run
+          mode for previewing the migration.
+
+          How: Read the current monolithic file. For each task: extract notes
+          into notes.yaml, write remaining fields plus an empty history array
+          into task.yaml, create the directory. Build the index from the
+          extracted filterable fields. Use the write buffer to collect all
+          writes, then flush as one commit. The dry-run mode collects writes
+          but discards instead of flushing.
+
+          Edge cases: tasks with validation errors are migrated as-is with
+          warnings. Tasks with no notes get an empty notes.yaml. The command
+          is idempotent — running on an already-migrated project is a no-op.
+
+      - title: Build index rebuild command
+        slug: task-build-index-rebuild
+        priority: 2
+        tags: [tasks, migration, cli]
+        depends_on:
+          - "@task-build-migration"
+        description: |
+          Build the kspec task rebuild-index command that regenerates
+          project.tasks.yaml from per-task directories.
+
+          Why: If the index drifts from the per-task files (bug, manual edit,
+          interrupted write), users need a repair tool. This also serves as a
+          migration verification step.
+
+          What: A CLI command that scans .kspec/tasks/*/ directories, reads
+          each task.yaml, extracts indexed fields, and writes a fresh
+          project.tasks.yaml. Reports any differences between the old and new
+          index. In repair mode, overwrites the index.
+
+          How: Scan the tasks directory for ULID-named subdirectories. Read
+          task.yaml from each. Build the index entries. Compare with the
+          current index and report diffs. On --repair, write the rebuilt index.
+
+      # ─── Phase 5: Cleanup ───
+
+
+      - title: Remove monolithic task file support
+        slug: task-remove-monolithic
+        priority: 2
+        tags: [tasks, cleanup]
+        depends_on:
+          - "@task-build-migration"
+        description: |
+          Remove the legacy monolithic file loading path from the task data
+          manager after migration is complete and stable.
+
+          Why: Keeping two storage backends increases complexity and testing
+          surface. Once all projects are migrated, the old path serves no
+          purpose.
+
+          What: Remove the code that loads tasks from a monolithic array in
+          project.tasks.yaml. Remove loadTasksFromFile, extractRawTaskArray,
+          writeRawTaskArray, and related helpers. Remove the fallback search
+          paths (backlog.tasks.yaml, active.tasks.yaml, etc.). Remove the
+          git log -L based activity extraction.
+
+          How: Delete the old codepaths, update tests to use the split format,
+          verify the full test suite passes. The migration command remains
+          available for new projects that might start with the old format
+          (e.g. manual YAML editing before first kspec init).
+
+      - title: Update existing task storage specs
+        slug: task-update-storage-specs
+        priority: 2
+        tags: [tasks, spec]
+        depends_on:
+          - "@task-impl-split-storage"
+        description: |
+          Update the existing @task-storage, @task-storage-alongside, and
+          @task-storage-separate specs to reflect the new per-task directory
+          architecture.
+
+          Why: The existing specs describe a monolithic file model with vague
+          aspirations about splitting. The new architecture is concrete and
+          the specs should match reality.
+
+          What: Update @task-storage description and AC to reference the
+          per-task directory model. Mark @task-storage-alongside and
+          @task-storage-separate as superseded by the new specs in this plan.
+          The new @task-directory-storage spec is the authoritative source.
+
+          How: Use kspec item set and kspec item ac set to update the existing
+          specs. Add notes explaining the supersession.
+      ```
+
+
+      ## Implementation Notes
+
+
+      **Phasing is critical.** Phase 1 (task data manager + caller migration) is pure refactoring
+      with zero behavior change — every test must continue passing with identical output. Phase 2
+      (split storage) is the backend swap inside the manager. Phase 3 (atomic writes) ensures
+      multi-file safety. Phase 4 (migration) provides the data transformation. Phase 5 (cleanup)
+      removes dead code. Each phase is independently shippable and testable.
+
+
+      **The manager-first approach is key.** By migrating all callers to the task data manager
+      before changing the storage format, the actual storage split becomes a contained change in one
+      module. If the manager interface is right, the storage swap is invisible to all consumers.
+      This is the same pattern as database migrations behind a repository layer.
+
+
+      **Index consistency.** The index is a derived cache. Per-task files are authoritative. The
+      rebuild command is the escape hatch. During normal operation, the manager keeps them in sync
+      through atomic writes. The index should never be written to directly — only through the
+      manager.
+
+
+      **History entries vs git history.** Going forward, all field changes are recorded as history
+      entries in task.yaml. Git history becomes supplementary (per-task directory commit log), not
+      primary. Pre-migration tasks won't have history entries — the fallback to git log --
+      tasks/<ulid>/ handles those. This degradation is acceptable because it only applies to
+      historical data that predates the migration.
+
+
+      **Write buffer integration.** The existing WriteBuffer class already supports multi-file
+      atomic writes. The task data manager uses this for every mutation, not just batch operations.
+      The overhead is minimal for single-task operations (buffer 2-3 files, flush immediately).
+      Batch operations continue to use the shared batch buffer.
+
+
+      **Shadow branch commit messages.** With per-task files, shadow branch commit messages should
+      include the task ULID for fast git log --grep lookups. The manager should generate structured
+      commit messages (e.g. "task-start @task-slug 01KJP279: pending → in_progress") that enable
+      future git-based queries without line tracking.
+
+
+      **Testing strategy.** Phase 1 tests verify behavioral equivalence — same inputs produce same
+      outputs through the manager as through direct yaml.ts calls. Phase 2 tests verify the split
+      format produces correct file structures. Phase 4 tests verify migration round-trips (migrate,
+      load, compare with pre-migration data). The full test suite runs after each phase.
+
+
+      **No schema changes.** The TaskSchema, TaskInputSchema, and TasksFileSchema types are
+      unchanged. The manager maps between the external schema (what callers see) and the internal
+      storage format (how files are organized). The history and notes separation is internal to the
+      storage backend.
+    status: draft
+    approved_at: null
+    derived_specs: []
+    derived_tasks: []
+    module_ref: "@tasks"
+    source_path: /home/chapel/Projects/kynetic-spec/plans/task-storage-split.md
+    created_at: 2026-03-20T22:56:21.296Z
+    completed_at: null
+    notes: []
