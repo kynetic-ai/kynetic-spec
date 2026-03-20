@@ -29964,3 +29964,29 @@ reviews:
     created_at: 2026-03-20T16:55:19.683Z
     updated_at: 2026-03-20T17:04:22.793Z
     notes: []
+  - _ulid: 01KM639PNFVQRN3808GJ5WPMSX
+    slugs: []
+    title: Review task-schema-derived-types (cycle 3)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM639PNEZD36M0QTTCYWABT8
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T17:04:43.695Z
+    examined_commit: cdb70fae4e3fc3481147505e3f19023b1113c5fc
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM5Z4NK56J72PS2YVKP5EJ8G"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T17:04:43.695Z
+    updated_at: null
+    notes: []
