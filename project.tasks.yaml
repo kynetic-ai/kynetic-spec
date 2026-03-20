@@ -109422,6 +109422,15 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T00:25:37.976Z
+    - _ulid: 01KM4AGNPD6P7J0WX1YXDN4224
+      content: "Review cycle 3 approved. Merge not completed because the primary dev worktree
+        (/home/chapel/Projects/kynetic-spec-dispatch) is dirty: src/agent-runtime/dispatch.ts,
+        src/agent-runtime/workspace.ts, tests/dispatch-branch-push-lifecycle.test.ts,
+        tests/dispatch-target-sync.test.ts, plus .kspec-dispatch-shadow-mutation.lock/. Refusing to
+        update dev under another active dirty worktree."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T00:32:23.245Z
   todos: []
   automation: eligible
 - _ulid: 01KM46GRK3CYYA4V37D8Y32G4K
