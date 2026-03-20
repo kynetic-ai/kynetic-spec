@@ -25981,6 +25981,12 @@ reviews:
         payload:
           thread_ulid: 01KM4VM9QTSG6CWBMCXBJPBSFH
         timestamp: 2026-03-20T05:42:53.745Z
+      - _ulid: 01KM4W999GZPVSX6D85EJ6GE5Y
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM4VM908ZR5D6144W8GSWT8N
+        timestamp: 2026-03-20T05:42:55.536Z
     examined_commit: 148c2d03728085839fd9a47a6ad7cc129ef789a4
     external_links: []
     lifecycle_state: closed
@@ -26041,6 +26047,8 @@ reviews:
               changes still freeze the visible list and surface the non-blocking indicator.
             created_at: 2026-03-20T05:42:51.881Z
         kind: blocker
+        resolved_at: 2026-03-20T05:42:55.145Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM4VM9QTSG6CWBMCXBJPBSFH
         entries:
           - _ulid: 01KM4VM9QTT4YPSVENYD23CD2V
@@ -26080,7 +26088,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T05:31:41.966Z
     created_at: 2026-03-20T05:26:57.283Z
-    updated_at: 2026-03-20T05:42:53.474Z
+    updated_at: 2026-03-20T05:42:55.145Z
     notes: []
   - _ulid: 01KM4W0PKQGFRN5AFC2CR76ZGC
     slugs: []
