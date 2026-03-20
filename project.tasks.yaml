@@ -109616,5 +109616,13 @@
   session_id: 01KM48JAXKZMX5MT9G4JTNB540
   created_at: 2026-03-20T00:51:16.246Z
   started_at: 2026-03-20T00:52:45.112Z
-  notes: []
+  notes:
+    - _ulid: 01KM4BQ340A2QWBTGYN5598G3H
+      content: "Reproduced checkout dependency drift in the current repo: npm run build fails with TS2307
+        for croner because node_modules/croner is absent even though package-lock.json includes it.
+        Investigating dispatch bootstrap reuse and setup/bootstrap dependency freshness checks to
+        force reinstall when package manifests drift from installed modules."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T00:53:22.176Z
   todos: []
