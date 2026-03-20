@@ -27018,6 +27018,19 @@ reviews:
         runner: kspec
         created_at: 2026-03-20T06:30:58.313Z
         completed_at: 2026-03-20T06:30:58.313Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test failed in the reviewer snapshot: 289 files passed, but
+          tests/review-per-cycle-lifecycle.test.ts timed out at line 149 during the full-suite run.
+          The same file passed when rerun in isolation, so the branch still misses the required
+          merge gate due to an unresolved full-suite timeout or flakiness issue."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T06:31:56.011Z
+        completed_at: 2026-03-20T06:31:56.011Z
     events:
       - _ulid: 01KM4YR6NNQBCJWSJ5VEXVSJRG
         actor: Jacob Chapel
@@ -27060,6 +27073,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM4Z2XW21FZMMBVTVPW8M4FQ
         timestamp: 2026-03-20T06:31:53.832Z
+      - _ulid: 01KM4Z31Z9QJGKD9JMTPX7CR6D
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-20T06:31:57.166Z
     examined_commit: 972087fb3f745be8663ade6f6a05d502f993e091
     external_links: []
     lifecycle_state: open
@@ -27118,5 +27138,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T06:26:01.525Z
-    updated_at: 2026-03-20T06:31:52.962Z
+    updated_at: 2026-03-20T06:31:56.011Z
     notes: []
