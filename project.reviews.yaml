@@ -29509,6 +29509,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM61SYD9H18PCHKE2SPV6W7D
         timestamp: 2026-03-20T16:38:39.002Z
+      - _ulid: 01KM61T6537S8S1CH220BE90EK
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM61T5XQNF28HEN8E9V99F5R
+        timestamp: 2026-03-20T16:38:46.691Z
     examined_commit: 1e4e7d7ea6611fa27c20fcdb3608375d296daa01
     external_links: []
     lifecycle_state: open
@@ -29540,7 +29547,22 @@ reviews:
               test suite emitted that exact automation=undefined warning."
             created_at: 2026-03-20T16:38:38.761Z
         kind: blocker
+      - _ulid: 01KM61T5XQNF28HEN8E9V99F5R
+        entries:
+          - _ulid: 01KM61T5XQGZYDSWJJP5K55QP6
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: src/parser/yaml.ts, src/parser/plans.ts,
+              tests/read-side-validation-warnings.test.ts. Commands run: git diff/stat against dev,
+              kspec task get, kspec item get, kspec review for-task, grep for AC annotations, kspec
+              validate, npm test, git show, and a zod enum safeParse reproduction via node. Claims
+              verified: the task adds warnings in all five targeted read paths; full suite passes;
+              repo-wide validate debt is pre-existing; enum-value warnings currently print
+              field=undefined. Categories searched: correctness, AC/test coverage, edge cases in
+              fallback parsing, error guidance payload quality, and integration with existing parser
+              callers."
+            created_at: 2026-03-20T16:38:46.455Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T16:34:18.688Z
-    updated_at: 2026-03-20T16:38:38.761Z
+    updated_at: 2026-03-20T16:38:46.455Z
     notes: []
