@@ -13077,12 +13077,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T04:45:04.926Z
+      updated_at: 2026-03-20T04:45:13.924Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T04:45:04.926Z
+      updated_at: 2026-03-20T04:45:13.924Z
     integration:
       status: pending
       detail: null
@@ -13090,24 +13090,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5c99aae155547908523751e1996ca00fc11ee2fe
-      updated_at: 2026-03-20T04:45:04.926Z
-    lifecycle_state: ready
+      updated_at: 2026-03-20T04:45:13.924Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM4KPQ6B10BAYD44D6HAG0GC"
     task_slug: allow-plan-derive-task-only-plans-without-specs-block
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T04:37:03.424Z
-      last_reconciled_at: 2026-03-20T04:45:04.926Z
+      last_reconciled_at: 2026-03-20T04:45:13.924Z
       created_at: 2026-03-20T04:36:52.890Z
-      updated_at: 2026-03-20T04:45:04.926Z
+      updated_at: 2026-03-20T04:45:13.924Z
     workspace_id: dispatch-workspace-01KM4KPQ6B10BAYD44D6HAG0GC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 841dd67c5c2f93ebb4854ba0cbad364a796331fa
+        last_seen_at: 2026-03-20T04:45:13.924Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/allow-plan-derive-task-only-plans-without-specs-block-01km4kpq-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/allow-plan-derive-task-only-plans-without-specs-block/01km4kpq
-        head: 5c99aae155547908523751e1996ca00fc11ee2fe
-        last_seen_at: 2026-03-20T04:36:52.890Z
+        head: 841dd67c5c2f93ebb4854ba0cbad364a796331fa
+        last_seen_at: 2026-03-20T04:45:13.924Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/allow-plan-derive-task-only-plans-without-specs-block-01km4kpq
