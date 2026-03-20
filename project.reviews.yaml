@@ -24569,7 +24569,19 @@ reviews:
     slugs: []
     title: Review cancelled-task exclusion in plan summary metrics (cycle 4)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Second full run passed: 289 files, 6624 tests passed, 3 skipped, 0 failed. Initial full
+          run showed unrelated dispatch/bootstrap flake; isolated repro of the failing files
+          passed."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T02:13:56.343Z
+        completed_at: 2026-03-20T02:13:56.343Z
     events:
       - _ulid: 01KM4FQXBAEDYVN790A6K3NE4Y
         actor: Jacob Chapel
@@ -24584,6 +24596,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T02:04:01.657Z
+      - _ulid: 01KM4GAMBAD0YPJBE5DZQVNMRD
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T02:13:56.714Z
     examined_commit: f2266e8aba0af3d0f269a2ac8b391fb8dc517c3e
     external_links: []
     lifecycle_state: open
@@ -24596,5 +24615,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T02:03:43.338Z
-    updated_at: 2026-03-20T02:04:01.436Z
+    updated_at: 2026-03-20T02:13:56.343Z
     notes: []
