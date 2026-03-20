@@ -13301,7 +13301,7 @@ workspaces:
         head: 783b22ef544bed092175027cb2c631b044760c73
         last_seen_at: 2026-03-20T04:53:18.386Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-triage-record-cli-reporting-success-without-persisted-record-01km4mk0
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 82c29e1ab95912c9340f50d9aa649fbdc6fed8af
     bootstrap:
       status: succeeded
@@ -13411,7 +13411,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T05:02:04.309Z
+      updated_at: 2026-03-20T05:02:08.968Z
     integration:
       status: pending
       detail: null
@@ -13426,10 +13426,10 @@ workspaces:
     task_slug: preserve-user-defined-stop-hooks-during-kspec-setup
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-20T04:53:28.403Z
-      last_reconciled_at: 2026-03-20T05:02:04.309Z
+      last_active_at: 2026-03-20T05:02:08.968Z
+      last_reconciled_at: 2026-03-20T05:02:08.968Z
       created_at: 2026-03-20T04:53:23.689Z
-      updated_at: 2026-03-20T05:02:07.966Z
+      updated_at: 2026-03-20T05:02:08.968Z
     workspace_id: dispatch-workspace-01KM4N8K3JS9YR423HKSG2119K
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
