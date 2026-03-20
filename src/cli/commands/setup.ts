@@ -33,8 +33,11 @@ import {
   SHADOW_BRANCH_NAME,
   SHADOW_WORKTREE_DIR,
   SESSIONS_WORKTREE_DIR,
+  TRANSIENT_PLANS_DIR,
+  ensurePlansGitignore,
   ensureSessionsGitignore,
   ensureShadowSessionsGitignore,
+  needsPlansGitignore,
   needsSessionsGitignore,
   needsShadowSessionsGitignore,
   type ShadowOptions,
@@ -1385,6 +1388,19 @@ export async function runSetupPipeline(
         const rootAdded = await ensureSessionsGitignore(projectDir);
         if (rootAdded) {
           actions.push(`added ${SESSIONS_WORKTREE_DIR}/ to .gitignore`);
+        }
+      }
+
+      // Add plans/ to root .gitignore
+      if (dryRun) {
+        const plansNeeded = await needsPlansGitignore(projectDir);
+        if (plansNeeded) {
+          actions.push(`add ${TRANSIENT_PLANS_DIR}/ to .gitignore`);
+        }
+      } else {
+        const plansAdded = await ensurePlansGitignore(projectDir);
+        if (plansAdded) {
+          actions.push(`added ${TRANSIENT_PLANS_DIR}/ to .gitignore`);
         }
       }
 

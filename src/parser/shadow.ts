@@ -317,6 +317,11 @@ export const SHADOW_WORKTREE_DIR = ".kspec";
  */
 export const SESSIONS_WORKTREE_DIR = ".kspec-sessions";
 
+/**
+ * Transient plan working directory name at project root.
+ */
+export const TRANSIENT_PLANS_DIR = "plans";
+
 export interface ProjectRoots {
   mainRoot: string;
   worktreeRoot: string;
@@ -2400,6 +2405,36 @@ export async function needsSessionsGitignore(
   return true;
 }
 
+export async function needsPlansGitignore(
+  projectRoot: string,
+): Promise<boolean> {
+  const gitignorePath = path.join(projectRoot, ".gitignore");
+
+  let content = "";
+  try {
+    content = await fs.readFile(gitignorePath, "utf-8");
+  } catch {
+    return true;
+  }
+
+  const lines = content.split("\n");
+  const patterns = [
+    TRANSIENT_PLANS_DIR,
+    `${TRANSIENT_PLANS_DIR}/`,
+    `/${TRANSIENT_PLANS_DIR}`,
+    `/${TRANSIENT_PLANS_DIR}/`,
+  ];
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (patterns.includes(trimmed)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 export async function ensureSessionsGitignore(
   projectRoot: string,
 ): Promise<boolean> {
@@ -2430,6 +2465,41 @@ export async function ensureSessionsGitignore(
   } catch (error) {
     throw new ShadowError(
       `Failed to update .gitignore with sessions directory: ${error}`,
+      "GIT_ERROR",
+      "Check file permissions for .gitignore",
+    );
+  }
+}
+
+export async function ensurePlansGitignore(
+  projectRoot: string,
+): Promise<boolean> {
+  const gitignorePath = path.join(projectRoot, ".gitignore");
+  const entry = `${TRANSIENT_PLANS_DIR}/`;
+
+  try {
+    const needed = await needsPlansGitignore(projectRoot);
+    if (!needed) {
+      return false;
+    }
+
+    let content = "";
+    try {
+      content = await fs.readFile(gitignorePath, "utf-8");
+    } catch {
+      // File doesn't exist, will create
+    }
+
+    const newContent =
+      content.endsWith("\n") || content === ""
+        ? `${content}${entry}\n`
+        : `${content}\n${entry}\n`;
+
+    await fs.writeFile(gitignorePath, newContent, "utf-8");
+    return true;
+  } catch (error) {
+    throw new ShadowError(
+      `Failed to update .gitignore with plans directory: ${error}`,
       "GIT_ERROR",
       "Check file permissions for .gitignore",
     );
@@ -2833,7 +2903,18 @@ export async function initializeShadow(
       ]);
     }
 
-    // Step 1c: Create .kspec-sessions/ directory
+    // Step 1c: Also add plans/ to .gitignore for transient plan documents
+    const plansAdded = await ensurePlansGitignore(projectRoot);
+    if (plansAdded) {
+      await runGitAsync(projectRoot, ["add", ".gitignore"]);
+      await runGitAsync(projectRoot, [
+        "commit",
+        "-m",
+        `chore: add ${TRANSIENT_PLANS_DIR}/ to .gitignore for transient plan files`,
+      ]);
+    }
+
+    // Step 1d: Create .kspec-sessions/ directory
     // AC: @session-storage-modes ac-sessions-dir-autocreate
     const sessionsDir = path.join(projectRoot, SESSIONS_WORKTREE_DIR);
     await fs.mkdir(sessionsDir, { recursive: true });

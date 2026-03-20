@@ -41,5 +41,6 @@ test-results/
 # Dispatch workspace tracking
 .kspec-dispatch-workspace.json
 .kspec-dispatch-shadow-mutation
+plans/
 bun.lock
 .claude/plugins/
