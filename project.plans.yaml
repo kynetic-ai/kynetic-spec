@@ -24606,7 +24606,7 @@ plans:
       The trait @trait-validated-enum-input captures the cross-cutting contract so new
 
       commands automatically inherit the validation requirement via spec coverage.
-    status: approved
+    status: draft
     approved_at: 2026-03-20T14:23:44.459Z
     derived_specs: []
     derived_tasks: []
