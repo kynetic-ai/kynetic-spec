@@ -109876,6 +109876,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T04:39:38.497Z
+    - _ulid: 01KM4RYTHSX89YK9XDDJG3RQQ1
+      content: "Implemented task-only plan derivation for specless plans. plan derive now only requires
+        module resolution and spec materialization when parsed plan specs exist; plans with manual
+        tasks in ## Tasks can derive successfully with --tasks, while truly empty plans still fail
+        with actionable guidance. Added CLI regression coverage for task-only success and empty-plan
+        failure messaging. Verification: npm test -- tests/cli-plan-derive.test.ts; npm test. Note:
+        kspec validate still reports pre-existing repository-wide reference/completeness debt
+        unrelated to this task (meta.yaml dangling refs plus existing completeness/alignment
+        warnings)."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T04:44:47.033Z
   todos: []
   automation: eligible
 - _ulid: 01KM4MK0N1K71YCJ2PFVZGTSTE
