@@ -109736,3 +109736,30 @@
       author: Jacob Chapel
       created_at: 2026-03-20T01:23:44.005Z
   todos: []
+- _ulid: 01KM4KPPDWB2PQ1YQNYQDK3SJH
+  slugs: []
+  title: Align item ac add/remove AC identifier naming
+  type: task
+  description: "Batch arg naming inconsistency: item ac add uses 'id' but item ac remove uses 'acId'
+    for the same AC identifier parameter. Should be consistent across subcommands."
+  spec_ref: null
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - cli
+    - batch
+    - dx
+  vcs_refs: []
+  created_at: 2026-03-20T03:12:57.788Z
+  notes:
+    - _ulid: 01KM4KPPE0CQTD6NTSVWVJYXQD
+      content: "Validated on 2026-03-19: src/cli/commands/item.ts uses --id for item ac add but positional
+        <acId> for item ac remove for the same concept. This is a small CLI consistency fix and
+        likely low effort."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T03:12:57.792Z
+  todos: []

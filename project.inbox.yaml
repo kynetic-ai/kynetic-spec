@@ -1639,14 +1639,6 @@ inbox:
       - daemon
     added_by: "@claude"
     created_at: 2026-03-15T19:51:03.768Z
-  - _ulid: 01KKT10X5JS0Y3883M8HFBMZCR
-    text: "Batch arg naming inconsistency: item ac add uses 'id' but item ac remove uses 'acId' for the
-      same AC identifier parameter. Should be consistent across subcommands."
-    tags:
-      - cli
-      - batch
-    added_by: "@claude"
-    created_at: 2026-03-16T00:34:05.106Z
   - _ulid: 01KKT8W615Z6Z2SXG22RFXHA4Z
     text: "Plan lint command (kspec plan lint) — semantic diagnostics for plan documents: spec-task
       coverage gaps, dependency validity, orphan specs, priority inversions. Standalone for draft
