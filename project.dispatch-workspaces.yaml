@@ -15585,18 +15585,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/clean-up-dangling-references-on-item-deletion/01km6edz
-    canonical_branch_head: c6a9e8e762c6937ecabbb3488d34fb7d36f1e771
+    canonical_branch_head: 42888ca3f06655b7f48977f6bfe33781805ab5f4
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T20:20:37.231Z
+      updated_at: 2026-03-20T20:34:33.028Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T20:20:42.384Z
+      updated_at: 2026-03-20T20:34:33.028Z
     integration:
       status: pending
       detail: null
@@ -15604,7 +15604,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: c6a9e8e762c6937ecabbb3488d34fb7d36f1e771
-      updated_at: 2026-03-20T20:20:37.231Z
+      updated_at: 2026-03-20T20:34:33.028Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM6EDZF8S463CZME2XD4065Y"
@@ -15612,9 +15612,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T20:20:42.384Z
-      last_reconciled_at: 2026-03-20T20:20:42.384Z
+      last_reconciled_at: 2026-03-20T20:34:33.028Z
       created_at: 2026-03-20T20:20:37.231Z
-      updated_at: 2026-03-20T20:20:42.384Z
+      updated_at: 2026-03-20T20:34:33.028Z
     workspace_id: dispatch-workspace-01KM6EDZF8S463CZME2XD4065Y
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
