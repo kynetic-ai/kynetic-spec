@@ -12670,18 +12670,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-test-dispatch-shared-checkout-safety/01km3zmf
-    canonical_branch_head: 6385dea4f2dc4387f33bb3cb4dd8a99645d1e339
+    canonical_branch_head: 71a378aa525231a491e7c353dc542c159e2c980f
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T02:25:05.623Z
+      updated_at: 2026-03-20T02:25:09.660Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T02:25:05.623Z
+      updated_at: 2026-03-20T02:25:09.660Z
     integration:
       status: pending
       detail: null
@@ -12689,24 +12689,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 6385dea4f2dc4387f33bb3cb4dd8a99645d1e339
-      updated_at: 2026-03-20T02:25:05.623Z
-    lifecycle_state: ready
+      updated_at: 2026-03-20T02:25:09.660Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM3ZMFYDXR42KW2KGZ09RYYD"
     task_slug: task-test-dispatch-shared-checkout-safety
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T02:15:54.788Z
-      last_reconciled_at: 2026-03-20T02:25:05.623Z
+      last_reconciled_at: 2026-03-20T02:25:09.660Z
       created_at: 2026-03-20T02:15:53.422Z
-      updated_at: 2026-03-20T02:25:05.623Z
+      updated_at: 2026-03-20T02:25:09.660Z
     workspace_id: dispatch-workspace-01KM3ZMFYDXR42KW2KGZ09RYYD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 71a378aa525231a491e7c353dc542c159e2c980f
+        last_seen_at: 2026-03-20T02:25:09.660Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-dispatch-shared-checkout-safety-01km3zmf-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-test-dispatch-shared-checkout-safety/01km3zmf
-        head: 6385dea4f2dc4387f33bb3cb4dd8a99645d1e339
-        last_seen_at: 2026-03-20T02:15:53.422Z
+        head: 71a378aa525231a491e7c353dc542c159e2c980f
+        last_seen_at: 2026-03-20T02:25:09.660Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-test-dispatch-shared-checkout-safety-01km3zmf
