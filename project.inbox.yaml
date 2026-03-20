@@ -1604,15 +1604,6 @@ inbox:
       - plan
     added_by: "@claude"
     created_at: 2026-03-15T03:40:48.828Z
-  - _ulid: 01KKQSRQADYB6JJ7ARDK9PCFSD
-    text: "Worktree guard blocks git push from within kspec worktrees even though push is safe.
-      Workaround: push from main repo via git push origin <branch>. Guard should allow push
-      operations — only reset/rebase/clean are genuinely dangerous to session state."
-    tags:
-      - bug
-      - worktree-guard
-    added_by: "@claude"
-    created_at: 2026-03-15T03:48:48.077Z
   - _ulid: 01KKR5PY7HZDRQGD9J1XD2C08A
     text: "SUGGESTION from PR #873: ws-invalidation module subscribes to topic 'tasks' but daemon
       broadcasts on 'tasks:updates'. Exact-match semantics in pubsub.ts means centralized WS
