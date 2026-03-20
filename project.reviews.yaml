@@ -29302,6 +29302,18 @@ reviews:
         runner: npm
         created_at: 2026-03-20T16:25:36.024Z
         completed_at: 2026-03-20T16:25:36.024Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Repository-wide pre-existing validation debt unrelated to this task: 3 reference errors
+          in .kspec/modules/meta.yaml, 30 orphaned-spec alignment warnings, and completeness
+          warnings including pre-existing invalid AC annotations."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T16:25:37.564Z
+        completed_at: 2026-03-20T16:25:37.564Z
     events:
       - _ulid: 01KM60V178R7HF039PAYY49V1A
         actor: Jacob Chapel
@@ -29337,6 +29349,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM6122S62YYHVDAVKYKYEG0J
         timestamp: 2026-03-20T16:25:37.040Z
+      - _ulid: 01KM6123R4VNWBNWM4HZER6RT3
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T16:25:37.797Z
     examined_commit: cef00da87ceba5a7f6cc96733b0f9de12a6f6f29
     external_links: []
     lifecycle_state: open
@@ -29386,5 +29405,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T16:21:45.833Z
-    updated_at: 2026-03-20T16:25:36.806Z
+    updated_at: 2026-03-20T16:25:37.564Z
     notes: []
