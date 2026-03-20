@@ -29648,6 +29648,17 @@ reviews:
         runner: npm
         created_at: 2026-03-20T16:49:58.908Z
         completed_at: 2026-03-20T16:49:58.908Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation still reports pre-existing repository reference, alignment, and completeness
+          debt unrelated to this task; no new task-specific validation issue was identified.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T16:50:00.401Z
+        completed_at: 2026-03-20T16:50:00.401Z
     events:
       - _ulid: 01KM625X0SV6XYAKPHNWDTJEB5
         actor: Jacob Chapel
@@ -29683,6 +29694,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM62EQBHM2G6738BBMVKZXFK
         timestamp: 2026-03-20T16:49:59.883Z
+      - _ulid: 01KM62ER9MD8W154TVSHDZJEJG
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T16:50:00.628Z
     examined_commit: cdb70fae4e3fc3481147505e3f19023b1113c5fc
     external_links: []
     lifecycle_state: open
@@ -29722,5 +29740,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T16:45:10.553Z
-    updated_at: 2026-03-20T16:49:59.666Z
+    updated_at: 2026-03-20T16:50:00.401Z
     notes: []
