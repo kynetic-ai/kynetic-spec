@@ -28859,7 +28859,24 @@ reviews:
     slugs: []
     title: Review auto-unregister stale projects
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: packages/daemon/src/project-context.ts, packages/daemon/src/watcher.ts,
+          tests/daemon-context-manager.test.ts, tests/daemon-watcher-error-handling.test.ts, plus
+          surrounding routes/server/middleware files. Commands run: git diff/stat/log, kspec task
+          get, kspec item get, kspec validate, rg AC annotations, npm test. Claims verified: watcher
+          now invokes permanent-failure callback after ENOENT exhaustion; ProjectContextManager
+          unregisters the project from that callback; full test suite passes. Categories searched:
+          correctness, edge cases, error handling, test quality, integration; no task-specific
+          blockers found."
+        name: review-evidence
+        required: false
+        runner: reviewer
+        created_at: 2026-03-20T14:28:14.431Z
+        completed_at: 2026-03-20T14:28:14.431Z
     events:
       - _ulid: 01KM5T3FJHFF1YR1RTG194QY0Z
         actor: Jacob Chapel
@@ -28874,6 +28891,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T14:24:39.320Z
+      - _ulid: 01KM5TB5PJ8T2MYM6F7DEACJNR
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: review-evidence
+        timestamp: 2026-03-20T14:28:14.675Z
     examined_commit: 28988e187a61dfc78211068ce94987f0fcdb39fe
     external_links: []
     lifecycle_state: open
@@ -28886,5 +28910,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T14:24:02.641Z
-    updated_at: 2026-03-20T14:24:38.903Z
+    updated_at: 2026-03-20T14:28:14.431Z
     notes: []
