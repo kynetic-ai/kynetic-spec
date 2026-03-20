@@ -21,7 +21,7 @@
 	const compositionConfigsQuery = createQuery(() => ({
 		queryKey: queryKeys.automation.compositionConfigs(),
 		queryFn: () => fetchCompositionConfigs(),
-		enabled: isProjectInitialized(),
+		enabled: isProjectInitialized() && !isStaticMode(),
 	}));
 
 	let compositionConfigs = $derived<CompositionConfigSummary[]>(
