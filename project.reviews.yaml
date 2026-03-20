@@ -30485,6 +30485,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T18:02:46.273Z
+      - _ulid: 01KM676HMZ5CTABXDE5ZFQXT89
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM66JKZS79QHA0Y9FJ69ASAH
+        timestamp: 2026-03-20T18:12:54.559Z
     examined_commit: da5c883a711417c070887f27271be92cd51ba7c5
     external_links: []
     lifecycle_state: closed
@@ -30521,6 +30527,13 @@ reviews:
               to `SessionTriggerSchema.options` therefore removes a supported API filter instead of
               just hardening invalid input.
             created_at: 2026-03-20T18:02:37.849Z
+          - _ulid: 01KM676HD04J05N1ZRFF8RX7QN
+            author: Jacob Chapel
+            body: Fixed in commit 8334eae8de18d4abe39d8b6e91fcbe1f0642553f. The sessions list/search query
+              schemas now keep the supported legacy trigger=dispatched alias while remaining closed
+              over known values, so task.* dispatch filters still pass framework validation instead
+              of regressing to 400s.
+            created_at: 2026-03-20T18:12:54.304Z
         kind: blocker
       - _ulid: 01KM66JMS4X669GZCG5R2Z7881
         entries:
@@ -30580,7 +30593,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T18:02:46.272Z
     created_at: 2026-03-20T17:57:31.038Z
-    updated_at: 2026-03-20T18:02:46.273Z
+    updated_at: 2026-03-20T18:12:54.304Z
     notes: []
   - _ulid: 01KM66Q672GTMDNG9S132WCM1N
     slugs: []
