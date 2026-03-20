@@ -25707,3 +25707,29 @@ reviews:
     created_at: 2026-03-20T05:02:48.933Z
     updated_at: 2026-03-20T05:06:57.048Z
     notes: []
+  - _ulid: 01KM4TJ29CVV524JZ4MFYJ1DM0
+    slugs: []
+    title: Review recover missing workspace for automation-eligible in-progress tasks
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM4TJ29BJWJ88E7M03EQXV38
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T05:12:46.123Z
+    examined_commit: 4bf313b436b3c043e28c31e7c6c88ecd5222fa7b
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM4NHPTCMTXAVKH0STBCVF22"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T05:12:46.124Z
+    updated_at: null
+    notes: []
