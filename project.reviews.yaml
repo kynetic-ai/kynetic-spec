@@ -31666,7 +31666,20 @@ reviews:
     slugs: []
     title: Review @01KM6BGYMGZ518JENMCRACJPX3 (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation completed with the repository's existing warnings baseline only (exit 6
+          without --warnings-ok): orphaned specs, uncovered AC annotations in tests, and one
+          orphaned skill directory. No new schema or reference errors were introduced by this
+          change."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T21:18:59.495Z
+        completed_at: 2026-03-20T21:18:59.495Z
     events:
       - _ulid: 01KM6HP6869XV4E6583E7606WN
         actor: Jacob Chapel
@@ -31695,6 +31708,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T21:18:58.947Z
+      - _ulid: 01KM6HV94WHPQQECZ7GCSEX09N
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-20T21:18:59.740Z
     examined_commit: faf60b38d295340053d86214b6e13d69e0ced421
     external_links: []
     lifecycle_state: open
@@ -31745,5 +31765,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-20T21:16:12.935Z
-    updated_at: 2026-03-20T21:18:58.688Z
+    updated_at: 2026-03-20T21:18:59.495Z
     notes: []
