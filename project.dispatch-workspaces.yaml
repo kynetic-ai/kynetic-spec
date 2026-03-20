@@ -14767,7 +14767,7 @@ workspaces:
         head: da5c883a711417c070887f27271be92cd51ba7c5
         last_seen_at: 2026-03-20T18:03:43.774Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-api-input-validation-01km5z4m
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: a507fc148a704f8aa708f7e5599780cbbac0622f
     bootstrap:
       status: succeeded
@@ -14877,7 +14877,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T18:03:46.314Z
+      updated_at: 2026-03-20T18:03:55.207Z
     integration:
       status: pending
       detail: null
@@ -14892,10 +14892,10 @@ workspaces:
     task_slug: fix-plans-page-progress-bar-using-unreliable-tailwind-arbitrary-value-classes
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-20T17:56:50.635Z
-      last_reconciled_at: 2026-03-20T18:03:46.314Z
+      last_active_at: 2026-03-20T18:03:55.207Z
+      last_reconciled_at: 2026-03-20T18:03:55.207Z
       created_at: 2026-03-20T17:56:42.451Z
-      updated_at: 2026-03-20T18:03:53.185Z
+      updated_at: 2026-03-20T18:03:55.207Z
     workspace_id: dispatch-workspace-01KM65J5SV82ZJNT6XQX2YN1RS
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
