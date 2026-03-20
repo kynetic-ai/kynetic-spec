@@ -106,6 +106,13 @@ function parseUptimeSeconds(raw: unknown): number | null {
   return null;
 }
 
+export function buildDaemonChildEnv(
+  baseEnv: NodeJS.ProcessEnv = process.env,
+): NodeJS.ProcessEnv {
+  const { KSPEC_NO_DAEMON: _kspecNoDaemon, ...childEnv } = baseEnv;
+  return { ...childEnv, BUN_ENV: 'production' };
+}
+
 
 /**
  * AC: @cli-serve-commands ac-11
@@ -320,7 +327,7 @@ async function startServer(opts: {
       detached: true,
       stdio: 'ignore', // TODO: redirect to log file when logging implemented
       cwd: process.cwd(),
-      env: { ...process.env, BUN_ENV: 'production' },
+      env: buildDaemonChildEnv(),
     });
 
     // Detach from parent
@@ -367,7 +374,7 @@ async function startServer(opts: {
     const child = spawn(runtime, [daemonBinary, '--port', String(port), '--kspec-dir', kspecDir], {
       stdio: 'inherit',
       cwd: process.cwd(),
-      env: { ...process.env, BUN_ENV: 'production' },
+      env: buildDaemonChildEnv(),
     });
 
     // Handle Ctrl+C - forward SIGTERM to child for graceful shutdown
