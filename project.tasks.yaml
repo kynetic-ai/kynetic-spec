@@ -110399,5 +110399,17 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T05:50:14.474Z
+    - _ulid: 01KM4X6ZW3702FYWEAK889X81Y
+      content: "Fix cycle update: coalesced .kspec-sessions watcher debounce keys by logical session root
+        so the Chokidar/Linux fallback emits one sessions-topic broadcast per session change instead
+        of one per filesystem path. Added a regression test that creates a session directory plus
+        session.yaml and asserts a single callback for the session root. Verification: npm run
+        typecheck; npm test -- tests/session-watcher.test.ts tests/web-ui-tanstack-query.test.ts.
+        Full npm test on the rebased branch still has unrelated failures in
+        tests/agent-dispatch-engine.test.ts (dispatch prompt guardrails) and
+        tests/dispatch-runtime-bootstrap-contract.test.ts (bootstrap contract timeouts)."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T05:59:08.931Z
   todos: []
   automation: eligible
