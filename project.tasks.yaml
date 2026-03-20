@@ -110821,7 +110821,7 @@
   spec_ref: "@api-input-type-safety"
   plan_ref: "@plan-input-validation-hardening"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-schema-derived-types"
@@ -110832,9 +110832,18 @@
     - validation
     - web-ui
   vcs_refs: []
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-20T17:56:05.288Z
+    commit: a507fc148a704f8aa708f7e5599780cbbac0622f
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
   session_id: 01KM655P095P5HDD91PN3WAT7C
   created_at: 2026-03-20T15:52:03.070Z
   started_at: 2026-03-20T17:38:02.713Z
+  submitted_at: 2026-03-20T17:56:05.794Z
   notes:
     - _ulid: 01KM65GM62PJ96MV3HQ5E87EDK
       content: Tightening daemon route schemas to use canonical enum options through shared enum helpers.
