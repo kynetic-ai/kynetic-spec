@@ -23126,6 +23126,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T00:14:39.932Z
+      - _ulid: 01KM49G8V2Q1D8HAYDF6MPGNH9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM49G8CDVZK6BACJ7PATMBVY
+        timestamp: 2026-03-20T00:14:41.506Z
     examined_commit: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
     external_links: []
     lifecycle_state: open
@@ -23135,10 +23142,31 @@ reviews:
       content_hash: ""
       ref: "@01KKX6QPC0374PT4W93CMA7EMX"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM49G8CDVZK6BACJ7PATMBVY
+        entries:
+          - _ulid: 01KM49G8CD2CS48T6WB7904N3M
+            author: Jacob Chapel
+            body: 'Evidence log. Files read: src/parser/shadow.ts, src/cli/commands/inbox.ts,
+              src/cli/commands/setup.ts, src/cli/commands/skill-install.ts,
+              src/cli/commands/tasks.ts, src/cli/commands/workflow.ts,
+              tests/shadow-commit-call-site-regression.test.ts, tests/agent-dispatch-engine.test.ts.
+              Commands run: git diff --stat, git diff, kspec task get, kspec review for-task, kspec
+              review get, rg commitIfShadow, npm test -- --run
+              tests/shadow-commit-call-site-regression.test.ts, kspec validate, npm test, npm test
+              -- --run tests/agent-dispatch-engine.test.ts -t "AC-12: Shadow branch mutations
+              serialized via mutex", npm test. Claims verified: the changed call sites now pass
+              entity refs or omit them intentionally for batch operations; verified by reading
+              commitIfShadow/generateCommitMessage and by the new regression test asserting concrete
+              shadow commit subjects. Categories searched: correctness, edge cases, error handling,
+              test quality, integration. Findings: no change-specific defects found; full-suite gate
+              required one rerun after an isolated agent-dispatch-engine flake, then passed
+              cleanly.'
+            created_at: 2026-03-20T00:14:41.037Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T00:06:02.730Z
-    updated_at: 2026-03-20T00:14:39.457Z
+    updated_at: 2026-03-20T00:14:41.037Z
     notes: []
   - _ulid: 01KM4990NW27N2DBW6TFE9MZCY
     slugs: []
