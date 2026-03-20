@@ -108872,6 +108872,17 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T01:54:30.115Z
+    - _ulid: 01KM4GDE7HGGBQZT4ESA0Y36C6
+      content: "[FIX_CYCLE: 4] Rebased the canonical worker branch onto origin/dev to remove unrelated
+        stacked task history called out in review, leaving only the two workspace-collision commits
+        on branch head 3d36ababa. Verified the reviewed full-suite failures were non-deterministic:
+        the focused repro subset passed both on this branch and on clean origin/dev, and the
+        required full gate now passes on the rebased snapshot with npm test (288 files, 6626 tests).
+        No task-local code changes were required beyond the lineage repair; this cycle addresses the
+        branch-isolation blocker and re-establishes a green gate on the current head."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T02:15:28.753Z
   todos: []
   automation: eligible
 - _ulid: 01KM289GY9589XH063SSFMBJFQ
