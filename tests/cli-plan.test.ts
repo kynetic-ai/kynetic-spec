@@ -580,14 +580,12 @@ describe("Integration: plan commands", () => {
         'plan add --title "Plan Metrics" --content "Metrics" --slug plan-metrics',
         isolatedTempDir,
       );
-      const plan = kspecJson<{ _ulid: string }>("plan get @plan-metrics --json", isolatedTempDir);
-      const shortPlanRef = `@${plan._ulid.slice(0, 8)}`;
       kspec(
-        `task add --title "Active work" --slug active-work --plan-ref ${shortPlanRef}`,
+        'task add --title "Active work" --slug active-work --plan-ref @plan-metrics',
         isolatedTempDir,
       );
       kspec(
-        `task add --title "Cancelled work" --slug cancelled-work --plan-ref ${shortPlanRef}`,
+        'task add --title "Cancelled work" --slug cancelled-work --plan-ref @plan-metrics',
         isolatedTempDir,
       );
       kspec('task cancel @cancelled-work --reason "No longer needed"', isolatedTempDir);

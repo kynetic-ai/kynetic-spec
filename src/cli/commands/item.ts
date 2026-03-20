@@ -2007,8 +2007,8 @@ Examples:
       }
     });
 
-  // kspec item ac remove <ref> <ac-id>
-  markMutating(acCmd.command("remove <ref> <acId>"))
+  // kspec item ac remove <ref> <id>
+  markMutating(acCmd.command("remove <ref> <id>"))
     .description("Remove an acceptance criterion")
     .option("--force", "Skip confirmation")
     .action(async (ref: string, acId: string, options) => {
