@@ -23097,3 +23097,29 @@ reviews:
     created_at: 2026-03-20T00:06:02.730Z
     updated_at: 2026-03-20T00:06:23.618Z
     notes: []
+  - _ulid: 01KM4990NW27N2DBW6TFE9MZCY
+    slugs: []
+    title: Review shared-checkout drift detection and safe repair
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM4990NWPMQDR5CV4H1QS3BG
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T00:10:43.772Z
+    examined_commit: 05e31856c8a3ccf29936c1b0df5efe5902a98977
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM3ZMF9C5B3JEDTE4AR74K46"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T00:10:43.772Z
+    updated_at: null
+    notes: []
