@@ -11976,34 +11976,34 @@ workspaces:
     canonical_branch: dispatch/task/fix-shadow-commit-call-sites-that-omit-entity-refs/01kkx6qp
     canonical_branch_head: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-20T00:16:46.104Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-20T01:40:20.769Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T00:16:47.340Z
+      updated_at: 2026-03-20T01:40:20.769Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 53be2094bc46d5c352d60c095941b9033e61d079
-      updated_at: 2026-03-20T00:16:46.104Z
-    lifecycle_state: ready
+      updated_at: 2026-03-20T01:40:20.769Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KKX6QPC0374PT4W93CMA7EMX"
     task_slug: fix-shadow-commit-call-sites-that-omit-entity-refs
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T00:04:38.637Z
-      last_reconciled_at: 2026-03-20T00:16:47.340Z
+      last_reconciled_at: 2026-03-20T01:40:20.769Z
       created_at: 2026-03-19T06:53:50.346Z
-      updated_at: 2026-03-20T00:16:47.340Z
+      updated_at: 2026-03-20T01:40:20.769Z
     workspace_id: dispatch-workspace-01KKX6QPC0374PT4W93CMA7EMX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -12310,34 +12310,34 @@ workspaces:
     canonical_branch: dispatch/task/task-implement-cancelled-task-dependency-cleanup/01km43vy
     canonical_branch_head: 86035071daccf934787a0b9f1fe7a029e343d28a
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-20T00:32:50.607Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-20T01:40:21.013Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T00:32:53.586Z
+      updated_at: 2026-03-20T01:40:21.013Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
-      updated_at: 2026-03-20T00:32:50.607Z
-    lifecycle_state: ready
+      updated_at: 2026-03-20T01:40:21.013Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KM43VYQXEFJMMYK2184MR7FH"
     task_slug: task-implement-cancelled-task-dependency-cleanup
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T00:26:20.714Z
-      last_reconciled_at: 2026-03-20T00:32:53.586Z
+      last_reconciled_at: 2026-03-20T01:40:21.013Z
       created_at: 2026-03-19T22:45:09.789Z
-      updated_at: 2026-03-20T00:32:53.586Z
+      updated_at: 2026-03-20T01:40:21.013Z
     workspace_id: dispatch-workspace-01KM43VYQXEFJMMYK2184MR7FH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -12560,12 +12560,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T00:38:18.087Z
+      updated_at: 2026-03-20T01:40:21.229Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T00:38:21.826Z
+      updated_at: 2026-03-20T01:40:21.229Z
     integration:
       status: pending
       detail: null
@@ -12573,17 +12573,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 674cabcd8646e873f128fa67b9d2db44ae74797a
-      updated_at: 2026-03-20T00:38:18.087Z
-    lifecycle_state: ready
+      updated_at: 2026-03-20T01:40:21.229Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM3ZMF9C5B3JEDTE4AR74K46"
     task_slug: task-implement-dispatch-shared-checkout-safety
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T00:37:47.389Z
-      last_reconciled_at: 2026-03-20T00:38:21.826Z
+      last_reconciled_at: 2026-03-20T01:40:21.229Z
       created_at: 2026-03-19T23:58:20.872Z
-      updated_at: 2026-03-20T00:38:21.826Z
+      updated_at: 2026-03-20T01:40:21.229Z
     workspace_id: dispatch-workspace-01KM3ZMF9C5B3JEDTE4AR74K46
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
