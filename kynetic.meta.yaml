@@ -7528,6 +7528,16 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-20T01:33:05.596Z
+  - _ulid: 01KM4FMZCQCYD4V0F2M0R7RC26
+    type: friction
+    content: "Full npm test in the dispatch worker workspace was non-deterministic across consecutive
+      runs on the same rebased head: two runs failed on different unrelated test sets before a third
+      run passed cleanly. This makes fix-cycle merge gates harder to interpret when task-specific
+      coverage is already green."
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-20T02:02:07.127Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
