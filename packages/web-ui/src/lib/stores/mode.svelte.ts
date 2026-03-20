@@ -47,7 +47,7 @@ export async function initMode(): Promise<void> {
 
 	// 1. Try daemon health check
 	try {
-		const response = await fetch(`${DAEMON_API_BASE}/health`, {
+		const response = await fetch(`${DAEMON_API_BASE}/api/health`, {
 			signal: AbortSignal.timeout(2000)
 		});
 		if (response.ok) {

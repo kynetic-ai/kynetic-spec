@@ -577,8 +577,8 @@ describe("settings page migration (@ui-data-freshness ac-1)", () => {
     expect(settingsSrc).not.toContain("async function loadAllData");
   });
 
-  it("disables daemon-only queries in static mode", () => {
-    expect(settingsSrc).toContain("!isStaticMode()");
+  it("handles static mode in queryFn rather than enabled gate", () => {
+    expect(settingsSrc).toContain("isStaticMode()");
   });
 });
 

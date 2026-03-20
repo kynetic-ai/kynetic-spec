@@ -47,7 +47,7 @@
 	const sessionQuery = createQuery(() => ({
 		queryKey: queryKeys.sessions.detail(sessionId),
 		queryFn: () => fetchSession(sessionId),
-		enabled: isProjectInitialized() && !isStaticMode(),
+		enabled: isProjectInitialized(),
 	}));
 
 	// Events are fetched once on load (for catch-up/historical), then updated incrementally via WS.
