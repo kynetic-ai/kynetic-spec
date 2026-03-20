@@ -7505,6 +7505,18 @@ observations:
     resolution: null
     resolved: false
     created_at: 2026-03-19T22:58:04.879Z
+  - _ulid: 01KM4DZTMZFZ2VM5NHHR58MES8
+    type: friction
+    content: Automated review/merge flow accepted a false 'Already up to date' conclusion. The reviewer
+      approved and completed @01KM4BK8 even though
+      'dev...dispatch/task/fix-dispatch-checkout-dependency-drift-after-new-npm-deps/01km4bk8' still
+      showed the task branch ahead by two commits. Review/merge guidance or tooling should require
+      ancestry verification (for example rev-list/merge-base) before concluding that a branch is
+      already integrated.
+    author: Jacob Chapel
+    resolution: null
+    resolved: false
+    created_at: 2026-03-20T01:33:05.568Z
 schedules:
   - _ulid: 01KM23DEE19G916QCSW8PV3YD9
     action:
