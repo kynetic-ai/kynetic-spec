@@ -221,6 +221,11 @@ describe('test runner environment checks', () => {
       });
 
       it('detects missing node_modules', () => {
+        fs.writeFileSync(
+          path.join(tempDir, 'package.json'),
+          JSON.stringify({ devDependencies: { vitest: '^4.0.0' } }),
+        );
+        fs.writeFileSync(path.join(tempDir, 'package-lock.json'), '{}');
         const result = runner.checkDependencies(tempDir);
         expect(result.ok).toBe(false);
         expect(result.reason).toContain('node_modules/ not found');
@@ -228,13 +233,43 @@ describe('test runner environment checks', () => {
 
       it('detects missing vitest in node_modules', () => {
         fs.mkdirSync(path.join(tempDir, 'node_modules'), { recursive: true });
+        fs.writeFileSync(
+          path.join(tempDir, 'package.json'),
+          JSON.stringify({ devDependencies: { vitest: '^4.0.0' } }),
+        );
+        fs.writeFileSync(path.join(tempDir, 'package-lock.json'), '{}');
         const result = runner.checkDependencies(tempDir);
         expect(result.ok).toBe(false);
-        expect(result.reason).toContain('vitest not found');
+        expect(result.reason).toContain('vitest');
+      });
+
+      it('detects newly added direct dependencies that are missing from node_modules', () => {
+        fs.mkdirSync(path.join(tempDir, 'node_modules', 'vitest'), { recursive: true });
+        fs.writeFileSync(
+          path.join(tempDir, 'package.json'),
+          JSON.stringify({
+            dependencies: { croner: '^10.0.0' },
+            devDependencies: { vitest: '^4.0.0' },
+          }),
+        );
+        fs.writeFileSync(path.join(tempDir, 'package-lock.json'), '{}');
+
+        const result = runner.checkDependencies(tempDir);
+        expect(result.ok).toBe(false);
+        expect(result.reason).toContain('croner');
       });
 
       it('passes when node_modules and vitest exist', () => {
         fs.mkdirSync(path.join(tempDir, 'node_modules', 'vitest'), { recursive: true });
+        fs.mkdirSync(path.join(tempDir, 'node_modules', 'croner'), { recursive: true });
+        fs.writeFileSync(
+          path.join(tempDir, 'package.json'),
+          JSON.stringify({
+            dependencies: { croner: '^10.0.0' },
+            devDependencies: { vitest: '^4.0.0' },
+          }),
+        );
+        fs.writeFileSync(path.join(tempDir, 'package-lock.json'), '{}');
         const result = runner.checkDependencies(tempDir);
         expect(result.ok).toBe(true);
       });
