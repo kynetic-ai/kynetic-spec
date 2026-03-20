@@ -30491,6 +30491,12 @@ reviews:
         payload:
           thread_ulid: 01KM66JKZS79QHA0Y9FJ69ASAH
         timestamp: 2026-03-20T18:12:54.559Z
+      - _ulid: 01KM676JEG3GTS0V76NRV8G5FD
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM66JP9ZME06CKH2PWHMP2A9
+        timestamp: 2026-03-20T18:12:55.377Z
     examined_commit: da5c883a711417c070887f27271be92cd51ba7c5
     external_links: []
     lifecycle_state: closed
@@ -30583,6 +30589,12 @@ reviews:
               rows instead of a framework validation error, which is exactly the failure mode this
               task is meant to eliminate for typed filters."
             created_at: 2026-03-20T18:02:38.632Z
+          - _ulid: 01KM676J6K0YKDRRVHJAWN7KEA
+            author: Jacob Chapel
+            body: Fixed in commit 8334eae8de18d4abe39d8b6e91fcbe1f0642553f. /api/reviews subject_type now
+              derives from ReviewSubjectSchema.options, so invalid discriminator values fail at the
+              framework boundary instead of silently returning empty results.
+            created_at: 2026-03-20T18:12:55.123Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -30593,7 +30605,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T18:02:46.272Z
     created_at: 2026-03-20T17:57:31.038Z
-    updated_at: 2026-03-20T18:12:54.304Z
+    updated_at: 2026-03-20T18:12:55.123Z
     notes: []
   - _ulid: 01KM66Q672GTMDNG9S132WCM1N
     slugs: []
