@@ -300,7 +300,10 @@ daemon:
 
       // Run a CLI command that triggers maybeAutoStartDaemon()
       // Using 'validate' since it doesn't require init and loads context
-      const result = kspec("validate", tempDir, { expectFail: true });
+      const result = kspec("validate", tempDir, {
+        expectFail: true,
+        env: { KSPEC_NO_DAEMON: "0" },
+      });
 
       // Should contain the deprecation warning in stderr
       expect(result.stderr).toContain('Manifest "daemon" block is deprecated');

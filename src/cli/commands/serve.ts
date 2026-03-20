@@ -256,7 +256,7 @@ async function startServer(opts: {
   const pidManager = new PidFileManager();
 
   // Check if already running
-  if (pidManager.isDaemonRunning()) {
+  if (pidManager.isDaemonRunning({ ignoreNoDaemon: true })) {
     const pid = pidManager.readPid();
     const existingPort = pidManager.readPort();
     if (isJsonMode()) {
@@ -333,13 +333,13 @@ async function startServer(opts: {
 
     while (Date.now() - startTime < maxWait) {
       pid = pidManager.readPid();
-      if (pid && pidManager.isDaemonRunning()) {
+      if (pid && pidManager.isDaemonRunning({ ignoreNoDaemon: true })) {
         break;
       }
       await new Promise(resolve => setTimeout(resolve, 100));
     }
 
-    if (pid && pidManager.isDaemonRunning()) {
+    if (pid && pidManager.isDaemonRunning({ ignoreNoDaemon: true })) {
       if (isJsonMode()) {
         output({ running: true, pid, port });
       } else {
@@ -404,7 +404,7 @@ async function stopServer(opts: { kspecDir?: string; json?: boolean }): Promise<
 
   const pidManager = new PidFileManager();
 
-  if (!pidManager.isDaemonRunning()) {
+  if (!pidManager.isDaemonRunning({ ignoreNoDaemon: true })) {
     // AC: @cli-serve-commands ac-5
     if (isJsonMode()) {
       output({ running: false });
@@ -438,13 +438,13 @@ async function stopServer(opts: { kspecDir?: string; json?: boolean }): Promise<
     const maxWait = 5000;
     const startTime = Date.now();
     while (Date.now() - startTime < maxWait) {
-      if (!pidManager.isDaemonRunning()) {
+      if (!pidManager.isDaemonRunning({ ignoreNoDaemon: true })) {
         break;
       }
       await new Promise(resolve => setTimeout(resolve, 100));
     }
 
-    if (pidManager.isDaemonRunning()) {
+    if (pidManager.isDaemonRunning({ ignoreNoDaemon: true })) {
       if (!isJsonMode()) {
         warn(`Daemon did not stop gracefully, forcing...`);
       }
@@ -477,7 +477,7 @@ async function statusServer(opts: { kspecDir?: string; json?: boolean }): Promis
   }
 
   const pidManager = new PidFileManager();
-  const running = pidManager.isDaemonRunning();
+  const running = pidManager.isDaemonRunning({ ignoreNoDaemon: true });
   const pid = pidManager.readPid();
 
   // Read port from global config (AC: @multi-directory-daemon ac-13)
@@ -591,7 +591,7 @@ async function restartServer(opts: { kspecDir?: string; json?: boolean }): Promi
     // Port file doesn't exist or is invalid, let startServer use config
   }
 
-  if (pidManager.isDaemonRunning()) {
+  if (pidManager.isDaemonRunning({ ignoreNoDaemon: true })) {
     if (!isJsonMode()) {
       info('Stopping daemon...');
     }

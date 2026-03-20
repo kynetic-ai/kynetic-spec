@@ -65,7 +65,7 @@ import {
   findClosestCommand,
   getAllCommands,
 } from "./suggest.js";
-import { PidFileManager } from "./pid-utils.js";
+import { isNoDaemonModeEnabled, PidFileManager } from "./pid-utils.js";
 import { getAlwaysSyncAnnotation, getMutatingAnnotation } from "./command-annotations.js";
 import { setSyncMode, clearSyncMode } from "./sync-mode.js";
 import { spawn } from "child_process";
@@ -130,6 +130,11 @@ async function maybeAcquireDispatchMutationLock(isMutating: boolean): Promise<vo
  */
 async function maybeAutoStartDaemon(): Promise<void> {
   try {
+    // AC: @multi-directory-daemon ac-32
+    if (isNoDaemonModeEnabled()) {
+      return;
+    }
+
     // Load context to get daemon config from kspec.config.yaml
     const context = await initContext();
     const daemonConfig = context.config.daemon;

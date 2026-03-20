@@ -15,6 +15,27 @@ import { readFileSync, writeFileSync, unlinkSync, existsSync, mkdirSync, openSyn
 import { join } from 'path';
 import { homedir } from 'os';
 
+function isFalsyNoDaemonValue(value: string): boolean {
+  switch (value.trim().toLowerCase()) {
+    case '':
+    case '0':
+    case 'false':
+    case 'no':
+    case 'off':
+      return true;
+    default:
+      return false;
+  }
+}
+
+export function isNoDaemonModeEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
+  const value = env.KSPEC_NO_DAEMON;
+  if (value === undefined) {
+    return false;
+  }
+  return !isFalsyNoDaemonValue(value);
+}
+
 export class PidFileManager {
   private configDir: string;
   private pidFilePath: string;
@@ -158,7 +179,11 @@ export class PidFileManager {
    * AC: @multi-directory-daemon ac-10
    * Checks if daemon is currently running based on PID file
    */
-  isDaemonRunning(): boolean {
+  isDaemonRunning(opts: { ignoreNoDaemon?: boolean } = {}): boolean {
+    if (!opts.ignoreNoDaemon && isNoDaemonModeEnabled()) {
+      return false;
+    }
+
     const pid = this.readPid();
     if (pid === null) {
       return false;

@@ -24,3 +24,7 @@ if (!globalThis.crypto) {
 if (!process.env.KSPEC_CLAUDE_HOME) {
   process.env.KSPEC_CLAUDE_HOME = mkdtempSync(join(tmpdir(), "kspec-test-claude-home-"));
 }
+
+if (!process.env.KSPEC_NO_DAEMON) {
+  process.env.KSPEC_NO_DAEMON = "1";
+}
