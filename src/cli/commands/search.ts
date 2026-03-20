@@ -18,10 +18,12 @@ import type {
   LoadedSpecItem,
   LoadedTask,
 } from "../../parser/yaml.js";
+import { ItemTypeSchema, TaskStatusSchema } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { formatMatchedFields, grepItem } from "../../utils/grep.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, output } from "../output.js";
+import { validateEnumOption } from "../validators.js";
 
 /**
  * Format a spec item for search results
@@ -186,6 +188,30 @@ export function registerSearchCommand(program: Command): void {
         const limit = parseInt(options.limit, 10) || 50;
         let inboxUlids: string[] = [];
         let metaUlids: string[] = [];
+
+        if (options.type) {
+          const typeResult = validateEnumOption(
+            options.type,
+            ItemTypeSchema.options,
+            "item type",
+          );
+          if (!typeResult.ok) {
+            error(typeResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+        }
+
+        if (options.status) {
+          const statusResult = validateEnumOption(
+            options.status,
+            TaskStatusSchema.options,
+            "task status",
+          );
+          if (!statusResult.ok) {
+            error(statusResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+        }
 
         // Search spec items
         // AC: @observation-content-search ac-global-search-filter - skip items when --observations-only

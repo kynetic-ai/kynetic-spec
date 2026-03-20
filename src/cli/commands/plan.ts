@@ -1031,7 +1031,16 @@ Examples:
 
         // AC: @plan-crud ac-7 - status filter
         if (options.status) {
-          plans = filterPlansByStatus(plans, options.status);
+          const statusResult = validateEnumOption(
+            options.status,
+            PlanStatusSchema.options,
+            "plan status",
+          );
+          if (!statusResult.ok) {
+            error(statusResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          plans = filterPlansByStatus(plans, statusResult.value);
         }
 
         // Sort by created date (newest first)
