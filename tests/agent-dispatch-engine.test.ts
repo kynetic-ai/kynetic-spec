@@ -3673,13 +3673,16 @@ describe("Self-trigger suppression", () => {
 // AC: @agent-dispatch-engine ac-19
 describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
   let testDir: string;
+  let remoteDir: string;
 
   beforeEach(async () => {
     testDir = await createTempDir("kspec-dispatch-reconcile-");
+    remoteDir = await createTempDir("kspec-dispatch-reconcile-remote-");
   });
 
   afterEach(async () => {
     await cleanupTempDir(testDir);
+    await cleanupTempDir(remoteDir);
   });
 
   // AC: @agent-dispatch-engine ac-19
@@ -3930,13 +3933,24 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
   });
 
   // AC: @dispatch-workspace-registry ac-11
-  it("treats missing in_progress worker worktrees as recoverable instead of discarding the queue entry", async () => {
+  it("reprovisions missing in_progress worker worktrees during dispatch bootstrap", async () => {
     const worker = makeTestAgent({
       id: "task-worker",
       dispatch: [{ on: "task.in_progress", filter: { automation: "eligible" } }],
       concurrency: { max_concurrent: 1 },
     });
     await setupProjectWithAgents(testDir, [worker]);
+    git(remoteDir, "init --bare");
+    git(testDir, `remote add origin "${remoteDir}"`);
+    await fs.writeFile(
+      path.join(testDir, "kspec.config.yaml"),
+      YAML.stringify({
+        dispatch: {
+          remote_sync: false,
+        },
+      }),
+      "utf-8",
+    );
 
     const taskId = testUlid("TASK", 32);
     const taskRef = `@${taskId}`;
@@ -3950,8 +3964,16 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
         slugs: ["task-reprovision-in-progress-workspace"],
       },
     });
-    await fs.rm(workspace.cwd, { recursive: true, force: true });
-    git(testDir, "worktree prune");
+    git(testDir, `push origin ${workspace.metadata.canonicalBranch}`);
+    git(testDir, `worktree remove --force ${workspace.cwd}`);
+    git(testDir, `branch -D ${workspace.metadata.canonicalBranch}`);
+    expect(fsSync.existsSync(workspace.cwd)).toBe(false);
+
+    const runSpy = vi.spyOn(invocationModule, "runInvocation").mockImplementation(async () => ({
+      session: {} as any,
+      outcome: "success" as const,
+      durationMs: 1,
+    }));
 
     const engine = new DispatchEngine({
       projectDir: testDir,
@@ -3960,45 +3982,19 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
       reconcileIntervalMs: 0,
       coalesceWindowMs: 0,
     });
-    type WorkspaceCandidateHealth = { eligible: boolean; exists: boolean; reason: string | null };
-    type QueueEntryProbe = {
-      _workspaceCandidateHealth: (entry: {
-        change: TaskStateChange;
-      }) => Promise<WorkspaceCandidateHealth>;
-    };
 
-    const result = await (engine as unknown as QueueEntryProbe)._workspaceCandidateHealth({
-      change: {
-        taskId,
-        taskRef,
-        fromStatus: "pending",
-        toStatus: "in_progress",
-        timestamp: Date.now(),
-        task: {
-          _ulid: taskId,
-          title: "Reprovision In Progress Workspace",
-          slugs: ["task-reprovision-in-progress-workspace"],
-          status: "in_progress",
-          type: "task",
-          priority: 1,
-          blocked_by: [],
-          depends_on: [],
-          context: [],
-          tags: [],
-          vcs_refs: [],
-          notes: [],
-          todos: [],
-          created_at: new Date().toISOString(),
-          automation: "eligible",
-        } as any,
-      },
-    });
+    await engine.start();
+    await waitForMockCall(runSpy);
 
-    expect(result).toMatchObject({
-      eligible: true,
-      exists: true,
+    expect(runSpy).toHaveBeenCalledTimes(1);
+    expect(runSpy.mock.calls[0]?.[0]).toMatchObject({
+      taskRef,
+      agent: expect.objectContaining({ id: "task-worker" }),
+      cwd: workspace.cwd,
     });
-    expect(fsSync.existsSync(workspace.cwd)).toBe(false);
+    expect(fsSync.existsSync(workspace.cwd)).toBe(true);
+
+    await engine.stop();
   });
 
   // AC: @dispatch-workspace-cleanup-policy ac-6
