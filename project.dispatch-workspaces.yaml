@@ -13819,7 +13819,7 @@ workspaces:
         head: dd5d3ee05e0e9b18dd64fba50fcf2ad200e6e1f0
         last_seen_at: 2026-03-20T05:52:50.858Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/align-item-ac-add-remove-ac-identifier-naming-01km4kpp
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: ae077977e2b5f008e5c9d4c9357ebd8e45074f7c
     bootstrap:
       status: succeeded
@@ -13945,9 +13945,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T06:14:26.007Z
-      last_reconciled_at: 2026-03-20T06:21:00.610Z
+      last_reconciled_at: 2026-03-20T06:21:07.561Z
       created_at: 2026-03-20T05:59:51.387Z
-      updated_at: 2026-03-20T06:21:00.610Z
+      updated_at: 2026-03-20T06:21:07.561Z
     workspace_id: dispatch-workspace-01KM4MSHAM7WJS8J9S05XPYA7D
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
