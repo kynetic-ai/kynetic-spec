@@ -3286,8 +3286,9 @@ interface DiscoverySubmissionLinkage {
 }
 
 /**
- * Attempt workspace discovery and recovery for a `pending_review` or
- * `needs_work` dispatch entry that has no healthy local workspace candidate.
+ * Attempt workspace discovery and recovery for a resumable dispatch entry
+ * (`in_progress`, `pending_review`, or `needs_work`) that has no healthy
+ * local workspace candidate.
  *
  * Applies explicit precedence ordering (AC-4):
  *   1. Existing registry state
