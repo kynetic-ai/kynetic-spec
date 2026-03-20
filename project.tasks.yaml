@@ -110029,7 +110029,7 @@
     install-core and it stripped the Stop hook. Setup should preserve user-added hooks or at least
     warn before overwriting.
   spec_ref: "@project-config"
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on: []
   context: []
@@ -110039,7 +110039,9 @@
     - hooks
     - bug
   vcs_refs: []
+  session_id: 01KM4SEQKP10EVJARN7XD205V7
   created_at: 2026-03-20T03:40:12.786Z
+  started_at: 2026-03-20T04:53:57.404Z
   notes:
     - _ulid: 01KM4N8K3PX7JE0MP9G2TDT6V1
       content: "Validated and clarified on 2026-03-19: kspec setup should only remove or rewrite Stop hook
