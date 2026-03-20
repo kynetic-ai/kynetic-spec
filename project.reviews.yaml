@@ -24619,6 +24619,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T02:13:57.949Z
+      - _ulid: 01KM4GB9TQ4CM3F1FXQ4WZ6NKG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM4GB9KSKHXQ45MP2B6PXMAZ
+        timestamp: 2026-03-20T02:14:18.711Z
     examined_commit: f2266e8aba0af3d0f269a2ac8b391fb8dc517c3e
     external_links: []
     lifecycle_state: closed
@@ -24628,7 +24635,40 @@ reviews:
       content_hash: ""
       ref: "@01KM46GRK3CYYA4V37D8Y32G4K"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM4GB9KSKHXQ45MP2B6PXMAZ
+        entries:
+          - _ulid: 01KM4GB9KS988PEZRY22N4N71K
+            author: Jacob Chapel
+            body: >-
+              Evidence log:
+
+              Files read: src/lib/plan-summary.ts, src/cli/commands/plan.ts,
+              packages/daemon/src/routes/plans.ts, src/export/json.ts, tests/plan-summary.test.ts,
+              tests/cli-plan.test.ts, tests/export/json.test.ts,
+              packages/web-ui/tests/e2e/plans.spec.ts.
+
+              Commands run: git diff 35dabeaac...f2266e8ab; kspec task get
+              @01KM46GRK3CYYA4V37D8Y32G4K; kspec item get @01KM46FW; rg -n \"AC: @01KM46FW|AC:
+              @plan-summary-metrics\" tests packages/web-ui/tests; kspec validate; npm test; npm
+              test -- tests/agent-dispatch-engine.test.ts
+              tests/canonical-task-workspace-contract.test.ts
+              tests/dispatch-runtime-bootstrap-contract.test.ts; npm test.
+
+              Claims verified: shared helper preserves derived_tasks and task.plan_ref linkage,
+              including short-ULID plan_ref matching; cancelled tasks are excluded from task_count
+              and task_progress totals across CLI list output, daemon plan summaries, and JSON
+              export/static surfaces.
+
+              Categories searched: correctness, regression risk, test quality, integration surface
+              coverage, merge-gate health.
+
+              Notes: kspec validate still reports pre-existing repo-wide reference/completeness debt
+              outside this task's touched files. The first full npm test run failed in unrelated
+              dispatch/bootstrap tests, but the isolated repro passed and a second full npm test run
+              passed cleanly (289 files, 6624 passed, 3 skipped).
+            created_at: 2026-03-20T02:14:18.489Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -24638,5 +24678,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T02:13:57.948Z
     created_at: 2026-03-20T02:03:43.338Z
-    updated_at: 2026-03-20T02:13:57.949Z
+    updated_at: 2026-03-20T02:14:18.489Z
     notes: []
