@@ -110489,5 +110489,15 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T06:51:26.659Z
+    - _ulid: 01KM50QQRFE5S4B27PYHJJ0TAP
+      content: "Fix cycle update: aligned sessions freshness ownership with the global ws invalidation
+        layer by removing page-level subscribe/unsubscribe expectations and keeping only local
+        agents/sessions handlers on /sessions. This prevents /sessions teardown from unsubscribing
+        globally owned topics and dropping invalidation for later views. Verification: npm run
+        typecheck; npm test -- tests/web-ui-tanstack-query.test.ts; npm test (290 files, 6659 tests
+        passed, 3 skipped)."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T07:00:43.407Z
   todos: []
   automation: eligible
