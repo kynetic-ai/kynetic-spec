@@ -29829,7 +29829,17 @@ reviews:
     slugs: []
     title: Review task-read-side-validation-warnings (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Fails only on pre-existing repo-wide reference/alignment/completeness debt in .kspec/meta
+          and fixture annotations; no new task-specific validation issue observed.
+        name: kspec validate
+        required: false
+        created_at: 2026-03-20T17:04:19.114Z
+        completed_at: 2026-03-20T17:04:19.114Z
     events:
       - _ulid: 01KM62RFW26ZK4GCGY5C6KW8GB
         actor: Jacob Chapel
@@ -29844,6 +29854,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T16:55:45.371Z
+      - _ulid: 01KM638YXBQHPJ0KZ8M6YJ492V
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T17:04:19.372Z
     examined_commit: 4a87401efe44bca228accf5120399874fa80f101
     external_links: []
     lifecycle_state: open
@@ -29856,5 +29873,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T16:55:19.683Z
-    updated_at: 2026-03-20T16:55:44.924Z
+    updated_at: 2026-03-20T17:04:19.114Z
     notes: []
