@@ -111498,7 +111498,7 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: blocked
+  status: needs_work
   blocked_by:
     - "Dispatch bootstrap failed: Dispatch shadow mutation lock unavailable while committing
       workspace registry for @01KM6BGYMGZ518JENMCRACJPX3: Timed out waiting for file lock on
