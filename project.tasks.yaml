@@ -110768,7 +110768,18 @@
   session_id: 01KM67PPHYZJSSF5Y945RD8267
   created_at: 2026-03-20T15:52:02.391Z
   started_at: 2026-03-20T18:22:28.825Z
-  notes: []
+  notes:
+    - _ulid: 01KM68BX70QRVQSJQVFYDPE0PD
+      content: "Added enum validation for CLI query/filter surfaces in
+        task/item/plan/review/triage/search/schedule/agent commands so invalid filter values fail
+        fast with valid alternatives instead of returning empty results. Added integration coverage
+        for invalid and valid filter values across CLI and meta-backed commands. Full npm test
+        passes. kspec validate still reports pre-existing reference/completeness debt unrelated to
+        this task. Note: the current branch does not expose tasks ready --status/--type flags, so
+        there was no validation hook to add there without expanding scope."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T18:33:18.816Z
   todos: []
   automation: eligible
 - _ulid: 01KM5Z4M7YQN173XSB98TPV8Y2
