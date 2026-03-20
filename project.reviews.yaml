@@ -30033,9 +30033,25 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T17:10:00.564Z
+      - _ulid: 01KM63KJPXXZ0AFR1S76RBC8G5
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-20T17:10:07.325Z
+      - _ulid: 01KM63KJPYN6M252VY1B4E82NW
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T17:10:07.326Z
     examined_commit: cdb70fae4e3fc3481147505e3f19023b1113c5fc
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -30080,7 +30096,14 @@ reviews:
               payload types."
             created_at: 2026-03-20T17:09:48.279Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-20T17:10:07.325Z
     created_at: 2026-03-20T17:04:43.695Z
-    updated_at: 2026-03-20T17:10:00.128Z
+    updated_at: 2026-03-20T17:10:07.326Z
     notes: []
