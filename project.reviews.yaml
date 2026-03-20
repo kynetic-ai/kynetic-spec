@@ -30851,7 +30851,19 @@ reviews:
     slugs: []
     title: Review task-parser-write-validation
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fails due to pre-existing repository meta/completeness debt unrelated to this task: 3
+          missing refs in .kspec/modules/meta.yaml plus longstanding completeness warnings. Parser
+          task code does not modify .kspec state."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T18:26:34.133Z
+        completed_at: 2026-03-20T18:26:34.133Z
     events:
       - _ulid: 01KM67QHD7C4AQP4B2HQTTSNRK
         actor: Jacob Chapel
@@ -30866,6 +30878,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T18:22:18.296Z
+      - _ulid: 01KM67ZJ88KRAY9HBFZEJYDNCW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T18:26:34.376Z
     examined_commit: a0bf72cf5aec046fb671938f44c6982741caacbf
     external_links: []
     lifecycle_state: open
@@ -30878,5 +30897,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T18:22:11.368Z
-    updated_at: 2026-03-20T18:22:18.040Z
+    updated_at: 2026-03-20T18:26:34.133Z
     notes: []
