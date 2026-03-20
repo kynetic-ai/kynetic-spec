@@ -315,7 +315,7 @@ traits:
     description: Commands that modify shadow branch state automatically commit changes with semantic messages
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     acceptance_criteria:
       - given: command modifies state in shadow worktree
         id: ac-1
