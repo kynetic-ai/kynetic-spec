@@ -110667,7 +110667,7 @@
   spec_ref: "@cli-input-type-safety"
   plan_ref: "@plan-input-validation-hardening"
   origin: derived
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on:
     - "@task-schema-derived-types"
@@ -110677,9 +110677,18 @@
     - cli
     - validation
   vcs_refs: []
+  submission_linkage:
+    review_url: null
+    branch: dev
+    captured_at: 2026-03-20T17:36:45.361Z
+    commit: 89942c26e4d0033049772e411e7235ee37407e86
+    remote: origin
+    remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+    upstream_ref: refs/heads/dev
   session_id: 01KM64AFAVFG0X3J4D30CEV4TA
   created_at: 2026-03-20T15:52:01.646Z
   started_at: 2026-03-20T17:23:09.339Z
+  submitted_at: 2026-03-20T17:36:45.833Z
   notes:
     - _ulid: 01KM64HDAKZ9F4TB71XS0ME51A
       content: Implemented schema-derived enum validation for task add, item add/set, inbox promote, plan
