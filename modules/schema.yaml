@@ -1547,6 +1547,9 @@ requirements:
       type definitions, CLI help strings that list valid values, and
       type assertions that enumerate possible values. All of these must
       trace back to a single canonical schema definition.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
