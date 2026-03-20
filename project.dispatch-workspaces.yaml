@@ -13640,18 +13640,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-fix-sessions-live-freshness/01km4qgv
-    canonical_branch_head: 47d46a5f52f53d6fa2ae2257220d411f898f631a
+    canonical_branch_head: f72a88e05ba5cc38eb65066e8950095cb4364d24
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T07:05:11.646Z
+      updated_at: 2026-03-20T07:13:09.858Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T07:05:12.881Z
+      updated_at: 2026-03-20T07:13:09.858Z
     integration:
       status: pending
       detail: null
@@ -13659,7 +13659,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: ce5e2029ce243ddab6173a031bf47c297c334690
-      updated_at: 2026-03-20T07:05:11.646Z
+      updated_at: 2026-03-20T07:13:09.858Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
@@ -13667,9 +13667,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T07:05:12.881Z
-      last_reconciled_at: 2026-03-20T07:05:12.881Z
+      last_reconciled_at: 2026-03-20T07:13:09.858Z
       created_at: 2026-03-20T05:12:07.929Z
-      updated_at: 2026-03-20T07:05:12.881Z
+      updated_at: 2026-03-20T07:13:09.858Z
     workspace_id: dispatch-workspace-01KM4QGVTQR64KQPQ0S24AHV0S
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
