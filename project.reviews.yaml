@@ -25586,3 +25586,29 @@ reviews:
     created_at: 2026-03-20T04:54:26.837Z
     updated_at: 2026-03-20T04:58:29.372Z
     notes: []
+  - _ulid: 01KM4SZV353EVK6HSK9X8WMA1Y
+    slugs: []
+    title: Review preserve user-defined Stop hooks during kspec setup
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM4SZV35N544ANSMGY5XXBYN
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T05:02:48.933Z
+    examined_commit: d06d4de00e8aab12d98d39a3ab0632650990df40
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM4N8K3JS9YR423HKSG2119K"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T05:02:48.933Z
+    updated_at: null
+    notes: []
