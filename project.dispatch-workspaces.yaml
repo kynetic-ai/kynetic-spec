@@ -14481,18 +14481,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-read-side-validation-warnings/01km5z4p
-    canonical_branch_head: 7b22df38c8925c8238f48b2e96fe60804d3e9875
+    canonical_branch_head: 1e4e7d7ea6611fa27c20fcdb3608375d296daa01
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T16:21:13.905Z
+      updated_at: 2026-03-20T16:32:59.834Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T16:21:20.870Z
+      updated_at: 2026-03-20T16:32:59.834Z
     integration:
       status: pending
       detail: null
@@ -14500,7 +14500,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 7b22df38c8925c8238f48b2e96fe60804d3e9875
-      updated_at: 2026-03-20T16:21:13.905Z
+      updated_at: 2026-03-20T16:32:59.834Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM5Z4P8FV3JEDM2KRN6A0AKN"
@@ -14508,9 +14508,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T16:21:20.870Z
-      last_reconciled_at: 2026-03-20T16:21:20.870Z
+      last_reconciled_at: 2026-03-20T16:32:59.834Z
       created_at: 2026-03-20T16:21:13.905Z
-      updated_at: 2026-03-20T16:21:20.870Z
+      updated_at: 2026-03-20T16:32:59.834Z
     workspace_id: dispatch-workspace-01KM5Z4P8FV3JEDM2KRN6A0AKN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
