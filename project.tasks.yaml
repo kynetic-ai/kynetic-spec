@@ -111008,5 +111008,13 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T16:29:19.124Z
+    - _ulid: 01KM61EZSABH43MWAJFXK0E467
+      content: "Verification: npm test passed (292 files, 6668 tests). Added focused parser coverage for
+        task/spec/inbox/triage/plan loaders. kspec validate still reports pre-existing repo-wide
+        reference/completeness debt in .kspec/meta and unrelated AC annotation fixtures; this change
+        does not add new validate failures."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T16:32:39.722Z
   todos: []
   automation: eligible
