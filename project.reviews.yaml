@@ -28588,6 +28588,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-20T07:30:03.023Z
+      - _ulid: 01KM52DZMC8XDZKGKHANRH3F8M
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM52DZD7GFKCZMBEZ7H9E2XV
+        timestamp: 2026-03-20T07:30:20.940Z
     examined_commit: 3fc75afebf2523867deedbea012605cfdf64f0f2
     external_links: []
     lifecycle_state: draft
@@ -28597,8 +28604,32 @@ reviews:
       content_hash: ""
       ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM52DZD7GFKCZMBEZ7H9E2XV
+        entries:
+          - _ulid: 01KM52DZD7EZ7NKYD2PB6CAGJS
+            author: Jacob Chapel
+            body: "Evidence log: Files read: packages/daemon/src/project-context.ts,
+              packages/daemon/src/session-watcher.ts,
+              packages/web-ui/src/lib/query/ws-invalidation.ts,
+              packages/web-ui/src/routes/sessions/+page.svelte,
+              packages/web-ui/tests/e2e/sessions.spec.ts,
+              packages/web-ui/tests/e2e/api-watcher.spec.ts, tests/session-watcher.test.ts,
+              tests/daemon-context-manager.test.ts, tests/enhanced-setup.test.ts,
+              src/parser/shadow.ts, src/cli/commands/setup.ts, src/agent-runtime/dispatch.ts,
+              src/agent-runtime/workspace.ts. Commands run: kspec task get, kspec review for-task,
+              git diff/base comparison, kspec validate, npm test, npm run typecheck, git diff
+              --check, AC annotation grep. Claims verified: worker claim that the watcher now
+              survives missing .kspec-sessions at daemon start was verified in code and tests;
+              worker claim that sessions freshness updates flow through centralized invalidation
+              plus page-level scrolled-state handling was verified in daemon/web UI code and E2E
+              coverage. Categories searched: correctness, edge cases, error handling, test quality,
+              integration. Result: no blocking issues found in this snapshot. Note: kspec validate
+              still reports pre-existing project-wide reference/completeness failures outside this
+              task’s diff."
+            created_at: 2026-03-20T07:30:20.711Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T07:30:03.023Z
-    updated_at: null
+    updated_at: 2026-03-20T07:30:20.711Z
     notes: []
