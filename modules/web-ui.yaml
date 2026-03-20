@@ -2042,7 +2042,7 @@ features:
           SvelteKit patterns with $effect for reactive loading.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
