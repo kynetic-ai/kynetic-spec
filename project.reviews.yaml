@@ -31411,7 +31411,18 @@ reviews:
     slugs: []
     title: Review @01KM6AR90T6NH9Q6RWF35J63DD
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Exit 6 due to pre-existing repository warnings only; validation passed for schema and
+          references, with orphan/completeness warnings unrelated to this task.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T19:58:51.573Z
+        completed_at: 2026-03-20T19:58:51.573Z
     events:
       - _ulid: 01KM6D0SQGCEB9E1FS4CN4BQWH
         actor: Jacob Chapel
@@ -31426,6 +31437,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T19:54:52.610Z
+      - _ulid: 01KM6D8HX70DBTE1P9T220B6C0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T19:58:51.816Z
     examined_commit: cd1cae22e3b5390bb4c808ccc8e30f4c25f682b4
     external_links: []
     lifecycle_state: open
@@ -31438,5 +31456,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T19:54:37.680Z
-    updated_at: 2026-03-20T19:54:52.344Z
+    updated_at: 2026-03-20T19:58:51.573Z
     notes: []
