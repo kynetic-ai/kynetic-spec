@@ -111694,5 +111694,101 @@
     - feature
   vcs_refs: []
   created_at: 2026-03-20T20:19:18.120Z
-  notes: []
+  notes:
+    - _ulid: 01KM6EEQ6XWC3ES9CAPH6E8Q3P
+      content: >-
+        ## What
+
+
+        When an item is deleted via kspec item delete, other items that reference it via
+        relationship fields (relates_to, depends_on, blocked_by, implements, tests, supersedes) are
+        left with broken references. These are only caught later by kspec validate as errors. The
+        deletion should clean up all dangling references as part of the same atomic operation.
+
+
+        Covers new ac-11 on @spec-item-delete-children.
+
+
+        ## Why
+
+
+        Currently three broken relates_to references accumulated in meta.yaml from items that were
+        deleted without cleanup. This is a recurring maintenance burden — every deletion risks
+        leaving orphaned refs that pollute validation output. Task cancellation already does this
+        for depends_on (src/cli/commands/task.ts:2282-2307), so there's proven precedent and an
+        existing pattern to follow.
+
+
+        ## How
+
+
+        ### 1. Add a reference cleanup step to deleteSpecItem flow
+
+        **File:** src/cli/commands/item.ts (item delete handler, ~lines 1325-1496)
+
+
+        After the item(s) are identified for deletion but before the shadow commit:
+
+        - Load all spec items
+
+        - Scan every item's relationship fields for references matching any deleted ULID or slug
+
+        - Remove matching references from those fields
+
+        - Track cleanup count for reporting
+
+
+        The relationship fields to scan are the same ones that validateRefs() checks: relates_to,
+        depends_on, blocked_by, implements, tests, supersedes.
+
+
+        ### 2. Follow the task cancellation pattern
+
+        **Reference:** src/cli/commands/task.ts:2282-2307
+
+
+        The existing task cancel cleanup:
+
+        - Scans all tasks for depends_on refs to the cancelled task
+
+        - Removes them
+
+        - Adds a note explaining the removal
+
+        - Commits everything atomically
+
+
+        Apply the same approach: scan, remove, report count. Notes on affected items are optional
+        but the count must be reported to the user (e.g., "Deleted @ref. Cleaned 3 references from 2
+        items.").
+
+
+        ### 3. Handle cascade correctly
+
+        When --cascade deletes multiple items (A→B→C), collect ALL deleted ULIDs/slugs first, then
+        do a single cleanup pass. Don't clean up references to B while B is also being deleted —
+        that's wasted work.
+
+
+        ### 4. Include in atomic commit
+
+        All reference removals must be part of the same shadow commit as the deletion itself (ac-6
+        already requires single commit for cascade). No intermediate state where refs are broken.
+
+
+        ### Verification
+
+        - Delete an item that is referenced by other items' relates_to → refs cleaned, count
+        reported
+
+        - Delete with --cascade where children are referenced → all refs cleaned in one pass
+
+        - kspec validate shows no errors after deletion
+
+        - JSON mode (--json) includes cleanup count in output
+
+        - Existing tests for ac-1 through ac-10 still pass
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-20T20:19:42.430Z
   todos: []
