@@ -23214,7 +23214,17 @@ reviews:
     slugs: []
     title: Review shared-checkout drift detection and safe repair
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Passed after environment prep. 286 files, 6610 tests, 3 skipped, 0 failed.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T00:16:32.145Z
+        completed_at: 2026-03-20T00:16:32.145Z
     events:
       - _ulid: 01KM4990NWPMQDR5CV4H1QS3BG
         actor: Jacob Chapel
@@ -23229,6 +23239,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T00:11:04.483Z
+      - _ulid: 01KM49KN4B8F37R1S1VQM3S6A7
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T00:16:32.395Z
     examined_commit: 05e31856c8a3ccf29936c1b0df5efe5902a98977
     external_links: []
     lifecycle_state: open
@@ -23241,5 +23258,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T00:10:43.772Z
-    updated_at: 2026-03-20T00:11:04.052Z
+    updated_at: 2026-03-20T00:16:32.145Z
     notes: []
