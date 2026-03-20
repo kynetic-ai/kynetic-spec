@@ -572,6 +572,31 @@ describe("Integration: plan commands", () => {
 
       await cleanupTempDir(emptyTempDir);
     });
+
+    // AC: @01KM46FW ac-1
+    it("excludes cancelled tasks while preserving plan_ref-linked plan list counts", async () => {
+      const isolatedTempDir = await setupTempFixtures();
+      kspec(
+        'plan add --title "Plan Metrics" --content "Metrics" --slug plan-metrics',
+        isolatedTempDir,
+      );
+      const plan = kspecJson<{ _ulid: string }>("plan get @plan-metrics --json", isolatedTempDir);
+      const shortPlanRef = `@${plan._ulid.slice(0, 8)}`;
+      kspec(
+        `task add --title "Active work" --slug active-work --plan-ref ${shortPlanRef}`,
+        isolatedTempDir,
+      );
+      kspec(
+        `task add --title "Cancelled work" --slug cancelled-work --plan-ref ${shortPlanRef}`,
+        isolatedTempDir,
+      );
+      kspec('task cancel @cancelled-work --reason "No longer needed"', isolatedTempDir);
+
+      const output = kspec("plan list", isolatedTempDir);
+      expect(output).toContain('[1 task] Plan Metrics');
+      expect(output).not.toContain('[2 tasks] Plan Metrics');
+      await cleanupTempDir(isolatedTempDir);
+    });
   });
 
   describe("plan note", () => {

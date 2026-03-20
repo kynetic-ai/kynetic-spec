@@ -48,6 +48,10 @@ import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, isJsonMode, output, success, warn } from "../output.js";
 import { ulid } from "ulid";
 import { registerPlanImportCommand } from "./plan-import.js";
+import {
+  getLinkedPlanSummaryTasks,
+  isCountedInPlanSummary,
+} from "../../lib/plan-summary.js";
 
 /**
  * Format relative time for display
@@ -997,6 +1001,7 @@ Examples:
       try {
         const ctx = await initContext();
         let plans = await loadPlans(ctx);
+        const tasks = await loadAllTasks(ctx);
 
         // AC: @plan-crud ac-7 - status filter
         if (options.status) {
@@ -1021,12 +1026,14 @@ Examples:
           for (const p of plans) {
             const ref = shortPlanRef(p, plans);
             const age = formatRelativeTime(p.created_at);
-            const taskCount = p.derived_tasks.length;
-            const tasks =
+            const taskCount = getLinkedPlanSummaryTasks(p, tasks).filter((task) =>
+              isCountedInPlanSummary(task),
+            ).length;
+            const taskLabel =
               taskCount > 0 ? ` [${taskCount} task${taskCount > 1 ? "s" : ""}]` : "";
 
             console.log(
-              `  ${ref} [${p.status}]${tasks} ${p.title}`,
+              `  ${ref} [${p.status}]${taskLabel} ${p.title}`,
             );
             console.log(`         Created ${age}`);
 

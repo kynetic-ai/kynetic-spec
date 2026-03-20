@@ -1,3 +1,4 @@
+import * as fs from 'node:fs/promises';
 import type { Page } from '@playwright/test';
 import { test, expect } from '../fixtures/test-base';
 
@@ -706,6 +707,47 @@ Runtime fetch coverage should observe the real batch request.
 		expect(body).toHaveProperty('content');
 		expect(body.content).toContain('Active Plan');
 		expect(body.content).toContain('actively being implemented');
+	});
+
+	// AC: @01KM46FW ac-1
+	test('GET /api/plans/:ref excludes cancelled tasks while preserving plan_ref links', async ({ request, daemon }) => {
+		const tasksPath = `${daemon.tempDir}/project.tasks.yaml`;
+		const plansPath = `${daemon.tempDir}/project.plans.yaml`;
+		const taskContent = await fs.readFile(tasksPath, 'utf-8');
+		const planContent = await fs.readFile(plansPath, 'utf-8');
+
+		await fs.writeFile(
+			plansPath,
+			planContent.replace(
+				`derived_tasks:
+      - "@test-task-in-progress"
+      - "@test-task-completed"
+      - "@test-task-ready"`,
+				'derived_tasks: []'
+			)
+		);
+		await fs.writeFile(
+			tasksPath,
+			taskContent
+				.replace('status: pending', 'status: cancelled')
+				.replace('status: completed', 'status: completed\n    plan_ref: "@test-plan-active"')
+		);
+
+		const response = await request.get(`${daemon.baseUrl}/api/plans/test-plan-active`, {
+			headers: { 'X-Kspec-Dir': daemon.tempDir }
+		});
+
+		expect(response.status()).toBe(200);
+
+		const body = await response.json();
+		expect(body.task_count).toBe(2);
+		expect(body.task_progress).toEqual({
+			total: 2,
+			completed: 1,
+			in_progress: 1,
+			pending: 0,
+			blocked: 0
+		});
 	});
 
 	// AC: @ui-plans-view ac-2
