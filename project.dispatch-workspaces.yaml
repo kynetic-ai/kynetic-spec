@@ -11428,7 +11428,7 @@ workspaces:
         head: cae35ae3ffd1e6af9095ae533906687eaef9b211
         last_seen_at: 2026-03-18T17:09:17.141Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-migrate-triggers-01kkzpw7
-  - active_role: worker
+  - active_role: null
     base_branch_point: bb5471acddfb9905490cdced154f7a52a26a0fdc
     bootstrap:
       status: succeeded
@@ -11466,34 +11466,34 @@ workspaces:
     canonical_branch: dispatch/task/remove-dead-parseversionfromoptions-function/01km21d0
     canonical_branch_head: fb1c18c7b0784d61a8710960326b0117145b8e95
     cleanup:
-      status: not_scheduled
-      detail: null
-      eligible: false
-      reason: null
-      updated_at: 2026-03-20T03:58:49.130Z
+      status: scheduled
+      detail: integrated-into-base-branch
+      eligible: true
+      reason: integrated-into-base-branch
+      updated_at: 2026-03-20T03:59:53.556Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T03:58:49.130Z
+      updated_at: 2026-03-20T03:59:53.556Z
     integration:
-      status: pending
-      detail: null
-      outcome: manual_merge
+      status: merged
+      detail: integration:merged
+      outcome: merged
       publication_mode: manual_merge
       target_branch: dev
       target_commit: bb5471acddfb9905490cdced154f7a52a26a0fdc
-      updated_at: 2026-03-19T03:54:57.179Z
-    lifecycle_state: active
+      updated_at: 2026-03-20T03:59:53.556Z
+    lifecycle_state: closing
     resolved_base_branch: dev
     task_ref: "@01KM21D00SD4D9WW2G1BFC1YB0"
     task_slug: remove-dead-parseversionfromoptions-function
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T03:54:58.109Z
-      last_reconciled_at: 2026-03-20T03:58:49.130Z
+      last_reconciled_at: 2026-03-20T03:59:53.556Z
       created_at: 2026-03-19T03:54:57.179Z
-      updated_at: 2026-03-20T03:58:49.130Z
+      updated_at: 2026-03-20T03:59:53.556Z
     workspace_id: dispatch-workspace-01KM21D00SD4D9WW2G1BFC1YB0
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
