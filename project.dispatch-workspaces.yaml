@@ -12557,18 +12557,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-implement-dispatch-shared-checkout-safety/01km3zmf
-    canonical_branch_head: 674cabcd8646e873f128fa67b9d2db44ae74797a
+    canonical_branch_head: 05e31856c8a3ccf29936c1b0df5efe5902a98977
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-19T23:58:20.872Z
+      updated_at: 2026-03-20T00:09:52.096Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-19T23:58:22.183Z
+      updated_at: 2026-03-20T00:09:52.096Z
     integration:
       status: pending
       detail: null
@@ -12576,7 +12576,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 674cabcd8646e873f128fa67b9d2db44ae74797a
-      updated_at: 2026-03-19T23:58:20.872Z
+      updated_at: 2026-03-20T00:09:52.096Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM3ZMF9C5B3JEDTE4AR74K46"
@@ -12584,9 +12584,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-19T23:58:22.183Z
-      last_reconciled_at: 2026-03-19T23:58:22.183Z
+      last_reconciled_at: 2026-03-20T00:09:52.096Z
       created_at: 2026-03-19T23:58:20.872Z
-      updated_at: 2026-03-19T23:58:22.183Z
+      updated_at: 2026-03-20T00:09:52.096Z
     workspace_id: dispatch-workspace-01KM3ZMF9C5B3JEDTE4AR74K46
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
