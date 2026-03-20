@@ -22915,7 +22915,18 @@ reviews:
     slugs: []
     title: Review cancelled-task exclusion in plan summary metrics (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Reproduced on c7627d0: from a temp fixture project, created plan
+          01KM48Q7E603FJ1SWAPGK32HPT, created a task with --plan-ref @01KM48Q7, then plan list and
+          export json reported task_count 0 and zero task_progress for that plan."
+        name: short-ULID plan_ref linkage reproduction
+        required: true
+        created_at: 2026-03-20T00:02:41.778Z
+        completed_at: 2026-03-20T00:02:41.778Z
     events:
       - _ulid: 01KM48QNDEK370VXPM0N1PJTN9
         actor: Jacob Chapel
@@ -22930,6 +22941,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T00:02:24.662Z
+      - _ulid: 01KM48TA6KQ3WRW4K5KVWVAN1J
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: short-ULID plan_ref linkage reproduction
+        timestamp: 2026-03-20T00:02:42.003Z
     examined_commit: c7627d0da34617524b4cedc03341c6229b69a164
     external_links: []
     lifecycle_state: open
@@ -22942,5 +22960,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T00:01:15.182Z
-    updated_at: 2026-03-20T00:02:24.433Z
+    updated_at: 2026-03-20T00:02:41.778Z
     notes: []
