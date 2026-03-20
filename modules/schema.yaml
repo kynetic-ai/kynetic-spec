@@ -1414,6 +1414,11 @@ requirements:
         id: ac-10
         then: JSON error includes children array with refs
         when: kspec item delete @ref --json (has children) executed
+      - given: other items reference the deleted item in relationship fields
+        id: ac-11
+        then: those references are removed, the cleanup is included in the same commit, and the number of
+          cleaned references is reported
+        when: the item is deleted (with or without --cascade)
     tags: []
     created: 2026-01-21T05:24:01.143Z
     notes: []
