@@ -27031,6 +27031,621 @@ reviews:
         runner: npm
         created_at: 2026-03-20T06:31:56.011Z
         completed_at: 2026-03-20T06:31:56.011Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: >-
+          > @kynetic-ai/spec@0.11.0 test
+
+          > node scripts/test.cjs
+
+
+           RUN  v4.0.17 /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-fix-sessions-live-freshness-01km4qgv-review
+
+          stdout | tests/agent-dispatch-engine.test.ts > Dispatch scheduling priority model >
+          excludes blocked, dependency-blocked, and stale continuation candidates before ranking
+
+          [dispatch] Workspace discovery diagnostic for @01SCHA00000002000000000002:
+          [no-recoverable-workspace] No trustworthy recovery path exists for
+          @01SCHA00000002000000000002. Attempted: registry state, metadata-backed worktrees, task
+          submission linkage, and remote/review locators.
+
+          [dispatch]   Suggestion: No workspace record or branch could be found for this task.
+          Ensure the task was submitted with `kspec task submit` (which captures submission
+          linkage), or manually provision a workspace with `kspec agent workspace provision`.
+
+
+          stdout | tests/agent-dispatch-engine.test.ts > Dispatch scheduling priority model >
+          excludes blocked, dependency-blocked, and stale continuation candidates before ranking
+
+          [dispatch] Discarded queue entry @01SCHA00000002000000000002 for agent "task-worker":
+          workspace is unhealthy (no-recoverable-workspace)
+
+          [dispatch] Discarded 1 ineligible queue entry for agent "task-worker"
+
+           ❯ tests/review-per-cycle-lifecycle.test.ts (3 tests | 2 failed) 52020ms
+               ✓ creates new review record per fix cycle and updates review_ref  11891ms
+               × review for-task returns both current and historical reviews 15541ms
+               × each closed review preserves its own verdict and disposition independently 24587ms
+           ✓ tests/task-set-batch.test.ts (16 tests) 67261ms
+               ✓ should update all tasks when multiple refs provided  6158ms
+               ✓ should update multiple fields at once  5806ms
+               ✓ should update descriptions in batch mode  5260ms
+               ✓ should reject --status flag with error message  2093ms
+               ✓ should warn when no changes specified  2277ms
+               ✓ should handle partial validation failure  3569ms
+               ✓ should operate on all provided references in batch mode  6736ms
+               ✓ should continue processing after errors  5698ms
+               ✓ should return exit code 0 when all refs succeed  3871ms
+               ✓ should return exit code 1 when any refs fail  2551ms
+               ✓ should report success and failure counts  5362ms
+               ✓ should error when both positional ref and --refs provided  2938ms
+               ✓ should output JSON array with result for each ref  5592ms
+               ✓ should process each ref once when duplicates provided  3742ms
+               ✓ should work in single ref mode (backward compatibility)  4221ms
+               ✓ should error when neither positional ref nor --refs provided  1387ms
+           ✓ tests/item-set-enum-validation.test.ts (13 tests) 72337ms
+                 ✓ should update implementation status without overwriting maturity  3131ms
+                 ✓ should reject invalid implementation status with error listing valid values  1713ms
+                 ✓ should not write changes when status is invalid  3623ms
+                 ✓ should accept all valid implementation statuses  10119ms
+                 ✓ should reject case-insensitive variants of valid statuses  6172ms
+                 ✓ should reject partial matches of valid statuses  4789ms
+                 ✓ should treat empty string status as no-op (no changes written)  4245ms
+                 ✓ should reject invalid maturity with error listing valid values  2763ms
+                 ✓ should not write changes when maturity is invalid  4109ms
+                 ✓ should accept all valid maturity values  12282ms
+                 ✓ should reject case-insensitive variants of valid maturity values  7795ms
+                 ✓ should reject partial matches of valid maturity values  6482ms
+                 ✓ should treat empty string maturity as no-op (no changes written)  5111ms
+           ❯ tests/task-needs-work.test.ts (9 tests | 2 failed) 74744ms
+               ✓ needs_work is a valid task status in schema  3793ms
+               ✓ transitions pending_review to needs_work with reason and fix cycle note  7170ms
+               ✓ allows task start from needs_work state  10841ms
+               ✓ rejects needs-work from non-pending_review states  4258ms
+               ✓ needs_work tasks appear in active task list  7224ms
+               ✓ help content documents needs_work state  669ms
+               × increments fix cycle counter on repeated kickbacks 18315ms
+               × supports full fix cycle: pending_review -> needs_work -> in_progress -> pending_review 16928ms
+               ✓ requires --reason flag for needs-work command  5544ms
+           ✓ tests/tasks-assess-automation.test.ts (28 tests) 75981ms
+                 ✓ should list pending unassessed tasks by default  1714ms
+                 ✓ should include already-assessed tasks with --all flag  3847ms
+                 ✓ should show message when no unassessed pending tasks  3672ms
+                 ✓ should skip already-assessed tasks without --all  3772ms
+                 ✓ should exclude non-pending tasks  1032ms
+                 ✓ should assess only specified task with ref argument  3047ms
+                 ✓ should return non-zero exit code for non-existent task  1072ms
+                 ✓ should pass has_spec_ref when task has resolvable spec_ref  2341ms
+                 ✓ should fail has_spec_ref when spec_ref is missing  1967ms
+                 ✓ should check spec_has_acs only when spec_ref exists  2176ms
+                 ✓ should skip spec_has_acs when no spec_ref  1915ms
+                 ✓ should pass not_spike for non-spike tasks  2031ms
+                 ✓ should fail not_spike for spike tasks  2986ms
+                 ✓ should recommend manual_only for spike tasks  2195ms
+                 ✓ should recommend needs_review for missing spec_ref  2355ms
+                 ✓ should recommend review_for_eligible when all criteria pass  2138ms
+                 ✓ should apply obvious cases: spike -> manual_only  4015ms
+                 ✓ should apply obvious cases: missing criteria -> needs_review  3550ms
+                 ✓ should NOT auto-mark eligible when all criteria pass  3628ms
+                 ✓ should add note explaining assessment in auto mode  3579ms
+                 ✓ should include reason in note for needs_review  4078ms
+                 ✓ should show changes without modifying tasks in dry-run  3582ms
+                 ✓ should combine --dry-run with --auto  3554ms
+                 ✓ should display criteria check results for each task  2156ms
+                 ✓ should show recommendation for each task  3253ms
+                 ✓ should show summary counts at end  2172ms
+                 ✓ should output structured JSON with --json  1945ms
+                 ✓ should include summary counts in JSON  2208ms
+           ❯ tests/activity-display.test.ts (5 tests | 2 failed) 78639ms
+               ✓ shows activity section after creating and starting a task  8959ms
+               × caps default display to 10 entries 22711ms
+               × shows all entries with --activity flag 24213ms
+               ✓ includes activity array with typed entries in JSON  13115ms
+               ✓ uses ISO 8601 timestamps in activity entries  9639ms
+           ✓ tests/automation-eligibility.test.ts (28 tests) 92773ms
+                 ✓ should allow optional automation field with enum values  1613ms
+                 ✓ should have no automation field when not specified  1977ms
+                 ✓ should set automation status with --automation flag  1670ms
+                 ✓ should allow setting any valid automation value  4465ms
+                 ✓ should clear automation status with --no-automation flag  3240ms
+                 ✓ should reject invalid automation values  1020ms
+                 ✓ should create task with automation flag  1990ms
+                 ✓ should create task with needs_review automation  2294ms
+                 ✓ should reject invalid automation value on create  1538ms
+                 ✓ should display automation status in task details  2456ms
+                 ✓ should show unassessed for tasks without automation  2290ms
+                 ✓ should display automation status in ready list  7445ms
+                 ✓ should filter by --eligible flag  6946ms
+                 ✓ should filter by --unassessed flag  7764ms
+                 ✓ should filter by --needs-review flag  7813ms
+                 ✓ should require --reason when setting needs_review  1213ms
+                 ✓ should accept needs_review with reason  2787ms
+                 ✓ should warn when eligible task has no spec_ref  2761ms
+                 ✓ should not warn for completed eligible task without spec_ref  4100ms
+                 ✓ should not warn for cancelled eligible task without spec_ref  3895ms
+                 ✓ should still warn for active eligible tasks without spec_ref  2632ms
+                 ✓ should not warn when eligible task has spec_ref  1932ms
+                 ✓ should not warn for completed eligible task with unresolvable spec_ref  4263ms
+                 ✓ should not warn for cancelled eligible task with unresolvable spec_ref  3234ms
+                 ✓ should warn when eligible task has unresolvable spec_ref  3669ms
+                 ✓ should include automation field in JSON output  3146ms
+                 ✓ should include automation in tasks list JSON  2338ms
+                 ✓ should include automation in tasks ready JSON  2280ms
+           ✓ tests/task-completion-enforcement.test.ts (17 tests) 95629ms
+               ✓ should complete task successfully when status is pending_review  5299ms
+               ✓ should error when trying to complete in_progress task  3687ms
+               ✓ should error when trying to complete pending task  2278ms
+               ✓ should error when trying to complete blocked task  4355ms
+               ✓ should complete blocked task with --force flag and show warning  6142ms
+               ✓ should include warning in JSON output when force-completing blocked task  4637ms
+               ✓ should complete in_progress task with --force flag  5824ms
+               ✓ should complete pending task with --force flag  4911ms
+               ✓ should complete cancelled task with --force flag  5125ms
+               ✓ should still error when force-completing already completed task  7079ms
+               ✓ should not add force note when --force used on pending_review task  7787ms
+               ✓ should error when trying to complete cancelled task  3400ms
+               ✓ should error when trying to complete already completed task  8414ms
+               ✓ should allow skip-review to bypass enforcement and document reason  6856ms
+               ✓ should error when skip-review provided without reason  2946ms
+               ✓ should handle batch mode with mixed states correctly  11723ms
+               ✓ should allow skip-review from pending state  5165ms
+           ✓ tests/core-skill-update.test.ts (20 tests) 99705ms
+                 ✓ should update skill version when package version differs  6527ms
+                 ✓ should update SKILL.md content when version differs  6425ms
+                 ✓ should show version transition in output  5810ms
+                 ✓ should update supporting directories when version differs  5771ms
+                 ✓ should skip skills already at current package version  4863ms
+                 ✓ should not show "Updated" when all skills are current  4970ms
+                 ✓ should report skipped reason in JSON output  4435ms
+                 ✓ should provide install-core guidance when same-version templates drift  4151ms
+                 ✓ should provide the same drift guidance in dry-run output  4879ms
+                 ✓ should not process skills with origin "project"  3162ms
+                 ✓ should not process skills with origin "local"  2478ms
+                 ✓ should only process skills with origin "core"  8019ms
+                 ✓ should not make changes with --dry-run  8060ms
+                 ✓ should show what would be updated with --dry-run  6700ms
+                 ✓ should return JSON with results array  6215ms
+                 ✓ should include dry_run field in JSON output  4544ms
+                 ✓ should include kspec_version in JSON output  4303ms
+                 ✓ should include version info in update results  4893ms
+                 ✓ should handle no core skills installed  1447ms
+                 ✓ should skip core skill not in manifest  2052ms
+           ✓ tests/setup-pipeline-unification.test.ts (13 tests) 100813ms
+                 ✓ should produce identical kspec-agents.md from setup and agents generate  8055ms
+                 ✓ should generate hash using computeMetaHash from agents.ts  8839ms
+                 ✓ should skip kspec-agents.md regeneration when content unchanged  12173ms
+                 ✓ should render skills via the renderer registry  8294ms
+                 ✓ should render skills for all platforms with registered renderers  7350ms
+                 ✓ should produce consistent output structure from setup command  5285ms
+                 ✓ should include author configuration when called from setup command  4830ms
+                 ✓ should honor --agent override in setup command flow  4914ms
+                 ✓ should handle --no-hooks through the unified pipeline  5231ms
+                 ✓ should handle --skip-skills through the unified pipeline  4038ms
+                 ✓ should emit debug output on error path when KSPEC_DEBUG is enabled  10128ms
+                 ✓ should not produce debug output when KSPEC_DEBUG is not set  7972ms
+                 ✓ should produce the same artifacts from init --setup and setup separately  13702ms
+           ✓ tests/item-set-relationships.test.ts (22 tests) 104048ms
+                 ✓ should update implementation status  2040ms
+                 ✓ should add relates_to reference to item  3431ms
+                 ✓ should append to existing relates_to references  6841ms
+                 ✓ should not add duplicate relates_to reference  5456ms
+                 ✓ should not add duplicate relates_to via mixed ref forms (slug then ULID)  6564ms
+                 ✓ should error when relates_to reference does not exist  1602ms
+                 ✓ should error when relates_to reference is a task, not a spec item  1834ms
+                 ✓ should add implements reference to item  4696ms
+                 ✓ should append to existing implements references  6673ms
+                 ✓ should error when implements reference does not exist  2339ms
+                 ✓ should not add duplicate implements via mixed ref forms (slug then ULID)  6526ms
+                 ✓ should add depends_on reference to item  4493ms
+                 ✓ should append to existing depends_on references  6899ms
+                 ✓ should error when depends_on reference does not exist  2204ms
+                 ✓ should not add duplicate depends_on via mixed ref forms (slug then ULID)  8081ms
+                 ✓ should clear all relates_to references  6356ms
+                 ✓ should clear all implements references  6371ms
+                 ✓ should clear all depends_on references  5613ms
+                 ✓ should error when using --relates-to and --clear-relates-to together  2750ms
+                 ✓ should error when using --implements and --clear-implements together  3909ms
+                 ✓ should error when using --depends-on and --clear-depends-on together  3695ms
+                 ✓ should include updated relationships in JSON output  5673ms
+           ❯ tests/dispatch-runtime-bootstrap-contract.test.ts (9 tests | 5 failed) 107075ms
+               ✓ runs configured dispatch and agent bootstrap before delivering the prompt  3408ms
+               ✓ fails bootstrap when tracked source mutations are not explicitly allowed  10354ms
+               × reuses valid worker bootstrap state for reviewer preflight instead of rerunning it 15101ms
+               × does not let reviewer bootstrap readiness skip the first worker bootstrap run 15097ms
+               ✓ rejects a fresh reviewer workspace when required bootstrap steps are not reviewer-safe  13277ms
+               × records explicit bootstrap invalidation reasons for config, head, and prior failure changes 15065ms
+               × reuses prior bootstrap results on later worker invocations when no invalidation signal exists 15061ms
+               × repairs missing direct dependencies before reusing a previously successful bootstrap 15073ms
+               ✓ records actionable bootstrap failure detail and blocks the task before invocation  4636ms
+           ✓ packages/web-ui/tests/prose-typography.test.ts (2 tests) 58995ms
+               ✓ includes Tailwind typography styles in the built CSS bundle  58993ms
+           ❯ tests/cli-schedule-commands.test.ts (45 tests | 2 failed) 116572ms
+               ✓ should display each schedule's name, cron expression, and enabled status  1225ms
+               ✓ should output valid JSON with no ANSI codes when --json flag is provided  683ms
+               ✓ should include all data available in human-readable mode in JSON output  888ms
+               ✓ should filter by --status enabled  1749ms
+               ✓ should limit output to N items with --limit  843ms
+               ✓ should skip first N items with --offset  1337ms
+               ✓ should show informative message when no schedules exist  1492ms
+               ✓ should show summary count in human output  1060ms
+               ✓ should output only the count with --count  2259ms
+               × should output JSON count object with --count --json 23194ms
+               ✓ should exit 0 on success  1114ms
+               ✓ should exit 0 when no schedules exist  1410ms
+               ✓ should display schedule details  1335ms
+               ✓ should return JSON with all fields  712ms
+               ✓ should show error with hint for unknown ref  680ms
+               ✓ should create a new schedule  2668ms
+               ✓ should create schedule with all options  2131ms
+               ✓ should reject invalid cron expression  1389ms
+               ✓ should reject duplicate ID  1202ms
+               ✓ should error with guidance when missing required action option  1176ms
+               ✓ should return JSON error on failure in JSON mode  1110ms
+               ✓ should persist schedule across reads  2674ms
+               ✓ should not persist state when add fails validation  2404ms
+               ✓ should exit 0 on successful add  1089ms
+               ✓ should create schedule with kspec action type  1967ms
+               ✓ should create schedule with agent action type  2160ms
+               ✓ should create schedule with notify action type  1662ms
+               ✓ should update schedule fields  2800ms
+               ✓ should update overlap policy  2140ms
+               ✓ should error with hint for unknown ref  816ms
+               ✓ should reject invalid cron on set  929ms
+               ✓ should enable a disabled schedule  2498ms
+               ✓ should be idempotent for already-enabled schedule  1227ms
+               ✓ should error with hint for unknown ref  889ms
+               ✓ should disable an enabled schedule  2770ms
+               ✓ should be idempotent for already-disabled schedule  1232ms
+               ✓ should remove a schedule with --confirm  4354ms
+               ✓ should require --confirm flag  2731ms
+               ✓ should error with hint for unknown ref  1062ms
+               ✓ should error when daemon is not running  1078ms
+               ✓ should error with hint for unknown schedule ref  1046ms
+               × should use @ prefix for references in JSON output 25285ms
+               ✓ should output JSON even when other format flags present  1350ms
+               ✓ should include guidance in JSON error  1070ms
+               ✓ should exit with validation error code for invalid input  1681ms
+           ✓ tests/trait-cli.test.ts (34 tests) 119973ms
+               ✓ should create trait-type item with title  878ms
+               ✓ should set description field when --description provided  808ms
+               ✓ should allow custom slug  933ms
+               ✓ should add trait to kynetic.yaml traits array  1039ms
+               ✓ should list all traits with AC counts  4139ms
+               ✓ should include trait refs in list output  5757ms
+               ✓ should return traits array in JSON mode  5476ms
+               ✓ should show trait details and acceptance criteria  3846ms
+               ✓ should show usage count when trait is used  4093ms
+               ✓ should return full trait data in JSON mode  4240ms
+               ✓ should add trait to spec traits array  2431ms
+               ✓ should persist trait in spec file  1851ms
+               ✓ should be idempotent - no duplicate when trait already added  3405ms
+               ✓ should error when trait does not exist  2591ms
+               ✓ should error when spec ref is invalid  1504ms
+               ✓ should error when adding trait to task  2586ms
+               ✓ should remove trait from traits array  4890ms
+               ✓ should persist removal in spec file  5644ms
+               ✓ should warn when trait not in spec traits array  4000ms
+               ✓ should allow removing all traits  6458ms
+               ✓ should error when trait ref is invalid  4970ms
+               ✓ should create spec item with trait applied  3428ms
+               ✓ should apply multiple traits  4015ms
+               ✓ should persist traits in spec file  3014ms
+               ✓ should work without --trait flag  3503ms
+               ✓ should error when trait ref does not exist  4188ms
+               ✓ should error when ref is not a trait type  3855ms
+               ✓ should deduplicate traits when same trait passed via different ref forms  3917ms
+               ✓ should store canonical slug form instead of ULID  4558ms
+               ✓ should create project-level trait items with --root  4082ms
+               ✓ should reject --root for non-trait item types with recovery guidance  3044ms
+               ✓ should reject combining --root with --under with recovery guidance  3575ms
+               ✓ should include structured guidance for --root type validation in JSON mode  3456ms
+               ✓ should include structured guidance for conflicting --root and --under in JSON mode  3797ms
+           ✓ tests/batch-exec-engine.test.ts (67 tests) 119673ms
+               ✓ --dry-run validates without executing  2775ms
+               ✓ pre-validates and rejects before any execution  2813ms
+               ✓ rejects read-only commands  2524ms
+               ✓ rejects malformed JSON with error details including position info  2118ms
+               ✓ rejects empty --commands value instead of falling back to stdin  2316ms
+               ✓ rejects whitespace-only --commands value instead of falling back to stdin  2484ms
+               ✓ fails fast when stdin is open but no input ever arrives  3341ms
+               ✓ returns structured JSON error for malformed JSON in --json mode  2457ms
+               ✓ rejects empty batch with descriptive error  2671ms
+               ✓ accepts inline JSON commands  2524ms
+               ✓ accepts P1/P2/P3 aliases for numeric priority args in batch commands  4197ms
+               ✓ accepts tags alias for tag args in batch commands  3346ms
+               ✓ treats content-only plan import as success in batch mode  3134ms
+               ✓ accepts file input  2935ms
+               ✓ atomic mode: all succeed → single commit, changes visible  3795ms
+               ✓ atomic mode: failure → all changes rolled back  3399ms
+               ✓ immediate mode: per-command execution  3935ms
+               ✓ immediate mode: failure stops execution, prior commands persist  4270ms
+               ✓ --continue: continues through failures, implies immediate mode  4180ms
+               ✓ JSON output includes mode field  3388ms
+               ✓ forward reference: command 2 uses slug from command 1  6055ms
+               ✓ auto-appends --force for commands that support it  3142ms
+               ✓ default mode stops on first error  3735ms
+               ✓ preserves correlation IDs in results  2762ms
+               ✓ includes suggestion in JSON output for typos  2444ms
+               ✓ shows 'Did you mean' in human-readable output for typos  3151ms
+               ✓ shows 'kspec batch commands' hint on validation failure  2506ms
+               ✓ does not show hint in JSON mode  2600ms
+               ✓ does not show hint for runtime execution failures  3396ms
+               ✓ sets validationFailed flag in JSON output for validation errors  2852ms
+               ✓ does not set validationFailed flag for runtime execution failures  2706ms
+               ✓ JSON output timestamps use ISO 8601  4131ms
+               ✓ JSON error output includes guidance in structured format  2558ms
+               ✓ runtime error produces non-zero exit code  2104ms
+               ✓ --dry-run shows validation error without state change  2808ms
+               ✓ --dry-run JSON output includes dry_run boolean field  2646ms
+               ✓ passes nested --data objects as JSON strings, not [object Object]  4478ms
+               ✓ overrides initContext to use specified directory  2964ms
+           ✓ tests/task-review-url.test.ts (9 tests) 46710ms
+               ✓ should transition in_progress to pending_review on submit  5512ms
+               ✓ should persist review_url when submitted with --review-url  5494ms
+               ✓ should display review_url in task get human output  7073ms
+               ✓ should reject invalid review URL without changing state  5515ms
+               ✓ should reject empty review URL without changing state  5623ms
+               ✓ should submit without --review-url and leave field undefined  5921ms
+               ✓ should set review_url via task set  3448ms
+               ✓ should clear review_url via task set --review-url null  6136ms
+               ✓ should reject invalid URL in task set  1984ms
+          stdout | tests/agent-dispatch-engine.test.ts > Stale queue entry discard > should discard
+          queued entries when task has moved to a different state
+
+          [dispatch] Discarded queue entry @01TASK00000000000000000000 for agent "worker": task
+          state changed to completed
+
+          [dispatch] Discarded 1 ineligible queue entry for agent "worker"
+
+           ✓ tests/task-clear-deps.test.ts (8 tests) 48637ms
+               ✓ should clear all dependencies when task has dependencies  7145ms
+               ✓ should report no changes when task has no dependencies  3069ms
+               ✓ should error when --clear-deps and --depends-on used together  3061ms
+               ✓ should clear multiple dependencies  7874ms
+               ✓ should output valid JSON with task data when --json flag provided  5102ms
+               ✓ should clear dependencies on multiple tasks with --refs flag  9466ms
+               ✓ should output JSON array with results for each ref in batch mode  8040ms
+               ✓ should auto-prefix @ on bare slug references in task set --depends-on  4879ms
+           ✓ tests/cli-plan.test.ts (40 tests) 128623ms
+                 ✓ should create a plan with content  1954ms
+                 ✓ should read content from file with --content-file  1895ms
+                 ✓ should create plan with default draft status  1709ms
+                 ✓ should support custom status  2123ms
+                 ✓ should support custom slug  2798ms
+                 ✓ should error when both --content and --content-file are provided  1391ms
+                 ✓ should auto-generate slug with plan- prefix when no slug provided  2594ms
+                 ✓ should use provided slug as-is (no auto-prefix)  2339ms
+                 ✓ should error when provided slug collides with existing item  2116ms
+                 ✓ should error when provided slug collides with existing item  1642ms
+                 ✓ should auto-generate unique slug when same title is used twice  4276ms
+                 ✓ should reject missing title  752ms
+                 ✓ should auto-increment slug when auto-generated slug collides with existing spec  2958ms
+                 ✓ should display full plan details  1945ms
+                 ✓ should output valid JSON with --json  1663ms
+                 ✓ should resolve by ULID prefix  3142ms
+                 ✓ should error when plan not found  2351ms
+                 ✓ should update title  3279ms
+                 ✓ should update status and set approved_at when transitioning to approved  3743ms
+                 ✓ should prevent transitions from completed status  4345ms
+                 ✓ should prevent transitions from rejected status  3467ms
+                 ✓ should add slug  5024ms
+                 ✓ should not duplicate slug if already present  4698ms
+                 ✓ should error when adding slug that collides with existing item  3646ms
+                 ✓ should error when adding slug that collides with existing item  3611ms
+                 ✓ should write plan content to stdout  1893ms
+                 ✓ should write plan content to the specified file  3282ms
+                 ✓ should return a runtime error when writing the export file fails  2735ms
+                 ✓ should fail when plan content is empty  3723ms
+                 ✓ should return a usage error when the plan ref does not resolve  2072ms
+                 ✓ should output full plan data as JSON  3599ms
+                 ✓ should list all plans  5021ms
+                 ✓ should filter by status  5069ms
+                 ✓ should output JSON array with --json  4589ms
+                 ✓ should show empty message when no plans  4568ms
+                 ✓ excludes cancelled tasks while preserving plan_ref-linked plan list counts  9678ms
+                 ✓ should add note with ULID, timestamp, and author  2817ms
+                 ✓ should append multiple notes  5825ms
+                 ✓ should display notes in plan get output  4217ms
+           ✓ tests/hook-cli.test.ts (50 tests) 129655ms
+               ✓ should show empty message when no hooks exist  766ms
+               ✓ should list hooks with name, event trigger, action type, and enabled status  2417ms
+               ✓ should output valid JSON with --json flag  1614ms
+               ✓ should filter by enabled/disabled status  3474ms
+               ✓ should filter by event type domain using --tag  3629ms
+               ✓ should support --limit and --offset  6891ms
+               ✓ should apply multiple filters with AND logic  4647ms
+               ✓ should show informative message when no hooks match filters  2208ms
+               ✓ should show summary with total matching items  4973ms
+               ✓ should output only count with --count flag  4375ms
+               ✓ should add a hook that persists across commands  2154ms
+               ✓ should add a hook with all action types  4373ms
+               ✓ should add a hook with filter  890ms
+               ✓ should add a hook in disabled state with --disabled  1103ms
+               ✓ should reject invalid event type  969ms
+               ✓ should reject invalid action JSON  884ms
+               ✓ should reject malformed JSON in --action  897ms
+               ✓ should reject duplicate hook names  2147ms
+               ✓ should produce human-readable success message  1516ms
+               ✓ should get hook details by name  2144ms
+               ✓ should get hook details by ULID prefix  2452ms
+               ✓ should get hook as JSON  2077ms
+               ✓ should show error with suggestion when hook not found  1376ms
+               ✓ should update hook name  3898ms
+               ✓ should update hook event type  4489ms
+               ✓ should update hook action  4071ms
+               ✓ should update hook filter  4311ms
+               ✓ should clear filter with empty object  3485ms
+               ✓ should enable/disable via --enabled/--disabled  6556ms
+               ✓ should error when hook not found  1291ms
+               ✓ should reject duplicate name on rename  3537ms
+               ✓ should reject invalid event type in set  1855ms
+               ✓ should enable a disabled hook  4157ms
+               ✓ should disable an enabled hook  3198ms
+               ✓ should succeed when enabling an already enabled hook  2583ms
+               ✓ should succeed when disabling an already disabled hook  2315ms
+               ✓ should error when hook not found for enable  1024ms
+               ✓ should exit with code 0 on successful enable  2478ms
+               ✓ should remove a hook with --confirm  3358ms
+               ✓ should require --confirm for removal  2256ms
+               ✓ should error when hook not found for remove  977ms
+               ✓ should output JSON on successful remove  2835ms
+               ✓ should exit with code 0 on successful remove  2879ms
+               ✓ should return errors as JSON with error field  1174ms
+               ✓ should output JSON even when other format flags present  2487ms
+               ✓ should include description and suggestion on not-found error  1568ms
+               ✓ should include guidance in JSON error output  1104ms
+               ✓ should exit 0 on successful list  1615ms
+               ✓ should exit non-zero on validation error  1048ms
+               ✓ should exit 0 with empty hook list  1129ms
+          stdout | tests/agent-dispatch-engine.test.ts > Stale queue entry discard > should discard
+          queued entries when task has been deleted
+
+          [dispatch] Discarded queue entry @01TASK00000000000000000000 for agent "worker": task no
+          longer exists on disk
+
+          [dispatch] Discarded 1 ineligible queue entry for agent "worker"
+
+           ✓ tests/item-set-traits.test.ts (30 tests) 134416ms
+               ✓ should replace traits with validated and canonicalized refs  5230ms
+               ✓ should error when trait ref does not exist  4998ms
+               ✓ should error when ref is not a trait type  5410ms
+               ✓ should deduplicate traits passed multiple times  5413ms
+               ✓ should store canonical slug form  6476ms
+               ✓ should append trait to existing traits  6768ms
+               ✓ should not duplicate when adding trait already present  6352ms
+               ✓ should append multiple traits at once  6744ms
+               ✓ should validate trait refs  5734ms
+               ✓ should remove specified trait and keep others  5242ms
+               ✓ should remove multiple traits at once  5755ms
+               ✓ should validate trait refs even when removing  3999ms
+               ✓ should clear all traits  3838ms
+               ✓ should error when combining --trait and --add-trait  3851ms
+               ✓ should error when combining --trait and --remove-trait  4738ms
+               ✓ should error when combining --add-trait and --clear-traits  4135ms
+               ✓ should show changed fields in success message  5186ms
+               ✓ should show before→after for trait changes in text output  4577ms
+               ✓ should include changes array in JSON output  4709ms
+               ✓ should include trait changes in JSON output  4447ms
+               ✓ should warn when values are already set (no-op)  4291ms
+               ✓ should show changed fields in task set success message  2361ms
+               ✓ should show before→after for priority change in text output  2555ms
+               ✓ should include changes array in task set JSON output  2564ms
+               ✓ should include tag changes in task set JSON output  2660ms
+               ✓ should not record diff when clearing an already-null field  2506ms
+               ✓ should show changed fields in ac set success message  2985ms
+               ✓ should show before→after for ac field change in text output  3864ms
+               ✓ should include changes array in ac set JSON output  3562ms
+               ✓ should warn when ac values are already set (no-op)  3456ms
+          stdout | tests/agent-dispatch-engine.test.ts > AC-19: Periodic reconciliation re-enqueues
+          missed tasks > should enqueue matching tasks with no active or queued invocation
+
+          [dispatch] Reconciliation enqueued 1 task(s)
+
+           ✓ tests/cli/session-start-activity-timeline.test.ts (19 tests) 137342ms
+                 ✓ should include both completed tasks and commits in a single timeline  7562ms
+                 ✓ should show Recent Activity header in human output instead of separate sections  7136ms
+                 ✓ should preserve raw recently_completed and recent_commits arrays in JSON  9592ms
+                 ✓ should show linked task info when commit has Task: @slug trailer  9958ms
+                 ✓ should show linked task info in human output  7739ms
+                 ✓ should include task_refs in commit summary JSON  1267ms
+                 ✓ should sort timeline items most recent first  7668ms
+                 ✓ should show linked commit+task as single combined entry, not two separate entries  8457ms
+                 ✓ should show unlinked commit and unlinked task as separate entries  8714ms
+                 ✓ should only show task completions when --no-git is passed  7777ms
+                 ✓ should not show commit entries in human output with --no-git  9557ms
+                 ✓ should show task as top-level entry with linked commits nested beneath using visual connectors  10419ms
+                 ✓ should nest multiple commits under the same task with ├─ and └─ connectors  8969ms
+                 ✓ should show standalone task completions with ✓ marker  9283ms
+                 ✓ should show task on its own line, commit on separate nested line  8803ms
+                 ✓ should show orphan commits with ○ marker as standalone indented entries  1397ms
+                 ✓ should classify orphan commits as type "commit" in JSON  1568ms
+                 ✓ should use different visual markers for orphan commits vs task entries  9878ms
+                 ✓ should not show orphan commits with tree connectors  1596ms
+           ✓ tests/task-system-ac-backfill.test.ts (12 tests) 63036ms
+               ✓ moves tasks through pending, active, review, completed, and cancelled states with persisted reasons  13944ms
+               ✓ returns blocked tasks to a non-terminal state when they are unblocked  9875ms
+               ✓ computes ready work from status, blockers, and dependencies and sorts needs_work before pending  8102ms
+               ✓ returns the highest-priority ready task and supports task list filters in json mode  10599ms
+               ✓ derives spec-linked tasks once and skips duplicates without force  3906ms
+               ✓ stores append-only notes with supersession metadata and exposes them through CLI commands  5554ms
+               ✓ stores todo identity and state changes across add, done, undone, and list commands  8965ms
+               ✓ keeps the exported real @tasks backfill snapshot free of non-module descendants without acceptance criteria  1236ms
+           ✓ tests/skill-meta-integration.test.ts (12 tests) 46848ms
+                 ✓ should return skill metadata when kspec meta get @skill-id is run  3432ms
+                 ✓ should return skill metadata by ULID prefix  4306ms
+                 ✓ should display skill type and reference in human-readable output  3044ms
+                 ✓ should show only skills when --type skill is used  3343ms
+                 ✓ should return only skills in JSON when --type skill is used  3859ms
+                 ✓ should include skills when listing all meta items  4288ms
+                 ✓ should include skill count in meta show summary  3213ms
+                 ✓ should show 0 skills when none exist  3811ms
+                 ✓ should include skill count in JSON output  3567ms
+                 ✓ should resolve skill id when checking references  5307ms
+                 ✓ should return skill ULID when resolving by id  4592ms
+                 ✓ should return skill when resolved by ULID prefix  4084ms
+           ✓ tests/cli/session-start-notes.test.ts (12 tests) 76913ms
+                 ✓ should include notes from pending_review tasks  7899ms
+                 ✓ should group pending_review notes separately from in_progress notes  12110ms
+                 ✓ should show pending_review notes in human-readable output  7305ms
+                 ✓ should include notes from recently completed tasks  9812ms
+                 ✓ should limit to last 3-5 completed tasks  1116ms
+                 ✓ should show recently completed tasks in activity timeline  7110ms
+                 ✓ should include notes from multiple completed tasks  17941ms
+                 ✓ should include pending_review and completed notes even with many in_progress notes  1124ms
+                 ✓ should include task_status field for all notes  4887ms
+                 ✓ should produce valid JSON on stdout with no extra lines  1608ms
+                 ✓ should not contain ANSI color codes in JSON output  4391ms
+                 ✓ should not have info/warning lines on stdout  1608ms
+           ✓ tests/workflow-prune.test.ts (9 tests) 35411ms
+               ✓ should delete runs older than specified duration  7831ms
+               ✓ should delete runs with specific status  9794ms
+               ✓ should identify abandoned active runs  1930ms
+               ✓ should show what would be deleted with --dry-run  6693ms
+               ✓ should combine multiple filters  5433ms
+               ✓ should error if no filter specified  796ms
+               ✓ should handle no matches gracefully  1055ms
+               ✓ should validate duration format  913ms
+               ✓ should validate status values  964ms
+           ✓ tests/ac-delete-confirmation.test.ts (8 tests) 34407ms
+               ✓ should prompt for confirmation when removing AC without --force  4477ms
+               ✓ should remove AC when user confirms with y  4411ms
+               ✓ should cancel operation when user declines with n  4515ms
+               ✓ should cancel operation when user enters empty response  4066ms
+               ✓ should remove AC immediately with --force flag  4496ms
+               ✓ should error in JSON mode without --force  3952ms
+               ✓ should error in non-interactive environment without --force  4090ms
+               ✓ should work in non-interactive environment with --force  4398ms
+           ✓ tests/task-submission-linkage.test.ts (13 tests) 94452ms
+               ✓ should capture branch and commit on submit from named branch  7478ms
+               ✓ should include review URL in submission linkage when provided  7489ms
+               ✓ should capture remote, remote_url, and upstream_ref when upstream is configured  7723ms
+               ✓ should capture upstream_ref when local branch tracks a differently named remote branch  7670ms
+               ✓ should show submission linkage in task get human output  7005ms
+               ✓ should include submission_linkage as machine-readable state in JSON  6798ms
+               ✓ should record commit even with detached HEAD and warn  6489ms
+               ✓ should show detached indicator in human display when branch is null  7029ms
+               ✓ should repair submission linkage via task set --submission-linkage  9945ms
+               ✓ should clear submission linkage via task set --clear-submission-linkage  7344ms
+               ✓ should backfill linkage on task that predates linkage capture  4839ms
+               ✓ should fall back to dispatch config base_branch for upstream_ref when no git upstream tracking  7407ms
+               ✓ should prefer git upstream tracking over dispatch config fallback  7235ms
+           ✓ tests/init-setup-integration.test.ts (9 tests) 50141ms
+                 ✓ creates shadow branch and manifest when --setup is passed  5504ms
+                 ✓ installs core skills in .kspec/skills/ when --setup is passed  5884ms
+                 ✓ creates rendered skills, hooks config, and kspec-agents.md when --setup is passed  6760ms
+                 ✓ shows setup summary in output when --setup is passed  7684ms
+                 ✓ creates only shadow branch and manifest without --setup  3328ms
+                 ✓ does not install hooks without --setup  3220ms
+                 ✓ shows custom shadow directory and branch in next steps when configured  3341ms
+                 ✓ handles already initialized project gracefully  5937ms
+                 ✓ handles --setup with --force for reinitializing  8482ms failed in the reviewer snapshot: 289 files passed, but tests/review-per-cycle-lifecycle.test.ts timed out at line 149 during the full-suite run. The same file passed when rerun in isolation, so the branch still misses the required merge gate due to an unresolved full-suite timeout/flakiness issue.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T06:33:35.491Z
+        completed_at: 2026-03-20T06:33:35.491Z
     events:
       - _ulid: 01KM4YR6NNQBCJWSJ5VEXVSJRG
         actor: Jacob Chapel
@@ -27087,6 +27702,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM4Z3H1TY8SV7XMXN8FC9034
         timestamp: 2026-03-20T06:32:13.464Z
+      - _ulid: 01KM4Z628MCY0XDPN6BYF1FYRJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-20T06:33:35.765Z
     examined_commit: 972087fb3f745be8663ade6f6a05d502f993e091
     external_links: []
     lifecycle_state: open
@@ -27162,5 +27784,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-20T06:26:01.525Z
-    updated_at: 2026-03-20T06:32:12.602Z
+    updated_at: 2026-03-20T06:33:35.491Z
     notes: []
