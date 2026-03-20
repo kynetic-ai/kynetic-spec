@@ -2114,10 +2114,14 @@ Examples:
             }
 
             // AC: @state-blocked ac-1 — save current status for restoration on unblock
+            // Preserve the first non-blocked prior_status on repeated block calls
             return {
               ...latestTask,
               status: "blocked",
-              prior_status: latestTask.status,
+              prior_status:
+                latestTask.status === "blocked"
+                  ? latestTask.prior_status
+                  : latestTask.status,
               blocked_by: [...latestTask.blocked_by, options.reason],
             };
           },

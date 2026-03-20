@@ -248,7 +248,7 @@ Transitions:
   in_progress → completed        kspec task complete (skip review)
   in_progress → blocked          kspec task block
   pending_review → blocked       kspec task block
-  blocked → pending              kspec task unblock
+  blocked → prior status          kspec task unblock (restores pre-block status, or pending)
   any → cancelled                kspec task cancel
 
 Auto-blocking:

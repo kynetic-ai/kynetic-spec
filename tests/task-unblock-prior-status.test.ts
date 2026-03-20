@@ -165,6 +165,36 @@ describe('Integration: restore prior status on task unblock', () => {
     expect(blocked.task.blocked_by).toContain('Test');
   });
 
+  // AC: @state-blocked ac-1 — re-blocking preserves original prior_status
+  it('should preserve original prior_status when re-blocking an already blocked task', () => {
+    kspec('task add --title "Re-block test" --slug task-reblock', tempDir);
+    kspec('task start @task-reblock', tempDir);
+
+    const beforeBlock = kspecJson<TaskState>('task get @task-reblock', tempDir);
+    expect(beforeBlock.status).toBe('in_progress');
+
+    kspec('task block @task-reblock --reason "First blocker"', tempDir);
+
+    const firstBlock = kspecJson<TaskState>('task get @task-reblock', tempDir);
+    expect(firstBlock.status).toBe('blocked');
+    expect(firstBlock.prior_status).toBe('in_progress');
+    expect(firstBlock.blocked_by).toEqual(['First blocker']);
+
+    kspec('task block @task-reblock --reason "Second blocker"', tempDir);
+
+    const secondBlock = kspecJson<TaskState>('task get @task-reblock', tempDir);
+    expect(secondBlock.status).toBe('blocked');
+    expect(secondBlock.prior_status).toBe('in_progress');
+    expect(secondBlock.blocked_by).toEqual(['First blocker', 'Second blocker']);
+
+    kspec('task unblock @task-reblock', tempDir);
+
+    const unblocked = kspecJson<TaskState>('task get @task-reblock', tempDir);
+    expect(unblocked.status).toBe('in_progress');
+    expect(unblocked.blocked_by).toEqual([]);
+    expect(unblocked.prior_status).toBeNull();
+  });
+
   // AC: @trait-json-output ac-1 — JSON output includes prior_status field
   // AC: @trait-json-output ac-2 — all data available in JSON
   it('should include prior_status in task get JSON output when blocked', () => {
