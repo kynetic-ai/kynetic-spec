@@ -108983,6 +108983,17 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T14:39:08.368Z
+    - _ulid: 01KM5VB42X8HVAF43MM420NP8H
+      content: "[FIX_CYCLE: 3] Stopped explicit serve launches from propagating KSPEC_NO_DAEMON into the
+        daemon child process by stripping the flag from the spawned environment in
+        src/cli/commands/serve.ts. Added regression coverage in tests/cli-no-daemon.test.ts to
+        verify explicit daemon child envs clear KSPEC_NO_DAEMON while preserving other variables.
+        Verification: npm test passed (291 files, 6665 tests, 3 skipped); kspec validate still
+        reports the same pre-existing repo validation issues in .kspec/modules/meta.yaml and
+        existing completeness debt."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T14:45:41.597Z
   todos: []
   automation: eligible
 - _ulid: 01KM28A020C9M06YC8MA2E96NW
