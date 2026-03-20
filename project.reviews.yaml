@@ -31119,7 +31119,20 @@ reviews:
     slugs: []
     title: Review @01KM6AR90T6NH9Q6RWF35J63DD
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Project-wide validation errors are present in this snapshot before considering the diff:
+          3 unresolved references in .kspec/modules/meta.yaml plus existing completeness warnings.
+          These appear unrelated to the changed review status-filter code but were observed during
+          deterministic review checks."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T19:33:06.821Z
+        completed_at: 2026-03-20T19:33:06.821Z
     events:
       - _ulid: 01KM6BJQXPAAEWE40HTCSXVP4C
         actor: Jacob Chapel
@@ -31141,6 +31154,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM6BN5C0ZDF8K8139P4MEQCN
         timestamp: 2026-03-20T19:30:48.260Z
+      - _ulid: 01KM6BSDCGFE8TAMRFJX4NAVQH
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T19:33:07.088Z
     examined_commit: 9af2a866525c2f5b72dac5439c638bb3943c84d5
     external_links: []
     lifecycle_state: open
@@ -31173,5 +31193,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-20T19:29:28.502Z
-    updated_at: 2026-03-20T19:30:47.809Z
+    updated_at: 2026-03-20T19:33:06.821Z
     notes: []
