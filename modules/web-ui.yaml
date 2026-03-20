@@ -2372,7 +2372,7 @@ features:
       View for browsing plan records with progress tracking via linked specs and tasks.
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
