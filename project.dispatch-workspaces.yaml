@@ -11984,7 +11984,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T00:16:46.104Z
+      updated_at: 2026-03-20T00:16:47.340Z
     integration:
       status: pending
       detail: null
@@ -11993,25 +11993,20 @@ workspaces:
       target_branch: dev
       target_commit: 53be2094bc46d5c352d60c095941b9033e61d079
       updated_at: 2026-03-20T00:16:46.104Z
-    lifecycle_state: integrating
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KKX6QPC0374PT4W93CMA7EMX"
     task_slug: fix-shadow-commit-call-sites-that-omit-entity-refs
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T00:04:38.637Z
-      last_reconciled_at: 2026-03-20T00:16:46.104Z
+      last_reconciled_at: 2026-03-20T00:16:47.340Z
       created_at: 2026-03-19T06:53:50.346Z
-      updated_at: 2026-03-20T00:16:46.104Z
+      updated_at: 2026-03-20T00:16:47.340Z
     workspace_id: dispatch-workspace-01KKX6QPC0374PT4W93CMA7EMX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 5ac40253e2bb3528cd818e098ca4a5639062d7fc
-        last_seen_at: 2026-03-20T00:04:37.115Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-shadow-commit-call-sites-that-omit-entity-refs-01kkx6qp-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-shadow-commit-call-sites-that-omit-entity-refs/01kkx6qp
