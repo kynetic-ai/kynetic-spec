@@ -30,7 +30,7 @@ import {
   normalizeRefInput,
   TaskTypeSchema,
 } from "../../schema/index.js";
-import type { Task, TaskInput } from "../../schema/index.js";
+import type { AutomationStatus, Task, TaskInput } from "../../schema/index.js";
 import { alignmentCheck, errors } from "../../strings/index.js";
 import {
   formatCommitGuidance,
@@ -504,7 +504,7 @@ async function setTaskFields(
     // AC: @task-automation-eligibility ac-5, ac-11, ac-12, ac-18
     // Handle automation status changes
     // Note: --no-automation sets options.automation to false, so check that first
-    let validatedAutomation: "eligible" | "needs_review" | "manual_only" | undefined;
+    let validatedAutomation: AutomationStatus | undefined;
     if (options.automation !== undefined && options.automation !== false) {
       const automationResult = validateEnumOption(
         options.automation,
@@ -1066,11 +1066,7 @@ Examples:
         }
 
         // AC: @task-automation-eligibility ac-13 - validate automation if provided
-        let automationValue:
-          | "eligible"
-          | "needs_review"
-          | "manual_only"
-          | undefined;
+        let automationValue: AutomationStatus | undefined;
         if (options.automation) {
           const automationResult = validateEnumOption(
             options.automation,
