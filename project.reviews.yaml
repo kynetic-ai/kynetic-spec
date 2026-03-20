@@ -31952,6 +31952,13 @@ reviews:
         payload:
           to: draft
         timestamp: 2026-03-20T22:09:59.194Z
+      - _ulid: 01KM6MSS7A4N2D42GGFANCNFNE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM6MSRZGK5QAAYVFYC3189MR
+        timestamp: 2026-03-20T22:10:36.394Z
     examined_commit: 470ed5083bbcb2e24854070eff6cb630ef16e690
     external_links: []
     lifecycle_state: draft
@@ -31961,8 +31968,123 @@ reviews:
       content_hash: ""
       ref: "@01KM6KM0AAVDTJHPFEZGYA59PD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM6MSRZGK5QAAYVFYC3189MR
+        anchor:
+          type: code
+          commit: 470ed5083bbcb2e24854070eff6cb630ef16e690
+          line_end: 251
+          line_start: 251
+          path: src/cli/help/content.ts
+          side: head
+        entries:
+          - _ulid: 01KM6MSRZG4VMCPVGQHC7EQ9JN
+            author: Jacob Chapel
+            body: >-
+              The built-in lifecycle help still documents 'blocked -> pending' for , but this change
+              makes unblock restore the prior status when known. task - Operations on individual
+              tasks
+
+              ────────────────────────────────────────
+
+
+              Usage:
+                kspec task
+
+              Commands:
+                list                 List all tasks (alias for 'kspec tasks list')
+                get                  Get task details
+                add                  Create a new task
+                set                  Update task fields
+                patch                Update task with JSON data
+                start                Start working on a task (pending|needs_work -> in_progress)
+                complete             Complete a task (pending_review -> completed)
+                submit               Submit task for review (transitions to pending_review)
+                needs-work           Kick task back to worker for fixes (pending_review -> needs_work)
+                block                Block a task
+                unblock              Unblock a task
+                cancel               Cancel a task
+                reset                Reset a task to pending state
+                delete               Delete a task permanently
+                note                 Add a note to a task
+                notes                Show notes for a task
+                review               Get task context for review (task details, spec, ACs, git diff)
+                todos                Show todos for a task
+                todo                 Manage task todos
+                branch               Create or resume the deterministic dispatch-compatible branch for a task
+
+              Details:
+
+              Individual task operations for managing task lifecycle.
+
+
+              Task References:
+                Tasks can be referenced by slug (@task-slug) or ULID prefix (@01KEZ).
+                The @ prefix is optional in commands.
+
+              Notes vs Todos:
+                - Notes: Append-only work log entries for tracking progress and findings
+                - Todos: Lightweight checklist items that emerge during work
+
+              Blocking vs Dependencies:
+                - blocked_by: Manual blockers (strings like "waiting on design review")
+                - depends_on: Task references that auto-resolve when completed
+
+                Use 'task block' for manual blockers. Dependencies are set in YAML.
+
+              Examples:
+                kspec task get @task-cli-help
+                kspec task add --title "Fix login bug" --priority 1 --tag bug
+                kspec task start @my-task
+                kspec task note @my-task "Investigated root cause, found issue in auth module"
+                kspec task complete @my-task --reason "Fixed by updating token validation"
+                kspec task todo add @my-task "Review error handling"
+                kspec task todo done @my-task 1
+                kspec task todos @my-task
+
+              See also: kspec help tasks, kspec help refs, kspec help statuses and Task Statuses
+
+              ────────────────────────────────────────
+
+              Task lifecycle states and transitions.
+
+
+              States:
+                pending        → Ready to start (or waiting on dependencies)
+                in_progress    → Currently being worked on
+                pending_review → Code done, awaiting review/merge
+                needs_work     → Reviewer found issues, kicked back to worker
+                completed      → Done (merged/shipped)
+                blocked        → Manually blocked (has blocked_by entries)
+                cancelled      → Cancelled, won't be done
+
+              Transitions:
+                pending → in_progress          kspec task start
+                needs_work → in_progress       kspec task start (fix cycle)
+                in_progress → pending_review   kspec task submit
+                pending_review → needs_work    kspec task needs-work --reason "..."
+                pending_review → completed     kspec task complete
+                in_progress → completed        kspec task complete (skip review)
+                in_progress → blocked          kspec task block
+                pending_review → blocked       kspec task block
+                blocked → pending              kspec task unblock
+                any → cancelled                kspec task cancel
+
+              Auto-blocking:
+                Tasks with unfinished depends_on entries are effectively blocked
+                but show as 'pending'. They become 'ready' when deps complete.
+
+              The 'tasks ready' command shows pending tasks with no blockers
+
+              and no incomplete dependencies.
+
+
+              See also: kspec help task, kspec help tasks therefore describe the wrong transition
+              for the new behavior, which is user-visible contract drift and should be updated with
+              the implementation.
+            created_at: 2026-03-20T22:10:36.144Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T22:09:59.194Z
-    updated_at: null
+    updated_at: 2026-03-20T22:10:36.144Z
     notes: []
