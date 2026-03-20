@@ -24436,9 +24436,6 @@ plans:
       ## Tasks
 
 
-      derive_from_specs: true
-
-
       ```yaml
 
       - title: Add CLI mutation enum validation
@@ -24573,26 +24570,6 @@ plans:
           - Warning format: "Warning: Skipping invalid <type> "<id>" in <file>: <issues>"
           - Ensure valid records are still returned (non-breaking)
 
-      - title: Create trait-validated-enum-input
-        slug: task-create-validated-enum-trait
-        priority: 1
-        tags:
-          - spec
-          - validation
-        description: |
-          **What:** Create the @trait-validated-enum-input trait spec with acceptance
-          criteria that apply to any command or endpoint accepting enum values.
-
-          **Why:** This trait is the spec-level enforcement mechanism. When applied to
-          specs, it ensures all implementations inherit the validation contract. New
-          commands that accept enums will inherit these ACs via the trait.
-
-          **How:**
-          - This task is auto-derived from the trait spec in this plan
-          - Verify the trait is created correctly after plan derive
-          - Apply the trait to existing specs that have enum inputs but lack it
-          - The trait has 4 ACs covering rejection, error messages, schema derivation,
-            and default value validity
       ```
 
 
@@ -24637,4 +24614,8 @@ plans:
     source_path: /home/chapel/Projects/kynetic-spec/plans/input-validation-hardening.md
     created_at: 2026-03-20T14:22:28.455Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KM5T5S2MTXYNTVG9PSTTTBEQ
+        content: Remove derive_from_specs and redundant trait creation task
+        author: "@claude"
+        created_at: 2026-03-20T14:25:17.908Z
