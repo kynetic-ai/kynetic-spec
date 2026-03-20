@@ -90,10 +90,12 @@ export class ProjectContextManager {
 
     const kspecDir = join(normalizedPath, '.kspec');
     const sessionsDir = join(normalizedPath, '.kspec-sessions');
+    let kspecWatcher: KspecWatcher | null = null;
+    let sessionWatcher: SessionWatcher | null = null;
 
     try {
       // AC: @multi-directory-daemon ac-17, ac-18 - Create watcher with project-scoped broadcasts
-      const kspecWatcher = new KspecWatcher({
+      kspecWatcher = new KspecWatcher({
         kspecDir,
         onFileChange: (file, content) => {
           // AC: @multi-directory-daemon ac-17 - File changes trigger events scoped to project
@@ -121,7 +123,7 @@ export class ProjectContextManager {
         }
       });
 
-      const sessionWatcher = new SessionWatcher({
+      sessionWatcher = new SessionWatcher({
         sessionsDir,
         onSessionChange: (file) => {
           if (this.pubsub) {
@@ -153,6 +155,13 @@ export class ProjectContextManager {
         context.watcherActive = true;
       }
     } catch (error: unknown) {
+      if (sessionWatcher) {
+        await sessionWatcher.stop().catch(() => undefined);
+      }
+      if (kspecWatcher) {
+        await kspecWatcher.stop().catch(() => undefined);
+      }
+
       // AC: @multi-directory-daemon ac-19 - Handle OS limits (EMFILE/ENFILE)
       const code = error instanceof Error && 'code' in error ? (error as NodeJS.ErrnoException).code : undefined;
       if (code === 'EMFILE' || code === 'ENFILE') {

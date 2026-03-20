@@ -7,11 +7,13 @@
  * AC: @multi-directory-daemon ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8, ac-8c, ac-14, ac-15, ac-16, ac-20, ac-20b
  */
 
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { setupMultiDirFixtures, cleanupTempDir } from './helpers/cli';
 import { join } from 'path';
 import { symlink } from 'fs/promises';
 import { ProjectContextManager } from '../packages/daemon/src/project-context';
+import { KspecWatcher } from '../packages/daemon/src/watcher';
+import { SessionWatcher } from '../packages/daemon/src/session-watcher';
 import type { ProjectContext } from '../packages/daemon/src/project-context';
 
 describe('ProjectContextManager', () => {
@@ -30,6 +32,7 @@ describe('ProjectContextManager', () => {
   });
 
   afterEach(async () => {
+    vi.restoreAllMocks();
     await cleanupTempDir(fixturesRoot);
   });
 
@@ -102,6 +105,26 @@ describe('ProjectContextManager', () => {
 
       expect(context2).toBe(context1);
       expect(context2.registeredAt).toBe(registeredAt1);
+    });
+  });
+
+  describe('Watcher startup rollback', () => {
+    it('stops an already-started kspec watcher if session watcher startup fails', async () => {
+      manager.registerProject(projectA);
+
+      const kspecWatcherStart = vi.spyOn(KspecWatcher.prototype, 'start').mockResolvedValue();
+      const kspecWatcherStop = vi.spyOn(KspecWatcher.prototype, 'stop').mockResolvedValue();
+      const sessionWatcherStart = vi.spyOn(SessionWatcher.prototype, 'start').mockRejectedValue(
+        new Error('session watcher failed'),
+      );
+      const sessionWatcherStop = vi.spyOn(SessionWatcher.prototype, 'stop').mockResolvedValue();
+
+      await expect(manager.startWatcher(projectA)).rejects.toThrow('session watcher failed');
+
+      expect(kspecWatcherStart).toHaveBeenCalledOnce();
+      expect(sessionWatcherStart).toHaveBeenCalledOnce();
+      expect(kspecWatcherStop).toHaveBeenCalledOnce();
+      expect(sessionWatcherStop).toHaveBeenCalledOnce();
     });
   });
 
