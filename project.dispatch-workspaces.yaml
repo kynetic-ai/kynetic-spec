@@ -15022,12 +15022,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T18:21:26.242Z
+      updated_at: 2026-03-20T18:21:30.717Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T18:21:26.242Z
+      updated_at: 2026-03-20T18:21:30.717Z
     integration:
       status: pending
       detail: null
@@ -15035,24 +15035,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a507fc148a704f8aa708f7e5599780cbbac0622f
-      updated_at: 2026-03-20T18:21:26.242Z
-    lifecycle_state: ready
+      updated_at: 2026-03-20T18:21:30.717Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM5Z4MXMC234763SFZZHK7GH"
     task_slug: task-parser-write-validation
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T18:14:17.020Z
-      last_reconciled_at: 2026-03-20T18:21:26.242Z
+      last_reconciled_at: 2026-03-20T18:21:30.717Z
       created_at: 2026-03-20T18:14:06.435Z
-      updated_at: 2026-03-20T18:21:26.242Z
+      updated_at: 2026-03-20T18:21:30.717Z
     workspace_id: dispatch-workspace-01KM5Z4MXMC234763SFZZHK7GH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: a0bf72cf5aec046fb671938f44c6982741caacbf
+        last_seen_at: 2026-03-20T18:21:30.717Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-parser-write-validation-01km5z4m-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-parser-write-validation/01km5z4m
-        head: a507fc148a704f8aa708f7e5599780cbbac0622f
-        last_seen_at: 2026-03-20T18:14:06.435Z
+        head: a0bf72cf5aec046fb671938f44c6982741caacbf
+        last_seen_at: 2026-03-20T18:21:30.717Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-parser-write-validation-01km5z4m
