@@ -12906,12 +12906,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T04:32:03.621Z
+      updated_at: 2026-03-20T04:32:10.808Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T04:32:03.621Z
+      updated_at: 2026-03-20T04:32:10.808Z
     integration:
       status: pending
       detail: null
@@ -12919,24 +12919,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5c99aae155547908523751e1996ca00fc11ee2fe
-      updated_at: 2026-03-20T04:32:03.621Z
-    lifecycle_state: ready
+      updated_at: 2026-03-20T04:32:10.808Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM4KPQ4CJS24TH0NTVXJA1V3"
     task_slug: fix-review-add-subject-type-precedence-with-version-context
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T04:22:52.270Z
-      last_reconciled_at: 2026-03-20T04:32:03.621Z
+      last_reconciled_at: 2026-03-20T04:32:10.808Z
       created_at: 2026-03-20T04:22:36.306Z
-      updated_at: 2026-03-20T04:32:03.621Z
+      updated_at: 2026-03-20T04:32:10.808Z
     workspace_id: dispatch-workspace-01KM4KPQ4CJS24TH0NTVXJA1V3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 111d29d52180ca272c6a43ec08f0adf130cd218a
+        last_seen_at: 2026-03-20T04:32:10.808Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-review-add-subject-type-precedence-with-version-context-01km4kpq-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-review-add-subject-type-precedence-with-version-context/01km4kpq
-        head: 5c99aae155547908523751e1996ca00fc11ee2fe
-        last_seen_at: 2026-03-20T04:22:36.306Z
+        head: 111d29d52180ca272c6a43ec08f0adf130cd218a
+        last_seen_at: 2026-03-20T04:32:10.808Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-review-add-subject-type-precedence-with-version-context-01km4kpq
