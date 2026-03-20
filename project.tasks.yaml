@@ -109650,4 +109650,13 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T01:15:36.953Z
+    - _ulid: 01KM4DEP85QHTAF5P25CX8CMZ4
+      content: "[FIX_CYCLE: 2] Separated transient dependency-repair invalidation from the persisted
+        bootstrap config hash. The implicit npm ci repair step still forces a rerun while
+        dependencies are missing, but once the workspace is healthy the next bootstrap now reuses
+        prior success instead of surfacing a synthetic bootstrap-config-changed rerun. Added a
+        regression assertion that the post-repair run is reused."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T01:23:44.005Z
   todos: []
