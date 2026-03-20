@@ -31134,6 +31134,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T19:30:02.971Z
+      - _ulid: 01KM6BN5T48AAZ159DVYTCT4P9
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM6BN5C0ZDF8K8139P4MEQCN
+        timestamp: 2026-03-20T19:30:48.260Z
     examined_commit: 9af2a866525c2f5b72dac5439c638bb3943c84d5
     external_links: []
     lifecycle_state: open
@@ -31143,8 +31150,28 @@ reviews:
       content_hash: ""
       ref: "@01KM6AR90T6NH9Q6RWF35J63DD"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM6BN5C0ZDF8K8139P4MEQCN
+        anchor:
+          type: code
+          commit: 9af2a866525c2f5b72dac5439c638bb3943c84d5
+          line_end: 153
+          line_start: 150
+          path: packages/daemon/src/routes/reviews.ts
+          side: head
+        entries:
+          - _ulid: 01KM6BN5C0QR1MRA7HFK1Y8198
+            author: Jacob Chapel
+            body: "This changes the backend contract for GET /api/reviews: omitting status now returns every
+              lifecycle state instead of defaulting to open reviews. That violates
+              @review-records-daemon-api ac-1 (and the web UI requirement that the list defaults to
+              open) while only masking the validation bug for callers that omit the param. The task
+              can still be fixed without this regression by either allowing an explicit all-status
+              sentinel through validation or preserving the existing open-by-default daemon behavior
+              and changing only the callers that need all reviews."
+            created_at: 2026-03-20T19:30:47.809Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T19:29:28.502Z
-    updated_at: 2026-03-20T19:30:02.671Z
+    updated_at: 2026-03-20T19:30:47.809Z
     notes: []
