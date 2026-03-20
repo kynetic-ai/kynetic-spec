@@ -24243,6 +24243,64 @@ plans:
               Import fails with an error identifying the invalid field
               and listing valid values
 
+      # ─── Single source of truth ────────────────────────────────
+
+      - title: Schema-Derived Type Definitions
+        slug: schema-derived-type-definitions
+        type: requirement
+        parent: "@schema"
+        traits:
+          - trait-type-safe-input
+        description: |
+          Every surface that references a constrained type — CLI option help
+          text, daemon API route schemas, runtime validation arrays, type
+          assertions — must derive its definition from the canonical Zod
+          schema rather than maintaining a separate copy. When multiple
+          representations of the same type exist, they drift independently
+          and create silent inconsistencies.
+
+          This includes hardcoded enum arrays used for validation, Elysia
+          literal unions used for API schema enforcement, CLI help strings
+          that list valid values, and TypeScript type assertions that
+          enumerate possible values. All of these must trace back to a
+          single Zod schema definition.
+        acceptance_criteria:
+          - id: ac-1
+            given: |
+              A runtime validation check references a set of valid values
+              for a type that has a Zod schema definition
+            when: |
+              The valid values are determined
+            then: |
+              They are derived from the schema (e.g. Schema.options) rather
+              than maintained as a separate hardcoded array or set
+          - id: ac-2
+            given: |
+              An API framework schema defines the allowed values for a field
+            when: |
+              The schema is constructed
+            then: |
+              The allowed values are derived from the Zod schema definition,
+              not hardcoded as separate literals
+          - id: ac-3
+            given: |
+              A CLI command's help text lists valid values for an option
+            when: |
+              The help text is generated
+            then: |
+              The listed values are derived from the schema definition so
+              they stay in sync when the schema changes
+          - id: ac-4
+            given: |
+              Two or more Zod schemas define allowed values for the same
+              semantic concept
+            when: |
+              The schemas are compared
+            then: |
+              They share a single source definition or one is explicitly
+              derived from the other, with no independent incompatible
+              copies
+
       # ─── Read-side resilience ──────────────────────────────────
 
       - title: Read-Side Validation Warnings
@@ -24463,6 +24521,59 @@ plans:
 
           Covers: @parser-write-type-safety ac-1, ac-2, ac-3.
 
+      - title: Consolidate type definitions to schema source of truth
+        slug: task-schema-derived-types
+        spec_ref: "@schema-derived-type-definitions"
+        priority: 2
+        tags:
+          - schema
+          - validation
+          - maintenance
+        description: |
+          **What:** Replace all hardcoded enum arrays, Elysia literal unions,
+          CLI help text values, and type assertions with derivations from the
+          canonical Zod schemas. Also resolve the automation status divergence
+          where three independent Zod schemas define incompatible value sets
+          for the same semantic concept.
+
+          **Why:** The audit found 5 hardcoded enum arrays in daemon routes,
+          10+ CLI help strings with hardcoded values, and type assertions in
+          aggregation routes — all duplicating what Zod schemas already define.
+          Worse, there are 3 incompatible "automation" enums:
+          - AutomationStatusSchema (task.ts): eligible, needs_review, manual_only
+          - TaskEventPayload automation (event-payloads.ts): eligible, not_eligible, assisted
+          - AgentDispatchFilterSchema (meta.ts): eligible, ineligible
+          Only "eligible" overlaps across all three. These must be reconciled.
+
+          **How:**
+          1. Reconcile automation enums — determine the canonical set and
+             derive the others from it, or document why they are intentionally
+             different domains
+
+          2. Replace hardcoded arrays in daemon routes with schema derivations:
+             - packages/daemon/src/routes/agent-dispatch.ts: VALID_TASK_STATUSES
+               → derive from TaskStatusSchema.options
+             - packages/daemon/src/routes/reviews.ts: VALID_DECISIONS,
+               VALID_CHECK_STATUSES, VALID_LIFECYCLE_TARGETS, validKinds,
+               validSides → derive from corresponding Review*Schema.options
+             - packages/daemon/src/routes/aggregation.ts: remove type assertions
+               with hardcoded enum values
+
+          3. Replace Elysia hardcoded literals:
+             - packages/daemon/src/routes/meta.ts line 108: automation literal
+               union → derive from schema like line 105 does for dispatch events
+
+          4. Make CLI help text derive from schemas. Either:
+             (a) Generate help strings: `"Task type (${TaskTypeSchema.options.join(', ')})"` or
+             (b) Accept that help text is documentation and may list a subset,
+                 but validation must use the schema
+
+          5. Follow existing correct patterns:
+             - src/triage/constants.ts: `VALID_ACTIONS = TriageActionSchema.options`
+             - meta.ts:105: `t.Union(Schema.options.map(v => t.Literal(v)))`
+
+          Covers: @schema-derived-type-definitions ac-1 through ac-4.
+
       - title: Add read-side validation warnings
         slug: task-read-side-validation-warnings
         spec_ref: "@read-side-validation-warnings"
@@ -24561,3 +24672,8 @@ plans:
           endpoints to scope, add non-enum scope deferral note"
         author: "@claude"
         created_at: 2026-03-20T15:27:51.897Z
+      - _ulid: 01KM5YAVTR0T019BE1SFQRAN71
+        content: Add schema-derived type definitions spec and task — consolidate hardcoded enums, reconcile
+          automation status divergence, derive all type references from canonical Zod schemas
+        author: "@claude"
+        created_at: 2026-03-20T15:37:58.873Z
