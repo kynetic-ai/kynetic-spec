@@ -24079,6 +24079,18 @@ reviews:
         runner: kspec
         created_at: 2026-03-20T01:54:15.683Z
         completed_at: 2026-03-20T01:54:15.683Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "npm test exits 1 on snapshot 47883f95b with four failing tests: two agent-dispatch-engine
+          regressions, canonical-task-workspace-contract cleanup metadata timeout, and
+          dispatch-runtime-bootstrap-contract dependency-repair timeout."
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T01:55:09.083Z
+        completed_at: 2026-03-20T01:55:09.083Z
     events:
       - _ulid: 01KM4ESK8SCZ8JYQFEQR5R9MFN
         actor: Jacob Chapel
@@ -24130,6 +24142,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T01:54:27.430Z
+      - _ulid: 01KM4F87PXQ5W1PANNNDYWNE5E
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm-test
+        timestamp: 2026-03-20T01:55:09.662Z
     examined_commit: 47883f95b96085dff4a90d0147498b14a5f8da6f
     external_links: []
     lifecycle_state: closed
@@ -24497,5 +24516,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T01:54:27.430Z
     created_at: 2026-03-20T01:47:09.977Z
-    updated_at: 2026-03-20T01:54:27.430Z
+    updated_at: 2026-03-20T01:55:09.083Z
     notes: []
