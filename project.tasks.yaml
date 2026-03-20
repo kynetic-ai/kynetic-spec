@@ -111493,8 +111493,13 @@
   spec_ref: null
   meta_ref: null
   plan_ref: null
-  status: needs_work
-  blocked_by: []
+  status: blocked
+  blocked_by:
+    - "Dispatch bootstrap failed: Dispatch shadow mutation lock unavailable while committing
+      workspace registry for @01KM6BGYMGZ518JENMCRACJPX3: Timed out waiting for file lock on
+      /home/chapel/Projects/kynetic-spec-dispatch/.kspec-dispatch-shadow-mutation after 5000ms. If
+      no other kspec process is running, remove
+      /home/chapel/Projects/kynetic-spec-dispatch/.kspec-dispatch-shadow-mutation.lock manually."
   depends_on: []
   context: []
   priority: 1
