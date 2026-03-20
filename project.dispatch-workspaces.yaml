@@ -15240,7 +15240,7 @@ workspaces:
         head: 80518667626a6529e0eb127a4d99fa19d3260061
         last_seen_at: 2026-03-20T18:34:02.379Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-cli-filter-input-validation-01km5z4k
-  - active_role: null
+  - active_role: worker
     base_branch_point: da0fbf18378b893f4b1036d23282f691beaccf56
     bootstrap:
       status: succeeded
@@ -15310,7 +15310,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T19:43:15.247Z
+      updated_at: 2026-03-20T19:43:17.135Z
     integration:
       status: pending
       detail: null
@@ -15319,16 +15319,16 @@ workspaces:
       target_branch: dev
       target_commit: da0fbf18378b893f4b1036d23282f691beaccf56
       updated_at: 2026-03-20T19:43:15.247Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM6AR90T6NH9Q6RWF35J63DD"
     task_slug: fix-reviews-api-status-filter-validation-mismatch
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-20T19:28:41.475Z
-      last_reconciled_at: 2026-03-20T19:43:15.247Z
+      last_active_at: 2026-03-20T19:43:17.135Z
+      last_reconciled_at: 2026-03-20T19:43:17.135Z
       created_at: 2026-03-20T19:17:06.568Z
-      updated_at: 2026-03-20T19:43:15.928Z
+      updated_at: 2026-03-20T19:43:17.135Z
     workspace_id: dispatch-workspace-01KM6AR90T6NH9Q6RWF35J63DD
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
