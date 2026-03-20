@@ -110469,5 +110469,15 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T06:33:58.219Z
+    - _ulid: 01KM4ZTH02VXCXR38G7DP840YW
+      content: "Fix cycle update: added rollback cleanup in project watcher startup so a failed session
+        watcher start stops any already-started .kspec watcher before rethrowing, preventing leaked
+        duplicate watchers on retry. Added a regression test for that startup failure path.
+        Verification: npm run typecheck; npm test -- tests/daemon-context-manager.test.ts
+        tests/review-per-cycle-lifecycle.test.ts; npm test (290 files, 6657 tests passed, 3
+        skipped)."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T06:44:46.210Z
   todos: []
   automation: eligible
