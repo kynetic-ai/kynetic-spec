@@ -111216,5 +111216,14 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T17:58:15.733Z
+    - _ulid: 01KM66M1YP6THBZ2REQJNBP1GT
+      content: "Verified the /plans build output after creating the workspace dist/ directory: dist/web-ui
+        contains bg-status-completed, bg-status-in-progress, bg-status-pending, and
+        bg-status-blocked, with no remaining bg-[var(--design-status-*)] classes. Playwright plans
+        e2e could not run in dispatch because the test harness attempts to start/stop the daemon,
+        which is forbidden inside agent invocations."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T18:02:48.662Z
   todos: []
   automation: eligible
