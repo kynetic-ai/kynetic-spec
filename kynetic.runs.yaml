@@ -13851,7 +13851,7 @@ runs:
     started_at: 2026-03-19T23:23:46.529Z
   - _ulid: 01KM4DYYQEFBTE7Q7RMW0K7M3R
     status: active
-    current_step: 1
+    current_step: 2
     initiated_by: Jacob Chapel
     step_results:
       - status: completed
@@ -13865,7 +13865,17 @@ runs:
       - status: completed
         step_index: 1
         started_at: 2026-03-20T01:33:17.838Z
-        completed_at: 2026-03-20T01:33:17.838Z
+        completed_at: 2026-03-20T01:33:33.062Z
+        notes: "High-confidence friction identified and captured: (1) reviewer/merge flow can misclassify
+          branch integration if it trusts git merge output without ancestry checks, now tracked as
+          observation 01KM4DZT; (2) task-work fix-cycle docs do not match the CLI requirement to
+          move needs_work back to in_progress before submit, also tracked under 01KM4DZT. Meaningful
+          success pattern: targeted regression plus full-suite rerun caught and closed the bootstrap
+          invalidation bug cleanly."
+      - status: completed
+        step_index: 2
+        started_at: 2026-03-20T01:33:33.062Z
+        completed_at: 2026-03-20T01:33:33.062Z
     total_steps: 4
     workflow_ref: "@01KFRPSFFH357GG0EP0JJZ2NA7"
     started_at: 2026-03-20T01:32:36.975Z
