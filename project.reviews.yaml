@@ -31057,6 +31057,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-20T18:37:59.794Z
+      - _ulid: 01KM68MW52RCMZEFFT26MXRXCE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM68MVVGZ70XKS2100F19QKK
+        timestamp: 2026-03-20T18:38:12.642Z
     examined_commit: 80518667626a6529e0eb127a4d99fa19d3260061
     external_links: []
     lifecycle_state: closed
@@ -31066,7 +31073,37 @@ reviews:
       content_hash: ""
       ref: "@01KM5Z4KJQ7CF8F2P48711SY91"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM68MVVGZ70XKS2100F19QKK
+        entries:
+          - _ulid: 01KM68MVVH4G8F5M1KD6QCGRX2
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: kspec-agents.md,
+              src/cli/commands/{agent,item,plan,review,schedule,search,task,tasks,triage}.ts,
+              src/cli/{validators,exit-codes,output}.ts, tests/cli-filter-input-validation.test.ts,
+              tests/cli-mutation-input-validation.test.ts, tests/helpers/cli.ts
+
+
+              Commands run: git diff --stat, git diff, kspec task get @01KM5Z4KJQ7CF8F2P48711SY91,
+              kspec item get @cli-input-type-safety, kspec validate, npm test, node
+              dist/cli/index.js tasks list --type invalid-type, node dist/cli/index.js search
+              validation --status pending --json
+
+
+              Claims verified: invalid typed query filters now fail fast with explicit enum errors;
+              valid filters still return filtered results; task/tasks list share listTasksAction so
+              task list alias is covered; tasks ready does not expose --status/--type in this
+              snapshot
+
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No blocking findings.
+            created_at: 2026-03-20T18:38:12.337Z
+        kind: nit
     verdicts:
       - applies_to_version:
           type: entity_version
@@ -31076,5 +31113,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T18:37:57.666Z
     created_at: 2026-03-20T18:34:34.803Z
-    updated_at: 2026-03-20T18:37:59.528Z
+    updated_at: 2026-03-20T18:38:12.337Z
     notes: []
