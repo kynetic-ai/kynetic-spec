@@ -25466,28 +25466,29 @@ plans:
           available for new projects that might start with the old format
           (e.g. manual YAML editing before first kspec init).
 
-      - title: Update existing task storage specs
-        slug: task-update-storage-specs
+      - title: Deprecate old task storage specs and clean up references
+        slug: task-deprecate-old-storage-specs
         priority: 2
-        tags: [tasks, spec]
+        tags: [tasks, cleanup]
         depends_on:
-          - "@task-impl-split-storage"
+          - "@task-remove-monolithic"
         description: |
-          Update the existing @task-storage, @task-storage-alongside, and
-          @task-storage-separate specs to reflect the new per-task directory
-          architecture.
+          Mark the old task storage specs as deprecated and clean up any
+          code or documentation references to them.
 
-          Why: The existing specs describe a monolithic file model with vague
-          aspirations about splitting. The new architecture is concrete and
-          the specs should match reality.
+          Why: @task-storage, @task-storage-alongside, and @task-storage-separate
+          describe the old monolithic storage model. After the split architecture
+          is implemented and the old codepaths removed, these specs no longer
+          describe reality.
 
-          What: Update @task-storage description and AC to reference the
-          per-task directory model. Mark @task-storage-alongside and
-          @task-storage-separate as superseded by the new specs in this plan.
-          The new @task-directory-storage spec is the authoritative source.
+          What: Set maturity to deprecated on all three specs. Set superseded_by
+          to @task-directory-storage on each. Then grep for any remaining
+          references to the old spec slugs in code, tests, docs, or other specs
+          and update or remove them.
 
-          How: Use kspec item set and kspec item ac set to update the existing
-          specs. Add notes explaining the supersession.
+          How: Use kspec item set --maturity deprecated --superseded-by
+          @task-directory-storage for each spec. Search codebase for references
+          and clean up.
       ```
 
 
@@ -25550,4 +25551,9 @@ plans:
     source_path: /home/chapel/Projects/kynetic-spec/plans/task-storage-split.md
     created_at: 2026-03-20T22:56:21.296Z
     completed_at: null
-    notes: []
+    notes:
+      - _ulid: 01KM6R0V0BEP9RX93HDC3766DG
+        content: Remove migration/cleanup specs (one-time ops don't need behavioral contracts). Deprecation
+          task uses maturity=deprecated + superseded_by instead of updating old specs.
+        author: "@claude"
+        created_at: 2026-03-20T23:06:53.323Z
