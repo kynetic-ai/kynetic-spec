@@ -15645,3 +15645,79 @@ workspaces:
         head: 42888ca3f06655b7f48977f6bfe33781805ab5f4
         last_seen_at: 2026-03-20T20:34:41.468Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/clean-up-dangling-references-on-item-deletion-01km6edz
+  - active_role: null
+    base_branch_point: 68e74dc59de2d01a3e1c7b9577526657470cb1c6
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/restore-pre-block-status-on-task-unblock/01km6km0
+    canonical_branch_head: 68e74dc59de2d01a3e1c7b9577526657470cb1c6
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-20T21:51:38.667Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-20T21:51:38.667Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 68e74dc59de2d01a3e1c7b9577526657470cb1c6
+      updated_at: 2026-03-20T21:51:38.667Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KM6KM0AAVDTJHPFEZGYA59PD"
+    task_slug: restore-pre-block-status-on-task-unblock
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-20T21:51:38.667Z
+      created_at: 2026-03-20T21:51:38.667Z
+      updated_at: 2026-03-20T21:51:38.667Z
+    workspace_id: dispatch-workspace-01KM6KM0AAVDTJHPFEZGYA59PD
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/restore-pre-block-status-on-task-unblock/01km6km0
+        head: 68e74dc59de2d01a3e1c7b9577526657470cb1c6
+        last_seen_at: 2026-03-20T21:51:38.667Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/restore-pre-block-status-on-task-unblock-01km6km0
