@@ -23416,7 +23416,20 @@ reviews:
     slugs: []
     title: Review cancelled-task exclusion in plan summary metrics (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full npm test failed twice in this snapshot on tests/cli-serve.test.ts:232 (foreground
+          serve Ctrl+C test expected child.exitCode 0, received null). The same file passed when
+          rerun in isolation with npm test -- tests/cli-serve.test.ts, so the blocking gate appears
+          to be an unrelated suite-level flake rather than this task's code path.
+        name: npm test
+        required: true
+        runner: test.cjs
+        created_at: 2026-03-20T00:29:43.422Z
+        completed_at: 2026-03-20T00:29:43.422Z
     events:
       - _ulid: 01KM4AB3BWQ5ZS0EY37EHRE5ZC
         actor: Jacob Chapel
@@ -23438,6 +23451,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM4ABRX48P36J3YFEZ0V9RJ1
         timestamp: 2026-03-20T00:29:42.923Z
+      - _ulid: 01KM4ABSTVQ24BCMM8M222H494
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-20T00:29:43.643Z
     examined_commit: 362db738bf59d0946d8c77d89942f03b20b7acdc
     external_links: []
     lifecycle_state: open
@@ -23468,5 +23488,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-20T00:29:20.636Z
-    updated_at: 2026-03-20T00:29:42.692Z
+    updated_at: 2026-03-20T00:29:43.422Z
     notes: []
