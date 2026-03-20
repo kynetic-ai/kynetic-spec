@@ -453,13 +453,14 @@ describe("dispatch target branch sync", () => {
     }
   });
 
-  // AC: @dispatch-integration-mutation-scope ac-4
-  it("refuses sync with actionable guidance when the shared checkout is on another branch", async () => {
+  // AC: @dispatch-integration-mutation-scope ac-1
+  // AC: @dispatch-integration-mutation-scope ac-2
+  it("syncs the integration branch while leaving a different checked-out branch untouched", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
     await setupProjectFiles(projectDir);
     git(projectDir, "checkout -b human-feature");
 
-    await pushRemoteCommit(
+    const remoteTip = await pushRemoteCommit(
       remoteDir,
       "dev",
       "remote-ahead.txt",
@@ -477,16 +478,105 @@ describe("dispatch target branch sync", () => {
     });
     await engine.start();
 
+    expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
     const result = await engine._syncTargetBranch();
 
-    expect(result).toBe("unsafe_target");
+    expect(result).toBe("up_to_date");
+    expect(git(projectDir, "branch --show-current")).toBe("human-feature");
     expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
-    expect(git(projectDir, "rev-parse dev")).toBe(localDevBefore);
-    expect(engine.getDegradedState().active).toBe(true);
-    expect(engine.getDegradedState().reason).toContain('current branch is "human-feature"');
-    expect(engine.getDegradedState().reason).toContain('Check out "dev"');
+    expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
+    expect(localDevBefore).not.toBe(remoteTip);
+    expect(engine.getDegradedState().active).toBe(false);
 
     await engine.stop();
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-1
+  // AC: @dispatch-integration-mutation-scope ac-3
+  // AC: @dispatch-integration-mutation-scope ac-4
+  it("restores a missing local integration branch from remote and syncs it without touching the current branch", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const humanHeadBefore = git(projectDir, "rev-parse human-feature");
+    git(projectDir, "branch -D dev");
+    git(projectDir, "update-ref -d refs/remotes/origin/dev");
+
+    const remoteTip = await pushRemoteCommit(
+      remoteDir,
+      "dev",
+      "remote-restored.txt",
+      "restored\n",
+      "remote restored branch",
+    );
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
+    const result = await engine._syncTargetBranch();
+
+    expect(result).toBe("up_to_date");
+    expect(git(projectDir, "branch --show-current")).toBe("human-feature");
+    expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
+    expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
+    expect(engine.getDegradedState().active).toBe(false);
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-1
+  // AC: @dispatch-integration-mutation-scope ac-2
+  // AC: @dispatch-integration-mutation-scope ac-4
+  it("refuses non-checked-out sync when another worktree has the integration branch checked out", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const foreignWorktreeDir = `${projectDir}-integration-owner`;
+    execSync(`git worktree add "${foreignWorktreeDir}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    try {
+      const humanHeadBefore = git(projectDir, "rev-parse human-feature");
+      const localDevBefore = git(projectDir, "rev-parse dev");
+      const foreignHeadBefore = git(foreignWorktreeDir, "rev-parse HEAD");
+
+      await pushRemoteCommit(
+        remoteDir,
+        "dev",
+        "remote-blocked.txt",
+        "blocked\n",
+        "blocked by foreign worktree",
+      );
+
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(engine.getDegradedState().active).toBe(true);
+      expect(engine.getDegradedState().reason).toContain("currently checked out");
+      expect(git(projectDir, "branch --show-current")).toBe("human-feature");
+      expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
+      expect(git(projectDir, "rev-parse dev")).toBe(localDevBefore);
+      expect(git(foreignWorktreeDir, "rev-parse HEAD")).toBe(foreignHeadBefore);
+      expect(await engine._syncTargetBranch()).toBe("unsafe_target");
+
+      await engine.stop();
+    } finally {
+      git(projectDir, `worktree remove --force "${foreignWorktreeDir}"`);
+    }
   });
 
   // AC: @dispatch-integration-mutation-scope ac-1

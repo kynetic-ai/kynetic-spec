@@ -1732,7 +1732,10 @@ export async function resolveDispatchWorkspaceConfig(
     : path.resolve(projectDir, rawRoot);
 
   if (configuredBaseBranch) {
-    const resolved = resolveBranchStartPoint(projectDir, configuredBaseBranch);
+    let resolved = resolveBranchStartPoint(projectDir, configuredBaseBranch);
+    if (!resolved && ensureLocalDispatchIntegrationBranchExists(projectDir, configuredBaseBranch)) {
+      resolved = resolveBranchStartPoint(projectDir, configuredBaseBranch);
+    }
     if (!resolved) {
       throw new DispatchWorkspaceError(
         `Configured dispatch.base_branch "${configuredBaseBranch}" does not exist in this repository.`,
@@ -1798,7 +1801,37 @@ export async function resolveDispatchWorkspaceConfig(
 export interface DispatchIntegrationMutationScope {
   projectDir: string;
   integrationBranch: string;
-  currentBranch: string;
+  currentBranch: string | null;
+  targetBranchCheckedOut: boolean;
+}
+
+function ensureLocalDispatchIntegrationBranchExists(
+  projectDir: string,
+  integrationBranch: string,
+): boolean {
+  if (refExists(projectDir, `refs/heads/${integrationBranch}`)) {
+    return true;
+  }
+  if (tryRestoreBranchFromRemote(projectDir, integrationBranch)) {
+    return true;
+  }
+
+  for (const remote of listGitRemotes(projectDir)) {
+    const fetchResult = runGit(projectDir, ["fetch", remote, integrationBranch], {
+      timeout: 30_000,
+    });
+    if (fetchResult.status !== 0) {
+      console.debug(
+        `[dispatch] Failed to fetch integration branch "${integrationBranch}" from ${remote}: ${fetchResult.stderr || fetchResult.stdout}`,
+      );
+      continue;
+    }
+    if (tryRestoreBranchFromRemote(projectDir, integrationBranch)) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 export function resolveDispatchIntegrationMutationScope(
@@ -1806,27 +1839,66 @@ export function resolveDispatchIntegrationMutationScope(
   integrationBranch: string,
 ): DispatchIntegrationMutationScope {
   const currentBranch = resolveCurrentBranch(projectDir);
-  if (!currentBranch) {
-    throw new DispatchWorkspaceError(
-      `Dispatch cannot determine a safe mutation surface for integration target "${integrationBranch}" in ${projectDir}.`,
-      `Check out "${integrationBranch}" in the shared dispatch checkout at ${projectDir} and retry.`,
-    );
+  if (!currentBranch || currentBranch !== integrationBranch) {
+    if (!ensureLocalDispatchIntegrationBranchExists(projectDir, integrationBranch)) {
+      throw new DispatchWorkspaceError(
+        `Dispatch cannot determine a safe mutation surface for integration target "${integrationBranch}" in ${projectDir}.`,
+        `Create or fetch "${integrationBranch}" in ${projectDir}, or verify that a remote branch named "${integrationBranch}" exists before retrying.`,
+      );
+    }
+
+    const checkedOutWorktree = findExistingWorktreeForBranch(projectDir, integrationBranch);
+    if (checkedOutWorktree) {
+      throw new DispatchWorkspaceError(
+        `Dispatch cannot safely mutate integration target "${integrationBranch}" from ${projectDir} because that branch is currently checked out in worktree "${checkedOutWorktree}".`,
+        `Check out a different branch in "${checkedOutWorktree}" or run the integration-target operation from that worktree before retrying.`,
+      );
+    }
   }
 
-  if (currentBranch !== integrationBranch) {
-    throw new DispatchWorkspaceError(
-      `Dispatch refuses to mutate integration target "${integrationBranch}" from shared checkout ${projectDir} because the current branch is "${currentBranch}".`,
-      `Check out "${integrationBranch}" in ${projectDir}, or restart dispatch from a shared checkout that already has "${integrationBranch}" checked out.`,
-    );
+  if (currentBranch === integrationBranch) {
+    ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, integrationBranch);
   }
-
-  ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, integrationBranch);
 
   return {
     projectDir,
     integrationBranch,
     currentBranch,
+    targetBranchCheckedOut: currentBranch === integrationBranch,
   };
+}
+
+export function fastForwardDispatchIntegrationBranch(
+  projectDir: string,
+  integrationBranch: string,
+  remoteRef: string,
+): GitResult {
+  const localCommit = resolveCommit(projectDir, integrationBranch);
+  const remoteCommit = resolveCommit(projectDir, remoteRef);
+  if (localCommit && remoteCommit && localCommit === remoteCommit) {
+    return {
+      status: 0,
+      stdout: "Already up to date.",
+      stderr: "",
+    };
+  }
+
+  const ffCheck = runGit(projectDir, ["merge-base", "--is-ancestor", integrationBranch, remoteRef]);
+  if (ffCheck.status !== 0) {
+    return ffCheck.status === 1
+      ? {
+          status: 1,
+          stdout: "",
+          stderr: `fatal: Not possible to fast-forward integration target "${integrationBranch}" to ${remoteRef}.`,
+        }
+      : ffCheck;
+  }
+
+  const updateArgs = ["update-ref", `refs/heads/${integrationBranch}`, remoteRef];
+  if (localCommit) {
+    updateArgs.push(localCommit);
+  }
+  return runGit(projectDir, updateArgs);
 }
 
 export function runDispatchIntegrationTargetGit(

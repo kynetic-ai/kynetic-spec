@@ -331,8 +331,9 @@ describe("dispatch branch push lifecycle", () => {
       expect(result.error).toBeNull();
     });
 
-    // AC: @dispatch-integration-mutation-scope ac-4
-    it("refuses integration target push with actionable guidance when shared checkout is on another branch", async () => {
+    // AC: @dispatch-integration-mutation-scope ac-1
+    // AC: @dispatch-integration-mutation-scope ac-3
+    it("pushes the integration target even when another branch is checked out", async () => {
       await seedRepo(tempDir);
       git(tempDir, "checkout -b dev");
 
@@ -349,14 +350,14 @@ describe("dispatch branch push lifecycle", () => {
 
       const result = pushIntegrationTarget(tempDir, "dev", "origin");
 
-      expect(result.pushed).toBe(false);
+      expect(result.pushed).toBe(true);
       expect(result.skipped).toBe(false);
-      expect(result.error).toContain('current branch is "human-feature"');
-      expect(result.error).toContain('Check out "dev"');
+      expect(result.error).toBeNull();
+      expect(git(tempDir, "branch --show-current")).toBe("human-feature");
 
       git(tempDir, "fetch origin");
       expect(git(tempDir, "rev-parse dev")).toBe(localDevHead);
-      expect(git(tempDir, "rev-parse origin/dev")).not.toBe(localDevHead);
+      expect(git(tempDir, "rev-parse origin/dev")).toBe(localDevHead);
     });
 
     // AC: @dispatch-remote-branch-sync ac-push-non-fatal
