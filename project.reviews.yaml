@@ -30386,7 +30386,17 @@ reviews:
     slugs: []
     title: Review task-daemon-api-input-validation
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 294 files passed; 6677 tests passed, 3 skipped.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T18:02:03.200Z
+        completed_at: 2026-03-20T18:02:03.200Z
     events:
       - _ulid: 01KM66ABRY5VRPY549WZ8RV8PB
         actor: Jacob Chapel
@@ -30415,6 +30425,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM66JMS4X669GZCG5R2Z7881
         timestamp: 2026-03-20T18:02:02.656Z
+      - _ulid: 01KM66JNSDJTXM1C6K2HH0GRYP
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T18:02:03.438Z
     examined_commit: da5c883a711417c070887f27271be92cd51ba7c5
     external_links: []
     lifecycle_state: open
@@ -30465,5 +30482,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T17:57:31.038Z
-    updated_at: 2026-03-20T18:02:02.404Z
+    updated_at: 2026-03-20T18:02:03.200Z
     notes: []
