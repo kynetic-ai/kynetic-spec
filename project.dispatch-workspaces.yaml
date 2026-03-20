@@ -15457,15 +15457,10 @@ workspaces:
       reason: null
       updated_at: 2026-03-20T21:27:43.487Z
     health:
-      status: stale
-      issues:
-        - code: missing_reviewer_worktree
-          message: Reviewer worktree
-            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates-01km6bgy-review"
-            is missing or no longer registered.
-          suggestion: Recreate the detached reviewer snapshot before running review again.
-      summary: Workspace registry record is stale and needs reconciliation.
-      updated_at: 2026-03-20T21:27:43.487Z
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-20T21:27:45.948Z
     integration:
       status: pending
       detail: null
@@ -15474,25 +15469,20 @@ workspaces:
       target_branch: dev
       target_commit: da0fbf18378b893f4b1036d23282f691beaccf56
       updated_at: 2026-03-20T21:27:43.487Z
-    lifecycle_state: stale
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM6BGYMGZ518JENMCRACJPX3"
     task_slug: fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T21:27:42.180Z
-      last_reconciled_at: 2026-03-20T21:27:43.487Z
+      last_reconciled_at: 2026-03-20T21:27:45.948Z
       created_at: 2026-03-20T19:30:54.853Z
-      updated_at: 2026-03-20T21:27:43.487Z
+      updated_at: 2026-03-20T21:27:45.948Z
     workspace_id: dispatch-workspace-01KM6BGYMGZ518JENMCRACJPX3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 8d5b720a96036aec20d843268d56bfef5cbc1e8f
-        last_seen_at: 2026-03-20T21:27:18.355Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates-01km6bgy-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates/01km6bgy
