@@ -172,6 +172,26 @@ describe("read-side validation warnings (@read-side-validation-warnings)", () =>
     expect(warnings.join("\n")).toContain("Suggested action: fix the invalid field in the YAML record and rerun the command.");
   });
 
+  // AC: @read-side-validation-warnings ac-1
+  // AC: @trait-error-guidance ac-5
+  it("includes invalid enum values when zod reports them via received", async () => {
+    const brokenTask = {
+      ...createTask({ title: "Broken automation task", slugs: ["broken-automation-task"] }),
+      automation: "ineligible",
+    };
+    await fs.writeFile(
+      path.join(specDir, "project.tasks.yaml"),
+      toYaml({ tasks: [brokenTask] }),
+    );
+
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    await loadAllTasks(ctx);
+
+    expect(warnSpy).toHaveBeenCalledTimes(1);
+    expect(String(warnSpy.mock.calls[0]?.[0])).toContain('automation="ineligible"');
+  });
+
   // AC: @read-side-validation-warnings ac-2
   it("returns valid records normally while warning only for invalid records", async () => {
     await seedMixedInvalidRecords(specDir);

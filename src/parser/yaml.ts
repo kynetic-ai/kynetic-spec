@@ -102,6 +102,18 @@ function formatIssueValue(value: unknown): string {
   }
 }
 
+function getIssueValue(issue: ZodError["issues"][number]): unknown {
+  if ("input" in issue && issue.input !== undefined) {
+    return issue.input;
+  }
+
+  if ("received" in issue) {
+    return issue.received;
+  }
+
+  return undefined;
+}
+
 export function warnSkippedRecord(
   entityType: string,
   id: string,
@@ -110,7 +122,7 @@ export function warnSkippedRecord(
 ): void {
   const details = error.issues.map((issue) => {
     const fieldPath = formatIssuePath(issue.path);
-    const invalidValue = formatIssueValue(("input" in issue) ? issue.input : undefined);
+    const invalidValue = formatIssueValue(getIssueValue(issue));
     return `${fieldPath}=${invalidValue} (${issue.message})`;
   }).join("; ");
 
