@@ -24835,7 +24835,19 @@ reviews:
     slugs: []
     title: Review shared checkout git context hardening
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed on examined commit 71a378aa525231a491e7c353dc542c159e2c980f: 289 files,
+          6629 tests, 3 skipped. Focused re-run of tests/dispatch-target-sync.test.ts also passed
+          (22 tests), including the new poisoned git env and linked shared checkout cases."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T02:32:37.207Z
+        completed_at: 2026-03-20T02:32:37.207Z
     events:
       - _ulid: 01KM4H3CAP14XWJ4MA48KTGW40
         actor: Jacob Chapel
@@ -24850,6 +24862,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T02:27:57.273Z
+      - _ulid: 01KM4HCTRW3QWKEEMXFGPZ6YEN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T02:32:37.405Z
     examined_commit: 71a378aa525231a491e7c353dc542c159e2c980f
     external_links: []
     lifecycle_state: open
@@ -24862,5 +24881,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T02:27:27.703Z
-    updated_at: 2026-03-20T02:27:57.060Z
+    updated_at: 2026-03-20T02:32:37.207Z
     notes: []
