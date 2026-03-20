@@ -59,13 +59,13 @@
 	const healthQuery = createQuery(() => ({
 		queryKey: queryKeys.settings.health(),
 		queryFn: () => fetchHealth(),
-		enabled: isProjectInitialized(),
+		enabled: isProjectInitialized() && !isStaticMode(),
 	}));
 
 	const shadowQuery = createQuery(() => ({
 		queryKey: queryKeys.settings.shadow(),
 		queryFn: () => fetchShadowStatus(),
-		enabled: isProjectInitialized(),
+		enabled: isProjectInitialized() && !isStaticMode(),
 	}));
 
 	const conventionsQuery = createQuery(() => ({

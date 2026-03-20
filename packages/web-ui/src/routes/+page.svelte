@@ -91,7 +91,7 @@
 	const agentStatusQuery = createQuery(() => ({
 		queryKey: queryKeys.agents.status(),
 		queryFn: () => fetchAgentStatus(),
-		enabled: isProjectInitialized(),
+		enabled: isProjectInitialized() && !isStaticMode(),
 		staleTime: 10 * 1000,
 	}));
 
