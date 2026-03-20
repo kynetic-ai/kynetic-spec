@@ -110051,6 +110051,14 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T03:40:12.790Z
+    - _ulid: 01KM4SHAXAXRM3Q14PJ4X187H1
+      content: Setup currently matches Stop hooks by command substring, which lets reconciliation treat
+        user-owned entries as kspec-managed. Updating setup/status to recognize only the exact
+        kspec-installed Stop entry shape, then adding a regression test that seeds a custom Stop
+        hook and verifies setup preserves it when checkpoint is disabled.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T04:54:53.610Z
   todos: []
   automation: eligible
 - _ulid: 01KM4NHPTCMTXAVKH0STBCVF22
