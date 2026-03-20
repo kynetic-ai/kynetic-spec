@@ -532,6 +532,55 @@ describe("dispatch target branch sync", () => {
 
   // AC: @dispatch-integration-mutation-scope ac-1
   // AC: @dispatch-integration-mutation-scope ac-2
+  // AC: @dispatch-integration-mutation-scope ac-4
+  it("refuses non-checked-out sync when another worktree has the integration branch checked out", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout -b human-feature");
+
+    const foreignWorktreeDir = `${projectDir}-integration-owner`;
+    execSync(`git worktree add "${foreignWorktreeDir}" dev`, {
+      cwd: projectDir,
+      stdio: "pipe",
+      env: workspaceModule.buildDispatchGitEnv(),
+    });
+
+    try {
+      const humanHeadBefore = git(projectDir, "rev-parse human-feature");
+      const localDevBefore = git(projectDir, "rev-parse dev");
+      const foreignHeadBefore = git(foreignWorktreeDir, "rev-parse HEAD");
+
+      await pushRemoteCommit(
+        remoteDir,
+        "dev",
+        "remote-blocked.txt",
+        "blocked\n",
+        "blocked by foreign worktree",
+      );
+
+      const engine = new DispatchEngine({
+        projectDir,
+        reconcileIntervalMs: 0,
+        coalesceWindowMs: 0,
+      });
+      await engine.start();
+
+      expect(engine.getDegradedState().active).toBe(true);
+      expect(engine.getDegradedState().reason).toContain("currently checked out");
+      expect(git(projectDir, "branch --show-current")).toBe("human-feature");
+      expect(git(projectDir, "rev-parse human-feature")).toBe(humanHeadBefore);
+      expect(git(projectDir, "rev-parse dev")).toBe(localDevBefore);
+      expect(git(foreignWorktreeDir, "rev-parse HEAD")).toBe(foreignHeadBefore);
+      expect(await engine._syncTargetBranch()).toBe("unsafe_target");
+
+      await engine.stop();
+    } finally {
+      git(projectDir, `worktree remove --force "${foreignWorktreeDir}"`);
+    }
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-1
+  // AC: @dispatch-integration-mutation-scope ac-2
   // AC: @dispatch-integration-mutation-scope ac-3
   it("syncs the intended linked shared checkout even when inherited git env points at another repo", async () => {
     const { sourceDir, sharedCheckoutDir, remoteDir: worktreeRemoteDir } =

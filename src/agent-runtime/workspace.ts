@@ -1846,6 +1846,14 @@ export function resolveDispatchIntegrationMutationScope(
         `Create or fetch "${integrationBranch}" in ${projectDir}, or verify that a remote branch named "${integrationBranch}" exists before retrying.`,
       );
     }
+
+    const checkedOutWorktree = findExistingWorktreeForBranch(projectDir, integrationBranch);
+    if (checkedOutWorktree) {
+      throw new DispatchWorkspaceError(
+        `Dispatch cannot safely mutate integration target "${integrationBranch}" from ${projectDir} because that branch is currently checked out in worktree "${checkedOutWorktree}".`,
+        `Check out a different branch in "${checkedOutWorktree}" or run the integration-target operation from that worktree before retrying.`,
+      );
+    }
   }
 
   if (currentBranch === integrationBranch) {
