@@ -24638,7 +24638,7 @@ plans:
       unvalidated input type. Non-enum typed inputs (number ranges like priority 1-5,
       ref format validation, date formats) are valid future work under the same trait
       but are not tasked here.
-    status: draft
+    status: approved
     approved_at: 2026-03-20T14:23:44.459Z
     derived_specs: []
     derived_tasks: []
