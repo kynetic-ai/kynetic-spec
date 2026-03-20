@@ -23959,9 +23959,25 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-20T01:52:00.839Z
+      - _ulid: 01KM4F2QVS9QQ210CQZVR8WPWZ
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-20T01:52:09.593Z
+      - _ulid: 01KM4F2QVS7H2YB3YE78ADV5HS
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T01:52:09.593Z
     examined_commit: fb63a8129fdc268cc392a6428a06b5d57b366898
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -23969,9 +23985,16 @@ reviews:
       ref: "@01KM3ZMF9C5B3JEDTE4AR74K46"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-20T01:52:09.592Z
     created_at: 2026-03-20T01:41:14.106Z
-    updated_at: 2026-03-20T01:52:00.606Z
+    updated_at: 2026-03-20T01:52:09.593Z
     notes: []
   - _ulid: 01KM4ESK8SQSAH0T83P5DA0TQB
     slugs: []
