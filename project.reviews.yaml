@@ -25138,9 +25138,25 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-20T04:36:38.474Z
+      - _ulid: 01KM4RG4EW8NCZA6MRAS8NA0FZ
+        actor: jacob.chapel@gmail.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-20T04:36:45.660Z
+      - _ulid: 01KM4RG4EWQHWMFXNA5AKY4G99
+        actor: jacob.chapel@gmail.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T04:36:45.660Z
     examined_commit: 111d29d52180ca272c6a43ec08f0adf130cd218a
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -25148,7 +25164,14 @@ reviews:
       ref: "@01KM4KPQ4CJS24TH0NTVXJA1V3"
       shadow_commit: ""
     threads: []
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: jacob.chapel@gmail.com
+        role: reviewer
+        created_at: 2026-03-20T04:36:45.659Z
     created_at: 2026-03-20T04:32:53.408Z
-    updated_at: 2026-03-20T04:36:38.247Z
+    updated_at: 2026-03-20T04:36:45.660Z
     notes: []
