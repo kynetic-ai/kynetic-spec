@@ -27709,9 +27709,25 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-20T06:33:35.765Z
+      - _ulid: 01KM4Z6P6ZGYV668MAKMH3Q50D
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-20T06:33:56.192Z
+      - _ulid: 01KM4Z6P7038FCVJMYMWX1FHNA
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T06:33:56.192Z
     examined_commit: 972087fb3f745be8663ade6f6a05d502f993e091
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -27782,7 +27798,14 @@ reviews:
               note claiming a clean full run is not yet true."
             created_at: 2026-03-20T06:32:12.602Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-20T06:33:56.191Z
     created_at: 2026-03-20T06:26:01.525Z
-    updated_at: 2026-03-20T06:33:35.491Z
+    updated_at: 2026-03-20T06:33:56.192Z
     notes: []
