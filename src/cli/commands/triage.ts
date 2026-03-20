@@ -15,13 +15,18 @@ import {
   shortestUniqueUlid,
 } from "../../parser/index.js";
 import { commitIfShadow } from "../../parser/shadow.js";
-import { normalizeRefInput } from "../../schema/index.js";
+import {
+  normalizeRefInput,
+  TriageActionSchema,
+  TriageStatusSchema,
+} from "../../schema/index.js";
 import type { TriageAction } from "../../schema/index.js";
 import { exportTriageAsContext, truncateText } from "../../export/triage.js";
 import { errors } from "../../strings/index.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success } from "../output.js";
+import { validateEnumOption } from "../validators.js";
 import { executeTriageAction, VALID_ACTIONS } from "../../triage/index.js";
 
 /**
@@ -183,14 +188,32 @@ Examples:
         // AC: @triage-cli-commands ac-3 — status filter
         // AC: @trait-filterable-list ac-1
         if (options.status) {
-          records = records.filter((r) => r.status === options.status);
-          activeFilters.push(`status=${options.status}`);
+          const statusResult = validateEnumOption(
+            options.status,
+            TriageStatusSchema.options,
+            "triage status",
+          );
+          if (!statusResult.ok) {
+            error(statusResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          records = records.filter((r) => r.status === statusResult.value);
+          activeFilters.push(`status=${statusResult.value}`);
         }
 
         // AC: @trait-filterable-list ac-5
         if (options.action) {
-          records = records.filter((r) => r.action === options.action);
-          activeFilters.push(`action=${options.action}`);
+          const actionResult = validateEnumOption(
+            options.action,
+            TriageActionSchema.options,
+            "triage action",
+          );
+          if (!actionResult.ok) {
+            error(actionResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          records = records.filter((r) => r.action === actionResult.value);
+          activeFilters.push(`action=${actionResult.value}`);
         }
 
         if (options.decidedBy) {

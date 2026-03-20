@@ -45,7 +45,9 @@ import type {
   ReviewVerdictDecision,
 } from "../../schema/index.js";
 import {
+  ReviewDispositionSchema,
   ReviewCheckStatusSchema,
+  ReviewLifecycleStateSchema,
   ReviewThreadKindSchema,
 } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
@@ -595,14 +597,40 @@ export function registerReviewCommands(program: Command): void {
         // Apply filters
         // AC: @trait-filterable-list ac-1
         if (options.status) {
+          const statusResult = validateEnumOption(
+            options.status,
+            ReviewLifecycleStateSchema.options,
+            "review lifecycle state",
+          );
+          if (!statusResult.ok) {
+            exitWithGuidance(
+              statusResult.error,
+              EXIT_CODES.VALIDATION_FAILED,
+              `Valid statuses: ${ReviewLifecycleStateSchema.options.join(", ")}`,
+              { field: "status", value: options.status },
+            );
+          }
           reviews = reviews.filter(
-            (r) => r.lifecycle_state === options.status,
+            (r) => r.lifecycle_state === statusResult.value,
           );
         }
 
         if (options.disposition) {
+          const dispositionResult = validateEnumOption(
+            options.disposition,
+            ReviewDispositionSchema.options,
+            "review disposition",
+          );
+          if (!dispositionResult.ok) {
+            exitWithGuidance(
+              dispositionResult.error,
+              EXIT_CODES.VALIDATION_FAILED,
+              `Valid dispositions: ${ReviewDispositionSchema.options.join(", ")}`,
+              { field: "disposition", value: options.disposition },
+            );
+          }
           reviews = reviews.filter(
-            (r) => computeDisposition(r) === options.disposition,
+            (r) => computeDisposition(r) === dispositionResult.value,
           );
         }
 

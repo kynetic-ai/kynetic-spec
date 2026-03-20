@@ -30,8 +30,10 @@ import {
 import { findClosestCommand } from "../suggest.js";
 import {
   normalizeRefInput,
+  TaskTypeSchema,
   TaskStatusSchema,
 } from "../../schema/common.js";
+import { validateEnumOption } from "../validators.js";
 
 /** List options shared between tasks list subcommand and default action */
 interface ListTasksOptions {
@@ -118,7 +120,16 @@ export async function listTasksAction(options: ListTasksOptions): Promise<void> 
       }
     }
     if (options.type) {
-      taskList = taskList.filter((t) => t.type === options.type);
+      const typeResult = validateEnumOption(
+        options.type,
+        TaskTypeSchema.options,
+        "task type",
+      );
+      if (!typeResult.ok) {
+        error(typeResult.error);
+        process.exit(EXIT_CODES.VALIDATION_FAILED);
+      }
+      taskList = taskList.filter((t) => t.type === typeResult.value);
     }
     if (options.tag) {
       const tag = options.tag;

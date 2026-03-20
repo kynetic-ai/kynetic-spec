@@ -26,7 +26,7 @@ import { buildPromptWithSkills, interpolateTemplate } from "../../agent-runtime/
 import { resolveAdapter } from "../../agents/adapters.js";
 import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, output, success, warn, isJsonMode } from "../output.js";
-import { parseIntOption } from "../validators.js";
+import { parseIntOption, validateEnumOption } from "../validators.js";
 import { PidFileManager } from "../pid-utils.js";
 import { errors } from "../../strings/errors.js";
 import type { LoadedAgent } from "../../parser/meta.js";
@@ -125,8 +125,19 @@ export function registerAgentCommands(program: Command): void {
 
         // AC: @trait-filterable-list ac-1 - automation status filter
         if (opts.status) {
+          const statusResult = validateEnumOption(
+            opts.status,
+            AgentDispatchAutomationFilterSchema.options,
+            "agent automation status",
+          );
+          if (!statusResult.ok) {
+            error(statusResult.error, {
+              suggestion: `Valid statuses: ${AgentDispatchAutomationFilterSchema.options.join(", ")}`,
+            });
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
           agents = agents.filter((a) =>
-            (a as LoadedAgent & { automation?: string }).automation === opts.status,
+            (a as LoadedAgent & { automation?: string }).automation === statusResult.value,
           );
         }
 

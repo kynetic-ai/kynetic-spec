@@ -25,6 +25,9 @@ import { EXIT_CODES } from "../exit-codes.js";
 import { error, info, isStructuredMode, output, success } from "../output.js";
 import { PidFileManager } from "../pid-utils.js";
 import { errors } from "../../strings/errors.js";
+import { validateEnumOption } from "../validators.js";
+
+const SCHEDULE_STATUS_OPTIONS = ["enabled", "disabled"] as const;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -228,7 +231,16 @@ export function registerScheduleCommands(program: Command): void {
 
         // AC: @trait-filterable-list ac-1 — filter by status (enabled/disabled)
         if (options.status) {
-          const isEnabled = options.status === "enabled";
+          const statusResult = validateEnumOption(
+            options.status,
+            SCHEDULE_STATUS_OPTIONS,
+            "schedule status",
+          );
+          if (!statusResult.ok) {
+            error(statusResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          const isEnabled = statusResult.value === "enabled";
           schedules = schedules.filter((s) => s.enabled === isEnabled);
         }
 

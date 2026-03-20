@@ -342,7 +342,16 @@ export function registerItemCommands(program: Command): void {
         };
 
         if (options.type) {
-          filter.type = options.type as ItemType;
+          const typeResult = validateEnumOption(
+            options.type,
+            ItemTypeSchema.options,
+            "item type",
+          );
+          if (!typeResult.ok) {
+            error(typeResult.error);
+            process.exit(EXIT_CODES.VALIDATION_FAILED);
+          }
+          filter.type = typeResult.value as ItemType;
         }
 
         // AC: @multi-value-status-filter ac-item-list-parity, ac-invalid-item-status
