@@ -108931,8 +108931,11 @@
   spec_ref: "@multi-directory-daemon"
   meta_ref: null
   plan_ref: null
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev after review approval. Verified KSPEC_NO_DAEMON suppresses incidental
+    daemon communication, explicit serve commands ignore the flag, and regression coverage passes
+    (npm test).
   depends_on: []
   context: []
   priority: 2
@@ -108953,6 +108956,7 @@
   created_at: 2026-03-19T05:15:02.985Z
   started_at: 2026-03-20T14:40:37.002Z
   submitted_at: 2026-03-20T14:46:11.526Z
+  completed_at: 2026-03-20T14:52:42.057Z
   notes:
     - _ulid: 01KM5S7Z67A873QM62WVPGPZX3
       content: Implemented KSPEC_NO_DAEMON suppression in the CLI daemon probe path and auto-start hook.
