@@ -10,6 +10,7 @@ import {
   loadTriageRecords,
   saveTriageRecord,
   findInboxItemByRef,
+  findTriageRecordByInboxRef,
   findTriageRecordByRef,
   shortestUniqueUlid,
 } from "../../parser/index.js";
@@ -50,6 +51,24 @@ function shortRecordRef(record: LoadedTriageRecord, records: LoadedTriageRecord[
     record._ulid,
     records.map((r) => r._ulid),
   );
+}
+
+async function persistAndReloadTriageRecord(
+  ctx: Awaited<ReturnType<typeof initContext>>,
+  record: LoadedTriageRecord,
+): Promise<{
+  persistedRecord: LoadedTriageRecord;
+  records: LoadedTriageRecord[];
+}> {
+  await saveTriageRecord(ctx, record);
+  const records = await loadTriageRecords(ctx);
+  const persistedRecord = findTriageRecordByInboxRef(records, record.inbox_ref);
+
+  if (!persistedRecord) {
+    throw new Error(`Persisted triage record for inbox item ${record.inbox_ref} was not found after save`);
+  }
+
+  return { persistedRecord, records };
 }
 
 // truncateText imported from shared export/triage.ts
@@ -105,8 +124,6 @@ Examples:
           return;
         }
 
-        const existingRecords = await loadTriageRecords(ctx);
-
         const author = options.decidedBy || getAuthor(ctx.config?.identity?.author);
         const evidenceRefs = options.evidence
           ? options.evidence.map(normalizeRefInput)
@@ -124,22 +141,19 @@ Examples:
           created_at: new Date().toISOString(),
         };
 
-        await saveTriageRecord(ctx, record);
+        const { persistedRecord, records } = await persistAndReloadTriageRecord(ctx, record);
         await commitIfShadow(
           ctx.shadow,
           "triage-record",
-          record._ulid.slice(0, 8),
+          persistedRecord._ulid.slice(0, 8),
           options.action,
         );
 
-        const createdRef = shortestUniqueUlid(
-          record._ulid,
-          [...existingRecords.map((r) => r._ulid), record._ulid],
-        );
+        const createdRef = shortRecordRef(persistedRecord, records);
 
         // AC: @triage-cli-commands ac-11 — JSON output
         // AC: @trait-json-output ac-1, ac-2, ac-4, ac-5
-        success(`Recorded triage decision: ${createdRef}`, { record });
+        success(`Recorded triage decision: ${createdRef}`, { record: persistedRecord });
       } catch (err) {
         error("Failed to record triage decision", err);
         process.exit(EXIT_CODES.ERROR);
@@ -412,9 +426,8 @@ Examples:
       try {
         const ctx = await initContext();
         const inboxItems = await loadInboxItems(ctx);
-        const existingRecords = await loadTriageRecords(ctx);
         const inboxUlids = inboxItems.map((item) => item._ulid);
-        const recordUlids = existingRecords.map((record) => record._ulid);
+        const existingRecords = await loadTriageRecords(ctx);
 
         // Find untriaged items (no existing triage record)
         const triagedInboxRefs = new Set(existingRecords.map((r) => r.inbox_ref));
@@ -537,16 +550,15 @@ Examples:
             created_at: new Date().toISOString(),
           };
 
-          await saveTriageRecord(ctx, record);
+          const { persistedRecord, records } = await persistAndReloadTriageRecord(ctx, record);
           await commitIfShadow(
             ctx.shadow,
             "triage-record",
-            record._ulid.slice(0, 8),
+            persistedRecord._ulid.slice(0, 8),
             action,
           );
 
-          recordUlids.push(record._ulid);
-          const recordRef = shortestUniqueUlid(record._ulid, recordUlids);
+          const recordRef = shortRecordRef(persistedRecord, records);
           triaged++;
           console.log(`Recorded: ${recordRef} → ${action}\n`);
         }

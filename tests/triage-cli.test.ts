@@ -114,6 +114,32 @@ describe("kspec triage record", () => {
     expect(result.record.created_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
   });
 
+  it("should report the persisted record ref when re-recording an already triaged inbox item", () => {
+    const inboxUlid = addInboxItem("Existing triage record");
+    const original = recordTriage(inboxUlid, "promote", "first pass");
+
+    const rerecorded = kspecJson<{ record: { _ulid: string; action: string; reasoning: string } }>(
+      `triage record @${inboxUlid.slice(0, 8)} --action defer --reasoning "updated decision"`,
+      tempDir,
+    );
+
+    expect(rerecorded.record._ulid).toBe(original._ulid);
+    expect(rerecorded.record.action).toBe("defer");
+    expect(rerecorded.record.reasoning).toBe("updated decision");
+
+    const records = kspecJson<Array<{ _ulid: string; action: string; reasoning: string }>>(
+      "triage list",
+      tempDir,
+    );
+    expect(records).toHaveLength(1);
+    expect(records[0]._ulid).toBe(original._ulid);
+    expect(records[0].action).toBe("defer");
+    expect(records[0].reasoning).toBe("updated decision");
+
+    const actResult = kspec(`triage act @${rerecorded.record._ulid.slice(0, 8)}`, tempDir);
+    expect(actResult.stdout).toContain("Acted on triage record");
+  });
+
   // AC: @trait-error-guidance ac-1
   it("should return error with guidance when inbox item not found", () => {
     const result = kspec(
