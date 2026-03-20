@@ -28887,6 +28887,18 @@ reviews:
         runner: npm
         created_at: 2026-03-20T14:28:15.177Z
         completed_at: 2026-03-20T14:28:15.177Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Repo-wide pre-existing validation failures remain in this snapshot (3 broken meta
+          references, orphaned skill warning, broad completeness warnings). No new validation issue
+          attributable to this task's code-only diff was identified.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T14:28:15.964Z
+        completed_at: 2026-03-20T14:28:15.964Z
     events:
       - _ulid: 01KM5T3FJHFF1YR1RTG194QY0Z
         actor: Jacob Chapel
@@ -28915,6 +28927,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T14:28:15.411Z
+      - _ulid: 01KM5TB76SJQWDWEXCJDYTTFZ2
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T14:28:16.217Z
     examined_commit: 28988e187a61dfc78211068ce94987f0fcdb39fe
     external_links: []
     lifecycle_state: open
@@ -28927,5 +28946,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T14:24:02.641Z
-    updated_at: 2026-03-20T14:28:15.177Z
+    updated_at: 2026-03-20T14:28:15.964Z
     notes: []
