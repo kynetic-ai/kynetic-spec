@@ -638,6 +638,11 @@ features:
         id: ac-hooks-validation
         then: A validation error is reported identifying the invalid field.
         when: kspec setup reads the configuration
+      - given: Project setup disables the checkpoint hook or reconciles hook installation state
+        id: ac-hooks-preserve-user-stop-hooks
+        then: Only the Stop hook entries previously installed by kspec are removed or changed. Unrelated
+          user-defined Stop hooks are preserved.
+        when: kspec setup updates Stop hooks in project Claude settings
     tags: []
     features:
       - _ulid: 01KHVXK25H4Y67SNE1VR7M9H52
