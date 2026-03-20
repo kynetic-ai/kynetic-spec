@@ -108943,7 +108943,15 @@
   session_id: 01KM5RN6JP5N10ZZRDCKPGGJ63
   created_at: 2026-03-19T05:15:02.985Z
   started_at: 2026-03-20T13:59:18.934Z
-  notes: []
+  notes:
+    - _ulid: 01KM5S7Z67A873QM62WVPGPZX3
+      content: Implemented KSPEC_NO_DAEMON suppression in the CLI daemon probe path and auto-start hook.
+        Explicit serve commands now bypass the suppression via an ignoreNoDaemon override, vitest
+        defaults KSPEC_NO_DAEMON=1 to prevent incidental daemon traffic, E2E fixtures unset it for
+        managed daemons, and daemon-dependent tests opt back in with KSPEC_NO_DAEMON=0 where needed.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T14:09:01.127Z
   todos: []
   automation: eligible
 - _ulid: 01KM28A020C9M06YC8MA2E96NW
