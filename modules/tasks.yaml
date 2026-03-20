@@ -456,7 +456,7 @@ features:
           repairing the task graph when abandoned work is removed.
         status:
           maturity: draft
-          implementation: in_progress
+          implementation: implemented
         depends_on: []
         implements: []
         relates_to: []
