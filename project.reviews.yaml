@@ -28422,6 +28422,13 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-20T07:17:06.295Z
+      - _ulid: 01KM51NRCTV40876C7MGG7BE2Q
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM51NR51QEQF0ZNQ8DGJF3HC
+        timestamp: 2026-03-20T07:17:07.098Z
     examined_commit: f72a88e05ba5cc38eb65066e8950095cb4364d24
     external_links: []
     lifecycle_state: open
@@ -28431,8 +28438,26 @@ reviews:
       content_hash: ""
       ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM51NR51QEQF0ZNQ8DGJF3HC
+        anchor:
+          type: code
+          commit: f72a88e05ba5cc38eb65066e8950095cb4364d24
+          line_end: 33
+          line_start: 31
+          path: packages/daemon/src/session-watcher.ts
+          side: head
+        entries:
+          - _ulid: 01KM51NR52BE56G52S5T1PRG20
+            author: Jacob Chapel
+            body: " returns immediately when  is absent, so the daemon never attaches any watcher for projects
+              that only create that directory later. In that state, the first session created by a
+              runtime path that writes  will not emit a  broadcast, and  stays stale until a manual
+              refresh or daemon restart. The new coverage only exercises changes after the directory
+              already exists, so this gap is still untested."
+            created_at: 2026-03-20T07:17:06.850Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T07:14:23.845Z
-    updated_at: 2026-03-20T07:17:06.055Z
+    updated_at: 2026-03-20T07:17:06.850Z
     notes: []
