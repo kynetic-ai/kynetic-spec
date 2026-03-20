@@ -15427,18 +15427,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates/01km6bgy
-    canonical_branch_head: c9465133970dc4c422a4631a0cc4fc016a5fb9ca
+    canonical_branch_head: faf60b38d295340053d86214b6e13d69e0ced421
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T21:02:31.933Z
+      updated_at: 2026-03-20T21:11:28.139Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T21:02:33.600Z
+      updated_at: 2026-03-20T21:11:28.139Z
     integration:
       status: pending
       detail: null
@@ -15446,7 +15446,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: da0fbf18378b893f4b1036d23282f691beaccf56
-      updated_at: 2026-03-20T21:02:31.933Z
+      updated_at: 2026-03-20T21:11:28.139Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM6BGYMGZ518JENMCRACJPX3"
@@ -15454,9 +15454,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T21:02:33.600Z
-      last_reconciled_at: 2026-03-20T21:02:33.600Z
+      last_reconciled_at: 2026-03-20T21:11:28.139Z
       created_at: 2026-03-20T19:30:54.853Z
-      updated_at: 2026-03-20T21:02:33.600Z
+      updated_at: 2026-03-20T21:11:28.139Z
     workspace_id: dispatch-workspace-01KM6BGYMGZ518JENMCRACJPX3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
