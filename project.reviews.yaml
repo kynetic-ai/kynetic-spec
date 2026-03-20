@@ -25191,6 +25191,19 @@ reviews:
         runner: kspec
         created_at: 2026-03-20T04:43:47.309Z
         completed_at: 2026-03-20T04:43:47.309Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite failed in untouched area: tests/cli-plan.test.ts > plan list > excludes
+          cancelled tasks while preserving plan_ref-linked plan list counts. Same failure reproduced
+          on recorded base commit 5c99aae155547908523751e1996ca00fc11ee2fe, so this task did not
+          introduce the failure."
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-03-20T04:43:48.051Z
+        completed_at: 2026-03-20T04:43:48.051Z
     events:
       - _ulid: 01KM4RH31JPCQ2V4EQSBX3MG7E
         actor: Jacob Chapel
@@ -25219,6 +25232,13 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-20T04:43:47.538Z
+      - _ulid: 01KM4RX177B7Y531VPDPAR29SS
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-20T04:43:48.327Z
     examined_commit: e05f78fc53850b715197a28a285d793c6f56f310
     external_links: []
     lifecycle_state: open
@@ -25267,5 +25287,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T04:37:16.979Z
-    updated_at: 2026-03-20T04:43:47.309Z
+    updated_at: 2026-03-20T04:43:48.051Z
     notes: []
