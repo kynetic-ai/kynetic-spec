@@ -13230,18 +13230,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/fix-triage-record-cli-reporting-success-without-persisted-record/01km4mk0
-    canonical_branch_head: a88b2408c1ecfaa2d7b5b0400b233d0e0a361644
+    canonical_branch_head: 783b22ef544bed092175027cb2c631b044760c73
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T04:45:19.327Z
+      updated_at: 2026-03-20T04:52:56.476Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T04:45:24.537Z
+      updated_at: 2026-03-20T04:52:56.476Z
     integration:
       status: pending
       detail: null
@@ -13249,7 +13249,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: a88b2408c1ecfaa2d7b5b0400b233d0e0a361644
-      updated_at: 2026-03-20T04:45:19.327Z
+      updated_at: 2026-03-20T04:52:56.476Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM4MK0N1K71YCJ2PFVZGTSTE"
@@ -13257,9 +13257,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T04:45:24.537Z
-      last_reconciled_at: 2026-03-20T04:45:24.537Z
+      last_reconciled_at: 2026-03-20T04:52:56.476Z
       created_at: 2026-03-20T04:45:19.327Z
-      updated_at: 2026-03-20T04:45:24.537Z
+      updated_at: 2026-03-20T04:52:56.476Z
     workspace_id: dispatch-workspace-01KM4MK0N1K71YCJ2PFVZGTSTE
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
