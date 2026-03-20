@@ -147,11 +147,11 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         // Apply filters
         let filtered = reviews;
 
-        // Status filter (lifecycle_state) — no param means no filtering (show all)
-        if (query.status) {
-          const statusFilters = Array.isArray(query.status) ? query.status : [query.status];
-          filtered = filtered.filter((r) => statusFilters.includes(r.lifecycle_state));
-        }
+        // Status filter (lifecycle_state) — default to 'open' if not specified
+        const statusFilters = query.status
+          ? (Array.isArray(query.status) ? query.status : [query.status])
+          : ['open'];
+        filtered = filtered.filter((r) => statusFilters.includes(r.lifecycle_state));
 
         // Disposition filter (computed)
         if (query.disposition) {

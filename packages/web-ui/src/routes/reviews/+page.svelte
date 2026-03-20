@@ -27,10 +27,11 @@
 
 	// --- URL-driven filter state ---
 	// No URL status param → default to 'open' (landing view shows open reviews)
-	// URL status=all → omit status from API call (backend returns all when no filter)
+	// URL status=all → send all valid statuses (backend defaults to 'open' when no status param)
 	// URL status=<value> → send that value to API
-	function getStatusFilter(urlStatus: string | null): string | undefined {
-		if (urlStatus === 'all') return undefined; // omit param → backend shows all
+	const ALL_STATUSES: string[] = ['draft', 'open', 'closed', 'archived'];
+	function getStatusFilter(urlStatus: string | null): string | string[] | undefined {
+		if (urlStatus === 'all') return ALL_STATUSES;
 		if (urlStatus) return urlStatus;
 		return 'open'; // default landing view
 	}
