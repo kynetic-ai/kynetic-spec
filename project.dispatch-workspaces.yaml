@@ -12940,18 +12940,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/fix-review-add-subject-type-precedence-with-version-context/01km4kpq
-    canonical_branch_head: 5c99aae155547908523751e1996ca00fc11ee2fe
+    canonical_branch_head: 111d29d52180ca272c6a43ec08f0adf130cd218a
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T04:22:36.306Z
+      updated_at: 2026-03-20T04:31:55.169Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T04:22:52.270Z
+      updated_at: 2026-03-20T04:31:55.169Z
     integration:
       status: pending
       detail: null
@@ -12959,7 +12959,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5c99aae155547908523751e1996ca00fc11ee2fe
-      updated_at: 2026-03-20T04:22:36.306Z
+      updated_at: 2026-03-20T04:31:55.169Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM4KPQ4CJS24TH0NTVXJA1V3"
@@ -12967,9 +12967,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T04:22:52.270Z
-      last_reconciled_at: 2026-03-20T04:22:52.270Z
+      last_reconciled_at: 2026-03-20T04:31:55.169Z
       created_at: 2026-03-20T04:22:36.306Z
-      updated_at: 2026-03-20T04:22:52.270Z
+      updated_at: 2026-03-20T04:31:55.169Z
     workspace_id: dispatch-workspace-01KM4KPQ4CJS24TH0NTVXJA1V3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
