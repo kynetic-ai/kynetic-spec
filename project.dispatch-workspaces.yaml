@@ -13108,12 +13108,22 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-20T04:49:55.500Z
+      updated_at: 2026-03-20T04:51:55.673Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T04:50:41.853Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch
+            "dispatch/task/allow-plan-derive-task-only-plans-without-specs-block/01km4kpq" is
+            missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/allow-plan-derive-task-only-plans-without-specs-block-01km4kpq"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-20T04:51:55.673Z
     integration:
       status: merged
       detail: integration:merged
@@ -13121,17 +13131,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5c99aae155547908523751e1996ca00fc11ee2fe
-      updated_at: 2026-03-20T04:49:55.500Z
-    lifecycle_state: closing
+      updated_at: 2026-03-20T04:51:55.673Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KM4KPQ6B10BAYD44D6HAG0GC"
     task_slug: allow-plan-derive-task-only-plans-without-specs-block
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T04:45:19.100Z
-      last_reconciled_at: 2026-03-20T04:50:41.853Z
+      last_reconciled_at: 2026-03-20T04:51:55.673Z
       created_at: 2026-03-20T04:36:52.890Z
-      updated_at: 2026-03-20T04:50:41.853Z
+      updated_at: 2026-03-20T04:51:55.673Z
     workspace_id: dispatch-workspace-01KM4KPQ6B10BAYD44D6HAG0GC
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
