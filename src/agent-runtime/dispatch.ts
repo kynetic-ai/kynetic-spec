@@ -1793,11 +1793,15 @@ export class DispatchEngine {
       ? (entry.change.toStatus !== "in_progress" && entry.change.toStatus !== "pending_review") || hasSubmissionLinkage
       : health.healthy;
 
-    // For pending_review and needs_work tasks, attempt workspace discovery
-    // before discarding the queue entry as missing or ineligible.
+    // For resumable tasks, attempt workspace discovery before discarding the
+    // queue entry as missing or ineligible.
     if (
       !eligible &&
-      (entry.change.toStatus === "pending_review" || entry.change.toStatus === "needs_work")
+      (
+        entry.change.toStatus === "in_progress"
+        || entry.change.toStatus === "pending_review"
+        || entry.change.toStatus === "needs_work"
+      )
     ) {
       const discoveryResult = await discoverWorkspaceForReviewOrFixCycle({
         projectDir: this.projectDir,

@@ -3856,6 +3856,151 @@ describe("AC-19: Periodic reconciliation re-enqueues missed tasks", () => {
     await engine.stop();
   });
 
+  // AC: @dispatch-workspace-registry ac-11
+  it("recovers metadata-backed legacy workspaces before pruning in_progress worker work", async () => {
+    const worker = makeTestAgent({
+      id: "task-worker",
+      dispatch: [{ on: "task.in_progress", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [worker]);
+
+    const taskId = testUlid("TASK", 31);
+    const taskRef = `@${taskId}`;
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress", automation: "eligible" }]);
+
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: testDir,
+      taskRef,
+      task: {
+        title: "Legacy Worker Recovery",
+        slugs: ["task-legacy-worker-recovery"],
+      },
+    });
+
+    const legacyBranch = "feat/legacy-worker-recovery";
+    git(workspace.cwd, `checkout -b ${legacyBranch}`);
+    git(testDir, `branch -D ${workspace.metadata.canonicalBranch}`);
+    const metadataPath = path.join(workspace.cwd, ".kspec-dispatch-workspace.json");
+    const metadata = JSON.parse(await fs.readFile(metadataPath, "utf-8")) as {
+      canonicalBranch: string;
+      canonicalBranchHead: string;
+    };
+    metadata.canonicalBranch = legacyBranch;
+    metadata.canonicalBranchHead = git(workspace.cwd, "rev-parse HEAD");
+    await fs.writeFile(metadataPath, `${JSON.stringify(metadata, null, 2)}\n`, "utf-8");
+    await fs.writeFile(
+      path.join(testDir, "project.dispatch-workspaces.yaml"),
+      YAML.stringify({
+        kynetic_dispatch_workspaces: "1.0",
+        workspaces: [],
+      }),
+      "utf-8",
+    );
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    const spawnSpy = vi.spyOn(
+      engine as unknown as { _spawnInvocation: (agent: unknown, entry: unknown) => Promise<boolean> },
+      "_spawnInvocation",
+    ).mockResolvedValue(true);
+
+    await engine.start();
+
+    expect(spawnSpy).toHaveBeenCalledTimes(1);
+    expect(git(workspace.cwd, "branch --show-current")).toBe(workspace.metadata.canonicalBranch);
+    const registry = YAML.parse(
+      await fs.readFile(path.join(testDir, "project.dispatch-workspaces.yaml"), "utf-8"),
+    ) as { workspaces?: Array<{ task_ref: string; canonical_branch: string }> };
+    expect(registry.workspaces).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          task_ref: taskRef,
+          canonical_branch: workspace.metadata.canonicalBranch,
+        }),
+      ]),
+    );
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-workspace-registry ac-11
+  it("treats missing in_progress worker worktrees as recoverable instead of discarding the queue entry", async () => {
+    const worker = makeTestAgent({
+      id: "task-worker",
+      dispatch: [{ on: "task.in_progress", filter: { automation: "eligible" } }],
+      concurrency: { max_concurrent: 1 },
+    });
+    await setupProjectWithAgents(testDir, [worker]);
+
+    const taskId = testUlid("TASK", 32);
+    const taskRef = `@${taskId}`;
+    await writeTasks(testDir, [{ _ulid: taskId, status: "in_progress", automation: "eligible" }]);
+
+    const workspace = await provisionDispatchWorkspace({
+      projectDir: testDir,
+      taskRef,
+      task: {
+        title: "Reprovision In Progress Workspace",
+        slugs: ["task-reprovision-in-progress-workspace"],
+      },
+    });
+    await fs.rm(workspace.cwd, { recursive: true, force: true });
+    git(testDir, "worktree prune");
+
+    const engine = new DispatchEngine({
+      projectDir: testDir,
+      specDir: testDir,
+      kspecCliPath: MOCK_KSPEC_CLI,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    type WorkspaceCandidateHealth = { eligible: boolean; exists: boolean; reason: string | null };
+    type QueueEntryProbe = {
+      _workspaceCandidateHealth: (entry: {
+        change: TaskStateChange;
+      }) => Promise<WorkspaceCandidateHealth>;
+    };
+
+    const result = await (engine as unknown as QueueEntryProbe)._workspaceCandidateHealth({
+      change: {
+        taskId,
+        taskRef,
+        fromStatus: "pending",
+        toStatus: "in_progress",
+        timestamp: Date.now(),
+        task: {
+          _ulid: taskId,
+          title: "Reprovision In Progress Workspace",
+          slugs: ["task-reprovision-in-progress-workspace"],
+          status: "in_progress",
+          type: "task",
+          priority: 1,
+          blocked_by: [],
+          depends_on: [],
+          context: [],
+          tags: [],
+          vcs_refs: [],
+          notes: [],
+          todos: [],
+          created_at: new Date().toISOString(),
+          automation: "eligible",
+        } as any,
+      },
+    });
+
+    expect(result).toMatchObject({
+      eligible: true,
+      exists: true,
+    });
+    expect(fsSync.existsSync(workspace.cwd)).toBe(false);
+  });
+
   // AC: @dispatch-workspace-cleanup-policy ac-6
   // AC: @review-and-fix-cycle-workspace-discovery-before-discard ac-1, ac-2
   // Discovery now recovers from reviewer metadata when worker worktree is gone.
