@@ -31535,7 +31535,17 @@ reviews:
     slugs: []
     title: Review clean up dangling references on item deletion
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Test Files 296 passed (296); Tests 6696 passed | 3 skipped (6699).
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T20:39:13.592Z
+        completed_at: 2026-03-20T20:39:13.592Z
     events:
       - _ulid: 01KM6FB0WXDS09V36CAWDSW3GD
         actor: Jacob Chapel
@@ -31557,6 +31567,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM6FJ991FBG35K3175KD4AQP
         timestamp: 2026-03-20T20:39:08.059Z
+      - _ulid: 01KM6FJF5KJKQZ48N2B33V1YDN
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T20:39:13.844Z
     examined_commit: 42888ca3f06655b7f48977f6bfe33781805ab5f4
     external_links: []
     lifecycle_state: open
@@ -31589,5 +31606,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T20:35:09.854Z
-    updated_at: 2026-03-20T20:39:07.809Z
+    updated_at: 2026-03-20T20:39:13.592Z
     notes: []
