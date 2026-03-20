@@ -30323,9 +30323,25 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-20T17:41:54.226Z
+      - _ulid: 01KM65DXC9A6GKGENMZCZY5VHC
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: approve
+        timestamp: 2026-03-20T17:41:58.794Z
+      - _ulid: 01KM65DXCAG5YGFGQE4BAD8NHY
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T17:41:58.794Z
     examined_commit: 309c8b97751cd0c81c183ee7c48db2673e10e999
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -30355,7 +30371,14 @@ reviews:
               integration. No blocking issues found.
             created_at: 2026-03-20T17:41:42.647Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: approve
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-20T17:41:58.793Z
     created_at: 2026-03-20T17:37:29.843Z
-    updated_at: 2026-03-20T17:41:53.974Z
+    updated_at: 2026-03-20T17:41:58.794Z
     notes: []
