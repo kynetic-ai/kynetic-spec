@@ -109468,12 +109468,8 @@
   spec_ref: "@01KM46FW"
   meta_ref: null
   plan_ref: null
-  status: blocked
-  blocked_by:
-    - "Review completed: task implementation aligns with @01KM46FW ac-1, but required merge gate is
-      blocked by full-suite failure in tests/cli-serve.test.ts (foreground serve Ctrl+C test leaves
-      child.exitCode null under full npm test while passing in isolation). Task code does not touch
-      serve, so this is treated as an external blocker until the suite is green."
+  status: needs_work
+  blocked_by: []
   depends_on: []
   context: []
   priority: 3
@@ -109488,7 +109484,7 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: 01KM498105AVZH6J5NZ0497CEH
+  session_id: null
   created_at: 2026-03-19T23:22:31.906Z
   started_at: 2026-03-20T00:11:02.518Z
   submitted_at: 2026-03-20T00:18:24.147Z
