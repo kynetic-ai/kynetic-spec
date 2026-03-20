@@ -14760,7 +14760,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T18:20:53.235Z
+      updated_at: 2026-03-20T18:21:07.856Z
     integration:
       status: merged
       detail: integration:merged
@@ -14776,18 +14776,13 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T18:14:05.484Z
-      last_reconciled_at: 2026-03-20T18:21:06.538Z
+      last_reconciled_at: 2026-03-20T18:21:07.856Z
       created_at: 2026-03-20T17:37:09.383Z
-      updated_at: 2026-03-20T18:21:06.538Z
+      updated_at: 2026-03-20T18:21:07.856Z
     workspace_id: dispatch-workspace-01KM5Z4M7YQN173XSB98TPV8Y2
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer:
-        branch_mode: detached
-        branch_ref: null
-        head: 8334eae8de18d4abe39d8b6e91fcbe1f0642553f
-        last_seen_at: 2026-03-20T18:13:53.852Z
-        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-daemon-api-input-validation-01km5z4m-review
+      reviewer: null
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-daemon-api-input-validation/01km5z4m
