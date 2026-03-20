@@ -76374,9 +76374,8 @@
   spec_ref: "@trait-shadow-commit"
   meta_ref: null
   plan_ref: null
-  status: blocked
-  blocked_by:
-    - Full npm test is currently failing outside this diff (tests/agent-dispatch-engine.test.ts assertion regressions and tests/canonical-task-workspace-contract.test.ts timeout), so the snapshot cannot pass review gates even though the task-local shadow-commit regression coverage passed.
+  status: pending
+  blocked_by: []
   depends_on: []
   context: []
   priority: 3
@@ -76393,7 +76392,7 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: 01KM2DYE9TGXX0B7AQN5WDP8XC
+  session_id: null
   created_at: 2026-03-17T06:11:37.984Z
   started_at: 2026-03-19T06:54:35.584Z
   submitted_at: 2026-03-19T07:02:28.078Z
