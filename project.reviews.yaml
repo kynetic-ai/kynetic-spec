@@ -28741,6 +28741,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM5SNG71KD4H83A7KZJT5R9J
         timestamp: 2026-03-20T14:16:24.782Z
+      - _ulid: 01KM5SNH66H2N5XY3AYRHQVFKG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM5SNGZ6DSNG9JEFX928BNPB
+        timestamp: 2026-03-20T14:16:25.542Z
     examined_commit: e9c0e7d53b1db9ecdc659db4b0297a5c04e98893
     external_links: []
     lifecycle_state: open
@@ -28769,7 +28776,24 @@ reviews:
               with KSPEC_NO_DAEMON=1."
             created_at: 2026-03-20T14:16:24.546Z
         kind: blocker
+      - _ulid: 01KM5SNGZ6DSNG9JEFX928BNPB
+        entries:
+          - _ulid: 01KM5SNGZ7JGGDTWZ79FWFT51A
+            author: Jacob Chapel
+            body: "Evidence log:\\nFiles read: src/cli/index.ts, src/cli/pid-utils.ts,
+              src/cli/commands/serve.ts, tests/cli-no-daemon.test.ts, tests/setup.ts,
+              tests/agent-dispatch-engine.test.ts, tests/parser/daemon-config.test.ts,
+              packages/web-ui/tests/fixtures/test-base.ts.\\nCommands run: git diff/stat, kspec task
+              get, kspec review for-task, rg/grep for AC annotations and call sites, kspec validate,
+              npm test, temp-project CLI repro for validate with and without
+              KSPEC_NO_DAEMON.\\nClaims verified: explicit serve commands still bypass suppression
+              via ignoreNoDaemon=true; full test suite passes; kspec validate still has unrelated
+              pre-existing repo validation errors.\\nCategories searched: correctness, regression
+              risk, test quality, config/error handling, integration with serve commands and test
+              fixtures."
+            created_at: 2026-03-20T14:16:25.319Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T14:15:21.074Z
-    updated_at: 2026-03-20T14:16:24.546Z
+    updated_at: 2026-03-20T14:16:25.319Z
     notes: []
