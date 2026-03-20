@@ -12731,9 +12731,9 @@ workspaces:
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
-        - workspace-dependencies-missing
-      lastRole: reviewer
-      lastRunAt: 2026-03-20T04:22:28.071Z
+        - canonical-branch-head-changed
+      lastRole: worker
+      lastRunAt: 2026-03-20T04:32:09.994Z
       roleStates:
         reviewer:
           status: succeeded
@@ -12766,54 +12766,14 @@ workspaces:
               source: dispatch
         worker:
           status: succeeded
-          canonicalBranchHead: 5c99aae155547908523751e1996ca00fc11ee2fe
+          canonicalBranchHead: 44d11f272a18ce4c02be15bc1a33a12cb3fcc310
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
           invalidationReasons:
-            - workspace-dependencies-missing
-          lastRunAt: 2026-03-20T04:12:01.987Z
-          steps:
-            - status: succeeded
-              allowTrackedChanges: false
-              idempotent: true
-              name: install-workspace-dependencies
-              output: |-
-                added 283 packages, and audited 288 packages in 3s
-
-                66 packages are looking for funding
-                  run `npm fund` for details
-
-                9 vulnerabilities (1 low, 5 moderate, 3 high)
-
-                To address all issues, run:
-                  npm audit fix
-
-                Run `npm audit` for details.
-              reviewerRerunAllowed: true
-              role: worker
-              run: npm ci
-              source: dispatch
-      steps:
-        - status: succeeded
-          allowTrackedChanges: false
-          idempotent: true
-          name: install-workspace-dependencies
-          output: |-
-            added 283 packages, and audited 288 packages in 8s
-
-            66 packages are looking for funding
-              run `npm fund` for details
-
-            9 vulnerabilities (1 low, 5 moderate, 3 high)
-
-            To address all issues, run:
-              npm audit fix
-
-            Run `npm audit` for details.
-          reviewerRerunAllowed: true
-          role: reviewer
-          run: npm ci
-          source: dispatch
+            - canonical-branch-head-changed
+          lastRunAt: 2026-03-20T04:32:09.994Z
+          steps: []
+      steps: []
     branch_provenance:
       adopted_at: null
       adopted_from: null
@@ -12851,7 +12811,7 @@ workspaces:
       last_active_at: 2026-03-20T04:22:35.777Z
       last_reconciled_at: 2026-03-20T04:32:09.625Z
       created_at: 2026-03-20T04:11:58.300Z
-      updated_at: 2026-03-20T04:32:09.625Z
+      updated_at: 2026-03-20T04:32:09.994Z
     workspace_id: dispatch-workspace-01KM4PZRFGV4WZ5HPZ9VZ3HBDN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
