@@ -110689,6 +110689,13 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T17:26:24.851Z
+    - _ulid: 01KM652T70NZQ9J03Y29CR4QEY
+      content: "Follow-up fix: batch execution does not always materialize Commander defaults, so explicit
+        fallback values are now validated for task add, item add, inbox promote, and plan add.
+        Verified targeted regressions plus full npm test pass."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T17:35:55.104Z
   todos: []
   automation: eligible
 - _ulid: 01KM5Z4KJQ7CF8F2P48711SY91
