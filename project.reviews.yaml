@@ -25799,6 +25799,12 @@ reviews:
         payload:
           thread_ulid: 01KM4TT5PKE3AK6DZC2D7BKMB9
         timestamp: 2026-03-20T05:36:52.849Z
+      - _ulid: 01KM4VY9AY8YFCSQZX2THHJ8Y2
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM4TT5PKE3AK6DZC2D7BKMB9
+        timestamp: 2026-03-20T05:36:55.135Z
     examined_commit: 4bf313b436b3c043e28c31e7c6c88ecd5222fa7b
     external_links: []
     lifecycle_state: closed
@@ -25835,6 +25841,8 @@ reviews:
               queue entry and recreates the worker worktree before invocation.
             created_at: 2026-03-20T05:36:52.622Z
         kind: blocker
+        resolved_at: 2026-03-20T05:36:54.934Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM4TT6HWA4BH6K1572TCB01K
         entries:
           - _ulid: 01KM4TT6HWZZ29TR85NDG8E3Q5
@@ -25861,7 +25869,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T05:17:32.411Z
     created_at: 2026-03-20T05:12:46.124Z
-    updated_at: 2026-03-20T05:36:52.622Z
+    updated_at: 2026-03-20T05:36:54.934Z
     notes: []
   - _ulid: 01KM4VC1G3DMZZ306MY0RH1SCC
     slugs: []
