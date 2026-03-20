@@ -110101,6 +110101,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T04:27:51.738Z
+    - _ulid: 01KM4RE9N6PM31WJX36VPHKQT0
+      content: "[FIX_CYCLE: 1] Added a safety guard for the non-checked-out integration-branch
+        fast-forward path: dispatch now refuses isolated branch-ref updates when the integration
+        branch is checked out in another worktree, because update-ref would advance that foreign
+        worktree's HEAD. Added regression coverage proving dispatch enters degraded state and leaves
+        both the shared checkout's current branch and the foreign worktree untouched. Verification:
+        npm test -- tests/dispatch-target-sync.test.ts tests/dispatch-branch-push-lifecycle.test.ts
+        (pass). kspec validate still reports pre-existing repo-wide reference/completeness issues
+        unrelated to this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T04:35:45.446Z
   todos: []
   automation: eligible
 - _ulid: 01KM4QGVTQR64KQPQ0S24AHV0S
