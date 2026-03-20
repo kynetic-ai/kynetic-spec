@@ -110821,8 +110821,11 @@
   spec_ref: "@api-input-type-safety"
   plan_ref: "@plan-input-validation-hardening"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Merged to dev after approved review. Tightened daemon API enum input schemas against
+    canonical schema options, preserved the dispatched session trigger alias, and added daemon
+    regression coverage for invalid mutation/query enum inputs.
   depends_on:
     - "@task-schema-derived-types"
   context: []
@@ -110845,6 +110848,7 @@
   created_at: 2026-03-20T15:52:03.070Z
   started_at: 2026-03-20T18:12:31.954Z
   submitted_at: 2026-03-20T18:13:08.823Z
+  completed_at: 2026-03-20T18:20:32.746Z
   notes:
     - _ulid: 01KM65GM62PJ96MV3HQ5E87EDK
       content: Tightening daemon route schemas to use canonical enum options through shared enum helpers.
