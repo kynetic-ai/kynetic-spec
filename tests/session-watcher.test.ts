@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { mkdir, writeFile } from 'fs/promises';
+import { mkdir, rm, writeFile } from 'fs/promises';
 import { join } from 'path';
 import { setupMultiDirFixtures, cleanupTempDir } from './helpers/cli';
 import { SessionWatcher } from '../packages/daemon/src/session-watcher';
@@ -65,6 +65,40 @@ describeOrSkip('SessionWatcher', () => {
 		await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
 
 		expect(onSessionChange).toHaveBeenCalled();
+
+		await watcher.stop();
+	});
+
+	it('starts before .kspec-sessions exists and emits after the directory is created', async () => {
+		const onSessionChange = vi.fn();
+		const sessionsDir = join(projectDir, '.kspec-sessions');
+		await rm(sessionsDir, { recursive: true, force: true });
+		const watcher = new SessionWatcher({
+			sessionsDir,
+			onSessionChange,
+			onError: vi.fn()
+		});
+
+		await watcher.start();
+
+		const sessionDir = join(sessionsDir, '01JTESTSESSIONWATCHER0000004');
+		const metadataPath = join(sessionDir, 'session.yaml');
+		await mkdir(sessionDir, { recursive: true });
+		await writeFile(
+			metadataPath,
+			[
+				'id: 01JTESTSESSIONWATCHER0000004',
+				'agent_type: task-worker',
+				'status: active',
+				'started_at: "2026-03-19T12:00:00.000Z"',
+				''
+			].join('\n')
+		);
+
+		await new Promise((resolve) => setTimeout(resolve, DEBOUNCE_WAIT));
+
+		expect(onSessionChange).toHaveBeenCalledTimes(1);
+		expect(onSessionChange).toHaveBeenCalledWith(sessionDir);
 
 		await watcher.stop();
 	});

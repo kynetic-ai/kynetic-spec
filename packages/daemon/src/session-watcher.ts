@@ -5,7 +5,7 @@
  * source-agnostic session freshness notifications to WebSocket clients.
  */
 
-import { existsSync, watch, type FSWatcher } from 'fs';
+import { existsSync, readdirSync, watch, type FSWatcher } from 'fs';
 import chokidar, { type FSWatcher as ChokidarWatcher } from 'chokidar';
 import { join, relative, sep } from 'path';
 
@@ -25,15 +25,18 @@ export class SessionWatcher {
 	private baseBackoffMs = 1000;
 	private stopped = false;
 	private recoveryTimer: NodeJS.Timeout | null = null;
+	private bootstrapPollTimer: NodeJS.Timeout | null = null;
 
 	constructor(private options: SessionWatcherOptions) {}
 
 	async start(): Promise<void> {
+		this.stopped = false;
+
 		if (!existsSync(this.options.sessionsDir)) {
+			this.scheduleBootstrapPoll();
 			return;
 		}
 
-		this.stopped = false;
 		try {
 			await this.startBunWatcher();
 		} catch (error) {
@@ -41,6 +44,21 @@ export class SessionWatcher {
 			this.usingChokidar = true;
 			await this.startChokidarWatcher();
 		}
+	}
+
+	private scheduleBootstrapPoll(): void {
+		if (this.bootstrapPollTimer) {
+			return;
+		}
+
+		this.bootstrapPollTimer = setInterval(() => {
+			void this.promoteBootstrapPoll();
+		}, this.debounceMs);
+		if (typeof this.bootstrapPollTimer === 'object' && 'unref' in this.bootstrapPollTimer) {
+			this.bootstrapPollTimer.unref();
+		}
+
+		console.log('[session-watcher] Waiting for .kspec-sessions directory');
 	}
 
 	private async startBunWatcher(): Promise<void> {
@@ -55,7 +73,7 @@ export class SessionWatcher {
 	}
 
 	private async startChokidarWatcher(): Promise<void> {
-		this.watcher = chokidar.watch(join(this.options.sessionsDir, '**/*'), {
+		this.watcher = chokidar.watch(this.options.sessionsDir, {
 			ignoreInitial: true,
 			awaitWriteFinish: {
 				stabilityThreshold: 100,
@@ -74,6 +92,24 @@ export class SessionWatcher {
 			});
 
 		console.log('[session-watcher] Watching .kspec-sessions directory with Chokidar');
+	}
+
+	private async promoteBootstrapPoll(): Promise<void> {
+		if (this.stopped || !existsSync(this.options.sessionsDir)) {
+			return;
+		}
+
+		if (this.bootstrapPollTimer) {
+			clearInterval(this.bootstrapPollTimer);
+			this.bootstrapPollTimer = null;
+		}
+
+		await this.start();
+		for (const entry of readdirSync(this.options.sessionsDir, { withFileTypes: true })) {
+			if (entry.isDirectory()) {
+				this.handleFileChange(join(this.options.sessionsDir, entry.name));
+			}
+		}
 	}
 
 	private handleFileChange(filePath: string): void {
@@ -161,6 +197,11 @@ export class SessionWatcher {
 		if (this.recoveryTimer) {
 			clearTimeout(this.recoveryTimer);
 			this.recoveryTimer = null;
+		}
+
+		if (this.bootstrapPollTimer) {
+			clearInterval(this.bootstrapPollTimer);
+			this.bootstrapPollTimer = null;
 		}
 
 		if (this.watcher) {
