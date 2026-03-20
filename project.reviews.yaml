@@ -24691,7 +24691,17 @@ reviews:
     slugs: []
     title: Review handle git worktree collisions between multiple project checkouts (cycle 4)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed on head 3d36ababa: 288 files, 6626 tests, 3 skipped."
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T02:23:48.258Z
+        completed_at: 2026-03-20T02:23:48.258Z
     events:
       - _ulid: 01KM4GJW6CDETRFKPV2FAASDNQ
         actor: Jacob Chapel
@@ -24713,6 +24723,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM4GWNB7D4T7CYNW9HEDEE16
         timestamp: 2026-03-20T02:23:47.805Z
+      - _ulid: 01KM4GWP88TA407H9SQ9FMRSKJ
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm-test
+        timestamp: 2026-03-20T02:23:48.488Z
     examined_commit: 3d36ababa8aa4443911217f748d355cc64601336
     external_links: []
     lifecycle_state: open
@@ -24752,5 +24769,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T02:18:26.892Z
-    updated_at: 2026-03-20T02:23:47.560Z
+    updated_at: 2026-03-20T02:23:48.258Z
     notes: []
