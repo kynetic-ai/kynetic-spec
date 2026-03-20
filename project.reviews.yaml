@@ -28446,6 +28446,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T07:17:07.885Z
+      - _ulid: 01KM51NSY1VSVZD8ESGH18ZA9N
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM51NSPVHZ62H00WJ4JEY1AT
+        timestamp: 2026-03-20T07:17:08.673Z
     examined_commit: f72a88e05ba5cc38eb65066e8950095cb4364d24
     external_links: []
     lifecycle_state: open
@@ -28474,7 +28481,26 @@ reviews:
               already exists, so this gap is still untested."
             created_at: 2026-03-20T07:17:06.850Z
         kind: blocker
+      - _ulid: 01KM51NSPVHZ62H00WJ4JEY1AT
+        entries:
+          - _ulid: 01KM51NSPWTH3Q3S0S7T5HZWA5
+            author: Jacob Chapel
+            body: "Evidence log: files read: packages/daemon/src/project-context.ts,
+              packages/daemon/src/session-watcher.ts,
+              packages/web-ui/src/lib/query/ws-invalidation.ts,
+              packages/web-ui/src/routes/sessions/+page.svelte,
+              packages/web-ui/tests/e2e/sessions.spec.ts,
+              packages/web-ui/tests/e2e/api-watcher.spec.ts, tests/session-watcher.test.ts,
+              tests/daemon-context-manager.test.ts, tests/web-ui-tanstack-query.test.ts,
+              src/cli/commands/setup.ts, src/parser/shadow.ts,
+              tests/init-setup-sessions-dir.test.ts. Commands run: kspec task get, kspec item get,
+              kspec review for-task, git diff, grep for AC annotations, kspec validate, npm test.
+              Claims verified: full test suite passes on this snapshot; sessions invalidation is
+              wired globally and locally; the new daemon path depends on a startup watcher over .
+              Categories searched: correctness, edge cases, test quality, integration."
+            created_at: 2026-03-20T07:17:08.444Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T07:14:23.845Z
-    updated_at: 2026-03-20T07:17:07.616Z
+    updated_at: 2026-03-20T07:17:08.444Z
     notes: []
