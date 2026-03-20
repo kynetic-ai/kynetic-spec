@@ -18,7 +18,8 @@
   AC: @ui-data-freshness ac-3 — WS events invalidate session queries via centralized wiring
 -->
 <script lang="ts">
-	import { onDestroy } from 'svelte';
+	import { on, off, subscribe, unsubscribe } from '$lib/stores/connection.svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { base } from '$app/paths';
@@ -42,13 +43,22 @@
 	import Terminal from '@lucide/svelte/icons/terminal';
 	import Loader2 from '@lucide/svelte/icons/loader-2';
 	import Search from '@lucide/svelte/icons/search';
+	import ArrowUp from '@lucide/svelte/icons/arrow-up';
+	import type { BroadcastEvent } from '@kynetic-ai/shared';
 
 	const PAGE_SIZE = 25;
 	const SCROLL_THRESHOLD = 200; // px from bottom to trigger load
 	const SEARCH_LIMIT = 50;
+	const TOP_REFRESH_THRESHOLD = 80;
 
 	// Local UI state
 	let searchInput = $state('');
+	let isNearTop = $state(true);
+	let pendingFreshCount = $state(0);
+	let frozenSessions = $state<SessionSummary[] | null>(null);
+	let liveRefreshQueued = false;
+	let liveRefreshInFlight = false;
+	let scrollContainer: HTMLElement | null = null;
 
 	// IntersectionObserver sentinel element
 	let sentinel: HTMLDivElement | undefined = $state();
@@ -159,6 +169,7 @@
 	let totalMatches = $derived(searchResultsQuery.data?.total_matches ?? 0);
 	let searchTotal = $derived(searchResultsQuery.data?.total_sessions ?? 0);
 	let searchLoading = $derived(searchResultsQuery.isLoading);
+	let visibleSessions = $derived(frozenSessions ?? sessions);
 
 	// AC: @session-filter-controls ac-filter-counts — Read unfiltered_total from paginated response
 	let unfilteredTotal = $derived(sessionsQuery.data?.pages[0]?.unfiltered_total ?? 0);
@@ -223,8 +234,108 @@
 		applySearch(searchInput);
 	}
 
+	function resolveScrollContainer(): HTMLElement | null {
+		return document.querySelector('main.overflow-auto');
+	}
+
+	function updateNearTopState(): void {
+		scrollContainer ??= resolveScrollContainer();
+		const nextNearTop = (scrollContainer?.scrollTop ?? 0) <= TOP_REFRESH_THRESHOLD;
+		isNearTop = nextNearTop;
+		if (nextNearTop && (pendingFreshCount > 0 || frozenSessions)) {
+			pendingFreshCount = 0;
+			frozenSessions = null;
+		}
+	}
+
+	async function refetchForFreshness(): Promise<boolean> {
+		if (searchMode) {
+			const previousTotal = searchTotal;
+			const previousFirstId = searchResults[0]?.session_id ?? null;
+			const result = await searchResultsQuery.refetch();
+			const nextTotal = result.data?.total_sessions ?? 0;
+			const nextFirstId = result.data?.items[0]?.session_id ?? null;
+			return nextTotal !== previousTotal || nextFirstId !== previousFirstId;
+		}
+
+		const previousTotal = total;
+		const previousFirstId = sessions[0]?.id ?? null;
+		const result = await sessionsQuery.refetch();
+		const nextPage = result.data?.pages[0];
+		const nextTotal = nextPage?.total ?? 0;
+		const nextFirstId = nextPage?.items[0]?.id ?? null;
+		return nextTotal !== previousTotal || nextFirstId !== previousFirstId;
+	}
+
+	async function processLiveRefresh(): Promise<void> {
+		const snapshot = frozenSessions ?? sessions.slice();
+		const changed = await refetchForFreshness();
+		if (!changed || isNearTop || searchMode) {
+			if (isNearTop) {
+				pendingFreshCount = 0;
+				frozenSessions = null;
+			}
+			return;
+		}
+
+		if (!frozenSessions) {
+			frozenSessions = snapshot;
+		}
+		pendingFreshCount += 1;
+	}
+
+	async function drainLiveRefreshQueue(): Promise<void> {
+		if (liveRefreshInFlight) return;
+		liveRefreshInFlight = true;
+		try {
+			while (liveRefreshQueued) {
+				liveRefreshQueued = false;
+				await processLiveRefresh();
+			}
+		} finally {
+			liveRefreshInFlight = false;
+		}
+	}
+
+	function isLiveSessionUpdate(topic: 'agents' | 'sessions', event: BroadcastEvent): boolean {
+		if (topic === 'sessions') {
+			return event.event !== 'session_error';
+		}
+
+		const streamingEvents = new Set([
+			'message_start',
+			'message_progress',
+			'thinking_start',
+			'thinking_progress',
+			'tool_call_start'
+		]);
+		return !streamingEvents.has(event.event);
+	}
+
+	function handleLiveSessionUpdate(topic: 'agents' | 'sessions', event: BroadcastEvent): void {
+		if (isStaticMode() || !isLiveSessionUpdate(topic, event)) {
+			return;
+		}
+		liveRefreshQueued = true;
+		void drainLiveRefreshQueue();
+	}
+
+	async function revealFreshSessions(): Promise<void> {
+		pendingFreshCount = 0;
+		frozenSessions = null;
+		scrollContainer ??= resolveScrollContainer();
+		scrollContainer?.scrollTo({ top: 0, behavior: 'smooth' });
+		await refetchForFreshness();
+	}
+
 	$effect(() => {
 		searchInput = searchQuery;
+	});
+
+	$effect(() => {
+		if (!searchMode) return;
+		pendingFreshCount = 0;
+		frozenSessions = null;
 	});
 
 	// AC: @session-list-infinite-scroll ac-scroll-load — IntersectionObserver for sentinel
@@ -250,6 +361,35 @@
 
 	onDestroy(() => {
 		observer?.disconnect();
+		if (!isStaticMode()) {
+			off('agents', agentsHandler);
+			off('sessions', sessionsHandler);
+			unsubscribe(['agents', 'sessions']);
+		}
+		scrollContainer?.removeEventListener('scroll', updateNearTopState);
+	});
+
+	const agentsHandler = (event: BroadcastEvent) => handleLiveSessionUpdate('agents', event);
+	const sessionsHandler = (event: BroadcastEvent) => handleLiveSessionUpdate('sessions', event);
+
+	onMount(() => {
+		if (isStaticMode()) {
+			return;
+		}
+
+		subscribe(['agents', 'sessions']);
+		on('agents', agentsHandler);
+		on('sessions', sessionsHandler);
+	});
+
+	$effect(() => {
+		scrollContainer = resolveScrollContainer();
+		if (!scrollContainer) return;
+		updateNearTopState();
+		scrollContainer.addEventListener('scroll', updateNearTopState, { passive: true });
+		return () => {
+			scrollContainer?.removeEventListener('scroll', updateNearTopState);
+		};
 	});
 </script>
 
@@ -363,9 +503,21 @@
 			{/each}
 		</div>
 	{:else}
+		{#if pendingFreshCount > 0}
+			<button
+				type="button"
+				class="sticky top-0 z-10 flex items-center gap-2 self-start rounded-full border bg-background/95 px-3 py-2 text-sm font-medium shadow-sm backdrop-blur"
+				data-testid="new-sessions-indicator"
+				onclick={() => void revealFreshSessions()}
+			>
+				<ArrowUp class="size-4" />
+				{pendingFreshCount} new session{pendingFreshCount === 1 ? '' : 's'}
+			</button>
+		{/if}
+
 		<!-- AC: @ui-session-history ac-1 — List showing ID, agent type, task ref, status, duration, age -->
 		<div class="space-y-2" data-testid="sessions-list">
-			{#each sessions as s (s.id)}
+			{#each visibleSessions as s (s.id)}
 				<!-- AC: @ui-session-history ac-2 — Click navigates to /sessions/:id -->
 				<a
 					href="{base}/sessions/{s.id}"
