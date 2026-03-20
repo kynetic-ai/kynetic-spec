@@ -110311,6 +110311,19 @@
   session_id: 01KM4TH26Y6X8BN3HD52N5FYC1
   created_at: 2026-03-20T04:19:41.015Z
   started_at: 2026-03-20T05:12:52.633Z
-  notes: []
+  notes:
+    - _ulid: 01KM4V94YXXSKEZMK44HXPA8A7
+      content: "Implemented source-agnostic sessions freshness in the daemon/web UI path. Added a
+        .kspec-sessions watcher that broadcasts the sessions topic, wired sessions-topic
+        invalidation into the shared query layer, and updated /sessions to refetch immediately at
+        top while freezing visible rows + showing a new-sessions indicator when scrolled away.
+        Verification: npm test -- tests/web-ui-tanstack-query.test.ts tests/session-watcher.test.ts;
+        npm run typecheck. Full npm test still has unrelated baseline failures in
+        tests/agents-instruction-gen.test.ts and tests/cli-plan.test.ts, and targeted Playwright
+        sessions/api-watcher runs are blocked in dispatch because the harness cannot start its own
+        daemon."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T05:25:22.526Z
   todos: []
   automation: eligible
