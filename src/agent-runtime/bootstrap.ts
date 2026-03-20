@@ -297,7 +297,7 @@ export async function ensureWorkspaceBootstrap(
   const dependencyStep = implicitDependencyStep(workspaceDir);
   const effectiveSteps = dependencyStep ? [dependencyStep, ...steps] : steps;
   const roleSteps = effectiveSteps.filter((step) => stepAppliesToRole(step, role));
-  const configHash = hashConfig(effectiveSteps);
+  const configHash = hashConfig(steps);
   const metadata: DispatchWorkspaceMetadata = structuredClone(options.metadata);
   metadata.bootstrap = normalizeDispatchBootstrapState(metadata.bootstrap);
   metadata.bootstrapState = metadata.bootstrap;

@@ -694,6 +694,30 @@ describe("dispatch runtime bootstrap contract", () => {
     await expect(
       fs.stat(path.join(workspace.cwd, "node_modules", "local-dep")),
     ).resolves.toBeTruthy();
+
+    workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Dependency Repair Bootstrap", slugs: ["dependency-repair-bootstrap"] },
+    });
+    const postRepairRecord = await readWorkspaceRecord(workspace.metadataPath, taskRef);
+    const reusedAfterRepair = await ensureWorkspaceBootstrap({
+      projectDir: tempDir,
+      workspaceDir: workspace.cwd,
+      metadataPath: workspace.metadataPath,
+      metadata: {
+        ...workspace.metadata,
+        bootstrap: postRepairRecord.bootstrap,
+        bootstrapState: postRepairRecord.bootstrap,
+      },
+      role: "worker",
+      agent: makeAgent(),
+      env: {},
+    });
+
+    expect(reusedAfterRepair.reused).toBe(true);
+    expect(reusedAfterRepair.ranSteps).toBe(false);
+    expect(reusedAfterRepair.metadata.bootstrap.invalidationReasons).toEqual([]);
   });
 
   // AC: @dispatch-runtime-bootstrap-contract ac-6
