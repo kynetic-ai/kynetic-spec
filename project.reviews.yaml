@@ -26235,7 +26235,17 @@ reviews:
     slugs: []
     title: Review @01KM4QGVTQR64KQPQ0S24AHV0S
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm run typecheck exited 0.
+        name: typecheck
+        required: true
+        runner: tsc
+        created_at: 2026-03-20T05:49:30.603Z
+        completed_at: 2026-03-20T05:49:30.603Z
     events:
       - _ulid: 01KM4WBNDA1EZWN0HKY193A8JZ
         actor: Jacob Chapel
@@ -26257,6 +26267,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM4WNA9SV0EDBFSZEH7YP5EC
         timestamp: 2026-03-20T05:49:30.025Z
+      - _ulid: 01KM4WNB9Y073V5YVX0J993P4T
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: typecheck
+        timestamp: 2026-03-20T05:49:30.814Z
     examined_commit: 818b53f420eda826592758a52a7691fd0b055d75
     external_links: []
     lifecycle_state: open
@@ -26289,5 +26306,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-20T05:44:13.482Z
-    updated_at: 2026-03-20T05:49:29.785Z
+    updated_at: 2026-03-20T05:49:30.603Z
     notes: []
