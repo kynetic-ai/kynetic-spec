@@ -15082,7 +15082,7 @@ workspaces:
         head: a0bf72cf5aec046fb671938f44c6982741caacbf
         last_seen_at: 2026-03-20T18:21:30.717Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-parser-write-validation-01km5z4m
-  - active_role: null
+  - active_role: worker
     base_branch_point: 1cb15865407997d672327c8e8d457f65057241f3
     bootstrap:
       status: succeeded
@@ -15171,7 +15171,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T18:21:36.747Z
+      updated_at: 2026-03-20T18:21:55.345Z
     integration:
       status: pending
       detail: null
@@ -15180,16 +15180,16 @@ workspaces:
       target_branch: dev
       target_commit: 1cb15865407997d672327c8e8d457f65057241f3
       updated_at: 2026-03-20T18:21:36.747Z
-    lifecycle_state: ready
+    lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM5Z4KJQ7CF8F2P48711SY91"
     task_slug: task-cli-filter-input-validation
     timestamps:
       closed_at: null
-      last_active_at: null
-      last_reconciled_at: 2026-03-20T18:21:36.747Z
+      last_active_at: 2026-03-20T18:21:55.345Z
+      last_reconciled_at: 2026-03-20T18:21:55.345Z
       created_at: 2026-03-20T18:21:36.747Z
-      updated_at: 2026-03-20T18:21:41.724Z
+      updated_at: 2026-03-20T18:21:55.345Z
     workspace_id: dispatch-workspace-01KM5Z4KJQ7CF8F2P48711SY91
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:

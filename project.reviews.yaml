@@ -30847,3 +30847,29 @@ reviews:
     created_at: 2026-03-20T18:15:04.722Z
     updated_at: 2026-03-20T18:20:05.552Z
     notes: []
+  - _ulid: 01KM67QHD88G5P8ZHKWJZPKZDG
+    slugs: []
+    title: Review task-parser-write-validation
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM67QHD7C4AQP4B2HQTTSNRK
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T18:22:11.368Z
+    examined_commit: a0bf72cf5aec046fb671938f44c6982741caacbf
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM5Z4MXMC234763SFZZHK7GH"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T18:22:11.368Z
+    updated_at: null
+    notes: []
