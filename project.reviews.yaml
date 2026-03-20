@@ -28719,7 +28719,17 @@ reviews:
     slugs: []
     title: Review task-implement-kspec-no-daemon
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed locally: 291 files, 6662 tests passed, 3 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T14:16:35.761Z
+        completed_at: 2026-03-20T14:16:35.761Z
     events:
       - _ulid: 01KM5SKJ7H2212WZZZ6PMP67GW
         actor: Jacob Chapel
@@ -28748,6 +28758,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM5SNGZ6DSNG9JEFX928BNPB
         timestamp: 2026-03-20T14:16:25.542Z
+      - _ulid: 01KM5SNVD3BH6TW29X45AJB4T1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T14:16:36.003Z
     examined_commit: e9c0e7d53b1db9ecdc659db4b0297a5c04e98893
     external_links: []
     lifecycle_state: open
@@ -28795,5 +28812,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T14:15:21.074Z
-    updated_at: 2026-03-20T14:16:25.319Z
+    updated_at: 2026-03-20T14:16:35.761Z
     notes: []
