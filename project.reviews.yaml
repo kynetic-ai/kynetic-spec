@@ -29763,6 +29763,12 @@ reviews:
         payload:
           thread_ulid: 01KM62ENWVJKT5BTNYVQVVRJPT
         timestamp: 2026-03-20T17:02:56.282Z
+      - _ulid: 01KM637F9QXWDPP0HT6ECZ7DGQ
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM62ENWVJKT5BTNYVQVVRJPT
+        timestamp: 2026-03-20T17:03:30.615Z
     examined_commit: cdb70fae4e3fc3481147505e3f19023b1113c5fc
     external_links: []
     lifecycle_state: closed
@@ -29790,6 +29796,8 @@ reviews:
               skipped, so I could not reproduce the earlier red gate.
             created_at: 2026-03-20T17:02:56.038Z
         kind: blocker
+        resolved_at: 2026-03-20T17:03:30.383Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM62EQBHM2G6738BBMVKZXFK
         entries:
           - _ulid: 01KM62EQBJ6FPY1RBGX5PP72SB
@@ -29815,7 +29823,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T16:50:15.416Z
     created_at: 2026-03-20T16:45:10.553Z
-    updated_at: 2026-03-20T17:02:56.038Z
+    updated_at: 2026-03-20T17:03:30.383Z
     notes: []
   - _ulid: 01KM62RFW303MTYMM5ZS98Z445
     slugs: []
