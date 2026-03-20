@@ -109314,7 +109314,7 @@
   spec_ref: null
   plan_ref: "@plan-dispatch-integration-checkout-boundaries"
   origin: derived
-  status: pending
+  status: in_progress
   blocked_by: []
   depends_on:
     - "@task-isolate-dispatch-git-targeting"
@@ -109327,7 +109327,9 @@
     - test
     - git
   vcs_refs: []
+  session_id: 01KM4GE7FZ0SC2GJB521C07N74
   created_at: 2026-03-19T21:22:14.093Z
+  started_at: 2026-03-20T02:16:29.488Z
   notes: []
   todos: []
   automation: eligible
