@@ -1,6 +1,10 @@
 kynetic_triage: "1.0"
 triage:
   - _ulid: 01KJ3RQTWDNRPQA70XFYD2QC9G
+    status: acted_on
+    action: spec-gap
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KFH76CQV9J2NQKQE8QRYVQC3
     item_snapshot: "Cross-feature requirement pattern: How to express that core features (search,
       validate, export) must support all entity types. When new entity type added, should
@@ -8,47 +12,47 @@ triage:
       (2) trait on entity types like @trait-searchable, (3) validation warning for missing coverage,
       (4) parent spec that entity types must satisfy. Surfaced when realizing search doesn't cover
       inbox."
-    status: acted_on
-    action: spec-gap
-    reasoning: first item reasoning
-    decided_by: "@claude"
-    evidence_refs: []
-    override_reasoning: We should bridge this gap
-    override_by: Jacob Chapel
     override_at: 2026-02-23T05:58:04.083Z
-    acted_at: 2026-02-23T08:24:14.327Z
+    override_by: Jacob Chapel
+    override_reasoning: We should bridge this gap
+    reasoning: first item reasoning
     result_ref: "@01KJ4SJP"
     created_at: 2026-02-22T22:50:19.918Z
     updated_at: 2026-02-23T08:24:14.329Z
+    acted_at: 2026-02-23T08:24:14.327Z
   - _ulid: 01KJ3T9S4R04XWBGE7DDT5Z8EM
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ3T9QMVRE7PM5AWAE6JG3KG
     item_snapshot: Export precedence test
-    status: acted_on
-    action: delete
-    reasoning: test
-    decided_by: "@claude"
-    evidence_refs: []
-    override_reasoning: Its a test
-    override_by: Jacob Chapel
     override_at: 2026-02-23T05:52:02.067Z
-    acted_at: 2026-02-23T08:24:14.257Z
+    override_by: Jacob Chapel
+    override_reasoning: Its a test
+    reasoning: test
     created_at: 2026-02-22T23:17:36.536Z
     updated_at: 2026-02-23T08:24:14.259Z
+    acted_at: 2026-02-23T08:24:14.257Z
   - _ulid: 01KJ3T9VXRARPYJDJDCWTJQAMY
-    inbox_ref: 01KJ3T9TKZDCK7HSEEH6BJQ6KD
-    item_snapshot: Spec gap test
     status: acted_on
     action: delete
-    reasoning: needs spec
     decided_by: "@claude"
     evidence_refs: []
-    override_reasoning: It's a test
-    override_by: Jacob Chapel
+    inbox_ref: 01KJ3T9TKZDCK7HSEEH6BJQ6KD
+    item_snapshot: Spec gap test
     override_at: 2026-02-23T05:56:25.572Z
-    acted_at: 2026-02-23T08:24:14.236Z
+    override_by: Jacob Chapel
+    override_reasoning: It's a test
+    reasoning: needs spec
     created_at: 2026-02-22T23:17:39.384Z
     updated_at: 2026-02-23T08:24:14.238Z
+    acted_at: 2026-02-23T08:24:14.236Z
   - _ulid: 01KJ4HBF2V4EZE9T92XSXP7DX5
+    status: acted_on
+    action: spec-gap
+    decided_by: Jacob Chapel
+    evidence_refs: []
     inbox_ref: 01KJ43CPCNZZPFGWF6HHP2BJ0H
     item_snapshot: "Include triage records in static snapshot (kspec-snapshot.json). Currently the
       snapshot format (KspecSnapshot type) doesn't include triage records, so the triage page in
@@ -56,53 +60,53 @@ triage:
       triage decisions read-only. AC-8 of @interactive-triage-ui expects read-only display. Needs:
       add triage records to export snapshot, update KspecSnapshot type, add fetchTriageRecordsStatic
       to read from snapshot."
-    status: acted_on
-    action: spec-gap
     reasoning: There's a spec gap here
-    decided_by: Jacob Chapel
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:14.209Z
     result_ref: "@01KJ4SJP"
     created_at: 2026-02-23T06:00:29.019Z
     updated_at: 2026-02-23T08:24:14.214Z
+    acted_at: 2026-02-23T08:24:14.209Z
   - _ulid: 01KJ4SHPFWX5GQ6DQ62SZ474B1
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGVC4ZYF62SY94YC4H8ER51E
     item_snapshot: "Add regression test asserting ralph spawn sites pass methodTimeouts for
       session/prompt and session/resume (from Codex review of PR #328, task @01KGVB8X)"
-    status: acted_on
-    action: delete
     reasoning: Stale - ralph timeout architecture reworked
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:14.141Z
     created_at: 2026-02-23T08:23:41.820Z
     updated_at: 2026-02-23T08:24:14.142Z
+    acted_at: 2026-02-23T08:24:14.141Z
   - _ulid: 01KJ4SHPGKWWS6SP66KZBP7TN4
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGVD9Z9Z8FM94FKXGBYDDQS3
     item_snapshot: Add regression test for non-text content blocks (e.g. image blocks) in ralph
       stringify() to lock rendering behavior for that payload shape
-    status: acted_on
-    action: delete
     reasoning: Stale - low value, no incidents
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:14.116Z
     created_at: 2026-02-23T08:23:41.843Z
     updated_at: 2026-02-23T08:24:14.118Z
+    acted_at: 2026-02-23T08:24:14.116Z
   - _ulid: 01KJ4SHPH3TVXKQS4M40633Q3W
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGWM89MZCZ35WZF3G32BXPVK
     item_snapshot: "Add integration-level regression tests for malformed priority values on derive and
       plan derive (e.g. --priority 3abc, --priority 1.9) to lock in the Commander pre-parse fix from
       PR #347"
-    status: acted_on
-    action: delete
     reasoning: "Stale - fix stable since PR #347"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:14.095Z
     created_at: 2026-02-23T08:23:41.859Z
     updated_at: 2026-02-23T08:24:14.097Z
+    acted_at: 2026-02-23T08:24:14.095Z
   - _ulid: 01KJ4SHPHK977ZXD7SP436G9D3
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ2082ZYZ3HGBSGJMTYBRDAE
     item_snapshot: "Core skill plugin discovery: ship pre-built plugin in npm package, auto-register
       marketplace. Plan at ~/.claude/plans/sharded-gliding-catmull.md. Codex review at
@@ -113,102 +117,102 @@ triage:
       ~/.claude/plugins/known_marketplaces.json kspec-plugins entry,
       ~/.claude/plugins/installed_plugins.json kspec entry, ~/.claude/plugins/cache/kspec-plugins/
       cache."
-    status: acted_on
-    action: delete
     reasoning: "Resolved - shipped in PR #444"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:14.072Z
     created_at: 2026-02-23T08:23:41.875Z
     updated_at: 2026-02-23T08:24:14.075Z
+    acted_at: 2026-02-23T08:24:14.072Z
   - _ulid: 01KJ4SHPJ1R7DZK96M0ZX6RMRD
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHKTNJ156YKJ74RN1J0EH40Q
     item_snapshot: generateUnifiedDiff is hand-rolled 80-line diff that only handles substitutions, not
       insertions/deletions. Replace with diff npm package for correctness.
-    status: acted_on
-    action: delete
     reasoning: "Resolved - uses diff npm package since PR #412"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:14.042Z
     created_at: 2026-02-23T08:23:41.889Z
     updated_at: 2026-02-23T08:24:14.044Z
+    acted_at: 2026-02-23T08:24:14.042Z
   - _ulid: 01KJ4SHPJFXH9RZHS76PADZ77F
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHKTNJ1MM6G3QC3KDYB52W9K
     item_snapshot: "parseFrontmatter regex /^---
 
       / fails silently on Windows CRLF line endings. Should handle \r
 
       \ for cross-platform correctness."
-    status: acted_on
-    action: delete
     reasoning: "Resolved - CRLF regex fixed in PR #408"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:14.020Z
     created_at: 2026-02-23T08:23:41.903Z
     updated_at: 2026-02-23T08:24:14.022Z
+    acted_at: 2026-02-23T08:24:14.020Z
   - _ulid: 01KJ4SHPJXMDZKSMCJQ4G3R9KF
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHKTNJ20S0TR3PB3BGDF678H
     item_snapshot: normalizeBaseDirectory only matches exact pattern "Base directory for this skill:".
       Any variation (caps, hyphens, rewording) is silently missed. Make more robust.
-    status: acted_on
-    action: delete
     reasoning: "Resolved - case-insensitive regex in PR #408"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:13.998Z
     created_at: 2026-02-23T08:23:41.917Z
     updated_at: 2026-02-23T08:24:14.000Z
+    acted_at: 2026-02-23T08:24:13.998Z
   - _ulid: 01KJ4SHPK8E08M2R5VYA0WG25R
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHKTNJ2C5M049ER00C5AEZYT
     item_snapshot: 'Guard script substring matching is brittle: echo "git reset" would be blocked.
       Should check word boundaries or command position rather than simple substring contains.'
-    status: acted_on
-    action: delete
     reasoning: "Resolved - guard script word boundaries in PR #412"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:13.976Z
     created_at: 2026-02-23T08:23:41.928Z
     updated_at: 2026-02-23T08:24:13.977Z
+    acted_at: 2026-02-23T08:24:13.976Z
   - _ulid: 01KJ4SHPKNVGKQ8T3B1WRQAAQ3
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHKTNJ3HE5YVRH82GWRCN2XF
     item_snapshot: "EXPECTED_TEMPLATES constant in agents.ts is defined but never referenced. Dead code
       from PR #386 template system."
-    status: acted_on
-    action: delete
     reasoning: "Resolved - dead code removed in PR #403"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:13.949Z
     created_at: 2026-02-23T08:23:41.941Z
     updated_at: 2026-02-23T08:24:13.952Z
+    acted_at: 2026-02-23T08:24:13.949Z
   - _ulid: 01KJ4SHPM1WFM89TJQ1S5T5TGG
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHKTNJ4A656881SF7K8XPZZV
     item_snapshot: readFileSync in loadCoreSkillsManifest and loadCoreSkillContent inconsistent with
       async codebase. Should use fs.readFile for consistency.
-    status: acted_on
-    action: delete
     reasoning: Resolved - now uses async fs.readFile
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:13.916Z
     created_at: 2026-02-23T08:23:41.953Z
     updated_at: 2026-02-23T08:24:13.918Z
+    acted_at: 2026-02-23T08:24:13.916Z
   - _ulid: 01KJ4SHPMC72TMA1DZ4W2AB97J
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHKTNJ4MRPJ5851FJFJZ7TK6
     item_snapshot: getKspecPackageVersion returns "unknown" on failure, silently preventing skill update
       detection ("unknown" === "unknown" = skip). Should warn or error instead.
-    status: acted_on
-    action: delete
     reasoning: Resolved - returns null not unknown, callers check
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:13.889Z
     created_at: 2026-02-23T08:23:41.965Z
     updated_at: 2026-02-23T08:24:13.890Z
+    acted_at: 2026-02-23T08:24:13.889Z
   - _ulid: 01KJ4SHPMSGMJVPABK75WEBPD1
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHJ4RVT8N3Y9S4M357TZMWQD
     item_snapshot: >-
       Deduplicate utility functions: contentsEqual(), directoriesEqual(), copyDirectory() exist
@@ -221,170 +225,170 @@ triage:
 
       Triage 2026-02-22: 3/6 sub-items RESOLVED by PRs #403 #410 #411. Remaining: silent error
       swallowing, legacy renderClaudeCodeSkill, renderer partial duplication.
-    status: acted_on
-    action: delete
     reasoning: "Resolved - deduplicated in PR #411"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:13.864Z
     created_at: 2026-02-23T08:23:41.977Z
     updated_at: 2026-02-23T08:24:13.866Z
+    acted_at: 2026-02-23T08:24:13.864Z
   - _ulid: 01KJ4SHPN6T751YQWM0RDS9PZF
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHJ4RVTPGWASH9AZR6WHXHCT
     item_snapshot: "Codex drift detection ignores sidecar file: checkPlatformSkillDrift only hashes
       SKILL.md content, so manual edits to agents/openai.yaml go undetected. Should include sidecar
       content in hash or check it separately."
-    status: acted_on
-    action: delete
     reasoning: "Resolved - sidecar included in hash per PR #410"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:13.841Z
     created_at: 2026-02-23T08:23:41.990Z
     updated_at: 2026-02-23T08:24:13.843Z
+    acted_at: 2026-02-23T08:24:13.841Z
   - _ulid: 01KJ4SHPNKWRNYRMA8JGXT55VK
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHJ4RVV1DMCHPAB2TFQCKTMJ
     item_snapshot: Setup.ts reimplements agent instruction generation instead of calling agents.ts
       generateAgentsContent(). Also duplicates core skill installation logic from skill.ts. Two code
       paths that will drift over time.
-    status: acted_on
-    action: delete
     reasoning: "Resolved - setup calls generateAgentsContent per PR #405-406"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:13.815Z
     created_at: 2026-02-23T08:23:42.003Z
     updated_at: 2026-02-23T08:24:13.817Z
+    acted_at: 2026-02-23T08:24:13.815Z
   - _ulid: 01KJ4SHPNZN2V7ACT55XTDP7QA
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHJ4RVVREK1CH7DCAGR8JW58
     item_snapshot: "Dead code: toKebabCase function defined at skill-render.ts:156 but never called.
       Frontmatter keys use hardcoded strings instead. Either remove or wire it in."
-    status: acted_on
-    action: delete
     reasoning: "Resolved - toKebabCase removed in PR #403"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:13.788Z
     created_at: 2026-02-23T08:23:42.015Z
     updated_at: 2026-02-23T08:24:13.790Z
+    acted_at: 2026-02-23T08:24:13.788Z
   - _ulid: 01KJ4SHPPA9K4JTGY4R33WEBN2
+    status: acted_on
+    action: duplicate
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHVQTX1J9FXA3GFAY2711E1J
     item_snapshot: "Version pinning for consumer projects: add optional kspec_version field to manifest
       (e.g. kspec_version: '>=0.2.0') and have CLI warn on mismatch. Currently all consumers
       (kynetic-bot, imgen, comfy-ecaj-nodes) use global kspec with no version constraint — breaking
       changes propagate silently. Lightweight approach: warn, don't block. Could also surface in
       'kspec setup --status' health check."
-    status: acted_on
-    action: duplicate
     reasoning: Duplicate of 01KHFCDS - version pinning
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:24:13.747Z
     created_at: 2026-02-23T08:23:42.026Z
     updated_at: 2026-02-23T08:24:13.751Z
+    acted_at: 2026-02-23T08:24:13.747Z
   - _ulid: 01KJ4SKS8PF99AENFEKM0FDQEM
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHW3CC7QPTKBZEHSR8Z55XQF
     item_snapshot: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ
       Synced shadow branch) into stdout, breaking JSON parsing. Info/sync messages should go to
       stderr when --json mode is active."
-    status: acted_on
-    action: promote
     reasoning: Clear bug - --json commands mix info lines into stdout, breaks automation
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:11.375Z
     result_ref: "@01KJ4SMC"
     created_at: 2026-02-23T08:24:50.198Z
     updated_at: 2026-02-23T08:25:11.379Z
+    acted_at: 2026-02-23T08:25:11.375Z
   - _ulid: 01KJ4SKS9D1MR3D80Q37GN5QPV
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHW3CC8AM42PG3SVH10XKXJK
     item_snapshot: "Bug: `kspec plan import` ignores spec_ref on manual tasks. AC @plan-import ac-27
       says manual tasks get no spec_ref, but when a task YAML explicitly provides spec_ref pointing
       to a valid spec, it should be honored. Currently taskDef.spec_ref is never read in the manual
       task creation path (plan-import.ts:513-523)."
-    status: acted_on
-    action: promote
     reasoning: Clear bug - plan import ignores spec_ref on manual tasks
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:10.273Z
     result_ref: "@01KJ4SMB"
     created_at: 2026-02-23T08:24:50.221Z
     updated_at: 2026-02-23T08:25:10.276Z
+    acted_at: 2026-02-23T08:25:10.273Z
   - _ulid: 01KJ4SKS9XTHP75WC9YYFY0R0Q
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHZHZAP3P1Y97YF8QSM3KCT0
     item_snapshot: "kspec batch cannot handle task patch with nested --data JSON argument. The data
       object gets stringified as [object Object] instead of being serialized as JSON. Batch args are
       likely passed through a simple string coercion. Workaround: run task patch commands
       individually. Fix: batch arg handling should JSON.stringify objects before passing to command
       handlers."
-    status: acted_on
-    action: promote
     reasoning: Clear bug - batch cannot handle nested JSON args
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:09.208Z
     result_ref: "@01KJ4SMA"
     created_at: 2026-02-23T08:24:50.237Z
     updated_at: 2026-02-23T08:25:09.210Z
+    acted_at: 2026-02-23T08:25:09.208Z
   - _ulid: 01KJ4SKSAHFY4BRDJ80YA297J3
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHZHZAQ0YXEN9X6VP205SMPE
     item_snapshot: task complete --force should bypass the submit requirement. Currently --force does
       not skip the in_progress → pending_review transition, making it impossible to complete
       non-code tasks (design, triage, research) without a meaningless submit step. The --force flag
       exists but does not actually force completion from in_progress state.
-    status: acted_on
-    action: promote
     reasoning: Clear bug - task complete --force should bypass submit requirement
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:08.170Z
     result_ref: "@01KJ4SM9"
     created_at: 2026-02-23T08:24:50.257Z
     updated_at: 2026-02-23T08:25:08.173Z
+    acted_at: 2026-02-23T08:25:08.170Z
   - _ulid: 01KJ4SKSB234N50TF39JBX82A1
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ11KQKZ9R8NJ64RXH9AVKHV
     item_snapshot: kspec-agents.md Finding Information table shows skill IDs as /help instead of
       /kspec:help — generateSkillsTable() in agent-data-sections.ts doesn't account for namespace
       rendering of core skills
-    status: acted_on
-    action: promote
     reasoning: Simple bug - agents table shows /help instead of /kspec:help
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:07.149Z
     result_ref: "@01KJ4SM8"
     created_at: 2026-02-23T08:24:50.274Z
     updated_at: 2026-02-23T08:25:07.151Z
+    acted_at: 2026-02-23T08:25:07.149Z
   - _ulid: 01KJ4SKSBH7C76MHXNBHJRD145
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHHR778VGPE2VWEFT7P7FC51
     item_snapshot: kspec item add needs --root flag for adding traits to project-level kynetic.yaml
       without --under. Currently impossible via CLI, requiring manual YAML edits that violate the
       never-edit-manually rule.
-    status: acted_on
-    action: promote
     reasoning: Blocks core workflow - cannot add traits to root manifest via CLI
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:06.115Z
     result_ref: "@01KJ4SM7"
     created_at: 2026-02-23T08:24:50.289Z
     updated_at: 2026-02-23T08:25:06.118Z
+    acted_at: 2026-02-23T08:25:06.115Z
   - _ulid: 01KJ4SKSBYK5QEPSBXZRYPAVPZ
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHHR779DJC9QBVJKSBDFMBMW
     item_snapshot: kspec plan import should place type:trait items with no parent in the project-level
       traits array (kynetic.yaml), not the module-level traits array. Currently causes schema
       validation error.
-    status: acted_on
-    action: promote
     reasoning: Clear bug - plan import misplaces type:trait items
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:05.070Z
     result_ref: "@01KJ4SM6"
     created_at: 2026-02-23T08:24:50.303Z
     updated_at: 2026-02-23T08:25:05.073Z
+    acted_at: 2026-02-23T08:25:05.070Z
   - _ulid: 01KJ4SKSCC9XM4X7619E1T59C7
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHCVWQ5Q83FACF6TSQDQWT6F
     item_snapshot: "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that
       ensures @ prefix on ref-like strings. Apply at CLI input boundary (TaskInput construction)
@@ -392,171 +396,171 @@ triage:
       validation and cause silent data loss. Today's depends_on fix (PR #353) patched 3 locations —
       a shared boundary would prevent recurrence. Related: @merge-ref-normalization (merge layer),
       @01KG0N4V (silent safeParse drops)."
-    status: acted_on
-    action: promote
     reasoning: Systemic fix - normalizeRefInput prevents recurring @ prefix bugs
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:04.010Z
     result_ref: "@01KJ4SM5"
     created_at: 2026-02-23T08:24:50.316Z
     updated_at: 2026-02-23T08:25:04.013Z
+    acted_at: 2026-02-23T08:25:04.010Z
   - _ulid: 01KJ4SKSCS6GY7151SQEA3B3W8
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHYRZ4QGG9XHQMNR6X4N970Q
     item_snapshot: "Error message consistency: task needs-work uses inline error string instead of
       centralized error strings pattern (src/strings/errors.ts). Should add cannotNeedsWork or
       similar to match cannotStart pattern."
-    status: acted_on
-    action: promote
     reasoning: Quick win - error message consistency, use centralized error strings
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:02.896Z
     result_ref: "@01KJ4SM4"
     created_at: 2026-02-23T08:24:50.329Z
     updated_at: 2026-02-23T08:25:02.899Z
+    acted_at: 2026-02-23T08:25:02.896Z
   - _ulid: 01KJ4SN7B3TR43KNB0VX149SJN
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHHR779RG1QG6DGK99P5NAXY
     item_snapshot: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons
       in then: values) before attempting parse, rather than failing with cryptic nested mapping
       error."
-    status: acted_on
-    action: promote
     reasoning: Must-have - plan import YAML-unsafe value detection, complements auto-quoting
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:49.119Z
     result_ref: "@01KJ4SNH"
     created_at: 2026-02-23T08:25:37.380Z
     updated_at: 2026-02-23T08:25:49.122Z
+    acted_at: 2026-02-23T08:25:49.119Z
   - _ulid: 01KJ4SN7C4RVPNY38FQ6S5SDSG
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHVCPEVTKV48MV2WFCYRSNYB
     item_snapshot: "Plan import should support task priority: plan document specs can specify priority,
       and derived tasks should inherit it. Currently all derived tasks get P3 regardless of plan
       content. Workaround: manually batch-set priorities after import."
-    status: acted_on
-    action: promote
     reasoning: Must-have - plan import should support task priority, common friction
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:48.033Z
     result_ref: "@01KJ4SNG"
     created_at: 2026-02-23T08:25:37.412Z
     updated_at: 2026-02-23T08:25:48.036Z
+    acted_at: 2026-02-23T08:25:48.033Z
   - _ulid: 01KJ4SN7CZ4HHT9HWVHDNST68S
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHCK3K4B5YCCYYCMXJYERY09
     item_snapshot: "plan import: add depends_on field to plan YAML spec format so specs/tasks get
       structural dependencies on import. Currently plan import creates specs and tasks but
       dependencies must be added manually post-import. Add a depends_on param per spec entry in the
       YAML (e.g., depends_on: [@full-model-recipe]) that maps to spec depends_on and task blocked_by
       on import."
-    status: acted_on
-    action: promote
     reasoning: Must-have - plan import depends_on field, high friction post-import
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:46.871Z
     result_ref: "@01KJ4SNF"
     created_at: 2026-02-23T08:25:37.439Z
     updated_at: 2026-02-23T08:25:46.875Z
+    acted_at: 2026-02-23T08:25:46.871Z
   - _ulid: 01KJ4SN7DJ17DJKGNAPSTQA569
+    status: acted_on
+    action: spec-gap
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHV3EX6G0G425ZX1JVF4RRX1
     item_snapshot: "Design section configuration for agents generate — allow projects to control which
       sections appear (skills table, conventions, workflows, static templates). Key questions: where
       does config live, include vs exclude list, defaults, custom sections, ordering, data vs
       template distinction, migration path. See plan doc for full requirements."
-    status: acted_on
-    action: spec-gap
     reasoning: Must-have but needs spec design - section configuration for agents generate
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:45.823Z
     result_ref: "@01KJ4SNF"
     created_at: 2026-02-23T08:25:37.458Z
     updated_at: 2026-02-23T08:25:45.826Z
+    acted_at: 2026-02-23T08:25:45.823Z
   - _ulid: 01KJ4SN7EBE3FPFC19ZPP5HQ7T
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHXFRF9CF4WG4HJ8BDYXTCA9
     item_snapshot: "task set --spec-ref has no way to clear the field. --plan-ref supports 'null' to
       clear but --spec-ref tries to resolve 'null' as a reference. Should support same 'null'
       pattern for consistency. Workaround: find an alternative valid spec reference to link to."
-    status: acted_on
-    action: promote
     reasoning: Must-have - task set --spec-ref clearing inconsistency, simple fix
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:45.763Z
     result_ref: "@01KJ4SNE"
     created_at: 2026-02-23T08:25:37.483Z
     updated_at: 2026-02-23T08:25:45.766Z
+    acted_at: 2026-02-23T08:25:45.763Z
   - _ulid: 01KJ4SN7EX1RGB817DHV0AXW61
+    status: acted_on
+    action: spec-gap
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHWTXFAFT10MXMNYS06JJNWV
     item_snapshot: "kspec validate @spec or @task — targeted validation that checks a single spec/task's
       AC coverage against codebase. Not full approval, just verifies each AC has at least one // AC:
       annotation in test files. Would make trait AC gaps immediately visible during task-work. Could
       be used by local-review skill as a concrete check instead of relying on agent diligence."
-    status: acted_on
-    action: spec-gap
     reasoning: Must-have but needs spec design - targeted kspec validate for single item
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:25:44.582Z
     result_ref: "@01KJ4SNE"
     created_at: 2026-02-23T08:25:37.501Z
     updated_at: 2026-02-23T08:25:44.589Z
+    acted_at: 2026-02-23T08:25:44.582Z
   - _ulid: 01KJ4SZHT3NF8KBN8M2W6B8DF3
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KFHJNZKSXJ2RNAT06VEAYR3R
     item_snapshot: "Reverse spec lookup - kspec which <file> or kspec which <file:line> to find
       specs/ACs that reference or are implemented by a given code path. Useful for bug fixes to
       quickly discover what specs need updating. Could scan for // AC: annotations and spec_ref
       links. Instructive, helps find already-instrumented code."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Reverse spec lookup. Not blocking."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.727Z
     created_at: 2026-02-23T08:31:15.780Z
     updated_at: 2026-02-23T08:31:29.737Z
+    acted_at: 2026-02-23T08:31:29.727Z
   - _ulid: 01KJ4SZHVA6Q2R2HAQFCR4EMS8
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KFPDCY6FN46DHZ13E7FMK051
     item_snapshot: "Add cross-platform CI matrix testing - run core functionality tests on Windows,
       macOS, and Linux. Would catch issues like Unix-specific commands (which, cp -r) before they
       reach PR review. Consider: matrix strategy in GitHub Actions, platform-specific test skips
       where needed, focus on CLI commands and daemon lifecycle."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Cross-platform CI matrix. CRLF fixes addressed most issues."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.698Z
     created_at: 2026-02-23T08:31:15.818Z
     updated_at: 2026-02-23T08:31:29.707Z
+    acted_at: 2026-02-23T08:31:29.698Z
   - _ulid: 01KJ4SZHW4FRY9HSC1FD2GCCMQ
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KFQ5175HK1E74Y2DNQK9RXHY
     item_snapshot: "E2E tests: Use isolated port range (not 3456) + cross-platform cleanup. Current
       approach conflicts with existing daemons. Should use high ephemeral port range and improve
       cleanup mechanism."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: E2E isolated port range. Current approach works, occasional local conflict."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.674Z
     created_at: 2026-02-23T08:31:15.844Z
     updated_at: 2026-02-23T08:31:29.682Z
+    acted_at: 2026-02-23T08:31:29.674Z
   - _ulid: 01KJ4SZHWQWXT623MNRZRW99BJ
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KFYAHFF2NZRP7F60JN8Q3DXC
     item_snapshot: E2E test dev mode - configure Playwright to work with vite dev server instead of
       requiring full build for faster test iteration (12+ seconds to 1-2 seconds)
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: E2E test dev mode with vite dev server. DX improvement, not blocking."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.649Z
     created_at: 2026-02-23T08:31:15.863Z
     updated_at: 2026-02-23T08:31:29.657Z
+    acted_at: 2026-02-23T08:31:29.649Z
   - _ulid: 01KJ4SZHXAVW7HRR4Q4YABC6HZ
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGG6GYZAMZCTWRPZG2XM2YQ9
     item_snapshot: "Improve derive granularity: Research suggests specs with 4+ ACs are candidates for
       splitting. Potential enhancements: (1) --by-ac flag to create tasks per AC group, (2)
@@ -564,204 +568,204 @@ triage:
       common patterns (cli-command, api-endpoint), (5) complexity warnings when specs are too large.
       See session research on task decomposition patterns from Linear, Atlassian, BDD/Example
       Mapping, and AI coding assistants."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Derive granularity improvements. AC count display addresses main pain point."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.621Z
     created_at: 2026-02-23T08:31:15.882Z
     updated_at: 2026-02-23T08:31:29.631Z
+    acted_at: 2026-02-23T08:31:29.621Z
   - _ulid: 01KJ4SZHXTT4WJFGK4KAC1SK9N
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGGEMM4XAZZ19JXBXPC3FY3P
     item_snapshot: "Daemon debugging improvements: (1) Add --log-file or --verbose to 'kspec serve
       start', (2) Log resolved web UI path on startup, (3) Capture and show stderr when daemon fails
       to start within timeout. Consolidated from @01KFQ586, @01KFQ595, @01KFPH3D."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Daemon debugging improvements. Daemon is stable now."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.594Z
     created_at: 2026-02-23T08:31:15.898Z
     updated_at: 2026-02-23T08:31:29.602Z
+    acted_at: 2026-02-23T08:31:29.594Z
   - _ulid: 01KJ4SZHYDYT6GZ8J535QKYAVX
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGGF4YYFQSRX5SMSKRC9BFF0
     item_snapshot: "Project config file (kspec.config.yaml or .kspecrc): Configure shadow remote URL
       (enable separate repo for specs), feature toggles, default values (author, priority),
       validation strictness. Enables multi-repo projects sharing specs and tailoring kspec to
       project needs. Consolidated from @01KFGVVJ, @01KFGVVN."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Project config file. Partially resolved by kspec.config.yaml (PRs 418-421)."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.568Z
     created_at: 2026-02-23T08:31:15.917Z
     updated_at: 2026-02-23T08:31:29.578Z
+    acted_at: 2026-02-23T08:31:29.568Z
   - _ulid: 01KJ4SZHYXXYZ2KV2V0R7EAGRG
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGGFB2MJKNJQ3ZPYCZHQRHQE
     item_snapshot: "AC test coverage analysis: 'kspec coverage @spec-ref' command to scan codebase for
       '// AC: @spec ac-N' annotations and report which ACs have test coverage vs gaps. Soft check
       for review, not blocking. Consolidated from @01KFHJNR, @01KFP9A6."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: AC test coverage analysis. Overlaps with validate --drift."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.540Z
     created_at: 2026-02-23T08:31:15.933Z
     updated_at: 2026-02-23T08:31:29.550Z
+    acted_at: 2026-02-23T08:31:29.540Z
   - _ulid: 01KJ4SZHZCVFJ6Q1SCYVHQFXJX
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGGG0KZWCGS6QQVGSZD7XKNG
     item_snapshot: "Shadow sync improvements: (1) Auto-resolve using rebase/merge-driver for cleaner
       sync, (2) Make sync warnings visible in CLI output (currently silent unless KSPEC_DEBUG=1),
       (3) Auto-detect common issues with suggested fixes. Consolidated from @01KFTDA7, @01KFHZR4."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Shadow sync improvements. Merge driver works, sync is reliable."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.510Z
     created_at: 2026-02-23T08:31:15.948Z
     updated_at: 2026-02-23T08:31:29.520Z
+    acted_at: 2026-02-23T08:31:29.510Z
   - _ulid: 01KJ4SZHZV9VHAZVAZWP7B44EB
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGGKNX3XQ0TXYQZ4V2R7MVPT
     item_snapshot: "CLI array field flag patterns: (1) Generic --clear <field> or --<field> [] for
       clearing arrays, (2) --add-<field> vs multiple flags for append semantics. Design unified
       approach for depends-on, tags, blocked-by, etc. Consolidated from @01KFGRV6, @01KFR0KN."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: CLI array field flag patterns. Design consistency, not blocking."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.482Z
     created_at: 2026-02-23T08:31:15.963Z
     updated_at: 2026-02-23T08:31:29.492Z
+    acted_at: 2026-02-23T08:31:29.482Z
   - _ulid: 01KJ4SZJ0BF8KBXM7JSF6K8XP6
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGGP9FAD0QQFQS47DEGC3QFK
     item_snapshot: "Inbox CLI improvements: (1) Add filtering to list: --before/--after <date>, --author
       <name> (--tag exists), (2) Add merge command: 'kspec inbox merge @source @target' for
       consolidating duplicates, (3) Add --priority and --automation flags to promote command.
       Consolidated from @01KG95JP, @01KG95JQ, @01KG95JS."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Inbox CLI improvements (filtering, merge, promote flags). Piecemeal as needed."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.451Z
     created_at: 2026-02-23T08:31:15.979Z
     updated_at: 2026-02-23T08:31:29.461Z
+    acted_at: 2026-02-23T08:31:29.451Z
   - _ulid: 01KJ4SZJ106JRYT1QPZ2B43ARS
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGGPJ61YA22XXS5Z6QRZXCNK
     item_snapshot: "Workflow CLI improvements: (1) 'workflow show' should infer active run like
       'workflow next', (2) Warn when --input flags passed but step has no inputs defined, (3)
       Improve 'workflow show' output format with vertical display, status indicators, indented
       notes. Consolidated from @01KFKSF6, @01KFKSGC, @01KFKTNR."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Workflow CLI improvements. Rough edges but functional."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.416Z
     created_at: 2026-02-23T08:31:16.000Z
     updated_at: 2026-02-23T08:31:29.428Z
+    acted_at: 2026-02-23T08:31:29.416Z
   - _ulid: 01KJ4SZJ1M8ADXDTCZGN70B55X
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGGPSRFPPH8WP42VRDC76Z5J
     item_snapshot: "Spec item slug/addressing improvements: (1) Warn/error on slug collision when
       creating items, (2) Make nested requirements addressable by slug (currently kspec item ac add
       @slug fails for items under requirements:). Consolidated from @01KGDCRG, @01KGDCRJ."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Spec item slug/addressing improvements. Nested addressing is niche."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.386Z
     created_at: 2026-02-23T08:31:16.020Z
     updated_at: 2026-02-23T08:31:29.397Z
+    acted_at: 2026-02-23T08:31:29.386Z
   - _ulid: 01KJ4SZJ24BB8WVXPY7CDQZPWR
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGGTT34ES3W098NNYE9Y8BZZ
     item_snapshot: "Expand @trait-multi-ref-batch to remaining commands: trait add/remove, task set
       --automation, inbox delete, task note. Enables batch operations like 'kspec task note @ref1
       @ref2 @ref3 \"shared content\"'. Consolidated from @01KG71J2, @01KG95JM, @01KFVXBM."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Expand multi-ref batch to remaining commands. Incremental improvement."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.358Z
     created_at: 2026-02-23T08:31:16.036Z
     updated_at: 2026-02-23T08:31:29.367Z
+    acted_at: 2026-02-23T08:31:29.358Z
   - _ulid: 01KJ4SZJ2KAXTREGXXPYDX5722
-    inbox_ref: 01KGKVK9TDARHY80HN3A8M8TEF
-    item_snapshot: Add --spec-ref filter to kspec task list command to filter tasks by linked spec item
     status: acted_on
     action: defer
-    reasoning: "Nice-to-have: Add --spec-ref filter to task list. Quick win when needed."
     decided_by: "@claude"
     evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.331Z
+    inbox_ref: 01KGKVK9TDARHY80HN3A8M8TEF
+    item_snapshot: Add --spec-ref filter to kspec task list command to filter tasks by linked spec item
+    reasoning: "Nice-to-have: Add --spec-ref filter to task list. Quick win when needed."
     created_at: 2026-02-23T08:31:16.051Z
     updated_at: 2026-02-23T08:31:29.340Z
+    acted_at: 2026-02-23T08:31:29.331Z
   - _ulid: 01KJ4SZJ330CBMBE8ZRY21AJMX
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGQY6QYS94S2D9J983436MX6
     item_snapshot: "Workflow lifecycle CLI design (from mining run 01KFS6MJ): kspec workflow complete
       @run-ref (mark run completed, archive), kspec workflow cancel @run-ref (cancel abandoned run),
       kspec workflow cleanup --older-than Nd (auto-cancel stale runs). Extends existing @01KFPH39
       auto-cleanup with concrete subcommand design."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Workflow lifecycle CLI (complete, cancel, cleanup). Prune exists."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.305Z
     created_at: 2026-02-23T08:31:16.067Z
     updated_at: 2026-02-23T08:31:29.314Z
+    acted_at: 2026-02-23T08:31:29.305Z
   - _ulid: 01KJ4SZJ3K9X3HSKAX1YYEVA6V
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGVK8R6J950C8Q6KVPY4K3Z0
     item_snapshot: "Item list --module flag and tree view: kspec item list --module cli to scope output
       to a specific module. kspec item tree @module for hierarchical view (features ->
       requirements). Currently 50+ items display flat, making it hard to find the right parent for
       new specs. Friction: during automation triage had to grep YAML files to find parent specs."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Item list --module flag and tree view. Partially done. Low priority for
       remaining."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.275Z
     created_at: 2026-02-23T08:31:16.083Z
     updated_at: 2026-02-23T08:31:29.285Z
+    acted_at: 2026-02-23T08:31:29.275Z
   - _ulid: 01KJ4SZJ44YCACP9HB1Q8YMXBY
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGWG99FJBKHZJ1M6KPKMPNV9
     item_snapshot: Define typed event data schemas per EventType — session.start, session.update (with
       tool_call/sessionUpdate variants), session.end, prompt.sent, tool.call, tool.result, note.
       Current z.unknown() data field makes it impossible to reliably query events without
       reverse-engineering from real JSONL files.
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Define typed event data schemas per EventType. Design improvement."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.248Z
     created_at: 2026-02-23T08:31:16.100Z
     updated_at: 2026-02-23T08:31:29.257Z
+    acted_at: 2026-02-23T08:31:29.248Z
   - _ulid: 01KJ4SZJ4P20CEEZ8M8K2WP3AD
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGWQ2TS3KG96KCB3P3R6Q477
     item_snapshot: "Session log compaction: at end of each ralph loop, replace raw events.jsonl with a
       compiled stats file (event counts by type, tool usage frequency, duration, task transitions,
       error summary). Keep session folders and context snapshots intact but prune the raw log. This
       gives trend analysis capability without unbounded log growth. Could be a kspec session compact
       command or automatic post-loop step."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Session log compaction. Not causing problems yet."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.220Z
     created_at: 2026-02-23T08:31:16.118Z
     updated_at: 2026-02-23T08:31:29.229Z
+    acted_at: 2026-02-23T08:31:29.220Z
   - _ulid: 01KJ4SZJ59X2KVE440DVMY8SEQ
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KGWZR76NDTG9N7A2GRSFB36J
     item_snapshot: "Active context from meta: use the meta database (observations, conventions,
       patterns) as a dynamic context source that automatically surfaces relevant entries based on
@@ -770,220 +774,220 @@ triage:
       priors. Replaces manual markdown maintenance (AGENTS.md, skill docs) with structured data that
       stays current as observations accumulate. Could use conventions or a new meta item type for
       durable patterns distinct from one-off observations."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have/longshot: Active context from meta. Ambitious, not actionable now."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.188Z
     created_at: 2026-02-23T08:31:16.137Z
     updated_at: 2026-02-23T08:31:29.200Z
+    acted_at: 2026-02-23T08:31:29.188Z
   - _ulid: 01KJ4SZJ5TAXK55ZEX6PBB7N6M
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KH20S10H2ES5J1MCAQVXPTN1
     item_snapshot: "Centralize daemon port default (3456) — currently hardcoded in 6 places:
       src/schema/spec.ts, src/cli/index.ts, src/cli/commands/serve.ts, packages/daemon/src/index.ts,
       packages/web-ui/src/lib/constants.ts, packages/web-ui/tests/fixtures/test-base.ts. Extract to
       a shared constant to prevent drift."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Centralize daemon port default. Reduced severity after config system."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.157Z
     created_at: 2026-02-23T08:31:16.154Z
     updated_at: 2026-02-23T08:31:29.166Z
+    acted_at: 2026-02-23T08:31:29.157Z
   - _ulid: 01KJ4SZJ6BHEB80AYD3PYPBF03
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHA982WGBJHN6Q8EA6F3QSPD
     item_snapshot: "Formalize CLI usage analysis as a repeatable workflow. Tools exist in
       .claude-research/tools/ (parse-ralph-logs.mjs, parse-claude-logs.mjs, compile-data.mjs) plus
       interactive HTML report. Consider: kspec skill, CLI command, or standalone workflow. Re-run
       after implementing the 6 CLI agent-UX improvements to measure impact."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Formalize CLI usage analysis as workflow. Niche."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.129Z
     created_at: 2026-02-23T08:31:16.171Z
     updated_at: 2026-02-23T08:31:29.139Z
+    acted_at: 2026-02-23T08:31:29.129Z
   - _ulid: 01KJ4SZJ6WNAGB2G9BT4KAK3FW
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHCYW7JZX2AAKDTBQPB3RRZZ
     item_snapshot: "Add repeated-flag support to --status filter (ac-repeated-flag gap from PR #354).
       Commander.js .option() needs a collect function to accumulate repeated --status flags into an
       array. Currently only comma-separated works. Small fix: change .option('-s, --status
       <status>') to use Commander's variadic/collect pattern, then feed array into
       parseMultiStatus()."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Repeated-flag support for --status filter. Very low priority."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.101Z
     created_at: 2026-02-23T08:31:16.188Z
     updated_at: 2026-02-23T08:31:29.110Z
+    acted_at: 2026-02-23T08:31:29.101Z
   - _ulid: 01KJ4SZJ7DQKK4ESDDG6XNCWPB
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHF37MC1Z94J4SV66CY7Q9PG
     item_snapshot: Shadow branch diff/changelog — since .kspec/ is git-tracked, we could show changes to
       stored artifacts (workflows, tasks, specs, inbox) over time. Something like kspec history @ref
       or kspec diff --since '1 week ago' that leverages the git history on kspec-meta branch. Could
       show task state transitions, spec evolution, workflow modifications, etc.
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Shadow branch diff/changelog. Future auditing feature."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.073Z
     created_at: 2026-02-23T08:31:16.205Z
     updated_at: 2026-02-23T08:31:29.084Z
+    acted_at: 2026-02-23T08:31:29.073Z
   - _ulid: 01KJ4SZJ7YTTDYY6EKDSD6GA73
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHFCDS47KQRGMEAM90S9NWD9
     item_snapshot: "Version pinning: all projects use whatever global kspec version is installed. No
       lock file or constraint resolution. Consider adding version constraints to kynetic.yaml
       manifest."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Version pinning. No breaking changes causing issues yet."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.048Z
     created_at: 2026-02-23T08:31:16.222Z
     updated_at: 2026-02-23T08:31:29.056Z
+    acted_at: 2026-02-23T08:31:29.048Z
   - _ulid: 01KJ4SZJ8EA35CK2C9MJP38ZC6
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHFCDS4K3GHYWVMAG2PRT2MZ
     item_snapshot: "Memory seeding: seed MEMORY.md with project-relevant starting notes during kspec
       setup. Could bootstrap agent effectiveness in new projects."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Memory seeding during setup. May be covered by PR #409."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:29.020Z
     created_at: 2026-02-23T08:31:16.238Z
     updated_at: 2026-02-23T08:31:29.029Z
+    acted_at: 2026-02-23T08:31:29.020Z
   - _ulid: 01KJ4SZJ8YBR3XHMEA01S8BB05
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHPYJ2WP3BTTZ4QKNAFVHYAD
     item_snapshot: "Codex skill: handle own-PR reviews — GitHub rejects REQUEST_CHANGES on your own PRs,
       Codex should use COMMENT event instead. Bundle this fix with skill importing refinement so it
       propagates to all projects."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Codex skill own-PR review handling. Edge case."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.992Z
     created_at: 2026-02-23T08:31:16.254Z
     updated_at: 2026-02-23T08:31:29.000Z
+    acted_at: 2026-02-23T08:31:28.992Z
   - _ulid: 01KJ4SZJ9D32KXB21HJ7W7DS3M
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHRTEVDN8R7Q2ET8BSRQFG0B
     item_snapshot: "Task-specific ephemeral AC: Support acceptance criteria directly on tasks (not just
       via spec_ref). Useful for implementation requirements, refactoring criteria, and one-off work
       that doesn't warrant a spec item. Task ACs would be checked during review but wouldn't live in
       the spec hierarchy. Addresses the gap where plan-imported ACs are behavioral specs vs
       task-level implementation requirements."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Task-specific ephemeral AC. Design discussion for future."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.963Z
     created_at: 2026-02-23T08:31:16.269Z
     updated_at: 2026-02-23T08:31:28.975Z
+    acted_at: 2026-02-23T08:31:28.963Z
   - _ulid: 01KJ4SZJ9YF1FSGJBAYYKXNZSC
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHRX2P7YDCA743JDR9ZVEYPX
     item_snapshot: skill-render.ts lines 492, 730, 924 have LF-only frontmatter regexes. Low risk in
       render path (kspec generates these files with LF) but should be hardened for consistency with
       the CRLF fixes in skill.ts/validate-skills.ts.
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: skill-render.ts LF-only frontmatter regexes. Very low risk."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.937Z
     created_at: 2026-02-23T08:31:16.286Z
     updated_at: 2026-02-23T08:31:28.946Z
+    acted_at: 2026-02-23T08:31:28.937Z
   - _ulid: 01KJ4SZJAFDVG7W7QK18ZQ5DB9
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHSJJREJ657W37GKYQG4EY5Q
     item_snapshot: "Feature request: ralph loop boundary tracking in session logs. Currently no easy way
       to see what happened in a ralph loop iteration without cross-referencing PR timestamps, git
       log, and task states. A session log showing PR-to-task mapping per loop iteration would help
       audit and review. Originated from imgen project observation."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Ralph loop boundary tracking in session logs. Nice for debugging."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.909Z
     created_at: 2026-02-23T08:31:16.303Z
     updated_at: 2026-02-23T08:31:28.918Z
+    acted_at: 2026-02-23T08:31:28.909Z
   - _ulid: 01KJ4SZJAZ4KR6WNAA83A59AMG
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHVCPEWG9XDW4NH17850SFJR
     item_snapshot: "Inbox tag management: no way to add/remove tags on existing inbox items. Only
       settable at creation via inbox add --tag. Need: kspec inbox tag add @ref <tag> and kspec inbox
       tag remove @ref <tag>."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Inbox tag management (add/remove on existing items). Moderate utility."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.879Z
     created_at: 2026-02-23T08:31:16.319Z
     updated_at: 2026-02-23T08:31:28.889Z
+    acted_at: 2026-02-23T08:31:28.879Z
   - _ulid: 01KJ4SZJBJ3KKZ4T2FWZ8061AJ
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHVCPEX1NTKSB3ABTTCD5CE5
     item_snapshot: "Batch command arg naming inconsistency: inbox add accepts tag (singular) not tags.
       No documentation of which args each batch command accepts. Consider: consistent plural naming
       or better error messages with valid arg list."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Batch command arg naming inconsistency (tag vs tags). DX papercut."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.850Z
     created_at: 2026-02-23T08:31:16.338Z
     updated_at: 2026-02-23T08:31:28.860Z
+    acted_at: 2026-02-23T08:31:28.850Z
   - _ulid: 01KJ4SZJC4FMHSFQCCJN9G4NJS
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHVCPEXGQ1E2WGE0FRS11R72
     item_snapshot: "Stale workflow runs accumulate: no way to prune or auto-expire old runs. After many
       sessions, every workflow next command requires specifying a run ID because 7+ active runs
       exist. Need: kspec workflow prune (expire runs older than N days) or kspec workflow cancel
       @run-id."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Stale workflow runs accumulate. Check if workflow prune resolves."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.825Z
     created_at: 2026-02-23T08:31:16.356Z
     updated_at: 2026-02-23T08:31:28.834Z
+    acted_at: 2026-02-23T08:31:28.825Z
   - _ulid: 01KJ4SZJCQE70JS182345YB2NT
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHVE47MW4BDDK1417YMM6BF6
     item_snapshot: When spawning parallel review agents (e.g. Codex + /pr-review), instruct the
       /pr-review agent not to merge — only review. The parent agent should control the merge
       decision after all reviews complete. Update /pr-review skill or add a --no-merge flag.
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Instruct /pr-review not to merge during parallel reviews. Edge case."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.790Z
     created_at: 2026-02-23T08:31:16.375Z
     updated_at: 2026-02-23T08:31:28.799Z
+    acted_at: 2026-02-23T08:31:28.790Z
   - _ulid: 01KJ4SZJD8SNNHQSPZVAK90XWM
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHVQVVVMCVA1WKPB1H880YD4
     item_snapshot: "Template/example repo for new kspec consumers: either a GitHub template repo or
       'kspec create-project' command showing a fully configured consumer project (manifest,
       CLAUDE.md with @kspec-agents.md, skills, hooks). Real consumer projects (kynetic-bot, imgen,
       comfy-ecaj-nodes) serve as informal examples but a clean minimal template would lower
       onboarding friction."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Duplicate of version pinning 01KHFCDS. Consolidate."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.757Z
     created_at: 2026-02-23T08:31:16.392Z
     updated_at: 2026-02-23T08:31:28.771Z
+    acted_at: 2026-02-23T08:31:28.757Z
   - _ulid: 01KJ4SZJDYGTE3WT191D1X7CQA
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHVR5K9XCYYRDH0VB2FNE4GW
     item_snapshot: "Per-module task files and task archiving: Original design intent was
       project.tasks.yaml for non-spec tasks, <module>.tasks.yaml for module-scoped tasks. Never
@@ -991,118 +995,118 @@ triage:
       size (comfy-ecaj-nodes has 97 tasks in one file) but requires reading more files. Related:
       need task archiving to move completed tasks out of the active file. Both address the same
       scaling problem (task files growing unbounded) from different angles."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Per-module task files and task archiving. Future scaling concern."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.733Z
     created_at: 2026-02-23T08:31:16.415Z
     updated_at: 2026-02-23T08:31:28.741Z
+    acted_at: 2026-02-23T08:31:28.733Z
   - _ulid: 01KJ4SZJEJC4Z6KTSBEZ1PACQ1
-    inbox_ref: 01KHWWM9CW2H4F94BXKNJ127EA
-    item_snapshot: "CLI DX: accept tags as alias for tag in batch commands"
     status: acted_on
     action: promote
-    reasoning: "Small CLI DX: accept tags as alias for tag in batch commands. Tiny, well-scoped.
-      Automation eligible."
     decided_by: "@claude"
     evidence_refs: []
-    acted_at: 2026-03-03T06:43:34.653Z
+    inbox_ref: 01KHWWM9CW2H4F94BXKNJ127EA
+    item_snapshot: "CLI DX: accept tags as alias for tag in batch commands"
+    reasoning: "Small CLI DX: accept tags as alias for tag in batch commands. Tiny, well-scoped.
+      Automation eligible."
     result_ref: "@01KJS702"
     created_at: 2026-02-23T08:31:16.434Z
     updated_at: 2026-03-03T06:43:34.670Z
+    acted_at: 2026-03-03T06:43:34.653Z
   - _ulid: 01KJ4SZJFKCZ62JK5Z7ZZ3SGCG
-    inbox_ref: 01KHWWMANX9JFMPRK9TWM2PDQE
-    item_snapshot: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
     status: acted_on
     action: promote
-    reasoning: "Small CLI DX: accept spec_ref as alias for spec-ref in batch commands. Tiny,
-      well-scoped. Automation eligible."
     decided_by: "@claude"
     evidence_refs: []
-    acted_at: 2026-03-03T06:43:32.945Z
+    inbox_ref: 01KHWWMANX9JFMPRK9TWM2PDQE
+    item_snapshot: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
+    reasoning: "Small CLI DX: accept spec_ref as alias for spec-ref in batch commands. Tiny,
+      well-scoped. Automation eligible."
     result_ref: "@01KJS701"
     created_at: 2026-02-23T08:31:16.467Z
     updated_at: 2026-03-03T06:43:32.971Z
+    acted_at: 2026-03-03T06:43:32.945Z
   - _ulid: 01KJ4SZJGB553H18AY8DZREF4Z
-    inbox_ref: 01KHWWMC2P592NMM8N63TDGZ0Q
-    item_snapshot: "CLI DX: accept P1/P2/P3 format as alias for numeric priority in batch commands"
     status: acted_on
     action: promote
-    reasoning: "Small CLI DX: accept P1/P2/P3 as alias for numeric priority. Aligns docs with CLI usage.
-      Automation eligible."
     decided_by: "@claude"
     evidence_refs: []
-    acted_at: 2026-03-03T06:43:31.231Z
+    inbox_ref: 01KHWWMC2P592NMM8N63TDGZ0Q
+    item_snapshot: "CLI DX: accept P1/P2/P3 format as alias for numeric priority in batch commands"
+    reasoning: "Small CLI DX: accept P1/P2/P3 as alias for numeric priority. Aligns docs with CLI usage.
+      Automation eligible."
     result_ref: "@01KJS6ZZ"
     created_at: 2026-02-23T08:31:16.491Z
     updated_at: 2026-03-03T06:43:31.250Z
+    acted_at: 2026-03-03T06:43:31.231Z
   - _ulid: 01KJ4SZJH467QW0CKV7GCJJWC3
-    inbox_ref: 01KHWWMDCV6NBYK8D8EMYBZEPV
-    item_snapshot: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
     status: acted_on
     action: promote
-    reasoning: Missing --description flag on task set is a friction point. Small, well-scoped CLI
-      addition. Automation eligible.
     decided_by: "@claude"
     evidence_refs: []
-    acted_at: 2026-03-03T06:43:29.498Z
+    inbox_ref: 01KHWWMDCV6NBYK8D8EMYBZEPV
+    item_snapshot: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
+    reasoning: Missing --description flag on task set is a friction point. Small, well-scoped CLI
+      addition. Automation eligible.
     result_ref: "@01KJS6ZX"
     created_at: 2026-02-23T08:31:16.516Z
     updated_at: 2026-03-03T06:43:29.522Z
+    acted_at: 2026-03-03T06:43:29.498Z
   - _ulid: 01KJ4SZJHXJEMH8ZM7HQ6KBRTP
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ0K9CEX5EJYT9YYA9D04GX7
     item_snapshot: "inbox promote missing --slug option: cannot set task slug during promotion, must use
       default auto-generated slug. Add --slug <slug> option to inbox promote command."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: inbox promote missing --slug option. Low priority."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.579Z
     created_at: 2026-02-23T08:31:16.541Z
     updated_at: 2026-02-23T08:31:28.589Z
+    acted_at: 2026-02-23T08:31:28.579Z
   - _ulid: 01KJ4SZJJND7M0EFJ4A061H29K
-    inbox_ref: 01KJ1RW37A4V1TV1KZK33YS46N
-    item_snapshot: "CLI gap: kspec skill set should support --id to rename a skill without delete+recreate"
     status: acted_on
     action: defer
-    reasoning: "Nice-to-have: kspec skill set --id for rename. Very low frequency need."
     decided_by: "@claude"
     evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.551Z
+    inbox_ref: 01KJ1RW37A4V1TV1KZK33YS46N
+    item_snapshot: "CLI gap: kspec skill set should support --id to rename a skill without delete+recreate"
+    reasoning: "Nice-to-have: kspec skill set --id for rename. Very low frequency need."
     created_at: 2026-02-23T08:31:16.565Z
     updated_at: 2026-02-23T08:31:28.560Z
+    acted_at: 2026-02-23T08:31:28.551Z
   - _ulid: 01KJ4SZJK67VHGV81CE2BDWANT
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHYTNNF4B67SGERG0WRZ2RBR
     item_snapshot: "Single-source task state diagram: currently duplicated in AGENTS.md,
       templates/agents-sections/03-task-lifecycle.md, and src/cli/help/content.ts. Adding needs_work
       required updating all three independently. Generate from schema or single template to avoid
       triple-update when adding states."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Single-source task state diagram. Would reduce maintenance burden."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.525Z
     created_at: 2026-02-23T08:31:16.582Z
     updated_at: 2026-02-23T08:31:28.534Z
+    acted_at: 2026-02-23T08:31:28.525Z
   - _ulid: 01KJ4SZJKRZ0DVYSE70XCN02YY
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHYTNNFYNQ74GHA9PBM31CAF
     item_snapshot: "Distinguish behavioral vs testable ACs in kspec validate: workflow ACs (agent
       behavioral specs enforced by skills/prompts) get flagged as uncovered in test coverage,
       creating false MUST-FIX findings in reviews. Allow tagging ACs or specs as agent-enforced to
       report separately from code-testable ACs."
-    status: acted_on
-    action: defer
     reasoning: "Nice-to-have: Distinguish behavioral vs testable ACs in validate. Improves signal-to-noise."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.499Z
     created_at: 2026-02-23T08:31:16.600Z
     updated_at: 2026-02-23T08:31:28.508Z
+    acted_at: 2026-02-23T08:31:28.499Z
   - _ulid: 01KJ4SZJMA06N9M112SV4T0V31
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHY9YB0NKASBKAEMRKKC7C0Y
     item_snapshot: "Terminal exit code display in ralph CLI renderer — claude-agent-acp PR #316 adds
       _meta.terminal_exit.exit_code on Bash tool completions (opt-in via
@@ -1110,31 +1114,31 @@ triage:
       cli-renderer.ts. Only concrete gain from the terminal streaming protocol — the output data
       itself is identical to existing _meta.claudeCode.toolResponse path. Worth adopting if Bash
       failure debugging becomes a pain point."
-    status: acted_on
-    action: defer
     reasoning: "Longshot: Terminal exit code display in ralph CLI renderer. Minimal gain, upstream dependent."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.468Z
     created_at: 2026-02-23T08:31:16.618Z
     updated_at: 2026-02-23T08:31:28.479Z
+    acted_at: 2026-02-23T08:31:28.468Z
   - _ulid: 01KJ4SZJMV3PP8HKK68WJGXXN1
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHYAGZM7KG19YH11G2SE44QD
     item_snapshot: Bash code fence language change in claude-agent-acp v0.18.0 — formatted Bash output
       changed from ```sh to ```console. Check if ralph's noise suppression patterns, session log
       rendering, or any regex patterns in cli-renderer.ts or events.ts match on the code fence
       language. Low risk since ralph primarily reads from _meta.claudeCode.toolResponse not content
       blocks, but worth a grep.
-    status: acted_on
-    action: defer
     reasoning: "Longshot: Bash code fence language change in ACP v0.18.0. Low risk, ralph uses
       toolResponse path."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.440Z
     created_at: 2026-02-23T08:31:16.635Z
     updated_at: 2026-02-23T08:31:28.449Z
+    acted_at: 2026-02-23T08:31:28.440Z
   - _ulid: 01KJ4SZJNE37KTMFHKSKMGDSAJ
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHYAV7WNK1PC8WC3AQCJV69X
     item_snapshot: >-
       Surface ACP usage/cost data in ralph session stats — after SDK bump to 0.14.x, new
@@ -1151,15 +1155,15 @@ triage:
       works around this by scraping /context stderr (fragile regex). Upstream PR to claude-agent-acp
       is highest-value path — Anthropic API stream events contain usage data, just needs wiring to
       ACP protocol.
-    status: acted_on
-    action: defer
     reasoning: "Longshot: Surface ACP usage/cost data. Blocked upstream - no usage_update events emitted."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.408Z
     created_at: 2026-02-23T08:31:16.654Z
     updated_at: 2026-02-23T08:31:28.422Z
+    acted_at: 2026-02-23T08:31:28.408Z
   - _ulid: 01KJ4SZJP0XYQQ8X8KP9SJHPQR
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHYDW52QSMT52EJ6FKBF5TWP
     item_snapshot: "Explore CLAUDE_CODE_SIMPLE mode for ralph loops — sets minimal system prompt with
       only Bash, file read, and file edit tools. Disables MCP tools, attachments, hooks, and
@@ -1167,15 +1171,15 @@ triage:
       all project context (AGENTS.md rules, spec-first workflow, kspec conventions) into the prompt
       itself instead of relying on Claude Code's built-in mechanisms. Tradeoff: simpler/faster agent
       vs ralph becomes responsible for all context bootstrapping. Ref: anthropics/claude-code#27019"
-    status: acted_on
-    action: defer
     reasoning: "Longshot: Explore CLAUDE_CODE_SIMPLE mode for ralph. Complexity shifts, does not disappear."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.377Z
     created_at: 2026-02-23T08:31:16.672Z
     updated_at: 2026-02-23T08:31:28.386Z
+    acted_at: 2026-02-23T08:31:28.377Z
   - _ulid: 01KJ4SZJPK2BPX1TW7BGVTBWTB
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHYFD9Q9Y4D3DHC61MJ506P3
     item_snapshot: "Ralph worktree isolation for task work — spawn each agent in a git worktree under a
       gitignored .worktrees/ dir for branch isolation. Pattern proven in kynetic-internal with jj
@@ -1185,99 +1189,99 @@ triage:
       isolated branches per task, parallel agent work, trivial cleanup of failed work, clean main
       branch. Unknowns: shadow branch commands from worktree context, git config inheritance,
       worktree lifecycle management in ralph."
-    status: acted_on
-    action: defer
     reasoning: "Longshot: Ralph worktree isolation. Complex implementation, depends on parallel agent
       architecture."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.342Z
     created_at: 2026-02-23T08:31:16.691Z
     updated_at: 2026-02-23T08:31:28.351Z
+    acted_at: 2026-02-23T08:31:28.342Z
   - _ulid: 01KJ4SZJQ61HG6X429BN3P1TS3
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ27VRA3ZY55X0JEXV4P06KT
     item_snapshot: "Spec and test kspec behavior without git: ensure kspec works in projects without git
       initialized, and handles git being introduced into an existing project where kspec is already
       in use. Cover shadow branch initialization, worktree setup on first git init, migration of
       .kspec/ state when git appears, and graceful degradation of git-dependent features
       (auto-commit, sync, shadow status)."
-    status: acted_on
-    action: defer
     reasoning: "Longshot: Spec and test kspec behavior without git. Edge case, kspec is designed for git
       projects."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.316Z
     created_at: 2026-02-23T08:31:16.710Z
     updated_at: 2026-02-23T08:31:28.324Z
+    acted_at: 2026-02-23T08:31:28.316Z
   - _ulid: 01KJ4SZJQSWF3S7935BPZF3GP6
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHG6F12ZN6SGAYRDTMW01Z37
     item_snapshot: "Tech debt: Pre-existing test anti-patterns - daemon-api-projects.test.ts has 10
       no-op tests behind existsSync guards. ralph.test.ts and ralph-context-refresh.test.ts have
       conditional assertions without preceding guard assertions. Not from ralph loop but should
       fix."
-    status: acted_on
-    action: defer
     reasoning: "Needs-review: Pre-existing test anti-patterns. Real issue but in rarely-touched files."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.290Z
     created_at: 2026-02-23T08:31:16.729Z
     updated_at: 2026-02-23T08:31:28.299Z
+    acted_at: 2026-02-23T08:31:28.290Z
   - _ulid: 01KJ4SZJRD2T96BRAC0S8E1HZS
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHHJ27CE4SNQXCZDZRJCFK4M
     item_snapshot: "Fix daemon-executable.test.ts - bun build --compile fails when routes import from
       parent packages. Pre-existing failure, root cause: ESM imports from parent packages can't be
       bundled. AC-16 on @daemon-server claimed complete but test doesn't pass."
-    status: acted_on
-    action: defer
     reasoning: "Needs-review: daemon-executable.test.ts bun build failure. Upstream bun limitation."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.264Z
     created_at: 2026-02-23T08:31:16.749Z
     updated_at: 2026-02-23T08:31:28.273Z
+    acted_at: 2026-02-23T08:31:28.264Z
   - _ulid: 01KJ4SZJS0GXSSBB4HA8BJGY90
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHHJMABXY8TC0PDX1SF781CZ
     item_snapshot: kspec tasks assess automation --all should display stored automation status
       (eligible/needs_review/manual_only) alongside criteria recommendation. Currently only shows
       criteria-based recommendation even for already-assessed tasks, making it impossible to verify
       batch operations.
-    status: acted_on
-    action: defer
     reasoning: "Needs-review: tasks assess automation --all display. Simple display fix when needed."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.239Z
     created_at: 2026-02-23T08:31:16.768Z
     updated_at: 2026-02-23T08:31:28.247Z
+    acted_at: 2026-02-23T08:31:28.239Z
   - _ulid: 01KJ4SZJSM47JR8GRPCK7FTKD7
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHJ4RVVDYD0Y7NNAGA58RNYW
     item_snapshot: "Silent error swallowing in setup pipeline: multiple bare catch {} blocks in setup.ts
       lose diagnostic info. At minimum should log at debug/verbose level for troubleshooting."
-    status: acted_on
-    action: defer
     reasoning: "Needs-review: Silent error swallowing in setup.ts bare catch blocks. Code quality, not
       blocking."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.201Z
     created_at: 2026-02-23T08:31:16.788Z
     updated_at: 2026-02-23T08:31:28.211Z
+    acted_at: 2026-02-23T08:31:28.201Z
   - _ulid: 01KJ4SZJTBQ9X3WPMGTFAGEC5K
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHJ4RVW38FP7HFAMQ4R0D8YB
     item_snapshot: "Legacy renderClaudeCodeSkill diverges from claudeCodeRenderer: uses old
       writeRenderHash (not platform-specific), lacks outputDir support, returns old type. setup.ts
       still uses it. Should route through registry and deprecate standalone function."
-    status: acted_on
-    action: defer
     reasoning: "Needs-review: Legacy renderClaudeCodeSkill diverges from renderer. Code quality."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.173Z
     created_at: 2026-02-23T08:31:16.811Z
     updated_at: 2026-02-23T08:31:28.181Z
+    acted_at: 2026-02-23T08:31:28.173Z
   - _ulid: 01KJ4SZJV22GQCWV1KK2SCYKP1
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHKTNJ0MR0F4NWMWKJAQN0N9
     item_snapshot: >-
       Codex and Claude Code renderers share ~70% duplicated render logic (content loading,
@@ -1291,133 +1295,133 @@ triage:
       Triage 2026-02-22: 8/13 sub-items RESOLVED by PRs #408 #412 #403. Remaining: getSetupStatus
       staleness, skill update mutation, naming inconsistency, redundant defaults, deprecated_target
       reuse.
-    status: acted_on
-    action: defer
     reasoning: "Needs-review: Codex/Claude Code renderer 70% duplicated render logic. Extract shared base."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.143Z
     created_at: 2026-02-23T08:31:16.834Z
     updated_at: 2026-02-23T08:31:28.153Z
+    acted_at: 2026-02-23T08:31:28.143Z
   - _ulid: 01KJ4SZJVP1MNJ3B6EN51XFH16
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHKTNJ2NTJ1C037GHF573AHR
     item_snapshot: getSetupStatus always reports "current" if hash file exists, cannot detect staleness.
       Should load meta context and compare hash to detect when agents.md needs regeneration.
-    status: acted_on
-    action: defer
     reasoning: "Needs-review: getSetupStatus cannot detect staleness. Most impactful of remaining audit
       items."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.114Z
     created_at: 2026-02-23T08:31:16.854Z
     updated_at: 2026-02-23T08:31:28.124Z
+    acted_at: 2026-02-23T08:31:28.114Z
   - _ulid: 01KJ4SZJW9CZ3Q6EC74N0YF2FV
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHKTNJ37P06E4SRQ3HBQ9PC3
     item_snapshot: skill update mutates loaded skill objects in-place before saveMetaItem. If save fails
       partway, in-memory state diverges from disk. Should copy before mutation.
-    status: acted_on
-    action: defer
     reasoning: "Needs-review: Skill update mutates in-place before save. Risk if save fails partway."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.069Z
     created_at: 2026-02-23T08:31:16.873Z
     updated_at: 2026-02-23T08:31:28.085Z
+    acted_at: 2026-02-23T08:31:28.069Z
   - _ulid: 01KJ4SZJWWRS4484XHVD56PKBS
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHKTNJ3WV66HWCJ76QXCRM3P
     item_snapshot: "Naming inconsistency: isKspecManagedSkill (skill-render.ts) vs isKspecManaged
       (skill.ts) for same logic. Standardize to one name."
-    status: acted_on
-    action: defer
     reasoning: "Needs-review: Naming inconsistency isKspecManagedSkill vs isKspecManaged. Low priority."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.037Z
     created_at: 2026-02-23T08:31:16.892Z
     updated_at: 2026-02-23T08:31:28.046Z
+    acted_at: 2026-02-23T08:31:28.037Z
   - _ulid: 01KJ4SZJXGB0Y8ZZNY8D998ZTF
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHKTNJ4YJEM1WJ0AWE8GHKXF
     item_snapshot: Redundant platform/tags/depends_on defaults in skill CLI — manually set before
       SkillSchema.safeParse which already applies them. Remove manual defaults.
-    status: acted_on
-    action: defer
     reasoning: "Needs-review: Redundant defaults in skill CLI before safeParse. Low priority."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:28.004Z
     created_at: 2026-02-23T08:31:16.913Z
     updated_at: 2026-02-23T08:31:28.017Z
+    acted_at: 2026-02-23T08:31:28.004Z
   - _ulid: 01KJ4SZJY6MANVSC64NSE8TR9J
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHKTNJ5CA819VJE5D2HK00KD
     item_snapshot: deprecated_target warning type reused for skill-specific warnings (depends_on
       validation, orphaned dirs). Add proper skill warning types for better filtering.
-    status: acted_on
-    action: defer
     reasoning: "Needs-review: deprecated_target warning type reused for skill warnings. Add proper types."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:27.958Z
     created_at: 2026-02-23T08:31:16.934Z
     updated_at: 2026-02-23T08:31:27.975Z
+    acted_at: 2026-02-23T08:31:27.958Z
   - _ulid: 01KJ4SZJYS02TNZF6A9DBZ2N4N
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KHKVQGQJKNV5QAKNFC2XJG0T
     item_snapshot: "Ralph loop consolidation pass: add a cleanup/consolidation iteration every N PRs or
       at loop end. The PR-by-PR review process misses cross-PR duplication accumulation — 32 PRs in
       last loop produced 24 inbox items of tech debt. A periodic consolidation step would catch dead
       code, duplicated utilities, and superseded implementations before they compound."
-    status: acted_on
-    action: defer
     reasoning: "Needs-review: Ralph loop consolidation pass. Manual triage (like this session) may be
       sufficient."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:31:27.906Z
     created_at: 2026-02-23T08:31:16.953Z
     updated_at: 2026-02-23T08:31:27.922Z
+    acted_at: 2026-02-23T08:31:27.906Z
   - _ulid: 01KJ4T3YBYSCH0ZQR1QYF783F9
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ33138CNS0KEXVTYJM62W45
     item_snapshot: "kspec batch silently fails on malformed JSON input - exits with code 1 and no error
       message. Should print JSON parse error or validation error details. batch has did-you-mean for
       bad arg keys (PR #440) but nothing for structural JSON errors. Encountered during triage
       session when batch --commands failed with no diagnostic output."
-    status: acted_on
-    action: promote
     reasoning: Bug - batch silently fails on malformed JSON, no error message
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:33:50.700Z
     result_ref: "@01KJ4T48"
     created_at: 2026-02-23T08:33:39.710Z
     updated_at: 2026-02-23T08:33:50.710Z
+    acted_at: 2026-02-23T08:33:50.700Z
   - _ulid: 01KJ4T3YDHBC7YXXJ1JDM9AANQ
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ3318Y1350NCQF6SK9GKHY7
     item_snapshot: "Session checkpoint hook noise: fires repeatedly for intentionally uncommitted files
       (e.g. generated reports). No way to suppress for specific paths. Could support
       .kspec/checkpoint-ignore listing paths to exclude from dirty-tree check, or respect
       gitignore-like patterns. Fired 6+ times in one session for a triage report artifact."
-    status: acted_on
-    action: defer
     reasoning: Nice-to-have - checkpoint hook noise, not blocking
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:33:49.559Z
     created_at: 2026-02-23T08:33:39.761Z
     updated_at: 2026-02-23T08:33:49.568Z
+    acted_at: 2026-02-23T08:33:49.559Z
   - _ulid: 01KJ4T3YEJXBE739MMBDKA543P
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ331EH4M78HCKVCABPM26NK
     item_snapshot: "CLI parity: kspec task add requires --title flag but kspec inbox add accepts
       positional text argument. task add should accept positional title for consistency. Small
       change in Commander.js argument definition."
-    status: acted_on
-    action: defer
     reasoning: Nice-to-have DX - task add positional title consistency
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:33:49.532Z
     created_at: 2026-02-23T08:33:39.794Z
     updated_at: 2026-02-23T08:33:49.541Z
+    acted_at: 2026-02-23T08:33:49.532Z
   - _ulid: 01KJ4T3YFGGTP9NPD336ZC85MZ
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ35CN8RKR2S26MSBB1WK4X0
     item_snapshot: "Plugin registry tests: validate structurally instead of exact output matching.
       Current tests assert exact JSON shapes (e.g. source field structure) which breaks when Claude
@@ -1427,15 +1431,15 @@ triage:
       For known_marketplaces.json registry, test entry exists with valid path, not exact source
       object shape. Motivation: the source field assertion broke twice already (local → directory
       object) because tests coupled to implementation details."
-    status: acted_on
-    action: defer
     reasoning: Test improvement - structural validation for plugin registry tests
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:33:49.504Z
     created_at: 2026-02-23T08:33:39.824Z
     updated_at: 2026-02-23T08:33:49.513Z
+    acted_at: 2026-02-23T08:33:49.504Z
   - _ulid: 01KJ4T3YGA7KQAZTAPPF06ZBH4
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ3QN15VJWAAMPTYT3K06XK3
     item_snapshot: "Codex skill prompt needs ralph-loop safety guard. During ralph loop session
       01KJ3N2N8V38823H87PG09V7XR, the worker agent invoked /codex review #448 (per focus
@@ -1449,365 +1453,365 @@ triage:
       pkill/kill on kspec processes.'). Could detect ralph context via KSPEC_SESSION_ID env var or
       similar. Alternative: restrict sandbox mode when codex is called from ralph. See codex skill
       at .claude/skills/codex/SKILL.md and ralph tool handler at src/cli/commands/ralph.ts:589-634."
-    status: acted_on
-    action: promote
     reasoning: Safety bug - codex killed ralph process during loop, needs safety guard
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:33:49.477Z
     result_ref: "@01KJ4T46"
     created_at: 2026-02-23T08:33:39.851Z
     updated_at: 2026-02-23T08:33:49.486Z
+    acted_at: 2026-02-23T08:33:49.477Z
   - _ulid: 01KJ4T3YHENYSJVQDW0VDAWEX3
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ40ESZK9AWPP53D2SQ76M30
     item_snapshot: "SUGGESTION: Update @triage-daemon-api spec AC-4/AC-5 wording from PUT to POST to
       match codebase convention. All daemon routes use POST for mutations."
-    status: acted_on
-    action: delete
     reasoning: Trivial spec wording suggestion, not inbox-worthy
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:33:48.348Z
     created_at: 2026-02-23T08:33:39.886Z
     updated_at: 2026-02-23T08:33:48.357Z
+    acted_at: 2026-02-23T08:33:48.348Z
   - _ulid: 01KJ4T3YJFZ1NVG02QP3RA8JX1
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ4FFAWXJE5STMAAEDH0FG2B
     item_snapshot: "Web UI list pages hardcode limit: 1000 with no pagination — triage page confirmed,
       likely affects inbox/tasks pages too. Silent truncation for large datasets. Need pagination or
       virtual scrolling pattern across all list views."
-    status: acted_on
-    action: defer
     reasoning: Nice-to-have - web UI pagination for large datasets
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:33:48.309Z
     created_at: 2026-02-23T08:33:39.919Z
     updated_at: 2026-02-23T08:33:48.319Z
+    acted_at: 2026-02-23T08:33:48.309Z
   - _ulid: 01KJ4T3YK6GF4HW45RM3R51456
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ4HNNKRVX2HJHD1SEXZGC6R
     item_snapshot: "Bug: kspec task add returned OK with ULID but task was not findable via task get or
       tasks list. Had to retry to get a persistent task. Possible shadow branch commit race
       condition or ULID issue. Observed during session 2026-02-22."
-    status: acted_on
-    action: promote
     reasoning: Data integrity bug - task add returns OK but task not findable, possible shadow race
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:33:48.278Z
     result_ref: "@01KJ4T45"
     created_at: 2026-02-23T08:33:39.942Z
     updated_at: 2026-02-23T08:33:48.288Z
+    acted_at: 2026-02-23T08:33:48.278Z
   - _ulid: 01KJ4T3YKYJ1ZWE1Z4WM92DB6P
+    status: acted_on
+    action: duplicate
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ4HNNN3AJ1CZKMY5487EJJ7
     item_snapshot: "Feature: add --description flag to kspec task set so task descriptions can be
       updated after creation. Currently description is set-once at task add time. Workaround is task
       note but that is not the same as updating the canonical description."
-    status: acted_on
-    action: duplicate
     reasoning: Duplicate of 01KHWWMD - task set --description flag, already deferred
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:33:46.957Z
     created_at: 2026-02-23T08:33:39.966Z
     updated_at: 2026-02-23T08:33:46.971Z
+    acted_at: 2026-02-23T08:33:46.957Z
   - _ulid: 01KJ4T3YMNHRDC9RR97CDWP7DM
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ4KFAXR94SCYKWQ2KQWXH54
     item_snapshot: "Trait AC annotation gaps on @triage-cli-commands: @trait-error-guidance ac-3,
       @trait-semantic-exit-codes ac-3/4/6/7, @trait-filterable-list ac-2, @trait-shadow-commit
       ac-2/3/4/6/7/8, @trait-dry-run ac-4/6. Pre-existing, not introduced by PR #458."
-    status: acted_on
-    action: defer
     reasoning: Pre-existing trait AC annotation gaps, tracking only
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-23T08:33:46.884Z
     created_at: 2026-02-23T08:33:39.990Z
     updated_at: 2026-02-23T08:33:46.903Z
+    acted_at: 2026-02-23T08:33:46.884Z
   - _ulid: 01KJDNA70808Y9ZN1XF8ARPPBP
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ4TETN5XH8286FWZABW5ZX3
     item_snapshot: Web UI WebSocket connection unreliable - continually disconnects and reconnects.
       Needs investigation into reconnection logic, heartbeat handling, or fallback to polling.
-    status: acted_on
-    action: promote
     reasoning: "Bug: WebSocket unreliable, disconnects/reconnects. Needs investigation."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:33:05.296Z
     result_ref: "@01KJDQ1GZ"
     created_at: 2026-02-26T19:02:52.168Z
     updated_at: 2026-02-26T19:33:05.310Z
+    acted_at: 2026-02-26T19:33:05.296Z
   - _ulid: 01KJDNA725H4FZMFZH92R3ADM7
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ4TETP5C44S2YDBCR1P3075
     item_snapshot: "Web UI triage page: add filter controls for triage action types (promote, delete,
       defer, spec-gap, duplicate). Currently no way to filter triage records by action."
-    status: acted_on
-    action: promote
-    reasoning: Web UI filter controls — nice to have, not blocking
-    decided_by: "@claude"
-    evidence_refs: []
-    override_reasoning: I want this
-    override_by: Jacob Chapel
     override_at: 2026-02-26T19:31:13.854Z
-    acted_at: 2026-02-26T19:33:04.501Z
+    override_by: Jacob Chapel
+    override_reasoning: I want this
+    reasoning: Web UI filter controls — nice to have, not blocking
     result_ref: "@01KJDQ1G"
     created_at: 2026-02-26T19:02:52.229Z
     updated_at: 2026-02-26T19:33:04.516Z
+    acted_at: 2026-02-26T19:33:04.501Z
   - _ulid: 01KJDNA73KN5GAXGA1DM1AWWSP
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ4TETPNXN6GZ4MT53BRZ1KA
     item_snapshot: "Web UI: persist all filter state and current view in URL query params so refreshing
       the page preserves state. Applies to all list/filter pages (triage, inbox, tasks, etc)."
-    status: acted_on
-    action: promote
-    reasoning: Web UI URL state persistence — nice to have, not blocking
-    decided_by: "@claude"
-    evidence_refs: []
-    override_reasoning: I want this
-    override_by: Jacob Chapel
     override_at: 2026-02-26T19:31:04.929Z
-    acted_at: 2026-02-26T19:33:03.691Z
+    override_by: Jacob Chapel
+    override_reasoning: I want this
+    reasoning: Web UI URL state persistence — nice to have, not blocking
     result_ref: "@01KJDQ1F"
     created_at: 2026-02-26T19:02:52.275Z
     updated_at: 2026-02-26T19:33:03.706Z
+    acted_at: 2026-02-26T19:33:03.691Z
   - _ulid: 01KJDNA74KJQPRCKXA0WCVVM2Q
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ4VDK6PQV9MNFQTXGQTS3Q0
     item_snapshot: Triage promote action should optionally delete the inbox item after creating the
       task. Currently promoted items stay in inbox requiring manual cleanup. Consider --consume flag
       or making deletion the default for promote (with snapshot preserved in triage record).
-    status: acted_on
-    action: promote
     reasoning: Triage promote should delete inbox item — causes inbox bloat (67 deferred items stay).
       Clear scope, well-defined fix.
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:33:02.872Z
     result_ref: "@01KJDQ1E"
     created_at: 2026-02-26T19:02:52.307Z
     updated_at: 2026-02-26T19:33:02.887Z
+    acted_at: 2026-02-26T19:33:02.872Z
   - _ulid: 01KJDNA75PX9EHFDXZ8KJFEJ0Z
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ4VDK7KWD0TZWCYBWXDABHT
     item_snapshot: "Batch arg name discoverability: kspec batch commands shows CLI signatures but batch
       JSON uses different arg names (e.g. inbox-ref not ref, message not text). Add a batch-specific
       help that shows the JSON arg names, or accept both forms."
-    status: acted_on
-    action: delete
-    reasoning: Batch arg name discoverability — DX improvement, not urgent
-    decided_by: "@claude"
-    evidence_refs: []
-    override_reasoning: Think this is handled now with the recent improvements around batch.
-    override_by: Jacob Chapel
     override_at: 2026-02-26T19:29:53.746Z
-    acted_at: 2026-02-26T19:33:02.123Z
+    override_by: Jacob Chapel
+    override_reasoning: Think this is handled now with the recent improvements around batch.
+    reasoning: Batch arg name discoverability — DX improvement, not urgent
     created_at: 2026-02-26T19:02:52.342Z
     updated_at: 2026-02-26T19:33:02.137Z
+    acted_at: 2026-02-26T19:33:02.123Z
   - _ulid: 01KJDNA76ZV0P7GCJGJMMAAAVA
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ4VHNAZDGTNTX7S7630S6B9
     item_snapshot: "ULID short ref ambiguity in batch operations: when two ULIDs share a prefix (e.g.
       01KJ4SNE9 and 01KJ4SNEC), short refs like @01KJ4SNE fail. kspec already has a
       shortest-unique-ID utility — this should be used anywhere refs are displayed (triage list,
       task list, inbox list, promote result_ref, etc.) so that presented refs are always unambiguous
       and copy-pasteable into subsequent commands."
-    status: acted_on
-    action: promote
     reasoning: ULID short ref ambiguity causes batch failures. kspec already has shortest-unique-ID
       utility — wire it up.
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:33:01.983Z
     result_ref: "@01KJDQ1D"
     created_at: 2026-02-26T19:02:52.383Z
     updated_at: 2026-02-26T19:33:01.998Z
+    acted_at: 2026-02-26T19:33:01.983Z
   - _ulid: 01KJDNA7819FJ59DBD57YGKC4P
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ4YMK5A4D2BDHAFVQ0XTAPS
     item_snapshot: "Add kspec.config.yaml with ralph.skills overrides for project-specific skill names
       (/task-work, /reflect, /pr-review) until core kspec: namespace skills are created"
-    status: acted_on
-    action: delete
-    reasoning: Config file for ralph skill overrides — workaround exists, not urgent
-    decided_by: "@claude"
-    evidence_refs: []
-    override_reasoning: I think this isn't needed as we have the core skills now?
-    override_by: Jacob Chapel
     override_at: 2026-02-26T19:29:09.542Z
-    acted_at: 2026-02-26T19:33:01.208Z
+    override_by: Jacob Chapel
+    override_reasoning: I think this isn't needed as we have the core skills now?
+    reasoning: Config file for ralph skill overrides — workaround exists, not urgent
     created_at: 2026-02-26T19:02:52.417Z
     updated_at: 2026-02-26T19:33:01.223Z
+    acted_at: 2026-02-26T19:33:01.208Z
   - _ulid: 01KJDNA7902JC2BCJX50258W86
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ63QDZSHSB8J8BAEEPV4EZQ
     item_snapshot: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec
       plan get @plan-ref to read implementation notes, algorithm details, and context. Update
       task-work skill and task-work-loop workflow to include this step. Plans are the right place
       for rich implementation context instead of cramming it into task notes.
-    status: acted_on
-    action: promote
-    reasoning: Agent plan_ref check — workflow/skill improvement, not blocking task work
-    decided_by: "@claude"
-    evidence_refs: []
-    override_reasoning: High value documentation update that will help reinforce behavior and high quality output
-    override_by: Jacob Chapel
     override_at: 2026-02-26T19:27:59.358Z
-    acted_at: 2026-02-26T19:33:01.065Z
+    override_by: Jacob Chapel
+    override_reasoning: High value documentation update that will help reinforce behavior and high quality output
+    reasoning: Agent plan_ref check — workflow/skill improvement, not blocking task work
     result_ref: "@01KJDQ1CT"
     created_at: 2026-02-26T19:02:52.448Z
     updated_at: 2026-02-26T19:33:01.080Z
+    acted_at: 2026-02-26T19:33:01.065Z
   - _ulid: 01KJDNA79VHCVAAN363VV8ZSDQ
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ63RW5ZEQFM3PMXD224F9VG
     item_snapshot: "Plan import --update replaces all ACs instead of merging. When extending an existing
       spec with a new AC via plan import, --update overwrites acceptance_criteria entirely. Need
       AC-merge strategy: append new AC IDs, preserve existing ones. Encountered during spec-plan for
       session-log-show ac-10."
-    status: acted_on
-    action: promote
     reasoning: "Bug: plan import --update replaces all ACs instead of merging. Data loss risk."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:33:00.257Z
     result_ref: "@01KJDQ1C"
     created_at: 2026-02-26T19:02:52.475Z
     updated_at: 2026-02-26T19:33:00.273Z
+    acted_at: 2026-02-26T19:33:00.257Z
   - _ulid: 01KJDNA7AS6NTRE2SVK8AWP8G2
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ63RW6VJ8K1MTR4VC3GM4AQ
     item_snapshot: Plan import warnings treated as errors in batch mode. The no YAML code block in specs
       section warning causes batch atomic rollback even though the task creation succeeded. Warnings
       should not cause batch failure — only actual errors should.
-    status: acted_on
-    action: promote
     reasoning: "Bug: plan import warnings cause batch rollback. Warnings should not be errors."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:59.457Z
     result_ref: "@01KJDQ1B"
     created_at: 2026-02-26T19:02:52.505Z
     updated_at: 2026-02-26T19:32:59.473Z
+    acted_at: 2026-02-26T19:32:59.457Z
   - _ulid: 01KJDNA7BTBMEN482J2FQQWQJH
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ67G4H6EHK6DZCXFM80BTXV
     item_snapshot: "Ralph event handler iteration attribution should use session-scoped mapping instead
       of shared mutable currentIteration. Codex review on PR #484 identified that late updates from
       a previous ACP session can still be tagged with wrong iteration. Use session_id→iteration map
       or session-scoped listener. See PR #484 review comment."
-    status: acted_on
-    action: promote
     reasoning: "Bug: ralph event iteration attribution uses shared mutable state. Identified in PR review."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:58.662Z
     result_ref: "@01KJDQ1A"
     created_at: 2026-02-26T19:02:52.538Z
     updated_at: 2026-02-26T19:32:58.677Z
+    acted_at: 2026-02-26T19:32:58.662Z
   - _ulid: 01KJDNA7CV4THZZ2XJR72F2YK6
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ6KTDE6ADT92WQ0CXYF9NZG
     item_snapshot: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
       depends_on). Currently batch commands reject underscore variants even though the error message
       suggests the kebab form. Normalizing both forms would reduce friction, especially for agents
       generating JSON batch payloads where underscore is the natural convention.
-    status: acted_on
-    action: promote
-    reasoning: CLI kebab/underscore normalization — DX improvement, workaround is to use correct form
-    decided_by: "@claude"
-    evidence_refs: []
-    override_reasoning: This happens enough it is worth doing, simple fix afaik
-    override_by: Jacob Chapel
     override_at: 2026-02-26T19:26:20.438Z
-    acted_at: 2026-02-26T19:32:57.821Z
+    override_by: Jacob Chapel
+    override_reasoning: This happens enough it is worth doing, simple fix afaik
+    reasoning: CLI kebab/underscore normalization — DX improvement, workaround is to use correct form
     result_ref: "@01KJDQ19"
     created_at: 2026-02-26T19:02:52.571Z
     updated_at: 2026-02-26T19:32:57.835Z
+    acted_at: 2026-02-26T19:32:57.821Z
   - _ulid: 01KJDNA7DP29PT56R2CV9V406M
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ6ZXC0WTGDMCWHT5VV3FW1D
     item_snapshot: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
       fast with a clear error, not block on stdin. Discovered when ralph loop got stuck calling
       batch with empty string arg.
-    status: acted_on
-    action: promote
     reasoning: "Bug: empty --commands string hangs instead of failing fast. Simple guard at arg parse
       time. Automation eligible."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-03T06:43:27.809Z
     result_ref: "@01KJS6ZW"
     created_at: 2026-02-26T19:02:52.598Z
     updated_at: 2026-03-03T06:43:27.829Z
+    acted_at: 2026-03-03T06:43:27.809Z
   - _ulid: 01KJDNA7EJT5VVGV2W3DM9R5HR
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ76Y81G54ASMF0A18Z5G35Y
     item_snapshot: "Session-scoped workflow runs: workflow runs could carry a session_id, filtering
       workflow show/list to current session by default. Session end could auto-close orphaned runs.
       Reduces noise when multiple sessions active (ralph + interactive). Natural fit since workflows
       are already ephemeral."
-    status: acted_on
-    action: defer
     reasoning: Session-scoped workflow runs — nice architectural improvement, not urgent
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:56.215Z
     created_at: 2026-02-26T19:02:52.626Z
     updated_at: 2026-02-26T19:32:56.233Z
+    acted_at: 2026-02-26T19:32:56.215Z
   - _ulid: 01KJDNA7FQKFAM59D2HJ2B4TNV
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ778T2MZ63PJ6MF46X2J2S9
     item_snapshot: "Ralph loop logs 'Unexpected case' for rate_limit_event messages from Claude API.
       These are informational SSE events (status: allowed) that the event handler doesn't recognize.
       Should either handle gracefully (ignore/log at debug level) or add to known event types.
       Currently noisy in ralph output."
-    status: acted_on
-    action: defer
     reasoning: Ralph rate_limit_event logging — cosmetic noise, not functional issue
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:56.122Z
     created_at: 2026-02-26T19:02:52.663Z
     updated_at: 2026-02-26T19:32:56.137Z
+    acted_at: 2026-02-26T19:32:56.122Z
   - _ulid: 01KJDNA7GQQ45RS1SFN0SVXTS6
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ77S4BZYW0CYX68JHNAQ31X
     item_snapshot: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool
       call hanging on stdin), ralph has no mechanism to detect or recover. A configurable
       per-iteration timeout (e.g., 15-20 min) that kills the stuck agent and logs the failure would
       prevent indefinite hangs. Separate from Claude Code's per-bash-command timeout which didn't
       prevent the kspec batch stdin hang.
-    status: acted_on
-    action: promote
     reasoning: Ralph iteration timeout needed. Agent hangs block entire loop with no recovery.
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:55.999Z
     result_ref: "@01KJDQ17W"
     created_at: 2026-02-26T19:02:52.695Z
     updated_at: 2026-02-26T19:32:56.013Z
+    acted_at: 2026-02-26T19:32:55.999Z
   - _ulid: 01KJDNA7HMG8YYEMJCFEMJ56NW
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ7CNAZQRSSS2BH4KWXT9G0R
     item_snapshot: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results
       but failed on kspec item get. Possible write conflict or index corruption during ralph loop
       session. Investigate shadow branch integrity."
-    status: acted_on
-    action: promote
-    reasoning: "Bug: shadow branch index inconsistency — items in search but not in item get. Data
-      integrity issue."
-    decided_by: "@claude"
-    evidence_refs: []
+    override_at: 2026-02-26T19:23:43.394Z
+    override_by: Jacob Chapel
     override_reasoning: iirc this was due to a bad status input so when trying to get the full record it
       failed but probably showed up in indexing for search just fine, seems like we might want to
       add a task as well to evaluate how we handle error cases like this (e.g. data shape incorrect,
       should it act like it isn't there or actually return an error about it or return what is valid
       with a message about what is wrong)
-    override_by: Jacob Chapel
-    override_at: 2026-02-26T19:23:43.394Z
-    acted_at: 2026-02-26T19:32:55.180Z
+    reasoning: "Bug: shadow branch index inconsistency — items in search but not in item get. Data
+      integrity issue."
     result_ref: "@01KJDQ17"
     created_at: 2026-02-26T19:02:52.724Z
     updated_at: 2026-02-26T19:32:55.199Z
+    acted_at: 2026-02-26T19:32:55.180Z
   - _ulid: 01KJDNA7JJYXDRGF2D104KFH7Y
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ8N6842MXY0QBV3VPZGTAY1
     item_snapshot: "Ralph CLI renderer: parallel tool calls produce confusing output. tool_result events
       render sequentially with no association to their tool_start, so when multiple tools run in
       parallel, results appear under the wrong header. Fix: include tool summary (e.g. filename) in
       the completed/failed status line so each result is self-identifying regardless of
       interleaving."
-    status: acted_on
-    action: defer
     reasoning: Ralph renderer parallel tool output — cosmetic, not blocking
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:54.425Z
     created_at: 2026-02-26T19:02:52.755Z
     updated_at: 2026-02-26T19:32:54.444Z
+    acted_at: 2026-02-26T19:32:54.425Z
   - _ulid: 01KJDNA7KYG668K3QAEKADJZV7
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ8NDTW6M80T7T07SACEP7F8
     item_snapshot: "Tests fail when run inside ralph loop due to environment contamination: (1)
       ralph.test.ts KSPEC_RALPH_SESSION assertion expects null but env var is inherited from ralph
@@ -1815,396 +1819,396 @@ triage:
       session-budget-integration.test.ts references nonexistent task set-automation command. Tests
       should isolate from parent process env vars (KSPEC_RALPH_SESSION, KSPEC_SESSION_ID) to be
       reliable in all contexts."
-    status: acted_on
-    action: promote
-    reasoning: "Bug: tests fail in ralph loop due to env contamination. Causes false failures."
-    decided_by: "@claude"
-    evidence_refs: []
-    override_reasoning: Should investigate this cause it might be fixed, but if not then def promote
-    override_by: Jacob Chapel
     override_at: 2026-02-26T19:21:22.606Z
-    acted_at: 2026-02-26T19:32:54.305Z
+    override_by: Jacob Chapel
+    override_reasoning: Should investigate this cause it might be fixed, but if not then def promote
+    reasoning: "Bug: tests fail in ralph loop due to env contamination. Causes false failures."
     result_ref: "@01KJDQ16"
     created_at: 2026-02-26T19:02:52.798Z
     updated_at: 2026-02-26T19:32:54.322Z
+    acted_at: 2026-02-26T19:32:54.305Z
   - _ulid: 01KJDNA7N6V4CR5HZTM52QYD3Y
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ8X526K52BVBGYENJKFFSM8
     item_snapshot: "Session event log tool-level filtering: kspec session log show <id> --tool Read
       would avoid grep/python one-liners when debugging ralph event issues"
-    status: acted_on
-    action: defer
     reasoning: Session log --tool filter — DX improvement, grep workaround exists
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:53.520Z
     created_at: 2026-02-26T19:02:52.838Z
     updated_at: 2026-02-26T19:32:53.538Z
+    acted_at: 2026-02-26T19:32:53.520Z
   - _ulid: 01KJDNA7P7GT9X5QW2MJ5XTNVX
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ905CBEHVK9RGCYDZ4K03BH
     item_snapshot: First item
-    status: acted_on
-    action: delete
     reasoning: Test data — First item
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:53.432Z
     created_at: 2026-02-26T19:02:52.872Z
     updated_at: 2026-02-26T19:32:53.445Z
+    acted_at: 2026-02-26T19:32:53.432Z
   - _ulid: 01KJDNA7Q3P3G0D83DTNW6XE91
-    inbox_ref: 01KJ905CK3H9P9QMY8DYXF3JSS
-    item_snapshot: Second item
     status: acted_on
     action: delete
-    reasoning: Test data — Second item
     decided_by: "@claude"
     evidence_refs: []
-    acted_at: 2026-02-26T19:32:53.322Z
+    inbox_ref: 01KJ905CK3H9P9QMY8DYXF3JSS
+    item_snapshot: Second item
+    reasoning: Test data — Second item
     created_at: 2026-02-26T19:02:52.899Z
     updated_at: 2026-02-26T19:32:53.339Z
+    acted_at: 2026-02-26T19:32:53.322Z
   - _ulid: 01KJDNA7R26BDB2QY813VX1ND2
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ93VXC8AJHN546JBKV9SJ8W
     item_snapshot: kspec batch command JSON format is undocumented — the shape {command, ref,
       ...options} is discoverable only through trial-and-error. Tried array format, args array, and
       string format before finding the correct object format. Help output shows allowed commands but
       not the JSON schema for batch payloads.
-    status: acted_on
-    action: delete
-    reasoning: Batch JSON format docs — already in AGENTS.md, could be improved but not urgent
-    decided_by: "@claude"
-    evidence_refs: []
+    override_at: 2026-02-26T19:20:13.120Z
+    override_by: Jacob Chapel
     override_reasoning: There's recent work on this specifically (adding to the kspec-agents.md and new
       way to see command info)
-    override_by: Jacob Chapel
-    override_at: 2026-02-26T19:20:13.120Z
-    acted_at: 2026-02-26T19:32:53.212Z
+    reasoning: Batch JSON format docs — already in AGENTS.md, could be improved but not urgent
     created_at: 2026-02-26T19:02:52.930Z
     updated_at: 2026-02-26T19:32:53.228Z
+    acted_at: 2026-02-26T19:32:53.212Z
   - _ulid: 01KJDNA7RYTZHTKEB8X5NN755Q
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ93W2PWGATM2YVHQRBSSVK5
     item_snapshot: kspec task set --priority accepts numbers (1-5) but all documentation, conventions,
       and plan documents use P1/P2/P3 notation. Error message says 'Priority must be a number
       between 1 and 5' which is confusing when you've been writing P1 everywhere. Should either
       accept both formats or align documentation with the numeric API.
-    status: acted_on
-    action: promote
-    reasoning: P1/P2/P3 format alias — DX improvement, duplicate of deferred item
-    decided_by: "@claude"
-    evidence_refs: []
+    override_at: 2026-02-26T19:18:59.745Z
+    override_by: Jacob Chapel
     override_reasoning: I think it would be good to support this, it happens enough. So either we
       support both inputs or update all documentation. There's a small spec gap on this if we
       support both but easy to do as part of the task work.
-    override_by: Jacob Chapel
-    override_at: 2026-02-26T19:18:59.745Z
-    acted_at: 2026-02-26T19:32:53.071Z
+    reasoning: P1/P2/P3 format alias — DX improvement, duplicate of deferred item
     result_ref: "@01KJDQ15"
     created_at: 2026-02-26T19:02:52.958Z
     updated_at: 2026-02-26T19:32:53.087Z
+    acted_at: 2026-02-26T19:32:53.071Z
   - _ulid: 01KJDNA7SVE6M6JV4XH7CH9KJP
+    status: acted_on
+    action: spec-gap
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ9BENECYW9DP5FP6Y5EJSVM
     item_snapshot: "kspec meta set convention: add --update-rule and --remove-rule flags. Currently the
       only way to fix a rule is to delete the entire convention and recreate it. Surfaced during
       skill CLI lookups task when codex review caught a wording issue in one rule."
-    status: acted_on
-    action: spec-gap
-    reasoning: Convention --update-rule — DX improvement, workaround is delete+recreate
-    decided_by: "@claude"
-    evidence_refs: []
-    override_reasoning: Having to delete is bad IMO, best to close this gap.
-    override_by: Jacob Chapel
     override_at: 2026-02-26T19:17:52.527Z
-    acted_at: 2026-02-26T19:32:52.287Z
+    override_by: Jacob Chapel
+    override_reasoning: Having to delete is bad IMO, best to close this gap.
+    reasoning: Convention --update-rule — DX improvement, workaround is delete+recreate
     result_ref: "@01KJDQ14"
     created_at: 2026-02-26T19:02:52.987Z
     updated_at: 2026-02-26T19:32:52.303Z
+    acted_at: 2026-02-26T19:32:52.287Z
   - _ulid: 01KJDNA7TNPB96SWJFH8JK4YW4
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJ9NJC7QK6F0SAB11PNN3798
     item_snapshot: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts.
       Either add a --agent flag (e.g. kspec setup --agent claude-code) to explicitly specify the
       agent type, or detect based on installed tooling (~/.claude exists) rather than requiring
       runtime env vars. Discovered while building containerized ralph runner — entrypoint bash
       script can't set CLAUDECODE=1 globally because claude blocks nested sessions.
-    status: acted_on
-    action: promote
-    reasoning: Setup without CLAUDECODE=1 — ralph container workaround exists
-    decided_by: "@claude"
-    evidence_refs: []
-    override_reasoning: Given I want to start using codex as well I would like to ensure setup works beyond claude code
-    override_by: Jacob Chapel
     override_at: 2026-02-26T19:17:00.594Z
-    acted_at: 2026-02-26T19:32:52.099Z
+    override_by: Jacob Chapel
+    override_reasoning: Given I want to start using codex as well I would like to ensure setup works beyond claude code
+    reasoning: Setup without CLAUDECODE=1 — ralph container workaround exists
     result_ref: "@01KJDQ14"
     created_at: 2026-02-26T19:02:53.013Z
     updated_at: 2026-02-26T19:32:52.113Z
+    acted_at: 2026-02-26T19:32:52.099Z
   - _ulid: 01KJDNA7VMWSG7KP54SZGJ2V9P
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJA6SXTB3DG19YC17E604J7X
     item_snapshot: "kspec agents generate should include package version in content hash (or add --force
       flag) so version bumps during releases automatically trigger regeneration. Currently skips
       because content is identical, but the version comment in the header is stale. Workaround:
       manually edit the version line."
-    status: acted_on
-    action: promote
     reasoning: "Agents generate version in hash — hit during every release. Clear scope. Consolidates
       duplicates #34, #40, #41."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:51.290Z
     result_ref: "@01KJDQ13"
     created_at: 2026-02-26T19:02:53.044Z
     updated_at: 2026-02-26T19:32:51.305Z
+    acted_at: 2026-02-26T19:32:51.290Z
   - _ulid: 01KJDNA7WG9TW2D239EA8JX9G3
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJA6SXVCSYQT1X48341636SC
     item_snapshot: Ralph PR merge should auto-delete remote branches after merge. Currently accumulates
       stale branches (found 13 after one session). The gh pr merge command supports --delete-branch.
       Add to pr-review-loop workflow merge step.
-    status: acted_on
-    action: promote
     reasoning: "Ralph auto-delete branches after merge. 13 stale branches per session. Simple fix:
       --delete-branch."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:50.487Z
     result_ref: "@01KJDQ12"
     created_at: 2026-02-26T19:02:53.072Z
     updated_at: 2026-02-26T19:32:50.501Z
+    acted_at: 2026-02-26T19:32:50.487Z
   - _ulid: 01KJDNA7XCWV164J03NXCGK32X
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJA6SXW5DHXFFJHH6DYQYBVJ
     item_snapshot: "Session summary/stats command — kspec session stats @id or kspec session show @id
       --summary. Parse events.jsonl to show: iteration count, tasks started/completed/blocked, PRs
       created/merged, total duration, exit reason. Currently requires custom python scripts to
       extract from 14k+ line event logs."
-    status: acted_on
-    action: defer
     reasoning: Session stats command — useful but not blocking, custom scripts work for now
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:49.709Z
     created_at: 2026-02-26T19:02:53.100Z
     updated_at: 2026-02-26T19:32:49.725Z
+    acted_at: 2026-02-26T19:32:49.709Z
   - _ulid: 01KJDNA7YARNCEYQCH7RGM6DGT
+    status: acted_on
+    action: spec-gap
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJBQ62SW8AJYGQJVC2Q7CMCF
     item_snapshot: "@cmd-validate spec is stale — missing flags: --completeness, --staleness, --drift,
       --alignment, --skills, --conventions (all already implemented in code). Pre-existing drift,
       not introduced by trait AC task."
-    status: acted_on
-    action: spec-gap
     reasoning: "@cmd-validate spec is stale — missing 6 flags already in code. Spec drift."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:49.604Z
     result_ref: "@01KJDQ12"
     created_at: 2026-02-26T19:02:53.130Z
     updated_at: 2026-02-26T19:32:49.618Z
+    acted_at: 2026-02-26T19:32:49.604Z
   - _ulid: 01KJDNA7Z7MEB2A756AGPH3WCX
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJCTQGQ6VA5DNT6NSGVZ5V99
     item_snapshot: Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate
       slug. Pre-existing issue across main.
-    status: acted_on
-    action: promote
     reasoning: "Bug: @observations slug ambiguity — validate reports 6 errors. Data integrity."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:49.406Z
     result_ref: "@01KJDQ11"
     created_at: 2026-02-26T19:02:53.159Z
     updated_at: 2026-02-26T19:32:49.420Z
+    acted_at: 2026-02-26T19:32:49.406Z
   - _ulid: 01KJDNA805PBMJDXBWG85732Y5
+    status: acted_on
+    action: spec-gap
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJCTQGRDZYNYRD66RHV5GGMX
     item_snapshot: Triage API spec says ac-4 and ac-5 use PUT method but implementation uses POST
       /:ref/override and POST /:ref/act. Spec needs updating to match reality.
-    status: acted_on
-    action: spec-gap
     reasoning: Triage API spec PUT vs POST mismatch — spec needs updating to match implementation
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:48.633Z
     result_ref: "@01KJDQ11"
     created_at: 2026-02-26T19:02:53.189Z
     updated_at: 2026-02-26T19:32:48.649Z
+    acted_at: 2026-02-26T19:32:48.633Z
   - _ulid: 01KJDNA8146X69M9P5FMBSGXKK
+    status: acted_on
+    action: spec-gap
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJCTQGSAZ8H0NZT9DR5628NX
     item_snapshot: Triage ac-5 says sets result_ref but delete action may not produce one. Verify
       behavior and update spec or add test assertion.
-    status: acted_on
-    action: spec-gap
     reasoning: Triage ac-5 result_ref for delete — spec may be wrong, needs verification
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:48.477Z
     result_ref: "@01KJDQ11"
     created_at: 2026-02-26T19:02:53.220Z
     updated_at: 2026-02-26T19:32:48.491Z
+    acted_at: 2026-02-26T19:32:48.477Z
   - _ulid: 01KJDNA821666CZ2E4AGAXNAJA
+    status: acted_on
+    action: duplicate
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJCXMR42ZTQZK510F8AESYN7
     item_snapshot: kspec agents generate meta hash should include package version — currently skips
       regeneration when only the version changes, requiring manual edit of the freshness comment
-    status: acted_on
-    action: duplicate
     reasoning: Duplicate of 01KJA6SXTB3DG19YC17E604J7X — agents generate version hash
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:48.325Z
     created_at: 2026-02-26T19:02:53.249Z
     updated_at: 2026-02-26T19:32:48.341Z
+    acted_at: 2026-02-26T19:32:48.325Z
   - _ulid: 01KJDNA833SJZV4WRP256KK839
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJCXMR524W6YTGCEPHEZ97WH
     item_snapshot: kspec task patch appears to hang indefinitely — had to kill and use task set + task
       note as workaround
-    status: acted_on
-    action: promote
     reasoning: "Bug: task patch hangs indefinitely. Blocks normal workflow."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:48.188Z
     result_ref: "@01KJDQ10"
     created_at: 2026-02-26T19:02:53.283Z
     updated_at: 2026-02-26T19:32:48.204Z
+    acted_at: 2026-02-26T19:32:48.188Z
   - _ulid: 01KJDNA844EG8Y2D2XN590AW43
+    status: acted_on
+    action: duplicate
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJDFFJDCG18ZY3B8RQ96JJFP
     item_snapshot: Add --description flag to kspec task set (matches task add interface, avoids need for
       task patch --data JSON workaround)
-    status: acted_on
-    action: duplicate
     reasoning: Duplicate of deferred item 01KHWWMD — task set --description flag
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:47.397Z
     created_at: 2026-02-26T19:02:53.317Z
     updated_at: 2026-02-26T19:32:47.415Z
+    acted_at: 2026-02-26T19:32:47.397Z
   - _ulid: 01KJDNA853NFJ8ZS5SDMBRNM0Z
+    status: acted_on
+    action: spec-gap
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJDFFJEED59WPDEZ7MZ98ZW9
     item_snapshot: "Plan import: generate richer task descriptions from Implementation Notes section —
       include file paths, what to change, verification steps instead of generic 'See plan...' text"
-    status: acted_on
-    action: spec-gap
-    reasoning: Plan import richer descriptions — improvement, not blocking
-    decided_by: "@claude"
-    evidence_refs: []
+    override_at: 2026-02-26T19:12:37.001Z
+    override_by: Jacob Chapel
     override_reasoning: It's not blocking but is something that I've found causes pain when doing plan
       imports as it often takes multiple passes to ensure the resulting tasks are standalone. So I
       would like to properly handle this.
-    override_by: Jacob Chapel
-    override_at: 2026-02-26T19:12:37.001Z
-    acted_at: 2026-02-26T19:32:47.291Z
+    reasoning: Plan import richer descriptions — improvement, not blocking
     result_ref: "@01KJDQ0Z"
     created_at: 2026-02-26T19:02:53.347Z
     updated_at: 2026-02-26T19:32:47.305Z
+    acted_at: 2026-02-26T19:32:47.291Z
   - _ulid: 01KJDNA863W9TWRQP1FAWQ5NGB
+    status: acted_on
+    action: spec-gap
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJDFFJF7BYFNDQVB96T7KFM9
     item_snapshot: "Merge driver: auto-resolve .kspec-agents-hash file conflicts (deterministic hash,
       should always take latest)"
-    status: acted_on
-    action: spec-gap
-    reasoning: Merge driver for hash file — low frequency conflict, manual resolution works
-    decided_by: "@claude"
-    evidence_refs: []
+    override_at: 2026-02-26T19:10:50.608Z
+    override_by: Jacob Chapel
     override_reasoning: Since this is meant to track what is in main but is really when it was last
       generated, it is a bit weird and could be a source of conflicts as work is done across many
       instances of the repo. So we'd want our merge driver to handle it in a consistent way.
-    override_by: Jacob Chapel
-    override_at: 2026-02-26T19:10:50.608Z
-    acted_at: 2026-02-26T19:32:47.122Z
+    reasoning: Merge driver for hash file — low frequency conflict, manual resolution works
     result_ref: "@01KJDQ0Z"
     created_at: 2026-02-26T19:02:53.379Z
     updated_at: 2026-02-26T19:32:47.138Z
+    acted_at: 2026-02-26T19:32:47.122Z
   - _ulid: 01KJDNA8723DJ93CK1F5EBEX44
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJDFFJFXQWX51PQEGAPJ09AC
     item_snapshot: "Shadow repair: handle missing /bin/sh — use direct git commands instead of spawning
       shell, fails on fish-only systems"
-    status: acted_on
-    action: promote
     reasoning: "Bug: shadow repair fails on fish-only systems (no /bin/sh). Affects real users."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:46.928Z
     result_ref: "@01KJDQ0Y"
     created_at: 2026-02-26T19:02:53.410Z
     updated_at: 2026-02-26T19:32:46.943Z
+    acted_at: 2026-02-26T19:32:46.928Z
   - _ulid: 01KJDNA881HJEG69MJN5NWXV0Q
+    status: acted_on
+    action: duplicate
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJDN04PSK23P7QTTP3RWEQES
     item_snapshot: kspec agents generate --force flag to skip staleness check and always regenerate.
       Needed during release when version bumps but content hash unchanged.
-    status: acted_on
-    action: duplicate
     reasoning: Duplicate of 01KJA6SXTB3DG19YC17E604J7X — agents generate --force flag
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:46.038Z
     created_at: 2026-02-26T19:02:53.441Z
     updated_at: 2026-02-26T19:32:46.064Z
+    acted_at: 2026-02-26T19:32:46.038Z
   - _ulid: 01KJDNA891TXP2E23ZAXJWWVGX
+    status: acted_on
+    action: duplicate
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJDN04QWW61AC3MBPD2EQW8A
     item_snapshot: Include package.json version in kspec agents staleness hash so version bumps
       auto-trigger regeneration without manual hash deletion.
-    status: acted_on
-    action: duplicate
     reasoning: Duplicate of 01KJA6SXTB3DG19YC17E604J7X — version in staleness hash
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-02-26T19:32:45.916Z
     created_at: 2026-02-26T19:02:53.473Z
     updated_at: 2026-02-26T19:32:45.935Z
+    acted_at: 2026-02-26T19:32:45.916Z
   - _ulid: 01KJS6Z99YDKCXMXY41AN7EKY4
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJS1XVF32VNP2P1E7ZEKYDC9
     item_snapshot: "kspec validate --json appends human-readable summary text after JSON payload,
       causing invalid JSON for downstream jq parsing. Expected: pure JSON when --json is set.
       Workaround: pipe through head or sed to strip trailing text. Reported from imgen project."
-    status: acted_on
-    action: promote
     reasoning: "Bug breaking automation: --json appends human-readable text after JSON payload, making
       jq parsing fail. Clear fix, automation eligible."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-03T06:43:26.029Z
     result_ref: "@01KJS6ZT"
     created_at: 2026-03-03T06:43:07.198Z
     updated_at: 2026-03-03T06:43:26.050Z
+    acted_at: 2026-03-03T06:43:26.029Z
   - _ulid: 01KJS6Z9DE1HK35729ADS9EMXB
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJS1XVJEAFZ5F9KNSRHZ92ZS
     item_snapshot: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but
       returns non-zero when only warnings present (e.g., exit 6). Downstream automation cant
       distinguish warnings-only from real failures. Add explicit mode/flag for
       warning-only-is-success, or make output clearly state non-zero is from warnings. Reported from
       imgen project."
-    status: acted_on
-    action: promote
     reasoning: "Bug breaking automation: non-zero exit even when only warnings present. Ambiguous exit
       codes prevent reliable CI automation. Clear fix, automation eligible."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-03T06:43:24.295Z
     result_ref: "@01KJS6ZR"
     created_at: 2026-03-03T06:43:07.310Z
     updated_at: 2026-03-03T06:43:24.319Z
+    acted_at: 2026-03-03T06:43:24.295Z
   - _ulid: 01KJS6Z9KCGMWNFJP8KRJM86E0
+    status: acted_on
+    action: duplicate
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJGAE24345STWVS3RMKNC838
     item_snapshot: "task set --description: task set has no --description option, making it impossible
       to update task descriptions after creation. Workaround: add detailed task notes. Came up when
       plan-derived task had null description and needed standalone context for automation."
-    status: acted_on
-    action: duplicate
     reasoning: Duplicate of 01KHWWMDCV6NBYK8D8EMYBZEPV (task set --description missing flag).
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-03T06:43:22.629Z
     created_at: 2026-03-03T06:43:07.500Z
     updated_at: 2026-03-03T06:43:22.656Z
+    acted_at: 2026-03-03T06:43:22.629Z
   - _ulid: 01KJS6Z9RYRR1KQ40SVQVFT2CN
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJDXC04W8C4JMCKD7KX78TXA
     item_snapshot: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE
       when child process pipe is dead during shutdown. Should catch EPIPE and treat as
       connection-closed. Currently requires process-level uncaughtException handlers in tests that
       spawn/kill agents.
-    status: acted_on
-    action: promote
     reasoning: "Crash bug: uncaught EPIPE in ACP framing layer. Specific file (src/acp/framing.ts),
       straightforward error handling fix. Automation eligible."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-03T06:43:22.114Z
     result_ref: "@01KJS6ZP"
     created_at: 2026-03-03T06:43:07.678Z
     updated_at: 2026-03-03T06:43:22.135Z
+    acted_at: 2026-03-03T06:43:22.114Z
   - _ulid: 01KJS6Z9VNAWSJ3TCKN508JXJC
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJKC9TKVE2Z4B74A0AMBJNHE
     item_snapshot: "Shadow branch auto-push silently swallows failures — fire-and-forget push
       (shadow.ts:1159-1164) uses spawn with stdio:ignore and detached:true, making divergence errors
@@ -2220,47 +2224,47 @@ triage:
       regardless — this is about VISIBILITY of sync failures, not blocking commits. Related: the
       merge driver handles YAML conflicts well (56/57 commits rebased cleanly), so the recovery path
       works — the problem is purely that nobody knows recovery is needed."
-    status: acted_on
-    action: promote
     reasoning: "Reliability bug: shadow auto-push silently swallows failures. Fire-and-forget spawn
       drops errors. Specific location (shadow.ts:1159-1164). Automation eligible."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-03T06:43:20.376Z
     result_ref: "@01KJS6ZM"
     created_at: 2026-03-03T06:43:07.765Z
     updated_at: 2026-03-03T06:43:20.401Z
+    acted_at: 2026-03-03T06:43:20.376Z
   - _ulid: 01KJS6ZA4TVKXA6ZHKFR0DSY5V
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJRT6KR1T8P1A7N4XGAPMTQS
     item_snapshot: "eval-agents/SKILL.md line 144: scenario table label still reads Ralph continuation —
       scenario content was updated in PR #640 but table label was not. Update to Agent dispatch
       continuation."
-    status: acted_on
-    action: promote
     reasoning: "Tiny doc fix: eval-agents/SKILL.md line 144 has stale scenario table label. One-liner
       change. Automation eligible."
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-03T06:43:18.695Z
     result_ref: "@01KJS6ZK"
     created_at: 2026-03-03T06:43:08.059Z
     updated_at: 2026-03-03T06:43:18.716Z
+    acted_at: 2026-03-03T06:43:18.695Z
   - _ulid: 01KJX36RPSBATAHFRZ3K459QE0
+    status: acted_on
+    action: promote
+    decided_by: Jacob Chapel
+    evidence_refs: []
     inbox_ref: 01KJTB75HJSW19JMBHTE4390HQ
     item_snapshot: Add branch check warning to kspec task start — when current branch is not main and
       does not match the task slug, warn the agent. Would catch starting work on the wrong branch
       without a manual git branch check.
-    status: acted_on
-    action: promote
     reasoning: "Clear actionable guardrail for wrong-branch starts; aligns with unresolved
       branch-friction observations and PR #664 branch-isolation guidance."
-    decided_by: Jacob Chapel
-    evidence_refs: []
-    acted_at: 2026-03-04T18:54:21.472Z
     result_ref: "@01KJX36X"
     created_at: 2026-03-04T18:54:15.770Z
     updated_at: 2026-03-04T18:54:21.487Z
+    acted_at: 2026-03-04T18:54:21.472Z
   - _ulid: 01KK5X9SS2DV0TMFVJFHK0CMN5
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJS7BGC9GX1E66JYK3QDH8R3
     item_snapshot: "kspec agent run produces no visible output: (1) runInvocation is called without
       onUpdate, so no streaming to stdout during execution. (2) kspec session log show does not
@@ -2268,17 +2272,17 @@ triage:
       stream by default for interactive use), print text blocks as they arrive. Also: session log
       show should support a --output or --text mode that replays the assistant text from
       session.update events. Workaround: jq/python one-liner on events.jsonl."
-    status: acted_on
-    action: promote
     reasoning: Spec coverage exists at @cli-agent-commands ac-12 (streaming output) and ac-11 (--json
       suppression). Promote to task for implementation.
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-08T05:04:38.753Z
     result_ref: "@01KK5XAG"
     created_at: 2026-03-08T05:04:13.602Z
     updated_at: 2026-03-08T05:04:38.782Z
+    acted_at: 2026-03-08T05:04:38.753Z
   - _ulid: 01KK5X9SWBGW00F2RBSDTNH9VP
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJTBNHYM8CTAG9Q9SWY87W2M
     item_snapshot: "Race condition: process.env.KSPEC_SESSION_ID mutation in invocation.ts is not safe
       for concurrent multi-project agent dispatch. invocation.ts saves/restores KSPEC_SESSION_ID in
@@ -2288,17 +2292,17 @@ triage:
       process.env mutation remains as a race vector. Fix: either remove the process.env mutation
       entirely (rely solely on adapter config injection + spawn env), or add a process-level lock
       around the env mutation window."
-    status: acted_on
-    action: promote
     reasoning: Bug in invocation.ts — process.env mutation race condition for concurrent multi-project
       dispatch. No spec gap, runtime bug to fix.
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-08T05:04:40.799Z
     result_ref: "@01KK5XAJ"
     created_at: 2026-03-08T05:04:13.707Z
     updated_at: 2026-03-08T05:04:40.819Z
+    acted_at: 2026-03-08T05:04:40.799Z
   - _ulid: 01KKBBRH8MT4VNF90KSJNPK1A6
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJKY1H3C2SEQJ3ZAPSPXZP75
     item_snapshot: "Reflection follow-up: kspec batch can fail during copy-back with ENOTEMPTY on
       .kspec/sessions/<session-id> (observed while batching task start+note). The batch reports all
@@ -2306,79 +2310,79 @@ triage:
       broken/deleted-file state until manual recovery (e.g., git -C .kspec restore .). Improve batch
       copy-back robustness for session blob directories and avoid failing the batch when payload
       writes succeeded."
-    status: acted_on
-    action: delete
     reasoning: Fixed by in-memory WriteBuffer (commit 52f86b8f9) + sessions moved to .kspec-sessions/
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T07:53:55.815Z
     created_at: 2026-03-10T07:53:08.628Z
     updated_at: 2026-03-10T07:53:55.835Z
+    acted_at: 2026-03-10T07:53:55.815Z
   - _ulid: 01KKBBRHCAEZR3VKMBPY62YGYZ
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJS6ESNC2EMH2K2ATJCV1CMR
     item_snapshot: "kspec batch: item add + item set in same batch fails — newly created item slug not
       resolvable until after shadow commit. Explore deferred slug resolution or two-phase batch
       execution so items can be created and updated atomically."
-    status: acted_on
-    action: delete
     reasoning: Fixed by buffer-aware readFileBufferAware() in loadSpecFile (commit 2083d5fe3)
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T07:53:53.551Z
     created_at: 2026-03-10T07:53:08.746Z
     updated_at: 2026-03-10T07:53:53.573Z
+    acted_at: 2026-03-10T07:53:53.551Z
   - _ulid: 01KKBBRHF0M25PY8B74ETN0T8G
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJTFVPPB46K87NGGA3Z44EFK
     item_snapshot: "kspec batch item ac add silently drops items when shadow branch has concurrent
       commits. Batch reports N/N succeeded but only last item survives due to AC numbering
       collision. Workaround: add items individually or ensure no concurrent shadow writes. Needs
       investigation into batch atomicity under concurrent shadow commits."
-    status: acted_on
-    action: delete
     reasoning: Retracted as invalid (commit 9728253fa); buffer-aware reads prevent the issue
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T07:53:51.202Z
     created_at: 2026-03-10T07:53:08.832Z
     updated_at: 2026-03-10T07:53:51.228Z
+    acted_at: 2026-03-10T07:53:51.202Z
   - _ulid: 01KKBBRHHPC2ACVQ4ZB2VZ6X71
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJS9PR6ZKT6M25HGE716V01B
     item_snapshot: "Bug: after agent.failed, task remains stuck in in_progress with no note.
       invocation.ts should append a failure note and optionally reset task to pending so dispatch
       can retry cleanly. Currently requires manual intervention to close out the task."
-    status: acted_on
-    action: delete
     reasoning: "Fixed: AGENT-FAIL note auto-appended + retry threshold blocks task (invocation.ts:530-551)"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T07:53:49.157Z
     created_at: 2026-03-10T07:53:08.918Z
     updated_at: 2026-03-10T07:53:49.181Z
+    acted_at: 2026-03-10T07:53:49.157Z
   - _ulid: 01KKBBRHMYR8RX133SQMSQ040A
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KKA99RAZF7NRTY4XF891HXJ3
     item_snapshot: Session checkpoint hook fires for tasks owned by other sessions/agents. Should only
       checkpoint tasks owned by the current session. Possible regression or spec gap.
-    status: acted_on
-    action: delete
     reasoning: "Fixed: session-scoped filtering in checkpoint.ts (PR #537)"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T07:53:46.931Z
     created_at: 2026-03-10T07:53:09.022Z
     updated_at: 2026-03-10T07:53:46.954Z
+    acted_at: 2026-03-10T07:53:46.931Z
   - _ulid: 01KKBBRHQVB99SFEGSHYDXKRKX
+    status: acted_on
+    action: delete
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KK3HRRVMQDEQP7NDRHAKEG8J
     item_snapshot: Triage page (routes/triage/+page.svelte) still uses $app/stores instead of $app/state
       — same filter dropdown reactivity bug as inbox page
-    status: acted_on
-    action: delete
     reasoning: "Fixed: $derived + goto() pattern (commit 55b1810ae)"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T07:53:44.610Z
     created_at: 2026-03-10T07:53:09.115Z
     updated_at: 2026-03-10T07:53:44.634Z
+    acted_at: 2026-03-10T07:53:44.610Z
   - _ulid: 01KKBBRHTAWZ4A2117WQN7YE7S
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJG5A7Q8WZDHNTH9M600RZZ9
     item_snapshot: "Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
       (observed in codex session). Repro: with KSPEC_SESSION_ID set to an old session that has
@@ -2386,17 +2390,17 @@ triage:
       exhausted ... let iteration end naturally' even when not running ralph and no in-progress
       tasks. Expected: budget guard should apply only during active ralph loop iteration context, or
       stale/non-ralph session IDs should be ignored."
-    status: acted_on
-    action: promote
     reasoning: "Still valid: checkBudget() does not validate session is active — blocks legitimate work
       with stale KSPEC_SESSION_ID"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T07:53:42.501Z
     result_ref: "@01KKBBSH"
     created_at: 2026-03-10T07:53:09.194Z
     updated_at: 2026-03-10T07:53:42.516Z
+    acted_at: 2026-03-10T07:53:42.501Z
   - _ulid: 01KKBBRHWKTJMG5YSCKEZH34TY
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJGA18V9VY86ZFAVJ9CP2PNA
     item_snapshot: >-
       Diagnose skill verify drift/no-hash for plugin-provided core skills.
@@ -2419,31 +2423,31 @@ triage:
       - plugin-provided status handling in skill verify/status/diff paths
 
       - whether this is expected behavior or a bug in drift detection
-    status: acted_on
-    action: promote
     reasoning: "Still valid: skill verify switch missing plugin-provided case in skill-diff.ts"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T07:53:39.127Z
     result_ref: "@01KKBBSD"
     created_at: 2026-03-10T07:53:09.267Z
     updated_at: 2026-03-10T07:53:39.149Z
+    acted_at: 2026-03-10T07:53:39.127Z
   - _ulid: 01KKBBRHYST9FVS44128Y72KE3
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJS1XVH2AV1JX8X1QT9RMFC3
     item_snapshot: kspec commands should support manifest discovery from nested task worktrees (or
       accept explicit --project-root). Running kspec validate/note/submit from isolated worktrees
       (e.g., /tmp task worktrees) fails with No kspec manifest found. KSPEC_SPEC_DIR env var exists
       for batch mode but general CLI commands dont use it. Reported from imgen project task-work
       automation.
-    status: acted_on
-    action: defer
     reasoning: Mechanism looks correct in code; could not reproduce. Defer until next confirmed occurrence
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T07:53:35.421Z
     created_at: 2026-03-10T07:53:09.337Z
     updated_at: 2026-03-10T07:53:35.446Z
+    acted_at: 2026-03-10T07:53:35.421Z
   - _ulid: 01KKBBRJ1A4MVJJTV65ZJB11YX
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KK6BVYGH1PCV2N3Q2NZGAX5W
     item_snapshot: kspec shadow repair removes the .kspec worktree before verifying it can recreate it.
       If git is not on PATH (e.g. spawn git ENOENT), repair leaves the project in a worse state than
@@ -2451,93 +2455,93 @@ triage:
       worktree; instead it should try to re-link or fix in place. If removal is truly necessary,
       verify git is available before removing. Observed in kynetic-spec-ui when repair failed with
       'spawn git ENOENT' and left .kspec missing entirely.
-    status: acted_on
-    action: promote
     reasoning: "Still valid: repairShadow() calls fs.rm before git worktree add — narrow but real data
       loss window. Needs verify-before-delete pattern"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T07:53:32.981Z
     result_ref: "@01KKBBS7"
     created_at: 2026-03-10T07:53:09.418Z
     updated_at: 2026-03-10T07:53:32.997Z
+    acted_at: 2026-03-10T07:53:32.981Z
   - _ulid: 01KKBBRJ3VXX39KZPZ2Q6K3M0N
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJN378XQQETSAS8DKWAQ7F0F
     item_snapshot: "enhanced-setup.test.ts: 'should render core skills to codex output when codex is
       detected' fails — .codex/config.toml not created. Pre-existing failure (confirmed by stash
       test). Likely related to completed task @01KJEWKG — may need test update to match new codex
       config behavior."
-    status: acted_on
-    action: promote
     reasoning: "Still failing: enhanced-setup.test.ts codex config not created. Related to codex
       detection priority"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T07:53:29.780Z
     result_ref: "@01KKBBS4"
     created_at: 2026-03-10T07:53:09.499Z
     updated_at: 2026-03-10T07:53:29.799Z
+    acted_at: 2026-03-10T07:53:29.780Z
   - _ulid: 01KKBBRJ66VR6K02MHTQ2Q2XC3
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KKAK7EYPM7ZSZWBH9ZZQ4JVK
     item_snapshot: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform
       when CODEX_THREAD_ID is set but gets claude-code. Deterministic failure in shard3, unrelated
       to daemon isolation."
-    status: acted_on
-    action: promote
     reasoning: "Still failing: agent detection checks CLAUDECODE before CODEX_THREAD_ID, env override
       insufficient"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T07:53:26.449Z
     result_ref: "@01KKBBS1"
     created_at: 2026-03-10T07:53:09.574Z
     updated_at: 2026-03-10T07:53:26.466Z
+    acted_at: 2026-03-10T07:53:26.449Z
   - _ulid: 01KKBD4FNZ7XP910HKGVCR4BCT
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KKB9X155J0DJ8PFQ6DAFDG25
     item_snapshot: "CLI DX: audit and normalize argument naming across all subcommands. Inconsistencies
       found: task note uses positional <message> but plan note uses --text flag; item ac set vs
       expected item ac update; task set --depends-on requires array but gives poor error on
       comma-separated string. Evaluate entire CLI surface area for consistency or add aliases based
       on actual/expected usage patterns."
-    status: acted_on
-    action: defer
     reasoning: Large scope audit — no single fix, defer until CLI stabilization phase
-    decided_by: "@claude"
-    evidence_refs: []
     created_at: 2026-03-10T08:17:08.799Z
     updated_at: 2026-03-10T08:18:25.644Z
     acted_at: 2026-03-10T08:18:25.613Z
   - _ulid: 01KKBD4FS43KP9AJCY18GND080
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KKB0WWM9QRKCVE1CBMKE6ZY4
     item_snapshot: "CLI mutation commands should show what changed (before → after) in output,
       especially for array fields like --trait that replace rather than append. Two improvements:
       (1) item set --trait should append by default (or have --add-trait / --remove-trait), (2) all
       mutating commands should display diffs of what they changed so silent data loss is visible.
       Triggered by --trait silently replacing existing traits array."
-    status: acted_on
-    action: promote
     reasoning: "User-facing footgun: --trait replaces instead of appending. Known gotcha already
       documented in MEMORY.md"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:18:23.177Z
     result_ref: "@01KKBD6Q"
     created_at: 2026-03-10T08:17:08.900Z
     updated_at: 2026-03-10T08:18:23.201Z
+    acted_at: 2026-03-10T08:18:23.177Z
   - _ulid: 01KKBD4FVFFQZ0BHFMSRE2PW0V
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KK8Q8SE9R38ZAFAKSHJ9VH7M
     item_snapshot: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath
       so additional registered projects get periodic session pulls too."
-    status: acted_on
-    action: promote
     reasoning: "SHOULD-FIX from PR #723 review — daemon session-branch sync limited to startupProjectPath"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:18:19.387Z
     result_ref: "@01KKBD6K"
     created_at: 2026-03-10T08:17:08.975Z
     updated_at: 2026-03-10T08:18:19.406Z
+    acted_at: 2026-03-10T08:18:19.387Z
   - _ulid: 01KKBD4FXSGWA95VA8WXBKK5E6
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KK69HXSET7B215A80ZY1EKJH
     item_snapshot: "Dispatch trigger expansion ideas for flexible agent orchestration: (1) Cron-style
       scheduled triggers — run agents on intervals (e.g. nightly codebase audit, weekly spec drift
@@ -2551,159 +2555,159 @@ triage:
       that combine conditions (e.g. run audit agent when completed_tasks_since_last_audit > 5, or
       when validation_errors > threshold). (6) Watch triggers — react to external events like GitHub
       webhook (new issue filed, PR comment, CI failure) to auto-triage or auto-fix."
-    status: acted_on
-    action: promote
     reasoning: Design/spec task for dispatch trigger expansion — cron, webhook, file-watch triggers.
       Manual only, design phase first
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:18:16.172Z
     result_ref: "@01KKBD6G"
     created_at: 2026-03-10T08:17:09.049Z
     updated_at: 2026-03-10T08:18:16.192Z
+    acted_at: 2026-03-10T08:18:16.172Z
   - _ulid: 01KKBD4G0EJHEYW88GHVEEZ6Z3
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KK6168DMHH6H5EM7277P4Y1B
     item_snapshot: "kspec setup should update existing agent definitions on version bumps. Currently
       skips agents with matching IDs, so agents created with older kspec versions miss new fields
       like auto_approve. Surfaced via GitHub issue #700 — reporter had agents without auto_approve
       set, blocking headless dispatch. Options: (1) merge new defaults into existing agents, (2) add
       kspec setup --upgrade flag, (3) warn when agent config is missing expected fields."
-    status: acted_on
-    action: promote
     reasoning: "Clear DX improvement: setup should update agent defs on version bumps instead of
       skipping matching IDs"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:18:12.829Z
     result_ref: "@01KKBD6D"
     created_at: 2026-03-10T08:17:09.134Z
     updated_at: 2026-03-10T08:18:12.849Z
+    acted_at: 2026-03-10T08:18:12.829Z
   - _ulid: 01KKBD4G38VNC1HHRB7T9EE4JC
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KK5WHSWGB2SNA5B1498X0JAQ
     item_snapshot: "Improve kspec agent review ergonomics: direct 'kspec agent run --task <ref>' ignores
       agent prompt_template and always injects a hardcoded work prompt, so review agents drift into
       implementation. Prompt-driven codex-acp runs are also brittle and can fail with RPC parse
       errors. Need a reliable readonly review path with prompt_template parity, dry-run parity, and
       adapter-safe prompt handling."
-    status: acted_on
-    action: promote
     reasoning: "Bug in agent run: --task ignores prompt_template, injects hardcoded work prompt. Review
       agents drift into implementation"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:18:09.474Z
     result_ref: "@01KKBD69"
     created_at: 2026-03-10T08:17:09.224Z
     updated_at: 2026-03-10T08:18:09.494Z
+    acted_at: 2026-03-10T08:18:09.474Z
   - _ulid: 01KKBD4G5DAVCGDV23HKVMACDK
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KK5ETB1FQVBVFX99G95C1TZJ
     item_snapshot: Multi-project agent dashboard — tmux-style live view of all running agent sessions
       across projects. Show terminal-like panes for each active session with real-time output, agent
       name, task ref, elapsed time. Could aggregate WebSocket feeds from multiple daemon instances.
       Think mission control for agent fleet monitoring without navigating to individual project UIs.
-    status: acted_on
-    action: promote
     reasoning: Design/spec task for multi-project agent dashboard. Manual only, needs design phase
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:18:05.887Z
     result_ref: "@01KKBD66"
     created_at: 2026-03-10T08:17:09.293Z
     updated_at: 2026-03-10T08:18:05.907Z
+    acted_at: 2026-03-10T08:18:05.887Z
   - _ulid: 01KKBD4G7K79AXXGJCB219MSAM
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KK30AYASRF6F546A5W3G14DR
     item_snapshot: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies
       a SKILL.md, the agent must run 'kspec skill render <ref>' and commit the rendered output.
       Currently agents don't know this step exists and users have to remind them. Could be a
       post-step in task-work or a convention in AGENTS.md."
-    status: acted_on
-    action: promote
     reasoning: Document skill update workflow — agents dont know to run kspec skill render after
       modifying SKILL.md
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:18:02.657Z
     result_ref: "@01KKBD63"
     created_at: 2026-03-10T08:17:09.363Z
     updated_at: 2026-03-10T08:18:02.677Z
+    acted_at: 2026-03-10T08:18:02.657Z
   - _ulid: 01KKBD4G9ME9DYQ9NRCZPWCNJY
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJY9H27H9HRBH303RQJCKH4B
     item_snapshot: Alignment status calculation should treat needs_work and pending_review as active
       work states (maps to expected spec status in_progress). Was prototyped in fix cycle 4 of
       @implement-ui-design-system but reverted as out-of-scope. Needs dedicated alignment/validate
       task.
-    status: acted_on
-    action: promote
     reasoning: Alignment calculation fix — needs_work and pending_review should map to in_progress. Was
       prototyped already
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:17:59.235Z
     result_ref: "@01KKBD5Z"
     created_at: 2026-03-10T08:17:09.428Z
     updated_at: 2026-03-10T08:17:59.256Z
+    acted_at: 2026-03-10T08:17:59.235Z
   - _ulid: 01KKBD4GBQ9PYTEFH346EW03QG
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJXPG80VDQWGT01KTJ7GGWYW
     item_snapshot: 'Fix kspec item list --json output structure: currently returns nested [items, count]
       pairs which are difficult to parse programmatically. Should return flat { "items": [...],
       "total": N } shape consistent with other JSON commands. Check for existing consumers before
       changing.'
-    status: acted_on
-    action: promote
     reasoning: item list --json returns nested pairs instead of flat object — breaks programmatic usage
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:17:55.897Z
     result_ref: "@01KKBD5W"
     created_at: 2026-03-10T08:17:09.495Z
     updated_at: 2026-03-10T08:17:55.917Z
+    acted_at: 2026-03-10T08:17:55.897Z
   - _ulid: 01KKBD4GDTXZ4K7A5S84VG5RCE
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJXP9CS7E3GJ27DM8970MM46
     item_snapshot: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug
       ac-N comments and verify (1) slug resolves to a real spec item, (2) ac-N exists on that spec.
       Surface as completeness warnings. Catches typos like @alignment-validation-warnings before
       review."
-    status: acted_on
-    action: promote
     reasoning: AC annotation validation — verify slug resolves and ac-N exists. Extends existing
       validate command
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:17:52.359Z
     result_ref: "@01KKBD5S"
     created_at: 2026-03-10T08:17:09.562Z
     updated_at: 2026-03-10T08:17:52.378Z
+    acted_at: 2026-03-10T08:17:52.359Z
   - _ulid: 01KKBD4GG08Z4BFCS9AZZYSA2X
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJXP5TGJ6CCC2D45C4RS9B4X
     item_snapshot: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply
       change only to targeted item. Needed when bulk-updating many specs in scripts — currently
       requires yes | workaround which breaks kspec batch."
-    status: acted_on
-    action: promote
     reasoning: --no-cascade flag for item set — needed for bulk scripting, currently requires yes pipe
       workaround
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:17:48.982Z
     result_ref: "@01KKBD5N"
     created_at: 2026-03-10T08:17:09.632Z
     updated_at: 2026-03-10T08:17:49.001Z
+    acted_at: 2026-03-10T08:17:48.982Z
   - _ulid: 01KKBD4GJ477Y6HZ22BR49RD7W
+    status: acted_on
+    action: duplicate
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJXFS1A8QE3YPJ0J0HDY4SVJ
     item_snapshot: "`kspec setup` renders codex skills to `.agents/skills/` but does not store render
       hashes in the kspec-meta branch. This leaves all codex skills showing as `drifted` in `kspec
       skill status` immediately after a fresh setup. Workaround: delete rendered files and re-run
       `kspec skill render` so hashes are written. Fix: setup should store render hashes when it
       renders skills."
-    status: acted_on
-    action: duplicate
     reasoning: "Duplicate of promoted task @01KKBBSD — same issue: codex skill render hashes not stored"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:17:45.720Z
     created_at: 2026-03-10T08:17:09.700Z
     updated_at: 2026-03-10T08:17:45.746Z
+    acted_at: 2026-03-10T08:17:45.720Z
   - _ulid: 01KKBD4GM79AAZZFVMDX00VMAF
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJXFRHPQ44N29GATSVJZAZTN
     item_snapshot: When running `kspec setup` or `kspec init --setup`, automatically install default
       workflows referenced in core skills (e.g. `session-reflect`, `session-reflect-loop`,
@@ -2711,95 +2715,156 @@ triage:
       skill docs but not installed by default, causing `kspec workflow start @session-reflect` to
       fail on a fresh project. They should be bundled and installed the same way core skills are via
       `install-core`.
-    status: acted_on
-    action: promote
     reasoning: Auto-install default workflows during setup — clear scope, extends existing setup flow
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:17:43.544Z
     result_ref: "@01KKBD5G"
     created_at: 2026-03-10T08:17:09.767Z
     updated_at: 2026-03-10T08:17:43.567Z
+    acted_at: 2026-03-10T08:17:43.544Z
   - _ulid: 01KKBD4GQCRDWTDRVNCTG27VKM
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJVY4MRHGP0V4ZH4QSMP0Q4M
     item_snapshot: "Dispatch: add refresh command to re-bootstrap engine state without stopping/starting
       (reload agents + re-evaluate in_progress tasks)."
-    status: acted_on
-    action: defer
     reasoning: Nice-to-have dispatch refresh — stop/start works for now
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:17:40.347Z
     created_at: 2026-03-10T08:17:09.868Z
     updated_at: 2026-03-10T08:17:40.372Z
+    acted_at: 2026-03-10T08:17:40.347Z
   - _ulid: 01KKBD4GSRDV0WQQ7XZM477KRW
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJVP7YTYMMXN9K64WTS1XEP4
     item_snapshot: "Reflection: Harden machine-readable output contracts for JSON commands (especially
       'kspec validate --json') so output is strict JSON with no trailing text, enabling reliable
       jq-based automation."
-    status: acted_on
-    action: promote
     reasoning: validate --json outputs non-strict JSON with trailing text — breaks jq automation
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:17:38.253Z
     result_ref: "@01KKBD5B"
     created_at: 2026-03-10T08:17:09.944Z
     updated_at: 2026-03-10T08:17:38.275Z
+    acted_at: 2026-03-10T08:17:38.253Z
   - _ulid: 01KKBD4GVXH7K1XTYDT75DA41A
+    status: acted_on
+    action: defer
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJVP7W2N189NDC4SMQHR18GM
     item_snapshot: "Reflection: Improve task note readability by supporting filtered views for
       superseded history (for example latest-only and/or hide-superseded) to reduce stale guidance
       noise during implementation."
-    status: acted_on
-    action: defer
     reasoning: Filtered note views nice-to-have, not urgent — current full output workable
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:17:34.991Z
     created_at: 2026-03-10T08:17:10.013Z
     updated_at: 2026-03-10T08:17:35.018Z
+    acted_at: 2026-03-10T08:17:34.991Z
   - _ulid: 01KKBD4GY981HDE9VBNQ38PW5Q
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJVP7VSXE38QW7TNTPSW4CNP
     item_snapshot: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json'
       should include current step metadata (step_index, step_type, step_content) so users/agents can
       progress workflows without manually opening meta YAML."
-    status: acted_on
-    action: promote
     reasoning: Workflow show --json with step metadata — enables workflow automation and agent progress
       tracking
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:17:32.601Z
     result_ref: "@01KKBD55"
     created_at: 2026-03-10T08:17:10.089Z
     updated_at: 2026-03-10T08:17:32.620Z
+    acted_at: 2026-03-10T08:17:32.601Z
   - _ulid: 01KKBD4H0FWTTAM74TKAB41SSZ
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJVP3S8TYHGHFHT4KZ1BQZ9C
     item_snapshot: "Workflow UX: allow kspec workflow show (and related workflow run commands where
       safe) to default to the single active run instead of requiring explicit run-ref."
-    status: acted_on
-    action: promote
     reasoning: "Small UX fix: workflow show should default to single active run instead of requiring
       explicit ref"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:17:29.342Z
     result_ref: "@01KKBD52"
     created_at: 2026-03-10T08:17:10.159Z
     updated_at: 2026-03-10T08:17:29.361Z
+    acted_at: 2026-03-10T08:17:29.342Z
   - _ulid: 01KKBD4H2V9S48KWYCBEQ47D7A
+    status: acted_on
+    action: promote
+    decided_by: "@claude"
+    evidence_refs: []
     inbox_ref: 01KJVFDRC70KAZ98MJ9ERFY6JJ
     item_snapshot: Clarify @task-work submit timing and pending_review ownership semantics. Current
       wording can imply both 'submit after PR created' and 'submit before PR creation'. Normalize to
       one sequence (submit transitions ownership to pr-reviewer queue before PR handoff) and make
       worker/reviewer responsibilities explicit.
-    status: acted_on
-    action: promote
     reasoning: "Small doc fix: update plan-review dispatch naming to avoid role overload with pr-reviewer"
-    decided_by: "@claude"
-    evidence_refs: []
-    acted_at: 2026-03-10T08:17:25.963Z
     result_ref: "@01KKBD4Z"
     created_at: 2026-03-10T08:17:10.235Z
     updated_at: 2026-03-10T08:17:25.981Z
+    acted_at: 2026-03-10T08:17:25.963Z
+  - _ulid: 01KM4KKH70PCTN8XP8ATQXM04G
+    status: triaged
+    action: delete
+    decided_by: Jacob Chapel
+    evidence_refs:
+      - "@tests/guard-worktree.test"
+      - "@src/cli/commands/guard.ts"
+    inbox_ref: 01KKQSRQADYB6JJ7ARDK9PCFSD
+    item_snapshot: "Worktree guard blocks git push from within kspec worktrees even though push is safe.
+      Workaround: push from main repo via git push origin <branch>. Guard should allow push
+      operations — only reset/rebase/clean are genuinely dangerous to session state."
+    reasoning: No longer valid in the current tree. The worktree guard now explicitly allows non-force
+      git push and only blocks force-push; see tests/guard-worktree.test and
+      src/cli/commands/guard.ts.
+    created_at: 2026-03-20T03:11:14.144Z
+    updated_at: 2026-03-20T03:11:14.170Z
+  - _ulid: 01KM4KKHADKAAB987TBKS35MRV
+    status: triaged
+    action: promote
+    decided_by: Jacob Chapel
+    evidence_refs:
+      - "@review-cli-creation-and-query"
+    inbox_ref: 01KKWCEPAFKA3232W433KPDVMM
+    item_snapshot: "review add --base/--head flags override --subject-type, silently creating code
+      subjects when task subject was intended. parseSubjectFromOptions checks options.base before
+      subjectType, so passing version context for a task review creates the wrong subject type.
+      Consider: separate --version-base/--version-head from --base/--head, or validate that
+      --base/--head are incompatible with --subject-type task."
+    reasoning: Still valid. parseSubjectFromOptions() treats any --base flag as a code subject before
+      honoring --subject-type, so task/spec/plan review creation can be silently coerced into code
+      review shape.
+    created_at: 2026-03-20T03:11:14.253Z
+    updated_at: 2026-03-20T03:11:14.272Z
+  - _ulid: 01KM4KKHD1PKQ860V0XJDDETEE
+    status: triaged
+    action: promote
+    decided_by: Jacob Chapel
+    evidence_refs:
+      - "@plan-derive-enhanced"
+    inbox_ref: 01KM0P56BZ6P9RGXQ1FYSGBW7M
+    item_snapshot: "plan derive should allow task-only derivation without requiring a ## Specs YAML
+      block. Current behavior hard-fails with 'No specs found' when plan uses prose spec changes and
+      only has a ## Tasks section. This blocks the derive workflow for plans that update existing
+      specs rather than creating new ones (e.g. plan-review-version-auto-derivation). The derive
+      command should skip spec materialization when no specs are present and proceed to task
+      creation from the ## Tasks block."
+    reasoning: Still valid. plan derive currently exits when parsedPlan.specs is empty even when a plan
+      contains a Tasks block for manual task-only derivation, which blocks the documented task
+      materialization workflow.
+    created_at: 2026-03-20T03:11:14.337Z
+    updated_at: 2026-03-20T03:11:14.358Z
+  - _ulid: 01KM4KKHFQY414ZJ5D4WXWR05T
+    status: triaged
+    action: promote
+    decided_by: Jacob Chapel
+    evidence_refs:
+      - "@src/cli/commands/item.ts"
+    inbox_ref: 01KKT10X5JS0Y3883M8HFBMZCR
+    item_snapshot: "Batch arg naming inconsistency: item ac add uses 'id' but item ac remove uses 'acId'
+      for the same AC identifier parameter. Should be consistent across subcommands."
+    reasoning: Still valid and low effort. item ac add uses --id while item ac remove uses positional
+      <acId> for the same identifier concept, creating avoidable inconsistency in adjacent
+      subcommands.
+    created_at: 2026-03-20T03:11:14.423Z
+    updated_at: 2026-03-20T03:11:14.455Z
