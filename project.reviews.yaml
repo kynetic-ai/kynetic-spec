@@ -24944,6 +24944,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T04:23:44.159Z
+      - _ulid: 01KM4QZAR0X7E5YNWJA87X7FXN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM4QZAGJDTSGYJ045T1JGE6R
+        timestamp: 2026-03-20T04:27:35.040Z
     examined_commit: 44d11f272a18ce4c02be15bc1a33a12cb3fcc310
     external_links: []
     lifecycle_state: open
@@ -24953,8 +24960,30 @@ reviews:
       content_hash: ""
       ref: "@01KM4PZRFGV4WZ5HPZ9VZ3HBDN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM4QZAGJDTSGYJ045T1JGE6R
+        anchor:
+          type: code
+          commit: 44d11f272a18ce4c02be15bc1a33a12cb3fcc310
+          line_end: 1893
+          line_start: 1851
+          path: src/agent-runtime/workspace.ts
+          side: head
+        entries:
+          - _ulid: 01KM4QZAGJF7R879CFYQVX1PQ4
+            author: Jacob Chapel
+            body: "The new non-checked-out sync path skips checkout-coherence checks and updates refs/heads/
+              directly with update-ref. That is not confined to the shared checkout: if the
+              integration branch is checked out in any other worktree, Git will advance that
+              worktree's branch ref/HEAD without touching the shared checkout branch, which violates
+              the mutation-scope contract in AC-1/AC-2. I reproduced this with a separate worktree
+              on dev: after update-ref, the other worktree's HEAD moved from the old dev commit to
+              the new one while the shared checkout stayed on human-feature. This path needs an
+              explicit safety guard for 'branch checked out elsewhere' (or a different
+              implementation) plus regression coverage."
+            created_at: 2026-03-20T04:27:34.803Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T04:23:27.197Z
-    updated_at: 2026-03-20T04:23:43.627Z
+    updated_at: 2026-03-20T04:27:34.803Z
     notes: []
