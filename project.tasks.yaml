@@ -111429,5 +111429,32 @@
       supersedes: null
       author: "@claude"
       created_at: 2026-03-20T19:15:23.108Z
+    - _ulid: 01KM6BF9396Q79YATKKM8XJQ22
+      content: >-
+        Implemented the three coordinated changes per the task plan:
+
+
+        1. Backend (reviews.ts): Changed no-param default from 'open' to no filtering. Removed dead
+        'all' sentinel check that was unreachable after validation hardening.
+
+        2. UI reviews page (+page.svelte): getStatusFilter now maps URL 'all' → undefined (omit
+        param to API), no URL param → 'open' (default landing view). The select dropdown still
+        works: empty value = 'Open (default)', 'all' value = 'All statuses'.
+
+        3. Task modal (api.ts): Removed hardcoded status=all from fetchReviewsForTask — no param now
+        means all reviews.
+
+
+        Also updated E2E tests (api-reviews-list.spec.ts): replaced all status=all query params with
+        no-status-param requests. Updated the default behavior test to verify all reviews are
+        returned when no param is sent. Added a new test verifying status=open returns only open
+        reviews. Fixed the empty-result test to use subject_type=external (no fixture data) instead
+        of subject_type=code (now has fixtures).
+
+
+        All 6690 unit tests pass across 3 shards.
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-20T19:27:35.017Z
   todos: []
   automation: eligible
