@@ -1376,11 +1376,6 @@ features:
             id: ac-1
             then: The task leaves the blocked state and clears its `blocked_by` entries.
             when: The user runs `kspec task unblock <ref>`.
-          - given: A blocked task is being restored to fix-cycle follow-up rather than fresh pending work
-            id: ac-2
-            then: the task may return to needs_work instead of pending so follow-up work remains visible as
-              fix-cycle work
-            when: the task is unblocked through a supported exception path
       - _ulid: 01JHNKA9W2CTSK600000000000
         slugs:
           - task-cancel
