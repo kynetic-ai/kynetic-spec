@@ -436,6 +436,7 @@ export async function createServer(options: ServerOptions) {
       '/plans',
       '/reviews', '/reviews/*',
       '/settings',
+      '/automation',
     ];
     for (const route of spaRoutes) {
       app.get(route, () => Bun.file(indexHtmlPath));
