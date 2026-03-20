@@ -110147,6 +110147,17 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T05:17:33.576Z
+    - _ulid: 01KM4VXNC6FEH9FZ047G36NP1Z
+      content: "[FIX_CYCLE: 1] Replaced the helper-level AC-11 regression with an end-to-end dispatch
+        bootstrap test. The new coverage provisions a real workspace, pushes its canonical branch to
+        a bare remote, removes the worker worktree and local branch, then proves engine bootstrap
+        recovers the in_progress queue entry and recreates the worker worktree before invocation.
+        Verification: npm test -- agent-dispatch-engine.test.ts passed; npm test passed (289 files,
+        6644 tests); kspec validate still reports the same pre-existing project-wide
+        reference/alignment/completeness debt unrelated to this task."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T05:36:34.694Z
   todos: []
   automation: eligible
 - _ulid: 01KM4PZRFGV4WZ5HPZ9VZ3HBDN
