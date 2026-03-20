@@ -182,6 +182,7 @@ Runtime fetch coverage should observe the real batch request.
 
 		const progressBar = activePlan.getByTestId('plan-progress-bar');
 		await expect(progressBar).toBeVisible();
+		await expect(progressBar.locator('.bg-status-completed')).toHaveCount(1);
 
 		const progressText = activePlan.getByTestId('plan-progress-text');
 		await expect(progressText).toBeVisible();
@@ -199,6 +200,10 @@ Runtime fetch coverage should observe the real batch request.
 
 		const breakdown = activePlan.getByTestId('plan-task-breakdown');
 		await expect(breakdown).toBeVisible();
+		await expect(breakdown.locator('.bg-status-completed')).toHaveCount(1);
+		await expect(breakdown.locator('.bg-status-in-progress')).toHaveCount(1);
+		await expect(breakdown.locator('.bg-status-pending')).toHaveCount(1);
+		await expect(breakdown.locator('.bg-status-blocked')).toHaveCount(1);
 	});
 
 	// AC: @ui-plans-view ac-1
