@@ -24,7 +24,7 @@ const PENDING_REVIEW_TASK_ULID = '01KG0RRDCC9N4YGP991WD7XSPR';
 test.describe('Review List API (GET /api/reviews)', () => {
   // AC: @review-records-daemon-api ac-1
   test('returns paginated review list with expected shape', async ({ request, daemon }) => {
-    const response = await request.get(`${daemon.baseUrl}/api/reviews?status=all`);
+    const response = await request.get(`${daemon.baseUrl}/api/reviews`);
     expect(response.status()).toBe(200);
 
     const body = await response.json();
@@ -38,7 +38,7 @@ test.describe('Review List API (GET /api/reviews)', () => {
 
   // AC: @review-records-daemon-api ac-1
   test('review summary includes required fields', async ({ request, daemon }) => {
-    const response = await request.get(`${daemon.baseUrl}/api/reviews?status=all`);
+    const response = await request.get(`${daemon.baseUrl}/api/reviews`);
     expect(response.status()).toBe(200);
 
     const body = await response.json();
@@ -62,7 +62,7 @@ test.describe('Review List API (GET /api/reviews)', () => {
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    // Fixture has 1 open review — should only return open ones by default
+    // No status param → defaults to open reviews only
     for (const review of body.items) {
       expect(review.lifecycle_state).toBe('open');
     }
@@ -82,28 +82,29 @@ test.describe('Review List API (GET /api/reviews)', () => {
     }
   });
 
-  // AC: @review-records-daemon-api ac-1 — status=all returns all reviews
-  test('status=all returns reviews in all lifecycle states', async ({ request, daemon }) => {
-    const response = await request.get(`${daemon.baseUrl}/api/reviews?status=all`);
+  // AC: @review-records-daemon-api ac-1 — status=open returns only open reviews
+  // AC: @review-records-web-ui ac-1 — UI sends status=open as default landing view
+  test('status=open returns only open reviews', async ({ request, daemon }) => {
+    const response = await request.get(`${daemon.baseUrl}/api/reviews?status=open`);
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    // Fixtures have both open and draft reviews
-    expect(body.total).toBeGreaterThanOrEqual(2);
-    const states = new Set(body.items.map((r: { lifecycle_state: string }) => r.lifecycle_state));
-    expect(states.size).toBeGreaterThan(1);
+    expect(body.items.length).toBeGreaterThan(0);
+    for (const review of body.items) {
+      expect(review.lifecycle_state).toBe('open');
+    }
   });
 
   // AC: @review-records-daemon-api ac-1 — disposition filter
   // AC: @review-records-web-ui ac-1 — filtering by disposition
   test('filters reviews by disposition', async ({ request, daemon }) => {
     const response = await request.get(
-      `${daemon.baseUrl}/api/reviews?status=all&disposition=pending`
+      `${daemon.baseUrl}/api/reviews?status=draft&status=open&status=closed&status=archived&disposition=pending`
     );
     expect(response.status()).toBe(200);
 
     const body = await response.json();
-    // Both fixture reviews have no verdicts → disposition is 'pending'
+    // Filter across all statuses for pending disposition
     expect(body.items.length).toBeGreaterThan(0);
     for (const review of body.items) {
       expect(review.disposition).toBe('pending');
@@ -114,7 +115,7 @@ test.describe('Review List API (GET /api/reviews)', () => {
   // AC: @review-records-web-ui ac-1 — filtering by subject type
   test('filters reviews by subject type', async ({ request, daemon }) => {
     const response = await request.get(
-      `${daemon.baseUrl}/api/reviews?status=all&subject_type=task`
+      `${daemon.baseUrl}/api/reviews?status=draft&status=open&status=closed&status=archived&subject_type=task`
     );
     expect(response.status()).toBe(200);
 
@@ -129,7 +130,7 @@ test.describe('Review List API (GET /api/reviews)', () => {
   // AC: @review-records-web-ui ac-10 — empty state
   test('returns empty items for non-matching filter', async ({ request, daemon }) => {
     const response = await request.get(
-      `${daemon.baseUrl}/api/reviews?status=all&subject_type=code`
+      `${daemon.baseUrl}/api/reviews?subject_type=external`
     );
     expect(response.status()).toBe(200);
 
@@ -141,7 +142,7 @@ test.describe('Review List API (GET /api/reviews)', () => {
   // AC: @review-records-daemon-api ac-1 — sorting
   // AC: @review-records-web-ui ac-1 — sortable columns
   test('sorts reviews by created_at desc by default', async ({ request, daemon }) => {
-    const response = await request.get(`${daemon.baseUrl}/api/reviews?status=all`);
+    const response = await request.get(`${daemon.baseUrl}/api/reviews`);
     expect(response.status()).toBe(200);
 
     const body = await response.json();
@@ -158,7 +159,7 @@ test.describe('Review List API (GET /api/reviews)', () => {
   // AC: @review-records-web-ui ac-1 — sortable columns
   test('sorts reviews ascending when sort_dir=asc', async ({ request, daemon }) => {
     const response = await request.get(
-      `${daemon.baseUrl}/api/reviews?status=all&sort=created_at&sort_dir=asc`
+      `${daemon.baseUrl}/api/reviews?sort=created_at&sort_dir=asc`
     );
     expect(response.status()).toBe(200);
 
@@ -174,7 +175,7 @@ test.describe('Review List API (GET /api/reviews)', () => {
   // AC: @review-records-daemon-api ac-1 — pagination
   test('respects pagination parameters', async ({ request, daemon }) => {
     const response = await request.get(
-      `${daemon.baseUrl}/api/reviews?status=all&limit=1&offset=0`
+      `${daemon.baseUrl}/api/reviews?limit=1&offset=0`
     );
     expect(response.status()).toBe(200);
 
@@ -188,10 +189,10 @@ test.describe('Review List API (GET /api/reviews)', () => {
   // AC: @review-records-daemon-api ac-1 — pagination offset
   test('pagination offset returns different items', async ({ request, daemon }) => {
     const page1 = await request.get(
-      `${daemon.baseUrl}/api/reviews?status=all&limit=1&offset=0`
+      `${daemon.baseUrl}/api/reviews?limit=1&offset=0`
     );
     const page2 = await request.get(
-      `${daemon.baseUrl}/api/reviews?status=all&limit=1&offset=1`
+      `${daemon.baseUrl}/api/reviews?limit=1&offset=1`
     );
 
     const body1 = await page1.json();
@@ -204,7 +205,7 @@ test.describe('Review List API (GET /api/reviews)', () => {
 
   // AC: @review-records-daemon-api ac-1 — task title resolution via ReferenceIndex
   test('resolves task title for reviews with task subject', async ({ request, daemon }) => {
-    const response = await request.get(`${daemon.baseUrl}/api/reviews?status=all`);
+    const response = await request.get(`${daemon.baseUrl}/api/reviews`);
     expect(response.status()).toBe(200);
 
     const body = await response.json();
@@ -222,7 +223,7 @@ test.describe('Review List API (GET /api/reviews)', () => {
     request,
     daemon,
   }) => {
-    const response = await request.get(`${daemon.baseUrl}/api/reviews?status=all`);
+    const response = await request.get(`${daemon.baseUrl}/api/reviews`);
     expect(response.status()).toBe(200);
 
     const body = await response.json();
@@ -239,7 +240,7 @@ test.describe('Review List API (GET /api/reviews)', () => {
 
   // AC: @review-records-web-ui ac-1 — disposition badge values
   test('returns disposition as a known value', async ({ request, daemon }) => {
-    const response = await request.get(`${daemon.baseUrl}/api/reviews?status=all`);
+    const response = await request.get(`${daemon.baseUrl}/api/reviews`);
     expect(response.status()).toBe(200);
 
     const body = await response.json();
@@ -251,7 +252,7 @@ test.describe('Review List API (GET /api/reviews)', () => {
 
   // AC: @review-records-daemon-api ac-1 — JSON content type
   test('returns JSON content type', async ({ request, daemon }) => {
-    const response = await request.get(`${daemon.baseUrl}/api/reviews?status=all`);
+    const response = await request.get(`${daemon.baseUrl}/api/reviews`);
     const contentType = response.headers()['content-type'] || '';
     expect(contentType).toContain('application/json');
   });
@@ -301,7 +302,7 @@ test.describe('Review List API (GET /api/reviews)', () => {
   // AC: @review-records-web-ui ac-11 — sibling lookup by subject_ref
   test('filters reviews by subject_ref for revision navigation', async ({ request, daemon }) => {
     const response = await request.get(
-      `${daemon.baseUrl}/api/reviews?status=all&subject_type=task&subject_ref=%40test-task-pending-review`
+      `${daemon.baseUrl}/api/reviews?status=draft&status=open&status=closed&status=archived&subject_type=task&subject_ref=%40test-task-pending-review`
     );
     expect(response.status()).toBe(200);
 
@@ -315,7 +316,7 @@ test.describe('Review List API (GET /api/reviews)', () => {
   // AC: @review-records-web-ui ac-11 — sibling lookup by head_branch for code reviews
   test('filters code reviews by head_branch for revision navigation', async ({ request, daemon }) => {
     const response = await request.get(
-      `${daemon.baseUrl}/api/reviews?status=all&subject_type=code&head_branch=feat%2Freview-detail`
+      `${daemon.baseUrl}/api/reviews?status=draft&status=open&status=closed&status=archived&subject_type=code&head_branch=feat%2Freview-detail`
     );
     expect(response.status()).toBe(200);
 

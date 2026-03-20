@@ -26,11 +26,14 @@
 	let updatedReviewIds = $state<Set<string>>(new Set());
 
 	// --- URL-driven filter state ---
-	// Default status filter: 'open' (matches daemon default)
+	// No URL status param → default to 'open' (landing view shows open reviews)
+	// URL status=all → send all valid statuses (backend defaults to 'open' when no status param)
+	// URL status=<value> → send that value to API
+	const ALL_STATUSES: string[] = ['draft', 'open', 'closed', 'archived'];
 	function getStatusFilter(urlStatus: string | null): string | string[] | undefined {
-		if (urlStatus === 'all') return 'all';
+		if (urlStatus === 'all') return ALL_STATUSES;
 		if (urlStatus) return urlStatus;
-		return undefined; // daemon defaults to 'open'
+		return 'open'; // default landing view
 	}
 
 	let filterParams = $derived({

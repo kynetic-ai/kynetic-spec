@@ -1697,7 +1697,10 @@ export async function fetchReviewsForTask(taskRef: string): Promise<PaginatedRes
 
 	const url = new URL(`${API_BASE}/api/reviews`);
 	url.searchParams.set('task', taskRef);
-	url.searchParams.set('status', 'all');
+	// Fetch all lifecycle states — backend defaults to 'open' when no status param
+	for (const s of ['draft', 'open', 'closed', 'archived']) {
+		url.searchParams.append('status', s);
+	}
 
 	const response = await fetch(url.toString(), {
 		headers: getProjectHeaders()

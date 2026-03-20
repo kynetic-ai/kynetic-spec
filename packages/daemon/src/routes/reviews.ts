@@ -151,9 +151,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         const statusFilters = query.status
           ? (Array.isArray(query.status) ? query.status : [query.status])
           : ['open'];
-        if (statusFilters.length > 0 && statusFilters[0] !== 'all') {
-          filtered = filtered.filter((r) => statusFilters.includes(r.lifecycle_state));
-        }
+        filtered = filtered.filter((r) => statusFilters.includes(r.lifecycle_state));
 
         // Disposition filter (computed)
         if (query.disposition) {
