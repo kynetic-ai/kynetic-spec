@@ -13296,3 +13296,79 @@ workspaces:
         head: 783b22ef544bed092175027cb2c631b044760c73
         last_seen_at: 2026-03-20T04:53:18.386Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-triage-record-cli-reporting-success-without-persisted-record-01km4mk0
+  - active_role: null
+    base_branch_point: 82c29e1ab95912c9340f50d9aa649fbdc6fed8af
+    bootstrap:
+      status: not_run
+      canonicalBranchHead: null
+      configHash: null
+      failureMessage: null
+      invalidationReasons: []
+      lastRole: null
+      lastRunAt: null
+      roleStates:
+        reviewer:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+        worker:
+          status: not_run
+          canonicalBranchHead: null
+          configHash: null
+          failureMessage: null
+          invalidationReasons: []
+          lastRunAt: null
+          steps: []
+      steps: []
+    branch_provenance:
+      adopted_at: null
+      adopted_from: null
+      ownership: dispatcher-managed
+      rehydrated: null
+      remote_ref: null
+      source: provisioned
+    canonical_branch: dispatch/task/preserve-user-defined-stop-hooks-during-kspec-setup/01km4n8k
+    canonical_branch_head: 82c29e1ab95912c9340f50d9aa649fbdc6fed8af
+    cleanup:
+      status: not_scheduled
+      detail: null
+      eligible: false
+      reason: null
+      updated_at: 2026-03-20T04:53:23.689Z
+    health:
+      status: healthy
+      issues: []
+      summary: Workspace record matches current git branch and worktree state.
+      updated_at: 2026-03-20T04:53:23.689Z
+    integration:
+      status: pending
+      detail: null
+      outcome: manual_merge
+      publication_mode: manual_merge
+      target_branch: dev
+      target_commit: 82c29e1ab95912c9340f50d9aa649fbdc6fed8af
+      updated_at: 2026-03-20T04:53:23.689Z
+    lifecycle_state: ready
+    resolved_base_branch: dev
+    task_ref: "@01KM4N8K3JS9YR423HKSG2119K"
+    task_slug: preserve-user-defined-stop-hooks-during-kspec-setup
+    timestamps:
+      closed_at: null
+      last_active_at: null
+      last_reconciled_at: 2026-03-20T04:53:23.689Z
+      created_at: 2026-03-20T04:53:23.689Z
+      updated_at: 2026-03-20T04:53:23.689Z
+    workspace_id: dispatch-workspace-01KM4N8K3JS9YR423HKSG2119K
+    worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
+    worktrees:
+      reviewer: null
+      worker:
+        branch_mode: branch
+        branch_ref: dispatch/task/preserve-user-defined-stop-hooks-during-kspec-setup/01km4n8k
+        head: 82c29e1ab95912c9340f50d9aa649fbdc6fed8af
+        last_seen_at: 2026-03-20T04:53:23.689Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/preserve-user-defined-stop-hooks-during-kspec-setup-01km4n8k
