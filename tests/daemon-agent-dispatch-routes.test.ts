@@ -190,7 +190,7 @@ describe('Agent dispatch routes', () => {
       }),
     }));
 
-    expect(response.status).toBe(422);
+    expect(response.status).toBe(400);
   });
 });
 

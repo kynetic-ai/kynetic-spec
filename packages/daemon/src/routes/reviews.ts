@@ -64,12 +64,13 @@ import {
   ReviewAnchorTypeSchema,
   ReviewCheckStatusSchema,
   ReviewCodeAnchorSideSchema,
+  ReviewDispositionSchema,
   ReviewLifecycleStateSchema,
   ReviewThreadKindSchema,
   ReviewVerdictDecisionSchema,
 } from '../../schema/index.js';
 import { resolveRefTitle } from './ref-resolution.js';
-import { enumUnion } from './enum-utils.js';
+import { enumArrayUnion, enumUnion } from './enum-utils.js';
 
 interface ReviewsRouteOptions {
   pubsub: PubSubManager;
@@ -240,8 +241,8 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
       },
       {
         query: t.Object({
-          status: t.Optional(t.Union([t.String(), t.Array(t.String())])),
-          disposition: t.Optional(t.Union([t.String(), t.Array(t.String())])),
+          status: t.Optional(enumArrayUnion(ReviewLifecycleStateSchema.options)),
+          disposition: t.Optional(enumArrayUnion(ReviewDispositionSchema.options)),
           subject_type: t.Optional(t.Union([t.String(), t.Array(t.String())])),
           subject_ref: t.Optional(t.String()),
           head_branch: t.Optional(t.String()),
@@ -489,12 +490,12 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         }),
         body: t.Object({
           body: t.String(),
-          kind: t.Optional(t.String()),
+          kind: t.Optional(enumUnion(ReviewThreadKindSchema.options)),
           author: t.Optional(t.String()),
           anchor: t.Optional(t.Object({
-            type: t.Optional(t.String()),
+            type: t.Optional(enumUnion(ReviewAnchorTypeSchema.options)),
             path: t.Optional(t.String()),
-            side: t.Optional(t.String()),
+            side: t.Optional(enumUnion(ReviewCodeAnchorSideSchema.options)),
             line_start: t.Optional(t.Number()),
             line_end: t.Optional(t.Number()),
             commit: t.Optional(t.String()),
@@ -871,7 +872,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           id: t.String(),
         }),
         body: t.Object({
-          decision: t.Optional(t.String()),
+          decision: t.Optional(enumUnion(ReviewVerdictDecisionSchema.options)),
           reviewer: t.Optional(t.String()),
           role: t.Optional(t.String()),
         }),
@@ -1012,7 +1013,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
         }),
         body: t.Object({
           name: t.Optional(t.String()),
-          status: t.Optional(t.String()),
+          status: t.Optional(enumUnion(ReviewCheckStatusSchema.options)),
           runner: t.Optional(t.String()),
           evidence: t.Optional(t.String()),
           required: t.Optional(t.Boolean()),
@@ -1123,7 +1124,7 @@ export function createReviewsRoutes(options: ReviewsRouteOptions) {
           id: t.String(),
         }),
         body: t.Optional(t.Object({
-          target: t.Optional(t.String()),
+          target: t.Optional(enumUnion(VALID_LIFECYCLE_TARGETS)),
           actor: t.Optional(t.String()),
         })),
       }

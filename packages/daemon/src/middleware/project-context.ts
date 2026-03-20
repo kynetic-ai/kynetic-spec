@@ -27,6 +27,44 @@ export interface ProjectContextMiddlewareOptions {
   onProjectRegistered?: (projectPath: string) => Promise<void>;
 }
 
+function normalizeValidationField(path: string | undefined): string {
+  if (!path || path === '/') {
+    return 'request';
+  }
+
+  return path
+    .replace(/^\//, '')
+    .replaceAll('/', '.');
+}
+
+function collectConstAlternatives(schema: unknown): string[] {
+  if (!schema || typeof schema !== 'object') {
+    return [];
+  }
+
+  if ('const' in schema && typeof schema.const === 'string') {
+    return [schema.const];
+  }
+
+  const alternatives = new Set<string>();
+
+  if (Array.isArray((schema as { anyOf?: unknown[] }).anyOf)) {
+    for (const branch of (schema as { anyOf: unknown[] }).anyOf) {
+      for (const alternative of collectConstAlternatives(branch)) {
+        alternatives.add(alternative);
+      }
+    }
+  }
+
+  if ('items' in schema) {
+    for (const alternative of collectConstAlternatives((schema as { items?: unknown }).items)) {
+      alternatives.add(alternative);
+    }
+  }
+
+  return [...alternatives];
+}
+
 /**
  * Creates project context middleware plugin for Elysia.
  *
@@ -138,6 +176,45 @@ export function projectContextMiddleware(options: ProjectContextMiddlewareOption
           set.status = 500;
           return { error: 'Internal server error' };
         }
+      })
+      .onError(({ code, error, set }) => {
+        if (code !== 'VALIDATION') {
+          return;
+        }
+
+        const valueError = (error as {
+          valueError?: { path?: string; schema?: unknown; message?: string };
+          schema?: unknown;
+          error?: { path?: string; schema?: unknown; message?: string };
+          summary?: string;
+          message?: string;
+        }).valueError;
+        const decodeError = (error as {
+          error?: { path?: string; schema?: unknown; message?: string };
+        }).error;
+        const field = normalizeValidationField(valueError?.path ?? decodeError?.path);
+        const alternatives = collectConstAlternatives(
+          valueError?.schema
+            ?? decodeError?.schema
+            ?? (error as { schema?: unknown }).schema,
+        );
+
+        set.status = 400;
+        return {
+          error: 'validation_error',
+          details: [
+            {
+              field,
+              message: alternatives.length > 0
+                ? `Must be one of: ${alternatives.join(', ')}`
+                : valueError?.message
+                    ?? decodeError?.message
+                    ?? (error as { summary?: string; message?: string }).summary
+                    ?? (error as { message?: string }).message
+                    ?? 'Request validation failed',
+            },
+          ],
+        };
       });
 
   return { manager, middleware };

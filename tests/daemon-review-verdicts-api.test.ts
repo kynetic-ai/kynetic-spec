@@ -284,7 +284,7 @@ describe('Review Verdicts API', () => {
 
   // AC: @review-records-daemon-api ac-10
   // AC: @schema-derived-type-definitions ac-1
-  it('should return 400 with valid alternatives for invalid decision', async () => {
+  it('should return 400 at the API boundary for invalid decision', async () => {
     const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/verdicts`, {
       decision: 'invalid_decision',
       reviewer: 'test@example.com',
@@ -448,7 +448,7 @@ describe('Review Checks API', () => {
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 400 with valid alternatives for invalid check status', async () => {
+  it('should return 400 at the API boundary for invalid check status', async () => {
     const response = await makeRequest('POST', `/api/reviews/${REVIEW_OPEN_ULID}/checks`, {
       name: 'test',
       status: 'invalid_status',
@@ -596,7 +596,7 @@ describe('Review Lifecycle API', () => {
   });
 
   // AC: @review-records-daemon-api ac-8, ac-10 - invalid transition returns 400
-  it('should return 400 with valid alternatives for invalid transition target open → draft', async () => {
+  it('should return 400 at the API boundary for invalid transition target open → draft', async () => {
     const response = await makeRequest('PATCH', `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
       target: 'draft',
     });
@@ -649,7 +649,7 @@ describe('Review Lifecycle API', () => {
   });
 
   // AC: @review-records-daemon-api ac-10
-  it('should return 400 with valid alternatives for invalid target value', async () => {
+  it('should return 400 at the API boundary for invalid target value', async () => {
     const response = await makeRequest('PATCH', `/api/reviews/${REVIEW_OPEN_ULID}/lifecycle`, {
       target: 'invalid_state',
     });
