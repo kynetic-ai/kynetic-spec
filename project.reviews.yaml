@@ -25926,9 +25926,25 @@ reviews:
           kind: nit
           thread_ulid: 01KM4VM9QTSG6CWBMCXBJPBSFH
         timestamp: 2026-03-20T05:31:28.070Z
+      - _ulid: 01KM4VMQGEJC6RWH4VY6R88942
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-20T05:31:41.966Z
+      - _ulid: 01KM4VMQGE61MXB2WJH06QP4BR
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T05:31:41.966Z
     examined_commit: 148c2d03728085839fd9a47a6ad7cc129ef789a4
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -25994,7 +26010,14 @@ reviews:
               handling (reviewed watcher recovery/error events)."
             created_at: 2026-03-20T05:31:27.866Z
         kind: nit
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-20T05:31:41.966Z
     created_at: 2026-03-20T05:26:57.283Z
-    updated_at: 2026-03-20T05:31:27.866Z
+    updated_at: 2026-03-20T05:31:41.966Z
     notes: []
