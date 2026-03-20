@@ -11726,18 +11726,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/handle-git-worktree-collisions-between-multiple-project-checkouts/01km26db
-    canonical_branch_head: c6a9f65fc8ec1d98cd25e81b6c318b02a4b6392b
+    canonical_branch_head: 47883f95b96085dff4a90d0147498b14a5f8da6f
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T01:40:27.259Z
+      updated_at: 2026-03-20T01:41:39.746Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T01:40:28.348Z
+      updated_at: 2026-03-20T01:41:39.746Z
     integration:
       status: pending
       detail: null
@@ -11745,7 +11745,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 9b61b4de21aa6ce5379eb0858f6da63558a9a578
-      updated_at: 2026-03-20T01:40:27.259Z
+      updated_at: 2026-03-20T01:41:39.746Z
     lifecycle_state: active
     resolved_base_branch: dev
     task_ref: "@01KM26DB8RCM6D2T1SYZGZJR9X"
@@ -11753,9 +11753,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T01:40:28.348Z
-      last_reconciled_at: 2026-03-20T01:40:28.348Z
+      last_reconciled_at: 2026-03-20T01:41:39.746Z
       created_at: 2026-03-19T04:54:14.980Z
-      updated_at: 2026-03-20T01:40:28.348Z
+      updated_at: 2026-03-20T01:41:39.746Z
     workspace_id: dispatch-workspace-01KM26DB8RCM6D2T1SYZGZJR9X
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -11978,12 +11978,21 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-20T01:40:20.769Z
+      updated_at: 2026-03-20T01:41:41.327Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T01:40:20.769Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch
+            "dispatch/task/fix-shadow-commit-call-sites-that-omit-entity-refs/01kkx6qp" is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-shadow-commit-call-sites-that-omit-entity-refs-01kkx6qp"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-20T01:41:41.327Z
     integration:
       status: merged
       detail: integration:merged
@@ -11991,17 +12000,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 53be2094bc46d5c352d60c095941b9033e61d079
-      updated_at: 2026-03-20T01:40:20.769Z
-    lifecycle_state: closing
+      updated_at: 2026-03-20T01:41:41.327Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KKX6QPC0374PT4W93CMA7EMX"
     task_slug: fix-shadow-commit-call-sites-that-omit-entity-refs
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T00:04:38.637Z
-      last_reconciled_at: 2026-03-20T01:40:20.769Z
+      last_reconciled_at: 2026-03-20T01:41:41.327Z
       created_at: 2026-03-19T06:53:50.346Z
-      updated_at: 2026-03-20T01:40:20.769Z
+      updated_at: 2026-03-20T01:41:41.327Z
     workspace_id: dispatch-workspace-01KKX6QPC0374PT4W93CMA7EMX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
@@ -12312,12 +12321,21 @@ workspaces:
       detail: integrated-into-base-branch
       eligible: true
       reason: integrated-into-base-branch
-      updated_at: 2026-03-20T01:40:21.013Z
+      updated_at: 2026-03-20T01:41:43.187Z
     health:
-      status: healthy
-      issues: []
-      summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T01:40:21.013Z
+      status: invalid
+      issues:
+        - code: missing_canonical_branch
+          message: Canonical branch "dispatch/task/task-implement-cancelled-task-dependency-cleanup/01km43vy"
+            is missing.
+          suggestion: Re-provision the workspace or restore the branch before dispatch resumes.
+        - code: missing_worker_worktree
+          message: Worker worktree
+            "/home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-implement-cancelled-task-dependency-cleanup-01km43vy"
+            is missing or no longer registered.
+          suggestion: Re-provision the worker worktree from the recorded canonical branch.
+      summary: Workspace registry record is invalid because required git state is missing.
+      updated_at: 2026-03-20T01:41:43.187Z
     integration:
       status: merged
       detail: integration:merged
@@ -12325,17 +12343,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
-      updated_at: 2026-03-20T01:40:21.013Z
-    lifecycle_state: closing
+      updated_at: 2026-03-20T01:41:43.187Z
+    lifecycle_state: stale
     resolved_base_branch: dev
     task_ref: "@01KM43VYQXEFJMMYK2184MR7FH"
     task_slug: task-implement-cancelled-task-dependency-cleanup
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T00:26:20.714Z
-      last_reconciled_at: 2026-03-20T01:40:21.013Z
+      last_reconciled_at: 2026-03-20T01:41:43.187Z
       created_at: 2026-03-19T22:45:09.789Z
-      updated_at: 2026-03-20T01:40:21.013Z
+      updated_at: 2026-03-20T01:41:43.187Z
     workspace_id: dispatch-workspace-01KM43VYQXEFJMMYK2184MR7FH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
