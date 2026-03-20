@@ -26592,6 +26592,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T06:00:06.757Z
+      - _ulid: 01KM4ZCCFP0P1AGTB0GM1WNMGY
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM4X8A0QMJYP3T3AQYKGHH0M
+        timestamp: 2026-03-20T06:37:02.838Z
     examined_commit: dd5d3ee05e0e9b18dd64fba50fcf2ad200e6e1f0
     external_links: []
     lifecycle_state: closed
@@ -26619,6 +26625,12 @@ reviews:
               whenever templates/skills sources change, so the snapshot leaves agent-facing docs
               inconsistent with the command metadata it just updated."
             created_at: 2026-03-20T05:59:52.087Z
+          - _ulid: 01KM4ZCC88NGXMX5ZE1MYQPVYT
+            author: Jacob Chapel
+            body: Fixed in commit 50ebf0b9c. The tracked .agents/skills/kspec-writing-specs/SKILL.md snapshot
+              now documents item ac remove <ref> <id> to match the CLI/template contract. Full npm
+              test also passes on the updated branch.
+            created_at: 2026-03-20T06:37:02.599Z
         kind: blocker
       - _ulid: 01KM4X8CTD5SKNZKNJJM1X0PG5
         entries:
@@ -26644,7 +26656,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T06:00:06.756Z
     created_at: 2026-03-20T05:53:39.449Z
-    updated_at: 2026-03-20T06:00:06.757Z
+    updated_at: 2026-03-20T06:37:02.599Z
     notes: []
   - _ulid: 01KM4X99VDWZD5TTN4P5FMSXS3
     slugs: []
