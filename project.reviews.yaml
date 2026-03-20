@@ -23022,6 +23022,12 @@ reviews:
         payload:
           thread_ulid: 01KM48TANDRJXPCS08SAS26YYW
         timestamp: 2026-03-20T00:18:12.441Z
+      - _ulid: 01KM49PQHD6MADPS8EBTTFEVRJ
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM48TBB1VF026QH693GS3C3F
+        timestamp: 2026-03-20T00:18:13.165Z
     examined_commit: c7627d0da34617524b4cedc03341c6229b69a164
     external_links: []
     lifecycle_state: closed
@@ -23082,6 +23088,8 @@ reviews:
               tests/cli-plan.test.ts tests/export/json.test.ts passed, and full npm test passed."
             created_at: 2026-03-20T00:18:00.389Z
         kind: nit
+        resolved_at: 2026-03-20T00:18:12.946Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM48V5J4HSGE8RF88GWQW5K8
         anchor:
           type: code
@@ -23120,7 +23128,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T00:03:18.378Z
     created_at: 2026-03-20T00:01:15.182Z
-    updated_at: 2026-03-20T00:18:12.176Z
+    updated_at: 2026-03-20T00:18:12.946Z
     notes: []
   - _ulid: 01KM490E7AQ54TEGMQ6EWDGHQK
     slugs: []
