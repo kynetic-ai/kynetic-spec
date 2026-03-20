@@ -14,6 +14,10 @@ import {
   type AgentType,
   type AgentConfidence,
 } from "./agent-detection.js";
+import {
+  type ClaudeHookEntry,
+  isKspecManagedStopHookEntry,
+} from "../lib/claude-hooks.js";
 
 /**
  * Detected agent type
@@ -213,12 +217,9 @@ export async function getSetupStatus(
 
       // Check Stop
       const stopHooks = hooksConfig.Stop as
-        | Array<{ hooks?: Array<{ command?: string }> }>
+        | ClaudeHookEntry[]
         | undefined;
-      hooks.stop =
-        stopHooks?.some((entry) =>
-          entry.hooks?.some((h) => h.command?.includes("checkpoint"))
-        ) ?? false;
+      hooks.stop = stopHooks?.some(isKspecManagedStopHookEntry) ?? false;
 
       // Check PreToolUse
       const preToolUseHooks = hooksConfig.PreToolUse as

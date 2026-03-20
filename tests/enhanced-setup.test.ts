@@ -803,6 +803,124 @@ hooks:
       expect(hasCheckpoint).toBeFalsy();
     });
 
+    // AC: @project-config ac-hooks-preserve-user-stop-hooks
+    it('should preserve user-defined Stop hooks when disabling checkpoint', async () => {
+      await fs.writeFile(
+        path.join(tempDir, 'kspec.config.yaml'),
+        `
+hooks:
+  checkpoint: false
+`
+      );
+
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      await fs.mkdir(path.dirname(settingsPath), { recursive: true });
+      await fs.writeFile(
+        settingsPath,
+        `${JSON.stringify({
+          hooks: {
+            Stop: [
+              {
+                matcher: 'Notebook',
+                hooks: [
+                  {
+                    type: 'command',
+                    command: 'kspec session checkpoint --json',
+                  },
+                ],
+              },
+              {
+                matcher: '',
+                hooks: [
+                  {
+                    type: 'command',
+                    command: 'kspec session checkpoint --json',
+                  },
+                ],
+              },
+            ],
+          },
+        }, null, 2)}\n`,
+        'utf-8',
+      );
+
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+      expect(settings.hooks.Stop).toEqual([
+        {
+          matcher: 'Notebook',
+          hooks: [
+            {
+              type: 'command',
+              command: 'kspec session checkpoint --json',
+            },
+          ],
+        },
+      ]);
+    });
+
+    // AC: @project-config ac-hooks-preserve-user-stop-hooks
+    it('should add the managed checkpoint hook alongside user-defined Stop hooks', async () => {
+      await fs.writeFile(
+        path.join(tempDir, 'kspec.config.yaml'),
+        `
+hooks:
+  checkpoint: true
+`
+      );
+
+      const settingsPath = path.join(tempDir, '.claude', 'settings.json');
+      await fs.mkdir(path.dirname(settingsPath), { recursive: true });
+      await fs.writeFile(
+        settingsPath,
+        `${JSON.stringify({
+          hooks: {
+            Stop: [
+              {
+                matcher: 'Notebook',
+                hooks: [
+                  {
+                    type: 'command',
+                    command: 'kspec session checkpoint --json',
+                  },
+                ],
+              },
+            ],
+          },
+        }, null, 2)}\n`,
+        'utf-8',
+      );
+
+      kspec('setup', tempDir, {
+        env: { CLAUDECODE: '1' },
+      });
+
+      const settings = JSON.parse(await fs.readFile(settingsPath, 'utf-8'));
+      expect(settings.hooks.Stop).toEqual([
+        {
+          matcher: 'Notebook',
+          hooks: [
+            {
+              type: 'command',
+              command: 'kspec session checkpoint --json',
+            },
+          ],
+        },
+        {
+          matcher: '',
+          hooks: [
+            {
+              type: 'command',
+              command: 'kspec session checkpoint --json',
+            },
+          ],
+        },
+      ]);
+    });
+
     // AC: @project-config ac-hooks-section — removal of previously installed prompt-check
     it('should remove prompt-check hook when config disables it after previous install', async () => {
       // First: install with defaults (prompt-check enabled)
