@@ -29372,6 +29372,12 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T16:26:00.100Z
+      - _ulid: 01KM622K0PFV1T8DGG4XKS1ATE
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM612190HA4BY06GPFJDVFT5
+        timestamp: 2026-03-20T16:43:22.006Z
     examined_commit: cef00da87ceba5a7f6cc96733b0f9de12a6f6f29
     external_links: []
     lifecycle_state: closed
@@ -29400,6 +29406,13 @@ reviews:
               enums. The task’s schema-derivation goal is fine, but this route still needs
               schema-derived validation without bypassing the review API’s invalid-input contract.
             created_at: 2026-03-20T16:25:35.264Z
+          - _ulid: 01KM622JS21TRKQQGT2GJA13E9
+            author: Jacob Chapel
+            body: Fixed in cdb70fae4. The review routes still derive allowed values from the canonical schemas,
+              but the transport schemas now accept raw strings and the handlers perform
+              schema-derived validation so invalid verdict/check/lifecycle/comment enums return the
+              documented 400 actionable errors instead of framework 422s.
+            created_at: 2026-03-20T16:43:21.762Z
         kind: blocker
       - _ulid: 01KM6122S62YYHVDAVKYKYEG0J
         entries:
@@ -29428,7 +29441,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T16:26:00.099Z
     created_at: 2026-03-20T16:21:45.833Z
-    updated_at: 2026-03-20T16:26:00.100Z
+    updated_at: 2026-03-20T16:43:21.762Z
     notes: []
   - _ulid: 01KM61J0E012X86GNSKPR826D5
     slugs: []
