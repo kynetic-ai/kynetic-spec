@@ -109740,7 +109740,7 @@
   description: "Batch arg naming inconsistency: item ac add uses 'id' but item ac remove uses 'acId'
     for the same AC identifier parameter. Should be consistent across subcommands."
   spec_ref: "@item-ac"
-  status: pending_review
+  status: needs_work
   blocked_by: []
   depends_on: []
   context: []
@@ -109759,7 +109759,7 @@
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
     upstream_ref: refs/heads/dev
-  session_id: 01KM4WBE1JS4MY3KDK6T3WK0JC
+  session_id: null
   created_at: 2026-03-20T03:12:57.788Z
   started_at: 2026-03-20T05:44:53.427Z
   submitted_at: 2026-03-20T05:52:31.527Z
@@ -109792,6 +109792,11 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T05:52:14.283Z
+    - _ulid: 01KM4X8SP5R5B82PKWZGRSMMJG
+      content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex@openai"
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T06:00:08.133Z
   todos: []
   automation: eligible
 - _ulid: 01KM4KPQ4CJS24TH0NTVXJA1V3
