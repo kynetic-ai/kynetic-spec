@@ -28401,6 +28401,16 @@ reviews:
         runner: kspec
         created_at: 2026-03-20T07:17:06.055Z
         completed_at: 2026-03-20T07:17:06.055Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed locally in this snapshot: full npm test suite completed successfully."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T07:17:07.616Z
+        completed_at: 2026-03-20T07:17:07.616Z
     events:
       - _ulid: 01KM51GRZ4RT0H1GPEMZXG8YHP
         actor: Jacob Chapel
@@ -28429,6 +28439,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM51NR51QEQF0ZNQ8DGJF3HC
         timestamp: 2026-03-20T07:17:07.098Z
+      - _ulid: 01KM51NS5CWVRAHB4AA8C79CTT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T07:17:07.885Z
     examined_commit: f72a88e05ba5cc38eb65066e8950095cb4364d24
     external_links: []
     lifecycle_state: open
@@ -28459,5 +28476,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-20T07:14:23.845Z
-    updated_at: 2026-03-20T07:17:06.850Z
+    updated_at: 2026-03-20T07:17:07.616Z
     notes: []
