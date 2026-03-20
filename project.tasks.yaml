@@ -111997,5 +111997,16 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T22:10:49.241Z
+    - _ulid: 01KM6N9N42ZV8XME7QTBV0FJRV
+      content: "Fix cycle 1: Addressed both review blockers. (1) Re-blocking an already blocked task no
+        longer overwrites prior_status with 'blocked' — the block handler now checks if status is
+        already 'blocked' and preserves the existing prior_status instead of replacing it. (2)
+        Updated lifecycle help text in content.ts to document that unblock restores the pre-block
+        status (or pending as fallback) instead of always returning to pending. Added a new
+        integration test covering the re-block scenario: start -> block -> block again -> unblock
+        correctly restores to in_progress. All 8 feature tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-20T22:19:16.482Z
   todos: []
   automation: eligible
