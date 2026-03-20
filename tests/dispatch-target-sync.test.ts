@@ -17,6 +17,7 @@ function git(cwd: string, command: string): string {
     cwd,
     stdio: "pipe",
     encoding: "utf-8",
+    env: workspaceModule.buildDispatchGitEnv(),
   }).trim();
 }
 
@@ -26,6 +27,7 @@ function gitSucceeds(cwd: string, command: string): boolean {
       cwd,
       stdio: "pipe",
       encoding: "utf-8",
+      env: workspaceModule.buildDispatchGitEnv(),
     });
     return true;
   } catch {
@@ -93,6 +95,82 @@ async function setupProjectFiles(projectDir: string, baseBranch = "dev"): Promis
     "tasks: []\n",
     "utf-8",
   );
+}
+
+async function setupWorktreeLaunchedProjectWithRemote(): Promise<{
+  sourceDir: string;
+  sharedCheckoutDir: string;
+  remoteDir: string;
+}> {
+  const remoteDir = await createTempDir("kspec-target-sync-worktree-remote-");
+  git(remoteDir, "init --bare");
+
+  const sourceDir = await createTempDir("kspec-target-sync-worktree-source-");
+  initGitRepo(sourceDir);
+  await fs.writeFile(path.join(sourceDir, "README.md"), "seed\n", "utf-8");
+  git(sourceDir, "add README.md");
+  git(sourceDir, 'commit -m "init"');
+
+  const defaultBranch = git(sourceDir, "branch --show-current");
+  git(sourceDir, "checkout -b dev");
+  await fs.writeFile(path.join(sourceDir, "dev.txt"), "dev\n", "utf-8");
+  git(sourceDir, "add dev.txt");
+  git(sourceDir, 'commit -m "dev branch"');
+  git(sourceDir, `remote add origin "${remoteDir}"`);
+  git(sourceDir, "push -u origin dev");
+  git(sourceDir, `checkout ${defaultBranch}`);
+
+  const sharedCheckoutDir = `${sourceDir}-shared-checkout`;
+  execSync(`git worktree add "${sharedCheckoutDir}" dev`, {
+    cwd: sourceDir,
+    stdio: "pipe",
+    env: workspaceModule.buildDispatchGitEnv(),
+  });
+
+  return { sourceDir, sharedCheckoutDir, remoteDir };
+}
+
+async function setupPoisonRepo(): Promise<string> {
+  const poisonDir = await createTempDir("kspec-target-sync-poison-");
+  initGitRepo(poisonDir);
+  await fs.writeFile(path.join(poisonDir, "README.md"), "poison\n", "utf-8");
+  git(poisonDir, "add README.md");
+  git(poisonDir, 'commit -m "init poison repo"');
+  git(poisonDir, "checkout -b dev");
+  await fs.writeFile(path.join(poisonDir, "poison.txt"), "poison\n", "utf-8");
+  git(poisonDir, "add poison.txt");
+  git(poisonDir, 'commit -m "poison dev branch"');
+  return poisonDir;
+}
+
+async function withPoisonedGitContext<T>(poisonDir: string, run: () => Promise<T>): Promise<T> {
+  const originalGitDir = process.env.GIT_DIR;
+  const originalGitWorkTree = process.env.GIT_WORK_TREE;
+  const originalGitIndexFile = process.env.GIT_INDEX_FILE;
+
+  process.env.GIT_DIR = path.join(poisonDir, ".git");
+  process.env.GIT_WORK_TREE = poisonDir;
+  process.env.GIT_INDEX_FILE = path.join(poisonDir, ".git", "index");
+
+  try {
+    return await run();
+  } finally {
+    if (originalGitDir === undefined) {
+      delete process.env.GIT_DIR;
+    } else {
+      process.env.GIT_DIR = originalGitDir;
+    }
+    if (originalGitWorkTree === undefined) {
+      delete process.env.GIT_WORK_TREE;
+    } else {
+      process.env.GIT_WORK_TREE = originalGitWorkTree;
+    }
+    if (originalGitIndexFile === undefined) {
+      delete process.env.GIT_INDEX_FILE;
+    } else {
+      process.env.GIT_INDEX_FILE = originalGitIndexFile;
+    }
+  }
 }
 
 async function pushRemoteCommit(
@@ -350,6 +428,31 @@ describe("dispatch target branch sync", () => {
     expect(git(projectDir, "rev-parse HEAD")).not.toBe(previousTip);
   });
 
+  // AC: @dispatch-integration-mutation-scope ac-1
+  it("sanitizes inherited git context before direct integration-target git commands", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout dev");
+
+    const poisonDir = await setupPoisonRepo();
+    try {
+      await withPoisonedGitContext(poisonDir, async () => {
+        const result = workspaceModule.runDispatchIntegrationTargetGit(
+          projectDir,
+          "dev",
+          ["rev-parse", "--show-toplevel"],
+        );
+        expect(result.status).toBe(0);
+        expect(result.stdout).toBe(projectDir);
+      });
+
+      expect(git(poisonDir, "rev-parse --show-toplevel")).toBe(poisonDir);
+      expect(git(poisonDir, "rev-parse HEAD")).not.toBe(git(projectDir, "rev-parse HEAD"));
+    } finally {
+      await cleanupTempDir(poisonDir);
+    }
+  });
+
   // AC: @dispatch-integration-mutation-scope ac-4
   it("refuses sync with actionable guidance when the shared checkout is on another branch", async () => {
     ({ projectDir, remoteDir } = await setupProjectWithRemote());
@@ -384,6 +487,49 @@ describe("dispatch target branch sync", () => {
     expect(engine.getDegradedState().reason).toContain('Check out "dev"');
 
     await engine.stop();
+  });
+
+  // AC: @dispatch-integration-mutation-scope ac-1
+  // AC: @dispatch-integration-mutation-scope ac-2
+  // AC: @dispatch-integration-mutation-scope ac-3
+  it("syncs the intended linked shared checkout even when inherited git env points at another repo", async () => {
+    const { sourceDir, sharedCheckoutDir, remoteDir: worktreeRemoteDir } =
+      await setupWorktreeLaunchedProjectWithRemote();
+    const poisonDir = await setupPoisonRepo();
+
+    try {
+      await setupProjectFiles(sharedCheckoutDir);
+      const sourceHeadBefore = git(sourceDir, "rev-parse HEAD");
+      const remoteTip = await pushRemoteCommit(
+        worktreeRemoteDir,
+        "dev",
+        "linked-shared-checkout.txt",
+        "linked\n",
+        "linked shared checkout sync",
+      );
+
+      await withPoisonedGitContext(poisonDir, async () => {
+        const engine = new DispatchEngine({
+          projectDir: sharedCheckoutDir,
+          reconcileIntervalMs: 0,
+          coalesceWindowMs: 0,
+        });
+        await engine.start();
+
+        expect(await engine._syncTargetBranch()).toBe("up_to_date");
+        expect(git(sharedCheckoutDir, "rev-parse dev")).toBe(remoteTip);
+        expect(git(sharedCheckoutDir, "branch --show-current")).toBe("dev");
+        expect(git(sourceDir, "rev-parse HEAD")).toBe(sourceHeadBefore);
+        expect(git(poisonDir, "rev-parse HEAD")).not.toBe(remoteTip);
+
+        await engine.stop();
+      });
+    } finally {
+      git(sourceDir, `worktree remove --force "${sharedCheckoutDir}"`);
+      await cleanupTempDir(sourceDir);
+      await cleanupTempDir(worktreeRemoteDir);
+      await cleanupTempDir(poisonDir);
+    }
   });
 
   // AC: @dispatch-remote-branch-sync ac-pull-ff-only
