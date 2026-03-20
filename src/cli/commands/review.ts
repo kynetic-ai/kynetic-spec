@@ -305,12 +305,88 @@ function createEvent(
 
 /**
  * Parse subject from CLI flags.
- * AC: @review-cli-creation-and-query ac-1, ac-2
+ * AC: @review-cli-creation-and-query ac-1, ac-2, ac-ref-subject-remains-ref-subject,
+ *     ac-code-subject-created-only-when-requested, ac-ambiguous-review-subject-rejected,
+ *     ac-version-context-does-not-change-subject
  */
 function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubject {
   const subjectType = options.subjectType as string | undefined;
+  const hasRefSubjectInput = Boolean(options.subjectRef);
+  const hasCodeSubjectInput = Boolean(
+    options.base ||
+      options.head ||
+      options.mergeBase ||
+      options.baseBranch ||
+      options.headBranch,
+  );
+  const hasExternalSubjectInput = Boolean(
+    options.url || options.externalId || options.provider,
+  );
 
-  if (subjectType === "code" || options.base) {
+  const inferSubjectType = (): "task" | "code" | "external" => {
+    const inferredTypes = [
+      hasRefSubjectInput ? "task" : null,
+      hasCodeSubjectInput ? "code" : null,
+      hasExternalSubjectInput ? "external" : null,
+    ].filter((value): value is "task" | "code" | "external" => value !== null);
+
+    if (inferredTypes.length > 1) {
+      exitWithGuidance(
+        "Ambiguous review subject. Provide one subject input kind or make the subject explicit with matching flags.",
+        EXIT_CODES.USAGE_ERROR,
+        "Use exactly one of: --subject-ref [--subject-type plan|task|spec], --base/--head, or --url",
+        { field: "subject", value: "ambiguous" },
+      );
+    }
+
+    return inferredTypes[0] || "task";
+  };
+
+  const resolvedSubjectType = subjectType || inferSubjectType();
+
+  if (
+    resolvedSubjectType === "plan" ||
+    resolvedSubjectType === "task" ||
+    resolvedSubjectType === "spec"
+  ) {
+    if (hasCodeSubjectInput || hasExternalSubjectInput) {
+      exitWithGuidance(
+        `Subject type ${resolvedSubjectType} cannot be combined with code or external subject flags`,
+        EXIT_CODES.USAGE_ERROR,
+        "Use --subject-ref for plan/task/spec reviews. Use --examined-commit for review context, not --base/--head.",
+        { field: "subject-type", value: resolvedSubjectType },
+      );
+    }
+
+    if (!options.subjectRef) {
+      exitWithGuidance(
+        "Subject is required. Provide --subject-ref for plan/task/spec, or --base/--head for code, or --url for external",
+        EXIT_CODES.USAGE_ERROR,
+        "Usage: kspec review add --title '...' --subject-ref @ref [--subject-type plan|task|spec]",
+        { field: "subject", value: "missing" },
+      );
+    }
+
+    return {
+      type: resolvedSubjectType,
+      ref: (options.subjectRef as string).startsWith("@")
+        ? (options.subjectRef as string)
+        : `@${options.subjectRef as string}`,
+      shadow_commit: "",
+      content_hash: "",
+    };
+  }
+
+  if (resolvedSubjectType === "code") {
+    if (hasRefSubjectInput || hasExternalSubjectInput) {
+      exitWithGuidance(
+        "Code subject cannot be combined with --subject-ref or external subject flags",
+        EXIT_CODES.USAGE_ERROR,
+        "Use only --base/--head for code reviews, or remove --subject-type code.",
+        { field: "subject-type", value: "code" },
+      );
+    }
+
     if (!options.base || !options.head) {
       exitWithGuidance(
         "Code subject requires --base and --head commit refs",
@@ -336,7 +412,16 @@ function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubjec
     return subject;
   }
 
-  if (subjectType === "external" || options.url) {
+  if (resolvedSubjectType === "external") {
+    if (hasRefSubjectInput || hasCodeSubjectInput) {
+      exitWithGuidance(
+        "External subject cannot be combined with --subject-ref or code subject flags",
+        EXIT_CODES.USAGE_ERROR,
+        "Use only --url [--external-id --provider] for external reviews.",
+        { field: "subject-type", value: "external" },
+      );
+    }
+
     if (!options.url) {
       exitWithGuidance(
         "External subject requires --url",
@@ -358,33 +443,12 @@ function parseSubjectFromOptions(options: Record<string, unknown>): ReviewSubjec
     return subject;
   }
 
-  // Ref-backed subjects (plan, task, spec)
-  if (!options.subjectRef) {
-    exitWithGuidance(
-      "Subject is required. Provide --subject-ref for plan/task/spec, or --base/--head for code, or --url for external",
-      EXIT_CODES.USAGE_ERROR,
-      "Usage: kspec review add --title '...' --subject-ref @ref [--subject-type plan|task|spec]",
-      { field: "subject", value: "missing" },
-    );
-  }
-
-  const ref = options.subjectRef as string;
-  const type = (subjectType || "task") as "plan" | "task" | "spec";
-  if (!["plan", "task", "spec"].includes(type)) {
-    exitWithGuidance(
-      `Invalid subject type: ${type}. Must be one of: plan, task, spec, code, external`,
-      EXIT_CODES.USAGE_ERROR,
-      "Valid subject types: plan, task, spec, code, external",
-      { field: "subject-type", value: type },
-    );
-  }
-
-  return {
-    type,
-    ref: ref.startsWith("@") ? ref : `@${ref}`,
-    shadow_commit: "",
-    content_hash: "",
-  };
+  exitWithGuidance(
+    `Invalid subject type: ${resolvedSubjectType}. Must be one of: plan, task, spec, code, external`,
+    EXIT_CODES.USAGE_ERROR,
+    "Valid subject types: plan, task, spec, code, external",
+    { field: "subject-type", value: resolvedSubjectType },
+  );
 }
 
 // --- Command Registration ---
