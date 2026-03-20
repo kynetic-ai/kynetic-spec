@@ -724,11 +724,13 @@ describe("sessions list page migration (@ui-data-freshness ac-1)", () => {
     expect(sessionsSrc).not.toContain("async function loadNextPage");
   });
 
-  it("subscribes to agents and sessions topics for scroll-aware freshness UI", () => {
-    expect(sessionsSrc).toContain("subscribe(['agents', 'sessions'])");
+  it("registers local agents and sessions handlers without owning global topic transport", () => {
     expect(sessionsSrc).toContain("on('agents', agentsHandler)");
     expect(sessionsSrc).toContain("on('sessions', sessionsHandler)");
-    expect(sessionsSrc).toContain("unsubscribe(['agents', 'sessions'])");
+    expect(sessionsSrc).toContain("off('agents', agentsHandler)");
+    expect(sessionsSrc).toContain("off('sessions', sessionsHandler)");
+    expect(sessionsSrc).not.toContain("subscribe(['agents', 'sessions'])");
+    expect(sessionsSrc).not.toContain("unsubscribe(['agents', 'sessions'])");
   });
 
   it("uses onMount to scope live freshness subscriptions to the browser", () => {
