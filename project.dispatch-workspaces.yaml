@@ -15372,23 +15372,24 @@ workspaces:
     base_branch_point: da0fbf18378b893f4b1036d23282f691beaccf56
     bootstrap:
       status: succeeded
-      canonicalBranchHead: faf60b38d295340053d86214b6e13d69e0ced421
+      canonicalBranchHead: 8d5b720a96036aec20d843268d56bfef5cbc1e8f
       configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
       failureMessage: null
       invalidationReasons:
         - canonical-branch-head-changed
-      lastRole: worker
-      lastRunAt: 2026-03-20T21:19:51.054Z
+        - workspace-dependencies-missing
+      lastRole: reviewer
+      lastRunAt: 2026-03-20T21:27:23.064Z
       roleStates:
         reviewer:
           status: succeeded
-          canonicalBranchHead: faf60b38d295340053d86214b6e13d69e0ced421
+          canonicalBranchHead: 8d5b720a96036aec20d843268d56bfef5cbc1e8f
           configHash: 4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945
           failureMessage: null
           invalidationReasons:
             - canonical-branch-head-changed
             - workspace-dependencies-missing
-          lastRunAt: 2026-03-20T21:13:41.898Z
+          lastRunAt: 2026-03-20T21:27:23.064Z
           steps:
             - status: succeeded
               allowTrackedChanges: false
@@ -15419,7 +15420,27 @@ workspaces:
             - canonical-branch-head-changed
           lastRunAt: 2026-03-20T21:19:51.054Z
           steps: []
-      steps: []
+      steps:
+        - status: succeeded
+          allowTrackedChanges: false
+          idempotent: true
+          name: install-workspace-dependencies
+          output: |-
+            added 283 packages, and audited 288 packages in 3s
+
+            66 packages are looking for funding
+              run `npm fund` for details
+
+            9 vulnerabilities (1 low, 5 moderate, 3 high)
+
+            To address all issues, run:
+              npm audit fix
+
+            Run `npm audit` for details.
+          reviewerRerunAllowed: true
+          role: reviewer
+          run: npm ci
+          source: dispatch
     branch_provenance:
       adopted_at: null
       adopted_from: null
@@ -15434,12 +15455,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T21:27:36.950Z
+      updated_at: 2026-03-20T21:27:18.355Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T21:27:36.950Z
+      updated_at: 2026-03-20T21:27:18.355Z
     integration:
       status: pending
       detail: null
@@ -15447,7 +15468,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: da0fbf18378b893f4b1036d23282f691beaccf56
-      updated_at: 2026-03-20T21:27:36.950Z
+      updated_at: 2026-03-20T21:27:18.355Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM6BGYMGZ518JENMCRACJPX3"
@@ -15455,17 +15476,22 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T21:19:51.834Z
-      last_reconciled_at: 2026-03-20T21:27:36.950Z
+      last_reconciled_at: 2026-03-20T21:27:18.355Z
       created_at: 2026-03-20T19:30:54.853Z
-      updated_at: 2026-03-20T21:27:36.950Z
+      updated_at: 2026-03-20T21:27:23.064Z
     workspace_id: dispatch-workspace-01KM6BGYMGZ518JENMCRACJPX3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 8d5b720a96036aec20d843268d56bfef5cbc1e8f
+        last_seen_at: 2026-03-20T21:27:18.355Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates-01km6bgy-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates/01km6bgy
-        head: faf60b38d295340053d86214b6e13d69e0ced421
+        head: 8d5b720a96036aec20d843268d56bfef5cbc1e8f
         last_seen_at: 2026-03-20T21:27:18.355Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates-01km6bgy
   - active_role: null
