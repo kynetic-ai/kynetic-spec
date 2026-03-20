@@ -28269,6 +28269,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T07:04:11.697Z
+      - _ulid: 01KM50Y3XFMP66ZKDTVA5ANAWP
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM50Y3PXBNK0MT8GBC9WY283
+        timestamp: 2026-03-20T07:04:12.463Z
     examined_commit: 47d46a5f52f53d6fa2ae2257220d411f898f631a
     external_links: []
     lifecycle_state: draft
@@ -28298,7 +28305,32 @@ reviews:
               freshness is currently broken rather than proving the behavior.
             created_at: 2026-03-20T07:04:09.879Z
         kind: blocker
+      - _ulid: 01KM50Y3PXBNK0MT8GBC9WY283
+        entries:
+          - _ulid: 01KM50Y3PX2TS9M2X1RRSAASX8
+            author: Jacob Chapel
+            body: "Evidence log:\\nFiles read: packages/web-ui/src/routes/sessions/+page.svelte,
+              packages/web-ui/src/lib/query/ws-invalidation.ts,
+              packages/daemon/src/project-context.ts, packages/daemon/src/session-watcher.ts,
+              packages/web-ui/tests/e2e/sessions.spec.ts,
+              packages/web-ui/tests/e2e/api-watcher.spec.ts, tests/session-watcher.test.ts,
+              tests/web-ui-tanstack-query.test.ts, src/parser/shadow.ts, src/cli/commands/setup.ts,
+              src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+              tests/daemon-context-manager.test.ts, tests/init-setup-sessions-dir.test.ts,
+              tests/plan-inbox-mutation-serialization.test.ts, tests/cli-plan.test.ts,
+              tests/agent-dispatch-engine.test.ts.\\nCommands run: kspec task get
+              @01KM4QGVTQR64KQPQ0S24AHV0S; kspec item get @session-list-infinite-scroll; kspec
+              review for-task @01KM4QGVTQR64KQPQ0S24AHV0S; kspec review get
+              @01KM4ZY6KMAWPX0SPAJWNQ9ARY; kspec validate; rg -n \"AC:
+              @session-list-infinite-scroll|AC: @ui-url-panel-state\" tests packages/web-ui/tests;
+              git diff ...; npm test.\\nClaims verified: full repo test suite passes on this
+              snapshot; the previous review's global-subscription concern is addressed on the page;
+              the new source-agnostic E2E case does not set up __test_ws_instances before using
+              it.\\nCategories searched: correctness, test quality, edge cases, integration, error
+              handling."
+            created_at: 2026-03-20T07:04:12.253Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T07:03:32.007Z
-    updated_at: 2026-03-20T07:04:11.434Z
+    updated_at: 2026-03-20T07:04:12.253Z
     notes: []
