@@ -207,7 +207,7 @@ plans:
     type: task
     status: in_progress
     priority: 3
-    plan_ref: "@test-plan-active"
+    plan_ref: "@01KG0RRP"
     depends_on: []
     notes: []
     todos: []
@@ -231,7 +231,7 @@ plans:
     type: task
     status: pending
     priority: 2
-    plan_ref: "@test-plan-active"
+    plan_ref: "@01KG0RRP"
     depends_on: []
     notes: []
     todos: []
@@ -243,7 +243,7 @@ plans:
     type: task
     status: cancelled
     priority: 2
-    plan_ref: "@test-plan-active"
+    plan_ref: "@01KG0RRP"
     tags:
       - test
     description: A cancelled task linked to the active plan

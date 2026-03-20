@@ -26,12 +26,27 @@ function normalizeSummaryRef(ref: string | null | undefined): string | null {
   return ref.startsWith("@") ? ref.slice(1) : ref;
 }
 
+function matchesPlanRef(plan: PlanSummaryPlan, taskPlanRef: string | null): boolean {
+  if (!taskPlanRef) {
+    return false;
+  }
+
+  if (taskPlanRef.toLowerCase() === plan._ulid.toLowerCase()) {
+    return true;
+  }
+
+  if (plan._ulid.toLowerCase().startsWith(taskPlanRef.toLowerCase())) {
+    return true;
+  }
+
+  return plan.slugs.some((slug) => slug.toLowerCase() === taskPlanRef.toLowerCase());
+}
+
 export function getLinkedPlanSummaryTasks<T extends PlanSummaryTask>(
   plan: PlanSummaryPlan,
   tasks: Iterable<T>,
 ): T[] {
   const linkedTaskRefs = new Set<string>();
-  const linkedPlanRefs = new Set<string>([plan._ulid, ...plan.slugs]);
   const linkedTasks: T[] = [];
 
   for (const ref of plan.derived_tasks) {
@@ -43,11 +58,11 @@ export function getLinkedPlanSummaryTasks<T extends PlanSummaryTask>(
 
   for (const task of tasks) {
     const taskPlanRef = normalizeSummaryRef(task.plan_ref);
-    const matchesPlanRef = taskPlanRef != null && linkedPlanRefs.has(taskPlanRef);
+    const matchesPlanRefLink = matchesPlanRef(plan, taskPlanRef);
     const matchesDerivedTask =
       linkedTaskRefs.has(task._ulid) || task.slugs.some((slug) => linkedTaskRefs.has(slug));
 
-    if (matchesPlanRef || matchesDerivedTask) {
+    if (matchesPlanRefLink || matchesDerivedTask) {
       linkedTasks.push(task);
     }
   }

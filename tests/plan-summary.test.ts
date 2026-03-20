@@ -63,4 +63,38 @@ describe("plan summary helpers", () => {
       blocked: 0,
     });
   });
+
+  // AC: @01KM46FW ac-1
+  it("matches short-ULID plan_ref links in shared summary metrics", () => {
+    const plan = {
+      _ulid: "01PLAN00000000000000000001",
+      slugs: ["plan-one"],
+      derived_tasks: [],
+    };
+    const tasks = [
+      {
+        _ulid: "01TASK00000000000000000006",
+        slugs: ["task-short-plan-ref"],
+        plan_ref: "@01PLAN00",
+        status: "in_progress",
+      },
+      {
+        _ulid: "01TASK00000000000000000007",
+        slugs: ["task-other-plan"],
+        plan_ref: "@01PLAN99",
+        status: "pending",
+      },
+    ];
+
+    const linkedTasks = getLinkedPlanSummaryTasks(plan, tasks);
+
+    expect(linkedTasks.map((task) => task.slugs[0])).toEqual(["task-short-plan-ref"]);
+    expect(countPlanTaskProgress(linkedTasks)).toEqual({
+      total: 1,
+      completed: 0,
+      in_progress: 1,
+      pending: 0,
+      blocked: 0,
+    });
+  });
 });
