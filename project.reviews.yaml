@@ -26113,6 +26113,18 @@ reviews:
         runner: npm
         created_at: 2026-03-20T05:46:14.486Z
         completed_at: 2026-03-20T05:46:14.486Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fails due to pre-existing project-wide reference/alignment/completeness debt unrelated to
+          this task: 3 reference errors, 1 reference warning, 29 alignment warnings, 400
+          completeness warnings."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T05:46:15.850Z
+        completed_at: 2026-03-20T05:46:15.850Z
     events:
       - _ulid: 01KM4W0PKQQ95WGK6QN2G35GWN
         actor: Jacob Chapel
@@ -26157,6 +26169,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T05:46:14.891Z
+      - _ulid: 01KM4WFD91TFVR0MR8VXYKVYYX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T05:46:16.226Z
     examined_commit: 88c10fd9b74b568a8ec2aeb6ac3e51a8f0f8967d
     external_links: []
     lifecycle_state: closed
@@ -26210,7 +26229,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T05:46:12.541Z
     created_at: 2026-03-20T05:38:14.263Z
-    updated_at: 2026-03-20T05:46:14.486Z
+    updated_at: 2026-03-20T05:46:15.850Z
     notes: []
   - _ulid: 01KM4WBNDAJSEXSZWACXX74JEM
     slugs: []
