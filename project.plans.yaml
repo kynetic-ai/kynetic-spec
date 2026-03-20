@@ -24747,13 +24747,10 @@ plans:
         type: feature
         parent: "@tasks"
         description: |
-          Each task is stored as its own directory under .kspec/tasks/<ulid>/,
-          with separate files for core data, notes, and extensible content
-          like assets. A lean index file contains only the fields needed for
-          listing and filtering.
-
-          Non-goals: changing task semantics, altering the CLI surface for
-          end users, or modifying the task schema types visible to consumers.
+          Each task is stored as its own directory, with separate files for
+          core data and notes. A lean index file contains only the fields
+          needed for listing and filtering. Task semantics, CLI surface, and
+          schema types visible to consumers are unchanged.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -24761,26 +24758,38 @@ plans:
             when: |
               The task is persisted
             then: |
-              The task's core data lives in .kspec/tasks/<full-ulid>/task.yaml
-              and its notes live in .kspec/tasks/<full-ulid>/notes.yaml; the
-              directory uses the task's full ULID as its name
+              The task has its own directory named by its full ULID
           - id: ac-2
             given: |
-              A task directory exists with task.yaml and notes.yaml
+              A task is persisted
             when: |
-              Additional content is placed in the directory (e.g. an assets/
-              subdirectory with images or reference documents)
+              The task directory is examined
             then: |
-              The task system ignores unknown files and directories within the
-              task directory; they are preserved across reads and writes
+              Core task data and notes are stored in separate files within
+              the directory
           - id: ac-3
+            given: |
+              A task directory exists
+            when: |
+              Unknown files or directories are placed within it
+            then: |
+              The task system ignores them and preserves them across reads
+              and writes
+          - id: ac-4
             given: |
               A task is deleted
             when: |
               The deletion is persisted
             then: |
-              The task's entire directory is removed and the index entry is
-              removed in a single atomic shadow branch commit
+              The task's entire directory is removed
+          - id: ac-5
+            given: |
+              A task is deleted
+            when: |
+              The deletion is persisted
+            then: |
+              The corresponding index entry is removed in the same atomic
+              operation as the directory removal
 
       - title: Task Index File
         slug: task-index-file
@@ -24824,17 +24833,29 @@ plans:
             when: |
               The creation is persisted
             then: |
-              The task directory is created with task.yaml and notes.yaml,
-              and an index entry is appended to project.tasks.yaml, in a
-              single atomic operation
+              A task directory is created with the per-task files
           - id: ac-5
+            given: |
+              A new task is created
+            when: |
+              The creation is persisted
+            then: |
+              An index entry is added in the same atomic operation as the
+              directory creation
+          - id: ac-6
             given: |
               The index and a per-task file disagree on a filterable field value
             when: |
               The task is loaded for detailed view
             then: |
-              The per-task file is authoritative; the index is a derived cache
-              that can be rebuilt from per-task files
+              The per-task file is authoritative
+          - id: ac-7
+            given: |
+              The index has drifted from per-task files
+            when: |
+              A rebuild is requested
+            then: |
+              The index can be fully regenerated from per-task files alone
 
       - title: Per-Task Core Data File
         slug: task-core-data-file
@@ -24925,41 +24946,49 @@ plans:
         acceptance_criteria:
           - id: ac-1
             given: |
-              Any code path needs to read task data
+              Any consumer needs to read or write task data
             when: |
-              It calls the task data manager
+              It interacts with the task data manager
             then: |
-              The manager provides list operations that read only the index
-              and detail operations that read index plus per-task files; callers
-              do not know or care about the underlying file structure
+              Callers do not know or care about the underlying storage format
           - id: ac-2
             given: |
-              Any code path needs to mutate task data
+              A consumer requests a list of tasks
             when: |
-              It calls the task data manager
+              The list is computed
             then: |
-              The manager handles all file writes (index and per-task files),
-              file locking, and shadow branch commits as a single coordinated
-              operation; callers provide the mutation, not the I/O strategy
+              Only index data is read; per-task detail files are not accessed
           - id: ac-3
+            given: |
+              A consumer requests full details for a specific task
+            when: |
+              The detail is loaded
+            then: |
+              The manager assembles the complete task from index and per-task
+              files transparently
+          - id: ac-4
+            given: |
+              A consumer provides a task mutation
+            when: |
+              The mutation is persisted
+            then: |
+              All affected files, locking, and shadow branch commits are
+              handled by the manager as a single coordinated operation
+          - id: ac-5
             given: |
               Multiple mutations target different tasks concurrently
             when: |
               They are executed
             then: |
-              Per-task file locking allows non-overlapping mutations to proceed
-              without contention; only mutations to the same task or the shared
-              index file serialize
-          - id: ac-4
+              Non-overlapping mutations proceed without contention
+          - id: ac-6
             given: |
-              A mutation affects both indexed fields and non-indexed data
-              (e.g. status change that also adds a note)
+              A mutation affects both indexed and non-indexed data
             when: |
               The mutation is persisted
             then: |
-              The index update, task.yaml write, and notes.yaml write happen
-              within a single atomic operation that either all succeed or all
-              roll back
+              All writes happen within a single atomic operation that either
+              all succeed or all roll back
 
       - title: Atomic Multi-File Task Writes
         slug: task-atomic-writes
@@ -25368,73 +25397,60 @@ plans:
           work — the manager detects when a batch buffer is already active
           and uses it instead of creating a nested one.
 
-      # ─── Phase 4: Migration ───
-
-
-      - title: Build migration command
-        slug: task-build-migration
-        priority: 1
-        tags: [tasks, migration, cli]
-        depends_on:
-          - "@task-impl-index"
-          - "@task-impl-per-task-files"
-          - "@task-extend-write-buffer"
-        description: |
-          Build the kspec task migrate command that transforms the monolithic
-          project.tasks.yaml into the split per-task directory format.
-
-          Why: Existing projects need a migration path. The migration must
-          handle 1000+ tasks with extensive notes and produce a clean result
-          in a single shadow branch commit.
-
-          What: A CLI command that reads the monolithic file, creates per-task
-          directories with task.yaml and notes.yaml, rewrites project.tasks.yaml
-          as a lean index, and commits everything atomically. Supports dry-run
-          mode for previewing the migration.
-
-          How: Read the current monolithic file. For each task: extract notes
-          into notes.yaml, write remaining fields plus an empty history array
-          into task.yaml, create the directory. Build the index from the
-          extracted filterable fields. Use the write buffer to collect all
-          writes, then flush as one commit. The dry-run mode collects writes
-          but discards instead of flushing.
-
-          Edge cases: tasks with validation errors are migrated as-is with
-          warnings. Tasks with no notes get an empty notes.yaml. The command
-          is idempotent — running on an already-migrated project is a no-op.
-
       - title: Build index rebuild command
         slug: task-build-index-rebuild
         priority: 2
-        tags: [tasks, migration, cli]
+        tags: [tasks, cli]
+        spec_ref: "@task-index-file"
         depends_on:
-          - "@task-build-migration"
+          - "@task-impl-index"
         description: |
-          Build the kspec task rebuild-index command that regenerates
+          Build a kspec task rebuild-index command that regenerates
           project.tasks.yaml from per-task directories.
 
-          Why: If the index drifts from the per-task files (bug, manual edit,
-          interrupted write), users need a repair tool. This also serves as a
-          migration verification step.
+          Why: If the index drifts from per-task files (bug, manual edit,
+          interrupted write), users need a repair tool. The index is a derived
+          cache and must always be rebuildable from authoritative per-task data.
 
           What: A CLI command that scans .kspec/tasks/*/ directories, reads
           each task.yaml, extracts indexed fields, and writes a fresh
-          project.tasks.yaml. Reports any differences between the old and new
+          project.tasks.yaml. Reports differences between the old and new
           index. In repair mode, overwrites the index.
 
           How: Scan the tasks directory for ULID-named subdirectories. Read
           task.yaml from each. Build the index entries. Compare with the
-          current index and report diffs. On --repair, write the rebuilt index.
+          current index and report diffs. On --repair, write the rebuilt index
+          and commit to shadow branch.
 
-      # ─── Phase 5: Cleanup ───
+      # ─── Phase 4: Cleanup ───
 
+
+      - title: Deprecate old task storage specs
+        slug: task-deprecate-old-storage-specs
+        priority: 1
+        tags: [tasks, spec, cleanup]
+        description: |
+          Mark the old task storage specs as deprecated before implementation
+          begins, signaling that the new specs are the source of truth.
+
+          Why: @task-storage, @task-storage-alongside, and @task-storage-separate
+          describe the old monolithic storage model. The new specs in this plan
+          supersede them. Deprecating upfront prevents confusion about which
+          specs are authoritative during implementation.
+
+          What: Set maturity to deprecated on all three specs. Set superseded_by
+          to @task-directory-storage on each.
+
+          How: Use kspec item set --maturity deprecated --superseded-by
+          @task-directory-storage for each of the three specs.
 
       - title: Remove monolithic task file support
         slug: task-remove-monolithic
         priority: 2
         tags: [tasks, cleanup]
         depends_on:
-          - "@task-build-migration"
+          - "@task-impl-activity"
+          - "@task-extend-write-buffer"
         description: |
           Remove the legacy monolithic file loading path from the task data
           manager after migration is complete and stable.
@@ -25450,33 +25466,32 @@ plans:
           git log -L based activity extraction.
 
           How: Delete the old codepaths, update tests to use the split format,
-          verify the full test suite passes. The migration command remains
-          available for new projects that might start with the old format
-          (e.g. manual YAML editing before first kspec init).
+          verify the full test suite passes.
 
-      - title: Deprecate old task storage specs and clean up references
-        slug: task-deprecate-old-storage-specs
+      - title: Purge deprecated task storage spec references
+        slug: task-purge-old-storage-refs
         priority: 2
         tags: [tasks, cleanup]
         depends_on:
           - "@task-remove-monolithic"
         description: |
-          Mark the old task storage specs as deprecated and clean up any
-          code or documentation references to them.
+          Remove all remaining references to the deprecated @task-storage,
+          @task-storage-alongside, and @task-storage-separate specs from the
+          codebase.
 
-          Why: @task-storage, @task-storage-alongside, and @task-storage-separate
-          describe the old monolithic storage model. After the split architecture
-          is implemented and the old codepaths removed, these specs no longer
-          describe reality.
+          Why: After the monolithic code is removed, any AC annotation comments,
+          test references, documentation links, or spec cross-references
+          pointing to the old specs are stale and misleading.
 
-          What: Set maturity to deprecated on all three specs. Set superseded_by
-          to @task-directory-storage on each. Then grep for any remaining
-          references to the old spec slugs in code, tests, docs, or other specs
-          and update or remove them.
+          What: Search the entire codebase for references to the three
+          deprecated spec slugs. Remove AC annotation comments in tests,
+          delete tests that only existed to verify old storage behavior,
+          update any documentation or other specs that reference them.
 
-          How: Use kspec item set --maturity deprecated --superseded-by
-          @task-directory-storage for each spec. Search codebase for references
-          and clean up.
+          How: Grep for task-storage-alongside, task-storage-separate, and
+          task-storage (exact, not the new task-directory-storage) across all
+          source, test, doc, and spec files. Remove or update each reference.
+          Verify no broken links remain via kspec validate.
       ```
 
 
@@ -25486,8 +25501,8 @@ plans:
       **Phasing is critical.** Phase 1 (task data manager + caller migration) is pure refactoring
       with zero behavior change — every test must continue passing with identical output. Phase 2
       (split storage) is the backend swap inside the manager. Phase 3 (atomic writes) ensures
-      multi-file safety. Phase 4 (migration) provides the data transformation. Phase 5 (cleanup)
-      removes dead code. Each phase is independently shippable and testable.
+      multi-file safety. Phase 4 (cleanup) removes dead code. Each phase is independently shippable
+      and testable.
 
 
       **The manager-first approach is key.** By migrating all callers to the task data manager
@@ -25523,14 +25538,25 @@ plans:
 
       **Testing strategy.** Phase 1 tests verify behavioral equivalence — same inputs produce same
       outputs through the manager as through direct yaml.ts calls. Phase 2 tests verify the split
-      format produces correct file structures. Phase 4 tests verify migration round-trips (migrate,
-      load, compare with pre-migration data). The full test suite runs after each phase.
+      format produces correct file structures. The full test suite runs after each phase.
 
 
       **No schema changes.** The TaskSchema, TaskInputSchema, and TasksFileSchema types are
       unchanged. The manager maps between the external schema (what callers see) and the internal
       storage format (how files are organized). The history and notes separation is internal to the
       storage backend.
+
+
+      **Migration is post-plan.** Data migration from the monolithic format to the split format is a
+      one-time script written after all plan tasks are complete, not a tracked task. The script
+      lives in scripts/ and is deleted after use.
+
+
+      **Agent safety: never use local kspec builds.** Agents working on this plan must NEVER use
+      `npm run dev`, `node dist/`, or `npm link` to run their in-progress code against live shadow
+      branch data. Always use the globally installed `kspec` binary for any kspec CLI operations.
+      Running partially-implemented storage code against real project data risks corruption. All
+      testing must use the test harness with temp fixtures.
     status: draft
     approved_at: null
     derived_specs: []
@@ -25550,3 +25576,10 @@ plans:
           implementation details (function names, git commands, file paths as rationale)"
         author: "@claude"
         created_at: 2026-03-20T23:22:40.069Z
+      - _ulid: 01KM6TFNBT6WVZXSCEQCZ4WRSV
+        content: "Spec cleanup: remove non-goals prose, break compound ACs, strip implementation details.
+          Task restructure: deprecation first, migration removed (post-plan script), purge refs
+          separate from code removal, index rebuild kept as permanent feature. Agent safety note
+          added."
+        author: "@claude"
+        created_at: 2026-03-20T23:49:56.219Z
