@@ -30875,6 +30875,17 @@ reviews:
         runner: npm
         created_at: 2026-03-20T18:26:34.899Z
         completed_at: 2026-03-20T18:26:34.899Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: node --import tsx invocation of createTask({title:'Invalid task', status:'not-a-status'})
+          threw Invalid task input with the invalid status enum details.
+        name: manual parser validation
+        required: true
+        runner: node
+        created_at: 2026-03-20T18:26:35.668Z
+        completed_at: 2026-03-20T18:26:35.668Z
     events:
       - _ulid: 01KM67QHD7C4AQP4B2HQTTSNRK
         actor: Jacob Chapel
@@ -30903,6 +30914,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T18:26:35.144Z
+      - _ulid: 01KM67ZKQZZF8R23MBMX7EV0MW
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: manual parser validation
+        timestamp: 2026-03-20T18:26:35.904Z
     examined_commit: a0bf72cf5aec046fb671938f44c6982741caacbf
     external_links: []
     lifecycle_state: open
@@ -30915,5 +30933,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T18:22:11.368Z
-    updated_at: 2026-03-20T18:26:34.899Z
+    updated_at: 2026-03-20T18:26:35.668Z
     notes: []
