@@ -25334,7 +25334,17 @@ reviews:
     slugs: []
     title: Review task @01KM4KPQ6B10BAYD44D6HAG0GC
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Full test suite passed via npm test in reviewer snapshot
+        name: npm-test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T04:49:12.918Z
+        completed_at: 2026-03-20T04:49:12.918Z
     events:
       - _ulid: 01KM4S5PCBEXE298H7KGVZAGP1
         actor: Jacob Chapel
@@ -25349,6 +25359,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM4S6XHBSPYFQX7J5H05CPR6
         timestamp: 2026-03-20T04:49:12.473Z
+      - _ulid: 01KM4S6YDF5SF1D6C6CGA24H4G
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm-test
+        timestamp: 2026-03-20T04:49:13.135Z
     examined_commit: 841dd67c5c2f93ebb4854ba0cbad364a796331fa
     external_links: []
     lifecycle_state: draft
@@ -25385,5 +25402,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T04:48:32.139Z
-    updated_at: 2026-03-20T04:49:12.235Z
+    updated_at: 2026-03-20T04:49:12.918Z
     notes: []
