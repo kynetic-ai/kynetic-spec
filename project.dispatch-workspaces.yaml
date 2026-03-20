@@ -11937,7 +11937,7 @@ workspaces:
         head: b15aecdd0776108089c14b6486d969e2bce3abe6
         last_seen_at: 2026-03-19T06:41:32.053Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/add-explicit-generatecommitmessage-cases-for-all-shadow-operations-01kkx6qm
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: 53be2094bc46d5c352d60c095941b9033e61d079
     bootstrap:
       status: succeeded
@@ -11984,7 +11984,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T00:04:37.115Z
+      updated_at: 2026-03-20T00:04:38.637Z
     integration:
       status: pending
       detail: null
@@ -11999,10 +11999,10 @@ workspaces:
     task_slug: fix-shadow-commit-call-sites-that-omit-entity-refs
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-19T07:02:48.428Z
-      last_reconciled_at: 2026-03-20T00:04:37.115Z
+      last_active_at: 2026-03-20T00:04:38.637Z
+      last_reconciled_at: 2026-03-20T00:04:38.637Z
       created_at: 2026-03-19T06:53:50.346Z
-      updated_at: 2026-03-20T00:04:37.640Z
+      updated_at: 2026-03-20T00:04:38.637Z
     workspace_id: dispatch-workspace-01KKX6QPC0374PT4W93CMA7EMX
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
