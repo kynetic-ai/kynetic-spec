@@ -24747,13 +24747,10 @@ plans:
         type: feature
         parent: "@tasks"
         description: |
-          Tasks are stored as individual directories under .kspec/tasks/<ulid>/,
-          with separate files for core data, notes, and future extensible
-          content like assets. The monolithic project.tasks.yaml becomes a lean
-          index containing only the fields needed for listing and filtering.
-
-          This replaces the current single-file storage where all tasks, notes,
-          and metadata live in one YAML file that grows unboundedly.
+          Each task is stored as its own directory under .kspec/tasks/<ulid>/,
+          with separate files for core data, notes, and extensible content
+          like assets. A lean index file contains only the fields needed for
+          listing and filtering.
 
           Non-goals: changing task semantics, altering the CLI surface for
           end users, or modifying the task schema types visible to consumers.
@@ -24865,7 +24862,7 @@ plans:
               The caller requests activity information
             then: |
               The history section provides a complete audit trail of all field
-              changes without requiring git log operations
+              changes without requiring version control queries
           - id: ac-3
             given: |
               A history entry is recorded
@@ -24882,9 +24879,9 @@ plans:
         type: requirement
         parent: "@task-directory-storage"
         description: |
-          tasks/<ulid>/notes.yaml contains the task's append-only notes array.
-          Notes are the largest growth vector in task data and isolating them
-          keeps task.yaml small and its git history focused on field changes.
+          tasks/<ulid>/notes.yaml contains the task's append-only notes array,
+          stored separately from core task data so that note growth does not
+          affect task field reads or history.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -24919,15 +24916,10 @@ plans:
         type: feature
         parent: "@tasks"
         description: |
-          A single library module that owns all task storage operations. The
-          CLI, daemon API, batch system, and any other consumer reads and
-          writes tasks exclusively through this module. It encapsulates the
-          split storage format (index + per-task directories) behind a
-          consistent interface.
-
-          This replaces the current pattern where task I/O is spread across
-          loadAllTasks, saveTask, mutateTaskAtomically, and mutateTasksAtomically
-          in yaml.ts, with callers managing file paths and locking directly.
+          A single module that owns all task storage operations. All consumers
+          (CLI, API, batch, automation) read and write tasks exclusively
+          through this module. It encapsulates the storage format behind a
+          consistent interface so callers provide mutations, not I/O strategy.
         traits:
           - trait-error-guidance
         acceptance_criteria:
@@ -24975,8 +24967,8 @@ plans:
         parent: "@task-data-manager"
         description: |
           Task mutations that span multiple files (index + task.yaml + notes.yaml)
-          must be atomic. The write buffer system already provides this for
-          batch operations; this extends the same guarantee to all task writes.
+          must be atomic. All task writes — single or batch — either fully
+          succeed or fully roll back.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -25025,8 +25017,8 @@ plans:
             when: |
               A filtered task list is requested
             then: |
-              The response time is proportional to the number of index entries,
-              not the total volume of task data across all per-task directories
+              The response time is proportional to the number of tasks, not
+              the total volume of notes and history across all tasks
 
       - title: Task Detail Loading
         slug: task-detail-loading
@@ -25066,14 +25058,10 @@ plans:
         parent: "@task-directory-storage"
         description: |
           Task activity is recorded directly in the per-task files rather than
-          reconstructed from git history. Field changes are recorded in
-          task.yaml's history section. Note additions are evident from
-          notes.yaml. This eliminates the need for git log -L operations.
-
-          For supplementary git-based activity (e.g. correlating with code
-          commits), git log -- tasks/<ulid>/ provides per-task commit history
-          without the expensive line-range tracking that git log -L requires
-          on monolithic files.
+          reconstructed from version control history. Field changes are
+          recorded in task.yaml's history section. Note additions are evident
+          from notes.yaml entries. The activity timeline is assembled from
+          file contents alone.
         acceptance_criteria:
           - id: ac-1
             given: |
@@ -25081,8 +25069,9 @@ plans:
             when: |
               The timeline is assembled
             then: |
-              Field changes come from task.yaml history entries and note events
-              come from notes.yaml entries; no git log -L operation is performed
+              Field changes come from the task's stored history entries and
+              note events come from stored note entries; the timeline is
+              assembled from persisted data without version control queries
           - id: ac-2
             given: |
               A task has been through multiple status transitions, note additions,
@@ -25095,12 +25084,11 @@ plans:
           - id: ac-3
             given: |
               A task created before the storage migration has no history entries
-              in task.yaml
             when: |
               The activity timeline is requested
             then: |
-              The system falls back to git log -- tasks/<ulid>/ for post-migration
-              commits; pre-migration activity may be incomplete and is noted as such
+              Pre-migration activity may be incomplete; the timeline indicates
+              which entries are from stored history versus best-effort recovery
 
       ```
 
@@ -25557,3 +25545,8 @@ plans:
           task uses maturity=deprecated + superseded_by instead of updating old specs.
         author: "@claude"
         created_at: 2026-03-20T23:06:53.323Z
+      - _ulid: 01KM6RXQJ5TBYBK1JGQ4PP974B
+        content: "Clean specs: remove 'replaces' language (supersession handled by field, not prose), strip
+          implementation details (function names, git commands, file paths as rationale)"
+        author: "@claude"
+        created_at: 2026-03-20T23:22:40.069Z
