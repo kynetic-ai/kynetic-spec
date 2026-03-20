@@ -29178,6 +29178,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T14:51:15.834Z
+      - _ulid: 01KM5VNNEJGC78BMNP7AH0GZ9F
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM5VNN7YHMXJ251X8BQPEE44
+        timestamp: 2026-03-20T14:51:27.058Z
     examined_commit: 8adbcc01f84df1027194f8a9321873fa20b0b469
     external_links: []
     lifecycle_state: open
@@ -29187,8 +29194,38 @@ reviews:
       content_hash: ""
       ref: "@01KM289GY9589XH063SSFMBJFQ"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM5VNN7YHMXJ251X8BQPEE44
+        entries:
+          - _ulid: 01KM5VNN7YP199PC18ZN0TPZ6H
+            author: Jacob Chapel
+            body: >-
+              Evidence log
+
+
+              Files read: src/cli/pid-utils.ts, src/cli/index.ts, src/cli/commands/serve.ts,
+              packages/daemon/src/watcher.ts, packages/daemon/src/project-context.ts,
+              tests/cli-no-daemon.test.ts, tests/daemon-watcher-error-handling.test.ts,
+              tests/daemon-context-manager.test.ts, packages/web-ui/tests/fixtures/test-base.ts,
+              related daemon-call-site helpers.
+
+
+              Commands run: git diff against afb99935...8adbcc01, kspec task get
+              @01KM289GY9589XH063SSFMBJFQ, kspec review for-task @01KM289GY9589XH063SSFMBJFQ, rg for
+              AC annotations, kspec validate, npm test, rg for isDaemonRunning() call sites.
+
+
+              Claims verified: KSPEC_NO_DAEMON now suppresses incidental daemon probes via
+              PidFileManager.isDaemonRunning(); explicit serve commands bypass that suppression with
+              ignoreNoDaemon and strip KSPEC_NO_DAEMON from spawned daemon child env; watcher
+              permanent ENOENT now unregisters stale projects.
+
+
+              Categories searched: correctness, edge cases, error handling, test quality,
+              integration. No blocking findings.
+            created_at: 2026-03-20T14:51:26.846Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T14:47:42.729Z
-    updated_at: 2026-03-20T14:51:15.602Z
+    updated_at: 2026-03-20T14:51:26.846Z
     notes: []
