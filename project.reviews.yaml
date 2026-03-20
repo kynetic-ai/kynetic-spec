@@ -24022,6 +24022,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM4F5JY8FP6MFDVCV93H4WVV
         timestamp: 2026-03-20T01:53:43.150Z
+      - _ulid: 01KM4F5MB332HAKZBNDJYA9S19
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM4F5KYS45G0WKP3BCK67RQD
+        timestamp: 2026-03-20T01:53:44.291Z
     examined_commit: 47883f95b96085dff4a90d0147498b14a5f8da6f
     external_links: []
     lifecycle_state: open
@@ -24359,7 +24366,28 @@ reviews:
                   Co-Authored-By: OpenAI Codex <codex@openai.com> shows unrelated commits from other tasks, including the ralph removal stack, shadow-commit fixes, task-cancel cleanup, integration-target mutation-scope changes, and dependency-drift repair. Merging this review snapshot into dev would ship those unrelated tasks with it, so the task cannot advance until the branch is restacked or narrowed to only the workspace-collision work.
             created_at: 2026-03-20T01:53:42.856Z
         kind: blocker
+      - _ulid: 01KM4F5KYS45G0WKP3BCK67RQD
+        entries:
+          - _ulid: 01KM4F5KYSTC3N1TJREDAHMFXT
+            author: Jacob Chapel
+            body: "Evidence log:\\nFiles read: src/agent-runtime/workspace.ts, src/agent-runtime/dispatch.ts,
+              src/agent-runtime/bootstrap.ts, src/cli/index.ts,
+              tests/dispatch-workspace-config.test.ts, tests/dispatch-workspace-registry.test.ts,
+              tests/dispatch-target-sync.test.ts, tests/dispatch-runtime-bootstrap-contract.test.ts,
+              tests/agent-dispatch-engine.test.ts context via full-suite failures.\\nCommands run:
+              git diff --stat/base...head, git diff on changed runtime/test files, git log
+              base..head, git status --branch, kspec task get, kspec item get, kspec review
+              for-task/get, grep for AC annotations, kspec validate, npm test.\\nClaims verified:
+              verified the spec/task AC set directly; verified the worker note claiming full npm
+              test passes by rerunning npm test on snapshot 47883f95b, which still fails; verified
+              the branch contents directly via git log instead of relying on task
+              notes.\\nCategories searched: correctness (foreign worktree ownership flow),
+              integration (shared registry/worktree interactions), error handling (actionable
+              DispatchWorkspaceError paths), test quality/coverage (AC annotations and targeted
+              regression tests), merge safety (branch scope and unrelated stacked commits)."
+            created_at: 2026-03-20T01:53:43.898Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T01:47:09.977Z
-    updated_at: 2026-03-20T01:53:42.856Z
+    updated_at: 2026-03-20T01:53:43.898Z
     notes: []
