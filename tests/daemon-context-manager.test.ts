@@ -126,6 +126,35 @@ describe('ProjectContextManager', () => {
       expect(kspecWatcherStop).toHaveBeenCalledOnce();
       expect(sessionWatcherStop).toHaveBeenCalledOnce();
     });
+
+    // AC: @multi-directory-daemon ac-34
+    it('unregisters a project when the watcher reports permanent directory removal', async () => {
+      manager.registerProject(projectA);
+
+      const watcherInstances: KspecWatcher[] = [];
+      const kspecWatcherStart = vi.spyOn(KspecWatcher.prototype, 'start').mockImplementation(async function () {
+        watcherInstances.push(this as KspecWatcher);
+      });
+      const kspecWatcherStop = vi.spyOn(KspecWatcher.prototype, 'stop').mockResolvedValue();
+      const sessionWatcherStart = vi.spyOn(SessionWatcher.prototype, 'start').mockResolvedValue();
+      const sessionWatcherStop = vi.spyOn(SessionWatcher.prototype, 'stop').mockResolvedValue();
+
+      await manager.startWatcher(projectA);
+      expect(kspecWatcherStart).toHaveBeenCalledOnce();
+      expect(sessionWatcherStart).toHaveBeenCalledOnce();
+      expect(manager.hasProject(projectA)).toBe(true);
+
+      await (watcherInstances[0] as KspecWatcher & {
+        options: { onPermanentFailure?: (kspecDir: string) => void | Promise<void> };
+      }).options.onPermanentFailure?.(join(projectA, '.kspec'));
+
+      await vi.waitFor(() => {
+        expect(manager.hasProject(projectA)).toBe(false);
+      });
+
+      expect(kspecWatcherStop).toHaveBeenCalledOnce();
+      expect(sessionWatcherStop).toHaveBeenCalledOnce();
+    });
   });
 
   describe('Daemon restart behavior', () => {

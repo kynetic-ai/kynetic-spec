@@ -120,6 +120,9 @@ export class ProjectContextManager {
               error: error.message
             }, normalizedPath);
           }
+        },
+        onPermanentFailure: () => {
+          this.unregisterProject(normalizedPath);
         }
       });
 
