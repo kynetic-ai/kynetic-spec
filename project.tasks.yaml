@@ -111048,5 +111048,15 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T16:39:27.971Z
+    - _ulid: 01KM62N9M7HAE5HE610DK4XCRQ
+      content: "[FIX_CYCLE: 1] Addressed review blocker by preserving the actual invalid enum value in
+        read-side warnings: warnSkippedRecord now falls back from Zod issue.input to issue.received,
+        and a regression test covers automation='ineligible'. Verification: focused read-side
+        warning test passed, the previously flaky dispatch/bootstrap tests passed in isolation, full
+        npm test passed on rerun (292 files, 6669 passed, 3 skipped), and kspec validate still
+        reports only the same pre-existing repo-wide debt."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T16:53:34.983Z
   todos: []
   automation: eligible
