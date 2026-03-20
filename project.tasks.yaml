@@ -104687,13 +104687,8 @@
   spec_ref: "@trait-shadow-commit"
   meta_ref: null
   plan_ref: null
-  status: blocked
-  blocked_by:
-    - Approved review, but merge into dev is blocked by unrelated uncommitted changes already
-      present in the dev worktree (src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
-      tests/dispatch-branch-push-lifecycle.test.ts, tests/dispatch-target-sync.test.ts). Resolve or
-      relocate those changes, then merge
-      dispatch/task/fix-shadow-commit-call-sites-that-omit-entity-refs/01kkx6qp into dev.
+  status: pending_review
+  blocked_by: []
   depends_on: []
   context: []
   priority: 3
