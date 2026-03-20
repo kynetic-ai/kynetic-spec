@@ -15368,7 +15368,7 @@ workspaces:
         head: cd1cae22e3b5390bb4c808ccc8e30f4c25f682b4
         last_seen_at: 2026-03-20T19:53:53.839Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-reviews-api-status-filter-validation-mismatch-01km6ar9
-  - active_role: null
+  - active_role: reviewer
     base_branch_point: da0fbf18378b893f4b1036d23282f691beaccf56
     bootstrap:
       status: succeeded
@@ -15458,7 +15458,7 @@ workspaces:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T21:27:47.590Z
+      updated_at: 2026-03-20T21:27:53.712Z
     integration:
       status: pending
       detail: null
@@ -15473,10 +15473,10 @@ workspaces:
     task_slug: fix-web-ui-initialization-failures-health-check-url-spa-routes-and-query-gates
     timestamps:
       closed_at: null
-      last_active_at: 2026-03-20T21:27:42.180Z
-      last_reconciled_at: 2026-03-20T21:27:47.590Z
+      last_active_at: 2026-03-20T21:27:53.712Z
+      last_reconciled_at: 2026-03-20T21:27:53.712Z
       created_at: 2026-03-20T19:30:54.853Z
-      updated_at: 2026-03-20T21:27:52.120Z
+      updated_at: 2026-03-20T21:27:53.712Z
     workspace_id: dispatch-workspace-01KM6BGYMGZ518JENMCRACJPX3
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
