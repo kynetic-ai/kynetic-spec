@@ -109793,3 +109793,34 @@
       author: Jacob Chapel
       created_at: 2026-03-20T03:12:58.512Z
   todos: []
+- _ulid: 01KM4KPQ6B10BAYD44D6HAG0GC
+  slugs: []
+  title: Allow plan derive task-only plans without Specs block
+  type: bug
+  description: "plan derive should allow task-only derivation without requiring a ## Specs YAML block.
+    Current behavior hard-fails with 'No specs found' when plan uses prose spec changes and only has
+    a ## Tasks section. This blocks the derive workflow for plans that update existing specs rather
+    than creating new ones (e.g. plan-review-version-auto-derivation). The derive command should
+    skip spec materialization when no specs are present and proceed to task creation from the ##
+    Tasks block."
+  spec_ref: "@plan-derive-enhanced"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - plan
+    - cli
+    - bug
+  vcs_refs: []
+  created_at: 2026-03-20T03:12:58.571Z
+  notes:
+    - _ulid: 01KM4KPQ6ET68WGTD352QVF882
+      content: "Validated on 2026-03-19: src/cli/commands/plan.ts still exits with 'No specs found in plan
+        content' whenever parsedPlan.specs is empty, even when the plan has a Tasks block for manual
+        task-only derivation."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T03:12:58.574Z
+  todos: []

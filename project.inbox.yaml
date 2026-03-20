@@ -1792,19 +1792,6 @@ inbox:
       - dx
     added_by: "@claude"
     created_at: 2026-03-18T13:35:30.061Z
-  - _ulid: 01KM0P56BZ6P9RGXQ1FYSGBW7M
-    text: "plan derive should allow task-only derivation without requiring a ## Specs YAML block.
-      Current behavior hard-fails with 'No specs found' when plan uses prose spec changes and only
-      has a ## Tasks section. This blocks the derive workflow for plans that update existing specs
-      rather than creating new ones (e.g. plan-review-version-auto-derivation). The derive command
-      should skip spec materialization when no specs are present and proceed to task creation from
-      the ## Tasks block."
-    tags:
-      - plan
-      - cli
-      - derive
-    added_by: "@claude"
-    created_at: 2026-03-18T14:38:52.287Z
   - _ulid: 01KM0PS4CGKW9JJQXFQS2PAY7H
     text: >-
       Plan reviewer skill: Create a /plan-review skill for two use cases: (1) Structured plan review
