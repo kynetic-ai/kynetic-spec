@@ -20,6 +20,7 @@ import {
 import type { KspecContext } from "./yaml.js";
 import {
   readYamlFile,
+  warnSkippedRecord,
   writeYamlFilePreserveFormat,
 } from "./yaml.js";
 
@@ -44,7 +45,7 @@ export function getPlansFilePath(ctx: KspecContext): string {
  * Supports the canonical { kynetic_plans, plans } shape and a fallback
  * { plans } shape for older files without version metadata.
  */
-function parsePlansFromRaw(raw: unknown): Plan[] {
+function parsePlansFromRaw(raw: unknown, source = "project.plans.yaml"): Plan[] {
   const parsed = PlansFileSchema.safeParse(raw);
   if (parsed.success) {
     return parsed.data.plans;
@@ -58,6 +59,12 @@ function parsePlansFromRaw(raw: unknown): Plan[] {
         const planResult = PlanSchema.safeParse(plan);
         if (planResult.success) {
           plans.push(planResult.data);
+        } else {
+          const rawPlan = plan as Record<string, unknown> | null;
+          const planId = rawPlan && typeof rawPlan._ulid === "string"
+            ? rawPlan._ulid
+            : "<unknown-plan>";
+          warnSkippedRecord("plan", planId, source, planResult.error);
         }
       }
       return plans;
@@ -72,7 +79,7 @@ function parsePlansFromRaw(raw: unknown): Plan[] {
  */
 async function loadPlansFromFile(plansPath: string): Promise<Plan[]> {
   const raw = await readYamlFile<unknown>(plansPath);
-  return parsePlansFromRaw(raw);
+  return parsePlansFromRaw(raw, plansPath);
 }
 
 /**
