@@ -111872,7 +111872,7 @@
   spec_ref: "@task-unblock"
   meta_ref: null
   plan_ref: null
-  status: in_progress
+  status: pending_review
   blocked_by: []
   depends_on: []
   context: []
@@ -111886,7 +111886,7 @@
   submission_linkage:
     review_url: null
     branch: dev
-    captured_at: 2026-03-20T22:05:09.910Z
+    captured_at: 2026-03-20T22:19:56.907Z
     commit: 68e74dc59de2d01a3e1c7b9577526657470cb1c6
     remote: origin
     remote_url: git@github.com:kynetic-ai/kynetic-spec.git
@@ -111894,7 +111894,7 @@
   session_id: 01KM6MVWGFE9DV1Y72WPCXDT49
   created_at: 2026-03-20T21:49:58.474Z
   started_at: 2026-03-20T22:19:53.512Z
-  submitted_at: 2026-03-20T22:05:10.352Z
+  submitted_at: 2026-03-20T22:19:57.386Z
   notes:
     - _ulid: 01KM6KMRYCTSRT8SDGP81JCSGG
       content: >-
