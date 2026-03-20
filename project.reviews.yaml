@@ -25080,7 +25080,23 @@ reviews:
     slugs: []
     title: Review fix-review-add-subject-type-precedence-with-version-context
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Files read: src/cli/commands/review.ts, tests/review-cli.test.ts. Commands run: git diff
+          --stat, git diff, kspec task get, kspec item get, rg AC coverage scan, kspec validate, npm
+          test. Claims verified: explicit ref-backed subject stays task/spec/plan when review
+          context is supplied separately; mixed subject selectors are rejected; code subject
+          creation still works when explicitly requested. Categories searched: correctness, edge
+          cases, error handling, test quality, integration. Result: 289 files passed, 6636 tests
+          passed, 3 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T04:36:37.510Z
+        completed_at: 2026-03-20T04:36:37.510Z
     events:
       - _ulid: 01KM4R91MZZ8HD647KVA6F6F90
         actor: Jacob Chapel
@@ -25095,6 +25111,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T04:33:05.751Z
+      - _ulid: 01KM4RFWQED0HG6GM86P189JDT
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T04:36:37.742Z
     examined_commit: 111d29d52180ca272c6a43ec08f0adf130cd218a
     external_links: []
     lifecycle_state: open
@@ -25107,5 +25130,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T04:32:53.408Z
-    updated_at: 2026-03-20T04:33:05.435Z
+    updated_at: 2026-03-20T04:36:37.510Z
     notes: []
