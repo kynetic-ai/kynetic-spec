@@ -25969,6 +25969,12 @@ reviews:
         payload:
           thread_ulid: 01KM4VM908ZR5D6144W8GSWT8N
         timestamp: 2026-03-20T05:42:52.158Z
+      - _ulid: 01KM4W96SEKJPQRV81MRFBS6HP
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM4VM700831251JW21V0GQZE
+        timestamp: 2026-03-20T05:42:52.974Z
     examined_commit: 148c2d03728085839fd9a47a6ad7cc129ef789a4
     external_links: []
     lifecycle_state: closed
@@ -25996,6 +26002,13 @@ reviews:
               drives the /sessions page refresh/indicator path, so `ac-live-update-source-agnostic`
               is not actually covered."
             created_at: 2026-03-20T05:31:25.056Z
+          - _ulid: 01KM4W96GR3HQ4GH7K1R2BKRAY
+            author: Jacob Chapel
+            body: Fixed in commit 818b53f420eda826592758a52a7691fd0b055d75. Added an annotated page-level
+              /sessions E2E for @session-list-infinite-scroll ac-live-update-source-agnostic that
+              injects a sessions-topic broadcast, asserts the page subscribes to both agents and
+              sessions topics, and verifies the list/count refresh from the sessions-topic path.
+            created_at: 2026-03-20T05:42:52.696Z
         kind: blocker
       - _ulid: 01KM4VM908ZR5D6144W8GSWT8N
         anchor:
@@ -26053,7 +26066,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T05:31:41.966Z
     created_at: 2026-03-20T05:26:57.283Z
-    updated_at: 2026-03-20T05:42:51.881Z
+    updated_at: 2026-03-20T05:42:52.696Z
     notes: []
   - _ulid: 01KM4W0PKQGFRN5AFC2CR76ZGC
     slugs: []
