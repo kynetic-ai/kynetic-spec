@@ -30742,7 +30742,17 @@ reviews:
     slugs: []
     title: Review task-daemon-api-input-validation (cycle 2)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Fails with pre-existing project reference/completeness debt unrelated to this task: 3
+          reference errors, 1 reference warning, 30 alignment warnings, 402 completeness warnings."
+        name: kspec validate
+        required: false
+        created_at: 2026-03-20T18:19:56.635Z
+        completed_at: 2026-03-20T18:19:56.635Z
     events:
       - _ulid: 01KM67AGRH46X5VG4M1JG9CQ56
         actor: Jacob Chapel
@@ -30757,6 +30767,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T18:18:35.772Z
+      - _ulid: 01KM67KE1ZGYZ1VRX2FZ899SE0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T18:19:56.863Z
     examined_commit: 8334eae8de18d4abe39d8b6e91fcbe1f0642553f
     external_links: []
     lifecycle_state: open
@@ -30769,5 +30786,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T18:15:04.722Z
-    updated_at: 2026-03-20T18:18:35.344Z
+    updated_at: 2026-03-20T18:19:56.635Z
     notes: []
