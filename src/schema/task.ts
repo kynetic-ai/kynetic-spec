@@ -102,6 +102,8 @@ export const TaskSchema = z.object({
   // State
   status: TaskStatusSchema.default("pending"),
   blocked_by: z.array(z.string()).default([]),
+  // AC: @state-blocked ac-1, @task-unblock ac-1 — stores the status before blocking for restoration on unblock
+  prior_status: TaskStatusSchema.nullable().optional(),
   closed_reason: z.string().nullable().optional(),
 
   // Dependencies
@@ -180,6 +182,7 @@ export const TaskInputSchema = z.object({
   // State
   status: TaskStatusSchema.optional(),
   blocked_by: z.array(z.string()).optional(),
+  prior_status: TaskStatusSchema.nullable().optional(),
   closed_reason: z.string().nullable().optional(),
 
   // Dependencies

@@ -220,25 +220,28 @@ describe("Task system AC backfill coverage", () => {
   });
 
   // AC: @state-blocked ac-1
-  it("returns blocked tasks to a non-terminal state when they are unblocked", () => {
+  // AC: @task-unblock ac-1
+  it("returns blocked tasks to the status they had before being blocked", () => {
     kspecOutput('task add --title "Blocked task" --slug blocked-task', tempDir);
     kspecOutput("task start @blocked-task", tempDir);
     kspecOutput('task block @blocked-task --reason "Waiting on API"', tempDir);
 
-    const blocked = kspecJson<{ status: string; blocked_by: string[] }>(
+    const blocked = kspecJson<{ status: string; blocked_by: string[]; prior_status: string | null }>(
       "task get @blocked-task",
       tempDir,
     );
     expect(blocked.status).toBe("blocked");
     expect(blocked.blocked_by).toEqual(["Waiting on API"]);
+    expect(blocked.prior_status).toBe("in_progress");
 
     kspecOutput("task unblock @blocked-task", tempDir);
-    const unblocked = kspecJson<{ status: string; blocked_by: string[] }>(
+    const unblocked = kspecJson<{ status: string; blocked_by: string[]; prior_status: string | null }>(
       "task get @blocked-task",
       tempDir,
     );
-    expect(unblocked.status).toBe("pending");
+    expect(unblocked.status).toBe("in_progress");
     expect(unblocked.blocked_by).toEqual([]);
+    expect(unblocked.prior_status).toBeNull();
   });
 
   // AC: @derived-ready ac-1

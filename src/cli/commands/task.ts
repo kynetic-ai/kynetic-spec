@@ -2113,9 +2113,15 @@ Examples:
               return latestTask;
             }
 
+            // AC: @state-blocked ac-1 — save current status for restoration on unblock
+            // Preserve the first non-blocked prior_status on repeated block calls
             return {
               ...latestTask,
               status: "blocked",
+              prior_status:
+                latestTask.status === "blocked"
+                  ? latestTask.prior_status
+                  : latestTask.status,
               blocked_by: [...latestTask.blocked_by, options.reason],
             };
           },
@@ -2173,10 +2179,12 @@ Examples:
               return latestTask;
             }
 
+            // AC: @task-unblock ac-1 — restore prior status, fall back to pending
             // AC: @session-scoped-task-claiming ac-claim-clear
             return {
               ...latestTask,
-              status: "pending",
+              status: latestTask.prior_status ?? "pending",
+              prior_status: null,
               blocked_by: [],
               session_id: null,
             };
@@ -2388,6 +2396,10 @@ Examples:
           if (latestTask.blocked_by.length > 0) {
             nextTask.blocked_by = [];
             clearedFields.push("blocked_by");
+          }
+          if (latestTask.prior_status) {
+            nextTask.prior_status = null;
+            clearedFields.push("prior_status");
           }
           // AC: @session-scoped-task-claiming ac-claim-clear
           if (latestTask.session_id) {
