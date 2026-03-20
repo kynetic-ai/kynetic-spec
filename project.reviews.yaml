@@ -23498,9 +23498,16 @@ reviews:
         payload:
           thread_ulid: 01KM4ABRX48P36J3YFEZ0V9RJ1
         timestamp: 2026-03-20T02:02:05.662Z
+      - _ulid: 01KM4GCKV7NG4YE51464DGAEPR
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T02:15:01.736Z
     examined_commit: 362db738bf59d0946d8c77d89942f03b20b7acdc
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -23557,7 +23564,7 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T00:29:20.636Z
-    updated_at: 2026-03-20T02:02:05.487Z
+    updated_at: 2026-03-20T02:15:01.501Z
     notes: []
   - _ulid: 01KM4ADFZA90QMMT9BRQYPZWPQ
     slugs: []
