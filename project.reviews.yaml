@@ -28459,6 +28459,12 @@ reviews:
         payload:
           thread_ulid: 01KM51NR51QEQF0ZNQ8DGJF3HC
         timestamp: 2026-03-20T07:17:32.904Z
+      - _ulid: 01KM51PJ9BF672M8ME8TS7CWM2
+        actor: Jacob Chapel
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM51NSPVHZ62H00WJ4JEY1AT
+        timestamp: 2026-03-20T07:17:33.611Z
     examined_commit: f72a88e05ba5cc38eb65066e8950095cb4364d24
     external_links: []
     lifecycle_state: open
@@ -28512,8 +28518,15 @@ reviews:
               wired globally and locally; the new daemon path depends on a startup watcher over .
               Categories searched: correctness, edge cases, test quality, integration."
             created_at: 2026-03-20T07:17:08.444Z
+          - _ulid: 01KM51PJ32X16RD948FN9WS1K6
+            author: Jacob Chapel
+            body: "Evidence log clarification: I verified the daemon path by reading session-watcher.ts,
+              project-context.ts, the sessions page query/invalidation code, and the new E2E/unit
+              coverage. The reviewed tests only cover changes after .kspec-sessions already exists;
+              they do not exercise daemon startup before that directory exists."
+            created_at: 2026-03-20T07:17:33.410Z
         kind: nit
     verdicts: []
     created_at: 2026-03-20T07:14:23.845Z
-    updated_at: 2026-03-20T07:17:32.678Z
+    updated_at: 2026-03-20T07:17:33.410Z
     notes: []
