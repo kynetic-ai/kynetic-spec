@@ -246,10 +246,9 @@ features:
         implements:
           - "@task-states"
         acceptance_criteria:
-          - given: a task has status blocked
+          - given: a task is blocked
             id: ac-1
-            then: the task returns to pending or in_progress instead of transitioning directly to a terminal
-              state
+            then: the task returns to the status it had before being blocked
             when: the blocker is cleared and the task is unblocked
       - _ulid: 01JHNKA5W0TSTA400000000000
         slugs:

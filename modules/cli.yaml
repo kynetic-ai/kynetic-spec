@@ -1376,10 +1376,11 @@ features:
           - "@trait-semantic-exit-codes"
           - "@trait-error-guidance"
         acceptance_criteria:
-          - given: A blocked task no longer has active blockers.
+          - given: a blocked task
             id: ac-1
-            then: The task leaves the blocked state and clears its `blocked_by` entries.
-            when: The user runs `kspec task unblock <ref>`.
+            then: the task resumes from where it left off and its blockers are cleared; if the prior status is
+              unknown, it returns to pending
+            when: the user unblocks it
       - _ulid: 01JHNKA9W2CTSK600000000000
         slugs:
           - task-cancel
