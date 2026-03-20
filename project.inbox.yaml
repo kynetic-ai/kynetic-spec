@@ -1729,16 +1729,6 @@ inbox:
       - feature
     added_by: "@claude"
     created_at: 2026-03-17T13:32:45.402Z
-  - _ulid: 01KKZRY9J7MQJ5EZV43KV878BT
-    text: Add plans/ to .gitignore — checkpoint hook flags plan source files as uncommitted changes
-      repeatedly during plan sessions. Plan files are not committed per convention (shadow branch
-      plan record is the durable artifact). This fired ~7 times in the dispatch event expansion
-      planning session.
-    tags:
-      - friction
-      - cli
-    added_by: "@claude"
-    created_at: 2026-03-18T06:08:17.480Z
   - _ulid: 01KKZX5X64D8BFGBMCCXB5BEQ7
     text: "Review API read endpoints (@task-review-api-read) had a richer implementation on local dev
       (256c5edb5, 110ce4c15) that was superseded when remote re-implemented with simpler types.
