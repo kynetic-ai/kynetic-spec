@@ -29591,6 +29591,12 @@ reviews:
         payload:
           thread_ulid: 01KM61T5XQNF28HEN8E9V99F5R
         timestamp: 2026-03-20T16:53:28.565Z
+      - _ulid: 01KM62N449B7NYQ45WC1T0VJZ3
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM61SYD9H18PCHKE2SPV6W7D
+        timestamp: 2026-03-20T16:53:29.353Z
     examined_commit: 1e4e7d7ea6611fa27c20fcdb3608375d296daa01
     external_links: []
     lifecycle_state: closed
@@ -29628,6 +29634,8 @@ reviews:
               instead of undefined. Added a regression test covering the enum issue shape."
             created_at: 2026-03-20T16:53:26.822Z
         kind: blocker
+        resolved_at: 2026-03-20T16:53:29.122Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM61T5XQNF28HEN8E9V99F5R
         entries:
           - _ulid: 01KM61T5XQGZYDSWJJP5K55QP6
@@ -29660,7 +29668,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T16:39:26.854Z
     created_at: 2026-03-20T16:34:18.688Z
-    updated_at: 2026-03-20T16:53:28.336Z
+    updated_at: 2026-03-20T16:53:29.122Z
     notes: []
   - _ulid: 01KM625X0SET7QS06QEF1V0S20
     slugs: []
