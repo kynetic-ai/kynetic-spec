@@ -110941,6 +110941,14 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T18:17:01.316Z
+    - _ulid: 01KM67MFDRKPZCJBKC8RCE1W72
+      content: Verification complete. Added parser write-path safeParse guards for task/spec creation and
+        schema-derived plan spec type validation; covered invalid and valid paths with AC-linked
+        tests. npm test passed in full; kspec validate still reports unrelated pre-existing
+        reference/completeness debt in the repo.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T18:20:31.032Z
   todos: []
   automation: eligible
 - _ulid: 01KM5Z4NK56J72PS2YVKP5EJ8G
