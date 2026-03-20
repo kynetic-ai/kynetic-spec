@@ -12807,12 +12807,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-20T04:22:09.654Z
+      updated_at: 2026-03-20T04:22:19.067Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-20T04:22:09.654Z
+      updated_at: 2026-03-20T04:22:19.067Z
     integration:
       status: pending
       detail: null
@@ -12820,24 +12820,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 5c99aae155547908523751e1996ca00fc11ee2fe
-      updated_at: 2026-03-20T04:22:09.654Z
-    lifecycle_state: ready
+      updated_at: 2026-03-20T04:22:19.067Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM4PZRFGV4WZ5HPZ9VZ3HBDN"
     task_slug: fix-shared-checkout-integration-branch-targeting-when-current-branch-differs
     timestamps:
       closed_at: null
       last_active_at: 2026-03-20T04:12:02.842Z
-      last_reconciled_at: 2026-03-20T04:22:09.654Z
+      last_reconciled_at: 2026-03-20T04:22:19.067Z
       created_at: 2026-03-20T04:11:58.300Z
-      updated_at: 2026-03-20T04:22:09.654Z
+      updated_at: 2026-03-20T04:22:19.067Z
     workspace_id: dispatch-workspace-01KM4PZRFGV4WZ5HPZ9VZ3HBDN
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: 44d11f272a18ce4c02be15bc1a33a12cb3fcc310
+        last_seen_at: 2026-03-20T04:22:19.067Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-shared-checkout-integration-branch-targeting-when-current-branch-differs-01km4pzr-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/fix-shared-checkout-integration-branch-targeting-when-current-branch-differs/01km4pzr
-        head: 5c99aae155547908523751e1996ca00fc11ee2fe
-        last_seen_at: 2026-03-20T04:11:58.300Z
+        head: 44d11f272a18ce4c02be15bc1a33a12cb3fcc310
+        last_seen_at: 2026-03-20T04:22:19.067Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/fix-shared-checkout-integration-branch-targeting-when-current-branch-differs-01km4pzr
