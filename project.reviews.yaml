@@ -31194,6 +31194,12 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T19:33:10.041Z
+      - _ulid: 01KM6CWF4V3ZNJFBJNXMRH91YV
+        actor: "@claude"
+        event_type: thread_replied
+        payload:
+          thread_ulid: 01KM6BN5C0ZDF8K8139P4MEQCN
+        timestamp: 2026-03-20T19:52:15.772Z
     examined_commit: 9af2a866525c2f5b72dac5439c638bb3943c84d5
     external_links: []
     lifecycle_state: closed
@@ -31223,6 +31229,13 @@ reviews:
               sentinel through validation or preserving the existing open-by-default daemon behavior
               and changing only the callers that need all reviews."
             created_at: 2026-03-20T19:30:47.809Z
+          - _ulid: 01KM6CWEWXGGH6M31F5B4F1JFZ
+            author: "@claude"
+            body: Fixed in commit cd1cae22e. Restored the open-by-default backend contract — no status param now
+              defaults to ['open'] as before. UI callers that need all lifecycle states now send all
+              four valid statuses explicitly (draft, open, closed, archived) instead of omitting the
+              param or using the invalid 'all' sentinel.
+            created_at: 2026-03-20T19:52:15.517Z
         kind: blocker
     verdicts:
       - applies_to_version:
@@ -31233,7 +31246,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T19:33:07.878Z
     created_at: 2026-03-20T19:29:28.502Z
-    updated_at: 2026-03-20T19:33:09.790Z
+    updated_at: 2026-03-20T19:52:15.517Z
     notes: []
   - _ulid: 01KM6CHHKAGN9WFHD4XC0SW8WD
     slugs: []
