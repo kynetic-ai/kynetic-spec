@@ -100,6 +100,40 @@ async function readJson<T>(filePath: string): Promise<T> {
   return JSON.parse(await fs.readFile(filePath, "utf-8")) as T;
 }
 
+async function setupLocalFileDependencyProject(dir: string): Promise<void> {
+  const dependencyDir = path.join(dir, "deps", "local-dep");
+  await fs.mkdir(dependencyDir, { recursive: true });
+  await fs.writeFile(
+    path.join(dependencyDir, "package.json"),
+    JSON.stringify({
+      name: "local-dep",
+      version: "1.0.0",
+      main: "index.js",
+    }, null, 2),
+    "utf-8",
+  );
+  await fs.writeFile(path.join(dependencyDir, "index.js"), "module.exports = 'ok';\n", "utf-8");
+  await fs.writeFile(
+    path.join(dir, "package.json"),
+    JSON.stringify({
+      name: "dispatch-bootstrap-fixture",
+      private: true,
+      version: "1.0.0",
+      dependencies: {
+        "local-dep": "file:./deps/local-dep",
+      },
+    }, null, 2),
+    "utf-8",
+  );
+  execSync("npm install --package-lock-only", {
+    cwd: dir,
+    stdio: "pipe",
+    encoding: "utf-8",
+  });
+  git(dir, "add package.json package-lock.json deps/local-dep/package.json deps/local-dep/index.js");
+  git(dir, 'commit -m "fixture: add local dependency bootstrap project"');
+}
+
 async function readWorkspaceRecord(
   registryPath: string,
   taskRef: string,
@@ -595,6 +629,71 @@ describe("dispatch runtime bootstrap contract", () => {
     await expect(
       fs.readFile(path.join(workspace.cwd, ".dispatch-cache", "count"), "utf-8"),
     ).resolves.toBe("1\n");
+  });
+
+  it("repairs missing direct dependencies before reusing a previously successful bootstrap", async () => {
+    await seedRepo(tempDir);
+    await setupLocalFileDependencyProject(tempDir);
+    await fs.writeFile(
+      path.join(tempDir, "kspec.config.yaml"),
+      [
+        "dispatch:",
+        "  base_branch: agent-dev",
+      ].join("\n"),
+      "utf-8",
+    );
+
+    const taskRef = `@${testUlid("TASK", 30)}`;
+    let workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Dependency Repair Bootstrap", slugs: ["dependency-repair-bootstrap"] },
+    });
+
+    await ensureWorkspaceBootstrap({
+      projectDir: tempDir,
+      workspaceDir: workspace.cwd,
+      metadataPath: workspace.metadataPath,
+      metadata: workspace.metadata,
+      role: "worker",
+      agent: makeAgent(),
+      env: {},
+    });
+    await expect(
+      fs.stat(path.join(workspace.cwd, "node_modules", "local-dep")),
+    ).resolves.toBeTruthy();
+
+    await fs.rm(path.join(workspace.cwd, "node_modules"), { recursive: true, force: true });
+
+    workspace = await provisionDispatchWorkspace({
+      projectDir: tempDir,
+      taskRef,
+      task: { title: "Dependency Repair Bootstrap", slugs: ["dependency-repair-bootstrap"] },
+    });
+    const record = await readWorkspaceRecord(workspace.metadataPath, taskRef);
+    const repaired = await ensureWorkspaceBootstrap({
+      projectDir: tempDir,
+      workspaceDir: workspace.cwd,
+      metadataPath: workspace.metadataPath,
+      metadata: {
+        ...workspace.metadata,
+        bootstrap: record.bootstrap,
+        bootstrapState: record.bootstrap,
+      },
+      role: "worker",
+      agent: makeAgent(),
+      env: {},
+    });
+
+    expect(repaired.reused).toBe(false);
+    expect(repaired.ranSteps).toBe(true);
+    expect(repaired.metadata.bootstrap.invalidationReasons).toContain("workspace-dependencies-missing");
+    expect(
+      repaired.metadata.bootstrap.steps.some((step) => step.name === "install-workspace-dependencies"),
+    ).toBe(true);
+    await expect(
+      fs.stat(path.join(workspace.cwd, "node_modules", "local-dep")),
+    ).resolves.toBeTruthy();
   });
 
   // AC: @dispatch-runtime-bootstrap-contract ac-6

@@ -1,5 +1,7 @@
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { loadProjectConfig } from "../parser/config.js";
 import type { Agent } from "../schema/meta.js";
 import type {
@@ -46,6 +48,12 @@ export class DispatchBootstrapError extends Error {
     this.name = "DispatchBootstrapError";
     this.suggestion = suggestion;
   }
+}
+
+interface DependencyHealth {
+  ok: boolean;
+  reason: string | null;
+  missingPackages: string[];
 }
 
 function runShell(
@@ -106,6 +114,81 @@ function hashConfig(steps: DispatchBootstrapStep[]): string {
     .digest("hex");
 }
 
+function collectDirectDependencies(
+  packageJson: Record<string, unknown>,
+): string[] {
+  const names = new Set<string>();
+  for (const sectionName of [
+    "dependencies",
+    "devDependencies",
+    "optionalDependencies",
+  ]) {
+    const section = packageJson[sectionName];
+    if (!section || typeof section !== "object") {
+      continue;
+    }
+    for (const name of Object.keys(section as Record<string, unknown>)) {
+      names.add(name);
+    }
+  }
+  return [...names].sort();
+}
+
+function checkWorkspaceDependencies(workspaceDir: string): DependencyHealth {
+  const packageJsonPath = path.join(workspaceDir, "package.json");
+  const lockfilePath = path.join(workspaceDir, "package-lock.json");
+  const nodeModulesDir = path.join(workspaceDir, "node_modules");
+
+  if (!fs.existsSync(packageJsonPath) || !fs.existsSync(lockfilePath)) {
+    return { ok: true, reason: null, missingPackages: [] };
+  }
+
+  let packageJson: Record<string, unknown>;
+  try {
+    packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8")) as Record<string, unknown>;
+  } catch {
+    return { ok: true, reason: null, missingPackages: [] };
+  }
+
+  if (!fs.existsSync(nodeModulesDir)) {
+    return {
+      ok: false,
+      reason: "node_modules/ not found",
+      missingPackages: collectDirectDependencies(packageJson),
+    };
+  }
+
+  const missingPackages = collectDirectDependencies(packageJson).filter((packageName) => (
+    !fs.existsSync(path.join(nodeModulesDir, ...packageName.split("/")))
+  ));
+
+  if (missingPackages.length > 0) {
+    return {
+      ok: false,
+      reason: `node_modules missing direct dependencies: ${missingPackages.slice(0, 3).join(", ")}`,
+      missingPackages,
+    };
+  }
+
+  return { ok: true, reason: null, missingPackages: [] };
+}
+
+function implicitDependencyStep(workspaceDir: string): DispatchBootstrapStep | null {
+  const dependencyHealth = checkWorkspaceDependencies(workspaceDir);
+  if (dependencyHealth.ok) {
+    return null;
+  }
+
+  return {
+    source: "dispatch",
+    name: "install-workspace-dependencies",
+    run: "npm ci",
+    idempotent: true,
+    allowTrackedChanges: false,
+    reviewerRerunAllowed: true,
+  };
+}
+
 function resolveBootstrapSteps(
   agent: Agent,
   dispatchSteps: Array<{
@@ -149,6 +232,7 @@ function computeInvalidationReasons(
   state: DispatchWorkspaceBootstrapRoleState,
   canonicalBranchHead: string,
   configHash: string,
+  dependencyStepRequired: boolean,
 ): string[] {
   const reasons: string[] = [];
   if (state.status === "failed") {
@@ -159,6 +243,9 @@ function computeInvalidationReasons(
   }
   if (state.canonicalBranchHead && state.canonicalBranchHead !== canonicalBranchHead) {
     reasons.push("canonical-branch-head-changed");
+  }
+  if (dependencyStepRequired) {
+    reasons.push("workspace-dependencies-missing");
   }
   return reasons;
 }
@@ -207,8 +294,10 @@ export async function ensureWorkspaceBootstrap(
   } = options;
   const { config } = await loadProjectConfig(projectDir, projectDir);
   const steps = resolveBootstrapSteps(agent, config.dispatch.bootstrap.steps);
-  const roleSteps = steps.filter((step) => stepAppliesToRole(step, role));
-  const configHash = hashConfig(steps);
+  const dependencyStep = implicitDependencyStep(workspaceDir);
+  const effectiveSteps = dependencyStep ? [dependencyStep, ...steps] : steps;
+  const roleSteps = effectiveSteps.filter((step) => stepAppliesToRole(step, role));
+  const configHash = hashConfig(effectiveSteps);
   const metadata: DispatchWorkspaceMetadata = structuredClone(options.metadata);
   metadata.bootstrap = normalizeDispatchBootstrapState(metadata.bootstrap);
   metadata.bootstrapState = metadata.bootstrap;
@@ -218,11 +307,13 @@ export async function ensureWorkspaceBootstrap(
     workerState,
     metadata.canonicalBranchHead,
     configHash,
+    Boolean(dependencyStep),
   );
   const reviewerInvalidationReasons = computeInvalidationReasons(
     reviewerState,
     metadata.canonicalBranchHead,
     configHash,
+    Boolean(dependencyStep),
   );
   const workerBootstrapSucceeded =
     workerState.status === "succeeded" &&

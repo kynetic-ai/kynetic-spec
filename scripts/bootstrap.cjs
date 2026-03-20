@@ -18,6 +18,7 @@
 const { execSync, spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const { checkProjectDependencies } = require('./dependency-health.cjs');
 
 // Colors for terminal output (ANSI escape codes - no dependencies)
 const colors = {
@@ -417,22 +418,29 @@ function resolveShadowBootstrapActionWithDeps({
   };
 }
 
+function checkNodeModulesWithDeps({
+  projectRootPath,
+  fsApi,
+  pathApi,
+}) {
+  const result = checkProjectDependencies(projectRootPath, {
+    fsApi,
+    pathApi,
+  });
+  return result.ok
+    ? { installed: true }
+    : { installed: false, reason: result.reason || 'node_modules exists but missing dependencies' };
+}
+
 /**
- * Check if node_modules exists and has key dependencies
+ * Check if node_modules exists and has direct dependencies from package.json
  */
 function checkNodeModules() {
-  const nodeModules = path.join(projectRoot, 'node_modules');
-  if (!fs.existsSync(nodeModules)) {
-    return { installed: false, reason: 'node_modules/ not found' };
-  }
-
-  // Check for a key dependency (zod is required)
-  const zodPath = path.join(nodeModules, 'zod');
-  if (!fs.existsSync(zodPath)) {
-    return { installed: false, reason: 'node_modules exists but missing dependencies' };
-  }
-
-  return { installed: true };
+  return checkNodeModulesWithDeps({
+    projectRootPath: projectRoot,
+    fsApi: fs,
+    pathApi: path,
+  });
 }
 
 /**
@@ -565,6 +573,7 @@ if (require.main === module) {
 module.exports = {
   checkKspecCli,
   checkKspecCliWithDeps,
+  checkNodeModulesWithDeps,
   loadShadowBootstrapConfig,
   loadShadowBootstrapConfigWithDeps,
   resolveShadowBootstrapActionWithDeps,
