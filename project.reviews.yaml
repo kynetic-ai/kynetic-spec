@@ -30246,7 +30246,19 @@ reviews:
     slugs: []
     title: Review @01KM5Z4JVEFXG9SJ8P7RANZDNV
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: tests/cli-mutation-input-validation.test.ts annotates @cli-input-type-safety
+          ac-1/ac-3/ac-4 and inherited @trait-type-safe-input, @trait-error-guidance, and
+          @trait-semantic-exit-codes coverage for the changed mutation commands.
+        name: AC coverage
+        required: true
+        runner: rg
+        created_at: 2026-03-20T17:41:20.174Z
+        completed_at: 2026-03-20T17:41:20.174Z
     events:
       - _ulid: 01KM655PQKHWSW753NX5X2GSHS
         actor: Jacob Chapel
@@ -30261,6 +30273,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T17:37:46.820Z
+      - _ulid: 01KM65CQWM8ZXBR6K1ZM3Z37E0
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: AC coverage
+        timestamp: 2026-03-20T17:41:20.404Z
     examined_commit: 309c8b97751cd0c81c183ee7c48db2673e10e999
     external_links: []
     lifecycle_state: open
@@ -30273,5 +30292,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T17:37:29.843Z
-    updated_at: 2026-03-20T17:37:46.554Z
+    updated_at: 2026-03-20T17:41:20.174Z
     notes: []
