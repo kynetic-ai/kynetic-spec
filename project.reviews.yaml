@@ -25194,6 +25194,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T04:37:35.885Z
+      - _ulid: 01KM4RWZQJZ1N7GAMBDJMXS9KA
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM4RWZFTDFF8DPG8AJH6TWM1
+        timestamp: 2026-03-20T04:43:46.802Z
     examined_commit: e05f78fc53850b715197a28a285d793c6f56f310
     external_links: []
     lifecycle_state: open
@@ -25203,8 +25210,44 @@ reviews:
       content_hash: ""
       ref: "@01KM4PZRFGV4WZ5HPZ9VZ3HBDN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM4RWZFTDFF8DPG8AJH6TWM1
+        entries:
+          - _ulid: 01KM4RWZFTC04XG6E9F0QKVDT5
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+              tests/dispatch-target-sync.test.ts, tests/dispatch-branch-push-lifecycle.test.ts
+
+
+              Commands run: git diff --stat/base...head, git diff base...head, kspec task get
+              @01KM4PZRFGV4WZ5HPZ9VZ3HBDN, kspec item get @dispatch-integration-mutation-scope, rg
+              -n "AC: @dispatch-integration-mutation-scope|AC: @trait-"
+              tests/dispatch-target-sync.test.ts tests/dispatch-branch-push-lifecycle.test.ts, npm
+              test -- tests/dispatch-target-sync.test.ts
+              tests/dispatch-branch-push-lifecycle.test.ts, kspec validate, npm test, git worktree
+              add --detach .tmp-base-review-01 5c99aae155547908523751e1996ca00fc11ee2fe, npm test --
+              tests/cli-plan.test.ts (in base worktree)
+
+
+              Claims verified: verified the fix-cycle claim that the foreign-worktree guard blocks
+              isolated integration-branch ref updates without touching the shared checkout current
+              branch or the foreign worktree; verified the worker claim that the full-suite cli-plan
+              failure is unrelated by reproducing the same failure on base commit
+              5c99aae155547908523751e1996ca00fc11ee2fe.
+
+
+              Categories searched: correctness (no new issues found), edge cases (missing local
+              branch and foreign checked-out worktree covered), error handling (actionable
+              degraded-state path preserved), test quality (AC coverage for ac-1/ac-2/ac-3/ac-4
+              present in changed tests), integration (non-checked-out sync/push path verified; no
+              regression found in changed area).
+            created_at: 2026-03-20T04:43:46.554Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T04:37:16.979Z
-    updated_at: 2026-03-20T04:37:35.618Z
+    updated_at: 2026-03-20T04:43:46.554Z
     notes: []
