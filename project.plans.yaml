@@ -24036,17 +24036,3 @@ plans:
           - replacing shared-checkout robustness with operational workarounds
         author: Jacob Chapel
         created_at: 2026-03-19T21:22:14.791Z
-  - _ulid: 01KM48P2MBMAE38HX7G9X0HH9J
-    slugs:
-      - short-ref-plan
-    title: Short Ref Plan
-    content: c
-    status: draft
-    approved_at: null
-    derived_specs: []
-    derived_tasks: []
-    module_ref: null
-    source_path: null
-    created_at: 2026-03-20T00:00:23.179Z
-    completed_at: null
-    notes: []
