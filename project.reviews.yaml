@@ -25204,6 +25204,17 @@ reviews:
         runner: npm
         created_at: 2026-03-20T04:43:48.051Z
         completed_at: 2026-03-20T04:43:48.051Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: npm test -- tests/dispatch-target-sync.test.ts
+          tests/dispatch-branch-push-lifecycle.test.ts passed (44 tests).
+        name: dispatch targeted tests
+        required: true
+        runner: npm
+        created_at: 2026-03-20T04:43:48.805Z
+        completed_at: 2026-03-20T04:43:48.805Z
     events:
       - _ulid: 01KM4RH31JPCQ2V4EQSBX3MG7E
         actor: Jacob Chapel
@@ -25239,6 +25250,13 @@ reviews:
           status: fail
           name: npm test
         timestamp: 2026-03-20T04:43:48.327Z
+      - _ulid: 01KM4RX1X7WWPZK2HWSSX4KKT4
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: dispatch targeted tests
+        timestamp: 2026-03-20T04:43:49.032Z
     examined_commit: e05f78fc53850b715197a28a285d793c6f56f310
     external_links: []
     lifecycle_state: open
@@ -25287,5 +25305,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-20T04:37:16.979Z
-    updated_at: 2026-03-20T04:43:48.051Z
+    updated_at: 2026-03-20T04:43:48.805Z
     notes: []
