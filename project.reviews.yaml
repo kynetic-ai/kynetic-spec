@@ -30990,7 +30990,17 @@ reviews:
     slugs: []
     title: Review @01KM5Z4KJQ7CF8F2P48711SY91
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite passed in detached review snapshot: 296 files, 6687 passed, 3 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T18:37:58.762Z
+        completed_at: 2026-03-20T18:37:58.762Z
     events:
       - _ulid: 01KM68E7DKHGZTT12R48NAMVE6
         actor: Jacob Chapel
@@ -31021,6 +31031,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-20T18:37:57.667Z
+      - _ulid: 01KM68MET8XGN6X2XWRN44J325
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T18:37:58.984Z
     examined_commit: 80518667626a6529e0eb127a4d99fa19d3260061
     external_links: []
     lifecycle_state: closed
@@ -31040,5 +31057,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T18:37:57.666Z
     created_at: 2026-03-20T18:34:34.803Z
-    updated_at: 2026-03-20T18:37:57.667Z
+    updated_at: 2026-03-20T18:37:58.762Z
     notes: []
