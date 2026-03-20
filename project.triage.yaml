@@ -2808,8 +2808,8 @@ triage:
     action: delete
     decided_by: Jacob Chapel
     evidence_refs:
-      - "@tests/guard-worktree.test"
       - "@src/cli/commands/guard.ts"
+      - "@tests/guard-worktree.test"
     inbox_ref: 01KKQSRQADYB6JJ7ARDK9PCFSD
     item_snapshot: "Worktree guard blocks git push from within kspec worktrees even though push is safe.
       Workaround: push from main repo via git push origin <branch>. Guard should allow push
@@ -2818,7 +2818,7 @@ triage:
       git push and only blocks force-push; see tests/guard-worktree.test and
       src/cli/commands/guard.ts.
     created_at: 2026-03-20T03:11:14.144Z
-    updated_at: 2026-03-20T03:11:14.170Z
+    updated_at: 2026-03-20T03:11:37.831Z
   - _ulid: 01KM4KKHADKAAB987TBKS35MRV
     status: triaged
     action: promote
