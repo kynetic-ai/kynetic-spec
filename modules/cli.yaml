@@ -10794,6 +10794,9 @@ requirements:
       callers that bypass CLI or API boundary validation — including batch
       execution, plan derivation, and internal code paths that construct
       entities directly.
+    status:
+      maturity: draft
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
