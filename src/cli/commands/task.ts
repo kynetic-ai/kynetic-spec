@@ -18,6 +18,7 @@ import {
   loadAllTasks,
   loadReviewRecords,
   mutateTaskAtomically,
+  mutateTasksAtomically,
   ReferenceIndex,
   saveTask,
   scanTestCoverage,
@@ -194,6 +195,10 @@ function resolveTaskRefForBatch(
   }
 
   return { task };
+}
+
+function getTaskDisplayRef(task: Pick<LoadedTask, "_ulid" | "slugs">): string {
+  return `@${task.slugs[0] || task._ulid}`;
 }
 
 /**
@@ -2219,7 +2224,7 @@ Examples:
             const resolved = resolveTaskRefForBatch(refStr, taskList, idx);
             return { item: resolved.task, error: resolved.error };
           },
-          executeOperation: async (foundTask, { ctx, index, options }) => {
+          executeOperation: async (foundTask, { ctx, tasks, index, options }) => {
             try {
               if (
                 foundTask.status === "completed" ||
@@ -2231,13 +2236,59 @@ Examples:
                 };
               }
 
-              const updatedTask: Task = {
-                ...foundTask,
-                status: "cancelled",
-                closed_reason: options.reason || null,
-              };
+              const downstreamTasks = tasks.filter((task) =>
+                task.depends_on.some((depRef) => {
+                  const resolved = index.resolve(depRef);
+                  return resolved.ok && resolved.ulid === foundTask._ulid;
+                })
+              );
 
-              await saveTask(ctx, updatedTask);
+              const [updatedTask] = await mutateTasksAtomically(
+                ctx,
+                [foundTask, ...downstreamTasks],
+                (latestTasks) => {
+                  const latestCancelledTask = latestTasks[0];
+                  const cancelledTaskRef = getTaskDisplayRef(latestCancelledTask);
+                  const cancellationReason = options.reason
+                    ? ` Reason: ${options.reason}`
+                    : "";
+
+                  const updatedTasks = latestTasks.map((latestTask, taskIndex) => {
+                    if (taskIndex === 0) {
+                      return {
+                        ...latestTask,
+                        status: "cancelled" as const,
+                        closed_reason: options.reason || null,
+                      };
+                    }
+
+                    const remainingDependencies = latestTask.depends_on.filter((depRef) => {
+                      const resolved = index.resolve(depRef);
+                      return !resolved.ok || resolved.ulid !== latestCancelledTask._ulid;
+                    });
+
+                    const removedDependencyCount =
+                      latestTask.depends_on.length - remainingDependencies.length;
+                    if (removedDependencyCount === 0) {
+                      return latestTask;
+                    }
+
+                    const cleanupNote = createNote(
+                      `Cancelled dependency cleanup: removed ${cancelledTaskRef} from depends_on because the upstream task was cancelled.${cancellationReason}`,
+                      getAuthor(ctx.config?.identity?.author),
+                    );
+
+                    return {
+                      ...latestTask,
+                      depends_on: remainingDependencies,
+                      notes: [...latestTask.notes, cleanupNote],
+                    };
+                  });
+
+                  return updatedTasks;
+                },
+              );
+
               await commitIfShadow(
                 ctx.shadow,
                 "task-cancel",
