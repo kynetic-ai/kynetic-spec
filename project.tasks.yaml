@@ -111485,5 +111485,125 @@
     - bug
   vcs_refs: []
   created_at: 2026-03-20T19:28:29.840Z
-  notes: []
+  notes:
+    - _ulid: 01KM6BHVG0Z8MKE9PFPC9JRE2H
+      content: >-
+        ## What
+
+
+        Three related issues in the web UI initialization and routing:
+
+
+        ### 1. Health check URL mismatch (root cause)
+
+        `packages/web-ui/src/lib/stores/mode.svelte.ts:50` fetches `${DAEMON_API_BASE}/health` which
+        resolves to `http://localhost:3456/health`. The actual endpoint is registered at
+        `/api/health` (`packages/daemon/src/server.ts:276`). This always 404s.
+
+
+        The fallback chain then tries `/kspec-snapshot.json` (also 404s), and finally defaults to
+        `mode = 'daemon'` with `initError` set. The app works but takes the slow path through two
+        failed fetches, and the mode $state transitions through 'loading' → 'daemon' via the error
+        fallback instead of the success path.
+
+
+        ### 2. `/automation` missing from SPA fallback routes
+
+        `packages/daemon/src/server.ts:424-439` has a hardcoded `spaRoutes` array. `/automation` and
+        `/automation/*` are missing. Hard refresh on `/automation` returns 404 because the static
+        plugin can't find `automation/index.html` and there's no SPA fallback to serve `index.html`.
+
+
+        ### 3. Redundant `!isStaticMode()` in query enabled gates
+
+        Several pages gate their TanStack Query `enabled` with `isProjectInitialized() &&
+        !isStaticMode()`. Pages using this pattern (agents, automation, dashboard, settings, session
+        detail, board) don't load data on first client-side navigation. Pages using just
+        `isProjectInitialized()` (tasks, reviews, specs, inbox, etc.) work fine.
+
+
+        The `!isStaticMode()` check reads the `mode` $state variable. Combined with the failed
+        health check causing mode to take the slow fallback path, TanStack Query's Svelte 5 reactive
+        evaluation of the `enabled` callback doesn't properly fire queries on initial mount.
+        Navigating away and back re-mounts the component and queries work on the second try.
+
+
+        ## Why
+
+
+        Issue 1 is a URL typo — the health endpoint was moved under `/api/` prefix but the
+        client-side check wasn't updated.
+
+
+        Issue 2 is an omission — `/automation` route was added to SvelteKit but not to the daemon's
+        SPA fallback list.
+
+
+        Issue 3 is redundant defensive code. `isProjectInitialized()` alone is sufficient: if
+        `loadProjects()` succeeded (which it must have for `initialized` to be `true`), the daemon
+        is up and we're in daemon mode. The `!isStaticMode()` guard protects against an impossible
+        state (project initialized but in static mode) and its reactive dependency on `mode` causes
+        the loading failure.
+
+
+        ## How
+
+
+        ### Fix 1: Health check URL
+
+        **File:** `packages/web-ui/src/lib/stores/mode.svelte.ts` line 50
+
+        - Change: `${DAEMON_API_BASE}/health` → `${DAEMON_API_BASE}/api/health`
+
+
+        ### Fix 2: Add /automation to SPA routes
+
+        **File:** `packages/daemon/src/server.ts` lines 424-439
+
+        - Add `/automation` and `/automation/*` to the `spaRoutes` array
+
+
+        ### Fix 3: Remove redundant !isStaticMode() from query gates
+
+        **Files affected (grep for `isProjectInitialized() && !isStaticMode()`):**
+
+        - `packages/web-ui/src/routes/automation/+page.svelte` — lines 45, 59, 66, 73
+
+        - `packages/web-ui/src/routes/agents/+page.svelte` — line 41
+
+        - `packages/web-ui/src/routes/+page.svelte` — line 94
+
+        - `packages/web-ui/src/routes/settings/+page.svelte` — lines 62, 68
+
+        - `packages/web-ui/src/routes/sessions/[id]/+page.svelte` — line 50
+
+        - `packages/web-ui/src/routes/tasks/board/+page.svelte` — line 57
+
+
+        Change all from `enabled: isProjectInitialized() && !isStaticMode()` to `enabled:
+        isProjectInitialized()`. This matches the pattern used by all working pages (tasks, reviews,
+        specs, inbox, triage, validate, workflows, observations).
+
+
+        Also remove unused `isStaticMode` imports from files where it was only used in the enabled
+        gate.
+
+
+        ### Verification
+
+        - Hard refresh on `/automation` → page loads (not 404)
+
+        - Navigate to `/agents` → data loads on first visit (no navigate-away-and-back needed)
+
+        - Navigate to `/automation` → data loads on first visit
+
+        - Dashboard, settings, session detail, board page all load on first visit
+
+        - Browser console: health check returns 200 (no more 404 on `/health`)
+
+        - Static mode build still works (isStaticMode() still used elsewhere for conditional
+        rendering)
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-20T19:28:59.392Z
   todos: []
