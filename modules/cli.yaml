@@ -6776,7 +6776,7 @@ features:
           exporting triage decisions. Follows inbox.ts command registration pattern.
         status:
           maturity: draft
-          implementation: implemented
+          implementation: in_progress
         depends_on: []
         implements: []
         relates_to: []
