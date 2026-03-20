@@ -28805,6 +28805,12 @@ reviews:
         payload:
           thread_ulid: 01KM5SNG71KD4H83A7KZJT5R9J
         timestamp: 2026-03-20T14:33:13.938Z
+      - _ulid: 01KM5TME71YANEDW5SBC304V43
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM5SNG71KD4H83A7KZJT5R9J
+        timestamp: 2026-03-20T14:33:18.305Z
     examined_commit: e9c0e7d53b1db9ecdc659db4b0297a5c04e98893
     external_links: []
     lifecycle_state: closed
@@ -28839,6 +28845,8 @@ reviews:
               still holds while incidental daemon communication stays suppressed.
             created_at: 2026-03-20T14:33:13.692Z
         kind: blocker
+        resolved_at: 2026-03-20T14:33:18.067Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM5SNGZ6DSNG9JEFX928BNPB
         entries:
           - _ulid: 01KM5SNGZ7JGGDTWZ79FWFT51A
@@ -28865,7 +28873,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T14:16:46.126Z
     created_at: 2026-03-20T14:15:21.074Z
-    updated_at: 2026-03-20T14:33:13.692Z
+    updated_at: 2026-03-20T14:33:18.067Z
     notes: []
   - _ulid: 01KM5T3FJH33R78DYCX9K49WCD
     slugs: []
