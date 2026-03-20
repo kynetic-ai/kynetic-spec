@@ -29384,6 +29384,12 @@ reviews:
         payload:
           thread_ulid: 01KM6122S62YYHVDAVKYKYEG0J
         timestamp: 2026-03-20T16:43:36.944Z
+      - _ulid: 01KM6232AYEJFV8CJ7YKMHQ4KA
+        actor: Jacob Chapel
+        event_type: thread_resolved
+        payload:
+          thread_ulid: 01KM612190HA4BY06GPFJDVFT5
+        timestamp: 2026-03-20T16:43:37.694Z
     examined_commit: cef00da87ceba5a7f6cc96733b0f9de12a6f6f29
     external_links: []
     lifecycle_state: closed
@@ -29420,6 +29426,8 @@ reviews:
               documented 400 actionable errors instead of framework 422s.
             created_at: 2026-03-20T16:43:21.762Z
         kind: blocker
+        resolved_at: 2026-03-20T16:43:37.460Z
+        resolved_by: Jacob Chapel
       - _ulid: 01KM6122S62YYHVDAVKYKYEG0J
         entries:
           - _ulid: 01KM6122S6CB7AY6Z4M4PSZPHF
@@ -29453,7 +29461,7 @@ reviews:
         role: reviewer
         created_at: 2026-03-20T16:26:00.099Z
     created_at: 2026-03-20T16:21:45.833Z
-    updated_at: 2026-03-20T16:43:36.705Z
+    updated_at: 2026-03-20T16:43:37.460Z
     notes: []
   - _ulid: 01KM61J0E012X86GNSKPR826D5
     slugs: []
