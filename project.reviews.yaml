@@ -26117,6 +26117,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-20T05:38:36.579Z
+      - _ulid: 01KM4WF8DPCEAHW0A6CVV3K6X7
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM4WF814JVJ10MV66VDQZPV7
+        timestamp: 2026-03-20T05:46:11.254Z
     examined_commit: 88c10fd9b74b568a8ec2aeb6ac3e51a8f0f8967d
     external_links: []
     lifecycle_state: open
@@ -26126,10 +26133,44 @@ reviews:
       content_hash: ""
       ref: "@01KM4NHPTCMTXAVKH0STBCVF22"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM4WF814JVJ10MV66VDQZPV7
+        entries:
+          - _ulid: 01KM4WF814RAXCJT0DGDZJZX58
+            author: Jacob Chapel
+            body: >-
+              Evidence log
+
+
+              Files read: tests/agent-dispatch-engine.test.ts,
+              tests/dispatch-workspace-discovery.test.ts,
+              tests/dispatch-runtime-bootstrap-contract.test.ts, src/agent-runtime/dispatch.ts,
+              src/agent-runtime/workspace.ts, tests/action-model.test.ts
+
+
+              Commands run: git diff 8d98a994f365ceef2e620571967d82c60cf8cdef..88c10fd9b74b --
+              tests/agent-dispatch-engine.test.ts; kspec task get @01KM4NHPTCMTXAVKH0STBCVF22; kspec
+              item get @dispatch-workspace-registry; rg -n "AC: @dispatch-workspace-registry
+              ac-11|AC: @trait-error-guidance" tests; kspec validate; npm test --
+              agent-dispatch-engine.test.ts; npm test (rerun passed)
+
+
+              Claims verified: verified the fix-cycle claim by reading the diff against prior review
+              and confirming the new AC-11 regression drives engine.start(), reaches
+              provisioning/bootstrap, waits for runInvocation, and asserts the missing worker
+              worktree is recreated before handoff.
+
+
+              Categories searched: correctness (no issue found), edge cases (legacy metadata-backed
+              branch recovery and missing worktree/branch recovery covered), error handling
+              (pre-existing validate debt only), test quality (new test now exercises the end-to-end
+              bootstrap path instead of only helper eligibility), integration (full suite passed on
+              rerun).
+            created_at: 2026-03-20T05:46:10.852Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-20T05:38:14.263Z
-    updated_at: 2026-03-20T05:38:36.306Z
+    updated_at: 2026-03-20T05:46:10.852Z
     notes: []
   - _ulid: 01KM4WBNDAJSEXSZWACXX74JEM
     slugs: []
