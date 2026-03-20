@@ -26646,3 +26646,29 @@ reviews:
     created_at: 2026-03-20T05:53:39.449Z
     updated_at: 2026-03-20T06:00:06.757Z
     notes: []
+  - _ulid: 01KM4X99VDWZD5TTN4P5FMSXS3
+    slugs: []
+    title: Review task-fix-sessions-live-freshness (cycle 3)
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM4X99VCX2APDM3TK4CTYW22
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T06:00:24.684Z
+    examined_commit: 0bcd918c06e70e6113027d0909aa473c02c705e8
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM4QGVTQR64KQPQ0S24AHV0S"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T06:00:24.685Z
+    updated_at: null
+    notes: []
