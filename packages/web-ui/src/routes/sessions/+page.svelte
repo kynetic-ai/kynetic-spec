@@ -248,23 +248,49 @@
 		}
 	}
 
+	function buildSessionListFingerprint(items: SessionSummary[]): string {
+		return JSON.stringify(
+			items.map((session) => [
+				session.id,
+				session.status,
+				session.started_at,
+				session.ended_at ?? null,
+				session.duration_ms,
+				session.event_count,
+				session.iteration_count,
+				session.tasks_completed
+			])
+		);
+	}
+
+	function buildSearchFingerprint(items: SessionSearchResult[]): string {
+		return JSON.stringify(
+			items.map((result) => [
+				result.session_id,
+				result.agent_type,
+				result.started_at,
+				result.matches.length
+			])
+		);
+	}
+
 	async function refetchForFreshness(): Promise<boolean> {
 		if (searchMode) {
 			const previousTotal = searchTotal;
-			const previousFirstId = searchResults[0]?.session_id ?? null;
+			const previousFingerprint = buildSearchFingerprint(searchResults);
 			const result = await searchResultsQuery.refetch();
 			const nextTotal = result.data?.total_sessions ?? 0;
-			const nextFirstId = result.data?.items[0]?.session_id ?? null;
-			return nextTotal !== previousTotal || nextFirstId !== previousFirstId;
+			const nextFingerprint = buildSearchFingerprint(result.data?.items ?? []);
+			return nextTotal !== previousTotal || nextFingerprint !== previousFingerprint;
 		}
 
 		const previousTotal = total;
-		const previousFirstId = sessions[0]?.id ?? null;
+		const previousFingerprint = buildSessionListFingerprint(sessions);
 		const result = await sessionsQuery.refetch();
-		const nextPage = result.data?.pages[0];
-		const nextTotal = nextPage?.total ?? 0;
-		const nextFirstId = nextPage?.items[0]?.id ?? null;
-		return nextTotal !== previousTotal || nextFirstId !== previousFirstId;
+		const nextPages = result.data?.pages ?? [];
+		const nextTotal = nextPages[0]?.total ?? 0;
+		const nextFingerprint = buildSessionListFingerprint(nextPages.flatMap((page) => page.items));
+		return nextTotal !== previousTotal || nextFingerprint !== previousFingerprint;
 	}
 
 	async function processLiveRefresh(): Promise<void> {

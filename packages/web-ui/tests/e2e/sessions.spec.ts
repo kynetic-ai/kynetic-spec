@@ -952,15 +952,29 @@ test.describe('Session History View', () => {
 			await expect(page.getByTestId('new-sessions-indicator')).not.toBeVisible();
 		});
 
-		// AC: @session-list-infinite-scroll ac-live-update — Subscribes to agents topic
-		test('subscribes to agents WebSocket topic for live updates', async ({ page, daemon }) => {
+		// AC: @session-list-infinite-scroll ac-live-update-source-agnostic
+		test('refreshes from sessions-topic updates as well as agent-origin updates', async ({ page, daemon }) => {
+			let requestCount = 0;
+			const initialSessions = [makeSession(1)];
+			const refreshedSessions = [
+				makeSession(2, {
+					status: 'active',
+					started_at: '2026-03-28T10:00:00.000Z',
+					ended_at: undefined,
+					duration_ms: 60000
+				}),
+				...initialSessions
+			];
+
 			await page.route('**/api/sessions*', (route) => {
+				requestCount++;
+				const sessions = requestCount > 1 ? refreshedSessions : initialSessions;
 				route.fulfill({
 					status: 200,
 					contentType: 'application/json',
 					body: JSON.stringify({
-						items: [makeSession(1)],
-						total: 1,
+						items: sessions,
+						total: sessions.length,
 						offset: 0,
 						limit: 25,
 					}),
@@ -979,18 +993,51 @@ test.describe('Session History View', () => {
 
 			await page.goto('/sessions');
 			await expect(page.getByTestId('sessions-list')).toBeVisible();
+			await expect(page.getByTestId('sessions-count')).toContainText('1 of 1 session');
 
 			// Wait for WebSocket subscription to be sent
 			await page.waitForTimeout(1000);
 
-			// Should have subscribed to 'agents' topic
+			// Should subscribe to both legacy and source-agnostic session topics.
 			const subscribeMessages = wsMessages.filter(msg => {
 				try {
 					const parsed = JSON.parse(msg);
-					return parsed.command === 'subscribe' && parsed.topics?.includes('agents');
+					return parsed.command === 'subscribe';
 				} catch { return false; }
 			});
 			expect(subscribeMessages.length).toBeGreaterThan(0);
+
+			const topics = new Set<string>();
+			for (const message of subscribeMessages) {
+				const parsed = JSON.parse(message);
+				for (const topic of parsed.topics ?? []) topics.add(topic);
+			}
+			expect(topics.has('agents')).toBe(true);
+			expect(topics.has('sessions')).toBe(true);
+
+			const injected = await page.evaluate(() => {
+				const instances = (window as any).__test_ws_instances as WebSocket[];
+				const ws = instances?.find((s) => s.readyState === WebSocket.OPEN);
+				if (!ws) return false;
+
+				const msg = JSON.stringify({
+					msg_id: 'test-live-source-agnostic',
+					seq: 99995,
+					timestamp: new Date().toISOString(),
+					topic: 'sessions',
+					event: 'session_changed',
+					data: {
+						session_id: 'new-session-source-agnostic',
+						path: '.kspec-sessions/new-session-source-agnostic/session.yaml'
+					}
+				});
+				ws.dispatchEvent(new MessageEvent('message', { data: msg }));
+				return true;
+			});
+			expect(injected).toBe(true);
+
+			await expect(page.getByTestId('sessions-count')).toContainText('2 of 2 sessions', { timeout: 3000 });
+			await expect(page.getByTestId('session-row').first()).toContainText('active');
 		});
 
 		// AC: @session-list-infinite-scroll ac-live-update — Total count updates on new session
@@ -1127,17 +1174,25 @@ test.describe('Session History View', () => {
 			await expect(page.getByTestId('new-sessions-indicator')).not.toBeVisible();
 		});
 
-		// AC: @session-list-infinite-scroll ac-live-update — Scrolled-down indicator behavior
-		test('shows indicator when user is scrolled down and new session arrives', async ({ page, daemon }) => {
+		// AC: @session-list-infinite-scroll ac-live-update-scrolled
+		test('shows indicator when an in-list update arrives while the user is scrolled down', async ({ page, daemon }) => {
 			// Need enough sessions to enable scrolling
 			const sessions = Array.from({ length: 25 }, (_, i) => makeSession(i + 1));
+			let requestCount = 0;
 
 			await page.route('**/api/sessions*', (route) => {
+				requestCount++;
+				const currentSessions =
+					requestCount > 1
+						? sessions.map((session, index) =>
+								index === 10 ? { ...session, status: 'failed' as const } : session
+							)
+						: sessions;
 				route.fulfill({
 					status: 200,
 					contentType: 'application/json',
 					body: JSON.stringify({
-						items: sessions,
+						items: currentSessions,
 						total: 50, // More than one page so sentinel is visible
 						offset: 0,
 						limit: 25,
@@ -1170,7 +1225,8 @@ test.describe('Session History View', () => {
 			});
 			await page.waitForTimeout(200); // Let scroll handler fire
 
-			// Inject new session event while scrolled down
+			// Inject a sessions update while scrolled down. The total count and first
+			// row stay the same, so this only surfaces if the page detects in-list changes.
 			const injected = await page.evaluate(() => {
 				const instances = (window as any).__test_ws_instances as WebSocket[];
 				const ws = instances?.find((s) => s.readyState === WebSocket.OPEN);
@@ -1180,14 +1236,11 @@ test.describe('Session History View', () => {
 					msg_id: 'test-live-003',
 					seq: 9997,
 					timestamp: new Date().toISOString(),
-					topic: 'agents',
-					event: 'agent_invocation',
+					topic: 'sessions',
+					event: 'session_changed',
 					data: {
-						session_id: 'new-session-003',
-						agent_id: 'task-worker',
-						task_id: null,
-						status: 'started',
-						timestamp: Date.now()
+						session_id: sessions[10].id,
+						path: `.kspec-sessions/${sessions[10].id}/session.yaml`
 					}
 				});
 				ws.dispatchEvent(new MessageEvent('message', { data: msg }));
@@ -1199,8 +1252,8 @@ test.describe('Session History View', () => {
 			await expect(page.getByTestId('new-sessions-indicator')).toBeVisible({ timeout: 3000 });
 			await expect(page.getByTestId('new-sessions-indicator')).toContainText('1 new session');
 
-			// Total count should also be updated
-			await expect(page.getByTestId('sessions-count')).toContainText('of 51 sessions');
+			// Count stays unchanged because this is an in-place status update rather than a new row.
+			await expect(page.getByTestId('sessions-count')).toContainText('25 of 50 sessions');
 		});
 
 		// AC: @session-list-infinite-scroll ac-live-update — Clicking indicator refreshes
