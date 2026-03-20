@@ -1364,7 +1364,7 @@ requirements:
       features), NOT relationship refs like relates_to.
     status:
       maturity: draft
-      implementation: implemented
+      implementation: in_progress
     depends_on: []
     implements: []
     relates_to: []
