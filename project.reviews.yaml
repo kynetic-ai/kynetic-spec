@@ -31161,9 +31161,25 @@ reviews:
           status: fail
           name: kspec validate
         timestamp: 2026-03-20T19:33:07.088Z
+      - _ulid: 01KM6BSE57E53MXZV4615GVV5Q
+        actor: codex@openai
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-20T19:33:07.879Z
+      - _ulid: 01KM6BSE57FNV0TAYS3NC9QX2D
+        actor: codex@openai
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-20T19:33:07.879Z
     examined_commit: 9af2a866525c2f5b72dac5439c638bb3943c84d5
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -31191,7 +31207,14 @@ reviews:
               and changing only the callers that need all reviews."
             created_at: 2026-03-20T19:30:47.809Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai
+        role: reviewer
+        created_at: 2026-03-20T19:33:07.878Z
     created_at: 2026-03-20T19:29:28.502Z
-    updated_at: 2026-03-20T19:33:06.821Z
+    updated_at: 2026-03-20T19:33:07.879Z
     notes: []
