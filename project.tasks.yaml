@@ -95791,8 +95791,15 @@
     - agents
   vcs_refs: []
   created_at: 2026-03-14T00:19:59.946Z
-  notes: []
+  notes:
+    - _ulid: 01KM4P6S60WG62D5AFWAXECG68
+      content: "Automation status set to needs_review: Missing spec_ref; task needs a spec with acceptance
+        criteria before automation can work it reliably."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T03:56:42.048Z
   todos: []
+  automation: needs_review
 - _ulid: 01KKN32PF34M089KX910N0SZV4
   slugs:
     - implement-per-task-dispatch-drain-coalescing
@@ -109637,8 +109644,15 @@
   tags: []
   vcs_refs: []
   created_at: 2026-03-20T00:00:27.200Z
-  notes: []
+  notes:
+    - _ulid: 01KM4P6TN9A740FB2PVVRT1TJ6
+      content: "Automation status set to needs_review: Missing spec_ref and task lacks enough task-level
+        context for automation; clarify scope or link the governing spec."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T03:56:43.561Z
   todos: []
+  automation: needs_review
 - _ulid: 01KM4A3W025YNGAGH5JT6483HZ
   slugs:
     - task-investigate-npm-test-teardown-hang-after-green-suite-run
@@ -109659,8 +109673,15 @@
     - infra
   vcs_refs: []
   created_at: 2026-03-20T00:25:23.714Z
-  notes: []
+  notes:
+    - _ulid: 01KM4P6W3K9Y00YBXDXC6X22Y5
+      content: "Automation status set to needs_review: Missing spec_ref; investigation scope needs a
+        linked requirement or spec-backed testable outcome."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T03:56:45.043Z
   todos: []
+  automation: needs_review
 - _ulid: 01KM4BK84P70FSA8B84MJ707FA
   slugs: []
   title: Fix dispatch checkout dependency drift after new npm deps
@@ -109762,7 +109783,14 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T03:12:57.792Z
+    - _ulid: 01KM4P6XHNRHJKXY1H3NMM2BV6
+      content: "Automation status set to needs_review: Missing spec_ref; CLI naming consistency change
+        needs a linked spec or requirement before automation work."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T03:56:46.517Z
   todos: []
+  automation: needs_review
 - _ulid: 01KM4KPQ4CJS24TH0NTVXJA1V3
   slugs: []
   title: Fix review add subject-type precedence with version context
@@ -109793,6 +109821,7 @@
       author: Jacob Chapel
       created_at: 2026-03-20T03:12:58.512Z
   todos: []
+  automation: eligible
 - _ulid: 01KM4KPQ6B10BAYD44D6HAG0GC
   slugs: []
   title: Allow plan derive task-only plans without Specs block
@@ -109824,6 +109853,7 @@
       author: Jacob Chapel
       created_at: 2026-03-20T03:12:58.574Z
   todos: []
+  automation: eligible
 - _ulid: 01KM4MK0N1K71YCJ2PFVZGTSTE
   slugs: []
   title: Fix triage record CLI reporting success without persisted record
@@ -109849,6 +109879,7 @@
   created_at: 2026-03-20T03:28:25.761Z
   notes: []
   todos: []
+  automation: eligible
 - _ulid: 01KM4MSH97B855EH05P000Q1XG
   slugs: []
   title: Differentiate empty task file vs missing task file in deleteTask errors
@@ -109876,7 +109907,14 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T03:31:59.417Z
+    - _ulid: 01KM4P6Z0QDP3PCN1YZG0HTDKK
+      content: "Automation status set to needs_review: Missing spec_ref; bug has clear behavior but still
+        needs explicit spec coverage and acceptance criteria."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T03:56:48.023Z
   todos: []
+  automation: needs_review
 - _ulid: 01KM4MSHAM7WJS8J9S05XPYA7D
   slugs: []
   title: Ignore transient plans directory during plan sessions
@@ -109904,7 +109942,14 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T03:31:59.448Z
+    - _ulid: 01KM4P70F8ZRS2V0M03JA4RMQT
+      content: "Automation status set to needs_review: Missing spec_ref; add or link the spec governing
+        transient plan workspace files before automating the change."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T03:56:49.512Z
   todos: []
+  automation: needs_review
 - _ulid: 01KM4N8K3JS9YR423HKSG2119K
   slugs: []
   title: Preserve user-defined Stop hooks during kspec setup
@@ -109933,6 +109978,7 @@
       author: Jacob Chapel
       created_at: 2026-03-20T03:40:12.790Z
   todos: []
+  automation: eligible
 - _ulid: 01KM4NHPTCMTXAVKH0STBCVF22
   slugs: []
   title: Recover missing workspace for automation-eligible in-progress tasks
@@ -109961,3 +110007,4 @@
   created_at: 2026-03-20T03:45:11.499Z
   notes: []
   todos: []
+  automation: eligible
