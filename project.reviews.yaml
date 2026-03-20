@@ -23805,6 +23805,17 @@ reviews:
         runner: node scripts/test.cjs
         created_at: 2026-03-20T01:28:01.140Z
         completed_at: 2026-03-20T01:28:01.140Z
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Validation still fails on pre-existing .kspec schema/reference issues outside this diff:
+          2 task type schema errors and 3 missing meta relates_to refs."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-20T01:28:01.152Z
+        completed_at: 2026-03-20T01:28:01.152Z
     events:
       - _ulid: 01KM4DGTMH5X6ZN7VJNFWYBVP1
         actor: Jacob Chapel
@@ -23826,6 +23837,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T01:28:01.373Z
+      - _ulid: 01KM4DPHWX69GGBHYGR06KJ50Y
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: kspec validate
+        timestamp: 2026-03-20T01:28:01.693Z
     examined_commit: null
     external_links: []
     lifecycle_state: open
@@ -23838,5 +23856,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-20T01:24:54.033Z
-    updated_at: 2026-03-20T01:28:01.140Z
+    updated_at: 2026-03-20T01:28:01.152Z
     notes: []
