@@ -110351,5 +110351,17 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-20T05:31:43.160Z
+    - _ulid: 01KM4W8M8V2SJM8G8KCS79FVZ3
+      content: "Fix cycle update: expanded /sessions freshness change detection to fingerprint loaded rows
+        instead of only comparing total/first-row, so scrolled viewers now get the new-results
+        indicator for in-list status/order changes. Added a page-level E2E for
+        ac-live-update-source-agnostic that injects a sessions-topic broadcast and verifies the page
+        refreshes from that path. Verification: npm run typecheck; npm test --
+        tests/web-ui-tanstack-query.test.ts tests/session-watcher.test.ts. Targeted Playwright run
+        remains blocked in dispatch because the shared E2E fixture tries to start its own daemon,
+        which the dispatch guard forbids."
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T05:42:34.011Z
   todos: []
   automation: eligible
