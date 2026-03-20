@@ -31944,7 +31944,17 @@ reviews:
     slugs: []
     title: Review restore pre-block status on task unblock
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 297 files passed; 6703 tests passed, 3 skipped; duration 154.62s.
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-20T22:10:39.043Z
+        completed_at: 2026-03-20T22:10:39.043Z
     events:
       - _ulid: 01KM6MRMWT72P16A0BRX4CF4B5
         actor: Jacob Chapel
@@ -31959,6 +31969,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM6MSRZGK5QAAYVFYC3189MR
         timestamp: 2026-03-20T22:10:36.394Z
+      - _ulid: 01KM6MSW2M8F0A2SKPETT4EFZX
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-20T22:10:39.317Z
     examined_commit: 470ed5083bbcb2e24854070eff6cb630ef16e690
     external_links: []
     lifecycle_state: draft
@@ -32086,5 +32103,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-20T22:09:59.194Z
-    updated_at: 2026-03-20T22:10:36.144Z
+    updated_at: 2026-03-20T22:10:39.043Z
     notes: []
