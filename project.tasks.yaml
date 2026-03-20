@@ -109984,3 +109984,51 @@
   notes: []
   todos: []
   automation: eligible
+- _ulid: 01KM4PZRFGV4WZ5HPZ9VZ3HBDN
+  slugs: []
+  title: Fix shared-checkout integration branch targeting when current branch differs
+  type: bug
+  description: >-
+    What: Fix dispatch shared-checkout integration targeting so sync/push and related
+    integration-branch mutations do not require the configured integration branch to be the
+    currently checked-out branch in the shared checkout. Dispatch should verify the configured
+    integration branch exists locally and/or remotely; if it does not exist locally but does exist
+    remotely, create or restore the local branch and use it as the mutation surface. If the
+    integration branch is already checked out, that path should continue to work without clobbering
+    index or working-tree state.
+
+
+    Why: The current refusal path and DEGRADED error that says dispatch will not mutate the
+    integration target when the shared checkout is on another branch was not the intent. It
+    contradicts the approved shared-checkout plan, which treats shared-checkout correctness as the
+    product contract rather than requiring one branch topology. In practice, it is often ideal for
+    the human-facing shared checkout to have some other branch checked out while dispatch still
+    targets the configured integration branch safely and deterministically.
+
+
+    How: Replace the current-branch equality guard in the isolated integration-target path with
+    branch existence and resolution logic for the configured integration branch. Reuse existing
+    branch resolution and branch-restore helpers where possible, ensure the isolated targeting path
+    can create/use the integration branch when it exists remotely, and preserve checkout coherence
+    and non-clobbering safety checks so dispatch only refuses truly ambiguous or destructive cases.
+    Update regression coverage so tests assert: (1) non-checked-out integration branch still
+    syncs/pushes through the shared checkout correctly, (2) missing local branch is restored/created
+    from remote when available, (3) already-checked-out integration branch still works, and (4) task
+    worktrees remain untouched.
+  spec_ref: "@dispatch-integration-mutation-scope"
+  meta_ref: null
+  plan_ref: "@plan-dispatch-integration-checkout-boundaries"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 1
+  tags:
+    - dispatch
+    - git
+    - runtime
+    - bug
+  vcs_refs: []
+  created_at: 2026-03-20T04:10:20.528Z
+  notes: []
+  todos: []
