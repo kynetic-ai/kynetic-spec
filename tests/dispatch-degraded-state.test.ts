@@ -136,6 +136,25 @@ async function createRemoteRewrite(
   // new tip, and local dev is still at the old tip — git merge --ff-only will fail.
 }
 
+async function createUnsafeSharedCheckoutDrift(
+  projectDir: string,
+  branch: string,
+): Promise<void> {
+  const previousTip = git(projectDir, `rev-parse ${branch}`);
+
+  git(projectDir, "checkout --detach");
+  await fs.writeFile(path.join(projectDir, "dev.txt"), "dev\ndrifted\n", "utf-8");
+  git(projectDir, "add dev.txt");
+  git(projectDir, 'commit -m "unsafe drift tip"');
+  const branchTip = git(projectDir, "rev-parse HEAD");
+
+  git(projectDir, `checkout ${branch}`);
+  git(projectDir, `reset --hard ${previousTip}`);
+  git(projectDir, `update-ref refs/heads/${branch} ${branchTip}`);
+
+  await fs.writeFile(path.join(projectDir, "dev.txt"), "dev\nlocal-change\n", "utf-8");
+}
+
 describe("dispatch engine degraded state", () => {
   let projectDir: string;
   let remoteDir: string;
@@ -235,6 +254,38 @@ describe("dispatch engine degraded state", () => {
     expect(degraded.reason).toContain("git reset --hard");
     // Should identify the divergence pattern
     expect(degraded.reason).toContain("diverged");
+
+    await engine.stop();
+  });
+
+  // AC: @dispatch-shared-checkout-safety ac-3
+  // AC: @dispatch-shared-checkout-safety ac-4
+  // AC: @trait-error-guidance ac-1
+  // AC: @trait-error-guidance ac-2
+  it("degrades with branch-specific repair guidance when shared-checkout drift would overwrite local changes", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout dev");
+
+    await createUnsafeSharedCheckoutDrift(projectDir, "dev");
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    const result = await engine._syncTargetBranch();
+    expect(result).toBe("unsafe_target");
+
+    const syncStatus = engine.getTargetSyncStatus();
+    expect(syncStatus.degraded.active).toBe(true);
+    expect(syncStatus.baseBranch).toBe("dev");
+    expect(syncStatus.degraded.reason).toContain('integration target "dev"');
+    expect(syncStatus.degraded.reason).toContain("working tree has tracked modifications");
+    expect(syncStatus.degraded.reason).toContain("git checkout dev && git reset --hard dev");
+    expect(git(projectDir, "status --short")).toContain("dev.txt");
 
     await engine.stop();
   });

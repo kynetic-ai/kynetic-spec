@@ -20,6 +20,19 @@ function git(cwd: string, command: string): string {
   }).trim();
 }
 
+function gitSucceeds(cwd: string, command: string): boolean {
+  try {
+    execSync(`git ${command}`, {
+      cwd,
+      stdio: "pipe",
+      encoding: "utf-8",
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Set up a bare remote repo and a local project repo with origin pointing to it.
  * Returns { projectDir, remoteDir }. Both on "dev" as the base branch.
@@ -254,6 +267,55 @@ describe("dispatch target branch sync", () => {
     } finally {
       git(projectDir, `worktree remove --force "${taskWorktreeDir}"`);
     }
+  });
+
+  // AC: @dispatch-shared-checkout-safety ac-1
+  // AC: @dispatch-shared-checkout-safety ac-2
+  it("repairs clean shared-checkout drift before syncing the integration target", async () => {
+    ({ projectDir, remoteDir } = await setupProjectWithRemote());
+    await setupProjectFiles(projectDir);
+    git(projectDir, "checkout dev");
+
+    const previousTip = git(projectDir, "rev-parse dev");
+    const branchTip = await pushRemoteCommit(
+      remoteDir,
+      "dev",
+      "dev.txt",
+      "dev\nremote drift\n",
+      "remote drift tip",
+    );
+    git(projectDir, "fetch origin");
+    git(projectDir, `update-ref refs/heads/dev ${branchTip}`);
+
+    expect(git(projectDir, "rev-parse HEAD")).toBe(branchTip);
+    expect(git(projectDir, "status --short")).toContain("dev.txt");
+
+    const remoteTip = await pushRemoteCommit(
+      remoteDir,
+      "dev",
+      "dev.txt",
+      "dev\nremote drift\nremote after drift\n",
+      "remote after drift",
+    );
+
+    const engine = new DispatchEngine({
+      projectDir,
+      reconcileIntervalMs: 0,
+      coalesceWindowMs: 0,
+    });
+    await engine.start();
+
+    expect(previousTip).not.toBe(branchTip);
+    expect(git(projectDir, "rev-parse dev")).toBe(remoteTip);
+    expect(gitSucceeds(projectDir, "diff --quiet")).toBe(true);
+    expect(gitSucceeds(projectDir, "diff --cached --quiet")).toBe(true);
+    expect(await workspaceModule.ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, "dev")).toEqual({
+      repaired: false,
+      drifted: false,
+      previousCommit: null,
+    });
+
+    await engine.stop();
   });
 
   // AC: @dispatch-integration-mutation-scope ac-4

@@ -380,6 +380,122 @@ function resolveCurrentBranch(projectDir: string): string | null {
   return result.status === 0 && result.stdout ? result.stdout : null;
 }
 
+interface DispatchCheckoutCoherenceResult {
+  repaired: boolean;
+  drifted: boolean;
+  previousCommit: string | null;
+}
+
+function resolveBranchTree(projectDir: string, ref: string): string | null {
+  const result = runGit(projectDir, ["rev-parse", `${ref}^{tree}`]);
+  return result.status === 0 && result.stdout ? result.stdout : null;
+}
+
+function resolveIndexTree(projectDir: string): string | null {
+  const result = runGit(projectDir, ["write-tree"]);
+  return result.status === 0 && result.stdout ? result.stdout : null;
+}
+
+function listRecentBranchReflogCommits(projectDir: string, branch: string, limit = 20): string[] {
+  const result = runGit(projectDir, ["reflog", "show", "--format=%H", `-n${limit}`, branch]);
+  if (result.status !== 0 || !result.stdout) {
+    return [];
+  }
+  return Array.from(new Set(
+    result.stdout
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean),
+  ));
+}
+
+function buildUnsafeCheckoutDriftError(
+  integrationBranch: string,
+  detail: string,
+  suggestion: string,
+): DispatchWorkspaceError {
+  return new DispatchWorkspaceError(
+    `Dispatch detected shared-checkout drift for integration target "${integrationBranch}" but refused automatic repair because ${detail}.`,
+    suggestion,
+  );
+}
+
+export function ensureDispatchIntegrationTargetCheckoutCoherence(
+  projectDir: string,
+  integrationBranch: string,
+): DispatchCheckoutCoherenceResult {
+  const status = runGit(projectDir, ["status", "--porcelain"]);
+  if (status.status !== 0) {
+    throw new DispatchWorkspaceError(
+      `Dispatch could not inspect shared checkout state for integration target "${integrationBranch}".`,
+      `Run 'git status' in ${projectDir}, fix the git error, and retry dispatch.`,
+    );
+  }
+  if (!status.stdout) {
+    return { repaired: false, drifted: false, previousCommit: null };
+  }
+
+  const worktreeDiff = runGit(projectDir, ["diff", "--quiet"]);
+  if (worktreeDiff.status !== 0 && worktreeDiff.status !== 1) {
+    throw new DispatchWorkspaceError(
+      `Dispatch could not compare the working tree against the index for integration target "${integrationBranch}".`,
+      `Run 'git diff' in ${projectDir}, resolve the git error, and retry dispatch.`,
+    );
+  }
+  if (worktreeDiff.status === 1) {
+    throw buildUnsafeCheckoutDriftError(
+      integrationBranch,
+      "the working tree has tracked modifications",
+      `Review the local changes in ${projectDir}, then commit/stash/discard them before retrying. If the branch tip is authoritative, run 'git checkout ${integrationBranch} && git reset --hard ${integrationBranch}'.`,
+    );
+  }
+
+  const indexTree = resolveIndexTree(projectDir);
+  const headTree = resolveBranchTree(projectDir, "HEAD");
+  if (!indexTree || !headTree) {
+    throw new DispatchWorkspaceError(
+      `Dispatch could not compare index state against HEAD for integration target "${integrationBranch}".`,
+      `Run 'git status' in ${projectDir}, repair the repository state, and retry dispatch.`,
+    );
+  }
+  if (indexTree === headTree) {
+    return { repaired: false, drifted: false, previousCommit: null };
+  }
+
+  for (const commit of listRecentBranchReflogCommits(projectDir, integrationBranch)) {
+    if (commit === resolveCommit(projectDir, "HEAD")) continue;
+    if (resolveBranchTree(projectDir, commit) !== indexTree) continue;
+
+    const repair = runGit(projectDir, ["reset", "--hard", "HEAD"]);
+    if (repair.status !== 0) {
+      throw new DispatchWorkspaceError(
+        `Dispatch detected shared-checkout drift for integration target "${integrationBranch}" but failed to repair it automatically.`,
+        `Run 'git checkout ${integrationBranch} && git reset --hard ${integrationBranch}' in ${projectDir}, then retry dispatch.`,
+      );
+    }
+
+    const repairedWorktreeDiff = runGit(projectDir, ["diff", "--quiet"]);
+    const repairedIndexDiff = runGit(projectDir, ["diff", "--cached", "--quiet"]);
+    if (
+      repairedWorktreeDiff.status !== 0 ||
+      repairedIndexDiff.status !== 0
+    ) {
+      throw new DispatchWorkspaceError(
+        `Dispatch repaired shared-checkout drift for integration target "${integrationBranch}" but tracked checkout drift is still present.`,
+        `Inspect 'git diff' and 'git diff --cached' in ${projectDir}, clear any remaining tracked changes, and retry dispatch.`,
+      );
+    }
+
+    return { repaired: true, drifted: true, previousCommit: commit };
+  }
+
+  throw buildUnsafeCheckoutDriftError(
+    integrationBranch,
+    "the index contains staged or drifted tracked changes that do not match a known prior branch tip",
+    `Inspect 'git status' and 'git diff --cached' in ${projectDir}. Commit/stash/discard those changes, then retry dispatch. If the branch tip is authoritative, run 'git checkout ${integrationBranch} && git reset --hard ${integrationBranch}'.`,
+  );
+}
+
 function normalizeTaskSlug(taskRef: string, task?: { title?: string; slugs?: string[] }): string {
   const preferred = task?.slugs?.[0] ?? task?.title ?? taskRef.replace(/^@/, "task");
   const normalized = preferred
@@ -1486,6 +1602,8 @@ export function resolveDispatchIntegrationMutationScope(
       `Check out "${integrationBranch}" in ${projectDir}, or restart dispatch from a shared checkout that already has "${integrationBranch}" checked out.`,
     );
   }
+
+  ensureDispatchIntegrationTargetCheckoutCoherence(projectDir, integrationBranch);
 
   return {
     projectDir,
