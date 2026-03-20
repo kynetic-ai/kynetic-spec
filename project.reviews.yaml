@@ -25854,7 +25854,19 @@ reviews:
     slugs: []
     title: Review task-fix-sessions-live-freshness
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: 'Full suite run in review snapshot failed with one unrelated baseline failure:
+          tests/cli-plan.test.ts > Integration: plan commands > plan list > excludes cancelled tasks
+          while preserving plan_ref-linked plan list counts (Reference "@01KM4VFS" is not a plan).'
+        name: npm test
+        required: false
+        runner: npm
+        created_at: 2026-03-20T05:31:25.768Z
+        completed_at: 2026-03-20T05:31:25.768Z
     events:
       - _ulid: 01KM4VC1G367FKN23M259Q9047
         actor: Jacob Chapel
@@ -25876,6 +25888,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM4VM700831251JW21V0GQZE
         timestamp: 2026-03-20T05:31:25.287Z
+      - _ulid: 01KM4VM7WYW6AJBXWKZ3PH2G23
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-20T05:31:25.982Z
     examined_commit: 148c2d03728085839fd9a47a6ad7cc129ef789a4
     external_links: []
     lifecycle_state: open
@@ -25906,5 +25925,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-20T05:26:57.283Z
-    updated_at: 2026-03-20T05:31:25.056Z
+    updated_at: 2026-03-20T05:31:25.768Z
     notes: []
