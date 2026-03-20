@@ -29502,6 +29502,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-20T16:38:29.455Z
+      - _ulid: 01KM61SYMTAMJ6V6GP1F9TQRSG
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM61SYD9H18PCHKE2SPV6W7D
+        timestamp: 2026-03-20T16:38:39.002Z
     examined_commit: 1e4e7d7ea6611fa27c20fcdb3608375d296daa01
     external_links: []
     lifecycle_state: open
@@ -29511,8 +29518,29 @@ reviews:
       content_hash: ""
       ref: "@01KM5Z4P8FV3JEDM2KRN6A0AKN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM61SYD9H18PCHKE2SPV6W7D
+        anchor:
+          type: code
+          commit: 1e4e7d7ea6611fa27c20fcdb3608375d296daa01
+          line_end: 113
+          line_start: 113
+          path: src/parser/yaml.ts
+          side: head
+        entries:
+          - _ulid: 01KM61SYD9JQH6AVE19PD47E23
+            author: Jacob Chapel
+            body: "This formatter reads the invalid value from issue.input, but Zod v3 enum issues expose it as
+              issue.received instead. The result is warnings like automation=undefined even when the
+              bad YAML value was 'ineligible', so the new read-side warning still fails to identify
+              the field/value that broke validation. That violates the task's own guidance
+              requirement and makes the warning materially less useful for repair. Repro: z.object({
+              automation: z.enum(['eligible','needs_review','manual_only']) }).safeParse({
+              automation: 'ineligible' }) returns an issue with received='ineligible', and the full
+              test suite emitted that exact automation=undefined warning."
+            created_at: 2026-03-20T16:38:38.761Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-20T16:34:18.688Z
-    updated_at: 2026-03-20T16:38:29.213Z
+    updated_at: 2026-03-20T16:38:38.761Z
     notes: []
