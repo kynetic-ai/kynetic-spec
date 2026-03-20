@@ -30582,3 +30582,29 @@ reviews:
     created_at: 2026-03-20T17:57:31.038Z
     updated_at: 2026-03-20T18:02:46.273Z
     notes: []
+  - _ulid: 01KM66Q672GTMDNG9S132WCM1N
+    slugs: []
+    title: Review fix-plans-page-progress-bar-using-unreliable-tailwind-arbitrary-value-classes
+    author: Jacob Chapel
+    checks: []
+    events:
+      - _ulid: 01KM66Q6721SHDQ9N7YD5CNVFD
+        actor: Jacob Chapel
+        event_type: lifecycle_change
+        payload:
+          to: draft
+        timestamp: 2026-03-20T18:04:31.330Z
+    examined_commit: 6b9464befb19bc5ba24e78f661a6110b8d673ff3
+    external_links: []
+    lifecycle_state: draft
+    related_refs: []
+    subject:
+      type: task
+      content_hash: ""
+      ref: "@01KM65J5SV82ZJNT6XQX2YN1RS"
+      shadow_commit: ""
+    threads: []
+    verdicts: []
+    created_at: 2026-03-20T18:04:31.330Z
+    updated_at: null
+    notes: []
