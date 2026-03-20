@@ -90,7 +90,7 @@ type TaskRecord = {
   slugs: string[];
   status: "pending" | "pending_review" | "needs_work" | "completed";
   priority?: number;
-  automation?: "eligible" | "ineligible";
+  automation?: "eligible" | "manual_only";
   created_at?: string;
   review_url?: string;
 };

@@ -31,6 +31,8 @@ import { PidFileManager } from "../pid-utils.js";
 import { errors } from "../../strings/errors.js";
 import type { LoadedAgent } from "../../parser/meta.js";
 import { isEndLoopRequested, requestEndLoop } from "../../sessions/index.js";
+import { AgentDispatchAutomationFilterSchema } from "../../schema/index.js";
+import { describeEnumValues } from "../enum-help.js";
 import WsDefault from "ws";
 
 // WebSocket constructor that works on Node 18+.
@@ -97,7 +99,14 @@ export function registerAgentCommands(program: Command): void {
     .command("list")
     .description("List all agent definitions")
     .option("--json", "Output as JSON")
-    .option("--status <status>", "Filter by automation status (eligible|ineligible)")
+    .option(
+      "--status <status>",
+      describeEnumValues(
+        "Filter by automation status",
+        AgentDispatchAutomationFilterSchema.options,
+        "|",
+      ),
+    )
     .option("--tag <tag>", "Filter by tag (repeatable)", (val: string, arr: string[]) => [...arr, val], [] as string[])
     .option("--limit <n>", "Maximum number of results")
     .option("--offset <n>", "Skip first N results")

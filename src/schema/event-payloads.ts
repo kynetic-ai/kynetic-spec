@@ -11,6 +11,7 @@
 
 import { z } from "zod";
 import { TaskStatusSchema } from "./common.js";
+import { AutomationStatusSchema } from "./task.js";
 
 // ─── Task Event Payloads ────────────────────────────────────────────────────
 
@@ -39,7 +40,7 @@ export const TaskEventPayloadSchema = z.object({
   /** Task priority (1–5 numeric or named) */
   priority: z.union([z.number(), z.string()]).nullable(),
   /** Automation eligibility status */
-  automation: z.enum(["eligible", "not_eligible", "assisted"]).nullable(),
+  automation: AutomationStatusSchema.nullable(),
 });
 
 export type TaskEventPayload = z.infer<typeof TaskEventPayloadSchema>;

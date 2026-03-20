@@ -44,8 +44,10 @@ import type {
   ReviewThreadKind,
   ReviewVerdictDecision,
 } from "../../schema/index.js";
+import { ReviewThreadKindSchema } from "../../schema/index.js";
 import { errors } from "../../strings/index.js";
 import { EXIT_CODES } from "../exit-codes.js";
+import { describeEnumValues } from "../enum-help.js";
 import { error, info, isJsonMode, output, success, warn } from "../output.js";
 import { formatRelativeTime as formatRelativeTimeUtil } from "../../utils/time.js";
 
@@ -714,7 +716,11 @@ export function registerReviewCommands(program: Command): void {
       .command("comment <ref>")
       .description("Add a comment thread to a review")
       .requiredOption("--body <body>", "Comment body")
-      .option("--kind <kind>", "Thread kind: blocker, question, nit", "nit")
+      .option(
+        "--kind <kind>",
+        describeEnumValues("Thread kind", ReviewThreadKindSchema.options),
+        "nit",
+      )
       .option("--path <path>", "Code anchor: file path")
       .option("--side <side>", "Code anchor: base or head")
       .option("--line-start <n>", "Code anchor: start line", parseInt)
@@ -733,7 +739,7 @@ export function registerReviewCommands(program: Command): void {
 
           // Validate thread kind
           // AC: @trait-error-guidance ac-5
-          const validKinds = ["blocker", "question", "nit"];
+          const validKinds = ReviewThreadKindSchema.options;
           if (!validKinds.includes(options.kind)) {
             exitWithGuidance(
               `Invalid thread kind: ${options.kind}`,

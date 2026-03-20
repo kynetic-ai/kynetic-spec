@@ -4,6 +4,7 @@ import { HookSchema } from "./hooks.js";
 import { ScheduleSchema } from "./schedules.js";
 import { CompositionSchema } from "./composition.js";
 import { DispatchEventTypeSchema } from "./event-registry.js";
+import { AgentDispatchAutomationFilterSchema } from "./task.js";
 
 /**
  * ULID schema for meta items - uses the same strict validation as core items.
@@ -37,7 +38,7 @@ export const AgentDispatchEventSchema = DispatchEventTypeSchema;
  * AC: @agent-definition-schema ac-3
  */
 export const AgentDispatchFilterSchema = z.object({
-  automation: z.enum(["eligible", "ineligible"]).optional(),
+  automation: AgentDispatchAutomationFilterSchema.optional(),
   tags: z.array(z.string()).optional(),
   priority: z.number().optional(),
 });
@@ -106,7 +107,7 @@ export const AgentSchema = z.object({
   auto_approve: z.boolean().default(false),
   prompt_template: z.string().optional(),
   /** Automation eligibility for agent list filtering (eligible|ineligible) */
-  automation: z.enum(["eligible", "ineligible"]).optional(),
+  automation: AgentDispatchAutomationFilterSchema.optional(),
   /** Tags for filtering and categorization */
   tags: z.array(z.string()).default([]).optional(),
 });

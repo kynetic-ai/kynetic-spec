@@ -376,7 +376,7 @@ describe('Review WebSocket Broadcasts', () => {
       reviewer: 'test@example.com',
     });
 
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(422);
     expect(broadcastSpy).not.toHaveBeenCalled();
   });
 

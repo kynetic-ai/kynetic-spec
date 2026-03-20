@@ -584,7 +584,7 @@ describe("Dispatch in-progress priority", () => {
         fromStatus: "pending",
         toStatus: "in_progress",
       }),
-      task: { automation: "ineligible", tags: [] } as any,
+      task: { automation: "manual_only", tags: [] } as any,
     });
     expect(enqueueCount).toBe(0);
 
@@ -648,7 +648,7 @@ describe("Dispatch scheduling priority model", () => {
 
     const [depId, pendingId, reviewId, blockedId] = testUlids("SCHA", 4);
     await writeTasks(testDir, [
-      { _ulid: depId, status: "pending", automation: "ineligible" },
+      { _ulid: depId, status: "pending", automation: "manual_only" },
       { _ulid: pendingId, status: "pending", automation: "eligible", depends_on: [`@${depId}`] },
       { _ulid: reviewId, status: "pending_review", automation: "eligible", priority: 1 },
       { _ulid: blockedId, status: "needs_work", automation: "eligible", blocked_by: ["waiting"] },
@@ -1076,7 +1076,7 @@ describe("AC-6: Dispatch rule filters applied", () => {
 
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "in_progress", automation: "ineligible" },
+      { _ulid: taskId, status: "in_progress", automation: "manual_only" },
     ]);
 
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
@@ -1084,7 +1084,7 @@ describe("AC-6: Dispatch rule filters applied", () => {
 
     // Transition to pending — should NOT be queued (automation: ineligible)
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "ineligible" },
+      { _ulid: taskId, status: "pending", automation: "manual_only" },
     ]);
 
     let dispatchedCount = 0;
@@ -4242,7 +4242,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
 
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "in_progress", automation: "ineligible" },
+      { _ulid: taskId, status: "in_progress", automation: "manual_only" },
     ]);
 
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
@@ -4257,7 +4257,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
 
     // Transition to pending (task.ready) — should NOT be queued because task is ineligible
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "ineligible" },
+      { _ulid: taskId, status: "pending", automation: "manual_only" },
     ]);
 
     await engine.handleFileChange(testDir);
@@ -4309,7 +4309,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
 
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending_review", automation: "ineligible" },
+      { _ulid: taskId, status: "pending_review", automation: "manual_only" },
     ]);
 
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
@@ -4323,7 +4323,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
     enqueueCount = 0;
 
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "needs_work", automation: "ineligible" },
+      { _ulid: taskId, status: "needs_work", automation: "manual_only" },
     ]);
 
     await engine.handleFileChange(testDir);
@@ -4344,7 +4344,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
 
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "in_progress", automation: "ineligible" },
+      { _ulid: taskId, status: "in_progress", automation: "manual_only" },
     ]);
 
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
@@ -4353,7 +4353,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
     // Transition to pending_review — should be queued even though task is ineligible
     // because task.pending_review does NOT default to automation:eligible
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending_review", automation: "ineligible" },
+      { _ulid: taskId, status: "pending_review", automation: "manual_only" },
     ]);
 
     // Use handleStateChange directly to test filter behavior independently of file diffing
@@ -4387,7 +4387,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
 
     const taskId = testUlid("TASK");
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "in_progress", automation: "ineligible", tags: ["mvp"] },
+      { _ulid: taskId, status: "in_progress", automation: "manual_only", tags: ["mvp"] },
     ]);
 
     const engine = new DispatchEngine({ projectDir: testDir, specDir: testDir, kspecCliPath: MOCK_KSPEC_CLI, coalesceWindowMs: 0 });
@@ -4401,7 +4401,7 @@ describe("AC-21: Default automation:eligible for task.ready/task.needs_work with
     enqueueCount = 0;
 
     await writeTasks(testDir, [
-      { _ulid: taskId, status: "pending", automation: "ineligible", tags: ["mvp"] },
+      { _ulid: taskId, status: "pending", automation: "manual_only", tags: ["mvp"] },
     ]);
 
     await engine.handleFileChange(testDir);
