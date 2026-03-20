@@ -110999,6 +110999,14 @@
   session_id: 01KM60T8P89B3GWR4K75WCRPHN
   created_at: 2026-03-20T15:52:05.135Z
   started_at: 2026-03-20T16:22:01.367Z
-  notes: []
+  notes:
+    - _ulid: 01KM618VWM3N4MZ2RWBZX99JPV
+      content: Implemented read-side validation warnings for task/spec/inbox/triage/plan loaders. Added a
+        shared parser warning helper that reports the skipped record id, source file, failing
+        field/value, and a repair hint. Added parser tests covering invalid-only, mixed
+        valid+invalid, and all-valid loads across all affected record types.
+      supersedes: null
+      author: Jacob Chapel
+      created_at: 2026-03-20T16:29:19.124Z
   todos: []
   automation: eligible
