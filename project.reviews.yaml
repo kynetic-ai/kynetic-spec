@@ -40938,6 +40938,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T17:40:34.075Z
+      - _ulid: 01KM8QR2PHRRCV4CHKZ17EHRPD
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM8QR29SS0VMR4178WT0CYRE
+        timestamp: 2026-03-21T17:40:35.153Z
     examined_commit: 66ff03762bb3763a0166e96b7fc94c5adaa18729
     external_links: []
     lifecycle_state: open
@@ -40947,8 +40954,28 @@ reviews:
       content_hash: ""
       ref: "@01KM6YEWY1WSKEXTF5YNP5GG81"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM8QR29SS0VMR4178WT0CYRE
+        anchor:
+          type: code
+          commit: 66ff03762bb3763a0166e96b7fc94c5adaa18729
+          line_end: 3451
+          line_start: 3428
+          path: src/cli/commands/task.ts
+          side: head
+        entries:
+          - _ulid: 01KM8QR29S179TRNYXKYV9Y9A3
+            author: Test User
+            body: Backfill currently rebuilds index rows for tasks that already have per-task directories from
+              the stale monolithic YAML entry, not from the canonical split files. I reproduced this
+              with an existing split task whose task.yaml title was 'Canonical Split Title' and a
+              leftover monolithic row titled 'Stale Monolithic Title'; after 'kspec task migrate
+              --force', project.tasks.yaml kept the stale title. That makes a backfill mutate
+              list/filter output for existing tasks and breaks AC-7's guarantee that existing
+              per-task data is left unaffected.
+            created_at: 2026-03-21T17:40:34.745Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T17:37:13.499Z
-    updated_at: 2026-03-21T17:40:33.776Z
+    updated_at: 2026-03-21T17:40:34.745Z
     notes: []
