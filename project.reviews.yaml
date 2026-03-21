@@ -33638,6 +33638,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM74Z802WAP3S1BBTHWTXJ57
         timestamp: 2026-03-21T02:53:12.834Z
+      - _ulid: 01KM74ZF1Y0ENBNFC96VCPGMCS
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM74ZESZY1DMYKFN2Z23Y1WE
+        timestamp: 2026-03-21T02:53:19.806Z
     examined_commit: 97bb9be56c754d9a80593b79bb9743e0be05ca15
     external_links: []
     lifecycle_state: draft
@@ -33668,7 +33675,20 @@ reviews:
               queue/FIFO mutex and add a three-writer same-task test.
             created_at: 2026-03-21T02:53:12.579Z
         kind: blocker
+      - _ulid: 01KM74ZESZY1DMYKFN2Z23Y1WE
+        entries:
+          - _ulid: 01KM74ZESZ9HEA975XBEQ5PT4G
+            author: Jacob Chapel
+            body: "Review evidence log\\n\\nFiles read: kspec-agents.md, src/parser/task-data-manager.ts,
+              src/parser/yaml.ts, tests/task-data-manager.test.ts\\nCommands run: kspec task get,
+              kspec item get, kspec review for-task/get, git diff, rg AC scan, kspec validate, npm
+              test, node mutex reproduction\\nClaims verified: recursive discovery now delegates to
+              findTaskFiles(); mutateTasks now takes per-task locks before batch mutation; full test
+              suite was executed in this snapshot\\nCategories searched: correctness,
+              concurrency/edge cases, error handling, test quality, integration"
+            created_at: 2026-03-21T02:53:19.551Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T02:49:43.868Z
-    updated_at: 2026-03-21T02:53:12.579Z
+    updated_at: 2026-03-21T02:53:19.551Z
     notes: []
