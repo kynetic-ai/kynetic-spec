@@ -32692,6 +32692,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T01:31:37.347Z
+      - _ulid: 01KM70CNMA45VS1J8Z2Z40RZBW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM70CN6CWYCBFDB6PNH59PQM
+        timestamp: 2026-03-21T01:33:09.643Z
     examined_commit: 3e6d901fcc248a5e455c477b826578d8000f90af
     external_links: []
     lifecycle_state: open
@@ -32701,8 +32708,26 @@ reviews:
       content_hash: ""
       ref: "@01KM6YENV3CBFAGSRHVHR7QPJN"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM70CN6CWYCBFDB6PNH59PQM
+        anchor:
+          type: code
+          commit: 3e6d901fcc248a5e455c477b826578d8000f90af
+          line_end: 109
+          line_start: 105
+          path: src/parser/task-data-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KM70CN6C7HS576G3K8V5168S
+            author: Jacob Chapel
+            body: ac-2 is being marked as covered even though the implementation and the test both defer the
+              required behavior. listTasks just delegates to loadAllTasks(ctx), and the test comment
+              says the index-only optimization will come later. This task is therefore claiming
+              coverage for only index data is read without implementing or proving it, which is a
+              MUST-FIX coverage gap for a linked spec AC.
+            created_at: 2026-03-21T01:33:09.196Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T01:31:17.924Z
-    updated_at: 2026-03-21T01:31:36.891Z
+    updated_at: 2026-03-21T01:33:09.196Z
     notes: []
