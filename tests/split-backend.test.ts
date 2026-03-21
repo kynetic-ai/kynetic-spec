@@ -1001,7 +1001,7 @@ describe("SplitBackend", () => {
   // Then: Only the per-task file is written; the index is not modified
   describe("non-indexed changes skip index (ac-3)", () => {
     // AC: @task-index-file ac-3
-    it("adding a note does not modify the index file", async () => {
+    it("adding a note updates index notes_count but does not store note content in the index", async () => {
       const manager = new TaskDataManager("split");
 
       const created = await manager.createTask(ctx, {
@@ -1009,21 +1009,21 @@ describe("SplitBackend", () => {
         slugs: ["note-no-index"],
       });
 
-      // Capture index file content after creation
-      const indexPath = getIndexFilePath(ctx);
-      const indexBefore = await fs.readFile(indexPath, "utf-8");
-
       // Add a note (goes through mutateTask)
-      await manager.addNote(ctx, "@note-no-index", "A note that should not touch the index", "@tester");
+      await manager.addNote(ctx, "@note-no-index", "Secret note content", "@tester");
 
-      // The index file content should be unchanged
-      const indexAfter = await fs.readFile(indexPath, "utf-8");
-      expect(indexAfter).toBe(indexBefore);
-
-      // But the note should be persisted in the per-task notes file
+      // The note should be persisted in the per-task notes file
       const fetched = await manager.getTask(ctx, "@note-no-index");
       expect(fetched.notes.length).toBe(1);
-      expect(fetched.notes[0].content).toBe("A note that should not touch the index");
+      expect(fetched.notes[0].content).toBe("Secret note content");
+
+      // The index should have updated notes_count
+      const indexPath = getIndexFilePath(ctx);
+      const indexContent = await fs.readFile(indexPath, "utf-8");
+      expect(indexContent).toContain("notes_count: 1");
+
+      // But the index must NOT contain the note content itself
+      expect(indexContent).not.toContain("Secret note content");
     });
 
     // AC: @task-index-file ac-3
@@ -1094,6 +1094,42 @@ describe("SplitBackend", () => {
       expect(indexEntriesEqual(a, { ...a, tags: ["a", "b"] })).toBe(false);
       // Title changed
       expect(indexEntriesEqual(a, { ...a, title: "Changed" })).toBe(false);
+      // notes_count changed
+      expect(indexEntriesEqual(a, { ...a, notes_count: 1 })).toBe(false);
+      // todos_count changed
+      expect(indexEntriesEqual(a, { ...a, todos_count: 2 })).toBe(false);
+    });
+
+    // AC: @task-index-file ac-3
+    it("listTasks returns accurate notes_count after note additions", async () => {
+      const manager = new TaskDataManager("split");
+
+      const created = await manager.createTask(ctx, {
+        title: "Count accuracy",
+        slugs: ["count-accuracy"],
+      });
+
+      // Initially notes_count should be 0
+      let summaries = await manager.listTasks(ctx);
+      let summary = summaries.find((s) => s._ulid === created._ulid);
+      expect(summary).toBeDefined();
+      expect(summary!.notes_count).toBe(0);
+
+      // Add first note
+      await manager.addNote(ctx, "@count-accuracy", "Note one", "@tester");
+
+      // listTasks must reflect updated count without rebuild
+      summaries = await manager.listTasks(ctx);
+      summary = summaries.find((s) => s._ulid === created._ulid);
+      expect(summary!.notes_count).toBe(1);
+
+      // Add second note
+      await manager.addNote(ctx, "@count-accuracy", "Note two", "@tester");
+
+      // Count should increment again
+      summaries = await manager.listTasks(ctx);
+      summary = summaries.find((s) => s._ulid === created._ulid);
+      expect(summary!.notes_count).toBe(2);
     });
   });
 

@@ -158,15 +158,17 @@ export async function listTaskDirs(ctx: KspecContext): Promise<string[]> {
  * | listTasks     | READ  | -         | -          |
  * | getTask       | -     | READ      | READ       |
  * | createTask    | WRITE | WRITE     | WRITE      |
- * | mutateTask    | WRITE*| WRITE     | -          |
- * | addNote       | -     | -         | WRITE      |
+ * | mutateTask    | WRITE*| WRITE     | WRITE*     |
  * | deleteTask    | WRITE | DELETE    | DELETE     |
- * | mutateTasks   | WRITE*| WRITE     | -          |
+ * | mutateTasks   | WRITE*| WRITE     | WRITE*     |
  *
- * * Index is only written when indexed fields change.
- *   The index write determination is deferred to @task-impl-index.
+ * * Index is only written when indexed fields change (including
+ *   notes_count/todos_count). Notes are written when the mutation
+ *   includes note changes.
  *
- * AC: @task-index-file ac-3 — note-only mutations don't touch index
+ * Note: addNote goes through mutateTask, which updates the index
+ * count fields. Note content stays in per-task files only (AC-3);
+ * only the derived count is kept current in the index.
  */
 export type OperationType =
   | "list"      // Read index only
@@ -192,7 +194,6 @@ export interface OperationRouting {
  * Get the routing for a given operation type.
  *
  * AC: @task-index-file ac-1 — index contains only listing/filtering fields
- * AC: @task-index-file ac-3 — note-only mutations skip the index
  */
 export function getOperationRouting(operation: OperationType): OperationRouting {
   switch (operation) {
@@ -284,25 +285,29 @@ export function toIndexEntry(task: Task): Record<string, unknown> {
 
 /**
  * Fields that trigger an index write when they change.
- * Excludes notes_count and todos_count — these are denormalized counts
- * derived from per-task files. They update during rebuildIndex but do
- * not trigger index writes on note/todo mutations.
  *
- * AC: @task-index-file ac-3 — note-only mutations must not modify the index
+ * All indexed fields — including notes_count and todos_count — trigger
+ * an index write. While AC-3 says note content is non-indexed data,
+ * the counts are derived summary fields that live in the index for
+ * listing performance. When a note is added via mutateTask, the count
+ * changes and the index must be updated so listTasks returns accurate
+ * counts. Without this, list/session output shows stale note counts
+ * until a manual rebuild.
+ *
+ * AC: @task-index-file ac-3 — note content is not stored in the index;
+ *   only the count is updated as a derived summary field
  */
-const INDEX_CHANGE_FIELDS = INDEXED_FIELDS.filter(
-  (f) => f !== "notes_count" && f !== "todos_count",
-);
+const INDEX_CHANGE_FIELDS = INDEXED_FIELDS;
 
 /**
  * Compare two index entries for equality on fields that trigger writes.
- * Returns true if all change-triggering indexed fields have the same values.
+ * Returns true if all indexed fields have the same values.
  *
- * notes_count and todos_count are excluded from comparison because they
- * are derived from per-task file data (notes array / todos array). Updating
- * the index on every note addition would violate AC-3.
+ * All indexed fields are compared, including notes_count and todos_count.
+ * These derived counts must stay current in the index so that listTasks
+ * returns accurate values without reading per-task files.
  *
- * AC: @task-index-file ac-3 — skip index write when indexed fields unchanged
+ * AC: @task-index-file ac-2 — index updated when filterable fields change
  */
 export function indexEntriesEqual(
   a: Record<string, unknown>,
