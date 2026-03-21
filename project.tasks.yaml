@@ -113497,6 +113497,16 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-21T18:10:50.831Z
+    - _ulid: 01KM8T24CMA2QD4NY4QT135JW2
+      content: "Fix cycle 1: Addressed blocker — when a migrated task has notes but no stored history, the
+        pre-migration git fallback (getPreMigrationActivity) was returning note_added entries that
+        duplicated notes already present from notes.yaml. Fixed by filtering out note_added entries
+        from fallback results in the consumer (task.ts:910-916). Added test covering the
+        deduplication scenario. All 17 activity tests pass, 6910 total tests pass (2 pre-existing
+        timeout failures in agent-invocation-lifecycle.test.ts unrelated to this change)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T18:21:01.716Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YEVFHZ9J6734CYVPWWDMH
