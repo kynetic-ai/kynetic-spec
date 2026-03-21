@@ -271,7 +271,7 @@ async function deriveTaskFromSpec(
   existingTasks: LoadedTask[],
   _items: LoadedSpecItem[],
   index: ReferenceIndex,
-  alignmentIndex: AlignmentIndex,
+  alignmentIndex: AlignmentIndex<LoadedTask>,
   options: {
     force: boolean;
     dryRun: boolean;
@@ -390,7 +390,7 @@ function getTaskRef(task: LoadedTask, index: ReferenceIndex): string {
 function getParentTaskRef(
   parentSpec: LoadedSpecItem,
   specToTaskMap: Map<string, LoadedTask>,
-  alignmentIndex: AlignmentIndex,
+  alignmentIndex: AlignmentIndex<LoadedTask>,
   index: ReferenceIndex,
 ): string | undefined {
   // Check if we created a task for this parent in this session
@@ -508,7 +508,7 @@ function sortSpecsForDerive(
 function resolveSpecDependencyTaskRefs(
   specItem: LoadedSpecItem,
   specToTaskMap: Map<string, LoadedTask>,
-  alignmentIndex: AlignmentIndex,
+  alignmentIndex: AlignmentIndex<LoadedTask>,
   index: ReferenceIndex,
 ): { taskRefs: string[]; warnings: string[] } {
   const taskRefs: string[] = [];
