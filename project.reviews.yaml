@@ -39428,6 +39428,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T13:16:52.869Z
+      - _ulid: 01KM88NZ9GW3VYXTMFY71YKJCW
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM88NZ0J44ZQVWB2K98WQYSG
+        timestamp: 2026-03-21T13:17:17.488Z
     examined_commit: 4245fa4dfadcd899df46ee3bcf8b1c7ec90f97b6
     external_links: []
     lifecycle_state: open
@@ -39460,7 +39467,29 @@ reviews:
               incomplete in this snapshot.
             created_at: 2026-03-21T13:16:42.686Z
         kind: blocker
+      - _ulid: 01KM88NZ0J44ZQVWB2K98WQYSG
+        entries:
+          - _ulid: 01KM88NZ0KG1NJCAQQM0KYTEJ4
+            author: Jacob Chapel
+            body: "Review evidence log: Files read: src/parser/split-backend.ts,
+              src/parser/task-data-manager.ts, src/parser/yaml.ts, src/cli/commands/task.ts,
+              packages/daemon/src/routes/tasks.ts, packages/daemon/src/routes/triage.ts,
+              packages/daemon/src/routes/sessions.ts, packages/daemon/src/routes/diff.ts,
+              src/schema/spec.ts, tests/per-task-files.test.ts, tests/task-atomic-writes.test.ts,
+              tests/task-rebuild-index.test.ts, tests/split-backend.test.ts. Commands run: git diff
+              --stat/name-only, kspec task get, kspec review for-task, kspec item get
+              @task-core-data-file, kspec item get @task-notes-file, kspec validate, rg AC
+              annotations, rg loadAllTasks/resolveTaskDataManager usage, npm test. Claims verified:
+              full test suite passes; CLI/task paths are largely switched to resolveTaskDataManager;
+              split-mode daemon paths still contain raw loadAllTasks call sites. Categories
+              searched: correctness (found blocker in daemon read path), integration (found
+              blocker), tests/AC coverage (coverage present in tests/per-task-files.test.ts), edge
+              cases (migration gate and note-only/history paths inspected), error handling (validate
+              warnings only, no new task-specific errors), security (no relevant issues found in
+              inspected change set)."
+            created_at: 2026-03-21T13:17:17.203Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T13:10:28.514Z
-    updated_at: 2026-03-21T13:16:52.513Z
+    updated_at: 2026-03-21T13:17:17.203Z
     notes: []
