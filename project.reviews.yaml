@@ -39729,7 +39729,19 @@ reviews:
     slugs: []
     title: Review per-task core data and notes files (cycle 17)
     author: Test User
-    checks: []
+    checks:
+      - status: fail
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Full suite failed: 1 failed test / 6889 passed. Failure: tests/split-backend.test.ts >
+          concurrent mutations on different tasks succeed. Error: Batch flush commit failed: ENOENT
+          rename .../.kspec/project.tasks.yaml.kspec-batch-staging -> .../.kspec/project.tasks.yaml"
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T13:54:05.651Z
+        completed_at: 2026-03-21T13:54:05.651Z
     events:
       - _ulid: 01KM8AFFSX8Y5TGT6A3D58VVW0
         actor: Test User
@@ -39760,6 +39772,13 @@ reviews:
           from: open
           to: closed
         timestamp: 2026-03-21T13:54:01.833Z
+      - _ulid: 01KM8ASC6VBCDBHJA623FV6HP9
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: fail
+          name: npm test
+        timestamp: 2026-03-21T13:54:06.172Z
     examined_commit: 71d9fdfaf5c31d9816143595800c42f8996a40df
     external_links: []
     lifecycle_state: closed
@@ -39779,5 +39798,5 @@ reviews:
         role: reviewer
         created_at: 2026-03-21T13:54:01.832Z
     created_at: 2026-03-21T13:48:42.173Z
-    updated_at: 2026-03-21T13:54:01.833Z
+    updated_at: 2026-03-21T13:54:05.651Z
     notes: []
