@@ -40260,9 +40260,25 @@ reviews:
           status: pass
           name: review-evidence
         timestamp: 2026-03-21T16:08:39.419Z
+      - _ulid: 01KM8JFXTMM75ZJH9Y097ZFBSY
+        actor: codex@openai.com
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T16:08:45.140Z
+      - _ulid: 01KM8JFXTM3NWNPNWXTVW6B7DD
+        actor: codex@openai.com
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T16:08:45.141Z
     examined_commit: 57af9e5bc4227d76b715277cfa249b72e667f07c
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -40360,7 +40376,14 @@ reviews:
               refusing the operation. That can destroy the remaining monolithic task records.
             created_at: 2026-03-21T16:08:20.680Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex@openai.com
+        role: reviewer
+        created_at: 2026-03-21T16:08:45.140Z
     created_at: 2026-03-21T16:01:32.017Z
-    updated_at: 2026-03-21T16:08:39.057Z
+    updated_at: 2026-03-21T16:08:45.140Z
     notes: []
