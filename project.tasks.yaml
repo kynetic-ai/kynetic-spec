@@ -21372,11 +21372,23 @@
     - migration
     - cli
   review_ref: "@01KM8TK0KVA5YX0M314GX4N9XG"
-  notes_count: 8
-  todos_count: 0
   created_at: 2026-03-21T00:59:25.505Z
   started_at: 2026-03-21T18:29:01.269Z
   submitted_at: 2026-03-21T18:29:05.465Z
+  notes:
+    - _ulid: 01KM8VT0KQ6CGJD0YMANYMWBQ6
+      content: "Fix cycle 4: Addressed both blockers. (1) AC-8 atomicity test now uses a real shadow
+        branch with kspec init, writes monolithic tasks, runs migrate, and counts commits — asserts
+        exactly 1 new commit and clean working tree. (2) Replaced comment-only trait AC claims with
+        executable tests: @trait-dry-run ac-4 breaks the shadow worktree to trigger initContext
+        error during dry-run and verifies no state change; @trait-error-guidance ac-1/ac-2 uses a
+        read-only tasks directory to trigger EACCES during flush and verifies error description +
+        suggestion; @trait-error-guidance ac-6 same with --json verifying structured error object.
+        All 22 migration tests pass. Full suite: 6916 passed, 1 pre-existing failure unrelated to
+        this change."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T18:51:32.855Z
   automation: eligible
 - _ulid: 01KM6YEXN2KMJ43AMEKH3SW0RE
   slugs:
