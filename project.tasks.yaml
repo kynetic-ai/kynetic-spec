@@ -21598,3 +21598,23 @@
       author: "@claude"
       created_at: 2026-03-21T22:56:56.271Z
   todos: []
+- _ulid: 01KM99VKMSAS3JBX7S3QWBHRSV
+  slugs: []
+  title: Add missing AC test annotations for storage split specs
+  type: task
+  spec_ref: "@task-directory-storage"
+  meta_ref: null
+  plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 3
+  tags:
+    - tasks
+    - storage
+    - testing
+  vcs_refs: []
+  created_at: 2026-03-21T22:57:05.177Z
+  notes: []
+  todos: []
