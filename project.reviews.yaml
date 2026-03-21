@@ -33456,6 +33456,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7469RVTMDQ2141GWB3CWZW
         timestamp: 2026-03-21T02:39:35.447Z
+      - _ulid: 01KM747BJQB28NNDKPM4YAJWBE
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM747BANWKDN72XRTE6FQXXA
+        timestamp: 2026-03-21T02:40:09.815Z
     examined_commit: 6a5ac975064bf1dc5dfa7706e4c17796d524d57b
     external_links: []
     lifecycle_state: open
@@ -33484,7 +33491,29 @@ reviews:
               task files below the top level."
             created_at: 2026-03-21T02:39:35.196Z
         kind: blocker
+      - _ulid: 01KM747BANWKDN72XRTE6FQXXA
+        anchor:
+          type: code
+          commit: 6a5ac975064bf1dc5dfa7706e4c17796d524d57b
+          line_end: 524
+          line_start: 519
+          path: src/parser/task-data-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KM747BAN7EA89AMPSV30CMHR
+            author: Jacob Chapel
+            body: "Same-task serialization is still broken when mutateTask() overlaps with mutateTasks(). The
+              single-task path takes the per-task mutex, but the batch path goes straight to
+              mutateTasksAtomically() without acquiring those ULID locks, so both operations can
+              mutate the same task concurrently. I reproduced it by running
+              mutateTask(@test-task-pending) in parallel with mutateTasks([@test-task-pending,
+              @test-task-secondary]) setting priority=1 on both tasks: the final reload kept
+              status=in_progress but reverted priority to the old value 2, so the batch update to
+              the overlapping task was lost. That violates AC-9 and invalidates the comment above
+              that no other mutation can change the target task between phases."
+            created_at: 2026-03-21T02:40:09.557Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T02:38:39.245Z
-    updated_at: 2026-03-21T02:39:35.196Z
+    updated_at: 2026-03-21T02:40:09.557Z
     notes: []
