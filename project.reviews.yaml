@@ -37466,9 +37466,25 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T09:46:29.387Z
+      - _ulid: 01KM7WM0QA6HG7T0TTBMWMAWRB
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T09:46:30.507Z
+      - _ulid: 01KM7WM0QBW9H4BD0ZZ4DF9DR0
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T09:46:30.507Z
     examined_commit: 1e88f19f3c0bfbd20f3ece5cb6cd1372fc2fb16e
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -37514,7 +37530,14 @@ reviews:
               persisted audit trail is incorrect for the todo commands.
             created_at: 2026-03-21T09:45:30.974Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T09:46:30.506Z
     created_at: 2026-03-21T09:42:26.834Z
-    updated_at: 2026-03-21T09:46:28.976Z
+    updated_at: 2026-03-21T09:46:30.507Z
     notes: []
