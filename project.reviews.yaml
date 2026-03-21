@@ -36605,6 +36605,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7S8SFR33NK7JYBTV38A9BG
         timestamp: 2026-03-21T08:47:57.244Z
+      - _ulid: 01KM7S8TPH0A6ES12PPPHSP98Q
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM7S8TDKJ9BJDVR24MAEW5MS
+        timestamp: 2026-03-21T08:47:58.161Z
     examined_commit: fc3e4978e676d00c5dc7e84bd16e23a536d2fe14
     external_links: []
     lifecycle_state: open
@@ -36633,7 +36640,33 @@ reviews:
               mutations for list surfaces.
             created_at: 2026-03-21T08:47:56.921Z
         kind: blocker
+      - _ulid: 01KM7S8TDKJ9BJDVR24MAEW5MS
+        entries:
+          - _ulid: 01KM7S8TDMFX57CYT7A6CGDPJR
+            author: Jacob Chapel
+            body: >-
+              Review evidence log
+
+
+              Files read: src/parser/split-backend.ts, src/parser/task-data-manager.ts,
+              tests/split-backend.test.ts, packages/daemon/src/routes/tasks.ts,
+              packages/web-ui/src/lib/components/TaskList.svelte
+
+              Commands run: git diff --stat, git diff, git log, kspec task get, kspec item get,
+              kspec review for-task, kspec review get, grep/rg for AC annotations and
+              notes_count/todos_count consumers, kspec validate, npm test
+
+              Claims verified: full suite passes locally (6814 passed, 3 skipped); validate has
+              warnings only, no errors; task list surfaces consume
+              TaskSummary.notes_count/todos_count directly
+
+              Categories searched: correctness (found stale summary count regression), edge cases
+              (note-only and rebuild behavior), error handling (no issue found), test quality (new
+              tests codify the stale-count behavior), integration (daemon/UI list consumers
+              affected)
+            created_at: 2026-03-21T08:47:57.876Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T08:43:11.398Z
-    updated_at: 2026-03-21T08:47:56.921Z
+    updated_at: 2026-03-21T08:47:57.876Z
     notes: []
