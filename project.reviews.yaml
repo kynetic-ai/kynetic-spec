@@ -42424,7 +42424,18 @@ reviews:
     slugs: []
     title: Review add-missing-ac-test-annotations-for-storage-split-specs
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Completed with baseline warnings only (exit 6): schema/reference checks OK, no
+          task-specific validation errors introduced by this snapshot."
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T23:24:06.513Z
+        completed_at: 2026-03-21T23:24:06.513Z
     events:
       - _ulid: 01KM9B63CVT9MMS6344R2FWCYP
         actor: Test User
@@ -42453,6 +42464,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM9BD1Z649DNET4PF55W1BDX
         timestamp: 2026-03-21T23:24:05.825Z
+      - _ulid: 01KM9BD393SCC447Y5D2SWX0BK
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-21T23:24:06.819Z
     examined_commit: 6e8ed2622a60022c3094e03f5d57321a53683b34
     external_links: []
     lifecycle_state: open
@@ -42502,5 +42520,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T23:20:17.564Z
-    updated_at: 2026-03-21T23:24:05.478Z
+    updated_at: 2026-03-21T23:24:06.513Z
     notes: []
