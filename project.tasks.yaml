@@ -21523,3 +21523,23 @@
   submitted_at: 2026-03-21T16:35:36.092Z
   completed_at: 2026-03-21T16:44:34.010Z
   automation: eligible
+- _ulid: 01KM99V2BGM1Y4MNFPJS8YCHE4
+  slugs: []
+  title: Fix detail-loading fallback for missing per-task directories
+  type: task
+  spec_ref: "@task-detail-loading"
+  meta_ref: null
+  plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+  status: pending
+  blocked_by: []
+  depends_on: []
+  context: []
+  priority: 2
+  tags:
+    - tasks
+    - storage
+    - bug
+  vcs_refs: []
+  created_at: 2026-03-21T22:56:47.472Z
+  notes: []
+  todos: []
