@@ -112916,6 +112916,19 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T09:09:30.611Z
+    - _ulid: 01KM7VTPVW4X5121HAHWDVACTN
+      content: "Fix cycle 4: Addressed both blockers from review. (1) Added plan_ref and review_ref to
+        TaskSummary interface, rawToSummary(), and toTaskSummary() — these were indexed by
+        toIndexEntry/INDEXED_FIELDS but missing from the summary projection, so listTasks()
+        consumers would lose plan/review linkage data under split storage. Removed them from
+        DETAIL_ONLY_FIELDS in tests. (2) Added rebuildIndex() to TaskStorageBackend interface and
+        TaskDataManager class, making AC-7 accessible through the public API. MonolithicBackend
+        implements it as a no-op (returns task count). Added 5 new tests covering manager-accessible
+        rebuildIndex, plan_ref/review_ref presence in listTasks, mutation propagation, and rebuild
+        preservation. Full suite passes (6819 tests, 0 failures)."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T09:32:41.212Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YET1A7XY9D0V3YQ9DRASG
