@@ -16872,18 +16872,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-impl-per-task-files/01km6yet
-    canonical_branch_head: 06f70edba54859505601d662116fc9ac7ea7b37e
+    canonical_branch_head: c870308b044370f3e2434679932ea13d1b0a875c
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T08:31:22.133Z
+      updated_at: 2026-03-21T08:31:28.210Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T08:31:22.133Z
+      updated_at: 2026-03-21T08:31:28.210Z
     integration:
       status: pending
       detail: null
@@ -16891,24 +16891,29 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 95efd1618ada37f2b635d6526f2e303cb450d6cc
-      updated_at: 2026-03-21T08:31:22.133Z
-    lifecycle_state: ready
+      updated_at: 2026-03-21T08:31:28.210Z
+    lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM6YET1A7XY9D0V3YQ9DRASG"
     task_slug: task-impl-per-task-files
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T08:18:55.299Z
-      last_reconciled_at: 2026-03-21T08:31:22.133Z
+      last_reconciled_at: 2026-03-21T08:31:28.210Z
       created_at: 2026-03-21T07:55:49.032Z
-      updated_at: 2026-03-21T08:31:22.133Z
+      updated_at: 2026-03-21T08:31:28.210Z
     workspace_id: dispatch-workspace-01KM6YET1A7XY9D0V3YQ9DRASG
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
-      reviewer: null
+      reviewer:
+        branch_mode: detached
+        branch_ref: null
+        head: c870308b044370f3e2434679932ea13d1b0a875c
+        last_seen_at: 2026-03-21T08:31:28.210Z
+        path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-per-task-files-01km6yet-review
       worker:
         branch_mode: branch
         branch_ref: dispatch/task/task-impl-per-task-files/01km6yet
-        head: 06f70edba54859505601d662116fc9ac7ea7b37e
-        last_seen_at: 2026-03-21T08:18:53.251Z
+        head: c870308b044370f3e2434679932ea13d1b0a875c
+        last_seen_at: 2026-03-21T08:31:28.210Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-per-task-files-01km6yet
