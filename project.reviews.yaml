@@ -37173,9 +37173,25 @@ reviews:
           status: pass
           name: review evidence
         timestamp: 2026-03-21T09:27:24.013Z
+      - _ulid: 01KM7VH882Y1X5T6TKGJ2S1X8N
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T09:27:31.330Z
+      - _ulid: 01KM7VH882E0BEZ01K2HZX7PR7
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T09:27:31.330Z
     examined_commit: 9bb58c6776e7df3a23ef51e1df4133cade934b4b
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -37227,7 +37243,14 @@ reviews:
               does not work through the actual CLI path it is meant to enable.'
             created_at: 2026-03-21T09:26:57.929Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T09:27:31.329Z
     created_at: 2026-03-21T09:22:52.585Z
-    updated_at: 2026-03-21T09:27:23.750Z
+    updated_at: 2026-03-21T09:27:31.330Z
     notes: []
