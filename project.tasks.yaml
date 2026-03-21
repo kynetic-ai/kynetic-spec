@@ -113238,6 +113238,20 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T12:27:30.574Z
+    - _ulid: 01KM872TF4DJZ3E671KSAAKQBX
+      content: "Fix cycle 13: Reconciled per-task-files branch with current dev. Dev had merged 3 feature
+        branches (task-impl-index, task-extend-write-buffer, task-build-index-rebuild) that touched
+        the same files (task-data-manager.ts, split-backend.ts). Semantic merge resolved by starting
+        from dev's versions and layering in our history/metadata/migration features. Key
+        reconciliations: (1) withWriteBuffer() from dev wraps all manager operations — our metadata
+        passing now works within this wrapper, (2) toIndexEntry/indexEntriesEqual moved to
+        module-level exports — our mutateTask/mutateTasks now use these for index change detection
+        alongside history tracking, (3) buffer.deleteDirectory() replaces our fs.rm for atomic dir
+        removal, (4) rebuild-index CLI command integrated using resolveTaskDataManager pattern. All
+        6888 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T12:49:21.380Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
