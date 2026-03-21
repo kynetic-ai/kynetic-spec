@@ -37545,7 +37545,18 @@ reviews:
     slugs: []
     title: Review task-extend-write-buffer
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: Validation exited 6 because of existing project-wide warnings (orphaned specs/invalid
+          test-fixture AC refs), but no schema/reference errors were introduced by this change.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T09:58:43.078Z
+        completed_at: 2026-03-21T09:58:43.078Z
     events:
       - _ulid: 01KM7X4PVG03028PE0GJ070MWP
         actor: Jacob Chapel
@@ -37560,6 +37571,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T09:58:42.473Z
+      - _ulid: 01KM7XACD2Z2MZ567MQN76XSE8
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-21T09:58:43.363Z
     examined_commit: 99e92ad7d12fdb6a6cce9ab8f7d11bc48ca3bd1b
     external_links: []
     lifecycle_state: open
@@ -37572,5 +37590,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-21T09:55:37.456Z
-    updated_at: 2026-03-21T09:58:42.194Z
+    updated_at: 2026-03-21T09:58:43.078Z
     notes: []
