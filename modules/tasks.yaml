@@ -1232,14 +1232,11 @@ features:
           notes, and review events in reverse chronological order, capped at a reasonable default
           count
         when: kspec task get @ref is run
-      - given: |
-          a task has state transitions, notes, and linked review records
+      - given: a task has state transitions, notes, and linked review records
         id: ac-2
-        then: |
-          the full activity timeline is shown, merging shadow branch commit
-          history with review record events into a single chronological view
-        when: |
-          kspec task get @ref --activity is run
+        then: the full activity timeline is shown, merging stored task history and note records with review
+          record events into a single chronological view
+        when: kspec task get @ref --activity is run
       - given: |
           a task has linked review records (current and historical)
         id: ac-3
