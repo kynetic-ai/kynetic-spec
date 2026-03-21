@@ -37108,6 +37108,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7VFRFMM82FTYMVBDVVH75P
         timestamp: 2026-03-21T09:26:42.680Z
+      - _ulid: 01KM7VG7WPMTJHMQWX0PBDT48A
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7VG7M9RAY1GA62MTGFMJQ7
+        timestamp: 2026-03-21T09:26:58.198Z
     examined_commit: 9bb58c6776e7df3a23ef51e1df4133cade934b4b
     external_links: []
     lifecycle_state: open
@@ -37139,7 +37146,30 @@ reviews:
               implementation still does not work through the actual CLI path it is meant to enable.'
             created_at: 2026-03-21T09:26:42.421Z
         kind: blocker
+      - _ulid: 01KM7VG7M9RAY1GA62MTGFMJQ7
+        anchor:
+          type: code
+          commit: 9bb58c6776e7df3a23ef51e1df4133cade934b4b
+          line_end: 1201
+          line_start: 1201
+          path: src/cli/commands/task.ts
+          side: head
+        entries:
+          - _ulid: 01KM7VG7M91W45XZAKEWKJ8T28
+            author: Jacob Chapel
+            body: 'Blocking: the CLI is still wired to the monolithic singleton for task mutations. `task add`
+              goes through `taskDataManager.createTask(...)` here instead of the new context-aware
+              resolver, so a project with `task_storage.format: split` reports success but writes to
+              the root-level monolithic `project.tasks.yaml` rather than
+              `.kspec/tasks/<ulid>/task.yaml` and `.kspec/project.tasks.yaml`. I reproduced this
+              with a fresh repo whose manifest sets `task_storage.format: split`: after `kspec task
+              add --title "Split task" --slug split-task --priority 3 --description repro --json`,
+              `.kspec/project.tasks.yaml` stayed `[]`, `.kspec/tasks/` remained empty, and a new
+              top-level `project.tasks.yaml` appeared. That means the submitted implementation still
+              does not work through the actual CLI path it is meant to enable.'
+            created_at: 2026-03-21T09:26:57.929Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T09:22:52.585Z
-    updated_at: 2026-03-21T09:26:42.421Z
+    updated_at: 2026-03-21T09:26:57.929Z
     notes: []
