@@ -1624,7 +1624,7 @@ features:
       consistent interface so callers provide mutations, not I/O strategy.
     status:
       maturity: draft
-      implementation: in_progress
+      implementation: implemented
     depends_on: []
     implements: []
     relates_to: []
