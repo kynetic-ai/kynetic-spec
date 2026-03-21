@@ -1,0 +1,16 @@
+notes:
+  - _ulid: 01KJA300NF628EA8P1ZBK9NRAS
+    content: "Also fix: local SessionContext interface shadows imported StoredSessionContext (aliased on
+      import). During types extraction, rename the local one to something like SessionStartContext
+      or ComputedSessionContext to avoid the collision."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T09:45:00.335Z
+  - _ulid: 01KJAJQ0H501ZYBGZXDQ21XG9S
+    content: "Renamed formatDuration→formatDurationCompact/formatDurationVerbose, extracted
+      sessionStatusColor() in log.ts, consolidated displayRef via getDisplayRef() in
+      checkpoint.ts/context.ts, renamed SessionContext→SessionStartContext. All 491 session/ralph
+      tests pass, clean build. PR #532."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T14:19:42.502Z

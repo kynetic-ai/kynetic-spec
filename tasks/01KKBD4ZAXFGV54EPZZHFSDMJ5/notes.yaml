@@ -1,0 +1,39 @@
+notes:
+  - _ulid: 01KKBV7Y4K0FBFGG8ZFNG2D34B
+    content: >-
+      Execution context:
+
+      - Background: The task-work skill has contradictory submit timing — lifecycle table says 'Code
+      done, PR created' (implying PR before submit) while step 7 says 'Create PR after submitting'
+      (correct order). This confuses agents about the handoff.
+
+      - Scope: Fix task-work SKILL.md template only. The agents-sections/04-pr-workflow.md is
+      already correct ('Before creating a PR, mark the task'). Also clarify worker/reviewer
+      ownership in the lifecycle table and loop mode section.
+
+      - Files: templates/skills/task-work/SKILL.md
+
+      - Verification: Regenerate kspec-agents.md, verify rendered output is consistent. No code
+      changes, no tests needed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T12:23:41.971Z
+  - _ulid: 01KKBVFHMMDG0J2N48HK262Q29
+    content: >-
+      PR #749 created. Changes:
+
+      1. Lifecycle table: 'Code done, PR created' → 'Code done, ready for review'
+
+      2. Step 7 renamed to 'Submit and Create PR' with explicit numbered sequence and ownership
+      callout
+
+      3. Fix Cycle re-submit clarified: 'reviewer takes over again'
+
+      4. Loop Mode Turn Completion: explicit about submit triggering pr-reviewer dispatch
+
+      5. agents-sections/04-pr-workflow.md was already correct, no changes needed
+
+      6. kspec-agents.md regenerated and verified consistent
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T12:27:51.316Z

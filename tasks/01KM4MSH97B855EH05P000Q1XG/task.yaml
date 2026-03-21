@@ -1,0 +1,21 @@
+_ulid: 01KM4MSH97B855EH05P000Q1XG
+slugs: []
+title: Differentiate empty task file vs missing task file in deleteTask errors
+type: bug
+description: "deleteTask error message conflates 'file missing' with 'file has zero tasks' —
+  extractRawTaskArray returns rawTasks: [] for both cases, so the error says 'Task file not found'
+  even when the file exists but is empty. Add distinct error messages for each case."
+spec_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - schema
+  - bug
+vcs_refs: []
+created_at: 2026-03-20T03:31:59.398Z
+todos: []
+automation: needs_review

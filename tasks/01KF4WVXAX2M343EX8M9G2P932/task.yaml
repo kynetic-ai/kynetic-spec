@@ -1,0 +1,20 @@
+_ulid: 01KF4WVXAX2M343EX8M9G2P932
+slugs:
+  - task-meta-reference-queries
+title: "Implement: Meta Reference Queries"
+type: task
+spec_ref: "@meta-ref-queries"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Already implemented - discovered during task audit
+depends_on:
+  - "@task-meta-reference-integration"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:36.765Z
+started_at: 2026-01-18T15:46:02.166Z
+completed_at: 2026-01-18T15:46:02.166Z
+todos: []

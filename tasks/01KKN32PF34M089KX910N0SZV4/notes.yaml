@@ -1,0 +1,51 @@
+notes:
+  - _ulid: 01KKN32QMAKWNX3TV9479A42DV
+    content: "Spec gap analysis: No conflicts with existing dispatch engine ACs. ac-7 (dedup) operates
+      on event identity, coalescing operates on drain timing — complementary layers. ac-17 (stale
+      pruning) is the mechanism we rely on — the delayed drain ensures pruning sees the final state.
+      ac-23/ac-24 (fresh state at drain) are compatible since delayed drains still load from disk.
+      The coalescing window is purely additive between enqueue and drain."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T02:33:49.962Z
+  - _ulid: 01KKN3930PY5S85FZTK7RZK2PY
+    content: "Spec review findings addressed: (1) Removed ac-7 (post-invocation coalescing) —
+      post-invocation re-evaluation is a controlled full-scan, coalescing it adds 5s unnecessary
+      latency to worker→reviewer handoff. (2) Added ac-7 (scoping) — explicitly states bootstrap,
+      reconciliation, and post-invocation drains are NOT subject to coalescing. (3) Added ac-8
+      (drain re-entrance protection) — timer callbacks can fire concurrently, need mutex/flag to
+      serialize drains. Also: existing tests should use coalesceWindowMs: 0 for minimal churn; new
+      coalescing-specific tests use fake timers."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T02:37:18.230Z
+  - _ulid: 01KKN4QQWZCZVWYK0ZVYXK03TE
+    content: >-
+      Execution context:
+
+      - Background: Rapid sequential task state transitions can spawn agents for intermediate
+      states, wasting resources. Per-task coalescing defers drain to evaluate only the final landing
+      state.
+
+      - Scope: Add coalesceWindowMs option, per-task coalescing timers in handleStateChange, drain
+      serialization mutex, timer cleanup in stop(). Bootstrap/reconciliation/post-invocation drains
+      remain immediate.
+
+      - Files: src/agent-runtime/dispatch.ts (DispatchEngine class),
+      tests/agent-dispatch-engine.test.ts (test coverage)
+
+      - Verification: All existing tests pass with coalesceWindowMs: 0; new tests cover all 8 ACs
+      using fake timers
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T03:02:46.943Z
+  - _ulid: 01KKN60ZBXT2QPSG24E4RQ0KZE
+    content: "PR created: https://github.com/kynetic-ai/kynetic-spec/pull/840 — Implementation complete
+      with all 8 ACs covered by tests. Key design decisions: (1) _serializedDrain() with
+      drainPending flag for ac-8 rather than a full mutex, since drain concurrency is purely
+      timer-driven. (2) Bootstrap/reconciliation/post-invocation all call _drainQueues() directly,
+      bypassing coalescing per ac-7. (3) All existing tests use coalesceWindowMs: 0 for zero churn
+      in existing behavior."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T03:25:18.078Z

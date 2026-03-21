@@ -1,0 +1,102 @@
+notes:
+  - _ulid: 01KJDQB2J9SKA1QNC3SG3NN8WF
+    content: >-
+      ENRICHMENT — Standalone context for this task:
+
+
+      **What**: Web UI pages lose their filter state when the browser refreshes. For example,
+      filtering tasks by status=in_progress or triage by tag=cli is lost on reload. Filter state
+      should be persisted in URL query parameters so that refreshing preserves the view, and URLs
+      are shareable/bookmarkable.
+
+
+      **Where**: The tasks page (`packages/web-ui/src/routes/tasks/+page.svelte`) already partially
+      implements URL-based filters — it reads from `$page.url.searchParams` (line 39-47) via the
+      `filterParams` derived value. However, the triage page
+      (`packages/web-ui/src/routes/triage/+page.svelte`) uses local `$state` variables (`filterTag`,
+      `filterStatus` at lines 43-44) that are NOT synced to URL params. Other list pages (items,
+      inbox) likely have the same issue.
+
+
+      Key files to update:
+
+      - `packages/web-ui/src/routes/triage/+page.svelte` — filterTag and filterStatus need URL param
+      sync
+
+      - `packages/web-ui/src/routes/items/+page.svelte` — check if filters use URL params
+
+      - Any other list/filter pages under `packages/web-ui/src/routes/`
+
+
+      **How**: Follow the pattern already established in the tasks page:
+
+      1. Read initial filter values from `$page.url.searchParams` (from `$app/stores`)
+
+      2. When a filter changes, use `goto()` (from `$app/navigation`) to update URL params without a
+      full page reload: `goto(\`?status=\${filterStatus}&tag=\${filterTag}\`, { replaceState: true,
+      keepFocus: true })`
+
+      3. Use `$derived` to compute filter values from URL params (like tasks page does)
+
+      4. This approach gives: URL persistence, back/forward navigation, shareable links
+
+
+      For the triage page specifically:
+
+      - Replace `let filterTag = $state('')` with reading from `$page.url.searchParams.get('tag')`
+
+      - Replace `let filterStatus = $state('all')` with reading from
+      `$page.url.searchParams.get('status')`
+
+      - Add `goto()` calls when filters change
+
+
+      **Done when**:
+
+      - All list/filter pages read initial state from URL query params
+
+      - Changing a filter updates the URL without full page reload
+
+      - Refreshing the page preserves filter state
+
+      - Browser back/forward navigates between filter states
+
+      - The triage page URL shows filters like `?status=untriaged&tag=cli`
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T19:38:17.546Z
+  - _ulid: 01KJDQWG9550XY4Y8F7V6W5W47
+    content: Linked to @web-ui module. URL state persistence for filter/view params across all list pages.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T19:47:48.645Z
+  - _ulid: 01KJKXGPK47G78073ZAWTM0P1Z
+    content: "Execution scope: sync triage filter state (status/tag/action) with URL query params,
+      preserve state on refresh/back-forward, and add/update E2E coverage in triage.spec.ts for URL
+      persistence behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T05:21:39.940Z
+  - _ulid: 01KJKXW7Y8BEV4QFNCM45EZHWR
+    content: 'Implemented URL-synced triage filters in packages/web-ui/src/routes/triage/+page.svelte:
+      status/action/tag now round-trip via query params using goto() and URL parsing, with filter
+      state restored from URL on load and history navigation. Added AC-7 E2E coverage in
+      packages/web-ui/tests/e2e/triage.spec.ts for URL updates + restore/back-forward behavior.
+      Verification: npm run build -w packages/web-ui; npx playwright test tests/e2e/triage.spec.ts
+      -g "filter selections update URL query params|restores filter selections from URL and supports
+      back-forward history|action filter narrows cards by triage action and resets card index"
+      --workers=1 (3 passed). kspec validate still reports pre-existing project-wide
+      schema/reference/alignment issues unrelated to this task.'
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T05:27:58.153Z
+  - _ulid: 01KJKXYE0D30BTM6EFR8XTGNW5
+    content: "Submitted for review in PR #620: https://github.com/kynetic-ai/kynetic-spec/pull/620
+      (branch feat/triage-url-filter-state, commit 8bd9485bb). Implemented triage URL query sync for
+      status/action/tag filters with restore-on-load/history behavior and added AC-7 E2E coverage
+      for URL update + back/forward restoration. Verification: npm run build -w packages/web-ui;
+      targeted triage Playwright URL/filter tests passed (3/3); kspec validate reports pre-existing
+      project-wide issues unrelated to this change."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T05:29:09.901Z

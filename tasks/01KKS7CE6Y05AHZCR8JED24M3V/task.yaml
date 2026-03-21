@@ -1,0 +1,39 @@
+_ulid: 01KKS7CE6Y05AHZCR8JED24M3V
+slugs:
+  - task-validate-default-base-branch
+title: Validate default base branch in resolveDispatchWorkspaceConfig
+type: task
+spec_ref: "@dispatch-workspace-configuration"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #886. Validated the default 'main' fallback in
+  resolveDispatchWorkspaceConfig using resolveBranchStartPoint before returning. Now throws
+  DispatchWorkspaceError with actionable guidance when no base branch can be resolved. Two tests
+  added: error case (non-main repo, detached HEAD, no remote) and valid default fallback (main
+  exists, detached HEAD). All CI checks pass. Own AC coverage (ac-1 through ac-4) and trait AC
+  coverage (@trait-error-guidance ac-1, ac-2) verified."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - bug
+  - dispatch
+  - defensive-code
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-15T23:10:27.481Z
+  commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKSVY4D9EEAMZMQVAJ6PTZX6
+created_at: 2026-03-15T17:06:00.029Z
+started_at: 2026-03-15T23:05:27.439Z
+submitted_at: 2026-03-15T23:10:28.277Z
+completed_at: 2026-03-15T23:22:47.484Z
+todos: []
+automation: eligible

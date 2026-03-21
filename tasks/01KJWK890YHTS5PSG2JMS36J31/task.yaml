@@ -1,0 +1,45 @@
+_ulid: 01KJWK890YHTS5PSG2JMS36J31
+slugs: []
+title: "Fill spec gap: task set command options and acceptance criteria"
+type: task
+description: >-
+  The @task-set requirement spec is partially documented but significantly behind the
+  implementation. It has 9 ACs covering basic operations (title, spec-ref, priority, no-op warning,
+  author, clear-ref) but the description lists only 6 of 14+ options.
+
+
+  This matters because task set is one of the most heavily used commands — agents and humans use it
+  constantly to update tasks. Incomplete spec means new feature additions have no baseline to check
+  against, and the existing ACs don't cover the full option surface.
+
+
+  Current description documents: --title, --spec-ref, --depends-on, --priority (listed as 1-5,
+  should be 1-5 or P1-P5), --slug, --tag.
+
+
+  Missing from description: --description (with null-to-clear), --meta-ref (with null-to-clear),
+  --plan-ref (with null-to-clear), --clear-deps, --automation, --no-automation, --reason (required
+  for needs_review), --refs (batch mode), --status (rejected with guidance to use state commands).
+
+
+  Existing ACs to preserve: ac-task-set-1 through ac-task-set-7, ac-author, ac-clear-ref. Need new
+  ACs for: description updates, meta/plan ref management, dependency clearing, automation
+  eligibility setting/clearing, batch multi-ref mode, and the --status rejection guard.
+
+
+  Reference implementation at src/cli/commands/task.ts (task set definition around line 895-941).
+spec_ref: "@task-set"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - spec-hygiene
+  - cli
+vcs_refs: []
+created_at: 2026-03-04T14:15:28.030Z
+todos: []
+automation: needs_review

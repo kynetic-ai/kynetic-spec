@@ -1,0 +1,105 @@
+notes:
+  - _ulid: 01KFMMRZ7092524GREGAGASY11
+    content: |-
+      ## Implementation Notes
+
+      ### Objective
+      Implement spec item API endpoints.
+
+      ### Endpoints
+      - GET /api/items - List with filters (type, maturity, implementation)
+      - GET /api/items/:ref - Get single item with ACs and traits
+      - GET /api/items/:ref/tasks - Get linked tasks via AlignmentIndex
+
+      ### Steps
+      1. Use ItemIndex.query() with type filter
+      2. Expand acceptance_criteria in response
+      3. Resolve trait references to include inherited ACs
+      4. Use AlignmentIndex for spec-task relationships
+
+      ### ACs Covered
+      - ac-8: GET /api/items returns array
+      - ac-9: Type filter (multi-value)
+      - ac-10: GET /api/items/:ref with full details
+      - ac-11: GET /api/items/:ref/tasks via AlignmentIndex
+
+      ### Key Library APIs
+      - ItemIndex.getByType() for filtering
+      - TraitIndex.getInheritedAC() for trait expansion
+      - AlignmentIndex.getTasksForSpec() for linked tasks
+
+      ### Files to Create
+      - packages/daemon/src/routes/items.ts
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T05:21:02.689Z
+  - _ulid: 01KFNDGVWEA6KZEPK83N3K1KAA
+    content: >-
+      Implemented spec item API endpoints covering ac-8 through ac-11.
+
+
+      Created packages/daemon/src/routes/items.ts with 3 REST endpoints:
+
+      - GET /api/items: List with type filter, pagination, optional maturity/implementation/tag
+      filters
+
+      - GET /api/items/:ref: Get single item with full details (acceptance_criteria, traits,
+      relationships)
+
+      - GET /api/items/:ref/tasks: Get linked tasks via AlignmentIndex
+
+
+      Integration:
+
+      - Updated server.ts to register items routes
+
+      - Added E2E test file tests/daemon-api-items.test.ts with 6 tests
+
+
+      Implementation approach:
+
+      - Followed same pattern as tasks.ts (error handling, pagination wrapper, ReferenceIndex
+      resolution)
+
+      - Used ItemIndex for filtering, AlignmentIndex for task relationships
+
+      - AC annotations in code comments for traceability
+
+
+      All 1180 tests pass (6 new tests for items API).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T12:33:31.535Z
+  - _ulid: 01KFNDPED02QP7JAMKXBH06ZXE
+    content: |-
+      Completed implementation of spec item API endpoints.
+
+      WORK DONE:
+      - Fixed AlignmentIndex constructor (was passing 3 params, should be 2)
+      - Fixed buildLinks call (must be separate after construction)
+      - Removed unused ItemIndex import
+      - Updated tests to match implementation (changed ItemIndex to ReferenceIndex check)
+
+      ENDPOINTS:
+      - GET /api/items - list with type/maturity/implementation filters and pagination
+      - GET /api/items/:ref - get single spec item with full details
+      - GET /api/items/:ref/tasks - get linked tasks via AlignmentIndex
+
+      ACs COVERED:
+      - ac-8: GET /api/items returns array of all spec items
+      - ac-9: Type filter with multi-value support
+      - ac-10: GET /api/items/:ref with acceptance_criteria, traits, relationships
+      - ac-11: GET /api/items/:ref/tasks via AlignmentIndex.getTasksForSpec
+
+      TESTS: All 1180 tests pass (6 daemon-api-items E2E tests)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T12:36:34.336Z
+  - _ulid: 01KFNDRYH6GCZ9KKT24BVDFGQ5
+    content: |-
+      PR #192 created: https://github.com/kynetic-ai/kynetic-spec/pull/192
+
+      Ready for review. All 1180 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T12:37:56.390Z

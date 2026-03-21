@@ -1,0 +1,32 @@
+_ulid: 01KJTYJ4GP0ATCCX1RRTEF4RR3
+slugs:
+  - task-migrate-task-mutators-atomic
+title: Migrate remaining task update commands to atomic task mutation
+type: bug
+description: Most task mutators still use loadAllTasks -> mutate stale object -> saveTask full
+  replacement. Convert remaining update paths
+  (submit/complete/needs-work/block/unblock/reset/todo/set/patch and multi-ref variants) to mutate
+  against latest on-disk task state under one lock so concurrent writes cannot clobber fields.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #650. Migrated remaining task mutators to mutateTaskAtomically for
+  latest-state locked updates (submit/complete/needs-work/block/unblock/reset/todo/set/patch,
+  including batch variants) and added concurrency regression tests for submit, set --refs, and
+  complete --refs. AC coverage: N/A (infra/internal task with no spec_ref); full regression suite
+  passed and PR CI checks were green."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - concurrency
+  - parser
+  - cli
+vcs_refs: []
+created_at: 2026-03-03T22:54:36.566Z
+started_at: 2026-03-03T23:23:29.858Z
+submitted_at: 2026-03-03T23:33:43.153Z
+completed_at: 2026-03-03T23:45:16.361Z
+todos: []

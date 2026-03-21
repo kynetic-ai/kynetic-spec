@@ -1,0 +1,108 @@
+notes:
+  - _ulid: 01KFR82A8E9S3J6ZHJFNJTBMQC
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Workflow for /task-work loop. Key differences from @task-work-session: auto-filter to
+      automation-eligible tasks only, skip verification step, no interactive confirmations,
+      loop-specific task selection order (in_progress > pending_review > unblocking > priority).
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given eligible tasks with in_progress status exist, when agent selects next task, then
+      in_progress tasks selected first regardless of priority
+
+      - ac-2: Given no in_progress tasks AND eligible tasks with pending_review exist, when agent
+      selects next task, then pending_review task triggers sequential subagent spawn before ready
+      tasks
+
+      - ac-3: Given eligible ready tasks where some unblock others, when agent selects next task,
+      then tasks that unblock others preferred over isolated high-priority
+
+      - ac-4: Given only isolated eligible ready tasks exist, when agent selects next task, then
+      highest priority (lowest number) selected
+
+      - ac-5: Given tasks with various automation statuses, when workflow filters tasks, then only
+      automation: eligible tasks considered
+
+      - ac-6: Given task is selected, when workflow begins, then verification step skipped
+
+      - ac-7: Given workflow reaches decision step, when workflow continues, then decision
+      auto-resolves without human input
+
+      - ac-8: Given no eligible tasks exist in any state, when agent attempts selection, then
+      workflow exits cleanly with No eligible tasks message
+
+      - ac-9: Given all eligible tasks are blocked by dependencies, when agent attempts selection,
+      then workflow exits cleanly with All eligible tasks blocked message
+
+      - ac-10: Given multiple pending_review tasks exist, when agent handles pending_review, then
+      processes one at a time, oldest (by started_at) first
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T14:55:55.150Z
+  - _ulid: 01KFR84CBHR52KZSE8ZAJ4F1BD
+    content: "Implementation notes: 10 ACs covering task selection order (in_progress > pending_review >
+      unblocking > priority), eligible-only filter, skip-verify, no-confirm, edge cases
+      (no-eligible, all-blocked, multi-pending). based_on: @task-work-session. Key: pending_review
+      triggers sequential subagent spawn."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T14:57:02.833Z
+  - _ulid: 01KFREC39B76RSX8CF5TCDP0FB
+    content: >-
+      Implemented task-work-loop workflow:
+
+      - Created @task-work-loop workflow with mode: loop, based_on: @task-work-session
+
+      - 7 steps covering: filter eligible, task selection (in_progress > pending_review > unblocking
+      > priority), start, work, commit, submit, PR
+
+      - execution.mode: silent on most steps for auto-resolve
+
+      - Updated /task-work skill documentation with Loop Mode section
+
+      - Verified workflow appears in 'kspec meta workflows --tag loop'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T16:46:07.148Z
+  - _ulid: 01KFRG8R84ARHAX8JA7V04RHEG
+    content: |-
+      Corrected workflow based on feedback:
+      - Verification step KEPT (still check git history/existing code)
+      - pending_review handling removed (ralph spawns PR review subagent externally)
+      - Task selection: in_progress > unblocking > priority (no pending_review)
+      - Clearer exit conditions: task done, no eligible tasks, all blocked
+      - Added instructions for starting workflow (kspec workflow start @task-work-loop)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T17:19:14.693Z
+  - _ulid: 01KFRGJRG7C0P2NYER3990AB4D
+    content: |-
+      Updated spec @task-work-loop-workflow:
+      - Removed ac-2 (pending_review subagent spawn - ralph's responsibility)
+      - Removed ac-10 (pending_review handling - ralph's responsibility)
+      - Reworked ac-6: verification still performed (was 'skipped')
+      - Updated description to reflect correct behavior
+      Spec now has 8 ACs aligned with implementation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T17:24:42.631Z
+  - _ulid: 01KFRHVYYDMTBNE7KCF2Q724AS
+    content: >-
+      Addressed PR review feedback: Rewrote Loop Mode section to be agent-focused. Agent reading
+      this has already been invoked via /task-work loop, so now it:
+
+      - Starts with 'kspec workflow start @task-work-loop'
+
+      - Guides through each step with commands to run
+
+      - Clear exit conditions
+
+      - Removed confusing invocation instructions
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T17:47:12.717Z

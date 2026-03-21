@@ -1,0 +1,123 @@
+notes:
+  - _ulid: 01KKS7C4T0YARP0EKH8QKFF2CX
+    content: >-
+      ## Problem
+
+
+      session-start-inbox-triage.test.ts and session-start-computed-json.test.ts use sequential CLI
+      spawns (kspec inbox add, kspec triage record) for test setup. This is slow (~47 CLI spawns in
+      inbox-triage, ~12 in computed-json) and fragile under load. The "limit displayed untriaged
+      items to 20" test creates 22 items via 22 sequential CLI spawns, approaching its 20s timeout.
+
+
+      These tests are testing session start output, not inbox/triage CLI behavior — the CLI calls
+      are pure setup overhead.
+
+
+      ## Implementation
+
+
+      ### 1. Add YAML seeding helpers to tests/helpers/inbox.ts
+
+
+      Add synchronous (writeFileSync) helpers alongside existing CLI helpers:
+
+
+      ```ts
+
+      import { writeFileSync } from "node:fs";
+
+      import { stringify as yamlStringify } from "yaml";
+
+
+      export function seedInboxItems(tempDir: string, items: Array<{
+        _ulid: string; text: string; tags?: string[]; created_at?: string;
+      }>): void {
+        writeFileSync(path.join(tempDir, "project.inbox.yaml"), yamlStringify({
+          inbox: items.map(item => ({
+            _ulid: item._ulid,
+            text: item.text,
+            created_at: item.created_at ?? "2026-01-01T00:00:00.000Z",
+            tags: item.tags ?? [],
+            added_by: "@test",
+          })),
+        }));
+      }
+
+
+      export function seedTriageRecords(tempDir: string, records: Array<{
+        _ulid: string; inbox_ref: string; item_snapshot: string;
+        action: string; reasoning: string; created_at?: string;
+      }>): void {
+        writeFileSync(path.join(tempDir, "project.triage.yaml"), yamlStringify({
+          kynetic_triage: "1.0",
+          triage: records.map(r => ({
+            _ulid: r._ulid, inbox_ref: r.inbox_ref, item_snapshot: r.item_snapshot,
+            status: "triaged", action: r.action, reasoning: r.reasoning,
+            decided_by: "@test", evidence_refs: [],
+            created_at: r.created_at ?? "2026-01-01T00:00:00.000Z",
+          })),
+        }));
+      }
+
+      ```
+
+
+      ### 2. Convert setup CLI calls in both test files
+
+
+      Replace addInboxItem/triageItem setup calls with seedInboxItems/seedTriageRecords. Keep
+      assertion CLI calls (kspec session start) unchanged. Use testUlid()/testUlids() for ULID
+      generation.
+
+
+      Files to modify:
+
+      - tests/helpers/inbox.ts — add seedInboxItems, seedTriageRecords
+
+      - tests/cli/session-start-inbox-triage.test.ts — 13 tests, ~47 CLI spawns → 0 setup spawns
+
+      - tests/cli/session-start-computed-json.test.ts — inbox/triage setup only (~12 CLI spawns →
+      0), task CLI calls stay
+
+
+      ### 3. Existing precedent
+
+
+      triage-cli.test.ts (line 476-493) already writes project.triage.yaml directly with
+      yamlStringify(). Follow that pattern.
+
+
+      ### 4. Do NOT convert task setup calls
+
+
+      Tests in session-start-computed-json.test.ts that test computed.task_unlocks and
+      computed.recent_activity need real task state transitions (start/submit/complete creates
+      timestamps and status). These cannot be reliably seeded via YAML.
+
+
+      Also related: @session-start-computed-json spec
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T17:05:50.400Z
+  - _ulid: 01KKSV55G4W4EWBAD9VE4QZEMA
+    content: >-
+      Implementation complete. Changes:
+
+      - Added seedInboxItems() and seedTriageRecords() to tests/helpers/inbox.ts
+
+      - Converted all 13 tests in session-start-inbox-triage.test.ts from CLI spawns to YAML seeding
+      (~47 CLI spawns eliminated)
+
+      - Converted 4 inbox/triage tests in session-start-computed-json.test.ts from CLI spawns to
+      YAML seeding (~12 CLI spawns eliminated)
+
+      - Preserved task CLI calls in computed-json tests (task_unlocks, recent_activity need real
+      state transitions)
+
+      - Removed 20s timeout overrides from inbox-triage tests (no longer needed)
+
+      - Full test suite passes: 251 files, 5471 tests, 0 failures
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T22:51:33.253Z

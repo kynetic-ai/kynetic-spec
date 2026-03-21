@@ -1,0 +1,35 @@
+_ulid: 01KKER2K6CEG5M9066MNKQQ770
+slugs:
+  - task-implement-stall-watchdog
+title: Implement initial activity watchdog in invocation lifecycle
+type: task
+description: "Schema changes (src/schema/meta.ts): Add initial_response_timeout_seconds to agent
+  budget schema. Session types (src/sessions/types.ts): Add 'stalled' to SessionStatusSchema z.enum
+  and 'agent.stalled' to EventTypeSchema. Invocation types (src/agent-runtime/invocation.ts): Add
+  'stalled' to InvocationResult.outcome, add InvocationStallError class. Session store
+  (src/sessions/store.ts): Add 'stalled' to status maps/arrays. Invocation logic: Add stallResolved
+  flag in updateHandler for meaningful update types, create stallPromise alongside
+  timeoutPromise/abortPromise, add catch block for InvocationStallError BETWEEN
+  InvocationAbortedError and generic handler, add clearTimeout(stallHandle) to finally block.
+  Failure counter: Exclude stalled sessions from consecutive failure count. Dispatch: No changes
+  needed."
+spec_ref: "@invocation-initial-activity-watchdog"
+meta_ref: null
+plan_ref: "@plan-initial-activity-watchdog-for-agent-invocations"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #783. Implemented stall watchdog in invocation lifecycle with schema,
+  session types, store, CLI, and web UI updates."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - mvp
+  - agent-runtime
+vcs_refs: []
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-11T15:26:04.492Z
+started_at: 2026-03-11T15:36:59.209Z
+submitted_at: 2026-03-11T15:50:19.672Z
+completed_at: 2026-03-11T16:13:25.549Z
+todos: []

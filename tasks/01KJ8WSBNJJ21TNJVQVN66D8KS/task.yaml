@@ -1,0 +1,31 @@
+_ulid: 01KJ8WSBNJJ21TNJVQVN66D8KS
+slugs: []
+title: Review skills should always dig for task/spec context, never skip AC checks
+type: task
+description: "PR reviewers (codex, pr-review, local-review) should never skip AC/spec validation
+  just because a PR lacks a Task trailer. They should dig deeper: check commit messages for
+  Task:/Spec: trailers, search recent tasks matching PR scope, check AC annotations in changed
+  files, and validate against found specs. Currently codex SKILL.md line 128 explicitly says to skip
+  AC checks when no trailer exists. pr-review requires a task ref as a hard gate. Both need updating
+  to always pursue spec context."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #511. Updated 4 skill files (codex, pr-review, local-review, review
+  template) with dig-deeper spec context discovery pattern. Reviewers now check commit trailers,
+  task list search, and AC annotations before falling back to pure code review. All codex review
+  findings addressed."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - review
+  - skills
+vcs_refs: []
+created_at: 2026-02-24T22:37:16.338Z
+started_at: 2026-02-24T22:45:45.844Z
+completed_at: 2026-02-24T23:02:18.028Z
+todos: []
+automation: eligible

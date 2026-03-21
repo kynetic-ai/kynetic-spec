@@ -1,0 +1,21 @@
+notes:
+  - _ulid: 01KHA83PD9H3XDH77TQ9BN5DVG
+    content: |
+      Implementation notes:
+
+      Parse --status value by splitting on comma, then flatten if Commander.js
+      provides an array from repeated flags. Trim whitespace and filter empty
+      strings. Route both tasks list and task list through the shared list
+      function (from spec 1 refactor) so the fix applies to both. Use
+      validateEnumOption to validate each status value individually against the
+      correct enum (TaskStatus for tasks, ImplementationStatus for items). Apply
+      same pattern to item list --status.
+    author: "@claude"
+    created_at: 2026-02-13T00:58:41.961Z
+  - _ulid: 01KHCY641DM28DFW2P1PPKA676
+    content: Added parseMultiStatus() utility that handles comma-separated values, repeated flags,
+      trailing/leading commas, and enum validation. Applied to both tasks list (TaskStatus) and item
+      list (ImplementationStatus). Backend already supported arrays. 10 tests covering all 8 ACs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-14T02:02:58.989Z

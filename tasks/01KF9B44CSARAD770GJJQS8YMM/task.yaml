@@ -1,0 +1,25 @@
+_ulid: 01KF9B44CSARAD770GJJQS8YMM
+slugs: []
+title: Fix spec status persistence on task start
+type: task
+description: "Spec status persistence gap: When task start syncs spec implementation status to
+  in_progress, this change should be committed or included with the task start commit. Currently the
+  status update happens but may not be persisted until later work creates a commit. The gap was
+  noticed when spec went in_progress but wasn't captured in the commit stream."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Fixed spec status persistence gap by adding commitIfShadow calls after spec sync in
+  both task start and task complete commands. All tests pass (561/561).
+depends_on: []
+context: []
+priority: 3
+tags:
+  - workflow
+  - spec
+  - gap
+vcs_refs: []
+created_at: 2026-01-18T20:00:43.928Z
+started_at: 2026-01-19T03:32:11.289Z
+completed_at: 2026-01-19T03:37:03.162Z
+todos: []

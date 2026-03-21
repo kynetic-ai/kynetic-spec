@@ -1,0 +1,104 @@
+notes:
+  - _ulid: 01KJP276YTRR82K1S7DCM573YZ
+    content: |
+      Implementation notes:
+
+      Extend SessionMetadataSchema in src/sessions/types.ts. Add trigger
+      (enum: manual, task.ready, task.needs_work, task.pending_review, legacy),
+      agent_id (string), as optional fields. Use existing task_id field for
+      task reference (not a new task_ref — maintains backward compat). Extend
+      SessionStatusSchema with timed_out, failed. Extend EventTypeSchema
+      with new agent.* event types. Update session log list/show rendering
+      to distinguish session types.
+    author: "@claude"
+    created_at: 2026-03-02T01:22:20.762Z
+  - _ulid: 01KJPDFHDVEW2N068DJ1E47FJV
+    content: "Automation: eligible. Schema extension with 7 testable ACs. Clear file target
+      (src/sessions/types.ts), backward compat well-specified."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T04:39:07.963Z
+  - _ulid: 01KJPG5GPXJG8Y5KDDEA7KSB0E
+    content: >-
+      Implemented all 7 ACs:
+
+      - ac-1/ac-2: Added trigger (enum: manual, task.ready, task.needs_work, task.pending_review,
+      legacy) and agent_id fields to SessionMetadataSchema as optional fields. Updated createSession
+      to pass them through. Backward compat: old sessions without these fields parse fine with
+      undefined values.
+
+      - ac-3: Extended SessionStatusSchema with timed_out and failed. Updated statusCounts record in
+      computeSessionLogStats to include new values.
+
+      - ac-4: Extended EventTypeSchema with agent.dispatched, agent.started, agent.completed,
+      agent.failed, agent.timeout.
+
+      - ac-5: appendEvent accepts agent.completed with task_id, outcome, duration_ms payload (no
+      schema enforcement on data - open object).
+
+      - ac-6: Added session_type field to SessionLogSummary and SessionLogDetail (loop vs
+      invocation). resolveSessionType helper: trigger set and not 'legacy' → invocation, else →
+      loop. Updated session log list to show Type column.
+
+      - ac-7: Updated summarizeEventData to render agent.* events with human-readable summaries.
+      Updated event type color handling (magenta for agent.*). Added Type line to session log show
+      metadata.
+
+      Files changed: src/sessions/types.ts, src/sessions/store.ts, src/cli/commands/session/log.ts
+
+      New test file: tests/session-model-evolution.test.ts (24 tests, all passing)
+
+      No regressions: 195 session tests pass, shard failures are pre-existing
+      (enhanced-setup.test.ts).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T05:26:05.278Z
+  - _ulid: 01KJPGK6ZJSCCPTY24SYGEXD1X
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: AC-2 spec alignment mismatch (legacy default
+      values not materialized; tests assert undefined). MUST-FIX: PR includes out-of-scope
+      @agent-definition-schema changes while that task is needs_work."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-02T05:33:34.066Z
+  - _ulid: 01KJPH3MJAWZBDAK94JWATGS64
+    content: >-
+      [FIX_CYCLE: 1 resolved] Fixed all review findings:
+
+      1. AC-2 spec alignment: Materialized legacy defaults in getSession() — trigger defaults to
+      'legacy', agent_id defaults to agent_type value. Both are returned on read, not just left as
+      undefined.
+
+      2. Out-of-scope changes removed: Rebased onto feat/implement-agent-definition-schema branch.
+      PR #631 now only contains session-related files (store.ts, types.ts, log.ts,
+      session-model-evolution.test.ts).
+
+      3. Test updated to assert materialized defaults (trigger='legacy', agent_id='ralph') instead
+      of undefined.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T05:42:32.266Z
+  - _ulid: 01KJPJ48CKYCJJ1JG5CB911SX5
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: PR #631 still includes @agent-definition-schema
+      scope changes (see inline comment on src/schema/meta.ts) and check-unresolved-comments is
+      failing due unresolved review threads. Keep this PR scoped to @session-model-evolution only,
+      resolve threads, then resubmit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-02T06:00:21.139Z
+  - _ulid: 01KJPJG7HWSJRDV6CFNJ7EMYZ5
+    content: >-
+      [FIX_CYCLE: 3 resolved]
+
+      - Rebased feat/implement-session-model-evolution onto latest main (e76b70c) which merged the
+      @agent-definition-schema PR.
+
+      - PR #631 now shows only 4 session-scoped files: src/sessions/types.ts, src/sessions/store.ts,
+      src/cli/commands/session/log.ts, tests/session-model-evolution.test.ts.
+
+      - Resolved all 3 unresolved review threads via GraphQL.
+
+      - All tests pass (core-skill-install and enhanced-setup failures are pre-existing, unrelated
+      to this task).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T06:06:53.500Z

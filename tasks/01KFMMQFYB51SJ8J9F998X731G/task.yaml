@@ -1,0 +1,23 @@
+_ulid: 01KFMMQFYB51SJ8J9F998X731G
+slugs: []
+title: Search and validation API endpoints
+type: task
+spec_ref: "@api-contract"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #194 merged successfully. Implemented Search and Validation API endpoints
+  covering ac-19 through ac-21 from @api-contract spec. All CI checks passed. Greptile review: 5/5
+  confidence. Local review: READY TO MERGE. All 1199 tests pass."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - phase-2
+  - api
+vcs_refs: []
+created_at: 2026-01-23T05:20:14.282Z
+started_at: 2026-01-23T13:21:51.012Z
+completed_at: 2026-01-23T13:37:02.294Z
+todos: []
+automation: eligible

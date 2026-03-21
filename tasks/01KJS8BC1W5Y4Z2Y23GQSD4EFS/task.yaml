@@ -1,0 +1,28 @@
+_ulid: 01KJS8BC1W5Y4Z2Y23GQSD4EFS
+slugs: []
+title: kspec setup seeds built-in worker and reviewer agent definitions
+type: task
+description: "Per @ralph-replacement ac-2, kspec setup should create worker and reviewer agents in
+  kynetic.meta.yaml if they do not already exist. Worker: id=worker,
+  dispatch=[{on:task.ready,filter:{automation:eligible}},{on:task.needs_work,filter:{automation:eli\
+  gible}}], auto_approve=true, capabilities=[code,test,refactor], tools=[kspec,git,npm,vitest].
+  Reviewer: id=reviewer, dispatch=[{on:task.pending_review}], auto_approve=true,
+  capabilities=[review], tools=[kspec,git,gh]. Idempotent — skip if already defined. Relevant files:
+  src/cli/commands/setup.ts, src/schema/meta.ts. Spec AC: @ralph-replacement ac-2"
+spec_ref: "@ralph-replacement"
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Already implemented. setup.ts creates task-worker and pr-reviewer agents with dispatch rules.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - agent
+  - setup
+vcs_refs: []
+created_at: 2026-03-03T07:07:11.804Z
+todos: []
+automation: eligible

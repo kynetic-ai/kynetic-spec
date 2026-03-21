@@ -1,0 +1,23 @@
+_ulid: 01KFR82GCHTSZKX33HYEWKNNPJ
+slugs:
+  - task-loop-mode-error-handling
+title: "Implement: Loop Mode Error Handling"
+type: task
+spec_ref: "@loop-mode-error-handling"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #243. Implemented per-task failure tracking for loop mode with
+  [LOOP-FAIL:N] notes and auto-escalation to automation:needs_review after 3 failures. All 9 ACs
+  have test coverage (24 tests total). Fixed review feedback: optimized failure count calculation
+  and removed unused import."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - enhance-ralph
+vcs_refs: []
+created_at: 2026-01-24T14:56:01.425Z
+started_at: 2026-01-25T11:24:30.953Z
+completed_at: 2026-01-25T11:49:33.095Z
+todos: []

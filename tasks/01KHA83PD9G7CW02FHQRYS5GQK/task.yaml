@@ -1,0 +1,24 @@
+_ulid: 01KHA83PD9G7CW02FHQRYS5GQK
+slugs:
+  - implement-multi-value-status-filter
+title: Implement Multi-Value Status Filter
+type: task
+spec_ref: "@multi-value-status-filter"
+plan_ref: "@plan-cli-agent-ux-improvements"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #354. --status filter on tasks list and item list now accepts
+  comma-separated values (e.g. --status pending,in_progress). Invalid values show correct enum.
+  Trailing/leading commas silently ignored. parseMultiStatus() utility handles both task and item
+  status validation. 7 of 8 ACs covered by 10 tests. ac-repeated-flag gap noted: Commander.js option
+  definition needs collect function for repeated flags -- can be addressed in follow-up."
+depends_on:
+  - "@implement-command-group-default-actions"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-13T00:58:41.961Z
+started_at: 2026-02-14T02:00:17.621Z
+completed_at: 2026-02-14T02:11:45.446Z
+todos: []

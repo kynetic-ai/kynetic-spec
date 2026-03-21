@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KJGD4DTWEZS4CAF5J6NC17XQ
+    content: "Automation status set to needs_review: No spec_ref. Shadow auto-commit gap — overlaps with
+      @01KJF06N. Consider merging or creating shared spec."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-27T20:37:37.244Z

@@ -1,0 +1,41 @@
+_ulid: 01KJA3RQ2NH1ZN3ZANGZCD8S60
+slugs: []
+title: Consolidate dual import of ImplementationStatusSchema in item.ts
+type: task
+description: >-
+  src/cli/commands/item.ts imports ImplementationStatusSchema two ways:
+
+  1. Static import at top (line 36-37): import { ImplementationStatusSchema } from
+  "../../schema/common.js"
+
+  2. Dynamic import at line 328: const { ImplementationStatusSchema } = await
+  import("../../schema/common.js")
+
+
+  The dynamic import in the item list handler is unnecessary since the schema is already statically
+  imported. Replace the dynamic import with a reference to the existing static import.
+
+
+  Small cleanup, preexisting tech debt.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #538. Removed redundant dynamic import of ImplementationStatusSchema in
+  item list handler. Static import already present at lines 35-38. One-line deletion, zero behavior
+  change. All CI checks passed."
+depends_on: []
+context: []
+priority: 4
+tags:
+  - refactor
+  - cli
+vcs_refs: []
+session_id: 01KJBBPTAET8S20EV8SKCNWP0T
+created_at: 2026-02-25T09:58:29.717Z
+started_at: 2026-02-25T21:37:01.238Z
+submitted_at: 2026-02-25T21:40:02.464Z
+completed_at: 2026-02-25T21:50:14.728Z
+todos: []
+automation: eligible

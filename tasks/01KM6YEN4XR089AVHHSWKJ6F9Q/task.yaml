@@ -1,0 +1,59 @@
+_ulid: 01KM6YEN4XR089AVHHSWKJ6F9Q
+slugs:
+  - task-update-activity-timeline-spec
+title: Update activity timeline spec for in-file data source
+type: task
+description: |
+  Update the @task-activity-timeline feature spec's ACs to reflect
+  that activity is assembled from in-file data, not git history.
+
+  Why: @task-activity-timeline ac-1 says "state transitions recorded
+  via shadow branch commits" and ac-2 says "merging shadow branch
+  commit history with review record events." After this plan, activity
+  comes from in-file history entries and note timestamps — the feature
+  still exists but the data source changes. Unlike the child spec
+  @task-activity-git-query (which is deprecated), the parent feature
+  spec should be updated, not deprecated.
+
+  What: Update ac-1 and ac-2 to say activity comes from stored history
+  entries and note records rather than shadow branch commits. Keep the
+  behavioral requirements (chronological ordering, review event merging,
+  default count, --activity flag) unchanged.
+
+  How: Use kspec item ac set to update the given/when/then clauses on
+  ac-1 and ac-2 of @task-activity-timeline. Replace "shadow branch
+  commits" with "stored history entries" and "shadow branch commit
+  history" with "stored task history and note records."
+spec_ref: null
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Approved in review @01KM6ZGR. Canonical branch
+  dispatch/task/task-update-activity-timeline-spec/01km6yen already matches dev at 0b83080a89d1, so
+  no code merge was required. Reviewed shadow-branch spec update changed @task-activity-timeline
+  description plus ac-1/ac-2 to reference stored history entries and stored task history/note
+  records while preserving existing behavior.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - tasks
+  - spec
+vcs_refs: []
+review_ref: "@01KM6ZGRHYH57BWMMYZ27B911J"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-21T01:12:45.525Z
+  commit: 0b83080a89d15bec8d00c46e33d52fc6c2597dd0
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM6Z4DX2JHG4H4AR5Y0PQXBN
+created_at: 2026-03-21T00:59:17.533Z
+started_at: 2026-03-21T01:11:41.589Z
+submitted_at: 2026-03-21T01:12:45.932Z
+completed_at: 2026-03-21T01:20:06.271Z
+todos: []
+automation: eligible

@@ -1,0 +1,21 @@
+_ulid: 01KFMMXWWAMNM41ERK65RYAD46
+slugs: []
+title: GitHub Pages CI workflow
+type: infra
+spec_ref: "@gh-pages-export"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: GitHub Actions workflow for gh-pages deployment with debouncing. ACs 8-10 covered.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - phase-4
+  - export
+vcs_refs: []
+created_at: 2026-01-23T05:23:44.138Z
+started_at: 2026-01-28T08:09:53.862Z
+completed_at: 2026-01-28T08:15:14.316Z
+todos: []
+automation: needs_review

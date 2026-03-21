@@ -1,0 +1,72 @@
+_ulid: 01KHY9XF0Y160G7K8F4K0YVFM4
+slugs: []
+title: "Spike: Audit mock completeness vs real adapter behavior"
+type: spike
+description: >-
+  The ACP test mock (tests/mocks/acp-mock.js) is minimal and may not reflect real adapter behavior
+  after the upgrade. Needs assessment.
+
+
+  ## Current mock limitations
+
+
+  1. Only emits agent_message_chunk — never sends tool_call, tool_call_update, agent_thought_chunk
+  events
+
+  2. No empty-string finalization signal (real Claude Code sends content.text === "" to signal
+  stream end)
+
+  3. Permission handling only tested indirectly via mock's mirrored logic
+
+  4. No _meta.claudeCode.* fields in emitted events (tool name/output extraction untested at
+  integration level)
+
+  5. SessionUpdate discriminator values hardcoded as strings, not validated against SDK types
+
+
+  ## What to investigate
+
+
+  1. Run a real ralph session and capture events.jsonl
+
+  2. Compare the real SessionUpdate structures against what the mock emits
+
+  3. Identify gaps: which real event patterns are NOT covered by mock or unit tests?
+
+  4. Specifically check:
+     - tool_call events: do they have _meta.claudeCode.toolName in the real adapter?
+     - tool_call_update events: do they have rawOutput or _meta.claudeCode.toolResponse?
+     - Does the real adapter send duplicate tool_call events (the "alreadyCached" pattern from PR #316)?
+     - Are there new SessionUpdate variants (e.g. usage_update) that the translator should handle?
+
+  ## Outcome
+
+
+  Either:
+
+  - The mock is sufficient and unit tests in ralph.test.ts cover the gaps (likely)
+
+  - Or create tasks to extend the mock and/or add integration test scenarios
+
+
+  ## Note
+
+
+  This can be combined with the runtime compatibility spike if convenient — both require running a
+  real ralph session. But the focus here is on test coverage, not adapter compatibility.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Parent ACP spike completed; mock concerns addressed during ACP migration work
+depends_on:
+  - "@01KHY9WV"
+context: []
+priority: 3
+tags:
+  - acp-migration
+vcs_refs: []
+created_at: 2026-02-20T19:55:03.581Z
+todos: []
+automation: manual_only

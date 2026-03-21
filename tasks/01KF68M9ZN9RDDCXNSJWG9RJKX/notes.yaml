@@ -1,0 +1,136 @@
+notes:
+  - _ulid: 01KF68PK2H0S59TP079GFPMVDE
+    content: |-
+      ## Implementation Approach
+
+      Rewrite ralph.ts to use ACP client instead of CLI spawn. Key changes:
+
+      1. **Spawn via ACP**: Use spawnAgent() with adapter registry
+      2. **Session tracking**: Create session, log events throughout
+      3. **Streaming output**: Display agent updates in real-time
+      4. **Event logging**: Log prompt.sent, session.update, session.end
+
+      ## New Files
+      - `src/agents/adapters.ts` - Adapter registry (claude-code-acp, mock)
+      - `src/agents/spawner.ts` - Process spawning + ACP init
+
+      ## Modified Files
+      - `src/cli/commands/ralph.ts` - Complete rewrite
+
+      ## Adapter Registry
+      const ADAPTERS = {
+        'claude-code-acp': {
+          command: 'npx',
+          args: ['@zed-industries/claude-code-acp'],
+          systemPrompt: { mechanism: 'meta-extension' },
+        },
+        'mock-acp': { ... }  // For testing
+      };
+
+      ## New CLI Options
+      - --adapter <id> (default: claude-code-acp)
+      - --commit-on <boundary> (task|session|none, default: task)
+      - Remove: --claude-cmd (replaced by --adapter)
+
+      ## Data Flow
+      ralph → spawnAgent() → ACPClient → session events → JSONL storage
+
+      ## Gotchas
+      - Use shell: true for npx on Windows
+      - Graceful shutdown: ACP cancel → SIGTERM → SIGKILL
+      - Start without implementing fs/terminal handlers (deferred)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-17T15:20:39.762Z
+  - _ulid: 01KF6EN5VKVN1QC2CYDFH256X9
+    content: >-
+      Completed refactor of ralph command to use ACP protocol.
+
+
+      ## Changes Made
+
+
+      ### New Files
+
+      - `src/agents/adapters.ts` - Adapter registry with claude-code-acp and mock-acp adapters
+
+      - `src/agents/spawner.ts` - Agent spawning with ACP client initialization
+
+      - `src/agents/index.ts` - Module exports
+
+      - `tests/mocks/acp-mock.js` - ACP-compatible mock for testing
+
+
+      ### Modified Files
+
+      - `src/cli/commands/ralph.ts` - Complete rewrite using ACP client instead of CLI spawn
+
+
+      ### Key Implementation Details
+
+      1. **Adapter Registry**: Defines how to spawn different ACP agents. Built-in adapters for
+      claude-code-acp and testing.
+
+      2. **Agent Spawner**: Spawns child process and wraps stdio with ACPClient. Handles
+      initialization and cleanup.
+
+      3. **ACP Integration**: Uses ACPClient for initialize → newSession → prompt flow with
+      streaming updates.
+
+      4. **Session Events**: Logs session.start, prompt.sent, session.update, and session.end events
+      to JSONL.
+
+      5. **Streaming Output**: Displays agent text output in real-time using session/update
+      notifications.
+
+
+      ### CLI Changes
+
+      - Replaced `--claude-cmd` with `--adapter` (default: claude-code-acp)
+
+      - Added `--adapter-cmd` for custom adapter commands (testing)
+
+      - Kept existing options: --max-loops, --max-retries, --max-failures, --dry-run, --yolo
+
+
+      ### Tests
+
+      - All 11 ralph tests pass using new acp-mock.js
+
+      - Full test suite (311 tests) passes
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-17T17:04:44.915Z
+  - _ulid: 01KF6H2S11T8SS7CHSCAHFBCB5
+    content: |-
+      Additional fixes during testing:
+
+      ## Package Name Fix
+      - Changed adapter from @anthropic-ai/claude-code-acp to @zed-industries/claude-code-acp
+
+      ## Tool Request Handling
+      - Added request event forwarding in ACPClient (emits 'request' events)
+      - Added respond/respondError methods to ACPClient
+      - Implemented handlers in ralph.ts for:
+        - file/read - reads file content
+        - file/write - writes file content
+        - terminal/run - executes shell commands
+        - session/request_permission - handles permission requests
+
+      ## Permission Handler
+      - Initial attempt used wrong format: { granted: true }
+      - Fixed to use ACP spec format: { outcome: { outcome: 'selected', optionId } }
+      - In yolo mode, auto-selects 'allow_always' or 'allow_once' option
+
+      ## Type Safety Improvements
+      - Exported RequestPermissionRequest/Response types from ACP module
+      - Added typed respondPermission() method to ACPClient
+      - Enforces correct response format at compile time
+
+      ## Testing
+      - All 11 ralph tests pass
+      - Live tested with kspec-acp-test repo clone
+      - Agent successfully spawns, receives prompts, streams output
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-17T17:47:07.681Z

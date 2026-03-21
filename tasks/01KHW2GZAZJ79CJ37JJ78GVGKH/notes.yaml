@@ -1,0 +1,145 @@
+notes:
+  - _ulid: 01KHW2Q8H6Z8BXN6X1V4F9G6EE
+    content: >-
+      Implementation notes from plan @plan-unified-health-check-command-kspec-doctor:
+
+
+      **Severity model:** Each check gets ok | warning | error. Shadow broken = error. Setup missing
+      = error. Daemon not running = warning. Staleness unknown = warning. Exit 0 when no errors
+      (warnings are fine). Exit 1 when any error exists.
+
+
+      **Library layer: src/parser/doctor.ts (new)**
+
+      Place alongside existing parser modules (src/parser/shadow.ts, src/parser/yaml.ts). Returns
+      DoctorReport with CheckResult per subsystem.
+
+
+      Flow:
+
+      1. getShadowStatus(projectRoot) — if !exists, return early with not-initialized report
+
+      2. If shadow exists, run setup + daemon in parallel via Promise.allSettled
+
+      3. For setup: call getSetupStatus(projectRoot) — fix staleness bug (unknown, not
+      false-current)
+
+      4. For daemon: call new getDaemonStatus() extracted from serve.ts
+
+      5. Compute overall: healthy = (errors === 0)
+
+
+      **Extract getDaemonStatus() from serve.ts**
+
+      Currently statusServer() in serve.ts mixes data-gathering with output. Extract into shared
+      function in pid-utils.ts or new daemon-status.ts. Include projects array to avoid regressing
+      serve status output. readPort() throws on missing/invalid port file — wrap in try/catch
+      returning null.
+
+
+      **Fix getSetupStatus staleness false-positive**
+
+      In setup.ts lines 1106 and 1109, status falls back to "current" when hash can't be checked.
+      Change to "unknown". Update SetupStatus.agentsMd.status type to include "unknown" (line 965).
+      Update text renderer in setup.ts.
+
+
+      **Extract setup status logic to avoid CLI coupling**
+
+      Extract pure status-gathering logic into src/parser/setup-status.ts. CLI command keeps
+      formatter, calls extracted function. Avoids doctor.ts depending on CLI command module.
+
+
+      **CLI layer: src/cli/commands/doctor.ts (new)**
+
+      Thin wrapper: getGitRoot() -> getDoctorReport(gitRoot) -> output(report, formatDoctorReport)
+      -> exit based on report.overall.healthy.
+
+      Registration: Add to src/cli/commands/index.ts and wire in src/cli/index.ts.
+
+
+      **Files to create/modify:**
+
+      - src/parser/doctor.ts — NEW getDoctorReport() library function
+
+      - src/cli/commands/doctor.ts — NEW CLI command wrapper
+
+      - src/parser/setup-status.ts — NEW extracted getSetupStatus()/SetupStatus
+
+      - src/cli/commands/setup.ts — Refactor to call extracted getSetupStatus(); fix staleness type
+
+      - src/cli/commands/serve.ts — Extract getDaemonStatus() from statusServer()
+
+      - src/cli/pid-utils.ts — Or put getDaemonStatus() here alongside PidFileManager
+
+      - src/cli/commands/index.ts — Add export
+
+      - src/cli/index.ts — Wire registration
+
+
+      **Existing code to reuse:**
+
+      - getShadowStatus() — src/parser/shadow.ts:267
+
+      - PidFileManager — src/cli/pid-utils.ts:18
+
+      - output() — src/cli/output.ts
+
+      - EXIT_CODES — src/cli/exit-codes.ts
+
+      - getGitRoot() — src/parser/shadow.ts
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-19T23:10:51.430Z
+  - _ulid: 01KHWJ2G70479CVV6AHSH2F6F4
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. **src/parser/doctor.ts (NEW)** - Library layer with getDoctorReport() function
+         - DoctorReport type with shadow, setup, daemon, and overall sections
+         - Each check includes severity (ok/warning/error), message, and guidance
+         - AC annotations for all 14 acceptance criteria
+
+      2. **src/parser/daemon-status.ts (NEW)** - Extracted daemon status checking
+         - getDaemonStatus() probes PID file, verifies process, checks health endpoint
+         - AC: ac-daemon-running, ac-daemon-not-running, ac-daemon-unreachable
+
+      3. **src/parser/setup-status.ts (NEW)** - Extracted setup status checking
+         - getSetupStatus() checks hooks, skills, agents.md, seeding
+         - AC: ac-setup-agent-hooks, ac-setup-skills-agents-md, ac-staleness-unknown
+
+      4. **src/cli/commands/doctor.ts (NEW)** - CLI command wrapper
+         - Formats report for human-readable output
+         - Supports --json flag for JSON output (AC-12)
+         - Exit code 0 when healthy, 1 when errors (AC-13, AC-14)
+
+      5. **src/cli/commands/setup.ts (MODIFIED)**
+         - Added 'unknown' to agentsMd.status type (AC-11)
+         - Fixed false-positive: now returns 'unknown' instead of 'current' when hash cannot be computed
+         - Updated status display to handle 'unknown' status
+
+      6. **src/cli/commands/index.ts** - Added registerDoctorCommand export
+
+      7. **src/cli/index.ts** - Wired registerDoctorCommand registration
+
+
+      8. **tests/parser/doctor.test.ts (NEW)** - 26 tests covering all 14 ACs
+         - Tests for git repo check (AC-1)
+         - Tests for not initialized (AC-2)
+         - Tests for shadow healthy (AC-3)
+         - Tests for setup hooks (AC-4) and skills/agents.md (AC-5)
+         - Tests for daemon running (AC-6), unreachable (AC-7), not running (AC-8)
+         - Tests for overall verdict (AC-9)
+         - Tests for partial init (AC-10) and staleness unknown (AC-11)
+         - Tests for JSON output (AC-12) and exit codes (AC-13, AC-14)
+
+      All 2939 tests pass (1 pre-existing failure in daemon-executable.test.ts unrelated).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-20T03:39:08.384Z
+  - _ulid: 01KHWJSF37T1J9ZSBDZXPGPG7S
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-20T03:51:40.904Z

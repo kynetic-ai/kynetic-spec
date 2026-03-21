@@ -1,0 +1,41 @@
+_ulid: 01KJDQ0YXVQCR1ZY2ZY80G670Q
+slugs: []
+title: "Shadow repair: handle missing /bin/sh — use direct git commands instead of spawning shell,
+  fails on "
+type: task
+description: "**What**: `kspec shadow repair` (and other shadow branch operations) fails on systems
+  where `/bin/sh` is not available, such as NixOS or fish-only systems. All git operations in
+  `src/parser/shadow.ts` use `execSync()` and `execAsync()` (which is `promisify(exec)`), both of
+  which default to spawning `/bin/sh` to interpret the command string. **Where**:
+  `src/parser/shadow.ts` — all `execSync()` calls (lines ~154, 170, 189, 584, 595, 614) and all
+  `execAsync()` calls (lines ~841, 863, 882, 909, 933, 1007, 1027, 1030, 1179). The `repairShadow()`
+  function at line 1785 is the primary trigger but the issue affects every git-invoking function in
+  the file. **How**: Replace shell-spawning `exec`/`execSync` with `spawnSync`/`spawn` using `{
+  shell: false }` (or simply omitting shell). Pass git commands as arrays: `spawnSync('git',
+  ['rev-parse', '--git-dir'], { cwd, stdio })`. This avoids needing `/bin/sh` entirely. The `spawn`
+  import already exists at line 12 but is unused for most operations. For `execAsync` calls, use
+  `child_process.execFile` (which does not use a shell by default) wrapped with `promisify`. **Done
+  when**: (1) All `execSync`/`execAsync` calls in `shadow.ts` use `spawnSync`/`execFileAsync`
+  instead of shell-based execution. (2) `kspec shadow repair` succeeds on a system without
+  `/bin/sh`. (3) All existing shadow tests pass. (4) No string interpolation of git commands
+  (eliminates shell injection risk as a bonus)."
+spec_ref: "@shadow-repair-cmd"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #597. Replaced shell-based git command execution in
+  src/parser/shadow.ts with non-shell execFile/spawnSync argument-array execution across shadow
+  init/sync/repair/remote-tracking paths; removed execSync/execAsync usage and shell interpolation.
+  AC coverage verified via @shadow-recovery ac-recovery-1..6 tests and full regression suite
+  passed."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
+created_at: 2026-02-26T19:32:46.139Z
+started_at: 2026-02-28T07:44:31.479Z
+submitted_at: 2026-02-28T07:46:20.025Z
+completed_at: 2026-02-28T13:31:39.593Z
+todos: []
+automation: eligible

@@ -1,0 +1,130 @@
+notes:
+  - _ulid: 01KFTN2QW0KHK9RTHKZAVKTQDW
+    content: Starting implementation of ProjectSelector component for web UI. This task covers AC-25
+      (show selector when multiple projects), AC-26 (set X-Kspec-Dir header), and AC-27 (reload data
+      on project change). E2E tests already exist in
+      packages/web-ui/tests/e2e/project-selector.spec.ts. Will create Svelte component with dropdown
+      selector, integrate with API client to fetch projects and set header, and implement data
+      reload logic.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T13:21:49.441Z
+  - _ulid: 01KFVMBXYCX7ADFP0EDHNJBEKA
+    content: "Session cleanup: Removed 18 loop noise notes from overnight session. Implementation not
+      started - only planning was done. Needs: create project store, modify API client, build
+      ProjectSelector component, integrate into layout. Reset automation status when ready to
+      continue."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T22:28:36.429Z
+  - _ulid: 01KFXCS0FEM8FM21ZBGB04ZNBJ
+    content: Reset from in_progress to pending
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-26T14:54:25.262Z
+  - _ulid: 01KG1DXVC38J25YXH9WBCWM152
+    content: >-
+      Implemented web UI project selector:
+
+
+      **Phase 0**: Added WebSocket query param support (?project=<path>) in server.ts for browser
+      compatibility (browsers can't send headers during WS upgrade)
+
+
+      **Phase 1**: Created project.svelte.ts store with Svelte 5 runes managing:
+
+      - projects list
+
+      - selectedPath with localStorage persistence
+
+      - projectVersion counter for reactive reloads
+
+      - loading/error states
+
+      - Helper functions: loadProjects(), selectProject(), getSelectedProjectPath(),
+      hasMultipleProjects()
+
+
+      **Phase 2**: Modified api.ts to:
+
+      - Add fetchProjects() function
+
+      - Add getProjectHeaders() helper
+
+      - Inject X-Kspec-Dir header into all 12 API functions
+
+      - Add invalid project error detection for AC-36 recovery
+
+
+      **Phase 3**: Updated WebSocket manager.ts with:
+
+      - WebSocketManagerOptions interface with optional projectPath
+
+      - getUrl() method to append project as query param
+
+      - setProjectPath() method for project changes
+
+      - Updated connection.svelte.ts with reconnectWithProject() function
+
+
+      **Phase 4-5**: Created ProjectSelector.svelte component:
+
+      - Uses existing Select primitives from shadcn/ui
+
+      - Shows project name (last path segment) with full path as tooltip
+
+      - Triggers selectProject() and WebSocket reconnect on change
+
+      - Added data-testid attributes for E2E tests
+
+
+      Integrated in Sidebar.svelte:
+
+      - Shows between header and Current Focus section
+
+      - Only visible when hasMultipleProjects() returns true
+
+
+      **Phase 6-7**: Layout and page updates:
+
+      - +layout.svelte loads projects before initializing WebSocket
+
+      - All 5 page components (+page.svelte, tasks, items, inbox, observations) watch
+      getProjectVersion() and reload on change
+
+
+      **Phase 8**: E2E test fixtures:
+
+      - Added createSecondProject() helper to test-base.ts
+
+      - Creates valid .kspec/ structure with kynetic.yaml and project.tasks.yaml
+
+      - Initializes git repo and shadow worktree
+
+      - Registers project with daemon API
+
+      - Enabled all 10 project-selector tests
+
+
+      Build verified, all tests pass (except unrelated daemon-executable test).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-28T04:31:30.179Z
+  - _ulid: 01KG1F1KMG8VDG0YEFDVGFXXA3
+    content: >-
+      All E2E tests passing (10/10 project-selector tests + 28 smoke/navigation tests). Unit tests
+      passing (1428/1429 - one pre-existing failure unrelated to this change).
+
+
+      Key fixes during E2E test debugging:
+
+      1. Fixed Select component selectors (bits-ui uses data-slot attributes, not role='option')
+
+      2. Fixed race condition: layout now waits for projects to load before rendering children
+
+      3. Fixed localStorage access timing in tests
+
+      4. Tests use full page navigation which preserves localStorage selection
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-28T04:51:01.905Z

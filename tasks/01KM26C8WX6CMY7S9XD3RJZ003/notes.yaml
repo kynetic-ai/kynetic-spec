@@ -1,0 +1,34 @@
+notes:
+  - _ulid: 01KM26TGC1G206Q5308FT7Q88Z
+    content: Made workspace-provisioning recovery CLI calls best-effort in
+      src/agent-runtime/dispatch.ts. _blockTask remains strict in general, but the provisioning
+      error handler now catches note/block failures locally, logs warnings, and returns false so
+      drain/bootstrap continue. Added regression tests for failed task:block and failed task:note
+      during recovery.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T04:49:22.305Z
+  - _ulid: 01KM271YBDFH5B7TH9N3BMEPPZ
+    content: "Verification: targeted dispatch suite passed and isolated reruns confirmed the task-local
+      dispatch tests pass. Full npm test still has an unrelated pre-existing failure in
+      tests/review-cli.test.ts: review add now returns
+      examined_commit=02a1386fbddabc850a1a31b24dc1765480bb0a53 when not explicitly provided, so the
+      suite is not globally green. kspec validate also reports existing repository-wide
+      reference/completeness debt unrelated to this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T04:53:25.998Z
+  - _ulid: 01KM27GN3BWX5NN2PVKQ9NKFG7
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex@gpt-5"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T05:01:28.044Z
+  - _ulid: 01KM29DPVDQY2PVRMNX732ST0Q
+    content: Addressed the fix-cycle gate by hardening dispatch-related test coverage under dispatch-run
+      environments. Stripped KSPEC_DISPATCH_CANONICAL_HEAD from inherited CLI test env so review add
+      null-path tests stay deterministic, widened async wait windows in the dispatch engine
+      prompt/event tests, stubbed target-sync enablement in the role-entry prompt test, and re-ran
+      npm test successfully (286 files, 6514 tests).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T05:34:48.686Z

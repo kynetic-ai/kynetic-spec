@@ -1,0 +1,26 @@
+_ulid: 01KF9Q29R0MHJYAWJXQQVKETRK
+slugs: []
+title: Create INSTALL.md with agent-focused setup instructions
+type: task
+description: "Create INSTALL.md with agent-focused setup instructions: Step-by-step guide for agents
+  to install kspec in a new or existing repo from scratch. Should cover: npm install, kspec init,
+  worktree setup for existing repos, common gotchas. Written for AI agents rather than humans -
+  concise, copy-pasteable commands, clear success criteria."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Created INSTALL.md with agent-focused setup instructions. Covers From Source install
+  (npm coming soon), two setup flows (fresh vs cloning), agent configuration, verification
+  checklist, troubleshooting table, and working directory warning. Reviewed by subagent, verified
+  commands in temp directory.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - docs
+  - agents
+vcs_refs: []
+created_at: 2026-01-18T23:29:26.784Z
+started_at: 2026-01-21T21:43:40.809Z
+completed_at: 2026-01-21T21:46:32.727Z
+todos: []

@@ -1,0 +1,24 @@
+_ulid: 01KHVXK2ZK5HEG1DSJ9VCAE0BK
+slugs:
+  - implement-configurable-author-identity
+title: Implement Configurable Author Identity
+type: task
+spec_ref: "@config-author"
+plan_ref: "@plan-project-level-configuration-system"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #419. Implemented configurable author identity via kspec.config.yaml
+  identity.author field. Priority chain: KSPEC_AUTHOR env var > config author > git user > OS user.
+  All 3 ACs have test coverage (9 tests). Updated getAuthor(), createInboxItem(),
+  createObservation(), and all CLI/daemon call sites."
+depends_on:
+  - "@implement-project-config-file"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-19T21:41:11.795Z
+started_at: 2026-02-20T01:54:41.524Z
+completed_at: 2026-02-20T02:20:14.885Z
+todos: []
+automation: eligible

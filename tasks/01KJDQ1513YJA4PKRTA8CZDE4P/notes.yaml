@@ -1,0 +1,15 @@
+notes:
+  - _ulid: 01KJHGC0GS6CFYHAAVGGQ4YPYY
+    content: "Implemented priority parsing parity for task add/set: added parsePriority() to accept
+      numeric (1-5) and P-notation (P1-P5, case-insensitive), updated task CLI option help text to
+      document both formats, and added regression coverage in tests/cli-validators.test.ts plus
+      integration tests for task add/set with P-notation and invalid Px guidance. Verification: npm
+      test -- --run tests/cli-validators.test.ts tests/integration.test.ts (198 passed)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T06:53:25.914Z
+  - _ulid: 01KJHGFXY696XZY0JF0HXBRPMV
+    content: "[RALPH SUBAGENT] Subagent completed but did not merge or kick back. Review required."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T06:55:34.342Z

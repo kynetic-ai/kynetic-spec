@@ -1,0 +1,10 @@
+notes:
+  - _ulid: 01KJ8NCDYQSXZW28Y57RVXB72X
+    content: "Three fixes applied: (1) 30s timeout on spawnSync in tests/helpers/cli.ts with ETIMEDOUT
+      detection, (2) shadowPushAsync switched from exec()+callback to spawn() with
+      stdio:'ignore'+detached:true+unref() per Codex review finding that exec buffers stdio keeping
+      event loop alive, (3) vitest testTimeout bumped from 5s default to 15s. All 57
+      batch-exec-engine tests and 83 shadow tests pass. PR #505."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T20:27:52.664Z

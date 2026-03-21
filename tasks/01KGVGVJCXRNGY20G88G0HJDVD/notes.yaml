@@ -1,0 +1,37 @@
+notes:
+  - _ulid: 01KGVGVJCX6RN0VBHEAVFR2QPS
+    content: "Implementation: First verify note supersession data model in src/schema/task.ts — notes
+      have a supersedes field referencing earlier note ULIDs. In task get display
+      (src/cli/commands/task.ts), filter out notes whose ULID appears in any other note's supersedes
+      list. Add --all flag to show full history. For --json output, always include all notes with a
+      'superseded: true' computed field. Design question: should session start recent notes also
+      filter? Probably yes for consistency."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T07:42:56.413Z
+  - _ulid: 01KGVJKZ4JY6BXMV8EPWPXCZFR
+    content: "Automation status set to needs_review: Needs data model verification for note supersession
+      tracking"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T08:13:44.466Z
+  - _ulid: 01KHDQVQ4DNJEAP1T94SYM57FR
+    content: >-
+      Implemented note supersession filtering:
+
+      - Added isNoteSuperseded(), filterSupersededNotes(), and annotateNotesWithSuperseded() helper
+      functions in output.ts
+
+      - Updated formatTaskDetails() to filter superseded notes by default, show hidden count message
+
+      - Added --all flag to task get command to show full note history
+
+      - JSON output always includes all notes with 'superseded' computed field
+
+      - Updated session start to filter superseded notes from recent_notes
+
+      - 7 tests covering: hiding superseded notes, --all flag, JSON output, multiple supersessions,
+      session start filtering
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-14T09:31:41.069Z

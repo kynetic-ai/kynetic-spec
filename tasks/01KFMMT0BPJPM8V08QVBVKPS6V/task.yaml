@@ -1,0 +1,23 @@
+_ulid: 01KFMMT0BPJPM8V08QVBVKPS6V
+slugs: []
+title: Dashboard layout and navigation
+type: task
+spec_ref: "@web-dashboard"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #198 merged successfully. Dashboard layout with responsive navigation (sidebar
+  for desktop, bottom nav for mobile) implemented. All AC covered: ac-26 (layout), ac-27 (responsive
+  navigation). Review threads resolved via gh CLI."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - phase-3
+  - dashboard
+vcs_refs: []
+created_at: 2026-01-23T05:21:36.630Z
+started_at: 2026-01-23T14:42:37.898Z
+completed_at: 2026-01-23T15:14:08.090Z
+todos: []
+automation: eligible

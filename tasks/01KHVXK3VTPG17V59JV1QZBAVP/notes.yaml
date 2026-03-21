@@ -1,0 +1,47 @@
+notes:
+  - _ulid: 01KHVXK3VTZ1YBQP6TAS3C122X
+    content: |
+      Implementation notes:
+
+      Update generateManifest() in init.ts and generateShadowManifest() in shadow.ts
+      to remove the config template. Keep daemon in ManifestSchema as explicit optional
+      field with deprecation comment (do NOT use .passthrough() as it weakens validation).
+      Add config as z.any().optional() to ManifestSchema for backward compat with
+      existing manifests that have it. Neither field should be consumed at runtime —
+      all config reads go through ctx.config (from kspec.config.yaml).
+    author: "@claude"
+    created_at: 2026-02-19T21:41:12.698Z
+  - _ulid: 01KHWGTGK8PQGSVK5TQJSFMW0Y
+    content: |-
+      Implementation complete. Changes:
+
+      1. **generateManifest() updated** (src/cli/commands/init.ts):
+         - Removed config block template from non-shadow init
+         - AC-1: No config block in generated manifest
+
+      2. **generateShadowManifest() updated** (src/parser/shadow.ts):
+         - Removed config block template from shadow init
+         - AC-1: No config block in generated manifest
+
+      3. **ManifestSchema updated** (src/schema/spec.ts):
+         - Added config field as z.any().optional() for backward compat (AC-2)
+         - Added deprecation comments for both config and daemon fields
+         - daemon field kept explicit (not .passthrough()) per implementation notes
+
+      4. **Tests added** (tests/parser/manifest-cleanup.test.ts):
+         - 8 tests covering all 4 ACs:
+         - AC-1: kspec init generates manifest without config block
+         - AC-2: existing manifests with config block parse successfully (3 tests)
+         - AC-3: kspec init generates manifest without daemon block  
+         - AC-4: existing manifests with daemon block parse successfully (2 tests)
+         - Combined test for both config and daemon
+
+      All 2913 tests pass (1 pre-existing failure in daemon-executable.test.ts unrelated).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-20T03:17:18.056Z
+  - _ulid: 01KHWHFSQ32J2N36W0V0XDX959
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-20T03:28:55.523Z

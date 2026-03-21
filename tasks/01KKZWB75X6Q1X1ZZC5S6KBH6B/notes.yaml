@@ -1,0 +1,43 @@
+notes:
+  - _ulid: 01KM06YXWFN18M78HM7M65M5B5
+    content: "Implemented syncTargetBranch() in DispatchEngine with three trigger points: (1) engine
+      start — syncs before bootstrap evaluation, (2) periodic reconciliation — syncs as first step,
+      deferred when reviewer invocation is active, (3) before workspace provisioning — syncs when
+      lastSyncTimestamp exceeds sync_interval. Uses spawnSync for git fetch + merge --ff-only in
+      project dir (not worktree). Running guard prevents overlapping syncs. Returns TargetSyncResult
+      enum (synced/up_to_date/skipped/transient_failure/diverged) for downstream consumers (degraded
+      state task). All 14 new tests pass covering ac-pull-target-on-start, ac-pull-target-periodic,
+      ac-pull-target-periodic-deferred, ac-pull-target-before-provision, ac-pull-ff-only,
+      ac-transient-no-degrade, ac-no-remote. Full suite: 271/272 pass, 1 pre-existing failure in
+      review-cli.test.ts unrelated to changes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T10:13:18.352Z
+  - _ulid: 01KM07F24QZZ0VXMJWWSJRZ79V
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by dispatch-reviewer"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T10:22:06.999Z
+  - _ulid: 01KM07G675CEJYM5V6NTE1146A
+    content: "Review cycle 1 — request_changes (review @01KM07CS). MUST-FIX (1 blocker): _reconcile()
+      does not gate sync on _isTargetSyncStale() — syncs on every reconciliation pass instead of
+      respecting sync_interval. Violates ac-pull-target-periodic. Fix: add _isTargetSyncStale()
+      check to the reconcile sync guard (line 1211). The test for ac-pull-target-periodic should
+      also exercise the _reconcile() path, not just _syncTargetBranch() directly. SUGGESTIONS
+      (non-blocking): dead code on non-zero exit path (lines 2582-2588), misleading GIT_WORK_TREE
+      comment (line 2573)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T10:22:43.942Z
+  - _ulid: 01KM07XQRQRBAMMAGQ3S7Y163K
+    content: "Fixed MUST-FIX blocker from review cycle 1: added _isTargetSyncStale() gate to
+      _reconcile() sync guard (line 1211) so sync respects sync_interval instead of running every
+      reconciliation pass. Updated ac-pull-target-periodic test to exercise _reconcile() path
+      directly — verifies fresh timestamp skips sync, stale timestamp triggers it. Updated
+      ac-pull-target-periodic-deferred test to backdate timestamp before reconcile calls. Also
+      addressed suggestions: removed dead code (already-up-to-date check in non-zero exit path,
+      lines 2582-2588) and clarified GIT_WORK_TREE comment (line 2573). Full suite: 271/272 pass (1
+      pre-existing review-cli.test.ts failure, unrelated)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T10:30:07.895Z

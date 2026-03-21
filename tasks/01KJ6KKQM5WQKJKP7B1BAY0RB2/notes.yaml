@@ -1,0 +1,19 @@
+notes:
+  - _ulid: 01KJ6KKQM59XEDXGADGFGMCB65
+    content: |
+      Add session create subcommand to src/cli/commands/session.ts. Creates session
+      with optional --budget flag. Returns session ID on stdout. Also exposes
+      createSessionWithBudget() library function for ralph to call directly.
+      Include validation for invalid/stale KSPEC_SESSION_ID with clear error messages.
+    author: "@claude"
+    created_at: 2026-02-24T01:18:25.925Z
+  - _ulid: 01KJ759CHH0PBSVV54RMMW1DG7
+    content: Implemented session create command and library function. Added createSessionWithBudget() to
+      store.ts, validateSessionId() for invalid session handling, env injection functions (Claude
+      Code via CLAUDE_ENV_FILE or .claude/settings.json, Codex via config.json
+      shell_environment_policy.set, fallback export command). CLI command registered as 'session
+      create' with --agent-type, --budget, --inject, --task-id flags. 29 tests covering all 8 own
+      ACs and key trait ACs (json-output, semantic-exit-codes, error-guidance).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T06:27:21.266Z

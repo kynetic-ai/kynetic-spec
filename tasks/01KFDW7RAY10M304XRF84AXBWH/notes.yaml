@@ -1,0 +1,78 @@
+notes:
+  - _ulid: 01KFDWDR0QWF6ANH8GX4230CWE
+    content: >-
+      Completed comprehensive analysis via 5 parallel subagents:
+
+
+      **1. Trait Pattern Analysis**: Identified 20 cross-cutting CLI patterns that could become
+      traits:
+
+      - Core patterns (8): JSON output, multi-ref batch, confirmation prompts, filterable lists,
+      priority parameter, dry-run preview, semantic exit codes, error with guidance
+
+      - Domain patterns (12): Task state machine, reference resolution, append-only notes, nested
+      hierarchy, slug uniqueness, implementation status, meta associations, verbosity levels,
+      tree/flat display, spec-task alignment, slug generation, preview with limits
+
+
+      **2. AC Coverage Audit**:
+
+      - 69 items WITHOUT any acceptance criteria
+
+      - 18 items with incomplete/vague AC
+
+      - Critical gaps: all @type-* requirements (9 items), YAML conventions, task type requirements
+
+      - Pattern: Parent features often have AC while child requirements lack them
+
+
+      **3. Code/Spec Alignment**:
+
+      - HIGH: Task automation eligibility field completely missing from schema (spec exists, no
+      implementation)
+
+      - MEDIUM: YAML convention enforcement not implemented
+
+      - MEDIUM: Auto-adaptive file splitting spec'd but not implemented
+
+      - LOW: Validation completeness checks partially implemented (missing parent-child status
+      consistency)
+
+
+      **4. CLI Command Inventory**: Cataloged 50+ commands with full behavior documentation
+
+
+      **5. Spec Structure Review**:
+
+      - CLI module oversized (2684 lines vs ~500 for others)
+
+      - auth.yaml referenced in manifest but doesn't exist
+
+      - Suggests: Split CLI into domains, extract alignment system
+
+
+      **Next step**: Enter plan mode to detail spec changes
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T14:20:02.456Z
+  - _ulid: 01KFDYD4ZXFKQY4NHGHSGBZJ2D
+    content: |-
+      Completed comprehensive review. Created 7 follow-up tasks:
+
+      **P1 Tasks** (4):
+      - @01KFDYAJ - Validate trait system E2E
+      - @01KFDYAP - Create 8 core traits
+      - @01KFDYAS - Add AC to 17 critical spec items
+      - @01KFDYAW - Remove auth.yaml from manifest
+
+      **P2 Tasks** (2):
+      - @01KFDYB4 - Apply traits to task lifecycle commands
+      - @01KFDYB7 - Apply traits to item CRUD commands
+
+      **P3 Tasks** (1):
+      - @01KFDYBA - Apply traits to query and inbox commands
+
+      Plan file saved at: /home/chapel/.claude/plans/rustling-waddling-diffie.md
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T14:54:40.125Z

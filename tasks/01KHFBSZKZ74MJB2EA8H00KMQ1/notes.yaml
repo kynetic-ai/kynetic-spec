@@ -1,0 +1,23 @@
+notes:
+  - _ulid: 01KHFBSZKZD2EZSQNC4QS2M1SV
+    content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    author: "@claude"
+    created_at: 2026-02-15T00:39:30.175Z
+  - _ulid: 01KHFF5RYD6GFBGQCDTAS2TGG4
+    content: >-
+      Implemented Skill File-Based Content Model:
+
+
+      - ac-1: loadSkillContent already existed, added AC reference comment
+
+      - ac-2: Implemented loadSkillDocs() that reads .kspec/skills/<id>/docs/*.md files, returns
+      array of SkillDoc objects with name, path, content
+
+      - ac-3: Added validateSkillContentFiles() to check skill meta entries have corresponding
+      SKILL.md, integrated into validate() function
+
+
+      12 tests covering all ACs in tests/skill-content-model.test.ts
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-15T01:38:22.285Z

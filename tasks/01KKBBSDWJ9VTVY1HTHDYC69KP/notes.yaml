@@ -1,0 +1,45 @@
+notes:
+  - _ulid: 01KKBSZZADM5Q8B2XGX3VGDM76
+    content: >-
+      Fixed skill verify missing plugin-provided case. Changes:
+
+      1. Added 'plugin-provided' to VerifyResult.status type union
+
+      2. Added case 'plugin-provided' to switch statement that pushes appropriate result with
+      guidance message
+
+      3. Added pluginProvidedResults filtering and display (cyan-colored section)
+
+      4. Updated summary messages to include plugin-provided counts
+
+      5. Added 2 behavioral tests: status correctness and exit code behavior
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T12:01:52.462Z
+  - _ulid: 01KKBV5JMF7YAPX8Z5ZPDPP5S2
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX from PR #747: tests/skill-rendering.test.ts does
+      not actually create the 'only plugin-provided skills' scenario it claims to verify; it leaves
+      the default rendered test skill in place, so the exit-code assertion is not validating the
+      intended condition."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T12:22:24.656Z
+  - _ulid: 01KKBWQ4ZEB2KB6TTGBDX2XRYP
+    content: "Fix cycle 1: Addressed MUST-FIX from PR #747. The test 'should not exit non-zero when only
+      plugin-provided skills are present' was not actually creating a plugin-provided-only scenario
+      — it had a broken skill remove that expected failure, leaving non-core skills in place. Fixed
+      by: (1) removing the broken remove/re-add sequence (setupTempFixtures creates no skills, so
+      one core skill add is sufficient), (2) adding assertions that parse the JSON output and verify
+      ALL results are plugin-provided, not just checking exit code."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T12:49:29.070Z
+  - _ulid: 01KKBX83EES0MJ7M00RP3D4A6F
+    content: "Fix cycle 1 verification complete. Confirmed the fix in dda6811c2 properly addresses the
+      MUST-FIX: the Skill Verify Command describe block's beforeEach creates no skills (only
+      setupTempFixtures + initGitRepo), so adding a single core-origin skill produces a genuine
+      plugin-provided-only scenario. Test parses JSON output and asserts ALL results are
+      plugin-provided. Replied to and resolved the review thread. All CI checks green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T12:58:44.559Z

@@ -1,0 +1,160 @@
+notes:
+  - _ulid: 01KFESYT0HVY45N3Q4TF36VA5C
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Pause/resume functionality and structured step inputs.
+
+
+      ## Pause/Resume Commands
+
+
+      ```
+
+      kspec workflow pause @run-id [--json]
+
+      kspec workflow resume @run-id [--json]
+
+      ```
+
+
+      ### Pause Behavior
+
+      - Set status='paused'
+
+      - Set paused_at timestamp
+
+      - Shadow commit with 'workflow-pause' message
+
+      - Output: 'Paused run @id at step N/M'
+
+
+      ### Resume Behavior
+
+      - Verify status='paused' (error if not)
+
+      - Set status='active'
+
+      - Clear paused_at
+
+      - Shadow commit with 'workflow-resume' message
+
+      - Output current step ready to continue
+
+
+      ## Structured Step Inputs
+
+
+      ### StepInputSchema
+
+      ```typescript
+
+      {
+        name: string,           // e.g., 'spec_ref'
+        description?: string,   // Human explanation
+        required?: boolean,     // Default true
+        type?: 'string' | 'ref' | 'number',  // Default 'string'
+      }
+
+      ```
+
+
+      ### Extended WorkflowStepSchema
+
+      Add field: `inputs?: StepInput[]`
+
+
+      ### CLI
+
+      Add to `kspec workflow next`:
+
+      - `--input key=value` (repeatable)
+
+
+      ### Behavior
+
+      1. When step has inputs defined, display them:
+         ```
+         Step 3/5: [action] Derive task from spec
+           Inputs required:
+             - spec_ref (ref): Reference to the spec item
+         ```
+
+      2. If required input missing: error 'Missing required input: spec_ref'
+
+
+      3. Captured inputs stored in step_results.inputs:
+         ```typescript
+         { spec_ref: '@my-feature' }
+         ```
+
+      ## Key Files
+
+
+      - src/schema/meta.ts (StepInputSchema, extend WorkflowStepSchema)
+
+      - src/cli/commands/workflow.ts (pause, resume, --input flag)
+
+
+      ## Dependencies
+
+
+      Requires @workflow-step-navigation to be implemented first.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given an active run exists, when kspec workflow pause @run-id is executed, then
+      status=paused, paused_at set; can resume later
+
+      - ac-2: Given a paused run exists, when kspec workflow resume @run-id is executed, then
+      status=active, paused_at cleared, continues from current_step
+
+      - ac-3: Given a step defines inputs, when kspec workflow next @run-id is executed, then
+      outputs required inputs; --input key=value captures input in step_results.inputs; errors if
+      required input missing
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T22:56:10.257Z
+  - _ulid: 01KFJ5CM72D4P0F4ZJCK2YJDZR
+    content: "Automation status set to eligible: Has spec with 4 testable ACs, clear workflow feature"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T06:13:40.707Z
+  - _ulid: 01KFJBYXF58Y8KYNWEQZY8QGG8
+    content: |-
+      Implementation complete:
+
+      Schema updates:
+      - Added StepInputSchema for defining structured workflow step inputs
+      - Extended WorkflowStepSchema with optional inputs field
+      - Inputs support name, description, required flag, and type (string/ref/number)
+
+      CLI commands:
+      - Added kspec workflow pause @run-id [--json] - pauses active runs
+      - Added kspec workflow resume @run-id [--json] - resumes paused runs
+      - Extended kspec workflow next with --input key=value flag (repeatable)
+
+      Pause/resume behavior:
+      - Pause sets status=paused, records paused_at timestamp
+      - Resume validates status=paused, clears paused_at, sets status=active
+      - Both commands commit to shadow with appropriate commit messages
+
+      Step inputs behavior:
+      - When step has inputs defined, displays required inputs before execution
+      - Validates required inputs are provided via --input flags
+      - Captures inputs in step_results.inputs record
+      - Supports optional inputs that can be omitted
+      - Handles edge cases (values with = signs, invalid format)
+
+      Test coverage:
+      - AC-1: Pause active run (3 tests - JSON output, human output, error cases)
+      - AC-2: Resume paused run (2 tests - JSON output, human output)
+      - AC-3: Step inputs (6 tests - display, capture, validation, edge cases)
+      - AC-4: Resume validation (2 tests - error on non-paused status)
+      - All 74 workflow tests pass, 930 total tests pass
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T08:08:31.462Z

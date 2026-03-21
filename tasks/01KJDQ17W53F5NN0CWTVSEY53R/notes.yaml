@@ -1,0 +1,131 @@
+notes:
+  - _ulid: 01KJDQW7RZ6DDS9BNKW8XMDXF4
+    content: "Linked to @cli-ralph spec. New feature: iteration-level timeout for ralph loop. Spec
+      covers ralph command."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T19:47:39.935Z
+  - _ulid: 01KJK3T7PC2Z2H7RTVSQ8328M7
+    content: "Implemented iteration-level timeout for ralph loop attempts. Added --iteration-timeout
+      <minutes> (default 20), validated as positive numeric minutes, and applied timeout over full
+      task-work+reflect attempt using Promise.race. On timeout, ralph now logs iteration.timeout
+      events with iteration/attempt/timeout metadata, kills the stuck agent, and reuses existing
+      retry/max-failure handling. Updated session event schema to include iteration.timeout and
+      added regression tests in tests/ralph.test.ts for dry-run display, invalid value handling, and
+      timeout event logging. Verification: npx vitest run tests/ralph.test.ts tests/sessions.test.ts
+      (pass), npm test (pass). kspec validate still reports pre-existing project-level
+      meta/reference/alignment/completeness issues unrelated to this change."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T21:52:29.388Z
+  - _ulid: 01KJK3WXSEE5KSY4TDN2WYB5DG
+    content: "Pushed commit f22d1109 to existing branch feat/session-stale-close-metadata (open PR #607:
+      https://github.com/kynetic-ai/kynetic-spec/pull/607)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T21:53:57.550Z
+  - _ulid: 01KJK48WZBHDXEHPAG6FTRW3T7
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #607 includes unrelated @core-skill-update
+      changes in this task scope, and @cli-ralph AC coverage gate is incomplete (missing annotated
+      coverage for ac-3, ac-4, ac-5, ac-14, ac-15, ac-17, ac-18)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T22:00:29.932Z
+  - _ulid: 01KJK5TKC70952P6JSZXJC00ZM
+    content: "[FIX_CYCLE: 2] Re-implemented iteration-level timeout for ralph with --iteration-timeout
+      (default 20m), wrapping task-work+reflect prompts in Promise.race and emitting
+      iteration.timeout events with iteration/attempt/timeout metadata before retry/failure
+      handling. Added schema support for iteration.timeout in session event types. Closed AC
+      coverage gaps by adding @cli-ralph AC annotations/tests for ac-3, ac-4, ac-5, ac-14, ac-15,
+      ac-17, ac-18 and timeout behavior regression tests in tests/ralph.test.ts. Verification: npx
+      vitest run tests/ralph.test.ts tests/sessions.test.ts (pass). kspec validate still reports
+      pre-existing project-level schema/reference/alignment/completeness issues unrelated to this
+      task."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T22:27:38.504Z
+  - _ulid: 01KJK5VV3ECEA0AS7J74X8KMTN
+    content: "[FIX_CYCLE: 2] Implemented and pushed iteration-timeout fix on branch
+      feat/ralph-iteration-timeout. Commit: 3e730097. Opened PR #608:
+      https://github.com/kynetic-ai/kynetic-spec/pull/608."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T22:28:19.182Z
+  - _ulid: 01KJK608NF6GR4WB11X3BFQYAR
+    content: "Automation status set to needs_review: Subagent completed but did not merge or kick back.
+      Review required."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T22:30:44.143Z
+  - _ulid: 01KJK60E21T7Y8DEVCNVY0WRQV
+    content: "[RALPH SUBAGENT] Subagent completed but did not merge or kick back. Review required."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T22:30:49.665Z
+  - _ulid: 01KJK6Y20KT1W73HHH9V2PCW4C
+    content: Reset from completed to pending
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T22:47:00.371Z
+  - _ulid: 01KJK6YR76FMMN3EJK160JAX6T
+    content: "[FIX_CYCLE: 4] Review findings: MUST-FIX: Floating runIterationPrompts() promise causes
+      unhandled rejection crash in Node.js 22 when iteration times out. disposeSpawnedAgent() closes
+      the framing layer, rejecting the pending session/prompt request. The runIterationPrompts()
+      Promise rejects with no catch handler, crashing the process before session.end and wrap-up
+      agent run. Fix: store the Promise and attach .catch(() => {}) before the Promise.race.
+      SHOULD-FIX: --iteration-timeout feature has no spec ACs in @cli-ralph; tests/ralph.test.ts
+      lines 230 and 313 have no // AC: annotations. Add ACs to spec and annotate tests. Review
+      posted at PR #608."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T22:47:23.110Z
+  - _ulid: 01KJK704TWT5HRZ6R4VQ5Y7HZK
+    content: "Automation status set to needs_review: Subagent timed out after 20 minutes"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T22:48:08.796Z
+  - _ulid: 01KJK707NECN9S8HRC3BHGVQ2A
+    content: "[RALPH SUBAGENT] Subagent timed out after 20 minutes"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T22:48:11.694Z
+  - _ulid: 01KJK791KD9PKHACN3GH461C4V
+    content: >-
+      FIX_CYCLE: 5 Addressed all review findings:
+
+      1. MUST-FIX: Fixed floating runIterationPrompts() promise by storing the promise in a variable
+      and attaching .catch(() => {}) before Promise.race — prevents unhandled rejection crash in
+      Node.js 22 when timeout fires first and disposeSpawnedAgent() rejects the pending prompt.
+
+      2. SHOULD-FIX: Added spec ACs ac-24/ac-25/ac-26 to @cli-ralph for --iteration-timeout feature
+      (default behavior, validation, timeout event logging).
+
+      3. SHOULD-FIX: Added // AC: @cli-ralph annotations to tests at lines 230 (ac-25), 313 (ac-24,
+      ac-26), and 222 (ac-24).
+
+      All 140 ralph tests pass. Opening new PR for these fixes on a separate branch.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T22:53:00.397Z
+  - _ulid: 01KJK7AYYW3N608J9D0FH4B2DE
+    content: >-
+      FIX_CYCLE: 5 complete. Opened PR #610 (https://github.com/kynetic-ai/kynetic-spec/pull/610)
+      with:
+
+      1. Fixed floating runIterationPrompts() promise (.catch(() => {}) before Promise.race)
+
+      2. Added @cli-ralph ac-24/ac-25/ac-26 for --iteration-timeout feature
+
+      3. Added // AC: annotations to tests/ralph.test.ts
+
+      All 140 ralph tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T22:54:03.228Z
+  - _ulid: 01KJK83GPHS0M24040WY168BSP
+    content: "FIX_CYCLE: 6 Inherited needs_work task and verified PR #610 currently has no review
+      comments/threads and all checks passing. Transitioned task through in_progress and
+      re-submitted to pending_review for external review/merge."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T23:07:27.825Z

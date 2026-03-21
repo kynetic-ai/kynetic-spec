@@ -1,0 +1,70 @@
+_ulid: 01KJWJ4J038V4M03RNV8PXN33T
+slugs: []
+title: Universalize P-notation priority aliases across all CLI commands
+type: task
+description: >-
+  PR #666 added P-notation (P1-P5) support only in the batch layer (normalizePriorityAlias in
+  batch-exec.ts). But parsePriority() in src/cli/validators.ts already handles this correctly. The
+  fix is to make all commands use the shared parsePriority helper instead of raw parseIntOption for
+  priority.
+
+
+  ## Known commands NOT using parsePriority (use parseIntOption directly):
+
+  - derive --priority (src/cli/commands/derive.ts:445)
+
+  - plan derive --priority (src/cli/commands/plan.ts:509)
+
+  - inbox promote --priority (src/cli/commands/inbox.ts:215)
+
+  - meta derive-task --priority (src/cli/commands/meta.ts:1105)
+
+
+  ## Commands already using parsePriority:
+
+  - task add (src/cli/commands/task.ts:312)
+
+  - task set (src/cli/commands/task.ts:845)
+
+
+  ## Scope of work:
+
+  1. Find ALL places that accept --priority with numeric 1-5 validation (search for parseIntOption
+  calls with priority, and any other priority parsing). Do not rely solely on the list above —
+  verify exhaustively.
+
+  2. Replace parseIntOption(...priority...) calls with parsePriority() from src/cli/validators.ts.
+
+  3. Update --priority option descriptions from "(1-5)" to "(1-5 or P1-P5)" to match task add/task
+  set.
+
+  4. Remove the redundant normalizePriorityAlias, isNumericPriorityOption, and
+  isNumericPriorityArgument functions from batch-exec.ts since the underlying commands will handle
+  P-notation natively. Verify batch still works after removal.
+
+  5. Add/update tests for each affected command to verify P-notation acceptance (direct CLI, not
+  just batch).
+
+  6. Ensure existing tests still pass after the change.
+
+
+  ## Trait AC coverage required:
+
+  - ac-7: P-notation accepted and normalized via shared parsePriority
+
+  - ac-8: Single normalization point (parsePriority), no batch-layer duplication
+spec_ref: "@trait-priority-parameter"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - dx
+vcs_refs: []
+created_at: 2026-03-04T13:55:57.570Z
+todos: []
+automation: needs_review

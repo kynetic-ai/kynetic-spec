@@ -1,0 +1,12 @@
+notes:
+  - _ulid: 01KJX7Y7KHS2J0W4YAYA4TZ9FE
+    content: "Automation: eligible. Bug fix with clear root cause — tests must clear
+      CLAUDE_CODE_ENTRYPOINT/CLAUDE_PROJECT_DIR/CLAUDE_CODE env vars."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-04T20:16:58.993Z
+  - _ulid: 01KJY3CETMN0AFWDE8T1TH8545
+    content: "Automation status set to needs_review: Paused during UI revamp focus"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T04:16:36.693Z

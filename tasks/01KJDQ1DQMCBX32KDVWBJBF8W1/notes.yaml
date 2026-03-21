@@ -1,0 +1,173 @@
+notes:
+  - _ulid: 01KJDQA0MV956KKZREMG980AE6
+    content: >-
+      ENRICHMENT — Standalone context for this task:
+
+
+      **What**: When two ULIDs share a prefix (e.g., 01KJ4SNE9... and 01KJ4SNEC...), the default
+      8-character short ref `@01KJ4SNE` is ambiguous and fails to resolve. The
+      `ReferenceIndex.shortUlid()` method (in `src/parser/refs.ts` line 310) already computes the
+      minimum unique prefix, but many places in the codebase use a hardcoded `_ulid.slice(0, 8)`
+      instead. There are 69 occurrences of `_ulid.slice(0, 8)` across 19 files.
+
+
+      **Where**: All places that format ULID refs for display need to use `shortUlid()` instead of
+      `_ulid.slice(0, 8)`. Key files with hardcoded slicing:
+
+      - `src/cli/commands/triage.ts` (14 occurrences) — triage list, record, act, get, start
+
+      - `src/cli/commands/inbox.ts` (9 occurrences) — inbox list, add, promote
+
+      - `src/cli/commands/item.ts` (6 occurrences) — item list, get, add
+
+      - `src/cli/commands/plan.ts` (9 occurrences) — plan list, get
+
+      - `src/cli/commands/search.ts` (4 occurrences) — search results
+
+      - `src/cli/commands/session/context.ts` (4 occurrences) — session context display
+
+      - `src/triage/actions.ts` (1 occurrence) — promote result ref
+
+      - `src/parser/validate.ts` (8 occurrences) — validation output
+
+      - Several other files with 1-3 occurrences each
+
+
+      The `ReferenceIndex` is already available in most of these contexts (it's built during
+      `initContext()` or `buildIndexes()`).
+
+
+      **How**:
+
+      1. For each file, replace `_ulid.slice(0, 8)` with `index.shortUlid(_ulid)` where a
+      ReferenceIndex is in scope
+
+      2. For files where no index is available, either thread the index through or create a
+      lightweight shortening utility
+
+      3. For triage records (which aren't indexed in the main ReferenceIndex), consider building a
+      local index or a dedicated triage ULID shortener
+
+      4. Ensure that refs displayed by any list/get/result command are always copy-pasteable into
+      subsequent commands without ambiguity
+
+
+      **Done when**:
+
+      - No occurrences of `_ulid.slice(0, 8)` remain in display-facing code paths
+
+      - All displayed refs (triage list, task list, inbox list, search results, promote result_ref,
+      etc.) use `shortUlid()` or equivalent
+
+      - A test with two items sharing an 8-character ULID prefix shows that displayed refs are still
+      unique and resolvable
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T19:37:42.812Z
+  - _ulid: 01KJKHK2NRA76YCR98DKGTC5RR
+    content: >-
+      Execution context:
+
+      - Background: displayed short refs currently use fixed 8-char ULID prefixes in many output
+      paths; collisions make copy/paste refs ambiguous.
+
+      - Scope: update display-facing short-ref formatting to use shortest unique prefixes via
+      ReferenceIndex (or equivalent local unique-set helper where index is unavailable) and add
+      regression tests for ambiguous-prefix scenarios.
+
+      - Files: CLI display/output paths (triage/inbox/item/search/session context and related
+      helpers), triage action output, and targeted tests.
+
+      - Verification: run focused vitest suites for touched command paths + kspec validate before
+      submit.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T01:53:14.936Z
+  - _ulid: 01KJKJ64JHAYW893RNTS9CNKXC
+    content: >-
+      Implemented shortest-unique ULID display refs across key CLI/export paths to prevent ambiguous
+      8-char prefixes from breaking copy/paste workflows.
+
+
+      Changes:
+
+      - Added shared shortestUniqueUlid helper in parser refs and wired ReferenceIndex.shortUlid to
+      use it.
+
+      - Updated triage/inbox/search/plan/item/session-context/session-checkpoint/log output paths to
+      emit shortest unique refs instead of fixed 8-char prefixes in human-readable output.
+
+      - Updated shared triage action executor (CLI+daemon path) to disambiguate inbox refs and
+      spec-gap observation result refs.
+
+      - Updated AC coverage matching logic (parser validate + task review) to accept variable ULID
+      prefix lengths (8..full), preventing false uncovered-AC warnings when tests use
+      shortest-unique refs.
+
+      - Updated HTML/context exports for tasks/items/triage records to emit disambiguated refs.
+
+      - Added regression test in tests/triage-cli.test.ts that seeds colliding triage ULIDs and
+      verifies triage list prints distinct refs that each resolve via triage get.
+
+
+      Verification:
+
+      - npm test -- tests/triage-cli.test.ts (56 passed)
+
+      - npm test -- tests/triage-actions.test.ts tests/observation-content-search.test.ts
+      tests/cli-plan.test.ts tests/session-context.test.ts tests/validate-mode-selection.test.ts
+      tests/item-list-under.test.ts tests/task-add-depends-on.test.ts (108 passed)
+
+      - kspec validate (fails with pre-existing project-wide meta/reference/alignment/completeness
+      issues, including duplicate @observations slug and missing observations skill file)
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T02:03:39.473Z
+  - _ulid: 01KJKJ74A1NSBDD9TB39QKSSHB
+    content: "Opened PR #618: https://github.com/kynetic-ai/kynetic-spec/pull/618 (branch
+      fix/short-ulid-display-refs). Task submitted to pending_review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T02:04:11.970Z
+  - _ulid: 01KJKK53PWW73JTYWWQGWM7V2V
+    content: "[FIX_CYCLE: 1] Review findings: SHOULD-FIX: duplicated shortestUniqueUlid implementations
+      in src/export/html.ts and src/export/triage.ts instead of reusing shared src/parser/refs.ts
+      helper (see PR #618 inline review comments)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T02:20:34.396Z
+  - _ulid: 01KJKK9NP7TDZ543D9KC1HDTF7
+    content: >-
+      [FIX_CYCLE: 1] Addressed PR #618 SHOULD-FIX review finding by removing duplicated
+      shortestUniqueUlid implementations and reusing shared src/parser/refs.ts helper.
+
+
+      Changes:
+
+      - src/export/html.ts: removed local shortestUniqueUlid function and imported
+      shortestUniqueUlid from ../parser/refs.js.
+
+      - src/export/triage.ts: removed local shortestUniqueUlid function and imported
+      shortestUniqueUlid from ../parser/refs.js.
+
+
+      Verification:
+
+      - npm test -- tests/export/html.test.ts tests/triage-export.test.ts tests/triage-cli.test.ts
+      (84 passed)
+
+      - kspec validate (fails with pre-existing project-wide meta/reference/alignment/completeness
+      issues, including duplicate @observations slug and missing observations skill file)
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T02:23:03.879Z
+  - _ulid: 01KJKMHRJYX2A8FCXWTNDCV2VX
+    content: "Automation status set to needs_review: Subagent timed out after 20 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T02:44:57.566Z
+  - _ulid: 01KJKMHSPZBV0M7X7P2RN5FYY2
+    content: "[RALPH SUBAGENT] Subagent timed out after 20 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T02:44:58.719Z

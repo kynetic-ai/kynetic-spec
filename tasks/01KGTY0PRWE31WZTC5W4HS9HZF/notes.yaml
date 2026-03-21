@@ -1,0 +1,31 @@
+notes:
+  - _ulid: 01KGTY0PRWEKP32BG55JFAPTES
+    content: "Implementation: In src/cli/commands/derive.ts, count ACs on the spec being derived. Always
+      display count in output (e.g. 'Derived task from @spec (3 ACs)'). If >5 ACs, warn: 'This spec
+      has N ACs — consider splitting before implementing.' ~15 lines, no new deps. Quick win from
+      the derive-granularity research (01KGG6GY)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T02:13:41.789Z
+  - _ulid: 01KGVWT7A7167A3N98152SY86G
+    content: >-
+      Implemented AC count display in derive output:
+
+      - Added acCount field to DeriveResult interface
+
+      - Count ACs in deriveTaskFromSpec function
+
+      - Display '(N ACs)' in human-readable output for specs with ACs (hidden for 0 ACs)
+
+      - Show complexity warning for >5 ACs: 'This spec has N ACs — consider splitting before
+      implementing.'
+
+      - Added ac_count to JSON output
+
+      - Warning uses stderr (via warn() function) following UX conventions
+
+      - 7 new tests covering AC count display, dry-run, JSON output, complexity warning, and zero-AC
+      hiding
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T11:11:55.207Z

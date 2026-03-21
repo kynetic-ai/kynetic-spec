@@ -1,0 +1,27 @@
+_ulid: 01KJQKVZ1J0SBDG9B3A3RAJBZ6
+slugs: []
+title: Fix batch exec copying sessions/blobs to temp dir
+type: task
+spec_ref: "@batch-write-buffer"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #638. Added ac-7 flush failure test using mkdir-fails-on-non-dir
+  approach (ESM can't spy fs.writeFile directly). Documented Phase 2 partial commit limitation in
+  flush() JSDoc. All 7 ACs have test coverage. 21/21 batch-write-buffer tests pass."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - batch
+  - performance
+vcs_refs: []
+session_id: 01KJR8JA0CQXS951PDBEBRA3CW
+created_at: 2026-03-02T15:50:01.010Z
+started_at: 2026-03-03T01:09:57.114Z
+submitted_at: 2026-03-03T01:10:15.379Z
+completed_at: 2026-03-03T01:21:07.970Z
+todos: []
+automation: eligible

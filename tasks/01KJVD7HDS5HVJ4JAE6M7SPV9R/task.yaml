@@ -1,0 +1,31 @@
+_ulid: 01KJVD7HDS5HVJ4JAE6M7SPV9R
+slugs: []
+title: Add explicit dispatch watch subscribe-handshake failure behavior
+type: task
+description: "Spec gap: @cli-agent-commands covers chunk streaming and reconnect, but not initial
+  subscribe handshake failure semantics. Add AC and tests so watch fails fast with actionable error
+  when subscribe ack returns success=false, preventing silent no-output failures."
+spec_ref: "@cli-agent-commands"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #675. Added @cli-agent-commands ac-18 and implemented fail-fast
+  subscribe-ack rejection handling for kspec agent dispatch watch with actionable guidance and exit
+  code 3; added AC-18 test coverage in tests/cli-agent-commands.test.ts; verified own and inherited
+  trait AC annotation coverage for @cli-agent-commands and confirmed regression safety with full npm
+  test plus green CI."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - websocket
+vcs_refs: []
+session_id: 01KJWHG8FRV2G5Q0HTRC3PGSRN
+created_at: 2026-03-04T03:10:57.977Z
+started_at: 2026-03-04T13:46:02.902Z
+submitted_at: 2026-03-04T14:02:45.320Z
+completed_at: 2026-03-04T14:16:39.557Z
+todos: []
+automation: eligible

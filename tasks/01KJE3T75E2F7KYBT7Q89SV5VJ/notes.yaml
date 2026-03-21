@@ -1,0 +1,42 @@
+notes:
+  - _ulid: 01KJE5NK4CTQFR2ZWNN55P4N2Q
+    content: "Implemented unified agent detection model and switched both setup paths to use it. Added
+      shared src/parser/agent-detection.ts with Codex detection priority: CODEX_THREAD_ID (high),
+      CODEX_SANDBOX (high, backward-compatible), and CODEX_CI/CODEX_MANAGED_BY_NPM fallback
+      (medium). Updated src/cli/commands/setup.ts and src/parser/setup-status.ts to consume shared
+      detection semantics. Added tests in tests/agent-detection.test.ts covering CODEX_THREAD_ID
+      without CODEX_SANDBOX, backward compatibility with CODEX_SANDBOX, and setup/setup-status
+      consistency for medium-confidence Codex fallback signals. Verification: vitest new + related
+      suites passed (agent-detection, enhanced-setup, parser/doctor). kspec validate currently fails
+      due unrelated pre-existing repo-wide reference/alignment/completeness issues."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-26T23:48:42.252Z
+  - _ulid: 01KJE5P8VH76H46VK36PCGDWXW
+    content: "Follow-up verification: fixed AgentType compatibility in setup.ts by adding
+      cursor/windsurf literals so shared detector return type is assignable. Re-ran pnpm tsc
+      --noEmit and tests/agent-detection.test.ts; both pass."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-26T23:49:04.497Z
+  - _ulid: 01KJE6BQWYQ9JD8QT5MNZQKWFM
+    content: "Opened PR #568 with unified Codex detection changes and tests:
+      https://github.com/kynetic-ai/kynetic-spec/pull/568. Task submitted for review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T00:00:48.030Z
+  - _ulid: 01KJE6QTND1JFZABXECVDBW56C
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: Codex detection precedence bug (CODEX_THREAD_ID
+      can be overshadowed by GH_TOKEN/COPILOT_MODEL) and missing regression test; npm test gate not
+      green."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T00:07:24.077Z
+  - _ulid: 01KJE6T45PZTGWMGCGW8VTHJ7X
+    content: "Addressed PR MUST-FIX feedback: moved codex detection precedence ahead of copilot markers
+      in shared detector and added regression test for CODEX_THREAD_ID+GH_TOKEN coexistence.
+      Verification: tests/agent-detection.test.ts and tsc --noEmit pass. Pushed commit 234bab50 to
+      PR #568."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T00:08:39.350Z

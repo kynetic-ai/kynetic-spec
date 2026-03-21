@@ -1,0 +1,42 @@
+_ulid: 01KFQAAMM3W1SDVM7PA2WEWFJ7
+slugs:
+  - task-pid-port-tests
+title: Global PID/port management tests
+type: task
+description: |-
+  Write tests for global PID/port file management.
+
+  ## Test Cases
+  - Test PID file at ~/.config/kspec/daemon.pid
+  - Test port file at ~/.config/kspec/daemon.port
+  - Test directory creation when missing
+  - Test CLI port discovery
+  - Test port file validation (reject invalid content)
+  - Test file lock for concurrent daemon starts
+
+  ## AC Coverage
+  ac-9, ac-9b, ac-9c, ac-10b, ac-11, ac-13
+
+  ## Dependencies
+  Task: Multi-directory daemon test fixtures
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #239. Implemented comprehensive test coverage for global PID/port
+  management with file locking. All 7 ACs covered: ac-9 (global paths), ac-9b (dir creation), ac-9c
+  (port validation), ac-10b (file locking), ac-11 (cleanup), ac-13 (CLI port reading). 33 tests
+  passing with proper isolation."
+depends_on:
+  - "@01KFQAAA"
+context: []
+priority: 1
+tags:
+  - testing
+  - phase-1
+vcs_refs: []
+created_at: 2026-01-24T06:16:10.627Z
+started_at: 2026-01-25T09:41:09.744Z
+completed_at: 2026-01-25T10:16:56.429Z
+todos: []
+automation: eligible

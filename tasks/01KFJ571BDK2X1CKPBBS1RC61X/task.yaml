@@ -1,0 +1,30 @@
+_ulid: 01KFJ571BDK2X1CKPBBS1RC61X
+slugs: []
+title: ACP type safety audit - strengthen typing
+type: infra
+description: "ACP type safety audit: Review and strengthen typing across ACP client implementation.
+  Current state has respondPermission() typed but other handlers use 'unknown'. Consider: (1) Add
+  typed response methods for file/read, file/write, terminal/run (2) Type the request params using
+  SDK types (3) Evaluate if we're correctly implementing the full ACP protocol - check SDK docs for
+  any missing methods or incorrect assumptions (4) Consider whether respond(unknown) should be
+  deprecated in favor of typed methods only. The { granted: true } bug showed the value of
+  compile-time enforcement."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged PR #165. Strengthened ACP type safety by adding typed response methods
+  (respondReadTextFile, respondWriteTextFile) and typed request parameters. All 937 tests pass, all
+  CI checks passed. Compile-time enforcement now prevents response structure bugs."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - acp
+  - types
+  - tech-debt
+vcs_refs: []
+created_at: 2026-01-22T06:10:37.549Z
+started_at: 2026-01-22T09:11:30.547Z
+completed_at: 2026-01-22T09:23:37.781Z
+todos: []
+automation: eligible

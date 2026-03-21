@@ -1,0 +1,71 @@
+_ulid: 01KM0NW5NMJJDWRHKVQGDERHQM
+slugs:
+  - task-review-skill-version-docs
+title: Update review skill documentation
+type: task
+description: >-
+  Update the review skill source at templates/skills/review/SKILL.md to remove --version-base and
+  --version-head from all verdict and check command examples (lines 280-317 of SKILL.md). Update
+  explanatory text to say versions are auto-derived from the review subject. Run kspec skill render
+  to regenerate the rendered output at .agents/skills/kspec-review/SKILL.md.
+
+
+  Current examples teach agents to pass version flags on every verdict and check command, which is
+  the direct cause of agents creating mismatched applies_to_version types.
+
+
+  Why: The skill documentation is the primary interface agents use to learn CLI commands. If the
+  --version-* flags are removed from the CLI (in @task-cli-verdict-auto-version and
+  @task-cli-check-auto-version) without updating the skill, agent invocations will fail on
+  unrecognized flags. The skill must match the CLI surface.
+
+
+  How:
+
+  1. Edit templates/skills/review/SKILL.md
+
+  2. Remove --version-base and --version-head from all check examples (lines 280-292)
+
+  3. Remove --version-base and --version-head from all verdict examples (lines 305-317)
+
+  4. Update the explanatory text near those examples — explain that applies_to_version is
+  auto-derived from the review subject, so callers don't need to provide version info
+
+  5. Run kspec skill render to regenerate .agents/skills/
+
+  6. Commit both the source and rendered output together
+spec_ref: "@review-cli-mutation-commands"
+meta_ref: null
+plan_ref: "@plan-review-version-auto-derivation"
+status: completed
+blocked_by: []
+closed_reason: Merged to dev. Removed --version-base/--version-head from all 6 check and verdict
+  examples in review skill source template and both rendered outputs. Added explanatory text about
+  auto-derived applies_to_version. Regenerated kspec-agents.md. No code or test changes — docs only.
+  Reviewed and approved in cycle 3 after prior cycles fixed rendered output staleness and reverted
+  out-of-scope code changes.
+depends_on:
+  - "@task-cli-check-auto-version"
+context: []
+priority: 1
+tags:
+  - docs
+  - review
+  - skill
+vcs_refs: []
+review_ref: "@01KM0Y63EDYX1CG301AZW01DD6"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T16:51:23.381Z
+  commit: 9d5e929d1472e459b4ecb77108c3ba012ed963f9
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM0XCM8S5WF7XYXP1NKCX6PM
+created_at: 2026-03-18T14:33:56.660Z
+started_at: 2026-03-18T16:51:15.136Z
+submitted_at: 2026-03-18T16:51:23.847Z
+completed_at: 2026-03-18T17:01:30.499Z
+todos: []
+automation: eligible

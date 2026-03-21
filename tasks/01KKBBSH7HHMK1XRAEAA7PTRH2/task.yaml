@@ -1,0 +1,42 @@
+_ulid: 01KKBBSH7HHMK1XRAEAA7PTRH2
+slugs: []
+title: Task budget false-positive outside ralph loop when stale KSPEC_SESSION_ID is present
+  (observed in co
+type: task
+description: >-
+  Fix task budget false-positive when stale KSPEC_SESSION_ID is set outside a ralph loop.
+
+
+  Location: checkBudget() in src/sessions/store.ts (lines ~3495-3524).
+
+
+  Current behavior: checkBudget() validates (1) sessionId is set, (2) budget file exists, (3)
+  started_this_cycle >= max_per_cycle. It does NOT check whether the session is actually active. A
+  stale KSPEC_SESSION_ID from a completed/abandoned session causes false budget exhaustion errors.
+
+
+  Fix: Add session status validation to checkBudget(). Before enforcing the budget limit, call
+  getSession() or isSessionActive() to verify the session exists and is in active status. If the
+  session is not active (completed, abandoned, or missing), skip budget enforcement and return
+  allowed. Add a test case: set KSPEC_SESSION_ID to a non-existent or completed session, verify
+  checkBudget() does not block task start.
+spec_ref: "@session-model-evolution"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #748 (c37259b). checkBudget() now skips task-budget enforcement only
+  for existing non-active sessions, while still enforcing budgets when metadata is missing but a
+  budget file exists. Added stale-session regression coverage for missing metadata, completed
+  session, abandoned session, and active-session enforcement; fresh local npm test and GitHub CI
+  passed, and touched task-budget/session-model behavior remains covered."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKBWQS90D1Z7W955T7NJF3P5
+created_at: 2026-03-10T07:53:41.361Z
+started_at: 2026-03-10T13:05:49.247Z
+submitted_at: 2026-03-10T13:05:52.827Z
+completed_at: 2026-03-10T13:31:18.049Z
+todos: []
+automation: eligible

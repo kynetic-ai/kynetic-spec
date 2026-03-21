@@ -1,0 +1,19 @@
+notes:
+  - _ulid: 01KJAAD2Z1C3E3M11G6HTR76QG
+    content: Extracted shared test helpers and interfaces for session start tests. Created
+      tests/helpers/session-types.ts with comprehensive SessionContext (all fields optional) plus
+      all sub-interfaces (ActiveTaskSummary, ReadyTaskSummary, BlockedTaskSummary,
+      CompletedTaskSummary, CommitSummary, ActivityItem, NoteSummary, InboxSummary, InboxStats,
+      SessionContextComputed, SessionStats, WorkingTree). Created tests/helpers/inbox.ts with
+      addInboxItem() and triageItem() helpers. Updated all 6 session-start test files to import from
+      shared locations. All 109 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T11:54:28.705Z
+  - _ulid: 01KJAAF09TG970T71ZTMX03VGY
+    content: "Codex review skipped — codex CLI not installed and OPENAI_API_KEY not available. Manual
+      review confirms: shared types match source types, all 109 tests pass, all 6 files updated
+      correctly. No spec_ref on task (pure refactor)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T11:55:31.514Z

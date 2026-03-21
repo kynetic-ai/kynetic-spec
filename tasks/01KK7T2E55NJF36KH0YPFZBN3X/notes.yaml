@@ -1,0 +1,43 @@
+notes:
+  - _ulid: 01KK7T2E55HPXSHDYDPGWX2ADY
+    content: |
+      kspec init creates .kspec-sessions/ directory. kspec setup adds
+      .kspec-sessions/ to root .gitignore and sessions/ to .kspec/.gitignore.
+    author: "@claude"
+    created_at: 2026-03-08T22:46:15.461Z
+  - _ulid: 01KK86PW9AD8VQGQGQRED41FDK
+    content: >-
+      Implementation complete. Changes:
+
+      1. shadow.ts: Added SESSIONS_WORKTREE_DIR constant, ensureSessionsGitignore(),
+      ensureShadowSessionsGitignore(), sessionsDirectoryCreated field on ShadowInitResult
+
+      2. initializeShadow: Creates .kspec-sessions/ dir, adds to root .gitignore, includes sessions/
+      in .kspec/.gitignore template
+
+      3. runSetupPipeline: New step 3a-ii ensures sessions dir exists, root .gitignore has
+      .kspec-sessions/, shadow .gitignore has sessions/
+
+      4. init.ts: Reports sessionsDirectoryCreated in output
+
+      5. 11 tests covering AC coverage for ac-gitignore, ac-sessions-dir-autocreate,
+      ac-shadow-gitignore, ac-sessions-dir
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T02:27:08.203Z
+  - _ulid: 01KK874X3EDQ2GYKHW7BJ02BV3
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: setup --dry-run only previews .kspec-sessions/
+      creation and omits planned .gitignore updates introduced by PR #720, regressing
+      @enhanced-setup ac-6."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-09T02:34:47.791Z
+  - _ulid: 01KK8AMM7F0A9152W9HH2GNDZJ
+    content: "Fix cycle 1: Extracted needsSessionsGitignore() and needsShadowSessionsGitignore()
+      read-only check functions from shadow.ts. setup.ts now uses these in dry-run mode to detect
+      and preview planned .gitignore updates without applying them. Added test verifying dry-run
+      previews all three session actions (dir creation, root .gitignore, shadow .gitignore) and
+      confirms no files are modified. Also added unit tests for the new check functions."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T03:35:48.719Z

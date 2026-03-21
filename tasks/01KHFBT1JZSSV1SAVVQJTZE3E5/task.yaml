@@ -1,0 +1,24 @@
+_ulid: 01KHFBT1JZSSV1SAVVQJTZE3E5
+slugs:
+  - implement-skill-rendering-pipeline
+title: Implement Skill Rendering Pipeline
+type: task
+spec_ref: "@skill-rendering"
+plan_ref: "@plan-portable-agent-integration-infrastructure"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #381. Implemented skill rendering pipeline with full AC coverage:
+  SKILL.md creation with YAML frontmatter (ac-1), docs directory copying (ac-2), idempotent
+  rendering (ac-3), kspec-managed marker detection (ac-4), and orphan cleanup (ac-5). Added 21 tests
+  covering all acceptance criteria."
+depends_on:
+  - "@implement-skill-cli-commands"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-15T00:39:32.191Z
+started_at: 2026-02-15T03:39:35.219Z
+completed_at: 2026-02-15T04:01:17.867Z
+todos: []
+automation: eligible

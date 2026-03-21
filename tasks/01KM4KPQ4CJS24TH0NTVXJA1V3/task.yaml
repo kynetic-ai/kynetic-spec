@@ -1,0 +1,41 @@
+_ulid: 01KM4KPQ4CJS24TH0NTVXJA1V3
+slugs: []
+title: Fix review add subject-type precedence with version context
+type: bug
+description: "review add --base/--head flags override --subject-type, silently creating code
+  subjects when task subject was intended. parseSubjectFromOptions checks options.base before
+  subjectType, so passing version context for a task review creates the wrong subject type.
+  Consider: separate --version-base/--version-head from --base/--head, or validate that
+  --base/--head are incompatible with --subject-type task."
+spec_ref: "@review-cli-creation-and-query"
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev after review approval. Verified review subject parsing now preserves
+  explicit task/plan/spec subjects when review context is supplied separately, rejects ambiguous
+  mixed subject selectors with usage guidance, and retains explicit code-subject creation behavior.
+  Evidence: npm test passed (289 files, 6636 tests), review 01KM4R91 approved; kspec validate still
+  reports unrelated pre-existing repository issues."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - reviews
+  - bug
+vcs_refs: []
+review_ref: "@01KM4R91N0N1EBTV11XSYCDZFQ"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T04:31:39.192Z
+  commit: 5c99aae155547908523751e1996ca00fc11ee2fe
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM4QPPBDTA14DBC6SYX6ATXG
+created_at: 2026-03-20T03:12:58.508Z
+started_at: 2026-03-20T04:23:34.721Z
+submitted_at: 2026-03-20T04:31:39.599Z
+completed_at: 2026-03-20T04:37:25.717Z
+todos: []
+automation: eligible

@@ -1,0 +1,20 @@
+_ulid: 01KGVB8X9Y04BFEYGJAJTTNEBS
+slugs: []
+title: Increase ralph loop prompt timeout from 5min to 30min
+type: task
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #328. Added RALPH_PROMPT_TIMEOUT (30min) override for both ralph agent
+  and subagent spawn sites."
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-02-07T06:05:22.110Z
+started_at: 2026-02-07T06:06:33.409Z
+completed_at: 2026-02-07T06:23:24.142Z
+todos: []

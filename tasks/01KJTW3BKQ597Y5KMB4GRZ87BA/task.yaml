@@ -1,0 +1,31 @@
+_ulid: 01KJTW3BKQ597Y5KMB4GRZ87BA
+slugs:
+  - task-cli-serve-daemon-isolation
+title: Prevent cli-serve tests from killing unrelated running daemon
+type: bug
+description: tests/cli-serve.test.ts currently manipulates global ~/.config/kspec daemon state in
+  beforeEach/afterEach (serve stop plus PID SIGTERM cleanup). This can terminate an already-running
+  local daemon outside the test run. Update daemon-sensitive CLI tests to use isolated HOME/config
+  and project-scoped daemon lifecycle so tests never stop or kill external daemon processes.
+spec_ref: "@daemon-sensitive-cli-test-determinism"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #658. Isolated cli-serve daemon tests to per-test HOME/config, replaced
+  global PID kill cleanup with scoped serve stop, and switched fixed startup sleeps to bounded
+  readiness polling with actionable timeout diagnostics. AC coverage added for
+  @daemon-sensitive-cli-test-determinism ac-1/ac-2/ac-3 in tests/cli-serve.test.ts."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - test
+  - daemon
+  - bug
+vcs_refs: []
+created_at: 2026-03-03T22:11:35.159Z
+started_at: 2026-03-04T05:21:03.020Z
+submitted_at: 2026-03-04T05:35:05.161Z
+completed_at: 2026-03-04T05:43:24.116Z
+todos: []

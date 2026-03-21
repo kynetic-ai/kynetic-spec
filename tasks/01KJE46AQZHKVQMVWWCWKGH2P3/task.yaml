@@ -1,0 +1,40 @@
+_ulid: 01KJE46AQZHKVQMVWWCWKGH2P3
+slugs: []
+title: Make git root/shadow detection resilient to restricted runtimes
+type: task
+description: 'Issue: In the Codex execution runtime, Node shell-based git calls (execSync with
+  string commands like "git rev-parse --show-toplevel") can fail with spawnSync /bin/sh EPERM even
+  when git itself is available. Impact: getGitRoot() and related checks return false negatives,
+  kspec treats repo as non-git/non-shadow, and writes can fall back to root-level files (for example
+  project.tasks.yaml) instead of .kspec worktree paths. Findings: (1) kspec shadow status returned
+  Not a git repository in this runtime while user environment returned healthy shadow JSON. (2)
+  Running getGitRoot() through parser returned null before fix. (3) Task add created an untracked
+  root project.tasks.yaml due to shadow detection failure. Why: the implementation depended on shell
+  invocation semantics instead of direct process execution, which is fragile in sandboxed/restricted
+  runtimes. Proposal: standardize git invocations in detection-critical paths to direct argv-based
+  spawn/execFile style calls, add regression tests that simulate shell-unavailable execution
+  behavior, and audit other shell-form git calls that can influence path resolution.'
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #567. Replaced shell-string git detection calls in shadow parser with
+  argv-based sync git invocation () via shared runGitSync helper; updated
+  isGitRepo/getGitRoot/branchExists to avoid /bin/sh dependency in restricted runtimes. Verified CI
+  green and runtime behavior via kspec shadow status/getGitRoot; infra task had no spec_ref so AC
+  coverage gate was N/A."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - shadow
+  - portability
+  - runtime
+vcs_refs: []
+created_at: 2026-02-26T23:22:53.567Z
+started_at: 2026-02-26T23:26:58.084Z
+submitted_at: 2026-02-26T23:26:59.112Z
+completed_at: 2026-02-26T23:34:56.989Z
+todos: []

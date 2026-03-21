@@ -1,0 +1,21 @@
+_ulid: 01KF4WVX0EEF2R90HC63GY3B6Z
+slugs:
+  - task-kspec-meta-thread
+title: "Implement: kspec meta thread"
+type: task
+spec_ref: "@meta-thread-cmd"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Fully implemented kspec meta thread command with all required actions (add, remove,
+  list, clear) and comprehensive test coverage - all 14 tests passing
+depends_on:
+  - "@task-meta-cli-commands"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:36.430Z
+started_at: 2026-01-18T13:19:29.383Z
+completed_at: 2026-01-18T13:24:05.561Z
+todos: []

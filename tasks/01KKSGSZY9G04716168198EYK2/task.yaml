@@ -1,0 +1,57 @@
+_ulid: 01KKSGSZY9G04716168198EYK2
+slugs:
+  - task-session-event-detail-endpoint
+title: Add session event detail HTTP endpoint with blob resolution
+type: task
+description: |
+  Add GET /api/sessions/:id/events/:seq endpoint to the daemon
+  session routes.
+
+  Implementation:
+  1. Read events.jsonl for the session, find event by seq number.
+  2. Resolve any blob pointers in the event data — read blob files
+     from the session's blobs/ directory and inline the content.
+  3. Return the full resolved SessionEvent as JSON.
+  4. 404 if session or seq not found.
+  5. Respect X-Kspec-Dir project scoping.
+
+  The existing readEvents() in store.ts reads all events. For
+  single-event fetch, consider a targeted read that stops at the
+  matching seq to avoid reading the full file for large sessions.
+
+  Acceptance gates:
+  - @session-event-detail-endpoint ac-single-event-fetch
+  - @session-event-detail-endpoint ac-blob-resolution
+  - @session-event-detail-endpoint ac-not-found
+spec_ref: "@session-event-detail-endpoint"
+plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #882. Added GET /api/sessions/:id/events/:seq endpoint with blob
+  resolution. Implementation: readEventBySeq() in store.ts for targeted single-event read, new route
+  in sessions.ts with session ID resolution/seq validation/blob pointer resolution/404 handling, 11
+  tests covering all own ACs (ac-single-event-fetch, ac-blob-resolution, ac-not-found) and trait ACs
+  (@trait-api-endpoint ac-1, ac-2 tested; ac-3-ac-6 N/A). Fix cycle 1 addressed: trait AC
+  annotations fixed to standalone comments, unused imports removed, docstring corrected."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - daemon
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-15T22:12:19.624Z
+  commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKSRN9NTJHFAR7V15J34AB99
+created_at: 2026-03-15T19:50:41.353Z
+started_at: 2026-03-15T22:12:16.471Z
+submitted_at: 2026-03-15T22:12:20.422Z
+completed_at: 2026-03-15T22:24:48.104Z
+todos: []
+automation: eligible

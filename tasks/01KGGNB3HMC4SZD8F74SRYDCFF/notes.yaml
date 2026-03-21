@@ -1,0 +1,21 @@
+notes:
+  - _ulid: 01KGHC485ABZZY3EJ23M7HNXK4
+    content: >-
+      Improved ralph log separation between subagent and main loops:
+
+
+      1. Fixed createPrefixedRenderer to properly prefix streaming content (agent_message and
+      agent_thought) by wrapping process.stdout.write with line-boundary tracking
+
+      2. Added visual dividers (double line borders) when entering and exiting subagent review
+      processing
+
+      3. All output from subagents now clearly prefixed with [REVIEW SUBAGENT] including streaming
+      text
+
+
+      This makes it much easier to distinguish which context (main loop vs subagent) you're reading
+      in the logs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-03T09:07:53.643Z

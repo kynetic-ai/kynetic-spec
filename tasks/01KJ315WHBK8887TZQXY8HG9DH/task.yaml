@@ -1,0 +1,23 @@
+_ulid: 01KJ315WHBK8887TZQXY8HG9DH
+slugs: []
+title: "Spike: Design interactive triage system with persistent metadata"
+type: task
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Spike complete. Plan imported with 6 specs and 6 tasks. Dependencies set.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - spike
+  - design
+  - inbox
+  - triage
+vcs_refs: []
+created_at: 2026-02-22T15:58:34.538Z
+started_at: 2026-02-22T20:16:48.921Z
+completed_at: 2026-02-22T20:16:53.170Z
+todos: []

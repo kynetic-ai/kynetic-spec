@@ -1,0 +1,57 @@
+_ulid: 01KJWK89YMH01SAC8ECSHRJ5BC
+slugs: []
+title: "Fill spec gap: derive command options and fix spec/code mismatches"
+type: task
+description: >-
+  The @cmd-derive requirement spec has good AC coverage (15 ACs) but the description has spec/code
+  mismatches and missing options.
+
+
+  This matters because derive is a critical command for the spec-first workflow — it's how specs
+  become tasks. Mismatches between spec and code create confusion for agents trying to verify
+  behavior.
+
+
+  Issues to fix:
+
+  1. Description lists --json as an option, but --json is not defined on the derive command itself —
+  it comes via trait inheritance (@trait-json-output). The description should not list it as a
+  direct option (the trait handles it).
+
+  2. Description lists --recursive as an option, but the code uses recursive as the DEFAULT behavior
+  — there is no --recursive flag, only --flat to disable it. Description should clarify this.
+
+  3. Missing --priority option from description (exists in code at src/cli/commands/derive.ts:424).
+  Priority description should say '1-5 or P1-P5'.
+
+  4. Missing --title option from description (exists in code, allows overriding the default
+  'Implement: {spec title}' pattern). There is a separate @derive-title-override spec for this, but
+  the main command description should at least list the option.
+
+
+  Existing ACs are solid and should be preserved. May need a new AC for --priority behavior (derived
+  tasks get specified priority instead of default).
+
+
+  Reference implementation at src/cli/commands/derive.ts (command definition around line 414-426).
+spec_ref: "@cmd-derive"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Spec updated: description now matches code exactly (6 options, no phantom
+  --recursive/--json), added ac-priority and ac-title ACs, P-notation documented."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - spec-hygiene
+  - cli
+vcs_refs: []
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-04T14:15:28.980Z
+started_at: 2026-03-04T14:15:40.964Z
+submitted_at: 2026-03-04T14:16:41.591Z
+completed_at: 2026-03-04T14:16:42.729Z
+todos: []
+automation: eligible

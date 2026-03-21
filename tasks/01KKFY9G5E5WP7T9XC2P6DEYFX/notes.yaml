@@ -1,0 +1,121 @@
+notes:
+  - _ulid: 01KKHWSNS1Y1X6K2FNW5C4HRC6
+    content: >-
+      Execution context:
+
+      - Background: dispatcher must own workspace bootstrap so agents inherit a prepared runtime
+      instead of redoing setup.
+
+      - Scope: implement bootstrap config/state contract in dispatch preflight, including
+      reuse/invalidation behavior and failure recording.
+
+      - Files: dispatch runtime/workspace modules, related config/schema types, and focused tests
+      around dispatch preflight/bootstrap reuse.
+
+      - Verification: targeted and full npm test coverage plus kspec validate before submit.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T20:46:18.401Z
+  - _ulid: 01KKHXE8SDYT99J309YJN3YZAT
+    content: >-
+      Implemented dispatcher-owned bootstrap preflight.
+
+      - Added explicit dispatch and agent bootstrap step configuration with tracked-mutation opt-in,
+      idempotent/reviewer rerun controls, and persisted bootstrap state.
+
+      - Dispatch now bootstraps workspaces before runInvocation, reuses cached success when
+      config/head are unchanged, records explicit invalidation reasons, and blocks tasks on
+      actionable bootstrap failure.
+
+      - Verification: npm run typecheck; npm test -- --run
+      tests/dispatch-runtime-bootstrap-contract.test.ts tests/dispatch-workspace-config.test.ts
+      tests/canonical-task-workspace-contract.test.ts tests/agent-dispatch-engine.test.ts
+      tests/parser/config.test.ts; npm test; kspec validate (warnings only: existing repo-wide
+      alignment/completeness debt).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T20:57:33.229Z
+  - _ulid: 01KKHXGYGZ59JR6T0V7FJPS835
+    content: |-
+      PR opened: https://github.com/kynetic-ai/kynetic-spec/pull/805
+      Commit: c7baae499
+      Ready for reviewer dispatch.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T20:59:01.023Z
+  - _ulid: 01KKHXYJZK47466K69C21QC20P
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: reviewer bootstrap can report success on a fresh
+      reviewer workspace without running any bootstrap steps or reusing valid worker state."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T21:06:27.955Z
+  - _ulid: 01KKHZ6C7JAZV9H27VBX40BK7A
+    content: "[FIX_CYCLE: 1] Narrowed the reviewer regression to ensureWorkspaceBootstrap: fresh
+      reviewer workspaces with non-idempotent steps can fall through to status=succeeded without
+      reusing worker bootstrap state. Fixing the reviewer guard and adding a regression test for
+      reviewer-first bootstrap."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T21:28:11.762Z
+  - _ulid: 01KKHZBYAGVNPK6EK6V8F188BY
+    content: "[FIX_CYCLE: 1] Fixed reviewer bootstrap success on fresh reviewer workspaces by rejecting
+      reviewer preflight whenever required bootstrap work would be skipped and some steps are not
+      reviewer-safe. Added a regression test for first reviewer invocation without reusable worker
+      bootstrap state. Verification: npm run typecheck; npm test -- --run
+      tests/dispatch-runtime-bootstrap-contract.test.ts; npm test; kspec validate (warnings only:
+      existing repo-wide debt)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T21:31:14.128Z
+  - _ulid: 01KKHZRVGQPF61VWSVQJVMDEKP
+    content: "[FIX_CYCLE: 4] Review findings: MUST-FIX: reviewer bootstrap reuse can report success on a
+      fresh reviewer worktree that does not contain worker bootstrap artifacts; AC-3 test also
+      misses the reviewer filesystem state."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T21:38:17.240Z
+  - _ulid: 01KKJ17262K0M8QAFEQPX9Z8DV
+    content: "[FIX_CYCLE: 5] Updating bootstrap metadata to track worker/reviewer readiness separately.
+      Reviewer reuse now keys off reviewer-safe worktree state or explicit worker-state reuse when
+      no reviewer steps apply, and AC-3 coverage now asserts reviewer filesystem state plus
+      reviewer-first/worker-later behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T22:03:31.395Z
+  - _ulid: 01KKJ1JNKZJEA4HAD429DR4W7D
+    content: "[FIX_CYCLE: 5] Fixed reviewer bootstrap reuse by normalizing per-role bootstrap state in
+      dispatch workspace metadata. Worker and reviewer readiness are now tracked separately,
+      invalidation hashes use the full bootstrap config, reviewer reuse only falls back to worker
+      state when no reviewer steps apply, and reviewer success no longer lets first worker bootstrap
+      get skipped. Added AC-3 regressions for worker-only reviewer reuse and
+      reviewer-first/worker-later sequencing. Verification: npm run typecheck; npm test -- --run
+      tests/dispatch-runtime-bootstrap-contract.test.ts; npm test; kspec validate (warnings only:
+      pre-existing repo-wide debt)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T22:09:51.744Z
+  - _ulid: 01KKJ1VM6228T88A7RHMA1MS5W
+    content: "[FIX_CYCLE: 7] Review findings: MUST-FIX: PR #805 is conflicting with main on GitHub
+      (mergeable: CONFLICTING, mergeStateStatus: DIRTY). Rebase the branch and resubmit for merge."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T22:14:45.186Z
+  - _ulid: 01KKJ35Y3ANSRJVWSTPE7C40WT
+    content: "[FIX_CYCLE: 7] Resolving PR #805 merge conflict by rebasing
+      dispatch/task/task-implement-dispatch-bootstrap-contract/01kkfy9g onto origin/main, then
+      rerunning verification before resubmitting for review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T22:37:51.594Z
+  - _ulid: 01KKJ3WXBAS2BN3CQWDCWGJZMC
+    content: "[FIX_CYCLE: 7] Rebased PR #805 onto origin/main and force-pushed
+      dispatch/task/task-implement-dispatch-bootstrap-contract/01kkfy9g. Reconciled bootstrap
+      contract with the newer dispatch workspace registry model, preserved reviewer/worker bootstrap
+      role-state coverage, and reverified with npm run typecheck; npm test -- --run
+      tests/dispatch-runtime-bootstrap-contract.test.ts tests/dispatch-workspace-registry.test.ts
+      tests/dispatch-branch-integration-contract.test.ts
+      tests/canonical-task-workspace-contract.test.ts tests/dispatch-workspace-config.test.ts; npm
+      test; kspec validate (warnings only: existing repo-wide debt)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T22:50:24.490Z

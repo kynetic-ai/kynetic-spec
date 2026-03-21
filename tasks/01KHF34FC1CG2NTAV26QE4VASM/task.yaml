@@ -1,0 +1,32 @@
+_ulid: 01KHF34FC1CG2NTAV26QE4VASM
+slugs: []
+title: Extract drift detection field lists from Zod schemas at runtime
+type: task
+description: "PR #362 hardcodes SPEC_ITEM_FIELDS and TASK_FIELDS as manually maintained Sets. These
+  will drift from the actual Zod schemas — the exact problem the feature claims to detect. Fix:
+  derive field sets from SpecItemSchema.shape and TaskSchema.shape at runtime. Also adds a
+  CONCEPTUAL_FIELDS set of common English words (modules, features, requirements) that triggers
+  false positives on natural prose."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #626 (merge commit 81d7a0e26983b64709e2e3a4685c8d2b4ed82603).
+  Implemented runtime derivation of drift detection field sets from SpecItemSchema.shape and
+  TaskSchema.shape in src/parser/validate.ts, removing hardcoded lists to prevent future schema
+  drift. No linked spec_ref for this internal task, so own/trait AC coverage is N/A; regression
+  verification passed via local npm test (3630 passed) and green PR CI on head
+  0efdedf47f9edf11e2169a992bb3f3a88824a146."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJN28PAZMZDSX3RKS2M01JZJ
+created_at: 2026-02-14T22:07:56.801Z
+started_at: 2026-03-01T16:50:30.312Z
+submitted_at: 2026-03-01T17:01:10.777Z
+completed_at: 2026-03-01T17:53:35.635Z
+todos: []
+automation: needs_review

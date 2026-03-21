@@ -1,0 +1,52 @@
+notes:
+  - _ulid: 01KM8PHRX08MC8TCSKFTYYM5K6
+    content: >-
+      Implemented in-file activity timeline. Key changes:
+
+      - Added historyToActivity(), notesToActivity(), assembleActivityFromFiles() to
+      src/utils/activity.ts
+
+      - Added getPreMigrationActivity() for per-directory git log fallback
+
+      - Added ActivitySource type ('history'|'note'|'git_fallback'|'review') to ActivityEntry
+
+      - Updated task.ts consumer to use in-file history as primary source with fallback chain
+
+      - Added 16 tests covering all 3 ACs in tests/activity-in-file.test.ts
+
+      - All 6911 tests pass, no regressions
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T17:19:39.936Z
+  - _ulid: 01KM8SFFTFEGMY4M8AYB245QKR
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-21T18:10:50.831Z
+  - _ulid: 01KM8T24CMA2QD4NY4QT135JW2
+    content: "Fix cycle 1: Addressed blocker — when a migrated task has notes but no stored history, the
+      pre-migration git fallback (getPreMigrationActivity) was returning note_added entries that
+      duplicated notes already present from notes.yaml. Fixed by filtering out note_added entries
+      from fallback results in the consumer (task.ts:910-916). Added test covering the deduplication
+      scenario. All 17 activity tests pass, 6910 total tests pass (2 pre-existing timeout failures
+      in agent-invocation-lifecycle.test.ts unrelated to this change)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T18:21:01.716Z
+  - _ulid: 01KM8TGDX98YQ27XZX65TVP5VP
+    content: "[FIX_CYCLE: 2] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-21T18:28:50.217Z
+  - _ulid: 01KM8TYYBJJBWKR3Y0H7R9GG9Y
+    content: "Fix cycle 2: Addressed both blockers from review. (1) Added optional 'command' field to
+      ActivityEntry interface and populated it from entry.command in historyToActivity(), so
+      stored-history entries now preserve the originating kspec command. (2) Fixed multi-field
+      history entries to expose all changed fields using namespaced detail keys
+      (field.from/field.to) instead of dropping detail when fields.length > 1. Single-field entries
+      retain the backward-compatible flat key format. Updated 4 test assertions and added new
+      assertions for command preservation, multi-field detail on task-start/task-submit, and note
+      entries having no command. All 6912 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T18:36:45.810Z

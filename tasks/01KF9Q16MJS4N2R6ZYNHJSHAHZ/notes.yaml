@@ -1,0 +1,94 @@
+notes:
+  - _ulid: 01KFA1VZND5HCWGQC0FESBFEZG
+    content: Task was accidentally started but not worked on in iteration 6. Leaving in_progress for
+      next session to pick up. This task involves adding a review subagent workflow when completing
+      tasks - similar to the PR review workflow implemented in RALPH_LOOP_INSTRUCTIONS.md.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T02:38:14.189Z
+  - _ulid: 01KFA1WXEG9W4PN2N6TVJSVJ50
+    content: >-
+      Understanding the task: This is about adding an automated review workflow that triggers after
+      task completion. Similar to PR review pattern but for task completion. Key components needed:
+
+
+      1. CLI command: 'kspec task review <ref>' - gathers task details, linked spec, ACs, git diff
+      since started_at
+
+      2. Integration point: Hook or option in 'kspec task complete' to optionally trigger review
+
+      3. Configuration: Opt-in/out mechanism (maybe in .kspec/kynetic.yaml or config)
+
+      4. Output format: Report gaps between spec and implementation
+
+
+      This ties into the alignment system and the PR review automation patterns documented in meta
+      observations.
+
+
+      Need to decide: Should this be a CLI command that humans/agents call manually, or should it be
+      integrated into task complete workflow? Task description suggests both - command for explicit
+      review + integration for automatic review.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T02:38:44.688Z
+  - _ulid: 01KFA1YXEFGS9HKRXENWPMHTCT
+    content: >-
+      Design decision: Focus on minimal viable implementation. Instead of building complex
+      automation, provide:
+
+
+      1. 'kspec task review <ref>' command - gathers all context needed for review (task details,
+      spec, ACs, git diff since started_at)
+
+      2. Documentation of review workflow pattern in AGENTS.md
+
+      3. Output format optimized for agent consumption
+
+
+      Rationale: The PR review pattern already works well using subagents + gh commands. Same
+      pattern applies here - give agents the right command to gather context, let them analyze it.
+      Automation/integration can come later if the manual workflow proves valuable.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T02:39:50.224Z
+  - _ulid: 01KFA2A363JREK3DVZ9R3TW7QR
+    content: >-
+      Implementation complete - added minimal viable review workflow:
+
+
+      1. **getDiffSince() in src/utils/git.ts**
+         - New function that gets git diff since a specific timestamp
+         - Handles both committed changes and working tree changes
+         - Exported via src/utils/index.ts
+
+      2. **kspec task review command in src/cli/commands/task.ts**
+         - Gathers complete review context: task details, linked spec with ACs, git diff since started_at
+         - Supports both human-readable and JSON output modes
+         - Human output includes review checklist to guide agent/human review
+         - JSON output provides structured data for programmatic consumption
+
+      3. **Verified functionality**
+         - Tested on current task (@01KF9Q16) - successfully shows task details, notes, and diff
+         - All 543 existing tests pass - no regressions
+         - JSON mode works correctly
+
+      **What's NOT included (future enhancements):**
+
+      - Automatic integration into 'kspec task complete' workflow
+
+      - Configuration mechanism (opt-in/out)
+
+      - Test coverage for new functionality
+
+      - Documentation in AGENTS.md or RALPH_LOOP_INSTRUCTIONS.md
+
+
+      **Rationale for minimal scope:**
+
+      Following the pattern established with PR reviews - provide the command to gather context, let
+      agents/users decide when to use it. Integration and automation can come later if the manual
+      workflow proves valuable.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T02:45:56.547Z

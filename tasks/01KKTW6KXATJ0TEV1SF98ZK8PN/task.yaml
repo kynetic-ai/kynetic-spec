@@ -1,0 +1,60 @@
+_ulid: 01KKTW6KXATJ0TEV1SF98ZK8PN
+slugs:
+  - task-review-interaction
+title: Add review interaction controls (comment, reply, resolve, verdict)
+type: task
+description: |
+  Add interactive controls to the review detail page so users can
+  participate in reviews through the UI.
+
+  Why: Without interaction, the UI is read-only. Users need to create
+  threads, reply, resolve issues, and submit verdicts — the same
+  operations agents do via CLI but through a visual interface.
+
+  What: "Add Comment" button opening a form with body textarea and
+  kind selector (blocker/question/nit). Reply button on each thread
+  opening an inline reply form. Resolve/Reopen toggle on blocker and
+  question threads. Verdict submission panel with decision selector
+  (approve/request_changes/comment) and submit button. All controls
+  use optimistic updates with TanStack Query mutations.
+
+  How: POST/PATCH to the thread and verdict API endpoints. Mutation
+  hooks with optimistic updates following existing patterns. After
+  verdict submission, disposition badge updates immediately from the
+  response. WebSocket events handle multi-user scenarios (another
+  reviewer acting simultaneously).
+
+  Covers: @review-records-web-ui ac-3, ac-4, ac-5, ac-6.
+spec_ref: "@review-records-web-ui"
+plan_ref: "@plan-review-records-web-ui"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Added review interaction controls: Add Comment (ac-3), Reply (ac-4),
+  Resolve/Reopen (ac-5), Verdict submission (ac-6). All mutations use TanStack Query with
+  invalidation. isInteractive gate excludes archived and static mode. Build, svelte-check, and test
+  suite clean (pre-existing failures unrelated)."
+depends_on:
+  - "@task-review-detail-page"
+context: []
+priority: 3
+tags:
+  - web-ui
+  - review
+vcs_refs: []
+review_ref: "@01KKZC3RBEAWFJDCFPJW5YAH4E"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T02:01:15.195Z
+  commit: c829472cb105c3047739feb9542b4c83a5ac9b73
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KKZA148353GWG490R3496XZ7
+created_at: 2026-03-16T08:29:03.786Z
+started_at: 2026-03-18T01:48:22.423Z
+submitted_at: 2026-03-18T02:01:15.590Z
+completed_at: 2026-03-18T02:26:08.460Z
+todos: []
+automation: eligible

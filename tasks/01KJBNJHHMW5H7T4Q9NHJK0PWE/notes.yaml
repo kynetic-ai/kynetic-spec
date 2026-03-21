@@ -1,0 +1,12 @@
+notes:
+  - _ulid: 01KJD41Y7CED4AX4MYQC7XAGAJ
+    content: Created packages/web-ui/tests/e2e/api-watcher.spec.ts with 6 E2E tests covering
+      @daemon-server ac-4, ac-5, ac-6. Tests use page.evaluate() with native browser WebSocket API
+      to subscribe to files:updates and files:errors topics, then write YAML files directly to
+      daemon.kspecDir from Node.js context to trigger the watcher. All trait ACs annotated N/A with
+      reasons. CI skip added via testInfo.skip(process.env.CI) — file watcher tests skip in CI as
+      per convention. Deleted daemon-watcher.test.ts (163 lines of static analysis). All 3524 unit
+      tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T14:01:15.244Z

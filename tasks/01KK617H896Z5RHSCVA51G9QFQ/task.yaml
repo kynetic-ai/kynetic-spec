@@ -1,0 +1,35 @@
+_ulid: 01KK617H896Z5RHSCVA51G9QFQ
+slugs: []
+title: Fix dispatch watch WebSocket crash on Node 20
+type: task
+description: "kspec agent dispatch watch crashes on Node 20 with 'WebSocket is not defined'. The
+  command uses the global WebSocket constructor which is only available in Node 22+, but
+  package.json engines field says >=18.0.0. Fix: add ws package as a polyfill/fallback for Node <
+  22, or use a conditional import. The WebSocket usage is in src/cli/commands/agent.ts line 846. See
+  GitHub issue #701."
+spec_ref: "@cli-agent-commands"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #709 as f107f32b46b298eb7d1f5f81ae32b3d9f1200aeb. Fixed the
+  dispatch-watch WebSocket crash on Node 18-21 by using the ws-backed constructor path in
+  src/cli/commands/agent.ts and stabilizing dispatch-watch tests with injectable WebSocket control
+  plus fast initContext mocking. AC coverage for @cli-agent-commands ac-13 through ac-18 remains
+  verified in tests/cli-agent-commands.test.ts, and local typecheck plus full npm test passed on the
+  merged head."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - cli
+  - agent
+vcs_refs: []
+session_id: 01KK6JM3SPCNTV5NNKWFPB26A7
+created_at: 2026-03-08T06:12:53.641Z
+started_at: 2026-03-08T11:20:29.231Z
+submitted_at: 2026-03-08T11:59:36.299Z
+completed_at: 2026-03-08T12:09:38.189Z
+todos: []
+automation: eligible

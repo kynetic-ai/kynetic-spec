@@ -1,0 +1,54 @@
+_ulid: 01KKQRK68XM841PBFQFNPT33VZ
+slugs:
+  - task-cleanup-legacy-fetches
+title: Clean up legacy fetch infrastructure
+type: task
+description: >-
+  After all pages are migrated, remove dead code: unused fetch functions from api.ts
+  (fetchTasks-for-titles pattern), per-page taskTitles lookup map construction, sidebar polling
+  interval (setInterval), board agent status polling interval, manual loading/error $state variables
+  replaced by query states, old WebSocket reload handlers (loadAll, loadData patterns).
+
+
+  Grep for "limit: 999" and "limit: 1000" to verify none remain. Grep for "setInterval" to verify no
+  polling remains. Verify static mode still works end-to-end.
+
+
+  Acceptance gates (from @ui-data-freshness): No polling intervals remain (ac-4), static mode works
+  end-to-end (ac-6).
+spec_ref: "@ui-data-freshness"
+plan_ref: "@plan-ui-data-layer-rework"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #875. Removed all legacy fetch infrastructure: per-page taskTitles
+  lookup maps (using server-resolved invocation.task_title), limit:1000 from
+  dashboard/triage/static-mode queries, setInterval polling from session detail (replaced with
+  WebSocket event-driven debounced refresh), updated E2E test route patterns and mock data. All
+  acceptance gates verified: no setInterval, no limit:999/1000, no taskTitles, no loadData/loadAll
+  remain. ac-4 and ac-6 confirmed."
+depends_on:
+  - "@task-migrate-core-pages"
+  - "@task-migrate-sidebar"
+  - "@task-migrate-complex-pages"
+  - "@task-migrate-inbox-triage"
+context: []
+priority: 3
+tags:
+  - web-ui
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-15T08:28:40.115Z
+  commit: f685a0a6a6de762ecc06fd43442df8f14971d219
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKR8R07JGA7GPAGJ76C81D5W
+created_at: 2026-03-15T03:28:18.205Z
+started_at: 2026-03-15T08:11:22.117Z
+submitted_at: 2026-03-15T08:28:40.880Z
+completed_at: 2026-03-15T08:40:53.077Z
+todos: []
+automation: eligible

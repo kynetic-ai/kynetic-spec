@@ -1,0 +1,27 @@
+_ulid: 01KFMMHX91G8RSY91QANTT4FSQ
+slugs:
+  - task-rest-and-websocket-api-contract
+title: "Implement: REST and WebSocket API Contract"
+type: task
+spec_ref: "@api-contract"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "All 33 ACs from @api-contract spec successfully implemented and merged across 6
+  derived subtasks. Subtasks completed: @01KFMMPY (CORS/foundation), @01KFMMQ2 (Task API), @01KFMMQ7
+  (Spec Item API), @01KFMMQB (Inbox/Meta API), @01KFMMQF (Search/Validation API), @01KFMMQM (Error
+  handling tests). All 1207 tests passing. Implementation includes REST endpoints, WebSocket
+  protocol, CORS, error handling, and comprehensive test coverage with proper AC annotations."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - api
+  - rest
+  - websocket
+vcs_refs: []
+created_at: 2026-01-23T05:17:11.329Z
+started_at: 2026-01-23T11:43:29.972Z
+completed_at: 2026-01-23T13:54:53.830Z
+todos: []
+automation: eligible

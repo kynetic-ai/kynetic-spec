@@ -1,0 +1,23 @@
+notes:
+  - _ulid: 01KJ91QE80ERB3RT5FS62TPRT1
+    content: Refactor human-readable activity timeline to group commits under their linked tasks. Tasks
+      are top-level entries, linked commits nest beneath with visual connector (pipe or bent arrow).
+      Orphan commits (no task trailer) appear as standalone indented entries. Primarily a
+      display-layer change to the session start human formatter. The activity_timeline data already
+      has linked_commit type with task refs, so grouping logic can work from the existing data
+      structure. JSON output can stay flat or optionally adopt grouped structure.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T00:03:36.320Z
+  - _ulid: 01KJ98TZHDSV9NWSC71AFXFTJH
+    content: "Implemented hierarchical activity timeline display. Changes: (1) Task groups: linked
+      commits grouped under their task with visual connectors (├─ for non-last, └─ for last). (2)
+      Task entries use ✓ marker as top-level entries. (3) Orphan commits use ○ marker for visual
+      distinction. (4) Groups sorted by most recent event; commits within group sorted
+      chronologically (oldest first). (5) Multi-commit dedup: multiple commits referencing same task
+      appear nested under one task entry. (6) Updated [completed] badge to ✓ across activity
+      section. Updated tests in session-start-activity-timeline.test.ts (19 tests) and
+      session-start-notes.test.ts. All 3603 tests pass (2 known flaky ralph signal tests)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T02:07:52.365Z

@@ -1,0 +1,29 @@
+_ulid: 01KJDSXEME66TYKVVGGFW6PYT2
+slugs: []
+title: Fix test failures after v0.7.0 version bump
+type: task
+description: "5 tests failing across 3 files after the v0.7.0 bump: (1)
+  tests/claude-plugin-registry.test.ts - checkMarketplaceHealth returns version-mismatch instead of
+  healthy, plugin files still at 0.6.0. (2) tests/package-distribution.test.ts (2 failures) -
+  plugin.json and marketplace.json still show 0.6.0, tests expect 0.7.0. (3)
+  tests/ralph/session-budget-integration.test.ts (2 failures) - ralph loop times out waiting for
+  completion marker, likely unrelated to version bump, may be a race condition or mock issue. The
+  plugin version failures are likely fixed by regenerating plugin distribution files. The ralph
+  budget tests need investigation."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Plugin/marketplace version tests now pass at v0.9.0. Remaining 2 failures are ralph
+  budget race conditions — splitting into focused task.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - testing
+vcs_refs: []
+created_at: 2026-02-26T20:23:16.878Z
+todos: []
+automation: needs_review

@@ -1,0 +1,18 @@
+notes:
+  - _ulid: 01KJ4V6RRKKPMW0A8VY6MHGFYX
+    content: "AUTOMATION: Bug investigation. task add returned OK but task not findable. Investigate
+      shadow branch commit race condition or ULID collision."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T08:52:40.851Z
+  - _ulid: 01KJ6VB9MD2MQBFJYNFFRYA7GS
+    content: "Root cause: non-atomic read-modify-write in saveTask and other YAML mutation functions.
+      When concurrent kspec processes write to the same file (common in ralph loop), second write
+      can overwrite first. Fix: extracted advisory file lock (mkdir-based, with PID + timestamp
+      stale detection) into src/parser/file-lock.ts. Applied to: saveTask, deleteTask,
+      saveInboxItem, deleteInboxItem, saveTriageRecord, addChildItem, updateSpecItem,
+      deleteSpecItem, savePlan, deletePlan. Consolidated duplicate lock in plans.ts. 7 unit tests
+      for lock mechanism including concurrent write safety."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T03:33:38.061Z

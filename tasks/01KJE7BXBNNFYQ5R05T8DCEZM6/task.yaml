@@ -1,0 +1,59 @@
+_ulid: 01KJE7BXBNNFYQ5R05T8DCEZM6
+slugs: []
+title: Enable core skill install/render path for codex
+type: bug
+description: >-
+  Root cause: core skills are defined as claude-only, so codex is never targeted.
+
+
+  Evidence:
+
+  - templates/skills/manifest.yaml declares every core skill with platforms: [claude-code].
+
+  - skill install-core persists platforms directly from core manifest
+  (src/cli/commands/skill-install.ts), and setup pipeline install has a claude-code fallback
+  (src/cli/commands/setup.ts).
+
+  - setup render pipeline only dispatches renderers from each skill.platforms value; no codex
+  platform in meta means codex renderer is never invoked.
+
+  - claude-code core skills are intentionally skipped as plugin-provided in claude renderer, so
+  current render result is all plugin-provided skips and no codex rows.
+
+
+  Impact:
+
+  - In Codex environments, running skill install-core/setup does not produce .agents/skills/kspec-*/
+  SKILL.md outputs for core skills.
+
+
+  Tracking scope (no implementation in this task creation):
+
+  - Define expected platform strategy for core skills in Codex (manifest/platform defaults and
+  migration behavior).
+
+  - Update install-core/setup install path so core skill meta includes codex where intended.
+
+  - Add regression tests that assert codex core skills are rendered/available after install-core +
+  render/setup.
+
+  - Verify claude plugin-provided behavior remains unchanged.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: null
+depends_on: []
+context: []
+priority: 2
+tags:
+  - skills
+  - codex
+  - install-core
+vcs_refs: []
+created_at: 2026-02-27T00:18:22.197Z
+started_at: 2026-02-27T00:35:16.481Z
+submitted_at: 2026-02-27T01:48:02.326Z
+completed_at: 2026-02-27T05:19:42.802Z
+todos: []

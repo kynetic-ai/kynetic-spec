@@ -1,0 +1,8 @@
+notes:
+  - _ulid: 01KK2XMBJQ93XC2AAQXFWYYSBY
+    content: "Completed with --force from pending state. Reason: Already implemented in PR #685
+      (feat/dispatch: implement periodic reconciliation loop). Branch feat/ui-revamp just needs to
+      merge main to pick it up."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T01:12:16.216Z

@@ -1,0 +1,20 @@
+notes:
+  - _ulid: 01KGTN2ACKW9SZBP59JJBJPPQV
+    content: |
+      Implementation notes:
+
+      Aggregate by iterating session summaries (metadata-only for totals/averages).
+      Tool usage requires streaming events.jsonl across all matching sessions - only
+      parse when --tool-usage is requested to avoid unnecessary I/O.
+      Time grouping (--by-week/--by-day) buckets sessions by started_at date.
+      Depends on shared session summary reader and event stream reader.
+    author: "@claude"
+    created_at: 2026-02-06T23:37:17.459Z
+  - _ulid: 01KGVNWZJYK3AZ79P5VXXSQCVD
+    content: "Implemented session log stats command with all 8 spec ACs. Codex review found issue with
+      week calculation using local time instead of UTC - fixed with proper ISO-8601 week helper
+      using UTC APIs. Added concrete boundary date tests. 31 tests passing. PR #331 ready for
+      merge."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T09:11:05.567Z

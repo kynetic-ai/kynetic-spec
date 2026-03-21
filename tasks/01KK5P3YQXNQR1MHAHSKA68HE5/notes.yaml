@@ -1,0 +1,69 @@
+notes:
+  - _ulid: 01KK68QNT4ZZEA57DADQ179N08
+    content: >-
+      Execution context:
+
+      - Part C (setup defaults) already has filter: { automation: 'eligible' } on task-worker
+      dispatch rules — no changes needed
+
+      - Part B (engine default) needs _matchesFilter to default to automation:eligible for
+      task.ready/task.needs_work when no filter specified
+
+      - Part A (UI) needs filter editing per trigger row: automation dropdown, tag chips, priority
+      threshold
+
+      - Files to change: dispatch.ts, AgentEditForm.svelte, AgentCard.svelte (show filter badges)
+
+      - Tests: dispatch engine test, vitest component tests or E2E for UI
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T08:24:02.628Z
+  - _ulid: 01KK6ACQDD8M4Z0PK4X41KPVMR
+    content: >-
+      PR #706 created: https://github.com/kynetic-ai/kynetic-spec/pull/706
+
+
+      Changes:
+
+      - AgentEditForm: each trigger row now shows automation dropdown, tag chips, priority threshold
+      (ac-5 through ac-9)
+
+      - dispatch.ts: _matchesFilter defaults to automation:eligible for task.ready/task.needs_work
+      (ac-21)
+
+      - setup.ts: already had filter defaults, added ac-22 annotation to existing test
+
+      - 5 new AC-21 tests + 12 existing tests updated for new default behavior
+
+      - All 60 dispatch engine tests pass, full suite 4051 pass
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T08:53:00.973Z
+  - _ulid: 01KK6B7D91RH4BBS39VMJN2R74
+    content: "[FIX_CYCLE: 1] Review findings: PR #706 review found blocking issues: missing UI AC
+      coverage for @ui-agent-dispatch ac-5..ac-9, priority filter semantics still use exact match
+      instead of threshold, and filter badges are only partially surfaced."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T09:07:35.330Z
+  - _ulid: 01KK6CFN4SGS2ESR5FN5BHBKG8
+    content: >-
+      Fix cycle 1 addressed:
+
+      - MUST-FIX: Priority filter changed from exact match to threshold semantics (task.priority <=
+      filter.priority). 4 new dispatch engine tests covering equal, higher, lower priority, and
+      default priority.
+
+      - MUST-FIX: Added 15 E2E tests for @ui-agent-dispatch ac-5..ac-9 covering filter display,
+      automation defaults, tag chips, priority editing, and save persistence.
+
+      - SHOULD-FIX: AgentCard now shows full filter badges — automation, tags (as individual
+      badges), and priority (as p≤N) — not just automation.
+
+      - Updated fixture to include tags and priority on task-worker dispatch rule for E2E testing.
+
+      - All 64 dispatch engine tests pass. Full suite 4053+ pass (3 pre-existing failures in
+      unrelated test files).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T09:29:34.105Z

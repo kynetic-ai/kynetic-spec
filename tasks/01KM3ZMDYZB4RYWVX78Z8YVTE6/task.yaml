@@ -1,0 +1,48 @@
+_ulid: 01KM3ZMDYZB4RYWVX78Z8YVTE6
+slugs:
+  - task-isolate-dispatch-git-targeting
+title: Constrain integration-branch mutation scope
+type: task
+description: |
+  What: Make integration-branch operations resolve and mutate the
+  intended shared-checkout state deterministically.
+
+  Why: Dispatch needs one consistent mutation scope so sync, publish,
+  health, and repair operations always act on the same checkout and
+  never spill into task worktrees or ambiguous repository state.
+
+  How: Consolidate integration-branch operations behind one shared
+  dispatch-owned execution boundary and enforce the mutation-scope
+  contract there.
+spec_ref: "@dispatch-integration-mutation-scope"
+plan_ref: "@plan-dispatch-integration-checkout-boundaries"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev after approved review @01KM44E3. Verified full npm test pass (286
+  files, 6606 tests), AC coverage for @dispatch-integration-mutation-scope, and shared-checkout
+  mutation scoping plus unsafe-target refusal behavior.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - git
+  - runtime
+vcs_refs: []
+review_ref: "@01KM44E3J0C9T8C7PKTVW7B8HQ"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-19T22:44:56.510Z
+  commit: 146e2709913aa6c8f2e597da2e98c9d224b4255d
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM43F7DRM3W2MBWVQ0A6EB43
+created_at: 2026-03-19T21:22:12.063Z
+started_at: 2026-03-19T22:33:45.267Z
+submitted_at: 2026-03-19T22:44:56.952Z
+completed_at: 2026-03-19T22:51:05.857Z
+todos: []
+automation: eligible

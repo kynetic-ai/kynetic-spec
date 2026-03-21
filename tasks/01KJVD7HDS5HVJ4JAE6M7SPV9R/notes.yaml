@@ -1,0 +1,50 @@
+notes:
+  - _ulid: 01KJWHJECEN8C65X1RE4V0D1RF
+    content: >-
+      Execution context:
+
+      - Background: dispatch watch can silently show no output when websocket subscribe ack returns
+      success=false.
+
+      - Scope: add explicit AC + tests + implementation so watch fails fast with actionable guidance
+      on subscribe handshake failure.
+
+      - Files: src/cli/commands/agent.ts, tests/cli-agent-commands.test.ts, spec item
+      @cli-agent-commands.
+
+      - Verification: targeted cli-agent-commands tests, then kspec validate and relevant test
+      suite.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T13:46:04.046Z
+  - _ulid: 01KJWHWN28JER3BMGJ5T0X6YQ8
+    content: >-
+      Implemented subscribe-handshake failure handling for agent dispatch watch.
+
+      - Added @cli-agent-commands ac-18 to define failure semantics when subscribe ack returns
+      success=false.
+
+      - Added AC-18 test coverage in tests/cli-agent-commands.test.ts for immediate exit with
+      actionable guidance.
+
+      - Updated src/cli/commands/agent.ts to inspect subscribe ack (request_id=watch-subscribe),
+      fail fast on success=false, print guidance, and exit code 3 without reconnect loop.
+
+      - Verification: npx vitest run tests/cli-agent-commands.test.ts (pass, 46 tests); npx vitest
+      run . (pass, 173 files / 3642 tests).
+
+      - Note: kspec validate currently fails in this repo due pre-existing meta/reference/alignment
+      issues unrelated to this change (e.g., duplicate @observations slug and existing alignment
+      warnings).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T13:51:38.568Z
+  - _ulid: 01KJWJH53KA2WPKS3S4J0M7880
+    content: |-
+      Submitted for review.
+      - Branch: fix/dispatch-watch-subscribe-ack-failure
+      - Commit: 32e8209f2
+      - PR: https://github.com/kynetic-ai/kynetic-spec/pull/675
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T14:02:50.355Z

@@ -1,0 +1,38 @@
+_ulid: 01KJF06NRBB8EHQ6VGA8AZ8PAY
+slugs: []
+title: Prove shadow auto-commit gaps are closed with regression tests
+type: bug
+description: "What: skill command flows (notably skill import/set/render in this session) left
+  pending changes in .kspec that required a manual git commit/push on kspec-meta. This violates
+  expected shadow auto-commit/sync behavior. Where: skill command implementations and related
+  spec/trait mappings. How: identify commands that mutate .kspec without going through
+  commitIfShadow (or equivalent), align their spec coverage to @trait-shadow-commit where
+  applicable, and implement missing auto-commit/sync integration. Add tests proving no pending
+  .kspec changes remain after mutating skill commands. Done when: running skill
+  import/set/render/update paths that mutate shadow state leaves kspec-meta clean with commits
+  synced, and spec/trait coverage reflects the behavior."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #624. Fixed missing shadow auto-commit in skill render by calling
+  commitIfShadow after render/cleanup in src/cli/commands/skill-diff.ts. Added regression suite
+  tests/shadow-skill-commit.test.ts covering skill add/import/set/render(single+all)/delete
+  clean-shadow behavior. No deviations from task scope. Trait AC coverage confirmed for
+  @trait-shadow-commit ac-1 and ac-8 via new tests and passing CI/full test suite."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - skills
+  - shadow
+  - spec
+vcs_refs: []
+session_id: 01KJN28PAZMZDSX3RKS2M01JZJ
+created_at: 2026-02-27T07:32:24.971Z
+started_at: 2026-03-01T16:05:46.576Z
+submitted_at: 2026-03-01T16:18:25.415Z
+completed_at: 2026-03-01T16:30:27.227Z
+todos: []
+automation: eligible

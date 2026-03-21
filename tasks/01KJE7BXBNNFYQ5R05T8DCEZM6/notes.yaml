@@ -1,0 +1,35 @@
+notes:
+  - _ulid: 01KJE86X9X7XWBQ87BRE6T0KMC
+    content: "Investigation (2026-02-27): reproduced codex gap in this repo. kspec setup --dry-run
+      --json (detected codex-cli high confidence) reports Render skills: 11 plugin-provided with no
+      rendered skill IDs, and kspec skill render --json shows only claude-code plugin-provided
+      skips. templates/skills/manifest.yaml currently marks all core skills as claude-code only.
+      Because renderSkillsForSetup iterates skill.platforms, codex renderer is never invoked for
+      core skills."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T00:33:06.877Z
+  - _ulid: 01KJE8F7XBKDG47VBDQRH5S3AB
+    content: "Implemented codex core-skill install/render path (2026-02-27): updated
+      templates/skills/manifest.yaml so all core skills target both claude-code and codex; setup
+      render fallback message now platform-neutral; added regression tests in
+      tests/core-skill-install.test.ts (install-core + skill render creates
+      .agents/skills/kspec-help and keeps claude core plugin-provided) and
+      tests/enhanced-setup.test.ts (setup in codex env renders core skills to codex output).
+      Verified with npm run build plus vitest runs: core-skill-install, enhanced-setup,
+      core-skill-update, setup-pipeline-unification, core-skill-namespace all passing."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T00:37:39.883Z
+  - _ulid: 01KJECGKGR5GZSP3FD9AJ0BTSH
+    content: "PR #569 updated and re-reviewed on 2026-02-27; CI passing on head dba33943; task moved to
+      pending_review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T01:48:18.840Z
+  - _ulid: 01KJERKCJVT1G3PA72NAX8MVZY
+    content: "Merged via PR #569 on 2026-02-27 (merge commit 7042139b); codex core install/render path
+      is live."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T05:19:32.955Z

@@ -1,0 +1,10 @@
+notes:
+  - _ulid: 01KHWS7SH5X3PJW1F31ETQHCZF
+    content: Simplified subagent prompt to be data-only — provides task ref, branch, task details, and
+      spec context, then delegates entirely to /pr-review skill. Removed all hardcoded workflow
+      instructions from the prompt. Updated pr-review skill (SKILL.md) to include explicit
+      requirement to post a structured GitHub review (APPROVE or REQUEST_CHANGES) via gh api before
+      merging, with AC coverage checklist template.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-20T05:44:21.797Z

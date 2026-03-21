@@ -1,0 +1,43 @@
+notes:
+  - _ulid: 01KF880W3QJWJCXTB1KWMB0JS5
+    content: >-
+      Task auto-started when @task-meta-manifest-format completed (dependency satisfied).
+
+
+      Investigation findings: Includes functionality is already fully implemented in
+      src/parser/meta.ts:225-239:
+
+      - loadMetaContext() processes includes array from manifest
+
+      - Uses expandIncludePattern() to resolve glob patterns (same as spec includes)
+
+      - Loads items from each included file via loadMetaFile()
+
+      - Merges items into main MetaContext
+
+
+      The schema already defines includes field (MetaManifestSchema line 134).
+
+
+      Need to verify there are acceptance criteria defined for this spec item and test the
+      functionality.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T09:47:16.984Z
+  - _ulid: 01KF884PZNK73SDM600M0MR46N
+    content: "Investigation complete: Meta includes are already fully implemented. Schema has includes
+      field (src/schema/meta.ts:134), parser processes includes (src/parser/meta.ts:225-239). Need
+      to write integration test to verify the feature works correctly."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T09:49:22.805Z
+  - _ulid: 01KF88HMFDVDHE221A9ZKRBX1Y
+    content: "Implementation complete. Meta includes were already implemented in parser
+      (src/parser/meta.ts:225-239) but CLI commands were using metaCtx.manifest instead of metaCtx
+      (which contains items from both manifest and includes). Fixed all CLI commands to use
+      metaCtx.agents/workflows/conventions/observations directly. Added comprehensive integration
+      tests covering: loading from includes, glob patterns, missing files, reference validation
+      across includes. All 61 tests passing."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T09:56:26.221Z

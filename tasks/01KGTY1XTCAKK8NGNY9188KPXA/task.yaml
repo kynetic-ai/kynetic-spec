@@ -1,0 +1,27 @@
+_ulid: 01KGTY1XTCAKK8NGNY9188KPXA
+slugs: []
+title: Add batch commands subcommand for discoverability
+type: task
+description: "kspec batch commands — list allowed commands with positional arg names and option
+  flags. Reference for writing batch JSON without reading source. Example output: 'inbox add <text>
+  [--tag <tag...>]'. Complements --dry-run (which validates after writing) with discoverability
+  before writing."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #339. Added 'kspec batch commands' subcommand that lists all mutating
+  commands allowed in batch mode with signatures, descriptions, and JSON output. Includes regression
+  tests for nested batch rejection. All CI checks passed."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - batch
+  - dx
+vcs_refs: []
+created_at: 2026-02-07T02:14:21.772Z
+started_at: 2026-02-07T11:21:13.923Z
+completed_at: 2026-02-07T11:37:44.623Z
+todos: []
+automation: eligible

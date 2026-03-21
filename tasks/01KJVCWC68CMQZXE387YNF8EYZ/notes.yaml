@@ -1,0 +1,31 @@
+notes:
+  - _ulid: 01KJVCWPV8R5DKBKZHVH2S4CSF
+    content: >-
+      Execution context:
+
+      - Background: dispatch watch opens WS but receives no agent_text_chunk output because daemon
+      rejects Node subscribe payload as invalid JSON.
+
+      - Scope: fix WS command decoding for Node client payload types, add regression tests, and
+      surface subscribe-ack failures in watch command.
+
+      - Files: packages/daemon/src/websocket/handler.ts, src/cli/commands/agent.ts, tests for daemon
+      websocket handler + cli watch behavior.
+
+      - Verification: targeted vitest for websocket handler and cli watch, plus repro script showing
+      subscribe ack success and chunk logging path.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T03:05:03.081Z
+  - _ulid: 01KJVD7517XKYKXCDTEQ4646FP
+    content: "Root cause isolated and reproduced: daemon websocket command handler rejected CLI
+      subscribe frames, first as validation_error Invalid JSON (runtime payload not always plain
+      string), then as not_found due wrapper sockets without sessionId in message callback. Fixed by
+      robust payload decoding (string/typed-array/blob/object) and resolving session IDs via
+      PubSubManager.getSessionIdBySocket with context fallback. Added dedicated daemon websocket
+      handler regression tests for all payload forms and wrapper-session resolution. Verified
+      end-to-end in isolated repro project: kspec agent dispatch watch now streams [agent session]
+      text chunks in real time."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T03:10:45.287Z

@@ -1,0 +1,21 @@
+_ulid: 01KFC1GKMKN61T9J9XAP6QCEH2
+slugs:
+  - task-trait-type
+title: "Implement: Trait Type"
+type: task
+spec_ref: "@trait-type"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #99. Implemented trait-specific validation warnings with 100% AC
+  coverage (4/4 ACs). All 634 tests passing."
+depends_on:
+  - "@task-spec-traits-system"
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-19T21:10:30.291Z
+started_at: 2026-01-20T03:53:22.957Z
+completed_at: 2026-01-20T04:07:38.316Z
+todos: []

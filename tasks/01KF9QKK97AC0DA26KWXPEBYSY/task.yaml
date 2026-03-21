@@ -1,0 +1,21 @@
+_ulid: 01KF9QKK97AC0DA26KWXPEBYSY
+slugs: []
+title: Update documentation for meta-spec and observations tooling
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Comprehensive documentation update for meta-spec and observations system - added new
+  sections, updated examples, verified all commands against current CLI
+depends_on: []
+context: []
+priority: 2
+tags:
+  - docs
+  - meta
+vcs_refs: []
+created_at: 2026-01-18T23:38:53.607Z
+started_at: 2026-01-19T02:59:29.900Z
+completed_at: 2026-01-19T03:02:03.429Z
+todos: []

@@ -1,0 +1,11 @@
+notes:
+  - _ulid: 01KJBGX46MEQR2MPSVF0HKZ3HJ
+    content: "Validation PASSED. Both checks succeeded: (1) KSPEC_SESSION_ID env var is set to
+      01KJBGWBP73H0ERJ7GHR9164EA — confirms harness-specific injection via .claude/settings.json is
+      working correctly. (2) kspec task get @task-validate-session-inject --json shows session_id:
+      01KJBGWBP73H0ERJ7GHR9164EA — confirms task start correctly stamps session_id from the env var.
+      The fix from task @01KJAZAR (inject KSPEC_SESSION_ID via harness config in ralph loop, PR
+      #541) is working end-to-end."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T23:07:20.149Z

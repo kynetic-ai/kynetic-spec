@@ -1,0 +1,22 @@
+_ulid: 01KHQQV1WWK0B29W0DAFD7QJ8F
+slugs:
+  - task-new-project-bootstrapping
+title: "Implement: New Project Bootstrapping"
+type: task
+spec_ref: "@new-project-bootstrapping"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #409. Permission and memory seeding added to setup pipeline with
+  cross-platform support, safe JSON handling, and 28 tests."
+depends_on:
+  - "@task-setup-pipeline-unification"
+  - "@task-cross-platform-and-version-robustness"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-18T06:43:43.644Z
+started_at: 2026-02-18T21:56:01.434Z
+completed_at: 2026-02-18T22:24:55.304Z
+todos: []

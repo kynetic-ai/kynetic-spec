@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KHAQCCMSAWS3BSCH35HMRAGC
+    content: "Bug: silently returns 0 specs 0 tasks when Specs section exists without code fence.
+      Implements ac-34 on @plan-import."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-13T05:25:35.513Z

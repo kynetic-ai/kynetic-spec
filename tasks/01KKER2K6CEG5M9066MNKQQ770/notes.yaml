@@ -1,0 +1,29 @@
+notes:
+  - _ulid: 01KKES3JWBA3YMNZ2XRPBPM3NV
+    content: >-
+      Implementation complete. Changes across 9 files:
+
+
+      Schema: Added initial_response_timeout_seconds to AgentBudgetSchema (meta.ts)
+
+      Types: Added 'stalled' to SessionStatusSchema and 'agent.stalled' to EventTypeSchema
+      (sessions/types.ts)
+
+      Invocation: Added InvocationStallError class, MEANINGFUL_UPDATE_TYPES set, stallResolved flag
+      in updateHandler, stallPromise in race, catch block for stall between abort and generic
+      failure, clearTimeout(stallHandle) in finally, 'stalled' returns null from toInvocationOutcome
+      (invocation.ts)
+
+      Store: Added 'stalled' to statusCounts Record and status breakdown loop (store.ts)
+
+      CLI: Updated session log list help text and added magenta color for stalled status
+      (session/commands.ts, session/log.ts)
+
+      Web UI: Added 'stalled' to SessionSummary type union and statusColor switch in sessions page
+      and RelatedSessionsSection component (api.ts, +page.svelte, RelatedSessionsSection.svelte)
+
+
+      All 4521 tests pass. TypeScript compiles clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-11T15:44:05.515Z

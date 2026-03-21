@@ -1,0 +1,10 @@
+notes:
+  - _ulid: 01KJP29N40B9GVHT5S7VVXJFTY
+    content: "Design complete. Plan @plan-reactive-agent-runtime imported with 7 specs and 8 tasks.
+      Dual-reviewed by opus agent and codex (gpt-5.3-codex). Key design decisions: extend existing
+      daemon, declarative dispatch rules, per-invocation sessions, sequential default with parallel
+      opt-in, clean ralph replacement. Implementation phased: schema → core runtime → CLI/daemon →
+      migration."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T01:23:40.800Z

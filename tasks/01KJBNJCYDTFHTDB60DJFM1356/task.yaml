@@ -1,0 +1,62 @@
+_ulid: 01KJBNJCYDTFHTDB60DJFM1356
+slugs:
+  - task-e2e-daemon-server-core
+title: E2E tests for daemon Server core (replace daemon-server.test.ts)
+type: task
+description: >-
+  Replace tests/daemon-server.test.ts (310 lines) with Playwright E2E tests. Currently all static
+  analysis except the localhost middleware unit tests (lines 59-188).
+
+
+  Write: packages/web-ui/tests/e2e/api-server.spec.ts
+
+  Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+  Behaviors to test:
+
+  - GET /api/health — verify response shape {status: 'ok', uptime, connections, version}
+  (@daemon-server ac-11)
+
+  - CORS headers — fetch from test, verify Access-Control-Allow-Origin includes localhost:5173
+  (@daemon-server ac-15, @api-contract ac-1)
+
+  - Verify daemon is only accessible on localhost (the middleware unit tests at lines 59-188 are
+  already behavioral — move them to a vitest file like tests/daemon-localhost-middleware.test.ts, or
+  keep them in the same file with only the behavioral tests) (@daemon-server ac-3)
+
+
+  For the static tests being deleted (ac-1 Elysia dep, ac-2 hostname binding, ac-12 signal
+  handlers): these are verified implicitly — if the daemon starts and responds to health checks,
+  it's bound correctly. Signal handler shutdown is tested in cli-serve.test.ts.
+
+
+  After E2E tests pass, delete the static analysis tests from daemon-server.test.ts. Keep the
+  localhost middleware unit tests (lines 59-188) in place — they test real logic.
+
+  Run: npm test && npm run test:e2e to verify.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #553. Replaced static analysis tests in tests/daemon-server.test.ts
+  with Playwright E2E tests in packages/web-ui/tests/e2e/api-server.spec.ts. Tests cover
+  @daemon-server ac-1, ac-2, ac-3, ac-11, ac-15, @api-contract ac-1, and @trait-localhost-security.
+  Kept behavioral unit tests for localhost middleware in daemon-server.test.ts. Deleted static
+  analysis tests that only read source files."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - e2e
+vcs_refs: []
+session_id: 01KJCTE1GG3AZEHZ5YWTTHWCHF
+created_at: 2026-02-26T00:28:51.533Z
+started_at: 2026-02-26T11:47:01.975Z
+submitted_at: 2026-02-26T12:58:15.251Z
+completed_at: 2026-02-26T12:58:16.329Z
+todos: []
+automation: eligible

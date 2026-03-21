@@ -1,0 +1,19 @@
+notes:
+  - _ulid: 01KJ4V6V0HXEDTJM35H285YYMG
+    content: "AUTOMATION: Bug fix. Surface JSON parse error details on malformed input. AC @batch-exec
+      ac-invalid-json requires error with line/position info. Currently silent."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T08:52:43.153Z
+  - _ulid: 01KJ7054ZJKQD1Q5WS1AQDXA1K
+    content: "Investigated the bug: error handling code is already in place and working. Malformed JSON
+      produces clear error messages with position info (e.g., 'Invalid JSON: Expected property name
+      at position 1 (line 1 column 2)'). The original issue may have been transient or occurred
+      during concurrent operations. Strengthened existing tests: (1) integration test now verifies
+      error message content (position info) not just exit code, (2) added JSON-mode error test
+      verifying structured {success,error} output, (3) added non-array valid JSON test for schema
+      validation path, (4) strengthened empty batch test to verify error message. All 3295 tests
+      pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T04:57:39.570Z

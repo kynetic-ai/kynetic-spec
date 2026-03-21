@@ -1,0 +1,8 @@
+notes:
+  - _ulid: 01KJX36D7GEYZVQVGV5RJV02T2
+    content: "Carry-forward requirement from PR #664: keep branch-isolation step in
+      task-work/pr-review/codex/eval-agents skill updates. Runtime guidance must state: after task
+      start and before edits, create/switch to dedicated task branch."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T18:54:04.017Z

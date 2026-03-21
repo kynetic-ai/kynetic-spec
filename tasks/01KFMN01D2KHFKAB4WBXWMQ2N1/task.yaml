@@ -1,0 +1,26 @@
+_ulid: 01KFMN01D2KHFKAB4WBXWMQ2N1
+slugs: []
+title: E2E integration tests with Playwright
+type: task
+spec_ref: "@web-ui"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Parent epic complete. E2E infrastructure verified working (Playwright configured,
+  test fixtures exist, 5 smoke tests passing, npm scripts configured). Child tasks created for
+  specific test areas: tasks view (@01KFP84N), items view (@01KFP84S), inbox (@01KFP84X), search
+  (@01KFP850), connection handling (@01KFP854), observations (@01KFP85D), error handling
+  (@01KFP85G), navigation (@01KFP85M). Implementation work proceeds in child tasks."
+depends_on:
+  - "@task-watcher-impl"
+context: []
+priority: 2
+tags:
+  - phase-5
+  - testing
+vcs_refs: []
+created_at: 2026-01-23T05:24:54.306Z
+started_at: 2026-01-24T23:06:38.226Z
+completed_at: 2026-01-24T23:08:48.566Z
+todos: []
+automation: eligible

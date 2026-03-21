@@ -1,0 +1,19 @@
+notes:
+  - _ulid: 01KJ3SS53VD4G4TCCVAS8FJWHF
+    content: Automation eligible. This should be fixable by an agent — the root cause is well-documented
+      (cross-package relative imports). If no fix is found after multiple attempts, block for manual
+      handling.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-22T23:08:31.739Z
+  - _ulid: 01KJ3XTE1JQSJ5KGM5TEG8X1E1
+    content: "Root cause: bun build --compile was running from packages/daemon/ and trying to resolve
+      relative imports (../../parser/index.js) which pointed outside the package to non-existent
+      paths. Fix: Changed build:compile to compile from dist/daemon/index.ts (populated by npm run
+      build:daemon) where the relative import paths correctly resolve to dist/parser/ and
+      dist/utils/. Updated daemon package.json, build-executables.sh, and test. All 3
+      daemon-executable tests now pass. Full suite: 3105 passed, 1 failed (pre-existing doctor flaky
+      test)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T00:19:07.954Z

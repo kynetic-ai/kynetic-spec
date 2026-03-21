@@ -1,0 +1,41 @@
+notes:
+  - _ulid: 01KF50ZF9K6WKHAHXW7MWNZ07D
+    content: >-
+      Implementation complete:
+
+
+      - Used fuzzysort library (3.81 KB, zero deps) for subsequence-based fuzzy matching
+
+      - Created src/utils/fuzzy.ts with fuzzyMatch() wrapper function
+
+      - Extended ItemFilter with fuzzySearch and fuzzyThreshold fields
+
+      - Modified ItemIndex.query() to apply fuzzy matching after other filters
+
+      - Updated 'kspec item list' with -q/--search (fuzzy by default), --exact, --threshold options
+
+      - Updated 'kspec tasks list' with same search options, refactored to use ItemIndex
+
+      - Added comprehensive tests in tests/fuzzy.test.ts covering all 6 ACs
+
+      - All 212 tests pass
+
+
+      Note on fuzzysort behavior: It uses subsequence matching, so typos with missing letters (e.g.,
+      'valdation' -> 'Validation') work well, but typos with added/wrong letters may not match.
+      Updated AC-1 example from 'validashun' to 'valdation' to reflect realistic behavior.
+
+
+      AC annotation comments added to implementation files.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-17T03:46:27.763Z
+  - _ulid: 01KF51SSDRFZ89SXRQ9T53RYGN
+    content: Implementation deemed insufficient for actual use case. This implementation provides
+      autocomplete-style fuzzy matching on titles/slugs, but does not replace grep for content
+      search. The real need is grep-like syntax searching across all content (descriptions, notes,
+      AC text). Branched to fuzzy-search-v1 for reference. Superseded by updated spec and new
+      implementation task.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-17T04:00:50.104Z

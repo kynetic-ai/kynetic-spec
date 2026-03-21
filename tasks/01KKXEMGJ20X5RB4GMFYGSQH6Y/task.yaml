@@ -1,0 +1,73 @@
+_ulid: 01KKXEMGJ20X5RB4GMFYGSQH6Y
+slugs: []
+title: Replace hardcoded branch names in merge skill template with dynamic references
+type: task
+description: >-
+  ## What
+
+
+  The merge skill template (`templates/skills/merge/SKILL.md`) hardcodes `dev` as the merge target
+  branch in example commands on lines 50, 57, and 97. When an agent reads this skill, it may follow
+  the hardcoded examples instead of the dispatch-provided integration target.
+
+
+  ## Why
+
+
+  The merge skill is used by both human-directed and dispatch-driven workflows. In dispatch mode,
+  the correct merge target comes from the workspace metadata (injected into the dispatch prompt).
+  But the skill's example commands showing `git checkout dev` and `git log origin/dev..HEAD` create
+  a competing source of truth that can mislead agents — especially if the dispatch target is a
+  different branch.
+
+
+  ## How
+
+
+  1. Replace hardcoded `dev` references in `templates/skills/merge/SKILL.md` with generic
+  placeholders like `<integration-branch>` or instructional text that tells the agent to use the
+  dispatch-provided target branch (from the `Integration target` line in the dispatch prompt
+  context, or from `KSPEC_DISPATCH_MERGE_TARGET` env var).
+
+
+  2. Add a note in the skill that in dispatch mode, the merge target is always provided in the
+  dispatch prompt context and should be used verbatim — never assumed.
+
+
+  3. Run `kspec skill render` to regenerate the rendered output in `.agents/skills/`.
+
+
+  4. Verify the rendered skill no longer contains hardcoded branch names.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Merged to dev. Replaced 3 hardcoded 'dev' branch references in merge skill template
+  command examples with '<integration-branch>' placeholder. Added 'Determining the Integration
+  Branch' section explaining dispatch vs manual mode. Rendered outputs (.agents/ and .factory/)
+  regenerated and consistent.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - skills
+  - bug
+vcs_refs: []
+review_ref: "@01KKZ98XTPRHZCKE8ERR19DJYW"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T01:28:26.691Z
+  commit: 81daafe8a38dc2ac5fe460ef396d2b565f4799af
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KKZ8CCJDPVMV1BA7RER49CTZ
+created_at: 2026-03-17T08:29:42.338Z
+started_at: 2026-03-18T01:19:16.478Z
+submitted_at: 2026-03-18T01:28:27.064Z
+completed_at: 2026-03-18T01:36:16.885Z
+todos: []
+automation: eligible

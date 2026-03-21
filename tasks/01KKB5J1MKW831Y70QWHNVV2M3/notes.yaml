@@ -1,0 +1,28 @@
+notes:
+  - _ulid: 01KKB5PJYZ44QFKMX90RAKDRGP
+    content: >-
+      Execution context:
+
+      - Background: Existing specs that already render markdown need the trait-markdown-rendering
+      trait added to them
+
+      - Scope: Add trait-markdown-rendering to @ui-session-stream and @ui-plans-view specs
+
+      - IMPORTANT: kspec item set --trait REPLACES the entire traits array. Must include ALL
+      existing traits plus the new one.
+
+      - Steps: 1) kspec item get @ui-session-stream to see current traits, 2) kspec item set
+      @ui-session-stream --trait existing-1 --trait existing-2 --trait trait-markdown-rendering, 3)
+      repeat for @ui-plans-view
+
+      - Verification: kspec item get @ui-session-stream shows trait-markdown-rendering in traits
+      list alongside all previous traits. Same for @ui-plans-view.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T06:07:13.375Z
+  - _ulid: 01KKDQKG2H75177KWHXT5RHMG4
+    content: "Automation status set to needs_review: Meta-spec work (adding traits to specs) - unclear
+      if agent can do this safely"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-11T05:58:35.346Z

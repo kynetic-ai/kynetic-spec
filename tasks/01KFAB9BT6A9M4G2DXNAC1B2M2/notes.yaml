@@ -1,0 +1,15 @@
+notes:
+  - _ulid: 01KFAB9XS19DKA0X1PSVC8AXJV
+    content: Document the realpathSync fix in CONTRIBUTING.md or similar. Explain why it's needed (ESM +
+      npm link symlinks) and what symptoms look like without it.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T05:23:08.194Z
+  - _ulid: 01KFAH0TKR6RSM44BXSQKCXAAP
+    content: Added comprehensive ESM + npm link troubleshooting section to README.md. Documents
+      symptoms, root cause, the realpathSync fix, and provides guidance for contributors
+      encountering similar issues. Section explains why symlink resolution is needed for ESM module
+      detection and shows the code pattern.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T07:03:01.496Z

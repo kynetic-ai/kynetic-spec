@@ -1,0 +1,72 @@
+notes:
+  - _ulid: 01KKMSTW8F55ZK584MNZ77HJY5
+    content: >-
+      Execution context:
+
+      - Background: Cleanup and health reconciliation need to differentiate adopted/manual branches
+      from dispatcher-owned ones. This ensures externally-owned branch refs are preserved during
+      cleanup while worktrees/metadata are removed.
+
+      - Scope: Modify cleanup policy to check branch provenance, update health reconciliation to
+      surface distinct recovery paths for adopted branches, ensure rehydration refs are cleaned
+      without affecting external branches.
+
+      - Files: workspace cleanup logic, health reconciliation, workspace registry types, tests for
+      adopted branch cleanup scenarios.
+
+      - Verification: New tests for all 4 ACs plus trait ACs, existing test suite passes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T23:52:15.375Z
+  - _ulid: 01KKMVXSCFTBKYZRH430C6GDBV
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. AC-1: Cleanup preserves adopted branch refs — already implemented in reapDispatchWorkspace,
+      added dedicated test coverage.
+
+      2. AC-2: Dispatcher-managed branches still deleted during cleanup — existing behavior verified
+      with test.
+
+      3. AC-3: Health reconciliation now emits distinct issue codes:
+         - missing_adopted_branch_recoverable (stale status, with rehydration guidance) when remote locator is known
+         - missing_adopted_branch (invalid status) when no remote locator exists
+         - missing_canonical_branch (invalid status) for dispatcher-managed branches
+         - missing_reviewer_worktree already existed as a separate path
+      4. AC-4: Added rehydrated flag to branch provenance schema. Cleanup now distinguishes:
+         - rehydrated=true: local branch ref created by dispatch for rehydration is deleted on cleanup (remote lineage preserved)
+         - rehydrated=false/null: locally-adopted branch ref is preserved on cleanup
+
+      Files changed:
+
+      - src/schema/dispatch-workspace.ts: Added rehydrated field to branch provenance schema
+
+      - src/agent-runtime/workspace.ts: Updated reconcileWorkspaceHealth for AC-3 distinct issue
+      codes, added deleteRehydratedAdoptedBranch for AC-4, updated adoptedBranchProvenance helper
+
+      - tests/dispatch-workspace-adopted-branch-cleanup.test.ts: New test file with 10 tests
+      covering all 4 ACs plus trait AC N/A annotations
+
+
+      Full test suite: 235 files, 4799 tests pass, 0 failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T00:28:47.887Z
+  - _ulid: 01KKMWTV6XBB43SQJ79ENFM4VP
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: Rebase on latest main required. PR #835
+      (c045a819) added a new adoptedBranchProvenance() call in workspace discovery code that needs
+      the 4th rehydrated parameter added by this PR. CI fails with TS2554: Expected 4 arguments but
+      got 3. Implementation and AC coverage are otherwise solid."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T00:44:40.030Z
+  - _ulid: 01KKMX92YRF94F5Y7N3EZT5XCF
+    content: "[FIX_CYCLE: 1 resolved] Merged latest main into task branch and fixed the missing 4th
+      parameter (rehydrated) on the adoptedBranchProvenance() call added by PR #835 in
+      discoverWorkspaceForReviewOrFixCycle. Also tracks whether the branch was restored from remote
+      vs found locally. All 236 test files pass (4808 tests, 0 failures). TypeScript compiles
+      clean."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T00:52:26.712Z

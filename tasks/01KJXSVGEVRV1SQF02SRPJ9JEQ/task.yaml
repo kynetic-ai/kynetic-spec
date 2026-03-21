@@ -1,0 +1,23 @@
+_ulid: 01KJXSVGEVRV1SQF02SRPJ9JEQ
+slugs:
+  - implement-task-board-kanban
+title: Implement Task Board (Kanban)
+type: task
+spec_ref: "@ui-task-board"
+plan_ref: "@plan-ui-ux-revamp"
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on:
+  - "@implement-app-shell-and-navigation"
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+session_id: 01KK218EBK8VBEY8JF3NVKQE0W
+created_at: 2026-03-05T01:30:04.123Z
+started_at: 2026-03-06T17:19:40.346Z
+submitted_at: 2026-03-06T17:19:46.259Z
+completed_at: 2026-03-06T17:53:45.292Z
+todos: []
+automation: eligible

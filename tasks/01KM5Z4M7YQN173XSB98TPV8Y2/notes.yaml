@@ -1,0 +1,36 @@
+notes:
+  - _ulid: 01KM65GM62PJ96MV3HQ5E87EDK
+    content: Tightening daemon route schemas to use canonical enum options through shared enum helpers.
+      Scope includes task/item/review/triage/plan/session/search/meta route filters plus review and
+      triage mutation bodies; session agent_type remains unconstrained because the canonical session
+      schema defines it as an open string, not an enum.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T17:43:27.682Z
+  - _ulid: 01KM667FDRTKJ729C1WZRF3PRJ
+    content: "Tightened daemon enum validation at the framework boundary for
+      task/item/review/triage/plan/session/search/meta routes, plus review and triage mutation
+      bodies. Added shared middleware formatting so Elysia validation errors return daemon-standard
+      {error, details} responses with valid alternatives. Verification: targeted daemon suites
+      passed; full npm test rerun passed (294 files, 6677 tests, 3 skipped). kspec validate still
+      reports pre-existing project-wide reference/completeness debt unrelated to this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T17:55:56.472Z
+  - _ulid: 01KM66M0QH2T55Y91Z95P3RAHA
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T18:02:47.409Z
+  - _ulid: 01KM676KFXDHT1951HEFH5E2Q8
+    content: "Fix cycle: preserved the supported session trigger alias by validating session trigger
+      filters against canonical SessionTriggerSchema options plus the legacy dispatched shorthand,
+      and tightened /api/reviews subject_type against the canonical ReviewSubjectSchema
+      discriminator. Added daemon API regression coverage for invalid review subject_type filters
+      and for keeping trigger=dispatched accepted at the framework boundary. Verification: npm test
+      -- daemon-api-input-validation passed; npm test failed in unrelated dispatch/bootstrap and
+      cli-serve suites, and isolated reruns of agent-dispatch-engine and
+      dispatch-runtime-bootstrap-contract passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T18:12:56.445Z

@@ -1,0 +1,33 @@
+_ulid: 01KJ4HJB047Y2M2NJ54YJBJCJJ
+slugs:
+  - task-update-triage-skill
+title: Update triage skill to use new kspec triage CLI commands
+type: task
+description: "The /triage skill (.claude/skills/triage/SKILL.md) predates the triage record system
+  implemented in PRs #449-455. It still references the old manual flow (kspec inbox delete/promote)
+  without mentioning kspec triage record, kspec triage start, kspec triage act, kspec triage export,
+  or the triage record lifecycle. Update the skill to: 1) Incorporate kspec triage start for
+  interactive triage sessions. 2) Replace manual inbox promote/delete flows with kspec triage record
+  + kspec triage act two-step pattern. 3) Document kspec triage export for agent handoff context. 4)
+  Update the inbox sub-doc (docs/inbox.md) accordingly. 5) Ensure the skill teaches agents the full
+  triage record workflow (record → act, override flow, export for context)."
+spec_ref: "@triage-cli-commands"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #458. Updated triage skill with record→act workflow, added as core
+  skill in templates/skills/, extended install/update/build to copy supporting dirs recursively with
+  ENOENT-only error handling. Tests added for all new behavior."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - skill
+  - triage
+  - docs
+vcs_refs: []
+created_at: 2026-02-23T06:04:14.212Z
+started_at: 2026-02-23T06:19:49.195Z
+completed_at: 2026-02-23T06:59:04.141Z
+todos: []

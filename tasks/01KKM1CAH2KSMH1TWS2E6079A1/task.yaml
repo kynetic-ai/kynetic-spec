@@ -1,0 +1,77 @@
+_ulid: 01KKM1CAH2KSMH1TWS2E6079A1
+slugs: []
+title: Implement inline registry purge for closed dispatch workspace records
+type: task
+description: >-
+  The dispatch workspace registry (project.dispatch-workspaces.yaml) accumulates records
+  indefinitely. Records transition through lifecycle states ending in 'closed' but are never removed
+  from the file. Over time this causes unbounded growth.
+
+
+  Implement inline purge logic in saveDispatchWorkspaceRecord (src/parser/dispatch-workspaces.ts)
+  that removes closed records whose closed_at timestamp exceeds a retention threshold (default 7
+  days). The purge runs inside the existing withFileLock scope so no new locking is needed. The
+  shadow commit that follows registry writes already handles durability — purged records are simply
+  fewer records in the same write.
+
+
+  Key implementation details:
+
+  - Add purge logic to saveDispatchWorkspaceRecord only (NOT mutateDispatchWorkspaceRecordAtomically
+  — different semantics)
+
+  - Filter out records where lifecycle_state === 'closed' AND timestamps.closed_at is older than 7
+  days
+
+  - The first write after shipping will purge the backlog of old records automatically
+
+  - provisionDispatchWorkspace reads closed records (includeClosed: true) to reuse workspace
+  identity (canonical branch, worktree paths) during re-provisioning. After purge, re-opened tasks
+  beyond the retention window get fresh identities. This is acceptable since the worktree and branch
+  are already reaped by cleanup
+
+  - reconcileDispatchWorkspaceRegistry already filters to non-closed records (nonClosedRecords at
+  ~line 1272) — no interaction
+
+  - validateSingleOpenWorkspacePerTask only checks non-closed records — no interaction
+
+
+  Spec: @dispatch-workspace-registry ac-9
+
+  Files: src/parser/dispatch-workspaces.ts (purge logic in saveDispatchWorkspaceRecord), tests/ (new
+  test file for purge behavior)
+
+  Verification: npm test
+spec_ref: "@dispatch-workspace-registry"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #832. Implemented inline registry purge for closed dispatch workspace
+  records in saveDispatchWorkspaceRecord. Closed records with closed_at older than 7 days
+  (configurable) are removed atomically within the same write and lock scope. 7 tests covering purge
+  behavior, edge cases, and custom retention. All trait ACs (error-guidance) correctly annotated N/A
+  — internal registry maintenance with no user-facing CLI. All 4775 tests pass, CI green."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - dispatch
+  - cleanup
+  - registry
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-13T19:45:00.879Z
+  commit: 88b68a229e7759cabb0a1a8c2e891d9b7e0b2bd3
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKMB85VTW1TVCWTV2X6ZJFFA
+created_at: 2026-03-13T16:44:52.642Z
+started_at: 2026-03-13T19:37:39.315Z
+submitted_at: 2026-03-13T19:45:01.833Z
+completed_at: 2026-03-13T19:56:41.144Z
+todos: []
+automation: eligible

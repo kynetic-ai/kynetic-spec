@@ -1,0 +1,32 @@
+_ulid: 01KHWQESQ29G03V88XAPW3HWMS
+slugs: []
+title: Fix weak doctor ac-exit-zero test
+type: task
+description: >-
+  tests/parser/doctor.test.ts line 462 tests ac-exit-zero but the test comment says 'May not be
+  healthy due to missing skills, but structure is correct.' It does not actually assert
+  report.overall.healthy === true or exitCode === 0.
+
+
+  The test should create sufficient setup artifacts (or mock appropriately) to guarantee a healthy
+  report, then assert both the healthy boolean and exit code 0.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #430. Fixed weak ac-exit-zero test by adding proper assertions: (1)
+  exit code 0, (2) report.overall.healthy === true, (3) errorCount === 0. Added AC annotations
+  linking to @doctor-command ac-exit-zero and @trait-semantic-exit-codes ac-1. All quality gates
+  passed."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - test-gap
+vcs_refs: []
+created_at: 2026-02-20T05:13:14.210Z
+started_at: 2026-02-20T11:31:56.149Z
+completed_at: 2026-02-20T11:48:20.391Z
+todos: []
+automation: eligible

@@ -1,0 +1,12 @@
+notes:
+  - _ulid: 01KK6F7FFTBGN5BYPERRM0N9SD
+    content: "Fix applied and PR created (#710). Root cause: in _spawnInvocation, the cleanup chain was
+      .runExclusive(runInvocation).then(decrementActiveCount +
+      drainQueues).finally(deleteActiveDetails). The .then() called _drainQueues which acquired
+      shadowMutex for the next invocation, blocking .finally() until that next invocation completed.
+      Fix: moved activeCount decrement and activeInvocationDetails.delete into the runExclusive
+      callback so they run while the mutex is still held, before drain can spawn the next
+      invocation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T10:17:31.898Z

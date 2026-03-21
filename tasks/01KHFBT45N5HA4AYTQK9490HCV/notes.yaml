@@ -1,0 +1,28 @@
+notes:
+  - _ulid: 01KHFBT45NR8Z7ZTK4KZ595CF0
+    content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    author: "@claude"
+    created_at: 2026-02-15T00:39:34.837Z
+  - _ulid: 01KHG1G0GZWS7943C1ZSVVQX2E
+    content: >-
+      Implemented kspec skill update command with all 3 ACs:
+
+
+      - ac-1: When core skill version differs from kspec package version, content and version are
+      updated
+
+      - ac-2: Core skills already at current package version are skipped
+
+      - ac-3: Skills with origin custom/project are not touched (only origin 'core' processed)
+
+
+      Added 17 tests in tests/core-skill-update.test.ts covering all ACs plus dry-run, JSON output,
+      and edge cases.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-15T06:58:32.096Z
+  - _ulid: 01KHG256RFV4SR756JQFCEJ996
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-15T07:10:06.608Z

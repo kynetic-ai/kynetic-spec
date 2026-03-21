@@ -1,0 +1,24 @@
+_ulid: 01KFC7FZXSDQX967HGMCWKJBHQ
+slugs: []
+title: "Improve test performance: centralize utilities and use pre-built CLI"
+type: task
+description: "Integration test performance - tests take 50-75s which discourages frequent runs.
+  Investigate: parallel test execution, fixture caching, test isolation overhead, selective test
+  runs (--grep). Goal: fast feedback loop during development."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Centralized test utilities in tests/helpers/cli.ts, switched to pre-built CLI,
+  achieved 6x speedup (200s → 33s). PR #93 created."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - dx
+  - performance
+vcs_refs: []
+created_at: 2026-01-19T22:55:01.561Z
+started_at: 2026-01-19T23:02:37.477Z
+completed_at: 2026-01-19T23:09:34.230Z
+todos: []

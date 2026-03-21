@@ -1,0 +1,26 @@
+notes:
+  - _ulid: 01KHFCPJAKH17FY3JY4622K1F7
+    content: "Automation assessment: set to needs_review. missing spec_ref"
+    supersedes: null
+    author: "@automation-assess"
+    created_at: 2026-02-15T00:55:06.836Z
+  - _ulid: 01KJN5H7Y35TNHMFHNZ0A6YKWM
+    content: Changed SPEC_ITEM_FIELDS and TASK_FIELDS from hardcoded Sets to runtime derivation from
+      SpecItemSchema.shape and TaskSchema.shape. Both schemas were already imported. This fixes the
+      self-defeating bug where the drift detector itself could drift from the schemas it was
+      supposed to protect. Also discovered TaskSchema had session_id, submitted_at fields missing
+      from hardcoded set — these are now automatically included. All 8 drift detection tests pass.
+      Pre-existing failure in enhanced-setup.test.ts (codex config.toml not created) is unrelated.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-01T17:01:00.739Z
+  - _ulid: 01KJN6Q5NM7XFZ6PSZK9NKP0W0
+    content: "Automation status set to needs_review: Subagent timed out after 20 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T17:21:43.604Z
+  - _ulid: 01KJN6Q6T0YGW28JKEANZ6F02F
+    content: "[RALPH SUBAGENT] Subagent timed out after 20 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T17:21:44.768Z

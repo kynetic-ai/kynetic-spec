@@ -1,0 +1,25 @@
+notes:
+  - _ulid: 01KKAH5XEE6KAME7P9ZXG1AJX1
+    content: "Existing fixes: PR #658 (HOME isolation + startup polling, commit bae6c34ea), PR #673
+      (createIsolatedKspecHome helper, commit 24123696c), PR #674 (waitForStartup shared helper,
+      commit 26b870c2f). Previous task @task-fix-cli-serve-test-flakiness-shard-3 was completed
+      2026-03-04 with no failures reproduced. This verification should run under realistic
+      conditions: (1) run tests/cli-serve.test.ts 5 times back-to-back, (2) run npm run test:shard3
+      twice, (3) if a real daemon is running on the host, run tests to verify isolation works. If
+      all pass across all runs, close as verified. If any fail, capture the exact error and
+      investigate the remaining race."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T00:08:35.535Z
+  - _ulid: 01KKAK7FMTYEF8N8ZJN6YR7KK6
+    content: "Verification results: (1) cli-serve.test.ts: 5/5 runs passed (29/29 tests each), ~85s per
+      run. Ambient daemon running on port 3456 during all tests — isolation working correctly. (2)
+      test:shard3: 2/2 runs completed. 1365/1366 tests passed. Single failure is in
+      core-skill-install.test.ts (codex platform auto-detection) — unrelated to daemon isolation.
+      Filed as inbox item. (3) Conditions: real daemon on host (port 3456, 2123s uptime),
+      back-to-back execution (no cooldown), 5x repetition for cli-serve. Conclusion: cli-serve
+      foreground tests are stable. PRs #658, #673, #674 resolved the flakiness. No remaining race
+      conditions."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T00:44:24.090Z

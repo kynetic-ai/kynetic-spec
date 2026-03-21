@@ -1,0 +1,37 @@
+notes:
+  - _ulid: 01KJ6KKRKHQE5FW1GRYKWMGCG1
+    content: |
+      Replace end-loop marker file (.claude/ralph-end-loop.json) with session-scoped
+      state. Modify kspec ralph end-loop to write to session state. Modify kspec task
+      start to also check end-loop signal. Ensure sessions are always closed on exit
+      including SIGINT/SIGTERM — signal handlers must update session status to abandoned.
+      Remove END_LOOP_MARKER_PATH, readEndLoopMarker, clearEndLoopMarker,
+      clearStaleEndLoopMarker from ralph.ts.
+    author: "@claude"
+    created_at: 2026-02-24T01:18:26.929Z
+  - _ulid: 01KJ79SA05VWTRTVAB0H21RN7G
+    content: "Implementation complete, all 24 tests passing, full suite green (3417 pass, 2 pre-existing
+      flaky batch-exec timeouts). Changes staged on branch feat/migrate-end-loop-to-session but
+      commit blocked by ralph-task-limit-guard hook. Needs commit, push, and PR creation in next
+      iteration. Files changed: src/sessions/types.ts, src/sessions/store.ts,
+      src/cli/commands/ralph.ts, src/cli/commands/task.ts, tests/ralph/end-loop.test.ts."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T07:45:57.253Z
+  - _ulid: 01KJ7CM9DET5CR7TE1Q5TY65Q6
+    content: "[FIX_CYCLE: 1] Review findings: WIP commit f25b8bb3 on feat/migrate-end-loop-to-session
+      branch. Implementation complete but commit was blocked by now-removed task-limit-guard hook.
+      Next agent should verify the WIP commit, clean up if needed, run tests, and create PR."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T08:35:38.542Z
+  - _ulid: 01KJ7E6XDF84QQNAR0E6F8N86C
+    content: "[FIX_CYCLE: 2] Addressed 3 Codex review findings: (1) MUST-FIX: Added catch block for
+      unrecoverable loop errors, exitReason=error leads to abandoned status via isErrorExit check.
+      (2) SHOULD-FIX: isEndLoopRequested now only returns requested=true for active sessions,
+      preventing stale KSPEC_SESSION_ID from blocking task starts. (3) SHOULD-FIX: Added 4 new tests
+      covering unrecoverable error path and stale session scenarios. All 28 end-loop tests pass,
+      full suite 3413 pass. Review threads resolved, PR #503 ready for merge."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T09:03:17.423Z

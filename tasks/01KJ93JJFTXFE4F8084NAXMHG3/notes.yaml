@@ -1,0 +1,33 @@
+notes:
+  - _ulid: 01KJ93JT319K06HE6MY2271F7H
+    content: >-
+      Bug: ralph signal handler (src/cli/commands/ralph.ts ~lines 1057-1071) queues Promise.all for
+      fs.unlink(budget) + closeSession() but does not await it — process.exit(0) in .finally() fires
+      before I/O completes. This causes budget.json to persist after SIGINT, failing
+      ac-signal-cleanup.
+
+
+      Root cause: fire-and-forget async cleanup in synchronous signal handler. The normal exit path
+      (finally block ~line 1513) correctly awaits the same cleanup.
+
+
+      Fix: await cleanup promises before calling process.exit(). Either use async handler pattern or
+      set a flag and let the event loop drain. Only one instance of this pattern exists — no other
+      signal handlers in the codebase have this issue.
+
+
+      Test: tests/ralph/session-budget-integration.test.ts testSignalCleanup() — currently flaky,
+      should pass reliably after fix.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T00:36:01.762Z
+  - _ulid: 01KJ97RE610HN6E5C80W89FM8J
+    content: "Fixed unawaited async cleanup in ralph signal handler. The signalCleanup function created
+      Promise.all() for budget deletion + session close but never awaited it — process.exit(0) in
+      .finally() fired before I/O completed. Changed to async IIFE pattern: void (async () => { try
+      { await Promise.all([...]); } catch {} finally { process.exit(0); } })(). Updated static
+      analysis test in end-loop.test.ts to match new pattern. Added AC annotation for
+      @ralph-task-limit ac-signal-cleanup to both SIGINT and SIGTERM signal tests. All tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T01:49:00.481Z

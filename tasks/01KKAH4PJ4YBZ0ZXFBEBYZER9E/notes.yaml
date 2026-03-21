@@ -1,0 +1,68 @@
+notes:
+  - _ulid: 01KKAH5PXMC2WQ9ASX5NV7AVBH
+    content: "Root cause analysis from session data: (1) waitForDispatchWatchReady uses 500ms timeout —
+      too short under load. (2) Fake WebSocket onopen/onmessage scheduling races with the test
+      assertions. (3) 'crypto is not defined' in some CI envs. Fix checklist: [a] Increase all
+      dispatch watch waitFor/poll timeouts to min 2000ms. [b] In vitest setup or test beforeAll,
+      ensure globalThis.crypto exists (import crypto from 'node:crypto' and assign if missing). [c]
+      Make timeout error messages include last received data for diagnosis. [d] Check if fake WS
+      onopen can use queueMicrotask instead of setTimeout for more deterministic scheduling. Tests
+      to validate: run the full cli-agent-commands.test.ts file 5x in sequence under load (e.g.,
+      with other test files running)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T00:08:28.852Z
+  - _ulid: 01KKAJG4J0NH8BRPPDGM9JJ1RR
+    content: >-
+      Stabilized dispatch watch WebSocket mock timing:
+
+      1. Increased waitFor default timeout from 500ms to 2000ms (AC-3 compliance)
+
+      2. Updated all explicit timeout values (1000ms → 2000ms) in reconnect tests
+
+      3. Added crypto polyfill via tests/setup.ts (AC-4) - ensures globalThis.crypto exists in older
+      Node envs
+
+      4. Improved diagnostic timeout messages - waitFor now includes description parameter and
+      reconnect flush probe includes boolean state flags
+
+      5. Verified: 5 consecutive runs pass, concurrent load test passes (115 tests), shard1 passes
+      (1335 tests)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T00:31:39.072Z
+  - _ulid: 01KKAJHGJCXC63ZKHHX6ZV66N5
+    content: "PR created: https://github.com/kynetic-ai/kynetic-spec/pull/734"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T00:32:24.140Z
+  - _ulid: 01KKAKJ19V776YSFJGBS7T61ND
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: ac-3/ac-4 are implemented but not validated by
+      tests; new AC markers are attached to helper/setup code instead of tests."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T00:50:09.852Z
+  - _ulid: 01KKAN5SW9Q0HVZ5JF0G7MJQAF
+    content: "Fix cycle 1 addressed: Moved AC-3 annotation from waitFor helper to 3 behavioral tests
+      (timeout floor via fake timers, diagnostic error messages, configurable override). Moved AC-4
+      annotation from setup.ts comment to 2 behavioral tests (polyfill availability, UUID
+      generation). All 55 tests in cli-agent-commands.test.ts pass, shard1 (1335 tests) green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T01:18:26.185Z
+  - _ulid: 01KKANA9SNFYYDACWCTKX81QHG
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: ac-4 coverage is still incomplete; the new tests
+      do not exercise the missing-globalThis.crypto path, so they do not prove the polyfill prevents
+      ReferenceError."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T01:20:53.558Z
+  - _ulid: 01KKAP5EAHGEQ1H31XZMT5BCDH
+    content: "Fix cycle 2 addressed: Replaced ac-4 tests with behavioral tests that exercise the
+      missing-crypto path. Tests now (1) delete globalThis.crypto, (2) verify it's undefined, (3)
+      re-run polyfill logic, (4) verify crypto.randomUUID() works after polyfill. Second test proves
+      the exact failure mode: calling randomUUID() without polyfill throws, with polyfill it
+      succeeds. All 55 cli-agent-commands tests pass, shard1 (1335 tests) green."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T01:35:42.929Z

@@ -1,0 +1,30 @@
+notes:
+  - _ulid: 01KKNZ6AST360YFWVDTX19YQ3M
+    content: |-
+      Implemented review record validation in src/parser/review-validation.ts:
+      - validateReviewRecord() for persisted records
+      - validateReviewRecordInput() for creation inputs
+      - validateReviewsFile() for .reviews.yaml files
+      - parseReviewRecord/parseReviewRecordInput convenience wrappers
+      - findReviewFiles() to discover review YAML files
+      - Actionable error messages for subject type, URL, ULID, datetime failures
+      - Integrated into main validate() in validate.ts
+      - 37 tests covering both ACs (ac-1: schema coverage, ac-2: actionable feedback)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T10:45:08.026Z
+  - _ulid: 01KKPNRQTNB4GEJFZZ0BR9VBQK
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #849 has merge conflict with main (main has
+      moved forward with PR #846 and #848). Rebase onto current main. SHOULD-FIX: Remove dead code
+      formatIssuePath function in review-validation.ts:31-34. AC coverage and spec alignment are
+      verified — implementation is solid once conflict is resolved."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T17:19:39.861Z
+  - _ulid: 01KKPPRYZ21VQMYN32VE9JQR5B
+    content: "[FIX_CYCLE: 1] Addressed review findings: merged main into branch to resolve conflict in
+      src/parser/index.ts (keep both reviews.js and review-validation.js exports). Removed dead
+      formatIssuePath function. All 5029 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T17:37:15.746Z

@@ -1,0 +1,35 @@
+notes:
+  - _ulid: 01KJE86X8EY9R143SVPK7M0SR0
+    content: "Investigation (2026-02-27): install-core currently has no explicit platform selector.
+      registerSkillInstallCommands defines install-core options as --force/--dry-run only
+      (src/cli/commands/skill-install.ts). Skill metadata is written directly from core manifest
+      platforms (skillData uses coreSkill.platforms), and setup path uses platforms:
+      coreSkill.platforms || [claude-code] (src/cli/commands/setup.ts). This confirms a codex
+      override flag is currently missing in both direct install-core and setup-driven core install
+      paths."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T00:33:06.830Z
+  - _ulid: 01KJE8R7ZBR8G0A02J40MD0M4G
+    content: "Implemented install-core platform targeting (2026-02-27): added --platform
+      <claude-code|codex> option to kspec skill install-core. Without override, platform now
+      auto-detects from agent env (codex-cli -> codex, otherwise claude-code) for
+      backward-compatible default behavior. Core skills are rendered immediately to resolved
+      platform during install-core, so --platform codex writes .agents/skills/kspec-*/SKILL.md
+      independent of env detection."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T00:42:34.860Z
+  - _ulid: 01KJECGBK2BFC2FSVFDGD3VX85
+    content: "Implementation delivered in PR #569 (branch fix/codex-core-skill-platform-awareness):
+      added install-core platform override and codex-targeted render path assertions; pending review
+      with linked PR checks now green."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T01:48:10.722Z
+  - _ulid: 01KJERKFAZKQTMEC3B07Q757EA
+    content: "Merged via PR #569 on 2026-02-27 (merge commit 7042139b); install-core --platform override
+      is live."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T05:19:35.775Z

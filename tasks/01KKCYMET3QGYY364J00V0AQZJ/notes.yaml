@@ -1,0 +1,76 @@
+notes:
+  - _ulid: 01KKCYMET33J4X0Q2MQRCJQQAW
+    content: See plan @plan-iterative-plan-editing for implementation notes
+    author: "@claude"
+    created_at: 2026-03-10T22:42:12.419Z
+  - _ulid: 01KKE30F84S4DYQ1BP6BZYKHFV
+    content: >-
+      Execution context:
+
+      - Background: derive now owns plan materialization; import already stores content-only plans.
+
+      - Scope: replace single-task plan derive with content parsing, spec creation, optional task
+      derivation, and plan status/link updates.
+
+      - Files: src/cli/commands/plan.ts, shared plan materialization helpers if needed, relevant
+      schema/output code, and CLI tests.
+
+      - Verification: targeted plan CLI tests, full npm test, and kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T09:17:54.820Z
+  - _ulid: 01KKE41F19H1EJX0B154D6R0BD
+    content: "Implemented enhanced plan derivation in src/cli/commands/plan.ts: parse stored plan
+      markdown, create specs in topological order, support module fallback/override, optional task
+      derivation, additional task mapping, implementation-note propagation, dry-run/json summaries,
+      and active-state/link updates. Verification: npm run build succeeded; targeted plan/task tests
+      passed; kspec validate --warnings-ok passed with existing repo-wide warning debt. Full npm
+      test is flaky outside this task scope: tests/cli-serve.test.ts intermittently failed on daemon
+      health-check ECONNREFUSED during the npm-installed package startup case, but the same file
+      passed when rerun in isolation immediately after."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T09:35:55.946Z
+  - _ulid: 01KKE5YDBZKZ1GV91M3CM8VY9N
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: plan derive still misses inherited
+      error-guidance for unresolved refs, and PR #780 claims AC coverage for ac-commit /
+      trait-error-guidance ac-6 without real verification."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T10:09:13.087Z
+  - _ulid: 01KKE7WNCK44N58YBRYTJMNGDY
+    content: "[FIX_CYCLE: 2] Resolution:\\n- Added explicit recovery guidance for plan-derive unresolved
+      refs and invalid derive states, including structured JSON guidance payloads.\\n- Replaced the
+      weak AC claims with real verification in tests: unresolved-plan-ref text/JSON guidance and a
+      shadow-branch commit assertion for derive.\\n- Verification: npm run build passed; npm test --
+      tests/cli-plan-derive.test.ts passed (12 local tests / 22 including sibling worktree copy);
+      node dist/cli/index.js validate --warnings-ok passed with existing repo warning debt only.\\n-
+      Full npm test still has unrelated failures outside this task scope: cli-serve
+      npm-installed-package startup ECONNREFUSED, test-runner picking up transient
+      .worktrees/.review files, and a multi-project temp-fixture error from .review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T10:43:12.915Z
+  - _ulid: 01KKE9ZJJXFZ994DTQ6XP0VH6R
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: PR #780 includes unrelated commit 78a15cf4 from
+      @implement-missing-description-backfill; rebase/drop the foreign commit before merge so
+      preserved Task/Spec history stays accurate."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T11:19:45.502Z
+  - _ulid: 01KKEJD63PTHJCZ2P2MC7QPZQK
+    content: "[FIX_CYCLE: 4] Rebased feat/enhanced-plan-derivation onto current origin/main to drop the
+      unrelated @implement-missing-description-backfill review-artifact commit from PR #780 before
+      resubmission. Verification will be GitHub PR commit list plus a clean main..branch range
+      containing only this task's commits."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T13:47:00.086Z
+  - _ulid: 01KKEJE0R24XE0SMSAZ63Z5V1T
+    content: "[FIX_CYCLE: 5] Rebasing and force-pushing feat/enhanced-plan-derivation onto current
+      origin/main removed the unrelated @implement-missing-description-backfill review-artifact
+      commit from PR #780. Verified local main..branch range now contains only the two plan-derive
+      commits for this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T13:47:27.363Z

@@ -1,0 +1,61 @@
+_ulid: 01KKTW6FA04X5BDGFWPX0HKRY4
+slugs:
+  - task-review-api-read
+title: Implement review list and detail API endpoints
+type: task
+description: |
+  Add GET /api/reviews and GET /api/reviews/:id endpoints to the daemon.
+  These are the read-only foundation the web UI queries.
+
+  Why: The web UI needs server-side data. The review library already has
+  loadReviewRecords() and full record parsing — the daemon is a thin HTTP
+  layer over these functions, following the same pattern as /api/tasks and
+  /api/plans.
+
+  What: GET /api/reviews returns paginated ReviewSummary objects (ulid,
+  title, lifecycle, disposition, subject type, reviewer, linked task ref,
+  created/updated timestamps). Supports query params: status, disposition,
+  subject-type, reviewer, task (matches subject-ref or related-refs),
+  sort, limit, offset. Default status filter: open. GET /api/reviews/:id
+  returns the full review record including threads, checks, verdicts,
+  events, and computed disposition.
+
+  How: Add routes to packages/daemon/src/routes/. Use loadReviewRecords()
+  from parser/reviews.ts. Create ReviewSummary and ReviewDetail types in
+  packages/shared/src/api.ts following existing PlanSummary/TaskDetail
+  patterns. Pagination follows existing tasks route conventions
+  (limit/offset with total count header).
+
+  Covers: @review-records-daemon-api ac-1, ac-2.
+spec_ref: "@review-records-daemon-api"
+plan_ref: "@plan-review-records-web-ui"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev. Review API read endpoints (GET /api/reviews, GET /api/reviews/:id)
+  with filtering, pagination, and E2E tests. Rebased onto dev (35 commits behind), all 5672 tests
+  pass.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - daemon
+  - api
+  - review
+vcs_refs: []
+review_ref: "@01KKXDNWKRPFF3KM6AC2GJP42A"
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-16T09:10:11.478Z
+  commit: c09189ec7386070eb3b6331251bf123e29698e81
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-16T08:28:59.072Z
+started_at: 2026-03-16T09:01:31.069Z
+submitted_at: 2026-03-16T09:10:12.382Z
+completed_at: 2026-03-17T08:40:12.696Z
+todos: []
+automation: eligible

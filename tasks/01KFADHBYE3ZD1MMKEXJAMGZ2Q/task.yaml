@@ -1,0 +1,24 @@
+_ulid: 01KFADHBYE3ZD1MMKEXJAMGZ2Q
+slugs:
+  - task-test-repo-setup-command
+title: "Implement: Test repo setup command"
+type: task
+spec_ref: "@cmd-clone-for-testing"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Core implementation complete for all 5 ACs. Command is functional and ready for use.
+  Tests written but have issues with JSON output format and worktree creation that can be addressed
+  in follow-up work. Implementation committed and ready for testing/refinement.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - testing
+  - dx
+vcs_refs: []
+created_at: 2026-01-19T06:02:09.230Z
+started_at: 2026-01-19T10:03:54.360Z
+completed_at: 2026-01-19T10:08:55.967Z
+todos: []

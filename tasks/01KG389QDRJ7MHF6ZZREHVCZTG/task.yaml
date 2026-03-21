@@ -1,0 +1,18 @@
+_ulid: 01KG389QDRJ7MHF6ZZREHVCZTG
+slugs: []
+title: Support slug-based manifest naming
+type: task
+spec_ref: "@manifest-discovery"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #268 merged - slug-based manifest naming with full AC test coverage"
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-28T21:31:36.760Z
+started_at: 2026-01-28T21:31:52.424Z
+completed_at: 2026-01-29T01:01:33.378Z
+todos: []

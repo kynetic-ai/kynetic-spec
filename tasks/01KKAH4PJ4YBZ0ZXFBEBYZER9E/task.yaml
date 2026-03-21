@@ -1,0 +1,33 @@
+_ulid: 01KKAH4PJ4YBZ0ZXFBEBYZER9E
+slugs:
+  - task-fix-dispatch-watch-timing
+title: Stabilize dispatch watch WebSocket mock timing in cli-agent-commands tests
+type: task
+description: Dispatch watch tests (AC-13, AC-14, AC-16, AC-18) in tests/cli-agent-commands.test.ts
+  use fake WebSocket mocks with short poll timeouts. Under load, events do not propagate before
+  timeout. Increase timeouts to 2000ms+, add crypto polyfill, ensure diagnostic timeout messages.
+spec_ref: "@test-suite-perf-reliability"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #734 (f98853148230fa02df52bc14950b9ddd57b3db14). Stabilized dispatch
+  watch WebSocket timing by raising wait/poll timeouts to 2000ms, improving timeout diagnostics, and
+  adding a global crypto polyfill plus behavioral AC-3/AC-4 tests that exercise the missing-crypto
+  path. AC coverage for the scoped task was verified, targeted cli-agent-commands tests passed on
+  the PR head, and CI/full regression were green."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - bug
+  - cli
+vcs_refs: []
+session_id: 01KKANY341ANXZ48SNTDTPK5TW
+created_at: 2026-03-10T00:07:55.716Z
+started_at: 2026-03-10T01:31:57.191Z
+submitted_at: 2026-03-10T01:35:54.245Z
+completed_at: 2026-03-10T01:51:40.911Z
+todos: []
+automation: eligible

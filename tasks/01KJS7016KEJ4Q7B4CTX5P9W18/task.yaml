@@ -1,0 +1,23 @@
+_ulid: 01KJS7016KEJ4Q7B4CTX5P9W18
+slugs: []
+title: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
+type: task
+description: "CLI DX: accept spec_ref as alias for spec-ref in batch commands"
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: No implementation delta required. Verified on 2026-03-03 that batch args accept
+  spec_ref alias for --spec-ref in task add/task set (dry-run succeeds) and existing focused test
+  coverage passes.
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJVXPW876HS5DEF0SF5N218F
+created_at: 2026-03-03T06:43:31.667Z
+started_at: 2026-03-04T08:00:19.688Z
+submitted_at: 2026-03-04T08:00:56.210Z
+completed_at: 2026-03-04T08:01:00.569Z
+todos: []
+automation: eligible

@@ -1,0 +1,117 @@
+notes:
+  - _ulid: 01KKAYTY8TVVD8AWDJ5HAGVE3S
+    content: >-
+      Root cause: replaceState/pushState do NOT update $page.url (SvelteKit issue #10661,
+      intentional). Only goto() goes through the router and updates the page store. The codebase
+      already uses goto() correctly in triage, inbox, and TaskFilters — but 3 files use the broken
+      pattern.
+
+
+      Files to fix:
+
+      1. packages/web-ui/src/routes/specs/+page.svelte
+         - Line 43: window.history.pushState (set ?ref= on select) → goto(url, { replaceState: true, keepFocus: true, noScroll: true })
+         - Line 53: window.history.pushState (remove ?ref= on close) → goto(url, { replaceState: true, keepFocus: true, noScroll: true })
+         - Remove import of nothing from $app/navigation if replaceState was imported
+
+      2. packages/web-ui/src/routes/tasks/+page.svelte
+         - Line 124: replaceState(url, {}) → goto(url, { replaceState: true, keepFocus: true, noScroll: true })
+         - Change import from { replaceState } to { goto } from $app/navigation
+
+      3. packages/web-ui/src/routes/tasks/board/+page.svelte
+         - Line 103: replaceState(url, {}) → goto(url, { replaceState: true, keepFocus: true, noScroll: true })
+         - Change import from { replaceState } to { goto } from $app/navigation
+
+      Also in the close effects: since goto() properly updates $page.url, the open effect will see
+      urlRef=null after close and won't reopen. The lastProcessedRef guard can be simplified or
+      removed since the root cause is fixed.
+
+
+      Key goto options:
+
+      - replaceState: true — don't pollute browser history
+
+      - keepFocus: true — don't steal focus from current element
+
+      - noScroll: true — don't scroll to top
+
+
+      Reference: triage page line 206 already uses this exact pattern correctly.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T04:07:15.994Z
+  - _ulid: 01KKAZ1T25Q8VZTHAFF74H345B
+    content: "Additional scope: Add a development convention or documentation reinforcing that all URL
+      mutations in the web UI must use goto() from $app/navigation — never replaceState, pushState,
+      or window.history methods. This prevents future regressions. Options: (1) Add a rule to the
+      development or web-ui conventions via kspec meta, (2) Add a comment block at the top of a
+      shared helper, (3) Both. The convention should explain WHY (replaceState/pushState don't
+      update $page.url, causing stale reactive state) and reference the SvelteKit issue #10661."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T04:11:01.061Z
+  - _ulid: 01KKAZ4Y5CN966G2H91DHXRMEH
+    content: >-
+      Documentation specifics after reviewing current state:
+
+
+      No existing documentation covers URL state management patterns. Two places need updates:
+
+
+      1. svelte-5 skill (source: templates/skills/svelte-5/SKILL.md, rendered:
+      .agents/skills/svelte-5/SKILL.md)
+         - Add a '## URL State Management' section (follows the existing pattern of 'Problem/Symptom/Root Cause/Solution' used throughout the skill)
+         - Cover: replaceState/pushState don't update $page.url (SvelteKit #10661), use goto() with { replaceState: true, keepFocus: true, noScroll: true }, show before/after code examples
+         - After editing the template, run: kspec skill render
+
+      2. development convention (kspec meta)
+         - Add rule: 'In web UI code, use goto() from $app/navigation for all URL query parameter changes. Never use replaceState, pushState, or window.history — they do not update $page.url and break reactive effects.'
+         - Run: kspec meta set development --add-rule '...'
+         - Then: kspec agents generate
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T04:12:43.565Z
+  - _ulid: 01KKBEDTT3DZHPA7D3WTSMS8FP
+    content: >-
+      Fixed all 3 affected files to use goto() instead of replaceState/pushState:
+
+
+      1. specs/+page.svelte: replaced window.history.pushState with goto() in handleSelect and close
+      effect
+
+      2. tasks/+page.svelte: replaced replaceState with goto() in dialog close effect  
+
+      3. tasks/board/+page.svelte: replaced replaceState with goto() in modal close effect
+
+
+      Also added:
+
+      - URL State Management section to svelte-5 skill (explains the root cause and correct pattern)
+
+      - Development convention rule enforcing goto() for all URL mutations in web UI
+
+      - Regenerated kspec-agents.md and rendered skills
+
+
+      Build passes cleanly. 2 pre-existing test failures (codex platform detection) confirmed on
+      main — unrelated to this change.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T08:39:43.683Z
+  - _ulid: 01KKBFEJTQWJ2C8JXS4VQK0Z6W
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #738 implements @ui-url-panel-state with
+      goto(), but the branch has no test annotations for @ui-url-panel-state ac-1..ac-4. Local npm
+      test passed and CI is green; blocker is missing trait AC coverage documented in review
+      3920803050."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T08:57:36.855Z
+  - _ulid: 01KKBGRT09E3AK8CT9Q4PVT51B
+    content: "Fix cycle 1: Added @ui-url-panel-state ac-1..ac-4 trait AC annotations to existing E2E
+      tests in items.spec.ts, tasks.spec.ts, and task-board.spec.ts. The behavioral coverage already
+      existed — the tests exercise goto()-based URL mutations, panel open/close, deep-link dismiss,
+      and filter sync. Only the AC annotations were missing. Unit tests pass (2 pre-existing codex
+      failures unrelated). Pushed to PR #738."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T09:20:40.457Z

@@ -1,0 +1,65 @@
+_ulid: 01KJA01BXDN6M8EFJNJT8JNJSZ
+slugs: []
+title: Optimize gatherSessionContext to use single-pass task bucketing
+type: task
+description: >-
+  gatherSessionContext() in session.ts (after refactor: session/context.ts) filters allTasks 14
+  times:
+
+  - .filter(in_progress) for stats
+
+  - .filter(needs_work) for stats
+
+  - .filter(pending_review) for stats
+
+  - getReadyTasks(allTasks) (full pass)
+
+  - .filter(blocked) for stats
+
+  - .filter(completed) for stats
+
+  - .filter(in_progress || needs_work) for active tasks
+
+  - .filter(pending_review) for review tasks
+
+  - .filter(in_progress || needs_work) again for notes
+
+  - .filter(pending_review) again for notes
+
+  - .filter(completed && completed_at) for completed notes
+
+  - getReadyTasks(allTasks) again
+
+  - .filter(blocked) again
+
+  - .filter(completed && completed_at) again
+
+
+  Replace with a single pass that buckets tasks by status into a Map<status, LoadedTask[]>, then use
+  the buckets for stats, summaries, and notes. getReadyTasks() result should be cached.
+
+
+  Depends on: @01KJ9ZBT (session.ts refactor — do this after the split so you're editing the focused
+  context.ts file)
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #530. Single-pass task bucketing replaces 14+ .filter() calls with
+  Map<status, LoadedTask[]> bucketing, caches getReadyTasks() and sorted completed tasks. All 167
+  session tests pass, all CI green."
+depends_on:
+  - "@01KJ9ZBT"
+context: []
+priority: 3
+tags:
+  - refactor
+  - cli
+  - session
+vcs_refs: []
+created_at: 2026-02-25T08:53:18.892Z
+started_at: 2026-02-25T13:20:58.612Z
+completed_at: 2026-02-25T13:48:50.352Z
+todos: []
+automation: eligible

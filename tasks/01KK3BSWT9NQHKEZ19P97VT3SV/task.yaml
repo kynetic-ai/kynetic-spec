@@ -1,0 +1,32 @@
+_ulid: 01KK3BSWT9NQHKEZ19P97VT3SV
+slugs: []
+title: Tool calls in live session stream should render collapsed by default, not expanded
+type: task
+description: "When viewing a live agent session, new tool call entries often appear expanded
+  (showing full input/output) as they stream in. They should always render collapsed by default and
+  only expand when the user explicitly clicks to expand. The issue likely occurs because the
+  ToolCallView component's expanded state defaults to true or gets set to true during the
+  streaming/refresh cycle when new events arrive. Fix: (1) ensure ToolCallView initializes with
+  expanded=false, (2) preserve user-toggled expand state across periodic structured refreshes (don't
+  reset expanded state when the event list is re-rendered from events.jsonl refresh), (3) new tool
+  call entries appearing during live streaming should always start collapsed."
+spec_ref: "@ui-session-stream"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - web-ui
+vcs_refs: []
+session_id: 01KK3V1Q1TMRDSNJSG87C9G1CC
+created_at: 2026-03-07T05:19:57.769Z
+started_at: 2026-03-07T09:51:14.851Z
+submitted_at: 2026-03-07T09:59:01.153Z
+completed_at: 2026-03-07T10:04:35.483Z
+todos: []
+automation: eligible

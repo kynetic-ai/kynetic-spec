@@ -1,0 +1,73 @@
+_ulid: 01KM5Z4KJQ7CF8F2P48711SY91
+slugs:
+  - task-cli-filter-input-validation
+title: Add CLI filter input validation
+type: task
+description: |
+  **What:** Add validateEnumOption() checks to all CLI list/search
+  commands that accept typed filter options without validation. Audit
+  identified 14 unvalidated filter options across 9 commands: task list
+  --status/--type, tasks ready --status/--type, item list --type,
+  plan list --status, review list --status/--disposition, triage list
+  --status/--action, search --type/--status, schedule list --status,
+  agent list --status.
+
+  **Why:** Typos in filter values (e.g., --status "pending_revew")
+  silently return empty results. Users think there are no matching items
+  when really the filter value was invalid. Early validation with a clear
+  error saves debugging time.
+
+  **How:** Same validateEnumOption pattern as mutation validation.
+  Validation happens early in each command's action handler, before
+  loading data from the shadow branch. For schedule list --status
+  (enabled/disabled) and agent list --status (eligible/ineligible),
+  verify whether Zod schemas exist or create inline allowed-value arrays.
+
+  Specific files and schemas:
+  - src/cli/commands/task.ts: task list --status (TaskStatusSchema),
+    --type (TaskTypeSchema); tasks ready --status, --type
+  - src/cli/commands/item.ts: item list --type (ItemTypeSchema)
+  - src/cli/commands/plan.ts: plan list --status (PlanStatusSchema)
+  - src/cli/commands/review.ts: review list --status
+    (ReviewLifecycleStateSchema), --disposition (ReviewDispositionSchema)
+  - src/cli/commands/triage.ts: triage list --status (TriageStatusSchema),
+    --action (TriageActionSchema)
+  - src/cli/commands/search.ts: search --type (ItemTypeSchema),
+    --status (TaskStatusSchema)
+  - src/cli/commands/schedule.ts: schedule list --status
+  - src/cli/commands/agent.ts: agent list --status
+
+  Covers: @cli-input-type-safety ac-2, ac-3.
+spec_ref: "@cli-input-type-safety"
+plan_ref: "@plan-input-validation-hardening"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev after review approval. Added enum validation for CLI query/filter
+  options across task/item/plan/review/triage/search/schedule/agent commands and added integration
+  coverage for invalid and valid filter values.
+depends_on:
+  - "@task-cli-mutation-input-validation"
+context: []
+priority: 2
+tags:
+  - cli
+  - validation
+  - dx
+vcs_refs: []
+review_ref: "@01KM68E7DKCW93NTB4DHHSS4QM"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T18:33:20.510Z
+  commit: c6df5dad22b007df012753b88fac0146f31d492b
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM67PPHYZJSSF5Y945RD8267
+created_at: 2026-03-20T15:52:02.391Z
+started_at: 2026-03-20T18:22:28.825Z
+submitted_at: 2026-03-20T18:33:20.940Z
+completed_at: 2026-03-20T18:39:13.080Z
+todos: []
+automation: eligible

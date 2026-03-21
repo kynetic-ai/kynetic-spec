@@ -1,0 +1,39 @@
+notes:
+  - _ulid: 01KKBJF8QJPFG688SKTFPDGXYB
+    content: Removed arbitrary limit:500 from board fetchTasks() call. Daemon API defaults to returning
+      all tasks when no limit is provided. Also fixed api-static paginate() to match daemon behavior
+      (default to items.length instead of 50). Done column remains capped at 20 most recent via
+      client-side board-utils. Added unit test for ac-all-active-tasks covering all active columns
+      with large counts.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T09:50:25.010Z
+  - _ulid: 01KKBKW1MPQ2ZQ999FV25CY72G
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @ui-task-board ac-all-active-tasks lacks
+      coverage for the board fetch/static pagination path; current test only covers post-fetch
+      column distribution."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T10:14:52.310Z
+  - _ulid: 01KKBMZ5B8P4N4GG3A2CCSJ6EE
+    content: "Fix cycle 1: Addressed review feedback. Added fetchTasksStatic() test verifying no-limit
+      returns all tasks (board fetch path coverage). Added board-utils test with 175 tasks across
+      all active statuses verifying no column truncation. Also fixed api-static paginate() default
+      from 50 to items.length to match daemon API behavior."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T10:34:02.984Z
+  - _ulid: 01KKBP653YCH5ZPNNYV18CTFGC
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: PR #744 includes unrelated task changes in
+      kspec-agents.md and the current PR head has no CI checks. Rebase to task-only changes and
+      rerun CI before re-review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T10:55:20.702Z
+  - _ulid: 01KKBQ94AF4MZ07TAKD7F9H7HM
+    content: "Fix cycle 2: Rebased PR #744 onto current main, dropping unrelated commit 9d39c989e (from
+      task @01KKB8A3MS1V2CHTC1CEYCS96M). PR now contains only the 4 task-relevant files. Closed
+      stale PR #741. CI running on new head a5d14be29."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T11:14:26.767Z

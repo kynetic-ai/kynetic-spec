@@ -1,0 +1,31 @@
+_ulid: 01KK2NNR0SRZEYEVW223TQD7WP
+slugs: []
+title: "Distinguish session types: dispatched agent vs manual CLI run"
+type: task
+description: "Session context panel shows Type: Invocation for all new-runtime sessions. The trigger
+  field already distinguishes manual from auto-dispatched (manual, task.ready, task.in_progress,
+  task.needs_work, task.pending_review), but this is not surfaced clearly in the UI. Fix: (1) show
+  trigger value as a human-readable label instead of or alongside session_type (e.g. Dispatched:
+  Task Ready, Manual Run, Fix Cycle, PR Review), (2) in session history list, add a visual indicator
+  distinguishing dispatched vs manual sessions (e.g. icon or badge), (3) consider adding a filter
+  for trigger type in the session history list."
+spec_ref: "@ui-session-history"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - feature
+  - web-ui
+vcs_refs: []
+session_id: 01KK32F736VJRPYF2N8HHKFSWX
+created_at: 2026-03-06T22:53:13.113Z
+started_at: 2026-03-07T02:43:32.732Z
+submitted_at: 2026-03-07T02:53:57.965Z
+completed_at: 2026-03-07T03:06:22.240Z
+todos: []
+automation: eligible

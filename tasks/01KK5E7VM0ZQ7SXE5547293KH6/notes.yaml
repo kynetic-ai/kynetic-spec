@@ -1,0 +1,45 @@
+notes:
+  - _ulid: 01KK5VXV696HRTR8EV804ZAZP4
+    content: >-
+      Execution context:
+
+      - Background: daemon imports @elysiajs/static but clean npm installs miss the runtime
+      dependency.
+
+      - Scope: add the missing published dependency and verify daemon/package metadata stays
+      installable.
+
+      - Files: package manifests and any lockfile entries needed for dependency sync.
+
+      - Verification: inspect daemon import usage, run install/test checks covering dependency
+      presence, and validate task/spec alignment.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T04:40:13.258Z
+  - _ulid: 01KK5W1571A2RS2N9NRTXV4BQ6
+    content: Implemented the published-package fix by adding @elysiajs/static to the root package
+      dependencies and lockfile. Added a package distribution regression test that asserts the root
+      package declares daemon runtime dependencies needed by global installs. kspec validate still
+      fails on unrelated repo baseline meta/reference/completeness issues (duplicate @observations
+      slug, missing skill file, existing completeness debt).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T04:42:01.829Z
+  - _ulid: 01KK5W8YJTEJG8YAQS14C45Z6X
+    content: >-
+      Verification:
+
+      - npx vitest run tests/package-distribution.test.ts
+
+      - npm test (passed: 184 files, 4044 tests; 3 skipped)
+
+      - kspec validate remains red due to unrelated pre-existing meta/reference/completeness issues
+      in the repo baseline, not from this change.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T04:46:17.178Z
+  - _ulid: 01KK5WBAHZ75CME3AM57YCBHWQ
+    content: "Submitted for review in PR #698: https://github.com/kynetic-ai/kynetic-spec/pull/698"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T04:47:34.975Z

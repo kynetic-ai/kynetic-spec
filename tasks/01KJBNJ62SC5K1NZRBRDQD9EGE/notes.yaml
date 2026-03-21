@@ -1,0 +1,19 @@
+notes:
+  - _ulid: 01KJC2KF217ZY93C87QTBASQG8
+    content: "Written packages/web-ui/tests/e2e/api-meta.spec.ts with 34 Playwright E2E tests covering
+      @api-contract ac-15 through ac-21. Tests use daemon fixture for real HTTP calls. Deleted
+      tests/daemon-api-meta.test.ts (224 lines) and tests/daemon-api-validation.test.ts (166 lines)
+      of static analysis. Unit test run: all shards pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T04:16:37.953Z
+  - _ulid: 01KJC324XTHXJHPVC0K3Y9WJ28
+    content: "[FIX: Codex review] Fixed 3 issues: (1) Moved trait N/A annotations out of JSDoc block
+      comment to standalone // AC: line comments for machine parseability. (2) Added N/A annotations
+      for all 5 inherited traits (@trait-json-output, @trait-filterable-list, @trait-error-guidance,
+      @trait-api-endpoint, @trait-websocket-protocol) with 29 total trait ACs annotated. (3) Added
+      @multi-directory-daemon ac-24 annotation replacing the one that was deleted with the static
+      analysis file. Pushed commit 52dd62d5."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T04:24:39.099Z

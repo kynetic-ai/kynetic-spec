@@ -1,0 +1,37 @@
+_ulid: 01KJ9Z773XGGSAK2FJDD7P5K6B
+slugs: []
+title: Fix no-op conditional assertions in session-start-format.test.ts
+type: bug
+description: >-
+  Two assertions in tests/cli/session-start-format.test.ts are wrapped in `if
+  (result.stdout.includes(...))` guards, making them pass vacuously when the condition is false:
+
+
+  1. ~Line 203: `if (result.stdout.includes('untriaged'))` — the assertion for primer inbox stat
+  line only runs when the section is present. Should unconditionally assert the section appears.
+
+
+  2. ~Line 245: `if (result.stdout.includes('Inbox'))` — same pattern for full mode inbox section.
+
+
+  Fix: Remove the if-guards so the assertions always run. If the test then fails, the underlying
+  output is wrong and needs fixing in session.ts.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #524. Removed vacuous if-guards in session-start-format.test.ts so
+  assertions always run. Added explicit inbox items to ensure test preconditions are met."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - bug
+vcs_refs: []
+created_at: 2026-02-25T08:39:02.011Z
+started_at: 2026-02-25T11:35:19.959Z
+completed_at: 2026-02-25T11:42:13.107Z
+todos: []
+automation: eligible

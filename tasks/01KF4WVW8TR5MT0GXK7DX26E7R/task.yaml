@@ -1,0 +1,20 @@
+_ulid: 01KF4WVW8TR5MT0GXK7DX26E7R
+slugs:
+  - task-workflow-step-types
+title: "Implement: Workflow Step Types"
+type: task
+spec_ref: "@workflow-steps"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Step types check, action, and decision implemented with appropriate fields
+depends_on:
+  - "@task-workflow-definitions"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:35.674Z
+started_at: 2026-01-18T10:04:42.120Z
+completed_at: 2026-01-18T10:04:53.227Z
+todos: []

@@ -1,0 +1,70 @@
+notes:
+  - _ulid: 01KKG54GS6HKZ0F76MW4H4DNHZ
+    content: >-
+      Execution context:
+
+      - Background: implement canonical task branch lineage/workspace identity for dispatch workers
+      and reviewers.
+
+      - Scope: dispatcher branch naming, persisted workspace lineage state, worker/reviewer
+      workspace preparation, cleanup eligibility.
+
+      - Files: dispatch/worktree provisioning and related tests.
+
+      - Verification: targeted tests for dispatch/worktree behavior, then full npm test and kspec
+      validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T04:33:33.478Z
+  - _ulid: 01KKG5GRZW6HGK1Y9E90FGFPZW
+    content: >-
+      Implemented canonical task branch lineage:
+
+      - Added role-aware dispatch workspace provisioning with deterministic canonical branch naming
+      and persisted base-branch-point/head metadata.
+
+      - Worker/fix-cycle flows now reuse the same mutable branch lineage; pending_review dispatches
+      use a detached reviewer snapshot worktree.
+
+      - Added cleanup-eligibility reconciliation helper and AC-annotated tests covering canonical
+      naming, branch reuse, reviewer isolation, and cleanup eligibility.
+
+      - Verification: npm test; npm test -- canonical-task-workspace-contract
+      dispatch-workspace-config; node dist/cli/index.js validate (warnings-only baseline, exit 6).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T04:40:15.101Z
+  - _ulid: 01KKG60C16FAVBXGAYJQBSV524
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: AC-6 is not implemented in dispatcher/runtime
+      behavior. provisionDispatchWorkspace() always persists cleanupEligible=false, so canonical
+      branches never become cleanup-eligible after merge, abandonment, reset, or task closure. See
+      PR #799 review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T04:48:46.118Z
+  - _ulid: 01KKG65RSPKJMYCVJWDFRVXRT4
+    content: "[FIX_CYCLE: 1] Implementing runtime cleanup reconciliation so canonical workspace metadata
+      becomes cleanup-eligible when task lifecycle indicates merge, cancellation, completion, or
+      reset transitions. Verification will cover metadata persistence, not just helper output."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T04:51:43.030Z
+  - _ulid: 01KKG6H8CK536HQ08WJXZJFSE8
+    content: >-
+      Addressed PR #799 MUST-FIX for AC-6.
+
+      - Dispatch runtime now reconciles canonical workspace metadata on completed, cancelled, and
+      reset transitions.
+
+      - Workspace provisioning accepts lifecycle cleanup state and preserves cleanup-eligible
+      metadata once recorded.
+
+      - Added runtime-level AC coverage proving metadata persistence for integrated, abandoned, and
+      reset reconciliation paths.
+
+      - Verification: npm test -- canonical-task-workspace-contract; npm test --
+      dispatch-workspace-config; npm test; node dist/cli/index.js validate (warnings-only baseline,
+      exit 6).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T04:57:59.444Z

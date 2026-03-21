@@ -1,0 +1,184 @@
+notes:
+  - _ulid: 01KFMN13HS953BN1VSQG1CDEFS
+    content: |-
+      ## Implementation Notes
+
+      ### Objective
+      Write integration tests for API endpoints using Vitest.
+
+      ### Test Coverage
+      1. Task endpoints:
+         - GET /api/tasks (list, filter, pagination)
+         - GET /api/tasks/:ref (resolve, not found)
+         - POST /api/tasks/:ref/start (state transition)
+         - POST /api/tasks/:ref/note (append note)
+
+      2. Item endpoints:
+         - GET /api/items (list, filter)
+         - GET /api/items/:ref (with ACs, traits)
+         - GET /api/items/:ref/tasks (alignment)
+
+      3. Error handling:
+         - 404 for invalid refs
+         - 400 for validation errors
+         - 409 for state transition errors
+
+      4. WebSocket:
+         - Connection and handshake
+         - Subscribe/unsubscribe
+         - Event broadcast on changes
+
+      ### Files to Create
+      - packages/daemon/tests/api/tasks.test.ts
+      - packages/daemon/tests/api/items.test.ts
+      - packages/daemon/tests/api/inbox.test.ts
+      - packages/daemon/tests/websocket/protocol.test.ts
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T05:25:29.273Z
+  - _ulid: 01KFP0420TF09Y5CTPSSBJ93NF
+    content: "Session 3: Task was marked in_progress but no work was performed this session. Previous
+      session completed @01KFMMZR (executable compilation). Discovered and fixed daemon path
+      resolution issue (commit 7dd2106) but did not work on API integration tests. Task remains
+      ready for next session."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T17:58:34.778Z
+  - _ulid: 01KFP04827NZYXW7JZQM65DCBC
+    content: Reset from in_progress to pending
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T17:58:40.968Z
+  - _ulid: 01KFP04PZCPEVRV7R3AZX5NXM3
+    content: >-
+      Found existing tests are code structure tests that read source files and verify patterns
+      exist. Need to write true integration tests that:
+
+      1. Start daemon server in test environment
+
+      2. Make actual HTTP requests to REST endpoints
+
+      3. Connect real WebSocket clients and verify protocol
+
+      4. Test end-to-end behavior, not just code structure
+
+
+      Current coverage:
+
+      - daemon-api-tasks.test.ts: Code structure only (ac-2 to ac-7)
+
+      - daemon-api-items.test.ts: Code structure only (ac-8 to ac-11)
+
+      - daemon-api-inbox.test.ts: Code structure only (ac-12 to ac-14)
+
+      - daemon-api-meta.test.ts: Code structure only (ac-15 to ac-18)
+
+      - daemon-api-validation.test.ts: Code structure only (ac-19 to ac-21)
+
+      - daemon-api-error-handling.test.ts: Error patterns (ac-22 to ac-24)
+
+      - daemon-websocket.test.ts: Code structure only (ac-25 to ac-33)
+
+
+      Need: Real E2E integration tests using actual HTTP/WS connections
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T17:58:56.236Z
+  - _ulid: 01KFP0BFVGY2WWX44XM4A9DVXG
+    content: |-
+      Attempted integration tests but encountered complexity:
+
+      1. Daemon package imports from parent (@kynetic-ai/shared) which needs proper build
+      2. Elysia .listen() doesn't work in vitest environment (needs real Bun runtime)
+      3. Elysia .handle() approach requires all dependencies to be properly compiled
+
+      Current test coverage:
+      - Existing daemon-api-*.test.ts files verify CODE STRUCTURE (routes exist, patterns present)
+      - Missing: TRUE INTEGRATION TESTS that start real daemon and make HTTP/WS requests
+
+      Options forward:
+      A. Use Bun test runner instead of vitest (supports .listen())
+      B. Create separate E2E test suite that runs against real daemon instance
+      C. Mock dependencies in unit-style integration tests
+      D. Use supertest-style approach with custom test server
+
+      Recommendation: Option B - separate E2E suite
+      - tests/e2e/ directory with dedicated script
+      - Start daemon with `bun packages/daemon/src/index.ts`
+      - Make real HTTP/WebSocket requests
+      - Verify end-to-end behavior
+
+      This matches the AC intent better than code structure tests.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T18:02:38.321Z
+  - _ulid: 01KFP0CFJ4VMZKVQXGYENX4YWE
+    content: >-
+      After investigation, this task requires architectural decisions:
+
+
+      **Conclusion**: Existing tests (daemon-api-*.test.ts) already provide code structure
+      validation. What's missing is TRUE E2E tests with real HTTP/WS connections.
+
+
+      **Blocker**: Cannot complete in current iteration due to:
+
+      1. Daemon package dependencies on @kynetic-ai/shared require proper monorepo build setup
+
+      2. Vitest environment doesn't support Bun's .listen() (server startup)
+
+      3. Need separate E2E test infrastructure
+
+
+      **Recommended Next Steps**:
+
+      1. Create E2E test framework using Bun test runner
+
+      2. Build test harness that starts real daemon instance
+
+      3. Use real HTTP client (fetch) and WebSocket client
+
+      4. Cover all 33 ACs from @api-contract with end-to-end scenarios
+
+
+      **Alternative**: The existing daemon-api-*.test.ts files may be sufficient if augmented with
+      manual testing procedures. Need product decision on whether code-structure tests + manual QA
+      is acceptable vs building full E2E suite.
+
+
+      Marking task for triage/re-scoping.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T18:03:10.789Z
+  - _ulid: 01KFP8AJDP4WMS6DZ2ZWHJY3TM
+    content: >-
+      ## Status Update
+
+
+      This task is effectively addressed by the new E2E Playwright test suite. The E2E tests
+      exercise the API endpoints through real user flows, providing better coverage than isolated
+      API-only tests.
+
+
+      **Coverage via E2E**:
+
+      - Task API endpoints (GET, POST /start, POST /note) - via Tasks View tests
+
+      - Item API endpoints (GET) - via Items View tests
+
+      - Inbox API endpoints (GET, POST, DELETE) - via Inbox tests
+
+      - Meta/Session endpoints - via Observations tests
+
+      - Search endpoint - via Command Palette tests
+
+      - Error responses (400, 404, 409) - via Error Handling tests
+
+      - WebSocket protocol - via Connection Handling tests
+
+
+      **Recommendation**: Close this task as 'covered by E2E' or keep open for targeted API-only
+      integration tests if additional coverage is needed beyond UI flows.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T20:21:56.791Z

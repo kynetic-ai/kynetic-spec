@@ -1,0 +1,26 @@
+_ulid: 01KKB8FF9NXTCSJNYZZKHNR4KD
+slugs:
+  - implement-task-system-ac-backfill
+title: Implement Task System AC Backfill
+type: task
+spec_ref: "@tasks-ac-backfill"
+plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #787. Backfilled missing acceptance criteria across the targeted @tasks
+  descendants and added snapshot-backed task-system coverage for the touched refs plus
+  @tasks-ac-backfill own ACs. Fresh GitHub checks passed on merge head
+  9756f9b44a614db12a86225b69ae3d94c132da81; no trait ACs applied to this spec."
+depends_on:
+  - "@implement-spec-completeness-policy"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKFER9Q873E939FCD2GN2N1G
+created_at: 2026-03-10T06:55:45.973Z
+started_at: 2026-03-11T22:16:14.623Z
+submitted_at: 2026-03-11T22:16:20.429Z
+completed_at: 2026-03-11T22:31:54.243Z
+todos: []
+automation: eligible

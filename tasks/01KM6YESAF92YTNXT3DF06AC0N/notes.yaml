@@ -1,0 +1,82 @@
+notes:
+  - _ulid: 01KM7P7HDS4YG9GZC9FWG5PAZT
+    content: "Implemented task index file operations in split-backend.ts. Key design decisions: (1)
+      Extracted toIndexEntry() from private method to standalone exported function with
+      indexEntriesEqual() for change detection. (2) notes_count/todos_count excluded from change
+      detection so note additions don't trigger index writes (AC-3). They are denormalized counts
+      that get corrected during rebuildIndex(). (3) rebuildIndex() reads all per-task directories
+      and regenerates the index file, preserving the existing format (wrapper vs bare array). (4)
+      Per-task file authority (AC-6) was inherently satisfied since getTask() already reads from
+      per-task directory, not index. All 7 ACs covered with 20 new annotated tests. Full test suite
+      passes (6813 tests, 0 failures)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T07:54:50.169Z
+  - _ulid: 01KM7PJF4AGREDK9YAYWTB6K7Z
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-21T08:00:48.267Z
+  - _ulid: 01KM7QJ1TSGVJXSZNE90HRK7K3
+    content: "Fix cycle 1: Addressed blocker — stale notes_count/todos_count in index after note
+      mutations. Root cause: INDEX_CHANGE_FIELDS excluded notes_count and todos_count, so
+      indexEntriesEqual() didn't detect count changes, and mutateTask() skipped the index write.
+      Fix: removed the exclusion filter so all indexed fields (including counts) trigger index
+      writes when they change. Updated the AC-3 test to verify note content stays out of the index
+      while the count is updated. Added a regression test proving listTasks() returns accurate
+      notes_count after multiple note additions. Full test suite passes (6814 tests, 0 failures)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T08:18:03.226Z
+  - _ulid: 01KM7QX49YB1F5Y2TA4WM89YSC
+    content: "[FIX_CYCLE: 2] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-21T08:24:06.206Z
+  - _ulid: 01KM7RWH9W4SX2C0E1Q9EA1562
+    content: "Fix cycle 2: Addressed both blockers — reverted INDEX_CHANGE_FIELDS to exclude
+      notes_count/todos_count, restoring AC-3 compliance. Note-only mutations no longer trigger
+      index writes. Counts are set at creation time and corrected via rebuildIndex() (AC-7).
+      Reverted the AC-3 test to assert the index is unchanged after note additions. Replaced the
+      'listTasks returns accurate notes_count' test with one that verifies stale-after-note +
+      correct-after-rebuild behavior. Changed indexEntriesEqual assertions for counts from false to
+      true. Full test suite passes (6810 pass, 4 pre-existing failures in unrelated dispatch
+      tests)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T08:41:15.324Z
+  - _ulid: 01KM7S9TQ9EC7CP2G6NKBBH110
+    content: "[FIX_CYCLE: 3] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-21T08:48:30.953Z
+  - _ulid: 01KM7T1SVS9WE26D8960S1WJ3Z
+    content: "Fix cycle 3: Resolved the notes_count/todos_count oscillation. The root issue was
+      misclassifying counts as non-indexed data. AC-3 says note *content* is non-indexed (and indeed
+      note text never enters the index). But notes_count is a derived indexed field used by list
+      surfaces — when it changes, the index should update per AC-2. Removed the INDEX_CHANGE_FIELDS
+      filter that excluded counts, so indexEntriesEqual now compares all INDEXED_FIELDS. Updated
+      tests: the AC-3 test now verifies note content stays out of the index while the count updates;
+      the staleness test was replaced with one asserting listTasks returns accurate counts
+      immediately. Full suite passes (6814 tests)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T09:01:36.505Z
+  - _ulid: 01KM7TG8VKFRM2VS2TYQC4D6MA
+    content: "[FIX_CYCLE: 4] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-21T09:09:30.611Z
+  - _ulid: 01KM7VTPVW4X5121HAHWDVACTN
+    content: "Fix cycle 4: Addressed both blockers from review. (1) Added plan_ref and review_ref to
+      TaskSummary interface, rawToSummary(), and toTaskSummary() — these were indexed by
+      toIndexEntry/INDEXED_FIELDS but missing from the summary projection, so listTasks() consumers
+      would lose plan/review linkage data under split storage. Removed them from DETAIL_ONLY_FIELDS
+      in tests. (2) Added rebuildIndex() to TaskStorageBackend interface and TaskDataManager class,
+      making AC-7 accessible through the public API. MonolithicBackend implements it as a no-op
+      (returns task count). Added 5 new tests covering manager-accessible rebuildIndex,
+      plan_ref/review_ref presence in listTasks, mutation propagation, and rebuild preservation.
+      Full suite passes (6819 tests, 0 failures)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T09:32:41.212Z

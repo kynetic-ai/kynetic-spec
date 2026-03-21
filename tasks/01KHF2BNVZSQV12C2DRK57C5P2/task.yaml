@@ -1,0 +1,30 @@
+_ulid: 01KHF2BNVZSQV12C2DRK57C5P2
+slugs: []
+title: Create spec for validate --drift feature
+type: task
+description: "PR #362 added kspec validate --drift, a user-facing CLI flag for AC schema field
+  validation. This was shipped without a spec item or formal ACs, violating the spec-before-code
+  rule. Create a spec item with acceptance criteria covering: field detection from prose, conceptual
+  vs schema fields, strict mode, exit codes, and false positive handling."
+spec_ref: "@validate-drift"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #691. Added explicit AC coverage annotations for @validate-drift in
+  tests/ac-schema-drift.test.ts, including the filename-extension false-positive case and
+  warning-vs-strict exit-code coverage. Spec alignment reviewed against all six ACs; no inherited
+  trait ACs apply. GitHub CI passed on the merged head; local npm test attempts were blocked by
+  unrelated existing web UI dependency-resolution issues."
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+session_id: 01KK5F2SGRYK9G8ZGQBZ5XMMV6
+created_at: 2026-02-14T21:54:24.255Z
+started_at: 2026-03-08T01:09:21.966Z
+submitted_at: 2026-03-08T01:09:33.024Z
+completed_at: 2026-03-08T01:17:22.103Z
+todos: []
+automation: needs_review

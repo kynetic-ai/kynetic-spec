@@ -1,0 +1,81 @@
+_ulid: 01KM5Z4NK56J72PS2YVKP5EJ8G
+slugs:
+  - task-schema-derived-types
+title: Consolidate type definitions to schema source of truth
+type: task
+description: |
+  **What:** Replace all hardcoded enum arrays, Elysia literal unions,
+  CLI help text values, and type assertions with derivations from the
+  canonical Zod schemas. Also resolve the automation status divergence
+  where three independent Zod schemas define incompatible value sets
+  for the same semantic concept.
+
+  **Why:** The audit found 5 hardcoded enum arrays in daemon routes,
+  10+ CLI help strings with hardcoded values, and type assertions in
+  aggregation routes — all duplicating what Zod schemas already define.
+  Worse, there are 3 incompatible "automation" enums:
+  - AutomationStatusSchema (task.ts): eligible, needs_review, manual_only
+  - TaskEventPayload automation (event-payloads.ts): eligible, not_eligible, assisted
+  - AgentDispatchFilterSchema (meta.ts): eligible, ineligible
+  Only "eligible" overlaps across all three. These must be reconciled.
+
+  **How:**
+  1. Reconcile automation enums — determine the canonical set and
+     derive the others from it, or document why they are intentionally
+     different domains
+
+  2. Replace hardcoded arrays in daemon routes with schema derivations:
+     - packages/daemon/src/routes/agent-dispatch.ts: VALID_TASK_STATUSES
+       → derive from TaskStatusSchema.options
+     - packages/daemon/src/routes/reviews.ts: VALID_DECISIONS,
+       VALID_CHECK_STATUSES, VALID_LIFECYCLE_TARGETS, validKinds,
+       validSides → derive from corresponding Review*Schema.options
+     - packages/daemon/src/routes/aggregation.ts: remove type assertions
+       with hardcoded enum values
+
+  3. Replace Elysia hardcoded literals:
+     - packages/daemon/src/routes/meta.ts line 108: automation literal
+       union → derive from schema like line 105 does for dispatch events
+
+  4. Make CLI help text derive from schemas. Either:
+     (a) Generate help strings: `"Task type (${TaskTypeSchema.options.join(', ')})"` or
+     (b) Accept that help text is documentation and may list a subset,
+         but validation must use the schema
+
+  5. Follow existing correct patterns:
+     - src/triage/constants.ts: `VALID_ACTIONS = TriageActionSchema.options`
+     - meta.ts:105: `t.Union(Schema.options.map(v => t.Literal(v)))`
+
+  Covers: @schema-derived-type-definitions ac-1 through ac-4.
+spec_ref: "@schema-derived-type-definitions"
+plan_ref: "@plan-input-validation-hardening"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged dispatch/task/task-schema-derived-types/01km5z4n into dev after approved
+  review 01KM640S. Verified npm test passed (293 files, 6673 tests, 3 skipped). Schema-derived enum
+  consumers and automation status definitions are now consolidated to canonical schemas.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - schema
+  - validation
+  - maintenance
+vcs_refs: []
+review_ref: "@01KM640S2M75MHYAMFRRZZKHWY"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T17:16:23.606Z
+  commit: 52f57a70e817ac22b082a3fa0f759cb97fbe56b1
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM63NWFBR9PRVWT4887JPFWH
+created_at: 2026-03-20T15:52:04.453Z
+started_at: 2026-03-20T17:12:43.265Z
+submitted_at: 2026-03-20T17:16:24.034Z
+completed_at: 2026-03-20T17:22:02.910Z
+todos: []
+automation: eligible

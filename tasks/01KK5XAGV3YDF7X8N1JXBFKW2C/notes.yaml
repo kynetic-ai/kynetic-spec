@@ -1,0 +1,12 @@
+notes:
+  - _ulid: 01KKDW47M6N1DX7XY475Z6VCS1
+    content: "Verified on main that this task is already implemented. Evidence:
+      src/cli/commands/agent.ts streams agent_message_chunk text to stdout in interactive mode and
+      suppresses streaming in --json mode; src/cli/commands/session/log.ts supports --text replay
+      from session.update content. Focused verification passed with npm test --
+      tests/cli-agent-commands.test.ts tests/session-log-show.test.ts (110 tests). kspec validate
+      exits 6 due to existing project-wide warning backlog, but no task-specific failures were
+      found."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T07:17:38.054Z

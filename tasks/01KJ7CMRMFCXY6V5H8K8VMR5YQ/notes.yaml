@@ -1,0 +1,11 @@
+notes:
+  - _ulid: 01KJ99RF0PKTR4P5P3PYRFGM4E
+    content: "Dead marker file code was already removed from ralph.ts in PR #502. Verified: no
+      references to writeTaskLimitMarker, clearTaskLimitMarker, readTaskLimitMarker,
+      clearStaleMarker, TaskLimitMarker, or TASK_LIMIT_MARKER_PATH remain in src/. Static analysis
+      tests in session-budget-integration.test.ts (ac-remove-marker-code) confirm removal and all 33
+      tests pass. task-limit.test.ts tests --max-tasks flag parsing which is still active
+      functionality. No code changes needed — task already complete."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T02:23:58.486Z

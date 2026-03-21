@@ -1,0 +1,22 @@
+_ulid: 01KFNK3FRQX9QZFXEGE3ZNGMEG
+slugs: []
+title: Add type validation tests to shared package
+type: task
+description: "Add minimal type validation tests to @kynetic-ai/shared package to ensure: (1) types
+  compile correctly, (2) types match Zod schemas, (3) exports are accessible. Use vitest
+  expectTypeOf for type-level tests. Estimated effort: 1-2 hours. See PR #196 local review for
+  recommendations."
+spec_ref: "@web-ui"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Type validation tests merged in PR #206"
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-23T14:11:04.599Z
+started_at: 2026-01-23T18:40:15.759Z
+completed_at: 2026-01-23T18:40:19.399Z
+todos: []

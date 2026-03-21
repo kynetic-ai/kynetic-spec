@@ -1,0 +1,93 @@
+notes:
+  - _ulid: 01KFR82GCHGVHHD2HV6V35QBDZ
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Error handling specific to loop mode. Failures tracked via task notes with [LOOP-FAIL:N]
+      prefix. N=3 triggers automation: needs_review.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given error during task work, when error caught, then note added with [LOOP-FAIL:N]
+      prefix and error description
+
+      - ac-2: Given non-fatal error occurs, when error handled, then workflow continues to next task
+
+      - ac-3: Given task fails, when note added, then note includes [LOOP-FAIL:N] where N = previous
+      count + 1
+
+      - ac-4: Given task has prior [LOOP-FAIL:N] notes, when new failure occurs, then N is parsed
+      from latest note and incremented
+
+      - ac-5: Given task fails with N reaching 3, when threshold reached, then task marked
+      automation: needs_review with summary
+
+      - ac-6: Given task completes successfully, when workflow finishes, then no reset needed; count
+      is per-task in notes
+
+      - ac-7: Given workflow encounters error, when error evaluated, then failure = tests fail, PR
+      blocked, exception, or agent reports cannot complete
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T14:56:01.425Z
+  - _ulid: 01KFR866NCVVC4319003VWZG7M
+    content: "Implementation notes: 7 ACs covering note-on-error, continue, track-failures, parse-count,
+      escalate, reset, failure-definition. Failure tracking via task notes with [LOOP-FAIL:N]
+      prefix. N=3 triggers automation: needs_review. Failure = tests fail, PR blocked, exception, or
+      agent reports cannot complete."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T14:58:02.541Z
+  - _ulid: 01KFTEPNNHPKT6RNY26NAM6FNG
+    content: |-
+      ## Implementation Complete
+
+      Implemented loop mode error handling with per-task failure tracking.
+
+      ### What was implemented:
+      1. **Error tracking utilities** (src/ralph/loop-errors.ts):
+         - parseFailureCount() - Parse [LOOP-FAIL:N] prefix from notes (AC-4)
+         - getTaskFailureCount() - Get highest failure count from task notes (AC-4)
+         - createFailureNote() - Create failure note with incremented count (AC-1, AC-3)
+         - shouldEscalate() - Check if threshold reached (AC-5)
+         - isIterationFailure() - Determine if iteration result is a failure (AC-7)
+         - hasTaskProgress() - Check for progress via new notes (AC-8)
+         - processFailedIteration() - Main orchestration function (AC-2, AC-6, AC-8)
+
+      2. **Ralph integration** (src/cli/commands/ralph.ts):
+         - handleIterationFailure() - Called after iteration fails
+         - Tracks tasks in_progress at iteration start
+         - Re-loads tasks after failure to check progress
+         - Adds [LOOP-FAIL:N] notes to tasks without progress
+         - Escalates to automation:needs_review at 3 failures (AC-5)
+
+      3. **Test coverage** (tests/ralph-loop-errors.test.ts):
+         - 23 tests covering all 9 acceptance criteria
+         - All tests passing
+
+      ### How it works:
+      - At iteration start: capture active_tasks and timestamp
+      - After iteration fails: handleIterationFailure() is called
+      - For each task that was in_progress:
+        - Check if it made progress (new non-LOOP-FAIL notes)
+        - If no progress: add [LOOP-FAIL:N] note
+        - If N reaches 3: set automation:needs_review
+
+      ### Files modified:
+      - src/ralph/loop-errors.ts (new)
+      - src/ralph/index.ts (exports)
+      - src/cli/commands/ralph.ts (integration)
+      - tests/ralph-loop-errors.test.ts (new)
+
+      All 9 ACs implemented and tested.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T11:30:22.513Z
+  - _ulid: 01KFTFDXWZ9G5C7G4N7FYF59PH
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-01-25T11:43:04.607Z

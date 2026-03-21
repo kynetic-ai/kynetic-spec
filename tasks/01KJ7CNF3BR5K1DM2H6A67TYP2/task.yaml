@@ -1,0 +1,31 @@
+_ulid: 01KJ7CNF3BR5K1DM2H6A67TYP2
+slugs: []
+title: Audit and improve skills for agent self-sufficiency
+type: task
+description: "Ralph loop audit revealed agents spending 139 messages searching YAML files for trait
+  definitions instead of using kspec item get (1 command). Skills should contain enough context for
+  agents to use CLI efficiently for common lookups. An agent should: 1) identify which skills are
+  most commonly invoked during task-work, 2) find patterns where agents resort to raw file search
+  instead of CLI commands, 3) update skills to include lookup recipes (e.g. 'to find a trait: kspec
+  item get @trait-name'). High-impact, automatable."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #521. Added CLI lookup tables to 6 skills (task-work, review,
+  writing-specs, triage-inbox, local-review, pr-review) and a cli-lookups convention to
+  kspec-agents.md. Addresses root cause of agents wasting 139+ messages searching YAML files instead
+  of using kspec item get."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - skills
+  - agent-quality
+vcs_refs: []
+created_at: 2026-02-24T08:36:17.130Z
+started_at: 2026-02-25T02:41:55.317Z
+completed_at: 2026-02-25T03:01:45.161Z
+todos: []
+automation: eligible

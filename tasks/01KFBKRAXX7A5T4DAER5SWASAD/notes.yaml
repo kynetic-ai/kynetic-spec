@@ -1,0 +1,53 @@
+notes:
+  - _ulid: 01KFBKRVH9NWYB7AJVH92533VQ
+    content: TODO at src/cli/commands/item.ts:1163
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T17:10:20.457Z
+  - _ulid: 01KFFGDYMAS5C7AZ261J4KMA18
+    content: |-
+      Implementation notes:
+      - File: src/cli/commands/item.ts - modify AC remove handler (line ~1180)
+      - Existing TODO at line 1198: Add confirmation prompt when !options.force
+      - Use readline pattern from task delete
+      - Check process.stdin.isTTY for interactive detection
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T05:28:55.179Z
+  - _ulid: 01KFFXT8FQ3RC0EHYK9EYBGYGC
+    content: >-
+      Implementation complete:
+
+
+      - Added confirmation prompt logic to item ac remove command
+      (src/cli/commands/item.ts:1198-1231)
+
+      - Checks for --json mode without --force (AC-5)
+
+      - Checks for non-interactive environment without --force (AC-6)
+
+      - Prompts for confirmation in interactive mode when not --force (AC-1)
+
+      - Accepts 'y' to proceed (AC-2)
+
+      - Declines on 'n' or empty input with exit code 2 (AC-3)
+
+      - Skips prompt with --force flag (AC-4)
+
+      - Added KSPEC_TEST_TTY env var for testing interactive prompts
+
+      - Created tests/ac-delete-confirmation.test.ts with E2E tests for all 6 ACs
+
+      - All 831 tests pass including 8 new AC-specific tests
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T09:22:49.976Z
+  - _ulid: 01KFFXX0A2YK893NWBCMS70HR4
+    content: |-
+      PR #124 created: https://github.com/kynetic-ai/kynetic-spec/pull/124
+
+      Branch: feat/ac-delete-confirmation
+      Ready for review and merge.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T09:24:19.907Z

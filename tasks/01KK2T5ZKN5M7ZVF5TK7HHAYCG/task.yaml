@@ -1,0 +1,29 @@
+_ulid: 01KK2T5ZKN5M7ZVF5TK7HHAYCG
+slugs: []
+title: Fix inbox page filter dropdowns not functioning
+type: task
+description: "The filter dropdown selectors (status, tags, age) on the /inbox page are
+  non-functional — selecting a value has no effect on the displayed items. Likely same root cause as
+  the triage dropdown bug: Svelte 5 event binding issue or reactive state not updating on select
+  change. Investigate routes/inbox/+page.svelte filter controls and how filterStatus, filterTag,
+  filterAge state variables are bound to the select elements."
+spec_ref: "@ui-inbox-enhanced"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - web-ui
+vcs_refs: []
+session_id: 01KK3GRX347BMFT3087Y7P3P8R
+created_at: 2026-03-07T00:11:59.476Z
+started_at: 2026-03-07T06:54:28.637Z
+submitted_at: 2026-03-07T07:04:38.561Z
+completed_at: 2026-03-07T07:31:36.980Z
+todos: []
+automation: eligible

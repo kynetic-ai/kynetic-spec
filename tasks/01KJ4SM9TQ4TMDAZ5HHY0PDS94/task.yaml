@@ -1,0 +1,26 @@
+_ulid: 01KJ4SM9TQ4TMDAZ5HHY0PDS94
+slugs: []
+title: task complete --force should bypass the submit requirement. Currently --force does not skip
+  the in_p
+type: task
+description: task complete --force should bypass the submit requirement. Currently --force does not
+  skip the in_progress → pending_review transition, making it impossible to complete non-code tasks
+  (design, triage, research) without a meaningless submit step. The --force flag exists but does not
+  actually force completion from in_progress state.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #481. --force flag now bypasses all state checks in task complete,
+  enabling direct completion from in_progress, pending, blocked, and cancelled states. Documents
+  prior state in note and warning. 7 tests cover all force-complete paths. Spec @task-commands ac-1
+  fully covered."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-23T08:25:07.159Z
+started_at: 2026-02-23T16:01:14.301Z
+completed_at: 2026-02-23T16:24:01.884Z
+todos: []
+automation: eligible

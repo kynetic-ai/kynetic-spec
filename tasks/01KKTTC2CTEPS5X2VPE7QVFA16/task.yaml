@@ -1,0 +1,55 @@
+_ulid: 01KKTTC2CTEPS5X2VPE7QVFA16
+slugs: []
+title: Improve review skill to direct use of anchors in plan and code reviews
+type: task
+description: >-
+  The core review skill documents anchor CLI flags but doesn't direct reviewers to use them. During
+  plan review testing (4 rounds on @plan-review-records-web-ui), agents described locations in
+  comment body text instead of using structured anchors.
+
+
+  Changes needed to templates/skills/review/SKILL.md:
+
+  1. In the reviewer workflow section, direct using --section/--field for plan/spec reviews to
+  anchor findings to specific ACs or fields
+
+  2. In the reviewer workflow section, direct using --path/--line-start/--line-end for code reviews
+  to anchor findings to specific lines
+
+  3. Add examples showing anchored vs unanchored comments and why anchored is better
+  (machine-parseable, UI can render inline context)
+
+  4. In the finding quality standards section, add anchor as a recommended field alongside path/line
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Review skill template updated with anchor directives: strengthened
+  Code-Targeted Comments and Structured Anchors sections with 'Always anchor' directives, added Why
+  Anchors Matter section with side-by-side examples, added Anchor to Finding Quality standards,
+  updated Reviewer Workflow Summary step 5. Prior review blocker (merge conflict) resolved. All
+  rendered outputs match source."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - skills
+  - review
+vcs_refs: []
+review_ref: "@01KKXRAKWZTP8HNCDRBYTYXCF7"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-17T11:13:21.263Z
+  commit: 3adbbfee82515798cb91b386fb3d201cbd79fb0f
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KKXQCF6EJZ1XP3NRG048SZ56
+created_at: 2026-03-16T07:57:05.306Z
+started_at: 2026-03-17T11:13:18.061Z
+submitted_at: 2026-03-17T11:13:21.638Z
+completed_at: 2026-03-17T11:21:04.483Z
+todos: []
+automation: eligible

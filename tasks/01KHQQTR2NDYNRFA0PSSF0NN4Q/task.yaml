@@ -1,0 +1,22 @@
+_ulid: 01KHQQTR2NDYNRFA0PSSF0NN4Q
+slugs:
+  - task-dead-code-and-deduplication-sweep
+title: "Implement: Dead Code and Deduplication Sweep"
+type: task
+spec_ref: null
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #403. Removed dead code (SkillRenderResult, SkillStatusResult,
+  getSkillSyncStatus, toKebabCase, EXPECTED_TEMPLATES), deduplicated utilities (contentsEqual,
+  directoriesEqual, copyDirectory now imported from skill-render.ts), and removed redundant manual
+  defaults in skill add/import/install. Net -218 lines. All 5 ACs covered with annotated tests."
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-02-18T06:43:33.589Z
+started_at: 2026-02-18T07:02:15.937Z
+completed_at: 2026-02-18T07:35:14.175Z
+todos: []

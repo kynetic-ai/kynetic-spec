@@ -1,0 +1,49 @@
+_ulid: 01KKX6QR02Z2YKJBPBXD4RCRKT
+slugs: []
+title: Fix link commands that bypass generateCommitMessage
+type: task
+description: >-
+  link.ts:125 and link.ts:394 pass raw human-readable strings as the operation parameter to
+  commitIfShadow() instead of using a structured operation+ref+detail pattern:
+
+
+  - link.ts:125: 'Add implements link: @from -> @to'
+
+  - link.ts:394: 'Remove implements, depends_on link: @from -> @to'
+
+
+  These bypass generateCommitMessage() entirely (fall through to default, which just emits the raw
+  string). Fix: use structured operations like 'link-add' and 'link-remove' with the from-ref as the
+  ref parameter and the relationship details as detail. Add corresponding cases to
+  generateCommitMessage().
+spec_ref: "@trait-shadow-commit"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Merged to dev after approved review. Link create/delete now use structured
+  link-add/link-remove shadow commit operations, generateCommitMessage formats semantic link commit
+  subjects, and formatter plus CLI integration coverage verify the path.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - schema
+vcs_refs: []
+review_ref: "@01KM2FTFXZ88QBT8PNVW5AQZYR"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-19T07:25:33.220Z
+  commit: 53be2094bc46d5c352d60c095941b9033e61d079
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM2F68Q2F4TK541TJWRANKVA
+created_at: 2026-03-17T06:11:39.650Z
+started_at: 2026-03-19T07:16:12.103Z
+submitted_at: 2026-03-19T07:25:33.639Z
+completed_at: 2026-03-19T07:30:12.386Z
+todos: []
+automation: eligible

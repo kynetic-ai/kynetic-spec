@@ -1,0 +1,101 @@
+notes:
+  - _ulid: 01KHW19B512JKJ09DNKPQMXEC9
+    content: "Automation status set to manual_only: Editorial content — voice, positioning, emphasis
+      need human direction"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-19T22:45:46.785Z
+  - _ulid: 01KK5FY9MYNGB1ZDRV50WXCDBV
+    content: >-
+      Execution context:
+
+      - Background: public-facing docs for external users adopting kspec as a tool, not contributors
+      hacking on kspec itself.
+
+      - Scope: rewrite top-level README and add an end-to-end getting-started tutorial that links to
+      existing install and skill docs instead of duplicating them.
+
+      - Files: README.md, docs/getting-started.md, and any small cross-links needed from existing
+      docs.
+
+      - Verification: markdown review plus targeted repo checks for command accuracy and link
+      validity.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:10:45.150Z
+  - _ulid: 01KK5G28TFMFW933RNE6VA5A3J
+    content: >-
+      Rewrote the top-level README for external adopters and added docs/getting-started.md with an
+      end-to-end spec-first tutorial. Also added an INSTALL.md handoff to the tutorial.
+
+
+      Verification: checked markdown link targets and ran git diff --check.
+
+      Validation: kspec validate currently fails because of pre-existing meta/spec issues unrelated
+      to this docs task (missing .kspec/skills/observations/SKILL.md, duplicate @observations slug,
+      and existing alignment/completeness warnings).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:12:55.375Z
+  - _ulid: 01KK5GRE5QQYH2510KCXXSHAPV
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #692 includes unrelated validate-drift test
+      changes from task @01KHF2BNVZSQV12C2DRK57C5P2. Split the docs work into a dedicated PR/branch
+      before review can pass."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:25:01.751Z
+  - _ulid: 01KK5HFAMKQJRDB00ZSB2T354B
+    content: "[FIX_CYCLE: 1] Rebuilt docs/getting-started-readme from origin/main and force-pushed PR
+      #692 so it now contains only the docs task changes (README.md, INSTALL.md,
+      docs/getting-started.md). Verification: git diff --name-only origin/main..HEAD, git diff
+      --check origin/main..HEAD, and PR file list via gh pr view 692."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:37:31.795Z
+  - _ulid: 01KK5JCRXZ78F5S5FKKS2ZCTYD
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: INSTALL.md still has stale README anchors
+      (README.md#agent-integration and README.md#task-management) after the README rewrite, so the
+      external-user docs path contains broken links."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:53:36.703Z
+  - _ulid: 01KK5M0S812B25S753NY6TM080
+    content: "[FIX_CYCLE: 3] Addressing stale INSTALL.md README links by repointing them to the
+      rewritten README sections on the dedicated docs/getting-started-readme branch. Verification
+      will re-check anchors and diff scope before re-submitting."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T02:22:00.961Z
+  - _ulid: 01KK5M3DH2RW4Z48TDG62795EE
+    content: "[FIX_CYCLE: 3] Updated INSTALL.md to replace stale README anchor links with current docs
+      targets: README.md#how-it-works for setup context and docs/getting-started.md for the
+      first-task walkthrough. Verification: rg confirmed no remaining README.md#agent-integration or
+      README.md#task-management links; git diff --check passed; origin/main..HEAD file scope remains
+      README.md, INSTALL.md, docs/getting-started.md."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T02:23:27.266Z
+  - _ulid: 01KK5MTVYDXDX561H2WWYSZY2T
+    content: "[FIX_CYCLE: 6] Review findings: MUST-FIX: INSTALL.md still links to
+      AGENTS.md#shadow-branch-worktree-architecture, but the generated heading is 'Shadow Branch
+      Architecture', so the install guide still contains a broken handoff."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T02:36:15.693Z
+  - _ulid: 01KK5PFDDWRZZSZS790KAXQTMQ
+    content: "[FIX_CYCLE: 6] Correcting the remaining broken install-guide handoff by pointing the
+      shadow-branch architecture link at kspec-agents.md#shadow-branch-architecture, which is where
+      the generated heading actually exists on this docs branch. Verification will re-check anchors,
+      diff scope, and push an isolated docs-only fix to PR #692."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T03:04:57.532Z
+  - _ulid: 01KK5PGYSN6Y4AEA641XQWR135
+    content: "[FIX_CYCLE: 6] Updated INSTALL.md to replace the broken AGENTS.md shadow-branch anchor
+      with kspec-agents.md#shadow-branch-architecture, which matches the generated heading on this
+      branch. Verification: rg confirmed the new link target and no remaining stale README/AGENTS
+      anchors in INSTALL.md; git diff --check passed; git diff --name-only origin/main..HEAD remains
+      README.md, INSTALL.md, docs/getting-started.md; pushed commit 243c7041f to PR #692."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T03:05:48.085Z

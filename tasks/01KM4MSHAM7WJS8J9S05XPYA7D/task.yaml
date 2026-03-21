@@ -1,0 +1,38 @@
+_ulid: 01KM4MSHAM7WJS8J9S05XPYA7D
+slugs: []
+title: Ignore transient plans directory during plan sessions
+type: task
+description: Add plans/ to .gitignore — checkpoint hook flags plan source files as uncommitted
+  changes repeatedly during plan sessions. Plan files are not committed per convention (shadow
+  branch plan record is the durable artifact). This fired ~7 times in the dispatch event expansion
+  planning session.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Merged to dev after review approval. Added plans/ ignore backfill in init/setup,
+  covered checkpoint behavior for transient plan files, and verified with targeted suites plus full
+  npm test.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - dx
+  - plan
+vcs_refs: []
+review_ref: "@01KM4Y3NET6V4RD2EWVBX7W68G"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T06:13:39.959Z
+  commit: ae077977e2b5f008e5c9d4c9357ebd8e45074f7c
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM4X8K4WVTPWKC0XJMJF3BZ2
+created_at: 2026-03-20T03:31:59.444Z
+started_at: 2026-03-20T06:00:34.297Z
+submitted_at: 2026-03-20T06:13:40.412Z
+completed_at: 2026-03-20T06:20:47.931Z
+todos: []
+automation: eligible

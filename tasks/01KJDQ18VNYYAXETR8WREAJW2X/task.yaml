@@ -1,0 +1,74 @@
+_ulid: 01KJDQ18VNYYAXETR8WREAJW2X
+slugs: []
+title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
+  with a cle
+type: task
+description: >-
+  **What**: `kspec batch --commands ''` hangs instead of failing fast. When Commander receives
+  `--commands ''` (empty string), `options.commands` is `''` which is falsy in JavaScript. The
+  source selection logic at `src/cli/commands/batch.ts` line 148 (`else if (options.commands)`)
+  skips the inline path and falls through to `source = { type: 'stdin' }`. The stdin reader at
+  `src/cli/batch-exec.ts` lines 114-124 then blocks forever waiting for input that will never come.
+
+
+  **Where**:
+
+  - `src/cli/commands/batch.ts` lines 146-152 — source selection logic
+
+  - `src/cli/batch-exec.ts` lines 100-126 — `readSource()` stdin path
+
+
+  **How**:
+
+  Change the source selection to check `options.commands !== undefined` instead of truthiness:
+
+  ```typescript
+
+  if (options.file) {
+    source = { type: 'file', path: options.file };
+  } else if (options.commands !== undefined) {
+    source = { type: 'inline', json: options.commands };
+  } else {
+    source = { type: 'stdin' };
+  }
+
+  ```
+
+  This way `--commands ''` takes the inline path and gets caught by `parseBatchInput()` which will
+  fail on `JSON.parse('')` with a clear 'Invalid JSON' error.
+
+
+  Alternatively, also add early validation in the inline path: if `options.commands` is
+  empty/whitespace, throw `BatchParseError('Empty --commands value')` before attempting parse.
+
+
+  **Done when**:
+
+  - `kspec batch --commands ''` exits immediately with a clear error (not a hang)
+
+  - `kspec batch --commands ' '` also fails fast
+
+  - No regression: `kspec batch --commands '[...]'` still works correctly
+
+  - Add a test case for empty `--commands` input
+spec_ref: "@batch-exec"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #598. Updated batch source selection in src/cli/commands/batch.ts to
+  treat --commands as inline whenever provided (options.commands !== undefined), fixing hang
+  behavior for empty/whitespace --commands by routing to JSON parse failure instead of stdin
+  blocking. Added regression tests in tests/batch-exec-engine.test.ts for --commands '' and
+  --commands '   ' with fast-fail Invalid JSON assertions. No deviations from spec intent; AC
+  coverage verified for @batch-exec own criteria and inherited traits relevant to this path."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJJ6PWBGRT2HT64EH2099ZZH
+created_at: 2026-02-26T19:32:56.309Z
+started_at: 2026-02-28T13:32:24.588Z
+submitted_at: 2026-02-28T13:33:39.765Z
+completed_at: 2026-02-28T13:44:19.990Z
+todos: []
+automation: eligible

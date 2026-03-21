@@ -1,0 +1,158 @@
+notes:
+  - _ulid: 01KKB8FFVDD9HDVDBT9DPHVSKN
+    content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+    author: "@claude"
+    created_at: 2026-03-10T06:55:46.541Z
+  - _ulid: 01KKF1HH3B0AZYX31JMAT6MYAN
+    content: >-
+      Execution context:
+
+      - Background: complete the meta-module acceptance-criteria backfill from plan
+      @plan-spec-reconciliation-close-validate-completeness-ga.
+
+      - Scope: add missing ACs to @meta descendants only, keeping behavior/spec intent aligned with
+      implemented system.
+
+      - Files: .kspec shadow-branch spec state only via kspec CLI; no direct YAML edits.
+
+      - Verification: kspec validate --completeness and targeted item inspection for each updated
+      spec.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T18:11:31.052Z
+  - _ulid: 01KKF1S95CEBTFXFZFSCHD8KAC
+    content: >-
+      Completed meta-module AC backfill.
+
+      - Added concrete given/when/then acceptance criteria to all previously uncovered
+      feature/requirement items under @meta, covering manifest, agents, workflows, conventions,
+      observations, session context, meta CLI commands, and task meta_ref behavior.
+
+      - Verification:  now returns no feature/requirement descendants with missing or empty
+      acceptance_criteria.
+
+      - Verification: ✓ Validation passed
+
+      ────────────────────────────────────────
+
+      Files checked: 9
+
+      Items checked: 475
+
+      Tasks checked: 957
+
+      Meta: 10 agents, 16 workflows, 10 conventions
+
+
+      Schema: OK
+
+      References: OK
+
+
+      Completeness warnings: 341
+        Missing acceptance criteria: 11
+          ○ @01KJN1WT - Test Trait
+          ○ @shadow-concept - Shadow Branch Concept
+          ○ @shadow-structure - Shadow Directory Structure
+          ... and 8 more
+        Missing own AC coverage: 231
+          ! @trait-priority-parameter - Priority Parameter
+            Uncovered: ac-1, ac-2, ac-3, ac-4, ac-5, ac-6, ac-7, ac-8
+          ! @ulid-system - ULID Identifier System
+            Uncovered: ac-ulid-1, ac-ulid-2, ac-ulid-3
+          ! @slug-system - Slug Alias System
+            Uncovered: ac-slug-1, ac-slug-2, ac-slug-3
+          ... and 228 more
+        Missing trait AC coverage: 6
+          ! @batch-exec - Batch Command Execution
+            Uncovered trait ACs: @trait-priority-parameter ac-1, @trait-priority-parameter ac-2, @trait-priority-parameter ac-3, @trait-priority-parameter ac-4, @trait-priority-parameter ac-5, @trait-priority-parameter ac-6, @trait-priority-parameter ac-7, @trait-priority-parameter ac-8
+          ! @task-commands - Task Commands
+            Uncovered trait ACs: @trait-priority-parameter ac-1, @trait-priority-parameter ac-2, @trait-priority-parameter ac-3, @trait-priority-parameter ac-4, @trait-priority-parameter ac-5, @trait-priority-parameter ac-6, @trait-priority-parameter ac-7, @trait-priority-parameter ac-8
+          ! @derive-commands - Derive Commands
+            Uncovered trait ACs: @trait-priority-parameter ac-1, @trait-priority-parameter ac-2, @trait-priority-parameter ac-3, @trait-priority-parameter ac-4, @trait-priority-parameter ac-5, @trait-priority-parameter ac-6, @trait-priority-parameter ac-7, @trait-priority-parameter ac-8
+          ... and 3 more
+        Invalid AC annotations: 93
+          ! AC annotation references '@slug' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/tests/ac-annotation-validation.test.ts:6
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/tests/ac-annotation-validation.test.ts:87
+          ! AC annotation references '@my-spec' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/tests/ac-annotation-validation.test.ts:90
+          ! AC annotation references '@spec-a' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/tests/ac-annotation-validation.test.ts:123
+          ! AC annotation references '@spec-b' which cannot be resolved
+            /home/chapel/Projects/kynetic-spec-dispatch/tests/ac-annotation-validation.test.ts:127
+          ... and 88 more dropped missing acceptance criteria warnings from 54 to 11; remaining warnings are outside @meta (shadow-branch items and unrelated specs).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T18:15:45.068Z
+  - _ulid: 01KKF1SRJ9Y646R8JBJRF513YN
+    content: >-
+      Completed meta-module AC backfill.
+
+      - Added concrete given/when/then acceptance criteria to all previously uncovered feature and
+      requirement items under @meta, covering manifest, agents, workflows, conventions,
+      observations, session context, meta CLI commands, and task meta_ref behavior.
+
+      - Verification: a full @meta descendant listing now shows no feature or requirement items with
+      missing or empty acceptance criteria.
+
+      - Verification: kspec validate --completeness reduced global missing acceptance criteria
+      warnings from 54 to 11; remaining warnings are outside @meta.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T18:16:00.841Z
+  - _ulid: 01KKF41F6A7Q7HD0RD9WDS14PG
+    content: "[FIX_CYCLE: 1] Review findings: No PR found for review. Checked open/closed PRs for task
+      ULID, task slug, spec ref, and branch fix/meta-shadow-ac-backfill; no matching PR exists, and
+      the candidate local branch points to unrelated @core-ac-backfill work."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T18:55:10.538Z
+  - _ulid: 01KKF4X5RSSSYQC7BS59RVXGEC
+    content: "Fix-cycle scope correction:\\n- The completed work for this task lives on the shadow
+      branch only; there are no main-worktree file changes to review.\\n- The branch named
+      fix/meta-shadow-ac-backfill was contaminated with unrelated core backfill work, so this fix
+      cycle is creating a clean review-artifact branch from main instead of reusing it.\\n- Verified
+      @meta-shadow-ac-backfill remains scoped to @meta only; shadow-branch backfill now has its own
+      spec/task (@shadow-ac-backfill).\\n- Next steps: clean artifact branch, full verification,
+      empty review-artifact commit, push, PR, resubmit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T19:10:18.393Z
+  - _ulid: 01KKF52KD436CXXMRZD04FB328
+    content: "Verification for review artifact PR:\\n- Confirmed @meta now has zero feature/requirement
+      descendants with empty acceptance_criteria via kspec item list --under @meta --limit 999
+      --json.\\n- kspec validate --completeness exits with warnings only; remaining missing-AC
+      warnings are outside @meta scope.\\n- npm test passed: 212/212 files, 4552 tests, 3 skipped, 0
+      failed.\\n- Creating empty main-branch artifact commit because the substantive backfill lives
+      on the shadow branch only."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T19:13:16.196Z
+  - _ulid: 01KKF53WZ3BV70RGRKV0NNG170
+    content: "Review artifact created: PR #789 https://github.com/kynetic-ai/kynetic-spec/pull/789\\n-
+      Branch: fix/meta-shadow-ac-backfill-v2\\n- Commit: 09855e414 chore: add review artifact for
+      meta AC backfill\\n- This PR is intentionally empty in the main worktree; the reviewed changes
+      are the shadow-branch spec updates already recorded for this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T19:13:58.755Z
+  - _ulid: 01KKF7EFP368WEVN08F2PJR571
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: Fresh npm test failed on PR #789 head
+      (packages/web-ui/tests/prose-typography.test.ts timed out after 30000ms), so review gates are
+      not clean."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T19:54:42.755Z
+  - _ulid: 01KKFAF1NMN1SY4RPNJHGB6NZV
+    content: "[FIX_CYCLE: 2] Re-ran verification on branch fix/meta-shadow-ac-backfill-v2 at PR #789
+      head 09855e414dc76dc233783be42f8678f954565fad. Results: npm test passed fresh (212/212 files,
+      4552 tests, 3 skipped, 0 failed; ~115s) and the previously reported prose-typography timeout
+      did not reproduce. Reconfirmed task scope still passes: kspec item list --under @meta --limit
+      999 --json shows zero feature/requirement descendants with empty acceptance_criteria, and the
+      linked spec @meta-shadow-ac-backfill remains satisfied without additional main-worktree
+      changes."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T20:47:26.901Z

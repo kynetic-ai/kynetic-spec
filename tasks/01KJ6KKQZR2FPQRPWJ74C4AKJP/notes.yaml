@@ -1,0 +1,44 @@
+notes:
+  - _ulid: 01KJ6KKQZRCB3WS60T0K0JWYGM
+    content: |
+      Modify task start handler (~line 1068 in src/cli/commands/task.ts) to check
+      session budget before proceeding. Read KSPEC_SESSION_ID from process.env, read
+      budget.json, check started_this_cycle vs max_per_cycle. On success increment
+      counter. Error message must include budget counts AND wrap-up instructions
+      (replaces both hook block message and ralph prompt injection). Skip increment
+      when task is already in_progress (resume case). Also stamp session_id on task.
+    author: "@claude"
+    created_at: 2026-02-24T01:18:26.296Z
+  - _ulid: 01KJ77AZ5MTXNPH6R32MSKNNK5
+    content: Implemented budget enforcement in task start handler. Added checkBudget() call before task
+      transition (blocks with exit 4 + error guidance when exhausted). Added incrementBudget() call
+      after successful start (skipped for resume case since already in_progress returns early). 17
+      integration tests covering all 7 own ACs and 6 trait ACs (semantic-exit-codes ac-1/ac-4,
+      error-guidance ac-1/ac-2/ac-5/ac-6).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T07:03:10.260Z
+  - _ulid: 01KJ77NW4RHCFPP4MRF0XVTBXN
+    content: "[FIX_CYCLE: 1] Review findings: Review passed — code and tests are clean, all ACs covered,
+      no MUST-FIX or SHOULD-FIX items. However, changes are uncommitted and no PR exists. Worker
+      needs to: (1) commit changes, (2) push branch, (3) create PR, (4) resubmit for merge."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T07:09:07.608Z
+  - _ulid: 01KJ77X862H1V2KTHEQ8VSYSW6
+    content: "[FIX_CYCLE: 1] PR #501 created with budget enforcement implementation. Branch
+      feat/task-budget-enforcement pushed. 17 tests passing, full suite green (excluding known flaky
+      batch-exec timeout). Task needs: start → submit → codex review → merge. Blocked by
+      ralph-task-limit-guard this iteration."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T07:13:09.314Z
+  - _ulid: 01KJ78J7XG6TT37WHF4NAE4WKT
+    content: "[FIX_CYCLE: 2] Addressed Codex review findings: (1) Shadow commit concern — false
+      positive, budget.json is local filesystem not shadow branch. Replied with evidence. (2)
+      Removed false ac-2 annotation on exit code 4 test (correctly annotated as ac-4). (3) Added N/A
+      documentation for non-applicable trait ACs (semantic-exit-codes ac-3/5/6/7/8, error-guidance
+      ac-3/4). All threads resolved. PR #501 resubmitted, CI running."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T07:24:37.168Z

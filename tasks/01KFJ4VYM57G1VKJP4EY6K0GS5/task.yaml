@@ -1,0 +1,25 @@
+_ulid: 01KFJ4VYM57G1VKJP4EY6K0GS5
+slugs: []
+title: Fix test helper to capture stderr on success
+type: infra
+description: "Test helper should capture stderr on success - Currently helpers/cli.ts returns
+  stderr: '' when exit code is 0, making it impossible to test warning messages without JSON mode
+  workaround"
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged PR #161. All CI checks passed, both Claude and Greptile reviews found no
+  issues. Fix properly captures stderr on successful commands."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - reflection
+  - dx
+  - testing
+vcs_refs: []
+created_at: 2026-01-22T06:04:34.309Z
+started_at: 2026-01-22T08:18:16.320Z
+completed_at: 2026-01-22T08:33:13.238Z
+todos: []
+automation: eligible

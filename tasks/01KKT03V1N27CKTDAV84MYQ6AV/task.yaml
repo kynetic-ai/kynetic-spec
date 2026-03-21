@@ -1,0 +1,36 @@
+_ulid: 01KKT03V1N27CKTDAV84MYQ6AV
+slugs: []
+title: Remove task/todo checking from session checkpoint hook
+type: task
+spec_ref: "@cmd-session-checkpoint"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #891. Removed task status and todo completeness checking from session
+  checkpoint hook, keeping only uncommitted git changes detection. Narrowed CheckpointIssue type,
+  simplified format.ts, deleted obsolete session-checkpoint-scoping.test.ts (tested removed ACs),
+  added new session-checkpoint.test.ts covering ac-git-only. All 5464 tests pass, all CI checks
+  green."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - sessions
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-16T00:30:58.094Z
+  commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKT078JV094S6N32KW5VX6SV
+created_at: 2026-03-16T00:18:12.661Z
+started_at: 2026-03-16T00:20:23.929Z
+submitted_at: 2026-03-16T00:30:58.874Z
+completed_at: 2026-03-16T00:43:46.761Z
+todos: []
+automation: eligible

@@ -1,0 +1,15 @@
+notes:
+  - _ulid: 01KK4NAR2YN7TZBRGQ3N91XPBR
+    content: >-
+      Root cause identified: Two issues found.
+
+      1. Board header shows tasks.length (total from API fetch) instead of visible board count. The
+      Done column caps at 20 tasks, so most completed/cancelled tasks are invisible but still
+      counted in the header. Fixed: header now shows sum of column task counts.
+
+      2. api-static.ts toTaskSummary() drops the automation field, causing all pending tasks to land
+      in Backlog instead of splitting between Backlog and Ready in static mode. Fixed: added
+      automation field to toTaskSummary().
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T17:25:41.599Z

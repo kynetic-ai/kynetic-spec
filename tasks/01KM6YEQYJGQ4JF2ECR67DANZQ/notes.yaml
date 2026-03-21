@@ -1,0 +1,40 @@
+notes:
+  - _ulid: 01KM7F6MDKXHQE0YVM3KNSNVR1
+    content: "Migrated all task mutation operations (createTask+saveTask, mutateTaskAtomically,
+      mutateTasksAtomically) from direct yaml.ts calls to taskDataManager in:
+      review-task-integration.ts, derive.ts, triage/actions.ts, inbox.ts, plan.ts, meta.ts,
+      tasks.ts, item.ts. Also migrated loadAllTasks to taskDataManager.listTasks where only summary
+      fields are needed (meta observations list). Retained loadAllTasks where full task data is
+      required (alignment checks, closed_reason for auto-resolution, plan_ref for plan summary). All
+      6756 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T05:52:00.435Z
+  - _ulid: 01KM7FHECJC62NFYWNZ7T92M92
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-21T05:57:54.706Z
+  - _ulid: 01KM7FW0Y8R06QWFKBZX6FTEPQ
+    content: "Fix cycle 1: Reordered inbox promote to create task before deleting inbox item. The
+      migration had moved deleteInboxItem before taskDataManager.createTask, so a failure in task
+      creation would lose the inbox item. Fixed by: (1) calling createTask without commitOpts, (2)
+      deleting inbox item after, (3) doing a single commitIfShadow for both. This matches the
+      original safe ordering. All 6756 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T06:03:41.384Z
+  - _ulid: 01KM7GBNH02WMMEDEYWGZ36DN1
+    content: "[FIX_CYCLE: 2] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-21T06:12:13.984Z
+  - _ulid: 01KM7H157T865QXJMP7HQAQYNE
+    content: "Fix cycle 2: Migrated dispatch.ts (7 call sites) and validate.ts (2 call sites) from
+      direct loadAllTasks() to taskDataManager.loadAllTasks(). Added loadAllTasks() method to
+      TaskStorageBackend interface and TaskDataManager class for callers that need full task data
+      (notes for prompt building, notes.length for alignment). These were the last two files called
+      out in the review as bypassing the manager abstraction. All 6756 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T06:23:58.202Z

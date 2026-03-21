@@ -1,0 +1,64 @@
+_ulid: 01KKZPVS3KNNR0DF6VWXKDP4DT
+slugs:
+  - task-hook-executor
+title: Implement hook execution engine
+type: task
+description: |
+  The hook executor subscribes to the event bus and runs matching
+  hooks via the shared action model.
+
+  Why: Connects hook configuration to the event bus.
+
+  What: HookExecutor class that loads hooks from meta, subscribes to
+  the bus, filters events, and dispatches actions via ActionExecutor.
+  Propagates correlation_id and sets causation_id on downstream events.
+  Reloads hook config via versioned config snapshot (not re-reading
+  YAML on every event) — updated by file watcher or API change
+  notification.
+
+  How: On event, iterate hooks, check on + filter match, execute via
+  ActionExecutor. All actions are fire-and-forget. In-flight actions
+  from removed hooks complete. Config reload uses a version counter
+  incremented on meta file change.
+
+  Covers: @dispatch-hook-system ac-1 through ac-5.
+  Also implicitly covers @dispatch-composition-patterns ac-1
+  (pipeline chaining via hooks) and ac-4 (conditional routing via
+  separate hooks for completed vs failed).
+spec_ref: "@dispatch-hook-system"
+plan_ref: "@plan-dispatch-event-system-expansion"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. HookExecutor class implemented in src/agent-runtime/hook-executor.ts
+  with 253 lines. Subscribes to EventBus with wildcard pattern, evaluates hooks against events (type
+  match + filter matching), dispatches actions via ActionExecutor with correlation_id/causation_id
+  propagation. Versioned config snapshot with reloadHooks() for hot config updates. 23 tests
+  covering all 5 spec ACs. Trait-error-guidance ACs correctly N/A (internal engine component). Fix
+  cycle 1 resolved: out-of-scope deletions restored."
+depends_on:
+  - "@task-hook-schema"
+  - "@task-event-bus"
+  - "@task-action-model"
+context: []
+priority: 2
+tags:
+  - dispatch
+  - hooks
+vcs_refs: []
+review_ref: "@01KM0FZX596CRB304E3SW9XYNC"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T12:44:09.666Z
+  commit: 263970e4d2877f3e31aebf638a3d949568dd39cc
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM0EM1Y9FBQT4NNZCJ6WTB0B
+created_at: 2026-03-18T05:31:57.939Z
+started_at: 2026-03-18T12:44:02.954Z
+submitted_at: 2026-03-18T12:44:10.061Z
+completed_at: 2026-03-18T12:53:59.411Z
+todos: []
+automation: eligible

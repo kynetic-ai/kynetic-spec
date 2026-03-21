@@ -1,0 +1,26 @@
+_ulid: 01KJ6KKSXK8W90K87CV9WJ8VNR
+slugs:
+  - add-multi-harness-env-injection
+title: Add multi-harness env injection
+type: task
+spec_ref: "@session-creation-and-env-injection"
+plan_ref: "@plan-session-scoping-for-kspec"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #507. Added multi-harness env injection for Gemini CLI (.gemini/.env)
+  and OpenCode (project root .env). Extracted shared upsertDotenvSessionId() helper. Updated
+  performEnvInjection() routing. 8 new tests. All Codex review findings addressed."
+depends_on:
+  - "@implement-session-create-command"
+context: []
+priority: 3
+tags:
+  - cli
+  - sessions
+  - multi-harness
+vcs_refs: []
+created_at: 2026-02-24T01:18:28.275Z
+started_at: 2026-02-24T21:14:51.499Z
+completed_at: 2026-02-24T21:40:11.396Z
+todos: []
+automation: eligible

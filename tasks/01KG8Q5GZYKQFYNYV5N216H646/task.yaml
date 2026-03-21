@@ -1,0 +1,19 @@
+_ulid: 01KG8Q5GZYKQFYNYV5N216H646
+slugs: []
+title: Add signal handlers for ralph marker cleanup on Ctrl+C
+type: task
+spec_ref: "@ralph-end-loop"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #294. Added SIGINT/SIGTERM signal handlers with Promise.all().finally()
+  pattern to ensure marker cleanup completes before process exit."
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-31T00:27:39.901Z
+started_at: 2026-01-31T00:27:54.524Z
+completed_at: 2026-01-31T00:41:47.666Z
+todos: []

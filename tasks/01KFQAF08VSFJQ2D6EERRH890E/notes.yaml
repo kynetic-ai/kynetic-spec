@@ -1,0 +1,133 @@
+notes:
+  - _ulid: 01KFS0BBKD94RKD1NAHYBEQAT8
+    content: >-
+      Analysis of implementation requirements:
+
+
+      Current state:
+
+      - Only ONE watcher exists for startup project (server.ts:172-196)
+
+      - ProjectContextManager has watcherActive boolean but no actual watcher storage
+
+      - Need to create per-project watchers on registration
+
+
+      Required changes:
+
+      1. Add watcher storage to ProjectContextManager
+         - Map<string, KspecWatcher> to track watchers by project path
+         - startWatcher(projectPath) method
+         - stopWatcher(projectPath) method
+
+      2. Modify registerProject() to create watcher on registration
+         - Handle AC-16: concurrent registration should share watcher
+         - Handle AC-19: OS limits (EMFILE/ENFILE) with try/catch
+
+      3. Modify unregisterProject() to stop watcher
+         - Call watcher.stop() for the project
+         - Handle AC-11b: shutdown stops all watchers
+
+      4. Update server.ts to use ProjectContextManager for watchers
+         - Remove single watcher initialization
+         - Use manager.startWatcher() for each project
+
+      AC Coverage:
+
+      - AC-16: Concurrent requests share watcher (already handled by
+      ProjectContextManager.hasProject check)
+
+      - AC-17: File changes trigger events scoped to project (watcher broadcasts with projectPath)
+
+      - AC-19: Handle OS limits when creating watchers
+
+      - AC-20: Unregister stops watcher
+
+      - AC-11b: Shutdown stops all watchers
+
+
+      Next steps: Implement the changes listed above.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T22:00:17.261Z
+  - _ulid: 01KFS0BZY30DZAJS1FHVRB10S2
+    content: >-
+      Session end state: Analysis complete, ready for implementation.
+
+
+      Task left in_progress for next iteration due to complexity. Previous note contains full
+      implementation plan.
+
+
+      Quick context for next session:
+
+      - Tests already exist (task @01KFQAEM completed)
+
+      - PubSubManager filtering already works (task @01KFQAEA completed)
+
+      - Need to add watcher storage to ProjectContextManager
+
+      - Need to integrate with server.ts
+
+
+      Estimated effort: 1-2 hours for implementation + testing.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T22:00:38.083Z
+  - _ulid: 01KFS14WJ5XDA09HZC113KAHAX
+    content: >-
+      Implementation complete. Per-project file watcher functionality implemented with the following
+      changes:
+
+
+      1. **ProjectContextManager watcher management** (packages/daemon/src/project-context.ts):
+         - Added watcher storage: Map<string, KspecWatcher>
+         - Added startWatcher(projectPath) method to create per-project watchers
+         - Added stopWatcher(projectPath) to stop individual project watchers
+         - Added stopAllWatchers() for shutdown (AC-11b)
+         - Modified registerProject() to remain synchronous (watchers started separately)
+         - Watchers broadcast file changes scoped to project path (AC-17, AC-18)
+         - Handles OS resource limits (EMFILE/ENFILE) with proper error (AC-19)
+
+      2. **Middleware integration** (packages/daemon/src/middleware/project-context.ts):
+         - Added pubsub parameter to projectContextMiddleware
+         - Auto-starts watchers on project registration in middleware
+         - Added AC-19 error handling (503 response for resource limits)
+
+      3. **Server.ts updates** (packages/daemon/src/server.ts):
+         - Removed single global watcher
+         - Integrated ProjectContextManager for watcher lifecycle
+         - Startup project watcher started after initialization
+         - Shutdown calls stopAllWatchers() (AC-11b)
+
+      4. **Test updates**:
+         - Updated static analysis tests to check project-context.ts instead of server.ts
+         - Updated daemon-context-manager test to expect watcherActive=false after registration
+         - All 17 per-project watcher tests passing
+         - All 1379 tests passing (1 pre-existing failure in daemon-executable.test.ts)
+
+      Covers AC-16, AC-17, AC-18, AC-19, AC-20, AC-11b from @multi-directory-daemon spec.
+
+
+      Ready for commit and PR.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T22:14:13.829Z
+  - _ulid: 01KFS16Z7JB6E16G17FKK4A0PS
+    content: |-
+      PR created: #227 (https://github.com/kynetic-ai/kynetic-spec/pull/227)
+
+      Branch: feat/watcher-impl
+
+      Ready for review and merge.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T22:15:22.098Z
+  - _ulid: 01KFS1YF7GKGXG42Z9XN4QPA35
+    content: "CI tests failing due to platform limitation: GitHub Actions runner doesn't support
+      recursive fs.watch, falls back to Chokidar which has different timing characteristics. Tests
+      pass locally (17/17). Need to either: (1) increase timeout in tests for CI, (2) skip watcher
+      tests in CI, or (3) mock the file watcher in tests. Documented in workflow run @01KFS1XJ."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T22:28:12.144Z

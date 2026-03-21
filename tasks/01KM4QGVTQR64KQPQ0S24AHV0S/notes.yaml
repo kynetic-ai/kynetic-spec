@@ -1,0 +1,121 @@
+notes:
+  - _ulid: 01KM4V94YXXSKEZMK44HXPA8A7
+    content: "Implemented source-agnostic sessions freshness in the daemon/web UI path. Added a
+      .kspec-sessions watcher that broadcasts the sessions topic, wired sessions-topic invalidation
+      into the shared query layer, and updated /sessions to refetch immediately at top while
+      freezing visible rows + showing a new-sessions indicator when scrolled away. Verification: npm
+      test -- tests/web-ui-tanstack-query.test.ts tests/session-watcher.test.ts; npm run typecheck.
+      Full npm test still has unrelated baseline failures in tests/agents-instruction-gen.test.ts
+      and tests/cli-plan.test.ts, and targeted Playwright sessions/api-watcher runs are blocked in
+      dispatch because the harness cannot start its own daemon."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T05:25:22.526Z
+  - _ulid: 01KM4VMRNRFRWATVFENXEQ05TY
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T05:31:43.160Z
+  - _ulid: 01KM4W8M8V2SJM8G8KCS79FVZ3
+    content: "Fix cycle update: expanded /sessions freshness change detection to fingerprint loaded rows
+      instead of only comparing total/first-row, so scrolled viewers now get the new-results
+      indicator for in-list status/order changes. Added a page-level E2E for
+      ac-live-update-source-agnostic that injects a sessions-topic broadcast and verifies the page
+      refreshes from that path. Verification: npm run typecheck; npm test --
+      tests/web-ui-tanstack-query.test.ts tests/session-watcher.test.ts. Targeted Playwright run
+      remains blocked in dispatch because the shared E2E fixture tries to start its own daemon,
+      which the dispatch guard forbids."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T05:42:34.011Z
+  - _ulid: 01KM4WPNYAV0K1YNJQRWPEH75P
+    content: "[FIX_CYCLE: 2] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T05:50:14.474Z
+  - _ulid: 01KM4X6ZW3702FYWEAK889X81Y
+    content: "Fix cycle update: coalesced .kspec-sessions watcher debounce keys by logical session root
+      so the Chokidar/Linux fallback emits one sessions-topic broadcast per session change instead
+      of one per filesystem path. Added a regression test that creates a session directory plus
+      session.yaml and asserts a single callback for the session root. Verification: npm run
+      typecheck; npm test -- tests/session-watcher.test.ts tests/web-ui-tanstack-query.test.ts. Full
+      npm test on the rebased branch still has unrelated failures in
+      tests/agent-dispatch-engine.test.ts (dispatch prompt guardrails) and
+      tests/dispatch-runtime-bootstrap-contract.test.ts (bootstrap contract timeouts)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T05:59:08.931Z
+  - _ulid: 01KM4XM8NNGH2P1XKNA5NFM6PF
+    content: "[FIX_CYCLE: 3] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T06:06:23.925Z
+  - _ulid: 01KM4YNEKKV7AT00WEF70HZ84X
+    content: "Fix cycle update: hardened merge-gate tests so the full suite stays green on this branch.
+      Replaced the brittle short plan ULID reference in cli-plan coverage with the stable
+      @plan-metrics slug, and updated the async plan mutation serialization helper to strip
+      dispatch/session env vars like the shared kspec test helper. Verification: npm test (290
+      files, 6648 tests, 3 skipped); npm run typecheck."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T06:24:31.348Z
+  - _ulid: 01KM4Z6R6BAWFCPNH85RGTMDEC
+    content: "[FIX_CYCLE: 4] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T06:33:58.219Z
+  - _ulid: 01KM4ZTH02VXCXR38G7DP840YW
+    content: "Fix cycle update: added rollback cleanup in project watcher startup so a failed session
+      watcher start stops any already-started .kspec watcher before rethrowing, preventing leaked
+      duplicate watchers on retry. Added a regression test for that startup failure path.
+      Verification: npm run typecheck; npm test -- tests/daemon-context-manager.test.ts
+      tests/review-per-cycle-lifecycle.test.ts; npm test (290 files, 6657 tests passed, 3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T06:44:46.210Z
+  - _ulid: 01KM506R23GE8VXD5G1K2CZM0Q
+    content: "[FIX_CYCLE: 5] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T06:51:26.659Z
+  - _ulid: 01KM50QQRFE5S4B27PYHJJ0TAP
+    content: "Fix cycle update: aligned sessions freshness ownership with the global ws invalidation
+      layer by removing page-level subscribe/unsubscribe expectations and keeping only local
+      agents/sessions handlers on /sessions. This prevents /sessions teardown from unsubscribing
+      globally owned topics and dropping invalidation for later views. Verification: npm run
+      typecheck; npm test -- tests/web-ui-tanstack-query.test.ts; npm test (290 files, 6659 tests
+      passed, 3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T07:00:43.407Z
+  - _ulid: 01KM50YQ774XNSZKN2DWNPSYMW
+    content: "[FIX_CYCLE: 6] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T07:04:32.231Z
+  - _ulid: 01KM51ECQNVWJFA54ACCGMVQH0
+    content: "Addressed the cycle-6 blocker by replacing the brittle source-agnostic sessions E2E with a
+      real .kspec-sessions fixture mutation in the isolated daemon project. The test now verifies
+      /sessions freshness through the daemon session watcher and centralized TanStack Query
+      invalidation path instead of synthetic WebSocket injection. Verification: npm test passed (290
+      files, 6659 tests). Playwright remains blocked in dispatch because the E2E fixture cannot
+      start/stop the daemon from inside an agent invocation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T07:13:05.781Z
+  - _ulid: 01KM51Q027YBXJ8MHXN5WCWDEC
+    content: "[FIX_CYCLE: 7] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T07:17:47.719Z
+  - _ulid: 01KM524X0EV0HCFC7HQP1DHA8Z
+    content: "Fix cycle update: session watcher now stays live when the daemon starts before
+      .kspec-sessions exists. Instead of returning early, it polls for directory creation, attaches
+      the real watcher once the directory appears, and emits any already-present session roots so
+      the first runtime-created session still broadcasts freshness updates. Added a regression test
+      that starts without .kspec-sessions, creates the first session later, and verifies the watcher
+      emits exactly once. Verification: npm run typecheck; npm test -- tests/session-watcher.test.ts
+      tests/web-ui-tanstack-query.test.ts; npm test."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T07:25:23.342Z

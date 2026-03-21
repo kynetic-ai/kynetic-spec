@@ -1,0 +1,8 @@
+notes:
+  - _ulid: 01KKXBC22A4BCXP8MGKAKZC7FA
+    content: Fixed toYaml() anchor/alias crash. structuredClone preserves shared object references, so
+      used JSON.parse(JSON.stringify()) instead to break them before YAML.stringify. Added
+      regression test in yaml-round-trip-stability.test.ts. All 4 specified test files pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-17T07:32:39.626Z

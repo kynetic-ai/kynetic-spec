@@ -1,0 +1,55 @@
+_ulid: 01KKZPW5J7YNTE7PD2JK0KRAPF
+slugs:
+  - task-automation-view
+title: Build automation view in web UI
+type: task
+description: |
+  New /automation route consolidating all dispatch automation config
+  and monitoring.
+
+  Why: With hooks, schedules, and composition, automation needs its
+  own view where everything is visible together.
+
+  What: Sections for agent dispatch triggers, hooks, schedules, event
+  log (real-time via WebSocket), and composition groups. Inline editing
+  for configuration. Real-time event log via "automation" WebSocket
+  topic. Schedule runtime state from daemon API.
+
+  How: Follow existing tasks/sessions view patterns. TanStack Query
+  for data. WebSocket subscription for live updates.
+
+  Covers: @ui-automation-view ac-1 through ac-7.
+spec_ref: "@ui-automation-view"
+plan_ref: "@plan-dispatch-event-system-expansion"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Automation view at /automation route with 5 sections: agent dispatch
+  triggers (with inline editing), hooks, schedules (with runtime state and manual trigger), event
+  log (with real-time WebSocket updates), and composition groups (with join progress bars). All 7
+  ACs covered. New GET /api/compositions endpoint added. TanStack Query + WebSocket invalidation
+  pattern follows existing views."
+depends_on:
+  - "@task-daemon-api"
+context: []
+priority: 3
+tags:
+  - dispatch
+  - web-ui
+vcs_refs: []
+review_ref: "@01KM0VWHJ2NPK35CSQ64EJF23R"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T16:17:19.871Z
+  commit: e5df80e26f4b1c62b427f72f4cb94bb2feaa23ff
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM0V046KM83MZBVXBJGDWE9H
+created_at: 2026-03-18T05:32:10.695Z
+started_at: 2026-03-18T16:17:06.593Z
+submitted_at: 2026-03-18T16:17:20.343Z
+completed_at: 2026-03-18T16:33:18.503Z
+todos: []
+automation: eligible

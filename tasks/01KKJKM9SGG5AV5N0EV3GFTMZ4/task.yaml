@@ -1,0 +1,28 @@
+_ulid: 01KKJKM9SGG5AV5N0EV3GFTMZ4
+slugs:
+  - implement-portable-skill-reference-resolution
+title: Implement Portable Skill Reference Resolution
+type: task
+spec_ref: "@portable-skill-references"
+derivation: auto
+plan_ref: "@plan-droid-platform-support"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #823 (merge commit bc85500e18c7035f5d834a70889cf8233cf19dc4).
+  Implemented droid portable skill reference resolution by mapping droid-acp to the droid prompt
+  platform and loading skill origins from meta context before falling back to rendered core-skill
+  inference. Added AC coverage for droid core/project invocation formatting, token resolution, and
+  prompt rewriting; review verified all four spec ACs and no trait ACs applied."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKK37EY9VCK3XSZPTW3G7RVE
+created_at: 2026-03-13T03:25:19.536Z
+started_at: 2026-03-13T07:58:58.979Z
+submitted_at: 2026-03-13T08:06:36.156Z
+completed_at: 2026-03-13T08:26:23.344Z
+todos: []
+automation: eligible

@@ -1,0 +1,62 @@
+notes:
+  - _ulid: 01KFBX5R6E5PD4HPVERVS2HVMP
+    content: >-
+      Implementation scope from @task-automation-eligibility (25 ACs):
+
+      - Schema: Add optional automation field (eligible, needs_review, manual_only) to tasks
+
+      - Ralph: Filter to only eligible tasks, re-check each iteration, handle no eligible tasks
+
+      - CLI: --automation flag for task set/add, --no-automation to clear,
+      --eligible/--unassessed/--needs-review filters for tasks ready
+
+      - Display: Show automation status in task get and tasks ready
+
+      - Validation: Warn on eligible without spec_ref, warn on spec_ref deletion
+
+      - Constraints: Agents can't mark eligible (human only), needs_review requires note
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T19:54:40.207Z
+  - _ulid: 01KFE8YT0N1VQP5BR96QCCXZPQ
+    content: >-
+      Implemented task automation eligibility system:
+
+
+      **Schema:**
+
+      - Added AutomationStatusSchema with values: eligible, needs_review, manual_only
+
+      - Added optional automation field to TaskSchema and TaskInputSchema
+
+
+      **CLI Commands:**
+
+      - task set: --automation <status> to set, --no-automation to clear (returns to unassessed)
+
+      - task set: --reason required when setting needs_review, adds note documenting change
+
+      - task add: --automation <status> to create with initial status
+
+      - task get: Displays automation status (or 'unassessed' if not set)
+
+      - tasks ready: Shows automation status in list, filters: --eligible, --unassessed,
+      --needs-review
+
+
+      **Validation:**
+
+      - Warns when eligible task has no spec_ref (AC-21)
+
+      - Warns when eligible task's spec_ref doesn't resolve (AC-23)
+
+
+      **Tests:**
+
+      - 22 E2E tests covering all ACs in tests/automation-eligibility.test.ts
+
+
+      All 737 tests pass (714 existing + 22 new + 1 skipped).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T17:59:04.470Z

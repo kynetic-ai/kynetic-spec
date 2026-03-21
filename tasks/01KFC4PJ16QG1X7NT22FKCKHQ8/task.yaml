@@ -1,0 +1,18 @@
+_ulid: 01KFC4PJ16QG1X7NT22FKCKHQ8
+slugs: []
+title: Fix staleness.test.ts to use CLI_PATH pattern instead of global kspec
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Fixed staleness tests to use CLI_PATH pattern. PR #92 created."
+depends_on: []
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-19T22:06:10.982Z
+started_at: 2026-01-19T22:06:39.262Z
+completed_at: 2026-01-19T22:11:59.343Z
+todos: []

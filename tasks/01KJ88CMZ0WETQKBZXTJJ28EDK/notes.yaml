@@ -1,0 +1,10 @@
+notes:
+  - _ulid: 01KJ9A2C9VQVZRCBZQCGY01X2Z
+    content: "Added N/A trait AC annotation format to templates/agents-sections/05-commit-convention.md
+      under a new '### N/A Trait ACs' subsection. Documents the required format: `// AC: @trait-slug
+      ac-N — N/A: reason`. Emphasizes the // AC: prefix is required (not prose), annotations should
+      be grouped, and must be machine-parseable. Regenerated kspec-agents.md. All 3604 tests pass (1
+      known flaky ralph test)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T02:29:23.387Z

@@ -1,0 +1,30 @@
+_ulid: 01KJCW71YTXH4JG06QN5CKP5FJ
+slugs:
+  - task-triage-e2e-behavioral-coverage
+title: Add missing behavioral coverage to triage API E2E tests
+type: bug
+spec_ref: "@triage-daemon-api"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #596. Added triage API E2E behavioral coverage for triage:updates
+  broadcasts on create/override/act paths in packages/web-ui/tests/e2e/api-triage.spec.ts, including
+  protocol payload assertions and result_ref validation for act. Updated @trait-websocket-protocol
+  ac-3 annotation to covered. Own ACs (ac-1..ac-9) and task-scope trait AC coverage verified in
+  review."
+depends_on:
+  - "@task-fix-triage-e2e-ac-gaps"
+context: []
+priority: 3
+tags:
+  - testing
+  - e2e
+vcs_refs: []
+session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
+created_at: 2026-02-26T11:44:14.296Z
+started_at: 2026-02-28T07:29:10.652Z
+submitted_at: 2026-02-28T07:29:15.432Z
+completed_at: 2026-02-28T07:39:14.668Z
+todos: []
+automation: eligible

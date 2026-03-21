@@ -1,0 +1,18 @@
+_ulid: 01KGVGZHRPK2782D02FF83XC6K
+slugs: []
+title: Add kspec worktree command to spawn isolated agent workspaces
+type: task
+description: Add feature to spawn worktree for an agent to work in
+spec_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Under-defined (one line, no spec, no ACs). Dispatch handles branch isolation via
+  task-work skill. Claude Code worktree covers agent isolation.
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-07T07:45:06.838Z
+todos: []
+automation: needs_review

@@ -1,0 +1,34 @@
+_ulid: 01KK7T2G3B8KMYSF48VJA1HAPA
+slugs:
+  - implement-session-branch-worktree-mode
+title: Implement session branch worktree mode
+type: task
+spec_ref: "@session-branch-worktree"
+plan_ref: "@plan-session-storage-separation"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #723 on March 9, 2026. Implemented session branch worktree mode with
+  orphan branch/worktree init during init/setup, lifecycle-boundary auto-commits only, independent
+  daemon session-branch sync, and shadow status/repair support for the session worktree. Reviewed AC
+  coverage for ac-init/ac-commit-boundaries/ac-sync/ac-status/ac-repair; full local regression
+  passed (npm test: 191 files, 4209 passed, 3 skipped). Follow-up debt tracked separately in inbox
+  item 01KK8Q8S for multi-project daemon session sync."
+depends_on:
+  - "@extract-session-path-resolution-from-specdir"
+  - "@update-kspec-init-setup-for-session-directory"
+  - "@remove-shadowautocommit-from-session-operations"
+context: []
+priority: 3
+tags:
+  - session
+  - storage
+  - git
+  - post-mvp
+vcs_refs: []
+session_id: 01KK8NNFSBV28NZBPDBRSREYWB
+created_at: 2026-03-08T22:46:17.451Z
+started_at: 2026-03-09T07:05:55.760Z
+submitted_at: 2026-03-09T07:06:34.113Z
+completed_at: 2026-03-09T07:17:53.066Z
+todos: []
+automation: eligible

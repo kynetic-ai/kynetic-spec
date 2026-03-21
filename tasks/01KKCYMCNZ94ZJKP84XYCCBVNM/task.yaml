@@ -1,0 +1,26 @@
+_ulid: 01KKCYMCNZ94ZJKP84XYCCBVNM
+slugs:
+  - implement-plan-export-command
+title: Implement Plan Export Command
+type: task
+spec_ref: "@plan-export"
+plan_ref: "@plan-iterative-plan-editing"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #767. Implemented `kspec plan export <ref>` with stdout, file output,
+  and JSON export modes plus semantic error handling for missing plans, empty content, and runtime
+  write failures. AC coverage verified for @plan-export and inherited
+  @trait-json-output/@trait-semantic-exit-codes via tests/cli-plan.test.ts; current PR head passed
+  local plan CLI tests, full npm test, and green CI."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKDEEVZBSV3RSDGVVXC7NGEN
+created_at: 2026-03-10T22:42:10.239Z
+started_at: 2026-03-11T03:25:37.924Z
+submitted_at: 2026-03-11T03:31:51.579Z
+completed_at: 2026-03-11T03:58:26.246Z
+todos: []
+automation: eligible

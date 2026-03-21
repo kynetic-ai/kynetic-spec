@@ -1,0 +1,32 @@
+_ulid: 01KK7T2F51QR38YMPS1FX6HKXS
+slugs:
+  - add-kspec-session-migrate-command
+title: Add kspec session migrate command
+type: task
+spec_ref: "@session-legacy-migration"
+plan_ref: "@plan-session-storage-separation"
+status: completed
+blocked_by: []
+closed_reason: "Already implemented. The kspec session migrate command was built as part of the
+  legacy session read fallback work (commit 135e671ab, PR #722). Implementation: CLI action at
+  src/cli/commands/session/migrate.ts, core logic at src/sessions/legacy.ts (migrateLegacySessions,
+  hasLegacySessions). Full AC coverage: ac-migration-copy (copies session dirs, preserves originals)
+  and ac-migration-idempotent (skips existing, reports counts) — 56 tests pass across unit and CLI
+  test files."
+depends_on:
+  - "@add-legacy-session-read-fallback"
+context: []
+priority: 3
+tags:
+  - session
+  - storage
+  - migration
+  - cli
+vcs_refs: []
+session_id: 01KK8JV296P5XMTVV766NY4MR4
+created_at: 2026-03-08T22:46:16.481Z
+started_at: 2026-03-09T06:07:26.974Z
+submitted_at: 2026-03-09T06:09:34.658Z
+completed_at: 2026-03-09T06:09:50.711Z
+todos: []
+automation: eligible

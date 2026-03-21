@@ -1,0 +1,24 @@
+_ulid: 01KJ4SMCWBGEWF6MD1VS0AS0JH
+slugs: []
+title: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced
+  shadow branch"
+type: task
+description: "Bug: `kspec session start --json` (and other --json commands) mix info lines (ℹ Synced
+  shadow branch) into stdout, breaking JSON parsing. Info/sync messages should go to stderr when
+  --json mode is active."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #476. Fixed info/warning messages leaking into stdout in --json mode by
+  routing them through info()/warn() helpers that send to stderr in structured output modes. 5 new
+  tests covering JSON purity, static analysis, and YAML mode. All quality gates passed."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-23T08:25:10.283Z
+started_at: 2026-02-23T13:31:39.345Z
+completed_at: 2026-02-23T14:01:26.928Z
+todos: []
+automation: eligible

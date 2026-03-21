@@ -1,0 +1,21 @@
+_ulid: 01KEZWDHPHN82718XXDX6VM7ZH
+slugs: []
+title: Fix broken @milestone-self-hosting references in spec
+type: task
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Removed 4 bogus @milestone-self-hosting dependencies from post-mvp tasks. Milestones
+  aren't implemented yet, and these tasks are already properly prioritized via P2/P3 + post-mvp
+  tags.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - critical
+vcs_refs: []
+created_at: 2026-01-15T03:50:33.936Z
+started_at: 2026-01-15T03:53:47.502Z
+completed_at: 2026-01-15T03:54:20.726Z
+todos: []

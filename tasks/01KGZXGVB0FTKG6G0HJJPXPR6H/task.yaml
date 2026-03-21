@@ -1,0 +1,19 @@
+_ulid: 01KGZXGVB0FTKG6G0HJJPXPR6H
+slugs:
+  - imgen-agents-restructure
+title: Restructure imgen AGENTS.md & CLAUDE.md
+type: task
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Task is for external project (imgen), not kynetic-spec. Doesn't belong in this task tracker.
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-09T00:41:14.336Z
+todos: []
+automation: manual_only

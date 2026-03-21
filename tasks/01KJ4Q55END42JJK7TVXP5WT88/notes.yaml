@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KJ4Q8RVED8PFNJV08G63ZGJX
+    content: "PR #461 created with path-based filtering. Tests only run on PRs when code-relevant files
+      change. Awaiting CI pass and merge."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T07:43:52.174Z

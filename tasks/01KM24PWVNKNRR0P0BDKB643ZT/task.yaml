@@ -1,0 +1,60 @@
+_ulid: 01KM24PWVNKNRR0P0BDKB643ZT
+slugs: []
+title: Fix DEFAULT_KSPEC_CLI_PATH pointing to nonexistent bin/kspec.cjs
+type: bug
+description: >-
+  **What:** `DEFAULT_KSPEC_CLI_PATH` in `src/agent-runtime/invocation.ts:36-39` resolves to
+  `../../bin/kspec.cjs` relative to the dist output, producing a path (`<root>/bin/kspec.cjs`) that
+  has never existed. Fix it to point to `../cli/index.js` (resolving to `dist/cli/index.js`), which
+  is the actual CLI entrypoint declared in `package.json` `"bin"`.
+
+
+  **Why:** This breaks all `spawnSync(process.execPath, [kspecCliPath, ...args])` call sites:
+
+  - `kspec` action type in ActionExecutor (`src/agent-runtime/action-executor.ts:693`) —
+  schedules/hooks using kspec actions fail instantly
+
+  - `_runKspecCommand` in DispatchEngine (`src/agent-runtime/dispatch.ts:2132`) — dispatch task
+  notes (`[AGENT-TIMEOUT]`, `[AGENT-FAIL]`, `[DISPATCH-BOOTSTRAP]`) silently never written
+
+  - `runKspecCli` in invocation.ts — timeout/failure notes lost
+
+
+  Broken since the original invocation commit (027bcd31d); never caught because task state
+  transitions and agent spawning use library calls, not CLI.
+
+
+  **How:** Change the path in `DEFAULT_KSPEC_CLI_PATH` from `../../bin/kspec.cjs` to
+  `../cli/index.js`. Verify by running a kspec schedule action with the daemon and confirming
+  `action.completed` instead of `action.failed`.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Merged to dev at 9b61b4de2. Updated DEFAULT_KSPEC_CLI_PATH to resolve the built
+  dist/cli/index.js entrypoint instead of the nonexistent bin/kspec.cjs path, and added resolver
+  coverage for both source and dist module locations.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - agent-runtime
+vcs_refs: []
+review_ref: "@01KM26MSAFXRYDGYZ26T9T1YER"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-19T04:45:13.462Z
+  commit: 02a1386fbddabc850a1a31b24dc1765480bb0a53
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM25XB109EN8EE0R6RQJYN8C
+created_at: 2026-03-19T04:12:26.869Z
+started_at: 2026-03-19T04:33:55.497Z
+submitted_at: 2026-03-19T04:45:13.937Z
+completed_at: 2026-03-19T04:52:59.841Z
+todos: []
+automation: eligible

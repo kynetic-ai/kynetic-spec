@@ -1,0 +1,72 @@
+notes:
+  - _ulid: 01KJE86XA7G73YT1Q8V613YQQQ
+    content: "Investigation (2026-02-27): core skill content currently contains many Claude-form
+      invocations (/kspec:task-work, /kspec:plan, etc.) in templates/skills/*/SKILL.md. No
+      codex-specific variant pipeline is present for core templates, so codex-rendered output would
+      carry the same references. Related assumptions also appear in parser/config defaults and ralph
+      constants (/kspec:task-work, /kspec:reflect, /kspec:review), so platform-aware guidance likely
+      needs a consistent policy across templates + generated docs + config defaults."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T00:33:06.888Z
+  - _ulid: 01KJE956KMW4YYXMFW5W3TPF19
+    content: "Implemented platform-aware core skill references for Codex (2026-02-27): codex renderer
+      now namespaces core skill frontmatter name as kspec-<id> (matching codex directory naming) and
+      applies render-time conversion of Claude-style references /kspec:<id> -> -<id> in rendered
+      SKILL.md body. This keeps shared template source while producing codex-native invocation
+      guidance."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T00:49:39.444Z
+  - _ulid: 01KJE95CCSKZEN13XVMVPK8RGF
+    content: "Added regression tests: tests/skill-rendering.test.ts verifies core codex skills render
+      name: kspec-<id> and rewrite /kspec:* references to -*; updated install/setup codex assertions
+      in tests/core-skill-install.test.ts and tests/enhanced-setup.test.ts to expect namespaced
+      codex names. Validation passed across skill-rendering, core-skill-install, enhanced-setup,
+      core-skill-namespace, and core-skill-update suites."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T00:49:45.369Z
+  - _ulid: 01KJEA53YN88QYHB8R4PE20DDV
+    content: "Review clarification (2026-02-27): Codex core-skill cross-reference target remains
+      namespaced invocation form (-<id>) to match codex frontmatter naming (kspec-<id>). The
+      temporary /kspec:<id> -> -<id> adjustment was reverted; renderer now keeps -* conversion and
+      scopes rewriting to core skills only to avoid mutating non-core codex content."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T01:07:05.301Z
+  - _ulid: 01KJEAVR8EHM9K90N4FW0X55WH
+    content: "Implemented portable skill reference tokens end-to-end (2026-02-27): core skill templates
+      now use {skill:<id>} in SKILL.md and triage docs; renderer resolves tokens per platform and
+      origin (Claude: /kspec:<id> for core, /<id> for non-core; Codex: -<id> for core, $<id> for
+      non-core). Supporting markdown directories (docs/references) are transformed during render
+      with idempotent diff/copy checks preserved. Legacy codex core /kspec:<id> rewrite remains as
+      compatibility fallback."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T01:19:26.990Z
+  - _ulid: 01KJECGMZ03J8B90EQAZC895ZW
+    content: "PR #569 updated with portable {skill:<id>} token resolution across SKILL.md and supporting
+      markdown; CI passing on head dba33943; task moved to pending_review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T01:48:20.320Z
+  - _ulid: 01KJECH6JT5SMRHS3NRZSXWYE5
+    content: "Correction (2026-02-27): Codex invocation mapping in this task is core -> -<id>, non-core
+      -> $<id>. Some earlier notes displayed '-' due shell interpolation when posting text;
+      implementation/tests/PR use the '$' forms."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T01:48:38.362Z
+  - _ulid: 01KJERKDZ4DX2W6PNJAZMRFS7G
+    content: "Merged via PR #569 on 2026-02-27 (merge commit 7042139b); portable {skill:<id>} reference
+      resolution across SKILL and supporting markdown is live."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T05:19:34.372Z
+  - _ulid: 01KJERMMMBGRHY29RFFW92GT0R
+    content: "Final correction (2026-02-27): Codex invocation mapping is core -> $kspec-<id>, non-core
+      -> $<id>; Claude mapping is core -> /kspec:<id>, non-core -> /<id>."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T05:20:13.963Z

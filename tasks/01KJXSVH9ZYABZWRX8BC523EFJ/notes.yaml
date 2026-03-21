@@ -1,0 +1,96 @@
+notes:
+  - _ulid: 01KJXSVH9Z0H25B1K8PR9V7T13
+    content: See plan @plan-ui-ux-revamp for implementation notes
+    author: "@claude"
+    created_at: 2026-03-05T01:30:04.991Z
+  - _ulid: 01KJYYJJAD7V9KWSMRX0C38B7H
+    content: >-
+      Execution context:
+
+      - Background: Implement the /agents route showing agent definitions, dispatch status, and
+      active invocations
+
+      - Scope: API client functions, AgentCard/DispatchStatus/ActiveInvocationRow components,
+      /agents page with all 3 ACs
+
+      - Files: lib/api.ts (add functions), lib/components/agents/ (new feature dir),
+      routes/agents/+page.svelte, tests/e2e/agents.spec.ts
+
+      - Verification: E2E tests covering ac-1 (agent definitions), ac-2 (dispatch running), ac-3
+      (dispatch stopped)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T12:11:48.429Z
+  - _ulid: 01KJYZ1SMMTAJK3MTFC37F7T2Y
+    content: >-
+      Implementation complete. Created:
+
+      - API client: fetchAgentStatus(), fetchAgentDefinitions(), controlDispatch() in lib/api.ts
+
+      - AgentCard component: shows name, id, triggers as badges, active/completed counts (ac-1)
+
+      - DispatchStatus component: running/stopped indicator, start/stop button, static mode tooltip
+      (ac-2, ac-3)  
+
+      - ActiveInvocationRow: task ref, elapsed time, session stream link with ds-breathe animation
+      (ac-2)
+
+      - /agents page: loads agent defs + dispatch status in parallel, WebSocket subscription for
+      live updates
+
+      - E2E tests: 13 tests covering all 3 ACs with fixture agents (task-worker, pr-reviewer)
+
+      - All animations gated with motion-reduce:animate-none
+
+      - Build passes, 3748/3753 tests pass (2 pre-existing codex failures, 3 skips)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T12:20:07.444Z
+  - _ulid: 01KJYZB266DZA2EDE1096SDV6W
+    content: "Review findings: MUST-FIX 1) Active invocation updates are streamed via WebSocket but the
+      live-updating region has no aria-live announcement path; screen readers won't be notified of
+      invocation changes (packages/web-ui/src/routes/agents/+page.svelte:187). MUST-FIX 2) Active
+      Invocations list has no empty state when dispatch is enabled but there are zero active
+      invocations, violating the checklist requirement that collection views provide actionable
+      empty guidance (packages/web-ui/src/routes/agents/+page.svelte:187). MUST-FIX 3) E2E
+      error-boundary coverage is currently documentary/fluff: the test named 'error message displays
+      on API failure' never induces failure and only asserts no error is shown; this does not
+      validate the failure path (packages/web-ui/tests/e2e/agents.spec.ts:213). SHOULD-FIX 4)
+      Loading-state test is nondeterministic because it passes if either loaded content or skeleton
+      is visible, so it can pass without proving skeleton behavior
+      (packages/web-ui/tests/e2e/agents.spec.ts:203). Validation/tests run: kspec validate (global
+      pre-existing repo issues, none specific to @ui-agent-dispatch), npm test (root pass: 3750
+      passed, 3 skipped), packages/web-ui npm test pass (63 passed)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-05T12:25:11.110Z
+  - _ulid: 01KJYZB72E8TXCAK2VT3BZXNQZ
+    content: "[FIX_CYCLE: 1] Review findings: Review issues: missing aria-live handling for streamed
+      invocation updates, missing actionable empty state for active-invocation collection, and
+      fluff/non-failing error-boundary E2E coverage."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-05T12:25:16.111Z
+  - _ulid: 01KJZ0CNBXKXG7QF6XVTD3T8H7
+    content: >-
+      Fix cycle 1 complete. Addressed all 4 review findings:
+
+      - MUST-FIX 1: Added aria-live='polite' on active-invocations-section for DOM changes, plus
+      sr-only assertive aria-live region for WebSocket invocation lifecycle announcements
+      (started/completed/failed)
+
+      - MUST-FIX 2: Added actionable empty state when dispatch is running but no active invocations,
+      with guidance to run 'kspec tasks ready --eligible'
+
+      - MUST-FIX 3: Replaced documentary error-boundary test with real API failure test using
+      page.route() interception returning 500 errors
+
+      - SHOULD-FIX 4: Fixed loading-state test determinism by using page.route() to delay API
+      responses 500ms, ensuring skeleton is reliably visible
+
+      Also fixed API route patterns in E2E tests (definitions endpoint is /api/meta/agents not
+      /api/agent/definitions). All tests pass: root 3748/3750 (2 pre-existing codex failures),
+      web-ui 63/63.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T12:43:32.094Z

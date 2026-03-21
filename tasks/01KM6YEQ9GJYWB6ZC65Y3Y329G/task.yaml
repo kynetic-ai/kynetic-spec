@@ -1,0 +1,57 @@
+_ulid: 01KM6YEQ9GJYWB6ZC65Y3Y329G
+slugs:
+  - task-migrate-daemon
+title: Migrate daemon API to task data manager
+type: task
+description: |
+  Replace all direct task loading/saving in the daemon routes with task
+  data manager calls.
+
+  Why: The daemon is the second major consumer of task I/O. Its routes
+  in packages/daemon/src/routes/tasks.ts call loadAllTasks and saveTask
+  directly. These must go through the manager for the same reason as
+  the CLI.
+
+  What: Replace direct yaml.ts calls in daemon task routes (GET /api/tasks,
+  GET /api/tasks/:ref, POST /api/tasks/:ref/start, /note, /submit,
+  /complete, /block) with task data manager methods. The daemon should
+  use listTasks for the list endpoint (index-only read) and getTask
+  for the detail endpoint (full read).
+
+  How: The daemon already uses initContext() on each route which
+  provides the project context. The task data manager receives this
+  context and handles all I/O. The daemon routes become thin wrappers:
+  validate input, call manager, format response, broadcast WebSocket.
+spec_ref: "@task-data-manager"
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged dispatch/task/task-migrate-daemon/01km6yeq into dev at 571b6c3df. Review
+  @01KM7E2B approved after verifying daemon task routes use taskDataManager, kspec validate had
+  warnings-only baseline output, and npm test passed (298 files, 6756 tests).
+depends_on:
+  - "@task-impl-data-manager"
+context: []
+priority: 1
+tags:
+  - tasks
+  - daemon
+  - migration
+vcs_refs: []
+review_ref: "@01KM7E2BNBH2G7VHJF91TYPQY6"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-21T05:31:11.214Z
+  commit: 6cb272c5d20a72401bf9fe26e7dfe40cf64fff75
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM7DHPQW867R1WJDT78B6MCS
+created_at: 2026-03-21T00:59:19.728Z
+started_at: 2026-03-21T05:31:07.671Z
+submitted_at: 2026-03-21T05:31:11.658Z
+completed_at: 2026-03-21T05:37:49.542Z
+todos: []
+automation: eligible

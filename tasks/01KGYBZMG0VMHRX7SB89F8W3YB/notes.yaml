@@ -1,0 +1,108 @@
+notes:
+  - _ulid: 01KGYC0EHBTS85BWHV7SRM5PCF
+    content: >-
+      ## Context
+
+
+      PR kynetic-ai/kynetic-bot#90 restructured kynetic-bot's AGENTS.md from 287 → 496 lines, 
+
+      modeled on kynetic-spec's tightened AGENTS.md (PR #350). Codex reviewed the PR and found 
+
+      5 issues — all fixed. Several patterns discovered during that work should be back-ported 
+
+      to kynetic-spec's AGENTS.md.
+
+
+      ## Findings That Translate
+
+
+      ### 1. MUST-FIX: Verify doc claims against source code
+
+      Codex caught that AGENTS.md claimed supervisor "Notifies ESCALATION_CHANNEL" but code only 
+
+      emits/logs. **Audit kynetic-spec AGENTS.md for similar claim-vs-reality gaps**, especially 
+
+      in Running Services, Shadow Branch Architecture, and Test Fixture Patterns sections.
+
+
+      ### 2. SHOULD-FIX: Distinguish auto-commit mechanisms
+
+      kynetic-spec rule 1 says "CLI auto-commits to shadow branch" which is accurate since it only 
+
+      has .kspec/. But if/when kynetic-spec adds runtime data (e.g., web-ui sessions), the same 
+
+      ambiguity would appear. Low priority — just awareness.
+
+
+      ### 3. SHOULD-FIX: PR agent limitations note
+
+      kynetic-bot AGENTS.md added: "PR agent limitations: Review subagent can't run kspec/npm — 
+
+      must delegate those to main agent." This is equally true for kynetic-spec but not documented. 
+
+      Add to PR Workflow section.
+
+
+      ### 4. SHOULD-FIX: Dual defaults documentation pattern
+
+      kynetic-bot had SHUTDOWN_TIMEOUT defaulting to 10s in bot config but 30s in supervisor CLI. 
+
+      Check kynetic-spec for similar split-default env vars (daemon port, health check intervals) 
+
+      and document explicitly if found.
+
+
+      ### 5. SUGGESTION: Consolidate duplicate guidance
+
+      kynetic-bot had "Creating Work" duplicated in two sections. Check kynetic-spec for similar 
+
+      redundancy — the "Creating Work" subsection under Spec-First Development exists, verify 
+
+      nothing overlaps elsewhere.
+
+
+      ### 6. SUGGESTION: Add bot-style "Running" gotchas section
+
+      kynetic-spec's Running Services section could benefit from explicit gotchas like:
+
+      - E2E port hardcoded (already in CI Limitations table but not in Running)
+
+      - daemon health endpoint path
+
+      - web-ui BASE_PATH requirement for local static builds
+
+
+      ## What Was Done in kynetic-bot#90
+
+
+      - Rewrote AGENTS.md: 20 sections, ~496 lines
+
+      - Slimmed CLAUDE.md to single `@AGENTS.md` directive
+
+      - New sections: project identity, dual shadow branches, bot architecture
+      (ACP/supervisor/memory), ralph loop mode, PR workflow, running the bot, expanded
+      troubleshooting
+
+      - Codex review found 5 issues, all fixed in follow-up commit
+
+      - All review threads resolved, CI green, merged
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-08T10:15:56.715Z
+  - _ulid: 01KGZXJ0YCQSZQP2KA3XPX97ND
+    content: Imgen restructuring split to dedicated task @imgen-agents-restructure. This task now covers
+      only kynetic-spec-specific improvements (PR agent limitations note, Running Services gotchas,
+      duplicate guidance check).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-09T00:41:52.844Z
+  - _ulid: 01KH0W6S696YR5D1WDR8RNHEY0
+    content: "Fixed 4 factual errors in AGENTS.md Running Services section: (1) daemon commands npm run
+      daemon → kspec serve start, (2) default port 3000 → 3456, (3) health endpoint /health →
+      /api/health, (4) web-ui dev comment clarified as Vite-only (port 5173). Also removed stale
+      '(not 3000)' parenthetical from E2E architecture. Other findings from cross-pollinate: PR
+      agent limitations don't apply (kspec subagent has full ACP access), duplicate guidance is
+      minor/low-priority, dual defaults is a code issue captured for awareness."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-09T09:37:30.313Z

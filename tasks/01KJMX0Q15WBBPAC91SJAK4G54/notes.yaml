@@ -1,0 +1,25 @@
+notes:
+  - _ulid: 01KJN47R01FG7GDGN7GW0Q3S93
+    content: >-
+      Implemented exit code/signal propagation through ACP client close path.
+
+
+      Approach:
+
+      - Added optional 'reason' param to JsonRpcFraming.close() — becomes error message for pending
+      request rejections
+
+      - Forwarded reason through ACPClient.close(reason?) to framing
+
+      - Updated spawner.ts exit handler to capture (code, signal) and pass descriptive message:
+      'Subagent process exited with signal SIGKILL' or 'Subagent process exited with code 1'
+
+      - Added 4 new tests in acp.test.ts: 2 for framing, 2 for ACPClient
+
+
+      Files changed: src/acp/framing.ts, src/acp/client.ts, src/agents/spawner.ts, tests/acp.test.ts
+
+      All 49 ACP tests pass. Pre-existing failures in enhanced-setup.test.ts are unrelated.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-01T16:38:20.929Z

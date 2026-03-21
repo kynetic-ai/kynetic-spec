@@ -1,0 +1,53 @@
+notes:
+  - _ulid: 01KFDYCTT33EYQ997DR7DPSJHK
+    content: |-
+      **Scope**: Add traits field to query and inbox command specs in cli.yaml.
+
+      **Commands to update (8)**:
+      - `@cmd-tasks-list`
+      - `@cmd-tasks-ready`
+      - `@cmd-tasks-blocked`
+      - `@cmd-search`
+      - `@cmd-inbox-add`
+      - `@cmd-inbox-list`
+      - `@cmd-inbox-promote`
+      - `@cmd-inbox-delete`
+
+      **Traits to apply** (varies per command):
+      - `@trait-json-output` - all commands
+      - `@trait-filterable-list` - tasks list, inbox list, search
+      - `@trait-confirmation-prompt` - inbox delete
+      - `@trait-semantic-exit-codes` - all commands
+      - `@trait-error-guidance` - all commands
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T14:54:29.700Z
+  - _ulid: 01KFE11FEWDKQWQH2MJQKR1HS0
+    content: >-
+      Applied traits to all 8 query and inbox command specs:
+
+
+      ✓ @cmd-tasks-ready - added json-output, filterable-list, semantic-exit-codes, error-guidance
+
+      ✓ @cmd-tasks-list - added json-output, filterable-list, semantic-exit-codes, error-guidance
+
+      ✓ @cmd-tasks-blocked - added json-output, filterable-list, semantic-exit-codes, error-guidance
+
+      ✓ @fuzzy-item-search (kspec search) - added json-output, filterable-list, semantic-exit-codes,
+      error-guidance
+
+      ✓ @cmd-inbox-add - added json-output, semantic-exit-codes, error-guidance
+
+      ✓ @cmd-inbox-list - added json-output, filterable-list, semantic-exit-codes, error-guidance
+
+      ✓ @cmd-inbox-promote - added json-output, semantic-exit-codes, error-guidance
+
+      ✓ @cmd-inbox-delete - added json-output, confirmation-prompt, semantic-exit-codes,
+      error-guidance
+
+
+      All trait references validated successfully. This completes the spec review task series (7/7
+      complete).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T15:40:43.357Z

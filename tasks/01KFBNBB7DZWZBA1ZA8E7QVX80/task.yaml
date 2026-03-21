@@ -1,0 +1,29 @@
+_ulid: 01KFBNBB7DZWZBA1ZA8E7QVX80
+slugs: []
+title: Spec out session log analysis tooling
+type: task
+description: "Session log analysis tooling: Design features for searching, filtering, and analyzing
+  events.jsonl session logs. Use cases: (1) Find events by time range, (2) Filter by event type
+  (tool calls, errors, etc.), (3) Search event content, (4) Timeline reconstruction for debugging,
+  (5) Aggregate stats (tool usage, error rates). Could be CLI commands like 'kspec session events'
+  or separate analysis tooling. Would help with retrospectives and debugging automation issues."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Spec design complete. Created 4 specs (session-log-list, session-log-show,
+  session-log-stats, session-log-search) under @session-events with 30 total ACs. Codex-reviewed and
+  all feedback addressed. 4 derived implementation tasks with list as dependency for
+  show/stats/search.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - dx
+  - sessions
+vcs_refs: []
+created_at: 2026-01-19T17:37:54.924Z
+started_at: 2026-02-06T23:24:57.251Z
+completed_at: 2026-02-06T23:37:48.811Z
+todos: []
+automation: manual_only

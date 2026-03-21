@@ -1,0 +1,23 @@
+_ulid: 01KFBP98HFVG1WE75DKPYTXSK1
+slugs:
+  - extract-test-helpers
+title: Extract shared test helpers to utility file
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Already implemented in commit 971caec. Verified tests/helpers/cli.ts contains all
+  shared helpers, no duplicates remain, and all 841 tests pass.
+depends_on: []
+context: []
+priority: 4
+tags:
+  - testing
+  - tech-debt
+vcs_refs: []
+created_at: 2026-01-19T17:54:15.214Z
+started_at: 2026-01-21T10:28:19.393Z
+completed_at: 2026-01-21T10:28:24.176Z
+todos: []
+automation: eligible

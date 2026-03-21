@@ -1,0 +1,22 @@
+_ulid: 01KFESYSK4HTYP0JTR92BTMWW4
+slugs:
+  - task-workflow-run-foundation
+title: "Implement: Workflow Run Foundation"
+type: task
+spec_ref: "@workflow-run-foundation"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged PR #154. Implemented workflow run foundation with all 6 ACs covered by 21 E2E
+  tests. Fixed test setup issues (valid ULIDs, non-shadow mode). All CI checks passed. Comprehensive
+  review confirmed implementation quality."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-20T22:56:09.828Z
+started_at: 2026-01-22T06:15:34.798Z
+completed_at: 2026-01-22T06:55:58.903Z
+todos: []
+automation: eligible

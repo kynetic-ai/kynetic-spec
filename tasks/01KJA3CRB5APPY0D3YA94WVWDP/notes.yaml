@@ -1,0 +1,10 @@
+notes:
+  - _ulid: 01KJAEGQKVYQSF5KS9G2J98M5Q
+    content: "Fixed 3x multiplier bug: In full mode, changed noteLimitPerStatus from limit to undefined
+      (uncapped, consistent with other sections). In non-full mode, added .slice(0, noteLimit) after
+      concatenation to cap total notes at limit. Updated collectRecentNotes to accept undefined
+      limit. 4 new tests in session-note-limit.test.ts covering cap, rounding, full mode uncap, and
+      starvation prevention."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T13:06:22.459Z

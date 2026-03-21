@@ -1,0 +1,53 @@
+notes:
+  - _ulid: 01KEZFXP1JPK4VBWDXTK2Q00AP
+    content: |-
+      Placeholder for CLI refinement work. Known items:
+
+      - Color consistency pass (labels vs values, status colors)
+      - Consider adding spec get command for viewing spec details directly
+      - Review output density/formatting across commands
+      - Potential: depends_on/relates_to expansion in spec view
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T00:12:11.187Z
+  - _ulid: 01KF7YWTXAJ76N826M3MM98S3Y
+    content: >-
+      Reviewed current state: output.ts has solid foundation with status colors, context display,
+      centralized labels. The project already has src/strings/ with labels, errors, guidance,
+      validation.
+
+
+      Next: Audit actual command outputs for consistency issues - check alignment of labels, color
+      usage, and formatting patterns across different commands.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T07:07:47.498Z
+  - _ulid: 01KF7Z7YXVNP8PJ2Y6GWR8R8R4
+    content: >-
+      Completed label consistency pass:
+
+
+      Fixed inconsistency where item.ts and inbox.ts had hardcoded labels (ULID:, Slugs:, Type:,
+      etc) instead of using centralized fieldLabels from src/strings/labels.ts.
+
+
+      Changes:
+
+      - Added 'maturity' field to centralized fieldLabels
+
+      - Added 'description' and 'acceptanceCriteria' to centralized sectionHeaders
+
+      - Updated item.ts to import and use fieldLabels and sectionHeaders
+
+      - Updated inbox.ts to import and use fieldLabels
+
+      - All 429 tests pass
+
+      - Output formatting is now consistent across commands
+
+
+      This ensures single source of truth for all user-facing labels, making future updates easier
+      and consistent.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T07:13:52.059Z

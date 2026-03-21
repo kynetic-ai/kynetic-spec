@@ -1,0 +1,61 @@
+_ulid: 01KJS90FR4GQVQQYA4QM2XJZ1W
+slugs: []
+title: Rewrite {skill:foo} references to adapter-specific format when injecting skills into agent prompt
+type: task
+description: >-
+  When buildPromptWithSkills injects skill content into the agent prompt, cross-skill references
+  like {skill:writing-specs} or {skill:plan} are passed through as-is. These are meaningless to the
+  agent unless it knows the format.
+
+
+  Adapters have different invocation formats:
+
+  - claude-agent-acp  -> /skill-name  (Claude Code slash commands, e.g. /kspec:task-work)
+
+  - codex-acp         -> $skill-name  (Codex CLI format)
+
+  - unknown/fallback  -> leave {skill:foo} as-is
+
+
+  Fix: In src/agent-runtime/prompts.ts, after resolving skill content, apply a substitution pass
+  over the concatenated prompt replacing {skill:foo} with the adapter-appropriate format. The
+  adapter ID is available via agent.adapter (resolved via resolveAdapter in src/agents/adapters.ts).
+
+
+  Note: Claude Code uses kspec: namespace prefix for kspec skills (e.g. /kspec:task-work not
+  /task-work). Check .agents/skills/ directory naming convention and the skill manifest to
+  understand the correct prefix.
+
+
+  Relevant files:
+
+  - src/agent-runtime/prompts.ts  — resolveSkills, buildPromptWithSkills
+
+  - src/agents/adapters.ts        — adapter resolution, adapter IDs
+
+  - src/schema/meta.ts            — AgentSchema.adapter field, platform_config
+
+  - .agents/skills/               — rendered skill names (kspec-task-work -> /kspec:task-work)
+
+
+  Spec AC: @agent-invocation-lifecycle ac-10
+spec_ref: "@agent-invocation-lifecycle"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: null
+depends_on: []
+context: []
+priority: 3
+tags:
+  - agent
+  - skills
+  - dx
+vcs_refs: []
+created_at: 2026-03-03T07:18:43.716Z
+started_at: 2026-03-04T00:44:07.706Z
+submitted_at: 2026-03-04T00:49:18.835Z
+completed_at: 2026-03-04T00:58:20.181Z
+todos: []
+automation: eligible

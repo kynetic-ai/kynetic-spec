@@ -1,0 +1,18 @@
+notes:
+  - _ulid: 01KG7227KJ66C9DN9YVZ1M3KZN
+    content: "Automation assessment: set to needs_review. missing spec_ref"
+    supersedes: null
+    author: "@automation-assess"
+    created_at: 2026-01-30T08:59:37.458Z
+  - _ulid: 01KG72BRD5S9278RT01AN63GDV
+    content: "Eligible: Simple CLI alias - add 'list' subcommand to 'task' that delegates to 'tasks'
+      command."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-30T09:04:49.573Z
+  - _ulid: 01KG77EG5ZNEY1BPNC4HG0JM4Q
+    content: Added 'kspec task list' as alias for 'kspec tasks list'. All options work identically
+      (--status, --type, --tag, --meta-ref, --grep, --verbose, --full). Help shows it's an alias.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-30T10:33:42.335Z

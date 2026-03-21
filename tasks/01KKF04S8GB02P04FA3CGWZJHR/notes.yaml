@@ -1,0 +1,94 @@
+notes:
+  - _ulid: 01KKF077Q8J4XCV2PQ41TC0C0M
+    content: >-
+      Implementation details:
+
+
+      File: src/agent-runtime/dispatch.ts
+
+      Location: _spawnInvocation() .then() callback (~line 1144)
+
+
+      Current code:
+
+      .then(async () => {
+        if (!this.running) return;
+        try {
+          const agents = await this._loadAgents();
+          await this._drainQueues(agents);
+        } catch { /* Best effort */ }
+      })
+
+
+      Change to:
+
+      .then(async () => {
+        if (!this.running) return;
+        // AC: @agent-dispatch-engine ac-23, ac-24
+        try {
+          await this._evaluateAllTasks({ skipIfActive: true });
+        } catch (err) {
+          // AC: @agent-dispatch-engine ac-25
+          console.warn("[dispatch] Post-invocation re-evaluation failed, proceeding with existing queue:", err);
+        }
+        try {
+          const agents = await this._loadAgents();
+          await this._drainQueues(agents);
+        } catch { /* best effort drain */ }
+      })
+
+
+      Key details:
+
+      - _evaluateAllTasks({ skipIfActive: true }) re-scans all tasks on disk and enqueues any
+      matching dispatch rules. skipIfActive prevents double-enqueue via _hasActiveOrQueuedInvocation
+      (checks agentId + taskId).
+
+      - Separate try/catch blocks so re-evaluation failure doesn't prevent draining already-queued
+      items (ac-25).
+
+      - _evaluateAllTasks internally calls _loadAgents() (line 629). Optimization: could return
+      agents to avoid redundant second load. Not blocking.
+
+      - Retry setTimeout path (~line 1112) has the same pattern but is intentionally excluded — it
+      re-attempts failed spawns, not task discovery.
+
+
+      Verification checklist:
+
+      1. Unit test: 2+ tasks in pending_review, 1 task.ready. After worker completes, reviewer
+      spawns next (not worker). Validates ac-23, ac-24, @dispatch-in-progress-priority ac-4.
+
+      2. Unit test: Re-evaluation doesn't double-enqueue tasks already queued (skipIfActive dedup).
+
+      3. Unit test: After reviewer completes with remaining pending_review tasks, another reviewer
+      spawns before worker.
+
+      4. Unit test: _evaluateAllTasks throws → drain still runs on existing queue (validates ac-25).
+
+      5. Manual: Run dispatch with multiple queued PRs, observe reviews clear before new work.
+
+
+      Context: Reviewer-first ordering relies on pr-reviewer being defined before task-worker in
+      kynetic.meta.yaml (already applied). _drainQueues iterates agents in definition order. Test
+      setup must preserve this ordering.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-11T17:48:25.192Z
+  - _ulid: 01KKF0V5WRE5FBSXD5AB32JJEP
+    content: "Implementation complete. Changed _spawnInvocation .then() callback to call
+      _evaluateAllTasks({ skipIfActive: true }) before _drainQueues. Separate try/catch blocks so
+      re-evaluation failure doesn't prevent draining (ac-25). Three tests added: (1) worker
+      completes, pending_review tasks written to disk during invocation are discovered by
+      re-evaluation and reviewer spawns next, (2) skipIfActive dedup prevents double-enqueue, (3)
+      re-evaluation failure still allows existing queue to drain."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-11T17:59:18.681Z
+  - _ulid: 01KKF4SRH2VP3XSSEQKAJMAPTC
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #788 is missing inherited AC coverage for
+      @trait-task-readiness ac-status on @agent-dispatch-engine. Review posted:
+      https://github.com/kynetic-ai/kynetic-spec/pull/788#pullrequestreview-3931872074"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T19:08:26.530Z

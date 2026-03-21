@@ -1,0 +1,116 @@
+notes:
+  - _ulid: 01KFS38DP7C1MRCE9T689SE3WZ
+    content: >-
+      Initial investigation:
+
+
+      Problem: The web UI project selector component does not exist yet. The task is to write tests
+      for AC-25, AC-26, and AC-27, but the functionality itself hasn't been implemented.
+
+
+      Findings:
+
+      - No ProjectSelector component found in packages/web-ui/src
+
+      - No X-Kspec-Dir header handling in api.ts
+
+      - No /api/projects endpoints called from the web UI
+
+      - E2E test infrastructure exists (Playwright with daemon fixture)
+
+
+      This is a test-first scenario. I need to check if:
+
+      1. The backend /api/projects endpoints are implemented (they should be per @01KFQAFM
+      completion)
+
+      2. Whether I should implement the component + tests together, or just document expected
+      behavior tests
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T22:51:06.823Z
+  - _ulid: 01KFS395AKQWYAQDG8SW1AAJNH
+    content: >-
+      Decision: Writing documentary E2E tests for project selector
+
+
+      The web UI project selector component hasn't been implemented yet, so I'll write Playwright
+      E2E tests that:
+
+      1. Document expected behavior per AC-25, AC-26, AC-27
+
+      2. Skip/mark as pending until component is implemented
+
+      3. Provide clear test structure for future implementation
+
+
+      Test approach:
+
+      - Create project-selector.spec.ts with Playwright tests
+
+      - Use test.skip() to mark as pending implementation
+
+      - Add comprehensive test coverage for all 3 ACs
+
+      - Follow existing E2E test patterns from smoke.spec.ts
+
+
+      This follows the documentary test pattern seen elsewhere in the codebase.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T22:51:31.028Z
+  - _ulid: 01KFS3BS32E2SQ9FA92RBE61RX
+    content: >-
+      Implementation complete:
+
+
+      Created packages/web-ui/tests/e2e/project-selector.spec.ts with 10 comprehensive documentary
+      E2E tests covering AC-25, AC-26, and AC-27.
+
+
+      Test coverage:
+
+      - AC-25 (Project selector visibility):
+        * Shows selector when multiple projects registered
+        * Hides selector when only one project
+        * Preserves selection across navigation
+        * Defaults to first project if no selection
+
+      - AC-26 (X-Kspec-Dir header):
+        * Sets header when project selected
+        * Includes header in all API requests (tasks, items, inbox, session)
+        * Defaults to first registered project
+
+      - AC-27 (Data reload on project change):
+        * Reloads task data
+        * Reloads spec items
+        * Reloads inbox items
+        * Shows loading state during reload
+
+      All tests use test.skip() and will be enabled when ProjectSelector component is implemented.
+      Tests follow existing E2E patterns from smoke.spec.ts.
+
+
+      Test run: 10 skipped (as expected - component not yet implemented)
+
+      Build status: Web UI builds successfully
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T22:52:56.803Z
+  - _ulid: 01KFS3XBBQGJ8GRQY7Q016Q7FS
+    content: |-
+      Review feedback addressed in commit da587c1a:
+
+      Fixed all 6 Greptile code review issues:
+      1. Race condition in X-Kspec-Dir header test - moved interception after click
+      2. Race condition in multi-endpoint loop - restructured to intercept before navigation
+      3. Flaky content assertion in task reload - validate API request instead
+      4. Flaky content assertion in items reload - validate API request instead
+      5. Flaky content assertion in inbox reload - validate API request instead
+      6. Race condition in default project test - use specific /api/tasks matcher
+
+      Manual intervention needed: Greptile review threads must be resolved via GitHub UI.
+      check-unresolved-comments CI check is currently failing but will pass once threads resolved.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T23:02:32.568Z

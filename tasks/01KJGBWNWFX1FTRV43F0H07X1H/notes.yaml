@@ -1,0 +1,72 @@
+notes:
+  - _ulid: 01KJGBWNWFME1VVZFKGQW9SRWR
+    content: See plan @plan-auto-close-stale-active-sessions for implementation notes
+    author: Jacob Chapel
+    created_at: 2026-02-27T20:15:54.767Z
+  - _ulid: 01KJGD3VH017SW02CJ2NENB8XQ
+    content: "Automation triage: eligible. 8 testable ACs covering inactivity threshold, fallback, AND
+      logic, input validation, defaults, ISO rejection, corrupt events, and liveness guard."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-27T20:37:18.496Z
+  - _ulid: 01KJK0T1ZVRG2WT45A2FFDBM7D
+    content: >-
+      Execution context:
+
+      - Background: implement stale-session candidate selection for upcoming auto-close flow.
+
+      - Scope: add criteria parsing/validation and candidate selection logic, with fallback + guard
+      behavior per @session-stale-criteria ACs.
+
+      - Files: primarily ralph/session command implementation + session store helpers + tests for
+      candidate selection and CLI validation paths.
+
+      - Verification: targeted stale-session tests plus full npm test and kspec validate before
+      submit.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T20:59:57.819Z
+  - _ulid: 01KJK19NHPSA4DF6RE7TK8A6QQ
+    content: "Implemented stale-session criteria engine in src/sessions/store.ts: relative-duration
+      validation/defaults (older-than=24h, inactive-for=6h, liveness-guard=5m), strict activity
+      resolution with started_at fallback for missing events, AND-based threshold evaluation, and
+      liveness-guard suppression for recently-active sessions. Added AC-annotated regression
+      coverage in tests/session-stale-criteria.test.ts for @session-stale-criteria ac-1..ac-8,
+      including corrupt events handling and absolute timestamp rejection guidance. Verification: npx
+      vitest run tests/session-stale-criteria.test.ts tests/sessions.test.ts; npm test (full suite
+      pass: 3578 passed, 3 skipped). kspec validate currently reports known pre-existing repo-level
+      schema/reference/alignment/completeness issues unrelated to this task."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T21:08:29.367Z
+  - _ulid: 01KJK1FDV5F4QR90BBFNCFQHFJ
+    content: "Automation status set to needs_review: Subagent completed but did not merge or kick back.
+      Review required."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T21:11:38.085Z
+  - _ulid: 01KJK1FGDP1PSMC4ND2M4VC4NW
+    content: "[RALPH SUBAGENT] Subagent completed but did not merge or kick back. Review required."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T21:11:40.727Z
+  - _ulid: 01KJK2B9XM881XGMFXE5DKF1HR
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: AC-7 coverage is incomplete in PR #605.
+      tests/session-stale-criteria.test.ts covers corrupt events.jsonl but not unreadable
+      events.jsonl failure path; add explicit unreadable-case test asserting skipped/failure counts
+      and warning context."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T21:26:51.572Z
+  - _ulid: 01KJK2REWT51YVGY85GJ5AMF25
+    content: "[FIX_CYCLE: 1] Addressed MUST-FIX for @session-stale-criteria ac-7 by adding explicit
+      unreadable events.jsonl coverage in tests/session-stale-criteria.test.ts. New AC-annotated
+      test creates an unreadable events path and asserts skipped/failure totals plus warning context
+      (reason=events_unreadable, detail includes read failure context). Commit b563c372 pushed to PR
+      #605 branch (feat/session-stale-candidate-criteria). Verification: npx vitest run
+      tests/session-stale-criteria.test.ts passes (12 tests). Full npm test run in this session
+      still reports pre-existing timeout failures in tests/cli/session-note-limit.test.ts and
+      tests/cli/session-start-format.test.ts unrelated to stale-session criteria changes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T21:34:02.650Z

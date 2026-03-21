@@ -1,0 +1,40 @@
+_ulid: 01KKNRBZAGSK357RJ8PKV75MZ9
+slugs:
+  - task-implement-review-storage-and-identity
+title: Implement review record storage and reference identity
+type: task
+spec_ref: "@review-record-storage-and-identity"
+plan_ref: "@plan-review-records-and-gates"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #846. Implemented review record storage and reference identity:
+  dedicated first-party storage in project.reviews.yaml (ac-1), ULID-backed identity with @ref
+  resolution through shared reference system including buildReferenceIndex/buildIndexes integration
+  (ac-2), single dedicated file per project (ac-3). Fix cycle 1 resolved
+  buildReferenceIndex/buildIndexes integration gap. 25 tests, all 3 ACs covered, 4953 tests
+  passing."
+depends_on:
+  - "@task-implement-review-record-core"
+context: []
+priority: 1
+tags:
+  - review
+  - storage
+  - identity
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-14T10:14:45.637Z
+  commit: 345842980ec9cc5474800e321ea89f3d20c5072a
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKNX1PRW9BCV5CNXH051XNJP
+created_at: 2026-03-14T08:45:52.848Z
+started_at: 2026-03-14T10:07:55.801Z
+submitted_at: 2026-03-14T10:14:46.388Z
+completed_at: 2026-03-14T10:26:45.999Z
+todos: []
+automation: eligible

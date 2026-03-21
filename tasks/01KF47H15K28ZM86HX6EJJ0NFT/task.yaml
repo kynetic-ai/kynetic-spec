@@ -1,0 +1,20 @@
+_ulid: 01KF47H15K28ZM86HX6EJJ0NFT
+slugs:
+  - task-shadow-remote-sync
+title: "Implement: Shadow Remote Sync"
+type: task
+spec_ref: "@shadow-sync"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Implemented auto-sync: push after commit (fire-and-forget), pull on session start,
+  shadow sync/resolve commands, conflict detection and resolution guidance"
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-16T20:21:40.147Z
+started_at: 2026-01-16T20:33:00.733Z
+completed_at: 2026-01-16T20:38:39.176Z
+todos: []

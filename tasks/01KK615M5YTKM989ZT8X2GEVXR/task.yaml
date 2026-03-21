@@ -1,0 +1,28 @@
+_ulid: 01KK615M5YTKM989ZT8X2GEVXR
+slugs: []
+title: Document agent system configuration and setup
+type: task
+description: "Document the agent system comprehensively: agent definition schema (id, adapter,
+  dispatch rules, skills, concurrency, auto_approve, budget), setup behavior (built-in agents,
+  skip-existing logic, upgrade path), dispatch engine configuration, adapter types
+  (claude-agent-acp, codex-acp), environment injection (KSPEC_SESSION_ID, CLAUDECODE), and common
+  troubleshooting (auto_approve missing from older setups, nested session detection). Should cover
+  both kspec setup defaults and manual kspec meta set agent customization. Context: GitHub issue
+  #700 surfaced that users hit silent failures due to undocumented agent configuration
+  requirements."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 2
+tags:
+  - docs
+  - agent
+  - dx
+vcs_refs: []
+created_at: 2026-03-08T06:11:51.101Z
+todos: []
+automation: manual_only

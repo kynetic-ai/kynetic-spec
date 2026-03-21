@@ -1,0 +1,32 @@
+_ulid: 01KJD106N5ZQ3VB9T3EV3BHYZK
+slugs:
+  - task-ci-e2e-tests
+title: Add E2E test job to CI
+type: infra
+description: Add a separate GitHub Actions job for Playwright E2E tests. Should install Playwright
+  chromium with deps (cache browsers), run npm run test:e2e, and be distinct from the unit test
+  shards. Reference imgen CI pattern for browser caching strategy.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #694. Added a dedicated GitHub Actions Playwright smoke E2E job with
+  Playwright browser cache restore, Bun setup, Chromium install, and a repo-level smoke command path
+  separated from the vitest shards; preserved the full suite as npm run test:e2e:full. Verification:
+  fresh PR-head CI passed on 7591bedf including e2e (playwright smoke), and env -u KSPEC_SESSION_ID
+  npm run test:e2e passed locally in isolated review worktree."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - ci
+  - infra
+vcs_refs: []
+session_id: 01KK5RFE703TQEWSP790Q6XN1T
+created_at: 2026-02-26T13:07:52.613Z
+started_at: 2026-03-08T03:48:01.139Z
+submitted_at: 2026-03-08T03:55:44.863Z
+completed_at: 2026-03-08T04:39:18.275Z
+todos: []
+automation: manual_only

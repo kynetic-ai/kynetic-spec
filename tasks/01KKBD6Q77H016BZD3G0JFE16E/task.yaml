@@ -1,0 +1,40 @@
+_ulid: 01KKBD6Q77H016BZD3G0JFE16E
+slugs: []
+title: CLI mutation commands should show what changed (before → after) in output, especially for
+  array fiel
+type: task
+description: >-
+  Two related CLI mutation UX improvements:
+
+
+  1. item set --trait should append by default (or provide --add-trait / --remove-trait flags).
+  Current behavior silently REPLACES the entire traits array, causing data loss when users expect
+  append semantics.
+
+
+  2. All mutating CLI commands should display a diff of what changed (before/after) so silent
+  overwrites are visible.
+
+
+  Priority is (1) — the --trait replace behavior is a known footgun documented in MEMORY.md. Fix in
+  src/cli/commands/item.ts. Consider backward compatibility.
+spec_ref: "@trait-confirmation-prompt"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #759. Implemented item set trait mutation flags
+  (--add-trait/--remove-trait/--clear-traits), before→after diff output for item/task/item-ac
+  mutation flows, shared diff rendering, and no-op suppression for already-empty task clears.
+  Reviewed AC coverage for @item-set, @task-set, @item-ac, and @trait-json-output ac-2; full npm
+  test passed (4374 tests)."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKCM99CBTB9CKYBAYGKMWBCW
+created_at: 2026-03-10T08:18:22.055Z
+started_at: 2026-03-10T20:01:51.926Z
+submitted_at: 2026-03-10T20:01:56.157Z
+completed_at: 2026-03-10T20:28:46.553Z
+todos: []
+automation: eligible

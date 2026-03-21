@@ -1,0 +1,55 @@
+notes:
+  - _ulid: 01KKBTX20S1JVHMVTXGAYGMJ4P
+    content: >-
+      Execution context:
+
+      - Background: checkBudget() was enforcing budget limits without verifying session is active,
+      causing false-positive blocks when a stale KSPEC_SESSION_ID env var was present from a
+      previous completed/abandoned session.
+
+      - Fix: Added getSession() call before budget enforcement. If session is missing or not in
+      'active' status, skip budget check and return allowed.
+
+      - Files changed: src/sessions/store.ts (checkBudget function), tests/session-budget.test.ts (4
+      new tests)
+
+      - Tests: 4 new unit tests covering: missing session, completed session, abandoned session,
+      active session still blocks. All 485 session tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T12:17:45.498Z
+  - _ulid: 01KKBWCRS6EHF4DQ891XJ2GK7X
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #748 fails fresh CI on the merge ref. The new
+      checkBudget() branch at src/sessions/store.ts:3512 treats missing sessions as allowed, which
+      breaks existing task-budget-enforcement integration tests and lets budget-exhausted task
+      starts succeed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T12:43:48.902Z
+  - _ulid: 01KKBWGFCBS4C5C9MR6AZP9W9X
+    content: "PR review dispatch: No new commits on PR #748 since previous review kicked back to
+      needs_work. The MUST-FIX regression (missing session file in integration tests causes !session
+      => allow bypass) is still present. Waiting for worker to push a fix before re-review."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T12:45:50.348Z
+  - _ulid: 01KKBXMPMGHZS36EEW6CHBPKMS
+    content: "Fix cycle 1 resolution: Narrowed the stale session check from `\\!session ||
+      session.status \\!== 'active'` to `session && session.status \\!== 'active'`. The original
+      logic treated missing session metadata as stale (allow bypass), which broke integration tests
+      that create budget files without session metadata. Now: missing metadata → proceed with normal
+      budget checks; existing non-active session → skip enforcement. Added test for the
+      missing-metadata-with-budget scenario. All 56 budget tests pass, integration tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T13:05:37.424Z
+  - _ulid: 01KKBY7YERPTWPS8QTEW1MT2XJ
+    content: "Fix cycle 1 addressed: Verified commit 58018ac (narrowed stale session check) passes all
+      CI — 3/3 test shards + E2E + claude-review all green. Replied to MUST-FIX review comment
+      explaining the fix and resolved the thread. The condition `session && session.status \\!==
+      'active'` correctly: (1) falls through to normal budget checks when session metadata is
+      missing, (2) skips enforcement for completed/abandoned sessions, (3) enforces for active
+      sessions."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T13:16:08.024Z

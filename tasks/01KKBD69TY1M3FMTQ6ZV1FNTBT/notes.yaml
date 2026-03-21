@@ -1,0 +1,22 @@
+notes:
+  - _ulid: 01KKCBYYG2AYE507EP3K3Q827E
+    content: >-
+      Fixed agent run --task to respect prompt_template. Changes:
+
+      1. Moved interpolateTemplate() to src/agent-runtime/prompts.ts (shared utility)
+
+      2. dispatch.ts imports and re-exports from prompts.ts for backward compat
+
+      3. CLI agent run handler now checks agentDef.prompt_template when --task is used without
+      explicit prompt
+
+      4. Template variables interpolated: task_ref, task_title (best-effort from loadAllTasks),
+      trigger='manual', review_url=''
+
+      5. Explicit user prompt still takes precedence over prompt_template
+
+      6. Added 4 tests covering: template use, fallback when no template, explicit prompt override,
+      variable interpolation
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T17:15:53.219Z

@@ -1,0 +1,38 @@
+_ulid: 01KFM7GJS5J3QRQWEKR600GN9N
+slugs: []
+title: "Merge driver: conflict resolution"
+type: task
+description: |-
+  Implement conflict detection and resolution:
+
+  **File:** src/merge/conflicts.ts
+
+  **Covers ACs:**
+  - ac-4: Interactive prompt for scalar field conflicts
+  - ac-8: Interactive prompt for delete vs modify conflicts
+  - ac-10: Non-interactive mode - write conflicts as YAML comments
+
+  **Functions:**
+  - detectConflict(base, ours, theirs, path) - Identify true conflicts
+  - promptScalarConflict(field, oursValue, theirsValue) - Interactive choice
+  - promptDeleteModifyConflict(item, modification) - Delete vs keep
+  - formatConflictComment(conflict) - YAML comment format for non-interactive
+spec_ref: "@yaml-merge-driver"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #178 merged. Implemented conflict resolution for semantic YAML merge driver.
+  Added interactive prompts for scalar and delete-modify conflicts (AC-4, AC-8) with proper
+  automated test coverage. Added non-interactive YAML comment formatting (AC-10). Fixed blocking
+  issue from local review by refactoring functions for testability. All 1033 tests pass."
+depends_on:
+  - "@01KFM7FQ"
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-23T01:29:16.324Z
+started_at: 2026-01-23T07:02:46.566Z
+completed_at: 2026-01-23T07:24:02.849Z
+todos: []
+automation: eligible

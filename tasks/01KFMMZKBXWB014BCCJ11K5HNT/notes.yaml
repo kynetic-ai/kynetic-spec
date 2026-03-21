@@ -1,0 +1,180 @@
+notes:
+  - _ulid: 01KFMN0TA0ZB22X9EDC5S4TFQT
+    content: |-
+      ## Implementation Notes
+
+      ### Objective
+      Implement configurable auto-start for daemon when CLI commands are run.
+
+      ### Steps
+      1. Add config section to kynetic.yaml:
+         ```yaml
+         daemon:
+           auto_start: true  # default
+           port: 3456
+         ```
+
+      2. Hook into CLI entry point:
+         - Check if daemon running
+         - If not running and auto_start enabled, start in background
+         - Continue with original command
+
+      3. Provide setting to disable auto-start
+
+      ### ACs Covered (implicit behavior)
+      - Daemon starts automatically when needed
+      - Can be disabled via config
+
+      ### Files to Modify
+      - src/cli/index.ts (entry point hook)
+      - src/schema/config.ts (daemon config schema)
+      - src/parser/config.ts (load daemon config)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T05:25:19.809Z
+  - _ulid: 01KFNVMVPYVA0XT86Q6HA4V74X
+    content: |-
+      Iteration 44: Task inherited, preparing for next session
+
+      **Task Overview:**
+      Add configurable auto-start for daemon when CLI commands are run.
+
+      **Implementation Plan:**
+      1. Add daemon config section to kynetic.yaml schema:
+         - auto_start: boolean (default true)
+         - port: number (default 3456)
+      2. Hook CLI entry point (src/cli/index.ts):
+         - Check if daemon running
+         - If not running and auto_start enabled, start in background
+         - Continue with original command
+      3. Load daemon config from kynetic.yaml
+
+      **Files to Modify:**
+      - src/cli/index.ts (entry point hook)
+      - src/schema/config.ts (daemon config schema)
+      - src/parser/config.ts (load daemon config)
+
+      **Next Session Actions:**
+      1. Read existing code to understand daemon implementation
+      2. Add daemon config schema
+      3. Implement auto-start logic in CLI entry point
+      4. Add tests with AC annotations
+      5. Create PR
+
+      Task ready to begin implementation in next iteration.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T16:40:22.494Z
+  - _ulid: 01KFNW8B91MTYK1PFHBFRXY0AR
+    content: Session interrupted - task was being worked by ralph iteration 44 when OOM occurred. No
+      code changes were made. Task remains ready for next session to pick up from implementation
+      plan in previous notes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T16:51:01.025Z
+  - _ulid: 01KFNX70ZWYG5KAW7N8VAPGWGG
+    content: >-
+      Implementation complete:
+
+
+      1. Added daemon config schema to ManifestSchema in src/schema/spec.ts:
+         - auto_start: boolean (default true)
+         - port: number (default 3456, range 1-65535)
+         - Both fields optional in daemon object
+
+      2. Implemented auto-start logic in src/cli/index.ts:
+         - Added maybeAutoStartDaemon() function
+         - Hooked into preAction hook before command execution
+         - Skips for init, serve, help, kspec commands
+         - Checks if daemon running via PidFileManager
+         - Silently starts daemon in background if auto_start enabled and daemon not running
+         - Non-fatal errors - command continues if auto-start fails
+
+      3. Created comprehensive test suite in tests/daemon-auto-start.test.ts:
+         - Tests daemon config parsing with defaults
+         - Tests missing daemon config (gracefully handles)
+         - Tests default values (auto_start=true, port=3456)
+         - Tests disabling auto_start
+         - Tests port validation (rejects invalid, accepts 1-65535)
+
+      All 7 tests passing. 1207/1217 total tests passing (7 pre-existing failures in cli-serve tests
+      unrelated to this task).
+
+
+      Next step: Commit and submit PR.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T17:07:46.301Z
+  - _ulid: 01KFNXDFV8ZGEHK2EETBHW0T79
+    content: Iteration 1 complete. Implementation committed (bacb9a3). Ready for PR creation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T17:11:18.120Z
+  - _ulid: 01KFNXRNYWWTVH7HD9MWFB7XE1
+    content: >-
+      PR #204 created and awaiting CI completion.
+
+
+      URL: https://github.com/kynetic-ai/kynetic-spec/pull/204
+
+      Branch: feat/daemon-auto-start
+
+
+      CI Status:
+
+      - ✅ test: pass (3m50s) - All 1207 tests passing
+
+      - ✅ Greptile Review: pass (3m32s)
+
+      - ✅ check-unresolved-comments: pass (5s)
+
+      - ⏳ claude-review: pending (still running)
+
+
+      Local review complete - advisory approval with suggestions for E2E tests and AC annotations in
+      follow-up.
+
+
+      Next iteration: Complete PR merge after CI passes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T17:17:24.829Z
+  - _ulid: 01KFNXTGAM07GT0S2D94D1F02S
+    content: |-
+      Iteration 1 session complete.
+
+      Status: Task in pending_review, awaiting CI completion and PR merge.
+
+      Summary:
+      - Implementation: Complete ✅
+      - Tests: 7/7 passing, 1207/1217 total ✅
+      - Commit: bacb9a3 on feat/daemon-auto-start branch ✅
+      - PR: #204 created and CI running ✅
+      - Local review: Advisory approval ✅
+
+      Next session: Monitor CI, complete PR review-merge workflow, mark task complete after merge.
+
+      Working tree clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T17:18:24.596Z
+  - _ulid: 01KFNY5PWA9JZXCDTWNQ6G51WE
+    content: |-
+      Iteration 2 complete:
+
+      1. Created PR #204 (already existed from previous iteration)
+      2. Addressed Greptile review feedback with commit f1adbb2:
+         - Fixed hardcoded daemon binary path to use package-relative path
+         - Changed from 'bun' to process.execPath for runtime compatibility
+         - Simplified auto_start logic to rely on schema defaults
+      3. Resolved all 3 Greptile review threads
+      4. Waited for all CI checks to pass (test, claude-review, check-unresolved-comments)
+      5. Used @pr-review-merge workflow to merge PR #204
+      6. Merged with merge commit strategy to preserve trailers
+      7. Task marked complete
+
+      PR: https://github.com/kynetic-ai/kynetic-spec/pull/204
+      Merge commit: 9a265cd
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T17:24:31.755Z

@@ -1,0 +1,25 @@
+_ulid: 01KHTAMXBFDEKQBEG5YQ3D67P9
+slugs: []
+title: Consolidate meta ref lookup patterns
+type: task
+description: Consolidate 12+ call sites across 5 files that use different ref-to-item resolution
+  patterns (findMetaItemByRef, resolveMetaRefToUlid, inline .find()) into a single shared resolver.
+  Improves consistency and reduces duplication.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #416. Added resolveMetaRef() as unified resolver in parser/meta.ts,
+  consolidating 12+ duplicated inline lookup patterns across meta.ts commands (get, set, delete,
+  promote). Reduced ~120 lines of duplicated code and added 9 tests for the new resolver."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-19T06:50:54.191Z
+started_at: 2026-02-20T00:30:51.804Z
+completed_at: 2026-02-20T00:49:05.659Z
+todos: []
+automation: eligible

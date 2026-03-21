@@ -1,0 +1,42 @@
+notes:
+  - _ulid: 01KJHJ3CQ8KCK68Y6EEDVG3NEC
+    content: >-
+      Execution context:
+
+      - Background: triage API E2E coverage still relies on N/A notes for some runtime behavior,
+      especially mutation broadcasts.
+
+      - Scope: add missing behavioral coverage in triage API E2E tests only.
+
+      - Files: packages/web-ui/tests/e2e/api-triage.spec.ts (and fixture helpers only if required).
+
+      - Verification: run targeted Playwright E2E for api-triage, then focused validation of this
+      task’s expected behavior.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T07:23:40.648Z
+  - _ulid: 01KJHJCJDHQBEZDDWF3XBJHTFW
+    content: "Implemented missing behavioral E2E coverage in
+      packages/web-ui/tests/e2e/api-triage.spec.ts for triage WebSocket broadcasts: added live
+      triage:updates assertions for create (triage_record_created), override
+      (triage_record_updated), and act (triage_record_acted with result_ref) plus helper
+      subscription/wait utilities. Also updated trait annotation for @trait-websocket-protocol ac-3
+      from N/A to covered. Verification attempted: npx playwright test tests/e2e/api-triage.spec.ts
+      --grep 'broadcasts triage_record' and npx playwright test tests/e2e/api-websocket.spec.ts
+      --grep 'connects to /ws'. Current environment cannot establish /ws WebSocket (existing
+      api-websocket also fails with WebSocket error), so WS tests could not be validated end-to-end
+      here."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T07:28:41.393Z
+  - _ulid: 01KJHJF0BYA84T74QX8TQNF2T3
+    content: "Submitted for review in PR #596: https://github.com/kynetic-ai/kynetic-spec/pull/596.
+      Added triage API E2E behavioral coverage for triage:updates broadcasts on create/override/act
+      paths in packages/web-ui/tests/e2e/api-triage.spec.ts and updated @trait-websocket-protocol
+      ac-3 annotation to covered. Verification attempted with targeted Playwright commands, but this
+      runner currently fails WebSocket connection setup for existing websocket E2E tests as well
+      (api-websocket connect test also errors), so WS E2E execution could not be fully validated
+      here."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T07:30:01.215Z

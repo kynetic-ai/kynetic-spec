@@ -1,0 +1,39 @@
+notes:
+  - _ulid: 01KJ3FXHDHXHD05K28G8JQXVWX
+    content: |
+      Implementation notes:
+
+      Create src/schema/triage.ts following plan.ts pattern.
+      TriageStatusSchema = z.enum(["pending", "triaged", "acted_on"]).
+      TriageActionSchema = z.enum(["promote", "delete", "defer", "spec-gap", "duplicate"]).
+      Include updated_at field set on any mutation.
+      Enforce inbox_ref uniqueness in save logic (upsert pattern).
+      Add load/save in src/parser/yaml.ts: getTriageFilePath, loadTriageRecords, saveTriageRecord.
+    author: "@claude"
+    created_at: 2026-02-22T20:16:09.649Z
+  - _ulid: 01KJ3GA0ENHKF8G4J83AFESZ0V
+    content: |-
+      Implemented schema and parser layer:
+
+      **Schema (src/schema/triage.ts):**
+      - TriageStatusSchema: pending | triaged | acted_on
+      - TriageActionSchema: promote | delete | defer | spec-gap | duplicate
+      - TriageRecordSchema: full record with decision, override, and execution fields
+      - TriageRecordInputSchema: input variant for creation
+      - TriageFileSchema: collection format with kynetic_triage version string
+
+      **Parser (src/parser/yaml.ts):**
+      - getTriageFilePath(ctx) — returns project.triage.yaml path
+      - loadTriageRecords(ctx) — loads and validates triage records
+      - saveTriageRecord(ctx, record) — upsert by ULID or inbox_ref, sets updated_at
+      - findTriageRecordByRef(records, ref) — lookup by ULID/short ULID
+      - findTriageRecordByInboxRef(records, inboxRef) — lookup by inbox item reference
+
+      **Tests (38 passing):**
+      - tests/triage-schema.test.ts — 21 tests covering all 9 ACs
+      - tests/triage-parser.test.ts — 17 tests covering load/save/find operations
+
+      All ACs covered. Full test suite green (3 pre-existing failures unrelated).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-22T20:22:58.261Z

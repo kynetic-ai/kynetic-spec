@@ -1,0 +1,29 @@
+_ulid: 01KJ4PEV6Q2D7QHS2SNPRDCG3Y
+slugs: []
+title: Regenerate kspec-agents.md after release version bump
+type: task
+description: The release skill should run 'kspec agents generate' after the version bump PR is
+  merged, so the kspec-agents.md header version stays in sync. Add as a post-release step in Phase 7
+  or 8 of the release skill.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #477. Added kspec agents generate step to release skill Phase 6. After
+  npm version bumps package.json, the skill regenerates kspec-agents.md so the version header stays
+  in sync. Updated dry-run preview and Phase 8 report checklist. Addressed Codex review: added
+  inline comment about using npm run dev -- for self-hosting releases. All CI checks pass."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - release
+  - agents
+  - improvement
+vcs_refs: []
+created_at: 2026-02-23T07:29:42.615Z
+started_at: 2026-02-23T14:01:56.972Z
+completed_at: 2026-02-23T14:29:03.740Z
+todos: []
+automation: eligible

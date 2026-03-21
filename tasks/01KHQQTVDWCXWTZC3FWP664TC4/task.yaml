@@ -1,0 +1,23 @@
+_ulid: 01KHQQTVDWCXWTZC3FWP664TC4
+slugs:
+  - task-setup-pipeline-unification
+title: "Implement: Setup Pipeline Unification"
+type: task
+spec_ref: "@setup-pipeline-unification"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #405. Follow-up fixes for Codex review in PR #406. All 5 ACs
+  implemented: setup uses generateAgentsContent from agents.ts, platform renderer registry, single
+  runSetupPipeline code path, debug logging on all catch blocks, init --setup and setup use same
+  pipeline."
+depends_on:
+  - "@task-dead-code-and-deduplication-sweep"
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-02-18T06:43:37.020Z
+started_at: 2026-02-18T09:17:38.241Z
+completed_at: 2026-02-18T14:44:43.592Z
+todos: []

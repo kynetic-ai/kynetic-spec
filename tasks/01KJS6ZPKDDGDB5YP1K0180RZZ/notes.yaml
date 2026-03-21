@@ -1,0 +1,51 @@
+notes:
+  - _ulid: 01KJVMCDDVQHN85FJ6DMACDJ29
+    content: >-
+      Execution context:
+
+      - Background: ACP framing send() currently logs but does not treat EPIPE as a clean connection
+      close when child stdin is already closed.
+
+      - Scope: Handle EPIPE in src/acp/framing.ts send() path, remove process-level
+      uncaughtException workaround in tests, and add framing-level regression coverage.
+
+      - Files: src/acp/framing.ts, tests/acp.test.ts, tests/ralph/adapter-auto-approve.test.ts (as
+      needed).
+
+      - Verification: run focused ACP/adapter tests, then run full test suite or equivalent project
+      standard checks.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T05:15:57.756Z
+  - _ulid: 01KJVMNH96A4WG3DTKDFYJ3612
+    content: Paused task to address daemon-isolation priority work. Checkpoint saved on branch
+      fix/acp-framing-epipe at commit e0559fdd8.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T05:20:56.614Z
+  - _ulid: 01KJVZDC7TKVN0DXABC9S3B9C8
+    content: Resumed work on dedicated branch fix/task-01kjs6zp-acp-epipe to avoid PR conflation;
+      isolated prior checkpoint by cherry-picking only ACP EPIPE commit onto latest origin/main
+      before verification.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T08:28:43.643Z
+  - _ulid: 01KJVZKJ4P8694CFR50BTK46ZW
+    content: "Implemented ACP framing EPIPE handling at source: JsonRpcFraming now routes stdout write
+      and emitted stream errors through handleOutputError(), treats EPIPE/ERR_STREAM_DESTROYED as
+      clean connection close, and rejects pending requests via framing close instead of uncaught
+      exceptions. Added regression coverage in tests/acp.test.ts for sync throw + emitted EPIPE
+      error paths, and removed test-level process uncaughtException EPIPE suppression in
+      tests/ralph/adapter-auto-approve.test.ts. Verification: npx vitest run tests/acp.test.ts
+      tests/ralph/adapter-auto-approve.test.ts (pass), npm test (pass: 173 files / 3629 tests),
+      kspec validate (fails due pre-existing repo meta/reference/alignment issues unrelated to this
+      task)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T08:32:06.294Z
+  - _ulid: 01KJVZMG2QAFP3Z6K98XNRMA13
+    content: "Submitted for review via PR #665: https://github.com/kynetic-ai/kynetic-spec/pull/665
+      (branch fix/task-01kjs6zp-acp-epipe, commit f05177cb7)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T08:32:36.951Z

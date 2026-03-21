@@ -1,0 +1,39 @@
+notes:
+  - _ulid: 01KHA83QZKZ9J1WA6F1PNBGMVF
+    content: |
+      Implementation notes:
+
+      Reuse the grep utility from src/utils/grep.ts that kspec search already
+      uses. Add --search option to the meta observations subcommand in meta.ts.
+      Apply search filter after type/workflow/status filters. For the global
+      search --observations-only flag, add a new filter option to search.ts
+      alongside existing --items-only and --tasks-only flags. Make the scope-only
+      flags mutually exclusive with a validation check before search execution.
+    author: "@claude"
+    created_at: 2026-02-13T00:58:43.571Z
+  - _ulid: 01KHDW4AVWTW58XYG9R9WWVG01
+    content: >-
+      Implemented observation content search:
+
+
+      - Added --search flag to kspec meta observations command in meta.ts
+
+      - Uses grepItem from utils/grep.ts for regex pattern matching (consistent with kspec search
+      behavior)
+
+      - Added --observations-only flag to kspec search command
+
+      - Added mutual exclusivity validation for scope-only flags (--items-only, --tasks-only,
+      --observations-only)
+
+      - 14 tests covering all 7 ACs:
+        - ac-search-flag: --search filters observations by pattern
+        - ac-regex-support: Pattern treated as regex (e.g., 'friction|success')
+        - ac-combined-filters: AND logic with --type and other filters
+        - ac-search-all-fields: grepItem searches all text fields
+        - ac-search-json: JSON output contains only matching observations
+        - ac-global-search-filter: --observations-only limits search to observations
+        - ac-only-flags-exclusive: Multiple scope flags produce error
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-14T10:46:17.724Z

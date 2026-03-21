@@ -1,0 +1,27 @@
+_ulid: 01KKB8FDMRD5BXWRGZWFACHDNW
+slugs:
+  - implement-core-primitives-ac-backfill
+title: Implement Core Primitives AC Backfill
+type: task
+spec_ref: "@core-ac-backfill"
+plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #786. Backfilled review coverage for @core-ac-backfill and the in-scope
+  core primitive refs, including isolated regressions for completeness/testability plus targeted
+  schema, refs, and integration AC coverage. Verified with full npm test, task-scoped completeness
+  warnings filtered to [] for the in-scope refs, and fresh green CI on head dea2cb8b0. No trait ACs
+  applied to this change."
+depends_on:
+  - "@implement-spec-completeness-policy"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKF7HZRCNAGQVSJYPHTF0XGQ
+created_at: 2026-03-10T06:55:44.280Z
+started_at: 2026-03-11T20:03:24.977Z
+submitted_at: 2026-03-11T20:03:30.938Z
+completed_at: 2026-03-11T20:14:27.839Z
+todos: []
+automation: eligible

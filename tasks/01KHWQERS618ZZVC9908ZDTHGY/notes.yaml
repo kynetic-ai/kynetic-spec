@@ -1,0 +1,14 @@
+notes:
+  - _ulid: 01KJBQ6E16WZ5K7PQRV7YBJVR6
+    content: "Investigation found all 3 options from the task description were already implemented: (1)
+      kspec validate --completeness warns about uncovered trait ACs
+      (src/parser/validate.ts:975-1013, tested in tests/trait-ac-coverage.test.ts), (2) guidance
+      exists in task-work, writing-specs, and review skills, (3) local-review Step 3 enforces trait
+      AC coverage as MUST-FIX. The remaining gap was display clarity — 131 warnings lumped together.
+      Added subtype discriminator (own_ac/trait_ac) to CompletenessWarning interface and split
+      formatCompletenessWarnings() display into 'Missing own AC coverage: 95' and 'Missing trait AC
+      coverage: 36'. JSON output also includes the subtype field. Captured @cmd-validate spec
+      staleness as inbox item @01KJBQ62."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T00:57:16.582Z

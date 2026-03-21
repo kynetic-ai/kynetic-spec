@@ -1,0 +1,61 @@
+_ulid: 01KKZWB6C22Z7DDQWR1C3GWDFF
+slugs:
+  - task-dispatch-sync-config
+title: Add dispatch sync configuration schema and defaults
+type: task
+description: |
+  Why: The dispatch engine needs configuration for remote sync behavior
+  before any sync logic can be implemented. Without config schema, the
+  sync features have no way to be enabled/disabled or tuned.
+
+  What: Extend DispatchConfigSchema in src/parser/config.ts with two
+  new fields: sync_interval (non-negative integer, default 60 seconds)
+  and remote_sync (optional boolean, resolved at runtime). Add defaults
+  to DEFAULT_CONFIG.dispatch. Wire through resolveConfig() with runtime
+  remote detection for the default value. Update the typed config
+  interface. Add Zod validation for sync_interval constraints.
+
+  How: Follow the existing shadow.sync_interval pattern in config.ts
+  (line 44). Add sync_interval and remote_sync to DispatchConfigSchema
+  (line 122-148). Add defaults at line 396 (DEFAULT_CONFIG.dispatch).
+  In resolveConfig() (~line 604), wire the new fields with fallback
+  to defaults. The remote_sync runtime resolution (checking for git
+  remote existence) should use the same listGitRemotes() from
+  workspace.ts that the dispatch engine already uses. Add a validation
+  test for negative/non-integer sync_interval values.
+
+  Covers: @dispatch-sync-configuration ac-sync-interval,
+  ac-remote-sync-disabled, ac-remote-sync-default, ac-validation.
+spec_ref: "@dispatch-sync-configuration"
+plan_ref: "@plan-dispatch-remote-sync"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Added dispatch sync configuration: sync_interval (int >= 0, default
+  60) and remote_sync (optional bool, null for runtime resolution) to DispatchConfigSchema,
+  DEFAULT_CONFIG, resolveConfig(), getDefaultConfig(), and new resolveDispatchRemoteSync() helper.
+  21 new tests cover all 4 own ACs and trait-error-guidance ac-5. Clean implementation following
+  existing config patterns."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - config
+vcs_refs: []
+review_ref: "@01KM03JAVPK4GRKEMMZE9XR65E"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T09:08:37.393Z
+  commit: e79271ed026726efbbfa9f1e9fee43475701a287
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM02P9GVNG1JMJ48WXK8EFWE
+created_at: 2026-03-18T07:07:45.922Z
+started_at: 2026-03-18T08:59:00.852Z
+submitted_at: 2026-03-18T09:08:37.807Z
+completed_at: 2026-03-18T09:15:42.011Z
+todos: []
+automation: eligible

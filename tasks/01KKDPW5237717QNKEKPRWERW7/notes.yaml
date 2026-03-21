@@ -1,0 +1,27 @@
+notes:
+  - _ulid: 01KKDPXBBVHZ5XW2PYBJAN0XQH
+    content: "Fix implemented: removed rogue symlink, hardened watcher with symlink guards (Bun filter,
+      Chokidar followSymlinks:false, lstat check in processFileChange), added .kspec to
+      .kspec/.gitignore. Spec gap analysis: ac-7 covers this adequately, no AC updates needed. Root
+      cause: likely kspec init ran from inside .kspec/ directory around Mar 10 04:25."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-11T05:46:29.627Z
+  - _ulid: 01KKDRKABAAHP10ZS8ZP6VSKXM
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #772 breaks the Chokidar fallback by ignoring
+      every .kspec path, and the symlink-loop fix shipped without regression coverage for fallback
+      delivery."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T06:15:58.059Z
+  - _ulid: 01KKDTFJG384CG79ZWJBT4V3K8
+    content: "Fix cycle 1 addressed review feedback: narrowed watcher symlink guard to ignore only
+      nested .kspec loop paths, preserved Chokidar fallback delivery for real YAML files, and added
+      deterministic fallback regression coverage for the .kspec/.kspec -> .kspec case. Verification:
+      npm test -- --run tests/daemon-watcher-fallback.test.ts
+      tests/daemon-watcher-multi-project.test.ts passes. kspec validate reports existing repo-wide
+      warnings only. Full npm test still has unrelated pre-existing failures in
+      tests/cli-plan.test.ts, tests/cli-serve.test.ts, and tests/cli-worktree-resolution.test.ts."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T06:48:52.483Z

@@ -1,0 +1,36 @@
+notes:
+  - _ulid: 01KJWVR8HMT3ZG9DKZVK4HCQCR
+    content: >-
+      Completed spec gap fill for inbox commands:
+
+
+      Created 3 new requirement specs under @inbox-commands:
+
+      - @cmd-inbox-get (3 ACs) — show single item detail
+
+      - @cmd-inbox-set (5 ACs) — update content/tags with atomic mutation
+
+      - @cmd-inbox-note (3 ACs) — append note with separator
+
+
+      Added own ACs to 4 existing specs:
+
+      - @cmd-inbox-add: 3 ACs (text capture, tags, empty validation)
+
+      - @cmd-inbox-list: 5 ACs (sort order, newest, tag filter, limit, count)
+
+      - @cmd-inbox-delete: 3 ACs (confirmation, force, not-found)
+
+      - @cmd-inbox-promote: 3 new ACs (description fallback, tag inheritance, --keep flag) — already
+      had 4
+
+
+      Total: 25 own ACs across 7 requirement specs, plus trait inheritance.
+
+
+      Note: Discovered batch bug where multiple item ac add commands in same batch overwrite each
+      other — only last AC per spec persists. Filed as @01KJWQM3. Worked around by running
+      individual commands.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-04T16:44:00.437Z

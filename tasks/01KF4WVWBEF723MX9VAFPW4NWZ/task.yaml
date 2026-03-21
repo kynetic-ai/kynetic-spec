@@ -1,0 +1,22 @@
+_ulid: 01KF4WVWBEF723MX9VAFPW4NWZ
+slugs:
+  - task-convention-definitions
+title: "Implement: Convention Definitions"
+type: task
+spec_ref: "@convention-definitions"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Partial implementation: 3/5 ACs complete (display commands working). Validation
+  integration (AC-3, AC-4) deferred for focused session."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - meta
+  - conventions
+vcs_refs: []
+created_at: 2026-01-17T02:34:35.758Z
+started_at: 2026-01-18T10:06:02.956Z
+completed_at: 2026-01-18T10:08:39.070Z
+todos: []

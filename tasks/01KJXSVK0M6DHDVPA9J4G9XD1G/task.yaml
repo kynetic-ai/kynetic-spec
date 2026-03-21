@@ -1,0 +1,23 @@
+_ulid: 01KJXSVK0M6DHDVPA9J4G9XD1G
+slugs:
+  - implement-validation-and-alignment-view
+title: Implement Validation and Alignment View
+type: task
+spec_ref: "@ui-validation-view"
+plan_ref: "@plan-ui-ux-revamp"
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on:
+  - "@implement-app-shell-and-navigation"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KK25V9FEFCM418BCJMH48KJM
+created_at: 2026-03-05T01:30:06.740Z
+started_at: 2026-03-06T18:17:13.645Z
+submitted_at: 2026-03-06T18:20:54.999Z
+completed_at: 2026-03-06T18:26:13.605Z
+todos: []
+automation: eligible

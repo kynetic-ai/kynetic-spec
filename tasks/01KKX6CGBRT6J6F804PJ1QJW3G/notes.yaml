@@ -1,0 +1,51 @@
+notes:
+  - _ulid: 01KKZ4S1XYHJ02XSPH32GZ9AT0
+    content: "Applied raw-data-preservation pattern to saveWorkflowRun, deleteWorkflowRuns, and added
+      mutateWorkflowRunAtomically. Helpers: extractRawRunArray, writeRawRunArray, findRawRunIndex,
+      mergeRunPreservingRawShape. Added file locking via withFileLock. 7 round-trip stability tests
+      all pass, covering: no-change save, Zod default suppression, identity mutation, multi-run
+      stability, non-target pollution prevention, delete preservation, and multi-cycle stability.
+      One pre-existing failure in review-cli.test.ts (examined_commit) unrelated to this change."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T00:15:54.302Z
+  - _ulid: 01KKZ58S0N5MH1B3782NS40HB3
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by pr-reviewer@kspec-dispatch"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T00:24:29.461Z
+  - _ulid: 01KKZ59DY3Y8XR5R0F7NKC082X
+    content: >-
+      Review: request_changes (2 blockers).
+
+
+      1. MUST-FIX: Dispatch workspace round-trip stability regression. The commit removes the
+      raw-data-preservation pattern from dispatch-workspaces.ts (~200 lines of helpers deleted) and
+      reverts saveDispatchWorkspaceRecord/mutateDispatchWorkspaceRecordAtomically to schema-parsing
+      all workspaces via loadRegistryFile. This re-introduces Zod default pollution
+      (branch_provenance, roleStates, etc.) on every write. The 7 dispatch workspace round-trip
+      tests are also deleted. These must be restored.
+
+
+      2. MUST-FIX: Out-of-scope deletions (~1850 lines). The commit removes the review detail page,
+      shared API types, daemon route filters, E2E tests, and fixtures unrelated to workflow runs
+      YAML stability. These deletions affect @review-records-web-ui and @review-records-daemon-api
+      AC coverage and must be reverted.
+
+
+      The workflow runs implementation itself (meta.ts changes + new tests) is correct and
+      well-tested.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T00:24:50.883Z
+  - _ulid: 01KKZ6PMWTPEK6AHRNX1GDM7GN
+    content: "Fix cycle 1: Merged dev into task branch to resolve divergence. The branch had forked
+      before dispatch workspace round-trip work and review detail page were merged to dev. Without
+      the merge, merging back to dev would have deleted those changes. After merge, the diff against
+      dev is now scoped to exactly the workflow runs changes (meta.ts + test file). Both review
+      blockers resolved: (1) dispatch-workspaces.ts raw-data-preservation is intact, (2) no
+      out-of-scope deletions. Pre-existing review-cli.test.ts examined_commit failure remains (not
+      introduced by this task)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T00:49:32.571Z

@@ -1,0 +1,33 @@
+notes:
+  - _ulid: 01KGMWF78Y773Q3JN7T0Y58T86
+    content: "Starting implementation of plan document parser. Will create src/parser/plan-document.ts
+      to parse structured plan files with markdown sections and YAML blocks. Focus on: 1) Markdown
+      section parsing, 2) YAML block extraction, 3) Schema validation, 4) Error handling with line
+      numbers."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-04T17:51:13.694Z
+  - _ulid: 01KGMWJ9M8981STAKW74354TV8
+    content: "Implemented plan document parser in src/parser/plan-document.ts with comprehensive test
+      coverage. Parser extracts ## Specs, ## Tasks, and ## Implementation Notes sections from
+      markdown. Includes topological sorting for parent dependencies, circular dependency detection,
+      and error handling with recovery hints. All 23 tests passing covering ACs: ac-11 (specs
+      parsing), ac-12 (derive flag), ac-13 (impl notes), ac-16 (topo sort), ac-17 (missing parents),
+      ac-18 (circular deps), ac-21 (yaml errors), ac-22 (validation)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-04T17:52:54.408Z
+  - _ulid: 01KGMWJBB5VGX4RRXEE9JB28DZ
+    content: "Implementation complete. Created src/parser/plan-document.ts with: 1) Markdown section
+      extraction (## Specs, ## Tasks, ## Implementation Notes), 2) YAML parsing with error handling,
+      3) Topological sorting for parent dependencies with circular detection, 4) Schema validation
+      for specs and tasks. Added 23 comprehensive tests covering all parsing scenarios. All tests
+      passing."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-04T17:52:56.165Z
+  - _ulid: 01KGP0DGMP466EZE5KB8JGV41T
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-05T04:19:26.486Z

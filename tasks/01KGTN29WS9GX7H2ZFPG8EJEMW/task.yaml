@@ -1,0 +1,22 @@
+_ulid: 01KGTN29WS9GX7H2ZFPG8EJEMW
+slugs:
+  - implement-session-log-list
+title: Implement Session Log List
+type: task
+spec_ref: "@session-log-list"
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #327. Implemented session log list command with filtering, sorting,
+  JSON output, and 28 tests. Codex review caught task completion counting bug (wrong event shape) —
+  fixed before merge."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-06T23:37:16.953Z
+started_at: 2026-02-07T03:37:36.820Z
+completed_at: 2026-02-07T05:09:14.549Z
+todos: []
+automation: eligible

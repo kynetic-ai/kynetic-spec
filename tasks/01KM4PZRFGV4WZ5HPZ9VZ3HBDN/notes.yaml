@@ -1,0 +1,37 @@
+notes:
+  - _ulid: 01KM4Q7B66BJS3JRZMR03KNDSQ
+    content: "Traced the failure to resolveDispatchIntegrationMutationScope(): it hard-refuses when the
+      shared checkout is on a different current branch. Implementing branch-resolution/restore logic
+      for the configured integration branch and a non-checked-out fast-forward path so sync/push can
+      target the integration branch without mutating the human-facing checkout branch."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T04:14:29.062Z
+  - _ulid: 01KM4QM6GTFNCB7G33T995R6YB
+    content: "Implemented topology-agnostic integration targeting for shared checkouts:
+      resolve/configure the integration branch even when another branch is checked out, restore the
+      local branch from remotes when needed, and fast-forward the branch ref directly when the
+      target branch is not the current checkout. Added regression coverage for non-checked-out
+      sync/push and remote restoration. Verification: targeted dispatch tests passed; full npm test
+      still has an unrelated cli-plan failure in tests/cli-plan.test.ts around short plan-ref
+      resolution, and kspec validate reports pre-existing repo-wide reference/completeness issues."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T04:21:30.266Z
+  - _ulid: 01KM4QZV1T1FNVAP4Z7GRVPNMX
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T04:27:51.738Z
+  - _ulid: 01KM4RE9N6PM31WJX36VPHKQT0
+    content: "[FIX_CYCLE: 1] Added a safety guard for the non-checked-out integration-branch
+      fast-forward path: dispatch now refuses isolated branch-ref updates when the integration
+      branch is checked out in another worktree, because update-ref would advance that foreign
+      worktree's HEAD. Added regression coverage proving dispatch enters degraded state and leaves
+      both the shared checkout's current branch and the foreign worktree untouched. Verification:
+      npm test -- tests/dispatch-target-sync.test.ts tests/dispatch-branch-push-lifecycle.test.ts
+      (pass). kspec validate still reports pre-existing repo-wide reference/completeness issues
+      unrelated to this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T04:35:45.446Z

@@ -1,0 +1,37 @@
+notes:
+  - _ulid: 01KF7YCVM1TC8ZCHSQF4SY1RWR
+    content: >-
+      Implemented CLI command suggestions on error using Levenshtein distance for fuzzy matching.
+
+
+      Implementation details:
+
+      - Created src/cli/suggest.ts with findClosestCommand() using Levenshtein distance algorithm
+
+      - Added 'command:*' event handler in src/cli/index.ts to intercept unknown commands
+
+      - Threshold of 3 for distance matching (configurable)
+
+      - Falls back to generic help message if no close match found
+
+      - Added comprehensive test suite (11 tests) in tests/suggest.test.ts
+
+
+      Examples:
+
+      - 'kspec taks list' → suggests 'kspec tasks'
+
+      - 'kspec inbx add' → suggests 'kspec inbox'
+
+      - 'kspec tassk' → suggests 'kspec task'
+
+
+      Commander.js already handles subcommand typos with built-in suggestions, so only top-level
+      commands need custom handling.
+
+
+      Alias support stubbed out but left minimal - both 'task' and 'tasks' are valid commands, so no
+      singular/plural aliases needed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T06:59:03.937Z

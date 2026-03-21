@@ -1,0 +1,60 @@
+notes:
+  - _ulid: 01KKB8FD2K1M4EZREF1S3RRM1R
+    content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+    author: "@claude"
+    created_at: 2026-03-10T06:55:43.700Z
+  - _ulid: 01KKDZKF1DMNHFFQSH37B6YTAG
+    content: >-
+      Execution context:
+
+      - Background: completeness validation currently warns on modules missing acceptance criteria,
+      but the approved policy exempts modules while still requiring ACs for decisions, traits,
+      features, requirements, and constraints.
+
+      - Scope: update completeness validation policy and add/adjust tests for the warning rules
+      only.
+
+      - Files: expected changes in validate/completeness implementation and corresponding tests.
+
+      - Verification: targeted tests for completeness warnings plus kspec validate coverage where
+      practical.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T08:18:22.893Z
+  - _ulid: 01KKE075VA2HXGE5XKFAJ23EKD
+    content: >-
+      Implemented completeness policy in parser validation: modules are now exempt from missing
+      acceptance-criteria and missing-description warnings, while decisions remain subject to AC
+      requirements. Added focused parser tests covering module exemption,
+      feature/requirement/constraint/trait AC warnings, non-module description warnings, and
+      decision AC warnings.
+
+
+      Verification:
+
+      - Passed: npm test -- tests/parser/spec-completeness-policy.test.ts
+      tests/parser/validate-config.test.ts tests/trait-validation.test.ts
+
+      - Passed: kspec validate --warnings-ok (existing repo warnings only)
+
+      - Full suite context: npm test hit unrelated/flaky failures in shadow sync and cli-serve
+      tests; isolated reruns of the shadow cleanup case and cli-serve daemon-start case passed.
+      Untracked .review/ mirror in workspace causes duplicate vitest discovery and temp-dir
+      collisions in shadow tests.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T08:29:08.842Z
+  - _ulid: 01KKE175RSJ5KXNW4Y5ZS6BPC9
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #777 still includes unrelated
+      @batch-item-fetch-api daemon/web-ui changes. Rebase or split to a dedicated branch so only
+      @spec-completeness-policy changes remain."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T08:46:37.338Z
+  - _ulid: 01KKE23NQC81S9F8WSWB4ATSQ6
+    content: "Fix cycle: rebased fix/spec-completeness-policy onto current main to remove inherited
+      @batch-item-fetch-api commit from PR #777. No code changes beyond the already-implemented
+      completeness-policy diff; this update is branch/PR scoping only."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T09:02:11.181Z

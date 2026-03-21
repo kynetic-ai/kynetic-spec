@@ -1,0 +1,21 @@
+_ulid: 01KFAB9BT6A9M4G2DXNAC1B2M2
+slugs: []
+title: Document ESM symlink fix for contributors
+type: task
+description: Document ESM symlink realpathSync fix for contributors
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Added ESM symlink troubleshooting section to README.md covering symptoms, root cause,
+  and fix pattern for contributors
+depends_on: []
+context: []
+priority: 3
+tags:
+  - docs
+  - reflection
+vcs_refs: []
+created_at: 2026-01-19T05:22:49.797Z
+started_at: 2026-01-19T07:01:47.067Z
+completed_at: 2026-01-19T07:03:07.170Z
+todos: []

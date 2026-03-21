@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KJ4V6D4491AMKWWJKJX309AS
+    content: "AUTOMATION: Bug fix. Fix generateSkillsTable() in agent-data-sections.ts to render core
+      skill IDs with kspec: namespace prefix. Spec @agent-instruction-gen."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T08:52:28.933Z

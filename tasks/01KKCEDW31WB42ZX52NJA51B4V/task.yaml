@@ -1,0 +1,28 @@
+_ulid: 01KKCEDW31WB42ZX52NJA51B4V
+slugs:
+  - task-worktree-core-resolution
+title: "Core worktree resolution: resolveProjectRoots + initContext + KspecContext"
+type: task
+spec_ref: "@worktree-support"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #766. Added worktree-aware project root resolution via
+  resolveProjectRoots(), threaded projectRoot through initContext/config/shadow detection, updated
+  daemon/dispatch headers and serve/shadow defaults for linked worktrees, and verified explicit AC
+  coverage for all @worktree-support criteria plus full npm test coverage (205 files / 4536 tests)."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - infra
+  - shadow
+vcs_refs: []
+session_id: 01KKDA165QCRMGWCR2978301TV
+created_at: 2026-03-10T17:58:59.425Z
+started_at: 2026-03-11T02:02:07.523Z
+submitted_at: 2026-03-11T02:05:38.814Z
+completed_at: 2026-03-11T02:34:44.052Z
+todos: []
+automation: eligible

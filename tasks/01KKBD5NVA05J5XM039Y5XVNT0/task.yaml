@@ -1,0 +1,35 @@
+_ulid: 01KKBD5NVA05J5XM039Y5XVNT0
+slugs: []
+title: "Add --no-cascade flag to kspec item set: skip child status cascade prompt, apply change only
+  to targ"
+type: task
+description: >-
+  Add --no-cascade flag to kspec item set to skip child status cascade prompt.
+
+
+  Current behavior: When updating a parent item status, kspec prompts to cascade the change to
+  children. This blocks batch/scripted usage (yes | workaround breaks kspec batch).
+
+
+  Fix: Add --no-cascade boolean flag to the item set command in src/cli/commands/item.ts. When set,
+  skip the cascade confirmation and apply change only to the targeted item. Update batch commands
+  list if needed.
+spec_ref: "@trait-confirmation-prompt"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #752. Added --no-cascade flag to kspec item set command. When provided,
+  skips handleStatusCascade entirely so status changes apply only to the target item without
+  prompting to cascade to children. Two integration tests verify: no prompt shown and children
+  remain unchanged."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKBYQZ8AZVY8AQN6CRK8106E
+created_at: 2026-03-10T08:17:47.882Z
+started_at: 2026-03-10T13:41:32.638Z
+submitted_at: 2026-03-10T13:49:24.386Z
+completed_at: 2026-03-10T14:01:19.339Z
+todos: []
+automation: eligible

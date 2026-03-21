@@ -1,0 +1,25 @@
+_ulid: 01KK06VGDDDVV5N4737379DJMJ
+slugs: []
+title: Implement dispatch reconciliation loop
+type: task
+spec_ref: "@agent-dispatch-engine"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #685. Implemented periodic reconciliation loop (AC-19, AC-20) with
+  shared _evaluateAllTasks helper, .unref() on timer, and 8 new tests."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - infra
+  - cli
+vcs_refs: []
+session_id: null
+created_at: 2026-03-05T23:55:44.429Z
+started_at: 2026-03-06T03:54:52.439Z
+submitted_at: 2026-03-06T03:54:54.162Z
+completed_at: 2026-03-06T04:32:02.297Z
+todos: []
+automation: eligible

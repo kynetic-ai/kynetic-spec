@@ -1,0 +1,23 @@
+_ulid: 01KF4WVW0YWMRS6R0M19J5B84P
+slugs:
+  - task-meta-manifest-format
+title: "Implement: Meta Manifest Format"
+type: task
+spec_ref: "@meta-manifest-format"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: All 3 acceptance criteria verified and passing. Meta manifest format fully
+  implemented with schema, parser, CLI commands, validation integration, reference index support,
+  and comprehensive tests (458 passing). No code changes needed - implementation was already
+  complete from prior iterations.
+depends_on:
+  - "@task-meta-manifest"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:35.422Z
+started_at: 2026-01-18T09:40:51.498Z
+completed_at: 2026-01-18T09:45:48.565Z
+todos: []

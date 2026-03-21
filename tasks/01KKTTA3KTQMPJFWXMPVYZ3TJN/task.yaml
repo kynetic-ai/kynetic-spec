@@ -1,0 +1,43 @@
+_ulid: 01KKTTA3KTQMPJFWXMPVYZ3TJN
+slugs: []
+title: Add content rendering and anchor display ACs to review web UI spec
+type: task
+description: >-
+  The review-records-web-ui spec has ACs for thread structure (kind badges, resolution state) but
+  nothing about how review content is actually displayed. Missing:
+
+
+  1. Comment body rendering — markdown support, code blocks, inline formatting
+
+  2. Code anchor display — file path, line numbers, diff context for code-targeted comments
+
+  3. Structured anchor display — section/field references for plan/spec reviews shown with context
+
+  4. Verdict body rendering — reviewer notes alongside decision
+
+  5. Check evidence display — how evidence text and runner info are presented
+
+
+  These are essential for the review detail page (ac-2) and comment creation (ac-3) to be
+  implementable — without them, the UI tasks have no spec coverage for content treatment.
+
+
+  Action: Add ACs to @review-records-web-ui covering content rendering, code anchor visualization
+  (file:line with context), structured anchor visualization (section/field with referenced content),
+  and markdown rendering in comment bodies. Update the plan document after spec changes.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Created in error — changes going directly into the plan
+depends_on: []
+context: []
+priority: 2
+tags:
+  - specs
+  - web-ui
+  - review
+vcs_refs: []
+created_at: 2026-03-16T07:56:01.018Z
+todos: []

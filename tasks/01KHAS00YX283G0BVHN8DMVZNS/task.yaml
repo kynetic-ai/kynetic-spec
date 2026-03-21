@@ -1,0 +1,29 @@
+_ulid: 01KHAS00YX283G0BVHN8DMVZNS
+slugs: []
+title: Include step_results content in workflow runs --json output
+type: task
+description: workflow runs --json should include step_results with notes and abort_reason content.
+  Currently only metadata (ULID, status, timestamps) is serialized. Step notes contain the most
+  valuable data for mining/telemetry but require parsing raw YAML to access.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #628 (badd08d3f38fc23579cf8795a105f71b56ab329c). Added tests verifying
+  workflow runs/show --json include step_results notes content and workflow runs --json includes
+  abort_reason for aborted runs. Local and CI regression checks passed; AC coverage for JSON output
+  completeness requirement confirmed."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - workflow
+  - cli
+  - dx
+vcs_refs: []
+session_id: 01KJN28PAZMZDSX3RKS2M01JZJ
+created_at: 2026-02-13T05:53:47.482Z
+started_at: 2026-03-01T17:55:42.084Z
+submitted_at: 2026-03-01T17:57:11.802Z
+completed_at: 2026-03-01T18:07:56.970Z
+todos: []
+automation: eligible

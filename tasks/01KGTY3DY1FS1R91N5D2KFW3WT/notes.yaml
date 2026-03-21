@@ -1,0 +1,26 @@
+notes:
+  - _ulid: 01KGTY3DY13YX3W1VQS90SG9MS
+    content: "Implementation: In batch validation (batch-exec.ts), when unknown arg key is encountered,
+      compare against CommandMeta positional names using string similarity or simple prefix
+      matching. Format: 'Unknown arg \"content\" for \"inbox add\". Did you mean \"text\"? Run kspec
+      batch commands for reference.' ~15 lines. Pairs with batch commands discoverability task."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T02:15:11.041Z
+  - _ulid: 01KGVYJWQ0GGY06E41SZM6QVCF
+    content: >-
+      Implemented did-you-mean suggestions for batch validation errors:
+
+      1. Added 'suggestion' field to BatchCommandResult type to propagate suggestions from
+      validation
+
+      2. Updated CLI output to show 'Did you mean: X?' when suggestions are available
+
+      3. Added 'Run kspec batch commands' hint at the end of all validation errors
+
+      4. Hint only appears in human-readable output, not JSON mode
+
+      5. Added 4 new tests for suggestions and hint display
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T11:42:52.128Z

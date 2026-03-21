@@ -1,0 +1,25 @@
+_ulid: 01KJN093AMQAK4FRVHXP7SEEKG
+slugs: []
+title: Add Playwright E2E tests to CI pipeline
+type: task
+description: "E2E tests (packages/web-ui/tests/e2e/) are not in CI. GitHub Actions only runs vitest
+  shards. The WebSocket upgrade bug (server returning 200 instead of 101) went undetected for weeks
+  despite 21 failing E2E tests. Add a CI job for Playwright E2E: consider path filtering (only on
+  daemon/web-ui changes), browser caching, and the port 3456 constraint (tests cannot parallelize on
+  same machine)."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Duplicate of @task-ci-e2e-tests (01KJD106)
+depends_on: []
+context: []
+priority: 3
+tags:
+  - ci
+  - testing
+  - infra
+vcs_refs: []
+created_at: 2026-03-01T15:29:10.994Z
+todos: []

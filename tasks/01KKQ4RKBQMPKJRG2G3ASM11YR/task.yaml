@@ -1,0 +1,142 @@
+_ulid: 01KKQ4RKBQMPKJRG2G3ASM11YR
+slugs: []
+title: Suppress no-op workspace registry writes during periodic reconciliation
+type: task
+description: >-
+  ## Problem
+
+
+  The dispatch engine's periodic reconciliation (every 60s) unconditionally rewrites
+
+  project.dispatch-workspaces.yaml and commits to the shadow branch — even when nothing
+
+  has actually changed. This creates ~1 commit/minute of pure timestamp churn on the
+
+  kspec-meta branch.
+
+
+  ## Root Cause
+
+
+  reconcileDispatchWorkspaceRegistry() in src/agent-runtime/workspace.ts (around line 1462)
+
+  always calls saveWorkspaceRecordToRegistry() with updated_at: now and last_reconciled_at: now,
+
+  then calls commitWorkspaceRegistryToShadow() — regardless of whether any meaningful field changed.
+
+
+  The call chain is:
+
+  1. dispatch.ts _reconcile() (called every 60s by setInterval)
+
+  2. -> reconcileDispatchWorkspaceRegistry() in workspace.ts
+
+  3. -> Computes new health, lifecycle_state, active_role, cleanup, integration,
+  canonical_branch_head
+
+  4. -> Unconditionally writes record with fresh timestamps
+
+  5. -> Commits to shadow branch
+
+
+  ## Fix
+
+
+  Add dirty-checking before the save in reconcileDispatchWorkspaceRegistry(). Compare the
+
+  computed state fields against the existing record. Only call saveWorkspaceRecordToRegistry()
+
+  and commitWorkspaceRegistryToShadow() if at least one meaningful field differs.
+
+
+  Fields to compare (the meaningful fields):
+
+  - canonical_branch_head
+
+  - lifecycle_state
+
+  - active_role
+
+  - health (deep compare — status, issues)
+
+  - cleanup (deep compare — status, eligible, reason, detail)
+
+  - integration (deep compare — status, target_branch, target_commit, publication_mode, outcome,
+  detail)
+
+
+  Fields NOT to compare (timestamps are consequences, not triggers):
+
+  - timestamps.updated_at — only set when meaningful change occurs
+
+  - timestamps.last_reconciled_at — can track in memory but must not trigger write
+
+  - timestamps.closed_at — derived from lifecycle_state transition, compared via lifecycle_state
+
+
+  ## Implementation Notes
+
+
+  - The comparison should use a helper function (e.g. isRecordDirty(existing, computed)) for
+  testability
+
+  - For deep comparison of health/cleanup/integration sub-objects, compare the serializable fields
+  excluding their own updated_at timestamps
+
+  - last_reconciled_at can still be useful for staleness detection — consider keeping it as an
+  in-memory concern on the dispatch engine rather than persisted, or only persisting it when
+  piggy-backing on a dirty write
+
+  - The commit message dispatch-workspace-registry @@... should only appear when there is a real
+  change
+
+
+  ## Spec Coverage
+
+
+  Implements @dispatch-workspace-registry ac-10.
+
+
+  ## Testing
+
+
+  - Unit test: call reconcileDispatchWorkspaceRegistry() twice with identical task state; assert no
+  commit on second call
+
+  - Unit test: call with a changed field (e.g. health goes stale); assert commit happens
+
+  - Unit test: verify isRecordDirty() helper returns false for timestamp-only differences
+spec_ref: "@dispatch-workspace-registry"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #860. Added dirty-checking to reconcileDispatchWorkspaceRegistry() via
+  isWorkspaceRecordDirty() helper that compares meaningful fields (canonical_branch_head,
+  lifecycle_state, active_role, health, cleanup, integration) excluding updated_at timestamps.
+  Registry file and shadow branch commit are now suppressed when periodic reconciliation produces no
+  meaningful state change, eliminating ~1 commit/minute of timestamp churn. 12 tests covering all
+  branches of the dirty-check logic plus integration verification."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - dispatch
+  - bug
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-14T21:54:09.509Z
+  commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKQ4TRSVZCQ0SHJGV6MQHN28
+created_at: 2026-03-14T21:41:43.927Z
+started_at: 2026-03-14T21:43:16.150Z
+submitted_at: 2026-03-14T21:54:10.492Z
+completed_at: 2026-03-14T22:07:01.782Z
+todos: []
+automation: eligible

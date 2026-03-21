@@ -1,0 +1,23 @@
+_ulid: 01KFBM8EMBQWHDTRN8CGCRFYK4
+slugs:
+  - consolidate-short-ulid
+title: Consolidate shortUlid helper in inbox.ts with ReferenceIndex
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #126. Pure refactoring that removes duplicate shortUlid helper and uses
+  .slice(0, 8) for inbox item display. All 841 tests pass locally. Code quality excellent,
+  consistent with codebase patterns."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - tech-debt
+vcs_refs: []
+created_at: 2026-01-19T17:18:51.531Z
+started_at: 2026-01-21T09:52:39.532Z
+completed_at: 2026-01-21T10:14:42.230Z
+todos: []
+automation: eligible

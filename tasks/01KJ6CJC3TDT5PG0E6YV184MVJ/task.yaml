@@ -1,0 +1,50 @@
+_ulid: 01KJ6CJC3TDT5PG0E6YV184MVJ
+slugs:
+  - task-cleanup-obsolete-skills
+title: Clean up obsolete project skills superseded by core skills
+type: task
+description: >-
+  After the skill porting effort, .claude/skills/ still contains old versions of skills that were
+  rewritten as core skills in templates/skills/. These should be removed.
+
+
+  Duplicates (exist in both .claude/skills/ and templates/skills/):
+
+  - create-workflow — ported to kspec:create-workflow
+
+  - reflect — ported to kspec:reflect
+
+  - task-work — ported to kspec:task-work
+
+
+  Renamed/replaced (old name in .claude/skills/, new core version in templates/skills/):
+
+  - meta → kspec:observations
+
+  - spec → kspec:writing-specs
+
+  - spec-plan → kspec:plan
+
+
+  Action: Remove the 6 obsolete skills from .claude/skills/. Verify no references remain in
+  settings.json, CLAUDE.md, or other config. Confirm core versions fully cover functionality before
+  deleting.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Removed 6 obsolete project skills (create-workflow, reflect, task-work, meta, spec,
+  spec-plan) from .claude/skills/. All content verified covered by core skills. Committed in
+  91e26c52.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - skills
+vcs_refs: []
+created_at: 2026-02-23T23:15:21.338Z
+started_at: 2026-02-23T23:38:36.688Z
+completed_at: 2026-02-23T23:45:15.063Z
+todos: []

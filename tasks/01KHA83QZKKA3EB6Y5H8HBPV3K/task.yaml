@@ -1,0 +1,22 @@
+_ulid: 01KHA83QZKKA3EB6Y5H8HBPV3K
+slugs:
+  - implement-observation-content-search
+title: Implement Observation Content Search
+type: task
+spec_ref: "@observation-content-search"
+plan_ref: "@plan-cli-agent-ux-improvements"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #367. Implemented observation content search with --search flag for
+  kspec meta observations command and --observations-only flag for kspec search command. Added
+  mutual exclusivity validation for scope-only flags. All 7 ACs covered with 14 tests."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-13T00:58:43.571Z
+started_at: 2026-02-14T10:40:23.850Z
+completed_at: 2026-02-14T10:55:07.757Z
+todos: []
+automation: eligible

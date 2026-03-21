@@ -1,0 +1,19 @@
+notes:
+  - _ulid: 01KGGXCREFGK1CPED6VNVPB1YN
+    content: "Cross-cutting trait for commands with list output. Formalizes existing -v/--verbose on
+      task list, item list, validate. Extends to inbox list. AC: (1) truncated lists show all items
+      with --verbose, (2) summaries expand to detailed info."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-03T04:50:23.824Z
+  - _ulid: 01KGHBMS72XWT054CJWKQWWDMM
+    content: "Automation status set to manual_only: Task creates a spec/trait - output is specification,
+      not code"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-03T08:59:26.819Z
+  - _ulid: 01KHD9FXMD397FS2AA4P2DZ3AC
+    content: "Automation status set to needs_review: New spec construct - needs spec definition"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-14T05:20:34.445Z

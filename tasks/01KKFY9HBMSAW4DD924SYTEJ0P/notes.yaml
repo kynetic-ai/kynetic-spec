@@ -1,0 +1,217 @@
+notes:
+  - _ulid: 01KKJBBBY6WHTQS1Q38J1GGBC6
+    content: >-
+      Execution context:
+
+      - Scope: add dispatcher-owned role entry rendering separate from orientation, persist
+      publication mode on workspace metadata, and fail fast on invalid entry configuration.
+
+      - Files: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+      tests/agent-dispatch-engine.test.ts.
+
+      - Verification: focused dispatch/runtime tests, kspec validate, and targeted git diff review.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T01:00:38.214Z
+  - _ulid: 01KKJBGBY0X9JJZSAHVC5HYMEA
+    content: Implemented dispatcher-owned role entry rendering separate from orientation. Added
+      workspace publication_mode persistence, adapter-aware entrypoint rendering for worker/reviewer
+      roles, explicit manual-merge escalation guidance, and fail-fast prompt note reporting when
+      entry configuration is invalid. Verified with focused dispatch tests, full npm test, and kspec
+      validate (warnings-only baseline).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T01:03:22.048Z
+  - _ulid: 01KKJBS3SAQ86DP60TCKW2R5ZQ
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #810 is merge-conflicting with main in
+      src/agent-runtime/dispatch.ts; rebase/merge main, resolve conflicts, and rerun verification on
+      the updated head."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T01:08:08.618Z
+  - _ulid: 01KKJCCR5AJN6CNBDM3ECT6JBV
+    content: "[FIX_CYCLE: 1] Rebasing PR #810 onto main exposed conflicts in dispatch.ts/workspace.ts
+      plus stale role-entry fixtures. Resolved the runtime merge on top of current dispatch
+      workspace/bootstrap architecture, updated the role-entry tests for current
+      publication/workspace contracts, and force-pushed rebased head 105b05f43 to PR #810.
+      Verification: npm test -- tests/agent-dispatch-engine.test.ts; npm test; kspec validate
+      (warnings-only baseline, exit 6)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T01:18:52.074Z
+  - _ulid: 01KKJCPRVAKJQDVFX5MPGKY5PR
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: reviewer role entry leaves the real \\ config
+      token unresolved, so dispatch prompts are not adapter-appropriate on the project head."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T01:24:20.458Z
+  - _ulid: 01KKJD2HWFFV9W2E7VK4H5K66T
+    content: "[FIX_CYCLE: 3] Resolved the reviewer role-entry regression on the current project head by
+      routing role entrypoint rendering through the shared portable skill-token adapter resolver
+      before legacy slash/dollar rewrites. This fixes the real ralph.skills.pr_review value
+      {skill:pr-review} so reviewer prompts render adapter-appropriate syntax instead of leaking the
+      raw token. Verification: npm test -- tests/agent-dispatch-engine.test.ts; npm test; kspec
+      validate (warnings-only baseline, exit 6)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T01:30:46.543Z
+  - _ulid: 01KKJE0PVQ2AGFWN8DCDSFEW4T
+    content: "[FIX_CYCLE: 5] Review findings: MUST-FIX: GitHub CI failed on PR #810. The merge ref
+      regressed tests/dispatch-workspace-registry.test.ts:575 (expected lifecycle_state 'closing',
+      got 'ready'), so the role-entry branch is not ready to merge."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T01:47:14.679Z
+  - _ulid: 01KKJEAZ4V37S8FM1HVFX8AVTP
+    content: "[FIX_CYCLE: 5] Verified the current role-entry branch against the live remote base after
+      fetching origin/main (d6e7b1484). This branch is already rebased onto that head (0 behind, 3
+      task commits ahead), the previously cited registry assertion now passes on the current branch
+      (npm test -- tests/dispatch-workspace-registry.test.ts), full npm test passed on the rebased
+      head (225 files, 4663 tests, 3 skipped, 0 failed), and kspec validate remains at the
+      warnings-only project baseline (exit 6). No additional code change was required beyond the
+      already-pushed reviewer-entry/runtime fixes on this branch."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T01:52:50.843Z
+  - _ulid: 01KKJEHK72N00Y9H2MQ2BDFT2D
+    content: "[FIX_CYCLE: 7] Review findings: SHOULD-FIX: remove the unused workspace helpers added in
+      src/agent-runtime/workspace.ts so the role-entry PR only carries code required for the merged
+      behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T01:56:28.002Z
+  - _ulid: 01KKJENGKADCNZPH5T4NEKQJ0K
+    content: "[FIX_CYCLE: 7] Removed the dead local workspace helpers left behind after the
+      dispatch/runtime merge (commandSucceeds, nextLifecycleState, hasGitRemote) so the role-entry
+      PR only carries the helper surface still exercised by the current workspace lifecycle and
+      role-entry behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T01:58:36.394Z
+  - _ulid: 01KKJEVM9NX1MF1A422HGPNP1S
+    content: "[FIX_CYCLE: 7] Verification after removing the unused workspace helpers: npm test --
+      tests/dispatch-workspace-registry.test.ts tests/agent-dispatch-engine.test.ts
+      tests/dispatch-branch-integration-contract.test.ts passed (105 tests); npm test passed on the
+      current branch (225 files, 4663 tests, 3 skipped, 0 failed); kspec validate remains at the
+      warnings-only project baseline (exit 6)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T02:01:56.790Z
+  - _ulid: 01KKJEXKHE21172RCRN6KJC9NZ
+    content: "[FIX_CYCLE: 7] Re-entering in_progress solely to transition the verified fix back through
+      the standard submit gate after pushing commit 2e14ad2bf to PR #810."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T02:03:01.550Z
+  - _ulid: 01KKJFB3Q6HYGQQ98QZYBJTRJK
+    content: "[FIX_CYCLE: 11] Review findings: MUST-FIX: fresh npm test on PR #810 head 2e14ad2bf fails
+      tests/dispatch-workspace-registry.test.ts:587 (expected lifecycle_state 'closing', got
+      'integrating'); full regression gate is not green."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T02:10:24.102Z
+  - _ulid: 01KKJFGREQZ266Y60ZXAYY23C9
+    content: "[FIX_CYCLE: 11] Re-entered in_progress to reproduce the registry lifecycle regression on
+      the current PR head before changing code. Focusing on the lifecycle_state transition around
+      cleanup/integration so the fix stays scoped to the failing contract."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T02:13:29.176Z
+  - _ulid: 01KKJFR25F5T5JWMA3HRWPA653
+    content: "[FIX_CYCLE: 11] Identified a real merge-ref race in cleanupReviewerDispatchWorkspace():
+      reviewer cleanup runs outside the shadow mutex, can read stale worker metadata with
+      cleanupEligible=false, and then overwrite a newer completed/closing registry record back to
+      ready. Fixing the cleanup path to derive lifecycle from the registry record instead of the
+      metadata snapshot."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T02:17:28.496Z
+  - _ulid: 01KKJFZQSZY73T7C2XE7C400M9
+    content: "[FIX_CYCLE: 11] Fixed a reviewer-cleanup race that could overwrite a merged workspace back
+      to ready on the PR merge ref. cleanupReviewerDispatchWorkspace now derives the post-cleanup
+      lifecycle from the registry record instead of potentially stale worker metadata, and tests now
+      cover the stale-metadata path directly. Verification: npm run build; npm test --
+      tests/dispatch-workspace-registry.test.ts tests/agent-dispatch-engine.test.ts
+      tests/dispatch-branch-integration-contract.test.ts; npm test --
+      tests/dispatch-workspace-registry.test.ts (5 consecutive passes); npm run test:shard1 all
+      passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T02:21:40.032Z
+  - _ulid: 01KKJGC1PTY9F9HSC6CS1FTBM1
+    content: "[FIX_CYCLE: 15] Review findings: MUST-FIX: _spawnInvocation leaks inFlightTaskKeys on
+      bootstrap/prompt failure, which can strand the task after role-entry configuration errors."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T02:28:23.386Z
+  - _ulid: 01KKJGG3H2S4FATT2YTRV8JR1Y
+    content: "[FIX_CYCLE: 15] Re-entered in_progress to fix the remaining dispatch concurrency leak in
+      _spawnInvocation. Scope: src/agent-runtime/dispatch.ts plus targeted agent-dispatch-engine
+      regressions proving bootstrap/prompt failures release the in-flight task key so the task can
+      be retried."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T02:30:36.322Z
+  - _ulid: 01KKJGW8E8ACKQWQNS8CQ6EPSV
+    content: "[FIX_CYCLE: 15] Fixed the remaining _spawnInvocation leak by releasing the in-flight task
+      key from a top-level finally whenever provisioning/bootstrap/prompt/adapter validation bails
+      out before an invocation promise is registered. Added regressions for both bootstrap-failure
+      and prompt-failure paths. Verification: npm test -- tests/agent-dispatch-engine.test.ts; npm
+      test (225 files, 4665 passed, 3 skipped); kspec validate (warnings-only baseline, exit 6)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T02:37:14.568Z
+  - _ulid: 01KKJHHW0V48NZCAXZM7YK71N5
+    content: "[FIX_CYCLE: 18] Review findings: MUST-FIX: PR #810 failed GitHub CI on merge ref
+      c85b9104cf5e5085e413043a3c68b5266f307ab4. test (shard 2/3) regressed
+      tests/file-lock.test.ts:205 with count: 4 instead of count: 5, so the branch is not
+      mergeable."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T02:49:02.747Z
+  - _ulid: 01KKJJC3RVPCCEX4HX6P87GK3T
+    content: "[FIX_CYCLE: 18] Eliminated the flaky file-lock concurrency failure by making lock release
+      ownership-aware (per-acquire token in the pid marker, unlink+rmdir only when the current
+      marker still matches) so an old releaser cannot delete a successor lock. Hardened the dispatch
+      workspace lifecycle registry spec with a shared wait helper and longer poll budget so the
+      closing-state assertion tracks the async transition reliably under full-suite load.
+      Verification: npm test -- tests/dispatch-workspace-registry.test.ts tests/file-lock.test.ts;
+      npm test; kspec validate (warnings-only baseline, exit 6)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T03:03:22.651Z
+  - _ulid: 01KKJJQSTAKY8AR6KBPESPG3HC
+    content: "[FIX_CYCLE: 20] Review findings: MUST-FIX: @dispatch-role-workflow-entry-contract ac-4 is
+      not fully covered on PR #810; add a regression for invalid publicationMode fail-fast behavior
+      before merge."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T03:09:45.674Z
+  - _ulid: 01KKJJTM3D3THN5RVQKR2CS8BC
+    content: "[FIX_CYCLE: 20] Re-entered in_progress to close the remaining ac-4 gap with a prompt-build
+      regression for invalid dispatch workspace publicationMode. Scope:
+      tests/agent-dispatch-engine.test.ts plus targeted dispatch verification proving bad
+      publication metadata fails fast with actionable guidance and no spawned invocation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T03:11:18.126Z
+  - _ulid: 01KKJK6QQ62196ESHGE8YKM2BG
+    content: "[FIX_CYCLE: 20] Full-suite rerun after the new ac-4 regression exposed the known dispatch
+      workspace lifecycle race again in tests/dispatch-workspace-registry.test.ts: the immediate
+      parser-layer reread could still observe integrating before cleanup persisted closing. Hardened
+      the test to poll the loaded registry view through findDispatchWorkspaceByTaskRef so the
+      assertion tracks the durable closing state instead of a transient snapshot."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T03:17:55.046Z
+  - _ulid: 01KKJKCBCT43H54Q27ZQB2QCQS
+    content: "[FIX_CYCLE: 20] Added the missing ac-4 regression for invalid dispatch workspace
+      publicationMode so _spawnInvocation now proves prompt-build fail-fast behavior emits
+      actionable DISPATCH-PROMPT guidance and never starts an invocation. Also hardened the registry
+      lifecycle regression test’s parser-layer reread to poll for the durable closing state,
+      eliminating the remaining full-suite race on this branch. Verification: npm test --
+      tests/agent-dispatch-engine.test.ts tests/dispatch-workspace-registry.test.ts; npm test (225
+      files, 4667 passed, 3 skipped); kspec validate (warnings-only baseline, exit 6)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T03:20:59.034Z

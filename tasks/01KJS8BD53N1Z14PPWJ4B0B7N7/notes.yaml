@@ -1,0 +1,45 @@
+notes:
+  - _ulid: 01KJWBJYR465JW20W67E3NFSG9
+    content: >-
+      Execution context:
+
+      - Background: replace the old ralph loop template section with agent dispatch docs for runtime
+      migration clarity.
+
+      - Scope: update templates/agents-sections/06-ralph-loop.md and regenerate kspec-agents.md.
+
+      - Files: templates/agents-sections/06-ralph-loop.md, kspec-agents.md.
+
+      - Verification: run kspec agents generate, validate generated section content, and run
+      targeted checks.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T12:01:29.348Z
+  - _ulid: 01KJWBNKNH6AKMB7XG63AYNQKC
+    content: Updated templates/agents-sections/06-ralph-loop.md to document dispatch engine
+      start/stop/status/watch commands, built-in task-worker/pr-reviewer definitions, trigger-event
+      mapping, and one-shot kspec agent run usage. Regenerated kspec-agents.md via kspec agents
+      generate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T12:02:56.306Z
+  - _ulid: 01KJWBNN39N508WHQRR500VW09
+    content: "Verification: npx vitest run tests/ralph-replacement.test.ts
+      tests/agents-instruction-gen.test.ts (49 passing). kspec validate currently fails due
+      pre-existing repo meta/alignment issues unrelated to this task (duplicate @observations slug +
+      missing .kspec/skills/observations/SKILL.md)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T12:02:57.769Z
+  - _ulid: 01KJWBPGRQFCCQX6GZ1X3X1613
+    content: "Opened PR #671: https://github.com/kynetic-ai/kynetic-spec/pull/671"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T12:03:26.103Z
+  - _ulid: 01KJWCB87YGN120K70AXX9Q45D
+    content: "Autonomous dispatch invocation on 2026-03-04 verified this task was already completed and
+      merged in PR #671 (merged at 2026-03-04T12:13:15Z). No additional implementation changes were
+      required in this run."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T12:14:45.502Z

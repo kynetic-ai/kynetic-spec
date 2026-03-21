@@ -1,0 +1,20 @@
+_ulid: 01KF4WVW69CVQZXB6S98KJDJ1T
+slugs:
+  - task-agent-session-protocol
+title: "Implement: Agent Session Protocol"
+type: task
+spec_ref: "@agent-session-protocol"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Session protocol schema implemented with start, checkpoint, and end fields
+depends_on:
+  - "@task-agent-definitions"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:35.593Z
+started_at: 2026-01-18T10:03:59.683Z
+completed_at: 2026-01-18T10:04:17.328Z
+todos: []

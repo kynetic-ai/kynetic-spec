@@ -1,0 +1,16 @@
+notes:
+  - _ulid: 01KJRCDW6CERVGVA89BHZP8DCP
+    content: "Infra/internal task with no user-visible impact. Description is specific: wire npm build
+      as vitest globalSetup or pretest step to prevent stale dist/ confusion in CLI subprocess
+      tests. Infra exception applied — no spec required. Marked eligible."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T22:59:13.740Z
+  - _ulid: 01KJRMMKVNHSNKVF1XJR659MKX
+    content: Added vitest globalSetup (tests/global-setup.ts) that checks for dist/cli/index.js on
+      startup and runs npm run build if missing. This ensures build runs whether tests are invoked
+      via npm test, npm run test:shard1/2/3, or vitest directly. The pretest hook already handled
+      npm test; globalSetup covers the remaining invocation paths.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T01:22:43.190Z

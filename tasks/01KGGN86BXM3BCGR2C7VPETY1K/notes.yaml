@@ -1,0 +1,23 @@
+notes:
+  - _ulid: 01KGGN8F4S71Y478ZZ54K5JAKY
+    content: 'Original idea: Generic kspec batch command that accepts JSON array of CLI commands.
+      Example: [{"cmd": "item ac add", "ref": "@spec-1", "given": "..."}]. Skills/scripts generate
+      JSON, CLI executes. Supports --dry-run, --file/stdin input. Replaces need for command-specific
+      bulk variants.'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-03T02:28:14.618Z
+  - _ulid: 01KGK9N876F1CN28J8B89188WY
+    content: "Automation status set to manual_only: Design work requiring human architectural decisions
+      on API shape and execution model"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-04T03:03:13.894Z
+  - _ulid: 01KGR0CY3SFE5EQR8NYKYM92BW
+    content: Design complete via spec-plan workflow. Plan @batch-command-execution-via-json created with
+      3 specs (batch-exec feature + batch-command-schema + batch-allowed-commands), 22 ACs, 5
+      traits. 3 implementation tasks derived. Design reviewed by subagent - 2 blockers (exit code
+      conflict, trait slug mismatch) found and fixed before import.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-05T22:57:36.377Z

@@ -1,0 +1,12 @@
+notes:
+  - _ulid: 01KKMBNJ2RTJ4NZRJBS8C11E7E
+    content: "Implemented inline purge logic in saveDispatchWorkspaceRecord. The purge filters out
+      closed records whose closed_at exceeds a 7-day retention threshold (configurable via
+      options.retentionMs). Runs inside the existing withFileLock scope. Added
+      isClosedBeyondRetention helper and exported CLOSED_WORKSPACE_RETENTION_MS constant. Created
+      dedicated test file with 7 tests covering: old closed records purged, recent closed records
+      retained, non-closed records never purged, null closed_at edge case, multiple old records
+      purged in single save, custom retention threshold, and constant export. All 4775 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T19:44:41.048Z

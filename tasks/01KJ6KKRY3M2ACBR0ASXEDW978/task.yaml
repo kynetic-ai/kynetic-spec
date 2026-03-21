@@ -1,0 +1,23 @@
+_ulid: 01KJ6KKRY3M2ACBR0ASXEDW978
+slugs:
+  - implement-native-worktree-guard
+title: Implement native worktree guard
+type: task
+spec_ref: "@native-guard-commands"
+plan_ref: "@plan-session-scoping-for-kspec"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #506. Native kspec guard worktree command replaces bash scripts. All 6
+  own ACs covered, all trait ACs annotated. Previous review findings addressed in fix commit."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - guards
+vcs_refs: []
+created_at: 2026-02-24T01:18:27.267Z
+started_at: 2026-02-24T20:36:02.689Z
+completed_at: 2026-02-24T21:10:37.383Z
+todos: []
+automation: eligible

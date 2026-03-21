@@ -1,0 +1,74 @@
+_ulid: 01KJE03R4EZDVZS2ZHHEE4WJ81
+slugs: []
+title: Verify and fix codex-acp adapter integration for ralph
+type: task
+description: >-
+  Several issues identified with the codex-acp adapter that prevent it from working correctly with
+  ralph:
+
+
+  ## Issues
+
+
+  ### 1. CRITICAL: Env injection writes to wrong config file
+
+  injectCodexEnv() in src/sessions/store.ts writes KSPEC_SESSION_ID to ~/.codex/config.json using
+  JSON format. But Codex CLI reads ~/.codex/config.toml (TOML format). The injection has no effect —
+  Codex never sees the session ID.
+
+
+  Fix: Rewrite injectCodexEnv to read/write ~/.codex/config.toml using TOML format. The key path is
+  shell_environment_policy.set.KSPEC_SESSION_ID. Same for removeCodexEnv.
+
+
+  ### 2. Auto-approve args may use wrong config keys
+
+  The adapter registers these auto-approve args: -c approval_policy="never" and -c
+  sandbox_mode="danger-full-access". But codex-acp help shows sandbox_permissions (array), and the
+  config file uses trust_level. Need to verify which keys codex-acp actually accepts and what values
+  produce full auto-approve behavior.
+
+
+  ### 3. No integration test with real codex-acp
+
+  All tests use mock ACP. No test verifies that ralph can actually spawn and communicate with
+  @zed-industries/codex-acp. At minimum, a smoke test that spawns codex-acp and checks ACP handshake
+  would catch protocol mismatches.
+
+
+  ### 4. Package name fix pending (PR #565)
+
+  The adapter registry had codex-acp instead of @zed-industries/codex-acp. Fix is in PR #565,
+  pending merge.
+
+
+  ## How to verify
+
+  - kspec ralph run --dry-run --adapter codex-acp shows correct package name
+
+  - kspec ralph run --max-loops 1 --adapter codex-acp completes one iteration successfully
+
+  - Session ID reaches kspec subprocesses inside the codex agent
+
+  - Auto-approve args produce no permission prompts during ralph loop
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #566. Fixed codex env injection to use ~/.codex/config.toml (TOML)
+  instead of config.json (JSON). Added smol-toml dependency, updated all tests, added round-trip
+  preservation test, fixed pre-existing adapter.args assertion, tightened spec AC."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - ralph
+  - codex
+  - bug
+vcs_refs: []
+created_at: 2026-02-26T22:11:34.669Z
+started_at: 2026-02-26T22:13:52.039Z
+submitted_at: 2026-02-26T22:56:57.626Z
+completed_at: 2026-02-26T23:11:57.790Z
+todos: []

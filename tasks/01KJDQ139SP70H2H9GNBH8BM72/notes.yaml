@@ -1,0 +1,11 @@
+notes:
+  - _ulid: 01KJHFNRHEFK7BDCSV76MJ8EFK
+    content: "Implemented version-sensitive agents freshness hashing by including package version in
+      computeMetaHash, plus regression coverage: unit test for version-only hash drift and CLI test
+      proving status becomes stale when stored hash is legacy/no-version. Verification: npx vitest
+      run tests/agent-data-sections.test.ts tests/agents-instruction-gen.test.ts
+      tests/enhanced-setup.test.ts tests/setup-pipeline-unification.test.ts; npm test (160 files
+      passed, 3533 tests passed, 3 skipped)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T06:41:16.846Z

@@ -1,0 +1,10 @@
+notes:
+  - _ulid: 01KHXE5NQ5K3CYQW9B38RE4M7T
+    content: "Made /local-review mandatory in task-work skill: (1) Updated Workflow Overview from 10 to
+      11 steps, adding step 7 'Local Review', (2) Changed Integration section from 'Consider' to
+      'Run /local-review (required quality gate)', (3) Added /local-review to Key Commands section
+      with '(required)' note, (4) Updated Loop Mode workflow steps to explicitly include running
+      /local-review after commit and before submit."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-20T11:50:12.453Z

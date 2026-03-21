@@ -1,0 +1,24 @@
+_ulid: 01KGTZEYRB1B81YREN5FKHSN38
+slugs: []
+title: Enrich session start with pending_review and recently completed notes
+type: task
+description: Recent notes should cover pending review notes and most recently closed task notes as
+  well, probably separated out with some more organization so it is clear what was being worked on
+  and if there is anything from prior work worth sharing forward (in case its a continuation of the
+  same type of work)
+spec_ref: "@cmd-session-start"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #344. Session start now includes notes from pending_review and recently
+  completed tasks, grouped by status. Per-status allocation prevents note starvation. Both ACs
+  covered with tests."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-07T02:38:57.291Z
+started_at: 2026-02-07T13:18:22.839Z
+completed_at: 2026-02-07T13:40:19.878Z
+todos: []
+automation: eligible

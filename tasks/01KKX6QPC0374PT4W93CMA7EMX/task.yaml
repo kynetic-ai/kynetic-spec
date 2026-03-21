@@ -1,0 +1,55 @@
+_ulid: 01KKX6QPC0374PT4W93CMA7EMX
+slugs: []
+title: Fix shadow commit call sites that omit entity refs
+type: task
+description: >-
+  Several commitIfShadow() call sites violate ac-3 (commit message must include ULID prefix or
+  primary slug):
+
+
+  1. inbox-add (inbox.ts:108): passes ref=undefined. Fix: pass the newly created item's ULID after
+  saveInboxItem returns it.
+
+  2. workflow-* (workflow.ts:134,319,379,420,458,730,788,975): pass no ref at all. Fix: pass the
+  workflow run ULID or workflow ID.
+
+  3. setup skill-install-core (setup.ts:1182): passes ref='N core skills' which is a count, not a
+  ref. Fix: either omit ref (batch-like operation) or pass a meaningful identifier.
+
+  4. tasks-assess (tasks.ts:511): passes ref='automation' which is a label. Fix: pass the count as
+  detail and omit ref, or list affected task refs.
+
+
+  Each fix should ensure the commit message includes an entity ref when one exists, per
+  @trait-shadow-commit ac-3.
+spec_ref: "@trait-shadow-commit"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Merged to dev from
+  dispatch/task/fix-shadow-commit-call-sites-that-omit-entity-refs/01kkx6qp. Fixed shadow commit
+  call sites to include meaningful entity refs and added regression coverage for commit subjects.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - schema
+vcs_refs: []
+review_ref: "@01KM490E7AQ54TEGMQ6EWDGHQK"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T00:04:13.379Z
+  commit: 674cabcd8646e873f128fa67b9d2db44ae74797a
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM484VM9CQBKB5VB75XR564X
+created_at: 2026-03-17T06:11:37.984Z
+started_at: 2026-03-20T00:04:05.179Z
+submitted_at: 2026-03-20T00:04:13.817Z
+completed_at: 2026-03-20T00:46:15.757Z
+todos: []
+automation: eligible

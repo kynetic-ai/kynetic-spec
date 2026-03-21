@@ -1,0 +1,34 @@
+_ulid: 01KHWQEJDNM6BA4KMMC9A7CVPY
+slugs: []
+title: Review subagent should post structured GitHub review
+type: task
+description: >-
+  In session 01KHW4RP, zero GitHub reviews were posted across 10 PRs. The check-unresolved-comments
+  CI check passes vacuously when no review threads exist.
+
+
+  The review subagent should post a structured GitHub review (APPROVE or CHANGES_REQUESTED) with a
+  summary of what was verified (AC coverage, test quality, spec alignment). This creates an audit
+  trail and makes the check-unresolved-comments gate meaningful.
+
+
+  Even a short APPROVE review with a checklist of verified items is better than zero reviews.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #424. Simplified subagent prompt to data-only delegation to /pr-review
+  skill. Updated skill to require posting structured GitHub review before merge."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - ralph
+  - infra
+vcs_refs: []
+created_at: 2026-02-20T05:13:06.741Z
+started_at: 2026-02-20T05:41:03.436Z
+completed_at: 2026-02-20T06:05:25.593Z
+todos: []
+automation: eligible

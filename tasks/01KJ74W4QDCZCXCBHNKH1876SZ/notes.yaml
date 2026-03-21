@@ -1,0 +1,47 @@
+notes:
+  - _ulid: 01KJ755BA7F3ZWTE6JWJTN9S40
+    content: |-
+      Implementation notes:
+
+      Key file: tests/cli/session-start-*.test.ts (new or extend existing)
+      Existing test pattern: tests/cli/session-start-notes.test.ts
+
+      Test coverage needed for all new ACs:
+      - ac-primer-default: default output has correct sections
+      - ac-full-sections: --full adds observations, metadata, more items
+      - ac-brief-alias: --brief behaves same as no flags
+      - ac-section-order: sections appear in defined order
+      - ac-empty-skip: empty sections omitted entirely
+      - ac-slug-display: tasks with slugs show @slug
+      - ac-slug-fallback: tasks without slugs show @short-ulid, inbox always @short-ulid
+      - ac-relative-time-human: human output uses relative times
+      - ac-iso-time-json: JSON output uses ISO 8601
+      - ac-dirty-tree-only: clean working tree omits section
+      - ac-active-detail: in_progress/needs_work show title+description+notes
+      - ac-needs-work-indicator: needs_work visually distinct from in_progress
+      - ac-review-detail: pending_review shows title+notes
+      - ac-notes-starvation: notes split fairly across statuses
+      - ac-json-raw-preserved: JSON has recently_completed and recent_commits unchanged
+      - ac-unlocks-shown/omit-zero/unresolvable: from @session-start-unlocks
+      - ac-activity-merge/trailer-link/sort/dedup/no-git: from @session-start-activity-timeline
+      - ac-inbox-stat-line/full-list/all-triaged/untriaged-def: from @session-start-inbox-triage
+      - ac-computed-inbox/unlocks/activity: from @session-start-computed-json
+
+      Use setupTempFixtures(), kspec(), kspecJson<SessionContext>() helpers.
+      Annotate tests with // AC: @spec-ref ac-id comments.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T06:25:08.935Z
+  - _ulid: 01KJ95EYXMSQASZC3B85KFWEF9
+    content: "Analyzed all 6 session-start test files. Found 3 gaps: (1) ac-activity-hierarchy and
+      ac-activity-orphan had no tests — added 6 new tests to session-start-activity-timeline.test.ts
+      covering linked commit hierarchy display and orphan commit distinction. (2)
+      session-start-notes.test.ts used stale ac-1/ac-2 numbering — updated to
+      ac-review-detail/ac-notes-starvation. (3) Replaced static source analysis test with behavioral
+      ANSI color code check per project testing preferences. Added explicit trait tests for
+      @trait-json-output ac-4 (ref prefix consistency) and @trait-semantic-exit-codes ac-5 (exit 0
+      with minimal data). All 72 session-start tests pass. Full suite passes (3584 passed, only
+      known flaky ralph signal tests)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T01:08:52.788Z

@@ -1,0 +1,18 @@
+notes:
+  - _ulid: 01KK3HRKZNA58V6XZXC9C76X58
+    content: >-
+      Root cause identified: inbox page imported `page` from `$app/stores` (Svelte 4 store API)
+      instead of `$app/state` (Svelte 5 runes API). When using $app/stores with $derived, the store
+      subscription doesn't properly track fine-grained changes to nested properties like
+      url.searchParams, causing filter state derivations to not react to URL changes from goto().
+
+
+      Fix: Changed import from '$app/stores' to '$app/state' and removed $ prefix from page
+      references (page is now a reactive object, not a store).
+
+
+      Note: The triage page (routes/triage/+page.svelte) has the same issue — still uses
+      $app/stores. Captured separately.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T07:04:07.413Z

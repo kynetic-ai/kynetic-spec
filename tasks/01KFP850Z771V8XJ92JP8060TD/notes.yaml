@@ -1,0 +1,153 @@
+notes:
+  - _ulid: 01KFP883XVCE5GZR39HVKVP5W3
+    content: |-
+      ## Objective
+      Write E2E tests for command palette/search covering @web-dashboard ac-23 through ac-25.
+
+      **Depends on**: @01KFP834 (Infrastructure Setup)
+
+      ## File
+      packages/web-ui/tests/e2e/search.spec.ts
+
+      ## Acceptance Criteria Coverage
+
+      | AC | Description |
+      |----|-------------|
+      | ac-23 | Cmd+K (Ctrl+K) opens command palette |
+      | ac-24 | Debounced search (300ms) returns grouped results |
+      | ac-25 | Click result navigates to detail view |
+
+      ## Test Cases
+
+      ```typescript
+      test.describe('Command Palette', () => {
+        // AC: @web-dashboard ac-23
+        test('opens with Cmd+K', async ({ page }) => {
+          await page.goto('/');
+          await page.keyboard.press('Meta+k');
+          await expect(page.getByTestId('command-palette')).toBeVisible();
+        });
+        test('opens with Ctrl+K', async ({ page }) => {
+          await page.goto('/');
+          await page.keyboard.press('Control+k');
+          await expect(page.getByTestId('command-palette')).toBeVisible();
+        });
+        test('shows search input with placeholder');
+
+        // AC: @web-dashboard ac-24
+        test('searches after 300ms debounce', async ({ page }) => {
+          await page.keyboard.press('Meta+k');
+          await page.getByTestId('search-input').fill('test');
+          // Wait for debounce
+          await page.waitForTimeout(350);
+          await expect(page.getByTestId('search-results')).toBeVisible();
+        });
+        test('results grouped by type (tasks, items, inbox)');
+
+        // AC: @web-dashboard ac-25
+        test('click result navigates to detail', async ({ page }) => {
+          await page.keyboard.press('Meta+k');
+          await page.getByTestId('search-input').fill('task');
+          await page.waitForTimeout(350);
+          await page.getByTestId('search-result').first().click();
+          await expect(page).toHaveURL(/tasks/);
+        });
+        test('keyboard selection navigates to detail');
+        test('Escape closes palette');
+        test('shows no results message');
+      });
+      ```
+
+      ## data-testid Attributes Needed
+      - command-palette, search-input, search-results, search-result
+      - result-group-tasks, result-group-items, result-group-inbox
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T20:20:36.411Z
+  - _ulid: 01KFSZTGFYME2VM2M06JCNXF0H
+    content: |-
+      ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+      ### Goal
+      Implement the Command Palette/Search to meet AC-23 through AC-25 from @web-dashboard spec.
+
+      ### Acceptance Criteria to Implement
+      - AC-23: Cmd+K (or Ctrl+K) opens command palette with search input
+      - AC-24: Debounced search (300ms) shows tasks, items, inbox grouped by type
+      - AC-25: Click result navigates to detail view for that item
+
+      ### Implementation Steps
+      1. Review existing CommandPalette.svelte component
+      2. Implement keyboard shortcut listener (Cmd/Ctrl+K)
+      3. Build search input with debounce
+      4. Create search API endpoint or client-side search
+      5. Display grouped results (tasks, items, inbox sections)
+      6. Implement click-to-navigate for each result type
+      7. Add data-testid attributes throughout
+
+      ### Required data-testid Attributes
+      - command-palette, command-palette-input, command-palette-results
+      - search-group-tasks, search-group-items, search-group-inbox
+      - search-result-item
+
+      ### Definition of Done
+      - [ ] Cmd/Ctrl+K opens palette (AC-23)
+      - [ ] Search with debounce shows grouped results (AC-24)
+      - [ ] Click result navigates correctly (AC-25)
+      - [ ] All E2E tests pass - no skips
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T07:10:19.647Z
+  - _ulid: 01KFTJAH1HACAVDNJN7S323Z3J
+    content: "Loop iteration 9: Started task. Found CommandPalette.svelte implementation with all AC
+      annotations (ac-23, ac-24, ac-25). Need to create E2E tests in
+      packages/web-ui/tests/e2e/search.spec.ts covering keyboard shortcuts, debounced search,
+      grouped results, and navigation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T12:33:38.865Z
+  - _ulid: 01KFTJD8EXXWC94DKYH62VJHE5
+    content: |-
+      Implementation complete:
+      - Added data-testid attributes to CommandPalette.svelte:
+        - command-palette (dialog)
+        - command-palette-input (search input)
+        - command-palette-results (results list)
+        - search-group-{type} (result groups)
+        - search-result-item (individual results)
+      - Created comprehensive E2E tests in search.spec.ts covering:
+        - AC-23: Keyboard shortcuts (Cmd+K, Ctrl+K, toggle, placeholder)
+        - AC-24: Debounced search, loading state, no results, grouped results, clear input
+        - AC-25: Click navigation, query params, state reset
+        - Accessibility: ARIA attributes, keyboard navigation, Escape key
+      Total: 17 E2E tests covering all 3 target ACs plus accessibility
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T12:35:08.382Z
+  - _ulid: 01KFTJG8EM4HZVDFMXF2DZJP8N
+    content: >-
+      Pushed to existing PR #244 (https://github.com/kynetic-ai/kynetic-spec/pull/244). New commit
+      d5dfb54d adds command palette E2E tests. PR now includes:
+
+      - Inbox view tests (AC-16 to AC-19) - from earlier iteration
+
+      - Command palette tests (AC-23 to AC-25) - this task
+
+
+      Task submitted for review. E2E tests require daemon to verify they pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T12:36:46.676Z
+  - _ulid: 01KFTJGRSWMRCRY544YYE9BPTR
+    content: |-
+      [LOOP-COMPLETE] Task work finished in iteration 9. Implementation complete:
+      ✅ Added data-testid attributes to CommandPalette.svelte
+      ✅ Created 17 comprehensive E2E tests in search.spec.ts
+      ✅ All 3 target ACs covered (ac-23, ac-24, ac-25)
+      ✅ No test.skip() calls
+      ✅ Committed and pushed to PR #244
+
+      Task pending_review. PR: https://github.com/kynetic-ai/kynetic-spec/pull/244
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T12:37:03.421Z

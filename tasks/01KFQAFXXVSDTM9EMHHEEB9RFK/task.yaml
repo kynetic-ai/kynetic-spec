@@ -1,0 +1,41 @@
+_ulid: 01KFQAFXXVSDTM9EMHHEEB9RFK
+slugs:
+  - task-cli-status-tests
+title: CLI serve status tests
+type: task
+description: |-
+  Write tests for updated CLI serve status command.
+
+  ## Test Cases
+  - Test status shows registered projects list
+  - Test status shows port and uptime
+  - Test status with no daemon running
+  - Test status when daemon has multiple projects
+
+  ## AC Coverage
+  ac-12
+
+  ## Dependencies
+  Task: /api/projects endpoints implementation
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #228. Added AC-12 functionality to kspec serve status showing
+  registered projects list. Modified statusServer() to fetch from /api/projects endpoint and display
+  in both human-readable and JSON modes. Added 3 comprehensive tests covering all scenarios. All 20
+  cli-serve tests passing."
+depends_on:
+  - "@01KFQAFM"
+context: []
+priority: 1
+tags:
+  - testing
+  - cli
+  - phase-8
+vcs_refs: []
+created_at: 2026-01-24T06:19:03.995Z
+started_at: 2026-01-24T22:40:29.793Z
+completed_at: 2026-01-24T22:49:33.985Z
+todos: []
+automation: eligible

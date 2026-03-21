@@ -1,0 +1,8 @@
+notes:
+  - _ulid: 01KHAPKY4FQ5GR2SE2N4QE8H1Z
+    content: "Bug: task get @ref fails for blocked tasks — they're completely inaccessible via CLI.
+      Implements ac-2 on @rel-depends-on. Part (b) of original item (--include-blocked on tasks
+      list) is covered by task 01KHA83PD (multi-value status filter)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-13T05:12:14.223Z

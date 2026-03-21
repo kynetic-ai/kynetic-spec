@@ -1,0 +1,88 @@
+notes:
+  - _ulid: 01KFMTKQ8TZC3VEBXQPZPKCDEY
+    content: >-
+      Implementing conflict detection and resolution for semantic YAML merge driver.
+
+
+      Focus areas (from spec ACs):
+
+      - AC-4: Interactive prompts for scalar field conflicts
+
+      - AC-8: Interactive prompts for delete vs modify conflicts
+
+      - AC-10: Non-interactive mode with conflicts as YAML comments
+
+
+      Strategy:
+
+      1. Review existing conflict detection in mergeObjects/mergeArrays
+
+      2. Create conflict resolution module with interactive prompts
+
+      3. Implement YAML comment formatting for non-interactive mode
+
+      4. Add comprehensive test coverage for both modes
+
+
+      The array and object merge algorithms already detect conflicts - this task focuses on
+      resolution (prompting user or formatting as comments).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T07:03:02.170Z
+  - _ulid: 01KFMTXVRBF0H40Q66H95H97NP
+    content: >-
+      Implementation complete. Created conflict resolution module with:
+
+
+      - formatConflictComment() for AC-10: YAML comment formatting for non-interactive mode
+
+      - promptScalarConflict() for AC-4: Interactive prompts for scalar field conflicts
+
+      - promptDeleteModifyConflict() for AC-8: Interactive prompts for delete-modify conflicts
+
+      - resolveConflictsInteractive() to handle multiple conflicts in sequence
+
+
+      Test coverage:
+
+      - 13 tests covering all YAML comment formatting scenarios
+
+      - Manual test documentation for interactive prompts (requires stdin/stdout)
+
+      - formatValue() helper with consistent formatting: single-field objects show field name, 2+
+      field objects show count
+
+
+      All 1026 tests pass. Ready for submission.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T07:08:34.443Z
+  - _ulid: 01KFMV4A6RWZ77832Q0ZTZVEG8
+    content: "PR #178 created and awaiting CI checks. Local review completed with excellent AC coverage
+      and test quality. Minor recommendation to add E2E integration tests in future."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T07:12:05.848Z
+  - _ulid: 01KFMV9EJ5PMX8HAXYE0GA0V1W
+    content: "Local review completed. Found blocking issue: AC-4 and AC-8 have fluff tests instead of
+      real tests. Need to implement automated tests with mocked stdin/stdout for
+      promptScalarConflict() and promptDeleteModifyConflict() before merge."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T07:14:54.149Z
+  - _ulid: 01KFMVGF496C1DF7X0F0A9CS73
+    content: >-
+      Fixed AC-4 and AC-8 test coverage by:
+
+      1. Refactored promptScalarConflict() and promptDeleteModifyConflict() to accept optional
+      createInterface parameter for dependency injection
+
+      2. Replaced fluff tests with 9 real automated tests that mock readline interface
+
+      3. Also simplified confusing ternary logic in promptDeleteModifyConflict() (choice field is
+      always 'ours' or 'theirs', never conditional)
+
+      All 1033 tests pass. Ready for merge.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T07:18:44.105Z

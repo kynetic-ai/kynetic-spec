@@ -1,0 +1,39 @@
+_ulid: 01KJDQ107WAD90WTAVFFQDW0B1
+slugs: []
+title: kspec task patch appears to hang indefinitely — had to kill and use task set + task note as
+  workarou
+type: task
+description: "**What**: `kspec task patch @ref` hangs indefinitely when invoked without piped stdin
+  and without `--data`. The command reads from `process.stdin` using a `for await` loop (line
+  999-1003 in `src/cli/commands/task.ts`) which blocks forever waiting for input when stdin is a
+  TTY. **Where**: `src/cli/commands/task.ts`, lines 993-1004 — the `else` branch of the `if
+  (options.data)` check. When `--data` is not provided, the code does `for await (const chunk of
+  process.stdin)` which never resolves if stdin is a terminal. **How**: Add TTY detection before
+  attempting to read stdin. If `process.stdin.isTTY` is true and `--data` was not provided, print an
+  error message explaining that either `--data <json>` must be provided or JSON must be piped to
+  stdin, then exit with a validation error. Example: `if (!options.data && process.stdin.isTTY) {
+  error('Provide --data or pipe JSON to stdin'); process.exit(EXIT_CODES.VALIDATION_FAILED); }`.
+  Alternatively, add a short timeout on stdin reads. **Done when**: (1) Running `kspec task patch
+  @ref` without `--data` and without piped stdin immediately prints a helpful error and exits. (2)
+  `kspec task patch @ref --data '{...}'` still works. (3) `echo '{...}' | kspec task patch @ref`
+  still works. (4) Batch exec engine (`src/cli/batch-exec.ts`) still works with task patch."
+spec_ref: "@task-patch"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #588. Added TTY guard in task patch so interactive runs without --data
+  fail fast with validation error; preserved --data and piped-stdin behavior; added integration
+  coverage for stdin patch path and interactive no-input failure. Verified @task-patch AC coverage
+  (ac-1..ac-4) remains covered in tests/integration.test.ts and CI checks passed on PR head before
+  merge."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJH73C9JTMB6977AEY991KBQ
+created_at: 2026-02-26T19:32:47.484Z
+started_at: 2026-02-28T04:54:11.378Z
+submitted_at: 2026-02-28T04:54:12.481Z
+completed_at: 2026-02-28T05:04:57.045Z
+todos: []
+automation: eligible

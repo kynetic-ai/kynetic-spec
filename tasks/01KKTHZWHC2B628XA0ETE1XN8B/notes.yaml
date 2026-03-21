@@ -1,0 +1,55 @@
+notes:
+  - _ulid: 01KKTK1BM0EZF1RZ7BTBGSGTF5
+    content: >-
+      Completed skill rewrite:
+
+      - Rewrote core task-work skill: unified (no loop split), language-agnostic AC annotations,
+      review-aware fix cycles
+
+      - Rewrote core review skill: unified worker+reviewer, baked-in review principles + AC
+      coverage, full review record interface, no GitHub
+
+      - Created new core merge skill: local git merge, disposition-based gate, merge commits for
+      traceability
+
+      - Created project work-gates skill: kspec MUST-FIX patterns, test rules, E2E preference
+
+      - Created project review-gates skill: severity classification, anti-rubber-stamping, evidence
+      log
+
+      - Archived old skills: local-review, pr-review, review-principles, pr (deleted from
+      .kspec/skills/ and .agents/skills/)
+
+      - Deleted old workflows: local-review, task-work-session, task-work-loop, pr-review-loop,
+      pr-review-merge
+
+      - Updated agent skill references: pr-reviewer → review+review-gates+merge, task-worker →
+      task-work+work-gates
+
+      - Updated PR workflow template (now Work and Review Lifecycle)
+
+      - Rendered skills and regenerated kspec-agents.md
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T05:48:54.272Z
+  - _ulid: 01KKTKTRXKA61TDDS3ATB3382Z
+    content: "Follow-up fix: removed old skill dirs (local-review, pr, pr-review, review-principles)
+      from .claude/skills/ — they were missed during the initial cleanup (only .agents/skills/ was
+      cleaned). Now all three render targets (.agents/, .claude/, .factory/) are clean."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T06:02:47.092Z
+  - _ulid: 01KKTMXAAKHZ78BGE99NJJMMQE
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by pr-reviewer@kspec.local"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T06:21:39.027Z
+  - _ulid: 01KKTMYNNKY5107GRHCCZ7S3BH
+    content: "Review @01KKTMVT: request_changes. Two findings: (1) MUST-FIX: Template 04-pr-workflow.md
+      renamed from '## PR Workflow' to '## Work and Review Lifecycle' but
+      tests/agents-instruction-gen.test.ts not updated — 3 test failures. (2) SHOULD-FIX:
+      ui-data-layer skill re-rendered with stale agent_text_chunk reference from .kspec/skills/
+      source. Skill content quality is solid — core skills are well-structured and comprehensive."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T06:22:23.411Z

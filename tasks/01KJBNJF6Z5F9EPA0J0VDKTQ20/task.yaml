@@ -1,0 +1,68 @@
+_ulid: 01KJBNJF6Z5F9EPA0J0VDKTQ20
+slugs:
+  - task-e2e-daemon-websocket
+title: E2E tests for daemon WebSocket (replace daemon-websocket.test.ts)
+type: task
+description: >-
+  Replace tests/daemon-websocket.test.ts (591 lines, all static analysis) with Playwright E2E tests.
+
+
+  Write: packages/web-ui/tests/e2e/api-websocket.spec.ts
+
+  Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+  Note: existing connection.spec.ts tests WebSocket reconnection via the UI. These new tests should
+  verify the WebSocket protocol directly using page.evaluate() to create raw WebSocket connections,
+  or use Playwright's page.waitForEvent('websocket') API.
+
+
+  Behaviors to test:
+
+  - Connect to ws://localhost:3456/ws — receive 'connected' event with session_id (@api-contract
+  ac-25)
+
+  - Send subscribe command — receive ack response with matching command_id (@api-contract ac-26,
+  ac-27)
+
+  - Trigger a mutation (POST /api/tasks/:ref/note) — receive broadcast event via WebSocket
+  (@api-contract ac-28 through ac-33)
+
+  - Heartbeat: server sends ping, client responds pong (@trait-websocket-protocol ac-5)
+
+
+  Note: existing E2E connection.spec.ts has a SKIPPED test for WebSocket task updates due to 'daemon
+  WebSocket upgrade returns 200 instead of 101'. Investigate if this is still an issue. If WebSocket
+  connections work in the fixture, the skip can be removed.
+
+
+  After E2E tests pass, delete tests/daemon-websocket.test.ts.
+
+  Run: npm test && npm run test:e2e to verify.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #556. Replaced static analysis tests in tests/daemon-websocket.test.ts
+  with 13 Playwright E2E tests in packages/web-ui/tests/e2e/api-websocket.spec.ts. Tests cover all
+  applicable ACs: @api-contract ac-25 through ac-31, @trait-websocket-protocol ac-1/2/3/4,
+  @daemon-server ac-4. Applied N/A annotations with justifications for trait ACs that don't apply
+  (ac-5 requires 90s timeout infra, ac-33 has daemon shutdown gap). Fixed all Codex review findings
+  including timestamp validation, malformed command assertion logic, and unsubscribe negative test
+  reliability."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - e2e
+vcs_refs: []
+session_id: 01KJD0D3SDTVES77898MFKFS2D
+created_at: 2026-02-26T00:28:53.855Z
+started_at: 2026-02-26T12:58:27.492Z
+submitted_at: 2026-02-26T13:20:07.027Z
+completed_at: 2026-02-26T13:41:05.880Z
+todos: []
+automation: eligible

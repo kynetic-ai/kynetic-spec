@@ -1,0 +1,132 @@
+notes:
+  - _ulid: 01KJ4V7Q7CK4JF2GTV37NGWNQD
+    content: "MANUAL_ONLY: Spike requiring human investigation and judgment for test migration plan."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T08:53:12.044Z
+  - _ulid: 01KJ9ZWGGPGFRQWTCBDNCR0Z0H
+    content: "Session audit 01KJ8Z3Q identified additional static analysis tests to include: (1)
+      end-loop.test.ts lines 255-372 — 5 tests reading ralph.ts source for string patterns
+      (ac-detect, session close handlers, ac-remove-markers), (2) session-budget-integration.test.ts
+      lines 295-339 — marker code removal tests reading ralph.ts source. Both files already have
+      behavioral equivalents alongside the static ones, so migration = delete static tests after
+      confirming behavioral coverage."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T08:50:39.766Z
+  - _ulid: 01KJBK313W12Q9TCXPF8X620QH
+    content: >-
+      AUDIT COMPLETE — Inventory of static analysis tests across the repo:
+
+
+      **7 files with static analysis patterns, ~59 total tests.**
+
+
+      HIGH RISK (P1):
+
+      - daemon-server.test.ts: ~13 tests read packages/daemon/src/server.ts and check string
+      patterns for port, hostname, health, CORS, signals, WebSocket. Zero runtime verification of
+      daemon behavior.
+
+      - ralph/end-loop.test.ts lines 254-372: 8 tests read src/cli/commands/ralph.ts checking
+      session state detection, signal handlers, session close paths, marker removal. Already known
+      to miss real bugs (false-positive end-loop exit bug).
+
+
+      MEDIUM RISK (P2):
+
+      - ralph/session-budget-integration.test.ts lines 293-339: 13 tests checking marker code
+      removal (26 patterns). Absence tests.
+
+      - normalize-ref-input.test.ts lines 55-139: 8 tests doing lint-style anti-pattern detection on
+      CLI commands and daemon routes.
+
+      - skill-module-split.test.ts lines 18-69: 6 tests checking file existence and string patterns.
+      Same file has good behavioral tests on lines 74-120.
+
+      - web-ui-shared-types.test.ts: 5 tests checking re-export patterns in type files.
+
+
+      LOW RISK (P3):
+
+      - package-distribution.test.ts: 6 tests checking template file content patterns.
+
+
+      MIGRATION APPROACHES:
+
+      1. daemon-server → E2E Playwright tests hitting actual endpoints
+
+      2. ralph end-loop/session-budget → Import functions directly, unit test logic
+
+      3. normalize-ref-input → ESLint custom rule or keep as lint-like
+
+      4. skill-module-split → Convert to import-based checks (already partially done)
+
+      5. web-ui-shared-types → TypeScript import verification
+
+      6. package-distribution → npm pack --dry-run for realistic verification
+
+
+      ~40+ other files use readFile legitimately (reading test output, YAML fixtures, etc.)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T23:45:30.749Z
+  - _ulid: 01KJBNK3GGD5D43GD8G7WTHM1W
+    content: >-
+      AUDIT RESTRUCTURED — Original 4 tasks deleted, replaced with 10 properly-scoped tasks:
+
+
+      E2E REPLACEMENT TASKS (9 tasks, P2):
+
+      - @task-e2e-daemon-tasks-api — replace daemon-api-tasks.test.ts (258 lines, @api-contract ac-2
+      through ac-7)
+
+      - @task-e2e-daemon-items-api — replace daemon-api-items.test.ts (217 lines, @api-contract ac-8
+      through ac-11)
+
+      - @task-e2e-daemon-inbox-api — replace daemon-api-inbox.test.ts (218 lines, @api-contract
+      ac-12 through ac-14)
+
+      - @task-e2e-daemon-meta-validation-api — replace daemon-api-meta.test.ts +
+      daemon-api-validation.test.ts (390 lines, @api-contract ac-15 through ac-21)
+
+      - @task-e2e-daemon-triage-api — replace daemon-api-triage.test.ts (414 lines,
+      @triage-daemon-api ac-1 through ac-9)
+
+      - @task-e2e-daemon-errors-projects-api — replace daemon-api-error-handling.test.ts +
+      daemon-api-projects.test.ts (383 lines, @api-contract ac-22-24, @multi-directory-daemon
+      ac-28-30)
+
+      - @task-e2e-daemon-server-core — replace daemon-server.test.ts static parts (310 lines,
+      @daemon-server ac-11,15, @api-contract ac-1)
+
+      - @task-e2e-daemon-websocket — replace daemon-websocket.test.ts (591 lines, @api-contract
+      ac-25-33, @trait-websocket-protocol)
+
+      - @task-e2e-daemon-watcher — replace daemon-watcher.test.ts (163 lines, @daemon-server ac-4-6)
+
+
+      DELETION TASK (1 task, P2):
+
+      - @task-delete-static-analysis-tests — delete skill-module-split, web-ui-shared-types,
+      web-ui-triage, plus partial cleanup of end-loop, normalize-ref-input, package-distribution
+
+
+      Key decisions:
+
+      - All daemon API tests become Playwright E2E hitting real daemon (not vitest static analysis)
+
+      - skill-module-split tests deleted entirely (one-time refactoring outcome, not ongoing
+      behavior)
+
+      - web-ui-shared-types deleted (convention enforcement, not behavior)
+
+      - normalize-ref-input anti-pattern scanning deleted (not worth ESLint rule)
+
+      - Ralph absence tests (removed markers) kept — static scanning IS the right tool for absence
+      checks
+
+      - Localhost middleware unit tests kept — already behavioral
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T00:29:14.640Z

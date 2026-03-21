@@ -1,0 +1,59 @@
+notes:
+  - _ulid: 01KJRCDRQ6DPXHZWHXRWBXHBW7
+    content: Linked to @session-log-list (bug affects tasks-completed count in session log list).
+      Description provides precise implementation detail (store.ts:1654, countTaskCompletions +
+      extractTaskTransitions, handle string/array/meta fallback). Marked eligible.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T22:59:10.183Z
+  - _ulid: 01KJRGMA8F1NC085YR94MXFY09
+    content: >-
+      Root cause analysis complete:
+
+
+      countTaskCompletions (store.ts:1682) has two bugs:
+
+      1. Line 1696: quick-filter checks !line.includes('"tool_call"') which excludes
+      'tool_call_update' events — but for claude-agent-acp, the command data arrives in
+      tool_call_update events (rawInput is empty {} in the initial tool_call event)
+
+      2. Line 1700: only handles typeof command === 'string' — codex-acp sets command as an array
+      like ['/usr/bin/bash', '-lc', 'kspec task complete @ref'], actual command is at index 2
+
+
+      extractTaskTransitions (store.ts:2001) has similar bug: only handles string command, not array
+      format.
+
+
+      Fix:
+
+      - countTaskCompletions: remove the '"tool_call"' filter restriction (allow tool_call_update
+      too), and normalize array commands to extract command[2]
+
+      - extractTaskTransitions: same array normalization
+
+
+      Evidence: working session 01KJ6NFBH (feb 24, claude-code-acp) stores commands as strings in
+      tool_call_update events. Session 01KJMTEA (codex-acp) stores commands as arrays in tool_call
+      events.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T00:12:39.056Z
+  - _ulid: 01KJRHZDDSSH8P2NDAG85PM773
+    content: >-
+      Fixed both countTaskCompletions and extractTaskTransitions in store.ts:
+
+      1. Removed '"tool_call"' substring filter from countTaskCompletions — now picks up
+      tool_call_update events (claude-agent-acp format)
+
+      2. Added array command normalization in both functions — extracts last element for codex-acp
+      format ['/usr/bin/bash', '-lc', 'cmd']
+
+      3. Added 2 new unit tests in session-log-list.test.ts covering both new formats
+
+      4. All 30 session-log-list tests pass; no regressions
+
+      PR #637 created: https://github.com/kynetic-ai/kynetic-spec/pull/637
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T00:36:11.321Z

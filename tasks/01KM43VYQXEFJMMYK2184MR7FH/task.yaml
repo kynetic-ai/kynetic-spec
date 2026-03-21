@@ -1,0 +1,56 @@
+_ulid: 01KM43VYQXEFJMMYK2184MR7FH
+slugs:
+  - task-implement-cancelled-task-dependency-cleanup
+title: Implement cancelled-task dependency cleanup during task cancellation
+type: task
+description: >-
+  What: Extend task cancellation so cancelling a task also removes that task from downstream
+  depends_on arrays, records the cleanup on affected tasks, and leaves the task graph in a
+  consistent post-cancellation state.
+
+
+  Why: A cancelled prerequisite represents abandoned work, not completed work. Leaving downstream
+  dependency links in place creates stale blocking state and forces operators to manually repair
+  task graphs after routine cancellation decisions.
+
+
+  How: Update the cancellation flow to discover downstream tasks that reference the cancelled task,
+  remove those dependency refs, append clear audit notes on affected tasks, and persist the task
+  cancellation plus downstream cleanup as one atomic shadow mutation. Preserve current ready
+  semantics so only completed dependencies satisfy readiness; downstream tasks should become ready
+  only because the cancelled dependency link was explicitly removed. Add direct test coverage for
+  zero, one, and many downstream dependents, unchanged unrelated tasks, downstream readiness after
+  cleanup, and no observable partial state after the command completes.
+spec_ref: "@cancelled-task-dependency-cleanup"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Merged to dev from
+  dispatch/task/task-implement-cancelled-task-dependency-cleanup/01km43vy. Added cancelled-task
+  dependency cleanup during task cancellation, including buffered multi-file writes and regression
+  coverage for downstream dependency removal.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - tasks
+  - cli
+  - dispatch
+vcs_refs: []
+review_ref: "@01KM4ADFZA90QMMT9BRQYPZWPQ"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T00:24:28.096Z
+  commit: 674cabcd8646e873f128fa67b9d2db44ae74797a
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM49R56TW8K7CJBNK4DWX01Q
+created_at: 2026-03-19T22:36:12.925Z
+started_at: 2026-03-20T00:23:12.426Z
+submitted_at: 2026-03-20T00:24:28.917Z
+completed_at: 2026-03-20T00:46:28.897Z
+todos: []
+automation: eligible

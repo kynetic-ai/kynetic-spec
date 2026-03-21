@@ -1,0 +1,36 @@
+_ulid: 01KJ4FTAE506Y45KTGFMFB57NQ
+slugs:
+  - task-redesign-web-ui
+title: Redesign web UI holistically — interactive spec/design session
+type: spike
+description: "The current web UI has fundamental issues beyond individual bugs: sidebar nav links
+  are dead buttons, SPA fallback routes must be manually maintained, daemon test coverage is
+  static-only, types are duplicated between web-ui and schema. Before fixing piecemeal, do a
+  holistic redesign session to: 1) Inventory what currently exists and works. 2) Define what the web
+  UI should actually be. 3) Choose a component architecture that works. 4) Spec out the redesigned
+  UI with acceptance criteria. 5) Create a plan with prioritized tasks. This should be an
+  interactive session with the user."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Verified on March 8, 2026 that the redesign spike outcomes were already produced by
+  the existing UI revamp planning work: active plan @plan-ui-ux-revamp, imported redesign specs, and
+  derived implementation tasks. Closed as already completed by prior planning/import work rather
+  than duplicating the session."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - web-ui
+  - design
+  - spike
+vcs_refs: []
+session_id: 01KK5G4515H91WH531BEYXQKJ5
+created_at: 2026-02-23T05:33:38.629Z
+started_at: 2026-03-08T01:18:05.641Z
+submitted_at: 2026-03-08T01:19:41.592Z
+completed_at: 2026-03-08T01:19:51.778Z
+todos: []
+automation: manual_only

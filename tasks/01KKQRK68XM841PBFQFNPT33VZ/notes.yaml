@@ -1,0 +1,11 @@
+notes:
+  - _ulid: 01KKR9RFRH98EBGW10MANYHB46
+    content: "Removed per-page taskTitles lookup maps from dashboard and board (use server-resolved
+      invocation.task_title instead). Removed limit:1000 from dashboard tasks query, triage
+      triageRecords query, and static mode fallback in fetchMergedInbox. Replaced session detail
+      setInterval polling with event-driven debounced refresh via WebSocket. Updated E2E test mock
+      responses and route patterns. Verified: no limit:999/1000, no setInterval, no taskTitles, no
+      loadData/loadAll remain."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T08:28:17.553Z

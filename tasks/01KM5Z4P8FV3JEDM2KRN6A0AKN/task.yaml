@@ -1,0 +1,66 @@
+_ulid: 01KM5Z4P8FV3JEDM2KRN6A0AKN
+slugs:
+  - task-read-side-validation-warnings
+title: Add read-side validation warnings
+type: task
+description: |
+  **What:** When safeParse fails during YAML file loading, emit a stderr
+  warning identifying the dropped record and the validation error, instead
+  of silently skipping it. Affects loader functions for tasks, spec items,
+  inbox items, triage records, and plan records in src/parser/yaml.ts.
+
+  **Why:** Silent data loss is the root symptom of GitHub #899. A record
+  disappearing with no explanation forces users to manually inspect YAML.
+  A warning on stderr immediately tells users what happened, which record
+  was dropped, and which field failed — enough to fix it.
+
+  **How:**
+  1. Create a shared helper in src/parser/yaml.ts:
+     ```
+     function warnSkippedRecord(entityType: string, id: string,
+       source: string, error: z.ZodError): void
+     ```
+
+  2. Add else branches to safeParse checks in each loader:
+     - loadTasksFromFile() ~line 742
+     - extractItemsFromRaw() ~line 1626
+     - parseInboxItemsFromRaw() ~lines 2286/2299
+     - Triage record loader ~line 2754
+     - Plan record loader (verify location)
+
+  Valid records continue to load normally — warnings are non-breaking.
+
+  Covers: @read-side-validation-warnings ac-1, ac-2, ac-3.
+spec_ref: "@read-side-validation-warnings"
+plan_ref: "@plan-input-validation-hardening"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged dispatch/task/task-read-side-validation-warnings/01km5z4p into dev as
+  52f57a70e817ac22b082a3fa0f759cb97fbe56b1 after approving review @01KM62RF. Added read-side
+  validation warnings for task/spec/inbox/triage/plan loaders and regression coverage for
+  invalid-value reporting.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - parser
+  - dx
+  - validation
+vcs_refs: []
+review_ref: "@01KM62RFW303MTYMM5ZS98Z445"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T16:53:43.318Z
+  commit: 7b22df38c8925c8238f48b2e96fe60804d3e9875
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM624H49V0A6Q8HTT8E9R6NK
+created_at: 2026-03-20T15:52:05.135Z
+started_at: 2026-03-20T16:45:01.036Z
+submitted_at: 2026-03-20T16:53:43.804Z
+completed_at: 2026-03-20T17:05:45.386Z
+todos: []
+automation: eligible

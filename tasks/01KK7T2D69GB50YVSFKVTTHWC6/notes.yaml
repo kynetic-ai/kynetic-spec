@@ -1,0 +1,41 @@
+notes:
+  - _ulid: 01KK7T2D68HEXA0P31V1EW1F9V
+    content: |
+      Remove all shadowAutoCommit calls for session lifecycle events in
+      invocation.ts and store.ts. Session writes go to .kspec-sessions/
+      with no git operations in local mode.
+    author: "@claude"
+    created_at: 2026-03-08T22:46:14.473Z
+  - _ulid: 01KK8BWGJW30F890MGFQTHPV07
+    content: >-
+      Removed all shadowAutoCommit calls for session lifecycle events:
+
+      - invocation.ts: Removed 4 calls (completed, timed_out, aborted, failed outcomes)
+
+      - store.ts: Removed shadowAutoCommit from applyAutoAbandonMetadata, removed
+      shadowCommitMessage option and shadowCommitted result field
+
+      - stale-close.ts: Removed shadowCommitMessage pass-through to applyAutoAbandonMetadata
+
+      - Updated tests: Flipped 4 invocation tests from 'should call' to 'should NOT call', updated
+      stale criteria test to verify no shadow commit, updated stale-close trait annotations to N/A
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T03:57:35.708Z
+  - _ulid: 01KK8CRFGAM6GJJAQXDHW3YNQZ
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @session-remove-shadow-commits
+      ac-no-sync-conflict is not covered. PR #721 adds tests for invocation end and stale cleanup,
+      but no test demonstrates session writes can run alongside daemon shadowPull without a
+      kspec-meta conflict."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-09T04:12:52.107Z
+  - _ulid: 01KK8FA4F0QWZECHCCKN7RYJ1G
+    content: "Fix cycle 1: Added ac-no-sync-conflict test coverage in tests/shadow.test.ts. Test runs
+      shadowPull on .kspec/ concurrently with createSession + appendEvent on .kspec-sessions/,
+      verifies no git conflict, both operations succeed, session data readable from separate dir,
+      and session files absent from shadow worktree. Also rebased onto main to incorporate session
+      path resolution changes from PR #719."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T04:57:27.776Z

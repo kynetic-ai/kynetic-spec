@@ -1,0 +1,97 @@
+notes:
+  - _ulid: 01KFPB74SQW6J6RPK322N8385K
+    content: >-
+      ## Investigation Findings
+
+
+      ### Root Cause
+
+      The path resolution in serve.ts uses fragile relative path math:
+
+      ```typescript
+
+      const packageRoot = join(__dirname, '../../..');
+
+      ```
+
+
+      This works in development (goes from dist/cli/commands to project root) but fails for npm
+      installs where the package structure is different.
+
+
+      ### Current Test Failures
+
+      The 7 failing serve tests are actually caused by a **separate bug** in test setup:
+
+      - Tests call `setupTempFixtures(tempDir)` but function takes no args
+
+      - Function ignores tempDir and creates a NEW directory
+
+      - Result: test's .kspec/ directory never created, daemon can't write PID file
+
+
+      ### Decision: Bundle Daemon
+
+      User confirmed daemon is a core feature, should be bundled into main package rather than
+      separate install.
+
+
+      **Size impact:** ~3-4% increase (daemon is 2K lines, 116KB source vs 2.7MB dist)
+
+      **Build impact:** Minimal - add to tsconfig include
+
+      **New deps:** elysia, @elysiajs/cors, chokidar
+
+
+      ## Implementation Plan
+
+
+      1. Add daemon deps to main package.json
+
+      2. Update tsconfig to include packages/daemon/src
+
+      3. Update serve.ts path resolution to use dist/daemon/index.js
+
+      4. Fix test setup (create .kspec/ dir explicitly)
+
+      5. Ensure daemon auto-creates PID directory for robustness
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T21:12:30.263Z
+  - _ulid: 01KFPBJ4S3NSSXQRYWG95YKC0Q
+    content: |-
+      ## Implementation Complete
+
+      ### Changes Made
+
+      1. **package.json**:
+         - Added daemon dependencies: elysia, @elysiajs/cors, chokidar
+         - Added build:daemon script to copy daemon source to dist/daemon/
+
+      2. **serve.ts** - Updated daemon path resolution:
+         - Now resolves to dist/daemon/index.ts (bundled with package)
+         - Simplified from fragile '../../../' math to '../../daemon/index.ts'
+         - Added Bun runtime check (required for TypeScript execution)
+         - Improved error messages for missing Bun
+
+      3. **pid-utils.ts** (both CLI and daemon):
+         - Added auto-creation of PID directory if missing
+         - Improves robustness when kspec-dir doesn't exist
+
+      4. **Test fixes** (cli-serve.test.ts, daemon-server.test.ts):
+         - Fixed setupTempFixtures() misuse - was passing param to no-param function
+         - Now explicitly creates .kspec directory
+         - Fixed JSON status test to properly use --json flag
+
+      ### Architecture Decision
+      Daemon source is bundled as TypeScript (not compiled) because:
+      - Daemon requires Bun runtime for best performance (Elysia optimized for Bun)
+      - Bun runs TypeScript directly
+      - Avoids TypeScript strict mode issues in daemon code
+
+      ### Test Results
+      - All 17 serve tests pass (was 7 failing)
+      - Full suite: 1242 passed, 3 skipped
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T21:18:30.692Z

@@ -1,0 +1,42 @@
+_ulid: 01KM4BK84P70FSA8B84MJ707FA
+slugs: []
+title: Fix dispatch checkout dependency drift after new npm deps
+type: bug
+description: "Dispatch and sibling checkouts can run with stale node_modules after new runtime
+  dependencies are added. In /home/chapel/Projects/kynetic-spec-dispatch, node_modules/croner is
+  missing even though package.json/package-lock.json require it. Current symptoms: npm run build
+  fails with TS2307 for croner in src/agent-runtime/schedule-engine.ts and src/schema/schedules.ts,
+  and the built CLI fails at runtime with ERR_MODULE_NOT_FOUND for croner before foreground serve
+  tests can be trusted. Investigate why checkout/bootstrap/setup is not refreshing dependencies for
+  dispatch worktrees and make the workflow detect or repair missing package installs before
+  review/test runs."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review 01KM4DGT approved. Branch content was already present on dev when merge was
+  attempted, so no additional merge commit was needed.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - infra
+  - testing
+vcs_refs: []
+review_ref: "@01KM4DGTMH5A6Y0T9V7VXN4CWK"
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/fix-dispatch-checkout-dependency-drift-after-new-npm-deps/01km4bk8
+  captured_at: 2026-03-20T01:24:08.508Z
+  commit: aa68e5be7cc0c4ca8dc88a9ca11048740c46ce94
+  remote: null
+  remote_url: null
+  upstream_ref: dev
+session_id: 01KM48JAXKZMX5MT9G4JTNB540
+created_at: 2026-03-20T00:51:16.246Z
+started_at: 2026-03-20T01:24:05.109Z
+submitted_at: 2026-03-20T01:24:08.922Z
+completed_at: 2026-03-20T01:28:32.403Z
+todos: []

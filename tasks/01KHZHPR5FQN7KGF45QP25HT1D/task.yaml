@@ -1,0 +1,33 @@
+_ulid: 01KHZHPR5FQN7KGF45QP25HT1D
+slugs: []
+title: "Write core skill: kspec:create-workflow"
+type: task
+description: Refactor the create-workflow skill for the kspec/ namespace. Read current content from
+  .claude/skills/create-workflow/SKILL.md as reference. Meta-workflow for formalizing repeatable
+  patterns into kspec workflows. Rewrite from base principles. Write to
+  templates/skills/create-workflow/SKILL.md (rendered to .claude/skills/kspec/create-workflow/). Add
+  entry to manifest.yaml.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged to main (commit 758305d4). Wrote templates/skills/create-workflow/SKILL.md
+  (228 lines) — meta-workflow for formalizing repeatable patterns into kspec workflows. Covers:
+  candidate identification, workflow structure (triggers/step types/modes), 5-step creation process,
+  step design guidelines with examples, loop mode variants, skill decision matrix, lifecycle
+  commands, agent instruction regeneration. Manifest entry added. Installs correctly. PR #472 closed
+  as content already on main."
+depends_on:
+  - "@01KHZHPG"
+context: []
+priority: 3
+tags:
+  - core-skills
+  - skill-content
+vcs_refs: []
+created_at: 2026-02-21T07:30:26.607Z
+started_at: 2026-02-23T12:02:05.245Z
+completed_at: 2026-02-23T12:31:19.737Z
+todos: []
+automation: eligible

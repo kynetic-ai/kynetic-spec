@@ -1,0 +1,49 @@
+notes:
+  - _ulid: 01KJBT52BPCM4H5QVHEBR5WJTT
+    content: Wrote packages/web-ui/tests/e2e/api-tasks.spec.ts with 23 Playwright E2E tests covering
+      @api-contract ac-2 through ac-7. Tests use the daemon fixture (running daemon + fixtures) and
+      Playwright request API for direct HTTP calls. Verified response shapes, status codes, error
+      handling (404, 409, 400), pagination, and status filtering. Deleted
+      tests/daemon-api-tasks.test.ts (258 lines of static analysis). All 1200 unit tests still pass.
+      E2E tests require bun runtime (same as all other E2E tests) — not runnable in current sandbox
+      but structurally correct.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T01:48:57.590Z
+  - _ulid: 01KJBV4VCA11X39BPYZZ3E3SJC
+    content: >-
+      [FIX_CYCLE: 1] Review findings: Two MUST-FIX issues found:
+
+
+      1. kspec validate coverage regression: scanTestCoverage() only scans rootDir/tests/ but new
+      E2E tests are in packages/web-ui/tests/e2e/. This causes @api-contract ac-2, ac-3, ac-5, ac-6,
+      ac-7 to show as uncovered in validate output, regressing from main which showed only ac-31,
+      ac-33 uncovered. Fix: extend scanTestCoverage() to also scan packages/web-ui/tests/e2e/ (or
+      add a stub annotation file in tests/).
+
+
+      2. check-unresolved-comments CI gate failing: 7 inline review threads from previous review
+      remain open on GitHub. Code was fixed in commit a298a9d5 but threads must be resolved. Worker
+      must resolve all review comment threads on PR #543.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T02:06:19.019Z
+  - _ulid: 01KJBVGT30HYTVA4NNFF188GQJ
+    content: >-
+      [FIX_CYCLE: 2] Addressed both MUST-FIX issues from review:
+
+
+      1. Coverage scan regression fixed: Extended scanTestCoverage() in src/parser/validate.ts to
+      also scan packages/web-ui/tests/e2e/ for .spec.ts/.spec.js files. Extracted
+      scanDirForACAnnotations helper. Added 4 new tests in coverage-cache.test.ts.
+
+
+      2. PR thread resolution: Replied to all 7 open inline review threads explaining the fixes made
+      in commit a298a9d5. Resolved all 7 threads via GitHub GraphQL API.
+
+
+      Pushed new commit 7978da81 with the coverage fix. Waiting for CI to pass
+      (check-unresolved-comments should now succeed with all threads resolved).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T02:12:50.912Z

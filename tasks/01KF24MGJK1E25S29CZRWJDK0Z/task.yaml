@@ -1,0 +1,20 @@
+_ulid: 01KF24MGJK1E25S29CZRWJDK0Z
+slugs:
+  - task-kspec-task-set
+title: "Implement: kspec task set"
+type: task
+spec_ref: "@task-set"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Implemented all spec'd options: title, spec-ref, priority, slug, tag, depends-on.
+  Added validation for spec refs. All tests pass."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-16T00:52:39.634Z
+started_at: 2026-01-16T03:07:51.083Z
+completed_at: 2026-01-16T03:10:09.212Z
+todos: []

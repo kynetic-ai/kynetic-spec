@@ -1,0 +1,72 @@
+_ulid: 01KKZWB80XVKFH4V056NHB9H6T
+slugs:
+  - task-dispatch-degraded-state
+title: Implement dispatch engine degraded state
+type: task
+description: |
+  Why: When the integration target branch diverges from remote (local
+  has unpushed merges, or remote was force-pushed), the engine cannot
+  provision workspaces from a reliable base. It needs a degraded state
+  that blocks new work while letting in-flight work finish, with clear
+  operator guidance and automatic recovery.
+
+  What: A degraded state machine for the dispatch engine. Enters
+  degraded when fast-forward sync fails due to divergence. Blocks new
+  workspace provisioning. Exposes degraded status via CLI and API.
+  Broadcasts state transitions on WebSocket. Auto-recovers when the
+  next periodic sync succeeds. Tracks consecutive transient failure
+  count for escalated warnings (threshold 5) without entering degraded.
+
+  How: Add a degraded state object to DispatchEngine: { active: boolean,
+  reason: string, enteredAt: Date | null }. In syncTargetBranch(),
+  classify failures: ff-only rejection with local-ahead = "unpushed
+  merges" guidance, ff-only rejection with remote-rewritten = "force
+  push" guidance. When degraded is active, the drain loop skips
+  provisioning but continues processing in-flight invocations. On
+  successful sync while degraded, clear the state and trigger a queue
+  drain. Track consecutiveTransientFailures counter (reset on any
+  success); log escalated warning when threshold exceeded. Extend
+  status() response with { degraded: { active, reason, enteredAt } }.
+  Extend the dispatch status CLI to show a prominent warning line.
+  Broadcast sync_state events on the agents WebSocket topic on
+  enter/exit.
+
+  Covers: @dispatch-remote-branch-sync ac-divergence-enters-degraded,
+  ac-divergence-log-guidance, ac-degraded-no-provision,
+  ac-degraded-status-api, ac-degraded-status-broadcast,
+  ac-degraded-auto-recover, ac-degraded-recovery-logged,
+  ac-repeated-transient-escalation, ac-repeated-transient-no-degrade.
+spec_ref: "@dispatch-remote-branch-sync"
+plan_ref: "@plan-dispatch-remote-sync"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev (478f79b47). Implements degraded state machine for the dispatch
+  engine: divergence classification via git rev-list, enter/exit degraded with WebSocket broadcast,
+  blocks provisioning while degraded, auto-recovery on successful sync, transient failure counter
+  with escalation threshold. All 9 ACs covered by 13 new tests. 2 nits recorded (unused _mergeOutput
+  param, misleading test comments on divergence case classification)."
+depends_on:
+  - "@task-dispatch-target-sync"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - git
+vcs_refs: []
+review_ref: "@01KM0B33SCJD6B63X8501A39HE"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T11:18:03.005Z
+  commit: 36a39d0aecbb46f119c5f4c721586dd6bfc068c6
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM09TC4XXY6KZB1YAESACFDN
+created_at: 2026-03-18T07:07:47.613Z
+started_at: 2026-03-18T11:03:39.839Z
+submitted_at: 2026-03-18T11:18:03.395Z
+completed_at: 2026-03-18T11:27:23.697Z
+todos: []
+automation: eligible

@@ -1,0 +1,48 @@
+_ulid: 01KKQRK26BXGJJPBJ1NQ4GM59C
+slugs:
+  - task-ref-index-endpoint
+title: Implement ref index endpoint
+type: task
+description: >-
+  Add GET /api/refs/index returning a lightweight ref-to-display-metadata map. Include tasks, items,
+  and traits. Return title, type, and status for each. Key by both ULID and slug.
+
+
+  Omit descriptions, notes, ACs, tags, and other heavyweight fields. Must respect X-Kspec-Dir
+  project scoping. Add response type to @kynetic-ai/shared package.
+
+
+  Acceptance gates (from @ui-api-ref-resolution): Returns map with title, type, status per ref
+  (ac-4), payload significantly smaller than full entity lists (ac-5).
+spec_ref: "@ui-api-ref-resolution"
+plan_ref: "@plan-ui-data-layer-rework"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #867. The ref index endpoint implementation was delivered via PR #866
+  (server-side title resolution) which included the complete implementation with
+  ReferenceIndex/buildRefIndex utility, plans support, and comprehensive test coverage (28 tests in
+  ref-resolution.test.ts). PR #867 cleanly closed the task branch after merge conflict resolution
+  adopted main's version. All ACs covered: ac-4 (ref map with title/type/status, ULID+slug keys),
+  ac-5 (lightweight payload). All trait ACs properly annotated as N/A with justification."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - daemon
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-15T04:44:50.240Z
+  commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKQWHCJPC3ZJ0F9WHWAGGZR0
+created_at: 2026-03-15T03:28:14.027Z
+started_at: 2026-03-15T04:44:47.124Z
+submitted_at: 2026-03-15T04:44:50.971Z
+completed_at: 2026-03-15T04:56:24.208Z
+todos: []
+automation: eligible

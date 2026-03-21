@@ -1,0 +1,29 @@
+_ulid: 01KK7T2C50AGJB393WNBK5CTHR
+slugs:
+  - add-sessions-storage-config-to-manifest-schema
+title: Add sessions.storage config to manifest schema
+type: task
+spec_ref: "@session-storage-modes"
+plan_ref: "@plan-session-storage-separation"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #717. Added manifest schema support for sessions.storage (local|branch)
+  and optional sessions.branch, with default parsing of omitted sessions config to {storage:
+  'local'}. Verified config AC coverage for ac-config, ac-config-default, ac-config-invalid,
+  ac-branch-name, and ac-branch-name-default; full local npm test and GitHub PR checks passed on the
+  merged head."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - session
+  - storage
+  - schema
+vcs_refs: []
+session_id: 01KK80QZMV4ZGV3Q68D851RD1F
+created_at: 2026-03-08T22:46:13.408Z
+started_at: 2026-03-09T00:51:30.573Z
+submitted_at: 2026-03-09T00:51:39.415Z
+completed_at: 2026-03-09T00:59:41.655Z
+todos: []
+automation: eligible

@@ -1,0 +1,45 @@
+notes:
+  - _ulid: 01KJF06VJWMZTND40RHY7PS9VX
+    content: "Observed in this PR prep: after skill import/set/render, .kspec had pending changes
+      (skills/*/SKILL.md + .render-hash* files) and required manual commit/push (kspec-meta commit
+      bcda69ab). This is the concrete reproduction to preserve in tests."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T07:32:30.940Z
+  - _ulid: 01KJGD4GVYK198XNPSMYNNDK89
+    content: "Automation status set to needs_review: No spec_ref. Good description but needs spec with
+      ACs covering shadow auto-commit for skill commands."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-27T20:37:40.350Z
+  - _ulid: 01KJGDRJG3645FBW7B62FP4WFY
+    content: "Merged with @01KJE5A53 (task lifecycle shadow gaps). Investigation found commitIfShadow
+      present at all 16 saveTask() callsites and all skill mutation paths. Code may already be
+      correct — task refocused on proving it with regression tests. Key file:
+      src/parser/shadow.ts:742 (commitIfShadow). Batch mode suppression (isBatchMode()) is by
+      design. Concrete reproduction from original report: skill import/set/render left
+      skills/*/SKILL.md + .render-hash* pending, manual commit bcda69ab. Possible remaining gaps:
+      (a) skill render path may have separate mutation, (b) error paths where save succeeds but
+      commit skipped, (c) batch mode transitions. Deliverable: regression tests asserting no staged
+      changes remain after each mutating command. 17 specs already reference @trait-shadow-commit."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-27T20:48:37.379Z
+  - _ulid: 01KJN335K0CCEEPHYN9863E7N3
+    content: >-
+      Root cause confirmed: skill render command wrote .render-hash-<platform> files to .kspec/
+      shadow worktree but did not call commitIfShadow after completion. All other skill commands
+      (add, import, set, delete) correctly called commitIfShadow.
+
+
+      Fix: Added commitIfShadow call in skill-diff.ts render action after all rendering and cleanup
+      completes. Commits a single atomic message covering all rendered skills.
+
+
+      Tests: Created tests/shadow-skill-commit.test.ts with 6 regression tests covering: skill add,
+      import, set, delete (verified already working), and skill render single + all-skills
+      (reproduced bug, confirmed fix). Tests require git >= 2.42 for --orphan worktree support and
+      full kspec project setup via kspec init --setup.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-01T16:18:22.433Z

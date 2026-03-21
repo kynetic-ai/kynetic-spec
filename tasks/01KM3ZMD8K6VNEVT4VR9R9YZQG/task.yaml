@@ -1,0 +1,38 @@
+_ulid: 01KM3ZMD8K6VNEVT4VR9R9YZQG
+slugs:
+  - task-design-dispatch-shared-checkout-contract
+title: Design shared-checkout integration branch contract
+type: task
+description: |
+  What: Define the behavioral contract for dispatch integration-branch
+  mutation in a shared checkout.
+
+  Why: Shared-checkout correctness is the product behavior in scope.
+  The implementation needs an explicit contract for what dispatch may
+  mutate, what task worktrees are not allowed to own, and what health
+  guarantees users can rely on.
+
+  How: Align the plan with existing dispatch remote sync and worktree
+  isolation specs, keep deployment guidance out of the behavioral
+  contract, and define crisp operator-visible outcomes for unhealthy
+  checkout states.
+spec_ref: "@dispatch-shared-checkout-contract"
+plan_ref: "@plan-dispatch-integration-checkout-boundaries"
+origin: derived
+status: cancelled
+blocked_by: []
+closed_reason: Not needed. The approved plan and derived specs already contain the design work; this
+  task only restates that contract and adds no unique implementation or validation artifact.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - design
+  - git
+vcs_refs: []
+session_id: null
+created_at: 2026-03-19T21:22:11.347Z
+started_at: null
+todos: []
+automation: eligible

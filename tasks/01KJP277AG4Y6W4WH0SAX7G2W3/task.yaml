@@ -1,0 +1,27 @@
+_ulid: 01KJP277AG4Y6W4WH0SAX7G2W3
+slugs:
+  - implement-agent-invocation-lifecycle
+title: Implement Agent Invocation Lifecycle
+type: task
+spec_ref: "@agent-invocation-lifecycle"
+plan_ref: "@plan-reactive-agent-runtime"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #632. Implemented agent invocation lifecycle module (session creation,
+  ACP spawn, timeout/failure handling, event logging, skill-aware prompt building, cleanup, and
+  retry-threshold blocking). AC coverage verified for all 9 own ACs plus trait ACs marked N/A with
+  rationale; local npm test passed and required PR checks were green on current head."
+depends_on:
+  - "@implement-agent-definition-schema"
+  - "@implement-session-model-evolution"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJQM0DXCNG01HZGX4QJ2BYBG
+created_at: 2026-03-02T01:22:21.136Z
+started_at: 2026-03-02T16:44:32.965Z
+submitted_at: 2026-03-02T16:44:34.211Z
+completed_at: 2026-03-02T16:53:23.043Z
+todos: []
+automation: eligible

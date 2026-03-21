@@ -1,0 +1,35 @@
+notes:
+  - _ulid: 01KF47HHCE64MQQ8JHWAT1SB8Y
+    content: |-
+      Implementation approach from research:
+
+      1. Add helper functions to shadow.ts:
+         - hasRemoteTracking(worktreeDir) - check if upstream configured
+         - shadowPush(worktreeDir) - fire-and-forget push
+         - shadowPull(worktreeDir) - pull with --ff-only, fallback to --rebase
+
+      2. Modify commitIfShadow() to call shadowPush() after commit
+
+      3. Add shadowSync() for session start - pulls before operations
+
+      4. Add 'kspec shadow resolve' command for interactive conflict resolution
+
+      5. Pull strategy: --ff-only first (clean/fast), fall back to --rebase
+
+      6. Conflicts: abort rebase if fails, warn user, continue with local state
+
+      7. Configure git in worktree:
+         - pull.rebase = true
+         - pull.ff = only
+         - rebase.autoStash = true
+         - rerere.enabled = true
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-16T20:21:56.750Z
+  - _ulid: 01KF493Z1N8BAAWJD2YXP1T8KR
+    content: "Added AC-7 and AC-8 for auto-tracking: ensureRemoteTracking() automatically sets up
+      tracking when main branch has remote but shadow doesn't. Called at start of shadowPull() and
+      shadowPushAsync()."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-16T20:49:29.141Z

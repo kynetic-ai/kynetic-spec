@@ -1,0 +1,60 @@
+notes:
+  - _ulid: 01KHA83Q69VGE1B8PN321177M2
+    content: |
+      Implementation notes:
+
+      Items do NOT have a parent field in the schema. Parent-child hierarchy is
+      determined by YAML nesting, encoded in the _path metadata field (e.g.
+      features[0].requirements[1]). The existing formatItemTree() in item.ts
+      (lines 121-177) builds parent-child maps by parsing _path. The existing
+      findChildItems() in parser/items.ts (lines 422-455) finds direct children
+      only -- extend it or build a new findDescendantItems() that collects all
+      items sharing the same _sourceFile whose _path starts with the target
+      _path prefix. Resolve --under ref via ReferenceIndex, find the target
+      _sourceFile and _path, then filter the item list. Apply other filters
+      after scoping.
+    author: "@claude"
+    created_at: 2026-02-13T00:58:42.761Z
+  - _ulid: 01KHDT1HNMPEYHBCP0P429467T
+    content: >-
+      Implemented --under flag for module-scoped item listing:
+
+
+      - Added findDescendantItems() function in parser/items.ts that finds all items sharing the
+      same _sourceFile with a _path prefix matching the parent
+
+      - Updated item list command to accept --under <ref> option
+
+      - Reference resolution with error handling for invalid/task references
+
+      - Proper pagination handling (queries all items, then filters by scope, then applies limit)
+
+      - Works with --tree flag for hierarchical display
+
+      - Works with --count flag to show scoped subtree count
+
+      - Combines with other filters using AND logic
+
+      - JSON output includes all items in subtree
+
+
+      12 tests covering all 8 ACs:
+
+      - ac-under-filter: Only descendants shown
+
+      - ac-under-root-included: Root item included
+
+      - ac-nested-descendants: Multi-level nesting works
+
+      - ac-under-with-tree: Tree display scoped correctly
+
+      - ac-under-with-other-filters: AND logic with type/status filters
+
+      - ac-under-json: Full item data in JSON
+
+      - ac-under-invalid-ref: Error with suggestion message
+
+      - ac-count-with-under: Count reflects scoped subtree
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-14T10:09:49.237Z

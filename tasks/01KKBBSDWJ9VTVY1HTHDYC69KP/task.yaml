@@ -1,0 +1,37 @@
+_ulid: 01KKBBSDWJ9VTVY1HTHDYC69KP
+slugs: []
+title: Diagnose skill verify drift/no-hash for plugin-provided core skills.
+type: task
+description: >-
+  Fix skill verify reporting drift/no-hash for plugin-provided core skills.
+
+
+  The skill verify command in src/cli/commands/skill-diff.ts (lines ~1022-1050) has a switch
+  statement handling skill statuses: in-sync, drifted, not-rendered, no-hash. It is missing a case
+  for plugin-provided status. When plugin-provided skills are checked, they fall through without
+  proper handling.
+
+
+  Fix: Add a plugin-provided case to the switch statement that reports the appropriate status (these
+  skills are managed by the plugin, not locally rendered, so drift detection does not apply). Update
+  tests in tests/skill-rendering.test.ts.
+spec_ref: "@platform-renderer-trait"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #747 (commit c235f052b56431ae66fb85729f223d3c0045a1d2). Added explicit
+  plugin-provided handling to skill verify so plugin-managed core skills are surfaced instead of
+  falling through as drift/no-hash, updated output summaries, and verified the fix-cycle test now
+  creates a true plugin-provided-only scenario. AC coverage confirmed via behavioral tests for
+  @platform-renderer-trait ac-2 and current-head CI passing."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKBVGXV023QDNPP5SGE39XQH
+created_at: 2026-03-10T07:53:37.938Z
+started_at: 2026-03-10T12:46:33.364Z
+submitted_at: 2026-03-10T12:49:36.500Z
+completed_at: 2026-03-10T13:09:21.555Z
+todos: []
+automation: eligible

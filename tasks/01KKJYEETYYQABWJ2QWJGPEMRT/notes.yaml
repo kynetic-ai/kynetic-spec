@@ -1,0 +1,48 @@
+notes:
+  - _ulid: 01KKJYEETXAGGKACG58Q6ZE0ZW
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      reconcileWorkspaceHealth() in workspace.ts checks for the canonical branch using refExists()
+      which only checks local refs (git show-ref --verify refs/heads/<branch>). When a canonical
+      branch exists on a remote (e.g. origin) but not locally, the workspace is incorrectly marked
+      unhealthy with missing_canonical_branch. The health check should attempt to fetch or verify
+      the remote ref before declaring the branch missing. This enables dispatch to self-heal
+      workspaces whose local branches were pruned or never fetched, without requiring manual
+      intervention.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given A workspace record references a canonical branch that does not exist as a local
+      ref, when reconcileWorkspaceHealth() runs and the branch exists on a configured remote (e.g.
+      refs/remotes/origin/<branch>), then The health check fetches or creates the local branch from
+      the remote ref and does not emit a missing_canonical_branch issue
+
+      - ac-2: Given A workspace record references a canonical branch that does not exist locally or
+      on any remote, when reconcileWorkspaceHealth() runs, then The missing_canonical_branch issue
+      is still emitted (existing behavior preserved)
+
+      - ac-3: Given The remote branch fetch fails (network error, permissions, etc.), when
+      reconcileWorkspaceHealth() attempts the remote fallback, then The failure is logged at debug
+      level and the missing_canonical_branch issue is emitted as if no remote existed (graceful
+      degradation)
+
+      - ac-4: Given reconcileWorkspaceHealth() restores a branch from remote, when The workspace
+      health state is computed, then The canonical_branch_head is updated to the resolved commit
+      from the restored branch
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T06:34:22.429Z
+  - _ulid: 01KKMC89X7N7DR5XVNQJ0CBKVA
+    content: Implementation complete. Added tryRestoreBranchFromRemote() helper that checks configured
+      remotes (origin first) for the canonical branch when it's missing locally. If found, creates
+      the local branch from the remote ref. Graceful degradation on failure with debug-level
+      logging. The existing canonical_branch_head resolution in reconcileDispatchWorkspaceRegistry
+      naturally picks up the restored branch's commit. All 4 ACs covered with dedicated tests in
+      dispatch-workspace-remote-branch-fallback.test.ts. Full test suite passes (4772/4772).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T19:54:55.272Z

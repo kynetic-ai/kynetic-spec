@@ -1,0 +1,52 @@
+_ulid: 01KJWK8821AN0M759BMX4FK3NX
+slugs: []
+title: "Fill spec gap: task add command options and acceptance criteria"
+type: task
+description: >-
+  The @task-add requirement spec is incomplete. It was written early in the project when the command
+  had fewer options, and has never been updated as flags were added over time. The description lists
+  only 5 of 11 options, and there are zero acceptance criteria.
+
+
+  This matters because traits like @trait-priority-parameter inherit ACs into parent specs, but
+  those ACs only make sense when the spec itself documents the command's full surface. Without
+  complete specs, agents working on task add changes have no authoritative reference for expected
+  behavior, and trait AC coverage checks are meaningless against an incomplete baseline.
+
+
+  Current description documents: --title, --type, --spec-ref, --depends-on, --priority (listed as
+  1-5, should be 1-5 or P1-P5).
+
+
+  Missing from description: --description, --meta-ref, --plan-ref, --slug, --tag, --automation.
+
+
+  No acceptance criteria exist at all. Needs ACs covering: successful creation with required
+  options, default values (priority 3, type task, status pending), validation errors for invalid
+  inputs, each optional flag's behavior, and interaction between flags.
+
+
+  Reference the actual command implementation at src/cli/commands/task.ts (task add definition
+  around line 678-710) and existing test coverage at tests/ to understand current behavior before
+  writing ACs.
+spec_ref: "@task-add"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Spec fully documented: 11 options in description, 20 ACs covering all options with
+  happy path and validation error cases."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - spec-hygiene
+  - cli
+vcs_refs: []
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-04T14:15:27.041Z
+started_at: 2026-03-04T15:12:40.008Z
+submitted_at: 2026-03-04T15:15:22.171Z
+completed_at: 2026-03-04T15:15:23.281Z
+todos: []
+automation: eligible

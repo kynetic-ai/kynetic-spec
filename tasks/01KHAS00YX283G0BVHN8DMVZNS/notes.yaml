@@ -1,0 +1,23 @@
+notes:
+  - _ulid: 01KHAS00YX1H78GD9AGX27241D
+    content: "Bug/gap: workflow runs --json only serializes metadata (ULID, status, timestamps). Step
+      notes and abort_reason — the most valuable data for mining/telemetry — are missing. Requires
+      parsing raw YAML to access. Blocks official CLI usage analysis tooling."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-13T05:53:47.485Z
+  - _ulid: 01KHD0KP0E24X4YHSJXZQV8BMZ
+    content: "Automation status set to needs_review: CLI --json output schema is user-facing - may need
+      spec"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-14T02:45:20.526Z
+  - _ulid: 01KJN8NJWCMHZ17TE9BFHETXE5
+    content: "Verified current behavior: workflow runs --json already includes full step_results (with
+      notes) and abort_reason in output. The output function serializes the full run objects. The
+      gap is test coverage — existing tests only check status, not step_results content in JSON
+      output. Adding tests to verify step_results notes and abort_reason appear in workflow
+      runs/show --json."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-01T17:55:48.748Z

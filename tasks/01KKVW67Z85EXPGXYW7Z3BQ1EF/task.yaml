@@ -1,0 +1,50 @@
+_ulid: 01KKVW67Z85EXPGXYW7Z3BQ1EF
+slugs: []
+title: Enforce canonical field ordering in YAML serialization
+type: task
+description: >-
+  toYaml() in src/parser/yaml.ts uses sortMapEntries: false, relying on JS object insertion order to
+  keep _ulid first. This is fragile — any code path that reconstructs objects with different key
+  order would silently break the convention.
+
+
+  This matters because git log -L regex relies on _ulid being the first field of each entry to find
+  block boundaries (e.g. /^- _ulid:/ for tasks, /^_ulid:/ for modules).
+
+
+  Fix: Add a custom sortMapEntries comparator to toYaml() that enforces a canonical key order with
+  _ulid always first, followed by slugs, title, type, then remaining keys alphabetically (or in a
+  defined priority order).
+
+
+  Applies to all .kspec/ YAML files: project.tasks.yaml, project.inbox.yaml, modules/*.yaml.
+spec_ref: "@yaml-serialization-invariants"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Reviewed, approved, and merged to dev. Canonical key ordering implemented in toYaml()
+  with custom sortMapEntries comparator. All 4 ACs covered by 15 tests. No regressions in related
+  serialization tests.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - schema
+vcs_refs: []
+review_ref: "@01KKW8QCAKR7HESRF2X0V33CN7"
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/enforce-canonical-field-ordering-in-yaml-serialization/01kkvw67
+  captured_at: 2026-03-16T21:25:32.797Z
+  commit: c6138a9635fa858c36a6663cb8a3a764a4b15f64
+  remote: null
+  remote_url: null
+  upstream_ref: null
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-16T17:48:05.992Z
+started_at: 2026-03-16T21:18:28.086Z
+submitted_at: 2026-03-16T21:25:33.829Z
+completed_at: 2026-03-16T21:28:05.417Z
+todos: []

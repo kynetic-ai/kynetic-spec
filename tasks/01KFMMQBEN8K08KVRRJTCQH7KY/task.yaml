@@ -1,0 +1,23 @@
+_ulid: 01KFMMQBEN8K08KVRRJTCQH7KY
+slugs: []
+title: Inbox and meta API endpoints
+type: task
+spec_ref: "@api-contract"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #193 merged successfully. Implemented Inbox and Meta API endpoints covering ac-12
+  through ac-18 from @api-contract spec. Fixed critical bug in meta.ts (accessing meta.items instead
+  of meta.agents/workflows). All CI checks passed. All 1193 tests pass."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - phase-2
+  - api
+vcs_refs: []
+created_at: 2026-01-23T05:20:09.685Z
+started_at: 2026-01-23T12:51:31.905Z
+completed_at: 2026-01-23T13:21:17.475Z
+todos: []
+automation: eligible

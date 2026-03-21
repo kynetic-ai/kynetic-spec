@@ -1,0 +1,20 @@
+_ulid: 01KF109NY9BC079GKVN05Y1MV7
+slugs:
+  - task-kspec-session-checkpoint
+title: "Implement: kspec session checkpoint"
+type: task
+spec_ref: "@cmd-session-checkpoint"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Implemented checkpoint command with in-progress task detection, incomplete todo
+  detection, uncommitted changes detection, JSON output for hooks, and --force flag for override
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-15T14:17:35.944Z
+started_at: 2026-01-15T14:21:45.841Z
+completed_at: 2026-01-15T14:24:51.412Z
+todos: []

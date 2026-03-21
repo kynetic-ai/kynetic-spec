@@ -1,0 +1,21 @@
+_ulid: 01KFBJFEYZNNZ65TM17DDQH5DP
+slugs:
+  - dedupe-format-relative-time
+title: Deduplicate formatRelativeTime in inbox.ts
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #123 created. Code change is simple refactoring with no behavior change. All 823 tests pass."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - tech-debt
+vcs_refs: []
+created_at: 2026-01-19T16:47:44.094Z
+started_at: 2026-01-21T09:06:04.724Z
+completed_at: 2026-01-21T09:09:02.992Z
+todos: []
+automation: eligible

@@ -1,0 +1,51 @@
+notes:
+  - _ulid: 01KJZH4BDBX3TKDQHKTTEEQBG9
+    content: >-
+      Root cause: test-base.ts:24-58 cleanupExistingDaemon() uses lsof -ti :3456 to find and
+      process.kill(pid, SIGTERM) every process on port 3456. Called at line 81 before every test
+      fixture setup.
+
+
+      Approach:
+
+      1. Remove cleanupExistingDaemon() entirely
+
+      2. Replace hardcoded DAEMON_PORT=3456 with ephemeral port via net.createServer on port 0
+
+      3. Add HOME/config isolation (mirror createIsolatedKspecHome from tests/helpers/cli.ts)
+
+      4. Update DaemonFixture interface to expose port
+
+      5. All ~28 spec files already use daemon fixture — propagate port from fixture
+
+      6. Teardown already uses scoped serve stop (good) — just remove the kill cleanup
+
+
+      Prior art: tests/cli-serve.test.ts uses getAvailablePort(), createIsolatedKspecHome(),
+      waitForStartup()
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T17:36:05.547Z
+  - _ulid: 01KJZJWNXQFXJ3M8H8SDSBQH60
+    content: >-
+      Implementation complete. Changes across 15 files:
+
+      - test-base.ts: removed cleanupExistingDaemon(), added getAvailablePort() for ephemeral ports,
+      HOME isolation via isolatedHome, baseURL fixture override for page.goto() relative URLs
+
+      - playwright.config.ts: removed hardcoded baseURL and port 3456 comment
+
+      - 13 spec files: replaced hardcoded DAEMON_URL/DAEMON_WS_URL/DAEMON_HTTP_URL/DAEMON_PORT
+      constants with daemon.baseUrl/daemon.wsUrl/daemon.port from fixture
+
+      - Helper functions (connectWebSocket, subscribeToTriageUpdates, rawHttpRequest) updated to
+      accept dynamic URLs/ports
+
+      - beforeEach hooks updated to destructure daemon fixture
+
+
+      Smoke tests pass (5/5). api-server and api-tasks pass same as main (26/31 — 5 pre-existing
+      failures unrelated to port isolation). Full suite running.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T18:06:51.319Z

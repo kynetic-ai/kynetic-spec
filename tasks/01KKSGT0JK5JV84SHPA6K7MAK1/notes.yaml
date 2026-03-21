@@ -1,0 +1,62 @@
+notes:
+  - _ulid: 01KKSSVYYQY7W9ARNA6SWYAEH2
+    content: >-
+      Execution context:
+
+      - Background: Rewrite session detail page for WebSocket-first live viewing. Predecessor tasks
+      (accumulator + event detail endpoint) are merged.
+
+      - Scope: session-utils.ts (add incrementalBlockUpdate), +page.svelte (replace HTTP polling
+      with WS handlers, add reconnection/catch-up), ToolCallView.svelte (on-demand output via
+      TanStack Query), SessionStream.svelte (remove streamingText, add writing indicator), query
+      keys (add event detail), api.ts (add fetchSessionEventDetail)
+
+      - Files: packages/web-ui/src/lib/components/session/session-utils.ts,
+      packages/web-ui/src/routes/sessions/[id]/+page.svelte,
+      packages/web-ui/src/lib/components/session/ToolCallView.svelte,
+      packages/web-ui/src/lib/components/session/SessionStream.svelte,
+      packages/web-ui/src/lib/api.ts, packages/web-ui/src/lib/query/keys.ts
+
+      - Verification: npm test, npm run build
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T22:29:03.064Z
+  - _ulid: 01KKSVXFGTBQ8K04MAFXHWDNR7
+    content: >-
+      Implementation complete. PR #885 created.
+
+
+      Key implementation decisions:
+
+      - Added resultSeq to ToolCallBlock to fix on-demand output fetch targeting the
+      tool_call_update/tool_result event instead of the tool_call start event
+
+      - Used StreamingMarkdown component for live message rendering
+
+      - WS-created blocks use seq=-1; on-demand fetch requires resultSeq >= 0 (set after HTTP
+      gap-fill)
+
+      - Kept accumulateStreamingText as deprecated for backward compatibility with existing tests
+
+      - 3 pre-existing test failures in agent-dispatch-engine.test.ts (from accumulator refactoring)
+      are unrelated to this task
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T23:04:49.946Z
+  - _ulid: 01KKSWCZ7GFVF2D26P6497T0RC
+    content: '[FIX_CYCLE: 1] Review findings: MUST-FIX: E2E smoke test "live session output renders
+      markdown with the blinking streaming cursor" (packages/web-ui/tests/e2e/smoke.spec.ts:124) is
+      broken — references removed [data-testid="streaming-text"] element. Test must be updated to
+      work with the new in-block streaming architecture (send message_start first, then
+      message_progress, assert on content within [data-testid="message-block"]).'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T23:13:17.553Z
+  - _ulid: 01KKSXC1Q2ZEJ3HV04CYZZBKG6
+    content: "[FIX_CYCLE: 1] Fixed E2E smoke test: updated to send message_start before message_progress
+      (new WS protocol), assert on [data-testid='message-block'] >
+      [data-testid='streaming-markdown'] instead of removed [data-testid='streaming-text']. All 253
+      test files pass (5526 tests), build succeeds."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T23:30:15.906Z

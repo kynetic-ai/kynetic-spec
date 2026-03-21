@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KF8WH0GWZ1RM6QXED8WZCZYR
+    content: Retroactively marking complete. Implemented in commit e36d486c (2026-01-17) in
+      src/cli/commands/meta.ts:1017-1130. Updates existing meta items with type-specific options.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T15:45:37.308Z

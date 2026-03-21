@@ -1,0 +1,18 @@
+notes:
+  - _ulid: 01KJ3SS75HQBZFV2EWCBSPH7XS
+    content: Automation eligible. Investigation task — agent should try to reproduce and identify the
+      flaky condition. If unable to reproduce or diagnose after multiple attempts, block for manual
+      handling.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-22T23:08:33.841Z
+  - _ulid: 01KJ44Y2EQV8NBMWK9GAFAZA3M
+    content: "Root cause: getDaemonStatus() checks global PID file (~/.config/kspec/daemon.pid), not
+      per-project. Tests asserting 'daemon not running' behavior failed when a real daemon was
+      running on the host (e.g. during ralph loop sessions). Fix: Added vi.spyOn mocking of
+      getDaemonStatus in 3 tests (ac-daemon-running, ac-daemon-not-running x2) to isolate from host
+      environment, matching the pattern already used in the ac-daemon-unreachable test. Two
+      consecutive full suite runs (3168 tests) pass cleanly."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T02:23:27.192Z

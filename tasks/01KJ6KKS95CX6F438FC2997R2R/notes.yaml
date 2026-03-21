@@ -1,0 +1,20 @@
+notes:
+  - _ulid: 01KJ6KKS95WFBFJGR4JH73R1RT
+    content: |
+      Update GUARD_SCRIPTS in src/cli/commands/setup.ts to use kspec guard worktree
+      instead of bash scripts. Remove ralph-task-limit-guard.sh from installation.
+      Add migration logic: detect old PreToolUse entries in .claude/settings.json
+      referencing bash scripts, replace with native commands, delete old script files.
+      Ensure idempotent — no duplicate entries on re-run.
+    author: "@claude"
+    created_at: 2026-02-24T01:18:27.621Z
+  - _ulid: 01KJ8QWB0MFBGR836G4M4SK005
+    content: "All 6 ACs (ac-setup-native, ac-no-task-limit-hook, ac-migrate-hooks, ac-idempotent,
+      ac-worktree-guard, ac-worktree-allow) were already fully implemented and tested in the
+      dependency task @implement-native-worktree-guard (PR #506). The setup.ts migration logic,
+      native guard command installation, old script deletion, and idempotency handling are all in
+      place with 7 tests in native-guard-setup.test.ts and 51 tests in guard-worktree.test.ts. This
+      task is a no-op duplicate."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T21:11:31.092Z

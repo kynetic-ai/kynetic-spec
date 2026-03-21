@@ -1,0 +1,21 @@
+_ulid: 01KGTHJ9JB482P2TH67QF3DQRQ
+slugs: []
+title: Document kspec batch command across docs and skills
+type: task
+spec_ref: "@batch-exec"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #326. Documented kspec batch command across 7 files (SKILL.md,
+  CLAUDE.md, README.md, spec-plan, triage, inbox, observations). Codex review caught arg name errors
+  (content→text/message) and variadic format (string→array) — fixed before merge."
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-02-06T22:36:06.603Z
+started_at: 2026-02-06T22:37:01.690Z
+completed_at: 2026-02-06T23:10:07.326Z
+todos: []

@@ -1,0 +1,115 @@
+notes:
+  - _ulid: 01KK7T2G3B9C789Z5SSRNSWDQD
+    content: |
+      When sessions.storage is "branch", create orphan branch and worktree
+      at .kspec-sessions/. Auto-commit at lifecycle boundaries (create, close).
+      Independent sync from kspec-meta.
+    author: "@claude"
+    created_at: 2026-03-08T22:46:17.451Z
+  - _ulid: 01KK8JMR8F2F1NTVZDF2BSBG2X
+    content: >-
+      Implemented session branch worktree mode:
+
+
+      ## Files created:
+
+      - src/parser/session-branch.ts — Core module: init, status, repair, auto-commit, sync, config
+      resolution
+
+      - src/parser/session-sync-scheduler.ts — Periodic session branch sync for daemon
+
+      - tests/session-branch-worktree.test.ts — 17 tests covering init, status, repair, auto-commit,
+      config
+
+      - tests/session-branch-lifecycle.test.ts — 4 tests for lifecycle boundary auto-commits
+
+
+      ## Files modified:
+
+      - src/parser/shadow.ts — Added sessionBranchCreated to ShadowInitResult, sessions config to
+      ShadowInitOptions, session branch init step in initializeShadow
+
+      - src/sessions/store.ts — Import sessionBranchAutoCommit, add worktree detection cache, add
+      commitAtLifecycleBoundary calls at create/close/compact/stale-cleanup
+
+      - src/cli/commands/shadow.ts — Import session branch functions, extend formatShadowStatus for
+      session branch, add session status to 'shadow status', add session repair to 'shadow repair'
+
+      - src/cli/commands/init.ts — Pass session config to initializeShadow, report
+      sessionBranchCreated
+
+      - src/cli/commands/setup.ts — Add session branch worktree initialization step in setup
+      pipeline
+
+      - dist/daemon/server.ts — Import and initialize SessionSyncScheduler, stop on shutdown
+
+
+      ## AC Coverage:
+
+      - ac-init: initializeSessionBranch creates orphan branch + worktree, called from init/setup
+
+      - ac-commit-boundaries: commitAtLifecycleBoundary in store.ts at
+      create/close/compact/stale-cleanup (NOT on event append)
+
+      - ac-sync: SessionSyncScheduler + sessionBranchPull with in-flight dedup
+
+      - ac-status: shadow status reports both kspec-meta and session branch health
+
+      - ac-repair: shadow repair also repairs session branch independently
+
+
+      All 21 new tests pass. Full suite (189 files, 4145 tests) passes with 0 regressions.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T05:55:41.455Z
+  - _ulid: 01KK8K7T9PD7D0K99EKAWB39B0
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: session branch repair is not independent when
+      kspec-meta is healthy, and ac-sync is missing daemon wiring/test coverage in PR #723."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-09T06:06:06.135Z
+  - _ulid: 01KK8MP874SDWDE4B0X2HQZCQZ
+    content: "Fix cycle 1 — addressed all 3 MUST-FIX review findings: (1) Shadow repair early return:
+      restructured to use if/else instead of early return so session branch repair runs regardless
+      of kspec-meta health. (2) Daemon wiring: added SessionSyncScheduler import/init/stop in
+      packages/daemon/src/server.ts, reads manifest YAML directly for session config, created
+      session-sync.ts re-export. Independent error handling. (3) ac-sync test coverage: 5 new tests
+      covering sessionBranchPull (no remote, with remote), SessionSyncScheduler lifecycle, disabled
+      interval, and in-flight dedup independence. Full suite: 4233 passed, 0 regressions."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T06:31:27.716Z
+  - _ulid: 01KK8N1TBGN27P6RM29T1GJKAH
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: PR #723 still hardcodes the default shadow
+      manifest path and origin remote for session sync, so ac-sync is incomplete for non-default
+      configurations. Full local regression gate is also not clean (npm test: 3 failing tests)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-09T06:37:46.736Z
+  - _ulid: 01KK8PP29YJX12JVTMARHJSSGJ
+    content: >-
+      Fix cycle 2 — addressed both MUST-FIX findings:
+
+
+      1. **Hardcoded manifest path (daemon server.ts)**: Replaced raw readFileSync + hardcoded
+      '.kspec/kynetic.yaml' with loadProjectConfig() to derive specDir from config.shadow.directory.
+      Also replaced inline branch name/worktree path resolution with resolveSessionBranchConfig()
+      for consistency.
+
+
+      2. **Hardcoded 'origin' remote (session-branch.ts)**: Added resolveRemoteName() helper that
+      reads branch.<name>.remote from git config, falling back to 'origin' if unconfigured. Used in
+      both initializeSessionBranch() and sessionBranchPullImpl(). Matches the pattern used by
+      pullRebaseBeforePush() in shadow.ts.
+
+
+      3. **New test**: Added 'sessionBranchPull resolves configured remote instead of hardcoding
+      origin' — sets up a non-default remote ('upstream'), configures tracking, pushes from a clone,
+      then verifies pull uses the configured remote.
+
+
+      Full test suite: 4234 passed (23 session-branch tests), 2 pre-existing failures in codex
+      platform detection (unrelated). 0 regressions.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T07:06:18.814Z

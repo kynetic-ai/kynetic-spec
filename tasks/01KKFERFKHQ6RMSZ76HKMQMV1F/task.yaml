@@ -1,0 +1,36 @@
+_ulid: 01KKFERFKHQ6RMSZ76HKMQMV1F
+slugs:
+  - update-iterative-plan-workflow-and-skill-guidance
+title: Update iterative plan workflow and skill guidance
+type: task
+description: The iterative plan editing commands are implemented, but the process/docs layer still
+  describes the old import behavior. Follow up by updating @spec-plan-import (and any related plan
+  workflow/meta text) to reflect content-only import, optional stored module_ref, approval before
+  derive, plan derive as the materialization step, and re-import via --into instead of --update.
+  Update templates/skills/plan/SKILL.md to match the same flow, regenerate kspec-agents.md/rendered
+  skills as needed, and verify the documented workflow matches current CLI behavior.
+spec_ref: null
+meta_ref: "@spec-plan-import"
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #791 (cb163790d5bd46c9e2b3dccf45c1a839f18df6d0). Updated iterative plan
+  workflow and plan skill guidance to match content-only import, optional stored module_ref,
+  approval before derive, plan derive as the materialization step, and re-import via --into;
+  regenerated kspec-agents.md and rendered plan skill output."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - docs
+  - workflow
+  - skills
+  - plan
+vcs_refs: []
+session_id: 01KKFBD67T1HHYA1STWBW0EWYV
+created_at: 2026-03-11T22:02:30.384Z
+started_at: 2026-03-11T22:08:16.462Z
+submitted_at: 2026-03-11T22:17:34.755Z
+completed_at: 2026-03-11T22:34:06.208Z
+todos: []
+automation: manual_only

@@ -1,0 +1,18 @@
+notes:
+  - _ulid: 01KG72289YG7PQP9GPXW5CKGGN
+    content: "Automation assessment: set to needs_review. missing spec_ref"
+    supersedes: null
+    author: "@automation-assess"
+    created_at: 2026-01-30T08:59:38.174Z
+  - _ulid: 01KG72V44AVY5T11H8MW2J4Z0N
+    content: "Eligible: Created spec @cli-utilities with ac-1 for ULID generation command."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-30T09:13:13.098Z
+  - _ulid: 01KG79KX1VHS8HW23TN1DFMME5
+    content: Implemented kspec util ulid command with --count option. Generates valid ULIDs using
+      Crockford base32 format. Added 8 tests covering single/multiple generation, JSON output, and
+      edge cases.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-30T11:11:36.507Z

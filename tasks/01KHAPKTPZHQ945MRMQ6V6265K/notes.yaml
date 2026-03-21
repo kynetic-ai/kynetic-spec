@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KHAPKTPZD285ZFYZMVKMT30J
+    content: "Bug: --depends-on stores bare IDs without @ prefix, breaking dependency resolution. Fix:
+      normalize references in task set, task add, and derive. Implements ac-1 on @rel-depends-on."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-13T05:12:10.720Z

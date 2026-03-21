@@ -1,0 +1,26 @@
+_ulid: 01KGKST8YNXET2CRHTM7268JG4
+slugs: []
+title: Add plan reference validation to kspec validate
+type: task
+description: Update src/cli/commands/validate.ts to check plan references. Warn if task plan_ref
+  points to non-existent plan. Warn if plan derived_tasks contains non-existent task refs. Validate
+  plan YAML structure on load. Do not fail validation for missing refs - warn only (plans may be
+  deleted).
+spec_ref: "@plan-validation"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #307 merged. Implemented plan_ref validation with warnings for dangling
+  references. All AC coverage verified with tests."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - validation
+  - planning
+vcs_refs: []
+created_at: 2026-02-04T07:45:35.701Z
+started_at: 2026-02-04T10:16:48.296Z
+completed_at: 2026-02-04T17:49:42.058Z
+todos: []
+automation: eligible

@@ -1,0 +1,79 @@
+_ulid: 01KKSGSZA2HXFDXW8RA3GV1JFC
+slugs:
+  - task-session-event-accumulator
+title: Implement daemon session event accumulator and new broadcast types
+type: task
+description: |
+  Replace the onTextChunk callback in the dispatch engine with
+  onSessionEvent that emits typed lifecycle events.
+
+  Core implementation:
+  1. Create per-session accumulator in dispatch.ts that buffers
+     agent_message_chunk text and flushes at newline boundaries.
+  2. Detect state transitions (message → tool_call, message → thinking,
+     etc.) and flush remaining buffer as _complete event.
+  3. Broadcast new event types via PubSubManager:
+     - message_start, message_progress, message_complete
+     - thinking_start, thinking_progress, thinking_complete
+     - tool_call_start (with tool name + input), tool_call_complete
+  4. tool_call_start includes input parameters from the ACP tool_call
+     SessionUpdate. tool_call_complete includes status and duration_ms
+     but NOT output.
+  5. Update agent-dispatch.ts broadcast calls to use new event types.
+  6. Remove onTextChunk callback and agent_text_chunk event type.
+
+  Consumers to update:
+  - ws-invalidation.ts: new event types need invalidation rules
+    (message_complete and tool_call_complete should invalidate
+    session event queries for the affected session)
+  - CLI watch command: update to consume new event stream, display
+    text at newline boundaries and tool call status transitions
+  - BroadcastEvent types in @kynetic-ai/shared
+
+  The accumulator must handle concurrent sessions independently —
+  use a Map<sessionId, AccumulatorState> with cleanup on session end.
+
+  Buffer safety: include a maximum buffer size (e.g., 8KB) that
+  triggers a flush even without a newline boundary, to prevent
+  unbounded memory growth from newline-sparse content (minified
+  JS, base64 strings, long single-line output).
+
+  Acceptance gates:
+  - @session-event-broadcast ac-newline-streaming
+  - @session-event-broadcast ac-boundary-flush
+  - @session-event-broadcast ac-per-session-state
+  - @session-event-broadcast ac-tool-input-included
+  - @session-event-broadcast ac-replaces-text-chunks
+spec_ref: "@session-event-broadcast"
+plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #881. Implemented session event accumulator with newline-boundary
+  streaming, typed broadcast events (message/thinking start/progress/complete, tool_call
+  start/complete), per-session state tracking, and 8KB max buffer safety. All consumers updated (CLI
+  watch, web UI, ws-invalidation). Replaces agent_text_chunk with structured lifecycle events. 5/5
+  own ACs covered, trait ACs unaffected. Fix cycle resolved CI build failure from cross-package
+  import."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - daemon
+  - websocket
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-15T21:56:32.144Z
+  commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKSQB486B0TCSHVFNE6KV052
+created_at: 2026-03-15T19:50:40.706Z
+started_at: 2026-03-15T21:56:29.148Z
+submitted_at: 2026-03-15T21:56:33.035Z
+completed_at: 2026-03-15T22:08:09.711Z
+todos: []
+automation: eligible

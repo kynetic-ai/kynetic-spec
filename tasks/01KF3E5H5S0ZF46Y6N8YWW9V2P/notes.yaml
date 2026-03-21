@@ -1,0 +1,62 @@
+notes:
+  - _ulid: 01KF7M43V8AG2QNC697Y6EECZX
+    content: |-
+      Session 3: Found incomplete WIP implementation from previous session.
+
+      STATUS: Partially implemented, 1 test failing
+
+      WHAT'S DONE:
+      - Command structure implemented (patch <ref>)
+      - JSON parsing from --data flag or stdin
+      - Schema validation (strict/passthrough modes)
+      - Unknown field detection
+      - 5 integration tests added (4 passing, 1 failing)
+      - Covers all 4 acceptance criteria in tests
+
+      WHAT'S BROKEN:
+      - --dry-run flag not working: still saves changes despite flag
+      - Test "should show changes with --dry-run" fails
+      - Root cause: early return after dry-run output missing or saveTask called anyway
+
+      NEXT STEPS:
+      1. Fix dry-run logic (likely missing early return before saveTask)
+      2. Verify all 6 tests pass
+      3. Test with stdin input (not covered by tests yet)
+      4. Complete task
+
+      DO NOT MERGE - tests failing
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T03:59:31.688Z
+  - _ulid: 01KF7MFC3A9PK7C7J18D24JZGV
+    content: >-
+      Attempted to implement task patch command following spec @task-patch. Implementation pattern
+      based on existing task set and item patch commands.
+
+
+      Implementation included:
+
+      - JSON parsing from --data flag or stdin
+
+      - Validation against TaskInputSchema.partial()
+
+      - --dry-run flag for preview
+
+      - --allow-unknown flag for extensibility
+
+      - Error handling for invalid JSON and unknown fields
+
+
+      Created 6 tests covering all 4 acceptance criteria plus additional edge cases.
+
+
+      BLOCKER: File changes were repeatedly reverted by linter or auto-save mechanism. Both
+      implementation in src/cli/commands/task.ts and tests in tests/integration.test.ts were removed
+      after being written. This happened twice - implementation was written, verified with grep,
+      then disappeared. System reminders confirm linter modifications.
+
+
+      Need to investigate why files are being auto-reverted before this task can be completed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T04:05:40.586Z

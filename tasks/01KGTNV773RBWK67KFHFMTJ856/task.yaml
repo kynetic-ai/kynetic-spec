@@ -1,0 +1,25 @@
+_ulid: 01KGTNV773RBWK67KFHFMTJ856
+slugs: []
+title: Add YAML quoting guidance to spec-plan skill
+type: task
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #334. Added YAML Syntax Issues section to spec-plan skill covering
+  mixed quoting and colons in values. Updated trait examples to use full slugs (trait-json-output)
+  with warning about import prefixing behavior."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - docs
+  - skills
+  - spec-plan
+vcs_refs: []
+created_at: 2026-02-06T23:50:53.411Z
+started_at: 2026-02-07T09:51:21.712Z
+completed_at: 2026-02-07T10:05:03.083Z
+todos: []
+automation: eligible

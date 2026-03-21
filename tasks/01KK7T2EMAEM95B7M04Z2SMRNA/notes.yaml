@@ -1,0 +1,65 @@
+notes:
+  - _ulid: 01KK7T2EMA7ZPTE0JWCKA2ZRJ4
+    content: |
+      When a session ID is not found in .kspec-sessions/, fall back to reading
+      from .kspec/sessions/. Emit deprecation warning. Merge results in list
+      operations with dedup.
+    author: "@claude"
+    created_at: 2026-03-08T22:46:15.946Z
+  - _ulid: 01KK8D3KRCRXNH6S2MEW2WS8R4
+    content: >-
+      Execution context:
+
+      - Background: When sessions don't exist in .kspec-sessions/, fall back to .kspec/sessions/
+      (shadow branch legacy location)
+
+      - Architecture: Create src/sessions/legacy.ts with fallback-aware wrappers around store.ts
+      read functions. Store functions stay pure — they read from wherever pointed. Legacy module
+      adds try-primary-then-fallback logic.
+
+      - Legacy path: path.join(specDir, 'sessions') since specDir points to .kspec/ worktree
+
+      - Key decision: CLI commands will pass both sessionsDir and specDir; legacy module derives
+      fallback path
+
+      - Scope: Read fallback (getSession, readEvents, listSessions, resolveSessionId,
+      getAllSessionLogSummaries, searchSessionEvents), list merge with dedup, deprecation warning,
+      shadow gitignore, session migrate command
+
+      - Files to create: src/sessions/legacy.ts
+
+      - Files to modify: src/cli/commands/session/log.ts (use legacy wrappers),
+      src/cli/commands/session/commands.ts, src/parser/shadow.ts (gitignore), init.ts, setup.ts
+
+      - Verification: new tests + full test suite
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T04:18:56.908Z
+  - _ulid: 01KK8E1G9C7X0GNG4HSC1G68T8
+    content: |-
+      PR #722 created: https://github.com/kynetic-ai/kynetic-spec/pull/722
+
+      Implementation summary:
+      - Created src/sessions/legacy.ts with fallback-aware wrappers for all read operations
+      - Created src/cli/commands/session/migrate.ts for the migrate command
+      - Updated log.ts to use legacy-aware wrappers (list, show, stats, search)
+      - 37 tests covering all 7 ACs pass
+      - TypeScript compiles clean
+      - No new test regressions (pre-existing failures on main unchanged)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T04:35:16.396Z
+  - _ulid: 01KK8EC1XEHCSC04ZWNQXD3XWS
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: add CLI-level coverage for session log fallback
+      and session migrate command behavior before merge"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-09T04:41:02.126Z
+  - _ulid: 01KK8FWCCW4P942GJY7YQY4F2Q
+    content: "Fix cycle 1: Added 19 CLI-level tests in tests/session-legacy-cli.test.ts covering session
+      log list/show/search fallback and session migrate command behavior. Tests use
+      setupTempFixtures() + kspec()/kspecJson() helpers to exercise real CLI surface. All pass, no
+      regressions."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T05:07:25.724Z

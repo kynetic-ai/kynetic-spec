@@ -1,0 +1,24 @@
+_ulid: 01KGVAZ6ZXXCBK1DYJ4GF4FRAM
+slugs: []
+title: "Fix: 'No onPostToolUseHook found' leaks past noise suppression"
+type: task
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #345. Fixed noise suppression for hook warnings by changing from
+  skip-entire-chunk to strip-patterns strategy. The stripNoise function now removes noise patterns
+  from content while preserving surrounding text, handling both standalone noise and embedded noise
+  concatenated with agent messages. Added comprehensive tests covering whitespace preservation,
+  greedy matching prevention, and cross-chunk accumulation."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-07T06:00:04.348Z
+started_at: 2026-02-07T13:40:47.394Z
+completed_at: 2026-02-07T14:14:15.729Z
+todos: []
+automation: eligible

@@ -1,0 +1,178 @@
+notes:
+  - _ulid: 01KKHGMDR4TDNM7QGTH61G0YQB
+    content: >-
+      Execution context:
+
+      - Background: dispatch workers/reviewers need isolated code worktrees rooted under the
+      configured dispatch worktree root, with reviewers attached to detached snapshots instead of a
+      second checkout of the mutable branch.
+
+      - Scope: implement worktree provisioning/reuse/reconciliation for worker, fix-cycle, and
+      reviewer roles against the canonical workspace registry; no fallback to the shared main
+      checkout.
+
+      - Files: expected focus in packages/daemon/src/agent-runtime plus matching tests under tests/
+      or packages/daemon tests.
+
+      - Verification: targeted runtime tests, then full npm test, then kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T17:13:43.429Z
+  - _ulid: 01KKHGS2QRCKZB0KQD7TMYPEF4
+    content: "Found and fixed a spec gap in dispatch workspace failure handling: unrecoverable worktree
+      provisioning errors were previously noted and skipped, but not blocking the task. Updated the
+      dispatch engine to add both a task note and an explicit task block with actionable guidance,
+      and added AC coverage for worktree isolation reuse/snapshot/failure behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T17:16:15.992Z
+  - _ulid: 01KKHGYVKNM8R0HY06N4F0TJS6
+    content: >-
+      Verification:
+
+      - Targeted tests passed: npm test -- tests/dispatch-workspace-config.test.ts
+      tests/canonical-task-workspace-contract.test.ts tests/agent-dispatch-engine.test.ts
+
+      - Full suite passed: npm test (219 files, 4614 passed, 3 skipped)
+
+      - kspec validate returned warnings-only from existing project baseline debt unrelated to this
+      task; no new validation errors introduced by this change set.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T17:19:25.301Z
+  - _ulid: 01KKHH2572MVC2Q24ZXG6VWDG0
+    content: "Review artifact: PR #802 https://github.com/kynetic-ai/kynetic-spec/pull/802"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T17:21:13.443Z
+  - _ulid: 01KKHJ2D42V78E03Z9XPGJR4MD
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: dispatch workspace failure path does not
+      guarantee the required blocked task transition when task block cannot be executed
+      successfully."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T17:38:50.114Z
+  - _ulid: 01KKHNXDR5FX3PA4KJAP8PBQDW
+    content: "Fix cycle progress: traced the unrecoverable workspace provisioning path in
+      src/agent-runtime/dispatch.ts. The current code returns false even if kspec task block is
+      unavailable or fails, so I am tightening it to require a successful blocked transition and
+      adding a regression test that forces task block to exit nonzero."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T18:46:01.222Z
+  - _ulid: 01KKHP5WTR38N4N54CEDTA3JF5
+    content: >-
+      Fix cycle resolution:
+
+      - Enforced dispatch workspace failure handling to require a successful  transition; note
+      writes remain best-effort but block failures now throw instead of silently returning false.
+
+      - Added regression coverage that forces the mock CLI  command to exit nonzero and
+      verifies  rejects rather than skipping the task transition.
+
+      - Verification: npm test -- tests/dispatch-workspace-config.test.ts
+      tests/canonical-task-workspace-contract.test.ts tests/agent-dispatch-engine.test.ts; npm test;
+      kspec validate (warnings-only baseline, exit 6).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T18:50:38.808Z
+  - _ulid: 01KKHP6N2PJHSNZCQRBV9GY82Y
+    content: >-
+      Fix cycle resolution:
+
+      - Enforced dispatch workspace failure handling to require a successful `kspec task block`
+      transition; note writes remain best-effort but block failures now throw instead of silently
+      returning false.
+
+      - Added regression coverage that forces the mock CLI `task block` command to exit nonzero and
+      verifies `_spawnInvocation()` rejects rather than skipping the task transition.
+
+      - Verification: npm test -- tests/dispatch-workspace-config.test.ts
+      tests/canonical-task-workspace-contract.test.ts tests/agent-dispatch-engine.test.ts; npm test;
+      kspec validate (warnings-only baseline, exit 6).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T18:51:03.638Z
+  - _ulid: 01KKHPHEBKJN75VG0RJ1PKCBH8
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: PR #802 is conflicting with main and cannot be
+      merged until the dispatch worktree isolation changes are rebased/resolved and revalidated."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T18:56:57.203Z
+  - _ulid: 01KKHQPAXEBNW5ABJZTKM4M28M
+    content: >-
+      Fix cycle resolution:
+
+      - Rebased dispatch worktree isolation branch onto origin/main to resolve PR #802 conflicts
+      after #801/#798 landed.
+
+      - Resolved the dispatch workspace failure-path conflict in src/agent-runtime/dispatch.ts by
+      keeping the stricter helper-based behavior: note writes remain best-effort, but failed `kspec
+      task block` transitions still throw instead of silently skipping.
+
+      - Revalidated after rebase: targeted dispatch tests passed (`npm test --
+      tests/dispatch-workspace-config.test.ts tests/canonical-task-workspace-contract.test.ts
+      tests/agent-dispatch-engine.test.ts`); full `npm test` passed (220 files, 4628 passed, 3
+      skipped); `kspec validate` remained warnings-only baseline (exit 6).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T19:17:06.094Z
+  - _ulid: 01KKHRABSRV812JV23BH17630X
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: full npm test is unstable on PR #802 head
+      bfa72bd2466d68523b5733a26ed52de57034fd50. Two consecutive reruns failed in different suites
+      (cli-serve and dispatch-workspace-registry), so the branch must be stabilized and revalidated
+      before merge."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T19:28:02.360Z
+  - _ulid: 01KKHS6YH6Q9X53QMERE4TB56P
+    content: "Fix cycle investigation: the reported dispatch-workspace-registry flake matches a real
+      YAML persistence race. Registry/state readers can observe a file during in-place rewrite and
+      parse null/partial content, and the cli-serve foreground shutdown assertion is also
+      timing-sensitive. I am hardening parser YAML writes to use atomic temp-file rename semantics
+      and tightening the serve foreground test shutdown wait before re-running repeated regression
+      checks."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T19:43:39.046Z
+  - _ulid: 01KKHSMBK7JX37C83A4X0PSTNF
+    content: >-
+      Fix cycle resolution:
+
+      - Stabilized shared YAML persistence by switching parser YAML writes to atomic temp-file
+      rename semantics so dispatch workspace registry/state readers cannot observe partially
+      rewritten files.
+
+      - Hardened the foreground daemon CLI test to wait deterministically for child exit after
+      SIGINT, removing the timing-sensitive  failure mode seen in repeated full-suite review reruns.
+
+      - Added regression coverage for atomic YAML temp-file cleanup.
+
+      - Verification: npm test -- tests/yaml-atomic-write.test.ts
+      tests/dispatch-workspace-registry.test.ts tests/cli-serve.test.ts; npm test (run 1: 221 files,
+      4629 passed, 3 skipped); npm test (run 2: 221 files, 4629 passed, 3 skipped); kspec validate
+      (warnings-only baseline, exit 6).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T19:50:58.408Z
+  - _ulid: 01KKHSMMFYNAMD8WA20SJ64MY6
+    content: >-
+      Fix cycle resolution:
+
+      - Stabilized shared YAML persistence by switching parser YAML writes to atomic temp-file
+      rename semantics so dispatch workspace registry/state readers cannot observe partially
+      rewritten files.
+
+      - Hardened the foreground daemon CLI test to wait deterministically for child exit after
+      SIGINT, removing the timing-sensitive child.exitCode === null failure mode seen in repeated
+      full-suite review reruns.
+
+      - Added regression coverage for atomic YAML temp-file cleanup.
+
+      - Verification: npm test -- tests/yaml-atomic-write.test.ts
+      tests/dispatch-workspace-registry.test.ts tests/cli-serve.test.ts; npm test (run 1: 221 files,
+      4629 passed, 3 skipped); npm test (run 2: 221 files, 4629 passed, 3 skipped); kspec validate
+      (warnings-only baseline, exit 6).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T19:51:07.518Z

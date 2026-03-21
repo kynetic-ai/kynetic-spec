@@ -1,0 +1,27 @@
+notes:
+  - _ulid: 01KKQSPJBMXA9ECGVVC36VJQHX
+    content: "Created UI data layer skill (.kspec/skills/ui-data-layer/SKILL.md). Researched TanStack
+      Query v6 Svelte docs online (thunk pattern, runes-native API, no stores). Explored existing
+      codebase patterns (api.ts, WebSocket manager, sidebar polling, sessions infinite scroll,
+      static mode, project switching). Skill covers: setup, v6 thunk API, query key factories, cache
+      timing, WS→invalidation wiring, mutations with optimistic updates, createInfiniteQuery for
+      sessions, ref index usage, project switch cache clearing, static mode compatibility, error
+      handling, migration guide (before/after), testing patterns, anti-patterns, and boundaries (WS
+      streaming stays outside queries)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T03:47:37.460Z
+  - _ulid: 01KKQT9538GF43PZ0K2X76GG3R
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: Branch behind origin/main with merge conflict in
+      kspec-agents.md. Rebase onto main and re-run kspec agents generate. Content quality is clean —
+      this is the only blocking issue."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T03:57:46.472Z
+  - _ulid: 01KKQTWJNQMTYVMKPB9WGJGNT7
+    content: "[FIX_CYCLE: 1] Merged origin/main into task branch to resolve kspec-agents.md conflict.
+      Regenerated agents (already up to date). Full test suite passes (248/249 files; 1 pre-existing
+      flaky cli-serve shutdown test). PR #865 updated."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T04:08:22.968Z

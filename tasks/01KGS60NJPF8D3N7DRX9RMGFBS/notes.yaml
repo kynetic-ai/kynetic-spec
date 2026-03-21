@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KGS6CWAHNPPPTNPY7W3NGJ1J
+    content: "Added --note flag to inbox promote. createNote imported, note added to task before save.
+      Tested: note appears in task get output."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-06T10:01:40.433Z

@@ -1,0 +1,41 @@
+_ulid: 01KM6YEYAEWFKETRCB53V73HHK
+slugs:
+  - task-remove-monolithic
+title: Remove monolithic task file support
+type: task
+description: |
+  Remove the legacy monolithic file loading path from the task data
+  manager after the split format is activated and stable.
+
+  Why: Keeping two storage backends increases complexity and testing
+  surface. Once all projects are migrated and activated, the old path
+  serves no purpose.
+
+  What: Remove the code that loads tasks from a monolithic array in
+  project.tasks.yaml. Remove loadTasksFromFile, extractRawTaskArray,
+  writeRawTaskArray, and related helpers. Remove the fallback search
+  paths (backlog.tasks.yaml, active.tasks.yaml, etc.). Remove the
+  git log -L based activity extraction.
+
+  How: Delete the old codepaths, update tests to use the split format,
+  verify the full test suite passes.
+
+  MANUAL ONLY: Must confirm the switchover is stable before removing
+  the fallback path.
+spec_ref: null
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-activate-split-storage"
+context: []
+priority: 2
+tags:
+  - tasks
+  - cleanup
+  - manual
+vcs_refs: []
+created_at: 2026-03-21T00:59:26.926Z
+todos: []
+automation: manual_only

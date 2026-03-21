@@ -1,0 +1,49 @@
+_ulid: 01KKX6C83WVQBYBZ5SWTXY1JKA
+slugs: []
+title: Round-trip stability for plan record YAML writes
+type: task
+description: >-
+  plans.ts savePlan, mutatePlanAtomically, and deletePlan all load project.plans.yaml through
+  PlansFileSchema.safeParse() before writing back. This adds ~7 Zod defaults (slugs, content,
+  status, derived_tasks, derived_specs, notes, created_at) to every plan record on each save.
+
+
+  Apply the same raw-data-preservation pattern: load the raw YAML array without schema
+  normalization, only schema-parse the target plan, merge onto raw data to suppress defaults.
+  Non-target plans stay as raw data.
+
+
+  Verify with tests: write a plans file, load and save one plan without changes, confirm file is
+  byte-identical.
+spec_ref: "@yaml-serialization-invariants"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Merged to dev. Applied raw-data-preservation pattern to plan YAML writes (savePlan,
+  mutatePlanAtomically, deletePlan). Non-target plans preserved as raw data without schema
+  normalization, preventing Zod defaults from polluting output. 6 round-trip stability tests added.
+  No regressions.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - schema
+  - plans
+vcs_refs: []
+review_ref: "@01KKYMKPJQS689KD4JC2WJK676"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-17T19:16:40.819Z
+  commit: 65035b85142bbf7c16078777c730bc19413276a4
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KKYK24M9N2K3A5197T83EN6R
+created_at: 2026-03-17T06:05:22.940Z
+started_at: 2026-03-17T19:16:33.507Z
+submitted_at: 2026-03-17T19:16:41.328Z
+completed_at: 2026-03-17T19:35:05.846Z
+todos: []
+automation: eligible

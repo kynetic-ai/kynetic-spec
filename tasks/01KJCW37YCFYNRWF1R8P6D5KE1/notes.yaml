@@ -1,0 +1,18 @@
+notes:
+  - _ulid: 01KJCWETVNFAKFMQ8H3X2NFVHE
+    content: "Description: kspec validate --completeness reports all own and trait ACs for
+      @triage-daemon-api as uncovered, despite annotations existing in
+      packages/web-ui/tests/e2e/api-triage.spec.ts. Likely a path/root mismatch in scanTestCoverage.
+      Investigate root cause and fix."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T11:48:29.173Z
+  - _ulid: 01KJCWMBVTNYB31XDEEG1YAY6Q
+    content: "Root cause found: bootstrap.cjs checkBuild() only checks if dist/cli/index.js EXISTS, not
+      whether it's stale. When source changes (like adding E2E scan paths to validate.ts) but dist/
+      already exists from a prior build, bootstrap skips npm run build. The npm-linked kspec binary
+      then runs stale dist/ code. Fix: compare mtime of newest src/ file vs dist/cli/index.js. After
+      local npm run build, all 9 triage ACs + trait ACs are correctly detected."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T11:51:30.426Z

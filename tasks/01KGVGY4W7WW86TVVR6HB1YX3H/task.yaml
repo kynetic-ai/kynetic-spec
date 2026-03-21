@@ -1,0 +1,24 @@
+_ulid: 01KGVGY4W7WW86TVVR6HB1YX3H
+slugs: []
+title: Support ephemeral workflow runs without persistent state
+type: task
+description: "Ephemeral workflow runs - Add support for workflows that don't persist run state. Use
+  cases: simple instruction flows, quick checklists, trivial step sequences. Options: (1)
+  --ephemeral flag on 'workflow start', (2) workflow.ephemeral field in definition, (3) both with
+  override. Ephemeral runs: no file storage, no shadow commits, not shown in 'workflow runs', state
+  only in session context or just sequential display. Reduces noise for simple flows."
+spec_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Workflow prune with --older-than/--status/--abandoned solves the noise problem.
+  Ephemeral mode adds complexity for marginal gain.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - workflow
+  - dx
+vcs_refs: []
+created_at: 2026-02-07T07:44:20.870Z
+todos: []
+automation: needs_review

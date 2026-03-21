@@ -1,0 +1,17 @@
+notes:
+  - _ulid: 01KJ6MGF84K6RFKK9TXV435GDM
+    content: >-
+      Fixed two locations:
+
+      1. detectTaskCompleteCommand() in ralph.ts: regex now matches both 'kspec task complete' and
+      'kspec task submit' via alternation pattern
+
+      2. getIterationStats() in session.ts: now counts pending_review tasks (using started_at >=
+      since) in addition to completed tasks (using completed_at >= since)
+
+      Exported detectTaskCompleteCommand for proper unit testing. Updated tests: replaced
+      placeholder expect(true) with real assertions, updated iteration stats test to verify
+      submitted tasks count toward limit. Updated spec ac-detection to reflect submit counting.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T01:34:07.620Z

@@ -1,0 +1,22 @@
+_ulid: 01KFMMXR8BSTRCVP6HW9CPVC94
+slugs: []
+title: Read-only mode behaviors
+type: task
+spec_ref: "@gh-pages-export"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Read-only mode UI with disabled buttons, hidden forms, and graceful error messages.
+  ACs 15-18 covered.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - phase-4
+  - export
+vcs_refs: []
+created_at: 2026-01-23T05:23:39.403Z
+started_at: 2026-01-28T08:05:54.809Z
+completed_at: 2026-01-28T08:15:05.316Z
+todos: []
+automation: needs_review

@@ -1,0 +1,127 @@
+notes:
+  - _ulid: 01KG0GA702KM4R9ZR8ZF3Y635N
+    content: |-
+      Wire up real test coverage data to the coverage indicator in ItemDetail.
+
+      Currently shows 'Coverage: Unknown' - placeholder for future implementation.
+
+      Requirements:
+      - Export scanTestCoverage() from validate.ts
+      - Add coverage data to Items API response  
+      - Update shared types for coverage info
+      - Update ItemDetail.svelte to display actual coverage status
+
+      Related to AC-15 (partial): AC row expansion shows full GWT with test coverage indicator.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-27T19:53:58.018Z
+  - _ulid: 01KG0GQV2NGM36WJ6TY6P93X9R
+    content: >-
+      ## Complete Implementation Details
+
+
+      ### Background
+
+      The ItemDetail.svelte component displays acceptance criteria for spec items. Each AC can be
+      expanded to show full Given/When/Then text. There's a placeholder 'Coverage: Unknown'
+      indicator that should show whether the AC has test coverage.
+
+
+      ### Current State
+
+      - File: packages/web-ui/src/lib/components/ItemDetail.svelte
+
+      - Line ~145: `<div data-testid="test-coverage-indicator" class="text-xs text-muted-foreground
+      mt-2 uncovered">Coverage: Unknown</div>`
+
+      - The 'uncovered' class is hardcoded, indicator always shows 'Unknown'
+
+
+      ### What scanTestCoverage() Does
+
+      - Located in: src/cli/commands/validate.ts (currently not exported)
+
+      - Scans test files for AC annotations like `// AC: @spec-item ac-N`
+
+      - Returns coverage map: which spec items have which ACs covered by tests
+
+      - Already used by `kspec validate` command
+
+
+      ### Implementation Steps
+
+
+      1. **Export scanTestCoverage from validate.ts**
+         - Make the function exportable
+         - Ensure it can be called from daemon context
+
+      2. **Add coverage to Items API**
+         - File: packages/daemon/src/routes/items.ts
+         - GET /api/items/:ref should include AC coverage data
+         - Structure: `acceptance_criteria: [{ _ulid, given, when, then, covered: boolean }]`
+
+      3. **Update shared types**
+         - File: packages/shared/src/types.ts
+         - Add `covered?: boolean` to AcceptanceCriterion type in ItemDetail interface
+
+      4. **Update ItemDetail.svelte**
+         - Read coverage from AC data
+         - Show 'Covered' (green) or 'Not Covered' (red) instead of 'Unknown'
+         - Update class from 'uncovered' to 'covered' when appropriate
+
+      ### Acceptance Criteria
+
+      From @web-dashboard AC-15: 'shows full Given/When/Then text with test coverage indicator if
+      available'
+
+
+      ### Test Verification
+
+      After implementation, the E2E test in items.spec.ts should verify:
+
+      - Coverage indicator shows actual state (not just 'Unknown')
+
+      - Class reflects covered/uncovered status
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-27T20:01:24.565Z
+  - _ulid: 01KG4NJT30GHB1N2Z0TDG35T73
+    content: |-
+      Starting implementation. Completed:
+      - Exported scanTestCoverage() from validate.ts
+      - Added covered?: boolean to AcceptanceCriterion in shared types
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-29T10:43:00.320Z
+  - _ulid: 01KG4P9DZK6N8BGPWJ92G6J68N
+    content: |-
+      Implementation complete:
+
+      1. Exported scanTestCoverage() from validate.ts
+      2. Added covered?: boolean to AcceptanceCriterion in shared types
+      3. Updated daemon items route (GET /api/items/:ref) to compute coverage
+      4. Updated JSON export (generateJsonSnapshot) to include coverage in static mode
+      5. Updated ItemDetail.svelte with proper coverage indicator display:
+         - Green checkmark + 'Covered' for covered ACs
+         - Amber X + 'Not covered' for uncovered ACs  
+         - Gray question mark + 'Coverage: Unknown' for unknown
+      6. Removed duplicate scanTestCoverage from task.ts, now imports from validate
+      7. Updated E2E tests:
+         - Added test fixture coverage-test.test.ts with AC annotation
+         - Modified test-base.ts to copy project-level tests to temp dir
+         - Added tests for both covered and uncovered AC indicators
+      All 20 items E2E tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-29T10:55:21.587Z
+  - _ulid: 01KG5BD81SJ3N96BQEM26R94HB
+    content: |-
+      Addressed PR review comments:
+      1. Extracted AC coverage computation to shared computeACCoverage() utility
+      2. Made scanTestCoverage() recursive to scan test subdirectories  
+      3. Added console.warn logging when coverage scan fails
+
+      Pushed commit b97211ce to address Greptile review feedback.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-29T17:04:26.681Z

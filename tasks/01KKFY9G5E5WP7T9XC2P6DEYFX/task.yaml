@@ -1,0 +1,34 @@
+_ulid: 01KKFY9G5E5WP7T9XC2P6DEYFX
+slugs:
+  - task-implement-dispatch-bootstrap-contract
+title: Implement dispatcher-owned runtime bootstrap contract
+type: task
+spec_ref: "@dispatch-runtime-bootstrap-contract"
+plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #805 (merge commit 120a71a2a037d304623611ca15afcf9283ce5908).
+  Implemented dispatcher-owned runtime bootstrap preflight with explicit dispatch/agent bootstrap
+  config, role-specific cached bootstrap state and invalidation, reviewer-safe reuse/rerun rules,
+  and actionable bootstrap failure blocking. AC coverage verified for
+  @dispatch-runtime-bootstrap-contract ac-1..ac-6 plus applicable @trait-error-guidance coverage;
+  local npm test and GitHub CI passed on the merged head."
+depends_on:
+  - "@task-implement-dispatch-workspace-registry"
+  - "@task-implement-dispatch-worktree-provisioning"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - runtime
+  - bootstrap
+vcs_refs: []
+review_url: https://github.com/kynetic-ai/kynetic-spec/pull/805
+session_id: 01KKJ2M92ZEBADBJMXJ9RMAQEP
+created_at: 2026-03-12T02:33:56.654Z
+started_at: 2026-03-12T22:50:37.595Z
+submitted_at: 2026-03-12T22:50:44.143Z
+completed_at: 2026-03-12T23:01:26.866Z
+todos: []
+automation: eligible

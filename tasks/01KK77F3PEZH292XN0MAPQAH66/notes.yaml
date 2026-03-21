@@ -1,0 +1,23 @@
+notes:
+  - _ulid: 01KK77NA606AMT2BPS1C6Y5D3J
+    content: "Root cause: closeSession() in invocation.ts writes session files to disk but never calls
+      shadowAutoCommit(). Added shadow commit after all 4 terminal event paths (completed,
+      timed_out, aborted, failed). Also fixed shadowPull to stash/unstash around pull operations so
+      dirty worktrees don't trigger false conflict warnings in the sync scheduler. Spec coverage:
+      @session-events ac-7 already requires this. No spec gap for the primary fix."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T17:24:31.040Z
+  - _ulid: 01KK787PD01JNQRRXJBEWM6A2J
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #714 adds no regression tests for the new
+      session-end shadow commit path or the dirty-worktree shadowPull stash/pop path."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T17:34:33.377Z
+  - _ulid: 01KK79XMB0CZHKYZT45NFMP6FM
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: PR #714 still broadens pre-read shadow sync to
+      all initContext() callers and lacks abort-path regression coverage for the new session-end
+      shadow commit logic."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T18:04:00.737Z

@@ -1,0 +1,19 @@
+_ulid: 01KEZYBC1M3KMG9KB47CKQHY07
+slugs:
+  - task-bulk-import
+title: Design bulk item import from simplified YAML
+type: spike
+spec_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Superseded by unified JSON to YAML bulk import spec decision
+depends_on: []
+context: []
+priority: 2
+tags:
+  - design
+  - dx
+  - cli
+vcs_refs: []
+created_at: 2026-01-15T04:24:19.764Z
+todos: []

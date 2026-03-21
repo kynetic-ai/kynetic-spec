@@ -1,0 +1,81 @@
+notes:
+  - _ulid: 01KFMN0YZ5W5G4SGCDPMS49G3B
+    content: |-
+      ## Implementation Notes
+
+      ### Objective
+      Compile daemon to standalone executables using bun build --compile.
+
+      ### Steps
+      1. Add build script:
+         ```bash
+         bun build --compile --minify packages/daemon/src/index.ts --outfile dist/kspec-daemon
+         ```
+
+      2. Cross-platform targets:
+         ```bash
+         bun build --compile --target=linux-x64 --outfile dist/kspec-daemon-linux-x64
+         bun build --compile --target=darwin-arm64 --outfile dist/kspec-daemon-darwin-arm64
+         bun build --compile --target=darwin-x64 --outfile dist/kspec-daemon-darwin-x64
+         bun build --compile --target=windows-x64 --outfile dist/kspec-daemon-win-x64.exe
+         ```
+
+      3. Embed web-ui assets if serving static files
+
+      ### ACs Covered
+      - ac-16: bun build --compile produces executable
+
+      ### Files to Create/Modify
+      - packages/daemon/package.json (build scripts)
+      - scripts/build-executables.sh
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T05:25:24.581Z
+  - _ulid: 01KFNYBK7SPJAHAM7HAC3Z0E54
+    content: >-
+      Implemented executable compilation for kspec-daemon using bun build --compile.
+
+
+      Changes:
+
+      1. Added build:compile script to packages/daemon/package.json - runs 'bun build --compile
+      --minify src/index.ts --outfile dist/kspec-daemon'
+
+      2. Created scripts/build-executables.sh - cross-platform build script for Linux x64, macOS
+      ARM64/x64, and Windows x64 targets
+
+
+      Testing:
+
+      - Successfully compiled standalone executable on Linux x64
+
+      - Verified executable runs without Bun installation required (97MB self-contained binary)
+
+      - Binary correctly parses arguments and attempts to start server (fails gracefully when .kspec
+      directory not found, as expected)
+
+
+      AC Coverage:
+
+      - ac-16: bun build --compile produces standalone executable ✓
+
+
+      The build:compile script can be run from packages/daemon directory with 'bun run
+      build:compile'. The build-executables.sh script can be run from project root to build for all
+      platforms.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T17:27:44.634Z
+  - _ulid: 01KFNYTQ6VQBZSD09BMCXXY1QV
+    content: |-
+      Added E2E test coverage for AC-16 to address local-review blocking issue.
+
+      Test suite includes:
+      1. E2E compilation test - runs bun build --compile and verifies standalone executable
+      2. Package.json script verification
+      3. Cross-platform build script validation
+
+      All 3 tests passing. PR #205 updated and ready for review.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T17:36:00.220Z

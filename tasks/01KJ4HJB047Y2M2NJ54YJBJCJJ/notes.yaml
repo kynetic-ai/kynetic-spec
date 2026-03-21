@@ -1,0 +1,23 @@
+notes:
+  - _ulid: 01KJ4JAVPGR8HX3KYBFX9JDP5N
+    content: Updated triage skill with new record→act workflow. Made it a core skill in
+      templates/skills/triage/ with SKILL.md + docs/ (inbox.md, observations.md, automation.md).
+      Extended core skill install/update/build-plugin to copy supporting directories (docs/,
+      references/, scripts/, assets/) not just SKILL.md. Updated @core-skill-install ac-2 and
+      @core-skill-update ac-1 specs to cover supporting files. All tests pass (182 skill tests + 3
+      setup tests).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T06:17:37.744Z
+  - _ulid: 01KJ4JEPSZHR36BAR5K8KZQXF8
+    content: Reset from completed to pending
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T06:19:43.808Z
+  - _ulid: 01KJ4K2HVFYS4M3XQCCP426DTP
+    content: "PR #458 created (feat/triage-core-skill). Awaiting CI and review. All work complete: skill
+      content updated, core template created, install/update/build extended for supporting dirs,
+      project-level skill removed, specs updated."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T06:30:34.095Z

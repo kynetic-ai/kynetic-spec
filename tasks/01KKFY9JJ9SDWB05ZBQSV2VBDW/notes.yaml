@@ -1,0 +1,64 @@
+notes:
+  - _ulid: 01KKHVVWQEXYB5J14C2N3FXXAB
+    content: >-
+      Execution context:
+
+      - Background: replace implicit per-agent drain ordering with one explicit cross-agent
+      scheduler for dispatch candidates.
+
+      - Scope: dispatch runtime candidate ranking, workspace-health eligibility gating, and
+      AC-annotated scheduler tests.
+
+      - Files: src/agent-runtime/dispatch.ts, src/agent-runtime/workspace.ts,
+      tests/agent-dispatch-engine.test.ts.
+
+      - Verification: npm test -- tests/agent-dispatch-engine.test.ts, npm test, kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T20:30:02.478Z
+  - _ulid: 01KKHWC9W4C5HRZ7KNF9N7939B
+    content: Implemented explicit cross-agent scheduling in the dispatch runtime. Candidate selection
+      now ranks globally by band, numeric priority, continuity affinity, and FIFO fairness;
+      unresolved blockers/dependencies are excluded for all candidate types; workspace health gates
+      continuation/handoff work so stale workspace state is pruned before dispatch. Added
+      AC-annotated dispatch scheduler tests and adjusted workspace health semantics so reviewer
+      snapshots can be provisioned on demand while still rejecting truly stale state.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T20:39:00.228Z
+  - _ulid: 01KKHWQYCDBEX9C03H9915AEWT
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #804 is in merge-conflict state against main.
+      Rebase or merge main, reconcile the overlapping dispatch/workspace changes in
+      src/agent-runtime/dispatch.ts, then rerun validation and tests on the updated head."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T20:45:21.677Z
+  - _ulid: 01KKHY3WAF5744ZMY4F23FDHA8
+    content: >-
+      Fix cycle reconciliation:
+
+      - Rebased task branch onto origin/main and hit content conflicts in
+      src/agent-runtime/dispatch.ts and src/agent-runtime/workspace.ts.
+
+      - Keeping main's registry-backed workspace lifecycle/active-idle tracking while reapplying
+      scheduler health gating, continuity state updates, and fairness semantics from this task.
+
+      - Verification after conflict resolution: targeted dispatch tests, full npm test, and kspec
+      validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T21:09:21.359Z
+  - _ulid: 01KKHYDDXP9S3JWBH4VN20FGFG
+    content: >-
+      Rebase verification:
+
+      - Resolved dispatch/workspace conflicts by preserving registry-backed lifecycle tracking plus
+      scheduler-side workspace health gating.
+
+      - Added the post-rebase type-safety follow-up for optional reviewer worktree registry entries.
+
+      - Verified with: npm test -- tests/agent-dispatch-engine.test.ts, npm test, kspec validate
+      (warnings-only baseline; exit 6).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T21:14:34.295Z

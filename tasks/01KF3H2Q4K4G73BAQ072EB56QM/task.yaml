@@ -1,0 +1,23 @@
+_ulid: 01KF3H2Q4K4G73BAQ072EB56QM
+slugs:
+  - task-task-completion-guardrails
+title: "Implement: Task Completion Guardrails"
+type: task
+spec_ref: "@task-completion-guardrails"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Implemented all 3 acceptance criteria with interactive prompts for spec status
+  updates. Manual testing confirms correct behavior for tasks with/without spec_ref and AC
+  reminders.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - workflow
+  - dx
+vcs_refs: []
+created_at: 2026-01-16T13:49:22.451Z
+started_at: 2026-01-18T08:35:38.968Z
+completed_at: 2026-01-18T08:39:25.049Z
+todos: []

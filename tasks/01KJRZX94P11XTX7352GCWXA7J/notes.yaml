@@ -1,0 +1,72 @@
+notes:
+  - _ulid: 01KJRZX94PHX2YXWXBQPXX139G
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      The kspec npm package bundles the pre-built web UI static assets so the daemon can serve the
+      web UI when installed in any project, without requiring a local web UI build. The build
+      pipeline copies packages/web-ui/build to dist/web-ui/, and resolveWebUiPath falls back to that
+      location relative to the daemon module.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given npm run build is executed, when build completes, then packages/web-ui/build
+      output is copied to dist/web-ui/ in the package
+
+      - ac-2: Given kspec is installed in a project with no local web UI build, when daemon starts
+      and resolves web UI path, then resolveWebUiPath returns the bundled dist/web-ui/ path relative
+      to the daemon module location
+
+      - ac-3: Given kspec is installed as an npm package in a non-monorepo project, when browser
+      opens http://localhost:3456/, then daemon serves the bundled web UI and returns HTTP 200 with
+      HTML content
+
+      - ac-4: Given an explicit webUiDir option or WEB_UI_DIR env var or local packages/web-ui/build
+      is present, when daemon starts, then the explicit or local path takes precedence over the
+      bundled dist/web-ui/ fallback
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T04:39:41.462Z
+  - _ulid: 01KJS05XQ7AD9SSVHTW7DHDEZR
+    content: >-
+      Implementation hints:
+
+
+      Build pipeline (package.json): Add a build:web-ui step that runs 'cd packages/web-ui && npm
+      run build && shx cp -r build ../dist/web-ui' (or equivalent). Wire it into the main build
+      script so dist/web-ui/ is always populated after npm run build.
+
+
+      resolveWebUiPath fallback (packages/daemon/src/server.ts): Add a 5th lookup after the existing
+      4. Use import.meta.url to find the daemon module's own location, then resolve relative to it:
+        const selfDir = dirname(fileURLToPath(import.meta.url));
+        const bundledPath = join(selfDir, '..', '..', 'web-ui');  // dist/daemon/ -> dist/ -> web-ui/
+        if (existsSync(bundledPath)) return bundledPath;
+
+      This works whether kspec is run from dist/ (installed package) or during development.
+
+
+      Also update package.json 'files' array if dist/web-ui/ isn't already covered by the 'dist'
+      glob — it should be, but worth confirming.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T04:44:24.679Z
+  - _ulid: 01KJS35F3X23QYG637RS82ZZ6G
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: CI broken — build:web-ui step added to main
+      build script breaks Node.js 18 CI (Vite requires Node 20+). MUST-FIX: All 4 ACs (ac-1 through
+      ac-4) have zero test coverage. AC annotation in server.ts is in a JSDoc block comment, not a
+      test file. Posted findings as inline comments on PR #642."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T05:36:35.453Z
+  - _ulid: 01KJS51F2JMPVDBA8EYRCA3XE1
+    content: "[FIX_CYCLE: 2] Review findings: Fix cycle 2 review: MUST-FIX ac-2 test doesn't call
+      resolveWebUiPath (tautology assertion only), MUST-FIX ac-3 has no test coverage (false claim
+      in comment that api-server.spec.ts covers it), SHOULD-FIX AC annotation still in JSDoc block
+      at server.ts:47."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T06:09:21.490Z

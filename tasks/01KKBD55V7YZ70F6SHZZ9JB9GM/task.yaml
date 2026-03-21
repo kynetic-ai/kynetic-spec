@@ -1,0 +1,27 @@
+_ulid: 01KKBD55V7YZ70F6SHZZ9JB9GM
+slugs: []
+title: "Reflection: Add workflow introspection to CLI output. 'kspec workflow show --json' should
+  include cu"
+type: task
+description: >-
+  Add step metadata to kspec workflow show --json output.
+
+
+  Current behavior: --json output includes workflow definition and run status but not the current
+  step details (step_index, step_type, step_content).
+
+
+  Fix: In the workflow show JSON formatter (src/cli/commands/workflow.ts), include current_step
+  object with index, type, and content fields. This enables agents to progress workflows
+  programmatically without parsing YAML.
+spec_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-03-10T08:17:31.495Z
+todos: []
+automation: needs_review

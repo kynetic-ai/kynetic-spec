@@ -1,0 +1,23 @@
+_ulid: 01KHVXK2CPXY1PSFS975MZY6QC
+slugs:
+  - implement-project-config-file
+title: Implement Project Config File
+type: task
+spec_ref: "@project-config"
+plan_ref: "@plan-project-level-configuration-system"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #418. Implemented project config file (kspec.config.yaml) with shadow
+  branch settings, identity settings, validation settings, and daemon settings. Config is loaded
+  before shadow detection and available on KspecContext.config. Env vars take precedence over file
+  values. All 7 ACs covered with 24 tests."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-19T21:41:11.190Z
+started_at: 2026-02-20T01:08:05.836Z
+completed_at: 2026-02-20T01:26:49.390Z
+todos: []
+automation: eligible

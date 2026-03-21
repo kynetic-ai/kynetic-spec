@@ -1,0 +1,19 @@
+_ulid: 01KF9B4WB2M5HNW7V7YKZXFPZ6
+slugs: []
+title: Regenerate invalid 28-char ULIDs in bootstrap meta
+type: task
+description: Bootstrap kynetic.meta.yaml has invalid 28-char ULIDs instead of 26-char. Need to
+  regenerate all meta item ULIDs. Validation now catches this!
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Already completed in commit ff935fd - all ULIDs now valid 26-char format
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-18T20:01:08.450Z
+started_at: 2026-01-19T02:19:36.779Z
+completed_at: 2026-01-19T02:20:58.081Z
+todos: []

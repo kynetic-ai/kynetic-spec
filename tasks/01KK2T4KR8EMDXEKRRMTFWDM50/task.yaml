@@ -1,0 +1,30 @@
+_ulid: 01KK2T4KR8EMDXEKRRMTFWDM50
+slugs: []
+title: Implement workflows page — list workflows with steps, triggers, and start action
+type: task
+description: "The /workflows page currently shows placeholder content. Implement: (1) Fetch
+  workflows from existing GET /api/meta endpoint (workflows are in kynetic.meta.yaml), (2) List each
+  workflow as a card showing id, description, steps with names, trigger type if any, and loop
+  variant indicator, (3) Add a Start button per workflow that calls the daemon to initiate a
+  workflow run (or shows the kspec workflow start command if no daemon endpoint exists yet), (4)
+  Show workflow status if tracking exists. Check daemon routes for existing workflow endpoints."
+spec_ref: "@ui-workflows-view"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - feature
+  - web-ui
+vcs_refs: []
+session_id: 01KK3E4EX1HQEGMA2R9MA7KVPW
+created_at: 2026-03-07T00:11:14.567Z
+started_at: 2026-03-07T06:08:35.756Z
+submitted_at: 2026-03-07T06:13:10.765Z
+completed_at: 2026-03-07T06:32:57.543Z
+todos: []
+automation: eligible

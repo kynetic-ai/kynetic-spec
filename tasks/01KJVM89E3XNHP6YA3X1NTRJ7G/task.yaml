@@ -1,0 +1,37 @@
+_ulid: 01KJVM89E3XNHP6YA3X1NTRJ7G
+slugs:
+  - task-dispatch-watch-transcript-fixtures
+title: Add dispatch watch transcript fixtures for adapter boundary patterns
+type: task
+description: "Create transcript-style regression fixtures/tests for kspec agent dispatch watch
+  across known adapter chunking patterns (empty-before-text boundaries, repeated non-text/tool
+  boundaries, interleaved multi-stream switching, reconnect boundaries). Goal: stabilize formatting
+  behavior and reduce future heuristic regressions while keeping AC-13 rendering semantics
+  explicit."
+spec_ref: "@cli-agent-commands"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #676 (commit 80d0c628). Added dispatch-watch transcript regression
+  fixtures for empty-before-text boundaries, repeated boundary coalescing, interleaved multi-stream
+  switching, and reconnect output flush behavior, with fixture-driven AC-13/AC-14 tests in
+  tests/cli-agent-commands.test.ts. Review verified own AC annotations for @cli-agent-commands
+  ac-1..ac-18 and trait AC coverage annotations/N-A declarations; regression gate npm test passed
+  (3646/3646)."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - agent
+  - websocket
+  - tests
+vcs_refs: []
+session_id: 01KJWKJDY3BC7C21HQEX3RE9S0
+created_at: 2026-03-04T05:13:42.595Z
+started_at: 2026-03-04T14:23:12.297Z
+submitted_at: 2026-03-04T14:27:49.919Z
+completed_at: 2026-03-04T14:39:24.907Z
+todos: []
+automation: eligible

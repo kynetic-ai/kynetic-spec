@@ -1,0 +1,58 @@
+_ulid: 01KM6YEQYJGQ4JF2ECR67DANZQ
+slugs:
+  - task-migrate-supporting
+title: Migrate supporting modules to task data manager
+type: task
+description: |
+  Replace direct task I/O in all remaining consumers: review-task
+  integration, plan derive, validation, alignment, batch execution,
+  and dispatch.
+
+  Why: These modules also call loadAllTasks and mutateTaskAtomically
+  directly. All task I/O must flow through the manager before the
+  storage format can change.
+
+  What: Update imports and calls in:
+  - src/parser/review-task-integration.ts (linkReviewToTasks,
+    handleVerdictTaskTransition)
+  - src/cli/commands/derive.ts (task creation during plan derive)
+  - src/parser/validate.ts (task loading for validation)
+  - src/parser/align.ts (spec-task alignment)
+  - src/cli/batch-exec.ts (batch write buffer integration)
+  - Any other files that import task functions from yaml.ts
+
+  How: Same pattern as CLI migration — replace direct calls with
+  manager methods. These modules tend to have simpler task interactions
+  (load all, find one, mutate one) so the changes are straightforward.
+spec_ref: "@task-data-manager"
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev after review approval. Migrated remaining supporting modules and
+  dispatch/validate task reads to TaskDataManager, added manager loadAllTasks support for
+  full-detail consumers, and verified with kspec validate plus npm test (6756 passing).
+depends_on:
+  - "@task-impl-data-manager"
+context: []
+priority: 1
+tags:
+  - tasks
+  - migration
+vcs_refs: []
+review_ref: "@01KM7H3CAQS8X7ZQAE7A2GNY2W"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-21T06:24:18.208Z
+  commit: 571b6c3df5fea1c478f526e6412b87879f747a0a
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM7GCRDZB0M6JBY6Y7V2KX3W
+created_at: 2026-03-21T00:59:20.402Z
+started_at: 2026-03-21T06:24:11.019Z
+submitted_at: 2026-03-21T06:24:18.631Z
+completed_at: 2026-03-21T06:30:46.241Z
+todos: []
+automation: eligible

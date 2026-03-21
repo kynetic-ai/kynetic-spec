@@ -1,0 +1,31 @@
+_ulid: 01KK7T2CNFQVZ8EM809ZSRC1PV
+slugs:
+  - extract-session-path-resolution-from-specdir
+title: Extract session path resolution from specDir
+type: task
+spec_ref: "@session-storage-path-resolution"
+plan_ref: "@plan-session-storage-separation"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #719 (commit e05e155be84dffb822523639cd219dcc0f37002d). Extracted
+  session path resolution from specDir by adding ctx.sessionsDir, routing session
+  store/helpers/CLI/daemon/invocation through .kspec-sessions at project root, and fixing follow-up
+  regressions in checkpoint scoping, task budget enforcement, and session log listing. AC coverage
+  verified for ac-resolver, ac-path-helpers, ac-context, ac-cli-commands, and ac-daemon-routes; npm
+  test passed on the merged head."
+depends_on:
+  - "@add-sessions-storage-config-to-manifest-schema"
+context: []
+priority: 1
+tags:
+  - session
+  - storage
+  - refactor
+vcs_refs: []
+session_id: 01KK86SCX8D65PEB3S8CSYEW6R
+created_at: 2026-03-08T22:46:13.935Z
+started_at: 2026-03-09T03:14:15.387Z
+submitted_at: 2026-03-09T03:14:24.574Z
+completed_at: 2026-03-09T03:25:23.484Z
+todos: []
+automation: eligible

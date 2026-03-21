@@ -1,0 +1,24 @@
+_ulid: 01KHFBT2Z4P78QGWV6B19K138P
+slugs:
+  - implement-agent-template-system
+title: Implement Agent Template System
+type: task
+spec_ref: "@agent-templates"
+plan_ref: "@plan-portable-agent-integration-infrastructure"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #386. Implemented Agent Template System with static markdown templates
+  in templates/agents-sections/ for kspec boilerplate documentation. All 3 ACs covered: (ac-1)
+  template sections included in defined order, (ac-2) all section types appear in output, (ac-3)
+  error if templates directory missing. Added 10 tests with AC annotations."
+depends_on:
+  - "@implement-agent-instruction-generation"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-15T00:39:33.604Z
+started_at: 2026-02-15T05:23:56.613Z
+completed_at: 2026-02-15T05:41:22.679Z
+todos: []
+automation: eligible

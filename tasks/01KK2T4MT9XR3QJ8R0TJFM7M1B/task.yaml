@@ -1,0 +1,33 @@
+_ulid: 01KK2T4MT9XR3QJ8R0TJFM7M1B
+slugs: []
+title: Implement settings page — project config, conventions, and daemon settings
+type: task
+description: "The /settings page currently shows placeholder content. Implement: (1) Display current
+  project config from kynetic.yaml (project name, version, remote tracking), (2) Show and edit
+  conventions (commits, naming, testing, etc.) from meta, (3) Show daemon connection info (port,
+  uptime, version from /api/health), (4) Shadow branch status (from kspec shadow status), (5)
+  Consider a section for managing skills list. Read-only sections are fine for v1 — editing can be a
+  follow-up."
+spec_ref: "@ui-settings-view"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp from fix/settings-review-feedback.
+  Implemented /settings read-only sections for project config (including remote tracking), daemon
+  info (port/uptime/version), shadow status, and conventions. AC coverage verified for
+  @ui-settings-view ac-1 with annotated tests; full test commands passed.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - feature
+  - web-ui
+vcs_refs: []
+session_id: 01KK3FKJTCTFQPKMTGE2B94EW7
+created_at: 2026-03-07T00:11:15.657Z
+started_at: 2026-03-07T06:33:20.267Z
+submitted_at: 2026-03-07T06:46:32.701Z
+completed_at: 2026-03-07T07:15:35.440Z
+todos: []
+automation: eligible

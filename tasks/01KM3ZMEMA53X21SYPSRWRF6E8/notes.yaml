@@ -1,0 +1,36 @@
+notes:
+  - _ulid: 01KM45BYETZXBZM8HWJRY7MX77
+    content: Routed integration-target sync and push commands through a shared workspace-owned targeting
+      helper so fetch/merge/push all resolve the dispatch mutation surface the same way. Added a
+      push-side regression test for wrong-branch shared checkout refusal to prove the isolated
+      targeting path is enforced beyond sync.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T23:02:25.498Z
+  - _ulid: 01KM45MEYP5S8Q64NMVVTGSA7G
+    content: "Verification: npm run build passed; targeted dispatch suites passed
+      (tests/dispatch-target-sync.test.ts, tests/dispatch-branch-push-lifecycle.test.ts); full npm
+      test hit a single non-local flaky failure in tests/cli-serve.test.ts but that file passed on
+      immediate isolated rerun. kspec validate still reports pre-existing repo-level
+      reference/completeness debt in .kspec/modules/meta.yaml and broad AC coverage warnings
+      unrelated to this dispatch diff."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T23:07:04.535Z
+  - _ulid: 01KM45YDGQ7XQZM2C5M5JRXKTM
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T23:12:30.743Z
+  - _ulid: 01KM46P2QAJF0A8FJNBCP8H9QD
+    content: "[FIX_CYCLE: 1] Restored the target-sync timeout semantics that were lost in the
+      isolated-target refactor by threading timeout support through
+      runDispatchIntegrationTargetGit() and passing the original 30s fetch / 10s ff-only merge
+      limits from _syncTargetBranch(). Added a regression test that asserts those exact timeout
+      options still flow through the shared targeting helper. Verification: npm run build passed;
+      npm test -- tests/dispatch-target-sync.test.ts passed; npm test --
+      tests/dispatch-branch-push-lifecycle.test.ts passed; full npm test hit one unrelated timeout
+      in tests/cli-schedule-commands.test.ts, and that file passed on immediate isolated rerun."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T23:25:26.122Z

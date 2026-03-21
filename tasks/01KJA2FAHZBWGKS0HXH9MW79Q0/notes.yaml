@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KJAM24NP2NT4BHV6XZDPMRSR
+    content: "Removed inboxSummaries alias in context.ts (use allInboxSummaries directly) and inlined
+      formatSearchTimestamp() trivial wrapper in log.ts. Items 1 (unused imports) and 2 (unused
+      _allTasks param) were already cleaned in session.ts refactor PR #523. All 522 session/ralph
+      tests pass, clean build. PR #533."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T14:43:15.767Z

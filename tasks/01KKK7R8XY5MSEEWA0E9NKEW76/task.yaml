@@ -1,0 +1,30 @@
+_ulid: 01KKK7R8XY5MSEEWA0E9NKEW76
+slugs:
+  - implement-branch-provenance-in-dispatch-workspace-
+title: Implement Branch Provenance in Dispatch Workspace Registry
+type: task
+spec_ref: "@branch-provenance-in-dispatch-workspace-registry"
+derivation: auto
+plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #830. Adds branch provenance tracking to the dispatch workspace
+  registry: DispatchWorkspaceBranchProvenanceSchema (ownership, source, remote_ref, adopted_from,
+  adopted_at), registry fallback for adopted branch discovery, inferred adoption in metadata-backed
+  recovery, and cleanup that preserves adopted branches. All 3 own ACs covered (11 tests),
+  trait-error-guidance N/A (internal runtime state). Two fix cycles addressed: registry fallback for
+  reaping adopted workspaces, and legacy metadata recovery preserving adopted branch identity."
+depends_on:
+  - "@implement-portable-task-submission-linkage"
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+session_id: 01KKM452F2Q89R6AD6GV86JHTE
+created_at: 2026-03-13T09:17:01.246Z
+started_at: 2026-03-13T17:46:18.285Z
+submitted_at: 2026-03-13T17:46:25.353Z
+completed_at: 2026-03-13T18:00:31.869Z
+todos: []
+automation: eligible

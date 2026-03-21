@@ -1,0 +1,22 @@
+_ulid: 01KFESYSE8RGFG64K1VDAP056W
+slugs:
+  - task-guided-workflow-execution
+title: "Implement: Guided Workflow Execution"
+type: task
+spec_ref: "@guided-workflow-execution"
+derivation: auto
+status: cancelled
+blocked_by: []
+closed_reason: Already implemented. workflow start/next/show/complete/abort/pause/resume all exist
+  with entry/exit criteria and enforcement modes.
+depends_on:
+  - "@task-workflow-definitions"
+context: []
+priority: 3
+tags:
+  - meta
+  - workflows
+vcs_refs: []
+created_at: 2026-01-20T22:56:09.672Z
+todos: []
+automation: needs_review

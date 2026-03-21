@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KJ719YVQ849FGY56NAV6NEF7
+    content: "Added 10 new trait AC tests for session-log-show: @trait-json-output (ac-2, ac-4, ac-6)
+      and @trait-semantic-exit-codes (ac-2, ac-6, ac-8). Documented N/A cases for ac-3/ac-5/ac-7.
+      Codex review raised 3 findings (exit code assertions too weak, trait spec mismatch, test
+      naming) — all addressed in fix commit. PR #497."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T05:17:45.719Z

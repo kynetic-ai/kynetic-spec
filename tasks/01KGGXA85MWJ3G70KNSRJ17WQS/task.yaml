@@ -1,0 +1,23 @@
+_ulid: 01KGGXA85MWJ3G70KNSRJ17WQS
+slugs: []
+title: "Design: CLI schema introspection commands for agent discoverability"
+type: task
+description: "Phase 2: Add schema introspection commands - kspec help --json-schema, kspec help
+  --exit-codes, kspec help commands --json for programmatic CLI discovery"
+spec_ref: "@cli-schema-introspection"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #314. All 5 ACs implemented and tested."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - agent-first
+  - cli
+  - phase-2
+vcs_refs: []
+created_at: 2026-02-03T04:49:01.620Z
+started_at: 2026-02-05T05:04:17.225Z
+completed_at: 2026-02-05T06:29:03.731Z
+todos: []
+automation: eligible

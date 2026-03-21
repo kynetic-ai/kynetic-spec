@@ -1,0 +1,59 @@
+_ulid: 01KKTW6NR1WA12MZCR6FY1AGT8
+slugs:
+  - task-review-task-integration
+title: Add review links to task detail page
+type: task
+description: |
+  Show linked reviews on the task detail page so users can navigate
+  from a task to its review history.
+
+  Why: When viewing a task in pending_review or needs_work state, the
+  user needs to see the review that's driving the workflow — its
+  disposition, outstanding blockers, and a link to the full review.
+
+  What: On the task detail page, if the task has review_ref or appears
+  in a review's related_refs, show a "Reviews" section with review
+  title, disposition badge, and thread summary (e.g., "3 threads,
+  1 blocker unresolved"). Each review links to /reviews/[id]. Show
+  the current (open) review prominently, with closed reviews collapsed
+  as history.
+
+  How: Use the existing task detail page component. Query
+  GET /api/reviews?task=@task-ref to find linked reviews. Render as
+  a compact card or list section. Follow existing task detail patterns
+  for supplementary data sections.
+
+  Covers: @review-records-web-ui ac-7.
+spec_ref: "@review-records-web-ui"
+plan_ref: "@plan-review-records-web-ui"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. AC-7 implemented: task detail page shows linked reviews with
+  disposition badges, thread summaries, links to /reviews/[id], current reviews prominent, closed
+  reviews collapsed. API: GET /api/reviews?task= filter, review_ref in task detail. Full E2E and
+  unit test coverage."
+depends_on:
+  - "@task-review-api-read"
+context: []
+priority: 3
+tags:
+  - web-ui
+  - review
+vcs_refs: []
+review_ref: "@01KKXYP3VVH969GDT1Q0YMPK4Z"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-17T12:42:13.686Z
+  commit: d7844f56824fc7f24dbf104390d14807a2a27582
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KKXWFYH3KDF55NYP3BTWFWTR
+created_at: 2026-03-16T08:29:05.665Z
+started_at: 2026-03-17T12:42:10.154Z
+submitted_at: 2026-03-17T12:42:14.108Z
+completed_at: 2026-03-17T13:12:55.855Z
+todos: []
+automation: eligible

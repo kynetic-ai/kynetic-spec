@@ -1,0 +1,23 @@
+notes:
+  - _ulid: 01KGVGY4W7Z0QCMW9Y1RT6QJCN
+    content: "Implementation: Needs spec/design first. Core question: how does step tracking work
+      without a run file? Options: (1) ephemeral field on workflow definition in meta YAML, (2)
+      --ephemeral flag on workflow start, (3) both with override. Execution model: write run file to
+      temp location (not .kspec/), auto-delete on completion. workflow next/show still work via temp
+      file. No shadow commits during run. Not shown in workflow runs. This avoids rethinking the
+      execution model while achieving the goal of no persistent noise. Affects: workflow start,
+      next, show, runs commands."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T07:44:20.871Z
+  - _ulid: 01KGVJKZWYET14PKPZXRZG1RW4
+    content: "Automation status set to needs_review: Fundamental workflow execution model change needs
+      design"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T08:13:45.246Z
+  - _ulid: 01KHD9G0KEHAV8GARY598JX6GW
+    content: "Automation status set to needs_review: Feature - needs spec for ephemeral workflow semantics"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-14T05:20:37.486Z

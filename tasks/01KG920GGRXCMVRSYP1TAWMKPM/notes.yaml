@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KGGBYSWKJFSEBDYADF04BRA5
+    content: "Implemented --title flag for derive command. Added option to registerDeriveCommand,
+      updated deriveTaskFromSpec options interface to include title, and modified task creation to
+      use provided title or default 'Implement: {spec.title}'. Added test in integration.test.ts
+      verifying AC-1."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-02T23:45:40.755Z

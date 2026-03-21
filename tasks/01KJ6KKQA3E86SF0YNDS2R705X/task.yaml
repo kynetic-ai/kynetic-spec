@@ -1,0 +1,24 @@
+_ulid: 01KJ6KKQA3E86SF0YNDS2R705X
+slugs:
+  - add-session-id-to-task-schema
+title: Add session_id to task schema
+type: task
+spec_ref: "@session-scoped-task-claiming"
+plan_ref: "@plan-session-scoping-for-kspec"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #499. Added session_id field to TaskSchema/TaskInputSchema, session
+  stamping on task start, warning for cross-session claiming, session indicator in output, and
+  session_id clearing on status transitions. All 6 ACs covered with 13 integration tests. CI green."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - schema
+  - tasks
+vcs_refs: []
+created_at: 2026-02-24T01:18:25.603Z
+started_at: 2026-02-24T05:48:02.012Z
+completed_at: 2026-02-24T06:16:49.002Z
+todos: []
+automation: eligible

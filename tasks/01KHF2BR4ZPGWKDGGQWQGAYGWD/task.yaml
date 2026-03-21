@@ -1,0 +1,29 @@
+_ulid: 01KHF2BR4ZPGWKDGGQWQGAYGWD
+slugs: []
+title: Fix trivial AC-6 test in multi-value status filter
+type: task
+description: "PR #354 test for AC-6 (item list parity) only asserts exit code 0 without verifying
+  filtered results actually match the requested statuses. The fixture may have zero matching items,
+  making the test pass vacuously. Update the test to create items with known statuses and assert the
+  filtered output contains exactly the expected items."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #627. Strengthened @multi-value-status-filter ac-item-list-parity test
+  by creating known-status items and asserting include/exclude parity plus status correctness;
+  updated JSON shape assertions to use {items:[...]} and status.implementation. AC coverage for the
+  targeted criterion verified and full npm test regression passed (3630 passing)."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJN28PAZMZDSX3RKS2M01JZJ
+created_at: 2026-02-14T21:54:26.591Z
+started_at: 2026-03-01T17:22:17.825Z
+submitted_at: 2026-03-01T17:34:34.797Z
+completed_at: 2026-03-01T17:46:17.656Z
+todos: []
+automation: eligible

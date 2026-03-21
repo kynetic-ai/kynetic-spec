@@ -1,0 +1,31 @@
+_ulid: 01KHZHPND968S82HKC1KSVCRRH
+slugs: []
+title: "Write core skill: kspec:writing-specs"
+type: task
+description: Refactor the spec skill into kspec:writing-specs. Read current content from
+  .claude/skills/spec/SKILL.md as reference. Covers spec item authoring — modules, features,
+  requirements, acceptance criteria (Given/When/Then), traits. Rewrite from base principles — what
+  does an agent need to write good specs? Write to templates/skills/writing-specs/SKILL.md (rendered
+  to .claude/skills/kspec/writing-specs/). Add entry to manifest.yaml.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #469. Wrote templates/skills/writing-specs/SKILL.md (333 lines)
+  covering spec hierarchy, AC writing with patterns and anti-patterns, trait system,
+  creating/updating specs workflow, quality checklist, validation, and command reference. Added
+  manifest entry. All 3181 tests pass, no regressions."
+depends_on:
+  - "@01KHZHPG"
+context: []
+priority: 3
+tags:
+  - core-skills
+  - skill-content
+vcs_refs: []
+created_at: 2026-02-21T07:30:23.785Z
+started_at: 2026-02-23T11:46:23.299Z
+completed_at: 2026-02-23T12:16:17.156Z
+todos: []
+automation: eligible

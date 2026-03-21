@@ -1,0 +1,36 @@
+_ulid: 01KJVPTJPKZWMMMBEH23N30D8F
+slugs:
+  - task-dispatch-in-progress-priority
+title: Implement in_progress-first dispatch scheduling
+type: bug
+description: Dispatch currently maps pending/needs_work/pending_review events but does not
+  prioritize or bootstrap in_progress work. Implement spec @dispatch-in-progress-priority so active
+  in-progress tasks are dispatched first, including at engine start. Update event schema/mapping,
+  scheduling order, built-in worker dispatch defaults, and regression tests to make behavior
+  deterministic and align with task-work-loop intent.
+spec_ref: "@dispatch-in-progress-priority"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #663 (merge commit d80157c). Added task.in_progress dispatch support in
+  schema/session/runtime, prioritized scheduler order as in_progress > needs_work > pending >
+  pending_review, added bootstrap in_progress candidate support, seeded built-in task-worker
+  defaults with automation-filtered task.in_progress rule, and covered
+  @dispatch-in-progress-priority ac-1..ac-3 via dispatch/setup/meta/session tests."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - daemon
+  - priority
+  - automation
+vcs_refs: []
+session_id: null
+created_at: 2026-03-04T05:58:39.059Z
+started_at: 2026-03-04T07:39:38.224Z
+submitted_at: 2026-03-04T07:40:29.598Z
+completed_at: 2026-03-04T07:52:54.298Z
+todos: []
+automation: eligible

@@ -1,0 +1,38 @@
+notes:
+  - _ulid: 01KJVSSQWP1NG26CD2XHMRH1SX
+    content: >-
+      Execution context:
+
+      - Background: task set lacks direct description updates, forcing JSON patch for a common edit.
+
+      - Scope: add --description support to task set (single + --refs batch), including clear
+      behavior parity.
+
+      - Files: src/cli/commands/task.ts plus task set tests/help as needed.
+
+      - Verification: focused vitest for task set/integration/batch-schema, then kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T06:50:37.334Z
+  - _ulid: 01KJVT2R1KP4HJXN155BSM2AHK
+    content: >-
+      Implemented task set CLI DX:
+
+      - Added --description <description> to task set (single + --refs batch).
+
+      - Supports clearing description via --description null or whitespace-only value.
+
+      - Added integration coverage for set/update/clear and batch description updates.
+
+      - Verified with npx vitest run tests/integration.test.ts tests/task-set-batch.test.ts
+      tests/help-examples.test.ts (all passing).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T06:55:32.403Z
+  - _ulid: 01KJVT4GZD8EH5ZWD40463EHF2
+    content: |-
+      Submitted in PR #661: https://github.com/kynetic-ai/kynetic-spec/pull/661
+      Commit: 00fed9c29 on branch feat/task-set-description-flag.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T06:56:30.701Z

@@ -1,0 +1,22 @@
+_ulid: 01KF9FX31YBYHE1D0FZ1Y75X3X
+slugs: []
+title: Enhance task start output with spec context and AC guidance
+type: task
+description: task start should output spec context, notes, and AC testing guidance - remind about
+  automated tests not just manual verification
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Enhanced task start output to show spec context (title, description, ACs) and AC
+  guidance. Added 3 integration tests. All 564 tests pass.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - dx
+vcs_refs: []
+created_at: 2026-01-18T21:24:16.062Z
+started_at: 2026-01-19T04:22:20.172Z
+completed_at: 2026-01-19T04:31:44.514Z
+todos: []

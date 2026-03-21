@@ -1,0 +1,21 @@
+_ulid: 01KFAB9960F1YGQQQKFYF3H7ZY
+slugs: []
+title: Add CI test for kspec command
+type: task
+description: Add CI test that kspec command works after build
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Added CLI verification step to CI workflow. After build, runs npm link and tests
+  kspec --version and --help commands to verify CLI is functional.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - ci
+  - reflection
+vcs_refs: []
+created_at: 2026-01-19T05:22:47.104Z
+started_at: 2026-01-19T06:49:43.620Z
+completed_at: 2026-01-19T06:50:14.706Z
+todos: []

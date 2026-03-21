@@ -1,0 +1,30 @@
+_ulid: 01KJTYJ629NSVHMN2PWAADJNPS
+slugs:
+  - task-atomic-plan-inbox-writes
+title: Add atomic update helpers for plan and inbox writes
+type: bug
+description: savePlan and saveInboxItem replace full objects and can overwrite concurrent updates
+  when callers pass stale snapshots. Add mutatePlanAtomically/mutateInboxItemAtomically-style APIs
+  and migrate update commands to use them.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #651. Added atomic plan/inbox mutators (mutatePlanAtomically,
+  mutateInboxItemAtomically), migrated stale-snapshot command paths (plan set/note/derive and inbox
+  set/note), and added concurrent serialization regression tests. Coverage verified via targeted
+  tests + full npm test and passing PR CI checks."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - concurrency
+  - parser
+  - cli
+vcs_refs: []
+created_at: 2026-03-03T22:54:38.153Z
+started_at: 2026-03-03T23:51:01.416Z
+submitted_at: 2026-03-04T00:01:14.764Z
+completed_at: 2026-03-04T00:11:34.683Z
+todos: []

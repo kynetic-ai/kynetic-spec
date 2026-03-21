@@ -1,0 +1,55 @@
+_ulid: 01KKW4VMRV351WBATFRXTPCTZH
+slugs:
+  - task-review-examined-commit
+title: Store examined commit on review records
+type: task
+description: |
+  Add an examined_commit field to the review record schema that captures
+  the HEAD of the detached review snapshot when the review is created.
+
+  Why: After workspaces are cleaned up, there's no way to know what
+  commit a reviewer actually looked at. Storing it on the review record
+  makes diff-since-last-review computable from durable data alone.
+
+  What: Add examined_commit (string, optional) to ReviewRecordSchema
+  in src/schema/review-records.ts. Populate it when the reviewer
+  creates a review from a dispatch workspace (from canonicalBranchHead
+  workspace metadata or KSPEC_DISPATCH_CANONICAL_HEAD env var). For
+  manually created reviews, leave null. Existing reviews without the
+  field are handled gracefully (optional field, backward compatible).
+
+  How: Schema change is additive (optional field). The review create
+  command auto-detects from KSPEC_DISPATCH_CANONICAL_HEAD env var if
+  set, or accepts --examined-commit for manual specification.
+
+  Covers: @review-fix-cycle-diff ac-1.
+spec_ref: "@review-fix-cycle-diff"
+plan_ref: "@plan-task-activity-timeline"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev. Added examined_commit field to review records — schema, parser, CLI
+  (--examined-commit flag + KSPEC_DISPATCH_CANONICAL_HEAD env var fallback), JSON/human output, and
+  3 integration tests covering all paths.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - reviews
+  - schema
+vcs_refs: []
+review_ref: "@01KKWC896GZBT077AHDA0DQG3M"
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-review-examined-commit/01kkw4vm
+  captured_at: 2026-03-16T22:25:52.839Z
+  commit: e6bcac947eef33b38543de2dd1de19e46e0b117d
+  remote: null
+  remote_url: null
+  upstream_ref: dev
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-16T20:19:35.835Z
+started_at: 2026-03-16T22:20:35.789Z
+submitted_at: 2026-03-16T22:25:53.853Z
+completed_at: 2026-03-16T22:29:48.987Z
+todos: []

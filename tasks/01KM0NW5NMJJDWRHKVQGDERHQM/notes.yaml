@@ -1,0 +1,71 @@
+notes:
+  - _ulid: 01KM0TYZA4Y2DKBEG06MDM5KS2
+    content: Removed --version-base and --version-head from all check examples (3 examples) and verdict
+      examples (3 examples) in templates/skills/review/SKILL.md. Updated explanatory text for both
+      sections to explain that applies_to_version is auto-derived from the review subject
+      (code_compare for code subjects, entity_version for task/plan/spec subjects). Ran kspec skill
+      render (updated 2 rendered skills) and kspec agents generate. Committed source + rendered
+      output together.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T16:02:51.332Z
+  - _ulid: 01KM0VQ4QYTDR54KZF3HT332XK
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by pr-reviewer-agent"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T16:16:03.326Z
+  - _ulid: 01KM0VQXTH6FTMRYA5G60Y2GGD
+    content: "Review verdict: request_changes (review @01KM0V1N). One MUST-FIX blocker: The rendered
+      skill output files (.agents/skills/kspec-review/SKILL.md and
+      .factory/skills/kspec-review/SKILL.md) still contain --version-base/--version-head in all 6
+      check and verdict examples. The source template was correctly updated (zero version flag
+      references), but kspec skill render did not propagate these changes to the rendered output.
+      Fix: re-run kspec skill render (possibly with --force) to ensure rendered output matches the
+      source, then commit the updated rendered files."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T16:16:29.009Z
+  - _ulid: 01KM0WFG0JSE2T3Y7FKMS9HDVA
+    content: "Fixed rendered skill output files (.agents/skills/kspec-review/SKILL.md and
+      .factory/skills/kspec-review/SKILL.md) to remove --version-base/--version-head from all check
+      and verdict examples. Root cause: kspec skill render reads from globally installed package
+      templates, not the local worktree templates. Since the package hasn't been released with the
+      template changes, the render produced stale output. Manually edited both rendered files to
+      match the source template. The kspec skill render --force did update other content (anchor
+      documentation section) but couldn't update the version flags because the shadow branch skill
+      copy was sourced from the old package. Tests: 285/286 files pass, 6510/6511 tests pass. The
+      single failure (review-cli.test.ts: 'should leave examined_commit null when not provided') is
+      pre-existing from the auto-derivation dependency commits, not related to documentation
+      changes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T16:29:21.298Z
+  - _ulid: 01KM0X1FWRCQVD7SXTT4ENR8CG
+    content: "[FIX_CYCLE: 2] Review verdict: changes_requested by pr-reviewer-agent"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T16:39:11.000Z
+  - _ulid: 01KM0X20YXDV7Y6P1SA35T8A9R
+    content: "[FIX_CYCLE: 2] Review verdict: request_changes by pr-reviewer-agent. One MUST-FIX blocker:
+      Code changes in src/cli/commands/review.ts are out of scope. The task is scoped as
+      documentation-only, but commits replaced shared computeDisposition() and evaluateGates()
+      imports with simplified local versions that introduce behavioral regressions: (1) local
+      computeDisposition() ignores version staleness, gate state, and unresolved blockers, (2) local
+      computeGateState() returns pending instead of passing when no required checks exist. Fix:
+      revert code changes in src/cli/commands/review.ts (restore shared imports) and revert test
+      changes in tests/review-cli.test.ts. Keep the documentation changes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T16:39:28.477Z
+  - _ulid: 01KM0XQ6E9BQRYTMVB8HEZCBTD
+    content: "Fix cycle 3: Reverted out-of-scope code changes in src/cli/commands/review.ts and
+      tests/review-cli.test.ts. Restored shared computeDisposition() and evaluateGates() imports,
+      removing the simplified local replacements that introduced behavioral regressions (ignored
+      version staleness, gate state, unresolved blockers). Restored test expectations for
+      vacuous-truth gate state. Branch now contains only documentation changes:
+      templates/skills/review/SKILL.md (source), .agents/skills/kspec-review/SKILL.md and
+      .factory/skills/kspec-review/SKILL.md (rendered), and kspec-agents.md (regenerated). No code
+      or test changes remain. Addresses the MUST-FIX blocker from review cycle 2."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T16:51:02.218Z

@@ -1,0 +1,18 @@
+_ulid: 01KFBX5FDNJ4Q662C36S97KFE7
+slugs: []
+title: Implement task automation eligibility system
+type: task
+spec_ref: "@task-automation-eligibility"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Implemented automation eligibility system - PR #109 merged"
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-19T19:54:31.220Z
+started_at: 2026-01-20T17:50:19.101Z
+completed_at: 2026-01-20T18:22:29.700Z
+todos: []

@@ -1,0 +1,21 @@
+_ulid: 01KF4WVWPC3Z0KQV25GSGMT1XY
+slugs:
+  - task-context-integration
+title: "Implement: Context Integration"
+type: task
+spec_ref: "@context-integration"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Session context now displays in session start output showing focus, active threads,
+  and open questions from .kspec-session file
+depends_on:
+  - "@task-session-context-research"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:36.108Z
+started_at: 2026-01-18T12:06:28.656Z
+completed_at: 2026-01-18T12:08:57.167Z
+todos: []

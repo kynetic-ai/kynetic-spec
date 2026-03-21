@@ -1,0 +1,74 @@
+_ulid: 01KJS7PDW5GQQX9WQ2C7C1JNRX
+slugs: []
+title: Add --text flag to kspec session log show to replay agent output
+type: task
+description: >-
+  kspec session log show has no way to read the actual text response from a completed agent
+  invocation. The session.update events contain content blocks with the agent's text, but --events
+  only shows event metadata, not content.
+
+
+  Fix: Add a --text flag to session log show that extracts and prints the assistant text from
+  session.update events in chronological order.
+
+
+  Implementation details:
+
+  - Events are stored in .kspec/sessions/<session-id>/events.jsonl
+
+  - Filter for type === 'session.update'
+
+  - From each event's data.content array, collect blocks with type === 'text'
+
+  - Print the text in order to stdout (no extra formatting — just the content)
+
+  - --text and --events are independent flags (both can be used together or separately)
+
+  - Externalized blobs: if content is a blob pointer, resolve it (same logic as --resolve-blobs)
+
+
+  Relevant files:
+
+  - src/cli/commands/session/log.ts — session log show command
+
+  - src/session/ — session event reading utilities
+
+
+  Workaround (until fixed):
+    cat .kspec/sessions/<id>/events.jsonl | python3 -c "
+    import sys, json
+    for line in sys.stdin:
+      e = json.loads(line)
+      if e.get('type') == 'session.update':
+        for block in (e.get('data',{}).get('content') or []):
+          if isinstance(block, dict) and block.get('type') == 'text':
+            print(block.get('text',''), end='')
+    "
+
+  Test: Integration test that creates a session with known text output and verifies --text prints
+  it.
+
+
+  Spec ACs to cover: @session-log-show ac-11 (--text flag replays assistant text)
+spec_ref: "@session-log-show"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #668 (commit 74b5e76e5452cf295f1a20bd3d114d540d22f6b8): added --text
+  replay mode to session log show with blob resolution support and AC-covered tests."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - session
+  - dx
+vcs_refs: []
+session_id: 01KJW3GKF2X1NY0RC6N3AXQM49
+created_at: 2026-03-03T06:55:45.541Z
+started_at: 2026-03-04T09:41:58.390Z
+submitted_at: 2026-03-04T09:50:20.963Z
+completed_at: 2026-03-04T10:26:59.765Z
+todos: []
+automation: eligible

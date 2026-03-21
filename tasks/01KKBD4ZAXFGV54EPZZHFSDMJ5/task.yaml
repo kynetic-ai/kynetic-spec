@@ -1,0 +1,33 @@
+_ulid: 01KKBD4ZAXFGV54EPZZHFSDMJ5
+slugs: []
+title: Clarify @task-work submit timing and pending_review ownership semantics. Current wording can
+  imply b
+type: task
+description: >-
+  Clarify task-work submit timing and pending_review ownership semantics in the task-work skill
+  (templates/skills/task-work.md).
+
+
+  Current wording can imply both submit after PR created and submit before PR creation. Normalize to
+  one sequence: kspec task submit transitions task to pending_review queue, then create PR, then
+  pr-reviewer picks up. Make worker/reviewer ownership handoff explicit. This is a
+  documentation/skill template fix, no code changes expected.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #749. Clarified the task-work skill so workers submit before PR
+  creation, made pending_review handoff to the reviewer explicit in lifecycle/fix-cycle/loop-mode
+  guidance, and kept the rendered skill aligned. AC coverage N/A for this internal/docs task; npm
+  test passed locally and PR CI was green."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKBTYH6EF618EJ0106MT8HP8
+created_at: 2026-03-10T08:17:24.828Z
+started_at: 2026-03-10T12:23:16.400Z
+submitted_at: 2026-03-10T12:27:26.141Z
+completed_at: 2026-03-10T12:55:01.519Z
+todos: []
+automation: eligible

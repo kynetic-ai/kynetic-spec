@@ -1,0 +1,23 @@
+_ulid: 01KG715ECQCHS16JF029SCJHXC
+slugs: []
+title: Handle session checkpoint hook when in .kspec/ directory
+type: task
+description: "Session checkpoint hook fails with error when working directory is inside .kspec/
+  shadow worktree. Error: RUNNING_FROM_SHADOW. Should handle gracefully - either auto-detect and run
+  from parent, or skip silently with warning instead of erroring. Current behavior disrupts session
+  end. Triggered by: cd .kspec && git status (then hook runs from wrong directory)."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #281 merged. Fix catches RUNNING_FROM_SHADOW error gracefully - shows warning in
+  human mode, exits silently in JSON mode."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-30T08:43:54.135Z
+started_at: 2026-01-30T09:52:44.698Z
+completed_at: 2026-01-30T10:01:24.614Z
+todos: []
+automation: eligible

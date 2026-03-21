@@ -1,0 +1,60 @@
+_ulid: 01KKTW6G1640H2J7RF82ZVSEXT
+slugs:
+  - task-review-api-threads
+title: Implement review thread mutation API endpoints
+type: task
+description: |
+  Add endpoints for creating threads, replying, and resolving/reopening.
+  These are the core interaction endpoints for the review UI.
+
+  Why: Thread interaction is the primary review workflow — reviewers
+  create threads with findings, workers reply and resolve. The review
+  library has addThread(), addReply(), resolveThread(), reopenThread()
+  in parser/review-threads.ts — the API wraps these.
+
+  What: POST /api/reviews/:id/comments creates a new thread (body, kind,
+  optional anchor). POST /api/reviews/:id/comments/:threadId/replies adds
+  a reply (body). PATCH /api/reviews/:id/comments/:threadId/resolve and
+  /reopen toggle resolution state. All mutations return the updated thread.
+
+  How: Route handlers call the atomic wrapper functions from
+  parser/review-threads.ts which handle file locking and persistence.
+  Validate request bodies with Zod schemas. Return 400 with actionable
+  messages for invalid input (missing body, invalid thread ULID, etc.).
+
+  Covers: @review-records-daemon-api ac-3, ac-4, ac-5, ac-10.
+spec_ref: "@review-records-daemon-api"
+plan_ref: "@plan-review-records-web-ui"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Implements review thread mutation API endpoints: POST
+  /api/reviews/:id/comments (create thread), POST /api/reviews/:id/comments/:threadId/replies (add
+  reply), PATCH resolve/reopen. Covers ac-3, ac-4, ac-5, ac-9, ac-10 with 29 E2E tests and full
+  trait AC N/A annotations. Simple merge conflict in server.ts resolved (additive import + route
+  registration)."
+depends_on:
+  - "@task-review-api-read"
+context: []
+priority: 2
+tags:
+  - daemon
+  - api
+  - review
+vcs_refs: []
+review_ref: "@01KKXMK34HGC8V9MBRPXMSD308"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-17T10:11:41.823Z
+  commit: 3a64769a2efda93e4e685368ef9c453100e596a2
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KKXKY88R6NW4G5GKA50KG7H2
+created_at: 2026-03-16T08:28:59.814Z
+started_at: 2026-03-17T10:11:38.461Z
+submitted_at: 2026-03-17T10:11:42.207Z
+completed_at: 2026-03-17T10:25:51.037Z
+todos: []
+automation: eligible

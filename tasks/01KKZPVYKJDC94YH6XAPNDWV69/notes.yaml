@@ -1,0 +1,41 @@
+notes:
+  - _ulid: 01KM0Q3P37G1SGPTCZYYGACWFR
+    content: Implemented all 7 schedule CLI commands (list, add, get, set, enable, disable, remove,
+      trigger). Schedule list merges config with daemon runtime data when daemon is running, falls
+      back to config-only otherwise. Trigger requires daemon. Extended META_ARRAY_FIELDS and added
+      saveSchedule/deleteSchedule/resolveScheduleRef to parser/meta.ts. 45 E2E tests covering all
+      commands with AC annotations for @dispatch-event-cli ac-2, ac-3 and all inherited trait ACs.
+      Pre-existing review-cli.test.ts failure is unrelated (ambient git state issue).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T14:55:31.431Z
+  - _ulid: 01KM0QNXA8XPNPBYMCDM96FCGD
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by pr-reviewer@kspec"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T15:05:28.648Z
+  - _ulid: 01KM0QPXW2XJ4VX3KA971J68CG
+    content: "Review completed (request_changes). Two missing N/A annotations for trait ACs:
+      @trait-error-guidance ac-4 (schedules have no state transitions) and
+      @trait-semantic-exit-codes ac-4 (runtime error handling). All other ACs properly annotated.
+      Tests pass (283 files, 6437 tests). Code quality is good. See review @01KM0QK2 for details."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T15:06:01.986Z
+  - _ulid: 01KM0R552G7SFN8WNZVAN6Q90F
+    content: "Fixed both blocker findings from review @01KM0QK2: added N/A annotations for
+      @trait-error-guidance ac-4 (schedules have no state transitions) and
+      @trait-semantic-exit-codes ac-4 (exit code 3 is NOT_FOUND in this project, not runtime error).
+      All 45 schedule CLI tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T15:13:48.112Z
+  - _ulid: 01KM0RQC5WRBYHV7MB8KXNFKQT
+    content: "Review cycle 2: approved by pr-reviewer@kspec. Review @01KM0RKE. All checks pass (vitest
+      283 files/6437 tests, AC coverage complete). Merged to dev. Evidence: Files read: schedule.ts,
+      meta.ts, cli-schedule-commands.test.ts, index.ts, exit-codes.ts. Commands run: npm test, kspec
+      validate, git diff. Claims verified: both N/A annotations confirmed present. Categories
+      searched: correctness, edge cases, error handling, test quality, integration — all clean."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T15:23:45.213Z

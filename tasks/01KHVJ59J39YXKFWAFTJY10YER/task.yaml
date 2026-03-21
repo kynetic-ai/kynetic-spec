@@ -1,0 +1,28 @@
+_ulid: 01KHVJ59J39YXKFWAFTJY10YER
+slugs: []
+title: Triage skills for core portability
+type: task
+description: "Review all 24+ skills in .claude/skills/ and categorize each into: (1) Core — ships in
+  templates/skills/ for any kspec project (e.g. task-work, pr, spec, meta, triage, reflect,
+  local-review, spec-plan, kspec), (2) Project-specific but portable — useful pattern but contains
+  kspec-project-specific content that would need generalization (e.g. e2e, svelte-5, eval-agents),
+  (3) Not portable — only makes sense for this project (e.g. codex with shadow-branch workarounds).
+  For each skill, document: current category, what would need to change to make it core, and any
+  dependencies on other skills. Output should be a clear manifest of what ships as core vs stays
+  project-local."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Triage complete. Created 11 follow-up tasks for core skill namespace work.
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-02-19T18:21:25.437Z
+started_at: 2026-02-21T05:46:58.841Z
+completed_at: 2026-02-21T07:31:10.039Z
+todos: []
+automation: manual_only

@@ -1,0 +1,18 @@
+_ulid: 01KF1VK66CXYWN9SRW8P4NMR3A
+slugs:
+  - task-shadow-branch
+title: "Implement: Shadow Branch"
+type: task
+spec_ref: null
+derivation: auto
+status: cancelled
+blocked_by: []
+closed_reason: Umbrella task superseded by child feature tasks (shadow-concept, shadow-init,
+  shadow-recovery, shadow-cli) which are all completed
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-15T22:14:39.052Z
+todos: []

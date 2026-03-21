@@ -1,0 +1,16 @@
+notes:
+  - _ulid: 01KGTNVDT5V9PH6K0BK1HMSXQQ
+    content: 'Add Common YAML Issues section to /spec-plan skill docs. Key gotcha: embedded double
+      quotes in scalar values break the parser (e.g. when: "kspec foo" is run). Recommend avoiding
+      quotes in AC given/when/then or using YAML block scalars. Could also improve
+      parsePlanDocument() error message to suggest fixes. Encountered during session-log-analysis
+      plan authoring.'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-06T23:51:00.165Z
+  - _ulid: 01KGVR8QPBTHFQF93P1QS4TT1Q
+    content: "Added YAML Syntax Issues section to spec-plan skill covering: embedded quotes breaking
+      parsing, colons in values needing quoting, and best practices for AC fields."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T09:52:27.852Z

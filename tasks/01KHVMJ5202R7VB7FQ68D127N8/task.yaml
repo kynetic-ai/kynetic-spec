@@ -1,0 +1,39 @@
+_ulid: 01KHVMJ5202R7VB7FQ68D127N8
+slugs: []
+title: Unified health check combining shadow status and setup status
+type: task
+description: >-
+  Building blocks exist separately: 'kspec shadow status' checks worktree health, 'kspec setup
+  --status' checks hooks/skills/agents.md/seeding. Consumer projects need a single command to verify
+  everything is healthy.
+
+
+  Options (decide during implementation):
+
+  1. Extend 'kspec setup --status' to include shadow branch health check
+
+  2. Add 'kspec doctor' as a unified check that combines both
+
+  3. Add 'kspec status' as the unified entry point
+
+
+  Should also handle the 'not initialized' case gracefully — if .kspec/ doesn't exist, guide the
+  user to 'kspec init' instead of erroring.
+
+
+  Reference: kynetic-bot, imgen, comfy-ecaj-nodes all lack any health verification in their Quick
+  Start. A single 'run this to check everything' command would improve onboarding for all consumers.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Superseded by @doctor-command spec and @impl-doctor-command task
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-19T19:03:23.968Z
+todos: []
+automation: needs_review

@@ -1,0 +1,24 @@
+_ulid: 01KJ4SMBV2YAJV75E3Y7VWQ4NZ
+slugs: []
+title: "Bug: `kspec plan import` ignores spec_ref on manual tasks. AC @plan-import ac-27 says manual
+  tasks g"
+type: task
+description: "Bug: `kspec plan import` ignores spec_ref on manual tasks. AC @plan-import ac-27 says
+  manual tasks get no spec_ref, but when a task YAML explicitly provides spec_ref pointing to a
+  valid spec, it should be honored. Currently taskDef.spec_ref is never read in the manual task
+  creation path (plan-import.ts:513-523)."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #483. Honors spec_ref on manual tasks in plan import. All CI green,
+  audit confirmed clean."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-23T08:25:09.218Z
+started_at: 2026-02-23T16:52:10.116Z
+completed_at: 2026-02-23T18:35:59.940Z
+todos: []
+automation: eligible

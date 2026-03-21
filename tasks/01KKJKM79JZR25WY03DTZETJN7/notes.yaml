@@ -1,0 +1,42 @@
+notes:
+  - _ulid: 01KKJQJ2DM828NHMP4XCXD223N
+    content: >-
+      Execution context:
+
+      - Background: plan-droid-platform-support adds Droid as a first-class platform and this task
+      covers ACP adapter registration only.
+
+      - Scope: register the built-in droid-acp adapter, expose it in adapter listings, and add
+      AC-annotated tests for resolution and auto-approve args.
+
+      - Files: src/agents/adapters.ts and targeted tests around adapter registry/session creation.
+
+      - Verification: run focused adapter tests plus kspec validate before submit.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T04:34:00.756Z
+  - _ulid: 01KKJQKHJPKQMH018ESH10ZPCH
+    content: Implemented the built-in droid-acp registry entry in src/agents/adapters.ts with native
+      droid exec stream-jsonrpc flags and --skip-permissions-unsafe auto-approve args. Added
+      explicit @droid-acp-adapter AC coverage for resolveAdapter(), listAdapters(), and
+      autoApproveArgs in tests/session-create.test.ts.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T04:34:49.046Z
+  - _ulid: 01KKJQZ8R0TNCRC31QG3CCWD6N
+    content: >-
+      Verification summary:
+
+      - Focused tests passed: npm test -- tests/session-create.test.ts
+      tests/ralph/adapter-auto-approve.test.ts
+
+      - kspec validate returned the repository's existing warning backlog only (exit 6), with no new
+      errors tied to @droid-acp-adapter.
+
+      - Full npm test currently fails on pre-existing dispatch shadow mutation lock/timeouts across
+      unrelated workflow and session CLI suites; representative failures include
+      workflow-runs.test.ts and multiple tests/cli/session-start-* files reporting dispatch shadow
+      mutation lock unavailable.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T04:41:13.216Z

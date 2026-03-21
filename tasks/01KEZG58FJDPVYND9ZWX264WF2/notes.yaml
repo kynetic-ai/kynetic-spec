@@ -1,0 +1,90 @@
+notes:
+  - _ulid: 01KEZG5N9BTACBWVPNVYDGQ7BC
+    content: >-
+      Problem: Spec, tasks, and implementation drift apart over time.
+
+
+      Examples of drift:
+
+      - Task @task-reference-resolution spec says nothing about dynamic ULID shortening, but that
+      became a key implementation detail
+
+      - User requests during implementation add features not in original spec
+
+      - Implementation discoveries change the approach
+
+
+      Goals:
+
+      1. Keep specs as accurate source of truth
+
+      2. Make drift visible and actionable
+
+      3. Guide agents to update specs when deviating
+
+      4. Enable reconciliation after the fact
+
+
+      Potential mechanisms:
+
+
+      PROACTIVE (during work):
+
+      - Task start: show spec, prompt for planned deviations
+
+      - Task complete: verify against acceptance criteria, prompt for spec updates
+
+      - Agent instructions mandating spec updates when deviating
+
+
+      REACTIVE (backprop):
+
+      - kspec reconcile: compare task notes to spec, flag drift
+
+      - Generate spec update suggestions from implementation notes
+
+      - Mark specs 'needs-review' when notes mention unlisted changes
+
+
+      STRUCTURAL:
+
+      - Acceptance criteria as verifiable checkboxes
+
+      - 'implementation_notes' field on spec items
+
+      - Spec versioning when updated post-implementation
+
+      - Deviation tracking on tasks
+
+
+      Deliverables:
+
+      1. Add spec items to spec/modules/ defining alignment features
+
+      2. Create implementation tasks from the spec
+
+      3. Update AGENTS.md with alignment guidance
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T00:16:32.556Z
+  - _ulid: 01KF008TX7EZ1J7AD310T79JPH
+    content: >-
+      Implemented spec-implementation alignment system:
+
+
+      1. AlignmentIndex (src/parser/alignment.ts) - bidirectional spec↔task mapping
+
+      2. Auto-sync spec implementation status on task start/complete (--no-sync to skip)
+
+      3. Proactive guidance on task note - reminds to update spec if diverging
+
+      4. kspec validate --alignment - detects orphaned specs and status mismatches
+
+      5. kspec item status @ref - shows implementation progress with linked tasks
+
+
+      Design decisions: auto-sync ON by default, warnings-only (not errors), proactive guidance over
+      pattern detection.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T04:57:53.832Z

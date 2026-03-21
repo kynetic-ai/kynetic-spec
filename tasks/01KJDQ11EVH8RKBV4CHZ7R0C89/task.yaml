@@ -1,0 +1,41 @@
+_ulid: 01KJDQ11EVH8RKBV4CHZ7R0C89
+slugs: []
+title: "Fix @observations slug ambiguity — kspec validate reports 6 errors for duplicate slug.
+  Pre-existing "
+type: task
+description: "**What**: `kspec validate` reports 6 reference errors because the slug `observations`
+  maps to two different items: a spec feature (ULID `01KF1XFBK00000000000000000`, type feature in
+  `modules/meta.yaml`) and a skill (ULID `01KJ51SSZ2NVZGXE32NR5TWPS9`, type skill in
+  `kynetic.meta.yaml`). Any `@observations` reference is ambiguous. 6 references in
+  `modules/meta.yaml` (implements fields) and `project.tasks.yaml` (spec_ref) are affected.
+  **Where**: `.kspec/modules/meta.yaml` — the spec feature item with slug `observations`.
+  `.kspec/kynetic.meta.yaml` — the skill with id `observations`. The slug collision happens in the
+  reference index (`src/parser/refs.ts`) which treats spec slugs and meta item ids as the same
+  namespace. **How**: Rename the skill id from `observations` to something distinct like `observe`
+  or `capture-observations`, OR rename the spec feature slug. The skill id is less entrenched (it
+  was recently created) so renaming it is lower risk. Update: (1) the skill id in
+  `kynetic.meta.yaml`, (2) any skill file references, (3) the rendered skill in `.claude/skills/`.
+  After the rename, `kspec validate` should report 0 reference errors for this slug. Use `kspec
+  batch` for the meta changes. **Done when**: (1) `kspec validate` no longer reports duplicate slug
+  errors for `@observations`. (2) The skill is still functional under its new id. (3) All 6
+  previously-ambiguous references resolve correctly. (4) `kspec agents generate` still includes the
+  observations skill."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #599 (commit 5ee2254244a7c9aa718493418964a600869f4b97). Removed legacy
+  /kspec:observations skill entry ambiguity by retaining canonical /kspec:observe in generated agent
+  instructions; duplicate @observations reference errors resolved (References: OK). AC coverage N/A
+  for this infra task (no spec_ref). Local regression: npm test passed (3548 passed, 0 failed)."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJJ6PWBGRT2HT64EH2099ZZH
+created_at: 2026-02-26T19:32:48.731Z
+started_at: 2026-02-28T13:45:04.362Z
+submitted_at: 2026-02-28T13:47:04.205Z
+completed_at: 2026-02-28T13:53:13.698Z
+todos: []
+automation: eligible

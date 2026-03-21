@@ -1,0 +1,25 @@
+notes:
+  - _ulid: 01KKBKJ6RGEBKP16P76HB0YXES
+    content: "Implemented terminal status filtering in checkAutomationEligibility(). Added Set-based
+      check for completed/cancelled status at loop top. Updated ac-21 and ac-23 to specify
+      non-terminal scope. Added 3 new tests: completed tasks skip, cancelled tasks skip, active
+      tasks still warn. Validate output went from 147 to 3 automation-no-spec warnings (all active
+      pending tasks)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T10:09:29.872Z
+  - _ulid: 01KKBMFSMRJZYC7P9TQYZZBXC6
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: ac-23 coverage is incomplete. The PR updates
+      terminal-status skip behavior for unresolved spec_ref warnings, but tests only cover the ac-21
+      no-spec path and do not verify completed/cancelled tasks are skipped for ac-23."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T10:25:39.481Z
+  - _ulid: 01KKBNVK4RF2SKWXS66VX1J8HB
+    content: "Fix cycle 1: Added 2 tests for ac-23 terminal status skip with unresolvable spec_ref.
+      Tests verify completed and cancelled eligible tasks with broken spec_ref do NOT emit warnings.
+      All 28 automation-eligibility tests pass. Full suite: 4297 passed (2 pre-existing
+      codex-related failures unrelated to this change)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T10:49:34.616Z

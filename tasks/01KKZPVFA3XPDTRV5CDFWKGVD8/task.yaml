@@ -1,0 +1,59 @@
+_ulid: 01KKZPVFA3XPDTRV5CDFWKGVD8
+slugs:
+  - task-event-schema
+title: Register event taxonomy and extend schema
+type: task
+description: |
+  Define the event type registry — an explicit enumeration of valid
+  event identifiers, not a free-form string pattern. Extend the schema
+  to accept new event types while keeping backward compatibility.
+
+  Why: Hooks and schedules reference event types beyond task state
+  changes. The registry validates new types while ensuring existing
+  dispatch rules work unchanged. Using a registry (not just a regex)
+  means ac-3 validation stays tight.
+
+  What: Maintain a registry of known event IDs with domain grouping.
+  Replace AgentDispatchEventSchema enum with a union that accepts both
+  original 4 values and registered new identifiers. Add session.*
+  events (ended, idle_timeout, cancelled) and action.* events (started,
+  completed, failed). Update SessionTriggerSchema.
+
+  How: STATUS_TO_EVENT and EVENT_TO_STATUS remain unchanged for task
+  events. The registry is a constant map from event_type to payload
+  schema, used by both validation and the event types CLI command.
+
+  Covers: @dispatch-event-taxonomy ac-1 through ac-5.
+spec_ref: "@dispatch-event-taxonomy"
+plan_ref: "@plan-dispatch-event-system-expansion"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev. Event type registry implemented as single source of truth in
+  src/schema/event-registry.ts with 15 events across 5 domains. AgentDispatchEventSchema,
+  HookEventTypeSchema, and payload fields all derive from registry. SessionTriggerSchema expanded.
+  validateEventType provides structured error guidance. 48 tests cover all ACs.
+depends_on:
+  - "@task-event-bus"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - schema
+vcs_refs: []
+review_ref: "@01KM04M3PF8FE3K6TG22VZBF5A"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T09:31:10.319Z
+  commit: c9ead12eb04ffb581ba086d839a42abe111db2b1
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM03TGDHY7GAXADFXMRWZRT3
+created_at: 2026-03-18T05:31:47.907Z
+started_at: 2026-03-18T09:18:47.765Z
+submitted_at: 2026-03-18T09:31:10.727Z
+completed_at: 2026-03-18T09:50:57.958Z
+todos: []
+automation: eligible

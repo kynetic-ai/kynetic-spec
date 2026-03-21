@@ -1,0 +1,51 @@
+notes:
+  - _ulid: 01KKDV2MB4JVGYDNHTFNWHD5FJ
+    content: >-
+      Execution context:
+
+      - Background: invocation retry/blocking currently infers failure streaks by reading
+      AGENT-FAIL/AGENT-SUCCESS task notes.
+
+      - Scope: replace streak tracking with structured invocation outcome data while preserving
+      required task notes/events for failure and timeout ACs.
+
+      - Files: src/agent-runtime/invocation.ts, src/sessions/*,
+      tests/agent-invocation-lifecycle.test.ts, related session tests if schema changes.
+
+      - Verification: targeted invocation/session tests, then full npm test and kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T06:59:16.964Z
+  - _ulid: 01KKDV7YPZZ9YJE9MY5BMCVFCZ
+    content: Replaced retry streak detection with session-backed invocation outcomes keyed by task_id
+      and agent_id. Failure handling still writes AGENT-FAIL notes for operator context, but success
+      notes are no longer used as tracking state. Updated AC-5/AC-9 tests to seed prior invocation
+      sessions instead of mocked task note history.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T07:02:11.423Z
+  - _ulid: 01KKDWEXB7V03SV4VQCYC543AA
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #773 includes unrelated daemon watcher
+      changes for @daemon-server/@01KKDPW5237717QNKEKPRWERW7; split or rebase the PR so it only
+      contains the invocation outcome work."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T07:23:27.976Z
+  - _ulid: 01KKDXDZ13HDNPQS893C29SFRP
+    content: "Fix cycle update:\\n- Rebased fix/invocation-outcome-data onto main at
+      3d6fc0307b72a85fff53413b453038e1c4008603 so PR #773 drops unrelated @daemon-server watcher
+      commits.\\n- Verified resulting branch diff only touches src/agent-runtime/invocation.ts and
+      tests/agent-invocation-lifecycle.test.ts.\\n- Re-running targeted and full verification on the
+      cleaned branch before resubmission."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T07:40:25.508Z
+  - _ulid: 01KKDXJ51ARGWH1N7V2HH5RD8T
+    content: "Verification on rebased PR branch:\\n- Focused run: npm test --
+      agent-invocation-lifecycle\\n- Full suite: npm test (208 files, 4515 tests passed, 3
+      skipped)\\n- Validation: kspec validate returned only the repository's existing warning
+      set.\\n- Force-pushed fix/invocation-outcome-data to update PR #773 with only the invocation
+      outcome tracking changes."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T07:42:42.730Z

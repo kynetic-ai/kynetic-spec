@@ -1,0 +1,24 @@
+notes:
+  - _ulid: 01KKR0EYTJ8KYKKZH3PKTTPJGX
+    content: >-
+      Execution context:
+
+      - Enriched task_updated broadcasts: added title, old_status, new_status (replacing bare status
+      field)
+
+      - Enriched agent_invocation and agent_text_chunk broadcasts: added task_title alongside
+      task_id
+
+      - Enriched inbox_item_created broadcasts: includes text, tags, added_by, created_at
+
+      - Added typed event data interfaces to packages/shared/src/websocket.ts
+
+      - Updated InvocationEvent interface and DispatchEngine to pass task_title through the callback
+      chain
+
+      - Added 6 tests validating enriched payload shapes in daemon-pubsub.test.ts
+
+      - All 241 test files pass (4959 tests)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T05:45:48.114Z

@@ -1,0 +1,24 @@
+notes:
+  - _ulid: 01KGVGZHRPM50MHRNSZ48T0EN8
+    content: "Implementation: Needs design/spec work. Key decisions: (1) Lifecycle — kspec worktree
+      create @task creates worktree on new branch, kspec worktree cleanup removes it. (2) Shadow
+      branch — worktrees share the same .kspec/ (single source of truth for tasks), or each gets a
+      read-only copy. Sharing is simpler but risks concurrent writes. (3) Naming — branch:
+      agent/<task-slug>, worktree dir: .worktrees/<task-slug>. (4) Integration — ralph could
+      auto-create worktree per task, merge back on completion. Start with manual create/cleanup, add
+      ralph integration later."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T07:45:06.838Z
+  - _ulid: 01KGVJM0MKYA8TG1X1NGH3G7A2
+    content: "Automation status set to needs_review: Major new feature needs design for lifecycle,
+      shadow branch interaction, cleanup"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T08:13:46.003Z
+  - _ulid: 01KHD9G1B3K0VR6ZX6FQMN0TZP
+    content: "Automation status set to needs_review: Feature - needs spec for worktree lifecycle and
+      isolation model"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-14T05:20:38.243Z

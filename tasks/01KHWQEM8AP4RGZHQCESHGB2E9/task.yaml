@@ -1,0 +1,30 @@
+_ulid: 01KHWQEM8AP4RGZHQCESHGB2E9
+slugs: []
+title: Fix detectRemoteType() for relative paths
+type: task
+description: >-
+  src/parser/config.ts detectRemoteType() classifies '../relative/path' as 'named' (a git remote
+  name) which is incorrect. Relative paths like ../ or ./ should be classified as 'path' type, same
+  as absolute paths.
+
+
+  The current detection at line 143 checks for / ./ or ~ prefixes but misses ../ prefix. Add '../'
+  to the path detection pattern. Add tests for this edge case.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #427. Fixed detectRemoteType() to recognize '../' prefix as a
+  filesystem path. Added test case for '../relative/path'. All CI checks passed."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - bugfix
+vcs_refs: []
+created_at: 2026-02-20T05:13:08.618Z
+started_at: 2026-02-20T10:35:12.162Z
+completed_at: 2026-02-20T10:52:37.706Z
+todos: []
+automation: eligible

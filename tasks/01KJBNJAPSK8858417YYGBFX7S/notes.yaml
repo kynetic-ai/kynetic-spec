@@ -1,0 +1,40 @@
+notes:
+  - _ulid: 01KJCTPC9QPYRQ5ESZXJVTCQV7
+    content: "Reading existing test files: daemon-api-error-handling.test.ts (148 lines, static
+      analysis) and daemon-api-projects.test.ts (235 lines, static/documentary tests). Projects
+      route is fully implemented in packages/daemon/src/routes/projects.ts. Writing
+      api-errors.spec.ts for error handling ACs (ac-22, ac-23, ac-24) and api-projects.spec.ts for
+      projects API ACs (ac-28, ac-29, ac-30). Existing errors.spec.ts uses mocks — creating separate
+      api-errors.spec.ts for real daemon tests."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T11:17:39.255Z
+  - _ulid: 01KJCV8F93ECZTVF1GMCTDCX6A
+    content: Created packages/web-ui/tests/e2e/api-errors.spec.ts (33 tests) covering @api-contract
+      ac-22, ac-23, ac-24 with real HTTP calls. Created
+      packages/web-ui/tests/e2e/api-projects.spec.ts (13 tests) covering @multi-directory-daemon
+      ac-28, ac-29, ac-30. Deleted tests/daemon-api-error-handling.test.ts (148 lines) and
+      tests/daemon-api-projects.test.ts (235 lines). All unit test suites pass (54 files, 1173
+      tests). N/A trait annotations added for all inherited traits.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T11:27:32.131Z
+  - _ulid: 01KJCVT4RNWJKA9G74BZFRS12S
+    content: "Fixed Codex review MUST-FIX issues: (1) api-errors.spec.ts: Added proper ac-23 test
+      sending empty text string to hit custom 400 handler with {error, details} shape. Clarified 422
+      tests are Elysia framework validation. (2) api-projects.spec.ts: Corrected AC annotations on
+      POST path validation tests from ac-5/6/7 (X-Kspec-Dir header ACs) to ac-29 (POST /api/projects
+      endpoint). Consolidated redundant POST tests. Pushed fix commit."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T11:37:11.189Z
+  - _ulid: 01KJCVZHBT0GN16X5ZN4DAYDFB
+    content: "[FIX_CYCLE: 1] Review findings: CI check-unresolved-comments is FAILING due to 3
+      unresolved GitHub review threads from prior Codex review. The code fixes were applied in
+      commit 6e045e45 but the threads were never resolved in GitHub. Worker must resolve the 3
+      threads: (1) api-errors.spec.ts:153 ac-23 422 test thread, (2) api-projects.spec.ts ac-5/6/7
+      annotation thread, (3) api-projects.spec.ts POST test structure suggestion. Code is correct —
+      only GitHub thread resolution needed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T11:40:07.930Z

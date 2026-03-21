@@ -1,0 +1,75 @@
+notes:
+  - _ulid: 01KEZJ3QN4ZD7TMZ1X4TBMGC52
+    content: >-
+      Problem: Notes created by Claude show author as 'unknown' because there's no way to
+      auto-detect the author.
+
+
+      Research findings - Claude Code environment:
+
+
+      1. Claude Code does NOT set a self-identification env var automatically
+
+
+      2. Two ways to configure it:
+
+         Option A - Settings env (simplest):
+         Add to ~/.claude/settings.json:
+         {
+           "env": {
+             "KSPEC_AUTHOR": "@claude"
+           }
+         }
+
+         Option B - SessionStart hook:
+         {
+           "hooks": {
+             "SessionStart": [{
+               "type": "command",
+               "command": "echo 'export KSPEC_AUTHOR=@claude' >> \"\$CLAUDE_ENV_FILE\""
+             }]
+           }
+         }
+
+      3. Available Claude Code variables:
+         - CLAUDE_PROJECT_DIR: project root path
+         - CLAUDE_CODE_REMOTE: 'true' if web/remote session
+         - Hook inputs have session_id, transcript_path, etc.
+
+      Implementation:
+
+      - Update createNote() to check process.env.KSPEC_AUTHOR as default
+
+      - Document setup in README/CLAUDE.md
+
+      - Consider KSPEC_AUTHOR or more generic like GIT_AUTHOR_NAME fallback
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T00:50:26.597Z
+  - _ulid: 01KEZM3K5W1BXE1GQSNDBB7TQE
+    content: Testing author auto-detection - this note should show git user.name
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T01:25:19.164Z
+  - _ulid: 01KEZM5DWGP1AK0ZKCKRC79J92
+    content: >-
+      Implemented author auto-detection:
+
+
+      - Added getAuthor() helper in src/parser/yaml.ts:410-437
+
+      - Fallback chain: KSPEC_AUTHOR env → git user.name → USER/USERNAME → undefined
+
+      - Updated createNote() to use auto-detected author when not explicitly provided
+
+      - Rewrote README.md with:
+        - Better project intro emphasizing AI-assisted development
+        - Agent Integration section with Claude Code setup instructions
+        - Agent-agnostic approach using KSPEC_AUTHOR env var
+        - Convention of using @ prefix for agent authors
+
+      Approach is agent-agnostic but provides explicit Claude Code instructions. Any agent can set
+      KSPEC_AUTHOR via their env configuration method.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T01:26:19.281Z

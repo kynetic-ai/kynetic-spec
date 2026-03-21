@@ -1,0 +1,20 @@
+notes:
+  - _ulid: 01KK6BK8RXFV4P4DCTG2HAB9VZ
+    content: >-
+      Implementation complete:
+
+      - Added SANITIZED_ENV_VARS constant listing CLAUDECODE and CLAUDE_CODE_SESSION
+
+      - spawnAgent() now strips these vars from process.env before merging adapter.env and
+      invocation env
+
+      - Sanitization is per-spawn (parent process.env untouched), and adapter/invocation env can
+      re-set them if needed
+
+      - 3 behavioral tests using mock ACP's VERIFY_ENV feature to verify child process sees
+      sanitized env
+
+      - Fixes GitHub issue #700
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T09:14:03.933Z

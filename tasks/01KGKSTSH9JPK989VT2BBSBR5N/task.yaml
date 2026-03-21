@@ -1,0 +1,25 @@
+_ulid: 01KGKSTSH9JPK989VT2BBSBR5N
+slugs: []
+title: Add Plan Documents section to AGENTS.md
+type: task
+description: "Add new section after Spec-First Development in AGENTS.md. Cover: what plans are, when
+  to use them, document format basics. Include plan workflow: explore -> plan -> review -> import.
+  Show example kspec plan import commands with flags. Explain manual vs automatic adjustment. Note
+  that plans are working documents - import immediately."
+spec_ref: "@plan-support"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #315. Updated AGENTS.md /spec-plan skill description with workflow references."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - docs
+  - planning
+vcs_refs: []
+created_at: 2026-02-04T07:45:52.681Z
+started_at: 2026-02-05T08:38:17.473Z
+completed_at: 2026-02-05T08:59:05.647Z
+todos: []
+automation: manual_only

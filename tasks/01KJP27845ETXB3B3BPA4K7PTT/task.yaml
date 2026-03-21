@@ -1,0 +1,28 @@
+_ulid: 01KJP27845ETXB3B3BPA4K7PTT
+slugs:
+  - implement-cli-agent-commands
+title: Implement CLI Agent Commands
+type: task
+spec_ref: "@cli-agent-commands"
+plan_ref: "@plan-reactive-agent-runtime"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #634. Implemented kspec agent command family (list, run, dispatch
+  start/stop/status) in src/cli/commands/agent.ts. All 10 own ACs covered and all 5 trait ACs
+  (@trait-json-output, @trait-semantic-exit-codes, @trait-error-guidance, @trait-dry-run,
+  @trait-filterable-list) covered or N/A-annotated. 25 integration tests pass. 4 fix cycles
+  addressed: empty task binding, dry-run overrides, --limit/--offset validation, and daemon shutdown
+  calling stopAllEngines()."
+depends_on:
+  - "@implement-agent-invocation-lifecycle"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJR8JA0CQXS951PDBEBRA3CW
+created_at: 2026-03-02T01:22:21.957Z
+started_at: 2026-03-02T22:18:33.390Z
+submitted_at: 2026-03-02T22:18:35.751Z
+completed_at: 2026-03-02T22:48:26.640Z
+todos: []
+automation: eligible

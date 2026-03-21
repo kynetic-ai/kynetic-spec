@@ -1,0 +1,53 @@
+notes:
+  - _ulid: 01KEZJP4TRJN1QM76D8N3AWC0Z
+    content: |-
+      Design: Two tiers of CLI help
+
+      Default (--help):
+      - Succinct, flags and options only
+      - Quick human reference
+
+      Extended (--help-full or 'kspec help <command>'):
+      - Detailed explanations
+      - Examples
+      - Concept clarifications (e.g., blocked_by vs depends_on)
+      - Edge cases and gotchas
+      - Agent-friendly context that can be pulled into prompts
+
+      Example for 'task unblock':
+
+      Default:
+        kspec task unblock <ref>  Unblock a task
+
+      Extended:
+        kspec task unblock <ref>
+        Clears manual blockers and sets status to pending.
+        Note: This clears the blocked_by field (manual string blockers),
+        NOT depends_on (task references). Dependencies auto-resolve
+        when referenced tasks complete.
+        Example:
+          kspec task block @my-task --reason 'Waiting on design review'
+          kspec task unblock @my-task  # clears all blocked_by entries
+
+      Implementation options:
+      - Commander's .addHelpText() for extended sections
+      - Separate 'kspec help <topic>' command
+      - --verbose or --full flag on --help
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T01:00:29.913Z
+  - _ulid: 01KEZXECCA6JM6DQH862HJGXAH
+    content: |-
+      Implemented extended help system:
+      - kspec help: Lists all topics (commands + concepts)
+      - kspec help <topic>: Shows detailed help with examples
+
+      Topics:
+      - Commands: task, tasks, validate, session, init, setup, item
+      - Concepts: refs, statuses, workflow
+
+      Each topic includes description, examples, and 'see also' links.
+      Unknown topics show error with available options.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T04:08:29.835Z

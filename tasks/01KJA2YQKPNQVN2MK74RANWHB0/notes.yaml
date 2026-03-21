@@ -1,0 +1,28 @@
+notes:
+  - _ulid: 01KJAN3G9FT2DXPJZZ94K9TAQ6
+    content: "Implemented runtime validation for 3 categories of unsafe casts: (1) --status option
+      validated against SessionStatusSchema.safeParse() with clear error message and exit code 2,
+      (2) summarizeEventData() uses type guards (typeof/null checks) instead of unsafe 'as' casts
+      for event.data and nested fields, (3) cosmetic fix: unknown|null simplified to unknown. 14 new
+      tests covering invalid status, malformed event data shapes (null, string, array, missing
+      nested fields). All 152 session log tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T15:01:29.008Z
+  - _ulid: 01KJANNSED9JJPA12CTX57H6EQ
+    content: "[FIX_CYCLE: 1] Review findings: SHOULD-FIX: summarizeEventData() repeats the same
+      null/typeof/Array.isArray type guard pattern 5 times inline. An existing isObject() utility at
+      src/acp/types.ts:118 does exactly this check and provides a type predicate, eliminating the
+      need for 'as Record<string, unknown>' casts. Refactor to use isObject() for readability and
+      consistency. See PR #534 inline review comment."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T15:11:28.206Z
+  - _ulid: 01KJANTGH2SMP8E65Y8T6XVD50
+    content: "[FIX_CYCLE: 1 COMPLETE] Refactored summarizeEventData() to use existing isObject() utility
+      from src/acp/types.ts. Replaced 5 inline null/typeof/Array.isArray guards and eliminated all
+      'as Record<string, unknown>' casts. The isObject() type predicate handles narrowing
+      automatically. All 152 session log tests pass, clean build."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T15:14:02.915Z

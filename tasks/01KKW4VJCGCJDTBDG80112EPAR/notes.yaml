@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KKW94Q4800D8R916JV3ACZNC
+    content: "Rewrote ac-3 to describe per-cycle review model: each cycle produces its own review
+      record, collection comprises full history. Moved 3 test annotations and 1 code comment from
+      ac-3 to ac-7 (stale verdict handling) since the existing tests exercise refreshSubject within
+      a single record, which maps to stale verdict detection not per-cycle lifecycle."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T21:34:27.464Z

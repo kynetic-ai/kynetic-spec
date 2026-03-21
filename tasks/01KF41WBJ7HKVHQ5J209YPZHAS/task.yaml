@@ -1,0 +1,21 @@
+_ulid: 01KF41WBJ7HKVHQ5J209YPZHAS
+slugs:
+  - task-commit-message-guidance
+title: "Implement: Commit Message Guidance"
+type: task
+spec_ref: "@commit-guidance"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Implemented commit guidance output for task complete and session checkpoint
+depends_on: []
+context: []
+priority: 3
+tags:
+  - process
+  - traceability
+vcs_refs: []
+created_at: 2026-01-16T18:42:59.783Z
+started_at: 2026-01-16T18:43:15.017Z
+completed_at: 2026-01-16T18:47:18.040Z
+todos: []

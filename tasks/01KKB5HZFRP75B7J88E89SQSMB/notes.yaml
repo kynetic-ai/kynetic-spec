@@ -1,0 +1,48 @@
+notes:
+  - _ulid: 01KKB5HZFRZPQY645FJ4266NQ7
+    content: |
+      Implementation notes:
+
+      Add route to packages/daemon/src/routes/items.ts.
+      Use existing initContext + item/task loading patterns.
+      Resolve refs using the same logic as findItemByRef/findTaskByRef.
+    author: "@claude"
+    created_at: 2026-03-10T06:04:42.360Z
+  - _ulid: 01KKB5N5WJYZCFCE5P3NX9XH4P
+    content: >-
+      Execution context:
+
+      - Background: Plan embedded views need to resolve multiple spec/task refs in a single request
+      to avoid N+1 API calls
+
+      - Scope: Add POST /api/items/batch route. Accept { refs: string[] }, return { items: [],
+      unresolved: [] }. Max 100 refs.
+
+      - Files: packages/daemon/src/routes/items.ts (add batch route), use existing initContext +
+      item/task loading patterns (findItemByRef/findTaskByRef)
+
+      - Has trait: @trait-api-endpoint — must satisfy trait ACs (JSON response, error handling,
+      request ID header)
+
+      - Verification: curl POST to /api/items/batch with valid refs returns summaries. Empty refs
+      returns empty arrays. >100 refs returns 400. Invalid refs appear in unresolved array.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T06:06:27.219Z
+  - _ulid: 01KKDYQ2KMHANNHPQMV55K354A
+    content: Started implementation from linked plan context. Isolating work onto a dedicated branch
+      because the current branch contains an unrelated pending-review task.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T08:02:52.661Z
+  - _ulid: 01KKDZ2HX9EDNPYRF3MQ004F5Q
+    content: "Implemented POST /api/items/batch in the daemon items routes. The endpoint resolves mixed
+      spec/task refs with existing findItemByRef/findTaskByRef logic, returns normalized summary
+      objects plus an unresolved array, validates missing refs input, and rejects batches over 100
+      refs with a 400 validation_error response. Verification: npm test passed (208 files / 4515
+      tests). npm run typecheck passed. kspec validate returned only existing repository warnings.
+      Playwright E2E could not run in dispatch mode because the shared fixture attempts to start the
+      daemon via kspec serve, which is explicitly blocked when KSPEC_SESSION_ID is set."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T08:09:08.777Z

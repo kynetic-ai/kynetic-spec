@@ -1,0 +1,40 @@
+_ulid: 01KKBBS1HGRR363BSDMG07EC19
+slugs: []
+title: "core-skill-install.test.ts codex auto-detect test failing: expects codex platform when
+  CODEX_THREAD_"
+type: task
+description: >-
+  Fix failing test: core-skill-install.test.ts "should auto-detect codex platform when
+  CODEX_THREAD_ID is present" (line ~280 in tests/core-skill-install.test.ts).
+
+
+  Current failure: expects platform "codex" but gets "claude-code".
+
+
+  Root cause: Agent detection in src/parser/agent-detection.ts checks CLAUDECODE (line 33) before
+  CODEX_THREAD_ID (line 105). The test sets CLAUDECODE to empty string, but the parent shell may
+  have CLAUDECODE=1 which leaks through env merging in the CLI test helper.
+
+
+  Fix approach: Either (a) fix env isolation in the test so CLAUDECODE is properly unset (not just
+  empty string), or (b) adjust detection priority so CODEX_THREAD_ID is checked before CLAUDECODE.
+  Option (a) is safer. Check tests/helpers/cli.ts for how env vars are merged.
+spec_ref: "@platform-renderer-trait"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #745. Fixed the codex auto-detect install-core test by blanking all
+  Claude detection env vars in the test override, preserving production detection priority while
+  restoring deterministic env isolation. AC coverage reviewed for the changed test path and CI
+  passed on the merged HEAD."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKBRJZHN2WN5N85XR3MHSJ4X
+created_at: 2026-03-10T07:53:25.296Z
+started_at: 2026-03-10T11:42:51.288Z
+submitted_at: 2026-03-10T11:43:58.435Z
+completed_at: 2026-03-10T11:55:55.065Z
+todos: []
+automation: eligible

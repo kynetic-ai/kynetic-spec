@@ -1,0 +1,32 @@
+_ulid: 01KHWQEKAJ87YAK4SP17Q3XMFM
+slugs: []
+title: Fix sync require('fs').statSync() in setup-status.ts
+type: task
+description: |-
+  src/parser/setup-status.ts line 84 uses require('fs').statSync() which is:
+  - Inconsistent with the rest of the file which uses async fs from node:fs/promises
+  - A blocking call in an async function
+  - Fragile ESM compatibility
+
+  Replace with await fs.stat(globalClaudeDir) which is already imported at line 10.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #426. Converted detectAgent() to async and replaced sync
+  require('fs').statSync() with async fs.stat() from node:fs/promises. The change addresses code
+  consistency (async operations), eliminates a blocking call in async context, and improves ESM
+  compatibility. All 2940 tests pass."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cleanup
+  - code-quality
+vcs_refs: []
+created_at: 2026-02-20T05:13:07.666Z
+started_at: 2026-02-20T10:17:53.482Z
+completed_at: 2026-02-20T10:34:39.329Z
+todos: []
+automation: eligible

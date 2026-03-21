@@ -1,0 +1,20 @@
+_ulid: 01KF4WVX755EQVCW8MWV7JBVEK
+slugs:
+  - task-kspec-meta-delete
+title: "Implement: kspec meta delete"
+type: task
+spec_ref: "@meta-delete-cmd"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Already implemented - discovered during task audit
+depends_on:
+  - "@task-meta-cli-commands"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:36.645Z
+started_at: 2026-01-18T15:45:42.531Z
+completed_at: 2026-01-18T15:45:42.531Z
+todos: []

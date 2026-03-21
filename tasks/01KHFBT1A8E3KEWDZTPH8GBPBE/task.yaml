@@ -1,0 +1,22 @@
+_ulid: 01KHFBT1A8E3KEWDZTPH8GBPBE
+slugs:
+  - implement-skill-meta-integration
+title: Implement Skill Meta Integration
+type: task
+spec_ref: "@skill-meta-integration"
+plan_ref: "@plan-portable-agent-integration-infrastructure"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #380. Implemented skill meta integration - kspec meta get/list/show now
+  include skills. All 4 acceptance criteria covered with 12 tests."
+depends_on:
+  - "@implement-skill-cli-commands"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-15T00:39:31.912Z
+started_at: 2026-02-15T03:24:15.500Z
+completed_at: 2026-02-15T03:38:48.238Z
+todos: []
+automation: eligible

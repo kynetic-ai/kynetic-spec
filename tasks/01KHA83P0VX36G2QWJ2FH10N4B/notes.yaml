@@ -1,0 +1,22 @@
+notes:
+  - _ulid: 01KHA83P0VG0HFJBZ7NPA6ARAG
+    content: |
+      Implementation notes:
+
+      Use Commander.js .action() on the parent command group to define default
+      behavior. Extract shared list logic from task.ts (lines 425-511) and
+      tasks.ts (lines 37-124) into a common function to eliminate the existing
+      code duplication. Both task list and tasks list should call the shared
+      function. The default action on tasks and task calls this same function.
+      Commander.js routes unknown subcommands to the error handler before the
+      default action, so ac-unknown-subcommand should work naturally.
+    author: "@claude"
+    created_at: 2026-02-13T00:58:41.563Z
+  - _ulid: 01KHCY631VA0X6MKGPGX34C8EM
+    content: Implemented default list action for tasks/task command groups using allowUnknownOption +
+      re-parse approach. Extracted shared listTasksAction() and addListOptions() from duplicated
+      code. Unknown subcommands detected after option parsing and show fuzzy suggestions. 11 tests
+      covering all 6 ACs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-14T02:02:57.979Z

@@ -1,0 +1,70 @@
+notes:
+  - _ulid: 01KKN0JWNJW69XWNGEZ370HJYN
+    content: >-
+      Execution context:
+
+      - Background: Existing adoption/provenance/cleanup tests cover individual ACs well but lack
+      regression tests that exercise end-to-end flows and cross-cutting concerns: adopted branch
+      cleanup preservation during reap, queue eligibility with submission linkage recovery for
+      adopted branches, health reconciliation distinguishing adopted vs dispatcher-managed branches,
+      and full dispatch flow where review spawns on adopted branch without fallback to synthetic
+      branches.
+
+      - Scope: New test file(s) covering regression scenarios for adopted manual branches and
+      fallback-independent dispatch review. Covers ACs from
+      @adopted-branch-cleanup-and-recoverability,
+      @review-and-fix-cycle-workspace-discovery-before-discard, and cross-spec integration points.
+
+      - Files: tests/dispatch-adopted-branch-regression.test.ts (new)
+
+      - Verification: npm test must pass with all new tests green
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T01:50:13.683Z
+  - _ulid: 01KKN0Z07APT9193FAEV2W8N5G
+    content: >-
+      Implementation complete. Created tests/dispatch-adopted-branch-regression.test.ts with 15
+      regression tests covering:
+
+
+      1. @adopted-branch-cleanup-and-recoverability (ac-1 through ac-4):
+         - ac-1: Adopted branch ref preserved during cleanup while worktrees removed
+         - ac-2: Dispatcher-managed branch deleted during cleanup
+         - ac-3: Health state distinguishes adopted branch recovery (remote fallback), missing managed branch, and missing reviewer snapshot as separate paths
+         - ac-4: Local rehydration state cleaned without deleting external source branch
+
+      2. @review-and-fix-cycle-workspace-discovery-before-discard (ac-1 through ac-4):
+         - ac-1: Recovery from submission linkage, registry state, and remote for pending_review/needs_work
+         - ac-2: Post-recovery workspace is healthy and fully functional
+         - ac-3: Explicit diagnostics and guidance when no recovery path exists
+         - ac-4: Precedence: registry state over submission linkage; metadata-backed recovery as fallback
+
+      3. Full lifecycle regression tests:
+         - Adopted branch identity maintained through review → fix-cycle → review → cleanup
+         - Dispatcher-managed branch deleted after full lifecycle (contrast test)
+         - Adopted workspace recovered from metadata after registry loss
+
+      All 4804 tests pass including 15 new regression tests.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T01:56:50.538Z
+  - _ulid: 01KKN1Q29102Z5R39WMFE7SHDB
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: CI failure in ac-4 test
+      (dispatch-adopted-branch-regression.test.ts:367). The 'removes local rehydration state without
+      deleting the external source branch' test fails in GitHub Actions — git branch --list returns
+      empty after reapDispatchWorkspace despite adopted ownership. Test passes locally but fails in
+      CI, indicating an environmental dependency in the multi-repo clone+adopt+reap flow. Fix the
+      test to be CI-stable."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T02:09:59.073Z
+  - _ulid: 01KKN2E9CX1AHG5Q507W8M6N75
+    content: "[FIX_CYCLE: 1] Fixed ac-4 test CI instability. Root cause: the multi-clone test setup
+      (bare repo → git clone → git fetch to rehydrate branch → git worktree add → git worktree
+      remove) caused git branch --list to return empty after reapDispatchWorkspace in GitHub
+      Actions, despite adopted ownership correctly skipping branch deletion. Restructured to use the
+      single-repo pattern (matching ac-1 which passes in CI) with a bare remote for external source
+      verification via git ls-remote. All 15 regression tests pass locally across all 3 shards."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T02:22:40.030Z

@@ -1,0 +1,34 @@
+_ulid: 01KJEWKGDK8YRGGF7CEXX0W33H
+slugs: []
+title: Seed Codex project_doc_fallback_filenames with kspec-agents.md
+type: task
+description: "What: Ensure Codex project config includes kspec-agents.md in
+  project_doc_fallback_filenames so AGENTS.md fallback discovery can load bundled kspec
+  instructions. Where: setup/install path that currently writes Codex config.toml entries (and/or
+  setup seeding for codex-cli). How: parse ~/.codex/config.toml safely, merge kspec-agents.md into
+  project_doc_fallback_filenames idempotently, preserve existing fields/order where possible, and
+  support dry-run semantics used by setup/install-core. Add regression tests for create, merge,
+  idempotent re-run, and invalid TOML failure handling. Done when: running kspec setup (codex-cli)
+  and kspec skill install-core --platform codex leaves ~/.codex/config.toml with
+  project_doc_fallback_filenames containing kspec-agents.md without clobbering existing config."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #570. Seeded Codex project_doc_fallback_filenames with kspec-agents.md
+  in setup/install-core with tests and AC alignment."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - codex
+  - skills
+  - setup
+  - config
+vcs_refs: []
+created_at: 2026-02-27T06:29:31.187Z
+started_at: 2026-02-27T06:34:28.412Z
+submitted_at: 2026-02-27T06:57:32.837Z
+completed_at: 2026-02-27T06:58:29.499Z
+todos: []

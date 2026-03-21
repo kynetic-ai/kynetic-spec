@@ -1,0 +1,35 @@
+notes:
+  - _ulid: 01KKDWGPVX9Z039W1CTN1E2KW3
+    content: >-
+      Execution context:
+
+      - Background: concurrent multi-project dispatch can race on process-level KSPEC_SESSION_ID
+      mutation inside agent invocation startup/cleanup.
+
+      - Scope: remove or isolate shared env mutation so concurrent invocations cannot leak session
+      identity across projects.
+
+      - Files: expected focus in src/agent/invocation.ts plus targeted tests around invocation env
+      injection/spawn behavior.
+
+      - Verification: focused tests for invocation/session env behavior, then full npm test and
+      kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T07:24:26.877Z
+  - _ulid: 01KKDWRA5V297JDCJ4MWJHK6CW
+    content: >-
+      Implemented fix for concurrent multi-project dispatch session injection.
+
+      - Removed process-level KSPEC_SESSION_ID mutation from invocation lifecycle.
+
+      - Kept per-adapter injection plus child spawn env injection as the only session propagation
+      path.
+
+      - Replaced AC-2 tests with child-env verification and a concurrent isolation regression test.
+
+      - Verification: npm test -- tests/agent-invocation-lifecycle.test.ts, npm test, kspec validate
+      (warnings only; pre-existing repo debt).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T07:28:36.027Z

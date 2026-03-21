@@ -1,0 +1,64 @@
+_ulid: 01KKTW6GRPMVH8M9WVGH9NTJCF
+slugs:
+  - task-review-api-verdicts
+title: Implement review verdict, check, and lifecycle API endpoints
+type: task
+description: |
+  Add endpoints for recording verdicts, checks, and lifecycle transitions.
+  These complete the mutation API surface.
+
+  Why: Verdicts drive disposition computation (the core review outcome).
+  Checks record verification evidence. Lifecycle transitions control
+  review state. The review library has functions for all of these in
+  parser/review-operations.ts.
+
+  What: POST /api/reviews/:id/verdicts records a verdict (decision,
+  reviewer, version fields). POST /api/reviews/:id/checks records a
+  check result (name, status, runner, evidence, version fields).
+  PATCH /api/reviews/:id/lifecycle transitions lifecycle state (target
+  state: open, closed, archived). Invalid transitions return 400 with
+  the reason.
+
+  How: Use submitVerdict() and transitionLifecycle() from
+  parser/review-operations.ts, and createCheck()/createLocalCheck()
+  from review/checks.ts. All mutations need mutateReviewAtomically()
+  from parser/reviews.ts for persistence with file locking. Validate
+  state transitions server-side (e.g., can't archive from draft).
+  Return recomputed disposition in verdict responses so the UI can
+  update immediately.
+
+  Covers: @review-records-daemon-api ac-6, ac-7, ac-8, ac-10.
+spec_ref: "@review-records-daemon-api"
+plan_ref: "@plan-review-records-web-ui"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev. Implemented review verdict (POST /api/reviews/:id/verdicts), check
+  (POST /api/reviews/:id/checks), and lifecycle (PATCH /api/reviews/:id/lifecycle) API endpoints.
+  Covers ac-6, ac-7, ac-8, ac-10 with 31 tests. Includes archived-state guards, auto-close on
+  approve/request_changes, WebSocket broadcasts, and actionable error messages.
+depends_on:
+  - "@task-review-api-read"
+context: []
+priority: 2
+tags:
+  - daemon
+  - api
+  - review
+vcs_refs: []
+review_ref: "@01KKYJDWKVMFS982PQ5ZDYTGVT"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-17T18:42:57.700Z
+  commit: 1c7a8e7ffc47ad6c3eecc5f3f3ee8f21f65607b8
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KKYGZEBRX34GPY2GB72J7DP8
+created_at: 2026-03-16T08:29:00.566Z
+started_at: 2026-03-17T18:30:29.882Z
+submitted_at: 2026-03-17T18:42:58.191Z
+completed_at: 2026-03-17T18:57:55.996Z
+todos: []
+automation: eligible

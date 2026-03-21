@@ -1,0 +1,35 @@
+notes:
+  - _ulid: 01KK3Q1ETM9AG90MV4YDC5B3Q1
+    content: "Fix applied: replaced onMount+$effect(version>0) data loading pattern across all 13 route
+      pages with a single $effect gated on isProjectInitialized(). This is the same pattern used in
+      the Sidebar fix (bf6611352). Pages fixed: dashboard, tasks list, task board, specs, inbox,
+      observations, agents, sessions, workflows, plans, settings, validate, triage. The root cause:
+      onMount() data loads could fire before the project store resolved the active project, causing
+      API calls with wrong/missing X-Kspec-Dir header. The fix gates all initial data loads on
+      isProjectInitialized(), ensuring the project context is established before any API calls."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T08:36:19.924Z
+  - _ulid: 01KK3R6Q0GD3ESXVA8VRPX1S1P
+    content: "[FIX_CYCLE: 1] Review findings: Review issues: merge conflict against feat/ui-revamp in
+      packages/web-ui/src/routes/plans/+page.svelte. Rebase/resolve and resubmit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-07T08:56:40.720Z
+  - _ulid: 01KK3R6PEPRYJX94GEQE7TGH69
+    content: "Review findings: Implementation checks and required tests passed, but merge into
+      feat/ui-revamp failed with a content conflict in
+      packages/web-ui/src/routes/plans/+page.svelte. Branch must be rebased or conflict-resolved
+      before landing."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-07T08:56:40.150Z
+  - _ulid: 01KK3S5ARXFGRRV30N9P3TTXHD
+    content: "Fix cycle 1: Rebased fix/kanban-wrong-project-load onto current feat/ui-revamp. Resolved
+      merge conflict in plans/+page.svelte — the conflict was between the isProjectInitialized
+      import (this fix) and the renderMarkdown import + plan content expansion features (merged to
+      feat/ui-revamp since original PR). Resolution: kept both imports. All tests pass (2
+      pre-existing failures in codex skill tests unrelated to this change)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T09:13:23.997Z

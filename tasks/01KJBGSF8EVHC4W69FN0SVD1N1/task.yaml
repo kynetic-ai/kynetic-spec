@@ -1,0 +1,45 @@
+_ulid: 01KJBGSF8EVHC4W69FN0SVD1N1
+slugs:
+  - task-validate-session-inject
+title: Validate KSPEC_SESSION_ID env injection in ralph loop
+type: task
+description: >-
+  Self-validating task: when ralph starts this task, verify that session_id was stamped on it.
+
+
+  Steps:
+
+  1. Run: echo $KSPEC_SESSION_ID — confirm the env var is set in your environment
+
+  2. Run: kspec task get @task-validate-session-inject --json — confirm session_id field is non-null
+
+  3. If both pass, add a note with the session_id value and submit the task
+
+  4. If either fails, add a note documenting what was missing and submit anyway (the failure IS the
+  finding)
+
+
+  This validates that ralph's harness-specific env injection (via .claude/settings.json) correctly
+  propagates KSPEC_SESSION_ID to kspec subprocesses.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Validated that KSPEC_SESSION_ID env injection works end-to-end. Session 01KJBGWB
+  stamped on task, env var present in agent subprocess. Settings.json cleanup confirmed on session
+  end.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - sessions
+  - validation
+vcs_refs: []
+session_id: 01KJBGWBP73H0ERJ7GHR9164EA
+created_at: 2026-02-25T23:05:20.398Z
+started_at: 2026-02-25T23:07:05.634Z
+submitted_at: 2026-02-25T23:07:23.905Z
+completed_at: 2026-02-25T23:09:17.365Z
+todos: []
+automation: eligible

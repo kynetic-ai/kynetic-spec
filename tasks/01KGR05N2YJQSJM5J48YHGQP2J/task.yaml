@@ -1,0 +1,23 @@
+_ulid: 01KGR05N2YJQSJM5J48YHGQP2J
+slugs:
+  - implement-batch-command-schema
+title: Implement Batch Command Schema
+type: task
+spec_ref: "@batch-command-schema"
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #321. Implemented batch command schema (Zod schemas for BatchCommand
+  and BatchInput), parsing layer (stdin/file/inline with BatchParseError), and validation (command
+  path resolution, arg mapping with kebab/camelCase, unknown command suggestions via fuzzy matching,
+  missing required arg detection, commandFilter extension point). All 5 ACs covered by 40 unit
+  tests. No regressions."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-05T22:53:37.758Z
+started_at: 2026-02-06T08:23:55.728Z
+completed_at: 2026-02-06T09:03:26.862Z
+todos: []

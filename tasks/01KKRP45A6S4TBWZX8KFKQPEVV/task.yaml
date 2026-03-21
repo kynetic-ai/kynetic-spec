@@ -1,0 +1,51 @@
+_ulid: 01KKRP45A6S4TBWZX8KFKQPEVV
+slugs: []
+title: Remove process.cwd() web UI resolution from daemon
+type: task
+description: |-
+  resolveWebUiPath() in packages/daemon/src/server.ts uses process.cwd() to find
+  packages/web-ui/build (options 3 and 4). In multi-directory daemon mode, cwd is
+  the project directory, not the daemon installation. If that project has its own
+  stale web UI build, the daemon serves it instead of its own current build.
+
+  Fix: Remove options 3 and 4 (process.cwd()-based resolution) from resolveWebUiPath().
+  The resolution order should be:
+  1. Explicit webUiDir option
+  2. WEB_UI_DIR environment variable
+  3. Bundled dist/web-ui/ relative to import.meta.url (the daemon's own module)
+
+  This matches @daemon-web-ui-bundle ac-4 (updated) and ac-5 (new).
+
+  The existing test in tests/daemon-web-ui-bundle.test.ts covers resolveWebUiPath —
+  update it to verify cwd-based paths are NOT used.
+spec_ref: "@daemon-web-ui-bundle"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #876. Removed process.cwd()-based web UI resolution (options 3 and 4)
+  from resolveWebUiPath() in daemon server.ts. Resolution order is now: explicit webUiDir option,
+  WEB_UI_DIR env var, bundled dist/web-ui/ relative to import.meta.url. Tests updated with negative
+  test for cwd-based paths. All 5 ACs covered (ac-3 N/A annotated). No traits on this spec."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - daemon
+  - bug
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-15T13:55:17.456Z
+  commit: 8045b69abbe62718c1abb64a7b00e7dc460b571d
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKRW3PHE1DMPCGZXQDMHXD9B
+created_at: 2026-03-15T12:04:22.982Z
+started_at: 2026-03-15T13:49:19.669Z
+submitted_at: 2026-03-15T13:55:18.406Z
+completed_at: 2026-03-15T14:07:59.199Z
+todos: []
+automation: eligible

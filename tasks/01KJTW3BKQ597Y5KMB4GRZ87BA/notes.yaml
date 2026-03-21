@@ -1,0 +1,41 @@
+notes:
+  - _ulid: 01KJVMQ73EWZ3JRP4BZ4Q8T9RY
+    content: >-
+      Execution context:
+
+      - Background: cli-serve tests currently stop/kill daemon via global ~/.config/kspec PID files
+      and can terminate a user daemon.
+
+      - Scope: isolate HOME/config per test, use project-scoped daemon lifecycle cleanup, and
+      replace fixed startup sleeps with bounded readiness waits plus timeout diagnostics.
+
+      - Files: tests/cli-serve.test.ts (primary), tests/helpers/cli.ts only if needed.
+
+      - Verification: run focused cli-serve tests, then validate and broader test checks before PR.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T05:21:51.727Z
+  - _ulid: 01KJVMV83HFA0CG3YS99KKKKRC
+    content: "Implemented daemon-test isolation in tests/cli-serve.test.ts: all CLI invocations now run
+      with per-test HOME via runKspec wrapper, removed global PID SIGTERM/unlink cleanup, and
+      replaced fixed startup sleeps with bounded wait helpers (health/uptime polling) that emit
+      actionable timeout context."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T05:24:03.825Z
+  - _ulid: 01KJVNF3KZ3S7AXPM4A1NMJD6Q
+    content: >-
+      Verification:
+
+      - npx vitest run tests/cli-serve.test.ts ✅ (22/22)
+
+      - npx vitest run tests/cli-serve.test.ts tests/daemon-global-pid-port.test.ts ✅ (55/55)
+
+      - npm test ✅ (173 files, 3613 passed, 3 skipped)
+
+      - kspec validate ❌ shows pre-existing repo-level schema/reference/alignment issues unrelated
+      to this task (e.g., duplicate @observations refs and missing
+      .kspec/skills/observations/SKILL.md).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T05:34:54.591Z

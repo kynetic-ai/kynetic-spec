@@ -1,0 +1,10 @@
+notes:
+  - _ulid: 01KKQ795T0XFC4CTQ64JM4KQT9
+    content: "Fix applied: stripped @ prefix from taskRef in commitWorkspaceRegistryToShadow() before
+      passing to commitIfShadow(). Used taskRef.replace(/^@/, '') to normalize. Audited all other
+      90+ commitIfShadow callers - none had this issue. CLI commands pass bare slugs/ULIDs; daemon
+      routes embed refs in the operation string. Added 2 tests to shadow.test.ts documenting the
+      contract."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T22:25:44.256Z

@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KM6Z746KPR90QA5CPJ98HRJP
+    content: "Updated @task-activity-timeline spec to reflect in-file data source: ac-1 changed 'shadow
+      branch commits' to 'stored history entries', ac-2 changed 'shadow branch commit history' to
+      'stored task history and note records', description changed 'shadow branch git history' to
+      'stored history entries'. ac-3/ac-4 unchanged. Behavioral requirements preserved."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T01:12:39.379Z

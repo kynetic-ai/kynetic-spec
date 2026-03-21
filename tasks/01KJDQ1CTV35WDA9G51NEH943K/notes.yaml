@@ -1,0 +1,129 @@
+notes:
+  - _ulid: 01KJDQ9E2V7MF4XRKW0MQQC59X
+    content: >-
+      ENRICHMENT — Standalone context for this task:
+
+
+      **What**: When agents start a task that has a `plan_ref` field, they should automatically
+      retrieve the plan to get implementation notes, algorithm details, and design context.
+      Currently the task-work skill and task-work-loop workflow do not mention checking plan_ref.
+      Plans are the intended home for rich implementation context rather than cramming it into task
+      descriptions or notes.
+
+
+      **Where**: 
+
+      - `templates/skills/task-work/SKILL.md` — Step 3 "Start Task" section (line 86-90) needs a
+      substep: "If task has plan_ref, run `kspec plan get @plan-ref` to read implementation notes"
+
+      - Task-work-loop workflow definition in `.kspec/` (the workflow YAML) — add the same step
+
+      - `src/cli/commands/task.ts` — the `task get` output already shows `plan_ref` when present;
+      the `task start` command could optionally print a hint like "This task has a plan: run `kspec
+      plan get @plan-ref` for implementation context"
+
+
+      **How**:
+
+      1. Update `templates/skills/task-work/SKILL.md` step 3 to add: "If `kspec task get @ref` shows
+      a `plan_ref`, run `kspec plan get @plan-ref` to read implementation notes and design context
+      before starting work."
+
+      2. Update the task-work-loop workflow to include the same check in its automated flow
+
+      3. Optionally enhance `kspec task start` in `src/cli/commands/task.ts` to print an info
+      message when the started task has a non-null plan_ref
+
+      4. Run `kspec agents generate` after template changes
+
+
+      **Done when**:
+
+      - The task-work skill documents checking plan_ref when starting tasks
+
+      - The task-work-loop workflow includes plan context retrieval
+
+      - Agents following the skill will automatically get plan context when a task has plan_ref
+
+      - `kspec agents generate` produces updated kspec-agents.md
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T19:37:23.804Z
+  - _ulid: 01KJDQVPYHQ56GVPJH0EKJ6TWV
+    content: "Infra: Workflow/skill documentation change. Agents check plan_ref when starting tasks. No
+      code change needed, skill template update."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T19:47:22.705Z
+  - _ulid: 01KJKBF7R47NGTJDZJMFFYAZAA
+    content: >-
+      Execution context:
+
+      - Background: agents can miss implementation context when tasks are linked to plans.
+
+      - Scope: update task-work skill docs + task-work-loop workflow steps to require plan_ref
+      lookup via kspec plan get.
+
+      - Files: templates/skills/task-work/SKILL.md, kspec-agents.md (generated), and workflow
+      definition in meta via kspec CLI.
+
+      - Verification: regenerate agent docs and confirm both skill + workflow include plan_ref
+      retrieval guidance.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-01T00:06:17.604Z
+  - _ulid: 01KJKF9EP1S1YTRX9A1Q59C6Z9
+    content: "Execution update: verified task-work-loop meta workflow already includes plan_ref lookup
+      in the start step; remaining work is to add equivalent guidance to
+      templates/skills/task-work/SKILL.md and regenerate kspec-agents.md so rendered instructions
+      match meta workflow behavior. Verification will diff for plan_ref guidance and run targeted
+      tests if any code-path behavior changes."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T01:13:02.401Z
+  - _ulid: 01KJKFECG3NC9JKE9705Z9BB1E
+    content: >-
+      Implemented task-work plan_ref guidance and regen:
+
+      - Updated templates/skills/task-work/SKILL.md CLI lookup table with plan_ref lookup (
+      then  when non-null).
+
+      - Updated Start Task step in task-work skill template to explicitly load plan context before
+      starting work.
+
+      - Regenerated kspec-agents.md via OK kspec-agents.md is already up to date (meta
+      task-work-loop already had plan_ref start-step guidance; no additional workflow edit
+      required).
+
+      Verification:
+
+      - npm test -- tests/skill-rendering.test.ts tests/agents-instruction-gen.test.ts (127 passed).
+
+      - kspec validate still reports pre-existing project-wide meta/reference issues around
+      @observations plus alignment/completeness warnings, unchanged by this task.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T01:15:44.004Z
+  - _ulid: 01KJKFESF9M9VVQW9A1GCTZH32
+    content: "Correction to prior note (shell interpolation removed): task-work skill now explicitly
+      instructs reading task links with kspec task get @ref and, when plan_ref is non-null, loading
+      plan context with kspec plan get @plan-ref before kspec task start @ref. Also regenerated
+      kspec-agents.md. Verification unchanged: targeted tests passed (127), and kspec validate
+      failures remain pre-existing @observations/alignment/completeness issues."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T01:15:57.289Z
+  - _ulid: 01KJKFH4YN6JWZCQCAYJ5YBNGC
+    content: "Lifecycle note: task start was blocked in this loop iteration by stale per-cycle budget
+      state on injected KSPEC_SESSION_ID while task status remained pending. Used one-shot env -u
+      KSPEC_SESSION_ID for start/submit transition so task could be moved to pending_review after
+      implementation was complete and committed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T01:17:14.581Z
+  - _ulid: 01KJKFJ0PQR0W2WMD7HMMB8M03
+    content: "Opened PR #616: https://github.com/kynetic-ai/kynetic-spec/pull/616 (branch
+      docs/task-work-plan-ref-context). Task submitted for review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T01:17:42.999Z

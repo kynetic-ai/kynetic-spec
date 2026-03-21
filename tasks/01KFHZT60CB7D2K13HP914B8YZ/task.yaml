@@ -1,0 +1,19 @@
+_ulid: 01KFHZT60CB7D2K13HP914B8YZ
+slugs:
+  - task-cli-version-display
+title: "Implement: CLI Version Display"
+type: task
+spec_ref: "@cli-version"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Implemented and merged PR #151. CLI now reads version from package.json dynamically."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-22T04:36:13.452Z
+started_at: 2026-01-22T04:41:02.463Z
+completed_at: 2026-01-22T04:57:35.836Z
+todos: []

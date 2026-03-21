@@ -1,0 +1,103 @@
+notes:
+  - _ulid: 01KGR05MRKC2P7MADTHFGB747E
+    content: >-
+      Implementation notes from plan:
+
+
+      Architecture builds on existing infrastructure:
+
+
+      1. **Command registry** — Extend `src/cli/introspection.ts` to produce a map of command paths
+      to their handler functions and metadata, including a `mutating: boolean` annotation. This
+      enables dynamic dispatch without Commander.js parsing overhead and drives the allow/deny
+      classification.
+
+
+      2. **Batch executor** (`src/cli/batch-exec.ts`) — New module:
+         - `parseBatchInput(source)` — Reads from stdin/file/inline, parses JSON array
+         - `validateBatch(commands, registry, context)` — Pre-validates all commands: known command, required args, ref resolution (including forward refs from earlier commands in batch)
+         - `executeBatch(commands, registry, context, options)` — Executes validated commands sequentially, collects results, handles stop-on-error vs continue
+
+      3. **Shadow commit batching** — Use a `context.batchMode` flag. When set, `commitIfShadow()`
+      skips the commit. The batch executor issues a single commit after all operations complete (or
+      after partial completion with `--continue`). The flag is set before execution and cleared
+      after.
+
+
+      4. **Forward reference resolution** — During pre-validation, track slugs that will be created
+      by earlier commands. Build a "planned refs" set that the validator checks against when a ref
+      doesn't exist yet. Only tracks creates, not deletes (documented limitation).
+
+
+      5. **Confirmation suppression** — When `context.batchMode` is set, commands that check for
+      `@trait-confirmation-prompt` behavior skip the prompt and proceed as if `--force` were passed.
+
+
+      6. **Handler extraction** — Each command's `.action()` handler needs to be callable
+      programmatically (not just via Commander.js parsing). Extract the core logic into importable
+      functions that batch can call directly. Many commands already follow this pattern (e.g.,
+      `resolveTaskRefForBatch()`).
+
+
+      7. **Test approach** — Unit tests for parse/validate/execute phases. Integration test with a
+      temp kspec project running a real batch payload end-to-end. Test the full matrix:
+      stdin/file/inline × stop-on-error/continue × success/failure/partial.
+    author: "@claude"
+    created_at: 2026-02-05T22:53:37.427Z
+  - _ulid: 01KGR1880314CP5YJAABQNX3MB
+    content: "Scope: This is the main feature task. Responsible for the batch command itself
+      (src/cli/commands/batch.ts), the batch executor module (src/cli/batch-exec.ts), shadow commit
+      batching (context.batchMode flag), forward reference resolution, confirmation suppression, and
+      the kspec batch CLI registration. Covers ACs: ac-stdin, ac-file, ac-inline, ac-stop-on-error,
+      ac-continue, ac-prevalidate, ac-dry-run, ac-forward-ref, ac-single-commit, ac-partial-commit,
+      ac-confirmation-suppressed, ac-invalid-json, ac-empty-batch. Depends on the other two tasks
+      being done first or simultaneously — the command schema defines the input format and the
+      allowed commands list drives validation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-05T23:12:31.235Z
+  - _ulid: 01KGT5Q54EF33YJ9WCF374MJEB
+    content: >-
+      Implementation complete: batch command execution with two modes.
+
+
+      **Atomic mode** (default): copies .kspec/ to temp dir, executes against copy, rolls back on
+      failure, copies back + single shadow commit on success. Uses KSPEC_SPEC_DIR env var override
+      in initContext() and setBatchMode() to suppress per-command shadow commits.
+
+
+      **Immediate mode** (--no-atomic): executes against real .kspec/ state, per-command
+      auto-commits via existing shadow machinery. No rollback on failure. --continue flag implies
+      immediate mode.
+
+
+      Key implementation details:
+
+      - KSPEC_SPEC_DIR env var in initContext() for temp dir redirection
+
+      - BatchExitError + exit interceptor to catch process.exit() calls
+
+      - OutputCapture to intercept console.log/error/warn per command
+
+      - resetCommandTree() to clear Commander state between dispatches
+
+      - Auto-append --force for confirmation suppression
+
+      - Strip ANSI via chalk.level=0 during dispatch
+
+      - .git removed from temp copy to prevent worktree pointer leaks
+
+      - Copy-back handles deletions by clearing real specDir first
+
+
+      Files created: batch-context.ts, commands/batch.ts
+
+      Files modified: batch-exec.ts, schema/batch.ts, parser/yaml.ts, parser/shadow.ts,
+      cli/index.ts, commands/index.ts
+
+      Tests: 39 tests (21 unit + 18 integration), all passing
+
+      Full test suite: 1823/1824 pass (1 pre-existing bun compilation failure)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-06T19:09:02.990Z

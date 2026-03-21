@@ -1,0 +1,59 @@
+_ulid: 01KM6YEVFHZ9J6734CYVPWWDMH
+slugs:
+  - task-extend-write-buffer
+title: Extend write buffer for multi-file task transactions
+type: task
+description: |
+  Extend the existing write buffer system to handle multi-file task
+  transactions where a single logical operation touches the index,
+  task.yaml, and notes.yaml.
+
+  Why: A status change that also adds a note must update three files
+  atomically (index + task.yaml + notes.yaml). If any write fails,
+  none should persist. The existing write buffer handles this for
+  batch operations but needs to be the default for all task mutations.
+
+  What: Ensure that every task mutation — not just batch operations —
+  uses a write buffer. The manager opens a buffer, queues all file
+  writes, then flushes as one shadow branch commit. This replaces the
+  current pattern where single-task mutations write files individually.
+
+  How: The task data manager wraps each mutation in a write buffer
+  scope. For single-task operations this is lightweight (2-3 files).
+  For batch operations the existing batch write buffer continues to
+  work — the manager detects when a batch buffer is already active
+  and uses it instead of creating a nested one.
+spec_ref: "@task-atomic-writes"
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Reviewed and approved in @01KM7Y3A8JFMBME1MQ41J9M1VN. Merged
+  dispatch/task/task-extend-write-buffer/01km6yev into dev after verifying task mutation buffering,
+  delete rollback atomicity, AC coverage, and full test suite pass (npm test: 6832 passed, 3
+  skipped)."
+depends_on:
+  - "@task-impl-split-storage"
+context: []
+priority: 1
+tags:
+  - tasks
+  - storage
+  - atomicity
+vcs_refs: []
+review_ref: "@01KM7Y3A8JFMBME1MQ41J9M1VN"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-21T10:11:02.640Z
+  commit: e273fe88270dc48f490a0856d03ba78deecc23b0
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM7XJWP2JYYTJ3B8CCA69P4C
+created_at: 2026-03-21T00:59:24.017Z
+started_at: 2026-03-21T10:10:59.158Z
+submitted_at: 2026-03-21T10:11:03.063Z
+completed_at: 2026-03-21T10:17:43.841Z
+todos: []
+automation: eligible

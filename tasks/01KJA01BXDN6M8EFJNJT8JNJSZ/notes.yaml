@@ -1,0 +1,17 @@
+notes:
+  - _ulid: 01KJA3KSP7VK52BSE86SBECM4H
+    content: "Also fix: completed tasks are sorted by completed_at twice (once for notes with
+      .slice(0,5), once for completed list with .slice(0,limit)). Cache the sorted result and
+      reuse."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T09:55:48.552Z
+  - _ulid: 01KJAFXVYSMDHSP0XAFB21QEPB
+    content: Replaced 14+ separate .filter() passes over allTasks with single-pass Map<status,
+      LoadedTask[]> bucketing. Cached getReadyTasks() result (called once, used for stats +
+      readyTasks list). Cached sorted completed tasks (used for notes + recentlyCompleted). Combined
+      in_progress + needs_work into activeStatusTasks variable reused 3 times. All 163 session tests
+      pass, no behavioral changes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T13:31:01.465Z

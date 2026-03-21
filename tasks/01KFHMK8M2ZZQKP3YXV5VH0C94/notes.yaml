@@ -1,0 +1,297 @@
+notes:
+  - _ulid: 01KFHMM5S2CX5WYQJ54E528CRB
+    content: |-
+      ## Research Summary
+
+      ### Scope
+      Web UI for viewing/editing kspec state with:
+      1. Local daemon mode for real-time interactive editing
+      2. Static GitHub Pages export for read-only display/linking
+
+      ### Tech Stack (per user preference)
+      - **Frontend**: Svelte 5 + SvelteKit + shadcn-svelte
+      - **Backend**: Hono (lightweight HTTP server) with SSE for real-time
+      - **File watching**: Chokidar with debouncing
+      - **IPC**: Unix socket for CLI-daemon, HTTP for web UI
+
+      ---
+
+      ## Codebase Findings
+
+      The kspec codebase is **excellently architected** for web API:
+      - **Library-first**: All logic in src/parser/ and src/schema/, independent of CLI
+      - **Pre-built indexes**: ItemIndex, ReferenceIndex, TraitIndex ready for query APIs
+      - **Zod schemas**: Validation for all types, input/patch schemas exist
+      - **Pagination**: ItemIndex.queryPaginated() already built
+      - **Shadow branch**: Auto-commit infrastructure handles persistence
+
+      Key files for API layer:
+      - src/parser/yaml.ts - Core YAML I/O, context init
+      - src/parser/items.ts - ItemIndex for queries
+      - src/parser/refs.ts - ReferenceIndex for @refs
+      - src/schema/*.ts - All Zod schemas
+
+      ---
+
+      ## Architecture Recommendation
+
+      ```
+      CLI ←→ Unix Socket ←→ Daemon ←→ HTTP/SSE ←→ Web UI
+                               ↓
+                          Chokidar (file watching)
+                               ↓
+                          .kspec/*.yaml
+      ```
+
+      ### Daemon Mode
+      - `kspec serve` - foreground server
+      - `kspec serve --daemon` - background with PID file
+      - `kspec serve stop` - graceful shutdown
+      - Health endpoints: /livez, /readyz
+
+      ### API Endpoints (based on existing operations)
+      - GET/POST/PATCH/DELETE /api/tasks/:ref
+      - GET/POST/PATCH/DELETE /api/items/:ref
+      - GET/POST/DELETE /api/inbox/:ref
+      - GET /api/meta/{agents,workflows,conventions,observations}
+      - POST /api/query (advanced filtering)
+      - GET /api/events (SSE stream)
+
+      ### Web UI Structure
+      ```
+      /                    - Dashboard overview
+      /tasks/              - Task list with filters
+      /tasks/@slug/        - Task detail (notes, todos, actions)
+      /specs/              - Spec tree view
+      /specs/@ref/         - Spec item detail with ACs
+      /inbox/              - Inbox management
+      /session/            - Current session context
+      ```
+
+      ### Dual Deployment
+      - **Dynamic**: adapter-node for local daemon
+      - **Static**: adapter-static for GitHub Pages
+      - Conditional adapter via env var at build time
+      - Static mode loads from pre-built JSON snapshots
+
+      ---
+
+      ## Svelte 5 Notes
+
+      - Uses runes: $state, $derived, $effect
+      - .svelte.ts files for shared reactive state
+      - shadcn-svelte has 50+ components (data-table, sidebar, etc.)
+      - SSE integration works well with runes for real-time
+
+      ---
+
+      ## GitHub Pages Patterns
+
+      - Trigger GitHub Action on kspec-meta branch push
+      - Checkout both branches (data + site code)
+      - Prerender routes for deep linking: /tasks/@slug/
+      - Show last-updated timestamps from git history
+      - Add .nojekyll to static/ dir
+
+      ---
+
+      ## Phased Implementation Suggestion
+
+      **Phase 1: Foundation**
+      - Daemon server with Hono
+      - Core API endpoints (tasks, items, inbox)
+      - SSE for real-time updates
+      - File watching with Chokidar
+
+      **Phase 2: Web Dashboard**
+      - SvelteKit project setup
+      - Dashboard overview page
+      - Task list and detail views
+      - Real-time update integration
+
+      **Phase 3: Full CRUD**
+      - Task actions (start, complete, add notes)
+      - Spec item viewing
+      - Inbox management
+
+      **Phase 4: GitHub Pages**
+      - Static export configuration
+      - GitHub Actions workflow
+      - Deep linking support
+
+      ---
+
+      ## Open Questions
+      - Should daemon auto-start when CLI is used, or always explicit?
+      - Port configuration: fixed vs dynamic with service discovery?
+      - Auth for multi-user scenarios (future)?
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T01:20:42.274Z
+  - _ulid: 01KFHMQ3YT5ADZFCK25CV9AX99
+    content: |-
+      ## Premature Spec Items Created
+
+      During research, the following spec items were created prematurely (before proper planning):
+
+      **Module:**
+      - @web-ui - "Web UI System" module
+
+      **Features under @web-ui:**
+      - @daemon-server - "Daemon Server Mode" (has 6 ACs added)
+      - @web-dashboard - "Web Dashboard" (has 2 ACs added)
+      - @gh-pages-export - "GitHub Pages Export" (no ACs yet)
+
+      These were created in error before the full planning was complete. When working this task:
+      1. Review these items against the final plan
+      2. If they align with the plan, keep and extend them
+      3. If they contradict the plan, delete and recreate properly
+      4. The ACs added may be useful as starting points but should be validated
+
+      To inspect: `kspec item get @web-ui` and `kspec item get @daemon-server` etc.
+      To delete if needed: delete children first, then parent module.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T01:22:18.715Z
+  - _ulid: 01KFJ4AWYHP67TC7WR0ZP9VHJ3
+    content: "Automation status set to manual_only: Web UI spike requires human design decisions"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T05:55:15.538Z
+  - _ulid: 01KFMKY53DTGVHFDB0SGSQZQ3B
+    content: |-
+      Starting spec creation per approved plan. Will create:
+      1. 3 new traits (@trait-websocket-protocol, @trait-api-endpoint, @trait-localhost-security)
+      2. Update @daemon-server ACs (6 → 16)
+      3. Add @api-contract feature (~35 ACs)
+      4. Expand @web-dashboard ACs (2 → 33)
+      5. Add @gh-pages-export ACs (0 → 15)
+      6. Add @cli-serve-commands feature (10 ACs)
+      7. Derive 31 implementation tasks
+
+      Tech stack: Elysia.js + Bun + WebSocket (per kynetic patterns)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T05:06:23.981Z
+  - _ulid: 01KFMMB94NXCY3ZKVXRR0PK9SZ
+    content: >-
+      ## Spec Creation Complete
+
+
+      Created comprehensive Web UI feature spec with:
+
+
+      ### New Traits (3)
+
+      - @trait-websocket-protocol (8 ACs) - connection lifecycle, pub/sub, heartbeat, sequence
+      tracking
+
+      - @trait-api-endpoint (6 ACs) - REST patterns, errors, pagination
+
+      - @trait-localhost-security (3 ACs) - localhost-only binding
+
+
+      ### Features Updated/Created (5)
+
+      1. @daemon-server - expanded from 6 to 16 ACs
+         - Elysia.js on Bun runtime
+         - Localhost-only security
+         - File watching with fallback
+         - WebSocket real-time
+         - Heartbeat ping/pong
+         - Executable compilation
+
+      2. @api-contract (NEW) - 33 ACs
+         - REST endpoints for tasks, items, inbox, meta
+         - WebSocket protocol (pub/sub, request_id, sequence)
+         - CORS, error handling, backpressure
+
+      3. @web-dashboard - expanded from 2 to 33 ACs
+         - Dashboard overview
+         - Task/item/inbox views
+         - WebSocketManager with reconnect
+         - Sequence deduplication
+         - Global search (Cmd+K)
+
+      4. @gh-pages-export - expanded from 0 to 18 ACs
+         - Export command (JSON/HTML)
+         - CI workflow
+         - SPA deep linking
+         - Read-only mode
+
+      5. @cli-serve-commands (NEW) - 10 ACs
+         - serve, stop, status, restart, logs
+
+      ### Total ACs: ~110 direct + ~50 inherited from traits
+
+
+      Tech stack decisions documented:
+
+      - Elysia.js + Bun (not Hono + Node)
+
+      - WebSocket (not SSE)
+
+      - JSON snapshot for GitHub Pages
+
+      - bun build --compile for distribution
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T05:13:34.102Z
+  - _ulid: 01KFMN2F99WRR332CPHQB1MVTQ
+    content: |-
+      ## Task Derivation Complete
+
+      Created 31 granular implementation tasks organized by phase:
+
+      ### Phase 0: Foundation (2 tasks)
+      - Setup Bun monorepo workspace
+      - Create shared types package
+
+      ### Phase 1: Core Infrastructure (6 tasks)
+      - Create packages/daemon structure
+      - Implement Elysia server core
+      - Implement file watcher and WebSocket broadcast
+      - Implement WebSocket protocol
+      - Implement daemon process detach
+      - Implement daemon logging
+
+      ### Phase 2: API Endpoints (6 tasks)
+      - API foundation and CORS middleware
+      - Task API endpoints
+      - Spec item API endpoints
+      - Inbox and meta API endpoints
+      - Search and validation API endpoints
+      - API error handling middleware
+
+      ### Phase 3: Web Dashboard (8 tasks)
+      - Create SvelteKit scaffold with shadcn-svelte
+      - Dashboard layout and navigation
+      - Task list and detail views
+      - Spec item tree and detail views
+      - Inbox view
+      - Session context and observations panel
+      - Global search command palette
+      - WebSocketManager with subscriptions
+
+      ### Phase 4: GitHub Pages Export (4 tasks)
+      - Export command implementation
+      - Static SPA for GitHub Pages
+      - Read-only mode behaviors
+      - GitHub Pages CI workflow
+
+      ### Phase 5: Integration (4 tasks)
+      - Daemon auto-start configuration
+      - Executable compilation with bun build
+      - API integration tests
+      - E2E integration tests with Playwright
+
+      Plus 5 derived base tasks linking to specs.
+
+      All tasks have detailed implementation notes with:
+      - Specific steps and code snippets
+      - AC coverage mapping
+      - Files to create/modify
+      - Dependencies
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T05:26:14.057Z

@@ -1,0 +1,58 @@
+_ulid: 01KKW4VNJP96SEMDYY3NEYMNE8
+slugs:
+  - task-review-diff-orientation
+title: Include fix-cycle diff in reviewer orientation prompt
+type: task
+description: |
+  When a reviewer picks up a task for a fix cycle (previous closed
+  review exists with examined_commit), the dispatch orientation prompt
+  includes a summary of what changed since the prior review.
+
+  Why: The reviewer in fix cycle #2 currently has no idea what changed
+  since fix cycle #1. They re-review everything or miss the actual
+  fixes. This was the root cause of the confused reviewer in the
+  @01KKTZ0B task.
+
+  What: In buildOrientationContext() (src/agent-runtime/dispatch.ts),
+  when rendering for pending_review and a prior closed review record
+  exists with examined_commit, compute and include a git diff --stat
+  between prior examined_commit and current canonicalBranchHead.
+
+  How: Load the task's previous review records (closed ones), find the
+  most recent with examined_commit, diff against current HEAD. Include
+  the stat summary in the orientation section. If no prior examined
+  commit exists (pre-migration or manual reviews), skip gracefully
+  per @review-fix-cycle-diff ac-3.
+
+  Covers: @review-fix-cycle-diff ac-2, ac-3.
+spec_ref: "@review-fix-cycle-diff"
+plan_ref: "@plan-task-activity-timeline"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Reviewed and merged to dev. AC-2 and AC-3 covered with 12 new tests, all 129 tests
+  passing. Review record @01KKWTA8 approved.
+depends_on:
+  - "@task-review-examined-commit"
+  - "@task-new-review-per-cycle"
+context: []
+priority: 2
+tags:
+  - dispatch
+  - reviews
+vcs_refs: []
+review_ref: "@01KKWTA85J22JSWC9ND019KXNB"
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-review-diff-orientation/01kkw4vn
+  captured_at: 2026-03-17T02:32:55.972Z
+  commit: b7004833684b0a7f6a3fda8ce5ee8822fd7b3531
+  remote: null
+  remote_url: null
+  upstream_ref: dev
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-16T20:19:36.662Z
+started_at: 2026-03-17T02:20:38.816Z
+submitted_at: 2026-03-17T02:32:56.753Z
+completed_at: 2026-03-17T02:35:29.150Z
+todos: []

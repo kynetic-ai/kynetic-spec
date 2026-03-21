@@ -1,0 +1,74 @@
+notes:
+  - _ulid: 01KFMMWY7Z0VXPRVM8GZZAK895
+    content: |-
+      ## Implementation Notes
+
+      ### Objective
+      Implement global search with Cmd+K command palette.
+
+      ### Steps
+      1. Command palette:
+         - Opens on Cmd+K / Ctrl+K
+         - shadcn Command component
+         - Debounced search (300ms)
+
+      2. Search results:
+         - Group by type (tasks, items, inbox)
+         - Click navigates to detail
+         - Keyboard navigation
+
+      ### ACs Covered
+      - ac-23: Cmd+K opens palette
+      - ac-24: Debounced search with grouped results
+      - ac-25: Click navigates to detail
+
+      ### Files to Create
+      - packages/web-ui/src/lib/components/CommandPalette.svelte
+      - packages/web-ui/src/lib/components/SearchResults.svelte
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T05:23:12.767Z
+  - _ulid: 01KFNS7HAKGF5Z4Y0YJW9TQECH
+    content: |-
+      Implementation complete:
+
+      - Added SearchResponse type to @kynetic-ai/shared package
+      - Added search() API function to web-ui api.ts
+      - Created CommandPalette.svelte component with:
+        - Cmd+K / Ctrl+K keyboard shortcut (ac-23)
+        - 300ms debounced search (ac-24)
+        - Results grouped by entity type (ac-24)
+        - Navigation to detail views on click (ac-25)
+      - Integrated into root layout for global access
+      - Installed lucide-svelte dependency
+
+      All 1207 tests passing. Build successful.
+
+      Commit: 72658ab
+      Branch: feat/command-palette
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T15:58:08.723Z
+  - _ulid: 01KFNSHVWVVQKVZYWC39NXZRD9
+    content: >-
+      Local review completed - same testing gap as previous PRs:
+
+
+      - ✅ Backend API tests exist (daemon-api-validation.test.ts has search endpoint tests)
+
+      - ⚠️ No frontend tests (consistent with entire web-ui package)
+
+
+      This is the same architectural gap affecting all web-ui PRs (#197-#200 - all merged without
+      frontend tests). The web-ui package lacks testing infrastructure (no
+      vitest/playwright/testing-library setup).
+
+
+      AC annotations are present in CommandPalette.svelte for all three ACs (ac-23, ac-24, ac-25).
+
+
+      Proceeding consistent with previous PRs. Frontend test infrastructure tracked separately in
+      ready tasks (@01KFMN01 - E2E integration tests with Playwright).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T16:03:47.228Z

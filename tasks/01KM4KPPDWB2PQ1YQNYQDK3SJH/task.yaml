@@ -1,0 +1,37 @@
+_ulid: 01KM4KPPDWB2PQ1YQNYQDK3SJH
+slugs: []
+title: Align item ac add/remove AC identifier naming
+type: task
+description: "Batch arg naming inconsistency: item ac add uses 'id' but item ac remove uses 'acId'
+  for the same AC identifier parameter. Should be consistent across subcommands."
+spec_ref: "@item-ac"
+status: completed
+blocked_by: []
+closed_reason: Merged to dev after approved review. Verified item ac remove exposes positional id
+  metadata consistently with item ac add, batch-schema coverage accepts id/rejects legacy acId,
+  regenerated writing-specs snapshot matches the command signature, and npm test passed on snapshot
+  50ebf0b9ccf89045e5c51b97347f276509a4091e.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - batch
+  - dx
+vcs_refs: []
+review_ref: "@01KM4ZGKRHFZRRABZ0PJPGY8X2"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T06:37:19.192Z
+  commit: 616f69546b0ef5e2b7b900d3f99ebed7d6f4cd92
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM4YPJVFP18PG5M168WV4ZGT
+created_at: 2026-03-20T03:12:57.788Z
+started_at: 2026-03-20T06:36:45.166Z
+submitted_at: 2026-03-20T06:37:19.739Z
+completed_at: 2026-03-20T06:45:17.189Z
+todos: []
+automation: eligible

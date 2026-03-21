@@ -1,0 +1,46 @@
+notes:
+  - _ulid: 01KFMQK93G7EY9JVMA2HNY63H7
+    content: >-
+      Created merge module foundation with types and parsing:
+
+
+      **Files created:**
+
+      - src/merge/types.ts - Core types (MergeResult, ConflictInfo, MergeOptions, ParseResult)
+
+      - src/merge/parse.ts - parseYamlVersions() function with graceful error handling
+
+      - src/merge/index.ts - Public API exports
+
+
+      **Coverage:**
+
+      - AC ac-1: parseYamlVersions() parses all three versions as structured data
+
+      - AC ac-11: Returns ParseResult with success=false when parsing fails, includes error details
+      and which file failed
+
+
+      **Next steps:**
+
+      This foundation enables the next tasks to implement the actual merge logic, conflict
+      detection, and CLI integration.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T06:10:21.937Z
+  - _ulid: 01KFMQRB06H1Q18H4HP8HSCNW2
+    content: |-
+      Added comprehensive test coverage for parse functionality:
+
+      **Test file:** tests/merge-parse.test.ts (6 tests)
+      - Successfully parses all three versions (base, ours, theirs)
+      - Returns error with failedFile='base' when base fails to parse
+      - Returns error with failedFile='ours' when ours fails to parse
+      - Returns error with failedFile='theirs' when theirs fails to parse
+      - Returns error when files cannot be read
+      - Parses complex kspec task file structures
+
+      All tests pass. Ready to submit.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T06:13:07.719Z

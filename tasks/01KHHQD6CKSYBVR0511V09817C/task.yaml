@@ -1,0 +1,31 @@
+_ulid: 01KHHQD6CKSYBVR0511V09817C
+slugs:
+  - implement-extended-skill-schema
+title: Implement Extended Skill Schema
+type: task
+spec_ref: "@extended-skill-schema"
+plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
+status: completed
+blocked_by: []
+closed_reason: >-
+  Merged in PR #396. Extended SkillSchema with portable Agent Skills fields:
+
+  - Added license, compatibility, allowed_tools, metadata fields
+
+  - Added platform_config with ClaudeCodeConfigSchema and CodexConfigSchema (strict)
+
+  - PlatformConfigSchema uses passthrough for future extensibility
+
+  - All 7 ACs verified with 27 tests covering schema validation, strict mode, passthrough, and
+  backward compatibility
+depends_on:
+  - "@implement-consolidate-skill-render-implementations"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-15T22:40:42.899Z
+started_at: 2026-02-15T23:38:11.212Z
+completed_at: 2026-02-15T23:54:51.141Z
+todos: []
+automation: eligible

@@ -1,0 +1,26 @@
+_ulid: 01KF9B3YXAHHKV1CZJSVS2WJMG
+slugs: []
+title: Document alignment system spec coverage
+type: task
+description: "Alignment system spec coverage gap - AlignmentIndex, auto-sync, validation commands
+  (kspec item status, alignment check) were implemented pragmatically without spec. Need to create
+  spec items documenting: alignment concept, AlignmentIndex structure, auto-sync behavior, alignment
+  validation, guidance output format."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Created comprehensive spec coverage for alignment system - added parent feature
+  @alignment-system with 5 child requirements covering auto-sync, bidirectional mapping, warnings,
+  summaries, and stats. All specs marked implemented with acceptance criteria.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - spec-gap
+  - alignment
+  - debt
+vcs_refs: []
+created_at: 2026-01-18T20:00:38.313Z
+started_at: 2026-01-19T03:23:27.556Z
+completed_at: 2026-01-19T03:27:38.752Z
+todos: []

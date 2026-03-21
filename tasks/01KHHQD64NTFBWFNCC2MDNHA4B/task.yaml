@@ -1,0 +1,44 @@
+_ulid: 01KHHQD64NTFBWFNCC2MDNHA4B
+slugs:
+  - implement-platform-renderer-contract
+title: Implement Platform Renderer Contract
+type: task
+spec_ref: "@platform-renderer-trait"
+plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
+status: completed
+blocked_by: []
+closed_reason: >-
+  Merged in PR #395. Implemented Platform Renderer Contract:
+
+
+  1. Defined PlatformRenderer interface with platform, defaultOutputDir, render(), and checkDrift()
+  methods
+
+  2. Defined PlatformRenderResult interface with id, platform, action, paths, supportingDirsAction,
+  skipReason
+
+  3. Defined DriftStatus type for drift detection
+
+  4. Implemented supporting directories support (references/, scripts/, assets/, docs/)
+
+  5. Implemented dryRun mode for preview without file writes
+
+  6. Implemented custom outputDir support
+
+  7. Implemented per-platform hash storage (.render-hash-<platform>)
+
+  8. Created renderer registry with getRenderer(), getAllRenderers(), registerRenderer()
+
+
+  All 6 acceptance criteria covered by 33 tests in tests/platform-renderer.test.ts.
+depends_on:
+  - "@implement-consolidate-skill-render-implementations"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-15T22:40:42.645Z
+started_at: 2026-02-15T23:19:27.197Z
+completed_at: 2026-02-15T23:37:24.584Z
+todos: []
+automation: eligible

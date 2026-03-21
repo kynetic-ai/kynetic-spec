@@ -1,0 +1,32 @@
+notes:
+  - _ulid: 01KJTPG8KNPTW4X1SEAQNJN5ZW
+    content: "Automation status set to needs_review: Missing spec_ref; add/attach spec with AC coverage
+      before automation"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T20:33:46.613Z
+  - _ulid: 01KJWF2VRW8YTV3N0AZ4M423MP
+    content: >-
+      Execution context:
+
+      - Scope: verify and fix shard-3 cli-serve flakiness if still reproducible.
+
+      - Verification: npm run test:shard3; npx vitest run --shard=3/3 (twice).
+
+      - Outcome: no cli-serve failures reproduced; tests/cli-serve.test.ts passed consistently (~66s
+      per run).
+
+      - Existing fix identified: merged PR #658 (commit bae6c34ea) from task
+      @task-cli-serve-daemon-isolation introduced HOME isolation and startup polling for
+      daemon-sensitive cli-serve tests.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T13:02:36.317Z
+  - _ulid: 01KJWF2X9TFVZZR87M68ZQV94J
+    content: "Completed with --force from in_progress state. Reason: Already implemented on main in PR
+      #658 (merge commit bae6c34ea; implementation commit 50d2dff86) via
+      @task-cli-serve-daemon-isolation. Verified by rerunning shard-3 test suite and two additional
+      shard-3 runs; cli-serve.test.ts remained stable with no failures."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T13:02:37.882Z

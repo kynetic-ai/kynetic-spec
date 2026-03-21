@@ -1,0 +1,25 @@
+_ulid: 01KGR0K2F8HA3TJXGD5EXD7SBP
+slugs: []
+title: "Fix: Plan import drops acceptance criteria from spec YAML"
+type: task
+description: kspec plan import parses ACs from the Specs YAML block but does not write them to
+  created spec items. Dry-run shows correct item count but actual import creates items with empty
+  acceptance_criteria arrays. Discovered during batch-exec plan import where 22 ACs had to be added
+  manually via 13 kspec item ac add invocations.
+spec_ref: "@plan-import"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Fixed: createSpecItem() now preserves acceptance_criteria. PR #319 merged."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - plan
+vcs_refs: []
+created_at: 2026-02-05T23:00:57.448Z
+started_at: 2026-02-06T00:03:33.089Z
+completed_at: 2026-02-06T00:23:51.521Z
+todos: []

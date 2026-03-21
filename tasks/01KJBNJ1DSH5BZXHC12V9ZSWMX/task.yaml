@@ -1,0 +1,56 @@
+_ulid: 01KJBNJ1DSH5BZXHC12V9ZSWMX
+slugs:
+  - task-e2e-daemon-items-api
+title: E2E tests for daemon Items API (replace daemon-api-items.test.ts)
+type: task
+description: >-
+  Replace tests/daemon-api-items.test.ts (217 lines, all static analysis) with Playwright E2E tests.
+
+
+  Write: packages/web-ui/tests/e2e/api-items.spec.ts
+
+  Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+  Endpoints to test:
+
+  - GET /api/items — list spec items with modules/features/requirements (@api-contract ac-8)
+
+  - GET /api/items?type=feature,requirement — multi-value type filter (@api-contract ac-9)
+
+  - GET /api/items/:ref — single item with acceptance_criteria, traits, relationships (@api-contract
+  ac-10)
+
+  - GET /api/items/:ref/tasks — linked tasks via AlignmentIndex (@api-contract ac-11)
+
+
+  After E2E tests pass, delete tests/daemon-api-items.test.ts.
+
+  Run: npm test && npm run test:e2e to verify.
+
+
+  Fixture data: packages/web-ui/tests/fixtures/modules/core.yaml has test spec items.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #544. Replaced 217 lines of static analysis in
+  tests/daemon-api-items.test.ts with 23 Playwright E2E tests in
+  packages/web-ui/tests/e2e/api-items.spec.ts. All ACs (ac-8 through ac-11) covered with real HTTP
+  calls against running daemon. All CI checks passed."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - e2e
+vcs_refs: []
+session_id: 01KJBS56Y7BX7RKGTH9T6MKRYG
+created_at: 2026-02-26T00:28:39.737Z
+started_at: 2026-02-26T02:26:06.286Z
+submitted_at: 2026-02-26T02:39:56.285Z
+completed_at: 2026-02-26T03:34:26.228Z
+todos: []
+automation: eligible

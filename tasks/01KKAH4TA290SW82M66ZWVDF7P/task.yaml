@@ -1,0 +1,33 @@
+_ulid: 01KKAH4TA290SW82M66ZWVDF7P
+slugs:
+  - task-verify-cli-serve-foreground-stable
+title: Verify cli-serve foreground test stability after daemon isolation fixes
+type: task
+description: "Foreground mode test was most frequent flaky failure (3+ sessions). PRs #658, #673,
+  #674 landed fixes. Verification task: run cli-serve tests 5x in sequence plus shard3 twice. Fix
+  remaining race if any failure found."
+spec_ref: "@daemon-sensitive-cli-test-determinism"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Verified stable. cli-serve.test.ts passed 5/5 runs (29/29 tests) with ambient daemon
+  on port 3456. shard3 passed 2/2 runs (1365/1366 — single failure is unrelated codex platform
+  auto-detect bug in core-skill-install.test.ts, filed as inbox item). PRs #658, #673, #674
+  successfully resolved the foreground test flakiness. No remaining race conditions detected. No
+  code changes needed."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - verification
+  - cli
+vcs_refs: []
+session_id: 01KKAJHZBW4YC3ARGV8J7DWRF7
+created_at: 2026-03-10T00:07:59.554Z
+started_at: 2026-03-10T00:32:55.180Z
+submitted_at: 2026-03-10T00:44:42.483Z
+completed_at: 2026-03-10T00:44:49.978Z
+todos: []
+automation: eligible

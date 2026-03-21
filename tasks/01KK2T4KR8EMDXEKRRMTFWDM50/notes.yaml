@@ -1,0 +1,74 @@
+notes:
+  - _ulid: 01KK3C4WV817MRD3P9G5WCWXPD
+    content: >-
+      Execution context:
+
+      - Background: Workflows page needs to display workflow definitions from kynetic.meta.yaml
+
+      - Scope: Fetch workflows from /api/meta/workflows, display cards with id, description, ordered
+      steps, trigger badges, loop variant indicators, and Start button (copies CLI command)
+
+      - Files changed: packages/shared/src/api.ts (updated Workflow types),
+      packages/web-ui/src/lib/api.ts (added fetchWorkflows), packages/web-ui/src/lib/api-static.ts
+      (added static fallback), packages/web-ui/src/routes/workflows/+page.svelte (full
+      implementation), packages/web-ui/src/routes/workflows/+page.ts (SSR disable),
+      tests/web-ui-workflows.test.ts (27 static analysis tests),
+      packages/web-ui/tests/e2e/workflows.spec.ts (10 E2E tests),
+      packages/web-ui/tests/fixtures/kynetic.meta.yaml (added workflow fixture data)
+
+      - Verification: npm test passes (27 new tests), web-ui build succeeds. E2E tests can't run
+      inside dispatch but are structurally correct.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T05:25:58.248Z
+  - _ulid: 01KK3DFNW43T7BE2NA23J4NZZG
+    content: >-
+      Review findings:
+
+      MUST-FIX 1) Raw Tailwind color classes violate design-token requirement in workflows page.
+      `packages/web-ui/src/routes/workflows/+page.svelte:33-35` uses `text-emerald-500`,
+      `text-blue-500`, `text-amber-500` instead of design-token classes.
+
+      MUST-FIX 2) AC coverage gap for start action behavior. Spec AC says Start action initiates
+      workflow (or fallback command path), but tests only verify button presence; no behavioral
+      assertion for click/action. See `packages/web-ui/tests/e2e/workflows.spec.ts:79-87`.
+
+      MUST-FIX 3) Fluff E2E test with no assertion.
+      `packages/web-ui/tests/e2e/workflows.spec.ts:91-99` creates `loading` locator but never
+      asserts visibility/count, so test passes regardless of loading state implementation.
+
+      Validation/test status:
+
+      - `npm test` passed.
+
+      - `cd packages/web-ui && npm test` passed.
+
+      - `kspec validate` reports repo-level schema/reference issues unrelated to this task; no
+      spec-specific warnings found for `@ui-workflows-view`.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-07T05:49:20.132Z
+  - _ulid: 01KK3DG0W535X7ERMY3K8VZR6K
+    content: "[FIX_CYCLE: 1] Review findings: Review issues: design-token violations in workflows page
+      and incomplete/fluff start-action/loading E2E coverage (see latest review note)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-07T05:49:31.397Z
+  - _ulid: 01KK3EV63CJ6HE40104RWTS6X4
+    content: >-
+      Fix cycle 1 addressed all 3 MUST-FIX items:
+
+      1. Replaced raw Tailwind colors (text-emerald-500, text-blue-500, text-amber-500) with
+      design-system severity tokens (text-severity-success, text-severity-info,
+      text-severity-warning)
+
+      2. Added behavioral E2E test for Start button: verifies clipboard copy of 'kspec workflow
+      start @spec-first' command and 'Copied!' feedback
+
+      3. Fixed fluff loading test: now asserts loading transitions to content (workflows-list or
+      workflows-empty visible)
+
+      All 27 static analysis tests pass, web-ui build succeeds.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T06:13:05.772Z

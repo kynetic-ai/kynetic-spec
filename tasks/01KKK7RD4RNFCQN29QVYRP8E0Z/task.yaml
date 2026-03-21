@@ -1,0 +1,40 @@
+_ulid: 01KKK7RD4RNFCQN29QVYRP8E0Z
+slugs:
+  - update-branching-conventions-and-agent-docs-for-dispatch-compatible-task-branches
+title: Update branching conventions and agent docs for dispatch-compatible task branches
+type: task
+spec_ref: null
+plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #838. Updated branching conventions and agent docs to reference kspec
+  task branch for dispatch-compatible deterministic branches. Changes include: task-work skill
+  section 3.5 updated from ad-hoc branching to kspec task branch @ref, two new branching convention
+  rules added (prefer kspec task branch, reserve dispatch/task/ namespace), dispatch loop template
+  updated, and all derived files regenerated (kspec-agents.md, .agents/skills/, .factory/skills/).
+  All CI checks passed, no regressions."
+depends_on:
+  - "@implement-deterministic-task-branch-helper"
+context: []
+priority: 1
+tags:
+  - docs
+  - dispatch
+  - agents
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-14T01:42:43.409Z
+  commit: 38dc760d3353e2cde497e9150881b2c81da24679
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKMZD7M3YHAV0CERPMB5AWCR
+created_at: 2026-03-13T09:17:05.560Z
+started_at: 2026-03-14T01:30:07.445Z
+submitted_at: 2026-03-14T01:42:44.132Z
+completed_at: 2026-03-14T01:54:23.399Z
+todos: []
+automation: eligible

@@ -1,0 +1,47 @@
+_ulid: 01KJSATPZHFFX6MMK7YKSYN008
+slugs: []
+title: "Fix pre-existing test failure: enhanced-setup codex config.toml not created"
+type: bug
+description: >-
+  Test: tests/enhanced-setup.test.ts > kspec setup (enhanced) > skill rendering > should render core
+  skills to codex output when codex is detected
+
+
+  Error: ENOENT: no such file or directory, open '/tmp/.../.codex/config.toml'
+
+
+  The test expects kspec setup to create a .codex/config.toml file when codex is detected, but the
+  file is not being created. The test reads codexConfigPath = path.join(tempDir, '.codex',
+  'config.toml') and checks it contains 'project_doc_fallback_filenames' and 'kspec-agents.md'.
+
+
+  This is a pre-existing failure on main (confirmed against main before PR #643 changes). Root
+  cause: the setup command codex config writing logic is either not triggering, writing to a
+  different path, or the detection logic is not working in the test environment.
+
+
+  Investigate: src/cli/setup.ts (or similar) to find where .codex/config.toml is written and why it
+  is not being created in the temp dir fixture.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Already implemented on main in commit 5818b6315; verified by passing enhanced setup
+  tests on 2026-03-04.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - setup
+  - codex
+  - testing
+vcs_refs: []
+session_id: 01KJWCX0B1M519AJ0RJVRJRT9C
+created_at: 2026-03-03T07:50:31.664Z
+started_at: 2026-03-04T12:26:19.906Z
+submitted_at: 2026-03-04T12:26:21.507Z
+completed_at: 2026-03-04T12:26:22.555Z
+todos: []
+automation: eligible

@@ -1,0 +1,59 @@
+_ulid: 01KJ4DP400CH23DK5CCMC1ZWF2
+slugs:
+  - task-audit-daemon-test-coverage
+  - task-audit-static-analysis-tests
+title: Audit test suite and plan migration from static analysis to behavioral tests
+type: spike
+description: >-
+  The test suite relies heavily on static analysis patterns — reading source files and checking for
+  string patterns (e.g. expect(content).toContain(...)). This approach cannot catch runtime bugs and
+  breaks on refactors (e.g. end-loop.test.ts had regex pattern tests that could not detect the
+  false-positive bug that caused a real ralph loop exit).
+
+
+  Deep dive:
+
+  1) Inventory ALL test files repo-wide and categorize by test approach (static analysis vs
+  behavioral vs E2E).
+
+  2) Identify which static-only tests have the highest risk of missing real bugs.
+
+  3) Design a migration plan — options include: unit tests that import functions directly,
+  integration tests with fixtures, CLI behavioral tests, or Playwright E2E tests.
+
+  4) Create follow-up tasks for the actual migration work.
+
+
+  Known areas with static analysis tests:
+
+  - Daemon tests (tests/daemon-*.test.ts)
+
+  - Ralph end-loop tests (tests/ralph/end-loop.test.ts) — session close handlers, marker removal
+
+  - Likely others across the test suite
+
+
+  The pattern to eliminate: reading source with fs.readFile then expect(content).toContain(...)
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Audit complete. Identified ~3,500 lines of static analysis tests across 14 files
+  covering ~98 ACs. Created 10 follow-up tasks: 9 E2E replacement tasks for daemon APIs and 1
+  deletion task for tests that don't need replacing. All tasks are automation-eligible with concrete
+  endpoints, AC annotations, and file references."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - e2e
+vcs_refs: []
+created_at: 2026-02-23T04:56:23.808Z
+started_at: 2026-02-25T23:43:23.129Z
+submitted_at: 2026-02-25T23:46:10.108Z
+completed_at: 2026-02-26T00:29:20.781Z
+todos: []
+automation: manual_only

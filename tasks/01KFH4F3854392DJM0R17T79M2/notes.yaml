@@ -1,0 +1,409 @@
+notes:
+  - _ulid: 01KFH4FF4RCGTJDJHE17MV1C4E
+    content: >-
+      ## Overview
+
+
+      Create a trait for specs that describe already-implemented functionality where implementation
+      predates formal task tracking. This enables kspec adoption on legacy projects and properly
+      handles bootstrap-era specs.
+
+
+      ## Problem Statement
+
+
+      Currently, validation reports:
+
+      - 15 orphaned specs (no implementing tasks)
+
+      - 127 status mismatches (specs marked implemented but no tasks)
+
+
+      These are false positives for bootstrap/legacy scenarios where specs were written after
+      implementation.
+
+
+      ## Solution: @trait-retrospective
+
+
+      A trait that specs can use to indicate they follow retrospective verification rather than
+      task-driven implementation.
+
+
+      ## Trait Definition
+
+
+      ```yaml
+
+      - _ulid: <generated>
+        slugs:
+          - trait-retrospective
+        title: 'Retrospective Verification'
+        type: trait
+        description: |
+          Applied to specs describing already-implemented functionality where
+          implementation predates formal task tracking. Common scenarios:
+          - Bootstrap specs (kspec tracking itself)
+          - Legacy adoption (adding kspec to existing codebase)
+          - Reverse-engineered specs from existing code
+          Specs with this trait:
+          - Do not require linked implementation tasks
+          - Must have verified_at and verified_by fields
+          - Status is manually set rather than derived from task completion
+        acceptance_criteria:
+          - ac-1:
+              given: a spec item uses @trait-retrospective
+              when: validation runs alignment checks
+              then: no 'orphaned spec' warning is generated for missing tasks
+          - ac-2:
+              given: a spec uses @trait-retrospective
+              when: status is set to implemented or verified
+              then: verified_at (ISO timestamp) and verified_by (agent ref) are required
+          - ac-3:
+              given: a spec uses @trait-retrospective without verified_at/verified_by
+              when: validation runs
+              then: warning indicates missing verification metadata
+          - ac-4:
+              given: a retrospective spec exists
+              when: viewing item details (kspec item get)
+              then: output indicates retrospective verification source
+      ```
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T20:38:30.809Z
+  - _ulid: 01KFH4FTW0N0E8R3CRZAADWZCZ
+    content: |-
+      ## Schema Changes
+
+      Add optional fields to spec item schema (src/schema/items.ts):
+
+      ```typescript
+      // Verification metadata for retrospective specs
+      verified_at: z.string().datetime().optional(),
+      verified_by: z.string().startsWith('@').optional(),
+      ```
+
+      These fields are:
+      - Optional on all specs
+      - Required when spec uses @trait-retrospective AND status is implemented/verified
+      - verified_by should be a valid agent reference
+
+      ## Validation Behavior Changes
+
+      Update src/cli/commands/validate.ts alignment checking:
+
+      1. When checking for orphaned specs:
+         - Skip specs that use @trait-retrospective
+         - Report them separately as 'Retrospective specs: N' (informational)
+
+      2. When checking status mismatches:
+         - Skip specs with @trait-retrospective (status is manually verified)
+         - Only report mismatches for task-tracked specs
+
+      3. New validation for retrospective specs:
+         - Warn if @trait-retrospective used but missing verified_at/verified_by
+         - Warn if verified_by doesn't resolve to a valid agent
+
+      Example output after implementation:
+      ```
+      Alignment warnings: 12
+        Orphaned specs (no tasks): 0
+        Retrospective specs: 127         # Informational, not warning
+        Status mismatches: 5             # Only real issues
+      ```
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T20:38:42.816Z
+  - _ulid: 01KFH4G5HHC1QSWEQMMWY5KRJM
+    content: >-
+      ## CLI Support
+
+
+      ### New flags for kspec item set
+
+
+      ```bash
+
+      kspec item set <ref> --verified-by <agent-ref> --verified-at <iso-timestamp>
+
+      kspec item set <ref> --verified-by @claude  # verified_at defaults to now
+
+      ```
+
+
+      ### Updated kspec item get output
+
+
+      When viewing a retrospective spec:
+
+      ```
+
+      Core Primitives
+
+      ────────────────────────────────────────
+
+      ULID:       01K...
+
+      Type:       module
+
+      Status:     implemented (retrospective)    # Indicate source
+
+      Verified:   2025-01-15 by @claude          # Show verification info
+
+      Uses:       @trait-retrospective
+
+      ...
+
+      ```
+
+
+      ### Potential bulk command (future/optional)
+
+
+      ```bash
+
+      # Apply trait to all implemented specs without tasks
+
+      kspec item trait add --bulk --filter 'status:implemented AND orphaned:true'
+      @trait-retrospective
+
+      ```
+
+
+      This could be a follow-up enhancement - initial implementation can use individual commands.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T20:38:53.745Z
+  - _ulid: 01KFH4GH40ZCZJJ9R27A7MRYTC
+    content: |-
+      ## Usage Example
+
+      Applying to a bootstrap spec:
+
+      ```yaml
+      - _ulid: 01K...
+        slugs:
+          - core
+        title: 'Core Primitives'
+        type: module
+        status: implemented
+        uses:
+          - '@trait-retrospective'
+        verified_at: '2025-01-15T00:00:00Z'
+        verified_by: '@claude'
+        description: 'ULID generation, slug management, reference resolution'
+      ```
+
+      ## Migration Plan for kspec's Own Specs
+
+      After implementation:
+
+      1. Create the @trait-retrospective trait definition
+      2. Identify all bootstrap/retrospective specs (currently ~127 with status mismatches)
+      3. Apply trait and verification metadata to each
+      4. Re-run validation to confirm warnings resolved
+
+      Candidates for @trait-retrospective in kspec:
+      - All specs in modules/core.yaml (Core Primitives, ULID, Slugs, etc.)
+      - All specs in modules/schema.yaml (Item types, Status lifecycle, etc.)
+      - All specs in modules/tasks.yaml (Task system, States, etc.)
+      - All specs in modules/cli.yaml (CLI commands implemented during bootstrap)
+
+      This is a one-time migration for kspec itself, demonstrating the pattern for other adopters.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T20:39:05.600Z
+  - _ulid: 01KFH4GYF31DJWB110NN46ZMDD
+    content: |-
+      ## Documentation
+
+      ### Update traits.md skill
+
+      Add section on @trait-retrospective:
+      - When to use (bootstrap, legacy adoption)
+      - Required fields (verified_at, verified_by)
+      - How validation treats retrospective specs
+
+      ### Update AGENTS.md
+
+      Add guidance for agents:
+      - When encountering orphaned spec warnings, consider if retrospective
+      - How to apply the trait during legacy adoption
+      - Verification metadata requirements
+
+      ### Example in README or docs
+
+      Document the legacy adoption workflow:
+      1. Write specs describing existing functionality
+      2. Apply @trait-retrospective
+      3. Set verified_at/verified_by
+      4. Run validation to confirm
+
+      ## Subtask Breakdown
+
+      This task should be broken into:
+
+      1. **Spec**: Create formal spec for @trait-retrospective with AC (this task covers design)
+      2. **Schema**: Add verified_at/verified_by fields to item schema
+      3. **Trait**: Create @trait-retrospective trait definition in kspec's specs
+      4. **Validation**: Update alignment checks to respect the trait
+      5. **CLI**: Add --verified-by/--verified-at flags to item set
+      6. **Migration**: Apply trait to kspec's bootstrap specs (~127 items)
+      7. **Docs**: Update traits.md, AGENTS.md with guidance
+
+      Suggest deriving child tasks after spec is approved.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T20:39:19.267Z
+  - _ulid: 01KFH4HA9E7N1QRF1FPYV511ST
+    content: >-
+      ## Benefits
+
+
+      1. **Clean validation**: Warnings become meaningful (only real issues)
+
+      2. **Legacy adoption**: Clear pattern for adding kspec to existing projects
+
+      3. **Audit trail**: verified_at/verified_by captures who confirmed implementation
+
+      4. **Consistent model**: Uses existing trait mechanism (no new concepts)
+
+      5. **Explicit opt-in**: Each spec must deliberately use the trait
+
+      6. **Self-documenting**: Trait definition explains the pattern
+
+
+      ## Design Rationale
+
+
+      **Why a trait vs other options?**
+
+
+      Considered alternatives:
+
+      - Flag on spec (retrospective: true) - works but traits are the existing cross-cutting
+      mechanism
+
+      - Audit tasks - creates 127 tiny tasks, noise
+
+      - Derivation mode - on task not spec, wrong place
+
+      - Implementation source field - similar to trait but less flexible
+
+
+      Trait approach wins because:
+
+      - Traits ARE the kspec mechanism for cross-cutting behavior
+
+      - Validation already understands traits
+
+      - Can add AC to the trait itself (self-describing)
+
+      - Consistent with existing patterns
+
+
+      **Why require verified_at/verified_by?**
+
+
+      - Creates audit trail (who verified, when)
+
+      - Prevents lazy use without verification
+
+      - Useful for compliance/auditing scenarios
+
+      - Answers 'how do we know this is implemented?'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T20:39:31.374Z
+  - _ulid: 01KFHFG3SMNFX4DQ36565968HT
+    content: "Automation status set to needs_review: Feature with thorough design in notes - needs spec
+      creation from drafted ACs before automation"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T23:51:06.292Z
+  - _ulid: 01KFMXNAHJ6MNRQ7P5SGGJTCVA
+    content: "Created @trait-retrospective spec with 4 acceptance criteria using kspec trait add
+      command. Next steps: implement schema changes (verified_at/verified_by fields), update
+      validation logic, add CLI support for --verified-by/--verified-at flags, and update item get
+      display."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T07:56:20.402Z
+  - _ulid: 01KFMXSJ1Y14RTNG0YJWFV2RFZ
+    content: Schema updated with verified_at/verified_by fields. All 1049 tests pass. Now working on
+      alignment.ts to skip retrospective specs from orphaned spec warnings (findAlignmentWarnings
+      method, line 213-220). Need to check for @trait-retrospective in spec.traits array.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T07:58:39.166Z
+  - _ulid: 01KFMY2B5SJDJY4CQAN415HN5C
+    content: >-
+      Implementation complete! All 4 ACs implemented:
+
+      - AC-1: alignment.ts skips retrospective specs from orphaned warnings
+
+      - AC-2: validate.ts requires verified_at/verified_by for implemented/verified retrospective
+      specs
+
+      - AC-3: validate.ts warns about missing verification metadata
+
+      - AC-4: item.ts get command shows retrospective status and verification info
+
+      Added --verified-by/--verified-at flags to item set. All 1049 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T08:03:27.033Z
+  - _ulid: 01KFMYFETXE8H7SWPNCBMXWHTP
+    content: Added comprehensive test file with 7 E2E tests covering all 4 ACs. Tests are created but
+      4/7 need debugging - issue with verification metadata not displaying in item get output. Need
+      to investigate trait detection logic or test setup. Core implementation is solid and ready for
+      review.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T08:10:36.766Z
+  - _ulid: 01KFMYYBA9XVR9B990XVEFGR2W
+    content: >-
+      Fixed failing E2E tests for @trait-retrospective feature.
+
+
+      **Root cause**: Tests were manually editing YAML to add traits field, but there was no CLI
+      command to add traits to items. This caused the trait check to fail and verification metadata
+      not to display.
+
+
+      **Solution**:
+
+      1. Added --trait option to 'kspec item set' command (line 692 in item.ts)
+
+      2. Updated handler to process traits (line 758 in item.ts)
+
+      3. Refactored all 4 tests to use CLI commands instead of manual YAML editing
+
+      4. Fixed date comparison test to compare dates (not timestamps) since display truncates to
+      date-only
+
+
+      **Changes**:
+
+      - src/cli/commands/item.ts: Added --trait option and handling
+
+      - tests/trait-retrospective.test.ts: Replaced YAML manipulation with CLI commands
+
+
+      **Result**: All 7 E2E tests now passing. All 1056 tests in suite pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T08:18:44.681Z
+  - _ulid: 01KFMZSSRY0A7ZFTTJEZY8PYNY
+    content: >-
+      Addressed greptile review comments:
+
+      - Fixed redundant verified_at assignment in item.ts (pushed commit a4c7749)
+
+      - Inverse validation (verified metadata → status check) intentionally not implemented - not
+      required by AC, could be added later if needed
+
+      - Waiting for CI to complete before resolving threads and merging
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T08:33:44.222Z

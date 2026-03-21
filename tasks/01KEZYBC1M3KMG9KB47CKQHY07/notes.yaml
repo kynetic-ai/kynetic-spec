@@ -1,0 +1,113 @@
+notes:
+  - _ulid: 01KEZYBSKSTZS50XQ32BZA4PZP
+    content: >-
+      Design idea: Bulk item import from simplified YAML
+
+
+      Use case: During design sessions, quickly capture multiple related items without running
+      individual CLI commands.
+
+
+      Proposed format (simplified subset):
+
+      ```yaml
+
+      # kspec import --under @core --file design.yaml
+
+      # or: kspec import --under @core < design.yaml
+
+
+      features:
+        - title: User Authentication
+          slug: auth
+          description: Handle user login/logout
+          requirements:
+            - title: Password must be hashed
+              slug: password-hash
+            - title: Session expires after 24h
+              slug: session-expiry
+          constraints:
+            - title: No plaintext passwords in logs
+
+        - title: API Rate Limiting
+          slug: rate-limit
+          tags: [security, api]
+          requirements:
+            - title: 100 requests per minute per user
+      ```
+
+
+      Key simplifications from full spec:
+
+      - No ULIDs (auto-generated)
+
+      - No status (defaults to draft/not_started)
+
+      - Nested structure matches item relationships
+
+      - Minimal required fields (just title)
+
+      - Optional slug, tags, description
+
+
+      Command options:
+
+      - `kspec import --under @parent --file items.yaml`
+
+      - `kspec import --under @parent --stdin` (pipe from editor)
+
+      - `--dry-run` to preview what would be created
+
+      - `--format` to output the simplified format from existing items (reverse)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T04:24:33.657Z
+  - _ulid: 01KEZYC3E9FPKNCNT8ZD957C7X
+    content: |-
+      Design session workflow concept:
+
+      1. Start a design session:
+         `kspec design start --under @module-name`
+         Opens $EDITOR with template, or starts interactive mode
+
+      2. Write items in simplified format (see above)
+
+      3. On save/exit:
+         - Validates structure
+         - Shows preview of items to create
+         - Asks for confirmation
+         - Creates all items under the parent
+
+      Alternative: pipe from any source
+         `cat design-notes.yaml | kspec import --under @core`
+         `pbpaste | kspec import --under @core`  # from clipboard
+
+      This enables rapid spec capture during brainstorming without CLI friction.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T04:24:43.723Z
+  - _ulid: 01KEZYGFD1EV5PK78Y17X3WB6K
+    content: >-
+      Acceptance criteria:
+
+
+      1. Clear documentation
+         - Help text explains simplified format
+         - Examples in 'kspec help import' / 'kspec help design'
+         - Error messages guide users to correct format
+
+      2. Skill integration
+         - If @task-kspec-skill is done first: update skill output to include import command for bulk spec capture
+         - If this is done first: document the format/workflow so skill can reference it
+
+      3. Format validation
+         - Validates structure before creating items
+         - Clear errors for invalid nesting (e.g., constraint under constraint)
+         - --dry-run shows exactly what would be created
+
+      4. Idempotency consideration
+         - Decide: error on duplicate slug? skip? update?
+         - Document the behavior clearly
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T04:27:07.042Z

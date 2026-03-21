@@ -1,0 +1,69 @@
+notes:
+  - _ulid: 01KK5QRE80MKAQFHQCHYVX7P7S
+    content: >-
+      Execution context:
+
+      - Background: validate/automation surfaced a small remaining set of tasks that are eligible or
+      unassessed without a linked spec.
+
+      - Scope: classify the current warning set, apply the first metadata correction batch, and
+      document when a task without spec_ref must be manual_only versus when it should gain a spec.
+
+      - Files: task metadata via kspec CLI; automation guidance under templates/skills if policy
+      text needs to change.
+
+      - Verification: re-run kspec tasks assess automation and kspec validate after updates.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T03:27:21.856Z
+  - _ulid: 01KK5QWDCE5XT1J7EJ526TDYVY
+    content: >-
+      Classified the current live warning set and applied the first correction batch.
+
+
+      - Reclassified @01KJXQK4 (UI/UX revamp umbrella task) from unassessed to manual_only because
+      it coordinates plan/design work and derived spec-backed implementation tasks rather than
+      implementing one spec directly.
+
+      - Added plan_ref @plan-ui-ux-revamp to that umbrella task so its planning context is explicit
+      without fabricating a spec_ref.
+
+      - Updated automation triage guidance to document the rule: do not invent spec_ref for umbrella
+      planning/design tasks; keep them manual_only and execute the derived spec-linked tasks
+      instead.
+
+      - Verification: kspec tasks assess automation now shows 0 needs_review items in the active
+      queue; kspec validate still has unrelated pre-existing schema/reference/completeness noise and
+      a larger historical automation-without-spec backlog outside this first-batch scope.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T03:29:32.046Z
+  - _ulid: 01KK5QXXAJTMQC1Q3CZ1VG37CQ
+    content: >-
+      Submitted for review in PR #695.
+
+
+      Artifacts:
+
+      - Main branch docs commit: d2ade61ae
+
+      - PR: https://github.com/kynetic-ai/kynetic-spec/pull/695
+
+
+      Verification:
+
+      - kspec tasks assess automation now shows only one review_for_eligible task and no
+      missing-spec needs_review items in the active queue.
+
+      - kspec validate still reports unrelated pre-existing schema/reference/completeness issues
+      plus historical automation-without-spec warnings outside this first-batch scope.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T03:30:21.139Z
+  - _ulid: 01KK5RW7VS5TSV989A7FH6TH6M
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #695 is stacked on unrelated CI/E2E commits
+      from task @01KJD106N5ZQ3VB9T3EV3BHYZK. Restack or recreate the PR so the review artifact only
+      contains the automation-triage metadata/docs changes for this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T03:46:54.970Z

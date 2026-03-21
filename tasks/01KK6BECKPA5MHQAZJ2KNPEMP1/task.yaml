@@ -1,0 +1,39 @@
+_ulid: 01KK6BECKPA5MHQAZJ2KNPEMP1
+slugs: []
+title: Implement bidirectional shadow branch sync
+type: task
+description: "Shadow branch sync is push-only: after each commit, shadowPushAsync fires a detached
+  git push. But there is no pull — other clones sharing the same remote kspec-meta branch never
+  receive updates until manual kspec shadow sync. This causes: (1) divergence between clones (tasks
+  created in clone A are invisible to clone B), (2) frequent merge conflicts when both clones push,
+  (3) manual intervention required to reconcile. Fix: (a) Change shadowPushAsync to pull-rebase
+  before pushing (using the kspec merge driver for YAML conflict resolution), (b) Add periodic
+  background pull in daemon mode (configurable interval, default 60s), (c) Ensure CLI commands also
+  pull before read operations that depend on fresh state (e.g. task list, session start). The merge
+  driver (kspec merge-driver) already handles YAML merges non-interactively."
+spec_ref: "@config-shadow"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #712 (fd0550ca5cf9a9d9c066a2c46c35cac1dcf6294d). Implemented
+  bidirectional shadow branch sync: pull-rebase before shadow push, daemon background shadow pull
+  with configurable shadow.sync_interval (default 60s), and CLI pre-read shadow pull via initContext
+  with configured shadow remote/branch support. AC coverage verified for @config-shadow ac-11 and
+  ac-12 with targeted shadow tests; required CI checks passed on the merged head."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - shadow
+  - sync
+  - multi-clone
+vcs_refs: []
+session_id: 01KK6ZQE40NHZ8ATSCS5DYG37Y
+created_at: 2026-03-08T09:11:24.022Z
+started_at: 2026-03-08T15:06:35.344Z
+submitted_at: 2026-03-08T15:14:11.995Z
+completed_at: 2026-03-08T15:23:51.500Z
+todos: []
+automation: eligible

@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KK7T2F5180QHQN68FKVZW500
+    content: |
+      CLI command to copy session directories from .kspec/sessions/ to
+      .kspec-sessions/. Idempotent, reports progress, does not delete originals.
+    author: "@claude"
+    created_at: 2026-03-08T22:46:16.481Z

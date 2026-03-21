@@ -1,0 +1,60 @@
+_ulid: 01KKZPVMVM269XTHFNX9GRPA5N
+slugs:
+  - task-agent-action-input
+title: Implement agent action input contract
+type: task
+description: |
+  Implement prompt templating, session strategy, and correlation
+  propagation for agent actions.
+
+  Why: "Agent B receives context about A's session" is meaningless
+  without defining how the prompt is built. This is the contract that
+  makes pipeline chaining actually work.
+
+  What: Agent actions support prompt/prompt_template (interpolated
+  with event context), task_binding (opt-in to per-task exclusivity),
+  and correlation/group_id propagation to spawned session metadata.
+  When triggered by invocation.completed, the default prompt includes
+  the upstream session_id, agent_id, and outcome summary.
+
+  How: Extend the existing prompt_template interpolation from
+  @agent-dispatch-engine ac-16. Add task_binding flag that controls
+  whether the invocation is task-scoped. Propagate correlation_id
+  and group_id to InvocationOptions metadata.
+
+  Covers: @dispatch-agent-action-input ac-1 through ac-4.
+spec_ref: "@dispatch-agent-action-input"
+plan_ref: "@plan-dispatch-event-system-expansion"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Implements agent action input contract: prompt resolution (prompt >
+  prompt_template > default), invocation.completed default prompt with upstream context,
+  task_binding for event-derived task scoping, and correlation_id/group_id propagation. All 4 ACs
+  covered with 26 tests. Clean merge, no conflicts."
+depends_on:
+  - "@task-action-model"
+  - "@task-event-bus"
+context: []
+priority: 2
+tags:
+  - dispatch
+  - actions
+  - agents
+vcs_refs: []
+review_ref: "@01KM0CJ6M6D6K9VXS90J3X7XF4"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T11:49:54.709Z
+  commit: 4aaa260c9aae4746e75a5d4ef29c6b591522364a
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM0BT1JJKE360A1N1V4NPDXR
+created_at: 2026-03-18T05:31:53.588Z
+started_at: 2026-03-18T11:38:28.740Z
+submitted_at: 2026-03-18T11:49:55.197Z
+completed_at: 2026-03-18T12:00:27.845Z
+todos: []
+automation: eligible

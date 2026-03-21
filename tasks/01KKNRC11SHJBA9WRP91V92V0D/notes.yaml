@@ -1,0 +1,54 @@
+notes:
+  - _ulid: 01KKPQGEV5VMFS546RTJ5VTPPT
+    content: >-
+      Execution context:
+
+      - Background: Checks and gate evaluation add the quality-gate layer to reviews. The schema
+      (ReviewCheckSchema, ReviewGateStateSchema) and subject-bindings staleness helpers already
+      exist. This task adds factory functions for creating checks and the gate evaluation engine.
+
+      - Scope: (1) Check recording factory (createCheck, createLocalCheck, mirrorExternalCheck), (2)
+      Gate evaluation engine (evaluateGates) that filters by applies_to_version freshness,
+      distinguishes required/informational, computes aggregate gate state, (3) AC-annotated tests
+      for all 6 ACs.
+
+      - Files: src/review/checks.ts (new), tests/review-checks.test.ts (new), src/review/index.ts
+      (update)
+
+      - Verification: npm test must pass, all 6 ACs covered with annotated tests.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T17:50:05.669Z
+  - _ulid: 01KKPR2B2DFYJN4S06T1DNW2EQ
+    content: >-
+      Submitted PR #853. Implementation adds:
+
+      - src/review/checks.ts: Check recording factories (createCheck, createLocalCheck,
+      mirrorExternalCheck) and gate evaluation engine (evaluateGates)
+
+      - src/review/index.ts: Updated barrel export
+
+      - tests/review-checks.test.ts: 38 tests covering all 6 ACs
+
+
+      Key design decisions:
+
+      - Checks are grouped by logical name for gate evaluation; latest fresh run per name determines
+      gate state
+
+      - Required flag uses 'any run required' semantics — if any run for a check name was marked
+      required, the gate is required
+
+      - Stale checks (applies_to_version mismatch) cause failing state for required gates, not
+      pending
+
+      - Skipped required checks are treated as satisfied (explicit skip is an acceptable outcome)
+
+      - Running checks leave gates in pending state
+
+      - Informational checks are always satisfied regardless of status
+
+      - Reuses isVersionStale from subject-bindings.ts for staleness detection
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T17:59:51.629Z

@@ -1,0 +1,21 @@
+_ulid: 01KGTY0PRWE31WZTC5W4HS9HZF
+slugs: []
+title: Add AC count display and complexity warning to derive
+type: task
+description: "[quick-win] Add AC count display and complexity warning to derive command - warn when
+  spec has >5 ACs and suggest decomposition options"
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #338. Added AC count display (N ACs) and complexity warning (>5 ACs
+  suggests splitting) to derive command output. 7 tests covering all scenarios."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-07T02:13:41.788Z
+started_at: 2026-02-07T11:08:01.291Z
+completed_at: 2026-02-07T11:20:22.826Z
+todos: []
+automation: eligible

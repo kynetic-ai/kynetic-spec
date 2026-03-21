@@ -1,0 +1,19 @@
+_ulid: 01KFF8DVY8KZ9NSQ4M5XXH5H2K
+slugs: []
+title: Unify YAML serialization API to prevent inconsistent behavior
+type: task
+spec_ref: null
+meta_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: "Addressed in PR #111 - fix was unified to toYaml() level in the same PR"
+depends_on: []
+context: []
+priority: 2
+tags:
+  - tech-debt
+  - yaml
+  - api
+vcs_refs: []
+created_at: 2026-01-21T03:09:03.815Z
+todos: []

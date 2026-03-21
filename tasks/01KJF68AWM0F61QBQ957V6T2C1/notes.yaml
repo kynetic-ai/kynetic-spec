@@ -1,0 +1,60 @@
+notes:
+  - _ulid: 01KJF8YC0BXF7553R2YE2NBHWD
+    content: Started implementation. Adding session event payload/line guardrails with blob
+      externalization + pointer metadata in store.ts, then wiring session log show/search to preview
+      pointers by default with optional blob resolution flags and regression tests.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T10:05:10.027Z
+  - _ulid: 01KJF96KD07NW7FDR9RN7HCVXM
+    content: "Implemented session event guardrails: appendEvent now externalizes oversized
+      update.rawOutput, update._meta.claudeCode.toolResponse stdout/stderr, and chunk text into
+      sessions/<id>/blobs with pointer metadata {path, bytes, sha256, truncated, preview}; added
+      event-line cap fallback to externalize entire data payload if still oversized. Added pointer
+      resolution utility and wired session log show/search with --resolve-blobs (default keeps
+      preview pointers). Added regression coverage in tests/sessions.test.ts,
+      tests/session-log-show.test.ts, tests/session-log-search.test.ts. Verification: npm run build;
+      npx vitest run tests/sessions.test.ts tests/session-log-show.test.ts
+      tests/session-log-search.test.ts (131/131). kspec validate still fails on pre-existing
+      @observations slug ambiguity + baseline alignment/completeness warnings unrelated to this
+      task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T10:09:39.744Z
+  - _ulid: 01KJF97EMCB0T6K5G4P9A86V0Z
+    content: "Submitted for review and opened PR #578 (fix/session-event-blob-guardrails). Includes
+      event payload/line guardrails with blob externalization pointers and --resolve-blobs support
+      in session log show/search with regression coverage. Verification: npm run build; npx vitest
+      run tests/sessions.test.ts tests/session-log-show.test.ts tests/session-log-search.test.ts
+      (131/131)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T10:10:07.629Z
+  - _ulid: 01KJH7BQQ86TMZHRCYY0VD0V64
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: Missing AC annotation/test coverage for
+      @session-events ac-7 (commit-boundary inclusion). Posted inline review comment on PR #578;
+      requires follow-up before approval."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T04:15:59.721Z
+  - _ulid: 01KJH7GA2B0D6X4CHNAMKH6J5F
+    content: "[FIX_CYCLE: 1] Added explicit AC coverage for @session-events ac-7 with a new
+      commit-boundary integration test in tests/sessions.test.ts. Test verifies accumulated session
+      events are included in the next git commit by asserting sessions/<id>/events.jsonl appears in
+      commit file list."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T04:18:29.579Z
+  - _ulid: 01KJH7M8ATR9H3KXWA4WYQ1YR1
+    content: "[FIX_CYCLE: 1] Verified explicit @session-events ac-7 annotation in tests/sessions.test.ts
+      commit-boundary test, re-ran targeted regression (npx vitest run tests/sessions.test.ts:
+      52/52), and confirmed PR #587 is open with commit 0d9ed9914bd6a67968e3f5866a41b192953baebd on
+      branch fix/session-events-ac7-commit-boundary."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T04:20:38.875Z
+  - _ulid: 01KJH8T69QFVB74TE10RWBAGE3
+    content: "[RALPH SUBAGENT] Subagent timed out after 20 minutes"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T04:41:21.975Z

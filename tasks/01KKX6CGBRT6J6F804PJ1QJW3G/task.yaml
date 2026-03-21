@@ -1,0 +1,50 @@
+_ulid: 01KKX6CGBRT6J6F804PJ1QJW3G
+slugs: []
+title: Round-trip stability for workflow runs YAML writes
+type: task
+description: >-
+  meta.ts saveWorkflowRun loads kynetic.runs.yaml through WorkflowRunsFileSchema.safeParse() before
+  writing back. This adds defaults like step_results: [] to every run record on each save.
+
+
+  Apply the same raw-data-preservation pattern: load the raw YAML array without schema
+  normalization, only schema-parse the target run, merge onto raw data. Non-target runs stay as raw
+  data.
+
+
+  Verify with tests: write a runs file, load and save one run without changes, confirm file is
+  byte-identical.
+spec_ref: "@yaml-serialization-invariants"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Applied raw-data-preservation pattern to workflow runs YAML writes:
+  saveWorkflowRun, mutateWorkflowRunAtomically, and deleteWorkflowRuns now load raw YAML without
+  schema normalization, only schema-parse the target run, and merge onto raw data to prevent Zod
+  default pollution. 7 round-trip stability tests verify byte-identical output. Fix cycle resolved
+  prior review blockers (dispatch workspace regression and out-of-scope deletions) by merging dev
+  into the task branch."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - schema
+  - meta
+vcs_refs: []
+review_ref: "@01KKZ6SFR20EDAKDMGKM87X333"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T00:49:47.692Z
+  commit: 42a4d2777452d52a41990f9cde2c39326bf86295
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KKZ60WQX4H7VDVYQ5SGGMDR4
+created_at: 2026-03-17T06:05:31.384Z
+started_at: 2026-03-18T00:49:44.359Z
+submitted_at: 2026-03-18T00:49:48.059Z
+completed_at: 2026-03-18T00:59:08.251Z
+todos: []
+automation: eligible

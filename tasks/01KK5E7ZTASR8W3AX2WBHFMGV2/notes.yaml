@@ -1,0 +1,10 @@
+notes:
+  - _ulid: 01KK6873KWVHV7PRAZJZ3C71VP
+    content: "Fix: When detected.type === 'unknown', setup no longer returns early. Instead it warns and
+      proceeds to runSetupPipeline(). The pipeline already handles unknown agents gracefully (hooks
+      skipped, permissions skipped, etc.). Added 'Configure author' skipped step for unknown agents
+      with manual instructions message. After pipeline completes, printManualInstructions() is
+      called to show KSPEC_AUTHOR export instructions. Three tests added covering AC ac-1."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T08:14:59.708Z

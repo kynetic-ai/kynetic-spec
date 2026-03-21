@@ -1,0 +1,93 @@
+notes:
+  - _ulid: 01KFBKKAEHM7D8HFN4X93EJQC8
+    content: "Found during cruft review: 'ULID Shortening' in core.yaml marked not_started but
+      implemented. Likely other spec items also out of sync. Audit all spec items against actual
+      implementation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T17:07:19.122Z
+  - _ulid: 01KFBPJEHSCVA38V99ZNHNXSYB
+    content: "Also review: YAML convention specs in schema.yaml and 'kspec hooks' in cli.yaml marked
+      not_started - consider marking maturity: deferred if these are post-release features."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T17:59:16.281Z
+  - _ulid: 01KFFHEB9NJNVKMV914FTQQJ48
+    content: "Automation status set to manual_only: Manual audit task - reviewing specs vs implementation"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T05:46:36.725Z
+  - _ulid: 01KFFSCTK6D0TZ8ZW98SX0RDEG
+    content: >-
+      Initial audit findings:
+
+
+      ## Implementation Status Mismatches
+
+
+      1. **ULID Shortening** (@spec-ulid-shortening) - marked not_started but IS implemented
+         - Implementation in src/parser/refs.ts with ulid-prefix matching
+         - Used throughout CLI for short references
+
+      2. **Cascade Status Updates** (@spec-cascade-status) - marked in_progress but IS implemented
+         - Implementation in src/cli/commands/item.ts handleStatusCascade()
+         - Prompts user when setting status on parent items
+
+      3. **YAML Conventions** (@spec-yaml-conventions) - marked not_started but IS implemented
+         - Uses 'yaml' v2.8.2 which defaults to YAML 1.2
+         - Handles ambiguous strings correctly by default
+
+      4. **blocks Relationship** (@spec-blocks-relationship) - marked not_started and NOT
+      implemented
+         - Correct status, no implementation found
+
+      5. **Auto-Adaptive Structure** (@spec-auto-adaptive-structure) - marked not_started and NOT
+      implemented
+         - Correct status, no implementation found
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T08:05:35.462Z
+  - _ulid: 01KFFSEZK5DMQ3BWASWJ5SK10B
+    content: >-
+      Complete audit of spec implementation statuses:
+
+
+      ## Updated Statuses
+
+
+      ### Changed from not_started to implemented:
+
+      1. **@ulid-shortening** - ULID prefix matching in src/parser/refs.ts (ulid-prefix matchType)
+
+      2. **@yaml-conventions** - Uses yaml v2.8.2 with YAML 1.2 by default
+
+      3. **@yaml-version** - yaml v2.8.2 implements YAML 1.2 spec
+
+      4. **@yaml-quoting** - yaml v2.8.2 handles ambiguous strings correctly
+
+
+      ### Changed from in_progress to implemented:
+
+      5. **@status-cascade** - Cascade implementation in src/cli/commands/item.ts
+      handleStatusCascade()
+
+
+      ### Verified as correctly marked not_started:
+
+      - **@rel-blocks** - blocks relationship NOT implemented (correct)
+
+      - **@auto-adaptive-structure** - Auto-adaptive file structure NOT implemented (correct)
+
+      - **@cmd-hooks** - kspec hooks CLI command NOT implemented (should be deferred per notes)
+
+
+      ## Cascade Effects
+
+      Updating @yaml-conventions cascaded to 18 child items including ref-syntax, ref-validation,
+      derive commands, cmd-tasks-* commands, and shadow commands.
+
+
+      All spec implementation statuses now accurately reflect actual code.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T08:06:46.117Z

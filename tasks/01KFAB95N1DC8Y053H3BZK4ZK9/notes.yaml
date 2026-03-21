@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KFAB9TA7RX0Z1M8ZH81MV9TN
+    content: "Script should run: npm install && npm run build && npm link. One command for fresh
+      contributor setup."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T05:23:04.647Z

@@ -1,0 +1,55 @@
+notes:
+  - _ulid: 01KHFCPHTHP924E82BBE9HDH25
+    content: "Automation assessment: set to needs_review. missing spec_ref"
+    supersedes: null
+    author: "@automation-assess"
+    created_at: 2026-02-15T00:55:06.321Z
+  - _ulid: 01KK5DZHVMBNRDPRNM33C4RH55
+    content: >-
+      Execution context:
+
+      - Background: PR #362 shipped validate --drift without a backing spec item; this task repairs
+      spec coverage for existing behavior.
+
+      - Scope: create a requirement under @cmd-validate covering field detection, conceptual vs
+      schema fields, strict handling, exit codes, and false-positive filtering.
+
+      - Files: shadow-branch spec/task state only; no TypeScript implementation changes expected.
+
+      - Verification: inspect existing validate implementation/tests, run kspec item get on new
+      spec, then run kspec validate --warnings-ok.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T00:36:29.172Z
+  - _ulid: 01KK5E6ZEK13BFGPNGQAQR1MW1
+    content: Created @validate-drift under @cmd-validate with six ACs covering prose field detection,
+      reference-string handling, valid schema fields, filename false-positive filtering, flag
+      gating, and strict exit-code behavior. Added AC annotations plus a dedicated filename
+      false-positive test in tests/ac-schema-drift.test.ts, ran npm test -- --run
+      tests/ac-schema-drift.test.ts, and rechecked targeted completeness/alignment validation for
+      @validate-drift.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T00:40:32.468Z
+  - _ulid: 01KK5E8X1315DN1SEA6KTED4AN
+    content: Adjusted @validate-drift implementation status back to in_progress after submission because
+      the current alignment checker expects linked specs to remain in_progress until the task is
+      completed, even for already-shipped behavior.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T00:41:35.523Z
+  - _ulid: 01KK5EKW13SJRVBFRW6STZWHZF
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #691 is conflated with unrelated derive and
+      smoke-test changes; rebase onto a dedicated branch with only @validate-drift work before
+      review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T00:47:34.947Z
+  - _ulid: 01KK5FTK60C8AXYH2C7MHS3JQF
+    content: "[FIX_CYCLE: 1] Rebuilt the PR branch from main with only the task-linked commit for
+      @validate-drift (tests/ac-schema-drift.test.ts). Re-ran npm test -- --run
+      tests/ac-schema-drift.test.ts and the full npm test suite; both passed. Repo-wide kspec
+      validate still reports pre-existing meta/reference issues unrelated to this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:08:43.841Z

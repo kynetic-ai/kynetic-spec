@@ -1,0 +1,20 @@
+_ulid: 01KF4WVWCA199XYTH30HWQ399A
+slugs:
+  - task-convention-schema
+title: "Implement: Convention Schema"
+type: task
+spec_ref: "@convention-schema"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Convention schema fully implemented with test coverage
+depends_on:
+  - "@task-convention-definitions"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:35.786Z
+started_at: 2026-01-18T10:38:15.445Z
+completed_at: 2026-01-18T10:42:55.945Z
+todos: []

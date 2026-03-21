@@ -1,0 +1,135 @@
+notes:
+  - _ulid: 01KM6ARYB40FXZ0THQZPG167J0
+    content: >-
+      ## What
+
+
+      The reviews API status filter sends 'all' as a query param value, but the Elysia validation
+      schema only accepts valid ReviewLifecycleState values: draft, open, closed, archived. This
+      causes validation_error on two code paths:
+
+
+      1. **Reviews list page** (`packages/web-ui/src/routes/reviews/+page.svelte:31`):
+      `getStatusFilter()` returns literal 'all' when user selects "All statuses", sent as
+      `?status=all`.
+
+      2. **Task detail modal** (`packages/web-ui/src/lib/api.ts:1700`): `fetchReviewsForTask()`
+      hardcodes `url.searchParams.set('status', 'all')` to fetch all reviews for a task regardless
+      of lifecycle state.
+
+
+      The daemon route handler (`packages/daemon/src/routes/reviews.ts:154`) has logic to treat
+      'all' as "skip filtering", but Elysia's schema validation
+      (`enumArrayUnion(ReviewLifecycleStateSchema.options)` at line 246) rejects the request before
+      the handler runs.
+
+
+      ## Why
+
+
+      This was introduced by the input validation hardening work (@plan-input-validation-hardening).
+      The validation correctly restricts to valid enum values, but the UI was relying on a non-enum
+      sentinel value 'all' that predated the validation.
+
+
+      ## How
+
+
+      Three coordinated changes:
+
+
+      ### 1. Backend: Change no-param default from 'open' to 'no filter'
+
+      **File:** `packages/daemon/src/routes/reviews.ts` lines 150-156
+
+      - Currently: no status param → defaults to `['open']`
+
+      - Change to: no status param → no filtering (show all)
+
+      - Remove the `statusFilters[0] !== 'all'` special case (dead code after validation was added)
+
+
+      ### 2. UI reviews page: Flip the default/all semantics
+
+      **File:** `packages/web-ui/src/routes/reviews/+page.svelte`
+
+      - Default page load: navigate with explicit `?status=open` (so "Open" is still the landing
+      view)
+
+      - "All statuses" option: remove the status param entirely (no param = no filter = all)
+
+      - Update `getStatusFilter()` (line 30-34): remove the `'all'` return path; when URL has no
+      status param, treat as "all" (undefined → no param sent to API)
+
+      - The page should load with `?status=open` on initial navigation (or redirect if no status
+      param) so the user still sees open reviews by default
+
+
+      ### 3. Task modal: Remove hardcoded status=all
+
+      **File:** `packages/web-ui/src/lib/api.ts` line 1700
+
+      - Remove `url.searchParams.set('status', 'all')` — with the backend change, no status param
+      means all reviews
+
+
+      ### Verification
+
+      - Navigate to /reviews → should show open reviews, URL has `?status=open`
+
+      - Select "All statuses" → URL loses status param, shows all reviews, no validation error
+
+      - Select specific status → URL has that status, filters correctly
+
+      - Open task modal → Reviews section loads without validation error
+
+      - All other filter pages (tasks, sessions) are unaffected (they already convert 'all' to param
+      deletion)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-20T19:15:23.108Z
+  - _ulid: 01KM6BF9396Q79YATKKM8XJQ22
+    content: >-
+      Implemented the three coordinated changes per the task plan:
+
+
+      1. Backend (reviews.ts): Changed no-param default from 'open' to no filtering. Removed dead
+      'all' sentinel check that was unreachable after validation hardening.
+
+      2. UI reviews page (+page.svelte): getStatusFilter now maps URL 'all' → undefined (omit param
+      to API), no URL param → 'open' (default landing view). The select dropdown still works: empty
+      value = 'Open (default)', 'all' value = 'All statuses'.
+
+      3. Task modal (api.ts): Removed hardcoded status=all from fetchReviewsForTask — no param now
+      means all reviews.
+
+
+      Also updated E2E tests (api-reviews-list.spec.ts): replaced all status=all query params with
+      no-status-param requests. Updated the default behavior test to verify all reviews are returned
+      when no param is sent. Added a new test verifying status=open returns only open reviews. Fixed
+      the empty-result test to use subject_type=external (no fixture data) instead of
+      subject_type=code (now has fixtures).
+
+
+      All 6690 unit tests pass across 3 shards.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-20T19:27:35.017Z
+  - _ulid: 01KM6BSF8CB59F9380PX8E691X
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T19:33:09.004Z
+  - _ulid: 01KM6CW69B4BVFYDNQPWCT3XJZ
+    content: "Fix cycle 1: Addressed blocker from review @01KM6BJQXPTK0ZH5WBHAYJA6N6. Restored the
+      open-by-default backend contract for GET /api/reviews (per @review-records-daemon-api ac-1).
+      The previous fix incorrectly changed the backend to return all reviews when no status param
+      was sent. Now the backend preserves its original default of filtering to open reviews. UI
+      callers that need all lifecycle states (fetchReviewsForTask, reviews page 'All statuses'
+      option) now send all four valid status values explicitly (draft, open, closed, archived)
+      instead of relying on param omission. Updated E2E tests to match: default behavior test
+      verifies open-only, and tests needing cross-lifecycle results explicitly request all statuses.
+      All 6690 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-20T19:52:06.699Z

@@ -1,0 +1,165 @@
+notes:
+  - _ulid: 01KKB8FDMR8G970BYB2NNW4V9R
+    content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+    author: "@claude"
+    created_at: 2026-03-10T06:55:44.280Z
+  - _ulid: 01KKEWEQNWM6ZX4Z3S878974HM
+    content: >-
+      Execution context:
+
+      - Background: Close @core completeness warnings by adding missing ACs to foundational
+      primitives under @core.
+
+      - Scope: Backfill ACs only for @item-required-fields, @item-optional-fields, @ulid-format,
+      @ulid-immutability, @ulid-shortening, @slug-format, @ref-syntax, @ref-validation,
+      @relationship-types, @rel-tests, and @rel-supersedes.
+
+      - Files: Shadow-branch spec state only via kspec CLI; no src/ or test changes expected in this
+      task.
+
+      - Verification: Run kspec validate --completeness and confirm zero missing acceptance criteria
+      warnings for @core descendants.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T16:42:36.604Z
+  - _ulid: 01KKEWEQQHZBZ8CF4PR52SJ19D
+    content: "Scoped @status-lifecycle out of this task after verification: it exists under @schema
+      rather than @core, so its AC backfill belongs to the schema task even though the plan
+      description mentioned status lifecycle alongside core primitives."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T16:42:36.658Z
+  - _ulid: 01KKEWK5B8TZQ8EVP39HJBKWCS
+    content: "Backfilled acceptance criteria for all in-scope @core descendants that were missing them:
+      @item-required-fields, @item-optional-fields, @ulid-format, @ulid-immutability,
+      @ulid-shortening, @slug-format, @ref-syntax, @ref-validation, @relationship-types, @rel-tests,
+      and @rel-supersedes. Re-ran completeness validation afterward; remaining missing-AC warnings
+      are outside this task's scope (for example @item-types and @status-lifecycle under @schema)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T16:45:01.672Z
+  - _ulid: 01KKEY0997BRWYCJ5Y12FWSAZ8
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: no PR/review artifact found for task
+      @01KKB8FDMRD5BXWRGZWFACHDNW, so review cannot be posted or merged. MUST-FIX: kspec validate
+      --completeness reports missing own AC coverage for newly backfilled core items including
+      @item-required-fields ac-1 and @item-optional-fields ac-1."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T17:09:40.263Z
+  - _ulid: 01KKEYWH0Y2C5A6TNRKH64KVHF
+    content: "[FIX_CYCLE: 2] Reopened task on branch fix/core-primitives-ac-backfill-v2. Scope for this
+      cycle: add the missing review artifact and close own-AC coverage gaps introduced by the newly
+      backfilled core specs, without expanding beyond the core items already accepted into scope."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T17:25:05.694Z
+  - _ulid: 01KKEZ8VG4ATZX567RBSMNDPXY
+    content: >-
+      Verification after fix cycle:
+
+      - Added AC annotations/regression coverage for the in-scope core refs that were backfilled by
+      this task: @item-required-fields, @item-optional-fields, @ulid-format, @ulid-immutability,
+      @ulid-shortening, @slug-format, @ref-syntax, @relationship-types, @rel-tests, and
+      @rel-supersedes.
+
+      - npm test -- --run tests/schema.test.ts tests/refs.test.ts passed.
+
+      - npm test -- --run tests/integration.test.ts -t "should preserve the original ULID when an
+      item is updated" passed.
+
+      - kspec validate --completeness --json filtered to this task's in-scope refs now returns [].
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T17:31:49.636Z
+  - _ulid: 01KKEZA6HQYECF301PX55MM6W9
+    content: "Review artifact created: PR #786 https://github.com/kynetic-ai/kynetic-spec/pull/786 on
+      branch fix/core-primitives-ac-backfill-v2."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T17:32:33.719Z
+  - _ulid: 01KKF1FJHZPW2R5N32B64WXZS0
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: PR #786 still leaves @core-ac-backfill own ACs
+      uncovered and mis-tags/partially covers @item-required-fields, @item-optional-fields, and
+      @ulid-immutability."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T18:10:27.008Z
+  - _ulid: 01KKF2FS2V837WPWAE8RBV77BN
+    content: >-
+      [FIX_CYCLE: 3] Closed review gaps on branch fix/core-primitives-ac-backfill-v2.
+
+      - Added a metadata regression test for @core-ac-backfill covering zero missing-AC warnings for
+      the in-scope core refs and concrete given/when/then structure for each backfilled AC.
+
+      - Replaced the mis-tagged schema annotations for @item-required-fields and
+      @item-optional-fields with integration tests that exercise stored items created without
+      optional metadata.
+
+      - Extended @ulid-immutability coverage to prove both original-item stability and
+      replacement-item ULID divergence when a superseding item is created.
+
+      - Verification: npm test -- --run tests/core-ac-backfill.test.ts; npm test -- --run
+      tests/schema.test.ts; npm test -- --run tests/integration.test.ts -t "required user-provided
+      field|optional metadata is omitted|updated or superseded"; kspec validate --completeness
+      --json filtered to
+      @core-ac-backfill/@item-required-fields/@item-optional-fields/@ulid-immutability => []
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T18:28:02.267Z
+  - _ulid: 01KKF2XRT41FVBSFRGJ3605FKC
+    content: "[FIX_CYCLE: 5] Review findings: MUST-FIX: npm test fails on current HEAD because
+      tests/core-ac-backfill.test.ts times out in the ac-testable regression. MUST-FIX: scoped
+      completeness for @core-ac-backfill still reports invalid @ref-validation annotations
+      (ac-2/ac-3/ac-4) at tests/ac-annotation-validation.test.ts:159, :224, and :341."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T18:35:40.740Z
+  - _ulid: 01KKF3NW54Y9Z6GN4ET188DB61
+    content: "[FIX_CYCLE: 5] Working branch fix/core-primitives-ac-backfill-v2. Scope: remove the
+      timeout regression in tests/core-ac-backfill.test.ts and correct invalid @ref-validation AC
+      annotations in tests/ac-annotation-validation.test.ts so scoped completeness for
+      @core-ac-backfill is clean again. Verification target: npm test plus filtered kspec validate
+      --completeness --json for @core-ac-backfill and in-scope refs."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T18:48:50.596Z
+  - _ulid: 01KKF3XFKXSP2CESTKMSM3EC0Q
+    content: "[FIX_CYCLE: 5] Closed the remaining review blockers on branch
+      fix/core-primitives-ac-backfill-v2. - Reworked tests/core-ac-backfill.test.ts to use
+      in-process parser loading plus one completeness validation pass, removing the per-ref CLI
+      spawning that caused the ac-testable regression to time out in the full suite. - Removed
+      invalid @ref-validation ac-2/ac-3/ac-4 annotations from
+      tests/ac-annotation-validation.test.ts; only the real @ref-validation ac-1 coverage tag
+      remains. - Verification: npm test -- --run tests/core-ac-backfill.test.ts
+      tests/ac-annotation-validation.test.ts; filtered kspec validate --completeness --warnings-ok
+      --json for @core-ac-backfill and in-scope refs => []; full npm test => 213 files passed, 4559
+      tests passed, 3 skipped."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T18:52:59.901Z
+  - _ulid: 01KKF6G2VRGVKFPM4F6A6WQ737
+    content: "[FIX_CYCLE: 8] Review findings: MUST-FIX: tests/core-ac-backfill.test.ts depends on the
+      local .kspec shadow worktree and fails CI on PR #786 current HEAD; rework the regression to
+      use isolated checked-in/temp data."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T19:38:06.584Z
+  - _ulid: 01KKF7QAJ1TYDXH847WR2TCQG7
+    content: "[FIX_CYCLE: 8] Reworked tests/core-ac-backfill.test.ts to build an isolated temp kspec
+      project from checked-in fixture data instead of reading the repo root .kspec worktree. Scoped
+      regressions now pass: npm test -- --run tests/core-ac-backfill.test.ts
+      tests/ac-annotation-validation.test.ts."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T19:59:32.417Z
+  - _ulid: 01KKF7Y40MRJ7N7N6JZYT8AWKX
+    content: "[FIX_CYCLE: 8] Pushed fix(test): isolate core AC backfill regression (dea2cb8b0) to
+      fix/core-primitives-ac-backfill-v2 / PR #786. Verification: npm test -- --run
+      tests/core-ac-backfill.test.ts tests/ac-annotation-validation.test.ts; kspec validate
+      --completeness --warnings-ok --json filtered to @core-ac-backfill and in-scope refs => []; npm
+      test -- --run packages/web-ui/tests/prose-typography.test.ts
+      tests/cli/session-start-inbox-triage.test.ts tests/cli/session-start-notes.test.ts passed to
+      confirm the earlier full-suite timeout failures were unrelated to this change."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T20:03:15.093Z

@@ -1,0 +1,31 @@
+_ulid: 01KKFY9D7YMTSRYKY6CF77WEAN
+slugs:
+  - task-implement-canonical-task-workspace-contract
+title: Implement canonical task branch lineage contract
+type: task
+spec_ref: "@canonical-task-workspace-contract"
+plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #799. Implemented canonical task branch lineage with deterministic
+  dispatch branch naming, persisted base branch point/head metadata, reviewer snapshot worktrees,
+  worker/fix-cycle branch reuse, and runtime cleanup-eligibility reconciliation. AC coverage
+  verified in tests/canonical-task-workspace-contract.test.ts and CI/local npm test passed."
+depends_on:
+  - "@task-design-canonical-task-workspace-contract"
+  - "@task-implement-dispatch-workspace-config"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - branch
+  - worktree
+vcs_refs: []
+session_id: 01KKG60K7E4N2CGKVW69ZYC40G
+created_at: 2026-03-12T02:33:53.662Z
+started_at: 2026-03-12T04:51:44.629Z
+submitted_at: 2026-03-12T04:58:21.646Z
+completed_at: 2026-03-12T05:24:34.588Z
+todos: []
+automation: eligible

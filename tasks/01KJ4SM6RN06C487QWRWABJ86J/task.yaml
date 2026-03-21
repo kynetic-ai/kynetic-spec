@@ -1,0 +1,25 @@
+_ulid: 01KJ4SM6RN06C487QWRWABJ86J
+slugs: []
+title: kspec plan import should place type:trait items with no parent in the project-level traits
+  array (ky
+type: task
+description: kspec plan import should place type:trait items with no parent in the project-level
+  traits array (kynetic.yaml), not the module-level traits array. Currently causes schema validation
+  error.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #480. Fixed plan import to place type:trait items with no parent in
+  kynetic.yaml project-level traits array instead of module-level traits. Implementation mirrors
+  existing kspec trait add pattern. AC coverage: ac-11 (trait creation), ac-15 (dry-run output). All
+  tests pass."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-23T08:25:04.021Z
+started_at: 2026-02-23T15:33:53.291Z
+completed_at: 2026-02-23T15:57:26.853Z
+todos: []
+automation: eligible

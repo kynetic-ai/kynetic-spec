@@ -1,0 +1,18 @@
+_ulid: 01KFDQ924NXA19T1K6F1B356Y0
+slugs: []
+title: Fix shadow detection when running kspec from inside .kspec/ folder
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Implemented detection for running kspec from inside .kspec/ directory. PR #107 merged."
+depends_on: []
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-20T12:50:06.100Z
+started_at: 2026-01-20T13:39:53.565Z
+completed_at: 2026-01-20T14:04:52.973Z
+todos: []

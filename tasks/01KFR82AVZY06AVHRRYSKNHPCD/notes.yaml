@@ -1,0 +1,82 @@
+notes:
+  - _ulid: 01KFR82AVZ2SW79N0X4ZH4RTTX
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Workflow for PR review subagent (ACP subprocess). Single purpose: get PR merged with quality
+      gates (AC coverage + spec alignment). Runs sequentially (ralph waits) because: clear log
+      output, main workflow consistency, dependent tasks must wait for PR merge.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given PR exists for pending_review task, when subagent starts, then runs @local-review
+      workflow first
+
+      - ac-2: Given local-review runs, when subagent verifies, then all spec ACs linked to task have
+      test coverage
+
+      - ac-3: Given tests pass, when subagent verifies, then implementation matches spec
+      requirements (not just tests)
+
+      - ac-4: Given quality check finds MUST-FIX issues, when subagent evaluates, then attempts to
+      fix issues in-place
+
+      - ac-5: Given changes are pushed, when subagent proceeds, then waits for CI to pass before
+      merge
+
+      - ac-6: Given all checks pass, when subagent merges, then follows @pr-review-merge gates
+
+      - ac-7: Given PR is merged, when subagent finishes, then marks task completed with PR
+      reference in note
+
+      - ac-8: Given issues cannot be resolved, when subagent evaluates, then marks task automation:
+      needs_review with explanation
+
+      - ac-9: Given subagent crashes or times out, when ralph detects failure, then task marked
+      automation: needs_review with subagent failure note
+
+      - ac-10: Given subagent spawned, when ralph behavior, then ralph waits for subagent completion
+      before continuing
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T14:55:55.775Z
+  - _ulid: 01KFR84N00K80ZF7Z9V6VRVNNT
+    content: "Implementation notes: 10 ACs covering local-first, ac-coverage, spec-align, fix-issues,
+      ci-wait, merge-gate, complete-task, report-block, subagent-fail, sequential. Runs in ACP
+      subagent (separate process) but SEQUENTIAL (ralph waits). Key quality gates: AC coverage +
+      spec alignment. Handles subagent crash/timeout."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T14:57:11.680Z
+  - _ulid: 01KFRX5BP97Q8KTDQ0TJ4MR2WS
+    content: >-
+      Created pr-review-loop workflow with 10 steps covering all 11 ACs. Workflow implements
+      sequential PR review process for loop mode:
+
+      1. Run @local-review workflow (ac-1)
+
+      2. Verify AC coverage (ac-2)
+
+      3. Verify spec alignment (ac-3)
+
+      4. Fix MUST-FIX issues or mark needs_review (ac-4, ac-8)
+
+      5. Push changes and wait for CI (ac-5)
+
+      6. Follow @pr-review-merge gates (ac-6)
+
+      7. Verify merge succeeded
+
+      8. Complete task with PR reference (ac-7)
+
+      9. Capture friction with search-first pattern (ac-11)
+
+
+      ac-9 (subagent failure handling) and ac-10 (sequential execution) are ralph behaviors, not
+      workflow steps. Workflow validated successfully with kspec validate.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T21:04:35.018Z

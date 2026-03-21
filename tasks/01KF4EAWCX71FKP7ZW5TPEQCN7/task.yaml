@@ -1,0 +1,20 @@
+_ulid: 01KF4EAWCX71FKP7ZW5TPEQCN7
+slugs:
+  - task-ready-secondary-sort
+title: Implement secondary sort for ready tasks (oldest first within priority)
+type: task
+spec_ref: "@task-queries"
+status: completed
+blocked_by: []
+closed_reason: Secondary sort by creation time implemented and tested
+depends_on: []
+context: []
+priority: 2
+tags:
+  - tasks
+  - dx
+vcs_refs: []
+created_at: 2026-01-16T22:20:38.685Z
+started_at: 2026-01-16T22:20:44.683Z
+completed_at: 2026-01-16T22:23:18.516Z
+todos: []

@@ -1,0 +1,22 @@
+_ulid: 01KFBKRAXX7A5T4DAER5SWASAD
+slugs:
+  - ac-delete-confirm
+title: Add confirmation prompt for AC deletion without --force
+type: task
+spec_ref: "@spec-ac-delete-confirmation"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #124. All 6 ACs have E2E test coverage with proper AC annotations.
+  Implementation adds confirmation prompt for AC deletion without --force flag. All 831 tests pass."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+vcs_refs: []
+created_at: 2026-01-19T17:10:03.453Z
+started_at: 2026-01-21T09:16:04.175Z
+completed_at: 2026-01-21T09:26:51.053Z
+todos: []
+automation: eligible

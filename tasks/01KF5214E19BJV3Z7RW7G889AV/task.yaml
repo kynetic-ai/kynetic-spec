@@ -1,0 +1,21 @@
+_ulid: 01KF5214E19BJV3Z7RW7G889AV
+slugs:
+  - task-grep-content-search
+title: "Implement: Grep-like Content Search"
+type: task
+spec_ref: "@fuzzy-item-search"
+status: completed
+blocked_by: []
+closed_reason: Implemented grep-like content search with kspec search command, --grep options on
+  item/tasks list, and comprehensive tests for all 6 ACs. All 222 tests pass.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - search
+  - grep
+vcs_refs: []
+created_at: 2026-01-17T04:04:50.753Z
+started_at: 2026-01-17T04:35:22.123Z
+completed_at: 2026-01-17T04:47:38.991Z
+todos: []

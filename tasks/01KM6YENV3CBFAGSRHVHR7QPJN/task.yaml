@@ -1,0 +1,66 @@
+_ulid: 01KM6YENV3CBFAGSRHVHR7QPJN
+slugs:
+  - task-impl-data-manager
+title: Implement task data manager module
+type: task
+description: |
+  Create the task data manager as a single library module that will
+  become the exclusive interface for all task I/O operations.
+
+  Why: Task I/O is currently spread across loadAllTasks, saveTask,
+  mutateTaskAtomically, and mutateTasksAtomically in yaml.ts, with
+  callers managing file paths and locking. The split storage format
+  requires coordinated writes across multiple files (index + task.yaml
+  + notes.yaml), which is unsustainable if every caller implements
+  its own I/O strategy.
+
+  What: Create a TaskDataManager class/module that encapsulates:
+  - listTasks(filters): reads only the index, returns summary records
+  - getTask(ref): reads index + per-task directory, returns full record
+  - createTask(input): writes task directory + index entry atomically
+  - mutateTask(ref, mutation): atomic read-modify-write with locking
+  - mutateTasks(refs, mutation): batch atomic operation
+  - deleteTask(ref): removes directory + index entry atomically
+  - addNote(ref, note): writes only to notes.yaml (no index update)
+
+  How: Start by wrapping the existing monolithic file operations behind
+  this interface. The initial implementation reads/writes the monolithic
+  file — the split format comes later. This lets us migrate all callers
+  to the new interface without changing storage format, then swap the
+  storage backend independently.
+
+  The interface must support the existing write buffer system for batch
+  operations. File locking moves inside the manager — callers no longer
+  acquire locks directly.
+spec_ref: "@task-data-manager"
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Approved in review @01KM7AQ3 and merged dispatch/task/task-impl-data-manager/01km6yen
+  into dev at 878b30086642. Added the task data manager module, supporting YAML helpers, task data
+  manager coverage, and the action-model test leak fix.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - tasks
+  - storage
+  - foundation
+vcs_refs: []
+review_ref: "@01KM7AQ3M6CXFGDXHX802AWG3B"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-21T04:32:28.270Z
+  commit: f1559ae07b7c8067eceb22565a6ca6284ce9beb5
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM7A9RW2GK9VYGTV97MW67CD
+created_at: 2026-03-21T00:59:18.243Z
+started_at: 2026-03-21T04:32:24.751Z
+submitted_at: 2026-03-21T04:32:28.704Z
+completed_at: 2026-03-21T04:40:47.684Z
+todos: []
+automation: eligible

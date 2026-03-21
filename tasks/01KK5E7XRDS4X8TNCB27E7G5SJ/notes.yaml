@@ -1,0 +1,53 @@
+notes:
+  - _ulid: 01KK61QW0QC8G03QY6DCJM3NQX
+    content: >-
+      Execution context:
+
+      - Background: kspec serve start fails with unclear error when Bun is missing; docs don't
+      mention Bun requirement
+
+      - Scope: (1) Improve error message in serve.ts with platform-specific install instructions,
+      (2) document Bun requirement in INSTALL.md/getting-started.md, (3) add tests for both ACs
+
+      - Files: src/cli/commands/serve.ts, INSTALL.md, docs/getting-started.md,
+      tests/cli-serve.test.ts
+
+      - Verification: npm run test:shard1/2/3 all pass, new tests cover @web-ui ac-1 and ac-2
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T06:21:48.951Z
+  - _ulid: 01KK64Q7Z61G80PPBT1K48W435
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @web-ui ac-1 is not actually covered yet.
+      tests/cli-serve.test.ts only inspects package.json instead of exercising npm-installed 'kspec
+      serve start' behavior, so packaging/runtime regressions could slip through."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T07:13:54.150Z
+  - _ulid: 01KK65NF9FMR4PMT242WGHRQ5F
+    content: "Fix cycle 1: Replaced static package.json inspection test with behavioral test. New test
+      npm-packs the project, installs the tarball in an isolated temp dir, then verifies: (1)
+      dist/daemon/index.ts exists in installed package, (2) elysia, @elysiajs/cors, @elysiajs/static
+      all resolve via require.resolve from the installed package location. This catches packaging
+      regressions the static check missed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T07:30:24.688Z
+  - _ulid: 01KK6609RJXWSVY5Y7FKCY0MPZ
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: @web-ui ac-1 coverage still does not execute the
+      npm-installed 'kspec serve start' path; current test only checks packaged files and dependency
+      resolution."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T07:36:19.474Z
+  - _ulid: 01KK676428HDQB7MG4QA363QCK
+    content: "Fix cycle 2: Replaced static file-existence/require.resolve test with true behavioral
+      test. The ac-1 test now: (1) npm packs the project, (2) installs the tarball in an isolated
+      temp dir, (3) runs the installed CLI's 'kspec serve start --daemon', (4) verifies the daemon
+      health endpoint responds with {status: ok}. This actually exercises the npm-installed serve
+      start path end-to-end. Also discovered and fixed a missing ulidx dependency in root
+      package.json — the daemon imports from ulidx but only ulid was declared, causing the daemon to
+      fail when installed from npm (exactly the kind of packaging regression the behavioral test
+      catches)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T07:56:58.824Z

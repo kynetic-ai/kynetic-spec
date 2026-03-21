@@ -1,0 +1,24 @@
+_ulid: 01KJ3FXH3T2RJQSNZAMPPF12ES
+slugs:
+  - implement-interactive-triage-system
+title: Implement Interactive Triage System
+type: task
+spec_ref: "@interactive-triage"
+plan_ref: "@plan-interactive-triage-system"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #450. Parent spec @interactive-triage ac-1 and ac-2 proven with
+  integration tests: end-to-end decision chain test (agent record → override → act → export with
+  attribution/timestamp verification in export output) and persistence test (records survive inbox
+  deletion). Codex review caught incomplete ac-2 coverage in export assertions — fixed in follow-up
+  commit. All CI green."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-22T20:16:09.338Z
+started_at: 2026-02-22T23:46:26.320Z
+completed_at: 2026-02-23T00:07:58.393Z
+todos: []
+automation: eligible

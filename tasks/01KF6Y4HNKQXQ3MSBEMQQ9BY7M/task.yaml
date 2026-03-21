@@ -1,0 +1,20 @@
+_ulid: 01KF6Y4HNKQXQ3MSBEMQQ9BY7M
+slugs: []
+title: Fix ralph phased tool_call event deduplication
+type: task
+spec_ref: "@ralph-output-formatting"
+status: completed
+blocked_by: []
+closed_reason: Fixed phased tool_call event deduplication. Tool calls now show single header with
+  summary appearing when input arrives. All 30 ralph tests pass.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - ralph
+  - bug
+vcs_refs: []
+created_at: 2026-01-17T21:35:17.170Z
+started_at: 2026-01-17T21:35:24.178Z
+completed_at: 2026-01-17T21:35:45.193Z
+todos: []

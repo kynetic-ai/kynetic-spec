@@ -1,0 +1,11 @@
+notes:
+  - _ulid: 01KKX1QXRQA51PYV65TSJ1KMBN
+    content: "Updated review skill (templates/skills/review/SKILL.md) with: auto-close on verdict
+      documentation, per-cycle review model section, fix cycles section replacing re-review section,
+      updated worker perspective for historical reviews, removed manual close from workflow summary.
+      Updated review-gates skill (.kspec/skills/review-gates/SKILL.md) role boundary section. Ran
+      kspec skill render — rendered for codex and droid platforms. Claude-code rendered output also
+      updated."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-17T04:44:22.679Z

@@ -1,0 +1,42 @@
+_ulid: 01KKNRBZXF4B280EVREQJ6ZJRH
+slugs:
+  - task-implement-review-subject-bindings
+title: Implement subject bindings with compare semantics and staleness
+type: task
+spec_ref: "@review-subject-bindings"
+plan_ref: "@plan-review-records-and-gates"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #847. Implementation adds subject binding factories (createCodeSubject,
+  createPlanSubject, createTaskSubject, createSpecSubject, createExternalSubject), subject version
+  extraction (extractSubjectVersion), and staleness detection (isVersionStale, findStaleChecks,
+  findStaleVerdicts). Code subjects use commit SHAs as authoritative identity with branch names as
+  optional metadata. Shadow-branch entities use per-entity content_hash for staleness detection to
+  prevent self-invalidation. All 5 ACs covered with 39 annotated tests. Reuses existing
+  computeContentHash from parser/skill-render.ts."
+depends_on:
+  - "@task-implement-review-record-core"
+  - "@task-implement-review-storage-and-identity"
+context: []
+priority: 1
+tags:
+  - review
+  - bindings
+  - identity
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-14T10:35:55.123Z
+  commit: 345842980ec9cc5474800e321ea89f3d20c5072a
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKNY58K5Z3Q7E199SFR0MHM7
+created_at: 2026-03-14T08:45:53.455Z
+started_at: 2026-03-14T10:27:31.437Z
+submitted_at: 2026-03-14T10:35:55.850Z
+completed_at: 2026-03-14T17:16:35.068Z
+todos: []
+automation: eligible

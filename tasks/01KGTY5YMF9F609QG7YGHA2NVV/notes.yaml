@@ -1,0 +1,24 @@
+notes:
+  - _ulid: 01KGTY5YMF3V2RQ9QVRBEMJCZC
+    content: "Implementation: In src/cli/commands/validate.ts, track error count and warning count
+      separately. Exit codes: 0=clean (no errors, no warnings), 1=errors present, 2=warnings only.
+      Add --severity flag (error|warning, default: warning) to control what's reported. When
+      --severity error, suppress warning output and only exit 1 on real errors. ~20 lines. Enables
+      CI usage on fresh projects where orphaned specs are expected."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T02:16:33.679Z
+  - _ulid: 01KGW0B6R94X2S9RE2EEV1TTHS
+    content: "Implemented separate exit codes for validate command: 0=success (no errors/warnings),
+      4=VALIDATION_FAILED (errors present), 6=VALIDATION_WARNINGS (warnings only). Added
+      EXIT_CODES.VALIDATION_WARNINGS constant. Updated help docs and tests. Fixed staleness and
+      traits-field tests to expect correct exit codes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T12:13:37.417Z
+  - _ulid: 01KGW13QFH8VMKFB83F9BWZH56
+    content: "Addressed codex PR review feedback: made tests deterministic, clarified --strict help text
+      scope (orphan/staleness only), added AC annotations. Codex re-review passed: LGTM."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T12:27:00.977Z

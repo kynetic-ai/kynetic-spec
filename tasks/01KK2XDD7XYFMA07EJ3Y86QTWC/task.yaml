@@ -1,0 +1,29 @@
+_ulid: 01KK2XDD7XYFMA07EJ3Y86QTWC
+slugs: []
+title: Dispatch engine should poll for eligible pending tasks on start and periodically
+type: task
+description: "The dispatch engine is event-driven: it only picks up tasks when a trigger event fires
+  (task.ready, task.in_progress, etc.). Tasks created before dispatch starts, or created without an
+  explicit state transition event, are never picked up. Fix: (1) On dispatch start, sweep all
+  pending+eligible tasks and emit synthetic task.ready events for them, (2) Add a periodic poll
+  (e.g. every 60s) to catch any tasks that fell through without events, (3) Ensure task add with
+  automation=eligible also emits a dispatchable event when dispatch is running."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Already implemented in PR #685 (feat/dispatch: implement periodic reconciliation
+  loop). Branch feat/ui-revamp just needs to merge main to pick it up."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - daemon
+vcs_refs: []
+created_at: 2026-03-07T01:08:28.540Z
+started_at: 2026-03-07T01:12:15.646Z
+completed_at: 2026-03-07T01:12:15.646Z
+todos: []
+automation: eligible

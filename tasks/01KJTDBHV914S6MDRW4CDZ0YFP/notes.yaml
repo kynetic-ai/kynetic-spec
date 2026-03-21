@@ -1,0 +1,54 @@
+notes:
+  - _ulid: 01KJTDBVQAZ0K2FGJ83BN3S107
+    content: >-
+      Two implementation pieces:
+
+      1. Daemon: in packages/daemon/src/routes/agent-dispatch.ts, pass onUpdate to runInvocation in
+      the dispatch engine that broadcasts agent_text_chunk events via existing WebSocket PubSub (see
+      createDispatchEngine - it already has pubsub.broadcast for InvocationEvents). Extend to
+      broadcast { type: 'agent_text_chunk', session_id, agent_id, task_id, text, timestamp } on the
+      'agents' channel.
+
+      2. CLI: new kspec agent dispatch watch subcommand in src/cli/commands/agent.ts that connects
+      to ws://localhost:<port>/ws, subscribes to the agents channel, filters and prints text chunks
+      with [agent-id session-id] prefix, supports --agent and --session flags, auto-reconnects on
+      drop with configurable retries.
+
+
+      Covers: @cli-agent-commands ac-13, ac-14, ac-15, ac-16 and @daemon-agent-dispatch ac-8
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T17:54:05.163Z
+  - _ulid: 01KJTH90MA5MVVFYHBEDFZ981E
+    content: >-
+      Implemented kspec agent dispatch watch command:
+
+
+      1. Daemon side (packages/daemon/src/routes/agent-dispatch.ts): Added onTextChunk callback to
+      createEngine, wiring pubsub.broadcast of agent_text_chunk events when dispatch engine produces
+      text output.
+
+
+      2. Core dispatch (src/agent-runtime/dispatch.ts): Added onTextChunk option to
+      DispatchEngineOptions and DispatchEngine class. In _dispatchInvocation, passes onUpdate to
+      runInvocation that calls onTextChunk for agent_message_chunk text updates.
+
+
+      3. CLI (src/cli/commands/agent.ts): Added kspec agent dispatch watch subcommand with --agent,
+      --session, --retries flags. Uses Node.js built-in WebSocket, subscribes to agents channel,
+      filters agent_text_chunk events, prints with [agent-id session-id] prefix, auto-reconnects
+      with exponential backoff, exits code 3 on failure/retry exhaustion.
+
+
+      4. Tests: Added 6 new tests covering AC-13 (chunk prefix), AC-14 (reconnect + retry
+      exhaustion), AC-15 (daemon not running), AC-16 (filter by agent/session). Used polling helper
+      for timing-sensitive WebSocket mock tests.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T19:02:26.187Z
+  - _ulid: 01KJTJNVZHY3WW640N9P0ZWB6S
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: validate --retries input in agent dispatch
+      watch; regression gate not green (full npm test has failing suites/timeouts)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T19:26:55.986Z

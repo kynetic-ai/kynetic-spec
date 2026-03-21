@@ -1,0 +1,74 @@
+_ulid: 01KM0NV0DPS9AS0HY7VB9K2EYS
+slugs:
+  - task-cli-check-auto-version
+title: Remove version flags from CLI review check command
+type: task
+description: >-
+  Remove --version-base, --version-head, and --version-hash from the kspec review check command in
+  src/cli/commands/review.ts. Replace the caller-provided version with auto-derivation via
+  extractSubjectVersion(review.subject) from src/review/subject-bindings.ts.
+
+
+  Currently the CLI check command (line 915 of review.ts) calls parseVersionFromOptions() to build a
+  version from caller-provided flags. The daemon API already auto-derives correctly
+  (packages/daemon/src/routes/reviews.ts line 915).
+
+
+  Also delete parseVersionFromOptions() (line 412 of review.ts) — verified that review refresh uses
+  its own --head/--base flags with different semantics and does not call this function. After both
+  the verdict and check tasks, it will have zero callers.
+
+
+  Why: Same root cause as the verdict command — callers pass wrong version types, creating type
+  mismatches between applies_to_version and the review subject. The daemon check endpoint already
+  auto-derives via extractSubjectVersion(). The CLI should match.
+
+
+  How:
+
+  1. Remove the three --version-* option definitions from the check command (lines 891-893 of
+  src/cli/commands/review.ts)
+
+  2. Remove the parseVersionFromOptions call (line 915)
+
+  3. Import extractSubjectVersion from src/review/subject-bindings.ts and use
+  extractSubjectVersion(found.subject) for applies_to_version
+
+  4. Delete parseVersionFromOptions() (line 412) — zero remaining callers after this task
+
+  5. Update tests that pass version flags to check commands — remove version flags and verify the
+  auto-derived version matches the review subject type
+spec_ref: "@review-cli-mutation-commands"
+meta_ref: null
+plan_ref: "@plan-review-version-auto-derivation"
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Removed --version-base/--version-head/--version-hash from review
+  check command. Auto-derives applies_to_version via extractSubjectVersion(). Tests updated. Note:
+  parseVersionFromOptions() is now dead code (zero callers after both check and verdict tasks
+  merged) — should be cleaned up."
+depends_on:
+  - "@task-spec-review-version-auto-derive"
+context: []
+priority: 1
+tags:
+  - cli
+  - review
+  - bug
+vcs_refs: []
+review_ref: "@01KM0SWDX9EHMCTX3HFD5W6PCJ"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T15:34:55.082Z
+  commit: 20cb7666e4d9c456dc6dc33edf108a0d1feec779
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM0RS8KKXYM0J69PDJFQ355B
+created_at: 2026-03-18T14:33:18.518Z
+started_at: 2026-03-18T15:25:11.172Z
+submitted_at: 2026-03-18T15:34:55.494Z
+completed_at: 2026-03-18T15:46:08.663Z
+todos: []
+automation: eligible

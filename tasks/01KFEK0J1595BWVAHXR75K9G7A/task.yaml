@@ -1,0 +1,20 @@
+_ulid: 01KFEK0J1595BWVAHXR75K9G7A
+slugs:
+  - task-task-automation-assessment
+title: "Implement: Task Automation Assessment"
+type: task
+spec_ref: "@tasks-assess-automation"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Implemented kspec tasks assess automation command with full AC coverage. All 28 ACs
+  have tests, CLI works with --auto and --dry-run modes, triage skill updated with focus modes.
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-20T20:54:47.589Z
+started_at: 2026-01-20T20:54:55.221Z
+completed_at: 2026-01-20T21:03:52.521Z
+todos: []

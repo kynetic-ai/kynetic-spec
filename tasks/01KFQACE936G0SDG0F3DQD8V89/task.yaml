@@ -1,0 +1,51 @@
+_ulid: 01KFQACE936G0SDG0F3DQD8V89
+slugs:
+  - task-middleware-impl
+title: X-Kspec-Dir middleware implementation
+type: task
+description: |-
+  Implement X-Kspec-Dir header middleware for project context resolution.
+
+  ## Implementation Notes
+  - Extract X-Kspec-Dir header from request
+  - Validate: must be absolute, no "..", readable
+  - Normalize path (resolve `.`, remove trailing slashes)
+  - Resolve to context via ProjectContextManager (auto-register if unknown)
+  - Handle default project case: if no header AND daemon has startup project, use that
+  - Handle no-default case: if no header AND no startup project, return 400
+  - Pass context to route handlers via Elysia's `derive()` method
+
+  ## Files
+  - New middleware in packages/daemon/src/middleware/project-context.ts
+  - Server needs to store optional "startupProject" from daemon's cwd at boot
+  - Middleware adds `projectContext: ProjectContext` to request state
+
+  ## AC Coverage
+  ac-1, ac-2, ac-3, ac-5, ac-6, ac-7, ac-8, ac-8b
+
+  ## Dependencies
+  - Task: ProjectContextManager implementation
+  - Task: Path validation middleware tests (tests first)
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #219. Implemented X-Kspec-Dir middleware with 11 ACs: header extraction
+  (ac-1), default fallback (ac-2, ac-3), auto-registration (ac-4), path validation (ac-5, ac-6,
+  ac-7), normalization (ac-8, ac-8b, ac-8c), and default validity check (ac-20b). 16 comprehensive
+  tests added. All CI checks passed."
+depends_on:
+  - "@01KFQABQ"
+  - "@01KFQAC1"
+context: []
+priority: 2
+tags:
+  - daemon
+  - middleware
+  - phase-3
+vcs_refs: []
+created_at: 2026-01-24T06:17:09.667Z
+started_at: 2026-01-24T19:38:13.394Z
+completed_at: 2026-01-24T19:46:41.443Z
+todos: []
+automation: eligible

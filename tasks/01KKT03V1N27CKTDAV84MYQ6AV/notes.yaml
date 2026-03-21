@@ -1,0 +1,93 @@
+notes:
+  - _ulid: 01KKT04RJWS5Q4CW8VGSSYE807
+    content: >-
+      ## Problem
+
+
+      The session checkpoint stop hook currently checks three things:
+
+      1. Uncommitted git changes
+
+      2. Tasks in in_progress status
+
+      3. Incomplete todos on active tasks
+
+
+      With the dispatch system running agents that handle tasks autonomously, the task/todo warnings
+      are almost always noise. Interactive sessions get repeatedly blocked by warnings about tasks
+      being worked on by other agents. The checkpoint's real value is preventing data loss from
+      uncommitted git changes.
+
+
+      ## What to do
+
+
+      Remove task status and todo completeness checking from the checkpoint. Keep only the
+      uncommitted git changes check.
+
+
+      ### ACs to implement
+
+      - ac-git-only: Only uncommitted git changes are reported. Task status and todos are not
+      checked.
+
+      - ac-3 (existing): Exit silently when no issues found.
+
+
+      ### ACs that were removed (clean up their implementations)
+
+      - ac-session-scope, ac-no-session-scope, ac-session-failsafe — these were task-scoping ACs
+      that filtered in-progress tasks by session ownership. All three were removed from the spec
+      since task checking itself is being removed.
+
+      - ac-1, ac-2 — dynamic numbering and conditional instructions. These were relevant when there
+      were three check categories but are redundant now that there's only git changes + ac-3.
+
+
+      ### Key files
+
+      - src/cli/commands/session/checkpoint.ts — performCheckpoint() is the core function. Remove
+      the task querying logic (lines ~48-77 for session-scoped filtering) and todo checking. Keep
+      only the git status check.
+
+      - src/cli/commands/session/types.ts — CheckpointIssue type has discriminators
+      "uncommitted_changes", "in_progress_task", "incomplete_todo". Remove the latter two.
+
+      - tests/cli/session-checkpoint-scoping.test.ts — Entire test file tests task-scoping behavior.
+      Should be removed or gutted.
+
+      - tests/ralph-replacement.test.ts — Has checkpoint tests. Update to reflect git-only behavior.
+
+
+      ### What NOT to change
+
+      - The hook format ({"decision": "block", "reason": "..."}) stays the same
+
+      - The retry detection via stop_hook_active stays the same
+
+      - The silent exit on clean pass (ac-3) stays the same
+
+      - The hook installation in kspec setup — that's a separate task
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T00:18:42.908Z
+  - _ulid: 01KKT0TZXJQWFX5C3D144CSRN2
+    content: >-
+      Completed implementation:
+
+      - Removed task loading, session scoping, and todo checking from performCheckpoint()
+
+      - Narrowed CheckpointIssue type to only 'uncommitted_changes'
+
+      - Simplified format.ts (only one issue type icon needed)
+
+      - Deleted session-checkpoint-scoping.test.ts (tested removed ACs: ac-session-scope,
+      ac-no-session-scope, ac-session-failsafe)
+
+      - Added tests/cli/session-checkpoint.test.ts with 4 tests covering ac-git-only
+
+      - All checkpoint tests pass. 2 pre-existing failures in agent-dispatch-engine.test.ts are
+      unrelated.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T00:30:51.314Z

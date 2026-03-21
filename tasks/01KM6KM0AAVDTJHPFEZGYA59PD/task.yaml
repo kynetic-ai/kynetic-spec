@@ -1,0 +1,37 @@
+_ulid: 01KM6KM0AAVDTJHPFEZGYA59PD
+slugs: []
+title: Restore pre-block status on task unblock
+type: task
+spec_ref: "@task-unblock"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Merged to dev at 0b83080a89d15bec8d00c46e33d52fc6c2597dd0. Restores prior task status
+  on unblock, preserves original prior_status across repeated block calls, clears prior_status on
+  reset/unblock, updates lifecycle help text, and adds regression coverage for
+  in_progress/needs_work/pending_review/pending plus legacy fallback behavior.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - tasks
+  - feature
+vcs_refs: []
+review_ref: "@01KM6NDBXJZY28XFGMF3QXSXZ2"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T22:19:56.907Z
+  commit: 68e74dc59de2d01a3e1c7b9577526657470cb1c6
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM6MVWGFE9DV1Y72WPCXDT49
+created_at: 2026-03-20T21:49:58.474Z
+started_at: 2026-03-20T22:19:53.512Z
+submitted_at: 2026-03-20T22:19:57.386Z
+completed_at: 2026-03-20T22:25:49.057Z
+todos: []
+automation: eligible

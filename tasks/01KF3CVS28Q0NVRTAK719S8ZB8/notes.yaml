@@ -1,0 +1,52 @@
+notes:
+  - _ulid: 01KF80MFDYPAT4RA0XVWMDBDTQ
+    content: Not worked on in iteration 10. Task was started in previous iteration but focus shifted to
+      PR review and task-archive spike. Task remains in_progress for next iteration. No
+      implementation changes made.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T07:38:10.751Z
+  - _ulid: 01KF80P5ZV5SMSYVJQR4JH1W2E
+    content: |-
+      WIP implementation found in src/parser/shadow.ts from previous iteration:
+      - Added isDebugMode() function checking KSPEC_DEBUG=1 or verboseFlag
+      - Modified shadowAutoCommit() to accept verbose parameter
+      - Added debug output for git operations (git add, diff, commit)
+      - Implements AC-1, AC-2, AC-3 (silent failure when debug disabled)
+
+      Still TODO:
+      - Wire up --verbose flag through CLI commands
+      - Add tests for debug mode behavior
+      - Update other shadow operations to support debug mode
+      - Document usage in help text
+
+      Committing WIP state for next iteration to continue.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T07:39:06.619Z
+  - _ulid: 01KF80WD1PYHNFYQTH4FFGJATZ
+    content: >-
+      Implemented shadow debug mode feature:
+
+
+      - Added isDebugMode() utility that checks KSPEC_DEBUG=1 env var or --verbose flag
+
+      - Updated shadowAutoCommit() to conditionally output debug messages to stderr only when debug
+      mode enabled
+
+      - Added global --verbose flag to CLI that works across all commands
+
+      - Implemented setVerboseModeGetter() to allow shadow.ts to check CLI verbose mode without
+      circular dependencies
+
+      - Updated shadowPushAsync() to include debug output for push operations
+
+      - Added comprehensive test coverage (7 tests) for all 3 acceptance criteria:
+        - AC-1: KSPEC_DEBUG=1 enables debug output (tested with both success and failure cases)
+        - AC-2: --verbose flag enables debug output
+        - AC-3: Debug output is silent when disabled (no errors shown)
+
+      All tests pass (51 total in shadow.test.ts).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T07:42:30.455Z

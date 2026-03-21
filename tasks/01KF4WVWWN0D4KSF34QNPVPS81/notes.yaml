@@ -1,0 +1,8 @@
+notes:
+  - _ulid: 01KF8HY636KZZR7K49ZXAYZYME
+    content: Added --type and --workflow filters to kspec meta observations command. Both filters work
+      correctly in combination with existing --all, --promoted, and --pending-resolution flags. All
+      tests pass (499 passed). Verified functionality with manual tests.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T12:40:34.662Z

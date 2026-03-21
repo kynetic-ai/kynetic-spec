@@ -1,0 +1,19 @@
+_ulid: 01KG762Y3SH9PCG6DGK8KKYNEV
+slugs: []
+title: Fix PR review subagent not completing task after merge
+type: task
+spec_ref: "@ralph-subagent-spawning"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #282. Fixed PR review subagent to complete task after merge by updating
+  prompt exit conditions and adding defensive verification in ralph."
+depends_on: []
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-30T10:09:54.809Z
+started_at: 2026-01-30T10:10:16.116Z
+completed_at: 2026-01-30T10:17:32.734Z
+todos: []

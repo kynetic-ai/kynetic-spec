@@ -1,0 +1,20 @@
+_ulid: 01KFDYAS3PT6Y9J7NANKS6YJ0S
+slugs: []
+title: Add AC to 17 critical spec items
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Added 34 acceptance criteria (2 per item) to 17 critical spec items across schema
+  types, task types, relationships, and YAML conventions. All AC follow given/when/then format and
+  define testable behavior.
+depends_on: []
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-20T14:53:22.422Z
+started_at: 2026-01-20T15:20:39.810Z
+completed_at: 2026-01-20T15:24:02.626Z
+todos: []

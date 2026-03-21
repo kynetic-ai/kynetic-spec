@@ -1,0 +1,56 @@
+notes:
+  - _ulid: 01KJTY9GHH3BWJ0XT4QTHQ5CVB
+    content: >-
+      Execution context:
+
+      - Background: concurrent task mutations from parallel agent tool calls can lose updates and
+      revert status.
+
+      - Scope: serialize runtime task mutation writes so state transitions/notes are not clobbered.
+
+      - Files: agent runtime/mutation code and corresponding tests.
+
+      - Verification: targeted tests + full npm test + kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T22:49:53.969Z
+  - _ulid: 01KJTYJEW1F06EE5HBAJ0B017A
+    content: |-
+      Investigation: stale read -> full-object save pattern affects more than start/note.
+      Follow-up tasks created:
+      - @task-migrate-task-mutators-atomic (remaining task mutators)
+      - @task-atomic-plan-inbox-writes (plan/inbox atomic updates)
+      - @task-harden-spec-item-save-concurrency (spec item save/update path)
+      - @task-concurrent-mutation-regression-suite (cross-entity regression tests).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T22:54:47.169Z
+  - _ulid: 01KJTYV1DY468DSKTXGRR1FQJ7
+    content: >-
+      Implemented atomic same-task mutation path:
+
+      - Added parser helper mutateTaskAtomically() to run read-modify-write under one lock against
+      latest on-disk task state.
+
+      - Switched kspec task start and kspec task note to use atomic helper so concurrent status/note
+      writes do not clobber each other.
+
+      - Added regression tests in tests/task-mutation-serialization.test.ts for concurrent
+      status+note and note+note mutations.
+
+      Verification:
+
+      - npx vitest run tests/task-mutation-serialization.test.ts
+      tests/agent-invocation-lifecycle.test.ts
+
+      - npx vitest run tests/task-budget-enforcement.test.ts
+      tests/session-scoped-task-claiming.test.ts tests/note-supersession-filter.test.ts
+      tests/task-needs-work.test.ts
+
+      - npm test (3580 passed, 3 skipped)
+
+      - kspec validate currently fails due pre-existing repo validation issues unrelated to this
+      task (existing skill/ref/alignment warnings/errors).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T22:59:28.318Z

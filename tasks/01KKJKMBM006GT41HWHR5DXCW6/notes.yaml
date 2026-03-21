@@ -1,0 +1,73 @@
+notes:
+  - _ulid: 01KKKS93B6JZSNKF31BDHTQBWS
+    content: >-
+      Implemented droid skill import support. Changes:
+
+
+      1. Added detectImportPlatform() function to skill-crud.ts that detects .factory/skills/ paths
+      and returns 'droid' platform, defaulting to 'claude_code' for all other paths.
+
+
+      2. Modified the import command's platform_config building to use the detected platform key
+      instead of hardcoding 'claude_code'. For droid imports, the 'agent' field is excluded (droid
+      doesn't use it, matching the renderer behavior).
+
+
+      3. Added 6 tests: 3 unit tests for detectImportPlatform, 3 integration tests covering all 3
+      ACs (droid import populates platform_config.droid, user_invocable=false works, existing
+      claude_code behavior unchanged).
+
+
+      All existing import tests continue to pass unchanged.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T14:23:18.375Z
+  - _ulid: 01KKKSFSMBJFZWCDNWHW682PC4
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: AC-3 coverage is not valid. The test annotated
+      for .claude/skills/ imports uses a generic temp path, so it does not verify the spec condition
+      that existing .claude/skills/ import behavior remains unchanged."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T14:26:57.803Z
+  - _ulid: 01KKKVW47AX6QPE0SDCDSVJ79J
+    content: "Fix cycle 1: Addressed review finding. AC-3 test now creates the skill file under an
+      actual .claude/skills/ path within the fixture project instead of a generic temp dir. This
+      ensures detectImportPlatform is exercised with a realistic .claude/skills/ path, genuinely
+      verifying existing Claude Code import behavior is preserved."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T15:08:39.018Z
+  - _ulid: 01KKKWG0ZES0JFBR960G6M73VD
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: PR #828 required CI is red on the current head.
+      GitHub test shard 3/3 failed in tests/agent-dispatch-engine.test.ts (AC-20 reconciliation
+      interval cleanup ENOTEMPTY temp-dir error), so the branch is not mergeable even though the
+      droid skill import diff and AC coverage review cleanly."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T15:19:31.054Z
+  - _ulid: 01KKKZ07PTN76RY6YMCXAPRZTT
+    content: "Fix cycle 2: CI failure was ENOTEMPTY race in AC-20 reconciliation test
+      (agent-dispatch-engine.test.ts). Root cause: DispatchEngine.stop() cleared the reconcile
+      interval timer but did not await the in-flight _reconcile() promise, so temp-dir cleanup could
+      race with async reconciliation work. Fixed by tracking inflightReconcile promise and awaiting
+      it in stop(). All 96 dispatch engine tests and 95 skill CLI tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T16:03:19.387Z
+  - _ulid: 01KKKZEJ61R9ZNPC9345HZGHXT
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: PR #828 is not mergeable against main (GitHub
+      reports mergeable=CONFLICTING on head cef1338852bc), and there is no successful CI
+      verification on that current head yet. Rebase or merge main into
+      dispatch/task/implement-droid-skill-import-support/01kkjkmb, resolve conflicts, rerun CI, then
+      resubmit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T16:11:08.865Z
+  - _ulid: 01KKM0KD03V05KM4FD3Y6PJBWB
+    content: "Fix cycle 3: Rebased onto current main (4d6126d81) to resolve merge conflict. Dropped the
+      dispatch reconciliation fix commit (cef133885) since main already has the same fix via commits
+      3305f1147 and 9cb3579a5 from the durably-shadow-commit task. Branch now has 2 clean commits on
+      top of main: feat + AC-3 test fix. All 4750 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T16:31:15.971Z

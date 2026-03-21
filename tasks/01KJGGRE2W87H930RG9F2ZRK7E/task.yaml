@@ -1,0 +1,104 @@
+_ulid: 01KJGGRE2W87H930RG9F2ZRK7E
+slugs:
+  - task-stabilize-kspec-validate-baseline
+title: Investigate and stabilize kspec validate failures/noise baseline
+type: spike
+description: >-
+  What:
+
+  `kspec validate` currently fails/noises in ways that block reliable use as a quality gate. Create
+  a single validated baseline and implement the minimum fixes/policy decisions to make output
+  actionable.
+
+
+  Current observed state (2026-02-27):
+
+  - Reference errors: 6 (all from `@observations` resolving to multiple items).
+
+  - Alignment warnings: 156 (including 137 status mismatches).
+
+  - Completeness warnings: 390.
+
+  - Automation-without-spec warnings: 128.
+
+
+  Root-cause findings already confirmed:
+
+  1) Slug namespace collision:
+     - `@observations` is ambiguous between a spec slug and a skill id.
+     - `ReferenceIndex` currently merges spec/task/plan slugs and meta ids into one slug namespace.
+  2) Validate mode-flag behavior bug:
+     - Mode flags are intended to isolate checks (`--refs`, `--schema`, etc.) but non-selected checks still run because undefined options are treated as enabled in parser validation.
+     - `--staleness` also does not participate in runAll detection, causing unexpected extra checks.
+  3) High warning volume is mostly data + policy driven (not one parser crash):
+     - Many specs have statuses that do not match task-derived expected status.
+     - Many automation-eligible tasks have no spec_ref.
+     - Completeness checks intentionally report broad missing AC/description/test coverage debt.
+
+  Scope:
+
+  - Phase 1 (hard failures + correctness bugs):
+    - Remove `@observations` ambiguity without breaking skill usage.
+    - Fix validate mode selection semantics so selected flags run only intended checks.
+    - Add regression tests for both.
+  - Phase 2 (warning policy + debt plan):
+    - Produce bucketed inventory for large warning classes (alignment mismatches, automation-without-spec, completeness).
+    - Decide and document what is intended policy vs debt vs validator false-positive.
+    - Propose execution strategy (bulk metadata cleanup, rule refinement, or both).
+
+  Out of scope:
+
+  - Fully resolving all 390 completeness warnings in this task.
+
+  - Large-scale content rewrites across legacy specs/tasks without an approved follow-up plan.
+
+
+  Implementation notes:
+
+  - Prefer a low-risk immediate fix for slug collision (rename colliding skill id or spec slug) plus
+  references update and generation checks.
+
+  - Keep backward compatibility in mind for skill invocation naming (document migration if renamed).
+
+  - For validate mode fixes, ensure command behavior matches help/docs and tests assert isolation.
+
+
+  Done when:
+
+  1. `kspec validate --refs` no longer fails on duplicate `@observations` slug.
+
+  2. `kspec validate --schema`, `--refs`, `--alignment`, `--completeness`, `--staleness` each
+  execute only the requested scope (unless explicitly combined), with tests.
+
+  3. A written triage summary is added to task notes with exact warning counts by bucket and
+  recommended follow-up tasks.
+
+  4. Follow-up tasks are created (or linked) for any accepted debt that is intentionally deferred.
+
+  5. Full `kspec validate` output is re-run and captured in task notes as post-fix baseline.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #585. Stabilized validate scoped-mode behavior by making mode selection
+  explicit, including --staleness/--drift in run-all detection, and decoupling parser
+  completeness/orphans from refs gating. Added and updated regression coverage for mode
+  isolation/combination behavior. AC/spec mapping is N/A for this spike task (no spec_ref); quality
+  gates verified via CI green plus focused tests and scoped command checks."
+depends_on:
+  - "@01KJDQ11EVH8RKBV4CHZ7R0C89"
+context: []
+priority: 2
+tags:
+  - cli
+  - validation
+  - meta
+vcs_refs: []
+session_id: null
+created_at: 2026-02-27T21:40:58.588Z
+started_at: 2026-02-28T00:05:56.696Z
+submitted_at: 2026-02-28T00:07:31.962Z
+completed_at: 2026-02-28T00:55:14.415Z
+todos: []
+automation: manual_only

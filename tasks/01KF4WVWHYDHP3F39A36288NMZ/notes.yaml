@@ -1,0 +1,36 @@
+notes:
+  - _ulid: 01KF89ABK5P6C1WK1ZYAJ72WA8
+    content: "Not implemented. Requires: 1) 'meta promote' subcommand in src/cli/commands/meta.ts, 2)
+      Task creation with meta_ref from observation.workflow_ref, 3) Setting observation.promoted_to
+      field, 4) origin='observation_promotion' field on created task, 5) Validation that observation
+      not already promoted (AC-6), 6) Validation that observation not already resolved (AC-8).
+      Linked to AC-3 from parent observations feature. This is a multi-step feature requiring CLI,
+      parser, and validation changes. Deferring for focused implementation session."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T10:09:56.325Z
+  - _ulid: 01KF89EJHX15AJKKD8MCSP44SV
+    content: "Session end state: Not implemented, deferred for focused implementation session. This task
+      was started for assessment but requires significant CLI and parser work. Task remains
+      in_progress as placeholder - future iteration should either implement it or mark as
+      blocked/cancelled if deprioritized. No code written this session."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T10:12:14.525Z
+  - _ulid: 01KF89GSD5S763CSTBYM88BSC7
+    content: "Found implementation gap: 1) Task description not being set from observation content, 2)
+      Task origin field not in schema. Will add origin field to TaskInputSchema and fix meta promote
+      command."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T10:13:27.077Z
+  - _ulid: 01KF89R2FBB13MNFP0EWN3XSNJ
+    content: "Implementation complete. Added 'origin' field to task schema (TaskSchema and
+      TaskInputSchema) to track task source. Updated 'kspec meta promote' command to set task
+      description from observation content and set origin='observation_promotion'. All acceptance
+      criteria verified: AC-3 (promotion creates task with correct fields), AC-6 (validation for
+      already promoted), AC-8 (validation for resolved with --force override). Manual testing
+      confirms all behaviors work correctly."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T10:17:25.739Z

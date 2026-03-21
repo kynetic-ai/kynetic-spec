@@ -1,0 +1,23 @@
+_ulid: 01KF9B4SJ1J3EA8XA9Z1JH7302
+slugs: []
+title: Fix PreToolUse:Bash hook error handling
+type: task
+description: "PreToolUse:Bash hook error on tool approval: When tools are approved, there's an error
+  shown '⎿ PreToolUse:Bash hook error'. Need to investigate kspec-worktree-guard.sh - may be failing
+  silently on certain inputs or returning invalid JSON in some cases. Should handle edge cases
+  gracefully and return valid JSON even on unexpected input."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Fixed by suppressing jq stderr output in kspec-worktree-guard.sh hook
+depends_on: []
+context: []
+priority: 2
+tags:
+  - ralph
+  - bug
+vcs_refs: []
+created_at: 2026-01-18T20:01:05.601Z
+started_at: 2026-01-19T02:17:49.663Z
+completed_at: 2026-01-19T02:18:57.976Z
+todos: []

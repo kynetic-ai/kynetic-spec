@@ -1,0 +1,78 @@
+notes:
+  - _ulid: 01KKQYPAXH32XQBBQ2S470QEYQ
+    content: >-
+      Execution context:
+
+      - Background: Three server-side aggregation endpoints for the daemon API — task status
+      summary, validation/alignment stats extension, inbox/triage merge.
+
+      - Scope: New route file (aggregation.ts), shared types in @kynetic-ai/shared, E2E tests. Task
+      description says ac-4 (WebSocket enrichment) is OUT of scope for this task.
+
+      - Files: packages/daemon/src/routes/aggregation.ts (new), packages/shared/src/api.ts (add
+      types), packages/daemon/src/server.ts (register routes),
+      packages/web-ui/tests/e2e/api-aggregation.spec.ts (new tests)
+
+      - Verification: E2E tests + full test suite pass
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T05:14:52.721Z
+  - _ulid: 01KKQZ8EC2KSYNMGE2JG5R3XCP
+    content: >-
+      Implementation complete. Created PR #869.
+
+
+      Files changed:
+
+      - packages/shared/src/api.ts: Added TaskStatusSummary, ValidationAggregation,
+      InboxItemWithTriage types
+
+      - packages/daemon/src/routes/aggregation.ts: New route file with 3 endpoints
+
+      - packages/daemon/src/server.ts: Registered aggregation routes
+
+      - packages/web-ui/tests/e2e/api-aggregation.spec.ts: 16 E2E tests covering all 3 ACs
+
+
+      Key decisions:
+
+      - Used /api/aggregation prefix to namespace all aggregation endpoints
+
+      - Task summary uses areDependenciesMet() for dependency-aware distinction between ready and
+      blocked
+
+      - Validation aggregation counts ACs from non-trait items only (traits define ACs that are
+      inherited)
+
+      - Inbox/triage merge uses findTriageRecordByInboxRef to match by ULID
+
+      - All trait-websocket-protocol ACs marked N/A (WebSocket enrichment is separate task
+      @task-ws-enrichment)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T05:24:46.082Z
+  - _ulid: 01KKQZNCVK1SJXR8TSKQ1MRDDE
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: (1) ac_counts.uncovered calculation counts spec
+      items instead of individual ACs — each CompletenessWarning is one item with N uncovered ACs,
+      not one AC. (2) PR has merge conflicts with main (53 commits behind, server.ts and api.ts
+      conflict). SHOULD-FIX: unused loadAllItems import. See PR #869 review for details."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T05:31:50.515Z
+  - _ulid: 01KKR0XPYKJ27HEGCDRZG4GQZ0
+    content: >-
+      [FIX_CYCLE: 1] Addressed all review findings:
+
+      1. MUST-FIX: Fixed ac_counts.uncovered to count individual ACs by parsing the details field
+      ('Uncovered: ac-1, ac-2, ac-3') instead of counting warnings (one per item).
+
+      2. MUST-FIX: Resolved merge conflicts with main (merged origin/main, kept both aggregation
+      routes and refs routes).
+
+      3. SHOULD-FIX: Removed unused loadAllItems import.
+
+
+      Tests: 5360 passed, 1 skipped pre-existing flaky (cli-serve foreground exit code).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T05:53:51.571Z

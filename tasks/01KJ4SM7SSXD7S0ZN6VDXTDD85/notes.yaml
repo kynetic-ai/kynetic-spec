@@ -1,0 +1,111 @@
+notes:
+  - _ulid: 01KJ4V7KPFGSXBBGSXS5KP4VCC
+    content: "Automation status set to needs_review: Spec gap - @item-add has no --root flag AC. Need to
+      update spec before implementing."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T08:53:08.431Z
+  - _ulid: 01KJ4V7MXQDDPGFQGFCP91VM11
+    content: "NEEDS_REVIEW: @item-add spec documents --parent and --type but has no --root flag for
+      placing traits in kynetic.yaml. Add AC to @item-add before implementing."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T08:53:09.687Z
+  - _ulid: 01KK5GT243NVYS1X763HVC86EV
+    content: >-
+      Execution context:
+
+      - Background: item add cannot currently create project-level trait items in kynetic.yaml
+      without manual edits.
+
+      - Scope: update @item-add spec coverage for a root-level trait path, implement --root for item
+      add, and add tests proving project-level trait placement.
+
+      - Files: src/cli/commands/item.ts, command schemas/tests, and related task/spec metadata via
+      kspec CLI.
+
+      - Verification: targeted vitest coverage for item add plus kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:25:54.947Z
+  - _ulid: 01KK5H84A12VC9013J3M8054V9
+    content: "Found branch ancestry issue: the dedicated task branch had been created from
+      feat/task-redesign-web-ui instead of main, which would have conflated this PR with unrelated
+      docs work. Rebased the task branch setup onto main before commit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:33:35.937Z
+  - _ulid: 01KK5H8WYPSGRPF7YP2HB40W97
+    content: Re-anchored the task branch from stale local main to origin/main so the eventual PR diff
+      stays scoped to this task only.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:34:01.174Z
+  - _ulid: 01KK5HAW96FRY02DT1F091SYRH
+    content: "Implemented --root support for item add when creating trait items, reusing a shared
+      project-level trait write helper across item add / trait add / plan import. Verification: npm
+      run build passed on the origin/main-based task branch; npx vitest run tests/trait-cli.test.ts
+      passed (32/32). kspec validate remains red due to pre-existing repo issues unrelated to this
+      task, including duplicate @observations refs and missing .kspec/skills/observations/SKILL.md."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:35:06.022Z
+  - _ulid: 01KK5HCCSZ5P84GE8Q3K4JRXTB
+    content: "Opened PR #693 for review: https://github.com/kynetic-ai/kynetic-spec/pull/693"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:35:55.711Z
+  - _ulid: 01KK5HWYFW9KG2HXB4B8F1AAM8
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @item-add ac-1 says item add --root returns the
+      created trait ref, but PR #693 still reports only a short ULID and the new test does not
+      assert the ref contract."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:44:58.108Z
+  - _ulid: 01KK5JFB9N3NC7E42VNSWVJJV9
+    content: "[FIX_CYCLE: 1] Narrowed the review issue to the human-readable success message in item add
+      --root: the command still prints a short ULID instead of an @ref. Updating the root-path
+      success output and strengthening the test to assert the returned ref contract directly."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:55:01.045Z
+  - _ulid: 01KK5JJZNCMF3SBWW7R6NGTC3P
+    content: "[FIX_CYCLE: 1] Updated item add --root to print the created trait ref in human-readable
+      success output () instead of a shortened ULID, matching @item-add ac-1. Strengthened
+      tests/trait-cli.test.ts to assert the stdout ref contract and verify the created trait remains
+      project-level in kynetic.yaml. Verification: npx vitest run tests/trait-cli.test.ts passed
+      (32/32); npm run build passed; kspec validate still fails on pre-existing repo issues
+      unrelated to this task, including duplicate @observations refs and missing
+      .kspec/skills/observations/SKILL.md."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:57:00.204Z
+  - _ulid: 01KK5JK6VBTKX50YEQ8YC7DVYX
+    content: "[FIX_CYCLE: 1] Updated item add --root to print the created trait ref in human-readable
+      success output (@root-trait) instead of a shortened ULID, matching @item-add ac-1.
+      Strengthened tests/trait-cli.test.ts to assert the stdout ref contract and verify the created
+      trait remains project-level in kynetic.yaml. Verification: npx vitest run
+      tests/trait-cli.test.ts passed (32/32); npm run build passed; kspec validate still fails on
+      pre-existing repo issues unrelated to this task, including duplicate @observations refs and
+      missing .kspec/skills/observations/SKILL.md."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:57:07.564Z
+  - _ulid: 01KK5MEQDYJC6HY67XK2N58SJ0
+    content: "[FIX_CYCLE: 5] Review findings: MUST-FIX: item add --root introduced new validation errors
+      without recovery guidance. The @item-add inherited @trait-error-guidance ac-2/ac-6 contract is
+      still unmet for the --root misuse paths in text and JSON modes. See PR #693 review comments."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T02:29:37.855Z
+  - _ulid: 01KK5N5EKSHMD89DQASKC9C9K2
+    content: "[FIX_CYCLE: 5] Added recovery guidance for item add --root validation errors in both text
+      and JSON modes. The command now reports conflicting --under/--root usage and invalid --type
+      values with actionable suggestions plus structured details (field/value metadata) so inherited
+      @trait-error-guidance ac-2/ac-5/ac-6 are satisfied. Verification: npx vitest run
+      tests/trait-cli.test.ts passed (34/34); npm run build passed; npm test still fails only on the
+      pre-existing unrelated tests/cli-serve.test.ts:225 foreground-serve assertion (child.exitCode
+      null vs 0)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T02:42:02.489Z

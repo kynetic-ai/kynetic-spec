@@ -1,0 +1,51 @@
+_ulid: 01KKG0SKY8GQRYW3KP9J5DZ1JX
+slugs:
+  - bug-plan-embedded-views-live-loading
+title: Restore live embedded item loading on plans page
+type: bug
+description: >-
+  Repro:
+
+  - Open `/plans` in live daemon mode and expand
+  `@plan-ui-wide-markdown-rendering-plan-embedded-views`, `@plan-session-storage-separation`, or
+  `@plan-skill-system-portability`.
+
+  - Observed: `GET /api/plans/:ref` succeeds, but the page never issues `POST /api/items/batch`; the
+  content falls back to raw YAML code blocks with no embedded loading or error state.
+
+
+  Scope:
+
+  - Fix the plans-page embedded-content load path so expanding a plan with derived specs/tasks
+  actually fetches batch summaries and hands them to the embedded renderer.
+
+  - Preserve existing graceful fallback behavior when the batch request truly fails.
+
+  - Add runtime coverage that exercises the real fetch path instead of only parser-level behavior or
+  fully stubbed batch rendering.
+spec_ref: "@plan-embedded-views"
+meta_ref: null
+plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #797. Restored live plan embedded item loading by resolving title-only
+  YAML entries to derived refs, prioritizing derive_from_specs task embeds over adjacent manual task
+  YAML, and adding runtime coverage for the live batch-fetch path. AC coverage for
+  @plan-embedded-views and inherited markdown trait behavior was reviewed; local npm test and GitHub
+  CI both passed on the merged head."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - web-ui
+  - plans
+  - markdown
+  - bug
+vcs_refs: []
+session_id: 01KKG1H7H2W2ZNE1JADGCR882A
+created_at: 2026-03-12T03:17:41.960Z
+started_at: 2026-03-12T03:39:45.104Z
+submitted_at: 2026-03-12T03:50:15.335Z
+completed_at: 2026-03-12T04:00:49.969Z
+todos: []
+automation: eligible

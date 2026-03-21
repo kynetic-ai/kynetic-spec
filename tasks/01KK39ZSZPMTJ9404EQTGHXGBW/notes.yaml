@@ -1,0 +1,69 @@
+notes:
+  - _ulid: 01KK3A1JFSXCHP8DCM1JSHBPXT
+    content: "Additional requirement: when the agent is executing a tool call, the Active Fleet card
+      should show a tool call indicator (e.g. icon + tool name) similar to how the session stream
+      view displays tool calls. Parse tool_call_start/tool_use events from the WebSocket stream and
+      show something like '🔧 Edit src/lib/api.ts' or '🔧 Bash running...' instead of raw text
+      output during tool execution."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T04:49:12.186Z
+  - _ulid: 01KK3M7MCEEZQSV8AR1F0K0H5R
+    content: >-
+      Execution context:
+
+      - Background: Active Fleet cards show raw token chunks from agent_text_chunk WS events. Text
+      arrives as incomplete fragments that look like garbled output. Need sentence/line-level
+      buffering plus tool call indicators.
+
+      - Scope: (1) Create fleet-buffer.ts utility for line buffering + tool call state, (2) Update
+      board page to use buffer, (3) Update ActiveFleetRow to show tool call indicators, (4) Apply
+      same fix to dashboard Active Fleet cards.
+
+      - Files: packages/web-ui/src/lib/components/board/fleet-buffer.ts (new),
+      board/ActiveFleetRow.svelte, routes/tasks/board/+page.svelte, routes/+page.svelte
+
+      - Verification: Unit tests for fleet-buffer.ts, npm test passes in both root and
+      packages/web-ui
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T07:47:16.494Z
+  - _ulid: 01KK3P9MFYS6Y3KZ160Q1SQ7C8
+    content: "Review findings: MUST-FIX 1) Tool-call indicators in Active Fleet cannot render in
+      practice because UI listens for 'agent_tool_call'/'agent_tool_result' events
+      (packages/web-ui/src/routes/tasks/board/+page.svelte:145-161 and
+      packages/web-ui/src/routes/+page.svelte:321-337), but daemon publishes only 'agent_invocation'
+      and 'agent_text_chunk' on agents topic (packages/daemon/src/routes/agent-dispatch.ts:53-71).
+      This leaves the new indicator path unreachable. MUST-FIX 2) Dashboard Active Fleet streaming
+      blocks missing aria-live attributes (packages/web-ui/src/routes/+page.svelte:497-523), which
+      fails accessibility checklist requirement for live-stream updates. Validation/tests run: kspec
+      validate has existing global repo issues but no @ui-task-board-specific warnings; npm test
+      passed on rerun (184 files, 4034 passed), packages/web-ui npm test passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-07T08:23:19.294Z
+  - _ulid: 01KK3P9NT3JX5A5Z61HXCDC8F5
+    content: "[FIX_CYCLE: 1] Review findings: Review issues: tool-call event integration is unreachable
+      in current daemon WS contract; dashboard Active Fleet missing aria-live for streaming
+      updates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-07T08:23:20.643Z
+  - _ulid: 01KK3QVYPE4WVK6T6Q2FNW16QR
+    content: >-
+      Fix cycle 1 addressed both MUST-FIX items:
+
+      1) Removed unreachable agent_tool_call/agent_tool_result event handlers and tool-call
+      indicator UI from board page, dashboard page, and ActiveFleetRow component. Daemon WS contract
+      only publishes agent_invocation and agent_text_chunk — tool-call code was dead. Removed
+      processToolCallStart/processToolCallEnd/ToolCallIndicator from fleet-buffer.ts. Updated tests
+      accordingly (removed 8 tool-call tests).
+
+      2) Added aria-live="polite" and aria-label attributes to dashboard Active Fleet streaming
+      output blocks (fleet-output and fleet-output-empty). Board page ActiveFleetRow already had
+      aria-live from prior implementation.
+
+      Net change: -244 lines, +14 lines across 5 files. All tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T08:50:48.142Z

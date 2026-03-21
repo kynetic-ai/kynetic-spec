@@ -1,0 +1,61 @@
+notes:
+  - _ulid: 01KM27WYSQF397B7XZ7AHQDTQP
+    content: "Scoped dispatch workspace ownership to the current checkout's resolved worktree_root so
+      provisioning, discovery, health, and lifecycle updates ignore foreign registry
+      records/worktrees from sibling checkouts. Added regressions for foreign canonical-branch
+      collisions and registry reconciliation ignoring foreign-root records. Verification: targeted
+      dispatch workspace config/registry tests passed; full npm test still has the pre-existing
+      review CLI failure where examined_commit is non-null when omitted, and a dispatch-engine
+      timeout did not reproduce when rerun in isolation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T05:08:11.191Z
+  - _ulid: 01KM28DRMYX86ZKZE2X770JJ26
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex@openai.com"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T05:17:21.950Z
+  - _ulid: 01KM2AE4J847YHX2RGCJ93FWVD
+    content: "Addressed fix-cycle blocker by restoring the global single-open-workspace-per-task
+      registry invariant and moving foreign-checkout handling into provisioning. Provisioning now
+      fails early with actionable guidance when a foreign-root open workspace record already exists,
+      instead of falling through to a late duplicate-record write failure. Verification: npm test --
+      tests/dispatch-workspace-config.test.ts tests/dispatch-workspace-registry.test.ts passes. Full
+      npm test still reproduces the pre-existing unrelated failure in tests/review-cli.test.ts
+      ('should leave examined_commit null when not provided')."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T05:52:31.304Z
+  - _ulid: 01KM499MAD8WMDB3PQ66V62KB6
+    content: "Normalizing shared test-gate failure out of blocked state. Treat the required npm-test
+      failure as active follow-up work: either fix/prove isolation of the shared gate issue from
+      this task, or file/link a priority task for the gate failure rather than re-blocking this
+      task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T00:11:03.886Z
+  - _ulid: 01KM4EPGH1V9BAKP9W0XMNARCZ
+    content: "[FIX_CYCLE: 2] Rebased the canonical worker branch onto origin/dev and re-ran the required
+      full test gate. npm test now passes on head 47883f95b (288 files, 6623 tests), including the
+      dispatch workspace config/registry coverage for ac-8. No task-local code changes were required
+      in this cycle; the previously recorded npm-test failure was transient/shared suite state that
+      no longer reproduces on current integration."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T01:45:28.866Z
+  - _ulid: 01KM4F71338Q9CXNQ1WNN9RG2Y
+    content: "[FIX_CYCLE: 3] Review verdict: changes_requested by codex@openai.com"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T01:54:30.115Z
+  - _ulid: 01KM4GDE7HGGBQZT4ESA0Y36C6
+    content: "[FIX_CYCLE: 4] Rebased the canonical worker branch onto origin/dev to remove unrelated
+      stacked task history called out in review, leaving only the two workspace-collision commits on
+      branch head 3d36ababa. Verified the reviewed full-suite failures were non-deterministic: the
+      focused repro subset passed both on this branch and on clean origin/dev, and the required full
+      gate now passes on the rebased snapshot with npm test (288 files, 6626 tests). No task-local
+      code changes were required beyond the lineage repair; this cycle addresses the
+      branch-isolation blocker and re-establishes a green gate on the current head."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T02:15:28.753Z

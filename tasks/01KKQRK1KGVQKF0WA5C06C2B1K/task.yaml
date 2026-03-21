@@ -1,0 +1,67 @@
+_ulid: 01KKQRK1KGVQKF0WA5C06C2B1K
+slugs:
+  - task-server-resolve
+title: Add server-side title resolution to API responses
+type: task
+description: >-
+  Add resolved title fields alongside existing ref fields on daemon API responses. The daemon
+  already loads task/item data via ReferenceIndex on most routes.
+
+
+  Endpoints to update:
+
+  - GET /api/agent/status → active_invocations need task_title
+
+  - GET /api/sessions → session summaries need task_title
+
+  - GET /api/sessions/:id → session detail needs task_title
+
+  - GET /api/tasks → task summaries need spec_title alongside spec_ref
+
+  - GET /api/tasks/:ref → task detail needs spec_title, resolved depends_on and blocked_by entries
+  with titles and status
+
+  - Triage records → evidence_refs need resolved titles
+
+
+  Add response types to @kynetic-ai/shared package for type safety. Frontend: consume the new fields
+  instead of building per-page taskTitles lookup maps. Remove the fetchTasks({limit: 1000}) calls
+  from agents page, sessions list, and session detail page.
+
+
+  Acceptance gates (from @ui-api-ref-resolution): Single-valued refs include resolved title (ac-1),
+  array refs include resolved title and status per entry (ac-2), invalid/deleted refs return null
+  title, preserve raw ref (ac-3).
+spec_ref: "@ui-api-ref-resolution"
+plan_ref: "@plan-ui-data-layer-rework"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #866. Added server-side reference resolution to daemon API responses:
+  resolveRefTitle for single-valued refs (spec_title, task_title, plan_title), resolveRefEntries for
+  array refs (resolved_depends_on, resolved_blocked_by, resolved_evidence_refs), and GET /api/refs
+  lightweight index endpoint. All 5 own ACs and 6 trait ACs covered. 19 unit tests, 4972 total tests
+  passing. Two SUGGESTION-level items noted (inline resolution consistency in agent-dispatch,
+  duplicate type definitions)."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - daemon
+  - web-ui
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-15T04:02:14.974Z
+  commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKQSR7CQEY70BWMWTVDVN146
+created_at: 2026-03-15T03:28:13.424Z
+started_at: 2026-03-15T03:48:54.091Z
+submitted_at: 2026-03-15T04:02:15.715Z
+completed_at: 2026-03-15T04:14:44.762Z
+todos: []
+automation: eligible

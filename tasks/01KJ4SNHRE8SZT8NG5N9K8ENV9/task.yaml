@@ -1,0 +1,25 @@
+_ulid: 01KJ4SNHRE8SZT8NG5N9K8ENV9
+slugs: []
+title: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in then:
+  values) "
+type: task
+description: "kspec plan import should detect and report YAML-unsafe values in AC fields (colons in
+  then: values) before attempting parse, rather than failing with cryptic nested mapping error."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #493. Plan import now detects YAML-unsafe values (unquoted colons) in
+  AC fields and provides diagnostic hints with field name, line number, and fix suggestion (use
+  block scalars). Applied to both Specs and Tasks YAML parsing. Added detectYamlUnsafeValues()
+  utility, ac-37 to @plan-import. 9 unit tests + 1 CLI integration test. Codex review finding (list
+  marker prefix) addressed."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-23T08:25:48.046Z
+started_at: 2026-02-24T03:03:26.638Z
+completed_at: 2026-02-24T03:22:16.157Z
+todos: []
+automation: eligible

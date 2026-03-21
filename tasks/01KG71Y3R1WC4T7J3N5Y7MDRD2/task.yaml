@@ -1,0 +1,21 @@
+_ulid: 01KG71Y3R1WC4T7J3N5Y7MDRD2
+slugs: []
+title: Add explicit loop end signal for ralph agents
+type: task
+description: "Ralph loop: Add signal/mechanism for agents to explicitly end the loop when target
+  work is complete (e.g., special exit command or completion marker)"
+spec_ref: "@ralph-end-loop"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #292. Added 'kspec ralph end-iteration' command for explicit loop
+  termination. Restructured ralph command to support subcommands with full backward compatibility."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-30T08:57:22.432Z
+started_at: 2026-01-30T23:50:58.841Z
+completed_at: 2026-01-31T00:10:04.572Z
+todos: []
+automation: eligible

@@ -1,0 +1,29 @@
+_ulid: 01KJDQ1C22TH9SEXXGBYQT8Y3Z
+slugs: []
+title: Plan import --update replaces all ACs instead of merging. When extending an existing spec
+  with a new
+type: task
+description: "Plan import --update replaces all ACs instead of merging. When extending an existing
+  spec with a new AC via plan import, --update overwrites acceptance_criteria entirely. Need
+  AC-merge strategy: append new AC IDs, preserve existing ones. Encountered during spec-plan for
+  session-log-show ac-10."
+spec_ref: "@plan-import"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #613. Implemented AC-merge-by-id for plan import --update so existing
+  acceptance criteria are preserved, same-id ACs are replaced in place, and new IDs are appended.
+  Added regression coverage for mixed update+append, omitted acceptance_criteria preservation,
+  empty-existing AC population, and explicit ac-37 annotation coverage. Verified with full npm test
+  and green CI checks."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJK0CZR6Z664WKVZWV0CN4TT
+created_at: 2026-02-26T19:32:59.586Z
+started_at: 2026-02-28T23:40:24.828Z
+submitted_at: 2026-02-28T23:51:20.207Z
+completed_at: 2026-03-01T00:04:41.946Z
+todos: []
+automation: eligible

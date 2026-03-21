@@ -1,0 +1,12 @@
+notes:
+  - _ulid: 01KJWPNWQ96TZAGYNT80TAPX48
+    content: "Updated @task-add spec: (1) Rewrote description to document all 11 options with validation
+      behavior, defaults, and examples. (2) Added 20 ACs covering: basic creation, title required,
+      description, type, spec-ref valid/invalid, meta-ref valid/invalid, plan-ref valid/invalid,
+      priority default/valid/invalid, slug valid/conflict, tags, depends-on valid/invalid,
+      automation valid/invalid. (3) Discovered batch item ac add bug: atomic batch overwrites ACs
+      instead of appending when multiple ac adds target same item. Used sequential adds as
+      workaround."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-04T15:15:19.913Z

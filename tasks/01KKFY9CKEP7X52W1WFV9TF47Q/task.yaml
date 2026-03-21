@@ -1,0 +1,33 @@
+_ulid: 01KKFY9CKEP7X52W1WFV9TF47Q
+slugs:
+  - task-implement-dispatch-workspace-config
+title: Implement dispatch config for base branch and worktree root
+type: task
+spec_ref: "@dispatch-workspace-configuration"
+plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #796 via merge commit 28be06a81a3871220a673877307b3214120e55f9.
+  Implemented dispatch.base_branch and dispatch.worktree_root config parsing plus workspace
+  provisioning that creates task worktrees from the resolved base branch, records merge-target
+  metadata, and launches dispatched invocations inside the provisioned worktree. AC coverage
+  verified for @dispatch-workspace-configuration ac-1..ac-4, with @trait-error-guidance ac-1..ac-6
+  marked N/A for this internal runtime; focused local dispatch tests and GitHub Actions run
+  22986140147 passed on commit 569e43a172d18e2db587024eaab7178f6bc5ac5f."
+depends_on:
+  - "@task-design-dispatch-workspace-config"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - config
+vcs_refs: []
+review_url: https://github.com/kynetic-ai/kynetic-spec/pull/796
+session_id: 01KKG2PQ0ZZQ535JBV0K56A15Q
+created_at: 2026-03-12T02:33:53.006Z
+started_at: 2026-03-12T04:02:13.765Z
+submitted_at: 2026-03-12T04:08:20.538Z
+completed_at: 2026-03-12T04:18:23.682Z
+todos: []
+automation: eligible

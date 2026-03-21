@@ -1,0 +1,42 @@
+notes:
+  - _ulid: 01KK7WTGCN4STSF0Z7VC8M9P07
+    content: "Spec approach changed: instead of a standalone AC on @agent-dispatch-engine, created
+      @trait-task-readiness (4 ACs: ac-status, ac-deps, ac-not-blocked, ac-composable). Trait bound
+      to 6 specs: @agent-dispatch-engine, @query-ready, @query-next, @task-automation-eligibility,
+      @ui-task-board, @api-contract. The dispatch fix should implement ac-deps and ac-composable —
+      add areDependenciesMet() call to _matchesFilter() and verify it runs before consumer-specific
+      filters."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T23:34:21.334Z
+  - _ulid: 01KK7YRH5G5WF0DTN9G260H46M
+    content: >-
+      Implementation complete. Changes:
+
+      1. dispatch.ts: Added areDependenciesMet import, extended _matchesFilter() with blocked_by and
+      depends_on checks for task.ready/task.needs_work events (before consumer filters per
+      ac-composable), added allTasks param. Updated handleStateChange to load allTasks for dep
+      checking. Added readiness check in _drainQueues before spawning.
+
+      2. Tests: 8 new tests covering ac-deps, ac-not-blocked, ac-composable across
+      handleStateChange, bootstrap, drainQueues paths. Also verifies
+      task.in_progress/task.pending_review are NOT affected.
+
+      All 74 dispatch tests pass. 2 pre-existing codex test failures unrelated.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T00:08:13.744Z
+  - _ulid: 01KK7ZDSP7J8TQM6SRSSYY9CNT
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #718 includes unrelated session-storage plan
+      commit/file; rebase or recreate the branch so the PR contains only the dispatch-engine
+      depends_on/blocked_by fix."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-09T00:19:50.599Z
+  - _ulid: 01KK7ZJPD2ASHPYNM2DA824HTK
+    content: "Fix cycle: rebased branch onto origin/main to exclude unrelated
+      session-storage-separation.md commit that was on local main but not yet on remote. PR #718 now
+      contains only dispatch changes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T00:22:31.074Z

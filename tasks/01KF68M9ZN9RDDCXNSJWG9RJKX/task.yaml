@@ -1,0 +1,21 @@
+_ulid: 01KF68M9ZN9RDDCXNSJWG9RJKX
+slugs:
+  - task-ralph-acp-refactor
+title: Refactor ralph command to use ACP
+type: task
+spec_ref: "@cli-ralph"
+status: completed
+blocked_by: []
+closed_reason: Refactored ralph command to use ACP protocol with adapter registry, agent spawner,
+  session event logging, and streaming output. All 311 tests pass.
+depends_on:
+  - "@task-acp-protocol-client"
+  - "@task-session-event-storage"
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T15:19:24.917Z
+started_at: 2026-01-17T16:55:31.346Z
+completed_at: 2026-01-17T17:04:52.249Z
+todos: []

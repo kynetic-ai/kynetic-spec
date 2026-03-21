@@ -1,0 +1,49 @@
+_ulid: 01KKX6CEQFM17JX8AKKRPXQGR7
+slugs: []
+title: Round-trip stability for triage record YAML writes
+type: task
+description: >-
+  yaml.ts saveTriageRecord loads project.triage.yaml through TriageFileSchema.safeParse() before
+  writing back. While triage records have fewer defaults than other types, the same read-parse-write
+  pattern applies and any Zod defaults will accumulate.
+
+
+  Apply the same raw-data-preservation pattern: load the raw YAML array without schema
+  normalization, only modify the target record, preserve others as raw data.
+
+
+  Verify with tests: write a triage file, load and save one record without changes, confirm file is
+  byte-identical.
+spec_ref: "@yaml-serialization-invariants"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Applied raw-data-preservation pattern to saveTriageRecord: loads raw
+  YAML without schema normalization, merges only the target record, preserves non-target records as
+  raw data. Prevents Zod defaults (evidence_refs: []) from polluting output. 5 new round-trip
+  stability tests verify correctness across single-record saves, multi-record scenarios, multiple
+  cycles, and new record additions."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - schema
+  - triage
+vcs_refs: []
+review_ref: "@01KKZDGTYH1S966VCJ8XRPNTC3"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T02:32:13.473Z
+  commit: 1ef4b993a2d98101f0e3dfb520134d13b404ff07
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KKZBWQ6PG6HKDSJ7WG9MHDA5
+created_at: 2026-03-17T06:05:29.711Z
+started_at: 2026-03-18T02:32:02.562Z
+submitted_at: 2026-03-18T02:32:13.963Z
+completed_at: 2026-03-18T02:50:22.224Z
+todos: []
+automation: eligible

@@ -1,0 +1,8 @@
+notes:
+  - _ulid: 01KHXB506E098C46BW7C43DCH8
+    content: Changed doctor command to exit 1 (EXIT_CODES.ERROR) instead of 4
+      (EXIT_CODES.VALIDATION_FAILED) when health checks fail. This aligns with spec ac-exit-one and
+      trait-semantic-exit-codes ac-2. Added trait AC annotations to exit code tests.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-20T10:57:24.686Z

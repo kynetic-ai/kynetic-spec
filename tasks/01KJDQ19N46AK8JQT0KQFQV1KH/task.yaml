@@ -1,0 +1,69 @@
+_ulid: 01KJDQ19N46AK8JQT0KQFQV1KH
+slugs: []
+title: CLI args should accept both kebab-case and underscore variants (e.g. depends-on and
+  depends_on). Cur
+type: task
+description: >-
+  **What**: Batch command validation rejects underscore variants of argument names (e.g.,
+  `depends_on`) even though kebab-case (`depends-on`) and camelCase (`dependsOn`) are accepted.
+  Agents generating JSON batch payloads naturally use underscores, which is the standard JSON/Python
+  naming convention. The error message suggests the kebab form, creating a frustrating feedback
+  loop.
+
+
+  **Where**:
+
+  - `src/cli/batch-exec.ts` lines 180-216 — `kebabToCamel()` and `getKnownArgNames()` functions
+
+  - `src/cli/batch-exec.ts` lines 308-327 — unknown arg validation loop
+
+  - `src/cli/batch-exec.ts` lines 434-496 — `buildCommandArgv()` which also needs to handle
+  underscore keys when building CLI argv
+
+
+  **How**:
+
+  1. Add a `underscoreToKebab()` or `underscoreToCamel()` normalizer alongside `kebabToCamel()`.
+
+  2. In `getKnownArgNames()`, add underscore variants to the known names set (e.g., for
+  `depends-on`, also add `depends_on`).
+
+  3. In `buildCommandArgv()`, normalize incoming arg keys before classification — convert
+  underscores to kebab-case before looking up in positionalNameSet and optionMap.
+
+  4. In the required-args check (lines 330-348), also check underscore variants.
+
+
+  A cleaner approach: add a single `normalizeArgKey(key)` function that converts any variant (kebab,
+  camel, underscore) to a canonical form, then use it everywhere.
+
+
+  **Done when**:
+
+  - `{"command": "task set", "args": {"ref": "@task", "depends_on": ["@dep1"]}}` works in batch mode
+
+  - All three forms accepted: `depends-on`, `dependsOn`, `depends_on`
+
+  - Same normalization applies to all options, not just depends_on
+
+  - Add test cases for underscore variant args in batch validation tests
+spec_ref: "@batch-exec"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #600. Implemented canonical arg-key normalization for batch args so
+  kebab-case, camelCase, and underscore variants are accepted consistently in validation,
+  required-arg checks, and argv generation. Added underscore regression tests in batch schema and
+  batch exec engine coverage. Verified by full npm test (3550 passed) and green PR CI checks on
+  commit b7b44fb4a11a5a4d655333b96a9e13368d95b9ed."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJJ6PWBGRT2HT64EH2099ZZH
+created_at: 2026-02-26T19:32:57.124Z
+started_at: 2026-02-28T13:53:48.588Z
+submitted_at: 2026-02-28T13:58:02.088Z
+completed_at: 2026-02-28T14:07:12.388Z
+todos: []
+automation: eligible

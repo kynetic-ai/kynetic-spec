@@ -1,0 +1,54 @@
+_ulid: 01KKG0SN9325ERD0JW6H97SNFE
+slugs:
+  - task-plan-embedded-views-mixed-task-precedence
+title: Clarify and implement mixed Tasks-section precedence for derive_from_specs
+type: task
+description: >-
+  Background:
+
+  - The current `## Tasks` parser behavior is ambiguous when a plan contains both
+  `derive_from_specs: true` and an explicit YAML task list under the same heading.
+
+  - The current parser prefers the explicit YAML slugs, which can narrow the embed to a manual
+  subset even when the section is marked to render derived tasks.
+
+
+  Required behavior:
+
+  - Follow `@plan-embedded-views` `ac-9`: when `derive_from_specs: true` is present in the Tasks
+  section, embedded task rendering is driven by `plan.derived_tasks`; any adjacent manual YAML task
+  list is ignored for embedding precedence and must not create duplicate or narrower task embeds.
+
+
+  Scope:
+
+  - Update the parser and tests to enforce deterministic precedence for mixed task sections after
+  the live batch-loading regression is fixed.
+spec_ref: "@plan-embedded-views"
+meta_ref: null
+plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #798. Clarified mixed Tasks-section precedence so derive_from_specs
+  uses plan.derived_tasks regardless of directive ordering, while manual YAML remains the fallback
+  when derive_from_specs is absent. AC coverage verified for @plan-embedded-views ac-2 and ac-9,
+  inherited markdown trait coverage remains in place, PR CI passed, and npm test passed locally."
+depends_on:
+  - "@bug-plan-embedded-views-live-loading"
+context: []
+priority: 2
+tags:
+  - web-ui
+  - plans
+  - markdown
+  - parser
+  - spec
+vcs_refs: []
+review_url: https://github.com/kynetic-ai/kynetic-spec/pull/798
+session_id: 01KKHGK5AGKV303WHXGJEJY85W
+created_at: 2026-03-12T03:17:43.331Z
+started_at: 2026-03-12T17:15:56.012Z
+submitted_at: 2026-03-12T17:16:00.286Z
+completed_at: 2026-03-12T17:26:21.481Z
+todos: []
+automation: eligible

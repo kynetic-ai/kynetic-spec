@@ -1,0 +1,25 @@
+_ulid: 01KFP84NR39GV1JN5P32T37XBX
+slugs: []
+title: Implement Tasks View (AC-4 to AC-10, AC-33)
+type: task
+spec_ref: "@web-dashboard"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #251 merged. Fixed E2E test failures and test fixture issues causing 14
+  integration test failures."
+depends_on:
+  - "@task-watcher-impl"
+context: []
+priority: 2
+tags:
+  - e2e
+  - testing
+  - web-ui
+  - implementation
+vcs_refs: []
+created_at: 2026-01-23T20:18:43.587Z
+started_at: 2026-01-25T11:45:09.995Z
+completed_at: 2026-01-27T17:38:35.290Z
+todos: []
+automation: needs_review

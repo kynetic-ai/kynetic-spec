@@ -1,0 +1,19 @@
+_ulid: 01KG32YHJFBTMKAEXCGQKCV6Q9
+slugs: []
+title: "Split GitHub Pages workflow: separate web UI deploy from JSON snapshot generation"
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #267 merged - split GitHub Pages workflow into separate UI and snapshot
+  deployments. kspec-meta workflow tested and working."
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-28T19:58:07.439Z
+started_at: 2026-01-28T20:06:58.958Z
+completed_at: 2026-01-28T20:20:59.827Z
+todos: []

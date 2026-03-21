@@ -1,0 +1,31 @@
+_ulid: 01KK39ZSZPMTJ9404EQTGHXGBW
+slugs: []
+title: Buffer agent output in Active Fleet cards to show sentence-level text instead of raw token chunks
+type: task
+description: "The Active Fleet row on the task board shows raw streaming token chunks from
+  agent_text_chunk WebSocket events, resulting in incomplete fragments like 'driven\\nform\\n.'
+  being displayed. The output should be buffered and displayed at sentence or line level. Fix: (1)
+  accumulate incoming chunks into a text buffer, (2) only display complete lines (split on newline),
+  (3) show the last N complete lines (e.g. 3), dropping partial trailing content until the next
+  newline arrives, (4) apply same fix to the dashboard Active Fleet component if it shares the same
+  pattern."
+spec_ref: "@ui-task-board"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - web-ui
+vcs_refs: []
+session_id: 01KK3Q2N3KAZRY7C8G9FB2N2W3
+created_at: 2026-03-07T04:48:14.326Z
+started_at: 2026-03-07T08:44:25.995Z
+submitted_at: 2026-03-07T08:50:54.610Z
+completed_at: 2026-03-07T09:08:09.392Z
+todos: []
+automation: eligible

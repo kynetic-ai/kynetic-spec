@@ -1,0 +1,57 @@
+notes:
+  - _ulid: 01KHVXK3JFPHQ1TNAX38EM74YN
+    content: |
+      Implementation notes:
+
+      Update maybeAutoStartDaemon() in src/cli/index.ts to read ctx.config.daemon
+      instead of ctx.manifest?.daemon. Update serve.ts to remove hardcoded '3456'
+      default — use ctx.config.daemon.port with CLI flag override. Add deprecation
+      comment to ManifestSchema daemon field. New manifests should no longer include
+      daemon block. E2E test infrastructure (port 3456 in packages/web-ui/tests/e2e/)
+      manages its own daemon and must NOT be changed.
+    author: "@claude"
+    created_at: 2026-02-19T21:41:12.399Z
+  - _ulid: 01KHWFRPAHR058WQDK2KWJQ8Q0
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. **Config schema updated** (src/parser/config.ts):
+         - Added daemon.auto_start boolean field (default: true)
+         - AC annotations added for @config-daemon ac-3
+
+      2. **maybeAutoStartDaemon() updated** (src/cli/index.ts):
+         - Now reads from ctx.config.daemon instead of ctx.manifest?.daemon
+         - AC: @config-daemon ac-1 for port from config
+         - AC: @config-daemon ac-3 for auto_start from config
+         - AC: @config-daemon ac-4 for deprecation warning when manifest has daemon block
+
+      3. **serve.ts updated** (src/cli/commands/serve.ts):
+         - startServer() now loads config and uses config.daemon.port
+         - CLI --port flag still overrides config value (AC-2)
+         - restartServer() updated to work with optional port
+
+      4. **Deprecation warning** (src/cli/index.ts):
+         - Shows warning when manifest has daemon block
+         - Includes migration guidance to kspec.config.yaml
+         - Only shows once per session
+
+      5. **Tests added** (tests/parser/daemon-config.test.ts):
+         - 20 tests covering all 4 ACs:
+         - AC-1: daemon.port from config (3 tests)
+         - AC-2: CLI --port override via env var precedence (1 test)
+         - AC-3: daemon.auto_start configuration (4 tests)
+         - AC-4: manifest daemon deprecation (2 tests)
+         - Schema validation tests (6 tests)
+         - Integration tests (4 tests)
+
+      All 2905 tests pass (1 pre-existing failure in daemon-executable.test.ts unrelated to this
+      change).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-20T02:58:49.810Z
+  - _ulid: 01KHWGFQYP6GH583KJS1YDKMDD
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-20T03:11:25.142Z

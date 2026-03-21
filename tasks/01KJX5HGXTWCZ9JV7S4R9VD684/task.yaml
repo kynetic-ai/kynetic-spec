@@ -1,0 +1,26 @@
+_ulid: 01KJX5HGXTWCZ9JV7S4R9VD684
+slugs: []
+title: Fix codex platform detection tests leaking Claude Code env vars
+type: task
+description: "core-skill-install.test.ts:280 and enhanced-setup.test.ts:368 fail when run inside
+  Claude Code. Both tests set CLAUDECODE='' to simulate non-Claude-Code env, but
+  detectAgentFromEnv() (agent-detection.ts:32-52) checks 4 env vars: CLAUDECODE,
+  CLAUDE_CODE_ENTRYPOINT, CLAUDE_PROJECT_DIR, CLAUDE_CODE. When running inside Claude Code,
+  CLAUDE_CODE_ENTRYPOINT=cli leaks from the parent process and triggers Claude Code detection before
+  codex detection. Fix: tests must also set CLAUDE_CODE_ENTRYPOINT='', CLAUDE_PROJECT_DIR='',
+  CLAUDE_CODE='' in their env overrides."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - bug
+  - testing
+vcs_refs: []
+created_at: 2026-03-04T19:35:05.396Z
+todos: []
+automation: needs_review

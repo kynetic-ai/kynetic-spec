@@ -1,0 +1,51 @@
+notes:
+  - _ulid: 01KJP276K70GRHAEJZJ3166E31
+    content: |
+      Implementation notes:
+
+      Extend AgentSchema in src/schema/meta.ts. Add dispatch (array of
+      {on, filter?}), adapter (string), skills (string[]), budget ({max_tasks?,
+      timeout_minutes?}), concurrency ({max_concurrent?}), auto_approve (boolean),
+      and prompt_template (string?) fields. All new fields optional for backward
+      compatibility. CRUD uses existing meta add/set/remove patterns.
+    author: "@claude"
+    created_at: 2026-03-02T01:22:20.391Z
+  - _ulid: 01KJPDFFT9K4F5PHN4S8TQETS6
+    content: "Automation: eligible. Schema extension with 11 testable ACs. Clear file target
+      (src/schema/meta.ts) and existing patterns to follow."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T04:39:06.313Z
+  - _ulid: 01KJPEP8R4DP0FSEP03R5XDM43
+    content: Extended AgentSchema with dispatch rules, adapter, skills, budget, concurrency, and
+      auto_approve fields. All fields are optional for backward compatibility with existing agent
+      definitions. Updated meta add/set commands to support the new fields. Added 16 tests covering
+      all 11 ACs. Pre-existing test failures in enhanced-setup.test.ts and
+      core-skill-install.test.ts are unrelated to these changes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T05:00:17.028Z
+  - _ulid: 01KJPF87ANV25VEKS9H8R606Z4
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: AC-11 spec alignment mismatch (spec says meta
+      remove, PR validates meta delete --confirm); MUST-FIX: missing inherited trait AC coverage
+      annotations for @trait-json-output and @trait-shadow-commit in agent-definition-schema tests."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-02T05:10:05.397Z
+  - _ulid: 01KJPH0Y7YC43FV0A4KHA9JJER
+    content: >-
+      [FIX_CYCLE: 1 resolved] Fixed all review findings:
+
+      1. AC-11 spec alignment: Updated spec given clause from 'meta remove' to 'meta delete' to
+      match actual command
+
+      2. Fixed test comment: removed duplicate/incorrect 'meta remove' annotation line
+
+      3. Added @trait-shadow-commit ac-1 annotations to meta add/set/delete agent tests
+
+      4. Added @trait-json-output ac-1 and ac-2 annotations to JSON output tests
+
+      5. Added N/A annotations for remaining 10 trait ACs not applicable to schema extension tests
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T05:41:03.870Z

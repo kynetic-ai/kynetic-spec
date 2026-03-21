@@ -1,0 +1,61 @@
+notes:
+  - _ulid: 01KM0D4Y0QBPYZNDPT3XYHZZQD
+    content: Implemented HookExecutor class in src/agent-runtime/hook-executor.ts. Subscribes to
+      EventBus with wildcard pattern, evaluates hooks against events (event type match + filter
+      matching via matchesFilter), dispatches actions via ActionExecutor with correlation_id
+      propagation and causation_id set from triggering event. Uses versioned config snapshot with
+      reloadHooks() for hot config updates. Fire-and-forget execution with defensive catch for
+      unhandled rejections. 23 tests covering all 5 spec ACs plus N/A annotations for
+      trait-error-guidance (internal engine component, not a CLI command).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T12:01:26.551Z
+  - _ulid: 01KM0DK6J0D4QDR8Y0BPZMV5NX
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by pr-reviewer@dispatch"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T12:09:14.048Z
+  - _ulid: 01KM0DMA7CXQEM06GK5WBT1X7H
+    content: >-
+      Review cycle 1: request_changes. Review ref: @01KM0DGC.
+
+
+      BLOCKER: Out-of-scope removal of @dispatch-agent-action-input implementation. The commit
+      deletes prompt_template, task_binding, group_id, and buildDefaultAgentPrompt from
+      action-executor.ts and action.ts, plus the entire agent-action-input.test.ts (626 lines).
+      These features belong to the already-completed @task-agent-action-input and are needed for
+      pipeline chaining (@dispatch-composition-patterns). Also removes outcome and group_id from
+      KNOWN_EVENT_FIELDS.
+
+
+      FIX REQUIRED: Restore all @dispatch-agent-action-input code that was removed. The hook
+      executor implementation itself is correct — only the out-of-scope deletions need reverting.
+
+
+      Evidence log:
+
+      Files read: hook-executor.ts, action-executor.ts, action.ts, hooks.ts, index.ts,
+      hook-executor.test.ts, full diff
+
+      Commands run: npm test (277/278 pass, 1 pre-existing), kspec validate, hook-executor tests
+      (23/23), action-model tests (49/49)
+
+      Claims verified: 23 tests covering all 5 ACs confirmed. N/A trait annotations confirmed valid.
+
+      Categories: Correctness OK, Edge cases OK, Error handling OK, Test quality OK, Integration
+      FAIL (removals break agent-action-input), Regressions FAIL (schema fields removed, test file
+      deleted)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T12:09:50.573Z
+  - _ulid: 01KM0FJGB82YM8F85Z0GV7HH04
+    content: "Fix cycle 1: Restored @dispatch-agent-action-input implementation (prompt_template,
+      task_binding, group_id, buildDefaultAgentPrompt, KNOWN_EVENT_FIELDS entries, and
+      agent-action-input.test.ts). The hook executor branch was cut from dev before the
+      agent-action-input task was merged — the 'removals' flagged in review were actually missing
+      code, not deletions by this task. Applied the missing changes via patch from commit 9abea9424.
+      All 279 test files pass (278 pass + 1 pre-existing failure in review-cli.test.ts). Hook
+      executor tests: 23/23 pass. Agent-action-input tests: 26/26 pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T12:43:48.456Z

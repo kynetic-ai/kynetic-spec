@@ -1,0 +1,24 @@
+notes:
+  - _ulid: 01KGTXZ3PHDHTV2G847RXPPF2T
+    content: "Implementation: Add --trait option (variadic, comma-separated via existing parseTagsArray)
+      to item add in src/cli/commands/item.ts. After item creation, call existing trait-add logic.
+      Use the pattern from multi-trait support added in PR #323. ~10 lines + tests. Small but saves
+      a command on every spec creation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T02:12:49.489Z
+  - _ulid: 01KGVVSJRZ2JWN7GV8V5VB8C4J
+    content: "Implemented --trait flag for item add command. Added option to options list, updated input
+      construction to pass traits array, added example to help text. Created 4 tests covering:
+      single trait, multiple traits, persistence in YAML file, and default empty array behavior."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T10:54:05.599Z
+  - _ulid: 01KGVW858RRNMPD42ND2HZ4P7B
+    content: "Addressed Codex review feedback in second commit: Added trait validation before item
+      creation - resolves refs, verifies type is 'trait', deduplicates by ULID, and stores canonical
+      slug form. Added 4 additional tests for error cases and edge cases. All 29 trait-cli tests
+      pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T11:02:03.288Z

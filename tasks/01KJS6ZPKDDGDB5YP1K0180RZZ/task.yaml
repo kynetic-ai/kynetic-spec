@@ -1,0 +1,29 @@
+_ulid: 01KJS6ZPKDDGDB5YP1K0180RZZ
+slugs: []
+title: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE when
+  child proce
+type: task
+description: Handle EPIPE in ACP framing layer — src/acp/framing.ts send() throws uncaught EPIPE
+  when child process pipe is dead during shutdown. Should catch EPIPE and treat as
+  connection-closed. Currently requires process-level uncaughtException handlers in tests that
+  spawn/kill agents.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #665 (merge commit 6607641a4390ef5e00f9f945fc0eb4cf2a63409d).
+  Implemented ACP framing output error handling so EPIPE/ERR_STREAM_DESTROYED are treated as clean
+  connection closure, added regression tests for sync and emitted EPIPE paths, and removed
+  process-level uncaughtException EPIPE workaround from adapter tests. Infra/internal task has no
+  spec_ref; AC coverage gate N/A. Full local regression and CI checks passed on PR HEAD."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJVMAFWCEM76H9DCJN1QFRN6
+created_at: 2026-03-03T06:43:20.809Z
+started_at: 2026-03-04T05:15:58.455Z
+submitted_at: 2026-03-04T08:32:10.516Z
+completed_at: 2026-03-04T08:41:37.230Z
+todos: []
+automation: eligible

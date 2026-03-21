@@ -1,0 +1,24 @@
+_ulid: 01KFR82AVZY06AVHRRYSKNHPCD
+slugs:
+  - task-pr-review-loop-workflow
+title: "Implement: PR Review Loop Workflow"
+type: task
+spec_ref: "@pr-review-loop-workflow"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Workflow created and auto-committed to shadow branch (commit 724090d7). Implements
+  all 11 ACs with 10 workflow steps. Validated successfully with kspec validate. No PR needed -
+  workflow definitions live in shadow branch (.kspec/kynetic.meta.yaml) and are auto-committed by
+  kspec CLI.
+depends_on:
+  - "@task-loop-mode-workflows"
+context: []
+priority: 1
+tags:
+  - enhance-ralph
+vcs_refs: []
+created_at: 2026-01-24T14:55:55.775Z
+started_at: 2026-01-24T21:01:27.469Z
+completed_at: 2026-01-24T21:05:24.428Z
+todos: []

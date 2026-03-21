@@ -1,0 +1,27 @@
+_ulid: 01KJ5WV0G52E3BZA5W3VPW22J1
+slugs: []
+title: Fix ralph event logging iteration capture-by-value bug
+type: task
+description: "In ralph.ts:1573-1579, the streaming update event handler fires appendEvent() without
+  await (fire-and-forget). The iteration variable is captured by closure reference, not by value. By
+  the time the async callback executes, iteration has already been incremented in the for loop — so
+  hundreds of tool_call events get tagged with the wrong iteration number. Fix: snapshot iteration
+  into a const before the closure. One-line fix."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #485. Handles phased tool call events from ACP SDK 0.14+: translator
+  emits summaries when rawInput arrives late, deduplication in session display/stats/search. 7 new
+  tests, all CI green."
+depends_on: []
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-02-23T18:40:27.141Z
+started_at: 2026-02-23T18:51:36.061Z
+completed_at: 2026-02-23T21:36:33.124Z
+todos: []
+automation: eligible

@@ -1,0 +1,34 @@
+_ulid: 01KJF3XQYB6SGAG3HNQPSGKQA8
+slugs: []
+title: Fix ralph adapter validation false-negative for codex-acp
+type: bug
+description: Ralph adapter startup validation currently probes adapters with 'npx --no-install <pkg>
+  --version'. @zed-industries/codex-acp does not support --version and exits non-zero, causing a
+  false 'Adapter package not found' error even when the package exists. Update validation to use an
+  adapter-agnostic availability probe and keep the existing error behavior for truly missing
+  packages. Add regression tests covering codex-acp-like CLIs that reject --version but support
+  --help.
+spec_ref: "@ralph-adapter-validation"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #574. Updated ralph adapter validation to probe adapter packages with
+  --help first and --version fallback to avoid false negatives for codex-acp-like CLIs while
+  preserving existing not-found behavior. Added regression tests for help-first success, version
+  fallback, and all-probes-fail. AC coverage for @ralph-adapter-validation
+  valid-adapter-proceeds/invalid-adapter-error/validation-before-spawn verified."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - ralph
+  - codex
+  - validation
+vcs_refs: []
+created_at: 2026-02-27T08:37:26.602Z
+started_at: 2026-02-27T08:37:32.216Z
+submitted_at: 2026-02-27T08:45:12.244Z
+completed_at: 2026-02-27T08:53:53.963Z
+todos: []
+automation: eligible

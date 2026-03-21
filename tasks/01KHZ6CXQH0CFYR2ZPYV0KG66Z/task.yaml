@@ -1,0 +1,24 @@
+_ulid: 01KHZ6CXQH0CFYR2ZPYV0KG66Z
+slugs: []
+title: "Fix agents generate formatting: missing blank lines before section headings"
+type: task
+description: "kspec agents generate omits blank lines before ## Conventions and ## Workflows
+  headings in kspec-agents.md. Markdown spec requires blank line before headings. Fix in
+  src/cli/commands/agents.ts or src/parser/agent-data-sections.ts."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Fixed missing blank lines before ## Conventions and ## Workflows headings in
+  generated kspec-agents.md. Data sections now ensure \\n\\n separator between concatenated
+  sections. All 62 agents tests pass."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-21T04:12:50.286Z
+started_at: 2026-02-21T04:18:57.567Z
+completed_at: 2026-02-21T04:19:16.094Z
+todos: []

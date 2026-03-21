@@ -1,0 +1,31 @@
+notes:
+  - _ulid: 01KHFBSZ4AM2XFGZEDFN5F7CA9
+    content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    author: "@claude"
+    created_at: 2026-02-15T00:39:29.674Z
+  - _ulid: 01KHFDD1ARNZBZQ2WA1FCNR7ZC
+    content: |-
+      Implemented Skill as the 5th meta item type:
+
+      - Added SkillSchema with id, name, description, origin (core|project|local), version, tags
+      - Added skills array to MetaManifestSchema  
+      - Updated MetaContext to include skills array
+      - Added LoadedSkill interface with _sourceFile runtime metadata
+      - Implemented loadSkillContent() to read .kspec/skills/<id>/SKILL.md
+      - Implemented getSkillContentPath() helper
+      - Updated findMetaItemByRef() to include skills in search (by id, ULID, ULID prefix)
+      - Updated getMetaItemType() to discriminate skills by origin field
+      - Updated isMetaItemType() and getMetaStats() to include skills
+      - Added default skills: [] to manifest creation functions
+
+      17 tests covering all 7 ACs:
+      - ac-1: MetaManifestSchema validates skill entries
+      - ac-2: SkillSchema validates origin and version
+      - ac-3: loadSkillContent returns full SKILL.md content  
+      - ac-4: loadMetaContext populates skills with _sourceFile
+      - ac-5: findMetaItemByRef returns skill by semantic id
+      - ac-6: findMetaItemByRef returns skill by ULID prefix
+      - ac-7: getMetaItemType discriminates by origin field
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-15T01:07:23.096Z

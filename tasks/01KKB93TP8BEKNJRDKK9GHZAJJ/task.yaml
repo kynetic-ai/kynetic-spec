@@ -1,0 +1,27 @@
+_ulid: 01KKB93TP8BEKNJRDKK9GHZAJJ
+slugs:
+  - task-shadow-branch-ac-backfill
+title: "Implement: Shadow Branch AC Backfill"
+type: task
+spec_ref: "@shadow-ac-backfill"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #793. Backfilled acceptance criteria for previously uncovered
+  descendants under @shadow-branch, including shadow worktree mechanics, CLI management commands,
+  CI/bootstrap behavior, and validation semantics. Verified zero missing-AC descendants under
+  @shadow-branch, reviewed the new ACs for concrete given/when/then outcomes, and confirmed
+  regression coverage with a full npm test pass."
+depends_on:
+  - "@implement-spec-completeness-policy"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKFHW3NBQJCWQGZG49BZYKFA
+created_at: 2026-03-10T07:06:53.000Z
+started_at: 2026-03-11T23:01:04.549Z
+submitted_at: 2026-03-11T23:13:01.451Z
+completed_at: 2026-03-11T23:17:55.853Z
+todos: []
+automation: eligible

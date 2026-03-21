@@ -1,0 +1,33 @@
+notes:
+  - _ulid: 01KKFF30ZQE4T4GVC5V8H2FD76
+    content: >-
+      Execution context:
+
+      - Background: iterative plan editing shipped at the CLI/spec layer, but plan workflow/meta and
+      skill guidance still describe the old import-and-materialize flow.
+
+      - Scope: update @spec-plan-import and related plan workflow text, update
+      templates/skills/plan/SKILL.md, regenerate rendered agent instructions/skills, and verify docs
+      now match current CLI behavior.
+
+      - Files: .kspec/kynetic.meta.yaml, templates/skills/plan/SKILL.md, kspec-agents.md, rendered
+      .agents/skills/plan/SKILL.md and any related generated outputs.
+
+      - Verification: regenerate artifacts, run focused plan docs/CLI tests as needed, and confirm
+      workflow/skill text matches plan import/export/derive behavior.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T22:08:15.863Z
+  - _ulid: 01KKFFJJFHZZ7GPZZEY4WTR8WE
+    content: "Updated plan workflow/skill guidance to match the iterative plan-editing flow. Rewrote
+      @spec-plan-import to reflect content-only import, optional stored module_ref, re-import via
+      --into, approval before derive, and derive as the materialization step. Also corrected
+      @spec-plan-manual's stale note about derived_tasks auto-updating on import, updated
+      templates/skills/plan/SKILL.md, regenerated kspec-agents.md, and refreshed the rendered codex
+      core plan skill via node dist/cli/index.js skill install-core --platform codex --force after
+      confirming plan is plugin-provided rather than a normal shadow-skill render path.
+      Verification: npm run build; kspec validate --warnings-ok (warnings only, pre-existing
+      backlog)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T22:16:45.297Z

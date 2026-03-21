@@ -1,0 +1,86 @@
+notes:
+  - _ulid: 01KJW7S7GG7AAX81YBMC2S3PHH
+    content: >-
+      Execution context:
+
+      - Background: finalize deprecation behavior for legacy ralph command.
+
+      - Scope: update migration message so ralph run points to agent dispatch start, keep end-loop
+      mapping, ensure non-zero exit code.
+
+      - Files: src/cli/commands/ralph.ts and tests/ralph-replacement.test.ts.
+
+      - Verification: targeted vitest for ralph replacement, then kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T10:55:00.624Z
+  - _ulid: 01KJW83C4Z9XMYTW2X5MZJVMES
+    content: >-
+      Implemented deprecation-message alignment for ralph command.
+
+      - Updated src/cli/commands/ralph.ts to map 'kspec ralph run' -> 'kspec agent dispatch start'
+      and keep 'kspec ralph end-loop' -> 'kspec agent end-loop'.
+
+      - Kept deprecation behavior exiting with code 1 (EXIT_CODES.ERROR).
+
+      - Updated tests/ralph-replacement.test.ts to assert explicit exit code 1 and verify the new
+      mapping line.
+
+      Verification:
+
+      - npx vitest run tests/ralph-replacement.test.ts (pass: 9 tests)
+
+      - npx vitest run (pass: 173 files, 3641 passed, 3 skipped)
+
+      - kspec validate exits 4 due pre-existing project-wide meta/reference issues unrelated to this
+      task (missing .kspec/skills/observations/SKILL.md and duplicate @observations slug).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T11:00:33.055Z
+  - _ulid: 01KJW862RND6TRHHJ90R4FV9SR
+    content: "Submitted for review in PR #670: https://github.com/kynetic-ai/kynetic-spec/pull/670"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T11:02:01.749Z
+  - _ulid: 01KJW8G3K2BQ44P56636NPYRJ6
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @ralph-replacement ac-1 regression in PR #670;
+      deprecation message and tests removed required dry-run migration mapping."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T11:07:30.274Z
+  - _ulid: 01KJW93QVKPK8CQX2V190EMN60
+    content: >-
+      [FIX_CYCLE: 1] Restored dry-run migration guidance required by @ralph-replacement ac-1.
+
+      - Added deprecation mapping: 'kspec ralph --dry-run' -> 'kspec agent dispatch start --dry-run'
+      in src/cli/commands/ralph.ts.
+
+      - Updated tests/ralph-replacement.test.ts to assert dry-run mapping is present (using
+      resilient substring assertions to avoid ANSI formatting brittleness).
+
+      Verification:
+
+      - npm run build (pass)
+
+      - npx vitest run tests/ralph-replacement.test.ts (pass: 9/9)
+
+      - npx vitest run (pass: 173 files, 3641 passed, 3 skipped)
+
+      - kspec validate exits 4 due pre-existing project-wide schema/reference issues unrelated to
+      this task (missing .kspec/skills/observations/SKILL.md and duplicate @observations refs).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T11:18:13.619Z
+  - _ulid: 01KJW94FADSDH8KZXRT53EKGQS
+    content: >-
+      Fix-cycle update pushed to PR #670.
+
+      - Commit: 676e03b38
+
+      - Branch: fix/ralph-deprecation-dispatch-migration
+
+      - MUST-FIX review items addressed (dry-run mapping restored in deprecation output and AC test
+      coverage).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T11:18:37.646Z

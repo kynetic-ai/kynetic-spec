@@ -1,0 +1,124 @@
+notes:
+  - _ulid: 01KK5TDYYBRPRM8JXCA8Z18DCZ
+    content: >-
+      Execution context:
+
+      - Background: UI revamp added plans, triage, validation/alignment, settings, and sessions
+      views, but GitHub Pages static mode still exports only the older snapshot shape.
+
+      - Scope: update spec coverage where missing, extend snapshot/static API for the new read-only
+      views, and add regression tests for static mode behavior.
+
+      - Files: src/export/*, packages/shared/src/api.ts, packages/web-ui/src/lib/api*.ts, relevant
+      route components/tests.
+
+      - Verification: targeted vitest for export/static API and web-ui route behavior, then kspec
+      validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T04:14:04.236Z
+  - _ulid: 01KK5VAC54BJM57Z3M1FNZ0TM7
+    content: >-
+      Implemented static-mode support for the new UI views:
+
+      - Export now includes plans, triage records, detailed validation, and alignment data for
+      GitHub Pages snapshots.
+
+      - Static API now serves plans/plan content, triage records, validation/alignment, and
+      plan-based task/spec filtering from the snapshot.
+
+      - Settings renders snapshot-backed project/conventions data in static mode; sessions detail
+      shows an explicit read-only message instead of a failing fetch path.
+
+      - Added targeted export/static regression tests.
+
+      Verification: `npx vitest run tests/export/json.test.ts
+      packages/web-ui/tests/api-static.test.ts tests/web-ui-settings.test.ts
+      tests/lint/no-static-analysis.test.ts` passed. `npm test` still has unrelated timeouts in
+      tests/cli/session-start-format.test.ts, and `kspec validate` still reports pre-existing
+      meta/spec debt unrelated to this task.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T04:29:35.268Z
+  - _ulid: 01KK5VBV1YSACFYNNWB1CCWMND
+    content: "Submitted for review in PR #697: https://github.com/kynetic-ai/kynetic-spec/pull/697"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T04:30:23.295Z
+  - _ulid: 01KK5WG3XE7EKVMZRB2E2DXA5M
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #697 is red in CI (root build fails on
+      src/export/types.ts import), lacks AC-22 regression coverage for static sessions, and includes
+      unrelated docs/skill changes from other tasks."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T04:50:12.014Z
+  - _ulid: 01KK5ZQZFDV497R8GWAZFKHTJ7
+    content: >-
+      [FIX_CYCLE: 1] Addressed all three MUST-FIX items:
+
+      1. Fixed CI build failure: replaced @kynetic-ai/shared import in src/export/types.ts with
+      local types (TriageRecord from schema, new ExportedPlan interface) — tsc now compiles clean.
+
+      2. Removed unrelated commits: reverted docs/plans/completeness-warning-debt-reduction.md and
+      skill template changes from other tasks.
+
+      3. Added AC-22 regression tests: session detail page static message guard, fetchSessions empty
+      return in static mode, fetchSession throw in static mode.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T05:46:55.341Z
+  - _ulid: 01KK617YNERGDB1Y4NNAR1DD0G
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: PR #697 is still conflated with unrelated
+      Playwright CI/package changes, and AC-22 coverage relies on source-scanning tests instead of
+      behavior-level regression coverage."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T06:13:07.375Z
+  - _ulid: 01KK64GN76KTTZ4WC8R92CRF5K
+    content: >-
+      [FIX_CYCLE: 3] Addressed both MUST-FIX items from review:
+
+      1. Removed unrelated commits: Rebased branch onto updated main (which now has the UI revamp
+      merged) and cherry-picked only the 2 task-specific commits, dropping the unrelated
+      docs/skill/CI/package changes. PR diff now contains only 10 files, all directly related to
+      this task.
+
+      2. Replaced source-scanning AC-22 tests with behavioral tests: The old tests used readFileSync
+      to scan Svelte/TS source strings. New tests mock SvelteKit transitive deps ($app/environment,
+      $lib/stores/project.svelte, $lib/constants) and import fetchSessions/fetchSession from api.ts
+      directly, exercising the actual static-mode code paths.
+
+
+      Full test suite: 182 passed, 3 pre-existing failures (codex render path, enhanced setup codex,
+      session-start-format timeout).
+
+      Task-specific tests: 73/73 passed. tsc clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T07:10:18.343Z
+  - _ulid: 01KK65B6M7H7G6KM5KSJK2K9FW
+    content: "[FIX_CYCLE: 5] Review findings: MUST-FIX: @gh-pages-export ac-22 still lacks a
+      behavior-level regression test proving the static sessions route renders its read-only
+      message."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T07:24:48.135Z
+  - _ulid: 01KK66DXJ7T4GQBCD7Y2B8C9E1
+    content: >-
+      [FIX_CYCLE: 5] Added behavior-level Playwright E2E regression test for AC-22. Two tests in
+      sessions.spec.ts:
+
+      1. 'session detail shows read-only message in static mode' — Forces static mode by
+      intercepting health check (→503) and serving fake snapshot JSON. Navigates to /sessions/:id
+      and verifies data-testid='session-static-message' is visible with text 'Session history is not
+      included in the static export'.
+
+      2. 'session detail does not attempt API calls in static mode' — Same static mode setup, plus
+      tracks whether /api/sessions/** is ever called (proves loadSession() early-returns without
+      fetching).
+
+      These are true behavior-level tests: real SvelteKit app, real mode detection fallback, real
+      route rendering in the browser.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T07:43:45.735Z

@@ -1,0 +1,51 @@
+_ulid: 01KKQRK3BM6MARTC3MSE6YV4VY
+slugs:
+  - task-ws-enrichment
+title: Enrich WebSocket broadcast payloads
+type: task
+description: >-
+  Update broadcast calls in daemon routes to include display-ready data. The entities are already
+  loaded at broadcast time.
+
+
+  task_updated: add title, include both old and new status. agent_invocation: add task_title
+  alongside task_id. agent_text_chunk: add task_title. inbox_item_created: include full item data
+  (already partially done).
+
+
+  Update shared BroadcastEvent types in @kynetic-ai/shared.
+
+
+  Acceptance gates (from @ui-api-aggregation): Broadcasts include display title and old/new state
+  (ac-4).
+spec_ref: "@ui-api-aggregation"
+plan_ref: "@plan-ui-data-layer-rework"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #870. Enriched all WebSocket broadcast payloads: task_updated includes
+  title and old/new status, agent_invocation and agent_text_chunk include task_title,
+  inbox_item_created includes full item data (text, tags, added_by, created_at). Added typed event
+  data interfaces to @kynetic-ai/shared. All AC-4 requirements verified with 6 dedicated tests."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - daemon
+  - websocket
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-15T05:46:33.973Z
+  commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKQZ8Y9GCS76HXBKYYZ3QW70
+created_at: 2026-03-15T03:28:15.220Z
+started_at: 2026-03-15T05:25:23.522Z
+submitted_at: 2026-03-15T05:46:34.752Z
+completed_at: 2026-03-15T05:57:21.501Z
+todos: []
+automation: eligible

@@ -1,0 +1,175 @@
+notes:
+  - _ulid: 01KFADFRVSCQ8AA3HT5YHX5FVZ
+    content: |-
+      **Implementation for 5 ACs**
+
+      **File to modify:** src/cli/commands/validate.ts
+
+      **Step 1: Add CLI options**
+
+      ```typescript
+      .option('--staleness', 'Check for stale status mismatches')
+      .option('--strict', 'Treat staleness warnings as errors')
+      ```
+
+      **Step 2: Implement staleness checks**
+
+      Add new function in validate.ts or separate src/lib/staleness.ts:
+
+      ```typescript
+      interface StalenessWarning {
+        type: 'parent-pending' | 'spec-no-task' | 'task-spec-mismatch';
+        message: string;
+        refs: string[];
+      }
+
+      function checkStaleness(
+        items: SpecItem[],
+        tasks: Task[]
+      ): StalenessWarning[] {
+        const warnings: StalenessWarning[] = [];
+        // Check 1: Parent task pending but children done
+        for (const task of tasks) {
+          if (task.status \!== 'pending' && task.status \!== 'in_progress') continue;
+          if (\!task.spec_ref) continue;
+          const spec = findSpec(task.spec_ref, items);
+          if (\!spec) continue;
+          const children = findChildSpecs(spec, items);
+          if (children.length === 0) continue;
+          const allImplemented = children.every(
+            c => c.implementation_status === 'implemented'
+          );
+          if (allImplemented) {
+            warnings.push({
+              type: 'parent-pending',
+              message: `Task @${task.slug} is pending but all linked specs are implemented`,
+              refs: [task._ulid]
+            });
+          }
+        }
+        // Check 2: Spec implemented but no completed task
+        for (const item of items) {
+          if (item.implementation_status \!== 'implemented') continue;
+          const completedTasks = tasks.filter(
+            t => t.status === 'completed' && t.spec_ref === `@${item.slug}`
+          );
+          if (completedTasks.length === 0) {
+            warnings.push({
+              type: 'spec-no-task',
+              message: `Spec @${item.slug} is implemented but has no completed tasks`,
+              refs: [item._ulid]
+            });
+          }
+        }
+        // Check 3: Task completed but spec not started
+        for (const task of tasks) {
+          if (task.status \!== 'completed') continue;
+          if (\!task.spec_ref) continue;
+          const spec = findSpec(task.spec_ref, items);
+          if (\!spec) continue;
+          if (spec.implementation_status === 'not_started') {
+            warnings.push({
+              type: 'task-spec-mismatch',
+              message: `Task @${task.slug} completed but spec @${spec.slug} is not_started`,
+              refs: [task._ulid, spec._ulid]
+            });
+          }
+        }
+        return warnings;
+      }
+      ```
+
+      **Step 3: Integrate with validate command**
+
+      ```typescript
+      if (options.staleness) {
+        const warnings = checkStaleness(items, tasks);
+        if (warnings.length > 0) {
+          console.log(`\nStaleness warnings (${warnings.length}):`);
+          for (const w of warnings) {
+            console.log(`  ⚠ ${w.message}`);
+          }
+          if (options.strict) {
+            process.exit(EXIT_CODES.VALIDATION);
+          }
+        }
+      }
+      ```
+
+      **Testing:**
+      - Create test fixtures with each staleness scenario
+      - Verify correct warnings are generated
+      - Test --strict flag causes exit code 4
+      - Test without --staleness flag produces no staleness output
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T06:01:16.921Z
+  - _ulid: 01KFATNB2K1KYFX92F079RCN0J
+    content: >-
+      Implemented stale status detection with all 5 ACs:
+
+      - AC1: Check if task has dependencies and all are completed/implemented
+
+      - AC2: Check if spec is marked implemented but has no completed tasks
+
+      - AC3: Check if task is completed but spec is still not_started
+
+      - AC4: Added --staleness flag to validate command
+
+      - AC5: Added --strict support to exit code 4 if staleness warnings found
+
+
+      Implementation strategy: Since schema doesn't have hierarchical parent/child relationships for
+      specs, AC1 checks task dependencies (depends_on) instead. This still catches the intended
+      scenario: a parent task that's pending when all its subtasks are done.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T09:51:30.899Z
+  - _ulid: 01KFATPE84VBF1Q3T30M6AG657
+    content: |-
+      Implementation complete and manually tested. Tests still needed:
+      1. Test AC1 - parent pending with all deps done
+      2. Test AC2 - spec implemented with no tasks
+      3. Test AC3 - task done but spec not_started
+      4. Test --staleness flag displays warnings correctly
+      5. Test --strict flag exits with code 4 when staleness warnings present
+      6. Test --staleness with no issues shows 'Staleness: OK'
+
+      Manual testing confirmed all scenarios work correctly. See commit 4be72d1.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T09:52:06.917Z
+  - _ulid: 01KFATRAR3TPY3XN8QMFV2M4DX
+    content: >-
+      Implemented all 5 acceptance criteria for staleness detection:
+
+
+      1. parent-pending-children-done: Warns when task has completed dependencies but is still
+      pending
+
+      2. spec-implemented-no-task: Warns when spec is marked implemented but has no completed tasks
+
+      3. task-done-spec-not-started: Warns when task is completed but linked spec is still
+      not_started
+
+      4. staleness-flag: Added --staleness flag to validate command
+
+      5. staleness-exit-code: Exit code 0 by default, exit code 4 with --strict
+
+
+      Implementation:
+
+      - Added checkStaleness() function in src/cli/commands/validate.ts
+
+      - Added formatStalenessWarnings() function for display
+
+      - Integrated with validate command - runs when --staleness flag is provided
+
+      - All 6 tests passing in tests/staleness.test.ts
+
+
+      Note: AC-1 was reinterpreted as checking task dependencies rather than spec item parent-child
+      relationships, since the flat loaded structure doesn't preserve spec hierarchy.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T09:53:08.867Z

@@ -1,0 +1,88 @@
+_ulid: 01KKSGT0JK5JV84SHPA6K7MAK1
+slugs:
+  - task-session-stream-ws-ui
+title: Update web UI session stream for WebSocket-first live viewing
+type: task
+description: |
+  Rewrite the session detail page to consume the new WebSocket
+  event stream for live sessions and use on-demand HTTP for
+  tool output.
+
+  Changes to sessions/[id]/+page.svelte:
+  1. Remove the refreshEvents() HTTP polling and debounce timer.
+  2. Remove streamingText accumulation from agent_text_chunk.
+  3. Add WebSocket handlers for new event types:
+     - message_start → add DisplayBlock with writing indicator
+     - message_progress → append text to current message block
+     - message_complete → finalize message block, remove indicator
+     - thinking_start/progress/complete → same pattern, collapsed
+     - tool_call_start → add ToolCallBlock with name + input, status running
+     - tool_call_complete → update status, duration_ms
+  4. On expand of tool call block, fetch output via
+     GET /api/sessions/:id/events/:seq using TanStack Query
+     (createQuery with enabled gated on expand state).
+  5. Show error state with retry if detail fetch fails.
+
+  Changes to session-utils.ts:
+  - Add incrementalBlockUpdate() for applying WS events to block list
+  - Keep parseEventsToBlocks() for historical playback (unchanged)
+  - For historical playback, strip tool output from initial render
+    and load on-demand same as live (consistent UX)
+
+  Initial/catch-up load:
+  - When navigating to a live session, fetch events via HTTP first
+    (existing endpoint), then attach WS handlers for new events
+    using lastSeq to avoid duplication.
+
+  E2E tests should cover: live message streaming (newline-boundary
+  updates visible), tool call expand/load, historical session playback,
+  and WebSocket reconnection recovery.
+
+  Acceptance gates:
+  - @ws-session-event-streaming ac-message-start
+  - @ws-session-event-streaming ac-message-progress
+  - @ws-session-event-streaming ac-message-complete
+  - @ws-session-event-streaming ac-tool-call-start
+  - @ws-session-event-streaming ac-tool-call-complete
+  - @ws-session-event-streaming ac-tool-output-on-demand
+  - @ws-session-event-streaming ac-thinking-blocks
+  - @ws-session-event-streaming ac-live-session-catchup
+  - @ws-session-event-streaming ac-no-http-polling
+  - @ws-session-event-streaming ac-reconnect-recovery
+spec_ref: "@ws-session-event-streaming"
+plan_ref: "@plan-session-stream-redesign-websocket-first-with-on-de"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #885. Rewrote session detail page for WebSocket-first live viewing:
+  replaced HTTP polling with WS event handlers (message_start/progress/complete,
+  thinking_start/progress/complete, tool_call_start/complete) via incrementalBlockUpdate(); added
+  on-demand tool output via TanStack Query (fetchSessionEventDetail with expand-gated enabled); HTTP
+  catch-up on load and after WS reconnection; stripToolOutput for consistent on-demand UX. All 10
+  task-gated ACs covered (ac-message-start, ac-message-progress, ac-message-complete,
+  ac-tool-call-start, ac-tool-call-complete, ac-tool-output-on-demand, ac-thinking-blocks,
+  ac-live-session-catchup, ac-no-http-polling, ac-reconnect-recovery) plus ac-historical-playback.
+  253 test files pass (5526 tests), E2E smoke test updated for new WS protocol."
+depends_on:
+  - "@task-session-event-accumulator"
+  - "@task-session-event-detail-endpoint"
+context: []
+priority: 2
+tags:
+  - web-ui
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-15T23:30:24.116Z
+  commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKSX2HQBB50JQ9XKCCK461T7
+created_at: 2026-03-15T19:50:42.003Z
+started_at: 2026-03-15T23:25:23.533Z
+submitted_at: 2026-03-15T23:30:24.946Z
+completed_at: 2026-03-15T23:43:02.282Z
+todos: []
+automation: eligible

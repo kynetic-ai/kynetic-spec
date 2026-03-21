@@ -1,0 +1,46 @@
+_ulid: 01KJA2FAHZBWGKS0HXH9MW79Q0
+slugs: []
+title: Remove dead code in session modules after refactor
+type: task
+description: >-
+  After the session.ts split (depends on @01KJ9ZBT), clean up dead code that was carried forward:
+
+
+  1. Unused imports: listSessions, IterationSummary, SearchMatch — remove from whichever module they
+  end up in
+
+  2. Unused _allTasks parameter on toBlockedTaskSummary — remove parameter from function signature
+  and call sites
+
+  3. inboxSummaries alias: `const inboxSummaries: InboxSummary[] = allInboxSummaries;` — just use
+  allInboxSummaries directly
+
+  4. formatSearchTimestamp: trivial one-liner wrapper `new Date(eventTs).toISOString()` — inline at
+  call sites or remove
+
+
+  Verify: all tests pass, clean build.
+
+
+  Depends on: @01KJ9ZBT (session.ts refactor)
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #533. Removed inboxSummaries alias (context.ts) and inlined
+  formatSearchTimestamp wrapper (log.ts). Items 1-2 (unused imports, _allTasks param) were already
+  cleaned in PR #523. All 522 tests pass, clean build."
+depends_on:
+  - "@01KJ9ZBT"
+context: []
+priority: 3
+tags:
+  - refactor
+  - cli
+vcs_refs: []
+created_at: 2026-02-25T09:35:53.405Z
+started_at: 2026-02-25T14:28:41.562Z
+completed_at: 2026-02-25T14:51:50.891Z
+todos: []
+automation: eligible

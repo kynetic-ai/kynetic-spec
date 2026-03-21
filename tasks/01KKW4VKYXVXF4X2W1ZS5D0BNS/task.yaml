@@ -1,0 +1,60 @@
+_ulid: 01KKW4VKYXVXF4X2W1ZS5D0BNS
+slugs:
+  - task-new-review-per-cycle
+title: Create new review record per fix cycle
+type: task
+description: |
+  When a task re-enters pending_review after a fix cycle, the reviewer
+  creates a new review record rather than reopening the previous one.
+  The task's review_ref is updated to point to the new record.
+
+  Why: A single mutable review record spanning multiple fix cycles
+  makes it impossible to see what happened in each cycle. Separate
+  records per cycle give clean timeline artifacts and match the mental
+  model of individual reviews on a pull request.
+
+  What: Update the review skill and pr-reviewer agent workflow to
+  always create a new review when picking up a pending_review task
+  that already has a closed review_ref. Update review_ref on the task
+  to point to the new record. The old record remains closed and
+  accessible via the activity timeline.
+
+  How: The reviewer skill instructions check for existing closed
+  review_ref and create fresh. The dispatch orientation prompt surfaces
+  the prior review ref. Code changes: update review-task-integration
+  to handle review_ref replacement, ensure old review records are
+  findable by task ref for timeline rendering.
+
+  Covers: @review-record-per-cycle-lifecycle ac-2, ac-3.
+spec_ref: "@review-record-per-cycle-lifecycle"
+plan_ref: "@plan-task-activity-timeline"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Added 3 integration tests verifying per-cycle review record behavior:
+  review_ref replacement on new review creation, for-task returning historical reviews, and
+  independent disposition preservation across cycles. No code changes needed."
+depends_on:
+  - "@task-auto-close-review-on-verdict"
+context: []
+priority: 2
+tags:
+  - cli
+  - reviews
+  - dispatch
+vcs_refs: []
+review_ref: "@review-per-cycle-tests"
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-new-review-per-cycle/01kkw4vk
+  captured_at: 2026-03-16T22:15:19.952Z
+  commit: 4439a1d4fa7152a6db9258677970fd6707fc6c66
+  remote: null
+  remote_url: null
+  upstream_ref: dev
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-16T20:19:35.005Z
+started_at: 2026-03-16T22:08:02.259Z
+submitted_at: 2026-03-16T22:15:21.014Z
+completed_at: 2026-03-16T22:18:49.435Z
+todos: []

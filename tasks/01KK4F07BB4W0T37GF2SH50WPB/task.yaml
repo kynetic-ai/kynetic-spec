@@ -1,0 +1,34 @@
+_ulid: 01KK4F07BB4W0T37GF2SH50WPB
+slugs: []
+title: Fix task IDs showing instead of task names in sessions and dispatch views
+type: task
+description: "Task references in sessions list, session detail panel, and active invocation rows
+  show raw task IDs (@01KK3BSWT9NQHKEZ19P97VT3SV) instead of resolved task names. The ReferenceLink
+  component shows the ID when no title prop is passed. The fix existed briefly but was lost (likely
+  overwritten). Sessions list (sessions/+page.svelte line 174), SessionContextPanel, and
+  ActiveInvocationRow all pass task_id/task_ref to ReferenceLink without resolving the title first.
+  Need to either: (a) resolve task titles at the page level and pass them down, or (b) make
+  ReferenceLink self-resolving by fetching task data."
+spec_ref: "@ui-session-history"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp. Fix resolves task names in sessions list,
+  session detail panel, and active invocation rows using the same fetchTasks + title lookup pattern
+  as the dashboard. Clean code, correct Svelte 5 patterns, all tests pass.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - web-ui
+  - regression
+vcs_refs: []
+session_id: 01KK4NQMBN3X1Z3JHPBQKA903B
+created_at: 2026-03-07T15:35:05.323Z
+started_at: 2026-03-07T17:33:08.437Z
+submitted_at: 2026-03-07T17:42:13.891Z
+completed_at: 2026-03-07T21:54:47.316Z
+todos: []
+automation: eligible

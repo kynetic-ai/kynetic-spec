@@ -1,0 +1,147 @@
+notes:
+  - _ulid: 01KKSREVJXS84VH3494MWGZDXX
+    content: >-
+      ## Problem
+
+
+      All sessions show "0 events" in the web UI session list and dispatch invocation list. 
+
+      The session list API uses getSessionMetadataOnly() which hardcodes event_count,
+      iteration_count, 
+
+      and tasks_completed to 0. It intentionally skips reading events.jsonl for performance
+      (ac-metadata-only), 
+
+      but the stats were never populated through any other mechanism.
+
+
+      ## What needs to happen
+
+
+      Three new ACs were added to cover this:
+
+
+      ### 1. ac-persist-on-close (@session-summary-cache)
+
+      When a session reaches a terminal status, compute stats from events.jsonl and persist them 
+
+      in session.yaml. This is the core fix — once stats are in the metadata file, the list
+      endpoint 
+
+      picks them up for free.
+
+
+      **Where to look:**
+
+      - closeSession() in src/sessions/store.ts (lines ~432-462) — already reads metadata, writes 
+        session.yaml, and does a shadow commit. Add countEventLines() call before the write.
+      - SessionMetadataSchema in src/sessions/types.ts (line 55) — add event_count:
+      z.number().optional() 
+        (and iteration_count, tasks_completed) so values survive the Zod parse round-trip. Optional so 
+        existing sessions without these fields still load.
+      - getSessionMetadataOnly() in src/sessions/store.ts (line 1878) — change hardcoded 0 to read 
+        from metadata: event_count: metadata.event_count ?? 0
+
+      ### 2. ac-live-counter (@session-summary-cache)
+
+      Active sessions need live stats without re-scanning events.jsonl on every list request.
+
+
+      **Approach investigated:**
+
+      - Add an in-memory Map<sessionId, number> to SessionSummaryCache (src/sessions/cache.ts)
+
+      - Increment on each event append, serve from memory for active sessions
+
+      - The invocation runtime (src/agent-runtime/invocation.ts) has a single funnel for all event 
+        writes: the appendSessionEvent wrapper at line ~343. After appendEvent succeeds, notify the cache.
+      - IMPORTANT: appendSessionEvent is in library code, but SessionSummaryCache is daemon-side. 
+        Use a callback on InvocationOptions (like the existing onUpdate callback) to keep layers decoupled. 
+        Something like onEventAppended?: (sessionId: string) => void
+      - The dispatch engine (src/agent-runtime/dispatch.ts) constructs InvocationOptions at ~line
+      2001 
+        and already passes onUpdate — wire the new callback there.
+      - On session close, discard the live counter entry (the persisted YAML value takes over).
+
+
+      ### 3. ac-recompute-stats (@session-log-list)
+
+      CLI command: kspec session log recompute-stats [--session <id>]
+
+      - Without --session: iterate all non-active sessions missing event_count in their session.yaml
+
+      - With --session: do just one
+
+      - Run countEventLines(), write back to session.yaml
+
+      - Report how many sessions were updated
+
+      - Fits alongside existing kspec session compact as a maintenance command
+
+
+      ## Key files
+
+      - src/sessions/store.ts — closeSession(), getSessionMetadataOnly(), countEventLines()
+
+      - src/sessions/types.ts — SessionMetadataSchema
+
+      - src/sessions/cache.ts — SessionSummaryCache class
+
+      - src/agent-runtime/invocation.ts — appendSessionEvent wrapper, InvocationOptions
+
+      - src/agent-runtime/dispatch.ts — constructs InvocationOptions for dispatch
+
+
+      ## What does NOT need to change
+
+      - The daemon list API endpoint (packages/daemon/src/routes/sessions.ts) — already reads from
+      cache
+
+      - The web UI — already displays event_count from SessionLogSummary
+
+      - The detail endpoint — already computes real count via getSessionLogSummary()
+
+
+      ## Spec coverage
+
+      - ac-summary-stats and ac-active-refresh already existed but were not implemented properly
+
+      - ac-persist-on-close, ac-live-counter, ac-recompute-stats are new ACs added in this
+      investigation
+
+      - ac-metadata-only is satisfied — list still doesn't scan events.jsonl (reads persisted value
+      instead)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T22:04:25.053Z
+  - _ulid: 01KKSYEGWHKGA86F87YV9G55S6
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. SessionMetadataSchema (types.ts): Added optional event_count, iteration_count,
+      tasks_completed fields
+
+      2. closeSession() (store.ts): Now computes stats from events.jsonl via
+      countEventLines/countIterations/countTaskCompletions and persists them in session.yaml before
+      writing
+
+      3. getSessionMetadataOnly() (store.ts): Reads persisted stats from metadata (event_count ?? 0)
+      instead of hardcoding 0
+
+      4. SessionSummaryCache (cache.ts): Added in-memory liveEventCounts Map with
+      incrementEventCount(), discardLiveCounter(), getLiveEventCount() methods. The summaries()
+      method overlays live counts on active sessions.
+
+      5. InvocationOptions (invocation.ts): Added onEventAppended callback, called after each event
+      write
+
+      6. Dispatch engine (dispatch.ts): Wires onEventAppended to cache.incrementEventCount(), and
+      discards live counter + invalidates cache entry after invocation completes
+
+
+      Tests: 36 tests in session-summary-cache.test.ts covering all ACs (ac-persist-on-close,
+      ac-live-counter, plus existing ACs). Full suite passes (5482 tests).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T23:49:05.553Z

@@ -1,0 +1,19 @@
+_ulid: 01KFBKRGDJJW58T5YASXDMM394
+slugs:
+  - ralph-permission-prompt
+title: Implement permission prompting for ralph non-yolo mode
+type: task
+spec_ref: null
+meta_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Ralph deprecated. Permission model now per-agent auto_approve in agent definitions.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - ralph
+vcs_refs: []
+created_at: 2026-01-19T17:10:09.073Z
+todos: []
+automation: needs_review

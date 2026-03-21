@@ -1,0 +1,28 @@
+notes:
+  - _ulid: 01KF1ZGWAMSDSC14CDMSHXSX3V
+    content: |-
+      One-time migration steps:
+      1. Create orphan branch kspec-meta
+      2. Set up .kspec/ worktree pointing to it
+      3. Copy spec/* content to .kspec/
+      4. Initial commit on shadow branch
+      5. Add .kspec/ to .gitignore
+      6. Remove spec/ from main branch (or keep as archive)
+
+      This enables the shadow branch infrastructure and lets this project use itself.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T23:23:17.717Z
+  - _ulid: 01KF20NMT1WT68JM4GFZBSS1NN
+    content: |-
+      Migration complete:
+      - Created orphan branch kspec-meta
+      - Set up .kspec/ worktree
+      - Copied spec/* content to .kspec/
+      - Committed on shadow branch
+      - Verified kspec commands read from shadow
+
+      spec/ directory remains on main branch as archive.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T23:43:22.433Z

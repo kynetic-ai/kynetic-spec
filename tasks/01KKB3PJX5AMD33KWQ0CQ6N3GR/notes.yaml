@@ -1,0 +1,104 @@
+notes:
+  - _ulid: 01KKB3PJX5W3ZEBX5CG34Y49HD
+    content: |
+      Implementation notes:
+
+      The CLI already has --status, --agent (agent_type), --since. Add
+      --agent-id, --trigger, --task. The --agent flag maps to agent_type
+      for backward compat. Share filter logic between CLI and daemon where
+      possible — extract to a shared filterSessions() function.
+    author: "@claude"
+    created_at: 2026-03-10T05:32:16.165Z
+  - _ulid: 01KKD1R7HWQ6BWARVMNC91EXQB
+    content: >-
+      Execution context:
+
+      - Background: CLI session log list needs --agent-id, --trigger, --task, --agent-type, --offset
+      flags to match daemon API filtering
+
+      - Scope: Modify session log list command options/filtering, extract shared filterSessions(),
+      update stats/search to use new filters, update JSON output shape
+
+      - Files: src/cli/commands/session/log.ts (action handlers),
+      src/cli/commands/session/commands.ts (option registration), tests/session-log-list.test.ts
+      (new AC tests)
+
+      - Verification: npm test covering all 6 spec ACs + trait ACs
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T23:36:41.788Z
+  - _ulid: 01KKD2JTBGK0VKZNFYVRPXTGAM
+    content: >-
+      Implementation complete. Changes:
+
+      1. Extracted shared filterSessions() in log.ts - used by list, stats, and search commands
+
+      2. Added --agent-id, --trigger, --task, --agent-type, --offset flags to session log list
+
+      3. --agent and --agent-type are synonyms for backward compat (ac-backward-compat)
+
+      4. --trigger dispatched matches all task.* triggers (ac-trigger-filter)
+
+      5. JSON output now returns {items, total, offset, limit, filters?} matching daemon API shape
+      (ac-json-output)
+
+      6. Stats and search commands also accept new filters via shared SessionFilterOptions
+
+      7. Search uses pre-filtered session IDs when new filters are present
+
+      8. Updated 3 test files: session-log-list.test.ts (55 tests, all pass),
+      session-model-evolution.test.ts, session-legacy-cli.test.ts
+
+      9. Full test suite: 4432 passed, 3 skipped
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T23:51:13.008Z
+  - _ulid: 01KKD3NZ08W7BC72772GS2YAVN
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: session log JSON uses task instead of task_id in
+      unified filters, and filtered human summary omits filter state unless pagination truncates
+      results."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T00:10:24.649Z
+  - _ulid: 01KKD52MB2RB7648SVZDJBY32F
+    content: >-
+      Fix cycle 1 addressed:
+
+      - Session log JSON filter payload now uses task_id instead of task for API shape parity.
+
+      - Human summary now always includes active filter state, even when pagination does not
+      truncate filtered results.
+
+      - Added/updated session log list assertions for filters.task_id and summary text with filter
+      descriptions.
+
+      Verification:
+
+      - npm run build
+
+      - npm test -- tests/session-log-list.test.ts (passes)
+
+      - npm test (session-log changes pass; suite has an unrelated existing failure in
+      tests/cli-serve.test.ts foreground Ctrl+C exitCode expectation)
+
+      - kspec validate (warnings-only baseline, exit 6)
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T00:34:48.290Z
+  - _ulid: 01KKD6DZB4V4JSTPRAMGMV441F
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX review findings on PR #764: missing inherited
+      trait coverage for @trait-filterable-list ac-1/ac-2 and @trait-json-output ac-3 in session log
+      list tests."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T00:58:28.581Z
+  - _ulid: 01KKD7PTFBQ245H546K1DGP0AJ
+    content: Fix cycle 2 addressed:\n- Added explicit inherited trait coverage for
+      @trait-filterable-list ac-1 on the existing --status session log list test.\n- Added explicit
+      N/A annotation for @trait-filterable-list ac-2 because session log list does not implement
+      --tag filtering.\n- Added a JSON-mode invalid --status error-path test covering
+      @trait-json-output ac-3.\nVerification:\n- npm test -- tests/session-log-list.test.ts\n- npm
+      test\n- kspec validate (warnings-only baseline, exit 6)
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T01:20:47.083Z

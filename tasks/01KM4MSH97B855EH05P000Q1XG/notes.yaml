@@ -1,0 +1,14 @@
+notes:
+  - _ulid: 01KM4MSH9SZZ19KRF0YG9APK0R
+    content: "Validated on 2026-03-19: src/parser/yaml.ts deleteTask() throws 'Task file not found'
+      whenever extractRawTaskArray() returns an empty array, which conflates a missing file with an
+      existing but empty task file."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T03:31:59.417Z
+  - _ulid: 01KM4P6Z0QDP3PCN1YZG0HTDKK
+    content: "Automation status set to needs_review: Missing spec_ref; bug has clear behavior but still
+      needs explicit spec coverage and acceptance criteria."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T03:56:48.023Z

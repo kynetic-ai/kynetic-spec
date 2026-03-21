@@ -1,0 +1,48 @@
+notes:
+  - _ulid: 01KFJ4WDDC3F85VXQV9PD61A3K
+    content: "Automation status set to eligible: Single file fix in helpers/cli.ts, verifiable behavior
+      change"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T06:04:49.453Z
+  - _ulid: 01KFJ4WYA2XYP60BMJ4D462KJZ
+    content: >-
+      Fix in tests/helpers/cli.ts - currently returns stderr: '' when exit code is 0.
+
+
+      Change to always capture and return actual stderr output. This enables testing warning
+      messages that go to stderr even on successful commands.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T06:05:06.754Z
+  - _ulid: 01KFJCYJP7HK0N5X8TMMFV1J6V
+    content: >-
+      Fixed test helper to capture stderr on success by switching from execSync to spawnSync. The
+      key issue was that execSync only returns stdout when the command succeeds - stderr output is
+      lost. spawnSync properly captures both stdout and stderr regardless of exit code.
+
+
+      Changes made:
+
+      - Imported spawnSync from node:child_process
+
+      - Replaced execSync with spawnSync using shell mode for all invocations (consistent behavior,
+      proper arg parsing)
+
+      - spawnSync naturally captures both stdout and stderr in separate properties
+
+      - Fixed stdin handling to distinguish between undefined (no stdin) and empty string (send
+      empty line)
+
+
+      All 930 tests pass. The change enables testing warning messages that go to stderr even on
+      successful commands.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T08:25:48.999Z
+  - _ulid: 01KFJD15DA1JSZD38TAWXG4R4A
+    content: "PR #161 created: https://github.com/kynetic-ai/kynetic-spec/pull/161 - Awaiting automated
+      review and CI checks before merge"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T08:27:13.707Z

@@ -1,0 +1,25 @@
+_ulid: 01KHW2GZAZJ79CJ37JJ78GVGKH
+slugs:
+  - impl-doctor-command
+title: Implement kspec doctor command
+type: task
+spec_ref: "@doctor-command"
+plan_ref: "@plan-unified-health-check-command-kspec-doctor"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #423. Implemented kspec doctor command with unified health checks for
+  shadow branch, setup (hooks, skills, agents.md), and daemon status. Library layer in
+  src/parser/doctor.ts with CLI command in src/cli/commands/doctor.ts. All 14 ACs covered with 27
+  tests. Fixed ac-daemon-unreachable test coverage during PR review."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - dx
+vcs_refs: []
+created_at: 2026-02-19T23:07:25.407Z
+started_at: 2026-02-20T03:29:58.540Z
+completed_at: 2026-02-20T03:54:31.134Z
+todos: []
+automation: eligible

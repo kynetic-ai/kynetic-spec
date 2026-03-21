@@ -1,0 +1,46 @@
+_ulid: 01KJDQ142M8AM5HAYQBBG12VRS
+slugs: []
+title: kspec setup should work without CLAUDECODE=1 env var in non-interactive contexts. Either add
+  a --age
+type: task
+description: "**What**: `kspec setup` requires the `CLAUDECODE=1` environment variable (or
+  `CLAUDE_CODE_ENTRYPOINT` or `CLAUDE_PROJECT_DIR`) to detect the agent type as `claude-code`. In
+  non-interactive contexts like containerized ralph runners, these env vars may not be available,
+  causing `detectAgent()` to return `unknown` and setup to fail or print manual instructions instead
+  of auto-configuring. **Where**: `src/cli/commands/setup.ts` — the `detectAgent()` function (line
+  82-100) checks `process.env.CLAUDECODE`, `process.env.CLAUDE_CODE_ENTRYPOINT`, and
+  `process.env.CLAUDE_PROJECT_DIR`. The `registerSetupCommand()` function (line 1638-1655) has
+  options like `--dry-run`, `--author`, `--no-hooks` etc. but no `--agent` flag. The
+  `getSetupStatus()` function (line 774) and the main setup action (line 1345) both call
+  `detectAgent()`. **How**: Add an `--agent <type>` option to `kspec setup` that explicitly
+  specifies the agent type, bypassing `detectAgent()`. Supported values: `claude-code`, `cline`,
+  `cursor`, `windsurf`, `unknown`. When `--agent` is provided, skip detection and use the provided
+  type directly. Also consider a fallback detection: if env vars are absent, check for `~/.claude`
+  directory existence as a weaker signal for `claude-code`. The option should be threaded through to
+  both `runSetup()` and `getSetupStatus()`. **Done when**: (1) `kspec setup --agent claude-code`
+  works without any CLAUDECODE env var set. (2) `kspec setup --status --agent claude-code` reports
+  correct status. (3) `detectAgent()` still works as before when `--agent` is not provided. (4)
+  Invalid `--agent` values are rejected with a clear error. (5) Tests in
+  `tests/enhanced-setup.test.ts` and `tests/setup-pipeline-unification.test.ts` updated."
+spec_ref: "@enhanced-setup"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #594. Added setup --agent override
+  (claude-code|cline|cursor|windsurf|unknown), threaded override through setup and setup --status
+  paths, added ~/.claude fallback for detectAgent() when env markers are absent, and added
+  regression tests for override + invalid value guidance in enhanced-setup and
+  setup-pipeline-unification. AC coverage verified for @enhanced-setup own ACs and inherited trait
+  expectations; local npm test passed (160 files, 3545 passed, 3 skipped) and CI checks were green
+  on PR head before merge."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
+created_at: 2026-02-26T19:32:51.412Z
+started_at: 2026-02-28T07:04:26.341Z
+submitted_at: 2026-02-28T07:09:05.914Z
+completed_at: 2026-02-28T07:18:49.091Z
+todos: []
+automation: eligible

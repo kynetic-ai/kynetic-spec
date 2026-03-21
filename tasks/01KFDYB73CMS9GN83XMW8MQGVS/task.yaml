@@ -1,0 +1,19 @@
+_ulid: 01KFDYB73CMS9GN83XMW8MQGVS
+slugs: []
+title: Apply traits to item CRUD commands
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Applied traits to all 5 item CRUD commands. Each command now has appropriate trait
+  references matching the spec review plan.
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-20T14:53:36.748Z
+started_at: 2026-01-20T15:30:45.577Z
+completed_at: 2026-01-20T15:34:15.375Z
+todos: []

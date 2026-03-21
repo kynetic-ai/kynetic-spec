@@ -1,0 +1,50 @@
+_ulid: 01KJF687QGPXXV00F9ZPTQJKYF
+slugs: []
+title: "Ralph: Stream terminal/run output to session files and return bounded previews"
+type: bug
+description: >-
+  Problem: terminal/run currently accumulates child stdout/stderr in unbounded in-memory strings,
+  which can OOM long codex runs.
+
+
+  Scope (steps 1-2):
+
+  1) In terminal/run handler, stream stdout/stderr directly to per-session files (e.g.,
+  .kspec/sessions/<id>/tool-output/<toolCallId>.stdout.log and .stderr.log).
+
+  2) Keep only bounded in-memory preview (e.g., first N chars/lines and byte counters) for tool
+  response + CLI display.
+
+  3) Include metadata in tool response: stdout_path, stderr_path, stdout_bytes, stderr_bytes,
+  preview_truncated.
+
+  4) Preserve current UX by showing truncated preview in CLI while retaining full output on disk.
+
+
+  Done when: reproducing command-heavy codex run no longer grows heap unbounded from terminal/run
+  output, and full output is still retrievable from session artifacts.
+spec_ref: "@cli-ralph"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #576 (commit 4cf2a76e7d8223077e9f0db595080c145338b1c7). Implemented
+  streamed terminal/run stdout/stderr artifact capture to .kspec/sessions/{session}/tool-output with
+  bounded in-memory previews and metadata (stdout_path, stderr_path, stdout_bytes, stderr_bytes,
+  preview_truncated). Re-review fix-cycle verified explicit @cli-ralph ac-22/ac-23 test annotations
+  and spec alignment; CI checks passed on head fad7abeb before merge."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - ralph
+  - memory
+  - session-log
+vcs_refs: []
+session_id: null
+created_at: 2026-02-27T09:18:07.599Z
+started_at: 2026-02-27T09:40:30.969Z
+submitted_at: 2026-02-27T09:40:49.352Z
+completed_at: 2026-02-27T09:49:29.200Z
+todos: []
+automation: eligible

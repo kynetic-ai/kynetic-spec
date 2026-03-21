@@ -1,0 +1,29 @@
+notes:
+  - _ulid: 01KKAH5B8CJ9176335ST1J1378
+    content: "Affected tests: 'should limit activity timeline to 10 items in primer mode' (line 78) and
+      'should show up to 20 activity items in full mode' (line 119). Each runs 12 iterations of
+      (task add + start + submit + complete) = 48 CLI subprocesses. Takes ~10s locally, easily
+      exceeds 30s timeout under CI load. Fix approach: write 12 pre-completed tasks directly into
+      the temp fixture's project.tasks.yaml with valid ULIDs (use testUlid helper), status:
+      completed, closed_at timestamps, and slugs. The session start command reads from YAML so it
+      will pick them up without CLI round-trips. Verify timeline limits still enforced (10 primer,
+      20 full). The rest of the test file's tests use 1-3 CLI calls and are fine."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T00:08:16.908Z
+  - _ulid: 01KKAH6W0M36545A230QA60W5M
+    content: Task was auto-started by session context during creation. No implementation work has been
+      done yet — this session only created the spec and tasks. Task is ready for an agent to pick
+      up. Leaving in_progress for next dispatch cycle.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T00:09:06.837Z
+  - _ulid: 01KKAHDWR4BE8HGXPMP1SVY4G9
+    content: Replaced 2 timeline tests that used 48 sequential CLI subprocess calls each (12 iterations
+      × 4 task lifecycle calls) with direct YAML fixture seeding via seedCompletedTasks() helper.
+      The helper reads existing project.tasks.yaml, appends completed task entries with staggered
+      timestamps, and writes back. Tests no longer need the 30s timeout override. All 43 tests in
+      the file pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T00:12:56.964Z

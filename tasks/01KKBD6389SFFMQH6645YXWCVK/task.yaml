@@ -1,0 +1,37 @@
+_ulid: 01KKBD6389SFFMQH6645YXWCVK
+slugs: []
+title: "Document skill update workflow in AGENTS.md or task-work skill: when a task modifies a
+  SKILL.md, the"
+type: task
+description: >-
+  Document the skill update workflow so agents know to run kspec skill render after modifying
+  SKILL.md files.
+
+
+  Current gap: Agents modify skill source files but do not know they need to regenerate rendered
+  output. Users must manually remind them.
+
+
+  Fix: Add a step to the task-work skill (templates/skills/task-work.md) or a convention in
+  AGENTS.md: if task modifies any file in templates/skills/ or .kspec/skills/, run kspec skill
+  render and commit the rendered output. Small documentation change.
+spec_ref: "@platform-renderer-trait"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #756. Documented the skill-update workflow by adding a
+  regenerate-derived-files step to the task-work skill, adding the corresponding agent convention,
+  and regenerating the rendered task-work/agent outputs. Review verified this was a docs-only
+  change; full local test suite and PR CI passed, and workflow/rendered output alignment was
+  confirmed."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKCA2PMHVR86ANRH9F8Y06JZ
+created_at: 2026-03-10T08:18:01.609Z
+started_at: 2026-03-10T16:47:47.960Z
+submitted_at: 2026-03-10T16:55:02.244Z
+completed_at: 2026-03-10T17:22:18.634Z
+todos: []
+automation: eligible

@@ -1,0 +1,37 @@
+_ulid: 01KJDQ12GB09XHW1HVNMC7YJC4
+slugs: []
+title: "Ralph PR merge should auto-delete remote branches after merge. Currently accumulates stale
+  branches "
+type: task
+description: "**What**: After ralph merges PRs via the `pr-review-loop` workflow, remote branches
+  accumulate because the merge step does not include `--delete-branch`. 13 stale branches were found
+  after a single session. **Where**: `.kspec/kynetic.meta.yaml` — the `pr-review-loop` workflow (id
+  `01KFRX0S3VBZGV72A17E21AB9E`), specifically the merge action step at ~line 750-761 which
+  references `kspec workflow start @pr-review-merge`. Also the `pr-review-merge` workflow merge step
+  (~line 297-300) which says `gh pr merge (prefer merge commit to preserve trailers)`. The release
+  skill at `.claude/skills/release/SKILL.md` line 220 already uses `gh pr merge --merge
+  --delete-branch` as a pattern. **How**: Update the `pr-review-merge` workflow merge step content
+  in `kynetic.meta.yaml` to explicitly include `--delete-branch` in the `gh pr merge` command
+  guidance. Change the step from `gh pr merge (prefer merge commit to preserve trailers)` to `gh pr
+  merge --merge --delete-branch`. This is a meta YAML change — use `kspec` CLI to update the
+  workflow step, or edit the workflow directly. **Done when**: (1) The `pr-review-merge` workflow
+  merge step includes `--delete-branch` in its guidance. (2) `kspec agents generate` regenerated to
+  reflect the change. (3) After a ralph PR merge, the source branch is deleted from the remote."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #589. Updated @pr-review-merge workflow merge guidance to use 'gh pr
+  merge --merge --delete-branch' and regenerated kspec-agents.md. Verified via kspec meta get
+  @pr-review-merge and regression gate (npm test: 160 files passed, 3531 tests passed, 3 skipped)."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJH73C9JTMB6977AEY991KBQ
+created_at: 2026-02-26T19:32:49.803Z
+started_at: 2026-02-28T06:29:28.407Z
+submitted_at: 2026-02-28T06:29:29.735Z
+completed_at: 2026-02-28T06:36:19.057Z
+todos: []
+automation: eligible

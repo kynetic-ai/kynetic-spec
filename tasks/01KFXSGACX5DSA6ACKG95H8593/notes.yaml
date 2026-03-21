@@ -1,0 +1,224 @@
+notes:
+  - _ulid: 01KFXSGACWPEA08Q7VS0FDB6A7
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      When merging set-like arrays containing kspec references (depends_on, blocked_by, spec_ref),
+      references should be normalized to canonical form before comparison to prevent false
+      conflicts.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given both versions add refs to depends_on array, when one uses @slug and other uses
+      @ULID for same item, then refs are deduplicated (one entry in result, not two)
+
+      - ac-2: Given merge encounters ref that cannot be resolved, when normalization runs, then ref
+      is kept as-is (no error, graceful degradation)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-26T18:36:51.996Z
+  - _ulid: 01KFXSHG8E4EX358CMTPP1FXMD
+    content: |-
+      Implementation approach:
+
+      **Files to modify:**
+      - `src/merge/arrays.ts` - modify `mergeSetArray` to normalize refs
+      - May need to integrate with `src/parser/references.ts` for resolution
+
+      **Approach:**
+      1. Detect if array contains kspec references (strings starting with @)
+      2. For ref arrays, resolve each ref to canonical ULID before set comparison
+      3. Keep the original format from 'ours' side in output
+      4. If resolution fails, keep ref as-is (graceful degradation per ac-2)
+
+      **Complexity note:**
+      Ref normalization requires access to the kspec context (loaded specs/tasks) during merge.
+      The merge driver currently operates without full context loading.
+      May need to:
+      - Load minimal index for ref resolution, OR
+      - Accept that this is best-effort (works when merge happens in project context)
+
+      **Verification:**
+      - Test with depends_on containing @slug and @ULID for same task
+      - Verify deduplication
+      - Test with invalid ref to verify graceful degradation
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-26T18:37:30.766Z
+  - _ulid: 01KFXSM8GTC0NDB508ZGGAYZ9B
+    content: >-
+      **Background - Why this matters:**
+
+
+      When two branches modify `depends_on` arrays using different reference formats for the same
+      item, the merge driver treats them as different values, creating false conflicts or duplicate
+      entries.
+
+
+      **How to reproduce:**
+
+      1. Branch A adds: `depends_on: ["@task-watcher-impl"]` (slug format)
+
+      2. Branch B adds: `depends_on: ["@01KFPRX9"]` (ULID format)
+
+      3. Both reference the SAME task
+
+      4. Merge results in: `depends_on: ["@task-watcher-impl", "@01KFPRX9"]` (duplicate!)
+
+
+      **Example conflict seen in real merge:**
+
+      ```
+
+      Ours:   ["@task-watcher-impl"]
+
+      Theirs: ["@01KFPRX9"]
+
+      ```
+
+
+      These are the same ref - merge driver should recognize equivalence and deduplicate.
+
+
+      **Expected behavior:**
+
+      After merge, `depends_on` should have ONE entry (either format is acceptable, preferring
+      ours).
+
+
+      **Key insight:**
+
+      The merge driver runs during git operations. It may not have full kspec context loaded.
+      Implementation needs to either:
+
+      1. Load a minimal ref index during merge, or
+
+      2. Document that ref normalization is best-effort (works in project context)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-26T18:39:01.146Z
+  - _ulid: 01KFXSN1A5VT79A53JHAK2V7GC
+    content: >-
+      **Open design question (resolve before implementation):**
+
+
+      The merge driver is invoked by git with just file paths - it doesn't have the full kspec
+      context loaded. To normalize refs, we need to resolve @slug → @ULID.
+
+
+      **Options:**
+
+      1. **Lazy load index**: During merge, call `loadKspecContext()` to get ref resolution. Adds
+      latency but works everywhere.
+
+
+      2. **Best-effort**: Only normalize if running in a kspec project context. Document that
+      normalization may not work in bare repos or outside project.
+
+
+      3. **ULID-only comparison**: Skip slug resolution entirely. Only deduplicate exact string
+      matches. Simpler but doesn't solve the original problem.
+
+
+      **Recommendation:** Option 1 (lazy load) - the merge driver already reads YAML files, loading
+      the index is similar overhead and provides correct behavior.
+
+
+      This question should be answered before starting implementation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-26T18:39:26.534Z
+  - _ulid: 01KFXSTHH9K21G8XZQWZB1GK3E
+    content: >-
+      **Design decision resolved:** Use Option 1 (lazy load index).
+
+
+      During merge, load the kspec context to resolve refs to canonical ULIDs before comparison. The
+      merge driver already does file I/O, so loading the index is acceptable overhead for correct
+      behavior.
+
+
+      Implementation:
+
+      1. In `mergeSetArray` (or a wrapper), detect if array contains @ refs
+
+      2. If refs detected, call `loadKspecContext()` or similar to get ref resolver
+
+      3. Normalize all refs to ULIDs before Set comparison
+
+      4. Output uses 'ours' format preference
+
+
+      This removes the open question - task is now fully actionable.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-26T18:42:26.985Z
+  - _ulid: 01KG5R2HYGTGS78C9KR7KANVF0
+    content: >-
+      Session progress - Investigation and planning complete:
+
+
+      **Explored codebase:**
+
+      - `src/merge/arrays.ts:96-113` - `mergeSetArray` currently uses raw Set comparison
+
+      - `src/parser/refs.ts:109-317` - `ReferenceIndex` class with `resolve()` method
+
+      - `src/cli/commands/merge-driver.ts` - merge orchestration, currently no ref resolution
+
+      - Context loading via `initContext()` + `loadAllTasks()` + `loadAllItems()`
+
+
+      **Implementation plan ready:**
+
+      1. Add `normalizeRef()` helper to arrays.ts
+
+      2. Modify `mergeSetArray` to accept optional `ReferenceIndex` param
+
+      3. Add `buildRefIndex()` helper to merge-driver.ts (lazy load, graceful degradation)
+
+      4. Define `REF_SET_FIELDS = ['depends_on', 'blocked_by', 'implements', 'relates_to', 'tests',
+      'context', 'traits']`
+
+      5. Thread refIndex through `performSemanticMerge` → `mergeObjectsWithArrays`
+
+      6. Add tests for AC-1 (deduplication) and AC-2 (graceful degradation)
+
+
+      **Next steps:** Ready to implement code changes. Start with arrays.ts modifications.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-29T20:45:47.856Z
+  - _ulid: 01KG5RH3N28AC905Y1R0D5C7VB
+    content: >-
+      Implementation complete:
+
+
+      **Files modified:**
+
+      - `src/merge/arrays.ts`: Added `normalizeRef()` helper and updated `mergeSetArray()` to accept
+      optional `ReferenceIndex` parameter for ref normalization
+
+      - `src/cli/commands/merge-driver.ts`: Added `buildRefIndex()` for lazy context loading,
+      `REF_SET_FIELDS` constant, and updated `mergeObjectsWithArrays()` to use ref-aware merging
+
+      - `src/merge/index.ts`: Exported `normalizeRef` for testing
+
+      - `tests/merge-arrays.test.ts`: Added 14 new tests covering both ACs
+
+
+      **Test coverage:**
+
+      - AC-1 (deduplication): 8 tests covering slug/ULID/prefix deduplication, ours precedence,
+      mixed refs/non-refs
+
+      - AC-2 (graceful degradation): 6 tests covering unresolvable refs, no refIndex, non-ref values
+
+
+      **All 32 merge-arrays tests pass, all 12 merge-driver-cli tests pass.**
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-29T20:53:44.738Z

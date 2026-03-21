@@ -1,0 +1,140 @@
+notes:
+  - _ulid: 01KFBD9WV8G7CSZTKKRM5D6V45
+    content: >-
+      From retrospective: PR review feedback was merged without being addressed.
+
+
+      **Problem:**
+
+      - PR #87: 6 exit code issues identified by review, merged without fixing
+
+      - PR #89: Explicit request for inbox item, never created
+
+      - Velocity too high to process feedback properly
+
+
+      **Solution:**
+
+      Add CI check that blocks merge when PR has unresolved review comments:
+
+
+      1. Check for unresolved conversation threads on the PR
+
+      2. Check for review requests that haven't been addressed
+
+      3. Optionally: check for explicit action items in comments (e.g., 'TODO:', 'Fix:',
+      'Please...')
+
+
+      The review agent (claude-pr-review or similar) creates comments - CI should enforce they're
+      addressed before merge is allowed.
+
+
+      Could use GitHub's review thread resolution status or custom comment parsing.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T15:17:18.825Z
+  - _ulid: 01KFFP2G654S94ZEZBWKQ42V0M
+    content: >-
+      WIP: Designing CI check for unresolved PR review comments.
+
+
+      Current approach:
+
+      1. Create new GitHub Actions workflow (.github/workflows/check-review-comments.yml)
+
+      2. Trigger on PR events: opened, synchronize, ready_for_review, reopened
+
+      3. Also trigger on review events: submitted, dismissed
+
+      4. Use actions/github-script@v7 to check GitHub API for:
+         - CHANGES_REQUESTED reviews that haven't been dismissed
+         - Review comments with action item keywords (TODO, Fix, Must, etc.)
+      5. Fail CI check if unresolved CHANGES_REQUESTED found
+
+      6. Warn (but don't fail) if action item comments found
+
+
+      Encountered stream closed error when trying to write the workflow file - will need to retry in
+      next iteration.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T07:07:31.397Z
+  - _ulid: 01KFFP30JBZZ5MR5YWGKTNT3JF
+    content: >-
+      Implemented CI check for unresolved PR review comments.
+
+
+      **What was done:**
+
+      1. Created .github/workflows/pr-review-resolution-check.yml workflow
+
+      2. Uses GitHub GraphQL API to query review thread resolution status
+
+      3. Workflow triggers on PR events and review comment events
+
+      4. Fails check if unresolved, non-outdated review threads exist
+
+      5. Provides detailed output listing unresolved threads with location/author
+
+      6. Documented new check in AGENTS.md under PR Merge Requirements section
+
+
+      **How it works:**
+
+      - Queries GitHub's reviewThreads with isResolved and isOutdated fields
+
+      - Filters for threads that are NOT resolved AND NOT outdated
+
+      - If any found, fails the check with descriptive error message
+
+      - Lists first 200 chars of each unresolved comment for quick triage
+
+
+      **Key decisions:**
+
+      - Used github-script@v7 action for clean GraphQL integration
+
+      - Excluded outdated threads (comments on old commits that were force-pushed)
+
+      - Limited to first 100 review threads (pagination not needed for typical PRs)
+
+      - Displays comment author, file path, and snippet for context
+
+
+      This addresses the issue from retrospective where PRs were merged with unaddressed review
+      feedback.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T07:07:48.172Z
+  - _ulid: 01KFFP4ZWRRX8MQ5F8S4NQWQZW
+    content: |-
+      Implementation complete and tested:
+
+      1. Created .github/workflows/pr-review-resolution-check.yml
+         - Uses GitHub GraphQL API to query review thread resolution status
+         - Triggers on PR events: opened, synchronize, reopened, ready_for_review
+         - Also triggers on review events: submitted, edited, dismissed
+         - Filters for unresolved, non-outdated threads
+         - Fails CI check if any unresolved threads found
+         - Provides detailed output listing each unresolved thread
+
+      2. Updated AGENTS.md with documentation
+         - Added 'Automated Review Resolution Check' section under PR Merge Requirements
+         - Explains how the check works and how to resolve threads
+
+      3. Tested in PR #116
+         - Workflow successfully ran and passed (no unresolved threads)
+         - Confirmed check appears in CI status alongside existing checks
+
+      Next: Wait for CI to complete, then submit task for review.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T07:08:53.017Z
+  - _ulid: 01KFFPH3EPAYVYN2Y8CN7BVWPW
+    content: "Fixed PR review issue: added null check for comment.author using optional chaining
+      (comment.author?.login ?? 'unknown') to handle deleted user accounts. Pushed fix to
+      feat/ci-review-check branch."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T07:15:29.878Z

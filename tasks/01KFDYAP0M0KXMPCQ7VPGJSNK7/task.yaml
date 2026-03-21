@@ -1,0 +1,19 @@
+_ulid: 01KFDYAP0M0KXMPCQ7VPGJSNK7
+slugs: []
+title: Create 8 core traits
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Created 8 core traits with 53 total acceptance criteria. All traits validated and
+  loading correctly.
+depends_on: []
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-20T14:53:19.251Z
+started_at: 2026-01-20T15:14:35.308Z
+completed_at: 2026-01-20T15:19:42.467Z
+todos: []

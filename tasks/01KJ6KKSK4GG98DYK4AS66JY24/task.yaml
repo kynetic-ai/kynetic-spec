@@ -1,0 +1,27 @@
+_ulid: 01KJ6KKSK4GG98DYK4AS66JY24
+slugs:
+  - simplify-ralph-with-session-budget
+title: Simplify ralph with session budget
+type: task
+spec_ref: "@ralph-session-budget-integration"
+plan_ref: "@plan-session-scoping-for-kspec"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #504. Replaced all marker file code with session budget APIs in ralph
+  loop. 5 commits addressed all review findings across 4 review rounds. All CI checks passed. All 5
+  ACs covered with behavioral tests."
+depends_on:
+  - "@implement-session-create-command"
+  - "@add-budget-enforcement-to-task-start"
+  - "@migrate-end-loop-to-session-state"
+context: []
+priority: 3
+tags:
+  - ralph
+  - sessions
+vcs_refs: []
+created_at: 2026-02-24T01:18:27.940Z
+started_at: 2026-02-24T17:16:09.552Z
+completed_at: 2026-02-24T20:14:32.554Z
+todos: []
+automation: eligible

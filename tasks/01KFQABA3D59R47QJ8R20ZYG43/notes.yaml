@@ -1,0 +1,61 @@
+notes:
+  - _ulid: 01KFRP6ABAR6P1NT8Y6X984S2G
+    content: >-
+      Implemented global PID/port file management for multi-directory daemon architecture.
+
+
+      Changes:
+
+      - Updated PidFileManager in both packages/daemon/src/pid.ts and src/cli/pid-utils.ts to use
+      ~/.config/kspec/ instead of .kspec/
+
+      - Added writePort() and readPort() methods with port validation (1-65535)
+
+      - Added ensureConfigDir() to create config directory with mode 0755
+
+      - Updated serve.ts command to use new PidFileManager methods
+
+      - Updated daemon server.ts to write both PID and port files on startup
+
+      - Updated test files (daemon-pid.test.ts, cli-serve.test.ts) to use global location
+
+      - Added backward compatibility methods (read/write) that map to readPid/writePid
+
+
+      Test coverage:
+
+      - All 30 tests in daemon-global-pid-port.test.ts pass
+
+      - All 11 tests in daemon-pid.test.ts pass
+
+      - All 28 tests in cli-serve.test.ts pass
+
+      - Total: 1325 passing tests (only 1 pre-existing failure in daemon-executable.test.ts)
+
+
+      Covered ACs: ac-9, ac-9b, ac-9c, ac-10, ac-11, ac-13
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T19:02:46.378Z
+  - _ulid: 01KFRPCZF0DV5Q1QVXD6WR7X2H
+    content: >-
+      PR #217 created: https://github.com/kynetic-ai/kynetic-spec/pull/217
+
+
+      Branch: feat/global-pid-port-management
+
+
+      Status: Waiting for CI to complete. All tests passed locally (1325/1329 passing, only 1
+      pre-existing failure in daemon-executable.test.ts).
+
+
+      Next steps:
+
+      - Wait for CI to complete
+
+      - Address any review feedback
+
+      - Use workflow to merge when ready: kspec workflow next @01KFRP8A
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T19:06:24.608Z

@@ -1,0 +1,26 @@
+_ulid: 01KHARBR1E7S781ZYJ2BQVWRJ7
+slugs: []
+title: Gate reflect phase on meaningful session work during ralph loop
+type: task
+description: "Gate /reflect skill on session introspection: before running the full reflect
+  workflow, check whether meaningful work was done during the session (tasks completed, PRs created,
+  code changes). Skip reflection if the session had no substantive work — avoids the 19% workflow
+  time spent on empty reflection chains (31 consecutive runs observed with no new insights).
+  Skill-level change to the reflect skill, not a workflow change."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #357. Added gating logic to the reflect skill's Loop Mode section -
+  agent now checks session introspection data (recently_completed tasks, working_tree status,
+  recent_commits) before starting reflection. If no meaningful session work detected, reflection is
+  skipped to prevent wasted time on empty reflection runs."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-13T05:42:42.988Z
+started_at: 2026-02-14T03:18:13.462Z
+completed_at: 2026-02-14T03:28:21.762Z
+todos: []
+automation: eligible

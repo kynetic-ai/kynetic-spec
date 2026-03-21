@@ -1,0 +1,75 @@
+notes:
+  - _ulid: 01KKCDZA4YHXHYK95XAEZB9AJC
+    content: >-
+      Execution context:
+
+      - Background: item set --trait silently replaces entire traits array without validation. No
+      --add-trait/--remove-trait convenience on item set. Mutations show no before→after diff.
+
+      - Scope: (1) Add --add-trait/--remove-trait flags to item set with proper validation matching
+      item add quality, (2) Fix --trait validation/canonicalization, (3) Add before→after diff
+      display for item set, (4) Mutual exclusivity checks
+
+      - Files: src/cli/commands/item.ts (main), src/cli/output.ts (diff display helper),
+      tests/item-set-traits.test.ts (new)
+
+      - Verification: new tests + existing test suite passes
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T17:51:02.302Z
+  - _ulid: 01KKCG6YHHBAKVAM3XGMF6T9TE
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #759 only adds before→after output for item
+      set, while the task calls for mutating CLI commands generally; new tests are also annotated to
+      unrelated @trait-confirmation-prompt instead of @item-set/inherited ACs."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T18:30:09.714Z
+  - _ulid: 01KKCJ7S3DMPXGYE713TNRG2A6
+    content: >-
+      Fix cycle 1 - addressed review feedback:
+
+      1. Extended before→after diff to task set and item ac set (not just item set)
+
+      2. Extracted shared formatChangeValue/showChangeDiff utility in output.ts
+
+      3. Removed incorrect @trait-confirmation-prompt AC annotation from tests
+
+      4. Added tests for task set and item ac set diff output
+
+      5. task set now tracks actual value changes (before/after objects) instead of field name
+      strings
+
+      6. item ac set now detects no-op changes and warns
+
+      7. All 4373 tests pass (198 files)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T19:05:34.061Z
+  - _ulid: 01KKCKP2KR80E8GXPKEY4D2X9Y
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: task set records fake before→after diffs when
+      clearing already-empty fields, and the new mutation/diff behavior still lacks matching spec
+      updates plus AC annotations."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T19:30:51.128Z
+  - _ulid: 01KKCNEEA6A33927REGYK8J0Z9
+    content: >-
+      Fix cycle 2 - addressed review feedback:
+
+      1. Fixed fake diffs when clearing already-null/undefined fields in task set (spec_ref,
+      meta_ref, plan_ref, review_url, description, automation) - now guards each clear path
+
+      2. Updated @item-set spec: added ACs for --add-trait, --remove-trait, --clear-traits, trait
+      mutual exclusivity, diff output, and no-op detection
+
+      3. Updated @task-set spec: added ACs for diff output and no-op clear behavior
+
+      4. Added AC annotations throughout tests/item-set-traits.test.ts mapping to @item-set,
+      @task-set, @item-ac, and @trait-json-output ACs
+
+      5. Added regression test for clearing already-null spec_ref
+
+      6. All 4374 tests pass, kspec validate passes
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T20:01:38.118Z

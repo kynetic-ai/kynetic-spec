@@ -1,0 +1,30 @@
+_ulid: 01KKFZ61246P1HQKMP9HSM7D1F
+slugs:
+  - task-honor-derive-from-specs-false-in-plan-derive
+title: "Honor derive_from_specs: false in plan derive"
+type: bug
+description: "Update plan derive so derive_from_specs: false suppresses auto per-spec implementation
+  tasks while still materializing additional tasks from the plan document. Add regression coverage
+  for the false path so duplicate derived tasks are not reintroduced."
+spec_ref: "@plan-derive-enhanced"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #808. Updated plan derive so derive_from_specs: false suppresses auto
+  per-spec implementation tasks while still materializing manual additional_tasks with preserved
+  plan/spec refs and dependency mappings. Verified targeted plan-derive coverage for
+  ac-tasks-manual-only, reran full npm test successfully, and confirmed green CI on the merged
+  head."
+depends_on: []
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+session_id: 01KKJ59CS6XQJBNEV6QDMC4RQK
+created_at: 2026-03-12T02:49:31.460Z
+started_at: 2026-03-12T23:21:06.630Z
+submitted_at: 2026-03-12T23:26:22.106Z
+completed_at: 2026-03-12T23:37:57.462Z
+todos: []
+automation: eligible

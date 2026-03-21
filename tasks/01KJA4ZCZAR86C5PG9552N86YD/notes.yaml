@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KJAPT36KYR8DCQ31FQCBY389
+    content: Added debug logging to parseHookInput() for malformed JSON and non-object values using
+      KSPEC_DEBUG pattern. Also added isObject() validation to reject non-object JSON (arrays,
+      strings, numbers, booleans, null). Exported parseHookInput for testability. 16 unit tests
+      covering null/empty input, valid parsing, non-object rejection, and debug logging behavior.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T15:31:17.843Z

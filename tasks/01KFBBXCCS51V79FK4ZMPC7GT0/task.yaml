@@ -1,0 +1,20 @@
+_ulid: 01KFBBXCCS51V79FK4ZMPC7GT0
+slugs:
+  - fix-stale-status-ac1
+title: "Fix stale status AC-1: use spec hierarchy not task dependencies"
+type: bug
+spec_ref: "@stale-status-detection"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Spec AC-1 updated to match implementation. Changed from 'parent task with child spec
+  items' to 'task with dependency tasks' - aligns spec with what's actually implemented and tested.
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-19T14:53:00.185Z
+started_at: 2026-01-20T15:43:19.142Z
+completed_at: 2026-01-20T15:46:47.616Z
+todos: []

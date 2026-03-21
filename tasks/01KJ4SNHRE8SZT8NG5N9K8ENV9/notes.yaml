@@ -1,0 +1,17 @@
+notes:
+  - _ulid: 01KJ4V6PJ0QZ0F1XQ9MNAKRAVV
+    content: "AUTOMATION: Improvement. Detect YAML-unsafe values in AC fields before parse. Provide
+      clear diagnostic instead of cryptic error. Spec @plan-import."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T08:52:38.592Z
+  - _ulid: 01KJ6T0XC3QS051BWQE3AA7DHT
+    content: Implemented YAML-unsafe value detection for plan import. When YAML parsing fails due to
+      unquoted colons in AC fields (given/when/then/description), the error now includes diagnostic
+      hints identifying the specific field, line number, and problematic value, plus a fix
+      suggestion to use block scalars. Added detectYamlUnsafeValues() to plan-document.ts (exported
+      for testing). Diagnostics applied to both Specs and Tasks section parsing. Added ac-37 to
+      @plan-import. 8 new parser tests + 1 CLI integration test.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T03:10:29.251Z

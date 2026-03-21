@@ -1,0 +1,79 @@
+notes:
+  - _ulid: 01KJV9KEX4MQSP9MKNHKPGYFYG
+    content: >-
+      Execution context:
+
+      - Background: daemon close events can lose session identity (seen as undefined) and leave
+      stale tracked sockets.
+
+      - Scope: make disconnect cleanup resilient to ws.data/session races, keep health connections
+      accurate, and ensure heartbeat no longer pings disconnected clients.
+
+      - Files: packages/daemon/src/server.ts, packages/daemon/src/websocket/pubsub.ts,
+      tests/daemon-pubsub.test.ts, tests/daemon-heartbeat.test.ts.
+
+      - Verification: targeted vitest for daemon websocket/pubsub/heartbeat plus repo validation
+      (kspec validate).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T02:07:34.308Z
+  - _ulid: 01KJV9NQTQSHEA7BXWAG7WD9VN
+    content: >-
+      Implemented disconnect lifecycle cleanup:
+
+      - Added stable socket->session tracking in PubSubManager via WeakMap and new
+      removeConnectionBySocket()/getSessionIdBySocket().
+
+      - Updated daemon WebSocket close handler to remove by socket identity and log resolved session
+      id (prevents undefined session ids when ws.data races).
+
+      - Added regression tests:
+        - tests/daemon-pubsub.test.ts covers ac-1 (connection count accuracy) and ac-2 (abnormal-close-style cleanup with missing ws.data.sessionId).
+        - tests/daemon-heartbeat.test.ts covers ac-3 (removed/disconnected sessions are not pinged on subsequent heartbeat tick).
+      Verification:
+
+      - npm test -- tests/daemon-pubsub.test.ts tests/daemon-heartbeat.test.ts (pass)
+
+      - kspec validate currently fails due pre-existing project meta/reference issues unrelated to
+      this task (duplicate @observations + missing observations skill file).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T02:08:48.983Z
+  - _ulid: 01KJVA5W1KK0WFP43DTCMA4E3K
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: add behavioral coverage for /api/health
+      connection decrement after disconnect and daemon close-handler/log behavior for code 1006
+      (session id must be logged, not undefined)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T02:17:37.587Z
+  - _ulid: 01KJVAH9X9D3G35KKPPF232WJ5
+    content: >-
+      [FIX_CYCLE: 2] Addressed review MUST-FIX findings:
+
+      - AC-1: Added integration E2E coverage in packages/web-ui/tests/e2e/api-websocket.spec.ts
+      verifying /api/health.connections decrements after one of two active WebSocket clients
+      disconnects.
+
+      - AC-2: Added dedicated close-handler regression test in tests/daemon-websocket-close.test.ts
+      for code 1006 ensuring cleanup removes tracked session and disconnect log contains session id
+      (not undefined).
+
+      Implementation hardening:
+
+      - Added websocket lifecycle helper (packages/daemon/src/websocket/lifecycle.ts) and switched
+      server close callback to use it.
+
+      - Extended PubSubManager with context-id session tracking (from Elysia ws context id) plus
+      existing socket/subscription fallbacks so close callbacks can resolve session identity even
+      when ws.data is framework context.
+
+      Verification:
+
+      - npm test -- tests/daemon-pubsub.test.ts tests/daemon-heartbeat.test.ts
+      tests/daemon-websocket-close.test.ts (pass)
+
+      - Playwright targeted E2E: npx playwright test tests/e2e/api-websocket.spec.ts --grep "api
+      health connection count decrements" (pass).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T02:23:52.233Z

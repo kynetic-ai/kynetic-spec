@@ -1,0 +1,61 @@
+_ulid: 01KKZPW45E2RJ5PQFP3AEVS35F
+slugs:
+  - task-composition-join
+title: Implement composition join accumulator
+type: task
+description: |
+  The join accumulator enables fan-in synthesis by tracking action run
+  completions per composition group.
+
+  Why: Pipeline chaining works with hooks alone. Fan-in needs a
+  primitive that counts completions before firing.
+
+  What: JoinAccumulator subscribes to action.completed events,
+  tracks completions by group_id, fires on_complete when threshold
+  is met or timeout expires. Group_id is auto-generated per activation
+  or inherited from correlation_id. Only successful completions count
+  toward threshold; failures are tracked for partial results. Timeout
+  starts when first run begins. State is volatile (daemon lifetime).
+
+  How: Define composition schema in meta YAML. Subscribe to
+  action.completed/failed on bus. Match runs to groups via group_id.
+  State is Map<group_id, GroupState>.
+
+  Covers: @dispatch-composition-patterns ac-2, ac-3,
+  @dispatch-composition-correlation ac-1 through ac-4,
+  @dispatch-composition-schema ac-1, ac-2.
+spec_ref: "@dispatch-composition-patterns"
+plan_ref: "@plan-dispatch-event-system-expansion"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Composition join accumulator implements fan-in synthesis: schema with
+  join_count and on_complete action, JoinAccumulator runtime tracking completions per group_id,
+  threshold-based and timeout-based firing, volatile state lifecycle. All 8 in-scope ACs covered
+  with 25 passing tests. One nit: reload() docstring/behavior mismatch (non-blocking). Textual merge
+  conflict in index.ts resolved (parallel additive exports)."
+depends_on:
+  - "@task-action-model"
+  - "@task-event-bus"
+context: []
+priority: 3
+tags:
+  - dispatch
+  - composition
+vcs_refs: []
+review_ref: "@01KM0GNSYX53XSTT2ZCXEDQ20N"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T13:00:31.170Z
+  commit: 74af866f1c40670ee86ab9727d9ba5a2241d91e0
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM0FKVTFPK9PZ0ESQW6VZGYW
+created_at: 2026-03-18T05:32:09.262Z
+started_at: 2026-03-18T12:45:22.341Z
+submitted_at: 2026-03-18T13:00:31.604Z
+completed_at: 2026-03-18T13:11:03.870Z
+todos: []
+automation: eligible

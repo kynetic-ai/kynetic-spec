@@ -1,0 +1,39 @@
+_ulid: 01KFQAF9R883H31D67YX8MHXJ2
+slugs:
+  - task-projects-api-tests
+title: /api/projects endpoint tests
+type: task
+description: |-
+  Write tests for /api/projects endpoints.
+
+  ## Test Cases
+  - Test GET returns list with paths, registration time, watcher status
+  - Test POST registers project with path validation
+  - Test DELETE unregisters and stops watcher
+  - Test error cases (invalid paths, non-existent projects)
+
+  ## AC Coverage
+  ac-28, ac-29, ac-30
+
+  ## Dependencies
+  Task: ProjectContextManager implementation
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: E2E tests implemented and passing. All 3 ACs covered (ac-28, ac-29, ac-30). Committed
+  directly to main (07cb23df).
+depends_on:
+  - "@01KFQABQ"
+context: []
+priority: 1
+tags:
+  - testing
+  - api
+  - phase-7
+vcs_refs: []
+created_at: 2026-01-24T06:18:43.336Z
+started_at: 2026-01-25T23:15:11.658Z
+completed_at: 2026-01-25T23:27:14.011Z
+todos: []
+automation: eligible

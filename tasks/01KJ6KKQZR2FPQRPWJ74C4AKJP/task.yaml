@@ -1,0 +1,28 @@
+_ulid: 01KJ6KKQZR2FPQRPWJ74C4AKJP
+slugs:
+  - add-budget-enforcement-to-task-start
+title: Add budget enforcement to task start
+type: task
+spec_ref: "@task-budget-enforcement"
+plan_ref: "@plan-session-scoping-for-kspec"
+status: completed
+blocked_by: []
+closed_reason: "Merged PR #501. Budget enforcement added to task start — checks session budget
+  before allowing start, increments counter after successful transition, skips for
+  resume/no-session/no-budget cases. 17 tests covering all 7 own ACs and 8 trait ACs (with N/A
+  documented for non-applicable ones). All review threads resolved, CI green."
+depends_on:
+  - "@extend-session-schema-with-task-budget"
+  - "@add-session-id-to-task-schema"
+context: []
+priority: 3
+tags:
+  - cli
+  - tasks
+  - enforcement
+vcs_refs: []
+created_at: 2026-02-24T01:18:26.296Z
+started_at: 2026-02-24T07:14:25.492Z
+completed_at: 2026-02-24T07:27:52.352Z
+todos: []
+automation: eligible

@@ -1,0 +1,90 @@
+notes:
+  - _ulid: 01KKB3PKZZTGCX16EXAAF8DY6Y
+    content: |
+      Implementation notes:
+
+      No index needed if metadata filters narrow scope first. The existing
+      CLI search already does case-insensitive substring matching on event
+      payloads. The key optimization is filtering sessions by metadata
+      (status, since, agent, task) BEFORE scanning events.jsonl. For 7-day
+      windows this typically means scanning 20-50 sessions instead of 700+.
+      The daemon endpoint can stream results or use a reasonable timeout.
+    author: "@claude"
+    created_at: 2026-03-10T05:32:17.279Z
+  - _ulid: 01KKDHMSP3CMREZ41V6WYQBP8V
+    content: >-
+      Execution context:
+
+      - Background: add daemon API and /sessions UI support on top of existing CLI session text
+      search.
+
+      - Scope: shared metadata-prefiltered search path, API route, UI query persistence/results
+      rendering, and AC coverage.
+
+      - Files: session search/filtering code, daemon session routes, web UI sessions
+      page/components, relevant tests.
+
+      - Verification: targeted CLI/API/UI tests, npm test, and kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T04:14:26.499Z
+  - _ulid: 01KKDJDWBSPWX2017CRA6K84AQ
+    content: "Implemented shared metadata-prefiltered session text search across CLI, daemon, and
+      /sessions UI. Added GET /api/sessions/search, wired q= URL state with grouped match rendering,
+      and extended CLI search to honor --status plus shared metadata narrowing before scanning
+      events.jsonl. Verification: npm run build passed; npm test -- tests/session-log-search.test.ts
+      passed; npm test passed (4525 tests, 202 files); kspec validate --warnings-ok passed. Note:
+      Playwright daemon-backed E2E tests could not run in dispatch mode because this environment
+      forbids kspec serve start/stop inside agent execution."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T04:28:08.441Z
+  - _ulid: 01KKDMEF997NW6XYNSGH47GTTR
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: /api/sessions/search rejects relative since
+      filters like 7d, so the daemon/UI search path does not satisfy @session-text-search
+      ac-api-search/ac-scope-narrowing."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T05:03:24.969Z
+  - _ulid: 01KKDQ5372ZWWC7D544QM3FEKA
+    content: "Fix cycle: daemon /api/sessions/search currently parses since with Date(), so relative
+      filters like 7d fail even though CLI uses parseTimeSpec(). Updating the shared daemon filter
+      path to accept relative specs and expanding API coverage to exercise since=7d explicitly."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T05:50:43.426Z
+  - _ulid: 01KKDQD71022FMW03MHT1GMCEM
+    content: "Fix applied: daemon session filtering now parses since with parseTimeSpec(), so
+      /api/sessions/search accepts relative values like 7d and narrows metadata scope before
+      scanning events. Updated API E2E coverage to use since=7d with dynamic recent/stale fixtures.
+      Verification: npm run build:e2e passed; kspec validate --warnings-ok passed; npm test hit one
+      unrelated failure in tests/cli-serve.test.ts foreground serve shutdown (child.exitCode null in
+      this dispatch environment). Direct Playwright API run remains blocked here because daemon
+      start/stop is forbidden under KSPEC_SESSION_ID."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T05:55:09.472Z
+  - _ulid: 01KKDS6STB8AAKGQB3Q8AQKWC1
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: add explicit @session-text-search ac-performance
+      coverage and convert @trait-api-endpoint ac-3/ac-4/ac-5 search-endpoint N/A notes into
+      standalone // AC annotations."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T06:26:36.492Z
+  - _ulid: 01KKDSPT4TAJH515N715H9J0DP
+    content: "Fix cycle 2 execution: patching API E2E coverage to add explicit @session-text-search
+      ac-performance annotation on the metadata-prefilter search test and converting
+      @trait-api-endpoint ac-3/ac-4/ac-5 N/A coverage into standalone line comments so
+      validation/review tooling can see them."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T06:35:21.114Z
+  - _ulid: 01KKDSRN7TP9WY0DV271CCQVEM
+    content: "Fix cycle 2 applied on PR #770: added explicit @session-text-search ac-performance
+      coverage to packages/web-ui/tests/e2e/api-sessions-search.spec.ts and converted
+      @trait-api-endpoint ac-3/ac-4/ac-5 search-endpoint N/A coverage into standalone // AC
+      annotations. Verification: npm test -- tests/ac-annotation-validation.test.ts passed; kspec
+      validate --warnings-ok passed (project warning baseline only)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T06:36:21.626Z

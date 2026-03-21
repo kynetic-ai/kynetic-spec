@@ -1,0 +1,113 @@
+notes:
+  - _ulid: 01KFHJATMRSD94WHCC1EMQZMZY
+    content: |-
+      ## Context
+
+      During PR #141 we manually handled versioning:
+      1. `npm version patch --no-git-tag-version`
+      2. Amended commit to include package.json
+      3. Created tag after merge: `git tag v0.1.1 && git push origin v0.1.1`
+
+      This is error-prone and easy to forget steps (we almost forgot the tag).
+
+      ## Proposed /release Skill
+
+      A new skill to handle post-merge release workflow:
+
+      ```bash
+      /release patch   # 0.1.1 -> 0.1.2
+      /release minor   # 0.1.1 -> 0.2.0
+      /release major   # 0.1.1 -> 1.0.0
+      ```
+
+      ### Workflow
+      1. Verify on main branch and clean working tree
+      2. Verify HEAD is ahead of last tag (has releasable changes)
+      3. Bump version in package.json
+      4. Commit: `chore: release vX.Y.Z`
+      5. Create git tag: `vX.Y.Z`
+      6. Push commit and tag
+      7. Optionally create GitHub release with auto-generated notes
+
+      ### Options
+      - `--dry-run`: Show what would happen
+      - `--no-github-release`: Skip GitHub release creation
+      - `--prerelease`: Mark as prerelease (alpha/beta/rc)
+
+      ### Integration
+      - Check for linked kspec task to include in release notes
+      - Warn if there are completed tasks without releases
+      - CI npm publish workflow triggers on new tags
+
+      ### Location
+      `.claude/skills/release/` alongside pr skill
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T00:40:38.808Z
+  - _ulid: 01KFHMSHGEYGNDDCWS6W50EQ6B
+    content: |-
+      ## Implementation Complete
+
+      Created /release skill with the following:
+
+      ### Files Created/Modified
+      1. `.claude/skills/release/SKILL.md` - The release skill documentation
+      2. `.github/workflows/publish.yml` - Added step to commit version back to main
+      3. `AGENTS.md` - Added /release to Available Skills table
+
+      ### Skill Features
+      - Single-phase workflow: create tag + GH release
+      - Auto-detect version bump from conventional commits
+      - Friendly release notes (categorized, excludes test/docs-only)
+      - `--dry-run` for preview
+      - `--prerelease` for alpha/beta/rc
+      - CI automatically syncs version to package.json and commits back to main
+
+      ### CI Workflow Changes
+      - Changed permissions from `contents: read` to `contents: write`
+      - Added step to commit version sync back to main after npm publish
+
+      ### Verified
+      - Skill file follows existing patterns (PR skill structure)
+      - Dry-run workflow logic validated against current repo state
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T01:23:38.126Z
+  - _ulid: 01KFHZBV8A0YBFH1ZYP4T147VG
+    content: >-
+      ## npm Trusted Publishers Debugging Session
+
+
+      **Issue:** First release attempt (v0.1.1) failed with npm OIDC auth errors: 'Access token
+      expired or revoked' + 404.
+
+
+      **Root cause:** npm 10.8.2 (bundled with Node 18) has a bug with trusted publishers OIDC
+      authentication.
+
+
+      **Fix:** Added `npm install -g npm@latest` step to workflow. npm 11.8.0 resolved the issue.
+
+
+      **Red herrings investigated:**
+
+      - Environment name with spaces ('Publish Package' → 'publish')
+
+      - Environment config mismatch between workflow and npm
+
+      - registry-url in setup-node interfering with OIDC
+
+      - npm trusted publisher config caching
+
+
+      **PRs merged during debugging:** #142-150
+
+
+      **Key learning:** When hitting opaque CI auth errors, search GitHub issues early. A quick
+      search would have found the npm version bug immediately.
+
+
+      **Documentation:** Added troubleshooting section to /release skill (SKILL.md).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T04:28:23.691Z

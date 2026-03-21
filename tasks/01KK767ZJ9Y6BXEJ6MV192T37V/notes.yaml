@@ -1,0 +1,8 @@
+notes:
+  - _ulid: 01KK76D774K7Y7MFXVMQKP6BYF
+    content: Replaced default Svelte favicon with Kynetic logo. Generated favicon.ico (multi-size),
+      favicon-32.png, and favicon-192.png from the source 4096x4096 PNG. Updated +layout.svelte to
+      use static assets with base path support for GitHub Pages.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T17:02:37.284Z

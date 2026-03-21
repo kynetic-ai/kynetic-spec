@@ -1,0 +1,54 @@
+_ulid: 01KKX6CD2X6EKHGNE47Y8113HH
+slugs: []
+title: Round-trip stability for dispatch workspace YAML writes
+type: task
+description: >-
+  dispatch-workspaces.ts saveDispatchWorkspaceRecord and mutateDispatchWorkspaceRecordAtomically
+  load project.dispatch-workspaces.yaml through DispatchWorkspaceRegistryFileSchema.safeParse()
+  before writing back. This adds ~10 nested defaults (bootstrap status objects, integration/cleanup
+  states, invalidationReasons, steps, issues, branch_provenance) to every workspace record on each
+  save.
+
+
+  Apply the same raw-data-preservation pattern: load the raw YAML array without schema
+  normalization, only schema-parse the target workspace, merge onto raw data. Non-target workspaces
+  stay as raw data.
+
+
+  Verify with tests: write a dispatch workspaces file, load and save one workspace without changes,
+  confirm file is byte-identical.
+spec_ref: "@yaml-serialization-invariants"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Dispatch workspace YAML writes now use raw-data-preservation pattern:
+  load raw YAML without schema normalization, schema-parse only the target workspace, merge onto raw
+  data with recursive shape preservation. Non-target workspaces stay as raw data. Sibling validation
+  restored, callback-set fields preserved via pre-mutation comparison. 7 tests verify byte-identical
+  round-trip stability, identity mutation, multi-workspace preservation, non-target pollution
+  prevention, multi-cycle stability, malformed sibling rejection, and newly-added object field
+  persistence."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - schema
+  - dispatch
+vcs_refs: []
+review_ref: "@01KKZ489FBSPK1FCMQ584MNE8B"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-17T23:57:06.441Z
+  commit: c6efe01204ee7f807ab53079a8e4e5b457cb9ac8
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KKZ2ZE6XNE29WERMV2HF9460
+created_at: 2026-03-17T06:05:28.029Z
+started_at: 2026-03-17T23:57:00.111Z
+submitted_at: 2026-03-17T23:57:06.858Z
+completed_at: 2026-03-18T00:08:10.485Z
+todos: []
+automation: eligible

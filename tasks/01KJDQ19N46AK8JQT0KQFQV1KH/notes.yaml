@@ -1,0 +1,29 @@
+notes:
+  - _ulid: 01KJJ8DXYSJ1XM78N2028HFCZP
+    content: "Execution context:\\n- Background: batch JSON args currently accept kebab/camel but reject
+      underscore keys used by many generators.\\n- Scope: normalize arg-key variants in batch
+      validation + argv building so kebab/camel/underscore all work consistently.\\n- Files:
+      src/cli/batch-exec.ts and batch exec tests.\\n- Verification: targeted batch tests plus full
+      validation check for regression."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T13:53:54.649Z
+  - _ulid: 01KJJ8N8V7F4TXA17GAYFAVZ1E
+    content: "Implemented arg-key normalization for batch args to accept kebab-case, camelCase, and
+      underscore variants via canonical kebab normalization. Updated unknown-arg validation,
+      required-arg detection, and argv generation to use normalized keys, with fallback to command
+      metadata for canonical flag emission. Added regression coverage for underscore keys in
+      validateBatchCommands and buildCommandArgv. Verification: npm test --
+      tests/batch-schema.test.ts; npm test -- tests/batch-exec-engine.test.ts; npm test; kspec
+      validate."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T13:57:55.175Z
+  - _ulid: 01KJJ8P6CTQH49FKV098HGCP4W
+    content: "Submitted for review in PR #600: https://github.com/kynetic-ai/kynetic-spec/pull/600.
+      Implemented canonical arg-key normalization for kebab/camel/underscore variants in batch
+      validation + argv build path, added underscore regression coverage, and verified with targeted
+      tests, full npm test (3550 passed), and kspec validate."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T13:58:25.434Z

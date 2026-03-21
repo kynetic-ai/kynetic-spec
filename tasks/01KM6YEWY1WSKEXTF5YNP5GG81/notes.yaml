@@ -1,0 +1,66 @@
+notes:
+  - _ulid: 01KM8QEKXAD9BTTSN93MCSCX0F
+    content: Implemented task migrate command. The command reads monolithic project.tasks.yaml entries
+      (identified by having notes as an array vs notes_count scalar), creates per-task directories
+      with task.yaml and notes.yaml, rewrites the index with lean entries, and handles backfill for
+      tasks added by older tooling after a previous migration. All operations use the write buffer
+      for atomicity. Dry-run shows preview summary without modifications. Tasks with schema
+      validation errors are migrated with raw data preserved and warnings emitted. 15 E2E tests
+      cover all 8 spec ACs plus trait ACs (dry-run, error-guidance). Full test suite passes (6910
+      tests, 0 failures).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T17:35:25.098Z
+  - _ulid: 01KM8QSB41GE561VDHXNYEB8ZK
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-21T17:41:16.545Z
+  - _ulid: 01KM8RA9NMFR7ACNRA97GNTYSR
+    content: "Fix cycle 1: Addressed blocker — already-migrated tasks were building index entries from
+      stale monolithic YAML data instead of reading canonical task.yaml from the per-task directory.
+      Fixed by reading task.yaml and notes.yaml from the per-task directory when building index
+      entries for already-migrated tasks, with fallback to monolithic data only if the canonical
+      read fails. Added regression test verifying index uses canonical split title/status, not stale
+      monolithic values. Full suite passes (6911 tests, 0 failures)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T17:50:32.116Z
+  - _ulid: 01KM8RM54HPFYNEJRW7G6J26CZ
+    content: "[FIX_CYCLE: 2] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-21T17:55:55.154Z
+  - _ulid: 01KM8S3PZ8JM063AC4C9N5QKEB
+    content: "Fix cycle 2: Addressed both blockers. (1) Tasks with missing/invalid _ulid now get a
+      generated ULID and migrate with a warning instead of being silently skipped — prevents false
+      'Already migrated' reports. (2) Canonical-data path for already-migrated tasks no longer
+      round-trips through TaskSchema with sparse notes arrays — builds index entries directly from
+      raw canonical data, so tasks with notes correctly use split data instead of falling back to
+      stale monolithic values. Added 2 regression tests covering both scenarios. Full suite passes
+      (6912/6912, 1 pre-existing flaky timeout in agent-invocation-lifecycle unrelated to this
+      change)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T18:04:24.936Z
+  - _ulid: 01KM8SQMW4F13AGMXNRJ3GTNKJ
+    content: "[FIX_CYCLE: 3] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-21T18:15:18.148Z
+  - _ulid: 01KM8TGA959KH17W96G47MXX5Q
+    content: "Fix cycle 3: Addressed blocker — malformed non-empty _ulid values (e.g.
+      'not-a-valid-ulid') were being used verbatim as directory names, violating the split-storage
+      ULID directory contract. Fixed by validating _ulid against ulidPattern (Crockford base32)
+      before accepting it; invalid values now trigger ULID regeneration with a warning, same as
+      missing/empty values. Added regression test that creates a task with _ulid: 'not-a-valid-ulid'
+      and verifies it gets a regenerated valid ULID directory, not the malformed string. Full suite
+      passes (6914/6914, 0 failures)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T18:28:46.501Z
+  - _ulid: 01KM8V0KVK06KA3S0N6HZAXYD5
+    content: "[FIX_CYCLE: 4] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Test User
+    created_at: 2026-03-21T18:37:40.596Z

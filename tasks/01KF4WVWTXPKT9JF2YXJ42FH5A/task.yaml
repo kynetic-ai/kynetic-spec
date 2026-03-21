@@ -1,0 +1,21 @@
+_ulid: 01KF4WVWTXPKT9JF2YXJ42FH5A
+slugs:
+  - task-kspec-meta-conventions
+title: "Implement: kspec meta conventions"
+type: task
+spec_ref: "@meta-conventions-cmd"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Command already fully implemented with all required features - verified table, JSON,
+  and domain filter work correctly
+depends_on:
+  - "@task-meta-cli-commands"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:36.253Z
+started_at: 2026-01-18T12:22:11.432Z
+completed_at: 2026-01-18T12:23:03.908Z
+todos: []

@@ -1,0 +1,58 @@
+notes:
+  - _ulid: 01KJW3KEPZ323FHC2SJ5QCZQMP
+    content: >-
+      Execution context:
+
+      - Background: replaying assistant response text from session logs currently requires manual
+      parsing of events.jsonl.
+
+      - Scope: add --text to session log show, extract text from session.update content structures,
+      support blob resolution parity, and add integration tests.
+
+      - Files: src/cli/commands/session/commands.ts, src/cli/commands/session/log.ts,
+      tests/session-log-show.test.ts.
+
+      - Verification: targeted session-log-show tests plus kspec validate and relevant test shard.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T09:41:57.088Z
+  - _ulid: 01KJW425QR95RQZ54W0GX1Z36A
+    content: >-
+      Implemented --text replay for session log show:
+
+      - Added --text flag to session log show command.
+
+      - Extracts text from session.update data.content blocks in event order.
+
+      - Resolves externalized blob pointers before extracting text, so replay includes full content.
+
+      - Kept --events and --text independent; JSON output can include both events and text.
+
+      - In text mode, --text alone outputs raw replay content with no extra formatting.
+
+
+      Tests:
+
+      - Added AC coverage in tests/session-log-show.test.ts for @session-log-show ac-11 and --json
+      --text --events coexistence.
+
+      - Verified with npx vitest run tests/session-log-show.test.ts.
+
+      - Verified full suite via npm run test:shard1, npm run test:shard2, npm run test:shard3.
+
+      - npm run typecheck passes.
+
+
+      Validation note:
+
+      - kspec validate currently fails due pre-existing repo-wide meta/reference issues unrelated to
+      this task (missing observations skill file, duplicate @observations slug, existing
+      alignment/completeness warnings).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T09:49:59.416Z
+  - _ulid: 01KJW4BDJJWPZ69K9JK3YH7W0T
+    content: "Submitted for review in PR #668: https://github.com/kynetic-ai/kynetic-spec/pull/668"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T09:55:02.354Z

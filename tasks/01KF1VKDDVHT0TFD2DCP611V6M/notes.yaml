@@ -1,0 +1,53 @@
+notes:
+  - _ulid: 01KF1YZJS6QZEZVMWCNEFYB2MN
+    content: |-
+      Implemented shadow branch concept foundation:
+
+      1. Created src/parser/shadow.ts with:
+         - Shadow detection (detectShadow, getShadowStatus)
+         - Auto-commit functionality (shadowAutoCommit, commitIfShadow)
+         - Error handling (ShadowError, createShadowError, formatShadowError)
+         - Commit message generation for all kspec operations
+         - Helper utilities (isGitRepo, branchExists, isValidWorktree)
+
+      2. Updated src/parser/yaml.ts:
+         - Extended KspecContext with specDir and shadow fields
+         - initContext now detects shadow branch and sets specDir accordingly
+         - All path functions (getDefaultTaskFilePath, getInboxFilePath) use specDir
+         - loadAllTasks handles shadow mode separately
+         - Added findManifestInDir helper for shadow mode
+
+      3. Added tests/shadow.test.ts with 19 tests covering:
+         - Shadow detection
+         - Status checking
+         - Commit message generation
+         - Error creation
+         - Context initialization
+
+      All 101 tests pass. The system now:
+      - Detects .kspec/ worktree and uses it for all operations
+      - Falls back to traditional spec/ layout when shadow not present
+      - Provides clear error messages for shadow issues
+      - Has infrastructure for auto-commit (called by CLI commands)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T23:13:50.886Z
+  - _ulid: 01KF20ZDZ8Y89PCZ9XGV4F0807
+    content: >-
+      Implementation gap discovered: commitIfShadow() was implemented but never wired into CLI
+      command handlers. The auto-commit infrastructure exists but no command calls it after write
+      operations.
+
+
+      This was a gap in the implementation - the shadow.ts module was built standalone without
+      integrating into existing commands.
+
+
+      Possible spec gap: The spec defines 'Shadow Auto-Commit' feature but may not explicitly
+      require CLI integration. Should verify spec coverage and add acceptance criteria if missing.
+
+
+      Follow-up task created: @01KF20YY (Wire commitIfShadow into CLI command handlers)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T23:48:43.113Z

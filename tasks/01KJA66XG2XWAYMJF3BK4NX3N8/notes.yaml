@@ -1,0 +1,24 @@
+notes:
+  - _ulid: 01KJACQPF5YCMEMDPB6HYS3T3Q
+    content: "Fixed merge driver test: replaced silent skip with it.skipIf(), created kspec wrapper in
+      temp PATH pointing to project CLI. Added canRunShadowInitTests guard checking git >= 2.42 +
+      built CLI. PR #528 created."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T12:35:13.509Z
+  - _ulid: 01KJAD7915N0APV9KQPX0J46P3
+    content: "[FIX_CYCLE: 1] Review findings: CI shard 3/3 fails (session-budget-integration.test.ts
+      signal cleanup tests). Failure is unrelated to PR changes but branch needs rebase onto main to
+      resolve. Also: remove duplicate projectCli declaration at line 315 (already declared at module
+      scope line 39)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T12:43:44.038Z
+  - _ulid: 01KJADADBWBNPB00D5JBRCFTWA
+    content: "[FIX_CYCLE: 1] Rebased onto main to resolve unrelated CI shard 3/3 failure. Fixed review
+      suggestions: removed duplicate projectCli declaration (was shadowing module-scope var),
+      replaced require()-based wrapper with proper shell script wrapper (#!/bin/sh exec node).
+      Force-pushed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T12:45:26.780Z

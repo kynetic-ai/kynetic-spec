@@ -1,0 +1,48 @@
+notes:
+  - _ulid: 01KKHZXAFHHG20RJ1CHAMY5G6R
+    content: >-
+      Execution context:
+
+      - Background: dispatch currently serializes too broadly around invocation execution, which
+      blocks isolated worker/reviewer code work.
+
+      - Scope: narrow shadow serialization to explicit kspec mutation windows and preserve clear
+      mutation-specific failures.
+
+      - Files: dispatch runtime/locking code plus targeted dispatch tests.
+
+      - Verification: npm test and kspec validate after AC-targeted tests are updated.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T21:40:43.634Z
+  - _ulid: 01KKJ0MG6WCYQCDAHN9CWZPW4S
+    content: >-
+      Implemented dispatch-scoped shadow mutation locking.
+
+      - Dispatch no longer wraps the full invocation in the shadow mutex; concurrent invocations can
+      overlap outside mutation windows.
+
+      - Dispatched kspec mutations now acquire a shared lock file via
+      KSPEC_SHADOW_MUTATION_LOCK_FILE, and invocation-owned task note/block writes surface explicit
+      dispatch mutation failures when the protected mutation cannot complete.
+
+      - Added dispatch runtime, CLI lock, and AC-targeted tests covering overlap, mutation
+      serialization, and mutation failure guidance.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T21:53:23.164Z
+  - _ulid: 01KKJ0ZBV5SFPN1BJHCK9NNHXJ
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #806 is currently CONFLICTING against main,
+      so it cannot be merged. Rebase/update the branch and rerun review gates on the new HEAD."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T21:59:19.141Z
+  - _ulid: 01KKJ2GT1SNCP270QZ3VWTE98P
+    content: "[FIX_CYCLE: 2] Rebased task branch onto main and fixed a workspace-registry mutation race
+      introduced by narrowing the invocation lock. Dispatch now still overlaps invocation execution,
+      but markDispatchWorkspaceActive/Idle re-enter the shadow mutex so lifecycle transitions cannot
+      be overwritten back to pending. Verification: npm test passed on the rebased head; kspec
+      validate still reports only the repository's existing warnings."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T22:26:19.321Z

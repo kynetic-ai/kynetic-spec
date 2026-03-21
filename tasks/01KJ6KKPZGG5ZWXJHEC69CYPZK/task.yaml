@@ -1,0 +1,25 @@
+_ulid: 01KJ6KKPZGG5ZWXJHEC69CYPZK
+slugs:
+  - extend-session-schema-with-task-budget
+title: Extend session schema with task budget
+type: task
+spec_ref: "@session-creation-and-env-injection"
+plan_ref: "@plan-session-scoping-for-kspec"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #498. Added TaskBudgetSchema and 5 budget CRUD functions (createBudget,
+  getBudget, checkBudget, incrementBudget, resetBudget) to sessions module. Budget stored at
+  .kspec/sessions/{id}/budget.json (local FS, not shadow branch) with atomic writes. getBudget fails
+  closed on corruption (only ENOENT returns null). 32 tests. Codex review finding addressed."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - schema
+  - sessions
+vcs_refs: []
+created_at: 2026-02-24T01:18:25.264Z
+started_at: 2026-02-24T05:25:39.126Z
+completed_at: 2026-02-24T05:47:29.345Z
+todos: []
+automation: eligible

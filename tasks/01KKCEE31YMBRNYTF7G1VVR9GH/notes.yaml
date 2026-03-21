@@ -1,0 +1,170 @@
+notes:
+  - _ulid: 01KKCEFY92JAJKT9DJ5VFARHEF
+    content: >-
+      ## Implementation Guide
+
+
+      ### Covers ACs: ac-daemon-identity, ac-dispatch-cwd, ac-dispatch-conflict
+
+
+      ### 1. X-Kspec-Dir header migration in src/cli/commands/agent.ts
+
+
+      Change ALL X-Kspec-Dir header assignments from ctx.rootDir to ctx.projectRoot:
+
+      - Line ~455-456 (agent status)
+
+      - Line ~553-554 (dispatch start)
+
+      - Line ~609-610 (dispatch stop)
+
+      - Line ~665-666 (dispatch status)
+
+      - Line ~842 (dispatch watch WebSocket projectDir)
+
+
+      Also add X-Kspec-Cwd header when in worktree:
+
+      ```
+
+      if (ctx.rootDir !== ctx.projectRoot) {
+        headers["X-Kspec-Cwd"] = ctx.rootDir;
+      }
+
+      ```
+
+
+      ### 2. X-Kspec-Dir migration in src/cli/commands/task.ts
+
+
+      postDispatchEvent() at line ~60-90 builds headers from opts.projectPath.
+
+      Change all 6 callers to pass ctx.projectRoot instead of ctx.rootDir:
+
+      - Line ~1314 (task start)
+
+      - Line ~1538 (task submit)
+
+      - Line ~1694 (task block)
+
+      - Line ~1772 (task reset)
+
+      - Line ~1837 (task complete)
+
+      - Line ~1896 (task cancel)
+
+
+      ### 3. Batch root in src/cli/batch-exec.ts
+
+
+      Line ~777: change process.env.KSPEC_BATCH_PROJECT_ROOT = ctx.rootDir to ctx.projectRoot
+
+
+      ### 4. Hash path fix in src/cli/commands/agents.ts
+
+
+      Line ~345: change path.join(ctx.rootDir, ".kspec", HASH_FILE) to path.join(ctx.specDir,
+      HASH_FILE)
+
+
+      ### 5. Daemon meta route in packages/daemon/src/routes/meta.ts
+
+
+      Line ~205: change root_dir: ctx.rootDir to root_dir: ctx.projectRoot (or expose both)
+
+
+      ### 6. Dispatch cwd support in packages/daemon/src/routes/agent-dispatch.ts
+
+
+      Apply to BOTH start surfaces:
+
+      - Legacy: POST /api/agent/dispatch/start (~line 136+)
+
+      - Unified: POST /api/agent/dispatch with action: "start" (~line 170+)
+
+
+      Read X-Kspec-Cwd header. Validate:
+
+      - Must be absolute path
+
+      - Must share same git-common-dir as the project
+
+      - If engine already running with different cwd: return 409 Conflict
+
+
+      Pass cwd to DispatchEngine constructor.
+
+
+      ### Tests
+
+
+      - Verify dispatch events from worktree use projectRoot for X-Kspec-Dir
+
+      - Verify X-Kspec-Cwd is sent only when rootDir !== projectRoot
+
+      - Verify 409 Conflict when dispatch start with different cwd than running engine
+
+      - Verify agent cwd is the worktree root in spawned invocations
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T18:00:07.203Z
+  - _ulid: 01KKCEQ0YKN9H4HJX9A2P12KKW
+    content: "ADDITIONAL: Add a comment to getProjectRootFromSpecDir() in src/agent-runtime/prompts.ts
+      (lines 54-56) explaining that main-root resolution is correct for .agents/skills/ since it's
+      git-tracked and present in all worktrees. No code change needed, just documentation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T18:03:59.315Z
+  - _ulid: 01KKDJW860DMK0GB2V2CYEM2SR
+    content: >-
+      Execution context:
+
+      - Background: worktree root resolution landed; remaining work is propagating projectRoot/cwd
+      through daemon-facing call sites.
+
+      - Scope: migrate daemon identity headers and dispatch cwd handling, plus directly related
+      regression coverage.
+
+      - Files: expected in src/cli/commands/agent.ts, src/cli/commands/task.ts,
+      src/cli/batch-exec.ts, src/cli/commands/agents.ts, packages/daemon/src/routes/*, and tests
+      covering CLI/daemon dispatch flows.
+
+      - Verification: targeted tests for worktree dispatch/daemon headers plus npm test and kspec
+      validate before submit.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T04:35:59.297Z
+  - _ulid: 01KKDK9CFKCMRX4TC3FE8QPKQ7
+    content: >-
+      Implemented worktree call-site migration:
+
+      - CLI dispatch start now sends X-Kspec-Cwd only for linked worktrees while keeping X-Kspec-Dir
+      pinned to projectRoot.
+
+      - Daemon dispatch routes now validate X-Kspec-Cwd as absolute and same-git-project, preserve
+      per-project 409 conflicts across different worktree cwd values, and keep engine cwd bound to
+      the originating worktree.
+
+      - Fixed remaining worktree path leaks in batch project-root env, agent instruction hash
+      storage, and daemon meta config root_dir.
+
+      - Added regression coverage for daemon dispatch route cwd validation/conflicts plus CLI header
+      behavior.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T04:43:09.683Z
+  - _ulid: 01KKDM7H8WM8342W8MFSA4FSTX
+    content: >-
+      Verification:
+
+      - npm test passes after rebuilding CLI/daemon artifacts used by the test harness (207 files,
+      4549 tests passed, 3 skipped).
+
+      - kspec validate still exits 6 due existing project-wide warning debt only; no new validation
+      errors introduced by this task.
+
+      - Focus regressions covered: CLI header emission, daemon dispatch cwd validation/conflict
+      handling, worktree shadow defaults, and agents hash freshness behavior.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T04:59:37.628Z

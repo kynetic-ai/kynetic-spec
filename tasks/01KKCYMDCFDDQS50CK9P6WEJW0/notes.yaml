@@ -1,0 +1,44 @@
+notes:
+  - _ulid: 01KKCYMDCFS1DS81P1VE42PDQZ
+    content: See plan @plan-iterative-plan-editing for implementation notes
+    author: "@claude"
+    created_at: 2026-03-10T22:42:10.959Z
+  - _ulid: 01KKFAEKPHP5PQGPF84WYTYNJ9
+    content: >-
+      Execution context:
+
+      - Background: add plan re-import into an existing plan record without deriving specs/tasks
+
+      - Scope: extend plan import with --into, status guards, warnings, note reasons, and dry-run
+      support
+
+      - Files: src/cli/commands/plan-import.ts, related helpers/types, tests/cli-plan-import.test.ts
+
+      - Verification: targeted plan import tests, full npm test, kspec validate
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T20:47:12.594Z
+  - _ulid: 01KKFAVFYXH8W1GVD97WQGSY7P
+    content: "Implemented --into support for plan import with draft/approved-only guards, ignored-flag
+      warnings, optional reason notes, and dry-run previews. Added CLI coverage for in-place update
+      flows, active/terminal conflicts, and missing-file handling. Verification: npm test --
+      tests/cli-plan-import.test.ts, npm test, kspec validate (warnings-only exit 6 from
+      pre-existing project warnings)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T20:54:14.749Z
+  - _ulid: 01KKFCKR6DGQDJYF4MBC13P6RF
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: add command-level shadow commit coverage for
+      plan import --into and cover the missing ref-not-found guidance path; full npm test did not
+      clear in review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T21:24:58.189Z
+  - _ulid: 01KKFCX8YV9APP6X1XHFVTKFVP
+    content: "Fix cycle 1: added shadow-enabled integration coverage for plan import --into commits and
+      added not-found guidance coverage for missing target plan refs (text + JSON). Verification:
+      npm test -- tests/cli-plan-import.test.ts, npm test, kspec validate (warnings-only exit 6 from
+      pre-existing project warnings)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T21:30:10.268Z

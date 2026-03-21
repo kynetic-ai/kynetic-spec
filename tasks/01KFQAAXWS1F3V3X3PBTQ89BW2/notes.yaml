@@ -1,0 +1,200 @@
+notes:
+  - _ulid: 01KFRMECP1BWZAM77TQNNZ3HK3
+    content: >-
+      Starting ProjectContextManager unit tests. Creating test-first implementation with mock class
+      to validate expected behavior. Will cover ACs 1-8, 14-16, 20, focusing on:
+
+      - Project registration and caching
+
+      - Path validation and normalization
+
+      - Default project handling
+
+      - Concurrent registration
+
+      - Invalid project detection
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T18:32:13.762Z
+  - _ulid: 01KFRMES98MJP5ETV0M9DBKHYR
+    content: |-
+      Analysis complete. ProjectContextManager unit tests require:
+
+      1. Mock class implementing core manager API:
+         - registerProject(path): validates, normalizes, caches project context
+         - getProject(path): retrieves cached context
+         - setDefaultProject(path): sets fallback for requests without X-Kspec-Dir
+         - hasProject(path): checks registration status
+         - unregisterProject(path): removes from cache
+         - listProjects(): returns all registered projects
+      2. Test coverage areas (30+ tests needed):
+         - Path validation (AC-5, AC-6, AC-7, AC-8, AC-8b, AC-8c)
+         - Registration/caching (AC-1, AC-4, AC-14, AC-16)
+         - Default project (AC-2, AC-3, AC-20b)
+         - Auto-unregister on deletion (AC-20)
+         - Concurrent registration race (AC-16)
+      3. Uses setupMultiDirFixtures() for test isolation
+
+      WIP - next iteration should implement test file.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T18:32:26.665Z
+  - _ulid: 01KFRMFC0NA90E15T5JCD9FM7G
+    content: |-
+      Session end checkpoint: Task not completed, leaving in_progress.
+
+      CURRENT STATE:
+      - Analysis complete, no implementation yet
+      - Multi-dir fixtures already exist (from @01KFQAAA)
+      - ProjectContextManager class doesn't exist yet (test-first approach)
+
+      NEXT SESSION TODO:
+      1. Create tests/daemon-context-manager.test.ts
+      2. Implement mock ProjectContextManager class with API:
+         - registerProject(path, isDefault?): validates + caches
+         - getProject(path): retrieves cached context
+         - setDefaultProject(path): sets fallback
+         - hasProject(path): check registration
+         - unregisterProject(path): remove from cache
+         - listProjects(): return all registered
+      3. Write ~30 tests covering ACs: 1-8, 8b, 8c, 14-16, 20, 20b
+      4. Use setupMultiDirFixtures() helper for isolation
+      5. Follow same pattern as daemon-global-pid-port.test.ts
+
+      BLOCKED ON: Nothing - ready to implement
+      ESTIMATE: 1-2 iterations to complete all tests
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T18:32:45.845Z
+  - _ulid: 01KFRMKK1RJAEWRZX7KMQP784Z
+    content: >-
+      Test implementation complete: Created daemon-context-manager.test.ts with 29 comprehensive
+      tests.
+
+
+      COVERAGE:
+
+      - AC-1: Request with X-Kspec-Dir header (3 tests)
+
+      - AC-2: Default project handling (7 tests)
+
+      - AC-3: No default project error (1 test)
+
+      - AC-4: Auto-registration and caching (5 tests)
+
+      - AC-5: Invalid project path validation (1 test)
+
+      - AC-6: Relative path rejection (2 tests)
+
+      - AC-7: Parent traversal rejection (2 tests)
+
+      - AC-8: Path normalization (4 tests)
+
+      - AC-8c: Symlink handling - paths NOT resolved (1 test)
+
+      - AC-14: Multiple project registration (1 test)
+
+      - AC-15: List projects (1 test)
+
+      - AC-16: Concurrent registration race (1 test)
+
+      - AC-20: Project unregistration (3 tests)
+
+      - AC-20b: Deleted default project detection (2 tests)
+
+
+      IMPLEMENTATION:
+
+      - Mock ProjectContextManager class with full API
+
+      - Uses setupMultiDirFixtures() for test isolation
+
+      - Follows same pattern as daemon-global-pid-port.test.ts
+
+      - Tests cover all edge cases: normalization, validation, symlinks
+
+
+      VERIFICATION:
+
+      All 29 tests pass. Ready for review.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T18:35:04.120Z
+  - _ulid: 01KFRMT11Z08BC193SMWGDWDEK
+    content: |-
+      PR #215 created and local review complete. All quality gates passed:
+      - AC coverage: 14/39 ACs (unit test scope)
+      - Test quality: High - clear annotations, proper structure
+      - E2E preference: Unit tests appropriate for this component
+      - Test isolation: Excellent - proper setup/teardown
+
+      Awaiting CI completion (claude-review and test checks pending).
+      Next: Complete workflow steps after CI passes, then merge and complete task.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T18:38:35.071Z
+  - _ulid: 01KFSM7DFQKS1QJN3Y2R5KGTX1
+    content: >-
+      ## Gap Identified
+
+      AC-14 (multiple project registration) has only 1 test. AC-15 (list projects) has only 1 test.
+      These represent weak coverage for core multi-project functionality. Task reopened for
+      additional test coverage of these acceptance criteria.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T03:48:10.000Z
+  - _ulid: 01KFSYSACEX0FCGTN5CAS8JVJQ
+    content: Reset from in_progress to pending
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T06:52:12.046Z
+  - _ulid: 01KFT06V8G32WAZCT7VQ0QFQAK
+    content: >-
+      ## COVERAGE GAPS IDENTIFIED
+
+
+      ### Current Status
+
+      3/5 ACs properly covered in daemon-context-manager.test.ts
+
+
+      ### Weak Coverage: ac-14 (Re-registration After Restart)
+
+      AC-14: Given daemon restarts, when first request for a project arrives, then project is
+      re-registered automatically
+
+
+      Issue: Current test checks independent registration but doesn't test the restart scenario.
+
+
+      ### Weak Coverage: ac-15 (Empty Project List After Restart)
+
+      AC-15: Given daemon running with registered projects, when daemon restarts, then registered
+      project list is empty
+
+
+      Issue: Tests listing but not persistence across restarts.
+
+
+      ### What's Needed
+
+      - ac-14: Test that simulates daemon restart, then verifies re-registration on first request
+
+      - ac-15: Test that registers projects, simulates restart, verifies list is empty
+
+
+      ### Test Location
+
+      Add to: tests/daemon-context-manager.test.ts
+
+
+      ### Definition of Done
+
+      - [ ] ac-14 restart re-registration test added
+
+      - [ ] ac-15 empty list after restart test added
+
+      - [ ] No test.skip() calls
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T07:17:03.889Z

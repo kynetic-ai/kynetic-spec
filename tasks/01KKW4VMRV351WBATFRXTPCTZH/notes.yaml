@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KKWC2ACCZD48SF53MDJGPJE0
+    content: "Added examined_commit (string, nullable) to ReviewRecordSchema and
+      ReviewRecordInputSchema. review add populates from --examined-commit flag or
+      KSPEC_DISPATCH_CANONICAL_HEAD env var, defaulting to null. Field shown in JSON output and
+      human-readable display. 3 integration tests: explicit flag, env var, and null default."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T22:25:34.604Z

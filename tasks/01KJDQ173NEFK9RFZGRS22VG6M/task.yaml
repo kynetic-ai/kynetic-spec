@@ -1,0 +1,70 @@
+_ulid: 01KJDQ173NEFK9RFZGRS22VG6M
+slugs: []
+title: "Shadow branch index inconsistency: observation @01KJ73ME appeared in search results but
+  failed on ks"
+type: task
+description: >-
+  **What**: `kspec search` can find observations (e.g., @01KJ73ME) via `loadMetaContext()` which
+  reads the meta.observations array from kynetic.yaml, but `kspec item get` fails for the same
+  reference because the `ReferenceIndex` only indexes spec items and tasks — not meta entities like
+  observations, workflows, conventions, or agents.
+
+
+  This is not a write conflict or index corruption. It is an architectural gap: search and item-get
+  use different resolution paths. Search loads observations from meta context, while item-get only
+  resolves through the ReferenceIndex which does not include meta entities.
+
+
+  **Where**:
+
+  - `src/cli/commands/search.ts` — loads observations via `loadMetaContext()` (lines 241-257)
+
+  - `src/cli/commands/item.ts` — uses `refIndex.resolve()` which only covers spec items
+
+  - `src/parser/refs.ts` — `ReferenceIndex` class that builds the resolution index
+
+  - `src/cli/commands/meta.ts` — has dedicated `meta observe get` subcommand for observations
+
+
+  **How**:
+
+  Two options (pick one):
+
+  1. **Extend ReferenceIndex** to include meta entities (observations, workflows, agents,
+  conventions) so `item get` can resolve them. This is the deeper fix but has namespace collision
+  risk.
+
+  2. **Improve error message** in `item get` to suggest `kspec meta observe get @ref` when a ref
+  fails to resolve, since observations have their own dedicated get command. This is lighter and
+  avoids mixing namespaces.
+
+
+  Option 2 is recommended: observations already have `kspec meta observe get`, so the real bug is a
+  confusing UX, not missing functionality.
+
+
+  **Done when**:
+
+  - `kspec item get @observation-ref` either resolves the observation or provides a clear error
+  message suggesting `kspec meta observe get @ref`
+
+  - Alternatively, if extending ReferenceIndex: meta entities are resolvable via `item get` with
+  correct type display
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #595. Implemented item-get unresolved-ref guidance for observation refs
+  by suggesting 'kspec meta observe get <ref>' when applicable, with integration regression coverage
+  for the hint path. AC coverage N/A (task has no spec_ref); full regression and CI checks passed."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
+created_at: 2026-02-26T19:32:54.517Z
+started_at: 2026-02-28T07:19:25.415Z
+submitted_at: 2026-02-28T07:20:51.490Z
+completed_at: 2026-02-28T07:43:17.442Z
+todos: []
+automation: eligible

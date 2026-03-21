@@ -1,0 +1,23 @@
+notes:
+  - _ulid: 01KG7227V3EAKJZCXH9WXVSGH9
+    content: "Automation assessment: set to needs_review. missing spec_ref"
+    supersedes: null
+    author: "@automation-assess"
+    created_at: 2026-01-30T08:59:37.699Z
+  - _ulid: 01KG72J6EGH5EWPRRFR119YMYQ
+    content: "Eligible: Added AC ac-1 to @task-commands spec. Implement --force flag to bypass blocked
+      state with warning."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-30T09:08:20.560Z
+  - _ulid: 01KG783E9W2W3S54EVMQSDHBN5
+    content: |-
+      Implemented --force flag for task complete command. Changes:
+      - Added --force option to bypass blocked state check
+      - Shows warning when force-completing blocked task
+      - Adds note documenting forced completion with blocked_by reason
+      - JSON output includes warning field
+      - Added 2 tests in task-completion-enforcement.test.ts
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-30T10:45:08.540Z

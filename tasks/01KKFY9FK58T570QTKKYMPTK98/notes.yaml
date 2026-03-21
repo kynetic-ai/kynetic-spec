@@ -1,0 +1,62 @@
+notes:
+  - _ulid: 01KKJ4JE66RF8ERH2F625ZDEMC
+    content: >-
+      Execution context:
+
+      - Background: dispatch now provisions canonical worker and reviewer worktrees, so stale
+      worktrees/branches must be reaped deterministically.
+
+      - Scope: implement cleanup eligibility, scheduled reaping, orphan reconciliation, and branch
+      deletion guards for dispatch workspaces.
+
+      - Files: dispatch workspace registry/reconciler/orchestrator code plus targeted tests.
+
+      - Verification: run focused tests for dispatch workspace lifecycle, then npm test and kspec
+      validate before submit.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T23:02:09.862Z
+  - _ulid: 01KKJ538ZY3FEHTQAX8A5VZAR4
+    content: >-
+      Implemented dispatch workspace cleanup lifecycle:
+
+      - reviewer snapshots are removed after pending_review invocations while canonical worker
+      worktrees persist.
+
+      - cleanup-eligible workspaces now persist closing/scheduled cleanup metadata and
+      branch-deletion blockers move to cleanup_blocked with recorded guidance.
+
+      - startup/periodic reconciliation now reaps orphaned dispatch worktrees, stray dispatch root
+      directories, and orphaned dispatch/task branches deterministically.
+
+      - Verification: focused dispatch workspace tests passed; full npm test is passing on rerun;
+      kspec validate still exits 6 on the repo's pre-existing warning backlog only.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T23:11:21.598Z
+  - _ulid: 01KKJ5KQ6FNMHM78QR5V95ZY6J
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @dispatch-workspace-cleanup-policy ac-4 is only
+      partially covered in tests (unresolved-integration cleanup_blocked path is untested), and PR
+      #807 is currently conflicting with main so it cannot be merged."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T23:20:20.431Z
+  - _ulid: 01KKJ6P5B8KR8FFW30JA1SF8J2
+    content: Added unresolved-integration cleanup_blocked coverage for
+      @dispatch-workspace-cleanup-policy ac-4. This exercises the existing reapDispatchWorkspace
+      guard when cleanup is attempted before integration becomes cleanup-eligible, so both
+      canonical-branch blocker paths are now covered.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T23:39:09.032Z
+  - _ulid: 01KKJ7PCFDWDFV171BGPX5GJT0
+    content: "Rebased the cleanup branch onto origin/main and resolved the runtime merge against the
+      registry-backed workspace model. Added unresolved-integration coverage for
+      @dispatch-workspace-cleanup-policy ac-4, updated cleanup persistence so reviewer cleanup and
+      cleanup_blocked state stay consistent in both the registry and worktree sidecar, and aligned
+      the dispatch/canonical cleanup tests with the merged behavior. Verification: npm test --
+      dispatch-workspace-cleanup agent-dispatch-engine canonical-task-workspace-contract
+      dispatch-workspace-config dispatch-workspace-registry, npm test, kspec validate."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T23:56:44.909Z

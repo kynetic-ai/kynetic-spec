@@ -1,0 +1,40 @@
+_ulid: 01KJDQ139SP70H2H9GNBH8BM72
+slugs: []
+title: kspec agents generate should include package version in content hash (or add --force flag) so
+  versio
+type: task
+description: "**What**: `kspec agents generate` skips regeneration when content is unchanged, but
+  the staleness check does not include the package version in the content hash. After a version bump
+  (e.g., 0.6.0 to 0.7.0), the generated file header comment is stale, but the hash matches because
+  version is not part of the hash input. **Where**: `src/cli/commands/agents.ts` — the
+  `computeMetaHash()` function (line 125-154) computes a hash from skills, conventions, workflows,
+  and template sections, but does not include the package version. The `generateFreshnessComment()`
+  function (line 160) uses `version` from the package but this is only in the output, not the hash.
+  The skip logic is at ~line 346-348 where `checkAgentStatus()` compares the stored hash. **How**:
+  Add the package `version` string to the hash input in `computeMetaHash()`. Add `data.version =
+  version` (importing `version` from the package, which is already imported at the top of the file
+  for `generateFreshnessComment`). This way, any version bump automatically invalidates the hash and
+  triggers regeneration. Alternatively or additionally, add a `--force` flag to `kspec agents
+  generate` that bypasses the hash check. **Done when**: (1) `computeMetaHash()` includes the
+  package version in its hash computation. (2) After a version bump, `kspec agents generate`
+  regenerates the file instead of skipping. (3) Existing tests in
+  `tests/agents-instruction-gen.test.ts` updated to reflect the new hash behavior. (4) Optionally:
+  `--force` flag added to bypass the hash check entirely."
+spec_ref: "@agents-cli"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #592. Included package version in agents freshness hash input
+  (computeMetaHash) so version bumps invalidate stale hashes, plus regression tests for version-only
+  hash drift and legacy no-version hash staleness; AC coverage for @agents-cli ac-1..ac-4 verified."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
+created_at: 2026-02-26T19:32:50.617Z
+started_at: 2026-02-28T06:36:53.505Z
+submitted_at: 2026-02-28T06:41:24.259Z
+completed_at: 2026-02-28T06:50:08.857Z
+todos: []
+automation: eligible

@@ -1,0 +1,18 @@
+notes:
+  - _ulid: 01KKPPZPFKABEFJDJ66J0TQTEM
+    content: >-
+      Execution context:
+
+      - Background: Schema and storage already exist. This task adds thread operation functions and
+      disposition computation.
+
+      - Scope: addThread, addReply, resolveThread, reopenThread operations with event logging;
+      computeDisposition function; tests for all 6 ACs.
+
+      - Files: src/parser/review-threads.ts (new operations module), tests/review-threads.test.ts
+      (new test file)
+
+      - Verification: npm test covering all 6 ACs with AC annotations
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T17:40:56.436Z

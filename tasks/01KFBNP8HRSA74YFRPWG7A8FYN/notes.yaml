@@ -1,0 +1,44 @@
+notes:
+  - _ulid: 01KFBVHCQXMW37Z6ED13Z18GER
+    content: "Drafted spec @task-automation-eligibility with 21 acceptance criteria covering: schema
+      (enum field), Ralph filtering (only eligible shown), state transitions
+      (needs_review/manual_only require human to re-enable), CLI operations (task set, task add
+      flags), display (tasks ready, task get), filtering flags (--eligible, --unassessed), and
+      validation warning for eligible tasks without spec_ref. Awaiting user review for any additions
+      before marking complete."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T19:26:04.542Z
+  - _ulid: 01KFBWFRQ1B9YYD7XPZQJF7VQW
+    content: >-
+      Subagent review identified gaps in spec:
+
+
+      **Blocking issues:**
+
+      - AC-14/17 display contradiction (blank vs 'unassessed')
+
+      - AC-11/12 CLI inconsistency (--automation none vs --no-automation)
+
+      - AC-4/18 mandatory note unclear
+
+
+      **High severity:**
+
+      - Missing state transition rules
+
+      - spec_ref deletion behavior undefined
+
+      - Recovery path triggers unclear
+
+      - Ralph re-check mid-loop behavior
+
+      - Validation severity (warning vs error)
+
+
+      **Open design question:** Cross-cutting AC problem raised - bulk refs, --json, common flags
+      apply to many commands. Discussing traits/mixins system to handle shared AC without
+      duplication. Need to decide: fix current spec first, or spec the traits system first?
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T19:42:39.842Z

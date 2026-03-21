@@ -1,0 +1,23 @@
+_ulid: 01KFMMT99M68WVP261SJKB326F
+slugs: []
+title: Spec item tree and detail views
+type: task
+spec_ref: "@web-dashboard"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #198 merged successfully. Spec item tree and detail views implemented with
+  hierarchical display, expand/collapse, detail panel with AC display, linked tasks, and trait
+  chips. All AC covered: ac-11 through ac-15."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - phase-3
+  - dashboard
+vcs_refs: []
+created_at: 2026-01-23T05:21:45.780Z
+started_at: 2026-01-23T15:04:57.554Z
+completed_at: 2026-01-23T15:14:27.249Z
+todos: []
+automation: eligible

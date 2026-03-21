@@ -1,0 +1,30 @@
+notes:
+  - _ulid: 01KKAH5H9MHVK31AA1EG3F6T2M
+    content: "Affected tests: 'dist/web-ui/ is populated with index.html after build', 'falls back to
+      bundled dist/web-ui/ when no local or env build exists', 'non-existent explicit webUiDir is
+      skipped and falls through to bundled'. These test resolveWebUiPath() fallback logic. The first
+      test checks build output exists — this one should be the gate. Use
+      describe.skipIf(\\!fs.existsSync(bundledPath)) or it.skipIf for the 3 tests that depend on
+      dist/web-ui/. Skip message should say: 'dist/web-ui/ not populated — run npm run build to
+      include bundled web UI tests'. Keep any tests that DON'T depend on build artifacts running
+      normally."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T00:08:23.093Z
+  - _ulid: 01KKAHF5KG066FYKBS8A391GC0
+    content: "Blocked: Need to decide how to handle this, as skipping tests is not the right answer"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T00:13:38.800Z
+  - _ulid: 01KKAHVAREB0J7G94KCJKRD2FT
+    content: "Completed with --force from blocked state. Was blocked by: (dependency-blocked). Reason:
+      Cancelled: Skipping tests is the wrong approach. Replacing with a test runner script task that
+      ensures environment prerequisites (like build artifacts) are satisfied before running tests."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T00:20:17.294Z
+  - _ulid: 01KKAJ13CG60X9KQZ99PC2PA9F
+    content: Reset from completed to pending
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T00:23:26.352Z

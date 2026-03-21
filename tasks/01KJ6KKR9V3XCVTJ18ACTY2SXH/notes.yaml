@@ -1,0 +1,25 @@
+notes:
+  - _ulid: 01KJ6KKR9VN2HPV14CPPTY512Q
+    content: |
+      Modify tasks ready output in src/cli/commands/tasks.ts (~line 234) and session
+      context in src/cli/commands/session.ts to show session indicator when tasks have
+      session_id from another active session. Tasks remain visible and startable.
+    author: "@claude"
+    created_at: 2026-02-24T01:18:26.619Z
+  - _ulid: 01KJ78W0EAQ8XQXE3BSEPCW4NS
+    content: "All 6 ACs for @session-scoped-task-claiming were already implemented and tested in the
+      prior task @01KJ6KKQA (Add session_id to task schema, PR #499). Implementation: formatTask()
+      and formatTaskListWithAutomation() in src/cli/output.ts show [session 01KJ6NFB...] indicator.
+      Tests: tests/session-scoped-task-claiming.test.ts has 13 tests covering all 6 ACs, all
+      passing. No new code changes needed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T07:29:57.195Z
+  - _ulid: 01KJ78W90C7PKMPJRBBNFWNAFC
+    content: "Completed with --skip-review: Already fully implemented in @01KJ6KKQA (PR #499). Session
+      indicator [session 01KJ...] shows in formatTask() and formatTaskListWithAutomation() in
+      src/cli/output.ts. 13 integration tests in tests/session-scoped-task-claiming.test.ts cover
+      all 6 ACs including ac-display. No new code needed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T07:30:05.964Z

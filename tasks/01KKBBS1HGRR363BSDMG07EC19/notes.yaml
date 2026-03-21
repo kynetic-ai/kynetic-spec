@@ -1,0 +1,8 @@
+notes:
+  - _ulid: 01KKBS00AJ3F1H8ETPHSTZ2KE4
+    content: "Fixed env isolation in codex auto-detect test. Root cause: CLAUDE_CODE_ENTRYPOINT leaked
+      from parent shell (Claude Code sets it). The test only blanked CLAUDECODE but
+      detectAgentFromEnv() checks four env vars. Added blanks for all four. PR #745."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T11:44:24.914Z

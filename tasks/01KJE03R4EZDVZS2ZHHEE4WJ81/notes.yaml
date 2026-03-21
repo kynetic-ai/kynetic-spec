@@ -1,0 +1,10 @@
+notes:
+  - _ulid: 01KJE2P4YDHZ798YTGWZHX3CF0
+    content: "Fixed config.json → config.toml for codex env injection. Added smol-toml dependency.
+      Updated all 7 codex tests + added round-trip preservation test + fixed pre-existing
+      adapter.args assertion (PR #565 aftermath). Auto-approve args confirmed correct via Codex
+      config schema. 67/67 session-create tests pass. Full suite: 155/156 files pass (1 pre-existing
+      flaky integration test unrelated)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T22:56:34.766Z

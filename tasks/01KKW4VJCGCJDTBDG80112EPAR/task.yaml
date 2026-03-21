@@ -1,0 +1,55 @@
+_ulid: 01KKW4VJCGCJDTBDG80112EPAR
+slugs:
+  - task-rewrite-review-lifecycle-ac3
+title: Rewrite review-verdicts-and-resolution-lifecycle ac-3 for per-cycle model
+type: task
+description: |
+  Rewrite @review-verdicts-and-resolution-lifecycle ac-3 to describe the
+  per-cycle review model instead of the single-record iteration model.
+
+  Why: The current ac-3 states "the same review record tracks iteration
+  through its event log and compare context updates without losing the
+  audit trail." This conflicts with the per-cycle model where each review
+  cycle gets its own record. The original assumption predated the dispatch
+  review flow — review records were conceived as long-lived mutable
+  artifacts, but in practice each review cycle is a discrete assessment.
+
+  What: Rewrite ac-3 to describe that review cycles create new review
+  records, with the collection of records comprising the full review
+  history. Verify that existing code and tests referencing ac-3 are
+  compatible with the rewrite — the current implementation already
+  supports creating multiple reviews per task, so this is primarily a
+  spec alignment, not a code change.
+
+  How: Use kspec item ac set @review-verdicts-and-resolution-lifecycle
+  ac-3 to rewrite the AC text. Check tests tagged with this AC for
+  compatibility. Update any test annotations if needed.
+spec_ref: null
+plan_ref: "@plan-task-activity-timeline"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Reviewed, approved, and merged to dev. ac-3 rewrite accurately captures per-cycle
+  model. Annotation moves from ac-3 to ac-7 are semantically correct. All tests pass.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec
+  - reviews
+vcs_refs: []
+review_ref: "@01KKW9ABKRTQHY2HZMR9YR0YE8"
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-rewrite-review-lifecycle-ac3/01kkw4vj
+  captured_at: 2026-03-16T21:34:51.164Z
+  commit: 1f16d6c097c383806c4898cddd2e68a626aa419b
+  remote: null
+  remote_url: null
+  upstream_ref: null
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-16T20:19:33.392Z
+started_at: 2026-03-16T21:32:17.970Z
+submitted_at: 2026-03-16T21:34:52.177Z
+completed_at: 2026-03-16T21:38:55.664Z
+todos: []

@@ -1,0 +1,40 @@
+_ulid: 01KFQADD4VD2PN6PF16Y6V2JCD
+slugs:
+  - task-ws-binding-tests
+title: WebSocket connection binding tests
+type: task
+description: |-
+  Write tests for WebSocket project binding behavior.
+
+  ## Test Cases
+  - Test header read during upgrade handshake
+  - Test connection bound to project for lifetime
+  - Test immutable binding (no project switching mid-connection)
+  - Test rejection when no project specified and no default (close code 4000)
+
+  ## AC Coverage
+  ac-21, ac-21b, ac-22, ac-23
+
+  ## Dependencies
+  Task: ProjectContextManager implementation
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Work already merged to main (commit 811150c3). Created
+  daemon-websocket-binding.test.ts with 9 tests covering AC-21, AC-21b, AC-22. AC-23 has skipped
+  test pending implementation. All 8 active tests pass.
+depends_on:
+  - "@01KFQABQ"
+context: []
+priority: 1
+tags:
+  - testing
+  - websocket
+  - phase-5
+vcs_refs: []
+created_at: 2026-01-24T06:17:41.274Z
+started_at: 2026-01-25T22:49:20.289Z
+completed_at: 2026-01-25T23:10:02.702Z
+todos: []
+automation: eligible

@@ -1,0 +1,28 @@
+_ulid: 01KKBD6D2XVXHJB82Y0XB0KPCC
+slugs: []
+title: kspec setup should update existing agent definitions on version bumps. Currently skips agents
+  with m
+type: task
+description: >-
+  Make kspec setup update existing agent definitions on version bumps instead of skipping them.
+
+
+  Current behavior: setup skips agents with matching IDs, so agents from older kspec versions miss
+  new fields (e.g. auto_approve). Reported in GitHub issue #700 — users get stuck on headless
+  dispatch.
+
+
+  Fix options: (1) Merge new defaults into existing agents preserving user customizations, (2) add
+  kspec setup --upgrade flag, (3) warn when agent config is missing expected fields. Option 1 is
+  most user-friendly. Implementation in src/cli/commands/setup.ts agent installation logic.
+spec_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-03-10T08:18:11.677Z
+todos: []
+automation: needs_review

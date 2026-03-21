@@ -1,0 +1,70 @@
+_ulid: 01KKW6PK9QFXKH69HE6KY8Q40Y
+slugs:
+  - task-normalize-activity-entries
+title: Normalize git diff data into typed activity entries
+type: task
+description: |-
+  Parse raw git diff hunks from task commit history into typed, structured
+  activity entries for the timeline.
+
+  Why: git log -L returns raw diffs showing which YAML fields changed in
+  each commit. These need to be translated into meaningful activity records
+  that humans and the timeline UI can consume. The commit message alone is
+  insufficient — it may be a generic "task-set @ref" while the diff reveals
+  the actual change was a status transition, a new note, or a review linkage.
+
+  What: Create a normalizeTaskActivity(rawCommits) function that:
+  1. Parses diff hunks to identify which fields changed (added/removed lines)
+  2. Maps field changes to activity types:
+     - status field change → "state_change" with from/to values
+     - new entry in notes array → "note_added" with content preview
+     - review_ref set/changed → "review_linked" with review ref
+     - submission_linkage set → "submitted" with branch/commit
+     - priority/tags/description changes → "field_updated" with field name
+     - multiple field changes in one commit → multiple activity entries
+       with shared timestamp and commit ref
+  3. Falls back to commit message parsing when diff is unavailable or
+     unparseable (e.g. "Start @ref" → "started")
+  4. Returns chronologically ordered typed entries with: type, timestamp,
+     author, summary, and optional detail fields
+
+  How: Parse YAML diff lines to detect field-level changes. For array
+  fields like notes, detect insertions by looking for new _ulid entries.
+  For scalar fields like status, extract old/new values from -/+ lines.
+  Group changes per commit but emit separate activity entries per
+  meaningful change. Commit message serves as fallback context.
+
+  Covers: @task-activity-git-query ac-3, ac-4.
+spec_ref: "@task-activity-git-query"
+meta_ref: null
+plan_ref: "@plan-task-activity-timeline"
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Implements parseCommitMessage() (11 patterns, ac-3),
+  parseDiffChanges() (scalar fields + note detection, ac-4), and normalizeTaskActivity() (diff-first
+  with commit message fallback). 30 tests pass. Review 01KKWEBZ approved with 3 nits: dead
+  submission_linkage case, nested map field leakage, and missing review-* patterns — all low impact
+  due to diff-first strategy."
+depends_on:
+  - "@task-implement-activity-git-query"
+context: []
+priority: 1
+tags:
+  - cli
+  - tasks
+vcs_refs: []
+review_ref: "@01KKWEBZSZ2R6X6GGTBB3YE5M5"
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-normalize-activity-entries/01kkw6pk
+  captured_at: 2026-03-16T23:03:25.136Z
+  commit: f6e16b92e3cf47b7a6144407e45d3891435c0e05
+  remote: null
+  remote_url: null
+  upstream_ref: dev
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-16T20:51:47.638Z
+started_at: 2026-03-16T22:59:58.430Z
+submitted_at: 2026-03-16T23:03:25.970Z
+completed_at: 2026-03-16T23:13:32.072Z
+todos: []

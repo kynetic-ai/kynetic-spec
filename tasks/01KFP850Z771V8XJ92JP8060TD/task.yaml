@@ -1,0 +1,28 @@
+_ulid: 01KFP850Z771V8XJ92JP8060TD
+slugs: []
+title: Implement Search/Command Palette (AC-23 to AC-25)
+type: task
+spec_ref: "@web-dashboard"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #244. Implemented command palette/search covering ac-23 (Cmd+K/Ctrl+K
+  keyboard shortcuts), ac-24 (300ms debounced search with grouped results), and ac-25
+  (click-to-navigate). Added data-testid attributes to CommandPalette.svelte. Created 17
+  comprehensive E2E tests in search.spec.ts covering keyboard shortcuts, search functionality,
+  navigation, and accessibility. All ACs have test coverage."
+depends_on:
+  - "@task-watcher-impl"
+context: []
+priority: 2
+tags:
+  - e2e
+  - testing
+  - web-ui
+  - implementation
+vcs_refs: []
+created_at: 2026-01-23T20:18:55.079Z
+started_at: 2026-01-25T12:33:29.326Z
+completed_at: 2026-01-25T12:45:02.897Z
+todos: []
+automation: eligible

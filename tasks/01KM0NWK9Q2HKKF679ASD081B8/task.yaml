@@ -1,0 +1,78 @@
+_ulid: 01KM0NWK9Q2HKKF679ASD081B8
+slugs:
+  - task-remediate-review-versions
+title: Remediate existing review data with version mismatches
+type: task
+description: >-
+  Write a one-time migration script to fix applies_to_version on existing verdicts and checks that
+  have type mismatches with their review's subject. Of 110 existing reviews, the daemon computes
+  only 4 as approved (correct: 76) because verdicts/checks were stamped with code_compare versions
+  on task-subject reviews.
+
+
+  The daemon computes disposition dynamically via computeDisposition() in
+  src/parser/review-operations.ts, so correcting the stored applies_to_version will immediately fix
+  the web UI display without any daemon code changes.
+
+
+  Why: After the CLI fix (@task-cli-verdict-auto-version and @task-cli-check-auto-version), new
+  reviews will have correct versions, but the 110 existing reviews will remain broken in the web UI.
+  The data must be corrected for the reviews index to show accurate dispositions.
+
+
+  How:
+
+  1. Write a script that loads all review records from the shadow branch via loadReviewRecords()
+
+  2. For each review, extract the subject version via extractSubjectVersion(review.subject) from
+  src/review/subject-bindings.ts
+
+  3. For each verdict and check, compare applies_to_version.type with the subject version type
+
+  4. If mismatched in either direction (code_compare on entity subject, or entity_version on code
+  subject), replace applies_to_version with the version derived from the review subject. Note: if
+  the review subject itself has changed since the verdict was created (e.g. via refreshSubject), the
+  corrected version will still be 'stale' relative to the current subject — this is correct
+  behavior, not a bug
+
+  5. Save the corrected reviews and commit to shadow branch
+
+  6. Verify daemon API now returns correct dispositions by querying GET /api/reviews?status=all and
+  checking disposition counts
+
+  7. Delete the script after use — it's a one-time fix
+spec_ref: "@review-verdicts-and-resolution-lifecycle"
+meta_ref: null
+plan_ref: "@plan-review-version-auto-derivation"
+status: completed
+blocked_by: []
+closed_reason: Approved. Shadow branch data migration corrected 365 applies_to_version entries (101
+  verdicts, 264 checks) across 100 reviews from code_compare to entity_version type. No source code
+  changes. Review dispositions now compute correctly (86 approved vs ~4 before fix). Migration
+  script deleted after use.
+depends_on:
+  - "@task-cli-verdict-auto-version"
+  - "@task-cli-check-auto-version"
+context: []
+priority: 1
+tags:
+  - data
+  - review
+  - migration
+vcs_refs: []
+review_ref: "@01KM0XDVXAGYN37B7YKGR73W29"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T16:44:52.073Z
+  commit: 9d5e929d1472e459b4ecb77108c3ba012ed963f9
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM0WGJAYQMCR8NAKVNJGTQMR
+created_at: 2026-03-18T14:34:10.615Z
+started_at: 2026-03-18T16:30:18.735Z
+submitted_at: 2026-03-18T16:44:52.471Z
+completed_at: 2026-03-18T16:54:18.810Z
+todos: []
+automation: eligible

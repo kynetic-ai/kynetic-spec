@@ -1,0 +1,56 @@
+notes:
+  - _ulid: 01KK9ZH8V0F28QDCC269AM6XKD
+    content: >-
+      Execution context:
+
+      - Background: Legacy fallback reads from .kspec/sessions/ add complexity for marginal benefit.
+      Only session/log.ts uses them. Replace with detect-and-warn pattern.
+
+      - Scope: Remove *WithFallback/*Merged functions from legacy.ts, update log.ts to use store.ts
+      directly + hasLegacySessions warning, add warning to daemon routes, rewrite tests.
+
+      - Files: src/sessions/legacy.ts, src/cli/commands/session/log.ts,
+      packages/daemon/src/routes/sessions.ts, tests/session-legacy-fallback.test.ts,
+      tests/session-legacy-cli.test.ts
+
+      - Verification: npm test passes, spec ACs covered
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T19:00:13.281Z
+  - _ulid: 01KKA0WE0B8ZN998ZAG1ARSA35
+    content: >-
+      Implementation complete. Changes:
+
+      1. legacy.ts: Removed all *WithFallback/*Merged functions (getSessionWithFallback,
+      readEventsWithFallback, listSessionsMerged, getAllSessionLogSummariesMerged,
+      resolveSessionIdWithFallback, searchSessionEventsWithFallback,
+      computeToolUsageStatsWithFallback). Added countLegacySessions() and warnIfLegacySessions()
+      convenience function.
+
+      2. session/log.ts: Replaced all legacy imports with direct store.ts calls. Added
+      warnIfLegacySessions() at start of list/show/stats/search actions.
+
+      3. daemon sessions.ts: Added countLegacySessions import and warning field in list endpoint
+      response meta.
+
+      4. Tests: Rewrote session-legacy-fallback.test.ts (29 tests) and session-legacy-cli.test.ts
+      (18 tests) to verify detect-and-warn behavior. All 47 tests pass. Full suite: 4225 passed, 2
+      pre-existing failures unrelated to this change.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T19:23:47.595Z
+  - _ulid: 01KKA187A2CZR947E535PZ6XVM
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: daemon detect-and-warn only covers GET
+      /api/sessions and lacks daemon/API coverage; @session-legacy-migration ac-read-fallback
+      requires daemon reads to warn too."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-09T19:30:13.954Z
+  - _ulid: 01KKA1ZFQKFS727EK6E8MMSPCW
+    content: "Fix cycle 1: Extended daemon detect-and-warn to all session read endpoints (GET /:id and
+      /:id/events) — previously only GET / had it. Added E2E test file api-sessions-legacy.spec.ts
+      with 8 tests covering the warning contract across all 3 daemon session endpoints. All 4225
+      vitest tests pass (2 pre-existing codex-related failures unrelated)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T19:42:56.243Z

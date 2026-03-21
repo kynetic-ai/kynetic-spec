@@ -1,0 +1,31 @@
+_ulid: 01KJK9DVRY12X35GJDS5B6PRXG
+slugs: []
+title: Fix ACP RPC parse errors — compact subagent prompts + split budget constants
+type: bug
+description: Subagent prompts embed full task/spec JSON that overflows Rust ACP parser after
+  JSON-RPC encoding. Switch to always-compact summaries in subagent prompts and split the prompt
+  budget into separate subagent/worker constants.
+spec_ref: "@ralph-subagent-spawning"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #614. Switched subagent prompt context to compact task/spec identity
+  summaries with CLI fetch commands, split prompt budgets to 16KB subagent and 32KB worker, and
+  pinned worker truncation to explicit worker budget. AC coverage for @ralph-subagent-spawning
+  (ac-1..ac-13) verified via annotated tests."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - fix
+  - cli
+  - ralph
+vcs_refs: []
+session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
+created_at: 2026-02-28T23:30:35.422Z
+started_at: 2026-03-01T00:25:14.523Z
+submitted_at: 2026-03-01T00:36:26.508Z
+completed_at: 2026-03-01T00:48:48.299Z
+todos: []
+automation: eligible

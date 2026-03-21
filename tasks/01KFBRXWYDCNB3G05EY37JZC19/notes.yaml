@@ -1,0 +1,53 @@
+notes:
+  - _ulid: 01KFBRXWYCPEVJA07GPPK6JJXN
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Enable workflows defined in meta to serve as first-class skills without requiring static .md
+      files. Workflows become the single source of truth for procedural knowledge, with skill files
+      either generated or dynamically served.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given a workflow with skill_content field defined, when running kspec workflow export
+      @workflow-id, then generates a valid SKILL.md file with proper frontmatter
+
+      - ac-2: Given a workflow definition, when adding skill_content, phases, or prompt_templates
+      fields, then the workflow schema validates and stores the enhanced content
+
+      - ac-3: Given workflows with skill_content defined, when running kspec workflow sync, then all
+      workflow skill files are generated/updated in .claude/skills/
+
+      - ac-4: Given a workflow with phases containing parallel agents, when exporting the workflow,
+      then the generated skill includes properly formatted parallel agent instructions
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T18:40:28.620Z
+  - _ulid: 01KFBRY69413PPZK8TD15PA5RE
+    content: |-
+      Implementation approach from design discussion:
+
+      Phase 1 - Schema enhancement:
+      - Add skill_content field (multi-line markdown) to workflow schema
+      - Add phases array with parallel support
+      - Add prompt_templates for agent prompts
+
+      Phase 2 - Export command:
+      - kspec workflow export @workflow-id [--to path]
+      - Generates SKILL.md with frontmatter from workflow metadata
+      - Extracts skill_content as body
+
+      Phase 3 - Sync command:
+      - kspec workflow sync
+      - Regenerates all skill files from workflows with skill_content
+      - Could be hooked into pre-commit
+
+      Future (Phase 4) - MCP integration:
+      - kspec MCP server exposes workflows as callable tools
+      - Eliminates need for static files entirely
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T18:40:38.180Z

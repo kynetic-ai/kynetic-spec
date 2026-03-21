@@ -1,0 +1,28 @@
+_ulid: 01KK4F027ZMTQBCW246BY56Y37
+slugs: []
+title: Fix task list automation filter showing wrong subset
+type: task
+description: "The automation filter dropdown on the task list page shows All/Eligible/Blocked
+  options but the filter does not work correctly — selecting 'Eligible' shows all pending tasks
+  instead of only automation-eligible ones. The dropdown options should be: All, Eligible, Needs
+  Review, Manual Only (not 'Blocked' which is a task status, not an automation status)."
+spec_ref: "@web-dashboard"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - web-ui
+vcs_refs: []
+session_id: 01KK4FNHREW2HSWYXYW0ZNCJH6
+created_at: 2026-03-07T15:35:00.095Z
+started_at: 2026-03-07T15:46:59.097Z
+submitted_at: 2026-03-07T15:55:21.721Z
+completed_at: 2026-03-07T16:14:34.731Z
+todos: []
+automation: eligible

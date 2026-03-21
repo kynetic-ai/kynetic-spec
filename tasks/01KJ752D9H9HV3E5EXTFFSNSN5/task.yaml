@@ -1,0 +1,28 @@
+_ulid: 01KJ752D9H9HV3E5EXTFFSNSN5
+slugs: []
+title: Fix batch-exec-engine test timeout flakes
+type: bug
+description: "2 tests in tests/batch-exec-engine.test.ts time out at 5s vitest default: line 677
+  'default mode stops on first error' and line 745 'does not show hint for runtime execution
+  failures'. Root causes: (1) spawnSync in tests/helpers/cli.ts:91 has no timeout option, (2)
+  shadowPushAsync in src/parser/shadow.ts:1109 spawns un-unref'd child processes keeping event loop
+  alive, (3) no custom testTimeout in vitest.config.ts. Fixes: add timeout to spawnSync, .unref() in
+  shadowPushAsync, optionally bump testTimeout for integration suites."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #505. Three fixes: spawnSync 30s timeout, shadowPushAsync
+  spawn+detached+unref pattern, vitest testTimeout 15s. All CI green."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+vcs_refs: []
+created_at: 2026-02-24T06:23:32.656Z
+started_at: 2026-02-24T20:15:07.855Z
+completed_at: 2026-02-24T20:35:30.750Z
+todos: []
+automation: eligible

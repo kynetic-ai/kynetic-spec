@@ -1,0 +1,120 @@
+notes:
+  - _ulid: 01KKJP9KEQ41DDJ7HKP6XD1M7F
+    content: >-
+      Execution context:
+
+      - Background: reconcile legacy dispatch workspace state created during rollout so reviewer
+      handoff and reconciliation converge on canonical workspace records.
+
+      - Scope: audit current specs and implementation for orphaned/legacy workspace recovery,
+      branch-layout normalization, and discard diagnostics; update spec first if behavior is
+      underspecified.
+
+      - Files: dispatch runtime/state logic, related specs/tasks metadata via CLI, and dispatch
+      regression tests.
+
+      - Verification: targeted dispatch tests, npm test, and kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T04:11:54.712Z
+  - _ulid: 01KKJPD1745HJ5ME7R3K2TSBHA
+    content: >-
+      Spec audit findings:
+
+      - Existing cleanup AC covered generic orphan reattach/cleanup but not registry reconstruction
+      from metadata-backed worktrees or rollout-era legacy branch layouts.
+
+      - Scheduler spec did not require per-task discard diagnostics, only eligibility ordering.
+
+      - Added ACs for metadata-backed reattachment, legacy branch normalization/retirement, and
+      task-linked discard reasons before changing runtime behavior.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T04:13:47.108Z
+  - _ulid: 01KKJQ4CCMYKDXY8TGN2HZR5SX
+    content: >-
+      Implemented legacy dispatch workspace recovery and discard diagnostics.
+
+      - Reconciliation now rebuilds missing registry records from metadata-backed worktrees and
+      normalizes rollout-era legacy worker branches onto canonical dispatch/task/* branches.
+
+      - Queue pruning now logs task ref, agent, and exclusion reason for each discarded candidate.
+
+      - Added regression coverage for metadata-backed legacy recovery plus task-linked discard
+      diagnostics.
+
+      Verification:
+
+      - Passed: npm test -- tests/dispatch-workspace-cleanup.test.ts
+      tests/agent-dispatch-engine.test.ts
+
+      - kspec validate reports only pre-existing project warnings (exit 6).
+
+      - Full npm test in this dispatch worktree hit shared .kspec-dispatch-shadow-mutation lock
+      contention across unrelated suites; captured as observation @01KKJQ34.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T04:26:32.212Z
+  - _ulid: 01KKJQM6N4X9P8A53PW3CJNKT9
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: metadata-backed reviewer snapshots with stale or
+      missing worker registrations still bypass reconstruction/retirement and keep pending_review
+      handoff ineligible; full npm test is also red locally (29 files / 47 tests failed, dominated
+      by dispatch shadow mutation lock contention)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T04:35:10.628Z
+  - _ulid: 01KKJRK11KWTGAMXRRDFE70VHY
+    content: >-
+      [FIX_CYCLE: 1] Addressed reviewer-snapshot recovery when worker registration is stale or
+      missing.
+
+      - Metadata-backed reviewer snapshots now reconstruct a stale registry record even when the
+      worker worktree registration is gone, so pending_review pruning reports an unhealthy workspace
+      instead of a missing one.
+
+      - Added a regression that seeds reviewer-local metadata, removes the worker worktree, and
+      verifies reconciliation persists a stale record with reason missing-worker-worktree.
+
+      Verification:
+
+      - Passed: npm test -- tests/agent-dispatch-engine.test.ts
+
+      - kspec validate returned only the repository's existing warning backlog (exit 6).
+
+      - Full npm test still fails on existing dispatch shadow mutation lock contention outside this
+      task's scope (first failure in tests/triage-actions.test.ts).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T04:52:00.691Z
+  - _ulid: 01KKJS7AB1XJCQ1JE4GE7NB3XF
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: PR #816 CI failed on head
+      189b60a139d82f94156fb03598c60bc3c6b4bf40 (test shard 1/3: unhandled ENOENT in
+      tests/daemon-session-sync-multi-project.test.ts while watching .kspec/modules)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T05:03:05.569Z
+  - _ulid: 01KKJT1QVAAAV0471D3CJRH9WQ
+    content: >-
+      [FIX_CYCLE: 3] Hardened daemon watcher teardown for disappearing project roots.
+
+      - Added a Bun fs.watch error listener so deleted project fixtures no longer crash shard 1 with
+      an unhandled ENOENT under .kspec/modules.
+
+      - When the watched .kspec root is gone, the watcher now reports the error once, stops cleanly,
+      and skips exponential-retry timers instead of treating teardown like a recoverable watch
+      failure.
+
+      - Added regression coverage in tests/daemon-watcher-error-handling.test.ts for the
+      deleted-root ENOENT path.
+
+      Verification:
+
+      - Passed: npm test -- tests/daemon-watcher-error-handling.test.ts
+      tests/daemon-session-sync-multi-project.test.ts
+
+      - Passed: the rerun of npm run test:shard1 progressed past
+      tests/daemon-session-sync-multi-project.test.ts without the prior unhandled ENOENT; remaining
+      shard failures were unrelated pre-existing backlog in this workspace.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T05:17:31.370Z

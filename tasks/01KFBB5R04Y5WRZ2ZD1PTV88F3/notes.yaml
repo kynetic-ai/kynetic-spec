@@ -1,0 +1,37 @@
+notes:
+  - _ulid: 01KFBB5Y5CZ683A0RAYCA7PBAX
+    content: >-
+      PR #89 migrated from js-yaml to modern 'yaml' library for better formatting, but 3 files still
+      use the old writeYamlFile() function:
+
+
+      1. src/parser/fix.ts - lines 164, 178, 190, 196
+
+      2. src/cli/commands/module.ts - lines 90, 106
+
+      3. src/parser/meta.ts - lines 320, 609
+
+
+      Should use writeYamlFilePreserveFormat() instead for consistent YAML output.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T14:40:11.948Z
+  - _ulid: 01KFCR6GBN4PT81CKYSCVAHRGK
+    content: >-
+      Completed YAML library migration in all 3 remaining files:
+
+
+      1. src/parser/fix.ts - replaced writeYamlFile with writeYamlFilePreserveFormat (4 occurrences)
+
+      2. src/cli/commands/module.ts - replaced writeYamlFile with writeYamlFilePreserveFormat (2
+      occurrences)
+
+      3. src/parser/meta.ts - replaced writeYamlFile with writeYamlFilePreserveFormat (3
+      occurrences)
+
+
+      All 630 tests passing. Migration complete - entire codebase now uses modern 'yaml' library for
+      consistent formatting.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T03:46:56.502Z

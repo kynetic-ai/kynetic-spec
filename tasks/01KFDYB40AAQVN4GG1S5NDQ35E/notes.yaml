@@ -1,0 +1,49 @@
+notes:
+  - _ulid: 01KFDYCMJ6BJVQ26RDG1450V92
+    content: |-
+      **Scope**: Add traits field to task lifecycle command specs in cli.yaml.
+
+      **Commands to update (7)**:
+      - `@cmd-task-start`
+      - `@cmd-task-complete`
+      - `@cmd-task-cancel`
+      - `@cmd-task-block`
+      - `@cmd-task-unblock`
+      - `@cmd-task-submit`
+      - `@cmd-task-delete`
+
+      **Traits to apply** (varies per command):
+      - `@trait-json-output` - all commands
+      - `@trait-multi-ref-batch` - complete, cancel, delete
+      - `@trait-confirmation-prompt` - delete
+      - `@trait-semantic-exit-codes` - all commands
+      - `@trait-error-guidance` - all commands
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T14:54:23.303Z
+  - _ulid: 01KFE0D46ES08DK4BZKCX1MJS3
+    content: >-
+      Applied traits to 7 task lifecycle command specs in cli.yaml:
+
+
+      ✓ @task-start - added json-output, semantic-exit-codes, error-guidance
+
+      ✓ @task-complete - added json-output, semantic-exit-codes, error-guidance, multi-ref-batch
+
+      ✓ @task-block - added json-output, semantic-exit-codes, error-guidance
+
+      ✓ @task-unblock - added json-output, semantic-exit-codes, error-guidance
+
+      ✓ @task-cancel - added json-output, semantic-exit-codes, error-guidance, multi-ref-batch
+
+      ✓ @task-submit - created new spec (ULID: 01KFDZYWG0CTSK250000000000) with json-output,
+      semantic-exit-codes, error-guidance
+
+      ✓ @cmd-task-delete - added json-output, semantic-exit-codes, error-guidance, multi-ref-batch,
+      confirmation-prompt
+
+
+      All trait references validated successfully. Task complete and ready for commit.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T15:29:36.463Z

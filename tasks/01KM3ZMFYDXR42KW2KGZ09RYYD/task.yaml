@@ -1,0 +1,54 @@
+_ulid: 01KM3ZMFYDXR42KW2KGZ09RYYD
+slugs:
+  - task-test-dispatch-shared-checkout-safety
+title: Test shared-checkout safety and git context hardening
+type: task
+description: |
+  What: Add end-to-end and unit coverage for worktree-launched
+  dispatch processes, sanitized git execution context, clean drift
+  auto-repair, and unsafe drift refusal.
+
+  Why: These behaviors are easy to regress because they depend on git
+  environment, worktree context, and branch/index/tree state changes.
+  The plan should not rely on manual operator observation to know it
+  still works.
+
+  How: Extend the existing dispatch target sync and degraded-state
+  fixtures to model shared-checkout mode, leaked git env, out-of-band
+  branch ref movement, and repair refusal when local changes would be
+  overwritten.
+spec_ref: null
+plan_ref: "@plan-dispatch-integration-checkout-boundaries"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev at 5c99aae155547908523751e1996ca00fc11ee2fe after review approval.
+  Added dispatch target sync coverage for inherited GIT_* poisoning and linked shared-checkout
+  targeting; verified with npm test.
+depends_on:
+  - "@task-isolate-dispatch-git-targeting"
+  - "@task-route-dispatch-sync-through-targeting-path"
+  - "@task-implement-dispatch-shared-checkout-safety"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - test
+  - git
+vcs_refs: []
+review_ref: "@01KM4H3CAQPX2QSHH4JV947MSZ"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T02:24:50.176Z
+  commit: 6385dea4f2dc4387f33bb3cb4dd8a99645d1e339
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM4GE7FZ0SC2GJB521C07N74
+created_at: 2026-03-19T21:22:14.093Z
+started_at: 2026-03-20T02:16:29.488Z
+submitted_at: 2026-03-20T02:24:50.605Z
+completed_at: 2026-03-20T02:34:58.417Z
+todos: []
+automation: eligible

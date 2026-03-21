@@ -1,0 +1,20 @@
+_ulid: 01KF00CWN1R0XTG1R0A42BSXSE
+slugs:
+  - task-prompt-refactor
+title: Refactor prompts and guidance text into centralized location
+type: task
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: All 5 phases complete. Centralized all prompts, guidance, errors, and labels across the CLI.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - dx
+  - refactor
+vcs_refs: []
+created_at: 2026-01-15T05:00:06.688Z
+started_at: 2026-01-18T04:14:41.514Z
+completed_at: 2026-01-18T06:03:33.651Z
+todos: []

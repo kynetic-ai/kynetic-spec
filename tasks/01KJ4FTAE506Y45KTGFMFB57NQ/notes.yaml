@@ -1,0 +1,21 @@
+notes:
+  - _ulid: 01KJ4V7SENBYDYV28R1CT2910G
+    content: "MANUAL_ONLY: Spike requiring interactive design session with user."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T08:53:14.325Z
+  - _ulid: 01KK5GEA1BNM25F3P3MWVT78Z8
+    content: "Execution context:\\n- Autonomous dispatch with no interactive user available.\\n-
+      Verified the redesign spike outputs already exist from the March 5, 2026 planning pass.\\n-
+      Evidence: plan @plan-ui-ux-revamp is active and contains the holistic UI redesign spec set;
+      imported specs include @ui-design-system, @ui-app-shell, @ui-task-board, @ui-session-stream,
+      @ui-agent-dispatch, @ui-session-history, @ui-inbox-enhanced, @ui-plans-view,
+      @ui-validation-view, and @ui-dashboard-overview.\\n- Evidence: derived implementation tasks
+      under that plan exist and multiple core tasks are already completed, including
+      @implement-ui-design-system, @implement-app-shell-and-navigation, and
+      @implement-task-board-kanban.\\n- Conclusion: this spike's intended outputs (inventory,
+      architecture direction, acceptance-criteria-backed specs, and prioritized implementation plan)
+      were completed in prior work; no duplicate planning work was created in this invocation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T01:19:29.835Z

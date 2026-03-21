@@ -1,0 +1,84 @@
+notes:
+  - _ulid: 01KJKBBRTSDFKNX0MZADX4G3F1
+    content: >-
+      Implementation notes:
+
+
+      ## Fix 1: O(1) seq assignment in appendEvent (src/sessions/store.ts)
+
+
+      Replace getEventCount (reads entire file, counts lines) with getLastSeq:
+
+      - Read last ~4KB of events.jsonl (fs.read with position = fileSize - 4096)
+
+      - Find last complete JSON line (last newline boundary)
+
+      - Parse it, extract seq field, return seq + 1
+
+      - Empty/missing file returns 0
+
+      - This is O(1) regardless of file size
+
+
+      ## Fix 2: Backpressure in session update logger (src/cli/commands/ralph.ts)
+
+
+      Replace fire-and-forget Promise.resolve().then() pattern in createSessionUpdateLogger with a
+      sequential queue:
+
+      - Maintain a queue of pending updates and a processing flag
+
+      - When an update arrives: push to queue, start processing if not already
+
+      - Process loop: shift from queue, await appendEvent, repeat until queue empty
+
+      - This ensures at most ONE appendEvent is in flight at a time
+
+      - Updates are still non-blocking from the caller's perspective (event handler returns
+      immediately)
+
+      - Queue should be bounded (e.g., 1000 entries) — drop oldest if exceeded with a warning
+
+
+      ## Files
+
+      - src/sessions/store.ts — getEventCount → getLastSeq
+
+      - src/cli/commands/ralph.ts — createSessionUpdateLogger backpressure queue
+
+      - tests/sessions-store.test.ts — update seq assignment tests
+
+      - tests/ralph.test.ts — update/add logger backpressure tests
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-01T00:04:24.025Z
+  - _ulid: 01KJKEGTZ7T2Y7WDYK5XFYM6BG
+    content: >-
+      Implemented O(1) event seq assignment by replacing full-file line counting with tail-based
+      last-seq lookup in src/sessions/store.ts (bounded tail read + fallback full parse only when
+      tail is unparsable), and added bounded sequential backpressure queueing in
+      createSessionUpdateLogger to prevent unbounded in-flight appendEvent promises during rapid
+      update streams.
+
+
+      Verification:
+
+      - npm test -- tests/sessions.test.ts tests/ralph.test.ts (200 passed).
+
+      - npm test (3597 passed, 2 failed, 3 skipped) with failures in pre-existing baseline timeouts:
+      tests/cli/session-note-limit.test.ts:34 and :104.
+
+      - npm test -- tests/cli/session-note-limit.test.ts reproduced same baseline timeouts (2
+      failed, 2 passed). 
+
+      - kspec validate still fails on pre-existing project issues (@observations slug ambiguity +
+      missing observations skill file), unrelated to this task.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T00:59:35.783Z
+  - _ulid: 01KJKEKNGFJCQGKEDBXA2FX2TP
+    content: "Opened PR #615: https://github.com/kynetic-ai/kynetic-spec/pull/615 (branch
+      fix/ralph-loop-oom-backpressure). Task submitted for review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T01:01:08.495Z

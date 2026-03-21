@@ -1,0 +1,21 @@
+_ulid: 01KGFK9EDFW61N76RCHNR7RVQ0
+slugs: []
+title: Fix stale context after processPendingReviewTasks in ralph loop
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #297. Fixed ralph loop to refresh context after
+  processPendingReviewTasks completes, preventing premature exit when tasks become unblocked. Added
+  comprehensive integration tests for AC-20 with mock ACP that actually completes tasks. All tests
+  pass in CI."
+depends_on: []
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-02-02T16:34:35.055Z
+started_at: 2026-02-02T16:36:09.626Z
+completed_at: 2026-02-03T09:01:13.803Z
+todos: []

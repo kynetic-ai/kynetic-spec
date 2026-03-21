@@ -1,0 +1,39 @@
+notes:
+  - _ulid: 01KFR82FSP6PNQ2GZ43QK1E8R2
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Skill definition for /reflect loop. Invokes @session-reflect-loop-workflow for loop mode
+      behavior.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given ralph iteration ends, when agent acts, then /reflect loop invoked
+
+      - ac-2: Given loop mode active, when skill executes, then uses @session-reflect-loop workflow
+
+      - ac-3: Given potential capture identified, when skill evaluates, then MUST search existing
+      first
+
+      - ac-4: Given uncertain friction found, when skill evaluates, then item NOT captured
+
+      - ac-5: Given captures complete, when skill finishes, then user not prompted
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T14:56:00.823Z
+  - _ulid: 01KFR85EXGXK1CSH27PRB3FGZ4
+    content: "Implementation notes: 5 ACs covering invoke, workflow, search, high-conf, no-user. Skill
+      invocation spec only; workflow behavior is in @session-reflect-loop-workflow."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T14:57:38.225Z
+  - _ulid: 01KFT3HX7XRVYK1VRM98929G5H
+    content: "Added Loop Mode section to reflect/SKILL.md covering all 5 ACs: uses @session-reflect-loop
+      workflow, MUST search existing first, high-confidence captures only (uncertain = skip), no
+      user prompts."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T08:15:32.093Z

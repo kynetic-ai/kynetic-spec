@@ -1,0 +1,125 @@
+notes:
+  - _ulid: 01KFMMNTRMNTFZ7S2QDYVH9FDC
+    content: |-
+      ## Implementation Notes
+
+      ### Objective
+      Initialize the daemon package with Elysia.js and required dependencies.
+
+      ### Steps
+      1. Create packages/daemon/package.json with:
+         - elysia (HTTP framework)
+         - @elysiajs/cors (CORS plugin)
+         - chokidar (file watching fallback)
+         - Dependencies on packages/shared
+
+      2. Create packages/daemon/src/index.ts as entry point
+
+      3. Configure TypeScript for Bun runtime
+
+      ### Dependencies
+      - bun
+      - elysia
+      - @elysiajs/cors
+      - chokidar
+
+      ### Files to Create
+      - packages/daemon/package.json
+      - packages/daemon/tsconfig.json
+      - packages/daemon/src/index.ts
+      - packages/daemon/src/server.ts (placeholder)
+
+      ### ACs Covered
+      - Sets up foundation for ac-1 (server start)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T05:19:19.828Z
+  - _ulid: 01KFN25X55RVYY0Y9WX85B7K2W
+    content: |-
+      Created daemon package structure:
+      - Updated package.json with chokidar and @elysiajs/cors dependencies
+      - Created src/index.ts entry point with CLI arg parsing (--daemon, --port)
+      - Created src/server.ts with basic Elysia server setup
+      - Implements AC-1: configurable port (default 3456)
+      - Implements AC-2: localhost-only binding (127.0.0.1)
+      - Implements AC-11: /api/health endpoint (basic implementation)
+      - Implements AC-15: plugin pattern (cors middleware)
+      - Added placeholder WebSocket endpoint (/ws)
+      - TypeScript build successful
+      - All 1058 tests pass
+
+      TODOs marked in code for future tasks:
+      - File watching (AC-4-8)
+      - WebSocket protocol implementation (AC-13-14)
+      - Daemon mode and PID management (AC-9-10)
+      - Graceful shutdown (AC-12)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T09:15:18.053Z
+  - _ulid: 01KFN2EDYEVZH4S1Q5W77JPHHJ
+    content: |-
+      Added comprehensive test coverage and fixed IPv6 support:
+
+      Test Coverage (10 E2E tests):
+      - AC-1: Default port 3456 and configurable --port flag
+      - AC-2: Localhost binding with dual-stack (IPv4 + IPv6) support
+      - AC-11: Health endpoint structure validation
+      - AC-15: Plugin pattern and CORS middleware
+      - AC-8: Chokidar dependency verification
+      - AC-9: --daemon flag parsing
+      - Package structure validation
+      - WebSocket endpoint placeholder
+      - createServer function signature
+
+      IPv6 Fix:
+      - Changed hostname from '127.0.0.1' to 'localhost'
+      - Allows Bun to bind to both IPv4 (127.0.0.1) and IPv6 (::1)
+      - Maintains localhost-only security constraint
+
+      All 1068 tests pass (10 new daemon tests added)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T09:19:57.390Z
+  - _ulid: 01KFN2S6BYH4DPGW7ZG025MY6V
+    content: |-
+      PR #184 ready for merge pending CI completion:
+
+      Status:
+      - All code complete with comprehensive test coverage (10 E2E tests)
+      - Addressed all automated review feedback (port validation, logging, CORS)
+      - Local tests pass: 1068 tests (all passing)
+      - Replied to all review comments with fix commit reference
+      - CI status: tests running, claude-review passed
+      - Blocking: check-unresolved-comments requires manual resolution in GitHub UI
+
+      Next iteration should:
+      1. Wait for CI test suite to complete
+      2. Manually resolve comment threads in GitHub UI
+      3. Merge PR using --merge strategy (preserve commits)
+      4. Complete task @01KFMMM0
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T09:25:50.078Z
+  - _ulid: 01KFN349TJAV2XTA1AF6QTFCTY
+    content: >-
+      PR #184 ready to merge. All issues from greptile code review have been addressed in commit
+      8454ef7:
+
+
+      1. Port validation: Added range check (1-65535) and NaN validation
+
+      2. Logging order: Fixed - now logs before server creation
+
+      3. CORS config: Changed to origin: true for proper same-origin handling
+
+
+      All 1068 tests pass. CI checks: test✓, claude-review✓.
+
+
+      Note: check-unresolved-comments CI is failing because greptile review threads need manual
+      resolution in GitHub UI (click 'Resolve conversation' on each thread). The greptile bot
+      acknowledged all fixes but didn't auto-resolve. Cannot be done via API - requires manual UI
+      action or user override.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T09:31:54.067Z

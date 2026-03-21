@@ -1,0 +1,39 @@
+_ulid: 01KKW4VSHS4JRSB3AMJN05QR10
+slugs:
+  - task-update-agents-review-conventions
+title: Update AGENTS.md for review lifecycle conventions
+type: task
+description: |
+  Regenerate kspec-agents.md to reflect the updated review lifecycle
+  conventions. Add a convention rule for the fix-cycle note requirement
+  if needed. Run kspec agents generate.
+spec_ref: null
+plan_ref: "@plan-task-activity-timeline"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Reviewed and merged to dev. Convention rule accurately reflects fix-cycle note
+  requirement. Generated output verified against fresh kspec agents generate.
+depends_on:
+  - "@task-update-review-skill-docs"
+  - "@task-update-task-work-skill-docs"
+context: []
+priority: 3
+tags:
+  - docs
+vcs_refs: []
+review_ref: "@01KKX2F25CHK5BPSMH63EVRG7Z"
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-update-agents-review-conventions/01kkw4vs
+  captured_at: 2026-03-17T04:56:17.884Z
+  commit: 08d667d94d52162cca7875de88502c8c45dbb0fa
+  remote: null
+  remote_url: null
+  upstream_ref: dev
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-16T20:19:40.729Z
+started_at: 2026-03-17T04:55:23.259Z
+submitted_at: 2026-03-17T04:56:18.890Z
+completed_at: 2026-03-17T04:57:50.391Z
+todos: []

@@ -1,0 +1,25 @@
+notes:
+  - _ulid: 01KK33E3FZE3Q1R0TG3BG69HSR
+    content: >-
+      Implementation complete. Changes:
+
+      1. Added trigger field to SessionLogSummary (backend) and SessionSummary (web-ui API type)
+
+      2. Session list now shows trigger-based human-readable labels (e.g. 'Dispatched: Task Ready',
+      'Manual Run') with visual icons (Zap for dispatched, Terminal for manual)
+
+      3. Added trigger filter (All/Manual/Dispatched) to session history list header
+
+      4. SessionContextPanel: replaced generic 'Activity' icon with context-aware Zap/Terminal
+      icons, replaced session_type stat card with 'Origin' showing Dispatched/Manual
+
+      5. Shared getTriggerLabel() and isDispatchedSession() utilities in session-utils.ts
+
+      6. Unit tests for new utility functions (12 tests pass)
+
+      7. E2E tests for trigger labels, icons, and filter functionality
+
+      8. All design token colors used (no raw Tailwind colors) — passes static analysis test
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T02:53:42.784Z

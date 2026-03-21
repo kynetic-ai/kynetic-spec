@@ -1,0 +1,32 @@
+_ulid: 01KK39QYZC4J6PQ4WXHX2VHHN3
+slugs: []
+title: Fix sidebar badge counts showing stale data from wrong project on initial load
+type: task
+description: "When switching projects or first loading the UI for a project, the sidebar badge
+  counts (inbox, observations, pending review tasks) show numbers from the previous/default project
+  rather than the active one. They eventually correct after the 30-second refresh interval. Root
+  cause: Sidebar.svelte loads badge counts on mount but may fire before the project context is fully
+  resolved, or the initial API calls don't include the correct X-Kspec-Dir header for the active
+  project. Fix: (1) ensure loadCounts() waits for the active project to be resolved before fetching,
+  (2) reload counts immediately on project change (not just on version change), (3) consider
+  debouncing the project switch to avoid a flash of stale counts."
+spec_ref: "@ui-app-shell"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - web-ui
+vcs_refs: []
+session_id: 01KK3K1TZCJ8B5AKQ08NY89JM9
+created_at: 2026-03-07T04:43:57.291Z
+started_at: 2026-03-07T07:32:05.234Z
+submitted_at: 2026-03-07T07:38:32.592Z
+completed_at: 2026-03-07T08:01:49.708Z
+todos: []
+automation: eligible

@@ -1,0 +1,24 @@
+_ulid: 01KFMMM90B9F2WKBS6A6T52EA3
+slugs: []
+title: Implement file watcher and WebSocket broadcast
+type: task
+spec_ref: "@daemon-server"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #186 merged. Implemented file watcher with debouncing (ac-5), error handling
+  (ac-6), exponential backoff recovery (ac-7), and Chokidar fallback (ac-8). Broadcast file changes
+  and errors via WebSocket (ac-4). Addressed Greptile review feedback: fixed recursive pattern and
+  cross-platform path handling. All 1087 tests pass."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - phase-1
+  - daemon
+vcs_refs: []
+created_at: 2026-01-23T05:18:28.875Z
+started_at: 2026-01-23T09:57:10.142Z
+completed_at: 2026-01-23T10:16:01.067Z
+todos: []
+automation: eligible

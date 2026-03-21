@@ -1,0 +1,32 @@
+_ulid: 01KKAH4A7E0TM0RARWBVWBCXFA
+slugs:
+  - task-fix-session-start-format-timeout
+title: Replace subprocess loops with fixture seeding in session-start-format timeline tests
+type: task
+description: Two tests in tests/cli/session-start-format.test.ts create 12 tasks via 48 sequential
+  CLI subprocess calls each. Under CI load these exceed 30s timeout. Fix by writing completed tasks
+  directly into fixture YAML instead of CLI loops.
+spec_ref: "@test-suite-perf-reliability"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #733. Replaced two session-start timeline tests that used 48 sequential
+  CLI subprocess calls each with direct fixture YAML seeding via seedCompletedTasks(), preserving
+  timeline limit assertions while removing the timeout override. AC coverage confirmed for
+  @test-suite-perf-reliability ac-1; fresh GitHub CI checks passed on the merged head."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - bug
+  - cli
+vcs_refs: []
+session_id: 01KKAH4ZGNRK7E3GE22EN4Y33Z
+created_at: 2026-03-10T00:07:43.085Z
+started_at: 2026-03-10T00:08:18.365Z
+submitted_at: 2026-03-10T00:13:16.816Z
+completed_at: 2026-03-10T00:22:58.496Z
+todos: []
+automation: eligible

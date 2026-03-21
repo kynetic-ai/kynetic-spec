@@ -1,0 +1,71 @@
+notes:
+  - _ulid: 01KFACX65YAK4MYR5GTPT3AK4D
+    content: >-
+      Command: kspec meta observe --from-inbox @inbox-ref
+
+
+      **Purpose:** Convert an inbox item to an observation, preserving content. Useful during triage
+      when items were captured in the wrong bucket (should have been observation, not inbox).
+
+
+      **Behavior:**
+
+      1. Resolve @inbox-ref to inbox item
+
+      2. Create new observation with:
+         - type: inferred from content or default to 'idea'
+         - content: inbox item text
+         - author: original inbox item author
+      3. Delete the inbox item
+
+      4. Output: Show created observation ref
+
+
+      **CLI signature:**
+
+      kspec meta observe --from-inbox <ref> [--type <type>]
+
+
+      Where --type is optional override (friction|success|question|idea). If not provided, default
+      to 'idea'.
+
+
+      **Error cases:**
+
+      - Ref not found in inbox: exit 3 with 'Inbox item not found: @ref'
+
+      - Invalid --type value: exit 3 with 'Invalid observation type. Must be: friction, success,
+      question, idea'
+
+
+      **File to modify:** src/cli/commands/meta.ts
+
+
+      **Implementation:**
+
+      - Add --from-inbox option to existing 'observe' command
+
+      - When --from-inbox is provided, ignore positional <type> argument
+
+      - Load inbox, resolve ref, get item content
+
+      - Call existing observation creation logic
+
+      - Delete inbox item after observation created successfully
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T05:51:07.966Z
+  - _ulid: 01KFANB04KKR3989XFKJ8W270N
+    content: |-
+      Implementation complete:
+
+      - Added --from-inbox flag to 'kspec meta observe' command
+      - Type defaults to 'idea' but can be overridden with --type flag
+      - Inbox item content is used to create observation
+      - Inbox item is automatically deleted after conversion
+      - Comprehensive test coverage with 5 tests (all passing)
+      - AC annotations linking tests to spec acceptance criteria
+      - Tested manually and working correctly
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T08:18:29.140Z

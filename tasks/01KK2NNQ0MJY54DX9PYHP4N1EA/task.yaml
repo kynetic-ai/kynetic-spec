@@ -1,0 +1,31 @@
+_ulid: 01KK2NNQ0MJY54DX9PYHP4N1EA
+slugs: []
+title: Normalize reference displays across web UI — show titles and consistent linking
+type: task
+description: "References to tasks, specs, plans, and sessions are displayed inconsistently across
+  the web UI. Some views show raw ULID prefixes, some show slugs, some show titles. Create a shared
+  ReferenceLink component that: (1) accepts a ref type (task/spec/plan/session) and ID, (2) resolves
+  and displays the title when available with the slug/ULID as secondary, (3) links to the
+  appropriate detail view, (4) handles @ prefix normalization. Use this component in
+  SessionContextPanel task_ref, session history task_ref, task card spec_ref, dashboard active work,
+  and any other cross-reference display."
+spec_ref: "@ui-reference-display"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - feature
+  - web-ui
+vcs_refs: []
+session_id: 01KK38PWQAEH2Z5FFNX9BZEXKM
+created_at: 2026-03-06T22:53:12.084Z
+started_at: 2026-03-07T04:32:26.123Z
+submitted_at: 2026-03-07T04:37:47.343Z
+completed_at: 2026-03-07T04:43:49.945Z
+todos: []
+automation: eligible

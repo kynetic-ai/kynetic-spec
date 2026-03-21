@@ -1,0 +1,68 @@
+notes:
+  - _ulid: 01KFBD60A324N8K89SZR80M2Z3
+    content: >-
+      From ralph loop retrospective - shadow branch issues during overnight session:
+
+
+      **Root Causes Identified:**
+
+      1. Repeated `git worktree add` without checking existing state created nested .kspec/.kspec
+      directories
+
+      2. Stale git worktree metadata in .git/worktrees/ caused spawn ENOENT errors
+
+      3. Directory context leaked between commands (cd .kspec persisted)
+
+
+      **Improvements Needed:**
+
+
+      1. **Idempotent worktree operations:**
+         - Check if worktree exists before creating
+         - Run `git worktree prune` before repair operations
+         - Detect and handle nested directories
+
+      2. **Better error messages:**
+         - Show current directory context in errors
+         - Explain spawn ENOENT as worktree metadata issue
+
+      3. **CRITICAL: Enforce temp dir testing:**
+         - All kspec tests MUST use /tmp or system temp dir
+         - NEVER test kspec within the kspec repo itself
+         - Add validation/guard to prevent self-referential testing
+         - This prevents nested directory issues and worktree corruption
+
+      4. **Session startup robustness:**
+         - Verify worktree health at session start
+         - Auto-repair or fail-fast with clear instructions
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T15:15:11.299Z
+  - _ulid: 01KFFMRDVXWAYG5KYFBT1BRA25
+    content: >-
+      Completed all improvements:
+
+
+      1. **Idempotent worktree operations**: Added 'git worktree prune' at start of init process to
+      clean stale metadata. Added detection for nested .kspec/.kspec directories with debug logging.
+
+
+      2. **Improved error messages**: Wrapped all 'git worktree add' commands with try-catch that
+      detects ENOENT errors and provides context (current directory + suggestion to run git worktree
+      prune).
+
+
+      3. **Temp dir testing enforcement**: Added prominent comments to test helpers
+      (setupTempFixtures, createTempDir) emphasizing CRITICAL requirement to use temp dirs. Tests
+      already properly use os.tmpdir().
+
+
+      4. **Session startup health check**: Added automatic worktree health verification at session
+      start. If issues detected, attempts automatic repair via repairShadow(). Provides clear
+      feedback to user about repair status.
+
+
+      All 783 tests pass. Changes improve robustness based on overnight ralph loop issues.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T06:44:32.765Z

@@ -1,0 +1,156 @@
+notes:
+  - _ulid: 01KKB5J02D0AH6C0RE1A2WCB3M
+    content: |
+      Implementation notes:
+
+      Depends on batch-item-fetch-api for resolving derived refs.
+
+      The plan detail API already returns derived_specs and derived_tasks
+      as string arrays. After fetching plan detail, use the batch API to
+      resolve those refs into summary objects for the embedded cards.
+
+      Parse plan content to identify YAML blocks by heading context,
+      match against derived refs, and render embedded components.
+      Account for YAML flow scalars (>) vs block scalars (|) in stored
+      plan content which may affect heading detection.
+    author: "@claude"
+    created_at: 2026-03-10T06:04:42.957Z
+  - _ulid: 01KKB5NHCAKKA1QS0VPV8ZAA8A
+    content: >-
+      Execution context:
+
+      - Background: Plan detail page shows raw YAML for spec/task definitions. Should show rich
+      embedded cards instead.
+
+      - Scope: Parse plan content markdown to detect YAML blocks under ## Specs and ## Tasks
+      headings. Replace with embedded card components using data from batch item fetch API. Falls
+      back to syntax-highlighted code blocks on parse failure.
+
+      - Files: packages/web-ui/src/routes/plans/ (plan detail components), new embedded card
+      components
+
+      - Dependencies: Requires @implement-batch-item-fetch-api (for resolving refs) AND
+      @implement-streaming-markdown-component (for markdown rendering of non-YAML sections)
+
+      - Verification: Plan detail page shows embedded cards for derived specs/tasks. Cards link to
+      item/task detail. Non-YAML markdown renders with prose typography. Fallback works when YAML
+      parsing fails.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T06:06:38.987Z
+  - _ulid: 01KKFGMWATET3H1REYGZWV9ZZX
+    content: "Starting implementation on web UI plan detail surface. Scope: detect Specs/Tasks YAML
+      blocks in plan content, resolve derived refs through the batch item fetch API, render embedded
+      cards with fallback to syntax-highlighted markdown, and cover ACs with web UI tests."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T22:35:29.499Z
+  - _ulid: 01KKFH96EC5MW4PC4ENFM5RWFD
+    content: Implemented plan-content embedded view pipeline in the plans UI. Added a parser/view-model
+      for Specs/Tasks YAML block detection, wired batch item fetch summaries into embedded spec/task
+      cards with loading and fetch-failure fallback states, preserved prose rendering for non-YAML
+      markdown, and extended the batch summaries to include task assignee for task-card display.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T22:46:35.212Z
+  - _ulid: 01KKFHSYPHVP98TX8E2FH09BAD
+    content: >-
+      Verification:
+
+      - npm test -- tests/plan-embedded-views.test.ts tests/web-ui-session-stream.test.ts
+
+      - npm test -- packages/web-ui/tests/prose-typography.test.ts
+
+      - npm test (full suite: 216 files, 4599 passed, 3 skipped)
+
+      - kspec validate (warnings only; existing project-wide warning debt remains, no new validation
+      errors introduced)
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T22:55:44.337Z
+  - _ulid: 01KKFJ21QQ6C0X2NTYS6EV2HRJ
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: tests/plan-embedded-views.test.ts hardcodes
+      /home/chapel/Projects/kynetic-spec-dispatch/packages/web-ui, so the new coverage is not
+      portable and is expected to fail in CI or any non-identical checkout path."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T23:00:09.591Z
+  - _ulid: 01KKFK6N1PD70S2E04M4CHZ5Y1
+    content: "[FIX_CYCLE: 1] Replaced the hardcoded absolute packages/web-ui test root in
+      tests/plan-embedded-views.test.ts with join(process.cwd(), 'packages', 'web-ui') so the test
+      resolves the workspace portably across CI and non-identical checkout paths."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T23:20:09.014Z
+  - _ulid: 01KKFK7VNCTMKRDK6J37JBK1AC
+    content: "[FIX_CYCLE: 1] Verification after portability fix: npm test --
+      tests/plan-embedded-views.test.ts tests/web-ui-session-stream.test.ts (passed). Observed a
+      transient Vite HMR port 24678-in-use warning on stderr, but both target suites passed and the
+      repo test runner exited successfully."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T23:20:48.556Z
+  - _ulid: 01KKFKGXB89SG2EYPPSMS9PBMR
+    content: "[FIX_CYCLE: 4] Review findings: MUST-FIX: plan embedded task parsing misses the documented
+      derive_from_specs YAML-block format required by @plan-embedded-views ac-2."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T23:25:45.192Z
+  - _ulid: 01KKFND1GKP53W5EAV4RACN0K3
+    content: "[FIX_CYCLE: 4] Addressing the task-embed parser gap by recognizing derive_from_specs
+      inside the fenced ## Tasks YAML block as well as section text outside the fence, then adding a
+      regression test for the block-only format called out in PR review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T23:58:35.539Z
+  - _ulid: 01KKFNMC6TX08WN5NJECH4NMA7
+    content: "[FIX_CYCLE: 4] Verification after fenced derive_from_specs support: npm test --
+      tests/plan-embedded-views.test.ts tests/web-ui-session-stream.test.ts (passed, 130 tests). npm
+      test (passed: 216 files, 4600 tests, 3 skipped). kspec validate (warnings only; same
+      pre-existing warning debt, no new errors)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T00:02:35.866Z
+  - _ulid: 01KKFP7E4X2C069NZH2XWQ6RJ3
+    content: "[FIX_CYCLE: 7] Review findings: MUST-FIX: the new plan embedded view AC annotations
+      over-claim UI coverage. Add runtime coverage for the rendered spec/task cards, navigation,
+      loading placeholders, and error fallback before merge."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T00:13:00.445Z
+  - _ulid: 01KKFR3SV6G9F5ESYBSTB748V6
+    content: "[FIX_CYCLE: 7] Resuming work to replace parser-only AC coverage with runtime web UI
+      assertions for rendered spec/task cards, card navigation, loading skeletons, and error
+      fallback on the existing PR branch."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T00:45:58.503Z
+  - _ulid: 01KKFV8QGTM6K3Z2TX8DSH4857
+    content: >-
+      [FIX_CYCLE: 7] Replaced parser-only AC coverage with browser/runtime assertions on the plans
+      surface. Added Playwright checks for rendered embedded spec/task cards, card navigation,
+      mismatched-ref fallback, loading skeletons, and batch-error fallback; anchored ac-7 to the
+      existing acceptance-criteria expansion runtime test in items.spec; and removed the old
+      source-string/navigation assertions from tests/plan-embedded-views.test.ts.
+
+
+      Verification:
+
+      - npm test -- tests/plan-embedded-views.test.ts
+
+      - env -u KSPEC_SESSION_ID npm --workspace packages/web-ui run test:e2e:run --
+      tests/e2e/plans.spec.ts --grep 'renders embedded spec cards alongside surrounding markdown
+      prose|renders derived task cards from fenced derive_from_specs content with task
+      metadata|clicking an embedded spec card navigates to the spec detail route|clicking an
+      embedded task card opens the task detail view|falls back to rendered yaml code blocks when
+      embedded refs do not match derived refs|shows embedded loading skeletons while batch item
+      summaries are still loading|shows embedded error UI and raw yaml fallback when batch item
+      loading fails' (passed)
+
+      - kspec validate (warnings only; existing project-wide warning debt)
+
+      - npm test (full suite hit one unrelated/flaky failure in tests/cli-serve.test.ts shutdown
+      handling); npm test -- tests/cli-serve.test.ts passed on immediate rerun
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T01:41:05.690Z

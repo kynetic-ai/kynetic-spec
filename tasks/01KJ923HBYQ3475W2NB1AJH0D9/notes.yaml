@@ -1,0 +1,23 @@
+notes:
+  - _ulid: 01KJ923S3EFT5SFD6G0Z04HX8W
+    content: "Bug: kspec item set --status accepts arbitrary strings (e.g. 'specified') that aren't
+      valid enum values. The invalid value gets written to YAML, passes through the CLI layer
+      unchecked, and then causes Zod validation failures on read — making the entire item invisible
+      to all lookups until manually fixed. Fix: validate --status value against the Zod enum
+      (implementation: not_started|in_progress|implemented|verified, maturity:
+      draft|proposed|stable|deferred|deprecated) before writing. On invalid input, fail with a clear
+      error listing valid values. Applies to both kspec item set --status and kspec item set
+      --maturity if that exists. Also covers @maturity-states ac-reject-invalid."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T00:10:20.655Z
+  - _ulid: 01KJ96Q18B55492DY3NJXYV8V9
+    content: "Added enum validation for --status and --maturity flags in item set command. Validates
+      against ImplementationStatusSchema.options and MaturitySchema.options before writing. On
+      invalid input, fails with clear error listing valid values and exits with USAGE_ERROR code. 6
+      integration tests covering both @implementation-states ac-reject-invalid and @maturity-states
+      ac-reject-invalid: invalid value rejection, no-write verification, and all valid values
+      acceptance. All 3592 tests pass (2 known flaky ralph signal tests)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T01:30:45.899Z

@@ -1,0 +1,60 @@
+_ulid: 01KHY9W8TKBKB13B7X0JMY0D3P
+slugs: []
+title: Bump @agentclientprotocol/sdk to ^0.14.0
+type: task
+description: >-
+  Bump the ACP SDK version to match what claude-agent-acp@0.18.0 depends on (0.14.1).
+
+
+  ## Current state
+
+
+  - kynetic-spec pins @agentclientprotocol/sdk at ^0.13.0 (devDependency, types-only)
+
+  - claude-agent-acp@0.18.0 depends on @agentclientprotocol/sdk@0.14.1
+
+
+  ## Risk: Very Low
+
+
+  The SDK is types-only (devDependency, erased at runtime). All 21 imported types in
+  src/acp/types.ts still exist in 0.14.1 with compatible shapes. Changes between versions are
+  strictly additive:
+
+  - SessionUpdate union gets new "usage_update" variant (ignored by our code)
+
+  - PromptResponse gets optional usage field (we only read stopReason)
+
+  - RequestId changes bigint->number (we don't import this type)
+
+  - No types removed
+
+
+  ## Steps
+
+
+  1. Update package.json: "@agentclientprotocol/sdk": "^0.14.0"
+
+  2. npm install
+
+  3. tsc --noEmit to verify compilation
+
+  4. Run test suite
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #451. Bumped @agentclientprotocol/sdk from ^0.13.0 to ^0.14.0.
+  Types-only devDependency with zero breaking changes. All CI checks passed, 3105 tests green."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - acp-migration
+vcs_refs: []
+created_at: 2026-02-20T19:54:24.467Z
+started_at: 2026-02-23T00:08:31.298Z
+completed_at: 2026-02-23T00:24:30.815Z
+todos: []
+automation: eligible

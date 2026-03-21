@@ -1,0 +1,104 @@
+notes:
+  - _ulid: 01KFR830Q77F54SJRQF9Z2D638
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Ralph prompt refactoring to delegate to skills. Ralph includes skill invocation as literal
+      text in prompt; it does NOT detect or parse skill invocation from agent output.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given ralph iteration starts, when prompt built, then includes iteration N/M, session
+      ID, no-human flag
+
+      - ac-2: Given prompt built, when content examined, then does NOT contain step-by-step task
+      work instructions
+
+      - ac-3: Given prompt built, when content examined, then contains literal strings /task-work
+      loop and /reflect loop
+
+      - ac-4: Given agent output received, when ralph processes output, then ralph does NOT parse or
+      detect skill invocation patterns
+
+      - ac-5: Given iteration begins, when agent follows prompt, then invokes /task-work loop
+
+      - ac-6: Given pending_review exists, when agent follows prompt, then spawns subagent with
+      /pr-review @task-ref
+
+      - ac-7: Given iteration ends, when agent follows prompt, then invokes /reflect loop
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T14:56:18.151Z
+  - _ulid: 01KFR86BN0N4GEKEPPJBAVH2XD
+    content: "Implementation notes: 7 ACs covering context, no-inline, literal-skill, no-detection,
+      task-work, pr-review, reflect. Prompt includes iteration N/M, session ID, no-human-in-loop
+      flag. Prompt includes LITERAL strings /task-work loop and /reflect loop (skill invocation via
+      text). Ralph does NOT parse or detect skill invocation from agent output - skills are
+      agent-side only. Prompt does NOT include step-by-step instructions."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T14:58:07.648Z
+  - _ulid: 01KFS4Z5JNEGMCQVTH9N15EMP3
+    content: |-
+      Analyzing current implementation. Current state:
+      - ✅ ac-1 partial: Includes iteration N/M
+      - ❌ ac-1: Missing session ID and no-human flag
+      - ❌ ac-2: Contains step-by-step instructions (lines 78-176)
+      - ❌ ac-3: Does NOT contain literal /task-work or /reflect invocations
+      - ✅ ac-4: Already true - no parsing logic exists
+
+      Implementation plan:
+      1. Modify buildPrompt() to add session ID and no-human flag header
+      2. Replace step-by-step instructions with skill-based workflow
+      3. Add tests for prompt structure validation (ac-1, ac-2, ac-3)
+      4. Note: ac-5, ac-6, ac-7 test agent behavior (not directly testable in unit tests)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T23:21:00.758Z
+  - _ulid: 01KFS51HNRAXEFPMZAXCCB1N0A
+    content: |-
+      Implementation complete:
+
+      ✅ ac-1: Added session ID and no-human flag to prompt header
+      ✅ ac-2: Removed step-by-step instructions, replaced with skill delegation
+      ✅ ac-3: Added literal /task-work and /reflect skill invocations
+      ✅ ac-4: Ralph does NOT parse agent output (verified - no parsing code exists)
+      ✅ ac-5, ac-6, ac-7: Agent behavior (not directly testable in unit tests)
+
+      Tests added:
+      - ac-1: Validates iteration N/M, session ID regex, no-human flag
+      - ac-2: Confirms old-style instructions removed
+      - ac-3: Confirms /task-work and /reflect present
+
+      All 39 ralph tests passing.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T23:22:18.680Z
+  - _ulid: 01KFS5A5AX3EFE0H4GX6AXR3X3
+    content: >-
+      PR #231 created successfully. Local review passed all gates. Waiting for CI checks to complete
+      before merge:
+
+      - PR URL: https://github.com/kynetic-ai/kynetic-spec/pull/231
+
+      - Branch: feat/ralph-skill-delegation
+
+      - CI status: 3 checks pending (Greptile, claude-review, test)
+
+      - Workflow run: @01KFS58B
+
+
+      Next iteration should continue the @pr-review-merge workflow once CI completes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T23:27:00.958Z
+  - _ulid: 01KFS5HRZ6YZ4FK8R6P1WNR709
+    content: Added AC-4 test coverage per local review feedback. Test validates that Ralph does NOT
+      parse skill invocations from agent output - skills are invoked by the agent itself via Skill
+      tool, not detected by Ralph. All 40 ralph tests passing.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T23:31:10.439Z

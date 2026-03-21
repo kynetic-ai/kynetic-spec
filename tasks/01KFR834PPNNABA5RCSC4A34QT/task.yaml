@@ -1,0 +1,21 @@
+_ulid: 01KFR834PPNNABA5RCSC4A34QT
+slugs:
+  - task-ralph-subagent-spawning
+title: "Implement: Ralph Subagent Spawning"
+type: task
+spec_ref: "@ralph-subagent-spawning"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "PR #236 merged"
+depends_on:
+  - "@task-ralph-command-automated-task-loop"
+context: []
+priority: 1
+tags:
+  - enhance-ralph
+vcs_refs: []
+created_at: 2026-01-24T14:56:22.230Z
+started_at: 2026-01-25T09:07:13.183Z
+completed_at: 2026-01-25T09:24:03.841Z
+todos: []

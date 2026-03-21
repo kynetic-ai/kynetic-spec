@@ -1,0 +1,26 @@
+_ulid: 01KHFBT21F2S7QF8CSDNC9FDXV
+slugs:
+  - implement-claude-code-skill-renderer
+title: Implement Claude Code Skill Renderer
+type: task
+spec_ref: "@claude-code-renderer"
+plan_ref: "@plan-portable-agent-integration-infrastructure"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #383. Implemented renderClaudeCodeSkill library function that reads
+  from .kspec/skills/<id>/SKILL.md and writes to .claude/skills/<id>/SKILL.md with YAML frontmatter
+  (name, description). All 4 ACs covered: (1) creates .claude/skills/<id>/SKILL.md with frontmatter,
+  (2) frontmatter has name/description fields, (3) source content appears verbatim below
+  frontmatter, (4) files left as unstaged changes. Additional features: dry run support, idempotent
+  rendering, kspec-managed marker."
+depends_on:
+  - "@implement-skill-rendering-pipeline"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-15T00:39:32.655Z
+started_at: 2026-02-15T04:17:26.293Z
+completed_at: 2026-02-15T04:32:40.289Z
+todos: []
+automation: eligible

@@ -1,0 +1,70 @@
+_ulid: 01KJBNZKQA8XAVYF9NQVQRXNRQ
+slugs:
+  - task-lint-no-static-analysis-tests
+title: Add CI lint to prevent static analysis test pattern
+type: task
+description: >-
+  Add a vitest test that fails if any test file reads source code files — the static analysis
+  anti-pattern this project is migrating away from.
+
+
+  The pattern to detect: test files under tests/ that use readFile/readFileSync on paths containing
+  src/ or packages/*/src/. These read implementation source code and assert on string patterns
+  instead of testing behavior.
+
+
+  Approach: Write tests/lint/no-static-analysis.test.ts that:
+
+  1. Globs all tests/**/*.test.ts files
+
+  2. Parses each file looking for readFile/readFileSync calls where the path argument references
+  src/ (using simple regex)
+
+  3. Fails with a clear error message: "Test file X reads source file Y. Tests should exercise
+  behavior (import functions, call CLI, make HTTP requests) not scan source code for string
+  patterns."
+
+
+  No allowlist needed — there are no valid exceptions.
+
+
+  This should run as part of npm test so it catches new static analysis tests before they merge.
+
+
+  Note: The project uses Biome (not ESLint), and Biome doesn't support custom rules. A vitest lint
+  test is the right approach — it's the same pattern used for other convention enforcement (see
+  tests/convention-validation.test.ts).
+
+
+  This task is blocked on all E2E migration and deletion tasks completing first.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged PR #575 (tests/lint/no-static-analysis.test.ts) adding CI lint guard against
+  source-scanning tests; removed remaining static-analysis test patterns."
+depends_on:
+  - "@task-e2e-daemon-tasks-api"
+  - "@task-e2e-daemon-items-api"
+  - "@task-e2e-daemon-inbox-api"
+  - "@task-e2e-daemon-meta-validation-api"
+  - "@task-e2e-daemon-triage-api"
+  - "@task-e2e-daemon-errors-projects-api"
+  - "@task-e2e-daemon-server-core"
+  - "@task-e2e-daemon-websocket"
+  - "@task-e2e-daemon-watcher"
+  - "@task-delete-static-analysis-tests"
+context: []
+priority: 2
+tags:
+  - testing
+  - ci
+vcs_refs: []
+session_id: 01KJF51MP7P74B0KE93BPKQC3W
+created_at: 2026-02-26T00:36:04.458Z
+started_at: 2026-02-27T08:57:30.523Z
+submitted_at: 2026-02-27T09:05:24.188Z
+completed_at: 2026-02-27T09:17:32.858Z
+todos: []
+automation: eligible

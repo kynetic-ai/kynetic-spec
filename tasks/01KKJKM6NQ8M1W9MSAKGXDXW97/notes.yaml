@@ -1,0 +1,38 @@
+notes:
+  - _ulid: 01KKJNR76N84K3DF82CPKH1N88
+    content: >-
+      Execution context:
+
+      - Background: add Factory Droid environment detection without changing unrelated droid
+      platform work.
+
+      - Scope: parser/setup detection, setup status reporting, and setup agent override acceptance
+      for droid.
+
+      - Files: src/parser/agent-detection.ts, src/cli/commands/setup.ts, related tests covering
+      detection and setup status.
+
+      - Verification: targeted tests for detection/setup plus full npm test and kspec validate
+      before submit.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T04:02:25.109Z
+  - _ulid: 01KKJP57789PEX49H53VQ5T24P
+    content: >-
+      Implemented Droid detection and status reporting.
+
+      - Added ordered FACTORY_PROJECT_DIR detection with droid agent type/config path in shared env
+      detection.
+
+      - Added ~/.factory filesystem fallback in setup detection and exposed configPath in setup
+      --status output/JSON.
+
+      - Added AC-linked tests for droid env detection, Claude precedence, setup fallback, setup
+      status JSON, and --agent droid override.
+
+      - Verification: npm test -- tests/agent-detection.test.ts; npm test --
+      tests/enhanced-setup.test.ts; kspec validate exits 6 from existing repository-wide warnings;
+      full npm test surfaces multiple unrelated baseline failures outside this task.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T04:09:31.112Z

@@ -1,0 +1,40 @@
+notes:
+  - _ulid: 01KJGQWDEDV8KC457TZCK90AM4
+    content: Promoted from observation @01KJGAKM and expanded into standalone execution scope with
+      concrete behavior options, file targets, tests, and done criteria.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T23:45:29.037Z
+  - _ulid: 01KJJYQ417VJ23RG391HQZGWYX
+    content: "Implementation: added same-version template drift detection to skill update by comparing
+      template source tree to installed skill files. When drift is detected with matching version,
+      update now reports explicit guidance to run kspec skill install-core (normal + dry-run + JSON
+      reason/guidance fields). Added regression tests in tests/core-skill-update.test.ts for both
+      normal and dry-run drift messaging. Verification: npm run build; npx vitest run
+      tests/core-skill-update.test.ts tests/core-skill-install.test.ts; manual CLI scenario confirms
+      guidance appears in both modes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T20:23:24.455Z
+  - _ulid: 01KJJZKAPJSED9PM30EEBSKTXK
+    content: "Automation status set to needs_review: Subagent completed but did not merge or kick back.
+      Review required."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T20:38:48.786Z
+  - _ulid: 01KJJZKDHFQP33NKBEN2EP8ZXM
+    content: "[RALPH SUBAGENT] Subagent completed but did not merge or kick back. Review required."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T20:38:51.695Z
+  - _ulid: 01KJJZVZ37Y6JFR2TTFJSG1CGP
+    content: "Automation status set to needs_review: Subagent completed but did not merge or kick back.
+      Review required."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T20:43:31.816Z
+  - _ulid: 01KJJZW1GK9806DX0GM6FQP5PR
+    content: "[RALPH SUBAGENT] Subagent completed but did not merge or kick back. Review required."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T20:43:34.291Z

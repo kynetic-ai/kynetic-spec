@@ -1,0 +1,32 @@
+notes:
+  - _ulid: 01KFM7CRF02EFFWJSESRY7J1MW
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Merge driver must correctly identify kspec file types to apply appropriate merge strategies.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given file is *.tasks.yaml, when merge driver runs, then tasks array is merged using
+      task-specific strategy
+
+      - ac-2: Given file is *.inbox.yaml, when merge driver runs, then items array is merged using
+      inbox-specific strategy
+
+      - ac-3: Given file is modules/*.yaml, when merge driver runs, then spec items are merged
+      recursively with nested children
+
+      - ac-4: Given file is kynetic.yaml, when merge driver runs, then manifest fields merged:
+      includes as set-union, project fields prompt on conflict, config merged recursively
+
+      - ac-5: Given file is kynetic.meta.yaml, when merge driver runs, then arrays (agents,
+      workflows, conventions, observations) merged by ULID, context fields merged at field level
+
+      - ac-6: Given file is not a recognized kspec file, when merge driver runs, then driver falls
+      back to default behavior (copy ours)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T01:27:11.072Z

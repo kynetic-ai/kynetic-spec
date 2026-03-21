@@ -1,0 +1,30 @@
+notes:
+  - _ulid: 01KK06VST1ZEKAPWQQT8BEGQ6J
+    content: "Context: Dispatch engine is event-driven (CLI posts + file watcher). Events can be
+      silently lost (1s timeout on fire-and-forget HTTP post, daemon busy with shadow mutex, file
+      watcher miss). When events are lost, tasks stall indefinitely — no periodic re-scan exists.
+      Fix: Add a configurable reconciliation interval (default 60s) that re-runs bootstrap logic,
+      enqueuing tasks that match dispatch rules but have no active/queued invocation. Add
+      reconcileIntervalMs to DispatchEngineOptions (0 = disabled). Wire up via setInterval in
+      start(), clearInterval in stop(). Covers AC ac-19 and ac-20 on @agent-dispatch-engine."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T23:55:54.049Z
+  - _ulid: 01KK0K0A0KT5VQ6R59NXWP63NP
+    content: "Implemented AC-19 and AC-20: periodic reconciliation loop in DispatchEngine. Added
+      reconcileIntervalMs option (default 60s, 0/null disables). Reconciliation re-evaluates all
+      task states against dispatch rules, skipping tasks with active or queued invocations. Timer
+      starts in start(), cleared in stop(). 8 new tests covering: re-enqueue after missed events,
+      dedup against queued, skip non-dispatchable states, interval config, disable with 0/null,
+      timer cleanup on stop. All 55 dispatch tests pass. Also set timeout_minutes: 120 on ui-worker,
+      60 on ux-reviewer."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-06T03:28:04.627Z
+  - _ulid: 01KK0M6NPYXDWR940HBVD1GH0V
+    content: "[FIX_CYCLE: 1] Review findings: SHOULD-FIX: (1) _reconcile() duplicates _bootstrap() core
+      loop — extract shared helper. (2) setInterval timer missing .unref() — can hold process open.
+      See PR #685 inline comments."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-06T03:49:01.791Z

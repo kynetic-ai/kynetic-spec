@@ -1,0 +1,20 @@
+notes:
+  - _ulid: 01KHFBSZWNX8QTAY36V0MEPJDB
+    content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    author: "@claude"
+    created_at: 2026-02-15T00:39:30.453Z
+  - _ulid: 01KHFG1MY74YXSEPSY5880PRKX
+    content: |-
+      Implemented Skill Parser Integration:
+
+      - ac-1: saveMetaItem now supports 'skill' type, appends to manifest.skills and writes to disk
+      - ac-2: When saving a skill, creates .kspec/skills/<id>/ directory
+      - ac-3: deleteMetaItem now supports 'skill' type, removes from manifest.skills
+      - ac-4: When deleting a skill, removes .kspec/skills/<id>/ directory recursively
+      - ac-5: getMetaStats already included skills count (verified via tests)
+      - ac-6: isMetaItemType already returns true for 'skill' (verified via tests)
+
+      14 tests covering all 6 ACs in tests/skill-parser-integration.test.ts
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-15T01:53:35.687Z

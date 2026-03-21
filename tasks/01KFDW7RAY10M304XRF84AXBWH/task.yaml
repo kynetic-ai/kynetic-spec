@@ -1,0 +1,20 @@
+_ulid: 01KFDW7RAY10M304XRF84AXBWH
+slugs: []
+title: "Comprehensive spec review: trait adoption and AC gap analysis"
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Comprehensive spec review completed. Created 7 follow-up tasks covering trait
+  creation (8 traits), AC gap filling (17 items), and trait application (20 CLI commands). Plan
+  documented at /home/chapel/.claude/plans/rustling-waddling-diffie.md
+depends_on: []
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-20T14:16:46.174Z
+started_at: 2026-01-20T14:16:52.817Z
+completed_at: 2026-01-20T14:54:49.621Z
+todos: []

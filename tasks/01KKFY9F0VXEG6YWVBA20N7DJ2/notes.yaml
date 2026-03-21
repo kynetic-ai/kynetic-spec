@@ -1,0 +1,94 @@
+notes:
+  - _ulid: 01KKHHEP38FKCEVWXDHJQJ31WB
+    content: >-
+      Execution context:
+
+      - Background: dispatch workspaces already persist canonical branch and base-branch identity,
+      but they do not yet expose an explicit integration/publication contract to worker and reviewer
+      invocations.
+
+      - Scope: extend dispatch workspace metadata and runtime prompt/env wiring so integration
+      target branch, branch-point commit, publication mode, and integration outcome are recorded and
+      surfaced deterministically.
+
+      - Files: src/agent-runtime/workspace.ts, src/agent-runtime/dispatch.ts, related dispatch
+      workspace/orientation tests.
+
+      - Verification: npm test -- tests/canonical-task-workspace-contract.test.ts
+      tests/dispatch-workspace-config.test.ts tests/agent-dispatch-engine.test.ts and kspec
+      validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T17:28:03.944Z
+  - _ulid: 01KKHHNH0XVWDB04R4PP2MEMRH
+    content: Implemented explicit dispatch branch integration metadata in the workspace record,
+      including integration target branch/commit, publication mode, and integration outcome state.
+      Also wired branch/publication context into dispatch orientation text and added spec-focused
+      tests covering PR-target and manual-merge guidance.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T17:31:48.126Z
+  - _ulid: 01KKHHQMPPPPQGXN5JN21ZH0KJ
+    content: "Review artifact: PR #803 https://github.com/kynetic-ai/kynetic-spec/pull/803"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T17:32:57.431Z
+  - _ulid: 01KKHNSP7PYAQCFJ4SX8NJMDAT
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #803 conflicts with current main in
+      src/agent-runtime/dispatch.ts and must be rebased/resolved before merge."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T18:43:58.839Z
+  - _ulid: 01KKHPXNWPP7PG31Y7PDPCW40N
+    content: "[FIX_CYCLE: 1] Rebased PR #803 onto origin/main and resolved the workspace-registry merge
+      conflict by carrying branch integration metadata into the registry-backed workspace record.
+      Revalidated with: npm test -- tests/dispatch-branch-integration-contract.test.ts
+      tests/canonical-task-workspace-contract.test.ts tests/dispatch-workspace-config.test.ts
+      tests/agent-dispatch-engine.test.ts and kspec validate --warnings-ok (warnings are
+      pre-existing project-wide validation debt, no new errors)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T19:03:38.134Z
+  - _ulid: 01KKHQB44JRAATTHEYXGNZ1J12
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: PR #803 regresses dispatch workspace registry
+      validation. npm test fails in tests/dispatch-workspace-registry.test.ts because older records
+      missing integration target_commit/publication_mode/outcome are rejected before
+      duplicate-record checks run."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T19:10:58.706Z
+  - _ulid: 01KKHRMTZ1JHPXT0EJCSNKMF0T
+    content: "[FIX_CYCLE: 3] Restored registry compatibility for pre-integration-metadata workspace
+      records by hydrating missing integration.target_commit/publication_mode/outcome during parser
+      load before validation and duplicate-record checks. Added a regression test for legacy reload
+      behavior. Revalidated with: npm test -- tests/dispatch-workspace-registry.test.ts ; npm test ;
+      kspec validate --warnings-ok (warnings are pre-existing project validation debt only)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T19:33:45.569Z
+  - _ulid: 01KKHS17D2A95WB6ZE5TGBPZ0Y
+    content: "[FIX_CYCLE: 5] Review findings: MUST-FIX: legacy dispatch workspace records default to
+      manual_merge and violate @dispatch-branch-integration-contract ac-3/ac-4 for PR-capable repos
+      on reload."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T19:40:31.522Z
+  - _ulid: 01KKHTF4Y7RXH8PGP45RFN7RMY
+    content: "[FIX_CYCLE: 5] Reworking legacy workspace reload semantics so pending/in-progress records
+      recompute publication_mode from current repo capabilities instead of inheriting the parser's
+      manual_merge compatibility fallback. Adding a regression test for legacy registry reload in a
+      PR-capable repo."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T20:05:36.328Z
+  - _ulid: 01KKHTPTSXSVBGW23F8F4E0T3C
+    content: "[FIX_CYCLE: 5] Restored AC-compliant legacy reload behavior by recomputing
+      publication_mode for pending/in-progress workspaces from current repo capabilities during
+      provisioning, instead of preserving the parser's manual_merge compatibility fallback. Added a
+      regression test for a pre-metadata registry record reopening in a GitHub repo. Verification:
+      npm test -- tests/dispatch-branch-integration-contract.test.ts
+      tests/dispatch-workspace-registry.test.ts ; npm test ; kspec validate --warnings-ok (warnings
+      are existing project-wide validation debt only)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T20:09:48.094Z

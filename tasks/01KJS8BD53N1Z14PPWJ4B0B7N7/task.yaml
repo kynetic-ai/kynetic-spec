@@ -1,0 +1,33 @@
+_ulid: 01KJS8BD53N1Z14PPWJ4B0B7N7
+slugs: []
+title: Replace 06-ralph-loop.md template with agent dispatch documentation
+type: task
+description: "Replace templates/agents-sections/06-ralph-loop.md with agent dispatch docs covering:
+  kspec agent dispatch start/stop, built-in worker/reviewer agents, dispatch rules and trigger
+  events, one-shot invocation via kspec agent run. Keep 06- prefix for section order. Run kspec
+  agents generate after. Spec AC: @ralph-replacement ac-6"
+spec_ref: "@ralph-replacement"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #671. Replaced templates/agents-sections/06-ralph-loop.md with agent
+  dispatch documentation (dispatch start/status/watch/stop, built-in task-worker/pr-reviewer
+  definitions, trigger-event mapping, and one-shot kspec agent run usage) and regenerated
+  kspec-agents.md. Verified AC alignment for @ralph-replacement ac-6 and trait coverage remains
+  annotated; regression suite passed via npm test (3641 passing)."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - docs
+  - agent
+  - templates
+vcs_refs: []
+session_id: 01KJWBHHXEKX5C2BWT5DA0D3ME
+created_at: 2026-03-03T07:07:12.931Z
+started_at: 2026-03-04T12:01:28.268Z
+submitted_at: 2026-03-04T12:03:10.454Z
+completed_at: 2026-03-04T12:13:25.175Z
+todos: []
+automation: eligible

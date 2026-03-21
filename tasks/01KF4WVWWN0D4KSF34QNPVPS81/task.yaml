@@ -1,0 +1,20 @@
+_ulid: 01KF4WVWWN0D4KSF34QNPVPS81
+slugs:
+  - task-kspec-meta-observations
+title: "Implement: kspec meta observations"
+type: task
+spec_ref: "@meta-observations-cmd"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Added --type and --workflow filters to match spec requirements
+depends_on:
+  - "@task-meta-cli-commands"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:36.309Z
+started_at: 2026-01-18T12:37:10.547Z
+completed_at: 2026-01-18T12:40:40.907Z
+todos: []

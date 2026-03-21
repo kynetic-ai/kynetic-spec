@@ -1,0 +1,59 @@
+notes:
+  - _ulid: 01KHHQD7CVWNP5632BP2R4KTRA
+    content: |
+      Implementation notes:
+
+      File: src/cli/commands/skill.ts
+
+      Import command (lines ~577-714):
+      1. Expand parseFrontmatter() (lines ~1585-1607) to return all Agent Skills fields:
+         { name?, description?, license?, compatibility?, allowed_tools?, metadata?,
+           disable_model_invocation?, user_invocable?, context?, agent?, model?, argument_hint? }
+      2. Map Claude Code fields → platform_config.claude_code object
+      3. Strip frontmatter from content before writing to .kspec/skills/<id>/SKILL.md:
+         content.replace(/^---\n[\s\S]*?\n---\n?/, '')
+      4. Handle directories: check for references/, scripts/, assets/, docs/ in source
+      5. Set platforms based on what platform fields were found (or default to ["claude-code"])
+
+      Tests: tests/skill-cli.test.ts (import describe block)
+    author: "@claude"
+    created_at: 2026-02-15T22:40:43.931Z
+  - _ulid: 01KHHVNYQ01PWZ1A66ZQPY4GJN
+    content: Starting implementation. Reading existing skill import code to understand current state.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-15T23:55:24.257Z
+  - _ulid: 01KHHW3AY7PS153N90AGP590E3
+    content: >-
+      Implemented Import Frontmatter Stripping and Full Field Parsing:
+
+
+      1. Expanded parseFrontmatter() to return all Agent Skills fields:
+         - Core: name, description
+         - Portable: license, compatibility, allowed_tools
+         - Claude Code: user_invocable, disable_model_invocation, context, agent, model, argument_hint
+         - Supports both underscore and hyphen naming (user-invocable, user_invocable)
+
+      2. Added stripFrontmatter() function to remove frontmatter from content before storing
+
+
+      3. Updated import command to:
+         - Build platform_config.claude_code from frontmatter (AC-3)
+         - Populate license, compatibility, allowed_tools in meta.yaml (AC-1)
+         - Store body-only content without frontmatter (AC-2)
+         - Copy references/, scripts/, assets/ directories (AC-4)
+         - Copy docs/ for backward compatibility (AC-5)
+         - Accept --name and --description flags when no frontmatter (AC-6)
+
+      4. Extended skill get command to include new fields in JSON output
+
+
+      11 new tests in tests/skill-cli.test.ts covering all 6 ACs
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-16T00:02:42.759Z
+  - _ulid: 01KHHWR7P804JED97GT5ABPWQW
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-16T00:14:07.560Z

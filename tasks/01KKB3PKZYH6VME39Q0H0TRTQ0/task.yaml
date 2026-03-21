@@ -1,0 +1,28 @@
+_ulid: 01KKB3PKZYH6VME39Q0H0TRTQ0
+slugs:
+  - implement-session-text-search
+title: Implement Session Text Search
+type: task
+spec_ref: "@session-text-search"
+plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #770. Implemented shared metadata-prefiltered session text search
+  across CLI, daemon, and the /sessions UI, including GET /api/sessions/search, q= URL persistence,
+  grouped match rendering, relative since support, and explicit AC coverage for performance plus
+  trait N/A annotations. AC coverage confirmed for @session-text-search own criteria and inherited
+  @trait-api-endpoint criteria; CI and local npm test passed on the merged head."
+depends_on:
+  - "@implement-session-cli-unified-filtering"
+  - "@implement-session-filter-controls"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKDSMVNY7MQ4FMSRJEK29HDM
+created_at: 2026-03-10T05:32:17.278Z
+started_at: 2026-03-11T06:36:34.555Z
+submitted_at: 2026-03-11T06:36:45.606Z
+completed_at: 2026-03-11T06:58:00.140Z
+todos: []
+automation: eligible

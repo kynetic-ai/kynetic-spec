@@ -1,0 +1,50 @@
+_ulid: 01KKRTSS1EDEF6G8FE6CB16PB5
+slugs: []
+title: Add unfiltered_total to sessions API response to eliminate extra limit=0 request
+type: task
+description: >-
+  Sessions page makes a separate limit=0 API call to get the unfiltered total for the filter count
+  display ("12 of 731 sessions"). This defeats the purpose of infinite scroll pagination — the
+  server already has all sessions cached.
+
+
+  Fix: Add unfiltered_total field to the paginated sessions API response
+  (sessionCache.getAll().length before filtering). Remove the separate unfilteredQuery from the UI
+  and read unfiltered_total from the infinite query first page response.
+
+
+  Spec: @session-filter-controls ac-filter-counts (updated to specify unfiltered total comes from
+  same response)
+spec_ref: "@session-filter-controls"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #877. Added unfiltered_total field to GET /api/sessions response
+  (captured from sessionCache.getAll().length before filtering). Removed separate limit=0
+  unfilteredQuery from sessions page UI. UI now reads unfiltered_total from the infinite query's
+  first page response, eliminating one redundant API request per page load. 3 E2E tests added for
+  the new field. AC coverage verified for @session-filter-controls ac-filter-counts."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - web-ui
+  - bug
+  - tanstack-query
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-15T14:12:39.448Z
+  commit: 8045b69abbe62718c1abb64a7b00e7dc460b571d
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKRWGW2JCJAT40V9B7EJQ3FG
+created_at: 2026-03-15T13:26:05.614Z
+started_at: 2026-03-15T13:56:37.386Z
+submitted_at: 2026-03-15T14:12:40.442Z
+completed_at: 2026-03-15T14:24:48.336Z
+todos: []
+automation: eligible

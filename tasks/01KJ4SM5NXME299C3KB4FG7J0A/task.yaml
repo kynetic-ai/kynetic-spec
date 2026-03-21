@@ -1,0 +1,27 @@
+_ulid: 01KJ4SM5NXME299C3KB4FG7J0A
+slugs: []
+title: "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that ensures @
+  prefix on "
+type: task
+description: "Input ref normalization layer: Add normalizeRefInput() in schema/common.ts that
+  ensures @ prefix on ref-like strings. Apply at CLI input boundary (TaskInput construction) instead
+  of per-command handler. Prevents class of bugs where bare refs bypass RefSchema validation and
+  cause silent data loss. Today's depends_on fix (PR #353) patched 3 locations — a shared boundary
+  would prevent recurrence. Related: @merge-ref-normalization (merge layer), @01KG0N4V (silent
+  safeParse drops)."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #479. Added normalizeRefInput() in schema/common.ts, replaced 10 inline
+  ref normalization patterns across 8 files. Added 13 tests (6 unit, 2 static analysis regression
+  guards, 5 integration). All quality gates passed."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-23T08:25:02.909Z
+started_at: 2026-02-23T14:56:25.606Z
+completed_at: 2026-02-23T15:31:15.039Z
+todos: []
+automation: eligible

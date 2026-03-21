@@ -1,0 +1,21 @@
+_ulid: 01KFCJVC09RSPN0M8J2HGS49Y2
+slugs:
+  - task-pending-review-state
+title: "Implement: Pending Review State"
+type: task
+spec_ref: "@pending-review-state"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #94"
+depends_on:
+  - "@task-state-transitions"
+context: []
+priority: 2
+tags:
+  - tasks
+vcs_refs: []
+created_at: 2026-01-20T02:13:28.713Z
+started_at: 2026-01-20T02:15:59.174Z
+completed_at: 2026-01-20T02:52:19.319Z
+todos: []

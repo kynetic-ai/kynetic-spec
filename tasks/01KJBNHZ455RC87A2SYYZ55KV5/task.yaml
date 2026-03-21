@@ -1,0 +1,70 @@
+_ulid: 01KJBNHZ455RC87A2SYYZ55KV5
+slugs:
+  - task-e2e-daemon-tasks-api
+title: E2E tests for daemon Tasks API (replace daemon-api-tasks.test.ts)
+type: task
+description: >-
+  Replace tests/daemon-api-tasks.test.ts (258 lines, all static analysis) with Playwright E2E tests
+  that hit the real daemon.
+
+
+  The existing file reads packages/daemon/src/routes/tasks.ts and checks for string patterns. None
+  of it exercises actual HTTP behavior.
+
+
+  Write: packages/web-ui/tests/e2e/api-tasks.spec.ts
+
+  Using: the daemon fixture from tests/fixtures/test-base.ts (provides running daemon + fixtures
+  with tasks)
+
+  Pattern: fetch() against http://localhost:3456/api/tasks/* endpoints, verify response shapes and
+  status codes
+
+
+  Endpoints to test:
+
+  - GET /api/tasks — list tasks, verify response has items array with status/priority/spec_ref
+  fields (@api-contract ac-2)
+
+  - GET /api/tasks?status=pending,in_progress — multi-value status filter (@api-contract ac-3)
+
+  - GET /api/tasks?offset=0&limit=5 — pagination response shape {items, total, offset, limit}
+  (@api-contract ac-4)
+
+  - GET /api/tasks/:ref — single task with notes, todos, dependencies (@api-contract ac-5)
+
+  - POST /api/tasks/:ref/start — transition to in_progress, verify 200 response (@api-contract ac-6)
+
+  - POST /api/tasks/:ref/note — append note, verify response (@api-contract ac-7)
+
+
+  After E2E tests pass, delete tests/daemon-api-tasks.test.ts.
+
+  Run: npm test && npm run test:e2e to verify no regressions.
+
+
+  Fixture data: packages/web-ui/tests/fixtures/project.tasks.yaml has test tasks to query.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #543. Replaced tests/daemon-api-tasks.test.ts (258 lines of static
+  analysis) with 23 Playwright E2E tests in packages/web-ui/tests/e2e/api-tasks.spec.ts covering
+  @api-contract ac-2 through ac-7. Fixed coverage scan regression by extending scanTestCoverage() to
+  also scan packages/web-ui/tests/e2e/. All CI checks passed."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - e2e
+vcs_refs: []
+session_id: 01KJBS56Y7BX7RKGTH9T6MKRYG
+created_at: 2026-02-26T00:28:37.381Z
+started_at: 2026-02-26T02:22:09.849Z
+submitted_at: 2026-02-26T02:22:13.984Z
+completed_at: 2026-02-26T02:25:43.308Z
+todos: []
+automation: eligible

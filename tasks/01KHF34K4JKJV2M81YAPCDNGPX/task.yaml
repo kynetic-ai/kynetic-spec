@@ -1,0 +1,25 @@
+_ulid: 01KHF34K4JKJV2M81YAPCDNGPX
+slugs: []
+title: Add code-level reflect gating in ralph based on iteration delta
+type: task
+description: "PR #357 added skill-file instructions to gate reflection on meaningful work, but this
+  has no enforcement. Instead: ralph should snapshot session state (task statuses, working tree,
+  commit count) before each iteration, compare at the end, and only issue the reflect prompt if
+  something measurably changed (task transitions, commits, file changes). The reflect prompt itself
+  was already efficient at avoiding noisy observations — the issue is invoking it at all when
+  nothing happened."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Ralph loop gone. Dispatch invocations are discrete — no iteration delta. Reflection
+  gating is a skill concern now.
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-02-14T22:08:00.658Z
+todos: []
+automation: needs_review

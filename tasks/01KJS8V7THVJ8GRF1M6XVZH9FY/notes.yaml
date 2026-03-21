@@ -1,0 +1,24 @@
+notes:
+  - _ulid: 01KJXE0B8B8JHZSDBN2VD2S99Z
+    content: "Implementation complete. Changes: (1) review_url field on TaskSchema + TaskInputSchema,
+      (2) --review-url flag on task submit + task set with URL validation, (3) review_url display in
+      formatTaskDetails, (4) Exported interpolateTemplate + buildOrientationContext helpers in
+      dispatch.ts, (5) Fixed change.task data flow for API-event path, (6) Orientation context in
+      dispatch prompts: task title, trigger meaning, fix-cycle notes (last 3, 200 char cap), review
+      URL for reviewer. All 52 new+existing tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-04T22:02:59.728Z
+  - _ulid: 01KJXF657NXBJ6WY8MT8F675S3
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: task submit accepts empty --review-url and still
+      transitions state, violating @task-submit ac-submit-3."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T22:23:38.741Z
+  - _ulid: 01KJXFJ1M137HGMEZWW8EM3RPS
+    content: "[FIX_CYCLE: 1] Fixed empty --review-url bypass: changed truthy check to !== undefined in
+      task submit (line 1631), matching existing pattern in task set. Also fixed spread at line
+      1661. Added test for empty-string rejection. All 9 review_url tests + 44 dispatch tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-04T22:30:08.258Z

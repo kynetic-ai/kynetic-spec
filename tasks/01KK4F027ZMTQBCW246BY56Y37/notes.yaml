@@ -1,0 +1,22 @@
+notes:
+  - _ulid: 01KK4FV0TPNJW69DE7B9K1VTS8
+    content: >-
+      Execution context:
+
+      - Bug: Automation filter dropdown had wrong options (All/Eligible/Blocked) and daemon API
+      ignored the automation query param
+
+      - Root cause 1: TaskFilters.svelte used 'blocked' as an automation value but valid values are
+      eligible/needs_review/manual_only
+
+      - Root cause 2: Daemon GET /api/tasks route didn't include automation in query schema or
+      filtering logic (static API was correct)
+
+      - Fix: Updated dropdown to All/Eligible/Needs Review/Manual Only, added automation filtering
+      to daemon route, fixed duplicate automation property in response
+
+      - Files: packages/web-ui/src/lib/components/TaskFilters.svelte,
+      packages/daemon/src/routes/tasks.ts
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T15:49:43.382Z

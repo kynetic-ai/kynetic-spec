@@ -1,0 +1,24 @@
+_ulid: 01KJ91Q8BVDS75TV60KVRX5EKC
+slugs:
+  - task-hierarchical-activity-timeline
+title: Implement hierarchical activity timeline display
+type: task
+spec_ref: "@session-start-activity-timeline"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #519. Implemented hierarchical activity timeline: tasks as top-level
+  entries with ✓ marker, linked commits nested with tree connectors (├─/└─), orphan commits with ○
+  marker. All 7 ACs covered with 19 behavioral tests."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+vcs_refs: []
+created_at: 2026-02-25T00:03:30.299Z
+started_at: 2026-02-25T01:58:11.607Z
+completed_at: 2026-02-25T02:20:59.330Z
+todos: []
+automation: eligible

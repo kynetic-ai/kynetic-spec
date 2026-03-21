@@ -1,0 +1,36 @@
+_ulid: 01KJ4F7XFGJVY44SC1KA0FQMAD
+slugs:
+  - task-deduplicate-web-ui-types
+title: Eliminate duplicated types in web-ui by importing from shared schema
+type: task
+description: "packages/web-ui/src/lib/types/triage.ts manually mirrors types from
+  src/schema/triage.ts. If the schema changes, web-ui types silently diverge. The codebase has
+  @kynetic-ai/shared for shared types (already imported in api.ts), but triage types bypass this.
+  Scope: 1) Audit all packages/web-ui/src/lib/types/ files for types that duplicate src/schema/
+  definitions. 2) For each duplicated type, determine if it can be imported from the shared package
+  or needs a re-export. 3) Migrate triage types and any other duplicates to use the shared source of
+  truth. 4) Add a lint rule or CI check to prevent future type duplication."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #475. Added 10 types to @kynetic-ai/shared (Convention, TriageStatus,
+  TriageAction, TriageRecord, ExportedTask, ExportedItem, InheritedAC, ExportedValidation,
+  KspecSnapshot, ExportedProject). Replaced web-ui types/triage.ts and types/snapshot.ts with
+  re-exports from shared. Added static analysis test preventing future type drift. Fixed
+  Convention.validation to match actual schema per Codex review. All 3196 tests pass, all CI checks
+  green."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - refactor
+  - web-ui
+  - types
+vcs_refs: []
+created_at: 2026-02-23T05:23:35.534Z
+started_at: 2026-02-23T13:05:20.590Z
+completed_at: 2026-02-23T13:29:39.033Z
+todos: []
+automation: eligible

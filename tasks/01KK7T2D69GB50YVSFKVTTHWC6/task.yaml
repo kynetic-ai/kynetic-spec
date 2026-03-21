@@ -1,0 +1,29 @@
+_ulid: 01KK7T2D69GB50YVSFKVTTHWC6
+slugs:
+  - remove-shadowautocommit-from-session-operations
+title: Remove shadowAutoCommit from session operations
+type: task
+spec_ref: "@session-remove-shadow-commits"
+plan_ref: "@plan-session-storage-separation"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #721. Removed shadowAutoCommit from invocation end paths and stale
+  session auto-abandon flow, added concurrency coverage proving .kspec-sessions writes do not
+  conflict with shadowPull on kspec-meta, and verified AC coverage for ac-invocation-end,
+  ac-stale-cleanup, and ac-no-sync-conflict."
+depends_on:
+  - "@extract-session-path-resolution-from-specdir"
+context: []
+priority: 1
+tags:
+  - session
+  - storage
+  - refactor
+vcs_refs: []
+session_id: 01KK8E2GTFNVVZJ06AC65K7TC2
+created_at: 2026-03-08T22:46:14.473Z
+started_at: 2026-03-09T04:41:58.090Z
+submitted_at: 2026-03-09T04:57:45.269Z
+completed_at: 2026-03-09T05:17:25.034Z
+todos: []
+automation: eligible

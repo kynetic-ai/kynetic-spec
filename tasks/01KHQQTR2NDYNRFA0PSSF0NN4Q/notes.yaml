@@ -1,0 +1,53 @@
+notes:
+  - _ulid: 01KHQQTR2MB4MMJ2T5PBZDAKD2
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Remove dead code and deduplicate utilities across skill.ts, skill-render.ts, and agents.ts.
+      Clears noise before larger refactors.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given the codebase, when building the project, then SkillRenderResult,
+      SkillStatusResult types, and getSkillSyncStatus function are removed from skill.ts
+
+      - ac-2: Given skill-render.ts, when reviewing dead code, then toKebabCase function is removed
+      (zero callers)
+
+      - ac-3: Given agents.ts, when reviewing dead code, then EXPECTED_TEMPLATES constant is removed
+      (never referenced)
+
+      - ac-4: Given skill.ts needs contentsEqual, directoriesEqual, or copyDirectory, when these
+      functions are called, then they are imported from skill-render.ts, not duplicated locally
+
+      - ac-5: Given the skill CLI add/set commands, when constructing input before schema parse,
+      then redundant manual defaults for platform, tags, and depends_on are removed (schema provides
+      them)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-18T06:43:33.588Z
+  - _ulid: 01KHQSDNNQEAETSM38BBJQADMW
+    content: >-
+      All 5 ACs implemented:
+
+      - AC-1: Removed SkillRenderResult, SkillStatusResult types, getSkillSyncStatus function from
+      skill.ts. Also removed unused checkSkillDrift import.
+
+      - AC-2: Removed toKebabCase function from skill-render.ts (zero callers, frontmatter uses
+      hardcoded kebab strings).
+
+      - AC-3: Removed EXPECTED_TEMPLATES constant from agents.ts (never referenced).
+
+      - AC-4: Exported contentsEqual, directoriesEqual, copyDirectory from skill-render.ts. Imported
+      them in skill.ts instead of duplicating locally. Removed ~100 lines of duplicate code.
+
+      - AC-5: Removed redundant manual defaults for platforms, depends_on, tags from skill add,
+      import, and core install commands. Schema safeParse provides these defaults.
+
+      Build passes. All 2718 tests pass (1 pre-existing daemon-executable failure unrelated).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-18T07:11:22.295Z

@@ -1,0 +1,27 @@
+_ulid: 01KKK7R6R2GDTVKZMSJD5RR757
+slugs:
+  - implement-portable-task-submission-linkage
+title: Implement Portable Task Submission Linkage
+type: task
+spec_ref: "@portable-task-submission-linkage"
+derivation: auto
+plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #826. Adds structured submission_linkage to task submit (branch,
+  commit, remote, upstream_ref), displayed in task get, with detached HEAD handling and repair via
+  task set."
+depends_on: []
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+review_url: https://github.com/kynetic-ai/kynetic-spec/pull/826
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-13T09:16:59.010Z
+started_at: 2026-03-13T16:16:09.551Z
+submitted_at: 2026-03-13T16:16:14.840Z
+completed_at: 2026-03-13T16:16:18.570Z
+todos: []
+automation: eligible

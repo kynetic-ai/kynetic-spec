@@ -1,0 +1,23 @@
+_ulid: 01KJXSVGW0KG615NZ4M98CSAG6
+slugs:
+  - implement-session-stream-view
+title: Implement Session Stream View
+type: task
+spec_ref: "@ui-session-stream"
+plan_ref: "@plan-ui-ux-revamp"
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on:
+  - "@implement-app-shell-and-navigation"
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+session_id: 01KJYZ2DW7GFDFTJ5V7JR67SEN
+created_at: 2026-03-05T01:30:04.544Z
+started_at: 2026-03-05T12:25:44.413Z
+submitted_at: 2026-03-05T12:30:05.372Z
+completed_at: 2026-03-05T12:35:49.162Z
+todos: []
+automation: eligible

@@ -1,0 +1,31 @@
+_ulid: 01KKM8XSMBD2HB6PBC4303YYA3
+slugs: []
+title: Add workspace working directory instruction to dispatch prompt
+type: task
+description: "The dispatch prompt tells agents their workspace path but never explicitly instructs
+  them to USE it as their working directory. Agents (especially pr-reviewer) default to cd-ing to
+  the project root, which causes vitest to pick up test files from other worktrees under
+  .kspec-worktrees/. Fix: add a CRITICAL instruction in the autonomous preamble telling agents to
+  run all commands from their assigned workspace. Also fix vitest.config.ts to exclude
+  .kspec-worktrees/."
+spec_ref: "@dispatch-workspace-orientation-prompt"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #831. Added explicit workspace working directory instruction to
+  dispatch autonomous preamble, clarified orientation label, excluded .kspec-worktrees/ from vitest,
+  added ac-4 to spec and test coverage."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - cli
+  - dispatch
+  - bug
+vcs_refs: []
+created_at: 2026-03-13T18:56:45.194Z
+started_at: 2026-03-13T18:57:24.833Z
+submitted_at: 2026-03-13T18:58:51.526Z
+completed_at: 2026-03-13T19:17:26.275Z
+todos: []

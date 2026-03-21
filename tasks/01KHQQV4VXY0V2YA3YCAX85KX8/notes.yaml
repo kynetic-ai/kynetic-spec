@@ -1,0 +1,72 @@
+notes:
+  - _ulid: 01KHQQV4VWGHQ1Z2RPE9K4858M
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Split the 2365-line skill.ts monolith into focused modules and extract shared renderer logic
+      to reduce duplication between platform renderers.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given the skill command implementation, when reviewing the file structure, then
+      skill.ts is split into focused modules (skill-crud.ts, skill-install.ts, skill-diff.ts or
+      similar)
+
+      - ac-2: Given the Claude Code and Codex renderers, when reviewing skill-render.ts, then shared
+      render logic (content loading, hash check, idempotency, file write) is extracted into a base
+      function
+
+      - ac-3: Given external code importing from skill.ts, when building the project, then
+      re-exports maintain backward API compatibility
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-18T06:43:46.685Z
+  - _ulid: 01KHRTDCCTSVQXNVH8Y9JEMRNB
+    content: >-
+      Requirements (moved from spec — these are task-level, not behavioral):
+
+      - AC-1: skill.ts split into focused modules (skill-crud.ts, skill-install.ts, skill-diff.ts or
+      similar)
+
+      - AC-2: Shared render logic (content loading, hash check, idempotency, file write) extracted
+      into a base function in skill-render.ts
+
+      - AC-3: Re-exports maintain backward API compatibility for external code importing from
+      skill.ts
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-18T16:47:55.802Z
+  - _ulid: 01KHSHRMN41QHQHJ1XMT6PV77D
+    content: "Starting implementation. Plan: (1) Split skill.ts into skill-crud.ts, skill-install.ts,
+      skill-diff.ts; (2) Extract shared render base function in skill-render.ts; (3) Keep skill.ts
+      as thin orchestrator with re-exports for backward compat."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-18T23:36:01.956Z
+  - _ulid: 01KHSJBVB8HE36PBE5JGYQ6K6B
+    content: >-
+      Implementation complete:
+
+
+      AC-1: skill.ts (2349 lines) split into:
+        - skill-crud.ts (931 lines): list, add, get, set, delete, import + formatting/frontmatter helpers
+        - skill-install.ts (495 lines): install-core, update + template loading/version helpers
+        - skill-diff.ts (992 lines): render, status, diff, verify + related types/helpers
+        - skill.ts (54 lines): thin orchestrator that imports and delegates
+
+      AC-2: Extracted renderSkillBase() in skill-render.ts — shared logic for content loading,
+      frontmatter stripping, idempotency check, file write, hash storage, and supporting dir copy.
+      Both Claude Code and Codex renderers now use it via config objects, eliminating ~100 lines of
+      duplication.
+
+
+      AC-3: skill.ts re-exports all previously-exported symbols (getExpectedRenderedContent,
+      generateUnifiedDiff, loadCoreSkillsManifest, loadCoreSkillContent, getKspecPackageVersion,
+      isKspecManaged, KSPEC_MANAGED_MARKER, renderClaudeCodeSkill). All 221 skill tests pass.
+      setup.ts imports still work.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-18T23:46:31.400Z

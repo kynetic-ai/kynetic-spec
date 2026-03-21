@@ -1,0 +1,56 @@
+_ulid: 01KKJT2VJPSPQRCVDW5NZ9G6TJ
+slugs:
+  - durably-shadow-commit-dispatch-workspace-registry-writes
+title: Durably shadow-commit dispatch workspace registry writes
+type: bug
+description: >-
+  Dispatch workspace registry updates are currently written into
+  .kspec/project.dispatch-workspaces.yaml by runtime code, but that path does not explicitly perform
+  a shadow auto-commit afterward. This leaves a gap between writing registry state and durably
+  persisting it on the shadow branch.
+
+
+  Scope:
+
+  - update the dispatch workspace registry/runtime write path so successful registry mutations
+  trigger the correct shadow-branch commit flow
+
+  - ensure the commit path respects dispatch shadow-mutation serialization instead of introducing a
+  second unsynchronized write channel
+
+  - add regression coverage proving provisioning/reconciliation registry writes survive restart as
+  committed shadow state rather than only as a dirty worktree file
+
+  - document any resulting runtime error behavior when the registry write succeeds but the shadow
+  commit cannot be completed
+
+
+  Outcome: dispatch workspace state becomes durably persisted at write time, not merely present in
+  the local shadow worktree until some unrelated later commit happens.
+spec_ref: "@dispatch-workspace-registry"
+meta_ref: null
+plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #820 (merge commit bbc4267ae9b28ae14918485664a7eea236561e0b). Durably
+  persisted dispatch workspace registry writes through the shared shadow-mutation path, added
+  shadow-commit durability and failure-guidance coverage, and verified restart/reconciliation
+  persistence. AC coverage confirmed for @dispatch-workspace-registry ac-1..ac-8 plus inherited
+  @trait-error-guidance coverage/N/A annotations; local npm test and GitHub PR checks passed on head
+  975dede747a081507985a92d3164e0425718e275."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - registry
+  - shadow
+  - durability
+vcs_refs: []
+session_id: 01KKKXCQVVSJR1NWCY7WERRMZQ
+created_at: 2026-03-13T05:18:07.958Z
+started_at: 2026-03-13T15:50:22.624Z
+submitted_at: 2026-03-13T15:50:26.417Z
+completed_at: 2026-03-13T16:03:09.233Z
+todos: []
+automation: eligible

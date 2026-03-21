@@ -1,0 +1,120 @@
+notes:
+  - _ulid: 01KK6GYDSDZJ9Z0PZE6VTD695V
+    content: "Starting work. Created branch feat/bidirectional-shadow-sync from latest main. This task
+      focuses on spec ACs 11 and 12: pull-rebase before push, and periodic daemon background pull."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T10:47:32.398Z
+  - _ulid: 01KK6J4ET2PNNECA3E0EN2KV70
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. AC-11 (pull-rebase before push): Added pullRebaseBeforePush() in shadow.ts, called by
+      shadowPushAsync before the git push spawn. Uses fetch → rev-list check → ff-only → rebase
+      fallback → abort on conflict. Conflicts trigger push failure warning with guidance to run
+      kspec shadow resolve.
+
+
+      2. AC-12 (periodic daemon pull): Created ShadowSyncScheduler in
+      packages/daemon/src/shadow-sync.ts. Integrated into daemon server.ts — loads sync_interval
+      from project config (default 60s, 0 disables). Uses setInterval with unref(). Stops on daemon
+      shutdown. Added sync_interval to shadow config schema in config.ts (KspecConfigSchema,
+      ResolvedKspecConfig, DEFAULT_CONFIG, resolveConfig, getDefaultConfig).
+
+
+      3. Tests: 2 new behavioral tests for AC-11 in shadow.test.ts (integration + conflict). 5 new
+      tests for AC-12 in shadow-sync-scheduler.test.ts (interval=0, start/stop, syncOnce pulls,
+      no-tracking skip, concurrent guard).
+
+
+      All 101 shadow tests pass. All 3 config test files pass. Full shard runs show only
+      pre-existing codex-related failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T11:08:18.627Z
+  - _ulid: 01KK6JSPEJ4H0KP8RY182YS0N1
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #712 breaks daemon startup on the current
+      head. New daemon imports in packages/daemon/src/shadow-sync.ts and
+      packages/daemon/src/server.ts resolve to nonexistent parser paths in the built dist layout,
+      and the e2e smoke job is failing with 'Daemon failed to start within 5 seconds'."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T11:19:54.578Z
+  - _ulid: 01KK6P2ESNXBD6Z3AX0BYVEZJM
+    content: "Fix cycle 1: Corrected relative import paths in shadow-sync.ts and server.ts. Both files
+      used ../../parser/ which only works from the routes/ subdirectory (3 levels deep in
+      dist/daemon/routes/). From dist/daemon/ root (2 levels deep), ../../parser/ overshoots past
+      dist/ to the project root. Changed to ../parser/ which correctly resolves to dist/parser/ at
+      runtime. Verified with bun import smoke test and all 101 shadow tests + 61 config tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T12:17:07.382Z
+  - _ulid: 01KK6X8JV4Z1E24WYBS3NCN6MZ
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: task description still requires pre-read shadow
+      sync for CLI read paths such as task list; PR #712 only covers write-side pull-rebase and
+      daemon background pull."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T14:22:48.165Z
+  - _ulid: 01KK6Y21WB0PEZ28YA9GKG7TC6
+    content: "Fix cycle 2: Added pre-read shadow pull in initContext() so all CLI read operations (task
+      list, task get, search, session start, etc.) automatically pull remote changes before loading
+      data. The pull is best-effort: conflicts warn but don't fail the command. Controlled by
+      KSPEC_NO_SYNC=1 for offline/test scenarios. Moved session start's explicit shadowPull into
+      initContext to eliminate duplication. Two new behavioral tests verify pre-read sync works and
+      respects KSPEC_NO_SYNC. All 98 shadow tests pass. Shard failures are pre-existing
+      codex-related issues."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T14:36:42.763Z
+  - _ulid: 01KK6YGP26XWYKE3QB3VZ8XT3T
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX review on PR #712: scheduler tests copy the
+      implementation instead of covering shipped daemon code, and the new sync paths still drop
+      configured shadow branch/remote handling in CLI pre-read and pull-rebase logic."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T14:44:42.182Z
+  - _ulid: 01KK6ZA8DAVZY9E2QNB761DADY
+    content: >-
+      Fix cycle 3: Addressed all three MUST-FIX review findings:
+
+
+      1. Scheduler tests now import production ShadowSyncScheduler: Moved class from
+      packages/daemon/src/shadow-sync.ts to src/parser/shadow-sync-scheduler.ts (canonical location
+      with correct ./shadow.js import). Daemon re-exports from there. Tests import the real
+      production class, not a copy.
+
+
+      2. Pre-read sync uses configured shadow options: initContext() now builds ShadowOptions from
+      config (branch, directory, remote, remoteType) and passes to hasRemoteTracking() and
+      shadowPull(), so custom shadow.remote setups work correctly.
+
+
+      3. pullRebaseBeforePush reads configured remote from git config: Instead of hardcoding
+      'origin', reads branch.<name>.remote from git config and passes it to remoteBranchExists().
+      Falls back to 'origin' if config lookup fails.
+
+
+      All 143 shadow-related tests pass (98 shadow + 5 scheduler + 40 config). Full suite: 12
+      pre-existing codex-related failures, 0 new failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T14:58:40.170Z
+  - _ulid: 01KK6ZPMZW861H0N98PNMVR7Y5
+    content: "[FIX_CYCLE: 4] Review findings: MUST-FIX review on PR #712: CLI pre-read sync and daemon
+      background sync still miss configured shadow remotes because shadowPull() checks remote branch
+      existence against origin; add coverage for non-origin shadow.remote cases."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T15:05:26.268Z
+  - _ulid: 01KK7065ZKD98RS02WWWCCBNWV
+    content: "Fix cycle 4: shadowPull() was calling fetchRemote() and remoteBranchExists() with default
+      'origin' instead of the configured remote from ShadowOptions. Added getRemoteName() helper
+      (following getBranchName/getDirectoryName pattern) that resolves the effective remote name
+      from options. Two new behavioral tests prove shadowPull and shadowPushAsync work correctly
+      with a non-origin configured remote (specs-origin). All 100 shadow tests + 5 scheduler tests +
+      1315 shard1 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T15:13:55.188Z

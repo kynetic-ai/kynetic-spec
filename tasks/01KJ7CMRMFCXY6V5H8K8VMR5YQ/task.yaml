@@ -1,0 +1,27 @@
+_ulid: 01KJ7CMRMFCXY6V5H8K8VMR5YQ
+slugs: []
+title: Remove dead marker file code from ralph.ts
+type: task
+description: "writeTaskLimitMarker, clearTaskLimitMarker, readTaskLimitMarker, clearStaleMarker,
+  TaskLimitMarker interface, and TASK_LIMIT_MARKER_PATH are dead code after removing the
+  ralph-task-limit-guard shell hook (PR #502). The CLI-level checkBudget() in task.ts replaced the
+  hook. Remove the dead code and update associated tests in tests/ralph/task-limit.test.ts."
+spec_ref: "@ralph-task-limit"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "No code changes needed — dead marker code was already removed in PR #502. Verified
+  via source search and passing static analysis tests."
+depends_on: []
+context: []
+priority: 4
+tags:
+  - cleanup
+  - ralph
+vcs_refs: []
+created_at: 2026-02-24T08:35:54.127Z
+started_at: 2026-02-25T02:21:32.277Z
+completed_at: 2026-02-25T02:24:03.215Z
+todos: []
+automation: eligible

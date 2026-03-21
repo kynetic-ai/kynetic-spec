@@ -1,0 +1,31 @@
+notes:
+  - _ulid: 01KM7X27M8ZG0P3PFSYH5G2531
+    content: "Implemented withWriteBuffer() in TaskDataManager that wraps all task mutations
+      (createTask, mutateTask, mutateTasks, deleteTask) in a write buffer scope. For split format,
+      the manager activates a buffer before calling the backend, and the backend detects it via
+      getActiveBatchBuffer() — reusing it instead of creating a local buffer. For monolithic format,
+      buffer is skipped (single-file writes are atomic under file lock). When a batch buffer is
+      already active, the manager reuses it. Added 12 tests across all 4 ACs covering: single buffer
+      transaction for create/mutate/delete (ac-1), rollback on failure (ac-2), batch buffer reuse
+      (ac-3), multi-task atomic operations (ac-4). Full test suite passes (6831 tests, 0
+      regressions)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T09:54:16.329Z
+  - _ulid: 01KM7XAZCTPXSJ6BSSCE21WXST
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-21T09:59:02.810Z
+  - _ulid: 01KM7Y0EENWY8E473ZEX5XXKTK
+    content: "Fix cycle 1: Addressed blocker from review @01KM7X4PVG5B9316MEQYDYMNV3. The split
+      backend's deleteTask was calling fs.rm(taskDir) directly outside the manager's write buffer
+      scope, so if flush failed the directory was already removed (breaking AC-2 atomicity for
+      delete flows). Fix: added deleteDirectory() to WriteBuffer that queues recursive directory
+      removal as Phase 3 during flush. On discard(), pending dir removals are cleared — no side
+      effects. Updated isDeletedInOverlay() and _buildDirectoryOverlay() for correct
+      read-after-write overlay semantics. Added a new test verifying delete rollback preserves
+      directory and index on flush failure. All 6832 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T10:10:46.357Z

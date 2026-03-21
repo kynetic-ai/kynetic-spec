@@ -1,0 +1,36 @@
+notes:
+  - _ulid: 01KKK46AMAQ1ES5P5AN4GNT71W
+    content: >-
+      Execution context:
+
+      - Background: droid renderer and platform registration are already in place, but install-core
+      still rejects --platform droid.
+
+      - Scope: update install-core platform validation and add spec-linked coverage for droid
+      install behavior and default-platform regression.
+
+      - Files: src/cli/commands/skill-install.ts and tests/core-skill-install.test.ts unless
+      inspection shows a shared helper needs adjustment.
+
+      - Verification: npm test plus kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T08:14:47.434Z
+  - _ulid: 01KKK4G6WVC6AZVWGRRJFY6H3P
+    content: >-
+      Implemented droid support for skill install platform validation and added spec-linked
+      install-core coverage.
+
+      - Code: install-core now accepts --platform droid and reports it in CLI help/errors.
+
+      - Tests: added @droid-core-skill-install coverage for droid render output and default
+      claude-code behavior when no platform override is provided.
+
+      - Verification: npm test -- tests/core-skill-install.test.ts passes. kspec validate still
+      exits 6 on pre-existing repository warnings. Full npm test currently fails broadly in
+      unrelated suites (for example cli-plan, session-start-computed-json, shadow-skill-commit,
+      ralph/end-loop), so task verification is based on focused coverage plus unchanged global
+      warning/failure state.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T08:20:11.291Z

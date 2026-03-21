@@ -1,0 +1,27 @@
+_ulid: 01KJDQ1GZVK77Y8CETXW2E56TG
+slugs: []
+title: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
+  investigation
+type: task
+description: Web UI WebSocket connection unreliable - continually disconnects and reconnects. Needs
+  investigation into reconnection logic, heartbeat handling, or fallback to polling.
+spec_ref: "@daemon-server"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #622 (commit a5ccb212). Stabilized WebSocket reconnect lifecycle by
+  ignoring stale socket events, suppressing reconnect after intentional disconnect, and preserving
+  reconnect on unexpected disconnect; added regression tests in tests/websocket-manager.test.ts.
+  Also hardened serve status uptime parsing/retry to clear regression flake. AC coverage reviewed
+  for @daemon-server and inherited traits; regression gates passed (npm test + PR checks)."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJMTEASC25JM78T6MY1NW3XF
+created_at: 2026-02-26T19:33:04.635Z
+started_at: 2026-03-01T14:15:42.762Z
+submitted_at: 2026-03-01T14:15:43.594Z
+completed_at: 2026-03-01T14:26:11.228Z
+todos: []
+automation: eligible

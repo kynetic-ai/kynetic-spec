@@ -1,0 +1,66 @@
+_ulid: 01KKTHZWHC2B628XA0ETE1XN8B
+slugs: []
+title: Rewrite core skills for review-driven architecture
+type: task
+description: >-
+  Restructure core kspec skills around kspec reviews as the primary review mechanism. Three core
+  skill changes:
+
+
+  1. Rewrite task-work skill: unified (no loop split), language-agnostic AC annotations,
+  review-aware fix cycles via kspec review for-task
+
+  2. Rewrite review skill: unified worker+reviewer perspective, baked-in review principles
+  (adversarial investigation, bias countermeasures), AC coverage verification (own + trait), full
+  review record interface, no GitHub dependency
+
+  3. New merge skill: local git merge to dev/integration branch, disposition-based merge gate, merge
+  commits for trailer traceability
+
+
+  Also create two project-specific skills for kspec itself:
+
+  4. work-gates (.kspec/skills/): MUST-FIX patterns, test rules, E2E preference extracted from
+  current local-review
+
+  5. review-gates (.kspec/skills/): severity classification, regression patterns extracted from
+  current pr-review
+
+
+  Then archive superseded project-local skills (local-review, pr-review, review-principles, pr) and
+  update all references in workflows, conventions, AGENTS.md.
+
+
+  Render with kspec skill render + kspec agents generate.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged via PR #893. Rewrote core skills (task-work, review, merge) for review-driven
+  architecture. Created project-specific work-gates and review-gates skills. Archived superseded
+  skills (local-review, pr-review, review-principles, pr). Updated kspec-agents.md and all rendered
+  skill targets."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - skills
+  - core
+  - review
+vcs_refs: []
+review_ref: "@01KKTNX37WQYMJWHJNNH7NF2GW"
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/rewrite-core-skills-for-review-driven-architecture/01kkthzw
+  captured_at: 2026-03-16T06:28:41.911Z
+  commit: e07e8ab29dd0e7c2f1152619df82c933d8deaa0a
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dispatch/task/rewrite-core-skills-for-review-driven-architecture/01kkthzw
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-16T05:30:37.484Z
+started_at: 2026-03-16T06:28:38.713Z
+submitted_at: 2026-03-16T06:28:42.710Z
+completed_at: 2026-03-16T06:41:31.960Z
+todos: []

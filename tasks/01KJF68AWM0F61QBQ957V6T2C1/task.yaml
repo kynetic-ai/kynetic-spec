@@ -1,0 +1,48 @@
+_ulid: 01KJF68AWM0F61QBQ957V6T2C1
+slugs: []
+title: "Session events: Add oversized payload guardrails with externalized blob pointers"
+type: bug
+description: >-
+  Problem: large ACP updates can inflate JSONL event lines and memory pressure. We need safety
+  limits without losing auditability.
+
+
+  Scope (steps 3-4):
+
+  1) Add framing/event safety caps (line/payload size) to prevent single-message heap blowups.
+
+  2) For oversized payload fields (toolResponse stdout/stderr, rawOutput, large chunk text), write
+  full content to session blob files under .kspec/sessions/<id>/blobs/.
+
+  3) Store compact pointer objects in events.jsonl (path, bytes, sha256, truncated=true, preview).
+
+  4) Update session log show/search behavior to surface previews by default and optionally resolve
+  blob content on demand.
+
+
+  Non-goal: silently dropping payloads. If payload is externalized, events must keep enough metadata
+  to reconstruct/audit.
+spec_ref: "@session-events"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #587 (merge commit badc21d5d07debaac92c8e031ac5a43add2e1f8b). Added
+  explicit @session-events ac-7 commit-boundary coverage and verified @session-events AC
+  annotations/tests cover ac-1 through ac-9, including blob externalization and pointer audit
+  metadata behaviors."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - session-log
+  - memory
+  - reliability
+vcs_refs: []
+session_id: 01KJH73C9JTMB6977AEY991KBQ
+created_at: 2026-02-27T09:18:10.836Z
+started_at: 2026-02-28T04:17:04.505Z
+submitted_at: 2026-02-28T04:20:40.175Z
+completed_at: 2026-02-28T04:50:38.826Z
+todos: []
+automation: eligible

@@ -1,0 +1,39 @@
+notes:
+  - _ulid: 01KJVPAF4TEPYF7APZDWC6MQ9G
+    content: >-
+      Execution context:
+
+      - Background: validate currently exits 6 for warnings-only while printing a generic success
+      header, which is confusing in automation.
+
+      - Scope: add explicit warning-success mode/flag and clear warning-exit messaging; keep default
+      exit semantics backward-compatible.
+
+      - Files: src/cli/commands/validate.ts, src/cli/help/content.ts,
+      tests/validate-exit-codes.test.ts, README.md (if CLI docs changed).
+
+      - Verification: run focused validate exit-code tests, then run kspec validate for
+      project-level sanity.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T05:49:51.131Z
+  - _ulid: 01KJVPNPX84EA0QQJWECY0RAHC
+    content: >-
+      Implemented warning-only automation clarity for validate/lint.
+
+      - Added --warnings-ok flag to validate and lint: warning-only results can return exit 0 when
+      explicitly requested.
+
+      - Added explicit warning exit messaging for default warning-only path (exit 6) and warnings-ok
+      path (exit 0).
+
+      - Updated help/README docs and validate-exit-codes tests for new behavior.
+
+      - Verification: npm run build; npx vitest run tests/validate-exit-codes.test.ts (9/9 pass);
+      npm test (173 files, 3615 passed, 3 skipped).
+
+      - Project-level validate currently fails for pre-existing meta/reference issues unrelated to
+      this task (missing observations skill file, duplicate @observations slug refs).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T05:55:59.528Z

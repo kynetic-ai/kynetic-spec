@@ -1,0 +1,53 @@
+notes:
+  - _ulid: 01KKQWEB13G5M30JHQ35RPHDHG
+    content: >-
+      Execution context:
+
+      - Background: Install TanStack Query v6 and migrate dashboard as proof of the data layer
+      pattern
+
+      - Scope: Part 1 (infrastructure setup) and Part 2 (dashboard migration)
+
+      - Files changed:
+        - packages/web-ui/package.json (added @tanstack/svelte-query dependency)
+        - packages/web-ui/src/lib/query/client.ts (new - QueryClient factory)
+        - packages/web-ui/src/lib/query/keys.ts (new - query key factories)
+        - packages/web-ui/src/lib/query/ws-invalidation.ts (new - WS → query invalidation)
+        - packages/web-ui/src/lib/query/context.ts (new - QueryClient lifecycle)
+        - packages/web-ui/src/lib/query/index.ts (new - barrel export)
+        - packages/web-ui/src/routes/+layout.svelte (added QueryClientProvider + WS wiring)
+        - packages/web-ui/src/lib/stores/project.svelte.ts (added cache clear on project switch)
+        - packages/web-ui/src/routes/+page.svelte (migrated dashboard from manual fetch to createQuery)
+        - tests/web-ui-tanstack-query.test.ts (new - 48 static analysis tests)
+      - Verification: All 5001 tests pass, svelte-check passes for modified files, build succeeds
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T04:35:33.539Z
+  - _ulid: 01KKQWZGJXQY5V5QC7QWACBVFN
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: queryClient.clear() in clearQueryCache() does
+      not trigger refetches of active queries after project switch. Components continue showing
+      stale data from the old project. Use queryClient.resetQueries() instead. Also: unused
+      getProjectVersion import in +page.svelte, and ac-4 missing test annotation. See PR #868 review
+      comments for details."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T04:44:56.286Z
+  - _ulid: 01KKQYDZ2XQPJWMRRVNCRZTDX1
+    content: >-
+      [FIX_CYCLE: 1] Addressed all review findings from PR #868:
+
+      - MUST-FIX: Replaced queryClient.clear() with queryClient.resetQueries() in clearQueryCache().
+      resetQueries() resets state AND triggers refetches of active queries, so mounted components
+      fetch fresh data for the new project (ac-5).
+
+      - MUST-FIX: Updated ac-5 test to verify resetQueries() is used and clear() is not.
+
+      - SHOULD-FIX: Removed unused getProjectVersion import from +page.svelte.
+
+      - Added ac-4 test annotation and dedicated test verifying event-driven (not polling)
+      invalidation.
+
+      All 5002 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T05:10:18.462Z

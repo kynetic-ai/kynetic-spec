@@ -1,0 +1,38 @@
+notes:
+  - _ulid: 01KFGF9REJ1HCR58CGZJM07GMD
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Allow clearing all dependencies from a task via the task set command. Currently --depends-on
+      can only set dependencies to new values, not clear them to an empty list.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given a task has dependencies, when kspec task set @ref --clear-deps is executed, then
+      depends_on is set to empty array, task note added, shadow committed
+
+      - ac-2: Given a task has no dependencies, when kspec task set @ref --clear-deps is executed,
+      then succeeds with no changes needed message
+
+      - ac-3: Given --clear-deps and --depends-on are both provided, when command is executed, then
+      error indicating flags are mutually exclusive
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T14:28:23.635Z
+  - _ulid: 01KFGFPB7EPXT08RP4NYQBG351
+    content: "Implemented --clear-deps flag for task set command. Added 3 ACs: (1) clears dependencies
+      and adds note, (2) no-op when no dependencies exist, (3) mutual exclusivity with --depends-on.
+      Also fixed JSON output for no-changes case. All 845 tests pass including 4 new tests."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T14:35:16.079Z
+  - _ulid: 01KFGG3BS5WJNFR12F5AYYGB1P
+    content: "Added traits @trait-json-output and @trait-multi-ref-batch to spec. Added 3 additional
+      tests covering trait ACs for JSON mode and batch refs mode. Total: 7 tests, 848 tests
+      passing."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T14:42:22.631Z

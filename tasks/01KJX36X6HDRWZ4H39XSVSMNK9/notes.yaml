@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KJX7Y5VZWHGSHEF4E7XC0AY1
+    content: "Automation status set to needs_review: Changes CLI behavior (task start warning). Needs
+      spec coverage on task-start requirement before automation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-04T20:16:57.215Z

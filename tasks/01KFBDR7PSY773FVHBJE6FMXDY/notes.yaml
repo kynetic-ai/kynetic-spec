@@ -1,0 +1,42 @@
+notes:
+  - _ulid: 01KFBDREPGR2FS63DC3DAG15EA
+    content: >-
+      From retrospective observations - Result pattern type safety issues:
+
+
+      **Issues identified:**
+
+      1. Result<T, E> objects have .ok field but TypeScript doesn't enforce checking it
+
+      2. Type guards on Result types check optional fields instead of status
+
+      3. Error unions missing types causes unhandled cases
+
+
+      **Proposed improvements:**
+
+      1. Create branded type for 'checked' results to enforce .ok check before accessing .value
+
+      2. Lint rule or pattern: type guards must check discriminant property (ok), not optional
+      fields
+
+      3. Use Required<> or Exhaustive<> utility types for complete error handling
+
+      4. Consider neverthrow or similar library for stricter Result handling
+
+
+      Reference: ReferenceIndex.resolve() returns Result but callers often skip .ok check.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T15:25:15.856Z
+  - _ulid: 01KFFWTR2M0CRN085FWEDQ27VW
+    content: "Investigated current Result pattern usage. The codebase uses discriminated unions
+      (ResolveResult, SlugCheckResult) with 'ok: boolean' discriminant in refs.ts. TypeScript
+      properly types these, and code inspection shows proper .ok checks before accessing success
+      fields. Need to audit full codebase for any missed checks, but preliminary review of task.ts
+      shows consistent checking pattern. The issue may be less severe than initially thought - most
+      code follows best practices. Should focus on: (1) Adding lint rules to enforce checking, (2)
+      Creating helper type guards, (3) Documenting pattern in CONTRIBUTING or similar."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T09:05:37.364Z

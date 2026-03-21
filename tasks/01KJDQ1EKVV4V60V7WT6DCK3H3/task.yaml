@@ -1,0 +1,26 @@
+_ulid: 01KJDQ1EKVV4V60V7WT6DCK3H3
+slugs: []
+title: Triage promote action should optionally delete the inbox item after creating the task.
+  Currently pro
+type: task
+description: Triage promote action should optionally delete the inbox item after creating the task.
+  Currently promoted items stay in inbox requiring manual cleanup. Consider --consume flag or making
+  deletion the default for promote (with snapshot preserved in triage record).
+spec_ref: "@triage-cli-commands"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #617. Implemented promote consume-by-default behavior in triage act,
+  added --keep escape hatch, and updated dry-run messaging to indicate delete vs keep. Verified AC
+  coverage for @triage-cli-commands (ac-1..ac-17) including new consume/keep scenarios and trait
+  coverage checks; CI checks passed on head 791ea48."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-26T19:33:02.203Z
+started_at: 2026-03-01T01:31:55.076Z
+submitted_at: 2026-03-01T01:31:56.326Z
+completed_at: 2026-03-01T01:51:51.959Z
+todos: []
+automation: eligible

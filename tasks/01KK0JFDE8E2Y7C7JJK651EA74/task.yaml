@@ -1,0 +1,26 @@
+_ulid: 01KK0JFDE8E2Y7C7JJK651EA74
+slugs: []
+title: Fix max_tasks misuse as retry limit in dispatch/invocation code
+type: task
+spec_ref: "@agent-dispatch-engine"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #686. Fixed max_tasks misuse as retry limit — added budget.max_retries
+  field, updated dispatch.ts and invocation.ts, added CLI --max-retries option with full test
+  coverage."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - infra
+  - cli
+  - bug
+vcs_refs: []
+session_id: null
+created_at: 2026-03-06T03:18:51.078Z
+started_at: 2026-03-06T04:56:11.149Z
+submitted_at: 2026-03-06T04:56:12.907Z
+completed_at: 2026-03-06T05:04:08.157Z
+todos: []

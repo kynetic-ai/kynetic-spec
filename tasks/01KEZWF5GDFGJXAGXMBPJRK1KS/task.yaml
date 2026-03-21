@@ -1,0 +1,19 @@
+_ulid: 01KEZWF5GDFGJXAGXMBPJRK1KS
+slugs: []
+title: Review and fix orphaned spec items
+type: task
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Fixed invalid ULIDs and orphan detection false positives
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - dx
+vcs_refs: []
+created_at: 2026-01-15T03:51:26.988Z
+started_at: 2026-01-15T15:49:34.871Z
+completed_at: 2026-01-15T15:53:21.366Z
+todos: []

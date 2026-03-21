@@ -1,0 +1,37 @@
+_ulid: 01KKS7BD3N7DCQNS5GW8ZZSAZW
+slugs:
+  - task-yaml-seed-session-tests
+title: Replace CLI spawns with YAML seeding in session start tests
+type: task
+spec_ref: "@session-start-inbox-triage"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #884. Replaced ~59 CLI spawns with YAML seeding helpers
+  (seedInboxItems, seedTriageRecords) in session-start-inbox-triage.test.ts and
+  session-start-computed-json.test.ts. All 13 test names, assertions, and AC annotations preserved
+  identically. Full test suite passes (5471 tests, 0 failures). All CI checks green."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - test
+  - performance
+  - test-flakiness
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-15T22:51:29.077Z
+  commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKSTFJA9FJEKS3QJ0J3JKTZY
+created_at: 2026-03-15T17:05:26.133Z
+started_at: 2026-03-15T22:39:59.261Z
+submitted_at: 2026-03-15T22:51:29.850Z
+completed_at: 2026-03-15T23:03:55.027Z
+todos: []
+automation: eligible

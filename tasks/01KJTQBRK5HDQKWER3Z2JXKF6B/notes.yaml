@@ -1,0 +1,44 @@
+notes:
+  - _ulid: 01KJTSEWZB2HP44QSDBNW2ZC9D
+    content: >-
+      Execution context:
+
+      - Background: Suppress non-actionable rate_limit_event stderr noise from adapter in kspec
+      agent run while keeping actionable stderr visible.
+
+      - Scope: Update agent spawner stderr handling and add tests proving noise suppression +
+      actionable passthrough.
+
+      - Files: src/agents/spawner.ts, tests/cli-agent-commands.test.ts, tests/mocks/acp-mock.js.
+
+      - Verification: targeted vitest for agent command streaming/noise behavior plus full npm test
+      and kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T21:25:27.660Z
+  - _ulid: 01KJTSR4PT1PNXPE32QQTHN2Q8
+    content: >-
+      Implemented stderr filtering for agent subprocesses:
+
+      - Changed spawner stdio to pipe stderr and forward it through a line-based filter.
+
+      - Suppress only known non-actionable adapter line pattern: Unexpected case JSON with
+      type=rate_limit_event.
+
+      - Preserve all other stderr lines to avoid hiding actionable adapter errors.
+
+      - Added mock ACP env toggles to emit rate_limit_event noise and actionable stderr.
+
+      - Added integration test in cli-agent-commands suite verifying suppression + passthrough.
+
+      Validation:
+
+      - npx vitest run tests/cli-agent-commands.test.ts (pass)
+
+      - npm test (pass, 3576 passed / 3 skipped)
+
+      - kspec validate currently fails on pre-existing repository meta/spec issues unrelated to this
+      change.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T21:30:30.491Z

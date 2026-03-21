@@ -1,0 +1,80 @@
+notes:
+  - _ulid: 01KJJGJSC1QET01A4DV0TR5WYD
+    content: >-
+      Session work completed (2026-02-28):
+
+
+      Root cause: merge driver registered without --non-interactive flag. When git invoked it on
+      conflicting YAML files, it attempted interactive resolution via readline on unavailable stdin,
+      hanging indefinitely. The ours file was never written with merged content, so git used
+      unmodified ours version — silently losing remote-side changes.
+
+
+      Key finding: merge driver has NO timestamp awareness — purely structural 3-way merge. For
+      notes (append-only), it picks one side instead of unioning both.
+
+
+      Rebase approach worked: 170 local commits rebased onto 260 remote in isolated /tmp worktree.
+      Auto-continue script handled non-YAML conflicts. All 169 commits applied. Result: 705 tasks
+      with both sides preserved.
+
+
+      One data loss: Task @01KJDQ11 notes — 8 local notes replaced by 3 remote (ours-bias in rebase
+      context). Backup branches available: kspec-meta-backup-2026-02-28 (local),
+      kspec-remote-pre-merge (remote).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T16:16:22.402Z
+  - _ulid: 01KJJH0155QWRXXC31YDA31HCJ
+    content: >-
+      Refined scope — 3 code changes needed:
+
+
+      1. src/parser/shadow.ts — Ensure all code paths that register merge.kspec.driver include
+      --non-interactive. Audit initShadowBranch and any other registration points.
+
+
+      2. src/cli/commands/merge-driver.ts — Two fixes:
+         a. TTY detection: if process.stdin.isTTY is false, auto-enable non-interactive mode regardless of flag. Defense-in-depth so driver never hangs.
+         b. Exit code: in non-interactive mode, exit 0 even with conflicts (line 536). Currently exits 1 which breaks git rebase. The spec ac-10 already says exit 0.
+
+      3. src/merge/arrays.ts (mergeUlidArrays or equivalent) — Notes arrays should be union-merged
+      by ULID, not fall through to scalar conflict. Spec ac-5 says 'notes never conflict' but the
+      implementation doesn't match when arrays differ.
+
+
+      Items from original description already done: lost notes on @01KJDQ11 restored, inbox item
+      @01KJDFFJ is separate scope, timestamp-aware status resolution is a future enhancement.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T16:23:36.357Z
+  - _ulid: 01KJJHKEVS5G77Z1WYPKBHG165
+    content: >-
+      Implementation changes (3 files):
+
+
+      1. src/parser/shadow.ts — When existing merge driver config found in catch block, now
+      validates --non-interactive flag is present. If missing (legacy registration), re-registers
+      with --non-interactive. Ensures no stale config can cause hangs.
+
+
+      2. src/cli/commands/merge-driver.ts (line 514) — Added TTY detection fallback: nonInteractive
+      defaults to true when process.stdin.isTTY is false. Defense-in-depth so driver never hangs
+      even if --non-interactive flag is somehow missing.
+
+
+      3. src/cli/commands/merge-driver.ts (lines 534-536) — Non-interactive mode now always exits 0
+      regardless of conflicts. Per spec ac-10, conflicts are written as YAML comments and exit 0
+      prevents git from falling back to text merge (which corrupts YAML). Interactive mode retains
+      exit 1 for unresolved conflicts.
+
+
+      Tests updated: 4 existing tests that expected exit code 1 for non-interactive conflicts now
+      expect exit 0. All 12 merge-driver-cli tests pass.
+
+
+      Note: Array merge (notes union by ULID) was already correctly implemented — no changes needed
+      there. The spec ac-5 behavior was already working.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T16:34:12.986Z

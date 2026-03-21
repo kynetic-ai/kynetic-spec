@@ -1,0 +1,22 @@
+notes:
+  - _ulid: 01KJWCFC71WJDS9380BPDV99YT
+    content: "Verification result: this task’s scope is already implemented on main via prior migration
+      work (PR #640). Confirmed deleted legacy tests: tests/ralph.test.ts,
+      tests/ralph-loop-errors.test.ts, tests/ralph-wrap-up.test.ts,
+      tests/ralph-context-refresh.test.ts. Confirmed equivalent replacement coverage by running: npm
+      run test -- tests/agent-dispatch-engine.test.ts tests/agent-invocation-lifecycle.test.ts
+      tests/cli-agent-commands.test.ts tests/ralph-replacement.test.ts (121 tests passed). kspec
+      validate currently reports pre-existing repository-wide schema/reference issues unrelated to
+      this task (duplicate @observations slug and missing .kspec/skills/observations/SKILL.md)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T12:17:00.641Z
+  - _ulid: 01KJWCTTXX04ATJGCQDYAZ8GQB
+    content: "Autonomous pending_review dispatch processed on 2026-03-04. Task was already completed
+      (completed_at 2026-03-04T12:17:11.246Z) with closure linked to merged PR #640. Verified no
+      active PR for this task scope, confirmed PR #640 is MERGED, and reran full regression suite
+      (npm test: 173 files passed, 3641 tests passed, 3 skipped). No additional transition
+      required."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T12:23:16.157Z

@@ -1,0 +1,60 @@
+notes:
+  - _ulid: 01KJXMCRPM1TNQZAB3BTA1JY3R
+    content: >-
+      Completed reconciliation. Results: 150 alignment warnings → 17 (all remaining are legitimate
+      orphaned-spec warnings for unplanned future features).
+
+
+      Changes made:
+
+      1. alignment.ts: added taskUlids.length > 0 guard to status mismatch check — mismatches only
+      fire when tasks exist. No-task specs already covered by orphaned_spec warning. Eliminates ~117
+      false positives for legacy specs marked implemented before task system existed.
+
+      2. 20 spec status updates via kspec item set:
+         - 19 specs updated from in_progress → implemented (tasks completed, spec stale-low)
+         - 1 spec (kspec task set) updated from implemented → in_progress (has active tasks)
+      3. Shadow Branch module (cancelled task only): cleared spec_ref from cancelled task
+      @task-shadow-branch so alignment system treats it correctly.
+
+
+      Orphaned specs (17 remain): legitimate future work not yet tasked — Confirmation Prompt, REST
+      API, Fuzzy Matching, hooks, etc. These are correct warnings.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-04T23:54:38.164Z
+  - _ulid: 01KJXMXMFMRKT7A6WQMKWHY2HA
+    content: >-
+      Codex review found two MUST-FIX issues, both addressed:
+
+
+      1. No-task in_progress specs were silently unreported — extended orphaned_spec warning to also
+      fire for in_progress (not just not_started). Policy clarified: not_started/in_progress + no
+      tasks = warn; implemented/verified + no tasks = trust (baseline). Commit ae0864c.
+
+
+      2. No test coverage for new suppression behavior — added
+      tests/validate-alignment-no-task-policy.test.ts with 5 tests covering all four no-task status
+      combinations. All pass.
+
+
+      Also added @alignment-warnings ac-3 to spec to codify the baseline trust policy.
+
+
+      SHOULD-FIX: @alignment-warnings AC-2 was already accurate (scoped to 'based on linked tasks').
+      No spec update needed there.
+
+
+      Final state: 24 orphaned spec warnings (24 legit future-work items, 7 previously silently
+      missed in_progress ones now correctly surfaced), 0 status mismatches.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T00:03:50.901Z
+  - _ulid: 01KJXNGWTT5A6QN105FVXNDD4R
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: AC annotations in
+      tests/validate-alignment-no-task-policy.test.ts use wrong spec slug
+      (@alignment-validation-warnings vs @alignment-warnings) and are missing per-test annotations
+      for ac-2 and ac-3. 4 inline comments posted on PR #680."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T00:14:22.042Z

@@ -1,0 +1,20 @@
+_ulid: 01KGR8NWW2W00WEJESB6F3E7QT
+slugs: []
+title: Update AC-13 to reflect per-spec implementation notes scoping
+type: task
+spec_ref: "@plan-import"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Updated AC-13 wording to reflect per-spec implementation notes scoping from PR #320"
+depends_on: []
+context: []
+priority: 3
+tags:
+  - spec-drift
+vcs_refs: []
+created_at: 2026-02-06T01:22:18.589Z
+started_at: 2026-02-06T09:54:31.347Z
+completed_at: 2026-02-06T09:54:35.811Z
+todos: []

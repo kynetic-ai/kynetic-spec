@@ -1,0 +1,85 @@
+notes:
+  - _ulid: 01KGVGSH49350X0MVF442ZVV10
+    content: "Implementation: Two parts. (1) Add --depends-on flag to item set (may overlap with
+      01KGTVH6 relationship flags task). (2) In derive handler, when creating a task from a spec
+      that has depends_on, look up existing tasks with matching spec_ref for each dependency. If
+      found, add to new task's depends_on. Design decisions needed: if dependency spec has no task
+      yet, warn (don't block). Skip transitive deps — only direct. No circular detection needed if
+      specs are acyclic (validate could check). Addresses #1 post-import friction from MEMORY.md."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T07:41:49.577Z
+  - _ulid: 01KGVJKYB7R1770K1W4FYCP6NN
+    content: "Automation status set to needs_review: Needs design decisions on transitive deps and
+      missing dependency handling"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T08:13:43.655Z
+  - _ulid: 01KHD9FZ447DQM05C5A7R2QBB6
+    content: "Automation status set to needs_review: Feature - needs spec for dependency derivation rules"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-14T05:20:35.972Z
+  - _ulid: 01KK5D9KG14AR8Z1T8436YCE81
+    content: >-
+      Execution context:
+
+      - Background: derive currently handles parent/child task dependencies, but not direct spec
+      depends_on relationships when deriving outside plan import.
+
+      - Scope: align spec coverage, update derive dependency resolution, warn when a depended-on
+      spec has no derived task, and add regression tests.
+
+      - Files: src/cli/commands/derive.ts, derive-related tests, and any kspec spec/task metadata
+      touched through CLI.
+
+      - Verification: targeted vitest for derive/integration coverage, then full validation and
+      relevant test suite.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T00:24:29.953Z
+  - _ulid: 01KK5DGQSGDMX2ZJGQ18CW4YNG
+    content: Implemented direct spec dependency mapping in derive. Derived tasks now merge
+      hierarchy-based depends_on with task refs resolved from spec depends_on, and emit a non-fatal
+      warning when a depended-on spec has no active derived task. Added integration coverage for
+      both the linked-task and warning paths; existing derive and item-set relationship suites still
+      pass.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T00:28:23.729Z
+  - _ulid: 01KK5DJF05BJFYY5ZCX2XNDZC8
+    content: "Submitted for review in PR #690: https://github.com/kynetic-ai/kynetic-spec/pull/690"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T00:29:20.261Z
+  - _ulid: 01KK5DWVTRZB6C24M2S0Z169SC
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: spec dependency linking is order-dependent in a
+      single derive run; derive --all can create the consumer before the dependency task and leave
+      depends_on empty."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T00:35:01.081Z
+  - _ulid: 01KK5ESZ5K5T7Z9BATTK5151FX
+    content: Applied a dependency-aware ordering pass in derive so same-run spec depends_on links
+      resolve before consumer task creation. Added a derive --all regression test for
+      consumer-before-base ordering.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T00:50:54.772Z
+  - _ulid: 01KK5F16CB9SJSA0SVHK7XYBXT
+    content: >-
+      Verification:
+
+      - Rebuilt dist so CLI tests exercised the patched derive implementation.
+
+      - Targeted derive integration suite passed, including the new derive --all same-run dependency
+      regression.
+
+      - Full Vitest suite passed: 184 files, 4037 tests, 3 skipped.
+
+      - kspec validate still reports pre-existing meta/spec issues unrelated to this task (duplicate
+      @observations slug, missing observations skill content, and broad completeness/alignment
+      debt).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T00:54:51.531Z

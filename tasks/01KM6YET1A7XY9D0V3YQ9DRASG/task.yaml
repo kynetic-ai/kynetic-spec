@@ -1,0 +1,59 @@
+_ulid: 01KM6YET1A7XY9D0V3YQ9DRASG
+slugs:
+  - task-impl-per-task-files
+title: Implement per-task core data and notes files
+type: task
+description: |
+  Implement task.yaml and notes.yaml read/write operations within the
+  split storage backend.
+
+  Why: These are the per-task files that replace the monolithic blob.
+  task.yaml holds core data plus the append-only history section.
+  notes.yaml holds the notes array separately to keep task.yaml small.
+
+  What: task.yaml contains all current task fields minus notes, plus a
+  history array. Each history entry has timestamp, author, command,
+  and a changes object with field names mapped to previous/new values.
+  notes.yaml contains the notes array in the current schema format.
+
+  Note: spec_ref is @task-core-data-file but this task also covers
+  @task-notes-file ACs (notes.yaml implementation). Both specs must
+  have AC coverage.
+
+  How: On field mutations, update the field in-place and append a
+  history entry. On note additions, append to notes.yaml only. On
+  task reads, merge task.yaml fields with notes.yaml notes to produce
+  the unified task object that callers expect.
+spec_ref: "@task-core-data-file"
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Approved in review @01KM8MME and merged to dev as
+  87331ee1e9d640686caa51de93719322fb0c1a82. Implemented split per-task core data and notes files
+  with history tracking, split-aware task manager routing, and atomic buffered index/per-task
+  writes.
+depends_on:
+  - "@task-impl-split-storage"
+context: []
+priority: 1
+tags:
+  - tasks
+  - storage
+vcs_refs: []
+review_ref: "@01KM8MME5F3TMNTTY3VMVNTTYT"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-21T16:44:50.081Z
+  commit: 9df6382315d1c13535291c14fd632b5f53d72bc0
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM8M2B2B41ZD2B7A78S1RFE6
+created_at: 2026-03-21T00:59:22.538Z
+started_at: 2026-03-21T16:44:42.099Z
+submitted_at: 2026-03-21T16:44:50.541Z
+completed_at: 2026-03-21T16:52:35.246Z
+todos: []
+automation: eligible

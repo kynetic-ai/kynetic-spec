@@ -1,0 +1,20 @@
+_ulid: 01KFDYBA5EMW60DKC5DWN3REHH
+slugs: []
+title: Apply traits to query and inbox commands
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Applied traits to all 8 query and inbox command specs. Each command now has
+  appropriate trait references matching the spec review plan. Spec review task series complete
+  (7/7).
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-20T14:53:39.886Z
+started_at: 2026-01-20T15:36:38.700Z
+completed_at: 2026-01-20T15:40:49.893Z
+todos: []

@@ -1,0 +1,51 @@
+notes:
+  - _ulid: 01KFA4VKGCXFYXXE6ES1XD7RT5
+    content: >-
+      Task was accidentally started in previous iteration but no work was done. Leaving in_progress
+      for next iteration to either complete or properly reset.
+
+
+      The @status-cascade spec currently has 1 AC. Need to determine what additional ACs are missing
+      - likely need ACs for: (1) user says 'n' to cascade, (2) user says 'y' and cascade happens,
+      (3) edge cases like no children present.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T03:30:27.468Z
+  - _ulid: 01KFA4WT0XF69B9J8MH5QNF9EG
+    content: >-
+      Added 4 missing ACs to @status-cascade spec (ac-2 through ac-5):
+
+
+      - AC-2: User accepts cascade (responds 'y') - children updated
+
+      - AC-3: User rejects cascade (responds 'n') - children NOT updated
+
+      - AC-4: JSON mode - no prompt shown, children NOT updated
+
+      - AC-5: No children case - no prompt shown
+
+
+      Regarding maturity status cascade: Current implementation does NOT cascade maturity status.
+      When cascading, only the implementation status is updated while maturity is preserved from
+      each child's current status (lines 136-140 in src/cli/commands/item.ts). This seems correct -
+      maturity is independent from implementation progress. Each child should mature at its own pace
+      regardless of parent status.
+
+
+      All 5 behaviors now have corresponding ACs matching the test coverage.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T03:31:06.909Z
+  - _ulid: 01KFA4X55NG45D43HA1C66QPT7
+    content: >-
+      WIP STATE: No work completed this iteration. Task remains in backlog.
+
+
+      NEXT SESSION SHOULD: Either (a) complete by adding missing ACs to @status-cascade, or (b)
+      reset to pending if this was started by mistake.
+
+
+      Context preserved in previous note.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T03:31:18.325Z

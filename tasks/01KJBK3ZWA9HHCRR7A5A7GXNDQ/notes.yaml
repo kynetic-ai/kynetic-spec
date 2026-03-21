@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KJBKD6DMGFQMJJASCQMZ8CEQ
+    content: "Completed with --force from pending state. Reason: Audit determined no migration needed.
+      Absence tests (checking removed code patterns) are the correct approach for this use case.
+      Static scanning is the right tool for verifying code has been removed. Cost is ~72ms. Keep
+      as-is."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T23:51:03.860Z

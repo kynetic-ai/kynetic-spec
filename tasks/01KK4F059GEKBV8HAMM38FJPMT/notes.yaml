@@ -1,0 +1,23 @@
+notes:
+  - _ulid: 01KK4K2J55XYXVGREGPPCD9BAH
+    content: |-
+      Fixed responsive layout for both kanban board and task list views:
+
+      **Kanban board:**
+      - Replaced flex+overflow-x-auto with CSS grid (grid-cols-1 sm:2 lg:3 xl:5)
+      - Removed min-w-[260px]/max-w-[320px] from BoardColumn, replaced with min-w-0
+      - Updated BoardSkeleton to match same grid layout
+
+      **Task list:**
+      - Added table-fixed layout with percentage column widths (40%/12%/8%/15%/7%/18%)
+      - Added overflow-hidden to table wrapper, truncate on title and spec ref cells
+      - Added min-w-0 to page root container
+
+      **Layout chain fix:**
+      - Added min-w-0 to sidebar-inset and main element to prevent flex overflow
+      - Reduced filter min-width from 200px to 140px for better narrow-screen wrapping
+
+      All 168 web-ui tests pass. 2 pre-existing codex test failures unrelated to changes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T16:46:16.229Z

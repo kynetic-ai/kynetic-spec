@@ -1,0 +1,28 @@
+_ulid: 01KJBK3ZWA9HHCRR7A5A7GXNDQ
+slugs:
+  - task-migrate-budget-marker-tests
+title: Migrate ralph session-budget marker removal tests
+type: task
+description: "ralph/session-budget-integration.test.ts lines 293-339 have 13 tests checking that
+  marker code patterns are absent from ralph.ts. Options: (1) convert to import-based checks
+  verifying removed functions don't exist, (2) delete entirely since reintroduction of removed code
+  is low-probability, (3) keep as-is since they're absence tests with lower bug-miss risk."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Audit determined no migration needed. Absence tests (checking removed code patterns)
+  are the correct approach for this use case. Static scanning is the right tool for verifying code
+  has been removed. Cost is ~72ms. Keep as-is.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - ralph
+vcs_refs: []
+created_at: 2026-02-25T23:46:02.250Z
+started_at: 2026-02-25T23:51:03.860Z
+completed_at: 2026-02-25T23:51:03.860Z
+todos: []

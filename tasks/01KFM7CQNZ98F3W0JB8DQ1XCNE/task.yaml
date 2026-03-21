@@ -1,0 +1,17 @@
+_ulid: 01KFM7CQNZ98F3W0JB8DQ1XCNE
+slugs:
+  - task-semantic-yaml-merge-driver
+title: "Implement: Semantic YAML Merge Driver"
+type: task
+spec_ref: "@yaml-merge-driver"
+derivation: auto
+status: cancelled
+blocked_by: []
+closed_reason: Breaking into smaller tasks for manageable session scope
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-23T01:27:10.271Z
+todos: []

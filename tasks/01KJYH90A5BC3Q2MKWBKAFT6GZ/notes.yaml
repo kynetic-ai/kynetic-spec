@@ -1,0 +1,10 @@
+notes:
+  - _ulid: 01KJYHSDMFR12E8CT5FEWHPY23
+    content: "Implemented two-pronged fix: (1) staleness check in _drainQueues loads current task states
+      before spawning and discards entries where the task has moved to a different state than what
+      triggered the enqueue, (2) postDispatchEvent now returns early when KSPEC_SESSION_ID is set to
+      prevent self-triggering from dispatched agent invocations. Added AC-17 and AC-18 to
+      @agent-dispatch-engine spec. Tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T08:28:21.520Z

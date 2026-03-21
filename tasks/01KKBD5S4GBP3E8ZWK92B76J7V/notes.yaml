@@ -1,0 +1,103 @@
+notes:
+  - _ulid: 01KKC121YKQRB3GD3JEMRP66RJ
+    content: >-
+      Execution context:
+
+      - Background: AC annotations in test files (// AC: @slug ac-N) can reference non-existent
+      specs/traits or non-existent ACs. Need to validate these during kspec validate.
+
+      - Scope: Add a new validation function that takes the set of AC annotations from
+      scanTestCoverage and verifies each against the ReferenceIndex and loaded spec items.
+
+      - Files: src/parser/validate.ts (new function + integration into checkCompleteness or
+      validate), src/cli/commands/validate.ts (display), tests/ac-annotation-validation.test.ts
+
+      - Verification: New test file + full test suite pass
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T14:05:20.723Z
+  - _ulid: 01KKC1E83BS6CQRN7RXGDF8FAG
+    content: |-
+      PR created: https://github.com/kynetic-ai/kynetic-spec/pull/753
+
+      Implementation summary:
+      - Added scanACAnnotations() for structured AC annotation scanning (file/line info)
+      - Added validateACAnnotations() to check @slug resolution and ac-N existence
+      - Added 'invalid_ac_annotation' CompletenessWarningType
+      - Integrated into validate() completeness checks (runs by default)
+      - CLI displays invalid annotations in completeness warnings section
+      - 15 tests covering resolution, AC existence, traits, and edge cases
+      - Full test suite passes (198 files, 4352 tests)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T14:12:00.236Z
+  - _ulid: 01KKC38D3A8A9C6PWKTQ3AE17V
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: AC annotation validation accepts refs that
+      resolve to tasks/plans/meta items. Example repro: // AC: @task-example ac-1 yields no
+      invalid_ac_annotation warning. Restrict valid targets to spec items/traits and add regression
+      coverage."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T14:43:45.898Z
+  - _ulid: 01KKC42B5JBD0FRZ3DYWDEHSGQ
+    content: "Re-review (fix cycle 1): MUST-FIX still unresolved. No new commits since f955a29. The same
+      issue persists — validateACAnnotations() silently skips refs that resolve to tasks/plans/meta
+      items instead of warning. Posted follow-up review on PR #753 with inline comment on
+      src/parser/validate.ts:962. Task remains in needs_work."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T14:57:55.890Z
+  - _ulid: 01KKC5MPNR2F2ZVNRF4T7T8SDC
+    content: "Fix cycle 1 addressed: validateACAnnotations() now emits invalid_ac_annotation warning
+      when a ref resolves to a task/plan/meta item instead of silently skipping. Moved spec-item
+      check before empty-AC-ids check so even bare refs like // AC: @task-example are caught. Added
+      4 regression tests (2 unit, 2 integration with tasks in project.tasks.yaml). All 19 tests
+      pass, TypeScript compiles clean."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T15:25:26.073Z
+  - _ulid: 01KKC63MPECSZYFHE6F134KFJT
+    content: >-
+      Fix cycle 1: Addressed review feedback. Changes:
+
+      1. validateACAnnotations() now warns when AC annotations reference tasks, plans, or meta items
+      (previously silently skipped)
+
+      2. Moved spec-item check BEFORE the empty-AC-ids check, so '// AC: @task-example' (no AC ids)
+      is also caught
+
+      3. Added 4 regression tests: 2 integration tests (setupProject with tasks param) + 2 unit
+      tests (ReferenceIndex with tasks)
+
+      All 19 AC annotation tests pass. All 49 validation-related tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T15:33:35.566Z
+  - _ulid: 01KKC684AC8ZKZD6M397CR7G4D
+    content: "Fix cycle 1 addressed: commit 3d7bdb7 rejects AC annotations targeting non-spec/non-trait
+      items (tasks, plans, meta). Changed silent continue to emit invalid_ac_annotation warning.
+      Also moved spec-item check before empty-AC-ids check so // AC: @task-example (no AC ids) is
+      also caught. Added 4 regression tests: 2 integration (via validate()) and 2 unit (via
+      ReferenceIndex). All 19 AC annotation tests pass. 8 pre-existing test failures (timeouts in
+      session-start, cli-serve, native-guard-setup) are unrelated — branch only touches validation
+      files."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T15:36:02.636Z
+  - _ulid: 01KKC81GGA01KSRSXQ7W0CN2YR
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: AC annotation validation still misses secondary
+      @ref groups on a single // AC: line, so invalid annotations can slip through unvalidated."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T16:07:22.890Z
+  - _ulid: 01KKCA1WP1Z4CMQX5GCCERDGAC
+    content: "Fix cycle 2 addressed: The AC annotation regex required // AC: prefix for every match, so
+      secondary @ref groups on the same line (e.g. // AC: @spec-a ac-1, @spec-b ac-2) were never
+      validated. Extracted parseACAnnotationLine() shared helper that splits the remainder after //
+      AC: into individual @ref groups. Both scanDirForACAnnotations (coverage) and
+      scanDirForACAnnotationsStructured (validation) now use this parser. Added 13 regression tests
+      covering unit, scan, and validate layers. Full suite passes (198 files, 4376 tests). Rebased
+      on latest main."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T16:42:32.513Z

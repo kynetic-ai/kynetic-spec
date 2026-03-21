@@ -1,0 +1,26 @@
+_ulid: 01KGTVFNZRN6JJFVJJNZSV3YKV
+slugs: []
+title: Auto-quote YAML AC fields containing special characters
+type: task
+description: Auto-quote YAML AC fields containing braces/colons to prevent parse errors. When kspec
+  item ac add receives given/when/then with { [ or :, automatically wrap in quotes before writing
+  YAML.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Already implemented by YAML library. The yaml v2.x library handles auto-quoting of
+  special characters (braces, brackets, colons, boolean-like values) automatically when serializing.
+  Extensive testing confirmed all edge cases work correctly. No code changes required.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - reflection
+  - cli
+  - dx
+vcs_refs: []
+created_at: 2026-02-07T01:29:26.775Z
+started_at: 2026-02-07T10:06:40.864Z
+completed_at: 2026-02-07T10:11:40.748Z
+todos: []
+automation: eligible

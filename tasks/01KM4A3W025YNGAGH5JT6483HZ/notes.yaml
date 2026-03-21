@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KM4P6W3K9Y00YBXDXC6X22Y5
+    content: "Automation status set to needs_review: Missing spec_ref; investigation scope needs a
+      linked requirement or spec-backed testable outcome."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T03:56:45.043Z

@@ -1,0 +1,42 @@
+_ulid: 01KFQAGJBNSCPPJXGMYWE43WYY
+slugs:
+  - task-ui-selector-tests
+title: Web UI project selector tests
+type: task
+description: |-
+  Write tests for Web UI project selector component.
+
+  ## Test Cases
+  - Test selector shown when >1 project registered
+  - Test selector hidden when single project
+  - Test header injection on all API calls
+  - Test data reload on project change
+  - Test WebSocket reconnection on project change
+
+  ## AC Coverage
+  ac-25, ac-26, ac-27
+
+  ## Dependencies
+  Task: /api/projects endpoints implementation
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #229. Created 10 comprehensive documentary E2E tests for web UI project
+  selector covering AC-25 (selector visibility), AC-26 (X-Kspec-Dir header), and AC-27 (data
+  reload). All tests use test.skip() pending ProjectSelector component implementation. Fixed race
+  conditions and flaky assertions identified in Greptile review. All CI checks passing."
+depends_on:
+  - "@01KFQAFM"
+context: []
+priority: 1
+tags:
+  - testing
+  - web-ui
+  - phase-9
+vcs_refs: []
+created_at: 2026-01-24T06:19:24.917Z
+started_at: 2026-01-24T22:50:09.082Z
+completed_at: 2026-01-24T23:06:09.731Z
+todos: []
+automation: eligible

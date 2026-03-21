@@ -1,0 +1,33 @@
+_ulid: 01KK7GC44BYAW3B3HD9BPY0TB9
+slugs: []
+title: Switch task list detail panel from Sheet to Dialog modal
+type: task
+description: The refactor in 51e193de8 unified task detail *content* via TaskDetailContent.svelte,
+  but the task list still uses a Sheet (side slide-in) while the kanban board uses a Dialog
+  (floating centered modal). They should both use Dialog for consistency, matching @ui-task-board
+  ac-3 which explicitly says detail modal.
+spec_ref: "@web-dashboard"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #716 as commit f51f81a0ff49030206225931ade61b494ef7f896. Switched the
+  task list detail panel from Sheet to the same floating Dialog modal used by the board, and added
+  an E2E assertion that distinguishes dialog-content from the prior sheet-content implementation for
+  @web-dashboard ac-5. Local npm test and GitHub CI both passed on HEAD
+  ee824dd4e5a59b448ab66e0d9012eaf4264e5788; existing shared task detail coverage for ac-6/ac-7/ac-8
+  remains intact."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - web-ui
+vcs_refs: []
+session_id: 01KK7PXZEVWQHZ8P817MMXBPZ2
+created_at: 2026-03-08T19:56:47.115Z
+started_at: 2026-03-08T21:55:32.488Z
+submitted_at: 2026-03-08T21:55:36.570Z
+completed_at: 2026-03-08T22:04:40.558Z
+todos: []
+automation: eligible

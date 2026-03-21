@@ -1,0 +1,59 @@
+notes:
+  - _ulid: 01KGVASA25FCF8BH80S33YDTZ8
+    content: >-
+      ## Bug Report
+
+
+      When a subagent completes in the ralph loop, tool results are sometimes rendered as `[object
+      Object],[object Object]` instead of actual content.
+
+
+      ### Root Cause
+
+
+      `src/ralph/events.ts` — `extractToolOutput()` and `extractOriginalOutput()` use `String()` to
+      convert values:
+
+
+      - Line 212: `String(update.rawOutput)`
+
+      - Line 229: `String(toolResponse)` (fallback when no stdout)
+
+      - Line 235: `String(update.output)`
+
+      - Lines 248, 266: same pattern in `extractOriginalOutput()`
+
+
+      When ACP delivers tool results as an array of content blocks (e.g. `[{type: 'text', text:
+      '...'}, ...]`), `String()` on an array of objects produces `[object Object],[object Object]`.
+
+
+      The output then flows through `cli-renderer.ts:231-238` which prints it verbatim.
+
+
+      ### Fix
+
+
+      Add a helper function that checks if the value is a string, array, or object, and handles
+      each:
+
+      - String → use as-is
+
+      - Array of content blocks → extract `.text` fields and join
+
+      - Object → `JSON.stringify()`
+
+
+      Apply to all 5 `String()` call sites in `extractToolOutput()` and `extractOriginalOutput()`.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T05:56:50.885Z
+  - _ulid: 01KGVCWCCJQ8DVEH8K1WJ03V80
+    content: Added stringify() helper in events.ts that handles string/array/object values. Replaced all
+      5 String() call sites in extractToolOutput() and extractOriginalOutput(). Arrays of content
+      blocks (e.g. [{type:'text',text:'...'}]) now extract .text fields and join with newlines.
+      Plain objects get JSON.stringify(). Added 3 test cases covering array-of-blocks, single-block,
+      and plain-object scenarios.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T06:33:28.723Z

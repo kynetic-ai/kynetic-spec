@@ -1,0 +1,22 @@
+_ulid: 01KF3GVY7JRH173FB91CQW88D4
+slugs: []
+title: Alignment guidance should mention test coverage
+type: task
+description: Alignment check should mention tests - when task has spec_ref with AC, alignment
+  guidance should ask about test coverage not just spec updates
+spec_ref: "@alignment-guidance"
+status: completed
+blocked_by: []
+closed_reason: Added test coverage reminder to alignment guidance - shows AC count when linked spec
+  has acceptance criteria
+depends_on: []
+context: []
+priority: 3
+tags:
+  - dx
+  - workflow
+vcs_refs: []
+created_at: 2026-01-16T13:45:40.338Z
+started_at: 2026-01-16T16:43:38.739Z
+completed_at: 2026-01-16T16:45:48.960Z
+todos: []

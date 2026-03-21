@@ -1,0 +1,33 @@
+_ulid: 01KKAHWE1ZAPWVTPNZNTW5B8CH
+slugs:
+  - task-test-runner-script
+title: Create test runner script that ensures environment readiness before running tests
+type: task
+description: Create a test runner script (like bootstrap.cjs for dev setup) that agents and
+  developers use instead of raw npm test. Script verifies environment prerequisites (build artifacts
+  like dist/web-ui/, dependencies, config), fixes gaps automatically, then runs vitest. Provides
+  extensible hook points for pre/post-test actions and cleaner output.
+spec_ref: "@test-suite-perf-reliability"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #735. Added scripts/test.cjs as the default npm test entry point to
+  verify/fix dependencies and build artifacts before vitest runs, with cleaner runner-level
+  summaries and extensible pre/post hooks. AC coverage for @test-suite-perf-reliability ac-5 and
+  ac-6 was verified on the merged head; spec has no inherited traits."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - infra
+  - cli
+vcs_refs: []
+session_id: 01KKARW5ZRVPGT6QHWNKFPBFJY
+created_at: 2026-03-10T00:20:53.439Z
+started_at: 2026-03-10T02:27:03.743Z
+submitted_at: 2026-03-10T02:27:07.860Z
+completed_at: 2026-03-10T02:35:39.053Z
+todos: []
+automation: eligible

@@ -1,0 +1,22 @@
+notes:
+  - _ulid: 01KJ74T8SBYPVEJWW687NGC388
+    content: |
+      Implementation notes:
+
+      Compute reverse dependency map over non-completed tasks.
+      Use pattern from ralph.ts:601 for slug resolution: task.slugs[0] fallback to short ULID.
+      Store in computed.task_unlocks as Record<string, number> keyed by ref (short ULID).
+    author: "@claude"
+    created_at: 2026-02-24T06:19:05.899Z
+  - _ulid: 01KJ8T161X5TSV0NBN957RJN1A
+    content: "Implemented 'unlocks N' annotation for session start output. Added computeUnlocksMap()
+      that builds a reverse dependency map using ReferenceIndex — for each non-completed/cancelled
+      task, resolves its depends_on refs and increments the count for the dependency target.
+      Unresolvable refs are silently skipped per ac-unlocks-unresolvable. Added unlocks field to
+      ReadyTaskSummary and BlockedTaskSummary types. Rendering shows green 'unlocks N' text when
+      N>0, omitted when zero. 9 integration tests covering all 3 ACs: JSON + human output for
+      ready/blocked tasks, zero omission, completed dependents excluded, and unresolvable ref
+      handling via injected YAML with bogus ref."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T21:49:07.005Z

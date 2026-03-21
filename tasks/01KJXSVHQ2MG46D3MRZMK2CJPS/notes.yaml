@@ -1,0 +1,82 @@
+notes:
+  - _ulid: 01KJXSVHQ2D10H7SMMCRYTA7CZ
+    content: See plan @plan-ui-ux-revamp for implementation notes
+    author: "@claude"
+    created_at: 2026-03-05T01:30:05.410Z
+  - _ulid: 01KJZ0YE7TD5R95ZDXZFP3WWK7
+    content: >-
+      Execution context:
+
+      - Background: Session history view needs to show task ref per AC-1. The /sessions page already
+      exists with most required fields but is missing task_ref.
+
+      - Scope: Add task_id to SessionLogSummary in store.ts, update daemon list endpoint, update
+      web-ui types and session list display. Write E2E-oriented tests.
+
+      - Files: src/sessions/store.ts, packages/daemon/src/routes/sessions.ts,
+      packages/web-ui/src/lib/api.ts, packages/web-ui/src/routes/sessions/+page.svelte
+
+      - Verification: npm test (root), npm run test (web-ui)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T12:53:14.618Z
+  - _ulid: 01KJZ1A773MZCT8A1QDB1QN3NV
+    content: >-
+      Implementation complete:
+
+      - Added task_id to SessionLogSummary (store.ts) and SessionSummary (api.ts) so session list
+      includes task reference
+
+      - Updated /sessions page to display all AC-1 fields: ID (short ULID), agent type, task ref
+      (@-prefixed), status badge, duration, age
+
+      - Added data-testid attributes for E2E testing
+
+      - Added status colors for abandoned (needs-work) and timed_out (pending) states
+
+      - Added unit tests for task_id presence/absence in summaries
+
+      - Created E2E test suite (sessions.spec.ts) with route interception covering AC-1 metadata
+      fields, AC-2 navigation, empty/loading/error states
+
+      - All existing tests pass (2 pre-existing failures unrelated to changes)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T12:59:40.643Z
+  - _ulid: 01KJZ1JQJXV39DPB3D8ZHT0479
+    content: "[FIX_CYCLE: 1] Review findings: Review issues: MUST-FIX E2E AC coverage quality gaps in
+      sessions.spec.ts (incorrect sort assertion for ac-1; ac-2 test does not verify stream view and
+      has ineffective detail/events route stubbing)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-05T13:04:19.549Z
+  - _ulid: 01KJZ1JQ29MQP9Q9M82S9BKSSK
+    content: "Review findings: MUST-FIX 1) packages/web-ui/tests/e2e/sessions.spec.ts:202-223 'sessions
+      are sorted by most recent first' does not validate AC-1 correctly. The mock data order is not
+      most-recent-first (03-05 item is second), comments contradict the assertion, and assertion
+      expects session 1 first. This can pass while violating the required sort behavior. MUST-FIX 2)
+      packages/web-ui/tests/e2e/sessions.spec.ts:228-256 AC-2 test only asserts URL change and does
+      not assert session stream view rendering; additionally, route pattern '**/api/sessions' does
+      not match '/api/sessions/:id' or '/events', so the conditional branches are effectively dead
+      for detail API mocking."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-05T13:04:19.017Z
+  - _ulid: 01KJZ2VAGQQR4330DZPV7863KX
+    content: >-
+      Fix cycle 1 addressed:
+
+      - MUST-FIX 1: Sort assertion corrected. Mock data now provided in most-recent-first order (Mar
+      5, Mar 4, Mar 3) and assertions verify all three rows match via data-session-id attributes
+      instead of using a single resolves.toBe check on first row.
+
+      - MUST-FIX 2: AC-2 navigation test rewritten with three separate Playwright route handlers
+      (list, detail, events) instead of one handler with dead conditional branches. Test now asserts
+      session-stream component renders after navigation, verifying the stream view loads rather than
+      just checking URL change.
+
+      - All existing tests pass (2 pre-existing failures in core-skill-install and enhanced-setup
+      are unrelated).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T13:26:29.655Z

@@ -1,0 +1,25 @@
+_ulid: 01KF9Q16MJS4N2R6ZYNHJSHAHZ
+slugs: []
+title: Add subagent review workflow on task complete
+type: task
+description: Subagent review on task complete - when agent marks task complete, include instructions
+  to spawn review subagent. Subagent runs kspec task review to get task details, linked spec,
+  acceptance criteria, git diff since started_at. Reports gaps between spec and implementation back
+  to main agent. Configurable via setup (opt-in/out). Ties into alignment system.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Implemented minimal viable review workflow: Added 'kspec task review' command that
+  gathers task details, linked spec with ACs, and git diff since started_at. Both human-readable and
+  JSON output modes work. All 543 tests pass."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - agents
+  - alignment
+vcs_refs: []
+created_at: 2026-01-18T23:28:50.833Z
+started_at: 2026-01-19T02:37:41.978Z
+completed_at: 2026-01-19T02:46:06.647Z
+todos: []

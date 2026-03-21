@@ -1,0 +1,30 @@
+_ulid: 01KJP278TVFK6CV3BSDYPFVRJF
+slugs:
+  - implement-ralph-replacement
+title: Implement Ralph Replacement
+type: task
+spec_ref: "@ralph-replacement"
+plan_ref: "@plan-reactive-agent-runtime"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #640. Replaced ralph with kspec agent dispatch: (1) ralph.ts replaced
+  with deprecation stub listing equivalent kspec agent commands, (2) setup.ts creates built-in
+  task-worker + pr-reviewer agents via ensureBuiltInAgents(), (3) dispatch rules match ralph
+  behavior, (4) workflows/skills/templates updated, (5) 4 ralph test files deleted (~7400 lines),
+  replaced with ralph-replacement.test.ts (9 tests). All 8 ACs covered with annotations and N/A
+  declarations. Went through 4 review cycles fixing test file deletion miss, agents-instruction-gen
+  expectations, kspec-agents.md commit, kspec skill render, and AC/trait N/A annotations."
+depends_on:
+  - "@implement-cli-agent-commands"
+  - "@implement-daemon-agent-dispatch-integration"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJR8JA0CQXS951PDBEBRA3CW
+created_at: 2026-03-02T01:22:22.683Z
+started_at: 2026-03-03T02:35:21.401Z
+submitted_at: 2026-03-03T02:35:22.674Z
+completed_at: 2026-03-03T02:59:55.285Z
+todos: []
+automation: eligible

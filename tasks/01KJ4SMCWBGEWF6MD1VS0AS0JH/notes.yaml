@@ -1,0 +1,16 @@
+notes:
+  - _ulid: 01KJ4V6HYH3XMMRRRKMM3S4XX0
+    content: "AUTOMATION: Bug fix. Route info/sync messages to stderr when --json mode active. Spec
+      @cmd-session-start. Check trait @trait-json-output."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T08:52:33.873Z
+  - _ulid: 01KJ5BKAPS3M06XE1YM0BFEF7E
+    content: "Fixed info/warning messages leaking into stdout in --json mode. Replaced raw console.log()
+      calls in sessionStartAction() with info()/warn() from output.ts which suppress output in
+      structured modes. Added 3 tests: static analysis verifying no raw console.log in action
+      handler, runtime test verifying valid JSON on stdout, and test verifying no info/warning
+      markers in stdout. All 3199 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T13:39:09.657Z

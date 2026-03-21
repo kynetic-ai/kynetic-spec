@@ -1,0 +1,128 @@
+notes:
+  - _ulid: 01KJHAEBJXW166DHNWR5EMFZSF
+    content: "Root Cause: Ralph prompts embed raw JSON.stringify() of task/spec/session data inline. For
+      large payloads, the JSON-RPC line exceeds the Codex Rust binary read buffer causing parse
+      failures. Approach: 32KB total prompt budget with largest-first truncation. Truncated sections
+      show a blockquote notice with CLI fetch command and compact identity summary. Changes: (1)
+      subagent.ts — SUBAGENT_PROMPT_MAX_BYTES, formatJsonSection(), truncatePromptIfNeeded(),
+      compactSummary(). Updated buildSubagentPrompt(). (2) ralph.ts — Updated buildTaskWorkPrompt()
+      with same helpers. (3) ralph/index.ts — Exported new helpers. (4) tests/ralph.test.ts — 14 new
+      tests covering formatJsonSection, truncatePromptIfNeeded, and end-to-end buildSubagentPrompt
+      truncation. (5) Spec ac-10 updated to reflect truncation behavior."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T05:09:51.326Z
+  - _ulid: 01KJJMZYZR08RD00DZW1ACTRV0
+    content: "[FIX_CYCLE: 1] Review findings: Codex review on PR #590 found 2 MUST-FIX issues: (1)
+      session-budget-integration test regression — 4/15 fail on branch vs 15/15 on main, though may
+      be pre-existing flakiness tracked in @01KJGDR9; (2) AC annotation coverage gap for
+      @ralph-subagent-spawning (9 of 13 ACs missing test annotations, mostly pre-existing)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T17:33:28.440Z
+  - _ulid: 01KJJN05R8MPWDZRFTJFZ9NBVW
+    content: >-
+      Codex PR review posted on #590 (pullrequestreview-3870620687). Two inline MUST-FIX comments:
+
+      1. src/ralph/subagent.ts:288 — session-budget-integration regression (4 test failures on
+      branch, passes on main). Likely related to flaky timeout issue tracked in @01KJGDR9.
+
+      2. tests/ralph.test.ts:1680 — AC annotation coverage gap: only ac-2,9,10,11 annotated out of
+      ac-1..13. Mostly pre-existing, not introduced by this PR.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T17:33:35.369Z
+  - _ulid: 01KJJN2P73CJ748CQMEXTHA2J7
+    content: >-
+      [FIX_CYCLE: 2] Execution context:
+
+      - Background: PR #590 failed review due to session-budget-integration regressions and missing
+      AC annotations for @ralph-subagent-spawning.
+
+      - Scope: stabilize session-budget integration behavior and add missing AC annotations for
+      ac-1,3,4,5,6,7,8,12,13.
+
+      - Files: tests/ralph/session-budget-integration.test.ts, tests/ralph.test.ts, and minimal
+      production code only if required by failing behavior.
+
+      - Verification: npm test -- tests/ralph/session-budget-integration.test.ts; npm test --
+      tests/ralph.test.ts; npm test; kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-28T17:34:57.764Z
+  - _ulid: 01KJJPJ7HY6PW6N2N0F2XW82VB
+    content: >-
+      [FIX_CYCLE: 2] Addressed MUST-FIX findings.
+
+      - Restored ralph timeout escalation command to current CLI shape: task set --automation
+      needs_review --reason (replacing deprecated set-automation call).
+
+      - Added explicit AC annotations and integration coverage for @ralph-subagent-spawning
+      ac-1,3,4,5,6,7,8,12,13 in ralph-context-refresh/ralph tests.
+
+      - Added mock ACP support for reviewer kickback path (MOCK_ACP_NEEDS_WORK_TASK) and verified
+      task transitions to needs_work.
+
+      - Fixed session-budget integration harness isolation by removing KSPEC_SPEC_DIR override (it
+      widened task discovery to /tmp and pulled unrelated pending_review fixtures).
+
+      Verification:
+
+      - npm test -- tests/ralph/session-budget-integration.test.ts
+      tests/ralph-context-refresh.test.ts tests/ralph.test.ts (pass, 157 tests)
+
+      - npm test (fails in unrelated tests/cli/session-note-limit.test.ts timeout; reproduced in
+      isolation).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-28T18:00:55.615Z
+  - _ulid: 01KJJQ8NTKQ46V5D7CMFTWTJA1
+    content: "[FIX_CYCLE: 3] Codex PR review posted (pullrequestreview-3870655818). MUST-FIX: PR CI test
+      shard 2 fails in tests/ralph-context-refresh.test.ts (assertions at lines 482 and 512). Root
+      cause from CI logs: reviewer status/transition subprocess paths rely on bare 'kspec' and
+      return null status in Actions context. Fix CLI invocation path in status-check helpers, then
+      re-run CI."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-28T18:13:11.123Z
+  - _ulid: 01KJJQVHMGYH4HCA79V7NEX8YM
+    content: >-
+      [FIX_CYCLE: 3] Addressed PR review follow-up MUST-FIX items.
+
+      - Replaced hardcoded 'kspec' subprocess usage in ralph status/transition checks with portable
+      Node CLI invocation (process.execPath + dist CLI path, optional KSPEC_CLI_PATH override).
+
+      - Hardened ralph-context-refresh integration assertions to verify task state transitions
+      (completed/needs_work) instead of brittle log-string contracts.
+
+      Verification:
+
+      - npm test -- tests/ralph/session-budget-integration.test.ts
+      tests/ralph-context-refresh.test.ts tests/ralph.test.ts (pass)
+
+      - npm run test:shard2 (pass; 1361 tests).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-28T18:23:29.424Z
+  - _ulid: 01KJJRTTNYMD3QJ8W9QQYQZ8ZF
+    content: "[FIX_CYCLE: 6] Review findings: MUST-FIX: PR #590 is merge-conflicting with main
+      (mergeable CONFLICTING / mergeStateStatus DIRTY). Rebase/resolve conflicts and rerun CI on
+      latest HEAD."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-28T18:40:34.494Z
+  - _ulid: 01KJJSCAPYPR6V25NXGCFQVF0Y
+    content: >-
+      [FIX_CYCLE: 4] Rebased fix/truncate-oversized-acp-prompts onto origin/main to resolve PR #590
+      merge conflict flagged by review subagent. No manual conflict edits were required. Re-verified
+      after rebase:
+
+      - npm test -- tests/ralph/session-budget-integration.test.ts
+      tests/ralph-context-refresh.test.ts tests/ralph.test.ts (pass)
+
+      - npm run test:shard2 (pass)
+
+      Pushed rebased branch with --force-with-lease.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-28T18:50:07.967Z

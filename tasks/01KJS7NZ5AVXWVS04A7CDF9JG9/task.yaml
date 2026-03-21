@@ -1,0 +1,67 @@
+_ulid: 01KJS7NZ5AVXWVS04A7CDF9JG9
+slugs: []
+title: Stream agent text output to stdout in kspec agent run
+type: task
+description: >-
+  kspec agent run currently calls runInvocation() without an onUpdate callback, so the agent's text
+  response is never printed to the terminal. The user sees nothing until completion, when only the
+  session ID and outcome are shown.
+
+
+  Fix: In src/cli/commands/agent.ts (around line 363), pass an onUpdate handler to runInvocation
+  that prints text content blocks to stdout as they arrive. In --json mode, suppress streaming. At
+  the end, still output the session summary.
+
+
+  Implementation details:
+
+  - runInvocation accepts onUpdate?: (update: SessionUpdate) => void
+
+  - SessionUpdate events with content arrays contain text blocks (type: 'text')
+
+  - In interactive mode: process.stdout.write(block.text) for each text block
+
+  - In --json mode: skip the onUpdate handler entirely
+
+  - SessionUpdate type is imported from src/acp/index.ts
+
+
+  Relevant files:
+
+  - src/cli/commands/agent.ts — add onUpdate to runInvocation call (line ~363)
+
+  - src/agent-runtime/invocation.ts — runInvocation signature with onUpdate
+
+  - src/acp/index.ts — SessionUpdate type definition
+
+
+  Test: E2E or integration test that runs kspec agent run and verifies stdout contains agent text
+  output.
+
+
+  Spec ACs to cover: @cli-agent-commands ac-12 (interactive streaming), ac-11 (JSON suppression)
+spec_ref: "@cli-agent-commands"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #644. Streaming implementation: onUpdate passed to runInvocation in
+  interactive mode, suppressed in --json mode via isJsonMode() conditional. ac-11 and ac-12 covered
+  with non-trivially-true tests — ac-11 uses setJsonMode(true)+isJsonMode() to replicate agent.ts
+  decision logic and asserts onUpdate is undefined; ac-12 proves mock sends chunks when onUpdate is
+  real."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - cli
+  - agent
+  - dx
+vcs_refs: []
+session_id: 01KJS9H76EZZB742ZEV9GGR8XB
+created_at: 2026-03-03T06:55:30.474Z
+started_at: 2026-03-03T18:13:57.919Z
+submitted_at: 2026-03-03T18:13:59.185Z
+completed_at: 2026-03-03T18:31:03.753Z
+todos: []
+automation: eligible

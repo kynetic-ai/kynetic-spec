@@ -1,0 +1,20 @@
+_ulid: 01KF4WVX658M3KXFWYJSPKDWB9
+slugs:
+  - task-kspec-meta-set
+title: "Implement: kspec meta set"
+type: task
+spec_ref: "@meta-set-cmd"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Already implemented - discovered during task audit
+depends_on:
+  - "@task-meta-cli-commands"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:36.613Z
+started_at: 2026-01-18T15:45:38.879Z
+completed_at: 2026-01-18T15:45:38.879Z
+todos: []

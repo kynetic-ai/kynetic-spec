@@ -1,0 +1,313 @@
+notes:
+  - _ulid: 01KFC1GM9JY304NYM4BWEFQCYS
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Handling of edge cases and error conditions for the traits system.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given trait with no AC, when validating, then completeness warning emitted (trait
+      should have AC)
+
+      - ac-2: Given circular trait reference (trait A has traits: [@trait-B], trait B has traits:
+      [@trait-A]), when loading or validating, then error reported (cycles not allowed in traits
+      field)
+
+      - ac-3: Given spec implements trait that gets deleted, when validating, then broken ref error
+      reported
+
+      - ac-4: Given trait list empty, when running 'kspec trait list', then shows 'No traits
+      defined' message
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T21:10:30.962Z
+  - _ulid: 01KFC227NNN61ASTHDMG10HDBR
+    content: See parent task @task-spec-traits-system for full implementation context including file
+      paths, code patterns, and implementation order.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T21:20:07.861Z
+  - _ulid: 01KFC26K5W1D63GFZ4AZM39MD3
+    content: >-
+      IMPLEMENTATION SCOPE: Handle trait edge cases and errors
+
+
+      **Prerequisites**: TraitIndex, validation integration
+
+
+      **This task implements**:
+
+      - Warning when trait has no AC (completeness check)
+
+      - Error when circular trait references detected (trait A -> trait B -> trait A)
+
+      - Error when spec references deleted trait (broken ref)
+
+      - 'No traits defined' message in trait list when empty
+
+
+      **Files to modify**:
+
+      - src/parser/validate.ts - Circular ref detection, trait completeness
+
+      - src/parser/traits.ts - Cycle detection in TraitIndex constructor
+
+      - src/cli/commands/trait.ts - Empty list message
+
+
+      **Cycle detection pattern**:
+
+      During TraitIndex construction, track visited traits when resolving. If trait seen twice in
+      resolution chain, report error.
+
+
+      **Tests**:
+
+      - tests/parser/traits.test.ts - Cycle detection tests
+
+      - tests/parser/validate.test.ts - Edge case validation tests
+
+      - tests/cli/trait.test.ts - Empty list output test
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T21:22:30.716Z
+  - _ulid: 01KFD0MMXPWMQ569AK25Y8WH8T
+    content: >-
+      Analysis complete. AC-1 already implemented in validate.ts:576-588. Need to implement:
+
+      - AC-2: Circular trait reference detection (traits field can reference other traits, need
+      cycle detection)
+
+      - AC-3: Broken trait references (already partly handled by general ref validation, but need
+      trait-specific messaging)
+
+      - AC-4: Empty trait list message in CLI command
+
+
+      Implementation plan:
+
+      1. Add detectTraitCycles() function to validate.ts
+
+      2. Call it from validate() function
+
+      3. Update trait list command to show 'No traits defined' message
+
+      4. Write E2E tests for all 4 ACs
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T06:14:28.534Z
+  - _ulid: 01KFD0VE0NV7GV4S065EDJWKXA
+    content: >-
+      Implementation complete, tests written but need fixes:
+
+      - AC-1: Test needs adjustment (trait is in completeness warnings but not showing @test-trait
+      ref)
+
+      - AC-2: YAML indentation issue when manually editing manifest
+
+      - AC-3: Need to use proper item add command instead of module add
+
+      - AC-4: ✅ PASSED
+
+
+      All code changes complete:
+
+      - Added TraitCycleError type and traitCycleErrors array to ValidationResult
+
+      - Implemented detectTraitCycles() function with DFS-based cycle detection
+
+      - Updated validate() to call detectTraitCycles() and check traitCycleErrors in valid flag
+
+      - Added trait cycle error display in CLI validate command
+
+      - Changed 'No traits found' to 'No traits defined' in trait list command
+
+      - AC-1 already implemented in validate.ts (line 576-588)
+
+      - AC-3 already handled by general reference validation
+
+
+      Tests need minor fixes but implementation is complete.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T06:18:10.838Z
+  - _ulid: 01KFD0WJYJQDQBB3HGSSZJA97K
+    content: >-
+      WIP checkpoint - implementation complete, tests need minor fixes.
+
+
+      **Status:** All code implemented and committed to feat/trait-edge-cases branch (commit
+      c7c0401). Ready for test fixes and PR creation.
+
+
+      **What's done:**
+
+      ✅ AC-1: Trait no-AC warning (validate.ts:576-588, already existed)
+
+      ✅ AC-2: Circular trait detection (detectTraitCycles() with DFS, validate.ts:524-613)
+
+      ✅ AC-3: Broken trait refs (handled by existing ref validation)
+
+      ✅ AC-4: Empty list message (trait.ts:130, changed to 'No traits defined')
+
+      ✅ E2E test file created (tests/trait-edge-cases.test.ts)
+
+
+      **Test status:** 1/4 passing, 3 need fixes
+
+      - AC-1 test: Trait not showing @test-trait in output (shows 'Test Trait' title instead)
+
+      - AC-2 test: Manual YAML edit causes indentation error - need better approach
+
+      - AC-3 test: Wrong command (module add doesn't exist, use item add --type module)
+
+      - AC-4 test: ✅ PASSING
+
+
+      **Next steps:**
+
+      1. Fix test issues (should take ~15-20 min)
+
+      2. Run full test suite to verify no regressions
+
+      3. Submit task and create PR
+
+      4. Review and merge
+
+
+      **Files modified:**
+
+      - src/parser/validate.ts: Added TraitCycleError type, detectTraitCycles(), integrated into
+      validate()
+
+      - src/cli/commands/validate.ts: Display trait cycle errors
+
+      - src/cli/commands/trait.ts: Updated empty list message
+
+      - tests/trait-edge-cases.test.ts: E2E tests for all 4 ACs
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T06:18:48.658Z
+  - _ulid: 01KFD15CA25RVCHTCKM98AJT9J
+    content: >-
+      Test fixes applied but tests still failing. Root cause: implementation bugs in cycle detection
+      and reference validation.
+
+
+      **Current test status:** 2/4 passing
+
+      - AC-1: ✅ PASS (trait completeness warning)
+
+      - AC-2: ❌ FAIL (circular trait detection not working - validation passes when it should fail)
+
+      - AC-3: ❌ FAIL (broken trait ref detection not working - validation passes when it should
+      fail)
+
+      - AC-4: ✅ PASS (empty list message)
+
+
+      **Bug analysis:**
+
+      Both AC-2 and AC-3 show validation passing when it should be detecting errors. This means:
+
+      1. Either detectTraitCycles() isn't finding cycles correctly
+
+      2. Or broken trait references aren't being caught by reference validation
+
+      3. Need to debug the actual validation logic, not just the tests
+
+
+      **Test improvements made:**
+
+      - AC-1: Changed to check for 'Test Trait' title instead of '@test-trait' ref
+
+      - AC-2: Changed to use 'item trait add' CLI command to create circular refs
+
+      - AC-3: Created module+spec manually in YAML, use proper YAML deletion
+
+
+      **Next steps:**
+
+      1. Add debug logging to detectTraitCycles() to see if it's being called
+
+      2. Check if reference validation checks the traits field for broken refs
+
+      3. May need to fix implementation code, not just tests
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T06:23:36.770Z
+  - _ulid: 01KFD16PNBE1QNWY8R298VEMC7
+    content: |-
+      End of iteration 17 - WIP checkpoint.
+
+      **What's done:**
+      ✅ Test structure improved for all 4 ACs
+      ✅ AC-1 and AC-4 tests passing (2/4)
+      ✅ Committed test improvements (commit 4143c1d)
+      ✅ Root cause identified: implementation bugs, not test bugs
+
+      **What's NOT done:**
+      ❌ AC-2 (circular trait detection) - implementation bug in detectTraitCycles()
+      ❌ AC-3 (broken trait ref validation) - reference validation not checking traits field
+      ❌ Need to fix validation logic in src/parser/validate.ts
+
+      **Bug specifics:**
+      1. detectTraitCycles() exists at validate.ts:524-613 but doesn't find cycles
+      2. Function is called at validate.ts:954 and checked in valid flag at line 995
+      3. Tests show validation passing when it should fail with cycle/ref errors
+      4. Either cycle detection algorithm is broken OR item trait add isn't creating the refs
+
+      **Investigation needed:**
+      - Add debug logging to detectTraitCycles() to trace execution
+      - Verify item trait add actually modifies the traits field
+      - Check if reference validation validates traits field for broken refs
+      - May need to check TraitIndex construction for cycle detection
+
+      **Files involved:**
+      - tests/trait-edge-cases.test.ts (test file - improved but 2 tests fail due to impl bugs)
+      - src/parser/validate.ts (validation logic - has bugs)
+      - src/cli/commands/validate.ts (display logic - works fine)
+
+      **Next session should:**
+      1. Debug why item trait add @trait-a @trait-b succeeds but doesn't create circular ref
+      2. OR manually verify YAML has circular refs and debug detectTraitCycles()
+      3. Fix implementation bugs in validation
+      4. Re-run tests to verify 4/4 pass
+      5. Submit task and create PR
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T06:24:20.140Z
+  - _ulid: 01KFD1PV8S90J6MW0RAY0WGJWD
+    content: >-
+      Fixed trait edge case handling - all 4 tests passing.
+
+
+      **Root cause**: validate() wasn't loading items from manifest, so traits were never included
+      in validation.
+
+
+      **Fix**: Added extractItemsFromRaw() call in validate() to load manifest items (traits, inline
+      modules).
+
+
+      **Test fixes**:
+
+      - AC-2: Working correctly (cycle detection)
+
+      - AC-3: Simplified test to modify existing core.yaml feature instead of creating nested items
+
+      - All 4 ACs now have passing E2E tests
+
+
+      Files modified:
+
+      - src/parser/validate.ts: Load manifest items, import extractItemsFromRaw
+
+      - tests/trait-edge-cases.test.ts: Fix AC-3 test approach
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T06:33:09.145Z

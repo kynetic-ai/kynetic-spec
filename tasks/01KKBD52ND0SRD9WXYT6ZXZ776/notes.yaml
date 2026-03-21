@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KKBDYC52NPD2R2DQHCD9D75G
+    content: "Automation status set to needs_review: No workflow spec exists — need spec coverage before
+      automation"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T08:31:17.154Z

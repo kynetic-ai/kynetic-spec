@@ -1,0 +1,20 @@
+_ulid: 01KF4FMKJHW7405WHFKQEJXPX9
+slugs:
+  - task-session-ready-limit
+title: Increase session start ready task limit from 5 to 10
+type: task
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Increased default ready task limit from 5 to 10 in session start and context commands
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - dx
+vcs_refs: []
+created_at: 2026-01-16T22:43:25.905Z
+started_at: 2026-01-18T09:10:58.893Z
+completed_at: 2026-01-18T09:14:14.130Z
+todos: []

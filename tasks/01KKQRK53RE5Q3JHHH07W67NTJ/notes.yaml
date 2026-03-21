@@ -1,0 +1,68 @@
+notes:
+  - _ulid: 01KKR49JKM770NHB86FC8352D9
+    content: >-
+      Execution context:
+
+      - Background: Migrate 5 complex pages (tasks, board, specs, plans, validate) from manual
+      fetch+++WS reload patterns to TanStack Query
+
+      - Dependencies satisfied: tanstack-setup (merged #868), server-resolve (merged #866),
+      server-aggregation (merged #869), sidebar (merged #872) all merged to main. Merged main into
+      task branch.
+
+      - Scope: tasks/+page, tasks/board/+page, specs/+page, plans/+page, validate/+page. Add
+      aggregation fetch functions to api.ts, add query key entries as needed. Convert each page's
+      manual loadData()//WS handler to createQuery.
+
+      - Pattern reference: Dashboard (+page.svelte) and Sidebar (Sidebar.svelte) already migrated —
+      follow same createQuery + queryKeys + ws-invalidation pattern.
+
+      - Parallel task: core-pages PR #871 is open but touches different pages (agents, sessions,
+      settings, workflows, observations). No page file overlap but shared files (api.ts, keys.ts)
+      may need merge resolution.
+
+      - Verification: npm test (vitest shards), verify no setInterval polling remains on migrated
+      pages
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T06:52:46.068Z
+  - _ulid: 01KKR5PM759FTGGNGHY2E6AQ6J
+    content: "[FIX_CYCLE: 1] Review findings: SHOULD-FIX: Board page session cleanup reads stale
+      agentStatusQuery.data after async invalidateQueries(). Pre-existing code awaited fresh fetch
+      result before cleanup. Fix by awaiting invalidation or moving cleanup to a $effect reactive to
+      query data changes. See PR #873 review inline comments."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T07:17:22.277Z
+  - _ulid: 01KKR634WAJ4NFASDGF93T9TTF
+    content: "[FIX_CYCLE: 1] Addressed review findings: (1) SHOULD-FIX: Moved board page session cleanup
+      from synchronous read in WS handler to $effect reactive to agentStatusQuery.data — cleanup now
+      runs with fresh data after invalidation completes. (2) SUGGESTION: Removed dead
+      fetchTaskStatusSummary export and TaskStatusSummary import from api.ts, updated tests. All
+      5417 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T07:24:12.555Z
+  - _ulid: 01KKR6TVCCVCNHQXCTABA7RB55
+    content: "[FIX_CYCLE: 3] Review findings: PR #873 has merge conflicts with main after PR #871 (core
+      pages migration) merged. Conflicts in shared files (api.ts, keys.ts). Rebase onto main and
+      resolve conflicts, then re-push."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T07:37:09.260Z
+  - _ulid: 01KKR6V5K8CQB4EDE0G0Q0K3SW
+    content: "Review passed (all quality gates clean, all previous findings resolved). PR #873 cannot
+      merge due to conflicts with main after PR #871 (core pages migration). Worker needs to rebase
+      onto main and resolve conflicts in api.ts and keys.ts. No code quality issues — only a merge
+      conflict."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T07:37:19.721Z
+  - _ulid: 01KKR8118P3R5DHB5015RYJTX5
+    content: "[FIX_CYCLE: 4] Rebased onto main to resolve merge conflicts with PR #871 (core pages
+      migration). Conflicts in tests/web-ui-tanstack-query.test.ts resolved — kept both core pages
+      and complex pages test sections. api.ts and keys.ts auto-merged cleanly. All 5467 tests pass
+      locally, all CI checks pass. PR #873 is now MERGEABLE."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T07:58:00.470Z

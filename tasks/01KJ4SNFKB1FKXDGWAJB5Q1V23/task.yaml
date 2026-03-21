@@ -1,0 +1,25 @@
+_ulid: 01KJ4SNFKB1FKXDGWAJB5Q1V23
+slugs: []
+title: "plan import: add depends_on field to plan YAML spec format so specs/tasks get structural
+  dependencie"
+type: task
+description: "plan import: add depends_on field to plan YAML spec format so specs/tasks get
+  structural dependencies on import. Currently plan import creates specs and tasks but dependencies
+  must be added manually post-import. Add a depends_on param per spec entry in the YAML (e.g.,
+  depends_on: [@full-model-recipe]) that maps to spec depends_on and task blocked_by on import."
+spec_ref: "@plan-import"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #491. Added depends_on field to plan import YAML format for both specs
+  and tasks. Two-pass spec→task slug mapping resolves dependencies correctly including mixed imports
+  (new specs depending on existing specs). 7 new tests, all CI passing."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-23T08:25:45.835Z
+started_at: 2026-02-24T02:13:12.913Z
+completed_at: 2026-02-24T02:43:31.631Z
+todos: []
+automation: eligible

@@ -1,0 +1,24 @@
+_ulid: 01KFHMK8M2ZZQKP3YXV5VH0C94
+slugs: []
+title: Spec out Web UI and Daemon Mode feature
+type: spike
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Spec created with ~110 ACs across 5 features. 3 new traits added. 31 granular
+  implementation tasks derived with detailed notes.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - web
+  - ui
+  - daemon
+  - research
+vcs_refs: []
+created_at: 2026-01-22T01:20:12.418Z
+started_at: 2026-01-23T04:25:53.449Z
+completed_at: 2026-01-23T05:26:24.655Z
+todos: []
+automation: manual_only

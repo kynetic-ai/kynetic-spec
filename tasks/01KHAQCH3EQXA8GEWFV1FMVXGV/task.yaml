@@ -1,0 +1,25 @@
+_ulid: 01KHAQCH3EQXA8GEWFV1FMVXGV
+slugs: []
+title: Document fenced YAML requirement in plan import help and spec-plan skill
+type: task
+description: "Plan import: document fenced YAML requirement in plan import --help text and spec-plan
+  skill. The format requirement is not mentioned anywhere user-facing, causing discovery friction."
+spec_ref: "@plan-import"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #360. Added fenced YAML requirement documentation to plan import --help
+  text (new Format section) and spec-plan skill SKILL.md (Important callout). This improves
+  discoverability of the required format for plan files."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - reflection
+  - plan-import
+  - docs
+vcs_refs: []
+created_at: 2026-02-13T05:25:40.078Z
+started_at: 2026-02-14T08:42:59.001Z
+completed_at: 2026-02-14T08:53:09.925Z
+todos: []
+automation: eligible

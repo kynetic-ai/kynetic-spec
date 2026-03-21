@@ -1,0 +1,22 @@
+_ulid: 01KFMMXF71YN5P9FEQZ87WS9G4
+slugs: []
+title: Export command implementation
+type: task
+spec_ref: "@gh-pages-export"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Export command implemented with JSON/HTML formats, reference resolution, trait
+  expansion, validation inclusion, and dry-run support. All ACs 1-7 covered with tests.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - phase-4
+  - export
+vcs_refs: []
+created_at: 2026-01-23T05:23:30.144Z
+started_at: 2026-01-28T07:52:37.361Z
+completed_at: 2026-01-28T08:14:48.972Z
+todos: []
+automation: needs_review

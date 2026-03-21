@@ -1,0 +1,16 @@
+notes:
+  - _ulid: 01KJEWWMCXH1FFB3TX8QZNAYX4
+    content: "Implemented Codex project_doc_fallback_filenames seeding: added shared
+      src/lib/codex-config.ts helper and wired setup memory seeding + skill install-core codex paths
+      to ensure kspec-agents.md is present idempotently, with invalid TOML safety and dry-run
+      behavior. Added regression coverage in tests/cli/setup-seeding.test.ts,
+      tests/core-skill-install.test.ts, and tests/enhanced-setup.test.ts."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T06:34:30.173Z
+  - _ulid: 01KJEXSA9AJVG4B2CTQT37ZBTZ
+    content: Addressed PR feedback by adding @new-project-bootstrapping ac-3 for Codex fallback seeding
+      and annotating implementation/tests to AC refs (commit c0268b66).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T06:50:10.091Z

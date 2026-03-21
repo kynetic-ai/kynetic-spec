@@ -1,0 +1,22 @@
+_ulid: 01KFJ4N0A88X2QGY58G79CNJAC
+slugs: []
+title: Fix old AC annotation format in tests
+type: infra
+description: "Audit and fix incorrect AC annotations in tests - many tests use old format like '//
+  AC-N:' instead of the convention '// AC: @spec-ref ac-N'. Should sweep through test files and
+  standardize."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged PR #156. Fixed 72 old-format AC annotations across 9 files. Review found and
+  fixed 3 incorrect spec references. All CI checks passed."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-22T06:00:46.664Z
+started_at: 2026-01-22T07:03:00.956Z
+completed_at: 2026-01-22T07:20:50.868Z
+todos: []
+automation: eligible

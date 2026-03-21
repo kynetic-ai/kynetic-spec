@@ -1,0 +1,22 @@
+_ulid: 01KHA83P0VX36G2QWJ2FH10N4B
+slugs:
+  - implement-command-group-default-actions
+title: Implement Command Group Default Actions
+type: task
+spec_ref: "@command-group-default-actions"
+plan_ref: "@plan-cli-agent-ux-improvements"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #354. kspec tasks and kspec task with no subcommand now default to list
+  (exit 0). Options like --status, --json, --count forward correctly. Unknown subcommands show fuzzy
+  suggestions. Shared listTasksAction() extracted to eliminate code duplication. All 6 ACs covered
+  by 11 tests."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-13T00:58:41.563Z
+started_at: 2026-02-14T01:47:50.259Z
+completed_at: 2026-02-14T02:11:38.022Z
+todos: []

@@ -1,0 +1,62 @@
+notes:
+  - _ulid: 01KKJMZ41VW1D8DJJ8SA5FKVX4
+    content: >-
+      Execution context:
+
+      - Background: dispatch workspace, cleanup, bootstrap, orientation, and scheduler contracts now
+      have focused unit tests, but this task should prove they cooperate in one runtime flow.
+
+      - Scope: add an integration-style dispatch test covering base-branch sourcing, worker/reviewer
+      isolated worktrees, reviewer cleanup, fix-cycle reuse of the canonical branch/workspace, and
+      scheduler ordering after state transitions.
+
+      - Files: expected focus is tests/agent-dispatch-engine.test.ts and/or a dedicated dispatch
+      integration test file, with minimal helper changes only if needed.
+
+      - Verification: run targeted dispatch tests, then project validation and full test suite
+      before submit.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T03:48:42.683Z
+  - _ulid: 01KKJNKS9FBS0453A5K91AYP7D
+    content: >-
+      Implemented dispatch flow regression coverage and fixed the runtime queue handoff bug it
+      exposed.
+
+      - Added tests/dispatch-workspace-and-scheduler-flow.test.ts to exercise worker -> reviewer ->
+      fix-cycle behavior with real worktrees, base-branch env/orientation data, reviewer snapshot
+      cleanup, canonical branch reuse, and final workspace reaping.
+
+      - Updated src/agent-runtime/dispatch.ts to release the task's in-flight key before
+      post-invocation task re-evaluation so newly eligible follow-up work for the same task can be
+      queued immediately.
+
+      - Verification: dispatch-focused suite passed; representative lock-related failures from the
+      full npm test run passed in isolated reruns. `kspec validate` completed with the repo's
+      existing warning set (exit 6), not new errors.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T03:59:59.791Z
+  - _ulid: 01KKJPBNADHCB20AK3D3Y4C8QC
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #814 is red. CI shard 1 fails
+      tests/dispatch-workspace-registry.test.ts because lifecycle_state remains ready instead of
+      closing on the reviewed head."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T04:13:02.157Z
+  - _ulid: 01KKJQ877X0A5Y6DR3HB843NQT
+    content: "Fix cycle: reproduced the registry test in isolation, which passes locally. Investigating
+      shard-order-sensitive lifecycle reset behavior around reviewed-head cleanup and workspace
+      reuse before patching."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T04:28:38.013Z
+  - _ulid: 01KKJQFXMW9FPQ8XKT5N143MHP
+    content: "[FIX_CYCLE: 1] Fixed the reviewer-cleanup registry race. Reviewer snapshot cleanup now
+      runs under the dispatch shadow mutex, so a late cleanup write cannot overwrite a
+      completed-task lifecycle reconciliation from closing back to ready. Verification: npm test --
+      tests/dispatch-workspace-registry.test.ts tests/dispatch-workspace-and-scheduler-flow.test.ts;
+      kspec validate (existing warning baseline, exit 6)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T04:32:50.332Z

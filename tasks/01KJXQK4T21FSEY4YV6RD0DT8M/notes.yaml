@@ -1,0 +1,73 @@
+notes:
+  - _ulid: 01KJXR0FMZX9KNMZG7YPA2FQW2
+    content: "Phase 1: Completed research and drafted comprehensive UI revamp plan. Explored current web
+      UI, imgen design system, kynetic-internal dashboard, and all kspec features/API. Key
+      decisions: port imgen design system with oklch tokens, kanban board with Active Fleet row,
+      session stream with rich components, 5-phase plan. Plan at .kspec/artifacts/ui-revamp-plan.md"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T00:57:49.983Z
+  - _ulid: 01KJXRDYGHGFZZN0ENZ49Z4X6D
+    content: >-
+      Phase 1 complete: Plan drafted and reviewed. Review found 7 critical issues, all resolved in
+      plan update:
+
+
+      1. CRITICAL: Keep Tailwind (not rip it out). Map imgen tokens as Tailwind theme extensions
+
+      2. Missing Workflows and Settings views - added to navigation
+
+      3. API gaps corrected: dispatch/agent status endpoints already exist, session streaming
+      already broadcasts agent_text_chunk events
+
+      4. bits-ui duplication avoided: DS layer contains CSS + simple components only
+
+      5. Quick wins identified: needs_work status missing, Svelte 4 store, Observations nav hidden
+      at 0
+
+      6. Empty/error/loading states must be Phase 1, not Phase 5
+
+      7. Phase dependencies fixed: added Phase 0 prerequisites, daemon API work scoped per phase
+
+
+      Plan ready for user review at .kspec/artifacts/ui-revamp-plan.md
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T01:05:11.185Z
+  - _ulid: 01KJXS3YBHSZ9SN7ED3DSX56TA
+    content: "Phase 2: Codex review completed (gpt-5.3-codex, high reasoning). Found 7 MUST-FIX, 10
+      SHOULD-FIX, 1 SUGGESTION across 26 findings. All MUST-FIX items resolved in plan update
+      (section 12). Key findings: (1) session streaming is text-only, need two-tier approach for
+      structured events, (2) WebSocket topics inaccurately listed - corrected, (3) cancelled status
+      missing from kanban, (4) workflow runs have no daemon API, (5) accessibility needs per-phase
+      requirements not Phase 5 audit. Codex also recommended 3 prototype spikes before full
+      implementation. Full review at .kspec/artifacts/ui-revamp-codex-review.md"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T01:17:11.922Z
+  - _ulid: 01KJY1QWKHB316A8TKMX8MP7WN
+    content: |-
+      Plan imported and environment set up.
+
+      Created:
+      - Plan: @plan-ui-ux-revamp (10 specs, 10 tasks)
+      - Prereq task: @01KJXSWR (quick wins)
+      - Clone: ~/Projects/kynetic-spec-ui on feat/ui-revamp branch
+      - Shadow branch shared — tasks visible from both locations
+
+      Task dependency chain:
+        Prerequisites → Design System → App Shell → Task Board → Dashboard
+                                                  → Session Stream → Session History
+                                                  → Agent/Dispatch
+                                                  → Inbox/Plans/Validation (parallel)
+
+      Ready for work to begin.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T03:47:54.097Z
+  - _ulid: 01KK5QS6HP3PEMTF18JCCZARSQ
+    content: "Automation status set to manual_only: Plan/design umbrella task with derived spec-backed
+      implementation tasks; keep manual_only instead of attaching a synthetic spec_ref"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T03:27:46.742Z

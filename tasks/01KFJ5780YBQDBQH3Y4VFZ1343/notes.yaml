@@ -1,0 +1,47 @@
+notes:
+  - _ulid: 01KFJ5945469T8XYCMSW5BXQTR
+    content: "Automation status set to eligible: Infra task with clear scope, verifiable via CI/hook"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T06:11:45.957Z
+  - _ulid: 01KFJ59VP0MA4SXQHWB3JKZZ8G
+    content: |-
+      Add skill file validation:
+
+      1. Parse .claude/skills/*/SKILL.md files
+      2. Validate markdown structure (frontmatter, tables, code blocks)
+      3. Catch issues like unescaped pipes in tables
+      4. Options: pre-commit hook, CI check, or 'kspec validate --skills'
+
+      Could use existing markdown parser or simple regex validation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T06:12:10.049Z
+  - _ulid: 01KFJH9BAZ4PJEN0ET8WD4VWA8
+    content: |-
+      Implementation complete. Added skill file validation:
+
+      1. Created src/parser/validate-skills.ts with:
+         - Frontmatter validation (checks for name and description fields)
+         - Table pipe detection heuristic (warns about potential unescaped pipes)
+         - Support for finding all .claude/skills/*/SKILL.md files
+
+      2. Integrated into validate command:
+         - Added --skills flag to kspec validate
+         - Runs as part of default validation (runAll mode)
+         - Outputs formatted results with file-grouped errors
+
+      3. Added comprehensive tests in tests/skill-validation.test.ts:
+         - 9 tests covering frontmatter validation, content checks, and table validation
+         - All tests pass
+
+      All 951 tests pass. Validation works on existing skills (found 9 files, all valid).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T09:41:36.223Z
+  - _ulid: 01KFK6JVW89Y8EWFYCE5JRPTMB
+    content: "PR #167 created for review. Previous ralph loop session pushed directly to main without
+      PR, so I created feat/skill-file-validation branch and proper PR for code review."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-22T15:53:48.169Z

@@ -1,0 +1,86 @@
+notes:
+  - _ulid: 01KJVFEKV9XK97A25KNB6PXQW9
+    content: "Implemented AC-13 rendering fix in dispatch watch: apply [agent session] prefix at line
+      boundaries, not per token chunk; add newline on interleaved stream switch. Added two
+      regressions tests (token chunking, interleaved streams). Verified with npx vitest run
+      tests/cli-agent-commands.test.ts -t 'dispatch watch' and full npm test (3604 passed)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T03:49:46.985Z
+  - _ulid: 01KJVFQA1ZJQP1THR5J6ZEHM6F
+    content: "Posted clean PR review on #657 (GitHub review id 3886542494). No MUST-FIX/SHOULD-FIX
+      findings after AC/spec/code-quality/regression checks. Note: self-approval is disallowed by
+      GitHub for own PR, so clean review was posted as COMMENT. CI checks still pending before
+      merge."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T03:54:31.872Z
+  - _ulid: 01KJVH6S81SK82S4TFKM6DWJX0
+    content: "Follow-up fix after manual watch validation: coalesce tiny token chunks (50ms) so each
+      logical update renders on its own line, flush active line before reconnect messages, and
+      display shortened 8-char session IDs in watch prefixes. Added regressions for same-stream line
+      separation, short session ID display, and reconnect flush behavior. Validation: npx vitest run
+      tests/cli-agent-commands.test.ts -t 'dispatch watch'; npx vitest run tests/cli-serve.test.ts;
+      npm test (173 files passed)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T04:20:27.521Z
+  - _ulid: 01KJVHR7N2JTNTW2TTFZ425C17
+    content: "Aligned dispatch watch rendering to legacy Ralph parser semantics: removed heuristic line
+      splitting, now break lines on explicit boundaries (newline, stream switch, ACP empty chunk
+      sentinel) so message chunks coalesce naturally. Updated @cli-agent-commands AC-13/14 and added
+      AC-17 for short session-id prefix behavior. Added regression coverage for empty-chunk boundary
+      handling; cli-agent-commands tests pass."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T04:29:59.330Z
+  - _ulid: 01KJVJN5M21BRP8WWYFRMFKRT5
+    content: Pivoted from punctuation-based inference to structural boundaries from ACP update stream.
+      Dispatch now emits empty boundary sentinels on non-text session updates (e.g., tool events) so
+      watch can split logical message runs without guessing prose boundaries. Watch renderer remains
+      line-prefix based using explicit boundaries only. Added tests for dispatch boundary emission
+      and empty-first boundary handling; dispatch + cli-agent command suites pass.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T04:45:47.522Z
+  - _ulid: 01KJVK02QGMMKMRS1VJD5RWTT4
+    content: "Implemented structural boundary rendering for dispatch watch: dispatch emits empty
+      sentinels on non-text ACP updates (tool-call transitions), and watch treats boundaries as
+      stream-local line breaks. Removed punctuation-based guessing. Added regression tests for
+      cross-stream empty-boundary interleaving and strengthened dispatch boundary order assertions.
+      Peer review pass returned CLEAN; targeted tests (cli-agent-commands + agent-dispatch-engine)
+      all pass."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T04:51:45.008Z
+  - _ulid: 01KJVK37XA63Y5HBBC3AY1GYMH
+    content: "Added readability spacing in dispatch watch: after explicit ACP logical boundaries, next
+      rendered section now gets a blank spacer line (while still avoiding leading blank lines).
+      Updated AC-13 wording and adjusted watch tests accordingly; targeted suites pass."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T04:53:28.618Z
+  - _ulid: 01KJVK7YSFS227K89WF88XVVNK
+    content: "Changed dispatch watch display to speaker-section markers: [agent-id session-id] now
+      renders once when a stream becomes active, body text streams without per-line prefix
+      repetition, and marker appears again only when speaker changes. Preserved explicit ACP
+      boundary spacing and stream-local boundary handling. Updated AC-13 wording and refreshed watch
+      tests; targeted suites remain green."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T04:56:03.119Z
+  - _ulid: 01KJVKDRMQ8AJ5CDR4RZTANYRF
+    content: Collapsed repeated ACP boundary events in dispatch watch to one pending spacer line per
+      stream between text updates. This fixes large vertical gaps when many tool-call/non-text
+      updates occur before the next text chunk. Added regression test ('collapse repeated boundary
+      events to a single spacer line'). Targeted watch + dispatch test suites pass.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T04:59:13.431Z
+  - _ulid: 01KJVKN4XS682KF9YS4TRVR8N9
+    content: During review-loop/spec-gap check, found AC-17 wording lagged behind section-marker
+      refactor ('line prefix' wording). Updated AC-17 to speaker section marker terminology so spec
+      matches implemented/validated behavior.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T05:03:15.385Z

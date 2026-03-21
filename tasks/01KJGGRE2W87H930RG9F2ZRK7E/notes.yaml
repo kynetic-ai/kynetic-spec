@@ -1,0 +1,138 @@
+notes:
+  - _ulid: 01KJGR8P6N3N1H35TNB8SP8XH4
+    content: >-
+      Execution context:
+
+      - Background: validate mode flags are not isolating checks, which creates noisy/non-actionable
+      output for targeted runs.
+
+      - Scope: stabilize scoped validate behavior and capture actionable warning baseline/policy
+      buckets, without bulk-resolving historical debt.
+
+      - Files: src/cli/commands/validate.ts plus targeted validate CLI tests and docs/messages only
+      if needed.
+
+      - Verification: focused validate command tests, full test suite, and kspec validate reruns for
+      post-fix baseline capture.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T23:52:11.221Z
+  - _ulid: 01KJGRSBARA5PD7MB3YDJ5W74G
+    content: >-
+      Phase 1 implementation complete (hard-failure/correctness):
+
+      - Fixed validate mode selection in src/cli/commands/validate.ts by coercing selected flags to
+      explicit booleans, adding --staleness/--drift to runAll detection, and preventing
+      undefined-option fallthrough.
+
+      - Fixed parser gating in src/parser/validate.ts so --completeness/--orphans can run without
+      implicitly enabling full reference validation.
+
+      - Added regression coverage:
+        - tests/validate-mode-selection.test.ts (new) for scoped mode matrix and combined flags.
+        - tests/staleness.test.ts updated to assert scoped mode does not emit alignment/completeness sections.
+        - tests/ac-schema-drift.test.ts updated to assert scoped mode does not emit unrelated sections.
+
+      Scoped mode verification (post-fix):
+
+      - kspec validate --schema => Schema: OK, References: OK; no Alignment/Completeness/Staleness
+      sections.
+
+      - kspec validate --refs => Schema: OK, References: OK; no Alignment/Completeness/Staleness
+      sections.
+
+      - kspec validate --alignment => Alignment warnings: 157 only.
+
+      - kspec validate --completeness => Completeness warnings: 390 only.
+
+      - kspec validate --staleness => Staleness warnings: 99 only.
+
+
+      Post-fix baseline inventory:
+
+      - kspec validate
+        - Reference errors: 0 (References: OK)
+        - Alignment warnings: 157
+          - Orphaned specs: 19
+          - Status mismatches: 138
+        - Completeness warnings: 390
+          - Missing acceptance criteria: 156
+          - Missing descriptions: 6
+          - Missing own AC coverage: 93
+          - Missing trait AC coverage: 7
+          - Automation without spec: 128
+      - kspec validate --staleness
+        - Staleness warnings: 99
+          - Parent pending/in_progress, children done: 3
+          - Spec implemented, no task: 95
+          - Automation blocking: 1
+
+      Policy/debt triage recommendation:
+
+      - Alignment (157): primarily metadata/policy debt, not validator false-positive. Treat as
+      cleanup backlog + explicit status policy pass.
+
+      - Automation-without-spec (128): policy/hygiene debt; classify each task as add spec_ref vs
+      mark manual_only exception.
+
+      - Completeness (390): mixed documentation/test coverage debt; address in phased waves instead
+      of one large churn.
+
+
+      Follow-up tasks created for deferred debt:
+
+      - @task-reconcile-validate-alignment-warning-baseline (01KJGRPS7WJ1RAZJC62K7Z6YT6)
+
+      - @task-triage-automation-eligible-missing-spec-ref (01KJGRPX87E756YE1VFKXCWEZ3)
+
+      - @task-plan-completeness-warning-debt-reduction (01KJGRQ1BBMQ4VHWB8SSKG16RA)
+
+
+      Test verification:
+
+      - Targeted regression suite passed:
+        npx vitest run tests/validate-mode-selection.test.ts tests/staleness.test.ts tests/ac-schema-drift.test.ts
+      - Full suite currently has unrelated pre-existing failures in
+      tests/ralph/session-budget-integration.test.ts (3 timeout failures waiting for 'Ralph loop
+      completed').
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-28T00:01:17.144Z
+  - _ulid: 01KJGS1RFHPP58K5ZSAAV2QJ2J
+    content: "[FIX_CYCLE: 1] Review findings: Follow-up requested: update stale validate/staleness mode
+      specs after scoped mode semantics change."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-28T00:05:52.754Z
+  - _ulid: 01KJGS204CHTTF2CZ6JYTYAVKF
+    content: "Fix cycle context: updating spec documentation/AC language for validate mode isolation
+      semantics and stale option list drift in @cmd-validate."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-28T00:06:00.588Z
+  - _ulid: 01KJGS4NDTHSZ81QKY0RVXZPAA
+    content: >-
+      Spec/doc follow-up applied per review:
+
+      - Updated @stale-status-detection AC `staleness-flag` to scoped-mode semantics (runs staleness
+      section by default, combinable with other flags).
+
+      - Updated @validation-modes description to include full current mode flag set and explicit
+      semantics for default/all, single-flag isolation, and multi-flag union behavior.
+
+      - Added ACs to @validation-modes: `ac-mode-default-all`, `ac-mode-flag-isolation`,
+      `ac-mode-flag-combination`.
+
+      - Updated @cmd-validate description/options list to remove stale `--task-refs`, include
+      current flags, and document mode semantics + lint alias scope.
+
+      Verification: `kspec validate --schema` => Schema OK, References OK.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-28T00:07:27.930Z
+  - _ulid: 01KJGS8D4T2Z8M2HK2P4WR0PE0
+    content: "PR opened: https://github.com/kynetic-ai/kynetic-spec/pull/585 (branch:
+      fix/task-stabilize-kspec-validate-baseline, commit: 3fa47087)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-28T00:09:30.522Z

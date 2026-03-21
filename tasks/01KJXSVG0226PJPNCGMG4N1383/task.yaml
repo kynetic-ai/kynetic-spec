@@ -1,0 +1,23 @@
+_ulid: 01KJXSVG0226PJPNCGMG4N1383
+slugs:
+  - implement-app-shell-and-navigation
+title: Implement App Shell and Navigation
+type: task
+spec_ref: "@ui-app-shell"
+plan_ref: "@plan-ui-ux-revamp"
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on:
+  - "@implement-ui-design-system"
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+session_id: 01KJYEDAWR1173M5N07HW6HS69
+created_at: 2026-03-05T01:30:03.650Z
+started_at: 2026-03-05T07:41:10.250Z
+submitted_at: 2026-03-05T07:41:12.486Z
+completed_at: 2026-03-05T07:59:18.430Z
+todos: []
+automation: eligible

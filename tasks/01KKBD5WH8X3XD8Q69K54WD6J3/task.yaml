@@ -1,0 +1,36 @@
+_ulid: 01KKBD5WH8X3XD8Q69K54WD6J3
+slugs: []
+title: "Fix kspec item list --json output structure: currently returns nested [items, count] pairs
+  which are"
+type: task
+description: >-
+  Fix kspec item list --json output to return a flat { items: [...], total: N } structure.
+
+
+  Current behavior: Returns nested [items, count] pairs which are difficult to parse
+  programmatically.
+
+
+  Fix: Update the JSON formatter in the item list command (src/cli/commands/item.ts) to output {
+  items: [...], total: N }. Check for existing consumers (batch, tests, agents) before changing to
+  avoid breaking them. This is a breaking change to the JSON output contract — consider if a
+  --format flag or version header is needed.
+spec_ref: "@trait-json-output"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #755. Updated item list/get JSON serialization to strip internal loader
+  fields, expose ulid/ref, and keep item list output as a clean structured payload with downstream
+  tests adjusted. AC coverage reviewed for @trait-json-output, targeted tests passed locally, full
+  npm test passed (4344 passed, 3 skipped), and CI was green on merged HEAD."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKC5PE1JYHMCK25JRVFS9M2C
+created_at: 2026-03-10T08:17:54.728Z
+started_at: 2026-03-10T15:36:15.348Z
+submitted_at: 2026-03-10T16:04:10.105Z
+completed_at: 2026-03-10T16:28:40.004Z
+todos: []
+automation: eligible

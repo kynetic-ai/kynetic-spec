@@ -1,0 +1,67 @@
+notes:
+  - _ulid: 01KFBBZMH5W15GE80B83TZ19QR
+    content: |-
+      Friction observed: No way to recover from abandoned in_progress tasks.
+
+      Use cases:
+      1. Automation abandons task mid-work (crash, timeout, error)
+      2. Human starts task but needs to context switch
+      3. Task picked up by mistake and needs to be put back in queue
+
+      Proposed command:
+        kspec task reset @task-ref [--reason 'Why resetting']
+
+      Behavior:
+      - Sets status back to pending
+      - Clears started_at timestamp
+      - Adds note documenting the reset and reason
+      - Maybe warns if task has notes (work was done)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T14:54:14.053Z
+  - _ulid: 01KFE1W94ZZVPW3P45H09CF2S0
+    content: Ralph loop started this task before being killed. No actual implementation work was done -
+      resetting to pending.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T15:55:21.632Z
+  - _ulid: 01KFFG2HETYWKJEQMQ17B0KB75
+    content: |-
+      Implementation notes:
+      - File: src/cli/commands/task.ts - add reset subcommand after cancel
+      - Clear fields: completed_at, submitted_at, blocked_reason, cancel_reason
+      - Auto-note format: Reset from {status} to pending (append cancel_reason if present)
+      - No batch support initially (can add later if needed)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T05:22:41.243Z
+  - _ulid: 01KFFM5RN0S15ND9YXXD6J024F
+    content: >-
+      Implemented kspec task reset command with full AC coverage:
+
+
+      - AC-1: Resets tasks from any status to pending, clears completion-related fields
+      (completed_at, started_at, closed_reason, blocked_by)
+
+      - AC-2: Returns validation error if task is already pending
+
+      - AC-3: Creates shadow commit with 'task-reset' message
+
+      - AC-4: Auto-adds note documenting the reset with previous status (includes cancel reason if
+      applicable)
+
+      - AC-5: Does not affect dependent tasks (dependency checking happens on start, not reset)
+
+      - AC-6: JSON output includes previous_status, new_status, and cleared_fields array
+
+
+      Implementation follows existing patterns from task.ts (cancel, complete, block commands).
+
+      Added comprehensive test suite with 15 tests covering all ACs plus trait-inherited ACs
+      (json-output, semantic-exit-codes, error-guidance).
+
+
+      All 783 tests pass. Command tested manually and works correctly.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T06:34:21.216Z

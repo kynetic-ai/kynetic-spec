@@ -1,0 +1,24 @@
+_ulid: 01KGTXZ3PHH3SGH9GK5F8HC0YB
+slugs: []
+title: Add --trait flag to item add command
+type: task
+description: Add --trait flag to kspec item add command to apply traits at creation time
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #337. Added --trait flag to item add command with full validation:
+  resolves refs, verifies trait type, deduplicates by ULID, stores canonical slug form. Includes 8
+  tests covering happy paths and error cases (invalid ref, non-trait ref, dedup, canonical
+  storage)."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - reflection
+vcs_refs: []
+created_at: 2026-02-07T02:12:49.489Z
+started_at: 2026-02-07T10:51:41.865Z
+completed_at: 2026-02-07T11:07:23.461Z
+todos: []
+automation: eligible

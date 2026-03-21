@@ -1,0 +1,40 @@
+notes:
+  - _ulid: 01KKA7TRJ3A5VFCWFFEG5WZX7E
+    content: See plan @plan-lazy-shadow-sync for implementation notes
+    author: "@claude"
+    created_at: 2026-03-09T21:25:12.899Z
+  - _ulid: 01KKA9P29M3MD35JYWFKCYTCYB
+    content: >-
+      Implementation complete:
+
+
+      - Added isAheadOfUpstream() exported utility to shadow.ts — uses git rev-list --left-right
+      --count HEAD...@{u}
+
+      - Updated ShadowSyncScheduler.syncOnce() in shadow-sync-scheduler.ts:
+        1. Calls fetchRemote(worktreeDir) before shadowPull() to freshen FETCH_HEAD in the worktree git dir (ac-daemon-freshens-fetch-head)
+        2. After pull, checks isAheadOfUpstream() and pushes via pushShadowBranch() if ahead (ac-periodic-push)
+        3. Push failure is non-fatal — logged as warning, does not throw
+        4. Push is skipped if pull had a conflict
+      - Added 4 new tests covering both ACs:
+        - Push when ahead of upstream
+        - No push when not ahead
+        - Push failure is non-fatal
+        - FETCH_HEAD freshened in worktree git dir
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T21:57:36.180Z
+  - _ulid: 01KKAA3MXY1FX9P9PD7V7PA6AJ
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #731 daemon scheduler fetch/push ignores
+      configured shadow remote/branch and falls back to origin/defaults."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-09T22:05:01.247Z
+  - _ulid: 01KKABAQGR7DV3TRXV8A8T7CRV
+    content: "Fix cycle 1: Addressed MUST-FIX review feedback — scheduler fetch/push now uses
+      getRemoteName(shadowOptions) instead of defaulting to origin. Exported getRemoteName() from
+      shadow.ts. Added test verifying scheduler works with custom remote names. All 10 scheduler
+      tests pass, full suite 4230 passed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T22:26:21.848Z

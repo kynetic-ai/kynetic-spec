@@ -1,0 +1,40 @@
+notes:
+  - _ulid: 01KKB5HXP234Y9B9SNTZXX3N2Y
+    content: See plan @plan-ui-wide-markdown-rendering-plan-embedded-views for implementation notes
+    author: "@claude"
+    created_at: 2026-03-10T06:04:40.514Z
+  - _ulid: 01KKB5P8S0CZ6BRFZ1YPJZQT2M
+    content: >-
+      Execution context:
+
+      - Background: This is a spec-only task — the trait was already created by the plan import.
+      Verify it is correct and complete.
+
+      - Scope: Verify trait-markdown-rendering has all 9 ACs, correct description, and is properly
+      referenced by specs that need it (streaming-markdown-component, plan-embedded-views,
+      markdown-ui-adoption). No code changes needed.
+
+      - Verification: kspec item get @trait-markdown-rendering shows 9 ACs. Specs that use it show
+      inherited ACs. kspec validate passes for trait references.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T06:07:02.944Z
+  - _ulid: 01KKDXNMRHZD5AF9NNY4V7VR46
+    content: >-
+      Verification:
+
+      - Confirmed @trait-markdown-rendering exists with the planned description and all 9 acceptance
+      criteria.
+
+      - Confirmed planned adopters already reference the trait: @streaming-markdown-component,
+      @plan-embedded-views, and @markdown-ui-adoption all show inherited ACs from
+      @trait-markdown-rendering.
+
+      - Checked current implementation/search context; no code changes are required for this task
+      because this task's scope is spec state created by the approved plan import.
+
+      - Ran kspec validate; it exited 6 with existing project-wide warnings, but no
+      reference/alignment errors specific to @trait-markdown-rendering or its three linked specs.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T07:44:37.137Z

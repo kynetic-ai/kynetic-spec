@@ -1,0 +1,33 @@
+_ulid: 01KKFY9FK58T570QTKKYMPTK98
+slugs:
+  - task-implement-dispatch-workspace-cleanup
+title: Implement dispatch workspace cleanup and reaping
+type: task
+spec_ref: "@dispatch-workspace-cleanup-policy"
+plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #807. Implemented deterministic dispatch workspace cleanup and orphan
+  reaping for worker/reviewer worktrees, including closing/scheduled cleanup metadata,
+  cleanup_blocked branch-deletion guards, reviewer snapshot cleanup, and orphan worktree/branch
+  reconciliation. AC coverage verified for @dispatch-workspace-cleanup-policy ac-1..ac-5 with
+  trait-error-guidance marked N/A for this internal runtime surface; local focused tests and full
+  npm test passed, and remote CI completed green on the merged head."
+depends_on:
+  - "@task-implement-dispatch-worktree-provisioning"
+  - "@task-implement-dispatch-branch-integration-contract"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - cleanup
+  - worktree
+vcs_refs: []
+session_id: 01KKJ5ZRENWGP1EJBS85Q6ZGTA
+created_at: 2026-03-12T02:33:56.069Z
+started_at: 2026-03-12T23:57:24.702Z
+submitted_at: 2026-03-12T23:57:40.966Z
+completed_at: 2026-03-13T00:07:34.239Z
+todos: []
+automation: eligible

@@ -1,0 +1,48 @@
+_ulid: 01KKZPVX7D9A14ZFGSFSXS8X6Z
+slugs:
+  - task-hook-cli
+title: Implement hook CLI commands
+type: task
+description: |
+  kspec hook list, add, set, enable, disable, remove.
+
+  Why: Users and agents need to manage hooks without hand-editing YAML.
+
+  What: Standard CRUD commands with --json, shadow branch auto-commit,
+  batch compatibility. Follow existing meta mutation patterns.
+
+  Covers: @dispatch-event-cli ac-1, ac-4.
+spec_ref: "@dispatch-event-cli"
+plan_ref: "@plan-dispatch-event-system-expansion"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev. Implemented hook CLI commands (list, add, get, set, enable, disable,
+  remove) with full trait coverage. 50 integration tests covering own ACs (ac-1, ac-4) and all
+  inherited trait ACs (json-output, error-guidance, filterable-list, semantic-exit-codes,
+  shadow-commit). Fix cycle addressed missing N/A annotations and dead code.
+depends_on:
+  - "@task-hook-executor"
+context: []
+priority: 3
+tags:
+  - dispatch
+  - hooks
+  - cli
+vcs_refs: []
+review_ref: "@01KM0NTHXZTNRXBTD50MMQS164"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T14:27:18.143Z
+  commit: 7e797cb1b7e3b59e0671a481f6c7ad1eb55778df
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM0NA4QTDDH3MTKEH2JTQ1Y7
+created_at: 2026-03-18T05:32:02.157Z
+started_at: 2026-03-18T14:27:14.525Z
+submitted_at: 2026-03-18T14:27:18.572Z
+completed_at: 2026-03-18T14:35:09.411Z
+todos: []
+automation: eligible

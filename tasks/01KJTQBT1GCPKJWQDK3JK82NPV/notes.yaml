@@ -1,0 +1,44 @@
+notes:
+  - _ulid: 01KJTQN45TNP7DWJHCXVTF4VKG
+    content: >-
+      Execution context:
+
+      - Background: Streaming chunks and event seq values can race under concurrent update
+      callbacks.
+
+      - Scope: Enforce per-session ordered processing in invocation update handling; keep --json
+      behavior unchanged.
+
+      - Files: src/agent-runtime/invocation.ts, tests/agent-invocation-lifecycle.test.ts,
+      tests/cli-agent-commands.test.ts (as needed).
+
+      - Verification: Targeted invocation tests, then full npm test and kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T20:53:54.490Z
+  - _ulid: 01KJTR1HWKASJWZXQ841WC7T4V
+    content: >-
+      Implemented ordered session event logging in runInvocation:
+
+      - Added per-invocation serialized event write queue.
+
+      - Routed all invocation event writes (dispatched/started/update/completed/timeout/failed)
+      through queue.
+
+      - Added deterministic seq progression by reusing prior appended seq + 1.
+
+      - Added regression test for concurrent update burst with injected append delays; verifies
+      chunk order and strict seq uniqueness/monotonicity.
+
+      Verification:
+
+      - npx vitest run tests/agent-invocation-lifecycle.test.ts tests/cli-agent-commands.test.ts
+      (pass)
+
+      - npm test (pass: 167 files, 3575 tests)
+
+      - kspec validate currently fails due pre-existing project meta/alignment issues unrelated to
+      this task.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T21:00:41.748Z

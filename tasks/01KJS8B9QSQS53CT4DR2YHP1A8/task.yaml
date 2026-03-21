@@ -1,0 +1,34 @@
+_ulid: 01KJS8B9QSQS53CT4DR2YHP1A8
+slugs: []
+title: Add dispatch rule flags to kspec meta add agent / meta set
+type: task
+description: "kspec meta add agent and kspec meta set have no way to set dispatch rules — the most
+  critical field for wiring agents to task lifecycle events. Direct YAML editing is required,
+  violating the CLI-only convention. Add --add-dispatch-rule <json>, --remove-dispatch-rule <on>,
+  --clear-dispatch-rules to both commands. Schema in src/schema/meta.ts (AgentDispatchRuleSchema).
+  Relevant files: src/cli/commands/meta.ts. Spec AC: @agent-definition-schema ac-12"
+spec_ref: "@agent-definition-schema"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #669: added --add-dispatch-rule, --remove-dispatch-rule, and
+  --clear-dispatch-rules to kspec meta add agent and kspec meta set with schema validation
+  (AgentDispatchRuleSchema/AgentDispatchEventSchema) plus integration coverage for
+  append/remove/clear and invalid inputs. AC coverage for @agent-definition-schema ac-1..ac-12 and
+  inherited trait ACs verified (with explicit N/A annotations where applicable)."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - agent
+  - dx
+vcs_refs: []
+session_id: 01KJW67S4NJE0CPDCB3YWPD4KX
+created_at: 2026-03-03T07:07:09.433Z
+started_at: 2026-03-04T10:28:38.127Z
+submitted_at: 2026-03-04T10:45:31.457Z
+completed_at: 2026-03-04T10:52:33.417Z
+todos: []
+automation: eligible

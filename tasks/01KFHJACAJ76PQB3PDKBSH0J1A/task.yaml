@@ -1,0 +1,23 @@
+_ulid: 01KFHJACAJ76PQB3PDKBSH0J1A
+slugs: []
+title: Create /release skill for versioning and tagging
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Release skill implemented and working. v0.1.1 published to npm via trusted
+  publishers. Includes: skill file, CI workflow with version sync, troubleshooting docs for npm OIDC
+  auth issues."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - skill
+  - dx
+vcs_refs: []
+created_at: 2026-01-22T00:40:24.145Z
+started_at: 2026-01-22T01:21:15.314Z
+completed_at: 2026-01-22T04:29:06.063Z
+todos: []

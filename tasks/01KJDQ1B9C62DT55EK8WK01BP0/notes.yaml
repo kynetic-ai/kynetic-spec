@@ -1,0 +1,22 @@
+notes:
+  - _ulid: 01KJK6BHC1K8VKC5HSMV2WE7VB
+    content: "Fixed batch-mode plan import success handling by removing success-path process.exit(0) in
+      src/cli/commands/plan-import.ts and returning normally, preventing BatchExitError from being
+      caught by the command wrapper as a hard failure. Added regression in
+      tests/batch-exec-engine.test.ts (AC: @plan-import ac-34, ac-23) verifying warning-only plan
+      import inside batch succeeds and still surfaces warning text in command output. Verification:
+      npm run build; npx vitest run tests/batch-exec-engine.test.ts; npx vitest run
+      tests/cli-plan-import.test.ts."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T22:36:53.505Z
+  - _ulid: 01KJK81N2REG4Q0KQ48PR7PY52
+    content: "Automation status set to needs_review: Subagent timed out after 20 minutes"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T23:06:26.776Z
+  - _ulid: 01KJK81QZCDJ8PNPAJEFZVJRVJ
+    content: "[RALPH SUBAGENT] Subagent timed out after 20 minutes"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T23:06:29.741Z

@@ -1,0 +1,28 @@
+_ulid: 01KFP84XPQEDWJN2ZTM04H2PY3
+slugs: []
+title: Implement Inbox View (AC-16 to AC-19)
+type: task
+spec_ref: "@web-dashboard"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #244. Implemented Inbox View E2E tests covering AC-16 to AC-19 with
+  comprehensive test coverage. Added data-testid attributes across inbox page and created 13 E2E
+  tests validating list display, add functionality, animations, and delete confirmation. Fixed
+  duplicate data-testid attributes in ItemDetail.svelte. All quality gates passed: AC coverage
+  verified, tests validate real behavior, proper isolation in temp directories."
+depends_on:
+  - "@task-watcher-impl"
+context: []
+priority: 2
+tags:
+  - e2e
+  - testing
+  - web-ui
+  - implementation
+vcs_refs: []
+created_at: 2026-01-23T20:18:51.735Z
+started_at: 2026-01-25T12:15:01.776Z
+completed_at: 2026-01-25T12:41:12.622Z
+todos: []
+automation: eligible

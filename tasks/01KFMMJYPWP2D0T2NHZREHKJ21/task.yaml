@@ -1,0 +1,28 @@
+_ulid: 01KFMMJYPWP2D0T2NHZREHKJ21
+slugs: []
+title: Create shared types package
+type: infra
+spec_ref: "@web-ui"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #196 merged successfully. Created @kynetic-ai/shared types package with
+  comprehensive TypeScript interfaces for REST API responses (TaskSummary, PaginatedResponse,
+  TaskDetail, ItemSummary, ItemDetail, InboxItem, SessionContext, Agent, Workflow, Observation,
+  SearchResult, ValidationResult, AlignmentStats, ErrorResponse), WebSocket protocol
+  (ConnectedEvent, WebSocketCommand, CommandAck, BroadcastEvent), and core schemas. All types
+  properly annotated with AC references. Greptile review feedback addressed (Zod dependency
+  removed). All CI checks passed. Local review noted no tests exist but acknowledged acceptable for
+  types-only package. Follow-up task needed for test coverage."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - phase-0
+  - foundation
+vcs_refs: []
+created_at: 2026-01-23T05:17:45.564Z
+started_at: 2026-01-23T13:55:34.628Z
+completed_at: 2026-01-23T14:10:53.817Z
+todos: []
+automation: eligible

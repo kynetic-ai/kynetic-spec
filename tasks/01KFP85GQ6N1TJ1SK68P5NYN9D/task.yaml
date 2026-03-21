@@ -1,0 +1,25 @@
+_ulid: 01KFP85GQ6N1TJ1SK68P5NYN9D
+slugs: []
+title: Implement Error Handling (@api-contract AC-22 to AC-24)
+type: task
+spec_ref: "@api-contract"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Implementation already merged to main (commit f3a2ae37). E2E tests cover AC-22,
+  AC-23, AC-24 with data-testid attributes. No PR workflow was used.
+depends_on:
+  - "@task-watcher-impl"
+context: []
+priority: 2
+tags:
+  - e2e
+  - testing
+  - web-ui
+  - implementation
+vcs_refs: []
+created_at: 2026-01-23T20:19:11.206Z
+started_at: 2026-01-25T13:07:26.473Z
+completed_at: 2026-01-25T13:26:40.071Z
+todos: []
+automation: eligible

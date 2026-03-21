@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KM4P6S60WG62D5AFWAXECG68
+    content: "Automation status set to needs_review: Missing spec_ref; task needs a spec with acceptance
+      criteria before automation can work it reliably."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T03:56:42.048Z

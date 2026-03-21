@@ -1,0 +1,123 @@
+notes:
+  - _ulid: 01KFCJVC08H9ABPRBGE1BSAAK5
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Add pending_review status to task lifecycle. This state represents 'code complete, awaiting
+      merge' - bridging the gap between in_progress (actively working) and completed
+      (merged/shipped). Tasks transition to pending_review when work is done but PR needs
+      review/merge, then to completed when actually shipped.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given TaskStatusSchema in common.ts, when validating a task status value, then
+      pending_review is accepted as a valid enum value
+
+      - ac-2: Given a task with status pending_review, when kspec task complete is run, then the
+      task transitions to completed (pending_review is a valid pre-state for completion)
+
+      - ac-3: Given a task with status in_progress, when kspec task set @task --status
+      pending_review is run, then the task transitions to pending_review
+
+      - ac-4: Given a task with status pending_review, when ready tasks are queried via kspec tasks
+      ready, then the pending_review task is NOT included (only pending tasks are ready)
+
+      - ac-5: Given tasks exist with status pending_review, when kspec session start is run, then
+      pending_review tasks are displayed in an 'Awaiting Review' or similar section separate from
+      active work
+
+      - ac-6: Given a task with status pending_review, when kspec tasks list --status pending_review
+      is run, then the task appears in the filtered list
+
+      - ac-7: Given the AGENTS.md task state diagram, when describing task lifecycle, then
+      pending_review appears between in_progress and completed with valid transition paths
+
+      - ac-8: Given the CLI help content for task commands, when viewing help for task state
+      transitions, then pending_review is documented with its purpose and valid transitions
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T02:13:28.712Z
+  - _ulid: 01KFCJVSM03HNNP1B0XE1HBCM7
+    content: >-
+      Implementation approach from codebase exploration:
+
+
+      **Files to modify:**
+
+      1. `src/schema/common.ts` (line ~52) - Add 'pending_review' to TaskStatusSchema enum
+
+      2. `src/cli/commands/task.ts` (line ~591) - Update task complete validation to accept
+      pending_review
+
+      3. `src/cli/commands/session.ts` - Add 'Awaiting Review' section for pending_review tasks
+
+      4. `src/cli/help/content.ts` (line ~233) - Update state transition docs
+
+      5. `AGENTS.md` (lines 194-204) - Update state machine diagram
+
+
+      **Key decisions:**
+
+      - Use `kspec task set --status pending_review` for transition (generic setter pattern, no new
+      command needed)
+
+      - pending_review tasks excluded from ready list automatically (isTaskReady only returns
+      pending)
+
+      - Status filtering via `kspec tasks list --status pending_review` works automatically once
+      schema updated
+
+
+      **Tests needed:**
+
+      - Schema accepts pending_review value
+
+      - task complete accepts pending_review as valid pre-state
+
+      - task set transitions in_progress → pending_review
+
+      - tasks ready excludes pending_review tasks
+
+      - tasks list --status pending_review filters correctly
+
+      - session start shows pending_review section
+
+
+      **No changes needed:**
+
+      - `src/parser/yaml.ts` - Ready task logic already only returns pending
+
+      - `src/strings/errors.ts` - Error message is already generic
+
+      - Ralph/automation - separate from task status
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T02:13:42.657Z
+  - _ulid: 01KFCKP0XBQNJSKCRGQ5GGA92B
+    content: |-
+      Implementation complete. All 8 acceptance criteria addressed:
+
+      **Code changes:**
+      - `src/schema/common.ts`: Added 'pending_review' to TaskStatusSchema enum (AC-1)
+      - `src/cli/commands/task.ts`:
+        - Updated complete validation to accept pending_review (AC-2)
+        - Added new `task submit` command for in_progress → pending_review (AC-9)
+      - `src/cli/commands/session.ts`: Added Awaiting Review section with stats (AC-5)
+      - `src/strings/labels.ts`: Added awaitingReview header
+      - `src/cli/help/content.ts`: Updated statuses and workflow docs (AC-8)
+      - `AGENTS.md`: Updated state diagram with all transitions (AC-7)
+
+      **Tests added:**
+      - 6 new integration tests covering AC-1, AC-2, AC-4, AC-6, AC-9
+      - All 624 tests pass
+
+      **How it works:**
+      1. `kspec task start @task` → in_progress
+      2. `kspec task submit @task` → pending_review (code done, PR created)
+      3. `kspec task complete @task --reason 'Merged'` → completed (after merge)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T02:28:02.092Z

@@ -1,0 +1,26 @@
+_ulid: 01KKB8FERF22X0ADS5T97D1EAB
+slugs:
+  - implement-cli-ac-backfill
+title: Implement CLI AC Backfill
+type: task
+spec_ref: "@cli-ac-backfill"
+plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #785. Reviewed and landed the shadow-branch-only CLI AC backfill
+  artifact after confirming @cli descendants now have zero missing acceptance criteria and the newly
+  added ACs are present in given/when/then form. AC coverage confirmed for @cli-ac-backfill own
+  criteria; no inherited traits applied."
+depends_on:
+  - "@implement-spec-completeness-policy"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKEXWTYTSVWK0Y52GSHJ2PFX
+created_at: 2026-03-10T06:55:45.423Z
+started_at: 2026-03-11T17:10:39.871Z
+submitted_at: 2026-03-11T17:16:38.710Z
+completed_at: 2026-03-11T17:58:43.507Z
+todos: []
+automation: eligible

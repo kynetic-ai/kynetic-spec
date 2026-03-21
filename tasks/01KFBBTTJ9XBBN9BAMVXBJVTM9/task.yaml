@@ -1,0 +1,23 @@
+_ulid: 01KFBBTTJ9XBBN9BAMVXBJVTM9
+slugs:
+  - fix-test-repo-setup
+title: Fix test repo setup command issues
+type: bug
+spec_ref: "@cmd-clone-for-testing"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #106. Fixed critical worktree setup bug causing 7/8 tests to fail. Root
+  cause: git clone --mirror copied .git/worktrees/ metadata from source repo, conflicting with new
+  worktree creation. Solution: Clean up .git/worktrees/ after clone. Also fixed test setup to ensure
+  main branch exists. All 8 tests passing, 707 total tests passing, CI green, review approved with
+  no issues."
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-19T14:51:36.393Z
+started_at: 2026-01-20T06:42:23.749Z
+completed_at: 2026-01-20T12:36:07.612Z
+todos: []

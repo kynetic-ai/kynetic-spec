@@ -1,0 +1,32 @@
+_ulid: 01KJ7CN8XG3BCY10C2Z91VB5AX
+slugs: []
+title: Free budget for no-op task completions in ralph loop
+type: spike
+description: "When a task is completed as 'already implemented' (--skip-review) during a ralph loop
+  iteration, it counts against --max-tasks budget. This wastes iterations. Proposed approach: track
+  task starts and completes per iteration; if a complete happens without a corresponding start after
+  iteration reset, treat it as free (don't count against budget). Needs design review for edge cases
+  around fix cycles and skip-review completions."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #629. Implemented needs_work→in_progress budget exemption in task
+  start: skip budget gate for fix-cycle restarts and only increment budget on pending→in_progress
+  transitions. Added coverage for ac-needs-work-no-increment with tests for no-increment and
+  budget-exhausted restart behavior; own and inherited trait AC coverage reviewed during PR check."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - ralph
+  - sessions
+vcs_refs: []
+session_id: 01KJN28PAZMZDSX3RKS2M01JZJ
+created_at: 2026-02-24T08:36:10.800Z
+started_at: 2026-03-01T18:08:44.037Z
+submitted_at: 2026-03-01T18:13:52.751Z
+completed_at: 2026-03-01T18:25:32.541Z
+todos: []
+automation: eligible

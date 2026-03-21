@@ -1,0 +1,121 @@
+notes:
+  - _ulid: 01KFMMPBB014FZFQVK77WT3HNB
+    content: |-
+      ## Implementation Notes
+
+      ### Objective
+      Implement daemon background mode with process detach, PID file management.
+
+      ### Steps
+      1. Implement --daemon flag handling:
+         ```typescript
+         if (args.daemon) {
+           const child = Bun.spawn(['bun', 'run', 'serve'], {
+             detached: true,
+             stdio: ['ignore', 'pipe', 'pipe']
+           });
+           writePidFile(child.pid);
+           process.exit(0);
+         }
+         ```
+
+      2. Write PID to .kspec/.daemon.pid on daemon start
+
+      3. Implement stop command: read PID, send SIGTERM, wait, remove PID file
+
+      4. Handle orphaned PID files (process not running)
+
+      ### ACs Covered
+      - ac-9: --daemon detaches, writes PID
+      - ac-10: stop shuts down, removes PID
+
+      ### Files to Create/Modify
+      - packages/daemon/src/daemon.ts
+      - packages/daemon/src/pid.ts
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T05:19:36.801Z
+  - _ulid: 01KFN6Z1PAQVKBBNWCJHDW2CEJ
+    content: |-
+      Implementation plan:
+      1. Create src/cli/commands/serve.ts with Commander subcommands:
+         - 'kspec serve' (foreground mode, default port 3456)
+         - 'kspec serve --daemon' (background mode with PID file)
+         - 'kspec serve stop' (graceful shutdown)
+      2. Implement daemon/pid.ts for PID file management:
+         - writePidFile() - write PID to .kspec/.daemon.pid
+         - readPidFile() - read existing PID
+         - removePidFile() - cleanup on shutdown
+         - isProcessRunning() - check if PID is alive
+      3. Implement daemon detach logic:
+         - Use Bun's subprocess spawn with detached:true
+         - Redirect stdout/stderr to .kspec/.daemon.log
+         - Parent process exits after confirming child started
+      4. Integrate with existing server.ts shutdown handler:
+         - Call removePidFile() during graceful shutdown
+      5. Add E2E tests for daemon lifecycle
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T10:38:56.203Z
+  - _ulid: 01KFN73YJNVYF1K31G7AKFFXNE
+    content: >-
+      Implementation progress:
+
+      ✅ Created PidFileManager class (packages/daemon/src/pid.ts) with
+      write/read/remove/isProcessRunning methods
+
+      ✅ Integrated PID management into server.ts (write on daemon start, remove on shutdown)
+
+      ✅ Created serve command structure (src/cli/commands/serve.ts) with serve/stop subcommands
+
+      ✅ Created comprehensive E2E tests for PID file lifecycle (tests/daemon-pid.test.ts)
+
+
+      ⚠️ Issue discovered: TypeScript compilation error - CLI (in src/) trying to import daemon (in
+      packages/) causes rootDir conflict. The daemon package is separate with its own build.
+
+
+      Solution options:
+
+      1. Make serve command dev-only (check for daemon source, not built)
+
+      2. Create separate CLI entry point in daemon package
+
+      3. Move serve logic entirely to daemon package, expose via exported function
+
+
+      Next: Fix TypeScript build errors and complete integration.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T10:41:36.853Z
+  - _ulid: 01KFN756SHREXKZDYBNAN46HBX
+    content: >-
+      Commit 30487fc: PID file management complete.
+
+
+      Implemented:
+
+      - PidFileManager class with write/read/remove/isProcessRunning
+
+      - Server integration (write PID on daemon start, remove on shutdown)
+
+      - 11 E2E tests covering all PID lifecycle scenarios
+
+
+      Remaining work:
+
+      - CLI command for 'kspec serve' and 'kspec serve stop' (should live in daemon package, not
+      src/cli)
+
+      - Process detach implementation using spawn() with detached:true
+
+      - Log file redirection (.kspec/.daemon.log)
+
+      - Integration tests for full daemon start/stop lifecycle
+
+
+      Status: Core PID management done. CLI integration blocked by package boundary issue - needs
+      architectural decision on where serve command lives.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T10:42:18.033Z

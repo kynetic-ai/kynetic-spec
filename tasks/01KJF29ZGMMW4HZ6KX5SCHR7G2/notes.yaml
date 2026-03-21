@@ -1,0 +1,42 @@
+notes:
+  - _ulid: 01KJF29ZGM26S80GYMP45CGDSY
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Ralph must render skill invocation syntax in prompts based on the adapter role
+      (worker/reviewer). Claude-family adapters use slash syntax; Codex adapters use dollar syntax
+      with core namespacing. Portable {skill:<id>} references should resolve per adapter without
+      requiring duplicate prompt templates.
+
+
+
+      Acceptance Criteria:
+
+      - ac-2: Given ralph worker adapter targets Codex harness, when the task-work prompt is built,
+      then task-work and reflect invocations use dollar-style syntax with core namespacing (for
+      example -task-work loop and -reflect loop)
+
+      - ac-6: Given worker and reviewer adapters target different harnesses, when ralph builds
+      worker and subagent prompts in the same session, then each prompt uses invocation formatting
+      for its own role adapter without cross-role leakage
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T08:09:10.420Z
+  - _ulid: 01KJF2HXZJCAATS2P6DYE2RXTM
+    content: Implemented adapter-aware skill invocation resolution for ralph prompts. Added runtime
+      resolver that maps role adapters to platforms (claude/codex), resolves portable {skill:<id>}
+      references using meta skill origins, and normalizes legacy slash-style core invocations for
+      Codex compatibility. Wired reviewer subagent prompt to use reviewer-resolved skill name and
+      worker prompts to use worker-resolved task-work/reflect names. Added ralph tests for codex
+      normalization, portable token resolution, and per-role formatting isolation.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T08:13:30.995Z
+  - _ulid: 01KJF2J4XEQ6M0S94E329E7771
+    content: "Validation: npm run build succeeded; npx vitest run tests/ralph.test.ts passed (111/111).
+      Also ran kspec validate: it failed on pre-existing repository-level reference/alignment issues
+      (e.g., duplicate @observations slug), not introduced by this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T08:13:38.094Z

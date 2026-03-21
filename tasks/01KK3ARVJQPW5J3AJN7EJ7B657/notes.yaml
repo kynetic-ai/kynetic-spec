@@ -1,0 +1,59 @@
+notes:
+  - _ulid: 01KK3RGMDK99G29CHYCV7DQRJT
+    content: >-
+      Fixed collapsed tool call header to enforce single-line layout:
+
+      - Added overflow-hidden to the button container to prevent content overflow
+
+      - Added flex-shrink-0 + whitespace-nowrap to chevron, timestamp, tool name badge, and status
+      icons — these never shrink
+
+      - Changed preview span from flex-1 to min-w-0 for proper truncation in flex context (truncate
+      class already present)
+
+      - Duration badge already had flex-shrink-0 and ml-auto — preserved as-is
+
+      - Added AC annotation comment referencing @ui-session-stream ac-5
+
+      - No E2E test needed — this is a CSS-only fix; ac-5 acceptance criteria is validated by visual
+      inspection of the layout behavior
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T09:02:05.747Z
+  - _ulid: 01KK3SH2SATAPQFGSCXKTNH29Z
+    content: "Review findings: MUST-FIX 1)
+      packages/web-ui/src/lib/components/session/ToolCallView.svelte:70 makes the tool-name badge
+      flex-shrink-0 + whitespace-nowrap without truncation. With long tool names this can force
+      overflow clipping and hide right-side timing/status controls due button-level overflow-hidden,
+      violating task requirement that controls stay visible and only tool name/parameter summary
+      truncate. MUST-FIX 2) Missing test AC coverage for @ui-session-stream ac-5. No // AC:
+      @ui-session-stream ac-5 exists in test files (tests/ or packages/web-ui/tests/); only a source
+      comment was added in ToolCallView.svelte. Add a test that validates collapsed-row single-line
+      + truncation behavior and annotate it with ac-5. Regression suite status: npm test PASS, cd
+      packages/web-ui && npm test PASS. kspec validate reports repo-level existing issues; no
+      spec-specific warning for @ui-session-stream was surfaced in this change."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-07T09:19:49.034Z
+  - _ulid: 01KK3SHDQD386J6SG92G69AT32
+    content: "[FIX_CYCLE: 1] Review findings: Review issues: tool-call row layout still violates
+      single-line truncation contract (controls can be clipped), and @ui-session-stream ac-5 test
+      coverage annotation is missing."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-07T09:20:00.237Z
+  - _ulid: 01KK3TMWTGPF8P0CVQKHNWJ09F
+    content: >-
+      Fix cycle 1 addressed both MUST-FIX items:
+
+      1) Tool name badge changed from flex-shrink-0+whitespace-nowrap to min-w-0+max-w-[40%] with
+      inner truncate span. Icon inside badge keeps flex-shrink-0. This ensures long tool names
+      truncate with ellipsis while right-side controls (status icon, duration) remain visible.
+
+      2) Added 6 tests annotated with // AC: @ui-session-stream ac-5 in
+      web-ui-session-stream.test.ts — verifies overflow-hidden on button, flex-shrink-0 on
+      chevron/timestamp/duration/status-icons, min-w-0+truncate on tool name badge (and NOT
+      flex-shrink-0), and truncate on preview span.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T09:39:22.577Z

@@ -1,0 +1,46 @@
+_ulid: 01KJ9ZJPKKHWSJZT2E289J9B1Z
+slugs: []
+title: Fix removeAllListeners() in readStdinIfAvailable to use named handlers
+type: bug
+description: >-
+  In src/cli/commands/session.ts, the readStdinIfAvailable() function (~line 1669-1696) calls
+  process.stdin.removeAllListeners() in its timeout handler. This removes ALL stdin listeners, not
+  just the ones this function added, which could break other code with stdin listeners.
+
+
+  Fix: Replace with named handler functions and use process.stdin.removeListener(event, handler) to
+  only clean up the specific handlers this function registered.
+
+
+  Current pattern:
+    process.stdin.removeAllListeners()
+
+  Should be:
+    const onData = (chunk) => { ... };
+    const onEnd = () => { ... };
+    process.stdin.on('data', onData);
+    process.stdin.on('end', onEnd);
+    // In cleanup:
+    process.stdin.removeListener('data', onData);
+    process.stdin.removeListener('end', onEnd);
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #526. Replaced removeAllListeners() with named handlers + cleanup()
+  pattern in readStdinIfAvailable() and readStdinFully() in item.ts. Static analysis test added to
+  prevent regression. All CI passed."
+depends_on:
+  - "@01KJ9ZBT"
+context: []
+priority: 2
+tags:
+  - bug
+  - cli
+vcs_refs: []
+created_at: 2026-02-25T08:45:18.323Z
+started_at: 2026-02-25T12:04:01.500Z
+completed_at: 2026-02-25T12:21:26.748Z
+todos: []
+automation: eligible

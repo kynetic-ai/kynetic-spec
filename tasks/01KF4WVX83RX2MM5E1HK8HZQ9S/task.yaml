@@ -1,0 +1,23 @@
+_ulid: 01KF4WVX83RX2MM5E1HK8HZQ9S
+slugs:
+  - task-meta-reference-integration
+title: "Implement: Meta Reference Integration"
+type: task
+spec_ref: "@meta-ref"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: All 4 acceptance criteria implemented and tested. Added meta_ref field to tasks with
+  full validation and filtering support.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - mvp
+  - meta
+  - tasks
+vcs_refs: []
+created_at: 2026-01-17T02:34:36.675Z
+started_at: 2026-01-18T01:36:31.629Z
+completed_at: 2026-01-18T01:46:56.089Z
+todos: []

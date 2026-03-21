@@ -1,0 +1,30 @@
+_ulid: 01KJTHAB6NRKQE12JJ7Q7V80CK
+slugs: []
+title: Fix core-skill-install test flakiness in shard 3
+type: task
+description: "tests/core-skill-install.test.ts has 1 test failure when run in shard 3. The failure
+  is related to codex config: expected codex config to contain project_doc_fallback_filenames and
+  kspec-agents.md but the test fails. May be related to parallel test execution or file state
+  issues."
+spec_ref: "@new-project-bootstrapping"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Already implemented on main (commit 5818b63152dc6d38a7a0c95747264714b8995b0b on
+  2026-02-26). Verified by 15 repeated runs of tests/core-skill-install.test.ts with 0 failures;
+  observed shard-3 failure is unrelated and in tests/cli-serve.test.ts.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - bug
+vcs_refs: []
+session_id: 01KJWE283MT0YWZ2HTK0PMDTF7
+created_at: 2026-03-03T19:03:09.781Z
+started_at: 2026-03-04T12:49:50.073Z
+submitted_at: 2026-03-04T12:49:54.611Z
+completed_at: 2026-03-04T12:49:58.488Z
+todos: []
+automation: eligible

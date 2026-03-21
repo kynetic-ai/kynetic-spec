@@ -1,0 +1,63 @@
+notes:
+  - _ulid: 01KM46S696V7ENDJYV9KC8126X
+    content: Started implementation review. Rebasing showed the task branch is already current with
+      origin/dev. Inspecting all plan summary aggregation paths and existing tests to ensure
+      cancelled linked tasks are excluded consistently across API, CLI, UI, and export/static
+      surfaces.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T23:27:08.071Z
+  - _ulid: 01KM47KVQD6DZVPR4RT7CBMH2K
+    content: "Implemented shared cancelled-task exclusion for plan summary metrics. Added a shared
+      plan-summary helper and wired daemon plan routes, JSON/static export generation, and CLI plan
+      list counts to ignore cancelled linked tasks unless cancelled status is explicitly reported.
+      Added AC-tagged regression coverage for export snapshots, CLI plan list output, and the plans
+      API route. Verification: npm test -- tests/cli-plan.test.ts tests/export/json.test.ts passed.
+      kspec validate still reports pre-existing repo validation/reference debt unrelated to this
+      task. npm run test:e2e -- packages/web-ui/tests/e2e/plans.spec.ts is blocked in dispatch mode
+      because the Playwright fixture tries to start kspec serve, which this environment forbids."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T23:41:41.997Z
+  - _ulid: 01KM47YS3C3PASAM0HA60S0VQR
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T23:47:39.757Z
+  - _ulid: 01KM48H3SFB3R0NFRTDXFYD57X
+    content: "[FIX_CYCLE: 1] Restored plan summary linkage semantics so metrics resolve linked tasks
+      from both plan.derived_tasks and task.plan_ref, then apply cancelled-task exclusion on top.
+      Updated the shared helper used by export, daemon plan routes, and CLI plan list, and added
+      regressions for plan_ref-only links plus cancelled-task filtering. Verification: npm test --
+      tests/plan-summary.test.ts tests/cli-plan.test.ts tests/export/json.test.ts passed. kspec
+      validate still reports pre-existing repo-wide reference/completeness debt unrelated to this
+      task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T23:57:40.527Z
+  - _ulid: 01KM48VEWY7WCT2J2KTDWE6MB1
+    content: "[FIX_CYCLE: 3] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T00:03:19.582Z
+  - _ulid: 01KM49NN1T84G3QMK0DMFMQT65
+    content: "[FIX_CYCLE: 3] Restored short-ULID plan_ref matching in shared plan summary linkage so
+      plan_ref-only tasks continue to resolve across CLI, export, and daemon surfaces before
+      cancelled-task exclusion is applied. Added AC-tagged regressions in tests/plan-summary.test.ts
+      plus CLI/export coverage that uses @<short-ulid> plan refs directly. Verification: npm test --
+      tests/plan-summary.test.ts tests/cli-plan.test.ts tests/export/json.test.ts passed; full npm
+      test passed. kspec validate still reports pre-existing repo-wide
+      reference/alignment/completeness debt unrelated to this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T00:17:37.850Z
+  - _ulid: 01KM4FMYQ5VF8H5P09SBFE4PK3
+    content: "[FIX_CYCLE: 4] Rebased the canonical worker branch onto origin/dev and re-verified the
+      review blocker on current head. npm test -- tests/cli-serve.test.ts passed, the six-file
+      reduced repro from the initial flaky full-run failures passed, and a third full npm test run
+      passed cleanly on current head (289 files, 6624 passed, 3 skipped). This cycle did not require
+      additional code changes beyond the already-landed plan-summary fixes; the blocker on cycle 3
+      was a stale, non-deterministic full-suite failure unrelated to the plan summary behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T02:02:06.438Z

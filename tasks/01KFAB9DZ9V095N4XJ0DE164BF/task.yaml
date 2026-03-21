@@ -1,0 +1,22 @@
+_ulid: 01KFAB9DZ9V095N4XJ0DE164BF
+slugs: []
+title: Add --description flag to inbox promote
+type: task
+description: inbox promote --description flag - add description during promote instead of needing to
+  add note separately after. Preserves workflow continuity.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Added --description flag to inbox promote command with comprehensive tests
+depends_on: []
+context: []
+priority: 3
+tags:
+  - reflection
+  - cli
+  - dx
+vcs_refs: []
+created_at: 2026-01-19T05:22:52.009Z
+started_at: 2026-01-19T07:05:16.789Z
+completed_at: 2026-01-19T07:12:15.710Z
+todos: []

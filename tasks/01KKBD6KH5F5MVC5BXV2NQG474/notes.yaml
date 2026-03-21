@@ -1,0 +1,123 @@
+notes:
+  - _ulid: 01KKCCRYC9T4N7VMF98HFE4CME
+    content: >-
+      Execution context:
+
+      - Background: Daemon session sync only ran for startupProjectPath. Additional projects
+      registered via API or middleware auto-registration did not get periodic session pulls.
+
+      - Scope: Extend session sync to all registered projects, not just startup project.
+
+      - Files changed:
+        - packages/daemon/src/server.ts: Extracted startSessionSyncForProject/stopSessionSyncForProject helpers, changed single scheduler to Map, wired callbacks
+        - packages/daemon/src/routes/projects.ts: Added onProjectRegistered/onProjectUnregistered callbacks
+        - packages/daemon/src/middleware/project-context.ts: Added onProjectRegistered callback for auto-registration path
+        - tests/daemon-session-sync-multi-project.test.ts: New test file with 6 behavioral tests
+      - Approach: Follow existing watcher-per-project pattern. Three registration paths covered:
+      startup init, POST /api/projects, and middleware auto-registration via X-Kspec-Dir header.
+
+      - Verification: TypeScript compiles clean, new tests pass, full suite running.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T17:30:05.066Z
+  - _ulid: 01KKCF2479WQZ6RDASDVHZPH6T
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: middleware auto-registration passes a
+      non-normalized project path into session-sync scheduler bookkeeping, so daemon dedupe/cleanup
+      can miss duplicate or orphaned schedulers for the same project."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T18:10:03.113Z
+  - _ulid: 01KKCGGJBW2R5GG05ZTGG86V4D
+    content: "Fix cycle 1 addressed: Changed middleware auto-registration to pass projectContext.path
+      (normalized) instead of raw projectPath header to onProjectRegistered callback. Added
+      regression test with non-canonical path (/tmp/project-a/./) verifying normalization. All 7
+      tests in daemon-session-sync-multi-project.test.ts pass. Full suite green except pre-existing
+      trait-retrospective failure on main."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T18:35:24.924Z
+  - _ulid: 01KKCJN1CP6092ZXQCNDRA5ST0
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: PR #758 still leaves WebSocket auto-registration
+      in packages/daemon/src/server.ts outside the session-sync lifecycle, so projects first
+      registered via /ws?project=... or X-Kspec-Dir WebSocket binding still miss periodic session
+      pulls."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T19:12:48.535Z
+  - _ulid: 01KKCM84FNVANBA5758YBD8Y94
+    content: >-
+      Fix cycle 2 addressed: Wired WebSocket auto-registration into session-sync lifecycle. Changes:
+
+      1. Added getOrRegisterProject() to ProjectContextManager — returns {context, wasRegistered} to
+      unify the try-get-or-register pattern
+
+      2. All three registration paths (middleware, projects API, WebSocket beforeHandle) now use the
+      same shared onProjectRegistered callback
+
+      3. WebSocket beforeHandle now calls onProjectRegistered(projectContext.path) when
+      wasRegistered=true, starting session sync for WebSocket-registered projects
+
+      4. Added 5 new tests for getOrRegisterProject covering: new registration, existing project,
+      path normalization, double-register prevention, and callback-only-on-new-registration pattern
+
+      5. Middleware also refactored to use getOrRegisterProject for consistency, and error log
+      messages now use normalized projectContext.path
+
+      All 12 tests in daemon-session-sync-multi-project.test.ts pass. Full suite green except
+      pre-existing trait-retrospective failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T19:40:42.869Z
+  - _ulid: 01KKCNMZBES5W2K6RZ2NF2FGJZ
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: DELETE /api/projects still passes an
+      unnormalized path into session-sync teardown, so unregistering via a non-canonical path can
+      leave an orphaned scheduler running. Also, PR #758 is not mergeable on March 10, 2026 because
+      GitHub Actions test (shard 3/3) is failing on tests/file-lock.test.ts."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T20:05:12.175Z
+  - _ulid: 01KKCQP27XWNYMB9CN8T6ZM5R5
+    content: >-
+      Fix cycle 3 addressed: Normalized path in DELETE /api/projects route before passing to
+      onProjectUnregistered callback. Changes:
+
+      1. DELETE handler now uses getProject(projectPath) to resolve normalized ProjectContext
+      instead of passing raw decoded URL parameter
+
+      2. All downstream calls (onProjectUnregistered, stopWatcher, unregisterProject) use
+      context.path (normalized)
+
+      3. Added regression test: DELETE with non-canonical path (projectA + '/./') verifies
+      onProjectUnregistered receives normalized path
+
+      4. file-lock.test.ts shard 3 failure is pre-existing race condition in CI (count: 4 vs count:
+      5) — not related to this PR. Same failure reproduces on main.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T20:40:45.053Z
+  - _ulid: 01KKCS74SNDH3NW7NASJ26YWVA
+    content: "[FIX_CYCLE: 4] Review findings: SHOULD-FIX: add direct regression coverage for the
+      WebSocket registration path in daemon session-sync lifecycle"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T21:07:33.302Z
+  - _ulid: 01KKCTY824A2TRABHGAC8H0ZTX
+    content: >-
+      Fix cycle 4 addressed: Added direct regression coverage for WebSocket registration path in
+      session-sync lifecycle. Changes:
+
+      1. Extracted resolveWebSocketProject() from inline server.ts beforeHandle into
+      packages/daemon/src/websocket/project-resolution.ts — isolates the WebSocket project
+      resolution logic for testing without pulling in the full server dependency tree
+
+      2. Server.ts beforeHandle now delegates to the extracted function (no behavior change)
+
+      3. Added 7 new tests covering: header-based registration, query-param registration,
+      already-registered skip, path normalization regression, default project fallback, no-default
+      error, and header-over-query precedence
+
+      All 20 tests in daemon-session-sync-multi-project.test.ts pass. Full suite green except
+      pre-existing failures (trait-retrospective, cli-serve, integration null-clearing).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T21:37:38.884Z

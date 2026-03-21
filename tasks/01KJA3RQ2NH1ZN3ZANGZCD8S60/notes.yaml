@@ -1,0 +1,21 @@
+notes:
+  - _ulid: 01KJAQTRATZ7VZ2V1EXYYXQ02J
+    content: "[LOOP-FAIL:1] Task 01KJA3RQ2NH1ZN3ZANGZCD8S60 failed: Internal error: Your account does
+      not have access to Claude. Please login again or contact your administrator."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T15:49:08.058Z
+  - _ulid: 01KJAZB5RTRK450RJ3E7R99T2Q
+    content: Reset from in_progress to pending
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T18:00:26.138Z
+  - _ulid: 01KJBBWWGX73CPFVNE9KX4YQJ4
+    content: Removed redundant dynamic import of ImplementationStatusSchema in item list handler (line
+      328). The schema was already statically imported at lines 35-38. The dynamic import
+      unnecessarily shadowed the static import and created a duplicate module reference. Replaced
+      with reference to the already-available static import. All tests pass including
+      multi-value-status-filter.test.ts which exercises the fixed code path.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T21:39:49.406Z

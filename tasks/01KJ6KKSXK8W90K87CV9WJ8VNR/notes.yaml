@@ -1,0 +1,23 @@
+notes:
+  - _ulid: 01KJ6KKSXKXXMJH8SVZN2GEJCD
+    content: |
+      Implement --inject flag for kspec session create with per-harness environment
+      variable injection. Reuse detectAgent() from src/cli/commands/setup.ts. Claude
+      Code via CLAUDE_ENV_FILE or settings.json env. Codex via config.toml. Fallback
+      to export instructions for unknown harnesses. Start with Claude Code (best
+      documented), add others incrementally.
+    author: "@claude"
+    created_at: 2026-02-24T01:18:28.275Z
+  - _ulid: 01KJ8RP3SAFKY418HYF82YR36Z
+    content: "Added multi-harness env injection for Gemini CLI and OpenCode. Gemini CLI: writes to
+      .gemini/.env in project root (auto-loaded by Gemini CLI). OpenCode: writes to project root
+      .env (auto-loaded by Bun runtime). Both use a shared upsertDotenvSessionId() helper that
+      replaces existing KSPEC_SESSION_ID lines or appends new ones. Updated performEnvInjection()
+      routing to detect GEMINI_CLI=1 and OPENCODE_CONFIG_DIR/OPENCODE_CONFIG env vars. Updated
+      EnvInjectionResult method type. 8 new tests (3 Gemini, 3 OpenCode library, 2 CLI integration).
+      Also updated existing CLI fallback tests to clear new env vars. All other harnesses (Cline,
+      Aider, Copilot, Amp) fall through to the existing export fallback since they lack config-based
+      env injection mechanisms."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T21:25:35.658Z

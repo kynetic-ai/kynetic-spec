@@ -1,0 +1,25 @@
+_ulid: 01KFMMQ725ZMG11F5SZM35SQFT
+slugs: []
+title: Spec item API endpoints
+type: task
+spec_ref: "@api-contract"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #192 merged successfully. Implemented Spec Item API endpoints covering ac-8
+  through ac-11 from @api-contract spec. All CI checks passed. Greptile review feedback addressed
+  (ItemIndex -> ReferenceIndex fix already committed). Local review APPROVED with advisories noted
+  (code inspection test strategy is consistent with project patterns). All 4 target ACs have test
+  coverage with proper annotations."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - phase-2
+  - api
+vcs_refs: []
+created_at: 2026-01-23T05:20:05.189Z
+started_at: 2026-01-23T12:30:02.487Z
+completed_at: 2026-01-23T12:50:59.437Z
+todos: []
+automation: eligible

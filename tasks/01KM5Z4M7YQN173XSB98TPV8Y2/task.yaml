@@ -1,0 +1,82 @@
+_ulid: 01KM5Z4M7YQN173XSB98TPV8Y2
+slugs:
+  - task-daemon-api-input-validation
+title: Tighten daemon API input schemas
+type: task
+description: |
+  **What:** Replace loose t.String() with strict t.Union([t.Literal(...)])
+  in Elysia schemas for all daemon API endpoints that accept typed fields.
+  This covers both mutation endpoints (8 with loose enum body fields) and
+  query endpoints (7+ routes with loose enum filter params).
+
+  **Why:** The web UI uses these endpoints. Loose t.String() schemas mean
+  arbitrary values are accepted. For mutations, this risks data corruption.
+  For queries, this causes silent empty results on typos — the same problem
+  as CLI filters. Framework-level Elysia validation rejects requests before
+  the handler runs.
+
+  **How:** For each endpoint, replace loose Elysia types with strict unions
+  derived from Zod schemas. Reference pattern exists at
+  packages/daemon/src/routes/meta.ts (PATCH /api/meta/agents/:id) which
+  uses Schema.options.map(v => t.Literal(v)).
+
+  Mutation endpoints:
+  - packages/daemon/src/routes/reviews.ts:
+    POST /comments: kind, anchor.type, anchor.side
+    POST /verdicts: decision
+    POST /checks: status
+    PATCH /lifecycle: target
+  - packages/daemon/src/routes/triage.ts:
+    POST /: action
+    POST /:ref/override: action
+  - packages/daemon/src/routes/agent-dispatch.ts:
+    POST /events: from_status, to_status
+
+  Query/filter endpoints:
+  - packages/daemon/src/routes/tasks.ts: GET /api/tasks — status, type,
+    automation filter params
+  - packages/daemon/src/routes/items.ts: GET /api/items — type, maturity,
+    implementation filter params
+  - packages/daemon/src/routes/reviews.ts: GET /api/reviews — status,
+    disposition filter params
+  - packages/daemon/src/routes/triage.ts: GET /api/triage — status, action
+  - packages/daemon/src/routes/plans.ts: GET /api/plans — status
+  - packages/daemon/src/routes/sessions routes — status, agent_type
+  - packages/daemon/src/routes/validation.ts: search — type, status
+
+  Keep existing manual handler validation as defense-in-depth.
+
+  Covers: @api-input-type-safety ac-1 through ac-4.
+spec_ref: "@api-input-type-safety"
+plan_ref: "@plan-input-validation-hardening"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev after approved review. Tightened daemon API enum input schemas against
+  canonical schema options, preserved the dispatched session trigger alias, and added daemon
+  regression coverage for invalid mutation/query enum inputs.
+depends_on:
+  - "@task-schema-derived-types"
+context: []
+priority: 2
+tags:
+  - daemon
+  - validation
+  - web-ui
+vcs_refs: []
+review_ref: "@01KM67AGRJ58Q4A1FBWDT2V6FM"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T18:13:08.389Z
+  commit: a507fc148a704f8aa708f7e5599780cbbac0622f
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM66NSWRVB053Y718W04XJ75
+created_at: 2026-03-20T15:52:03.070Z
+started_at: 2026-03-20T18:12:31.954Z
+submitted_at: 2026-03-20T18:13:08.823Z
+completed_at: 2026-03-20T18:20:32.746Z
+todos: []
+automation: eligible

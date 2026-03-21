@@ -1,0 +1,198 @@
+notes:
+  - _ulid: 01KKCEF8PK7H5BKQZPBG45S9RP
+    content: >-
+      ## Implementation Guide
+
+
+      ### Covers ACs: ac-resolve-roots, ac-no-worktree-unchanged, ac-submodule-safe, ac-performance
+
+
+      ### 1. Add resolveProjectRoots() to src/parser/shadow.ts
+
+
+      New function alongside existing getGitRoot(). Returns ProjectRoots interface:
+
+      { mainRoot: string, worktreeRoot: string, isWorktree: boolean } | null
+
+
+      Algorithm:
+
+      - Single git rev-parse --show-toplevel --git-common-dir call (two-line output)
+
+      - Parse toplevel (line 1) and commonDir (line 2)
+
+      - Resolve commonDir against toplevel if relative
+
+      - Submodule guard: use path segment analysis (split on path.sep, check for .git followed by
+      modules segments), NOT raw string .includes(). Return isWorktree=false for submodules.
+
+      - If resolvedCommonDir === path.join(toplevel, '.git'), return isWorktree=false (main repo)
+
+      - Otherwise return { mainRoot: path.dirname(resolvedCommonDir), worktreeRoot: toplevel,
+      isWorktree: true }
+
+      - Return null if git commands fail
+
+
+      Keep getGitRoot() as-is for interactive commands (init, setup, doctor).
+
+
+      ### 2. Add projectRoot to KspecContext in src/parser/yaml.ts
+
+
+      interface KspecContext {
+        rootDir: string;         // code checkout root (worktree root when in worktree)
+        projectRoot: string;     // main repo root (where .kspec lives, daemon identity)
+        specDir: string;         // unchanged
+        sessionsDir: string;     // unchanged - at projectRoot
+        // ... rest unchanged
+      }
+
+
+      ### 3. Update initContext() in src/parser/yaml.ts
+
+
+      Current flow makes 2+ git spawns. New flow makes 1:
+
+      - Call resolveProjectRoots(cwd) once at the top
+
+      - Pass roots.mainRoot to loadProjectConfig(cwd, roots.mainRoot)
+
+      - detectRunningFromShadowWorktree unchanged (reads .git file, no spawn)
+
+      - Pass roots.mainRoot to detectShadow(cwd, options, roots.mainRoot)
+
+      - Return: rootDir = roots.worktreeRoot, projectRoot = roots.mainRoot
+
+      - sessionsDir = path.join(roots.mainRoot, ".kspec-sessions")
+
+      - Handle null roots (not a git repo) same as current getGitRoot null handling
+
+
+      ### 4. Add mainRoot? param to src/parser/config.ts
+
+
+      findProjectRoot(startDir, mainRoot?) and loadProjectConfig(startDir, mainRoot?)
+
+      When mainRoot provided, skip getGitRoot call. KSPEC_BATCH_PROJECT_ROOT still takes priority.
+
+
+      ### 5. Add mainRoot? param to detectShadow() in src/parser/shadow.ts
+
+
+      detectShadow(startDir, options?, mainRoot?) — use mainRoot instead of getGitRoot when
+      provided.
+
+
+      ### Tests
+
+
+      File: tests/parser/resolve-project-roots.test.ts
+
+
+      Setup pattern:
+
+      ```
+
+      const mainDir = await createTempDir();
+
+      await initGitRepo(mainDir);
+
+      execSync('git commit --allow-empty -m "init"', { cwd: mainDir });
+
+      const wtDir = path.join(await createTempDir(), 'wt');
+
+      execSync(`git worktree add ${wtDir} -b test-branch`, { cwd: mainDir });
+
+      ```
+
+
+      Cases:
+
+      1. Main repo: mainRoot === worktreeRoot, isWorktree === false
+
+      2. Linked worktree: mainRoot = original, worktreeRoot = wt, isWorktree === true
+
+      3. Worktree outside parent dir: still resolves
+
+      4. Not a git repo: returns null
+
+      5. Submodule: isWorktree === false
+
+      6. Detached worktree (--detach): same as linked
+
+
+      File: tests/worktree-context.test.ts
+
+      Integration tests for initContext from worktree. Need to set up a full kspec shadow branch in
+      the main repo, then verify initContext from the worktree finds .kspec, returns correct
+      rootDir/projectRoot/specDir/sessionsDir.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T17:59:45.108Z
+  - _ulid: 01KKCEQ28R1MVCJA479NE4H5TR
+    content: "ADDITIONAL TEST: Add bare git repo test case to resolveProjectRoots tests - should return
+      null (same outcome as 'not a git repo' since --show-toplevel fails on bare repos, but distinct
+      setup: git init --bare)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T18:04:00.664Z
+  - _ulid: 01KKD8MT1ZGDTXRXEPW193HA5X
+    content: >-
+      Execution context:
+
+      - Background: worktree-aware root resolution must distinguish code checkout root from main
+      project root where .kspec and daemon identity live.
+
+      - Scope: add resolveProjectRoots(), thread projectRoot through initContext/config/shadow
+      detection, fix agent/dispatch headers and serve/shadow command defaults.
+
+      - Files: src/parser/shadow.ts, src/parser/yaml.ts, src/parser/config.ts,
+      src/cli/commands/agent.ts, src/cli/commands/serve.ts, src/cli/commands/shadow.ts,
+      packages/daemon/src/routes/agent-dispatch.ts, related tests.
+
+      - Verification: targeted parser/worktree/agent/serve/shadow tests plus npm test for affected
+      files if runtime permits.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T01:37:09.695Z
+  - _ulid: 01KKD99HNEM81T2GSX09BK7JQJ
+    content: >-
+      Implemented worktree-aware root resolution end-to-end.
+
+      - Added resolveProjectRoots() and threaded projectRoot through initContext/config/shadow
+      detection.
+
+      - Updated agent/task daemon identity headers to use projectRoot and dispatch start to send
+      X-Kspec-Cwd=rootDir.
+
+      - Fixed serve/shadow command default resolution from linked worktrees.
+
+      - Added worktree/root-resolution coverage plus false-positive guard regression tests.
+
+      - Verification: targeted npm test subset passed, full npm test passed (203 files / 4533
+      tests), kspec validate returned existing repo warnings only.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T01:48:29.230Z
+  - _ulid: 01KKD9G9TNZHVYV490W6QTPE3J
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: missing @worktree-support AC coverage for
+      ac-shadow-commands, ac-serve-default, and ac-performance"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T01:52:10.582Z
+  - _ulid: 01KKDA2KNRZRWKM8W57WZ597G4
+    content: "Fix cycle: restoring task to in_progress on branch fix/task-worktree-core-resolution to
+      add missing @worktree-support AC coverage for shadow, serve, and performance cases."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T02:02:10.488Z
+  - _ulid: 01KKDA894KA8N53MY1FNJ54XMF
+    content: "Addressed FIX_CYCLE 1 review feedback by adding explicit @worktree-support AC coverage for
+      shadow command root resolution, serve default .kspec resolution, and initContext single-call
+      git root resolution. Verification: npm test -- tests/worktree-context.test.ts
+      tests/parser/resolve-project-roots.test.ts tests/cli-worktree-resolution.test.ts
+      tests/parser/init-context-performance.test.ts; kspec validate (repo warnings only)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T02:05:16.307Z

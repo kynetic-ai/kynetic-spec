@@ -1,0 +1,25 @@
+_ulid: 01KJ316F9ESM6V9JBSKEYDA163
+slugs: []
+title: Spec and formalize .kspec/artifacts/ directory convention
+type: task
+spec_ref: "@artifacts-directory"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #446. Artifacts directory convention implemented: init/setup/repair
+  create .kspec/artifacts/, doctor health check, .gitignore exclusion, 6 tests. Codex review noted:
+  spec wording re .gitkeep should be updated (intentionally skipped since dir is gitignored), setup
+  hardcodes .kspec path (low-risk), repair doesn't ensure .gitignore for legacy branches."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - spec
+  - dx
+  - convention
+vcs_refs: []
+created_at: 2026-02-22T15:58:53.742Z
+started_at: 2026-02-22T17:47:04.173Z
+completed_at: 2026-02-22T18:30:32.817Z
+todos: []

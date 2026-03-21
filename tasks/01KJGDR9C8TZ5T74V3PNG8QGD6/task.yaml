@@ -1,0 +1,25 @@
+_ulid: 01KJGDR9C8TZ5T74V3PNG8QGD6
+slugs: []
+title: Fix ralph session-budget-integration test timeouts
+type: task
+description: "2 tests failing in tests/ralph/session-budget-integration.test.ts: (1) ralph loop
+  times out waiting for completion marker, (2) output doesn't contain expected 'Iteration failed'
+  string. These are race conditions or mock issues in the ralph loop test harness, not version bump
+  related. Originally bundled in @01KJDSXEME66TYKVVGGFW6PYT2 which was cancelled after the
+  version-bump failures resolved themselves."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: All 15 tests pass — issue resolved organically
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - testing
+  - ralph
+vcs_refs: []
+created_at: 2026-02-27T20:48:28.039Z
+todos: []

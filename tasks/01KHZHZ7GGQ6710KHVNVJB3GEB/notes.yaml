@@ -1,0 +1,8 @@
+notes:
+  - _ulid: 01KHZJ60P7SWM2JR6XDDWMCPWP
+    content: "Fixed: added task.description display in formatTaskDetails() in output.ts. Shows as a
+      Description section between automation and spec_ref fields. Added 2 test cases verifying text
+      output includes/excludes description appropriately."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-21T07:38:46.855Z

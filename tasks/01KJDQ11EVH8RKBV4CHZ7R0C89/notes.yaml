@@ -1,0 +1,86 @@
+notes:
+  - _ulid: 01KJJ7ZVSTGWCFRGPCPWA7587W
+    content: "Execution update: identified duplicate core skill IDs in meta ( v0.7.0 and  v0.9.0).
+      Removed legacy  entry via kspec batch + skill delete to resolve shared-slug ambiguity with
+      @observations spec feature."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T13:46:13.690Z
+  - _ulid: 01KJJ816JX13KFTWQR04ZCDKVE
+    content: "Verification: removed legacy skill id observations; kept core skill id observe. kspec
+      validate now passes References: OK with no duplicate @observations slug errors. Regenerated
+      kspec-agents.md so skills table points to /kspec:observe only."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T13:46:57.501Z
+  - _ulid: 01KJJ821Z9S9HZ59G3GAGTPRG1
+    content: "Submitted for review in PR #599: https://github.com/kynetic-ai/kynetic-spec/pull/599.
+      Removed legacy skill id observations via batch skill delete, regenerated kspec-agents.md to
+      reference /kspec:observe, and verified kspec validate reports References: OK with no duplicate
+      @observations errors."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T13:47:25.545Z
+  - _ulid: 01KJJGN6SDBKB5F8XBK65K9WRB
+    content: >-
+      [Restored from pre-merge local branch — these 8 notes were lost during shadow branch merge on
+      2026-02-28 due to merge driver bug (missing --non-interactive flag). See task @01KJJGJ1 for
+      details.]
+
+
+      [2026-02-27T21:51:48.196Z] Jacob Chapel:
+
+      Execution context:
+
+      - Background: validate fails due to @observations slug collision between spec slug and skill
+      id.
+
+      - Scope: rename colliding skill id, update dependent references/rendered skills, and verify
+      validate/agents generation behavior.
+
+
+      [2026-02-27T21:56:40.665Z] Jacob Chapel:
+
+      Implemented fix for @observations slug ambiguity. Used atomic batch mutation to replace
+      colliding skill id: skill add id=observe (core, v0.8.0), skill delete @observations --confirm.
+      Regenerated agent instructions, rendered renamed skill. Verification: kspec validate --refs
+      reports References: OK, kspec-agents.md advertises /kspec:observe.
+
+
+      [2026-02-27T21:56:55.297Z] Jacob Chapel:
+
+      Correction: residual reference note refers to literal token kspec-observations in rendered
+      skill docs; not part of this fix scope.
+
+
+      [2026-02-27T22:43:06.563Z] Jacob Chapel:
+
+      Reset from pending_review to pending
+
+
+      [2026-02-27T22:44:41.479Z] Jacob Chapel:
+
+      Re-validated after harness reset: fix already present in source-of-truth state. kspec validate
+      --refs: References OK. Completing as already implemented.
+
+
+      [2026-02-27T23:17:36.075Z] Jacob Chapel:
+
+      Reset from completed to pending
+
+
+      [2026-02-27T23:23:34.592Z] Jacob Chapel:
+
+      Source-of-truth follow-up fix completed for observe/observations drift. Root cause:
+      templates/skills/manifest.yaml still declared id=observations. Renamed template dir, updated
+      manifest, fixed cross-skill references, regenerated codex rendered skill. All tests passing
+      (195 across 6 files).
+
+
+      [2026-02-27T23:26:04.083Z] Jacob Chapel:
+
+      Post-fix sync and verification complete. Ran kspec skill update, re-rendered codex observe
+      skill with cleanup, re-verified references, re-ran focused regression suite — all passing.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T16:17:41.677Z

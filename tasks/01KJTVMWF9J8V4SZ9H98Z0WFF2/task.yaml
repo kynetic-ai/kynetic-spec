@@ -1,0 +1,31 @@
+_ulid: 01KJTVMWF9J8V4SZ9H98Z0WFF2
+slugs: []
+title: Fix daemon WebSocket disconnect cleanup for dropped clients
+type: bug
+description: Daemon currently logs disconnects with undefined session ids on abnormal closes (1006)
+  and may retain stale tracked clients, which inflates connection totals and heartbeat activity.
+  Ensure disconnect cleanup uses stable session identity across open/close callbacks, removes stale
+  entries, and add regression coverage for close code 1006 and health connection counts.
+spec_ref: "@ws-disconnect-lifecycle-cleanup"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #655. Hardened daemon WebSocket disconnect cleanup by resolving session
+  identity via Elysia websocket context id + pubsub fallbacks, added /api/health connection
+  decrement E2E coverage, and added abnormal-close (1006) close-handler/log regression tests. AC
+  coverage confirmed for ac-1, ac-2, and ac-3 with passing local regression and green CI checks."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - daemon
+  - websocket
+  - bug
+vcs_refs: []
+session_id: null
+created_at: 2026-03-03T22:03:40.905Z
+started_at: 2026-03-04T02:23:52.691Z
+submitted_at: 2026-03-04T02:24:13.457Z
+completed_at: 2026-03-04T02:32:40.039Z
+todos: []

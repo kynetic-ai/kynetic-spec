@@ -1,0 +1,16 @@
+notes:
+  - _ulid: 01KHFCPJ2XPNJ7DZH4D9V6Z5KH
+    content: "Automation assessment: set to needs_review. missing spec_ref"
+    supersedes: null
+    author: "@automation-assess"
+    created_at: 2026-02-15T00:55:06.589Z
+  - _ulid: 01KJN7EK74440Z5YX4AV1Y5D2W
+    content: "Updated ac-item-list-parity test to create items with known statuses (implemented,
+      verified, not_started) and assert: (1) items with matching status appear in results, (2) items
+      with non-matching status are excluded, (3) all returned items have the requested status. Fixed
+      JSON structure: item list --json outputs {items: [{status: {implementation: '...'}, ...}]} not
+      a flat array. Pre-existing failures in enhanced-setup.test.ts and core-skill-install.test.ts
+      are unrelated."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-01T17:34:31.140Z

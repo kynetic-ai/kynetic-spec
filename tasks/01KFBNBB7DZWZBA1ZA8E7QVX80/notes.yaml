@@ -1,0 +1,119 @@
+notes:
+  - _ulid: 01KFFHED2QZAKGGPBS5N4DA7SW
+    content: "Automation status set to manual_only: Design/spec task, not implementation"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T05:46:38.551Z
+  - _ulid: 01KGTMF2PBMT348WSGFN07T01H
+    content: >-
+      Design phase research completed. Explored full session infrastructure:
+
+
+      **What exists:**
+
+      - 37 session logs, 372K+ events in .kspec/sessions/
+
+      - Each session: session.yaml (metadata), events.jsonl (JSONL event log), context-iter-N.json
+      (snapshots)
+
+      - Event types: session.start/update/end, prompt.sent, tool.call/result, note
+
+      - Existing spec: @session-events covers storage layer (7 ACs, all implemented)
+
+      - No CLI commands to query/analyze session data
+
+
+      **Proposed specs (3):**
+
+      1. session-log-list — List sessions with summary stats (status, duration, event count, task
+      completions)
+
+      2. session-log-show — Show detailed session view (events timeline, task transitions, iteration
+      summaries)  
+
+      3. session-log-stats — Aggregate analytics across sessions (throughput, duration trends,
+      success rates)
+
+
+      **Traits:** @json-output, @semantic-exit-codes on all three
+
+
+      **Open design questions (awaiting user input):**
+
+      1. Scope: all 3 specs or start with list+show?
+
+      2. Naming: `kspec session log list` (sub-sub) vs `kspec session list` (direct subcommand)?
+
+      3. Stats depth: simple counts vs deeper analysis (failure rates, tool patterns, iteration
+      efficiency)?
+
+
+      **Workflow state:** @spec-plan-design started (run 01KGTMBK), paused at design review step
+      pending user decisions on scope/naming/depth.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-06T23:26:46.987Z
+  - _ulid: 01KGTMR4PKWKADDGSTFK312FGD
+    content: >-
+      Plan document written and dry-run validated successfully. Ready to import.
+
+
+      **Plan document:** /tmp scratchpad (session-log-analysis.md) — will need to be recreated if
+      session expires.
+
+
+      **Dry-run output confirmed:**
+
+      - 4 specs: @session-log-list, @session-log-show, @session-log-stats, @session-log-search
+
+      - 4 derived tasks: implement-session-log-{list,show,stats,search}
+
+      - All under @session-events parent in @cli module
+
+      - Traits: @json-output + @semantic-exit-codes on all, @filterable-list on list
+
+
+      **Next step:** Run `kspec plan import <path> --module @cli` to create specs and tasks, then
+      complete this design task.
+
+
+      **Design decisions made:**
+
+      - Namespace: kspec session log <subcommand> (avoids collision with session start/checkpoint)
+
+      - All 4 commands (list/show/stats/search)
+
+      - Deep stats (tool usage, time grouping) but bounded by structured data
+
+      - Search supports filtering by event type, agent, date range
+
+      - Shared infra: lazy JSONL reader, date filter utility, session ID prefix resolver
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-06T23:31:43.956Z
+  - _ulid: 01KGTMYKBPBES529VVSJAVN5F8
+    content: >-
+      Codex review completed and all feedback addressed:
+
+      - MUST-FIX: Fixed trait refs to use full slugs (trait-json-output, trait-semantic-exit-codes,
+      trait-filterable-list)
+
+      - SHOULD-FIX: Added per-spec implementation_notes to show/stats/search specs
+
+      - SHOULD-FIX: Made search excerpt concrete (200 chars) and added default limit (50 matches)
+
+      - SHOULD-FIX: Split compound AC in stats (totals vs averages now separate ACs)
+
+      - Scoped tool-usage output to top 10
+
+
+      Dry-run passes cleanly: 4 specs, 4 derived tasks under @session-events in @cli module.
+
+
+      Plan document at scratchpad path (session-specific). Awaiting user confirmation to run import.
+
+
+      Next: kspec plan import <path> --module @cli
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-06T23:35:15.574Z

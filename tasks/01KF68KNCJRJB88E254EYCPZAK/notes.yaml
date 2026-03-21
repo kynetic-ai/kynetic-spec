@@ -1,0 +1,42 @@
+notes:
+  - _ulid: 01KF68NR73ZX0ANAXDFQRV4A3B
+    content: >-
+      ## Implementation Approach
+
+
+      Port from kynetic with simplifications. Key files:
+
+      - `src/acp/types.ts` - Re-export from @agentclientprotocol/sdk, add JSON-RPC types locally
+
+      - `src/acp/framing.ts` - Port directly from kynetic, replace @kynetic/shared logger with
+      console/noop
+
+      - `src/acp/client.ts` - Simplify: remove session-aware handlers, permission enforcer, context
+      usage tracking
+
+      - `src/acp/index.ts` - Public exports
+
+
+      ## Reference Files (kynetic)
+
+      - ../kynetic/packages/lifeline/src/acp/types.ts
+
+      - ../kynetic/packages/lifeline/src/acp/framing.ts
+
+      - ../kynetic/packages/lifeline/src/acp/client.ts
+
+
+      ## Dependencies
+
+      - Add @agentclientprotocol/sdk as devDependency for types only
+
+
+      ## Key Classes
+
+      - JsonRpcFraming: Line-based JSON-RPC over stdio, timeout handling, correlation
+
+      - ACPClient: EventEmitter-based, methods: initialize(), newSession(), prompt(), cancel(),
+      close()
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-17T15:20:12.260Z

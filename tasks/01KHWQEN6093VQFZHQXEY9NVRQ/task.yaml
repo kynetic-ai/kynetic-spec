@@ -1,0 +1,43 @@
+_ulid: 01KHWQEN6093VQFZHQXEY9NVRQ
+slugs: []
+title: Reconcile doctor command exit code with spec
+type: task
+description: >-
+  The @doctor-command spec ac-exit-one says 'exit code is 1' when errors exist. The implementation
+  uses EXIT_CODES.VALIDATION_FAILED which is 4. The test at doctor.test.ts line 500 asserts exitCode
+  === 4.
+
+
+  Also @trait-semantic-exit-codes ac-2 defines exit 1 for validation errors.
+
+
+  Either:
+
+  - Update the spec AC to say 'non-zero exit code' instead of 'exit code is 1', OR
+
+  - Change the implementation to use exit code 1
+
+
+  The spec should match reality. Since doctor is a health check (not a validation command), exit 1
+  is more conventional for CLI health checks. Recommend changing implementation to exit 1.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #428. Changed doctor command to exit 1 (EXIT_CODES.ERROR) instead of 4
+  (EXIT_CODES.VALIDATION_FAILED) when health checks fail. This aligns implementation with
+  @doctor-command ac-exit-one and @trait-semantic-exit-codes ac-2. Added trait AC annotations to
+  exit code tests for coverage tracking."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - spec-gap
+  - bugfix
+vcs_refs: []
+created_at: 2026-02-20T05:13:09.568Z
+started_at: 2026-02-20T10:53:26.118Z
+completed_at: 2026-02-20T11:09:00.829Z
+todos: []
+automation: eligible

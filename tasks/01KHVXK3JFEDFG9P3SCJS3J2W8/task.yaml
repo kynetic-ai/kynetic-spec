@@ -1,0 +1,24 @@
+_ulid: 01KHVXK3JFEDFG9P3SCJS3J2W8
+slugs:
+  - implement-configurable-daemon-settings
+title: Implement Configurable Daemon Settings
+type: task
+spec_ref: "@config-daemon"
+plan_ref: "@plan-project-level-configuration-system"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #421. Implemented configurable daemon settings in kspec.config.yaml:
+  daemon.port (AC-1), CLI --port override (AC-2), daemon.auto_start (AC-3), and deprecation warning
+  for manifest daemon block (AC-4). All 4 acceptance criteria have test coverage in
+  tests/parser/daemon-config.test.ts."
+depends_on:
+  - "@implement-project-config-file"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-19T21:41:12.399Z
+started_at: 2026-02-20T02:51:22.680Z
+completed_at: 2026-02-20T03:11:15.933Z
+todos: []
+automation: eligible

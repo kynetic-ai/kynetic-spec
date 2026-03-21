@@ -1,0 +1,21 @@
+notes:
+  - _ulid: 01KM4MSHAQNRSHJF4VZBT6JTAZ
+    content: "Validated on 2026-03-19: root .gitignore still does not include plans/. This matches the
+      reported checkpoint friction from transient plan working files."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T03:31:59.448Z
+  - _ulid: 01KM4P70F8ZRS2V0M03JA4RMQT
+    content: "Automation status set to needs_review: Missing spec_ref; add or link the spec governing
+      transient plan workspace files before automating the change."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T03:56:49.512Z
+  - _ulid: 01KM4XPNFFVB2AH8GD1EYV65RX
+    content: Implemented transient plan workspace ignores by adding plans/ to the repo root .gitignore
+      and extending init/setup gitignore helpers so existing and newly initialized projects both
+      ignore plan working files. Added regression coverage for gitignore helpers, setup
+      dry-run/backfill behavior, and session checkpoint behavior with transient plan files.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T06:07:42.575Z

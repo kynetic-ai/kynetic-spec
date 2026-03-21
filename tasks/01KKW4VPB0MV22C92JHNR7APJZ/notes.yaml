@@ -1,0 +1,11 @@
+notes:
+  - _ulid: 01KKWCT2N6CHXSBC0GZ9T6ZFVS
+    content: "Implemented getRawTaskCommits() and findTaskBlockLines() in src/utils/activity.ts. Uses
+      git log -L to track all commits that modified a task's YAML block boundaries, leveraging the
+      _ulid-first invariant. 13 tests pass covering both ACs: ac-1 (returns all commits including
+      creation, state transitions, notes) and ac-2 (excludes changes to other tasks). Parser
+      (parseGitLogLOutput) is separately tested with synthetic output. Running full test suite for
+      regression check."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T22:38:33.127Z

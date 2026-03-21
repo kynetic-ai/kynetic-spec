@@ -1,0 +1,29 @@
+_ulid: 01KJTHACWHYNBEQ09GCHYH00H4
+slugs: []
+title: Fix cli-serve test flakiness in shard 3
+type: task
+description: tests/cli-serve.test.ts has 1 test failure when run in shard 3 (71s duration, likely
+  timeout). Need to investigate whether it is a daemon port conflict or timing issue in parallel
+  shard execution. The test takes 71s which suggests it may be waiting on a timeout.
+spec_ref: "@cli-serve-commands"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Already implemented on main in PR #658 (merge commit bae6c34ea; implementation
+  commit 50d2dff86) via @task-cli-serve-daemon-isolation. Verified by rerunning shard-3 test suite
+  and two additional shard-3 runs; cli-serve.test.ts remained stable with no failures."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - bug
+  - cli
+vcs_refs: []
+session_id: 01KJWERJSFT0HYB45VHW82PX7B
+created_at: 2026-03-03T19:03:11.504Z
+started_at: 2026-03-04T13:02:35.669Z
+completed_at: 2026-03-04T13:02:37.406Z
+todos: []
+automation: eligible

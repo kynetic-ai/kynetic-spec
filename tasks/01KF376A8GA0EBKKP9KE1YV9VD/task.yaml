@@ -1,0 +1,20 @@
+_ulid: 01KF376A8GA0EBKKP9KE1YV9VD
+slugs:
+  - task-kspec-item-ac
+title: "Implement: kspec item ac"
+type: task
+spec_ref: "@item-ac"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Implemented all 4 item ac commands (list/add/set/remove) with proper YAML escaping,
+  auto-ID generation, and 12 integration tests covering all acceptance criteria.
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-16T10:56:34.576Z
+started_at: 2026-01-16T10:56:39.646Z
+completed_at: 2026-01-16T11:01:52.278Z
+todos: []

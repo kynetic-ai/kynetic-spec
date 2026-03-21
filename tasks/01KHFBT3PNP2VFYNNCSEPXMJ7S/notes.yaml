@@ -1,0 +1,19 @@
+notes:
+  - _ulid: 01KHFBT3PNMAFQH6WM9Q2FGCS1
+    content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    author: "@claude"
+    created_at: 2026-02-15T00:39:34.357Z
+  - _ulid: 01KHFZCDS4CPSN3CEYG4WNV26M
+    content: Verified that all 5 ACs are already implemented in src/cli/commands/setup.ts
+      (installClaudeCodeHooks function and GUARD_SCRIPTS constant). Added @full-hook-install AC
+      annotations to existing tests in tests/enhanced-setup.test.ts. Added new test for ac-4
+      (dynamic path detection) that verifies the worktree guard script uses CWD from hook input
+      rather than hardcoded absolute paths. All 20 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-15T06:21:37.444Z
+  - _ulid: 01KHG01Z2RNK5MWY8FDM6XRD71
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-15T06:33:23.288Z

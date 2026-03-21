@@ -1,0 +1,31 @@
+_ulid: 01KJR8FKEE2TR1Z96DAT20ETHD
+slugs: []
+title: Auto-build dist before CLI subprocess tests run
+type: infra
+description: CLI tests use compiled dist/ binary. Source changes (schema, CLI code) silently don't
+  apply until npm run build. Wire build as a pretest step or vitest globalSetup so it runs
+  automatically. Prevents confusing failures where source is correct but dist is stale.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #639. Added tests/global-setup.ts as vitest globalSetup that checks for
+  dist/cli/index.js and runs npm run build if missing. Wired in vitest.config.ts. Covers shard
+  scripts and direct vitest invocations that previously bypassed the pretest npm hook. All CI checks
+  passed (shard 1/2/3, claude-review, check-unresolved-comments). No AC checks — infra task with no
+  spec_ref."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - testing
+vcs_refs: []
+session_id: 01KJR8JA0CQXS951PDBEBRA3CW
+created_at: 2026-03-02T21:50:16.014Z
+started_at: 2026-03-03T01:21:41.440Z
+submitted_at: 2026-03-03T01:28:36.726Z
+completed_at: 2026-03-03T01:44:21.592Z
+todos: []
+automation: eligible

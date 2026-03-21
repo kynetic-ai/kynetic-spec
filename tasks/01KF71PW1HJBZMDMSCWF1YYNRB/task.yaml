@@ -1,0 +1,20 @@
+_ulid: 01KF71PW1HJBZMDMSCWF1YYNRB
+slugs:
+  - ralph-session-fix
+title: Fix ralph session context overflow
+type: task
+spec_ref: "@cli-ralph"
+status: completed
+blocked_by: []
+closed_reason: "Fixed context overflow by creating fresh ACP session per iteration. PR #17 merged."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - ralph
+vcs_refs: []
+created_at: 2026-01-17T22:37:43.345Z
+started_at: 2026-01-17T22:37:50.272Z
+completed_at: 2026-01-17T22:38:10.427Z
+todos: []

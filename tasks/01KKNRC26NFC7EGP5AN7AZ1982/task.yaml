@@ -1,0 +1,39 @@
+_ulid: 01KKNRC26NFC7EGP5AN7AZ1982
+slugs:
+  - task-implement-review-validation
+title: Implement schema validation for review records
+type: task
+spec_ref: "@review-record-validation"
+plan_ref: "@plan-review-records-and-gates"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #849. Implemented first-party schema validation for review records
+  covering all review entities (records, threads, checks, verdicts, events, subject bindings) with
+  actionable error messages. Integrated into kspec validate pipeline. 37 tests covering both ACs.
+  Fix cycle 1 resolved merge conflict and removed dead code."
+depends_on:
+  - "@task-implement-review-record-core"
+  - "@task-implement-review-storage-and-identity"
+context: []
+priority: 2
+tags:
+  - review
+  - schema
+  - validation
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-14T17:37:38.314Z
+  commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKPPEPER0R76MTMPN8FSNY8S
+created_at: 2026-03-14T08:45:55.797Z
+started_at: 2026-03-14T17:37:31.431Z
+submitted_at: 2026-03-14T17:37:39.059Z
+completed_at: 2026-03-14T17:48:56.875Z
+todos: []
+automation: eligible

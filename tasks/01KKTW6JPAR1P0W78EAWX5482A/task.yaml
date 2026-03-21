@@ -1,0 +1,58 @@
+_ulid: 01KKTW6JPAR1P0W78EAWX5482A
+slugs:
+  - task-review-list-page
+title: Build review list page
+type: task
+description: |
+  Create the /reviews route with a filterable, sortable list of reviews.
+
+  Why: Users need to see all reviews at a glance — which are open,
+  which need attention, what disposition each has. This is the entry
+  point to the review UI.
+
+  What: SvelteKit page at /reviews. Table showing review title,
+  lifecycle status, disposition badge (color-coded: pending=amber,
+  approved=emerald, changes_requested=red), subject type, reviewer,
+  linked task (clickable), and timestamps. Filters for status,
+  disposition, and subject type via URL query params. Default filter:
+  open reviews. Sortable columns. Empty state when no reviews exist.
+
+  How: TanStack Query for data fetching from GET /api/reviews.
+  WebSocket subscription to "reviews:updates" topic for real-time
+  invalidation. Use goto() for URL param changes per project conventions.
+  Follow existing list page patterns (tasks list, plans list).
+
+  Covers: @review-records-web-ui ac-1, ac-10.
+spec_ref: "@review-records-web-ui"
+plan_ref: "@plan-review-records-web-ui"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev. Review list page at /reviews with filterable, sortable table showing
+  lifecycle status, color-coded disposition badges, subject type, reviewer, and linked tasks. API
+  endpoints (GET /api/reviews, GET /api/reviews/:id) with pagination, filtering, sorting, and
+  ReferenceIndex title resolution. 22 E2E tests. Covers @review-records-web-ui ac-1 and ac-10.
+depends_on:
+  - "@task-review-api-read"
+context: []
+priority: 3
+tags:
+  - web-ui
+  - review
+vcs_refs: []
+review_ref: "@01KKXTDXP689EPHR15X500SAJF"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-17T11:45:44.658Z
+  commit: 96b8192a0391d7fa3b4fea270cd6fdb76a26e0ed
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KKXSBCZW4G7FTG47C67QVZWJ
+created_at: 2026-03-16T08:29:02.538Z
+started_at: 2026-03-17T11:45:41.391Z
+submitted_at: 2026-03-17T11:45:45.052Z
+completed_at: 2026-03-17T11:57:02.184Z
+todos: []
+automation: eligible

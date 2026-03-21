@@ -1,0 +1,19 @@
+_ulid: 01KFDYB40AAQVN4GG1S5NDQ35E
+slugs: []
+title: Apply traits to task lifecycle commands
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Applied traits to all 7 task lifecycle command specs. Created new spec for
+  task-submit command. All trait references validated successfully.
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-20T14:53:33.578Z
+started_at: 2026-01-20T15:24:59.864Z
+completed_at: 2026-01-20T15:29:42.259Z
+todos: []

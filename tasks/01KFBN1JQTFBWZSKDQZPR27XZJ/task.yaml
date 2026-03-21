@@ -1,0 +1,24 @@
+_ulid: 01KFBN1JQTFBWZSKDQZPR27XZJ
+slugs:
+  - fix-yaml-formatting-status
+title: Fix task-yaml-formatting status (should be completed)
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Fixed incorrect task status for @task-yaml-formatting. Used kspec task reset to
+  change from cancelled to pending, then properly completed it with documentation of the yaml
+  library migration work.
+depends_on:
+  - "@task-reset-command"
+context: []
+priority: 3
+tags:
+  - tech-debt
+vcs_refs: []
+created_at: 2026-01-19T17:32:34.938Z
+started_at: 2026-01-21T10:24:28.141Z
+completed_at: 2026-01-21T10:25:16.187Z
+todos: []
+automation: manual_only

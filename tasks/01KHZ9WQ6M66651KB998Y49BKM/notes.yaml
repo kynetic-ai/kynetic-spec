@@ -1,0 +1,31 @@
+notes:
+  - _ulid: 01KJ4V53P2ACDNYCWNHZJPDJM1
+    content: "AUTOMATION: Standalone optimization. Apply hash-check-before-write pattern to skill
+      rendering paths. No spec needed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T08:51:46.498Z
+  - _ulid: 01KJ4ZF9J540ATZD7VSVZ5KEAN
+    content: "Implemented hash-check-before-write for: (1) generateAgentInstructions in setup.ts — uses
+      metaHash comparison to skip kspec-agents.md regeneration when unchanged, displays 'already up
+      to date' in setup output. (2) copyCoreSkillFiles in skill-install.ts — compares SKILL.md
+      content and supporting directory trees before copying, returns { changed: boolean } so callers
+      can track changes. (3) Guard script writes in installClaudeCodeHooks — reads existing script
+      content before writing, skips write if identical. All 3181 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T10:07:14.501Z
+  - _ulid: 01KJ508WV7WEDBFXX4Y90QEENW
+    content: "[FIX_CYCLE: 1] Addressed Codex review: (1) MUST-FIX: generateAgentInstructions now checks
+      kspec-agents.md exists before hash-based skip — prevents 'already up to date' when file is
+      deleted but hash remains. (2) SHOULD-FIX: Renamed dirsEqual→sourceMatchesDest with subset
+      comparison — only verifies source entries match in dest, ignores extra dest files from overlay
+      copy. All 3181 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T10:21:13.447Z
+  - _ulid: 01KJ51GXRMHF8B9AWZ1KG1NEGY
+    content: "[RALPH SUBAGENT] Subagent timed out after 20 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-23T10:43:05.108Z

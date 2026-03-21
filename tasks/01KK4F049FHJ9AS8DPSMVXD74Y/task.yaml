@@ -1,0 +1,30 @@
+_ulid: 01KK4F049FHJ9AS8DPSMVXD74Y
+slugs: []
+title: Unify task detail display across kanban and task list
+type: task
+description: The kanban board's TaskDetailModal is superior to whatever detail view the task list
+  page uses. Unify the task display so the task list page uses the same modal/detail component as
+  the kanban board for consistency.
+spec_ref: "@web-dashboard"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed (FC2). Merged to feat/ui-revamp. Static mode regression fixed — all
+  action buttons now show disabled with tooltips in read-only mode per @gh-pages-export ac-16. AC
+  annotations corrected (ac-18 for note form, not ac-17). @web-dashboard completeness warnings
+  resolved (ac-1, ac-3, ac-11-14 annotated). All 4030 tests pass.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - enhancement
+  - web-ui
+vcs_refs: []
+session_id: 01KK53DG6CYC8T6RE0Z6S1QMD7
+created_at: 2026-03-07T15:35:02.191Z
+started_at: 2026-03-07T21:32:25.117Z
+submitted_at: 2026-03-07T21:43:13.397Z
+completed_at: 2026-03-07T22:07:54.003Z
+todos: []
+automation: eligible

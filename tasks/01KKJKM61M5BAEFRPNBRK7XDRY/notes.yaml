@@ -1,0 +1,56 @@
+notes:
+  - _ulid: 01KKJM5BAW70T4PTCEYQZ5VP3F
+    content: >-
+      Execution context:
+
+      - Background: Droid platform support needs a first-class schema entry before
+      renderer/setup/import work can depend on it.
+
+      - Scope: add Droid config schema/type, register droid in PlatformConfigSchema, and tighten
+      validation/tests only as needed for that contract.
+
+      - Files: src/schema/meta.ts and tests/skill-schema.test.ts unless adjacent type-export
+      coverage needs a small addition.
+
+      - Verification: targeted schema tests, typecheck/build-backed test run, then kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T03:34:38.173Z
+  - _ulid: 01KKJMCNGDFP7MNCGC67AGHVRS
+    content: "Implemented Droid platform config schema support in src/schema/meta.ts by adding
+      DroidConfigSchema, wiring optional platform_config.droid into PlatformConfigSchema, and
+      exporting DroidConfig. Added AC-tagged coverage in tests/skill-schema.test.ts for accepted
+      Droid fields, strict rejection of unknown Droid keys, PlatformConfigSchema shape including
+      droid, and compile-time DroidConfig usage. Verification: npm test --
+      tests/skill-schema.test.ts, npm test, kspec validate (warnings-only baseline exit 6; no
+      task-specific errors)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T03:38:37.966Z
+  - _ulid: 01KKJXX0CJK3SGFFMJYEX698YS
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: droid platform schema support did not update the
+      skill CLI validation guidance path, so invalid droid platform_config keys still show stale
+      valid-key guidance that only mentions claude_code and codex."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T06:24:50.578Z
+  - _ulid: 01KKJY4D8EDEDPCQ6BTQ3WZZ0Q
+    content: "Fix cycle focus: update skill CLI platform_config validation guidance so schema-backed
+      valid-key output includes droid alongside claude_code and codex, then add regression coverage
+      for invalid droid keys and expanded guidance text."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T06:28:53.134Z
+  - _ulid: 01KKJYBXDCQN8Q5MP4MG9B8386
+    content: >-
+      Verification after fix cycle:
+
+      - Focused coverage passed: npm test -- tests/skill-cli.test.ts tests/skill-schema.test.ts
+
+      - Full suite passed: npm test
+
+      - kspec validate exited 6 with pre-existing warnings-only baseline; schema/reference checks
+      remain OK and no task-specific validation errors were introduced.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T06:32:59.053Z

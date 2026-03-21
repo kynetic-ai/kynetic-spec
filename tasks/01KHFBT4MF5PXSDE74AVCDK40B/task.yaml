@@ -1,0 +1,22 @@
+_ulid: 01KHFBT4MF5PXSDE74AVCDK40B
+slugs:
+  - implement-init-setup-integration
+title: Implement Init Setup Integration
+type: task
+spec_ref: "@init-setup-integration"
+plan_ref: "@plan-portable-agent-integration-infrastructure"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #393. Implemented init --setup flag with test fixes for weak assertions
+  and CI compatibility."
+depends_on:
+  - "@implement-enhanced-setup-command"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-15T00:39:35.311Z
+started_at: 2026-02-15T07:33:14.361Z
+completed_at: 2026-02-15T08:47:21.035Z
+todos: []
+automation: eligible

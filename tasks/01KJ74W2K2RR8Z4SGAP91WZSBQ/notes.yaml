@@ -1,0 +1,71 @@
+notes:
+  - _ulid: 01KJ7559QEJ2JZCNHXYR2V5CPF
+    content: >-
+      Implementation notes:
+
+
+      Key file: src/cli/commands/session.ts (formatSessionContext() starting ~line 814)
+
+      Also update: src/strings/labels.ts (sessionHeaders)
+
+
+      Data model changes (additive only on existing interfaces):
+
+
+      ActiveTaskSummary — add: slug: string | null, description: string | null
+
+      ReadyTaskSummary — add: slug: string | null, description: string | null, unlocks: number
+
+      BlockedTaskSummary — add: slug: string | null, description: string | null, unlocks: number
+
+      CompletedTaskSummary — add: slug: string | null
+
+      InboxSummary — add: triaged: boolean, triage_action: string | null
+
+      CommitSummary — add: body: string | null, task_ref: string | null
+
+
+      ref stays as short ULID — no breaking change. Slug display is human output only.
+
+
+      Section ordering: active → review → blocked → ready → activity → inbox → working tree → quick
+      commands
+
+      Empty sections: skip entirely (no header, no placeholder)
+
+      Primer (default): top 5 ready, 10 activity items, inbox stat line only
+
+      Full (--full): all ready, 20 activity, up to 20 untriaged inbox items, observations, session
+      metadata
+
+      --brief: alias for primer (no-op backward compat)
+
+      needs_work: visually distinct from in_progress (different status label/color)
+
+      Active tasks: show title, description, recent notes (richest detail)
+
+      Review tasks: show title and recent notes
+
+      Slug display: @slug when available, @short-ulid fallback. Inbox always @short-ulid.
+
+      Timestamps: relative in human output (2h ago), ISO 8601 in JSON.
+
+
+      Verify ralph filterByExplicitTasks() unchanged (ref is still short ULID).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T06:25:07.310Z
+  - _ulid: 01KJ93K7RS2JHR3R6DXYWH4JJC
+    content: "Rewrote formatSessionContext() for primer/full modes. Changes: (1) Added slug,
+      description, status fields to ActiveTaskSummary, ReadyTaskSummary, BlockedTaskSummary,
+      CompletedTaskSummary. (2) New section ordering: active → review → blocked → ready → activity →
+      inbox → observations (full) → session metadata (full) → working tree → quick commands. (3)
+      Primer: top 5 ready, 10 activity items, inbox stat line only. Full: all ready, 20 activity, 20
+      untriaged inbox, observations section, metadata. (4) @slug display with @short-ulid fallback.
+      (5) Empty sections omitted entirely. (6) needs_work visually distinct from in_progress. (7)
+      Notes shown inline under active/review tasks. (8) Observations loaded from meta context in
+      full mode. (9) 37 new tests + 2 updated tests covering all 15 ACs. All 3571 tests pass (3
+      known flaky ralph)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T00:36:15.769Z

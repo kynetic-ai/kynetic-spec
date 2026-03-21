@@ -1,0 +1,24 @@
+_ulid: 01KHQQV4VXY0V2YA3YCAX85KX8
+slugs:
+  - task-skill-module-split
+title: "Implement: Skill Module Split"
+type: task
+spec_ref: null
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #411. Split 2349-line skill.ts into skill-crud.ts (931 lines),
+  skill-install.ts (495 lines), skill-diff.ts (992 lines) with thin orchestrator. Extracted
+  renderSkillBase() in skill-render.ts eliminating ~100 lines of renderer duplication. All 236 tests
+  pass with full AC coverage (15 dedicated tests for ac-1/ac-2/ac-3). Backward API compatibility
+  verified via re-exports."
+depends_on:
+  - "@task-setup-pipeline-unification"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-18T06:43:46.685Z
+started_at: 2026-02-18T23:35:03.968Z
+completed_at: 2026-02-19T00:11:22.366Z
+todos: []

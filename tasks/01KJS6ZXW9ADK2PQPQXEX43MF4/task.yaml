@@ -1,0 +1,24 @@
+_ulid: 01KJS6ZXW9ADK2PQPQXEX43MF4
+slugs: []
+title: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
+type: task
+description: "CLI DX: add --description flag to task set command (currently requires task patch --data)"
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #661. Added --description support to task set for single-ref and --refs
+  batch mode, including clear behavior for null/whitespace input and integration tests for
+  update/clear flows. AC coverage: task has no spec_ref, so own/trait AC checks were N/A; regression
+  validated via npm test and passing PR CI."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJVS8ZP3DGFDH98G8AT7K627
+created_at: 2026-03-03T06:43:28.265Z
+started_at: 2026-03-04T06:50:38.008Z
+submitted_at: 2026-03-04T06:55:53.221Z
+completed_at: 2026-03-04T08:20:59.027Z
+todos: []
+automation: eligible

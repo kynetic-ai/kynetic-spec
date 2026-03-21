@@ -1,0 +1,45 @@
+notes:
+  - _ulid: 01KKQSWDCJ7K1HC2M0RWSRYBY8
+    content: >-
+      Execution context:
+
+      - Background: This task adds server-side title resolution to daemon API responses so the web
+      UI doesn't need per-page taskTitles lookup maps or fetchTasks({limit: 1000}) calls.
+
+      - Scope: (1) Create ref resolution utility, (2) Add resolved title fields to shared types in
+      packages/shared, (3) Update daemon routes: tasks, sessions, agent-dispatch, triage, (4) Add
+      lightweight ref index endpoint (ac-4/ac-5), (5) Write tests for all 5 ACs plus trait ACs
+
+      - Files: packages/shared/src/api.ts, packages/daemon/src/routes/tasks.ts, sessions.ts,
+      agent-dispatch.ts, triage.ts, new resolution utility, tests
+
+      - Verification: npm test, all AC annotations present
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T03:50:48.978Z
+  - _ulid: 01KKQTJG7CGMX45SYMK3M4MSSM
+    content: >-
+      Submitted PR #866. Implementation adds server-side title resolution to all specified daemon
+      API endpoints:
+
+      - GET /api/tasks: spec_title on summaries
+
+      - GET /api/tasks/:ref: spec_title, plan_title, resolved_depends_on, resolved_blocked_by
+
+      - GET /api/agent/status: task_title on active invocations
+
+      - GET /api/sessions: task_title on session summaries
+
+      - GET /api/sessions/:id: task_title on session detail
+
+      - GET /api/triage: resolved_evidence_refs with titles
+
+      - GET /api/refs: new lightweight index endpoint (ac-4, ac-5)
+
+
+      Added ref-resolution utility, shared types (ResolvedRefEntry, RefIndexEntry,
+      RefIndexResponse), and 19 tests covering all 5 spec ACs. Full test suite: 4972 passed, 0
+      failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T04:02:52.780Z

@@ -1,0 +1,30 @@
+notes:
+  - _ulid: 01KK2YCKK5RYTY3X3RDRDCBYWM
+    content: >-
+      Fixed session stream not rendering agent messages, tool calls, or thinking blocks.
+
+
+      Root cause: parseEventsToBlocks in session-utils.ts had two issues:
+
+      1. Data path: Checked data.update but ACP stores SessionUpdate directly as data. Fixed with
+      auto-detection (data.sessionUpdate present = ACP format, otherwise check data.update for
+      legacy).
+
+      2. Event type names: Checked legacy names (assistant_text, assistant, thinking,
+      assistant_thinking, tool_result) but ACP uses (agent_message_chunk, agent_thought_chunk,
+      tool_call_update). Added all ACP types while keeping legacy backward compat.
+
+      3. Content extraction: ACP ContentChunk uses {content: {type: 'text', text: '...'}} not flat
+      text/content. Added extractTextContent() helper.
+
+      4. Tool name: ACP uses 'title' field instead of 'tool'/'name'. Added title to field lookup.
+
+      5. Tool result: ACP tool_call_update uses explicit status field (completed/failed) instead of
+      error flags.
+
+
+      All 101 session stream tests pass (legacy + new ACP format tests). Full suite: 3891 pass, 2
+      pre-existing failures unrelated to this change.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T01:25:30.853Z

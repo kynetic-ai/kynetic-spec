@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KJBE631TKNBVDKKQ92ZV56J1
+    content: "Changed two instruction strings in checkpoint.ts: (1) step 3 'Complete the task' → 'Submit
+      the task', (2) footer 'kspec task complete @task --reason \"Summary\" if task is done' →
+      'kspec task submit @task if task is done'. No test changes needed — no tests assert on
+      instruction text."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T22:19:48.154Z

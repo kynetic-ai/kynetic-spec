@@ -1,0 +1,36 @@
+_ulid: 01KKBD6KH5F5MVC5BXV2NQG474
+slugs: []
+title: "SHOULD-FIX from PR #723: extend daemon session-branch sync beyond startupProjectPath so
+  additional r"
+type: task
+description: >-
+  Extend daemon session-branch sync to cover all registered projects, not just startupProjectPath.
+
+
+  Current behavior: The daemon periodically syncs the session branch but only for the project it
+  started with. Additional projects registered via the API do not get periodic session pulls.
+
+
+  Fix: In the daemon sync loop (src/daemon/), iterate over all registered project paths and sync
+  each. Flagged as SHOULD-FIX in PR #723 review. Check src/daemon/index.ts or the session sync timer
+  for where startupProjectPath is hardcoded.
+spec_ref: "@config-daemon"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #758. Extended daemon session-branch sync lifecycle across all
+  registered project paths, including API, middleware, and WebSocket registration paths, with
+  normalized teardown and direct regression coverage for multi-project/session-sync behavior. Review
+  confirmed no remaining MUST-FIX or SHOULD-FIX findings; targeted daemon regression tests passed
+  locally and GitHub CI was green on the merged head."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKCSXSF17C73TZWPQ2XJ8AN1
+created_at: 2026-03-10T08:18:18.277Z
+started_at: 2026-03-10T21:26:09.396Z
+submitted_at: 2026-03-10T21:37:47.975Z
+completed_at: 2026-03-10T22:02:08.076Z
+todos: []
+automation: eligible

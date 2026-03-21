@@ -1,0 +1,24 @@
+_ulid: 01KJ32FKT1753QRTAPVDGG1KHB
+slugs: []
+title: "Fix plugin marketplace: add marketplace.json and validate directory source setup"
+type: task
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #445. Generated marketplace.json for directory source, restructured
+  plugin to plugins/kspec/ matching official pattern, fixed MarketplaceEntry type, added ac-6 test
+  coverage, updated spec ac-5 path."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - plugin
+  - bug
+  - cli
+vcs_refs: []
+created_at: 2026-02-22T16:21:21.857Z
+started_at: 2026-02-22T16:44:02.493Z
+completed_at: 2026-02-22T17:34:56.312Z
+todos: []

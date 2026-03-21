@@ -1,0 +1,22 @@
+notes:
+  - _ulid: 01KJ6KKSK4GHPXAX5GY0B00DNQ
+    content: |
+      Major refactor of src/cli/commands/ralph.ts. Create session with budget at loop
+      start (~line 1237). Reset budget at each iteration start (~line 1317). Pass
+      KSPEC_SESSION_ID to spawned agents via env. Remove ALL marker file code (both
+      task-limit and end-loop), detectTaskCompleteCommand, ACP prompt injection block
+      (lines 1517-1557), stale marker cleanup, and marker-related signal handler
+      cleanup. Ensure session close in ALL exit paths including signal handlers.
+    author: "@claude"
+    created_at: 2026-02-24T01:18:27.940Z
+  - _ulid: 01KJ8BRAJ9QHSSY5Q7BGFQPGCX
+    content: "Implementation complete. Removed all marker file code (TaskLimitMarker,
+      detectTaskCompleteCommand, extractBashCommand, ACP prompt injection), replaced with session
+      budget APIs (createSessionWithBudget, resetBudget, getSessionBudgetPath). Added
+      KSPEC_SESSION_ID env injection to spawned agents. Budget cleanup in both signal handler and
+      finally block. Updated tests (24 new static analysis tests, removed obsolete marker/detection
+      tests). Cleaned up .gitignore and codex skill marker file references. Full suite: 3432 pass (1
+      pre-existing flaky timeout)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T17:39:36.649Z

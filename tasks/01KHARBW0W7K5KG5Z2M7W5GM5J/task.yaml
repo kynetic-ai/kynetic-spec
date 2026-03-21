@@ -1,0 +1,24 @@
+_ulid: 01KHARBW0W7K5KG5Z2M7W5GM5J
+slugs: []
+title: PR-review-merge fast-path for clean merges
+type: task
+description: "PR-review-merge fast-path for clean merges: when CI is already green, no review
+  comments exist, and no threads are open, collapse steps 3-7 into a single verification step. Data
+  shows p50 is 137s but most of that is stepping through gates that all pass trivially. Condition:
+  only when review is genuinely clean (all checks pass on first look)."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #358. Added fast-path section to pr-review skill that skips the full
+  workflow when PR is clean (CI green, no comments, no threads, no changes requested). This is a
+  skill-level guidance change directing subagent behavior - no code implementation needed."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-13T05:42:47.068Z
+started_at: 2026-02-14T03:29:40.320Z
+completed_at: 2026-02-14T03:39:59.852Z
+todos: []
+automation: eligible

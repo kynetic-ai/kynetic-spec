@@ -1,0 +1,12 @@
+notes:
+  - _ulid: 01KK3FK0AEBNDP8Q4899CPB7PZ
+    content: "Fixed dropdown filters on triage and inbox pages. Root cause: filter state used $state +
+      $effect sync from URL params, combined with bind:value (two-way binding) on select elements.
+      This created a race condition where bind:value would set state immediately, but the $effect
+      reading stale URL params could reset it back before goto() completed. Fix: changed filter
+      state to $derived from URL search params (single source of truth) and replaced bind:value with
+      one-way value attribute on selects. This matches the working TaskFilters.svelte pattern. Also
+      fixed the same issue on the inbox page which used identical broken pattern."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T06:26:06.286Z

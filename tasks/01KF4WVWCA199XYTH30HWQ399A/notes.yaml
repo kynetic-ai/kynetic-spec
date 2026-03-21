@@ -1,0 +1,18 @@
+notes:
+  - _ulid: 01KF8B6KY4ZX57913PDS882FYK
+    content: |-
+      Convention schema fully implemented in src/schema/meta.ts (lines 69-101). Schema includes:
+
+      1. ConventionExampleSchema - good/bad example pairs
+      2. ConventionValidationSchema - supports regex, enum, range, prose validation types
+      3. ConventionSchema - _ulid, domain, rules[], examples[], optional validation
+
+      Added comprehensive test coverage in tests/meta.test.ts:
+      - Test for full convention structure with domain, rules, examples, validation
+      - Test for all four validation types (regex, enum, range, prose)
+      - Test for required field validation (domain field requirement)
+
+      All 467 tests passing, including 3 new convention schema tests.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T10:42:50.949Z

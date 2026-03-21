@@ -1,0 +1,48 @@
+notes:
+  - _ulid: 01KFR82G309EHNT6S3ZSVSETEB
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Skill definition for /pr-review - invoked in ACP subagent context. Key focus: AC coverage
+      verification + spec alignment (not just tests passing). Delegates to @pr-review-loop-workflow.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given /pr-review @task-ref invoked, when skill executes, then starts
+      @pr-review-loop-workflow
+
+      - ac-2: Given skill invoked without task ref, when skill validates, then errors with task
+      reference required
+
+      - ac-3: Given task ref provided but no PR exists, when skill validates, then errors with no PR
+      found for task
+
+      - ac-4: Given skill documentation, when content examined, then emphasizes AC coverage AND spec
+      alignment as quality gates
+
+      - ac-5: Given skill starts, when execution, then delegates all behavior to
+      @pr-review-loop-workflow
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T14:56:01.120Z
+  - _ulid: 01KFR862SM939QW3PJ4XNJMVT7
+    content: "Implementation notes: 5 ACs covering invoke, task-ref required, pr-exists check,
+      quality-focus, workflow-delegate. Skill dispatch + quality emphasis; actual behavior in
+      @pr-review-loop-workflow. Key quality gates: AC coverage + spec alignment (not just tests
+      passing). Runs in subagent context (invoked via /pr-review @task-ref in prompt)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T14:57:58.581Z
+  - _ulid: 01KFT4ZB8Q9RJP02FQCT2T2YDN
+    content: |-
+      Created pr-review skill:
+      - SKILL.md with validation (task-ref required, PR must exist)
+      - Delegates to @pr-review-loop workflow
+      - Emphasizes AC coverage + spec alignment as quality gates
+      - Updated AGENTS.md skills table
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T08:40:21.017Z

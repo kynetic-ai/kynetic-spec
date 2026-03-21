@@ -1,0 +1,59 @@
+_ulid: 01KKQRK2R219TBGWE4XQEBJNEC
+slugs:
+  - task-server-aggregation
+title: Add server-side aggregation endpoints
+type: task
+description: >-
+  Three independent server-side endpoints. Can be implemented incrementally.
+
+
+  1. Task status summary: Endpoint returning counts by status with dependency-aware ready vs blocked
+  distinction.
+
+
+  2. Validation/alignment stats: Extend validation/alignment response to include entity counts, AC
+  counts, and orphan counts as pre-computed fields. Eliminates the fragile pattern of parsing
+  free-text warning detail strings with regex for AC coverage calculation.
+
+
+  3. Inbox/triage merge: Merged endpoint returning inbox items with inline triage status.
+
+
+  Add response types to @kynetic-ai/shared package. Each must respect X-Kspec-Dir project scoping.
+
+
+  Acceptance gates (from @ui-api-aggregation): Status counts with dependency-aware distinctions
+  (ac-1), coverage stats as pre-computed fields (ac-2), inbox items with inline triage status
+  (ac-3).
+spec_ref: "@ui-api-aggregation"
+plan_ref: "@plan-ui-data-layer-rework"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #869. Added three server-side aggregation endpoints to the daemon API:
+  (1) GET /api/aggregation/tasks/summary with dependency-aware ready vs blocked distinction, (2) GET
+  /api/aggregation/validation with entity counts, AC counts, and orphan counts as pre-computed
+  fields, (3) GET /api/aggregation/inbox with inline triage status. All own ACs (ac-1, ac-2, ac-3)
+  covered by 16 E2E tests. Trait ACs all N/A with valid justification. Fix cycle addressed:
+  ac_counts.uncovered counting fix and merge conflict resolution."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - daemon
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-15T05:54:08.927Z
+  commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKR0HF59QNB7DEVQ4DJDSE3S
+created_at: 2026-03-15T03:28:14.594Z
+started_at: 2026-03-15T05:54:05.452Z
+submitted_at: 2026-03-15T05:54:09.674Z
+completed_at: 2026-03-15T06:04:48.161Z
+todos: []
+automation: eligible

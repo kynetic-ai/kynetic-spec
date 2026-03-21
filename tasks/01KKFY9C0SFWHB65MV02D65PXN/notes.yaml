@@ -1,0 +1,51 @@
+notes:
+  - _ulid: 01KKG0Q3NHVBKW00WCFYTYXRD3
+    content: >-
+      Execution context:
+
+      - Background: design the persistent registry that makes canonical dispatch workspaces durable
+      across daemon restarts and review/fix cycles.
+
+      - Scope: define persisted record shape, lifecycle states, reconciliation rules, and how
+      dispatcher/worker/reviewer flows use it.
+
+      - Files: plan/spec artifacts plus any generated agent docs only if sources change.
+
+      - Verification: plan/spec review, search for overlap, and kspec validate alignment if metadata
+      changes.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T03:16:19.761Z
+  - _ulid: 01KKG0RM0PZ6MGX0RVDGKHVN1R
+    content: >-
+      Execution context:
+
+      - Background: Approved plan @plan-dispatch-worktree-isolation-and-scheduling already captures
+      the persistent workspace registry design needed for restart-safe canonical dispatch
+      workspaces.
+
+      - Scope: Verified @dispatch-workspace-registry fully specifies the durable record contract,
+      including required fields, single-active-workspace invariant, reconciliation behavior,
+      unhealthy-state transitions, lifecycle states, and persistence of integration/cleanup history.
+
+      - Files/artifacts: Plan record @plan-dispatch-worktree-isolation-and-scheduling, spec
+      @dispatch-workspace-registry, current dispatch runtime in src/agent-runtime/dispatch.ts, and
+      existing persistent worktree precedent in src/parser/session-branch.ts plus
+      tests/session-branch-worktree.test.ts.
+
+      - Verification: Ran kspec task get, kspec plan get, kspec item get, kspec search, git history
+      checks for prior registry work, and source searches over src/tests/packages. The design is
+      already captured in plan/spec, while code currently lacks a first-party dispatch workspace
+      registry or reconciliation layer, confirming implementation remains for
+      @task-implement-dispatch-workspace-registry and related follow-on tasks.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T03:17:09.271Z
+  - _ulid: 01KKG0RRHX4RG4M15FSPS3M292
+    content: "Completed with --force from in_progress state. Reason: Design captured in approved plan
+      @plan-dispatch-worktree-isolation-and-scheduling and spec @dispatch-workspace-registry;
+      implementation remains for @task-implement-dispatch-workspace-registry and downstream dispatch
+      worktree/integration/cleanup tasks."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-12T03:17:13.917Z

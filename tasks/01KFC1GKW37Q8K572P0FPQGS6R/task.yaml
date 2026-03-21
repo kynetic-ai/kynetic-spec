@@ -1,0 +1,21 @@
+_ulid: 01KFC1GKW37Q8K572P0FPQGS6R
+slugs:
+  - task-traitindex
+title: "Implement: TraitIndex"
+type: task
+spec_ref: "@trait-index"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #101. Implemented TraitIndex with 100% AC coverage (3/3 ACs). All 662
+  tests passing. Clean architecture following established patterns."
+depends_on:
+  - "@task-spec-traits-system"
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-19T21:10:30.531Z
+started_at: 2026-01-20T04:26:35.775Z
+completed_at: 2026-01-20T04:35:54.811Z
+todos: []

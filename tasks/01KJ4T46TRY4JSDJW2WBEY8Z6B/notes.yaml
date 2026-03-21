@@ -1,0 +1,17 @@
+notes:
+  - _ulid: 01KJ4V6SVB6VCEA2G1YK0FFET2
+    content: "AUTOMATION: Safety chore. Add ralph-loop context to codex skill prompt. Detect via
+      KSPEC_SESSION_ID env var. Prevent kspec ralph/serve/pkill from inside codex."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T08:52:41.963Z
+  - _ulid: 01KJ6XJYT6BHCVAXTHZ7AF1YKR
+    content: "Added ralph-loop safety guard to codex skill. Two changes: (1) ralph.ts now passes
+      KSPEC_RALPH_SESSION=<sessionId> env var to spawned agents via spawnAndInitialize. (2) Codex
+      SKILL.md has new 'Ralph Loop Safety Guard' section with detection logic (env var primary,
+      marker files fallback) and safety preamble that must be prepended to all codex prompts when
+      inside ralph. Mock ACP extended with env var verification
+      (MOCK_ACP_VERIFY_ENV_FILE/MOCK_ACP_VERIFY_ENV_VARS). 2 new tests verify env propagation."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T04:12:46.279Z

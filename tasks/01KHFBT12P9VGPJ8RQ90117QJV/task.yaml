@@ -1,0 +1,23 @@
+_ulid: 01KHFBT12P9VGPJ8RQ90117QJV
+slugs:
+  - implement-skill-import-command
+title: Implement Skill Import Command
+type: task
+spec_ref: "@skill-import"
+plan_ref: "@plan-portable-agent-integration-infrastructure"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #379. Implemented skill import command with all 7 ACs covered: YAML
+  frontmatter parsing, content/docs copying, --origin/--id/--name/--description options, error
+  guidance for missing metadata, and base-directory path stripping. Added 17 tests."
+depends_on:
+  - "@implement-skill-cli-commands"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-15T00:39:31.670Z
+started_at: 2026-02-15T03:10:15.295Z
+completed_at: 2026-02-15T03:23:28.607Z
+todos: []
+automation: eligible

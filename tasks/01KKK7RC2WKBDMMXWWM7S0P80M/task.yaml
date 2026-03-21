@@ -1,0 +1,37 @@
+_ulid: 01KKK7RC2WKBDMMXWWM7S0P80M
+slugs:
+  - implement-deterministic-task-branch-helper
+title: Implement Deterministic Task Branch Helper
+type: task
+spec_ref: "@deterministic-task-branch-helper"
+derivation: auto
+plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #837. Implements kspec task branch <ref> command that creates or
+  resumes the deterministic dispatch-compatible branch (dispatch/task/<slug>/<short-id>) for a task.
+  Supports local branch reuse, remote rehydration, and both human-readable and JSON output with
+  dispatch continuity guidance. All 3 spec ACs covered plus trait ACs for json-output,
+  semantic-exit-codes, and error-guidance. 16 integration tests."
+depends_on:
+  - "@implement-adopted-branch-cleanup-and-recoverabilit"
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-14T01:17:42.144Z
+  commit: 38dc760d3353e2cde497e9150881b2c81da24679
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKMXY8DBXAWAS4BX15FH7NRD
+created_at: 2026-03-13T09:17:04.476Z
+started_at: 2026-03-14T01:04:23.987Z
+submitted_at: 2026-03-14T01:17:42.876Z
+completed_at: 2026-03-14T01:29:27.220Z
+todos: []
+automation: eligible

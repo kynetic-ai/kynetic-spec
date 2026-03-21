@@ -1,0 +1,21 @@
+_ulid: 01KFMMXKP1XPV6Z805YHW97AAN
+slugs: []
+title: Static SPA for GitHub Pages
+type: task
+spec_ref: "@gh-pages-export"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Static data layer with mode detection, API dispatch, and deep linking. ACs 11-14 covered.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - phase-4
+  - export
+vcs_refs: []
+created_at: 2026-01-23T05:23:34.720Z
+started_at: 2026-01-28T07:58:23.052Z
+completed_at: 2026-01-28T08:14:57.024Z
+todos: []
+automation: needs_review

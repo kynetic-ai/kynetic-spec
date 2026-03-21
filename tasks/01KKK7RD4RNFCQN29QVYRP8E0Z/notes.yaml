@@ -1,0 +1,42 @@
+notes:
+  - _ulid: 01KKMZJQ9GGKT9RYXBSJDGCWEG
+    content: >-
+      Execution context:
+
+      - Background: The deterministic task branch helper (kspec task branch) was implemented in PR
+      #837. Now branching conventions and agent docs need to be updated to reference it and explain
+      the dispatch-compatible branch naming contract.
+
+      - Scope: Update branching convention rules (kspec meta), task-work skill template (section 3.5
+      branch isolation), dispatch loop template (06-ralph-loop.md), and regenerate derived files.
+
+      - Files: templates/skills/task-work/SKILL.md, templates/agents-sections/06-ralph-loop.md,
+      conventions via kspec meta set branching
+
+      - Verification: kspec agents generate + kspec skill render succeed; kspec-agents.md and
+      rendered skills reflect dispatch-compatible branching
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T01:32:39.600Z
+  - _ulid: 01KKN06GEKQBZ4Q0YTAFV1S8AF
+    content: >-
+      Completed and submitted as PR #838. Changes:
+
+      1. Added two branching convention rules via kspec meta: prefer kspec task branch for task
+      work, and reserve dispatch/task/ namespace
+
+      2. Updated task-work skill template section 3.5 to use kspec task branch @ref instead of
+      ad-hoc git checkout
+
+      3. Updated dispatch loop template (06-ralph-loop.md) to reference kspec task branch explicitly
+
+      4. Updated Loop Mode Key Behaviors and Command Reference in task-work skill
+
+      5. Regenerated kspec-agents.md (via npm run dev -- agents generate) and rendered skills for
+      codex/droid platforms (via npm run dev -- skill render)
+
+      6. Note: had to merge origin/main to get the task branch CLI command (PR #837) into the
+      worktree before docs could reference it accurately
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T01:43:27.956Z

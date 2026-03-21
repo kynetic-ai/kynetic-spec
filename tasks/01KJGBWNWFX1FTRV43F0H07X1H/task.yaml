@@ -1,0 +1,26 @@
+_ulid: 01KJGBWNWFX1FTRV43F0H07X1H
+slugs:
+  - implement-stale-session-candidate-criteria
+title: Implement Stale Session Candidate Criteria
+type: task
+spec_ref: "@session-stale-criteria"
+plan_ref: "@plan-auto-close-stale-active-sessions"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #605. Implemented stale session candidate criteria engine with
+  relative-duration validation/defaults, AND threshold evaluation, started_at fallback, strict
+  corrupt/unreadable events handling with skipped/failure reporting, and liveness guard suppression.
+  AC coverage verified for @session-stale-criteria ac-1 through ac-8 (including unreadable events
+  path)."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
+created_at: 2026-02-27T20:15:54.767Z
+started_at: 2026-02-28T21:28:15.380Z
+submitted_at: 2026-02-28T21:34:08.281Z
+completed_at: 2026-02-28T21:43:37.853Z
+todos: []
+automation: needs_review

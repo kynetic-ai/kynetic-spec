@@ -1,0 +1,54 @@
+notes:
+  - _ulid: 01KGGTWEPNKHCMZ5HQ0F8WKKD9
+    content: Store plan documents in .kspec/plans/ and link them to derived tasks. Plans persist across
+      sessions, provide implementation context without embedding in notes. Could integrate with
+      Claude Code plan mode workflow.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-03T04:06:32.406Z
+  - _ulid: 01KGK9NT3F06FSKH6ENGFBJPQK
+    content: "Automation status set to manual_only: Architectural design work - requires human decisions
+      on storage format, Claude Code integration, and shadow branch workflow"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-04T03:03:32.207Z
+  - _ulid: 01KGKSW183TRW3FQ987V74JKHW
+    content: |-
+      Created @plan-support feature spec under @cli module with 33 acceptance criteria covering:
+      - Plan CRUD operations (AC-1 through AC-9)
+      - Plan validation (AC-10)
+      - Plan import with auto-generation (AC-11 through AC-29)
+      - JSON output support (AC-30 through AC-32)
+      - Error handling with recovery hints (AC-33)
+
+      Created 11 implementation tasks (all P2-P3, standalone, no dependencies):
+      - 01KGKSSK: Schema definition
+      - 01KGKSSP: Parser functions
+      - 01KGKSSV: CLI CRUD commands
+      - 01KGKSSY: Plan derive command
+      - 01KGKST6: Task schema plan_ref field
+      - 01KGKST8: Plan validation
+      - 01KGKSTC: Plan document parser
+      - 01KGKSTH: Plan import command
+      - 01KGKSTS: AGENTS.md documentation
+      - 01KGKSTX: /plan skill
+      - 01KGKSV0: @plan-workflow meta definition
+
+      All tasks are independent and can be implemented in any order.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-04T07:46:33.347Z
+  - _ulid: 01KGKT3XAKKGAP02879P8XXTFT
+    content: |-
+      Applied 6 traits to @plan-support as specified in plan:
+      - @trait-json-output
+      - @trait-dry-run  
+      - @trait-semantic-exit-codes
+      - @trait-error-guidance
+      - @trait-shadow-commit
+      - @trait-filterable-list
+
+      Review complete. All 33 ACs, 11 tasks, and 6 traits now match the plan.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-04T07:50:51.476Z

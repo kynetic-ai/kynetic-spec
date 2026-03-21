@@ -1,0 +1,11 @@
+notes:
+  - _ulid: 01KJD12BB3E1RZADXWWFPWR4Q4
+    content: Created packages/web-ui/tests/e2e/api-websocket.spec.ts with 13 E2E tests covering
+      @api-contract ac-25 through ac-33 and @trait-websocket-protocol. Used page.evaluate() with
+      native browser WebSocket API in Playwright to test protocol directly. Deleted
+      daemon-websocket.test.ts (591 lines of static analysis). All 3524 vitest unit tests pass. E2E
+      tests require bun runtime and browser environment (same as all other E2E tests — run via npm
+      run test:e2e in packages/web-ui).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T13:09:02.948Z

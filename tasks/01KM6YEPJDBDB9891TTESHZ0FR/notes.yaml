@@ -1,0 +1,25 @@
+notes:
+  - _ulid: 01KM7BVRZP7T739ACZA8M0Q60R
+    content: Migrated all direct yaml.ts task function calls in src/cli/commands/task.ts to
+      taskDataManager methods. Replaced mutateTaskAtomically (13 call sites), mutateTasksAtomically
+      (1 call site in cancel), saveTask+createTask (1 call site in add), and deleteTask (1 call
+      site). Kept loadAllTasks for ReferenceIndex construction and commitIfShadow for cases where
+      commit detail depends on callback-computed values. All 6756 tests pass with no regressions.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T04:53:38.934Z
+  - _ulid: 01KM7C4PJYXNAJWY9T99E1WEC1
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-21T04:58:31.390Z
+  - _ulid: 01KM7DGE45V3AZBY6YRF1YV0Z3
+    content: "Fix cycle 1: Addressed blocker from review @01KM7BXYASSXCD59AZNGS2WP2H. Replaced all 21
+      remaining loadAllTasks() calls in task.ts with taskDataManager.listTasks() and
+      taskDataManager.getTask(). Made resolveTaskRef() async to load full task details via the data
+      manager after index resolution. Updated resolveTaskRefForBatch() and setTaskFields() to accept
+      TaskSummary[] instead of LoadedTask[]. ReferenceIndex construction uses structural cast since
+      it only needs _ulid and slugs. All 6756 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T05:22:24.517Z

@@ -1,0 +1,8 @@
+notes:
+  - _ulid: 01KJAH36SK73VGCDSKABE49082
+    content: "Added 6 edge case tests to item-set-enum-validation.test.ts: case sensitivity
+      (In_Progress, PROPOSED etc.), partial matches (in_prog, dra etc.), and empty string no-op for
+      both --status and --maturity. All 12 tests pass, no regressions across 56 item tests."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T13:51:24.979Z

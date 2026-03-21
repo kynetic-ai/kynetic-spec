@@ -1,0 +1,121 @@
+notes:
+  - _ulid: 01KKM0V8N7G4FS6DA85F2D2BB3
+    content: >-
+      Execution context:
+
+      - Background: Dispatch workspace records need branch provenance to distinguish
+      dispatcher-managed vs adopted branches. This enables proper cleanup semantics, recovery from
+      the correct source, and prevents normalizing adopted branches back to dispatch/task/*
+      namespace.
+
+      - Scope: Add branch_provenance optional field to DispatchWorkspaceRecordSchema with ownership,
+      source, remote_ref, and adoption metadata. Update workspace creation, reconciliation, and
+      metadata serialization to populate/preserve provenance. Ensure backward compatibility for
+      records without provenance (default to dispatcher-managed).
+
+      - Files: src/schema/dispatch-workspace.ts (schema), src/agent-runtime/workspace.ts (runtime),
+      src/parser/dispatch-workspaces.ts (legacy normalization if needed),
+      tests/dispatch-workspace-branch-provenance.test.ts (new test file)
+
+      - Verification: New test file covering all 3 ACs + trait-error-guidance N/A annotations.
+      Existing tests must continue passing.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T16:35:33.671Z
+  - _ulid: 01KKM1GDNX8770PEZB1PAGAN1C
+    content: >-
+      Implementation complete. Changes:
+
+
+      Schema (src/schema/dispatch-workspace.ts):
+
+      - Added DispatchWorkspaceBranchOwnershipSchema enum: 'dispatcher-managed' | 'adopted'
+
+      - Added DispatchWorkspaceBranchProvenanceSchema: ownership, source, remote_ref, adopted_from,
+      adopted_at
+
+      - Added optional branch_provenance field to DispatchWorkspaceRecordSchema with default of
+      dispatcher-managed
+
+
+      Runtime (src/agent-runtime/workspace.ts):
+
+      - Added branchProvenance to DispatchWorkspaceMetadata interface
+
+      - Added defaultBranchProvenance() and adoptedBranchProvenance() helpers
+
+      - Provisioning populates branch_provenance (dispatcher-managed by default, preserves existing)
+
+      - Recovery from metadata detects adopted branches (non-dispatch namespace) and sets adopted
+      provenance
+
+      - Reconciliation preserves adopted branch identity (skips normalization to dispatch/task/*
+      namespace)
+
+      - Cleanup skips branch deletion for adopted branches (preserves externally-owned refs)
+
+      - toMetadata() includes branchProvenance with fallback to default
+
+
+      Tests (tests/dispatch-workspace-branch-provenance.test.ts):
+
+      - 8 tests covering all 3 ACs + trait-error-guidance N/A annotations
+
+      - All existing dispatch workspace tests continue passing
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T16:47:06.941Z
+  - _ulid: 01KKM1YFSGCCYR9DWH630PFBAY
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: adopted branch cleanup is incomplete.
+      reapDispatchWorkspace still discovers workspaces via a synthetic dispatch/task/* branch, so
+      adopted workspaces cannot be reaped even though branch deletion is skipped for adopted
+      provenance."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T16:54:47.856Z
+  - _ulid: 01KKM2Q0R3W819BPY34D1401WT
+    content: >-
+      Fix cycle 1 addressed. The issue was that findWorkspaceRegistrationByTaskRef hardcoded the
+      dispatch/task/* branch pattern when discovering worktrees. Adopted branches use non-dispatch
+      canonical names (e.g. feat/*), so the synthetic branch lookup returned null and
+      reapDispatchWorkspace silently returned action:'none'.
+
+
+      Fix: Added registry fallback to findWorkspaceRegistrationByTaskRef. When the synthetic
+      dispatch/task/<slug>/<shortId> branch has no worktree, the function now queries the workspace
+      registry by task_ref to get the actual canonical_branch, then looks up the worktree by that.
+      This fixes both reapDispatchWorkspace and cleanupReviewerDispatchWorkspace (both call
+      findWorkspaceRegistrationByTaskRef).
+
+
+      Added 2 new tests:
+
+      - Direct reap of adopted workspace via registry fallback (exercises reapDispatchWorkspace
+      directly)
+
+      - Reap via artifact reconciliation (exercises the reconcileDispatchWorkspaceArtifacts →
+      reapDispatchWorkspace path that triggered the original bug)
+
+
+      Both verify worktree removal AND that adopted branches are preserved (not deleted).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T17:08:11.651Z
+  - _ulid: 01KKM36CV0HAWFZ288Q8ND5NRF
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: metadata-backed recovery still normalizes legacy
+      adopted workspaces back to dispatch/task/* when branch_provenance is missing, so AC-2 is not
+      satisfied."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T17:16:35.552Z
+  - _ulid: 01KKM4WB7REZBNECAQYS3GV34K
+    content: "Fix cycle 2 addressed. The issue was that recoverWorkspaceRecordFromMetadata normalized
+      legacy adopted workspaces (missing branch_provenance, non-dispatch canonical branch) back to
+      dispatch/task/* namespace. Added inferredAdopted check: when branchProvenance is missing AND
+      canonicalBranch is not a dispatch branch, the recovery preserves the adopted branch identity
+      and skips the git checkout -B normalization. Added test that exercises the full
+      metadata-backed recovery path with a legacy adopted workspace (no branchProvenance in
+      metadata, registry record removed)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T17:46:03.384Z

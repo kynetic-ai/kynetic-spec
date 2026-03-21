@@ -1,0 +1,47 @@
+_ulid: 01KJ3SMVTJC1FFY14RAAA7K2SV
+slugs:
+  - task-investigate-doctor-flaky-tests
+title: Investigate flaky doctor test failures
+type: task
+description: >-
+  Doctor tests (tests/parser/doctor.test.ts) have been reported as failing intermittently by agents
+  during ralph loop sessions. The 29-test suite passes consistently in isolation but has been
+  observed failing during automated runs.
+
+
+  Investigation needed:
+
+  - Reproduce the flaky failure (run test suite in loop or under load)
+
+  - Check for timing/race conditions (daemon status checks, file system operations)
+
+  - Check for test isolation issues (shared state between tests, temp dir cleanup)
+
+  - Review recent ralph logs or session notes for specific error messages
+
+  - Determine if related to daemon health check timeouts or mock reliability
+
+
+  The doctor test covers: shadow health, setup status, daemon running/unreachable/not-running,
+  overall verdict, JSON output, exit codes. Any of these could have timing sensitivity.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #456. Root cause: getDaemonStatus() checks global PID file, not
+  per-project. Fix: added vi.spyOn mocking in 3 daemon tests to isolate from host environment.
+  Previous SHOULD-FIX (ac-daemon-running not testing running state) addressed. All 3168 tests pass."
+depends_on: []
+context: []
+priority: 4
+tags:
+  - bug
+  - investigation
+  - testing
+vcs_refs: []
+created_at: 2026-02-22T23:06:11.154Z
+started_at: 2026-02-23T02:08:09.409Z
+completed_at: 2026-02-23T02:41:03.385Z
+todos: []
+automation: eligible

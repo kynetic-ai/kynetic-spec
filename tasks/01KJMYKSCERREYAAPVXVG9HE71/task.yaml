@@ -1,0 +1,109 @@
+_ulid: 01KJMYKSCERREYAAPVXVG9HE71
+slugs: []
+title: Fix WebSocket upgrade blocked by Elysia beforeHandle return value
+type: task
+description: >-
+  ## Problem
+
+
+  WebSocket connections to the daemon never upgraded — server returned HTTP 200 with JSON body
+  instead of 101 Switching Protocols. Every connection failed with close code 1006 (abnormal
+  closure), cycling through reconnect attempts until max reached.
+
+
+  The Web UI showed continuous "Connecting... failed... Reconnecting..." loops. All 21 WebSocket E2E
+  tests (api-websocket.spec.ts, connection.spec.ts, triage.spec.ts) failed. CI never caught this
+  because E2E tests are not included in the shard-based test pipeline.
+
+
+  ## Root Cause
+
+
+  In Elysia 1.4, when a derive() middleware is present in the route chain, returning a value from a
+  WebSocket beforeHandle hook short-circuits the upgrade and sends the return value as an HTTP 200
+  response.
+
+
+  The daemon's ws beforeHandle (server.ts:227) returned { wsRequestId: requestId } on two code paths
+  (lines 242 and 269). This was intended to pass a correlation ID to the open() handler, but Elysia
+  treated it as the HTTP response body.
+
+
+  Progressive reproduction confirmed:
+
+  - cors only → 101 (works)
+
+  - cors + derive → 101 (works)  
+
+  - cors + derive + ws beforeHandle returning value → 200 (broken)
+
+
+  Without derive middleware, Elysia correctly discards the beforeHandle return value. The
+  interaction between derive and ws beforeHandle causes the composed handler to treat the return as
+  an early response.
+
+
+  ## Investigation
+
+
+  1. Observed browser console showing repeated WS connection failures with code 1006
+
+  2. Used curl with WebSocket upgrade headers — confirmed server returns HTTP 200 with
+  {"wsRequestId":"..."} body
+
+  3. Traced through Elysia source (adapter/bun/index.mjs) — ws handler at line 250-371 never reached
+
+  4. The composed lifecycle handler (compose.mjs) runs derive as a transform hook, then lifecycle
+  beforeHandle hooks
+
+  5. Created progressive reproduction isolating the exact combination: derive + ws beforeHandle
+  return value
+
+  6. Verified fix: removing return statements from beforeHandle produces 101 Switching Protocols
+
+
+  ## Fix
+
+
+  Commit 7848744c8 — packages/daemon/src/server.ts:
+
+  1. Changed wsProjectPaths from Map<string, string> (keyed by ULID requestId) to WeakMap<Request,
+  string> (keyed by Request object)
+
+  2. Removed both return { wsRequestId: requestId } statements from beforeHandle
+
+  3. Changed open() to retrieve project path via ws.data.request from the WeakMap
+
+  4. WeakMap auto-cleans when Request is garbage collected — no manual delete needed
+
+
+  ## Related
+
+
+  Predecessor task @01KJDQ1GZ addressed client-side reconnect race conditions (PR #622) but missed
+  the server-side root cause. The client-side fixes remain valuable for handling legitimate
+  disconnects, but the server was never actually upgrading connections.
+spec_ref: "@trait-websocket-protocol"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #623 (commit 64d5e482b). Fixed daemon WebSocket upgrade regression by
+  removing ws beforeHandle return payloads in Elysia 1.4 + derive path and using Request-keyed
+  WeakMap to carry resolved project binding into open(). Local npm test passed (163 files, 3620
+  tests, 0 failures) and CI checks passed on reviewed head 7848744c8458750090a28a84346743f6a2e17fdf.
+  Trait AC context @trait-websocket-protocol reviewed and confirmed covered by existing protocol
+  tests/annotations."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - daemon
+  - bug
+vcs_refs: []
+created_at: 2026-03-01T15:00:04.110Z
+started_at: 2026-03-01T15:01:54.176Z
+submitted_at: 2026-03-01T15:01:55.514Z
+completed_at: 2026-03-01T15:20:46.273Z
+todos: []

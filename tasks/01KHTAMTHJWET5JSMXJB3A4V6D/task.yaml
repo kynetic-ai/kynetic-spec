@@ -1,0 +1,26 @@
+_ulid: 01KHTAMTHJWET5JSMXJB3A4V6D
+slugs: []
+title: Add discriminant field for skill type guards
+type: task
+description: "Replace fragile 'origin' in item type discrimination (7 call sites) with a proper
+  discriminant field (_type: skill) or findSkillByRef helper. Prevents silent misclassification if
+  another meta type ever gets an origin field."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #415. Added _type: 'skill' discriminant field to SkillSchema for
+  reliable type discrimination. Created isSkill() type guard and updated 6 call sites across
+  skill-crud.ts, skill-diff.ts, and validate.ts. Backward compatible via .default('skill'). Added 5
+  new tests for isSkill() type guard."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-19T06:50:51.314Z
+started_at: 2026-02-20T00:06:17.837Z
+completed_at: 2026-02-20T00:30:14.412Z
+todos: []
+automation: eligible

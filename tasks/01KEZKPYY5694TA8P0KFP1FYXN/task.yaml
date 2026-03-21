@@ -1,0 +1,20 @@
+_ulid: 01KEZKPYY5694TA8P0KFP1FYXN
+slugs:
+  - task-list-context
+title: Add context/summary to task list output
+type: task
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Added context line showing first line of description in task list output
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - ux
+vcs_refs: []
+created_at: 2026-01-15T01:18:25.221Z
+started_at: 2026-01-15T15:54:54.224Z
+completed_at: 2026-01-15T15:56:42.202Z
+todos: []

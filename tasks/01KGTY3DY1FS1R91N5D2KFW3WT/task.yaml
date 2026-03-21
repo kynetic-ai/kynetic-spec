@@ -1,0 +1,27 @@
+_ulid: 01KGTY3DY1FS1R91N5D2KFW3WT
+slugs: []
+title: Add did-you-mean suggestions to batch validation errors
+type: task
+description: "Better batch pre-validation errors — when unknown arg key is used, suggest correct
+  positional name. e.g. 'Unknown arg \"content\" for \"inbox add\". Did you mean \"text\"? Run kspec
+  batch commands for reference.' CommandMeta already has the arg names. Note: --dry-run already
+  catches this, but the error message doesn't suggest the fix."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #340. Added did-you-mean suggestions to batch validation errors:
+  suggestion field in BatchCommandResult, inline 'Did you mean: X?' display for typos, 'Run kspec
+  batch commands' hint for validation failures (human-readable output only). 6 new tests added."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - batch
+  - dx
+vcs_refs: []
+created_at: 2026-02-07T02:15:11.041Z
+started_at: 2026-02-07T11:38:10.000Z
+completed_at: 2026-02-07T11:57:21.186Z
+todos: []
+automation: eligible

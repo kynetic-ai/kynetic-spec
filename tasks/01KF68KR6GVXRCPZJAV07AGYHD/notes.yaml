@@ -1,0 +1,68 @@
+notes:
+  - _ulid: 01KF68P5PB0NA78ZGKDYC3027W
+    content: |-
+      ## Implementation Approach
+
+      Create JSONL-based event storage for agent sessions. Key files:
+      - `src/sessions/types.ts` - Session and event schemas (Zod)
+      - `src/sessions/store.ts` - JSONL event storage functions
+
+      ## Storage Structure
+      .kspec/sessions/{session-ulid}/
+        session.yaml      # Metadata: task_id, agent_type, status, started_at, ended_at
+        events.jsonl      # Append-only event log
+
+      ## Event Schema
+      interface SessionEvent {
+        ts: number;           // Unix ms
+        seq: number;          // Sequence in session
+        type: 'session.start' | 'prompt.sent' | 'session.update' | 'session.end';
+        session_id: string;
+        trace_id?: string;    // For correlation
+        data: unknown;        // Type-specific payload
+      }
+
+      ## Storage API
+      - createSession(sessionId, metadata): Create dir + session.yaml
+      - appendEvent(sessionId, event): Append to events.jsonl with auto ts/seq
+      - readEvents(sessionId): Read all events in order
+      - updateSessionStatus(sessionId, status): Update session.yaml
+
+      ## Key Considerations
+      - Use appendFileSync for crash safety
+      - Create directory on first event, not upfront
+      - Events committed at task/session boundaries
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-17T15:20:26.059Z
+  - _ulid: 01KF6BEFYRWGKKJXDCQMAWDS4H
+    content: |-
+      ## Implementation Complete
+
+      Created JSONL-based event storage for agent sessions:
+
+      ### Files Created
+      - `src/sessions/types.ts` - Zod schemas for SessionMetadata and SessionEvent
+      - `src/sessions/store.ts` - Storage functions (createSession, appendEvent, readEvents, etc.)
+      - `src/sessions/index.ts` - Re-exports
+      - `tests/sessions.test.ts` - 41 tests covering all acceptance criteria
+
+      ### Acceptance Criteria Coverage
+      - AC-1: createSession() creates .kspec/sessions/{id}/ with session.yaml
+      - AC-2: appendEvent() appends JSON lines with auto-assigned ts and seq
+      - AC-3: Uses fs.appendFileSync for crash safety (atomic append)
+      - AC-4: readEvents() returns events sorted by sequence number
+      - AC-5: Metadata includes task_id (optional), agent_type, status, started_at, ended_at
+      - AC-6: updateSessionStatus() updates metadata with status and ended_at
+
+      ### Storage Structure
+      ```
+      .kspec/sessions/{session-ulid}/
+        session.yaml      # Metadata
+        events.jsonl      # Append-only event log
+      ```
+
+      All 307 tests pass (41 new session tests + 266 existing).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-17T16:08:40.152Z

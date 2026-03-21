@@ -1,0 +1,46 @@
+notes:
+  - _ulid: 01KKJ8CSB04PZ9FACW5Y2YTH9K
+    content: >-
+      Execution context:
+
+      - Background: dispatch now provisions canonical task workspaces and bootstrap state, but
+      prompts still need an explicit orientation block so worker/reviewer invocations start with the
+      correct branch, workspace, and cycle context.
+
+      - Scope: implement the workspace-aware orientation section for dispatch prompts and add/adjust
+      tests for worker, reviewer, and cycle-specific rendering.
+
+      - Files: likely dispatch prompt/runtime files under src plus targeted tests under tests/.
+
+      - Verification: run focused tests for dispatch prompt rendering, then kspec validate, then
+      full npm test before submit.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T00:08:58.977Z
+  - _ulid: 01KKJ8V1X8SKT02T3480NW77GX
+    content: "Implemented workspace-aware dispatch orientation so prompts are built from provisioned
+      workspace metadata instead of task status alone. The orientation block now includes workspace
+      path, canonical branch, integration target, role/focus, canonical head, prepared state, and
+      explicit fix-cycle or review-cycle guidance. Verification: focused dispatch prompt tests
+      passed; full npm test had one unrelated flaky failure in cli-serve/daemon watcher
+      interactions, and isolated reruns of tests/cli-serve.test.ts and
+      tests/daemon-agent-dispatch-routes.test.ts both passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T00:16:46.504Z
+  - _ulid: 01KKJ94TK36S0P3WJHZAXS14ZD
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #809 conflicts with main, and workspace
+      provisioning does not persist the new orientation metadata fields for real dispatch runs."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T00:22:06.691Z
+  - _ulid: 01KKJAB2TC2F2Z60PXQAV14DA0
+    content: "[FIX_CYCLE: 1] Rebased PR #809 onto origin/main, updated orientation rendering to stay
+      compatible with both provisioned-workspace and metadata-only callers, and added a regression
+      test that reads the persisted .kspec-dispatch-workspace.json written by real provisioning.
+      Verification: npm test -- tests/dispatch-branch-integration-contract.test.ts
+      tests/canonical-task-workspace-contract.test.ts tests/agent-dispatch-engine.test.ts; kspec
+      validate (warnings-only baseline, exit 6); npm test."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T00:43:00.301Z

@@ -1,0 +1,33 @@
+_ulid: 01KK5E7ZTASR8W3AX2WBHFMGV2
+slugs: []
+title: kspec setup should work without agent environment detected
+type: task
+description: kspec setup exits with error 'Could not auto-detect agent environment' and does
+  nothing. It should still install core skills, generate kspec-agents.md, and perform other setup
+  steps even without detecting a specific agent platform. The agent env detection should be
+  optional/informational.
+spec_ref: "@cmd-setup"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #705 (merge commit 94cc90c4245bfcebd04dcc6554190795fc293ff2). Updated
+  kspec setup so unknown agent detection warns but still runs the full setup pipeline, adds a
+  skipped Configure author summary step for unknown agents, and prints manual KSPEC_AUTHOR
+  instructions after setup. AC coverage confirmed for @cmd-setup ac-1 in tests/setup.test.ts;
+  targeted setup suites passed after fresh build and full npm test passed on PR head."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - bug
+  - cli
+  - dx
+vcs_refs: []
+session_id: 01KK677D6HQAEGY2AQWHNDQPK5
+created_at: 2026-03-08T00:41:05.609Z
+started_at: 2026-03-08T08:06:44.518Z
+submitted_at: 2026-03-08T08:15:04.925Z
+completed_at: 2026-03-08T09:00:49.545Z
+todos: []
+automation: eligible

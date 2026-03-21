@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KFA0DB4QB44KK6MSFDJ39PBP
+    content: Fixed the newline issue by moving console.log() to BEFORE the success message in
+      ralph.ts:462. This ensures that streaming output is properly terminated with a newline before
+      the 'Completed iteration N' message is printed. Previously the success message appeared on the
+      same line as the last streaming content. All 30 ralph tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T02:12:45.848Z

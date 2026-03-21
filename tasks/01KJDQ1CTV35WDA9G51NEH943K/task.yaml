@@ -1,0 +1,27 @@
+_ulid: 01KJDQ1CTV35WDA9G51NEH943K
+slugs: []
+title: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec plan get
+  @plan-r
+type: task
+description: Agents should check plan_ref when starting tasks. If a task has plan_ref, run kspec
+  plan get @plan-ref to read implementation notes, algorithm details, and context. Update task-work
+  skill and task-work-loop workflow to include this step. Plans are the right place for rich
+  implementation context instead of cramming it into task notes.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #616. Added explicit plan_ref context retrieval guidance to task-work
+  skill (CLI lookup + Start Task step), and regenerated kspec-agents.md. Task has no spec_ref, so AC
+  coverage is N/A; review and CI gates passed on current PR head."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJK0CZR6Z664WKVZWV0CN4TT
+created_at: 2026-02-26T19:33:00.379Z
+started_at: 2026-03-01T01:17:08.331Z
+submitted_at: 2026-03-01T01:17:09.523Z
+completed_at: 2026-03-01T01:28:19.393Z
+todos: []
+automation: eligible

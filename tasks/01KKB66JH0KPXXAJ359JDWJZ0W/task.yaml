@@ -1,0 +1,32 @@
+_ulid: 01KKB66JH0KPXXAJ359JDWJZ0W
+slugs: []
+title: Default task list to active statuses
+type: task
+description: The task list view currently shows all statuses by default. Change it to default to
+  showing only active statuses (pending, in_progress, pending_review, needs_work, blocked).
+  Completed and cancelled tasks should be hidden unless the user explicitly selects them. This
+  likely requires changing the status filter from a single-select dropdown to a multi-select
+  approach, or adding preset filter groups.
+spec_ref: "@web-dashboard"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #740 (977c164). Default task list now shows active statuses by default,
+  with explicit All Statuses opt-in for completed/cancelled tasks. Verified own AC
+  ac-default-active-filter with static and E2E coverage, confirmed @ui-url-panel-state ac-4 coverage
+  remained intact, and ran full local npm test on PR head (4295 passed, 3 skipped)."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - web-ui
+  - feature
+vcs_refs: []
+session_id: 01KKBF2PDKX0M6G6J911XTPY73
+created_at: 2026-03-10T06:15:57.215Z
+started_at: 2026-03-10T08:58:07.353Z
+submitted_at: 2026-03-10T09:09:32.095Z
+completed_at: 2026-03-10T09:28:32.990Z
+todos: []
+automation: eligible

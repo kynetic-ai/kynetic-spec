@@ -1,0 +1,82 @@
+notes:
+  - _ulid: 01KJ8WSSCFT27761HWH249M888
+    content: >-
+      ## Problem
+
+
+      Codex PR review said 'No PR Task trailer was present, so spec/trait AC coverage checks were
+      skipped per instructions' on PR #510. This defeats the purpose of spec-first development —
+      reviewers should always validate against specs.
+
+
+      ## Affected Skills
+
+
+      ### 1. .claude/skills/codex/SKILL.md (line 128)
+
+      Current: 'If no Task trailer exists, proceed with pure code review (skip AC checks).'
+
+      Fix: Replace with instructions to dig deeper — check commit trailers, search tasks list, check
+      AC annotations in changed files, then validate against found specs. Only fall back to pure
+      code review if genuinely no spec coverage exists for the change.
+
+
+      ### 2. .claude/skills/pr-review/SKILL.md
+
+      Current: Requires task ref as a hard validation gate ('Task reference required. Error
+      immediately.')
+
+      Fix: Instead of erroring, dig for context the same way — commit trailers, task list search, AC
+      annotations. The PR body trailer is a convenience, not a prerequisite.
+
+
+      ### 3. .claude/skills/local-review/SKILL.md
+
+      Current: AC coverage checks are unconditional (good), but only when spec context is already
+      known.
+
+      Fix: Add step to discover spec context if not explicitly provided — same dig-deeper pattern.
+
+
+      ## Dig-Deeper Pattern (apply to all three)
+
+
+      When no Task trailer in PR body:
+
+      1. Check commit messages for Task: or Spec: trailers
+
+      2. Search recent tasks: kspec tasks list — match by title/description to PR scope
+
+      3. Check if changed files have // AC: @spec-ref annotations pointing to specs
+
+      4. If a spec is found, validate AC coverage identically to trailer-present case
+
+      5. Only skip AC validation if genuinely no spec exists for the changed behavior
+
+
+      ## Principle
+
+      Reviewers should be investigators, not form-checkers. The absence of a trailer is a signal to
+      look harder, not permission to skip validation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T22:37:30.383Z
+  - _ulid: 01KJ8X5NM649HSJ5WFEEXN8YW9
+    content: Reset from in_progress to pending
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T22:43:59.750Z
+  - _ulid: 01KJ8XCHPFQZYHJ0AK4JC1P75M
+    content: "Updated 4 skill files with dig-deeper spec context discovery pattern. Changes: (1) codex
+      SKILL.md line 128 — replaced 'skip AC checks' with 5-step discovery process (commit trailers,
+      task search, AC annotations, then validate if found). Also added discovery instruction to the
+      simpler review subcommand prompt. (2) pr-review SKILL.md — removed hard error gate for missing
+      task ref, replaced with discovery pattern that checks PR body, commit messages, diff
+      annotations, and task list search. Now accepts PR numbers directly. (3) local-review SKILL.md
+      — added Step 0: Discover Spec Context before the existing 8 steps. Falls back to
+      code-quality-only review if no spec found. (4) templates/skills/review/SKILL.md — added Spec
+      Context Discovery section as the base building block that all review skills reference. All
+      3513 tests pass (1 known flaky ralph timeout unrelated)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T22:47:45.103Z

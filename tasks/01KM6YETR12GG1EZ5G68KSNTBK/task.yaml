@@ -1,0 +1,55 @@
+_ulid: 01KM6YETR12GG1EZ5G68KSNTBK
+slugs:
+  - task-impl-activity
+title: Implement in-file activity timeline
+type: task
+description: |
+  Replace the git log -L based activity extraction with history entries
+  from task.yaml.
+
+  Why: git log -L on the monolithic file takes 35+ seconds for old
+  tasks. The in-file history provides instant activity timelines.
+
+  What: Update getRawTaskCommits and normalizeTaskActivity (or their
+  replacements) to read history entries from task.yaml instead of
+  running git log -L. Merge note timestamps from notes.yaml into the
+  timeline. For tasks migrated from the old format, fall back to
+  git log -- tasks/<ulid>/ (per-directory git log, which is fast).
+
+  How: The activity module reads task.yaml history entries and
+  notes.yaml timestamps, merges them chronologically, and produces
+  the same ActivityEntry[] format the CLI and daemon already consume.
+  The git log -L codepath is removed. A lightweight git log fallback
+  handles pre-migration tasks that lack history entries.
+spec_ref: "@task-activity-in-file"
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev at 8337c9ada07b3d1da672e92346b5b5e34ab5d31d after approved review
+  01KM8V1T. In-file activity timeline now reads stored history and note entries, preserves command
+  metadata and multi-field details, and retains pre-migration fallback coverage.
+depends_on:
+  - "@task-impl-per-task-files"
+context: []
+priority: 1
+tags:
+  - tasks
+  - activity
+vcs_refs: []
+review_ref: "@01KM8V1TDKF4YKPP5DR2G519TJ"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-21T18:36:53.890Z
+  commit: 87331ee1e9d640686caa51de93719322fb0c1a82
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM8TJ4K11PQQAFQTZCQDRK5M
+created_at: 2026-03-21T00:59:23.265Z
+started_at: 2026-03-21T18:30:41.376Z
+submitted_at: 2026-03-21T18:36:54.340Z
+completed_at: 2026-03-21T18:44:05.024Z
+todos: []
+automation: eligible

@@ -1,0 +1,37 @@
+_ulid: 01KM6AR90T6NH9Q6RWF35J63DD
+slugs: []
+title: Fix reviews API status filter validation mismatch
+type: task
+spec_ref: "@review-records-web-ui"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Merged to dev after approved review @01KM6D0SQGK35V7A845JPDABRN. Preserved GET
+  /api/reviews open-by-default behavior while updating UI callers to request all valid lifecycle
+  states explicitly, eliminating invalid status=all requests. Verified with kspec validate (warnings
+  only, pre-existing) and npm test (6690 passed, 3 skipped).
+depends_on: []
+context: []
+priority: 1
+tags:
+  - web-ui
+  - daemon
+  - bug
+vcs_refs: []
+review_ref: "@01KM6D0SQGK35V7A845JPDABRN"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T19:52:52.141Z
+  commit: da0fbf18378b893f4b1036d23282f691beaccf56
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM6CC0T23F75DJMEGSZJNMY5
+created_at: 2026-03-20T19:15:01.274Z
+started_at: 2026-03-20T19:52:44.559Z
+submitted_at: 2026-03-20T19:52:52.561Z
+completed_at: 2026-03-20T19:59:33.098Z
+todos: []
+automation: eligible

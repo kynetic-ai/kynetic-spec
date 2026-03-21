@@ -1,0 +1,72 @@
+_ulid: 01KJBNJAPSK8858417YYGBFX7S
+slugs:
+  - task-e2e-daemon-errors-projects-api
+title: E2E tests for daemon Error Handling + Projects API (replace 2 files)
+type: task
+description: >-
+  Replace tests/daemon-api-error-handling.test.ts (148 lines) and tests/daemon-api-projects.test.ts
+  (235 lines) with Playwright E2E tests. Both are all static analysis.
+
+
+  Write: packages/web-ui/tests/e2e/api-errors.spec.ts (or extend existing errors.spec.ts which
+  currently uses mocks)
+
+  Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+  Error handling — make real requests that trigger each error type:
+
+  - GET /api/tasks/nonexistent-ref — 404 with {error, message, suggestion} (@api-contract ac-22)
+
+  - POST /api/tasks/:ref/note with empty body — 400 with {error, details:[{field, message}]}
+  (@api-contract ac-23)
+
+  - POST /api/tasks/:ref/start on already-started task — 409 with {error, current,
+  valid_transitions} (@api-contract ac-24)
+
+
+  Note: existing errors.spec.ts uses route.fulfill() mocks. The new tests should hit the REAL daemon
+  instead. Either extend that file with a real-daemon section or create api-errors.spec.ts.
+
+
+  Projects API (uses daemon.createSecondProject helper):
+
+  - GET /api/projects — list registered projects with paths and watcherStatus
+  (@multi-directory-daemon ac-28)
+
+  - POST /api/projects — register project with path validation (@multi-directory-daemon ac-29)
+
+  - DELETE /api/projects/:encodedPath — unregister project (@multi-directory-daemon ac-30)
+
+
+  After E2E tests pass, delete both static files.
+
+  Run: npm test && npm run test:e2e to verify.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #551. Replaced tests/daemon-api-error-handling.test.ts (148 lines) and
+  tests/daemon-api-projects.test.ts (235 lines) with Playwright E2E tests. Created
+  packages/web-ui/tests/e2e/api-errors.spec.ts (33 tests) covering @api-contract ac-22, ac-23, ac-24
+  with real HTTP calls to running daemon. Created packages/web-ui/tests/e2e/api-projects.spec.ts (13
+  tests) covering @multi-directory-daemon ac-28, ac-29, ac-30. Fix cycle resolved: corrected ac-23
+  to use custom 400 handler validation (whitespace text), fixed ac-5/6/7 misannotations to use
+  ac-29, added explicit POST response assertion test. Resolved 3 unresolved GitHub review threads.
+  All CI checks passing."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - e2e
+vcs_refs: []
+session_id: 01KJCTE1GG3AZEHZ5YWTTHWCHF
+created_at: 2026-02-26T00:28:49.241Z
+started_at: 2026-02-26T11:45:27.209Z
+submitted_at: 2026-02-26T11:45:30.587Z
+completed_at: 2026-02-26T11:45:57.259Z
+todos: []
+automation: eligible

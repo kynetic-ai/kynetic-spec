@@ -1,0 +1,60 @@
+notes:
+  - _ulid: 01KM60QX9RMYB1XKR5YTAAZ7Q0
+    content: "Consolidated schema-derived enum consumers across daemon routes, CLI help text, and
+      dispatch automation handling. Reconciled task automation drift by keeping task automation
+      canonical (eligible/needs_review/manual_only), deriving the dispatch filter as a coarse
+      eligible/ineligible view, and moving task event payload automation to canonical task values.
+      Added AC-annotated coverage for API boundary rejection, CLI help derivation, invalid
+      automation guidance, and automation-schema projection behavior. Verification: npm run
+      typecheck; npm test. Note: kspec validate still reports pre-existing repository
+      reference/completeness debt unrelated to this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T16:20:03.512Z
+  - _ulid: 01KM612TNA80TB9EEG6CGCVST9
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T16:26:01.258Z
+  - _ulid: 01KM6229N481YW5SN6WCZ3WPHJ
+    content: "[FIX_CYCLE: 2] Restored the review API's actionable 400 contract while keeping enum values
+      schema-derived. Review comment/verdict/check/lifecycle endpoints now accept raw strings at the
+      transport layer and validate against schema-derived option lists inside the handler, so
+      invalid values return field-specific guidance with valid alternatives instead of framework
+      422s. Updated the verdict/check/lifecycle API tests and the review WebSocket regression test
+      to match the restored contract. Verification: npm run typecheck; npm test (292 files, 6669
+      passed, 3 skipped). kspec validate still reports the same pre-existing repository
+      reference/alignment/completeness debt unrelated to this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T16:43:12.420Z
+  - _ulid: 01KM62F7TKSR67P02Q2XBWMFRC
+    content: "[FIX_CYCLE: 3] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T16:50:16.532Z
+  - _ulid: 01KM637832WNTZKB2D8AHC3J4E
+    content: "[FIX_CYCLE: 4] Investigated the cycle-2 blocker as a reproducibility issue rather than a
+      new code defect. Re-ran the full suite twice on commit
+      cdb70fae4e3fc3481147505e3f19023b1113c5fc in this workspace; both runs exited 0 with 292 files
+      passed, 6669 tests passed, and 3 skipped. No additional code changes were required because the
+      submitted snapshot already satisfies the schema-derived enum fixes and the review API contract
+      restoration; this cycle adds reproducibility evidence and thread follow-up for re-review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T17:03:23.235Z
+  - _ulid: 01KM63KMW06MZ4PKZSF4N39MV3
+    content: "[FIX_CYCLE: 5] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T17:10:09.536Z
+  - _ulid: 01KM63YKSVB2MR918YDYB68CNA
+    content: Addressed cycle-3 blocker by replacing the remaining hand-written automation status unions
+      in src/cli/commands/task.ts with the schema-derived AutomationStatus type. Re-ran the focused
+      schema-derived test and the full npm test suite after rebasing onto origin/dev; both passed.
+      kspec validate still reports the pre-existing repo-wide reference/completeness debt from
+      .kspec/modules/meta.yaml and long-standing AC coverage warnings, not a regression from this
+      task.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T17:16:08.892Z

@@ -1,0 +1,11 @@
+notes:
+  - _ulid: 01KK2Z06MZKDN4PJ0Z8TFHG2QS
+    content: "Added formatTimeline() to session-utils.ts that shows absolute timestamps (12h format with
+      seconds). For same-day: '2:16:37 PM'. For other days: 'Mar 5, 10:16:37 AM'. Updated
+      SessionContextPanel Timeline section to use formatTimeline() instead of formatAge() for
+      Started/Ended fields. Title attribute shows full ISO string on hover. List views (sessions
+      list, TaskCard) still use formatAge() for coarse relative times. Added session-utils.test.ts
+      with 6 tests covering same-day, different-day, and seconds precision."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T01:36:12.959Z

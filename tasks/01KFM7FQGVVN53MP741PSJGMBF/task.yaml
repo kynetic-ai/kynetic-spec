@@ -1,0 +1,35 @@
+_ulid: 01KFM7FQGVVN53MP741PSJGMBF
+slugs: []
+title: "Merge driver foundation: types and parsing"
+type: task
+description: |-
+  Create merge module foundation:
+
+  **Files to create:**
+  - src/merge/types.ts - MergeResult, ConflictInfo, MergeOptions types
+  - src/merge/index.ts - Public API exports
+
+  **Covers ACs:**
+  - ac-1: Parse all three versions as structured data
+  - ac-11: Fallback on parse failure (copy ours, create marker)
+
+  **Scope:**
+  - Define types for merge results, conflicts, options
+  - Implement parseYamlVersions() to read base/ours/theirs
+  - Implement graceful fallback when parsing fails
+spec_ref: "@yaml-merge-driver"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #174 merged. Implemented merge driver foundation with types and parsing for
+  semantic YAML merging."
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-23T01:28:48.411Z
+started_at: 2026-01-23T06:09:32.788Z
+completed_at: 2026-01-23T06:21:30.447Z
+todos: []
+automation: eligible

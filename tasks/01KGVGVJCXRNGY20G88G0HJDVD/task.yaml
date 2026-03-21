@@ -1,0 +1,25 @@
+_ulid: 01KGVGVJCXRNGY20G88G0HJDVD
+slugs: []
+title: Filter superseded notes from default task display
+type: task
+description: Note supersession should filter display - when a note has been superseded, hide it by
+  default in task notes output. Show only 'active' notes (those not superseded). Add --all flag to
+  show full history including superseded notes. This matters because notes are used as instructions
+  for agents, and superseded notes should be ignored in favor of newer ones.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #363. Implemented note supersession filtering: superseded notes are
+  hidden by default in task get output, added --all flag to show full history, JSON output includes
+  'superseded' computed field, session start also filters superseded notes. 7 tests added covering
+  all scenarios."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-07T07:42:56.412Z
+started_at: 2026-02-14T09:24:34.473Z
+completed_at: 2026-02-14T09:39:48.173Z
+todos: []
+automation: eligible

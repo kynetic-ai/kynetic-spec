@@ -1,0 +1,28 @@
+_ulid: 01KKB5J02DQA312B76P7PNAT9X
+slugs:
+  - implement-plan-content-embedded-views
+title: Implement Plan Content Embedded Views
+type: task
+spec_ref: "@plan-embedded-views"
+plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #792 (22a27883afc2a1f5b57ea2534158a8df08687710). Implemented
+  plan-content embedded spec/task views on the web UI using batch item summaries, added
+  loading/error fallback behavior, supported fenced derive_from_specs task embeds, and covered
+  runtime card rendering/navigation plus structured AC display. AC coverage verified for
+  @plan-embedded-views and inherited @trait-markdown-rendering coverage remains satisfied."
+depends_on:
+  - "@implement-batch-item-fetch-api"
+  - "@implement-streaming-markdown-component"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKFQZD2XWTTBE53F169CFE7K
+created_at: 2026-03-10T06:04:42.957Z
+started_at: 2026-03-12T00:45:57.783Z
+submitted_at: 2026-03-12T01:41:45.596Z
+completed_at: 2026-03-12T01:58:41.204Z
+todos: []
+automation: eligible

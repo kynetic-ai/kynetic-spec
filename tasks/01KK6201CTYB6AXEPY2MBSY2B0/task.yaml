@@ -1,0 +1,42 @@
+_ulid: 01KK6201CTYB6AXEPY2MBSY2B0
+slugs: []
+title: Fix active fleet showing completed agents as still active
+type: task
+description: "The dispatch engine shows completed invocations as still active. Root cause: in
+  _spawnInvocation (dispatch.ts), the cleanup chain is
+  shadowMutex.runExclusive(runInvocation).then(drainQueues).finally(cleanupActiveDetails). The
+  .then() calls _drainQueues which spawns the NEXT invocation via shadowMutex.runExclusive — but
+  .finally() only runs after .then() completes. This means the old invocation's
+  activeInvocationDetails entry persists until the next invocation finishes. Evidence: agents page
+  shows reviewer as '1 active' with 15m elapsed, but sessions page shows that reviewer session
+  completed 12m ago — the cleanup is blocked behind the currently running worker invocation (which
+  holds the shadowMutex). Fix: move activeInvocationDetails.delete and activeCount decrement into
+  the .runExclusive callback (after emitting the event), BEFORE the drain step. The .then should
+  only handle draining, and .finally should only handle abort controller cleanup."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #710. Fixed dispatch active fleet cleanup ordering by moving
+  activeCount decrement and activeInvocationDetails deletion into the shadowMutex runExclusive
+  callback before queue drain, so completed or terminally failed invocations no longer appear active
+  while the next invocation runs. Added regression coverage for success and retry-exhausted failure
+  paths in tests/agent-dispatch-engine.test.ts. Task has no spec_ref, so AC coverage was not
+  applicable; targeted local regression tests passed and PR CI was green on the merged HEAD."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - web-ui
+  - daemon
+  - dispatch
+vcs_refs: []
+session_id: 01KK6EE15NMZN0YYXN5XC596EK
+created_at: 2026-03-08T06:26:16.602Z
+started_at: 2026-03-08T10:10:26.973Z
+submitted_at: 2026-03-08T10:16:59.820Z
+completed_at: 2026-03-08T10:37:20.612Z
+todos: []
+automation: eligible

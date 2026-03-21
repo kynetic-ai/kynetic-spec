@@ -1,0 +1,47 @@
+notes:
+  - _ulid: 01KJVRYZ0P8SHBM41J76C5S17Q
+    content: >-
+      Execution context:
+
+      - Background: batch command should fail fast when --commands is missing/empty, not hang
+      reading stdin.
+
+      - Scope: CLI argument handling and tests for empty/missing args and stdin fallback behavior.
+
+      - Files: batch command parser/handler and related CLI tests.
+
+      - Verification: targeted vitest for batch command behavior plus full test suite for
+      regression.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T06:35:59.895Z
+  - _ulid: 01KJVS6WKWNH3XGW11P6WSANSD
+    content: >-
+      Implemented fail-fast stdin handling for kspec batch when no input arrives on an open pipe.
+
+      - Added idle-timeout stdin reader in src/cli/batch-exec.ts for non-TTY stdin to prevent
+      indefinite hangs.
+
+      - Improved missing-input error guidance to include --commands/--file/stdin options.
+
+      - Added regression test in tests/batch-exec-engine.test.ts that spawns batch with open stdin
+      and asserts fast non-zero exit.
+
+      Validation:
+
+      - npx tsc
+
+      - npx vitest run tests/batch-exec-engine.test.ts
+
+      - npx vitest run tests/batch-schema.test.ts tests/batch-commands.test.ts
+
+      - kspec validate currently fails due pre-existing project meta/reference issues unrelated to
+      this task (duplicate @observations + missing skill file).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T06:40:19.580Z
+  - _ulid: 01KJVS8BKBJP7JPBVAM9YA46QE
+    content: "Submitted for review in PR #660: https://github.com/kynetic-ai/kynetic-spec/pull/660"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T06:41:07.692Z

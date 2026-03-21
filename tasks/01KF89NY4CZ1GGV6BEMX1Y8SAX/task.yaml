@@ -1,0 +1,19 @@
+_ulid: 01KF89NY4CZ1GGV6BEMX1Y8SAX
+slugs: []
+title: Improve error messages
+type: task
+description: Need better error messages
+meta_ref: "@session-start"
+origin: observation_promotion
+status: completed
+blocked_by: []
+closed_reason: All hardcoded error messages migrated to centralized strings module
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-18T10:16:15.756Z
+started_at: 2026-01-18T10:24:14.790Z
+completed_at: 2026-01-18T10:29:47.365Z
+todos: []

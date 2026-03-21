@@ -1,0 +1,17 @@
+notes:
+  - _ulid: 01KJ4V59EWTD9J8F12HB8Y15T1
+    content: "AUTOMATION: Content authoring. Write templates/skills/plan/SKILL.md. Read
+      .claude/skills/spec-plan/SKILL.md as reference."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T08:51:52.412Z
+  - _ulid: 01KJ55Q9GYQ9CZ4KEJ9HFNKJB4
+    content: "Wrote templates/skills/plan/SKILL.md (225 lines). Covers: two-path approach (import vs
+      manual), three-phase workflow (design→execute→validate), plan document format with full
+      section reference and field table, trait selection guide with common applications table, YAML
+      pitfalls (block scalars, colons), dry-run-first pattern, post-import checklist, plan
+      lifecycle, batch alternative, full command reference. Rewritten from base principles. Added
+      manifest entry. Installs correctly. All 3181 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T11:56:28.062Z

@@ -1,0 +1,21 @@
+_ulid: 01KF1W7AKJ10X9PYFC1EXFF400
+slugs:
+  - task-recursive-derive
+title: Implement recursive derive with auto-dependencies
+type: task
+spec_ref: "@cmd-derive"
+status: completed
+blocked_by: []
+closed_reason: Implemented recursive derive with auto-dependencies. Added --flat option, auto
+  depends_on from hierarchy, --json output, 14 ACs to spec, 9 integration tests. All 184 tests pass.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - feature
+vcs_refs: []
+created_at: 2026-01-15T22:25:38.929Z
+started_at: 2026-01-17T00:37:34.086Z
+completed_at: 2026-01-17T00:48:16.767Z
+todos: []

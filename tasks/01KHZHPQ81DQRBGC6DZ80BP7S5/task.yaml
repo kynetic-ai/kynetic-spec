@@ -1,0 +1,32 @@
+_ulid: 01KHZHPQ81DQRBGC6DZ80BP7S5
+slugs: []
+title: "Write core skill: kspec:task-work"
+type: task
+description: Refactor the task-work skill for the kspec/ namespace. Read current content from
+  .claude/skills/task-work/SKILL.md as reference. Task lifecycle — start, work, note, submit,
+  complete. Fix cycle handling. Scope management. Rewrite from base principles — focus on what is
+  universal to any kspec project, strip project-specific commands (npm test, specific test helpers,
+  etc). Write to templates/skills/task-work/SKILL.md (rendered to .claude/skills/kspec/task-work/).
+  Add entry to manifest.yaml.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #471. Wrote templates/skills/task-work/SKILL.md (296 lines) covering
+  full task lifecycle, fix cycle handling, scope management, AC annotations, implementation quality,
+  loop mode with blocking rules, and command reference. All project-specific content stripped.
+  Manifest entry added. All 3181 tests pass. Skill installs correctly."
+depends_on:
+  - "@01KHZHPG"
+context: []
+priority: 3
+tags:
+  - core-skills
+  - skill-content
+vcs_refs: []
+created_at: 2026-02-21T07:30:25.665Z
+started_at: 2026-02-23T11:57:13.457Z
+completed_at: 2026-02-23T12:26:57.441Z
+todos: []
+automation: eligible

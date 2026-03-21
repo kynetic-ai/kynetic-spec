@@ -1,0 +1,20 @@
+_ulid: 01KF4WVWRB1EP8XNBC7PYST2TF
+slugs:
+  - task-kspec-meta-show
+title: "Implement: kspec meta show"
+type: task
+spec_ref: "@meta-show"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Command fully implemented and tested, displays all required summary information
+depends_on:
+  - "@task-meta-cli-commands"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:36.171Z
+started_at: 2026-01-18T10:10:30.683Z
+completed_at: 2026-01-18T10:10:42.370Z
+todos: []

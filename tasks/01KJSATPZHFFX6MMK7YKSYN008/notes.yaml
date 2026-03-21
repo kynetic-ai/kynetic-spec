@@ -1,0 +1,40 @@
+notes:
+  - _ulid: 01KJSATY4AV9YYAYF2KEC7TF5F
+    content: >-
+      Pre-existing failure confirmed on main branch before any changes from task @01KJSA2T (PR
+      #643). Verified by running: git stash && npx vitest run tests/enhanced-setup.test.ts and
+      confirming the same ENOENT failure on the pristine main branch.
+
+
+      Failure details:
+
+      - Test file: tests/enhanced-setup.test.ts:385
+
+      - Expects: .codex/config.toml to exist in temp dir
+
+      - Actual: file not created
+
+      - Error: ENOENT: no such file or directory
+
+
+      The setup command should write .codex/config.toml when codex is detected in the environment.
+      The test simulates codex being present but the config file is never created.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T07:50:38.986Z
+  - _ulid: 01KJWD01DF0V2TMRBR8DXRXBQZ
+    content: >-
+      Verification on 2026-03-04:
+
+      - Confirmed fix already exists on main in commit 5818b6315 (fix: seed codex fallback docs with
+      kspec-agents), which updates setup seeding and adds src/lib/codex-config.ts.
+
+      - Ran targeted reproduction: npx vitest run tests/enhanced-setup.test.ts -t 'should render
+      core skills to codex output when codex is detected' (PASS).
+
+      - Ran full file: npx vitest run tests/enhanced-setup.test.ts (27 passed).
+
+      Conclusion: task issue is already resolved upstream; no additional code changes required.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T12:26:06.639Z

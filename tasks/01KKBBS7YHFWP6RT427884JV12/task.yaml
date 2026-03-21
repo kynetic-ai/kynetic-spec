@@ -1,0 +1,33 @@
+_ulid: 01KKBBS7YHFWP6RT427884JV12
+slugs: []
+title: kspec shadow repair removes the .kspec worktree before verifying it can recreate it. If git
+  is not o
+type: task
+description: >-
+  Shadow repair safety: repairShadow() in src/parser/shadow.ts calls fs.rm(worktreeDir) at line 2729
+  BEFORE attempting git worktree add at line 2739. If worktree recreation fails (git unavailable,
+  disk error, permissions), the .kspec directory is gone with no recovery path for the user.
+
+
+  The kspec-meta branch data survives in .git/ and can be recovered with git worktree add .kspec
+  kspec-meta, but users would not know this.
+
+
+  Design decision needed: (1) Verify git availability and worktree add feasibility BEFORE any fs.rm,
+  (2) consider in-place repair (re-link broken worktree without deletion), (3) add a backup/restore
+  mechanism, (4) at minimum print recovery instructions if recreation fails. Manual task because it
+  touches data safety and needs human review of the repair strategy.
+spec_ref: "@session-branch-worktree"
+status: cancelled
+blocked_by: []
+closed_reason: Superseded by @fix-broken-shadow-safety under @broken-shadow-safety. The older task
+  covered only the repair-deletes-.kspec failure mode and was linked to the wrong spec family
+  (@session-branch-worktree).
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-03-10T07:53:31.856Z
+todos: []
+automation: manual_only

@@ -1,0 +1,32 @@
+_ulid: 01KK5E7XRDS4X8TNCB27E7G5SJ
+slugs: []
+title: Document Bun requirement for daemon or provide Node.js fallback
+type: task
+description: "kspec serve start fails with 'Bun runtime is required' but this is not documented in
+  the install guide or README. Users discover it only when trying to start the daemon. Either: (a)
+  document the Bun requirement clearly in install/setup, (b) auto-install Bun during kspec setup, or
+  (c) provide a Node.js-compatible daemon fallback."
+spec_ref: "@web-ui"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #704. Documented Bun as the daemon/web UI prerequisite, improved
+  missing-Bun guidance in serve start with install commands and URL, added the missing ulidx runtime
+  dependency, and verified @web-ui ac-1/ac-2 coverage including an npm-pack/install/start end-to-end
+  test."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - docs
+  - daemon
+  - dx
+vcs_refs: []
+session_id: 01KK66F8NGFR856T4WTHCAGNFG
+created_at: 2026-03-08T00:41:03.501Z
+started_at: 2026-03-08T07:57:10.905Z
+submitted_at: 2026-03-08T07:57:13.242Z
+completed_at: 2026-03-08T08:20:56.372Z
+todos: []
+automation: eligible

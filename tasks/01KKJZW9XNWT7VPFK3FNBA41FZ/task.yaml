@@ -1,0 +1,36 @@
+_ulid: 01KKJZW9XNWT7VPFK3FNBA41FZ
+slugs:
+  - fix-broken-shadow-safety
+title: Fix broken shadow fail-open fallback and repair safety
+type: bug
+description: "Investigate and fix the destructive broken-shadow path reported from the dispatch
+  checkout. Scope: fail closed when a configured shadow branch exists but the shadow worktree is
+  missing or disconnected; prevent daemon/dispatch from writing kspec-managed state outside the
+  configured shadow directory; preserve or restore the prior shadow directory when repair cannot
+  recreate the worktree; and make bootstrap/setup reuse shadow repair instead of re-initializing an
+  existing shadow branch."
+spec_ref: "@broken-shadow-safety"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #824. Hardened broken shadow recovery so context fails closed on
+  disconnected shadow state, repair preserves/restores the prior shadow directory on failure, and
+  bootstrap/setup reuse repair semantics for existing local or remote shadow state. AC coverage
+  verified for all four spec criteria; focused verification and full regression passed."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - shadow
+  - dispatch
+  - daemon
+  - reliability
+vcs_refs: []
+review_url: https://github.com/kynetic-ai/kynetic-spec/pull/824
+created_at: 2026-03-13T06:59:24.725Z
+started_at: 2026-03-13T07:21:31.583Z
+submitted_at: 2026-03-13T07:54:05.245Z
+completed_at: 2026-03-13T09:40:41.671Z
+todos: []
+automation: eligible

@@ -1,0 +1,164 @@
+notes:
+  - _ulid: 01KK4H9H82J780G5T3RYXQEC8Q
+    content: >-
+      Execution context:
+
+      - Background: Kanban board has a TaskDetailModal component; task list page uses a different
+      detail view. Need to unify so both use the same component.
+
+      - Scope: Extract/refactor the task detail display into a shared component, use it from both
+      kanban and task list views.
+
+      - Branch: feat/unify-task-detail (off feat/ui-revamp)
+
+      - Verification: npm test in root, npm run test in packages/web-ui
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T16:15:07.523Z
+  - _ulid: 01KK4J4C1DKF3VGZE1DD9N5NKS
+    content: Implementation complete. Created shared TaskDetailContent.svelte component that contains
+      all task detail display logic. TaskDetailModal (kanban) wraps it in Dialog, task list page
+      wraps it in Sheet. Both views now render identical content with unified test IDs (task-*
+      prefix). Updated E2E tests in task-board.spec.ts and tasks.spec.ts to use the new unified IDs.
+      All 182 test files pass (4030 tests). The 2 pre-existing failures in codex config tests are
+      unrelated.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T16:29:46.926Z
+  - _ulid: 01KK4KDKETZHRYB7CHV8PHMGFB
+    content: >-
+      Review findings:
+
+      - MUST-FIX: Static mode regression in shared detail content. In TaskDetailContent, all actions
+      are hidden behind `{#if !isStaticMode()}`
+      (packages/web-ui/src/lib/components/board/TaskDetailContent.svelte:289 and :415). This removes
+      the Start Task button entirely in read-only SPA mode, which conflicts with @gh-pages-export
+      ac-16 (button should be disabled with explanatory tooltip).
+
+      - MUST-FIX: `kspec validate --completeness -v --warnings-ok` reports warnings for
+      @web-dashboard: uncovered ACs ac-1, ac-2, ac-3, ac-11, ac-12, ac-13, ac-14 (see
+      /tmp/kspec-completeness.txt lines 363-364). Per review checklist, warnings for this spec are
+      blocking.
+
+      - Regression check: `npm test` (root) and `packages/web-ui npm test` both passed.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-07T16:52:18.011Z
+  - _ulid: 01KK4KDSNSPYK5FXM1M0YBWBFM
+    content: "[FIX_CYCLE: 1] Review findings: Review issues: static-mode action UX regression vs
+      @gh-pages-export ac-16, plus blocking @web-dashboard completeness warnings from kspec
+      validate."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-07T16:52:24.378Z
+  - _ulid: 01KK4N0DQ9YQEM0PXBJZB9TZT2
+    content: >-
+      Fix cycle 1 - addressed review feedback:
+
+      1. Static mode regression: Replaced {#if !isStaticMode()} guard that hid all action buttons
+      with disabled buttons + tooltips. Now Start, Submit, Complete, Block, and Add Note buttons are
+      always visible but disabled with 'Read-only mode' tooltip in static mode, matching
+      @gh-pages-export ac-16.
+
+      2. @web-dashboard completeness warnings: Added missing // AC: @web-dashboard annotations to
+      dashboard.spec.ts (ac-1, ac-2, ac-3) and items.spec.ts (ac-11, ac-12, ac-13, ac-14). Tests
+      already existed but lacked the standard annotation format that kspec validate scans for.
+
+      All 4030 tests pass (2 pre-existing codex config failures). Build succeeds. kspec validate
+      --completeness no longer reports @web-dashboard warnings.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T17:20:03.305Z
+  - _ulid: 01KK53CVQF5N7DJ4CAB9P3YFBH
+    content: >-
+      Review findings (fix cycle 1 re-review):
+
+      - SHOULD-FIX: Incorrect AC annotation at TaskDetailModal.svelte:528. The comment '// AC:
+      @gh-pages-export ac-17 — Note form disabled in static mode' references ac-17, which is about
+      the inbox Add button being disabled/hidden in SPA mode (not the task note form). The real
+      ac-17 is already correctly annotated in inbox/+page.svelte:7 and api.ts:397. This annotation
+      should either reference @gh-pages-export ac-18 (general write action no-op) or be removed
+      entirely — it misleads coverage tracking.
+
+      - SUGGESTION: The readOnly tooltip pattern is repeated 5 times with near-identical code (~75
+      lines of boilerplate). Consider extracting a DisabledTooltipButton snippet or component.
+
+      - PASS: Static mode fix correctly addresses @gh-pages-export ac-16 (disabled buttons with
+      tooltips).
+
+      - PASS: @web-dashboard completeness warnings resolved — ac-1, ac-2, ac-3, ac-11, ac-12, ac-13,
+      ac-14 annotations added.
+
+      - PASS: All tests pass (4029/4032, 3 pre-existing failures in codex config and session-start
+      timeout).
+
+      - PASS: No hardcoded Tailwind colors — uses design tokens correctly.
+
+      - PASS: Svelte 5 patterns only ($state/$derived/$effect).
+
+      - PASS: kspec validate shows no new warnings for this task's specs.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T21:31:30.927Z
+  - _ulid: 01KK53D4F8CV6G3FA9RKANPKY4
+    content: "[FIX_CYCLE: 2] Review findings: SHOULD-FIX: Incorrect AC annotation at
+      TaskDetailModal.svelte:528 — ac-17 is about inbox Add button, not task note form. Remove or
+      change to @gh-pages-export ac-18."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T21:31:39.880Z
+  - _ulid: 01KK53F2C1SQ3MRWF74B7RG18C
+    content: "Re-review update: The fix/unify-task-detail-display branch is STALE. The fix cycle 1
+      commit (c89a604e4) modified TaskDetailModal.svelte, but the original refactoring (51e193de8,
+      merged as dda66873e) extracted all action/note logic into TaskDetailContent.svelte. The
+      current feat/ui-revamp still has the static mode regression in TaskDetailContent.svelte:289
+      ({#if !isStaticMode()} hides actions entirely instead of showing disabled buttons with
+      tooltips). The fix needs to be applied to TaskDetailContent.svelte, not the old monolithic
+      TaskDetailModal.svelte. The AC annotation additions to dashboard.spec.ts and items.spec.ts are
+      valid and already merged via dda66873e."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T21:32:43.265Z
+  - _ulid: 01KK53G6VPB9QXQQAWC13KYZ81
+    content: >-
+      Clarification for fix cycle 2: The fix branch (fix/unify-task-detail-display) is stale — its
+      single commit modified the old monolithic TaskDetailModal.svelte, but feat/ui-revamp already
+      has the extracted TaskDetailContent.svelte. The worker needs to:
+
+      1. Apply the @gh-pages-export ac-16 fix (disabled buttons with tooltips in static mode) to
+      TaskDetailContent.svelte:289, replacing the {#if !isStaticMode()} guard that hides actions
+      entirely
+
+      2. Apply the same pattern to the note form at TaskDetailContent.svelte:415
+
+      3. Add @web-dashboard AC annotations to dashboard.spec.ts (ac-1, ac-2, ac-3) and items.spec.ts
+      (ac-11, ac-12, ac-13, ac-14) — these were in the fix branch but never merged
+
+      4. Do NOT annotate the note form with @gh-pages-export ac-17 (that AC is about the inbox Add
+      button, already covered elsewhere)
+
+      5. The fix branch can be deleted — its changes target the wrong file
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T21:33:20.630Z
+  - _ulid: 01KK541B9Q3NWJXM9VM5JCJ10C
+    content: >-
+      Fix cycle 2 - addressed review feedback:
+
+      1. Static mode regression (MUST-FIX from FC1, still present in current code): Replaced {#if
+      !isStaticMode()} guards in TaskDetailContent.svelte with disabled buttons + tooltips using
+      Tooltip.Root/Trigger/Content pattern. All action buttons (Start, Submit, Complete, Block, Add
+      Note) now visible but disabled in static mode with 'Read-only mode' tooltip.
+
+      2. Incorrect AC annotation (SHOULD-FIX from FC2): Used @gh-pages-export ac-18 (not ac-17) for
+      the note form disabled annotation, since ac-17 is about the inbox Add button.
+
+      3. @web-dashboard completeness warnings: Added // AC: @web-dashboard ac-1 to
+      dashboard.spec.ts, // AC: @web-dashboard ac-3 to dashboard.spec.ts, // AC: @web-dashboard
+      ac-11/12/13/14 to items.spec.ts. Only ac-2 (WebSocket count animation) remains uncovered — out
+      of scope for this task.
+
+      All 4030 tests pass (2 pre-existing codex config failures).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T21:42:42.231Z

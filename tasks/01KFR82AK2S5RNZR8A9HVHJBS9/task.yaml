@@ -1,0 +1,28 @@
+_ulid: 01KFR82AK2S5RNZR8A9HVHJBS9
+slugs:
+  - task-session-reflect-loop-workflow
+title: "Implement: Session Reflect Loop Workflow"
+type: task
+spec_ref: "@session-reflect-loop-workflow"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: |-
+  Workflow created and auto-committed to shadow branch. Implements all 6 ACs:
+  - ac-1: Step 1 searches observations/inbox/tasks BEFORE identifying
+  - ac-2, ac-4: Step 2 defines high-confidence criteria (concrete, systemic, clear)
+  - ac-3: Step 3 evaluates duplicates and skips them
+  - ac-5, ac-6: Step 3 has skip_user_prompt: true (no user interaction)
+
+  Workflow definition at .kspec/kynetic.meta.yaml (shadow commit d3c95c26)
+depends_on:
+  - "@task-loop-mode-workflows"
+context: []
+priority: 1
+tags:
+  - enhance-ralph
+vcs_refs: []
+created_at: 2026-01-24T14:55:55.490Z
+started_at: 2026-01-24T19:12:45.214Z
+completed_at: 2026-01-24T19:16:03.523Z
+todos: []

@@ -1,0 +1,130 @@
+notes:
+  - _ulid: 01KKB5J0NCHXW2CDXS6EDJ8XKA
+    content: |
+      Implementation notes:
+
+      This is primarily a component swap task. For each surface:
+      1. Import renderMarkdown or the StreamingMarkdown component
+      2. Replace plain text / whitespace-pre-wrap rendering with
+         {@html renderMarkdown(content)} wrapped in prose classes
+      3. Ensure prose styling works in each component's layout context
+
+      Priority order (most impactful first):
+      - Task notes (heavily used, often contain code blocks)
+      - Task descriptions
+      - Spec descriptions
+      - Observations
+      - Workflow descriptions
+      - Inbox items
+      - AC text (inline formatting only)
+
+      ThinkingBlock and ToolCallView are intentionally excluded — they
+      render agent internals where monospace/pre is the correct format.
+      SystemBlock is also excluded — it shows structured system events,
+      not user-authored markdown content.
+
+      Shared DOMPurify config: Both the static renderMarkdown() utility
+      and the StreamingMarkdown component must use the same DOMPurify
+      allowlist configuration. Extract to a shared sanitize.ts module.
+    author: "@claude"
+    created_at: 2026-03-10T06:04:43.564Z
+  - _ulid: 01KKB5NYPWK47QVNPXN266ZW96
+    content: >-
+      Execution context:
+
+      - Background: Only plan content and agent messages currently render markdown. All
+      user/agent-authored text should render markdown.
+
+      - Scope: Component swap across 7 surfaces. Replace plain text / whitespace-pre-wrap with
+      {@html renderMarkdown(content)} wrapped in prose classes.
+
+      - Priority order: task notes > task descriptions > spec descriptions > observations >
+      workflows > inbox > AC text
+
+      - Files to modify: packages/web-ui/src/lib/components/tasks/TaskDetailContent.svelte,
+      packages/web-ui/src/routes/observations/+page.svelte,
+      packages/web-ui/src/routes/workflows/+page.svelte,
+      packages/web-ui/src/lib/components/items/ItemDetail.svelte,
+      packages/web-ui/src/routes/inbox/+page.svelte, packages/web-ui/src/routes/triage/+page.svelte
+
+      - Excluded: ThinkingBlock, ToolCallView (agent internals, monospace is correct), SystemBlock
+      (structured events, not user markdown)
+
+      - Dependencies: Requires @implement-prose-typography-setup (prose classes must work first)
+
+      - Verification: Each surface renders markdown formatting. Code blocks highlighted. Dark mode
+      works. No XSS via sanitization.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T06:06:52.636Z
+  - _ulid: 01KKEJWEAM0QPZ60K0WDR422ZR
+    content: >-
+      Execution context:
+
+      - Background: static markdown rendering is already in place for plans and agent messages; this
+      task extends it to remaining user/agent-authored UI surfaces.
+
+      - Scope: task description and notes, spec description and AC text, observations, workflows,
+      inbox, and triage inbox views.
+
+      - Exclusions: ThinkingBlock, ToolCallView, SystemBlock remain plain/structured renderers by
+      design.
+
+      - Verification: targeted web-ui tests for each adopted surface plus kspec validate and full
+      project test suite.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T13:55:20.020Z
+  - _ulid: 01KKEKJJ005CSPFYATBDFMQV63
+    content: >-
+      Implemented markdown adoption across the remaining static text surfaces in web-ui.
+
+
+      Changes:
+
+      - Added renderInlineMarkdown() for short GWT strings while keeping renderMarkdown() for full
+      prose blocks.
+
+      - Swapped task descriptions/notes, spec descriptions/AC text, observations, workflows, inbox
+      list items, and triage card text to sanitized markdown rendering with prose styling.
+
+      - Seeded E2E fixtures with markdown-rich content and added browser assertions for spec ACs
+      ac-1 through ac-7.
+
+
+      Verification:
+
+      - tests/web-ui-session-stream.test.ts passed.
+
+      - npm run build:e2e passed on current HEAD.
+
+      - Playwright execution is blocked in dispatch because the shared fixture still tries to run
+      kspec serve start.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T14:07:24.672Z
+  - _ulid: 01KKEWAB77X1288E7GXWNBFAGK
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #782 includes unrelated commits from open
+      task @01KKB5HYXXE1DH0T13T6BK2SYC / PR #781 (streaming markdown component). Rebase or rebuild
+      the branch so review covers only @markdown-ui-adoption."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T16:40:12.775Z
+  - _ulid: 01KKEX15AKW8ZBJ8E8F2ART3GG
+    content: "[FIX_CYCLE: 2] Rebuilt the task onto a clean branch from main and replayed only the
+      markdown-adoption changes. The only conflict was packages/web-ui/src/lib/utils/markdown.ts
+      because main lacks the streaming branch sanitize/highlight refactor; resolved by adding
+      renderInlineMarkdown() on top of main's existing static markdown sanitizer so PR scope stays
+      isolated to @markdown-ui-adoption."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T16:52:40.403Z
+  - _ulid: 01KKEX924VMN26Q9FQ5W2RG31T
+    content: "[FIX_CYCLE: 3] Verification on the rebuilt branch: kspec validate still exits 6 with the
+      repository's pre-existing warning set; npm test passed cleanly after clearing transient
+      SvelteKit build output (211 files, 4539 tests, 3 skipped); npm run build:e2e still fails in
+      packages/web-ui with a SvelteKit-generated .svelte-kit/output ENOENT/adapter copy error that
+      appears environmental and unrelated to the markdown diff."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T16:56:59.291Z

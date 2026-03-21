@@ -1,0 +1,28 @@
+_ulid: 01KF9Q39SJWQX48YFKJ0V7ZFN6
+slugs: []
+title: Add git hook for kspec-meta branch protection
+type: task
+description: "Git hook for kspec-meta branch protection: Add a pre-commit or pre-push git hook in
+  the main repo that prevents dangerous operations on kspec-meta branch. Would complement the Claude
+  PreToolUse hook with git-level protection. Consider: (1) pre-commit hook rejecting commits that
+  modify .kspec worktree incorrectly, (2) pre-push hook preventing force pushes to kspec-meta, (3)
+  post-checkout hook warning if .kspec worktree gets on wrong branch. This protects against
+  non-Claude git operations too."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Implemented git pre-commit hook to protect kspec-meta branch. Hook blocks direct
+  commits unless KSPEC_SHADOW_COMMIT=1 env var is set. shadowAutoCommit now sets this var. Hook
+  installed to .git/hooks (worktrees use main repo hooks via commondir). Tested: blocks unauthorized
+  commits, allows kspec CLI commits, allows commits on other branches."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - safety
+  - git
+vcs_refs: []
+created_at: 2026-01-18T23:29:59.601Z
+started_at: 2026-01-19T06:20:49.129Z
+completed_at: 2026-01-19T06:29:11.298Z
+todos: []

@@ -1,0 +1,29 @@
+_ulid: 01KJS6ZRR71WCNJQ5KC9WSDTXB
+slugs: []
+title: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but returns
+  non-zer"
+type: task
+description: "kspec validate uses ambiguous exit codes in automation: prints Validation passed but
+  returns non-zero when only warnings present (e.g., exit 6). Downstream automation cant distinguish
+  warnings-only from real failures. Add explicit mode/flag for warning-only-is-success, or make
+  output clearly state non-zero is from warnings. Reported from imgen project."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #659. Implemented warning-only automation clarity for validate/lint by
+  adding --warnings-ok (exit 0 on warnings-only when requested), preserving default warning exit
+  code 6 with explicit messaging, and ensuring structured validate/lint output stays
+  machine-parseable in --json mode. Reviewed full PR diff and verified regression suite passes on PR
+  head (npm test: 173 files, 3616 tests, 3 skipped). AC coverage: N/A (task has no spec_ref)."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJVP83PDXQH6YBFSVXG5M79A
+created_at: 2026-03-03T06:43:23.015Z
+started_at: 2026-03-04T05:49:50.333Z
+submitted_at: 2026-03-04T05:56:01.633Z
+completed_at: 2026-03-04T06:48:36.734Z
+todos: []
+automation: eligible

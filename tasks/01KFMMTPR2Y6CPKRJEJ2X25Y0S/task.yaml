@@ -1,0 +1,23 @@
+_ulid: 01KFMMTPR2Y6CPKRJEJ2X25Y0S
+slugs: []
+title: Global search command palette
+type: task
+spec_ref: "@web-dashboard"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #201 merged successfully. Global search command palette implemented with Cmd+K
+  shortcut, debounced search, grouped results, and navigation. Greptile feedback addressed (cleanup
+  function, ulid navigation). All CI checks passed."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - phase-3
+  - dashboard
+vcs_refs: []
+created_at: 2026-01-23T05:21:59.553Z
+started_at: 2026-01-23T15:51:34.551Z
+completed_at: 2026-01-23T16:13:00.069Z
+todos: []
+automation: eligible

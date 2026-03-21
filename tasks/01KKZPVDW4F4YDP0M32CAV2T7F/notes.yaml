@@ -1,0 +1,49 @@
+notes:
+  - _ulid: 01KKZZYAYVXCVF3PHNYG1K76SM
+    content: "Implemented EventBus class in src/agent-runtime/event-bus.ts with: (1) EventEnvelope type
+      with event_id, event_type, emitted_at, source_type, source_id, causation_id, correlation_id
+      (ac-1), (2) Causation/correlation chain tracking with auto-resolution from ring buffer and
+      KSPEC_CORRELATION_ID env var support (ac-2), (3) Task event dedup using
+      (taskId:fromStatus:toStatus) key within configurable window, non-task events skip dedup
+      (ac-3), (4) Per-source sequential delivery via promise chains ensuring emission order (ac-4),
+      (5) Chain depth limit via correlation_id tracking with configurable max (default 5) and logged
+      warning on rejection (ac-5), (6) Configurable ring buffer (default 500) for recent event
+      retention (ac-6). Integrated into DispatchEngine: task state changes and invocation lifecycle
+      events now emit through the bus. Engine-level dedup preserved for backward compat; bus
+      skipDedup flag avoids double-filtering. 36 tests with AC annotations covering all 6 ACs, all
+      117 existing dispatch engine tests still pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T08:10:38.939Z
+  - _ulid: 01KM00B42MAJZNVK0DN721WJ2Q
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by pr-reviewer@kspec-dispatch"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T08:17:37.876Z
+  - _ulid: 01KM00C0GAD1SGJ6WMM28FBXEE
+    content: "Review cycle 1 — request_changes (review @01KM008E). Event bus implementation is solid and
+      correctly implements all 6 ACs. Two MUST-FIX blockers: (1) Revert out-of-scope meta.ts
+      refactor — removed raw-data-preservation pattern, file locking, and breaks
+      @yaml-serialization-invariants ac-3 by adding Zod-default empty arrays to absent sections.
+      This reverts the round-trip stability work merged in the immediately preceding dev commit. (2)
+      Restore ~327 lines of deleted tests from yaml-round-trip-stability.test.ts covering
+      saveObservation, saveMetaItem, deleteMetaItem paths. Fix: git checkout dev --
+      src/parser/meta.ts tests/yaml-round-trip-stability.test.ts, then recommit with only event bus
+      changes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T08:18:06.986Z
+  - _ulid: 01KM01CS43138WKXRFYBMJTHJ9
+    content: "Fix cycle 1 investigation: Both review blockers (out-of-scope meta.ts refactor and deleted
+      yaml-round-trip-stability tests) do NOT exist in the current commit (14505dad0). git diff
+      8d087368e..14505dad0 shows only 4 files changed: src/agent-runtime/event-bus.ts,
+      src/agent-runtime/dispatch.ts, src/agent-runtime/index.ts, tests/event-bus.test.ts. git diff
+      origin/dev -- src/parser/meta.ts tests/yaml-round-trip-stability.test.ts produces zero output
+      — both files are identical to dev. All 49 yaml-round-trip-stability tests pass. All 36
+      event-bus tests pass. The 2 test failures (cli-serve.test.ts and review-cli.test.ts) are
+      pre-existing on dev (identical files, zero diff). The review findings may have been based on
+      intermediate worktree state that was cleaned up before the final commit. No code changes
+      needed — resubmitting as-is."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T08:36:00.771Z

@@ -1,0 +1,21 @@
+_ulid: 01KF1VKDWJ0G37T95RKAD7R1TZ
+slugs:
+  - task-shadow-initialization
+title: "Implement: Shadow Initialization"
+type: task
+spec_ref: "@shadow-init"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Shadow initialization implemented with simplified flow using git worktree add --orphan
+depends_on: []
+context: []
+priority: 1
+tags:
+  - infrastructure
+  - cli
+vcs_refs: []
+created_at: 2026-01-15T22:14:46.930Z
+started_at: 2026-01-15T23:26:49.425Z
+completed_at: 2026-01-15T23:34:30.533Z
+todos: []

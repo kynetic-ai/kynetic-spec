@@ -1,0 +1,33 @@
+_ulid: 01KHZHPGKCDJWTVFH5VSZ8BXQ9
+slugs: []
+title: Render core skills under kspec/ namespace directory
+type: task
+description: "Update the core skill render pipeline so template skills install to
+  .claude/skills/kspec/<skill-id>/SKILL.md instead of flat .claude/skills/<skill-id>/SKILL.md. Key
+  changes: (1) getRenderedSkillPath() in src/parser/skill-render.ts adds kspec/ prefix for
+  origin:core skills, (2) loadCoreSkillContent() in src/cli/commands/skill-install.ts unchanged —
+  template dir stays templates/skills/<id>/, render path handles the nesting, (3) manifest.yaml
+  skill ids stay kebab-case (no slashes or colons in schema), (4) kspec setup --status checks under
+  .claude/skills/kspec/ subdir for core skills, (5) Clean up old .claude/skills/kspec-help/ if
+  present (migrated to .claude/skills/kspec/help/). Project-specific skills in .claude/skills/ root
+  are untouched — only origin:core skills get the kspec/ prefix. Test: kspec setup should create
+  .claude/skills/kspec/help/SKILL.md, kspec skill install-core should install under kspec/ subdir."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #440. Core skills now render under .claude/skills/kspec/<id>/
+  namespace. Includes migration cleanup, namespace-aware drift detection, safe --clean for nested
+  directories, and spec coverage (ac-6, ac-7 on @skill-rendering). 13 new tests."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - core-skills
+  - infrastructure
+vcs_refs: []
+created_at: 2026-02-21T07:30:18.860Z
+started_at: 2026-02-21T16:02:25.535Z
+completed_at: 2026-02-21T17:45:51.292Z
+todos: []

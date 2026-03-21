@@ -1,0 +1,32 @@
+_ulid: 01KJ74W4QDCZCXCBHNKH1876SZ
+slugs:
+  - task-session-start-output-tests
+title: Add session start output tests
+type: task
+description: "Tests covering all new ACs: slug display + fallback, unlocks computation and display,
+  inbox triage stats, merged activity timeline ordering + dedup, commit trailer parsing, empty
+  section skipping, primer vs full differences, JSON computed fields, --no-git behavior, notes
+  starvation prevention."
+spec_ref: "@cmd-session-start"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #516. Added 6 tests for ac-activity-hierarchy/ac-activity-orphan,
+  explicit trait tests for @trait-json-output ac-4 and @trait-semantic-exit-codes ac-5 (N/A), fixed
+  stale AC numbering in notes tests, replaced static analysis with behavioral ANSI check. All 72
+  session-start tests pass."
+depends_on:
+  - "@01KJ74W2"
+context: []
+priority: 2
+tags:
+  - cli
+  - session
+  - testing
+vcs_refs: []
+created_at: 2026-02-24T06:20:07.277Z
+started_at: 2026-02-25T01:00:40.031Z
+completed_at: 2026-02-25T01:24:55.217Z
+todos: []
+automation: eligible

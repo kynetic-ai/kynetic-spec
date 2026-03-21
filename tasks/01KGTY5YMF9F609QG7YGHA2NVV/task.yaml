@@ -1,0 +1,28 @@
+_ulid: 01KGTY5YMF9F609QG7YGHA2NVV
+slugs: []
+title: Separate validate exit codes for errors vs warnings
+type: task
+description: "kspec validate exit code: validate returns exit code 1 for alignment warnings
+  (orphaned specs, missing test coverage) even when there are zero errors. On fresh projects with
+  specs but no code, this is the expected state. Consider: separate exit codes (0=clean, 1=errors,
+  2=warnings-only), or --errors-only / --severity flags to filter output and control exit behavior."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #341. Implemented separate exit codes for validate command: 0=success,
+  4=errors present (VALIDATION_FAILED), 6=warnings only (VALIDATION_WARNINGS). This enables CI
+  pipelines to distinguish validation failures from informational warnings. Added dedicated tests
+  with AC annotations and updated help documentation."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - validation
+  - dx
+vcs_refs: []
+created_at: 2026-02-07T02:16:33.679Z
+started_at: 2026-02-07T11:58:07.796Z
+completed_at: 2026-02-07T12:33:48.141Z
+todos: []
+automation: eligible

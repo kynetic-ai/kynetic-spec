@@ -1,0 +1,32 @@
+_ulid: 01KJCW37YCFYNRWF1R8P6D5KE1
+slugs:
+  - task-fix-triage-e2e-ac-gaps
+title: Investigate kspec validate not crediting triage API E2E annotations
+type: bug
+description: "Codex retrospective review of PR #547 found coverage gaps in the triage API E2E tests.
+  MUST-FIX: (1) kspec validate doesn't credit AC annotations in
+  packages/web-ui/tests/e2e/api-triage.spec.ts — likely path/root mismatch. (2) ac-3/ac-4/ac-5 claim
+  coverage but don't verify triage:updates WebSocket broadcast — file marks WS as N/A which
+  conflicts. (3) ac-5 never verifies result_ref for result-producing actions. SHOULD-FIX: (4)
+  @trait-api-endpoint ac-5 (shadow commit) annotated as implicitly covered but no test checks shadow
+  commit occurrence."
+spec_ref: "@triage-daemon-api"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #552. Bootstrap now always rebuilds dist/ to prevent stale code. Root
+  cause was checkBuild() only checking existence, not freshness."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - e2e
+vcs_refs: []
+created_at: 2026-02-26T11:42:09.349Z
+started_at: 2026-02-26T11:48:57.047Z
+submitted_at: 2026-02-26T11:54:12.777Z
+completed_at: 2026-02-26T12:07:17.141Z
+todos: []
+automation: manual_only

@@ -1,0 +1,28 @@
+notes:
+  - _ulid: 01KGTVFNZR7D6E472H5V12QPQS
+    content: "Implementation: In AC add/set handlers, detect { [ : in given/when/then strings and wrap
+      with single quotes before YAML serialization. Check src/cli/commands/item.ts AC add path and
+      src/parser/ write utilities. ~20 lines + tests for edge cases (nested quotes, already-quoted
+      strings). Bug prevention — agents hit this when writing ACs with JSON examples or CLI flag
+      syntax."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T01:29:26.776Z
+  - _ulid: 01KGVSBCQ4J61XRA43B7WGNAA6
+    content: "Investigation complete: The yaml library (v2.x) already handles auto-quoting of special
+      characters when serializing. Tested braces {}, brackets [], colons :, leading special chars,
+      and boolean-like values (yes/no/true). All cases work correctly - the library auto-quotes
+      strings as needed and Zod schema properly coerces values back to strings. No code changes
+      needed - the task was created based on an assumption that turned out to be already handled by
+      the YAML library migration (commit f659bac0)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T10:11:23.492Z
+  - _ulid: 01KGVSBXJCKA25Y42FFR7408BQ
+    content: "Completed with --skip-review: Already implemented by YAML library. The yaml v2.x library
+      handles auto-quoting of special characters (braces, brackets, colons, boolean-like values)
+      automatically when serializing. Extensive testing confirmed all edge cases work correctly. No
+      code changes required."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T10:11:40.749Z

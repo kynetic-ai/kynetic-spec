@@ -1,0 +1,42 @@
+notes:
+  - _ulid: 01KJDQVZCFA46XS91H4TP27506
+    content: Linked to @shadow-repair-cmd spec. Large scope (15+ functions) but spec exists with ACs.
+      Shell portability fix — replace /bin/sh spawns with direct git commands.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T19:47:31.344Z
+  - _ulid: 01KJHK9K26XGHPC9PN1Q8R8NW2
+    content: >-
+      Execution context:
+
+      - Background: shadow git operations still invoke shell command strings, which breaks on
+      environments without /bin/sh and increases command-injection surface.
+
+      - Scope: refactor git invocation paths in src/parser/shadow.ts to non-shell child-process
+      execution only.
+
+      - Files: src/parser/shadow.ts and tests/shadow.test.ts (only if extra coverage is needed).
+
+      - Verification: run targeted shadow tests and focused command-level checks for repair/sync
+      paths.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T07:44:32.326Z
+  - _ulid: 01KJHKCFDVQ1EH8BRTQ7ZJH50S
+    content: "Implemented non-shell git execution refactor in src/parser/shadow.ts: replaced all
+      shell-based exec/execSync command strings with argument-array execution via execFile (async)
+      and spawnSync (sync helper). Added shared helpers runGitAsync/runCommandSync and updated
+      auto-commit, remote tracking, init, sync, repair, and merge-driver paths accordingly.
+      Verification: npm test -- tests/shadow.test.ts (84/84 passing), and grep confirms no
+      execSync/execAsync usage remains in shadow.ts."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T07:46:06.907Z
+  - _ulid: 01KJHKDSX0RNK9HEA30PNEHPMM
+    content: "Submitted for review in PR #597: https://github.com/kynetic-ai/kynetic-spec/pull/597.
+      Replaced all shell-based execSync/execAsync usage in src/parser/shadow.ts with non-shell
+      execFile/spawnSync argument-array execution. Verified with npm test -- tests/shadow.test.ts
+      (84 passing)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T07:46:50.400Z

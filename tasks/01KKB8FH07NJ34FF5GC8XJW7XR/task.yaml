@@ -1,0 +1,25 @@
+_ulid: 01KKB8FH07NJ34FF5GC8XJW7XR
+slugs:
+  - implement-missing-description-backfill
+title: Implement Missing Description Backfill
+type: task
+spec_ref: "@description-backfill"
+plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #779. Completed the missing description backfill for the spec items
+  tracked by @description-backfill, validated that the missing-description warning is gone for this
+  task's scope, and cleared the review fix-cycle regressions with passing full npm test coverage on
+  the merged head."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKE9RZ4AB8CGNTVEDM6HTM9E
+created_at: 2026-03-10T06:55:47.719Z
+started_at: 2026-03-11T11:20:31.654Z
+submitted_at: 2026-03-11T11:26:54.779Z
+completed_at: 2026-03-11T13:34:43.635Z
+todos: []
+automation: eligible

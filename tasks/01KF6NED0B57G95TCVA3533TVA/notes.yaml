@@ -1,0 +1,112 @@
+notes:
+  - _ulid: 01KF6NGGDRPX2AYYYP4GFPWDYS
+    content: >-
+      Implementation approach from kynetic research:
+
+
+      1. Event Translation Layer (like ui-event-translator.ts):
+         - Map ACP update types: agent_message_chunk → agent_message, tool_call → tool_use, tool_call_update → tool_result
+         - Tool name extraction: check _meta.claudeCode.toolName, then _meta.toolName, then name field
+         - Strip MCP prefixes (mcp__acp__Write → Write)
+
+      2. Display Summaries per tool type:
+         - Bash: show command (truncate at 50 chars)
+         - Read/Write/Edit: show filename from file_path
+         - Grep/Glob: show pattern
+         - WebSearch: show query
+         - Task: show description
+
+      3. Message Aggregation Pattern:
+         - Track turn/block indices for message grouping
+         - pendingTools Map<tool_call_id, message_id> for lifecycle tracking
+         - Finalization: empty string chunk signals message boundary
+         - Tool status lifecycle: pending → running → completed/failed/cancelled
+
+      4. Output Format:
+         - Section headers: --- Tool Call --- or similar
+         - Timestamps: relative from session start (+5s, +2m)
+         - Chalk colors: blue for agent content, gray for metadata, green for success, red for errors
+         - Truncation: 20 lines or 1000 chars with '... (truncated)' indicator
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-17T19:04:31.929Z
+  - _ulid: 01KF6NGXKZ8NA8ED7Z4MT8J0WK
+    content: >-
+      Key learnings from kynetic beads history (pitfalls to avoid):
+
+
+      1. FINALIZATION BUG: Agent messages stayed streaming forever because Hub Agent didn't send
+      finalization signal. Fix: Ensure empty string chunk or status event marks message complete.
+
+
+      2. SANITIZATION GAPS: Table elements, KaTeX equation elements were stripped after streaming
+      ended. Fix: Whitelist all HTML elements your rendering produces.
+
+
+      3. INLINE STYLING BLEED: Bold/italic/strikethrough applied to entire line because code used
+      element.lastElementChild instead of data.nodes[data.index]. Fix: Target the actual inline
+      element.
+
+
+      4. LIBRARY FORMAT REQUIREMENTS: streaming-markdown requires newline after $$ for block math.
+      Don't try to fix input format after the fact - guide the source to produce correct format.
+
+
+      5. TEST QUALITY: Permissive assertions like toBeGreaterThanOrEqual(3) couldn't catch bugs.
+      Fix: Use exact assertions with content verification.
+
+
+      6. TREAT LLM OUTPUT AS UNTRUSTED: Even though it's our agent, sanitize like user content.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-17T19:04:45.440Z
+  - _ulid: 01KF6PXCRGRJSMWW2G3YDTR2F7
+    content: >-
+      Architecture decision: Separated translator (data) from renderer (display).
+
+
+      - src/ralph/events.ts: Pure data types (RalphEvent) and translator that converts SessionUpdate
+      to RalphEvent
+
+      - src/ralph/cli-renderer.ts: CLI-specific rendering with chalk colors and stdout
+
+      - This enables future TUI to consume same event stream with different renderer
+
+
+      Key translator features:
+
+      - Extracts tool name from _meta.claudeCode.toolName (Claude Code pattern)
+
+      - Strips MCP prefixes (mcp__acp__Write → Write)
+
+      - Generates per-tool summaries (Bash: command, Read/Write: filename, etc.)
+
+      - Suppresses noise patterns (onPostToolUseHook messages)
+
+      - Tracks pending tools for lifecycle and accumulates streaming content
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-17T19:29:02.736Z
+  - _ulid: 01KF6QA1N6FA9V7QZT7RZG2XGG
+    content: |-
+      Implementation complete:
+
+      Files created:
+      - src/ralph/events.ts - RalphEvent types and createTranslator() function
+      - src/ralph/cli-renderer.ts - createCliRenderer() with chalk formatting
+      - src/ralph/index.ts - Module exports
+
+      Modified:
+      - src/cli/commands/ralph.ts - Uses translator + renderer pattern
+
+      AC coverage:
+      - ac-1 (agent messages): ✓ Section headers, chalk.blue content
+      - ac-2 (tool calls): ✓ Tool name, summary per tool type, status, truncated output
+      - ac-3 (timestamps): ✓ Relative timestamps [+5s] format
+      - ac-4 (noise suppression): ✓ Filters onPostToolUseHook patterns
+      - ac-5 (finalization): ✓ Tracks activeMessage, finalizes on empty chunk
+
+      All 311 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-17T19:35:57.351Z

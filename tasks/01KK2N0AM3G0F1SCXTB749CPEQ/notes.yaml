@@ -1,0 +1,16 @@
+notes:
+  - _ulid: 01KK4FMZ9SREXC67CCEB0HQ7HN
+    content: >-
+      Root cause: daemon route handler at packages/daemon/src/routes/validation.ts:221 accessed
+      result.traitCycles, but the validate() function (src/parser/validate.ts) returns
+      traitCycleErrors. The undefined property was serialized as a missing field in JSON, causing
+      the client to crash when accessing .length on undefined.
+
+
+      Fix: Changed result.traitCycles to result.traitCycleErrors in the daemon route. Also added
+      defensive normalization in fetchValidation() (packages/web-ui/src/lib/api.ts) to default all
+      array fields to empty arrays via nullish coalescing, preventing similar crashes from missing
+      API fields.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T15:46:25.209Z

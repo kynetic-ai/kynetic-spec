@@ -1,0 +1,64 @@
+_ulid: 01KKJP6E1TN5ZFMHASTHSGG2MH
+slugs:
+  - reconcile-legacy-dispatch-workspaces-and-spec-gaps
+title: Reconcile legacy dispatch workspaces and close upgrade-path spec gaps
+type: bug
+description: >-
+  The dispatch runtime should recover sanely when a project has metadata-backed worktrees or
+  partially adopted dispatch state from earlier iterations of the feature. Current failure mode:
+  periodic reconciliation can enqueue pending_review work and then discard it as ineligible because
+  the reviewer handoff only consults project.dispatch-workspaces.yaml, while some live dispatch
+  worktrees still exist only on disk or on legacy/non-canonical branches.
+
+
+  Scope:
+
+  - audit the current dispatch reconciliation path against existing specs
+  (@dispatch-workspace-cleanup-policy, @dispatch-workspace-registry,
+  @dispatch-scheduling-priority-model) and add spec updates first if upgrade/legacy recovery or
+  reviewer-prune observability is underspecified
+
+  - teach reconciliation/startup to detect metadata-backed dispatch worktrees under the dispatch
+  root that are missing from the registry and either reattach them to a canonical workspace record
+  or clean/block them deterministically
+
+  - define handling for legacy branch layouts (for example feat/* worker branches created during
+  rollout) so they do not silently poison reviewer eligibility
+
+  - improve dispatch discard diagnostics so logs identify which task refs were pruned and why,
+  instead of only reporting aggregate counts per agent
+
+  - add regression coverage for upgrade-path/legacy-project scenarios where dispatch state was
+  created incrementally during feature rollout
+
+
+  Outcome: upgrading projects and in-flight rollout states should converge onto the canonical
+  registry/workspace model without making task-worker and pr-reviewer behavior look like a single
+  collapsed queue.
+spec_ref: "@dispatch-workspace-cleanup-policy"
+meta_ref: null
+plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #816 via merge commit fbdd35a665192a1a8b7ceb33578e43bcbdfa5895.
+  Reconciliation now rebuilds metadata-backed dispatch workspace records, normalizes legacy feat/*
+  worker branches onto canonical dispatch/task/* branches, logs task-linked discard reasons during
+  queue pruning, and hardens daemon watcher teardown for deleted .kspec roots. AC coverage verified
+  for @dispatch-workspace-cleanup-policy ac-6/ac-7 and @dispatch-scheduling-priority-model ac-8;
+  fresh PR CI passed on head 5fbf600b5aa248215c4d107dc2bd609713a33cbb."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - migration
+  - upgrade
+  - cleanup
+vcs_refs: []
+session_id: 01KKJSSZB86EXQ1WR2ZRWDSAWG
+created_at: 2026-03-13T04:10:10.874Z
+started_at: 2026-03-13T05:18:07.629Z
+submitted_at: 2026-03-13T05:18:11.504Z
+completed_at: 2026-03-13T05:32:12.090Z
+todos: []
+automation: eligible

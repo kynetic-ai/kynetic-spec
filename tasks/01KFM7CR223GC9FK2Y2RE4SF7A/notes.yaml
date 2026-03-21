@@ -1,0 +1,25 @@
+notes:
+  - _ulid: 01KFM7CR21W791HD49EF6KGBGT
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      CLI subcommand that git invokes as the custom merge driver. Inherits @trait-dry-run and
+      @trait-error-guidance from parent.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given git invokes merge driver with standard arguments, when kspec merge-driver %O %A
+      %B %L %P runs, then driver reads base (%O), ours (%A), theirs (%B) files and writes merged
+      result to %A path
+
+      - ac-2: Given driver runs successfully, when processing completes, then stderr shows summary
+      of what was merged/conflicted for user visibility
+
+      - ac-3: Given --non-interactive flag is passed, when conflicts detected, then driver writes
+      conflicts as YAML comments instead of prompting
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T01:27:10.658Z

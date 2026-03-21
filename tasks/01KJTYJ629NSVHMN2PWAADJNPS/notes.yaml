@@ -1,0 +1,41 @@
+notes:
+  - _ulid: 01KJV1SVPHP1WW53V1VVQTHP6F
+    content: >-
+      Execution context:
+
+      - Background: Prevent lost updates from stale object snapshots during plan/inbox writes.
+
+      - Scope: Add atomic mutate helpers for plan and inbox item updates; migrate CLI/task write
+      paths that currently replace full objects.
+
+      - Files: parser/store and command/task mutation call sites related to plan/inbox updates.
+
+      - Verification: targeted tests for stale-snapshot safety plus full test suite and kspec
+      validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T23:51:15.409Z
+  - _ulid: 01KJV2BDX1QY36WCQ6D5SAWCX9
+    content: >-
+      Implemented atomic update APIs for plan and inbox writes to prevent stale-snapshot clobbers.
+
+      - Added mutatePlanAtomically in src/parser/plans.ts and mutateInboxItemAtomically in
+      src/parser/yaml.ts; both lock file, re-read latest state, mutate in callback, and write once.
+
+      - Migrated stale-snapshot command paths to atomic mutations: plan set/note/derive and inbox
+      set/note.
+
+      - Added regression coverage in tests/plan-inbox-mutation-serialization.test.ts for concurrent
+      CLI updates preserving unrelated fields.
+
+      Verification:
+
+      - npm test passed (169 files, 3585 tests).
+
+      - Targeted tests passed for parser plans + inbox/plan integration slices.
+
+      - kspec validate reports existing repository-wide baseline issues unrelated to this task
+      (meta/observations slug conflicts and alignment warnings).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T00:00:51.105Z

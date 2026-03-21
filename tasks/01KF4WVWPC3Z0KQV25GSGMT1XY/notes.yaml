@@ -1,0 +1,48 @@
+notes:
+  - _ulid: 01KF8G0NFZACW8SPZKAYRE1EEW
+    content: |-
+      WIP: Partial integration started but incomplete.
+
+      Changes so far:
+      - Added loadSessionContext import to session.ts
+      - Added SessionContext type import (aliased as StoredSessionContext)
+      - Added context field to SessionContext interface
+
+      Still needed:
+      - Load session context in gatherSessionContext function
+      - Display context in session output (focus, threads, open_questions)
+      - Format context section per spec example
+      - Handle empty/missing context gracefully
+      - Add tests for context display
+
+      This was auto-started but not completed in iteration 32. Needs continuation in next session.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T12:06:58.815Z
+  - _ulid: 01KF8G2D1J9E81MSRF033DWAC7
+    content: Implemented context integration - session start now displays focus, active threads, and
+      open questions from .kspec-session file. Added StoredSessionContext to SessionContext
+      interface and updated formatSessionContext to display the data. All tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T12:07:55.698Z
+  - _ulid: 01KF8G2FGNKA3ZSWFJS83TCQJZ
+    content: |-
+      Additional WIP commit: Added display formatting in formatSessionContext function.
+
+      The display section shows:
+      - Focus (if set)
+      - Active threads (if any)
+      - Open questions (if any)
+
+      Only displays section if context exists and has content.
+
+      Still needs:
+      - Loading context in gatherSessionContext (ctx.context = await loadSessionContext(...))
+      - Tests for the display formatting
+      - Integration test for end-to-end flow
+
+      Draft PR #52 contains all WIP commits.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T12:07:58.229Z

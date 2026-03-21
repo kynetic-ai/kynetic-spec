@@ -1,0 +1,29 @@
+_ulid: 01KJDGCEF2MXN9KEMJ2F4S5VVP
+slugs: []
+title: Add batch usage template for agent instructions and CLI example output
+type: task
+description: "Two parts: (1) New agents-sections template (02-cli-usage.md) documenting batch JSON
+  format, arg rules, invocation methods, and discovery commands. Ships with npm package. (2) CLI
+  enhancement — kspec batch commands <path> to filter output to a single command schema (e.g. kspec
+  batch commands task-set). Documented in the new template. Reduces agent trial-and-error when
+  constructing batch payloads."
+spec_ref: "@batch-allowed-commands"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #560. Added batch usage template (07-batch-usage.md) and path filter
+  for batch commands CLI."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - docs
+  - dx
+vcs_refs: []
+created_at: 2026-02-26T17:36:42.460Z
+started_at: 2026-02-26T18:20:24.049Z
+submitted_at: 2026-02-26T18:25:51.504Z
+completed_at: 2026-02-26T18:42:57.046Z
+todos: []

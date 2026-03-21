@@ -1,0 +1,27 @@
+_ulid: 01KKBD5ZVMAE1PYCVFHZTRKF2N
+slugs: []
+title: "Alignment status calculation should treat needs_work and pending_review as active work
+  states (maps "
+type: task
+description: >-
+  Update alignment status calculation to treat needs_work and pending_review as active work states.
+
+
+  Current behavior: Alignment maps these task states to unexpected spec statuses, causing misleading
+  alignment warnings.
+
+
+  Fix: In the alignment calculation (likely src/parser/validate.ts or src/parser/alignment.ts), map
+  needs_work and pending_review task states to in_progress expected spec status. Was prototyped in a
+  previous fix cycle but reverted as out-of-scope. Standalone change with test updates.
+spec_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-03-10T08:17:58.132Z
+todos: []
+automation: needs_review

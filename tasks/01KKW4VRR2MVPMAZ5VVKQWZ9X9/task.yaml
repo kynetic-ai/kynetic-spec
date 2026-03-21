@@ -1,0 +1,47 @@
+_ulid: 01KKW4VRR2MVPMAZ5VVKQWZ9X9
+slugs:
+  - task-update-task-work-skill-docs
+title: Update task-work skill for fix-cycle notes
+type: task
+description: |
+  Update the task-work skill (templates/skills/task-work/SKILL.md)
+  to enforce that workers add a task note summarizing what changed
+  before resubmitting after a fix cycle.
+
+  What: Add explicit guidance to the Fix Cycle section requiring a
+  note before kspec task submit that summarizes what was changed and
+  why. Reference the activity timeline as the consumer of this note.
+  This note becomes a key timeline entry for understanding fix cycles.
+
+  Run kspec skill render after editing to regenerate .agents/skills/.
+spec_ref: null
+plan_ref: "@plan-task-activity-timeline"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Reviewed and merged to dev. Clean docs-only change: added fix-cycle note requirement
+  (step 4), per-cycle review model reference, and historical reviews comment. All three files
+  consistent."
+depends_on:
+  - "@task-new-review-per-cycle"
+context: []
+priority: 2
+tags:
+  - docs
+  - tasks
+vcs_refs: []
+review_ref: "@01KKX25K2TA66PPZMVSW46YMXS"
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-update-task-work-skill-docs/01kkw4vr
+  captured_at: 2026-03-17T04:50:57.722Z
+  commit: 5cfeef645f782c1220377ec5bdecf32122cb9be3
+  remote: null
+  remote_url: null
+  upstream_ref: dev
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-16T20:19:39.906Z
+started_at: 2026-03-17T04:49:49.330Z
+submitted_at: 2026-03-17T04:50:58.798Z
+completed_at: 2026-03-17T04:52:38.195Z
+todos: []

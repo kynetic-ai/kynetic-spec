@@ -1,0 +1,32 @@
+_ulid: 01KJE5A53YPYHZ4M0K2G4PEC0X
+slugs: []
+title: Investigate task lifecycle commands leaving shadow changes staged without auto-commit
+type: task
+description: "What: during this session, task lifecycle operations updated
+  `.kspec/project.tasks.yaml` but left changes staged in the shadow worktree instead of producing
+  the expected automatic commit, requiring a manual `git commit` in `.kspec`. Where: task transition
+  flow (`task start/submit/complete`) and shared shadow commit helper integration. How: reproduce
+  with a minimal command sequence, identify when commitIfShadow/shadowAutoCommit is skipped or
+  bypassed, and ensure transitions consistently auto-commit shadow changes. Add regression test
+  covering submit path and staged-index state checks. Done when: task lifecycle commands that mutate
+  shadow state always result in committed shadow changes (no lingering staged diff) unless
+  explicitly in a dry-run or documented exception mode."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Merged into @01KJF06N. Same root issue (shadow auto-commit gaps) observed in
+  different command families. Code inspection shows commitIfShadow is now present at all callsites —
+  merging to single task focused on regression test coverage.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - shadow
+  - task-workflow
+  - reliability
+vcs_refs: []
+created_at: 2026-02-26T23:42:27.454Z
+todos: []
+automation: needs_review

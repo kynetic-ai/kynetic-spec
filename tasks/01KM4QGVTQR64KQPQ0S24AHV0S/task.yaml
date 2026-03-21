@@ -1,0 +1,74 @@
+_ulid: 01KM4QGVTQR64KQPQ0S24AHV0S
+slugs:
+  - task-fix-sessions-live-freshness
+title: Fix sessions page real-time freshness across session origins
+type: bug
+description: >-
+  Why:
+
+  The /sessions page currently falls out of date and requires manual refresh when session list data
+  changes without an effective live-update path reaching the page. Existing specs already require
+  live update behavior for the sessions view, but the current behavior is inconsistent and appears
+  biased toward specific runtime paths.
+
+
+  What:
+
+  - Align /sessions with the live-update behavior required by @session-list-infinite-scroll.
+
+  - Extend freshness coverage so session list updates are source-agnostic rather than tied to one
+  runtime path.
+
+  - Ensure counts, status changes, and newly visible sessions update correctly under active filters
+  and current sort order.
+
+  - Preserve good UX when the user is scrolled away from the top of the list.
+
+
+  How:
+
+  - Trace all server-side paths that can create or close sessions and identify which ones emit
+  real-time signals today.
+
+  - Establish one freshness path that covers list-visible session changes across those paths.
+
+  - Update the sessions page so live updates affect rendered list data and counts without requiring
+  a browser refresh.
+
+  - Cover both immediate top-of-list updates and scrolled-state indicator behavior.
+
+  - Add tests for new session creation, completion or status changes, filtered views, cross-origin
+  session changes, and scrolled-position behavior.
+spec_ref: "@session-list-infinite-scroll"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Merged to dev after review approval. Verified local npm test (290 files, 6660 passed,
+  3 skipped) and npm run typecheck. Sessions freshness now updates source-agnostically through the
+  daemon session watcher and shared WebSocket invalidation path, with scrolled-state indicator
+  behavior preserved.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - web-ui
+  - sessions
+vcs_refs: []
+review_ref: "@01KM52DE4FWS7DXC85FZYSZ0K9"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T07:25:37.918Z
+  commit: 9b7ac734efff51f995040f28dd18c2a36324a6bc
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM51R5R7Y2A7R5JRVBN46GFP
+created_at: 2026-03-20T04:19:41.015Z
+started_at: 2026-03-20T07:19:02.300Z
+submitted_at: 2026-03-20T07:25:38.338Z
+completed_at: 2026-03-20T07:31:47.560Z
+todos: []
+automation: eligible

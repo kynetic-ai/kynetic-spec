@@ -1,0 +1,25 @@
+_ulid: 01KJ923HBYQ3475W2NB1AJH0D9
+slugs:
+  - task-validate-status-enum
+title: Validate enum values in item set --status
+type: bug
+spec_ref: "@implementation-states"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #517. Added enum validation for --status and --maturity flags in item
+  set command. Invalid values now fail with clear error listing valid values. 6 integration tests
+  covering @implementation-states ac-reject-invalid and @maturity-states ac-reject-invalid. Codex
+  review clean."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+vcs_refs: []
+created_at: 2026-02-25T00:10:12.733Z
+started_at: 2026-02-25T01:25:25.255Z
+completed_at: 2026-02-25T01:39:35.181Z
+todos: []
+automation: eligible

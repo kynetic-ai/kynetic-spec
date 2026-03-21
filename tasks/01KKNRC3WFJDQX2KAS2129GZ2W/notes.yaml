@@ -1,0 +1,62 @@
+notes:
+  - _ulid: 01KKPR45QWGAMTZAQ4XZH2XWFQ
+    content: >-
+      Execution context:
+
+      - Background: Implementing review CLI creation (review add) and query (review get, review
+      list) commands
+
+      - Scope: review add with ref and code subject bindings, review get, review list with
+      filtering, --slug flag support
+
+      - Dependencies: review CLI surface (completed), review validation (completed), subject
+      bindings (completed) 
+
+      - Files: expected changes in src/cli/commands/review/, tests/
+
+      - Verification: npm test, kspec validate
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T18:00:51.708Z
+  - _ulid: 01KKPRXGF35FAARGSNPZXKH2HJ
+    content: >-
+      Implementation complete. Created review CLI with three commands:
+
+      - review add: Creates reviews with ref-backed subjects (task/plan/spec) or code subjects
+      (base/head commits). Supports --slug, --author, --related-ref flags.
+
+      - review get: Shows full review details including lifecycle state, computed disposition,
+      computed gate state, threads, checks, verdicts, events, and notes.
+
+      - review list: Lists reviews with filters (--status, --disposition, --subject, --reviewer,
+      --tag, --limit, --offset, --count).
+
+
+      All commands support --json output. 37 tests covering all 5 own ACs plus trait ACs for
+      json-output, filterable-list, semantic-exit-codes, and shadow-commit.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T18:14:41.891Z
+  - _ulid: 01KKPSFTAD7KWW8TJXX4DXXBAF
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: (1) Merge conflict — src/cli/commands/review.ts
+      conflicts with existing 1445-line review CLI surface on main (from
+      @task-implement-review-cli-surface). Branch must rebase onto main and integrate into existing
+      structure. (2) Missing @trait-semantic-exit-codes N/A annotations for ac-3, ac-4, ac-7, ac-8.
+      (3) Mislabeled test at line 347 — annotated as ac-5 but tests NOT_FOUND exit code 3,
+      contradicting both the AC and test name. SHOULD-FIX: Unused imports (kspecOutput in test,
+      ReviewLifecycleState in impl). See PR #854 review for inline details."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T18:24:41.805Z
+  - _ulid: 01KKPT1JB6F4EVGDQVY7JM1EDN
+    content: "Fix cycle resolution: All review findings addressed by merging with origin/main. The
+      @task-implement-review-cli-surface (PR #851) had already landed on main with a complete review
+      CLI surface (1445 lines) that fully implements all 5 ACs for @review-cli-creation-and-query
+      plus mutation commands, task linkage, and comprehensive trait coverage (json-output,
+      filterable-list, semantic-exit-codes, shadow-commit including N/A annotations). Our branch's
+      duplicate review.ts and test file were dropped in favor of main's complete implementation.
+      Removed duplicate registerReviewCommands registration that the merge introduced. All 5162
+      tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T18:34:23.462Z

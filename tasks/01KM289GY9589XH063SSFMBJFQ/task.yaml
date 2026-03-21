@@ -1,0 +1,62 @@
+_ulid: 01KM289GY9589XH063SSFMBJFQ
+slugs:
+  - task-implement-kspec-no-daemon
+title: Implement KSPEC_NO_DAEMON to suppress incidental daemon communication
+type: task
+description: >-
+  **What:** Implement the `KSPEC_NO_DAEMON` environment variable (ac-32, ac-33) so CLI commands skip
+  all incidental daemon communication when set. Explicit `kspec serve` commands must remain
+  unaffected.
+
+
+  **Why:** Tests running in `/tmp/` directories auto-register with the live daemon via
+  `postDispatchEvent()` and middleware auto-registration. This pollutes the project list, starts
+  watchers for ephemeral directories, and causes ENOENT recovery loops when tests clean up. All
+  daemon communication flows through `isDaemonRunning()` in `src/cli/pid-utils.ts` — guarding there
+  covers all paths.
+
+
+  **How:** 
+
+  - In `isDaemonRunning()`, return `false` early when `KSPEC_NO_DAEMON` is truthy — this gates
+  `postDispatchEvent()`, `getDaemonUrl()` (agent.ts, event.ts, schedule.ts), daemon auto-start in
+  `cli/index.ts`, and status queries
+
+  - Leave `kspec serve` commands unaffected (they call `isDaemonRunning()` for operational checks,
+  not side-effects — verify each call site)
+
+  - Set `KSPEC_NO_DAEMON=1` in `tests/setup.ts` as a default for all vitest tests
+
+  - Verify E2E fixtures (`packages/web-ui/tests/fixtures/test-base.ts`) unset it since they manage
+  their own daemon
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Merged to dev after review approval. Verified KSPEC_NO_DAEMON suppresses incidental
+  daemon communication, explicit serve commands ignore the flag, and regression coverage passes (npm
+  test).
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - daemon
+vcs_refs: []
+review_ref: "@01KM5VETC9615KQTN2EH5S6KHA"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T14:46:11.080Z
+  commit: f1e5390cfcd5d246863775e3cc68a4dd86bc07c5
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM5V0P8PKRVH5TTZ719SHGY7
+created_at: 2026-03-19T05:15:02.985Z
+started_at: 2026-03-20T14:40:37.002Z
+submitted_at: 2026-03-20T14:46:11.526Z
+completed_at: 2026-03-20T14:52:42.057Z
+todos: []
+automation: eligible

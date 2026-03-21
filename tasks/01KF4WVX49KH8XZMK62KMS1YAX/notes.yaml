@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KF8WGS9NSPH2SYWTM24XPHCB
+    content: Retroactively marking complete. Implemented in commit 750ca54a (2026-01-17) in
+      src/cli/commands/meta.ts:539-639. Lists all meta items with --type filter, table/JSON output.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T15:45:29.909Z

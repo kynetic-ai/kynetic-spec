@@ -1,0 +1,84 @@
+notes:
+  - _ulid: 01KEZZ5KJ4BZER0DSRWKWE2WGF
+    content: "Idea: Move completed/cancelled tasks to a separate archive file (e.g.,
+      kynetic.tasks.archive.yaml) to keep the active tasks file clean and focused. Decisions needed:
+      naming convention, manual vs automatic archiving, whether to support unarchiving, how
+      references to archived tasks should work."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T04:38:39.429Z
+  - _ulid: 01KF8097M3Q30XCYX12RJGS4WC
+    content: >-
+      Reviewed current task loading system. Key findings:
+
+
+      1. **Multiple task files already supported**: loadAllTasks() searches for *.tasks.yaml files
+      in specDir (shadow mode) or rootDir/spec/tasks (traditional mode). System already handles
+      multiple task files natively.
+
+
+      2. **File size**: project.tasks.yaml is 210KB with 66 completed + 3 cancelled = 69 closed
+      tasks out of 151 total. File is getting large but not unwieldy yet.
+
+
+      3. **Task references**: Tasks can have depends_on relationships. If we archive, we need to
+      ensure archived tasks remain resolvable for validation and queries.
+
+
+      4. **Loading pattern**: Tasks from all *.tasks.yaml files are loaded together, so
+      archive.tasks.yaml would work seamlessly.
+
+
+      Design questions to answer:
+
+      - Manual vs automatic archiving (CLI command vs auto-move on complete)?
+
+      - Naming: project.tasks.archive.yaml or tasks.archive.yaml?
+
+      - Should archived tasks be loaded by default or only when needed?
+
+      - How to handle references to archived tasks (keep in index? special handling?)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T07:32:02.307Z
+  - _ulid: 01KF80C0RMC4FPVRQ888WKZQY7
+    content: >-
+      Explored reference directories (kspec-acp-test, kspec-ralph-test):
+
+
+      **Finding**: Both directories have the exact same task-archive spike (pending) and spec-level
+      design for task storage, but NO implementation yet. This confirms we're working on a planned
+      enhancement.
+
+
+      **Key Design Insights from References**:
+
+      1. **Auto-adaptive pattern** documented in KYNETIC_SPEC_DESIGN.md:
+         - Small projects: tasks alongside specs (auth.yaml + auth.tasks.yaml)
+         - Large projects: separate tasks/ directory with archive/ subdirectory
+         - Example: tasks/archive/2025-01.yaml for monthly archiving
+
+      2. **Lifecycle parallel**: Spec items have deprecation→archived flow. Tasks could follow
+      similar pattern: completed→archived.
+
+
+      3. **Storage flexibility**: The design deliberately supports multiple *.tasks.yaml files -
+      system already loads all of them via loadAllTasks().
+
+
+      **Recommendation for MVP**:
+
+      Given file size (210KB, 69 closed tasks) and existing multi-file support, recommend MANUAL
+      archiving command first:
+
+      - `kspec task archive @ref [...refs]` - moves tasks to project.tasks.archive.yaml
+
+      - Archived tasks remain loaded/resolvable (no breaking changes to references)
+
+      - Later: auto-archive triggers based on age/count thresholds
+
+
+      **Next**: Draft spec for task archiving command to align with design doc pattern.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T07:33:33.588Z

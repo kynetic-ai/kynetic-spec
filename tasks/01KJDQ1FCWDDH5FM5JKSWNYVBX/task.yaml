@@ -1,0 +1,27 @@
+_ulid: 01KJDQ1FCWDDH5FM5JKSWNYVBX
+slugs: []
+title: "Web UI: persist all filter state and current view in URL query params so refreshing the page
+  preserv"
+type: task
+description: "Web UI: persist all filter state and current view in URL query params so refreshing
+  the page preserves state. Applies to all list/filter pages (triage, inbox, tasks, etc)."
+spec_ref: "@web-ui"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #620. Implemented triage URL query synchronization for
+  status/action/tag filters in web UI, with restore-on-load and back/forward history behavior. Added
+  E2E coverage for URL updates and filter restoration in triage tests. AC coverage verified for
+  @interactive-triage-ui ac-7; inherited @trait-websocket-protocol ACs are annotated N/A for this
+  UI-focused change."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJKWXHKKHZMP574E78F7BHA3
+created_at: 2026-02-26T19:33:03.004Z
+started_at: 2026-03-01T05:21:35.378Z
+submitted_at: 2026-03-01T05:28:13.436Z
+completed_at: 2026-03-01T05:40:47.233Z
+todos: []
+automation: eligible

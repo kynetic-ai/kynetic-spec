@@ -1,0 +1,24 @@
+_ulid: 01KJ74T9QRZK5NKK1R5VJWGZ54
+slugs:
+  - implement-session-start-inbox-triage-awareness
+title: Implement Session Start Inbox Triage Awareness
+type: task
+spec_ref: "@session-start-inbox-triage"
+plan_ref: "@plan-session-start-output-redesign"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #513. Implemented triage-aware inbox statistics for session start:
+  inbox section now cross-references with triage records to show untriaged/deferred/total counts.
+  JSON includes all items with triaged/triage_action fields. Human display: primer shows stat line
+  only, full mode shows untriaged items up to 20. 13 integration tests covering all 4 ACs. Codex
+  review finding addressed (JSON stability)."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-24T06:19:06.872Z
+started_at: 2026-02-24T23:30:33.068Z
+completed_at: 2026-02-24T23:55:52.728Z
+todos: []
+automation: eligible

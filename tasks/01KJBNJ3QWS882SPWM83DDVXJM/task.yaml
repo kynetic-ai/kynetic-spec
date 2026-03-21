@@ -1,0 +1,55 @@
+_ulid: 01KJBNJ3QWS882SPWM83DDVXJM
+slugs:
+  - task-e2e-daemon-inbox-api
+title: E2E tests for daemon Inbox API (replace daemon-api-inbox.test.ts)
+type: task
+description: >-
+  Replace tests/daemon-api-inbox.test.ts (218 lines, all static analysis) with Playwright E2E tests.
+
+
+  Write: packages/web-ui/tests/e2e/api-inbox.spec.ts
+
+  Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+  Endpoints to test:
+
+  - GET /api/inbox — list items ordered by created_at desc (@api-contract ac-12)
+
+  - POST /api/inbox — create item with text, verify ULID assigned and 201 response (@api-contract
+  ac-13)
+
+  - DELETE /api/inbox/:ref — delete item, verify 200 response (@api-contract ac-14)
+
+
+  After E2E tests pass, delete tests/daemon-api-inbox.test.ts.
+
+  Run: npm test && npm run test:e2e to verify.
+
+
+  Fixture data: packages/web-ui/tests/fixtures/project.inbox.yaml has test inbox items.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #545. Replaced 218 lines of static analysis in
+  tests/daemon-api-inbox.test.ts with 20 Playwright E2E tests in
+  packages/web-ui/tests/e2e/api-inbox.spec.ts. All ACs (ac-12 through ac-14) covered with real HTTP
+  calls against running daemon. Fixed Codex review issues: ac-1 misannotation, 404 error shape
+  assertion, and trait AC annotation placement. All CI checks passed."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - e2e
+vcs_refs: []
+session_id: 01KJBZXXNHE3M4WX1BZ6Z5ZNCJ
+created_at: 2026-02-26T00:28:42.108Z
+started_at: 2026-02-26T03:34:55.276Z
+submitted_at: 2026-02-26T03:38:10.273Z
+completed_at: 2026-02-26T04:06:05.837Z
+todos: []
+automation: eligible

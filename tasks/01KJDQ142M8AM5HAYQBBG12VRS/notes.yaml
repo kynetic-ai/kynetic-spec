@@ -1,0 +1,20 @@
+notes:
+  - _ulid: 01KJHH8DC08TQTPCC8BQ44TBME
+    content: "Implemented setup agent override and detection fallback. Changes: added --agent <type>
+      option to setup command with strict validation (claude-code|cline|cursor|windsurf|unknown),
+      threaded override into both setup --status and setup pipeline execution paths, and added
+      detectAgent() fallback to infer claude-code at low confidence when ~/.claude exists but env
+      markers are absent. Added tests in enhanced-setup + setup-pipeline-unification for status
+      override, setup override without CLAUDECODE env vars, and invalid --agent guidance.
+      Verification: npm test -- --run tests/enhanced-setup.test.ts
+      tests/setup-pipeline-unification.test.ts; npm test (160 files, 3545 passed, 3 skipped)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T07:08:56.576Z
+  - _ulid: 01KJHH935YWEK10GR11WP7XXCA
+    content: "Submitted for review in PR #594: https://github.com/kynetic-ai/kynetic-spec/pull/594.
+      Includes setup --agent override support, status-path override threading, ~/.claude fallback
+      detection, and regression tests in enhanced-setup + setup-pipeline-unification."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T07:09:18.911Z

@@ -1,0 +1,127 @@
+notes:
+  - _ulid: 01KKCA4D3MMM0WBJG558VVF8JW
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Parse and render ANSI SGR (Select Graphic Rendition) escape sequences in terminal/bash tool
+      output displayed in the session stream. Convert ANSI color codes to styled HTML spans so
+      terminal output appears with the same colors and formatting as a real terminal. Currently
+      ToolCallView.svelte renders output in a plain <pre> tag — ANSI codes show as garbled raw text.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given tool output contains ANSI SGR escape sequences (e.g. \x1b[32mPASS\x1b[0m), when
+      the output is displayed in ToolCallView, then the text renders with corresponding CSS colors
+      instead of showing raw escape codes
+
+      - ac-2: Given tool output uses standard ANSI colors (30-37 foreground, 40-47 background, 90-97
+      bright, 100-107 bright background), when rendered in the web UI, then colors map to a
+      terminal-like palette that works in both light and dark themes
+
+      - ac-3: Given tool output contains formatting codes (bold=1, dim=2, italic=3, underline=4,
+      strikethrough=9), when rendered in the web UI, then corresponding CSS styles are applied
+      (font-weight, opacity, font-style, text-decoration)
+
+      - ac-4: Given tool output contains reset codes (\x1b[0m for full reset, or specific resets
+      like \x1b[22m), when rendered, then styling resets correctly without leaking to subsequent
+      text
+
+      - ac-5: Given tool output contains ANSI parameter sequences but the ESC character was stripped
+      or lost during storage, when rendered, then the raw bracket sequences are stripped rather than
+      displayed as garbled text — fallback to clean plain text
+
+      - ac-6: Given tool output may contain user-controlled content alongside ANSI codes, when ANSI
+      codes are converted to HTML, then all non-ANSI content is HTML-escaped before insertion to
+      prevent XSS
+
+      - ac-7: Given tool output is 10000+ characters with many ANSI sequences, when rendered, then
+      parsing and rendering completes without visible delay
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T16:43:54.868Z
+  - _ulid: 01KKCFKW4FDHMNFSXQHHYG6G8J
+    content: >-
+      Implementation complete. Built custom ANSI SGR parser (no new dependencies) with:
+
+      - ansi.ts: Parses SGR codes → styled HTML spans with HTML escaping for XSS safety
+
+      - tokens.css: 16 ANSI terminal colors as oklch CSS custom properties (light + dark themes)
+
+      - ToolCallView.svelte: Uses containsAnsi() to conditionally render via {@html ansiToHtml()}
+      for tool output
+
+      - 50 unit tests covering all 8 ACs including edge cases
+
+      - Full test suite passes (1 pre-existing failure in trait-retrospective.test.ts unrelated to
+      changes)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T18:19:44.655Z
+  - _ulid: 01KKCGWG4PT77PQEREWE0JAKXJ
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #760 misses @ansi-terminal-rendering ac-5 in
+      ToolCallView. Orphaned CSI fragments like [32mPASS[0m still render as garbled text because
+      ansiToHtml() only runs when a real ESC sequence is present. Review posted with inline
+      comments."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T18:41:55.863Z
+  - _ulid: 01KKCK8738NWSM9TCZGQGSC83Z
+    content: "Fix cycle 1: containsAnsi() now detects orphaned CSI patterns (not just real ESC
+      sequences), so ToolCallView routes orphaned CSI text through ansiToHtml() which strips the
+      fragments. Added 3 new tests: integration path test, lastIndex safety regression test, and
+      expanded ac-8 detection test. 52/52 ANSI tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T19:23:16.968Z
+  - _ulid: 01KKCMKRMR06QYWDZ7AHCK32RW
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: ANSI parser leaves private-mode CSI sequences
+      like \\x1b[?25l/[?25l visible instead of stripping them, and npm test currently fails on PR
+      head (9 failing tests across integration.test.ts and trait-retrospective.test.ts). Review
+      posted on PR #760."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T19:47:03.961Z
+  - _ulid: 01KKCPJPE35JF6VVFFTWDRWQ7S
+    content: "Fix cycle 2: Expanded ANSI_RE and ORPHANED_CSI_RE to match private-mode CSI prefix '?'
+      (e.g. \\x1b[?25l, [?25l). Also added orphaned CSI stripping in the main processing loop's text
+      chunks (not just fast path), so mixed real+orphaned sequences are fully cleaned. Added 5 new
+      tests. All 57 ANSI tests pass, no regressions in full suite (9 pre-existing failures on main
+      unrelated to this PR)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T20:21:26.083Z
+  - _ulid: 01KKCR0GK81ZZPV73S2H8NPRV8
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: ToolCallView truncates raw output before ANSI
+      parsing, so previews can leak dangling ESC bytes when the 1000-char cutoff splits a control
+      sequence. Review posted on PR #760."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T20:46:27.432Z
+  - _ulid: 01KKCSX77W6JD0ECQGKE0YXTBX
+    content: "Fix cycle 3: Added safeTruncateAnsi() that strips trailing partial ESC sequences after
+      slicing, so the 1000-char preview cutoff never leaves dangling ESC bytes. ToolCallView now
+      uses safeTruncateAnsi(outputText, 1000) instead of raw .slice(0, 1000). Added 8 regression
+      tests covering: cutoff mid-sequence, lone trailing ESC, partial ESC[, preserved complete
+      sequences, and orphaned CSI fragments at boundary. All 65 ANSI tests pass. 14 pre-existing
+      failures (integration.test.ts + trait-retrospective.test.ts) confirmed identical on main."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T21:19:36.700Z
+  - _ulid: 01KKCV978YFFD9HEMFQFQ8DX0T
+    content: "[FIX_CYCLE: 4] Review findings: MUST-FIX: safeTruncateAnsi corrupts plain non-ANSI output
+      previews at the 1000-char boundary by stripping literal bracketed text like [12."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T21:43:38.527Z
+  - _ulid: 01KKCWSG9QKNBF19QQ1JCBWS3H
+    content: "Fix cycle 4: Removed orphaned CSI regex from safeTruncateAnsi entirely. The function now
+      only strips real ESC byte sequences split by truncation. Orphaned CSI cleanup is handled
+      downstream by ansiToHtml/stripOrphanedCsi. Added 3 regression tests: exact repro case (x*998 +
+      '[12more'), array-like patterns, and ANSI+bracket mixed content. 68/68 ANSI tests pass, no
+      regressions."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T22:10:00.631Z

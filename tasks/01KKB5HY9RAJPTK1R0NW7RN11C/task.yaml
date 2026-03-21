@@ -1,0 +1,25 @@
+_ulid: 01KKB5HY9RAJPTK1R0NW7RN11C
+slugs:
+  - implement-prose-typography-setup
+title: Implement Prose Typography Setup
+type: task
+spec_ref: "@prose-typography-setup"
+plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #775. Installed and configured Tailwind typography for web-ui prose
+  surfaces, updated MessageBlock dark-mode inversion, and added build-backed AC coverage verifying
+  prose classes and emitted CSS bundle. No spec deviations. AC coverage verified for
+  @prose-typography-setup ac-1 and ac-2; no inherited trait ACs."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKDXPP2QN2EVZ7GS3KMXMZF0
+created_at: 2026-03-10T06:04:41.144Z
+started_at: 2026-03-11T07:52:54.702Z
+submitted_at: 2026-03-11T08:01:36.339Z
+completed_at: 2026-03-11T08:17:31.192Z
+todos: []
+automation: eligible

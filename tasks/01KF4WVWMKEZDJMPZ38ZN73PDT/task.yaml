@@ -1,0 +1,20 @@
+_ulid: 01KF4WVWMKEZDJMPZ38ZN73PDT
+slugs:
+  - task-context-schema
+title: "Implement: Context Schema"
+type: task
+spec_ref: "@context-schema"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: SessionContext Zod schema implemented with validation in loadSessionContext
+depends_on:
+  - "@task-session-context-research"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:36.051Z
+started_at: 2026-01-18T11:47:11.046Z
+completed_at: 2026-01-18T11:48:22.058Z
+todos: []

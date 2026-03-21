@@ -1,0 +1,55 @@
+_ulid: 01KM6YESAF92YTNXT3DF06AC0N
+slugs:
+  - task-impl-index
+title: Implement task index file operations
+type: task
+description: |
+  Implement the index file read/write operations within the split
+  storage backend.
+
+  Why: The index is what makes list operations fast. Without it,
+  listing tasks requires scanning every task directory and reading
+  every task.yaml file.
+
+  What: Define which fields are indexed (ulid, slugs, title, status,
+  priority, type, tags, spec_ref, plan_ref, review_ref, depends_on,
+  automation, timestamps). Implement index reads for listTasks and
+  index writes that keep the index in sync with per-task mutations.
+
+  How: The index is a standard YAML array in project.tasks.yaml with
+  the same schema validation as today but fewer fields per entry. On
+  mutations that affect indexed fields, the manager reads the index,
+  updates the matching entry, writes it back. On note-only mutations,
+  the index is untouched. The index write is included in the same
+  write buffer transaction as the per-task file writes.
+spec_ref: "@task-index-file"
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev at e273fe882. Implemented split index file operations, exposed
+  rebuildIndex through TaskDataManager, and preserved plan/review linkage in TaskSummary.
+depends_on:
+  - "@task-impl-split-storage"
+context: []
+priority: 1
+tags:
+  - tasks
+  - storage
+vcs_refs: []
+review_ref: "@01KM7VYM7KSNKK1QGC8S5WT9ZM"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-21T09:33:02.381Z
+  commit: 95efd1618ada37f2b635d6526f2e303cb450d6cc
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM7V7X33JMHYTDNK3CBD7M4H
+created_at: 2026-03-21T00:59:21.807Z
+started_at: 2026-03-21T09:32:54.613Z
+submitted_at: 2026-03-21T09:33:02.864Z
+completed_at: 2026-03-21T09:40:30.820Z
+todos: []
+automation: eligible

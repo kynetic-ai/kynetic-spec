@@ -1,0 +1,41 @@
+_ulid: 01KM4MK0N1K71YCJ2PFVZGTSTE
+slugs: []
+title: Fix triage record CLI reporting success without persisted record
+type: bug
+description: Observed on 2026-03-19 during inbox triage. Running triage record for an inbox item
+  reported success with a short ref, but triage list still showed no triage records, triage export
+  returned an empty array, and triage act on the returned ref said the triage record was not found.
+  Investigate whether record persistence, storage location, or ref generation and lookup are
+  inconsistent.
+spec_ref: "@triage-cli-commands"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Merged to dev as 8d98a994f365ceef2e620571967d82c60cf8cdef after approved review.
+  Verified the triage re-record path now returns the persisted record ULID, interactive triage uses
+  persisted refs, manual repro passes, and npm test passed (6639 tests).
+depends_on: []
+context: []
+priority: 2
+tags:
+  - triage
+  - cli
+  - bug
+vcs_refs: []
+review_ref: "@01KM4SGGRNS5FQVR6HFY60VKPM"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T04:52:59.531Z
+  commit: 82c29e1ab95912c9340f50d9aa649fbdc6fed8af
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM4RZZ0ZCV0Z4B88YZ8BZNGJ
+created_at: 2026-03-20T03:28:25.761Z
+started_at: 2026-03-20T04:45:57.324Z
+submitted_at: 2026-03-20T04:52:59.933Z
+completed_at: 2026-03-20T04:59:20.390Z
+todos: []
+automation: eligible

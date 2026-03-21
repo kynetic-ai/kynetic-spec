@@ -1,0 +1,53 @@
+notes:
+  - _ulid: 01KKB8FERFE58KMK98C8Q0KJFH
+    content: See plan @plan-spec-reconciliation-close-validate-completeness-ga for implementation notes
+    author: "@claude"
+    created_at: 2026-03-10T06:55:45.423Z
+  - _ulid: 01KKEY29PD38JQFNQG9GMWSXPW
+    content: >-
+      Execution context:
+
+      - Background: Completeness reconciliation task for @cli descendants missing acceptance
+      criteria.
+
+      - Scope: Add or backfill given/when/then ACs only for CLI spec items lacking them; no behavior
+      change.
+
+      - Files: Shadow-branch spec items under @cli via kspec CLI only.
+
+      - Verification: kspec item list/item get for @cli descendants, then kspec validate
+      --completeness and kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T17:10:46.222Z
+  - _ulid: 01KKEY6M7ADAX1PK75FQKJ9YHY
+    content: Backfilled acceptance criteria for the current @cli descendants missing them. Used one
+      atomic kspec batch update so the shadow branch history stays scoped to this reconciliation
+      step.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T17:13:08.074Z
+  - _ulid: 01KKEYCVXT03ZE2BFMC7XPXX2E
+    content: >-
+      Verification:
+
+      - kspec item list --under @cli --limit 999 --json | jq ... now returns no feature/requirement
+      descendants with empty acceptance_criteria.
+
+      - kspec validate --completeness reduced global missing acceptance criteria warnings from 116
+      to 78, matching the 38 @cli items backfilled in this task.
+
+      - npm test passed after the metadata update; remaining validate warnings are outside this task
+      scope (own AC coverage, trait AC coverage, and invalid annotation debt tracked separately).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T17:16:32.570Z
+  - _ulid: 01KKF0VA1XB6JP2XVT8F4VFTA1
+    content: "Review closed cleanly in PR #785 and merged via merge commit
+      9120f31197a92bab6de8cfd9654857bd66c984fa at 2026-03-11T17:58:44Z. Review artifact PR had no
+      main-branch file diff by design; reviewer audit confirmed @cli descendants now have zero
+      missing acceptance criteria and the added ACs are structurally complete given/when/then
+      entries."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T17:59:22.941Z

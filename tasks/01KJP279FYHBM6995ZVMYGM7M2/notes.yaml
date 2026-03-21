@@ -1,0 +1,173 @@
+notes:
+  - _ulid: 01KJP2JZPGF5Z4RGQVTQHQW33N
+    content: >-
+      Implementation context:
+
+
+      ## Target Location
+
+      docs/migration/ralph-to-agent-runtime.md (new file)
+
+
+      ## Audience
+
+      kspec users who have ralph configurations, workflows, or scripts that invoke kspec ralph.
+
+
+      ## Required Sections
+
+      1. **Command equivalence table**: ralph run → agent dispatch start, ralph --dry-run → agent
+      run --dry-run, ralph end-loop → N/A (reactive model has no loop to end), ralph --adapter →
+      configured in agent definitions, ralph --max-loops → N/A (dispatch is continuous), ralph
+      --tasks → agent run --task
+
+      2. **Configuration migration**: ralph CLI flags → agent definition fields in kynetic.meta.yaml
+      (adapter, dispatch rules, budget, concurrency)
+
+      3. **Behavioral differences**: batch loop vs reactive dispatch, shared session vs
+      per-invocation sessions, iteration-based budget vs invocation-based budget, poll-based task
+      detection vs event-driven dispatch
+
+      4. **Step-by-step migration procedure**: verify agent definitions exist → enable dispatch →
+      validate equivalent behavior → remove ralph references from scripts
+
+      5. **FAQ / troubleshooting**: common issues during migration
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T01:28:46.544Z
+  - _ulid: 01KJPDFV5R1ZBDG174AJQZ6YK5
+    content: "Automation: manual_only. User-facing migration docs benefit from human judgment on tone,
+      completeness, and audience needs. No spec_ref."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T04:39:17.944Z
+  - _ulid: 01KJX7VVG5CF8M4ZV5ME1JAJ4A
+    content: Repurposed from migration guide to trace purge. Ralph was internal tooling — no external
+      users need a guide. Task now covers final cleanup of ralph references in code, templates, and
+      config.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-04T20:15:41.061Z
+  - _ulid: 01KKZ0FM9S8ETED5QFB2D7G3J4
+    content: "Completed ralph→agent rename: renamed 06-ralph-loop.md→06-agent-dispatch-mode.md,
+      RalphConfigSchema→AgentConfigSchema, ralph:→agent: in config/schema/defaults, updated
+      dispatch.ts references, removed unused ralphLoop error, cleaned up legacy session comments.
+      All 5672 tests pass."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-17T23:00:51.129Z
+  - _ulid: 01KKZ1H41Y8E9EK9NVM6SF4V4R
+    content: Committed ralph trace purge as f2f07a109 on branch
+      dispatch/task/task-ralph-migration-guide/01kjp279. Working tree is clean; task remains in
+      pending_review for reviewer pickup.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-17T23:19:08.606Z
+  - _ulid: 01KKZ1N305TXG6R7D3HC2NXERE
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by opencode@local"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-17T23:21:18.597Z
+  - _ulid: 01KKZ1PM3F25ZBYEHEY4RS155D
+    content: "Addressed review blocker: task was previously submitted before commit existed, so
+      submission linkage pointed at commit 3c6e26905. Committed actual task changes as f2f07a109 and
+      preserved clean working tree so reviewer can evaluate the correct commit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-17T23:22:08.879Z
+  - _ulid: 01KKZ2B9TR4MZDC7K4HT8FW297
+    content: "[FIX_CYCLE: 2] Review verdict: changes_requested by opencode@local"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-17T23:33:26.489Z
+  - _ulid: 01KKZ2TZV9BMXATJQ7H8E0BAW4
+    content: Rebased branch dispatch/task/task-ralph-migration-guide/01kjp279 onto dev. Rebase completed
+      cleanly with no conflicts so the task branch now sits on the current dev base for the next
+      review pass.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-17T23:42:00.553Z
+  - _ulid: 01KKZ2WEP9728DR67ZFPABSR3J
+    content: Rebased branch onto dev after resubmission. Current reviewable commit is
+      83d649f7f3b6eb2f8fd4c99ec98a262f3629391c on dispatch/task/task-ralph-migration-guide/01kjp279.
+      Noted for reviewer context; no additional code changes made in response to review findings
+      yet.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-17T23:42:48.521Z
+  - _ulid: 01KM2C56JP822A5PK7EPFEPV5P
+    content: Rebased the branch onto current dev, replayed the ralph cleanup on top of the current
+      config/runtime shape, renamed remaining agent config fixtures from ralph->agent, and updated
+      stale runtime/session comments. Verified with npm test (286 files, 6514 tests passing, 3
+      skipped).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T06:22:35.606Z
+  - _ulid: 01KM2CV38M1T8Y2J45WYMY5DW6
+    content: "[FIX_CYCLE: 3] Review verdict: changes_requested by codex@openai.com"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T06:34:33.108Z
+  - _ulid: 01KM2DVY9H668ED10DDW7VS83E
+    content: "Fix cycle 3: restored backward compatibility for legacy top-level ralph config blocks by
+      parsing them as an alias for agent config while preferring explicit agent settings when both
+      are present. Also removed the remaining stale ralph wording from session budget/session-type
+      comments and updated dispatch-related test fixtures to use config.agent. Verified with npm
+      test -- tests/parser/config.test.ts tests/cli-agent-commands.test.ts
+      tests/triage-parser.test.ts, full npm test (286 files / 6516 tests passed / 3 skipped), and
+      kspec validate still shows the repo's pre-existing reference/completeness baseline issues
+      unrelated to this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T06:52:29.362Z
+  - _ulid: 01KM2E65QWNF3FSAB9CRZHCNGQ
+    content: "[FIX_CYCLE: 4] Review verdict: changes_requested by codex@openai.com"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T06:58:04.668Z
+  - _ulid: 01KM2F4WED35410SRJ59HEQRNQ
+    content: "Fix cycle 4: removed stale ralph wording from AGENTS guidance, agent eval scenarios, and
+      leftover non-functional code/test comments; renamed the legacy config alias schema to
+      agent-focused naming while preserving the legacy ralph config key for backward compatibility.
+      Verified remaining ralph matches are intentional compatibility/spec fixtures. Full npm test
+      passed on the rebased branch (6600 passed, 3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T07:14:50.957Z
+  - _ulid: 01KM2FCV1C44YHWRT779GH3NYP
+    content: "[FIX_CYCLE: 5] Review verdict: changes_requested by codex@openai.com"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T07:19:11.660Z
+  - _ulid: 01KM2GGHY04AYHMSKFA484F5NB
+    content: "Fix cycle 5: removed the registered kspec ralph command entirely by deleting
+      src/cli/commands/ralph.ts and moving the migration guidance into the unknown-command handler,
+      so 'kspec ralph ...' now errors as a removed command instead of shipping a live command
+      surface. Also updated triage-automation skill source plus tracked generated codex/droid
+      outputs to replace the last shipped 'Ralph loop' wording. Verification: rebuilt
+      CLI/shared/daemon/plugin artifacts with 'tsc && chmod +x dist/cli/index.js && npm run
+      build:shared && npm run build:daemon && npm run build:plugin'; focused 'SKIP_BUILD=1 npm test
+      -- tests/ralph-replacement.test.ts tests/parser/config.test.ts
+      tests/cli-agent-commands.test.ts' passed (165 tests); full 'SKIP_BUILD=1 npm test' passed (286
+      files, 6600 passed, 3 skipped). 'kspec validate' still reports the repo's pre-existing meta
+      reference/completeness baseline issues unrelated to this task, and the default npm test build
+      path is still blocked by an unrelated packages/web-ui SvelteKit ENOENT build failure in this
+      worktree, so I used the fresh partial rebuild plus SKIP_BUILD=1 to verify the task-local
+      changes."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T07:38:41.984Z
+  - _ulid: 01KM2H0GRVD82KR6M75HQNM9V0
+    content: "[FIX_CYCLE: 6] Review verdict: changes_requested by codex@openai.com"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T07:47:25.083Z
+  - _ulid: 01KM2HC5GMX04C8GMKCTFX34MT
+    content: "Fix cycle 6: rebased dispatch/task/task-ralph-migration-guide/01kjp279 onto origin/dev to
+      drop unrelated branch drift from the review snapshot. Current origin/dev..HEAD diff is scoped
+      to the remaining ralph cleanup only; the prior unrelated packages/daemon review surface is
+      gone. Verified with full npm test (286 files, 6603 tests passed). kspec validate still reports
+      pre-existing repo-wide reference/completeness debt unrelated to this task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T07:53:46.773Z

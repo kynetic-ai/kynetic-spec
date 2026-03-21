@@ -1,0 +1,24 @@
+_ulid: 01KGR05NEFEAJJWR6ZWF0GZR7K
+slugs:
+  - implement-batch-allowed-commands
+title: Implement Batch Allowed Commands
+type: task
+spec_ref: "@batch-allowed-commands"
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #322. Implements WeakMap-based command annotation registry
+  (command-annotations.ts) with markMutating/getAnnotation/createBatchCommandFilter. Adds
+  mutating:boolean to CommandMeta in introspection.ts (defaults false for deny-by-default).
+  Annotates 53 mutating commands across 11 registration files. Updates batch-exec.ts with
+  nested-batch rejection before commandFilter and improved denylist message. 22 tests cover all 3
+  ACs (ac-allowlist, ac-denylist, ac-batch-itself). All CI checks pass."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-05T22:53:38.127Z
+started_at: 2026-02-06T09:12:15.358Z
+completed_at: 2026-02-06T09:32:26.908Z
+todos: []

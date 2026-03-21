@@ -1,0 +1,26 @@
+_ulid: 01KGKSV0ZJJZPCKX232CQDV6JR
+slugs: []
+title: Add @plan-workflow to meta definitions
+type: task
+description: "Add workflow to kynetic.meta.yaml. Steps covering: explore, create plan, verify
+  sections, review, dry-run, import, verify, add notes. Include decision step for user approval with
+  options. Include check steps for required sections and dry-run verification. Reference /plan skill
+  for format details."
+spec_ref: "@plan-support"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #315. Added @spec-plan-design, @spec-plan-import, @spec-plan-manual
+  workflows to meta."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - workflow
+  - planning
+vcs_refs: []
+created_at: 2026-02-04T07:46:00.306Z
+started_at: 2026-02-05T08:38:22.033Z
+completed_at: 2026-02-05T08:59:10.387Z
+todos: []
+automation: manual_only

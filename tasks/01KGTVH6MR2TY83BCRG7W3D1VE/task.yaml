@@ -1,0 +1,26 @@
+_ulid: 01KGTVH6MR2TY83BCRG7W3D1VE
+slugs: []
+title: Add --relates-to, --implements, --depends-on flags to item set
+type: task
+description: Add --relates-to, --implements, --depends-on flags to kspec item set command. Currently
+  relationship fields require manual YAML editing.
+spec_ref: "@item-set"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #335. Added --relates-to, --implements, --depends-on flags to item set
+  command with append semantics. Added --clear-* variants for clearing relationships. Validates refs
+  exist and are spec items (rejects tasks). All ACs (ac-5, ac-6, ac-7) covered with tests. Added
+  ac-4 test annotation for --status flag."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - dx
+  - reflection
+vcs_refs: []
+created_at: 2026-02-07T01:30:16.599Z
+started_at: 2026-02-07T10:13:02.931Z
+completed_at: 2026-02-07T10:36:42.792Z
+todos: []
+automation: eligible

@@ -1,0 +1,45 @@
+notes:
+  - _ulid: 01KK7T2DNPXZ0806X5SJ2484KR
+    content: |
+      Update ACs in @session-events, @session-creation-and-env-injection,
+      @session-log-list, @cli-ralph to reference .kspec-sessions/ instead of .kspec/sessions/.
+      Update @session-creation-and-env-injection description for new paths.
+      Remove @trait-shadow-commit from @session-compact and @session-stale-cleanup.
+      Update @session-events ac-7 for storage-mode-dependent commit behavior.
+      Review @session-end-loop-signal and @agent-invocation-lifecycle — confirm
+      no AC text changes needed (they don't hardcode paths), but ensure any
+      in-progress implementation uses the new path resolver.
+    author: "@claude"
+    created_at: 2026-03-08T22:46:14.966Z
+  - _ulid: 01KK8CD00NV7VAT701X6MT2MXP
+    content: >-
+      All 8 ACs completed via atomic kspec batch (10 operations):
+
+
+      1. ac-session-events-paths: Updated @session-events ac-1 and ac-8 to reference
+      .kspec-sessions/{id}/ instead of .kspec/sessions/{id}/
+
+      2. ac-session-events-commits: Updated @session-events ac-7 to reflect storage-mode-dependent
+      behavior (local=no commits, branch=lifecycle boundaries)
+
+      3. ac-session-creation-paths: Updated @session-creation-and-env-injection ac-create and
+      ac-budget-local to reference .kspec-sessions/{id}/
+
+      4. ac-session-creation-description: Updated description to reference
+      .kspec-sessions/{id}/budget.json
+
+      5. ac-compact-trait: Removed @trait-shadow-commit from @session-compact
+
+      6. ac-stale-cleanup-trait: Removed @trait-shadow-commit from @session-stale-cleanup
+
+      7. ac-session-log-list-path: Updated @session-log-list ac-1 to reference .kspec-sessions/
+
+      8. ac-cli-ralph-path: Updated @cli-ralph ac-22 to reference
+      .kspec-sessions/{session}/tool-output/
+
+
+      All changes verified via kspec item get. Validation passes. No code changes needed — spec-only
+      task.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T04:06:35.797Z

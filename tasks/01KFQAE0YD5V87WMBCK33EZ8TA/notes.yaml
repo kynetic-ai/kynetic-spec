@@ -1,0 +1,59 @@
+notes:
+  - _ulid: 01KFRZPMH3CQZ42Z4Y304QG8BJ
+    content: >-
+      Reviewing task requirements. This task asks for WebSocket broadcast filtering tests covering
+      ac-18.
+
+
+      Current situation:
+
+      - Just removed fluff documentary tests from PR #225
+
+      - ac-18 has partial coverage via daemon-watcher-multi-project.test.ts (watcher isolation)
+
+      - Proper WebSocket E2E tests blocked on infrastructure (@01KFMMZW)
+
+
+      Options:
+
+      1. Add unit tests for PubSubManager.broadcast() filtering logic
+
+      2. Wait for E2E test infrastructure decision
+
+      3. Mark task as blocked by @01KFMMZW
+
+
+      Checking existing test coverage for PubSubManager...
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T21:48:58.275Z
+  - _ulid: 01KFRZR9XX8GFWT04F6GWRWJ7Z
+    content: >-
+      Created comprehensive unit tests for PubSubManager.broadcast() filtering logic. Added 9 tests
+      in tests/daemon-pubsub.test.ts:
+
+
+      Coverage:
+
+      - ac-18: Multiple tests for project-scoped broadcast filtering
+
+      - Verifies only connections with matching projectPath receive events
+
+      - Tests multi-project scenarios (project A events don't reach project B)
+
+      - Tests subscription + project filtering combination
+
+      - Tests legacy connections (no projectPath) don't receive scoped broadcasts
+
+      - Tests broadcast without projectPath reaches all (legacy behavior)
+
+      - Verifies message structure (seq, msg_id, timestamp, topic)
+
+      - Tests sequence incrementing per connection
+
+
+      All tests passing. These unit tests validate the core filtering logic without requiring
+      WebSocket E2E infrastructure.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T21:49:52.957Z

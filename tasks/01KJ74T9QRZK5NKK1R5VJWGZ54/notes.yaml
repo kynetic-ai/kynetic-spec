@@ -1,0 +1,23 @@
+notes:
+  - _ulid: 01KJ74T9QR9HQRR1FM5E1527XN
+    content: |
+      Implementation notes:
+
+      Import loadTriageRecords() from src/parser/yaml.ts (already exported).
+      Join on triage.inbox_ref to inbox._ulid.
+      Untriaged = no triage record exists for that inbox ULID.
+      Deferred = triage record exists with action=defer.
+      Add triaged (boolean) and triage_action (string|null) to InboxSummary.
+    author: "@claude"
+    created_at: 2026-02-24T06:19:06.872Z
+  - _ulid: 01KJ90BQTVW65G021R59D41SNJ
+    content: "Implemented triage-aware inbox statistics for session start. Changes: (1) Extended
+      InboxSummary with triaged/triage_action fields and added InboxStats interface. (2)
+      gatherSessionContext now loads triage records and cross-references with inbox items by ULID.
+      (3) Primer mode shows stat line only (untriaged/deferred/total). (4) Full mode shows untriaged
+      items (up to 20) plus stat line. (5) Quick commands updated to suggest 'kspec triage inbox'
+      instead of 'kspec inbox promote'. (6) Added inboxTriage hint string. (7) 13 behavioral tests
+      covering all 4 ACs. All 3535 tests pass (2 known flaky ralph signal tests unrelated)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T23:39:44.347Z

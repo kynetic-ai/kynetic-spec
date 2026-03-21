@@ -1,0 +1,111 @@
+notes:
+  - _ulid: 01KEZMRPC9B4D43CSYVEMY5G03
+    content: |-
+      Design for kspec setup command:
+
+      Purpose: Auto-configure agent environment to work with kspec (primarily KSPEC_AUTHOR).
+
+      Behavior:
+      1. Auto-detect which agent environment we're in
+      2. Install appropriate config for that environment
+      3. Report success/failure
+
+      Detection strategy:
+      - Claude Code: CLAUDE_PROJECT_DIR env var present
+      - Cursor: TBD (research needed)
+      - VS Code + Continue: TBD
+      - Aider: TBD
+      - Generic/unknown: Offer shell profile or skip
+
+      Installation targets:
+      - Claude Code: ~/.claude/settings.json (merge into env.KSPEC_AUTHOR)
+      - Others: TBD based on research
+
+      Fallback:
+      - If can't detect or install, print manual instructions
+      - Agents using skills (e.g., @task-kspec-skill) can provide their own instructions
+
+      Command: kspec setup
+      - No subcommand needed, assumes agent context
+      - Could add --dry-run flag to show what would be done
+      - Could add --force to overwrite existing config
+
+      Related: @task-kspec-skill, @task-author-env (completed)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T01:36:50.570Z
+  - _ulid: 01KEZN5K8S6XEY464Y0NTHMK1V
+    content: >-
+      Implemented kspec setup command (src/cli/commands/setup.ts):
+
+
+      Agent Detection (high confidence markers):
+
+      - Claude Code: CLAUDE_PROJECT_DIR
+
+      - Cline: CLINE_ACTIVE
+
+      - Aider: AIDER_MODEL, AIDER_DARK_MODE
+
+      - OpenCode: OPENCODE_CONFIG_DIR, OPENCODE_CONFIG
+
+
+      Agent Detection (medium confidence):
+
+      - GitHub Copilot CLI: COPILOT_MODEL, GH_TOKEN
+
+      - Gemini CLI: GEMINI_API_KEY
+
+      - Codex CLI: CODEX_SANDBOX, CODEX_HOME
+
+
+      Config installers:
+
+      - Claude Code: ~/.claude/settings.json (JSON merge)
+
+      - Aider: ~/.aider.conf.yml (YAML append)
+
+      - Copilot/Gemini/Codex/OpenCode: Generic JSON config
+
+      - Cline/Roo-Code: Shell profile (manual instructions)
+
+
+      Command options:
+
+      - --dry-run: Show what would be done
+
+      - --author: Override default author (@claude, @aider, etc.)
+
+      - --force: Overwrite existing KSPEC_AUTHOR
+
+
+      Research from subagent also found Amp (Sourcegraph) with AMP_API_KEY and
+      ~/.config/amp/settings.json - could add in future.
+
+
+      All tests pass. Build succeeds.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T01:43:53.370Z
+  - _ulid: 01KEZNGE5RCCV1VDBWPWXKYAKX
+    content: >-
+      Fix: Updated Claude Code detection to use correct env vars.
+
+
+      Original detection used CLAUDE_PROJECT_DIR which isn't always set.
+
+
+      Actual env vars available in Claude Code CLI session:
+
+      - CLAUDECODE=1 (primary detection marker)
+
+      - CLAUDE_CODE_ENTRYPOINT=cli (indicates entry point)
+
+      - CLAUDE_PROJECT_DIR (not always present)
+
+
+      Updated detection to check all three markers. Verified working - setup now correctly detects
+      and configures Claude Code.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T01:49:48.600Z

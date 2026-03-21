@@ -1,0 +1,26 @@
+_ulid: 01KKAH4Y0MPPD3S2T6593RDTRM
+slugs:
+  - task-verify-budget-cleanup-stable
+title: Verify session-budget-integration crash cleanup test stability
+type: task
+description: "Crash cleanup test was flaky across 2 sessions. Fix landed 2026-02-24. Verification
+  task: run test file 5x and once in full suite. Fix remaining timing issue if any failure found."
+spec_ref: "@test-suite-perf-reliability"
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Ralph is being replaced by dispatch engine — ralph and its tests should be purged instead
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - verification
+  - ralph
+vcs_refs: []
+created_at: 2026-03-10T00:08:03.348Z
+started_at: null
+completed_at: null
+todos: []
+automation: eligible

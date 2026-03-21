@@ -1,0 +1,21 @@
+_ulid: 01KF9B4YXTCGR53W0HX0HPADDS
+slugs: []
+title: Add ralph loop session save on iteration end
+type: task
+description: Need to have a way for the ralph loop to explicitly end a session and save the session
+  files at the end of the loop iteration
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Added session context snapshot saving to ralph loop - context-iter-{N}.json files now
+  saved after each successful iteration for audit trail
+depends_on: []
+context: []
+priority: 2
+tags:
+  - ralph
+vcs_refs: []
+created_at: 2026-01-18T20:01:11.098Z
+started_at: 2026-01-19T02:21:22.787Z
+completed_at: 2026-01-19T02:26:58.177Z
+todos: []

@@ -1,0 +1,25 @@
+_ulid: 01KG6ZGQMD92G93WNFV63TH0Z5
+slugs: []
+title: Add 'task list' alias for 'tasks' command
+type: task
+description: Add kspec task list as alias for kspec tasks. CLI naming consistency - other commands
+  use 'kspec <noun> list' pattern.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #284. Added 'kspec task list' as alias for 'kspec tasks list' for CLI
+  naming consistency - other commands use 'kspec <noun> list' pattern. All options work identically
+  (--status, --type, --tag, --meta-ref, --grep, --verbose, --full)."
+depends_on: []
+context: []
+priority: 4
+tags:
+  - reflection
+  - cli
+  - dx
+vcs_refs: []
+created_at: 2026-01-30T08:15:06.893Z
+started_at: 2026-01-30T10:32:32.531Z
+completed_at: 2026-01-30T10:39:01.448Z
+todos: []
+automation: eligible

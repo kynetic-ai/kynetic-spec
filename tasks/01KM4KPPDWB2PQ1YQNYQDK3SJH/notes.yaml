@@ -1,0 +1,44 @@
+notes:
+  - _ulid: 01KM4KPPE0CQTD6NTSVWVJYXQD
+    content: "Validated on 2026-03-19: src/cli/commands/item.ts uses --id for item ac add but positional
+      <acId> for item ac remove for the same concept. This is a small CLI consistency fix and likely
+      low effort."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T03:12:57.792Z
+  - _ulid: 01KM4P6XHNRHJKXY1H3NMM2BV6
+    content: "Automation status set to needs_review: Missing spec_ref; CLI naming consistency change
+      needs a linked spec or requirement before automation work."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T03:56:46.517Z
+  - _ulid: 01KM4WG54Z1EVW3PSCFM0CY93D
+    content: Linked task to @item-ac and added AC ac-item-ac-id-arg-consistency to make the CLI
+      identifier naming contract explicit before code changes. The mismatch affects command
+      introspection and batch arg validation because Commander positional names become metadata.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T05:46:40.672Z
+  - _ulid: 01KM4WTAYBA9HX5TZHGSKTV6N0
+    content: Implemented the item ac remove positional arg rename from id metadata acId -> id to match
+      item ac add. Added batch-schema regression coverage for item ac remove arg validation and
+      updated the writing-specs skill reference to show item ac remove <ref> <id>. Verified with npm
+      test -- tests/batch-schema.test.ts and full npm test.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T05:52:14.283Z
+  - _ulid: 01KM4X8SP5R5B82PKWZGRSMMJG
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T06:00:08.133Z
+  - _ulid: 01KM4ZCB4HHKAXWXJJ3JCTYG8G
+    content: "Fix cycle update: regenerated the tracked kspec-writing-specs skill snapshot so the
+      rendered command reference now matches item ac remove <ref> <id>. Also fixed an unrelated
+      stale cli-plan fixture that used a short plan ULID prefix; switched it to the stable
+      @plan-metrics slug so full npm test is green again. Verification: npm test passed (289 files,
+      6654 tests); kspec validate still reports pre-existing repo-wide reference/completeness issues
+      unrelated to @item-ac."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T06:37:01.458Z

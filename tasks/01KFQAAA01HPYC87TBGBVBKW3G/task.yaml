@@ -1,0 +1,40 @@
+_ulid: 01KFQAAA01HPYC87TBGBVBKW3G
+slugs:
+  - task-multi-dir-fixtures
+title: Multi-directory daemon test fixtures
+type: task
+description: |-
+  Create test helpers for multi-project E2E and integration tests.
+
+  ## Implementation Notes
+  - Extend existing helpers (tests/helpers/cli.ts) with HTTP client support
+  - Add `createTestProject(name)` - creates temp dir with valid .kspec/ structure
+  - Add `spawnDaemon(options)` - starts daemon process, returns port and cleanup fn
+  - Add `daemonRequest(port, method, path, headers)` - HTTP client with X-Kspec-Dir support
+  - Use existing `createTempDir`/`cleanupTempDir` patterns
+
+  ## AC Coverage
+  Enables testing of ac-1 through ac-8b, ac-24
+
+  ## Dependencies
+  None (foundational)
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #213. Created multi-directory daemon test fixtures with helper
+  function, comprehensive documentation, and proper module declarations. Fixed validation conflicts
+  by excluding multi-dir from default setupTempFixtures()."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - testing
+  - infrastructure
+  - phase-1
+vcs_refs: []
+created_at: 2026-01-24T06:15:59.745Z
+started_at: 2026-01-24T17:52:07.682Z
+completed_at: 2026-01-24T18:14:16.964Z
+todos: []
+automation: eligible

@@ -1,0 +1,72 @@
+notes:
+  - _ulid: 01KK7T2CNFQ60ZDV8928Z5A5JZ
+    content: |
+      Replace all getSessionsDir(specDir) calls to resolve from project root
+      .kspec-sessions/ instead of specDir/sessions. Add sessionsDir to context.
+      Thread through store.ts, CLI commands, daemon routes.
+    author: "@claude"
+    created_at: 2026-03-08T22:46:13.935Z
+  - _ulid: 01KK7W4ZT159P8MG2CH4NY9CZE
+    content: Reset from in_progress to pending
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T23:22:36.225Z
+  - _ulid: 01KK7W5GN5Q83SEQKDDVBW9VAG
+    content: "Reset to pending. Dispatch engine started this task prematurely — dependency
+      @add-sessions-storage-config-to-manifest-schema is in needs_work status (not completed). This
+      is a dispatch engine bug: _matchesFilter() in dispatch.ts does not check depends_on
+      relationships. WIP changes committed on branch feat/extract-session-path-resolution for
+      potential reuse once dependency is completed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T23:22:53.477Z
+  - _ulid: 01KK84BYHJ2QJ9D5A86CP4HPY1
+    content: >-
+      Execution context:
+
+      - Background: Decouples session storage from shadow branch by extracting path resolution
+
+      - Scope: Add sessionsDir to KspecContext, update store.ts path helpers, thread through CLI
+      commands, daemon routes, invocation.ts, dispatch.ts
+
+      - Key decision: applyAutoAbandonMetadata needs specDir option for shadow commit (temp, until
+      next task removes shadow commits)
+
+      - Files changed: yaml.ts (context type + initContext), store.ts (path helpers), 5 CLI command
+      files, daemon sessions route, invocation.ts, dispatch.ts, 12 test files
+
+      - Verification: npx tsc --noEmit clean, 4116/4118 tests pass (2 pre-existing failures on main)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T01:46:12.914Z
+  - _ulid: 01KK84SANGBQ4FV8VCWRYS0B25
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: session-storage-path-resolution review found
+      incomplete AC coverage (ac-context/ac-cli-commands/ac-daemon-routes) and local regressions in
+      session checkpoint scoping, task budget enforcement, and session log list."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-09T01:53:31.313Z
+  - _ulid: 01KK89BCG5W4VMJX7TCKBASKAF
+    content: >-
+      Fix cycle 1: addressed all review findings.
+
+
+      1. Fixed checkBudget(ctx.specDir, ...) → checkBudget(ctx.sessionsDir, ...) in task.ts — root
+      cause of budget enforcement regression
+
+      2. Updated 13 test files to use .kspec-sessions/ instead of sessions/ for CLI integration
+      tests
+
+      3. Added runtime ac-context test (initContext + sessionsDir verification)
+
+      4. Added ac-cli-commands tests (session create path, session log list, checkpoint)
+
+      5. Added ac-daemon-routes tests (initContext provides sessionsDir, store round-trip)
+
+      6. Replaced source-reading daemon routes test with behavioral test (avoids static analysis
+      lint)
+
+      7. Full test suite: 4132 passing, only 2 pre-existing failures (codex skill tests on main)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T03:13:17.317Z

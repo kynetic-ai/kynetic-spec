@@ -1,0 +1,65 @@
+notes:
+  - _ulid: 01KKSNAAE167HYS2N48Y3K0T4G
+    content: >-
+      Execution context:
+
+      - Background: Replace per-token text chunk broadcasting with structured lifecycle events at
+      newline boundaries
+
+      - Scope: Session event accumulator, new broadcast types, consumer updates (ws-invalidation,
+      CLI watch, shared types)
+
+      - Files: dispatch.ts (accumulator), agent-dispatch.ts (broadcasts), shared types,
+      ws-invalidation.ts, CLI watch command
+
+      - Verification: Unit tests for accumulator logic, full test suite passing
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T21:09:30.689Z
+  - _ulid: 01KKSPFZENFW923SK0NF5044VJ
+    content: >-
+      Implementation complete. Key changes:
+
+      - New SessionEventAccumulator class (src/agent-runtime/session-event-accumulator.ts) with
+      per-session state, newline-boundary flushing, 8KB max buffer, and state transition detection
+
+      - New typed event types in @kynetic-ai/shared (MessageStart/Progress/Complete,
+      ThinkingStart/Progress/Complete, ToolCallStart/Complete)
+
+      - dispatch.ts: replaced onTextChunk with onSessionEvent, wired accumulator into update handler
+      and session end
+
+      - agent-dispatch.ts: broadcasts typed events instead of agent_text_chunk
+
+      - ws-invalidation.ts: completion events trigger session query invalidation, progress events
+      skip invalidation
+
+      - CLI watch: consumes new typed events, shows tool call start/complete status in terminal
+
+      - Web UI: session-utils.ts and all pages updated to consume new event types (with backwards
+      compat for agent_text_chunk)
+
+      - All 5492 tests passing
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T21:30:04.629Z
+  - _ulid: 01KKSQ0VBQ4ND8X7QPK65J63HX
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: CI build failure. Importing @kynetic-ai/shared
+      in src/ breaks the build order — root tsc runs before shared package is built. Two files
+      affected: src/agent-runtime/dispatch.ts:28 and
+      src/agent-runtime/session-event-accumulator.ts:16. Fix by moving SessionEventData type to root
+      src/ or changing build order. All other quality gates pass (5/5 own ACs covered, tests pass
+      locally, spec alignment verified)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T21:39:17.495Z
+  - _ulid: 01KKSQZWW7219CSGP3G7JYWEGR
+    content: "[FIX_CYCLE: 1] Fix applied: Created src/agent-runtime/session-event-types.ts with
+      canonical SessionEventData types for the root package. Replaced @kynetic-ai/shared imports in
+      dispatch.ts and session-event-accumulator.ts with local imports. Also removed dead force
+      parameter from flushBuffer(). tsc build passes with packages/shared/dist removed (simulating
+      CI). 5491 tests pass (1 pre-existing flaky test in dispatch role entrypoint —
+      timing-dependent, passes on retry). All 3 review threads resolved."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T21:56:14.855Z

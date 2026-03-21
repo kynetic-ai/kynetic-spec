@@ -1,0 +1,26 @@
+_ulid: 01KJP276K7PBYD5M3R78P3SFH7
+slugs:
+  - implement-agent-definition-schema
+title: Implement Agent Definition Schema
+type: task
+spec_ref: "@agent-definition-schema"
+plan_ref: "@plan-reactive-agent-runtime"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #630. Implemented Agent Definition Schema extensions in AgentSchema and
+  meta CLI add/set/delete pathways (adapter, dispatch, skills, budget, concurrency, auto_approve
+  defaults) with integration coverage for all 11 own ACs plus inherited trait AC coverage/N-A
+  annotations. Full local npm test and CI checks passed on merge commit
+  e76b70c7e7dbf39dd06759eb2ef5771fab653a13."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJPDHWGZQSSMPV34A1D7Q10X
+created_at: 2026-03-02T01:22:20.391Z
+started_at: 2026-03-02T05:40:56.301Z
+submitted_at: 2026-03-02T05:40:57.568Z
+completed_at: 2026-03-02T05:52:20.746Z
+todos: []
+automation: eligible

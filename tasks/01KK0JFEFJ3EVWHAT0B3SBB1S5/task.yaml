@@ -1,0 +1,30 @@
+_ulid: 01KK0JFEFJ3EVWHAT0B3SBB1S5
+slugs: []
+title: Replace note-based failure tracking with structured invocation outcome data
+type: task
+spec_ref: "@agent-invocation-lifecycle"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #773 (merge commit e54b16db4efcd0e3c50ce72d31d2d859fb7adae2). Replaced
+  note-based retry streak tracking with session-backed invocation outcome history in
+  src/agent-runtime/invocation.ts, preserved failure/timeout task notes, and updated AC-4/ac-5/ac-9
+  coverage in tests/agent-invocation-lifecycle.test.ts to seed prior invocation sessions. AC
+  coverage for the reviewed change was verified and GitHub CI passed on the merged HEAD; local
+  dispatch-host npm test reproduced the known cli-serve ECONNREFUSED startup failure but was not
+  treated as a blocker because CI was green on the same commit."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - infra
+  - cli
+vcs_refs: []
+session_id: 01KKDWSS76F8GTATFNTWXDP1P9
+created_at: 2026-03-06T03:18:52.146Z
+started_at: 2026-03-11T07:42:51.931Z
+submitted_at: 2026-03-11T07:42:58.983Z
+completed_at: 2026-03-11T07:52:15.619Z
+todos: []
+automation: eligible

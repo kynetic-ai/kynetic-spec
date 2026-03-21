@@ -1,0 +1,30 @@
+_ulid: 01KGKST67NN1HN4RTA2NC4AWVJ
+slugs: []
+title: Add plan_ref field to Task schema
+type: task
+description: "Modify src/schema/task.ts to add plan_ref: RefSchema.nullable().optional(). Add to
+  both TaskSchema and TaskInputSchema. Update task get output to display plan_ref when present (omit
+  when null). Update task set to accept --plan-ref @plan for retroactive linking. Update task list
+  to show plan indicator when present."
+spec_ref: "@plan-derive"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #305. Implemented plan_ref field on Task schema with full validation
+  and CLI support. Added plan_ref to both TaskSchema and TaskInputSchema. Implemented --plan-ref
+  flag in task add and task set commands with validation (ensures ref points to plans, not
+  tasks/specs). Updated task get output to display plan_ref field. All AC-6 requirements met with 8
+  comprehensive E2E tests covering creating, displaying, setting, clearing plan_ref, validation, and
+  error cases. Tests properly isolated in temp directories."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - schema
+  - planning
+vcs_refs: []
+created_at: 2026-02-04T07:45:32.916Z
+started_at: 2026-02-04T09:30:48.316Z
+completed_at: 2026-02-04T09:56:25.374Z
+todos: []
+automation: eligible

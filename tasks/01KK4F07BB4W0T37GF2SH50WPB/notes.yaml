@@ -1,0 +1,21 @@
+notes:
+  - _ulid: 01KK4P8VEVXXFR44XD8WN2FQB3
+    content: >-
+      Fixed task IDs showing instead of names in 3 locations:
+
+      1. Sessions list page (sessions/+page.svelte) - fetches tasks alongside sessions, builds title
+      lookup map, passes resolved title to ReferenceLink
+
+      2. Session detail panel (SessionContextPanel.svelte) - added taskTitle prop, resolved by
+      parent session detail page via fetchTasks
+
+      3. Active invocation rows (ActiveInvocationRow.svelte) - added taskTitle prop, resolved by
+      agents page via fetchTasks
+
+
+      Used same pattern as dashboard (+page.svelte) which already correctly resolves task titles.
+      Each page builds a Record<string, string> mapping @ulid and @slug to task.title, then passes
+      the looked-up title to ReferenceLink's title prop.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T17:42:08.091Z

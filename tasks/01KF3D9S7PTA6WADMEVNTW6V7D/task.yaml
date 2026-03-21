@@ -1,0 +1,20 @@
+_ulid: 01KF3D9S7PTA6WADMEVNTW6V7D
+slugs:
+  - task-item-set-remove-slug
+title: Implement --remove-slug option for item set
+type: task
+spec_ref: "@item-set"
+status: completed
+blocked_by: []
+closed_reason: Implemented --remove-slug option with validation for last slug protection
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - feature
+vcs_refs: []
+created_at: 2026-01-16T12:43:19.670Z
+started_at: 2026-01-16T15:31:38.158Z
+completed_at: 2026-01-16T15:34:03.056Z
+todos: []

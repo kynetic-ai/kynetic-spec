@@ -1,0 +1,25 @@
+_ulid: 01KHAPA9MV1HJV32K6VGNQ38KA
+slugs:
+  - task-ralph-wrap-up-agent-on-loop-exit
+title: Implement ralph wrap-up agent on loop exit
+type: task
+spec_ref: "@01KHAP9PZ2WEMV9PRV037MC5Y8"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #369. Implemented ralph wrap-up agent that spawns on loop exit (all
+  exit reasons: no_tasks, end_loop_signal, max_iterations, error, max_failures,
+  explicit_tasks_done). Gathers working tree state (staged/unstaged/untracked), tasks, and session
+  info. Builds focused prompt for subagent to handle cleanup (commit, stash, or flag for review).
+  Runs with 2-minute timeout. All 5 ACs covered by 35 tests."
+depends_on:
+  - "@task-ralph-command-automated-task-loop"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-13T05:06:58.331Z
+started_at: 2026-02-14T11:15:07.945Z
+completed_at: 2026-02-14T11:37:36.006Z
+todos: []
+automation: eligible

@@ -1,0 +1,127 @@
+notes:
+  - _ulid: 01KHYA7W5JQCRRAWQA2GH4AANK
+    content: "Automation status set to manual_only: Spikes require interactive runtime testing and human
+      judgment on outcomes"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-20T20:00:44.722Z
+  - _ulid: 01KHYAGE5GP1A7Q9GWHBYR58Z7
+    content: >-
+      Additional validation items discovered from changelog review (v0.13.2 → v0.18.0):
+
+
+      1. rawOutput field (v0.14.0): tool_call_update now includes rawOutput. Our extractToolOutput()
+      already checks rawOutput as priority 1 — verify this works correctly with real adapter output.
+
+
+      2. config_option_update events (v0.18.0): New SessionUpdate discriminator value. Our
+      translator's default case returns null for unknown types — should be safe, but verify no
+      crash.
+
+
+      3. current_mode_update events (v0.14.0): Plan mode transitions now emit notifications. Verify
+      our event translator handles these gracefully (should fall through to null).
+
+
+      4. Edit tool diff content blocks (v0.18.0): Edit results now include {type: "diff"} content
+      blocks. Verify extractToolOutput() still extracts output correctly.
+
+
+      5. Bash code fence language (v0.18.0): Changed from ```sh to ```console in formatted output.
+      Check if any ralph rendering or pattern matching depends on this.
+
+
+      6. disallowedTools merge fix (v0.16.0/v0.18.0): User-provided disallowedTools no longer
+      silently dropped. We don't currently pass disallowedTools, but good to know.
+
+
+      7. configOptions in NewSessionResponse (v0.18.0): Session creation response now has
+      configOptions array. Verify our newSession() handling doesn't choke on extra fields.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-20T20:05:25.298Z
+  - _ulid: 01KJ69QG0MM0R2NYYW0GC82ZMT
+    content: >-
+      [SPIKE COMPLETE] ACP 0.18.0 runtime validation against ralph session
+      01KJ4VNM972YKRADFPC84B55RY (16 iterations, 27k events).
+
+
+      ## Core Fields — All Present and Working
+
+
+      - _meta.claudeCode.toolName: Present on all 1,733 tool_call events. Always bare names (Bash,
+      Read, Edit, etc.) — no MCP prefix.
+
+      - _meta.claudeCode.toolResponse: Present on 1,690 completion events. Tool-specific structure
+      intact (stdout/stderr for Bash, content/filenames for Grep, etc.).
+
+      - rawOutput: Present on all 1,733 completion events as string. extractToolOutput() hits this
+      at priority 1.
+
+      - --dangerously-skip-permissions: Working — zero permission events in session (all
+      auto-approved).
+
+
+      ## New Event Types (all handled gracefully)
+
+
+      - `plan` (128 events): Unknown to translator, returns null. No crash.
+
+      - `available_commands_update` (17 events): Same — returns null.
+
+      - `null` updates (32 events): Handled gracefully.
+
+      - `config_option_update`, `current_mode_update`: NOT observed in this session.
+
+
+      ## Phased Tool Call Model (ACP 0.14+)
+
+
+      - tool_call events: Have kind, status:"pending", rawInput (always empty {}). Our code falls
+      through rawInput to input field correctly.
+
+      - tool_call_update streaming: Have content array with {type:"content"} blocks, no rawOutput.
+
+      - tool_call_update completion: Have rawOutput (string), status, _meta.claudeCode.toolResponse.
+
+      - Already handled by existing tool_call/tool_call_update logic in events.ts.
+
+
+      ## Edit Tool Diff Blocks
+
+
+      - Edit completions use {type:"diff", path, oldText, newText} content blocks.
+
+      - No impact: extractToolOutput() hits rawOutput first, diff blocks are in content array.
+
+
+      ## Bash Code Fence Language
+
+
+      - Not applicable: rawOutput is plain string, no SDK-injected fences.
+
+
+      ## Fallback Chain Status
+
+
+      - extractToolName(): Level 1 (_meta.claudeCode.toolName) always hits.
+
+      - extractToolOutput(): Level 1 (rawOutput) hits on completions. Level 2 (toolResponse) present
+      as backup.
+
+
+      ## Untested
+
+
+      - Permission event field structure (option.kind, optionId): Session used yolo mode, so no
+      permission events were generated. Would need a non-yolo run to verify. Low risk — the
+      handleRequest code already uses these fields and the session ran successfully.
+
+
+      ## Verdict
+
+
+      No code changes needed. Existing fallback chains handle ACP 0.18.0 correctly.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T22:25:43.444Z

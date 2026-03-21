@@ -1,0 +1,111 @@
+notes:
+  - _ulid: 01KKCYME2BQ3Q0PW830AKSQMY9
+    content: See plan @plan-iterative-plan-editing for implementation notes
+    author: "@claude"
+    created_at: 2026-03-10T22:42:11.659Z
+  - _ulid: 01KKDAT7KWJT976JHMS83H9JWJ
+    content: >-
+      Execution context:
+
+      - Background: plan import currently materializes specs/tasks immediately, but this task shifts
+      import to content-only storage for iterative editing.
+
+      - Scope: update plan import behavior, CLI flags/output, and AC-annotated tests for draft
+      default, optional/stored module, status override, content-only import, and ignored --update.
+
+      - Files: src/cli/commands/plan-import.ts plus adjacent plan import tests and any shared
+      helpers the command depends on.
+
+      - Verification: targeted plan import tests, kspec validate, then full npm test before submit.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T02:15:04.573Z
+  - _ulid: 01KKDBFFEDET2WNHX2YZGDPY9V
+    content: >-
+      Implemented content-only plan import.
+
+      - Changed plan import to create only a plan record, defaulting status to draft unless --status
+      overrides it.
+
+      - Made --module optional and persisted it as module_ref on the plan record for later derive.
+
+      - Made --update a warning-only no-op, updated plan get/export surfaces for module_ref, and
+      replaced the legacy import tests plus batch import expectation with content-only coverage.
+
+      - Verification: npm run build; npm test -- tests/cli-plan-import.test.ts; npm test --
+      tests/batch-exec-engine.test.ts; kspec validate (warnings-only repo debt); full npm test
+      passed.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T02:26:40.717Z
+  - _ulid: 01KKDCH9TQ9PFP3YKCF0X6YVEE
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #768 misannotates @trait-semantic-exit-codes
+      ac-6 in tests/cli-plan-import.test.ts, so inherited AC coverage is incomplete."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T02:45:09.080Z
+  - _ulid: 01KKDE6CHYEHKVBR35SHBF6S9T
+    content: "[FIX_CYCLE: 1] Corrected trait AC coverage in tests/cli-plan-import.test.ts by adding a
+      real invalid-flag usage test for @trait-semantic-exit-codes ac-6 and removing that annotation
+      from the missing-file test, which exercises a different error path. Verification in progress:
+      npm run build; npm test -- tests/cli-plan-import.test.ts; kspec validate --warnings-ok; full
+      npm test pending."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T03:14:08.574Z
+  - _ulid: 01KKDEDASSTPJKBMQ7VYT0AS7B
+    content: "[FIX_CYCLE: 1] Verification complete. npm run build passed, npm test --
+      tests/cli-plan-import.test.ts passed, kspec validate --warnings-ok returned existing repo
+      warnings only, and full npm test passed (205 files, 4496 tests, 3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T03:17:56.153Z
+  - _ulid: 01KKDFM3RT37GVZQXS567QKKHR
+    content: "[FIX_CYCLE: 4] Review findings: MUST-FIX: PR #768 only stores plan.module_ref on import.
+      @plan-import-content-only ac-module-stored also requires kspec plan derive to use the stored
+      module when --module is omitted, and current tests only cover persistence."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T03:39:06.907Z
+  - _ulid: 01KKDGXTVF7NMZVZY35YY0D86R
+    content: "[FIX_CYCLE: 4] Wired plan derive to resolve module context from --module or stored
+      plan.module_ref, validate that the resolved ref points to a module item, and expose the
+      effective module_ref in derive output. Added regression coverage for stored-module fallback
+      and explicit override in tests/cli-plan.test.ts; targeted build/tests and kspec validate
+      --warnings-ok are green."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T04:01:54.032Z
+  - _ulid: 01KKDH468SPC4GMBXNPZ6VNBM5
+    content: "[FIX_CYCLE: 4] Verification complete on fix branch head. npm run build passed, npm test --
+      tests/cli-plan.test.ts passed, npm test -- tests/cli-plan-import.test.ts passed, kspec
+      validate --warnings-ok returned existing repo warnings only, and full npm test passed (205
+      files, 4498 tests passed, 3 skipped)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T04:05:22.330Z
+  - _ulid: 01KKDJST1RQAPAY6Y9E97DRPF2
+    content: "[FIX_CYCLE: 7] Review findings: MUST-FIX: PR #768 fails full regression. npm test reports
+      11 failures, led by stale/broken plan import runtime behavior (built CLI still requires
+      --module and rejects --status) plus a remaining cli-worktree-resolution regression."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T04:34:39.288Z
+  - _ulid: 01KKDR2N3NF0G6W4K5W5E6M2T2
+    content: "[FIX_CYCLE: 7] Root cause confirmed: npm test only checked for dist/ artifact existence,
+      so reused workspaces kept running a stale built CLI after src/ plan import changes. Tightened
+      scripts/test.cjs to treat newer source inputs as stale build output and trigger npm run build
+      automatically; added coverage in tests/test-runner.test.ts for stale-artifact detection before
+      re-running plan import/worktree regressions."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T06:06:52.022Z
+  - _ulid: 01KKDR8RV1TKNSGEZ6Q0T362F0
+    content: "[FIX_CYCLE: 7] Verification complete after tightening stale-build detection. npm test --
+      tests/test-runner.test.ts passed; npm test -- tests/cli-plan-import.test.ts
+      tests/cli-plan.test.ts tests/batch-exec-engine.test.ts tests/cli-worktree-resolution.test.ts
+      passed; npm test passed (205 files, 4499 tests, 3 skipped); kspec validate --warnings-ok
+      returned existing repo warnings only."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T06:10:12.450Z

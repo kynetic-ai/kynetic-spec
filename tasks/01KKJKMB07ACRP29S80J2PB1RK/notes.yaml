@@ -1,0 +1,125 @@
+notes:
+  - _ulid: 01KKKQAZN48RZ1Z35WWJJ0KS14
+    content: >-
+      Execution context:
+
+      - Background: Droid setup status reporting was largely implemented in the
+      droid-setup-integration task. This task covers the dedicated @droid-setup-status spec with
+      test coverage annotated to the correct spec ref.
+
+      - Scope: Add AC-annotated tests for @droid-setup-status ac-1 (factory skills scanning), ac-2
+      (filesystem fallback), ac-3 (session agent-type). Add AC annotations to implementation code.
+
+      - Files: tests/droid-setup-status.test.ts (new), src/parser/setup-status.ts (annotations),
+      src/cli/commands/session/commands.ts (annotations)
+
+      - Verification: npm test passes, kspec validate shows coverage
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T13:49:22.981Z
+  - _ulid: 01KKKR8GSXFJ7NEZ9W0460WVG9
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: npm test failed twice on review snapshot
+      b6a01c0ac242 (cli-serve foreground shutdown assertion; agent-dispatch-engine reconciliation
+      interval temp-dir cleanup), so regression gate is not clean."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T14:05:30.814Z
+  - _ulid: 01KKKTZJGFGVTYPV6JDKF6F9BH
+    content: "Fix cycle: Fixed race condition in DispatchEngine.stop() where in-flight _reconcile()
+      calls were not awaited before teardown. The setInterval callback fires _reconcile() as
+      fire-and-forget, so stop() could return before reconciliation finished accessing temp dirs.
+      Added activeReconcile promise tracking so stop() awaits the in-flight call. Reproduced the
+      ENOTEMPTY failure under full-suite load, confirmed fix with 2 consecutive clean full-suite
+      runs (4736 tests). The cli-serve foreground shutdown assertion was not reproducible in
+      isolation or under load — likely a transient CI-only race."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T14:53:03.375Z
+  - _ulid: 01KKKVC55W5MJ3AR2T0K4TBXS1
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: regression gate still fails on PR #827. Fresh
+      npm test on 38d2bcaf72fcde7d5c22b18de98a6a2431843c61 timed out in
+      tests/cli/session-start-format.test.ts (notes starvation prevention JSON case), so the PR is
+      not mergeable yet."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T14:59:55.708Z
+  - _ulid: 01KKKXAQNWSS53TASHAXF3EVR7
+    content: "Fix cycle 2: Eliminated CI timeout in session-start-format.test.ts notes starvation
+      prevention test. Replaced 25 CLI subprocess calls with direct YAML seeding via new
+      seedTasksWithNotes() helper. Test time dropped from 5288ms to 592ms (9x improvement). Full
+      suite passes: 4736 tests, 0 failures."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T15:34:06.268Z
+  - _ulid: 01KKKXYPEW6JDVMZT2F9TXNB4K
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: PR #827 still fails GitHub Actions on head
+      b43328698d83. test (shard 1/3) failed in tests/dispatch-workspace-registry.test.ts with
+      expected 'closing' vs 'integrating', plus ENOTEMPTY/spawn node ENOENT cleanup errors, so the
+      regression gate is not clean."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T15:45:00.380Z
+  - _ulid: 01KKM05KKG3TCZKR0M9QW97W4N
+    content: "Fix cycle 3: Prevented idle marking from regressing terminal lifecycle states in
+      markDispatchWorkspaceIdle. When an invocation completes and calls markDispatchWorkspaceIdle
+      with a stale taskStatus (e.g. 'pending_review' from the original dispatch event), it could
+      overwrite a 'closing' state set by a concurrent handleStateChange(completed) →
+      reconcileDispatchWorkspaceLifecycle. Added early-return guard: if the existing record is
+      already in a terminal state (closing/cleanup_blocked/closed), only clear active_role without
+      recalculating lifecycle. Full suite passes: 4736 tests, 0 failures."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T16:23:43.985Z
+  - _ulid: 01KKM0NKGSRVMZKWA5D66SQGDB
+    content: "[FIX_CYCLE: 4] Review findings: MUST-FIX: PR #827 does not merge cleanly into main. Rebase
+      or merge main into dispatch/task/implement-droid-setup-status-reporting/01kkjkmb, rerun
+      verification on the new head, and resubmit for review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T16:32:28.185Z
+  - _ulid: 01KKM1WZ0ZHNPM42KMHFJ1DXB6
+    content: "Fix cycle 4: Merged main into dispatch branch to resolve merge conflict in
+      src/agent-runtime/dispatch.ts. Conflict was between local single-promise activeReconcile
+      tracking vs main's Set-based inFlightReconciles tracking — took main's version which is
+      strictly better (handles overlapping reconciliation calls). Full test suite passes: 4756
+      tests, 0 failures."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T16:53:57.919Z
+  - _ulid: 01KKM27D9NMC8PNPGYCZXNP6JD
+    content: "[FIX_CYCLE: 5] Review findings: MUST-FIX: npm test still fails on reviewed head
+      db26d181b7e508648df31f4e712b227878d1be7b in tests/dispatch-workspace-registry.test.ts
+      (expected closing, got integrating) with follow-on ENOTEMPTY cleanup errors."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T16:59:40.213Z
+  - _ulid: 01KKM43D3PGVAA35N0DYF7S1FF
+    content: "Fix cycle 5: Eliminated race condition in dispatch-workspace-registry lifecycle test. The
+      pending_review invocation's post-completion chain (markDispatchWorkspaceIdle →
+      cleanupReviewerDispatchWorkspace) runs AFTER activeInvocations is decremented, so the old
+      activeInvocations poll loop could exit too early. Fix: stop/restart the engine between
+      pending_review and completed transitions to fully drain invocation promises. Also disabled
+      periodic reconciliation in all DispatchEngine test instances. Full suite passes: 4756 tests, 0
+      failures across 2 consecutive runs."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T17:32:26.102Z
+  - _ulid: 01KKM4HYVBP56VE3QRSV09HQBK
+    content: "[FIX_CYCLE: 6] Review findings: MUST-FIX: fresh npm test fails on reviewed head
+      87c20fbdd984d7b3fad383846d78088ce7eb7c4c (agent-dispatch-engine stale queue discard assertions
+      plus session-start timeouts), so the regression gate is not clean."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T17:40:23.020Z
+  - _ulid: 01KKM7VST3004SAHQM29G88RSQ
+    content: "Fix cycle 6: Eliminated two sources of parallel-load test flakiness. (1) Stale queue
+      discard tests in agent-dispatch-engine: replaced runInvocation mock with _spawnInvocation mock
+      using fire-and-forget pattern matching the real implementation. This avoids real workspace
+      provisioning I/O (git worktree operations) that fails under parallel file execution. Also
+      mocked workspace lifecycle functions and disabled periodic reconciliation. (2)
+      Session-start-notes: converted two slow tests from 35+ CLI subprocess calls to direct YAML
+      seeding (matching session-start-format pattern). Test time dropped from 30s+ to <260ms. Full
+      suite passes: 4756 tests, 0 failures across 2 consecutive runs."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T18:38:11.267Z

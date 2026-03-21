@@ -1,0 +1,19 @@
+_ulid: 01KFDYAW8AQ0B54800XVX56BEE
+slugs: []
+title: Remove auth.yaml from manifest
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Removed modules/auth.yaml from kynetic.yaml includes. File doesn't exist and change
+  already applied to shadow branch.
+depends_on: []
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-20T14:53:25.642Z
+started_at: 2026-01-20T15:10:43.554Z
+completed_at: 2026-01-20T15:42:58.553Z
+todos: []

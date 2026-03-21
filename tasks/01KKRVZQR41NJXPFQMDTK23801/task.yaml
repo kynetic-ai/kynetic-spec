@@ -1,0 +1,53 @@
+_ulid: 01KKRVZQR41NJXPFQMDTK23801
+slugs: []
+title: Disable SSR globally to fix hard refresh stuck on loading
+type: task
+description: >-
+  Hard refresh on pages without +page.ts ssr=false (agents, sessions, inbox, observations, specs,
+  triage, validate) gets stuck on loading skeleton. API requests complete but the page never
+  renders. Client-side navigation works fine.
+
+
+  Root cause: SSR renders children with ready=true (browser=false on server), but client hydration
+  flips ready to false, creating a hydration mismatch that breaks reactive state propagation. This
+  is cross-cutting — every page is affected unless it has its own +page.ts with ssr=false.
+
+
+  Fix: Add root +layout.ts with export const ssr = false. This app connects to a local daemon; SSR
+  adds no value. Simplify the layout ready derivation since browser is always true without SSR.
+  Existing per-page +page.ts files (tasks, plans, workflows, settings) become redundant but
+  harmless.
+
+
+  Spec: @ui-data-freshness ac-9
+spec_ref: "@ui-data-freshness"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #878. Disabled SSR globally via root +layout.ts (export const ssr =
+  false) to fix hard refresh stuck on loading. Simplified layout ready derivation by removing
+  browser-conditional ternary. AC @ui-data-freshness ac-9 covered with implementation annotation and
+  3 static analysis tests. All 5470 tests pass, all CI green."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - web-ui
+  - bug
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-15T14:24:12.272Z
+  commit: 8045b69abbe62718c1abb64a7b00e7dc460b571d
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKRXG470F4PRD9QSN5A0E94Z
+created_at: 2026-03-15T13:46:49.476Z
+started_at: 2026-03-15T14:13:32.126Z
+submitted_at: 2026-03-15T14:24:13.018Z
+completed_at: 2026-03-15T14:35:47.342Z
+todos: []
+automation: eligible

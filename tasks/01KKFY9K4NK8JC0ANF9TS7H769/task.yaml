@@ -1,0 +1,39 @@
+_ulid: 01KKFY9K4NK8JC0ANF9TS7H769
+slugs:
+  - task-test-dispatch-workspace-and-scheduler-flow
+title: Test base-branch sourcing, isolated worktree flow, cleanup, and scheduler ordering
+type: task
+spec_ref: null
+plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #814. Added integration-style dispatch coverage for base-branch
+  sourcing, isolated worker/reviewer worktrees, reviewer cleanup, fix-cycle canonical workspace
+  reuse, and scheduler ordering; plus the reviewer-cleanup lifecycle serialization fix that closed
+  the registry race. AC/task intent reviewed with targeted dispatch regression coverage passing
+  locally and current-head CI green."
+depends_on:
+  - "@task-implement-dispatch-workspace-config"
+  - "@task-implement-dispatch-worktree-provisioning"
+  - "@task-implement-dispatch-branch-integration-contract"
+  - "@task-implement-dispatch-workspace-cleanup"
+  - "@task-implement-dispatch-bootstrap-contract"
+  - "@task-implement-dispatch-orientation-prompt"
+  - "@task-implement-dispatch-role-entrypoints"
+  - "@task-scope-dispatch-shadow-serialization"
+  - "@task-implement-priority-aware-dispatch-scheduler"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - test
+  - integration
+vcs_refs: []
+session_id: 01KKJQ6NXRA1GWFDDQ0NV2YZFQ
+created_at: 2026-03-12T02:33:59.701Z
+started_at: 2026-03-13T04:28:34.199Z
+submitted_at: 2026-03-13T04:33:07.686Z
+completed_at: 2026-03-13T04:44:24.265Z
+todos: []
+automation: eligible

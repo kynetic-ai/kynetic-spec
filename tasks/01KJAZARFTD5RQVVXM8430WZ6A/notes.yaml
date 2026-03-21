@@ -1,0 +1,21 @@
+notes:
+  - _ulid: 01KJBFYQ65G9BKAW9WEBTRKT1D
+    content: "Root cause: Ralph passes KSPEC_SESSION_ID via spawner env (process env inheritance), but
+      Claude Code sandboxes child processes and doesn't forward arbitrary parent env vars to
+      commands run via Bash tool. The injection mechanism (injectClaudeCodeEnv →
+      .claude/settings.json env section) exists but ralph doesn't call it. Fix: call
+      injectClaudeCodeEnv() after session creation when adapter is claude-agent-acp, and clean up on
+      session end."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T22:50:43.782Z
+  - _ulid: 01KJBGFH0F5G6KPC18RKMPFJDY
+    content: "Implementation complete. Added adapter-aware env injection to ralph loop:
+      injectEnvForAdapter() writes KSPEC_SESSION_ID to harness-specific config (e.g.
+      .claude/settings.json for Claude Code) after session creation. removeEnvForAdapter() cleans up
+      in finally block and signal handlers. Added removeClaudeCodeEnv() and removeDotenvSessionId()
+      helpers. Design is extensible — new harnesses just add a switch case. 10 new tests all
+      passing, full suite green (pre-existing mock-acp timeout failures only)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T22:59:54.512Z

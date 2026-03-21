@@ -1,0 +1,40 @@
+_ulid: 01KHWQEP30P7WWVAEZMRJPY12M
+slugs: []
+title: Add deprecation warning tests for config-daemon and manifest-cleanup
+type: task
+description: >-
+  @config-daemon ac-4 says 'a deprecation warning is emitted recommending migration to
+  kspec.config.yaml' and @config-manifest-cleanup ac-4 says 'a debug-level deprecation note is
+  logged'. Neither is verified in tests.
+
+
+  tests/parser/daemon-config.test.ts verifies config takes precedence over manifest but does NOT
+  verify warning output on stderr.
+
+  tests/parser/manifest-cleanup.test.ts verifies parsing succeeds but does NOT verify deprecation
+  logging.
+
+
+  Add tests that capture stderr/debug output and verify deprecation messages appear when legacy
+  manifest blocks are encountered.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #429. Added test coverage for deprecation warnings: (1) @config-daemon
+  ac-4 CLI stderr warning test in daemon-config.test.ts, (2) @config-manifest-cleanup ac-4
+  debug-level logging tests in manifest-cleanup.test.ts with KSPEC_DEBUG=1 verification. Also
+  implemented missing parseManifestWithWarnings() helper in yaml.ts for debug-level deprecation
+  notes. All ACs verified."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - test-gap
+vcs_refs: []
+created_at: 2026-02-20T05:13:10.496Z
+started_at: 2026-02-20T11:10:46.271Z
+completed_at: 2026-02-20T11:31:07.212Z
+todos: []
+automation: eligible

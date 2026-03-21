@@ -1,0 +1,45 @@
+notes:
+  - _ulid: 01KJ75580X522543JHKECYFPWH
+    content: |-
+      Implementation notes:
+
+      Add computed key to SessionContext interface:
+
+      interface SessionContextComputed {
+        inbox_untriaged_count: number;
+        inbox_deferred_count: number;
+        inbox_total: number;
+        task_unlocks: Record<string, number>;
+        recent_activity: ActivityItem[];
+      }
+
+      interface ActivityItem {
+        type: "task_completed" | "commit";
+        timestamp: string;
+        task_ref?: string;
+        task_slug?: string | null;
+        task_title?: string;
+        close_reason?: string;
+        commit_hash?: string;
+        commit_message?: string;
+        commit_author?: string;
+        linked_task_ref?: string;
+      }
+
+      Wire into gatherSessionContext() after unlocks, activity, and triage data are gathered.
+      Raw arrays (recently_completed, recent_commits) stay unchanged.
+      computed is additive — no existing JSON fields modified.
+
+      Key file: src/cli/commands/session.ts
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T06:25:05.566Z
+  - _ulid: 01KJ91NQTA5N7XYJ7ZJ39HX928
+    content: Implemented computed JSON fields for session start. Added SessionContextComputed interface
+      with inbox_untriaged_count, inbox_deferred_count, inbox_total, task_unlocks (ref-to-count
+      map), and recent_activity (mirrors activity_timeline). Wired into gatherSessionContext() after
+      existing data is gathered. 11 integration tests covering all 3 ACs. All 3547 tests pass (1
+      known flaky ralph timeout).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T00:02:40.586Z

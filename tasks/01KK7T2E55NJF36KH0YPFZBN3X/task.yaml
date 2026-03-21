@@ -1,0 +1,30 @@
+_ulid: 01KK7T2E55NJF36KH0YPFZBN3X
+slugs:
+  - update-kspec-init-setup-for-session-directory
+title: Update kspec init/setup for session directory
+type: task
+spec_ref: "@session-storage-modes"
+plan_ref: "@plan-session-storage-separation"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #720 (merge commit 1b0c9e36dc21). Updated kspec init/setup to create
+  .kspec-sessions/, ensure root and shadow gitignore entries, and preserve dry-run preview of those
+  planned actions. Reviewed against @session-storage-modes with AC coverage confirmed for config,
+  branch naming, sessions directory creation/separation, and gitignore behavior; fresh CI passed on
+  the merged head."
+depends_on:
+  - "@add-sessions-storage-config-to-manifest-schema"
+context: []
+priority: 2
+tags:
+  - session
+  - storage
+  - cli
+vcs_refs: []
+session_id: 01KK89EEBG2XA6TFD63SWC00D3
+created_at: 2026-03-08T22:46:15.461Z
+started_at: 2026-03-09T03:26:41.185Z
+submitted_at: 2026-03-09T03:35:52.562Z
+completed_at: 2026-03-09T03:45:21.004Z
+todos: []
+automation: eligible

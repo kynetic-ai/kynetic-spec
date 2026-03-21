@@ -1,0 +1,62 @@
+notes:
+  - _ulid: 01KKK0QVX2TJEQ9MJME5DV3YDP
+    content: Supersedes @01KKBBS7, which covered the narrower repair-deletes-.kspec failure mode but was
+      linked to the wrong spec family. Use this task as the single implementation thread for the
+      broader broken-shadow incident.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T07:14:27.874Z
+  - _ulid: 01KKK155ANB51KZHWB4MTSZH7K
+    content: >-
+      Execution context:
+
+      - Background: dispatch checkout lost .kspec twice; when shadow detection fell through,
+      daemon/dispatch continued in repo-root mode and a root-level project.dispatch-workspaces.yaml
+      appeared.
+
+      - Scope: fail fast for broken existing shadow repos, prevent repo-root fallback path
+      resolution, preserve/restore .kspec when repair cannot recreate it, and make setup/bootstrap
+      recovery prefer repair semantics over fresh init.
+
+      - Files: expected focus in src/parser/yaml.ts, src/parser/shadow.ts, scripts/bootstrap.cjs,
+      packages/daemon/src/watcher.ts if watcher behavior remains justified, plus targeted tests
+      under tests/.
+
+      - Verification: focused vitest coverage for shadow/bootstrap/watcher regressions, then
+      validate whether any docs/help output or generated agent artifacts need updates based on
+      behavior changes.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T07:21:43.509Z
+  - _ulid: 01KKK1SR0A5HMNZMWPGBFQ659Z
+    content: "Requirement clarification: bootstrap/recovery must treat existing shadow state on the
+      configured remote as recoverable too, not only a local kspec-meta branch. If local shadow
+      state is missing but the configured remote has the branch, recovery should attach/fetch and
+      repair rather than re-initialize a brand-new shadow history."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T07:32:57.994Z
+  - _ulid: 01KKK2MKFDSBSHKKSFVF7EVAJ0
+    content: Implemented broken-shadow safety across repair/bootstrap/setup flows. repairShadow() now
+      preserves/restores the prior worktree on failure and can reattach a missing local shadow
+      branch from existing remote shadow state before recreating the worktree; kspec shadow repair
+      now uses configured shadow options instead of default-only assumptions. scripts/bootstrap.cjs
+      and kspec setup now choose repair when shadow state already exists locally or on the
+      configured/default remote, and setup prompts/messages were updated to describe missing or
+      unhealthy worktrees instead of only the local-branch case. Verified with npm run build; npm
+      test -- --run tests/bootstrap.test.ts tests/setup.test.ts tests/shadow.test.ts
+      tests/daemon-watcher-error-handling.test.ts; npm test -- --run tests/integration.test.ts -t
+      "should search shadow branch when main is empty but shadow has commits"; npm test -- --run
+      tests/dispatch-workspace-and-scheduler-flow.test.ts. kspec validate still reports the repo\'s
+      existing warning set (orphaned specs, AC coverage gaps, fixture annotation warnings, orphaned
+      skill dir) but no new schema/reference errors from this task.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T07:47:38.094Z
+  - _ulid: 01KKK4H2VAVW0YSYW7PBE13CP9
+    content: "Replaced PR #822 with PR #824 from canonical dispatch branch
+      dispatch/task/fix-broken-shadow-safety/01kkjzw9 so dispatch review and any follow-up fix cycle
+      stay on the same branch lineage."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T08:20:39.914Z

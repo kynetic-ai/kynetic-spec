@@ -1,0 +1,16 @@
+notes:
+  - _ulid: 01KJE46FMZK4P8MB71JJ0J1Z5M
+    content: "Investigation summary: reproduced mismatch where kspec shadow status failed in Codex
+      runtime but succeeded in user shell. Root cause is shell-form Node git execution failing under
+      restricted runtime (/bin/sh EPERM), which made getGitRoot/isGitRepo/branchExists return false
+      negatives and caused non-shadow fallback writes. Confirmed by direct module probe (getGitRoot
+      returned null before patch) and by root project.tasks.yaml creation from task add before fix."
+    supersedes: null
+    author: "@codex"
+    created_at: 2026-02-26T23:22:58.591Z
+  - _ulid: 01KJE4WW318T9VXFJXR70EQRFZ
+    content: "Completion clarification: argv-based git invocation uses spawnSync via runGitSync; prior
+      completion reason rendered empty parentheses due shell escaping."
+    supersedes: null
+    author: chapel
+    created_at: 2026-02-26T23:35:12.225Z

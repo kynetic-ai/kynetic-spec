@@ -1,0 +1,19 @@
+notes:
+  - _ulid: 01KJC0DQHCHQVWB7ENNCMXFBFN
+    content: "Wrote packages/web-ui/tests/e2e/api-inbox.spec.ts with 20 Playwright E2E tests covering
+      @api-contract ac-12 through ac-14. Tests use daemon fixture for real HTTP calls. Deleted
+      tests/daemon-api-inbox.test.ts (218 lines of static analysis). Unit test run: 1212/1213
+      passed. PR #545 created."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T03:38:32.876Z
+  - _ulid: 01KJC0XD9PEQBAZ5N9GP7NHHB6
+    content: "[FIX: Codex review] Fixed 3 issues: (1) Corrected @api-contract ac-1 (CORS) misannotation
+      on JSON content-type test — now properly annotated as @api-contract ac-12 response format. (2)
+      Fixed 'short ref' test that claimed to test prefix resolution but used full ULID — renamed to
+      'full ULID ref deletion test' for accuracy. (3) Added message and suggestion assertions to 404
+      DELETE error test per @trait-api-endpoint ac-2. Also updated PR body with Task/Spec trailers.
+      Pushed commit cd253f50."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T03:47:06.678Z

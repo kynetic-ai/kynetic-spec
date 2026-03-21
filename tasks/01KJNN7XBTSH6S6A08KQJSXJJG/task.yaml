@@ -1,0 +1,37 @@
+_ulid: 01KJNN7XBTSH6S6A08KQJSXJJG
+slugs: []
+title: Fix session task counting for claude-agent-acp and codex-acp adapters
+type: task
+description: "countTaskCompletions() in src/sessions/store.ts:1654 and extractTaskTransitions() rely
+  on rawInput.command being a plain string containing 'task complete'. Two ACP adapters break this:
+  (1) claude-agent-acp sets rawInput to {} (empty) — command never recorded in rawInput.command, (2)
+  codex-acp sets rawInput.command to an array like ['/usr/bin/bash', '-lc', 'kspec task complete
+  @ref'] instead of a string. Result: kspec session log list shows Tasks=0 for all sessions since
+  ~Feb 24. Fix: normalize command extraction to handle string, array, and _meta.claudeCode fallback
+  formats. Affects both countTaskCompletions and extractTaskTransitions in store.ts."
+spec_ref: "@session-log-list"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #637. Fixed task count=0 bug in kspec session log list for
+  claude-agent-acp and codex-acp adapters. Two root causes addressed: (1) removed narrow 'tool_call'
+  event filter that blocked tool_call_update events used by claude-agent-acp, (2) added array
+  command normalization for codex-acp format [bash, -lc, cmd]. Both countTaskCompletions and
+  extractTaskTransitions updated consistently. 2 new unit tests added. All 30 session-log-list tests
+  pass; CI clean."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - sessions
+  - ralph
+vcs_refs: []
+session_id: 01KJR8JA0CQXS951PDBEBRA3CW
+created_at: 2026-03-01T21:35:32.217Z
+started_at: 2026-03-03T00:04:46.823Z
+submitted_at: 2026-03-03T00:35:43.419Z
+completed_at: 2026-03-03T00:59:50.830Z
+todos: []
+automation: eligible

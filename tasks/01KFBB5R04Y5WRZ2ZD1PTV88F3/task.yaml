@@ -1,0 +1,20 @@
+_ulid: 01KFBB5R04Y5WRZ2ZD1PTV88F3
+slugs:
+  - yaml-migration-remaining
+title: Complete YAML library migration in 3 remaining files
+type: infra
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #98. Successfully migrated all remaining writeYamlFile usages to
+  writeYamlFilePreserveFormat in fix.ts, module.ts, and meta.ts. All 630 tests passing."
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-19T14:40:05.636Z
+started_at: 2026-01-20T03:43:25.224Z
+completed_at: 2026-01-20T03:53:04.788Z
+todos: []

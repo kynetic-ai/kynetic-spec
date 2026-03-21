@@ -1,0 +1,66 @@
+notes:
+  - _ulid: 01KKA7TR1B9T1JRBW6455W337P
+    content: See plan @plan-lazy-shadow-sync for implementation notes
+    author: "@claude"
+    created_at: 2026-03-09T21:25:12.363Z
+  - _ulid: 01KKAE124PQER1J1ZYTPBWW9R8
+    content: >-
+      Implementation complete. This task's ACs (ac-write-always-syncs, ac-write-skips-read-check)
+      were already implemented by the syncMode mechanism from task 1
+      (@implement-lazy-shadow-sync-on-reads). The work here was adding AC annotations to code and
+      tests, plus 3 new behavioral tests:
+
+      1. initContext skips all sync when syncMode is 'skip' (write commands)
+
+      2. initContext skips sync on both calls within a mutating command lifecycle (consume-once)
+
+      3. Mutating task command (task add) is annotated as mutating (triggers skip syncMode)
+
+
+      Files changed:
+
+      - src/cli/index.ts: AC annotation on preAction skip logic
+
+      - src/parser/yaml.ts: AC annotation on initContext skip check
+
+      - src/parser/shadow.ts: AC annotations on commitIfShadow and pullRebaseBeforePush
+
+      - tests/shadow-drift-check.test.ts: 3 new tests for ac-write-skips-read-check
+
+      - tests/shadow.test.ts: AC annotation on existing pull-rebase test
+
+      - tests/sync-mode.test.ts: AC annotation on existing skip mode test
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T23:13:30.774Z
+  - _ulid: 01KKAEBA4MNZEJT5677XNMQWZ4
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @shadow-write-sync ac-write-always-syncs is not
+      fully covered. Current PR only tests shadowPushAsync() directly; add a test proving
+      commitIfShadow() on a mutating write reaches the full pull-rebase-before-push sync path."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-09T23:19:06.645Z
+  - _ulid: 01KKAERWE6BZSXJKM02QVZEKPM
+    content: "Fix cycle 1: Added behavioral test proving commitIfShadow() (the write entrypoint)
+      triggers full pull-rebase-before-push sync. Test creates remote divergence, calls
+      commitIfShadow with ShadowConfig, then verifies remote changes were pulled into local worktree
+      — proving the sync path executed. This addresses the review finding that the prior test only
+      exercised shadowPushAsync() directly."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T23:26:31.367Z
+  - _ulid: 01KKAFGAS4AB85H07Y0P891523
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: current PR head fails npm test due to timeouts
+      in tests/cli/session-start-format.test.ts (primer and full activity timeline cases). AC
+      coverage for @shadow-write-sync is now complete, but regression gate is still failing."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-09T23:39:19.716Z
+  - _ulid: 01KKAFYKX0V8P7HAFFFXX670NW
+    content: "Fix cycle 2: Investigated session-start-format.test.ts timeout — it was transient. All 3
+      CI test shards pass on current PR HEAD. Tests pass locally (43/43 in 64s). The 2 unrelated
+      test failures (core-skill-install.test.ts, enhanced-setup.test.ts codex detection) are
+      pre-existing on main. Replied to both review threads with findings and resolved them."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T23:47:07.808Z

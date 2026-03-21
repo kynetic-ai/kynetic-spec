@@ -1,0 +1,34 @@
+_ulid: 01KHZHPS2EYQCYB3065CA27E9F
+slugs: []
+title: "Write core skill: kspec:review"
+type: task
+description: "NEW skill — extract kspec-specific review concerns into a generic review skill. No
+  existing skill to refactor from — read .claude/skills/local-review/SKILL.md and
+  .claude/skills/pr-review/SKILL.md as reference for what kspec-specific review patterns exist.
+  Covers: spec/AC alignment verification, trait AC coverage, kspec validate integration, general
+  coding best practices in context of kspec workflow. Should be a building block that projects
+  reference in their own review skills/prompts. NOT a full local-review replacement — no
+  project-specific test commands. Write to templates/skills/review/SKILL.md (rendered to
+  .claude/skills/kspec/review/). Add entry to manifest.yaml."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #473. NEW review skill (templates/skills/review/SKILL.md, 186 lines)
+  covering spec alignment, own AC coverage, trait AC coverage, and kspec validate integration.
+  Building block for project-specific review workflows. Manifest entry added. All quality gates
+  passed — 3181 tests, 5/5 CI checks green."
+depends_on:
+  - "@01KHZHPG"
+context: []
+priority: 3
+tags:
+  - core-skills
+  - skill-content
+vcs_refs: []
+created_at: 2026-02-21T07:30:27.534Z
+started_at: 2026-02-23T12:06:27.351Z
+completed_at: 2026-02-23T12:36:40.867Z
+todos: []
+automation: eligible

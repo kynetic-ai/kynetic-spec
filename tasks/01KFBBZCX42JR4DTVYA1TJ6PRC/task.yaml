@@ -1,0 +1,20 @@
+_ulid: 01KFBBZCX42JR4DTVYA1TJ6PRC
+slugs:
+  - task-reset-command
+title: Add kspec task reset command to return task to pending
+type: task
+spec_ref: "@spec-task-reset"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #114. Implementation reviewed and all blocking issues fixed."
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-19T14:54:06.244Z
+started_at: 2026-01-21T06:29:05.454Z
+completed_at: 2026-01-21T06:51:37.318Z
+todos: []
+automation: eligible

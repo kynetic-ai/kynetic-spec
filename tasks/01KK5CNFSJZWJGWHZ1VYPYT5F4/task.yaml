@@ -1,0 +1,33 @@
+_ulid: 01KK5CNFSJZWJGWHZ1VYPYT5F4
+slugs: []
+title: Make new UI views work in GitHub Pages static mode
+type: task
+description: "The UI revamp added 7 new views but the kspec-snapshot.json export and static API
+  layer were not updated to support them. Snapshot gaps: plans not exported, triage not exported,
+  alignment data missing, task automation/spec_ref fields missing. Static API gaps: plans/triage
+  return empty, settings skips all sections, sessions needs messaging. Payload is 4.5MB - consider
+  pruning. Spec @gh-pages-export needs new ACs."
+spec_ref: "@gh-pages-export"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #697. Extended GitHub Pages static snapshots and web-ui adapters for
+  plans, triage, validation/alignment, settings, and sessions read-only behavior; added regression
+  coverage for AC-21 through AC-24 including behavior-level static sessions coverage. Trait coverage
+  for existing export command behavior remains in place."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - web-ui
+  - static
+  - gh-pages
+vcs_refs: []
+session_id: 01KK65PPHNCE0Y6DV8XSAP5RCD
+created_at: 2026-03-08T00:13:30.801Z
+started_at: 2026-03-08T07:43:57.029Z
+submitted_at: 2026-03-08T07:43:59.313Z
+completed_at: 2026-03-08T08:05:31.379Z
+todos: []
+automation: eligible

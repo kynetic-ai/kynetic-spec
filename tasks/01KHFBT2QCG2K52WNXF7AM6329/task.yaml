@@ -1,0 +1,23 @@
+_ulid: 01KHFBT2QCG2K52WNXF7AM6329
+slugs:
+  - implement-agents-cli-commands
+title: Implement Agents CLI Commands
+type: task
+spec_ref: "@agents-cli"
+plan_ref: "@plan-portable-agent-integration-infrastructure"
+status: completed
+blocked_by: []
+closed_reason: "Already fully implemented in PR #385. All 4 ACs verified: ac-1 (generate creates
+  kspec-agents.md), ac-2 (--dry-run prints without writing), ac-3 (status reports current), ac-4
+  (status reports stale). 22 tests pass covering all acceptance criteria."
+depends_on:
+  - "@implement-agent-instruction-generation"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-15T00:39:33.356Z
+started_at: 2026-02-15T05:23:29.349Z
+completed_at: 2026-02-15T05:23:35.888Z
+todos: []
+automation: eligible

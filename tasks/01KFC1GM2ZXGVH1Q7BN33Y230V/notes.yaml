@@ -1,0 +1,139 @@
+notes:
+  - _ulid: 01KFC1GM2ZKTMVQPWQXB5XFR48
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Validation checks that specs implementing traits have test coverage for all trait AC. Uses the
+      existing completeness check infrastructure with test annotation scanning.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given spec implementing trait, when trait AC has no test annotation, then completeness
+      warning emitted
+
+      - ac-2: Given spec implementing trait, when trait AC has test annotation '// AC: @trait-ref
+      ac-N', then no warning for that AC
+
+      - ac-3: Given kspec validate run, when spec has traits, then trait AC coverage included in
+      completeness check (no special flag needed)
+
+      - ac-4: Given trait deleted, when spec still references it, then validation reports broken ref
+      error
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T21:10:30.751Z
+  - _ulid: 01KFC221P3PSY5M3KHV04E4ZE6
+    content: See parent task @task-spec-traits-system for full implementation context including file
+      paths, code patterns, and implementation order.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T21:20:01.731Z
+  - _ulid: 01KFC25Y2TDE02TN6X8M08JV4D
+    content: |-
+      IMPLEMENTATION SCOPE: Validate test coverage for trait AC
+
+      **Prerequisites**: TraitIndex from @task-traitindex
+
+      **This task implements**:
+      - Check that specs implementing traits have tests for trait AC
+      - Test annotations use format: // AC: @trait-ref ac-N
+      - Add completeness warning for uncovered trait AC
+      - Integrated into default validate (no special flag)
+
+      **Files to modify**:
+      - src/parser/validate.ts - Update checkCompleteness() to include trait AC coverage
+
+      **Pattern**:
+      1. Build TraitIndex
+      2. For each spec with traits, get inherited AC via traitIndex.getInheritedAC()
+      3. Check each trait AC has test annotation matching '// AC: @trait-slug ac-N'
+      4. Emit completeness warning if not covered
+
+      **Warning format**:
+      ```
+      Trait AC not covered: @cli-task-list implements @trait-json-output but ac-1 has no test
+      ```
+
+      **Tests**:
+      - tests/parser/validate.test.ts - Test trait AC coverage warnings
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T21:22:09.114Z
+  - _ulid: 01KFCX76MV0BC8HZGMPGR723CV
+    content: |-
+      Understanding requirements:
+
+      AC-1: When a spec implements a trait, validate that all trait ACs have test coverage
+      AC-2: Test annotation format is '// AC: @trait-ref ac-N'
+      AC-3: Trait AC coverage included automatically in 'kspec validate' (no special flag)
+      AC-4: Validation error when spec references deleted trait
+
+      Implementation approach:
+      1. Extend checkCompleteness() in validate.ts to scan for trait AC coverage
+      2. Use TraitIndex.getInheritedAC() to get all trait ACs for a spec
+      3. Check test coverage for each inherited AC using same mechanism as direct ACs
+      4. Add trait broken ref check to ref validation
+      5. Add tests covering all 4 ACs
+
+      Current architecture:
+      - checkCompleteness() already scans test annotations and checks AC coverage
+      - TraitIndex provides getInheritedAC() to get trait ACs for a spec
+      - Need to integrate these in the completeness check
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T05:14:42.204Z
+  - _ulid: 01KFCXERHSKYDPGYZPT6YXSYM4
+    content: |-
+      Implementation complete with 100% AC coverage.
+
+      Changes made:
+      1. Extended checkCompleteness() in src/parser/validate.ts to validate trait AC coverage
+         - Added optional TraitIndex parameter
+         - Scans inherited trait ACs using TraitIndex.getInheritedAC()
+         - Checks test coverage for each inherited AC using same mechanism as direct ACs
+         - Emits 'missing_test_coverage' warnings for uncovered trait ACs
+
+      2. Updated validate() function to build TraitIndex and pass to checkCompleteness()
+
+      3. Broken trait ref validation already handled by existing validateRefs() in refs.ts (AC-4)
+
+      4. Created comprehensive test suite in tests/trait-ac-coverage.test.ts:
+         - AC-1: Warns when spec implementing trait has no test coverage for trait AC ✓
+         - AC-2: No warning when trait AC has test annotation ✓
+         - AC-3: Trait AC coverage included in default kspec validate ✓
+         - AC-4: Error when spec references deleted trait ✓
+         - Additional edge case tests for multiple specs/traits ✓
+
+      All 674 tests passing. Ready for PR.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T05:18:49.914Z
+  - _ulid: 01KFCXNF2WBSF7NANT3JS6GG27
+    content: >-
+      Fixed 2 issues from PR review:
+
+      1. Replaced fluff test (expect(true).toBe(true)) with structured example showing
+      Given/When/Then pattern
+
+      2. Added documentation comment explaining fixture tests are for scanner validation, not
+      examples of good tests
+
+
+      All 6 tests still passing. Pushed fixes to PR #103.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T05:22:29.597Z
+  - _ulid: 01KFCXSRFE78TJJYA8VV7A6BA1
+    content: |-
+      PR #103 updated with review fixes. Waiting for CI to complete.
+
+      Next steps:
+      1. Wait for CI checks to pass (test and claude-review)
+      2. If CI passes, merge PR #103
+      3. Complete task with reason: 'Merged in PR #103'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T05:24:50.287Z

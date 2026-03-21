@@ -1,0 +1,35 @@
+_ulid: 01KK60VVZRX87B64NJTRN0QYA1
+slugs: []
+title: Sanitize inherited env vars in agent spawner
+type: task
+description: "The agent spawner (src/agents/spawner.ts) passes process.env directly to child
+  processes. When the daemon runs inside a Claude Code session, CLAUDECODE=1 leaks into spawned
+  agents, triggering nested-session detection and failing all dispatch invocations. Fix: strip known
+  host-environment variables (CLAUDECODE, CLAUDE_CODE_SESSION) from inherited env before spawning.
+  Must include unit test verifying env sanitization to prevent regression. See GitHub issue #700.
+  Community PR #702 has the right approach but needs tests."
+spec_ref: "@agent-invocation-lifecycle"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #708. Sanitized inherited agent env by stripping CLAUDECODE and
+  CLAUDE_CODE_SESSION before adapter/invocation env merge in the spawner, with behavioral regression
+  tests covering child env sanitization and parent env preservation. AC coverage verified for
+  @agent-invocation-lifecycle ac-12; inherited @trait-error-guidance ACs remain explicitly N/A for
+  this library module."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - agent
+  - dispatch
+vcs_refs: []
+session_id: 01KK6AZJYC91HM66HXFNPGRRJH
+created_at: 2026-03-08T06:06:31.415Z
+started_at: 2026-03-08T09:08:04.779Z
+submitted_at: 2026-03-08T09:14:08.887Z
+completed_at: 2026-03-08T09:35:00.203Z
+todos: []
+automation: eligible

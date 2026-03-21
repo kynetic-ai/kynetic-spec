@@ -1,0 +1,22 @@
+notes:
+  - _ulid: 01KJJ78GMNRXYKH5487693GGAF
+    content: "Execution update: fixed batch input source selection so --commands uses inline mode when
+      provided (including empty/whitespace values) by checking options.commands !== undefined in
+      src/cli/commands/batch.ts. Added regression tests in tests/batch-exec-engine.test.ts that
+      assert --commands '' and --commands '   ' return Invalid JSON and do not fall back to
+      stdin-path error text. Verification: npm test -- tests/batch-exec-engine.test.ts (59 passed)
+      and manual CLI check node dist/cli/index.js batch --commands '' exits 1 immediately with
+      Invalid JSON."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T13:33:28.597Z
+  - _ulid: 01KJJ7A2J3021G3W3B5JRTHJHB
+    content: "Submitted for review in PR #598: https://github.com/kynetic-ai/kynetic-spec/pull/598.
+      Fixed batch source selection to treat --commands as inline when provided (including
+      empty/whitespace), eliminating stdin fallback for empty inline args. Added regression tests
+      for --commands '' and --commands '   '. Verification: npm test --
+      tests/batch-exec-engine.test.ts (59 passing) and manual fast-fail check via node
+      dist/cli/index.js batch --commands ''."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T13:34:19.715Z

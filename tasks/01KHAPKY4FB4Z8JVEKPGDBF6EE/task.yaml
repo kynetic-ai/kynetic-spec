@@ -1,0 +1,26 @@
+_ulid: 01KHAPKY4FB4Z8JVEKPGDBF6EE
+slugs: []
+title: "Fix: task get should work for blocked tasks"
+type: task
+description: "UX: tasks with depends_on pointing to incomplete tasks are invisible in 'kspec tasks
+  list' and 'kspec task get'. No --include-blocked flag exists. These tasks exist in
+  project.tasks.yaml but can't be accessed through any CLI command. Should either: (1) show blocked
+  tasks in list with [blocked] marker, (2) add --include-blocked flag, or (3) at minimum make 'kspec
+  task get' work for blocked tasks. Current behavior makes dependency bugs extremely hard to
+  diagnose. Discovered in imgen session 13."
+spec_ref: "@rel-depends-on"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #353. Root cause was bug 1 (bare refs failing RefSchema). With @
+  auto-prefix fix, tasks with depends_on are no longer silently dropped from CLI visibility."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - ux
+  - cli
+vcs_refs: []
+created_at: 2026-02-13T05:12:14.223Z
+started_at: 2026-02-14T00:52:06.244Z
+completed_at: 2026-02-14T00:52:26.737Z
+todos: []

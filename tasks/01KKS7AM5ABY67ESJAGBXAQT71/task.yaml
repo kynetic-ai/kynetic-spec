@@ -1,0 +1,38 @@
+_ulid: 01KKS7AM5ABY67ESJAGBXAQT71
+slugs:
+  - task-fix-dispatch-engine-stop-await
+title: Fix dispatch engine stop() not awaiting second-generation invocations
+type: task
+spec_ref: "@agent-dispatch-engine"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #880. Fix prevents second-generation invocations during engine shutdown
+  by clearing queues before awaiting runningInvocations and adding a !this.running guard at the top
+  of _spawnInvocation. Defense-in-depth: 3 layers prevent post-shutdown spawning. 7 tests fixed to
+  set running=true for direct _spawnInvocation calls, polling timeout increased for git worktree
+  latency. All 106 dispatch tests pass, full suite (5471 tests) clean, CI all green."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - dispatch
+  - test-flakiness
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-fix-dispatch-engine-stop-await/01kks7am
+  captured_at: 2026-03-15T21:02:25.430Z
+  commit: eb224322abe7db2840eb0143173c0b3727f641a8
+  remote: null
+  remote_url: null
+  upstream_ref: null
+session_id: 01KKS7CCYC1GFQG3FW0S5WDK79
+created_at: 2026-03-15T17:05:00.586Z
+started_at: 2026-03-15T17:06:22.270Z
+submitted_at: 2026-03-15T21:02:26.228Z
+completed_at: 2026-03-15T21:16:30.072Z
+todos: []
+automation: eligible

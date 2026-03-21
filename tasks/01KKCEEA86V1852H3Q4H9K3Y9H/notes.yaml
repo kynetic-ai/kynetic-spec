@@ -1,0 +1,162 @@
+notes:
+  - _ulid: 01KKCEGR5VZQW3SP442BA17BJY
+    content: >-
+      ## Implementation Guide
+
+
+      ### Covers ACs: ac-shadow-commands, ac-serve-default, ac-false-positive-guard
+
+
+      ### 1. Shadow CLI commands in src/cli/commands/shadow.ts
+
+
+      5 call sites use getGitRoot(process.cwd()). Replace each with resolveProjectRoots:
+
+      - Line ~143 (shadow status)
+
+      - Line ~207 (shadow repair)
+
+      - Line ~297 (shadow log)
+
+      - Line ~346 (shadow resolve)
+
+      - Line ~459 (shadow sync)
+
+
+      Change pattern:
+
+      ```
+
+      // Before:
+
+      const gitRoot = getGitRoot(process.cwd());
+
+      // After:
+
+      const roots = resolveProjectRoots(process.cwd());
+
+      const gitRoot = roots?.mainRoot ?? null;
+
+      ```
+
+
+      Import resolveProjectRoots from ../../parser/shadow.js alongside existing getGitRoot import.
+
+
+      ### 2. Serve commands in src/cli/commands/serve.ts
+
+
+      ALL subcommands default --kspec-dir to process.cwd()/.kspec via Commander option defaults.
+
+      Affected lines: ~134 (start), ~153 (stop), ~172 (status), ~191 (restart).
+
+      The restart subcommand at ~590 passes opts.kspecDir back into startServer.
+
+
+      Fix: resolve --kspec-dir default via worktree-aware path for all subcommands.
+
+      Simplest approach: resolve once in a shared helper or preAction:
+
+      ```
+
+      async function resolveKspecDir(explicitDir?: string): Promise<string> {
+        if (explicitDir) return explicitDir;
+        const ctx = await initContext();
+        return ctx.specDir;
+      }
+
+      ```
+
+      Or use resolveProjectRoots() directly to find mainRoot and append .kspec.
+
+
+      ### 3. detectRunningFromShadowWorktree false positive fix in src/parser/shadow.ts
+
+
+      Current code at ~line 467-471 has worktreeName.includes("kspec") which short-circuits
+
+      before the structural check (manifest+modules) at ~lines 477-491.
+
+
+      Fix: reorder checks so name heuristic is a signal, not definitive. Require the
+
+      structural check to confirm before returning positive. Only return mainProjectRoot
+
+      if BOTH the name/config match AND the structural check pass.
+
+
+      Decision order:
+
+      1. Check if worktree name matches configured shadow directory name exactly → strong signal
+
+      2. Check if worktree name is the default (.kspec) → strong signal
+
+      3. If neither matches but name contains "kspec" → weak signal, MUST confirm with structure
+      check
+
+      4. Structure check: directory contains kspec manifest files + modules/ or .tasks.*
+
+      5. Return positive only if signal + structure both pass
+
+
+      ### Tests
+
+
+      - kspec shadow status from a linked worktree: succeeds and shows main repo shadow health
+
+      - kspec serve start from worktree without --kspec-dir: defaults to main repo .kspec/
+
+      - kspec serve restart from worktree: uses resolved path through restart flow
+
+      - Code worktree named kspec-feature: NOT detected as shadow worktree
+
+      - .kspec/ worktree: still correctly detected as shadow worktree
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T18:00:33.723Z
+  - _ulid: 01KKCEPZJ4SHJ1ACPV6Z6N4FGC
+    content: "CLARIFICATION: For serve fix, use resolveProjectRoots() directly (not initContext) to
+      avoid full context init overhead. Pattern: const roots = resolveProjectRoots(process.cwd());
+      const kspecDir = roots ? path.join(roots.mainRoot, '.kspec') : path.join(process.cwd(),
+      '.kspec');"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T18:03:57.892Z
+  - _ulid: 01KKDRR78EVXMNYXPB56MF346G
+    content: >-
+      Execution context:
+
+      - Background: verify whether worktree command cleanup is still outstanding after upstream
+      fast-forward.
+
+      - Scope: shadow command root resolution, serve default kspec-dir behavior, and shadow-worktree
+      false-positive guard.
+
+      - Files: src/cli/commands/shadow.ts, src/cli/commands/serve.ts, src/parser/shadow.ts, related
+      tests.
+
+      - Verification: npm test -- tests/cli-worktree-resolution.test.ts
+      tests/parser/resolve-project-roots.test.ts tests/shadow.test.ts tests/cli-serve.test.ts
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T06:18:38.734Z
+  - _ulid: 01KKDRS714ZNMHB7H224GPWBYP
+    content: >-
+      Verified on origin/main after fast-forward:
+
+      - src/cli/commands/shadow.ts resolves project root via resolveProjectRoots(...).mainRoot
+      before shadow status/repair/log/resolve/sync.
+
+      - src/cli/commands/serve.ts defaults --kspec-dir through resolveDefaultKspecDir() backed by
+      initContext().specDir, which is worktree-aware.
+
+      - src/parser/shadow.ts detectRunningFromShadowWorktree() only treats exact configured/default
+      shadow directory names as definitive; code worktrees like kspec-feature return null unless the
+      shadow file structure is present.
+
+      - Targeted tests passed: tests/parser/resolve-project-roots.test.ts,
+      tests/cli-worktree-resolution.test.ts, tests/shadow.test.ts. kspec validate returned
+      warnings-only (exit 6) unrelated to this task.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T06:19:11.268Z

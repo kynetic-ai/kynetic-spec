@@ -1,0 +1,50 @@
+_ulid: 01KKB8A3MS1V2CHTC1CEYCS96M
+slugs: []
+title: Remove stale observations skill entry and directory from shadow branch
+type: task
+description: >-
+  The @observations slug ambiguity fix (task @01KJDQ11E, completed Feb 28) didn't fully clean up.
+  Two remnants persist:
+
+
+  1. kynetic.meta.yaml line ~8149 still has a core skill with id: observations
+
+  2. .kspec/skills/observations/ directory exists (near-empty, only .render-hash-codex)
+
+
+  The correct skill is 'observe' (id: observe), which works fine. The stale 'observations' skill
+  entry collides with the @observations spec feature (01KF1XFBK00000000000000000) causing 6
+  reference errors and 1 schema error in kspec validate.
+
+
+  **Fix**: (1) Remove the observations skill entry from kynetic.meta.yaml (kspec skill delete or
+  batch). (2) Remove the .kspec/skills/observations/ directory. (3) Verify kspec validate reports 0
+  reference errors for @observations. (4) Verify kspec agents generate still works and references
+  /kspec:observe correctly.
+
+
+  **Done when**: kspec validate shows 0 schema errors and 0 reference errors related to
+  @observations.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #743. Removed the stale observations skill entry from shadow metadata,
+  confirmed .kspec/skills/observations is absent, and regenerated kspec-agents.md so only
+  /kspec:observe remains. Verified with kspec validate (Schema: OK, References: OK), kspec agents
+  generate (no-op on PR head), and npm test (197 files, 4320 tests passed, 3 skipped)."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - meta
+  - bug
+vcs_refs: []
+session_id: 01KKBNWKJD9VX2M6EDBWQ2A3WK
+created_at: 2026-03-10T06:52:50.201Z
+started_at: 2026-03-10T10:56:22.052Z
+submitted_at: 2026-03-10T11:01:48.608Z
+completed_at: 2026-03-10T11:30:47.012Z
+todos: []
+automation: eligible

@@ -1,0 +1,24 @@
+_ulid: 01KG0G9PVZRNSCK547VHH478JV
+slugs: []
+title: Implement AC test coverage indicator in Items View
+type: task
+spec_ref: "@web-dashboard"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #274 merged. Implemented AC test coverage indicator in Items View with visual
+  indicators for covered/uncovered/unknown status. Addressed all review comments including code
+  deduplication, recursive test scanning, and error logging. Deferred performance optimization
+  captured as inbox item @01KG5DPP."
+depends_on:
+  - "@01KFP84S"
+context: []
+priority: 3
+tags:
+  - web-ui
+  - implementation
+vcs_refs: []
+created_at: 2026-01-27T19:53:41.503Z
+started_at: 2026-01-29T10:34:19.648Z
+completed_at: 2026-01-29T18:07:26.476Z
+todos: []

@@ -1,0 +1,41 @@
+notes:
+  - _ulid: 01KJH8VZV37NY5P2HGGM1MAH94
+    content: "Execution context: add TTY guard in task patch stdin path so interactive runs fail fast
+      instead of hanging; preserve --data and piped-stdin behavior; update CLI tests in
+      tests/task.test.ts and verify batch path remains functional."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T04:42:20.899Z
+  - _ulid: 01KJH8ZQ3XZ4ATR45B2WNKXR0Q
+    content: 'Implemented stdin TTY guard for task patch: if --data is absent and input is interactive
+      (process.stdin.isTTY or KSPEC_TEST_TTY), command now exits immediately with validation error
+      instead of waiting on stdin. Also treats empty stdin as no patch data. Added integration
+      regressions for piped-stdin success and interactive/no-data fast-fail; verified with npm run
+      build, npx vitest run tests/integration.test.ts -t "Integration: task patch", and npx vitest
+      run tests/batch-exec-engine.test.ts.'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T04:44:23.037Z
+  - _ulid: 01KJH90V9G87QJMPGJQ970BMH6
+    content: "Submitted for review in PR #588 (fix/task-patch-tty-guard). Includes TTY no-data guard for
+      task patch + empty-stdin validation and integration tests for piped stdin and interactive
+      fast-fail. Verification: npm run build; npx vitest run tests/integration.test.ts -t
+      'Integration: task patch'; npx vitest run tests/batch-exec-engine.test.ts."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T04:45:00.080Z
+  - _ulid: 01KJH9ECSTVGM54987HWKRE450
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #588 includes out-of-scope @session-events
+      changes (tests/sessions.test.ts) unrelated to @task-patch task scope. Split unrelated commit
+      and resubmit focused PR."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T04:52:23.995Z
+  - _ulid: 01KJH9J412J7CR669TYWT5XXAE
+    content: "[FIX_CYCLE: 1] Removed out-of-scope @session-events commit from PR #588 by rewriting
+      branch history; PR now contains only src/cli/commands/task.ts and tests/integration.test.ts
+      for @task-patch. Re-verified with npm run build, npx vitest run tests/integration.test.ts -t
+      'Integration: task patch', and npx vitest run tests/batch-exec-engine.test.ts."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T04:54:26.083Z

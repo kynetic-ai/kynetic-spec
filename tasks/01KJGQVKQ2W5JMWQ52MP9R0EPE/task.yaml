@@ -1,0 +1,66 @@
+_ulid: 01KJGQVKQ2W5JMWQ52MP9R0EPE
+slugs: []
+title: Clarify core skill update behavior for local template edits
+type: task
+description: >-
+  **What**: Remove ambiguity in `kspec skill update` when core templates change locally but package
+  version is unchanged.
+
+
+  **Problem**: `skill update` short-circuits on version match, so same-version template edits are
+  skipped with no clear next action. During local core-skill/template iteration this appears broken,
+  and users only discover later that `skill install-core` was required.
+
+
+  **Scope**:
+
+  1. Update `skill update` behavior in `src/cli/commands/skill-install.ts` so same-version cases are
+  not silently misleading. Acceptable outcomes:
+     - detect template/file drift and still update files, OR
+     - keep version gate but emit explicit guidance (`use kspec skill install-core`) in both normal and `--dry-run` output.
+  2. Ensure output clearly distinguishes: version up-to-date vs template content out-of-sync.
+
+  3. Add/adjust tests in `tests/core-skill-update.test.ts` (and `tests/core-skill-install.test.ts`
+  if needed) covering the same-version local-template-change path and expected messaging/behavior.
+
+
+  **Verification**:
+
+  - `npx vitest run tests/core-skill-update.test.ts tests/core-skill-install.test.ts`
+
+  - Manual CLI check on changed-template scenario shows deterministic behavior (update or explicit
+  guidance), including `--dry-run`.
+
+
+  **Done when**:
+
+  1. Same-version template changes are no longer silently skipped without actionable guidance.
+
+  2. Users can reliably tell whether to run `skill update` vs `skill install-core`.
+
+  3. Tests cover the scenario and pass.
+spec_ref: "@core-skill-update"
+meta_ref: "@01KJGAKM"
+origin: observation_promotion
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #603. Implemented same-version template drift detection in skill update
+  and explicit guidance to run 'kspec skill install-core' when local files differ despite matching
+  version, including dry-run output. Added regression tests for drift guidance in
+  tests/core-skill-update.test.ts. AC coverage confirmed for @core-skill-update ac-1, ac-2, ac-3;
+  full regression suite passed via npm test."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - skills
+  - cli
+  - ux
+vcs_refs: []
+session_id: 01KJJYHWH08599J074BXW0JH58
+created_at: 2026-02-27T23:45:02.684Z
+started_at: 2026-02-28T20:21:11.151Z
+submitted_at: 2026-02-28T20:23:42.868Z
+completed_at: 2026-02-28T20:58:20.117Z
+todos: []
+automation: needs_review

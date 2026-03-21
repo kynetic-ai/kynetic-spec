@@ -1,0 +1,41 @@
+_ulid: 01KFQAE0YD5V87WMBCK33EZ8TA
+slugs:
+  - task-broadcast-filter-tests
+title: Per-project broadcast filtering tests
+type: task
+description: |-
+  Write tests for per-project WebSocket broadcast filtering.
+
+  ## Test Cases
+  - Test events only sent to connections for matching project
+  - Test multi-project scenario: project A event doesn't reach project B connections
+  - Test subscription scoping
+
+  ## AC Coverage
+  ac-18
+
+  ## Dependencies
+  Task: WebSocket connection binding implementation
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #226. Added 9 comprehensive unit tests for PubSubManager.broadcast()
+  filtering logic covering ac-18. Tests validate project-scoped broadcast filtering, multi-project
+  isolation, subscription + project filtering, legacy connection handling, message structure, and
+  sequence incrementing. All new tests passing. CI failures are pre-existing watcher test issues
+  unrelated to this PR."
+depends_on:
+  - "@01KFQADQ"
+context: []
+priority: 1
+tags:
+  - testing
+  - websocket
+  - phase-5
+vcs_refs: []
+created_at: 2026-01-24T06:18:01.549Z
+started_at: 2026-01-24T21:48:30.496Z
+completed_at: 2026-01-24T21:55:50.636Z
+todos: []
+automation: eligible

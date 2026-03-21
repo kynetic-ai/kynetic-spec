@@ -1,0 +1,21 @@
+_ulid: 01KF3E5FZ28PFCX9GZX86CZZ2E
+slugs:
+  - task-kspec-item-patch
+title: "Implement: kspec item patch"
+type: task
+spec_ref: "@item-patch"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Implemented item patch command with single and bulk modes, all 12 AC covered with tests
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - dx
+vcs_refs: []
+created_at: 2026-01-16T12:58:27.682Z
+started_at: 2026-01-17T02:14:18.666Z
+completed_at: 2026-01-17T02:22:07.087Z
+todos: []

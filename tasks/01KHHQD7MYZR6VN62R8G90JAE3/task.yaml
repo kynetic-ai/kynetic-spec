@@ -1,0 +1,23 @@
+_ulid: 01KHHQD7MYZR6VN62R8G90JAE3
+slugs:
+  - implement-supporting-files-convention
+title: Implement Supporting Files Convention
+type: task
+spec_ref: "@supporting-files-convention"
+plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #398. Implemented supporting files convention with functions for
+  loading skill supporting files (references/, scripts/, assets/, docs/) and proper test coverage
+  for all 4 acceptance criteria."
+depends_on:
+  - "@implement-extended-skill-schema"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-15T22:40:44.190Z
+started_at: 2026-02-16T00:18:47.267Z
+completed_at: 2026-02-16T00:34:02.090Z
+todos: []
+automation: eligible

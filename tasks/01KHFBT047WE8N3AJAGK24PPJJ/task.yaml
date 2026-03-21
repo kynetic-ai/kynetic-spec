@@ -1,0 +1,23 @@
+_ulid: 01KHFBT047WE8N3AJAGK24PPJJ
+slugs:
+  - implement-skill-validation
+title: Implement Skill Validation
+type: task
+spec_ref: "@skill-validation"
+plan_ref: "@plan-portable-agent-integration-infrastructure"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #375. Implemented skill validation with 4 ACs: missing content file
+  validation (ac-1), depends_on reference validation (ac-2), orphaned skill directory detection
+  (ac-3), and schema validation (ac-4). Added 14 tests covering all acceptance criteria."
+depends_on:
+  - "@implement-skill-parser-integration"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-15T00:39:30.695Z
+started_at: 2026-02-15T02:04:07.048Z
+completed_at: 2026-02-15T02:22:43.280Z
+todos: []
+automation: eligible

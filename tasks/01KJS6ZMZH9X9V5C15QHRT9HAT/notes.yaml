@@ -1,0 +1,55 @@
+notes:
+  - _ulid: 01KJS9Q8P8J6TFTTYC7ASFR8MV
+    content: Task picked up by dispatch worker in session 01KJS9H7 which was killed when serve was
+      stopped. No changes were made. Resetting to pending for future automation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T07:31:10.152Z
+  - _ulid: 01KJTV2JQNX9EG3S1EKW3Q71P2
+    content: >-
+      Execution context:
+
+      - Background: shadow auto-push failures are currently silent because git push is detached with
+      stdio ignored.
+
+      - Scope: keep auto-commit non-blocking while surfacing push failures and escalating repeated
+      failures.
+
+      - Files: src/parser/shadow.ts and tests/shadow.test.ts (plus related call sites only if
+      required).
+
+      - Verification: targeted shadow tests, full test suite shard/full run, and kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T21:53:41.109Z
+  - _ulid: 01KJTWEV245YK0HM4JTY01YWMY
+    content: Resumed via manual kspec-task-work after dispatch shutdown interruption. Keeping existing
+      WIP changes in src/parser/shadow.ts and tests/shadow.test.ts, validating behavior with
+      targeted shadow tests, then deciding whether additional push-status surfacing is needed in
+      this task scope.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T22:17:51.429Z
+  - _ulid: 01KJTWG3RDYAACCX5H59NT0V4K
+    content: "Implemented shadow auto-push failure visibility in src/parser/shadow.ts: capture push
+      exit/error details from detached push process, emit warning on failure, and escalate after
+      repeated consecutive failures. Added regression tests in tests/shadow.test.ts for
+      single-failure warning and repeated-failure escalation. Verification: npm run test --
+      tests/shadow.test.ts (86 passed)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T22:18:33.102Z
+  - _ulid: 01KJTWYYBXQHAY4TEAE4PD1VVP
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #648 changes @shadow-sync ac-1 behavior
+      (errors ignored -> warning/escalation) without aligned spec update; AC annotation coverage is
+      semantically mismatched."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T22:26:39.101Z
+  - _ulid: 01KJTX141V0VSNBRGBQXE6K9ZX
+    content: "Fix cycle update: aligned @shadow-sync ac-1 with implemented behavior (push failure
+      warnings + repeated-failure visibility escalation, non-blocking local commit) and linked this
+      task to @shadow-sync for explicit traceability in review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T22:27:50.459Z

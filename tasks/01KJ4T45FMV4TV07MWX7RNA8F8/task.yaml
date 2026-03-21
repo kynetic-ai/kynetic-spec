@@ -1,0 +1,24 @@
+_ulid: 01KJ4T45FMV4TV07MWX7RNA8F8
+slugs: []
+title: "Bug: kspec task add returned OK with ULID but task was not findable via task get or tasks
+  list. Had "
+type: task
+description: "Bug: kspec task add returned OK with ULID but task was not findable via task get or
+  tasks list. Had to retry to get a persistent task. Possible shadow branch commit race condition or
+  ULID issue. Observed during session 2026-02-22."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #494. Added advisory file locking (mkdir-based) to all 10 YAML mutation
+  functions to prevent concurrent write data loss. Consolidated duplicate lock from plans.ts. 9
+  tests covering lock mechanics and concurrent safety."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-23T08:33:46.996Z
+started_at: 2026-02-24T03:22:46.028Z
+completed_at: 2026-02-24T04:04:07.417Z
+todos: []
+automation: eligible

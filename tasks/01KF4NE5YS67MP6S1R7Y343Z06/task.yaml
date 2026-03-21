@@ -1,0 +1,20 @@
+_ulid: 01KF4NE5YS67MP6S1R7Y343Z06
+slugs:
+  - task-enhanced-verbose-output-for-task-lists
+title: "Implement: Enhanced Verbose Output for Task Lists"
+type: task
+spec_ref: "@task-list-verbose"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Implemented enhanced verbose output for task lists with --full flag, all 5 ACs
+  satisfied, tests passing
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T00:24:46.809Z
+started_at: 2026-01-18T09:20:39.162Z
+completed_at: 2026-01-18T09:32:13.844Z
+todos: []

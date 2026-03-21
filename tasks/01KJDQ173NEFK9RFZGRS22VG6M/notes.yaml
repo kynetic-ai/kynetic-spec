@@ -1,0 +1,22 @@
+notes:
+  - _ulid: 01KJHHXRHVPVTBKNR40K8QACV7
+    content: "Implemented item-get guidance for meta observation refs. Scope: src/cli/commands/item.ts
+      and tests/integration.test.ts. Behavior change: when item ref resolution fails, item get now
+      checks meta refs and, if ref is an observation, returns a hint to use 'kspec meta observe get
+      <ref>' instead of a generic not-found error. Verification: npm test -- --run
+      tests/integration.test.ts -t 'suggest meta observe get for observation refs'."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T07:20:36.155Z
+  - _ulid: 01KJHHYQ1NMHT96Y99X4ZX9SN9
+    content: "Submitted for review in PR #595: https://github.com/kynetic-ai/kynetic-spec/pull/595.
+      Includes item-get observation hint guidance and regression coverage in
+      tests/integration.test.ts."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T07:21:07.382Z
+  - _ulid: 01KJHJ1F0KY595ZGZ3X81MMJWN
+    content: "[RALPH SUBAGENT] Subagent completed but did not merge or kick back. Review required."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T07:22:37.459Z

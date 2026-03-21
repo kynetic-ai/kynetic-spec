@@ -1,0 +1,39 @@
+_ulid: 01KKNRC0FGK9TWYBNBVEGC7Z50
+slugs:
+  - task-implement-review-comment-threads
+title: Implement threaded comments with diff-side anchors and blocking kinds
+type: task
+spec_ref: "@review-comment-threads-and-anchors"
+plan_ref: "@plan-review-records-and-gates"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #852. Implemented review thread operations (addThread, addReply,
+  resolveThread, reopenThread) with append-only event logging, atomic persistence wrappers using
+  mutateReviewAtomically, and computeThreadDisposition for blocking-state computation. All 6 ACs
+  covered with 36 tests across general threads, code anchors, structured anchors, threaded replies,
+  thread kinds, and disposition computation. Zero regressions (4989 tests pass)."
+depends_on:
+  - "@task-implement-review-subject-bindings"
+context: []
+priority: 2
+tags:
+  - review
+  - comments
+  - ux
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-14T17:46:43.427Z
+  commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKPPTCNHSAJ3B199MM0ZRFY1
+created_at: 2026-03-14T08:45:54.032Z
+started_at: 2026-03-14T17:38:28.971Z
+submitted_at: 2026-03-14T17:46:44.143Z
+completed_at: 2026-03-14T17:58:54.684Z
+todos: []
+automation: eligible

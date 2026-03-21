@@ -1,0 +1,42 @@
+_ulid: 01KKNRC4F8KAXMPAJCEVZEMNVH
+slugs:
+  - task-implement-review-cli-mutations
+title: Implement review CLI mutation commands
+type: task
+spec_ref: "@review-cli-mutation-commands"
+plan_ref: "@plan-review-records-and-gates"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #857. Implemented all review CLI mutation commands: comment add (ac-1),
+  reply (ac-1b), check add (ac-2), verdict set (ac-3), resolve/reopen (ac-4), lifecycle transitions
+  open/close/archive (ac-5), refresh subject compare context (ac-6), and design constraint for
+  deferred destructive operations (ac-7). All 8 own ACs verified with test coverage. Trait coverage
+  complete: json-output 6/6, semantic-exit-codes 8/8, shadow-commit 8/8, confirmation-prompt 6/6
+  N/A. Fix cycle 1 resolved missing @trait-json-output ac-2 and ac-3 annotations."
+depends_on:
+  - "@task-implement-review-cli-surface"
+  - "@task-implement-review-verdicts-and-resolution"
+  - "@task-implement-review-validation"
+context: []
+priority: 2
+tags:
+  - review
+  - cli
+  - workflow
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-14T19:48:46.470Z
+  commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKPY1NJP5R1YVN80JBFQ7X2M
+created_at: 2026-03-14T08:45:58.120Z
+started_at: 2026-03-14T19:48:43.505Z
+submitted_at: 2026-03-14T19:48:47.209Z
+completed_at: 2026-03-14T20:00:07.067Z
+todos: []
+automation: eligible

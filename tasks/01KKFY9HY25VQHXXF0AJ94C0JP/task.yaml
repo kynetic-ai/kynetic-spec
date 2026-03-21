@@ -1,0 +1,32 @@
+_ulid: 01KKFY9HY25VQHXXF0AJ94C0JP
+slugs:
+  - task-scope-dispatch-shadow-serialization
+title: Narrow dispatch serialization to mutation windows
+type: task
+spec_ref: "@scoped-dispatch-shadow-serialization"
+plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #806. Narrowed dispatch shadow serialization from invocation-wide
+  locking to mutation windows, propagated a shared mutation lock into dispatched kspec commands, and
+  re-serialized workspace active/idle registry mutations to preserve lifecycle integrity after the
+  rebase fix. AC coverage verified for @scoped-dispatch-shadow-serialization ac-1..ac-3 and
+  applicable @trait-error-guidance guidance paths; full npm test and GitHub CI passed on commit
+  0ada8ff9d0233b0c1ccce212a1836df6f7611f1d."
+depends_on:
+  - "@task-implement-dispatch-worktree-provisioning"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - concurrency
+  - shadow
+vcs_refs: []
+session_id: 01KKJ1M0QKMTR8TXMCNTM38TKK
+created_at: 2026-03-12T02:33:58.466Z
+started_at: 2026-03-12T22:16:06.183Z
+submitted_at: 2026-03-12T22:26:28.829Z
+completed_at: 2026-03-12T22:37:12.482Z
+todos: []
+automation: eligible

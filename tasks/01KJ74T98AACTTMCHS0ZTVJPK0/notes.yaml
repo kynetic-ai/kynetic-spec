@@ -1,0 +1,23 @@
+notes:
+  - _ulid: 01KJ74T98AMB4646H4J16RSVME
+    content: |
+      Implementation notes:
+
+      Requires extending git.ts getRecentCommits() to include commit body.
+      Current format uses %s (subject only). Change to NUL-delimited format
+      with %B or %(trailers:key=Task) to access trailers.
+      Parse Task: @slug trailer with regex: /Task:\s*@([\w-]+)/
+      Add body and task_ref fields to CommitSummary interface.
+    author: "@claude"
+    created_at: 2026-02-24T06:19:06.378Z
+  - _ulid: 01KJ8W45EEXS6T4XZKCDE6VX5R
+    content: "Implemented unified activity timeline for session start. Extended GitCommit and
+      CommitSummary with body and task_refs fields. Updated getRecentCommits() to use NUL-delimited
+      format for safe body parsing and extract Task: @slug trailers. Built buildActivityTimeline()
+      that merges completed tasks and commits, deduplicating linked entries. Updated
+      formatSessionContext() to replace separate Recently Completed and Recent Commits sections with
+      unified Recent Activity section. Preserves raw arrays in JSON output. Handles --no-git by only
+      showing task completions. 11 integration tests covering all 5 ACs."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T22:25:41.839Z

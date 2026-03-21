@@ -1,0 +1,32 @@
+notes:
+  - _ulid: 01KM618VWM3N4MZ2RWBZX99JPV
+    content: Implemented read-side validation warnings for task/spec/inbox/triage/plan loaders. Added a
+      shared parser warning helper that reports the skipped record id, source file, failing
+      field/value, and a repair hint. Added parser tests covering invalid-only, mixed valid+invalid,
+      and all-valid loads across all affected record types.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T16:29:19.124Z
+  - _ulid: 01KM61EZSABH43MWAJFXK0E467
+    content: "Verification: npm test passed (292 files, 6668 tests). Added focused parser coverage for
+      task/spec/inbox/triage/plan loaders. kspec validate still reports pre-existing repo-wide
+      reference/completeness debt in .kspec/meta and unrelated AC annotation fixtures; this change
+      does not add new validate failures."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T16:32:39.722Z
+  - _ulid: 01KM61VEF297PB03CXQM3MMWCF
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex@openai.com"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T16:39:27.971Z
+  - _ulid: 01KM62N9M7HAE5HE610DK4XCRQ
+    content: "[FIX_CYCLE: 1] Addressed review blocker by preserving the actual invalid enum value in
+      read-side warnings: warnSkippedRecord now falls back from Zod issue.input to issue.received,
+      and a regression test covers automation='ineligible'. Verification: focused read-side warning
+      test passed, the previously flaky dispatch/bootstrap tests passed in isolation, full npm test
+      passed on rerun (292 files, 6669 passed, 3 skipped), and kspec validate still reports only the
+      same pre-existing repo-wide debt."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T16:53:34.983Z

@@ -1,0 +1,41 @@
+_ulid: 01KKNKTFJ0JB8JK0DNDMDCRXAG
+slugs: []
+title: Fix daemon session sync hardcoded manifest path
+type: task
+description: "startSessionSyncForProject in packages/daemon/src/server.ts:117 hardcodes
+  join(specDir, 'kynetic.yaml') instead of using findManifestInDir(). Projects with non-default
+  manifest names (e.g., be-kynetic) fail with ENOENT when the daemon tries to start session sync.
+  Introduced in commit 5ea3e0e08 (2026-03-10). Fix: export findManifestInDir from src/parser/yaml.ts
+  and use it in the daemon. Gracefully skip sync if no manifest found."
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #841. Exported findManifestInDir() from src/parser/yaml.ts and replaced
+  hardcoded join(specDir, 'kynetic.yaml') with discovery API call in packages/daemon/src/server.ts.
+  Added graceful early return when no manifest found. 5 new behavioral tests covering slug-based
+  manifest discovery, priority ordering, null case, and backward compatibility. All CI checks pass.
+  AC coverage verified: @multi-directory-daemon ac-31 and @manifest-discovery ac-6."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - bug
+  - daemon
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-14T07:45:34.966Z
+  commit: 8c2a386b10b0684fefcb86a4d3508279cc324a42
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKNM7H3CJ57C7FHP09NR832X
+created_at: 2026-03-14T07:26:25.342Z
+started_at: 2026-03-14T07:33:53.755Z
+submitted_at: 2026-03-14T07:45:35.826Z
+completed_at: 2026-03-14T07:57:20.980Z
+todos: []
+automation: eligible

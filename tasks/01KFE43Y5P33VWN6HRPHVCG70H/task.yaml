@@ -1,0 +1,19 @@
+_ulid: 01KFE43Y5P33VWN6HRPHVCG70H
+slugs: []
+title: Create /spec skill for spec authoring guidance
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Implemented /spec skill with progressive disclosure: SKILL.md entry point + 3
+  detailed docs (AC, item types, traits). Generic and portable. Committed as e419f2e."
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-20T16:34:29.686Z
+started_at: 2026-01-20T16:48:17.375Z
+completed_at: 2026-01-20T17:19:51.451Z
+todos: []

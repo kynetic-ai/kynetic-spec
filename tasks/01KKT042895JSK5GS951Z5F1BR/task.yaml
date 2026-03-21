@@ -1,0 +1,37 @@
+_ulid: 01KKT042895JSK5GS951Z5F1BR
+slugs: []
+title: Add hooks configuration to kspec.config.yaml and setup
+type: task
+spec_ref: "@project-config"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #892. Added typed hooks configuration section to kspec.config.yaml with
+  checkpoint (default: false) and prompt_check (default: true) fields. Setup now conditionally
+  installs/removes hooks based on config preferences and is idempotent. All 4 own ACs covered
+  (ac-hooks-section, ac-hooks-missing-keys, ac-hooks-no-config, ac-hooks-validation) with tests at
+  both parser and setup layers. Two SUGGESTIONs noted (HooksPreferences type duplication, removal
+  logic duplication) — non-blocking."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - config
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-16T00:43:20.294Z
+  commit: 6f2b02df930df09e597db225bd51605b7f2a58e7
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKT0WKD862DWN9C68ZJD9Y52
+created_at: 2026-03-16T00:18:20.041Z
+started_at: 2026-03-16T00:31:59.737Z
+submitted_at: 2026-03-16T00:43:21.181Z
+completed_at: 2026-03-16T00:57:24.867Z
+todos: []
+automation: eligible

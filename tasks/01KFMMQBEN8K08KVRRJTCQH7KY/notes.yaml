@@ -1,0 +1,154 @@
+notes:
+  - _ulid: 01KFMMS43XYN0E6QPTB3RM7RQ4
+    content: |-
+      ## Implementation Notes
+
+      ### Objective
+      Implement inbox and meta API endpoints.
+
+      ### Endpoints
+      - GET /api/inbox - List inbox items
+      - POST /api/inbox - Create inbox item
+      - DELETE /api/inbox/:ref - Delete inbox item
+      - GET /api/meta/session - Current session context
+      - GET /api/meta/agents - List agents
+      - GET /api/meta/workflows - List workflows
+      - GET /api/meta/observations - List observations with filter
+
+      ### Steps
+      1. Reuse inbox CRUD logic from CLI
+      2. Load meta items via loadMeta()
+      3. Filter observations by resolved status
+
+      ### ACs Covered
+      - ac-12: GET /api/inbox ordered by created_at
+      - ac-13: POST /api/inbox creates item
+      - ac-14: DELETE /api/inbox/:ref removes item
+      - ac-15: GET /api/meta/session returns context
+      - ac-16: GET /api/meta/agents
+      - ac-17: GET /api/meta/workflows
+      - ac-18: GET /api/meta/observations with filter
+
+      ### Files to Create
+      - packages/daemon/src/routes/inbox.ts
+      - packages/daemon/src/routes/meta.ts
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T05:21:07.709Z
+  - _ulid: 01KFNEK3K6PYG5C9AMQR4CHRXT
+    content: |-
+      Starting implementation of inbox and meta API endpoints.
+
+      PLAN:
+      1. Create packages/daemon/src/routes/inbox.ts with 3 endpoints:
+         - GET /api/inbox - list all inbox items (ac-12)
+         - POST /api/inbox - create inbox item (ac-13)
+         - DELETE /api/inbox/:ref - delete inbox item (ac-14)
+      2. Create packages/daemon/src/routes/meta.ts with 4 endpoints:
+         - GET /api/meta/session - get session context (ac-15)
+         - GET /api/meta/agents - list agents (ac-16)
+         - GET /api/meta/workflows - list workflows (ac-17)
+         - GET /api/meta/observations - list observations with filter (ac-18)
+
+      3. Register routes in packages/daemon/src/server.ts
+
+      4. Create E2E tests following project pattern (code inspection)
+
+      Following existing patterns from tasks.ts and items.ts routes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T12:52:13.542Z
+  - _ulid: 01KFNEKFXHMEQ1NSWXV5DF9Q82
+    content: |-
+      Iteration 26 end - task started but implementation not complete.
+
+      STATUS: IN PROGRESS (not code complete)
+
+      PROGRESS:
+      - Task started and plan documented
+      - Researched parser functions available:
+        - Inbox: loadInboxItems, createInboxItem, saveInboxItem, deleteInboxItem
+        - Meta: loadMetaContext, loadSessionContext, saveSessionContext, findMetaItemByRef
+      - Reviewed existing route patterns (tasks.ts, items.ts)
+
+      NEXT ITERATION SHOULD:
+      1. Create packages/daemon/src/routes/inbox.ts
+      2. Create packages/daemon/src/routes/meta.ts
+      3. Register routes in server.ts
+      4. Create tests following code inspection pattern
+      5. Test locally
+      6. Create PR when complete
+
+      DO NOT submit this task yet - implementation not done.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T12:52:26.162Z
+  - _ulid: 01KFNEXMQ8TS8AA0BYE8MATKKW
+    content: |-
+      Implementation complete for all 7 ACs.
+
+      CREATED FILES:
+      1. packages/daemon/src/routes/inbox.ts - Inbox API endpoints
+         - GET /api/inbox - list items ordered by created_at desc (ac-12)
+         - POST /api/inbox - create item with ULID generation (ac-13)
+         - DELETE /api/inbox/:ref - delete item with ref resolution (ac-14)
+
+      2. packages/daemon/src/routes/meta.ts - Meta API endpoints
+         - GET /api/meta/session - session context (focus, threads, questions) (ac-15)
+         - GET /api/meta/agents - list all agents (ac-16)
+         - GET /api/meta/workflows - list all workflows (ac-17)
+         - GET /api/meta/observations - list with resolved filter (ac-18)
+
+      3. tests/daemon-api-inbox.test.ts - 6 E2E structure tests
+      4. tests/daemon-api-meta.test.ts - 7 E2E structure tests
+
+      INTEGRATION:
+      - Registered routes in packages/daemon/src/server.ts
+      - Added imports for createInboxRoutes and createMetaRoutes
+      - Connected to pubsub for WebSocket broadcasts (inbox only)
+
+      PATTERNS FOLLOWED:
+      - ReferenceIndex for ref resolution (ac-14)
+      - Shadow commits with semantic messages (ac-13, ac-14)
+      - WebSocket broadcasts for state changes (ac-13, ac-14)
+      - Elysia schema validation for body/query params
+      - Consistent error responses (404 not_found, 400 validation_error)
+      - AC annotations in comments linking to spec
+      - Code inspection test strategy (consistent with project)
+
+      TEST RESULTS:
+      - All 1193 existing tests continue to pass
+      - 13 new tests added (6 inbox + 7 meta)
+      - No build errors
+      - No TypeScript errors
+
+      All 7 target ACs (ac-12 through ac-18) now implemented with test coverage.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T12:57:58.760Z
+  - _ulid: 01KFNF3DBESPQ64W0103ACPXHQ
+    content: |-
+      Local review completed: APPROVED
+
+      PR #193 created: https://github.com/kynetic-ai/kynetic-spec/pull/193
+
+      REVIEW RESULTS:
+      ✅ AC Coverage: 7/7 target ACs covered (ac-12 through ac-18)
+      ✅ Test Quality: Meets existing standards (structure tests)
+      ⚠️  Test Strategy: Advisory - uses structure tests (consistent with project pattern)
+      ✅ Test Isolation: Appropriate for test type (read-only verification)
+
+      BLOCKING ISSUES: None
+
+      ADVISORY NOTES:
+      - Structure tests verify code patterns exist but don't run server/make requests
+      - Pattern is consistent with daemon-api-tasks.test.ts and daemon-api-items.test.ts
+      - Would benefit from true E2E tests in future work (systemic issue, not PR-specific)
+
+      NEXT STEPS:
+      1. Wait for CI checks (test, claude-review, check-unresolved-comments)
+      2. Address any automated review feedback
+      3. Merge via @pr-review-merge workflow when all gates pass
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T13:01:07.822Z

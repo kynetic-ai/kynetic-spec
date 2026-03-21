@@ -1,0 +1,8 @@
+notes:
+  - _ulid: 01KF2CFYNKXJHADY2SFQAHNVZQ
+    content: "Implemented task set command with options: --title, --spec-ref, --priority, --slug, --tag,
+      --depends-on. Validates spec refs exist and aren't tasks. Immediately used to link task
+      01KF2C05 to its spec."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-16T03:09:58.836Z

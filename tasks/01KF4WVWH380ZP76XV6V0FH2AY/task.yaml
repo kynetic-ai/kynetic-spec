@@ -1,0 +1,20 @@
+_ulid: 01KF4WVWH380ZP76XV6V0FH2AY
+slugs:
+  - task-observation-types
+title: "Implement: Observation Types"
+type: task
+spec_ref: "@observation-types"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Observation types fully implemented with all four types as specified
+depends_on:
+  - "@task-observations"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:35.939Z
+started_at: 2026-01-18T10:09:15.512Z
+completed_at: 2026-01-18T10:09:31.799Z
+todos: []

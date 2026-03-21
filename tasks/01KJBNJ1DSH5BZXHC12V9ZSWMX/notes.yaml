@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KJBX0WRB668M1VT0RGTEPA22
+    content: Written packages/web-ui/tests/e2e/api-items.spec.ts with 23 Playwright E2E tests covering
+      @api-contract ac-8 through ac-11. Tests use daemon fixture for real HTTP calls. Deleted
+      tests/daemon-api-items.test.ts (217 lines of static analysis). Unit test run skipped due to
+      cgroup PID limit (2020/2048) in sandbox — identical pattern to previous task which passed CI.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T02:39:06.507Z

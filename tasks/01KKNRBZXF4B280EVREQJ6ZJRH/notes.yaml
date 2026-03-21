@@ -1,0 +1,38 @@
+notes:
+  - _ulid: 01KKNY9BM488V3ZP16YH9TQ6KF
+    content: >-
+      Execution context:
+
+      - Background: Subject bindings define how review records identify what's under review. Prior
+      tasks delivered Zod schemas; this task adds the behavioral layer (factories, content hashing,
+      staleness detection).
+
+      - Scope: (1) Subject binding factory functions for each subject type, (2) content hash
+      computation for shadow-branch entities, (3) staleness evaluation comparing applies_to_version
+      against refreshed subject version, (4) AC-annotated tests covering all 5 ACs.
+
+      - Files: src/review/subject-bindings.ts (new), tests/review-subject-bindings.test.ts (new)
+
+      - Verification: npm test must pass, all 5 ACs covered with annotated tests.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T10:29:18.596Z
+  - _ulid: 01KKNYPKKG177VSYWXJXSE14DY
+    content: >-
+      Submitted PR #847. Implementation adds:
+
+      - src/review/subject-bindings.ts: Factory functions (createCodeSubject, createPlanSubject,
+      createTaskSubject, createSpecSubject, createExternalSubject), extractSubjectVersion,
+      isVersionStale, findStaleChecks, findStaleVerdicts
+
+      - src/review/index.ts: Module barrel export
+
+      - src/index.ts: Added review module re-export
+
+      - tests/review-subject-bindings.test.ts: 39 tests covering all 5 ACs
+
+      Key decision: Reused computeContentHash from parser/skill-render.ts rather than duplicating.
+      Shadow branch staleness uses content_hash (not shadow commit) to prevent self-invalidation.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T10:36:32.753Z

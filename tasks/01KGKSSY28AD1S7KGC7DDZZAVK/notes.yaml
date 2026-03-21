@@ -1,0 +1,25 @@
+notes:
+  - _ulid: 01KGM1NTDP7V2Q4JTND41DZ8MF
+    content: "Implemented plan derive command in src/cli/commands/plan.ts. Command creates tasks from
+      approved or active plans with bidirectional linking (plan_ref on task, derived_tasks on plan).
+      Added 12 comprehensive E2E tests covering all ACs (ac-5, ac-6): task creation from
+      approved/active plans, plan_ref and derived_tasks updates, status transitions, custom
+      titles/priorities, error handling for draft plans, slug uniqueness, and bidirectional display
+      in both task get and plan get. All tests passing. Implementation follows patterns from spec
+      derive command. Supports --title and --priority flags for customization."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-04T10:02:58.359Z
+  - _ulid: 01KGM2BKMEX9CYM958Q4KE7QKB
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-04T10:14:52.302Z
+  - _ulid: 01KGM2E5Z5E5KHJV95QEF202SV
+    content: "PR #306 has unresolved review threads that require manual resolution in GitHub UI. Test
+      fix (99637b4d) addresses first comment. Second comment about slug generation duplication is
+      technical debt, not a blocker. Cannot proceed with merge until threads are manually resolved -
+      this is a human action requirement per pr-review-merge workflow."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-04T10:16:16.614Z

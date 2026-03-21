@@ -1,0 +1,19 @@
+_ulid: 01KFC1GKGFBGKAVP1PKWCR7G02
+slugs:
+  - task-spec-traits-system
+title: "Implement: Spec Traits System"
+type: task
+spec_ref: "@spec-traits"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #97"
+depends_on: []
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-19T21:10:30.159Z
+started_at: 2026-01-20T03:22:26.141Z
+completed_at: 2026-01-20T03:43:02.397Z
+todos: []

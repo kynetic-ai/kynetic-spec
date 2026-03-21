@@ -1,0 +1,50 @@
+notes:
+  - _ulid: 01KKB93TP8WHJMPYGH18YTENP6
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      Add acceptance criteria to spec items under @shadow-branch that lack them. Covers orphan
+      branch worktree mechanics, auto-commit, sync, and merge driver.
+
+
+
+      Acceptance Criteria:
+
+      - ac-coverage: Given All feature and requirement items under @shadow-branch module, when kspec
+      validate --completeness runs, then Zero missing acceptance criteria warnings for
+      @shadow-branch descendants
+
+      - ac-testable: Given Each newly added AC, when It is reviewed, then It follows given/when/then
+      format with concrete, observable outcomes
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T07:06:53.000Z
+  - _ulid: 01KKFJ4SR2YVGM8CKX8JJMQDFR
+    content: >-
+      Execution context:
+
+      - Background: this task reduces completeness warning debt in the shadow branch module by
+      backfilling missing acceptance criteria.
+
+      - Scope: add concrete given/when/then ACs only for feature and requirement items under
+      @shadow-branch that currently lack them.
+
+      - Files: .kspec shadow-branch state only via kspec CLI; no manual YAML edits.
+
+      - Verification: kspec validate --completeness and targeted kspec item get checks for updated
+      items.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T23:01:39.714Z
+  - _ulid: 01KKFJS0GE2BY3GA06QNGN1Q98
+    content: "Backfilled acceptance criteria for all previously uncovered descendants under
+      @shadow-branch: @shadow-concept, @shadow-structure, @shadow-read-path, @shadow-write-path,
+      @shadow-ci, @shadow-cli, @shadow-status-cmd, @shadow-log-cmd, @shadow-repair-cmd, and
+      @shadow-validation. Verified with `kspec item list --under @shadow-branch --limit 999 --json |
+      jq` returning zero descendants without ACs, `kspec validate --completeness` leaving only
+      unrelated global missing-AC warnings, and `npm test` passing after refreshing generated
+      caches/build artifacts."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T23:12:41.999Z

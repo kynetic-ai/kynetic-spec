@@ -1,0 +1,46 @@
+_ulid: 01KJA66Z3ZKKZQN6HMZTTQEQ7E
+slugs: []
+title: Add local test sharding support for faster dev runs
+type: task
+description: >-
+  CI already shards tests into 3 with `npx vitest run --shard=N/3`. Add npm scripts so developers
+  can do the same locally for faster feedback:
+
+
+  Add to package.json scripts:
+    "test:shard1": "vitest run --shard=1/3",
+    "test:shard2": "vitest run --shard=2/3",
+    "test:shard3": "vitest run --shard=3/3"
+
+  Or a single parameterized script:
+    "test:shard": "vitest run --shard"
+    Usage: npm run test:shard -- --shard=1/3
+
+  Also consider documenting this in the testing convention (kspec meta) so agents know they can run
+  a subset of tests for faster iteration during development. Full suite is still required before PR.
+
+
+  Current full suite time: ~150s. Each shard would be ~50s.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #536. Added test:shard1/2/3 npm scripts matching CI configuration for
+  faster local dev runs (~50s vs ~150s). Added testing convention documenting shard usage. Fixed
+  kspec-agents.md regeneration: v0.5.0 header restored and N/A Trait ACs section reinstated (root
+  cause: stale hash file causing false idempotency skip)."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - dx
+vcs_refs: []
+session_id: 01KJB841ZBR4KTKGGQJT4QEPT7
+created_at: 2026-02-25T10:41:13.855Z
+started_at: 2026-02-25T20:42:08.558Z
+submitted_at: 2026-02-25T20:42:09.611Z
+completed_at: 2026-02-25T20:51:20.935Z
+todos: []
+automation: eligible

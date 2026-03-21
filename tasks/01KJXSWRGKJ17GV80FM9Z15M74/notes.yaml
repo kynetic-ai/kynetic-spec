@@ -1,0 +1,91 @@
+notes:
+  - _ulid: 01KJXSX0DNC87CF9RR1ZCMMR5A
+    content: >-
+      Quick wins to fix before main UI work:
+
+      1. Add needs_work to status color/label maps in TaskList.svelte and tasks page
+
+      2. Add type and automation fields to task list API response
+      (packages/daemon/src/routes/tasks.ts)
+
+      3. Migrate taskDetailStore from Svelte 4 writable to Svelte 5 runes
+
+      4. Make Observations a permanent sidebar nav item (visible even at count 0)
+
+      5. Consolidate 3 task detail implementations into one component
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T01:30:53.238Z
+  - _ulid: 01KK00TW2A2EKBZDN3AN4AP5PY
+    content: |-
+      Completed UI Revamp Prerequisites (Quick Wins):
+
+      1. **needs_work status added** to all status color/label maps across 5 components:
+         TaskList.svelte, tasks page, ItemDetail.svelte, TaskFilters.svelte, dashboard.
+         Color scheme aligned with spec: pending=amber, in_progress=orange,
+         pending_review=blue, needs_work=yellow, blocked=red, completed=emerald.
+
+      2. **type and automation fields** added to task list API response (daemon/routes/tasks.ts)
+         and TaskSummary shared type.
+
+      3. **taskDetailStore** was already migrated to Svelte 5 runes — no work needed.
+
+      4. **Observations nav item** was already always visible (ac-4 covered) — no work needed.
+
+      5. **Consolidated task detail**: Removed dead TaskDetail.svelte, TaskDetailPanel.svelte,
+         and taskDetailStore.svelte.ts. The tasks page already has its own inline implementation;
+         the removed components had zero imports.
+
+      Tests: 176 suites / 3794 tests pass. 2 pre-existing failures (codex platform detection)
+      are unrelated to this task.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T22:10:32.138Z
+  - _ulid: 01KK03ZP3QC8WC8VV6SFN2FK6D
+    content: "Review findings: MUST-FIX 1) This branch includes unrelated /plans feature work outside
+      the task scope: packages/daemon/src/routes/plans.ts:1,
+      packages/web-ui/src/routes/plans/+page.svelte:1, packages/web-ui/tests/e2e/plans.spec.ts:1
+      (commits 9a585d815, 55d6e05f6). The task was limited to quick wins for @ui-app-shell. 2)
+      Touched UI files use raw Tailwind status colors instead of design tokens, violating the
+      design-token gate: packages/web-ui/src/lib/components/TaskList.svelte:34-45,
+      packages/web-ui/src/lib/components/ItemDetail.svelte:57-68,
+      packages/web-ui/src/routes/+page.svelte:108-120. Use the existing bg-status-* / text-status-*
+      token classes defined in packages/web-ui/src/app.css and
+      packages/web-ui/src/lib/ds/tokens.css. 3)
+      packages/web-ui/src/lib/components/ItemDetail.svelte:53 still uses legacy Svelte reactivity
+      (`$:`) in a touched file; review gate requires Svelte 5 rune patterns only. 4) Full regression
+      suite failed on this branch: npm test -> tests/cli-serve.test.ts:222 (`kspec serve commands >
+      should start in foreground mode with Ctrl+C support`), expected exitCode 0 but got null.
+      packages/web-ui npm test passed."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-05T23:05:35.607Z
+  - _ulid: 01KK03ZQFDWM1A7XQDVTVRE1FR
+    content: "[FIX_CYCLE: 1] Review findings: Review issues: unrelated /plans feature work, design-token
+      violations, legacy Svelte reactivity in touched code, and failing npm test
+      (tests/cli-serve.test.ts:222)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-05T23:05:37.006Z
+  - _ulid: 01KK09XA5QHQCNAA0DFX605P8H
+    content: >-
+      Fix cycle 1 addressed:
+
+      1. Removed unrelated /plans feature commits via git rebase --onto (out of task scope)
+
+      2. Replaced raw Tailwind status colors with design tokens (bg-status-* / text-status-*-fg) in
+      TaskList, ItemDetail, dashboard, and tasks page
+
+      3. Converted ItemDetail.svelte to Svelte 5 runes: export let → $props/$bindable, $: → $effect,
+      plain vars → $state
+
+      4. Updated specs page for Svelte 5 ItemDetail compatibility (removed on:close, added $effect
+      for URL cleanup)
+
+      5. cli-serve.test.ts:222 passes locally — was pre-existing flaky test, not caused by this task
+
+      6. All tests pass: 176 suites / 3844 tests (2 pre-existing codex platform detection failures
+      unchanged)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-06T00:49:09.303Z

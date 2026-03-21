@@ -1,0 +1,33 @@
+_ulid: 01KJZH4AF5S9431B5YN693PBJH
+slugs:
+  - task-e2e-daemon-isolation
+title: Fix E2E test daemon isolation regression
+type: bug
+description: "Playwright E2E test base (packages/web-ui/tests/fixtures/test-base.ts) has
+  cleanupExistingDaemon() that kills any process on port 3456 via lsof/SIGTERM. This kills the
+  user's dev daemon whenever E2E tests start. Same pattern was fixed for vitest in PR #658 but never
+  applied to Playwright. Fix: remove cleanupExistingDaemon(), use ephemeral ports, add HOME
+  isolation, propagate dynamic port to all fixtures. Prior art: PRs #658, #672, #673, #674."
+spec_ref: "@e2e-test-daemon-isolation"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #682. Removed cleanupExistingDaemon(), added ephemeral ports, HOME
+  isolation, and scoped cleanup. All 5 ACs covered. Reviewed by Claude, Codex, and CI — all clean."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - test
+  - daemon
+  - e2e
+  - regression
+vcs_refs: []
+review_url: https://github.com/kynetic-ai/kynetic-spec/pull/682
+created_at: 2026-03-05T17:36:04.580Z
+started_at: 2026-03-05T17:46:25.390Z
+submitted_at: 2026-03-05T18:35:35.073Z
+completed_at: 2026-03-05T18:49:53.615Z
+todos: []
+automation: eligible

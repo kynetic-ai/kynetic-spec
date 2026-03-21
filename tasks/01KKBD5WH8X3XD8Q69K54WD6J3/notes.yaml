@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KKC7VBK7BB0TCEZVJ6VPA9H2
+    content: "Fixed item list/get JSON output: added serializeSpecItemForJson() that strips
+      _sourceFile/_path, renames _ulid->ulid, and adds @-prefixed ref field. Updated 4 test files
+      (item-list-under, item-set-relationships, trait-cli, cli-plan-import) to use clean field
+      names. Added 2 new integration tests for AC coverage. All 4344 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T16:04:01.255Z

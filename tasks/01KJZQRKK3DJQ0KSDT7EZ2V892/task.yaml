@@ -1,0 +1,46 @@
+_ulid: 01KJZQRKK3DJQ0KSDT7EZ2V892
+slugs:
+  - task-dispatch-daemon-guard
+title: Prevent dispatch agents from killing host daemon
+type: task
+description: >-
+  Dispatch worker agents can accidentally kill the daemon hosting the dispatch engine by running
+  kspec serve stop/restart. This happened in practice during fix cycle 4 of
+  @implement-task-board-kanban — the agent tried to debug E2E failures by manually starting a
+  daemon, which killed the dispatch daemon and severed the WebSocket connection.
+
+
+  Fix requires two changes:
+
+  1. Inject KSPEC_DAEMON_PID into spawned agent environment (in invocation.ts alongside
+  KSPEC_SESSION_ID)
+
+  2. Guard kspec serve stop/restart/start to refuse when KSPEC_DAEMON_PID is set, with clear error
+  message
+
+
+  Also update agent instructions to add convention: never run kspec serve stop/restart/start when
+  running under dispatch.
+spec_ref: "@cli-serve-commands"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #683. Added guardAgentContext() to serve start/stop/restart that checks
+  KSPEC_SESSION_ID and refuses with VALIDATION_FAILED. 4 tests, convention rule added. Fix cycle
+  addressed foreground test env sanitization and exact exit code assertions."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - dispatch
+  - bug
+vcs_refs: []
+session_id: null
+created_at: 2026-03-05T19:32:00.739Z
+started_at: 2026-03-05T20:06:38.089Z
+submitted_at: 2026-03-05T20:06:39.755Z
+completed_at: 2026-03-05T20:39:50.447Z
+todos: []
+automation: eligible

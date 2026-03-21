@@ -1,0 +1,23 @@
+_ulid: 01KHASRBM5V3YBA60PGQ5YH9VZ
+slugs: []
+title: Add kspec merge-driver configure command
+type: task
+description: "Add 'kspec merge-driver configure' command for existing repos that missed auto-config
+  during init. Would set git config merge.kspec.* and create .gitattributes in shadow branch. Useful
+  for repos initialized before PR #183 or where config was lost."
+spec_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: kspec init and shadow repair already configure merge driver. Standalone configure
+  command is redundant.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - dx
+  - merge
+vcs_refs: []
+created_at: 2026-02-13T06:07:04.837Z
+todos: []
+automation: manual_only

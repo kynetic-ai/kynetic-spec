@@ -1,0 +1,194 @@
+notes:
+  - _ulid: 01KJP278TV2GKBMD6DMP6PG4PX
+    content: See plan @plan-reactive-agent-runtime for implementation notes
+    author: "@claude"
+    created_at: 2026-03-02T01:22:22.683Z
+  - _ulid: 01KJP2JKPYGHGRTT0T7G4E8V2N
+    content: >-
+      Implementation context:
+
+
+      ## Files to Delete
+
+      - src/cli/commands/ralph.ts (~2257 lines)
+
+      - src/ralph/ directory (subagent.ts, wrap-up.ts, prompts.ts, context.ts, etc.)
+
+      - tests/ralph.test.ts, tests/ralph-loop-errors.test.ts, tests/ralph-wrap-up.test.ts,
+      tests/ralph-context-refresh.test.ts
+
+
+      ## Files to Update
+
+      - Workflow definitions in .kspec/kynetic.meta.yaml: task-work-loop, pr-review-loop,
+      session-reflect-loop
+
+      - Skills: templates/skills/task-work/SKILL.md, .kspec/skills/codex/SKILL.md,
+      .kspec/skills/eval-agents/SKILL.md, .kspec/skills/pr-review/SKILL.md
+
+      - Agent instruction template: templates/agents-sections/06-ralph-loop.md → replace with agent
+      dispatch section
+
+      - kspec-agents.md (regenerate via kspec agents generate after template changes)
+
+
+      ## Files to Create
+
+      - Default agent definitions in kspec setup (worker + reviewer with standard dispatch rules)
+
+      - Deprecation stub: kspec ralph command that shows migration error message
+
+      - Replacement tests for agent runtime covering dispatch, invocation lifecycle, CLI commands
+
+
+      ## Migration Checklist (in order)
+
+      1. Create deprecation stub for kspec ralph (error with migration instructions)
+
+      2. Create built-in worker + reviewer agent definitions in kspec setup
+
+      3. Update workflow definitions to reference agent dispatch concepts
+
+      4. Update skill files to reference kspec agent commands
+
+      5. Replace 06-ralph-loop.md template with agent dispatch section
+
+      6. Replace ralph tests with agent runtime tests
+
+      7. Delete src/cli/commands/ralph.ts and src/ralph/
+
+      8. Regenerate kspec-agents.md
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T01:28:34.270Z
+  - _ulid: 01KJPDFSGYG8KVD33EDSG3CNXE
+    content: "Automation: eligible. Migration task with enriched implementation note listing files to
+      delete/update/create and ordered migration checklist. 8 ACs cover each surface."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T04:39:16.254Z
+  - _ulid: 01KJRPC3DWTRET08VQM3TSEDGG
+    content: "Updated workflow definitions: task-work-loop, pr-review-loop, and task-work-session steps
+      now reference agent dispatch instead of ralph. Changes include: description updates via kspec
+      meta set, and direct YAML step content updates (kspec meta set doesn't support updating
+      workflow steps)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T01:53:01.373Z
+  - _ulid: 01KJRPFRFWR1NR7H4THHNBERBE
+    content: >-
+      Updated all skill files to reference agent dispatch instead of ralph:
+
+      - templates/skills/task-work/SKILL.md: updated turn completion section
+
+      - .kspec/skills/task-work/SKILL.md (and skills/): updated ralph → agent dispatch  
+
+      - .kspec/skills/pr-review/SKILL.md (and skills/): updated 'spawned by ralph' references
+
+      - .kspec/skills/codex/SKILL.md (and skills/): renamed 'Ralph Loop Safety Guard' section →
+      'Agent Dispatch Safety Guard', updated env var detection to KSPEC_SESSION_ID
+
+      - .kspec/skills/eval-agents/SKILL.md (and skills/): updated ralph loop references to agent
+      dispatch
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T01:55:01.244Z
+  - _ulid: 01KJRQ45HXXV8DNK289YAHG0HD
+    content: >-
+      Implementation complete. All 8 ACs covered:
+
+      - ac-1: ralph.ts replaced with deprecation stub showing migration error with kspec agent
+      equivalents
+
+      - ac-2: setup.ts ensureBuiltInAgents() creates task-worker + pr-reviewer in kynetic.meta.yaml
+      (idempotent)
+
+      - ac-3: Dispatch rules match ralph behavior (worker: task.ready + task.needs_work eligible,
+      reviewer: task.pending_review)
+
+      - ac-4: Workflows updated in previous session (task-work-loop, pr-review-loop,
+      session-reflect-loop)
+
+      - ac-5: Skills updated in previous session (task-work, codex, eval-agents, pr-review)
+
+      - ac-6: 06-ralph-loop.md rewritten as agent dispatch section referencing pr-reviewer agent
+
+      - ac-7: 4 ralph test files deleted (~4400 lines), replaced with
+      tests/ralph-replacement.test.ts (9 tests)
+
+      - ac-8: Uncommitted changes detection test added via session checkpoint
+
+      All 9 replacement tests pass. Build succeeds.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T02:06:09.981Z
+  - _ulid: 01KJRQYES980E4QWV5PJ2G49D4
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: 3 issues causing CI failure (shard 2/3 failing,
+      12 test failures): (1) tests/ralph/task-limit.test.ts not deleted - tests removed kspec ralph
+      --max-tasks flags (8 failures); (2) tests/agents-instruction-gen.test.ts not updated - expects
+      '## Ralph Loop Mode' but template renamed to '## Agent Dispatch Mode' (3 failures); (3)
+      kspec-agents.md not committed with regenerated content - still has ralph references.
+      SHOULD-FIX: .agents/skills/ rendered files not updated via kspec skill render; ac-8 test too
+      weak. Details in PR review."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T02:20:31.401Z
+  - _ulid: 01KJRR42AR2BFDP4H4WG6QW7G6
+    content: >-
+      [FIX_CYCLE: 2] Addressed all review findings from PR #640:
+
+      MUST-FIX:
+
+      1. Deleted tests/ralph/task-limit.test.ts (tested flags that no longer exist)
+
+      2. Updated tests/agents-instruction-gen.test.ts: 4 lines changed from 'Ralph Loop Mode' →
+      'Agent Dispatch Mode'
+
+      3. Committed regenerated kspec-agents.md (was generated but not committed)
+
+
+      SHOULD-FIX:
+
+      4. Ran kspec skill render — updated codex, eval-agents, pr-review in .agents/skills/ and
+      .claude/skills/
+
+      5. Strengthened ac-8 test: now parses JSON output and verifies decision='block' + reason
+      contains 'uncommitted changes'
+
+
+      All 9 replacement tests pass, all 40 agents-instruction-gen tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T02:23:35.256Z
+  - _ulid: 01KJRRN3T0M145EFNJW8RNQS7Y
+    content: "[FIX_CYCLE: 3] Review findings: SHOULD-FIX (cycle 2): (1)
+      .agents/skills/kspec-task-work/SKILL.md still has stale 'ralph auto-exits' comment at line 291
+      — kspec skill render was not run for task-work skill despite template source being correct;
+      (2) Missing N/A declarations for @trait-error-guidance ac-3, ac-4, ac-5, ac-6 in
+      tests/ralph-replacement.test.ts — these don't apply to the deprecation stub but need explicit
+      N/A annotations; (3) Missing AC annotations/N/A for own ACs 3, 4, 5, 7 — ac-3 covered
+      indirectly, ac-4/5 are config-only changes, ac-7 is a deletion — all need either annotations
+      or N/A declarations. See PR #640 review comment."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T02:32:53.824Z
+  - _ulid: 01KJRRSCWQMSM5BJAQQR73J67S
+    content: >-
+      [FIX_CYCLE: 4] Addressed cycle 3 findings:
+
+      SHOULD-FIX:
+
+      1. Ran kspec skill render for task-work skill (was missed in cycle 2) —
+      .agents/skills/kspec-task-work/SKILL.md now shows 'agent dispatch exits automatically' instead
+      of 'ralph auto-exits'
+
+      2. Added N/A declarations for @trait-error-guidance ac-3, ac-4, ac-5, ac-6 (ralph stub has no
+      ref lookups, state transitions, field validation, or --json mode)
+
+      3. Added coverage annotations for own ac-3 (covered by dispatch rule tests), ac-4/5
+      (config-only, N/A), ac-7 (deletion, N/A)
+
+      All review threads resolved.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T02:35:14.199Z

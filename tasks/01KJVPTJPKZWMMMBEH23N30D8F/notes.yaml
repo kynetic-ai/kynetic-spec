@@ -1,0 +1,71 @@
+notes:
+  - _ulid: 01KJVPTKY916RMSHB11ZBEDYEQ
+    content: >-
+      Execution context:
+
+      - Why: current dispatch cannot prioritize active in_progress work because no in_progress
+      dispatch event exists and queueing is FIFO by arrival.
+
+      - Scope:
+        1) add/validate in_progress-compatible dispatch event semantics in schema/runtime mapping,
+        2) apply deterministic status precedence with in_progress at top,
+        3) include bootstrap handling for existing in_progress tasks,
+        4) update built-in worker defaults from setup seeding if needed,
+        5) add/adjust tests in dispatch engine and setup/agent-seeding coverage.
+      - Candidate files: src/schema/meta.ts, src/agent-runtime/dispatch.ts,
+      src/cli/commands/setup.ts, tests/agent-dispatch-engine.test.ts,
+      tests/ralph-replacement.test.ts.
+
+      - Verification: targeted dispatch tests + setup seeding tests + full npm test.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T05:58:40.329Z
+  - _ulid: 01KJVVMP971A1W84RFMRFZER98
+    content: "Implementation plan: add task.in_progress as a valid dispatch/session trigger, wire
+      status↔event mapping in dispatch runtime, enforce deterministic queue precedence with
+      in_progress first, seed setup built-in task-worker with in_progress+eligible rule, and add
+      regression tests for scheduler order/bootstrap/defaults."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T07:22:48.999Z
+  - _ulid: 01KJVW9JJSX6YR2VT2N012B87G
+    content: "Implemented dispatch in_progress support end-to-end: added task.in_progress to
+      dispatch/session schemas, mapped in_progress status in dispatch runtime, added deterministic
+      queue precedence so in_progress dispatch entries are selected first, and updated built-in
+      task-worker setup defaults to include task.in_progress with automation: eligible filter. Added
+      regression coverage in tests/agent-dispatch-engine.test.ts, tests/ralph-replacement.test.ts,
+      tests/meta.test.ts, and tests/session-model-evolution.test.ts (with AC annotations for
+      @dispatch-in-progress-priority ac-1..ac-3). Verification: npm test passes (173 files, 3622
+      tests). kspec validate currently fails due pre-existing project meta/reference issues around
+      duplicate @observations and missing .kspec/skills/observations/SKILL.md, unrelated to this
+      task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T07:34:13.337Z
+  - _ulid: 01KJVWKBE897E1FRP1JBPNXWGV
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: dispatch precedence should keep needs_work ahead
+      of pending while still prioritizing in_progress."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T07:39:33.705Z
+  - _ulid: 01KJVWMNABFK8VHGJMZT9GJ1FM
+    content: "Addressing review feedback: adjusted queue precedence to keep needs_work above pending
+      while preserving in_progress as highest priority, and updated dispatch priority regression
+      expectation accordingly."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T07:40:16.587Z
+  - _ulid: 01KJVWNNMR7XKGZ8VW67A4ETKA
+    content: "Fix cycle update: adjusted dispatch status precedence to keep needs_work ahead of pending
+      while still prioritizing in_progress first. Updated priority-order regression expectation
+      accordingly and re-ran tests: npm test -- tests/agent-dispatch-engine.test.ts."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T07:40:49.688Z
+  - _ulid: 01KJVXZXJFAFEMWHY01D7TN70X
+    content: "Post-merge runtime config fix: updated @worker dispatch rules to include task.in_progress
+      with automation: eligible filter so active in-progress tasks are eligible for worker dispatch
+      in running loop mode."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T08:03:54.064Z

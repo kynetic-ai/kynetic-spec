@@ -1,0 +1,68 @@
+notes:
+  - _ulid: 01KKPVY93GK0408A3W1TPY5DRT
+    content: >-
+      Execution context:
+
+      - Background: This task adds review_ref linkage to the task schema and implements sync rules
+      between review records and task lifecycle transitions. Reviews were added as first-party
+      records in prior tasks; this bridges them with the existing task workflow.
+
+      - Scope: (1) Add review_ref field to TaskSchema, (2) Auto-set review_ref when review add
+      targets a task or relates to one, (3) Auto-transition task to needs_work on changes_requested
+      verdict, (4) Warn on inconsistent review linkage during validation/rendering, (5) Preserve
+      review history through fix cycles, (6) Treat external links as compatibility only.
+
+      - Files: src/schema/task.ts, src/parser/reviews.ts (integration hooks), src/parser/tasks.ts
+      (if needed), src/cli/commands/task.ts (display/validation),
+      tests/review-task-integration.test.ts
+
+      - Verification: npm test, kspec validate
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T19:07:32.848Z
+  - _ulid: 01KKPWHN4K1948172QWD6H82GP
+    content: >-
+      Implementation complete. PR #856 created.
+
+
+      Changes:
+
+      - src/schema/task.ts: Added review_ref field to TaskSchema and TaskInputSchema
+
+      - src/parser/review-task-integration.ts: New module with linkReviewToTasks(),
+      handleVerdictTaskTransition(), checkReviewLinkageConsistency()
+
+      - src/parser/index.ts: Added export for review-task-integration module
+
+      - src/parser/validate.ts: Added inconsistent_review_linkage warning type and review linkage
+      check
+
+      - src/cli/output.ts: Display review_ref in task get output
+
+      - tests/review-task-integration.test.ts: 22 tests covering all 7 ACs
+
+
+      All 4975 tests pass. No regressions.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T19:18:07.763Z
+  - _ulid: 01KKPX15SM4TZ81TM922AGG67R
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: (1) Merge conflict in src/parser/index.ts —
+      rebase onto main required. (2) linkReviewToTasks and handleVerdictTaskTransition are library
+      functions only — not wired into review CLI commands. ACs ac-2, ac-3, ac-4 require CLI-level
+      integration: wire linkReviewToTasks into review add handler, wire handleVerdictTaskTransition
+      into review verdict handler. SHOULD-FIX: Pass explicit author to createNote in
+      handleVerdictTaskTransition. See PR #856 review for details."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T19:26:36.340Z
+  - _ulid: 01KKPXXCEEEGYHYPXK10N8J199
+    content: "Fix cycle 1 addressed: (1) Merged main to resolve parser/index.ts conflict — all three
+      review exports coexist. (2) Wired linkReviewToTasks() into review add CLI handler for
+      ac-2/ac-3 auto-linkage. (3) Wired handleVerdictTaskTransition() into review verdict CLI
+      handler for ac-4 auto-transition. (4) Passed explicit author via
+      getAuthor(ctx.config?.identity?.author) to createNote in handleVerdictTaskTransition. All 5257
+      tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T19:42:00.654Z

@@ -1,0 +1,18 @@
+_ulid: 01KFM7CRF0Z5XDYVV0ZH1YPNJT
+slugs:
+  - task-file-type-detection
+title: "Implement: File Type Detection"
+type: task
+spec_ref: "@merge-file-detection"
+derivation: auto
+status: cancelled
+blocked_by: []
+closed_reason: Restructuring task breakdown
+depends_on:
+  - "@task-semantic-yaml-merge-driver"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-23T01:27:11.072Z
+todos: []

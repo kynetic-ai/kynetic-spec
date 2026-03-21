@@ -1,0 +1,49 @@
+notes:
+  - _ulid: 01KM05XRE7EF1DS1SQN8FKRQMB
+    content: "Implemented session lifecycle event emission. Changes: (1) dispatch.ts captures
+      runInvocation() result and calls new _emitSessionLifecycleEvent() method after invocation
+      terminal events. Maps: success→session.ended, timed_out→session.ended, failed→session.ended
+      (or session.cancelled if shutdown abort), stalled→session.idle_timeout. Payload includes
+      session_id, agent_id, task_ref, duration_ms, terminal_reason, and work_summary (event_count,
+      iteration_count, tasks_completed from session metadata). (2) Updated PAYLOAD_FIELDS_BY_EVENT
+      in hooks.ts to align field names with spec (duration_ms, terminal_reason, work_summary). (3)
+      Updated KNOWN_EVENT_FIELDS in action-executor.ts for consistency. (4) 24 tests covering all AC
+      requirements including outcome mapping, payload contract, field registry consistency, filter
+      matching, and action run closure contract."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T09:55:11.431Z
+  - _ulid: 01KM06FFXGM3DWH7E82YV4PR90
+    content: "[FIX_CYCLE: 1] Review findings: Merge conflict with dev in src/schema/hooks.ts. On dev,
+      PAYLOAD_FIELDS_BY_EVENT was refactored to reference PAYLOAD_FIELDS_BY_EVENT_TYPE from
+      src/schema/event-registry.ts (via the command-action task merge). This task updated the inline
+      PAYLOAD_FIELDS_BY_EVENT with correct session field names (duration_ms, terminal_reason,
+      work_summary), but the inline definition no longer exists on dev. To resolve: rebase onto dev,
+      then update src/schema/event-registry.ts to change session event payload_fields from
+      [duration, reason] to [duration_ms, terminal_reason, work_summary] for session.ended,
+      session.idle_timeout, and session.cancelled. The hooks.ts re-export will then automatically
+      pick up the correct fields."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T10:04:52.528Z
+  - _ulid: 01KM06FSWTGYXW8NF9WT46EZF3
+    content: "Review approved (verdict: approve, review: @01KM06BB). Code changes are correct — all ACs
+      covered, tests pass (6075 passed, 1 pre-existing failure unrelated to this task), mappings
+      match spec. However, merge to dev failed due to semantic conflict in src/schema/hooks.ts: the
+      dev branch refactored PAYLOAD_FIELDS_BY_EVENT to reference event-registry.ts, while this task
+      updated the old inline definition. Worker needs to rebase onto dev and update
+      event-registry.ts session event payload_fields to use duration_ms, terminal_reason, and
+      work_summary instead of duration and reason."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T10:05:02.746Z
+  - _ulid: 01KM07FTP66EZ32TA3KYBBB4ZD
+    content: "[FIX_CYCLE: 2] Merged dev into branch to incorporate task-event-schema changes (commit
+      c790bb1ff). Resolved hooks.ts conflict: accepted the re-export from event-registry.ts
+      (PAYLOAD_FIELDS_BY_EVENT = PAYLOAD_FIELDS_BY_EVENT_TYPE). Updated event-registry.ts session
+      event payload_fields from placeholder names (duration, reason) to spec-aligned names
+      (duration_ms, terminal_reason, work_summary). Updated event-registry tests to match. All 6123
+      tests pass (1 pre-existing failure in review-cli.test.ts:152 unrelated to this task)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-18T10:22:32.134Z

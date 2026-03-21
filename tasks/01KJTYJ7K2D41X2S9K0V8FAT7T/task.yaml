@@ -1,0 +1,31 @@
+_ulid: 01KJTYJ7K2D41X2S9K0V8FAT7T
+slugs:
+  - task-harden-spec-item-save-concurrency
+title: Harden spec item save/update path against stale full-object writes
+type: bug
+description: saveSpecItem currently forwards the full LoadedSpecItem into updateSpecItem, which can
+  overwrite concurrent edits to the same item. Refactor save/update flow to patch only intended
+  fields from latest on-disk state and add conflict-safe behavior.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #652. Hardened spec item mutation serialization by enforcing patch-only
+  save/update payloads, guarding against LoadedSpecItem full-object writes, and adding stale _path
+  ULID fallback for safe concurrent edits. Added regression tests in
+  tests/spec-item-mutation-serialization.test.ts. AC coverage: N/A (task has no spec_ref; reviewed
+  under infra/internal quality gates)."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - concurrency
+  - parser
+  - cli
+vcs_refs: []
+created_at: 2026-03-03T22:54:39.714Z
+started_at: 2026-03-04T00:18:55.098Z
+submitted_at: 2026-03-04T00:24:53.024Z
+completed_at: 2026-03-04T00:40:22.363Z
+todos: []

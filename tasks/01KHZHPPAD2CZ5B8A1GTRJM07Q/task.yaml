@@ -1,0 +1,32 @@
+_ulid: 01KHZHPPAD2CZ5B8A1GTRJM07Q
+slugs: []
+title: "Write core skill: kspec:plan"
+type: task
+description: Refactor the spec-plan skill into kspec:plan. Read current content from
+  .claude/skills/spec-plan/SKILL.md as reference. Covers plan-to-spec translation — both import path
+  (structured markdown document) and manual path (incremental CLI). Rewrite from base principles.
+  Write to templates/skills/plan/SKILL.md (rendered to .claude/skills/kspec/plan/). Add entry to
+  manifest.yaml.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #470. Wrote templates/skills/plan/SKILL.md (336 lines) covering
+  plan-to-spec translation: two-path approach (import vs manual), three-phase workflow, plan
+  document format with full section reference and field table, trait selection guide, YAML pitfalls,
+  dry-run-first pattern, post-import checklist, plan lifecycle, batch alternative, and command
+  reference. Added manifest entry. All quality gates passed."
+depends_on:
+  - "@01KHZHPG"
+context: []
+priority: 3
+tags:
+  - core-skills
+  - skill-content
+vcs_refs: []
+created_at: 2026-02-21T07:30:24.717Z
+started_at: 2026-02-23T11:52:19.534Z
+completed_at: 2026-02-23T12:21:49.864Z
+todos: []
+automation: eligible

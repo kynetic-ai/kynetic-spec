@@ -1,0 +1,29 @@
+_ulid: 01KHFBSZ4A4M52HPYKZS0ZVY09
+slugs:
+  - implement-skill-meta-type
+title: Implement Skill Meta Type
+type: task
+spec_ref: "@skill-meta-type"
+plan_ref: "@plan-portable-agent-integration-infrastructure"
+status: completed
+blocked_by: []
+closed_reason: |-
+  Merged in PR #371. Implemented Skill as the 5th meta item type:
+
+  - Added SkillSchema with id, name, description, origin (core|project|local), version, tags
+  - Added skills array to MetaManifestSchema
+  - Implemented loadSkillContent() to read .kspec/skills/<id>/SKILL.md
+  - Added LoadedSkill interface with _sourceFile runtime metadata
+  - Updated findMetaItemByRef() to include skills in search
+  - Updated getMetaItemType() to discriminate skills by origin field
+  - All 7 acceptance criteria have test coverage (17 tests)
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-15T00:39:29.674Z
+started_at: 2026-02-15T00:59:29.218Z
+completed_at: 2026-02-15T01:16:20.782Z
+todos: []
+automation: eligible

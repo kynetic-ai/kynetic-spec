@@ -1,0 +1,25 @@
+_ulid: 01KKB5HZFRP75B7J88E89SQSMB
+slugs:
+  - implement-batch-item-fetch-api
+title: Implement Batch Item Fetch API
+type: task
+spec_ref: "@batch-item-fetch-api"
+plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #776. Implemented POST /api/items/batch for mixed spec/task ref lookup
+  with unresolved tracking, empty-batch handling, and 100-ref validation. AC coverage verified for
+  @batch-item-fetch-api and applicable @trait-api-endpoint criteria, and current HEAD passed npm
+  test in a clean temporary worktree before merge."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKDYNW0HGY4JW1HQHY6RSRXB
+created_at: 2026-03-10T06:04:42.360Z
+started_at: 2026-03-11T08:02:37.478Z
+submitted_at: 2026-03-11T08:09:37.179Z
+completed_at: 2026-03-11T08:39:29.791Z
+todos: []
+automation: eligible

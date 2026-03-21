@@ -1,0 +1,53 @@
+notes:
+  - _ulid: 01KK2ZSVSCKM3EA1TDRT26A62V
+    content: >-
+      Fixed double @@ bug and made task ref a clickable link in SessionContextPanel:
+
+
+      1. Added normalizeTaskId() to strip leading @ from task_id before display, preventing @@prefix
+
+      2. Replaced plain text <span> with <a> tag linking to /tasks?ref={taskId} with
+      data-testid='session-task-link'
+
+      3. Added  to resolve task title via fetchTask — displays title when available, falls back to
+      @ULID prefix
+
+      4. Also fixed the same double @@ issue in the sessions list page (shortTaskRef function)
+
+
+      Files changed:
+
+      - packages/web-ui/src/lib/components/session/SessionContextPanel.svelte
+
+      - packages/web-ui/src/routes/sessions/+page.svelte
+
+
+      All 161 web-ui tests pass. Pre-existing failures in codex-related tests are unrelated.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T01:50:13.804Z
+  - _ulid: 01KK305NGQMKKXJHHVHG8Y4J5G
+    content: "Review findings: MUST-FIX
+      packages/web-ui/src/lib/components/session/SessionContextPanel.svelte:37-47 fetches task title
+      in a  that reruns whenever session is refreshed. In
+      packages/web-ui/src/routes/sessions/[id]/+page.svelte:67-69 session metadata is refreshed
+      every 3s for live sessions, so this causes repeated /api/tasks/:ref requests even when task_id
+      is unchanged. Cache last fetched task_id (or guard by task_id change) before calling
+      fetchTask."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-07T01:56:40.599Z
+  - _ulid: 01KK305TG42N62T04JX4ZJVXCN
+    content: "[FIX_CYCLE: 1] Review findings: Review issues: MUST-FIX repeated fetchTask calls in
+      SessionContextPanel during live session refresh."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-07T01:56:45.700Z
+  - _ulid: 01KK31HVJPQGX0XFPQ9HRRVRBM
+    content: "Fix cycle 1: Addressed MUST-FIX review feedback — repeated fetchTask calls in
+      SessionContextPanel during live session refresh. Added lastFetchedTaskId guard so the $effect
+      only calls fetchTask when task_id actually changes, not on every 3s session metadata refresh.
+      All 161 web-ui tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T02:20:48.598Z

@@ -1,0 +1,74 @@
+_ulid: 01KJGW1EZK12VQ50673X0FPZ01
+slugs: []
+title: Fix ralph orchestrator memory leaks causing OOM after ~30 iterations
+type: bug
+description: >-
+  The ralph orchestrator process (kspec ralph run) accumulates memory across loop iterations until
+  it hits the ~4GB V8 heap limit and crashes with OOM. This happens even with --restart-every 1
+  because that only restarts the spawned agent subprocess, not the orchestrator itself.
+
+
+  Stack trace ends at StringDecoder::DecodeData — the orchestrator reading stdio from the spawned
+  agent.
+
+
+  Memory leaks identified:
+
+
+  1. Event listeners stacking (primary) — src/cli/commands/ralph.ts ~L1700-1748. update and request
+  listeners registered on agent.client but never removed. On agent restart, new listeners added to
+  new client; old closures capture translator/renderer/state preventing GC. Fix: call
+  agent.client.removeAllListeners() before agent.kill() in restart-every block and in finally
+  cleanup.
+
+
+  2. Framing buffer accumulation — src/acp/framing.ts ~L87. JSON-RPC framing uses this.buffer +=
+  chunk string concatenation. Buffer not reset across newSession() calls. Fix: ensure fresh
+  ACPClient/framing on agent respawn or add buffer reset method.
+
+
+  3. Unbounded Maps/Arrays — src/cli/commands/ralph.ts. sessionIterationMap: new entry per
+  iteration, never cleared (~L1424, 1757). recentTaskRefs[]: grows without bound (~L1423,
+  1845-1849). ACPClient.sessions Map: accumulates per-session entries, never pruned (~client.ts
+  L77). Fix: prune old entries, cap arrays, delete closed sessions.
+
+
+  4. Async event logging fire-and-forget — src/cli/commands/ralph.ts ~L1714-1720. appendEvent() with
+  full ACP update objects queued via .catch(() => {}). Pending writes hold update objects in memory
+  until I/O completes. Fix: consider backpressure or limiting concurrent pending writes.
+
+
+  Acceptance Criteria:
+
+  - ac-1: Event listeners are removed before agent.kill() in restart-every block and finally cleanup
+
+  - ac-2: sessionIterationMap entries are pruned after each iteration (keep only current)
+
+  - ac-3: recentTaskRefs is bounded (e.g. keep last N or clear per iteration, only needed at
+  wrap-up)
+
+  - ac-4: ACPClient.sessions entries are removed when sessions end
+
+  - ac-5: Ralph loop can run 30+ iterations with codex-acp adapter without OOM
+
+  - ac-6: Existing ralph tests pass
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #586. Fixed ralph orchestrator memory leaks: event listener cleanup,
+  session iteration map pruning, bounded recentTaskRefs, ACP client session cleanup on close."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - ralph
+  - bug
+vcs_refs: []
+session_id: null
+created_at: 2026-02-28T00:58:08.755Z
+started_at: 2026-02-28T01:29:47.506Z
+submitted_at: 2026-02-28T01:33:41.426Z
+completed_at: 2026-02-28T05:35:45.539Z
+todos: []

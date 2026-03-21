@@ -1,0 +1,24 @@
+_ulid: 01KJ3FXJJ4X0RPBR4ZXWBCYJZ0
+slugs:
+  - implement-triage-agent-export
+title: Implement Triage Agent Export
+type: task
+spec_ref: "@triage-agent-export"
+plan_ref: "@plan-interactive-triage-system"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #454. Shared triage export formatter in src/export/triage.ts extracted
+  from CLI and daemon. Two formats: context (markdown) and JSON. All 4 own ACs and 6 trait ACs
+  (@trait-json-output) covered with 18 dedicated tests. Prior review findings (2 MUST-FIX, 1
+  SHOULD-FIX) addressed in fix cycle."
+depends_on:
+  - "@implement-triage-record-schema"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-22T20:16:10.820Z
+started_at: 2026-02-23T01:05:57.250Z
+completed_at: 2026-02-23T01:37:07.220Z
+todos: []
+automation: eligible

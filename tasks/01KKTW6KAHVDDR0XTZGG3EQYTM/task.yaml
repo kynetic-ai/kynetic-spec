@@ -1,0 +1,68 @@
+_ulid: 01KKTW6KAHVDDR0XTZGG3EQYTM
+slugs:
+  - task-review-detail-page
+title: Build review detail page with thread view and revision selector
+type: task
+description: |
+  Create the /reviews/[id] route showing the full review with threads,
+  checks, verdicts, disposition, and a revision selector for navigating
+  between reviews on the same subject.
+
+  Why: This is the primary review interaction surface — where humans
+  read agent findings, see check results, and understand the overall
+  review state. Multiple reviews on the same subject (e.g., 6 rounds
+  of plan review) need to be navigable as revisions.
+
+  What: Header with review title, lifecycle badge, disposition badge,
+  subject info (type, ref, version), and reviewer. Revision dropdown
+  listing all reviews for the same subject ordered by creation date.
+  Thread list with kind badges (blocker=red, question=amber, nit=gray),
+  resolution state, entries with author/timestamp, and markdown
+  rendering in bodies. Checks section with pass/fail status and
+  staleness indicator. Verdicts with reviewer decisions. Empty states
+  for sections with no items.
+
+  How: TanStack Query fetching from GET /api/reviews/:id. For the
+  revision selector, query GET /api/reviews?subject-ref=X to find
+  sibling reviews. WebSocket subscription for real-time updates. Thread
+  entries rendered as a conversation view. Markdown rendering with
+  syntax highlighting in code blocks.
+
+  Covers: @review-records-web-ui ac-2, ac-8, ac-9, ac-10, ac-11.
+spec_ref: "@review-records-web-ui"
+plan_ref: "@plan-review-records-web-ui"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Review detail page at /reviews/[id] with threads (kind badges,
+  resolution state, conversation view), checks (pass/fail/stale), verdicts (decision badges),
+  disposition, markdown rendering (syntax highlighting), author/timestamps, empty states, and
+  revision selector for same-subject reviews. All 5 assigned ACs (ac-2, ac-8, ac-9, ac-10, ac-11)
+  covered. Two nits noted: ReviewDetail.notes type field mismatch, misleading fetchReviewSiblings
+  JSDoc comment."
+depends_on:
+  - "@task-review-list-page"
+  - "@task-review-api-threads"
+  - "@task-review-api-verdicts"
+context: []
+priority: 3
+tags:
+  - web-ui
+  - review
+vcs_refs: []
+review_ref: "@01KKZ30JMRB16ZTFPAGJM73CY0"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-17T20:33:49.646Z
+  commit: 392421a4da0b405f2fd37ed90bf6a62ff4e3effc
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KKYPGR9N08JJYXPYZA7HHJ43
+created_at: 2026-03-16T08:29:03.185Z
+started_at: 2026-03-17T20:07:11.132Z
+submitted_at: 2026-03-17T20:33:50.059Z
+completed_at: 2026-03-17T23:52:38.177Z
+todos: []
+automation: eligible

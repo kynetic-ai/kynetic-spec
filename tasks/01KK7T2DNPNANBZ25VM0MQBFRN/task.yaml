@@ -1,0 +1,29 @@
+_ulid: 01KK7T2DNPNANBZ25VM0MQBFRN
+slugs:
+  - update-existing-session-specs-for-new-storage-path
+title: Update existing session specs for new storage paths
+type: task
+spec_ref: "@session-spec-path-updates"
+plan_ref: "@plan-session-storage-separation"
+status: completed
+blocked_by: []
+closed_reason: All 8 ACs completed. Updated path references in @session-events (ac-1, ac-7, ac-8),
+  @session-creation-and-env-injection (description, ac-create, ac-budget-local), @session-log-list
+  (ac-1), @cli-ralph (ac-22) from .kspec/sessions/ to .kspec-sessions/. Removed @trait-shadow-commit
+  from @session-compact and @session-stale-cleanup. Spec-only task — no code changes or PR needed.
+depends_on:
+  - "@extract-session-path-resolution-from-specdir"
+context: []
+priority: 1
+tags:
+  - session
+  - storage
+  - spec
+vcs_refs: []
+session_id: 01KK8BZFWX77P91QZD0WDN87HA
+created_at: 2026-03-08T22:46:14.966Z
+started_at: 2026-03-09T04:01:17.972Z
+submitted_at: 2026-03-09T04:07:04.856Z
+completed_at: 2026-03-09T04:07:19.580Z
+todos: []
+automation: eligible

@@ -1,0 +1,20 @@
+_ulid: 01KGVARWDN5AHFD3YXG2W20EZG
+slugs: []
+title: "Fix ralph log: String() on array of objects produces [object Object]"
+type: task
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #329. Added stringify() helper to handle array-of-content-blocks and
+  plain objects in ralph event output extraction."
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-02-07T05:56:36.917Z
+started_at: 2026-02-07T06:32:04.575Z
+completed_at: 2026-02-07T06:41:35.003Z
+todos: []

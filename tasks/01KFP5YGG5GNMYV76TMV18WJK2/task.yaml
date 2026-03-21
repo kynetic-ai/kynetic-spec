@@ -1,0 +1,63 @@
+_ulid: 01KFP5YGG5GNMYV76TMV18WJK2
+slugs: []
+title: Improve PR review process enforcement
+type: task
+description: >-
+  Ralph loop session analysis revealed gaps in review feedback handling:
+
+
+  ## Issues Found
+
+
+  1. **Confidence scores not acting as gates**
+     - PR #204 merged with 2/5 Greptile confidence ('Critical implementation bugs')
+     - Should require 4/5+ or explicit issue resolution tracking
+
+  2. **Deferred feedback not tracked**
+     - PR #206 daemon path issue deferred with 'will track separately' but no task created
+     - ~40% of deferred items had proper tracking
+     - Pattern: 'will fix later' without task system integration
+
+  3. **Standards feedback ignored**
+     - ~95% of correctness bugs addressed
+     - ~60% of standards/compliance feedback addressed
+     - AC annotation feedback in PR #204 completely ignored
+
+  ## Proposed Improvements
+
+
+  1. **Confidence score gates**: Document that PRs with <4/5 confidence require explicit resolution
+  tracking before merge
+
+
+  2. **Deferred feedback workflow**: When deferring PR feedback, MUST create task with:
+     - Reference to PR and comment
+     - Clear scope of what needs fixing
+     - Link in commit message (e.g., 'Deferred: @task-ref')
+
+  3. **Mandatory /local-review**: Make pre-PR review non-optional:
+     - Check AC coverage
+     - Verify test quality
+     - Confirm standards compliance
+
+  ## Context
+
+
+  From analysis of PRs #193-206 during overnight Ralph loop sessions. 14 PRs merged with mixed
+  review handling quality.
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #277 merged - added CI re-verification requirements to pr-review-merge and
+  pr-review-loop workflows plus skill documentation"
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-23T19:40:24.453Z
+started_at: 2026-01-29T23:38:50.645Z
+completed_at: 2026-01-30T00:20:34.166Z
+todos: []
+automation: needs_review

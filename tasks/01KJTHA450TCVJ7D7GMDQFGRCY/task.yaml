@@ -1,0 +1,32 @@
+_ulid: 01KJTHA450TCVJ7D7GMDQFGRCY
+slugs: []
+title: Fix AC-10 test flakiness in cli-agent-commands
+type: task
+description: "Tests for AC-10 fail intermittently when a daemon from another parallel shard is
+  running on port 3456. Error: 400 - undefined is not an object. Tests use kspec CLI subprocess
+  which connects to any real daemon. Fix by mocking the daemon at CLI level or ensuring isolation."
+spec_ref: "@cli-agent-commands"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #672. Isolated AC-10 daemon dispatch tests by adding per-fixture
+  daemon.auto_start=false config and forcing HOME/USERPROFILE to the temp project dir for subprocess
+  CLI calls, eliminating external daemon leakage. Verified AC coverage for @cli-agent-commands ac-10
+  and @trait-error-guidance ac-1/ac-2 in tests/cli-agent-commands.test.ts; local full regression npm
+  test passed and CI checks passed on current HEAD."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - testing
+  - bug
+vcs_refs: []
+session_id: 01KJWD6PVCFRET92JHW9GRPE70
+created_at: 2026-03-03T19:03:02.559Z
+started_at: 2026-03-04T12:32:34.844Z
+submitted_at: 2026-03-04T12:34:19.653Z
+completed_at: 2026-03-04T12:43:33.497Z
+todos: []
+automation: eligible

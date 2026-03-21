@@ -1,0 +1,44 @@
+_ulid: 01KJ88CMZ0WETQKBZXTJJ28EDK
+slugs: []
+title: Document N/A trait AC annotation format in testing convention
+type: task
+description: >-
+  When a trait AC doesn't apply to a spec, the correct annotation format is:
+
+  `// AC: @trait-slug ac-N N/A — reason`
+
+
+  Not prose comments like `// @trait-slug ac-N: N/A — reason` or bullet lists in file headers.
+
+
+  This came up in PR #503 where Codex flagged N/A trait ACs as MUST-FIX because they used prose
+  instead of the // AC: prefix. The convention should be documented in the testing convention
+  (templates/agents-sections/) so agents get it right the first time.
+
+
+  Update:
+
+  - templates/agents-sections/ testing section to include N/A annotation format
+
+  - Regenerate kspec-agents.md after
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #520. Documented N/A trait AC annotation format in
+  templates/agents-sections/05-commit-convention.md and regenerated kspec-agents.md. Prior
+  SHOULD-FIX about hardcoded // AC: prefix was addressed. All CI passed."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - convention
+  - testing
+  - documentation
+vcs_refs: []
+created_at: 2026-02-24T16:40:48.352Z
+started_at: 2026-02-25T02:25:09.340Z
+completed_at: 2026-02-25T02:41:24.886Z
+todos: []
+automation: eligible

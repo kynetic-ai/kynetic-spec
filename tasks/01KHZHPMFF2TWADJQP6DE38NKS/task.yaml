@@ -1,0 +1,34 @@
+_ulid: 01KHZHPMFF2TWADJQP6DE38NKS
+slugs: []
+title: "Write core skills: kspec:triage-inbox and kspec:triage-automation"
+type: task
+description: Split the monolithic triage skill into two focused skills. Read current content from
+  .claude/skills/triage/SKILL.md as reference. kspec:triage-inbox covers inbox item processing
+  (categorize, promote to spec/task, merge duplicates, delete stale). kspec:triage-automation covers
+  task automation eligibility assessment. Each should be self-descriptive and simpler than the
+  combined original. Rewrite from base principles. Write to templates/skills/triage-inbox/SKILL.md
+  and templates/skills/triage-automation/SKILL.md (rendered to .claude/skills/kspec/triage-inbox/
+  and .claude/skills/kspec/triage-automation/). Add both entries to manifest.yaml.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #468. Split monolithic triage skill into two focused skills:
+  triage-inbox (225 lines, covers record-act pattern, inbox categorization, interactive/individual
+  triage, spec-first processing, observation processing, batch operations) and triage-automation
+  (134 lines, covers eligibility criteria, per-task assessment, auto mode, commands reference). Both
+  entries added to manifest.yaml and install correctly via skill install-core. All tests pass."
+depends_on:
+  - "@01KHZHPG"
+context: []
+priority: 3
+tags:
+  - core-skills
+  - skill-content
+vcs_refs: []
+created_at: 2026-02-21T07:30:22.831Z
+started_at: 2026-02-23T11:25:27.574Z
+completed_at: 2026-02-23T11:45:45.183Z
+todos: []
+automation: eligible

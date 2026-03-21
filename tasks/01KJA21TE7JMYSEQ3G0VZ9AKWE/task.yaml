@@ -1,0 +1,83 @@
+_ulid: 01KJA21TE7JMYSEQ3G0VZ9AKWE
+slugs: []
+title: Consolidate naming inconsistencies in session modules
+type: task
+description: >-
+  After the session.ts split (depends on @01KJ9ZBT), consolidate naming inconsistencies across the
+  new modules.
+
+
+  ## Duration Formatters
+
+
+  Two formatters with subtle behavioral differences and unclear names:
+
+  - formatDuration: omits seconds when hours are present
+
+  - formatDurationLong: shows "Xh Ym" when both present, "Xm Ys" without hours
+
+
+  Consolidate into a single formatDuration(ms, options?) where options controls precision/verbosity.
+  Or rename to make the behavioral difference clear (e.g., formatDurationCompact vs
+  formatDurationVerbose).
+
+
+  ## displayRef Pattern (5 variants)
+
+
+  Five different approaches to the same thing:
+
+  1. displayRef lambda in formatSessionContext
+
+  2. getRef lambda in getIterationStats
+
+  3. Inline `task.slugs.length > 0 ? task.slugs[0] : null` in to*TaskSummary mappers
+
+  4. @-prefixed variant in other mappers
+
+  5. Various inline ternaries
+
+
+  Consolidate into a single `getDisplayRef(item: { slugs: string[], _ulid: string }): string`
+  utility in types.ts or a shared utils module. Should return `@slug` if slugs exist, otherwise
+  short ULID.
+
+
+  ## Status Color (4 duplicates)
+
+
+  The same completed->green, active->blue, else->yellow ternary appears 4 times across format
+  functions. Extract to `statusColor(status: string): chalk.Chalk`.
+
+
+  ## Priority Formatting (3 duplicates)
+
+
+  `task.priority <= 2 ? chalk.red(...) : chalk.gray(...)` appears 3 times. Extract to
+  `formatPriority(level: number): string`.
+
+
+  Depends on: @01KJ9ZBT (session.ts refactor)
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #532. Consolidated naming inconsistencies: renamed
+  formatDuration→formatDurationCompact/formatDurationVerbose, extracted sessionStatusColor() in
+  log.ts, consolidated displayRef via getDisplayRef() in format.ts, renamed
+  SessionContext→SessionStartContext. All CI passed, clean review."
+depends_on:
+  - "@01KJ9ZBT"
+context: []
+priority: 3
+tags:
+  - refactor
+  - cli
+  - session
+vcs_refs: []
+created_at: 2026-02-25T09:28:30.917Z
+started_at: 2026-02-25T14:03:57.745Z
+completed_at: 2026-02-25T14:28:10.142Z
+todos: []
+automation: eligible

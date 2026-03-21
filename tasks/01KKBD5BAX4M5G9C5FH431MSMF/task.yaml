@@ -1,0 +1,36 @@
+_ulid: 01KKBD5BAX4M5G9C5FH431MSMF
+slugs: []
+title: "Reflection: Harden machine-readable output contracts for JSON commands (especially 'kspec
+  validate -"
+type: task
+description: >-
+  Harden kspec validate --json to output strict JSON with no trailing text.
+
+
+  Current behavior: validate --json may append human-readable summary text after the JSON object,
+  breaking jq pipelines and programmatic consumers.
+
+
+  Fix: Ensure all output after the opening { goes through the JSON formatter. Check
+  src/cli/commands/validate.ts for any console.log calls that bypass the JSON output mode. Add a
+  test that pipes validate --json output through JSON.parse to catch regressions.
+spec_ref: "@trait-json-output"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #750. Hardened validate/lint --json to emit strict single-object JSON
+  by restructuring both commands to collect all validation data before output. Fixed
+  console.log(initHint) leak in JSON mode. Added 5 tests covering ANSI-free output, data
+  completeness (alignment, skills), and lint --json parseability. All trait AC coverage verified
+  (ac-1, ac-2)."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKC0V40BWZ2BRNHCSVYH9RHE
+created_at: 2026-03-10T08:17:37.116Z
+started_at: 2026-03-10T14:24:29.371Z
+submitted_at: 2026-03-10T14:24:32.907Z
+completed_at: 2026-03-10T15:20:46.263Z
+todos: []
+automation: eligible

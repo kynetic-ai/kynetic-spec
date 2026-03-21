@@ -1,0 +1,31 @@
+_ulid: 01KK2T7CVKTKWAG10MJFZHQXYK
+slugs: []
+title: Show plan content in plans view — expand card or detail view
+type: task
+description: "The /plans page shows plan metadata (title, status, progress, spec/task counts) but
+  not the actual plan content text. Plans have a content field with the full markdown plan document.
+  Add: (1) an expandable section on each plan card, or a click-to-open detail view, that renders the
+  plan content as formatted markdown, (2) ensure the daemon GET /api/plans endpoint returns the
+  content field (check if it's currently omitted for payload size), (3) if content is large,
+  consider lazy-loading it on expand rather than including in the list response."
+spec_ref: "@ui-plans-view"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp. Added lazy-loaded plan content expand UI and
+  /api/plans/:ref detail endpoint with AC-2 E2E coverage.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - web-ui
+vcs_refs: []
+session_id: 01KK3MQHJ0CSHVK9MFSFTJZ3DQ
+created_at: 2026-03-07T00:12:45.811Z
+started_at: 2026-03-07T08:12:10.455Z
+submitted_at: 2026-03-07T08:12:12.110Z
+completed_at: 2026-03-07T08:43:41.628Z
+todos: []
+automation: eligible

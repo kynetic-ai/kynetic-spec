@@ -1,0 +1,33 @@
+notes:
+  - _ulid: 01KG3P0QTY1H3W41Q5A0RVGMDW
+    content: >-
+      Issue: When exporting JSON to stdout (no -o flag), the info() call on line 59 of export.ts
+      outputs 'ℹ Generating snapshot...' to stdout before the JSON, corrupting the output.
+
+
+      This breaks the GitHub Pages snapshot at
+      https://kynetic-ai.github.io/kynetic-spec/kspec-snapshot.json - only tasks are parsed, other
+      fields missing.
+
+
+      Fix: Suppress info message when JSON output goes to stdout. Line 59 should check if
+      format=json and no output file before calling info().
+
+
+      File: src/cli/commands/export.ts:59
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-29T01:31:22.335Z
+  - _ulid: 01KG3PP501E0JV5R4GD0XEQ525
+    content: >-
+      Fixed by suppressing info() message when JSON output goes to stdout. Added check for
+      jsonToStdout condition before calling info(). Verified:
+
+      - JSON to stdout now starts with valid JSON (no info prefix)
+
+      - Info message still shows when writing to file
+
+      - All 25 export tests pass
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-29T01:43:03.938Z

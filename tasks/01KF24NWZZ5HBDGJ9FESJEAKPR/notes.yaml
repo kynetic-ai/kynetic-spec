@@ -1,0 +1,16 @@
+notes:
+  - _ulid: 01KF3V0NCXPTKFV14AS2J88TE3
+    content: Checked task delete and derive hint specs - added missing AC. Found Shadow Branch parent
+      task (@task-shadow-branch) might be stale - children all implemented but parent pending.
+      Consider closing or repurposing.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-16T16:43:00.893Z
+  - _ulid: 01KF3V1GVN66Q8BXZ0QNPV5E8H
+    content: "Updated: shadow-branch module status to implemented, cancelled stale umbrella task.
+      Remaining gap: many core/schema spec items from bootstrap phase still show not_started but are
+      implemented. Full sweep would require going through ~50+ items. Recommend addressing gradually
+      or as a separate larger task."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-16T16:43:29.013Z

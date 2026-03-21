@@ -1,0 +1,58 @@
+_ulid: 01KKZPVKH0KPXZCQH7SGZ2B92S
+slugs:
+  - task-command-action
+title: Implement command action with structured form
+type: task
+description: |
+  Implement the command action using structured program + args form
+  instead of shell strings. Eliminates injection risks.
+
+  Why: Shell string interpolation with user-controlled values is an
+  injection vector. Structured commands are safe by construction.
+
+  What: Command actions specify program (string) and args (string[]).
+  Template variables are interpolated as literal strings within each
+  arg element, never passed through shell parsing. Event context is
+  available via namespaced KSPEC_* environment variables with an
+  allowlist and 1KB size limit per value. Shell mode is off by default.
+
+  How: Use child_process.spawn (not exec/execSync) with shell: false.
+  Each arg is a separate argv element. Template values go into args
+  via string replacement, not shell expansion. The allowlist for env
+  vars is derived from the event payload schema.
+
+  Covers: @dispatch-command-action ac-1 through ac-4.
+spec_ref: "@dispatch-command-action"
+plan_ref: "@plan-dispatch-event-system-expansion"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev. Implemented command action with structured program+args form: shell
+  field (default false) on CommandActionSchema, KSPEC_* env var injection via allowlist with 1KB
+  truncation, spawn() with shell:false for injection safety. All 4 ACs covered by 25 tests. One nit
+  noted about multi-byte truncation test boundary coverage."
+depends_on:
+  - "@task-action-model"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - actions
+  - security
+vcs_refs: []
+review_ref: "@01KM043KNE5VCKKWNPRHP53165"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T09:18:09.419Z
+  commit: ca266e824eb760fa55bd42cf3ceb953a6b93c35b
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM039544WKKWBB85YXDP2H70
+created_at: 2026-03-18T05:31:52.224Z
+started_at: 2026-03-18T09:09:24.374Z
+submitted_at: 2026-03-18T09:18:09.812Z
+completed_at: 2026-03-18T09:26:44.323Z
+todos: []
+automation: eligible

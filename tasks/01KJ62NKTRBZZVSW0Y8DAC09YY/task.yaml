@@ -1,0 +1,23 @@
+_ulid: 01KJ62NKTRBZZVSW0Y8DAC09YY
+slugs:
+  - task-iteration-boundary-counting
+title: Implement index-based iteration boundary counting in computeIterationSummaries
+type: task
+spec_ref: "@session-log-show"
+plan_ref: "@plan-sequence-based-iteration-counting-for-session-anal"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #486. Implemented index-based iteration boundary counting using
+  prompt.sent events, with legacy fallback for older sessions."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - bug
+vcs_refs: []
+created_at: 2026-02-23T20:22:21.784Z
+started_at: 2026-02-23T22:31:18.626Z
+completed_at: 2026-02-23T23:02:12.592Z
+todos: []
+automation: eligible

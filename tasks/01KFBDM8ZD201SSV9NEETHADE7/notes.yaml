@@ -1,0 +1,94 @@
+notes:
+  - _ulid: 01KFBDMFJBB1A6GBW2M8NMT2ZY
+    content: |-
+      From retrospective observations - multiple friction points around JSON output:
+
+      **Issues identified:**
+      1. Global --json flag conflicts with command-specific output formats
+      2. stderr messages leak into JSON output (especially git stderr)
+      3. Some commands wrap output, others return raw
+      4. Inconsistent envelope formats between commands
+
+      **Actions needed:**
+      1. Audit all commands for JSON output behavior
+      2. Document convention: global --json only, no command-specific JSON flags
+      3. Use output() helper consistently
+      4. Separate stderr stream for git/subprocess output
+      5. Standardize envelope format (success, data, error)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T15:23:05.675Z
+  - _ulid: 01KFFTJSFSW1EQJKBWXHJ5ZR7R
+    content: >-
+      Audit findings:
+
+
+      **Issues identified:**
+
+
+      1. **clone-for-testing command has its own --json flag** (line 147): This conflicts with
+      global --json flag pattern. Should use isJsonMode() from output helper instead.
+
+
+      2. **Inconsistent envelope formats:**
+         - output() helper: outputs raw data in JSON mode
+         - success() helper: wraps in { success: true, message, ...data }
+         - error() helper: wraps in { success: false, error, details }
+         - batch.ts: outputs raw BatchResult structure
+         - derive.ts: outputs custom array format
+         - meta.ts: outputs raw item data
+         - session checkpoint: outputs { decision, reason } (special case for Claude Code hooks)
+
+      3. **Direct JSON.stringify usage found in:**
+         - output.ts (helpers - OK)
+         - batch.ts (formatBatchOutput - OK, uses isJsonMode())
+         - session.ts (checkpoint - special case for hooks, OK)
+         - clone-for-testing.ts (uses own --json flag - ISSUE)
+         - item.ts (--dry-run output - OK, not JSON mode)
+         - derive.ts (outputs data directly - uses isJsonMode(), OK)
+         - meta.ts (outputs data directly - uses isJsonMode(), OK)
+         - setup.ts (outputs example config - OK, not for JSON mode)
+
+      4. **Stderr handling:** git commands properly use stdio: ['pipe', 'pipe', 'pipe'] to suppress
+      stderr. No issues found.
+
+
+      **Recommended fixes:**
+
+      1. Remove --json option from clone-for-testing, use global --json flag
+
+      2. Document envelope format conventions (no change needed - current pattern is intentional)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T08:26:19.513Z
+  - _ulid: 01KFFTQZP58HRGJP0179ZX09FP
+    content: >-
+      Completed JSON output consistency audit and fix.
+
+
+      **Changes made:**
+
+      1. Removed command-specific --json flag from clone-for-testing command
+
+      2. Updated clone-for-testing to use global isJsonMode() helper
+
+      3. Updated tests to use global --json flag (via kspecJson helper)
+
+
+      **Audit results:**
+
+      - No stderr leakage issues found (git commands properly use stdio pipes)
+
+      - Envelope formats are intentionally varied:
+        - output(): raw data for general use
+        - success(): wrapped { success, message, ...data } for success confirmations
+        - error(): wrapped { success: false, error, details } for errors
+        - session checkpoint: special { decision, reason } format for Claude Code hooks
+      - All commands now use global --json flag consistently
+
+
+      All 808 tests pass. The one inconsistency (clone-for-testing's own --json flag) has been
+      fixed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T08:29:09.701Z

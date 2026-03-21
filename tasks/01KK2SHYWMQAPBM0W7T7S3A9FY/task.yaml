@@ -1,0 +1,33 @@
+_ulid: 01KK2SHYWMQAPBM0W7T7S3A9FY
+slugs: []
+title: Fix agent completed count always showing 0 — aggregate from session history
+type: task
+description: "Agent cards show Active: 0, Completed: 0 because the completed count is only tracked
+  in ephemeral page state via WebSocket events — it resets on page reload and the API never provides
+  initial counts. Fix: (1) In daemon GET /api/agent/status endpoint (agent-dispatch.ts), query
+  session store to aggregate completed session counts by agent_id, (2) return per-agent counts in
+  agent_definitions array (e.g. completed_sessions: number), (3) in agents page, pre-populate
+  completedCounts from API response on load instead of starting from {}. The active count works
+  because it derives from active_invocations — completed needs the same server-side source of
+  truth."
+spec_ref: "@ui-agent-dispatch"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - web-ui
+  - daemon
+vcs_refs: []
+session_id: 01KK35X960XDNY6QFBCS3S9E4S
+created_at: 2026-03-07T00:01:03.380Z
+started_at: 2026-03-07T03:45:16.092Z
+submitted_at: 2026-03-07T03:51:18.194Z
+completed_at: 2026-03-07T03:56:33.789Z
+todos: []
+automation: eligible

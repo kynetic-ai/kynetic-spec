@@ -1,0 +1,30 @@
+_ulid: 01KGVGSH49ACMXJBGCYW12ZDYF
+slugs: []
+title: Auto-derive task dependencies from spec depends_on relationships
+type: task
+description: "Spec-level depends_on field with derive integration - Add --depends-on flag to kspec
+  item set for spec items. When deriving tasks, automatically create task dependencies based on spec
+  dependencies. Example: if @spec-A depends_on @spec-B, then kspec derive @spec-A creates task-A
+  depending on task-B. Removes need to manually set task dependencies after derive."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #690. Added derive-time mapping from spec depends_on to task
+  depends_on, including same-run ordering so derive --all links dependency tasks before consumers
+  and warning-only behavior when a depended-on spec has no active task. AC coverage verified for
+  @cmd-derive ac-16 and ac-17; full npm test and PR CI passed on current HEAD."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - derive
+  - dx
+vcs_refs: []
+session_id: 01KK5EA92PSQT2W5P74VXWFJ40
+created_at: 2026-02-07T07:41:49.575Z
+started_at: 2026-03-08T00:48:18.771Z
+submitted_at: 2026-03-08T00:55:15.207Z
+completed_at: 2026-03-08T01:03:55.548Z
+todos: []
+automation: manual_only

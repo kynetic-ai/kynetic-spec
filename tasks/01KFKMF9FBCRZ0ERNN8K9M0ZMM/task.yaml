@@ -1,0 +1,80 @@
+_ulid: 01KFKMF9FBCRZ0ERNN8K9M0ZMM
+slugs: []
+title: Meta resolve and promote commands missing commitIfShadow calls
+type: bug
+description: >-
+  The `kspec meta resolve` command updates observations in kynetic.meta.yaml but does not
+  auto-commit changes to the shadow branch.
+
+
+  ## Root Cause
+
+
+  In src/cli/commands/meta.ts:
+
+  - Line 1076: `await saveObservation(ctx, observation)` saves the update
+
+  - BUT no `commitIfShadow()` call follows, unlike other meta commands
+
+
+  ## Secondary Issue
+
+
+  The `meta promote` command has a similar gap:
+
+  - Line 969: Calls `commitIfShadow()` for task creation
+
+  - Line 979: Saves updated observation with promoted_to field
+
+  - Missing second `commitIfShadow()` after the observation update
+
+
+  ## Impact
+
+
+  - Shadow branch state diverges from observation state
+
+  - Resolution changes not tracked in git history
+
+  - `kspec log @obs-ref` misses resolution events
+
+  - Remote shadow sync issues
+
+
+  ## Fix
+
+
+  Add `commitIfShadow()` calls:
+
+  1. After `saveObservation()` in resolve command (~line 1076)
+
+  2. After `saveObservation()` in promote command (~line 979)
+
+
+  Pattern to follow (from meta observe command):
+
+  ```typescript
+
+  await commitIfShadow(
+    ctx.shadow,
+    "meta-resolve",
+    observation._ulid.substring(0, 8),
+    "Resolved observation",
+  );
+
+  ```
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #172 merged. Added @trait-shadow-commit trait with 8 AC and fixed 6 missing
+  commitIfShadow calls in meta commands."
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-22T19:56:31.083Z
+started_at: 2026-01-23T03:01:33.508Z
+completed_at: 2026-01-23T04:08:46.376Z
+todos: []

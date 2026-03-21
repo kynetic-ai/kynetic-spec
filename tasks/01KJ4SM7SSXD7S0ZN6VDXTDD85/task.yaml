@@ -1,0 +1,29 @@
+_ulid: 01KJ4SM7SSXD7S0ZN6VDXTDD85
+slugs: []
+title: kspec item add needs --root flag for adding traits to project-level kynetic.yaml without
+  --under. Cu
+type: task
+description: kspec item add needs --root flag for adding traits to project-level kynetic.yaml
+  without --under. Currently impossible via CLI, requiring manual YAML edits that violate the
+  never-edit-manually rule.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #693 (merge commit b1389f2da3173770e86f8c2f06f6034aca31df61). Added
+  --root support to kspec item add for project-level trait creation in kynetic.yaml without --under,
+  reused a shared project-level trait write helper across item add / trait add / plan import, and
+  added CLI coverage for root-path success plus recovery-guided misuse cases in text and JSON modes.
+  AC coverage verified for @item-add ac-1 and the changed inherited trait behavior; npx vitest run
+  tests/trait-cli.test.ts and npm test both passed on the merged head."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KK5MNP9V79EGH50AKH15CEDD
+created_at: 2026-02-23T08:25:05.081Z
+started_at: 2026-03-08T02:36:55.990Z
+submitted_at: 2026-03-08T02:42:22.856Z
+completed_at: 2026-03-08T03:12:22.915Z
+todos: []
+automation: manual_only

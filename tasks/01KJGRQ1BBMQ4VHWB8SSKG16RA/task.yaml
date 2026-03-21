@@ -1,0 +1,27 @@
+_ulid: 01KJGRQ1BBMQ4VHWB8SSKG16RA
+slugs:
+  - task-plan-completeness-warning-debt-reduction
+title: Create phased plan for completeness warning debt reduction
+type: spike
+description: Break down completeness warnings into executable waves (missing AC, missing
+  descriptions, own AC coverage, trait AC coverage). Define acceptance gates per wave and identify
+  areas where rule refinement is preferable to content churn.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: needs_work
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - validation
+  - completeness
+  - quality
+vcs_refs: []
+session_id: null
+created_at: 2026-02-28T00:00:01.387Z
+started_at: 2026-03-08T03:36:08.610Z
+submitted_at: 2026-03-08T03:39:32.679Z
+todos: []
+automation: manual_only

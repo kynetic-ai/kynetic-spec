@@ -1,0 +1,20 @@
+_ulid: 01KFR82G303PDT36DCA1RZ9Z45
+slugs:
+  - task-pr-review-skill
+title: "Implement: PR Review Skill"
+type: task
+spec_ref: "@pr-review-skill"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "PR #235 merged"
+depends_on: []
+context: []
+priority: 1
+tags:
+  - enhance-ralph
+vcs_refs: []
+created_at: 2026-01-24T14:56:01.120Z
+started_at: 2026-01-25T08:39:05.008Z
+completed_at: 2026-01-25T08:49:17.402Z
+todos: []

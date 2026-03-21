@@ -1,0 +1,88 @@
+notes:
+  - _ulid: 01KJDQ8ZD10EG4Z7MHEAHWBMAT
+    content: >-
+      ENRICHMENT — Standalone context for this task:
+
+
+      **What**: When `kspec plan import --update` encounters an existing spec, it replaces the
+      entire `acceptance_criteria` array instead of merging. If a spec already has ac-1 through ac-9
+      and a plan adds ac-10, --update overwrites all ACs with only what the plan document contains,
+      losing ac-1 through ac-9.
+
+
+      **Where**: `src/cli/commands/plan-import.ts` lines 271-303 (the --update branch). The update
+      logic builds a `Partial<SpecItemInput>` and sets `updates.acceptance_criteria =
+      spec.acceptance_criteria` (line 296), passed to `updateSpecItem()` in `src/parser/yaml.ts`
+      line 1522. `updateSpecItem` does direct property assignment (`targetObj[key] = value` at line
+      1560) with no merge logic.
+
+
+      **How**: Implement an AC merge strategy in the update path. When `updates.acceptance_criteria`
+      is set and the existing item already has ACs:
+
+      1. Index existing ACs by their `id` field (e.g., "ac-1", "ac-2")
+
+      2. For each AC in the plan update: if an AC with the same `id` exists, replace it; otherwise
+      append it
+
+      3. Preserve existing ACs whose IDs are not in the update set
+
+      Best done in `plan-import.ts` before calling `updateSpecItem`, since general updateSpecItem
+      callers may want full replacement semantics.
+
+
+      **Done when**:
+
+      - `kspec plan import --update` with a plan that adds one new AC to an existing spec preserves
+      all pre-existing ACs and appends the new one
+
+      - A plan that modifies an existing AC (same id) updates that AC in place while preserving
+      others
+
+      - Tests cover: append-only new AC, update existing AC by id, mixed append+update, no ACs in
+      plan (preserves existing), empty existing ACs (creates all from plan)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T19:37:08.769Z
+  - _ulid: 01KJK9ZVC9G3J7K5SZVV436C9B
+    content: >-
+      Execution context:
+
+      - Background: plan import --update currently replaces acceptance_criteria and drops existing
+      ACs.
+
+      - Scope: implement AC merge-by-id in plan-import update path + regression tests for
+      append/update/mixed/preserve/create behavior.
+
+      - Files: src/cli/commands/plan-import.ts and tests/cli-plan-import.test.ts.
+
+      - Verification: focused plan-import tests plus kspec validate before submit.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T23:40:24.846Z
+  - _ulid: 01KJKA2JB52BZDNEM2WZEJ4T6J
+    content: "Implemented AC merge-by-id for plan import --update in src/cli/commands/plan-import.ts.
+      Existing ACs are preserved, same-id ACs are replaced in place, and new IDs are appended.
+      Updated cli-plan-import integration tests to cover mixed update+append, omitted-AC preserve
+      behavior, and empty-existing AC population. Verification: npm test --
+      tests/cli-plan-import.test.ts (47 passed). kspec validate currently fails on pre-existing
+      project meta/reference issues (@observations slug ambiguity and missing observations skill
+      file), unrelated to this task."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T23:41:53.894Z
+  - _ulid: 01KJKAGXRGGWV6YZKRM7XP19NB
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @plan-import ac-37 lacks explicit test
+      annotation coverage (unquoted-colon diagnostic test is tagged as ac-21)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T23:49:44.336Z
+  - _ulid: 01KJKAKJBZ87004T8MVK8EDWXF
+    content: "[FIX_CYCLE: 1] Addressed review MUST-FIX by updating unquoted-colon diagnostic test
+      annotation to explicitly cover @plan-import ac-37 (alongside ac-21) in
+      tests/cli-plan-import.test.ts. Verification: npm test -- tests/cli-plan-import.test.ts (47
+      passed). kspec validate still fails on pre-existing project meta/reference issues
+      (@observations slug ambiguity, missing observations skill file), unrelated to this task."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T23:51:10.975Z

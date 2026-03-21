@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KFQAYYE47MPKXC30BBX9Z89K
+    content: "Automation status set to needs_review: Missing spec_ref - test infrastructure fix needs
+      spec coverage"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-24T06:27:16.037Z

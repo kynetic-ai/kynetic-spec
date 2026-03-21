@@ -1,0 +1,108 @@
+notes:
+  - _ulid: 01KKXKXD7RZJC5AT8AZ3Y6Y2XZ
+    content: "Implemented review verdict, check, and lifecycle API endpoints. Created
+      packages/daemon/src/routes/reviews.ts with three endpoints using set.status pattern (matching
+      diff routes) instead of error() helper (which doesn't work in Elysia prefix groups). All 28
+      tests pass. Key design decisions: (1) Body fields made t.Optional to prevent Elysia's 422 — we
+      do our own validation for actionable 400s. (2) Verdicts use submitVerdict() +
+      transitionLifecycle() for auto-close. (3) Checks derive applies_to_version from review
+      subject. (4) Lifecycle validates transitions against VALID_TRANSITIONS map before calling
+      transitionLifecycle(). (5) WebSocket broadcast on all mutations. Pre-existing
+      review-cli.test.ts failure (examined_commit) is unrelated to this task."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-17T10:01:56.728Z
+  - _ulid: 01KKXMXFWBVSMQQHZ04QF5E9AX
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by pr-reviewer@kspec"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-17T10:19:28.011Z
+  - _ulid: 01KKXMY5YVKR1S7342PKAS7V00
+    content: "Review cycle 1 (review @01KKXKZZ): request_changes. One blocker: verdict and check
+      endpoints do not guard against mutations on archived (terminal-state) reviews.
+      Approve/request_changes verdicts on archived reviews trigger an unhandled 500 error
+      (transitionLifecycle throws for archived→closed). Comment verdicts silently succeed, mutating
+      a terminal-state review. Fix: add lifecycle state validation before mutations — reject with
+      400 if review is archived. Two nits (non-blocking): duplicated VALID_TRANSITIONS map, AC-9
+      broadcast untested (follows codebase pattern). Tests pass (pre-existing review-cli.test.ts
+      failure confirmed unrelated). AC coverage verified for ac-6,7,8,9,10. Trait ACs properly
+      annotated N/A."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-17T10:19:50.619Z
+  - _ulid: 01KKXP029ZXZFKFAC4YQTAHE06
+    content: "Fixed blocker: added lifecycle state guard on verdict and check endpoints to reject
+      mutations on archived (terminal-state) reviews with 400 and actionable error message.
+      Previously approve/request_changes verdicts caused unhandled 500 (transitionLifecycle throws
+      for archived→closed), and comment verdicts silently mutated immutable archived reviews. Also
+      addressed nit by exporting VALID_TRANSITIONS from review-operations.ts and importing in the
+      route handler, eliminating the duplication divergence risk. Added 3 tests covering
+      archived-state guard for verdicts (approve + comment) and checks. All 31 route tests pass,
+      full suite passes (pre-existing review-cli.test.ts failure unchanged)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-17T10:38:20.991Z
+  - _ulid: 01KKXPWYKGNQV7JX2F8DVVW2GJ
+    content: "Review cycle 2 (review @01KKXP2W): approved by pr-reviewer@kspec. All checks passing:
+      vitest (5765 passed, 1 pre-existing failure), AC coverage (ac-6/7/8/10 + traits),
+      kspec-validate (pre-existing only), cycle-1 fixes verified. Zero findings. Merge blocked by
+      conflict: task-review-api-threads (commit 51465810f) merged thread mutation routes into same
+      packages/daemon/src/routes/reviews.ts file. Resolution requires combining both route sets."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-17T10:54:07.472Z
+  - _ulid: 01KKYG61HCXVG33E8YBE4P5T39
+    content: >-
+      Merge conflict resolution needed before landing on dev. The review is approved — code is
+      correct.
+
+
+      1. Rebase branch onto current dev HEAD
+
+      2. packages/daemon/src/routes/reviews.ts: add/add conflict — dev has list+detail+thread routes
+      (ac-1–5, 651 lines), branch has verdict+check+lifecycle routes (ac-6–8, 454 lines). Combine
+      both route sets into one file: merge imports, chain all routes in the Elysia group, keep both
+      sets of AC annotations.
+
+      3. packages/daemon/src/server.ts: AC comment conflict on .use(createReviewsRoutes(...)) line —
+      dev says ac-3,4,5, branch says ac-6,7,8. Combine to ac-3,4,5,6,7,8.
+
+      4. src/parser/review-operations.ts: branch exports VALID_TRANSITIONS (const → export const).
+      Apply this change — the route handler imports it.
+
+      5. Run tests: existing 28 verdict/check/lifecycle tests in
+      tests/daemon-review-verdicts-api.test.ts plus the thread tests must all pass after merge.
+
+      6. Resubmit for merge.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-17T18:15:59.788Z
+  - _ulid: 01KKYHQ6E40T177B5VKFE5TN4M
+    content: Resolved merge conflict with dev. Merged dev's list/detail/thread routes (ac-1-5) with this
+      branch's verdict/check/lifecycle routes (ac-6-8) into unified
+      packages/daemon/src/routes/reviews.ts. Combined imports from both branches, kept both route
+      sets, and merged AC annotations in server.ts. All 31 verdict/check/lifecycle tests pass, all
+      273 review-related tests pass (1 pre-existing examined_commit failure unchanged). Shard test
+      failures are pre-existing timeouts (setup-seeding, session-start-format,
+      session-iteration-stats) unrelated to these changes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-17T18:42:50.436Z
+  - _ulid: 01KKYJGJ2PWPWBSY97N8C44E2T
+    content: 'Review cycle 3 (review @01KKYJDW): approved by pr-reviewer@kspec. This cycle reviewed the
+      merge conflict resolution (commit fb60707). All checks passing: vitest (31/31 task tests, 5769
+      total, 4 pre-existing failures), AC coverage (ac-6/7/8/9/10 + all trait ACs annotated N/A),
+      kspec-validate (pre-existing only), cycle-2 fixes verified. Zero findings. Evidence log: Files
+      read: packages/daemon/src/routes/reviews.ts (1079 lines), packages/daemon/src/server.ts,
+      src/parser/review-operations.ts, tests/daemon-review-verdicts-api.test.ts (695 lines).
+      Commands run: npm test (full suite), npm test tests/daemon-review-verdicts-api.test.ts, kspec
+      validate. Claims verified: "all 31 tests pass" (confirmed), "archived guard blocks mutations"
+      (code verified at lines 738-747, 888-897), "VALID_TRANSITIONS exported" (confirmed export
+      const). Categories searched: correctness (library function signatures match usage), edge cases
+      (draft+approve auto-close, closed review verdicts, double-close guard), error handling
+      (validation chains, 400/404 responses with actionable messages), security (no sensitive data
+      in WebSocket broadcasts), test quality (tests prove ACs not just touch code), integration
+      (imports re-exported via parser/index.ts, server.ts AC annotations updated).'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-17T18:56:41.559Z

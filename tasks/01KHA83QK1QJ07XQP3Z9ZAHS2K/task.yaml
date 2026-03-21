@@ -1,0 +1,35 @@
+_ulid: 01KHA83QK1QJ07XQP3Z9ZAHS2K
+slugs:
+  - implement-unified-cross-reference-lookup
+title: Implement Unified Cross-Reference Lookup
+type: task
+spec_ref: "@unified-cross-reference-lookup"
+plan_ref: "@plan-cli-agent-ux-improvements"
+status: completed
+blocked_by: []
+closed_reason: >-
+  Merged in PR #366. Implemented kspec refs command for unified cross-reference lookup:
+
+
+  - New command file src/cli/commands/refs.ts
+
+  - Scans tasks and spec items for all reference fields: spec_ref, depends_on, meta_ref, plan_ref,
+  blocked_by, implements, relates_to, supersedes, traits, tests
+
+  - Groups output by relationship type (e.g., 'Tasks (spec_ref)', 'Specs (depends_on)')
+
+  - Supports --json flag with structured output
+
+  - Uses ReferenceIndex for ULID, slug, and short ULID resolution
+
+  - All 12 acceptance criteria covered by 14 tests
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-13T00:58:43.169Z
+started_at: 2026-02-14T10:19:41.615Z
+completed_at: 2026-02-14T10:39:56.612Z
+todos: []
+automation: eligible

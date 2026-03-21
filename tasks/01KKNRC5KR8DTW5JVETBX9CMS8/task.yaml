@@ -1,0 +1,42 @@
+_ulid: 01KKNRC5KR8DTW5JVETBX9CMS8
+slugs:
+  - task-create-review-skill
+title: Create review skill for agent instructions
+type: task
+spec_ref: null
+plan_ref: "@plan-review-records-and-gates"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #859. Added comprehensive review record CLI documentation to the review
+  skill (templates/skills/review/SKILL.md). Documented lifecycle, disposition computation, creating
+  reviews for all subject types, threaded comments with anchors, check recording, verdict
+  management, thread resolution, subject refresh, task linkage, and command reference. Updated
+  manifest description. Regenerated rendered skills and agent instructions. All CI checks passed. No
+  code changes — documentation only."
+depends_on:
+  - "@task-implement-review-cli-create-query"
+  - "@task-implement-review-cli-mutations"
+  - "@task-implement-review-cli-task-linkage"
+context: []
+priority: 3
+tags:
+  - review
+  - skill
+  - agents
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-14T20:42:54.163Z
+  commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKQ0G7KSNN8ND3BCGF6SCEFH
+created_at: 2026-03-14T08:45:59.288Z
+started_at: 2026-03-14T20:27:25.572Z
+submitted_at: 2026-03-14T20:42:54.891Z
+completed_at: 2026-03-14T20:54:36.250Z
+todos: []
+automation: eligible

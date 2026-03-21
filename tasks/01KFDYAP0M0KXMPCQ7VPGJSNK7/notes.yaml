@@ -1,0 +1,62 @@
+notes:
+  - _ulid: 01KFDYC0WT8JMBBYYCB1WP3TPW
+    content: |-
+      **Scope**: Create 8 core traits in kynetic.yaml with full AC.
+
+      **Traits to create**:
+      1. `@trait-json-output` (6 AC) - JSON output mode support
+      2. `@trait-multi-ref-batch` (8 AC) - Batch operations via --refs flag
+      3. `@trait-confirmation-prompt` (6 AC) - Destructive operation confirmation
+      4. `@trait-filterable-list` (7 AC) - List filtering and pagination
+      5. `@trait-priority-parameter` (6 AC) - Priority 1-5 scale
+      6. `@trait-dry-run` (6 AC) - Preview mode
+      7. `@trait-semantic-exit-codes` (8 AC) - Consistent exit code meanings
+      8. `@trait-error-guidance` (6 AC) - Error messages with suggestions
+
+      **Location**: Traits go in `kynetic.yaml` root-level `traits` array
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T14:54:03.163Z
+  - _ulid: 01KFDZJ315TK9QZZAAMKWKXAXR
+    content: Ralph loop (b8191fa) in progress - iteration 3 working on creating 8 core traits. Loop is
+      actively running and will continue autonomously.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T15:14:50.534Z
+  - _ulid: 01KFDZJNMHYF7M1K9R3H6W9QN4
+    content: Ralph loop (b8191fa) actively working on this task. Creating 8 core traits in kynetic.yaml.
+      Loop running with 20 max iterations.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T15:15:09.586Z
+  - _ulid: 01KFDZTV2B7PXTVSJYQRK1JHQ0
+    content: >-
+      Created 8 core traits in kynetic.yaml with full acceptance criteria:
+
+
+      1. @trait-json-output (6 AC) - JSON output mode support
+
+      2. @trait-multi-ref-batch (8 AC) - Batch operations via --refs flag
+
+      3. @trait-confirmation-prompt (6 AC) - Destructive operation confirmation
+
+      4. @trait-filterable-list (7 AC) - List filtering and pagination
+
+      5. @trait-priority-parameter (6 AC) - Priority 1-5 scale
+
+      6. @trait-dry-run (6 AC) - Preview mode
+
+      7. @trait-semantic-exit-codes (8 AC) - Consistent exit code meanings
+
+      8. @trait-error-guidance (6 AC) - Error messages with suggestions
+
+
+      Initial implementation used invalid ULIDs (contained 'O' which is not allowed in Crockford
+      base32). Fixed by regenerating valid ULIDs using ulid library.
+
+
+      Validation: kspec trait list shows all 8 traits with correct AC counts. kspec validate
+      confirms schema validation passes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T15:19:37.292Z

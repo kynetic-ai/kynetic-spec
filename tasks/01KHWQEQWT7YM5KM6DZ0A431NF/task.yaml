@@ -1,0 +1,37 @@
+_ulid: 01KHWQEQWT7YM5KM6DZ0A431NF
+slugs: []
+title: Make /local-review mandatory in task-work skill
+type: task
+description: >-
+  The task-work skill says 'Consider /local-review for quality check' which makes it advisory. In
+  session 01KHW4RP, /local-review was skipped on all 10 PRs.
+
+
+  Change the wording from 'consider' to 'run' and make it a required step before kspec task submit.
+  The local-review checks (AC coverage, test quality, test isolation) are the substance of what the
+  review agent would verify, so doing them pre-submit catches issues earlier.
+
+
+  Update .claude/skills/task-work.md accordingly.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #431. Made /local-review mandatory in task-work skill by: (1) updating
+  workflow steps from 10 to 11, adding 'Local Review' as step 7, (2) changing Integration section
+  from 'Consider' to 'Run (required quality gate)', (3) adding /local-review to Key Commands with
+  (required) note, (4) updating Loop Mode workflow to explicitly include /local-review after commit
+  and before submit."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - process
+  - skill
+vcs_refs: []
+created_at: 2026-02-20T05:13:12.346Z
+started_at: 2026-02-20T11:49:13.977Z
+completed_at: 2026-02-20T12:02:09.010Z
+todos: []
+automation: eligible

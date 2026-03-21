@@ -1,0 +1,25 @@
+_ulid: 01KF1H92ZHGBKBJDHMZ8HBW660
+slugs:
+  - task-session-context-research
+title: Research session context integration with session start
+type: spike
+spec_ref: "@session-context"
+status: completed
+blocked_by: []
+closed_reason: "Research spike complete. Key findings: (1) Session context would add
+  focus/threads/questions to session start output via .kspec-session file (gitignored). (2)
+  Complementary to existing session commands - captures INTENT vs computed STATE. (3)
+  Recommendation: Defer implementation until we see concrete friction with current task notes/inbox
+  approach. All design questions answered in task notes."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - design
+  - meta
+  - session
+vcs_refs: []
+created_at: 2026-01-15T19:14:22.320Z
+started_at: 2026-01-18T06:18:25.174Z
+completed_at: 2026-01-18T06:20:30.764Z
+todos: []

@@ -1,0 +1,89 @@
+notes:
+  - _ulid: 01KJ7D1FTMGBZ3STQN8ZZCF9M7
+    content: >-
+      ## Audit Results (from ralph loop post-mortem)
+
+
+      ### Root Cause
+
+      Agents see trait references (e.g. "Inherited from @trait-error-guidance") in kspec item get
+      output but don't know to run `kspec item get @trait-slug` to resolve them. They fall back to
+      searching .kspec/modules/*.yaml files one by one — 139 messages in one observed case.
+
+
+      ### Skills to Update (prioritized)
+
+
+      **HIGH impact (fix first):**
+
+      1. `/kspec:task-work` — Add CLI lookup table after "Verify Work Is Needed" section. Include:
+      task get, item get, trait get, search, item list, trait list. Add explicit pattern: "When item
+      get shows 'Inherited from @trait-slug', run item get @trait-slug. Do NOT search YAML files."
+
+      2. `/kspec:review` — Add "Looking Up Trait Definitions" subsection under Trait AC Coverage.
+      Add golden path: item get → trait get → grep for annotations → validate.
+
+      3. `local-review` (Claude skill) — Expand step 1 to say "for each inherited trait, run kspec
+      item get @trait-slug". Expand step 3 with trait lookup recipe.
+
+
+      **MEDIUM impact:**
+
+      4. `pr-review` (Claude skill) — Add trait lookup reminder in AC Coverage section.
+
+      5. `/kspec:writing-specs` — Add "Finding Where Things Live" section with search/list/item get
+      recipes.
+
+
+      **LOW impact:**
+
+      6. `triage-inbox` — Replace `kspec item list | grep` with `kspec search`.
+
+
+      ### Cross-Cutting
+
+      Consider adding a "CLI Lookups" convention rule via `kspec meta set` so it appears in
+      AGENTS.md Essential Rules for all agents regardless of skill.
+
+
+      ### Specific Content
+
+      The audit agent drafted exact text to add to each skill. The key table to add everywhere:
+
+
+      | Need | Command |
+
+      |------|---------|
+
+      | Task details | `kspec task get @ref` |
+
+      | Spec + all ACs | `kspec item get @ref` |
+
+      | Trait definition | `kspec item get @trait-slug` or `kspec trait get @trait-slug` |
+
+      | Search by keyword | `kspec search "keyword"` |
+
+      | List by type | `kspec item list --type feature` |
+
+      | All traits | `kspec trait list` |
+
+
+      ### Automation Notes
+
+      Straightforward text additions to skill markdown files. No code changes. Can be automated once
+      content is approved.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T08:42:51.092Z
+  - _ulid: 01KJ9B43F8ETD86JSQT440JXYQ
+    content: "Updated 6 skill files with CLI lookup tables and anti-patterns. Changes: (1) task-work:
+      added CLI Lookups section with lookup table + key pattern for resolving inherited traits, (2)
+      review: added CLI Lookups section with trait resolution guidance, (3) writing-specs: added
+      Finding Things section with discovery commands, (4) triage-inbox: replaced 'kspec item list |
+      grep' with 'kspec search', (5) local-review: added CLI Lookups section, (6) pr-review: added
+      CLI Lookups section. Also added 'cli-lookups' convention via kspec meta (4 rules) which now
+      appears in kspec-agents.md for all agents. Rebuilt plugin. All 3603 tests pass (2 known flaky
+      ralph signal tests)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T02:47:48.456Z

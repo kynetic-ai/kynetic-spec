@@ -1,0 +1,19 @@
+_ulid: 01KFBB1B2BMQF0XAFMF3H1ABCJ
+slugs:
+  - fix-exit-codes-pr87
+title: "Fix 6 incorrect exit codes from PR #87 review"
+type: bug
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #96"
+depends_on: []
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-19T14:37:41.323Z
+started_at: 2026-01-20T03:10:51.309Z
+completed_at: 2026-01-20T03:22:14.062Z
+todos: []

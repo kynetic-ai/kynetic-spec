@@ -1,0 +1,168 @@
+notes:
+  - _ulid: 01KFP89333VKSN3K9R156GRT52
+    content: >-
+      ## Objective
+
+      Write E2E tests for observations panel covering @web-dashboard ac-21, ac-22 and @api-contract
+      ac-15, ac-18.
+
+
+      **Depends on**: @01KFP834 (Infrastructure Setup)
+
+
+      ## File
+
+      packages/web-ui/tests/e2e/observations.spec.ts
+
+
+      ## Acceptance Criteria Coverage
+
+
+      | AC | Description |
+
+      |----|-------------|
+
+      | @web-dashboard ac-21 | Observations count badge in sidebar |
+
+      | @web-dashboard ac-22 | Panel shows unresolved with type icons |
+
+      | @api-contract ac-15 | Session context (focus, threads, questions) |
+
+      | @api-contract ac-18 | Observations filter (?resolved=false) |
+
+
+      ## Test Cases
+
+
+      ```typescript
+
+      test.describe('Observations', () => {
+        test.describe('List View', () => {
+          // AC: @web-dashboard ac-22
+          test('displays observations with type icons', async ({ page }) => {
+            await page.goto('/observations');
+            await expect(page.getByTestId('observation-friction')).toBeVisible();
+            await expect(page.getByTestId('observation-success')).toBeVisible();
+          });
+          test('filters by type (friction/success/question/idea)');
+          // AC: @api-contract ac-18
+          test('filters by unresolved', async ({ page }) => {
+            await page.getByTestId('filter-unresolved').click();
+            // Verify only unresolved shown
+          });
+          test('shows empty state');
+        });
+
+        test.describe('Actions', () => {
+          test('resolves an observation', async ({ page }) => {
+            await page.getByTestId('resolve-button').first().click();
+            await page.getByTestId('resolution-input').fill('Fixed in PR #123');
+            await page.getByTestId('confirm-resolve').click();
+          });
+          test('updates list in real-time');
+        });
+
+        test.describe('Session Context', () => {
+          // AC: @api-contract ac-15
+          test('displays current focus');
+          test('displays active threads');
+          test('displays open questions');
+        });
+      });
+
+      ```
+
+
+      ## data-testid Attributes Needed
+
+      - observations-panel
+
+      - observation-friction, observation-success, observation-question, observation-idea
+
+      - filter-type, filter-unresolved
+
+      - resolve-button, resolution-input, confirm-resolve
+
+      - session-focus, session-threads, session-questions
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T20:21:08.323Z
+  - _ulid: 01KFSZV7YDT46KJ56CFTVSD67H
+    content: >-
+      ## UPDATED INSTRUCTIONS - Supersedes previous notes
+
+
+      ### Goal
+
+      Implement the Observations Panel to meet AC-20 through AC-22 from @web-dashboard spec.
+
+
+      ### Acceptance Criteria to Implement
+
+      - AC-20: Dashboard header shows current focus text prominently when set
+
+      - AC-21: Sidebar shows unresolved observations count badge
+
+      - AC-22: Click badge opens panel listing observations with type icons
+      (friction/success/question/idea)
+
+
+      ### Implementation Steps
+
+      1. Add focus display to dashboard header area
+
+      2. Add observations count badge to Sidebar.svelte
+
+      3. Create ObservationsPanel component
+
+      4. Fetch observations from API and filter to unresolved
+
+      5. Display with type-specific icons
+
+      6. Add data-testid attributes throughout
+
+
+      ### Required data-testid Attributes
+
+      - session-focus, session-focus-text
+
+      - observations-badge, observations-count
+
+      - observations-panel, observation-item, observation-type-icon
+
+
+      ### Definition of Done
+
+      - [ ] Focus text displays in header (AC-20)
+
+      - [ ] Observations badge shows count (AC-21)
+
+      - [ ] Panel lists observations with type icons (AC-22)
+
+      - [ ] All E2E tests pass - no skips
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T07:10:43.662Z
+  - _ulid: 01KFTM3EDX33HX4ZFD046WCMAM
+    content: "Started implementation. Found existing AC-20 (focus display) and AC-21 (observations
+      badge) already in Sidebar.svelte. API endpoints exist. Need to: 1) Create ObservationsPanel
+      component, 2) Create /observations page route, 3) Add data-testid attributes, 4) Create E2E
+      tests for AC-20, AC-21, AC-22"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T13:04:43.966Z
+  - _ulid: 01KFTM3JG8YXTEQY5020VSQPXK
+    content: "Subagent context: Spawned to review PR #245 for task @01KFP854 (Connection Handling). Did
+      not work on this task. Task remains pending."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T13:04:48.137Z
+  - _ulid: 01KFTM6YED6V0931YVP2T5P0RA
+    content: Completed implementation. Found AC-20, AC-21, AC-22 already implemented in Sidebar and
+      observations page. Added missing data-testid attributes (observations-badge,
+      observations-count, observation-item, observation-type-icon, observation-type,
+      observation-content, observations-panel, observations-empty, loading, error). Created 12
+      comprehensive E2E tests covering all 3 ACs plus responsive layout. Committed bb1a2df5.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-25T13:06:38.670Z

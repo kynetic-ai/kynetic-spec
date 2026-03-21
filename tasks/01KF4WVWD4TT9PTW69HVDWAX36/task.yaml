@@ -1,0 +1,20 @@
+_ulid: 01KF4WVWD4TT9PTW69HVDWAX36
+slugs:
+  - task-convention-domains
+title: "Implement: Convention Domains"
+type: task
+spec_ref: "@convention-domains"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: All 6 standard convention domains now defined in meta manifest
+depends_on:
+  - "@task-convention-definitions"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:35.812Z
+started_at: 2026-01-18T10:49:08.667Z
+completed_at: 2026-01-18T10:51:28.303Z
+todos: []

@@ -1,0 +1,11 @@
+notes:
+  - _ulid: 01KKBS8KAYZ11RGPPFPXYHYCCN
+    content: "Root cause: test at line 418 only blanked CLAUDECODE env var but not
+      CLAUDE_CODE_ENTRYPOINT, CLAUDE_PROJECT_DIR, CLAUDE_CODE. When running inside Claude Code,
+      CLAUDE_CODE_ENTRYPOINT leaks from parent env, causing detectAgentFromEnv() to return
+      'claude-code' before reaching the CODEX_THREAD_ID check. Same issue as fixed in
+      core-skill-install.test.ts (commit 2dfe94fe9). Fix: blank all four Claude env vars in the
+      codex detection test."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T11:49:06.526Z

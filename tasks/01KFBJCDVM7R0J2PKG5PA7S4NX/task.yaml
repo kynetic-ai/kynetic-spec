@@ -1,0 +1,22 @@
+_ulid: 01KFBJCDVM7R0J2PKG5PA7S4NX
+slugs:
+  - fix-skipped-workflow-test
+title: "Fix skipped test: invalid workflow reference in meta_ref"
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #117. Test unskipped and validates AC-3 for workflow reference
+  validation. All 784 tests pass."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+vcs_refs: []
+created_at: 2026-01-19T16:46:04.659Z
+started_at: 2026-01-21T07:12:03.213Z
+completed_at: 2026-01-21T07:27:54.880Z
+todos: []
+automation: eligible

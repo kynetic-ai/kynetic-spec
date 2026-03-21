@@ -1,0 +1,32 @@
+_ulid: 01KJTQBRK5HDQKWER3Z2JXKF6B
+slugs: []
+title: Suppress non-actionable rate_limit_event noise in agent run output
+type: bug
+description: '`kspec agent run` currently prints adapter stderr lines like `Unexpected case:
+  {"type":"rate_limit_event",...}` even when invocation succeeds. Investigation shows this
+  originates from `@zed-industries/claude-agent-acp` unreachable logging and is surfaced because our
+  spawner inherits stderr (`src/agents/spawner.ts`: stdio ["pipe","pipe","inherit"]). Add
+  filtering/handling so informational rate-limit events do not pollute normal CLI output, while
+  preserving actionable adapter errors.'
+spec_ref: "@cli-agent-commands"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #647. Suppressed non-actionable adapter stderr rate_limit_event noise
+  in agent spawner while preserving actionable stderr passthrough, with regression coverage in
+  cli-agent-commands tests and mock ACP stderr toggles. Verified own AC (@cli-agent-commands ac-12)
+  and inherited trait AC coverage mappings; local targeted + full test suites and PR CI all passed
+  on commit 56cbfef5b6c0343415ef2f65fe1a01eabc6cc656."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - agent
+  - cli
+  - dx
+  - acp
+vcs_refs: []
+created_at: 2026-03-03T20:48:47.715Z
+started_at: 2026-03-03T21:30:49.953Z
+submitted_at: 2026-03-03T21:31:00.866Z
+completed_at: 2026-03-03T21:42:27.698Z
+todos: []

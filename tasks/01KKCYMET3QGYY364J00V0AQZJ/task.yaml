@@ -1,0 +1,28 @@
+_ulid: 01KKCYMET3QGYY364J00V0AQZJ
+slugs:
+  - implement-enhanced-plan-derivation
+title: Implement Enhanced Plan Derivation
+type: task
+spec_ref: "@plan-derive-enhanced"
+plan_ref: "@plan-iterative-plan-editing"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #780. Enhanced plan derive now materializes specs from stored plan
+  content, supports module fallback/override, optional task derivation, implementation-note
+  propagation, dry-run/JSON output, status/link updates, and unresolved-ref guidance. Verified with
+  targeted derive/plan/task suites, full npm test (4520 passed, 3 skipped), and kspec validate
+  --warnings-ok."
+depends_on:
+  - "@implement-plan-import-content-only-storage"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+review_url: https://github.com/kynetic-ai/kynetic-spec/pull/780
+session_id: null
+created_at: 2026-03-10T22:42:12.419Z
+started_at: 2026-03-11T13:47:46.067Z
+submitted_at: 2026-03-11T13:47:51.701Z
+completed_at: 2026-03-11T16:51:06.176Z
+todos: []
+automation: eligible

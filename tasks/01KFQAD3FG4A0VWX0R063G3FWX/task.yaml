@@ -1,0 +1,68 @@
+_ulid: 01KFQAD3FG4A0VWX0R063G3FWX
+slugs:
+  - task-routes-migration
+title: Migrate API routes to use request context
+type: task
+description: >-
+  Update all API routes to read project context from request state.
+
+
+  ## Implementation Notes
+
+  Current pattern: `createTasksRoutes({ kspecDir: projectRoot, pubsub })` (see
+  packages/daemon/src/routes/tasks.ts lines 39-41)
+
+  - Routes receive kspecDir via closure from factory options
+
+  - Target pattern: Access `ctx.store.projectContext.kspecContext` from middleware-derived state
+
+  - Remove kspecDir from route factory options entirely
+
+
+  ## Files to Modify
+
+  - packages/daemon/src/routes/tasks.ts
+
+  - packages/daemon/src/routes/items.ts
+
+  - packages/daemon/src/routes/inbox.ts
+
+  - packages/daemon/src/routes/meta.ts
+
+  - packages/daemon/src/routes/validation.ts
+
+
+  ## AC Coverage
+
+  ac-1, ac-2, ac-3, ac-24
+
+
+  ## Dependencies
+
+  - Task: X-Kspec-Dir middleware implementation
+
+  - Task: API routes multi-project tests (tests first)
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #224. Successfully migrated all API routes (tasks, items, inbox, meta,
+  validation) to use request-scoped projectContext from middleware instead of closure-scoped
+  kspecDir. All 17 route handlers now derive kspecDir from projectContext.path. Covers AC-1, AC-2,
+  AC-3, AC-24 from @multi-directory-daemon spec. All route migration tests passing (watcher test
+  failures are pre-existing CI environment issues)."
+depends_on:
+  - "@01KFQACE"
+  - "@01KFQACQ"
+context: []
+priority: 2
+tags:
+  - daemon
+  - routes
+  - phase-4
+vcs_refs: []
+created_at: 2026-01-24T06:17:31.376Z
+started_at: 2026-01-24T21:06:05.617Z
+completed_at: 2026-01-24T21:22:47.028Z
+todos: []
+automation: eligible

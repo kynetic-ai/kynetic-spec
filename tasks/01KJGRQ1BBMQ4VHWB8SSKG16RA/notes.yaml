@@ -1,0 +1,81 @@
+notes:
+  - _ulid: 01KK5R90D176VQ75MGR8J9BQ3T
+    content: >-
+      Execution context:
+
+      - Background: this spike turns the broad completeness warning backlog into a phased,
+      reviewable plan grounded in the live validate baseline.
+
+      - Scope: define waves for missing AC, missing descriptions, own AC coverage, and trait AC
+      coverage; set gates for each wave; call out areas where validator/rule refinement is
+      preferable to large content churn.
+
+      - Files: plan artifact(s) for this spike plus any small supporting docs updates needed to
+      reference the plan.
+
+      - Verification: re-run kspec validate --completeness, inspect current warning hotspots, create
+      a durable plan record, and capture the resulting plan ref + branch/PR in task notes.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T03:36:24.738Z
+  - _ulid: 01KK5RE0EV281QT462CH4YKSBB
+    content: >-
+      Created durable plan @plan-completeness-warning-debt-reduction (01KK5RDB) and committed the
+      reviewable source document at docs/plans/completeness-warning-debt-reduction.md.
+
+
+      Current baseline captured on 2026-03-07:
+
+      - missing_acceptance_criteria: 149
+
+      - missing_description: 7
+
+      - missing_test_coverage (own_ac): 106
+
+      - missing_test_coverage (trait_ac): 6
+
+      - automation_eligible_no_spec: 144
+
+
+      Wave summary:
+
+      - Wave 0: classify warning families and decide module/state-taxonomy policy
+
+      - Wave 1: clear low-churn hygiene debt (descriptions + placeholder test trait)
+
+      - Wave 2: close @trait-priority-parameter coverage across six command families
+
+      - Wave 3: reduce review-critical own AC coverage debt
+
+      - Wave 4: split structural-vs-behavioral missing AC debt before bulk backfill
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T03:39:08.635Z
+  - _ulid: 01KK5RF3MYQV8EH0AFQX2TKWEP
+    content: >-
+      Submitted for review in PR #696.
+
+
+      Artifacts:
+
+      - Plan: @plan-completeness-warning-debt-reduction (01KK5RDB)
+
+      - Source doc: docs/plans/completeness-warning-debt-reduction.md
+
+      - Branch: docs/completeness-warning-debt-plan
+
+      - Commit: 90504f101
+
+      - Verification: kspec validate --completeness --json --warnings-ok; kspec plan get
+      @plan-completeness-warning-debt-reduction --json
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T03:39:44.670Z
+  - _ulid: 01KK5SQE13QJ1SDQXKFNKAP20D
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #696 is conflated with unrelated
+      CI/automation changes from other tasks and remote e2e checks are failing on the current PR
+      head. Split this task onto a clean branch/PR containing only the completeness plan artifact,
+      then resubmit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T04:01:46.019Z

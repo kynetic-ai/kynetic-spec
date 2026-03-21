@@ -1,0 +1,23 @@
+_ulid: 01KJ4SNECVEF1DWQTDK9KK5ASN
+slugs: []
+title: task set --spec-ref has no way to clear the field. --plan-ref supports 'null' to clear but
+  --spec-re
+type: task
+description: "task set --spec-ref has no way to clear the field. --plan-ref supports 'null' to clear
+  but --spec-ref tries to resolve 'null' as a reference. Should support same 'null' pattern for
+  consistency. Workaround: find an alternative valid spec reference to link to."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #490. Added null clearing support for --spec-ref and --meta-ref in task
+  set, matching existing --plan-ref behavior. All ACs covered with annotated tests, CI green."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-23T08:25:44.603Z
+started_at: 2026-02-24T01:51:33.450Z
+completed_at: 2026-02-24T02:12:44.599Z
+todos: []
+automation: eligible

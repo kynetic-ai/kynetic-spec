@@ -1,0 +1,64 @@
+_ulid: 01KJSA2TZWD88MG76PZ7KFKVFY
+slugs: []
+title: Handle ACP permission requests in invocation — auto-approve tool calls in dispatch mode
+type: task
+description: >-
+  Root cause of agent hanging on Edit/Write/Bash calls: invocation.ts only registers a
+  client.on('update') handler but never registers a client.on('request') handler. When
+  claude-agent-acp sends a request_permission (or similar JSON-RPC request) asking the client to
+  approve a tool call, the kspec ACP client has no handler — the request sits unanswered, the agent
+  waits forever, and after 5 minutes the session/prompt times out.
+
+
+  The --dangerously-skip-permissions flag is irrelevant here — that is a Claude Code CLI flag. This
+  adapter (claude-agent-acp) uses the Claude Agent SDK which has its own ACP-level permission
+  protocol.
+
+
+  Fix: In src/agent-runtime/invocation.ts, register a 'request' handler on the ACP client alongside
+  the existing 'update' handler. Auto-approve all permission requests in dispatch mode
+  (auto_approve=true). In non-auto-approve mode, either deny or surface the request to the caller
+  via onUpdate.
+
+
+  The ACPClient already has respondPermission(), respondReadTextFile(), respondWriteFile() methods —
+  they just need to be wired up.
+
+
+  Relevant files:
+
+  - src/agent-runtime/invocation.ts — add client.on('request', handler) around line 309
+
+  - src/acp/client.ts — respondPermission(), respond(), request event emission (line 99-100)
+
+  - src/acp/types.ts — RequestPermissionRequest, RequestPermissionResponse types
+
+
+  Verify fix: kspec agent run worker --task @some-eligible-task should now complete Edit operations
+  without hanging.
+
+
+  Spec AC: @agent-invocation-lifecycle ac-11
+spec_ref: "@agent-invocation-lifecycle"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #643. Registered ACP request handler in invocation.ts to auto-approve
+  session/request_permission in dispatch mode. Fixes agent hang on Edit/Write/Bash tool calls."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - agent
+  - dispatch
+  - acp
+vcs_refs: []
+session_id: 01KJS9H76EZZB742ZEV9GGR8XB
+created_at: 2026-03-03T07:37:29.340Z
+started_at: 2026-03-03T07:40:03.365Z
+submitted_at: 2026-03-03T07:49:11.078Z
+completed_at: 2026-03-03T17:11:49.924Z
+todos: []
+automation: eligible

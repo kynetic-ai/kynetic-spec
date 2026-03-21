@@ -1,0 +1,29 @@
+_ulid: 01KKB5HYXXE1DH0T13T6BK2SYC
+slugs:
+  - implement-streaming-markdown-component
+title: Implement Streaming Markdown Component
+type: task
+spec_ref: "@streaming-markdown-component"
+plan_ref: "@plan-ui-wide-markdown-rendering-plan-embedded-views"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #781 (merge commit d6be0276aa68c8da94aff408d6c6e76b821b2c27).
+  Implemented the shared StreamingMarkdown renderer, unified sanitize/highlight utilities for static
+  and streaming markdown, wired SessionStream live output through the component, and added
+  behavioral AC coverage including live SessionStream smoke coverage. Own ACs and inherited
+  @trait-markdown-rendering ACs were verified; npm test passed in an isolated review checkout; CI
+  was green on head 124b728c7fba4cf5d25c4745b3441af823767704."
+depends_on:
+  - "@implement-prose-typography-setup"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+review_url: https://github.com/kynetic-ai/kynetic-spec/pull/781
+session_id: 01KKEVVAD651XRE8BQ56468T4C
+created_at: 2026-03-10T06:04:41.789Z
+started_at: 2026-03-11T16:32:39.339Z
+submitted_at: 2026-03-11T16:37:15.306Z
+completed_at: 2026-03-11T17:02:21.742Z
+todos: []
+automation: eligible

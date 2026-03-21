@@ -1,0 +1,29 @@
+_ulid: 01KJS6ZW51AVVEKHSP2J0AWXHY
+slugs: []
+title: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail fast
+  with a cle
+type: task
+description: kspec batch --commands '' hangs instead of erroring — empty/missing args should fail
+  fast with a clear error, not block on stdin. Discovered when ralph loop got stuck calling batch
+  with empty string arg.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #660 (merge commit bbce145b). Implemented fail-fast non-TTY stdin
+  idle-timeout handling in batch input parsing and added regression coverage for open-pipe/no-data
+  stdin so batch exits quickly with actionable guidance instead of hanging. Verified code quality
+  and behavior alignment; AC coverage confirmed for @batch-exec ac-stdin and
+  @trait-semantic-exit-codes ac-2 in tests/batch-exec-engine.test.ts; full npm test passed locally
+  and CI passed on PR head."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJVRWMC2T7XBYTBAHTDQHK8R
+created_at: 2026-03-03T06:43:26.496Z
+started_at: 2026-03-04T06:35:58.472Z
+submitted_at: 2026-03-04T06:41:06.321Z
+completed_at: 2026-03-04T08:09:20.970Z
+todos: []
+automation: eligible

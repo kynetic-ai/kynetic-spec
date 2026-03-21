@@ -1,0 +1,26 @@
+notes:
+  - _ulid: 01KJVQDEA47KER24GTNRA1GQ4S
+    content: >-
+      Execution context:
+
+      - Background: validate --json must emit pure JSON for downstream parsers (jq, tooling).
+
+      - Scope: fix validate/lint structured output so no human text is appended to stdout in JSON
+      mode; add regression tests.
+
+      - Files: src/cli/commands/validate.ts and validate-related tests.
+
+      - Verification: targeted validate tests plus full suite shard where feasible, and a direct
+      validate --json parse check.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T06:08:57.157Z
+  - _ulid: 01KJVQGWKXMRRV3PWQV1VQS434
+    content: "Implemented fix: validate/lint now suppress all post-result human-readable console output
+      when structured output mode is active (--json/--yaml), preventing appended text on stdout.
+      Added regression test in validate-exit-codes to assert validate --json stdout is parseable and
+      contains no appended summary sections. Verified with npm run build and targeted vitest test
+      file."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T06:10:50.109Z

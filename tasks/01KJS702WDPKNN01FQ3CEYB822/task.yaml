@@ -1,0 +1,22 @@
+_ulid: 01KJS702WDPKNN01FQ3CEYB822
+slugs: []
+title: "CLI DX: accept tags as alias for tag in batch commands"
+type: task
+description: "CLI DX: accept tags as alias for tag in batch commands"
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #667. Added batch argument alias support for tags->tag with tests
+  covering argv translation and persisted tags."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJW0P89KS67VP1G9QWW6QCWJ
+created_at: 2026-03-03T06:43:33.388Z
+started_at: 2026-03-04T08:59:50.030Z
+submitted_at: 2026-03-04T09:07:46.868Z
+completed_at: 2026-03-04T09:39:54.655Z
+todos: []
+automation: eligible

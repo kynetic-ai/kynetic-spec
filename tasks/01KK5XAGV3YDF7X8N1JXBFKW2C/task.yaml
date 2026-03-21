@@ -1,0 +1,27 @@
+_ulid: 01KK5XAGV3YDF7X8N1JXBFKW2C
+slugs: []
+title: Add streaming output to kspec agent run
+type: task
+description: "kspec agent run produces no visible output: (1) runInvocation is called without
+  onUpdate, so no streaming to stdout during execution. (2) kspec session log show does not display
+  session.update text content after the fact. Fix: add --stream flag to agent run (or stream by
+  default for interactive use), print text blocks as they arrive. Also: session log show should
+  support a --output or --text mode that replays the assistant text from session.update events.
+  Workaround: jq/python one-liner on events.jsonl."
+spec_ref: "@cli-agent-commands"
+status: completed
+blocked_by: []
+closed_reason: Already implemented on main. Verified agent run live streaming, JSON suppression, and
+  session log --text replay via focused CLI tests (110 passing).
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+session_id: 01KKDVDTBMBTC1DYSK94TMAGFJ
+created_at: 2026-03-08T05:04:37.219Z
+started_at: 2026-03-11T07:16:18.408Z
+submitted_at: 2026-03-11T07:17:51.120Z
+completed_at: 2026-03-11T07:17:59.459Z
+todos: []
+automation: eligible

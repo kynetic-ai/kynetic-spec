@@ -1,0 +1,15 @@
+notes:
+  - _ulid: 01KJWKA78347W96YH23FCCKRKF
+    content: "Updated @cmd-derive spec: (1) Fixed description — removed --recursive (not a flag),
+      removed --json (comes via trait), added --priority and --title. (2) Updated priority
+      description to show P-notation (1-5 or P1-P5). (3) Added ac-priority and ac-title ACs. (4)
+      Added P1 example. (5) Reset implementation status back to implemented."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-04T14:16:31.748Z
+  - _ulid: 01KJWKHT8XTZDHWF3Q8X0NJAWX
+    content: "Autonomous dispatch check on 2026-03-04: task was already completed before this
+      invocation; no additional implementation changes were required."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T14:20:40.606Z

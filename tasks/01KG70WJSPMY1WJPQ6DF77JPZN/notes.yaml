@@ -1,0 +1,27 @@
+notes:
+  - _ulid: 01KG72282K8N9EQ1N8687T8BDZ
+    content: "Automation assessment: set to needs_review. missing spec_ref"
+    supersedes: null
+    author: "@automation-assess"
+    created_at: 2026-01-30T08:59:37.939Z
+  - _ulid: 01KG72P59HGSRV784P2BZVNFZH
+    content: "Eligible: Created spec @obs-list-display with ac-1 for resolved column display."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-30T09:10:30.449Z
+  - _ulid: 01KG78KTR4H8Y48KAVF668N30S
+    content: |-
+      Implemented Resolved column for observation list with --all flag:
+      - Added conditional Resolved column that only shows when --all is used
+      - Shows ✓ (green) for resolved, ✗ (red) for unresolved observations
+      - Adjusted column widths and content truncation to accommodate new column
+      - Added test verifying column presence and checkmark indicators
+      - All 15 observation-related tests pass
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-30T10:54:05.572Z
+  - _ulid: 01KG799KZ5KDQW7Q2Z3SHX2Y3E
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-01-30T11:05:59.525Z

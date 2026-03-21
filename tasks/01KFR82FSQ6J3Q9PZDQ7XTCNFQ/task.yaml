@@ -1,0 +1,20 @@
+_ulid: 01KFR82FSQ6J3Q9PZDQ7XTCNFQ
+slugs:
+  - task-reflect-loop-skill
+title: "Implement: Reflect Loop Skill"
+type: task
+spec_ref: "@reflect-loop-skill"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Added Loop Mode section to SKILL.md - committed in 74fd539f
+depends_on: []
+context: []
+priority: 1
+tags:
+  - enhance-ralph
+vcs_refs: []
+created_at: 2026-01-24T14:56:00.823Z
+started_at: 2026-01-25T08:15:09.435Z
+completed_at: 2026-01-25T08:15:53.345Z
+todos: []

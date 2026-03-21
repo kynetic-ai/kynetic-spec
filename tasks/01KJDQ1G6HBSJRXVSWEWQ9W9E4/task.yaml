@@ -1,0 +1,28 @@
+_ulid: 01KJDQ1G6HBSJRXVSWEWQ9W9E4
+slugs: []
+title: "Web UI triage page: add filter controls for triage action types (promote, delete, defer,
+  spec-gap, d"
+type: task
+description: "Web UI triage page: add filter controls for triage action types (promote, delete,
+  defer, spec-gap, duplicate). Currently no way to filter triage records by action."
+spec_ref: "@interactive-triage-ui"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #619 (commit f42cf881a6469b63d998d87765b2a9fb03c47915): added triage
+  action-type filter control on web UI triage page, wired action filtering into derived card list,
+  and reset card index on action/tag/status filter changes. Added AC-7 E2E coverage for
+  action-filter behavior and stability retry on fallback reload. Reviewed spec alignment and AC
+  coverage (own ac-1..ac-8 plus inherited @trait-websocket-protocol annotations/coverage) with no
+  MUST-FIX or SHOULD-FIX findings."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
+created_at: 2026-02-26T19:33:03.825Z
+started_at: 2026-03-01T03:09:01.220Z
+submitted_at: 2026-03-01T03:09:18.249Z
+completed_at: 2026-03-01T05:18:14.437Z
+todos: []
+automation: eligible

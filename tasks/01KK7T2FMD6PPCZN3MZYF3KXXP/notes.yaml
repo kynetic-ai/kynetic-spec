@@ -1,0 +1,56 @@
+notes:
+  - _ulid: 01KK7T2FMDCJ6BM346ZM5HB2RE
+    content: |
+      Update existing session tests to use .kspec-sessions/ directory.
+      Add tests for: legacy fallback reads, no shadow commits on session
+      operations, config parsing for storage modes, end-loop signal at new path.
+      Update test fixtures and helpers.
+    author: "@claude"
+    created_at: 2026-03-08T22:46:16.973Z
+  - _ulid: 01KK8NK8XJZY3VTEDQ09ZF01R0
+    content: >-
+      Updated test path constants for session storage separation:
+
+      - sessions.test.ts: Updated 5 path helper test references from .kspec/sessions to
+      .kspec-sessions
+
+      - session-budget.test.ts: Updated 2 path helper test references from .kspec/sessions to
+      .kspec-sessions
+
+
+      AC coverage verified across all related specs:
+
+      - @session-storage-path-resolution: all 5 ACs covered in
+      session-storage-path-resolution.test.ts
+
+      - @session-remove-shadow-commits: 3 ACs covered in agent-invocation-lifecycle.test.ts,
+      session-stale-criteria.test.ts, shadow.test.ts
+
+      - @session-legacy-migration: all 7 ACs covered across session-legacy-fallback.test.ts,
+      session-legacy-cli.test.ts, init-setup-sessions-dir.test.ts
+
+      - @session-storage-modes: config ACs in schema/session-storage-config.test.ts, gitignore/dir
+      ACs in init-setup-sessions-dir.test.ts
+
+      - End-loop signal at new path: ralph/end-loop.test.ts already uses .kspec-sessions/
+
+
+      All 4233 tests pass. 2 pre-existing failures on main (codex skill tests) unrelated.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T06:47:18.706Z
+  - _ulid: 01KK8NY5SGKR1G8NMVJF3V4SCK
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #724 includes unmerged
+      @implement-session-branch-worktree changes from PR #723, so the task cannot be reviewed or
+      merged independently."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-09T06:53:15.953Z
+  - _ulid: 01KK8PY01H8P30PPD7A0ZEX18N
+    content: "Fix cycle: Addressed review feedback. PR #724 included unmerged PR #723 changes. Created
+      clean branch test/session-storage-separation-v2 from main with only the test commit
+      cherry-picked. Closed PR #724, opened PR #725. All tests pass (89 in modified files, 16 AC
+      coverage tests)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-09T07:10:38.642Z

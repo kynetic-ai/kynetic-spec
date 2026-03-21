@@ -1,0 +1,83 @@
+notes:
+  - _ulid: 01KJ316VA1XV93XEQH15S54FN5
+    content: >-
+      Directory created and gitignored. Remaining work is spec + documentation.
+
+
+      ## Done
+
+      - Created .kspec/artifacts/ directory
+
+      - Added .kspec/.gitignore to exclude artifacts/ from shadow branch commits
+
+      - Moved first artifact (triage-report-2026-02-22.html) there
+
+
+      ## Remaining (needs spec)
+
+      - Spec the convention: what goes in artifacts, naming patterns, lifecycle
+
+      - Add to kspec setup: create artifacts/ dir during init
+
+      - Document in AGENTS.md or template sections: when to use artifacts/ vs other locations
+
+      - Consider: kspec artifacts list, kspec artifacts clean --older-than Nd
+
+      - Consider: should agents auto-name artifacts with date prefix? (current:
+      triage-report-2026-02-22.html)
+
+      - Add to doctor command: check artifacts/ exists
+
+
+      ## Design Questions
+
+      - Should artifacts be purely ephemeral or optionally tracked?
+
+      - Naming convention: <type>-<date>.ext? <type>-<session-id>.ext?
+
+      - Max size/age policy?
+
+      - Should kspec generate commands output to artifacts/ by default?
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-22T15:59:06.049Z
+  - _ulid: 01KJ37C8HXX2K25VFZNCKSBWJN
+    content: "Spec created: @artifacts-directory with 8 ACs covering init, setup, doctor, repair,
+      gitignore, naming convention, and empty dir persistence. Review identified key gaps: .gitkeep
+      for empty dir survival, name collision handling, shadow repair behavior, and AC redundancy —
+      all addressed in final spec. Implementation scope: modify init (shadow.ts), setup pipeline,
+      doctor checks, and shadow repair to create/check .kspec/artifacts/ with .gitkeep."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-22T17:46:54.909Z
+  - _ulid: 01KJ37TGWDEGXT1KHDRJNNYQVV
+    content: >-
+      Implementation complete for 6 of 8 ACs:
+
+
+      - ac-init-creates: initializeShadow() creates artifacts/ dir (shadow.ts ~line 1708)
+
+      - ac-gitignore-entry: .gitignore with artifacts/ written during init (shadow.ts ~line 1710)
+
+      - ac-commits-exclude: Covered by gitignore — tested that git add -A doesn't stage artifacts
+
+      - ac-setup-ensures: runSetupPipeline() creates artifacts/ if missing (setup.ts ~line 1542)
+
+      - ac-doctor-checks: buildShadowSection() checks artifactsDirExists (doctor.ts ~line 257)
+
+      - ac-repair-recreates: repairShadow() creates artifacts/ after worktree rebuild (shadow.ts
+      ~line 1818)
+
+
+      Convention-only ACs (no code enforcement):
+
+      - ac-naming-convention: Documented pattern type-YYYY-MM-DD.ext — agents follow by reading spec
+
+      - ac-empty-dir-persistence: Handled by init/setup/repair creating the dir (not via .gitkeep
+      since gitignore excludes artifacts/)
+
+
+      Tests added: 6 new tests across shadow.test.ts and doctor.test.ts. All 112+29 pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-22T17:54:42.189Z

@@ -1,0 +1,11 @@
+notes:
+  - _ulid: 01KKBG45Q2CS9N1KEYAB1HZX7B
+    content: "Implementation complete. Changed default task list to show only active statuses (pending,
+      in_progress, pending_review, needs_work, blocked). Approach: defined ACTIVE_STATUSES constant
+      in TaskFilters, used it in +page.svelte to pass multi-status filter to API when no status
+      param in URL. 'all' param explicitly shows all statuses including completed/cancelled. Updated
+      fetchTasks and filterTasks to support string[] status param. Added unit test for multi-status
+      filtering and 3 E2E tests."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T09:09:24.322Z

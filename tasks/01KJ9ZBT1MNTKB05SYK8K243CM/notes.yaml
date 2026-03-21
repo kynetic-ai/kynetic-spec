@@ -1,0 +1,49 @@
+notes:
+  - _ulid: 01KJA7GHS03QJ1MMS7NE16165Z
+    content: >-
+      Refactored session.ts (2807 lines) into 8 focused modules under src/cli/commands/session/:
+
+      - types.ts (271 lines): All interfaces and type aliases
+
+      - context.ts (647 lines): gatherSessionContext(), getIterationStats(), all mapper functions
+
+      - format.ts (577 lines): formatSessionContext(), formatCheckpointResult(), deduplicated
+      helpers (getDisplayRef, formatPriority, statusColor, formatInlineNote)
+
+      - checkpoint.ts (179 lines): performCheckpoint()
+
+      - log.ts (772 lines): All session log commands (list, show, stats, search)
+
+      - create.ts (190 lines): sessionCreateAction(), performEnvInjection()
+
+      - commands.ts (312 lines): registerSessionCommands() and action wiring
+
+      - index.ts (42 lines): Barrel re-exports
+
+
+      session.ts reduced to 39-line barrel for backward compatibility.
+
+
+      Cleanup applied during extraction:
+
+      1. Removed unused _allTasks parameter from toBlockedTaskSummary
+
+      2. Removed unused imports (listSessions, IterationSummary, SearchMatch)
+
+      3. Fixed removeAllListeners() in readStdinIfAvailable to use named handlers
+
+      4. Deduplicated 4x status color ternary into statusColor() helper
+
+      5. Deduplicated 3x priority formatting into formatPriority() helper
+
+      6. Deduplicated note display into formatInlineNote() helper
+
+      7. Consolidated displayRef lambda into exported getDisplayRef() utility
+
+
+      One test updated: session-create.test.ts static analysis test now reads from
+      session/create.ts. All 112 session tests + 51 session-create tests + 3 iteration-stats tests
+      pass. Build clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T11:03:56.448Z

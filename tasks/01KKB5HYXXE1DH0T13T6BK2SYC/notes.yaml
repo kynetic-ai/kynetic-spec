@@ -1,0 +1,145 @@
+notes:
+  - _ulid: 01KKB5HYXX879R1HDDE567TF9Q
+    content: |
+      Implementation notes:
+
+      Port streaming-markdown + highlight.js pattern from kynetic-internal's
+      packages/hub-ui/src/lib/components/chat/StreamingMarkdown.svelte.
+
+      Proven versions from kynetic-internal:
+      - streaming-markdown@^0.2.15
+      - highlight.js@^11.11.1
+
+      Key files to reference:
+      - StreamingMarkdown.svelte (component with 3 $effect blocks)
+      - highlight.ts (highlight.js wrapper with language subset)
+      - sanitize.ts (DOMPurify config with custom element handling)
+      - app.css lines 256-331 (syntax highlight theme)
+
+      Adapt for kspec's needs:
+      - Drop KaTeX/Mermaid support (not needed for kspec content)
+      - Keep streaming-markdown parser, highlight.js, DOMPurify stack
+      - Replace current renderMarkdown() utility with this component for
+        streaming contexts; keep renderMarkdown() for simple static use
+      - Add highlight.js CSS theme to web-ui app.css
+
+      Bundle size strategy: Use highlight.js/lib/core with individual
+      language imports (not the full highlight.js bundle). Register only
+      the 15 target languages.
+
+      CSS scoping: streaming-markdown uses direct DOM manipulation with
+      :global() selectors. Scope highlight theme and streaming styles
+      carefully to avoid conflicts with other component styles.
+
+      SSR note: All SvelteKit pages in this project export ssr=false,
+      so DOMPurify and highlight.js DOM dependencies are not a concern.
+    author: "@claude"
+    created_at: 2026-03-10T06:04:41.789Z
+  - _ulid: 01KKB5MTA5Y60GSAG9DR3FP6F7
+    content: |-
+      Execution context:
+      - Background: Port proven streaming markdown pattern from kynetic-internal to kspec web UI
+      - Scope: Create StreamingMarkdown.svelte component, highlight.ts wrapper, shared sanitize.ts. Install streaming-markdown@^0.2.15 + highlight.js@^11.11.1. Drop KaTeX/Mermaid from the port.
+      - Files to port FROM: /home/chapel/Projects/kynetic-internal/packages/hub-ui/src/lib/components/chat/StreamingMarkdown.svelte, highlight.ts, sanitize.ts, app.css (lines 256-331 for syntax theme)
+      - Files to create IN: packages/web-ui/src/lib/components/markdown/StreamingMarkdown.svelte, packages/web-ui/src/lib/utils/highlight.ts, packages/web-ui/src/lib/utils/sanitize.ts
+      - Key decisions: Use highlight.js/lib/core with individual language imports (15 languages). Create shared sanitize.ts with unified DOMPurify config used by both StreamingMarkdown and static renderMarkdown.
+      - Verification: npm run build succeeds. Component renders streaming content with incremental updates. Code blocks get syntax highlighting after streaming ends.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T06:06:15.365Z
+  - _ulid: 01KKE4Q2E9YH10N6NF5BF5H95W
+    content: "Implementing shared markdown rendering stack for web UI: add highlight/sanitize utilities,
+      port StreamingMarkdown.svelte, wire SessionStream streaming view to it, and extend web-ui
+      tests for streaming + trait coverage."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T09:47:43.946Z
+  - _ulid: 01KKE5HTM4HN7GCPCPXJCYZN4M
+    content: "Implemented shared streaming markdown stack for web-ui. Added StreamingMarkdown.svelte
+      plus shared highlight/sanitize helpers, updated static renderMarkdown() to use the same
+      sanitization/highlight path, wired SessionStream live output through the component, and added
+      AC-linked coverage in tests/web-ui-session-stream.test.ts. Verification: web-ui build passed,
+      package web-ui test slice passed, lint no-static-analysis passed. Full npm test has one
+      remaining unrelated failure in .review/pr775/tests/clone-for-testing.test.ts about reusing a
+      temp clone directory."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T10:02:20.676Z
+  - _ulid: 01KKE76XB7MGG2X0AEPKDTV62A
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #781 is red in CI (web-ui session-stream
+      tests fail on shard 3/3, plus merge-ref shard 2/3 exits non-zero) and several AC annotations
+      do not validate the claimed behavior for @streaming-markdown-component /
+      @trait-markdown-rendering. Inline review comments posted on PR #781."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T10:31:20.167Z
+  - _ulid: 01KKE8FRPPTXR57A8W9DK5JYQM
+    content: "Fix cycle: reproducing PR #781 failures locally, replacing weak markdown AC assertions
+      with runtime behavioral coverage, and investigating the shard 2/3 merge-ref regression before
+      re-submitting."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T10:53:38.902Z
+  - _ulid: 01KKE9QMTVK9860VSD1JQY72WZ
+    content: "Fix cycle resolution: replaced brittle bundle/source-file scans in web-ui session stream
+      tests with direct markdown behavior checks plus Vite-transformed module assertions for the
+      streaming/static paths and SessionStream wiring. Synced origin/main to pick up latest
+      dispatch/validation fixes affecting merge-ref CI. Verification: npm test -- --run
+      tests/web-ui-session-stream.test.ts tests/daemon-agent-dispatch-routes.test.ts
+      tests/agent-dispatch-engine.test.ts tests/parser/spec-completeness-policy.test.ts; node
+      dist/cli/index.js validate (warnings-only baseline). Local shard3 is still polluted by
+      untracked .worktrees/.review copies, but the task-owned test file and related dispatch suite
+      are green."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T11:15:25.659Z
+  - _ulid: 01KKEAJD5Y1WAGE2RZERQ0P0YY
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: PR #781 is still red (test shard 2/3 ENOENT
+      watcher failure and unresolved review gate), and AC coverage for @streaming-markdown-component
+      ac-5/ac-6/ac-7 plus @trait-markdown-rendering ac-9 still relies on transformed-source checks
+      instead of runtime behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T11:30:02.558Z
+  - _ulid: 01KKEJ13GV8GZGZHYM1RE00NTP
+    content: "Fix-cycle plan: extract a testable streaming markdown controller from the Svelte wrapper,
+      replace remaining source-shape assertions with DOM/runtime coverage for static mode, frame
+      batching, and large-input scheduling, and add a browser-path assertion for live SessionStream
+      markdown + cursor rendering before re-submitting PR #781."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T13:40:24.219Z
+  - _ulid: 01KKEJAZRYANMV4T3B7T2N9X56
+    content: "Fix-cycle verification: extracted the streaming markdown update state machine into a
+      shared controller, replaced ac-5/ac-6/@trait-markdown-rendering ac-9 source-shape checks with
+      DOM/runtime controller assertions, and moved ac-7 coverage to a browser-path smoke test on the
+      live session page. Verification: npm --workspace packages/web-ui run build; npm test -- --run
+      tests/web-ui-session-stream.test.ts tests/daemon-agent-dispatch-routes.test.ts; node
+      dist/cli/index.js validate (warnings-only baseline). Limitation: the new Playwright smoke
+      assertion could not be executed locally because dispatch-mode policy forbids the test fixture
+      from starting its own daemon inside this agent invocation; it is expected to run in CI on PR
+      #781."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T13:45:48.062Z
+  - _ulid: 01KKEJTS0KY27A955KF66QP97B
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: @trait-markdown-rendering ac-3 is still not
+      covered by a behavioral assertion. The current annotated test only checks for a <code> tag
+      plus prose wrapper source strings, which does not validate the required visually distinct
+      monospace styling."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T13:54:25.427Z
+  - _ulid: 01KKEW40NS853YM07PTVKNX0R4
+    content: "[FIX_CYCLE: 4] Replaced the remaining @trait-markdown-rendering ac-3 source-shape check
+      with runtime inline-code coverage. Added shared inline-code decoration for both static and
+      finalized streaming markdown output so code spans now carry explicit background + monospace
+      styling, and updated web-ui-session-stream tests to assert rendered DOM behavior instead of
+      transformed component source. Verification: npm test -- --run
+      tests/web-ui-session-stream.test.ts; npm --workspace packages/web-ui run build; node
+      dist/cli/index.js validate (warnings-only baseline). Also repaired local workspace drift with
+      npm install after the runner surfaced a missing streaming-markdown package during the pre-test
+      build step."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T16:36:45.369Z

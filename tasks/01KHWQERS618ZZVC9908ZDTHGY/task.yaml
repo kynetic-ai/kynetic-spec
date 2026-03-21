@@ -1,0 +1,45 @@
+_ulid: 01KHWQERS618ZZVC9908ZDTHGY
+slugs: []
+title: Address systemic trait AC testing gap
+type: task
+description: >-
+  Trait ACs are inherited by specs but rarely tested. In the config/doctor feature set, only ~4/44
+  trait ACs (9%) had test coverage. Traits like @trait-error-guidance (6 ACs), @trait-json-output (6
+  ACs), and @trait-semantic-exit-codes (8 ACs) define expectations that inheriting specs silently
+  ignore in tests.
+
+
+  Options:
+
+  1. Add a kspec validate check that warns when a spec inherits trait ACs but no test files contain
+  // AC: @spec ac-N annotations for them
+
+  2. Add guidance to the spec skill and task-work skill about testing trait ACs
+
+  3. Generate a trait AC coverage report in /local-review
+
+
+  This is a systemic issue, not specific to one spec. The trait inheritance model promises coverage
+  that isn't being delivered.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #542. All 3 options from task description were already implemented.
+  Added subtype discriminator (own_ac/trait_ac) to CompletenessWarning and split validate display
+  into separate own/trait AC coverage sections. Captured @cmd-validate spec staleness as inbox
+  item."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - process
+  - spec-system
+vcs_refs: []
+created_at: 2026-02-20T05:13:13.254Z
+started_at: 2026-02-26T00:43:25.988Z
+submitted_at: 2026-02-26T01:00:54.568Z
+completed_at: 2026-02-26T01:21:08.241Z
+todos: []
+automation: manual_only

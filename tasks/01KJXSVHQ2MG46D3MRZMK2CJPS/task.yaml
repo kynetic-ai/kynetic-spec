@@ -1,0 +1,23 @@
+_ulid: 01KJXSVHQ2MG46D3MRZMK2CJPS
+slugs:
+  - implement-session-history
+title: Implement Session History
+type: task
+spec_ref: "@ui-session-history"
+plan_ref: "@plan-ui-ux-revamp"
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on:
+  - "@implement-session-stream-view"
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+session_id: 01KJZ264KG3H4DT5A00PNWAJED
+created_at: 2026-03-05T01:30:05.410Z
+started_at: 2026-03-05T13:26:40.897Z
+submitted_at: 2026-03-05T13:26:42.617Z
+completed_at: 2026-03-05T13:31:52.054Z
+todos: []
+automation: eligible

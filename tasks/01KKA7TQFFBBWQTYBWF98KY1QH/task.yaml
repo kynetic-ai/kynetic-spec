@@ -1,0 +1,26 @@
+_ulid: 01KKA7TQFFBBWQTYBWF98KY1QH
+slugs:
+  - implement-lazy-shadow-sync-on-reads
+title: Implement Lazy Shadow Sync on Reads
+type: task
+spec_ref: "@shadow-lazy-read-sync"
+plan_ref: "@plan-lazy-shadow-sync"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #730. Implemented lazy shadow sync on reads with worktree-aware
+  FETCH_HEAD drift checks, syncMode propagation/consume-once behavior, session-start always-sync
+  routing, and KSPEC_NO_SYNC precedence. AC coverage verified across all 17 spec criteria with
+  targeted drift-check/sync-mode tests; local full suite passed (195/195 files, 4261 tests) and
+  GitHub checks passed on merge commit f6cbc6fe2f952ab8e8687149716da997890cc5b6."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKABRSNWJSXQZSH1AXS7C0B0
+created_at: 2026-03-09T21:25:11.791Z
+started_at: 2026-03-09T22:50:21.026Z
+submitted_at: 2026-03-09T22:50:24.881Z
+completed_at: 2026-03-09T23:02:12.864Z
+todos: []
+automation: eligible

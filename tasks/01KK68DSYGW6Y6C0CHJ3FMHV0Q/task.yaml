@@ -1,0 +1,39 @@
+_ulid: 01KK68DSYGW6Y6C0CHJ3FMHV0Q
+slugs: []
+title: Fix static mode pages not loading data due to project initialization gate
+type: task
+description: "GitHub Pages static site loads kspec-snapshot.json successfully but no page renders
+  any data. Root cause: +layout.svelte sets appReady=true in static mode but never sets
+  initialized=true in the project store (project.svelte.ts). Every page gates data loading on
+  isProjectInitialized() which returns false forever in static mode. Fix: export a function from
+  project store (e.g. initializeForStaticMode) that sets initialized=true, and call it from
+  +layout.svelte in the static mode branch before setting appReady. Must include E2E regression test
+  verifying that static mode pages render data from the snapshot. Affects all pages: dashboard,
+  tasks, specs, inbox, agents, plans, triage, observations, workflows, sessions, validate, task
+  board."
+spec_ref: "@gh-pages-export"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #711. Fixed static-mode page data loading by initializing the shared
+  project store before page-level gates run, and added E2E regression coverage for snapshot-backed
+  dashboard/tasks/specs/inbox rendering plus the data freshness indicator. Reviewed diff was aligned
+  to @gh-pages-export ac-25 with no blocking findings; required GitHub CI checks passed on the
+  merged head."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - web-ui
+  - static
+  - gh-pages
+vcs_refs: []
+session_id: 01KK6F7YD8RMCG69SJ69JQNQ6J
+created_at: 2026-03-08T08:18:39.184Z
+started_at: 2026-03-08T10:21:25.447Z
+submitted_at: 2026-03-08T10:29:20.911Z
+completed_at: 2026-03-08T10:46:36.806Z
+todos: []
+automation: eligible

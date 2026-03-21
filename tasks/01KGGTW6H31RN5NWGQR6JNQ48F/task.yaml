@@ -1,0 +1,27 @@
+_ulid: 01KGGTW6H31RN5NWGQR6JNQ48F
+slugs: []
+title: "Design: First-party plan support with shadow branch storage"
+type: task
+description: First-party plan support with shadow branch storage - Store plan documents in kspec
+  shadow branch (e.g., .kspec/plans/) and link them to derived tasks. Plans persist across sessions,
+  provide implementation context without embedding in notes. Could integrate with Claude Code plan
+  mode workflow. Medium scope. Surfaced when plan file at ~/.claude/plans/ wouldn't persist for
+  future sessions.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Created @plan-support feature spec with 33 ACs, 6 traits, and 11 implementation
+  tasks. Reviewed by Plan agent, all gaps fixed.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - reflection
+  - planning
+  - shadow
+vcs_refs: []
+created_at: 2026-02-03T04:06:24.035Z
+started_at: 2026-02-04T07:41:29.457Z
+completed_at: 2026-02-04T08:19:35.168Z
+todos: []
+automation: manual_only

@@ -1,0 +1,20 @@
+_ulid: 01KKBD66B1RFDQTSD3YKDQB3Q1
+slugs: []
+title: "Multi-project agent dashboard — tmux-style live view of all running agent sessions across
+  projects. "
+type: task
+description: "Design spec for multi-project agent dashboard. Concept: tmux-style live view of all
+  running agent sessions across projects with real-time output, agent name, task ref, elapsed time,
+  and status. Deliverable: spec items covering dashboard layout, data sources (daemon API,
+  WebSocket), multi-project discovery, and interaction model. No implementation yet."
+spec_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-03-10T08:18:04.769Z
+todos: []
+automation: manual_only

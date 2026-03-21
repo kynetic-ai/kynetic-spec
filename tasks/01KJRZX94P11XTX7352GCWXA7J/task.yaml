@@ -1,0 +1,24 @@
+_ulid: 01KJRZX94P11XTX7352GCWXA7J
+slugs:
+  - task-web-ui-assets-bundled-in-npm-package
+title: "Implement: Web UI assets bundled in npm package"
+type: task
+spec_ref: "@daemon-web-ui-bundle"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #642. Added build:web-ui pipeline step, resolveWebUiPath bundled
+  fallback via import.meta.url, 5 unit tests covering all ACs, and upgraded CI to Node 22."
+depends_on:
+  - "@task-daemon-server-mode"
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+session_id: 01KJR8JA0CQXS951PDBEBRA3CW
+created_at: 2026-03-03T04:39:41.462Z
+started_at: 2026-03-03T06:10:51.749Z
+submitted_at: 2026-03-03T06:10:53.310Z
+completed_at: 2026-03-03T06:18:47.485Z
+todos: []
+automation: eligible

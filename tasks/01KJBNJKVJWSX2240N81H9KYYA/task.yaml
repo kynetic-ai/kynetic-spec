@@ -1,0 +1,86 @@
+_ulid: 01KJBNJKVJWSX2240N81H9KYYA
+slugs:
+  - task-delete-static-analysis-tests
+title: Delete static analysis tests for ralph end-loop, web-ui-triage, and misc
+type: task
+description: >-
+  Delete static analysis tests that have behavioral coverage elsewhere or test things that don't
+  need testing. Where gaps exist, add behavioral replacements.
+
+
+  Files to DELETE entirely:
+
+  1. tests/skill-module-split.test.ts (121 lines) — tests that a code split happened. The split is
+  done. Re-exports are proven by actual usage.
+
+  2. tests/web-ui-shared-types.test.ts (61 lines) — convention enforcement guard for 2 files, not
+  behavior.
+
+  3. tests/web-ui-triage.test.ts (300 lines) — reads Svelte components for string patterns. UI
+  behavior covered by E2E.
+
+
+  Partial deletes in tests/ralph/end-loop.test.ts:
+
+  - DELETE lines 254-272 (ac-detect): covered by behavioral tests at lines 148-251.
+
+  - DELETE lines 348-372 (ac-remove-markers): absence tests checking removed marker code stays
+  removed. Not behavior — nobody is reintroducing deleted marker file code.
+
+  - DELETE lines 374-418 (trait error-guidance): exact duplicates of lines 120-144.
+
+  - DELETE lines 493-502 (closeSession export check): string matching on store.ts source.
+
+  - REPLACE lines 277-346 (session close handlers) with behavioral tests: the static tests check for
+  signal handler registration and close_reason strings in ralph.ts source.
+  session-budget-integration.test.ts lines 420-548 already verify status (completed/abandoned) and
+  signal names, but do NOT verify close_reason text. Add behavioral assertions to the existing
+  spawnRalphUntil tests that read session.yaml and check close_reason contains the expected text
+  (e.g. "Completed all iterations", "Received SIGINT", "Received SIGTERM"). Then delete lines
+  277-346. Annotate the new assertions with // AC: @session-end-loop-signal ac-session-close-normal,
+  ac-session-close-signal, ac-session-close-error.
+
+  - KEEP: lines 1-252 (behavioral), 423-478 (behavioral CLI tests).
+
+
+  Partial deletes in tests/ralph/session-budget-integration.test.ts:
+
+  - DELETE lines 293-339 (ac-remove-marker-code): 13 absence tests checking 26 removed marker
+  patterns in ralph.ts. Same rationale — nobody is reintroducing deleted marker file code.
+
+  - KEEP: lines 1-290 (behavioral budget tests), 341-548 (behavioral session close tests).
+
+
+  Other partial deletes:
+
+  5. tests/normalize-ref-input.test.ts — delete lines 37-139 (anti-pattern scanning and import
+  checks). Keep lines 1-35 (unit tests for normalizeRefInput function).
+
+  6. tests/package-distribution.test.ts — delete lines 20-46 (directory existence via fs.stat) and
+  lines 57-62 (directory count). Keep lines 50-55, 64-91, 94-185 (content validation, npm packaging,
+  plugin integrity).
+
+
+  Run: npm test to verify no regressions.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #558. Deleted 869 lines of static analysis tests across 7 files. Added
+  behavioral replacements: close_reason assertions for session close paths, new
+  ac-session-close-error test using --max-failures 1, N/A annotations for ac-detect and
+  ac-remove-markers. All Codex review findings addressed."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+vcs_refs: []
+session_id: 01KJD384ABVWV1CVHJX0B5PJYA
+created_at: 2026-02-26T00:28:58.610Z
+started_at: 2026-02-26T14:58:10.500Z
+submitted_at: 2026-02-26T14:58:16.191Z
+completed_at: 2026-02-26T14:58:17.442Z
+todos: []
+automation: eligible

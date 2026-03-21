@@ -1,0 +1,23 @@
+_ulid: 01KJS8BFDFFNC3PVTNHRRPZSVZ
+slugs: []
+title: Update workflows to remove ralph references and use agent dispatch concepts
+type: task
+description: "Workflow definitions task-work-loop, pr-review-loop, session-reflect-loop still
+  reference ralph concepts. Per @ralph-replacement ac-4, update to reference kspec agent dispatch
+  commands. Also regenerate kspec-agents.md after. Spec AC: @ralph-replacement ac-4"
+spec_ref: "@ralph-replacement"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - docs
+  - workflow
+  - ralph
+vcs_refs: []
+created_at: 2026-03-03T07:07:15.247Z
+todos: []
+automation: manual_only

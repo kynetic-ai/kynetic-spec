@@ -1,0 +1,25 @@
+_ulid: 01KG7175F5P831523KRV6KVZT5
+slugs: []
+title: Auto-set BUN_ENV=production when spawning daemon
+type: task
+description: Auto-set BUN_ENV=production when spawning daemon in serve.ts to prevent Bun dev mode
+  HTML transformation causing asset hash mismatches
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #283. Set BUN_ENV=production in all daemon spawn locations (serve.ts
+  detached/foreground modes and maybeAutoStartDaemon in index.ts) to prevent Bun dev mode HTML
+  transformation causing asset hash mismatches."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - reflection
+  - daemon
+  - small
+vcs_refs: []
+created_at: 2026-01-30T08:44:50.533Z
+started_at: 2026-01-30T10:18:55.516Z
+completed_at: 2026-01-30T10:31:30.509Z
+todos: []
+automation: eligible

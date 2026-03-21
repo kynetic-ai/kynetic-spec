@@ -1,0 +1,25 @@
+_ulid: 01KG9207MXNT85M0WPJ63HAKFF
+slugs: []
+title: Add --depends-on flag to task add command
+type: task
+description: "Add --depends-on flag to 'kspec task add' - Set task dependencies at creation time
+  instead of requiring follow-up 'task set' or manual YAML edit. Small scope: single flag addition.
+  Surfaced when creating 10 E2E tasks that all depend on infrastructure setup task."
+spec_ref: "@task-add-depends-on"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #295. Added --depends-on flag to task add command with validation. Also
+  fixed validation inconsistency in task set --depends-on per Greptile review feedback."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - reflection
+  - cli
+  - tasks
+vcs_refs: []
+created_at: 2026-01-31T03:37:00.829Z
+started_at: 2026-01-31T07:07:56.550Z
+completed_at: 2026-01-31T07:41:12.749Z
+todos: []
+automation: eligible

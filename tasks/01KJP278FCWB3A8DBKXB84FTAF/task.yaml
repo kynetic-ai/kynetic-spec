@@ -1,0 +1,27 @@
+_ulid: 01KJP278FCWB3A8DBKXB84FTAF
+slugs:
+  - implement-daemon-agent-dispatch-integration
+title: Implement Daemon Agent Dispatch Integration
+type: task
+spec_ref: "@daemon-agent-dispatch"
+plan_ref: "@plan-reactive-agent-runtime"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #635. Implemented daemon agent dispatch integration: added
+  InvocationEvent type and onInvocationEvent callback to DispatchEngine, GET /api/agent/status and
+  POST /api/agent/dispatch endpoints, POST /api/agent/events for CLI event emission, WebSocket
+  broadcasts via pubsub on invocation lifecycle, and postDispatchEvent() fire-and-forget helper in
+  CLI task commands. All 7 ACs covered. E2E test suite added in api-agent-dispatch.spec.ts."
+depends_on:
+  - "@implement-agent-dispatch-engine"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJR8JA0CQXS951PDBEBRA3CW
+created_at: 2026-03-02T01:22:22.316Z
+started_at: 2026-03-02T23:47:15.293Z
+submitted_at: 2026-03-02T23:47:16.648Z
+completed_at: 2026-03-03T00:04:16.320Z
+todos: []
+automation: eligible

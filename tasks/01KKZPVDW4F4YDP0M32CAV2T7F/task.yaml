@@ -1,0 +1,65 @@
+_ulid: 01KKZPVDW4F4YDP0M32CAV2T7F
+slugs:
+  - task-event-bus
+title: Implement event envelope and bus
+type: task
+description: |
+  The event bus with standard envelope is the foundation for everything.
+  Today, handleStateChange() does dedup, rule matching, enqueue, and
+  drain inline. This task refactors that into a publish/subscribe model.
+
+  Why: Every subsequent feature (hooks, schedules, composition) needs a
+  central place to emit and subscribe to events with identity, causation
+  tracking, and loop prevention. Without the bus, each feature wires into
+  handleStateChange() directly.
+
+  What: Create an EventBus class with typed event envelope (event_id,
+  event_type, emitted_at, source_type, source_id, correlation_id,
+  causation_id). Add emit(event) and subscribe(pattern, handler).
+  Refactor existing dispatch rule matching into a subscriber. Add
+  invocation lifecycle events by routing existing onInvocationEvent
+  through the bus. Implement chain depth limit using correlation_id
+  tracking (default max 5). Add configurable ring buffer for recent
+  event retention.
+
+  How: The bus lives inside DispatchEngine and shares its lifecycle.
+  Task event dedup remains for task.* events only. Non-task events have
+  unique event_id and skip dedup. Events are delivered in emission order
+  per source. The ring buffer is a simple circular array.
+
+  Covers: @dispatch-event-envelope ac-1 through ac-6.
+spec_ref: "@dispatch-event-envelope"
+plan_ref: "@plan-dispatch-event-system-expansion"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged to dev (296c476ae). Event bus implementation approved — all 6 ACs covered
+  with 36 annotated tests. Clean integration into DispatchEngine: task state changes and invocation
+  lifecycle events emit through the bus. Three non-blocking nits noted in review @01KM0243: (1)
+  missing _eventBus.clear() in stop(), (2) chain depth counter incremented before dedup check
+  (latent ordering issue), (3) RingBuffer private field access via string indexing. Merge conflict
+  in index.ts resolved (parallel additive exports from action-executor and event-bus branches)."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - events
+  - foundation
+vcs_refs: []
+review_ref: "@01KM0243JZG3PSR9Q8MP96Q4K6"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T08:36:34.033Z
+  commit: 8166d8d659867217b31b97296d530899f07a433e
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM011KV02E3F9W5X4YR94XV0
+created_at: 2026-03-18T05:31:46.436Z
+started_at: 2026-03-18T08:36:26.254Z
+submitted_at: 2026-03-18T08:36:34.494Z
+completed_at: 2026-03-18T08:50:48.948Z
+todos: []
+automation: eligible

@@ -1,0 +1,60 @@
+notes:
+  - _ulid: 01KJS8K98W47H65FHCDBV2KESR
+    content: "Manually added dispatch rules to worker and reviewer agents in kynetic.meta.yaml since CLI
+      does not yet support --add-dispatch-rule. Worker: task.ready + task.needs_work with
+      automation:eligible filter. Reviewer: task.pending_review. This task still needed to add CLI
+      flag support."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T07:11:31.100Z
+  - _ulid: 01KJS8RV6V9KG4Y1E63ZFFHQPZ
+    content: "Fixed worker skill slug: kspec-task-work -> task-work. Runtime resolves from
+      .kspec/skills/<id>/SKILL.md so bare slug is required, not the kspec- prefixed rendered name.
+      Also need --remove-skill on meta set (no way to remove skills via CLI currently)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-03T07:14:33.307Z
+  - _ulid: 01KJW6931NHWTJZ45NXSV7NKCH
+    content: >-
+      Execution context:
+
+      - Background: CLI currently requires manual YAML edits to manage agent dispatch rules.
+
+      - Scope: add dispatch rule mutation flags to both meta add agent and meta set, with validation
+      + tests.
+
+      - Files: src/cli/commands/meta.ts and related tests under tests/.
+
+      - Verification: targeted meta command tests + full validate/test command before submit.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T10:28:43.189Z
+  - _ulid: 01KJW6ZWD0S7794F456BX9S582
+    content: >-
+      Implemented AC-12 dispatch rule CLI mutations:
+
+      - Added --add-dispatch-rule (repeatable JSON), --remove-dispatch-rule <event>, and
+      --clear-dispatch-rules to both meta add agent and meta set.
+
+      - Parsed/validated add payloads with AgentDispatchRuleSchema and remove event with
+      AgentDispatchEventSchema.
+
+      - Added integration tests for append/remove/clear and invalid JSON/event errors in
+      tests/meta.test.ts.
+
+      Verification:
+
+      - npx vitest run tests/meta.test.ts (pass)
+
+      - npm test (pass: 173 files, 3641 tests)
+
+      - kspec validate still reports pre-existing repo-wide schema/reference/alignment issues
+      unrelated to this task.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T10:41:10.048Z
+  - _ulid: 01KJW780BZ9BZYCY07YTJ4537D
+    content: "Submitted for review in PR #669: https://github.com/kynetic-ai/kynetic-spec/pull/669"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T10:45:36.256Z

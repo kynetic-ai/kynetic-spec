@@ -1,0 +1,62 @@
+notes:
+  - _ulid: 01KKNTVEKADPW3SM5QFJKBE6FK
+    content: Reset from in_progress to pending
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T09:29:17.162Z
+  - _ulid: 01KKNW823NH257BNDSMYT9G4YT
+    content: >-
+      Execution context:
+
+      - Background: This task implements the storage and reference identity layer for review
+      records, building on the Zod schema created in @task-implement-review-record-core.
+
+      - Scope: Parser/loader functions for project.reviews.yaml (load, save, find), integration into
+      the shared reference system (ReferenceIndex), and exported Loaded type.
+
+      - Files: src/parser/yaml.ts (add review CRUD), src/parser/refs.ts (register in
+      ReferenceIndex), tests/review-storage.test.ts (new)
+
+      - Verification: Tests covering all 3 ACs — dedicated storage (ac-1), ULID-backed @ref identity
+      (ac-2), single-file storage path (ac-3)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T09:53:38.933Z
+  - _ulid: 01KKNWMGJN6EN8KEEJAXBYXFWG
+    content: >-
+      Implementation complete:
+
+      - Created src/parser/reviews.ts with full CRUD: LoadedReviewRecord type, getReviewsFilePath,
+      loadReviewRecords, findReviewByRef, createReviewRecord, saveReviewRecord,
+      mutateReviewAtomically, deleteReviewRecord
+
+      - Integrated into ReferenceIndex (src/parser/refs.ts): added reviews parameter to constructor
+      with indexReview method for ULID + slug indexing
+
+      - Exported from src/parser/index.ts
+
+      - Storage: project.reviews.yaml with { kynetic_reviews: '1.0', reviews: [...] } wrapper format
+
+      - Tests: 23 tests in tests/review-storage.test.ts covering all 3 ACs
+
+      - Full test suite: 4951 tests pass, 0 regressions
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T10:00:26.965Z
+  - _ulid: 01KKNX1C9Y590B0FR1FWCG408Q
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: buildReferenceIndex() and buildIndexes() in
+      src/parser/yaml.ts do not load or pass reviews to ReferenceIndex constructor. AC-2 requires
+      reviews to be addressable via @ref using the shared reference system, but the shared entry
+      points default reviews to []. Update both functions to load reviews via loadReviewRecords(ctx)
+      and pass them as the 5th parameter. See PR #846 review for details."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T10:07:28.574Z
+  - _ulid: 01KKNXE43B475ZMH8R74SSTCXV
+    content: "[FIX_CYCLE: 1] Fixed: buildReferenceIndex() and buildIndexes() in src/parser/yaml.ts now
+      load reviews via loadReviewRecords(ctx) and pass them to the ReferenceIndex constructor. Added
+      2 tests verifying reviews are resolvable through these shared entry points. Full test suite:
+      4952 pass, 0 regressions (1 pre-existing flaky in cli-serve.test.ts)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T10:14:26.155Z

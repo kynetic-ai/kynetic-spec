@@ -1,0 +1,36 @@
+_ulid: 01KJ4T46TRY4JSDJW2WBEY8Z6B
+slugs: []
+title: Codex skill prompt needs ralph-loop safety guard. During ralph loop session
+  01KJ3N2N8V38823H87PG09V7
+type: task
+description: "Codex skill prompt needs ralph-loop safety guard. During ralph loop session
+  01KJ3N2N8V38823H87PG09V7XR, the worker agent invoked /codex review #448 (per focus instructions).
+  The codex agent (gpt-5.3-codex, danger-full-access sandbox) ran a 'CLI spot-check' that
+  accidentally started a kspec ralph process, then ran pkill -f 'kspec ralph' to clean it up — which
+  killed the actual ralph loop process hosting it. Codex session rollout-2026-02-22T14-02-07
+  completed normally (703k tokens, clean exit) while ralph died mid-tool-call (session stuck at
+  active, no session.end event, last event seq 963 was the codex exec Bash call). Fix: add context
+  to the codex skill prompt when invoked inside ralph (e.g. 'You are running inside a kspec ralph
+  loop. NEVER start kspec ralph, kspec serve, or use pkill/kill on kspec processes.'). Could detect
+  ralph context via KSPEC_SESSION_ID env var or similar. Alternative: restrict sandbox mode when
+  codex is called from ralph. See codex skill at .claude/skills/codex/SKILL.md and ralph tool
+  handler at src/cli/commands/ralph.ts:589-634."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #495. Added ralph-loop safety guard to codex skill: (1) ralph sets
+  KSPEC_RALPH_SESSION env var on process.env so all spawned agents (worker, subagent, wrap-up)
+  inherit it, (2) codex SKILL.md has new safety guard section with detection and preamble
+  instructions preventing Codex from starting/killing kspec processes. Mock ACP extended with env
+  verification. 2 tests. Codex review findings addressed (env propagation to subagents, improved
+  negative test)."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-23T08:33:48.376Z
+started_at: 2026-02-24T04:04:39.622Z
+completed_at: 2026-02-24T04:26:47.848Z
+todos: []
+automation: eligible

@@ -1,0 +1,71 @@
+notes:
+  - _ulid: 01KKB3PHA6F3AFZ9F6JQ2TQ3PX
+    content: |
+      Implementation notes:
+
+      Store cache in memory on the daemon. Use Map<sessionId, CachedSummary>.
+      On startup, list session directories and read metadata in parallel.
+      For stats, scan events.jsonl line count (fast) and grep for iteration
+      markers. Only active sessions need stats refresh.
+    author: "@claude"
+    created_at: 2026-03-10T05:32:14.534Z
+  - _ulid: 01KKBF0VT6S7CBD4X3C4FZPJD5
+    content: >-
+      Implemented SessionSummaryCache class in src/sessions/cache.ts:
+
+      - In-memory Map<sessionId, CacheEntry> stores session summaries
+
+      - First getAll() builds cache by reading all session.yaml files in parallel (ac-cache-build)
+
+      - Subsequent calls diff directory listing to detect new/removed sessions (ac-cache-invalidate)
+
+      - Corrupt/missing session.yaml files are skipped with warning (ac-cache-graceful)
+
+      - Summary stats (event_count, iteration_count, tasks_completed) computed from events.jsonl and
+      context-iter files (ac-summary-stats)
+
+      - Active sessions have stats recomputed on each request; completed sessions use cached stats
+      (ac-active-refresh)
+
+      - In-flight promise dedup prevents concurrent cache builds
+
+      - Integrated into daemon session routes (replaced getAllSessionLogSummaries with cache.getAll)
+
+      - 21 tests covering all 5 ACs pass
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T08:50:07.302Z
+  - _ulid: 01KKBGCM1W2S7QHJP5RK3VCRFW
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX review on PR #739: cache invalidation misses
+      in-place session.yaml status/metadata changes for non-active sessions, and the module-level
+      SessionSummaryCache leaks across projects in multi-directory daemon mode."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T09:14:01.148Z
+  - _ulid: 01KKBHKERHRXNWPCAJG0T5H6MN
+    content: >-
+      Fix cycle 1 - addressed both MUST-FIX review findings:
+
+
+      1. Cache invalidation for in-place session.yaml changes: Added mtime tracking to CacheEntry.
+      On refresh(), all cached non-active sessions have their session.yaml mtime checked. If mtime
+      differs from cached value, the entry is re-read from disk. This covers the case where an
+      existing completed/failed/abandoned session has its status or metadata modified externally.
+
+
+      2. Per-project cache scoping: Replaced module-level SessionSummaryCache singleton with
+      getSessionCache(sessionsDir) registry function. Each unique sessionsDir gets its own cache
+      instance. The daemon routes now call getSessionCache(ctx.sessionsDir) per request instead of
+      using a shared global.
+
+
+      3. Added tests: (a) in-place session.yaml status change detection test in ac-cache-invalidate
+      suite, (b) getSessionCache per-project scoping tests verifying instance identity and data
+      isolation.
+
+
+      All 25 session-summary-cache tests pass. Full test suite: 2 pre-existing failures in codex
+      skill tests (unrelated).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T09:35:13.681Z

@@ -1,0 +1,55 @@
+_ulid: 01KKMVDNTA80SYMTFY9EY454WJ
+slugs: []
+title: Investigate and fix npx ENOENT crash in dispatch agent spawn
+type: task
+description: >-
+  When the daemon is started via kspec serve start (which spawns bun as a child process), subsequent
+  agent spawns using npx fail with ENOENT. This causes the daemon to crash because the spawn error
+  is unhandled (no child.on('error') handler in spawner.ts). The crash leaves stale reviewer
+  worktree records that block future dispatch attempts.
+
+
+  Investigation findings:
+
+  - npx resolves fine from the shell, from bun directly, and from kspec agent run
+
+  - The daemon started via direct bun invocation can spawn agents without issue
+
+  - Only the kspec serve start path fails (spawn('bun', ...) -> spawn('npx', ...))
+
+  - Concurrent spawns are not the issue (tested and ruled out)
+
+  - PATH is not being mutated by any code in the spawn chain
+
+  - Appears to be a Bun-specific issue with PATH resolution in nested spawn chains
+
+
+  Current mitigation committed: use bunx (Bun built-in) instead of npx when running under Bun
+  runtime. This avoids the PATH resolution issue but the root cause in Bun's spawn behavior is not
+  fully understood.
+
+
+  Additional issues identified:
+
+  - spawner.ts has no child.on('error') handler, so spawn failures crash the entire daemon process
+  instead of being caught by the invocation try/catch
+
+  - Stale reviewer worktree records after crashes create a blocking cycle (addressed by the branch
+  adoption plan tasks)
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Fixed already; no further work needed.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - dispatch
+  - reliability
+  - agents
+vcs_refs: []
+created_at: 2026-03-14T00:19:59.946Z
+todos: []
+automation: needs_review

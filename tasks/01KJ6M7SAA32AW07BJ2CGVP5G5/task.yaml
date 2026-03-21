@@ -1,0 +1,29 @@
+_ulid: 01KJ6M7SAA32AW07BJ2CGVP5G5
+slugs: []
+title: "Fix: detectTaskCompleteCommand should match task submit"
+type: task
+description: "detectTaskCompleteCommand() in ralph.ts (~line 229) only matches 'kspec task complete'
+  but not 'kspec task submit'. When the agent submits a task (pending_review), ralph never detects
+  it, never writes the marker file, and the agent keeps picking up new tasks — bypassing
+  --max-tasks. Fix: add 'submit' to the detection pattern. Also update getIterationStats() to count
+  pending_review tasks toward the limit."
+spec_ref: "@ralph-task-limit"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #489. detectTaskCompleteCommand now matches task submit,
+  getIterationStats counts pending_review tasks."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - ralph
+  - bug
+  - loop
+vcs_refs: []
+created_at: 2026-02-24T01:29:23.017Z
+started_at: 2026-02-24T01:29:51.113Z
+completed_at: 2026-02-24T01:49:57.859Z
+todos: []
+automation: eligible

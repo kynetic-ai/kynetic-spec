@@ -1,0 +1,27 @@
+_ulid: 01KKJKMACTMKC8CNF9D9Y56B3C
+slugs:
+  - implement-droid-core-skill-install-support
+title: Implement Droid Core Skill Install Support
+type: task
+spec_ref: "@droid-core-skill-install"
+derivation: auto
+plan_ref: "@plan-droid-platform-support"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #825. Added droid as a valid install-core platform override, verified
+  droid core skills render into .factory/skills/kspec-<id>/SKILL.md, and preserved the default
+  claude-code behavior when --platform is omitted. Own AC coverage verified for ac-1 through ac-3;
+  spec has no inherited trait ACs."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKK453XX2VX1JKH3H9G8B7NA
+created_at: 2026-03-13T03:25:20.154Z
+started_at: 2026-03-13T08:14:31.705Z
+submitted_at: 2026-03-13T08:20:47.305Z
+completed_at: 2026-03-13T08:33:15.429Z
+todos: []
+automation: eligible

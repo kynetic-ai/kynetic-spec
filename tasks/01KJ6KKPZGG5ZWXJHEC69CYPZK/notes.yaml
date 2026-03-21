@@ -1,0 +1,19 @@
+notes:
+  - _ulid: 01KJ6KKPZGVX8AHJHP2CHZPQTP
+    content: |
+      Add TaskBudgetSchema to src/sessions/types.ts. Budget stored in local filesystem
+      at .kspec/sessions/{id}/budget.json (NOT shadow branch). Add incrementBudget(),
+      resetBudget(), checkBudget() functions to src/sessions/store.ts. Atomic writes
+      via write-to-temp-then-rename pattern. Single-writer guarantee documented.
+    author: "@claude"
+    created_at: 2026-02-24T01:18:25.264Z
+  - _ulid: 01KJ72KGJ0MCQ7V3V7Q3YJ9RRH
+    content: "Added TaskBudgetSchema (max_per_cycle: positive int, started_this_cycle: nonneg int) to
+      sessions/types.ts. Added 5 budget CRUD functions (createBudget, getBudget, checkBudget,
+      incrementBudget, resetBudget) to sessions/store.ts with atomic write-to-temp-then-rename.
+      Budget stored at .kspec/sessions/{id}/budget.json (local filesystem, not shadow branch). Codex
+      review caught MUST-FIX: getBudget was failing open on corrupt files — fixed to only return
+      null for ENOENT, throwing on parse/validation errors. 32 tests. PR #498."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T05:40:27.328Z

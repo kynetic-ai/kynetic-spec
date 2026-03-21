@@ -1,0 +1,25 @@
+notes:
+  - _ulid: 01KK7PEM88J9K6BNF94E6ME8JG
+    content: "Switched task list detail panel from Sheet (side slide-in) to Dialog (centered modal) to
+      match kanban board. Changes: replaced
+      Sheet/SheetContent/SheetHeader/SheetTitle/SheetDescription imports with
+      Dialog.Root/Dialog.Content/Dialog.Header/Dialog.Title/Dialog.Description in +page.svelte. Kept
+      same data-testid='task-detail-panel' so E2E tests continue working. Also updated comment in
+      TaskDetailContent.svelte and test comments in tasks.spec.ts."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T21:43:00.616Z
+  - _ulid: 01KK7PW8SFKQPZNC15VDWHSQ61
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: AC-5 coverage still only asserts a generic
+      detail panel opens; add an E2E assertion that distinguishes the Dialog modal behavior from the
+      old Sheet implementation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T21:50:27.632Z
+  - _ulid: 01KK7Q5DJ1TEY3NADGFD4F9VE9
+    content: 'Fix cycle 1: Added E2E assertion `await expect(detailPanel).toHaveAttribute("data-slot",
+      "dialog-content")` to the AC-5 test. This discriminates Dialog (dialog-content) from Sheet
+      (sheet-content) — the test would fail if the component were reverted. Pushed to PR #716.'
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T21:55:27.426Z

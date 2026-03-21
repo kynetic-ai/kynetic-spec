@@ -1,0 +1,44 @@
+notes:
+  - _ulid: 01KHVXK2CPBR3BD8BVHTBPV3AA
+    content: |
+      Implementation notes:
+
+      New file src/parser/config.ts with KspecConfigSchema (Zod), ResolvedKspecConfig type,
+      and loadProjectConfig(gitRoot) function. Config.ts is a leaf module with no imports
+      from yaml.ts or shadow.ts (circular dependency avoidance). Use fs.readFile + yaml
+      library directly, or extract readYamlFile into src/parser/yaml-utils.ts.
+
+      Central resolver function resolveConfig(fileConfig, envOverrides, cliOverrides) with
+      typed ResolvedKspecConfig output. All commands call this once via ctx.config rather
+      than doing ad-hoc resolution.
+
+      For ac-7 (batch mode), loadProjectConfig must resolve gitRoot independently of
+      KSPEC_SPEC_DIR. The batch executor in batch-exec.ts should pass the real project
+      root to config loading before redirecting spec dir.
+    author: "@claude"
+    created_at: 2026-02-19T21:41:11.190Z
+  - _ulid: 01KHW9VT9AM2V70HFDMCXSF98X
+    content: >-
+      Implementation complete. Created src/parser/config.ts with:
+
+      - KspecConfigSchema (Zod) for kspec.config.yaml validation
+
+      - loadProjectConfig() loads from git root, handles invalid YAML gracefully
+
+      - resolveConfig() applies env var precedence (KSPEC_AUTHOR, KSPEC_DAEMON_PORT,
+      KSPEC_DAEMON_HOST)
+
+      - findProjectRoot() handles KSPEC_BATCH_PROJECT_ROOT for batch mode
+
+
+      Updated yaml.ts initContext() to load config before shadow detection and include on
+      KspecContext.
+
+
+      Updated batch-exec.ts to set KSPEC_BATCH_PROJECT_ROOT before redirecting KSPEC_SPEC_DIR.
+
+
+      24 tests in tests/parser/config.test.ts covering all 7 ACs. All 2848 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-20T01:15:40.714Z

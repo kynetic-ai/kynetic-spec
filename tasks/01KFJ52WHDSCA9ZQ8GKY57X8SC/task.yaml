@@ -1,0 +1,26 @@
+_ulid: 01KFJ52WHDSCA9ZQ8GKY57X8SC
+slugs: []
+title: Improve ACP mock to require permission requests
+type: infra
+description: "ACP mock protocol fidelity: Update tests/mocks/acp-mock.js to require permission
+  requests like the real agent does. Currently mock auto-succeeds tool calls without permission
+  flow. Would have caught the { granted: true } format bug in tests rather than live testing."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged PR #163. Added comprehensive test coverage for mock's handleRequestPermission
+  function with 6 tests covering auto-approval, cancellation, preference ordering, and error cases.
+  All 936 tests pass, all CI checks passed."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - acp
+  - mock
+vcs_refs: []
+created_at: 2026-01-22T06:08:21.548Z
+started_at: 2026-01-22T08:42:52.432Z
+completed_at: 2026-01-22T08:55:41.500Z
+todos: []
+automation: eligible

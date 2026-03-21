@@ -1,0 +1,67 @@
+_ulid: 01KJBNJ62SC5K1NZRBRDQD9EGE
+slugs:
+  - task-e2e-daemon-meta-validation-api
+title: E2E tests for daemon Meta + Validation APIs (replace 2 files)
+type: task
+description: >-
+  Replace tests/daemon-api-meta.test.ts (224 lines) and tests/daemon-api-validation.test.ts (166
+  lines) with Playwright E2E tests. Both are all static analysis.
+
+
+  Write: packages/web-ui/tests/e2e/api-meta.spec.ts
+
+  Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+  Meta endpoints:
+
+  - GET /api/meta/session — session context with focus, threads, questions (@api-contract ac-15)
+
+  - GET /api/meta/agents — defined agents (@api-contract ac-16)
+
+  - GET /api/meta/workflows — defined workflows (@api-contract ac-17)
+
+  - GET /api/meta/observations — observations with resolved filter (@api-contract ac-18)
+
+
+  Validation/Search endpoints:
+
+  - GET /api/search?q=keyword — search across items, tasks, inbox, observations (@api-contract
+  ac-19)
+
+  - GET /api/validate — validation results {valid, schemaErrors, refErrors, orphans} (@api-contract
+  ac-20)
+
+  - GET /api/alignment — AlignmentIndex stats and warnings (@api-contract ac-21)
+
+
+  After E2E tests pass, delete both static files.
+
+  Run: npm test && npm run test:e2e to verify.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #546. Replaced 224 lines of static analysis in
+  tests/daemon-api-meta.test.ts and 166 lines in tests/daemon-api-validation.test.ts with 34
+  Playwright E2E tests in packages/web-ui/tests/e2e/api-meta.spec.ts. All ACs (ac-15 through ac-21)
+  covered with real HTTP calls against running daemon. Fixed Codex review issues: trait N/A
+  annotations moved outside JSDoc block comment for machine parseability, added all 5 inherited
+  traits with complete N/A annotations (29 total trait ACs), added @multi-directory-daemon ac-24
+  annotation. All CI checks passed."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - e2e
+vcs_refs: []
+session_id: 01KJBZXXNHE3M4WX1BZ6Z5ZNCJ
+created_at: 2026-02-26T00:28:44.505Z
+started_at: 2026-02-26T04:08:50.834Z
+submitted_at: 2026-02-26T04:17:00.251Z
+completed_at: 2026-02-26T04:32:53.831Z
+todos: []
+automation: eligible

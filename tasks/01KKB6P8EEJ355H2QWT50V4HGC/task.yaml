@@ -1,0 +1,33 @@
+_ulid: 01KKB6P8EEJ355H2QWT50V4HGC
+slugs: []
+title: Board view should load all active tasks without arbitrary limit
+type: task
+description: "The task board currently fetches with limit: 500, which means projects with more tasks
+  will have incomplete active columns. Remove the arbitrary limit for active status columns
+  (Backlog, Ready, In Progress, Review) so they show all matching tasks. The Done column should keep
+  its limit of 20 most recent. May require paginated loading or removing the limit param entirely
+  for board fetches."
+spec_ref: "@ui-task-board"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #744. Removed the arbitrary board fetch limit so active columns load
+  all matching tasks, kept the Done column capped to recent items, and aligned static-mode
+  pagination with daemon behavior. AC coverage confirmed for @ui-task-board ac-all-active-tasks via
+  packages/web-ui/tests/api-static.test.ts and packages/web-ui/tests/board-utils.test.ts; full npm
+  test passed and PR CI was green on head a5d14be29."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - web-ui
+  - feature
+vcs_refs: []
+session_id: 01KKBPJP0AE02MJ83WSWE1Z6T2
+created_at: 2026-03-10T06:24:31.178Z
+started_at: 2026-03-10T11:23:33.887Z
+submitted_at: 2026-03-10T11:23:37.550Z
+completed_at: 2026-03-10T11:42:28.488Z
+todos: []
+automation: eligible

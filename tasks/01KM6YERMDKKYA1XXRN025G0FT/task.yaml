@@ -1,0 +1,68 @@
+_ulid: 01KM6YERMDKKYA1XXRN025G0FT
+slugs:
+  - task-impl-split-storage
+title: Implement split storage backend
+type: task
+description: |
+  Create the split storage backend abstraction inside the task data
+  manager: format detection, directory layout conventions, and the
+  routing logic that decides which files to read/write for each
+  operation type. The child tasks (@task-impl-index and
+  @task-impl-per-task-files) implement the specific read/write
+  operations for each file type.
+
+  Why: All callers now use the task data manager. The internal storage
+  can change from monolithic file to split directories without any
+  caller modifications.
+
+  What: Implement the storage backend abstraction with:
+  - Format detection (monolithic vs split) for dual-format support
+  - Directory layout: .kspec/tasks/<full-ulid>/ per task
+  - Routing: which operations touch the index, which touch per-task
+    files, which touch both
+  - Per-task file locking replacing whole-file locking
+
+  The actual index read/write and per-task file read/write operations
+  are implemented by the child tasks. This task provides the framework
+  they plug into.
+
+  How: Add a storage backend interface to the task data manager. The
+  split backend implements format detection (does .kspec/tasks/ exist
+  with ULID directories?), directory management, and routing logic.
+  Atomic writes use the existing write buffer — buffer all file writes,
+  flush as one shadow branch commit.
+spec_ref: "@task-directory-storage"
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev in 95efd1618 after approved review @01KM7N7J. Split storage backend now
+  provides per-task directory routing, index/count persistence, lazy split backend registration, and
+  AC coverage via split backend/task manager tests.
+depends_on:
+  - "@task-migrate-cli"
+  - "@task-migrate-daemon"
+  - "@task-migrate-supporting"
+context: []
+priority: 1
+tags:
+  - tasks
+  - storage
+  - foundation
+vcs_refs: []
+review_ref: "@01KM7N7JCE58R2Y5NVNJFD6X9R"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-21T07:36:03.880Z
+  commit: 61eb4369ce1f4ece77cb55bc19f888eebf4d78a8
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM7KHF9BB35Z2N3CZDFHJ2GF
+created_at: 2026-03-21T00:59:21.101Z
+started_at: 2026-03-21T07:36:00.410Z
+submitted_at: 2026-03-21T07:36:04.306Z
+completed_at: 2026-03-21T07:42:17.143Z
+todos: []
+automation: eligible

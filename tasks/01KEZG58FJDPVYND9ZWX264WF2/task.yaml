@@ -1,0 +1,20 @@
+_ulid: 01KEZG58FJDPVYND9ZWX264WF2
+slugs:
+  - task-alignment-system
+title: Design spec-implementation alignment system
+type: spike
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Implemented alignment system: AlignmentIndex, auto-sync, validation, item status command"
+depends_on: []
+context: []
+priority: 2
+tags:
+  - core
+  - process
+vcs_refs: []
+created_at: 2026-01-15T00:16:19.442Z
+started_at: 2026-01-15T04:44:06.651Z
+completed_at: 2026-01-15T04:58:00.774Z
+todos: []

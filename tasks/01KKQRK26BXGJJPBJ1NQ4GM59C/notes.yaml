@@ -1,0 +1,40 @@
+notes:
+  - _ulid: 01KKQVJF66XE9DDKMHM2SCTGJS
+    content: |-
+      Implemented GET /api/refs/index endpoint.
+
+      Files changed:
+      - packages/shared/src/api.ts — Added RefIndexEntry and RefIndexResponse types
+      - packages/daemon/src/routes/refs.ts — New route handler for /api/refs/index
+      - packages/daemon/src/server.ts — Registered refs route
+      - tests/daemon-refs-index.test.ts — 6 tests covering AC-4, AC-5, and trait ACs
+
+      Design decisions:
+      - Returns flat map keyed by both ULID and slug for O(1) lookup
+      - For spec items, extracts implementation status from nested status object
+      - Uses Promise.all to load tasks and items concurrently
+      - No pagination since this is a complete index, not a list endpoint
+      - Trait ACs ac-2/3/4/5 marked N/A (read-only index endpoint with no body/pagination/mutation)
+
+      All 4959 tests pass, 0 regressions.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T04:20:20.294Z
+  - _ulid: 01KKQVYER98QXA99758YFJEQMM
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #867 has merge conflicts with main. Branch is
+      behind by 20+ commits. PR #866 (server-side title resolution) modified
+      packages/daemon/src/server.ts and likely conflicts. Rebase onto main and resolve conflicts.
+      Code quality and AC coverage are otherwise clean — no code changes needed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T04:26:53.065Z
+  - _ulid: 01KKQWYWQ5X70WAEPFMP54BWHQ
+    content: "[FIX_CYCLE: 1] Resolved merge conflicts with main. PR #866 (server-side title resolution)
+      had already merged the ref index implementation using ReferenceIndex and buildRefIndex
+      utility. Adopted main's version which is more complete (includes plans, uses shared utility).
+      Removed duplicate test file (daemon-refs-index.test.ts) since ref-resolution.test.ts provides
+      full AC-4/AC-5 coverage. Fixed duplicate type definitions in api.ts from auto-merge. All 5312
+      tests pass, PR #867 now CLEAN/MERGEABLE."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T04:44:35.941Z

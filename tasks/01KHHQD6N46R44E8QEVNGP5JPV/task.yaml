@@ -1,0 +1,27 @@
+_ulid: 01KHHQD6N46R44E8QEVNGP5JPV
+slugs:
+  - implement-claude-code-renderer-extended-frontmatte
+title: Implement Claude Code Renderer - Extended Frontmatter
+type: task
+spec_ref: "@claude-code-renderer-extended"
+plan_ref: "@plan-multi-platform-skill-rendering-with-agent-skills-c"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #399. Implemented Claude Code renderer extended frontmatter with all 8
+  ACs covered: portable fields (license, allowed-tools), platform_config.claude_code fields
+  (user-invocable, disable-model-invocation, context, agent), snake_case to kebab-case conversion,
+  hash migration from .render-hash to .render-hash-claude-code, and supporting directories
+  (references/, scripts/, assets/) copying. All 61 skill rendering tests pass."
+depends_on:
+  - "@implement-extended-skill-schema"
+  - "@implement-platform-renderer-contract"
+  - "@implement-supporting-files-convention"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-15T22:40:43.172Z
+started_at: 2026-02-16T00:34:48.263Z
+completed_at: 2026-02-16T00:59:58.802Z
+todos: []
+automation: eligible

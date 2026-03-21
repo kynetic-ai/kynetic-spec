@@ -1,0 +1,19 @@
+_ulid: 01KJ3FXHDH6X85QF35D56P2F69
+slugs:
+  - implement-triage-record-schema
+title: Implement Triage Record Schema
+type: task
+spec_ref: "@triage-record-schema"
+plan_ref: "@plan-interactive-triage-system"
+status: completed
+blocked_by: []
+closed_reason: Schema and parser implemented with full AC coverage (38 tests). Committed in aac8bc27.
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-22T20:16:09.649Z
+started_at: 2026-02-22T20:16:58.536Z
+completed_at: 2026-02-22T20:23:31.838Z
+todos: []

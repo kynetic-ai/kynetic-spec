@@ -1,0 +1,62 @@
+_ulid: 01KK5P3YQXNQR1MHAHSKA68HE5
+slugs: []
+title: Add dispatch filter UI and default automation eligibility
+type: task
+description: >-
+  The dispatch engine feeds non-eligible tasks (manual_only, needs_review) to agents because:
+
+
+  1. The AgentEditForm UI has no filter editing — dispatch triggers show only the event type, with
+  no way to view or configure filter criteria (automation, tags, priority).
+
+
+  2. addTrigger() creates rules as { on: event } with no filter, and the engine's _matchesFilter()
+  returns true when filter is undefined.
+
+
+  3. Default agent definitions (from kspec setup) lack filter: { automation: eligible } on their
+  rules.
+
+
+  Fix requires three changes:
+
+
+  A) UI: Add filter editing per dispatch trigger row — automation dropdown (eligible/any), tag
+  chips, priority threshold. Default automation to 'eligible' for task.ready and task.needs_work
+  triggers. Show existing filters as badges.
+
+
+  B) Engine: Default to automation: eligible for task.ready and task.needs_work events when no
+  filter is specified. This is a safety net so even unconfigured agents don't pick up ineligible
+  tasks.
+
+
+  C) Setup: Update default agent definitions to include filter: { automation: eligible } on
+  task-worker dispatch rules.
+
+
+  See new ACs on @ui-agent-dispatch (ac-5 through ac-9) and @agent-dispatch-engine (ac-21, ac-22).
+spec_ref: "@ui-agent-dispatch"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #706. Added dispatch filter UI for agent trigger rows, enforced default
+  automation eligibility safety net for task.ready/task.needs_work, and confirmed setup defaults on
+  built-in task-worker rules. Review verified AC coverage for @ui-agent-dispatch ac-5..ac-9 and
+  @agent-dispatch-engine ac-21..ac-22; prior review findings were resolved before merge."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - web-ui
+  - dispatch
+  - bug
+vcs_refs: []
+session_id: 01KK6BMK2JZ4CZW6YCDBN9Q06P
+created_at: 2026-03-08T02:58:42.044Z
+started_at: 2026-03-08T09:18:58.248Z
+submitted_at: 2026-03-08T09:29:40.041Z
+completed_at: 2026-03-08T09:44:46.930Z
+todos: []
+automation: eligible

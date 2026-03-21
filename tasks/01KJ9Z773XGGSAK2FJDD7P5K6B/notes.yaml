@@ -1,0 +1,31 @@
+notes:
+  - _ulid: 01KJA8Q7HPYMCJN7M6MCY8JJR0
+    content: "Fixed two no-op conditional assertions in session-start-format.test.ts. Both tests had
+      if-guards that made assertions pass vacuously when the condition was false (no inbox items in
+      fixture). Fix: added explicit inbox items via kspec inbox add before asserting, and removed
+      the if-guards so assertions always run. All 43 tests in the file pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T11:25:03.927Z
+  - _ulid: 01KJA93KN8ESW0A38EBWMHAM0A
+    content: "[FIX_CYCLE: 1] Review findings: PR #524 bundles unrelated refactor commit (f461447c -
+      split session.ts, task @01KJ9ZBT) with the assertion fix. Must split into separate PRs. The
+      test fix itself (commit 85a371b9) is correct."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T11:31:49.544Z
+  - _ulid: 01KJA97G3MRS5KJ40C0VS27DAY
+    content: "[FIX_CYCLE: 1 RESOLVED] Rebased branch onto origin/main to drop the unrelated refactor
+      commit (f461447c, already merged via PR #523). PR #524 now contains only the assertion fix
+      commit (3ea4616f). All 43 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T11:33:56.981Z
+  - _ulid: 01KJA9AB1Z7KN353T4V9A5A2XA
+    content: "Submitted for review. PR #524 rebased onto main, now contains only the assertion fix
+      commit (3ea4616f). Codex review skipped — OPENAI_API_KEY not available in environment. Manual
+      review confirms fix is correct: removed vacuous if-guards, added explicit inbox items to make
+      assertions unconditional."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T11:35:30.112Z

@@ -1,0 +1,36 @@
+_ulid: 01KHZHPT0KJ5QKX8A9S9YE8Y57
+slugs: []
+title: Purge project-specific skill references from shared templates and docs
+type: task
+description: "Remove references to /pr, /pr-review, /local-review, /release from
+  templates/agents-sections/ and any generated docs or code that ships with kspec. These are
+  project-specific skills that should not be in shared/core content. Audit: (1)
+  templates/agents-sections/*.md for skill references, (2) src/ for hardcoded skill names in strings
+  or help text, (3) kspec-agents.md generation code for skill assumptions. Replace with
+  /kspec:review where appropriate for review-related references. Ensure the purge does not break
+  this project — the project-specific skills still exist in .claude/skills/, they just should not be
+  referenced by shipped code."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #463. Purged all project-specific skill references (/pr, /pr-review,
+  /local-review, /release, /triage, /reflect, /task-work) from shipped templates and source code.
+  Templates use generic language or kspec: namespace skills. Ralph prompt builders now receive skill
+  names from config (ralph.skills section in kspec.config.yaml) with kspec: namespace defaults. Fix
+  cycle addressed initial review finding that constants still shipped project-specific names. All
+  3177 tests pass, CI green."
+depends_on:
+  - "@01KHZHPG"
+context: []
+priority: 2
+tags:
+  - core-skills
+  - cleanup
+vcs_refs: []
+created_at: 2026-02-21T07:30:28.499Z
+started_at: 2026-02-23T09:41:59.151Z
+completed_at: 2026-02-23T09:52:43.257Z
+todos: []
+automation: eligible

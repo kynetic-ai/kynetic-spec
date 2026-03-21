@@ -1,0 +1,95 @@
+_ulid: 01KKQ6WEK03MXED7T07XW39DWK
+slugs: []
+title: Fix double @@ in dispatch-workspace-registry shadow commit messages
+type: task
+description: >-
+  ## Problem
+
+
+  Shadow branch commit messages for dispatch-workspace-registry operations show double @@:
+
+  dispatch-workspace-registry @@01KKNRC5KR8DTW5JVETBX9CMS8
+
+
+  Should be:
+
+  dispatch-workspace-registry @01KKNRC5KR8DTW5JVETBX9CMS8
+
+
+  ## Root Cause
+
+
+  generateCommitMessage() in src/parser/shadow.ts (line 1012-1014) has a default case
+
+  that unconditionally prepends @ to the ref:
+
+    default:
+      parts.push(operation);
+      if (ref) parts.push(' @' + ref);
+
+  All named cases (task-start, task-complete, etc.) also use '@' + ref and expect bare
+
+  refs without the @ prefix. This contract works for those callers.
+
+
+  But commitWorkspaceRegistryToShadow() in src/agent-runtime/workspace.ts (line 1000-1003)
+
+  passes taskRef which is already @-prefixed (comes from record.task_ref /
+  nonClosedRecords[0].task_ref
+
+  which stores refs in canonical @ULID format):
+
+    commitIfShadow(ctx.shadow, "dispatch-workspace-registry", taskRef)
+
+  ## Fix
+
+
+  Strip the @ prefix from taskRef before passing it to commitIfShadow in
+
+  commitWorkspaceRegistryToShadow(). Use taskRef.replace(/^@/, '') to normalize.
+
+
+  Check all other callers of commitIfShadow to verify they pass bare refs — this may
+
+  be the only call site with the issue since the others go through CLI command handlers
+
+  that work with bare refs.
+
+
+  ## Files
+
+
+  - src/agent-runtime/workspace.ts — commitWorkspaceRegistryToShadow() around line 1000
+
+  - src/parser/shadow.ts — generateCommitMessage() around line 1012 (for reference only)
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #861. Fixed double @@ in dispatch-workspace-registry shadow commit
+  messages by stripping @ prefix from taskRef before passing to commitIfShadow(). Two contract tests
+  added. All CI green, all 4955 tests pass."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - bug
+  - dispatch
+  - shadow
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-14T22:29:18.899Z
+  commit: 6b688925e6b6d5b1ba7190064a434316bc1b04fa
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKQ6XXDS7NSWTPGR1T059T23
+created_at: 2026-03-14T22:18:47.260Z
+started_at: 2026-03-14T22:19:51.466Z
+submitted_at: 2026-03-14T22:29:19.863Z
+completed_at: 2026-03-14T22:40:35.237Z
+todos: []
+automation: eligible

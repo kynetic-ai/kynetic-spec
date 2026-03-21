@@ -1,0 +1,19 @@
+_ulid: 01KF3916MG8R71TG7SZ5EP6Q5Y
+slugs:
+  - task-slug-uniqueness
+title: "Implement: Slug Uniqueness"
+type: task
+spec_ref: "@slug-uniqueness"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Implemented slug uniqueness validation and prevention - all acceptance criteria met
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-16T11:28:44.176Z
+started_at: 2026-01-16T11:28:49.260Z
+completed_at: 2026-01-16T11:33:16.509Z
+todos: []

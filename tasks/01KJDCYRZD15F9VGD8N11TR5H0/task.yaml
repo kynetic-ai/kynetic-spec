@@ -1,0 +1,69 @@
+_ulid: 01KJDCYRZD15F9VGD8N11TR5H0
+slugs:
+  - implement-per-role-adapter-selection-for-ralph-loo
+title: Implement Per-role adapter selection for ralph loop
+type: task
+description: >-
+  Add --worker-adapter and --reviewer-adapter flags to ralph CLI for per-role adapter selection.
+
+
+  ## What to change
+
+
+  1. **src/cli/commands/ralph.ts** (~line 879) — Add two new CLI options: --worker-adapter <id> and
+  --reviewer-adapter <id>. After option parsing (~line 968), resolve two adapters using precedence:
+  role flag > --adapter > default.
+
+
+  2. **src/cli/commands/ralph.ts** — Pass workerAdapter to main iteration spawn (~line 1303) and
+  reviewerAdapter to processPendingReviewTasks() (~line 1158). Wrap-up agent uses workerAdapter.
+
+
+  3. **src/cli/commands/ralph.ts** — Update validation to check both adapters on startup.
+  Deduplicate when same ID (validate once, inject env once). Track injected adapters in a Set.
+
+
+  4. **src/cli/commands/ralph.ts** — Update dry-run output to show both adapter IDs. Record both in
+  session start event metadata.
+
+
+  ## Precedence
+
+  worker = --worker-adapter ?? --adapter ?? claude-agent-acp
+
+  reviewer = --reviewer-adapter ?? --adapter ?? claude-agent-acp
+
+  wrap-up = worker (always)
+
+
+  ## How to verify
+
+  - kspec ralph run --dry-run --worker-adapter codex-acp shows codex-acp for worker
+
+  - kspec ralph run --dry-run --reviewer-adapter codex-acp shows codex-acp for reviewer
+
+  - Both invalid adapters cause exit code 3 before session creation
+
+  - Same adapter ID deduplicates validation and env injection
+
+  - Session metadata records both adapter IDs
+spec_ref: "@ralph-per-role-adapters"
+plan_ref: "@plan-plan-per-role-adapter-configuration-for-ralph-loop"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #564. Added --worker-adapter and --reviewer-adapter flags with
+  precedence resolution, deduped validation/env injection (including alias normalization for
+  claude-code-acp), per-role adapter routing for worker/reviewer/wrap-up, and 12 tests covering all
+  ACs."
+depends_on:
+  - "@implement-register-codex-acp-in-adapter-registry"
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-02-26T16:36:48.749Z
+started_at: 2026-02-26T21:25:04.040Z
+submitted_at: 2026-02-26T21:35:47.745Z
+completed_at: 2026-02-26T22:05:21.766Z
+todos: []
+automation: eligible

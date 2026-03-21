@@ -1,0 +1,26 @@
+_ulid: 01KKB8FD2K4BWC0MJ70CASAN3H
+slugs:
+  - implement-spec-completeness-policy
+title: Implement Spec Completeness Policy
+type: task
+spec_ref: "@spec-completeness-policy"
+plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #777. Implemented the spec completeness policy so module items are
+  exempt from missing acceptance-criteria and description warnings, while decisions, traits,
+  features, requirements, and constraints remain covered by completeness checks. Added focused
+  parser tests covering all four spec ACs; own AC coverage verified and full npm test passed on PR
+  head."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKE1RMXKT038NSC9DX23EJYG
+created_at: 2026-03-10T06:55:43.699Z
+started_at: 2026-03-11T09:01:45.077Z
+submitted_at: 2026-03-11T09:02:23.924Z
+completed_at: 2026-03-11T09:16:47.120Z
+todos: []
+automation: eligible

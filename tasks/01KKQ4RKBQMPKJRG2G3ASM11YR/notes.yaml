@@ -1,0 +1,22 @@
+notes:
+  - _ulid: 01KKQ5EXZ00THEKZR4AHQ299GZ
+    content: >-
+      Implementation complete:
+
+      - Added isWorkspaceRecordDirty() exported helper in src/agent-runtime/workspace.ts that
+      compares meaningful fields (canonical_branch_head, lifecycle_state, active_role, health,
+      cleanup, integration) excluding updated_at timestamps via deepEqualExcludingTimestamps()
+      internal helper.
+
+      - Modified reconcileDispatchWorkspaceRegistry() to skip saveWorkspaceRecordToRegistry() and
+      commitWorkspaceRegistryToShadow() when no meaningful field changed.
+
+      - Added 12 tests in tests/dispatch-workspace-registry.test.ts: 9 unit tests for
+      isWorkspaceRecordDirty + 3 integration tests (suppress write, trigger write on change,
+      suppress shadow commit).
+
+      - All 24 tests in dispatch-workspace-registry.test.ts pass. Full suite: 240/241 pass (1
+      pre-existing flaky test in agent-dispatch-engine.test.ts passes on rerun).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T21:53:55.680Z

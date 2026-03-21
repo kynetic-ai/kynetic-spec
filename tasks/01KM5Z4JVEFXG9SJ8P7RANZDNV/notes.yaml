@@ -1,0 +1,16 @@
+notes:
+  - _ulid: 01KM64HDAKZ9F4TB71XS0ME51A
+    content: Implemented schema-derived enum validation for task add, item add/set, inbox promote, plan
+      add/set, and review check mutations using validateEnumOption. Added end-to-end regression
+      tests to verify invalid values fail before persistence and valid/default values still execute
+      normally.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T17:26:24.851Z
+  - _ulid: 01KM652T70NZQ9J03Y29CR4QEY
+    content: "Follow-up fix: batch execution does not always materialize Commander defaults, so explicit
+      fallback values are now validated for task add, item add, inbox promote, and plan add.
+      Verified targeted regressions plus full npm test pass."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T17:35:55.104Z

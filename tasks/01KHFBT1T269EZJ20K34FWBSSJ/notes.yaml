@@ -1,0 +1,24 @@
+notes:
+  - _ulid: 01KHFBT1T2SSE9P5QAMY85V5GW
+    content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    author: "@claude"
+    created_at: 2026-02-15T00:39:32.418Z
+  - _ulid: 01KHFQMQ88CF68X95RY0BATT6V
+    content: >-
+      Implemented skill render CLI commands with all acceptance criteria:
+
+
+      - ac-1: kspec skill render shows summary of created/updated/skipped files (existing)
+
+      - ac-2: kspec skill render @task-work renders only that skill (added positional ref support)
+
+      - ac-3: kspec skill status shows table with sync status (in-sync, drifted, not-rendered)
+
+      - ac-4: kspec skill diff @task-work shows unified diff when content differs
+
+
+      Added 11 new tests covering all ACs. Updated existing render command to support positional ref
+      argument for single-skill rendering per spec.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-15T04:06:20.680Z

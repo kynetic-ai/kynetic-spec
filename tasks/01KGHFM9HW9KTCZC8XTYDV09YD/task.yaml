@@ -1,0 +1,22 @@
+_ulid: 01KGHFM9HW9KTCZC8XTYDV09YD
+slugs: []
+title: Create zero-dependency bootstrap script for agent sessions
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #300 - 36565a76"
+depends_on: []
+context: []
+priority: 1
+tags:
+  - cli
+  - dx
+  - bootstrap
+  - agent-first
+vcs_refs: []
+created_at: 2026-02-03T10:09:05.084Z
+started_at: 2026-02-03T10:09:53.426Z
+completed_at: 2026-02-04T09:06:01.942Z
+todos: []

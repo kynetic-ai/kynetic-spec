@@ -1,0 +1,22 @@
+_ulid: 01KF1G6M03VD4GE5QSFZ5F4X7V
+slugs:
+  - task-inbox-obs-design
+title: Explore inbox/observations unification
+type: spike
+spec_ref: "@meta-spec"
+status: completed
+blocked_by: []
+closed_reason: "Spike complete. Recommendation: Keep inbox and observations separate - they serve
+  distinct purposes with different query patterns and mental models. See task notes for full
+  rationale."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - design
+  - meta
+vcs_refs: []
+created_at: 2026-01-15T18:55:32.866Z
+started_at: 2026-01-18T06:14:42.639Z
+completed_at: 2026-01-18T06:16:36.518Z
+todos: []

@@ -1,0 +1,31 @@
+_ulid: 01KJGRPS7WJ1RAZJC62K7Z6YT6
+slugs:
+  - task-reconcile-validate-alignment-warning-baseline
+title: Reconcile validate alignment warning baseline (status mismatches + orphans)
+type: spike
+description: Use current validate baseline to classify 157 alignment warnings into policy-intended
+  vs metadata debt. Produce an execution plan for bulk-safe status reconciliation and orphan
+  handling, then apply initial high-confidence cleanup.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #680. Reduced alignment warnings from 150 to 24 (all orphaned specs, 0
+  mismatches). Fixed alignment.ts suppression logic, corrected 20 spec statuses, added 5 behavioral
+  tests with proper AC annotations."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - validation
+  - alignment
+  - meta
+vcs_refs: []
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-02-27T23:59:53.084Z
+started_at: 2026-03-05T00:23:01.668Z
+submitted_at: 2026-03-05T00:23:03.208Z
+completed_at: 2026-03-05T00:23:04.272Z
+todos: []
+automation: manual_only

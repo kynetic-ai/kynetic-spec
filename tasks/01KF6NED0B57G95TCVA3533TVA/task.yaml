@@ -1,0 +1,20 @@
+_ulid: 01KF6NED0B57G95TCVA3533TVA
+slugs:
+  - task-ralph-output-formatting
+title: "Implement: Ralph Output Formatting"
+type: task
+spec_ref: "@ralph-output-formatting"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Implemented ralph output formatting with translator/renderer architecture. All AC met, tests pass.
+depends_on:
+  - "@task-ralph-command-automated-task-loop"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T19:03:22.891Z
+started_at: 2026-01-17T19:17:41.220Z
+completed_at: 2026-01-17T19:36:05.717Z
+todos: []

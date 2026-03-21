@@ -1,0 +1,21 @@
+_ulid: 01KF9FX0CEF7P5TT2H33MMM4VR
+slugs: []
+title: Add --priority flag to derive command
+type: task
+description: Add --priority flag to derive command to override default P3 when deriving tasks from
+  specs without explicit priority
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Added --priority flag to derive command with full validation and testing
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - derive
+vcs_refs: []
+created_at: 2026-01-18T21:24:13.326Z
+started_at: 2026-01-19T03:59:27.091Z
+completed_at: 2026-01-19T04:04:56.109Z
+todos: []

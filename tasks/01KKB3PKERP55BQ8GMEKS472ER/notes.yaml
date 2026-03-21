@@ -1,0 +1,78 @@
+notes:
+  - _ulid: 01KKB3PKERJB48MA2GFKAA03PS
+    content: |
+      Implementation notes:
+
+      For task filtering, a direct task_id match on session metadata suffices.
+      For spec filtering, use the existing AlignmentIndex to resolve spec →
+      tasks, then filter sessions by those task IDs. Add a "Sessions" section
+      to TaskDetail and ItemDetail components. The dedicated sub-resource
+      endpoints (/tasks/:ref/sessions, /items/:ref/sessions) are simpler
+      than overloading the main sessions endpoint with spec resolution logic.
+    author: "@claude"
+    created_at: 2026-03-10T05:32:16.728Z
+  - _ulid: 01KKDCJYJMHJ37YD94RBKEEB78
+    content: >-
+      Execution context:
+
+      - Background: session browsing already supports task_id/spec_ref filters on /sessions; this
+      task adds bidirectional links from task/spec detail surfaces back into session history.
+
+      - Scope: add task/item session API endpoints, surface related sessions in task and spec detail
+      views, and verify filter-link navigation.
+
+      - Files: daemon task/item routes plus corresponding web UI detail components and tests.
+
+      - Verification: targeted daemon/UI tests, npm test, and kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T02:46:03.093Z
+  - _ulid: 01KKDDHVJB4YSEXKZERDP5XAX6
+    content: "Implemented task/spec session context end-to-end: added /api/tasks/:ref/sessions and
+      /api/items/:ref/sessions, surfaced related sessions in task/spec detail UI, and wired
+      /sessions page to honor task_id/spec_ref URL filters. Verification: npm run build passed; npm
+      test -- session-related-routes passed. Playwright coverage file added with AC annotations, but
+      daemon-backed E2E could not run in dispatch because kspec serve start is blocked by design
+      inside agent invocations."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T03:02:55.819Z
+  - _ulid: 01KKDDKKY0Y9KX884C5WCGJE1X
+    content: "Opened PR #769 for review: https://github.com/kynetic-ai/kynetic-spec/pull/769"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T03:03:53.536Z
+  - _ulid: 01KKDESDQBY8C6RNE4341KA1QM
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #769 includes unrelated plan-export changes
+      and the current PR head fails npm test."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T03:24:32.372Z
+  - _ulid: 01KKDFNBS40672VW235SCHK9QW
+    content: "Fix cycle resumed on dedicated branch feat/task-spec-session-context to remove unrelated
+      plan-export changes from PR #769 and re-run failing test coverage on the PR head."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T03:39:47.877Z
+  - _ulid: 01KKDFZQTSFW8K8TMR9HDCFK62
+    content: Adjusted the new session-related route test to import daemon helpers from source instead of
+      dist, then rebuilding once before verification so npm test exercises fresh CLI artifacts and
+      the task branch stays isolated from unrelated plan-export changes.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T03:45:27.897Z
+  - _ulid: 01KKDG2KDYR82BZ60FK92X87DS
+    content: "Correction: the temporary source-import experiment for session-related-routes was
+      reverted. Verified path forward is a clean task-only branch plus a fresh npm run build before
+      npm test so dist-based CLI/daemon tests exercise current artifacts."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T03:47:01.694Z
+  - _ulid: 01KKDG9WCEHSPTQQXQRNFQ6PX3
+    content: "Fix cycle verification on cleaned PR branch: npm run build completed successfully and npm
+      test passed on commit d771808a2 (202 files, 4524 tests passed, 3 skipped). Force-updating PR
+      #769 to drop the unrelated plan-export commit so the branch contains only the session-context
+      change."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T03:51:00.238Z

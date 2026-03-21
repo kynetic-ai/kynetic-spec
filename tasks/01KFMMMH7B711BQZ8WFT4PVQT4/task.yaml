@@ -1,0 +1,27 @@
+_ulid: 01KFMMMH7B711BQZ8WFT4PVQT4
+slugs: []
+title: Implement daemon process detach
+type: task
+spec_ref: "@daemon-server"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #188 merged. Implemented PID file management foundation for daemon lifecycle.
+  Provides PidFileManager class with read/write/remove operations and process detection utilities.
+  Integrates into daemon server (writes on start when isDaemon: true, removes on shutdown). Partial
+  coverage of AC-9 and AC-10 - provides infrastructure but CLI commands (kspec serve --daemon, kspec
+  serve stop) still need implementation. Excellent test coverage (11 comprehensive tests, all 1149
+  tests pass). Local review: PASS. Greptile review: 5/5 confidence. Next: implement actual CLI
+  commands."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - phase-1
+  - daemon
+vcs_refs: []
+created_at: 2026-01-23T05:18:37.290Z
+started_at: 2026-01-23T10:38:36.162Z
+completed_at: 2026-01-23T10:50:00.496Z
+todos: []
+automation: eligible

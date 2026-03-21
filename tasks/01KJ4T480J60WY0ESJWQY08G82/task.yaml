@@ -1,0 +1,25 @@
+_ulid: 01KJ4T480J60WY0ESJWQY08G82
+slugs: []
+title: "kspec batch silently fails on malformed JSON input - exits with code 1 and no error message.
+  Should "
+type: task
+description: "kspec batch silently fails on malformed JSON input - exits with code 1 and no error
+  message. Should print JSON parse error or validation error details. batch has did-you-mean for bad
+  arg keys (PR #440) but nothing for structural JSON errors. Encountered during triage session when
+  batch --commands failed with no diagnostic output."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #496. Test-only changes: strengthened batch malformed JSON error tests
+  to verify error message content (position info) not just exit codes, added JSON-mode structured
+  error test, added non-array valid JSON schema validation test, fixed AC annotation prefixes."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-23T08:33:49.586Z
+started_at: 2026-02-24T04:27:39.693Z
+completed_at: 2026-02-24T05:06:20.414Z
+todos: []
+automation: eligible

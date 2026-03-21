@@ -1,0 +1,31 @@
+notes:
+  - _ulid: 01KGTVH6MRWTD9RGYNGE30R7SF
+    content: "Implementation: Add relationship flags to item set in src/cli/commands/item.ts. Each takes
+      @ref, append semantics (add to existing array). Consider --clear-relates-to etc. for reset.
+      Follow --slug flag pattern. Validate refs exist. Tests: set each field, verify in item get
+      output, test append behavior and clear. Completes the relationship story — display was added
+      in PR #323, editing is the missing half."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T01:30:16.600Z
+  - _ulid: 01KGVSRDT1PFS66HMC7J0P0RHT
+    content: Implemented --relates-to, --implements, --depends-on flags for item set command with append
+      semantics. Added --clear-* variants for clearing each relationship type. Validated refs exist
+      before adding. Added 17 tests covering all ACs (ac-5, ac-6, ac-7) plus duplicate prevention,
+      error handling, and clear functionality.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T10:18:30.593Z
+  - _ulid: 01KGVTRP9QM5Z356SREYN946MT
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-07T10:36:07.863Z
+  - _ulid: 01KGVVHKA8Y07PN812ED5CZEWH
+    content: "Follow-up fix in PR #336: Addressed Codex review finding about string-based duplicate
+      prevention. Now deduplicates by resolved ULID identity, preventing semantic duplicates when
+      same target referenced via @slug vs @ULID. Stores canonical slug format for user-friendly
+      display."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T10:49:44.008Z

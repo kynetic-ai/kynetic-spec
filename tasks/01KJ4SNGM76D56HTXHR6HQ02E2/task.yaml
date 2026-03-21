@@ -1,0 +1,23 @@
+_ulid: 01KJ4SNGM76D56HTXHR6HQ02E2
+slugs: []
+title: "Plan import should support task priority: plan document specs can specify priority, and
+  derived task"
+type: task
+description: "Plan import should support task priority: plan document specs can specify priority,
+  and derived tasks should inherit it. Currently all derived tasks get P3 regardless of plan
+  content. Workaround: manually batch-set priorities after import."
+spec_ref: "@plan-import"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #492. Plan import now supports priority field on specs (1-5), derived
+  tasks inherit priority from their source spec, defaulting to P3 when unspecified."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-23T08:25:46.887Z
+started_at: 2026-02-24T02:43:57.817Z
+completed_at: 2026-02-24T03:02:53.550Z
+todos: []
+automation: eligible

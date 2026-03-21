@@ -1,0 +1,32 @@
+_ulid: 01KJE5A565T4K1JZ5XJ5860FH1
+slugs: []
+title: Add platform override for skill install-core to support Codex .agents output
+type: task
+description: "What: `kspec skill install-core` currently relies on environment auto-detection and
+  has no explicit platform selector. In Codex-misdetection scenarios, it installs/updates
+  `.claude/skills` instead of `.agents/skills`, which blocks intended Codex skill delivery. Where:
+  skill install-core command and platform resolution path used by core skill rendering/install. How:
+  add `--platform <claude-code|codex>` (or equivalent explicit target) for install-core; when set to
+  codex, force install to `.agents/skills` regardless of detection. Keep current auto-detect default
+  for backward compatibility. Add tests for codex forced output path and default behavior. Done
+  when: running `kspec skill install-core --platform codex` writes/updates `.agents/skills/*` and
+  does not require Codex env detection to be correct."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: null
+depends_on: []
+context: []
+priority: 2
+tags:
+  - skills
+  - codex
+  - cli
+vcs_refs: []
+created_at: 2026-02-26T23:42:27.525Z
+started_at: 2026-02-27T01:48:09.321Z
+submitted_at: 2026-02-27T01:48:12.117Z
+completed_at: 2026-02-27T05:19:45.630Z
+todos: []

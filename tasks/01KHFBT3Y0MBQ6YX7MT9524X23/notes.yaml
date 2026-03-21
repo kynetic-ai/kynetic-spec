@@ -1,0 +1,38 @@
+notes:
+  - _ulid: 01KHFBT3Y11WF8QYJ441NVXM12
+    content: See plan @plan-portable-agent-integration-infrastructure for implementation notes
+    author: "@claude"
+    created_at: 2026-02-15T00:39:34.593Z
+  - _ulid: 01KHG0G9MNER8F8AVFVT661ZZE
+    content: >-
+      Implemented core skill installation (kspec skill install-core) with all 5 ACs:
+
+
+      - ac-1: Meta entries created with origin 'core' and 'core' tag
+
+      - ac-2: SKILL.md content copied from templates/skills/<id>/ to .kspec/skills/<id>/
+
+      - ac-3: Existing custom/project skills skipped with message (not overwritten)
+
+      - ac-4: --force flag overwrites custom forks with core versions
+
+      - ac-5: Version set to kspec package version from package.json
+
+
+      Also created templates/skills/ structure with:
+
+      - manifest.yaml: Defines core skill metadata (id, name, description, platforms)
+
+      - kspec-help/SKILL.md: Initial core skill providing kspec CLI help
+
+
+      Added 18 tests in tests/core-skill-install.test.ts covering all ACs plus dry-run and JSON
+      output.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-15T06:41:12.853Z
+  - _ulid: 01KHG15VRPBEDV6MXKVMQ1MRQZ
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-15T06:52:59.542Z

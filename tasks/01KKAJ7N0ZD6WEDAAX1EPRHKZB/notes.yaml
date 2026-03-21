@@ -1,0 +1,108 @@
+notes:
+  - _ulid: 01KKAJ81X8MK59XVYTTPKNJDVW
+    content: >-
+      Implementation guide: The specs page already has the correct pattern at
+      packages/web-ui/src/routes/specs/+page.svelte — an $effect that watches for modal close and
+      cleans up the URL:
+
+
+      $effect(() => {
+        if (!detailOpen && selectedRef) {
+          selectedRef = null;
+          const url = new URL(window.location.href);
+          url.searchParams.delete('ref');
+          window.history.pushState({}, '', url);
+        }
+      });
+
+
+      Apply the same pattern to:
+
+      1. packages/web-ui/src/routes/tasks/+page.svelte (list view, lines 115-121 clear internal
+      state but not URL)
+
+      2. packages/web-ui/src/routes/tasks/board/+page.svelte (board view, has no cleanup effect at
+      all)
+
+
+      For the board view, the cleanup goes in TaskDetailModal.svelte or in the board +page.svelte
+      where modalOpen is bound. Verify with E2E or manual test: open modal via URL, close it,
+      confirm ?ref= is gone and modal stays closed.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T00:27:14.216Z
+  - _ulid: 01KKAPHFKAQQE9M6PPGBNZHKVY
+    content: >-
+      Implementation: Applied the same URL cleanup pattern from /specs page to both /tasks and
+      /tasks/board views.
+
+
+      Changes:
+
+      1. packages/web-ui/src/routes/tasks/+page.svelte — Added url.searchParams.delete('ref') +
+      history.pushState to existing dialog-close effect (lines 114-126)
+
+      2. packages/web-ui/src/routes/tasks/board/+page.svelte — Added new $effect that clears
+      lastProcessedRef and removes ?ref= from URL when modalOpen becomes false (lines 94-103)
+
+      3. E2E tests added to both tasks.spec.ts and task-board.spec.ts covering: closing modal via
+      ESC removes param, closing modal opened via URL param removes param and modal stays closed
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T01:42:17.450Z
+  - _ulid: 01KKAV3XR051P34JJTW3KMV8AM
+    content: Reset from completed to pending
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T03:02:16.064Z
+  - _ulid: 01KKAV4GZMRY8Z8GQ459SF8KYN
+    content: "[FIX_CYCLE: 1] Review findings: Fix only cleared the URL query param but did not reset
+      Svelte component state (selectedTaskRef, modalOpen). The modal closes visually but the
+      reactive effect watching ?ref= reopens it. AC-7 has been updated to require clearing both
+      component state AND URL param. Tests only checked URL so they passed — need tests that verify
+      the modal actually stays closed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T03:02:35.764Z
+  - _ulid: 01KKAV4WZQY404CWED04HNYX2F
+    content: "Fix cycle 1: The initial fix only added URL cleanup via $effect but didn't clear the
+      Svelte component state. The close/dismiss flow needs to: (1) Set modalOpen = false / clear
+      selectedTaskRef in the component, (2) THEN clean up the URL param. The order matters — if you
+      only change the URL, the $effect watching the URL won't fire because the component state still
+      holds the ref. Look at how the open effect works: it watches searchParams, sets state, fetches
+      task. The close effect must be the inverse: watch for modalOpen becoming false, clear
+      selectedTaskRef, clear URL. The specs page pattern works there because its state model is
+      simpler (detailOpen + selectedRef). The task views have more state to clear."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T03:02:48.056Z
+  - _ulid: 01KKAVNFVPECZZ0HDA5V0H2AJQ
+    content: >-
+      Fix cycle 1 resolution: Root cause was using window.history.pushState which doesn't update
+      SvelteKit's $page store synchronously, creating a race condition where the URL-watching
+      $effect could re-trigger before seeing the param removal.
+
+
+      Changes:
+
+      1. Both task views now use SvelteKit's replaceState() from $app/navigation instead of
+      window.history.pushState — this ensures $page.url updates atomically
+
+      2. Board view cleanup effect now clears selectedTaskRef = null (was missing)
+
+      3. Both views construct new URL from $page.url (reactive source) instead of
+      window.location.href
+
+      4. Using replaceState instead of pushState prevents browser back button going to stale ?ref=
+      state
+
+      5. E2E tests strengthened: increased stability wait from 500ms to 1000ms, added test verifying
+      same task can be reopened after close
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T03:11:51.670Z
+  - _ulid: 01KKAYS7TW35BMHBYHZMQX5NTN
+    content: Reset from completed to pending
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T04:06:20.252Z

@@ -1,0 +1,29 @@
+_ulid: 01KGKSSY28AD1S7KGC7DDZZAVK
+slugs: []
+title: Implement plan derive command for task creation
+type: task
+description: "Add plan derive @plan [--title \"...\"] subcommand. Creates task with plan_ref field
+  pointing to plan. Updates plan's derived_tasks array. Requires plan status to be approved or
+  active. Auto-transitions plan to active on first derivation. Outputs task ref and suggested next
+  steps. Note: Each task can only reference one plan. Re-derivation overwrites plan_ref."
+spec_ref: "@plan-derive"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #306. Implemented plan derive command for creating tasks from approved
+  or active plans with bidirectional linking. AC coverage: ac-5 (task creation,
+  plan_ref/derived_tasks updates, status transitions) and ac-6 (bidirectional display in task
+  get/plan get) both fully covered by 12 E2E tests. Fixed test expectations issue found in review.
+  All tests passing."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - planning
+vcs_refs: []
+created_at: 2026-02-04T07:45:24.551Z
+started_at: 2026-02-04T09:57:43.421Z
+completed_at: 2026-02-04T10:25:51.658Z
+todos: []
+automation: eligible

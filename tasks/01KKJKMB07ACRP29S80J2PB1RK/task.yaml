@@ -1,0 +1,27 @@
+_ulid: 01KKJKMB07ACRP29S80J2PB1RK
+slugs:
+  - implement-droid-setup-status-reporting
+title: Implement Droid Setup Status Reporting
+type: task
+spec_ref: "@droid-setup-status"
+derivation: auto
+plan_ref: "@plan-droid-platform-support"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #827. Added droid setup status reporting: .factory/skills/ scanning
+  (ac-1), ~/.factory filesystem fallback detection (ac-2), droid agent-type acceptance in session
+  create (ac-3). Also fixed dispatch engine test flakiness and session test timeouts across 6 fix
+  cycles."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKM4YJ1Y8E1Y5VMVTJ36YQ2V
+created_at: 2026-03-13T03:25:20.775Z
+started_at: 2026-03-13T18:38:29.508Z
+submitted_at: 2026-03-13T18:38:34.001Z
+completed_at: 2026-03-13T18:52:46.103Z
+todos: []
+automation: eligible

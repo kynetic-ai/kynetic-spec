@@ -1,0 +1,167 @@
+notes:
+  - _ulid: 01KF7GGHTQA9243DWAEDCXAV6G
+    content: "Starting work on remaining meta CLI commands. PR #21 already implemented: agents,
+      workflows, observe, observations, promote, resolve. Still need: show, conventions, focus,
+      thread, question, context, get, list, add, set, delete. Will start with 'meta show' command."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T02:56:24.920Z
+  - _ulid: 01KF7GQGV1XZ2CW2Y1KPKJDX92
+    content: "Implemented three key meta CLI commands: 'conventions', 'get', and 'list'. AC coverage:
+      AC-conv-1, AC-conv-2, AC-conv-5 for conventions; meta-get-cmd for unified item retrieval;
+      meta-list-cmd for unified listing. All commands support --json output and work with all meta
+      item types (agents, workflows, conventions, observations). Tests pass (31/32, 1 skipped)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T03:00:13.281Z
+  - _ulid: 01KF7GSM8S6W9HBZF39HXY6RVD
+    content: "Session checkpoint: Implemented 3 of 11 remaining meta CLI commands. COMPLETED: meta
+      conventions (AC-conv-1,2,5), meta get (unified item retrieval), meta list (unified listing
+      with type filters). All support --json output and work across all meta item types. PR #23
+      created and ready for review. REMAINING: Session context commands (focus, thread, question,
+      context) and mutation commands (add, set, delete). Note: 'show' command was already
+      implemented. Next session should pick up with session context commands or mutation commands
+      depending on priority."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T03:01:22.330Z
+  - _ulid: 01KF7H4F4QJQQRN3WTWRW2ZJTX
+    content: Continuing meta CLI work. Session context commands (focus, thread, question, context)
+      blocked by missing spec - there's a dedicated research task @01KF1H92 for this. Will implement
+      mutation commands (add, set, delete) instead, which are more straightforward and can work with
+      existing meta item types.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T03:07:17.527Z
+  - _ulid: 01KF7HV5C0MQPEZTJFM6CNW3XY
+    content: "Implemented meta mutation commands (add, set, delete). All commands work with agents,
+      workflows, and conventions. Full test coverage with 18 new integration tests. PR #24 created.
+      Remaining work: session context commands (focus, thread, question, context) which are blocked
+      by missing spec - need to complete research task @01KF1H92 first."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T03:19:41.185Z
+  - _ulid: 01KF7HWB2MK6PX9H312ZQAE1WM
+    content: >-
+      Session 2 checkpoint: Implemented meta mutation commands (add, set, delete) with full test
+      coverage.
+
+
+      COMPLETED COMMANDS (11 total):
+
+      - meta show (manifest summary)
+
+      - meta agents (table/JSON output)
+
+      - meta workflows (table/JSON output)
+
+      - meta conventions (table/detail/JSON output)
+
+      - meta get (unified item retrieval)
+
+      - meta list (unified listing with filters)
+
+      - meta observe (create observations)
+
+      - meta observations (list observations)
+
+      - meta promote (observation → task)
+
+      - meta resolve (mark observation resolved)
+
+      - meta add (create agents/workflows/conventions)
+
+      - meta set (update existing items)
+
+      - meta delete (delete with --confirm)
+
+
+      REMAINING COMMANDS (~4):
+
+      - Session context commands: focus, thread, question, context
+
+      - These are BLOCKED: require session-context spec which doesn't exist yet
+
+      - Research task @01KF1H92 should be done first to define session context integration
+
+
+      TECHNICAL NOTES:
+
+      - All commands support global --json flag (use isJsonMode(), not command-specific flags)
+
+      - Mutation commands use saveMetaItem/deleteMetaItem from parser
+
+      - Full validation of required fields per type
+
+      - ULID prefix resolution works across all commands
+
+
+      PR STATUS:
+
+      - PR #23: conventions/get/list merged to main
+
+      - PR #24: add/set/delete created, ready for review
+
+
+      NEXT SESSION OPTIONS:
+
+      1. Complete @01KF1H92 research task, then implement session context commands
+
+      2. Mark this task complete (core meta CRUD is done) and work on other priorities
+
+      3. Add acceptance criteria to @meta-commands spec for what we've built
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T03:20:19.797Z
+  - _ulid: 01KF7KPG3TCZN5QANYR58BTT3S
+    content: >-
+      Session 3 checkpoint: Fixed critical bugs in meta delete command and merged PR #24.
+
+
+      CRITICAL FIXES IMPLEMENTED:
+
+      1. Dangling reference validation - prevents deletion of meta items referenced by
+      tasks/observations
+
+      2. Reference resolution bug fix - properly handles mixed reference formats (ULID vs semantic
+      ID)
+
+      3. Spec alignment - updated spec to use --confirm instead of --force
+
+
+      TECHNICAL DETAILS:
+
+      - Added resolveMetaRefToUlid() helper to normalize all reference formats
+
+      - Both deletion target and task/observation references resolve to ULIDs for comparison
+
+      - Handles: agent.id, workflow.id, convention.domain, ULID prefixes
+
+      - 5 new integration tests covering all reference validation scenarios
+
+
+      PR STATUS:
+
+      - PR #24: Meta mutation commands (add, set, delete) merged to main
+
+      - All tests passing (56 passed, 1 skipped)
+
+      - Three review cycles completed (addressed all critical issues)
+
+
+      COMMANDS COMPLETED (14 total):
+
+      All meta CLI commands now implemented except session context commands which are blocked by
+      @01KF1H92
+
+
+      NEXT STEPS:
+
+      - Task is essentially complete - all core meta CRUD operations working
+
+      - Session context commands blocked by missing spec (research task @01KF1H92)
+
+      - Could mark complete or continue with other ready tasks
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-18T03:52:05.499Z

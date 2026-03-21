@@ -1,0 +1,26 @@
+_ulid: 01KJ6KKS95CX6F438FC2997R2R
+slugs:
+  - update-setup-with-migration-cleanup
+title: Update setup with migration cleanup
+type: task
+spec_ref: "@native-guard-commands"
+plan_ref: "@plan-session-scoping-for-kspec"
+status: completed
+blocked_by: []
+closed_reason: "All work was already completed in dependency task @implement-native-worktree-guard
+  (PR #506). Setup.ts already installs native kspec guard worktree, migrates old bash script
+  entries, deletes old script files, and handles idempotency. All 6 spec ACs have test coverage in
+  native-guard-setup.test.ts. No additional code changes needed."
+depends_on:
+  - "@implement-native-worktree-guard"
+context: []
+priority: 3
+tags:
+  - cli
+  - setup
+vcs_refs: []
+created_at: 2026-02-24T01:18:27.621Z
+started_at: 2026-02-24T21:11:23.357Z
+completed_at: 2026-02-24T21:11:44.250Z
+todos: []
+automation: eligible

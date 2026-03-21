@@ -1,0 +1,42 @@
+notes:
+  - _ulid: 01KJVTVNW9D7CEF66BV6APX2V1
+    content: >-
+      Execution context:
+
+      - Background: Batch payloads currently fail when priority is provided as P-notation for
+      commands that expect numeric 1-5.
+
+      - Scope: Add batch-layer normalization so priority values P1/P2/P3 (and existing P1-P5 format)
+      are accepted where numeric priority options are expected.
+
+      - Files: src/cli/batch-exec.ts and tests/batch-exec-engine.test.ts.
+
+      - Verification: run targeted Vitest for batch exec engine, then run kspec validate and full
+      tests as needed for confidence.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T07:09:09.385Z
+  - _ulid: 01KJVVD621RDA18JVDRYXF8B2W
+    content: "WIP checkpoint committed on branch feat/task-batch-priority-p-alias at commit 6946452be.
+      Files: src/cli/batch-exec.ts, tests/batch-exec-engine.test.ts."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T07:18:43.010Z
+  - _ulid: 01KJW0KWKCTT4R91RZZYDZBE4G
+    content: "Implemented batch-layer priority alias normalization for numeric priority params in
+      src/cli/batch-exec.ts (accepts P1-P5 / p1-p5 -> 1-5 only when command metadata indicates
+      numeric priority). Added unit/integration coverage in tests/batch-exec-engine.test.ts,
+      including guard that non-numeric priority options keep literal values. Validation: npm run
+      test -- tests/batch-exec-engine.test.ts (pass), npm test (pass: 173 files, 3632 tests).
+      Context: moved work from stale branch base to clean branch
+      feat/task-batch-priority-p-alias-clean to avoid PR conflation."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T08:49:45.580Z
+  - _ulid: 01KJW0NKN3Q9GW9MQS2YBBCBN2
+    content: "Submitted for review in PR #666 (https://github.com/kynetic-ai/kynetic-spec/pull/666) from
+      branch feat/task-batch-priority-p-alias-clean. Commits: 14af23c14 (batch alias normalization)
+      and 1af52786b (test robustness update)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T08:50:41.955Z

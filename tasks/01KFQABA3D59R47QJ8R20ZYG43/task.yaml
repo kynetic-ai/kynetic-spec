@@ -1,0 +1,61 @@
+_ulid: 01KFQABA3D59R47QJ8R20ZYG43
+slugs:
+  - task-pid-port-impl
+title: Global PID/port file management
+type: task
+description: >-
+  Move PID/port files to global location and implement file locking.
+
+
+  ## Implementation Notes
+
+  - Move PID from .kspec/.daemon.pid to ~/.config/kspec/daemon.pid
+
+  - Move port from .kspec/.daemon.port to ~/.config/kspec/daemon.port
+
+  - Create ~/.config/kspec/ directory if missing (mode 0755)
+
+  - Add file lock on PID file to prevent concurrent daemon starts
+
+  - Validate port file content on read (reject non-numeric)
+
+
+  ## Files to Modify
+
+  - `packages/daemon/src/pid.ts`: Change PidFileManager constructor (line 15) to use global path,
+  add dir creation, add file lock
+
+  - `src/cli/commands/serve.ts`: Update readPortFile() (lines 34-56) to use global location, add
+  validation
+
+  - Both packages need changes (daemon AND CLI)
+
+
+  ## AC Coverage
+
+  ac-9, ac-9b, ac-9c, ac-10, ac-10b, ac-11, ac-13
+
+
+  ## Dependencies
+
+  Task: Global PID/port management tests (tests first)
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #217. Implemented global PID/port file management - moved
+  daemon.{pid,port} files from project-local .kspec/ to global ~/.config/kspec/. Covers ac-9, ac-9b,
+  ac-9c, ac-10, ac-11, ac-13. 30 comprehensive tests added. All CI checks passed."
+depends_on:
+  - "@01KFQAAM"
+context: []
+priority: 2
+tags:
+  - daemon
+  - phase-2
+vcs_refs: []
+created_at: 2026-01-24T06:16:32.621Z
+started_at: 2026-01-24T18:52:49.102Z
+completed_at: 2026-01-24T19:12:25.119Z
+todos: []
+automation: eligible

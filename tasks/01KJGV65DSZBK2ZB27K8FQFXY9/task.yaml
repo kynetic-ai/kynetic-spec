@@ -1,0 +1,52 @@
+_ulid: 01KJGV65DSZBK2ZB27K8FQFXY9
+slugs: []
+title: Add integration test for config-aware init output messaging
+type: task
+description: >-
+  The post-init 'Next steps' output now uses configurable directoryName and branchName from project
+  config instead of hardcoded defaults. There are no tests asserting this config-aware behavior, so
+  hardcoded regressions could slip back in.
+
+
+  Add a focused integration test in tests/init-setup-integration.test.ts that:
+
+  1. Creates a temp git repo with a kspec.config.yaml that sets custom shadow.directory and
+  shadow.branch values (e.g. directory: .specs, branch: specs-meta)
+
+  2. Runs kspec init --no-prompt in that repo
+
+  3. Asserts the output contains the custom directory name (not .kspec) in the 'Note: Spec files
+  live in' line
+
+  4. Asserts the output contains the custom branch name (not kspec-meta) in the same line
+
+  5. Asserts the next steps reference the custom directory name
+
+
+  Use the existing test patterns in init-setup-integration.test.ts (createTempDir, initGitRepo,
+  kspec helper). Reference AC: @init-setup-integration ac-4 since this is about the without-setup
+  output path.
+spec_ref: "@init-setup-integration"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #604. Added integration test coverage in
+  tests/init-setup-integration.test.ts for config-aware init output messaging when running without
+  --setup; verifies custom shadow directory (.specs) and branch (specs-meta) are shown in Next
+  steps/Note output and guards against fallback to hardcoded defaults. AC coverage confirmed for
+  @init-setup-integration ac-1 through ac-4 (trait ACs N/A)."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - testing
+vcs_refs: []
+session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
+created_at: 2026-02-28T00:43:14.232Z
+started_at: 2026-02-28T20:39:50.979Z
+submitted_at: 2026-02-28T20:41:04.840Z
+completed_at: 2026-02-28T20:51:34.652Z
+todos: []
+automation: eligible

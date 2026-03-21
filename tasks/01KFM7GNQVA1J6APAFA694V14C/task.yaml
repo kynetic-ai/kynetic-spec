@@ -1,0 +1,39 @@
+_ulid: 01KFM7GNQVA1J6APAFA694V14C
+slugs: []
+title: "Merge driver: file type detection"
+type: task
+description: |-
+  Implement file type detection and strategy dispatch:
+
+  **File:** src/merge/semantic.ts (partial)
+
+  **Covers ACs from @merge-file-detection:**
+  - ac-1: tasks.yaml → task-specific merge
+  - ac-2: inbox.yaml → inbox-specific merge
+  - ac-3: modules/*.yaml → recursive spec merge
+  - ac-4: kynetic.yaml → manifest merge (includes union, project prompt)
+  - ac-5: kynetic.meta.yaml → meta arrays by ULID, context field merge
+  - ac-6: unrecognized → fallback (copy ours)
+
+  **Functions:**
+  - detectFileType(path, content) - Identify kspec file type
+  - getMergeStrategy(fileType) - Return appropriate merger function
+spec_ref: "@merge-file-detection"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #179 merged. Implemented file type detection for semantic YAML merge driver with
+  detectFileType() function and FileType enum. All 6 ACs covered with comprehensive tests (8 test
+  cases). Cross-platform support. All 1041 tests pass."
+depends_on:
+  - "@01KFM7G2"
+  - "@01KFM7G5"
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-01-23T01:29:19.355Z
+started_at: 2026-01-23T07:24:18.872Z
+completed_at: 2026-01-23T07:36:29.070Z
+todos: []
+automation: eligible

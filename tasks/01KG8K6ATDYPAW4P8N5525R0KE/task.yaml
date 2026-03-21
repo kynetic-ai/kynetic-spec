@@ -1,0 +1,20 @@
+_ulid: 01KG8K6ATDYPAW4P8N5525R0KE
+slugs: []
+title: Document new CLI features from overnight loop
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #291"
+depends_on: []
+context: []
+priority: 3
+tags:
+  - docs
+  - cli
+vcs_refs: []
+created_at: 2026-01-30T23:18:12.044Z
+started_at: 2026-01-30T23:21:33.158Z
+completed_at: 2026-01-30T23:34:02.109Z
+todos: []

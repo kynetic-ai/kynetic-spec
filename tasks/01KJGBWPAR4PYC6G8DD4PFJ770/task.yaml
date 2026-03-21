@@ -1,0 +1,26 @@
+_ulid: 01KJGBWPAR4PYC6G8DD4PFJ770
+slugs:
+  - implement-auto-abandon-metadata-and-audit-trail
+title: Implement Auto-abandon Metadata and Audit Trail
+type: task
+spec_ref: "@session-stale-close-metadata"
+plan_ref: "@plan-auto-close-stale-active-sessions"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #607. Implemented stale auto-abandon metadata apply helper with
+  canonical close_reason format, shared ended_at/status=abandoned updates, dry-run preview, and one
+  command-specific shadow commit path for multi-session persistence. Verified AC coverage for
+  @session-stale-close-metadata ac-1..ac-4 in tests/session-stale-criteria.test.ts and confirmed
+  green CI on commit 8131a376."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
+created_at: 2026-02-27T20:15:55.224Z
+started_at: 2026-02-28T22:08:54.932Z
+submitted_at: 2026-02-28T22:08:56.786Z
+completed_at: 2026-02-28T22:19:13.639Z
+todos: []
+automation: needs_review

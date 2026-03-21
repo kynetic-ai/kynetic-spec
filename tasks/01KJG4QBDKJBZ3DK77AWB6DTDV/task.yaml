@@ -1,0 +1,29 @@
+_ulid: 01KJG4QBDKJBZ3DK77AWB6DTDV
+slugs:
+  - implement-session-event-compaction
+title: Implement Session Event Compaction
+type: task
+spec_ref: "@session-compact"
+plan_ref: "@plan-session-compact-command"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #579. Implemented session event compaction CLI and store pipeline with
+  atomic rewrite, --all/--dry-run flows, active-session guard, and metrics reporting; fix cycle
+  aligned runtime error exit semantics to trait expectations and added explicit
+  @trait-semantic-exit-codes ac-4 coverage annotation in tests. AC coverage re-verified for
+  @session-compact own ACs and inherited trait ACs before merge."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - session-log
+  - reliability
+vcs_refs: []
+session_id: null
+created_at: 2026-02-27T18:10:40.179Z
+started_at: 2026-02-27T18:41:22.671Z
+submitted_at: 2026-02-27T18:41:28.760Z
+completed_at: 2026-02-27T18:49:55.005Z
+todos: []
+automation: eligible

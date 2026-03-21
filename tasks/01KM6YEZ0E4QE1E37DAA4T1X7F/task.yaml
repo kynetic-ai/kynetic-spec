@@ -1,0 +1,45 @@
+_ulid: 01KM6YEZ0E4QE1E37DAA4T1X7F
+slugs:
+  - task-purge-old-storage-refs
+title: Purge deprecated spec references
+type: task
+description: |
+  Remove all remaining references to the deprecated specs from the
+  codebase: @task-storage, @task-storage-alongside,
+  @task-storage-separate, and @task-activity-git-query.
+
+  Why: After the monolithic code is removed, any AC annotation comments,
+  test references, documentation links, or spec cross-references
+  pointing to the old specs are stale and misleading.
+
+  What: Search the entire codebase for references to the four
+  deprecated spec slugs. Remove AC annotation comments in tests,
+  delete tests that only existed to verify old storage or git-based
+  activity behavior, update any documentation or other specs that
+  reference them.
+
+  How: Grep for task-storage-alongside, task-storage-separate,
+  task-storage (exact, not the new task-directory-storage), and
+  task-activity-git-query across all source, test, doc, and spec files.
+  Remove or update each reference. Verify no broken links remain via
+  kspec validate.
+
+  MANUAL ONLY: Final cleanup after confirming the old code and format
+  are fully retired.
+spec_ref: null
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-remove-monolithic"
+context: []
+priority: 2
+tags:
+  - tasks
+  - cleanup
+  - manual
+vcs_refs: []
+created_at: 2026-03-21T00:59:27.630Z
+todos: []
+automation: manual_only

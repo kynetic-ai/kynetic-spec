@@ -1,0 +1,69 @@
+_ulid: 01KM6YEWY1WSKEXTF5YNP5GG81
+slugs:
+  - task-build-migration
+title: Build migration command
+type: task
+description: |
+  Build the kspec task migrate command that transforms the monolithic
+  project.tasks.yaml into the split per-task directory format, and
+  handles backfilling tasks written in legacy format after migration.
+
+  Why: Other users of the project need a supported migration path.
+  The command also handles backfill: if older tooling or a previous
+  kspec version writes tasks to the monolithic file after an initial
+  migration, running migrate again should pick up the new tasks
+  without affecting existing per-task directories.
+
+  What: A CLI command that reads the monolithic file, creates per-task
+  directories with task.yaml and notes.yaml, rewrites project.tasks.yaml
+  as a lean index, and commits everything atomically. Supports dry-run
+  mode. On subsequent runs, detects tasks in the monolithic file that
+  don't have corresponding per-task directories and backfills them.
+
+  How: Read the current monolithic file. For each task: check if a
+  per-task directory already exists (skip if so). Otherwise extract
+  notes into notes.yaml, write remaining fields plus an empty history
+  array into task.yaml, create the directory. Build the index from
+  the extracted filterable fields. Use the write buffer to collect all
+  writes, then flush as one shadow branch commit. Dry-run collects
+  writes but discards instead of flushing.
+
+  Edge cases: tasks with validation errors are migrated as-is with
+  warnings. Tasks with no notes get an empty notes.yaml. Fully
+  migrated projects with no monolithic tasks report "already migrated."
+
+  CRITICAL: Agents working on this task must never use npm run dev,
+  node dist/, or npm link to run in-progress code against live shadow
+  branch data. Always use the globally installed kspec binary for CLI
+  operations. All testing must use the test harness with temp fixtures.
+spec_ref: "@task-storage-migration"
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+origin: derived
+status: needs_work
+blocked_by: []
+depends_on:
+  - "@task-impl-index"
+  - "@task-impl-per-task-files"
+  - "@task-extend-write-buffer"
+context: []
+priority: 1
+tags:
+  - tasks
+  - migration
+  - cli
+vcs_refs: []
+review_ref: "@01KM8TK0KVA5YX0M314GX4N9XG"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-21T18:29:04.987Z
+  commit: 87331ee1e9d640686caa51de93719322fb0c1a82
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: null
+created_at: 2026-03-21T00:59:25.505Z
+started_at: 2026-03-21T18:29:01.269Z
+submitted_at: 2026-03-21T18:29:05.465Z
+todos: []
+automation: eligible

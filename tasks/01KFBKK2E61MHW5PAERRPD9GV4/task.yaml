@@ -1,0 +1,26 @@
+_ulid: 01KFBKK2E61MHW5PAERRPD9GV4
+slugs:
+  - audit-spec-statuses
+title: Audit spec implementation statuses vs actual code
+type: task
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Completed spec implementation status audit. Updated 5 spec items from incorrect
+  statuses to 'implemented': ULID Shortening, Cascade Status Updates, YAML Conventions, YAML 1.2
+  Required, and Quote Ambiguous Strings. Verified blocks relationship and auto-adaptive structure
+  are correctly marked not_started. Cascade to yaml-conventions updated 18 child items. All changes
+  committed to shadow branch."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - spec
+  - tech-debt
+vcs_refs: []
+created_at: 2026-01-19T17:07:10.917Z
+started_at: 2026-01-21T08:03:53.875Z
+completed_at: 2026-01-21T08:07:21.946Z
+todos: []
+automation: manual_only

@@ -1,0 +1,36 @@
+_ulid: 01KKBD5S4GBP3E8ZWK92B76J7V
+slugs: []
+title: "Add AC annotation validation to kspec validate: scan test files for // AC: @slug ac-N
+  comments and v"
+type: task
+description: >-
+  Add AC annotation validation to kspec validate.
+
+
+  New validation rule: scan test files for // AC: @slug ac-N comments and verify (1) @slug resolves
+  to a real spec item or trait, (2) ac-N exists on that item. Surface mismatches as completeness
+  warnings.
+
+
+  This catches typos in AC annotations before they reach PR review. Implement in
+  src/parser/validate.ts alongside existing trait AC coverage checks. The test scanner
+  infrastructure (scanTestCoverage) already exists — extend it to validate references.
+spec_ref: "@ref-validation"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #753 (merge commit fb7892b9d5e2d4155ee656d7a2467d1baf88ab1c). Added AC
+  annotation validation to kspec validate, including unresolved-ref, non-spec target, missing-AC,
+  and multi-ref comment-line handling. Verified targeted AC annotation suite and full npm test pass
+  on current HEAD; GitHub checks green on merge head."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKC8W4QBKS3Q1DNZZS811T91
+created_at: 2026-03-10T08:17:51.248Z
+started_at: 2026-03-10T16:29:10.097Z
+submitted_at: 2026-03-10T16:42:39.911Z
+completed_at: 2026-03-10T17:02:38.936Z
+todos: []
+automation: eligible

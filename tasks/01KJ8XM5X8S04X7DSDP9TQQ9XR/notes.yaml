@@ -1,0 +1,28 @@
+notes:
+  - _ulid: 01KJ8YPSVS98VXZ2F396JFT7Y7
+    content: "Root cause: spawnRalphUntil and testSignalCleanup helpers used cwd: process.cwd() (real
+      project root). When the real working tree had uncommitted changes, getWorkingTreeStatus()
+      returned dirty, causing runWrapUpAgent() to spawn a wrap-up agent with a 2-minute timeout —
+      well exceeding the test's 25s safety timeout. Fix: (1) Changed cwd to tempDir (in /tmp,
+      outside any git repo), (2) Initialize a clean git repo in tempDir with initial commit so
+      getWorkingTreeStatus() reliably returns clean, (3) This ensures isWrapUpNeeded() returns false
+      and wrap-up is skipped. All 3513 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T23:10:49.721Z
+  - _ulid: 01KJ8Z5K1MGBRFZ4J52M6XK5NA
+    content: "[FIX_CYCLE: 1] Review findings: Existing MUST-FIX from chapel's review is not addressed in
+      pushed code: Ralph writes sessions/ artifacts in tempDir before wrap-up runs, making the repo
+      dirty again despite the initial commit. The local uncommitted fix (adding .gitignore for
+      sessions/) looks correct but needs to be committed and pushed to the PR branch."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T23:18:54.260Z
+  - _ulid: 01KJ8ZCY5NG9XRFY994NHAPT80
+    content: "[FIX_CYCLE: 1] Addressed MUST-FIX: Added .gitignore with 'sessions/' in temp repo's
+      initial setup. This ensures ralph's session artifacts (sessions/<id>/session.yaml) don't make
+      the repo dirty, preventing isWrapUpNeeded() from spawning the 2-minute wrap-up agent. All 3513
+      tests pass. Pushed to PR #512."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T23:22:55.029Z

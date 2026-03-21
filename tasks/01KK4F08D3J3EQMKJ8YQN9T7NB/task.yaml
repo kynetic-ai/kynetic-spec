@@ -1,0 +1,34 @@
+_ulid: 01KK4F08D3J3EQMKJ8YQN9T7NB
+slugs: []
+title: Fix settings page showing shadow branch as unhealthy when it is healthy
+type: task
+description: "The settings page shows shadow branch status as 'Unhealthy' (yellow indicator) even
+  when kspec shadow status reports it as healthy. The daemon endpoint GET /api/meta/shadow calls
+  getShadowStatus() which checks branchExists, worktreeExists, and worktreeLinked. The UI shows
+  unhealthy when enabled=true but healthy=false. Possible causes: (1) the daemon's initContext
+  resolves a different project root than the CLI, (2) the project header is missing/wrong so the
+  daemon checks the wrong directory, or (3) the getShadowStatus check fails for worktreeLinked in
+  the daemon context."
+spec_ref: "@ui-settings-view"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Review passed. Merged to feat/ui-revamp. One-line fix in daemon shadow endpoint:
+  changed ctx.shadow.worktreeDir (full path) to ctx.config.shadow.directory (directory name) so
+  getShadowStatus constructs the correct path. Regression test verifies both correct and buggy
+  behavior. No regressions, all quality gates green."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - web-ui
+vcs_refs: []
+session_id: 01KK4P9K8991NMACZHCTPNTH1S
+created_at: 2026-03-07T15:35:06.403Z
+started_at: 2026-03-07T17:42:57.039Z
+submitted_at: 2026-03-07T17:51:02.745Z
+completed_at: 2026-03-07T22:01:44.309Z
+todos: []
+automation: eligible

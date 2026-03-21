@@ -1,0 +1,32 @@
+_ulid: 01KK2NNKV88XS2NCPKRHP3MH5E
+slugs: []
+title: Fix session stream not rendering agent messages, tool calls, or thinking blocks
+type: task
+description: "The session stream view only shows SystemBlock events (Agent dispatched, Agent
+  started, Agent completed). Agent messages, tool calls, and thinking blocks are missing. Root
+  cause: parseEventsToBlocks() in session-utils.ts line ~142 reads data.update but the event
+  structure stores the SessionUpdate directly as data (no .update nesting). Additionally, ACP event
+  type names have changed — the parser checks for old names (assistant_text, assistant, thinking,
+  assistant_thinking) instead of current ACP types (agent_message_chunk, agent_thought_chunk,
+  tool_call_update). Fix: correct the data path and add handlers for current ACP SessionUpdate
+  types."
+spec_ref: "@ui-session-stream"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - bug
+  - web-ui
+vcs_refs: []
+session_id: 01KK2XQT6V7431BNAGH4NJHD5Z
+created_at: 2026-03-06T22:53:08.839Z
+started_at: 2026-03-07T01:14:29.949Z
+submitted_at: 2026-03-07T01:25:35.874Z
+completed_at: 2026-03-07T01:30:49.846Z
+todos: []
+automation: eligible

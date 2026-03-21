@@ -1,0 +1,138 @@
+notes:
+  - _ulid: 01KJDQBJ4QTDMCZJ4NAY7B1KGP
+    content: >-
+      ENRICHMENT — Standalone context for this task:
+
+
+      **What**: The triage page has status and tag filters (lines 326-347 of
+      `packages/web-ui/src/routes/triage/+page.svelte`) but no way to filter triage records by their
+      action type (promote, delete, defer, spec-gap, duplicate). When reviewing triage history,
+      users often want to see "all promote decisions" or "all spec-gap findings" without scrolling
+      through mixed results.
+
+
+      **Where**: `packages/web-ui/src/routes/triage/+page.svelte`:
+
+      - Existing filters: `filterStatus` (all/untriaged/triaged/acted_on) at line 44, `filterTag` at
+      line 43
+
+      - Filter UI: lines 324-347 (the filter controls div with data-testid="triage-filters")
+
+      - Filtered items computation: `filteredItems` derived at lines 78-96 — currently filters by
+      tag and status only
+
+      - The `TriageAction` type includes: promote, delete, defer, spec-gap, duplicate (defined in
+      `$lib/types/triage`)
+
+
+      **How**:
+
+      1. Add a new `filterAction` state variable: `let filterAction = $state<TriageAction | ''>('')`
+
+      2. Add a new `<select>` element in the filters div (alongside status and tag filters) with
+      options for each action type
+
+      3. Add action filtering to the `filteredItems` derived computation:
+         ```
+         if (filterAction) {
+           items = items.filter((i) => i.record?.action === filterAction);
+         }
+         ```
+      4. Include the action filter in the `$effect` that resets `currentIndex` when filters change
+      (line 296-302)
+
+      5. If implementing URL state persistence (task @01KJDQ1F), also sync this filter to URL params
+
+
+      **Done when**:
+
+      - A dropdown/select control for triage action type appears in the filter bar
+
+      - Selecting "promote" shows only items with promote decisions
+
+      - Selecting "spec-gap" shows only spec-gap items
+
+      - The empty/default option shows all items (no action filter)
+
+      - Changing the filter resets the card navigation index to 0
+
+      - E2E test covers filtering by action type
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T19:38:33.495Z
+  - _ulid: 01KJDQWRKV7J9BSC3BY2NNPNG8
+    content: Linked to @interactive-triage-ui spec. Add filter controls for triage action types on
+      triage page.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T19:47:57.179Z
+  - _ulid: 01KJKMNG3VF2TXPKYDBZC72JTD
+    content: >-
+      Implemented triage action-filter support in web UI scope for @interactive-triage-ui ac-7.
+
+
+      Changes in progress:
+
+      - Added action filter state (`filterAction`) and filtering logic in
+      `packages/web-ui/src/routes/triage/+page.svelte` so cards can be filtered by triage decision
+      action.
+
+      - Added action filter `<select>` UI (`data-testid="triage-action-filter"`) using existing
+      ACTION_LABELS.
+
+      - Included action filter in the index-reset effect so changing filters returns card navigation
+      to index 0.
+
+      - Added E2E coverage in `packages/web-ui/tests/e2e/triage.spec.ts` for control visibility and
+      behavior (action filter narrows results and resets card index).
+
+
+      Next: run targeted E2E and validation checks, then full test suite before submit.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T02:46:59.963Z
+  - _ulid: 01KJKN5GXGSEWEQNXEDV71W02R
+    content: >-
+      Verification summary after implementation:
+
+
+      - Targeted AC-7 E2E checks pass:
+        - `npm run build && npx playwright test tests/e2e/triage.spec.ts -g "displays filter controls and progress count|action filter narrows cards by triage action and resets card index"`
+        - Result: 2 passed.
+      - Full triage.spec run still has pre-existing failures unrelated to this change (real-time
+      progress assertion and submit-enabled expectation paths).
+
+      - Full repo test run has a pre-existing failing file:
+        - `tests/cli/session-note-limit.test.ts` (3 timeout failures at lines 34, 70, 104).
+      - `kspec validate` still fails with pre-existing project-wide
+      schema/reference/alignment/completeness issues (missing observations skill file, duplicate
+      @observations slug, many baseline alignment warnings).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T02:55:45.072Z
+  - _ulid: 01KJKN8H59YH4Y0DZ330GFE5AD
+    content: "Submitted for review in PR #619: https://github.com/kynetic-ai/kynetic-spec/pull/619
+      (branch feat/triage-action-filter, commit e8371171a). Implemented triage action filter UI +
+      logic and AC-7 E2E coverage updates."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T02:57:23.625Z
+  - _ulid: 01KJKNQV0D9G4KCZETEV1H6RPX
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: New AC-7 action-filter E2E test is failing
+      (packages/web-ui/tests/e2e/triage.spec.ts:167, page.reload ERR_CONNECTION_REFUSED). PR #619
+      reviewed and commented inline; worker should stabilize this test and resubmit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T03:05:45.229Z
+  - _ulid: 01KJKNXZKY0QRGHSAGE6PKW2HW
+    content: '[FIX_CYCLE: 2] Stabilized AC-7 action-filter E2E test in PR #619 by replacing single-shot
+      page.reload() with a retry wrapper (up to 3 attempts with backoff) to tolerate transient
+      daemon connection refusal during test-created triage setup.\n\nCode change:\n-
+      packages/web-ui/tests/e2e/triage.spec.ts: added reloadWithRetry(page) helper and used it in
+      the fallback branch that creates a deterministic triage record.\n\nVerification:\n- cd
+      packages/web-ui && npx playwright test tests/e2e/triage.spec.ts -g "action filter narrows
+      cards by triage action and resets card index" --repeat-each=8 --workers=1\n- Result: 8 passed
+      (39.4s).'
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T03:09:06.558Z

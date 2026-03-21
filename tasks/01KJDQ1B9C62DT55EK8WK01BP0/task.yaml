@@ -1,0 +1,77 @@
+_ulid: 01KJDQ1B9C62DT55EK8WK01BP0
+slugs: []
+title: Plan import warnings treated as errors in batch mode. The no YAML code block in specs section
+  warnin
+type: task
+description: >-
+  **What**: When `kspec plan import` runs inside batch mode, non-fatal warnings (e.g., 'no YAML code
+  block in specs section') cause the batch to fail and roll back. The plan-import command uses
+  `warn()` for non-fatal issues and `process.exit(EXIT_CODES.SUCCESS)` on completion. In batch mode,
+  `process.exit()` is intercepted and throws `BatchExitError`. The exit code 0 is correctly detected
+  as success (line 859 in batch-exec.ts). However, the warnings written to stderr via `warn()` are
+  captured by `OutputCapture` and when the captured output is returned, it may be treated as an
+  error indicator by the batch result processing.
+
+
+  The core issue is that `plan import` calls `process.exit(0)` even on success (line 687 of
+  plan-import.ts). In batch mode, this throws `BatchExitError(0)`, which IS handled as success
+  (batch-exec.ts line 859). But the warnings in captured stderr make the output look like a failure.
+  Additionally, the batch atomic mode may see stderr output as part of the error string when
+  `BatchExitError` code is non-zero for other plan import failures.
+
+
+  **Where**:
+
+  - `src/cli/commands/plan-import.ts` line 687 — `process.exit(EXIT_CODES.SUCCESS)` which triggers
+  BatchExitError in batch mode
+
+  - `src/cli/commands/plan-import.ts` lines 124-135 — warning emission for non-fatal parse errors
+
+  - `src/cli/batch-exec.ts` lines 849-875 — BatchExitError handling in `dispatchCommand()`
+
+  - `src/cli/batch-context.ts` — OutputCapture that captures both stdout and stderr
+
+
+  **How**:
+
+  1. In `plan-import.ts`, replace the final `process.exit(EXIT_CODES.SUCCESS)` with a simple
+  `return`. The batch executor expects normal returns for success — only use `process.exit()` for
+  failures. This is the main fix.
+
+  2. Alternatively, ensure that `dispatchCommand()` in batch-exec.ts distinguishes between stderr
+  warnings and actual errors when a `BatchExitError(0)` is caught — treat exit code 0 as success
+  regardless of captured output content.
+
+  3. Consider adding a `warnings` field to `BatchCommandResult` so warnings can be reported without
+  marking the command as failed.
+
+
+  **Done when**:
+
+  - `kspec plan import` with warnings runs successfully in batch mode (no rollback)
+
+  - Warnings are still visible in batch output (not silenced)
+
+  - Plan import still fails correctly in batch mode for actual errors (YAML parse errors, missing
+  module, etc.)
+
+  - Add a test case: batch with a plan import that produces warnings should succeed
+spec_ref: "@plan-import"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #609. Fixed batch-mode plan import by replacing
+  process.exit(EXIT_CODES.SUCCESS) with return in plan-import.ts success path, preventing
+  BatchExitError interception. Added regression test in batch-exec-engine.test.ts covering
+  warning-only plan import succeeds in batch (ac-34, ac-23). All CI checks passed."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
+created_at: 2026-02-26T19:32:58.796Z
+started_at: 2026-02-28T22:31:41.762Z
+submitted_at: 2026-02-28T22:37:50.461Z
+completed_at: 2026-02-28T23:05:33.314Z
+todos: []
+automation: needs_review

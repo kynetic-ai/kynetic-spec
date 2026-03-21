@@ -1,0 +1,8 @@
+notes:
+  - _ulid: 01KHXGQFSE040TE9W6CNRPE7RK
+    content: Added ac-5 (host from config) and ac-6 (env var override) to @config-daemon spec. Added AC
+      annotations to existing tests in config.test.ts and implementation in config.ts. All tests
+      pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-20T12:34:53.358Z

@@ -1,0 +1,26 @@
+_ulid: 01KGTNT0HR1XZ5B44B4AJAKJDE
+slugs: []
+title: Document prompt-file pattern in codex skill
+type: task
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #333. Added 'Handling Complex Prompts' section to codex skill
+  documenting the prompt-file pattern: use mktemp for temp file, write prompt with heredoc, inject
+  with $(cat file), cleanup. Includes when-to-use table and accurate rationale comparing prompt-file
+  to heredocs. Review feedback addressed (mktemp + cleanup, corrected heredoc explanation)."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - docs
+  - skills
+  - codex
+vcs_refs: []
+created_at: 2026-02-06T23:50:13.815Z
+started_at: 2026-02-07T09:39:25.001Z
+completed_at: 2026-02-07T09:50:53.981Z
+todos: []
+automation: eligible

@@ -1,0 +1,31 @@
+notes:
+  - _ulid: 01KJW16F2CNHXAFZ4XFHWPZ8G3
+    content: >-
+      Execution context:
+
+      - Background: batch currently validates option keys strictly, so plural 'tags' is rejected
+      even when CLI option is '--tag'.
+
+      - Scope: accept 'tags' as alias for 'tag' in batch command args without changing non-batch
+      command behavior.
+
+      - Files: src/cli/batch-exec.ts and batch execution tests.
+
+      - Verification: targeted batch tests plus full test suite checks.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T08:59:54.316Z
+  - _ulid: 01KJW1M8T3QMPGAVWFX0YZ9E5X
+    content: Implemented batch arg alias resolution for tags->tag in validation and argv translation.
+      Added unit and integration coverage in batch-exec-engine tests; verified alias emits --tag and
+      persists inbox tags.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T09:07:26.659Z
+  - _ulid: 01KJW1MD1KMA0JRNQ57DPM2DVH
+    content: "Validation check: kspec validate currently fails from pre-existing project
+      metadata/reference issues (duplicate @observations slug and missing skills.observations
+      content), unrelated to this task's batch alias changes."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T09:07:30.996Z

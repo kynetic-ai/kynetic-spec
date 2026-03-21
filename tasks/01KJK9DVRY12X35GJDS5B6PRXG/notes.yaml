@@ -1,0 +1,54 @@
+notes:
+  - _ulid: 01KJK9EJRQ5RDBD9RQSD4S1CQD
+    content: >-
+      Implementation notes:
+
+
+      1. src/ralph/subagent.ts:
+         - Add formatCompactSection(data, label, fetchCmd) — always returns compact format (identity fields via existing compactSummary() + CLI fetch command). No JSON fence.
+         - Change buildSubagentPrompt to use formatCompactSection instead of formatJsonSection. Keep truncatePromptIfNeeded as final guardrail.
+         - Lower SUBAGENT_PROMPT_MAX_BYTES to 16KB and add WORKER_PROMPT_MAX_BYTES (32KB). Export both.
+
+      2. src/cli/commands/ralph.ts:
+         - buildTaskWorkPrompt uses WORKER_PROMPT_MAX_BYTES (32KB) — no behavior change for worker prompts.
+         - Pass explicit maxBytes to truncatePromptIfNeeded call.
+
+      3. tests/ralph.test.ts:
+         - Update buildSubagentPrompt tests: assert compact summaries (no json fence for task/spec), always include CLI fetch commands.
+         - Add test: subagent prompt with 37-AC spec stays compact and well under 16KB.
+         - Update budget constant tests.
+         - Add worker prompt test: verify it uses 32KB budget (no regression from constant split).
+         - Existing truncatePromptIfNeeded and formatJsonSection tests stay unchanged (worker path still uses them).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T23:30:58.967Z
+  - _ulid: 01KJKCPS10RC6P5K9NKJ8TCE9R
+    content: Implemented compact subagent prompt sections in src/ralph/subagent.ts (task/spec summaries
+      + CLI fetch commands, no embedded JSON), split prompt budgets into
+      SUBAGENT_PROMPT_MAX_BYTES=16KB and WORKER_PROMPT_MAX_BYTES=32KB, and wired worker prompt
+      truncation to explicit worker budget in src/cli/commands/ralph.ts to preserve previous worker
+      behavior.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T00:27:53.248Z
+  - _ulid: 01KJKD5NF9CE1VW1MAR54S3XBC
+    content: >-
+      Verification:
+
+      - npm test -- tests/ralph.test.ts (146 passed).
+
+      - Full npm test run failed due pre-existing session-note-limit timeouts
+      (tests/cli/session-note-limit.test.ts timed out at lines 34, 70, 104 in suite run; isolated
+      rerun timed out at lines 34 and 104) unrelated to modified files.
+
+      - kspec validate still fails on pre-existing project meta/reference issues (@observations slug
+      ambiguity + missing observations skill file).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T00:36:01.129Z
+  - _ulid: 01KJKD8HKN58XTAG32132RX0S3
+    content: "Opened PR #614: https://github.com/kynetic-ai/kynetic-spec/pull/614 (branch
+      fix/ralph-compact-subagent-prompts). Task submitted for review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T00:37:35.478Z

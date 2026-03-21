@@ -1,0 +1,64 @@
+_ulid: 01KJWK8AWMEP2D3PHNKH726NNR
+slugs: []
+title: "Fill spec gap: inbox commands — add child requirement specs"
+type: task
+description: >-
+  The @inbox-commands feature spec exists but has no acceptance criteria of its own and no child
+  requirement specs for individual subcommands. It only has a description paragraph.
+
+
+  This matters because inbox is a key part of the capture workflow. Without requirement-level specs,
+  there's no authoritative reference for what inbox add, inbox list, inbox get, inbox promote, inbox
+  delete, and inbox defer actually do. Trait ACs (like @trait-priority-parameter) inherit at the
+  feature level but can't be validated against specific command behaviors without requirement specs.
+
+
+  Needed child requirements:
+
+  - inbox add: captures text with optional --tag, --priority, --source flags
+
+  - inbox list: lists inbox items with filtering (--status, --tag, --limit, --offset)
+
+  - inbox get: shows single inbox item detail
+
+  - inbox promote: converts inbox item to task or spec item (accepts --priority, --spec-ref,
+  --description, --type)
+
+  - inbox delete: removes inbox item (with confirmation)
+
+  - inbox defer: defers an inbox item for later triage
+
+
+  Each requirement should have ACs covering the command's options, validation, output format, and
+  error cases.
+
+
+  Reference implementation at src/cli/commands/inbox.ts. Check existing test coverage to understand
+  current behavior before writing ACs.
+
+
+  Note: @trait-priority-parameter applies at the feature level, but only inbox add and inbox promote
+  actually accept --priority. The other subcommands don't. This is fine — trait ACs that don't apply
+  to a specific requirement should be annotated as N/A per project convention.
+spec_ref: "@inbox-commands"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Spec gap filled: 7 inbox command requirement specs now have 25 own ACs total, plus
+  trait inheritance. Created 3 new specs (get, set, note) and added ACs to 4 existing specs (add,
+  list, delete, promote). No code changes needed — this was spec-only work."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - spec-hygiene
+  - cli
+vcs_refs: []
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-04T14:15:29.940Z
+started_at: 2026-03-04T16:38:50.740Z
+submitted_at: 2026-03-04T16:44:13.498Z
+completed_at: 2026-03-04T16:44:20.531Z
+todos: []
+automation: eligible

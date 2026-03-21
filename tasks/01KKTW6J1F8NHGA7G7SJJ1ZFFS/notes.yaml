@@ -1,0 +1,81 @@
+notes:
+  - _ulid: 01KKXE1XDY5N4THAVH8RR2221W
+    content: Implemented all four AC endpoints. The unified diff parser lives in
+      src/utils/git-diff-parser.ts as a shared utility. The daemon route file
+      (packages/daemon/src/routes/diff.ts) handles HTTP routing, git command execution, ref
+      validation, and review content resolution for plan/spec/task/code subject types. 13 tests
+      passing covering parser logic and git integration. Pre-existing test timeouts in
+      shadow/dispatch/session tests unrelated to this change.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-17T08:19:32.926Z
+  - _ulid: 01KKXG6AD02SWR94WATGB2ZGW1
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by agent@kspec-reviewer"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-17T08:56:54.432Z
+  - _ulid: 01KKXG6X4KC9GG7S0XVPGWB1RC
+    content: >-
+      Review cycle 1 — request_changes. Two blocker findings:
+
+
+      1. MUST-FIX: Command injection in git helper functions (runGitDiff, getFileAtCommit,
+      isValidGitRef). User-supplied HTTP query parameters are string-interpolated into execSync
+      shell commands. Fix: use execFileSync with array arguments instead of execSync with string
+      interpolation.
+
+
+      2. MUST-FIX: No test coverage for ac-4 (GET /api/reviews/:id/content). The most complex
+      endpoint (~230 lines, 5 subject types) has zero tests. Need unit tests covering plan, spec,
+      task, code, and external subject types plus error cases.
+
+
+      One SHOULD-FIX: ac-2 context expansion tests only verify git show + slicing logic, not the
+      route handler's validation/clamping/error paths.
+
+
+      Evidence log:
+
+      - Files read: packages/daemon/src/routes/diff.ts, src/utils/git-diff-parser.ts,
+      src/utils/index.ts, tests/daemon-diff-api.test.ts, packages/daemon/src/server.ts,
+      src/utils/git.ts, src/schema/review-records.ts, src/parser/index.ts
+
+      - Commands run: npm test (5683 passed, 2 failed pre-existing), git diff stat, AC annotation
+      grep
+
+      - Claims verified: "13 tests passing" — confirmed 13 tests in daemon-diff-api.test.ts all
+      pass. "Pre-existing test timeouts" — confirmed neither failing test file was modified by this
+      commit.
+
+      - Categories searched: security (command injection found), correctness (parser logic correct),
+      edge cases (quoted filenames minor), error handling (good coverage in routes), test quality
+      (ac-4 untested, ac-2 tests weak), integration (imports and patterns consistent)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-17T08:57:13.619Z
+  - _ulid: 01KKXHRE1BNKEJZVVWK8JCVW3P
+    content: >-
+      Fix cycle 1 — addressed all review findings:
+
+
+      1. MUST-FIX (command injection): Replaced all execSync calls with execFileSync in git helper
+      functions (runGitDiff, getFileAtCommit, isValidGitRef). User-supplied HTTP query parameters
+      are now passed as array arguments, preventing shell injection.
+
+
+      2. MUST-FIX (ac-4 test coverage): Added 6 route-level tests for GET /api/reviews/:id/content
+      covering all 5 subject types (plan with sections/specs/tasks/notes, spec with
+      description/ACs/traits/metadata, code with diff_params, task with description/notes, external
+      with null content) plus 404 error case.
+
+
+      3. SHOULD-FIX (ac-2 test coverage): Added 5 route-level tests for GET /api/diff/context
+      covering valid range extraction with line numbers, boundary clamping, invalid line range
+      (400), non-existent file (404), and invalid ref (400).
+
+
+      4. Changed error response pattern from Elysia error() to set.status + return object for
+      Node.js/.handle() test compatibility, matching the pattern used by other daemon routes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-17T09:24:16.555Z

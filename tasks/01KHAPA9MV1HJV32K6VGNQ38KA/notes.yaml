@@ -1,0 +1,80 @@
+notes:
+  - _ulid: 01KHAPA9MTAXSFZXGRC04G9E3P
+    content: >-
+      Implementation notes (auto-generated from spec):
+
+
+      When the ralph loop exits for any reason (no eligible tasks, agent signaled end-loop, max
+      iterations reached, error), spawn a final wrap-up subagent before terminating. The wrap-up
+      agent ensures the workspace is in a clean state: uncommitted changes are identified and
+      handled (committed, stashed, or flagged), stale markers are cleaned up, and a brief exit
+      summary is produced. Runs as a subagent like PR review, with a focused prompt and short
+      timeout.
+
+
+
+      Acceptance Criteria:
+
+      - ac-1: Given Ralph loop exits for any reason (no tasks, end-loop signal, max iterations,
+      error), when exit sequence begins, then a wrap-up subagent is spawned before the process
+      terminates
+
+      - ac-2: Given Wrap-up agent starts, when it inspects the working tree, then identifies
+      uncommitted changes (staged, unstaged, untracked) and reports what they appear to relate to
+      (task refs, file patterns)
+
+      - ac-3: Given Wrap-up agent finds uncommitted changes, when changes are present, then commits
+      with appropriate message, stashes, or flags for human review depending on context; does not
+      silently discard work
+
+      - ac-4: Given Wrap-up agent completes, when cleanup is done, then produces a brief exit
+      summary: what was cleaned up, final task states, any items flagged for human attention
+
+      - ac-5: Given Wrap-up agent is running, when timeout is reached (default 2 minutes), then
+      agent is terminated and ralph exits without wrap-up; wrap-up must not block shutdown
+      indefinitely
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-13T05:06:58.331Z
+  - _ulid: 01KHDY205J26300Y54TAA9NB2W
+    content: >-
+      Implemented ralph wrap-up agent on loop exit:
+
+
+      - Added wrap-up.ts module with WrapUpContext, ExitReason types
+
+      - buildWrapUpContext() gathers exit state (working tree, tasks, session info)
+
+      - buildWrapUpPrompt() generates focused prompt for wrap-up agent
+
+      - isWrapUpNeeded() determines if wrap-up should run (dirty tree, error, in-progress tasks)
+
+      - runWrapUpAgent() spawns subagent with 2-minute timeout
+
+      - Integrated into ralph.ts finally block - runs on all exits except dry-run
+
+      - Added session.wrapup event type for audit logging
+
+      - Tracks exit reason throughout loop (no_tasks, end_loop_signal, max_iterations, error,
+      max_failures, explicit_tasks_done)
+
+
+      35 tests covering:
+
+      - ac-1: Wrap-up spawned on exit (all exit reasons handled)
+
+      - ac-2: Working tree inspection (staged, unstaged, untracked reported)
+
+      - ac-3: Prompt instructions for commit/stash/flag handling
+
+      - ac-4: Exit summary instructions in prompt
+
+      - ac-5: 2-minute timeout constant, timeout warning in prompt
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-14T11:19:58.386Z
+  - _ulid: 01KHDZ0MKAFZY6SCT933DJ44JK
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-14T11:36:42.346Z

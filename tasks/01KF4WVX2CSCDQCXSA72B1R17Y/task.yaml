@@ -1,0 +1,21 @@
+_ulid: 01KF4WVX2CSCDQCXSA72B1R17Y
+slugs:
+  - task-kspec-meta-context
+title: "Implement: kspec meta context"
+type: task
+spec_ref: "@meta-context-cmd"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Implemented kspec meta context command with full spec compliance - shows session
+  context, supports --json and --clear, comprehensive test coverage (6 tests), all 561 tests pass
+depends_on:
+  - "@task-meta-cli-commands"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:36.492Z
+started_at: 2026-01-19T03:05:08.299Z
+completed_at: 2026-01-19T03:10:58.644Z
+todos: []

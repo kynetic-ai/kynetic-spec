@@ -1,0 +1,28 @@
+_ulid: 01KJHAD8E2QTA99YTNYCFCR9AT
+slugs: []
+title: "Fix: Truncate oversized ACP prompt payloads"
+type: task
+description: "Ralph subagent and worker prompts embed raw JSON.stringify() of task/spec/session data
+  inline. For large payloads (tasks with many notes, large specs), the resulting JSON-RPC line
+  exceeds the Codex Rust binary read buffer, causing 'agent_client_protocol::rpc: failed to parse
+  incoming message'. The parser receives a partial fragment and fails. Observed on the review
+  subagent path, but the worker prompt has the same vulnerability."
+spec_ref: "@ralph-subagent-spawning"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #590 reviewed and merged at head 690d0648"
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - ralph
+vcs_refs: []
+session_id: null
+created_at: 2026-02-28T05:09:15.330Z
+started_at: 2026-02-28T18:41:10.956Z
+submitted_at: 2026-02-28T19:01:39.719Z
+completed_at: 2026-02-28T19:01:41.319Z
+todos: []

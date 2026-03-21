@@ -1,0 +1,32 @@
+_ulid: 01KKFY9HBMSAW4DD924SYTEJ0P
+slugs:
+  - task-implement-dispatch-role-entrypoints
+title: Implement role-specific workflow, PR target, and manual merge entry contract
+type: task
+spec_ref: "@dispatch-role-workflow-entry-contract"
+plan_ref: "@plan-dispatch-worktree-isolation-and-scheduling"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #810. Implemented dispatcher-owned role-specific workflow entry
+  rendering, publication-mode-aware PR/manual-merge guidance, invalid publication metadata fail-fast
+  handling, and the related dispatch/file-lock lifecycle regressions. AC coverage verified for ac-1
+  through ac-4 with local npm test green and GitHub CI green on head
+  4efbd91edf14dc0081fce672efb458663ddcfd92."
+depends_on:
+  - "@task-implement-dispatch-orientation-prompt"
+  - "@task-implement-dispatch-branch-integration-contract"
+context: []
+priority: 1
+tags:
+  - dispatch
+  - prompts
+  - skills
+vcs_refs: []
+session_id: 01KKJJRK1CCGA6V47NGCYKF211
+created_at: 2026-03-12T02:33:57.875Z
+started_at: 2026-03-13T03:10:51.284Z
+submitted_at: 2026-03-13T03:21:44.860Z
+completed_at: 2026-03-13T03:32:35.103Z
+todos: []
+automation: eligible

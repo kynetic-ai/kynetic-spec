@@ -1,0 +1,79 @@
+notes:
+  - _ulid: 01KJZQS871W22QPR27A6TZDXTA
+    content: >-
+      Spec coverage: spans two specs:
+
+      - @cli-serve-commands ac-11 (new): guard serve stop/restart/start when KSPEC_DAEMON_PID is set
+
+      - @agent-invocation-lifecycle ac-12 (new): inject KSPEC_DAEMON_PID into agent env
+
+
+      Implementation approach:
+
+      1. In src/agent-runtime/invocation.ts: add KSPEC_DAEMON_PID to the env object alongside
+      KSPEC_SESSION_ID (get daemon PID from PidFileManager or process.ppid)
+
+      2. In src/cli/commands/serve.ts: add guard at top of stopServer() and restartServer() checking
+      process.env.KSPEC_DAEMON_PID, refuse with error message
+
+      3. In startServer(): also guard — if KSPEC_DAEMON_PID is set, the agent shouldn't be trying to
+      start daemons either
+
+      4. Update kspec-agents.md development convention to warn about this
+
+
+      Files to modify:
+
+      - src/agent-runtime/invocation.ts (env injection)
+
+      - src/cli/commands/serve.ts (guard in stop/restart/start)
+
+      - templates/agents-sections/ or kspec meta (add convention rule)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T19:32:21.857Z
+  - _ulid: 01KJZRVWQ54NMW6KDXPD55QWNQ
+    content: >-
+      Implementation complete (500377d60):
+
+      - Added guardAgentContext() to src/cli/commands/serve.ts — checks KSPEC_SESSION_ID at top of
+      startServer, stopServer, restartServer
+
+      - 4 tests in tests/cli-serve.test.ts covering start/stop/restart refusal + JSON error output
+
+      - Convention rule added to kspec-agents.md via kspec meta
+
+      - All 26 serve tests pass (0 regressions)
+
+      - No changes needed to invocation.ts — KSPEC_SESSION_ID already injected for all agent spawns
+
+      - Removed unnecessary ac-12 from @agent-invocation-lifecycle (KSPEC_DAEMON_PID not needed)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T19:51:16.965Z
+  - _ulid: 01KJZSE0TR415QVTHS4GDRQHAE
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: guard currently keys off KSPEC_SESSION_ID
+      (over-broad) and regresses dispatch-run serve foreground path; implement daemon-scoped guard
+      signal (KSPEC_DAEMON_PID) and align tests."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T20:01:11.001Z
+  - _ulid: 01KJZSRBRR3Q6GACM7RE7YYWRB
+    content: >-
+      Fix cycle 1: addressed both reviewer findings.
+
+
+      1. MUST-FIX (foreground env leak): The foreground serve test at line 164 used spawn() directly
+      with process.env, which inherits KSPEC_SESSION_ID when tests run inside a dispatch agent
+      session. Fixed by destructuring to strip KSPEC_SESSION_ID before passing env to spawn(). The
+      runKspec() helper already had this sanitization (cli.ts:112-117).
+
+
+      2. SHOULD-FIX (exact exit codes): Guard tests now assert exitCode === 4 (VALIDATION_FAILED)
+      instead of generic !== 0.
+
+
+      Both commits pushed (c605ae45b, bd73a53a0). All 26 serve tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T20:06:49.881Z

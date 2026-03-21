@@ -1,0 +1,61 @@
+_ulid: 01KKTW6HCFS1KY6X0KVF5F6RFP
+slugs:
+  - task-review-api-websocket
+title: Add WebSocket events for review mutations
+type: task
+description: |
+  Broadcast WebSocket events when review records are created or mutated,
+  so the UI can refresh without polling.
+
+  Why: The web UI uses TanStack Query with WebSocket-driven invalidation.
+  Without real-time events, users would need to manually refresh to see
+  new threads, verdicts, or disposition changes from agent reviewers.
+
+  What: Add a "reviews:updates" WebSocket topic. Emit events on review
+  creation, thread creation/update, verdict submission, check recording,
+  and lifecycle transitions. Event types: review_created, review_updated,
+  thread_created, thread_updated, verdict_submitted, check_recorded,
+  lifecycle_changed.
+
+  How: Follow existing WebSocket patterns (tasks:updates, plans:updates).
+  Add broadcast calls at the end of each mutation endpoint handler.
+  Events carry the review ULID and the mutation type so the client
+  knows which query keys to invalidate.
+
+  Covers: @review-records-daemon-api ac-9.
+spec_ref: "@review-records-daemon-api"
+plan_ref: "@plan-review-records-web-ui"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev. Added WebSocket broadcasts on reviews:updates topic for all 7 review
+  mutation endpoints (thread_created, thread_replied, thread_resolved, thread_reopened,
+  verdict_submitted, check_added, lifecycle_changed). Added typed event data interfaces in shared
+  package. 12 tests verify broadcast behavior including payload shape, negative cases, and
+  projectPath scoping.
+depends_on:
+  - "@task-review-api-threads"
+  - "@task-review-api-verdicts"
+context: []
+priority: 2
+tags:
+  - daemon
+  - websocket
+  - review
+vcs_refs: []
+review_ref: "@01KKYNMDDPXWRFFMPSSRGD01XF"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-17T19:42:01.111Z
+  commit: c9d611f9fddad7ed70b5a553ccb097668ea3be1c
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KKYKNXTN7VG2A5AQPN5D38JN
+created_at: 2026-03-16T08:29:01.199Z
+started_at: 2026-03-17T19:17:30.733Z
+submitted_at: 2026-03-17T19:42:01.560Z
+completed_at: 2026-03-17T19:52:06.386Z
+todos: []
+automation: eligible

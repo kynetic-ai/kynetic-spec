@@ -1,0 +1,62 @@
+notes:
+  - _ulid: 01KKSQ34ARF6GZZFNE5NP9H76H
+    content: >-
+      Execution context:
+
+      - Background: New HTTP endpoint for on-demand session event detail with blob resolution, part
+      of WebSocket-first session stream redesign
+
+      - Scope: readEventBySeq in store.ts + GET /api/sessions/:id/events/:seq route in sessions.ts +
+      unit tests
+
+      - Files changed: src/sessions/store.ts (new readEventBySeq function),
+      packages/daemon/src/routes/sessions.ts (new route), tests/session-event-detail.test.ts (new
+      test file)
+
+      - Verification: npm test -- tests/session-event-detail.test.ts (11 tests passing), full test
+      suite shards running
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T21:40:32.216Z
+  - _ulid: 01KKSQAFEB5871QS7C391N8F0C
+    content: >-
+      Submitted for review. PR #882: https://github.com/kynetic-ai/kynetic-spec/pull/882
+
+
+      Changes:
+
+      - src/sessions/store.ts: Added readEventBySeq() - targeted single-event read that stops at
+      matching seq
+
+      - packages/daemon/src/routes/sessions.ts: Added GET /api/sessions/:id/events/:seq with session
+      ID resolution, seq validation, blob pointer resolution, and proper 404 handling
+
+      - tests/session-event-detail.test.ts: 11 tests covering all own ACs + applicable trait ACs
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T21:44:32.971Z
+  - _ulid: 01KKSQPE224EZ95G1MQDHFCPDW
+    content: "[FIX_CYCLE: 1] Review findings: SHOULD-FIX: Trait AC annotations (@trait-api-endpoint ac-1
+      through ac-6) are inside JSDoc block comment but need standalone // AC: line comments. ac-1
+      and ac-2 need annotations on the test cases that prove them; ac-3 through ac-6 need standalone
+      N/A annotations. See PR #882 review comments for details. Also two SUGGESTIONs: unused imports
+      and misleading docstring."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T21:51:04.770Z
+  - _ulid: 01KKSRWSTD9XGKJQ6651KJS92F
+    content: >-
+      [FIX_CYCLE: 1] Addressed all review findings:
+
+      - SHOULD-FIX: Converted trait AC annotations from JSDoc block to standalone // AC: line
+      comments (ac-3–ac-6 N/A at file top, ac-1 on valid-request test, ac-2 on not-found test)
+
+      - SUGGESTION: Removed unused imports (getSessionDir, getSessionEventsPath)
+
+      - SUGGESTION: Fixed misleading docstring in readEventBySeq ('avoiding full parsing' instead of
+      'avoiding full file read')
+
+      All 11 tests pass, shard1 regression check clean (1770 pass).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T22:12:01.998Z

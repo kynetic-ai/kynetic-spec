@@ -1,0 +1,20 @@
+_ulid: 01KF229CJV28XAW3KC6NNRRS0M
+slugs:
+  - task-fix-hook-commands
+title: Fix hooks to use npm run dev instead of npx tsx
+type: task
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Hooks now use npm run dev for project-relative execution
+depends_on: []
+context: []
+priority: 1
+tags:
+  - infrastructure
+  - hooks
+vcs_refs: []
+created_at: 2026-01-16T00:11:37.946Z
+started_at: 2026-01-16T00:11:44.653Z
+completed_at: 2026-01-16T00:13:06.260Z
+todos: []

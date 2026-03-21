@@ -1,0 +1,31 @@
+_ulid: 01KJTP68SV9VZ37KXF6TCEEKWB
+slugs: []
+title: Add isolated HOME helper for daemon-sensitive CLI tests
+type: infra
+description: Create a shared test helper/pattern that forces HOME/config isolation for
+  daemon-related CLI tests to avoid ambient ~/.config/kspec PID/port interference.
+spec_ref: "@daemon-sensitive-cli-test-determinism"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #673. Added shared createIsolatedKspecHome() helper in
+  tests/helpers/cli.ts and migrated daemon-sensitive CLI tests in cli-serve and cli-agent-commands
+  to use isolated HOME/.config paths. No behavior deviations noted; spec
+  @daemon-sensitive-cli-test-determinism AC coverage verified (ac-1/ac-2/ac-3 annotations in
+  tests/cli-serve.test.ts), trait ACs N/A for this spec."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - test
+  - daemon
+  - reflection
+vcs_refs: []
+session_id: 01KJWF789H1G68TWHT02XSVAQ5
+created_at: 2026-03-03T20:28:19.131Z
+started_at: 2026-03-04T13:06:11.447Z
+submitted_at: 2026-03-04T13:08:54.212Z
+completed_at: 2026-03-04T13:21:45.371Z
+todos: []
+automation: eligible

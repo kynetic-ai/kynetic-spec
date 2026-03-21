@@ -1,0 +1,46 @@
+_ulid: 01KJA4ZCZAR86C5PG9552N86YD
+slugs: []
+title: Add debug logging for malformed hook input in parseHookInput
+type: task
+description: >-
+  parseHookInput() in session.ts (after refactor: likely session/checkpoint.ts or session/create.ts)
+  silently swallows JSON parse errors:
+
+    function parseHookInput(stdin: string | null): StopHookInput | null {
+      if (!stdin) return null;
+      try {
+        return JSON.parse(stdin.trim()) as StopHookInput;
+      } catch {
+        return null;
+      }
+    }
+
+  Malformed JSON from a hook is silently ignored. Add a debug log in the catch block (using
+  KSPEC_DEBUG or the project's debug logging pattern) so hook integration issues can be diagnosed:
+
+    catch (err) {
+      debug('parseHookInput: failed to parse stdin as JSON:', err);
+      return null;
+    }
+
+  Depends on: @01KJ9ZBT (session.ts refactor)
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #535. Added debug logging to parseHookInput() for malformed JSON and
+  non-object values using KSPEC_DEBUG pattern. 16 unit tests covering all cases."
+depends_on:
+  - "@01KJ9ZBT"
+context: []
+priority: 3
+tags:
+  - cli
+  - dx
+vcs_refs: []
+created_at: 2026-02-25T10:19:37.319Z
+started_at: 2026-02-25T15:23:02.782Z
+completed_at: 2026-02-25T15:43:22.231Z
+todos: []
+automation: eligible

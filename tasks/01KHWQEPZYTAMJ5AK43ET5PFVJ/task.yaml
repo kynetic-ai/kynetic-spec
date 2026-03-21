@@ -1,0 +1,38 @@
+_ulid: 01KHWQEPZYTAMJ5AK43ET5PFVJ
+slugs: []
+title: Add spec AC for daemon.host configuration
+type: task
+description: >-
+  src/parser/config.ts supports daemon.host configuration with KSPEC_DAEMON_HOST env var override
+  (line 364), but no spec AC covers host configurability. The @config-daemon spec only has ACs for
+  port and auto_start.
+
+
+  Either:
+
+  - Add an AC to @config-daemon for host configuration, OR
+
+  - Remove the host config if it was added speculatively without spec coverage
+
+
+  The host config exists in the implementation and is functional, so adding a spec AC is the right
+  path.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #433. Added ac-5 (host from config) and ac-6 (env var override) to
+  @config-daemon spec. Added AC annotations to existing tests in config.test.ts and implementation
+  in config.ts. All 6 ACs now have test coverage."
+depends_on: []
+context: []
+priority: 4
+tags:
+  - spec-gap
+vcs_refs: []
+created_at: 2026-02-20T05:13:11.422Z
+started_at: 2026-02-20T12:29:52.599Z
+completed_at: 2026-02-20T12:54:37.311Z
+todos: []
+automation: eligible

@@ -1,0 +1,27 @@
+notes:
+  - _ulid: 01KGGXAFVYYXMSS5TWSXNXV7EB
+    content: "Add introspection commands for programmatic CLI discovery: kspec help --json-schema, kspec
+      help --exit-codes, kspec help commands --json. Enables agents to discover available commands
+      and their schemas."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-03T04:49:09.502Z
+  - _ulid: 01KGP3EYTQ893YN1WH11R0E0MC
+    content: |-
+      Implemented all 5 acceptance criteria for CLI schema introspection:
+
+      ac-1: help --json outputs valid JSON with commands tree and help content
+      ac-2: help --exit-codes displays all exit codes in human-readable format  
+      ac-3: help --exit-codes --json outputs exit codes as JSON array
+      ac-4: help <command> --json-schema generates JSON Schema for command options/arguments
+      ac-5: Fixed --json flag handling via global preAction hook
+
+      Key implementation details:
+      - The global --json flag is handled by preAction hook in index.ts which sets globalJsonMode
+      - Help command uses isJsonMode() to check if JSON output should be produced
+      - Added showExitCodes(), showExitCodesJson(), and showCommandJsonSchema() functions
+      - JSON Schema generation extracts types from Commander option flags
+      - All 5 ACs covered with comprehensive E2E tests (22 total tests passing)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-05T05:12:39.511Z

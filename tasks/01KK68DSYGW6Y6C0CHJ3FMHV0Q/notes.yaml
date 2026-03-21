@@ -1,0 +1,22 @@
+notes:
+  - _ulid: 01KK6FWZ01C7Z7XQ1QYX8KGGJS
+    content: >-
+      Fix implemented:
+
+      - Added initializeForStaticMode() to project.svelte.ts that sets initialized=true
+
+      - Called it from +layout.svelte in the static mode branch, before setting appReady
+
+      - This ensures isProjectInitialized() returns true in static mode, unblocking all page data
+      loading gates
+
+      - Added E2E regression test (static-mode.spec.ts) covering dashboard, tasks, specs, inbox, and
+      data freshness indicator
+
+      - E2E tests could not run in dispatch (daemon start blocked by KSPEC_SESSION_ID guard) but
+      will run in CI
+
+      - All 183 vitest tests pass, build succeeds, no TS errors in modified files
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T10:29:15.905Z

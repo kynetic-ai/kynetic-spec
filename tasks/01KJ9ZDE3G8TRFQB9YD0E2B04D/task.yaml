@@ -1,0 +1,73 @@
+_ulid: 01KJ9ZDE3G8TRFQB9YD0E2B04D
+slugs: []
+title: Extract shared test helpers and interfaces for session start tests
+type: task
+description: >-
+  Multiple session start test files duplicate the same interfaces and helpers. Extract them to
+  shared locations.
+
+
+  ## Duplicated Interfaces (extract to tests/helpers/session-types.ts)
+
+
+  | Interface | Files where duplicated |
+
+  |-----------|----------------------|
+
+  | ActivityItem | session-start-activity-timeline, session-start-format,
+  session-start-computed-json |
+
+  | SessionContext | session-start-activity-timeline, session-start-format,
+  session-start-computed-json, session-start-notes, session-start-inbox-triage (5 copies, varying
+  shapes) |
+
+  | CommitSummary | session-start-activity-timeline, session-start-format |
+
+  | CompletedTaskSummary | session-start-activity-timeline, session-start-format |
+
+  | InboxStats | session-start-format, session-start-inbox-triage |
+
+
+  For SessionContext: create a single comprehensive interface with all fields optional
+  (Partial-like), so each test can use the subset it needs without maintaining separate copies.
+
+
+  ## Duplicated Helpers (extract to tests/helpers/inbox.ts)
+
+
+  | Helper | Files where duplicated |
+
+  |--------|----------------------|
+
+  | addInboxItem(tempDir, text, tags?) | session-start-computed-json, session-start-inbox-triage
+  (identical) |
+
+  | triageItem(tempDir, ref, decision, reason) | session-start-computed-json,
+  session-start-inbox-triage (identical) |
+
+
+  ## Verification
+
+
+  - All existing tests pass without modification to test logic (only imports change)
+
+  - No new test files needed — just move types/helpers and update imports
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #525. Extracted shared test helpers (session-types.ts, inbox.ts) from 6
+  session-start test files. All 109 tests pass, no regressions."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - refactor
+vcs_refs: []
+created_at: 2026-02-25T08:42:25.776Z
+started_at: 2026-02-25T11:42:47.102Z
+completed_at: 2026-02-25T12:03:26.363Z
+todos: []
+automation: eligible

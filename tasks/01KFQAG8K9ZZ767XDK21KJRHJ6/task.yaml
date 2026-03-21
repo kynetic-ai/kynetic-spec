@@ -1,0 +1,59 @@
+_ulid: 01KFQAG8K9ZZ767XDK21KJRHJ6
+slugs:
+  - task-cli-status-impl
+title: CLI serve status with projects list
+type: task
+description: >-
+  Update CLI serve status to show registered projects.
+
+
+  ## Implementation Notes
+
+  - Current statusServer function (src/cli/commands/serve.ts lines 372-404) checks PID and basic
+  status
+
+  - Needs to read port from global location (requires global PID/port task complete)
+
+  - Call GET /api/projects and display project list
+
+
+  ## Files to Modify
+
+  - src/cli/commands/serve.ts
+
+
+  ## AC Coverage
+
+  ac-12
+
+
+  ## Dependencies
+
+  - Task: Global PID/port file management (for port discovery)
+
+  - Task: /api/projects endpoints implementation
+
+  - Task: CLI serve status tests (tests first)
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #242. Implemented AC-12: CLI serve status now displays daemon uptime in
+  human-readable format (Xh Ym Zs) fetched from /api/health endpoint. Includes uptime in both
+  human-readable and JSON output. All 21 tests passing including new uptime test coverage."
+depends_on:
+  - "@01KFQABA"
+  - "@01KFQAFM"
+  - "@01KFQAFX"
+  - "@01KFQACE"
+context: []
+priority: 2
+tags:
+  - cli
+  - phase-8
+vcs_refs: []
+created_at: 2026-01-24T06:19:14.921Z
+started_at: 2026-01-25T11:15:51.311Z
+completed_at: 2026-01-25T11:23:14.878Z
+todos: []
+automation: eligible

@@ -1,0 +1,11 @@
+notes:
+  - _ulid: 01KKWBEWFP6SVHWEMME62XR50P
+    content: "The existing code already supports per-cycle review records: linkReviewToTasks
+      unconditionally replaces review_ref when a new review is created with a task subject, and
+      review for-task finds all reviews via subject ref regardless of review_ref. Added 3
+      integration tests exercising the full flow: single fix cycle (ac-2), for-task returning both
+      reviews (ac-2/ac-3), and 3-cycle scenario with independent dispositions (ac-3). No code
+      changes needed — this was verification + test coverage."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T22:14:57.783Z

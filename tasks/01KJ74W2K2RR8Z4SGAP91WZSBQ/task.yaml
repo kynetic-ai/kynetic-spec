@@ -1,0 +1,33 @@
+_ulid: 01KJ74W2K2RR8Z4SGAP91WZSBQ
+slugs:
+  - task-rewrite-formatsessioncontext
+title: Rewrite formatSessionContext() for primer/full modes
+type: task
+description: "Replace current brief/full formatting with new primer (default) and full modes.
+  Primer: curated sections, slug display with fallback, relative times, unlocks annotations, merged
+  activity, inbox stat line, skip empty. Full: same ordering, more items, additional sections
+  (observations, metadata). Visually distinguish needs_work from in_progress. Inline notes under
+  active tasks."
+spec_ref: "@cmd-session-start"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #515. Rewrote formatSessionContext() with primer/full modes: new
+  section ordering (active→review→blocked→ready→activity→inbox→observations→metadata→tree→commands),
+  slug display, empty section skipping, needs_work visual distinction, inline notes under
+  active/review tasks, observations section in full mode. 39 new tests + 2 updated tests covering
+  all 15 spec ACs plus trait AC coverage. Codex review findings addressed."
+depends_on:
+  - "@implement-session-start-computed-json-fields"
+context: []
+priority: 2
+tags:
+  - cli
+  - session
+vcs_refs: []
+created_at: 2026-02-24T06:20:05.088Z
+started_at: 2026-02-25T00:16:09.276Z
+completed_at: 2026-02-25T00:56:52.185Z
+todos: []
+automation: eligible

@@ -1,0 +1,31 @@
+_ulid: 01KJAZARFTD5RQVVXM8430WZ6A
+slugs:
+  - task-ralph-missing-session-stamp
+title: Investigate why ralph loop did not stamp session_id on task @01KJA3RQ
+type: task
+description: During a ralph loop session, task @01KJA3RQ was started in_progress but has no
+  session_id. Ralph's session failed with an auth error (LOOP-FAIL:1). Either KSPEC_SESSION_ID was
+  not injected before task start, or the failure happened before the stamp. Investigate the ralph
+  task-start flow to ensure session_id is always stamped when running in a loop session.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #541. Fixed KSPEC_SESSION_ID not being stamped on tasks in ralph loop.
+  Root cause: Claude Code sandboxes child processes and doesn't forward parent env vars. Fix:
+  adapter-aware env injection writes to harness-specific config (settings.local.json for Claude
+  Code). Includes previous-value restore on cleanup, try/finally safety, and 14 new tests. Validated
+  end-to-end with ralph loop."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - sessions
+vcs_refs: []
+created_at: 2026-02-25T18:00:12.538Z
+started_at: 2026-02-25T22:44:35.669Z
+submitted_at: 2026-02-25T22:59:55.888Z
+completed_at: 2026-02-25T23:39:31.162Z
+todos: []

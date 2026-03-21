@@ -1,0 +1,35 @@
+_ulid: 01KK5XAJVEJZNYR7GRDPEFP2M0
+slugs: []
+title: Fix KSPEC_SESSION_ID race condition in concurrent multi-project dispatch
+type: task
+description: "Race condition: process.env.KSPEC_SESSION_ID mutation in invocation.ts is not safe for
+  concurrent multi-project agent dispatch. invocation.ts saves/restores KSPEC_SESSION_ID in finally,
+  and the per-engine mutex serializes within a project — but two projects running agents
+  concurrently both mutate the same process-level env var. The injectEnvForAdapter() path (writing
+  to .claude/settings.local.json etc.) largely mitigates this in practice, but the process.env
+  mutation remains as a race vector. Fix: either remove the process.env mutation entirely (rely
+  solely on adapter config injection + spawn env), or add a process-level lock around the env
+  mutation window."
+spec_ref: "@agent-invocation-lifecycle"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #774 (merge commit 3d6fc0307b72a85fff53413b453038e1c4008603). Removed
+  process-level KSPEC_SESSION_ID mutation from the invocation lifecycle, relying on adapter-specific
+  injection plus child spawn env only, and added regression coverage for spawned child env
+  propagation and concurrent invocation isolation. AC coverage verified for
+  @agent-invocation-lifecycle ac-2; inherited @trait-error-guidance ACs remain explicitly marked N/A
+  for this library module. Local focused tests, full npm test, and hosted CI all passed on the
+  merged HEAD."
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+review_url: https://github.com/kynetic-ai/kynetic-spec/pull/774
+session_id: 01KKDW602F060W4C6K78RGTYVJ
+created_at: 2026-03-08T05:04:39.277Z
+started_at: 2026-03-11T07:24:12.110Z
+submitted_at: 2026-03-11T07:29:09.242Z
+completed_at: 2026-03-11T07:38:53.381Z
+todos: []
+automation: eligible

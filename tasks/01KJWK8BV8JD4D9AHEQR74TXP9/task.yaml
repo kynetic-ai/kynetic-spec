@@ -1,0 +1,56 @@
+_ulid: 01KJWK8BV8JD4D9AHEQR74TXP9
+slugs: []
+title: "Fill spec gap: meta commands — add child requirement specs"
+type: task
+description: >-
+  The @meta-commands feature spec exists but has no acceptance criteria and no child requirement
+  specs for individual subcommands. Like @inbox-commands, it's a feature-level shell.
+
+
+  This matters because meta commands manage conventions, workflows, agents, skills, and observations
+  — the entire meta-spec layer. Without requirement specs, agents adding or modifying meta commands
+  have no baseline to verify against.
+
+
+  The meta command surface is large. Priority subcommands to spec (those that accept --priority or
+  are most commonly used):
+
+  - meta derive-task: derives a task from a meta item (accepts --priority, currently using
+  parseIntOption instead of parsePriority)
+
+  - meta observe: captures observations (friction, success, question, idea)
+
+  - meta set: updates meta-spec fields
+
+  - meta add: adds new meta items (workflow, agent, convention, skill)
+
+  - meta show: displays meta-spec content
+
+  - meta promote: promotes observation to inbox or task
+
+
+  Each requirement should have ACs covering options, validation, output, and error cases. Start with
+  meta derive-task since it's directly relevant to the priority alias work.
+
+
+  Reference implementation at src/cli/commands/meta.ts. The file is large — meta derive-task is
+  around line 1050-1120.
+
+
+  Note: @trait-priority-parameter applies at the feature level, but only meta derive-task actually
+  accepts --priority. Other subcommands should annotate the trait ACs as N/A per convention.
+spec_ref: "@meta-commands"
+meta_ref: null
+plan_ref: null
+status: pending
+blocked_by: []
+depends_on: []
+context: []
+priority: 3
+tags:
+  - spec-hygiene
+  - cli
+vcs_refs: []
+created_at: 2026-03-04T14:15:30.920Z
+todos: []
+automation: needs_review

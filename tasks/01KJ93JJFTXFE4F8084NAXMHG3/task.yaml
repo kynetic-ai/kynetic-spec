@@ -1,0 +1,26 @@
+_ulid: 01KJ93JJFTXFE4F8084NAXMHG3
+slugs:
+  - task-fix-ralph-signal-cleanup
+title: Fix unawaited async cleanup in ralph signal handler
+type: bug
+spec_ref: "@ralph-task-limit"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #518. Fixed unawaited async cleanup in ralph signal handler — changed
+  fire-and-forget Promise.all().finally() to properly awaited async IIFE pattern. Budget.json now
+  reliably cleaned up on SIGINT/SIGTERM. Updated static analysis test in end-loop.test.ts. Added
+  @ralph-task-limit ac-signal-cleanup AC annotations to signal tests. Codex review clean."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - ralph
+  - testing
+vcs_refs: []
+created_at: 2026-02-25T00:35:53.978Z
+started_at: 2026-02-25T01:40:10.257Z
+completed_at: 2026-02-25T01:57:06.152Z
+todos: []
+automation: eligible

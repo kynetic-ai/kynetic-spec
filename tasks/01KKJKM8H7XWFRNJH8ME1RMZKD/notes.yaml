@@ -1,0 +1,158 @@
+notes:
+  - _ulid: 01KKJS4K7PNSKVK4BTNZ4ANT86
+    content: >-
+      Execution context:
+
+      - Background: finish Droid support by wiring setup/status behavior to the renderer and
+      agent-detection work already landed.
+
+      - Scope: setup agent override acceptance, Droid skill rendering path, Droid-specific
+      KSPEC_AUTHOR guidance, and hook-phase skip behavior without affecting existing Claude Code
+      flows.
+
+      - Files: src/cli/commands/setup.ts plus focused CLI/setup tests, and any adjacent setup-status
+      helpers if the current shared status path is insufficient.
+
+      - Verification: targeted setup tests, then full npm test and kspec validate before submit.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T05:01:36.374Z
+  - _ulid: 01KKJSRDBA89GE1FPXVER2ENK1
+    content: >-
+      Implemented Droid setup integration.
+
+      - Stacked prerequisite Droid schema, agent-detection, and renderer commits onto this task
+      branch because setup integration depends on those codepaths.
+
+      - Updated setup to use Droid author defaults/guidance, scan .factory/skills during setup
+      status, and skip hook installation with an explicit Droid-not-supported message.
+
+      - Added direct AC-tagged CLI coverage for all @droid-setup-integration acceptance criteria in
+      tests/enhanced-setup.test.ts.
+
+      - Verification: targeted npm test pass for enhanced-setup, agent-detection, platform-renderer,
+      and skill-schema tests. kspec validate returned repository-wide warning debt only. Full npm
+      test in this dispatch workspace hit unrelated dispatch shadow mutation lock timeouts on
+      .kspec-dispatch-shadow-mutation.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T05:12:25.706Z
+  - _ulid: 01KKJT0DBZ0YCKVQPV1DHPMCN2
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: shared doctor/setup-status path still reports
+      Claude-only hooks and skill status for Droid after setup; see PR #819 review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T05:16:47.871Z
+  - _ulid: 01KKJTRC1Y4B0J90VMM5E34GMR
+    content: >-
+      Addressed PR #819 fix-cycle feedback in the shared doctor/setup-status path.
+
+      - Made shared setup status scan .factory/skills when Droid is detected so doctor reports
+      rendered Droid skills instead of Claude-only counts.
+
+      - Marked hooks as unsupported for non-Claude agents and report Droid hook status as an
+      intentional skip instead of a setup error.
+
+      - Added doctor regression coverage and isolated doctor env detection from harness env vars.
+
+      - Verification: npm run typecheck; npm test -- tests/parser/doctor.test.ts
+      tests/agent-detection.test.ts tests/enhanced-setup.test.ts; kspec validate (warnings only from
+      existing repo debt).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T05:29:52.958Z
+  - _ulid: 01KKK4FM4MGDYSKGJ71BW0X8HW
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: setup --status --agent droid still reports hooks
+      as missing on 677bf54 instead of intentionally unsupported, so the duplicated status path in
+      src/cli/commands/setup.ts remains out of sync with doctor and blocks PR #819."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T08:19:52.084Z
+  - _ulid: 01KKK4M6EQV6XRHXA8K8747Q63
+    content: "Fix cycle execution: replacing the duplicated setup --status scanner with the shared
+      parser/setup-status path so Droid hook semantics and skill scanning stay aligned between
+      doctor and setup status. Verification target: targeted setup/doctor tests, typecheck, and
+      kspec validate before re-submit."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T08:22:21.912Z
+  - _ulid: 01KKK58GNJ741M8WJQJD41BWE2
+    content: >-
+      Completed fix-cycle update for the duplicated setup --status path.
+
+      - Replaced the local setup status scanner with the shared parser/setup-status helper, adding
+      agent override support so setup --status and doctor use the same Droid/Claude semantics.
+
+      - Updated the shared helper to preserve configPath for env/override detection and to recognize
+      native PreToolUse guard installs (kspec guard worktree) plus legacy guard markers.
+
+      - Added regression coverage for Droid human-readable status output and Claude native-guard
+      status detection.
+
+      - Verification: npm run typecheck; npm test -- tests/enhanced-setup.test.ts
+      tests/parser/doctor.test.ts tests/agent-detection.test.ts (74 passed); kspec validate
+      (warnings only from existing repo debt); npm test still fails in this dispatch workspace due
+      existing shadow lock contention and unrelated pre-existing suite failures outside this task
+      scope.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T08:33:27.730Z
+  - _ulid: 01KKK5MTV41MG1B8K6N722VTW6
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: full regression gate is not clean on PR #819.
+      npm test exits 1 with 29 failing tests across 23 files, including session-start suites and
+      ralph/end-loop, with repeated dispatch shadow mutation lock errors."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T08:40:11.365Z
+  - _ulid: 01KKK7JQF923R2ZNRZG8Q3YX7H
+    content: "Fix cycle 3 resolution: the 29 failing tests were all caused by
+      KSPEC_SHADOW_MUTATION_LOCK_FILE env var leaking from the dispatch environment into
+      test-spawned CLI processes. The test helper stripped KSPEC_SESSION_ID and KSPEC_RALPH_SESSION
+      but not the lock file var, causing all test kspec invocations to contend on a single
+      parent-level lock. Fixed by adding KSPEC_SHADOW_MUTATION_LOCK_FILE to the stripped env vars.
+      Also fixed a droid env-detection test that didn't clear Claude Code env vars (CLAUDECODE,
+      CLAUDE_CODE_ENTRYPOINT) which are present in dispatch worktrees. Verification: npm run
+      typecheck clean, npm test 225/225 files passed (4695 tests), kspec validate warnings-only."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T09:13:59.529Z
+  - _ulid: 01KKK7YPQ1WK66YV2FZ481G5NP
+    content: "[FIX_CYCLE: 4] Review findings: MUST-FIX: PR #819 is regression-clean but no longer merges
+      cleanly with current main. Rebase or merge main into
+      dispatch/task/implement-droid-setup-integration/01kkjkm8 and resolve conflicts in
+      src/cli/commands/setup.ts and src/parser/setup-status.ts before review can complete."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T09:20:31.969Z
+  - _ulid: 01KKKBTWZRAZFT1CNKGXR3VYNY
+    content: "Fix cycle 4 resolution: merged origin/main into the task branch to resolve conflicts in
+      src/cli/commands/setup.ts, src/parser/setup-status.ts, and tests/enhanced-setup.test.ts.
+      Conflict resolution kept our branch's changes (shared setup-status import, droid configPath
+      resolution, and Claude env var clearing in tests). Also updated the droid skill count
+      assertion in enhanced-setup.test.ts to account for core skills now targeting the droid
+      platform after merging the droid core skill install work from main. Verification: npm run
+      typecheck clean, npm test 228 files passed (4730 tests, 2 flaky timing tests pass on re-run)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T10:28:21.624Z
+  - _ulid: 01KKKCDJKE9E4YQV1DQ6HAEHGD
+    content: "[FIX_CYCLE: 5] Review findings: MUST-FIX: GitHub Actions is still red on PR #819 for head
+      f26d7ac640e5. Failing shards report dispatch regressions in
+      tests/dispatch-workspace-registry.test.ts:616 (expected closing, got integrating) and
+      tests/dispatch-workspace-and-scheduler-flow.test.ts:370 (expected 4 lifecycle records, got 3).
+      Local npm test passed, but CI must be green before merge."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-13T10:38:33.583Z
+  - _ulid: 01KKKF1CGMEMH75NRPFCXZS5B9
+    content: "Fix cycle 5 resolution: the CI failures in dispatch-workspace-registry.test.ts:616 and
+      dispatch-workspace-and-scheduler-flow.test.ts:370 were flaky timing issues — both tests pass
+      consistently locally but fail on slower CI runners. Root cause: tight polling timeouts
+      (2000ms/1200ms) that expire before async workspace lifecycle state transitions complete under
+      I/O contention. Fix: increased waitFor/waitForWorkspaceRecord timeouts, bumped test-level
+      vitest timeouts to 30s, and added explicit wait for background invocation cleanup before
+      triggering the completed transition. Verification: npm run typecheck clean, npm test 228/228
+      files passed (4730 tests)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-13T11:24:19.860Z

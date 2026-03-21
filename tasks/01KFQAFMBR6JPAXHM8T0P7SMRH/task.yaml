@@ -1,0 +1,46 @@
+_ulid: 01KFQAFMBR6JPAXHM8T0P7SMRH
+slugs:
+  - task-projects-api-impl
+title: /api/projects endpoints implementation
+type: task
+description: |-
+  Implement /api/projects endpoints for project management.
+
+  ## Endpoints
+  - GET /api/projects - list registered projects with paths, registration time, watcher status
+  - POST /api/projects - explicit registration with {path: string} body
+  - DELETE /api/projects/:encodedPath - unregister and stop watcher
+
+  ## Files
+  - New file: packages/daemon/src/routes/projects.ts
+  - Register in server.ts
+
+  ## AC Coverage
+  ac-28, ac-29, ac-30
+
+  ## Dependencies
+  - Task: ProjectContextManager implementation
+  - Task: /api/projects endpoint tests (tests first)
+spec_ref: "@multi-directory-daemon"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #227. Implemented /api/projects endpoints: GET (list all), POST
+  (register new project), DELETE (unregister project). Endpoints integrate with
+  ProjectContextManager for lifecycle management. Covers AC-28, AC-29, AC-30 from
+  @multi-directory-daemon spec."
+depends_on:
+  - "@01KFQABQ"
+  - "@01KFQAF9"
+context: []
+priority: 2
+tags:
+  - daemon
+  - api
+  - phase-7
+vcs_refs: []
+created_at: 2026-01-24T06:18:54.200Z
+started_at: 2026-01-24T22:17:57.744Z
+completed_at: 2026-01-24T22:39:49.685Z
+todos: []
+automation: eligible

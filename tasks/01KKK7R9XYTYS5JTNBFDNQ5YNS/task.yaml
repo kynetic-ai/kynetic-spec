@@ -1,0 +1,38 @@
+_ulid: 01KKK7R9XYTYS5JTNBFDNQ5YNS
+slugs:
+  - implement-adopted-branch-cleanup-and-recoverabilit
+title: Implement Adopted Branch Cleanup and Recoverability
+type: task
+spec_ref: "@adopted-branch-cleanup-and-recoverability"
+derivation: auto
+plan_ref: "@plan-dispatch-branch-adoption-and-deterministic-task-br"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #836. Implemented adopted branch cleanup and distinct health recovery
+  paths: cleanup preserves adopted branch refs while removing worktrees/metadata, rehydrated local
+  mirror refs are cleaned up, health reconciliation emits distinct issue codes
+  (missing_adopted_branch_recoverable, missing_adopted_branch, missing_canonical_branch) with
+  provenance-specific recovery guidance. All 4 ACs covered with 10 tests. Trait ACs N/A (internal
+  runtime). Fix cycle addressed merge conflict with PR #835."
+depends_on:
+  - "@implement-review-and-fix-cycle-workspace-discovery"
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: main
+  captured_at: 2026-03-14T00:52:43.321Z
+  commit: 38dc760d3353e2cde497e9150881b2c81da24679
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/main
+session_id: 01KKMWTXTHYE5AYQMXHK1904ZP
+created_at: 2026-03-13T09:17:02.270Z
+started_at: 2026-03-14T00:52:40.108Z
+submitted_at: 2026-03-14T00:52:44.055Z
+completed_at: 2026-03-14T01:03:42.525Z
+todos: []
+automation: eligible

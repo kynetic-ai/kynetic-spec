@@ -1,0 +1,138 @@
+_ulid: 01KJ9ZBT1MNTKB05SYK8K243CM
+slugs: []
+title: Refactor session.ts — split into focused modules
+type: task
+description: >-
+  session.ts is 2806 lines with 6 distinct concerns crammed into one file. Split it into focused
+  modules to improve maintainability before further changes cause drift.
+
+
+  ## Current Structure (what to extract)
+
+
+  | Concern | Lines | Target File |
+
+  |---------|-------|-------------|
+
+  | Types/interfaces (SessionContext, summaries, etc.) | ~80-308 | src/cli/commands/session/types.ts
+  |
+
+  | Data gathering (gatherSessionContext, collectRecentNotes, all to*Summary mappers) | ~310-868 |
+  src/cli/commands/session/context.ts |
+
+  | Checkpoint logic (performCheckpoint, getIterationStats) | ~870-1097 |
+  src/cli/commands/session/checkpoint.ts |
+
+  | Human output formatting (formatSessionContext — 510 lines, all format helpers) | ~1099-1636 |
+  src/cli/commands/session/format.ts |
+
+  | Session log commands (list, show, stats, search + their formatters) | ~1780-2513 |
+  src/cli/commands/session/log.ts |
+
+  | Session create + env injection | ~2515-2683 | src/cli/commands/session/create.ts |
+
+  | Command registration (registerSessionCommands, wiring) | ~2685-2806 | stays as
+  src/cli/commands/session.ts (barrel) |
+
+
+  ## Execution Plan
+
+
+  1. Create `src/cli/commands/session/` directory
+
+  2. Extract `types.ts` first — all interfaces, type aliases, constants. Everything else imports
+  from here.
+
+  3. Extract `context.ts` — gatherSessionContext(), all to*Summary() mappers, collectRecentNotes(),
+  buildActivityTimeline(). Imports types. Exports the main gatherSessionContext function.
+
+  4. Extract `format.ts` — formatSessionContext() and all its helper functions (formatDuration,
+  status color helpers, displayRef lambda should become a proper exported function). Imports types.
+
+  5. Extract `log.ts` — sessionLogListAction, sessionLogShowAction, sessionLogStatsAction,
+  sessionLogSearchAction, and their private format helpers (formatDurationLong, summarizeEventData,
+  formatSearchTimestamp). These have ZERO dependency on the session-start code.
+
+  6. Extract `checkpoint.ts` — performCheckpoint, getIterationStats. Used by ralph integration.
+
+  7. Extract `create.ts` — sessionCreateAction, performEnvInjection, all env injection helpers.
+
+  8. Update `session.ts` to be a barrel that imports from sub-modules and wires up
+  registerSessionCommands.
+
+  9. Run full test suite — ALL existing tests must pass without modification. The public API
+  (registerSessionCommands) doesn't change.
+
+
+  ## Key Constraints
+
+
+  - **No behavior changes.** This is a pure structural refactor. If a test fails, the extraction was
+  wrong.
+
+  - **No renaming.** Keep all function names identical. Only file locations change.
+
+  - **Preserve exports.** If anything was exported from session.ts, it must still be importable from
+  the same path (re-export from barrel).
+
+  - **Watch for circular deps.** types.ts must not import from other session modules. context.ts and
+  format.ts both need types but should not import each other.
+
+  - **The duplicate logic (note formatting, displayRef, priority coloring, status colors) should be
+  extracted into shared helpers in format.ts** during the move — don't just copy-paste the
+  duplication into the new file.
+
+
+  ## Cleanup Opportunities (do during extraction)
+
+
+  - Deduplicate the 4x status color ternary into a single `statusColor(status)` helper
+
+  - Deduplicate the 3x priority formatting into `formatPriority(level)` helper  
+
+  - Deduplicate the note-display formatting (active tasks vs pending review) into
+  `formatInlineNote(note, isFull)` helper
+
+  - Consolidate the 5 variants of displayRef into a single `getDisplayRef(item)` utility
+
+  - Remove dead code: unused `_allTasks` parameter on `toBlockedTaskSummary`, unused imports
+  (listSessions, IterationSummary, SearchMatch)
+
+  - Fix `removeAllListeners()` in readStdinIfAvailable to use named handlers instead
+
+
+  ## Verification
+
+
+  After extraction:
+
+  1. `npx vitest run` — all tests pass
+
+  2. `npm run build` — clean build, no type errors
+
+  3. `kspec session start` — works correctly (manual smoke test)
+
+  4. `git diff --stat` should show session.ts shrinking to <200 lines
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #523. Refactored session.ts (2807 lines) into 8 focused modules under
+  src/cli/commands/session/: types.ts, context.ts, format.ts, checkpoint.ts, log.ts, create.ts,
+  commands.ts, index.ts. Barrel file preserves backward compatibility. Deduplicated helpers
+  (statusColor, formatPriority, formatInlineNote, getDisplayRef), removed dead code. All tests pass,
+  clean build."
+depends_on: []
+context: []
+priority: 1
+tags:
+  - refactor
+  - cli
+  - session
+vcs_refs: []
+created_at: 2026-02-25T08:41:32.467Z
+started_at: 2026-02-25T10:43:59.578Z
+completed_at: 2026-02-25T11:22:39.979Z
+todos: []
+automation: eligible

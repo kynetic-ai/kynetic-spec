@@ -1,0 +1,26 @@
+_ulid: 01KJS6ZZGM4RYKNYS98PY1CSHQ
+slugs: []
+title: "CLI DX: accept P1/P2/P3 format as alias for numeric priority in batch commands"
+type: task
+description: "CLI DX: accept P1/P2/P3 format as alias for numeric priority in batch commands"
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #666 (d561c38b07f9f67f56ca3395e1c8e79e4717e904): batch argv
+  normalization now accepts P1/P2/P3 (P1-P5 case-insensitive) for numeric priority parameters while
+  preserving literal P-notation for non-numeric priority options. Added unit + integration coverage
+  in tests/batch-exec-engine.test.ts. Full regression verified (npm test: 173 files, 3632 passed, 0
+  failed) and PR CI checks passed on current HEAD before merge. AC coverage path: N/A (task has no
+  spec_ref)."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJVT52QN7EH1GVPZ9QP1SD53
+created_at: 2026-03-03T06:43:29.940Z
+started_at: 2026-03-04T07:06:09.618Z
+submitted_at: 2026-03-04T08:49:57.796Z
+completed_at: 2026-03-04T08:58:42.278Z
+todos: []
+automation: eligible

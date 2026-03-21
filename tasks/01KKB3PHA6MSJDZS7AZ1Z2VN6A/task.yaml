@@ -1,0 +1,27 @@
+_ulid: 01KKB3PHA6MSJDZS7AZ1Z2VN6A
+slugs:
+  - implement-session-summary-cache
+title: Implement Session Summary Cache
+type: task
+spec_ref: "@session-summary-cache"
+plan_ref: "@plan-session-explorer-unified-session-browsing-filterin"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #739. Implemented an in-memory session summary cache for daemon session
+  listing/detail reads, added incremental invalidation for new/removed sessions plus in-place
+  session.yaml mtime changes, and scoped caches per sessionsDir for multi-project isolation. AC
+  coverage verified for all 5 own ACs in tests/session-summary-cache.test.ts; targeted vitest and
+  full npm test both passed. Repo-wide kspec validate remains red for unrelated pre-existing
+  @observations meta issues."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKBGSWTFEGMJK80ZCXAJNJDE
+created_at: 2026-03-10T05:32:14.534Z
+started_at: 2026-03-10T09:35:30.168Z
+submitted_at: 2026-03-10T09:35:33.904Z
+completed_at: 2026-03-10T09:59:07.474Z
+todos: []
+automation: eligible

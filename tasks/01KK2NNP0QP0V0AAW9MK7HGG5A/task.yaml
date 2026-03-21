@@ -1,0 +1,30 @@
+_ulid: 01KK2NNP0QP0V0AAW9MK7HGG5A
+slugs: []
+title: Fix double @@ on task ref and make it a clickable link in session context panel
+type: task
+description: "SessionContextPanel line ~113 renders task_id as @{session.task_id.slice(0,8)} but
+  task_id may already contain an @ prefix from session metadata, producing @@01KJXSV. Also the task
+  ref is plain text, not a clickable link. Fix: (1) strip leading @ before display with
+  task_id.replace(/^@/, ), (2) wrap in an <a> tag linking to /tasks?ref={taskId} or the task board
+  detail view. Should also resolve the task title when available and display it instead of just the
+  ULID prefix."
+spec_ref: "@ui-session-stream"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - web-ui
+vcs_refs: []
+session_id: 01KK310E7D7DZCFP32PG3FMR0J
+created_at: 2026-03-06T22:53:11.063Z
+started_at: 2026-03-07T02:20:57.392Z
+submitted_at: 2026-03-07T02:20:59.062Z
+completed_at: 2026-03-07T02:26:28.004Z
+todos: []
+automation: eligible

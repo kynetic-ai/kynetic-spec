@@ -1,0 +1,22 @@
+_ulid: 01KGYBZMG0VMHRX7SB89F8W3YB
+slugs:
+  - agents-md-cross-pollinate
+title: Apply kynetic-bot AGENTS.md learnings to kynetic-spec
+type: task
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Fixed 4 factual errors in AGENTS.md Running Services (PR #351, merged). Dual
+  defaults captured as inbox item @01KH20S1. PR agent limitations finding not applicable. Duplicate
+  guidance is minor — no action taken."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-08T10:15:30.046Z
+started_at: 2026-02-09T20:16:53.911Z
+completed_at: 2026-02-09T20:16:58.413Z
+todos: []

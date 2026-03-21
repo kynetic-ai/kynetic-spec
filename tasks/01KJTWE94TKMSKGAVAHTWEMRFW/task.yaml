@@ -1,0 +1,32 @@
+_ulid: 01KJTWE94TKMSKGAVAHTWEMRFW
+slugs:
+  - task-agent-task-mutation-serialization
+title: Prevent lost task state from concurrent task mutations in agent invocations
+type: bug
+description: "Session 01KJTV0B showed concurrent kspec subprocesses mutating the same task (task
+  start + task note) can cause a lost update: note persists but status reverts to pending. Ensure
+  agent/runtime mutation paths serialize per-task writes (or use optimistic concurrency with retry)
+  so state transitions and notes cannot overwrite each other under parallel tool calls."
+spec_ref: "@agent-invocation-lifecycle"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #649. Added mutateTaskAtomically and switched task start/note to
+  latest-state atomic writes to prevent concurrent status/note lost updates; added regression tests
+  for concurrent mutation races. AC coverage for @agent-invocation-lifecycle remains covered (with
+  new ac-5 concurrency regression)."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - agent
+  - dispatch
+  - concurrency
+vcs_refs: []
+created_at: 2026-03-03T22:17:33.082Z
+started_at: 2026-03-03T22:49:52.539Z
+submitted_at: 2026-03-03T22:59:52.972Z
+completed_at: 2026-03-03T23:15:55.170Z
+todos: []

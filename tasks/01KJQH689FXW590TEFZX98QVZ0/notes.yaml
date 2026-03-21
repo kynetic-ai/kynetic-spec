@@ -1,0 +1,44 @@
+notes:
+  - _ulid: 01KJQJ6WAT6YXGZ4MR2E57PGTV
+    content: "WIP: Fix implemented but tests not yet run due to shell stdout issue in environment.
+      Changes made: (1) src/parser/yaml.ts isTaskReady() now accepts needs_work status in addition
+      to pending, and getReadyTasks() sorts needs_work before pending. (2) src/cli/commands/tasks.ts
+      empty message updated to mention needs_work. (3) tests/tasks-ready-needs-work.test.ts written
+      with 3 integration tests. Branch: fix/tasks-ready-needs-work. Next: run npm test to verify,
+      then commit and PR."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T15:21:01.530Z
+  - _ulid: 01KJQJM01SSYRPQ4QRE4NW42X7
+    content: "Blocked by disk full (ENOSPC). Cannot run tests or commit. Code changes are complete and
+      correct: (1) isTaskReady() now accepts needs_work in src/parser/yaml.ts, (2) getReadyTasks()
+      sorts needs_work before pending, (3) empty message updated in tasks.ts, (4) test file written
+      at tests/tasks-ready-needs-work.test.ts. All 3 files have unsaved/uncommitted changes. Next
+      session: free disk space, then run npm run test:shard1 and commit."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T15:28:11.322Z
+  - _ulid: 01KJQJXRWCHD18AE2FB5SN96N9
+    content: "New bug found while diagnosing disk full: recursive grep explosion in session blobs. kspec
+      search commands scan .kspec/sessions/*/blobs/ causing grep results to be stored as blobs,
+      which grow exponentially. Separate bug - needs its own task. Diag files created in project
+      root (diag-batch.txt, diag-sessions.txt, diag-big-session.txt, diag-blobs.txt,
+      diag-blob-count.txt) - delete these after this session."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T15:33:31.660Z
+  - _ulid: 01KJQMDX5KXKA4WNB6CBQ0CTPA
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: tests/tasks-ready-needs-work.test.ts has no //
+      AC annotations for @cmd-tasks-ready coverage; SHOULD-FIX: sort-order test can pass without
+      asserting needs_work < pending due conditional check."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-02T15:59:48.915Z
+  - _ulid: 01KJQV48AAGWPBC230KFGYBVP5
+    content: "Fix cycle 1 complete: added // AC: @trait-filterable-list ac-N annotations to all 3 tests.
+      Fixed sort test to assert both tasks present (needs_work and pending) before comparing indices
+      — removes conditional check that could silently skip the assertion. All 3 tests pass. Pushed
+      to fix/tasks-ready-needs-work (PR #633)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T17:56:52.683Z

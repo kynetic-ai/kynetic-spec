@@ -1,0 +1,51 @@
+notes:
+  - _ulid: 01KKRVPJVQE4YXRCC7YQ386ZFV
+    content: >-
+      Investigation findings — corrected approach:
+
+
+      1. **limit=0 fetch**: Instead of gating the separate unfilteredQuery on hasFilters, the better
+      fix is to eliminate it entirely. The sessions API should return unfiltered_total alongside
+      total in every paginated response. The daemon already has all sessions cached via
+      sessionCache.getAll() — adding unfiltered_total is one line. The UI reads it from the infinite
+      query's first page response instead of making a separate request.
+
+
+      2. **SSR hydration**: Root +layout.ts with ssr=false is confirmed fix. Pages missing +page.ts
+      with ssr=false: agents, sessions, inbox, observations, specs, triage, validate.
+
+
+      3. **Spec gaps identified**:
+         - @session-filter-controls ac-filter-counts: doesn't specify unfiltered total comes from same response (led to separate request)
+         - @session-list-infinite-scroll: no AC for hard refresh completing load lifecycle
+         - @ui-data-freshness: no AC for initial page load on hard refresh (only covers revisit caching)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T13:41:49.559Z
+  - _ulid: 01KKRXECYHY30K79V73ZV04GZ4
+    content: >-
+      Implementation complete:
+
+
+      1. Daemon API (sessions.ts): Added unfiltered_total field to GET /api/sessions response.
+      Captured from sessionCache.getAll().length before applying any filters. Returns alongside
+      existing total/offset/limit fields.
+
+
+      2. Web UI (api.ts): Added unfiltered_total to SessionListResponse interface and static mode
+      return value.
+
+
+      3. Sessions page (+page.svelte): Removed separate unfilteredQuery (createQuery with limit=0).
+      Now derives unfilteredTotal from sessionsQuery.data.pages[0].unfiltered_total. This eliminates
+      one API request per page load.
+
+
+      4. Tests: Added 3 E2E tests verifying unfiltered_total behavior (no filters, with filters,
+      with pagination). Updated api-static test for new response shape.
+
+
+      All tests passing (pre-existing flaky dispatch tests excluded).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T14:12:18.513Z

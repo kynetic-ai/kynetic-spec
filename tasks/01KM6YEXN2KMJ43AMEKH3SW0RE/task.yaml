@@ -1,0 +1,44 @@
+_ulid: 01KM6YEXN2KMJ43AMEKH3SW0RE
+slugs:
+  - task-activate-split-storage
+title: Activate split storage format
+type: task
+description: |
+  Activate the split storage format after migration has been run and
+  verified. This is the switchover point — after this, all task writes
+  go to the split format.
+
+  Why: The migration command creates the per-task directories but the
+  system continues writing to the monolithic format until explicitly
+  switched. This task is the deliberate switchover after confirming
+  the migration is correct.
+
+  What: Run the activation command to set the storage format to split.
+  Verify that subsequent task operations (list, get, add, set, note)
+  read from and write to the per-task directory structure. Confirm
+  the index stays in sync.
+
+  How: Run the activation command. Exercise the full task lifecycle
+  through CLI and daemon API. Verify shadow branch commits show
+  per-task file changes rather than monolithic file changes.
+
+  MANUAL ONLY: This task requires human coordination. Migration must
+  be run first, all dispatch/agent work must be paused, and the
+  switchover must be verified before resuming automated work.
+spec_ref: "@task-storage-activation"
+plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
+origin: derived
+status: pending
+blocked_by: []
+depends_on:
+  - "@task-build-migration"
+context: []
+priority: 1
+tags:
+  - tasks
+  - storage
+  - manual
+vcs_refs: []
+created_at: 2026-03-21T00:59:26.242Z
+todos: []
+automation: manual_only

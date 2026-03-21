@@ -1,0 +1,19 @@
+notes:
+  - _ulid: 01KJ3FXJ0D5HEVXGB714CPV356
+    content: |
+      Implementation notes:
+
+      Create packages/daemon/src/routes/triage.ts.
+      Elysia prefix /api/triage with pubsub injection.
+      Topic triage:updates, events: triage_created, triage_updated, triage_acted.
+      Register in server.ts alongside existing routes.
+    author: "@claude"
+    created_at: 2026-02-22T20:16:10.253Z
+  - _ulid: 01KJ3Z6X22H1TRJQ32PDNV2AY9
+    content: "Implemented triage daemon API routes at packages/daemon/src/routes/triage.ts. 6 endpoints:
+      GET / (list), GET /export, POST / (create), GET /:ref, POST /:ref/override, POST /:ref/act.
+      All 9 own ACs covered. Trait ACs: api-endpoint ac-1-5, websocket-protocol ac-3. Reused
+      executeTriageAction from CLI. 24 tests passing."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T00:43:25.122Z

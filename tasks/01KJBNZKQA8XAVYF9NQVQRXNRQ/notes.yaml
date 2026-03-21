@@ -1,0 +1,16 @@
+notes:
+  - _ulid: 01KJF5GD8YHVV7SM2ZX9RQJP7K
+    content: "Implemented CI lint test at tests/lint/no-static-analysis.test.ts to block static-analysis
+      anti-patterns: scans tests/**/*.test.ts for readFile/readFileSync calls that reference src/ or
+      packages/*/src/ and fails with explicit guidance message. Removed existing source-scanning
+      tests to satisfy no-exception rule: deleted tests/stdin-named-handlers.test.ts, removed
+      setup.ts bare-catch static assertion from tests/setup-pipeline-unification.test.ts, and
+      replaced session-create source-comment assertion with behavioral EXIT_CODES.USAGE_ERROR
+      assertion. Verification: npx vitest run tests/lint/no-static-analysis.test.ts
+      tests/session-create.test.ts tests/setup-pipeline-unification.test.ts passed (80/80); npm test
+      currently fails on pre-existing context-sensitive timeouts (batch-exec-engine atomic rollback
+      and ralph/session-budget-integration cleanup tests) when running in ralph session env with
+      KSPEC_SESSION_ID/KSPEC_RALPH_SESSION set."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T09:05:06.846Z

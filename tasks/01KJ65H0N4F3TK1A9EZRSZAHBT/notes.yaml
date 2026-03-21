@@ -1,0 +1,108 @@
+notes:
+  - _ulid: 01KJ6JZEJADFS9RJ2EVEW27WWQ
+    content: >-
+      ## Session Progress — Spike Investigation Complete, Plan Drafted
+
+
+      ### What was done
+
+      1. **Full investigation of session scoping approach** — explored current session
+      infrastructure, ralph loop, hooks, task schema, and environment variable handling across 4
+      agent harnesses (Claude Code, Codex, OpenCode, Gemini CLI).
+
+
+      2. **Design decisions made with user:**
+         - Soft advisory task claiming (not hard isolation)
+         - Budget enforcement built into kspec task start itself (no hook needed for task limiting)
+         - Session state machine: ralph unlocks → agent starts task → agent submits → kspec auto-locks → ralph resets for next iteration
+         - Single-writer guarantee for atomicity (ralph and agent are never concurrent)
+         - KSPEC_SESSION_ID env var flows through agent tool calls
+
+      3. **Plan written in kspec import format** at
+      `/home/chapel/.claude/plans/bright-seeking-marble.md`:
+         - 5 specs: session-creation-and-env-injection, session-scoped-task-claiming, task-budget-enforcement, native-guard-commands, ralph-session-budget-integration
+         - 9 tasks covering schema changes, CLI commands, budget enforcement, native guards, ralph simplification, multi-harness env injection
+         - Dry run passes clean: `kspec plan import --module cli --dry-run`
+
+      4. **Dual review completed** — both an internal agent review and Codex review-plan found
+      convergent issues. Reviews saved at `/tmp/codex-plan-review.md`.
+
+
+      ### Review findings to address before import
+
+      MUST-FIX:
+
+      - Add ACs for invalid/stale KSPEC_SESSION_ID (session not found, malformed ID)
+
+      - Add migration cleanup ACs (remove old hook entries from settings.json, delete old bash
+      scripts)
+
+      - Add cross-file consistency ACs (task state + budget state divergence on partial failure)
+
+      - Fix `ac-cleanup` to be concrete and testable
+
+
+      SHOULD-FIX (under discussion with user):
+
+      - Shadow branch contention: should budget state live in local file vs shadow branch?
+
+      - Submit vs complete with review subagent: should subagent inherit session ID?
+
+      - End-loop marker: leave as-is or migrate to session state?
+
+      - Wrap-up message: error message should contain wrap-up instructions
+
+      - Explicitly state interactive sessions have no budget
+
+      - Fix file reference: `tasks ready` is in tasks.ts not task.ts
+
+      - State explicitly that enforcement is cooperative-only
+
+
+      ### What's left
+
+      - User wants to discuss specific findings (shadow branch contention, subagent session
+      inheritance, end-loop marker, wrap-up message) before updating the plan
+
+      - After discussion: update plan with fixes, re-run dry run, import
+
+      - Then: derive implementation tasks from the plan
+
+
+      ### Key files
+
+      - Plan: /home/chapel/.claude/plans/bright-seeking-marble.md
+
+      - Codex review: /tmp/codex-plan-review.md
+
+      - Internal review: in conversation context
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T01:07:21.290Z
+  - _ulid: 01KJ6KNM8DXMMSBTQG7R6G9KHQ
+    content: >-
+      Completed with --skip-review: Spike complete. Investigated session scoping approach for kspec,
+      including:
+
+      - Cross-harness env var research (Claude Code, Codex, OpenCode, Gemini CLI)
+
+      - Current session/ralph/hook architecture analysis
+
+      - Design of session-scoped budget enforcement replacing marker files + bash hooks
+
+      - Dual review (internal + Codex) with all MUST-FIX findings addressed
+
+
+      Deliverables:
+
+      - Plan @plan-session-scoping-for-kspec imported with 6 specs, 10 tasks
+
+      - Dependencies set between tasks
+
+      - Specs have traits: @trait-json-output, @trait-semantic-exit-codes, @trait-error-guidance
+
+      - Key design decisions: budget on local filesystem (not shadow branch), single-writer
+      guarantee, cooperative enforcement, end-loop migrated to session state, sessions always closed
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-24T01:19:28.013Z

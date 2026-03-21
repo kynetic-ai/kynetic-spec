@@ -1,0 +1,69 @@
+_ulid: 01KKZTP0MNJWXACHQBQ8351C0P
+slugs: []
+title: Update dispatch agent instructions for merge conflict handling and branch freshness
+type: task
+description: |-
+  Current problem: Reviewer agents block tasks on ANY merge conflict,
+  even simple textual ones (e.g., two additive features editing the same
+  file). This wastes a human round-trip for trivial resolution.
+
+  Three changes needed:
+
+  1. **Worker: rebase on target before starting work.** Task workers
+     should rebase their branch on the integration target (e.g., dev) as
+     the first step when starting or resuming work. This keeps branches
+     fresh and lets workers optimistically resolve conflicts as they
+     arise.
+
+  2. **Reviewer: resolve simple conflicts, MUST-FIX complex ones.**
+     Update merge skill and review-gates so reviewers attempt to resolve
+     straightforward textual conflicts (parallel additive edits). If the
+     conflict is unclear or semantically complex, the reviewer should NOT
+     block — instead, submit a MUST-FIX finding noting the merge
+     conflict, what files are affected, and what the reviewer knows about
+     the conflict. This sends it back to the worker via needs_work.
+
+  3. **Worker: best-effort non-destructive conflict resolution.** When a
+     worker receives a needs_work with merge conflict findings, they
+     should attempt best-effort resolution. Only block if there is
+     genuine uncertainty about correct resolution that requires human
+     judgment.
+
+  Files to update:
+  - templates/skills/merge/SKILL.md — conflict handling guidance
+  - .agents/skills/review-gates/SKILL.md — role boundary for reviewers
+  - kspec-agents.md blocking rules — clarify merge conflicts are not
+    automatic blocks
+  - templates/agents-sections/ — if branching/rebase guidance lives there
+
+  After updating, run kspec agents generate and kspec skill render.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Merged to dev. Updated merge skill, task-work skill, review-gates, and blocking rules
+  so agents resolve simple merge conflicts instead of blocking, and workers rebase before starting
+  work.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - dispatch
+  - skills
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/update-dispatch-agent-instructions-for-merge-conflict-handling-and-branch-freshness/01kkztp0
+  captured_at: 2026-03-18T07:07:48.562Z
+  commit: ed097eedb02c40bfa09c5aa4cb8f244b2a4952b5
+  remote: null
+  remote_url: null
+  upstream_ref: dev
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-18T06:38:43.349Z
+started_at: 2026-03-18T06:40:54.908Z
+submitted_at: 2026-03-18T07:07:49.832Z
+completed_at: 2026-03-18T07:08:00.863Z
+todos: []

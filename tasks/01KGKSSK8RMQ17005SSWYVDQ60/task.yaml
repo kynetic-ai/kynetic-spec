@@ -1,0 +1,29 @@
+_ulid: 01KGKSSK8RMQ17005SSWYVDQ60
+slugs: []
+title: Define Plan and PlansFile schemas
+type: task
+description: 'Create src/schema/plan.ts following patterns from task.ts. Fields: _ulid, slugs,
+  title, content, summary, status, derived_tasks, related_specs, source, source_path, created_at,
+  approved_at, rejected_at, completed_at, notes, tags. Status enum: draft, approved, active,
+  completed, rejected. PlansFile: { kynetic_plans: "1.0", plans: Plan[] }. Export from
+  src/schema/index.ts.'
+spec_ref: "@plan-crud"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #303. Implemented Plan and PlansFile schemas with comprehensive
+  validation and parser functions. Added 29 tests covering ac-1, ac-2, ac-3, ac-4, ac-7, ac-8, ac-9.
+  ACs ac-30 and ac-31 (JSON CLI output) correctly deferred to task 01KGKSSV. All tests passing, CI
+  green."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - schema
+  - planning
+vcs_refs: []
+created_at: 2026-02-04T07:45:13.496Z
+started_at: 2026-02-04T09:08:27.061Z
+completed_at: 2026-02-04T09:19:43.107Z
+todos: []
+automation: eligible

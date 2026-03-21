@@ -1,0 +1,23 @@
+_ulid: 01KJXSVJ4AFN1YG4GMNEZK9B66
+slugs:
+  - implement-enhanced-inbox-view
+title: Implement Enhanced Inbox View
+type: task
+spec_ref: "@ui-inbox-enhanced"
+plan_ref: "@plan-ui-ux-revamp"
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on:
+  - "@implement-app-shell-and-navigation"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJZ4FKX7ER403GJ6RZVEQEWJ
+created_at: 2026-03-05T01:30:05.834Z
+started_at: 2026-03-05T14:16:14.778Z
+submitted_at: 2026-03-05T14:16:16.387Z
+completed_at: 2026-03-05T21:28:35.135Z
+todos: []
+automation: eligible

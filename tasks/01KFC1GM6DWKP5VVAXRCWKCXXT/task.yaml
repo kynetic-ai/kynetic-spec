@@ -1,0 +1,22 @@
+_ulid: 01KFC1GM6DWKP5VVAXRCWKCXXT
+slugs:
+  - task-trait-cli-commands
+title: "Implement: Trait CLI Commands"
+type: task
+spec_ref: "@trait-cli"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #104. Implemented all 8 trait CLI commands with 100% AC coverage (8/8
+  ACs). All 21 E2E tests passing. Review found no blocking issues. Production-quality implementation
+  with proper test isolation, AC annotations, and edge case handling."
+depends_on:
+  - "@task-spec-traits-system"
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-19T21:10:30.861Z
+started_at: 2026-01-20T05:28:05.350Z
+completed_at: 2026-01-20T06:13:14.087Z
+todos: []

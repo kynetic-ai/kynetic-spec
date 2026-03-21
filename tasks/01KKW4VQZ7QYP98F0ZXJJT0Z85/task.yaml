@@ -1,0 +1,48 @@
+_ulid: 01KKW4VQZ7QYP98F0ZXJJT0Z85
+slugs:
+  - task-update-review-skill-docs
+title: Update review skill for per-cycle review records
+type: task
+description: |
+  Update the review skill (templates/skills/review/SKILL.md) and
+  review-gates skill to reflect the per-cycle review record model.
+
+  What: Document auto-close behavior on verdict. Add fix-cycle section
+  explaining new-record-per-cycle. Update worker perspective for how
+  to find historical reviews. Remove guidance about reopening reviews.
+  Document the relationship between individual reviews and the task's
+  review history (analogous to individual PR reviews comprising a
+  PR's full review history).
+
+  Run kspec skill render after editing to regenerate .agents/skills/.
+spec_ref: null
+plan_ref: "@plan-task-activity-timeline"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Reviewed and merged to dev. Documentation accurately reflects per-cycle review model,
+  auto-close behavior, and updated worker/reviewer guidance. Review 01KKX1SF approved.
+depends_on:
+  - "@task-auto-close-review-on-verdict"
+  - "@task-new-review-per-cycle"
+context: []
+priority: 2
+tags:
+  - docs
+  - reviews
+vcs_refs: []
+review_ref: "@01KKX1SF79Z1D6P3DP5QH7TFED"
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-update-review-skill-docs/01kkw4vq
+  captured_at: 2026-03-17T04:44:33.526Z
+  commit: 7c22bca2fc6bcd2eb8ac76b62f9f7236c9881ece
+  remote: null
+  remote_url: null
+  upstream_ref: dev
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-16T20:19:39.111Z
+started_at: 2026-03-17T04:38:13.149Z
+submitted_at: 2026-03-17T04:44:34.578Z
+completed_at: 2026-03-17T04:47:49.592Z
+todos: []

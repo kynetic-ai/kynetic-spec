@@ -1,0 +1,20 @@
+_ulid: 01KF4WVWG3WWK8108GY1PNSH89
+slugs:
+  - task-observation-schema
+title: "Implement: Observation Schema"
+type: task
+spec_ref: "@observation-schema"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Observation schema fully implemented with all required and optional fields
+depends_on:
+  - "@task-observations"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-17T02:34:35.907Z
+started_at: 2026-01-18T10:06:44.248Z
+completed_at: 2026-01-18T10:06:57.782Z
+todos: []

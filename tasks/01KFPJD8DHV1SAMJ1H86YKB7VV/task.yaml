@@ -1,0 +1,37 @@
+_ulid: 01KFPJD8DHV1SAMJ1H86YKB7VV
+slugs: []
+title: Daemon serves built web UI on root route
+type: task
+description: >-
+  The daemon currently only serves API endpoints. To enable E2E testing and match the spec (ac-17,
+  web-dashboard ac-1), the daemon must serve the built SvelteKit static assets on the root route.
+
+
+  Implementation approach:
+
+  1. Add Elysia static file serving plugin for packages/web-ui/build/
+
+  2. Ensure web UI is built before daemon can serve it (build step or check)
+
+  3. Root route (/) serves index.html, other static assets served from /assets/
+
+  4. API routes continue to work at /api/*
+
+  5. WebSocket continues to work at /ws
+
+
+  This unblocks all E2E testing tasks.
+spec_ref: "@daemon-server"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged PR #208. Daemon now serves web UI on same port, enabling E2E testing."
+depends_on: []
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-23T23:18:10.609Z
+started_at: 2026-01-23T23:31:40.211Z
+completed_at: 2026-01-24T00:31:51.352Z
+todos: []

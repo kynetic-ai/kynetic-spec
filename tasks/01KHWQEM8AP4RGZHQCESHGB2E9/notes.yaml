@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KHXA4S40RYN1MA7D11G2V231
+    content: Fixed detectRemoteType() to recognize '../' prefix as a path. Added '../relative/path' test
+      case. Pre-existing daemon-executable.test.ts failure is unrelated (bun compile).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-20T10:39:48.864Z

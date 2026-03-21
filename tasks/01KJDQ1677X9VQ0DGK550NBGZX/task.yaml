@@ -1,0 +1,72 @@
+_ulid: 01KJDQ1677X9VQ0DGK550NBGZX
+slugs: []
+title: "Tests fail when run inside ralph loop due to environment contamination: (1) ralph.test.ts
+  KSPEC_RALP"
+type: task
+description: >-
+  **What**: Three tests fail when run inside a ralph loop because they inherit environment variables
+  from the parent ralph process instead of running in a clean env:
+
+
+  1. `tests/ralph.test.ts` line ~618: The test asserts `KSPEC_RALPH_SESSION` is null for non-ralph
+  child processes, but when tests run inside a ralph loop, the env var leaks from the parent process
+  via `...process.env` spread (line 40).
+
+
+  2. `tests/session-create.test.ts`: The `kspecJson()` helper parses stdout as JSON, but when
+  KSPEC_SESSION_ID is inherited from ralph, the session-create command emits an "active session"
+  warning to stderr that contaminates the output parsing.
+
+
+  3. `tests/ralph/session-budget-integration.test.ts`: References a nonexistent `task
+  set-automation` command (the actual command is `task set --automation`).
+
+
+  **Where**:
+
+  - `tests/ralph.test.ts` — `runRalph()` helper (lines 27-56), env propagation test (lines 591-619)
+
+  - `tests/session-create.test.ts` — tests using `kspecJson()` for session creation
+
+  - `tests/ralph/session-budget-integration.test.ts` — the test referencing `set-automation`
+
+  - `tests/helpers/cli.ts` — the `kspec()` and `kspecJson()` helpers
+
+
+  **How**:
+
+  - In `runRalph()` and test helpers that spawn child processes, explicitly delete
+  `KSPEC_RALPH_SESSION` and `KSPEC_SESSION_ID` from the env spread unless the test specifically
+  tests those vars. The pattern at line 601-603 already shows the approach.
+
+  - Apply the same cleanup to the `kspec()` and `kspecJson()` helpers in `tests/helpers/cli.ts` so
+  ALL test invocations are isolated from parent ralph env vars by default.
+
+  - Fix the `set-automation` reference to use the correct `task set --automation` command syntax.
+
+
+  **Done when**:
+
+  - All three test files pass both standalone (`npm test`) and when run inside a ralph loop
+
+  - The `kspec()` / `kspecJson()` test helpers strip `KSPEC_RALPH_SESSION` and `KSPEC_SESSION_ID`
+  from inherited env by default
+
+  - Tests that need these vars explicitly pass them via the `env` option
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Already implemented on main. Verified helper env isolation, corrected command usage,
+  and contaminated-env regression run passed (203 tests).
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
+created_at: 2026-02-26T19:32:53.607Z
+started_at: 2026-02-28T07:03:24.915Z
+submitted_at: 2026-02-28T07:04:15.904Z
+completed_at: 2026-02-28T07:04:17.233Z
+todos: []
+automation: eligible

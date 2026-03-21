@@ -1,0 +1,50 @@
+_ulid: 01KKW4VGQNTEWDFVVFETA3D43D
+slugs:
+  - task-fix-task-add-commit-ref
+title: Fix task-add shadow commit to include entity ref
+type: task
+description: |
+  Fix the task-add case in generateCommitMessage() (src/parser/shadow.ts
+  line 990) to include the task ref alongside the title.
+
+  Why: @trait-shadow-commit ac-2/ac-3 requires commit messages to include
+  the entity ref. The task-add case uses "Add task: <title>" and drops
+  the ref entirely because `detail` (the title) takes precedence over
+  `ref` in the format string. This is a bug against the existing trait.
+
+  What: Change to "Add task @<ref>: <title>" so both ref and title are
+  present. Update the generateCommitMessage test in tests/shadow.test.ts
+  for the new format.
+
+  How: Single change in the switch statement. The ref is already passed
+  to the function — it's just unused when detail is present.
+
+  Covers: @trait-shadow-commit ac-2, ac-3.
+spec_ref: null
+plan_ref: "@plan-task-activity-timeline"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Reviewed, approved, and merged to dev. Fix correctly includes entity ref in task-add
+  commit messages.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - cli
+  - bug
+vcs_refs: []
+submission_linkage:
+  review_url: null
+  branch: dispatch/task/task-fix-task-add-commit-ref/01kkw4vg
+  captured_at: 2026-03-16T21:44:09.100Z
+  commit: 69b7aecd437f4e32095a413cc53fddf76d2239f8
+  remote: null
+  remote_url: null
+  upstream_ref: null
+session_id: 01KJVJ866FAH439DBR6PRGBWGJ
+created_at: 2026-03-16T20:19:31.701Z
+started_at: 2026-03-16T21:42:01.641Z
+submitted_at: 2026-03-16T21:44:10.103Z
+completed_at: 2026-03-16T21:46:48.727Z
+todos: []

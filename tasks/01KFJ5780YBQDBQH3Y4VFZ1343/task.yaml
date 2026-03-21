@@ -1,0 +1,23 @@
+_ulid: 01KFJ5780YBQDBQH3Y4VFZ1343
+slugs: []
+title: Add skill file linting/validation
+type: infra
+description: Skill file linting/validation - catch markdown parsing issues (like pipes in tables)
+  before runtime. Could be a pre-commit hook or CI check that validates skill SKILL.md files parse
+  correctly.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged PR #167. Added skill file validation with frontmatter and table pipe checks."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - dx
+  - skills
+vcs_refs: []
+created_at: 2026-01-22T06:10:44.382Z
+started_at: 2026-01-22T09:34:05.845Z
+completed_at: 2026-01-22T16:42:52.676Z
+todos: []
+automation: eligible

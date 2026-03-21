@@ -1,0 +1,49 @@
+notes:
+  - _ulid: 01KKPS4CY1HCTGNB106YBTY778
+    content: >-
+      Execution context:
+
+      - Background: This task implements verdict aggregation, staleness detection, thread
+      resolution, gate evaluation, and review lifecycle transitions. It builds on the completed
+      review record core model, storage/identity, subject bindings, comment threads, and
+      checks/gates tasks.
+
+      - Scope: Pure library functions for computing disposition from verdicts/checks/threads,
+      submitting verdicts, resolving threads, managing lifecycle transitions (close/archive), and
+      staleness detection. No CLI commands (those are separate tasks).
+
+      - Files: src/parser/review-operations.ts (new - verdict/thread/lifecycle operations),
+      tests/review-verdicts-resolution.test.ts (new - comprehensive AC coverage)
+
+      - Verification: npm test covering all 9 ACs with AC annotations
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T18:18:27.649Z
+  - _ulid: 01KKPSJKSV4X0CFRZMN7TV16G7
+    content: "Submitted PR #855: feat(parser): add verdict aggregation with compare binding and
+      staleness. All 73 tests pass covering all 9 ACs. Full suite (5026 tests) passes with no
+      regressions."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T18:26:13.436Z
+  - _ulid: 01KKPSZ5AHGQDK264D4KFPZATH
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #855 has merge conflicts with main and
+      duplicates 7 functions that have been merged to main since the branch was created
+      (extractSubjectVersion, isVersionStale, evaluateGates, resolveThread, reopenThread,
+      getUnresolvedBlockers, createEvent). Rebase onto main and refactor to use existing utilities.
+      Unique functions (getEffectiveVerdicts, computeDisposition, submitVerdict, refreshSubject,
+      transitionLifecycle) should be kept but refactored to use the existing primitives. AC coverage
+      is comprehensive and tests pass - just needs deduplication."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T18:33:04.594Z
+  - _ulid: 01KKPTSZTMASW5RW61DJZ9HTVE
+    content: "[FIX_CYCLE: 1] Addressed review findings: merged origin/main (13 new commits including
+      review threads, subject bindings, checks modules), resolved merge conflict in parser/index.ts,
+      refactored review-operations.ts to use 7 existing primitives (extractSubjectVersion,
+      isVersionStale, evaluateGates, resolveThread, reopenThread, getUnresolvedBlockers,
+      createEvent). Updated tests to use shared function signatures. Adapted stale-check tests to
+      match evaluateGates semantics. All 73 verdict tests and full suite (5235) pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T18:47:43.700Z

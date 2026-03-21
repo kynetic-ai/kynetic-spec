@@ -1,0 +1,121 @@
+notes:
+  - _ulid: 01KJDQAHM5SX18W9F5V0ET02G6
+    content: >-
+      ENRICHMENT — Standalone context for this task:
+
+
+      **What**: When `kspec triage act` executes a "promote" action, it creates a new task from the
+      inbox item but leaves the original inbox item in the inbox. This requires a separate manual
+      `kspec inbox delete` step to clean up, which is tedious and easy to forget. The inbox item's
+      text is already preserved in the triage record's `item_snapshot` field, so the original is not
+      needed for audit trail purposes.
+
+
+      **Where**: 
+
+      - `src/triage/actions.ts` lines 54-74 — the `promote` case in `executeTriageAction()`.
+      Currently creates the task and returns, but never calls `deleteInboxItem()` for the promoted
+      item.
+
+      - `src/cli/commands/triage.ts` lines 235-289 — the `triage act` command handler. This is where
+      the `--consume` flag would be parsed and passed to `executeTriageAction()`.
+
+      - The `delete` and `duplicate` cases (lines 77-90, 117-130) already call `deleteInboxItem()` —
+      the promote case can follow the same pattern.
+
+
+      **How**: Two reasonable approaches:
+
+      1. **Flag approach**: Add `--consume` flag to `kspec triage act` that deletes the inbox item
+      after promote. Pass it through `ExecuteTriageActionOptions` to `executeTriageAction()`.
+
+      2. **Default behavior**: Make deletion the default for promote (since the snapshot is
+      preserved in the triage record), with a `--keep` flag to opt out.
+
+
+      Recommendation: Option 2 (delete by default) is cleaner since every promoted item has its text
+      preserved in `item_snapshot`. The `--keep` flag is the escape hatch. The `delete` and
+      `duplicate` cases already delete inbox items as their default behavior, so promote doing the
+      same is consistent.
+
+
+      Implementation:
+
+      1. Add `consume` option to `ExecuteTriageActionOptions` (default true for promote)
+
+      2. In the `promote` case of `executeTriageAction()`, after creating the task, call
+      `deleteInboxItem()` for `record.inbox_ref` unless consume is false
+
+      3. Add `--keep` flag to `kspec triage act` command that sets `consume: false`
+
+      4. Update dry-run output to mention deletion
+
+
+      **Done when**:
+
+      - `kspec triage act <ref>` on a promote record creates the task AND deletes the inbox item
+
+      - `kspec triage act <ref> --keep` creates the task but preserves the inbox item
+
+      - Dry-run output mentions that the inbox item would be deleted
+
+      - The `item_snapshot` in the triage record still contains the original text for audit trail
+
+      - Tests cover: promote with deletion (default), promote with --keep, dry-run output
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T19:38:00.197Z
+  - _ulid: 01KJKG7WFH1661Q65B70E3XAQF
+    content: >-
+      Execution context:
+
+      - Background: triage promote should consume inbox items by default while preserving audit
+      snapshot in triage records.
+
+      - Scope: add default consume behavior for promote action, add --keep escape hatch, and update
+      dry-run messaging/tests.
+
+      - Files: src/triage/actions.ts, src/cli/commands/triage.ts, triage CLI/action tests.
+
+      - Verification: targeted triage tests + kspec validate before submit.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T01:29:39.569Z
+  - _ulid: 01KJKGB939JWK2RT4H5M3WSB2S
+    content: >-
+      Implemented promote-consume behavior in shared triage action executor and triage CLI act
+      command:
+
+      - Added promote consume control (default true) to executeTriageAction options.
+
+      - Promote now deletes referenced inbox item by default after task creation; --keep bypasses
+      deletion.
+
+      - Dry-run now reports whether promoted inbox item would be deleted or kept.
+
+      - Added regression coverage in tests/triage-actions.test.ts and tests/triage-cli.test.ts for
+      default consume, --keep, and dry-run messaging.
+
+      Verification:
+
+      - npm test -- tests/triage-actions.test.ts tests/triage-cli.test.ts (67 passed).
+
+      - kspec validate still fails with pre-existing project-wide
+      meta/reference/alignment/completeness issues around observations slug/skill and unrelated
+      alignment warnings.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T01:31:30.793Z
+  - _ulid: 01KJKGC61AKBA443BD79ERR95C
+    content: "Lifecycle note: this iteration inherited a stale KSPEC_SESSION_ID budget guard that
+      blocked normal task start ('Task budget exhausted: 1/1'). Used one-shot env -u
+      KSPEC_SESSION_ID for task start/submit transitions after code/test completion."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T01:32:00.426Z
+  - _ulid: 01KJKGCXACKNR9AS8J5240WSP1
+    content: "Opened PR #617: https://github.com/kynetic-ai/kynetic-spec/pull/617 (branch
+      fix/triage-promote-consume-inbox). Task submitted to pending_review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-01T01:32:24.268Z

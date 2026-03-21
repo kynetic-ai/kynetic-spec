@@ -1,0 +1,17 @@
+_ulid: 01KGS6CAMA0RPRFNHXYDBG5BR8
+slugs: []
+title: Test note flag
+type: task
+description: Test item for --note flag verification
+spec_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Test task for --note verification
+depends_on: []
+context: []
+priority: 3
+tags:
+  - test
+vcs_refs: []
+created_at: 2026-02-06T10:01:22.314Z
+todos: []

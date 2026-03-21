@@ -1,0 +1,31 @@
+notes:
+  - _ulid: 01KJF6GD922YTTN9A75CAC5KCJ
+    content: "Implemented bounded terminal/run capture in ralph: stdout/stderr now stream to
+      .kspec/sessions/<session>/tool-output/<toolCallId>.{stdout,stderr}.log while responses return
+      bounded previews plus metadata (stdout_path, stderr_path, stdout_bytes, stderr_bytes,
+      preview_truncated). Wired request handler context for worker/subagent/wrap-up and added
+      regression tests in tests/ralph.test.ts for artifact streaming + preview-only fallback.
+      Verification: npm run build; npx vitest run tests/ralph.test.ts (116/116)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T09:22:35.426Z
+  - _ulid: 01KJF6HKWQ8VW0SJB5TR11PKT1
+    content: "Submitted for review and opened PR #576 (fix/ralph-terminal-output-artifacts). Includes
+      streamed terminal/run artifact capture with bounded previews and metadata; verified via npm
+      run build and npx vitest run tests/ralph.test.ts."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T09:23:14.968Z
+  - _ulid: 01KJF7D49QJMJSH32BEGS876D8
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: tests are annotated as @cli-ralph ac-11 but do
+      not explicitly annotate new @cli-ralph ac-22/ac-23 coverage in PR #576."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T09:38:16.503Z
+  - _ulid: 01KJF7GM9BJJ9XFSVDYK6WS2V6
+    content: "[FIX_CYCLE: 2] Addressed review MUST-FIX by adding explicit AC annotations for new
+      @cli-ralph ac-22/ac-23 in tests/ralph.test.ts terminal/run output capture tests. Verification:
+      npx vitest run tests/ralph.test.ts (116/116)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-27T09:40:11.179Z

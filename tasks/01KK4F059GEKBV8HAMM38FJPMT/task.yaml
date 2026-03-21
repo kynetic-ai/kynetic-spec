@@ -1,0 +1,27 @@
+_ulid: 01KK4F059GEKBV8HAMM38FJPMT
+slugs: []
+title: Fix kanban and task list responsive layout (no horizontal scrolling)
+type: task
+description: Both the kanban board and task list are too wide and do not honor the browser's
+  viewport width, requiring horizontal scrolling. Need to make both views responsive with proper
+  width constraints, overflow handling, and mobile-friendly layout.
+spec_ref: "@ui-task-board"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - web-ui
+vcs_refs: []
+session_id: 01KK4J4TXGAR9BRYXB8SJ1YN3F
+created_at: 2026-03-07T15:35:03.216Z
+started_at: 2026-03-07T16:36:56.709Z
+submitted_at: 2026-03-07T16:46:22.245Z
+completed_at: 2026-03-07T17:06:39.003Z
+todos: []
+automation: eligible

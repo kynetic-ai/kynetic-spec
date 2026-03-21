@@ -1,0 +1,64 @@
+_ulid: 01KKTW6N50TFB9MFMG7T5KZT6N
+slugs:
+  - task-structured-content-viewer
+title: Build structured content viewer for plan/spec reviews
+type: task
+description: |
+  Build the content viewer for non-code reviews (plans, specs) with
+  section-level inline commenting.
+
+  Why: Plans and specs are the primary review subjects for design work.
+  The current CLI experience shows threads in a flat list — the web UI
+  should show the actual content with threads anchored to the sections
+  they reference.
+
+  What: For plans: render the plan document with identifiable sections
+  (specs list, tasks list, implementation notes). For specs: render
+  description, acceptance criteria (each AC individually targetable),
+  traits, and metadata. Each section has a comment button that creates
+  a thread with a structured anchor. Existing threads with structured
+  anchors render inline at their referenced section.
+
+  How: Fetch content from GET /api/reviews/:id/content. Parse plan
+  markdown into sections (split on ## headings, YAML code blocks).
+  Parse spec YAML into structured fields. Render each section as a
+  component with a hover-to-comment button. Map structured anchors
+  (section + field + anchor-ref) to rendered section positions. Reuse
+  the thread rendering components from the review detail page.
+
+  Covers: @review-structured-content-viewer ac-1, ac-2, ac-3, ac-4.
+spec_ref: "@review-structured-content-viewer"
+plan_ref: "@plan-review-records-web-ui"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev (fca8525ea). Structured content viewer for plan/spec/task reviews with
+  section-level inline commenting, structured anchors, and thread positioning. 3 new Svelte
+  components, API types, query key, 41 tests — all ACs covered.
+depends_on:
+  - "@task-diff-api"
+  - "@task-review-detail-page"
+  - "@task-review-interaction"
+context: []
+priority: 3
+tags:
+  - web-ui
+  - review
+  - content
+vcs_refs: []
+review_ref: "@01KKZF1E5FSJZB882KACD85QY2"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-18T03:13:50.453Z
+  commit: 3074c95391dd533e480c7d7bb14c575e4dc34ffc
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KKZDWQ84JRTVVNWHM0YA9YDM
+created_at: 2026-03-16T08:29:05.056Z
+started_at: 2026-03-18T03:01:29.009Z
+submitted_at: 2026-03-18T03:13:50.863Z
+completed_at: 2026-03-18T03:36:34.323Z
+todos: []
+automation: eligible

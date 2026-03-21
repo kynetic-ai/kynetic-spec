@@ -1,0 +1,22 @@
+_ulid: 01KF9FWXPG3YYDF5PZEY62K4HH
+slugs: []
+title: Add --tree flag to item list command
+type: task
+description: "Item list --tree or --hierarchy flag - shows parent/child structure for finding where
+  to place new items. Friction: during triage had to grep/search to find @cli module since flat list
+  doesn't show nesting."
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Added --tree flag to item list command with full hierarchy visualization. All tests pass (561/561).
+depends_on: []
+context: []
+priority: 3
+tags:
+  - cli
+  - dx
+vcs_refs: []
+created_at: 2026-01-18T21:24:10.576Z
+started_at: 2026-01-19T03:46:12.448Z
+completed_at: 2026-01-19T03:51:31.795Z
+todos: []

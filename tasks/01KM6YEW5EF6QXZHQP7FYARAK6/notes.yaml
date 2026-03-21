@@ -1,0 +1,41 @@
+notes:
+  - _ulid: 01KM7ZG74XADT6M0KCDSQJJ778
+    content: Implemented kspec task rebuild-index CLI command. Scans .kspec/tasks/ for per-task
+      directories, builds new index entries via toIndexEntry, compares against current index, and
+      reports added/removed/changed entries. --repair overwrites the index, --dry-run previews
+      changes. Uses split-mode TaskDataManager for per-task file loading. 19 E2E tests covering all
+      4 own ACs + trait-dry-run (6 ACs) + trait-error-guidance (3 applicable ACs). Full test suite
+      (6851 tests) passes.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T10:36:51.741Z
+  - _ulid: 01KM7ZX5SAQE4RTXE7JF8M645N
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex@gpt-5"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-21T10:43:56.330Z
+  - _ulid: 01KM80MFZY3TQHKB8AYPC67HBB
+    content: "Fix cycle 1: Addressed both blocker threads from review. (1) Added confirmation gate to
+      --repair path — now requires interactive 'y' confirmation or --force flag before overwriting
+      the index, matching existing codebase patterns (TTY check, JSON mode guard, KSPEC_TEST_TTY env
+      var for testing). (2) Fixed @trait-dry-run ac-5 test to actually pass --force alongside
+      --dry-run --repair, proving dry-run takes precedence even when --force is present. Updated all
+      existing --repair tests to pass --force since the confirmation gate is now active. Full test
+      suite (6851 tests) passes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T10:56:40.447Z
+  - _ulid: 01KM80Z79V1DZ8FVR22RWQ654Q
+    content: "[FIX_CYCLE: 2] Review verdict: changes_requested by codex@gpt-5"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-21T11:02:31.995Z
+  - _ulid: 01KM82SSXXKMEJ79J2GGQK2FAA
+    content: "Fix cycle 2: Addressed blocker — the early return for zero diffs (diffs.length === 0)
+      bypassed the dry-run preview branch, so --dry-run with a synced index showed 'Index is up to
+      date' without a DRY RUN marker, violating @trait-dry-run ac-3. Added DRY RUN warning to the
+      zero-diff path when isDryRun is active. Added test covering this scenario (synced index +
+      --dry-run asserts DRY RUN marker present). All 20 rebuild-index tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-21T11:34:31.614Z

@@ -1,0 +1,27 @@
+_ulid: 01KKAH4JPPYXXXG4C6QTXHJ7W8
+slugs:
+  - task-fix-web-ui-bundle-test-skip
+title: Make daemon-web-ui-bundle tests skip gracefully when dist/web-ui/ missing
+type: task
+description: 3 tests in tests/daemon-web-ui-bundle.test.ts fail with opaque assertion errors when
+  dist/web-ui/index.html missing. Agents retry without rebuilding, wasting cycles. Add
+  describe-level skip with diagnostic message when build artifacts absent.
+spec_ref: "@test-suite-perf-reliability"
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Replaced by @task-test-runner-script — test runner script approach instead of skipping tests
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+  - bug
+  - daemon
+vcs_refs: []
+created_at: 2026-03-10T00:07:51.766Z
+started_at: null
+completed_at: null
+todos: []
+automation: eligible

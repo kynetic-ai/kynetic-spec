@@ -1,0 +1,70 @@
+notes:
+  - _ulid: 01KGR05NEFE799ZZ56YM7DQNGX
+    content: >-
+      Implementation notes from plan:
+
+
+      Architecture builds on existing infrastructure:
+
+
+      1. **Command registry** — Extend `src/cli/introspection.ts` to produce a map of command paths
+      to their handler functions and metadata, including a `mutating: boolean` annotation. This
+      enables dynamic dispatch without Commander.js parsing overhead and drives the allow/deny
+      classification.
+
+
+      2. **Batch executor** (`src/cli/batch-exec.ts`) — New module:
+         - `parseBatchInput(source)` — Reads from stdin/file/inline, parses JSON array
+         - `validateBatch(commands, registry, context)` — Pre-validates all commands: known command, required args, ref resolution (including forward refs from earlier commands in batch)
+         - `executeBatch(commands, registry, context, options)` — Executes validated commands sequentially, collects results, handles stop-on-error vs continue
+
+      3. **Shadow commit batching** — Use a `context.batchMode` flag. When set, `commitIfShadow()`
+      skips the commit. The batch executor issues a single commit after all operations complete (or
+      after partial completion with `--continue`). The flag is set before execution and cleared
+      after.
+
+
+      4. **Forward reference resolution** — During pre-validation, track slugs that will be created
+      by earlier commands. Build a "planned refs" set that the validator checks against when a ref
+      doesn't exist yet. Only tracks creates, not deletes (documented limitation).
+
+
+      5. **Confirmation suppression** — When `context.batchMode` is set, commands that check for
+      `@trait-confirmation-prompt` behavior skip the prompt and proceed as if `--force` were passed.
+
+
+      6. **Handler extraction** — Each command's `.action()` handler needs to be callable
+      programmatically (not just via Commander.js parsing). Extract the core logic into importable
+      functions that batch can call directly. Many commands already follow this pattern (e.g.,
+      `resolveTaskRefForBatch()`).
+
+
+      7. **Test approach** — Unit tests for parse/validate/execute phases. Integration test with a
+      temp kspec project running a real batch payload end-to-end. Test the full matrix:
+      stdin/file/inline × stop-on-error/continue × success/failure/partial.
+    author: "@claude"
+    created_at: 2026-02-05T22:53:38.127Z
+  - _ulid: 01KGR18DBJ9W99BD14926D8GEE
+    content: "Scope: Classify CLI commands as mutating vs read-only. Responsible for adding a mutating
+      annotation to command metadata in src/cli/introspection.ts, building the allow/deny registry
+      that validateBatch checks against, and the specific rejection for nested batch commands.
+      Covers ACs: ac-allowlist, ac-denylist, ac-batch-itself. Also covers ac-mutating-only on the
+      parent spec."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-05T23:12:36.722Z
+  - _ulid: 01KGS3JJEDCJV2PRHBZER6VHJN
+    content: "Starting implementation. PR #321 (batch-command-schema) is merged. Plan approved —
+      creating annotation registry, classifying all commands, updating batch-exec, writing tests."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-06T09:12:21.197Z
+  - _ulid: 01KGS43XJXM7GATMA138KPG9GT
+    content: Implementation complete. Created command-annotations.ts with WeakMap registry, added
+      mutating field to CommandMeta in introspection.ts, updated batch-exec.ts with nested-batch
+      rejection and improved denylist message, annotated all 49 mutating commands across 11 command
+      files. 22 new tests pass, 40 existing batch-schema tests pass, full suite green (1
+      pre-existing daemon-executable failure).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-06T09:21:49.661Z

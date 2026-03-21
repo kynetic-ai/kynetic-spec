@@ -1,0 +1,49 @@
+_ulid: 01KKB8A2E7D76JSJJ17YGBEBA4
+slugs: []
+title: "Validate: skip automation-no-spec warning for completed/cancelled tasks"
+type: task
+description: >-
+  The checkAutomationEligibility() function in src/parser/validate.ts warns on ALL automation:
+  eligible tasks without spec_ref, regardless of status. 145 of 147 current warnings are completed
+  tasks and 2 are cancelled — zero are active. The warning is only actionable for active tasks.
+
+
+  **Code change**: In checkAutomationEligibility(), filter out tasks with status completed or
+  cancelled before checking for missing spec_ref.
+
+
+  **Spec gap**: @task-automation-eligibility ac-21 says 'when a task has automation: eligible but no
+  spec_ref' — it doesn't mention task status. Update ac-21 (and ac-23 if needed) to specify that
+  this warning only applies to non-terminal task statuses (pending, in_progress, needs_work,
+  pending_review, blocked). Completed and cancelled tasks have already been assessed and don't need
+  this guardrail.
+
+
+  **Done when**: (1) kspec validate no longer warns for completed/cancelled eligible tasks without
+  spec_ref. (2) ac-21 updated to specify non-terminal status scope. (3) Existing tests updated to
+  cover the status filtering. (4) Active eligible tasks without spec_ref still trigger the warning.
+spec_ref: "@task-automation-eligibility"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #742. Updated checkAutomationEligibility() to skip completed/cancelled
+  automation-eligible tasks before both missing-spec_ref and unresolvable-spec_ref warnings, and
+  updated spec ac-21/ac-23 to scope warnings to non-terminal statuses. AC coverage verified in
+  tests/automation-eligibility.test.ts for active warning paths plus completed/cancelled skip cases;
+  focused tests and full npm test passed."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - cli
+  - validation
+  - bug
+vcs_refs: []
+session_id: 01KKBN02TV6WEAQQ8E5ZW2QD6R
+created_at: 2026-03-10T06:52:48.964Z
+started_at: 2026-03-10T10:49:46.692Z
+submitted_at: 2026-03-10T10:49:50.372Z
+completed_at: 2026-03-10T11:10:20.579Z
+todos: []
+automation: eligible

@@ -1,0 +1,19 @@
+notes:
+  - _ulid: 01KG7228R5M5JB4656PPFRBKRK
+    content: "Automation assessment: set to needs_review. missing spec_ref"
+    supersedes: null
+    author: "@automation-assess"
+    created_at: 2026-01-30T08:59:38.629Z
+  - _ulid: 01KG728CP3NGDKTSX5YDH38DCS
+    content: "Eligible: Bug fix - detect .kspec/ directory and either auto-run from parent or skip
+      gracefully with warning. Prefer skip with warning to avoid unexpected behavior."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-30T09:02:59.267Z
+  - _ulid: 01KG7546KJY6A7E18WVGR27ZSV
+    content: "Implemented fix: Catch ShadowError with code RUNNING_FROM_SHADOW in
+      sessionCheckpointAction. Human mode shows warning, JSON mode exits silently. Both allow
+      session stop to proceed."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-30T09:53:07.699Z

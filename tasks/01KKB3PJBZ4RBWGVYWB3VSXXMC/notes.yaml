@@ -1,0 +1,114 @@
+notes:
+  - _ulid: 01KKB3PJBZ7MFYQ6WY8HHE1G99
+    content: |
+      Implementation notes:
+
+      Follow the TaskFilters.svelte pattern. Use goto() for URL state
+      (never replaceState/pushState directly — see SvelteKit URL state
+      management notes). Populate filter options dynamically from the
+      distinct values in the session data (unique agent types, agent IDs).
+    author: "@claude"
+    created_at: 2026-03-10T05:32:15.615Z
+  - _ulid: 01KKCXCSXWYCM4AY8DXTJD4JCS
+    content: >-
+      Execution context:
+
+      - Background: Add comprehensive filter controls to sessions page following the
+      TaskFilters.svelte URL-state pattern
+
+      - Scope: SessionFilters component, update FetchSessionsParams, update sessions page to use
+      URL-derived filters and pass all params to API
+
+      - Key ACs: status, agent_id, agent_type, trigger, date (since), clear filters, filter counts
+
+      - Trait ACs: @ui-url-panel-state ac-4 (use goto() for URL mutations)
+
+      - Files: packages/web-ui/src/routes/sessions/+page.svelte, packages/web-ui/src/lib/api.ts, new
+      SessionFilters.svelte component
+
+      - Verification: npm test, manual AC review
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T22:20:33.084Z
+  - _ulid: 01KKCYCA007KV388E7PBWHJW2Y
+    content: >-
+      PR #763 created. Implementation summary:
+
+
+      1. SessionFilters.svelte: New component with Select dropdowns for status, trigger, agent type,
+      agent ID, and date range. All URL mutations use goto() per @ui-url-panel-state. Clear filters
+      button removes all params. Filter count shows 'N of M sessions' when filters active.
+
+
+      2. api.ts: FetchSessionsParams expanded with status[], agent_id, agent_type, since.
+      fetchSessions() passes all params to daemon API. SessionSummary now includes agent_id.
+
+
+      3. +page.svelte: Replaced local triggerFilter state with URL-derived filter state via
+      $page.url.searchParams. Integrated SessionFilters component. Added loadFilterOptions() for
+      distinct values and unfilteredTotal tracking.
+
+
+      4. E2e tests updated: Old trigger-filter button references replaced with
+      session-filter-trigger Select interactions. Added new tests for status filter, date filter,
+      clear filters, filter counts, and URL persistence.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T22:37:45.344Z
+  - _ulid: 01KKD1J0VB04D48FRQJJFKR0B4
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #763 only supports single-status filtering,
+      uses date_range instead of the spec's since URL param, and is missing agent_id/agent_type AC
+      coverage."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T23:33:18.315Z
+  - _ulid: 01KKD3C01B657ZNHHTFXDQB99E
+    content: >-
+      Fix cycle 1 completed:
+
+      - Replaced single-value status handling with repeated status URL params and multi-select
+      status chips.
+
+      - Changed time-range URL contract from date_range to spec-compliant since=<iso-date> while
+      keeping Today/7d/30d UX.
+
+      - Added dedicated E2E AC coverage for agent_id, agent_type, repeated status params, since URL
+      state, clear filters, and URL persistence.
+
+      - Verification: npm test passed (199 files, 4409 tests, 3 skipped). kspec validate reported
+      only existing project warning debt. Targeted Playwright sessions.spec could not run in
+      dispatch because its fixture attempts kspec serve start, which is disallowed when
+      KSPEC_SESSION_ID is set.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T00:04:58.027Z
+  - _ulid: 01KKD4M5VZG1S5HYR8FW069WQP
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: sessions page still fetches the full session
+      dataset to populate filter controls, which defeats the new infinite-scroll pagination design
+      and regresses initial load scalability."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T00:26:54.719Z
+  - _ulid: 01KKD5XSN7HZC8YN9Q8XK388NB
+    content: >-
+      Fix cycle 2 addressed:
+
+      - Removed the sessions page's unfiltered limit=total fetch for filter control hydration.
+
+      - Filter options now seed from the first unfiltered page and grow from already-loaded
+      paginated data, preserving infinite-scroll scalability.
+
+      - Kept active agent/agent-type controls visible even when only the selected value is currently
+      known.
+
+      - Added E2E regression coverage that asserts filter-control seeding never requests more than
+      the page size.
+
+      - Verification: kspec validate returned only existing project warning debt. npm test still
+      fails in inherited CLI suites (tests/session-log-list.test.ts,
+      tests/session-legacy-cli.test.ts, tests/session-model-evolution.test.ts) that are already
+      tracked under the separate session-list infinite-scroll fix cycle and are unrelated to this
+      web-ui patch.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T00:49:38.472Z

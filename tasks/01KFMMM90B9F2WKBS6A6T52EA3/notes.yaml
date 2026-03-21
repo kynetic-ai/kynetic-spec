@@ -1,0 +1,122 @@
+notes:
+  - _ulid: 01KFMMP30D4K83N20JV3S4D8N3
+    content: |-
+      ## Implementation Notes
+
+      ### Objective
+      Implement file watcher for .kspec/ directory with debouncing and WebSocket broadcast.
+
+      ### Steps
+      1. Create file watcher using Bun fs.watch (primary) with Chokidar fallback:
+         ```typescript
+         import { watch } from 'fs';
+         function watchKspec(callback: (files: string[]) => void) {
+           const watcher = watch('.kspec', { recursive: true }, (event, filename) => {
+             // Debounce and aggregate
+             debouncedNotify(filename);
+           });
+         }
+         ```
+
+      2. Implement 500ms debounce for rapid changes
+
+      3. Handle YAML parse errors gracefully (log, broadcast error event, don't crash)
+
+      4. Handle directory inaccessible errors with exponential backoff recovery
+
+      5. Broadcast changes to subscribed WebSocket clients via topic 'files:updates'
+
+      ### ACs Covered
+      - ac-4: File changes trigger WS update
+      - ac-5: Debounce rapid changes
+      - ac-6: Handle YAML parse errors
+      - ac-7: Handle directory inaccessible
+      - ac-8: Chokidar fallback
+
+      ### Files to Create
+      - packages/daemon/src/watcher.ts
+      - packages/daemon/src/watcher/debounce.ts
+      - packages/daemon/src/watcher/fallback.ts
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T05:19:28.270Z
+  - _ulid: 01KFN4JWVPVRNANB0ZMECE8MH6
+    content: >-
+      Starting implementation of file watcher and WebSocket broadcast.
+
+
+      Scope: ac-4, ac-5, ac-6, ac-7, ac-8 (file watching with debouncing, error handling, and
+      fallback)
+
+
+      Implementation plan:
+
+      1. Implement Bun fs.watch for .kspec/*.yaml files
+
+      2. Add debouncing (500ms) for rapid changes
+
+      3. Add YAML parse error handling (log + broadcast error event)
+
+      4. Add recovery logic with exponential backoff for inaccessible directory
+
+      5. Add fallback to Chokidar if Bun fs.watch fails
+
+      6. Broadcast file change events to subscribed WebSocket clients
+
+
+      Will build on existing server.ts from @01KFMMM4.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T09:57:20.887Z
+  - _ulid: 01KFN4THFMCBYWD29ZMWPD4BAC
+    content: >-
+      Implementation complete. Created KspecWatcher class with:
+
+
+      ✅ AC-4: File watching with WebSocket broadcast for .kspec/*.yaml changes
+
+      ✅ AC-5: 500ms debouncing to aggregate rapid changes
+
+      ✅ AC-6: YAML parse error handling with error event broadcasting
+
+      ✅ AC-7: Exponential backoff recovery (1s -> 32s over 5 retries)
+
+      ✅ AC-8: Automatic fallback to Chokidar if Bun fs.watch fails
+
+
+      Architecture:
+
+      - Separate watcher.ts module for clean separation of concerns
+
+      - WebSocket connection tracking in server.ts
+
+      - Integrated with graceful shutdown (stops watcher, closes connections)
+
+      - Event format: {type, file, timestamp, content/error}
+
+
+      Test approach: Structure tests (verifying implementation exists and has expected features).
+      Full E2E would require Bun runtime and actual file watching, which isn't available in CI.
+
+
+      All 1087 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T10:01:31.380Z
+  - _ulid: 01KFN4ZTDDDTEF1CZHYSFJ88QJ
+    content: "PR #186 created and submitted for review. Local review: PASS with no blocking issues. CI
+      checks in progress. Workflow started for merge once CI completes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T10:04:24.365Z
+  - _ulid: 01KFN5CSWW4V0HW3TQSVA9SJ4D
+    content: |-
+      Addressed Greptile review feedback:
+      - Fixed Chokidar fallback to use **/*.yaml for recursive watching (matches Bun behavior)
+      - Replaced fragile string replacement with path.relative() for cross-platform path handling
+      - Removed unused pattern variable
+      - Updated test to verify globstar pattern
+      All 1087 tests pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-23T10:11:29.820Z

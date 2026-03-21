@@ -1,0 +1,56 @@
+notes:
+  - _ulid: 01KKS7JRW69MB7WWGZCY8C4HB8
+    content: "Completed documentation update. Changes: (1) Expanded custom task YAML example in plan doc
+      to show description, spec_ref, depends_on fields. (2) Updated Section Reference table to
+      reflect optional fields. (3) Added Task Fields reference table parallel to existing Spec
+      Fields table. (4) Fixed wording per review: spec_ref says 'local spec slug', depends_on says
+      'local task/spec slugs'. Files changed: templates/skills/plan/SKILL.md. Rendered via kspec
+      setup to .kspec/skills/ and .agents/skills/."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T17:09:27.558Z
+  - _ulid: 01KKS89KE2WNRAGPCECS9T2EAH
+    content: >-
+      [FIX_CYCLE: 1] Review findings: MUST-FIX: No PR exists and changes were applied to the wrong
+      file. Three blocking issues:
+
+
+      1. SUBMISSION COMMIT MISSING: The submission commit 0779d4b does not exist in the repo
+      history. The changes were never pushed to main or any branch.
+
+
+      2. WRONG FILE EDITED: The worker edited .kspec/skills/plan/SKILL.md (shadow branch local skill
+      override) instead of templates/skills/plan/SKILL.md (the source template). Per AGENTS.md:
+      'Core skills are authored in templates/skills/ and listed in templates/skills/manifest.yaml.'
+      The plan skill is a core skill — the source of truth is templates/skills/plan/SKILL.md.
+
+
+      3. NO PR CREATED: Task was submitted without creating a PR. The pr workflow requires a PR for
+      review.
+
+
+      Required fixes:
+
+      - Apply all three changes (expanded task example, updated Section Reference, Task Fields
+      table) to templates/skills/plan/SKILL.md
+
+      - Run kspec skill render (or kspec setup) to regenerate .agents/skills/ from the source
+      template
+
+      - Remove the local override from .kspec/skills/plan/SKILL.md (or ensure it stays in sync)
+
+      - Create a PR with the changes
+
+      - The content in .kspec/skills/plan/SKILL.md shows good work — just applied to the wrong file
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T17:21:55.650Z
+  - _ulid: 01KKS8MKQD5CM9P5TE7HD6PGQ1
+    content: "Fix cycle 1 response: Reviewer findings were based on stale submission linkage (pointed to
+      main before branch was created). All three changes were correctly applied to
+      templates/skills/plan/SKILL.md (source template), then synced via kspec setup to
+      .kspec/skills/ and .agents/skills/. PR #879 exists on branch docs/plan-custom-task-fields with
+      the correct changes."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T17:27:56.397Z

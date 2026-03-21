@@ -1,0 +1,55 @@
+notes:
+  - _ulid: 01KFBB1KWQWM5V32YBYMEJHER8
+    content: >-
+      Review feedback from PR #87 identified 6 incorrect exit code usages that were merged without
+      being fixed:
+
+
+      1. batch.ts:77 - NOT_FOUND should be USAGE_ERROR (mutual exclusion error)
+
+      2. batch.ts:89 - NOT_FOUND should be USAGE_ERROR (missing required arg)
+
+      3. batch.ts:214 - USAGE_ERROR should be ERROR (partial batch failure)
+
+      4. task.ts:318 - NOT_FOUND should be VALIDATION_FAILED (priority range)
+
+      5. task.ts:821 - NOT_FOUND should be USAGE_ERROR (missing required flag)
+
+      6. task.ts:1241,1291 - NOT_FOUND should be USAGE_ERROR (invalid number format)
+
+
+      These cause incorrect exit codes for scripts/automation integrating with kspec.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T14:37:50.360Z
+  - _ulid: 01KFCPDE6EX5TMHYKRF2JN835T
+    content: >-
+      Fixed all 6 incorrect exit codes identified in PR #87 review:
+
+
+      1. batch.ts:77 - Changed mutual exclusion error from NOT_FOUND to USAGE_ERROR
+
+      2. batch.ts:89 - Changed missing required arg error from NOT_FOUND to USAGE_ERROR
+
+      3. batch.ts:214 - Changed partial batch failure from USAGE_ERROR to ERROR
+
+      4. task.ts:318 - Changed priority range validation from NOT_FOUND to VALIDATION_FAILED
+
+      5. task.ts:853 - Changed missing required flag from NOT_FOUND to USAGE_ERROR
+
+      6. task.ts:1273,1323 - Changed invalid number format from NOT_FOUND to USAGE_ERROR (2
+      locations)
+
+
+      All tests passing (624 passed, 1 skipped). Changes align with exit code semantics:
+
+      - USAGE_ERROR for invalid arguments/flags
+
+      - VALIDATION_FAILED for business rule violations
+
+      - ERROR for general/partial failures
+
+      - NOT_FOUND for resource not found (kept where appropriate)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-20T03:15:46.510Z

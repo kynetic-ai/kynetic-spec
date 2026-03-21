@@ -1,0 +1,42 @@
+notes:
+  - _ulid: 01KGTN2AKV5HWC7ZW7Q2HE7EFQ
+    content: |
+      Implementation notes:
+
+      Stream events.jsonl line by line across sessions. JSON.stringify each event data
+      field and test against pattern for substring match. Pre-filter sessions by metadata
+      (--since, --agent) before scanning events to reduce I/O.
+      Content excerpt: take 200 chars around match position.
+      Depends on shared event stream reader and date filter utility.
+    author: "@claude"
+    created_at: 2026-02-06T23:37:17.691Z
+  - _ulid: 01KGVPS69G0W0HSZQBEVREYC31
+    content: >-
+      Implemented session log search command with:
+
+      - Added searchSessionEvents() function to sessions/store.ts with case-insensitive substring
+      matching
+
+      - Pre-filters sessions by --since and --agent before scanning events for performance
+
+      - Quick substring pre-filter on lines before JSON parsing for efficiency
+
+      - Content excerpts limited to 200 chars, centered on match
+
+      - CLI command registered with --type, --since, --agent, -n/--limit flags
+
+      - 27 tests covering all 7 spec ACs plus trait ACs for JSON output and exit codes
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T09:26:29.936Z
+  - _ulid: 01KGVQ60P62NQJMPM927F0Y1BS
+    content: |-
+      Codex review complete:
+      - First review found MUST-FIX: unvalidated --limit could result in NaN disabling the limit
+      - Added CLI validation with proper error message and USAGE_ERROR exit code
+      - Added defense-in-depth store normalization for invalid limits
+      - Added 4 new tests for invalid limit handling (31 total tests)
+      - Re-review confirmed all issues resolved, LGTM
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-07T09:33:30.182Z

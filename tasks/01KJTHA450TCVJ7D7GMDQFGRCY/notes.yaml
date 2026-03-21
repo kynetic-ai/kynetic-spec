@@ -1,0 +1,45 @@
+notes:
+  - _ulid: 01KJTPG6P49VG4TENB5ZGJ7JX4
+    content: "Automation status set to needs_review: Missing spec_ref; add/attach spec with AC coverage
+      before automation"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T20:33:44.644Z
+  - _ulid: 01KJWDC0Q2SJG2AYE10SQYGVBE
+    content: >-
+      Execution context:
+
+      - Background: AC-10 tests for agent dispatch start can intermittently hit real daemon state in
+      parallel runs.
+
+      - Scope: Stabilize AC-10 coverage in tests by removing external daemon dependencies.
+
+      - Files: tests/cli-agent-commands.test.ts (and minimal helper/support files only if required).
+
+      - Verification: run AC-10 focused test selection plus kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T12:32:39.138Z
+  - _ulid: 01KJWDEDP1W65X8237823RSZS4
+    content: Implemented AC-10 test isolation in tests/cli-agent-commands.test.ts by creating a
+      dedicated fixture setup that disables daemon auto_start via kspec.config.yaml and forces
+      HOME/USERPROFILE to the temp project directory for subprocess runs. This removes leakage from
+      external daemons running on 3456 in parallel shards.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T12:33:57.953Z
+  - _ulid: 01KJWDEJ8442MF9V882MEE3DMX
+    content: "Verification results: npx vitest run tests/cli-agent-commands.test.ts -t 'AC-10' passed
+      repeatedly (10x loop), and full tests/cli-agent-commands.test.ts passed. kspec validate
+      currently fails due unrelated pre-existing repo issues (duplicate @observations refs, missing
+      .kspec/skills/observations/SKILL.md, existing alignment/completeness warnings)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T12:34:02.629Z
+  - _ulid: 01KJWDGRN647ACW1SX06RYNKQS
+    content: "PR opened: https://github.com/kynetic-ai/kynetic-spec/pull/672 (branch
+      fix/ac10-cli-daemon-test-isolation). Includes AC-10 daemon isolation fixture updates and
+      focused/full test evidence."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T12:35:14.726Z

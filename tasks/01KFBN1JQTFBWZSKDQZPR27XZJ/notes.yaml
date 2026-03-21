@@ -1,0 +1,20 @@
+notes:
+  - _ulid: 01KFBN1YRNVZP99NYFX3TGR7DP
+    content: Use 'kspec task reset' to change @task-yaml-formatting from cancelled to pending, then
+      complete it with proper reason.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-19T17:32:47.253Z
+  - _ulid: 01KFFHM0VTDP46HHKMSF032P1T
+    content: "Automation status set to manual_only: Admin task - fixing incorrect task status, not
+      implementation work"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T05:49:42.651Z
+  - _ulid: 01KFG1C6SVY6RRB2KS5TN9E1BR
+    content: Successfully fixed task status. Used 'kspec task reset' to change @task-yaml-formatting
+      from cancelled to pending, then started, submitted, and completed it with proper reason
+      documenting the yaml library migration work.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-21T10:25:03.803Z

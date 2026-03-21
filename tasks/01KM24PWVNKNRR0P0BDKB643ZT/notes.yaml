@@ -1,0 +1,20 @@
+notes:
+  - _ulid: 01KM260RF6K2DXZHHQVME9ECXY
+    content: Investigated DEFAULT_KSPEC_CLI_PATH usage. The production fix is to target the package bin
+      entrypoint under cli/, but source-mode tests load src/ directly, so the implementation will
+      prefer ../cli/index.js and fall back to ../cli/index.ts to keep both runtime and test
+      execution working.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T04:35:18.631Z
+  - _ulid: 01KM26JEAJXM6J7X2538THGXZ1
+    content: Fixed DEFAULT_KSPEC_CLI_PATH resolution in src/agent-runtime/invocation.ts by resolving the
+      built dist/cli/index.js entrypoint from both source and dist module locations, eliminating the
+      dead bin/kspec.cjs target. Added invocation lifecycle tests covering the default resolver and
+      verified agent-invocation-lifecycle plus agent-dispatch-engine suites. Full npm test reached
+      one unrelated failure in tests/review-cli.test.ts because dispatch exports
+      KSPEC_DISPATCH_CANONICAL_HEAD, which causes examined_commit to auto-populate instead of
+      staying null.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-19T04:44:58.066Z

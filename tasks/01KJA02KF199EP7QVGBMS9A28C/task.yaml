@@ -1,0 +1,37 @@
+_ulid: 01KJA02KF199EP7QVGBMS9A28C
+slugs: []
+title: Add edge case tests for item set enum validation
+type: task
+description: >-
+  tests/item-set-enum-validation.test.ts covers happy/sad paths for --status and --maturity
+  validation but is missing edge cases:
+
+
+  1. Empty string: `kspec item set @ref --status ""` — should reject with helpful error
+
+  2. Case sensitivity: `kspec item set @ref --status In_Progress` — should reject (enums are
+  lowercase)
+
+  3. Partial match: `kspec item set @ref --status in_prog` — should reject, not partial-match
+
+
+  Add these as additional test cases in the existing file.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #531. Added 6 edge case tests: case sensitivity (In_Progress, PROPOSED
+  etc.), partial matches (in_prog, dra etc.), and empty string no-op for both --status and
+  --maturity."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - testing
+vcs_refs: []
+created_at: 2026-02-25T08:53:59.393Z
+started_at: 2026-02-25T13:49:45.619Z
+completed_at: 2026-02-25T14:03:22.894Z
+todos: []
+automation: eligible

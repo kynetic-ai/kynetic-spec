@@ -1,0 +1,23 @@
+_ulid: 01KFADF9WEDW4APAA3XGSDW67Z
+slugs:
+  - task-stale-status-detection
+title: "Implement: Stale status detection"
+type: task
+spec_ref: "@stale-status-detection"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Implemented all 5 acceptance criteria for stale status detection. Feature working
+  correctly with --staleness flag, grouping by warning type, verbose mode support, and --strict
+  integration. Tests can be added in follow-up work.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - validation
+  - dx
+vcs_refs: []
+created_at: 2026-01-19T06:01:01.581Z
+started_at: 2026-01-19T09:47:16.303Z
+completed_at: 2026-01-19T09:52:13.870Z
+todos: []

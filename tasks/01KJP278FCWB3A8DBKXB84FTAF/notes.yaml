@@ -1,0 +1,93 @@
+notes:
+  - _ulid: 01KJP278FCYMWFF26JQBC67G1X
+    content: |
+      Implementation notes:
+
+      New route file at packages/daemon/src/routes/agents.ts following
+      existing route patterns (createAgentRoutes). Enhanced watcher needs
+      a TaskStateDiffCache class that stores last-known parsed task states
+      and computes diffs on change. CLI event POST is fire-and-forget
+      with a short timeout (1s). WebSocket broadcasts use existing
+      pubsub infrastructure with a new "agents" topic.
+    author: "@claude"
+    created_at: 2026-03-02T01:22:22.316Z
+  - _ulid: 01KJPDFQX67GW110ZVA79PCXYT
+    content: "Automation: eligible. Daemon routes following existing patterns. 7 ACs + 3 traits.
+      Implementation notes specify file locations."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T04:39:14.598Z
+  - _ulid: 01KJRBYYGE12XMVGQ47X2RDMS7
+    content: >-
+      Execution context:
+
+      - Background: Wire the daemon's file watcher and CLI task commands to the dispatch engine with
+      WebSocket broadcasts
+
+      - Scope: 7 ACs + 3 traits. Key gaps: (1) dispatch engine lacks WebSocket broadcast on
+      invocation events, (2) CLI task commands don't post to /api/agent/events after state changes,
+      (3) /api/agent/status endpoint missing (currently /api/agent/dispatch/status), (4) POST
+      /api/agent/dispatch route not present (currently separate /start and /stop)
+
+      - Files: packages/daemon/src/routes/agent-dispatch.ts (add status/dispatch routes, add
+      pubsub), src/agent-runtime/dispatch.ts (add WS broadcast callback), src/cli/commands/task.ts
+      (add daemon event emission), tests/e2e/api-agent-dispatch.spec.ts (new E2E tests)
+
+      - Verification: npm run test (unit), npm run test:e2e (E2E for daemon routes)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T22:51:04.590Z
+  - _ulid: 01KJRCTV4DHB6XPZF2FHR6F0X2
+    content: >-
+      Implemented all 7 ACs:
+
+      - ac-1: File watcher integration already wired in server.ts; dispatch engine
+      handleFileChange() diffs task states (pre-existing)
+
+      - ac-2: Added postDispatchEvent() to task.ts; fires after
+      start/submit/needs-work/complete/block/unblock
+
+      - ac-3/ac-4: Added onInvocationEvent callback to DispatchEngine; agent-dispatch routes wire it
+      to pubsub.broadcast('agents', ...) with session_id/agent_id/task_id/status/timestamp
+
+      - ac-5: Added GET /api/agent/status returning dispatch_enabled, active_invocations,
+      queue_depth, agent_definitions
+
+      - ac-6: Added POST /api/agent/dispatch with action: start|stop returning dispatch_enabled
+      boolean
+
+      - ac-7: postDispatchEvent() checks isDaemonRunning() first; fetch uses 1s AbortSignal.timeout;
+      all errors swallowed silently
+
+      Files changed: src/agent-runtime/dispatch.ts (InvocationEvent type, onInvocationEvent
+      callback), packages/daemon/src/routes/agent-dispatch.ts (new endpoints, pubsub wiring,
+      createEngine helper), packages/daemon/src/server.ts (pass pubsub to
+      createAgentDispatchRoutes), src/cli/commands/task.ts (postDispatchEvent helper + calls in
+      state transitions)
+
+      Tests: packages/web-ui/tests/e2e/api-agent-dispatch.spec.ts (new E2E tests covering all 7 ACs)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T23:06:18.638Z
+  - _ulid: 01KJRDZ7KT7JMM3ZWH373YQAA1
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: @trait-api-endpoint ac-2 missing N/A annotation
+      in api-agent-dispatch.spec.ts. SHOULD-FIX: @trait-api-endpoint ac-6 test doesn't actually
+      verify X-Request-Id header (inconsistent with other E2E test files that mark it N/A). See PR
+      #635 review for inline comments."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T23:26:11.066Z
+  - _ulid: 01KJRF612Z61A1R6BS5KJQJ96X
+    content: >-
+      [FIX_CYCLE: 1 complete] Addressed both PR #635 review findings:
+
+      - MUST-FIX: Added @trait-api-endpoint ac-2 N/A annotation in the N/A block (agent dispatch
+      endpoints use project context, not item refs)
+
+      - SHOULD-FIX: Replaced @trait-api-endpoint ac-6 test with N/A annotation, consistent with
+      other E2E test files (X-Request-Id is infrastructure concern)
+
+      1 file changed, 2 insertions(+), 10 deletions(-)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-02T23:47:22.335Z

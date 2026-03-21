@@ -1,0 +1,80 @@
+_ulid: 01KJDQ1AF125H0FK29HE769R4P
+slugs: []
+title: Ralph event handler iteration attribution should use session-scoped mapping instead of shared
+  mutabl
+type: task
+description: >-
+  **What**: Ralph event handler uses a `sessionIterationMap` (Map<string, number>) to attribute late
+  ACP session updates to the correct iteration. However, the current implementation has a race
+  condition: when a new ACP session starts for iteration N+1, late updates from iteration N's
+  session can arrive after `sessionIterationMap.set(newSessionId, N+1)` but the old session's
+  listener may still fire. The `_sid` closure variable in the `on('update')` handler captures the
+  session ID correctly, but there is no cleanup of old listeners when starting a new session.
+
+
+  The Codex review on PR #484 identified that the shared mutable `sessionIterationMap` approach is
+  fragile — a session-scoped listener pattern would be more robust.
+
+
+  **Where**:
+
+  - `src/cli/commands/ralph.ts` line 1061 — `sessionIterationMap` declaration
+
+  - `src/cli/commands/ralph.ts` lines 1305-1337 — the `on('update')` handler that uses
+  `sessionIterationMap.get(_sid)` for iteration lookup
+
+  - `src/cli/commands/ralph.ts` line 1369 — where new sessions are registered in the map
+
+
+  **How**:
+
+  Two approaches (pick one):
+
+
+  1. **Session-scoped listeners** (recommended): Instead of one persistent `on('update')` handler,
+  register a new listener per ACP session that captures the iteration number in its closure. Remove
+  the old listener when the session ends or a new one starts. This eliminates the shared mutable map
+  entirely.
+
+
+  2. **Cleanup old sessions**: When starting a new ACP session, remove the previous session's entry
+  from `sessionIterationMap` and call `agent.client.off('update', oldHandler)` to prevent stale
+  callbacks. Less clean but simpler delta.
+
+
+  Both approaches should also ensure the translator is reset between iterations (it already creates
+  a fresh translator per retry, but verify per-iteration reset).
+
+
+  **Done when**:
+
+  - Late updates from a previous ACP session are attributed to the correct iteration (the one that
+  created that session)
+
+  - No shared mutable state for iteration tracking — either session-scoped closures or explicit
+  cleanup
+
+  - Existing event logging tests still pass
+
+  - Event log entries show correct iteration numbers even when sessions overlap
+spec_ref: "@cli-ralph"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #612. Replaced shared sessionIterationMap attribution with
+  session-scoped update logger closures plus explicit detach/replace cleanup on session
+  rotation/end/dispose to prevent listener accumulation while preserving correct late-update
+  iteration attribution. Added regression coverage for session-bound logging and listener
+  replacement ordering in tests/ralph.test.ts. AC coverage for @cli-ralph remains fully annotated
+  (ac-1..ac-26) with no trait ACs."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJK0CZR6Z664WKVZWV0CN4TT
+created_at: 2026-02-26T19:32:57.953Z
+started_at: 2026-02-28T23:27:38.188Z
+submitted_at: 2026-02-28T23:27:57.001Z
+completed_at: 2026-02-28T23:39:21.126Z
+todos: []
+automation: eligible

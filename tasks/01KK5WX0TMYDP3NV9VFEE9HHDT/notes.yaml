@@ -1,0 +1,32 @@
+notes:
+  - _ulid: 01KK6AYG80SG9Q4MT0TSCC71FN
+    content: >-
+      Fix applied in two files:
+
+      1. packages/daemon/src/middleware/project-context.ts — Added early return in derive middleware
+      to skip project context resolution for non-API routes and /api/health. Non-API routes (static
+      files, SPA pages) get projectContext: undefined instead of triggering a 400 when no project is
+      configured.
+
+      2. packages/daemon/src/server.ts — Added '/' to spaRoutes array so the root path correctly
+      serves index.html via SPA fallback.
+
+      All daemon unit tests pass (53 tests). TypeScript compiles clean.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T09:02:43.456Z
+  - _ulid: 01KK6BTPE4SC21KP6SBGGBXSVK
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: add regression coverage for non-API/static
+      requests, /api/health, and root SPA fallback before merge (see PR #707 review)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-08T09:18:07.300Z
+  - _ulid: 01KK6D1XZCF034RKT44WRZ1NPT
+    content: "Fix cycle 1: Added regression tests per review feedback. 5 new vitest unit tests in
+      daemon-path-validation-middleware.test.ts verify the derive middleware URL-based routing logic
+      (static files, /api/health, SPA routes skip project context; API routes still require it). 3
+      new E2E tests in api-server.spec.ts verify GET / serves HTML, /api/health works, and API
+      routes succeed with a configured project. All 153 daemon tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-08T09:39:32.973Z

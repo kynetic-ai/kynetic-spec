@@ -1,0 +1,7 @@
+notes:
+  - _ulid: 01KJACGA91KPXECF22E098TB0B
+    content: "Added NaN/zero/negative validation for --limit in gatherSessionContext(). Throws
+      RangeError with clear message. 6 integration tests. PR #527 created."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-25T12:31:11.649Z

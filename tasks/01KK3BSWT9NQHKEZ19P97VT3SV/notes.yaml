@@ -1,0 +1,52 @@
+notes:
+  - _ulid: 01KK3SXTJJHR7JCKCBGA3RH8Z8
+    content: >-
+      Fixed collapsed-by-default behavior for tool calls in session stream.
+
+
+      Root cause: ToolCallView.svelte initialized expanded state as $state(block.status ===
+      'running'), causing running tool calls to auto-expand during live streaming.
+
+
+      Fix: Changed to $state(false) so all tool calls start collapsed regardless of status.
+      User-toggled expand state is naturally preserved across periodic refreshes because Svelte's
+      keyed {#each} (keyed by block.seq) reuses component instances and their internal state when
+      the same key appears in a re-rendered array.
+
+
+      Added E2E tests covering:
+
+      - Completed tool calls render collapsed
+
+      - Running tool calls in live sessions render collapsed
+
+      - Click toggle works (expand/collapse)
+
+      - User-expanded state persists across periodic refresh cycles
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T09:26:46.610Z
+  - _ulid: 01KK3TZY6JX4QV4CCQBBZ621AE
+    content: "Review findings: MUST-FIX — @ui-session-stream ac-5 lacks required test annotation
+      coverage. Evidence: 'rg -n \"AC: @ui-session-stream ac-5\" tests packages/web-ui/tests'
+      returns no matches, and 'kspec validate --completeness --json' reports missing_test_coverage
+      for @ui-session-stream with details 'Uncovered: ac-5'. Diff is otherwise focused and required
+      test suites passed (npm test; packages/web-ui npm test)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-07T09:45:24.435Z
+  - _ulid: 01KK3TZZGKX7YB5N0GYJ18KRQM
+    content: "[FIX_CYCLE: 1] Review findings: Review issues: MUST-FIX missing AC coverage for
+      @ui-session-stream ac-5 (validate completeness warning: Uncovered ac-5)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-07T09:45:25.779Z
+  - _ulid: 01KK3VRPMMXMNJ3WNB7T144QN0
+    content: "Fix cycle 1: Applied collapsed-by-default fix ((false) instead of (block.status ===
+      'running')) which was on the unmerged fix/tool-call-default-collapsed branch but never merged
+      to feat/ui-revamp. Added test verifying expanded state initializes to false. AC-5 test
+      annotations (CSS layout checks) were already present from a different task's merge
+      (c767d1b6a). All 168 web-ui tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-07T09:58:55.892Z

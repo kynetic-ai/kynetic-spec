@@ -1,0 +1,60 @@
+_ulid: 01KJBNJ8BPJSB3EYXX6FBP7CRJ
+slugs:
+  - task-e2e-daemon-triage-api
+title: E2E tests for daemon Triage API (replace daemon-api-triage.test.ts)
+type: task
+description: >-
+  Replace tests/daemon-api-triage.test.ts (414 lines, all static analysis) with Playwright E2E
+  tests.
+
+
+  Write: packages/web-ui/tests/e2e/api-triage.spec.ts
+
+  Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+  Endpoints to test:
+
+  - GET /api/triage — list records sorted by created_at desc (@triage-daemon-api ac-1)
+
+  - GET /api/triage?status=pending — status filter (@triage-daemon-api ac-2)
+
+  - POST /api/triage — create record with item_snapshot (@triage-daemon-api ac-3)
+
+  - POST /api/triage/:ref/override — set override fields (@triage-daemon-api ac-4)
+
+  - POST /api/triage/:ref/act — execute action, transition to acted_on (@triage-daemon-api ac-5)
+
+  - GET /api/triage/export?format=json — export records (@triage-daemon-api ac-6)
+
+  - Error cases: 404 not found, 409 already acted, 422 validation (@triage-daemon-api ac-7 through
+  ac-9)
+
+
+  After E2E tests pass, delete tests/daemon-api-triage.test.ts.
+
+  Run: npm test && npm run test:e2e to verify.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #547. Replaced 414-line static analysis file
+  tests/daemon-api-triage.test.ts with 34 Playwright E2E tests in
+  packages/web-ui/tests/e2e/api-triage.spec.ts. All 9 @triage-daemon-api ACs and @trait-api-endpoint
+  ACs covered with real HTTP calls to running daemon. All CI checks passed."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - e2e
+vcs_refs: []
+session_id: 01KJBZXXNHE3M4WX1BZ6Z5ZNCJ
+created_at: 2026-02-26T00:28:46.838Z
+started_at: 2026-02-26T04:34:28.288Z
+submitted_at: 2026-02-26T05:36:07.584Z
+completed_at: 2026-02-26T11:16:32.366Z
+todos: []
+automation: eligible

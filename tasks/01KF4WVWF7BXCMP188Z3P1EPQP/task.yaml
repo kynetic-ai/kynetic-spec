@@ -1,0 +1,23 @@
+_ulid: 01KF4WVWF7BXCMP188Z3P1EPQP
+slugs:
+  - task-observations
+title: "Implement: Observations"
+type: task
+spec_ref: "@observations"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: Implemented all 9 acceptance criteria for observations feature. Added observe,
+  observations, promote, and resolve commands with full test coverage.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - mvp
+  - meta
+  - feedback
+vcs_refs: []
+created_at: 2026-01-17T02:34:35.879Z
+started_at: 2026-01-18T01:22:31.130Z
+completed_at: 2026-01-18T01:34:32.899Z
+todos: []

@@ -1,0 +1,22 @@
+_ulid: 01KFC1GKZRHZ5V66MYSTVZ544E
+slugs:
+  - task-trait-display-in-spec-task-output
+title: "Implement: Trait Display in Spec/Task Output"
+type: task
+spec_ref: "@trait-display"
+derivation: auto
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #102. Fixed critical bug where loadSpecFile() only parsed first YAML
+  document - changed to use YAML.parseAllDocuments(). All 6 tests passing (100% AC coverage: 5/5
+  ACs). All 668 tests passing."
+depends_on:
+  - "@task-spec-traits-system"
+context: []
+priority: 1
+tags: []
+vcs_refs: []
+created_at: 2026-01-19T21:10:30.648Z
+started_at: 2026-01-20T04:36:03.976Z
+completed_at: 2026-01-20T05:13:29.799Z
+todos: []

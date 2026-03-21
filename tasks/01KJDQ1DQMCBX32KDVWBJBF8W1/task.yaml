@@ -1,0 +1,29 @@
+_ulid: 01KJDQ1DQMCBX32KDVWBJBF8W1
+slugs: []
+title: "ULID short ref ambiguity in batch operations: when two ULIDs share a prefix (e.g. 01KJ4SNE9
+  and 01KJ"
+type: task
+description: "ULID short ref ambiguity in batch operations: when two ULIDs share a prefix (e.g.
+  01KJ4SNE9 and 01KJ4SNEC), short refs like @01KJ4SNE fail. kspec already has a shortest-unique-ID
+  utility — this should be used anywhere refs are displayed (triage list, task list, inbox list,
+  promote result_ref, etc.) so that presented refs are always unambiguous and copy-pasteable into
+  subsequent commands."
+spec_ref: "@batch-exec"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #618. Implemented shortest-unique ULID display refs across CLI/export
+  and reused shared refs helper for export paths in fix cycle 1. Review verified spec alignment for
+  unambiguous copy-pasteable refs and confirmed @batch-exec own + inherited trait AC annotation
+  coverage. CI checks passed on head 691228e72."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJKCGRAVN1BTZ611MX7EK5H3
+created_at: 2026-02-26T19:33:01.300Z
+started_at: 2026-03-01T02:22:52.837Z
+submitted_at: 2026-03-01T02:23:15.306Z
+completed_at: 2026-03-01T02:44:56.320Z
+todos: []
+automation: needs_review

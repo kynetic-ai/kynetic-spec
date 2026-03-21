@@ -1,0 +1,114 @@
+notes:
+  - _ulid: 01KJXSVKE4KK0MKFP61JZBR1DD
+    content: See plan @plan-ui-ux-revamp for implementation notes
+    author: "@claude"
+    created_at: 2026-03-05T01:30:07.172Z
+  - _ulid: 01KJZWY21HJ7M4PBNA85TD6KPC
+    content: >-
+      Execution context:
+
+      - Background: Dashboard is the home view (/) providing at-a-glance overview of project state
+
+      - Scope: Three sections — Active Work (reuses ActiveFleetRow), Status Summary (clickable count
+      cards per status), Needs Attention (inbox untriaged + observations unresolved + validation
+      warnings + blocked tasks)
+
+      - Files: packages/web-ui/src/routes/+page.svelte (main page), packages/web-ui/src/lib/api.ts
+      (may need fetchValidation/fetchAlignment)
+
+      - Verification: npm test + AC annotation tests
+
+      - Branch: feat/dashboard-overview
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T21:02:22.257Z
+  - _ulid: 01KJZY1K8308Y371AE74YQX0FA
+    content: >-
+      Implementation complete:
+
+      - Replaced basic 5-card dashboard with full overview: Active Work (fleet cards), Status
+      Summary (7 statuses), Needs Attention (4 aggregated categories)
+
+      - Added fetchValidation() API client for validation warning counts
+
+      - Used design system tokens (bg-status-*, text-status-*-fg) for status dots
+
+      - Active fleet shows agent invocations with pulse indicator, task title, elapsed time, and
+      session stream link
+
+      - Needs Attention links to inbox, observations, validate, and filtered tasks views
+
+      - Loading skeleton uses ds-shimmer, error boundary with retry button
+
+      - Empty states for no-active-work and no-attention-needed
+
+      - 19 E2E tests all passing: structure/interaction tests + API contract verification
+
+      - Pre-existing E2E port issue (hardcoded 3456 in build) means browser-side data tests use API
+      contract pattern
+
+      - board/ components don't exist on this branch (task-board is on separate branch), so active
+      fleet is inlined
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T21:21:46.755Z
+  - _ulid: 01KK0X5Y22W04KP3VHV0VPXHJK
+    content: "Review findings: MUST-FIX 1) AC validation gap in dashboard E2E tests.
+      packages/web-ui/tests/e2e/dashboard.spec.ts:14-17 explicitly notes browser fetch failures, and
+      current tests only check structure/navigation/API contracts, not that UI renders aggregated
+      counts for active work/status summary/needs-attention from fixture data. This does not
+      adequately validate @ui-dashboard-overview ac-1 behavior. MUST-FIX 2) Count-to-filter mismatch
+      for blocked cards. packages/web-ui/src/routes/+page.svelte:234-242 increments blocked count
+      for pending tasks with unmet deps, but blocked card links/filter use status=blocked at lines
+      104-107 and 154. Users can see blocked count that does not match tasks shown after click."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-06T06:25:54.755Z
+  - _ulid: 01KK0X634Q05B39PPVYS23QZD9
+    content: "[FIX_CYCLE: 1] Review findings: Review issues: AC coverage does not validate dashboard UI
+      aggregation path, and blocked count card semantics do not match filtered results."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-06T06:25:59.959Z
+  - _ulid: 01KK1VDCFSZF7ZJEWDBE73VX74
+    content: >-
+      Fix cycle 1 addressed:
+
+      1. Blocked count card semantics: status summary Blocked card now only counts status=blocked
+      tasks (not pending with unmet deps). Needs-attention blocked card also uses status=blocked
+      only. Count matches click-through to /tasks?status=blocked.
+
+      2. AC validation gap: E2E tests now use page.route() to intercept browser API calls and
+      fulfill with fixture-consistent data, validating the full UI aggregation path. New tests
+      verify correct status counts, needs-attention counts, empty states, active fleet rendering,
+      and attention card links.
+
+      Unit tests pass (2 pre-existing failures in codex tests unrelated to this work). Build
+      succeeds. E2E tests cannot run from agent invocation but are syntactically valid and
+      structurally correct.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-06T15:14:16.185Z
+  - _ulid: 01KK1Y0J9Q9BEB05VRCXB6ECKS
+    content: "Review findings: MUST-FIX merge conflict while merging feat/dashboard-overview into
+      feat/ui-revamp. Conflict file: packages/web-ui/src/routes/+page.svelte. Rebase or merge
+      feat/ui-revamp into feat/dashboard-overview, resolve conflicts, rerun required tests, and
+      resubmit for review."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-06T15:59:41.879Z
+  - _ulid: 01KK1Y0MFXR1JAYYZAG3XK4H6P
+    content: "[FIX_CYCLE: 2] Review findings: Review issues: merge conflict against feat/ui-revamp in
+      packages/web-ui/src/routes/+page.svelte prevented landing reviewed changes."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-06T15:59:44.126Z
+  - _ulid: 01KK1Z8X0AW81RHV77QKPJZ9XZ
+    content: "Fix cycle 2 addressed: Merged feat/ui-revamp into feat/dashboard-overview to resolve
+      +page.svelte conflict. Resolution kept full dashboard implementation (active fleet, status
+      summary, needs-attention). Fixed duplicate needs_work field in TaskCounts interface introduced
+      by the merge. Build passes. Unit tests pass (176/178, 2 pre-existing codex failures). E2E
+      tests structurally verified."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-06T16:21:43.562Z

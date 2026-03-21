@@ -1,0 +1,96 @@
+notes:
+  - _ulid: 01KHVXK2PH27DV19BTJNAKR6RD
+    content: |
+      Implementation notes:
+
+      Thread config through shadow.ts functions via optional parameters that default to
+      SHADOW_BRANCH_NAME / SHADOW_WORKTREE_DIR constants. ShadowConfig already carries
+      branchName — extend it.
+
+      Key functions needing config threading: detectShadow(), initializeShadow(),
+      hasRemoteTracking(), ensureRemoteTracking(), pushShadowBranch(), shadowPull(),
+      shadowSync(), ensureGitignore(), getShadowStatus(), repairShadow(),
+      resolveShadowPath().
+
+      Remote type detection algorithm for shadow.remote:
+      - Starts with /, ./, or ~ -> local filesystem path
+      - Contains :// or starts with git@ -> git URL
+      - Otherwise -> git remote name
+      For path/URL types, git remote add with configured value. For remote name,
+      verify it exists before push/pull. Authentication for URLs delegated to git
+      credential helpers — do not store tokens in config. Add guidance in error
+      messages recommending remote names over inline URLs with credentials.
+
+      For ac-8, detectRunningFromShadowWorktree() currently checks cwdBase === ".kspec".
+      Two options: (1) read config first with a lightweight non-throwing load, or
+      (2) make detection generic by checking if cwd is ANY git worktree via the .git
+      file being a worktree pointer, regardless of directory name. Option 2 preferred.
+
+      For ac-9, kspec shadow status should compare detected branch/directory against
+      config and warn on mismatch rather than silently using stale settings.
+    author: "@claude"
+    created_at: 2026-02-19T21:41:11.505Z
+  - _ulid: 01KHWB9WXAKFXA4WPKGCJ6EM0V
+    content: >-
+      Implementation complete. Changes:
+
+
+      1. **Config schema updated** (src/parser/config.ts):
+         - Added shadow.directory field (worktree path, default: .kspec)
+         - Changed shadow.remote_url to shadow.remote with flexible detection
+         - Added detectRemoteType() for named/path/URL classification
+         - Added ResolvedShadowRemote type with value and type fields
+
+      2. **Shadow functions updated** (src/parser/shadow.ts):
+         - Added ShadowOptions interface for passing config to functions
+         - Added getBranchName() and getDirectoryName() helper functions
+         - Updated detectShadow, getShadowStatus, initializeShadow, repairShadow
+         - Updated hasRemoteTracking, ensureRemoteTracking, pushShadowBranch
+         - Updated shadowPull, shadowSync, shadowPushAsync
+         - Updated ensureGitignore and resolveShadowPath
+         - All functions default to constants when options not provided (AC-7)
+
+      3. **detectRunningFromShadowWorktree enhanced** (AC-8):
+         - Now accepts optional configuredDirectory parameter
+         - Detects custom directories using git worktree metadata
+         - Falls back to detecting kspec file structure (manifest + modules)
+
+      4. **Config mismatch detection** (AC-9):
+         - Added checkConfigMismatch() function
+         - Returns ShadowConfigMismatch with detected vs configured values
+         - Provides migration guidance when mismatch found
+
+      5. **Init command updated** (src/cli/commands/init.ts):
+         - Loads project config before initialization
+         - Passes shadow options from config to initializeShadow
+         - Checks for config mismatch and guides user (with --force override)
+         - Uses configured branch/directory names in output messages
+
+      6. **Context initialization updated** (src/parser/yaml.ts):
+         - Passes config shadow settings to detectShadow
+         - Passes configured directory to detectRunningFromShadowWorktree
+
+      7. **15 new tests added** covering all 9 ACs:
+         - Backward compat tests (ac-7)
+         - Custom branch name tests (ac-1)
+         - Custom directory tests (ac-2)
+         - Remote type detection tests (ac-3, ac-4, ac-5)
+         - Custom directory detection tests (ac-8)
+         - Config mismatch detection tests (ac-9)
+         - Combined custom branch+directory test
+
+      All 2863 tests pass (1 pre-existing failure in daemon-executable.test.ts unrelated to this
+      change).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-20T01:40:50.730Z
+  - _ulid: 01KHWC1CPX6QEGAV83WQ9XH17V
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-20T01:53:40.573Z
+  - _ulid: 01KHWDAWZX3H89Z2HKX60YSZTP
+    content: "[RALPH SUBAGENT] Subagent timed out after 10 minutes"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-02-20T02:16:20.734Z

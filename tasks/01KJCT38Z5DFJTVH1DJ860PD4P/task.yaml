@@ -1,0 +1,32 @@
+_ulid: 01KJCT38Z5DFJTVH1DJ860PD4P
+slugs:
+  - task-test-bootstrap-link-detection
+title: Add tests for bootstrap link detection
+type: task
+description: "Add unit tests for bootstrap.cjs link detection logic (checkKspecCli). Cover: global
+  kspec not linked, dist not built yet, already linked, symlink resolution on Unix. Extract testable
+  helpers if needed."
+spec_ref: "@bootstrap-script"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #591. Added bootstrap link-detection unit coverage for
+  @bootstrap-script ac-1/ac-2/ac-3 via tests/bootstrap.test.ts and extracted testable
+  checkKspecCliWithDeps helper in scripts/bootstrap.cjs while preserving runtime bootstrap behavior.
+  Included fix-cycle regression stabilizations in test suite; fresh CI shards passed and local npm
+  test passed (3525 passed)."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - test
+  - infra
+vcs_refs: []
+session_id: 01KJH73C9JTMB6977AEY991KBQ
+created_at: 2026-02-26T11:07:13.253Z
+started_at: 2026-02-28T06:01:11.853Z
+submitted_at: 2026-02-28T06:09:04.674Z
+completed_at: 2026-02-28T06:17:43.674Z
+todos: []
+automation: eligible

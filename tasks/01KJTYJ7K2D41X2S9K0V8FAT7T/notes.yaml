@@ -1,0 +1,51 @@
+notes:
+  - _ulid: 01KJV3CEWQVE6VM10AT128AK4G
+    content: >-
+      Execution context:
+
+      - Background: saveSpecItem currently forwards a full LoadedSpecItem into updateSpecItem, which
+      risks stale-field clobbering under concurrent edits.
+
+      - Scope: harden save/update flow so only explicit patch fields are written, and make update
+      path robust when stored _path becomes stale.
+
+      - Files: src/parser/yaml.ts and new/updated parser concurrency tests.
+
+      - Verification: targeted vitest for spec-item concurrency coverage, then broader
+      test/validation checks before submit.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T00:18:53.463Z
+  - _ulid: 01KJV3PT6JW0RX9AAMHAA0Q8T5
+    content: >-
+      Implemented concurrency hardening for spec item writes:
+
+      - saveSpecItem now requires an explicit patch payload and rejects empty updates, preventing
+      stale full-object writeback.
+
+      - updateSpecItem now validates patch shape and rejects LoadedSpecItem-style payloads (runtime
+      metadata keys).
+
+      - updateSpecItem now verifies _path target ULID and falls back to ULID lookup when path index
+      becomes stale after concurrent structural edits.
+
+      - Added regression tests in tests/spec-item-mutation-serialization.test.ts for stale _path
+      fallback, patch-only save behavior, and guardrails.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T00:24:32.723Z
+  - _ulid: 01KJV3Q1BW0PVH15MW8CMR8R7D
+    content: >-
+      Verification:
+
+      - npm test passed (170 files, 3589 passed, 3 skipped).
+
+      - Added targeted regression suite passed: tests/spec-item-mutation-serialization.test.ts (4
+      tests).
+
+      - kspec validate still fails due pre-existing project-level schema/reference/alignment issues
+      unrelated to this task (missing skills/observations SKILL.md, duplicate @observations slug
+      refs, existing alignment/completeness warnings).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T00:24:40.060Z

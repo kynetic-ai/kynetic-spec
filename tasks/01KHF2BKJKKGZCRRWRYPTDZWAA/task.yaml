@@ -1,0 +1,28 @@
+_ulid: 01KHF2BKJKKGZCRRWRYPTDZWAA
+slugs: []
+title: Revisit ralph wrap-up agent design and test coverage
+type: task
+description: "PR #369 added a wrap-up agent that runs on ralph loop exit. Retrospective flagged it
+  as over-engineered but the intent is broader than simple cleanup: it ensures all work is
+  completed, finds in-progress work where task state doesn't match reality, root-causes whether work
+  is still needed, and does best-effort to get the project into a clean state (either continue the
+  loop or put work on a branch with a task for the user). Too many possible states to rely on code
+  alone — the agent approach is intentional. However: runWrapUpAgent() has zero integration tests
+  (all 37 tests only check prompt strings and boolean helpers). Revisit AC coverage, add integration
+  tests for the actual agent spawn/timeout/cleanup paths, and verify the prompt adequately covers
+  the intended scenarios."
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Ralph deprecated. Wrap-up agent concept doesn't apply to dispatch model — invocations
+  are independent.
+depends_on: []
+context: []
+priority: 2
+tags: []
+vcs_refs: []
+created_at: 2026-02-14T21:54:21.907Z
+todos: []
+automation: needs_review

@@ -1,0 +1,22 @@
+notes:
+  - _ulid: 01KJX7Y46S0M5HDYJMM7TJ8PJY
+    content: "Automation: eligible. Testing task — no spec needed. Clear scope: add concurrency tests
+      for task/plan/inbox/spec mutations."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-04T20:16:55.513Z
+  - _ulid: 01KJY34JE19Z4GE9H8EF3DSYEZ
+    content: Reset from in_progress to pending
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-05T04:12:18.242Z
+  - _ulid: 01KJY39E7PWD7EWPC4M0NK0MHH
+    content: Reset from in_progress to pending
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-05T04:14:57.782Z
+  - _ulid: 01KJY3CA43SD5GN072MFFKYYY6
+    content: "Automation status set to needs_review: Paused during UI revamp focus"
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-05T04:16:31.875Z

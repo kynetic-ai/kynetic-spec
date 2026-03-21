@@ -1,0 +1,59 @@
+_ulid: 01KJBNJHHMW5H7T4Q9NHJK0PWE
+slugs:
+  - task-e2e-daemon-watcher
+title: E2E tests for daemon Watcher (replace daemon-watcher.test.ts)
+type: task
+description: >-
+  Replace tests/daemon-watcher.test.ts (163 lines, all static analysis) with Playwright E2E tests.
+
+
+  Write: packages/web-ui/tests/e2e/api-watcher.spec.ts
+
+  Using: daemon fixture from tests/fixtures/test-base.ts
+
+
+  Behaviors to test:
+
+  - Modify a YAML file in the fixture's .kspec/ directory — verify daemon detects the change and
+  updates data (visible via subsequent GET request or WebSocket event) (@daemon-server ac-4)
+
+  - Verify debounce: rapid successive file changes result in a single reparse (@daemon-server ac-5)
+
+  - Verify YAML parse errors don't crash the watcher — modify file to invalid YAML, then fix it
+  (@daemon-server ac-6)
+
+
+  Note: CI (GitHub Actions) does not support recursive fs.watch — file watcher tests are skipped in
+  CI. Add the same skip condition used by other watcher tests. Check the convention in
+  kspec-agents.md: 'File watcher tests skip in CI'.
+
+
+  After E2E tests pass, delete tests/daemon-watcher.test.ts.
+
+  Run: npm test && npm run test:e2e to verify.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #557. Replaced tests/daemon-watcher.test.ts (163 lines of static
+  analysis) with packages/web-ui/tests/e2e/api-watcher.spec.ts (582 lines of behavioral E2E tests).
+  6 tests covering @daemon-server ac-4 (file change detection + API mutation), ac-5 (debounce
+  verification, 2 tests), ac-6 (YAML error broadcast + recovery). Fixed Codex review race conditions
+  by adding installBroadcastCounter() two-phase pattern. Added N/A annotations for ac-7/ac-8 (not
+  testable in E2E). All CI checks passed."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - testing
+  - daemon
+  - e2e
+vcs_refs: []
+session_id: 01KJD384ABVWV1CVHJX0B5PJYA
+created_at: 2026-02-26T00:28:56.244Z
+started_at: 2026-02-26T13:47:45.592Z
+submitted_at: 2026-02-26T14:01:38.950Z
+completed_at: 2026-02-26T14:22:54.362Z
+todos: []
+automation: eligible

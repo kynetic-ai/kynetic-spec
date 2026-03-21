@@ -1,0 +1,23 @@
+_ulid: 01KF1G6J5VMJJ92GN86NGPT35W
+slugs:
+  - task-meta-spec-gaps
+title: Address spec gaps in meta-spec module
+type: task
+spec_ref: "@meta-spec"
+status: completed
+blocked_by: []
+closed_reason: "Addressed all 7 meta-spec gaps: tightened acceptance criteria with specific outputs,
+  defined observation edge cases, added convention validation strategy, added CRUD primitives,
+  clarified workflow execution model, added meta-ref validation rules, and defined the
+  observation→task resolution loop"
+depends_on: []
+context: []
+priority: 1
+tags:
+  - spec
+  - meta
+vcs_refs: []
+created_at: 2026-01-15T18:55:31.003Z
+started_at: 2026-01-16T02:39:46.310Z
+completed_at: 2026-01-16T02:48:22.565Z
+todos: []

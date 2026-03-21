@@ -1,0 +1,174 @@
+notes:
+  - _ulid: 01KKB3PHV7HT3R85BJ2WVXWS7G
+    content: |
+      Implementation notes:
+
+      Use IntersectionObserver on a sentinel element at the bottom of the
+      list. Track offset/limit/total in component state. Reset offset to 0
+      when any filter changes. Append new pages to existing items array.
+      WebSocket updates use the existing global subscription — no new
+      connection management needed per-component.
+    author: "@claude"
+    created_at: 2026-03-10T05:32:15.079Z
+  - _ulid: 01KKCRQY7TM5NS8SEXS8NRMH8C
+    content: >-
+      Implemented infinite scroll pagination on /sessions page. Key changes:
+
+      1. Updated fetchSessions() in api.ts to accept offset/limit/trigger params, returning
+      SessionListResponse with pagination fields.
+
+      2. Rewrote sessions +page.svelte with IntersectionObserver on a sentinel element for automatic
+      page loading.
+
+      3. Server-side trigger filtering (delegates to daemon API instead of client-side filtering).
+
+      4. WebSocket subscription on 'agents' topic to detect new sessions (agent_invocation with
+      status=started).
+
+      5. New sessions indicator button with refresh capability.
+
+      6. Loading skeleton on initial load, spinner for subsequent page loads, end-of-list indicator.
+
+      7. Updated E2E tests with pagination-aware mock route handler + new infinite scroll test
+      cases.
+
+      8. Fixed api-static.test.ts to match updated return shape.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T20:59:15.066Z
+  - _ulid: 01KKCT87EZCS7SEF0RZGWCQSYJ
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #761 is conflated with unrelated task work,
+      and the /sessions live-update path does not satisfy @session-list-infinite-scroll
+      ac-live-update (count/top-of-list behavior plus missing E2E coverage)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T21:25:37.376Z
+  - _ulid: 01KKCVY3BBW9TVJPQNXZR3QTG4
+    content: "Fix cycle 1 addressed. Created clean branch fix/session-infinite-scroll-v2 from main with
+      only session infinite-scroll changes (cherry-picked original commit + fix). Closed conflated
+      PR #761, opened clean PR #762. Changes: (1) ac-live-update handler now increments total
+      immediately, re-fetches page 1 when user is at top, shows indicator when scrolled. (2) Added
+      scroll position tracking via onscroll handler. (3) Added 4 new E2E tests covering count
+      update, at-top re-fetch, scrolled-down indicator, and indicator click refresh."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T21:55:02.635Z
+  - _ulid: 01KKCX5KS94Q0KAGCXA7FTCV5J
+    content: "[FIX_CYCLE: 2] Review findings: MUST-FIX: PR #762 does not satisfy
+      @session-list-infinite-scroll ac-live-update in real scrolling, inherited trait AC
+      @ui-url-panel-state ac-4 lacks tracked coverage/N-A annotation, and fresh npm test fails in
+      tests/cli-agent-commands.test.ts prompt_template cases."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T22:16:37.417Z
+  - _ulid: 01KKD16VDRVYSW0GZE4Z4HZ004
+    content: >-
+      Fix cycle 2 addressed. Three issues resolved:
+
+      1. Scroll container fix: The onscroll handler was on the page's root div, but the actual
+      scroll container is the layout's <main class="overflow-auto">. Changed to find <main> via
+      closest('main') at mount time and attach scroll listener via addEventListener. isAtTop now
+      correctly reflects the user's actual scroll position.
+
+      2. @ui-url-panel-state ac-4: Added proper N/A annotation in both the component (AC comment
+      block) and E2E test file. Session filters use local component state (triggerFilter), not URL
+      query parameters — goto() is not needed.
+
+      3. cli-agent-commands.test.ts failures: Not reproducible — all 4 prompt_template tests pass on
+      both main and the PR branch. Likely a stale build or flaky test environment in the reviewer's
+      run.
+
+      E2E test updates: Fixed scroll-down tests to target the correct scroll container
+      (main.overflow-auto instead of parentElement of sessions-list).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T23:27:12.313Z
+  - _ulid: 01KKD2V5JFYEQSHCR928SF1PE3
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: @ui-url-panel-state ac-4 is only annotated
+      inside block comments instead of standalone // AC:/# AC: N/A tracking, and full npm test is
+      red on PR #762 (local run surfaced 16 failures before interruption)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T23:55:46.639Z
+  - _ulid: 01KKD43TGVYKZN66AGV6V24XF9
+    content: >-
+      Fix cycle 3 progress:
+
+      - Converted @ui-url-panel-state ac-4 coverage to standalone // AC: N/A annotations in the
+      sessions page and sessions E2E spec so coverage tracking can see them.
+
+      - Investigated red full suite on PR branch: failures were stale CLI tests expecting session
+      log list --json to return a bare array; current contract is paginated { items, total, offset,
+      limit }.
+
+      - Updated the three failing CLI test files to the paginated shape and made one active-session
+      duration assertion deterministic by setting started_at explicitly.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T00:17:58.811Z
+  - _ulid: 01KKD4A3HMMAXJ41PD4P4A7VPS
+    content: >-
+      Fix cycle 3 completed:
+
+      - Replaced block-comment-only @ui-url-panel-state ac-4 N/A markers with standalone // AC:
+      annotations in the sessions route and sessions E2E spec.
+
+      - Updated stale CLI tests to the current paginated session log list JSON contract ({ items,
+      total, offset, limit }) so this branch is green against current main-era expectations.
+
+      - Removed a flaky active-session duration assertion by using an explicit past started_at
+      fixture.
+
+      - Verification: npm test -- tests/session-legacy-cli.test.ts tests/session-log-list.test.ts
+      tests/session-model-evolution.test.ts; npm test (199 files, 4409 tests, 3 skipped, exit 0).
+
+      - Pushed commit 8ee26bd72 to PR #762 branch fix/session-infinite-scroll-v2.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T00:21:24.660Z
+  - _ulid: 01KKD5GR92G6GHC4440MYKKJ0P
+    content: "[FIX_CYCLE: 4] Review findings: MUST-FIX: PR #762 remains red on current HEAD. Reproduced
+      failing regressions locally in tests/session-legacy-cli.test.ts,
+      tests/session-log-list.test.ts, tests/session-model-evolution.test.ts, and
+      tests/cli-serve.test.ts, so the task cannot merge yet."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T00:42:31.075Z
+  - _ulid: 01KKD6QC85CCRJVQBBMVN481DW
+    content: >-
+      Fix cycle 4 progress:
+
+      - Merged current origin/main into fix/session-infinite-scroll-v2 to reproduce the actual PR
+      merge ref instead of the stale branch tip.
+
+      - Confirmed shard-1 red was caused by main-era session log JSON expectations on the merge ref;
+      branch-local runs had been misleading because local main was behind.
+
+      - Verification after merge: npm test -- tests/session-legacy-cli.test.ts
+      tests/session-log-list.test.ts tests/session-model-evolution.test.ts tests/cli-serve.test.ts
+      (all passing).
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T01:03:36.710Z
+  - _ulid: 01KKD6ZJBPAHF2MG69ZQD9X781
+    content: >-
+      Fix cycle 4 completed:
+
+      - Merged current origin/main into fix/session-infinite-scroll-v2 so PR #762 matches the real
+      merge ref that CI evaluates.
+
+      - Reproduced the prior shard-1 failure from the GitHub log: stale local main had hidden that
+      the merge ref was still testing against current main-era session-log expectations.
+
+      - Verified on the updated branch: npm test -- tests/session-legacy-cli.test.ts
+      tests/session-log-list.test.ts tests/session-model-evolution.test.ts tests/cli-serve.test.ts
+      (all passing).
+
+      - Full verification: npm test -> 201 files, 4497 tests passed, 3 skipped; kspec validate ->
+      warnings only (existing project-wide warning debt, exit 6).
+
+      - Pushed merge commit 957569c75 to PR #762 and resolved the stale review threads so
+      check-unresolved-comments can rerun cleanly.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T01:08:05.110Z

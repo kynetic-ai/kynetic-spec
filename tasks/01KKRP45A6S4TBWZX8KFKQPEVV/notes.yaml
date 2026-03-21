@@ -1,0 +1,26 @@
+notes:
+  - _ulid: 01KKRW50TSG30XG7YCBR6PRFXA
+    content: >-
+      Execution context:
+
+      - Background: resolveWebUiPath() uses process.cwd() in options 3 and 4, which breaks
+      multi-directory daemon mode when cwd is a project directory with a stale web-ui/build
+
+      - Scope: Remove options 3 and 4 from resolveWebUiPath() in server.ts, update test replica and
+      add negative test
+
+      - Files: packages/daemon/src/server.ts, tests/daemon-web-ui-bundle.test.ts
+
+      - Verification: npm test covering daemon-web-ui-bundle tests
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T13:49:42.617Z
+  - _ulid: 01KKRWFM805XDHVKDHVNHYK09C
+    content: Implementation complete. Removed options 3 and 4 (process.cwd()-based resolution) from
+      resolveWebUiPath() in packages/daemon/src/server.ts. Updated test replica in
+      tests/daemon-web-ui-bundle.test.ts to match new 3-step resolution order and added negative
+      test verifying cwd-based paths are not used. All 6 daemon-web-ui-bundle tests pass. Full test
+      suite timeouts are pre-existing and unrelated.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T13:55:30.177Z

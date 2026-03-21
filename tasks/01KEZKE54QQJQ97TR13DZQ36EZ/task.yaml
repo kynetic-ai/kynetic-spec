@@ -1,0 +1,21 @@
+_ulid: 01KEZKE54QQJQ97TR13DZQ36EZ
+slugs:
+  - task-inbox-system
+title: Design inbox/capture system for unstructured ideas
+type: spike
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Implemented inbox capture system with add/list/get/promote/delete commands, session
+  integration, and updated agent instructions
+depends_on: []
+context: []
+priority: 2
+tags:
+  - core
+  - process
+vcs_refs: []
+created_at: 2026-01-15T01:13:36.663Z
+started_at: 2026-01-15T13:44:31.243Z
+completed_at: 2026-01-15T13:55:46.105Z
+todos: []

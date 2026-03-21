@@ -1,0 +1,31 @@
+_ulid: 01KK5E7WQ76A3HJAD8BCF6PF3A
+slugs: []
+title: Support git < 2.42 in kspec init (--orphan worktree fallback)
+type: task
+description: kspec init fails on git < 2.42 because 'git worktree add --orphan' was introduced in
+  git 2.42. Debian 12 (bookworm) ships git 2.39, Ubuntu 22.04 ships 2.34. Need a fallback that
+  creates the orphan branch and worktree using older git commands (create orphan branch manually,
+  then add worktree).
+spec_ref: "@config-shadow"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #703. Added git < 2.42 orphan-worktree fallback in shadow
+  initialization using a temp-repo flow that never touches the project working tree, with AC
+  coverage for @config-shadow ac-10 in tests/shadow.test.ts and CI green on the merged head."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - bug
+  - cli
+  - compatibility
+vcs_refs: []
+session_id: 01KK5ZRK5PH8V9E62T05WHRC75
+created_at: 2026-03-08T00:41:02.439Z
+started_at: 2026-03-08T05:54:38.645Z
+submitted_at: 2026-03-08T06:05:46.431Z
+completed_at: 2026-03-08T06:47:15.338Z
+todos: []
+automation: eligible

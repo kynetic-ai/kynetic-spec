@@ -1,0 +1,46 @@
+notes:
+  - _ulid: 01KKNM0Q5WKSBRASNAC05PHP9D
+    content: Covers @manifest-discovery ac-6 (all production code must use discovery API) and
+      @multi-directory-daemon ac-31 (daemon manifest reads for auto-registered projects must use
+      discovery). Fix is in packages/daemon/src/server.ts:117.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T07:29:49.756Z
+  - _ulid: 01KKNMBA9M6WPSJRXDX2M8TT3W
+    content: >-
+      Execution context:
+
+      - Background: startSessionSyncForProject() hardcodes join(specDir, 'kynetic.yaml') on line 117
+      of packages/daemon/src/server.ts. Projects with non-default manifest names fail with ENOENT.
+
+      - Scope: Export findManifestInDir from src/parser/yaml.ts, use it in daemon server.ts,
+      gracefully skip sync when no manifest found.
+
+      - Files: src/parser/yaml.ts (export), packages/daemon/src/server.ts (fix), tests for the fix.
+
+      - Verification: npm test, verify ENOENT no longer occurs with non-default manifest names.
+
+      - ACs: @multi-directory-daemon ac-31, @manifest-discovery ac-6
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T07:35:37.013Z
+  - _ulid: 01KKNMYAX94EXF7PG0DNPV9F58
+    content: >-
+      Fix implemented and PR created: https://github.com/kynetic-ai/kynetic-spec/pull/841
+
+
+      Changes:
+
+      1. Exported findManifestInDir() from src/parser/yaml.ts
+
+      2. Replaced hardcoded join(specDir, 'kynetic.yaml') with findManifestInDir(specDir) in
+      packages/daemon/src/server.ts
+
+      3. Added graceful early return when no manifest found (prevents ENOENT)
+
+      4. Added 5 behavioral tests in tests/daemon-session-sync-manifest-discovery.test.ts
+
+      5. Full test suite passes (239 files, 4853 tests, 0 failures)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-14T07:46:00.233Z

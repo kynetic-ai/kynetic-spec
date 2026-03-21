@@ -1,0 +1,43 @@
+_ulid: 01KJDQ1513YJA4PKRTA8CZDE4P
+slugs: []
+title: kspec task set --priority accepts numbers (1-5) but all documentation, conventions, and plan
+  documen
+type: task
+description: "**What**: `kspec task set --priority` and `kspec task add --priority` only accept raw
+  numbers (1-5), but all documentation, conventions, and plan documents use P1/P2/P3 notation. The
+  error message says 'Priority must be a number between 1 and 5' which is confusing when P-notation
+  is used everywhere else. **Where**: `src/cli/validators.ts` — the `parseIntOption()` function
+  (line 36-64) is used for priority parsing. It calls `Number(value)` which rejects `P1` etc. The
+  priority option is defined in `src/cli/commands/task.ts` at lines 608, 827. The `parseIntOption`
+  is called at lines 287-296 (task set) and 759-767 (task add). **How**: Create a `parsePriority()`
+  wrapper function in `src/cli/validators.ts` that first normalizes P-notation before calling
+  `parseIntOption()`. Implementation: strip a leading case-insensitive `P` prefix if present
+  (`value.replace(/^[Pp]/, '')`), then delegate to `parseIntOption()`. Replace all
+  `parseIntOption(options.priority, { min: 1, max: 5, name: 'Priority' })` calls in `task.ts` with
+  `parsePriority(options.priority)`. Update the option description from 'Priority (1-5)' to
+  'Priority (1-5 or P1-P5)'. Update the error message to mention both formats. **Done when**: (1)
+  `kspec task set @ref --priority P1` works and sets priority to 1. (2) `kspec task add --priority
+  p3` works (case-insensitive). (3) `kspec task set @ref --priority 2` still works (backward
+  compatible). (4) Invalid values like `P6`, `Px`, `0` are rejected with a clear error mentioning
+  both formats. (5) Tests in `tests/cli-validators.test.ts` cover both formats. (6) CLI help text
+  shows accepted format."
+spec_ref: "@batch-exec"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #593: added parsePriority() to accept 1-5 and P1-P5 notation
+  (case-insensitive), switched task add/set priority parsing to parsePriority, updated CLI help
+  text, and added validator + integration coverage for valid and invalid P-notation (including clear
+  guidance errors). AC coverage for task scope verified; full npm test and required CI checks
+  passed."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJHCVA63NR1MQFKHV6JN8QRE
+created_at: 2026-02-26T19:32:52.387Z
+started_at: 2026-02-28T06:50:50.347Z
+submitted_at: 2026-02-28T06:53:37.898Z
+completed_at: 2026-02-28T07:02:49.676Z
+todos: []
+automation: eligible

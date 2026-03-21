@@ -1,0 +1,68 @@
+_ulid: 01KJDQ17W53F5NN0CWTVSEY53R
+slugs: []
+title: Ralph loop needs iteration-level timeout. When a spawned agent gets stuck (e.g., tool call
+  hanging o
+type: task
+description: >-
+  **What**: Ralph loop has no per-iteration timeout. When a spawned agent gets stuck (e.g., a tool
+  call hanging on stdin, like the `kspec batch --commands ""` hang), ralph waits indefinitely.
+  Claude Code's per-bash-command timeout (120s default) does not cover all hang scenarios — an agent
+  can be alive but unresponsive at the ACP protocol level.
+
+
+  **Where**:
+
+  - `src/cli/commands/ralph.ts` — main loop at line ~1127, the `agent.client.prompt()` call at line
+  ~1373 and the reflection prompt call. These are the two main await points that can hang.
+
+  - `src/acp/client.ts` — the ACP client that manages the session/prompt lifecycle
+
+
+  **How**:
+
+  - Add a configurable `--iteration-timeout <minutes>` CLI option (default: 20 minutes) to the ralph
+  command registration (line ~868).
+
+  - Wrap the `agent.client.prompt()` calls in a `Promise.race` with a timeout. On timeout: (1) kill
+  the stuck agent process via `agent.kill()`, (2) log the timeout as a failed iteration, (3) apply
+  the existing retry/failure escalation logic.
+
+  - The timeout should cover the entire iteration (task-work prompt + optional reflection prompt),
+  not individual prompts, since an iteration is the atomic unit of work.
+
+  - Consider using `AbortController` / `AbortSignal` if the ACP client supports it, otherwise use
+  `Promise.race` with a timer.
+
+
+  **Done when**:
+
+  - `kspec ralph --iteration-timeout 15` kills a stuck agent after 15 minutes and continues to the
+  next iteration (or exits if max failures reached)
+
+  - Default timeout is 20 minutes
+
+  - Timeout events are logged to the session event store with type `iteration.timeout`
+
+  - Existing retry and failure escalation logic handles timeouts the same as other iteration
+  failures
+spec_ref: "@cli-ralph"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #610. Implemented iteration-timeout hardening by capturing
+  runIterationPrompts() promise and attaching catch before Promise.race to prevent Node.js 22
+  unhandled rejection on timeout/dispose path. Added/confirmed @cli-ralph ac-24/ac-25/ac-26 for
+  iteration-timeout defaults, validation, and iteration.timeout event behavior, with AC annotations
+  in tests/ralph.test.ts. Verified @cli-ralph AC annotation coverage across ac-1..ac-26 and green PR
+  CI on merge commit 3935ca808c131813871ec5a48e7550f9a239a5a1."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KJJZJ5BFS6CTF47JFN7TZ2GM
+created_at: 2026-02-26T19:32:55.301Z
+started_at: 2026-02-28T23:07:15.520Z
+submitted_at: 2026-02-28T23:07:18.877Z
+completed_at: 2026-02-28T23:14:18.000Z
+todos: []
+automation: needs_review

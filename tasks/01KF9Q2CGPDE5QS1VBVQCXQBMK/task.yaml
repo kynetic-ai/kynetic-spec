@@ -1,0 +1,22 @@
+_ulid: 01KF9Q2CGPDE5QS1VBVQCXQBMK
+slugs: []
+title: Document kspec worktree architecture in AGENTS.md
+type: task
+description: "Document kspec worktree architecture in AGENTS.md: .kspec/ is a git worktree on
+  kspec-meta branch, CLI commands that modify specs auto-commit to that branch, agents don't need to
+  manually commit spec changes or check .kspec git status"
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Added comprehensive shadow branch worktree architecture documentation to AGENTS.md.
+  Covers concepts, setup, verification, sync, troubleshooting, and onboarding.
+depends_on: []
+context: []
+priority: 3
+tags:
+  - docs
+vcs_refs: []
+created_at: 2026-01-18T23:29:29.622Z
+started_at: 2026-01-19T06:14:59.717Z
+completed_at: 2026-01-19T06:17:36.177Z
+todos: []

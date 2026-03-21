@@ -1,0 +1,25 @@
+_ulid: 01KF1BBM6X8491F1GS6K79RZYK
+slugs: []
+title: Design spec-drift detection hook for user input
+type: task
+description: "Reinforce spec-first workflow - we implemented validate --fix without spec coverage
+  first. Need mechanism to catch this pattern. Ideas: pre-commit hook that warns if code changes
+  without spec changes? Agent instructions that prompt for spec check? Alignment check that flags
+  implemented features without specs?"
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Implemented spec-first reminder hook: session prompt-check command, added to main
+  project settings, updated setup command to install both hooks"
+depends_on: []
+context: []
+priority: 2
+tags:
+  - design
+  - hooks
+  - spec-first
+vcs_refs: []
+created_at: 2026-01-15T17:30:54.045Z
+started_at: 2026-01-15T17:31:05.721Z
+completed_at: 2026-01-15T18:02:34.163Z
+todos: []

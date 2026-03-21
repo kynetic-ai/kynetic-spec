@@ -1,0 +1,67 @@
+_ulid: 01KM5Z4JVEFXG9SJ8P7RANZDNV
+slugs:
+  - task-cli-mutation-input-validation
+title: Add CLI mutation input validation
+type: task
+description: |
+  **What:** Add validateEnumOption() checks to all CLI mutation commands
+  that accept typed options without runtime validation. Audit identified
+  9 unvalidated enum options across mutation commands: task add --type,
+  item add --type, item set --type/--status/--maturity, inbox promote
+  --type, plan add/set --status, review check add --status.
+
+  **Why:** These commands persist invalid values to shadow branch YAML
+  files. On next read, safeParse drops those records silently — the
+  primary data corruption vector reported in GitHub #899. Fixing
+  mutations is highest priority because it prevents new corruption.
+
+  **How:** Each fix follows the existing validated pattern at
+  src/cli/commands/task.ts line 1067 (task add --automation):
+  1. Import the Zod schema (e.g. TaskTypeSchema from ../../schema/common.js)
+  2. Call validateEnumOption(value, Schema.options, "field name") before
+     the value is used
+  3. On failure: call error() with the result message and process.exit()
+  4. On success: use the validated value
+
+  Specific locations:
+  - src/cli/commands/task.ts ~line 1147: task add --type (TaskTypeSchema)
+  - src/cli/commands/item.ts line 708: item add --type (ItemTypeSchema)
+  - src/cli/commands/item.ts line 1089: item set --type (ItemTypeSchema)
+  - src/cli/commands/item.ts: item set --status (ImplementationStatusSchema),
+    --maturity (MaturitySchema)
+  - src/cli/commands/inbox.ts: inbox promote --type (TaskTypeSchema)
+  - src/cli/commands/plan.ts: plan add/set --status (PlanStatusSchema)
+  - src/cli/commands/review.ts: review check add --status (ReviewCheckStatusSchema)
+
+  Covers: @cli-input-type-safety ac-1, ac-3.
+spec_ref: "@cli-input-type-safety"
+plan_ref: "@plan-input-validation-hardening"
+origin: derived
+status: completed
+blocked_by: []
+closed_reason: Merged to dev after review approval. Added runtime enum validation for
+  task/item/inbox/plan/review mutation commands and regression coverage; npm test passed.
+depends_on:
+  - "@task-schema-derived-types"
+context: []
+priority: 1
+tags:
+  - cli
+  - validation
+vcs_refs: []
+review_ref: "@01KM655PQKXERC3W6XQA9MF3N4"
+submission_linkage:
+  review_url: null
+  branch: dev
+  captured_at: 2026-03-20T17:36:45.361Z
+  commit: 89942c26e4d0033049772e411e7235ee37407e86
+  remote: origin
+  remote_url: git@github.com:kynetic-ai/kynetic-spec.git
+  upstream_ref: refs/heads/dev
+session_id: 01KM64AFAVFG0X3J4D30CEV4TA
+created_at: 2026-03-20T15:52:01.646Z
+started_at: 2026-03-20T17:23:09.339Z
+submitted_at: 2026-03-20T17:36:45.833Z
+completed_at: 2026-03-20T17:42:59.447Z
+todos: []
+automation: eligible

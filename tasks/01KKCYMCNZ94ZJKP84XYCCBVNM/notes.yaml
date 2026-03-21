@@ -1,0 +1,78 @@
+notes:
+  - _ulid: 01KKCYMCNZG4J4JQ1NMNWRH4P1
+    content: See plan @plan-iterative-plan-editing for implementation notes
+    author: "@claude"
+    created_at: 2026-03-10T22:42:10.239Z
+  - _ulid: 01KKD9KAH9ACBVHSMY5NRP0WQ8
+    content: |-
+      Execution context:
+      - Background: iterative plan editing needs round-trip export before re-import/derive.
+      - Scope: add `kspec plan export <ref>` with stdout/file/json behavior and semantic errors.
+      - Files: src/cli/commands/plan.ts, tests/cli-plan.test.ts.
+      - Verification: targeted CLI tests, full npm test, kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T01:53:49.609Z
+  - _ulid: 01KKD9ZZY9ND5HZ3F8E5J6FD1A
+    content: "Implemented `kspec plan export <ref>` in `src/cli/commands/plan.ts` with stdout,
+      `--output`, and `--json` modes. Added AC-annotated CLI coverage in `tests/cli-plan.test.ts`
+      for content export, file export, empty-content validation, unresolved refs, and JSON trait
+      behavior. Verification: `npm run build`, `npm test -- tests/cli-plan.test.ts`, full `npm test`
+      (203 files / 4538 tests passed), `kspec validate` (warnings only from pre-existing repo-wide
+      backlog)."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T02:00:44.745Z
+  - _ulid: 01KKDARRMGVTEPJH9NGWWKY1RV
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #767 mixes @plan-export with unrelated
+      @worktree-support commits; rebase/split the branch so the review scope matches the task."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T02:14:16.465Z
+  - _ulid: 01KKDC1HVC1R9N9AKJEP5DV6KR
+    content: "[FIX_CYCLE: 2] Rebased feat/plan-export onto main so PR #767 contains only the
+      @plan-export implementation commit. Verified main...HEAD diff is limited to
+      src/cli/commands/plan.ts and tests/cli-plan.test.ts before re-running checks."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T02:36:33.004Z
+  - _ulid: 01KKDC2XSJAAJWY87VCJJXFQ90
+    content: "Rebased branch verification surfaced stale dist artifacts after switching branches:
+      tests/helpers/cli.ts runs dist/cli, so plan export was missing from the built output until npm
+      run build refreshed dist on feat/plan-export. Rebuilding before rerunning CLI tests."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T02:37:18.002Z
+  - _ulid: 01KKDC4FD8B6EMCJZJPED9T9N6
+    content: "Fix-cycle verification on the cleaned feat/plan-export branch: npm run build completed
+      successfully; npm test -- tests/cli-plan.test.ts passed (49/49); kspec validate returned
+      warnings only from the pre-existing repository backlog, with no new errors from @plan-export."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T02:38:08.808Z
+  - _ulid: 01KKDE06Z0R0WS30J1TDV4D2RP
+    content: "[FIX_CYCLE: 3] Review findings: MUST-FIX: PR #767 is missing executable coverage for
+      @trait-semantic-exit-codes ac-4. The runtime error branch in plan export's --output file-write
+      path is only annotated, not tested."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T03:10:46.241Z
+  - _ulid: 01KKDEVYNAWWVS1T2J3EMEAA3Y
+    content: "[FIX_CYCLE: 4] Implementing executable coverage for @trait-semantic-exit-codes ac-4 by
+      exporting to an existing directory path in tests/cli-plan.test.ts. This deterministically
+      forces fs.writeFile to fail in the --output branch and verifies the runtime error exit path
+      without changing production behavior."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T03:25:55.242Z
+  - _ulid: 01KKDF5YQNYQAFX7HQYH1VH1M3
+    content: "[FIX_CYCLE: 4] Verification after adding executable runtime-error coverage: npm test --
+      tests/cli-plan.test.ts passed (50/50) with the new --output directory-path failure case
+      covering @trait-semantic-exit-codes ac-4; kspec validate returned only the existing repository
+      warning backlog. Full npm test on current HEAD still reports unrelated timeout-heavy failures
+      in tests/enhanced-setup.test.ts, tests/native-guard-setup.test.ts,
+      tests/setup-pipeline-unification.test.ts, tests/cli/session-start-inbox-triage.test.ts, and
+      tests/cli/session-start-notes.test.ts; none touch the plan export files in this branch."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-11T03:31:22.997Z

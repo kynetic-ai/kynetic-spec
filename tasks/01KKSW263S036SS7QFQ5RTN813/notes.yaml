@@ -1,0 +1,41 @@
+notes:
+  - _ulid: 01KKSYHQ636X2SZS4YZK5ZKJK8
+    content: >-
+      Execution context:
+
+      - Background: Dispatch engine allows concurrent invocations for the same task across different
+      agents, causing conflicts
+
+      - Scope: Add cross-agent exclusivity check in handleStateChange() and _selectNextCandidate()
+      so at most one invocation is active per task
+
+      - Files: src/agent-runtime/dispatch.ts, tests/agent-dispatch-engine.test.ts
+
+      - AC: @agent-dispatch-engine ac-26
+
+      - Verification: Tests proving cross-agent exclusivity, existing tests still pass
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T23:50:50.307Z
+  - _ulid: 01KKSZ1XT0SBZ78TQ9CKABYD06
+    content: >-
+      Implementation complete. PR #889 created.
+
+
+      Changes:
+
+      1. Added _hasActiveInvocationForTask(taskRef) method that checks both activeInvocationDetails
+      and inFlightTaskKeys across all agents for cross-agent exclusivity.
+
+      2. Added guard in _selectNextCandidate() to skip candidates whose task already has an active
+      invocation by any agent. Entries remain queued (not discarded) so post-invocation drain picks
+      them up.
+
+      3. Added 4 tests covering: worker-blocks-reviewer, dual-agent-same-event,
+      different-tasks-concurrent, and staleness-check-on-deferred-entries.
+
+
+      All 5475 tests pass with 0 failures.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-15T23:59:41.376Z

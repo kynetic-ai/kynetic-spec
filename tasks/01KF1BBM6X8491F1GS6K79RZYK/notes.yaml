@@ -1,0 +1,198 @@
+notes:
+  - _ulid: 01KF1BBXRQW5XZQEAYPC4SVTDZ
+    content: |-
+      Refined concept from discussion:
+
+      1. UserPromptSubmit hook fires after user input
+      2. Two-tier approach:
+         - Lightweight gate (prompt-type?) to filter simple requests (typos, questions)
+         - Full analysis only when gate triggers: 'Analyze if this expands spec or creates gaps'
+      3. Goal: Catch spec drift at source rather than after implementation
+
+      Research needed:
+      - Claude Code hook types and capabilities
+      - Prompt type on hooks - how does gating work?
+      - What context is available in UserPromptSubmit hooks?
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T17:31:03.832Z
+  - _ulid: 01KF1BDVKRF6CFAKJ6EPWGWXMY
+    content: |-
+      Research findings:
+
+      ## Hook Types Available
+      1. **command** - runs script, stdout added as context
+      2. **prompt** - uses Haiku LLM for intelligent decisions, returns {ok: bool, reason: string}
+
+      ## UserPromptSubmit Capabilities
+      - Fires after user input, before Claude processes
+      - Receives: prompt text, session_id, transcript_path, cwd
+      - Can block (exit 2) or inject context (stdout/additionalContext)
+      - Supports BOTH command and prompt types
+
+      ## Key Insight: Prompt-type IS the gate
+      The prompt type uses Haiku to evaluate conditions - perfect for:
+      - Lightweight filtering of simple vs spec-impacting requests
+      - No script overhead for simple questions
+      - Returns structured decision
+
+      ## Design Pattern Emerging
+      Option A: Single prompt-type hook
+        - Haiku evaluates: 'Is this expanding scope or creating spec gaps?'
+        - If yes, inject spec-first instructions
+        - If no, pass through silently
+
+      Option B: Two-stage (more control)
+        - Stage 1: prompt-type gate (is this simple?)
+        - Stage 2: command hook injects full instructions if gate triggers
+
+      Sources:
+      - https://code.claude.com/docs/en/hooks
+      - https://claude.com/blog/how-to-configure-hooks
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T17:32:07.161Z
+  - _ulid: 01KF1BEHKRVERKCRKJDEFFMKFB
+    content: >-
+      Current state: Research complete, awaiting decision on approach.
+
+
+      Two options identified:
+
+      A) Single prompt-type hook - Haiku both gates and injects in one step
+
+      B) Command hook - Script with more control over logic
+
+
+      Next step: User to decide approach preference, then draft concrete prompt/implementation.
+
+
+      Blocking question: Should the hook inject general spec-first reminders, or should it be more
+      specific (e.g., run kspec commands to check coverage)?
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T17:32:29.688Z
+  - _ulid: 01KF1BW6E9N2BMDWE4KB03TM26
+    content: |-
+      Deep research on prompt-type hooks complete.
+
+      Key finding: Haiku gets LIMITED context in prompt-type hooks:
+      - Just the hook input JSON (prompt text, session_id, cwd)
+      - NOT conversation history or project files
+      - Response format: {ok: bool, reason: string}
+
+      Uncertainty identified:
+      - For Stop hooks, ok=false means 'keep working' and reason becomes context
+      - For UserPromptSubmit, ok=false might BLOCK the prompt entirely
+      - Need to test empirically or use command hook for predictability
+
+      Three options on table:
+      A) Command hook - full control, stdout becomes context
+      B) Test prompt-type empirically - quick spike to see behavior
+      C) Hybrid - command hook that calls Haiku for gating
+
+      Awaiting user decision on which path to pursue.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T17:39:57.002Z
+  - _ulid: 01KF1C6BRGHW7VADB095QC9YKP
+    content: |-
+      Spike setup complete. Created test-hooks/ folder with:
+      - .claude/settings.json with prompt-type UserPromptSubmit hook
+      - Hook uses Haiku to classify SIMPLE vs COMPLEX requests
+      - Returns ok:false with [SPEC-CHECK] reason for complex requests
+
+      Next: User to test in test-hooks/ folder and report:
+      1. Does ok:false block the prompt or inject context?
+      2. Is the reason visible to Claude?
+
+      This will determine if prompt-type works for our use case or if we need command hook.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T17:45:30.129Z
+  - _ulid: 01KF1CCQD5R1NR29R7C3AAF2SN
+    content: |-
+      Spike results:
+      - ok:true → prompt proceeds normally
+      - ok:false → BLOCKS prompt entirely, shows reason to user
+
+      This confirms prompt-type hooks are for GATING (allow/block), not context injection.
+
+      Conclusion: Must use command hook for spec-drift detection.
+      Command hook stdout becomes context without blocking the prompt.
+
+      Next step: Design command hook that:
+      1. Analyzes user prompt (pattern matching or call Haiku via API)
+      2. If complex/scope-expanding, output spec-first reminder
+      3. If simple, output nothing (or minimal context)
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T17:48:58.662Z
+  - _ulid: 01KF1CMB7V47SR9RJ2JQ8GM9CE
+    content: |-
+      Design decision: Simple injection, let Claude be smart
+
+      Approach:
+      - kspec CLI command (like stop hook) outputs standard reminder
+      - Always injects on every UserPromptSubmit
+      - No filtering/gating - Claude (Opus) is smart enough to apply when relevant
+      - Keep it LEAN to minimize noise
+
+      Draft reminder text options:
+      1. '[spec-check] Before implementing: Does this expand scope? Is there spec coverage?'
+      2. 'If this changes behavior, is there spec coverage?'
+      3. Single question probe that prompts reflection
+
+      Next: Draft the CLI command and hook config
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T17:53:08.348Z
+  - _ulid: 01KF1CTZZJ1PS94DH7PZEC7Z2E
+    content: >-
+      Implementation complete:
+
+
+      Added 'kspec session prompt-check' command that outputs:
+
+      [kspec] Before implementing behavior changes, check spec coverage. Update spec first if
+      needed.
+
+
+      Updated test-hooks/.claude/settings.json to use command hook.
+
+
+      Ready for testing:
+
+      1. cd test-hooks && claude
+
+      2. Try any prompt - should see the reminder injected as context
+
+      3. Verify Claude considers it appropriately without blocking
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T17:56:46.195Z
+  - _ulid: 01KF1CX2B79RA4X0GW41W53PRN
+    content: |-
+      Implementation ready for testing:
+      - Command: kspec session prompt-check
+      - Test hook updated with absolute path
+      - User to test in test-hooks/ directory
+
+      Pending: User verification that reminder appears in context without blocking
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T17:57:54.151Z
+  - _ulid: 01KF1D23HH6H8QVDZ6ZBZNV89J
+    content: |-
+      Testing successful:
+      - Hook fires on UserPromptSubmit
+      - Reminder appears as 'UserPromptSubmit hook success: [kspec] Before implementing...'
+      - Claude saw it and considered spec coverage before diving in
+
+      Remaining work for production use:
+      - Add hook to main project .claude/settings.json
+      - Consider portability (absolute path vs detection)
+      - Could clean up test-hooks/ folder
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-01-15T18:00:39.217Z

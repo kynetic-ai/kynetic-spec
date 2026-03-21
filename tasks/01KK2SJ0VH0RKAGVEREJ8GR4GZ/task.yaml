@@ -1,0 +1,31 @@
+_ulid: 01KK2SJ0VH0RKAGVEREJ8GR4GZ
+slugs: []
+title: Add compact kanban board to dashboard with active fleet row and needs attention
+type: task
+description: "Redesign the dashboard layout to show a compact kanban-style task overview instead of
+  just status count cards. New layout top-to-bottom: (1) Active Fleet row at top showing in-progress
+  agent work (existing component, keep as horizontal row), (2) Needs Attention section (existing,
+  keep as-is), (3) Compact kanban board with columns: Ready, In Progress, Needs Work, Review,
+  Blocked, Completed. No Cancelled column. Each column shows task cards (compact — title, priority
+  badge, slug, spec ref). Columns should not be full-page height — use a constrained max-height with
+  scroll within each column. Reuse existing TaskCard component in a compact variant or create a
+  MiniTaskCard. The status summary count cards can be replaced by the kanban column headers showing
+  counts. Keep existing click-to-navigate behavior — clicking a card should still open the task
+  detail or navigate to the task board."
+spec_ref: "@ui-dashboard-overview"
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Existing kanban board at /tasks/board already covers this need. Dashboard layout is
+  fine as status summary cards + needs attention.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - feature
+  - web-ui
+vcs_refs: []
+created_at: 2026-03-07T00:01:05.393Z
+todos: []
+automation: eligible

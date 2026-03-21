@@ -1,0 +1,22 @@
+_ulid: 01KFMMJTT49ATBWDDRHY58C8WS
+slugs: []
+title: Setup Bun monorepo workspace
+type: infra
+spec_ref: "@web-ui"
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: "PR #175 merged. Set up npm workspace structure with 3 packages (daemon, web-ui,
+  shared). All 962 tests pass, TypeScript configs validated."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - phase-0
+  - foundation
+vcs_refs: []
+created_at: 2026-01-23T05:17:41.572Z
+started_at: 2026-01-23T06:14:31.715Z
+completed_at: 2026-01-23T06:51:20.414Z
+todos: []
+automation: eligible

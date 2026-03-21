@@ -1,0 +1,38 @@
+_ulid: 01KG1H918VB2BT4MVRARPQRBR7
+slugs: []
+title: Update tasks.spec.ts to use correct bits-ui Select selectors
+type: task
+description: >-
+  tasks.spec.ts lines 62 and 167 still use the old incorrect getByRole('option') pattern for bits-ui
+  Select. Should be updated to use data-slot selectors per e2e skill guidance.
+
+
+  Current (incorrect):
+
+  await page.getByRole('option', { name: 'Pending', exact: true }).click();
+
+
+  Should be:
+
+  const dropdownContent = page.locator('[data-slot="select-content"]');
+
+  await expect(dropdownContent).toBeVisible();
+
+  await dropdownContent.locator('[data-slot="select-item"]').filter({ hasText: 'Pending' }).click();
+
+
+  From PR #256 review comment.
+spec_ref: null
+meta_ref: null
+status: completed
+blocked_by: []
+closed_reason: Tests already correct - bits-ui uses proper ARIA roles. Skill documentation updated instead.
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-01-28T05:30:02.394Z
+started_at: 2026-01-29T10:02:15.608Z
+completed_at: 2026-01-29T10:02:19.484Z
+todos: []

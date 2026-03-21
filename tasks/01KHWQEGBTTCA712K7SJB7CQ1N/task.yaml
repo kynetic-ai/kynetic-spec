@@ -1,0 +1,32 @@
+_ulid: 01KHWQEGBTTCA712K7SJB7CQ1N
+slugs: []
+title: Increase ralph review subagent timeout
+type: task
+description: >-
+  The DEFAULT_SUBAGENT_TIMEOUT in src/ralph/subagent.ts is 10 minutes, but CI takes ~10 minutes
+  (2900+ tests). The review subagent cannot wait for CI and complete its review within that budget —
+  5 of 10 review subagents timed out in session 01KHW4RP.
+
+
+  Increase DEFAULT_SUBAGENT_TIMEOUT to at least 20 minutes. The RALPH_PROMPT_TIMEOUT is already 30
+  minutes, so the subagent timeout should be closer to that. Consider making it configurable via
+  ralph config.
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #424. Increased DEFAULT_SUBAGENT_TIMEOUT from 10 to 20 minutes, added
+  --subagent-timeout CLI option for configurability."
+depends_on: []
+context: []
+priority: 2
+tags:
+  - ralph
+  - infra
+vcs_refs: []
+created_at: 2026-02-20T05:13:04.633Z
+started_at: 2026-02-20T05:34:41.397Z
+completed_at: 2026-02-20T06:05:20.637Z
+todos: []
+automation: eligible

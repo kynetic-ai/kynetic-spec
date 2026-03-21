@@ -1,0 +1,51 @@
+notes:
+  - _ulid: 01KJTPGAGEHQY6YGPJNHRSCWQ3
+    content: "Automation status set to needs_review: Missing spec_ref; task needs spec and ACs before
+      automation"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-03T20:33:48.558Z
+  - _ulid: 01KJWGB3G1RSSVPTYA9Q02257C
+    content: >-
+      Execution context:
+
+      - Background: daemon/process tests still have startup synchronization logic split across
+      files, with at least one fixed-delay assertion pattern that can flake in CI.
+
+      - Scope: add a reusable bounded startup wait helper and apply it in daemon/process CLI tests
+      for deterministic startup/readiness waits.
+
+      - Files: tests/helpers/cli.ts and daemon/process-oriented tests that currently use
+      local/ad-hoc startup wait logic.
+
+      - Verification: targeted vitest for changed tests, then full suite sharded runs as required by
+      project conventions, plus kspec validate.
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T13:24:34.945Z
+  - _ulid: 01KJWGRYAQXGJ429R5VRX7YWB2
+    content: Implemented reusable startup wait helper and migrated daemon/process startup
+      synchronization tests to bounded polling with diagnostics.\n\nChanges:\n- Added
+      tests/helpers/cli.ts::waitForStartup() with timeout + last-observation failure context.\n-
+      Replaced file-local wait logic in tests/cli-serve.test.ts with shared helper for
+      health/uptime/readiness waits.\n- Updated tests/cli-agent-commands.test.ts to use shared
+      helper for async readiness checks and replaced fixed 10ms reconnect assertion wait with
+      condition-based polling.\n\nVerification:\n- npm run test -- tests/cli-serve.test.ts
+      tests/cli-agent-commands.test.ts\n- npm run test:shard1\n- npm run test:shard2\n- npm run
+      test:shard3\n- kspec validate (fails due pre-existing repository-level
+      meta/reference/alignment issues unrelated to this task)
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T13:32:08.407Z
+  - _ulid: 01KJWGTBQ8P6HZFD5Y83BD1D7F
+    content: "Submitted for review in PR #674: https://github.com/kynetic-ai/kynetic-spec/pull/674"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T13:32:54.889Z
+  - _ulid: 01KJWHFCQS26ZGBRQG9CNEDVTX
+    content: "Autonomous dispatch run at 2026-03-04: verified task already completed. PR #674 merged on
+      2026-03-04T13:40:39Z (merge commit 26b870c2f) and commit is on main; no further lifecycle
+      transition required."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T13:44:24.058Z

@@ -1,0 +1,41 @@
+_ulid: 01KJS6ZMZH9X9V5C15QHRT9HAT
+slugs: []
+title: Shadow branch auto-push silently swallows failures — fire-and-forget push
+  (shadow.ts:1159-1164) uses
+type: task
+description: "Shadow branch auto-push silently swallows failures — fire-and-forget push
+  (shadow.ts:1159-1164) uses spawn with stdio:ignore and detached:true, making divergence errors
+  completely invisible. In a 4-hour ralph container session, 50+ commits accumulated locally with no
+  indication pushes were failing. The push fails because host and container both commit to
+  kspec-meta concurrently, causing divergence on the first push attempt, and every subsequent
+  auto-push also fails silently. Fix should: (1) capture push exit code even in fire-and-forget mode
+  (spawn with stdio:pipe, read stderr, unref after), (2) on push failure, log warning to stderr so
+  it appears in agent output and JSON mode, (3) consider returning a result from
+  autoCommit/shadowPush indicating push status so callers can surface it (e.g. kspec batch could
+  include push_failed:true in response), (4) on repeated failures, escalate visibility — e.g. after
+  3 consecutive push failures, emit a prominent warning. The local commit always succeeds regardless
+  — this is about VISIBILITY of sync failures, not blocking commits. Related: the merge driver
+  handles YAML conflicts well (56/57 commits rebased cleanly), so the recovery path works — the
+  problem is purely that nobody knows recovery is needed."
+spec_ref: "@shadow-sync"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #648. Implemented shadow auto-push failure visibility in
+  src/parser/shadow.ts by capturing detached push exit/error details, emitting warning output on
+  failure, and escalating warning visibility after repeated consecutive failures while keeping local
+  commits non-blocking. Added regression tests in tests/shadow.test.ts for single-failure warning
+  and repeated-failure escalation. AC coverage confirmation: @shadow-sync ac-1 behavior is covered
+  by tests with explicit annotations; existing @shadow-sync sync-path coverage (ac-4/ac-6/ac-8)
+  remains intact."
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: null
+created_at: 2026-03-03T06:43:19.153Z
+started_at: 2026-03-03T22:27:35.346Z
+submitted_at: 2026-03-03T22:28:03.013Z
+completed_at: 2026-03-03T22:38:57.728Z
+todos: []
+automation: eligible

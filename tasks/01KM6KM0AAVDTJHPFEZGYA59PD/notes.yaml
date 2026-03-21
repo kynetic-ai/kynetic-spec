@@ -1,0 +1,113 @@
+notes:
+  - _ulid: 01KM6KMRYCTSRT8SDGP81JCSGG
+    content: >-
+      ## What
+
+
+      kspec task unblock always sets status to pending regardless of what status the task had before
+      being blocked. A task that was in_progress, needs_work, or pending_review before blocking
+      should return to that status when unblocked.
+
+
+      Covers updated ACs:
+
+      - @state-blocked ac-1: task returns to the status it had before being blocked
+
+      - @task-unblock ac-1: task resumes from where it left off; if prior status is unknown, returns
+      to pending
+
+
+      ## Why
+
+
+      Dispatch workers that get blocked mid-work lose their in_progress state and fall back to
+      pending on unblock. This means they get re-picked up as new work instead of continuing. Same
+      issue for tasks in needs_work (fix cycle) or pending_review — unblocking drops important
+      lifecycle context. We hit this with @01KM6BGY which was in needs_work but went to pending on
+      unblock, requiring a manual patch to fix.
+
+
+      ## How
+
+
+      ### 1. Add a prior status field to the task schema
+
+      **File:** src/schema/task.ts
+
+
+      Add an optional field to store the status a task had before being blocked. This is only set
+      when transitioning to blocked and cleared on unblock.
+
+
+      ### 2. Record prior status in the block command
+
+      **File:** src/cli/commands/task.ts (block handler, ~line 2091-2153)
+
+
+      When transitioning to blocked, save the current status to the new field. The valid pre-block
+      statuses are: pending, in_progress, needs_work, pending_review (completed and cancelled
+      already reject blocking).
+
+
+      ### 3. Restore prior status in the unblock command
+
+      **File:** src/cli/commands/task.ts (unblock handler, ~line 2155-2211)
+
+
+      On unblock, read the stored prior status and restore it instead of hardcoding pending. Clear
+      the prior status field and blocked_by. Fall back to pending if the field is not set (backwards
+      compat for tasks blocked before this change).
+
+
+      ### 4. Update dispatch event payload
+
+      Both block and unblock already emit dispatch events with fromStatus/toStatus. The unblock
+      event should now correctly report the restored status as toStatus instead of always reporting
+      pending.
+
+
+      ### Verification
+
+      - Block an in_progress task → unblock → status is in_progress
+
+      - Block a needs_work task → unblock → status is needs_work
+
+      - Block a pending_review task → unblock → status is pending_review
+
+      - Block a pending task → unblock → status is pending
+
+      - Unblock a task that was blocked before this change (no stored prior status) → status is
+      pending
+
+      - kspec task get shows correct status after unblock
+
+      - Dispatch events report correct toStatus on unblock
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-20T21:50:23.692Z
+  - _ulid: 01KM6MFEHVQ3F1T7MED4KQCBFB
+    content: Implemented prior_status restoration on task unblock. Added prior_status field to
+      TaskSchema/TaskInputSchema. Block handler saves current status before transitioning to
+      blocked. Unblock handler restores prior_status (falls back to pending for backwards compat).
+      Reset handler clears prior_status. Updated 2 existing tests and added 7 new tests covering all
+      pre-block statuses (in_progress, needs_work, pending_review, pending), backwards compat, and
+      JSON output. Full test suite passes (297 files, 6703 tests).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-20T22:04:57.788Z
+  - _ulid: 01KM6MT5RSR9WDAN9HJNMNG9EZ
+    content: "[FIX_CYCLE: 1] Review verdict: changes_requested by codex@openai"
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-20T22:10:49.241Z
+  - _ulid: 01KM6N9N42ZV8XME7QTBV0FJRV
+    content: "Fix cycle 1: Addressed both review blockers. (1) Re-blocking an already blocked task no
+      longer overwrites prior_status with 'blocked' — the block handler now checks if status is
+      already 'blocked' and preserves the existing prior_status instead of replacing it. (2) Updated
+      lifecycle help text in content.ts to document that unblock restores the pre-block status (or
+      pending as fallback) instead of always returning to pending. Added a new integration test
+      covering the re-block scenario: start -> block -> block again -> unblock correctly restores to
+      in_progress. All 8 feature tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-20T22:19:16.482Z

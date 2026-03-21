@@ -1,0 +1,25 @@
+_ulid: 01KF1KB4D199B61AKJ17RM7YFN
+slugs: []
+title: Design shadow branch for meta tracking
+type: spike
+description: Shadow branch for auto-commit meta tracking - orphan branch (e.g., kspec-meta) that
+  only contains spec/ directory. Auto-commits on kspec commands go to shadow branch, keeping main
+  history clean. Reading task/spec state always pulls from shadow branch. Solves commit bloat
+  problem for auto-tracking. Works with git directly or jj. Could be configured during kspec init.
+spec_ref: null
+status: completed
+blocked_by: []
+closed_reason: Shadow branch spec designed and validated. Created spec/modules/shadow.yaml with full
+  feature coverage. Ready for implementation task derivation.
+depends_on: []
+context: []
+priority: 1
+tags:
+  - architecture
+  - git
+  - infrastructure
+vcs_refs: []
+created_at: 2026-01-15T19:50:26.465Z
+started_at: 2026-01-15T22:04:41.086Z
+completed_at: 2026-01-15T22:07:27.124Z
+todos: []

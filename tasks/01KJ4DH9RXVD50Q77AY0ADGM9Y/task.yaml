@@ -1,0 +1,32 @@
+_ulid: 01KJ4DH9RXVD50Q77AY0ADGM9Y
+slugs:
+  - task-extract-triage-action-executor
+title: Extract shared triage action executor and deduplicate validActions
+type: task
+description: "Both src/cli/commands/triage.ts and packages/daemon/src/routes/triage.ts contain
+  duplicate switch/case logic for triage action execution (promote/delete/defer/spec-gap/duplicate).
+  PR #454 extracted the formatter but not the executor. Extract to a shared module (e.g.
+  src/triage/actions.ts), update both consumers to import from it. Also deduplicate the validActions
+  array (appears 3x in triage.ts plus once with skip). Extract to module-level constant or export
+  from schema."
+spec_ref: "@triage-cli-commands"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #474. Extracted shared executeTriageAction() and VALID_ACTIONS to
+  src/triage/ module. CLI and daemon now import from shared module instead of maintaining duplicate
+  switch/case logic. VALID_ACTIONS derived from TriageActionSchema (single source of truth). All 17
+  own ACs and 6 trait ACs verified with test coverage. 3193 tests pass."
+depends_on: []
+context: []
+priority: 3
+tags:
+  - refactor
+  - triage
+vcs_refs: []
+created_at: 2026-02-23T04:53:45.885Z
+started_at: 2026-02-23T12:37:06.986Z
+completed_at: 2026-02-23T13:04:49.134Z
+todos: []
+automation: eligible

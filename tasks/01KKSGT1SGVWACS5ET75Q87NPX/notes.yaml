@@ -1,0 +1,43 @@
+notes:
+  - _ulid: 01KKSZ96ZVAKGCWTQGTF2F48W1
+    content: >-
+      Execution context:
+
+      - Background: Predecessor tasks (#881, #883, #885) replaced the agent_text_chunk streaming
+      with typed session event streaming. This cleanup task removes backward-compat shims and dead
+      code.
+
+      - Scope: (1) Update @ui-session-stream ac-2 spec text, (2) Remove AgentTextChunkEventData
+      type, (3) Remove agent_text_chunk from ws-invalidation.ts/session-utils.ts, (4) Remove
+      accumulateStreamingText (dead code — unused by any production code), (5) Update tests to
+      remove backward-compat assertions, (6) Update skill docs referencing agent_text_chunk
+
+      - Files: packages/shared/src/websocket.ts, packages/web-ui/src/lib/query/ws-invalidation.ts,
+      packages/web-ui/src/lib/components/session/session-utils.ts,
+      tests/web-ui-session-stream.test.ts, tests/web-ui-tanstack-query.test.ts,
+      tests/cli-agent-commands.test.ts, .claude/skills/ui-data-layer/SKILL.md,
+      templates/skills/ui-data-layer/SKILL.md
+
+      - Verification: npm test (full suite), grep for agent_text_chunk confirming zero production
+      references
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T00:03:40.155Z
+  - _ulid: 01KKSZWW55S8EDKP9SG99K78FA
+    content: |-
+      Completed cleanup. PR #890 created.
+
+      Summary:
+      - Updated @ui-session-stream ac-2 to reference typed WebSocket session events
+      - Removed AgentTextChunkEventData type from shared/websocket.ts  
+      - Removed agent_text_chunk from ws-invalidation.ts streaming events set
+      - Removed deprecated accumulateStreamingText() from session-utils.ts
+      - Removed backward-compat tests for legacy agent_text_chunk
+      - Updated test assertions to verify agent_text_chunk absence
+      - Renamed test helper emitAgentTextChunk → emitSessionTextEvent
+      - Updated ui-data-layer skill docs
+
+      Net: 7 insertions, 147 deletions across 8 files. Full test suite passes (5543 tests).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T00:14:24.421Z

@@ -1,0 +1,44 @@
+notes:
+  - _ulid: 01KKBYPE6WCXGV22RYRF1V4A0W
+    content: >-
+      Execution context:
+
+      - Background: validate --json emitted incomplete JSON (only core ValidationResult) and had one
+      console.log leak
+
+      - Scope: Restructure validate+lint commands to collect ALL validation data before output, emit
+      comprehensive JSON
+
+      - Changes:
+        1. validate.ts: Moved output() call to after all checks complete; in structured mode, builds comprehensive object with alignmentWarnings, alignmentStats, conventionValidation, stalenessWarnings, skillValidation, driftWarnings, fixResult
+        2. validate.ts: Fixed console.log(initHint) leak that bypassed structured mode check
+        3. validate.ts: Lint command similarly restructured for JSON output purity
+        4. tests/validate-exit-codes.test.ts: Added 5 new tests for JSON output purity covering ANSI-free output, completeness/alignment/skills data in JSON, and lint --json
+      - Verification: All 4335 tests pass (197 files), 0 failures
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T13:24:02.908Z
+  - _ulid: 01KKC0F8CGKN9RCRRNN0FKAAT2
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #750 fails npm test on current head.
+      tests/validate-exit-codes.test.ts expects validate --json to include alignmentWarnings and
+      skillValidation, but the submitted deliverable does not emit them."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-10T13:55:04.720Z
+  - _ulid: 01KKC24M00YXWVQ9MZ97Y7GPHG
+    content: "Fix cycle 1 resolution: Verified source code was already correct — alignmentWarnings,
+      alignmentStats, skillValidation are all included in JSON output when runAll=true (lines
+      919-1020 of validate.ts). The reviewer's test failure was from running tests against a stale
+      build artifact (tests invoke the compiled CLI binary, not source). Rebased on main (picked up
+      2 new commits), rebuilt, confirmed all 15 tests pass. Force-pushed to trigger fresh CI."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T14:24:13.313Z
+  - _ulid: 01KKC31177XP0XZTZS9VPMAKRE
+    content: "Fix cycle 1 resolved: All review threads resolved (MUST-FIX was stale build artifact
+      issue). All CI checks now green — test shards 1-3 pass, e2e pass, claude-review pass,
+      check-unresolved-comments pass. No code changes needed; the rebase+rebuild from prior note was
+      the fix."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T14:39:44.359Z

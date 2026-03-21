@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KKC04M1E409H3W0DSZ9GPQ5K
+    content: "Added --no-cascade flag to item set command. Commander parses it as options.cascade=false
+      (negated boolean pattern used elsewhere in codebase). When set, skips handleStatusCascade
+      entirely. No batch changes needed — flag auto-discovered via Commander option introspection.
+      Two tests added: no prompt shown + children not updated."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-10T13:49:16.206Z

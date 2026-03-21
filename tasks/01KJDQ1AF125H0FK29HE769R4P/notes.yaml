@@ -1,0 +1,66 @@
+notes:
+  - _ulid: 01KJDQVH2H94SY215Y96TMWF0K
+    content: "Linked to @cli-ralph spec. Ralph internal: session-scoped event listener mapping. Clear
+      scope from enrichment."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-26T19:47:16.689Z
+  - _ulid: 01KJK8HKREGH7X5J8M4EVHBTWJ
+    content: >-
+      Execution context:
+
+      - Background: Ralph logs session.update events from ACP stream and must attribute each event
+      to the iteration that created that ACP session.
+
+      - Scope: Replace shared mutable session-iteration mapping with session-scoped update listener
+      behavior and explicit listener cleanup when session rotates/disposes.
+
+      - Files: src/cli/commands/ralph.ts plus focused tests in tests/ralph.test.ts.
+
+      - Verification: targeted ralph tests for update attribution plus full ralph test file and
+      kspec validate.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T23:15:09.710Z
+  - _ulid: 01KJK8RVZ1AMH4N1PC0GVE3AS3
+    content: >-
+      Implemented session-scoped streaming update attribution for Ralph iterations.
+
+      - Replaced shared mutable sessionIterationMap approach with
+      createSessionUpdateLogger(acpSessionId, iteration, logUpdate).
+
+      - Each ACP session now registers a logger that captures iteration in closure and ignores
+      updates from other session IDs.
+
+      - Logging callback now safely swallows both sync and async logging failures.
+
+      - Updated helper tests in tests/ralph.test.ts to cover session-bound attribution and logger
+      error swallowing.
+
+      Verification: npm test -- tests/ralph.test.ts (141 passed).
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T23:19:07.489Z
+  - _ulid: 01KJK94BAT1FKZC7RGRWJEYYCY
+    content: "[FIX_CYCLE: 1] Review findings: MUST-FIX: PR #612 adds a new update listener per iteration
+      without removing prior listeners; listener accumulation risks memory leaks and EventEmitter
+      warnings over long ralph loops."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T23:25:23.674Z
+  - _ulid: 01KJK98J6NVSYHMX05DNR12CTF
+    content: "[FIX_CYCLE: 2] Addressed PR #612 MUST-FIX listener accumulation by tracking one active
+      session.update logger and detaching it via replaceSessionUpdateLogger() on session rotation,
+      error cleanup, periodic restart, and final cleanup. Added unit regression test for
+      detach-then-attach behavior in tests/ralph.test.ts. Verification: npm test --
+      tests/ralph.test.ts (142 passed). kspec validate still reports pre-existing meta/reference
+      issues unrelated to this task (@observations ambiguity, missing observations skill file)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T23:27:41.786Z
+  - _ulid: 01KJK98XXK58WHY0PGWCEXHPET
+    content: "[FIX_CYCLE: 2] Pushed commit 3eba7201 to PR #612 with listener detach on
+      rotation/end/dispose and regression test coverage for replaceSessionUpdateLogger ordering."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-28T23:27:53.779Z

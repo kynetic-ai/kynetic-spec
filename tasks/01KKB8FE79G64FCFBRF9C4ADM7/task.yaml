@@ -1,0 +1,27 @@
+_ulid: 01KKB8FE79G64FCFBRF9C4ADM7
+slugs:
+  - implement-schema-and-structure-ac-backfill
+title: Implement Schema and Structure AC Backfill
+type: task
+spec_ref: "@schema-ac-backfill"
+plan_ref: "@plan-spec-reconciliation-close-validate-completeness-ga"
+status: completed
+blocked_by: []
+closed_reason: "Merged in PR #784 (69420642a28584e531c216b9f7083bbfc262a98d). Added review-artifact
+  test coverage for the schema/structure AC backfill with isolated temp fixtures, verified the
+  touched schema refs have no completeness warnings, and confirmed full regression plus fresh PR CI
+  passed on the merged head. AC coverage for @schema-ac-backfill and the touched backfill refs was
+  reviewed and confirmed."
+depends_on:
+  - "@implement-spec-completeness-policy"
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+session_id: 01KKF7YXFBJX9SP7QQ1H35AZZ6
+created_at: 2026-03-10T06:55:44.873Z
+started_at: 2026-03-11T20:15:32.262Z
+submitted_at: 2026-03-11T20:20:12.245Z
+completed_at: 2026-03-11T20:30:31.902Z
+todos: []
+automation: eligible

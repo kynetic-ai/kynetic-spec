@@ -1,0 +1,33 @@
+_ulid: 01KK2SHZXHD706QWBM4P2TTGB1
+slugs: []
+title: Add agent definition editing UI with inline edit form
+type: task
+description: "Currently agent definitions can only be edited via CLI (kspec meta set agent). Add:
+  (1) Daemon PATCH /api/meta/agents/:id endpoint that updates agent fields in kynetic.meta.yaml via
+  the existing meta set infrastructure, (2) An edit icon/button on each AgentCard that opens an
+  inline form or modal, (3) Edit form fields: name, description, adapter, dispatch triggers
+  (add/remove), capabilities, tools, skills, budget (max_tasks, timeout_minutes), concurrency
+  (max_concurrent), auto_approve toggle, prompt_template textarea, (4) Save calls the PATCH
+  endpoint, (5) Cancel discards changes. Agent schema fields from src/schema/meta.ts AgentSchema
+  should drive the form structure."
+spec_ref: "@ui-agent-dispatch"
+meta_ref: null
+plan_ref: null
+status: completed
+blocked_by: []
+closed_reason: Review passed. Merged to feat/ui-revamp.
+depends_on: []
+context: []
+priority: 2
+tags:
+  - feature
+  - web-ui
+  - daemon
+vcs_refs: []
+session_id: 01KK3CEDBN2AW3MPY2PBYG6X9Z
+created_at: 2026-03-07T00:01:04.433Z
+started_at: 2026-03-07T05:43:07.333Z
+submitted_at: 2026-03-07T05:43:09.043Z
+completed_at: 2026-03-07T06:06:38.030Z
+todos: []
+automation: eligible

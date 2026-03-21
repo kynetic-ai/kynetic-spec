@@ -1,0 +1,9 @@
+notes:
+  - _ulid: 01KJX36BZ6G4KZGDZ3B2FDD30T
+    content: "Carry-forward requirement from PR #664: when replacing ralph loop wording with agent
+      dispatch concepts, preserve explicit per-task branch isolation guidance (create/switch
+      dedicated task branch before file edits) so worker/reviewer/fix-cycle flows avoid cross-task
+      branch contamination."
+    supersedes: null
+    author: Jacob Chapel
+    created_at: 2026-03-04T18:54:02.726Z

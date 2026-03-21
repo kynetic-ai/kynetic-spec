@@ -1,0 +1,143 @@
+notes:
+  - _ulid: 01KKT05KN3SC10N8XVA87TFAND
+    content: >-
+      ## Problem
+
+
+      The checkpoint and prompt-check hooks are currently always installed by kspec setup into
+      .claude/settings.json with no way to control this via project configuration. The checkpoint
+      hook is being scoped down to git-only checks (separate task), and should be off by default
+      since most projects using dispatch don't need it. The prompt-check (spec-first reminder on
+      UserPromptSubmit) is lightweight and useful, so it should default to enabled.
+
+
+      ## What to do
+
+
+      Add a hooks configuration section to kspec.config.yaml and make kspec setup respect it when
+      installing/removing hooks.
+
+
+      ### ACs to implement on @project-config
+
+      - ac-hooks-section: hooks section in kspec.config.yaml allows independent enable/disable of
+      each hook (checkpoint, prompt-check)
+
+      - ac-hooks-missing-keys: When hooks section exists but a key is absent, resolve to that hook's
+      default
+
+      - ac-hooks-no-config: When no hooks section or no config file, all hooks resolve to defaults
+
+      - ac-hooks-validation: Invalid values in hooks section produce a validation error
+
+
+      ### ACs to implement on @cmd-session-checkpoint
+
+      - ac-default-disabled: New projects without checkpoint preference don't get the hook installed
+
+      - ac-install-when-enabled: When config enables checkpoint, setup installs it
+
+      - ac-remove-when-disabled: When config disables or doesn't mention checkpoint, setup removes
+      it if previously installed
+
+
+      ### Config shape
+
+
+      kspec.config.yaml gains:
+
+      ```yaml
+
+      hooks:
+        checkpoint: true    # or false, default: false
+        prompt_check: true  # or false, default: true
+      ```
+
+
+      ### Key files
+
+      - src/schema/spec.ts — ManifestSchema has a `hooks` field (currently z.record(z.string(),
+      z.unknown()).optional()). Replace with a proper typed schema for the hooks config.
+
+      - src/cli/commands/setup.ts — Lines ~303-328 install the stop hook unconditionally. Needs to
+      read config, conditionally install/remove checkpoint, and conditionally install/remove
+      prompt-check.
+
+      - .claude/settings.json — The target file where hooks are installed/removed. Setup already
+      reads and writes this file.
+
+
+      ### Defaults
+
+      - prompt-check (UserPromptSubmit hook): ENABLED by default — lightweight spec-first reminder
+
+      - checkpoint (Stop hook): DISABLED by default — with dispatch handling tasks, most sessions
+      don't need pre-stop blocking
+
+
+      ### Important behaviors
+
+      - kspec setup must be idempotent — running it multiple times with the same config produces the
+      same result
+
+      - Removal: if a hook was previously installed and config now says disabled (or absent with
+      default=disabled), setup removes that hook entry from .claude/settings.json
+
+      - The hooks section in ManifestSchema already exists but is untyped. Give it a proper Zod
+      schema.
+
+      - kspec init should NOT add a hooks section to kspec.config.yaml — let the defaults apply.
+      Users opt in by adding the section.
+
+
+      ### Dependencies
+
+      - This task does NOT depend on the checkpoint scope reduction task (removing task/todo
+      checks). They're independent — this controls installation, that controls what the hook checks.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T00:19:10.627Z
+  - _ulid: 01KKT1055TPQ5A3QSKEBGA0SDG
+    content: >-
+      Execution context:
+
+      - Background: Setup currently installs checkpoint and prompt-check hooks unconditionally. Need
+      to make this configurable via kspec.config.yaml.
+
+      - Scope: Add HooksConfigSchema to config.ts, update setup.ts to conditionally install/remove
+      hooks based on config, add comprehensive tests.
+
+      - Files: src/parser/config.ts, src/cli/commands/setup.ts, tests/parser/config.test.ts,
+      tests/enhanced-setup.test.ts
+
+      - Verification: npm test passes, hooks config controls installation behavior
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T00:33:40.538Z
+  - _ulid: 01KKT1K1KFRWXWS03RRKEE237E
+    content: >-
+      Implementation complete. PR #892 created.
+
+
+      Changes:
+
+      1. Added HooksConfigSchema to config.ts with checkpoint (default: false) and prompt_check
+      (default: true) fields
+
+      2. Wired hooks into KspecConfigSchema, ResolvedKspecConfig, resolveConfig(),
+      getDefaultConfig()
+
+      3. Updated installClaudeCodeHooks() in setup.ts to accept HooksPreferences and conditionally
+      install/remove hooks
+
+      4. runSetupPipeline() loads project config to pass hook preferences
+
+      5. 20 new config tests + 8 new setup tests covering all 4 hooks ACs
+
+      6. Updated 2 existing tests that assumed unconditional Stop hook installation
+
+
+      All tests pass. TypeScript compiles cleanly.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-03-16T00:43:59.473Z

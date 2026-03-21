@@ -1,0 +1,52 @@
+notes:
+  - _ulid: 01KJ4V6FEHNKAMR2A4CFZ6WQ6W
+    content: "AUTOMATION: Bug fix. Batch arg handling should JSON.stringify objects before passing to
+      handlers. Spec @batch-exec."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T08:52:31.313Z
+  - _ulid: 01KJ5NG687NCF4GAAGASEY2PDK
+    content: Added toArgString() helper in batch-exec.ts that JSON.stringify objects instead of using
+      String() which produces [object Object]. Fix applied to all 4 value-serialization paths in
+      buildCommandArgv (positional scalars, positional array items, option scalars, option array
+      items). 3 unit tests + 1 integration test with real task patch through batch. All 3229 tests
+      pass.
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T16:32:12.551Z
+  - _ulid: 01KJ5P5HSH0F936M14PD9724WJ
+    content: "[FIX_CYCLE: 1] Review findings: Re-review: Previous findings unaddressed (same HEAD
+      e30e7dd). MUST-FIX: trait AC coverage annotations missing for @batch-exec inherited traits
+      (@trait-json-output, @trait-semantic-exit-codes, @trait-error-guidance, @trait-dry-run,
+      @trait-shadow-commit). SHOULD-FIX: new regression tests lack // AC: annotations. No new
+      commits since last review — worker must address findings before merge."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T16:43:52.498Z
+  - _ulid: 01KJ5PKD8XB2XFGWNMP4E8MGXW
+    content: "[FIX_CYCLE: 1] Addressed review findings: added // AC: annotations for all 5 inherited
+      traits (@trait-json-output, @trait-semantic-exit-codes, @trait-error-guidance, @trait-dry-run,
+      @trait-shadow-commit). Added 6 new dedicated trait AC tests covering JSON ref prefix, ISO 8601
+      timestamps, JSON error guidance, runtime exit codes, dry-run error handling, and dry-run
+      field. Annotated existing regression test. All 3235 tests pass."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T16:51:26.621Z
+  - _ulid: 01KJ5WJFJ724ZG9X1V0RHFJMCY
+    content: "[FIX_CYCLE: 3] Review findings: Audit findings: (1) Unresolved review thread on GitHub
+      blocks check-unresolved-comments CI. (2) Weak trait AC test @trait-json-output ac-4 -
+      assertion checks command name not @ prefix on refs. (3) Weak trait AC test @trait-dry-run ac-6
+      - checks string 'dry-run' not actual dry_run boolean field. Strengthen or remove those 2
+      annotations, resolve the GH thread, then resubmit."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T18:35:47.655Z
+  - _ulid: 01KJ5XEJR8C7BGYM4DK48Y4CZS
+    content: "[FIX_CYCLE: 4] Addressed review findings: (1) Added dry_run: true boolean field to
+      BatchExecResult type and dry-run response path, satisfying @trait-dry-run ac-6. Strengthened
+      test to assert actual boolean instead of string. (2) Removed misleading @trait-json-output
+      ac-4 annotation — batch JSON envelope doesn't contain entity references. (3) Resolved GitHub
+      review thread PRRT_kwDOQ7Tfmc5wLbCc. All 3233 tests pass (1 pre-existing cli-serve flake)."
+    supersedes: null
+    author: "@claude"
+    created_at: 2026-02-23T18:51:08.425Z

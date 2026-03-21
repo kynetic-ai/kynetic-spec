@@ -1,0 +1,19 @@
+_ulid: 01KHZMQ8YTV97DQ12GGR7SGJQX
+slugs:
+  - ws
+title: Whitespace existing
+type: task
+description: valid
+spec_ref: null
+meta_ref: null
+plan_ref: null
+status: cancelled
+blocked_by: []
+closed_reason: Test task artifact — no real work
+depends_on: []
+context: []
+priority: 3
+tags: []
+vcs_refs: []
+created_at: 2026-02-21T08:23:09.530Z
+todos: []
