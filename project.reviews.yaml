@@ -40917,6 +40917,17 @@ reviews:
         runner: npm
         created_at: 2026-03-21T17:40:33.776Z
         completed_at: 2026-03-21T17:40:33.776Z
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: kspec validate exited 6 with the repo's existing warning profile (orphaned skills/orphaned
+          specs/legacy AC annotation warnings); no new validation error attributable to this change.
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T17:40:45.508Z
+        completed_at: 2026-03-21T17:40:45.508Z
     events:
       - _ulid: 01KM8QHXRV42Z1EVYK1FVV6EET
         actor: Test User
@@ -40945,6 +40956,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM8QR29SS0VMR4178WT0CYRE
         timestamp: 2026-03-21T17:40:35.153Z
+      - _ulid: 01KM8QRD36S18HSYHA7TPAN3BV
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-21T17:40:45.798Z
     examined_commit: 66ff03762bb3763a0166e96b7fc94c5adaa18729
     external_links: []
     lifecycle_state: open
@@ -40977,5 +40995,5 @@ reviews:
         kind: blocker
     verdicts: []
     created_at: 2026-03-21T17:37:13.499Z
-    updated_at: 2026-03-21T17:40:34.745Z
+    updated_at: 2026-03-21T17:40:45.508Z
     notes: []
