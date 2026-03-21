@@ -3144,4 +3144,323 @@ Examples:
         process.exit(EXIT_CODES.ERROR);
       }
     });
+
+  // kspec task rebuild-index
+  // AC: @task-index-rebuild ac-1, ac-2, ac-3, ac-4
+  task
+    .command("rebuild-index")
+    .description("Rebuild the task index from per-task directories")
+    .option("--repair", "Overwrite the index with the rebuilt version")
+    .option("--dry-run", "Show what would change without applying")
+    .option("--force", "Used with --repair to skip confirmation")
+    .action(async (options) => {
+      try {
+        const ctx = await initContext();
+
+        // AC: @trait-dry-run ac-5 — dry-run takes precedence over --repair
+        const isDryRun = !!options.dryRun;
+        const isRepair = !!options.repair && !isDryRun;
+
+        // Import split backend utilities
+        const { listTaskDirs, toIndexEntry, getIndexFilePath } = await import(
+          "../../parser/split-backend.js"
+        );
+        const { readYamlFile } = await import("../../parser/yaml.js");
+        const { TaskDataManager } = await import(
+          "../../parser/task-data-manager.js"
+        );
+
+        // AC: @task-index-rebuild ac-4 — report when no per-task directories exist
+        const ulids = await listTaskDirs(ctx);
+        if (ulids.length === 0) {
+          // AC: @trait-error-guidance ac-1 — description of what went wrong
+          // AC: @trait-error-guidance ac-2 — suggested action to resolve
+          // AC: @trait-error-guidance ac-6 — guidance in structured error object
+          error(
+            "No per-task directories found in .kspec/tasks/",
+            { suggestion: "Run 'kspec task migrate' to convert monolithic task storage to per-task directories." },
+          );
+          if (!isJsonMode()) {
+            info("Run 'kspec task migrate' to convert monolithic task storage to per-task directories.");
+          }
+          process.exit(EXIT_CODES.VALIDATION_FAILED);
+        }
+
+        // AC: @task-index-rebuild ac-1 — scan all task directories and extract indexed fields
+        // Use a split-mode TaskDataManager to load tasks from per-task files
+        const splitManager = new TaskDataManager("split");
+        const allTasks = await splitManager.loadAllTasks(ctx);
+        const newEntries: Record<string, unknown>[] = allTasks.map((t) =>
+          toIndexEntry(t),
+        );
+        const newEntriesByUlid = new Map(
+          newEntries.map((e) => [e._ulid as string, e]),
+        );
+
+        // Read current index entries for comparison
+        const indexPath = getIndexFilePath(ctx);
+        let currentEntries: Record<string, unknown>[] = [];
+        try {
+          const raw = await readYamlFile<unknown>(indexPath);
+          if (Array.isArray(raw)) {
+            currentEntries = raw.filter(
+              (e): e is Record<string, unknown> =>
+                !!e && typeof e === "object",
+            );
+          } else if (
+            raw &&
+            typeof raw === "object" &&
+            "tasks" in raw
+          ) {
+            const wrapper = raw as Record<string, unknown>;
+            if (Array.isArray(wrapper.tasks)) {
+              currentEntries = wrapper.tasks.filter(
+                (e): e is Record<string, unknown> =>
+                  !!e && typeof e === "object",
+              );
+            }
+          }
+        } catch {
+          // Index file may not exist — treat as empty
+        }
+        const currentByUlid = new Map(
+          currentEntries
+            .filter((e) => typeof e._ulid === "string")
+            .map((e) => [e._ulid as string, e]),
+        );
+
+        // AC: @task-index-rebuild ac-2 — report differences
+        const { indexEntriesEqual } = await import(
+          "../../parser/split-backend.js"
+        );
+
+        interface IndexDiff {
+          type: "added" | "removed" | "changed";
+          ulid: string;
+          title?: string;
+          fields?: Array<{
+            field: string;
+            before: unknown;
+            after: unknown;
+          }>;
+        }
+        const diffs: IndexDiff[] = [];
+
+        // Find added entries (in per-task dirs but not in index)
+        for (const [ulid, newEntry] of newEntriesByUlid) {
+          const currentEntry = currentByUlid.get(ulid);
+          if (!currentEntry) {
+            diffs.push({
+              type: "added",
+              ulid,
+              title: newEntry.title as string,
+            });
+          } else if (!indexEntriesEqual(currentEntry, newEntry)) {
+            // Changed entries — compare all fields present in the new entry
+            const fields: IndexDiff["fields"] = [];
+            const allKeys = new Set([
+              ...Object.keys(newEntry),
+              ...Object.keys(currentEntry),
+            ]);
+            for (const field of allKeys) {
+              if (field === "_ulid") continue; // Skip identity field
+              const before = currentEntry[field];
+              const after = newEntry[field];
+              if (before === after) continue;
+              if (before === undefined && after === undefined) continue;
+              // Deep comparison for arrays
+              if (Array.isArray(before) && Array.isArray(after)) {
+                if (
+                  before.length === after.length &&
+                  before.every(
+                    (v: unknown, i: number) => v === after[i],
+                  )
+                )
+                  continue;
+              }
+              fields.push({ field, before, after });
+            }
+            if (fields.length > 0) {
+              diffs.push({
+                type: "changed",
+                ulid,
+                title: (newEntry.title || currentEntry.title) as string,
+                fields,
+              });
+            }
+          }
+        }
+
+        // Find removed entries (in index but not in per-task dirs)
+        for (const [ulid, currentEntry] of currentByUlid) {
+          if (!newEntriesByUlid.has(ulid)) {
+            diffs.push({
+              type: "removed",
+              ulid,
+              title: currentEntry.title as string,
+            });
+          }
+        }
+
+        const resultData = {
+          ...(isDryRun ? { dry_run: true } : {}),
+          task_dirs_found: ulids.length,
+          index_entries_current: currentEntries.length,
+          index_entries_rebuilt: newEntries.length,
+          differences: diffs,
+          repaired: false,
+        };
+
+        if (diffs.length === 0) {
+          output(resultData, () => {
+            if (isDryRun) {
+              warn("DRY RUN — no changes will be written");
+              console.log();
+            }
+            success(
+              `Index is up to date (${newEntries.length} tasks)`,
+            );
+          });
+          return;
+        }
+
+        // AC: @trait-dry-run ac-3 — clear indication that this is a preview
+        if (isDryRun) {
+          output(resultData, () => {
+            warn("DRY RUN — no changes will be written");
+            console.log();
+            printDiffs(diffs);
+            console.log();
+            info(
+              `${diffs.length} difference(s) found. Use --repair to apply changes.`,
+            );
+          });
+          return;
+        }
+
+        // No --repair: just report diffs
+        if (!isRepair) {
+          output(resultData, () => {
+            printDiffs(diffs);
+            console.log();
+            info(
+              `${diffs.length} difference(s) found. Use --repair to overwrite the index.`,
+            );
+          });
+          return;
+        }
+
+        // AC: @task-index-rebuild ac-3 — confirm before repairing unless --force
+        if (!options.force) {
+          if (isJsonMode()) {
+            error("Confirmation required. Use --force with --json to proceed");
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+
+          const isTTY =
+            process.env.KSPEC_TEST_TTY === "1" ||
+            process.env.KSPEC_TEST_TTY === "true" ||
+            process.stdin.isTTY;
+          if (!isTTY) {
+            error("Non-interactive environment. Use --force to proceed");
+            process.exit(EXIT_CODES.USAGE_ERROR);
+          }
+
+          const readline = await import("node:readline");
+          const rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout,
+          });
+          const answer = await new Promise<string>((resolve) => {
+            rl.question(
+              `Overwrite index with ${newEntries.length} entries (${diffs.length} change(s))? [y/N] `,
+              resolve,
+            );
+          });
+          rl.close();
+
+          if (answer.toLowerCase() !== "y" && answer.toLowerCase() !== "yes") {
+            info("Index repair cancelled");
+            return;
+          }
+        }
+
+        // AC: @task-index-rebuild ac-3 — repair mode: overwrite index
+        const result = await splitManager.rebuildIndex(ctx);
+
+        await commitIfShadow(
+          ctx.shadow,
+          `fix: rebuild task index from per-task directories`,
+        );
+
+        resultData.repaired = true;
+
+        output(resultData, () => {
+          printDiffs(diffs);
+          console.log();
+          success(
+            `Index rebuilt from ${result.count} per-task directories`,
+          );
+        });
+      } catch (err) {
+        // AC: @trait-error-guidance ac-1 — includes description of what went wrong
+        // AC: @trait-error-guidance ac-2 — includes suggested action
+        // AC: @trait-error-guidance ac-6 — guidance in structured error object
+        if (isJsonMode()) {
+          output({
+            success: false,
+            error: String(err instanceof Error ? err.message : err),
+            suggestion:
+              "Check that .kspec/ directory exists and shadow branch is healthy. Run 'kspec shadow status' for diagnostics.",
+          });
+        } else {
+          error(
+            "Failed to rebuild index",
+            err instanceof Error ? err.message : err,
+          );
+          info(
+            "Check that .kspec/ directory exists and shadow branch is healthy. Run 'kspec shadow status' for diagnostics.",
+          );
+        }
+        process.exit(EXIT_CODES.ERROR);
+      }
+    });
+}
+
+/**
+ * Print index diff details in human-readable format.
+ */
+function printDiffs(
+  diffs: Array<{
+    type: "added" | "removed" | "changed";
+    ulid: string;
+    title?: string;
+    fields?: Array<{ field: string; before: unknown; after: unknown }>;
+  }>,
+): void {
+  const added = diffs.filter((d) => d.type === "added");
+  const removed = diffs.filter((d) => d.type === "removed");
+  const changed = diffs.filter((d) => d.type === "changed");
+
+  if (added.length > 0) {
+    console.log(chalk.green(`  Added (${added.length}):`));
+    for (const d of added) {
+      console.log(chalk.green(`    + ${d.title} (${d.ulid})`));
+    }
+  }
+  if (removed.length > 0) {
+    console.log(chalk.red(`  Removed (${removed.length}):`));
+    for (const d of removed) {
+      console.log(chalk.red(`    - ${d.title} (${d.ulid})`));
+    }
+  }
+  if (changed.length > 0) {
+    console.log(chalk.yellow(`  Changed (${changed.length}):`));
+    for (const d of changed) {
+      console.log(chalk.yellow(`    ~ ${d.title} (${d.ulid})`));
+      if (d.fields) {
+        showChangeDiff(d.fields);
+      }
+    }
+  }
 }
