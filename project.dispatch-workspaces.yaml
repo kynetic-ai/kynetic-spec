@@ -16963,7 +16963,7 @@ workspaces:
         head: c925689681d0bb27dffc744f759c87480f0b41d2
         last_seen_at: 2026-03-21T10:03:22.378Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/task-impl-per-task-files-01km6yet
-  - active_role: worker
+  - active_role: null
     base_branch_point: e273fe88270dc48f490a0856d03ba78deecc23b0
     bootstrap:
       status: succeeded
@@ -17022,18 +17022,18 @@ workspaces:
       remote_ref: null
       source: provisioned
     canonical_branch: dispatch/task/task-extend-write-buffer/01km6yev
-    canonical_branch_head: 99e92ad7d12fdb6a6cce9ab8f7d11bc48ca3bd1b
+    canonical_branch_head: 7809046b69a1bc666d453cab12652d9841b697d2
     cleanup:
       status: not_scheduled
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T10:03:17.285Z
+      updated_at: 2026-03-21T10:11:27.085Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T10:03:22.724Z
+      updated_at: 2026-03-21T10:11:27.085Z
     integration:
       status: pending
       detail: null
@@ -17041,17 +17041,17 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: e273fe88270dc48f490a0856d03ba78deecc23b0
-      updated_at: 2026-03-21T10:03:17.285Z
-    lifecycle_state: active
+      updated_at: 2026-03-21T10:11:27.085Z
+    lifecycle_state: ready
     resolved_base_branch: dev
     task_ref: "@01KM6YEVFHZ9J6734CYVPWWDMH"
     task_slug: task-extend-write-buffer
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T10:03:22.724Z
-      last_reconciled_at: 2026-03-21T10:03:22.724Z
+      last_reconciled_at: 2026-03-21T10:11:27.085Z
       created_at: 2026-03-21T09:41:54.097Z
-      updated_at: 2026-03-21T10:03:22.724Z
+      updated_at: 2026-03-21T10:11:27.085Z
     workspace_id: dispatch-workspace-01KM6YEVFHZ9J6734CYVPWWDMH
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
