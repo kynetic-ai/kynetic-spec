@@ -42630,6 +42630,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T23:34:10.035Z
+      - _ulid: 01KM9CDMDMPT7J7ART2VTK27V1
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM9CDM3AZD0APHSATCB4TNG8
+        timestamp: 2026-03-21T23:41:52.948Z
     examined_commit: e85852381a7bdabdd4cae7f7fd041c9e3d106e4d
     external_links: []
     lifecycle_state: open
@@ -42639,8 +42646,29 @@ reviews:
       content_hash: ""
       ref: "@01KM99VKMSAS3JBX7S3QWBHRSV"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM9CDM3AZD0APHSATCB4TNG8
+        anchor:
+          type: code
+          commit: e85852381a7bdabdd4cae7f7fd041c9e3d106e4d
+          line_end: 485
+          line_start: 463
+          path: tests/agent-invocation-lifecycle.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM9CDM3A3JV0TXJEP0Q7CAD3
+            author: Test User
+            body: The merge gate is still red on this snapshot. I ran `npm test` twice and both full-suite runs
+              failed in timeout-handling tests in this file (first `should close session as
+              timed_out when timeout is reached`, then `should dispatch ACP cancel request on
+              timeout` at this block) with the 15s test timeout. I reran this file in isolation and
+              it passed, so this looks like suite-level flakiness rather than a regression from the
+              AC annotation changes, but we still cannot approve or merge while `npm test` is
+              failing on the branch. Please stabilize or explain the timeout behavior and resubmit
+              with a clean full-suite run.
+            created_at: 2026-03-21T23:41:52.618Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T23:33:46.331Z
-    updated_at: 2026-03-21T23:34:09.701Z
+    updated_at: 2026-03-21T23:41:52.618Z
     notes: []
