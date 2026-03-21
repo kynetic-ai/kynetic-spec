@@ -18,7 +18,7 @@ import {
   scanTestCoverage,
   syncSpecImplementationStatus,
 } from "../../parser/index.js";
-import { taskDataManager, resolveTaskDataManager, type TaskSummary } from "../../parser/task-data-manager.js";
+import { resolveTaskDataManager, type TaskSummary } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
   AutomationStatusSchema,
@@ -162,7 +162,7 @@ async function resolveTaskRef(
 
   // Load full task details via the data manager
   // AC: @task-data-manager ac-3 — assembles complete task transparently
-  return taskDataManager.getTask(ctx, result.ulid);
+  return resolveTaskDataManager(ctx).getTask(ctx, result.ulid);
 }
 
 /**
@@ -528,7 +528,7 @@ async function setTaskFields(
       validatedAutomation = automationResult.value;
     }
 
-    const updatedTask = await taskDataManager.mutateTask(ctx, foundTask._ulid, (latestTask) => {
+    const updatedTask = await resolveTaskDataManager(ctx).mutateTask(ctx, foundTask._ulid, (latestTask) => {
       const nextTask: Task = { ...latestTask };
       const mutationChanges: Array<{ field: string; before: unknown; after: unknown }> = [];
 
@@ -795,7 +795,7 @@ export function registerTaskCommands(program: Command): void {
     .action(async (ref: string, options: { all?: boolean; activity?: boolean }) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const _items = await loadAllItems(ctx);
 
         // Build all indexes including TraitIndex
@@ -1033,7 +1033,7 @@ Examples:
     .action(async (options) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
 
         // Load meta items for validation
@@ -1198,7 +1198,7 @@ Examples:
         };
 
         // AC: @task-data-manager ac-1, ac-4 — create via task data manager
-        const newTask = await taskDataManager.createTask(ctx, input, {
+        const newTask = await resolveTaskDataManager(ctx).createTask(ctx, input, {
           operation: "task-add",
           ref: input.slugs?.[0] || undefined,
           detail: input.title,
@@ -1295,7 +1295,7 @@ Examples:
         }
 
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
 
         // Load meta items for validation
@@ -1407,7 +1407,7 @@ Examples:
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
 
         // Load meta items for validation
@@ -1506,7 +1506,7 @@ Examples:
         }
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
-        const updatedTask = await taskDataManager.mutateTask(
+        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           foundTask._ulid,
           (latestTask) => ({
@@ -1536,7 +1536,7 @@ Examples:
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
@@ -1597,7 +1597,7 @@ Examples:
         // AC: @session-scoped-task-claiming ac-stamp, ac-no-env
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
-        const updatedTask = await taskDataManager.mutateTask(
+        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           foundTask._ulid,
           (latestTask) => {
@@ -1728,7 +1728,7 @@ Examples:
     .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
@@ -1760,7 +1760,7 @@ Examples:
               let forcedFromNonStandard = false;
               let forceStateDetail: string | undefined;
               // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
-              const updatedTask = await taskDataManager.mutateTask(
+              const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
                 ctx,
                 foundTask._ulid,
                 (latestTask) => {
@@ -1966,7 +1966,7 @@ Examples:
         }
 
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
@@ -1978,7 +1978,7 @@ Examples:
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
-        const updatedTask = await taskDataManager.mutateTask(
+        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           foundTask._ulid,
           (latestTask) => {
@@ -2048,7 +2048,7 @@ Examples:
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
@@ -2056,7 +2056,7 @@ Examples:
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
         let cycleNumber = 0;
-        const updatedTask = await taskDataManager.mutateTask(
+        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           foundTask._ulid,
           (latestTask) => {
@@ -2124,14 +2124,14 @@ Examples:
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
-        const updatedTask = await taskDataManager.mutateTask(
+        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           foundTask._ulid,
           (latestTask) => {
@@ -2193,14 +2193,14 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
-        const updatedTask = await taskDataManager.mutateTask(
+        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           foundTask._ulid,
           (latestTask) => {
@@ -2264,7 +2264,7 @@ Examples:
     .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
@@ -2299,7 +2299,7 @@ Examples:
 
               // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
               const allRefs = [foundTask, ...downstreamTasks].map((t) => t._ulid);
-              const [updatedTask] = await taskDataManager.mutateTasks(
+              const [updatedTask] = await resolveTaskDataManager(ctx).mutateTasks(
                 ctx,
                 allRefs,
                 (latestTasks) => {
@@ -2378,7 +2378,7 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
@@ -2386,7 +2386,7 @@ Examples:
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let previousStatus: Task["status"] = foundTask.status;
         const clearedFields: string[] = [];
-        const updatedTask = await taskDataManager.mutateTask(ctx, foundTask._ulid, (latestTask) => {
+        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(ctx, foundTask._ulid, (latestTask) => {
           previousStatus = latestTask.status;
 
           // AC: @spec-task-reset ac-2 - Error if already pending
@@ -2508,7 +2508,7 @@ Examples:
     .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
@@ -2566,7 +2566,7 @@ Examples:
               }
 
               // AC: @task-data-manager ac-1, ac-4 — delete via task data manager
-              await taskDataManager.deleteTask(ctx, foundTask._ulid, {
+              await resolveTaskDataManager(ctx).deleteTask(ctx, foundTask._ulid, {
                 operation: "task-delete",
                 ref: foundTask.slugs[0] || index.shortUlid(foundTask._ulid),
                 detail: foundTask.title,
@@ -2601,7 +2601,7 @@ Examples:
     .action(async (ref: string, message: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
@@ -2609,7 +2609,7 @@ Examples:
         const note = createNote(message, options.author, options.supersedes);
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
-        const updatedTask = await taskDataManager.mutateTask(
+        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           foundTask._ulid,
           (latestTask) => ({
@@ -2665,7 +2665,7 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
@@ -2697,7 +2697,7 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
@@ -2876,7 +2876,7 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
@@ -2909,14 +2909,14 @@ Examples:
     .action(async (ref: string, text: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let todo = createTodo(1, text, options.author);
-        const updatedTask = await taskDataManager.mutateTask(
+        const updatedTask = await resolveTaskDataManager(ctx).mutateTask(
           ctx,
           foundTask._ulid,
           (latestTask) => {
@@ -2954,7 +2954,7 @@ Examples:
     .action(async (ref: string, idStr: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
@@ -2968,7 +2968,7 @@ Examples:
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let todoState: "not_found" | "already_done" | "updated" | undefined;
         let updatedTodo: Task["todos"][number] | undefined;
-        await taskDataManager.mutateTask(ctx, foundTask._ulid, (latestTask) => {
+        await resolveTaskDataManager(ctx).mutateTask(ctx, foundTask._ulid, (latestTask) => {
           const todoIndex = latestTask.todos.findIndex((todo) => todo.id === id);
           if (todoIndex === -1) {
             todoState = "not_found";
@@ -3023,7 +3023,7 @@ Examples:
     .action(async (ref: string, idStr: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
@@ -3041,7 +3041,7 @@ Examples:
           | "updated"
           | undefined;
         let updatedTodo: Task["todos"][number] | undefined;
-        await taskDataManager.mutateTask(ctx, foundTask._ulid, (latestTask) => {
+        await resolveTaskDataManager(ctx).mutateTask(ctx, foundTask._ulid, (latestTask) => {
           const todoIndex = latestTask.todos.findIndex((todo) => todo.id === id);
           if (todoIndex === -1) {
             todoState = "not_found";
@@ -3100,7 +3100,7 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await taskDataManager.listTasks(ctx);
+        const tasks = await resolveTaskDataManager(ctx).listTasks(ctx);
         const items = await loadAllItems(ctx);
         const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
         const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
