@@ -343,6 +343,57 @@ describe("Atomic Multi-File Task Writes", () => {
     });
 
     // AC: @task-atomic-writes ac-2
+    it("index write failure does not leave per-task files committed", async () => {
+      const [ulid] = testUlids("AIDX", 1);
+      await createSplitTask(ctx, ulid, "index-fail-test");
+
+      // Snapshot state before
+      const indexBefore = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      const taskBefore = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+
+      // Monkey-patch writeYamlFile to throw only when writing the index file
+      const yamlModule = await import("../src/parser/yaml.js");
+      const originalWriteYamlFile = yamlModule.writeYamlFile;
+      const indexPath = getIndexFilePath(ctx);
+      vi.spyOn(yamlModule, "writeYamlFile").mockImplementation(
+        async (filePath: string, data: unknown) => {
+          if (path.resolve(filePath) === path.resolve(indexPath)) {
+            throw new Error("Simulated index write failure");
+          }
+          return originalWriteYamlFile(filePath, data);
+        },
+      );
+
+      try {
+        await expect(
+          manager.mutateTask(
+            ctx,
+            `@${ulid}`,
+            (task) => ({
+              ...task,
+              status: "in_progress",
+              started_at: "2026-03-20T12:00:00.000Z",
+            }),
+          ),
+        ).rejects.toThrow("Simulated index write failure");
+      } finally {
+        vi.restoreAllMocks();
+      }
+
+      // Per-task files should be unchanged — the buffer was discarded
+      // because the index write (inside the buffer) threw
+      const taskAfter = await fs.readFile(getTaskFilePath(ctx, ulid), "utf-8");
+      expect(taskAfter).toBe(taskBefore);
+
+      // Index should also be unchanged
+      const indexAfter = await fs.readFile(getIndexFilePath(ctx), "utf-8");
+      expect(indexAfter).toBe(indexBefore);
+
+      // Buffer should be cleaned up
+      expect(getActiveBatchBuffer()).toBeNull();
+    });
+
+    // AC: @task-atomic-writes ac-2
     it("createTask failure does not leave partial files on disk", async () => {
       // Create a conflicting task directory to prevent task creation from
       // being fully processed — we rely on Zod validation failure instead

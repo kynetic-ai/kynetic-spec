@@ -644,6 +644,9 @@ class SplitBackend implements TaskStorageBackend {
 
     // runWithBuffer creates an isolated async-local scope. If a parent
     // buffer exists (from withWriteBuffer or batch-exec), it's reused.
+    // Both per-task files AND the index write are inside the buffer so
+    // they flush atomically — if the index write fails, per-task files
+    // are not committed either (the buffer discards on error).
     await runWithBuffer(ctx.specDir, async () => {
       // Create directory
       await mkdirBufferAware(taskDir);
@@ -656,15 +659,16 @@ class SplitBackend implements TaskStorageBackend {
 
       // Write notes file (notes.yaml)
       await writeNotesFile(notesFilePath, notes || []);
-    });
 
-    // Add to index after buffer flush, serialized by indexMutex
-    const releaseIndex = await this.indexMutex.acquire();
-    try {
-      await this.addToIndex(ctx, task);
-    } finally {
-      releaseIndex();
-    }
+      // Add to index within the same buffer — serialized by indexMutex
+      // AC: @task-index-file ac-5 — index entry added atomically with per-task files
+      const releaseIndex = await this.indexMutex.acquire();
+      try {
+        await this.addToIndex(ctx, task);
+      } finally {
+        releaseIndex();
+      }
+    });
 
     return { ...task, _sourceFile: taskFilePath };
   }
@@ -724,9 +728,11 @@ class SplitBackend implements TaskStorageBackend {
         coreDataAfter as Record<string, unknown>,
       );
 
-      // Use a write buffer for per-task file atomicity — runWithBuffer
-      // creates an isolated async-local scope so concurrent mutations on
-      // other tasks don't share this buffer.
+      // Use a write buffer for per-task file AND index atomicity —
+      // runWithBuffer creates an isolated async-local scope so concurrent
+      // mutations on other tasks don't share this buffer. Both per-task
+      // files and the index write are inside the buffer so they flush
+      // atomically — if either write fails, the buffer discards all.
       const taskFilePath = getTaskFilePath(ctx, task._ulid);
 
       await runWithBuffer(ctx.specDir, async () => {
@@ -746,23 +752,21 @@ class SplitBackend implements TaskStorageBackend {
           const notesFilePath = getNotesFilePath(ctx, task._ulid);
           await writeNotesFile(notesFilePath, notes);
         }
-      });
 
-      // Index update happens AFTER buffer flush, serialized by indexMutex.
-      // Per-task files are already on disk. The index is a derived file
-      // (rebuildable), so separating it from the per-task buffer is safe.
-      // The mutex prevents concurrent mutations on different tasks from
-      // clobbering each other's index entry changes.
-      // AC: @task-index-file ac-2 — index updated when indexed fields change
-      const newIndexEntry = toIndexEntry(cleanTask);
-      if (!indexEntriesEqual(oldIndexEntry, newIndexEntry)) {
-        const releaseIndex = await this.indexMutex.acquire();
-        try {
-          await this.updateIndexEntry(ctx, cleanTask);
-        } finally {
-          releaseIndex();
+        // Index update inside the same buffer — serialized by indexMutex.
+        // The mutex prevents concurrent mutations on different tasks from
+        // clobbering each other's index entry changes.
+        // AC: @task-index-file ac-2 — index updated when indexed fields change
+        const newIndexEntry = toIndexEntry(cleanTask);
+        if (!indexEntriesEqual(oldIndexEntry, newIndexEntry)) {
+          const releaseIndex = await this.indexMutex.acquire();
+          try {
+            await this.updateIndexEntry(ctx, cleanTask);
+          } finally {
+            releaseIndex();
+          }
         }
-      }
+      });
 
       return { ...cleanTask, _sourceFile: taskFilePath };
     } finally {
@@ -831,9 +835,10 @@ class SplitBackend implements TaskStorageBackend {
         );
       }
 
-      // Write per-task files within a single buffer transaction.
+      // Write per-task files AND index within a single buffer transaction.
       // runWithBuffer creates an isolated async-local scope so concurrent
-      // mutations on other tasks don't share this buffer.
+      // mutations on other tasks don't share this buffer. Both per-task
+      // files and index writes are inside the buffer for atomicity.
       const cleanResults: Array<{ cleanTask: Task; taskFilePath: string; oldIndexEntry: Record<string, unknown> }> = [];
 
       await runWithBuffer(ctx.specDir, async () => {
@@ -863,32 +868,32 @@ class SplitBackend implements TaskStorageBackend {
 
           cleanResults.push({ cleanTask, taskFilePath, oldIndexEntry: oldIndexEntries[i] });
         }
+
+        // Index updates inside the same buffer — serialized by indexMutex
+        // AC: @task-index-file ac-2 — index updated when indexed fields change
+        const indexUpdates: Task[] = [];
+        for (const { cleanTask, oldIndexEntry } of cleanResults) {
+          const newIndexEntry = toIndexEntry(cleanTask);
+          if (!indexEntriesEqual(oldIndexEntry, newIndexEntry)) {
+            indexUpdates.push(cleanTask);
+          }
+        }
+
+        if (indexUpdates.length > 0) {
+          const releaseIndex = await this.indexMutex.acquire();
+          try {
+            for (const task of indexUpdates) {
+              await this.updateIndexEntry(ctx, task);
+            }
+          } finally {
+            releaseIndex();
+          }
+        }
       });
 
-      // Index updates after buffer flush, serialized by indexMutex
-      // AC: @task-index-file ac-2 — index updated when indexed fields change
-      const updatedTasks: LoadedTask[] = [];
-      const indexUpdates: Task[] = [];
-
-      for (const { cleanTask, taskFilePath, oldIndexEntry } of cleanResults) {
-        const newIndexEntry = toIndexEntry(cleanTask);
-        if (!indexEntriesEqual(oldIndexEntry, newIndexEntry)) {
-          indexUpdates.push(cleanTask);
-        }
-        updatedTasks.push({ ...cleanTask, _sourceFile: taskFilePath });
-      }
-
-      if (indexUpdates.length > 0) {
-        const releaseIndex = await this.indexMutex.acquire();
-        try {
-          for (const task of indexUpdates) {
-            await this.updateIndexEntry(ctx, task);
-          }
-        } finally {
-          releaseIndex();
-        }
-      }
-
+      const updatedTasks: LoadedTask[] = cleanResults.map(
+        ({ cleanTask, taskFilePath }) => ({ ...cleanTask, _sourceFile: taskFilePath }),
+      );
       return updatedTasks;
     } finally {
       for (const release of releases) {
@@ -929,16 +934,16 @@ class SplitBackend implements TaskStorageBackend {
         // AC: @task-directory-storage ac-4 — entire directory is removed
         // AC: @task-atomic-writes ac-2 — directory removal deferred to flush
         buffer.deleteDirectory(taskDir);
-      });
 
-      // Remove from index after buffer flush, serialized by indexMutex
-      // AC: @task-directory-storage ac-5 — index entry removed atomically with directory
-      const releaseIndex = await this.indexMutex.acquire();
-      try {
-        await this.removeFromIndex(ctx, task._ulid);
-      } finally {
-        releaseIndex();
-      }
+        // Remove from index within the same buffer — serialized by indexMutex
+        // AC: @task-directory-storage ac-5 — index entry removed atomically with directory
+        const releaseIndex = await this.indexMutex.acquire();
+        try {
+          await this.removeFromIndex(ctx, task._ulid);
+        } finally {
+          releaseIndex();
+        }
+      });
     } finally {
       releaseTaskLock();
     }
