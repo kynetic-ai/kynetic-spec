@@ -13,13 +13,12 @@ import {
   type LoadedSpecItem,
   type LoadedTask,
   loadAllItems,
-  loadAllTasks,
   loadReviewRecords,
   ReferenceIndex,
   scanTestCoverage,
   syncSpecImplementationStatus,
 } from "../../parser/index.js";
-import { taskDataManager } from "../../parser/task-data-manager.js";
+import { taskDataManager, type TaskSummary } from "../../parser/task-data-manager.js";
 import { commitIfShadow } from "../../parser/shadow.js";
 import {
   AutomationStatusSchema,
@@ -115,13 +114,16 @@ async function postDispatchEvent(opts: {
 
 /**
  * Find a task by reference with detailed error reporting.
+ * Uses ReferenceIndex for resolution and TaskDataManager to load full details.
  * Returns the task or exits with appropriate error.
+ * AC: @task-data-manager ac-1 — callers don't know about storage format
  */
-function resolveTaskRef(
+async function resolveTaskRef(
   ref: string,
-  tasks: LoadedTask[],
+  tasks: TaskSummary[],
   index: ReferenceIndex,
-): LoadedTask {
+  ctx: import("../../parser/yaml.js").KspecContext,
+): Promise<LoadedTask> {
   const result = index.resolve(ref);
 
   if (!result.ok) {
@@ -150,27 +152,30 @@ function resolveTaskRef(
     process.exit(EXIT_CODES.NOT_FOUND);
   }
 
-  // Check if it's actually a task
-  const task = tasks.find((t) => t._ulid === result.ulid);
-  if (!task) {
+  // Check if it's actually a task (not a spec item or meta item)
+  const taskSummary = tasks.find((t) => t._ulid === result.ulid);
+  if (!taskSummary) {
     error(errors.reference.notTask(ref));
     // AC: @cli-exit-codes consistent-usage - NOT_FOUND for missing resources
     process.exit(EXIT_CODES.NOT_FOUND);
   }
 
-  return task;
+  // Load full task details via the data manager
+  // AC: @task-data-manager ac-3 — assembles complete task transparently
+  return taskDataManager.getTask(ctx, result.ulid);
 }
 
 /**
  * Batch-compatible resolver that returns null instead of calling process.exit().
- * Used by executeBatchOperation to handle errors without terminating the process.
+ * Resolves ref against the summary array to verify it's a task.
  * AC: @multi-ref-batch ac-4, ac-8 - Partial failure handling and ref resolution
+ * AC: @task-data-manager ac-1 — callers don't know about storage format
  */
 function resolveTaskRefForBatch(
   ref: string,
-  tasks: LoadedTask[],
+  tasks: TaskSummary[],
   index: ReferenceIndex,
-): { task: LoadedTask | null; error?: string } {
+): { task: TaskSummary | null; error?: string } {
   const result = index.resolve(ref);
 
   if (!result.ok) {
@@ -189,13 +194,13 @@ function resolveTaskRefForBatch(
     return { task: null, error: errorMsg };
   }
 
-  // Check if it's actually a task
-  const task = tasks.find((t) => t._ulid === result.ulid);
-  if (!task) {
+  // Check if it's actually a task (not a spec item or meta item)
+  const taskSummary = tasks.find((t) => t._ulid === result.ulid);
+  if (!taskSummary) {
     return { task: null, error: `Reference "${ref}" is not a task` };
   }
 
-  return { task };
+  return { task: taskSummary };
 }
 
 function getTaskDisplayRef(task: Pick<LoadedTask, "_ulid" | "slugs">): string {
@@ -336,9 +341,9 @@ function reportBranchResult(result: {
  * AC: @spec-task-set-batch ac-1, ac-2, ac-4, ac-5
  */
 async function setTaskFields(
-  foundTask: LoadedTask,
+  foundTask: TaskSummary,
   ctx: any,
-  tasks: LoadedTask[],
+  tasks: TaskSummary[],
   items: LoadedSpecItem[],
   _allMetaItems: any[],
   index: ReferenceIndex,
@@ -523,8 +528,7 @@ async function setTaskFields(
       validatedAutomation = automationResult.value;
     }
 
-    let updatedTask = foundTask;
-    updatedTask = await taskDataManager.mutateTask(ctx, foundTask._ulid, (latestTask) => {
+    const updatedTask = await taskDataManager.mutateTask(ctx, foundTask._ulid, (latestTask) => {
       const nextTask: Task = { ...latestTask };
       const mutationChanges: Array<{ field: string; before: unknown; after: unknown }> = [];
 
@@ -791,7 +795,7 @@ export function registerTaskCommands(program: Command): void {
     .action(async (ref: string, options: { all?: boolean; activity?: boolean }) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const _items = await loadAllItems(ctx);
 
         // Build all indexes including TraitIndex
@@ -800,7 +804,7 @@ export function registerTaskCommands(program: Command): void {
           return buildIndexes(ctx);
         })();
 
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // AC: @trait-display ac-3 - task get shows inherited AC sections
         // Get inherited traits if task has spec_ref
@@ -1001,7 +1005,7 @@ Examples:
     .action(async (options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
 
         // Load meta items for validation
@@ -1015,7 +1019,7 @@ Examples:
         ];
 
         // Build index for reference validation
-        const refIndex = new ReferenceIndex(tasks, items, allMetaItems);
+        const refIndex = new ReferenceIndex(tasks as unknown as LoadedTask[], items, allMetaItems);
 
         // Check slug uniqueness if provided
         if (options.slug) {
@@ -1052,7 +1056,7 @@ Examples:
           const specRefResult = validateSpecRef(
             options.specRef,
             refIndex,
-            tasks,
+            tasks as unknown as LoadedTask[],
             items,
           );
           if (!specRefResult.ok) {
@@ -1174,7 +1178,7 @@ Examples:
 
         // Build index including the new task for accurate short ULID
         const index = new ReferenceIndex(
-          [...tasks, newTask],
+          [...tasks, newTask] as unknown as LoadedTask[],
           items,
           allMetaItems,
         );
@@ -1263,7 +1267,7 @@ Examples:
         }
 
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
 
         // Load meta items for validation
@@ -1276,7 +1280,7 @@ Examples:
           ...metaContext.observations,
         ];
 
-        const index = new ReferenceIndex(tasks, items, allMetaItems);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items, allMetaItems);
 
         // AC: @trait-multi-ref-batch ac-8 - Deduplicate refs
         const refsFlag = options.refs
@@ -1294,13 +1298,13 @@ Examples:
             index,
             resolveRef: (
               refStr: string,
-              taskList: LoadedTask[],
+              taskList: TaskSummary[],
               idx: ReferenceIndex,
             ) => {
               const result = resolveTaskRefForBatch(refStr, taskList, idx);
               return { item: result.task, error: result.error };
             },
-            executeOperation: async (task: LoadedTask, context) => {
+            executeOperation: async (task: TaskSummary, context) => {
               return await setTaskFields(
                 task,
                 context.ctx,
@@ -1311,7 +1315,7 @@ Examples:
                 context.options,
               );
             },
-            getUlid: (task: LoadedTask) => task._ulid,
+            getUlid: (task: TaskSummary) => task._ulid,
           });
 
           formatBatchOutput(result, "Set");
@@ -1322,7 +1326,7 @@ Examples:
             process.exit(EXIT_CODES.USAGE_ERROR);
           }
 
-          const foundTask = resolveTaskRef(ref, tasks, index);
+          const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
           const result = await setTaskFields(
             foundTask,
             ctx,
@@ -1375,7 +1379,7 @@ Examples:
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
 
         // Load meta items for validation
@@ -1388,8 +1392,8 @@ Examples:
           ...metaContext.observations,
         ];
 
-        const index = new ReferenceIndex(tasks, items, allMetaItems);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items, allMetaItems);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // Get JSON data from --data flag or stdin
         let jsonData: string;
@@ -1504,10 +1508,10 @@ Examples:
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         if (foundTask.status === "in_progress") {
           warn("Task is already in progress");
@@ -1696,9 +1700,9 @@ Examples:
     .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
         // AC: @spec-completion-enforcement ac-8
         if (options.skipReview && !options.reason) {
@@ -1724,7 +1728,7 @@ Examples:
             try {
               const forcingCompletion = options.force;
               const now = new Date().toISOString();
-              let transitionFromStatus: Task["status"] = foundTask.status;
+              let transitionFromStatus: Task["status"] = foundTask.status as Task["status"];
               let forcedFromNonStandard = false;
               let forceStateDetail: string | undefined;
               // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
@@ -1934,10 +1938,10 @@ Examples:
         }
 
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // AC: @portable-task-submission-linkage ac-1, ac-3, ac-5 — capture git context
         const linkage = isGitRepo(ctx.projectRoot)
@@ -2016,10 +2020,10 @@ Examples:
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
@@ -2092,10 +2096,10 @@ Examples:
     .action(async (ref: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
@@ -2161,10 +2165,10 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let transitionFromStatus: Task["status"] = foundTask.status;
@@ -2232,9 +2236,9 @@ Examples:
     .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
         const result = await executeBatchOperation({
           positionalRef: ref,
@@ -2346,10 +2350,10 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let previousStatus: Task["status"] = foundTask.status;
@@ -2476,9 +2480,9 @@ Examples:
     .action(async (ref: string | undefined, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
 
         // For batch mode (--refs), require --force
         if (
@@ -2569,10 +2573,10 @@ Examples:
     .action(async (ref: string, message: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         const note = createNote(message, options.author, options.supersedes);
 
@@ -2633,10 +2637,10 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         output(foundTask.notes, () => {
           if (foundTask.notes.length === 0) {
@@ -2665,10 +2669,10 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // Import getDiffSince from utils
         const { getDiffSince } = await import("../../utils/index.js");
@@ -2844,10 +2848,10 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         output(foundTask.todos, () => {
           if (foundTask.todos.length === 0) {
@@ -2877,10 +2881,10 @@ Examples:
     .action(async (ref: string, text: string, options) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // AC: @task-data-manager ac-1, ac-4 — mutate via task data manager
         let todo = createTodo(1, text, options.author);
@@ -2922,10 +2926,10 @@ Examples:
     .action(async (ref: string, idStr: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         const id = parseInt(idStr, 10);
         if (Number.isNaN(id)) {
@@ -2991,10 +2995,10 @@ Examples:
     .action(async (ref: string, idStr: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         const id = parseInt(idStr, 10);
         if (Number.isNaN(id)) {
@@ -3068,10 +3072,10 @@ Examples:
     .action(async (ref: string) => {
       try {
         const ctx = await initContext();
-        const tasks = await loadAllTasks(ctx);
+        const tasks = await taskDataManager.listTasks(ctx);
         const items = await loadAllItems(ctx);
-        const index = new ReferenceIndex(tasks, items);
-        const foundTask = resolveTaskRef(ref, tasks, index);
+        const index = new ReferenceIndex(tasks as unknown as LoadedTask[], items);
+        const foundTask = await resolveTaskRef(ref, tasks, index, ctx);
 
         // AC: @trait-error-guidance ac-1, ac-2
         if (!isGitRepo()) {
