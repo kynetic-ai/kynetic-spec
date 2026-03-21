@@ -113193,6 +113193,16 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T11:52:29.942Z
+    - _ulid: 01KM84GEMN8VJZDQ1KDCYTK250
+      content: "Fix cycle 10: Addressed blocker from review @01KM83KR — split backend lacked migration
+        gate. Added ensureMigrated() to SplitBackend that checks on first operation per specDir
+        whether project.tasks.yaml has unmigrated monolithic entries (entries with notes arrays)
+        without corresponding per-task directories. Throws TaskDataManagerError with migration
+        guidance when detected. Gate fires on all backend entry points. Empty task sets pass through
+        normally (ac-5). Added 3 tests. All 6829 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T12:04:22.293Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
