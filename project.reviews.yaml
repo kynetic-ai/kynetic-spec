@@ -36162,9 +36162,25 @@ reviews:
           status: skipped
           name: kspec validate
         timestamp: 2026-03-21T08:16:26.566Z
+      - _ulid: 01KM7QF78ZFS32G0XAXTXD8TX4
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T08:16:30.496Z
+      - _ulid: 01KM7QF7902J21TYWN3JDZ342G
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T08:16:30.496Z
     examined_commit: 06f70edba54859505601d662116fc9ac7ea7b37e
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -36207,7 +36223,14 @@ reviews:
               caller requests activity information, which misses @task-core-data-file ac-2.
             created_at: 2026-03-21T08:15:25.419Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T08:16:30.495Z
     created_at: 2026-03-21T08:15:02.872Z
-    updated_at: 2026-03-21T08:16:26.093Z
+    updated_at: 2026-03-21T08:16:30.496Z
     notes: []
