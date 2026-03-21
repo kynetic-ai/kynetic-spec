@@ -35944,7 +35944,17 @@ reviews:
     slugs: []
     title: Review task-impl-index
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "Passed in review workspace: 299 test files, 6813 passed, 3 skipped."
+        name: npm test
+        required: true
+        runner: npm
+        created_at: 2026-03-21T08:00:25.450Z
+        completed_at: 2026-03-21T08:00:25.450Z
     events:
       - _ulid: 01KM7PH42KFQX15PDZ13X5P8F2
         actor: Jacob Chapel
@@ -35959,6 +35969,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T08:00:24.821Z
+      - _ulid: 01KM7PHS5M7F41P2HCGV1ACTX1
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: npm test
+        timestamp: 2026-03-21T08:00:25.780Z
     examined_commit: 6023a5e30180743cd13485125c05f5975f5bf0da
     external_links: []
     lifecycle_state: open
@@ -35971,5 +35988,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-21T08:00:04.180Z
-    updated_at: 2026-03-21T08:00:24.548Z
+    updated_at: 2026-03-21T08:00:25.450Z
     notes: []
