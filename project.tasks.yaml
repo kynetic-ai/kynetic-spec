@@ -112497,6 +112497,16 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T04:58:31.390Z
+    - _ulid: 01KM7DGE45V3AZBY6YRF1YV0Z3
+      content: "Fix cycle 1: Addressed blocker from review @01KM7BXYASSXCD59AZNGS2WP2H. Replaced all 21
+        remaining loadAllTasks() calls in task.ts with taskDataManager.listTasks() and
+        taskDataManager.getTask(). Made resolveTaskRef() async to load full task details via the
+        data manager after index resolution. Updated resolveTaskRefForBatch() and setTaskFields() to
+        accept TaskSummary[] instead of LoadedTask[]. ReferenceIndex construction uses structural
+        cast since it only needs _ulid and slugs. All 6756 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T05:22:24.517Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YEQ9GJYWB6ZC65Y3Y329G
