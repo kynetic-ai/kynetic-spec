@@ -39853,6 +39853,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM8G4JX5CPWW6X48572STKBT
         timestamp: 2026-03-21T15:27:36.756Z
+      - _ulid: 01KM8G56YXTB234MGJHXX95XMG
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM8G56K33R6CHE1MXNPHJ46N
+        timestamp: 2026-03-21T15:27:56.893Z
     examined_commit: 4241cfba631c31163ad3241461302891839d59f6
     external_links: []
     lifecycle_state: open
@@ -39880,7 +39887,25 @@ reviews:
               for  cleanup edits.
             created_at: 2026-03-21T15:27:36.358Z
         kind: blocker
+      - _ulid: 01KM8G56K33R6CHE1MXNPHJ46N
+        anchor:
+          type: code
+          commit: 4241cfba631c31163ad3241461302891839d59f6
+          line_end: 513
+          line_start: 509
+          path: src/cli/commands/tasks.ts
+          side: head
+        entries:
+          - _ulid: 01KM8G56K3SNCSP0CZPC36PQDT
+            author: Test User
+            body: 'The `tasks assess --auto` path mutates `automation` and appends a note without passing
+              `commitOpts` into `mutateTask()`. In split storage, `TaskDataManager` derives history
+              metadata only from `commitOpts`, so this path records field-change history with
+              `command: "unknown"` instead of the triggering CLI operation. That violates
+              @task-core-data-file ac-3 for every automated assessment mutation.'
+            created_at: 2026-03-21T15:27:56.515Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T15:20:39.834Z
-    updated_at: 2026-03-21T15:27:36.358Z
+    updated_at: 2026-03-21T15:27:56.515Z
     notes: []
