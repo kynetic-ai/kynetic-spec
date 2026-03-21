@@ -15775,7 +15775,7 @@ workspaces:
         head: 7dc74516c25a93fb51023be448ef5e7494b37e3a
         last_seen_at: 2026-03-20T22:20:46.281Z
         path: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees/restore-pre-block-status-on-task-unblock-01km6km0
-  - active_role: reviewer
+  - active_role: null
     base_branch_point: 0b83080a89d15bec8d00c46e33d52fc6c2597dd0
     bootstrap:
       status: succeeded
@@ -15879,12 +15879,12 @@ workspaces:
       detail: null
       eligible: false
       reason: null
-      updated_at: 2026-03-21T01:38:07.308Z
+      updated_at: 2026-03-21T01:53:24.596Z
     health:
       status: healthy
       issues: []
       summary: Workspace record matches current git branch and worktree state.
-      updated_at: 2026-03-21T01:38:14.837Z
+      updated_at: 2026-03-21T01:53:24.596Z
     integration:
       status: pending
       detail: null
@@ -15892,7 +15892,7 @@ workspaces:
       publication_mode: manual_merge
       target_branch: dev
       target_commit: 0b83080a89d15bec8d00c46e33d52fc6c2597dd0
-      updated_at: 2026-03-21T01:38:07.308Z
+      updated_at: 2026-03-21T01:53:24.596Z
     lifecycle_state: integrating
     resolved_base_branch: dev
     task_ref: "@01KM6YEMDW3WNPT2XM66EH0AKM"
@@ -15900,9 +15900,9 @@ workspaces:
     timestamps:
       closed_at: null
       last_active_at: 2026-03-21T01:38:14.837Z
-      last_reconciled_at: 2026-03-21T01:38:14.837Z
+      last_reconciled_at: 2026-03-21T01:53:24.596Z
       created_at: 2026-03-21T01:08:46.031Z
-      updated_at: 2026-03-21T01:38:14.837Z
+      updated_at: 2026-03-21T01:53:24.596Z
     workspace_id: dispatch-workspace-01KM6YEMDW3WNPT2XM66EH0AKM
     worktree_root: /home/chapel/Projects/kynetic-spec-dispatch/.kspec-worktrees
     worktrees:
