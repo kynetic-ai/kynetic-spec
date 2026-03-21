@@ -36583,7 +36583,17 @@ reviews:
     slugs: []
     title: Review task-impl-index (cycle 3)
     author: Jacob Chapel
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: No validation errors. Warnings-only baseline (orphan/coverage warnings outside this task).
+        name: kspec validate
+        required: false
+        runner: kspec
+        created_at: 2026-03-21T08:47:58.836Z
+        completed_at: 2026-03-21T08:47:58.836Z
     events:
       - _ulid: 01KM7S02N521AA15W5KMS13G38
         actor: Jacob Chapel
@@ -36612,6 +36622,13 @@ reviews:
           kind: nit
           thread_ulid: 01KM7S8TDKJ9BJDVR24MAEW5MS
         timestamp: 2026-03-21T08:47:58.161Z
+      - _ulid: 01KM7S8VPDY36YD84W6W6HK0SF
+        actor: Jacob Chapel
+        event_type: check_added
+        payload:
+          status: pass
+          name: kspec validate
+        timestamp: 2026-03-21T08:47:59.181Z
     examined_commit: fc3e4978e676d00c5dc7e84bd16e23a536d2fe14
     external_links: []
     lifecycle_state: open
@@ -36668,5 +36685,5 @@ reviews:
         kind: nit
     verdicts: []
     created_at: 2026-03-21T08:43:11.398Z
-    updated_at: 2026-03-21T08:47:57.876Z
+    updated_at: 2026-03-21T08:47:58.836Z
     notes: []
