@@ -21747,5 +21747,15 @@
       supersedes: null
       author: Test User
       created_at: 2026-03-21T23:42:07.153Z
+    - _ulid: 01KM9D7M9MPA36WV8BHKSHF2DA
+      content: "Fix cycle 2: The blocker was flaky test timeouts in agent-invocation-lifecycle.test.ts —
+        not caused by our AC annotation changes. Tests that spawn real ACP child processes via
+        runInvocation were exceeding the default 15s vitest testTimeout under full-suite CPU
+        pressure. Fixed by adding { timeout: 30_000 } to all 11 describe blocks that spawn child
+        processes, leaving the 2 pure unit test blocks at the default. Full suite passes cleanly:
+        6936 tests, 0 failures."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T23:56:04.788Z
   todos: []
   automation: eligible
