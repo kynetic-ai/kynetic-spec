@@ -612,10 +612,23 @@ export function unregisterBackend(format: StorageFormat): void {
 /**
  * Validate a task record against the schema before persisting.
  * Strips _sourceFile before validation since it is runtime metadata.
+ * When originalUlid is provided, enforces that the mutation did not
+ * change the task's identity — ULID must be immutable.
  *
  * AC: @trait-error-guidance ac-5 — validation errors include field info
  */
-function validateMutationOutput(task: Task | LoadedTask): void {
+function validateMutationOutput(task: Task | LoadedTask, originalUlid?: string): void {
+  // Enforce ULID immutability — mutations must not change a task's identity
+  if (originalUlid && task._ulid !== originalUlid) {
+    throw new TaskDataManagerError(
+      `Mutation must not change a task's ULID. Original: ${originalUlid}, received: ${task._ulid}`,
+      {
+        suggestion: "The mutation callback must preserve the task's _ulid. Return the task with its original identity.",
+        field: "_ulid",
+      },
+    );
+  }
+
   const { _sourceFile: _, ...cleanTask } = task as LoadedTask;
   const result = TaskSchema.safeParse(cleanTask);
   if (!result.success) {
@@ -808,7 +821,7 @@ export class TaskDataManager {
       task,
       async (latestTask) => {
         const result = await mutate(latestTask);
-        validateMutationOutput(result);
+        validateMutationOutput(result, latestTask._ulid);
         return result;
       },
     );
@@ -857,8 +870,8 @@ export class TaskDataManager {
       tasks,
       async (latestTasks) => {
         const results = await mutate(latestTasks);
-        for (const result of results) {
-          validateMutationOutput(result);
+        for (let i = 0; i < results.length; i++) {
+          validateMutationOutput(results[i], latestTasks[i]?._ulid);
         }
         return results;
       },
@@ -893,13 +906,11 @@ export class TaskDataManager {
   ): Promise<void> {
     const task = await this.getTask(ctx, ref);
 
-    if (!task._sourceFile) {
-      throw new TaskDataManagerError(
-        `Cannot delete task ${ref}: no source file metadata. The task may have been loaded from an unexpected location.`,
-        { suggestion: "Reload the task and try again" },
-      );
-    }
-
+    // Delegate entirely to the backend — it decides how to locate and
+    // remove the task based on its own storage format. The manager does
+    // not require _sourceFile; a split backend may use other metadata.
+    // AC: @task-data-manager ac-1 — callers don't know about storage format
+    // AC: @task-data-manager ac-8 — split backend owns its own deletion path
     await this.backend.deleteTask(ctx, task);
 
     if (commitOpts) {

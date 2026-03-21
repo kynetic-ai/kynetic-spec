@@ -1005,6 +1005,12 @@ export async function extractRawTaskArray(
     };
   }
 
+  // Bare single-task object (not an array, not a {tasks:[...]} wrapper).
+  // Treat as a single-element array so mutations can read and write it back.
+  if (typeof existingRaw === "object") {
+    return { rawTasks: [existingRaw], useTasksWrapper: false, wrapperObj: undefined };
+  }
+
   return { rawTasks: [], useTasksWrapper: false };
 }
 
@@ -1046,11 +1052,26 @@ export function findRawTaskIndex(rawTasks: unknown[], ulid: string): number {
  * Fields NOT in rawTask are only added if they carry meaningful data
  * (i.e. non-empty arrays, non-null values, etc.).
  */
+/** Schema-known keys — used to distinguish unknown (extension) fields from
+ *  known fields that a mutation intentionally cleared. */
+const TASK_SCHEMA_KEYS = new Set(Object.keys(TaskSchema.shape));
+
 export function mergeTaskPreservingRawShape(
   rawTask: Record<string, unknown>,
   normalizedTask: Record<string, unknown>,
 ): Record<string, unknown> {
   const result: Record<string, unknown> = {};
+
+  // Carry forward raw keys that are NOT part of the task schema and NOT
+  // present in the normalizedTask output. These are backend-specific or
+  // forward-compatible extension fields that must survive round-trip
+  // mutations. Schema-known keys that are absent from normalizedTask were
+  // intentionally cleared by the mutation — do not restore them.
+  for (const [key, value] of Object.entries(rawTask)) {
+    if (!(key in normalizedTask) && !TASK_SCHEMA_KEYS.has(key)) {
+      result[key] = value;
+    }
+  }
 
   for (const [key, value] of Object.entries(normalizedTask)) {
     if (key in rawTask) {

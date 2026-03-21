@@ -1136,4 +1136,213 @@ describe("TaskDataManager", () => {
       expect(taskDataManager.storageFormat).toBe("monolithic");
     });
   });
+
+  // Fix cycle 8 — blocker 1: ULID immutability enforcement
+  describe("ULID immutability in mutations", () => {
+    it("rejects mutateTask callback that changes the task ULID", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      await expect(
+        manager.mutateTask(ctx, "@test-task-pending", (task) => ({
+          ...task,
+          _ulid: testUlid("FAKE"),
+        })),
+      ).rejects.toThrow(TaskDataManagerError);
+
+      try {
+        await manager.mutateTask(ctx, "@test-task-pending", (task) => ({
+          ...task,
+          _ulid: testUlid("FAKE"),
+        }));
+      } catch (err) {
+        const tdmErr = err as TaskDataManagerError;
+        expect(tdmErr.message).toContain("must not change");
+        expect(tdmErr.message).toContain("ULID");
+        expect(tdmErr.field).toBe("_ulid");
+      }
+    });
+
+    it("does not persist ULID change to disk", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      const original = await manager.getTask(ctx, "@test-task-pending");
+      const originalUlid = original._ulid;
+
+      try {
+        await manager.mutateTask(ctx, "@test-task-pending", (task) => ({
+          ...task,
+          _ulid: testUlid("FAKE"),
+        }));
+      } catch {
+        // Expected to fail
+      }
+
+      // ULID should be unchanged on disk
+      const reloaded = await manager.getTask(ctx, "@test-task-pending");
+      expect(reloaded._ulid).toBe(originalUlid);
+    });
+
+    it("rejects ULID change in batch mutations", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      await expect(
+        manager.mutateTasks(
+          ctx,
+          ["@test-task-pending", "@test-task-secondary"],
+          (tasks) =>
+            tasks.map((task, i) =>
+              i === 0 ? { ...task, _ulid: testUlid("FAKE") } : task,
+            ),
+        ),
+      ).rejects.toThrow(TaskDataManagerError);
+    });
+  });
+
+  // Fix cycle 8 — blocker 2: preserve unknown raw fields through mutations
+  describe("unknown raw field preservation", () => {
+    it("preserves unknown fields through addNote mutation", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      // Inject a custom field into the raw YAML by inserting it at the
+      // correct indentation level within the tasks wrapper
+      const tasksFile = path.join(ctx.specDir, "project.tasks.yaml");
+      const content = await fs.readFile(tasksFile, "utf-8");
+      const lines = content.split("\n");
+      const ulidLineIdx = lines.findIndex((l) => l.includes("01KF1645CA45ZT43W2T6HJMVA1"));
+      expect(ulidLineIdx).toBeGreaterThan(-1);
+      // The task properties use 4-space indent in the tasks wrapper
+      lines.splice(ulidLineIdx + 1, 0, "    custom_backend_field: preserved-value");
+      await fs.writeFile(tasksFile, lines.join("\n"));
+
+      // Mutate via addNote (should not strip the custom field)
+      await manager.addNote(ctx, "@test-task-pending", "Note after custom field");
+
+      // Re-read raw file to verify custom field survived
+      const afterContent = await fs.readFile(tasksFile, "utf-8");
+      expect(afterContent).toContain("custom_backend_field: preserved-value");
+    });
+
+    it("preserves unknown fields through mutateTask", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      // Inject a custom field into the raw YAML
+      const tasksFile = path.join(ctx.specDir, "project.tasks.yaml");
+      const content = await fs.readFile(tasksFile, "utf-8");
+      const lines = content.split("\n");
+      const ulidLineIdx = lines.findIndex((l) => l.includes("01KF1645CA45ZT43W2T6HJMVA1"));
+      expect(ulidLineIdx).toBeGreaterThan(-1);
+      lines.splice(ulidLineIdx + 1, 0, "    backend_metadata: keep-me");
+      await fs.writeFile(tasksFile, lines.join("\n"));
+
+      // Mutate via mutateTask
+      await manager.mutateTask(ctx, "@test-task-pending", (task) => ({
+        ...task,
+        priority: 1,
+      }));
+
+      // Re-read raw file to verify custom field survived
+      const afterContent = await fs.readFile(tasksFile, "utf-8");
+      expect(afterContent).toContain("backend_metadata: keep-me");
+    });
+  });
+
+  // Fix cycle 8 — blocker 3: single-task YAML file mutation
+  describe("single-task YAML file support", () => {
+    it("reads and mutates a bare single-task YAML file", async () => {
+      tempDir = await setupTempFixtures();
+      manager = new TaskDataManager();
+      const ctx = await initContext(tempDir);
+
+      // Write a bare single-task YAML file (not an array, not {tasks:[...]})
+      const singleUlid = testUlid("SNGL");
+      const singleTaskYaml = [
+        `_ulid: ${singleUlid}`,
+        'title: "Single task"',
+        "slugs:",
+        "  - single-task",
+        "type: task",
+        "status: pending",
+        "priority: 3",
+        "tags: []",
+        "depends_on: []",
+        "blocked_by: []",
+        `created_at: "2026-03-20T00:00:00.000Z"`,
+        "notes: []",
+        "todos: []",
+      ].join("\n");
+
+      await fs.writeFile(
+        path.join(ctx.specDir, "single.tasks.yaml"),
+        singleTaskYaml,
+      );
+
+      // getTask should find it
+      const task = await manager.getTask(ctx, "@single-task");
+      expect(task._ulid).toBe(singleUlid);
+      expect(task.title).toBe("Single task");
+
+      // addNote should succeed (the mutation write path must handle this format)
+      await manager.addNote(ctx, "@single-task", "Note on single-task file");
+
+      // Verify persisted
+      const reloaded = await manager.getTask(ctx, "@single-task");
+      expect(reloaded.notes.some((n) => n.content === "Note on single-task file")).toBe(true);
+    });
+  });
+
+  // Fix cycle 8 — blocker 4: deleteTask without _sourceFile
+  describe("deleteTask without _sourceFile (split backend)", () => {
+    it("routes delete to backend even when _sourceFile is absent", async () => {
+      tempDir = await setupTempFixtures();
+
+      let deleteCalled = false;
+      const mockSplitBackend: TaskStorageBackend = {
+        format: "split",
+        async listTasks() { return []; },
+        async getTask(_ctx, ref) {
+          // Return a task without _sourceFile to simulate split backend
+          const { loadAllTasks: load, findTaskByRef: find } = await import("../src/parser/yaml.js");
+          const tasks = await load(_ctx);
+          const found = find(tasks, ref);
+          if (found) {
+            // Strip _sourceFile to simulate split backend behavior
+            const { _sourceFile: _, ...noSource } = found;
+            return noSource as typeof found;
+          }
+          return undefined;
+        },
+        async createTask(_ctx, task) {
+          return { ...task, _sourceFile: "/split/" + task._ulid + "/task.yaml" };
+        },
+        async mutateTask(_ctx, task) { return task; },
+        async mutateTasks(_ctx, tasks) { return tasks; },
+        async deleteTask() {
+          deleteCalled = true;
+        },
+      };
+
+      registerBackend(mockSplitBackend);
+      try {
+        const splitManager = new TaskDataManager("split");
+        const ctx = await initContext(tempDir);
+
+        // Delete should route to the backend's deleteTask without
+        // pre-checking _sourceFile
+        await splitManager.deleteTask(ctx, "@test-task-pending");
+        expect(deleteCalled).toBe(true);
+      } finally {
+        unregisterBackend("split");
+      }
+    });
+  });
 });
