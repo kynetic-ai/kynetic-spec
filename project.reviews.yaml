@@ -42446,6 +42446,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM9BD0YD1MG807CZB0E5XFA6
         timestamp: 2026-03-21T23:24:04.766Z
+      - _ulid: 01KM9BD2A1X2CP8K2C725SYJ0E
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM9BD1Z649DNET4PF55W1BDX
+        timestamp: 2026-03-21T23:24:05.825Z
     examined_commit: 6e8ed2622a60022c3094e03f5d57321a53683b34
     external_links: []
     lifecycle_state: open
@@ -42475,7 +42482,25 @@ reviews:
               ac-2 effectively unproven.
             created_at: 2026-03-21T23:24:04.429Z
         kind: blocker
+      - _ulid: 01KM9BD1Z649DNET4PF55W1BDX
+        anchor:
+          type: code
+          commit: 6e8ed2622a60022c3094e03f5d57321a53683b34
+          line_end: 684
+          line_start: 613
+          path: tests/task-data-manager.test.ts
+          side: head
+        entries:
+          - _ulid: 01KM9BD1Z66DCHH807NF78SGWB
+            author: Test User
+            body: This annotation claims coverage for , but the test only verifies that an activated split
+              manager routes  and  through the split backend. The AC says split format is used for
+              all reads and writes, so a coverage claim here needs evidence for write paths as well
+              (for example create/mutate/delete). As written, the annotation narrows the behavior
+              under test and marks the broader AC as covered when it is not.
+            created_at: 2026-03-21T23:24:05.478Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T23:20:17.564Z
-    updated_at: 2026-03-21T23:24:04.429Z
+    updated_at: 2026-03-21T23:24:05.478Z
     notes: []
