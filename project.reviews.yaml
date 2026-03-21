@@ -36653,9 +36653,25 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7S9FZKS1GG889B298MAX17
         timestamp: 2026-03-21T08:48:20.265Z
+      - _ulid: 01KM7S9SESDT2DQ4F6KKAJX6R6
+        actor: codex
+        event_type: verdict_submitted
+        payload:
+          applies_to_version:
+            type: entity_version
+            content_hash: ""
+          decision: request_changes
+        timestamp: 2026-03-21T08:48:29.658Z
+      - _ulid: 01KM7S9SETRQCZ7PT9XQ4QR0PD
+        actor: codex
+        event_type: lifecycle_change
+        payload:
+          from: open
+          to: closed
+        timestamp: 2026-03-21T08:48:29.658Z
     examined_commit: fc3e4978e676d00c5dc7e84bd16e23a536d2fe14
     external_links: []
-    lifecycle_state: open
+    lifecycle_state: closed
     related_refs: []
     subject:
       type: task
@@ -36725,7 +36741,14 @@ reviews:
               the index out of sync for user-visible list data.
             created_at: 2026-03-21T08:48:19.955Z
         kind: blocker
-    verdicts: []
+    verdicts:
+      - applies_to_version:
+          type: entity_version
+          content_hash: ""
+        decision: request_changes
+        reviewer: codex
+        role: reviewer
+        created_at: 2026-03-21T08:48:29.657Z
     created_at: 2026-03-21T08:43:11.398Z
-    updated_at: 2026-03-21T08:48:19.955Z
+    updated_at: 2026-03-21T08:48:29.658Z
     notes: []
