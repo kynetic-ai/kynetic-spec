@@ -113277,6 +113277,18 @@
       supersedes: null
       author: Jacob Chapel
       created_at: 2026-03-21T13:17:22.970Z
+    - _ulid: 01KM896ZX0PKW44EX5SNZPAK1P
+      content: "Fix cycle 15: Replaced all 24 remaining loadAllTasks(ctx) calls across 11 daemon route
+        files (tasks.ts, items.ts, sessions.ts, diff.ts, reviews.ts, triage.ts, plans.ts,
+        aggregation.ts, inbox.ts, refs.ts, agent-dispatch.ts) with
+        resolveTaskDataManager(ctx).loadAllTasks(ctx). The raw loadAllTasks only reads *.tasks.yaml
+        (lean index entries), so in split storage mode it dropped per-task detail like description
+        and notes. The resolved manager routes through the correct backend. Also removed stale
+        loadAllTasks imports and replaced a typeof loadAllTasks type annotation with LoadedTask[] in
+        sessions.ts. TypeScript compiles clean, all 6888 tests pass."
+      supersedes: null
+      author: "@claude"
+      created_at: 2026-03-21T13:26:35.168Z
   todos: []
   automation: eligible
 - _ulid: 01KM6YETR12GG1EZ5G68KSNTBK
