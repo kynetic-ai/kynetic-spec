@@ -35616,6 +35616,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T07:03:41.842Z
+      - _ulid: 01KM7KFAMM5E1GHTWWE58BVYA3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7KFAD08WYRM3SY6T07RNHY
+        timestamp: 2026-03-21T07:06:39.636Z
     examined_commit: dd5e26ef8777fce556ae0ccaa5d1ff5bd14f779a
     external_links: []
     lifecycle_state: open
@@ -35625,8 +35632,25 @@ reviews:
       content_hash: ""
       ref: "@01KM6YERMDKKYA1XXRN025G0FT"
       shadow_commit: ""
-    threads: []
+    threads:
+      - _ulid: 01KM7KFAD08WYRM3SY6T07RNHY
+        anchor:
+          type: code
+          commit: dd5e26ef8777fce556ae0ccaa5d1ff5bd14f779a
+          line_end: 849
+          line_start: 810
+          path: src/parser/split-backend.ts
+          side: head
+        entries:
+          - _ulid: 01KM7KFAD0JW8KRM8R4R48HRF1
+            author: Jacob Chapel
+            body: "The split index never persists  or , but  still derives those fields entirely from the index
+              record. Repro: create a split task, call , then ;  returns one note while the summary
+              still reports  (). The daemon task list API forwards those summary counts directly, so
+              task cards and detail badges will silently show the wrong numbers in split mode."
+            created_at: 2026-03-21T07:06:39.392Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T07:03:23.100Z
-    updated_at: 2026-03-21T07:03:41.588Z
+    updated_at: 2026-03-21T07:06:39.392Z
     notes: []
