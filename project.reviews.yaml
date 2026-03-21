@@ -35318,6 +35318,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM7G7WSQWPNVEV0SF5EQSB38
         timestamp: 2026-03-21T06:10:10.888Z
+      - _ulid: 01KM7G7Z0XSQP0QKWKA4RGPVA3
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7G7YGGHDVJVQ9PZ5N87YYF
+        timestamp: 2026-03-21T06:10:12.637Z
     examined_commit: 028e4ab3766f79012521057d9d4be114c06f2cf2
     external_links: []
     lifecycle_state: open
@@ -35346,7 +35353,26 @@ reviews:
               manager abstraction required by `@task-data-manager` AC-1."
             created_at: 2026-03-21T06:10:10.360Z
         kind: blocker
+      - _ulid: 01KM7G7YGGHDVJVQ9PZ5N87YYF
+        anchor:
+          type: code
+          commit: 028e4ab3766f79012521057d9d4be114c06f2cf2
+          line_end: 945
+          line_start: 944
+          path: src/cli/commands/validate.ts
+          side: head
+        entries:
+          - _ulid: 01KM7G7YGGRW2DSERZVB73PMRS
+            author: Jacob Chapel
+            body: "MUST-FIX: `validate` still reads task storage directly via `loadAllTasks()` for both
+              alignment and staleness checks. This task's scope explicitly called out validation as
+              a remaining consumer to migrate, and `@task-data-manager` AC-1 requires task readers
+              to go through the manager instead of touching storage helpers directly. Leaving these
+              call sites in place means validation still depends on the monolithic task loader, so
+              the storage-format abstraction is not complete."
+            created_at: 2026-03-21T06:10:12.112Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T06:08:55.442Z
-    updated_at: 2026-03-21T06:10:10.360Z
+    updated_at: 2026-03-21T06:10:12.112Z
     notes: []
