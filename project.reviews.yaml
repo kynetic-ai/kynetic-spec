@@ -36646,6 +36646,13 @@ reviews:
           status: pass
           name: npm test
         timestamp: 2026-03-21T08:48:00.110Z
+      - _ulid: 01KM7S9G99QNE1Y9TN4YYETRVQ
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM7S9FZKS1GG889B298MAX17
+        timestamp: 2026-03-21T08:48:20.265Z
     examined_commit: fc3e4978e676d00c5dc7e84bd16e23a536d2fe14
     external_links: []
     lifecycle_state: open
@@ -36700,7 +36707,25 @@ reviews:
               affected)
             created_at: 2026-03-21T08:47:57.876Z
         kind: nit
+      - _ulid: 01KM7S9FZKS1GG889B298MAX17
+        anchor:
+          type: code
+          commit: fc3e4978e676d00c5dc7e84bd16e23a536d2fe14
+          line_end: 299
+          line_start: 297
+          path: src/parser/split-backend.ts
+          side: head
+        entries:
+          - _ulid: 01KM7S9FZKNSRJZRKH74E0NT4Q
+            author: Jacob Chapel
+            body: Excluding notes_count and todos_count from index change detection makes listTasks() return
+              stale summaries after normal note or todo mutations. Those counts are part of
+              TaskSummary and are sent straight through the task list API/UI, so after addNote() the
+              user-visible list can keep showing 0 notes until someone runs a rebuild. That leaves
+              the index out of sync for user-visible list data.
+            created_at: 2026-03-21T08:48:19.955Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T08:43:11.398Z
-    updated_at: 2026-03-21T08:47:59.847Z
+    updated_at: 2026-03-21T08:48:19.955Z
     notes: []
