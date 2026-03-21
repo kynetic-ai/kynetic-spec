@@ -42494,6 +42494,13 @@ reviews:
         payload:
           thread_ulid: 01KM9BD0YD1MG807CZB0E5XFA6
         timestamp: 2026-03-21T23:24:41.523Z
+      - _ulid: 01KM9BE65PYRFTMEMYG6P21E7P
+        actor: Test User
+        event_type: thread_created
+        payload:
+          kind: nit
+          thread_ulid: 01KM9BE5W13TFDGJKGMCKD416N
+        timestamp: 2026-03-21T23:24:42.550Z
     examined_commit: 6e8ed2622a60022c3094e03f5d57321a53683b34
     external_links: []
     lifecycle_state: open
@@ -42548,7 +42555,23 @@ reviews:
               under test and marks the broader AC as covered when it is not.
             created_at: 2026-03-21T23:24:05.478Z
         kind: blocker
+      - _ulid: 01KM9BE5W13TFDGJKGMCKD416N
+        entries:
+          - _ulid: 01KM9BE5W1G6D4DEBA9AZZWEGB
+            author: Test User
+            body: "Evidence log: Files read: tests/split-backend.test.ts, tests/task-data-manager.test.ts,
+              tests/ac-annotation-validation.test.ts. Commands run: git diff against
+              6661e9cae3c71f9e8292fa2e75c39e69e148ff77, kspec task get, kspec item get for
+              @task-directory-storage @task-listing-performance @task-detail-loading
+              @task-storage-activation, rg for relevant AC annotations, kspec validate, npm test.
+              Claims verified: the snapshot only edits annotation comments in two test files; npm
+              test passes with 304 files / 6935 tests / 3 skipped. Categories searched: correctness
+              (2 coverage mismatches found), test quality (2 findings), edge cases (checked AC scope
+              vs test behavior, no additional issues), error handling (no changes), integration (no
+              runtime regression from test run)."
+            created_at: 2026-03-21T23:24:42.241Z
+        kind: nit
     verdicts: []
     created_at: 2026-03-21T23:20:17.564Z
-    updated_at: 2026-03-21T23:24:41.177Z
+    updated_at: 2026-03-21T23:24:42.241Z
     notes: []
