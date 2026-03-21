@@ -40548,7 +40548,18 @@ reviews:
     slugs: []
     title: Review @01KM8KEEN57D9E64GZPQTH1SXJ
     author: Test User
-    checks: []
+    checks:
+      - status: pass
+        applies_to_version:
+          type: entity_version
+          content_hash: ""
+        evidence: "SKIP_BUILD=1 npm test -- tests/file-lock.test.ts
+          tests/dispatch-shadow-mutation-lock.test.ts: 15/15 tests passed."
+        name: targeted-tests
+        required: true
+        runner: npm
+        created_at: 2026-03-21T16:43:23.086Z
+        completed_at: 2026-03-21T16:43:23.086Z
     events:
       - _ulid: 01KM8M3B042VTMDVAZAR988NPB
         actor: Test User
@@ -40563,6 +40574,13 @@ reviews:
           from: draft
           to: open
         timestamp: 2026-03-21T16:37:09.726Z
+      - _ulid: 01KM8MFBBC6PAFS977AGV5EX1M
+        actor: Test User
+        event_type: check_added
+        payload:
+          status: pass
+          name: targeted-tests
+        timestamp: 2026-03-21T16:43:23.373Z
     examined_commit: a5f4801899b17fd67eb522cc0e5803c156a9e49d
     external_links: []
     lifecycle_state: open
@@ -40575,5 +40593,5 @@ reviews:
     threads: []
     verdicts: []
     created_at: 2026-03-21T16:36:49.796Z
-    updated_at: 2026-03-21T16:37:09.415Z
+    updated_at: 2026-03-21T16:43:23.086Z
     notes: []
