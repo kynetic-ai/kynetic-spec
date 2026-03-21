@@ -112226,8 +112226,11 @@
   spec_ref: "@task-data-manager"
   plan_ref: "@plan-task-storage-split-per-task-directory-architecture"
   origin: derived
-  status: pending_review
+  status: completed
   blocked_by: []
+  closed_reason: Approved in review @01KM7AQ3 and merged dispatch/task/task-impl-data-manager/01km6yen
+    into dev at 878b30086642. Added the task data manager module, supporting YAML helpers, task data
+    manager coverage, and the action-model test leak fix.
   depends_on: []
   context: []
   priority: 1
@@ -112249,6 +112252,7 @@
   created_at: 2026-03-21T00:59:18.243Z
   started_at: 2026-03-21T04:32:24.751Z
   submitted_at: 2026-03-21T04:32:28.704Z
+  completed_at: 2026-03-21T04:40:47.684Z
   notes:
     - _ulid: 01KM6ZY93T298G8J88RBYGZ700
       content: "Implemented TaskDataManager module (src/parser/task-data-manager.ts) wrapping existing
