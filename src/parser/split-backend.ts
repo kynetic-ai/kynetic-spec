@@ -162,10 +162,10 @@ export async function listTaskDirs(ctx: KspecContext): Promise<string[]> {
  * | deleteTask    | WRITE | DELETE    | DELETE     |
  * | mutateTasks   | WRITE*| WRITE     | WRITE*     |
  *
- * * Index is only written when filterable fields change.
- *   notes_count/todos_count are excluded from change detection
- *   per AC-3: note-only mutations must not modify the index.
- *   Counts are set at creation time and corrected during rebuild.
+ * * Index is only written when indexed fields change.
+ *   This includes notes_count/todos_count — these are indexed fields
+ *   used by list surfaces. Note *content* is non-indexed (AC-3),
+ *   but the derived count is an indexed field (AC-2).
  *
  * AC: @task-index-file ac-3 — note-only mutations don't touch index
  */
@@ -284,35 +284,23 @@ export function toIndexEntry(task: Task): Record<string, unknown> {
 }
 
 /**
- * Fields that trigger an index write when they change.
+ * Compare two index entries for equality on all indexed fields.
+ * Returns true if all indexed fields (including notes_count/todos_count)
+ * have the same values.
  *
- * Excludes notes_count and todos_count — these are denormalized counts
- * derived from per-task files. They are set at creation time and
- * corrected during rebuildIndex(), but do not trigger index writes on
- * note/todo mutations. This keeps note-only mutations from touching
- * the index, honoring the spec contract.
+ * notes_count and todos_count ARE included in the comparison because they
+ * are indexed fields used by list surfaces. When a note is added, the note
+ * *content* is non-indexed data (AC-3), but the *count* is a derived indexed
+ * field that changes — triggering an index write per AC-2 (filterable field
+ * changes are persisted to both index and per-task file atomically).
  *
- * AC: @task-index-file ac-3 — note-only mutations must not modify the index
- */
-const INDEX_CHANGE_FIELDS = INDEXED_FIELDS.filter(
-  (f) => f !== "notes_count" && f !== "todos_count",
-);
-
-/**
- * Compare two index entries for equality on fields that trigger writes.
- * Returns true if all change-triggering indexed fields have the same values.
- *
- * notes_count and todos_count are excluded from comparison because they
- * are derived from per-task file data (notes array / todos array). Updating
- * the index on every note addition would violate AC-3.
- *
- * AC: @task-index-file ac-3 — skip index write when only counts changed
+ * AC: @task-index-file ac-2 — index updated when any indexed field changes
  */
 export function indexEntriesEqual(
   a: Record<string, unknown>,
   b: Record<string, unknown>,
 ): boolean {
-  for (const field of INDEX_CHANGE_FIELDS) {
+  for (const field of INDEXED_FIELDS) {
     const va = a[field];
     const vb = b[field];
 
@@ -544,8 +532,8 @@ class SplitBackend implements TaskStorageBackend {
    *
    * AC: @task-data-manager ac-5 — non-overlapping mutations no contention
    * AC: @task-data-manager ac-9 — same-task mutations serialize
-   * AC: @task-index-file ac-2 — index updated when filterable fields change
-   * AC: @task-index-file ac-3 — index untouched when only non-indexed data changes
+   * AC: @task-index-file ac-2 — index updated when indexed fields change
+   * AC: @task-index-file ac-3 — note/history content not stored in index
    */
   async mutateTask(
     ctx: KspecContext,
@@ -589,8 +577,10 @@ class SplitBackend implements TaskStorageBackend {
           await writeNotesFile(notesFilePath, notes);
         }
 
-        // Only update index if indexed fields actually changed
-        // AC: @task-index-file ac-3 — note-only mutations skip index
+        // Only update index if any indexed field changed (including counts).
+        // Note *content* is non-indexed data (AC-3), but notes_count is an
+        // indexed field — so adding a note updates the count in the index.
+        // AC: @task-index-file ac-2 — index updated when indexed fields change
         const newIndexEntry = toIndexEntry(cleanTask);
         if (!indexEntriesEqual(oldIndexEntry, newIndexEntry)) {
           await this.updateIndexEntry(ctx, cleanTask);
@@ -626,8 +616,7 @@ class SplitBackend implements TaskStorageBackend {
    * AC: @task-data-manager ac-6 — all writes in single atomic operation
    * AC: @task-data-manager ac-9 — same-task mutations serialize
    * AC: @task-atomic-writes ac-3 — batch uses single write buffer
-   * AC: @task-index-file ac-2 — index updated when filterable fields change
-   * AC: @task-index-file ac-3 — index untouched when only non-indexed data changes
+   * AC: @task-index-file ac-2 — index updated when indexed fields change
    */
   async mutateTasks(
     ctx: KspecContext,
@@ -687,8 +676,8 @@ class SplitBackend implements TaskStorageBackend {
             await writeNotesFile(notesFilePath, notes);
           }
 
-          // Only update index if indexed fields changed
-          // AC: @task-index-file ac-3 — note-only mutations skip index
+          // Only update index if any indexed field changed (including counts)
+          // AC: @task-index-file ac-2 — index updated when indexed fields change
           const newIndexEntry = toIndexEntry(cleanTask);
           if (!indexEntriesEqual(oldIndexEntries[i], newIndexEntry)) {
             await this.updateIndexEntry(ctx, cleanTask);

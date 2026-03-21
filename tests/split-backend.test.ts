@@ -1001,7 +1001,7 @@ describe("SplitBackend", () => {
   // Then: Only the per-task file is written; the index is not modified
   describe("non-indexed changes skip index (ac-3)", () => {
     // AC: @task-index-file ac-3
-    it("adding a note does not modify the index file", async () => {
+    it("adding a note updates the index count but not note content", async () => {
       const manager = new TaskDataManager("split");
 
       const created = await manager.createTask(ctx, {
@@ -1009,21 +1009,23 @@ describe("SplitBackend", () => {
         slugs: ["note-no-index"],
       });
 
-      // Capture index file content after creation
-      const indexPath = getIndexFilePath(ctx);
-      const indexBefore = await fs.readFile(indexPath, "utf-8");
-
       // Add a note (goes through mutateTask)
-      await manager.addNote(ctx, "@note-no-index", "A note that should not touch the index", "@tester");
+      await manager.addNote(ctx, "@note-no-index", "A note with content that stays out of the index", "@tester");
 
-      // The index file content should be unchanged
-      const indexAfter = await fs.readFile(indexPath, "utf-8");
-      expect(indexAfter).toBe(indexBefore);
+      // The index should update notes_count (it's an indexed field)
+      const summaries = await manager.listTasks(ctx);
+      const summary = summaries.find((s) => s._ulid === created._ulid);
+      expect(summary!.notes_count).toBe(1);
 
-      // But the note should be persisted in the per-task notes file
+      // But note *content* must NOT appear in the index (non-indexed data)
+      const indexPath = getIndexFilePath(ctx);
+      const indexContent = await fs.readFile(indexPath, "utf-8");
+      expect(indexContent).not.toContain("A note with content that stays out of the index");
+
+      // The note should be persisted in the per-task notes file
       const fetched = await manager.getTask(ctx, "@note-no-index");
       expect(fetched.notes.length).toBe(1);
-      expect(fetched.notes[0].content).toBe("A note that should not touch the index");
+      expect(fetched.notes[0].content).toBe("A note with content that stays out of the index");
     });
 
     // AC: @task-index-file ac-3
@@ -1094,14 +1096,14 @@ describe("SplitBackend", () => {
       expect(indexEntriesEqual(a, { ...a, tags: ["a", "b"] })).toBe(false);
       // Title changed
       expect(indexEntriesEqual(a, { ...a, title: "Changed" })).toBe(false);
-      // notes_count changed — excluded from INDEX_CHANGE_FIELDS per AC-3
-      expect(indexEntriesEqual(a, { ...a, notes_count: 1 })).toBe(true);
-      // todos_count changed — excluded from INDEX_CHANGE_FIELDS per AC-3
-      expect(indexEntriesEqual(a, { ...a, todos_count: 2 })).toBe(true);
+      // notes_count changed — indexed field, triggers index write
+      expect(indexEntriesEqual(a, { ...a, notes_count: 1 })).toBe(false);
+      // todos_count changed — indexed field, triggers index write
+      expect(indexEntriesEqual(a, { ...a, todos_count: 2 })).toBe(false);
     });
 
-    // AC: @task-index-file ac-3 + ac-7
-    it("notes_count in index is stale after note additions but accurate after rebuild", async () => {
+    // AC: @task-index-file ac-2
+    it("listTasks returns accurate notes_count after note additions", async () => {
       const manager = new TaskDataManager("split");
 
       const created = await manager.createTask(ctx, {
@@ -1115,24 +1117,18 @@ describe("SplitBackend", () => {
       expect(summary).toBeDefined();
       expect(summary!.notes_count).toBe(0);
 
-      // Add two notes — index should remain stale per AC-3
+      // Add two notes — index count updates because notes_count is indexed
       await manager.addNote(ctx, "@count-accuracy", "Note one", "@tester");
       await manager.addNote(ctx, "@count-accuracy", "Note two", "@tester");
 
-      // listTasks still shows 0 because note-only mutations skip the index
-      summaries = await manager.listTasks(ctx);
-      summary = summaries.find((s) => s._ulid === created._ulid);
-      expect(summary!.notes_count).toBe(0);
-
-      // But getTask returns the real count (per-task file is authoritative, AC-6)
-      const fetched = await manager.getTask(ctx, "@count-accuracy");
-      expect(fetched.notes.length).toBe(2);
-
-      // After rebuild (AC-7), the index count is corrected
-      await (manager as any).backend.rebuildIndex(ctx);
+      // listTasks shows accurate count — notes_count is an indexed field
       summaries = await manager.listTasks(ctx);
       summary = summaries.find((s) => s._ulid === created._ulid);
       expect(summary!.notes_count).toBe(2);
+
+      // getTask also returns the real count
+      const fetched = await manager.getTask(ctx, "@count-accuracy");
+      expect(fetched.notes.length).toBe(2);
     });
   });
 
