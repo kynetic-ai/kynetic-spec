@@ -34042,6 +34042,13 @@ reviews:
           kind: blocker
           thread_ulid: 01KM77B98RPAXYSF8SMTFSX3YT
         timestamp: 2026-03-21T03:34:44.507Z
+      - _ulid: 01KM77BFWTAHDS095YGA1NZSAN
+        actor: Jacob Chapel
+        event_type: thread_created
+        payload:
+          kind: blocker
+          thread_ulid: 01KM77BFMG2ZVYDHE89G2JAJPK
+        timestamp: 2026-03-21T03:34:51.034Z
     examined_commit: 29d48278f31ece8b422641f746402a06ab097948
     external_links: []
     lifecycle_state: open
@@ -34111,7 +34118,27 @@ reviews:
               valid on-disk task file on reads and then refuses to write it back."
             created_at: 2026-03-21T03:34:44.248Z
         kind: blocker
+      - _ulid: 01KM77BFMG2ZVYDHE89G2JAJPK
+        anchor:
+          type: code
+          commit: 29d48278f31ece8b422641f746402a06ab097948
+          line_end: 903
+          line_start: 894
+          path: src/parser/task-data-manager.ts
+          side: head
+        entries:
+          - _ulid: 01KM77BFMG4Y2NB82RPWNFMYC1
+            author: Jacob Chapel
+            body: "`deleteTask()` still hard-requires `_sourceFile` before it will delegate to the backend. That
+              leaks the monolithic file-path model into the supposedly format-agnostic manager. I
+              reproduced this with a registered mock split backend whose getTask() returned a valid
+              LoadedTask without `_sourceFile`: manager.deleteTask() threw `Cannot delete task @x:
+              no source file metadata` and the backend's deleteTask() was never called. So once the
+              split backend stops exposing file paths, the delete path stops routing through the
+              backend at all, which violates ac-1/ac-8."
+            created_at: 2026-03-21T03:34:50.768Z
+        kind: blocker
     verdicts: []
     created_at: 2026-03-21T03:29:42.814Z
-    updated_at: 2026-03-21T03:34:44.248Z
+    updated_at: 2026-03-21T03:34:50.768Z
     notes: []
